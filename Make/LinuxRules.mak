@@ -14,11 +14,11 @@ LD = $(XCC)
 ## ---------------------------------------------------------------
 ## INCLUDES, LIBS and DEFINES are set by specific makefiles...
 ## 
-_SOURCES := $(addprefix $(TUCUXI_ROOT)\Src\$(NAME)\, $(SOURCES))						# Source files for a given module are referenced from the module directory
-_INCLUDES := $(addprefix -I, $(INCLUDES)) -I$(TUCUXI_ROOT)\Src							# Include directories are referenced from Tucuxi's root directory
-_LIBS := $(foreach _LIB, $(LIBS), $(TUCUXI_ROOT)\Src\$(_LIB)\$(_LIB).a) $(EXTLIBS)	# Libs are rerefenced by their name only 
+_SOURCES := $(addprefix $(TUCUXI_ROOT)/Src/$(NAME)/, $(SOURCES))						# Source files for a given module are referenced from the module directory
+_INCLUDES := $(addprefix -I, $(INCLUDES)) -I$(TUCUXI_ROOT)/Src							# Include directories are referenced from Tucuxi's root directory
+_LIBS := $(foreach _LIB, $(LIBS), $(TUCUXI_ROOT)/Src/$(_LIB)/$(_LIB).a) $(EXTLIBS)	# Libs are rerefenced by their name only 
 _DEFINES := $(addprefix -D, $(DEFINES))
-_MODULEDIR := $(TUCUXI_ROOT)\Src\$(NAME)
+_MODULEDIR := $(TUCUXI_ROOT)/Src/$(NAME)
 
 ## ---------------------------------------------------------------
 ## Build flags.
@@ -36,11 +36,11 @@ OBJS := $(patsubst %.cpp, %.o, $(filter %.cpp, $(SOURCES)))
 ##
 ifeq ($(TYPE),LIB)
 all : $(_OBJS)
-	$(AR) rcs $(_MODULEDIR)\$(NAME).a $(_OBJS) $(_LIBS)
+	$(AR) rcs $(_MODULEDIR)/$(NAME).a $(_OBJS) $(_LIBS)
 
 clean:
 	del $(_OBJS)
-	del $(_MODULEDIR)\$(NAME).a
+	del $(_MODULEDIR)/$(NAME).a
 endif
 
 ## ---------------------------------------------------------------
@@ -49,8 +49,8 @@ endif
 ifeq ($(TYPE),DLL)
 CFLAGS += -fPIC
 all : $(OBJS) $(_LIBS)
-	$(LD) -shared $(LDFLAGS) -o $(_MODULEDIR)\$(NAME).so $(OBJS) $(_LIBS)
-	cp $(NAME).so $(YDEEROOTDIR)/bin/LinuxDebug
+	$(LD) -shared $(LDFLAGS) -o $(_MODULEDIR)/$(NAME).so $(OBJS) $(_LIBS)
+	cp $(_MODULEDIR)/$(NAME).so $(TUCUXI_ROOT)/bin/
 
 clean:
 	rm -f $(_OBJS)
@@ -62,8 +62,8 @@ endif
 ##
 ifeq ($(TYPE),APP)
 all : $(OBJS) $(_LIBS)
-	$(LD) -rdynamic $(LDFLAGS) -o $(_MODULEDIR)\$(NAME) $(OBJS) -Wl,--whole-archive $(_LIBS) -Wl,--no-whole-archive -ldl -lrt -lpthread
-	cp $(NAME) $(YDEEROOTDIR)/bin/LinuxDebug
+	$(LD) -rdynamic $(LDFLAGS) -o $(_MODULEDIR)/$(NAME) $(OBJS) -Wl,--whole-archive $(_LIBS) -Wl,--no-whole-archive -ldl -lrt -lpthread
+	cp $(_MODULEDIR)/$(NAME) $(TUCUXI_ROOT)/bin/
 
 clean:
 	rm -f $(_OBJS)
