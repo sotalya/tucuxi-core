@@ -33,9 +33,32 @@ LDFLAGS	= -lpthread -lrt -Wl,--gc-sections
 OBJS := $(patsubst %.cpp, %.o, $(filter %.cpp, $(SOURCES))) $(patsubst %.txt, %.o, $(filter %.txt, $(SOURCES)))
 
 ## ---------------------------------------------------------------
+## Rules for construction of a static library
+##
+ifeq ($(TYPE), LIB)
+all : $(_OBJS)
+        $(AR) rcs $(_MODULEDIR)\$(NAME).a $(_OBJS) $(_LIBS)
+
+clean:
+        del $(_OBJS)
+        del $(_MODULEDIR)\$(NAME).a
+endif
+
+## ---------------------------------------------------------------
 ## Rules for construction of c and c++ shared library
 ##
 ifeq ($(TYPE),DLL)
+CFLAGS += -fPIC
+all : $(OBJS) $(_LIBS1)
+	$(LD) -shared $(LDFLAGS) -o $(NAME).so $(OBJS) $(_LIBS2) 
+	cp $(NAME).so $(YDEEROOTDIR)/bin/LinuxDebug
+
+clean:
+	rm -f $(addsuffix /*.o, $(SRCDIRS))
+	rm -f $(NAME).so
+endif
+
+ifeq ($(TYPE),LIB)
 CFLAGS += -fPIC
 all : $(OBJS) $(_LIBS1)
 	$(LD) -shared $(LDFLAGS) -o $(NAME).so $(OBJS) $(_LIBS2) 
