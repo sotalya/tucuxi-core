@@ -29,7 +29,7 @@ LDFLAGS = -lpthread -lrt -Wl,--gc-sections
 ## ---------------------------------------------------------------
 ## Object list. SOURCES is set by specific makefiles
 ##
-OBJS := $(patsubst %.cpp, %.o, $(filter %.cpp, $(SOURCES)))
+_OBJS := $(patsubst %.cpp, %.o, $(filter %.cpp, $(SOURCES)))
 
 ## ---------------------------------------------------------------
 ## Rules for construction of a static library
