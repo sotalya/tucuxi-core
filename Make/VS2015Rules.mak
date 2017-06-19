@@ -7,8 +7,9 @@
 ## ---------------------------------------------------------------
 ## Compiler and linker...
 ##
-CXX := "cl"
+CXX := cl
 LD := $(CXX)
+LIBRARIAN := lib
 
 ## ---------------------------------------------------------------
 ## INCLUDES, LIBS and DEFINES are set by specific makefiles...
@@ -22,10 +23,10 @@ _MODULEDIR := $(TUCUXI_ROOT)\Src\$(NAME)
 ## ---------------------------------------------------------------
 ## Build flags.
 ##
-CCFLAG :=  -Os -c -Oy $(_INCLUDES) $(_DEFINES)
+CCFLAG :=  -Os -c -Oy -EHsc -nologo $(_INCLUDES) $(_DEFINES)
 ASFLAG := -W $(_INCLUDES)
-LDFLAG_APP := -MT -Fm$(_MODULEDIR)\$(NAME).map
-LDFLAG_DLL := -LD -MD -Fm$(_MODULEDIR)\$(NAME).map
+LDFLAG_APP := -nologo -MT -Fm$(_MODULEDIR)\$(NAME).map
+LDFLAG_DLL := -nologo -LD -MD -Fm$(_MODULEDIR)\$(NAME).map
 
 ## ---------------------------------------------------------------
 ## Object list. SOURCES is set by specific makefiles
@@ -33,7 +34,19 @@ LDFLAG_DLL := -LD -MD -Fm$(_MODULEDIR)\$(NAME).map
 _OBJS := $(patsubst %.cpp, %.o, $(_SOURCES))
 
 ## ---------------------------------------------------------------
-## Rules for construction of c++ dll
+## Rules for construction of a static library
+##
+ifeq ($(TYPE), LIB)
+all : $(_OBJS)
+	$(LIBRARIAN) /NOLOGO /VERBOSE /OUT:$(_MODULEDIR)\$(NAME).lib $(_OBJS) $(_LIBS) 
+
+clean:
+	del $(_OBJS)
+	del $(_MODULEDIR)\$(NAME).lib
+endif
+
+## ---------------------------------------------------------------
+## Rules for construction of a dynamic library
 ##
 ifeq ($(TYPE), DLL)
 all : $(_OBJS)
@@ -52,7 +65,7 @@ endif
 ##
 ifeq ($(TYPE), APP)
 all : $(_OBJS)
-	$(LD) $(LDFLAG_APP) -Fe$(_MODULEDIR)\$(NAME).exe $(_OBJS) $(_LIBS)
+	$(LD) $(LDFLAG_APP) -Fe$(_MODULEDIR)\$(NAME).exe $(_OBJS) $(_LIBS) 
 	copy /Y /V $(_MODULEDIR)\$(NAME).exe $(TUCUXI_ROOT)\Bin
 
 clean:
