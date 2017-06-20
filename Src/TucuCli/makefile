@@ -10,7 +10,7 @@ TYPE := APP
 
 SOURCES := tucucli.cpp 
 INCLUDES := . \
-            ..\..\Libs\eigen
+            ../../Libs/eigen
 LIBS := TucuCore
 EXTLIBS := 
 DEFINES := 

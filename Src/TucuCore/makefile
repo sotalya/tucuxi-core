@@ -14,8 +14,8 @@ SOURCES := concentrationcalculator.cpp \
            onecompartmentbolus.cpp \
            onecompartmentextra.cpp
 INCLUDES := . \
-            ..\..\Libs\eigen \
-            ..\..\Libs\boost
+            ../../Libs/eigen \
+            ../../Libs/boost
 LIBS := 
 EXTLIBS := 
 DEFINES := TUCUCORE_LIBRARY
