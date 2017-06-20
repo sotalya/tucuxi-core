@@ -3,7 +3,7 @@
 
 #include <map>
 
-#include "Eigen\Dense"
+#include "Eigen/Dense"
 
 #include "definitions.h"
 #include "intakeevent.h"
