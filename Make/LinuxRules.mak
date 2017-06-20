@@ -48,8 +48,8 @@ endif
 ##
 ifeq ($(TYPE),DLL)
 CFLAGS += -fPIC
-all : $(OBJS) $(_LIBS)
-	$(LD) -shared $(LDFLAGS) -o $(_MODULEDIR)/$(NAME).so $(OBJS) $(_LIBS)
+all : $(_OBJS) $(_LIBS)
+	$(LD) -shared $(LDFLAGS) -o $(_MODULEDIR)/$(NAME).so $(_OBJS) $(_LIBS)
 	cp $(_MODULEDIR)/$(NAME).so $(TUCUXI_ROOT)/bin/
 
 clean:
@@ -61,8 +61,8 @@ endif
 ## Rules for construction of c and c++ application
 ##
 ifeq ($(TYPE),APP)
-all : $(OBJS) $(_LIBS)
-	$(LD) -rdynamic $(LDFLAGS) -o $(_MODULEDIR)/$(NAME) $(OBJS) -Wl,--whole-archive $(_LIBS) -Wl,--no-whole-archive -ldl -lrt -lpthread
+all : $(_OBJS) $(_LIBS)
+	$(LD) -rdynamic $(LDFLAGS) -o $(_MODULEDIR)/$(NAME) $(_OBJS) -Wl,--whole-archive $(_LIBS) -Wl,--no-whole-archive -ldl -lrt -lpthread
 	cp $(_MODULEDIR)/$(NAME) $(TUCUXI_ROOT)/bin/
 
 clean:
