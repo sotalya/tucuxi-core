@@ -23,7 +23,7 @@ _MODULEDIR := $(TUCUXI_ROOT)/Src/$(NAME)
 ## ---------------------------------------------------------------
 ## Build flags.
 ##
-CFLAGS = -g -Wall $(_INCLUDES) $(_DEFINES) -ffunction-sections -fdata-sections -foptimize-sibling-calls -DMW_NO_TYPEINFO -D_REENTRANT  
+CFLAGS = -g -Wall $(_INCLUDES) $(_DEFINES) -std=c++11 -ffunction-sections -fdata-sections -foptimize-sibling-calls -DMW_NO_TYPEINFO -D_REENTRANT  
 LDFLAGS = -lpthread -lrt -Wl,--gc-sections
 
 ## ---------------------------------------------------------------
