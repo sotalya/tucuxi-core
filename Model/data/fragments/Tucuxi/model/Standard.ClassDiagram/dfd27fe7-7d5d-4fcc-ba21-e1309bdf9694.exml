@@ -1,0 +1,50 @@
+<?xml version="1.0" ?>
+<!--GENERATED FILE, PLEASE DO NOT EDIT!!!--><EXT object="CoreServices" version="4">
+  <OBJECT>
+    <ID name="CoreServices" mc="Standard.ClassDiagram" uid="dfd27fe7-7d5d-4fcc-ba21-e1309bdf9694"/>
+    <PID name="CoreServices" mc="Standard.Package" uid="d9857c03-ad15-4f36-b89d-25ce2d9c6d6d"/>
+    <ATTRIBUTES>
+      <ATT name="UiDataVersion">437</ATT>
+      <ATT name="UiData"><![CDATA[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]]></ATT>
+      <ATT name="Name"><![CDATA[CoreServices]]></ATT>
+      <ATT name="status">1970354901745664</ATT>
+    </ATTRIBUTES>
+    <DEPENDENCIES>
+      <LINK relation="Represented">
+        <ID name="IDataModelServices" mc="Standard.Class" uid="7ec1f642-4e8c-4bb2-aa68-da2fc816c81c"/>
+        <ID name="IProcessingServices" mc="Standard.Class" uid="5a583bb8-0636-4ae5-a0da-82e086d40045"/>
+        <REFOBJ>
+          <ID name="ComputePercentiles" mc="Standard.Operation" uid="cdf0c5cd-fcb5-421e-a8d5-783723491724"/>
+        </REFOBJ>
+        <REFOBJ>
+          <ID name="LoadDrug" mc="Standard.Operation" uid="e65b5d02-faf3-45b5-8088-2a68cd64d152"/>
+        </REFOBJ>
+        <REFOBJ>
+          <ID name="ComputeAdjustments" mc="Standard.Operation" uid="c7c56155-3288-47a5-9508-77c87af4d07e"/>
+        </REFOBJ>
+        <REFOBJ>
+          <ID name="ComputeConcentrations" mc="Standard.Operation" uid="00cca1bd-1f2c-4906-ac53-6a1c37c02234"/>
+        </REFOBJ>
+        <REFOBJ>
+          <ID name="LoadTreatment" mc="Standard.Operation" uid="1c273263-8a48-4474-9865-b53de80b717b"/>
+        </REFOBJ>
+      </LINK>
+      <COMP relation="Descriptor">
+        <OBJECT>
+          <ID name="" mc="Infrastructure.Note" uid="02a78ca9-a40d-458d-9070-e824691219f2"/>
+          <ATTRIBUTES>
+            <ATT name="Content"></ATT>
+            <ATT name="MimeType"></ATT>
+            <ATT name="Name"></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="Model">
+              <FOREIGNID name="description" mc="Infrastructure.NoteType" uid="00000000-0000-3e81-0000-000000000000"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+      </COMP>
+    </DEPENDENCIES>
+  </OBJECT>
+</EXT>

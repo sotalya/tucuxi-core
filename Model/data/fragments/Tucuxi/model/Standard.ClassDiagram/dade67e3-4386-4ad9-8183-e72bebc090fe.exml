@@ -1,0 +1,77 @@
+<?xml version="1.0" ?>
+<!--GENERATED FILE, PLEASE DO NOT EDIT!!!--><EXT object="DrugModel2" version="4">
+  <OBJECT>
+    <ID name="DrugModel2" mc="Standard.ClassDiagram" uid="dade67e3-4386-4ad9-8183-e72bebc090fe"/>
+    <PID name="DrugModel" mc="Standard.Package" uid="e5340267-9772-41e6-a77e-d21b9bf6a88a"/>
+    <ATTRIBUTES>
+      <ATT name="UiDataVersion">120</ATT>
+      <ATT name="UiData"><![CDATA[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]]></ATT>
+      <ATT name="Name"><![CDATA[DrugModel2]]></ATT>
+      <ATT name="status">1970354901745664</ATT>
+    </ATTRIBUTES>
+    <DEPENDENCIES>
+      <LINK relation="Represented">
+        <ID name="DrugModel" mc="Standard.Class" uid="67d7faf1-bc85-4c89-a101-3fa9efd1189d"/>
+        <REFOBJ>
+          <ID name="drugModelId" mc="Standard.Attribute" uid="08b04aff-6c9a-42e6-9d90-3c85d072b5c1"/>
+        </REFOBJ>
+        <REFOBJ>
+          <ID name="name" mc="Standard.Attribute" uid="8e5a83b3-8a86-47ea-bc38-5464d2569931"/>
+        </REFOBJ>
+        <ID name="MetaData" mc="Standard.Class" uid="ab7df389-2602-46f7-9492-ad1990e9448b"/>
+        <ID name="DrugDomain" mc="Standard.Class" uid="c11201d8-806d-4d7d-ae1f-e845d86cd8d3"/>
+        <ID name="Study" mc="Standard.Class" uid="95c06d43-ba27-408c-b295-92feefa0b767"/>
+        <REFOBJ>
+          <ID name="description" mc="Standard.Attribute" uid="08a8ad91-d2a0-40bb-bf45-1d57a9f2a165"/>
+        </REFOBJ>
+        <REFOBJ>
+          <ID name="name" mc="Standard.Attribute" uid="ef0c3c5d-7faa-45a6-92bf-2e9aaf3d4670"/>
+        </REFOBJ>
+        <ID name="ScientificPaper" mc="Standard.Class" uid="2e6b706a-8107-4fc8-b9c3-a602f9218dbd"/>
+        <REFOBJ>
+          <ID name="bibtex" mc="Standard.Attribute" uid="22c92e55-3c8b-415b-a541-5594e2bb8b07"/>
+        </REFOBJ>
+        <REFOBJ>
+          <ID name="study" mc="Standard.AssociationEnd" uid="7f2220e1-ff14-4209-b314-16c0b3291636"/>
+        </REFOBJ>
+        <REFOBJ>
+          <ID name="" mc="Standard.AssociationEnd" uid="9ff78d0d-8f10-4849-a416-1cda26bd919e"/>
+        </REFOBJ>
+        <REFOBJ>
+          <ID name="metaData" mc="Standard.AssociationEnd" uid="c5975237-b2b7-4b8b-aec4-c8e664cdef50"/>
+        </REFOBJ>
+        <REFOBJ>
+          <ID name="" mc="Standard.AssociationEnd" uid="2df19dd5-f71a-46e4-a481-8f6db2e70f07"/>
+        </REFOBJ>
+        <REFOBJ>
+          <ID name="drugDomain" mc="Standard.AssociationEnd" uid="72d408a2-62f1-4bf5-a130-7655b7f67a55"/>
+        </REFOBJ>
+        <REFOBJ>
+          <ID name="" mc="Standard.AssociationEnd" uid="88f3e623-adbf-47c4-8ca5-b564634f4d22"/>
+        </REFOBJ>
+        <REFOBJ>
+          <ID name="" mc="Standard.AssociationEnd" uid="63294c1f-8d39-4606-9dd1-198835af4a2f"/>
+        </REFOBJ>
+        <REFOBJ>
+          <ID name="references" mc="Standard.AssociationEnd" uid="1c535f79-a38d-4d49-9b31-c58933ac8b34"/>
+        </REFOBJ>
+      </LINK>
+      <COMP relation="Descriptor">
+        <OBJECT>
+          <ID name="" mc="Infrastructure.Note" uid="76f53ede-2462-4afb-9387-20475a2a7dc4"/>
+          <ATTRIBUTES>
+            <ATT name="Content"></ATT>
+            <ATT name="MimeType"></ATT>
+            <ATT name="Name"></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="Model">
+              <FOREIGNID name="description" mc="Infrastructure.NoteType" uid="00000000-0000-3e81-0000-000000000000"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+      </COMP>
+    </DEPENDENCIES>
+  </OBJECT>
+</EXT>

@@ -1,0 +1,46 @@
+<?xml version="1.0" ?>
+<!--GENERATED FILE, PLEASE DO NOT EDIT!!!--><EXT object="Entities" version="4">
+  <OBJECT>
+    <ID name="Entities" mc="Standard.ClassDiagram" uid="bd0199da-d21f-4b1d-9c93-9606663e51c7"/>
+    <PID name="DrugModel" mc="Standard.Package" uid="e5340267-9772-41e6-a77e-d21b9bf6a88a"/>
+    <ATTRIBUTES>
+      <ATT name="UiDataVersion">629</ATT>
+      <ATT name="UiData"><![CDATA[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]]></ATT>
+      <ATT name="Name"><![CDATA[Entities]]></ATT>
+      <ATT name="status">1970354901745664</ATT>
+    </ATTRIBUTES>
+    <DEPENDENCIES>
+      <LINK relation="Represented">
+        <ID name="Entity" mc="Standard.Class" uid="3d059c7c-45c6-4466-b9a4-9e3242c40542"/>
+        <ID name="ActiveSubstance" mc="Standard.Class" uid="cafd91d1-446a-47a7-a9dd-252ae82a5e63"/>
+        <ID name="DrugModel" mc="Standard.Class" uid="67d7faf1-bc85-4c89-a101-3fa9efd1189d"/>
+        <ID name="DrugDomain" mc="Standard.Class" uid="c11201d8-806d-4d7d-ae1f-e845d86cd8d3"/>
+        <REFOBJ>
+          <ID name="Generalization" mc="Standard.Generalization" uid="b8775033-278f-4fd6-b515-426834171210"/>
+        </REFOBJ>
+        <REFOBJ>
+          <ID name="Generalization" mc="Standard.Generalization" uid="e8865e3e-8158-4faf-9ff1-65032b299e6f"/>
+        </REFOBJ>
+        <REFOBJ>
+          <ID name="Generalization" mc="Standard.Generalization" uid="eafab259-eaea-4889-aa25-41cd486c0ec2"/>
+        </REFOBJ>
+      </LINK>
+      <COMP relation="Descriptor">
+        <OBJECT>
+          <ID name="" mc="Infrastructure.Note" uid="d2b42da1-7415-4d0b-8272-803332d89e5a"/>
+          <ATTRIBUTES>
+            <ATT name="Content"></ATT>
+            <ATT name="MimeType"></ATT>
+            <ATT name="Name"></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="Model">
+              <FOREIGNID name="description" mc="Infrastructure.NoteType" uid="00000000-0000-3e81-0000-000000000000"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+      </COMP>
+    </DEPENDENCIES>
+  </OBJECT>
+</EXT>

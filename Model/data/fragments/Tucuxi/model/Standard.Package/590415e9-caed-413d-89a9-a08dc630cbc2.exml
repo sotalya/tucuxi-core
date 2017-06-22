@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+<!--GENERATED FILE, PLEASE DO NOT EDIT!!!--><EXT object="DrugTreatment" version="4">
+  <OBJECT>
+    <ID name="DrugTreatment" mc="Standard.Package" uid="590415e9-caed-413d-89a9-a08dc630cbc2"/>
+    <PID name="Tucuxi" mc="Standard.Project" uid="ae3c2eec-2cef-485d-9d98-ccae0d307348"/>
+    <ATTRIBUTES>
+      <ATT name="IsInstantiable">false</ATT>
+      <ATT name="IsAbstract">false</ATT>
+      <ATT name="IsLeaf">false</ATT>
+      <ATT name="IsRoot">false</ATT>
+      <ATT name="Visibility">Public</ATT>
+      <ATT name="Name"><![CDATA[DrugTreatment]]></ATT>
+      <ATT name="status">1970354901745664</ATT>
+    </ATTRIBUTES>
+    <DEPENDENCIES>
+      <COMP relation="OwnedElement">
+        <COMPID name="DrugTreatment" mc="Standard.Class" uid="0494e63a-1f41-46cc-98cd-2958f20691da"/>
+        <COMPID name="CorePatient" mc="Standard.Class" uid="b750893b-f6e8-49bb-85d7-e4bab72c5deb"/>
+        <COMPID name="CoreMeasure" mc="Standard.Class" uid="de886b1c-2dfc-49e2-965a-f04941981de5"/>
+        <COMPID name="PatientVariates" mc="Standard.Class" uid="faf87d13-f034-48b7-941f-34bb5a192da8"/>
+      </COMP>
+      <COMP relation="Product">
+        <COMPID name="DrugTreatment" mc="Standard.ClassDiagram" uid="bf04bd57-5ec1-42e2-bfad-2acc13ef7461"/>
+      </COMP>
+    </DEPENDENCIES>
+  </OBJECT>
+</EXT>

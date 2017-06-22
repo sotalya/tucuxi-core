@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+<!--GENERATED FILE, PLEASE DO NOT EDIT!!!--><EXT object="CoreServices" version="4">
+  <OBJECT>
+    <ID name="CoreServices" mc="Standard.Package" uid="d9857c03-ad15-4f36-b89d-25ce2d9c6d6d"/>
+    <PID name="Tucuxi" mc="Standard.Project" uid="ae3c2eec-2cef-485d-9d98-ccae0d307348"/>
+    <ATTRIBUTES>
+      <ATT name="IsInstantiable">false</ATT>
+      <ATT name="IsAbstract">false</ATT>
+      <ATT name="IsLeaf">false</ATT>
+      <ATT name="IsRoot">false</ATT>
+      <ATT name="Visibility">Public</ATT>
+      <ATT name="Name"><![CDATA[CoreServices]]></ATT>
+      <ATT name="status">1970354901745664</ATT>
+    </ATTRIBUTES>
+    <DEPENDENCIES>
+      <COMP relation="OwnedElement">
+        <COMPID name="DataModelServices" mc="Standard.Class" uid="7ec1f642-4e8c-4bb2-aa68-da2fc816c81c"/>
+        <COMPID name="ProcessingServices" mc="Standard.Class" uid="5a583bb8-0636-4ae5-a0da-82e086d40045"/>
+      </COMP>
+      <COMP relation="Product">
+        <COMPID name="CoreServices" mc="Standard.ClassDiagram" uid="dfd27fe7-7d5d-4fcc-ba21-e1309bdf9694"/>
+      </COMP>
+    </DEPENDENCIES>
+  </OBJECT>
+</EXT>

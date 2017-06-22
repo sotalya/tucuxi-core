@@ -1,0 +1,80 @@
+<?xml version="1.0" ?>
+<!--GENERATED FILE, PLEASE DO NOT EDIT!!!--><EXT object="DrugModel" version="4">
+  <OBJECT>
+    <ID name="DrugModel" mc="Standard.Package" uid="e5340267-9772-41e6-a77e-d21b9bf6a88a"/>
+    <PID name="Tucuxi" mc="Standard.Project" uid="ae3c2eec-2cef-485d-9d98-ccae0d307348"/>
+    <ATTRIBUTES>
+      <ATT name="IsInstantiable">false</ATT>
+      <ATT name="IsAbstract">false</ATT>
+      <ATT name="IsLeaf">false</ATT>
+      <ATT name="IsRoot">false</ATT>
+      <ATT name="Visibility">Public</ATT>
+      <ATT name="Name"><![CDATA[DrugModel]]></ATT>
+      <ATT name="status">1970354901745664</ATT>
+    </ATTRIBUTES>
+    <DEPENDENCIES>
+      <COMP relation="OwnedElement">
+        <COMPID name="DrugModel" mc="Standard.Class" uid="67d7faf1-bc85-4c89-a101-3fa9efd1189d"/>
+        <COMPID name="ActiveSubstance" mc="Standard.Class" uid="cafd91d1-446a-47a7-a9dd-252ae82a5e63"/>
+        <COMPID name="Analyte" mc="Standard.Class" uid="bc8524b3-d66c-418d-b778-47572aaf12f0"/>
+        <COMPID name="FormulationAndRoute" mc="Standard.Class" uid="bb8d6e4f-f8ac-42d6-9c94-c18d9debbbe6"/>
+        <COMPID name="TimeChoice" mc="Standard.Class" uid="f5d95c88-c7cf-429d-b9c6-1de8422c83b7"/>
+        <COMPID name="ValidDoses" mc="Standard.Class" uid="e628532b-eab7-432f-8ce5-44cd04e9237c"/>
+        <COMPID name="DrugVariates" mc="Standard.Class" uid="c05d329d-f614-479d-8f5d-0184947be0aa"/>
+        <COMPID name="DrugParameterSet" mc="Standard.Class" uid="c22b15ab-f047-421d-a32b-489fd1b3c125"/>
+        <COMPID name="Targets" mc="Standard.Class" uid="bd77710e-7b9e-4c48-b3b0-a0a1b276460d"/>
+        <COMPID name="Study" mc="Standard.Class" uid="95c06d43-ba27-408c-b295-92feefa0b767"/>
+        <COMPID name="MetaData" mc="Standard.Class" uid="ab7df389-2602-46f7-9492-ad1990e9448b"/>
+        <COMPID name="DrugDomain" mc="Standard.Class" uid="c11201d8-806d-4d7d-ae1f-e845d86cd8d3"/>
+        <COMPID name="ValidDose" mc="Standard.Class" uid="4fac7978-c258-4c93-855e-dd9827406c4b"/>
+        <COMPID name="DrugParameter" mc="Standard.Class" uid="c563b230-0a1f-4c10-ba24-83b1d40cfc99"/>
+        <COMPID name="Adme" mc="Standard.Class" uid="a7a872fe-4c7e-4d97-b7f4-9928df54c8ea"/>
+        <COMPID name="Admin" mc="Standard.Class" uid="687f25eb-337d-4022-b9be-b794e46d7af8"/>
+        <OBJECT>
+          <ID name="Type" mc="Standard.Enumeration" uid="32ff3f90-4d36-4cd8-8a0a-7b1c96ffdbdf"/>
+          <ATTRIBUTES>
+            <ATT name="IsElementary">true</ATT>
+            <ATT name="IsAbstract">false</ATT>
+            <ATT name="IsLeaf">false</ATT>
+            <ATT name="IsRoot">false</ATT>
+            <ATT name="Visibility">Public</ATT>
+            <ATT name="Name"><![CDATA[Type]]></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <COMP relation="Value">
+              <OBJECT>
+                <ID name="Absorption" mc="Standard.EnumerationLiteral" uid="4b5b3441-e9a4-42fd-b34c-cb57877321dc"/>
+                <ATTRIBUTES>
+                  <ATT name="Name"><![CDATA[Absorption]]></ATT>
+                  <ATT name="status">1970354901745664</ATT>
+                </ATTRIBUTES>
+                <DEPENDENCIES></DEPENDENCIES>
+              </OBJECT>
+              <OBJECT>
+                <ID name="Disposition" mc="Standard.EnumerationLiteral" uid="8b1d0130-3880-4433-b366-8218bf7382e2"/>
+                <ATTRIBUTES>
+                  <ATT name="Name"><![CDATA[Disposition]]></ATT>
+                  <ATT name="status">1970354901745664</ATT>
+                </ATTRIBUTES>
+                <DEPENDENCIES></DEPENDENCIES>
+              </OBJECT>
+            </COMP>
+          </DEPENDENCIES>
+        </OBJECT>
+        <COMPID name="IndependantSubstance" mc="Standard.Class" uid="2def53d6-8844-4880-8c61-1d3c17bb307d"/>
+        <COMPID name="DependantSubstance" mc="Standard.Class" uid="efdc99b6-1bdd-4c8a-ab63-6241854340b1"/>
+        <COMPID name="ActiveSubstanceDescription" mc="Standard.Class" uid="0e2812bf-dbe3-4924-a639-31f8829b0692"/>
+        <COMPID name="ScientificPaper" mc="Standard.Class" uid="2e6b706a-8107-4fc8-b9c3-a602f9218dbd"/>
+      </COMP>
+      <COMP relation="Product">
+        <COMPID name="DrugModel1" mc="Standard.ClassDiagram" uid="0b3f55ba-339c-47f8-bea9-5a241ebb5bbf"/>
+        <COMPID name="DrugParameterSet" mc="Standard.ClassDiagram" uid="01759808-45dd-42a7-a938-43ca24598520"/>
+        <COMPID name="Entities" mc="Standard.ClassDiagram" uid="bd0199da-d21f-4b1d-9c93-9606663e51c7"/>
+        <COMPID name="Administration" mc="Standard.ClassDiagram" uid="a115bafc-536b-41d1-9f51-8fa40e36f72c"/>
+        <COMPID name="ActiveSubstance" mc="Standard.ClassDiagram" uid="1cf34bf3-b39b-49ed-ac82-b3dc6bdb4044"/>
+        <COMPID name="DrugModel2" mc="Standard.ClassDiagram" uid="dade67e3-4386-4ad9-8183-e72bebc090fe"/>
+      </COMP>
+    </DEPENDENCIES>
+  </OBJECT>
+</EXT>

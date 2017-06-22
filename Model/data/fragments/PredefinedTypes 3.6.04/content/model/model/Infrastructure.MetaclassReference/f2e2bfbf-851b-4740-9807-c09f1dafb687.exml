@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<!--GENERATED FILE, PLEASE DO NOT EDIT!!!--><EXT object="" version="4">
+  <OBJECT>
+    <ID name="" mc="Infrastructure.MetaclassReference" uid="f2e2bfbf-851b-4740-9807-c09f1dafb687"/>
+    <PID name="Analyst" mc="Infrastructure.Profile" uid="f7bd80c7-d21a-4ac0-a03b-086a36e7cca8"/>
+    <ATTRIBUTES>
+      <ATT name="ReferencedClassName"><![CDATA[Analyst.RequirementContainer]]></ATT>
+      <ATT name="status">1970354901745664</ATT>
+    </ATTRIBUTES>
+    <DEPENDENCIES>
+      <COMP relation="DefinedTable">
+        <COMPID name="Reliability" mc="Infrastructure.PropertyTableDefinition" uid="00080cf0-0000-001c-0000-000000000000"/>
+      </COMP>
+    </DEPENDENCIES>
+  </OBJECT>
+</EXT>

@@ -1,0 +1,26 @@
+<?xml version="1.0" ?>
+<!--GENERATED FILE, PLEASE DO NOT EDIT!!!--><EXT object="Common" version="4">
+  <OBJECT>
+    <ID name="Common" mc="Standard.Package" uid="de3a0d17-9dc4-45af-969b-f43444d0fed4"/>
+    <PID name="Tucuxi" mc="Standard.Project" uid="ae3c2eec-2cef-485d-9d98-ccae0d307348"/>
+    <ATTRIBUTES>
+      <ATT name="IsInstantiable">false</ATT>
+      <ATT name="IsAbstract">false</ATT>
+      <ATT name="IsLeaf">false</ATT>
+      <ATT name="IsRoot">false</ATT>
+      <ATT name="Visibility">Public</ATT>
+      <ATT name="Name"><![CDATA[Common]]></ATT>
+      <ATT name="status">1970354901745664</ATT>
+    </ATTRIBUTES>
+    <DEPENDENCIES>
+      <COMP relation="OwnedElement">
+        <COMPID name="ErrorModel" mc="Standard.Package" uid="5e02a0e2-3efb-4214-b924-fad13951dbb0"/>
+        <COMPID name="Operations" mc="Standard.Package" uid="ddb49256-37d6-4f72-8a79-0897657e5f04"/>
+        <COMPID name="Amount" mc="Standard.Package" uid="5b68bdf6-6dc2-4417-9991-02940adffb36"/>
+        <COMPID name="Entity" mc="Standard.Package" uid="6eeb6cea-703d-4635-9abb-250186f813d6"/>
+        <COMPID name="ValueObject" mc="Standard.Package" uid="1c776cab-0b8d-4c83-a0ce-bb025e8ced85"/>
+        <COMPID name="TranslatableString" mc="Standard.Class" uid="d62f72a7-e9e7-4e4e-9d25-e0820eb26968"/>
+      </COMP>
+    </DEPENDENCIES>
+  </OBJECT>
+</EXT>

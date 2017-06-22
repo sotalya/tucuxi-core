@@ -1,0 +1,36 @@
+<?xml version="1.0" ?>
+<!--GENERATED FILE, PLEASE DO NOT EDIT!!!--><EXT object="OperableAmount Class diagram" version="4">
+  <OBJECT>
+    <ID name="OperableAmount Class diagram" mc="Standard.ClassDiagram" uid="39b904d6-67c5-4ead-b76a-5d537451d8a4"/>
+    <PID name="Amount" mc="Standard.Package" uid="5b68bdf6-6dc2-4417-9991-02940adffb36"/>
+    <ATTRIBUTES>
+      <ATT name="UiDataVersion">707</ATT>
+      <ATT name="UiData"><![CDATA[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]]></ATT>
+      <ATT name="Name"><![CDATA[OperableAmount Class diagram]]></ATT>
+      <ATT name="status">1970354901745664</ATT>
+    </ATTRIBUTES>
+    <DEPENDENCIES>
+      <LINK relation="Represented">
+        <ID name="Amount" mc="Standard.Class" uid="748cfc88-7446-42a3-a74e-936238f699f6"/>
+        <ID name="OperableAmount" mc="Standard.Class" uid="72984d40-f659-4296-a1dd-9adac6b7688b"/>
+        <ID name="OperableCheckableAmount" mc="Standard.Class" uid="23d8d5c3-91bc-41f9-a09d-3e606a363d51"/>
+      </LINK>
+      <COMP relation="Descriptor">
+        <OBJECT>
+          <ID name="" mc="Infrastructure.Note" uid="4c22b4f8-2818-49be-a48f-fbb9eca42a45"/>
+          <ATTRIBUTES>
+            <ATT name="Content"></ATT>
+            <ATT name="MimeType"></ATT>
+            <ATT name="Name"></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="Model">
+              <FOREIGNID name="description" mc="Infrastructure.NoteType" uid="00000000-0000-3e81-0000-000000000000"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+      </COMP>
+    </DEPENDENCIES>
+  </OBJECT>
+</EXT>

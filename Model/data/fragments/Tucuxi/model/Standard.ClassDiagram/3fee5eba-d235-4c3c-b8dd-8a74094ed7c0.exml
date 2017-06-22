@@ -1,0 +1,51 @@
+<?xml version="1.0" ?>
+<!--GENERATED FILE, PLEASE DO NOT EDIT!!!--><EXT object="CommandLineInterface" version="4">
+  <OBJECT>
+    <ID name="CommandLineInterface" mc="Standard.ClassDiagram" uid="3fee5eba-d235-4c3c-b8dd-8a74094ed7c0"/>
+    <PID name="CommandLineInterface" mc="Standard.Package" uid="c4c14856-4d5d-4104-a3ed-c3a453312024"/>
+    <ATTRIBUTES>
+      <ATT name="UiDataVersion">402</ATT>
+      <ATT name="UiData"><![CDATA[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]]></ATT>
+      <ATT name="Name"><![CDATA[CommandLineInterface]]></ATT>
+      <ATT name="status">1970354901745664</ATT>
+    </ATTRIBUTES>
+    <DEPENDENCIES>
+      <LINK relation="Represented">
+        <ID name="TucuCli" mc="Standard.Class" uid="04a097c3-e360-4d04-b736-0c9737bb4ef8"/>
+        <ID name="DataModelServices" mc="Standard.Class" uid="7ec1f642-4e8c-4bb2-aa68-da2fc816c81c"/>
+        <ID name="ProcessingServices" mc="Standard.Class" uid="5a583bb8-0636-4ae5-a0da-82e086d40045"/>
+        <REFOBJ>
+          <ID name="LoadDrug" mc="Standard.Operation" uid="e65b5d02-faf3-45b5-8088-2a68cd64d152"/>
+        </REFOBJ>
+        <REFOBJ>
+          <ID name="LoadTreatment" mc="Standard.Operation" uid="1c273263-8a48-4474-9865-b53de80b717b"/>
+        </REFOBJ>
+        <REFOBJ>
+          <ID name="ComputeConcentrations" mc="Standard.Operation" uid="00cca1bd-1f2c-4906-ac53-6a1c37c02234"/>
+        </REFOBJ>
+        <REFOBJ>
+          <ID name="ComputePercentiles" mc="Standard.Operation" uid="cdf0c5cd-fcb5-421e-a8d5-783723491724"/>
+        </REFOBJ>
+        <REFOBJ>
+          <ID name="ComputeAdjustments" mc="Standard.Operation" uid="c7c56155-3288-47a5-9508-77c87af4d07e"/>
+        </REFOBJ>
+      </LINK>
+      <COMP relation="Descriptor">
+        <OBJECT>
+          <ID name="" mc="Infrastructure.Note" uid="922d1fe6-2a46-4e1b-a5f8-3705dbd35237"/>
+          <ATTRIBUTES>
+            <ATT name="Content"></ATT>
+            <ATT name="MimeType"></ATT>
+            <ATT name="Name"></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="Model">
+              <FOREIGNID name="description" mc="Infrastructure.NoteType" uid="00000000-0000-3e81-0000-000000000000"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+      </COMP>
+    </DEPENDENCIES>
+  </OBJECT>
+</EXT>

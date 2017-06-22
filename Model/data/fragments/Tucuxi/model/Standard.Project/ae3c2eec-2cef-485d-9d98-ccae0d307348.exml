@@ -1,0 +1,29 @@
+<?xml version="1.0" ?>
+<!--GENERATED FILE, PLEASE DO NOT EDIT!!!--><EXT object="Tucuxi" version="4">
+  <OBJECT>
+    <ID name="Tucuxi" mc="Standard.Project" uid="ae3c2eec-2cef-485d-9d98-ccae0d307348"/>
+    <ATTRIBUTES>
+      <ATT name="ProjectContext"></ATT>
+      <ATT name="ProjectDescr"></ATT>
+      <ATT name="Name"><![CDATA[Tucuxi]]></ATT>
+      <ATT name="status">1970354901745664</ATT>
+    </ATTRIBUTES>
+    <DEPENDENCIES>
+      <COMP relation="Model">
+        <COMPID name="DrugModel" mc="Standard.Package" uid="e5340267-9772-41e6-a77e-d21b9bf6a88a"/>
+        <COMPID name="DrugTreatment" mc="Standard.Package" uid="590415e9-caed-413d-89a9-a08dc630cbc2"/>
+        <COMPID name="DrugResponseAnalysis" mc="Standard.Package" uid="1290fdc0-dcd6-45c7-9d82-ce86cb84ba9d"/>
+        <COMPID name="DosageHistory" mc="Standard.Package" uid="475c9f26-28bb-4dd2-a934-ebb91d8e2914"/>
+        <COMPID name="ProcessingRequest" mc="Standard.Package" uid="a0ab6dee-74bc-4afe-9618-c254033760b0"/>
+        <COMPID name="ProcessingResponse" mc="Standard.Package" uid="cfd94fb9-d906-4408-a289-f256e6b983ec"/>
+        <COMPID name="Common" mc="Standard.Package" uid="de3a0d17-9dc4-45af-969b-f43444d0fed4"/>
+        <COMPID name="TucuMath" mc="Standard.Package" uid="c76f11a6-ee2a-4567-877d-3b836f448e13"/>
+        <COMPID name="CommandLineInterface" mc="Standard.Package" uid="c4c14856-4d5d-4104-a3ed-c3a453312024"/>
+        <COMPID name="CoreServices" mc="Standard.Package" uid="d9857c03-ad15-4f36-b89d-25ce2d9c6d6d"/>
+      </COMP>
+      <COMP relation="DiagramRoot">
+        <COMPID name="Tucuxi" mc="Infrastructure.DiagramSet" uid="f94298cb-5691-4412-96bf-7512c665fd56"/>
+      </COMP>
+    </DEPENDENCIES>
+  </OBJECT>
+</EXT>

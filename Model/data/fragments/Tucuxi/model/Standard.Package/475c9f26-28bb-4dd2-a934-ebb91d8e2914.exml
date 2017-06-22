@@ -1,0 +1,35 @@
+<?xml version="1.0" ?>
+<!--GENERATED FILE, PLEASE DO NOT EDIT!!!--><EXT object="DosageHistory" version="4">
+  <OBJECT>
+    <ID name="DosageHistory" mc="Standard.Package" uid="475c9f26-28bb-4dd2-a934-ebb91d8e2914"/>
+    <PID name="Tucuxi" mc="Standard.Project" uid="ae3c2eec-2cef-485d-9d98-ccae0d307348"/>
+    <ATTRIBUTES>
+      <ATT name="IsInstantiable">false</ATT>
+      <ATT name="IsAbstract">false</ATT>
+      <ATT name="IsLeaf">false</ATT>
+      <ATT name="IsRoot">false</ATT>
+      <ATT name="Visibility">Public</ATT>
+      <ATT name="Name"><![CDATA[DosageHistory]]></ATT>
+      <ATT name="status">1970354901745664</ATT>
+    </ATTRIBUTES>
+    <DEPENDENCIES>
+      <COMP relation="OwnedElement">
+        <COMPID name="DosageTimeRange" mc="Standard.Class" uid="9202d5d7-173d-4d29-9cbd-df3186b88d34"/>
+        <COMPID name="DosageHistory" mc="Standard.Class" uid="6f0cb234-2da1-49d1-b4dd-b0288152651f"/>
+        <COMPID name="AbstractDosage" mc="Standard.Class" uid="67aa327c-0d39-4a9f-8f3a-46b5f17071ac"/>
+        <COMPID name="DosageUnbounded" mc="Standard.Class" uid="0f8e9390-0106-4d0c-8fbb-2319dd3c43b0"/>
+        <COMPID name="DosageBounded" mc="Standard.Class" uid="d346107b-9b86-4ec1-8add-eb8d4a87549a"/>
+        <COMPID name="DosageLoop" mc="Standard.Class" uid="447561df-f8ff-48dc-874a-c31e3921d1af"/>
+        <COMPID name="DosageRepeat" mc="Standard.Class" uid="2f199488-5b99-48a5-9130-cb0349f0707d"/>
+        <COMPID name="DosageSequence" mc="Standard.Class" uid="1ff54603-7f40-4d21-8da5-b90d64f32a45"/>
+        <COMPID name="SingleDosage" mc="Standard.Class" uid="2319fe0a-8bfb-4a62-b0ad-2c2d0201df28"/>
+        <COMPID name="LastingDosage" mc="Standard.Class" uid="c5d0c6d8-cb03-424a-aae9-9ccf052c182d"/>
+        <COMPID name="DailyDosage" mc="Standard.Class" uid="13f3d46f-4df4-43f7-984c-d210453d1f48"/>
+        <COMPID name="WeeklyDosage" mc="Standard.Class" uid="a950b4e2-cf74-453a-a4eb-1d4815cd38a4"/>
+      </COMP>
+      <COMP relation="Product">
+        <COMPID name="DosageHistory Class diagram" mc="Standard.ClassDiagram" uid="98c7cdf8-8bc8-4f9b-8601-50737b29f85a"/>
+      </COMP>
+    </DEPENDENCIES>
+  </OBJECT>
+</EXT>

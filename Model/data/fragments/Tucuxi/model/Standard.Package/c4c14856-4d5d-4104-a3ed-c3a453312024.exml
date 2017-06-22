@@ -1,0 +1,24 @@
+<?xml version="1.0" ?>
+<!--GENERATED FILE, PLEASE DO NOT EDIT!!!--><EXT object="CommandLineInterface" version="4">
+  <OBJECT>
+    <ID name="CommandLineInterface" mc="Standard.Package" uid="c4c14856-4d5d-4104-a3ed-c3a453312024"/>
+    <PID name="Tucuxi" mc="Standard.Project" uid="ae3c2eec-2cef-485d-9d98-ccae0d307348"/>
+    <ATTRIBUTES>
+      <ATT name="IsInstantiable">false</ATT>
+      <ATT name="IsAbstract">false</ATT>
+      <ATT name="IsLeaf">false</ATT>
+      <ATT name="IsRoot">false</ATT>
+      <ATT name="Visibility">Public</ATT>
+      <ATT name="Name"><![CDATA[CommandLineInterface]]></ATT>
+      <ATT name="status">1970354901745664</ATT>
+    </ATTRIBUTES>
+    <DEPENDENCIES>
+      <COMP relation="OwnedElement">
+        <COMPID name="TucuCli" mc="Standard.Class" uid="04a097c3-e360-4d04-b736-0c9737bb4ef8"/>
+      </COMP>
+      <COMP relation="Product">
+        <COMPID name="CommandLineInterface" mc="Standard.ClassDiagram" uid="3fee5eba-d235-4c3c-b8dd-8a74094ed7c0"/>
+      </COMP>
+    </DEPENDENCIES>
+  </OBJECT>
+</EXT>

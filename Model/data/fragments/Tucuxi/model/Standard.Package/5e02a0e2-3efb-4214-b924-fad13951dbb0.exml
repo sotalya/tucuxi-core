@@ -1,0 +1,24 @@
+<?xml version="1.0" ?>
+<!--GENERATED FILE, PLEASE DO NOT EDIT!!!--><EXT object="ErrorModel" version="4">
+  <OBJECT>
+    <ID name="ErrorModel" mc="Standard.Package" uid="5e02a0e2-3efb-4214-b924-fad13951dbb0"/>
+    <PID name="Common" mc="Standard.Package" uid="de3a0d17-9dc4-45af-969b-f43444d0fed4"/>
+    <ATTRIBUTES>
+      <ATT name="IsInstantiable">false</ATT>
+      <ATT name="IsAbstract">false</ATT>
+      <ATT name="IsLeaf">false</ATT>
+      <ATT name="IsRoot">false</ATT>
+      <ATT name="Visibility">Public</ATT>
+      <ATT name="Name"><![CDATA[ErrorModel]]></ATT>
+      <ATT name="status">1970354901745664</ATT>
+    </ATTRIBUTES>
+    <DEPENDENCIES>
+      <COMP relation="OwnedElement">
+        <COMPID name="ErrorModel" mc="Standard.Class" uid="1a8b59a7-c8ae-48a3-b84c-cea206c70f33"/>
+      </COMP>
+      <COMP relation="Product">
+        <COMPID name="ErrorModel Class diagram" mc="Standard.ClassDiagram" uid="4c0f9700-d1c9-48dc-bd76-a1e899ef954a"/>
+      </COMP>
+    </DEPENDENCIES>
+  </OBJECT>
+</EXT>

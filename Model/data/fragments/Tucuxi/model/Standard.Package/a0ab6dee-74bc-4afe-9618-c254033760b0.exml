@@ -1,0 +1,28 @@
+<?xml version="1.0" ?>
+<!--GENERATED FILE, PLEASE DO NOT EDIT!!!--><EXT object="ProcessingRequest" version="4">
+  <OBJECT>
+    <ID name="ProcessingRequest" mc="Standard.Package" uid="a0ab6dee-74bc-4afe-9618-c254033760b0"/>
+    <PID name="Tucuxi" mc="Standard.Project" uid="ae3c2eec-2cef-485d-9d98-ccae0d307348"/>
+    <ATTRIBUTES>
+      <ATT name="IsInstantiable">false</ATT>
+      <ATT name="IsAbstract">false</ATT>
+      <ATT name="IsLeaf">false</ATT>
+      <ATT name="IsRoot">false</ATT>
+      <ATT name="Visibility">Public</ATT>
+      <ATT name="Name"><![CDATA[ProcessingRequest]]></ATT>
+      <ATT name="status">1970354901745664</ATT>
+    </ATTRIBUTES>
+    <DEPENDENCIES>
+      <COMP relation="OwnedElement">
+        <COMPID name="ProcessingRequest" mc="Standard.Class" uid="6cd7d188-8837-4306-b19f-a4f846fa979b"/>
+        <COMPID name="ProcessingTraits" mc="Standard.Class" uid="76def296-a1ff-4917-8f9f-0d4ba51390d1"/>
+        <COMPID name="PredictionTraits" mc="Standard.Class" uid="fde3a308-2ccb-43a7-beba-b4bcd47e5465"/>
+        <COMPID name="DosageAdjustmentTraits" mc="Standard.Class" uid="66eb68af-cf3d-4b4d-8d60-811a2846cda6"/>
+        <COMPID name="SimpleDosageAdjustmentTraits" mc="Standard.Class" uid="abdaeab7-c6df-4bb7-9e3f-3f439d37c78a"/>
+      </COMP>
+      <COMP relation="Product">
+        <COMPID name="ProcessingRequest Class diagram" mc="Standard.ClassDiagram" uid="dd074cf5-3ea6-475c-9165-ca0e19698419"/>
+      </COMP>
+    </DEPENDENCIES>
+  </OBJECT>
+</EXT>

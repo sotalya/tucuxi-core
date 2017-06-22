@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+<!--GENERATED FILE, PLEASE DO NOT EDIT!!!--><EXT object="ValueObject" version="4">
+  <OBJECT>
+    <ID name="ValueObject" mc="Standard.Package" uid="1c776cab-0b8d-4c83-a0ce-bb025e8ced85"/>
+    <PID name="Common" mc="Standard.Package" uid="de3a0d17-9dc4-45af-969b-f43444d0fed4"/>
+    <ATTRIBUTES>
+      <ATT name="IsInstantiable">false</ATT>
+      <ATT name="IsAbstract">false</ATT>
+      <ATT name="IsLeaf">false</ATT>
+      <ATT name="IsRoot">false</ATT>
+      <ATT name="Visibility">Public</ATT>
+      <ATT name="Name"><![CDATA[ValueObject]]></ATT>
+      <ATT name="status">1970354901745664</ATT>
+    </ATTRIBUTES>
+    <DEPENDENCIES>
+      <COMP relation="OwnedElement">
+        <COMPID name="ValueObject" mc="Standard.Class" uid="a396da3c-144b-4a74-b73e-1827bf098aae"/>
+      </COMP>
+    </DEPENDENCIES>
+  </OBJECT>
+</EXT>

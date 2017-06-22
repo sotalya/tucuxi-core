@@ -1,0 +1,24 @@
+<?xml version="1.0" ?>
+<!--GENERATED FILE, PLEASE DO NOT EDIT!!!--><EXT object="DrugResponseAnalysis" version="4">
+  <OBJECT>
+    <ID name="DrugResponseAnalysis" mc="Standard.Package" uid="1290fdc0-dcd6-45c7-9d82-ce86cb84ba9d"/>
+    <PID name="Tucuxi" mc="Standard.Project" uid="ae3c2eec-2cef-485d-9d98-ccae0d307348"/>
+    <ATTRIBUTES>
+      <ATT name="IsInstantiable">false</ATT>
+      <ATT name="IsAbstract">false</ATT>
+      <ATT name="IsLeaf">false</ATT>
+      <ATT name="IsRoot">false</ATT>
+      <ATT name="Visibility">Public</ATT>
+      <ATT name="Name"><![CDATA[DrugResponseAnalysis]]></ATT>
+      <ATT name="status">1970354901745664</ATT>
+    </ATTRIBUTES>
+    <DEPENDENCIES>
+      <COMP relation="OwnedElement">
+        <COMPID name="DrugResponseAnalysis" mc="Standard.Class" uid="d684833f-620c-4169-bf13-e0fc27582d8c"/>
+      </COMP>
+      <COMP relation="Product">
+        <COMPID name="DrugResponseAnalysis" mc="Standard.ClassDiagram" uid="ec8c8935-a37b-4235-bb03-8d3aace380c3"/>
+      </COMP>
+    </DEPENDENCIES>
+  </OBJECT>
+</EXT>

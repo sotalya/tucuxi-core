@@ -1,0 +1,26 @@
+<?xml version="1.0" ?>
+<!--GENERATED FILE, PLEASE DO NOT EDIT!!!--><EXT object="Amount" version="4">
+  <OBJECT>
+    <ID name="Amount" mc="Standard.Package" uid="5b68bdf6-6dc2-4417-9991-02940adffb36"/>
+    <PID name="Common" mc="Standard.Package" uid="de3a0d17-9dc4-45af-969b-f43444d0fed4"/>
+    <ATTRIBUTES>
+      <ATT name="IsInstantiable">false</ATT>
+      <ATT name="IsAbstract">false</ATT>
+      <ATT name="IsLeaf">false</ATT>
+      <ATT name="IsRoot">false</ATT>
+      <ATT name="Visibility">Public</ATT>
+      <ATT name="Name"><![CDATA[Amount]]></ATT>
+      <ATT name="status">1970354901745664</ATT>
+    </ATTRIBUTES>
+    <DEPENDENCIES>
+      <COMP relation="OwnedElement">
+        <COMPID name="OperableCheckableAmount" mc="Standard.Class" uid="23d8d5c3-91bc-41f9-a09d-3e606a363d51"/>
+        <COMPID name="OperableAmount" mc="Standard.Class" uid="72984d40-f659-4296-a1dd-9adac6b7688b"/>
+        <COMPID name="Amount" mc="Standard.Class" uid="748cfc88-7446-42a3-a74e-936238f699f6"/>
+      </COMP>
+      <COMP relation="Product">
+        <COMPID name="OperableAmount Class diagram" mc="Standard.ClassDiagram" uid="39b904d6-67c5-4ead-b76a-5d537451d8a4"/>
+      </COMP>
+    </DEPENDENCIES>
+  </OBJECT>
+</EXT>

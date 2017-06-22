@@ -1,0 +1,54 @@
+<?xml version="1.0" ?>
+<!--GENERATED FILE, PLEASE DO NOT EDIT!!!--><EXT object="DrugResponseAnalysis" version="4">
+  <OBJECT>
+    <ID name="DrugResponseAnalysis" mc="Standard.ClassDiagram" uid="ec8c8935-a37b-4235-bb03-8d3aace380c3"/>
+    <PID name="DrugResponseAnalysis" mc="Standard.Package" uid="1290fdc0-dcd6-45c7-9d82-ce86cb84ba9d"/>
+    <ATTRIBUTES>
+      <ATT name="UiDataVersion">527</ATT>
+      <ATT name="UiData"><![CDATA[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]]></ATT>
+      <ATT name="Name"><![CDATA[DrugResponseAnalysis]]></ATT>
+      <ATT name="status">1970354901745664</ATT>
+    </ATTRIBUTES>
+    <DEPENDENCIES>
+      <LINK relation="Represented">
+        <ID name="DrugResponseAnalysis" mc="Standard.Class" uid="d684833f-620c-4169-bf13-e0fc27582d8c"/>
+        <ID name="DrugTreatment" mc="Standard.Class" uid="0494e63a-1f41-46cc-98cd-2958f20691da"/>
+        <ID name="DrugModel" mc="Standard.Class" uid="67d7faf1-bc85-4c89-a101-3fa9efd1189d"/>
+        <REFOBJ>
+          <ID name="drugTreatment" mc="Standard.AssociationEnd" uid="5d061840-f572-48f0-9284-f2a4b1464836"/>
+        </REFOBJ>
+        <REFOBJ>
+          <ID name="" mc="Standard.AssociationEnd" uid="a1e7aba7-1067-4aef-a036-42928e07ab44"/>
+        </REFOBJ>
+        <REFOBJ>
+          <ID name="drugModel" mc="Standard.AssociationEnd" uid="9950de34-7ce8-4589-ab23-3848694f4434"/>
+        </REFOBJ>
+        <REFOBJ>
+          <ID name="" mc="Standard.AssociationEnd" uid="69be0549-62e8-4f2d-88af-5ac2ed50458f"/>
+        </REFOBJ>
+        <REFOBJ>
+          <ID name="drugModelId" mc="Standard.Attribute" uid="08b04aff-6c9a-42e6-9d90-3c85d072b5c1"/>
+        </REFOBJ>
+        <REFOBJ>
+          <ID name="name" mc="Standard.Attribute" uid="8e5a83b3-8a86-47ea-bc38-5464d2569931"/>
+        </REFOBJ>
+      </LINK>
+      <COMP relation="Descriptor">
+        <OBJECT>
+          <ID name="" mc="Infrastructure.Note" uid="38119037-e3a4-46d7-a51c-20a10e12741e"/>
+          <ATTRIBUTES>
+            <ATT name="Content"></ATT>
+            <ATT name="MimeType"></ATT>
+            <ATT name="Name"></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="Model">
+              <FOREIGNID name="description" mc="Infrastructure.NoteType" uid="00000000-0000-3e81-0000-000000000000"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+      </COMP>
+    </DEPENDENCIES>
+  </OBJECT>
+</EXT>
