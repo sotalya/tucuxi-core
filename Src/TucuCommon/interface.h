@@ -1,7 +1,9 @@
 #ifndef TUCUXI_TUCUCOMMON_INTERFACE_H
 #define TUCUXI_TUCUCOMMON_INTERFACE_H
 
+#include <typeinfo>
 #include <string>
+
 
 namespace Tucuxi {
 namespace Common {

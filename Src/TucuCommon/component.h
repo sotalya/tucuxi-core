@@ -10,6 +10,8 @@
 namespace Tucuxi {
 namespace Common {
 
+#include <typeinfo>
+
 class Component
 {
 protected:

@@ -1,6 +1,7 @@
 #ifndef TUCUXI_TUCUCOMMON_COMPONENTMANAGER_H
 #define TUCUXI_TUCUCOMMON_COMPONENTMANAGER_H
 
+#include <typeinfo>
 #include <string>
 #include <map>
 
