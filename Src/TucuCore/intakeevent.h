@@ -13,11 +13,11 @@ namespace Math {
 class IntakeEvent : public TimedEvent {
 public:
 	IntakeEvent() /*: calc(0)*/ {}
-	IntakeEvent(time_t _time, double _offsetTime, double _value, double _interval, int _route, double _infusionTime, int nbPoints)
+	IntakeEvent(time_t _time, double _offsetTime, double _value, double _interval, int _route, double _infusionTime, int _nbPoints)
 		: TimedEvent(_time), 
 		  m_offsetTime(_offsetTime), 
 		  m_value(_value), 
-		  m_nbPoints(m_nbPoints), 
+		  m_nbPoints(_nbPoints), 
 		  m_interval(_interval), 
 		  m_route(_route), 
 		  m_infusionTime(_infusionTime) /*, calc(0) */ {}
