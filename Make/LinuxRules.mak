@@ -78,7 +78,7 @@ endif
 ## ---------------------------------------------------------------
 ## Rules for construction of c and c++ application
 ##
-ifeq ($(TYPE),TEST
+ifeq ($(TYPE),TEST)
 all : $(_OBJS) $(_LIBS)
 	$(LD) -rdynamic $(LDFLAGS) -o $(_MODULEDIR)/$(NAME)-Test $(_OBJS) -Wl,--whole-archive $(_LIBS) -Wl,--no-whole-archive -ldl -lrt -lpthread
 	cp $(_MODULEDIR)/$(NAME)-Test $(TUCUXI_ROOT)/bin/
