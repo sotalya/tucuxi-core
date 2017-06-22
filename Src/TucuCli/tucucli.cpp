@@ -39,7 +39,7 @@ int main()
 		outResiduals,
 		true);
 
-	printf("Out residual = %f", outResiduals[0]);
+	printf("Out residual = %f\n", outResiduals[0]);
 
     return 0;
 }

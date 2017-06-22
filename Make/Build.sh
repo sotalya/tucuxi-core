@@ -16,4 +16,11 @@ do
 done
 
 
+for MODULE in TucuCommon
+do
+   cd $TUCUXI_ROOT/Test/$MODULE
+   make TARGET=LINUX $MAKECMD > Build.log 2>&1
+done
+
+
 

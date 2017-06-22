@@ -5,13 +5,13 @@
 ##
 ## ----------------------------------------------------------------------------
 
-NAME := TucuCli
-TYPE := APP
+NAME := TucuCommon
+TYPE := TEST
 
-SOURCES := tucucli.cpp 
-INCLUDES := . \
-            ../../Libs/eigen-3.3.2
-LIBS := TucuCore
+SOURCES := test_componentmanager.cpp 
+INCLUDES := ../../Libs/fructose-1.3/fructose/include
+
+LIBS := TucuCommon
 EXTLIBS := 
 DEFINES := 
 

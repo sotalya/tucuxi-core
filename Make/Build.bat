@@ -12,7 +12,16 @@ for %%i in (TucuCommon TucuCore TucuCli) do (
 	echo *********************************************
 	echo *** Compiling %%i
 	cd "%TUCUXI_ROOT%\Src\%%i"
+	%MAKE% TARGET=VS2015 -f "%TUCUXI_ROOT%\Src\%%i\Makefile" clean
 	%MAKE% TARGET=VS2015 -f "%TUCUXI_ROOT%\Src\%%i\Makefile"
+)
+
+for %%i in (TucuCommon) do (
+	echo *********************************************
+	echo *** Compiling %%i
+	cd "%TUCUXI_ROOT%\Test\%%i"
+	%MAKE% TARGET=VS2015 -f "%TUCUXI_ROOT%\Test\%%i\Makefile" clean
+	%MAKE% TARGET=VS2015 -f "%TUCUXI_ROOT%\Test\%%i\Makefile"
 )
 
 pause
