@@ -10,6 +10,7 @@ fi
 for MODULE in TucuCommon TucuCore TucuCli
 do
    cd $TUCUXI_ROOT/src/$MODULE
+   mkdir -p objs
    make TARGET=LINUX $MAKECMD > objs/build.log 2>&1
 done
 
@@ -17,6 +18,7 @@ done
 for MODULE in TucuCommon
 do
    cd $TUCUXI_ROOT/test/$MODULE
+   mkdir -p objs
    make TARGET=LINUX $MAKECMD > objs/build.log 2>&1
 done
 
