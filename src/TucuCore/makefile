@@ -14,10 +14,10 @@ SOURCES := concentrationcalculator.cpp \
            onecompartmentbolus.cpp \
            onecompartmentextra.cpp
 INCLUDES := . \
-            ../../Libs/eigen-3.3.2 \
-            ../../Libs/boost-1.63.0
+            ../../libs/eigen-3.3.2 \
+            ../../libs/boost-1.63.0
 LIBS := 
 EXTLIBS := 
-DEFINES := TUCUCORE_LIBRARY
+DEFINES := 
 
-include $(TUCUXI_ROOT)/Make/Rules.mak
+include $(TUCUXI_ROOT)/make/rules.mak

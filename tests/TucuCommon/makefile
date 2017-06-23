@@ -9,10 +9,10 @@ NAME := TucuCommon
 TYPE := TEST
 
 SOURCES := tests.cpp
-INCLUDES := ../../Libs/fructose-1.3/fructose/include
+INCLUDES := ../../libs/fructose-1.3/fructose/include
 
 LIBS := TucuCommon
 EXTLIBS := 
 DEFINES := 
 
-include $(TUCUXI_ROOT)/Make/Rules.mak
+include $(TUCUXI_ROOT)/make/rules.mak

@@ -15,4 +15,4 @@ LIBS :=
 EXTLIBS := 
 DEFINES := 
 
-include $(TUCUXI_ROOT)/Make/Rules.mak
+include $(TUCUXI_ROOT)/make/rules.mak
