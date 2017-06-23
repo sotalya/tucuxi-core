@@ -1,7 +1,5 @@
 #!/bin/bash
 
-TUCUXI_ROOT=/srv/TucuData/jenkins/Jobs/Tucuxi/workspace
-export TUCUXI_ROOT=/srv/TucuData/jenkins/Jobs/Tucuxi/workspace
 
 mkdir -p $TUCUXI_ROOT/bin
 
