@@ -14,15 +14,10 @@ LD = $(XCC)
 ## ---------------------------------------------------------------
 ## INCLUDES, LIBS and DEFINES are set by specific makefiles...
 ## 
-ifeq ($(TYPE), TEST)
-_SOURCES := $(addprefix $(TUCUXI_ROOT)/test/$(NAME)/, $(SOURCES))			# Source files for a given module are referenced from the module directory
-_MODULEDIR := $(TUCUXI_ROOT)/test/$(NAME)
-else
-_SOURCES := $(addprefix $(TUCUXI_ROOT)/src/$(NAME)/, $(SOURCES))			# Source files for a given module are referenced from the module directory
-_MODULEDIR := $(TUCUXI_ROOT)/src/$(NAME)
-endif
-_INCLUDES := $(addprefix -I, $(INCLUDES)) -I$(TUCUXI_ROOT)/src				# Include directories are referenced from Tucuxi's root directory
-_LIBS := $(foreach _LIB, $(LIBS), $(TUCUXI_ROOT)/src/$(_LIB)/objs/$(_LIB).a) $(EXTLIBS)	# Libs are rerefenced by their name only 
+_SOURCES := $(SOURCES)																		# Source files for a given module are referenced from the module directory
+_OBJS := $(patsubst %.cpp, objs/%.o, $(SOURCES))											# List of object files
+_INCLUDES := $(addprefix -I, $(INCLUDES)) -I$(TUCUXI_ROOT)/src								# Include directories are referenced from Tucuxi's root directory
+_LIBS := $(foreach _LIB, $(LIBS), $(TUCUXI_ROOT)/src/$(_LIB)/objs/$(_LIB).a) $(EXTLIBS)		# Libs are rerefenced by their name only 
 _DEFINES := $(addprefix -D, $(DEFINES))
 
 ## ---------------------------------------------------------------
@@ -32,16 +27,11 @@ CFLAGS = -g -Wall $(_INCLUDES) $(_DEFINES) -std=c++11 -ffunction-sections -fdata
 LDFLAGS = -lpthread -lrt -Wl,--gc-sections
 
 ## ---------------------------------------------------------------
-## Object list. SOURCES is set by specific makefiles
-##
-_OBJS := $(patsubst %.cpp, objs/%.o, $(filter %.cpp, $(SOURCES)))
-
-## ---------------------------------------------------------------
 ## Rules for construction of a static library
 ##
 ifeq ($(TYPE),LIB)
 all : $(_OBJS)
-	$(AR) rcs $(_MODULEDIR)/objs/$(NAME).a $(_OBJS) $(_LIBS)
+	$(AR) rcs objs/$(NAME).a $(_OBJS) $(_LIBS)
 
 clean:
 	rm objs/*
@@ -53,8 +43,8 @@ endif
 ifeq ($(TYPE),DLL)
 CFLAGS += -fPIC
 all : $(_OBJS) $(_LIBS)
-	$(LD) -shared $(LDFLAGS) -o $(_MODULEDIR)/$(NAME).so $(_OBJS) $(_LIBS)
-	cp $(_MODULEDIR)/objs/$(NAME).so $(TUCUXI_ROOT)/bin/
+	$(LD) -shared $(LDFLAGS) -o objs/$(NAME).so $(_OBJS) $(_LIBS)
+	cp objs/$(NAME).so $(TUCUXI_ROOT)/bin/
 
 clean:
 	rm -f objs/*
@@ -65,8 +55,8 @@ endif
 ##
 ifeq ($(TYPE),APP)
 all : $(_OBJS) $(_LIBS)
-	$(LD) -rdynamic $(LDFLAGS) -o $(_MODULEDIR)/objs/$(NAME) $(_OBJS) -Wl,--whole-archive $(_LIBS) -Wl,--no-whole-archive -ldl -lrt -lpthread
-	cp $(_MODULEDIR)/objs/$(NAME) $(TUCUXI_ROOT)/bin/
+	$(LD) -rdynamic $(LDFLAGS) -o objs/$(NAME) $(_OBJS) -Wl,--whole-archive $(_LIBS) -Wl,--no-whole-archive -ldl -lrt -lpthread
+	cp objs/$(NAME) $(TUCUXI_ROOT)/bin/
 
 clean:
 	rm -f objs/*
@@ -77,8 +67,8 @@ endif
 ##
 ifeq ($(TYPE),TEST)
 all : $(_OBJS) $(_LIBS)
-	$(LD) -rdynamic $(LDFLAGS) -o $(_MODULEDIR)/objs/$(NAME)-Test $(_OBJS) -Wl,--whole-archive $(_LIBS) -Wl,--no-whole-archive -ldl -lrt -lpthread
-	cp $(_MODULEDIR)/objs/$(NAME)-Test $(TUCUXI_ROOT)/bin/
+	$(LD) -rdynamic $(LDFLAGS) -o objs/$(NAME)-Test $(_OBJS) -Wl,--whole-archive $(_LIBS) -Wl,--no-whole-archive -ldl -lrt -lpthread
+	cp objs/$(NAME)-Test $(TUCUXI_ROOT)/bin/
 
 clean:
 	rm -f objs/*
@@ -88,4 +78,5 @@ endif
 ## Generic rules
 ##
 objs/%.o: %.cpp
+	mkdir -p objs
 	$(XCC) -c -o objs/$*.o $(CFLAGS) $<
