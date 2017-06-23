@@ -6,8 +6,23 @@
 
 #include "TucuCore/onecompartmentextra.h"
 
+#include "spdlog/spdlog.h"
+
 int main()
 {
+	//Multithreaded console logger(with color support)
+	auto console = spdlog::stdout_color_mt("console");
+	console->info("Welcome to spdlog!");
+	console->info("An info message example {}.", 1);
+
+	std::vector<spdlog::sink_ptr> sinks;
+	sinks.push_back(std::make_shared<spdlog::sinks::stdout_sink_mt>());
+	sinks.push_back(std::make_shared<spdlog::sinks::rotating_file_sink_mt>("logfile", 1024 * 1024 * 5, 3));
+	auto combined_logger = std::make_shared<spdlog::logger>("name", begin(sinks), end(sinks));
+	spdlog::register_logger(combined_logger);
+
+	combined_logger->info("Welcome to spdlog!");
+
 	Tucuxi::Math::IntakeIntervalCalculator::Result res;
 	Tucuxi::Math::OneCompartmentExtra calculator;
 

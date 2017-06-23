@@ -8,7 +8,7 @@
 NAME := TucuCommon
 TYPE := TEST
 
-SOURCES := test_componentmanager.cpp 
+SOURCES := tests.cpp
 INCLUDES := ../../Libs/fructose-1.3/fructose/include
 
 LIBS := TucuCommon

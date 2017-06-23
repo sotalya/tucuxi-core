@@ -64,10 +64,3 @@ struct TestComponentManager : public fructose::test_base<TestComponentManager>
 		fructose_assert_no_exception(i3->Test1());
 	}
  };
-
-int main(int argc, char** argv) 
-{
-	TestComponentManager tests;
-	tests.add_test("CreateComponent", &TestComponentManager::createComponent);
-	return tests.run(argc, argv);
-}
