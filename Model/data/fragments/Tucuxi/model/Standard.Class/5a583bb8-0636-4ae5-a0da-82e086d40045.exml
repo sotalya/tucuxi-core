@@ -59,6 +59,21 @@
           <DEPENDENCIES></DEPENDENCIES>
         </OBJECT>
       </COMP>
+      <COMP relation="Parent">
+        <OBJECT>
+          <ID name="Generalization" mc="Standard.Generalization" uid="39531b0c-3ea5-4ae8-a4a2-eda0182b82d6"/>
+          <ATTRIBUTES>
+            <ATT name="Discriminator"></ATT>
+            <ATT name="Name"><![CDATA[Generalization]]></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="SuperType">
+              <ID name="Interface" mc="Standard.Class" uid="6b713f2c-b457-482f-b5e9-d8df57f7d70d"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+      </COMP>
     </DEPENDENCIES>
   </OBJECT>
 </EXT>

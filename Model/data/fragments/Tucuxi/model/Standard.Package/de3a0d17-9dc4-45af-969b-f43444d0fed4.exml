@@ -20,6 +20,8 @@
         <COMPID name="Entity" mc="Standard.Package" uid="6eeb6cea-703d-4635-9abb-250186f813d6"/>
         <COMPID name="ValueObject" mc="Standard.Package" uid="1c776cab-0b8d-4c83-a0ce-bb025e8ced85"/>
         <COMPID name="TranslatableString" mc="Standard.Class" uid="d62f72a7-e9e7-4e4e-9d25-e0820eb26968"/>
+        <COMPID name="ComponentManager" mc="Standard.Package" uid="59648748-5ba9-483f-92a6-5d02308f44eb"/>
+        <COMPID name="Logger" mc="Standard.Package" uid="760fee8d-d22d-44bf-89f7-98b4e302ff68"/>
       </COMP>
     </DEPENDENCIES>
   </OBJECT>

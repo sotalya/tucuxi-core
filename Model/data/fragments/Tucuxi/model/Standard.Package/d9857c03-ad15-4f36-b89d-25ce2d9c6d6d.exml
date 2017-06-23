@@ -14,8 +14,9 @@
     </ATTRIBUTES>
     <DEPENDENCIES>
       <COMP relation="OwnedElement">
-        <COMPID name="DataModelServices" mc="Standard.Class" uid="7ec1f642-4e8c-4bb2-aa68-da2fc816c81c"/>
-        <COMPID name="ProcessingServices" mc="Standard.Class" uid="5a583bb8-0636-4ae5-a0da-82e086d40045"/>
+        <COMPID name="IDataModelServices" mc="Standard.Class" uid="7ec1f642-4e8c-4bb2-aa68-da2fc816c81c"/>
+        <COMPID name="IProcessingServices" mc="Standard.Class" uid="5a583bb8-0636-4ae5-a0da-82e086d40045"/>
+        <COMPID name="CoreComponent" mc="Standard.Class" uid="501d6281-e6b3-4377-9688-a63f9b217666"/>
       </COMP>
       <COMP relation="Product">
         <COMPID name="CoreServices" mc="Standard.ClassDiagram" uid="dfd27fe7-7d5d-4fcc-ba21-e1309bdf9694"/>
