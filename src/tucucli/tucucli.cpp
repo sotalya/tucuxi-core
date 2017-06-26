@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <time.h>
 
-#include "TucuCore/onecompartmentextra.h"
+#include "tucucore/onecompartmentextra.h"
 
 #include "spdlog/spdlog.h"
 

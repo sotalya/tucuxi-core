@@ -1,7 +1,7 @@
 
 #include <Eigen/Dense>
 
-#include "onecompartmentextra.h"
+#include "tucucore/onecompartmentextra.h"
 
 namespace Tucuxi {
 namespace Math {

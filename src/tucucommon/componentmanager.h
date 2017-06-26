@@ -5,8 +5,8 @@
 #include <string>
 #include <map>
 
-#include "interface.h"
-#include "component.h"
+#include "tucucommon/interface.h"
+#include "tucucommon/component.h"
 
 namespace Tucuxi {
 namespace Common {

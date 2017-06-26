@@ -5,10 +5,10 @@
 
 #include "Eigen/Dense"
 
-#include "definitions.h"
-#include "intakeevent.h"
-#include "parameter.h"
-#include "cachedlogarithms.h"
+#include "tucucore/definitions.h"
+#include "tucucore/intakeevent.h"
+#include "tucucore/parameter.h"
+#include "tucucore/cachedlogarithms.h"
 
 namespace Tucuxi {
 namespace Math {

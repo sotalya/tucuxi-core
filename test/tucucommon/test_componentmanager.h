@@ -1,5 +1,5 @@
 #include "fructose/fructose.h"
-#include "TucuCommon/componentmanager.h"
+#include "tucucommon/componentmanager.h"
 
 class ITest1 : public Tucuxi::Common::Interface
 {

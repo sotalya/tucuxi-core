@@ -1,7 +1,7 @@
 
 #include <boost/functional/hash.hpp>
 
-#include "cachedlogarithms.h"
+#include "tucucore/cachedlogarithms.h"
 
 namespace Tucuxi {
 namespace Math {

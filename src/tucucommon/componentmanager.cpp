@@ -1,5 +1,5 @@
 
-#include "componentmanager.h"
+#include "tucucommon/componentmanager.h"
 
 namespace Tucuxi {
 namespace Common {

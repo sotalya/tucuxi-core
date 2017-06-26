@@ -1,5 +1,5 @@
-#include "intakeintervalcalculator.h"
-#include "cachedlogarithms.h"
+#include "tucucore/intakeintervalcalculator.h"
+#include "tucucore/cachedlogarithms.h"
 
 namespace Tucuxi {
 namespace Math {

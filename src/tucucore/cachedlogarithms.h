@@ -1,8 +1,8 @@
 #ifndef TUCUXI_MATH_CACHEDLOGARITHMS_H
 #define TUCUXI_MATH_CACHEDLOGARITHMS_H
 
-#include "definitions.h"
-#include "parameter.h"
+#include "tucucore/definitions.h"
+#include "tucucore/parameter.h"
 
 namespace Tucuxi {
 namespace Math {

@@ -1,7 +1,7 @@
 #ifndef TUCUXI_MATH_ONECOMPARTMENTEXTRA_H
 #define TUCUXI_MATH_ONECOMPARTMENTEXTRA_H
 
-#include "intakeintervalcalculator.h"
+#include "tucucore/intakeintervalcalculator.h"
 
 namespace Tucuxi {
 namespace Math {

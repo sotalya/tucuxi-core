@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include "definitions.h"
+#include "tucucore/definitions.h"
 
 namespace Tucuxi {
 namespace Math {
