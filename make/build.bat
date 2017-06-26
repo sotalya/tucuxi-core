@@ -24,4 +24,8 @@ for %%i in (tucucommon) do (
 	%MAKE% TARGET=VS2015 -f "%TUCUXI_ROOT%\test\%%i\makefile"
 )
 
+echo *********************************************
+echo *** Generating documentation
+doxygen "%TUCUXI_ROOT%\src\doxyfile
+
 pause

@@ -1,3 +1,7 @@
+/*
+* Copyright (C) 2017 Tucuxi SA
+*/
+
 #ifndef TUCUXI_MATH_PARAMETER_H
 #define TUCUXI_MATH_PARAMETER_H
 

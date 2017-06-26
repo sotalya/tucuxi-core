@@ -1,3 +1,6 @@
+/*
+* Copyright (C) 2017 Tucuxi SA
+*/
 
 #include "tucucommon/componentmanager.h"
 

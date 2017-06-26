@@ -1,3 +1,6 @@
+/*
+* Copyright (C) 2017 Tucuxi SA
+*/
 
 #ifndef TUCUXI_MATH_INTAKEEVENT_H
 #define TUCUXI_MATH_INTAKEEVENT_H

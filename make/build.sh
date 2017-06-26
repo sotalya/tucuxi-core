@@ -22,5 +22,5 @@ do
    make TARGET=LINUX $MAKECMD > objs/build.log 2>&1
 done
 
-
+doxygen $TUCUXI_ROOT/src/doxyfile
 

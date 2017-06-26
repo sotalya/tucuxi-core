@@ -1,3 +1,7 @@
+/*
+* Copyright (C) 2017 Tucuxi SA
+*/
+
 #include "tucucore/intakeintervalcalculator.h"
 #include "tucucore/cachedlogarithms.h"
 

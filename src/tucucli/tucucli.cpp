@@ -1,12 +1,21 @@
-// TucuCli.cpp : Defines the entry point for the console application.
-//
+/*
+* Copyright (C) 2017 Tucuxi SA
+*/
 
 #include <stdio.h>
 #include <time.h>
 
+#include "spdlog/spdlog.h"
+
 #include "tucucore/onecompartmentextra.h"
 
-#include "spdlog/spdlog.h"
+/// \defgroup TucuCli Tucuxi Console application
+/// \brief The Tucuxi console application
+/// 
+/// The Tucuxi console application offers a simple command line interface to 
+/// launch prediction and suggestion algorithms.
+/// 
+/// This application is intended mainly to run automated test scripts
 
 int main()
 {
