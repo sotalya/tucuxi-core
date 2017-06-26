@@ -5,7 +5,7 @@
 ##
 ## ----------------------------------------------------------------------------
 
-NAME := TucuCommon
+NAME := tucucommon
 TYPE := LIB
 
 SOURCES := componentmanager.cpp

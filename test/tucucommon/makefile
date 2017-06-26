@@ -5,13 +5,13 @@
 ##
 ## ----------------------------------------------------------------------------
 
-NAME := TucuCommon
+NAME := tucucommon
 TYPE := TEST
 
 SOURCES := tests.cpp
 INCLUDES := ../../libs/fructose-1.3/fructose/include
 
-LIBS := TucuCommon
+LIBS := tucucommon
 EXTLIBS := 
 DEFINES := 
 

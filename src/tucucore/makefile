@@ -5,7 +5,7 @@
 ##
 ## ----------------------------------------------------------------------------
 
-NAME := TucuCore
+NAME := tucucore
 TYPE := LIB
 
 SOURCES := concentrationcalculator.cpp \

@@ -8,7 +8,7 @@ if not defined VisualStudioVersion (
 
 set MAKE="C:\Program Files (x86)\GnuWin32\bin\make" %1
 
-for %%i in (TucuCommon TucuCore TucuCli) do (
+for %%i in (tucucommon tucucore tucucli) do (
 	echo *********************************************
 	echo *** Compiling %%i
 	cd "%TUCUXI_ROOT%\Src\%%i"
@@ -16,7 +16,7 @@ for %%i in (TucuCommon TucuCore TucuCli) do (
 	%MAKE% TARGET=VS2015 -f "%TUCUXI_ROOT%\src\%%i\makefile"
 )
 
-for %%i in (TucuCommon) do (
+for %%i in (tucucommon) do (
 	echo *********************************************
 	echo *** Compiling %%i
 	cd "%TUCUXI_ROOT%\Test\%%i"

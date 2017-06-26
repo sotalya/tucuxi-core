@@ -7,7 +7,7 @@ if test "$1" = "clean"; then
 MAKECMD=clean
 fi
 
-for MODULE in TucuCommon TucuCore TucuCli
+for MODULE in tucucommon tucucore tucucli
 do
    cd $TUCUXI_ROOT/src/$MODULE
    mkdir -p objs
@@ -15,7 +15,7 @@ do
 done
 
 
-for MODULE in TucuCommon
+for MODULE in tucucommon
 do
    cd $TUCUXI_ROOT/test/$MODULE
    mkdir -p objs
