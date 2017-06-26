@@ -8,7 +8,7 @@
 #include "tucucore/timedevent.h"
 
 namespace Tucuxi {
-namespace Math {
+namespace Core {
 
 //
 // Represents a Dose, as extracted from a DAL Dosage

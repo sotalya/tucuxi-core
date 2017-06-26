@@ -7,7 +7,7 @@
 #include "tucucore/onecompartmentbolus.h"
 
 namespace Tucuxi {
-namespace Math {
+namespace Core {
 
 OneCompartmentBolus::OneCompartmentBolus()
 {

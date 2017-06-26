@@ -9,7 +9,7 @@
 #include "tucucore/parameter.h"
 
 namespace Tucuxi {
-namespace Math {
+namespace Core {
 
 
 // Used as the values in the log hash tables 

@@ -11,7 +11,7 @@
 #include "tucucore/definitions.h"
 
 namespace Tucuxi {
-namespace Math {
+namespace Core {
 
 // Represents a pharmacokinetics parameter.
 class Parameter

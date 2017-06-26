@@ -11,7 +11,7 @@
 #include "Eigen/Dense"
 
 namespace Tucuxi {
-namespace Math {
+namespace Core {
 
 typedef double Float;					// General decimal number in math module (use this to set the precision for all number values)
 typedef Float Time;				// Used to set precision of time variables

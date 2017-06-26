@@ -7,7 +7,7 @@
 #include "tucucore/cachedlogarithms.h"
 
 namespace Tucuxi {
-namespace Math {
+namespace Core {
 
 CachedLogarithms::CachedLogarithms()
 {

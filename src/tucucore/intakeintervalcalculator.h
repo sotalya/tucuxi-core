@@ -15,7 +15,7 @@
 #include "tucucore/cachedlogarithms.h"
 
 namespace Tucuxi {
-namespace Math {
+namespace Core {
 
 class IntakeIntervalCalculator
 {

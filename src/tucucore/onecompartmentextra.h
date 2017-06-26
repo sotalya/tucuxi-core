@@ -8,7 +8,7 @@
 #include "tucucore/intakeintervalcalculator.h"
 
 namespace Tucuxi {
-namespace Math {
+namespace Core {
 
 class OneCompartmentExtra : public IntakeIntervalCalculator
 {

@@ -2,7 +2,7 @@
 #define TUCUXI_MATH_TIMEDEVENT_H
 
 namespace Tucuxi {
-namespace Math {
+namespace Core {
 
 class TimedEvent
 {

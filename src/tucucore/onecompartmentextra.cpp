@@ -7,7 +7,7 @@
 #include "tucucore/onecompartmentextra.h"
 
 namespace Tucuxi {
-namespace Math {
+namespace Core {
 
 OneCompartmentExtra::OneCompartmentExtra()
 {

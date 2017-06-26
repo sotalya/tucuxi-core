@@ -6,7 +6,7 @@
 #include "tucucore/cachedlogarithms.h"
 
 namespace Tucuxi {
-namespace Math {
+namespace Core {
 
 IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakePoints(
 	Concentrations& _concentrations,

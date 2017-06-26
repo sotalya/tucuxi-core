@@ -32,26 +32,26 @@ int main()
 
 	combined_logger->info("Welcome to spdlog!");
 
-	Tucuxi::Math::IntakeIntervalCalculator::Result res;
-	Tucuxi::Math::OneCompartmentExtra calculator;
+	Tucuxi::Core::IntakeIntervalCalculator::Result res;
+	Tucuxi::Core::OneCompartmentExtra calculator;
 
 	time_t now;
 	time(&now);
 
-	Tucuxi::Math::Concentrations concentrations;
-	Tucuxi::Math::Times times;
-	Tucuxi::Math::IntakeEvent intakeEvent(now, 0, 0.2, 24, 1, 0, 250);
-	Tucuxi::Math::ParameterList parameters;
-	Tucuxi::Math::Residuals inResiduals;
-	Tucuxi::Math::Residuals outResiduals;
+	Tucuxi::Core::Concentrations concentrations;
+	Tucuxi::Core::Times times;
+	Tucuxi::Core::IntakeEvent intakeEvent(now, 0, 0.2, 24, 1, 0, 250);
+	Tucuxi::Core::ParameterList parameters;
+	Tucuxi::Core::Residuals inResiduals;
+	Tucuxi::Core::Residuals outResiduals;
 
 	inResiduals.push_back(0);
 	inResiduals.push_back(1);
 
-	parameters.push_back(Tucuxi::Math::Parameter("CL", 14.3));
-	parameters.push_back(Tucuxi::Math::Parameter("F", 1));
-	parameters.push_back(Tucuxi::Math::Parameter("Ka", 0.609));
-	parameters.push_back(Tucuxi::Math::Parameter("V", 347));
+	parameters.push_back(Tucuxi::Core::Parameter("CL", 14.3));
+	parameters.push_back(Tucuxi::Core::Parameter("F", 1));
+	parameters.push_back(Tucuxi::Core::Parameter("Ka", 0.609));
+	parameters.push_back(Tucuxi::Core::Parameter("V", 347));
 
 	res = calculator.calculateIntakePoints(
 		concentrations,
