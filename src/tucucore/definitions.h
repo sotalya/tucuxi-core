@@ -5,6 +5,14 @@
 #ifndef TUCUXI_MATH_DEFINITIONS_H
 #define TUCUXI_MATH_DEFINITIONS_H
 
+/// \defgroup TucuCore Tucuxi core library
+/// \brief Tucuxi core classes for the computation of predictions of drug concentrations
+/// This module defines all classes needed for:
+///    - computing predicitions of drug concentrations
+///    - computing percentiles for the above predictions
+///    - computing suggestions for the adaptation of treatments
+///    - modeling relevant data for above computations
+
 #include <vector>
 #include <map>
 
@@ -13,18 +21,50 @@
 namespace Tucuxi {
 namespace Core {
 
-typedef double Float;					// General decimal number in math module (use this to set the precision for all number values)
-typedef Float Time;				// Used to set precision of time variables
-typedef Float Concentration;	// Used for 0-D concentration
 
-typedef std::vector<Time> Times;					//used for 1-D concentrations
-typedef std::vector<Concentration> Concentrations;	//used for 1-D concentrations
+/// \ingroup TucuCore
+/// \brief The numeric type that will be used throughout the library (use this to set the precision for all number values)
+typedef double Value;
 
-typedef std::vector<Concentration> Residuals;		//used for 1-D residuals
+/// \ingroup TucuCore
+/// \brief The type used to represent an absolute date and time
+typedef time_t Date;
 
-typedef int CycleSize; //used as the number of points in the cycle.
+/// \ingroup TucuCore
+/// \brief The type used to represent an absolute time in ms
+typedef double Time;
 
-typedef std::map<std::string, Eigen::VectorXd> PrecomputedLogarithms; 
+/// \ingroup TucuCore
+/// \brief The type used to represent a difference of time in ms
+typedef double DeltaTime;
+
+/// \ingroup TucuCore
+/// \brief The type used to represent a dose in mg
+typedef Value Dose;
+
+/// \ingroup TucuCore
+/// \brief The type used to represent a concentration in mg
+typedef Value Concentration;
+
+/// \ingroup TucuCore
+/// \brief The type used to represent a serie of times
+typedef std::vector<Time> Times;
+
+/// \ingroup TucuCore
+/// \brief The type used to represent a serie of concentrations
+typedef std::vector<Concentration> Concentrations;
+
+/// \ingroup TucuCore
+/// \brief The type used to represent a serie of residuals
+typedef std::vector<Concentration> Residuals;
+
+/// \ingroup TucuCore
+/// \brief The number of points in the cycle.
+typedef int CycleSize;
+
+/// \ingroup TucuCore
+/// \brief A structure to store precomputed logarithms 
+typedef std::map<std::string, Eigen::VectorXd> PrecomputedLogarithms;
 
 }
 }

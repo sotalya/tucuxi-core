@@ -26,6 +26,6 @@ for %%i in (tucucommon) do (
 
 echo *********************************************
 echo *** Generating documentation
-doxygen "%TUCUXI_ROOT%\src\doxyfile
+doxygen "%TUCUXI_ROOT%\src\doxyfile"
 
 pause

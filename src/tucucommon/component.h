@@ -27,17 +27,17 @@ namespace Common {
 /// \code
 ///	class TestComponent : public Tucuxi::Common::Component, Interface1, Interface2
 ///	{
-///	   ...
+///	    ...
 ///	protected:
-///		virtual Tucuxi::Common::Interface* getInterface(const std::string &_name)
-///		{
-///			return Tucuxi::Common::Component::getInterfaceImpl(_name);
-///		}
+///	    virtual Tucuxi::Common::Interface* getInterface(const std::string &_name)
+///	    {
+///	        return Tucuxi::Common::Component::getInterfaceImpl(_name);
+///	    }
 ///	private:
-///		TestComponent() {
-///			registerInterface(dynamic_cast<Interface1*>(this));
-///			registerInterface(dynamic_cast<Interface2*>(this));
-///		}
+///	    TestComponent() {
+///	        registerInterface(dynamic_cast<Interface1*>(this));
+///	        registerInterface(dynamic_cast<Interface2*>(this));
+///	    }
 ///	};
 /// \endcode
 ///
@@ -45,34 +45,34 @@ namespace Common {
 class Component
 {
 protected:
-	/// \brief Allows a component to store the correct pointer to the given interface.
-	/// @param _interface The interface. The calling component should use "dynamic_cast" to pass the correct pointer.
-	/// @return None
-	template <typename T> void registerInterface(T* _interface)
-	{
-		std::string name = typeid(_interface).name();
-		m_interfaces[name] = _interface;
-	}
+    /// \brief Allows a component to store the correct pointer to the given interface.
+    /// @param _interface The interface. The calling component should use "dynamic_cast" to pass the correct pointer.
+    /// @return None
+    template <typename T> void registerInterface(T* _interface)
+    {
+        std::string name = typeid(_interface).name();
+        m_interfaces[name] = _interface;
+    }
 
-	/// \brief Helper method to simplify the implementation of Interface::getInterface.
-	/// The name to pass to this function is the name of the interface as expressed by the typeid function. Note that 
-	/// this is actually transparent to users if they take advantage of the templated version of Interface::getInterface.
-	/// \code
-	/// Interface1 i1 = ...;
-	/// Interface2 i2 = i1.getInterface<Interface2>();   // Calling getInterface with the correct name is done automatically.
-	/// \endcode
-	/// @param _name The name of the interface to retrieve. 
-	/// @return None
-	Interface* getInterfaceImpl(const std::string &_name)
-	{
-		if (m_interfaces.end() != m_interfaces.find(_name)) {
-			return m_interfaces[_name];
-		}
-		return nullptr;
-	}
+    /// \brief Helper method to simplify the implementation of Interface::getInterface.
+    /// The name to pass to this function is the name of the interface as expressed by the typeid function. Note that 
+    /// this is actually transparent to users if they take advantage of the templated version of Interface::getInterface.
+    /// \code
+    /// Interface1 i1 = ...;
+    /// Interface2 i2 = i1.getInterface<Interface2>();   // Calling getInterface with the correct name is done automatically.
+    /// \endcode
+    /// @param _name The name of the interface to retrieve. 
+    /// @return None
+    Interface* getInterfaceImpl(const std::string &_name)
+    {
+        if (m_interfaces.end() != m_interfaces.find(_name)) {
+            return m_interfaces[_name];
+        }
+        return nullptr;
+    }
 
 private:
-	std::map<std::string, Interface*> m_interfaces;				/// The list of correctly initialized interface pointers
+    std::map<std::string, Interface*> m_interfaces;     /// The list of correctly initialized interface pointers
 };
 
 }

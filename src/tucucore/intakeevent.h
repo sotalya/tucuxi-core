@@ -10,58 +10,62 @@
 namespace Tucuxi {
 namespace Core {
 
-//
-// Represents a Dose, as extracted from a DAL Dosage
-//
+/// \ingroup TucuCore
+/// \brief A class reprensting the event of taking a dose.
+/// Represents a Dose, as extracted from a DAL Dosage
 class IntakeEvent : public TimedEvent {
 public:
-	IntakeEvent() /*: calc(0)*/ {}
-	IntakeEvent(time_t _time, double _offsetTime, double _value, double _interval, int _route, double _infusionTime, int _nbPoints)
-		: TimedEvent(_time), 
-		  m_offsetTime(_offsetTime), 
-		  m_value(_value), 
-		  m_nbPoints(_nbPoints), 
-		  m_interval(_interval), 
-		  m_route(_route), 
-		  m_infusionTime(_infusionTime) /*, calc(0) */ {}
-	~IntakeEvent() {}
-		
-/*			
-	// As a convention with boost multi-index, modifications of
-	// values should occur through a functor like this
-	//
-	struct change_density {
-		change_density(const int _nbp) :new_density(_nbp) {}
-		void operator() (IntakeEvent& i) { i.nbPoints = new_density; }
-	private:
-		int new_density;
-	};
+    /// \brief The default constructor is not needed
+    IntakeEvent() = delete;
+    
+    /// \brief Constructor
+    IntakeEvent(time_t _time, DeltaTime _offsetTime, Dose _dose, DeltaTime _interval, int _route, DeltaTime _infusionTime, int _nbPoints)
+        : TimedEvent(_time), 
+          m_offsetTime(_offsetTime), 
+          m_dose(_dose), 
+          m_nbPoints(_nbPoints), 
+          m_interval(_interval), 
+          m_route(_route), 
+          m_infusionTime(_infusionTime) /*, calc(0) */ {}
+
+    /// \brief Destructor
+    ~IntakeEvent() {}
+        
+/*
+    // As a convention with boost multi-index, modifications of
+    // values should occur through a functor like this
+    //
+    struct change_density {
+        change_density(const int _nbp) :new_density(_nbp) {}
+        void operator() (IntakeEvent& i) { i.nbPoints = new_density; }
+    private:
+        int new_density;
+    };
 */
-	
-	void setInterval(Float _interval)	{ m_interval = _interval; }
-	Float getInterval() const			{ return m_interval; }
-
-	Float getValue() const				{ return m_value;  }
-
-	Float getOffsetTime() const			{ return m_offsetTime;  }
-
-	// The association with intakeintervalcalculator happens here
-	// The intaketocalculatorassociator sets this value
-	// void setCalc(IntakeIntervalCalculator& _calc) { calc = &_calc; }
+    
+    void setInterval(DeltaTime _interval)   { m_interval = _interval; }     /// Change the interval value
+    DeltaTime getInterval() const           { return m_interval; }          /// Get the interval value
+    
+    Value getDose() const                   { return m_dose; }              /// Get the dose
+    
+    DeltaTime getOffsetTime() const         { return m_offsetTime; }        /// Get the time since the start of the treatment
+    
+    // The association with intakeintervalcalculator happens here
+    // The intaketocalculatorassociator sets this value
+    // void setCalc(IntakeIntervalCalculator& _calc) { calc = &_calc; }
 
 
 private:
-	// The numeric value of the number of hours since the first dose
-	double m_offsetTime;
-	double m_value;
+    Dose m_dose;                /// The dose in mg
+    DeltaTime m_offsetTime;     /// Number of hours since the first dose
+    
+    int m_nbPoints;             /// Number of points to compute for this intake
 
-	int m_nbPoints;
+    int m_route;                /// The route of administration
+    DeltaTime m_interval;       /// The time before the next intake
+    DeltaTime m_infusionTime;   /// The duration in case of an infusion
 
-	double m_interval;
-	int m_route;
-	double m_infusionTime;
-
-	// IntakeIntervalCalculator* calc;			
+    // IntakeIntervalCalculator* calc;
 };
 
 }

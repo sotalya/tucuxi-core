@@ -10,24 +10,28 @@
 namespace Tucuxi {
 namespace Core {
 
+/// \ingroup TucuCore
+/// \brief Intake interval calculator for the one compartment extravascular algorithm
+/// \sa IntakeIntervalCalculator
 class OneCompartmentExtra : public IntakeIntervalCalculator
 {
 public:
-	OneCompartmentExtra();
+    /// \brief Constructor
+    OneCompartmentExtra();
 
 protected:
-	virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters) override;
-	virtual void prepareComputations(const IntakeEvent& _intakeEvent, const ParameterList& _parameters) override;
-	virtual void computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterList& _parameters, Eigen::VectorXd& _times) override;
-	virtual void computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) override;
+    virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters) override;
+    virtual void prepareComputations(const IntakeEvent& _intakeEvent, const ParameterList& _parameters) override;
+    virtual void computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterList& _parameters, Eigen::VectorXd& _times) override;
+    virtual void computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) override;
 
 private:
-	Float m_D;
-	Float m_CL;
-	Float m_F;
-	Float m_Ka;
-	Float m_V;
-	Float m_Ke;
+    Value m_D;	/// Quantity of drug
+    Value m_Cl;	/// Clearance
+    Value m_F;  /// Biodisponibility
+    Value m_Ka; /// Absorption rate constant
+    Value m_V;  /// Volume of the compartment
+    Value m_Ke; /// Elimination constant rate = Cl/V where Cl is the clearance and V is the volume of the compartment
 };
 
 }
