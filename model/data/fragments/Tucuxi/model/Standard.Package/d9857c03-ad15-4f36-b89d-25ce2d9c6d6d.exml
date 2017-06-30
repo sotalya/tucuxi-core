@@ -17,9 +17,17 @@
         <COMPID name="IDataModelServices" mc="Standard.Class" uid="7ec1f642-4e8c-4bb2-aa68-da2fc816c81c"/>
         <COMPID name="IProcessingServices" mc="Standard.Class" uid="5a583bb8-0636-4ae5-a0da-82e086d40045"/>
         <COMPID name="CoreComponent" mc="Standard.Class" uid="501d6281-e6b3-4377-9688-a63f9b217666"/>
+        <COMPID name="IntakeExtractor" mc="Standard.Class" uid="c63de876-bb21-41b6-a97c-693c2d92b7f9"/>
+        <COMPID name="SampleExtractor" mc="Standard.Class" uid="8066caab-3741-4164-9a76-c5de9a9470ad"/>
+        <COMPID name="ParameterExtractor" mc="Standard.Class" uid="45053ee8-b319-4382-97da-2c25a4d43479"/>
+        <COMPID name="TargetEvent" mc="Standard.Class" uid="813e474e-3926-47f5-a51b-35fa13beac7c"/>
+        <COMPID name="TargetSerie" mc="Standard.Class" uid="80499452-5eb7-409f-a618-d9686e813b9a"/>
+        <COMPID name="CovariateExtractor" mc="Standard.Class" uid="6bd88456-4093-438e-b2f9-3d34c25f371c"/>
+        <COMPID name="TargetExtractor" mc="Standard.Class" uid="60d89984-a4c4-4450-99a6-ebd45642647c"/>
       </COMP>
       <COMP relation="Product">
         <COMPID name="CoreServices" mc="Standard.ClassDiagram" uid="dfd27fe7-7d5d-4fcc-ba21-e1309bdf9694"/>
+        <COMPID name="Processing" mc="Standard.ClassDiagram" uid="ce7c5261-6e3b-41b4-b6d7-8154befffa8a"/>
       </COMP>
     </DEPENDENCIES>
   </OBJECT>
