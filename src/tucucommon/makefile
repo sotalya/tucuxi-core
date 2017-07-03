@@ -8,7 +8,7 @@
 NAME := tucucommon
 TYPE := LIB
 
-SOURCES := componentmanager.cpp
+SOURCES := componentmanager.cpp componentlogger.cpp
 INCLUDES := .
 
 LIBS := 

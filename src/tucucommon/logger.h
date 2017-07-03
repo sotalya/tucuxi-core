@@ -1,39 +1,47 @@
-#ifndef TUCUXI_COMMON_LOOGER
-#define TUCUXI_COMMON_LOOGER
+/*
+ * Copyright (C) 2017 Tucuxi SA
+ */
 
-#include "tucucommon/componentmanager.h"
-//#include "tucucommon/ilogger.h"
+#ifndef TUCUXI_TUCUCOMMON_LOGGER_H
+#define TUCUXI_TUCUCOMMON_LOGGER_H
 
-class Logger
+#include "tucucommon/component.h"
+#include "tucucommon/ilogger.h"
+
+class Logger : public Tucuxi::Common::Component, ILogger
 {
-public:
-	Logger() 
-	{
-	}
 
 public:
-	void debug(const char* msg) {}
-	template <typename Arg1, typename... Args> 
-	void debug(const char* fmt, const Arg1 &arg1, const Args&... args) { /* m_Logger->debug(frm, arg1, args, ...); */ }
+    virtual void debug(const char* msg);
 
-	void info(const char* msg) {}
-	template <typename Arg1, typename... Args> 	
-	void info(const char* fmt, const Arg1 &arg1, const Args&... args) { /* m_Logger->info(frm, arg1, args, ...); */ }
+    template <typename Arg1, typename... Args>
+    virtual void debug(const char* fmt, const Arg1 &arg1, const Args&... args);
 
-	void warn(const char* msg) {}
-	template <typename Arg1, typename... Args> 	
-	void warn(const char* fmt, const Arg1 &arg1, const Args&... args) { /* m_Logger->warning(frm, arg1, args, ...); */ }
+    virtual void info(const char* msg);
 
-	void error(const char* msg) {}
-	template <typename Arg1, typename... Args> 	
-	void error(const char* fmt, const Arg1 &arg1, const Args&... args) { /* m_Logger->error(frm, arg1, args, ...); */ }
+    template <typename Arg1, typename... Args>
+    virtual void info(const char* fmt, const Arg1 &arg1, const Args&... args);
 
-	void critical(const char* msg) {}
-	template <typename Arg1, typename... Args> 
-	void critical(const char* fmt, const Arg1 &arg1, const Args&... args) { /* m_Logger->critical(frm, arg1, args, ...); */ }
+    virtual void warn(const char* msg);
+
+    template <typename Arg1, typename... Args>
+    virtual void warn(const char* fmt, const Arg1 &arg1, const Args&... args);
+
+    virtual void error(const char* msg);
+
+    template <typename Arg1, typename... Args>
+    virtual void error(const char* fmt, const Arg1 &arg1, const Args&... args);
+
+    virtual void critical(const char* msg);
+
+    template <typename Arg1, typename... Args>
+    virtual void critical(const char* fmt, const Arg1 &arg1, const Args&... args);
+
+protected:
+    virtual Tucuxi::Common::Interface* getInterface(const std::string &_name);
 
 private:
-	// ILogger *m_Logger;
+    Logger();
 };
 
-#endif // TUCUXI_COMMON_LOOGER
+#endif // TUCUXI_TUCUCOMMON_LOGGER_H
