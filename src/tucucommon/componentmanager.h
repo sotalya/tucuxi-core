@@ -83,7 +83,6 @@ public:
     /// @return A pointer on the specified interface of the specified component
     template <typename T> T* getComponent(const std::string &_name)
     {
-        std::string interfaceName = typeid(T*).name();
         if (m_components.end() != m_components.find(_name))
         {
             Interface* itf = m_components[_name];

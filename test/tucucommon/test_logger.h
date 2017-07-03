@@ -1,6 +1,6 @@
 
 #include "fructose/fructose.h"
-#include "TucuCommon/logger.h"
+#include "tucucommon/logger.h"
 
 class some_class {};
 std::ostream& operator<<(std::ostream& os, const some_class& c)
