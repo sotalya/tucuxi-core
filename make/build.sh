@@ -33,7 +33,7 @@ do
 done
 
 doxygen $TUCUXI_ROOT/src/doxyfile
-if [ $? -eq 2 ]
+if [ $? -ne 0 ]
 then
   RESULT=1
 fi
