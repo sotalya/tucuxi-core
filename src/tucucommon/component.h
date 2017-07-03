@@ -9,7 +9,7 @@
 #include <map>
 #include <typeinfo>
 
-#include "interface.h"
+#include "tucucommon/interface.h"
 
 namespace Tucuxi {
 namespace Common {

@@ -1,8 +1,8 @@
 #ifndef TUCUXI_COMMON_LOOGER
 #define TUCUXI_COMMON_LOOGER
 
-#include "TucuCommon/componentmanager.h"
-//#include "TucuCommon/ilogger.h"
+#include "tucucommon/componentmanager.h"
+//#include "tucucommon/ilogger.h"
 
 class Logger
 {

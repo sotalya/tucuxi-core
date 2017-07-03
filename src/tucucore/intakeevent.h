@@ -21,11 +21,11 @@ public:
     /// \brief Constructor
     IntakeEvent(time_t _time, DeltaTime _offsetTime, Dose _dose, DeltaTime _interval, int _route, DeltaTime _infusionTime, int _nbPoints)
         : TimedEvent(_time), 
-          m_offsetTime(_offsetTime), 
-          m_dose(_dose), 
-          m_nbPoints(_nbPoints), 
-          m_interval(_interval), 
-          m_route(_route), 
+          m_dose(_dose),
+          m_offsetTime(_offsetTime),
+          m_nbPoints(_nbPoints),
+          m_route(_route),
+          m_interval(_interval),
           m_infusionTime(_infusionTime) /*, calc(0) */ {}
 
     /// \brief Destructor
