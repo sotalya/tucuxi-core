@@ -68,7 +68,7 @@ endif
 ifeq ($(TYPE),TEST)
 all : $(_OBJS) $(_LIBS)
 	$(LD) -rdynamic $(LDFLAGS) -o objs/$(NAME)-test $(_OBJS) -Wl,--whole-archive $(_LIBS) -Wl,--no-whole-archive -ldl -lrt -lpthread
-	cp objs/$(NAME)-Test $(TUCUXI_ROOT)/bin/
+	cp objs/$(NAME)-test $(TUCUXI_ROOT)/bin/
 
 clean:
 	rm -f objs/*
