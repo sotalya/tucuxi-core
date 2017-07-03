@@ -27,9 +27,9 @@ public:
 	virtual void Test2() { printf("Test2\n"); }
 
 protected:
-	virtual Tucuxi::Common::Interface* getInterfaceImpl(const std::string &_name) 
+	virtual Tucuxi::Common::Interface* getInterface(const std::string &_name) 
 	{ 
-		return Tucuxi::Common::Component::getInterface(_name); 
+		return Tucuxi::Common::Component::getInterfaceImpl(_name); 
 	}
 
 private:
