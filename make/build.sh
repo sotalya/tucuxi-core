@@ -13,7 +13,7 @@ for MODULE in tucucommon tucucore tucucli
 do
    cd $TUCUXI_ROOT/src/$MODULE
    mkdir -p objs
-   make TARGET=LINUX $MAKECMD > objs/build.log 2>&1
+   make TARGET=LINUX $MAKECMD 2>&1 | tee objs/build.log
    if [ $? -eq 2 ]
    then
       RESULT=1
@@ -25,14 +25,14 @@ for MODULE in tucucommon
 do
    cd $TUCUXI_ROOT/test/$MODULE
    mkdir -p objs
-   make TARGET=LINUX $MAKECMD > objs/build.log 2>&1
+   make TARGET=LINUX $MAKECMD 2>&1 | tee objs/build.log
    if [ $? -eq 2 ]
    then
       RESULT=1
    fi
 done
 
-doxygen $TUCUXI_ROOT/src/doxyfile
+doxygen $TUCUXI_ROOT/src/doxyfile 2>&1 | tee objs/doxigen.log
 if [ $? -ne 0 ]
 then
   RESULT=1
