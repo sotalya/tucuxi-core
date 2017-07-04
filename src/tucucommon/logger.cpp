@@ -17,29 +17,40 @@ Logger::~Logger()
     spdlog::drop_all();
 }
 
+void setLevel(spdlog::level level)
+{
+    m_logger->set_level(level);
+}
+
+
 void Logger::debug(const char* msg)
 {
     m_logger->debug(msg);
+    m_logger->flush();
 }
 
 void Logger::info(const char* msg)
 {
     m_logger->info(msg);
+    m_logger->flush();
 }
 
 void Logger::warn(const char* msg)
 {
     m_logger->warn(msg);
+    m_logger->flush();
 }
 
 void Logger::error(const char* msg)
 {
     m_logger->error(msg);
+    m_logger->flush();
 }
 
 void Logger::critical(const char* msg)
 {
     m_logger->critical(msg);
+    m_logger->flush();
 }
 
 Tucuxi::Common::Interface* Logger::getInterface(const std::string &_name)
@@ -47,7 +58,7 @@ Tucuxi::Common::Interface* Logger::getInterface(const std::string &_name)
     return Tucuxi::Common::Component::getInterfaceImpl(_name);
 }
 
-Logger::Logger()
+Logger::Logger(const std::string &_filename)
 {
     registerInterface(dynamic_cast<ILogger*>(this));
 
@@ -76,10 +87,10 @@ Logger::Logger()
         sinks.push_back(sink_unix);
 
         // Sink for daily file
-        //sinks.push_back(std::make_shared<spdlog::sinks::daily_file_sink_mt>("logfile", "txt", 23, 59));
+        //sinks.push_back(std::make_shared<spdlog::sinks::daily_file_sink_mt>(_filename, "txt", 23, 59));
 
         // Sink for rotating file
-        sinks.push_back(std::make_shared<spdlog::sinks::rotating_file_sink_mt>("MyLogFile", 1024 * 1024 * 5, 3));
+        sinks.push_back(std::make_shared<spdlog::sinks::rotating_file_sink_mt>(_filename, 1024 * 1024 * 5, 3));
 
         m_logger = std::make_shared<spdlog::logger>("m_logger", begin(sinks), end(sinks));
 

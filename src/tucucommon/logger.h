@@ -17,6 +17,7 @@ class Logger : public Tucuxi::Common::Component, ILogger
 
 public:
     ~Logger();
+    void setLevel(spdlog::level level);
 
     virtual void debug(const char* msg);
     virtual void info(const char* msg);
@@ -29,7 +30,7 @@ protected:
 
 // TODO : Replace by private
 public:
-    Logger();
+    Logger(const std::string &_filename);
 
 private:
     std::shared_ptr<spdlog::logger> m_logger;
