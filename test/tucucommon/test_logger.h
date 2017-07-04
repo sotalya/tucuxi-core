@@ -9,12 +9,6 @@
 
 #include "tucucommon/loggerhelper.h"
 
-class some_class {};
-std::ostream& operator<<(std::ostream& os, const some_class& c)
-{ 
-    return os << "some_class"; 
-}
-
 struct TestLogger : public fructose::test_base<TestLogger> 
 {
     void basic(const std::string& _testName)
@@ -48,17 +42,5 @@ struct TestLogger : public fructose::test_base<TestLogger>
         std::getline(infile, str);
         diff = std::regex_match (str, std::regex("\\[[0-9\\-\\:\\.\\ ]*\\] \\[m_logger\\] \\[critical\\] Tcho les topiots"));
         fructose_assert(diff != 0);
-    }
-
-    void logMyClass(const std::string& _testName)
-    {
-        std::cout << _testName << std::endl;
-
-        Tucuxi::Common::LoggerHelper logger;
-        some_class c;
-        //logger.info("Logging a custom class with operator<<: {}", c);
-        //logger.debug(c);
-
-        // Todo: Check content of log file...
     }
  };

@@ -81,13 +81,13 @@ Logger::Logger(const std::string &_filename)
 
         #ifdef _WIN32
         // Windows console
-        auto sink_color_console = std::make_shared<spdlog::sinks::wincolor_stdout_sink_mt>();
+        spdlog::sink_ptr sink_color_console = std::make_shared<spdlog::sinks::wincolor_stdout_sink_mt>();
+        sinks.push_back(sink_color_console);
         #else
         // Linux console
-        auto sink_color_console = std::make_shared<spdlog::sinks::ansicolor_stdout_sink_mt>();
-        #endif
-
+        spdlog::sink_ptr sink_color_console = std::make_shared<spdlog::sinks::ansicolor_stdout_sink_mt>();
         sinks.push_back(sink_color_console);
+        #endif
 
         // Sink for daily file
         //sinks.push_back(std::make_shared<spdlog::sinks::daily_file_sink_mt>(_filename, "txt", 23, 59));

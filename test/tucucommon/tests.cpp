@@ -13,6 +13,5 @@ int main(int argc, char** argv)
 
 	TestLogger loggerTests;
 	loggerTests.add_test("Logger-basic", &TestLogger::basic);
-	loggerTests.add_test("Logger-class", &TestLogger::logMyClass);	
 	return loggerTests.run(argc, argv);
 }
