@@ -17,7 +17,7 @@ Logger::~Logger()
     spdlog::drop_all();
 }
 
-void setLevel(spdlog::level level)
+void Logger::setLevel(spdlog::level::level_enum level)
 {
     m_logger->set_level(level);
 }

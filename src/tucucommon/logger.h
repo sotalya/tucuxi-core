@@ -17,7 +17,7 @@ class Logger : public Tucuxi::Common::Component, ILogger
 
 public:
     ~Logger();
-    void setLevel(spdlog::level level);
+    void setLevel(spdlog::level::level_enum level);
 
     virtual void debug(const char* msg);
     virtual void info(const char* msg);

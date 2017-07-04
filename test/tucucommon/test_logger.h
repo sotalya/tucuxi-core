@@ -20,7 +20,7 @@ struct TestLogger : public fructose::test_base<TestLogger>
     {
         std::cout << _testName << std::endl;
 
-        Tucuxi::Common::Logger logger;
+        Tucuxi::Common::Logger logger("/home/mylag/reds/Tucuxi/tucuxi/bin/MyLogFile.txt");
         logger.debug("Tcho les topiots");
 //        logger.info("Tcho les {}", "topiots");
 //        logger.warn("{} + {} = {}", 2, 2, 4);
@@ -51,7 +51,7 @@ struct TestLogger : public fructose::test_base<TestLogger>
     {
         std::cout << _testName << std::endl;
 
-        Tucuxi::Common::Logger logger;
+        Tucuxi::Common::Logger logger("/home/mylag/reds/Tucuxi/tucuxi/bin/MyLogFile.txt");
         some_class c;
 //        logger.info("Logging a custom class with operator<<: {}", c);
 
