@@ -21,9 +21,9 @@ struct TestLogger : public fructose::test_base<TestLogger>
     {
         std::cout << _testName << std::endl;
 
-        Tucuxi::Common::LoggerHelper::init("");
-        Tucuxi::Common::LoggerHelper logger;
+        Tucuxi::Common::LoggerHelper::init("/home/mylag/reds/Tucuxi/tucuxi/bin/MyLogFile.txt");
 
+        Tucuxi::Common::LoggerHelper logger;
         logger.debug("Tcho les topiots");
         logger.info("Tcho les {}", "topiots");
         logger.warn("{} + {} = {}", 2, 2, 4);

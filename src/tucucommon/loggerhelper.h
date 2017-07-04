@@ -30,7 +30,7 @@ public:
             ILogger* iLogger = pCmpMgr->getComponent<ILogger>("Logger");
             if (iLogger == nullptr) {
                 // The "Logger" component does not exist yet, let's create and register it
-                Logger* pLogger = new Logger();
+                Logger* pLogger = new Logger(_logFilePath);
                 pCmpMgr->registerComponent("Logger", dynamic_cast<ILogger*>(pLogger));
             }
             return true;

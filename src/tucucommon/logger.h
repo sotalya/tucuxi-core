@@ -17,6 +17,7 @@ class Logger : public Tucuxi::Common::Component, public ILogger
 {
 public:
     ~Logger();
+    void setLevel(spdlog::level::level_enum level);
 
     virtual void debug(const char* msg);
     virtual void info(const char* msg);
@@ -28,7 +29,7 @@ protected:
     virtual Tucuxi::Common::Interface* getInterface(const std::string &_name);
 
 private:
-    Logger();
+    Logger(const std::string &_filename);
     friend class LoggerHelper;
 
 private:
