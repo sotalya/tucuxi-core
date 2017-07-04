@@ -23,7 +23,6 @@ void Logger::setLevel(spdlog::level::level_enum level)
     m_logger->set_level(level);
 }
 
-
 void Logger::debug(const char* msg)
 {
     m_logger->debug(msg);
