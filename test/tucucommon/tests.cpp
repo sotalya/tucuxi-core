@@ -18,8 +18,7 @@ int main(int argc, char** argv)
             return res;
     }
 
-    TestLogger loggerTests(path);
+    TestLogger loggerTests;
     loggerTests.add_test("Logger-basic", &TestLogger::basic);
-    loggerTests.add_test("Logger-class", &TestLogger::logMyClass);
     return loggerTests.run(argc, argv);
 }

@@ -9,12 +9,6 @@
 
 #include "tucucommon/loggerhelper.h"
 
-class some_class {};
-std::ostream& operator<<(std::ostream& os, const some_class& c)
-{ 
-    return os << "some_class"; 
-}
-
 struct TestLogger : public fructose::test_base<TestLogger> 
 {
     std::string m_path;
@@ -69,15 +63,4 @@ struct TestLogger : public fructose::test_base<TestLogger>
         fructose_assert(diff != 0);
     }
 
-    void logMyClass(const std::string& _testName)
-    {
-        std::cout << _testName << std::endl;
-
-        //Tucuxi::Common::LoggerHelper logger;
-        //some_class c;
-        //logger.info("Logging a custom class with operator<<: {}", c);
-        //logger.debug(c);
-
-        // Todo: Check content of log file...
-    }
  };
