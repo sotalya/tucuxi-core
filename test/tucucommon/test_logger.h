@@ -1,12 +1,13 @@
 
-#include "fructose/fructose.h"
-#include "tucucommon/logger.h"
-
 #include <sstream>
 #include <string>
 #include <iostream>
 #include <stdio.h>
 #include <regex>
+
+#include "fructose/fructose.h"
+
+#include "tucucommon/loggerhelper.h"
 
 class some_class {};
 std::ostream& operator<<(std::ostream& os, const some_class& c)
@@ -20,10 +21,12 @@ struct TestLogger : public fructose::test_base<TestLogger>
     {
         std::cout << _testName << std::endl;
 
-        Tucuxi::Common::Logger logger;
+        Tucuxi::Common::LoggerHelper::init("");
+        Tucuxi::Common::LoggerHelper logger;
+
         logger.debug("Tcho les topiots");
-//        logger.info("Tcho les {}", "topiots");
-//        logger.warn("{} + {} = {}", 2, 2, 4);
+        logger.info("Tcho les {}", "topiots");
+        logger.warn("{} + {} = {}", 2, 2, 4);
         logger.error("Tcho les topiots");
         logger.critical("Tcho les topiots");
 
@@ -51,9 +54,10 @@ struct TestLogger : public fructose::test_base<TestLogger>
     {
         std::cout << _testName << std::endl;
 
-        Tucuxi::Common::Logger logger;
+        Tucuxi::Common::LoggerHelper logger;
         some_class c;
-//        logger.info("Logging a custom class with operator<<: {}", c);
+        //logger.info("Logging a custom class with operator<<: {}", c);
+        //logger.debug(c);
 
         // Todo: Check content of log file...
     }

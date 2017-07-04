@@ -5,16 +5,16 @@
 #ifndef TUCUXI_TUCUCOMMON_LOGGER_H
 #define TUCUXI_TUCUCOMMON_LOGGER_H
 
+#include "spdlog/spdlog.h"
+
 #include "tucucommon/component.h"
 #include "tucucommon/ilogger.h"
-#include "spdlog/spdlog.h"
 
 namespace Tucuxi {
 namespace Common {
 
-class Logger : public Tucuxi::Common::Component, ILogger
+class Logger : public Tucuxi::Common::Component, public ILogger
 {
-
 public:
     ~Logger();
 
@@ -27,9 +27,9 @@ public:
 protected:
     virtual Tucuxi::Common::Interface* getInterface(const std::string &_name);
 
-// TODO : Replace by private
-public:
+private:
     Logger();
+    friend class LoggerHelper;
 
 private:
     std::shared_ptr<spdlog::logger> m_logger;

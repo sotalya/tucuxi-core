@@ -2,11 +2,12 @@
  * Copyright (C) 2017 Tucuxi SA
  */
 
-#include "tucucommon/logger.h"
-#include "spdlog/spdlog.h"
-
 #include <memory>
 #include <iostream>
+
+#include "spdlog/spdlog.h"
+
+#include "tucucommon/logger.h"
 
 namespace Tucuxi {
 namespace Common {
@@ -67,13 +68,15 @@ Logger::Logger()
 
         std::vector<spdlog::sink_ptr> sinks;
 
-        // Linux console
-        auto sink_unix = std::make_shared<spdlog::sinks::ansicolor_stdout_sink_mt>();
-
+#ifdef _WIN32
         // Windows console
-        //auto sink_win = std::make_shared<spdlog::sinks::wincolor_stdout_sink_mt>();
-
-        sinks.push_back(sink_unix);
+        spdlog::sink_ptr sink = std::make_shared<spdlog::sinks::wincolor_stdout_sink_mt>();
+        sinks.push_back(sink);
+#else
+        // Linux console
+        spdlog::sink_ptr sink = std::make_shared<spdlog::sinks::ansicolor_stdout_sink_mt>();
+        sinks.push_back(sink);
+#endif
 
         // Sink for daily file
         //sinks.push_back(std::make_shared<spdlog::sinks::daily_file_sink_mt>("logfile", "txt", 23, 59));

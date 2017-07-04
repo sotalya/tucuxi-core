@@ -5,6 +5,8 @@
 #ifndef TUCUXI_TUCUCOMMON_ILOGGER_H
 #define TUCUXI_TUCUCOMMON_ILOGGER_H
 
+#include "tucucommon/interface.h"
+
 namespace Tucuxi {
 namespace Common {
 
