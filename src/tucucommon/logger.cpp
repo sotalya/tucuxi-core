@@ -5,6 +5,9 @@
 #include "tucucommon/logger.h"
 #include "spdlog/spdlog.h"
 
+#include <memory>
+#include <iostream>
+
 namespace Tucuxi {
 namespace Common {
 
@@ -14,32 +17,32 @@ Logger::~Logger()
     spdlog::drop_all();
 }
 
-virtual void Logger::debug(const char* msg)
+void Logger::debug(const char* msg)
 {
     m_logger->debug(msg);
 }
 
-virtual void Logger::info(const char* msg)
+void Logger::info(const char* msg)
 {
     m_logger->info(msg);
 }
 
-virtual void Logger::warn(const char* msg)
+void Logger::warn(const char* msg)
 {
     m_logger->warn(msg);
 }
 
-virtual void Logger::error(const char* msg)
+void Logger::error(const char* msg)
 {
     m_logger->error(msg);
 }
 
-virtual void Logger::critical(const char* msg)
+void Logger::critical(const char* msg)
 {
     m_logger->critical(msg);
 }
 
-virtual Tucuxi::Common::Interface* Logger::getInterface(const std::string &_name)
+Tucuxi::Common::Interface* Logger::getInterface(const std::string &_name)
 {
     return Tucuxi::Common::Component::getInterfaceImpl(_name);
 }
@@ -64,34 +67,30 @@ Logger::Logger()
 
         std::vector<spdlog::sink_ptr> sinks;
 
-        // Sink for console
+        // Linux console
+        auto sink_unix = std::make_shared<spdlog::sinks::ansicolor_stdout_sink_mt>();
 
-        // Windows
-        sinks.push_back(std::make_shared<spdlog::sinks::wincolor_stdout_sink_mt>());
+        // Windows console
+        //auto sink_win = std::make_shared<spdlog::sinks::wincolor_stdout_sink_mt>();
 
-        // Linux
-        // sinks.push_back(std::make_shared<spdlog::sinks::ansicolor_stdout_sink_mt>());
-
-        // Sink for rotating file
-        sinks.push_back(std::make_shared<spdlog::sinks::rotating_file_sink_mt>("logfile", 1024 * 1024 * 5, 3));
+        sinks.push_back(sink_unix);
 
         // Sink for daily file
-        // sinks.push_back(std::make_shared<spdlog::sinks::daily_file_sink_mt>("logfile", "txt", 23, 59));
+        //sinks.push_back(std::make_shared<spdlog::sinks::daily_file_sink_mt>("logfile", "txt", 23, 59));
 
-        // Create logger
-        m_logger = std::make_shared<spdlog::logger>("tucuxi_logger", begin(sinks), end(sinks));
+        // Sink for rotating file
+        sinks.push_back(std::make_shared<spdlog::sinks::rotating_file_sink_mt>("MyLogFile", 1024 * 1024 * 5, 3));
+
+        m_logger = std::make_shared<spdlog::logger>("m_logger", begin(sinks), end(sinks));
+
+        // Debug should be display
+        m_logger->set_level(spdlog::level::debug);
+
+        // Set custom pattern
+        //m_logger->set_pattern("TUCUXI [%H:%M:%S %z] [thread %t] %v");
 
         // Register it if you need to access it globally. In this case is useless.
-        // spdlog::register_logger(m_logger);
-        // m_logger = spdlog::get("tucuxi_logger");
-
-        // We cas use multiple loggers with the same sink.
-        // E.g multiple pattern can be written in the same file.
-        // auto sharedFileSink = std::make_shared<spdlog::sinks::simple_file_sink_mt>("fileName.txt");
-        // auto firstLogger = std::make_shared<spdlog::logger>("firstLoggerName", sharedFileSink);
-        // auto secondLogger = std::make_unique<spdlog::logger>("secondLoggerName", sharedFileSink);
-
-        m_logger.set_pattern("TUCUXI [%H:%M:%S %z] [thread %t] %v");
+        spdlog::register_logger(m_logger);
 
     }
     catch (const spdlog::spdlog_ex& ex)

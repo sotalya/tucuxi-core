@@ -27,7 +27,8 @@ public:
 protected:
     virtual Tucuxi::Common::Interface* getInterface(const std::string &_name);
 
-private:
+// TODO : Replace by private
+public:
     Logger();
 
 private:
