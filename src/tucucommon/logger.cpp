@@ -78,13 +78,15 @@ Logger::Logger(const std::string &_filename)
 
         std::vector<spdlog::sink_ptr> sinks;
 
-        // Linux console
-        auto sink_unix = std::make_shared<spdlog::sinks::ansicolor_stdout_sink_mt>();
-
+        #ifdef _WIN32
         // Windows console
-        //auto sink_win = std::make_shared<spdlog::sinks::wincolor_stdout_sink_mt>();
+        auto sink_color_console = std::make_shared<spdlog::sinks::wincolor_stdout_sink_mt>();
+        #else
+        // Linux console
+        auto sink_color_console = std::make_shared<spdlog::sinks::ansicolor_stdout_sink_mt>();
+        #endif
 
-        sinks.push_back(sink_unix);
+        sinks.push_back(sink_color_console);
 
         // Sink for daily file
         //sinks.push_back(std::make_shared<spdlog::sinks::daily_file_sink_mt>(_filename, "txt", 23, 59));
