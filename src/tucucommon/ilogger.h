@@ -5,6 +5,8 @@
 #ifndef TUCUXI_TUCUCOMMON_ILOGGER_H
 #define TUCUXI_TUCUCOMMON_ILOGGER_H
 
+namespace Tucuxi {
+namespace Common {
 
 class ILogger : public Tucuxi::Common::Interface
 {
@@ -34,5 +36,8 @@ public:
 //    template <typename Arg1, typename... Args>
 //    virtual void critical(const char* fmt, const Arg1 &arg1, const Args&... args) = 0;
 };
+
+}
+}
 
 #endif // TUCUXI_TUCUCOMMON_ILOGGER_H

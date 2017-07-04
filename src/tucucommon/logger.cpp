@@ -3,6 +3,10 @@
  */
 
 #include "tucucommon/logger.h"
+#include "spdlog/spdlog.h"
+
+namespace Tucuxi {
+namespace Common {
 
 Logger::~Logger()
 {
@@ -94,4 +98,7 @@ Logger::Logger()
     {
         std::cout << "Log initialization failed: " << ex.what() << std::endl;
     }
+}
+
+}
 }

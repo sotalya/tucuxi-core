@@ -9,6 +9,9 @@
 #include "tucucommon/ilogger.h"
 #include "spdlog/spdlog.h"
 
+namespace Tucuxi {
+namespace Common {
+
 class Logger : public Tucuxi::Common::Component, ILogger
 {
 
@@ -30,5 +33,8 @@ private:
 private:
     std::shared_ptr<spdlog::logger> m_logger;
 };
+
+}
+}
 
 #endif // TUCUXI_TUCUCOMMON_LOGGER_H
