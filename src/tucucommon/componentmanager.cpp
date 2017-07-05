@@ -26,7 +26,9 @@ void ComponentManager::registerComponentFactory(const std::string &_name, TCompo
 
 void ComponentManager::registerComponent(const std::string &_name, Interface *_pComponent)
 {
-    m_components[_name] = _pComponent;
+    if (_pComponent != nullptr) {
+        m_components[_name] = _pComponent;
+    }
 }
 
 
