@@ -3,6 +3,7 @@
 #include <string>
 #include <iostream>
 #include <stdio.h>
+#include <cstdio>
 #include <regex>
 
 #include "fructose/fructose.h"
@@ -17,6 +18,10 @@ struct TestLogger : public fructose::test_base<TestLogger>
     TestLogger(std::string& _path)
     {
         m_path = _path + std::string("/MyLogFile.txt");
+
+        // Make sure to remove the existing rotating file...
+        std::remove(m_path.c_str());
+
         Tucuxi::Common::LoggerHelper::init(m_path);
     }
 
@@ -33,35 +38,11 @@ struct TestLogger : public fructose::test_base<TestLogger>
 
         // Check content of log file :
         std::ifstream infile(m_path);
-
-        std::string str;
-
-        int diff = 0;
-
-        std::getline(infile, str);
-        std::cout << str << std::endl;
-        diff = std::regex_match (str, std::regex("\\[[0-9\\-\\:\\.\\ ]*\\] \\[m_logger\\] \\[debug\\] Tcho les topiots"));
-        fructose_assert(diff != 0);
-
-        std::getline(infile, str);
-        std::cout << str << std::endl;
-        diff = std::regex_match (str, std::regex("\\[[0-9\\-\\:\\.\\ ]*\\] \\[m_logger\\] \\[info\\] Tcho les topiots"));
-        fructose_assert(diff != 0);
-
-        std::getline(infile, str);
-        std::cout << str << std::endl;
-        diff = std::regex_match (str, std::regex("\\[[0-9\\-\\:\\.\\ ]*\\] \\[m_logger\\] \\[warning\\] 2 \\+ 2 = 4"));
-        fructose_assert(diff != 0);
-
-        std::getline(infile, str);
-        std::cout << str << std::endl;
-        diff = std::regex_match (str, std::regex("\\[[0-9\\-\\:\\.\\ ]*\\] \\[m_logger\\] \\[error\\] Tcho les topiots"));
-        fructose_assert(diff != 0);
-
-        std::getline(infile, str);
-        std::cout << str << std::endl;
-        diff = std::regex_match (str, std::regex("\\[[0-9\\-\\:\\.\\ ]*\\] \\[m_logger\\] \\[critical\\] Tcho les topiots"));
-        fructose_assert(diff != 0);
+        checkLogfileLine(infile, "debug", "Tcho les topiots");
+        checkLogfileLine(infile, "info", "Tcho les topiots");
+        checkLogfileLine(infile, "warning", "2 + 2 = 4");
+        checkLogfileLine(infile, "error", "Tcho les topiots");
+        checkLogfileLine(infile, "critical", "Tcho les topiots");
     }
 
     void crashes(const std::string& _testName)
@@ -77,5 +58,25 @@ struct TestLogger : public fructose::test_base<TestLogger>
         Tucuxi::Common::ComponentManager::getInstance()->unregisterComponent("Logger");
         Tucuxi::Common::LoggerHelper::init("");
         logger.info("asdfa");
+    }
+
+private:
+    void checkLogfileLine(std::ifstream& _file, const char* _level, const char* _msg)
+    {
+        static const char* patternFormat = "\\[[0-9\\-\\:\\.\\ ]*\\] [0-9]* ([a-z]*): (.*)";
+        std::string line;
+        std::getline(_file, line);
+        //std::cout << line << std::endl;
+
+        std::string pattern = Tucuxi::Common::Utils::strFormat(patternFormat, _level, _msg);
+        std::regex rgx(pattern);
+        std::smatch match;
+
+        bool isMatching = std::regex_search(line, match, rgx);
+        fructose_assert(isMatching);
+        if (isMatching) {
+            fructose_assert(match[1].str() == _level);
+            fructose_assert(match[2].str() == _msg);
+        }
     }
  };
