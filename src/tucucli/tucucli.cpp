@@ -22,7 +22,7 @@ int main(int argc, char** argv)
     // Get application folder
     std::string appFolder = Tucuxi::Common::Utils::getAppFolder(argv);
 
-    Tucuxi::Common::LoggerHelper::init(appFolder);
+    Tucuxi::Common::LoggerHelper::init(appFolder + "/tucucli.log");
     Tucuxi::Common::LoggerHelper logHelper;
 
     logHelper.info("********************************************************");

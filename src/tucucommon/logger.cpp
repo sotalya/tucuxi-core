@@ -145,7 +145,7 @@ Logger::Logger(const std::string &_filename)
         m_logger->set_level(spdlog::level::debug);
 
         // Set custom pattern
-        //m_logger->set_pattern("TUCUXI [%H:%M:%S %z] [thread %t] %v");
+        m_logger->set_pattern("[%C-%m-%d %H:%M:%S.%e] %t %l: %v");
 
         // Register it if you need to access it globally. In this case is useless.
         spdlog::register_logger(m_logger);
