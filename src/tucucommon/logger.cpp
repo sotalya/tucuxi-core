@@ -18,41 +18,86 @@ Logger::~Logger()
     spdlog::drop_all();
 }
 
-void Logger::setLevel(spdlog::level::level_enum level)
+
+void Logger::setLevel(spdlog::level::level_enum _level)
 {
-    m_logger->set_level(level);
+    m_logger->set_level(_level);
 }
 
 
-void Logger::debug(const char* msg)
+void Logger::debug(const char* _msg)
 {
-    m_logger->debug(msg);
-    m_logger->flush();
+    try {
+        if (m_logger != nullptr) {
+            m_logger->debug(_msg);
+            m_logger->flush();
+        }
+    }
+    catch (const spdlog::spdlog_ex& ex)
+    {
+        std::cout << "Writing log message failed: " << ex.what() << std::endl;
+    }
 }
 
-void Logger::info(const char* msg)
+
+void Logger::info(const char* _msg)
 {
-    m_logger->info(msg);
-    m_logger->flush();
+    try {
+        if (m_logger != nullptr) {
+            m_logger->info(_msg);
+            m_logger->flush();
+        }
+    }
+    catch (const spdlog::spdlog_ex& ex)
+    {
+        std::cout << "Writing log message failed: " << ex.what() << std::endl;
+    }
 }
 
-void Logger::warn(const char* msg)
+
+void Logger::warn(const char* _msg)
 {
-    m_logger->warn(msg);
-    m_logger->flush();
+    try {
+        if (m_logger != nullptr) {
+            m_logger->warn(_msg);
+            m_logger->flush();
+        }
+    }
+    catch (const spdlog::spdlog_ex& ex)
+    {
+        std::cout << "Writing log message failed: " << ex.what() << std::endl;
+    }
 }
 
-void Logger::error(const char* msg)
+
+void Logger::error(const char* _msg)
 {
-    m_logger->error(msg);
-    m_logger->flush();
+    try {
+        if (m_logger != nullptr) {
+            m_logger->error(_msg);
+            m_logger->flush();
+        }
+    }
+    catch (const spdlog::spdlog_ex& ex)
+    {
+        std::cout << "Writing log message failed: " << ex.what() << std::endl;
+    }
 }
 
-void Logger::critical(const char* msg)
+
+void Logger::critical(const char* _msg)
 {
-    m_logger->critical(msg);
-    m_logger->flush();
+    try {
+        if (m_logger != nullptr) {
+            m_logger->critical(_msg);
+            m_logger->flush();
+        }
+    }
+    catch (const spdlog::spdlog_ex& ex) {
+        std::cout << "Writing log message failed: " << ex.what() << std::endl;
+    }
 }
+
 
 Tucuxi::Common::Interface* Logger::getInterface(const std::string &_name)
 {
@@ -105,10 +150,8 @@ Logger::Logger(const std::string &_filename)
 
         // Register it if you need to access it globally. In this case is useless.
         spdlog::register_logger(m_logger);
-
     }
-    catch (const spdlog::spdlog_ex& ex)
-    {
+    catch (const spdlog::spdlog_ex& ex) {
         std::cout << "Log initialization failed: " << ex.what() << std::endl;
     }
 }

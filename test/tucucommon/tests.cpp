@@ -8,10 +8,17 @@ int main(int argc, char** argv)
 	componentManagerTests.add_test("CreateComponent", &TestComponentManager::createComponent);
 	int res = componentManagerTests.run(argc, argv);
 	if (res != 0) {
-		return res;
+        printf("ComponentManager test failed!");
+		return 1;
 	}
 
 	TestLogger loggerTests;
 	loggerTests.add_test("Logger-basic", &TestLogger::basic);
-	return loggerTests.run(argc, argv);
+    loggerTests.add_test("Logger-crashes", &TestLogger::crashes);
+    res = loggerTests.run(argc, argv);
+    if (res != 0) {
+        printf("Logger test failed!");
+        return 1;
+    }
+    return 0;
 }

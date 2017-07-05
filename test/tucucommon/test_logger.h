@@ -8,6 +8,7 @@
 #include "fructose/fructose.h"
 
 #include "tucucommon/loggerhelper.h"
+#include "tucucommon/componentmanager.h"
 
 struct TestLogger : public fructose::test_base<TestLogger> 
 {
@@ -42,5 +43,20 @@ struct TestLogger : public fructose::test_base<TestLogger>
         std::getline(infile, str);
         diff = std::regex_match (str, std::regex("\\[[0-9\\-\\:\\.\\ ]*\\] \\[m_logger\\] \\[critical\\] Tcho les topiots"));
         fructose_assert(diff != 0);
+    }
+
+    void crashes(const std::string& _testName)
+    {
+        // Try to make our LoggerHelper crash
+        Tucuxi::Common::LoggerHelper::init("c:/temp/test.log");
+        Tucuxi::Common::LoggerHelper logger;
+        logger.info("asdfa {}");
+        logger.info("asdfa {}", 12, 22);
+        logger.info("asdfa {}", ((char*)0x00));
+
+        // Re-initialize our Logger component
+        Tucuxi::Common::ComponentManager::getInstance()->unregisterComponent("Logger");
+        Tucuxi::Common::LoggerHelper::init("");
+        logger.info("asdfa");
     }
  };

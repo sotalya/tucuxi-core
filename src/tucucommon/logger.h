@@ -17,13 +17,13 @@ class Logger : public Tucuxi::Common::Component, public ILogger
 {
 public:
     ~Logger();
-    void setLevel(spdlog::level::level_enum level);
+    void setLevel(spdlog::level::level_enum _level);
 
-    virtual void debug(const char* msg);
-    virtual void info(const char* msg);
-    virtual void warn(const char* msg);
-    virtual void error(const char* msg);
-    virtual void critical(const char* msg);
+    virtual void debug(const char* _msg);
+    virtual void info(const char* _msg);
+    virtual void warn(const char* _msg);
+    virtual void error(const char* _msg);
+    virtual void critical(const char* _msg);
 
 protected:
     virtual Tucuxi::Common::Interface* getInterface(const std::string &_name);

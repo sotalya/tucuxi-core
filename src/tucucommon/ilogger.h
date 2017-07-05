@@ -13,30 +13,11 @@ namespace Common {
 class ILogger : public Tucuxi::Common::Interface
 {
 public:
-    virtual void debug(const char* msg) = 0;
-
-//    template <typename Arg1, typename... Args>
-//    virtual void debug(const char* fmt, const Arg1 &arg1, const Args&... args) = 0;
-
-    virtual void info(const char* msg) = 0;
-
-//    template <typename Arg1, typename... Args>
-//    virtual void info(const char* fmt, const Arg1 &arg1, const Args&... args) = 0;
-
-    virtual void warn(const char* msg) = 0;
-
-//    template <typename Arg1, typename... Args>
-//    virtual void warn(const char* fmt, const Arg1 &arg1, const Args&... args) = 0;
-
-    virtual void error(const char* msg) = 0;
-
-//    template <typename Arg1, typename... Args>
-//    virtual void error(const char* fmt, const Arg1 &arg1, const Args&... args) = 0;
-
-    virtual void critical(const char* msg) = 0;
-
-//    template <typename Arg1, typename... Args>
-//    virtual void critical(const char* fmt, const Arg1 &arg1, const Args&... args) = 0;
+    virtual void debug(const char* _msg) = 0;
+    virtual void info(const char* _msg) = 0;
+    virtual void warn(const char* _msg) = 0;
+    virtual void error(const char* _msg) = 0;
+    virtual void critical(const char* _msg) = 0;
 };
 
 }
