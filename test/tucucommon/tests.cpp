@@ -17,7 +17,7 @@ int main(int argc, char** argv)
     int res = componentManagerTests.run(argc, argv);
     if (res != 0) {
         printf("ComponentManager test failed");
-        return 1;
+        exit(1);
     }
 
     TestLogger loggerTests(appFolder);
@@ -26,7 +26,7 @@ int main(int argc, char** argv)
     res = loggerTests.run(argc, argv);
     if (res != 0) {
         printf("Logger test failed");
-        return 1;
+        exit(1);
     }
 
     return 0;
