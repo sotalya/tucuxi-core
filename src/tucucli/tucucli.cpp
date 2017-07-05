@@ -5,8 +5,8 @@
 #include <stdio.h>
 #include <time.h>
 
-#include "spdlog/spdlog.h"
-
+#include "tucucommon/utils.h"
+#include "tucucommon/loggerhelper.h"
 #include "tucucore/onecompartmentextra.h"
 
 /// \defgroup TucuCli Tucuxi Console application
@@ -17,21 +17,17 @@
 /// 
 /// This application is intended mainly to run automated test scripts
 
-int main()
+int main(int argc, char** argv)
 {
-    //Multithreaded console logger(with color support)
-    auto console = spdlog::stdout_color_mt("console");
-    console->info("Welcome to spdlog!");
-    console->info("An info message example {}.", 1);
+    // Get application folder
+    std::string appFolder = Tucuxi::Common::Utils::getAppFolder(argv);
 
-    std::vector<spdlog::sink_ptr> sinks;
-    sinks.push_back(std::make_shared<spdlog::sinks::stdout_sink_mt>());
-    sinks.push_back(std::make_shared<spdlog::sinks::rotating_file_sink_mt>("logfile", 1024 * 1024 * 5, 3));
-    auto combined_logger = std::make_shared<spdlog::logger>("name", begin(sinks), end(sinks));
-    spdlog::register_logger(combined_logger);
+    Tucuxi::Common::LoggerHelper::init(appFolder);
+    Tucuxi::Common::LoggerHelper logHelper;
 
-    combined_logger->info("Welcome to spdlog!");
-
+    logHelper.info("********************************************************");
+    logHelper.info("Tucuxi console application is starting up...");
+    
     Tucuxi::Core::IntakeIntervalCalculator::Result res;
     Tucuxi::Core::OneCompartmentExtra calculator;
 
@@ -65,6 +61,7 @@ int main()
 
     printf("Out residual = %f\n", outResiduals[0]);
 
+    logHelper.info("Tucuxi console application is exiting...");
     return 0;
 }
 
