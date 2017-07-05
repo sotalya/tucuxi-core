@@ -8,7 +8,9 @@
 NAME := tucucommon
 TYPE := LIB
 
-SOURCES := componentmanager.cpp logger.cpp
+SOURCES := componentmanager.cpp \
+           logger.cpp \
+           utils.cpp
 INCLUDES := ../../libs/spdlog-master-20170622/include
 
 LIBS := 
