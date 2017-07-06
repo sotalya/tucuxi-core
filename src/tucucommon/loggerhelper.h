@@ -18,7 +18,7 @@ namespace Common {
     /// \brief Helper class to simplify logging
     ///
     /// This is a wrapper around the ILogger interface of the Logger component. This idea is to make it as 
-    /// simple as possible to log messages. To log messages, just create an instance of LoggerWrapper locally or 
+    /// simple as possible to log messages. To log messages, just create an instance of LoggerHelper locally or 
     /// as a member of your class and call its logging methods.
     ///
     /// Example:
