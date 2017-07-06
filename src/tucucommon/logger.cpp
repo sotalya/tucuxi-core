@@ -24,76 +24,48 @@ void Logger::setLevel(spdlog::level::level_enum _level)
     m_logger->set_level(_level);
 }
 
+
 void Logger::debug(const char* _msg)
 {
-    try {
-        if (m_logger != nullptr) {
-            m_logger->debug(_msg);
-            m_logger->flush();
-        }
-    }
-    catch (const spdlog::spdlog_ex& ex)
-    {
-        std::cout << "Writing log message failed: " << ex.what() << std::endl;
+    if (m_logger != nullptr) {
+        m_logger->debug(_msg);
+        m_logger->flush();
     }
 }
 
 
 void Logger::info(const char* _msg)
 {
-    try {
-        if (m_logger != nullptr) {
-            m_logger->info(_msg);
-            m_logger->flush();
-        }
-    }
-    catch (const spdlog::spdlog_ex& ex)
-    {
-        std::cout << "Writing log message failed: " << ex.what() << std::endl;
+    if (m_logger != nullptr) {
+        m_logger->info(_msg);
+        m_logger->flush();
     }
 }
 
 
 void Logger::warn(const char* _msg)
 {
-    try {
-        if (m_logger != nullptr) {
-            m_logger->warn(_msg);
-            m_logger->flush();
-        }
-    }
-    catch (const spdlog::spdlog_ex& ex)
-    {
-        std::cout << "Writing log message failed: " << ex.what() << std::endl;
+    if (m_logger != nullptr) {
+        m_logger->warn(_msg);
+        m_logger->flush();
     }
 }
 
 
 void Logger::error(const char* _msg)
 {
-    try {
-        if (m_logger != nullptr) {
-            m_logger->error(_msg);
-            m_logger->flush();
-        }
-    }
-    catch (const spdlog::spdlog_ex& ex)
-    {
-        std::cout << "Writing log message failed: " << ex.what() << std::endl;
+    if (m_logger != nullptr) {
+        m_logger->error(_msg);
+        m_logger->flush();
     }
 }
 
 
 void Logger::critical(const char* _msg)
 {
-    try {
-        if (m_logger != nullptr) {
-            m_logger->critical(_msg);
-            m_logger->flush();
-        }
-    }
-    catch (const spdlog::spdlog_ex& ex) {
-        std::cout << "Writing log message failed: " << ex.what() << std::endl;
+    if (m_logger != nullptr) {
+        m_logger->critical(_msg);
+        m_logger->flush();
     }
 }
 

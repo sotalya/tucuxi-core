@@ -17,18 +17,14 @@ struct TestLogger : public fructose::test_base<TestLogger>
 
     TestLogger(std::string& _path)
     {
-        m_path = _path + std::string("/MyLogFile.txt");
-
-        // Make sure to remove the existing rotating file...
-        std::remove(m_path.c_str());
-
-        Tucuxi::Common::LoggerHelper::init(m_path);
+        m_path = _path;
     }
 
     void basic(const std::string& _testName)
     {
         std::cout << _testName << std::endl;
 
+        reset("LogTest2.log");
         Tucuxi::Common::LoggerHelper logger;
         logger.debug("Tcho les topiots");
         logger.info("Tcho les {}", "topiots");
@@ -37,7 +33,7 @@ struct TestLogger : public fructose::test_base<TestLogger>
         logger.critical("Tcho les topiots");
 
         // Check content of log file :
-        std::ifstream infile(m_path);
+        std::ifstream infile(m_path + "/LogTest2.log");
         checkLogfileLine(infile, "debug", "Tcho les topiots");
         checkLogfileLine(infile, "info", "Tcho les topiots");
         checkLogfileLine(infile, "warning", "2 + 2 = 4");
@@ -47,20 +43,38 @@ struct TestLogger : public fructose::test_base<TestLogger>
 
     void crashes(const std::string& _testName)
     {
-        // Try to make our LoggerHelper crash
-        Tucuxi::Common::LoggerHelper::init("c:/temp/test.log");
+        // Work with an uninitialized logger
         Tucuxi::Common::LoggerHelper logger;
-        logger.info("asdfa {}");
-        logger.info("asdfa {}", 12, 22);
-        logger.info("asdfa {}", ((char*)0x00));
-
-        // Re-initialize our Logger component
-        Tucuxi::Common::ComponentManager::getInstance()->unregisterComponent("Logger");
-        Tucuxi::Common::LoggerHelper::init("");
         logger.info("asdfa");
+        
+        // Initialize with a bad file path
+        Tucuxi::Common::LoggerHelper::init("");
+        Tucuxi::Common::LoggerHelper logger2;
+        logger2.info("asdfa");        
+
+
+        // Try to make our LoggerHelper crash
+        reset("LogTest1.log");
+        Tucuxi::Common::LoggerHelper logger3;
+        logger3.info("asdfa {}");
+        logger3.info("asdfa {}", 12, 22);
+        logger3.info("asdfa {}", ((char*)0x00));
     }
 
 private:
+    void reset(const char* _fileName)
+    {
+        // Remove the current logger (hack for test only)
+        Tucuxi::Common::ComponentManager::getInstance()->unregisterComponent("Logger");
+
+        // Make sure to remove the existing rotating file...
+        const std::string& fileName = Tucuxi::Common::Utils::strFormat("%s/%s", m_path.c_str(), _fileName);
+        std::remove(fileName.c_str());
+
+        // Initialize the logger correctly
+        Tucuxi::Common::LoggerHelper::init(fileName);
+    }
+
     void checkLogfileLine(std::ifstream& _file, const char* _level, const char* _msg)
     {
         static const char* patternFormat = "\\[[0-9\\-\\:\\.\\ ]*\\] [0-9]* ([a-z]*): (.*)";

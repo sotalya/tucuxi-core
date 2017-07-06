@@ -27,6 +27,8 @@ namespace Common {
     /// logger.info("Hello, my name is {}", "Roger");
     /// \endcode
     ///
+    /// Format documentation: http://fmtlib.net/latest/syntax.html
+    ///
     /// \sa ILogger
 class LoggerHelper
 {
