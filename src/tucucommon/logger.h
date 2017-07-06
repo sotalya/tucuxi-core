@@ -67,6 +67,7 @@ public:
     virtual void critical(const char* _msg);
 
 protected:
+    /// \brief Access other interfaces of the same component.
     virtual Tucuxi::Common::Interface* getInterface(const std::string &_name);
 
 private:
