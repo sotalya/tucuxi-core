@@ -21,8 +21,8 @@ int main(int argc, char** argv)
     }
 
     TestLogger loggerTests(appFolder);
-    loggerTests.add_test("Logger-basic", &TestLogger::basic);
     loggerTests.add_test("Logger-crashes", &TestLogger::crashes);
+    loggerTests.add_test("Logger-basic", &TestLogger::basic);
     res = loggerTests.run(argc, argv);
     if (res != 0) {
         printf("Logger test failed");
