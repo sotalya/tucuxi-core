@@ -19,7 +19,7 @@
         <OBJECT>
           <ID name="dosages" mc="Standard.AssociationEnd" uid="6b691b85-a1e5-43d6-a233-4dce97f3b104"/>
           <ATTRIBUTES>
-            <ATT name="Aggregation">KindIsAggregation</ATT>
+            <ATT name="Aggregation">KindIsComposition</ATT>
             <ATT name="IsChangeable">true</ATT>
             <ATT name="Changeable">ReadWrite</ATT>
             <ATT name="IsDerived">false</ATT>
