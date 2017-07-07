@@ -5,15 +5,14 @@
 ##
 ## ----------------------------------------------------------------------------
 
-NAME := tucucommon
+NAME := tinyjs
 TYPE := LIB
 
-SOURCES := componentmanager.cpp \
-           logger.cpp \
-           utils.cpp \
-           jsengine.cpp
-INCLUDES := ../../libs/spdlog-master-20170622/include \
-            ../../libs/tiny-js-master-20170629
+SOURCES := TinyJS.cpp \
+           TinyJS_Functions.cpp \
+           TinyJS_MathFunctions.cpp \
+           TinyJS_SyntaxTree.cpp
+INCLUDES :=             
 
 LIBS := 
 EXTLIBS := 
