@@ -76,6 +76,7 @@ Tucuxi::Common::Interface* Logger::getInterface(const std::string &_name)
 }
 
 Logger::Logger(const std::string &_filename)
+    : m_logger(nullptr)
 {
     registerInterface(dynamic_cast<ILogger*>(this));
 
