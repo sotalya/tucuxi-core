@@ -15,7 +15,8 @@ class IntakeSeries
 };
 
 #define DOSAGE_UTILS(className) \
-    virtual void extract(IntakeExtractor *extractor, Date start, Date end, IntakeSeries &series);
+    virtual void extract(IntakeExtractor *extractor, Date start, Date end, IntakeSeries &series); \
+    friend IntakeExtractor;
 
 class Dosage
 {
@@ -24,7 +25,7 @@ class Dosage
 };
 
 /// \brief A list of abstract dosages
-typedef std::vector<Dosage> DosageList;
+typedef std::vector<Dosage*> DosageList;
 
 class DosageUnbounded : public Dosage
 {
@@ -104,6 +105,7 @@ private:
 
 class DosageTimeRange
 {
+    friend IntakeExtractor;
 
 private:
     DosageList m_dosages;
@@ -111,10 +113,15 @@ private:
     Date m_endDate;
 };
 
+/// \brief A list of dosage time range
+typedef std::vector<DosageTimeRange*> DosageTimeRangeList;
+
 /// \ingroup TucuCore
 /// \brief Represents a dosage history.
 class DosageHistory
 {
+    friend IntakeExtractor;
+
 public:
     /// \brief Constructor
     DosageHistory()
@@ -122,7 +129,7 @@ public:
 
 private:
 
-    std::vector<DosageTimeRange*> m_history;
+    DosageTimeRangeList m_history;
 };
 
 }

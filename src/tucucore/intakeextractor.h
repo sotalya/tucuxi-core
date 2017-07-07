@@ -26,6 +26,8 @@ public:
 
     void extract(DosageHistory *_dosageHistory, Date _start, Date _end, IntakeSeries &_series);
 private:
+    void extract(DosageTimeRange *_dosage, Date _start, Date _end, IntakeSeries &_series);
+    void extract(DosageList _dosage, Date _start, Date _end, IntakeSeries &_series);
     void extract(Dosage *_dosage, Date _start, Date _end, IntakeSeries &_series);
     void extract(DosageUnbounded *_dosage, Date _start, Date _end, IntakeSeries &_series);
     void extract(DosageLoop *_dosage, Date _start, Date _end, IntakeSeries &_series);
