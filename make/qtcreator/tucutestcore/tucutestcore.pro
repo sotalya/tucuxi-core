@@ -30,8 +30,6 @@ HEADERS += \
     ../../../src/tucucore/onecompartmentextra.h \
     ../../../src/tucucore/parameter.h \
     ../../../src/tucucore/timedevent.h \
-    ../../../test/tucucommon/test_componentmanager.h \
-    ../../../test/tucucommon/test_logger.h \
     ../../../test/tucucore/test_dosage.h
 
 SOURCES += \
@@ -45,4 +43,4 @@ SOURCES += \
     ../../../src/tucucore/dosage.cpp \
     ../../../src/tucucore/onecompartmentbolus.cpp \
     ../../../src/tucucore/onecompartmentextra.cpp \
-    ../../../test/tucucommon/tests.cpp
+    ../../../test/tucucore/tests.cpp
