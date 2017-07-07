@@ -30,7 +30,8 @@ HEADERS += \
     ../../../src/tucucore/onecompartmentextra.h \
     ../../../src/tucucore/parameter.h \
     ../../../src/tucucore/timedevent.h \
-    ../../../test/tucucore/test_dosage.h
+    ../../../test/tucucore/test_dosage.h \
+    ../../../test/tucucore/test_intakeextractor.h
 
 SOURCES += \
     ../../../src/tucucommon/componentmanager.cpp \
