@@ -24,20 +24,21 @@ class IntakeExtractor
 
 public:
 
-    void extract(DosageHistory *_dosageHistory, Date _start, Date _end, IntakeSeries &_series);
+    void extract(const DosageHistory *_dosageHistory, Date _start, Date _end, IntakeSeries &_series);
+
 private:
-    void extract(DosageTimeRange *_dosage, Date _start, Date _end, IntakeSeries &_series);
-    void extract(DosageList _dosage, Date _start, Date _end, IntakeSeries &_series);
-    void extract(Dosage *_dosage, Date _start, Date _end, IntakeSeries &_series);
-    void extract(DosageUnbounded *_dosage, Date _start, Date _end, IntakeSeries &_series);
-    void extract(DosageLoop *_dosage, Date _start, Date _end, IntakeSeries &_series);
-    void extract(DosageBounded *_dosage, Date _start, Date _end, IntakeSeries &_series);
-    void extract(DosageRepeat *_dosage, Date _start, Date _end, IntakeSeries &_series);
-    void extract(DosageSequence *_dosage, Date _start, Date _end, IntakeSeries &_series);
-    void extract(SingleDose *_dosage, Date _start, Date _end, IntakeSeries &_series);
-    void extract(LastingDose *_dosage, Date _start, Date _end, IntakeSeries &_series);
-    void extract(DailyDose *_dosage, Date _start, Date _end, IntakeSeries &_series);
-    void extract(WeeklyDose *_dosage, Date _start, Date _end, IntakeSeries &_series);
+    void extract(const DosageTimeRange *_dosage, Date _start, Date _end, IntakeSeries &_series);
+    void extract(const DosageList _dosage, Date _start, Date _end, IntakeSeries &_series);
+    void extract(const Dosage *_dosage, Date _start, Date _end, IntakeSeries &_series);
+    void extract(const DosageUnbounded *_dosage, Date _start, Date _end, IntakeSeries &_series);
+    void extract(const DosageLoop *_dosage, Date _start, Date _end, IntakeSeries &_series);
+    void extract(const DosageBounded *_dosage, Date _start, Date _end, IntakeSeries &_series);
+    void extract(const DosageRepeat *_dosage, Date _start, Date _end, IntakeSeries &_series);
+    void extract(const DosageSequence *_dosage, Date _start, Date _end, IntakeSeries &_series);
+    void extract(const SingleDose *_dosage, Date _start, Date _end, IntakeSeries &_series);
+    void extract(const LastingDose *_dosage, Date _start, Date _end, IntakeSeries &_series);
+    void extract(const DailyDose *_dosage, Date _start, Date _end, IntakeSeries &_series);
+    void extract(const WeeklyDose *_dosage, Date _start, Date _end, IntakeSeries &_series);
 };
 
 }
