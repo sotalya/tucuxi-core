@@ -16,7 +16,7 @@ LIBRARIAN := lib
 _SOURCES := $(SOURCES)																		# Source files for a given module are referenced from the module directory
 _OBJS := $(patsubst %.cpp, objs/%.o, $(SOURCES))											# List of object files
 _INCLUDES := $(addprefix -I, $(INCLUDES)) -I$(TUCUXI_ROOT)\src								# Include directories are referenced from Tucuxi's root directory
-_LIBS := $(foreach _LIB, $(LIBS), $(TUCUXI_ROOT)\src\$(_LIB)\objs\$(_LIB).lib) $(EXTLIBS)	# Libs are rerefenced by their name only 
+_LIBS := $(foreach _LIB, $(LIBS), $(TUCUXI_ROOT)\bin\$(_LIB).lib) $(EXTLIBS)				# Libs are rerefenced by their name only 
 _DEFINES := $(addprefix -D, $(DEFINES))
 
 ## ---------------------------------------------------------------
@@ -33,9 +33,11 @@ LDFLAG_DLL := -nologo -LD -MD -Fmobjs\$(NAME).map
 ifeq ($(TYPE), LIB)
 all : $(_OBJS)
 	$(LIBRARIAN) /NOLOGO /VERBOSE /OUT:objs\$(NAME).lib $(_OBJS) $(_LIBS) 
+	copy /Y /V objs\$(NAME).lib $(TUCUXI_ROOT)\bin
 
 clean:
 	del /Q objs\*
+	del /Q $(TUCUXI_ROOT)\bin\$(NAME).lib
 endif
 
 ## ---------------------------------------------------------------
@@ -48,6 +50,7 @@ all : $(_OBJS)
 
 clean:
 	del /Q objs\*
+	del /Q $(TUCUXI_ROOT)\bin\$(NAME).dll
 endif
 
 ## ---------------------------------------------------------------
@@ -60,6 +63,7 @@ all : $(_OBJS)
 
 clean:
 	del /Q objs\*
+	del /Q $(TUCUXI_ROOT)\bin\$(NAME).exe
 endif
 
 ## ---------------------------------------------------------------
@@ -68,10 +72,11 @@ endif
 ifeq ($(TYPE), TEST)
 all : $(_OBJS)
 	$(LD) $(LDFLAG_APP) -Feobjs\$(NAME)-Test.exe $(_OBJS) $(_LIBS) 
-	copy /Y /V objs\$(NAME)-Test.exe $(TUCUXI_ROOT)\bin
+	copy /Y /V objs\$(NAME)-test.exe $(TUCUXI_ROOT)\bin
 
 clean:
 	del /Q objs\*
+	del /Q $(TUCUXI_ROOT)\bin\$(NAME)-test.exe
 endif
 
 ## ---------------------------------------------------------------

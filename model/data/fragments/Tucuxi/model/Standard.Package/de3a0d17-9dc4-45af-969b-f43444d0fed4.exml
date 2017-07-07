@@ -23,6 +23,9 @@
         <COMPID name="ComponentManager" mc="Standard.Package" uid="59648748-5ba9-483f-92a6-5d02308f44eb"/>
         <COMPID name="Logger" mc="Standard.Package" uid="760fee8d-d22d-44bf-89f7-98b4e302ff68"/>
         <COMPID name="XML" mc="Standard.Package" uid="1898909d-0ec1-4482-8cca-a6b538cdea0b"/>
+        <COMPID name="License" mc="Standard.Package" uid="fd1723c4-c420-41a5-a274-b0e82fe97f91"/>
+        <COMPID name="Encryption" mc="Standard.Package" uid="1d88e06c-81ac-4a7a-8cc7-28f98caab8b5"/>
+        <COMPID name="ScriptEngine" mc="Standard.Package" uid="ae099ca5-2581-4feb-860f-ce19167f78ab"/>
       </COMP>
     </DEPENDENCIES>
   </OBJECT>

@@ -31,6 +31,7 @@ struct TestLogger : public fructose::test_base<TestLogger>
         logger.warn("{} + {} = {}", 2, 2, 4);
         logger.error("Tcho les topiots");
         logger.critical("Tcho les topiots");
+        logger.critical("{}", std::string("Tcho les topiots"));
 
         // Check content of log file :
         std::ifstream infile(m_path + "/LogTest2.log");
@@ -38,6 +39,7 @@ struct TestLogger : public fructose::test_base<TestLogger>
         checkLogfileLine(infile, "info", "Tcho les topiots");
         checkLogfileLine(infile, "warning", "2 + 2 = 4");
         checkLogfileLine(infile, "error", "Tcho les topiots");
+        checkLogfileLine(infile, "critical", "Tcho les topiots");
         checkLogfileLine(infile, "critical", "Tcho les topiots");
     }
 

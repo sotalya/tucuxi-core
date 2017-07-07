@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
-<!--GENERATED FILE, PLEASE DO NOT EDIT!!!--><EXT object="WeeklyDosage" version="4">
+<!--GENERATED FILE, PLEASE DO NOT EDIT!!!--><EXT object="WeeklyDose" version="4">
   <OBJECT>
-    <ID name="WeeklyDosage" mc="Standard.Class" uid="a950b4e2-cf74-453a-a4eb-1d4815cd38a4"/>
+    <ID name="WeeklyDose" mc="Standard.Class" uid="a950b4e2-cf74-453a-a4eb-1d4815cd38a4"/>
     <PID name="DosageHistory" mc="Standard.Package" uid="475c9f26-28bb-4dd2-a934-ebb91d8e2914"/>
     <ATTRIBUTES>
       <ATT name="IsActive">false</ATT>
@@ -11,7 +11,7 @@
       <ATT name="IsLeaf">false</ATT>
       <ATT name="IsRoot">false</ATT>
       <ATT name="Visibility">Public</ATT>
-      <ATT name="Name"><![CDATA[WeeklyDosage]]></ATT>
+      <ATT name="Name"><![CDATA[WeeklyDose]]></ATT>
       <ATT name="status">1970354901745664</ATT>
     </ATTRIBUTES>
     <DEPENDENCIES>
@@ -25,7 +25,7 @@
           </ATTRIBUTES>
           <DEPENDENCIES>
             <LINK relation="SuperType">
-              <ID name="SingleDosage" mc="Standard.Class" uid="2319fe0a-8bfb-4a62-b0ad-2c2d0201df28"/>
+              <ID name="DailyDose" mc="Standard.Class" uid="13f3d46f-4df4-43f7-984c-d210453d1f48"/>
             </LINK>
           </DEPENDENCIES>
         </OBJECT>

@@ -8,6 +8,14 @@ if not defined VisualStudioVersion (
 
 set MAKE="C:\Program Files (x86)\GnuWin32\bin\make"
 
+for %%i in (tiny-js-master-20170629) do (
+	echo *********************************************
+	echo *** Compiling %%i
+	cd "%TUCUXI_ROOT%\libs\%%i"
+	%MAKE% TARGET=VS2015 -f "%TUCUXI_ROOT%\libs\%%i\makefile" clean
+	%MAKE% TARGET=VS2015 -f "%TUCUXI_ROOT%\libs\%%i\makefile"
+)
+
 for %%i in (tucucommon tucucore tucucli) do (
 	echo *********************************************
 	echo *** Compiling %%i

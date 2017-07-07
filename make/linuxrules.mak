@@ -17,7 +17,7 @@ LD = $(XCC)
 _SOURCES := $(SOURCES)																		# Source files for a given module are referenced from the module directory
 _OBJS := $(patsubst %.cpp, objs/%.o, $(SOURCES))											# List of object files
 _INCLUDES := $(addprefix -I, $(INCLUDES)) -I$(TUCUXI_ROOT)/src								# Include directories are referenced from Tucuxi's root directory
-_LIBS := $(foreach _LIB, $(LIBS), $(TUCUXI_ROOT)/src/$(_LIB)/objs/$(_LIB).a) $(EXTLIBS)		# Libs are rerefenced by their name only 
+_LIBS := $(foreach _LIB, $(LIBS), $(TUCUXI_ROOT)/bin/$(_LIB).a) $(EXTLIBS)					# Libs are rerefenced by their name only 
 _DEFINES := $(addprefix -D, $(DEFINES))
 
 ## ---------------------------------------------------------------
@@ -32,9 +32,11 @@ LDFLAGS = -lpthread -lrt -Wl,--gc-sections
 ifeq ($(TYPE),LIB)
 all : $(_OBJS)
 	$(AR) rcs objs/$(NAME).a $(_OBJS) $(_LIBS)
+	cp objs/$(NAME).a $(TUCUXI_ROOT)/bin/
 
 clean:
 	rm objs/*
+	rm $(TUCUXI_ROOT)/bin/$(NAME).a
 endif
 
 ## ---------------------------------------------------------------
@@ -48,6 +50,7 @@ all : $(_OBJS) $(_LIBS)
 
 clean:
 	rm -f objs/*
+	rm $(TUCUXI_ROOT)/bin/$(NAME).so
 endif
 
 ## ---------------------------------------------------------------
@@ -60,6 +63,7 @@ all : $(_OBJS) $(_LIBS)
 
 clean:
 	rm -f objs/*
+	rm $(TUCUXI_ROOT)/bin/$(NAME)
 endif
 
 ## ---------------------------------------------------------------
@@ -72,6 +76,7 @@ all : $(_OBJS) $(_LIBS)
 
 clean:
 	rm -f objs/*
+	rm $(TUCUXI_ROOT)/bin/$(NAME)-test
 endif
 
 ## ---------------------------------------------------------------
