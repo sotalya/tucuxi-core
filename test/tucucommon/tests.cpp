@@ -6,6 +6,7 @@
 
 #include "test_componentmanager.h"
 #include "test_logger.h"
+#include "test_scriptengine.h"
 
 int main(int argc, char** argv) 
 {
@@ -26,6 +27,14 @@ int main(int argc, char** argv)
     res = loggerTests.run(argc, argv);
     if (res != 0) {
         printf("Logger test failed");
+        exit(1);
+    }
+
+    TestScriptEngine scriptEngineTests;
+    scriptEngineTests.add_test("ScriptEngine-basic", &TestScriptEngine::basic);
+    res = scriptEngineTests.run(argc, argv);
+    if (res != 0) {
+        printf("Script engine test failed");
         exit(1);
     }
 
