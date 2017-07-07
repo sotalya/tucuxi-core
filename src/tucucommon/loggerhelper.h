@@ -75,6 +75,13 @@ public:
             m_pLogger->debug(_msg);
         }
     }
+
+    /// \brief Log a "debug" message.
+    /// @param _msg The message to log
+    void debug(const std::string& _msg)
+    {
+        debug(_msg.c_str());
+    }
     
     /// \brief Log a formatted "debug" message.
     /// @param _fmt The message format
@@ -97,6 +104,13 @@ public:
         if (m_pLogger != nullptr) {
             m_pLogger->info(_msg);
         }
+    }
+
+    /// \brief Log an "information" message.
+    /// @param _msg The message to log
+    void info(const std::string& _msg)
+    {
+        info(_msg.c_str());
     }
 
     /// \brief Log a formatted "information" message.
@@ -122,6 +136,13 @@ public:
         }
     }
 
+    /// \brief Log a "warning" message.
+    /// @param _msg The message to log
+    void warn(const std::string& _msg)
+    {
+        warn(_msg.c_str());
+    }
+
     /// \brief Log a formatted "warning" message.
     /// @param _fmt The message format
     /// @param _args List of values referenced by _fmt
@@ -145,6 +166,13 @@ public:
         }
     }
 
+    /// \brief Log an "error" message.
+    /// @param _msg The message to log
+    void error(const std::string& _msg)
+    {
+        error(_msg.c_str());
+    }
+
     /// \brief Log a formatted "error" message.
     /// @param _fmt The message format
     /// @param _args List of values referenced by _fmt
@@ -166,6 +194,13 @@ public:
         if (m_pLogger != nullptr) {
             m_pLogger->critical(_msg);
         }
+    }
+
+    /// \brief Log a "critical" message.
+    /// @param _msg The message to log
+    void critical(const std::string& _msg)
+    {
+        critical(_msg.c_str());
     }
 
     /// \brief Log a formatted "critical" message.

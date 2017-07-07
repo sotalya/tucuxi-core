@@ -41,29 +41,10 @@ public:
     /// @return None
     void setLevel(spdlog::level::level_enum _level);
 
-    /// \brief Log a "debug" message.
-    /// @param _msg The message to log
-    /// @return None
     virtual void debug(const char* _msg);
-
-    /// \brief Log a "debug" message.
-    /// @param _msg The message to log
-    /// @return None
     virtual void info(const char* _msg);
-
-    /// \brief Log a "debug" message.
-    /// @param _msg The message to log
-    /// @return None
     virtual void warn(const char* _msg);
-
-    /// \brief Log a "debug" message.
-    /// @param _msg The message to log
-    /// @return None
     virtual void error(const char* _msg);
-
-    /// \brief Log a "debug" message.
-    /// @param _msg The message to log
-    /// @return None
     virtual void critical(const char* _msg);
 
 protected:
