@@ -31,6 +31,12 @@ void IntakeExtractor::extract(const DosageTimeRange *_dosage, Date _start, Date 
 
 void IntakeExtractor::extract(const DosageList _dosage, Date _start, Date _end, IntakeSeries &_series)
 {
+    for(std::vector<Dosage *>::const_iterator dosage = _dosage.begin(); dosage != _dosage.end(); ++dosage)
+    {
+        // Here we exploit the visitor pattern
+        // The dosage will call the associated extract function of the IntakeExtractor
+        (*dosage)->extract(this, _start, _end, _series);
+    }
 
 }
 
