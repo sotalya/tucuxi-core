@@ -2,7 +2,7 @@
 
 RESULT=0
 
-for MODULE in tucucommon
+for MODULE in tucucommon tucucore
 do
    cd $TUCUXI_ROOT/test/$MODULE
    objs/$MODULE-test $@ 2>&1 | tee objs/$MODULE-test.log
