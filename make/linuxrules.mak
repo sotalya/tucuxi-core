@@ -10,6 +10,7 @@
 XCC = g++
 XC = gcc
 LD = $(XCC)
+AR = ar
 
 ## ---------------------------------------------------------------
 ## INCLUDES, LIBS and DEFINES are set by specific makefiles...
@@ -31,7 +32,13 @@ LDFLAGS = -lpthread -lrt -Wl,--gc-sections
 ##
 ifeq ($(TYPE),LIB)
 all : $(_OBJS)
-	$(AR) rcs objs/$(NAME).a $(_OBJS) $(_LIBS)
+	rm -f objs/ar.mri
+	echo create objs/$(NAME).a > objs/ar.mri
+	$(foreach _OBJLIB, $(_LIBS), echo addlib $(_OBJLIB) >> objs/ar.mri )
+	echo addmod $(_OBJS) >> objs/ar.mri
+	echo save >> objs/ar.mri
+	echo end >> objs/ar.mri
+	$(AR) -M < objs/ar.mri
 	cp objs/$(NAME).a $(TUCUXI_ROOT)/bin/
 
 clean:

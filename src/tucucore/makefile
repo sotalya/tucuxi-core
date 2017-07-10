@@ -12,7 +12,9 @@ SOURCES := concentrationcalculator.cpp \
            intakeintervalcalculator.cpp \
            cachedlogarithms.cpp \
            onecompartmentbolus.cpp \
-           onecompartmentextra.cpp
+           onecompartmentextra.cpp \
+           intakeextractor.cpp \
+           dosage.cpp
 INCLUDES := . \
             ../../libs/eigen-3.3.2 \
             ../../libs/boost-1.63.0

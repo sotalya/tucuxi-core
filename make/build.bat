@@ -24,7 +24,7 @@ for %%i in (tucucommon tucucore tucucli) do (
 	%MAKE% TARGET=VS2015 -f "%TUCUXI_ROOT%\src\%%i\makefile"
 )
 
-for %%i in (tucucommon) do (
+for %%i in (tucucommon tucucore) do (
 	echo *********************************************
 	echo *** Compiling %%i
 	cd "%TUCUXI_ROOT%\Test\%%i"

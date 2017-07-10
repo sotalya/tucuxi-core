@@ -3,7 +3,6 @@
 #include <string>
 
 #include "tucucommon/utils.h"
-#include "tucucore/dosage.h"
 
 #include "test_componentmanager.h"
 #include "test_logger.h"

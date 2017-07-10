@@ -31,7 +31,7 @@ do
    fi
 done
 
-for MODULE in tucucommon
+for MODULE in tucucommon tucucore
 do
    cd $TUCUXI_ROOT/test/$MODULE
    mkdir -p objs
