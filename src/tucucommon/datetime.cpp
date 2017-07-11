@@ -26,6 +26,12 @@ DateTime::DateTime(const date::year_month_day& _date, const TimeOfDay& _time)
     m_date += _time.getDuration<std::chrono::seconds>();
 }
 
+DateTime::DateTime(const date::year_month_day& _date, const std::chrono::seconds& _time)
+{
+    m_date = date::sys_days(_date);
+    m_date += _time;
+}
+
 date::year_month_day DateTime::getDate() const
 {
     return date::year_month_day(date::floor<date::days>(m_date));
@@ -75,6 +81,48 @@ DateTime& DateTime::operator-=(const Duration& _duration)
 const Duration DateTime::operator-(const DateTime& _date) const
 {
     return Duration(std::chrono::duration_cast<std::chrono::seconds>(m_date - _date.m_date));
+}
+
+int DateTime::year() const
+{
+    date::sys_days days = date::floor<date::days>(m_date);
+    return (int)date::year_month_day(days).year();
+}
+
+int DateTime::month() const
+{
+    date::sys_days days = date::floor<date::days>(m_date);
+    return (unsigned)date::year_month_day(days).month();
+}
+
+int DateTime::day() const
+{
+    date::sys_days days = date::floor<date::days>(m_date);
+    return (unsigned)date::year_month_day(days).day();
+}
+
+int DateTime::hour() const
+{
+    date::sys_days days = date::floor<date::days>(m_date);
+    return std::chrono::duration_cast<std::chrono::hours>(m_date - days).count();
+}
+
+int DateTime::minute() const
+{
+    date::sys_days days = date::floor<date::days>(m_date);
+    return std::chrono::duration_cast<std::chrono::minutes>(m_date - days).count() % 60;
+}
+
+__int64 DateTime::second() const
+{
+    date::sys_days days = date::floor<date::days>(m_date);
+    return std::chrono::duration_cast<std::chrono::seconds>(m_date - days).count() % 60;
+}
+
+__int64 DateTime::millisecond() const
+{
+    date::sys_days days = date::floor<date::days>(m_date);
+    return std::chrono::duration_cast<std::chrono::milliseconds>(m_date - days).count() % 1000;
 }
 
 }

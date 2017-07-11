@@ -33,17 +33,17 @@ public:
     /// \brief Construct a duration from a std::chrono::minutes
     /// This also provide implicit conversions when using all the other methods.
     /// @param _value Duration in minutes
-    Duration(std::chrono::minutes _value);
+    Duration(const std::chrono::minutes _value);
 
     /// \brief Construct a duration from a std::chrono::seconds
     /// This also provide implicit conversions when using all the other methods.
     /// @param _value Duration in seconds
-    Duration(std::chrono::seconds d);
+    Duration(const std::chrono::seconds d);
 
     /// \brief Construct a duration from a std::chrono::milliseconds
     /// This also provide implicit conversions when using all the other methods.
     /// @param _value Duration in milliseconds
-    Duration(std::chrono::milliseconds d);
+    Duration(const std::chrono::milliseconds d);
 
     /// \brief Returns the duration in one of the std::chrono duration class (hours, minutes, seconds, ...)    
     /// @return The duration in the specified T unit.
@@ -66,17 +66,6 @@ public:
     ///
     bool isNegative() const;
 
-/*
-    /// \brief Return the number of days
-    /// Truncate any time under the day
-    ///  @return The number of days in this duration
-    qint64 days () const;
-
-    /// \brief Compute the number of years, takign into account leap years.
-    /// Returns the number of years between end and start, taking into account leap years.
-    /// @return the number of years between start and end.
-    static qint64 yearsBetween(const QDate &start, const QDate &end);
-*/
     /// \brief Reset the duration to 0h00
     void clear();
 
@@ -134,7 +123,7 @@ public:
     bool operator!=(const Duration &) const;
 
 private:
-    std::chrono::duration<float> m_duration;
+    std::chrono::duration<float> m_duration;  /// The encapsulated duration
 };
 
 }

@@ -40,7 +40,9 @@ int main(int argc, char** argv)
     }
 
     TestDateTime dateTimeTests;
-    dateTimeTests.add_test("DateTime-basic", &TestDateTime::basic);
+    dateTimeTests.add_test("DateTime-datetime", &TestDateTime::datetime);
+    dateTimeTests.add_test("DateTime-timeofday", &TestDateTime::timeofday);
+    dateTimeTests.add_test("DateTime-duration", &TestDateTime::duration);
     res = dateTimeTests.run(argc, argv);
     if (res != 0) {
         printf("Date and time test failed");
