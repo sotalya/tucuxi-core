@@ -140,4 +140,5 @@ private:
 }
 }
 
-#endif TUCUXI_TUCUCOMMON_DURATION_H
+#endif // TUCUXI_TUCUCOMMON_DURATION_H
+

@@ -34,7 +34,7 @@ date::year_month_day DateTime::getDate() const
 TimeOfDay DateTime::getTimeOfDay() const
 {
     date::sys_days today = date::floor<date::days>(m_date);
-    return std::chrono::duration_cast<std::chrono::seconds>(m_date - today);
+    return TimeOfDay(Duration(std::chrono::duration_cast<std::chrono::seconds>(m_date - today)));
 }
 
 void DateTime::setDate(const date::year_month_day& _newDate)
