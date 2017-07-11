@@ -8,6 +8,8 @@
 #include <chrono>
 #include <date/date.h>
 
+#include "tucucommon/basetypes.h"
+
 namespace Tucuxi {
 namespace Common {
 
@@ -55,11 +57,11 @@ public:
 
     /// \brief Return the second of the contained time
     /// @return The second.
-    __int64 second() const;
+    int64 second() const;
 
     /// \brief Return the millisecond of the contained time
     /// @return The millisecond.
-    __int64 millisecond() const;
+    int64 millisecond() const;
 
     /// \brief Computes the duration between two times
     /// @param _time A time to compare to.

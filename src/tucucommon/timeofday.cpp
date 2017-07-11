@@ -41,12 +41,12 @@ int TimeOfDay::minute() const
     return std::chrono::duration_cast<std::chrono::minutes>(m_time).count() % 60;
 }
 
-__int64 TimeOfDay::second() const
+int64 TimeOfDay::second() const
 {
     return std::chrono::duration_cast<std::chrono::seconds>(m_time).count() % 60;
 }
 
-__int64 TimeOfDay::millisecond() const
+int64 TimeOfDay::millisecond() const
 {
     return std::chrono::duration_cast<std::chrono::milliseconds>(m_time).count() % 1000;
 }

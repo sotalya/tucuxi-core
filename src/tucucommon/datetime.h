@@ -7,6 +7,8 @@
 
 #include <chrono>
 
+#include "tucucommon/basetypes.h"
+
 namespace date {
 class year_month_day;
 }
@@ -113,11 +115,11 @@ public:
 
     /// \brief Return the second of the contained date
     /// @return The second.
-    __int64 second() const;
+    int64 second() const;
 
     /// \brief Return the millisecond of the contained date
     /// @return The millisecond.
-    __int64 millisecond() const;
+    int64 millisecond() const;
 
 private:
     std::chrono::time_point<std::chrono::system_clock> m_date;  /// The date managed by the class
