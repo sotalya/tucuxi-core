@@ -7,14 +7,10 @@
 #include "tucucommon/timeofday.h"
 #include "tucucommon/duration.h"
 
-using namespace std::chrono;
+using namespace std::chrono_literals;
 
 struct TestDateTime : public fructose::test_base<TestDateTime>
 {
-    std::chrono::duration<float> t(std::chrono::duration<float> d) {
-        d = d * 2;
-    }
-
     void basic(const std::string& _testName)
     {
         std::cout << _testName << std::endl;
@@ -29,8 +25,8 @@ struct TestDateTime : public fructose::test_base<TestDateTime>
         float n = diff / 15min;
         fructose_assert(n == 8);
 
-        Tucuxi::Common::TimeOfDay tod1 = 8h + 0min + 0s;
-        Tucuxi::Common::TimeOfDay tod2 = 8h + 42min + 37s;
+        Tucuxi::Common::TimeOfDay tod1(8h + 0min + 0s);
+        Tucuxi::Common::TimeOfDay tod2(8h + 42min + 37s);
         Tucuxi::Common::Duration d = tod2 - tod1;
 /*
         Tucuxi::Common::Duration a;

@@ -31,7 +31,7 @@ public:
     /// @return The duration in the specified T unit.
     template<class T> T get() const
     {
-        return std::chrono::duration_cast<T>(m_duration);
+        return std::chrono::duration_cast<T>(m_date);
     }
 
     date::year_month_day getDate() const;
