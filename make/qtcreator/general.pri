@@ -1,7 +1,11 @@
 
 
-CONFIG += c++11
+CONFIG += c++14
 CONFIG -= qt
+
+LIBS += ../../../bin/tinyjs.a
+
+QMAKE_LFLAGS += -Wl,--no-as-needed -ldl
 
 INCLUDEPATH += ../../../src \
     ../../../libs/spdlog-master-20170622/include/ \
