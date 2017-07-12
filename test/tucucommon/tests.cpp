@@ -5,6 +5,7 @@
 #include "tucucommon/utils.h"
 
 #include "test_componentmanager.h"
+#include "test_licensechecker.h"
 #include "test_logger.h"
 #include "test_scriptengine.h"
 
@@ -27,6 +28,17 @@ int main(int argc, char** argv)
     res = loggerTests.run(argc, argv);
     if (res != 0) {
         printf("Logger test failed");
+        exit(1);
+    }
+
+    TestLicenseChecker licenseCheckerTests(appFolder);
+    licenseCheckerTests.add_test("licenseChecker-basic", &TestLicenseChecker::basic);
+    licenseCheckerTests.add_test("licenseChecker-getNewLicense", &TestLicenseChecker::getNewLicense);
+    licenseCheckerTests.add_test("licenseChecker-checkValidLicense", &TestLicenseChecker::checkValidLicense);
+    licenseCheckerTests.add_test("licenseChecker-checkInvalidLicense", &TestLicenseChecker::checkInvalidLicense);
+    res = licenseCheckerTests.run(argc, argv);
+    if (res != 0) {
+        printf("LicenseChecker test failed");
         exit(1);
     }
 
