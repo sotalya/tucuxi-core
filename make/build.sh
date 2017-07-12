@@ -54,9 +54,9 @@ do
 done
 
 doxygen $TUCUXI_ROOT/src/doxyfile $@ 2>&1 | tee objs/doxigen.log
-if [ ${PIPESTATUS[0]} -ne 0 ]
-then
+#if [ ${PIPESTATUS[0]} -ne 0 ]
+#then
 #  RESULT=1
-fi
+#fi
 
 exit $RESULT
