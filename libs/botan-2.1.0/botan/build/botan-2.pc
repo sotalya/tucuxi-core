@@ -1,0 +1,12 @@
+prefix=/usr/local
+exec_prefix=${prefix}
+libdir=${prefix}/lib
+includedir=${prefix}/include/botan-2
+
+Name: Botan
+Description: Crypto and TLS for C++11
+Version: 2.2.0
+
+Libs: -L${libdir} -lbotan-2 -fstack-protector -m64 -pthread
+Libs.private: -lrt
+Cflags: -I${includedir}
