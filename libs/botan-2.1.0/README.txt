@@ -28,7 +28,7 @@ NAME := botan
 TYPE := LIB
 
 SOURCES := botan_all.cpp
-INCLUDES := include
+INCLUDES := build/include
 
 LIBS := 
 EXTLIBS := 
