@@ -43,7 +43,7 @@ struct TestLicenseChecker : public fructose::test_base<TestLicenseChecker>
 
         Tucuxi::Common::MachineId machineId;
         Tucuxi::Common::LicenseChecker::retrieveMachineID(&machineId);
-        std::cout << "ID selected : " << machineId.m_type << ":" << machineId.m_fingerprint << std::endl;
+        std::cout << "Machine " << machineId.m_type << ":" << machineId.m_fingerprint << std::endl;
      }
 
     void checkValidLicense(const std::string& _testName)
@@ -52,11 +52,7 @@ struct TestLicenseChecker : public fructose::test_base<TestLicenseChecker>
 
         Tucuxi::Common::MachineId machineId;
         Tucuxi::Common::LicenseChecker::retrieveMachineID(&machineId);
-
-        std::cout << "ID selected : " << machineId.m_type << ":" << machineId.m_fingerprint << std::endl;
-
-        int res = Tucuxi::Common::LicenseChecker::evalLicenseFile(m_path + std::string("license"), &machineId);
-        std::cout << "Res : " << res << std::endl;
+        std::cout << "Machine " << machineId.m_type << ":" << machineId.m_fingerprint << std::endl;
     }
 
     void checkInvalidLicense(const std::string& _testName)
@@ -65,24 +61,14 @@ struct TestLicenseChecker : public fructose::test_base<TestLicenseChecker>
 
         Tucuxi::Common::MachineId machineId;
         Tucuxi::Common::LicenseChecker::retrieveMachineID(&machineId);
-
-        std::cout << "ID selected : " << machineId.m_type << ":" << machineId.m_fingerprint << std::endl;
-
-        int res = Tucuxi::Common::LicenseChecker::evalLicenseFile(m_path + std::string("license2"), &machineId);
-        std::cout << "Res : " << res << std::endl;
+        std::cout << "Machine " << machineId.m_type << ":" << machineId.m_fingerprint << std::endl;
     }
 
     void getNewLicense(const std::string& _testName)
     {
-        std::cout << _testName << std::endl;
-
         Tucuxi::Common::MachineId machineId;
         Tucuxi::Common::LicenseChecker::retrieveMachineID(&machineId);
-
-        std::cout << "ID selected : " << machineId.m_type << ":" << machineId.m_fingerprint << std::endl;
-
-        int res = Tucuxi::Common::LicenseChecker::writeLicenseFile(m_path + std::string("license"), &machineId);
-        std::cout << "Res : " << res << std::endl;
+        std::cout << "Machine " << machineId.m_type << ":" << machineId.m_fingerprint << std::endl;
     }
 
 };
