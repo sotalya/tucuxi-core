@@ -20,6 +20,17 @@ do
    fi
 done
 
+for MODULE in botan-2.1.0
+do
+   cd $TUCUXI_ROOT/libs/$MODULE
+   mkdir -p objs
+   make TARGET=LINUX $MAKECMD $@ 2>&1 | tee objs/build.log
+   if [ ${PIPESTATUS[0]} -eq 2 ]
+   then
+      RESULT=1
+   fi
+done
+
 for MODULE in tucucommon tucucore tucucli
 do
    cd $TUCUXI_ROOT/src/$MODULE
