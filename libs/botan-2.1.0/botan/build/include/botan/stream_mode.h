@@ -1,1 +1,0 @@
-../../../src/lib/modes/stream_mode.h
