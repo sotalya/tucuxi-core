@@ -8,6 +8,7 @@
 #include "test_licensechecker.h"
 #include "test_logger.h"
 #include "test_scriptengine.h"
+#include "test_datetime.h"
 
 int main(int argc, char** argv) 
 {
@@ -47,6 +48,16 @@ int main(int argc, char** argv)
     res = scriptEngineTests.run(argc, argv);
     if (res != 0) {
         printf("Script engine test failed");
+        exit(1);
+    }
+
+    TestDateTime dateTimeTests;
+    dateTimeTests.add_test("DateTime-datetime", &TestDateTime::datetime);
+    dateTimeTests.add_test("DateTime-timeofday", &TestDateTime::timeofday);
+    dateTimeTests.add_test("DateTime-duration", &TestDateTime::duration);
+    res = dateTimeTests.run(argc, argv);
+    if (res != 0) {
+        printf("Date and time test failed");
         exit(1);
     }
 
