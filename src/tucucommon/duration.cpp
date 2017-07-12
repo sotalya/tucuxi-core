@@ -2,6 +2,7 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
+#include "basetypes.h"
 #include "duration.h"
 
 namespace Tucuxi {
@@ -103,14 +104,15 @@ float Duration::operator/(const Duration &_other) const
 
 const Duration Duration::operator%(const Duration &_other) const
 {
-    //return std::chrono::duration_cast<std::chrono::seconds>(m_duration % _other.m_duration);
-    return Duration();
+    int64 n1 = std::chrono::duration_cast<std::chrono::seconds>(m_duration).count();
+    int64 n2 = std::chrono::duration_cast<std::chrono::seconds>(_other.m_duration).count();
+    return Duration(std::chrono::seconds(n1 % n2));
 }
 
-const Duration Duration::operator%(float _divider) const
+const Duration Duration::operator%(int _divider) const
 {
-    //return std::chrono::duration_cast<std::chrono::seconds>(m_duration % _divider);
-    return Duration();
+    int64 n1 = std::chrono::duration_cast<std::chrono::seconds>(m_duration).count();
+    return Duration(std::chrono::seconds(n1 % _divider));
 }
 
 bool Duration::operator<(const Duration &_other) const
