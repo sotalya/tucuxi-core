@@ -9,18 +9,7 @@ if test "$1" = "clean"; then
 MAKECMD=clean
 fi
 
-for MODULE in tiny-js-master-20170629
-do
-   cd $TUCUXI_ROOT/libs/$MODULE
-   mkdir -p objs
-   make TARGET=LINUX $MAKECMD $@ 2>&1 | tee objs/build.log
-   if [ ${PIPESTATUS[0]} -eq 2 ]
-   then
-      RESULT=1
-   fi
-done
-
-for MODULE in botan-2.1.0
+for MODULE in tiny-js-master-20170629 botan-2.1.0
 do
    cd $TUCUXI_ROOT/libs/$MODULE
    mkdir -p objs
@@ -54,9 +43,9 @@ do
 done
 
 doxygen $TUCUXI_ROOT/src/doxyfile $@ 2>&1 | tee objs/doxigen.log
-#if [ ${PIPESTATUS[0]} -ne 0 ]
-#then
-#  RESULT=1
-#fi
+if [ ${PIPESTATUS[0]} -ne 0 ]
+then
+  RESULT=1
+fi
 
 exit $RESULT
