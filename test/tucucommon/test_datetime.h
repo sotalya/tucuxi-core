@@ -59,7 +59,7 @@ struct TestDateTime : public fructose::test_base<TestDateTime>
         // Test setDate and setTimeOfDay
         Tucuxi::Common::DateTime d21;
         d21.setDate(d1.getDate());
-        d21.setTimeOfDay(11h + 22min + 30s);
+        d21.setTimeOfDay(Tucuxi::Common::TimeOfDay(11h + 22min + 30s));
         checkDateTime(d21, 2017, 1, 1, 11, 22, 30);
     }
 
