@@ -26,6 +26,9 @@ class TimeOfDay;
 /// \code
 /// DateTime date(2016_y/mar/17, 20h+3min+2s);
 /// \endcode
+/// It is possible to add/substract a Duration form a DateTime as well as substract two DateTime to obtain the Duration
+/// between the two.
+/// Methods year, month, day, hour, minute, second can be used to extract the different components of a date.
 /// \sa TimeOfDay, Duration
 class DateTime
 {
@@ -47,11 +50,11 @@ public:
     /// @param _time The time to be used (as a number of seconds since 0h00.
     DateTime(const date::year_month_day& _date, const std::chrono::seconds& _time);
 
-    /// \brief Returns the duration in one of the std::chrono duration class (hours, minutes, seconds, ...)    
+    /// \brief Returns the duration in one of the std::chrono duration class (years, months, days, ...)    
     /// @return The duration in the specified T unit.
     template<class T> T get() const
     {
-        return std::chrono::duration_cast<T>(m_date);
+        return std::chrono::duration_cast<T>(m_date.time_since_epoch());
     }
 
     /// \brief Returns the date part of the object.

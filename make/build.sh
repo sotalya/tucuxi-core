@@ -9,7 +9,7 @@ if test "$1" = "clean"; then
 MAKECMD=clean
 fi
 
-for MODULE in tiny-js-master-20170629
+for MODULE in tiny-js-master-20170629 botan-2.1.0
 do
    cd $TUCUXI_ROOT/libs/$MODULE
    mkdir -p objs

@@ -15,6 +15,10 @@ namespace Common {
 
 class Duration;
 
+/// \ingroup TucuCommon
+/// \brief A class to manage the time within a day
+/// Methods hour, minute, second can be used to extract the different components of a date.
+/// \sa DateTime, Duration
 class TimeOfDay
 {
 public:
@@ -44,7 +48,7 @@ public:
     /// @return The time.
     template<class T> date::time_of_day<T> get() const
     {
-        return date::time_of_day<T>(m_time);
+        return date::time_of_day<T>(std::chrono::duration_cast<T>(m_time));
     }
 
     /// \brief Return the hour of the contained time

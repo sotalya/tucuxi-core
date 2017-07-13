@@ -1,0 +1,3 @@
+<defines>
+SHAKE_CIPHER -> 20161018
+</defines>

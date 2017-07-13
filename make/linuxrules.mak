@@ -31,19 +31,19 @@ LDFLAGS = -lpthread -lrt -Wl,--gc-sections
 ## Rules for construction of a static library
 ##
 ifeq ($(TYPE),LIB)
-all : $(_OBJS)
-	rm -f objs/ar.mri
-	echo create objs/$(NAME).a > objs/ar.mri
+build : $(_OBJS)
+	$(DEL) objs/ar.mri
+	$(ECHO) create objs/$(NAME).a > objs/ar.mri
 	$(foreach _OBJLIB, $(_LIBS), echo addlib $(_OBJLIB) >> objs/ar.mri )
-	echo addmod $(_OBJS) >> objs/ar.mri
-	echo save >> objs/ar.mri
-	echo end >> objs/ar.mri
+	$(ECHO) addmod $(_OBJS) >> objs/ar.mri
+	$(ECHO) save >> objs/ar.mri
+	$(ECHO) end >> objs/ar.mri
 	$(AR) -M < objs/ar.mri
-	cp objs/$(NAME).a $(TUCUXI_ROOT)/bin/
+	$(COPY) objs/$(NAME).a $(TUCUXI_ROOT)/bin/
 
 clean:
-	rm objs/*
-	rm $(TUCUXI_ROOT)/bin/$(NAME).a
+	$(DEL) objs/*
+	$(DEL) $(TUCUXI_ROOT)/bin/$(NAME).a
 endif
 
 ## ---------------------------------------------------------------
@@ -51,44 +51,44 @@ endif
 ##
 ifeq ($(TYPE),DLL)
 CFLAGS += -fPIC
-all : $(_OBJS) $(_LIBS)
+build : $(_OBJS) $(_LIBS)
 	$(LD) -shared $(LDFLAGS) -o objs/$(NAME).so $(_OBJS) $(_LIBS)
-	cp objs/$(NAME).so $(TUCUXI_ROOT)/bin/
+	$(COPY) objs/$(NAME).so $(TUCUXI_ROOT)/bin/
 
 clean:
-	rm -f objs/*
-	rm $(TUCUXI_ROOT)/bin/$(NAME).so
+	$(DEL) objs/*
+	$(DEL) $(TUCUXI_ROOT)/bin/$(NAME).so
 endif
 
 ## ---------------------------------------------------------------
 ## Rules for construction of c and c++ application
 ##
 ifeq ($(TYPE),APP)
-all : $(_OBJS) $(_LIBS)
+build : $(_OBJS) $(_LIBS)
 	$(LD) -rdynamic $(LDFLAGS) -o objs/$(NAME) $(_OBJS) -Wl,--whole-archive $(_LIBS) -Wl,--no-whole-archive -ldl -lrt -lpthread
-	cp objs/$(NAME) $(TUCUXI_ROOT)/bin/
+	$(COPY) objs/$(NAME) $(TUCUXI_ROOT)/bin/
 
 clean:
-	rm -f objs/*
-	rm $(TUCUXI_ROOT)/bin/$(NAME)
+	$(DEL) objs/*
+	$(DEL) $(TUCUXI_ROOT)/bin/$(NAME)
 endif
 
 ## ---------------------------------------------------------------
 ## Rules for construction of c and c++ application
 ##
 ifeq ($(TYPE),TEST)
-all : $(_OBJS) $(_LIBS)
+build : $(_OBJS) $(_LIBS)
 	$(LD) -rdynamic $(LDFLAGS) -o objs/$(NAME)-test $(_OBJS) -Wl,--whole-archive $(_LIBS) -Wl,--no-whole-archive -ldl -lrt -lpthread
-	cp objs/$(NAME)-test $(TUCUXI_ROOT)/bin/
+	$(COPY) objs/$(NAME)-test $(TUCUXI_ROOT)/bin/
 
 clean:
-	rm -f objs/*
-	rm $(TUCUXI_ROOT)/bin/$(NAME)-test
+	$(DEL) -f objs/*
+	$(DEL) $(TUCUXI_ROOT)/bin/$(NAME)-test
 endif
 
 ## ---------------------------------------------------------------
 ## Generic rules
 ##
 objs/%.o: %.cpp
-	mkdir -p objs
+	$(MKDIR) -p objs
 	$(XCC) -c -o objs/$*.o $(CFLAGS) $<

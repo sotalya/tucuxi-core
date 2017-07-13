@@ -9,6 +9,8 @@ NAME := tucucommon
 TYPE := LIB
 
 SOURCES := componentmanager.cpp \
+           fingerprint.cpp \
+           licensechecker.cpp \
            logger.cpp \
            utils.cpp \
            jsengine.cpp \

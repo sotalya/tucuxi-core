@@ -11,14 +11,9 @@ namespace Tucuxi {
 namespace Common {
 
 /// \ingroup TucuCommon
-/// \brief Simple class that handle duration.
-/// This class is able to load a duration from a string, give some data about it and then re-convert it to a string.
-/// Created because QTime is not able to handle more than 24h, and QDateTime is not fitted for this purpose.
-/// Duration use the milliseconds as its base of time, and cannot go under 0;
-/// \section format From and to string formatting
-/// Duration is able to read a time from a string.
-/// A simple number is considered as an hour, as is a number followed by an 'h' character.
-/// A number after a 'h' character is considered as a number of minutes.
+/// \brief A class to handle a duration.
+/// The class is based on the std::chrono::duration<float> type representing a number of seconds
+/// \sa DateTime, Duration
 class Duration
 {
 public:
@@ -98,11 +93,11 @@ public:
     /// \brief Divide the duration by this duration
     float operator/(const Duration &_other) const;
 
-    /// \brief Obtain the remainder of dividing the duration by this duration
+    /// \brief Obtain the remainder of dividing the duration by the specified one
     const Duration operator%(const Duration &_other) const;
 
-    /// \brief Obtain the remainder of dividing the duration by this duration
-    const Duration operator%(float _divider) const;
+    /// \brief Obtain the remainder of dividing the duration by the speicifed divider
+    const Duration operator%(int _divider) const;
 
     /// \brief Is the duration smaller?
     bool operator<(const Duration &) const;

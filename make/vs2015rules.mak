@@ -31,59 +31,57 @@ LDFLAG_DLL := -nologo -LD -MD -Fmobjs\$(NAME).map
 ## Rules for construction of a static library
 ##
 ifeq ($(TYPE), LIB)
-all : $(_OBJS)
+build : $(_OBJS)
 	$(LIBRARIAN) /NOLOGO /VERBOSE /OUT:objs\$(NAME).lib $(_OBJS) $(_LIBS) 
-	copy /Y /V objs\$(NAME).lib $(TUCUXI_ROOT)\bin
+	$(COPY) objs\$(NAME).lib $(TUCUXI_ROOT)\bin
 
 clean:
-	del /Q objs\*
-	del /Q $(TUCUXI_ROOT)\bin\$(NAME).lib
+	$(DEL) objs\*
+	$(DEL) $(TUCUXI_ROOT)\bin\$(NAME).lib
 endif
 
 ## ---------------------------------------------------------------
 ## Rules for construction of a dynamic library
 ##
 ifeq ($(TYPE), DLL)
-all : $(_OBJS)
+build : $(_OBJS) postbuild
 	$(LD) $(LDFLAG_DLL) -Feobjs\$(NAME).dll $(_OBJS) $(_LIBS) 
-	copy /Y /V objs\$(NAME).dll $(TUCUXI_ROOT)\bin
+	$(COPY) objs\$(NAME).dll $(TUCUXI_ROOT)\bin
 
 clean:
-	del /Q objs\*
-	del /Q $(TUCUXI_ROOT)\bin\$(NAME).dll
+	$(DEL) objs\*
+	$(DEL) $(TUCUXI_ROOT)\bin\$(NAME).dll
 endif
 
 ## ---------------------------------------------------------------
 ## Rules for construction of a c++ application
 ##
 ifeq ($(TYPE), APP)
-all : $(_OBJS)
+build : $(_OBJS) postbuild
 	$(LD) $(LDFLAG_APP) -Feobjs\$(NAME).exe $(_OBJS) $(_LIBS) 
-	copy /Y /V objs\$(NAME).exe $(TUCUXI_ROOT)\bin
+	$(COPY) objs\$(NAME).exe $(TUCUXI_ROOT)\bin
 
 clean:
-	del /Q objs\*
-	del /Q $(TUCUXI_ROOT)\bin\$(NAME).exe
+	$(DEL) objs\*
+	$(DEL) $(TUCUXI_ROOT)\bin\$(NAME).exe
 endif
 
 ## ---------------------------------------------------------------
 ## Rules for construction of a c++ unit test application
 ##
 ifeq ($(TYPE), TEST)
-all : $(_OBJS)
+build : $(_OBJS) postbuild
 	$(LD) $(LDFLAG_APP) -Feobjs\$(NAME)-Test.exe $(_OBJS) $(_LIBS) 
-	copy /Y /V objs\$(NAME)-test.exe $(TUCUXI_ROOT)\bin
+	$(COPY) objs\$(NAME)-test.exe $(TUCUXI_ROOT)\bin
 
 clean:
-	del /Q objs\*
-	del /Q $(TUCUXI_ROOT)\bin\$(NAME)-test.exe
+	$(DEL) objs\*
+	$(DEL) $(TUCUXI_ROOT)\bin\$(NAME)-test.exe
 endif
 
 ## ---------------------------------------------------------------
 ## Generic rules
 ##
 objs/%.o: %.cpp
-	if not exist objs mkdir objs
+	if not exist objs $(MKDIR) objs
 	$(CXX) -Foobjs/$*.o $< $(CCFLAG)
-
-
