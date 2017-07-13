@@ -7,9 +7,13 @@
 ## ---------------------------------------------------------------
 ## Default main rule
 ##
-all: prebuild build postbuild
+all: postbuild
 	$(ECHO) Build done
-
+postbuild: build
+	$(ECHO)
+build: prebuild
+	$(ECHO)	
+	
 ## ---------------------------------------------------------------
 ## Default prebuild and postbuild rules
 ## A project makefile can redefine these rules to implement
