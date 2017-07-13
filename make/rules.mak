@@ -6,14 +6,13 @@
 
 ## ---------------------------------------------------------------
 ## Default main rule
-##
-all: postbuild
-	$(ECHO) Build done
-postbuild: build
-	$(ECHO)
-build: prebuild
-	$(ECHO)	
-	
+## This way of running make for the different step is needed to ensure
+## a correct execution order.
+all:
+	make prebuild
+	make build
+	make postbuild
+
 ## ---------------------------------------------------------------
 ## Default prebuild and postbuild rules
 ## A project makefile can redefine these rules to implement

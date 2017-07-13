@@ -31,7 +31,7 @@ LDFLAGS = -lpthread -lrt -Wl,--gc-sections
 ## Rules for construction of a static library
 ##
 ifeq ($(TYPE),LIB)
-build : prebuild $(_OBJS)
+build : $(_OBJS)
 	$(DEL) objs/ar.mri
 	$(ECHO) create objs/$(NAME).a > objs/ar.mri
 	$(foreach _OBJLIB, $(_LIBS), echo addlib $(_OBJLIB) >> objs/ar.mri )
