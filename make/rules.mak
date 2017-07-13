@@ -28,7 +28,7 @@ ifeq ($(TARGET), LINUX)
 MKDIR := mkdir
 DEL := rm -f
 COPY := cp
-ECHO :=
+ECHO := @echo
 include $(TUCUXI_ROOT)/make/linuxrules.mak
 endif
 
