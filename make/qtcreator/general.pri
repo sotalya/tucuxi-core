@@ -3,7 +3,7 @@
 CONFIG += c++14
 CONFIG -= qt
 
-LIBS += ../../../bin/tinyjs.a
+LIBS += ../../../libs/tiny-js-master-20170629/objs/tinyjs.a
 
 QMAKE_LFLAGS += -Wl,--no-as-needed -ldl
 
