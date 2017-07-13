@@ -8,7 +8,7 @@ git clone https://github.com/randombit/botan
 
 # Generate a cpp file the entire library code
 cd botan
-./configure.py --minimized-build --single-amalgamation-file --amalgamation
+./configure.py --minimized-build --single-amalgamation-file --amalgamation --disable-shared
 
 # you need this files :
 botan_all.cpp 

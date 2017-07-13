@@ -8,7 +8,7 @@ if not defined VisualStudioVersion (
 
 set MAKE="C:\Program Files (x86)\GnuWin32\bin\make"
 
-for %%i in (tiny-js-master-20170629) do (
+for %%i in (tiny-js-master-20170629 botan-2.1.0) do (
 	echo *********************************************
 	echo *** Compiling %%i
 	cd "%TUCUXI_ROOT%\libs\%%i"
