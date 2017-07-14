@@ -47,10 +47,6 @@ public:
         return std::chrono::duration_cast<T>(m_duration); 
     }
 
-    /// \brief Returns the duration in seconds 
-    /// @return The duration in seconds
-    float get() const;
-
     /// \brief Is the duration empty?
     /// If the duration has not been set or if the duration equals to 0, returns true.
     /// @return True if the duration is empty

@@ -1,3 +1,6 @@
+/*
+* Copyright (C) 2017 Tucuxi SA
+*/
 
 #include "fructose/fructose.h"
 
@@ -61,6 +64,13 @@ struct TestDateTime : public fructose::test_base<TestDateTime>
         d21.setDate(d1.getDate());
         d21.setTimeOfDay(Tucuxi::Common::TimeOfDay(11h + 22min + 30s));
         checkDateTime(d21, 2017, 1, 1, 11, 22, 30);
+
+        // Test reset and isUndefined
+        fructose_assert(!d1.isUndefined());
+        d1.reset();
+        fructose_assert(d1.isUndefined());
+        d1.setDate(d2.getDate());
+        fructose_assert(!d1.isUndefined());
     }
 
     void timeofday(const std::string& _testName)
@@ -72,10 +82,14 @@ struct TestDateTime : public fructose::test_base<TestDateTime>
         Tucuxi::Common::TimeOfDay t2(22h + 23min);
         Tucuxi::Common::TimeOfDay t3(22h + 23min + 24s);
         Tucuxi::Common::TimeOfDay t4(Tucuxi::Common::Duration(333s));
+        Tucuxi::Common::TimeOfDay t5(48h + 10min + 3s);
+        Tucuxi::Common::TimeOfDay t6(Tucuxi::Common::Duration(26h));
         checkTimeOfDay(t1, 22, 0, 0);
         checkTimeOfDay(t2, 22, 23, 0);
         checkTimeOfDay(t3, 22, 23, 24);
         checkTimeOfDay(t4, 0, 5, 33);
+        checkTimeOfDay(t5, 0, 10, 3);
+        checkTimeOfDay(t6, 2, 0, 0);
 
         time_of_day<std::chrono::seconds> tod = t3.get<std::chrono::seconds>();
         fructose_assert(tod.hours().count() == 22);
@@ -158,7 +172,7 @@ private:
         fructose_assert(_time.minute() == _minute);
         fructose_assert(_time.second() == _second);
     }
-    void checkDuration(const Tucuxi::Common::Duration& _duration, float _nbSeconds)
+    void checkDuration(const Tucuxi::Common::Duration& _duration, double _nbSeconds)
     {
         bool isEmpty = _nbSeconds == 0.0;
         bool isNegative = _nbSeconds < 0.0;
@@ -168,6 +182,7 @@ private:
         fructose_assert(_duration.get<std::chrono::seconds>().count() == nSeconds);
         fructose_assert(_duration.get<std::chrono::minutes>().count() == nSeconds/60);
         fructose_assert(_duration.get<std::chrono::hours>().count() == nSeconds/60/60);
-        fructose_assert(_duration.get() == _nbSeconds);
+        double d = _duration.get<std::chrono::milliseconds>().count() / 1000.0;
+        fructose_assert(d == _nbSeconds);
     }
 };

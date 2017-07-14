@@ -96,6 +96,24 @@ public:
     /// @return The computed duration.
     const Duration operator-(const DateTime& _date) const;
 
+    /// \brief Is the date smaller?
+    bool operator<(const DateTime& _other) const;
+
+    /// \brief Is the date bigger?
+    bool operator>(const DateTime& _other) const;
+
+    /// \brief Is the date bigger or equal?
+    bool operator>=(const DateTime& _other) const;
+
+    /// \brief Is the date smaller or equal?
+    bool operator<=(const DateTime& _other) const;
+
+    /// \brief Are these dates equals?
+    bool operator==(const DateTime& _other) const;
+
+    /// \brief Are these dates not equals?
+    bool operator!=(const DateTime& _other) const;
+
     /// \brief Return the year of the contained date
     /// @return The year.
     int year() const;
@@ -123,6 +141,13 @@ public:
     /// \brief Return the millisecond of the contained date
     /// @return The millisecond.
     int64 millisecond() const;
+
+    /// \brief Clear the date to internal value 0
+    void reset();
+
+    /// \brief Check if the value is empty (internal value is 0). See method Reset().
+    /// @return Returns true if the internal value is 0.
+    bool isUndefined();
 
 private:
     std::chrono::time_point<std::chrono::system_clock> m_date;  /// The date managed by the class

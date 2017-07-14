@@ -26,9 +26,11 @@ public:
     TimeOfDay();
 
     /// \brief Constructor from a Duration object
+    /// In case the specifed duration is bigger than one day, we only use the remainder.
     TimeOfDay(const Duration& _time);
 
-    /// \brief Constructor from a duration in seconds
+    /// \brief Constructor from a duration in seconds.
+    /// In case the specifed duration is bigger than one day, we only use the remainder.
     TimeOfDay(std::chrono::seconds& _time);
 
     /// \brief Constructor from a time_of_day object.
@@ -51,6 +53,11 @@ public:
         return date::time_of_day<T>(std::chrono::duration_cast<T>(m_time));
     }
 
+    /// \brief Computes the duration between two times
+    /// @param _time A time to compare to.
+    /// @return The millisecond.
+    const Duration operator-(const TimeOfDay& _time) const;
+
     /// \brief Return the hour of the contained time
     /// @return The hour.
     int hour() const;
@@ -67,10 +74,9 @@ public:
     /// @return The millisecond.
     int64 millisecond() const;
 
-    /// \brief Computes the duration between two times
-    /// @param _time A time to compare to.
-    /// @return The millisecond.
-    const Duration operator-(const TimeOfDay& _time) const;
+private:
+    /// \brief Make sure the time is not longer than one day.
+    void normalize();
 
 private:
     std::chrono::duration<float> m_time;  /// The encapsulated time (a duration from 0h00)
