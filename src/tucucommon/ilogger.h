@@ -10,6 +10,9 @@
 namespace Tucuxi {
 namespace Common {
 
+/// \ingroup TucuCommon
+/// \brief Interface for logging messages
+/// This is the main interface of the Logger component.
 class ILogger : public Tucuxi::Common::Interface
 {
 public:

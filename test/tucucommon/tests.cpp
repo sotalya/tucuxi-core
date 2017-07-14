@@ -1,3 +1,6 @@
+/*
+* Copyright (C) 2017 Tucuxi SA
+*/
 
 #include <iostream>
 #include <string>
@@ -9,6 +12,7 @@
 #include "test_logger.h"
 #include "test_scriptengine.h"
 #include "test_datetime.h"
+#include "test_xml.h"
 
 int main(int argc, char** argv) 
 {
@@ -58,6 +62,15 @@ int main(int argc, char** argv)
     res = dateTimeTests.run(argc, argv);
     if (res != 0) {
         printf("Date and time test failed");
+        exit(1);
+    }
+
+    TestXml xmlTests;
+    xmlTests.add_test("XML-read", &TestXml::read);
+    xmlTests.add_test("XML-write", &TestXml::write);
+    res = xmlTests.run(argc, argv);
+    if (res != 0) {
+        printf("XML test failed");
         exit(1);
     }
 

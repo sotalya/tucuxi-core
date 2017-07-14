@@ -9,19 +9,23 @@ NAME := tucucommon
 TYPE := LIB
 
 SOURCES := componentmanager.cpp \
-           fingerprint.cpp \
-           licensechecker.cpp \
            logger.cpp \
            utils.cpp \
            jsengine.cpp \
            duration.cpp \
            timeofday.cpp \
-           datetime.cpp
+           datetime.cpp \
+           xmldocument.cpp \
+           xmlnode.cpp \
+           xmlattribute.cpp \
+           fingerprint.cpp \
+           licensechecker.cpp 
 INCLUDES := ../../libs/spdlog-master-20170622/include \
             ../../libs/tiny-js-master-20170629 \
-            ../../libs/date-master-20170711
+            ../../libs/date-master-20170711 \
+            ../../libs/rapidxml-1.13
 
-LIBS := tinyjs
+LIBS := tinyjs botan
 EXTLIBS := 
 DEFINES := 
 
