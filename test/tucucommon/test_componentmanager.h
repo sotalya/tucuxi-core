@@ -1,3 +1,7 @@
+/*
+* Copyright (C) 2017 Tucuxi SA
+*/
+
 #include "fructose/fructose.h"
 #include "tucucommon/componentmanager.h"
 

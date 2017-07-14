@@ -1,3 +1,7 @@
+/*
+* Copyright (C) 2017 Tucuxi SA
+*/
+
 #ifndef TEST_DOSAGE_H
 #define TEST_DOSAGE_H
 

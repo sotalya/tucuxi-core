@@ -1,3 +1,7 @@
+/*
+* Copyright (C) 2017 Tucuxi SA
+*/
+
 #ifndef TEST_INTAKEEXTRACTOR_H
 #define TEST_INTAKEEXTRACTOR_H
 
