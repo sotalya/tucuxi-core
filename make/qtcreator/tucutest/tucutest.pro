@@ -12,7 +12,10 @@ include(../tucucore.pri)
 
 HEADERS += \
     ../../../test/tucucommon/test_componentmanager.h \
-    ../../../test/tucucommon/test_logger.h
+    ../../../test/tucucommon/test_logger.h \
+    ../../../test/tucucommon/test_datetime.h \
+    ../../../test/tucucommon/test_licensechecker.h \
+    ../../../test/tucucommon/test_scriptengine.h
 
 SOURCES += \
     ../../../test/tucucommon/tests.cpp
