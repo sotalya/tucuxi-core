@@ -31,8 +31,7 @@ int main(int argc, char** argv)
     Tucuxi::Core::IntakeIntervalCalculator::Result res;
     Tucuxi::Core::OneCompartmentExtra calculator;
 
-    time_t now;
-    time(&now);
+    DateTime now;
 
     Tucuxi::Core::Concentrations concentrations;
     Tucuxi::Core::Times times;

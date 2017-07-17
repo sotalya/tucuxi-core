@@ -128,7 +128,7 @@ XmlNode XmlNode::getParent() const
 }
 
 
-void XmlNode::addChild(XmlNode& _child)
+void XmlNode::addChild(XmlNode _child)
 {
     if (m_pNode != nullptr) {
         m_pNode->append_node(_child.m_pNode);
@@ -136,7 +136,7 @@ void XmlNode::addChild(XmlNode& _child)
 }
 
 
-void XmlNode::addAttribute(XmlAttribute& _attribute)
+void XmlNode::addAttribute(XmlAttribute _attribute)
 {
     if (m_pNode != nullptr) {
         m_pNode->append_attribute(_attribute.m_pAttribute);

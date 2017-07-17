@@ -53,8 +53,8 @@ public:
     XmlAttributeIterator getAttributes() const;
     XmlNodeIterator getChildren() const;
     XmlNode getParent() const;
-    void addChild(XmlNode& _child);
-    void addAttribute(XmlAttribute& _attribute);
+    void addChild(XmlNode _child);
+    void addAttribute(XmlAttribute _attribute);
 
     XmlNode& operator=(const XmlNode& _other);
     bool operator==(const XmlNode& _other) const;
