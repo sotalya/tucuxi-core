@@ -7,6 +7,10 @@
 
 #include "tucucore/timedevent.h"
 
+#include "tucucommon/datetime.h"
+
+using Tucuxi::Common::DateTime;
+
 namespace Tucuxi {
 namespace Core {
 
@@ -19,7 +23,7 @@ public:
     IntakeEvent() = delete;
     
     /// \brief Constructor
-    IntakeEvent(time_t _time, DeltaTime _offsetTime, Dose _dose, DeltaTime _interval, int _route, DeltaTime _infusionTime, int _nbPoints)
+    IntakeEvent(DateTime _time, DeltaTime _offsetTime, Dose _dose, DeltaTime _interval, int _route, DeltaTime _infusionTime, int _nbPoints)
         : TimedEvent(_time), 
           m_dose(_dose),
           m_offsetTime(_offsetTime),
@@ -30,19 +34,20 @@ public:
 
     /// \brief Destructor
     ~IntakeEvent() {}
-        
-/*
-    // As a convention with boost multi-index, modifications of
-    // values should occur through a functor like this
-    //
-    struct change_density {
-        change_density(const int _nbp) :new_density(_nbp) {}
-        void operator() (IntakeEvent& i) { i.nbPoints = new_density; }
-    private:
-        int new_density;
-    };
-*/
-    
+
+    IntakeEvent(const IntakeEvent &other) = default;
+    IntakeEvent& operator=(const IntakeEvent &other) = default;
+    bool operator==(const IntakeEvent &other)
+    {
+        return (/*m_time == other.m_time &&*/
+                m_dose == other.m_dose &&
+                m_offsetTime == other.m_offsetTime &&
+                m_nbPoints == other.m_nbPoints &&
+                m_route == other.m_route &&
+                m_interval == other.m_interval &&
+                m_infusionTime == other.m_infusionTime);
+    }
+
     void setInterval(DeltaTime _interval)   { m_interval = _interval; }     /// Change the interval value
     DeltaTime getInterval() const           { return m_interval; }          /// Get the interval value
     
