@@ -8,7 +8,7 @@
 #include <string>
 
 namespace rapidxml {
-    template<class Ch = char> class xml_document;
+    template<class Ch> class xml_document;
 }
 
 namespace Tucuxi {
@@ -45,7 +45,7 @@ private:
 
 private:
     std::string m_rawXml;
-    rapidxml::xml_document<>* m_pDocument;
+    rapidxml::xml_document<char>* m_pDocument;
 };
 
 }

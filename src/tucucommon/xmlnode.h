@@ -10,7 +10,7 @@
 #include "xmliterator.h"
 
 namespace rapidxml {
-    template<class Ch = char> class xml_node;
+    template<class Ch> class xml_node;
 }
 
 namespace Tucuxi {
@@ -61,14 +61,14 @@ public:
     bool operator!=(const XmlNode& _other) const;
 
 private:    
-    XmlNode(rapidxml::xml_node<>* _pNode);
+    XmlNode(rapidxml::xml_node<char>* _pNode);
 
     XmlNode next() const;
 
     char* allocateString(const std::string& _string);
     
 private:
-    rapidxml::xml_node<> *m_pNode;
+    rapidxml::xml_node<char> *m_pNode;
 
     friend class XmlDocument;
     friend class XmlAttribute;

@@ -8,7 +8,7 @@
 #include <string>
 
 namespace rapidxml {
-    template<class Ch = char> class xml_attribute;
+    template<class Ch> class xml_attribute;
 }
 
 namespace Tucuxi {
@@ -37,14 +37,14 @@ public:
     bool operator!=(const XmlAttribute& _other) const;
 
 private:    
-    XmlAttribute(rapidxml::xml_attribute<>* _pAttribute);
+    XmlAttribute(rapidxml::xml_attribute<char>* _pAttribute);
     
     XmlAttribute next() const;
 
     char* allocateString(const std::string& _string);
 
 private:
-    rapidxml::xml_attribute<>* m_pAttribute;
+    rapidxml::xml_attribute<char>* m_pAttribute;
 
     friend class XmlDocument;
     friend class XmlNode;    
