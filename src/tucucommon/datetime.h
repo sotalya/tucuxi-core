@@ -147,7 +147,7 @@ public:
 
     /// \brief Check if the value is empty (internal value is 0). See method Reset().
     /// @return Returns true if the internal value is 0.
-    bool isUndefined();
+    bool isUndefined() const;
 
 private:
     std::chrono::time_point<std::chrono::system_clock> m_date;  /// The date managed by the class

@@ -187,7 +187,7 @@ void DateTime::reset()
 }
 
 
-bool DateTime::isUndefined()
+bool DateTime::isUndefined() const
 {
     return (m_date.time_since_epoch().count() == 0);
 }
