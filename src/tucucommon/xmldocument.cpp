@@ -107,6 +107,7 @@ XmlNode XmlDocument::createNode(EXmlNodeType _type, const std::string& _name, co
             case EXmlNodeType::Declaration: type = rapidxml::node_type::node_declaration; break;
             case EXmlNodeType::Doctype:     type = rapidxml::node_type::node_doctype; break;
             case EXmlNodeType::Pi:          type = rapidxml::node_type::node_pi; break;            
+            case EXmlNodeType::Undefined:   break;
         }
         const char* name = _name.empty() ? 0 : m_pDocument->allocate_string(_name.c_str());
         const char* value = _value.empty() ? 0 : m_pDocument->allocate_string(_value.c_str());

@@ -21,7 +21,7 @@ public:
     static XmlIterator<T> none() { return XmlIterator<T>(T()); }
 
 private:
-    XmlIterator(T& _firstNode) { m_current = _firstNode; }
+    XmlIterator(T _firstNode) { m_current = _firstNode; }
 
 private:
     T m_current;
