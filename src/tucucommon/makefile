@@ -18,8 +18,9 @@ SOURCES := componentmanager.cpp \
            xmldocument.cpp \
            xmlnode.cpp \
            xmlattribute.cpp \
-           fingerprint.cpp \
-           licensechecker.cpp 
+           systeminfo.cpp \
+           licensemanager.cpp \
+           cryptohelper.cpp
 INCLUDES := ../../libs/spdlog-master-20170622/include \
             ../../libs/tiny-js-master-20170629 \
             ../../libs/date-master-20170711 \

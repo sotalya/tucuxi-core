@@ -10,12 +10,14 @@
 namespace Tucuxi {
 namespace Common {
 
-enum MachineIdType {CPU, MOTHERBOARD, BIOS, PRODUCT, NETWORK, NAME};
+enum MachineIdType {CPU, MOTHERBOARD, BIOS, PRODUCT, NETWORK, NAME, ERROR};
 
-class FingerPrint
+class SystemInfo
 {
 public:
     static std::string retrieveFingerPrint(MachineIdType _machineIdType);
+
+private:
     static std::string retrieveCpu();
     static std::string retrieveBios();
     static std::string retrieveMotherboard();
@@ -23,7 +25,6 @@ public:
     static std::string retrieveNetwork();
     static std::string retrieveName();
 
-private:
     static std::string readDMIfile(std::string _filename);
 };
 

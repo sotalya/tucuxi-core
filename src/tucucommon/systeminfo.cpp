@@ -23,7 +23,7 @@
 // Use for getName()
 #include <sys/utsname.h>
 
-#include "tucucommon/fingerprint.h"
+#include "tucucommon/systeminfo.h"
 
 //#ifdef _WIN32
 //// Windows
@@ -34,7 +34,7 @@
 namespace Tucuxi {
 namespace Common {
 
-std::string FingerPrint::retrieveFingerPrint(MachineIdType _machineIdType)
+std::string SystemInfo::retrieveFingerPrint(MachineIdType _machineIdType)
 {
     switch(_machineIdType) {
         case CPU:
@@ -49,12 +49,12 @@ std::string FingerPrint::retrieveFingerPrint(MachineIdType _machineIdType)
             return retrieveNetwork();
         case NAME:
             return retrieveName();
+        default:
+            return std::string();
     };
-
-    return std::string();
 }
 
-std::string FingerPrint::retrieveCpu()
+std::string SystemInfo::retrieveCpu()
 {
     // Retrieve the processor serial number
     unsigned int eax = 3, ebx = 0, ecx = 0, edx = 0;
@@ -76,7 +76,7 @@ std::string FingerPrint::retrieveCpu()
     }
 }
 
-std::string FingerPrint::readDMIfile(std::string _filename)
+std::string SystemInfo::readDMIfile(std::string _filename)
 {
     std::string content;
     std::ifstream file (_filename.c_str());
@@ -97,7 +97,7 @@ std::string FingerPrint::readDMIfile(std::string _filename)
     return std::string();
 }
 
-std::string FingerPrint::retrieveBios()
+std::string SystemInfo::retrieveBios()
 {
     // Retrieve the infos of bios (vendor-date-version)
     std::stringstream ss;
@@ -107,7 +107,7 @@ std::string FingerPrint::retrieveBios()
     return ss.str();
 }
 
-std::string FingerPrint::retrieveMotherboard()
+std::string SystemInfo::retrieveMotherboard()
 {
     // Retrieve the infos of motherboard (name-vendor-version-serial number)
     std::stringstream ss;
@@ -125,7 +125,7 @@ std::string FingerPrint::retrieveMotherboard()
     return ss.str();
 }
 
-std::string FingerPrint::retrieveProduct()
+std::string SystemInfo::retrieveProduct()
 {
     // Retrieve the infos of product (version-serial-uuid)
     std::stringstream ss;
@@ -142,7 +142,7 @@ std::string FingerPrint::retrieveProduct()
     return ss.str();
 }
 
-std::string FingerPrint::retrieveNetwork()
+std::string SystemInfo::retrieveNetwork()
 {
     // Retrieve the mac address of interfaces
     struct ifreq ifr;
@@ -200,7 +200,7 @@ std::string FingerPrint::retrieveNetwork()
     return std::string();
 }
 
-std::string FingerPrint::retrieveName()
+std::string SystemInfo::retrieveName()
 {
     // Retrieve the infos of the machine
     struct utsname unameData;

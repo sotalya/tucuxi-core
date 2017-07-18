@@ -8,11 +8,11 @@
 #include "tucucommon/utils.h"
 
 #include "test_componentmanager.h"
-#include "test_licensechecker.h"
+#include "test_licensemanager.h"
 #include "test_logger.h"
 #include "test_scriptengine.h"
 #include "test_datetime.h"
-#include "test_xml.h"
+/* #include "test_xml.h" */
 
 int main(int argc, char** argv) 
 {
@@ -36,14 +36,14 @@ int main(int argc, char** argv)
         exit(1);
     }
 
-    TestLicenseChecker licenseCheckerTests(appFolder);
-    licenseCheckerTests.add_test("licenseChecker-basic", &TestLicenseChecker::basic);
-    licenseCheckerTests.add_test("licenseChecker-getNewLicense", &TestLicenseChecker::getNewLicense);
-    licenseCheckerTests.add_test("licenseChecker-checkValidLicense", &TestLicenseChecker::checkValidLicense);
-    licenseCheckerTests.add_test("licenseChecker-checkInvalidLicense", &TestLicenseChecker::checkInvalidLicense);
-    res = licenseCheckerTests.run(argc, argv);
+    TestLicenseManager licenseManagerTests(appFolder);
+    licenseManagerTests.add_test("LicenseManager-basic", &TestLicenseManager::basic);
+    licenseManagerTests.add_test("LicenseManager-installNewLicense", &TestLicenseManager::installNewLicense);
+    licenseManagerTests.add_test("LicenseManager-checkValidLicense", &TestLicenseManager::checkValidLicense);
+    licenseManagerTests.add_test("LicenseManager-checkInvalidLicense", &TestLicenseManager::checkInvalidLicense);
+    res = licenseManagerTests.run(argc, argv);
     if (res != 0) {
-        printf("LicenseChecker test failed");
+        printf("License Manager test failed");
         exit(1);
     }
 
@@ -64,7 +64,7 @@ int main(int argc, char** argv)
         printf("Date and time test failed");
         exit(1);
     }
-
+/*
     TestXml xmlTests;
     xmlTests.add_test("XML-read", &TestXml::read);
     xmlTests.add_test("XML-write", &TestXml::write);
@@ -73,6 +73,6 @@ int main(int argc, char** argv)
         printf("XML test failed");
         exit(1);
     }
-
+*/
     return 0;
 }
