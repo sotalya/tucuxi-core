@@ -42,12 +42,14 @@ std::string XmlNode::getName() const
 }
 
 
-void XmlNode::setName(const std::string& _name) 
+bool XmlNode::setName(const std::string& _name) 
 {
     char *pstr = allocateString(_name);
     if (pstr != nullptr) {
         m_pNode->name(pstr);
+        return true;
     }
+    return false;
 }
 
 
@@ -60,12 +62,14 @@ std::string XmlNode::getValue() const
 }
 
 
-void XmlNode::setValue(const std::string& _value)
+bool XmlNode::setValue(const std::string& _value)
 {
     char *pstr = allocateString(_value);
     if (pstr != nullptr) {
         m_pNode->name(pstr);
+        return true;
     }
+    return false;
 }
 
 
@@ -88,11 +92,11 @@ EXmlNodeType XmlNode::getType() const
 }
 
 
-XmlAttribute XmlNode::getAttributes(const std::string& _name)
+XmlAttribute XmlNode::getAttribute(const std::string& _name) const
 {
     rapidxml::xml_attribute<> *pAttr = nullptr;
     if (m_pNode != nullptr) {
-        m_pNode->first_attribute(_name.c_str());
+        pAttr = m_pNode->first_attribute(_name.c_str());
     }
     return XmlAttribute(pAttr);
 }
@@ -117,6 +121,16 @@ XmlNodeIterator XmlNode::getChildren() const
     return XmlNodeIterator(XmlNode(pFirst));
 }
 
+/*
+XmlNodeIterator getChildren(EXmlNodeType) const
+{
+}
+
+
+XmlNodeIterator getChildren(const std::string& _name) const
+{
+}
+*/
 
 XmlNode XmlNode::getParent() const
 {
@@ -128,19 +142,29 @@ XmlNode XmlNode::getParent() const
 }
 
 
-void XmlNode::addChild(XmlNode _child)
+bool XmlNode::addChild(XmlNode _child)
 {
-    if (m_pNode != nullptr) {
+    if (m_pNode != nullptr && _child.isValid()) {
         m_pNode->append_node(_child.m_pNode);
+        return true;
     }
+    return false;
 }
 
 
-void XmlNode::addAttribute(XmlAttribute _attribute)
+bool XmlNode::addAttribute(XmlAttribute _attribute)
 {
-    if (m_pNode != nullptr) {
+    if (m_pNode != nullptr && _attribute.isValid()) {
         m_pNode->append_attribute(_attribute.m_pAttribute);
+        return true;
     }
+    return false;
+}
+
+
+bool XmlNode::isValid() const
+{
+    return (m_pNode != nullptr);
 }
 
 

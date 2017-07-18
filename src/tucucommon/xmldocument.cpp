@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <regex>
 
 #include "rapidxml.hpp"
 #include "rapidxml_print.hpp"
@@ -15,14 +16,9 @@
 namespace Tucuxi {
 namespace Common {
 
+
 XmlDocument::XmlDocument()
     : m_pDocument(nullptr)
-{
-}
-
-
-XmlDocument::XmlDocument(const XmlDocument& _document)
-    : m_pDocument(_document.m_pDocument)
 {
 }
 
@@ -32,6 +28,12 @@ XmlDocument::~XmlDocument()
     if (m_pDocument != nullptr) {
         delete m_pDocument;
     }
+}
+
+
+bool XmlDocument::isValid() const
+{
+    return (m_pDocument != nullptr);
 }
 
 
@@ -51,24 +53,30 @@ bool XmlDocument::fromString(const std::string& _xml)
 {
     m_rawXml = _xml;
     if (createDocument()) {
-        m_pDocument->parse<0>(&m_rawXml[0]);
-        return true;
+        try {
+            m_pDocument->parse<0>(&m_rawXml[0]);
+            return true;
+        }
+        catch (rapidxml::parse_error) {
+            reset();
+        }
     }
     return false;
 }
 
 
-bool XmlDocument::toString(std::string& _xml)
+bool XmlDocument::toString(std::string& _xml, bool _prettyPrint)
 {
     if (m_pDocument != nullptr) {        
-        rapidxml::print(std::back_inserter(_xml), *m_pDocument, 0);
+        rapidxml::print(std::back_inserter(_xml), *m_pDocument, _prettyPrint ? 0 : rapidxml::print_no_indenting);
+        _xml = std::regex_replace(_xml, std::regex("\""), "'");
         return true;
     }
     return false;
 }
 
 
-XmlNode XmlDocument::getRoot()
+XmlNode XmlDocument::getRoot() const
 {
     rapidxml::xml_node<>* pRoot = nullptr;
     if (m_pDocument != nullptr) {
@@ -78,14 +86,18 @@ XmlNode XmlDocument::getRoot()
 }
 
 
-void XmlDocument::setRoot(const XmlNode& _root)
+bool XmlDocument::setRoot(const XmlNode& _root)
 {
-    if (m_pDocument != nullptr) {
-        if (m_pDocument->first_node() != 0) {
-            m_pDocument->remove_first_node();
+    if (_root.isValid()) {
+        if (isValid()) {
+            if (m_pDocument->first_node() != 0) {
+                m_pDocument->remove_first_node();
+            }
+            m_pDocument->append_node(_root.m_pNode);
+            return true;
         }
-        m_pDocument->append_node(_root.m_pNode);
     }
+    return false;
 }
 
 
@@ -144,12 +156,17 @@ XmlAttribute XmlDocument::createAttribute(const std::string& _name, const std::s
 
 bool XmlDocument::createDocument()
 {
-    if (m_pDocument != nullptr) {        
+    reset();
+    m_pDocument = new rapidxml::xml_document<>();   
+    return (m_pDocument != nullptr);
+}
+
+void XmlDocument::reset()
+{
+    if (m_pDocument != nullptr) {
         delete m_pDocument;
         m_rawXml = "";
     }
-    m_pDocument = new rapidxml::xml_document<>();   
-    return (m_pDocument != nullptr);
 }
 
 }

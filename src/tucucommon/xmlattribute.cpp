@@ -52,12 +52,14 @@ std::string XmlAttribute::getName() const
 }
 
 
-void XmlAttribute::setName(const std::string& _name)
+bool XmlAttribute::setName(const std::string& _name)
 {
     char *pstr = allocateString(_name);
     if (pstr != nullptr) {
         m_pAttribute->name(pstr);
+        return true;
     }
+    return false;
 }
 
 
@@ -70,12 +72,20 @@ std::string XmlAttribute::getValue() const
 }
 
 
-void XmlAttribute::setValue(const std::string& _value)
+bool XmlAttribute::setValue(const std::string& _value)
 {
     char *pstr = allocateString(_value);
     if (pstr != nullptr) {
         m_pAttribute->value(pstr);
+        return true;
     }
+    return false;
+}
+
+
+bool XmlAttribute::isValid() const
+{
+    return (m_pAttribute != nullptr);
 }
 
 
