@@ -34,7 +34,7 @@ ifeq ($(TYPE),LIB)
 build : $(_OBJS)
 	$(DEL) objs/ar.mri
 	$(ECHO) create objs/$(NAME).a > objs/ar.mri
-	$(foreach _OBJLIB, $(_LIBS), echo addlib $(_OBJLIB) >> objs/ar.mri )
+	$(foreach _OBJLIB, $(_LIBS), echo addlib $(_OBJLIB) >> objs/ar.mri; )
 	$(ECHO) addmod $(_OBJS) >> objs/ar.mri
 	$(ECHO) save >> objs/ar.mri
 	$(ECHO) end >> objs/ar.mri
