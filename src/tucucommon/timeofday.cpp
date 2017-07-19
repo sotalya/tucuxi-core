@@ -60,6 +60,41 @@ int64 TimeOfDay::millisecond() const
     return std::chrono::duration_cast<std::chrono::milliseconds>(m_time).count() % 1000;
 }
 
+bool TimeOfDay::operator<(const TimeOfDay& _other) const
+{
+    return m_time < _other.m_time;
+}
+
+
+bool TimeOfDay::operator>(const TimeOfDay& _other) const
+{
+    return m_time > _other.m_time;
+}
+
+
+bool TimeOfDay::operator>=(const TimeOfDay& _other) const
+{
+    return m_time >= _other.m_time;
+}
+
+
+bool TimeOfDay::operator<=(const TimeOfDay& _other) const
+{
+    return m_time <= _other.m_time;
+}
+
+
+bool TimeOfDay::operator==(const TimeOfDay& _other) const
+{
+    return m_time == _other.m_time;
+}
+
+
+bool TimeOfDay::operator!=(const TimeOfDay& _other) const
+{
+    return m_time != _other.m_time;
+}
+
 
 void TimeOfDay::normalize()
 {

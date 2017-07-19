@@ -18,6 +18,7 @@ int main(int argc, char** argv)
 
     TestDosage dosageTests;
     dosageTests.add_test("Dosage-basic", &TestDosage::basic);
+    dosageTests.add_test("Dosage-advanced", &TestDosage::advanced);
     int res = dosageTests.run(argc, argv);
     if (res != 0) {
         printf("Dosage test failed");

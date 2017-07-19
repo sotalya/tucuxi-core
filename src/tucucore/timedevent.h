@@ -16,7 +16,7 @@ class TimedEvent
 {
 public:
     /// \brief Constructor, "deleted" because not necessary.
-    TimedEvent() = delete; // {}
+    TimedEvent() = delete;
     
     /// \brief Constructor defining the time of the event.
     /// \param _time Time of the event to set.
