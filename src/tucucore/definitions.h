@@ -60,10 +60,10 @@ typedef std::vector<Concentration> Concentrations;
 
 /// \ingroup TucuCore
 /// \brief Way a dose is administered.
-enum class RouteOfAdministration { bolus, extravasculaire, perfusion };
+enum class RouteOfAdministration { BOLUS, EXTRAVASCULAIRE, PERFUSION };
 
 /// \ingroup TucuCore
-/// \brief Days of the week.
+/// \brief Days of the week (in [0, 6]), starting on Sunday.
 typedef date::weekday DayOfWeek;
 
 /// \ingroup TucuCore

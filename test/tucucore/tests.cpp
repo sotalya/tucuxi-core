@@ -16,15 +16,21 @@ int main(int argc, char** argv)
     // Get application folder
     std::string appFolder = Tucuxi::Common::Utils::getAppFolder(argv);
 
+    // --- DOSAGE --- //
     TestDosage dosageTests;
-    dosageTests.add_test("Dosage-basic", &TestDosage::basic);
-    dosageTests.add_test("Dosage-advanced", &TestDosage::advanced);
+    dosageTests.add_test("SingleDose test", &TestDosage::testSingleDose);
+    dosageTests.add_test("LastingDose test", &TestDosage::testLastingDose);
+    dosageTests.add_test("DailyDose test", &TestDosage::testDailyDose);
+    dosageTests.add_test("WeeklyDose test", &TestDosage::testWeeklyDose);
+    dosageTests.add_test("DosageTimeRange test", &TestDosage::testDosageTimeRange);
+
     int res = dosageTests.run(argc, argv);
     if (res != 0) {
         printf("Dosage test failed");
         exit(1);
     }
 
+    // --- INTAKE EXTRACTOR --- //
     TestIntakeExtractor intakeExtractorTests;
     intakeExtractorTests.add_test("IntakeExtractor-basic", &TestIntakeExtractor::basic);
     intakeExtractorTests.add_test("IntakeExtractor-weekWithoutWeekEnd", &TestIntakeExtractor::weekWithoutWeekEnd);
