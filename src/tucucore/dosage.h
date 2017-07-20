@@ -1,6 +1,7 @@
 #ifndef TUCUXI_MATH_DOSAGE_H
 #define TUCUXI_MATH_DOSAGE_H
 
+#include <iostream>
 #include <memory>
 #include <vector>
 
@@ -229,9 +230,21 @@ public:
     /// \param _dose Quantity of drug administered.
     /// \param _route Route of administration.
     /// \param _infusionTime Duration in case of an infusion.
-    SingleDose(const Dose &_dose, const RouteOfAdministration &_routeOfAdministration,
+    /// \pre _dose >= 0
+    /// \pre IF _routeOfAdministration == RouteOfAdministration::PERFUSION THEN (!_infusionTime.isEmpty() && _infusionTime > 0)
+    SingleDose(const Dose &_dose,
+               const RouteOfAdministration &_routeOfAdministration,
                const Duration &_infusionTime)
     {
+        if (_dose < 0) {
+            throw std::invalid_argument("Dose value = " + std::to_string(_dose) + " is invalid (must be >= 0).");
+        }
+        if (_routeOfAdministration == RouteOfAdministration::PERFUSION && _infusionTime.isNegative()) {
+            throw std::invalid_argument("Infusion time for PERFUSION is invalid (must be >= 0).");
+        }
+        if (_routeOfAdministration == RouteOfAdministration::PERFUSION && _infusionTime.isEmpty()) {
+            throw std::invalid_argument("Route of administration is PERFUSION, but empty infusion time specified.");
+        }
         m_dose = _dose;
         m_routeOfAdministration = _routeOfAdministration;
         m_infusionTime = _infusionTime;
@@ -260,10 +273,19 @@ public:
     /// \param _route Route of administration.
     /// \param _infusionTime Duration in case of an infusion.
     /// \param _interval Interval between two doses.
-    LastingDose(const Dose &_dose, const RouteOfAdministration &_routeOfAdministration,
-                const Duration &_infusionTime, const Duration &_interval)
+    /// \pre !_interval.isEmpty() && _interval > 0
+    LastingDose(const Dose &_dose,
+                const RouteOfAdministration &_routeOfAdministration,
+                const Duration &_infusionTime,
+                const Duration &_interval)
         : SingleDose(_dose, _routeOfAdministration, _infusionTime)
     {
+        if (_interval.isEmpty()) {
+            throw std::invalid_argument("Interval between two doses not specified (empty).");
+        }
+        if (_interval <= Duration(std::chrono::seconds(0))) {
+            throw std::invalid_argument("Interval is invalid (must be >= 0).");
+        }
         m_interval = _interval;
     }
 
@@ -357,6 +379,9 @@ public:
                const DayOfWeek &_dayOfWeek)
         : DailyDose(_dose, _routeOfAdministration, _infusionTime, _timeOfDay)
     {
+        if (!_dayOfWeek.ok()) {
+            throw std::invalid_argument("Invalid day of week specified for weekly dose.");
+        }
         m_dayOfWeek = _dayOfWeek;
     }
 
@@ -419,7 +444,7 @@ public:
     /// \post _endDate.isUndefined()
     DosageTimeRange(const DateTime &_startDate) : m_startDate(_startDate)
     {
-        if (m_startDate.isUndefined()) {
+        if (_startDate.isUndefined()) {
             throw std::invalid_argument("Undefined start date for a time range specified.");
         }
         m_endDate.reset();
@@ -457,6 +482,20 @@ public:
         }
     }
 
+    /// \brief Getter for the start date of the interval.
+    /// \return Start date of the interval.
+    DateTime getStartDate() const
+    {
+        return m_startDate;
+    }
+
+    /// \brief Getter for the end date of the interval.
+    /// \return End date of the interval.
+    DateTime getEndDate() const
+    {
+        return m_endDate;
+    }
+
     /// \brief Check a time range against a list of time ranges for overlaps.
     /// \param _timeRange Time range to check.
     /// \param _timeRangeList List of time ranges to compare against.
@@ -491,9 +530,6 @@ public:
     DosageHistory(const DosageTimeRangeList &_timeRangeList)
     {
         for (auto&& timeRange: _timeRangeList) {
-            if (timeRangesOverlap(*timeRange, m_history)) {
-                throw std::runtime_error("Time range overlaps with previously-inserted one.");
-            }
             addTimeRange(*timeRange);
         }
     }
