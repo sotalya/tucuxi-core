@@ -16,7 +16,11 @@
 #include <vector>
 #include <map>
 
+#include "date/iso_week.h"
+
 #include "Eigen/Dense"
+
+#include "tucucommon/basetypes.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -53,6 +57,14 @@ typedef std::vector<Time> Times;
 /// \ingroup TucuCore
 /// \brief The type used to represent a serie of concentrations
 typedef std::vector<Concentration> Concentrations;
+
+/// \ingroup TucuCore
+/// \brief Way a dose is administered.
+enum class RouteOfAdministration { bolus, extravasculaire, perfusion };
+
+/// \ingroup TucuCore
+/// \brief Days of the week.
+typedef date::weekday DayOfWeek;
 
 /// \ingroup TucuCore
 /// \brief The type used to represent a serie of residuals

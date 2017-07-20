@@ -19,11 +19,20 @@ struct TestDosage : public fructose::test_base<TestDosage>
     void basic(const std::string& _testName)
     {
         std::cout << _testName << std::endl;
-        Tucuxi::Core::Dosage *dosage;
-        dosage = new Tucuxi::Core::SingleDose();
-        std::cout << "Dosage test succeeds" << std::endl;
+        std::unique_ptr<Tucuxi::Core::Dosage> dosage(Tucuxi::Core::LastingDose());
+        std::cout << "Basic dosage test succeeds" << std::endl;
+        fructose_assert(1 == 1);
     }
 
- };
+
+    void advanced(const std::string& _testName)
+    {
+        std::cout << _testName << std::endl;
+        std::unique_ptr<Tucuxi::Core::Dosage> dosage(Tucuxi::Core::LastingDose());
+        std::cout << "Advanced dosage test fails" << std::endl;
+        fructose_assert(0 == 1);
+    }
+
+};
 
 #endif // TEST_DOSAGE_H

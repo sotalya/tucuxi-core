@@ -74,6 +74,24 @@ public:
     /// @return The millisecond.
     int64 millisecond() const;
 
+    /// \brief Is the date smaller?
+    bool operator<(const TimeOfDay& _other) const;
+
+    /// \brief Is the date bigger?
+    bool operator>(const TimeOfDay& _other) const;
+
+    /// \brief Is the date bigger or equal?
+    bool operator>=(const TimeOfDay& _other) const;
+
+    /// \brief Is the date smaller or equal?
+    bool operator<=(const TimeOfDay& _other) const;
+
+    /// \brief Are these dates equal?
+    bool operator==(const TimeOfDay& _other) const;
+
+    /// \brief Are these dates not equal?
+    bool operator!=(const TimeOfDay& _other) const;
+
 private:
     /// \brief Make sure the time is not longer than one day.
     void normalize();

@@ -21,7 +21,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
     {
         std::cout << _testName << std::endl;
         Tucuxi::Core::Dosage *dosage;
-        dosage = new Tucuxi::Core::SingleDose();
+//        dosage = new Tucuxi::Core::LastingDose();
         std::cout << "Dosage test succeeds" << std::endl;
     }
 
