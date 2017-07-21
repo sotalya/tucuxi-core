@@ -10,6 +10,7 @@
 #include "test_componentmanager.h"
 #include "test_licensemanager.h"
 #include "test_logger.h"
+#include "test_cryptohelper.h"
 #include "test_scriptengine.h"
 #include "test_datetime.h"
 /* #include "test_xml.h" */
@@ -44,6 +45,14 @@ int main(int argc, char** argv)
     res = licenseManagerTests.run(argc, argv);
     if (res != 0) {
         printf("License Manager test failed");
+        exit(1);
+    }
+
+    TestCryptoHelper cryptoHelperTests(appFolder);
+    cryptoHelperTests.add_test("CryptoHelper-basic", &TestCryptoHelper::basic);
+    res = cryptoHelperTests.run(argc, argv);
+    if (res != 0) {
+        printf("Crypto Helper test failed");
         exit(1);
     }
 
