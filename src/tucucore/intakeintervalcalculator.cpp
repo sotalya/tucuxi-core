@@ -10,7 +10,7 @@ namespace Core {
 
 IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakePoints(
     Concentrations& _concentrations,
-    Times & _times,
+    TimeOffsets & _times,
     IntakeEvent& _intakeEvent,
     const ParameterList& _parameters,
     const Residuals& _inResiduals,
@@ -26,7 +26,7 @@ IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakePoints
     prepareComputations(_intakeEvent, _parameters);
 
     // Create our serie of times
-    Eigen::VectorXd times = Eigen::VectorXd::LinSpaced(_cycleSize, 0, _intakeEvent.getInterval());
+    Eigen::VectorXd times = Eigen::VectorXd::LinSpaced(_cycleSize, 0, _intakeEvent.getInterval().toMilliseconds());
 
     // Can we reuse cached logarithms? 
     if (!m_cache.get(_intakeEvent.getInterval(), _parameters, _cycleSize, m_precomputedLogarithms))	{
@@ -36,7 +36,7 @@ IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakePoints
 
     computeConcentrations(_inResiduals, _concentrations, _outResiduals);
 
-    times = times.array() + _intakeEvent.getOffsetTime();
+    times = times.array() + _intakeEvent.getOffsetTime().toMilliseconds();
     _times.assign(times.data(), times.data() + times.size());
 
     return Result::Ok;
@@ -66,7 +66,7 @@ IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakeSingle
     const IntakeEvent& _intakeEvent,
     const ParameterList& _parameters,
     const Residuals& _inResiduals,
-    const Time _atTime,
+    const int64& _atTime,
     Residuals& _outResiduals)
 {
     return Result::BadParameters;

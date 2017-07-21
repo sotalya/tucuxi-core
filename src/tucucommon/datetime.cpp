@@ -67,7 +67,9 @@ void DateTime::setTimeOfDay(const TimeOfDay& _newTime)
 
 const DateTime DateTime::operator+(const Duration& _duration) const
 {
-    return DateTime(*this) += _duration.get<std::chrono::seconds>();
+    DateTime tmp(*this);
+    tmp += _duration;
+    return tmp;
 }
 
 
@@ -80,7 +82,9 @@ DateTime& DateTime::operator+=(const Duration& _duration)
 
 const DateTime DateTime::operator-(const Duration& _duration) const
 {
-    return DateTime(*this) -= _duration.get<std::chrono::seconds>();
+    DateTime tmp(*this);
+    tmp -= _duration;
+    return tmp;
 }
 
 

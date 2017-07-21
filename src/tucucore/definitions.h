@@ -21,6 +21,7 @@
 #include "Eigen/Dense"
 
 #include "tucucommon/basetypes.h"
+#include "tucucommon/datetime.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -31,18 +32,6 @@ namespace Core {
 typedef double Value;
 
 /// \ingroup TucuCore
-/// \brief The type used to represent an absolute date and time
-typedef time_t Date;
-
-/// \ingroup TucuCore
-/// \brief The type used to represent an absolute time in ms
-typedef double Time;
-
-/// \ingroup TucuCore
-/// \brief The type used to represent a difference of time in ms
-typedef double DeltaTime;
-
-/// \ingroup TucuCore
 /// \brief The type used to represent a dose in mg
 typedef Value Dose;
 
@@ -51,8 +40,8 @@ typedef Value Dose;
 typedef Value Concentration;
 
 /// \ingroup TucuCore
-/// \brief The type used to represent a serie of times
-typedef std::vector<Time> Times;
+/// \brief The type used to represent a serie of times exrpressed as offsets in millisecond to the start of a cycle
+typedef std::vector<int64> TimeOffsets;
 
 /// \ingroup TucuCore
 /// \brief The type used to represent a serie of concentrations

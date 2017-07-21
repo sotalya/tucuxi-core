@@ -2,6 +2,8 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
+#include "date/date.h"
+
 #include "basetypes.h"
 #include "duration.h"
 
@@ -162,6 +164,35 @@ bool Duration::operator==(const Duration &_other) const
 bool Duration::operator!=(const Duration &_other) const
 {
     return m_duration != _other.m_duration;
+}
+
+int64 Duration::toDays() const
+{
+    return get<date::days>().count();
+}
+
+
+int64 Duration::toHours() const
+{
+    return get<std::chrono::milliseconds>().count();
+}
+
+
+int64 Duration::toMinutes() const
+{
+    return get<std::chrono::milliseconds>().count();
+}
+
+
+int64 Duration::toSeconds() const
+{
+    return get<std::chrono::seconds>().count();
+}
+
+
+int64 Duration::toMilliseconds() const
+{
+    return get<std::chrono::milliseconds>().count();
 }
 
 }

@@ -17,7 +17,8 @@ SOURCES := concentrationcalculator.cpp \
            dosage.cpp
 INCLUDES := . \
             ../../libs/eigen-3.3.2 \
-            ../../libs/boost-1.63.0
+            ../../libs/boost-1.63.0 \
+            ../../libs/date-master-20170711
 LIBS := 
 EXTLIBS := 
 DEFINES := 
