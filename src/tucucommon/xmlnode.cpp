@@ -6,6 +6,7 @@
 
 #include "xmlnode.h"
 #include "xmlattribute.h"
+#include "xmliterator.h"
 
 namespace Tucuxi {
 namespace Common {
@@ -121,16 +122,26 @@ XmlNodeIterator XmlNode::getChildren() const
     return XmlNodeIterator(XmlNode(pFirst));
 }
 
-/*
-XmlNodeIterator getChildren(EXmlNodeType) const
+
+XmlNodeIterator XmlNode::getChildren(EXmlNodeType _type) const
 {
+    rapidxml::xml_node<>* pFirst = nullptr;
+    if (m_pNode != nullptr) {
+        pFirst = m_pNode->first_node();
+    }
+    return XmlNodeIterator(XmlNode(pFirst), _type);
 }
 
 
-XmlNodeIterator getChildren(const std::string& _name) const
+XmlNodeIterator XmlNode::getChildren(const std::string& _name) const
 {
+    rapidxml::xml_node<>* pFirst = nullptr;
+    if (m_pNode != nullptr) {
+        pFirst = m_pNode->first_node();
+    }
+    return XmlNodeIterator(XmlNode(pFirst), _name);
 }
-*/
+
 
 XmlNode XmlNode::getParent() const
 {

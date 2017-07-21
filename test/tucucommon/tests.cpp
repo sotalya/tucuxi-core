@@ -65,9 +65,10 @@ int main(int argc, char** argv)
         exit(1);
     }
 
-    TestXml xmlTests;
+    TestXml xmlTests(appFolder);
     xmlTests.add_test("XML-read", &TestXml::read);
     xmlTests.add_test("XML-write", &TestXml::write);
+    xmlTests.add_test("XML-files", &TestXml::files);
     res = xmlTests.run(argc, argv);
     if (res != 0) {
         printf("XML test failed");

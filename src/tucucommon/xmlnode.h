@@ -7,7 +7,6 @@
 
 #include <string>
 
-#include "xmliterator.h"
 #include "componentmanager.h"
 
 namespace rapidxml {
@@ -20,6 +19,7 @@ namespace Common {
 class XmlNode;
 class XmlAttribute;
 
+template<class T> class XmlIterator;
 typedef class XmlIterator<XmlNode> XmlNodeIterator;
 typedef class XmlIterator<XmlAttribute> XmlAttributeIterator;
 
@@ -94,7 +94,7 @@ public:
     /// \brief Retrieve all children of the node
     /// @return An iterator to enumerate all children
     XmlNodeIterator getChildren() const;
-/*
+
     /// \brief Retrieve all children of the node matching the given type
     /// @param The type of element to look for
     /// @return An iterator to enumerate all children of the requested type
@@ -104,7 +104,7 @@ public:
     /// @param The name of element to look for
     /// @return An iterator to enumerate all children of the requested name
     XmlNodeIterator getChildren(const std::string& _name) const;
-*/
+
     /// \brief Retrieve the node's parent
     /// @return The node's parent
     XmlNode getParent() const;

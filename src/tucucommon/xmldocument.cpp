@@ -5,6 +5,9 @@
 #include <iostream>
 #include <sstream>
 #include <regex>
+#include <fstream>
+#include <sstream>
+#include <string>
 
 #include "rapidxml.hpp"
 #include "rapidxml_print.hpp"
@@ -39,12 +42,31 @@ bool XmlDocument::isValid() const
 
 bool XmlDocument::open(const std::string& _fileName)
 {
+    std::string xml;
+    std::ifstream inFile(_fileName);
+    if (inFile) {
+        std::string line;
+        while (std::getline(inFile, line)) {
+            xml += line;
+        }
+        return fromString(xml);
+    }
     return false;
 }
 
 
 bool XmlDocument::save(const std::string& _fileName)
 {
+    std::string xml;
+    if (toString(xml)) {
+        std::ofstream outFile(_fileName);
+        if (outFile) {
+            outFile.write(xml.c_str(), xml.length());
+            if (outFile) {
+                return true;
+            }
+        }
+    }
     return false;
 }
 
