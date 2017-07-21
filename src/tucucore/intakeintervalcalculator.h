@@ -48,7 +48,7 @@ public:
     /// @return An indication if the computation was successful
     virtual Result calculateIntakePoints(
         Concentrations& _concentrations,
-        Times & _times,
+        TimeOffsets & _times,
         IntakeEvent& _intakeEvent,
         const ParameterList& _parameters,
         const Residuals& _inResiduals,
@@ -69,7 +69,7 @@ public:
         const IntakeEvent& _intakeEvent,
         const ParameterList& _parameters,
         const Residuals& _inResiduals,
-        const Time _atTime,
+        const int64& _atTime,
         Residuals& _outResiduals);
 
 protected:

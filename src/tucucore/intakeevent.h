@@ -59,11 +59,11 @@ public:
     }
 
     void setInterval(Duration _interval) { m_interval = _interval; }     /// Change the interval value
-    DeltaTime getInterval() const        { return m_interval.get<std::chrono::milliseconds>().count(); }          /// Get the interval value
+    Duration getInterval() const         { return m_interval; }          /// Get the interval value
     
     Dose getDose() const                 { return m_dose; }              /// Get the dose
     
-    DeltaTime getOffsetTime() const      { return m_offsetTime.get<std::chrono::milliseconds>().count(); }        /// Get the time since the start of the treatment
+    Duration getOffsetTime() const      { return m_offsetTime; }         /// Get the time since the start of the treatment
     
     // The association with intakeintervalcalculator happens here
     // The intaketocalculatorassociator sets this value

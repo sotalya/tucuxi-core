@@ -7,7 +7,10 @@
 
 #include "tucucommon/utils.h"
 #include "tucucommon/loggerhelper.h"
+#include "tucucore/definitions.h"
 #include "tucucore/onecompartmentextra.h"
+
+using namespace std::chrono_literals;
 
 /// \defgroup TucuCli Tucuxi Console application
 /// \brief The Tucuxi console application
@@ -34,8 +37,8 @@ int main(int argc, char** argv)
     DateTime now;
 
     Tucuxi::Core::Concentrations concentrations;
-    Tucuxi::Core::Times times;
-    Tucuxi::Core::IntakeEvent intakeEvent(now, 0, 0.2, 24, 1, 0, 250);
+    Tucuxi::Core::TimeOffsets times;
+    Tucuxi::Core::IntakeEvent intakeEvent(now, 0s, 0.2, 24h, Tucuxi::Core::RouteOfAdministration::BOLUS, 0s, 250);
     Tucuxi::Core::ParameterList parameters;
     Tucuxi::Core::Residuals inResiduals;
     Tucuxi::Core::Residuals outResiduals;
