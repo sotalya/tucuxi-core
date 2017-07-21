@@ -91,7 +91,7 @@ protected:
 /// \brief Partial specialization to handle filtering nodes
 /// @return True if the current item should be returned by the iterator
 template<>
-bool XmlIterator<XmlNode>::isInSubgroup()
+inline bool XmlIterator<XmlNode>::isInSubgroup()
 {
     if (!m_name.empty() && m_name != m_current.getName()) {
         return false;
