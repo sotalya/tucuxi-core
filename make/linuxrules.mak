@@ -24,7 +24,7 @@ _DEFINES := $(addprefix -D, $(DEFINES))
 ## ---------------------------------------------------------------
 ## Build flags.
 ##
-CFLAGS = -g -Wall $(_INCLUDES) $(_DEFINES) -std=c++14 -ffunction-sections -fdata-sections -foptimize-sibling-calls -fpermissive -DMW_NO_TYPEINFO -D_REENTRANT  
+CFLAGS = -g -Wall $(_INCLUDES) $(_DEFINES) -std=c++14 -ffunction-sections -fdata-sections -foptimize-sibling-calls -fpermissive -DMW_NO_TYPEINFO -D_REENTRANT  -momit-leaf-frame-pointer -msha -march=native  
 LDFLAGS = -lpthread -lrt -Wl,--gc-sections
 
 ## ---------------------------------------------------------------
@@ -91,5 +91,5 @@ endif
 ##
 objs/%.o: %.cpp
 	$(MKDIR) -p objs
-	$(MKDIR) -p $(dir objs\$*.o)
+	$(MKDIR) -p $(dir objs/$*.o)
 	$(XCC) -c -o objs/$*.o $(CFLAGS) $<
