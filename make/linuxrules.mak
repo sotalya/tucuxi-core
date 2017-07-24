@@ -91,4 +91,5 @@ endif
 ##
 objs/%.o: %.cpp
 	$(MKDIR) -p objs
+	$(MKDIR) -p $(dir objs\$*.o)
 	$(XCC) -c -o objs/$*.o $(CFLAGS) $<

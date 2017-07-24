@@ -84,4 +84,5 @@ endif
 ##
 objs/%.o: %.cpp
 	if not exist objs $(MKDIR) objs
+	if not exist $(dir objs\$*.o) $(MKDIR) $(subst /,\, $(dir objs\$*.o))
 	$(CXX) -Foobjs/$*.o $< $(CCFLAG)
