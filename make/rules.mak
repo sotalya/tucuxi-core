@@ -29,7 +29,7 @@ postbuild:
 ##
 ifeq ($(TARGET), LINUX)
 MKDIR := mkdir
-DEL := rm -f
+DEL := rm -rf
 COPY := cp
 ECHO := @echo
 include $(TUCUXI_ROOT)/make/linuxrules.mak
