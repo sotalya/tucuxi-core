@@ -25,28 +25,28 @@ public:
     /// \brief Construct a duration from a std::chrono::hours
     /// This also provide implicit conversions when using all the other methods.
     /// @param _value Duration in hours
-    Duration(const std::chrono::hours &_value);
+    explicit Duration(const std::chrono::hours &_value);
 
     /// \brief Construct a duration from a std::chrono::minutes
     /// This also provide implicit conversions when using all the other methods.
     /// @param _value Duration in minutes
-    Duration(const std::chrono::minutes _value);
+    explicit Duration(const std::chrono::minutes _value);
 
     /// \brief Construct a duration from a std::chrono::seconds
     /// This also provide implicit conversions when using all the other methods.
     /// @param _value Duration in seconds
-    Duration(const std::chrono::seconds d);
+    explicit Duration(const std::chrono::seconds d);
 
     /// \brief Construct a duration from a std::chrono::milliseconds
     /// This also provide implicit conversions when using all the other methods.
     /// @param _value Duration in milliseconds
-    Duration(const std::chrono::milliseconds d);
+    explicit Duration(const std::chrono::milliseconds d);
 
-    /// \brief Returns the duration in one of the std::chrono duration class (hours, minutes, seconds, ...)    
+    /// \brief Returns the duration in one of the std::chrono duration class (hours, minutes, seconds, ...)
     /// @return The duration in the specified T unit.
-    template<class T> T get() const 
-    { 
-        return std::chrono::duration_cast<T>(m_duration); 
+    template<class T> T get() const
+    {
+        return std::chrono::duration_cast<T>(m_duration);
     }
 
     /// \brief Is the duration empty?
@@ -143,4 +143,3 @@ private:
 }
 
 #endif // TUCUXI_TUCUCOMMON_DURATION_H
-
