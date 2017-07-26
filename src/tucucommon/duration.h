@@ -14,7 +14,7 @@ namespace Common {
 
 /// \ingroup TucuCommon
 /// \brief A class to handle a duration.
-/// The class is based on the std::chrono::duration<float> type representing a number of seconds
+/// The class is based on the std::chrono::duration<double> type representing a number of seconds
 /// \sa DateTime, Duration
 class Duration
 {
@@ -76,20 +76,20 @@ public:
     Duration& operator-=(const Duration &_other);
 
     /// \brief Multiply the duration by this value
-    const Duration operator*(float _factor) const;
+    const Duration operator*(double _factor) const;
 
     /// \brief Multiplication compound assignment overload.
     /// @param rhs Right-hand side integer.
-    Duration& operator*=(float _factor);
+    Duration& operator*=(double _factor);
 
     /// \brief Divide the duration by this value
-    const Duration operator/(float _divider) const;
+    const Duration operator/(double _divider) const;
 
     /// \brief Divide the duration by this value
-    Duration& operator/=(float _divider);
+    Duration& operator/=(double _divider);
 
     /// \brief Divide the duration by this duration
-    float operator/(const Duration &_other) const;
+    double operator/(const Duration &_other) const;
 
     /// \brief Obtain the remainder of dividing the duration by the specified one
     const Duration operator%(const Duration &_other) const;
@@ -136,7 +136,7 @@ public:
     int64 toMilliseconds() const;
 
 private:
-    std::chrono::duration<float> m_duration;  /// The encapsulated duration
+    std::chrono::duration<double> m_duration;  /// The encapsulated duration
 };
 
 }

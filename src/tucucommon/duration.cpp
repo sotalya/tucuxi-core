@@ -84,33 +84,33 @@ Duration& Duration::operator-=(const Duration &_other)
 }
 
 
-const Duration Duration::operator*(float _factor) const
+const Duration Duration::operator*(double _factor) const
 {
     return Duration(*this) *= _factor;
 }
 
 
-Duration& Duration::operator*=(float _factor)
+Duration& Duration::operator*=(double _factor)
 {
     m_duration *= _factor;
     return *this;
 }
 
 
-const Duration Duration::operator/(float _divider) const
+const Duration Duration::operator/(double _divider) const
 {
     return Duration(*this) /= _divider;
 }
 
 
-Duration& Duration::operator/=(float _divider)
+Duration& Duration::operator/=(double _divider)
 {
     m_duration /= _divider;
     return *this;
 }
 
 
-float Duration::operator/(const Duration &_other) const
+double Duration::operator/(const Duration &_other) const
 {
     return m_duration / _other.m_duration;
 }
