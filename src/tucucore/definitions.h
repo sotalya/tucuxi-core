@@ -32,6 +32,18 @@ namespace Core {
 typedef double Value;
 
 /// \ingroup TucuCore
+/// \brief The type used to represent an absolute date and time
+typedef time_t Date;
+
+/// \ingroup TucuCore
+/// \brief The type used to represent an absolute time in ms
+typedef double Time;
+
+/// \ingroup TucuCore
+/// \brief The type used to represent a difference of time in ms
+typedef double DeltaTime;
+
+/// \ingroup TucuCore
 /// \brief The type used to represent a dose in mg
 typedef Value Dose;
 
@@ -39,9 +51,8 @@ typedef Value Dose;
 /// \brief The type used to represent a concentration in mg
 typedef Value Concentration;
 
-/// \ingroup TucuCore
 /// \brief The type used to represent a serie of times exrpressed as offsets in millisecond to the start of a cycle
-typedef std::vector<int64> TimeOffsets;
+ typedef std::vector<int64> TimeOffsets;
 
 /// \ingroup TucuCore
 /// \brief The type used to represent a serie of concentrations
@@ -49,11 +60,24 @@ typedef std::vector<Concentration> Concentrations;
 
 /// \ingroup TucuCore
 /// \brief Way a dose is administered.
-enum class RouteOfAdministration { BOLUS, EXTRAVASCULAIRE, PERFUSION };
+enum class RouteOfAdministration { INTRAVASCULAR, EXTRAVASCULAR, INFUSION };
+
+/// \ingroup TucuCore
+/// \brief Operations on scheduled intakes.
+enum class ScheduledIntakeOp { SKIP, ADD };
 
 /// \ingroup TucuCore
 /// \brief Days of the week (in [0, 6]), starting on Sunday.
 typedef date::weekday DayOfWeek;
+// Days are defined using a #define and not an enum since the library wants
+// unsigned variables as input to the constructor
+#define SUNDAY       0U
+#define MONDAY       1U
+#define TUESDAY      2U
+#define WEDNESDAY    3U
+#define THURSDAY     4U
+#define FRIDAY       5U
+#define SATURDAY     6U
 
 /// \ingroup TucuCore
 /// \brief The type used to represent a serie of residuals
@@ -64,7 +88,7 @@ typedef std::vector<Concentration> Residuals;
 typedef int CycleSize;
 
 /// \ingroup TucuCore
-/// \brief A structure to store precomputed logarithms 
+/// \brief A structure to store precomputed logarithms
 typedef std::map<std::string, Eigen::VectorXd> PrecomputedLogarithms;
 
 }

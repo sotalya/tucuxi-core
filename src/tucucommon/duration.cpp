@@ -22,23 +22,31 @@ Duration::Duration(const std::chrono::hours &_value)
 }
 
 
-Duration::Duration(std::chrono::minutes _value)
+Duration::Duration(const std::chrono::minutes &_value)
     : m_duration(_value)
 {
 }
 
 
-Duration::Duration(std::chrono::seconds _value)
+Duration::Duration(const std::chrono::seconds &_value)
     : m_duration(_value)
 {
 }
 
 
-Duration::Duration(std::chrono::milliseconds _value)
+Duration::Duration(const std::chrono::milliseconds &_value)
     : m_duration(_value)
 {
 }
 
+Duration::Duration(const std::chrono::hours &_hours,
+                   const std::chrono::minutes &_minutes,
+                   const std::chrono::seconds &_seconds)
+    : m_duration(std::chrono::seconds(_hours) +
+                 std::chrono::seconds(_minutes) +
+                 _seconds)
+{
+}
 
 bool Duration::isEmpty() const
 {

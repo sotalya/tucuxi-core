@@ -1,6 +1,7 @@
 #ifndef TUCUXI_MATH_INTAKEEXTRACTOR_H
 #define TUCUXI_MATH_INTAKEEXTRACTOR_H
 
+#include <algorithm>
 #include <vector>
 
 #include "tucucore/definitions.h"
@@ -20,6 +21,7 @@ class IntakeExtractor
     friend DosageLoop;
     friend DosageRepeat;
     friend DosageSequence;
+    friend ParallelDosageSequence;
     friend SingleDose;
     friend LastingDose;
     friend DailyDose;
@@ -64,24 +66,6 @@ private:
     /// whole set of calls)
     /// \post FORALL intake IN extracted_intakes, intake.time IN [_start, _end)
     int extract(const DosageTimeRange &_timeRange, const DateTime &_start, const DateTime &_end, IntakeSeries &_series);
-
-    /// \ingroup TucuCore
-    /// \brief Iterate over a dosage list and extract the list of intakes.
-    /// No check is performed on the single dosages to check whether they belong or not to the interval -- this is left
-    /// to each individual dosage, as the dosage list does not have this information.
-    ///
-    /// \param _dosageList Dosage list.
-    /// \param _start Start time/date for the considered interval.
-    /// \param _end End time/date for the considered interval, could be unset.
-    /// \param _series Returned series of intake in the considered interval.
-    /// \return number of intakes in the given interval, -1 in case of error.
-    ///
-    /// \pre _start IS NOT unset
-    /// \pre _end IS unset OR _end > _start
-    /// \post _series[OUT] = _series[IN] + extracted_intakes
-    /// (it would have been easier to simply empty the input _series, but this guarantees an uniform behavior across the
-    /// whole set of calls)
-    int extract(const DosageList &_dosageList, const DateTime &_start, const DateTime &_end, IntakeSeries &_series);
 
     /// \ingroup TucuCore
     /// \brief Abstract function that is needed to properly represent the hierarchy.
@@ -145,6 +129,23 @@ private:
     /// whole set of calls)
     /// \post FORALL intake IN extracted_intakes, intake.time IN [_start, _end)
     int extract(const DosageSequence &_dosageSequence, const DateTime &_start, const DateTime &_end, IntakeSeries &_series);
+
+    /// \ingroup TucuCore
+    /// \brief Iterate over an ordered sequence of parallel dosages and extract the list of intakes.
+    ///
+    /// \param _parallelDosageSequence Ordered sequence of parallel dosages.
+    /// \param _start Start time/date for the considered interval.
+    /// \param _end End time/date for the considered interval, could be unset.
+    /// \param _series Returned series of intake in the considered interval.
+    /// \return number of intakes in the given interval, -1 in case of error.
+    ///
+    /// \pre _start IS NOT unset
+    /// \pre _end IS unset OR _end > _start
+    /// \post _series[OUT] = _series[IN] + extracted_intakes
+    /// (it would have been easier to simply empty the input _series, but this guarantees an uniform behavior across the
+    /// whole set of calls)
+    /// \post FORALL intake IN extracted_intakes, intake.time IN [_start, _end)
+    int extract(const ParallelDosageSequence &_parallelDosageSequence, const DateTime &_start, const DateTime &_end, IntakeSeries &_series);
 
     /// \ingroup TucuCore
     /// \brief Extract a dose supposed to last for a certain time and add it to a list of intakes.

@@ -9,7 +9,7 @@ SingleDose::~SingleDose() { }
 
 /// \brief Visitor function's implementation.
 #define DOSAGE_UTILS_IMPL(className) \
-int className::extract(IntakeExtractor &_extractor, const DateTime &_start, const DateTime &_end, IntakeSeries &_series) \
+int className::extract(IntakeExtractor &_extractor, const DateTime &_start, const DateTime &_end, IntakeSeries &_series) const \
 { \
     return _extractor.extract(*this, _start, _end, _series); \
 }
@@ -18,6 +18,7 @@ DOSAGE_UTILS_IMPL(DosageBounded)
 DOSAGE_UTILS_IMPL(DosageLoop)
 DOSAGE_UTILS_IMPL(DosageRepeat)
 DOSAGE_UTILS_IMPL(DosageSequence)
+DOSAGE_UTILS_IMPL(ParallelDosageSequence)
 DOSAGE_UTILS_IMPL(LastingDose)
 DOSAGE_UTILS_IMPL(DailyDose)
 DOSAGE_UTILS_IMPL(WeeklyDose)

@@ -10,7 +10,6 @@
 
 #include "fructose/fructose.h"
 
-#include "tucucore/definitions.h"
 #include "tucucore/dosage.h"
 
 using namespace Tucuxi::Core;
@@ -18,20 +17,18 @@ using namespace Tucuxi::Core;
 struct TestDosage : public fructose::test_base<TestDosage>
 {
 
-    TestDosage()
+    TestDosage() { }
+
+
+    /// \brief Test the instantiation of a SingleDose-derived class, focusing on Single-Dose peculiarities.
+    /// \param _testName Test name.
+    /// The SingleDose class cannot be instantiated since it is abstract -- we will rely on the test below for a
+    /// LastingDose and focus on the capabilities of a pure SingleDose (i.e., the Dose, the Route, ...)
+    void testSingleDose(const std::string& /* _testName */)
     {
-    }
-
-    void testSingleDose(const std::string& _testName)
-    {
-        std::cout << _testName << std::endl;
-
-        // The SingleDose class cannot be instantiated since it is abstract -- we will rely on the test below for a
-        // LastingDose and focus on the capabilities of a pure SingleDose (i.e., the Dose, the Route, ...)
-
         const Dose validDose = 100.0;
         const Dose invalidDose = -100.0;
-        const RouteOfAdministration routePerfusion = RouteOfAdministration::PERFUSION;
+        const RouteOfAdministration routePerfusion = RouteOfAdministration::INFUSION;
         const Duration emptyInfusionTime;
         const Duration invalidInfusionTime(-std::chrono::minutes(20));
         const Duration validInfusionTime(std::chrono::minutes(20));
@@ -54,16 +51,15 @@ struct TestDosage : public fructose::test_base<TestDosage>
                                                             invalidInfusionTime,
                                                             validInterval),
                                   std::invalid_argument);
-
-        std::cout << "=> " << _testName << " succeeds!" << std::endl;
     }
 
-    void testLastingDose(const std::string& _testName)
-    {
-        std::cout << _testName << std::endl;
 
+    /// \brief Test the instantiation of a LastingDose.
+    /// \param _testName Test name.
+    void testLastingDose(const std::string& /* _testName */)
+    {
         const Dose validDose = 100.0;
-        const RouteOfAdministration routePerfusion = RouteOfAdministration::PERFUSION;
+        const RouteOfAdministration routePerfusion = RouteOfAdministration::INFUSION;
         const Duration validInfusionTime(std::chrono::minutes(20));
         const Duration emptyInterval;
         const Duration invalidInterval(-std::chrono::hours(10));
@@ -93,16 +89,15 @@ struct TestDosage : public fructose::test_base<TestDosage>
         DateTime dt(date::year_month_day(date::year(2017), date::month(7), date::day(20)),
                     std::chrono::seconds(12345));
         fructose_assert(ptr->getFirstIntakeInterval(dt) == dt)
-
-        std::cout << "=> " << _testName << " succeeds!" << std::endl;
     }
 
-    void testDailyDose(const std::string& _testName)
-    {
-        std::cout << _testName << std::endl;
 
+    /// \brief Test the instantiation of a DailyDose.
+    /// \param _testName Test name.
+    void testDailyDose(const std::string& /* _testName */)
+    {
         const Dose validDose = 100.0;
-        const RouteOfAdministration routePerfusion = RouteOfAdministration::PERFUSION;
+        const RouteOfAdministration routePerfusion = RouteOfAdministration::INFUSION;
         const Duration validInfusionTime(std::chrono::minutes(20));
         // Cannot have an invalid or invalid time of day (at worst, it simply takes the current time)
         const TimeOfDay validTimeOfDay(Duration(std::chrono::seconds(12345)));
@@ -143,23 +138,22 @@ struct TestDosage : public fructose::test_base<TestDosage>
         DateTime dtAfter_Correct(date::year_month_day(date::year(2017), date::month(7), date::day(21)),
                                  std::chrono::seconds(12345));
         fructose_assert(ptr->getFirstIntakeInterval(dtAfter) == dtAfter_Correct);
-
-        std::cout << "=> " << _testName << " succeeds!" << std::endl;
     }
 
-    void testWeeklyDose(const std::string& _testName)
-    {
-        std::cout << _testName << std::endl;
 
+    /// \brief Test the instantiation of a WeeklyDose.
+    /// \param _testName Test name.
+    void testWeeklyDose(const std::string& /* _testName */)
+    {
         const Dose validDose = 100.0;
-        const RouteOfAdministration routePerfusion = RouteOfAdministration::PERFUSION;
+        const RouteOfAdministration routePerfusion = RouteOfAdministration::INFUSION;
         const Duration validInfusionTime(std::chrono::minutes(20));
         // Cannot have an invalid or invalid time of day (at worst, it simply takes the current time)
         const TimeOfDay validTimeOfDay(Duration(std::chrono::seconds(12345)));
         const DayOfWeek invalidDayOfWeek((unsigned)11);
         // Days of week range from 0 to 6 (Sunday to Saturday)
-        const DayOfWeek validDayOfWeek1((unsigned)0);
-        const DayOfWeek validDayOfWeek2((unsigned)1);
+        const DayOfWeek validDayOfWeek1((unsigned)SUNDAY);
+        const DayOfWeek validDayOfWeek2((unsigned)MONDAY);
 
         fructose_assert_exception(Tucuxi::Core::WeeklyDose(validDose,
                                                            routePerfusion,
@@ -255,18 +249,21 @@ struct TestDosage : public fructose::test_base<TestDosage>
         DateTime afterDay_afterTOD_correct(date::year_month_day(date::year(2017), date::month(7), date::day(23)),
                                             std::chrono::seconds(12345));
         fructose_assert(ptr->getFirstIntakeInterval(afterDay_afterTOD) == afterDay_afterTOD_correct);
-
-        std::cout << "=> " << _testName << " succeeds!" << std::endl;
     }
 
-    void testDosageTimeRange(const std::string& _testName)
-    {
-        std::cout << _testName << std::endl;
 
+    /// \brief Test a time range, checking that overlaps are properly detected.
+    /// \param _testName Test name.
+    void testDosageTimeRange(const std::string& /* _testName */)
+    {
         // Give an undefined start date, expect an exception
         DateTime emptyDate;
         emptyDate.reset();
-        fructose_assert_exception(new Tucuxi::Core::DosageTimeRange(emptyDate), std::invalid_argument);
+        LastingDose fakeDose(Dose(200.0),
+                             RouteOfAdministration::INFUSION,
+                             Duration(std::chrono::minutes(20)),
+                             Duration(std::chrono::hours(240)));
+        fructose_assert_exception(new Tucuxi::Core::DosageTimeRange(emptyDate, fakeDose), std::invalid_argument);
 
         DateTime startDate(date::year_month_day(date::year(2017), date::month(7), date::day(17)),
                            std::chrono::seconds(12345));
@@ -274,18 +271,18 @@ struct TestDosage : public fructose::test_base<TestDosage>
                            std::chrono::seconds(12345));
 
         // Give a valid start date but no end date, expect no exception but the end date must be undefined
-        fructose_assert_no_exception(new Tucuxi::Core::DosageTimeRange(startDate));
-        std::unique_ptr<Tucuxi::Core::DosageTimeRange> ptr1(new Tucuxi::Core::DosageTimeRange(startDate));
+        fructose_assert_no_exception(new Tucuxi::Core::DosageTimeRange(startDate, fakeDose));
+        std::unique_ptr<Tucuxi::Core::DosageTimeRange> ptr1(new Tucuxi::Core::DosageTimeRange(startDate, fakeDose));
         fructose_assert(ptr1->getStartDate() == startDate);
         fructose_assert(ptr1->getEndDate().isUndefined());
 
         // Same as above, but with start and end dates. Check also that the two dates are meaningful (start <= end).
-        fructose_assert_exception(new Tucuxi::Core::DosageTimeRange(emptyDate, emptyDate), std::invalid_argument);
-        fructose_assert_exception(new Tucuxi::Core::DosageTimeRange(emptyDate, endDate), std::invalid_argument);
-        fructose_assert_exception(new Tucuxi::Core::DosageTimeRange(endDate, startDate), std::invalid_argument);
-        fructose_assert_no_exception(new Tucuxi::Core::DosageTimeRange(startDate, emptyDate));
-        fructose_assert_no_exception(new Tucuxi::Core::DosageTimeRange(startDate, endDate));
-        std::unique_ptr<Tucuxi::Core::DosageTimeRange> ptr2(new Tucuxi::Core::DosageTimeRange(startDate, endDate));
+        fructose_assert_exception(new Tucuxi::Core::DosageTimeRange(emptyDate, emptyDate, fakeDose), std::invalid_argument);
+        fructose_assert_exception(new Tucuxi::Core::DosageTimeRange(emptyDate, endDate, fakeDose), std::invalid_argument);
+        fructose_assert_exception(new Tucuxi::Core::DosageTimeRange(endDate, startDate, fakeDose), std::invalid_argument);
+        fructose_assert_no_exception(new Tucuxi::Core::DosageTimeRange(startDate, emptyDate, fakeDose));
+        fructose_assert_no_exception(new Tucuxi::Core::DosageTimeRange(startDate, endDate, fakeDose));
+        std::unique_ptr<Tucuxi::Core::DosageTimeRange> ptr2(new Tucuxi::Core::DosageTimeRange(startDate, endDate, fakeDose));
         fructose_assert(ptr2->getStartDate() == startDate);
         fructose_assert(ptr2->getEndDate() == endDate);
 
@@ -301,29 +298,47 @@ struct TestDosage : public fructose::test_base<TestDosage>
                               std::chrono::seconds(12345));
 
         std::unique_ptr<Tucuxi::Core::DosageTimeRange> beforeToMiddle(new Tucuxi::Core::DosageTimeRange(beforeStartDate,
-                                                                                                        afterStartBeforeEndDate));
+                                                                                                        afterStartBeforeEndDate,
+                                                                                                        fakeDose));
         assert(timeRangesOverlap(*ptr2, *beforeToMiddle));
 
         std::unique_ptr<Tucuxi::Core::DosageTimeRange> middleToAfter(new Tucuxi::Core::DosageTimeRange(afterStartBeforeEndDate,
-                                                                                                       afterEndDate));
+                                                                                                       afterEndDate,
+                                                                                                       fakeDose));
         assert(timeRangesOverlap(*ptr2, *middleToAfter));
 
         std::unique_ptr<Tucuxi::Core::DosageTimeRange> beforeToAfter(new Tucuxi::Core::DosageTimeRange(beforeStartDate,
-                                                                                                       afterEndDate));
+                                                                                                       afterEndDate,
+                                                                                                       fakeDose));
         assert(timeRangesOverlap(*ptr2, *beforeToAfter));
 
         std::unique_ptr<Tucuxi::Core::DosageTimeRange> insideInterval(new Tucuxi::Core::DosageTimeRange(afterStartBeforeEndDate,
-                                                                                                        afterMiddleBeforeEndDate));
+                                                                                                        afterMiddleBeforeEndDate,
+                                                                                                        fakeDose));
         assert(timeRangesOverlap(*ptr2, *insideInterval));
 
-        std::unique_ptr<Tucuxi::Core::DosageTimeRange> beforeToOpenEnd(new Tucuxi::Core::DosageTimeRange(beforeStartDate));
+        std::unique_ptr<Tucuxi::Core::DosageTimeRange> beforeToOpenEnd(new Tucuxi::Core::DosageTimeRange(beforeStartDate,
+                                                                                                         fakeDose));
         assert(timeRangesOverlap(*ptr2, *beforeToOpenEnd));
 
-        std::unique_ptr<Tucuxi::Core::DosageTimeRange> middleToOpenEnd(new Tucuxi::Core::DosageTimeRange(afterStartBeforeEndDate));
+        std::unique_ptr<Tucuxi::Core::DosageTimeRange> middleToOpenEnd(new Tucuxi::Core::DosageTimeRange(afterStartBeforeEndDate,
+                                                                                                         fakeDose));
         assert(timeRangesOverlap(*ptr2, *middleToOpenEnd));
 
-        std::unique_ptr<Tucuxi::Core::DosageTimeRange> afterToOpenEnd(new Tucuxi::Core::DosageTimeRange(afterEndDate));
+        std::unique_ptr<Tucuxi::Core::DosageTimeRange> afterToOpenEnd(new Tucuxi::Core::DosageTimeRange(afterEndDate,
+                                                                                                        fakeDose));
         assert(!timeRangesOverlap(*ptr2, *afterToOpenEnd));
+
+        // Check that two neighboring time ranges are not considered as overlapping
+        DateTime neigh1Start(date::year_month_day(date::year(2017), date::month(6), date::day(17)),
+                             std::chrono::seconds(12345));
+        DateTime neigh1End(date::year_month_day(date::year(2017), date::month(7), date::day(19)),
+                           std::chrono::seconds(12345));
+        DateTime neigh2Start(date::year_month_day(date::year(2017), date::month(7), date::day(19)),
+                             std::chrono::seconds(12345));
+        std::unique_ptr<Tucuxi::Core::DosageTimeRange> neigh1(new Tucuxi::Core::DosageTimeRange(neigh1Start, neigh1End, fakeDose));
+        std::unique_ptr<Tucuxi::Core::DosageTimeRange> neigh2(new Tucuxi::Core::DosageTimeRange(neigh2Start, fakeDose));
+        assert(!timeRangesOverlap(*neigh1, *neigh2));
 
         // Check the overlap detection for a time range against a list of time ranges
         DateTime before1(date::year_month_day(date::year(2017), date::month(1), date::day(17)),
@@ -340,18 +355,16 @@ struct TestDosage : public fructose::test_base<TestDosage>
                          std::chrono::seconds(12345));
 
         DosageTimeRangeList trList;
-        trList.emplace_back(new Tucuxi::Core::DosageTimeRange(before1, before2));
-        trList.emplace_back(new Tucuxi::Core::DosageTimeRange(before2, before3));
-        trList.emplace_back(new Tucuxi::Core::DosageTimeRange(before3, before4));
-        trList.emplace_back(new Tucuxi::Core::DosageTimeRange(before4, before5));
-        trList.emplace_back(new Tucuxi::Core::DosageTimeRange(before5, before6));
+        trList.emplace_back(new Tucuxi::Core::DosageTimeRange(before1, before2, fakeDose));
+        trList.emplace_back(new Tucuxi::Core::DosageTimeRange(before2, before3, fakeDose));
+        trList.emplace_back(new Tucuxi::Core::DosageTimeRange(before3, before4, fakeDose));
+        trList.emplace_back(new Tucuxi::Core::DosageTimeRange(before4, before5, fakeDose));
+        trList.emplace_back(new Tucuxi::Core::DosageTimeRange(before5, before6, fakeDose));
 
         assert(!timeRangesOverlap(*ptr2, trList));
 
-        trList.emplace_back(new Tucuxi::Core::DosageTimeRange(before5));
+        trList.emplace_back(new Tucuxi::Core::DosageTimeRange(before5, fakeDose));
         assert(timeRangesOverlap(*ptr2, trList));
-
-        std::cout << "=> " << _testName << " succeeds!" << std::endl;
     }
 };
 

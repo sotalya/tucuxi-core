@@ -6,6 +6,7 @@
 #define TUCUXI_TUCUCOMMON_DURATION_H
 
 #include <chrono>
+#include <iostream>
 
 #include "basetypes.h"
 
@@ -30,17 +31,25 @@ public:
     /// \brief Construct a duration from a std::chrono::minutes
     /// This also provide implicit conversions when using all the other methods.
     /// @param _value Duration in minutes
-    explicit Duration(const std::chrono::minutes _value);
+    explicit Duration(const std::chrono::minutes &_value);
 
     /// \brief Construct a duration from a std::chrono::seconds
     /// This also provide implicit conversions when using all the other methods.
     /// @param _value Duration in seconds
-    explicit Duration(const std::chrono::seconds d);
+    explicit Duration(const std::chrono::seconds &_value);
 
     /// \brief Construct a duration from a std::chrono::milliseconds
     /// This also provide implicit conversions when using all the other methods.
     /// @param _value Duration in milliseconds
-    explicit Duration(const std::chrono::milliseconds d);
+    explicit Duration(const std::chrono::milliseconds &_value);
+
+    /// \brief Construct a duration from a time expressed in hh, mm, ss
+    /// \param _hours Number of hours.
+    /// \param _minutes Number of minutes.
+    /// \param _seconds Number of seconds.
+    Duration(const std::chrono::hours &_hours,
+             const std::chrono::minutes &_minutes,
+             const std::chrono::seconds &_seconds);
 
     /// \brief Returns the duration in one of the std::chrono duration class (hours, minutes, seconds, ...)
     /// @return The duration in the specified T unit.

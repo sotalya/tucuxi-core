@@ -45,11 +45,20 @@ public:
     /// \brief Destructor
     ~IntakeEvent() {}
 
+    /// \brief Default copy constructor.
+    /// \param _other Source object to copy from.
     IntakeEvent(const IntakeEvent &other) = default;
+
+    /// \brief Default assignment operator.
+    /// \param _other Source object to copy from.
     IntakeEvent& operator=(const IntakeEvent &other) = default;
-    bool operator==(const IntakeEvent &other)
+
+    /// \brief Comparison operator.
+    /// \param _other Object to compare to.
+    /// \return true if the two objects are equal, false otherwise.
+    bool operator==(const IntakeEvent &other) const
     {
-        return (/*m_time == other.m_time &&*/
+        return (m_time == other.m_time &&
                 m_dose == other.m_dose &&
                 m_offsetTime == other.m_offsetTime &&
                 m_nbPoints == other.m_nbPoints &&
@@ -58,27 +67,68 @@ public:
                 m_infusionTime == other.m_infusionTime);
     }
 
-    void setInterval(Duration _interval) { m_interval = _interval; }     /// Change the interval value
-    Duration getInterval() const         { return m_interval; }          /// Get the interval value
+    /// \brief Change the time before the next intake.
+    /// \param _interval New interval size.
+    void setInterval(Duration _interval)
+    {
+        m_interval = _interval;
+    }
+
+    /// \brief Get the interval value in milliseconds.
+    /// \return Interval value in ms.
+    DeltaTime getInterval() const
+    {
+        return m_interval.get<std::chrono::milliseconds>().count();
+    }
     
-    Dose getDose() const                 { return m_dose; }              /// Get the dose
+    /// \brief Get the dose.
+    /// \return Dose value.
+    Dose getDose() const
+    {
+        return m_dose;
+    }
     
-    Duration getOffsetTime() const      { return m_offsetTime; }         /// Get the time since the start of the treatment
+    /// \brief Get the time (in milliseconds) since the start of the treatment.
+    /// \return Time in ms since the beginning of the treatment.
+    DeltaTime getOffsetTime() const
+    {
+        return m_offsetTime.get<std::chrono::milliseconds>().count();
+    }
     
+    /// \brief Get the route of administration of the treatment.
+    /// \return Route of administration.
+    RouteOfAdministration getRoute() const
+    {
+        return m_route;
+    }
+
+    /// \brief Get the infusion time (in milliseconds).
+    /// \return Infusion time (in ms).
+    DeltaTime getInfusionTime() const
+    {
+        return m_infusionTime.get<std::chrono::milliseconds>().count();
+    }
+
+    /// \brief Compare two intakes, sorting them according to intake time.
+    /// \param _other The intake to compare to.
+    /// \return True if the current IntakeEvent is relative to an intake that precedes the one is compared to, false
+    /// otherwise.
+    bool operator<(const IntakeEvent& _other) const
+    {
+        return m_time < _other.m_time;
+    }
+
     // The association with intakeintervalcalculator happens here
     // The intaketocalculatorassociator sets this value
     // void setCalc(IntakeIntervalCalculator& _calc) { calc = &_calc; }
-
 
 private:
     /// The dose in mg
     Dose m_dose;
     /// Number of hours since the first dose
     Duration m_offsetTime;
-    
     /// Number of points to compute for this intake
     int m_nbPoints;
-
     /// The route of administration
     RouteOfAdministration m_route;
     /// The time before the next intake

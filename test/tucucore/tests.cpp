@@ -26,21 +26,31 @@ int main(int argc, char** argv)
 
     int res = dosageTests.run(argc, argv);
     if (res != 0) {
-        printf("Dosage test failed");
+        std::cerr << "Dosage test failed\n";
         exit(1);
     }
+    std::cout << "Dosage test succeeded\n";
 
     // --- INTAKE EXTRACTOR --- //
     TestIntakeExtractor intakeExtractorTests;
-    intakeExtractorTests.add_test("IntakeExtractor-basic", &TestIntakeExtractor::basic);
-    intakeExtractorTests.add_test("IntakeExtractor-weekWithoutWeekEnd", &TestIntakeExtractor::weekWithoutWeekEnd);
-    intakeExtractorTests.add_test("IntakeExtractor-weekWithWeekEnd", &TestIntakeExtractor::weekWithoutWeekEnd);
+    intakeExtractorTests.add_test("OncePerWeek test", &TestIntakeExtractor::testOncePerWeek);
+    intakeExtractorTests.add_test("OnceEveryTenDays test", &TestIntakeExtractor::testOnceEveryTenDays);
+    intakeExtractorTests.add_test("OnceEvery36Hours test", &TestIntakeExtractor::testOnceEvery36Hours);
+    intakeExtractorTests.add_test("FiveTimesEvery12Hours test", &TestIntakeExtractor::testFiveTimesEvery12Hours);
+    intakeExtractorTests.add_test("FiveTimesEvery12HoursEarlyStop test", &TestIntakeExtractor::testFiveTimesEvery12HoursEarlyStop);
+    intakeExtractorTests.add_test("TwiceEveryTenDays test", &TestIntakeExtractor::testTwiceEveryTenDays);
+    intakeExtractorTests.add_test("OnceEveryDay test", &TestIntakeExtractor::testOnceEveryDay);
+    intakeExtractorTests.add_test("ThreeTimesEveryDay test", &TestIntakeExtractor::testThreeTimesEveryDay);
+    intakeExtractorTests.add_test("ComplexParallelSequence1 test", &TestIntakeExtractor::testComplexParallelSequence1);
+    intakeExtractorTests.add_test("ComplexParallelSequence2 test", &TestIntakeExtractor::testComplexParallelSequence2);
+    intakeExtractorTests.add_test("FullWeekExceptMonday test", &TestIntakeExtractor::testFullWeekExceptMonday);
 
     res = intakeExtractorTests.run(argc, argv);
     if (res != 0) {
-        printf("IntakeExtractor test failed");
+        std::cerr << "IntakeExtractor test failed\n";
         exit(1);
     }
+    std::cout << "IntakeExtractor test succeeded\n";
 
     return 0;
 }
