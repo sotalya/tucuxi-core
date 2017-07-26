@@ -6,6 +6,7 @@
 #define TUCUXI_TUCUCOMMON_DATETIME_H
 
 #include <chrono>
+#include <iostream>
 
 #include "tucucommon/basetypes.h"
 
@@ -76,10 +77,20 @@ public:
     /// @return The result of the addition.
     const DateTime operator+(const Duration& _duration) const;
 
+    /// \brief Return a new DateTime object with the addition of the date and the specified date.
+    /// @param _dateTime The date to be added.
+    /// @return The result of the addition.
+    const DateTime operator+(const DateTime& _dateTime) const;
+
     /// \brief Add a duration to the date.
     /// @param _duration The duration to be added. 
     /// @return A reference to the modified DateTime.
     DateTime& operator+=(const Duration& _duration);
+
+    /// \brief Add another date to the date.
+    /// @param _dateTime The date to be added.
+    /// @return A reference to the modified DateTime.
+    DateTime& operator+=(const DateTime& _dateTime);
 
     /// \brief Return a new DateTime object with the substraction of the date and the specified duration.
     /// @param _duration The duration to be substracted.

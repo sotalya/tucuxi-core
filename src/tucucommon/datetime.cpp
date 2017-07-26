@@ -73,9 +73,22 @@ const DateTime DateTime::operator+(const Duration& _duration) const
 }
 
 
+const DateTime DateTime::operator+(const DateTime& _dateTime) const
+{
+    return DateTime(*this) += _dateTime.get<std::chrono::seconds>();
+}
+
+
 DateTime& DateTime::operator+=(const Duration& _duration)
 {
     m_date += _duration.get<std::chrono::seconds>();
+    return *this;
+}
+
+
+DateTime& DateTime::operator+=(const DateTime& _dateTime)
+{
+    m_date += _dateTime.get<std::chrono::seconds>();
     return *this;
 }
 

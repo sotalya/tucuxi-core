@@ -30,7 +30,7 @@ typedef std::vector<IntakeEvent> IntakeSeries;
 /// \brief Implement the extract and clone operations for Dosage subclasses.
 #define DOSAGE_UTILS(BaseClassName, ClassName) \
     friend IntakeExtractor; \
-    virtual int extract(IntakeExtractor &_extractor, const DateTime &_start, const DateTime &_end, IntakeSeries &_series); \
+    virtual int extract(IntakeExtractor &_extractor, const DateTime &_start, const DateTime &_end, IntakeSeries &_series) const; \
     virtual std::unique_ptr<BaseClassName> clone() const \
     { \
         return std::unique_ptr<BaseClassName>(new ClassName(*this)); \
@@ -62,15 +62,13 @@ public:
     /// whole set of calls)
     /// \post FORALL intake IN extracted_intakes, intake.time IN [_start, _end)
     /// \see IntakeExtractor::extract()
-    virtual int extract(IntakeExtractor &_extractor, const DateTime &_start, const DateTime &_end, IntakeSeries &_series) = 0;
+    virtual int extract(IntakeExtractor &_extractor, const DateTime &_start, const DateTime &_end, IntakeSeries &_series) const = 0;
 
     /// \brief Return a pointer to a clone of the correct subclass.
     /// \return Pointer to a new object of subclass' type.
     virtual std::unique_ptr<Dosage> cloneDosage() const = 0;
 };
 
-/// \brief A list of abstract dosages
-typedef std::vector<std::unique_ptr<Dosage>> DosageList;
 
 /// \ingroup TucuCore
 /// \brief Pure virtual class upon which dosage loops are based.
@@ -89,9 +87,7 @@ class DosageBounded : public Dosage
 public:
     friend IntakeExtractor;
 
-    // We must declare it, since it is used when invoking extract() in the different subclasses (we want to be able to
-    // make the call, even if this function never gets called).
-    virtual int extract(IntakeExtractor &_extractor, const DateTime &_start, const DateTime &_end, IntakeSeries &_series) = 0;
+    virtual int extract(IntakeExtractor &_extractor, const DateTime &_start, const DateTime &_end, IntakeSeries &_series) const;
 
     /// \brief Return the instant of the first intake in the given interval.
     /// \param _intervalStart Starting point of the interval.
@@ -120,6 +116,14 @@ typedef std::vector<std::unique_ptr<DosageBounded>> DosageBoundedList;
 class DosageLoop : public DosageUnbounded
 {
 public:
+    /// \brief Construct a dosage loop from a bounded dosage.
+    /// \param _dosage Dosage to add to the loop.
+    DosageLoop(const DosageBounded &_dosage)
+    {
+        m_dosage = _dosage.clone();
+    }
+
+
     /// \brief Copy-construct a dosage loop.
     /// \param _other Dosage loop to clone.
     DosageLoop(const DosageLoop &_other) : DosageUnbounded(_other)
@@ -142,8 +146,7 @@ public:
     /// \brief Construct a repeated dosage starting from a dosage and the number of times it is repeated.
     /// \param _dosage Dosage to repeat.
     /// \param _nbTimes Number of times the dosage has to be repeated.
-    DosageRepeat(const DosageBounded &_dosage,
-                 const unsigned int _nbTimes)
+    DosageRepeat(const DosageBounded &_dosage, const unsigned int _nbTimes)
     {
         m_dosage = _dosage.clone();
         m_nbTimes = _nbTimes;
@@ -154,6 +157,7 @@ public:
     DosageRepeat(const DosageRepeat &_other) : DosageBounded(_other)
     {
         m_dosage = _other.m_dosage->clone();
+        m_nbTimes = _other.m_nbTimes;
     }
 
     DOSAGE_UTILS(DosageBounded, DosageRepeat);
@@ -182,10 +186,18 @@ private:
 };
 
 /// \ingroup TucuCore
-/// \brief Ordered sequence of dosages that is administered in a bounded interval.
+/// \brief Unordered sequence of dosages that is administered in a bounded interval.
+/// This class can be used, for instance, to represent a sequence of three daily doses in three different days.
 class DosageSequence : public DosageBounded
 {
 public:
+    /// \brief Create a dosage sequence taking at least a dosage (this prevents having an empty sequence).
+    /// \param _dosage Dosage to add.
+    DosageSequence(const DosageBounded &_dosage)
+    {
+        m_dosages.emplace_back(_dosage.clone());
+    }
+
     /// \brief Copy-construct a dosage sequence.
     /// \param _other Dosage sequence to clone.
     DosageSequence(const DosageSequence &_other) : DosageBounded(_other)
@@ -193,6 +205,13 @@ public:
         for (auto&& dosage: _other.m_dosages) {
             m_dosages.emplace_back(dosage->clone());
         }
+    }
+
+    /// \brief Add a dosage to the sequence.
+    /// \param _dosage Dosage to add.
+    void addDosage(const DosageBounded &_dosage)
+    {
+        m_dosages.emplace_back(_dosage.clone());
     }
 
     DOSAGE_UTILS(DosageBounded, DosageSequence);
@@ -221,6 +240,85 @@ private:
     DosageBoundedList m_dosages;
 };
 
+typedef std::vector<Duration> TimeOffsetList;
+
+/// \ingroup TucuCore
+/// \brief Unordered sequence of dosages, with a common starting point and an absolute offset, that evolve in parallel.
+/// This class can be used, for instance, to represent a sequence of three different doses that have to be administered
+/// in the same day, at different moments, but with a daily periodicization (that is, at XX:XX dose A, at YY:YY dose B,
+/// and at ZZ:ZZ dose C, and this every day).
+class ParallelDosageSequence : public DosageBounded
+{
+public:
+    /// \brief Create a dosage sequence taking at least a dosage and an absolute offset (this prevents having an empty
+    /// sequence).
+    /// \param _dosage Dosage to add.
+    /// \param _offset Offset of the dosage.
+    ParallelDosageSequence(const DosageBounded &_dosage, const Duration &_offset)
+    {
+        m_dosages.emplace_back(_dosage.clone());
+        m_offsets.emplace_back(_offset);
+    }
+
+
+    /// \brief Copy-construct a parallel dosage sequence.
+    /// \param _other Dosage sequence to clone.
+    ParallelDosageSequence(const ParallelDosageSequence &_other) : DosageBounded(_other)
+    {
+        for (auto&& dosage: _other.m_dosages) {
+            m_dosages.emplace_back(dosage->clone());
+        }
+        for (auto& offset: _other.m_offsets) {
+            m_offsets.emplace_back(offset);
+        }
+    }
+
+
+    /// \brief Add a dosage to the sequence, along with its offset with respect to the beginnning of the sequence.
+    /// \param _dosage Dosage to add.
+    /// \param _offset Offset of the dosage.
+    void addDosage(const DosageBounded &_dosage, const Duration &_offset)
+    {
+        m_dosages.emplace_back(_dosage.clone());
+        m_offsets.emplace_back(_offset);
+    }
+
+
+    DOSAGE_UTILS(DosageBounded, ParallelDosageSequence);
+
+
+    /// \brief Get the time step between two bounded dosages.
+    /// \return Time step of the whole repeated sequence.
+    virtual Duration getTimeStep() const
+    {
+        Duration totalDuration;
+        // We have to consider the time it takes for the dosage with the biggest time step
+        for (size_t i = 0; i < m_dosages.size(); ++i) {
+            if (m_offsets.at(i) + m_dosages.at(i)->getTimeStep() > totalDuration) {
+                totalDuration = m_offsets.at(i) + m_dosages.at(i)->getTimeStep();
+            }
+        }
+        return totalDuration;
+    }
+
+
+    /// \brief Return the instant of the first intake in the given interval.
+    /// \param _intervalStart Starting point of the first element of the sequence.
+    /// \return Time of the first intake in the ordered list.
+    virtual DateTime getFirstIntakeInterval(const DateTime &_intervalStart) const
+    {
+        // We consider that a ParallelSequence starts immediately
+        return _intervalStart;
+    }
+
+private:
+    /// \brief Sequence of bounded dosages that is administered.
+    DosageBoundedList m_dosages;
+    /// \brief Corresponding sequence of offsets.
+    TimeOffsetList m_offsets;
+};
+
+
 /// \ingroup TucuCore
 /// \brief Abstract class specifying a specific intake.
 class SingleDose : public DosageBounded
@@ -231,7 +329,7 @@ public:
     /// \param _route Route of administration.
     /// \param _infusionTime Duration in case of an infusion.
     /// \pre _dose >= 0
-    /// \pre IF _routeOfAdministration == RouteOfAdministration::PERFUSION THEN (!_infusionTime.isEmpty() && _infusionTime > 0)
+    /// \pre IF _routeOfAdministration == RouteOfAdministration::INFUSION THEN (!_infusionTime.isEmpty() && _infusionTime > 0)
     SingleDose(const Dose &_dose,
                const RouteOfAdministration &_routeOfAdministration,
                const Duration &_infusionTime)
@@ -239,11 +337,11 @@ public:
         if (_dose < 0) {
             throw std::invalid_argument("Dose value = " + std::to_string(_dose) + " is invalid (must be >= 0).");
         }
-        if (_routeOfAdministration == RouteOfAdministration::PERFUSION && _infusionTime.isNegative()) {
-            throw std::invalid_argument("Infusion time for PERFUSION is invalid (must be >= 0).");
+        if (_routeOfAdministration == RouteOfAdministration::INFUSION && _infusionTime.isNegative()) {
+            throw std::invalid_argument("Infusion time for INFUSION is invalid (must be >= 0).");
         }
-        if (_routeOfAdministration == RouteOfAdministration::PERFUSION && _infusionTime.isEmpty()) {
-            throw std::invalid_argument("Route of administration is PERFUSION, but empty infusion time specified.");
+        if (_routeOfAdministration == RouteOfAdministration::INFUSION && _infusionTime.isEmpty()) {
+            throw std::invalid_argument("Route of administration is INFUSION, but empty infusion time specified.");
         }
         m_dose = _dose;
         m_routeOfAdministration = _routeOfAdministration;
@@ -421,7 +519,7 @@ public:
         return intakeTime;
     }
 
-private:
+protected:
     /// \brief Day of the week the dose has to be administered.
     DayOfWeek m_dayOfWeek;
 };
@@ -439,40 +537,37 @@ class DosageTimeRange
 public:
     /// \brief Initialize an open-ended list of doses (the end date is not specified).
     /// \param _startDate Interval's starting date.
+    /// \param _dosage Administered dosage.
     /// \pre !_startDate.isUndefined()
     /// \post m_startDate == _startDate
     /// \post _endDate.isUndefined()
-    DosageTimeRange(const DateTime &_startDate) : m_startDate(_startDate)
+    DosageTimeRange(const DateTime &_startDate, const Dosage &_dosage) : m_startDate(_startDate)
     {
         if (_startDate.isUndefined()) {
             throw std::invalid_argument("Undefined start date for a time range specified.");
         }
         m_endDate.reset();
+        m_dosage = _dosage.cloneDosage();
     }
 
     /// \brief Copy-construct a time range.
     /// \param _other Time range to clone.
     DosageTimeRange(const DosageTimeRange &_other) : m_startDate(_other.m_startDate), m_endDate(_other.m_endDate)
     {
-        for (auto&& dosage: _other.m_dosages) {
-            m_dosages.emplace_back(dosage->cloneDosage());
-        }
-    }
-
-    /// \brief Add a dosage to the time range list of dosages.
-    /// \param _dosage Dosage to add
-    void addDosage(const Dosage &_dosage)
-    {
-        m_dosages.emplace_back(_dosage.cloneDosage());
+        m_dosage = _other.m_dosage->cloneDosage();
+        m_addedIntakes = _other.m_addedIntakes;
+        m_skippedIntakes = _other.m_skippedIntakes;
     }
 
     /// \brief Initialize an list of doses (the end date is specified, though it could be unset).
     /// \param _startDate Interval's starting date.
     /// \param _endDate Interval's ending date.
+    /// \param _dosage Administered dosage.
     /// \pre !_startDate.isUndefined()
     /// \post m_startDate == _startDate
     /// \post m_endDate == _endDate
-    DosageTimeRange(const DateTime& _startDate, const DateTime& _endDate) : m_startDate(_startDate), m_endDate(_endDate)
+    DosageTimeRange(const DateTime& _startDate, const DateTime& _endDate, const Dosage &_dosage)
+        : m_startDate(_startDate), m_endDate(_endDate)
     {
         if (m_startDate.isUndefined()) {
             throw std::invalid_argument("Undefined start date for a time range specified.");
@@ -480,6 +575,27 @@ public:
         if (!m_endDate.isUndefined() && m_startDate > m_endDate) {
             throw std::invalid_argument("The start date for a time range has to precede the end date.");
         }
+        m_dosage = _dosage.cloneDosage();
+    }
+
+    /// \brief Add a change in a scheduled intake.
+    /// \param _intake Intake to either mark as skipped or add (if unplanned).
+    /// \param _operation Operation to perform
+    /// \return 0 if the change has been successfully recorded, -1 otherwise.
+    int addIntakeChange(const IntakeEvent &_intake, const ScheduledIntakeOp &_operation)
+    {
+        switch (_operation) {
+        case ScheduledIntakeOp::SKIP:
+            m_skippedIntakes.push_back(_intake);
+            break;
+        case ScheduledIntakeOp::ADD:
+            m_addedIntakes.push_back(_intake);
+            break;
+        default:
+            std::cerr << "Unimplemented operation!\n";
+            return -1;
+        }
+        return 0;
     }
 
     /// \brief Getter for the start date of the interval.
@@ -509,12 +625,16 @@ public:
     friend bool timeRangesOverlap(const DosageTimeRange &_first, const DosageTimeRange &_second);
 
 private:
-    /// List of doses administered in the interval.
-    DosageList m_dosages;
+    /// Doses administered in the interval.
+    std::unique_ptr<Dosage> m_dosage;
     /// Start date of the interval. Must be a valid date.
     DateTime m_startDate;
     /// End date of the interval. Can be unset.
     DateTime m_endDate;
+    /// Added unscheduled intakes in the given time range
+    IntakeSeries m_addedIntakes;
+    /// Skipped scheduled intakes in the given time range
+    IntakeSeries m_skippedIntakes;
 };
 
 /// \ingroup TucuCore
@@ -525,14 +645,9 @@ class DosageHistory
     friend IntakeExtractor;
 
 public:
-    /// \brief Create a new history starting from a dosage time range list.
-    /// \param _timeRangeList List of time ranges to import.
-    DosageHistory(const DosageTimeRangeList &_timeRangeList)
-    {
-        for (auto&& timeRange: _timeRangeList) {
-            addTimeRange(*timeRange);
-        }
-    }
+    /// \brief Create a new empty dosage history.
+    DosageHistory() { }
+
 
     /// \brief Add a time range to the history.
     /// \param _timeRange Time range to add.
