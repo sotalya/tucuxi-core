@@ -76,9 +76,9 @@ public:
 
     /// \brief Get the interval value in milliseconds.
     /// \return Interval value in ms.
-    DeltaTime getInterval() const
+    Duration getInterval() const
     {
-        return m_interval.get<std::chrono::milliseconds>().count();
+        return m_interval;
     }
     
     /// \brief Get the dose.
@@ -90,9 +90,9 @@ public:
     
     /// \brief Get the time (in milliseconds) since the start of the treatment.
     /// \return Time in ms since the beginning of the treatment.
-    DeltaTime getOffsetTime() const
+    Duration getOffsetTime() const
     {
-        return m_offsetTime.get<std::chrono::milliseconds>().count();
+        return m_offsetTime;
     }
     
     /// \brief Get the route of administration of the treatment.
@@ -104,9 +104,9 @@ public:
 
     /// \brief Get the infusion time (in milliseconds).
     /// \return Infusion time (in ms).
-    DeltaTime getInfusionTime() const
+    Duration getInfusionTime() const
     {
-        return m_infusionTime.get<std::chrono::milliseconds>().count();
+        return m_infusionTime;
     }
 
     /// \brief Compare two intakes, sorting them according to intake time.

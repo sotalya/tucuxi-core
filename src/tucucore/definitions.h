@@ -40,10 +40,6 @@ typedef time_t Date;
 typedef double Time;
 
 /// \ingroup TucuCore
-/// \brief The type used to represent a difference of time in ms
-typedef double DeltaTime;
-
-/// \ingroup TucuCore
 /// \brief The type used to represent a dose in mg
 typedef Value Dose;
 
@@ -52,7 +48,7 @@ typedef Value Dose;
 typedef Value Concentration;
 
 /// \brief The type used to represent a serie of times exrpressed as offsets in millisecond to the start of a cycle
- typedef std::vector<int64> TimeOffsets;
+ typedef std::vector<double> TimeOffsets;
 
 /// \ingroup TucuCore
 /// \brief The type used to represent a serie of concentrations

@@ -16,6 +16,8 @@ using Tucuxi::Common::DateTime;
 using Tucuxi::Common::Duration;
 using Tucuxi::Common::TimeOfDay;
 
+using namespace std::chrono_literals;
+
 namespace Tucuxi {
 namespace Core {
 
@@ -448,7 +450,7 @@ public:
 
         // If the beginning of the interval is past the intake time, then move to the following day
         if (_intervalStart.getTimeOfDay() > m_timeOfDay) {
-            intakeTime += std::chrono::hours(24);
+            intakeTime += Duration(24h);
         }
 
         return intakeTime;

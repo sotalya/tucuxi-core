@@ -26,7 +26,7 @@ IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakePoints
     prepareComputations(_intakeEvent, _parameters);
 
     // Create our serie of times
-    Eigen::VectorXd times = Eigen::VectorXd::LinSpaced(_cycleSize, 0, _intakeEvent.getInterval().toMilliseconds());
+    Eigen::VectorXd times = Eigen::VectorXd::LinSpaced(_cycleSize, 0, static_cast<int>(_intakeEvent.getInterval().toMilliseconds()));
 
     // Can we reuse cached logarithms? 
     if (!m_cache.get(_intakeEvent.getInterval(), _parameters, _cycleSize, m_precomputedLogarithms))	{

@@ -30,7 +30,7 @@ int IntakeExtractor::extract(const DosageHistory &_dosageHistory, const DateTime
 
     std::sort(_series.begin(), _series.end());
 
-    return _series.size();
+    return static_cast<int>(_series.size());
 }
 
 
