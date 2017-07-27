@@ -23,25 +23,40 @@ public:
     /// Creates an empty duration (duration of 0)
     Duration();
 
+    /// \brief Construct a duration from a std::chrono::years
+    /// This also provide implicit conversions when using all the other methods.
+    /// @param _value Duration in years
+    Duration(const date::years &_value);
+
+    /// \brief Construct a duration from a std::chrono::months
+    /// This also provide implicit conversions when using all the other methods.
+    /// @param _value Duration in months
+    Duration(const date::months &_value);
+
+    /// \brief Construct a duration from a std::chrono::days
+    /// This also provide implicit conversions when using all the other methods.
+    /// @param _value Duration in days
+    Duration(const date::days &_value);
+
     /// \brief Construct a duration from a std::chrono::hours
     /// This also provide implicit conversions when using all the other methods.
     /// @param _value Duration in hours
-    explicit Duration(const std::chrono::hours &_value);
+    Duration(const std::chrono::hours &_value);
 
     /// \brief Construct a duration from a std::chrono::minutes
     /// This also provide implicit conversions when using all the other methods.
     /// @param _value Duration in minutes
-    explicit Duration(const std::chrono::minutes &_value);
+    Duration(const std::chrono::minutes &_value);
 
     /// \brief Construct a duration from a std::chrono::seconds
     /// This also provide implicit conversions when using all the other methods.
     /// @param _value Duration in seconds
-    explicit Duration(const std::chrono::seconds &_value);
+    Duration(const std::chrono::seconds &_value);
 
     /// \brief Construct a duration from a std::chrono::milliseconds
     /// This also provide implicit conversions when using all the other methods.
     /// @param _value Duration in milliseconds
-    explicit Duration(const std::chrono::milliseconds &_value);
+    Duration(const std::chrono::milliseconds &_value);
 
     /// \brief Construct a duration from a time expressed in hh, mm, ss
     /// \param _hours Number of hours.
@@ -50,13 +65,6 @@ public:
     Duration(const std::chrono::hours &_hours,
              const std::chrono::minutes &_minutes,
              const std::chrono::seconds &_seconds);
-
-    /// \brief Returns the duration in one of the std::chrono duration class (hours, minutes, seconds, ...)
-    /// @return The duration in the specified T unit.
-    template<class T> T get() const
-    {
-        return std::chrono::duration_cast<T>(m_duration);
-    }
 
     /// \brief Is the duration empty?
     /// If the duration has not been set or if the duration equals to 0, returns true.
@@ -124,6 +132,14 @@ public:
     /// \brief Are these durations not equals?
     bool operator!=(const Duration &) const;
 
+    /// \brief Retrieve the duration as a number of yeras
+    /// @return The number of years reprensenting the duration.
+    int64 toYears() const;
+
+    /// \brief Retrieve the duration as a number of months
+    /// @return The number of months reprensenting the duration.
+    int64 toMonths() const;
+
     /// \brief Retrieve the duration as a number of days
     /// @return The number of days reprensenting the duration.
     int64 toDays() const;
@@ -145,7 +161,15 @@ public:
     int64 toMilliseconds() const;
 
 private:
-    std::chrono::duration<double> m_duration;  /// The encapsulated duration
+    /// \brief Returns the duration in one of the std::chrono duration class (hours, minutes, seconds, ...)
+    /// @return The duration in the specified T unit.
+    template<class T> T get() const
+    {
+        return std::chrono::duration_cast<T>(m_duration);
+    }
+
+private:
+    std::chrono::duration<ChronoBaseType> m_duration;  /// The encapsulated duration
 };
 
 }

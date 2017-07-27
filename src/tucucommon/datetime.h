@@ -51,13 +51,6 @@ public:
     /// @param _time The time to be used (as a number of seconds since 0h00.
     DateTime(const date::year_month_day& _date, const std::chrono::seconds& _time);
 
-    /// \brief Returns the duration in one of the std::chrono duration class (years, months, days, ...)    
-    /// @return The duration in the specified T unit.
-    template<class T> T get() const
-    {
-        return std::chrono::duration_cast<T>(m_date.time_since_epoch());
-    }
-
     /// \brief Returns the date part of the object.
     date::year_month_day getDate() const;
 
@@ -159,6 +152,15 @@ public:
     /// \brief Check if the value is empty (internal value is 0). See method Reset().
     /// @return Returns true if the internal value is 0.
     bool isUndefined() const;
+
+private:
+
+    /// \brief Returns the duration in one of the std::chrono duration class (years, months, days, ...)    
+    /// @return The duration in the specified T unit.
+    template<class T> T get() const
+    {
+        return std::chrono::duration_cast<T>(m_date.time_since_epoch());
+    }
 
 private:
     std::chrono::time_point<std::chrono::system_clock> m_date;  /// The date managed by the class

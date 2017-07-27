@@ -7,4 +7,6 @@
 
 typedef long long int int64;
 
+typedef double ChronoBaseType;
+
 #endif // TUCUXI_TUCUCOMMON_BASETYPES_H

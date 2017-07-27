@@ -16,6 +16,24 @@ Duration::Duration()
 }
 
 
+Duration::Duration(const date::years &_value)
+    : m_duration(_value)
+{
+}
+
+
+Duration::Duration(const date::months &_value)
+    : m_duration(_value)
+{
+}
+
+
+Duration::Duration(const date::days &_value)
+    : m_duration(_value)
+{
+}
+
+
 Duration::Duration(const std::chrono::hours &_value)
     : m_duration(_value)
 {
@@ -174,6 +192,19 @@ bool Duration::operator!=(const Duration &_other) const
     return m_duration != _other.m_duration;
 }
 
+
+int64 Duration::toYears() const
+{
+    return get<date::years>().count();
+}
+
+
+int64 Duration::toMonths() const
+{
+    return get<date::months>().count();
+}
+
+
 int64 Duration::toDays() const
 {
     return get<date::days>().count();
@@ -182,13 +213,13 @@ int64 Duration::toDays() const
 
 int64 Duration::toHours() const
 {
-    return get<std::chrono::milliseconds>().count();
+    return get<std::chrono::hours>().count();
 }
 
 
 int64 Duration::toMinutes() const
 {
-    return get<std::chrono::milliseconds>().count();
+    return get<std::chrono::minutes>().count();
 }
 
 

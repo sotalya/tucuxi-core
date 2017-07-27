@@ -26,7 +26,7 @@ DateTime::DateTime(const date::year_month_day& _date)
 DateTime::DateTime(const date::year_month_day& _date, const TimeOfDay& _time)
 {
     m_date = date::sys_days(_date);
-    m_date += _time.getDuration<std::chrono::seconds>();
+    m_date += std::chrono::milliseconds(_time.getDuration());
 }
 
 
@@ -46,7 +46,7 @@ date::year_month_day DateTime::getDate() const
 TimeOfDay DateTime::getTimeOfDay() const
 {
     date::sys_days today = date::floor<date::days>(m_date);
-    return TimeOfDay(Duration(std::chrono::duration_cast<std::chrono::seconds>(m_date - today)));
+    return TimeOfDay(Duration(std::chrono::duration_cast<std::chrono::milliseconds>(m_date - today)));
 }
 
 
@@ -54,14 +54,14 @@ void DateTime::setDate(const date::year_month_day& _newDate)
 {
     TimeOfDay tod = DateTime::getTimeOfDay();
     m_date = date::sys_days(_newDate);
-    m_date += tod.getDuration<std::chrono::seconds>();
+    m_date += std::chrono::milliseconds(tod.getDuration());
 }
 
 
 void DateTime::setTimeOfDay(const TimeOfDay& _newTime)
 {
     m_date = date::floor<date::days>(m_date);
-    m_date += _newTime.getDuration<std::chrono::seconds>();
+    m_date += std::chrono::milliseconds(_newTime.getDuration());
 }
 
 
@@ -75,20 +75,22 @@ const DateTime DateTime::operator+(const Duration& _duration) const
 
 const DateTime DateTime::operator+(const DateTime& _dateTime) const
 {
-    return DateTime(*this) += _dateTime.get<std::chrono::seconds>();
+    DateTime tmp(*this);
+    tmp += _dateTime.get<std::chrono::milliseconds>();
+    return DateTime(*this);
 }
 
 
 DateTime& DateTime::operator+=(const Duration& _duration)
 {
-    m_date += _duration.get<std::chrono::seconds>();
+    m_date += std::chrono::milliseconds(_duration.toMilliseconds());
     return *this;
 }
 
 
 DateTime& DateTime::operator+=(const DateTime& _dateTime)
 {
-    m_date += _dateTime.get<std::chrono::seconds>();
+    m_date += _dateTime.get<std::chrono::milliseconds>();
     return *this;
 }
 
@@ -103,14 +105,14 @@ const DateTime DateTime::operator-(const Duration& _duration) const
 
 DateTime& DateTime::operator-=(const Duration& _duration)
 {
-    m_date -= _duration.get<std::chrono::seconds>();
+    m_date -= std::chrono::milliseconds(_duration.toMilliseconds());
     return *this;
 }
 
 
 const Duration DateTime::operator-(const DateTime& _date) const
 {
-    return Duration(std::chrono::duration_cast<std::chrono::seconds>(m_date - _date.m_date));
+    return Duration(std::chrono::duration_cast<std::chrono::milliseconds>(m_date - _date.m_date));
 }
 
 

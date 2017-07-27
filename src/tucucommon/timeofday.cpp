@@ -25,15 +25,21 @@ TimeOfDay::TimeOfDay(std::chrono::seconds& _time)
 
 
 TimeOfDay::TimeOfDay(const Duration& _time)
-    : m_time(_time.get<std::chrono::seconds>())
+    : m_time(_time.toMilliseconds())
 {
     normalize();
 }
 
 
+int64 TimeOfDay::getDuration() const
+{
+    return std::chrono::duration_cast<std::chrono::milliseconds>(m_time).count();
+}
+
+
 const Duration TimeOfDay::operator-(const TimeOfDay& _time) const
 {
-    return std::chrono::duration_cast<std::chrono::seconds>(m_time - _time.m_time);
+    return Duration(std::chrono::duration_cast<std::chrono::milliseconds>(m_time - _time.m_time));
 }
 
 
@@ -103,7 +109,7 @@ void TimeOfDay::normalize()
     if (value > oneDay)
     {
         value %= oneDay;
-        m_time = std::chrono::duration<float>(value/1000);
+        m_time = std::chrono::duration<ChronoBaseType>(value/1000);
     }
 }
 
