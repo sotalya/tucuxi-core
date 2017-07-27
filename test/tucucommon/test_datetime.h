@@ -41,15 +41,12 @@ struct TestDateTime : public fructose::test_base<TestDateTime>
 
         // Test differences
         Tucuxi::Common::Duration diff = d2 - d1;
-        fructose_assert(diff.get<days>().count() == 365);
-        fructose_assert(diff.get<months>().count() != 12); // Since a year is 365.2425 days
-        fructose_assert(diff.get<years>().count() != 1);   // Since a month is 365.2425/12 
-        diff = diff + std::chrono::duration_cast<std::chrono::seconds>(0.25*24h);
-        fructose_assert(diff.get<months>().count() == 12);
-        fructose_assert(diff.get<years>().count() == 1);
-
-        // Test get<T>()
-        fructose_assert(d2.get<days>().count() - d1.get<days>().count() == 365);
+        fructose_assert(diff.toDays() == 365);
+        fructose_assert(diff.toMonths() != 12); // Since a year is 365.2425 days
+        fructose_assert(diff.toYears() != 1);   // Since a month is 365.2425/12 
+        diff = diff + Tucuxi::Common::Duration(24h)*0.25;
+        fructose_assert(diff.toMonths() == 12);
+        fructose_assert(diff.toYears() == 1);
 
         // Test getDate
         Tucuxi::Common::DateTime d20(2017_y / jan / 1, 10h+22min);
@@ -81,20 +78,15 @@ struct TestDateTime : public fructose::test_base<TestDateTime>
         Tucuxi::Common::TimeOfDay t1(22h);
         Tucuxi::Common::TimeOfDay t2(22h + 23min);
         Tucuxi::Common::TimeOfDay t3(22h + 23min + 24s);
-        Tucuxi::Common::TimeOfDay t4(Tucuxi::Common::Duration(333s));
+        Tucuxi::Common::TimeOfDay t4(333s);
         Tucuxi::Common::TimeOfDay t5(48h + 10min + 3s);
-        Tucuxi::Common::TimeOfDay t6(Tucuxi::Common::Duration(26h));
+        Tucuxi::Common::TimeOfDay t6(26h);
         checkTimeOfDay(t1, 22, 0, 0);
         checkTimeOfDay(t2, 22, 23, 0);
         checkTimeOfDay(t3, 22, 23, 24);
         checkTimeOfDay(t4, 0, 5, 33);
         checkTimeOfDay(t5, 0, 10, 3);
         checkTimeOfDay(t6, 2, 0, 0);
-
-        time_of_day<std::chrono::seconds> tod = t3.get<std::chrono::seconds>();
-        fructose_assert(tod.hours().count() == 22);
-        fructose_assert(tod.minutes().count() == 23);
-        fructose_assert(tod.seconds().count() == 24);
     }
 
     void duration(const std::string& _testName)
@@ -133,7 +125,7 @@ struct TestDateTime : public fructose::test_base<TestDateTime>
         Tucuxi::Common::Duration d10 = d2 % 7;
         checkDuration(d10, 4);
 
-        float n = d2/15min;
+        double n = d2/15min;
         fructose_assert(n == 8);
 
         fructose_assert(d2 > d3);
@@ -179,10 +171,10 @@ private:
         int nSeconds = (int)_nbSeconds;
         fructose_assert(_duration.isEmpty() == isEmpty);
         fructose_assert(_duration.isNegative() == isNegative);
-        fructose_assert(_duration.get<std::chrono::seconds>().count() == nSeconds);
-        fructose_assert(_duration.get<std::chrono::minutes>().count() == nSeconds/60);
-        fructose_assert(_duration.get<std::chrono::hours>().count() == nSeconds/60/60);
-        double d = _duration.get<std::chrono::milliseconds>().count() / 1000.0;
+        fructose_assert(_duration.toSeconds() == nSeconds);
+        fructose_assert(_duration.toMinutes() == nSeconds/60);
+        fructose_assert(_duration.toHours() == nSeconds/60/60);
+        double d = _duration.toMilliseconds() / 1000.0;
         fructose_assert(d == _nbSeconds);
     }
 };
