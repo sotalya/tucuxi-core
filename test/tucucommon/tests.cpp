@@ -13,7 +13,7 @@
 #include "test_cryptohelper.h"
 #include "test_scriptengine.h"
 #include "test_datetime.h"
-/* #include "test_xml.h" */
+#include "test_xml.h"
 
 int main(int argc, char** argv) 
 {

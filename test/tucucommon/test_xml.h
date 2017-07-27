@@ -77,7 +77,7 @@ struct TestXml : public fructose::test_base<TestXml>
     {
         std::cout << _testName << std::endl;
 
-        int nChildren = 100 * 1000;
+        int nChildren =  5000;
         std::string fileName = Tucuxi::Common::Utils::strFormat("%s/test.xml", m_path.c_str());
 
         { // Create a big document and save it into a text file
