@@ -38,7 +38,7 @@ int main(int argc, char** argv)
 
     Tucuxi::Core::Concentrations concentrations;
     Tucuxi::Core::TimeOffsets times;
-    Tucuxi::Core::IntakeEvent intakeEvent(now, 0s, 0.2, 24h, Tucuxi::Core::RouteOfAdministration::BOLUS, 0s, 250);
+    Tucuxi::Core::IntakeEvent intakeEvent(now, 0s, 0.2, 24h, Tucuxi::Core::RouteOfAdministration::INTRAVASCULAR, 0s, 250);
     Tucuxi::Core::ParameterList parameters;
     Tucuxi::Core::Residuals inResiduals;
     Tucuxi::Core::Residuals outResiduals;
