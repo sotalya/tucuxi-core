@@ -113,7 +113,7 @@ struct TestDosage : public fructose::test_base<TestDosage>
                                                                                  validTimeOfDay));
 
         // Check that the step is exactly 24 hours
-        fructose_assert(ptr->getTimeStep().get<std::chrono::hours>() == std::chrono::hours(24));
+        fructose_assert(ptr->getTimeStep().toHours() == 24);
 
         // Check that the first intake is correcly set according to the interval's starting date
         // (12345 seconds = 03:25:45)
@@ -181,7 +181,7 @@ struct TestDosage : public fructose::test_base<TestDosage>
                                                                                    validDayOfWeek1));
 
         // Check that the step is exactly 7 * 24 hours
-        fructose_assert(ptr->getTimeStep().get<std::chrono::hours>() == std::chrono::hours(7 * 24));
+        fructose_assert(ptr->getTimeStep().toHours() == 7 * 24);
 
         // Check that the first intake is correcly set according to the interval's starting date
         // (12345 seconds = 03:25:45)
