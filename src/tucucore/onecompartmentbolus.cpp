@@ -43,7 +43,7 @@ void OneCompartmentBolus::prepareComputations(const IntakeEvent& _intakeEvent, c
 
 void OneCompartmentBolus::computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterList& _parameters, Eigen::VectorXd& _times)
 {
-    m_precomputedLogarithms["Ke"] = (m_Ke * _times).array().exp();
+    m_precomputedLogarithms["Ke"] = (-m_Ke * _times).array().exp();
 }
 
 
