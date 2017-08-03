@@ -1,5 +1,8 @@
 #!/bin/bash
 
+TUCUXI_MAKE=$( cd $( dirname ${BASH_SOURCE[0]} ) && pwd )
+export TUCUXI_ROOT=$(dirname ${TUCUXI_MAKE})
+echo $TUCUXI_ROOT
 
 mkdir -p $TUCUXI_ROOT/bin
 

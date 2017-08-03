@@ -13,6 +13,10 @@ SOURCES := concentrationcalculator.cpp \
            cachedlogarithms.cpp \
            onecompartmentbolus.cpp \
            onecompartmentextra.cpp \
+           onecompartmentintra.cpp \
+           twocompartmentbolus.cpp \
+           twocompartmentextra.cpp \
+           twocompartmentintra.cpp \
            intakeextractor.cpp \
            dosage.cpp
 INCLUDES := . \
