@@ -28,6 +28,8 @@ protected:
 private:
     Value m_D;	/// Quantity of drug
     Value m_Cl;	/// Clearance
+    Value m_F;  /// Biodisponibility
+    Value m_Ka; /// Absorption rate constant
     Value m_Q;	/// ???
     Value m_V1;	/// Volume of the compartment 1
     Value m_V2;	/// Volume of the compartment 2
@@ -35,7 +37,7 @@ private:
     Value m_K12; /// Q/V1
     Value m_K21; /// Q/V2
     Value m_SumK; /// Ke+K12+K21
-    Value m_Root; /// sqrt(sumK*sumK - 4*K21*Ke)
+    Value m_RootK; /// sqrt(sumK*sumK - 4*K21*Ke)
     Value m_Alpha; /// (sumK + root)/2
     Value m_Beta; /// (sumK - root)/2
 };

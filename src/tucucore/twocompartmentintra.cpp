@@ -27,10 +27,10 @@ bool TwoCompartmentIntra::checkInputs(const IntakeEvent& _intakeEvent, const Par
     m_K12 = m_Q / m_V1;
     m_K21 = m_Q / m_V2;
     m_SumK = m_Ke + m_K12 + m_K21;
-    m_Root = std::sqrt((m_SumK * m_SumK) - (4 * m_K21 * m_Ke));
-    m_Divider = m_Root * (-m_SumK + m_Root) * (m_SumK + m_Root);
-    m_Alpha = (m_SumK + m_Root)/2;
-    m_Beta = (m_SumK - m_Root)/2;
+    m_RootK = std::sqrt((m_SumK * m_SumK) - (4 * m_K21 * m_Ke));
+    m_Divider = m_RootK * (-m_SumK + m_RootK) * (m_SumK + m_RootK);
+    m_Alpha = (m_SumK + m_RootK)/2;
+    m_Beta = (m_SumK - m_RootK)/2;
     m_Tinf = (_intakeEvent.getInfusionTime()).toMilliseconds();
     m_Int = (_intakeEvent.getInterval()).toMilliseconds();
     m_DeltaD = (m_D / m_V1) / m_Tinf; 
@@ -66,7 +66,7 @@ void TwoCompartmentIntra::computeLogarithms(const IntakeEvent& _intakeEvent, con
     m_precomputedLogarithms["AlphaInf"] = (m_Alpha * _times).array().exp();
     m_precomputedLogarithms["BetaInf"] = (m_Beta * _times).array().exp();
     m_precomputedLogarithms["BetaInf2"] = (-2 * m_Beta * _times).array().exp();
-    m_precomputedLogarithms["Root"] = (m_Root * _times).array().exp();
+    m_precomputedLogarithms["Root"] = (m_RootK * _times).array().exp();
 }
 
 
@@ -87,33 +87,33 @@ void TwoCompartmentIntra::computeConcentrations(const Residuals& _inResiduals, C
 
     Concentration residInf1 =
 	(2 * m_DeltaD * std::exp(m_Beta * m_Tinf) * m_K21
-	* (std::exp(-m_Beta * m_Tinf) * (-m_K12 - m_K21 + m_Ke - m_Root) 
-	+ std::exp(-2 * m_Beta * m_Tinf) * (m_K12 + m_K21 - m_Ke + m_Root)
-	+ std::exp(m_Root*m_Tinf - m_Alpha*m_Tinf) * (m_K12 + m_K21 - m_Ke - m_Root)
-	+ std::exp(-m_Alpha*m_Tinf - m_Beta*m_Tinf) * (-m_K12 - m_K21 + m_Ke + m_Root))
+	* (std::exp(-m_Beta * m_Tinf) * (-m_K12 - m_K21 + m_Ke - m_RootK) 
+	+ std::exp(-2 * m_Beta * m_Tinf) * (m_K12 + m_K21 - m_Ke + m_RootK)
+	+ std::exp(m_RootK*m_Tinf - m_Alpha*m_Tinf) * (m_K12 + m_K21 - m_Ke - m_RootK)
+	+ std::exp(-m_Alpha*m_Tinf - m_Beta*m_Tinf) * (-m_K12 - m_K21 + m_Ke + m_RootK))
 	) / m_Divider;
     Concentration residInf2 = 
 	(2 * m_DeltaD * std::exp(m_Beta * m_Tinf) * m_K12
-	* (std::exp(-m_Beta * m_Tinf) * (-m_SumK - m_Root)
-	+ std::exp(-2 * m_Beta * m_Tinf) * (m_SumK + m_Root)
-	+ std::exp(m_Root * m_Tinf - m_Alpha * m_Tinf) * (m_SumK - m_Root)
-	+ std::exp(-m_Alpha * m_Tinf - m_Beta * m_Tinf) * (-m_SumK + m_Root))
+	* (std::exp(-m_Beta * m_Tinf) * (-m_SumK - m_RootK)
+	+ std::exp(-2 * m_Beta * m_Tinf) * (m_SumK + m_RootK)
+	+ std::exp(m_RootK * m_Tinf - m_Alpha * m_Tinf) * (m_SumK - m_RootK)
+	+ std::exp(-m_Alpha * m_Tinf - m_Beta * m_Tinf) * (-m_SumK + m_RootK))
         ) / m_Divider;
 
-    Concentration A = ((m_K12 - m_K21 + m_Ke + m_Root) * resid1) - (2 * m_K21 * resid2);
-    Concentration B = ((-m_K12 + m_K21 - m_Ke + m_Root) * resid1) + (2 * m_K21 * resid2);
-    Concentration A2 = (-2 * m_K12 * resid1) + ((-m_K12 + m_K21 - m_Ke + m_Root) * resid2);
-    Concentration BB2 = (2 * m_K12 * resid1) + ((m_K12 - m_K21 + m_Ke + m_Root) * resid2);
-    Concentration AInf = -m_K12 - m_K21 + m_Ke - m_Root;
-    Concentration BInf = m_K12 + m_K21 - m_Ke - m_Root;
-    Concentration BPostInf = (-m_K12 + m_K21 - m_Ke + m_Root)*residInf1 + 2*m_K21*residInf2;
-    Concentration APostInf = (m_K12 - m_K21 + m_Ke + m_Root)*residInf1 - 2*m_K21*residInf2;
+    Value A = ((m_K12 - m_K21 + m_Ke + m_RootK) * resid1) - (2 * m_K21 * resid2);
+    Value B = ((-m_K12 + m_K21 - m_Ke + m_RootK) * resid1) + (2 * m_K21 * resid2);
+    Value A2 = (-2 * m_K12 * resid1) + ((-m_K12 + m_K21 - m_Ke + m_RootK) * resid2);
+    Value BB2 = (2 * m_K12 * resid1) + ((m_K12 - m_K21 + m_Ke + m_RootK) * resid2);
+    Value AInf = -m_K12 - m_K21 + m_Ke - m_RootK;
+    Value BInf = m_K12 + m_K21 - m_Ke - m_RootK;
+    Value BPostInf = (-m_K12 + m_K21 - m_Ke + m_RootK)*residInf1 + 2*m_K21*residInf2;
+    Value APostInf = (m_K12 - m_K21 + m_Ke + m_RootK)*residInf1 - 2*m_K21*residInf2;
 
     // Calculate concentrations for comp1 and comp2
     Eigen::VectorXd concentrations1 = 
-	((A * alphaLogV) + (B * betaLogV)) / (2 * m_Root);
+	((A * alphaLogV) + (B * betaLogV)) / (2 * m_RootK);
     Eigen::VectorXd concentrations2 = 
-	((A2 * alphaLogV) + (BB2 * betaLogV)) / (2 * m_Root);
+	((A2 * alphaLogV) + (BB2 * betaLogV)) / (2 * m_RootK);
 
     // During infusion
     Eigen::ArrayXd p1p1 = (2 * m_DeltaD * m_K21 * betaInfLogV.head(forcesize)).array();
@@ -125,10 +125,10 @@ void TwoCompartmentIntra::computeConcentrations(const Residuals& _inResiduals, C
     Eigen::ArrayXd p2p1 = (2 * m_DeltaD * m_K12 * betaInfLogV.head(forcesize)).array();
     Eigen::ArrayXd p2p2 = 
 	betaLogV.head(forcesize) 
-	* (-m_SumK - m_Root) 
-	+ betaInf2LogV.head(forcesize) * (m_SumK + m_Root)
-        + rootLogV.head(forcesize).cwiseQuotient(alphaInfLogV.head(forcesize)) * (m_SumK - m_Root) 
-	+ alphaLogV.head(forcesize).cwiseQuotient(betaInfLogV.head(forcesize)) * (-m_SumK + m_Root);
+	* (-m_SumK - m_RootK) 
+	+ betaInf2LogV.head(forcesize) * (m_SumK + m_RootK)
+        + rootLogV.head(forcesize).cwiseQuotient(alphaInfLogV.head(forcesize)) * (m_SumK - m_RootK) 
+	+ alphaLogV.head(forcesize).cwiseQuotient(betaInfLogV.head(forcesize)) * (-m_SumK + m_RootK);
 
     concentrations1.head(forcesize) = 
 	concentrations1.head(forcesize) + ((p1p1 * (p1p2 + p1p3)) / m_Divider).matrix();
@@ -139,17 +139,17 @@ void TwoCompartmentIntra::computeConcentrations(const Residuals& _inResiduals, C
     therest = concentrations1.size() - forcesize;
     concentrations1.tail(therest) = 
 	concentrations1.tail(therest) 
-	+ (APostInf * alphaLogV.head(therest) + BPostInf * betaLogV.head(therest)) / (2 * m_Root);
+	+ (APostInf * alphaLogV.head(therest) + BPostInf * betaLogV.head(therest)) / (2 * m_RootK);
 
-    BB2 = 2 * m_K12 * residInf1 + (m_K12 - m_K21 + m_Ke + m_Root)*residInf2;
-    A2 = -2 * m_K12 * residInf1 + (-m_K12 + m_K21 - m_Ke + m_Root)*residInf2;
+    BB2 = 2 * m_K12 * residInf1 + (m_K12 - m_K21 + m_Ke + m_RootK)*residInf2;
+    A2 = -2 * m_K12 * residInf1 + (-m_K12 + m_K21 - m_Ke + m_RootK)*residInf2;
     concentrations2.tail(therest) += 
-	(A2 * alphaLogV.head(therest) + BB2 * betaLogV.head(therest)) / (2 * m_Root);
+	(A2 * alphaLogV.head(therest) + BB2 * betaLogV.head(therest)) / (2 * m_RootK);
 
     // return concentrations of comp1 and comp2
     _outResiduals.push_back(concentrations1[concentrations1.size() - 1]);
     //POSTCONDCONT(concentrations1[concentrations.size() - 1] >= 0, SHOULDNTGONEGATIVE, "The concentration is negative.")
-    _outResiduals.push_back(concentrations2[concentrations2.size() - 1]);
+    _outResiduals.push_back(concentrations2[concentrations1.size() - 1]);
     //POSTCONDCONT(concentrations2[concentrations.size() - 1] >= 0, SHOULDNTGONEGATIVE, "The concentration is negative.")
     _concentrations.assign(concentrations1.data(), concentrations1.data() + concentrations1.size());	
 }
