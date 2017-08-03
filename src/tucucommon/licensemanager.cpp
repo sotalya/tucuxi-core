@@ -129,7 +129,7 @@ int LicenseManager::checklicense(std::string _license)
 
     // Check second and third field == type machine id and id
     try {
-        int type = static_cast<MachineIdType>(std::stoi(_license.substr(field1, field2)));
+        MachineIdType type = static_cast<MachineIdType>(std::stoi(_license.substr(field1, field2)));
 
         if(type == MachineIdType::ERROR) {
             return LicenseError::INVALID_FIELD;
