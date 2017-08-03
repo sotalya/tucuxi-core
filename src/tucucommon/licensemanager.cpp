@@ -6,119 +6,148 @@
 #include <fstream>
 
 #include "tucucommon/licensemanager.h"
+#include "tucucommon/datetime.h"
+#include "tucucommon/cryptohelper.h"
 
 namespace Tucuxi {
 namespace Common {
 
-//LicenseChecker::public_key = std::string("1235");
-//LicenseChecker::private_key = std::string("1235");
+const std::string LicenseManager::m_key = "86685E7AA62844102FC7FAD5D6DDF46C9CA7777BF4E0153FDF5F86463EAC0D75";
 
-LicenseManager::LicenseManager() {
-
-    // Create machine id
-    std::string fingerprint;
-
-    for (int i = CPU; i != ERROR; i++)
-    {
-        fingerprint = SystemInfo::retrieveFingerPrint(static_cast<MachineIdType>(i));
-
-        if(!fingerprint.empty())
-        {
-            m_machineId.m_type = static_cast<MachineIdType>(i);
-            m_machineId.m_fingerprint = fingerprint;
-        }
-    }
-}
-
-int LicenseManager::checklicense(std::string _filename)
+int LicenseManager::checkLicenseFile(std::string _filename)
 {
-    MachineId idfromLicense;
-
     // Read content of license file
     std::string content;
     std::ifstream license(_filename);
 
     if (!license.is_open()) {
-        // Error : File not found.
-        return -1;
+        return LicenseError::MISSING_LICENSE;
     }
 
     std::getline(license, content);
-
     license.close();
 
-    // Read the first field : MachineId type
-    std::size_t field1 = content.find(":");
-    if(field1 == std::string::npos) {
-        // Error : Missing field.
-        return -2;
-    }
-    idfromLicense.m_type = static_cast<MachineIdType>(std::stoi(content.substr(0, field1)));
-
-    // Read the second field : MachineId fingerprint
-    std::size_t field2 = content.find(":", field1);
-    if (field2 == std::string::npos) {
-        // Error : Missing field.
-        return -2;
-    }
-    idfromLicense.m_fingerprint = std::stoi(content.substr(field1, field2));
-
-    // Read the third field : Date of creation
-    // std::size_t field3 = content.find(":", field2);
-    // if (field2 == std::string::npos) {
-    //    // Error : Missing field.
-    //    return -1;
-    // }
-    // Date date = ..;
-
-    // Read the fourth field : Duration of validity
-    // std::size_t field4 = content.find(":", field3);
-    // if (field3 == std::string::npos) {
-    //    // Error : Missing field.
-    //     return -1;
-    // }
-    // Date duration = ..;
-
-    // Check the license
-    if(idfromLicense.m_type == m_machineId.m_type &&
-            idfromLicense.m_fingerprint == m_machineId.m_fingerprint /* &&
-            m_today < date + duration */) {
-
-        // License is valide
-        return 1;
-    }
-    else {
-        // License is not valide
-        return 0;
-    }
-
+    return checklicense(content);
 }
 
-int LicenseManager::installLicense(std::string _filename)
+int LicenseManager::installLicense(std::string _request, std::string _filename)
 {
+    if(checklicense(_request) == LicenseError::INVALID_LICENSE) {
+        return LicenseError::INVALID_LICENSE;
+    }
+
     std::ofstream license(_filename);
 
     if (!license.is_open()) {
-        // Error : Cannot create lisence file.
-        return -1;
+        return CANNOT_CREATE_LICENSE;
     }
 
-    license << m_machineId.m_type;
-    license << ":";
-    license << m_machineId.m_fingerprint;
-    license << ":";
-    //license << m_today;
-    //license << ":";
-    //license << duration;
+    license << _request;
 
     license.close();
 
     return 0;
 }
 
-int generateRequestString(std::string* request)
+int LicenseManager::generateRequestString(std::string* request)
 {
+    // Retrieve ID from machine
+    MachineId idfromMachine;
+
+    if(retrieveMachineID(&idfromMachine) < 0)
+        return NO_MACHINE_ID_FOUND;
+
+    std::string iDhash;
+    if(!CryptoHelper::hash(idfromMachine.m_fingerprint, &iDhash))
+        return ERROR_CRYPTO;
+
+    DateTime today;
+
+    // Build request : Type of id : ID : Date of request : version app
+    *request = "request";
+    *request += ":";
+    *request += std::to_string(idfromMachine.m_type);
+    *request += ":";
+    *request += iDhash;
+    *request += ":";
+    *request += std::to_string(today.year());
+    *request += "/";
+    *request += std::to_string(today.month());
+    *request += "/";
+    *request += std::to_string(today.day());
+    *request += ":";
+    *request += "1.0";
+
+    if(!CryptoHelper::encrypt(LicenseManager::m_key, *request, request))
+        return ERROR_CRYPTO;
+
     return 0;
+}
+
+int LicenseManager::retrieveMachineID(MachineId* _machineId) {
+
+    // Create machine id
+    std::string fingerprint;
+
+    for (int i = CPU; i != ERROR; i++) {
+
+        fingerprint = SystemInfo::retrieveFingerPrint(static_cast<MachineIdType>(i));
+
+        if(!fingerprint.empty()) {
+            _machineId->m_type = static_cast<MachineIdType>(i);
+            _machineId->m_fingerprint = fingerprint;
+            return 0;
+        }
+    }
+
+    return NO_MACHINE_ID_FOUND;
+}
+
+int LicenseManager::checklicense(std::string _license)
+{
+    // license:0:ABCDABCDABCDABCDABCDABCD:yyyy/mm/dd:yyyy/mm/dd
+
+    std::size_t field1 = _license.find(":");
+    std::size_t field2 = _license.find(":", field1);
+    std::size_t field3 = _license.find(":", field2);
+    std::size_t field4 = _license.find(":", field3);
+    std::size_t field5 = _license.find(":", field4);
+
+    if(field1 == std::string::npos ||
+            field2 == std::string::npos ||
+            field3 == std::string::npos ||
+            field4 == std::string::npos ||
+            field5 == std::string::npos) {
+
+        return LicenseError::MISSING_FIELD;
+    }
+
+    // Check first field == license
+    if(_license.substr(0, field1) != "license") {
+        return INVALID_LICENSE;
+    }
+
+    // Check second and third field == type machine id and id
+    try {
+        int type = static_cast<MachineIdType>(std::stoi(_license.substr(field1, field2)));
+
+        if(type == MachineIdType::ERROR) {
+            return LicenseError::INVALID_FIELD;
+        }
+
+        if(SystemInfo::retrieveFingerPrint(type) != _license.substr(field2, field3)) {
+            return LicenseError::INVALID_FIELD;
+        }
+    }
+    catch (...) {
+        return LicenseError::INVALID_FIELD;
+    }
+
+//    DateTime lastUse(_license.substr(field3, field4)); // <= today
+
+//    DateTime endValidity(_license.substr(field4, field5)); // >= today
+
+    return VALID_LICENSE;
 }
 
 }

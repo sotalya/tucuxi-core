@@ -24,7 +24,7 @@ int main(int argc, char** argv)
     componentManagerTests.add_test("CreateComponent", &TestComponentManager::createComponent);
     int res = componentManagerTests.run(argc, argv);
     if (res != 0) {
-        printf("ComponentManager test failed");
+        printf("ComponentManager test failed\n");
         exit(1);
     }
 
@@ -33,7 +33,7 @@ int main(int argc, char** argv)
     loggerTests.add_test("Logger-basic", &TestLogger::basic);
     res = loggerTests.run(argc, argv);
     if (res != 0) {
-        printf("Logger test failed");
+        printf("Logger test failed\n");
         exit(1);
     }
 
@@ -44,7 +44,7 @@ int main(int argc, char** argv)
     licenseManagerTests.add_test("LicenseManager-checkInvalidLicense", &TestLicenseManager::checkInvalidLicense);
     res = licenseManagerTests.run(argc, argv);
     if (res != 0) {
-        printf("License Manager test failed");
+        printf("License Manager test failed\n");
         exit(1);
     }
 
@@ -52,7 +52,7 @@ int main(int argc, char** argv)
     cryptoHelperTests.add_test("CryptoHelper-basic", &TestCryptoHelper::basic);
     res = cryptoHelperTests.run(argc, argv);
     if (res != 0) {
-        printf("Crypto Helper test failed");
+        printf("Crypto Helper test failed\n");
         exit(1);
     }
 
@@ -60,7 +60,7 @@ int main(int argc, char** argv)
     scriptEngineTests.add_test("ScriptEngine-basic", &TestScriptEngine::basic);
     res = scriptEngineTests.run(argc, argv);
     if (res != 0) {
-        printf("Script engine test failed");
+        printf("Script engine test failed\n");
         exit(1);
     }
 
@@ -70,7 +70,7 @@ int main(int argc, char** argv)
     dateTimeTests.add_test("DateTime-duration", &TestDateTime::duration);
     res = dateTimeTests.run(argc, argv);
     if (res != 0) {
-        printf("Date and time test failed");
+        printf("Date and time test failed\n");
         exit(1);
     }
 
@@ -80,7 +80,7 @@ int main(int argc, char** argv)
     xmlTests.add_test("XML-files", &TestXml::files);
     res = xmlTests.run(argc, argv);
     if (res != 0) {
-        printf("XML test failed");
+        printf("XML test failed\n");
         exit(1);
     }
     return 0;
