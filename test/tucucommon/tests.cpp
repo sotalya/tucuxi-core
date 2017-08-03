@@ -40,7 +40,6 @@ int main(int argc, char** argv)
     TestLicenseManager licenseManagerTests(appFolder);
     licenseManagerTests.add_test("LicenseManager-basic", &TestLicenseManager::basic);
     licenseManagerTests.add_test("LicenseManager-installNewLicense", &TestLicenseManager::installNewLicense);
-    licenseManagerTests.add_test("LicenseManager-checkValidLicense", &TestLicenseManager::checkValidLicense);
     licenseManagerTests.add_test("LicenseManager-checkInvalidLicense", &TestLicenseManager::checkInvalidLicense);
     res = licenseManagerTests.run(argc, argv);
     if (res != 0) {
