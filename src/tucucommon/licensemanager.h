@@ -6,10 +6,22 @@
 #define TUCUXI_TUCUCOMMON_LICENSECHECKER_H
 
 #include <string.h>
+
 #include "tucucommon/systeminfo.h"
 
 namespace Tucuxi {
 namespace Common {
+
+enum LicenseError {
+    INVALID_LICENSE = 0,
+    VALID_LICENSE = 1,
+    MISSING_LICENSE = -1,
+    CANNOT_CREATE_LICENSE = -2,
+    MISSING_FIELD = -3,
+    INVALID_FIELD = -4,
+    NO_MACHINE_ID_FOUND = -5,
+    ERROR_CRYPTO = -6
+};
 
 struct MachineId {
     std::string m_fingerprint;
@@ -19,18 +31,16 @@ struct MachineId {
 class LicenseManager
 {
 public:
-    LicenseManager();
-    int checklicense(std::string _filename);
-    int installLicense(std::string _filename);
-    int generateRequestString(std::string _filename);
+    static int checkLicenseFile(std::string _filename);
+    static int installLicense(std::string _license, std::string _filename);
+    static int generateRequestString(std::string* _request);
 
 private:
-    //    static std::string public_key;  // server
-    //    static std::string private_key; // tucuxi
+    static int retrieveMachineID(MachineId* _machineId);
+    static int checklicense(std::string _request);
 
-    // System info
-    MachineId m_machineId;
-    // Date m_today;
+private:
+    static const std::string m_key;
 };
 
 }

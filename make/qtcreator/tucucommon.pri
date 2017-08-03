@@ -14,7 +14,8 @@ HEADERS += \
     $$PWD/../../src/tucucommon/timeofday.h \
     $$PWD/../../src/tucucommon/basetypes.h \
     $$PWD/../../src/tucucommon/fingerprint.h \
-    $$PWD/../../src/tucucommon/licensechecker.h \
+    $$PWD/../../src/tucucommon/licensemanager.h \
+    $$PWD/../../src/tucucommon/systeminfo.h \
     $$PWD/../../src/tucucommon/cryptohelper.h
 
 SOURCES += \
@@ -26,7 +27,8 @@ SOURCES += \
     $$PWD/../../src/tucucommon/jsengine.cpp \
     $$PWD/../../src/tucucommon/timeofday.cpp \
     $$PWD/../../src/tucucommon/fingerprint.cpp \
-    $$PWD/../../src/tucucommon/licensechecker.cpp \
+    $$PWD/../../src/tucucommon/licensemanager.cpp \
+    $$PWD/../../src/tucucommon/systeminfo.cpp \
     $$PWD/../../src/tucucommon/cryptohelper.cpp
 
 DISTFILES += \
