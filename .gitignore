@@ -1,0 +1,13 @@
+#Common ignored files
+*~
+*.o
+*.swp
+
+#Object files
+bin/*
+objs/*
+src/*/objs/*
+make/objs/*
+test/*/objs/*
+libs/*/objs/*
+libs/*/build/*
