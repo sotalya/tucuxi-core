@@ -35,7 +35,7 @@ private:
     Value m_K12; /// Q/V1
     Value m_K21; /// Q/V2
     Value m_SumK; /// Ke+K12+K21
-    Value m_Root; /// sqrt(sumK*sumK - 4*K21*Ke)
+    Value m_RootK; /// sqrt(sumK*sumK - 4*K21*Ke)
     Value m_Divider; /// sqrt(sumK*sumK - 4*K21*Ke)
     Value m_Alpha; /// (sumK + root)/2
     Value m_Beta; /// (sumK - root)/2
