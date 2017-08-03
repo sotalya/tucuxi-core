@@ -2,15 +2,16 @@
 #include <string>
 #include <iostream>
 
-
 #include "fructose/fructose.h"
+//#include "date/date.h"
 
 #include "tucucommon/systeminfo.h"
 #include "tucucommon/cryptohelper.h"
 #include "tucucommon/licensemanager.h"
-//#include "tucucommon/duration.h"
 #include "tucucommon/datetime.h"
 
+//using namespace std::chrono_literals;
+//using namespace date;
 
 struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
 {
@@ -47,6 +48,8 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
 
         id = Tucuxi::Common::SystemInfo::retrieveFingerPrint(Tucuxi::Common::ERROR);
         std::cout << "Error : " << id << std::endl;
+
+        //Tucuxi::Common::DateTime d(2017_y / jul / 27, 22h + 23min + 24s);
     }
 
     void installNewLicense(const std::string& _testName)
@@ -65,7 +68,7 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
         // Generate a request to get a new license file
         std::string request;
         res = Tucuxi::Common::LicenseManager::generateRequestString(&request);
-        fructose_assert(res == 0);
+        fructose_assert(res == Tucuxi::Common::LicenseError::REQUEST_SUCCESSFUL);
 
         std::cout << "Request string : " << request << std::endl;
 
@@ -76,7 +79,11 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
 
         // Install a new license file
         res = Tucuxi::Common::LicenseManager::installLicense(license, fileName);
-        fructose_assert(res == 0);
+        fructose_assert(res == Tucuxi::Common::LicenseError::INSTALLATION_SUCCESSFUL);
+
+        // Check license file
+        res = Tucuxi::Common::LicenseManager::checkLicenseFile(fileName);
+        fructose_assert(res == Tucuxi::Common::LicenseError::VALID_LICENSE);
     }
 
     std::string simuleNewLicense(std::string _request) {
@@ -91,7 +98,7 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
         std::size_t field2 = _request.find_last_of(":");
 
          if(field1 == std::string::npos || field2 == std::string::npos) {
-            fructose_fail();
+             fructose_fail("Error bad request for a new license.");
         }
 
         // Replace request by license :
@@ -102,7 +109,6 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
 
         // Add end date of license
         Tucuxi::Common::DateTime endValidty = Tucuxi::Common::DateTime();
-        //Tucuxi::Common::DateTime endValidty = Tucuxi::Common::DateTime() + Tucuxi::Common::Duration(date::days(60));
 
         _request += ":";
         _request += std::to_string(endValidty.year() + 1); // Valid for 1 year
@@ -117,26 +123,10 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
         if(!Tucuxi::Common::CryptoHelper::encrypt("86685E7AA62844102FC7FAD5D6DDF46C9CA7777BF4E0153FDF5F86463EAC0D75",
                                   _request,
                                   &license))  {
-            fructose_fail();
+            fructose_fail("Error encrypt failed.");
         }
 
         return license;
-    }
-
-    void checkValidLicense(const std::string& _testName)
-    {
-        std::cout << _testName << std::endl;
-
-//        // Make sure to remove delete licence file.
-//        const std::string& fileName = Tucuxi::Common::Utils::strFormat("%s/%s", m_path.c_str(), "license.txt");
-//        std::remove(fileName.c_str());
-
-//        // Install a new license file with a infini duration
-//        std::string response = "";
-//        Tucuxi::Common::LicenseManager::installLicense(response, fileName);
-
-//        // Check license file
-//        Tucuxi::Common::LicenseManager::checkLicenseFile(fileName);
     }
 
     void checkInvalidLicense(const std::string& _testName)
