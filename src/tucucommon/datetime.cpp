@@ -2,11 +2,19 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
+#include <string>
+#include <sstream>
+#include <iomanip>
+
 #include "date/date.h"
 
 #include "tucucommon/timeofday.h"
 #include "tucucommon/datetime.h"
 #include "tucucommon/duration.h"
+
+#ifdef _WIN32
+#define timegm _mkgmtime
+#endif
 
 namespace Tucuxi {
 namespace Common {
@@ -14,6 +22,16 @@ namespace Common {
 DateTime::DateTime()
     : m_date(std::chrono::system_clock::now())
 {
+}
+
+
+DateTime::DateTime(const std::string &_date, const std::string& _format)
+{
+    std::tm tm = {};
+    std::stringstream ss(_date);
+    ss >> std::get_time(&tm, _format.c_str());
+    time_t t = timegm(&tm);
+    m_date = std::chrono::system_clock::from_time_t(t);
 }
 
 
@@ -176,7 +194,8 @@ int DateTime::day() const
 int DateTime::hour() const
 {
     date::sys_days days = date::floor<date::days>(m_date);
-    return std::chrono::duration_cast<std::chrono::hours>(m_date - days).count();
+    int n = std::chrono::duration_cast<std::chrono::hours>(m_date - days).count();
+    return n;
 }
 
 
