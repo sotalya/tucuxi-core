@@ -105,19 +105,20 @@ int LicenseManager::retrieveMachineID(MachineId* _machineId) {
 
 int LicenseManager::checklicense(std::string _license)
 {
+    if(!CryptoHelper::decrypt(LicenseManager::m_key, _license, &_license))
+        return ERROR_CRYPTO;
+
     // license:0:ABCDABCDABCDABCDABCDABCD:yyyy/mm/dd:yyyy/mm/dd
 
     std::size_t field1 = _license.find(":");
-    std::size_t field2 = _license.find(":", field1);
-    std::size_t field3 = _license.find(":", field2);
-    std::size_t field4 = _license.find(":", field3);
-    std::size_t field5 = _license.find(":", field4);
+    std::size_t field2 = _license.find(":", field1 + 1);
+    std::size_t field3 = _license.find(":", field2 + 1);
+    std::size_t field4 = _license.find(":", field3 + 1);
 
     if(field1 == std::string::npos ||
             field2 == std::string::npos ||
             field3 == std::string::npos ||
-            field4 == std::string::npos ||
-            field5 == std::string::npos) {
+            field4 == std::string::npos) {
 
         return LicenseError::MISSING_FIELD;
     }
@@ -129,13 +130,18 @@ int LicenseManager::checklicense(std::string _license)
 
     // Check second and third field == type machine id and id
     try {
-        MachineIdType type = static_cast<MachineIdType>(std::stoi(_license.substr(field1, field2)));
+
+        MachineIdType type = static_cast<MachineIdType>(std::stoi(_license.substr(field1+1, field2-field1-1)));
 
         if(type == MachineIdType::ERROR) {
             return LicenseError::INVALID_FIELD;
         }
 
-        if(SystemInfo::retrieveFingerPrint(type) != _license.substr(field2, field3)) {
+        std::string iDhash;
+        if(!CryptoHelper::hash(SystemInfo::retrieveFingerPrint(type), &iDhash))
+            return ERROR_CRYPTO;
+
+        if(iDhash != _license.substr(field2+1, field3-field2-1)) {
             return LicenseError::INVALID_FIELD;
         }
     }
@@ -143,9 +149,8 @@ int LicenseManager::checklicense(std::string _license)
         return LicenseError::INVALID_FIELD;
     }
 
-//    DateTime lastUse(_license.substr(field3, field4)); // <= today
-
-//    DateTime endValidity(_license.substr(field4, field5)); // >= today
+//    DateTime lastUse(_license.substr(field3+1, field4-field3-1)); // <= today
+//    DateTime endValidity(_license.substr(field4+1, _license.length())); // >= today
 
     return VALID_LICENSE;
 }
