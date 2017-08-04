@@ -27,6 +27,10 @@ DEFINES :=
 include $(TUCUXI_ROOT)/make/rules.mak
 
 prebuild: 
+	if exist build $(RMDIR) build
+	if exist objs $(RMDIR) objs
+	$(MKDIR) build
+	$(MKDIR) objs
 	$(COPY) makefile makefile.tmp
 	python configure.py --disable-shared
 	$(DEL) Makefile

@@ -32,6 +32,7 @@ MKDIR := mkdir
 DEL := rm -rf
 COPY := cp
 ECHO := @echo
+RMDIR := $(DEL)
 include $(TUCUXI_ROOT)/make/linuxrules.mak
 endif
 
@@ -43,6 +44,7 @@ MKDIR := mkdir
 DEL := del /Q
 COPY := copy /Y /V
 ECHO := @echo
+RMDIR := rmdir /Q /S
 include $(TUCUXI_ROOT)/make/vs2015rules.mak
 endif
 
