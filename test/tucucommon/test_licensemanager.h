@@ -71,9 +71,9 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
         m_licenses[0] += ":";
         m_licenses[0] += m_fingerprint;
         m_licenses[0] += ":";
-        m_licenses[0] += today;
-        m_licenses[0] += ":";
         m_licenses[0] += endLicense1;
+        m_licenses[0] += ":";
+        m_licenses[0] += today;
 
         if(!Tucuxi::Common::CryptoHelper::encrypt("86685E7AA62844102FC7FAD5D6DDF46C9CA7777BF4E0153FDF5F86463EAC0D75",
                                   m_licenses[0],
@@ -87,9 +87,9 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
         m_licenses[1] += ":";
         m_licenses[1] += m_fingerprint;
         m_licenses[1] += ":";
-        m_licenses[1] += today;
-        m_licenses[1] += ":";
         m_licenses[1] += endLicense1;
+        m_licenses[1] += ":";
+        m_licenses[1] += today;
 
         if(!Tucuxi::Common::CryptoHelper::encrypt("86685E7AA62844102FC7FAD5D6DDF46C9CA7777BF4E0153FDF5F86463EAC0D75",
                                   m_licenses[1],
@@ -103,9 +103,9 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
         m_licenses[2] += ":";
         m_licenses[2] += m_fingerprint;
         m_licenses[2] += ":";
-        m_licenses[2] += today;
-        m_licenses[2] += ":";
         m_licenses[2] += endLicense1;
+        m_licenses[2] += ":";
+        m_licenses[2] += today;
 
         if(!Tucuxi::Common::CryptoHelper::encrypt("86685E7AA62844102FC7FAD5D6DDF46C9CA7777BF4E0153FDF5F86463EAC0D75",
                                   m_licenses[2],
@@ -119,9 +119,9 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
         m_licenses[3] += ":";
         m_licenses[3] += "";
         m_licenses[3] += ":";
-        m_licenses[3] += today;
-        m_licenses[3] += ":";
         m_licenses[3] += endLicense1;
+        m_licenses[3] += ":";
+        m_licenses[3] += today;
 
         if(!Tucuxi::Common::CryptoHelper::encrypt("86685E7AA62844102FC7FAD5D6DDF46C9CA7777BF4E0153FDF5F86463EAC0D75",
                                   m_licenses[3],
@@ -151,9 +151,9 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
         m_licenses[5] += ":";
         m_licenses[5] += m_fingerprint;
         m_licenses[5] += ":";
-        m_licenses[5] += today;
-        m_licenses[5] += ":";
         m_licenses[5] += endLicense2;
+        m_licenses[5] += ":";
+        m_licenses[5] += today;
 
         if(!Tucuxi::Common::CryptoHelper::encrypt("86685E7AA62844102FC7FAD5D6DDF46C9CA7777BF4E0153FDF5F86463EAC0D75",
                                   m_licenses[5],
@@ -219,6 +219,15 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
         res = Tucuxi::Common::LicenseManager::generateRequestString(&request);
         fructose_assert(res == Tucuxi::Common::LicenseError::REQUEST_SUCCESSFUL);
 
+        std::string test;
+        if(!Tucuxi::Common::CryptoHelper::decrypt("86685E7AA62844102FC7FAD5D6DDF46C9CA7777BF4E0153FDF5F86463EAC0D75",
+                                  m_licenses[0],
+                                  &test))  {
+            fructose_fail("Error encrypt failed.");
+        }
+
+         std::cout << "Test : " << test << std::endl;
+
         // Install a new license file
         res = Tucuxi::Common::LicenseManager::installLicense(m_licenses[0], fileName);
         fructose_assert(res == Tucuxi::Common::LicenseError::INSTALLATION_SUCCESSFUL);
@@ -246,6 +255,8 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
                                       &test))  {
                 fructose_fail("Error encrypt failed.");
             }
+
+            std::cout << "Test " << i << " : " << test << std::endl;
 
             // Make sure to remove delete licence file.
             const std::string& fileName = Tucuxi::Common::Utils::strFormat("%s/%s", m_path.c_str(), "license.txt");

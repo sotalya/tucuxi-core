@@ -45,6 +45,7 @@ int LicenseManager::checklicense(std::string _license)
         return ERROR_CRYPTO;
 
     // Read license : license:0:ABCDABCDABCDABCDABCDABCD:yyyy/mm/dd:yyyy/mm/dd
+    // Read license : key_word:type:fingerprint:end validity date:last used date
     std::size_t field1 = _license.find(":");
     std::size_t field2 = _license.find(":", field1 + 1);
     std::size_t field3 = _license.find(":", field2 + 1);
@@ -109,7 +110,7 @@ int LicenseManager::rewriteLicense(std::string _license, std::string _filename)
         return ERROR_CRYPTO;
 
     // Build license : license:0:ABCDABCDABCDABCDABCDABCD:yyyy/mm/dd:yyyy/mm/dd
-    // Read field of last used date
+    // Read last field of last used date
     std::size_t pos = _license.find_last_of(":");
     if(pos == std::string::npos) {
         return LicenseError::INVALID_LICENSE;
@@ -117,7 +118,7 @@ int LicenseManager::rewriteLicense(std::string _license, std::string _filename)
 
     // Update date
     DateTime today;
-    std::string lastUsed = "";
+    std::string lastUsed = ":";
     lastUsed += std::to_string(today.year());
     lastUsed += "-";
     lastUsed += std::to_string(today.month());
