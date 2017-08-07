@@ -33,6 +33,9 @@ DEL := rm -rf
 COPY := cp
 ECHO := @echo
 RMDIR := $(DEL)
+IFEXIST := if [ -a 
+THEN :=  ]; then
+ENDIF := ; fi;
 include $(TUCUXI_ROOT)/make/linuxrules.mak
 endif
 
@@ -45,6 +48,9 @@ DEL := del /Q
 COPY := copy /Y /V
 ECHO := @echo
 RMDIR := rmdir /Q /S
+IFEXIST := if exist
+THEN := 
+ENDIF :=
 include $(TUCUXI_ROOT)/make/vs2015rules.mak
 endif
 

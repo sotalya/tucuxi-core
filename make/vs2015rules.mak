@@ -10,6 +10,7 @@
 CXX := cl
 LD := $(CXX)
 LIBRARIAN := lib
+PYTHON := python
 
 ## ---------------------------------------------------------------
 ## SOURCES, INCLUDES, LIBS, EXTLIBS and DEFINES are set by specific makefiles...
