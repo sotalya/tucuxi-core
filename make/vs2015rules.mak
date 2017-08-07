@@ -45,7 +45,8 @@ endif
 ##
 ifeq ($(TYPE), DLL)
 build : $(_OBJS) postbuild
-	$(LD) $(LDFLAG_DLL) -Feobjs\$(NAME).dll $(_OBJS) $(_LIBS) 
+	$(LD) $(LDFLAG_DLL) -Feobjs\$(NAME).dll $(_OBJS) $(_LIBS) "$(WindowsSdkDir)Lib\$(WindowsSDKVersion)um\x64\advapi32.lib" "$(WindowsSdkDir)Lib\$(WindowsSDKVersion)um\x64\user32.lib"
+	$(COPY) objs\$(NAME).lib $(TUCUXI_ROOT)\bin
 	$(COPY) objs\$(NAME).dll $(TUCUXI_ROOT)\bin
 
 clean:

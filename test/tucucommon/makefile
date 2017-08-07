@@ -15,7 +15,7 @@ INCLUDES := ../../libs/fructose-1.3/fructose/include \
             ../../libs/rapidxml-1.13 \
             ../../libs/botan-2.1.0/build/include
 
-LIBS := tucucommon
+LIBS := tucucommon botan
 EXTLIBS := 
 DEFINES := 
 

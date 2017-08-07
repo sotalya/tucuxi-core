@@ -13,7 +13,7 @@ INCLUDES := . \
             ../../libs/eigen-3.3.2 \
             ../../libs/spdlog-master-20170622/include \
             ../../libs/date-master-20170711
-LIBS := tucucommon tucucore
+LIBS := tucucommon tucucore botan
 EXTLIBS := 
 DEFINES := 
 
