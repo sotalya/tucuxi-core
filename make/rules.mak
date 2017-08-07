@@ -33,9 +33,9 @@ DEL := rm -rf
 COPY := cp
 ECHO := @echo
 RMDIR := $(DEL)
-IFEXIST := if [ -a 
+IFEXIST := if [ -e 
 THEN :=  ]; then
-ENDIF := ; fi;
+ENDIF := ; fi
 include $(TUCUXI_ROOT)/make/linuxrules.mak
 endif
 
