@@ -16,7 +16,7 @@ INCLUDES := ../../libs/fructose-1.3/fructose/include \
             ../../libs/botan-2.1.0/build/include
 
 LIBS := tucucommon botan
-EXTLIBS := "$(WindowsSdkDir)Lib\$(WindowsSDKVersion)um\x64\advapi32.lib" "$(WindowsSdkDir)Lib\$(WindowsSDKVersion)um\x64\user32.lib"
+EXTLIBS := 
 DEFINES := 
 
 
