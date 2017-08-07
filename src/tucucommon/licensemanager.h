@@ -13,6 +13,8 @@ namespace Tucuxi {
 namespace Common {
 
 enum LicenseError {
+    REQUEST_SUCCESSFUL = 0,
+    INSTALLATION_SUCCESSFUL = 0,
     INVALID_LICENSE = 0,
     VALID_LICENSE = 1,
     MISSING_LICENSE = -1,

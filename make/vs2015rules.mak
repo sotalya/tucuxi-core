@@ -10,6 +10,7 @@
 CXX := cl
 LD := $(CXX)
 LIBRARIAN := lib
+PYTHON := python
 
 ## ---------------------------------------------------------------
 ## SOURCES, INCLUDES, LIBS, EXTLIBS and DEFINES are set by specific makefiles...
@@ -36,8 +37,8 @@ build : $(_OBJS)
 	$(COPY) objs\$(NAME).lib $(TUCUXI_ROOT)\bin
 
 clean:
-	$(DEL) objs\*
-	$(DEL) $(TUCUXI_ROOT)\bin\$(NAME).lib
+	if exist objs $(DEL) objs\*
+	if exist $(TUCUXI_ROOT)\bin\$(NAME).lib $(DEL) $(TUCUXI_ROOT)\bin\$(NAME).lib
 endif
 
 ## ---------------------------------------------------------------
@@ -46,11 +47,13 @@ endif
 ifeq ($(TYPE), DLL)
 build : $(_OBJS) postbuild
 	$(LD) $(LDFLAG_DLL) -Feobjs\$(NAME).dll $(_OBJS) $(_LIBS) 
+	$(COPY) objs\$(NAME).lib $(TUCUXI_ROOT)\bin
 	$(COPY) objs\$(NAME).dll $(TUCUXI_ROOT)\bin
 
 clean:
-	$(DEL) objs\*
-	$(DEL) $(TUCUXI_ROOT)\bin\$(NAME).dll
+	if exist objs $(DEL) objs\*
+	if exist $(TUCUXI_ROOT)\bin\$(NAME).lib $(DEL) $(TUCUXI_ROOT)\bin\$(NAME).lib
+	if exist $(TUCUXI_ROOT)\bin\$(NAME).dll $(DEL) $(TUCUXI_ROOT)\bin\$(NAME).dll
 endif
 
 ## ---------------------------------------------------------------
@@ -62,8 +65,8 @@ build : $(_OBJS) postbuild
 	$(COPY) objs\$(NAME).exe $(TUCUXI_ROOT)\bin
 
 clean:
-	$(DEL) objs\*
-	$(DEL) $(TUCUXI_ROOT)\bin\$(NAME).exe
+	if exist objs $(DEL) objs\*
+	if exist $(TUCUXI_ROOT)\bin\$(NAME).exe $(DEL) $(TUCUXI_ROOT)\bin\$(NAME).exe
 endif
 
 ## ---------------------------------------------------------------
@@ -75,8 +78,8 @@ build : $(_OBJS) postbuild
 	$(COPY) objs\$(NAME)-test.exe $(TUCUXI_ROOT)\bin
 
 clean:
-	$(DEL) objs\*
-	$(DEL) $(TUCUXI_ROOT)\bin\$(NAME)-test.exe
+	if exist objs $(DEL) objs\*
+	if exist $(TUCUXI_ROOT)\bin\$(NAME)-test.exe $(DEL) $(TUCUXI_ROOT)\bin\$(NAME)-test.exe
 endif
 
 ## ---------------------------------------------------------------

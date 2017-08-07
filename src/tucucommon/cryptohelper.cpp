@@ -10,7 +10,11 @@
 #include <botan/auto_rng.h>
 #include <botan/b64_filt.h>
 #include <botan/cipher_filter.h>
+#ifdef _WIN32
+#include <botan/pipe.h>
+#else
 #include <botan/fd_unix.h>
+#endif
 
 #include <botan/hash.h>
 #include <botan/hex.h>

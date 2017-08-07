@@ -15,8 +15,9 @@ INCLUDES := ../../libs/fructose-1.3/fructose/include \
             ../../libs/rapidxml-1.13 \
             ../../libs/botan-2.1.0/build/include
 
-LIBS := tucucommon
-EXTLIBS := 
+LIBS := tucucommon botan
+EXTLIBS := "$(WindowsSdkDir)Lib\$(WindowsSDKVersion)um\x64\advapi32.lib" "$(WindowsSdkDir)Lib\$(WindowsSDKVersion)um\x64\user32.lib"
 DEFINES := 
+
 
 include $(TUCUXI_ROOT)/make/rules.mak
