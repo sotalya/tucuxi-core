@@ -12,14 +12,154 @@
 
 //using namespace std::chrono_literals;
 //using namespace date;
+using namespace Tucuxi::Common;
+
+#define DEBUG_MSG
 
 struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
 {
     std::string m_path;
 
+    std::string m_fingerprint;  // Fingerprint
+    MachineIdType m_type;       // Type of fingerprint
+    std::string m_licenses[6];  // Licenses
+
     TestLicenseManager(std::string& _path)
     {
+        // Path
         m_path = _path;
+
+        // Build Fingerprint
+        for (int i = CPU; i != ERROR; i++) {
+            m_fingerprint = SystemInfo::retrieveFingerPrint(static_cast<MachineIdType>(i));
+
+            if(!m_fingerprint.empty()) {
+                m_type = static_cast<MachineIdType>(i);
+                break;
+            }
+        }
+
+        // Get hash from fingerprint
+        CryptoHelper::hash(m_fingerprint, &m_fingerprint);
+
+        // Build Date
+        DateTime dateToday;
+        DateTime dateEndLicense1 = dateToday; // + DateTime("0-01-0","%Y-%b-%ds");
+        DateTime dateEndLicense2 = dateToday; // - DateTime("0-01-0","%Y-%b-%ds");
+
+        std::string today = std::to_string(dateToday.year());
+        today += "-";
+        today += std::to_string(dateToday.month());
+        today += "-";
+        today += std::to_string(dateToday.day());
+
+        std::string endLicense1 = std::to_string(dateEndLicense1.year()+1);
+        endLicense1 += "-";
+        endLicense1 += std::to_string(dateEndLicense1.month());
+        endLicense1 += "-";
+        endLicense1 += std::to_string(dateEndLicense1.day());
+
+        std::string endLicense2 = std::to_string(dateEndLicense2.year()-1);
+        endLicense2 += "-";
+        endLicense2 += std::to_string(dateEndLicense2.month());
+        endLicense2 += "-";
+        endLicense2 += std::to_string(dateEndLicense2.day());
+
+        // Valid licens
+        m_licenses[0] = "license:";
+        m_licenses[0] += std::to_string(m_type);
+        m_licenses[0] += ":";
+        m_licenses[0] += m_fingerprint;
+        m_licenses[0] += ":";
+        m_licenses[0] += today;
+        m_licenses[0] += ":";
+        m_licenses[0] += endLicense1;
+
+        if(!Tucuxi::Common::CryptoHelper::encrypt("86685E7AA62844102FC7FAD5D6DDF46C9CA7777BF4E0153FDF5F86463EAC0D75",
+                                  m_licenses[0],
+                                  &m_licenses[0]))  {
+            fructose_fail("Error encrypt failed.");
+        }
+
+        // Wrong license with fake keyword
+        m_licenses[1] = "random:";
+        m_licenses[1] += std::to_string(m_type);
+        m_licenses[1] += ":";
+        m_licenses[1] += m_fingerprint;
+        m_licenses[1] += ":";
+        m_licenses[1] += today;
+        m_licenses[1] += ":";
+        m_licenses[1] += endLicense1;
+
+        if(!Tucuxi::Common::CryptoHelper::encrypt("86685E7AA62844102FC7FAD5D6DDF46C9CA7777BF4E0153FDF5F86463EAC0D75",
+                                  m_licenses[1],
+                                  &m_licenses[1]))  {
+            fructose_fail("Error encrypt failed.");
+        }
+
+        // Wrong license with wrong type of fingerprint
+        m_licenses[2] = "license:";
+        m_licenses[2] += std::to_string(10);
+        m_licenses[2] += ":";
+        m_licenses[2] += m_fingerprint;
+        m_licenses[2] += ":";
+        m_licenses[2] += today;
+        m_licenses[2] += ":";
+        m_licenses[2] += endLicense1;
+
+        if(!Tucuxi::Common::CryptoHelper::encrypt("86685E7AA62844102FC7FAD5D6DDF46C9CA7777BF4E0153FDF5F86463EAC0D75",
+                                  m_licenses[2],
+                                  &m_licenses[2]))  {
+            fructose_fail("Error encrypt failed.");
+        }
+
+        // Wrong license with no fingerprint
+        m_licenses[3] = "license:";
+        m_licenses[3] += std::to_string(m_type);
+        m_licenses[3] += ":";
+        m_licenses[3] += "";
+        m_licenses[3] += ":";
+        m_licenses[3] += today;
+        m_licenses[3] += ":";
+        m_licenses[3] += endLicense1;
+
+        if(!Tucuxi::Common::CryptoHelper::encrypt("86685E7AA62844102FC7FAD5D6DDF46C9CA7777BF4E0153FDF5F86463EAC0D75",
+                                  m_licenses[3],
+                                  &m_licenses[3]))  {
+            fructose_fail("Error encrypt failed.");
+        }
+
+        // Fake license (date change by user)
+        m_licenses[4] = "license:";
+        m_licenses[4] += std::to_string(m_type);
+        m_licenses[4] += ":";
+        m_licenses[4] += m_fingerprint;
+        m_licenses[4] += ":";
+        m_licenses[4] += endLicense2;
+        m_licenses[4] += ":";
+        m_licenses[4] += endLicense1;
+
+        if(!Tucuxi::Common::CryptoHelper::encrypt("86685E7AA62844102FC7FAD5D6DDF46C9CA7777BF4E0153FDF5F86463EAC0D75",
+                                  m_licenses[4],
+                                  &m_licenses[4]))  {
+            fructose_fail("Error encrypt failed.");
+        }
+
+        // Expired license
+        m_licenses[5] = "license:";
+        m_licenses[5] += std::to_string(m_type);
+        m_licenses[5] += ":";
+        m_licenses[5] += m_fingerprint;
+        m_licenses[5] += ":";
+        m_licenses[5] += today;
+        m_licenses[5] += ":";
+        m_licenses[5] += endLicense2;
+
+        if(!Tucuxi::Common::CryptoHelper::encrypt("86685E7AA62844102FC7FAD5D6DDF46C9CA7777BF4E0153FDF5F86463EAC0D75",
+                                  m_licenses[5],
+                                  &m_licenses[5]))  {
+            fructose_fail("Error encrypt failed.");
+        }
     }
 
     void basic(const std::string& _testName)
@@ -49,7 +189,17 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
         id = Tucuxi::Common::SystemInfo::retrieveFingerPrint(Tucuxi::Common::ERROR);
         std::cout << "Error : " << id << std::endl;
 
-        //Tucuxi::Common::DateTime d(2017_y / jul / 27, 22h + 23min + 24s);
+        MachineId idfromMachine;
+        for (int i = CPU; i != ERROR; i++) {
+            idfromMachine.m_fingerprint = SystemInfo::retrieveFingerPrint(static_cast<MachineIdType>(i));
+
+            if(!idfromMachine.m_fingerprint.empty()) {
+                idfromMachine.m_type = static_cast<MachineIdType>(i);
+                break;
+            }
+        }
+
+        fructose_assert(idfromMachine.m_type != ERROR);
     }
 
     void installNewLicense(const std::string& _testName)
@@ -62,98 +212,64 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
 
         // Detect missing license file
         int res = Tucuxi::Common::LicenseManager::checkLicenseFile(fileName);
-
-        fructose_assert(res == Tucuxi::Common::LicenseError::MISSING_LICENSE);
+        fructose_assert(res == Tucuxi::Common::LicenseError::MISSING_LICENSE_FILE);
 
         // Generate a request to get a new license file
         std::string request;
         res = Tucuxi::Common::LicenseManager::generateRequestString(&request);
         fructose_assert(res == Tucuxi::Common::LicenseError::REQUEST_SUCCESSFUL);
 
-        std::cout << "Request string : " << request << std::endl;
-
-        // Fictif license with a infini duration
-        std::string license = simuleNewLicense(request);
-
-        std::cout << "License string : " << license << std::endl;
-
         // Install a new license file
-        res = Tucuxi::Common::LicenseManager::installLicense(license, fileName);
+        res = Tucuxi::Common::LicenseManager::installLicense(m_licenses[0], fileName);
         fructose_assert(res == Tucuxi::Common::LicenseError::INSTALLATION_SUCCESSFUL);
+
+        // Check license file
+        res = Tucuxi::Common::LicenseManager::checkLicenseFile(fileName);
+        fructose_assert(res == Tucuxi::Common::LicenseError::VALID_LICENSE);
 
         // Check license file
         res = Tucuxi::Common::LicenseManager::checkLicenseFile(fileName);
         fructose_assert(res == Tucuxi::Common::LicenseError::VALID_LICENSE);
     }
 
-    std::string simuleNewLicense(std::string _request) {
-
-        Tucuxi::Common::CryptoHelper::decrypt("86685E7AA62844102FC7FAD5D6DDF46C9CA7777BF4E0153FDF5F86463EAC0D75",
-                                              _request,
-                                              &_request);
-
-        std::cout << "Plain request string : " << _request << std::endl;
-
-        std::size_t field1 = _request.find_first_of(":");
-        std::size_t field2 = _request.find_last_of(":");
-
-         if(field1 == std::string::npos || field2 == std::string::npos) {
-             fructose_fail("Error bad request for a new license.");
-        }
-
-        // Replace request by license :
-        _request = _request.replace(0, field1, "license");
-
-        // Remove version of tucuxi
-        _request = _request.substr(0, field2);
-
-        // Add end date of license
-        Tucuxi::Common::DateTime endValidty = Tucuxi::Common::DateTime();
-
-        _request += ":";
-        _request += std::to_string(endValidty.year() + 1); // Valid for 1 year
-        _request += "/";
-        _request += std::to_string(endValidty.month());
-        _request += "/";
-        _request += std::to_string(endValidty.day());
-
-        std::cout << "Plain license string : " << _request << std::endl;
-
-        std::string license;
-        if(!Tucuxi::Common::CryptoHelper::encrypt("86685E7AA62844102FC7FAD5D6DDF46C9CA7777BF4E0153FDF5F86463EAC0D75",
-                                  _request,
-                                  &license))  {
-            fructose_fail("Error encrypt failed.");
-        }
-
-        return license;
-    }
-
     void checkInvalidLicense(const std::string& _testName)
     {
         std::cout << _testName << std::endl;
 
-//        std::string licenses[6];
+        int res = 0;
 
-//        licenses[0] = ""; // Invalid type
-//        licenses[1] = ""; // Wrong type
-//        licenses[2] = ""; // Invalid ID
-//        licenses[3] = ""; // invalid Date
-//        licenses[4] = ""; // invalid duration
-//        licenses[5] = ""; // expired license
+        for(int i=1; i < 4; i++) {
 
-//        for(int i=0; i < 6; i++) {
+            std::string test;
+            if(!Tucuxi::Common::CryptoHelper::decrypt("86685E7AA62844102FC7FAD5D6DDF46C9CA7777BF4E0153FDF5F86463EAC0D75",
+                                      m_licenses[i],
+                                      &test))  {
+                fructose_fail("Error encrypt failed.");
+            }
 
-//            // Make sure to remove delete licence file.
-//            const std::string& fileName = Tucuxi::Common::Utils::strFormat("%s/%s", m_path.c_str(), "license.txt");
-//            std::remove(fileName.c_str());
+            // Make sure to remove delete licence file.
+            const std::string& fileName = Tucuxi::Common::Utils::strFormat("%s/%s", m_path.c_str(), "license.txt");
+            std::remove(fileName.c_str());
 
-//            // Install a invalid license file (wrong type)
-//            std::string response = "";
-//            Tucuxi::Common::LicenseManager::installLicense(licenses[i], fileName);
+            // Install a invalid license file (wrong type)
+            Tucuxi::Common::LicenseManager::installLicense(m_licenses[i], fileName);
+            fructose_assert(res == Tucuxi::Common::LicenseError::INVALID_LICENSE);
 
-//            // Check license file
-//            Tucuxi::Common::LicenseManager::checkLicenseFile(fileName);
-//        }
+            // Write result in license file
+            std::ofstream file(fileName);
+            if (!file.is_open()) {
+                fructose_fail("Cannot write license file.");
+            }
+            file << m_licenses[i];
+            file.close();
+
+            // Check license file
+            res = Tucuxi::Common::LicenseManager::checkLicenseFile(fileName);
+            fructose_assert(res == Tucuxi::Common::LicenseError::INVALID_LICENSE);
+
+            // Check license file
+            res = Tucuxi::Common::LicenseManager::checkLicenseFile(fileName);
+            fructose_assert(res == Tucuxi::Common::LicenseError::INVALID_LICENSE);
+        }
     }
 };

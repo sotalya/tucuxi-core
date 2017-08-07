@@ -7,11 +7,10 @@
 ## ---------------------------------------------------------------
 ## Compiler and linker...
 ##
-XCC := g++
-XC := gcc
-LD := $(XCC)
-AR := ar
-PYTHON := python
+XCC = g++
+XC = gcc
+LD = $(XCC)
+AR = ar
 
 ## ---------------------------------------------------------------
 ## INCLUDES, LIBS and DEFINES are set by specific makefiles...
