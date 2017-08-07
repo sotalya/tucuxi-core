@@ -37,17 +37,17 @@ namespace Common {
 std::string SystemInfo::retrieveFingerPrint(MachineIdType _machineIdType)
 {
     switch(_machineIdType) {
-        case CPU:
+        case MachineIdType::CPU:
             return retrieveCpu();
-        case BIOS:
+        case MachineIdType::BIOS:
             return retrieveBios();
-        case MOTHERBOARD:
+        case MachineIdType::MOTHERBOARD:
             return retrieveMotherboard();
-        case PRODUCT:
+        case MachineIdType::PRODUCT:
             return retrieveProduct();
-        case NETWORK:
+        case MachineIdType::NETWORK:
             return retrieveNetwork();
-        case NAME:
+        case MachineIdType::NAME:
             return retrieveName();
         default:
             return std::string();

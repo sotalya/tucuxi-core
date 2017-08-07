@@ -12,7 +12,7 @@
 namespace Tucuxi {
 namespace Common {
 
-enum LicenseError {
+enum class LicenseError {
     VALID_LICENSE = 1,
     INVALID_LICENSE = 0,
     REQUEST_SUCCESSFUL = 0,

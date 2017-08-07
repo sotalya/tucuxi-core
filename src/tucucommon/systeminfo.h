@@ -10,7 +10,7 @@
 namespace Tucuxi {
 namespace Common {
 
-enum MachineIdType {CPU, MOTHERBOARD, BIOS, PRODUCT, NETWORK, NAME, ERROR};
+enum class MachineIdType {CPU, MOTHERBOARD, BIOS, PRODUCT, NETWORK, NAME, ERROR};
 
 class SystemInfo
 {
