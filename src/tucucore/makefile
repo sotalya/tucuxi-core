@@ -17,6 +17,9 @@ SOURCES := concentrationcalculator.cpp \
            twocompartmentbolus.cpp \
            twocompartmentextra.cpp \
            twocompartmentintra.cpp \
+           threecompartmentbolus.cpp \
+           threecompartmentextra.cpp \
+           threecompartmentintra.cpp \
            intakeextractor.cpp \
            dosage.cpp
 INCLUDES := . \
