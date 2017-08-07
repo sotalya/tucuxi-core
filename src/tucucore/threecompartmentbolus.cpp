@@ -32,6 +32,7 @@ bool ThreeCompartmentBolus::checkInputs(const IntakeEvent& _intakeEvent, const P
     m_K21 = m_Q1 / m_V2;
     m_K13 = m_Q2 / m_V1;
     m_K31 = m_Q2 / m_V2;
+    m_NbPoints = _intakeEvent.getNumberPoints();
 
 /*
     PRECONDCONT(m_D >= 0, SHOULDNTGONEGATIVE, "The dose is negative.")
@@ -110,20 +111,20 @@ void ThreeCompartmentBolus::computeConcentrations(const Residuals& _inResiduals,
 	+ C * m_precomputedLogarithms["Gamma"]);
 
     Value concentrations2 = 
-	resid2 + resid1 * (B2 * m_precomputedLogarithms["Beta"](concentrations1.size() - 1) 
-	    + A2 * m_precomputedLogarithms["Alpha"](concentrations1.size() - 1) 
-	    + C2 * m_precomputedLogarithms["Gamma"](concentrations1.size() - 1));
+	resid2 + resid1 * (B2 * m_precomputedLogarithms["Beta"](m_NbPoints - 1) 
+	    + A2 * m_precomputedLogarithms["Alpha"](m_NbPoints - 1) 
+	    + C2 * m_precomputedLogarithms["Gamma"](m_NbPoints - 1));
 
     Value concentrations3 = 
-	resid3 + resid1 * (B3 * m_precomputedLogarithms["Beta"](concentrations1.size() - 1) 
-	    + A3 * m_precomputedLogarithms["Alpha"](concentrations1.size() - 1) 
-	    + C3 * m_precomputedLogarithms["Gamma"](concentrations1.size() - 1));
+	resid3 + resid1 * (B3 * m_precomputedLogarithms["Beta"](m_NbPoints - 1) 
+	    + A3 * m_precomputedLogarithms["Alpha"](m_NbPoints - 1) 
+	    + C3 * m_precomputedLogarithms["Gamma"](m_NbPoints - 1));
 
     // return concentrations of comp1, comp2 and comp3
-    _outResiduals.push_back(concentrations1[concentrations1.size() - 1]);
+    _outResiduals.push_back(concentrations1[m_NbPoints - 1]);
     _outResiduals.push_back(concentrations2);
     _outResiduals.push_back(concentrations3);
-    //POSTCONDCONT(concentrations1[concentrations.size() - 1] >= 0, SHOULDNTGONEGATIVE, "The concentration1 is negative.")
+    //POSTCONDCONT(concentrations1[m_NbPoints - 1] >= 0, SHOULDNTGONEGATIVE, "The concentration1 is negative.")
     //POSTCONDCONT(concentrations2 >= 0, SHOULDNTGONEGATIVE, "The concentration2 is negative.")
     //POSTCONDCONT(concentrations3 >= 0, SHOULDNTGONEGATIVE, "The concentration3 is negative.")
 

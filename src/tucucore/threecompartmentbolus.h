@@ -41,6 +41,7 @@ private:
     Value m_Alpha;
     Value m_Beta;
     Value m_Gamma;
+    int m_NbPoints; /// number measure points during interval
 };
 
 }
