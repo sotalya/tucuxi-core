@@ -4,7 +4,6 @@
 
 #include <iostream>
 #include <fstream>
-#include <ctime>
 
 #include "tucucommon/licensemanager.h"
 #include "tucucommon/datetime.h"
@@ -33,11 +32,18 @@ int LicenseManager::checkLicenseFile(std::string _filename)
     int res = checklicense(content);
 
     // Update date last used in file
-    if(res == VALID_LICENSE) {
-        rewriteLicense(content, _filename);
+    if(res != VALID_LICENSE) {
+        return res;
     }
 
-    return res;
+    res = rewriteLicense(content, _filename);
+
+    if(res == INSTALLATION_SUCCESSFUL) {
+        return VALID_LICENSE;
+    }
+    else {
+        return res;
+    }
 }
 
 int LicenseManager::checklicense(std::string _license)
@@ -91,35 +97,72 @@ int LicenseManager::checklicense(std::string _license)
         return LicenseError::INVALID_LICENSE;
     }
 
-    // Check 4th field == end validity date and check 5th field == last used date    
-    time_t rawtime;
-    time (&rawtime);
+    // Check 4th field == end validity date and check 5th field == last used date
+    try {
+        std::string strToday = std::to_string(DateTime().year()) +
+                std::to_string(DateTime().month()) +
+                std::to_string(DateTime().day());
 
-    struct tm* tmToday = localtime (&rawtime);
+        int today = std::stoi(strToday);
+        int endValidity = std::stoi(_license.substr(field3 + 1, field4 - field3 - 1));  // >= today
+        int lastUsed = std::stoi(_license.substr(field4 + 1, _license.length()));       // <= today
 
-    struct tm tmEndValidity; // >= today
-    if (!strptime(_license.substr(field3 + 1, field4 - field3 - 1).c_str(), "%Y-%m-%d", &tmEndValidity)) {
-        std::cout << "Error bad datetime conversion." << std::endl;
+        if(endValidity >= today && lastUsed <= today) {
+            return VALID_LICENSE;
+        }
+        else {
+            std::cout << "Error date false." << std::endl;
+            return INVALID_LICENSE;
+        }
+    }
+    catch (...) {
+        std::cout << "Error bad date conversion." << std::endl;
         return LicenseError::INVALID_LICENSE;
     }
 
-    struct tm tmLastUsed; // <= today
-    if (!strptime(_license.substr(field4 + 1, _license.length()).c_str(), "%Y-%m-%d", &tmLastUsed)) {
-        std::cout << "Error bad datetime conversion." << std::endl;
-        return LicenseError::INVALID_LICENSE;
-    }
+//    time_t rawtime;
+//    time (&rawtime);
 
-    int today = tmToday->tm_yday + tmToday->tm_year;
-    int endValidity = tmEndValidity.tm_yday + tmEndValidity.tm_year;
-    int lastUsed = tmLastUsed.tm_yday + tmLastUsed.tm_year;
+//    struct tm* tmToday = localtime (&rawtime);
 
-    if(endValidity >= today && lastUsed <= today) {
-        return VALID_LICENSE;
-    }
-    else {
-        std::cout << "Error date false." << std::endl;
-        return INVALID_LICENSE;
-    }
+//    std::cout << "EndValidity : " << _license.substr(field3 + 1, field4 - field3 - 1) << std::endl;
+
+//    struct tm tmEndValidity; // >= today
+//    if (!strptime(_license.substr(field3 + 1, field4 - field3 - 1).c_str(), "%Y-%m-%d", &tmEndValidity)) {
+//        std::cout << "Error bad datetime conversion." << std::endl;
+//        return LicenseError::INVALID_LICENSE;
+//    }
+
+//    std::cout << "LastUsed : " << _license.substr(field4 + 1, _license.length()) << std::endl;
+
+//    struct tm tmLastUsed; // <= today
+//    if (!strptime(_license.substr(field4 + 1, _license.length()).c_str(), "%Y-%m-%d", &tmLastUsed)) {
+//        std::cout << "Error bad datetime conversion." << std::endl;
+//        return LicenseError::INVALID_LICENSE;
+//    }
+
+//    int today = tmToday->tm_yday + tmToday->tm_year;
+//    int endValidity = tmEndValidity.tm_yday + tmEndValidity.tm_year;
+//    int lastUsed = tmLastUsed.tm_yday + tmLastUsed.tm_year;
+
+//    std::string temp = std::to_string(tmToday->tm_year + 1900) + "-" +
+//            std::to_string(tmToday->tm_mon + 1) + "-" +
+//            std::to_string(tmToday->tm_mday);
+
+//    std::cout << _license.substr(field3 + 1, field4 - field3 - 1) << " >= " << temp << " && "
+//              << _license.substr(field4 + 1, _license.length()) << " <= " << temp << std::endl;
+
+//    std::cout << endValidity << " >= " << today << " && "
+//              << lastUsed << " >= " << today << " <=> "
+//              << (lastUsed <= today && endValidity >= today) << std::endl;
+
+//    if(endValidity >= today && lastUsed <= today) {
+//        return VALID_LICENSE;
+//    }
+//    else {
+//        std::cout << "Error date false." << std::endl;
+//        return INVALID_LICENSE;
+//    }
 }
 
 int LicenseManager::rewriteLicense(std::string _license, std::string _filename)
@@ -138,9 +181,9 @@ int LicenseManager::rewriteLicense(std::string _license, std::string _filename)
     DateTime today;
     std::string lastUsed = ":";
     lastUsed += std::to_string(today.year());
-    lastUsed += "-";
+    //lastUsed += "-";
     lastUsed += std::to_string(today.month());
-    lastUsed += "-";
+    //lastUsed += "-";
     lastUsed += std::to_string(today.day());
 
     _license.replace(pos, _license.length(), lastUsed);
@@ -215,9 +258,9 @@ int LicenseManager::generateRequestString(std::string* request)
     *request += iDhash;
     *request += ":";
     *request += std::to_string(today.year());
-    *request += "-";
+    //*request += "-";
     *request += std::to_string(today.month());
-    *request += "-";
+    //*request += "-";
     *request += std::to_string(today.day());
     *request += ":";
     *request += "1.0";

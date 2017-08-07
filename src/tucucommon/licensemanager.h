@@ -13,16 +13,13 @@ namespace Tucuxi {
 namespace Common {
 
 enum LicenseError {
-    MISSING_LICENSE_FILE = -1,
-    INVALID_LICENSE = 0,
-    ERROR_CRYPTO = -6,
     VALID_LICENSE = 1,
+    INVALID_LICENSE = 0,
     REQUEST_SUCCESSFUL = 0,
     INSTALLATION_SUCCESSFUL = 0,
-    CANNOT_CREATE_LICENSE = -2,
-    MISSING_FIELD = -3,
-    INVALID_FIELD = -4,
-    NO_MACHINE_ID_FOUND = -5
+    MISSING_LICENSE_FILE = -1,
+    ERROR_CRYPTO = -2,
+    NO_MACHINE_ID_FOUND = -3
 };
 
 struct MachineId {

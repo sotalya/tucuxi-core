@@ -46,21 +46,21 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
         DateTime dateEndLicense2 = dateToday; // - DateTime("0-01-0","%Y-%b-%ds");
 
         std::string today = std::to_string(dateToday.year());
-        today += "-";
+        // today += "-";
         today += std::to_string(dateToday.month());
-        today += "-";
+        // today += "-";
         today += std::to_string(dateToday.day());
 
         std::string endLicense1 = std::to_string(dateEndLicense1.year()+1);
-        endLicense1 += "-";
+        // endLicense1 += "-";
         endLicense1 += std::to_string(dateEndLicense1.month());
-        endLicense1 += "-";
+        // endLicense1 += "-";
         endLicense1 += std::to_string(dateEndLicense1.day());
 
         std::string endLicense2 = std::to_string(dateEndLicense2.year()-1);
-        endLicense2 += "-";
+        // endLicense2 += "-";
         endLicense2 += std::to_string(dateEndLicense2.month());
-        endLicense2 += "-";
+        // endLicense2 += "-";
         endLicense2 += std::to_string(dateEndLicense2.day());
 
         // Valid licens
@@ -151,7 +151,7 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
         m_licenses[5] += ":";
         m_licenses[5] += endLicense2;
         m_licenses[5] += ":";
-        m_licenses[5] += today;
+        m_licenses[5] += endLicense2;
 
         if(!Tucuxi::Common::CryptoHelper::encrypt("86685E7AA62844102FC7FAD5D6DDF46C9CA7777BF4E0153FDF5F86463EAC0D75",
                                   m_licenses[5],
@@ -246,7 +246,7 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
 
         int res = 0;
 
-        for(int i=1; i < 4; i++) {
+        for(int i=1; i < 6; i++) {
 
             std::string test;
             if(!Tucuxi::Common::CryptoHelper::decrypt("86685E7AA62844102FC7FAD5D6DDF46C9CA7777BF4E0153FDF5F86463EAC0D75",
