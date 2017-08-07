@@ -15,7 +15,7 @@ INCLUDES := ../../libs/fructose-1.3/fructose/include \
             ../../libs/boost-1.63.0 \
             ../../libs/date-master-20170711
             
-LIBS := tucucommon tucucore
+LIBS := tucucommon tucucore botan
 EXTLIBS := 
 DEFINES := 
 
