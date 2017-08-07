@@ -1,17 +1,15 @@
 
 #include <string>
 #include <iostream>
+#include <ctime>
 
 #include "fructose/fructose.h"
-//#include "date/date.h"
 
 #include "tucucommon/systeminfo.h"
 #include "tucucommon/cryptohelper.h"
 #include "tucucommon/licensemanager.h"
 #include "tucucommon/datetime.h"
 
-//using namespace std::chrono_literals;
-//using namespace date;
 using namespace Tucuxi::Common;
 
 #define DEBUG_MSG
@@ -161,6 +159,7 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
             fructose_fail("Error encrypt failed.");
         }
     }
+
 
     void basic(const std::string& _testName)
     {

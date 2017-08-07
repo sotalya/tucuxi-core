@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <ctime>
 
 #include "tucucommon/licensemanager.h"
 #include "tucucommon/datetime.h"
@@ -86,22 +87,39 @@ int LicenseManager::checklicense(std::string _license)
         }
     }
     catch (...) {
-        std::cout << "Error bad conversion." << std::endl;
+        std::cout << "Error bad machine id type conversion." << std::endl;
         return LicenseError::INVALID_LICENSE;
     }
 
-    // Check 4th field == end validity date and check 5th field == last used date
-//    DateTime today;
-//    DateTime endValidity(_license.substr(field3 + 1, field4 - field3 - 1), "%Y-%b-%ds");  // >= today
-//    DateTime lastUsed(_license.substr(field4 + 1, _license.length()), "%Y-%b-%ds");       // <= today
+    // Check 4th field == end validity date and check 5th field == last used date    
+    time_t rawtime;
+    time (&rawtime);
 
-    //if(lastUsed <= today && endValidity >= today) {
+    struct tm* tmToday = localtime (&rawtime);
+
+    struct tm tmEndValidity; // >= today
+    if (!strptime(_license.substr(field3 + 1, field4 - field3 - 1).c_str(), "%Y-%m-%d", &tmEndValidity)) {
+        std::cout << "Error bad datetime conversion." << std::endl;
+        return LicenseError::INVALID_LICENSE;
+    }
+
+    struct tm tmLastUsed; // <= today
+    if (!strptime(_license.substr(field4 + 1, _license.length()).c_str(), "%Y-%m-%d", &tmLastUsed)) {
+        std::cout << "Error bad datetime conversion." << std::endl;
+        return LicenseError::INVALID_LICENSE;
+    }
+
+    int today = tmToday->tm_yday + tmToday->tm_year;
+    int endValidity = tmEndValidity.tm_yday + tmEndValidity.tm_year;
+    int lastUsed = tmLastUsed.tm_yday + tmLastUsed.tm_year;
+
+    if(endValidity >= today && lastUsed <= today) {
         return VALID_LICENSE;
-    //}
-    //else {
-    //    std::cout << "Error date false." << std::endl;
-    //    return INVALID_LICENSE;
-    //}
+    }
+    else {
+        std::cout << "Error date false." << std::endl;
+        return INVALID_LICENSE;
+    }
 }
 
 int LicenseManager::rewriteLicense(std::string _license, std::string _filename)
