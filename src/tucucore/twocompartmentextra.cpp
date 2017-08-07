@@ -152,11 +152,12 @@ void TwoCompartmentExtra::computeConcentrations(const Residuals& _inResiduals, C
 
     // Return concentrations of comp1, comp2 and comp3
     _outResiduals.push_back(concentrations1[concentrations1.size() - 1]);
-    //POSTCONDCONT(concentrations1[concentrations.size() - 1] >= 0, SHOULDNTGONEGATIVE, "The concentration is negative.")
     _outResiduals.push_back(concentrations2);
-    //POSTCONDCONT(concentrations2 >= 0, SHOULDNTGONEGATIVE, "The concentration is negative.")
     _outResiduals.push_back(m_precomputedLogarithms["Ka"](m_precomputedLogarithms["Ka"].size() - 1) * resid3);
+    //POSTCONDCONT(concentrations1[concentrations.size() - 1] >= 0, SHOULDNTGONEGATIVE, "The concentration is negative.")
+    //POSTCONDCONT(concentrations2 >= 0, SHOULDNTGONEGATIVE, "The concentration is negative.")
     //POSTCONDCONT( >= 0, SHOULDNTGONEGATIVE, "The concentration is negative.")
+
     _concentrations.assign(concentrations1.data(), concentrations1.data() + concentrations1.size());	
 }
 

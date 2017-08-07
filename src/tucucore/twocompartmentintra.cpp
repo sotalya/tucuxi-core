@@ -148,9 +148,10 @@ void TwoCompartmentIntra::computeConcentrations(const Residuals& _inResiduals, C
 
     // return concentrations of comp1 and comp2
     _outResiduals.push_back(concentrations1[concentrations1.size() - 1]);
-    //POSTCONDCONT(concentrations1[concentrations.size() - 1] >= 0, SHOULDNTGONEGATIVE, "The concentration is negative.")
     _outResiduals.push_back(concentrations2[concentrations1.size() - 1]);
+    //POSTCONDCONT(concentrations1[concentrations.size() - 1] >= 0, SHOULDNTGONEGATIVE, "The concentration is negative.")
     //POSTCONDCONT(concentrations2[concentrations.size() - 1] >= 0, SHOULDNTGONEGATIVE, "The concentration is negative.")
+
     _concentrations.assign(concentrations1.data(), concentrations1.data() + concentrations1.size());	
 }
 

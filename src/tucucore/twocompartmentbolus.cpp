@@ -55,7 +55,6 @@ void TwoCompartmentBolus::prepareComputations(const IntakeEvent& _intakeEvent, c
 
 void TwoCompartmentBolus::computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterList& _parameters, Eigen::VectorXd& _times)
 {
-    m_precomputedLogarithms["Ke"] = (-m_Ke * _times).array().exp();
     m_precomputedLogarithms["Alpha"] = (-m_Alpha * _times).array().exp();
     m_precomputedLogarithms["Beta"] = (-m_Beta * _times).array().exp();
 }
@@ -79,9 +78,10 @@ void TwoCompartmentBolus::computeConcentrations(const Residuals& _inResiduals, C
 
     // return concentrations of comp1 and comp2
     _outResiduals.push_back(concentrations1[concentrations1.size() - 1]);
-    //POSTCONDCONT(concentrations1[concentrations.size() - 1] >= 0, SHOULDNTGONEGATIVE, "The concentration is negative.")
     _outResiduals.push_back(concentrations2[concentrations1.size() - 1]);
+    //POSTCONDCONT(concentrations1[concentrations.size() - 1] >= 0, SHOULDNTGONEGATIVE, "The concentration is negative.")
     //POSTCONDCONT(concentrations2[concentrations.size() - 1] >= 0, SHOULDNTGONEGATIVE, "The concentration is negative.")
+
     _concentrations.assign(concentrations1.data(), concentrations1.data() + concentrations1.size());	
 }
 
