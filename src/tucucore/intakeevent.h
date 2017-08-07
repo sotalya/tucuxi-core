@@ -80,6 +80,13 @@ public:
     {
         return m_interval;
     }
+
+    /// \brief Get the number of points to compute for this intake
+    /// \return Number of points to compute for this intake
+    int getNumberPoints() const
+    {
+        return m_nbPoints;
+    }
     
     /// \brief Get the dose.
     /// \return Dose value.

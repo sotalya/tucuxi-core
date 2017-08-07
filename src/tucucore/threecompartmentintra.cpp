@@ -32,6 +32,9 @@ bool ThreeCompartmentIntra::checkInputs(const IntakeEvent& _intakeEvent, const P
     m_K21 = m_Q1 / m_V2;
     m_K13 = m_Q2 / m_V1;
     m_K31 = m_Q2 / m_V2;
+    m_Tinf = (_intakeEvent.getInfusionTime()).toMilliseconds();
+    m_Int = (_intakeEvent.getInterval()).toMilliseconds();
+    m_NbPoints = _intakeEvent.getNumberPoints();
 
 /*
     PRECONDCONT(m_D >= 0, SHOULDNTGONEGATIVE, "The dose is negative.")
@@ -55,6 +58,9 @@ bool ThreeCompartmentIntra::checkInputs(const IntakeEvent& _intakeEvent, const P
     PRECONDCONT(m_V2 > 0, SHOULDNTGONEGATIVE, "The volume2 is not greater than zero.")
     PRECONDCONT(!qIsNaN(m_V2), NOTANUMBER, "The V2 is NaN.")
     PRECONDCONT(!qIsInf(m_V2), ISINFINITY, "The V2 is Inf.")
+    PRECONDCONT(m_Tinf > 0, SHOULDNTGONEGATIVE, "The infusion time is not greater than zero.")
+    PRECONDCONT(!qIsNaN(m_Tinf), NOTANUMBER, "The infusion time is NaN.")
+    PRECONDCONT(!qIsInf(m_Tinf), ISINFINITY, "The infusion time is Inf.")
 */
 
     a0 = m_Ke * m_K21 * m_K31;
@@ -89,9 +95,10 @@ void ThreeCompartmentIntra::computeLogarithms(const IntakeEvent& _intakeEvent, c
 
 void ThreeCompartmentIntra::computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
 {
-    Concentration resid1 = _inResiduals[0] + m_F*m_D/m_V1;
-    Concentration resid2 = _inResiduals[1];
-    Concentration resid3 = _inResiduals[2];
+    Value deltaD = (m_D / m_V1) / m_Tinf; 
+    Value alphaTinf = std::exp(-m_Alpha* m_Tinf);
+    Value betaTinf = std::exp(-m_Beta * m_Tinf);
+    Value gammaTinf = std::exp(-m_Gamma * m_Tinf);
 
     Value A = (1 / m_V1) * (m_K21 - m_Alpha) * (m_K31 - m_Alpha) / (m_Alpha - m_Beta) / (m_Alpha - m_Gamma);
     Value B = (1 / m_V1) * (m_K21 - m_Beta) * (m_K31 - m_Beta) / (m_Beta - m_Alpha) / (m_Beta - m_Gamma);
@@ -104,26 +111,46 @@ void ThreeCompartmentIntra::computeConcentrations(const Residuals& _inResiduals,
     Value C3 = m_K13 / (m_K31 - m_Gamma) * C;
 
     // Calculate concentrations for comp1, comp2 and comp3
-    Eigen::VectorXd concentrations1 = 
-    resid1 * (B * m_precomputedLogarithms["Beta"] 
-	+ A * m_precomputedLogarithms["Alpha"] 
-	+ C * m_precomputedLogarithms["Gamma"]);
+    Eigen::VectorXd concentrations1;
 
-    Value concentrations2 = 
-    resid2 + resid1 * (B2 * m_precomputedLogarithms["Beta"](concentrations1.size() - 1) 
-	+ A2 * m_precomputedLogarithms["Alpha"](concentrations1.size() - 1) 
-	+ C2 * m_precomputedLogarithms["Gamma"](concentrations1.size() - 1));
+    for (int t = 0; t < m_NbPoints; ++t) 
+    {
+       // Comare the point is outside of infusion time or not
+       if ((t * (m_Int/m_NbPoints)) < m_Tinf)
+       {
+            concentrations1(t) = 
+		deltaD 
+		* (A/m_Alpha * (1 - m_precomputedLogarithms["Alpha"](t)) 
+			+ B/m_Beta * (1 - m_precomputedLogarithms["Beta"](t)) 
+			+ C/m_Gamma * (1 - m_precomputedLogarithms["Gamma"](t)));
+       } 
+       else 
+       {
+            concentrations1(t) = 
+		deltaD 
+		* (A/m_Alpha * (1 - alphaTinf) * m_precomputedLogarithms["Alpha"](t) / alphaTinf 
+			+ B/m_Beta * (1 - betaTinf) * m_precomputedLogarithms["Beta"](t) / betaTinf 
+			+ C/m_Gamma * (1 - gammaTinf) *    m_precomputedLogarithms["Gamma"](t) / gammaTinf);
+       }
+    }
+
+    Value concentrations2 =
+	deltaD * 
+	(A2/m_Alpha * (1 - alphaTinf) * m_precomputedLogarithms["Alpha"](m_NbPoints-1) / alphaTinf 
+		+ B2/m_Beta * (1 - betaTinf) * m_precomputedLogarithms["Beta"](m_NbPoints-1) / betaTinf 
+		+ C2/m_Gamma * (1 - gammaTinf) * m_precomputedLogarithms["Gamma"](m_NbPoints-1) / gammaTinf);
 
     Value concentrations3 = 
-    resid3 + resid1 * (B3 * m_precomputedLogarithms["Beta"](concentrations1.size() - 1) 
-	+ A3 * m_precomputedLogarithms["Alpha"](concentrations1.size() - 1) 
-	+ C3 * m_precomputedLogarithms["Gamma"](concentrations1.size() - 1));
+	deltaD * 
+	(A3/m_Alpha * (1 - alphaTinf) * m_precomputedLogarithms["Alpha"](m_NbPoints-1) / alphaTinf 
+		+ B3/m_Beta * (1 - betaTinf) * m_precomputedLogarithms["Beta"](m_NbPoints-1) / betaTinf 
+		+ C3/m_Gamma * (1 - gammaTinf) * m_precomputedLogarithms["Gamma"](m_NbPoints-1) / gammaTinf);
 
     // return concentrations of comp1, comp2 and comp3
-    _outResiduals.push_back(concentrations1[concentrations1.size() - 1]);
+    _outResiduals.push_back(concentrations1[m_NbPoints - 1]);
     _outResiduals.push_back(concentrations2);
     _outResiduals.push_back(concentrations3);
-    //POSTCONDCONT(concentrations1[concentrations.size() - 1] >= 0, SHOULDNTGONEGATIVE, "The concentration1 is negative.")
+    //POSTCONDCONT(concentrations1[m_NbPoints - 1] >= 0, SHOULDNTGONEGATIVE, "The concentration1 is negative.")
     //POSTCONDCONT(concentrations2 >= 0, SHOULDNTGONEGATIVE, "The concentration2 is negative.")
     //POSTCONDCONT(concentrations3 >= 0, SHOULDNTGONEGATIVE, "The concentration3 is negative.")
 
