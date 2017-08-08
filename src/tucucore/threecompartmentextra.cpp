@@ -109,22 +109,22 @@ void ThreeCompartmentExtra::computeConcentrations(const Residuals& _inResiduals,
 
     // Calculate concentrations for comp1, comp2 and comp3
     Eigen::VectorXd concentrations1 = 
-	resid1 * (B * m_precomputedLogarithms["Beta"] 
-	    + A * m_precomputedLogarithms["Alpha"] 
-	    + C * m_precomputedLogarithms["Gamma"]
-	    - (A + B + C) * m_precomputedLogarithms["Ka"]);
+        resid1 * (B * m_precomputedLogarithms["Beta"] 
+            + A * m_precomputedLogarithms["Alpha"] 
+            + C * m_precomputedLogarithms["Gamma"]
+            - (A + B + C) * m_precomputedLogarithms["Ka"]);
 
     Value concentrations2 = 
-	resid2 + resid1 * (B2 * m_precomputedLogarithms["Beta"](m_NbPoints - 1) 
-	    + A2 * m_precomputedLogarithms["Alpha"](m_NbPoints - 1) 
-	    + C2 * m_precomputedLogarithms["Gamma"](m_NbPoints - 1)
-	    - (A2 + B2 + C2) * m_precomputedLogarithms["Ka"](m_NbPoints - 1));
+        resid2 + resid1 * (B2 * m_precomputedLogarithms["Beta"](m_NbPoints - 1) 
+            + A2 * m_precomputedLogarithms["Alpha"](m_NbPoints - 1) 
+            + C2 * m_precomputedLogarithms["Gamma"](m_NbPoints - 1)
+            - (A2 + B2 + C2) * m_precomputedLogarithms["Ka"](m_NbPoints - 1));
 
     Value concentrations3 = 
-	resid3 + resid1 * (B3 * m_precomputedLogarithms["Beta"](m_NbPoints - 1) 
-	    + A3 * m_precomputedLogarithms["Alpha"](m_NbPoints - 1) 
-	    + C3 * m_precomputedLogarithms["Gamma"](m_NbPoints - 1)
-	    - (A3 + B3 + C3) * m_precomputedLogarithms["Ka"](m_NbPoints - 1));
+        resid3 + resid1 * (B3 * m_precomputedLogarithms["Beta"](m_NbPoints - 1) 
+            + A3 * m_precomputedLogarithms["Alpha"](m_NbPoints - 1) 
+            + C3 * m_precomputedLogarithms["Gamma"](m_NbPoints - 1)
+            - (A3 + B3 + C3) * m_precomputedLogarithms["Ka"](m_NbPoints - 1));
 
 
     // return concentrations of comp1, comp2 and comp3

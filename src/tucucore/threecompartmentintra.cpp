@@ -119,32 +119,32 @@ void ThreeCompartmentIntra::computeConcentrations(const Residuals& _inResiduals,
        if ((t * (m_Int/m_NbPoints)) < m_Tinf)
        {
             concentrations1(t) = 
-		deltaD 
-		* (A/m_Alpha * (1 - m_precomputedLogarithms["Alpha"](t)) 
-			+ B/m_Beta * (1 - m_precomputedLogarithms["Beta"](t)) 
-			+ C/m_Gamma * (1 - m_precomputedLogarithms["Gamma"](t)));
+	        deltaD 
+	        * (A/m_Alpha * (1 - m_precomputedLogarithms["Alpha"](t)) 
+		    + B/m_Beta * (1 - m_precomputedLogarithms["Beta"](t)) 
+	            + C/m_Gamma * (1 - m_precomputedLogarithms["Gamma"](t)));
        } 
        else 
        {
             concentrations1(t) = 
-		deltaD 
-		* (A/m_Alpha * (1 - alphaTinf) * m_precomputedLogarithms["Alpha"](t) / alphaTinf 
-			+ B/m_Beta * (1 - betaTinf) * m_precomputedLogarithms["Beta"](t) / betaTinf 
-			+ C/m_Gamma * (1 - gammaTinf) *    m_precomputedLogarithms["Gamma"](t) / gammaTinf);
+	        deltaD 
+	        * (A/m_Alpha * (1 - alphaTinf) * m_precomputedLogarithms["Alpha"](t) / alphaTinf 
+	            + B/m_Beta * (1 - betaTinf) * m_precomputedLogarithms["Beta"](t) / betaTinf 
+	            + C/m_Gamma * (1 - gammaTinf) *    m_precomputedLogarithms["Gamma"](t) / gammaTinf);
        }
     }
 
     Value concentrations2 =
-	deltaD * 
-	(A2/m_Alpha * (1 - alphaTinf) * m_precomputedLogarithms["Alpha"](m_NbPoints - 1) / alphaTinf 
-		+ B2/m_Beta * (1 - betaTinf) * m_precomputedLogarithms["Beta"](m_NbPoints - 1) / betaTinf 
-		+ C2/m_Gamma * (1 - gammaTinf) * m_precomputedLogarithms["Gamma"](m_NbPoints - 1) / gammaTinf);
+        deltaD * 
+        (A2/m_Alpha * (1 - alphaTinf) * m_precomputedLogarithms["Alpha"](m_NbPoints - 1) / alphaTinf 
+	    + B2/m_Beta * (1 - betaTinf) * m_precomputedLogarithms["Beta"](m_NbPoints - 1) / betaTinf 
+            + C2/m_Gamma * (1 - gammaTinf) * m_precomputedLogarithms["Gamma"](m_NbPoints - 1) / gammaTinf);
 
     Value concentrations3 = 
-	deltaD * 
-	(A3/m_Alpha * (1 - alphaTinf) * m_precomputedLogarithms["Alpha"](m_NbPoints - 1) / alphaTinf 
-		+ B3/m_Beta * (1 - betaTinf) * m_precomputedLogarithms["Beta"](m_NbPoints - 1) / betaTinf 
-		+ C3/m_Gamma * (1 - gammaTinf) * m_precomputedLogarithms["Gamma"](m_NbPoints - 1) / gammaTinf);
+        deltaD * 
+        (A3/m_Alpha * (1 - alphaTinf) * m_precomputedLogarithms["Alpha"](m_NbPoints - 1) / alphaTinf 
+	    + B3/m_Beta * (1 - betaTinf) * m_precomputedLogarithms["Beta"](m_NbPoints - 1) / betaTinf 
+            + C3/m_Gamma * (1 - gammaTinf) * m_precomputedLogarithms["Gamma"](m_NbPoints - 1) / gammaTinf);
 
     // return concentrations of comp1, comp2 and comp3
     _outResiduals.push_back(concentrations1[m_NbPoints - 1]);
