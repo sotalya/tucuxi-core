@@ -10,7 +10,8 @@ HEADERS += \
     $$PWD/../../src/tucucore/onecompartmentbolus.h \
     $$PWD/../../src/tucucore/onecompartmentextra.h \
     $$PWD/../../src/tucucore/parameter.h \
-    $$PWD/../../src/tucucore/timedevent.h
+    $$PWD/../../src/tucucore/timedevent.h \
+    $$PWD/../../src/tucucore/operation.h
 
 SOURCES += \
     $$PWD/../../src/tucucore/cachedlogarithms.cpp \
@@ -19,4 +20,5 @@ SOURCES += \
     $$PWD/../../src/tucucore/intakeextractor.cpp \
     $$PWD/../../src/tucucore/dosage.cpp \
     $$PWD/../../src/tucucore/onecompartmentbolus.cpp \
-    $$PWD/../../src/tucucore/onecompartmentextra.cpp
+    $$PWD/../../src/tucucore/onecompartmentextra.cpp \
+    $$PWD/../../src/tucucore/operation.cpp
