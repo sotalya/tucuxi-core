@@ -77,9 +77,9 @@ void TwoCompartmentBolus::computeConcentrations(const Residuals& _inResiduals, C
 
     // Calculate concentrations for comp1 and comp2
     Eigen::VectorXd concentrations1 = 
-    ((A * m_precomputedLogarithms["Alpha"]) + (B * m_precomputedLogarithms["Beta"])) / (2 * m_RootK);
+        ((A * m_precomputedLogarithms["Alpha"]) + (B * m_precomputedLogarithms["Beta"])) / (2 * m_RootK);
     Eigen::VectorXd concentrations2 = 
-    ((A2 * m_precomputedLogarithms["Alpha"]) + (BB2 * m_precomputedLogarithms["Beta"])) / (2 * m_RootK);
+        ((A2 * m_precomputedLogarithms["Alpha"]) + (BB2 * m_precomputedLogarithms["Beta"])) / (2 * m_RootK);
 
     // return concentrations of comp1 and comp2
     _outResiduals.push_back(concentrations1[m_NbPoints - 1]);
