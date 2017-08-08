@@ -76,12 +76,12 @@ void TwoCompartmentIntra::computeConcentrations(const Residuals& _inResiduals, C
     size_t ke_size = m_precomputedLogarithms["Ke"].size();
     int forcesize = std::min(ceil(m_Tinf/m_Int * ke_size), ceil(ke_size));
     int therest;
-    Eigen::VectorXd alphaLogV = m_precomputedLogarithms["Alpha"]; 
-    Eigen::VectorXd betaLogV = m_precomputedLogarithms["Beta"]; 
-    Eigen::VectorXd alphaInfLogV = m_precomputedLogarithms["AlphaInf"]; 
-    Eigen::VectorXd betaInfLogV = m_precomputedLogarithms["BetaInf"]; 
-    Eigen::VectorXd betaInf2LogV = m_precomputedLogarithms["BetaInf2"]; 
-    Eigen::VectorXd rootLogV = m_precomputedLogarithms["Root"]; 
+    Eigen::VectorXd& alphaLogV = m_precomputedLogarithms["Alpha"]; 
+    Eigen::VectorXd& betaLogV = m_precomputedLogarithms["Beta"]; 
+    Eigen::VectorXd& alphaInfLogV = m_precomputedLogarithms["AlphaInf"]; 
+    Eigen::VectorXd& betaInfLogV = m_precomputedLogarithms["BetaInf"]; 
+    Eigen::VectorXd& betaInf2LogV = m_precomputedLogarithms["BetaInf2"]; 
+    Eigen::VectorXd& rootLogV = m_precomputedLogarithms["Root"]; 
 
     Concentration resid1 = _inResiduals[0];
     Concentration resid2 = _inResiduals[1];
