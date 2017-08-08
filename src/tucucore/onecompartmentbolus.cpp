@@ -21,6 +21,7 @@ bool OneCompartmentBolus::checkInputs(const IntakeEvent& _intakeEvent, const Par
     m_D = _intakeEvent.getDose() * 1000;
     m_V = _parameters[0].getValue();
     m_Ke = _parameters[1].getValue();
+    m_NbPoints = _intakeEvent.getNumberPoints();
 /*
     PRECONDCONT(D >= 0, SHOULDNTGONEGATIVE, "The dose is negative.")
     PRECONDCONT(!qIsNaN(D), NOTANUMBER, "The dose is NaN.")
@@ -50,7 +51,7 @@ void OneCompartmentBolus::computeLogarithms(const IntakeEvent& _intakeEvent, con
 void OneCompartmentBolus::computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations = (m_D / m_V + _inResiduals[0]) * m_precomputedLogarithms["Ke"];
-    _outResiduals.push_back(concentrations[concentrations.size() - 1]);
+    _outResiduals.push_back(concentrations[m_NbPoints - 1]);
     //POSTCONDCONT(finalResiduals[0] >= 0, SHOULDNTGONEGATIVE, "The concentration is negative.")
     _concentrations.assign(concentrations.data(), concentrations.data() + concentrations.size());	
 }

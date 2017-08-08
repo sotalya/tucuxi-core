@@ -23,6 +23,7 @@ bool OneCompartmentExtra::checkInputs(const IntakeEvent& _intakeEvent, const Par
     m_Ka = _parameters[2].getValue();
     m_V = _parameters[3].getValue();
     m_Ke = m_Cl / m_V;
+    m_NbPoints = _intakeEvent.getNumberPoints();
 /*
     PRECONDCONT(D >= 0, SHOULDNTGONEGATIVE, "The dose is negative.")
     PRECONDCONT(!qIsNaN(D), NOTANUMBER, "The dose is NaN.")
@@ -64,9 +65,9 @@ void OneCompartmentExtra::computeConcentrations(const Residuals& _inResiduals, C
 
     Eigen::VectorXd concentrations = m_precomputedLogarithms["Ke"] * resid1 + (m_precomputedLogarithms["Ka"] - m_precomputedLogarithms["Ke"]) * part2;
     
-    _outResiduals.push_back(concentrations[concentrations.size() - 1]);
+    _outResiduals.push_back(concentrations[m_NbPoints - 1]);
     // POSTCONDCONT(finalResiduals[0] >= 0, SHOULDNTGONEGATIVE, "The concentration is negative.")
-    _outResiduals.push_back(resid2 * m_precomputedLogarithms["Ka"][concentrations.size() - 1]);
+    _outResiduals.push_back(resid2 * m_precomputedLogarithms["Ka"][m_NbPoints - 1]);
     // POSTCONDCONT(finalResiduals[1] >= 0, SHOULDNTGONEGATIVE, "The concentration is negative.")
     _concentrations.assign(concentrations.data(), concentrations.data() + concentrations.size());	
 }

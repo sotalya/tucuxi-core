@@ -29,6 +29,7 @@ private:
     Value m_D;	/// Quantity of drug
     Value m_V;	///	Volume of the compartment
     Value m_Ke; /// Elimination constant rate = Cl/V where Cl is the clearance and V is the volume of the compartment
+    int m_NbPoints; /// number measure points during interval
 };
 
 }

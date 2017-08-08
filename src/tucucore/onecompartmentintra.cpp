@@ -25,6 +25,7 @@ bool OneCompartmentIntra::checkInputs(const IntakeEvent& _intakeEvent, const Par
     m_Ke = m_Cl / m_V;
     m_Tinf = (_intakeEvent.getInfusionTime()).toMilliseconds();
     m_Int = (_intakeEvent.getInterval()).toMilliseconds();
+    m_NbPoints = _intakeEvent.getNumberPoints();
 /*
     PRECONDCONT(D >= 0, SHOULDNTGONEGATIVE, "The dose is negative.")
     PRECONDCONT(!qIsNaN(D), NOTANUMBER, "The dose is NaN.")
@@ -72,7 +73,7 @@ void OneCompartmentIntra::computeConcentrations(const Residuals& _inResiduals, C
     concentrations.tail(therest) = concentrations.tail(therest) + part1 * (exp(m_Ke * m_Tinf) - 1) * m_precomputedLogarithms["Ke"].tail(therest);
 
     // Set the new residual
-    _outResiduals.push_back(concentrations[concentrations.size() - 1]);
+    _outResiduals.push_back(concentrations[m_NbPoints - 1]);
     // POSTCONDCONT(finalResiduals[0] >= 0, SHOULDNTGONEGATIVE, "The concentration is negative.")
     _concentrations.assign(concentrations.data(), concentrations.data() + concentrations.size());	
 }

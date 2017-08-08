@@ -32,6 +32,7 @@ private:
     Value m_Ke; /// Elimination constant rate = Cl/V where Cl is the clearance and V is the volume of the compartment
     int64 m_Tinf; /// Infusion time (milliseconds)
     int64 m_Int; /// Interval (milliseconds)
+    int m_NbPoints; /// number measure points during interval
 };
 
 }
