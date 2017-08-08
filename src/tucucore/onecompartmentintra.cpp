@@ -67,10 +67,14 @@ void OneCompartmentIntra::computeConcentrations(const Residuals& _inResiduals, C
     Eigen::VectorXd concentrations = Eigen::VectorXd::Constant(ke_size, _inResiduals[0]);
     concentrations = concentrations.cwiseProduct(m_precomputedLogarithms["Ke"]);
 
-    concentrations.head(forcesize) = concentrations.head(forcesize) + part1 * (1.0 - m_precomputedLogarithms["Ke"].head(forcesize).array()).matrix();
+    concentrations.head(forcesize) = 
+        concentrations.head(forcesize) 
+	+ part1 * (1.0 - m_precomputedLogarithms["Ke"].head(forcesize).array()).matrix();
     
     therest = concentrations.size() - forcesize;
-    concentrations.tail(therest) = concentrations.tail(therest) + part1 * (exp(m_Ke * m_Tinf) - 1) * m_precomputedLogarithms["Ke"].tail(therest);
+    concentrations.tail(therest) = 
+        concentrations.tail(therest) 
+	+ part1 * (exp(m_Ke * m_Tinf) - 1) * m_precomputedLogarithms["Ke"].tail(therest);
 
     // Set the new residual
     _outResiduals.push_back(concentrations[m_NbPoints - 1]);

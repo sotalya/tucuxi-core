@@ -63,7 +63,9 @@ void OneCompartmentExtra::computeConcentrations(const Residuals& _inResiduals, C
     Concentration resid2 = _inResiduals[1] + m_F*m_D/m_V;
     Concentration part2 = m_Ka*resid2 / (-m_Ka + m_Ke);
 
-    Eigen::VectorXd concentrations = m_precomputedLogarithms["Ke"] * resid1 + (m_precomputedLogarithms["Ka"] - m_precomputedLogarithms["Ke"]) * part2;
+    Eigen::VectorXd concentrations = 
+        m_precomputedLogarithms["Ke"] * resid1 
+	+ (m_precomputedLogarithms["Ka"] - m_precomputedLogarithms["Ke"]) * part2;
     
     _outResiduals.push_back(concentrations[m_NbPoints - 1]);
     // POSTCONDCONT(finalResiduals[0] >= 0, SHOULDNTGONEGATIVE, "The concentration is negative.")
