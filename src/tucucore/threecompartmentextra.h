@@ -33,6 +33,7 @@ private:
     Value m_Q2;	/// ???
     Value m_V1;	/// Volume of the compartment 1
     Value m_V2;	/// Volume of the compartment 2
+    Value m_Ka; /// Absorption rate constant
     Value m_Ke; /// Elimination constant rate = Cl/V1 where Cl is the clearance and V1 is the volume of the compartment 1
     Value m_K12; /// Q/V1
     Value m_K21; /// Q/V2
@@ -41,6 +42,7 @@ private:
     Value m_Alpha;
     Value m_Beta;
     Value m_Gamma;
+    int m_NbPoints; /// number measure points during interval
 };
 
 }

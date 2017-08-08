@@ -27,11 +27,13 @@ bool ThreeCompartmentExtra::checkInputs(const IntakeEvent& _intakeEvent, const P
     m_Q2 = _parameters[3].getValue();
     m_V1 = _parameters[4].getValue();
     m_V2 = _parameters[5].getValue();
+    m_Ka = _parameters[5].getValue();
     m_Ke = m_Cl / m_V1;
     m_K12 = m_Q1 / m_V1;
     m_K21 = m_Q1 / m_V2;
     m_K13 = m_Q2 / m_V1;
     m_K31 = m_Q2 / m_V2;
+    m_NbPoints = _intakeEvent.getNumberPoints();
 
 /*
     PRECONDCONT(m_D >= 0, SHOULDNTGONEGATIVE, "The dose is negative.")
@@ -84,6 +86,7 @@ void ThreeCompartmentExtra::computeLogarithms(const IntakeEvent& _intakeEvent, c
     m_precomputedLogarithms["Alpha"] = (-m_Alpha * _times).array().exp();
     m_precomputedLogarithms["Beta"] = (-m_Beta * _times).array().exp();
     m_precomputedLogarithms["Gamma"] = (-m_Gamma * _times).array().exp();
+    m_precomputedLogarithms["Ka"] = (-m_Ka * _times).array().exp();
 }
 
 
@@ -93,9 +96,10 @@ void ThreeCompartmentExtra::computeConcentrations(const Residuals& _inResiduals,
     Concentration resid2 = _inResiduals[1];
     Concentration resid3 = _inResiduals[2];
 
-    Value A = (1 / m_V1) * (m_K21 - m_Alpha) * (m_K31 - m_Alpha) / (m_Alpha - m_Beta) / (m_Alpha - m_Gamma);
-    Value B = (1 / m_V1) * (m_K21 - m_Beta) * (m_K31 - m_Beta) / (m_Beta - m_Alpha) / (m_Beta - m_Gamma);
-    Value C = (1 / m_V1) * (m_K21 - m_Gamma) * (m_K31 - m_Gamma) / (m_Gamma - m_Beta) / (m_Gamma - m_Alpha);
+    Value A = 1/m_V1 * (m_Ka/(m_Ka - m_Alpha)) * (m_K21 - m_Alpha) * (m_K31 - m_Alpha) / (m_Alpha - m_Beta) / (m_Alpha - m_Gamma);
+    Value B = 1/m_V1 * (m_Ka/(m_Ka - m_Beta)) * (m_K21 - m_Beta) * (m_K31 - m_Beta) / (m_Beta - m_Alpha) / (m_Beta - m_Gamma);
+    Value C = 1/m_V1 * (m_Ka/(m_Ka - m_Gamma)) * (m_K21 - m_Gamma) * (m_K31 - m_Gamma) / (m_Gamma - m_Beta) / (m_Gamma - m_Alpha);
+
     Value A2 = m_K12 / (m_K21 - m_Alpha) * A;
     Value B2 = m_K12 / (m_K21 - m_Beta) * B;
     Value C2 = m_K12 / (m_K21 - m_Gamma) * C;
@@ -105,25 +109,29 @@ void ThreeCompartmentExtra::computeConcentrations(const Residuals& _inResiduals,
 
     // Calculate concentrations for comp1, comp2 and comp3
     Eigen::VectorXd concentrations1 = 
-    resid1 * (B * m_precomputedLogarithms["Beta"] 
-	+ A * m_precomputedLogarithms["Alpha"] 
-	+ C * m_precomputedLogarithms["Gamma"]);
+	resid1 * (B * m_precomputedLogarithms["Beta"] 
+	    + A * m_precomputedLogarithms["Alpha"] 
+	    + C * m_precomputedLogarithms["Gamma"]
+	    - (A + B + C) * m_precomputedLogarithms["Ka"]);
 
     Value concentrations2 = 
-    resid2 + resid1 * (B2 * m_precomputedLogarithms["Beta"](concentrations1.size() - 1) 
-	+ A2 * m_precomputedLogarithms["Alpha"](concentrations1.size() - 1) 
-	+ C2 * m_precomputedLogarithms["Gamma"](concentrations1.size() - 1));
+	resid2 + resid1 * (B2 * m_precomputedLogarithms["Beta"](m_NbPoints - 1) 
+	    + A2 * m_precomputedLogarithms["Alpha"](m_NbPoints - 1) 
+	    + C2 * m_precomputedLogarithms["Gamma"](m_NbPoints - 1)
+	    - (A2 + B2 + C2) * m_precomputedLogarithms["Ka"](m_NbPoints - 1));
 
     Value concentrations3 = 
-    resid3 + resid1 * (B3 * m_precomputedLogarithms["Beta"](concentrations1.size() - 1) 
-	+ A3 * m_precomputedLogarithms["Alpha"](concentrations1.size() - 1) 
-	+ C3 * m_precomputedLogarithms["Gamma"](concentrations1.size() - 1));
+	resid3 + resid1 * (B3 * m_precomputedLogarithms["Beta"](m_NbPoints - 1) 
+	    + A3 * m_precomputedLogarithms["Alpha"](m_NbPoints - 1) 
+	    + C3 * m_precomputedLogarithms["Gamma"](m_NbPoints - 1)
+	    - (A3 + B3 + C3) * m_precomputedLogarithms["Ka"](m_NbPoints - 1));
+
 
     // return concentrations of comp1, comp2 and comp3
-    _outResiduals.push_back(concentrations1[concentrations1.size() - 1]);
+    _outResiduals.push_back(concentrations1[m_NbPoints - 1]);
     _outResiduals.push_back(concentrations2);
     _outResiduals.push_back(concentrations3);
-    //POSTCONDCONT(concentrations1[concentrations.size() - 1] >= 0, SHOULDNTGONEGATIVE, "The concentration1 is negative.")
+    //POSTCONDCONT(concentrations1[m_NbPoints - 1] >= 0, SHOULDNTGONEGATIVE, "The concentration1 is negative.")
     //POSTCONDCONT(concentrations2 >= 0, SHOULDNTGONEGATIVE, "The concentration2 is negative.")
     //POSTCONDCONT(concentrations3 >= 0, SHOULDNTGONEGATIVE, "The concentration3 is negative.")
 
