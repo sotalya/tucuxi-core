@@ -61,7 +61,6 @@ void TwoCompartmentIntra::prepareComputations(const IntakeEvent& _intakeEvent, c
 
 void TwoCompartmentIntra::computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterList& _parameters, Eigen::VectorXd& _times)
 {
-    m_precomputedLogarithms["Ke"] = (-m_Ke * _times).array().exp();
     m_precomputedLogarithms["Alpha"] = (-m_Alpha * _times).array().exp();
     m_precomputedLogarithms["Beta"] = (-m_Beta * _times).array().exp();
     m_precomputedLogarithms["AlphaInf"] = (m_Alpha * _times).array().exp();
@@ -73,8 +72,7 @@ void TwoCompartmentIntra::computeLogarithms(const IntakeEvent& _intakeEvent, con
 
 void TwoCompartmentIntra::computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
 {
-    size_t ke_size = m_precomputedLogarithms["Ke"].size();
-    int forcesize = std::min(ceil(m_Tinf/m_Int * ke_size), ceil(ke_size));
+    int forcesize = std::max(0.0, std::min(ceil(m_Tinf/m_Int * m_NbPoints), ceil(m_NbPoints)));
     int therest;
     Eigen::VectorXd& alphaLogV = m_precomputedLogarithms["Alpha"]; 
     Eigen::VectorXd& betaLogV = m_precomputedLogarithms["Beta"]; 
