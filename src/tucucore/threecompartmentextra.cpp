@@ -27,7 +27,7 @@ bool ThreeCompartmentExtra::checkInputs(const IntakeEvent& _intakeEvent, const P
     m_Q2 = _parameters[3].getValue();
     m_V1 = _parameters[4].getValue();
     m_V2 = _parameters[5].getValue();
-    m_Ka = _parameters[5].getValue();
+    m_Ka = _parameters[6].getValue();
     m_Ke = m_Cl / m_V1;
     m_K12 = m_Q1 / m_V1;
     m_K21 = m_Q1 / m_V2;
