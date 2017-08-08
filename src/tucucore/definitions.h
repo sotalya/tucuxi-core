@@ -76,7 +76,7 @@ typedef date::weekday DayOfWeek;
 #define SATURDAY     6U
 
 /// \ingroup TucuCore
-/// \brief The type used to represent a serie of residuals
+/// \brief The type used to represent a serie of residuals.
 typedef std::vector<Concentration> Residuals;
 
 /// \ingroup TucuCore
@@ -84,8 +84,12 @@ typedef std::vector<Concentration> Residuals;
 typedef int CycleSize;
 
 /// \ingroup TucuCore
-/// \brief A structure to store precomputed logarithms
+/// \brief A structure to store precomputed logarithms.
 typedef std::map<std::string, Eigen::VectorXd> PrecomputedLogarithms;
+
+/// \ingroup TucuCore
+/// \brief Input operand types.
+enum class InputType { BOOL, INTEGER, DOUBLE };
 
 }
 }

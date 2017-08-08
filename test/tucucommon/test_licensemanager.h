@@ -1,17 +1,15 @@
 
 #include <string>
 #include <iostream>
+#include <ctime>
 
 #include "fructose/fructose.h"
-//#include "date/date.h"
 
 #include "tucucommon/systeminfo.h"
 #include "tucucommon/cryptohelper.h"
 #include "tucucommon/licensemanager.h"
 #include "tucucommon/datetime.h"
 
-//using namespace std::chrono_literals;
-//using namespace date;
 using namespace Tucuxi::Common;
 
 #define DEBUG_MSG
@@ -30,7 +28,7 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
         m_path = _path;
 
         // Build Fingerprint
-        for (int i = CPU; i != ERROR; i++) {
+        for (int i = int(MachineIdType::CPU); i != int(MachineIdType::ERROR); i++) {
             m_fingerprint = SystemInfo::retrieveFingerPrint(static_cast<MachineIdType>(i));
 
             if(!m_fingerprint.empty()) {
@@ -48,26 +46,26 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
         DateTime dateEndLicense2 = dateToday; // - DateTime("0-01-0","%Y-%b-%ds");
 
         std::string today = std::to_string(dateToday.year());
-        today += "-";
+        // today += "-";
         today += std::to_string(dateToday.month());
-        today += "-";
+        // today += "-";
         today += std::to_string(dateToday.day());
 
         std::string endLicense1 = std::to_string(dateEndLicense1.year()+1);
-        endLicense1 += "-";
+        // endLicense1 += "-";
         endLicense1 += std::to_string(dateEndLicense1.month());
-        endLicense1 += "-";
+        // endLicense1 += "-";
         endLicense1 += std::to_string(dateEndLicense1.day());
 
         std::string endLicense2 = std::to_string(dateEndLicense2.year()-1);
-        endLicense2 += "-";
+        // endLicense2 += "-";
         endLicense2 += std::to_string(dateEndLicense2.month());
-        endLicense2 += "-";
+        // endLicense2 += "-";
         endLicense2 += std::to_string(dateEndLicense2.day());
 
         // Valid licens
         m_licenses[0] = "license:";
-        m_licenses[0] += std::to_string(m_type);
+        m_licenses[0] += std::to_string(int(m_type));
         m_licenses[0] += ":";
         m_licenses[0] += m_fingerprint;
         m_licenses[0] += ":";
@@ -83,7 +81,7 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
 
         // Wrong license with fake keyword
         m_licenses[1] = "random:";
-        m_licenses[1] += std::to_string(m_type);
+        m_licenses[1] += std::to_string(int(m_type));
         m_licenses[1] += ":";
         m_licenses[1] += m_fingerprint;
         m_licenses[1] += ":";
@@ -115,7 +113,7 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
 
         // Wrong license with no fingerprint
         m_licenses[3] = "license:";
-        m_licenses[3] += std::to_string(m_type);
+        m_licenses[3] += std::to_string(int(m_type));
         m_licenses[3] += ":";
         m_licenses[3] += "";
         m_licenses[3] += ":";
@@ -131,7 +129,7 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
 
         // Fake license (date change by user)
         m_licenses[4] = "license:";
-        m_licenses[4] += std::to_string(m_type);
+        m_licenses[4] += std::to_string(int(m_type));
         m_licenses[4] += ":";
         m_licenses[4] += m_fingerprint;
         m_licenses[4] += ":";
@@ -147,13 +145,13 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
 
         // Expired license
         m_licenses[5] = "license:";
-        m_licenses[5] += std::to_string(m_type);
+        m_licenses[5] += std::to_string(int(m_type));
         m_licenses[5] += ":";
         m_licenses[5] += m_fingerprint;
         m_licenses[5] += ":";
         m_licenses[5] += endLicense2;
         m_licenses[5] += ":";
-        m_licenses[5] += today;
+        m_licenses[5] += endLicense2;
 
         if(!Tucuxi::Common::CryptoHelper::encrypt("86685E7AA62844102FC7FAD5D6DDF46C9CA7777BF4E0153FDF5F86463EAC0D75",
                                   m_licenses[5],
@@ -162,35 +160,36 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
         }
     }
 
+
     void basic(const std::string& _testName)
     {
         std::cout << _testName << std::endl;
 
         std::string id;
 
-        id = Tucuxi::Common::SystemInfo::retrieveFingerPrint(Tucuxi::Common::CPU);
+        id = Tucuxi::Common::SystemInfo::retrieveFingerPrint(Tucuxi::Common::MachineIdType::CPU);
         std::cout << "CPU : " << id << std::endl;
 
-        id = Tucuxi::Common::SystemInfo::retrieveFingerPrint(Tucuxi::Common::MOTHERBOARD);
+        id = Tucuxi::Common::SystemInfo::retrieveFingerPrint(Tucuxi::Common::MachineIdType::MOTHERBOARD);
         std::cout << "MOTHERBOARD : " << id << std::endl;
 
-        id = Tucuxi::Common::SystemInfo::retrieveFingerPrint(Tucuxi::Common::BIOS);
+        id = Tucuxi::Common::SystemInfo::retrieveFingerPrint(Tucuxi::Common::MachineIdType::BIOS);
         std::cout << "BIOS : " << id << std::endl;
 
-        id = Tucuxi::Common::SystemInfo::retrieveFingerPrint(Tucuxi::Common::PRODUCT);
+        id = Tucuxi::Common::SystemInfo::retrieveFingerPrint(Tucuxi::Common::MachineIdType::PRODUCT);
         std::cout << "PRODUCT : " << id << std::endl;
 
-        id = Tucuxi::Common::SystemInfo::retrieveFingerPrint(Tucuxi::Common::NETWORK);
+        id = Tucuxi::Common::SystemInfo::retrieveFingerPrint(Tucuxi::Common::MachineIdType::NETWORK);
         std::cout << "NETWORK : " << id << std::endl;
 
-        id = Tucuxi::Common::SystemInfo::retrieveFingerPrint(Tucuxi::Common::NAME);
+        id = Tucuxi::Common::SystemInfo::retrieveFingerPrint(Tucuxi::Common::MachineIdType::NAME);
         std::cout << "NAME : " << id << std::endl;
 
-        id = Tucuxi::Common::SystemInfo::retrieveFingerPrint(Tucuxi::Common::ERROR);
+        id = Tucuxi::Common::SystemInfo::retrieveFingerPrint(Tucuxi::Common::MachineIdType::ERROR);
         std::cout << "Error : " << id << std::endl;
 
         MachineId idfromMachine;
-        for (int i = CPU; i != ERROR; i++) {
+        for (int i = int(MachineIdType::CPU); i != int(MachineIdType::ERROR); i++) {
             idfromMachine.m_fingerprint = SystemInfo::retrieveFingerPrint(static_cast<MachineIdType>(i));
 
             if(!idfromMachine.m_fingerprint.empty()) {
@@ -199,7 +198,7 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
             }
         }
 
-        fructose_assert(idfromMachine.m_type != ERROR);
+        fructose_assert(idfromMachine.m_type != MachineIdType::ERROR);
     }
 
     void installNewLicense(const std::string& _testName)
@@ -212,12 +211,12 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
 
         // Detect missing license file
         int res = Tucuxi::Common::LicenseManager::checkLicenseFile(fileName);
-        fructose_assert(res == Tucuxi::Common::LicenseError::MISSING_LICENSE_FILE);
+        fructose_assert(res == int(Tucuxi::Common::LicenseError::MISSING_LICENSE_FILE));
 
         // Generate a request to get a new license file
         std::string request;
         res = Tucuxi::Common::LicenseManager::generateRequestString(&request);
-        fructose_assert(res == Tucuxi::Common::LicenseError::REQUEST_SUCCESSFUL);
+        fructose_assert(res == int(Tucuxi::Common::LicenseError::REQUEST_SUCCESSFUL));
 
         std::string test;
         if(!Tucuxi::Common::CryptoHelper::decrypt("86685E7AA62844102FC7FAD5D6DDF46C9CA7777BF4E0153FDF5F86463EAC0D75",
@@ -230,15 +229,15 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
 
         // Install a new license file
         res = Tucuxi::Common::LicenseManager::installLicense(m_licenses[0], fileName);
-        fructose_assert(res == Tucuxi::Common::LicenseError::INSTALLATION_SUCCESSFUL);
+        fructose_assert(res == int(Tucuxi::Common::LicenseError::INSTALLATION_SUCCESSFUL));
 
         // Check license file
         res = Tucuxi::Common::LicenseManager::checkLicenseFile(fileName);
-        fructose_assert(res == Tucuxi::Common::LicenseError::VALID_LICENSE);
+        fructose_assert(res == int(Tucuxi::Common::LicenseError::VALID_LICENSE));
 
         // Check license file
         res = Tucuxi::Common::LicenseManager::checkLicenseFile(fileName);
-        fructose_assert(res == Tucuxi::Common::LicenseError::VALID_LICENSE);
+        fructose_assert(res == int(Tucuxi::Common::LicenseError::VALID_LICENSE));
     }
 
     void checkInvalidLicense(const std::string& _testName)
@@ -247,7 +246,7 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
 
         int res = 0;
 
-        for(int i=1; i < 4; i++) {
+        for(int i=1; i < 6; i++) {
 
             std::string test;
             if(!Tucuxi::Common::CryptoHelper::decrypt("86685E7AA62844102FC7FAD5D6DDF46C9CA7777BF4E0153FDF5F86463EAC0D75",
@@ -264,7 +263,7 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
 
             // Install a invalid license file (wrong type)
             Tucuxi::Common::LicenseManager::installLicense(m_licenses[i], fileName);
-            fructose_assert(res == Tucuxi::Common::LicenseError::INVALID_LICENSE);
+            fructose_assert(res == int(Tucuxi::Common::LicenseError::INVALID_LICENSE));
 
             // Write result in license file
             std::ofstream file(fileName);
@@ -276,11 +275,11 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
 
             // Check license file
             res = Tucuxi::Common::LicenseManager::checkLicenseFile(fileName);
-            fructose_assert(res == Tucuxi::Common::LicenseError::INVALID_LICENSE);
+            fructose_assert(res == int(Tucuxi::Common::LicenseError::INVALID_LICENSE));
 
             // Check license file
             res = Tucuxi::Common::LicenseManager::checkLicenseFile(fileName);
-            fructose_assert(res == Tucuxi::Common::LicenseError::INVALID_LICENSE);
+            fructose_assert(res == int(Tucuxi::Common::LicenseError::INVALID_LICENSE));
         }
     }
 };
