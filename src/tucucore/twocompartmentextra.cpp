@@ -16,7 +16,7 @@ TwoCompartmentExtra::TwoCompartmentExtra()
 bool TwoCompartmentExtra::checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
 {
 /*
-    PRECOND(parameters.size() >= 2, SHOULDNTGONEGATIVE, "The number of parameters should be equal to 2.")
+    PRECOND(parameters.size() >= 4, SHOULDNTGONEGATIVE, "The number of parameters should be equal to 2.")
 */
     m_D = _intakeEvent.getDose() * 1000;
     m_Cl = _parameters[0].getValue();
@@ -28,10 +28,11 @@ bool TwoCompartmentExtra::checkInputs(const IntakeEvent& _intakeEvent, const Par
     m_Ke = m_Cl / m_V1;
     m_K12 = m_Q / m_V1;
     m_K21 = m_Q / m_V2;
-    m_SumK = m_Ke + m_K12 + m_K21;
-    m_RootK = std::sqrt((m_SumK * m_SumK) - (4 * m_K21 * m_Ke));
-    m_Alpha = (m_SumK + m_RootK)/2;
-    m_Beta = (m_SumK - m_RootK)/2;
+    Value sumK = m_Ke + m_K12 + m_K21;
+    m_RootK = std::sqrt((sumK * sumK) - (4 * m_K21 * m_Ke));
+    m_Alpha = (sumK + m_RootK)/2;
+    m_Beta = (sumK - m_RootK)/2;
+    m_NbPoints = _intakeEvent.getNumberPoints();
 /*
     PRECONDCONT(m_D >= 0, SHOULDNTGONEGATIVE, "The dose is negative.")
     PRECONDCONT(!qIsNaN(m_D), NOTANUMBER, "The dose is NaN.")
@@ -151,7 +152,7 @@ void TwoCompartmentExtra::computeConcentrations(const Residuals& _inResiduals, C
 	+ C * m_precomputedLogarithms["Ka"](m_precomputedLogarithms["Ka"].size() - 1)) / divider;
 
     // Return concentrations of comp1, comp2 and comp3
-    _outResiduals.push_back(concentrations1[concentrations1.size() - 1]);
+    _outResiduals.push_back(concentrations1[m_NbPoints - 1]);
     _outResiduals.push_back(concentrations2);
     _outResiduals.push_back(m_precomputedLogarithms["Ka"](m_precomputedLogarithms["Ka"].size() - 1) * resid3);
     //POSTCONDCONT(concentrations1[concentrations.size() - 1] >= 0, SHOULDNTGONEGATIVE, "The concentration is negative.")

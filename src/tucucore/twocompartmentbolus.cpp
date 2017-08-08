@@ -16,7 +16,7 @@ TwoCompartmentBolus::TwoCompartmentBolus()
 bool TwoCompartmentBolus::checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
 {
 /*
-    PRECOND(parameters.size() >= 2, SHOULDNTGONEGATIVE, "The number of parameters should be equal to 2.")
+    PRECOND(parameters.size() >= 4, SHOULDNTGONEGATIVE, "The number of parameters should be equal to 2.")
 */
     m_D = _intakeEvent.getDose() * 1000;
     m_Cl = _parameters[0].getValue();
@@ -26,10 +26,7 @@ bool TwoCompartmentBolus::checkInputs(const IntakeEvent& _intakeEvent, const Par
     m_Ke = m_Cl / m_V1;
     m_K12 = m_Q / m_V1;
     m_K21 = m_Q / m_V2;
-    m_SumK = m_Ke + m_K12 + m_K21;
-    m_RootK = std::sqrt((m_SumK * m_SumK) - (4 * m_K21 * m_Ke));
-    m_Alpha = (m_SumK + m_RootK)/2;
-    m_Beta = (m_SumK - m_RootK)/2;
+    m_NbPoints = _intakeEvent.getNumberPoints();
 /*
     PRECONDCONT(m_D >= 0, SHOULDNTGONEGATIVE, "The dose is negative.")
     PRECONDCONT(!qIsNaN(m_D), NOTANUMBER, "The dose is NaN.")
@@ -37,6 +34,9 @@ bool TwoCompartmentBolus::checkInputs(const IntakeEvent& _intakeEvent, const Par
     PRECONDCONT(m_Cl > 0, SHOULDNTGONEGATIVE, "The clearance is not greater than zero.")
     PRECONDCONT(!qIsNaN(m_Cl), NOTANUMBER, "The CL is NaN.")
     PRECONDCONT(!qIsInf(m_Cl), ISINFINITY, "The CL is Inf.")
+    PRECONDCONT(m_Q > 0, SHOULDNTGONEGATIVE, "The Q is not greater than zero.")
+    PRECONDCONT(!qIsNaN(m_Q), NOTANUMBER, "The Q is NaN.")
+    PRECONDCONT(!qIsInf(m_Q), ISINFINITY, "The Q is Inf.")
     PRECONDCONT(m_V1 > 0, SHOULDNTGONEGATIVE, "The volume1 is not greater than zero.")
     PRECONDCONT(!qIsNaN(m_V1), NOTANUMBER, "The V1 is NaN.")
     PRECONDCONT(!qIsInf(m_V1), ISINFINITY, "The V1 is Inf.")
@@ -44,6 +44,11 @@ bool TwoCompartmentBolus::checkInputs(const IntakeEvent& _intakeEvent, const Par
     PRECONDCONT(!qIsNaN(m_V2), NOTANUMBER, "The V2 is NaN.")
     PRECONDCONT(!qIsInf(m_V2), ISINFINITY, "The V2 is Inf.")
 */
+    Value sumK = m_Ke + m_K12 + m_K21;
+    m_RootK = std::sqrt((sumK * sumK) - (4 * m_K21 * m_Ke));
+    m_Alpha = (sumK + m_RootK)/2;
+    m_Beta = (sumK - m_RootK)/2;
+
     return true;
 }
 
@@ -77,8 +82,8 @@ void TwoCompartmentBolus::computeConcentrations(const Residuals& _inResiduals, C
     ((A2 * m_precomputedLogarithms["Alpha"]) + (BB2 * m_precomputedLogarithms["Beta"])) / (2 * m_RootK);
 
     // return concentrations of comp1 and comp2
-    _outResiduals.push_back(concentrations1[concentrations1.size() - 1]);
-    _outResiduals.push_back(concentrations2[concentrations1.size() - 1]);
+    _outResiduals.push_back(concentrations1[m_NbPoints - 1]);
+    _outResiduals.push_back(concentrations2[m_NbPoints - 1]);
     //POSTCONDCONT(concentrations1[concentrations.size() - 1] >= 0, SHOULDNTGONEGATIVE, "The concentration is negative.")
     //POSTCONDCONT(concentrations2[concentrations.size() - 1] >= 0, SHOULDNTGONEGATIVE, "The concentration is negative.")
 

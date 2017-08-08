@@ -16,7 +16,7 @@ TwoCompartmentIntra::TwoCompartmentIntra()
 bool TwoCompartmentIntra::checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
 {
 /*
-    PRECOND(parameters.size() >= 2, SHOULDNTGONEGATIVE, "The number of parameters should be equal to 2.")
+    PRECOND(parameters.size() >= 4, SHOULDNTGONEGATIVE, "The number of parameters should be equal to 2.")
 */
     m_D = _intakeEvent.getDose() * 1000;
     m_Cl = _parameters[0].getValue();
@@ -33,7 +33,7 @@ bool TwoCompartmentIntra::checkInputs(const IntakeEvent& _intakeEvent, const Par
     m_Beta = (m_SumK - m_RootK)/2;
     m_Tinf = (_intakeEvent.getInfusionTime()).toMilliseconds();
     m_Int = (_intakeEvent.getInterval()).toMilliseconds();
-    m_DeltaD = (m_D / m_V1) / m_Tinf; 
+    m_NbPoints = _intakeEvent.getNumberPoints();
 /*
     PRECONDCONT(m_D >= 0, SHOULDNTGONEGATIVE, "The dose is negative.")
     PRECONDCONT(!qIsNaN(m_D), NOTANUMBER, "The dose is NaN.")
@@ -49,6 +49,7 @@ bool TwoCompartmentIntra::checkInputs(const IntakeEvent& _intakeEvent, const Par
     PRECONDCONT(!qIsInf(m_V2), ISINFINITY, "The V2 is Inf.")
     PRECONDCONT(m_Divider != 0.0, DIVIDEBYZERO, "Divide by zero.");
 */
+
     return true;
 }
 
@@ -85,15 +86,17 @@ void TwoCompartmentIntra::computeConcentrations(const Residuals& _inResiduals, C
     Concentration resid1 = _inResiduals[0];
     Concentration resid2 = _inResiduals[1];
 
+    Value deltaD = (m_D / m_V1) / m_Tinf; 
+
     Concentration residInf1 =
-	(2 * m_DeltaD * std::exp(m_Beta * m_Tinf) * m_K21
+	(2 * deltaD * std::exp(m_Beta * m_Tinf) * m_K21
 	* (std::exp(-m_Beta * m_Tinf) * (-m_K12 - m_K21 + m_Ke - m_RootK) 
 	+ std::exp(-2 * m_Beta * m_Tinf) * (m_K12 + m_K21 - m_Ke + m_RootK)
 	+ std::exp(m_RootK*m_Tinf - m_Alpha*m_Tinf) * (m_K12 + m_K21 - m_Ke - m_RootK)
 	+ std::exp(-m_Alpha*m_Tinf - m_Beta*m_Tinf) * (-m_K12 - m_K21 + m_Ke + m_RootK))
 	) / m_Divider;
     Concentration residInf2 = 
-	(2 * m_DeltaD * std::exp(m_Beta * m_Tinf) * m_K12
+	(2 * deltaD * std::exp(m_Beta * m_Tinf) * m_K12
 	* (std::exp(-m_Beta * m_Tinf) * (-m_SumK - m_RootK)
 	+ std::exp(-2 * m_Beta * m_Tinf) * (m_SumK + m_RootK)
 	+ std::exp(m_RootK * m_Tinf - m_Alpha * m_Tinf) * (m_SumK - m_RootK)
@@ -116,13 +119,13 @@ void TwoCompartmentIntra::computeConcentrations(const Residuals& _inResiduals, C
 	((A2 * alphaLogV) + (BB2 * betaLogV)) / (2 * m_RootK);
 
     // During infusion
-    Eigen::ArrayXd p1p1 = (2 * m_DeltaD * m_K21 * betaInfLogV.head(forcesize)).array();
+    Eigen::ArrayXd p1p1 = (2 * deltaD * m_K21 * betaInfLogV.head(forcesize)).array();
     Eigen::ArrayXd p1p2 = AInf * (betaLogV.head(forcesize) - betaInf2LogV.head(forcesize));
     Eigen::ArrayXd p1p3 = 
 	(BInf 
 	* (rootLogV.head(forcesize).cwiseQuotient(alphaInfLogV.head(forcesize)) 
 	- alphaLogV.head(forcesize).cwiseQuotient(betaInfLogV.head(forcesize)))).array();
-    Eigen::ArrayXd p2p1 = (2 * m_DeltaD * m_K12 * betaInfLogV.head(forcesize)).array();
+    Eigen::ArrayXd p2p1 = (2 * deltaD * m_K12 * betaInfLogV.head(forcesize)).array();
     Eigen::ArrayXd p2p2 = 
 	betaLogV.head(forcesize) 
 	* (-m_SumK - m_RootK) 
@@ -147,8 +150,8 @@ void TwoCompartmentIntra::computeConcentrations(const Residuals& _inResiduals, C
 	(A2 * alphaLogV.head(therest) + BB2 * betaLogV.head(therest)) / (2 * m_RootK);
 
     // return concentrations of comp1 and comp2
-    _outResiduals.push_back(concentrations1[concentrations1.size() - 1]);
-    _outResiduals.push_back(concentrations2[concentrations1.size() - 1]);
+    _outResiduals.push_back(concentrations1[m_NbPoints - 1]);
+    _outResiduals.push_back(concentrations2[m_NbPoints - 1]);
     //POSTCONDCONT(concentrations1[concentrations.size() - 1] >= 0, SHOULDNTGONEGATIVE, "The concentration is negative.")
     //POSTCONDCONT(concentrations2[concentrations.size() - 1] >= 0, SHOULDNTGONEGATIVE, "The concentration is negative.")
 

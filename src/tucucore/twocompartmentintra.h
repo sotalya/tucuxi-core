@@ -39,9 +39,9 @@ private:
     Value m_Divider; /// sqrt(sumK*sumK - 4*K21*Ke)
     Value m_Alpha; /// (sumK + root)/2
     Value m_Beta; /// (sumK - root)/2
-    Value m_DeltaD; /// (D/V)/tinf
     int64 m_Tinf; /// Infusion time (milliseconds)
     int64 m_Int; /// Interval (milliseconds)
+    int m_NbPoints; /// number measure points during interval
 };
 
 }

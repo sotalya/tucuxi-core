@@ -34,10 +34,10 @@ private:
     Value m_Ke; /// Elimination constant rate = Cl/V1 where Cl is the clearance and V1 is the volume of the compartment 1
     Value m_K12; /// Q/V1
     Value m_K21; /// Q/V2
-    Value m_SumK; /// Ke+K12+K21
     Value m_RootK; /// sqrt(sumK*sumK - 4*K21*Ke)
     Value m_Alpha; /// (sumK + root)/2
     Value m_Beta; /// (sumK - root)/2
+    int m_NbPoints; /// number measure points during interval
 };
 
 }
