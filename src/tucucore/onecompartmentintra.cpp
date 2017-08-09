@@ -40,8 +40,6 @@ bool OneCompartmentIntra::checkInputs(const IntakeEvent& _intakeEvent, const Par
     bOK &= checkValue(!std::isnan(m_Ke), "The CL is NaN.");
     bOK &= checkValue(!std::isinf(m_Ke), "The CL is Inf.");
     bOK &= checkValue(m_Tinf >= 0, "The infusion time is zero or negative.");
-    bOK &= checkValue(!std::isnan(m_Tinf), "The m_Tinf is NaN.");
-    bOK &= checkValue(!std::isinf(m_Tinf), "The m_Tinf is Inf.");
 
     return bOK;
 }
@@ -62,7 +60,7 @@ bool OneCompartmentIntra::computeConcentrations(const Residuals& _inResiduals, C
 {
     Concentration part1 = m_D/(m_Tinf*m_Cl);
     size_t ke_size = m_precomputedLogarithms["Ke"].size();
-    int forcesize = std::min(ceil(m_Tinf/m_Int * ke_size), ceil(ke_size));
+    int forcesize = static_cast<int>(std::min(ceil(m_Tinf/m_Int * ke_size), ceil(ke_size)));
     int therest;
 
     // Calcaulate concentrations
@@ -73,7 +71,7 @@ bool OneCompartmentIntra::computeConcentrations(const Residuals& _inResiduals, C
         concentrations.head(forcesize) 
 	+ part1 * (1.0 - m_precomputedLogarithms["Ke"].head(forcesize).array()).matrix();
     
-    therest = concentrations.size() - forcesize;
+    therest = static_cast<int>(concentrations.size() - forcesize);
     concentrations.tail(therest) = 
         concentrations.tail(therest) 
 	+ part1 * (exp(m_Ke * m_Tinf) - 1) * m_precomputedLogarithms["Ke"].tail(therest);
