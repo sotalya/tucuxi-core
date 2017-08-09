@@ -15,9 +15,11 @@ TwoCompartmentExtra::TwoCompartmentExtra()
 
 bool TwoCompartmentExtra::checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
 {
-/*
-    PRECOND(parameters.size() >= 4, SHOULDNTGONEGATIVE, "The number of parameters should be equal to 2.")
-*/
+    bool bOK = true;
+
+    if(!checkValue(_parameters.size() >= 4, "The number of parameters should be equal to 4."))
+	    return false;
+    
     m_D = _intakeEvent.getDose() * 1000;
     m_Cl = _parameters[0].getValue();
     m_F = _parameters[1].getValue();
@@ -33,26 +35,26 @@ bool TwoCompartmentExtra::checkInputs(const IntakeEvent& _intakeEvent, const Par
     m_Alpha = (sumK + m_RootK)/2;
     m_Beta = (sumK - m_RootK)/2;
     m_NbPoints = _intakeEvent.getNumberPoints();
-/*
-    PRECONDCONT(m_D >= 0, SHOULDNTGONEGATIVE, "The dose is negative.")
-    PRECONDCONT(!qIsNaN(m_D), NOTANUMBER, "The dose is NaN.")
-    PRECONDCONT(!qIsInf(m_D), ISINFINITY, "The dose is Inf.")
-    PRECONDCONT(m_Cl > 0, SHOULDNTGONEGATIVE, "The clearance is not greater than zero.")
-    PRECONDCONT(!qIsNaN(m_Cl), NOTANUMBER, "The CL is NaN.")
-    PRECONDCONT(!qIsInf(m_Cl), ISINFINITY, "The CL is Inf.")
-    PRECONDCONT(m_V1 > 0, SHOULDNTGONEGATIVE, "The volume1 is not greater than zero.")
-    PRECONDCONT(!qIsNaN(m_V1), NOTANUMBER, "The V1 is NaN.")
-    PRECONDCONT(!qIsInf(m_V1), ISINFINITY, "The V1 is Inf.")
-    PRECONDCONT(m_V2 > 0, SHOULDNTGONEGATIVE, "The volume2 is not greater than zero.")
-    PRECONDCONT(!qIsNaN(m_V2), NOTANUMBER, "The V2 is NaN.")
-    PRECONDCONT(!qIsInf(m_V2), ISINFINITY, "The V2 is Inf.")
-    PRECONDCONT(m_Ka > 0, SHOULDNTGONEGATIVE, "The Ka is not greater than zero.")
-    PRECONDCONT(!qIsNaN(m_Ka), NOTANUMBER, "The Ka is NaN.")
-    PRECONDCONT(!qIsInf(m_Ka), ISINFINITY, "The Ka is Inf.")
-    PRECONDCONT(m_F > 0, SHOULDNTGONEGATIVE, "The F is not greater than zero.")
-    PRECONDCONT(!qIsNaN(m_F), NOTANUMBER, "The F is NaN.")
-    PRECONDCONT(!qIsInf(m_F), ISINFINITY, "The F is Inf.")
-*/
+
+    bOK &= checkValue(m_D >= 0, "The dose is negative.");
+    bOK &= checkValue(!std::isnan(m_D), "The dose is NaN.");
+    bOK &= checkValue(!std::isinf(m_D), "The dose is Inf.");
+    bOK &= checkValue(m_Cl > 0, "The clearance is not greater than zero.");
+    bOK &= checkValue(!std::isnan(m_Cl), "The CL is NaN.");
+    bOK &= checkValue(!std::isinf(m_Cl), "The CL is Inf.");
+    bOK &= checkValue(m_V1 > 0, "The volume1 is not greater than zero.");
+    bOK &= checkValue(!std::isnan(m_V1), "The V1 is NaN.");
+    bOK &= checkValue(!std::isinf(m_V1), "The V1 is Inf.");
+    bOK &= checkValue(m_V2 > 0, "The volume2 is not greater than zero.");
+    bOK &= checkValue(!std::isnan(m_V2), "The V2 is NaN.");
+    bOK &= checkValue(!std::isinf(m_V2), "The V2 is Inf.");
+    bOK &= checkValue(m_Ka > 0, "The Ka is not greater than zero.");
+    bOK &= checkValue(!std::isnan(m_Ka), "The Ka is NaN.");
+    bOK &= checkValue(!std::isinf(m_Ka), "The Ka is Inf.");
+    bOK &= checkValue(m_F > 0, "The F is not greater than zero.");
+    bOK &= checkValue(!std::isnan(m_F), "The F is NaN.");
+    bOK &= checkValue(!std::isinf(m_F), "The F is Inf.");
+
     return true;
 }
 
@@ -72,6 +74,8 @@ void TwoCompartmentExtra::computeLogarithms(const IntakeEvent& _intakeEvent, con
 
 bool TwoCompartmentExtra::computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
 {
+    bool bOK = true;
+
     Value A, B, C, divider;
     Concentration resid1 = _inResiduals[0];
     Concentration resid2 = _inResiduals[1];
@@ -117,8 +121,8 @@ bool TwoCompartmentExtra::computeConcentrations(const Residuals& _inResiduals, C
 	std::pow((sumK12K21 - 2 * m_Ka + m_Ke) * m_RootK,  2) 
 	- std::pow(std::pow(m_K12,2) + powDiffK21Ke + 2 * m_K12 * sumK21Ke, 2);
 
-    //PRECONDCONT(divider != 0.0, DIVIDEBYZERO, "Dividing by zero.");
-
+    if(!checkValue(divider != 0.0, "Dividing by zero."))
+	    return false;
 
     // Calculate concentrations of compartment 1
     Eigen::VectorXd concentrations1 = 
@@ -145,25 +149,29 @@ bool TwoCompartmentExtra::computeConcentrations(const Residuals& _inResiduals, C
         -std::pow(std::pow(m_K12, 2) + powDiffK21Ke + 2 * m_K12 * sumK21Ke, 2) 
         + std::pow(sumK12K21 - 2 * m_Ka + m_Ke, 2) * std::pow(m_RootK, 2);
     
-    //PRECONDCONT(divider != 0.0, DIVIDEBYZERO, "Dividing by zero.");
+    if(!checkValue(divider != 0.0, "Dividing by zero."))
+	    return false;
 
-    // Calculate concentrations of compartment 2
+    // Calculate concentrations of compartment 2 and 3
     Value concentrations2 = 
         2 * (B * m_precomputedLogarithms["Beta"](m_precomputedLogarithms["Beta"].size() - 1) 
         + A * m_precomputedLogarithms["Alpha"](m_precomputedLogarithms["Alpha"].size() - 1) 
         + C * m_precomputedLogarithms["Ka"](m_precomputedLogarithms["Ka"].size() - 1)) / divider;
+    Value concentrations3 = 
+	m_precomputedLogarithms["Ka"](m_precomputedLogarithms["Ka"].size() - 1) * resid3;
 
     // Return concentrations of comp1, comp2 and comp3
     _outResiduals.push_back(concentrations1[m_NbPoints - 1]);
     _outResiduals.push_back(concentrations2);
-    _outResiduals.push_back(m_precomputedLogarithms["Ka"](m_precomputedLogarithms["Ka"].size() - 1) * resid3);
-    //POSTCONDCONT(concentrations1[concentrations.size() - 1] >= 0, SHOULDNTGONEGATIVE, "The concentration is negative.")
-    //POSTCONDCONT(concentrations2 >= 0, SHOULDNTGONEGATIVE, "The concentration is negative.")
-    //POSTCONDCONT( >= 0, SHOULDNTGONEGATIVE, "The concentration is negative.")
+    _outResiduals.push_back(concentrations3);
 
     _concentrations.assign(concentrations1.data(), concentrations1.data() + concentrations1.size());	
 
-    return true;
+    bOK &= checkValue(_outResiduals[0] >= 0, "The concentration is negative.");
+    bOK &= checkValue(_outResiduals[1] >= 0, "The concentration is negative.");
+    bOK &= checkValue(_outResiduals[2] >= 0, "The concentration is negative.");
+
+    return bOK;
 }
 
 }

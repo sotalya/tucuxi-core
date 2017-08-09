@@ -15,25 +15,28 @@ OneCompartmentBolus::OneCompartmentBolus()
 
 bool OneCompartmentBolus::checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
 {
-    bool bOk = checkValue(_parameters.size() >= 2, "The number of parameters should be equal to 2.");
+    bool bOK = true;
     
-    if (bOk) {
-        m_D = _intakeEvent.getDose() * 1000;
-        m_V = _parameters[0].getValue();
-        m_Ke = _parameters[1].getValue();
-        m_NbPoints = _intakeEvent.getNumberPoints();
+    if(!checkValue(_parameters.size() >= 2, "The number of parameters should be equal to 2."))
+	    return false;
+    
+    m_D = _intakeEvent.getDose() * 1000;
+    m_V = _parameters[0].getValue();
+    m_Ke = _parameters[1].getValue();
+    m_NbPoints = _intakeEvent.getNumberPoints();
 
-        bOk &= checkValue(m_D >= 0, "The dose is negative.");
-        bOk &= checkValue(!std::isnan(m_D), "The dose is NaN.");
-        bOk &= checkValue(!std::isinf(m_D), "The dose is Inf.");
-        bOk &= checkValue(m_V > 0, "The volume is not greater than zero.");
-        bOk &= checkValue(!std::isnan(m_V), "The V is NaN.");
-        bOk &= checkValue(!std::isinf(m_V), "The V is Inf.");
-        bOk &= checkValue(m_Ke > 0, "The clearance is not greater than zero.");
-        bOk &= checkValue(!std::isnan(m_Ke), "The CL is NaN.");
-        bOk &= checkValue(!std::isinf(m_Ke), "The CL is Inf.");
-    }
-    return bOk;
+    // check the inputs
+    bOK &= checkValue(m_D >= 0, "The dose is negative.");
+    bOK &= checkValue(!std::isnan(m_D), "The dose is NaN.");
+    bOK &= checkValue(!std::isinf(m_D), "The dose is Inf.");
+    bOK &= checkValue(m_V > 0, "The volume is not greater than zero.");
+    bOK &= checkValue(!std::isnan(m_V), "The V is NaN.");
+    bOK &= checkValue(!std::isinf(m_V), "The V is Inf.");
+    bOK &= checkValue(m_Ke > 0, "The clearance is not greater than zero.");
+    bOK &= checkValue(!std::isnan(m_Ke), "The CL is NaN.");
+    bOK &= checkValue(!std::isinf(m_Ke), "The CL is Inf.");
+
+    return bOK;
 }
 
 
