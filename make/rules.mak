@@ -47,6 +47,10 @@ MKDIR := mkdir
 DEL := del /Q
 COPY := copy /Y /V
 ECHO := @echo
+RMDIR := rmdir /Q /S
+IFEXIST := if exist
+THEN := 
+ENDIF :=
 include $(TUCUXI_ROOT)/make/vs2015rules.mak
 endif
 

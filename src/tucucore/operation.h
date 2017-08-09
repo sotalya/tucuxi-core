@@ -1,6 +1,7 @@
 #ifndef TUCUXI_OPERATION_H
 #define TUCUXI_OPERATION_H
 
+#include <algorithm>
 #include <iostream>
 #include <memory>
 #include <utility>
@@ -24,6 +25,21 @@ public:
     /// \param _name Name of the operand.
     /// \param _type Type of the operand.
     OperationInput(const std::string &_name, const InputType &_type = InputType::DOUBLE);
+
+    /// \brief Create an operand from its name and value.
+    /// \param _name Name of the operand.
+    /// \param _value Numerical value of the input.
+    OperationInput(const std::string &_name, const bool &_value);
+
+    /// \brief Create an operand from its name and value.
+    /// \param _name Name of the operand.
+    /// \param _value Numerical value of the input.
+    OperationInput(const std::string &_name, const int &_value);
+
+    /// \brief Create an operand from its name and value.
+    /// \param _name Name of the operand.
+    /// \param _value Numerical value of the input.
+    OperationInput(const std::string &_name, const double &_value);
 
     /// \brief Default copy-construct an operation input.
     /// \param _other OperationInput used for copy-construction.
@@ -107,6 +123,57 @@ private:
 /// \brief List of operation's inputs.
 typedef std::vector<OperationInput> OperationInputList;
 
+/// \brief Iteration pointing to an operation's input.
+typedef std::vector<OperationInput>::const_iterator OperationInputIt;
+
+/// \brief Helper function to check if an input is present in a list of inputs and its value is defined.
+/// \param _inputs Input list to scan.
+/// \param _inputName Sought input name.
+/// \param _type Sought input type.
+/// \return true if the sought input is present, false otherwise.
+bool checkInputIsDefined(const OperationInputList &_inputs, const std::string &_inputName, const InputType &_type);
+
+/// \brief Helper function to check if an input is present in a list of inputs.
+/// \param _inputs Input list to scan.
+/// \param _inputName Sought input name.
+/// \param _type Sought input type.
+/// \return true if the sought input is present, false otherwise.
+bool checkInputIsPresent(const OperationInputList &_inputs, const std::string &_inputName, const InputType &_type);
+
+/// \brief Helper function to check if an input is present in a list of inputs.
+/// \param _inputs Input list to scan.
+/// \param _inputName Sought input name.
+/// \param _type Sought input type.
+/// \return true if the sought input is present, false otherwise.
+OperationInputIt findInputInList(const OperationInputList &_inputs, const std::string &_inputName, const InputType &_type);
+
+/// \brief Helper function to ease input retrieval from an input list.
+/// \param _inputs Input list to scan.
+/// \param _inputName Sought input name.
+/// \param _value Retrieved value
+/// \return true if the value can be successfully retrieved, false otherwise.
+/// \post if (inputIsDefined() && inputType == InputType::BOOLEAN) { _value == inputValue && [RETURN] == true }
+///       else { [RETURN] == false };
+bool getInputValue(const OperationInputList &_inputs, const std::string &_inputName, bool &_value);
+
+/// \brief Helper function to ease input retrieval from an input list.
+/// \param _inputs Input list to scan.
+/// \param _inputName Sought input name.
+/// \param _value Retrieved value
+/// \return true if the value can be successfully retrieved, false otherwise.
+/// \post if (inputIsDefined() && inputType == InputType::INTEGER) { _value == inputValue && [RETURN] == true }
+///       else { [RETURN] == false };
+bool getInputValue(const OperationInputList &_inputs, const std::string &_inputName, int &_value);
+
+/// \brief Helper function to ease input retrieval from an input list.
+/// \param _inputs Input list to scan.
+/// \param _inputName Sought input name.
+/// \param _value Retrieved value
+/// \return true if the value can be successfully retrieved, false otherwise.
+/// \post if (inputIsDefined() && inputType == InputType::DOUBLE) { _value == inputValue && [RETURN] == true }
+///       else { [RETURN] == false };
+bool getInputValue(const OperationInputList &_inputs, const std::string &_inputName, double &_value);
+
 
 /// \ingroup TucuCore
 /// \brief Abstract class representing a generic operation in Tucuxi.
@@ -145,7 +212,7 @@ public:
     /// \return true if the operation could be performed, false otherwise.
     /// \post if (check(_inputs)) { _result == [OPERATION_RESULT] && [RETURN] == true }
     ///       else { [RETURN] == false };
-    virtual bool evaluate(const OperationInputList &_inputs, double &_result) const = 0;
+    virtual bool evaluate(const OperationInputList &_inputs, double &_result) = 0;
 
     /// \brief Return the list of required input operands.
     /// This list can be filled by the caller to have all the values ready for evaluation.
@@ -187,16 +254,19 @@ public:
     /// \return true if the operation could be performed, false otherwise.
     /// \post if (check(_inputs) == true) { _result == [OPERATION_RESULT] && [RETURN] == true }
     ///       else { [RETURN] == false };
-    virtual bool evaluate(const OperationInputList &_inputs, double &_result) const override;
+    virtual bool evaluate(const OperationInputList &_inputs, double &_result) override final;
 
 
 protected:
     /// \brief Perform the desired computation on the given inputs.
-    /// \param _inputList List of inputs that have to be used by the operation.
+    /// \param _inputs List of inputs that have to be used by the operation.
     /// \param _result Result of the operation.
     /// \return true if the operation could be performed, false otherwise.
     /// \pre check(_inputs) == true
     virtual bool compute(const OperationInputList &_inputs, double &_result) const = 0;
+
+    /// \brief Force the user of the class to implement a function filling the vector of required inputs.
+    virtual void fillRequiredInputs() = 0;
 };
 
 
@@ -249,7 +319,7 @@ public:
     ///                                                 PREFERENCE(operation) <= { PREFERENCE({op2 IN m_operations | op2.check(_inputs == true) && op2 != operation })} };
     ///       if (EXISTS(bestMatch)) { _result == [RESULT(bestMatch)] && [RETURN] == true }
     ///       else { [RETURN] == false };
-    virtual bool evaluate(const OperationInputList &_inputs, double &_result) const override;
+    virtual bool evaluate(const OperationInputList &_inputs, double &_result) override;
 
     /// \brief Return the list of *possibly* required input operands.
     /// This list contains *ALL* the operands that could be needed by *ALL* the stored operations -- only a subset might
@@ -286,7 +356,7 @@ public:
     /// \return true if the operation could be performed, false otherwise.
     /// \post if (check(_inputs) && m_jsEngine.evaluate(m_expression) == true) { _result == [OPERATION_RESULT] && [RETURN] == true }
     ///       else { [RETURN] == false };
-    virtual bool evaluate(const OperationInputList &_inputs, double &_result) const override;
+    virtual bool evaluate(const OperationInputList &_inputs, double &_result) override;
 
 
 protected:

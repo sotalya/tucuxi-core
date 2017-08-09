@@ -11,7 +11,8 @@ include(../tucucore.pri)
 
 HEADERS += \
     ../../../test/tucucore/test_dosage.h \
-    ../../../test/tucucore/test_intakeextractor.h
+    ../../../test/tucucore/test_intakeextractor.h \
+    ../../../test/tucucore/test_operation.h
 
 SOURCES += \
     ../../../test/tucucore/tests.cpp
