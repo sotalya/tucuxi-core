@@ -77,7 +77,7 @@ IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakeSingle
 }
 
 
-bool checkValue(bool _isOk, const std::string& _errMsg)
+bool IntakeIntervalCalculator::checkValue(bool _isOk, const std::string& _errMsg)
 {
     if (!_isOk) {
         static Tucuxi::Common::LoggerHelper logger;
