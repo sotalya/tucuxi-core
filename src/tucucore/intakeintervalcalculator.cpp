@@ -2,6 +2,8 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
+#include "tucucommon/loggerhelper.h"
+
 #include "tucucore/intakeintervalcalculator.h"
 #include "tucucore/cachedlogarithms.h"
 
@@ -34,7 +36,9 @@ IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakePoints
         m_cache.set(_intakeEvent.getInterval(), _parameters, _cycleSize, m_precomputedLogarithms);
     }
 
-    computeConcentrations(_inResiduals, _concentrations, _outResiduals);
+    if (!computeConcentrations(_inResiduals, _concentrations, _outResiduals)) {
+        return Result::BadConcentration;
+    }
 
     times = times.array() + _intakeEvent.getOffsetTime().toMilliseconds();
     _times.assign(times.data(), times.data() + times.size());
@@ -70,6 +74,16 @@ IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakeSingle
     Residuals& _outResiduals)
 {
     return Result::BadParameters;
+}
+
+
+bool IntakeIntervalCalculator::checkValue(bool _isOk, const std::string& _errMsg)
+{
+    if (!_isOk) {
+        static Tucuxi::Common::LoggerHelper logger;
+        logger.error(_errMsg);
+    }
+    return _isOk;
 }
 
 }

@@ -57,7 +57,7 @@ void OneCompartmentExtra::computeLogarithms(const IntakeEvent& _intakeEvent, con
 }
 
 
-void OneCompartmentExtra::computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
+bool OneCompartmentExtra::computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
 {
     Concentration resid1 = _inResiduals[0];
     Concentration resid2 = _inResiduals[1] + m_F*m_D/m_V;
@@ -72,6 +72,8 @@ void OneCompartmentExtra::computeConcentrations(const Residuals& _inResiduals, C
     _outResiduals.push_back(resid2 * m_precomputedLogarithms["Ka"][m_NbPoints - 1]);
     // POSTCONDCONT(finalResiduals[1] >= 0, SHOULDNTGONEGATIVE, "The concentration is negative.")
     _concentrations.assign(concentrations.data(), concentrations.data() + concentrations.size());	
+
+    return true;
 }
 
 }

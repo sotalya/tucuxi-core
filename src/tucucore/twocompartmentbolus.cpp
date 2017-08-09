@@ -65,7 +65,7 @@ void TwoCompartmentBolus::computeLogarithms(const IntakeEvent& _intakeEvent, con
 }
 
 
-void TwoCompartmentBolus::computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
+bool TwoCompartmentBolus::computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
 {
     Concentration resid1 = _inResiduals[0] + (m_D/m_V1);
     Concentration resid2 = _inResiduals[1];
@@ -88,6 +88,8 @@ void TwoCompartmentBolus::computeConcentrations(const Residuals& _inResiduals, C
     //POSTCONDCONT(concentrations2[concentrations.size() - 1] >= 0, SHOULDNTGONEGATIVE, "The concentration is negative.")
 
     _concentrations.assign(concentrations1.data(), concentrations1.data() + concentrations1.size());	
+
+    return true;
 }
 
 }
