@@ -13,10 +13,7 @@ HEADERS += \
     $$PWD/../../src/tucucommon/jsengine.h \
     $$PWD/../../src/tucucommon/timeofday.h \
     $$PWD/../../src/tucucommon/basetypes.h \
-    $$PWD/../../src/tucucommon/fingerprint.h \
-    $$PWD/../../src/tucucommon/licensemanager.h \
-    $$PWD/../../src/tucucommon/systeminfo.h \
-    $$PWD/../../src/tucucommon/cryptohelper.h
+    $$PWD/../../src/tucucommon/systeminfo.h
 
 SOURCES += \
     $$PWD/../../src/tucucommon/componentmanager.cpp \
@@ -26,10 +23,7 @@ SOURCES += \
     $$PWD/../../src/tucucommon/duration.cpp \
     $$PWD/../../src/tucucommon/jsengine.cpp \
     $$PWD/../../src/tucucommon/timeofday.cpp \
-    $$PWD/../../src/tucucommon/fingerprint.cpp \
-    $$PWD/../../src/tucucommon/licensemanager.cpp \
-    $$PWD/../../src/tucucommon/systeminfo.cpp \
-    $$PWD/../../src/tucucommon/cryptohelper.cpp
+    $$PWD/../../src/tucucommon/systeminfo.cpp
 
 DISTFILES += \
     $$PWD/../../src/tucucommon/makefile
