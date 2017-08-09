@@ -11,7 +11,7 @@
 #include "tucucommon/basetypes.h"
 
 namespace date {
-class year_month_day;
+    class year_month_day;
 }
 
 namespace Tucuxi {
@@ -36,6 +36,12 @@ class DateTime
 public:
     /// \brief Build a date with the current date and time.
     DateTime();
+
+    /// \brief Build a date from the specified string
+    /// This constructor uses std::get_time internally. See get_time documentation for information about the _format  parameter.
+    /// @param _date The string to be parsed
+    /// @param _date The parsing format (see std::get_time documentation). 
+    DateTime(const std::string &_date, const std::string& _format);
 
     /// \brief Build a date with the specified data at 0h00.
     /// @param _date The date to be used. 

@@ -33,6 +33,8 @@ public:
     static int checkLicenseFile(std::string _filename);
     static int installLicense(std::string _license, std::string _filename);
     static int generateRequestString(std::string* _request);
+
+private:
     static int checklicense(std::string _request);
     static int rewriteLicense(std::string _license, std::string _filename);
 

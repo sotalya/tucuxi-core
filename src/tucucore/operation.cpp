@@ -10,6 +10,27 @@ OperationInput::OperationInput(const std::string &_name, const InputType &_type)
 }
 
 
+OperationInput::OperationInput(const std::string &_name, const bool &_value)
+    : m_name{_name}, m_type{InputType::BOOL}, m_isDefined{false}
+{
+    m_value.b = _value;
+}
+
+
+OperationInput::OperationInput(const std::string &_name, const int &_value)
+    : m_name{_name}, m_type{InputType::INTEGER}, m_isDefined{false}
+{
+    m_value.i = _value;
+}
+
+
+OperationInput::OperationInput(const std::string &_name, const double &_value)
+    : m_name{_name}, m_type{InputType::DOUBLE}, m_isDefined{false}
+{
+    m_value.d = _value;
+}
+
+
 bool
 OperationInput::isDefined() const
 {
@@ -117,12 +138,7 @@ Operation::check(const OperationInputList &_inputs) const
     // Check that all the inputs are there and they are valid:
     // For each required input, scan the list for a valid input with the same name and type.
     for (auto reqIn : m_requiredInputs) {
-        if (std::find_if(_inputs.begin(),
-                         _inputs.end(),
-                         [&reqIn](const OperationInput &_in) -> bool {
-                         return (reqIn.getName() == _in.getName() &&
-                                 reqIn.getType() == _in.getType() &&
-                                 _in.isDefined()); }) == _inputs.end()) {
+        if (!checkInputIsDefined(_inputs, reqIn.getName(), reqIn.getType())) {
             return false;
         }
     }
@@ -138,8 +154,69 @@ Operation::getInputs() const
 
 
 bool
-HardcodedOperation::evaluate(const OperationInputList &_inputs, double &_result) const
+checkInputIsDefined(const OperationInputList &_inputs, const std::string &_inputName, const InputType &_type)
 {
+    OperationInputIt it = findInputInList(_inputs, _inputName, _type);
+    if (it != _inputs.end()) {
+        return it->isDefined();
+    }
+    return false;
+}
+
+
+bool
+checkInputIsPresent(const OperationInputList &_inputs, const std::string &_inputName, const InputType &_type)
+{
+    return findInputInList(_inputs, _inputName, _type) == _inputs.end();
+}
+
+
+OperationInputIt
+findInputInList(const OperationInputList &_inputs, const std::string &_inputName, const InputType &_type)
+{
+    OperationInputIt it = std::find_if(_inputs.begin(), _inputs.end(),
+                                       [&_inputName,&_type](const OperationInput &_in) -> bool { return _inputName == _in.getName() && _type == _in.getType(); });
+    return it;
+}
+
+
+bool
+getInputValue(const OperationInputList &_inputs, const std::string &_inputName, bool &_value)
+{
+    OperationInputIt it = findInputInList(_inputs, _inputName, InputType::BOOL);
+    if (it != _inputs.end()) {
+        return it->getValue(_value);
+    }
+    return false;
+}
+
+
+bool
+getInputValue(const OperationInputList &_inputs, const std::string &_inputName, int &_value)
+{
+    OperationInputIt it = findInputInList(_inputs, _inputName, InputType::INTEGER);
+    if (it != _inputs.end()) {
+        return it->getValue(_value);
+    }
+    return false;
+}
+
+
+bool
+getInputValue(const OperationInputList &_inputs, const std::string &_inputName, double &_value)
+{
+    OperationInputIt it = findInputInList(_inputs, _inputName, InputType::DOUBLE);
+    if (it != _inputs.end()) {
+        return it->getValue(_value);
+    }
+    return false;
+}
+
+
+bool
+HardcodedOperation::evaluate(const OperationInputList &_inputs, double &_result)
+{
+    fillRequiredInputs();
     if (!check(_inputs)) {
         return false;
     }
@@ -184,7 +261,7 @@ DynamicOperation::check(const OperationInputList &_inputs) const
 
 
 bool
-DynamicOperation::evaluate(const OperationInputList &_inputs, double &_result) const
+DynamicOperation::evaluate(const OperationInputList &_inputs, double &_result)
 {
     // Initialize values that will be used in the search for the best matching operation
     int idxBest = -1;
@@ -223,11 +300,7 @@ DynamicOperation::getInputs() const
         OperationInputList tmp = op.first->getInputs();
         for (auto input: tmp) {
             // Push missing inputs, skipping duplicates
-            if (std::find_if(ret.begin(),
-                             ret.end(),
-                             [&input](const OperationInput &_in) -> bool {
-                             return (input.getName() == _in.getName() &&
-                                     input.getType() == _in.getType()); }) == ret.end()) {
+            if (!checkInputIsPresent(ret, input.getName(), input.getType())) {
                 ret.push_back(input);
             }
         }
@@ -265,7 +338,7 @@ JSOperation::clone() const
 
 
 bool
-JSOperation::evaluate(const OperationInputList &_inputs, double &_result) const
+JSOperation::evaluate(const OperationInputList &_inputs, double &_result)
 {
     JSEngine jsEngine;
     // Push the inputs
