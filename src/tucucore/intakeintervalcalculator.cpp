@@ -14,7 +14,7 @@ IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakePoints
     Concentrations& _concentrations,
     TimeOffsets & _times,
     IntakeEvent& _intakeEvent,
-    const ParameterList& _parameters,
+    const Parameters& _parameters,
     const Residuals& _inResiduals,
     const CycleSize _cycleSize,
     Residuals & _outResiduals,
@@ -68,7 +68,7 @@ IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakePoints
 IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakeSinglePoint(
     Concentrations& _concentrations,
     const IntakeEvent& _intakeEvent,
-    const ParameterList& _parameters,
+    const Parameters& _parameters,
     const Residuals& _inResiduals,
     const int64& _atTime,
     Residuals& _outResiduals)

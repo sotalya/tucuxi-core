@@ -2,8 +2,8 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
-#ifndef TUCUXI_MATH_ONECOMPARTMENTINTRA_H
-#define TUCUXI_MATH_ONECOMPARTMENTINTRA_H
+#ifndef TUCUXI_CORE_ONECOMPARTMENTINTRA_H
+#define TUCUXI_CORE_ONECOMPARTMENTINTRA_H
 
 #include "tucucore/intakeintervalcalculator.h"
 
@@ -20,9 +20,9 @@ public:
     OneCompartmentIntra();
 
 protected:
-    virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters) override;
-    virtual void prepareComputations(const IntakeEvent& _intakeEvent, const ParameterList& _parameters) override;
-    virtual void computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterList& _parameters, Eigen::VectorXd& _times) override;
+    virtual bool checkInputs(const IntakeEvent& _intakeEvent, const Parameters& _parameters) override;
+    virtual void prepareComputations(const IntakeEvent& _intakeEvent, const Parameters& _parameters) override;
+    virtual void computeLogarithms(const IntakeEvent& _intakeEvent, const Parameters& _parameters, Eigen::VectorXd& _times) override;
     virtual bool computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) override;
 
 private:
@@ -38,4 +38,4 @@ private:
 }
 }
 
-#endif // TUCUXI_MATH_ONECOMPARTMENTINTRA_H
+#endif // TUCUXI_CORE_ONECOMPARTMENTINTRA_H

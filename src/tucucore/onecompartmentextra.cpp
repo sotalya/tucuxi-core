@@ -13,7 +13,7 @@ OneCompartmentExtra::OneCompartmentExtra()
 {
 }
 
-bool OneCompartmentExtra::checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
+bool OneCompartmentExtra::checkInputs(const IntakeEvent& _intakeEvent, const Parameters& _parameters)
 {
 //	PRECOND(parameters.size() >= 4, SHOULDNTGONEGATIVE, "The number of parameters should be equal to 4.")
 
@@ -45,12 +45,12 @@ bool OneCompartmentExtra::checkInputs(const IntakeEvent& _intakeEvent, const Par
 }
 
 
-void OneCompartmentExtra::prepareComputations(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
+void OneCompartmentExtra::prepareComputations(const IntakeEvent& _intakeEvent, const Parameters& _parameters)
 {
 }
 
 
-void OneCompartmentExtra::computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterList& _parameters, Eigen::VectorXd& _times)
+void OneCompartmentExtra::computeLogarithms(const IntakeEvent& _intakeEvent, const Parameters& _parameters, Eigen::VectorXd& _times)
 {
     m_precomputedLogarithms["Ka"] = (-m_Ka * _times).array().exp();
     m_precomputedLogarithms["Ke"] = (-m_Ke * _times).array().exp();

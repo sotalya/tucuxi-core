@@ -2,13 +2,14 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
-#ifndef TUCUXI_MATH_PARAMETER_H
-#define TUCUXI_MATH_PARAMETER_H
+#ifndef TUCUXI_CORE_PARAMETER_H
+#define TUCUXI_CORE_PARAMETER_H
 
 #include <string>
 #include <vector>
 
 #include "tucucore/definitions.h"
+#include "tucucore/timedevent.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -31,6 +32,8 @@ public:
     /// @return Returns the parameter value
     Value getValue() const { return m_value; }
 
+    bool isVariable() const { return m_isVariable; }
+
 private:
     std::string m_name;     /// Name like "CL" or "V1"
     Value m_value;          /// The value (0.0 or 1.0 in case of booleans)	
@@ -40,8 +43,14 @@ private:
 };
 
 /// \brief A list of parameters
-typedef std::vector<Parameter> ParameterList;
+typedef std::vector<Parameter> Parameters;
+
+class ParametersEvent : public TimedEvent
+{
+};
+
+typedef std::vector<ParametersEvent> ParametersSeries;
 
 }
 }
-#endif // TUCUXI_MATH_PARAMETER_H
+#endif // TUCUXI_CORE_PARAMETER_H

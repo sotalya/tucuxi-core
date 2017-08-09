@@ -2,8 +2,8 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
-#ifndef TUCUXI_MATH_INTAKEINTERVALCALCULATOR_H
-#define TUCUXI_MATH_INTAKEINTERVALCALCULATOR_H
+#ifndef TUCUXI_CORE_INTAKEINTERVALCALCULATOR_H
+#define TUCUXI_CORE_INTAKEINTERVALCALCULATOR_H
 
 #include <map>
 
@@ -51,7 +51,7 @@ public:
         Concentrations& _concentrations,
         TimeOffsets & _times,
         IntakeEvent& _intakeEvent,
-        const ParameterList& _parameters,
+        const Parameters& _parameters,
         const Residuals& _inResiduals,
         const CycleSize _cycleSize,
         Residuals& _outResiduals,
@@ -68,7 +68,7 @@ public:
     virtual Result calculateIntakeSinglePoint(
         Concentrations& _concentrations,
         const IntakeEvent& _intakeEvent,
-        const ParameterList& _parameters,
+        const Parameters& _parameters,
         const Residuals& _inResiduals,
         const int64& _atTime,
         Residuals& _outResiduals);
@@ -78,18 +78,18 @@ protected:
     /// @param _intakeEvent intake for the cycle (all cyles start with an intake)
     /// @param _parameters Parameters for the cycle (all cycles have constant parameters)
     /// @return Returns true if inputs are ok
-    virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters) = 0;
+    virtual bool checkInputs(const IntakeEvent& _intakeEvent, const Parameters& _parameters) = 0;
 
     /// \brief Computation of algorithm's variables based on input data
     /// @param _intakeEvent intake for the cycle (all cyles start with an intake)
     /// @param _parameters Parameters for the cycle (all cycles have constant parameters)
-    virtual void prepareComputations(const IntakeEvent& _intakeEvent, const ParameterList& _parameters) = 0;
+    virtual void prepareComputations(const IntakeEvent& _intakeEvent, const Parameters& _parameters) = 0;
 
     /// \brief Computation of logarithm values that will may be shared by severall successive computations	
     /// @param _intakeEvent intake for the cycle (all cyles start with an intake)
     /// @param _parameters Parameters for the cycle (all cycles have constant parameters)
     /// @param _times Vector of times
-    virtual void computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterList& _parameters, Eigen::VectorXd& _times) = 0;
+    virtual void computeLogarithms(const IntakeEvent& _intakeEvent, const Parameters& _parameters, Eigen::VectorXd& _times) = 0;
 
     /// \brief Compute concentrations using a specific algorithm
     /// @param _inResiduals Initial residual concentrations
@@ -113,4 +113,4 @@ private:
 }
 }
 
-#endif // TUCUXI_MATH_INTAKEINTERVALCALCULATOR_H
+#endif // TUCUXI_CORE_INTAKEINTERVALCALCULATOR_H

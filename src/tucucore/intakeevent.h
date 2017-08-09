@@ -2,8 +2,8 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
-#ifndef TUCUXI_MATH_INTAKEEVENT_H
-#define TUCUXI_MATH_INTAKEEVENT_H
+#ifndef TUCUXI_CORE_INTAKEEVENT_H
+#define TUCUXI_CORE_INTAKEEVENT_H
 
 #include "tucucore/timedevent.h"
 
@@ -149,4 +149,4 @@ private:
 }
 }
 
-#endif // TUCUXI_MATH_INTAKEEVENT_H
+#endif // TUCUXI_CORE_INTAKEEVENT_H

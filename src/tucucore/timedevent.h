@@ -1,5 +1,9 @@
-#ifndef TUCUXI_MATH_TIMEDEVENT_H
-#define TUCUXI_MATH_TIMEDEVENT_H
+/*
+* Copyright (C) 2017 Tucuxi SA
+*/
+
+#ifndef TUCUXI_CORE_TIMEDEVENT_H
+#define TUCUXI_CORE_TIMEDEVENT_H
 
 #include "tucucommon/datetime.h"
 
@@ -42,4 +46,4 @@ protected:
 }
 }
 
-#endif // TUCUXI_MATH_TIMEDEVENT_H
+#endif // TUCUXI_CORE_TIMEDEVENT_H

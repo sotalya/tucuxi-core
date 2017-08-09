@@ -13,7 +13,7 @@ TwoCompartmentBolus::TwoCompartmentBolus()
 {
 }
 
-bool TwoCompartmentBolus::checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
+bool TwoCompartmentBolus::checkInputs(const IntakeEvent& _intakeEvent, const Parameters& _parameters)
 {
 /*
     PRECOND(parameters.size() >= 4, SHOULDNTGONEGATIVE, "The number of parameters should be equal to 2.")
@@ -53,12 +53,12 @@ bool TwoCompartmentBolus::checkInputs(const IntakeEvent& _intakeEvent, const Par
 }
 
 
-void TwoCompartmentBolus::prepareComputations(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
+void TwoCompartmentBolus::prepareComputations(const IntakeEvent& _intakeEvent, const Parameters& _parameters)
 {
 }
 
 
-void TwoCompartmentBolus::computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterList& _parameters, Eigen::VectorXd& _times)
+void TwoCompartmentBolus::computeLogarithms(const IntakeEvent& _intakeEvent, const Parameters& _parameters, Eigen::VectorXd& _times)
 {
     m_precomputedLogarithms["Alpha"] = (-m_Alpha * _times).array().exp();
     m_precomputedLogarithms["Beta"] = (-m_Beta * _times).array().exp();

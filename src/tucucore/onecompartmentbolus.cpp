@@ -13,7 +13,7 @@ OneCompartmentBolus::OneCompartmentBolus()
 {
 }
 
-bool OneCompartmentBolus::checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
+bool OneCompartmentBolus::checkInputs(const IntakeEvent& _intakeEvent, const Parameters& _parameters)
 {
     bool bOk = checkValue(_parameters.size() >= 2, "The number of parameters should be equal to 2.");
     
@@ -37,12 +37,12 @@ bool OneCompartmentBolus::checkInputs(const IntakeEvent& _intakeEvent, const Par
 }
 
 
-void OneCompartmentBolus::prepareComputations(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
+void OneCompartmentBolus::prepareComputations(const IntakeEvent& _intakeEvent, const Parameters& _parameters)
 {
 }
 
 
-void OneCompartmentBolus::computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterList& _parameters, Eigen::VectorXd& _times)
+void OneCompartmentBolus::computeLogarithms(const IntakeEvent& _intakeEvent, const Parameters& _parameters, Eigen::VectorXd& _times)
 {
     m_precomputedLogarithms["Ke"] = (-m_Ke * _times).array().exp();
 }

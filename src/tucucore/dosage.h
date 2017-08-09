@@ -1,5 +1,9 @@
-#ifndef TUCUXI_MATH_DOSAGE_H
-#define TUCUXI_MATH_DOSAGE_H
+/*
+* Copyright (C) 2017 Tucuxi SA
+*/
+
+#ifndef TUCUXI_CORE_DOSAGE_H
+#define TUCUXI_CORE_DOSAGE_H
 
 #include <iostream>
 #include <memory>
@@ -667,4 +671,4 @@ private:
 }
 }
 
-#endif // TUCUXI_MATH_DOSAGE_H
+#endif // TUCUXI_CORE_DOSAGE_H

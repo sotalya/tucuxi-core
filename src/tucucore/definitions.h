@@ -2,8 +2,8 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
-#ifndef TUCUXI_MATH_DEFINITIONS_H
-#define TUCUXI_MATH_DEFINITIONS_H
+#ifndef TUCUXI_CORE_DEFINITIONS_H
+#define TUCUXI_CORE_DEFINITIONS_H
 
 /// \defgroup TucuCore Tucuxi core library
 /// \brief Tucuxi core classes for the computation of predictions of drug concentrations
@@ -94,4 +94,4 @@ enum class InputType { BOOL, INTEGER, DOUBLE };
 }
 }
 
-#endif // TUCUXI_MATH_DEFINITIONS_H
+#endif // TUCUXI_CORE_DEFINITIONS_H

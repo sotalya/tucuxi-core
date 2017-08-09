@@ -1,5 +1,5 @@
-#ifndef TUCUXI_MATH_INTAKEEXTRACTOR_H
-#define TUCUXI_MATH_INTAKEEXTRACTOR_H
+#ifndef TUCUXI_CORE_INTAKEEXTRACTOR_H
+#define TUCUXI_CORE_INTAKEEXTRACTOR_H
 
 #include <algorithm>
 #include <vector>
@@ -44,7 +44,7 @@ public:
     /// (it would have been easier to simply empty the input _series, but this guarantees an uniform behavior across the
     /// whole set of calls)
     /// \post FORALL intake IN extracted_intakes, intake.time IN [_start, _end)
-    int extract(const DosageHistory &_dosageHistory, const DateTime &_start, const DateTime &_end, IntakeSeries &_series);
+    static int extract(const DosageHistory &_dosageHistory, const DateTime &_start, const DateTime &_end, IntakeSeries &_series);
 
 private:
 
@@ -199,4 +199,4 @@ private:
 }
 }
 
-#endif // TUCUXI_MATH_INTAKEEXTRACTOR_H
+#endif // TUCUXI_CORE_INTAKEEXTRACTOR_H

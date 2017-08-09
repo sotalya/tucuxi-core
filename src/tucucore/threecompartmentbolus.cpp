@@ -13,7 +13,7 @@ ThreeCompartmentBolus::ThreeCompartmentBolus()
 {
 }
 
-bool ThreeCompartmentBolus::checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
+bool ThreeCompartmentBolus::checkInputs(const IntakeEvent& _intakeEvent, const Parameters& _parameters)
 {
 /*
     PRECOND(parameters.size() >= 6, SHOULDNTGONEGATIVE, "The number of parameters should be equal to 6.")
@@ -75,12 +75,12 @@ bool ThreeCompartmentBolus::checkInputs(const IntakeEvent& _intakeEvent, const P
 }
 
 
-void ThreeCompartmentBolus::prepareComputations(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
+void ThreeCompartmentBolus::prepareComputations(const IntakeEvent& _intakeEvent, const Parameters& _parameters)
 {
 }
 
 
-void ThreeCompartmentBolus::computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterList& _parameters, Eigen::VectorXd& _times)
+void ThreeCompartmentBolus::computeLogarithms(const IntakeEvent& _intakeEvent, const Parameters& _parameters, Eigen::VectorXd& _times)
 {
     m_precomputedLogarithms["Alpha"] = (-m_Alpha * _times).array().exp();
     m_precomputedLogarithms["Beta"] = (-m_Beta * _times).array().exp();

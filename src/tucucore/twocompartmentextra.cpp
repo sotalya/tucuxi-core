@@ -13,7 +13,7 @@ TwoCompartmentExtra::TwoCompartmentExtra()
 {
 }
 
-bool TwoCompartmentExtra::checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
+bool TwoCompartmentExtra::checkInputs(const IntakeEvent& _intakeEvent, const Parameters& _parameters)
 {
 /*
     PRECOND(parameters.size() >= 4, SHOULDNTGONEGATIVE, "The number of parameters should be equal to 2.")
@@ -57,12 +57,12 @@ bool TwoCompartmentExtra::checkInputs(const IntakeEvent& _intakeEvent, const Par
 }
 
 
-void TwoCompartmentExtra::prepareComputations(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
+void TwoCompartmentExtra::prepareComputations(const IntakeEvent& _intakeEvent, const Parameters& _parameters)
 {
 }
 
 
-void TwoCompartmentExtra::computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterList& _parameters, Eigen::VectorXd& _times)
+void TwoCompartmentExtra::computeLogarithms(const IntakeEvent& _intakeEvent, const Parameters& _parameters, Eigen::VectorXd& _times)
 {
     m_precomputedLogarithms["Ka"] = (-m_Ka * _times).array().exp();
     m_precomputedLogarithms["Alpha"] = (-m_Alpha * _times).array().exp();

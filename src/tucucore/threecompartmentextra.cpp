@@ -13,7 +13,7 @@ ThreeCompartmentExtra::ThreeCompartmentExtra()
 {
 }
 
-bool ThreeCompartmentExtra::checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
+bool ThreeCompartmentExtra::checkInputs(const IntakeEvent& _intakeEvent, const Parameters& _parameters)
 {
 /*
     PRECOND(parameters.size() >= 6, SHOULDNTGONEGATIVE, "The number of parameters should be equal to 6.")
@@ -76,12 +76,12 @@ bool ThreeCompartmentExtra::checkInputs(const IntakeEvent& _intakeEvent, const P
 }
 
 
-void ThreeCompartmentExtra::prepareComputations(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
+void ThreeCompartmentExtra::prepareComputations(const IntakeEvent& _intakeEvent, const Parameters& _parameters)
 {
 }
 
 
-void ThreeCompartmentExtra::computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterList& _parameters, Eigen::VectorXd& _times)
+void ThreeCompartmentExtra::computeLogarithms(const IntakeEvent& _intakeEvent, const Parameters& _parameters, Eigen::VectorXd& _times)
 {
     m_precomputedLogarithms["Alpha"] = (-m_Alpha * _times).array().exp();
     m_precomputedLogarithms["Beta"] = (-m_Beta * _times).array().exp();
