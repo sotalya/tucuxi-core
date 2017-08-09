@@ -27,6 +27,7 @@ public:
     enum class Result {
         Ok,
         BadParameters,
+        BadConcentration,
         DensityError
     };
 
@@ -94,7 +95,13 @@ protected:
     /// @param _inResiduals Initial residual concentrations
     /// @param _concentrations vector of concentrations.
     /// @param _outResiduals Final residual concentrations
-    virtual void computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) = 0;
+    virtual bool computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) = 0;
+
+    /// \brief Check if a value is correct and log a message if it is not the case
+    /// @param _isOk Indicates that the value is correct
+    /// @param _errMsg Message to log in case of problem
+    bool checkValue(bool _isOk,  const std::string& _errMsg);
+
 
 protected:
     PrecomputedLogarithms m_precomputedLogarithms;      /// List of precomputed logarithms

@@ -93,7 +93,7 @@ void ThreeCompartmentIntra::computeLogarithms(const IntakeEvent& _intakeEvent, c
 }
 
 
-void ThreeCompartmentIntra::computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
+bool ThreeCompartmentIntra::computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
 {
     Value deltaD = (m_D / m_V1) / m_Tinf; 
     Value alphaTinf = std::exp(-m_Alpha* m_Tinf);
@@ -110,12 +110,13 @@ void ThreeCompartmentIntra::computeConcentrations(const Residuals& _inResiduals,
     Value B3 = m_K13 / (m_K31 - m_Beta) * B;
     Value C3 = m_K13 / (m_K31 - m_Gamma) * C;
 
+
     // Calculate concentrations for comp1, comp2 and comp3
     Eigen::VectorXd concentrations1;
 
     for (int t = 0; t < m_NbPoints; ++t) 
     {
-       // Comare the point is outside of infusion time or not
+       // Compare the point is outside of infusion time or not
        if ((t * (m_Int/m_NbPoints)) < m_Tinf)
        {
             concentrations1(t) = 
@@ -155,6 +156,8 @@ void ThreeCompartmentIntra::computeConcentrations(const Residuals& _inResiduals,
     //POSTCONDCONT(concentrations3 >= 0, SHOULDNTGONEGATIVE, "The concentration3 is negative.")
 
     _concentrations.assign(concentrations1.data(), concentrations1.data() + concentrations1.size());	
+
+    return true;
 }
 
 }

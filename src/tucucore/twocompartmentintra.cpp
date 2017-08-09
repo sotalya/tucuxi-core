@@ -70,7 +70,7 @@ void TwoCompartmentIntra::computeLogarithms(const IntakeEvent& _intakeEvent, con
 }
 
 
-void TwoCompartmentIntra::computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
+bool TwoCompartmentIntra::computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
 {
     int forcesize = std::max(0.0, std::min(ceil(m_Tinf/m_Int * m_NbPoints), ceil(m_NbPoints)));
     int therest;
@@ -154,6 +154,8 @@ void TwoCompartmentIntra::computeConcentrations(const Residuals& _inResiduals, C
     //POSTCONDCONT(concentrations2[concentrations.size() - 1] >= 0, SHOULDNTGONEGATIVE, "The concentration is negative.")
 
     _concentrations.assign(concentrations1.data(), concentrations1.data() + concentrations1.size());	
+
+    return true;
 }
 
 }
