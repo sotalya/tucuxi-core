@@ -87,7 +87,7 @@ int LicenseManager::checklicense(std::string _license)
         // Check 2th field == type machine id
         MachineIdType type = static_cast<MachineIdType>(std::stoi(_license.substr(field1 + 1, field2 - field1 - 1)));
 
-        if(type == MachineIdType::ERROR) {
+        if(type == MachineIdType::UNDEFINED) {
             logger.error("License is invalid.");
             return int(LicenseError::INVALID_LICENSE);
         }
@@ -215,7 +215,7 @@ int LicenseManager::generateRequestString(std::string* request)
     // Retrieve fingerprint ID from machine
     MachineId idfromMachine;
 
-    for (int i = int(MachineIdType::CPU); i != int(MachineIdType::ERROR); i++) {
+    for (int i = int(MachineIdType::CPU); i != int(MachineIdType::UNDEFINED); i++) {
 
         idfromMachine.m_fingerprint = SystemInfo::retrieveFingerPrint(static_cast<MachineIdType>(i));
 
@@ -226,7 +226,7 @@ int LicenseManager::generateRequestString(std::string* request)
     }
 
     // Check if a valid ID is found
-    if(idfromMachine.m_type == MachineIdType::ERROR) {
+    if(idfromMachine.m_type == MachineIdType::UNDEFINED) {
         logger.error("No machine id found.");
         return int(LicenseError::NO_MACHINE_ID_FOUND);
     }

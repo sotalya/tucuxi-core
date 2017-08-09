@@ -10,6 +10,7 @@
 CXX := cl
 LD := $(CXX)
 LIBRARIAN := lib
+PYTHON := python
 
 ## ---------------------------------------------------------------
 ## SOURCES, INCLUDES, LIBS, EXTLIBS and DEFINES are set by specific makefiles...
@@ -18,6 +19,9 @@ _OBJS := $(patsubst %.cpp, objs/%.o, $(SOURCES))											# List of object file
 _INCLUDES := $(addprefix -I, $(INCLUDES)) -I$(TUCUXI_ROOT)\src								# Include directories are referenced from Tucuxi's root directory
 _LIBS := $(foreach _LIB, $(LIBS), $(TUCUXI_ROOT)\bin\$(_LIB).lib) $(EXTLIBS)				# Libs are rerefenced by their name only 
 _DEFINES := $(addprefix -D, $(DEFINES))
+_WINLIBS := "$(WindowsSdkDir)Lib\$(WindowsSDKVersion)um\x64\advapi32.lib" \
+            "$(WindowsSdkDir)Lib\$(WindowsSDKVersion)um\x64\user32.lib" \
+            "$(WindowsSdkDir)Lib\$(WindowsSDKVersion)um\x64\Iphlpapi.lib"
 
 ## ---------------------------------------------------------------
 ## Build flags.
@@ -36,8 +40,8 @@ build : $(_OBJS)
 	$(COPY) objs\$(NAME).lib $(TUCUXI_ROOT)\bin
 
 clean:
-	$(DEL) objs\*
-	$(DEL) $(TUCUXI_ROOT)\bin\$(NAME).lib
+	if exist objs $(DEL) objs\*
+	if exist $(TUCUXI_ROOT)\bin\$(NAME).lib $(DEL) $(TUCUXI_ROOT)\bin\$(NAME).lib
 endif
 
 ## ---------------------------------------------------------------
@@ -45,13 +49,14 @@ endif
 ##
 ifeq ($(TYPE), DLL)
 build : $(_OBJS) postbuild
-	$(LD) $(LDFLAG_DLL) -Feobjs\$(NAME).dll $(_OBJS) $(_LIBS) "$(WindowsSdkDir)Lib\$(WindowsSDKVersion)um\x64\advapi32.lib" "$(WindowsSdkDir)Lib\$(WindowsSDKVersion)um\x64\user32.lib"
+	$(LD) $(LDFLAG_DLL) -Feobjs\$(NAME).dll $(_OBJS) $(_LIBS) $(_WINLIBS)
 	$(COPY) objs\$(NAME).lib $(TUCUXI_ROOT)\bin
 	$(COPY) objs\$(NAME).dll $(TUCUXI_ROOT)\bin
 
 clean:
-	$(DEL) objs\*
-	$(DEL) $(TUCUXI_ROOT)\bin\$(NAME).dll
+	if exist objs $(DEL) objs\*
+	if exist $(TUCUXI_ROOT)\bin\$(NAME).lib $(DEL) $(TUCUXI_ROOT)\bin\$(NAME).lib
+	if exist $(TUCUXI_ROOT)\bin\$(NAME).dll $(DEL) $(TUCUXI_ROOT)\bin\$(NAME).dll
 endif
 
 ## ---------------------------------------------------------------
@@ -59,12 +64,12 @@ endif
 ##
 ifeq ($(TYPE), APP)
 build : $(_OBJS) postbuild
-	$(LD) $(LDFLAG_APP) -Feobjs\$(NAME).exe $(_OBJS) $(_LIBS) 
+	$(LD) $(LDFLAG_APP) -Feobjs\$(NAME).exe $(_OBJS) $(_LIBS) $(_WINLIBS)
 	$(COPY) objs\$(NAME).exe $(TUCUXI_ROOT)\bin
 
 clean:
-	$(DEL) objs\*
-	$(DEL) $(TUCUXI_ROOT)\bin\$(NAME).exe
+	if exist objs $(DEL) objs\*
+	if exist $(TUCUXI_ROOT)\bin\$(NAME).exe $(DEL) $(TUCUXI_ROOT)\bin\$(NAME).exe
 endif
 
 ## ---------------------------------------------------------------
@@ -72,12 +77,12 @@ endif
 ##
 ifeq ($(TYPE), TEST)
 build : $(_OBJS) postbuild
-	$(LD) $(LDFLAG_APP) -Feobjs\$(NAME)-Test.exe $(_OBJS) $(_LIBS) 
+	$(LD) $(LDFLAG_APP) -Feobjs\$(NAME)-Test.exe $(_OBJS) $(_LIBS) $(_WINLIBS)
 	$(COPY) objs\$(NAME)-test.exe $(TUCUXI_ROOT)\bin
 
 clean:
-	$(DEL) objs\*
-	$(DEL) $(TUCUXI_ROOT)\bin\$(NAME)-test.exe
+	if exist objs $(DEL) objs\*
+	if exist $(TUCUXI_ROOT)\bin\$(NAME)-test.exe $(DEL) $(TUCUXI_ROOT)\bin\$(NAME)-test.exe
 endif
 
 ## ---------------------------------------------------------------

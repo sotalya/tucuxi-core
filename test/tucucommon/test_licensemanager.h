@@ -28,7 +28,7 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
         m_path = _path;
 
         // Build Fingerprint
-        for (int i = int(MachineIdType::CPU); i != int(MachineIdType::ERROR); i++) {
+        for (int i = int(MachineIdType::CPU); i != int(MachineIdType::UNDEFINED); i++) {
             m_fingerprint = SystemInfo::retrieveFingerPrint(static_cast<MachineIdType>(i));
 
             if(!m_fingerprint.empty()) {
@@ -185,11 +185,11 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
         id = Tucuxi::Common::SystemInfo::retrieveFingerPrint(Tucuxi::Common::MachineIdType::NAME);
         std::cout << "NAME : " << id << std::endl;
 
-        id = Tucuxi::Common::SystemInfo::retrieveFingerPrint(Tucuxi::Common::MachineIdType::ERROR);
-        std::cout << "Error : " << id << std::endl;
+        id = Tucuxi::Common::SystemInfo::retrieveFingerPrint(Tucuxi::Common::MachineIdType::UNDEFINED);
+        std::cout << "UNDEFINED : " << id << std::endl;
 
         MachineId idfromMachine;
-        for (int i = int(MachineIdType::CPU); i != int(MachineIdType::ERROR); i++) {
+        for (int i = int(MachineIdType::CPU); i != int(MachineIdType::UNDEFINED); i++) {
             idfromMachine.m_fingerprint = SystemInfo::retrieveFingerPrint(static_cast<MachineIdType>(i));
 
             if(!idfromMachine.m_fingerprint.empty()) {
@@ -198,7 +198,7 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
             }
         }
 
-        fructose_assert(idfromMachine.m_type != MachineIdType::ERROR);
+        fructose_assert(idfromMachine.m_type != MachineIdType::UNDEFINED);
     }
 
     void installNewLicense(const std::string& _testName)

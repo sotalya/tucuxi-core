@@ -105,13 +105,13 @@ std::string SystemInfo::retrieveDisk()
     std::stringstream ss_volume;
 
     // Volume ID
-    WCHAR volumeName[MAX_PATH + 1] = { 0 };
-    WCHAR fileSystemName[MAX_PATH + 1] = { 0 };
+    char volumeName[MAX_PATH + 1] = { 0 };
+    char fileSystemName[MAX_PATH + 1] = { 0 };
     DWORD serialNumber = 0;
     DWORD maxComponentLen = 0;
     DWORD fileSystemFlags = 0;
 
-    if (GetVolumeInformation(L"C:\\", // L"\\MyServer\MyShare\"
+    if (GetVolumeInformation("C:\\", // L"\\MyServer\MyShare\"
                              volumeName,
                              sizeof(volumeName),
                              &serialNumber,
@@ -165,7 +165,7 @@ std::string SystemInfo::retrieveMacAddress()
 
     } while(pAdapterInfo);
 
-    return ss_mac;
+    return ss_mac.str();
 
 #else
     // Retrieve the mac address of interfaces
@@ -223,7 +223,7 @@ std::string SystemInfo::retrieveMacAddress()
 std::string SystemInfo::retrieveBios()
 {
 #ifdef _WIN32
-
+    return "";
 #else
     // Retrieve the infos of bios (vendor-date-version)
     std::stringstream ss;
