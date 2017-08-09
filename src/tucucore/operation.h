@@ -2,6 +2,8 @@
 #define TUCUXI_OPERATION_H
 
 #include <iostream>
+#include <memory>
+#include <utility>
 #include <vector>
 
 #include "tucucore/definitions.h"
@@ -23,13 +25,28 @@ public:
     /// \param _type Type of the operand.
     OperationInput(const std::string &_name, const InputType &_type = InputType::DOUBLE);
 
-    /// \brief Return the type of the input
-    /// \return Type of the input.
-    InputType getType() const;
+    /// \brief Default copy-construct an operation input.
+    /// \param _other OperationInput used for copy-construction.
+    OperationInput(const OperationInput &_other) = default;
+
+    /// \brief Default destructor.
+    virtual ~OperationInput() = default;
+
+    /// \brief Default operator assignment function.
+    /// \param _rhs Source operation input.
+    OperationInput& operator=(const OperationInput &_rhs) = default;
 
     /// \brief Return whether the input value is defined or not.
     /// \return true if the value is defined, false otherwise.
     bool isDefined() const;
+
+    /// \brief Return the name of the input
+    /// \return Name of the input.
+    std::string getName() const;
+
+    /// \brief Return the type of the input
+    /// \return Type of the input.
+    InputType getType() const;
 
     /// \brief Get the boolean value stored in the operand (if present and the stored type is indeed a boolean).
     /// \return true if the value can be successfully retrieved, false otherwise.
@@ -72,18 +89,18 @@ public:
 
 
 private:
-    /// \brief Mark the input as defined or undefined.
-    bool m_isDefined;
     /// \brief Name of the input.
     std::string m_name;
     /// \brief Type of the input.
     InputType m_type;
+    /// \brief Mark the input as defined or undefined.
+    bool m_isDefined;
     /// \brief Store the value in the most appropriate type.
-    union m_value {
+    union {
         double d;
         bool b;
         int i;
-    };
+    } m_value;
 };
 
 
@@ -97,15 +114,22 @@ class Operation
 {
 public:
     /// \brief Create an operation without specifying the required inputs (this has to be done later manually).
-    Operation();
+    Operation() = default;
 
     /// \brief Create an operation already setting the list of required inputs.
     /// \param _requiredInputs List of required inputs.
     Operation(const OperationInputList &_requiredInputs);
 
-    /// \brief Add a required input to the list of inputs required by the operation.
-    /// \param _requiredInput Input to add to the list.
-    void addRequiredInput(const OperationInput &_requiredInput);
+    /// \brief Default destructor.
+    virtual ~Operation() = default;
+
+    /// \brief Return a pointer to a clone of the correct subclass.
+    /// \return Pointer to a new object of subclass' type.
+    virtual std::unique_ptr<Operation> clone() const = 0;
+
+    /// \brief Default operator assignment function.
+    /// \param _rhs Source operation.
+    Operation& operator=(const Operation &_rhs) = default;
 
     /// \brief Check if the given input list satisfies operation's requirements.
     /// \param _inputList List of inputs that have to be checked.
@@ -114,6 +138,8 @@ public:
     virtual bool check(const OperationInputList &_inputs) const;
 
     /// \brief Evaluate the operation on the given inputs.
+    /// \warning No control on types is performed -- you can for instance divide a boolean by a double without the
+    ///          system raising a warning.
     /// \param _inputList List of inputs that have to be used by the operation.
     /// \param _result Result of the operation.
     /// \return true if the operation could be performed, false otherwise.
@@ -134,22 +160,43 @@ protected:
 
 
 /// \brief List of operations, along with the preference level.
-typedef std::vector<std::pair<Operation, unsigned int>> OperationList;
+typedef std::vector<std::pair<std::unique_ptr<Operation>, unsigned int>> OperationList;
 
 
 /// \ingroup TucuCore
 /// \brief Base class for all hardcoded operations.
 /// An hardcoded operation is an operation that has an hardcoded evaluate method.
+/// \note Hardcoded operations do not have a way to add required inputs dynamically, since all the operations are known
+///       at compile time -- and therefore we expect the developer of the class to fill the list of requirements at
+///       development time.
 class HardcodedOperation : public Operation
 {
 public:
+    /// \brief Default destructor.
+    virtual ~HardcodedOperation() = default;
+
+    /// \brief Clone function returning a pointer to the base class.
+    /// \return Pointer to the base Operation class.
+    virtual std::unique_ptr<Operation> clone() const = 0;
+
     /// \brief Evaluate the operation on the given inputs.
+    /// \warning No control on types is performed -- you can for instance divide a boolean by a double without the
+    ///          system raising a warning.
     /// \param _inputList List of inputs that have to be used by the operation.
     /// \param _result Result of the operation.
     /// \return true if the operation could be performed, false otherwise.
-    /// \post if (check(_inputs)) { _result == [OPERATION_RESULT] && [RETURN] == true }
+    /// \post if (check(_inputs) == true) { _result == [OPERATION_RESULT] && [RETURN] == true }
     ///       else { [RETURN] == false };
-    virtual bool evaluate(const OperationInputList &_inputs, double &_result) const;
+    virtual bool evaluate(const OperationInputList &_inputs, double &_result) const override;
+
+
+protected:
+    /// \brief Perform the desired computation on the given inputs.
+    /// \param _inputList List of inputs that have to be used by the operation.
+    /// \param _result Result of the operation.
+    /// \return true if the operation could be performed, false otherwise.
+    /// \pre check(_inputs) == true
+    virtual bool compute(const OperationInputList &_inputs, double &_result) const = 0;
 };
 
 
@@ -158,18 +205,41 @@ public:
 class DynamicOperation : public Operation
 {
 public:
+    /// \brief Copy-construct a dynamic operation.
+    /// \param _other Operation used for copy-construction.
+    DynamicOperation(const DynamicOperation &_other);
+
+    /// \brief Default destructor.
+    virtual ~DynamicOperation() = default;
+
+    /// \brief Clone function returning a pointer to the base class.
+    /// \return Pointer to the base Operation class.
+    virtual std::unique_ptr<Operation> clone() const;
+
+    /// \brief Default operator assignment function.
+    /// \param _rhs Source operation.
+    DynamicOperation& operator=(const DynamicOperation &_rhs) = default;
+
     /// \brief Add an operation to the list of operations to choose from.
+    /// \param _operation Operation to add.
+    /// \param _preferenceLevel Preference level of the operation (if another one with the same number of matching
+    ///                         inputs is available)
+    /// \return true if the operation was successfully added to the list, false otherwise.
     bool addOperation(const Operation &_operation, const unsigned int _preferenceLevel);
 
     /// \brief Check if the given input list satisfies the requirements of at least one of the operations stored.
     /// \param _inputList List of inputs that have to be checked.
+    /// \return true if the input list satisfies the requirements of at least one of the operations stored, false
+    ///         otherwise.
     /// \post if (ANY(operation: m_operations) { operation.check(_inputs) } { [RETURN] == true }
     ///       else { [RETURN] == false };
-    virtual bool check(const OperationInputList &_inputs) const;
+    virtual bool check(const OperationInputList &_inputs) const override;
 
     /// \brief Evaluate an operation on the given inputs, choosing the one that suits best.
     /// The parameter match is taken as a first match measure, using the preference level as a second discrimination
     /// criterion.
+    /// \warning No control on types is performed -- you can for instance divide a boolean by a double without the
+    ///          system raising a warning.
     /// \warning If multiple operations have the same input set, the function returns the result of the first operation
     ///          in the list accepting those parameters (for a given preference level).
     /// \param _inputList List of inputs that have to be used by the operation.
@@ -179,13 +249,13 @@ public:
     ///                                                 PREFERENCE(operation) <= { PREFERENCE({op2 IN m_operations | op2.check(_inputs == true) && op2 != operation })} };
     ///       if (EXISTS(bestMatch)) { _result == [RESULT(bestMatch)] && [RETURN] == true }
     ///       else { [RETURN] == false };
-    virtual bool evaluate(const OperationInputList &_inputs, double &_result) const;
+    virtual bool evaluate(const OperationInputList &_inputs, double &_result) const override;
 
     /// \brief Return the list of *possibly* required input operands.
     /// This list contains *ALL* the operands that could be needed by *ALL* the stored operations -- only a subset might
     /// be needed for an operation to be performed. *NO* duplicates are present.
     /// \return Vector containing a list of the operands required by the whole set of stored operations.
-    virtual OperationInputList getInputs() const;
+    virtual OperationInputList getInputs() const override;
 
 
 protected:
@@ -204,21 +274,24 @@ public:
     /// \param _requiredInputs List of required inputs.
     JSOperation(const std::string &_expression, const OperationInputList &_requiredInputs);
 
+    /// \brief Clone function returning a pointer to the base class.
+    /// \return Pointer to the base Operation class.
+    virtual std::unique_ptr<Operation> clone() const;
+
     /// \brief Evaluate the operation on the given inputs using the JSEngine.
+    /// \warning No control on types is performed -- you can for instance divide a boolean by a double without the
+    ///          system raising a warning.
     /// \param _inputList List of inputs that have to be used by the operation.
     /// \param _result Result of the operation.
     /// \return true if the operation could be performed, false otherwise.
     /// \post if (check(_inputs) && m_jsEngine.evaluate(m_expression) == true) { _result == [OPERATION_RESULT] && [RETURN] == true }
     ///       else { [RETURN] == false };
-    virtual bool evaluate(const OperationInputList &_inputs, double &_result) const;
-    /// \todo To retrieve the result, an additional variable has to be introduced in the expression!
+    virtual bool evaluate(const OperationInputList &_inputs, double &_result) const override;
 
 
 protected:
     /// \brief JavaScript expression representing the operation to perform.
     std::string m_expression;
-    /// \brief JavaScript engine.
-    JSEngine m_jsEngine;
 };
 
 }

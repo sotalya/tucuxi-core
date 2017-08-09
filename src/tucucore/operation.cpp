@@ -3,5 +3,292 @@
 namespace Tucuxi {
 namespace Core {
 
+OperationInput::OperationInput(const std::string &_name, const InputType &_type)
+    : m_name{_name}, m_type{_type}, m_isDefined{false}
+{
+
+}
+
+
+bool
+OperationInput::isDefined() const
+{
+    return m_isDefined;
+}
+
+
+std::string
+OperationInput::getName() const
+{
+    return m_name;
+}
+
+
+InputType
+OperationInput::getType() const
+{
+    return m_type;
+}
+
+
+bool
+OperationInput::getValue(bool &_value) const
+{
+    if (m_type == InputType::BOOL && m_isDefined == true) {
+        _value = m_value.b;
+        return true;
+    }
+    return false;
+}
+
+
+bool
+OperationInput::setValue(const bool &_value)
+{
+    if (m_type == InputType::BOOL) {
+        m_value.b = _value;
+        m_isDefined = true;
+        return true;
+    }
+    return false;
+}
+
+
+bool
+OperationInput::getValue(int &_value) const
+{
+    if (m_type == InputType::INTEGER && m_isDefined == true) {
+        _value = m_value.i;
+        return true;
+    }
+    return false;
+}
+
+
+bool
+OperationInput::setValue(const int &_value)
+{
+    if (m_type == InputType::INTEGER) {
+        m_value.i = _value;
+        m_isDefined = true;
+        return true;
+    }
+    return false;
+}
+
+
+bool
+OperationInput::getValue(double &_value) const
+{
+    if (m_type == InputType::DOUBLE && m_isDefined == true) {
+        _value = m_value.d;
+        return true;
+    }
+    return false;
+}
+
+
+bool
+OperationInput::setValue(const double &_value)
+{
+    if (m_type == InputType::DOUBLE) {
+        m_value.d = _value;
+        m_isDefined = true;
+        return true;
+    }
+    return false;
+}
+
+
+Operation::Operation(const OperationInputList &_requiredInputs)
+    : m_requiredInputs{_requiredInputs}
+{
+
+}
+
+
+bool
+Operation::check(const OperationInputList &_inputs) const
+{
+    if (_inputs.size() < m_requiredInputs.size()) {
+        // Early-stop if the number of given inputs is below the required one
+        return false;
+    }
+    // Check that all the inputs are there and they are valid:
+    // For each required input, scan the list for a valid input with the same name and type.
+    for (auto reqIn : m_requiredInputs) {
+        if (std::find_if(_inputs.begin(),
+                         _inputs.end(),
+                         [&reqIn](const OperationInput &_in) -> bool {
+                         return (reqIn.getName() == _in.getName() &&
+                                 reqIn.getType() == _in.getType() &&
+                                 _in.isDefined()); }) == _inputs.end()) {
+            return false;
+        }
+    }
+    return true;
+}
+
+
+OperationInputList
+Operation::getInputs() const
+{
+    return m_requiredInputs;
+}
+
+
+bool
+HardcodedOperation::evaluate(const OperationInputList &_inputs, double &_result) const
+{
+    if (!check(_inputs)) {
+        return false;
+    }
+    return compute(_inputs, _result);
+}
+
+
+DynamicOperation::DynamicOperation(const DynamicOperation &_other)
+    : Operation(_other)
+{
+    for (auto&& op: _other.m_operations) {
+        m_operations.push_back(std::make_pair(op.first->clone(), op.second));
+    }
+}
+
+
+std::unique_ptr<Operation>
+DynamicOperation::clone() const
+{
+    return std::unique_ptr<Operation>(new DynamicOperation(*this));
+}
+
+
+bool
+DynamicOperation::addOperation(const Operation &_operation, const unsigned int _preferenceLevel)
+{
+    m_operations.push_back(std::make_pair(_operation.clone(), _preferenceLevel));
+    return true;
+}
+
+
+bool
+DynamicOperation::check(const OperationInputList &_inputs) const
+{
+    for (auto&& op: m_operations) {
+        if (op.first->check(_inputs)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+
+bool
+DynamicOperation::evaluate(const OperationInputList &_inputs, double &_result) const
+{
+    // Initialize values that will be used in the search for the best matching operation
+    int idxBest = -1;
+    unsigned int nInputsBest = -1;
+    unsigned int prefLevelBest = -1;
+
+    // Find the 'best' operation to perform
+    for (int i = 0; i < (int)m_operations.size(); ++i) {
+        // Check that the given operation can run with the inputs passed as parameter
+        if (m_operations.at(i).first->check(_inputs)) {
+            const unsigned int nInputs = m_operations.at(i).first->getInputs().size();
+            const unsigned int prefLevel = m_operations.at(i).second;
+            if (nInputs > nInputsBest || (nInputs == nInputsBest && prefLevel > prefLevelBest)) {
+                // We have found an operation with either more matching inputs or the same number but with higher
+                // preferability
+                idxBest = i;
+                nInputsBest = nInputs;
+                prefLevelBest = prefLevel;
+            }
+        }
+    }
+    if (idxBest < 0) {
+        // Could not find a suitable operation
+        return false;
+    }
+
+    return m_operations.at(idxBest).first->evaluate(_inputs, _result);
+}
+
+
+OperationInputList
+DynamicOperation::getInputs() const
+{
+    OperationInputList ret;
+    for (auto&& op: m_operations) {
+        OperationInputList tmp = op.first->getInputs();
+        for (auto input: tmp) {
+            // Push missing inputs, skipping duplicates
+            if (std::find_if(ret.begin(),
+                             ret.end(),
+                             [&input](const OperationInput &_in) -> bool {
+                             return (input.getName() == _in.getName() &&
+                                     input.getType() == _in.getType()); }) == ret.end()) {
+                ret.push_back(input);
+            }
+        }
+    }
+    return ret;
+}
+
+
+JSOperation::JSOperation(const std::string &_expression, const OperationInputList &_requiredInputs)
+    : Operation(_requiredInputs)
+{
+    // Append the prefix that will store the result of the evaluation in the 'result' variable
+    m_expression = "result = " + _expression;
+}
+
+
+std::unique_ptr<Operation>
+JSOperation::clone() const
+{
+    return std::unique_ptr<Operation>(new JSOperation(*this));
+}
+
+
+// Add the variable according to the given data type
+#define ADD_VAR_CASE(CASE_VAR, DATA_TYPE) \
+    case CASE_VAR: \
+    { \
+    DATA_TYPE value; \
+    if (inVar.getValue(value) == false) { \
+        return false;\
+    } \
+    jsEngine.setVariable(inVar.getName(), std::to_string(value)); \
+    } \
+    break;
+
+
+bool
+JSOperation::evaluate(const OperationInputList &_inputs, double &_result) const
+{
+    JSEngine jsEngine;
+    // Push the inputs
+    for (auto inVar: _inputs) {
+        switch (inVar.getType()) {
+        ADD_VAR_CASE(InputType::BOOL, bool);
+        ADD_VAR_CASE(InputType::INTEGER, int);
+        ADD_VAR_CASE(InputType::DOUBLE, double);
+        default:
+            return false;
+        }
+    }
+    if (!jsEngine.evaluate(m_expression)) {
+        return false;
+    }
+    std::string resAsString;
+    if(!jsEngine.getVariable("result", resAsString)) {
+        return false;
+    }
+    _result = std::stod(resAsString);
+    return true;
+}
+
+
 }
 }
