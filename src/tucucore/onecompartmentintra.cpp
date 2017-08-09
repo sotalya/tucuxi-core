@@ -56,7 +56,7 @@ void OneCompartmentIntra::computeLogarithms(const IntakeEvent& _intakeEvent, con
 }
 
 
-void OneCompartmentIntra::computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
+bool OneCompartmentIntra::computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
 {
     Concentration part1 = m_D/(m_Tinf*m_Cl);
     size_t ke_size = m_precomputedLogarithms["Ke"].size();
@@ -80,6 +80,8 @@ void OneCompartmentIntra::computeConcentrations(const Residuals& _inResiduals, C
     _outResiduals.push_back(concentrations[m_NbPoints - 1]);
     // POSTCONDCONT(finalResiduals[0] >= 0, SHOULDNTGONEGATIVE, "The concentration is negative.")
     _concentrations.assign(concentrations.data(), concentrations.data() + concentrations.size());	
+
+    return true;
 }
 
 }

@@ -13,6 +13,10 @@
 namespace Tucuxi {
 namespace Common {
 
+using days = std::chrono::duration<int, std::ratio_multiply<std::ratio<24>, std::chrono::hours::period>>;
+using years = std::chrono::duration<int, std::ratio_multiply<std::ratio<146097, 400>, days::period>>;
+using months = std::chrono::duration<int, std::ratio_divide<years::period, std::ratio<12>>>;
+
 /// \ingroup TucuCommon
 /// \brief A class to handle a duration.
 /// The class is based on the std::chrono::duration<double> type representing a number of seconds
@@ -26,17 +30,17 @@ public:
     /// \brief Construct a duration from a std::chrono::years
     /// This also provide implicit conversions when using all the other methods.
     /// @param _value Duration in years
-    Duration(const date::years &_value);
+    Duration(const years &_value);
 
     /// \brief Construct a duration from a std::chrono::months
     /// This also provide implicit conversions when using all the other methods.
     /// @param _value Duration in months
-    Duration(const date::months &_value);
+    Duration(const months &_value);
 
     /// \brief Construct a duration from a std::chrono::days
     /// This also provide implicit conversions when using all the other methods.
     /// @param _value Duration in days
-    Duration(const date::days &_value);
+    Duration(const days &_value);
 
     /// \brief Construct a duration from a std::chrono::hours
     /// This also provide implicit conversions when using all the other methods.

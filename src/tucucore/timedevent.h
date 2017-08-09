@@ -24,7 +24,7 @@ public:
     /// \post m_time == _time
     TimedEvent(DateTime _time) : m_time(_time)
     {
-        assert (!_time.isUndefined());
+        //assert (!_time.isUndefined());
     }
 
     /// \brief Get the time the event happened.

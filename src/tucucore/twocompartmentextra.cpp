@@ -70,7 +70,7 @@ void TwoCompartmentExtra::computeLogarithms(const IntakeEvent& _intakeEvent, con
 }
 
 
-void TwoCompartmentExtra::computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
+bool TwoCompartmentExtra::computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
 {
     Value A, B, C, divider;
     Concentration resid1 = _inResiduals[0];
@@ -162,6 +162,8 @@ void TwoCompartmentExtra::computeConcentrations(const Residuals& _inResiduals, C
     //POSTCONDCONT( >= 0, SHOULDNTGONEGATIVE, "The concentration is negative.")
 
     _concentrations.assign(concentrations1.data(), concentrations1.data() + concentrations1.size());	
+
+    return true;
 }
 
 }
