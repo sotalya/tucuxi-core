@@ -179,8 +179,8 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
         id = Tucuxi::Common::SystemInfo::retrieveFingerPrint(Tucuxi::Common::MachineIdType::PRODUCT);
         std::cout << "PRODUCT : " << id << std::endl;
 
-        id = Tucuxi::Common::SystemInfo::retrieveFingerPrint(Tucuxi::Common::MachineIdType::NETWORK);
-        std::cout << "NETWORK : " << id << std::endl;
+        id = Tucuxi::Common::SystemInfo::retrieveFingerPrint(Tucuxi::Common::MachineIdType::MAC);
+        std::cout << "MAC: " << id << std::endl;
 
         id = Tucuxi::Common::SystemInfo::retrieveFingerPrint(Tucuxi::Common::MachineIdType::NAME);
         std::cout << "NAME : " << id << std::endl;

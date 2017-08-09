@@ -7,29 +7,24 @@
 #include <iomanip>
 #include <sstream>
 
-// Use for getSerial
-//#include <sys/types.h>
-//#include <dirent.h>
-//#include <errno.h>
-#include <vector>
+#ifdef _WIN32
+
+#include <Windows.h>
+#include <iphlpapi.h>
+#include <stdlib.h>
+
+#else
+
 #include <fstream>
+#include <sys/ioctl.h>   // get mac address
+#include <net/if.h>      // get mac address
+#include <unistd.h>      // get mac address
+#include <netinet/in.h>  // get mac address
+#include <sys/utsname.h> // get name
 
-// Use for getMacAdress()
-#include <sys/ioctl.h>
-#include <net/if.h>
-#include <unistd.h>
-#include <netinet/in.h>
-
-// Use for getName()
-#include <sys/utsname.h>
+#endif
 
 #include "tucucommon/systeminfo.h"
-
-//#ifdef _WIN32
-//// Windows
-//#else
-//// Linux
-//#endif
 
 namespace Tucuxi {
 namespace Common {
@@ -39,14 +34,16 @@ std::string SystemInfo::retrieveFingerPrint(MachineIdType _machineIdType)
     switch(_machineIdType) {
         case MachineIdType::CPU:
             return retrieveCpu();
-        case MachineIdType::BIOS:
-            return retrieveBios();
         case MachineIdType::MOTHERBOARD:
             return retrieveMotherboard();
+        case MachineIdType::DISK:
+            return retrieveDisk();
+        case MachineIdType::MAC:
+            return retrieveMacAddress();
+        case MachineIdType::BIOS:
+            return retrieveBios();
         case MachineIdType::PRODUCT:
             return retrieveProduct();
-        case MachineIdType::NETWORK:
-            return retrieveNetwork();
         case MachineIdType::NAME:
             return retrieveName();
         default:
@@ -56,6 +53,9 @@ std::string SystemInfo::retrieveFingerPrint(MachineIdType _machineIdType)
 
 std::string SystemInfo::retrieveCpu()
 {
+#ifdef _WIN32
+    return std::string();
+#else
     // Retrieve the processor serial number
     unsigned int eax = 3, ebx = 0, ecx = 0, edx = 0;
 
@@ -74,41 +74,14 @@ std::string SystemInfo::retrieveCpu()
         ss << std::uppercase << "0x" << std::hex << edx << ecx;
         return ss.str();
     }
-}
-
-std::string SystemInfo::readDMIfile(std::string _filename)
-{
-    std::string content;
-    std::ifstream file (_filename.c_str());
-
-    if (file.is_open()) {
-        std::getline (file, content);
-    }
-
-    file.close();
-
-    // Some content of dmi file can be fill with space character.
-    for(size_t i=0; i < content.size(); i++) {
-        if(!isblank(content[i])) {
-            return content;
-        }
-    }
-
-    return std::string();
-}
-
-std::string SystemInfo::retrieveBios()
-{
-    // Retrieve the infos of bios (vendor-date-version)
-    std::stringstream ss;
-    ss << readDMIfile(std::string("/sys/class/dmi/id/bios_date"));
-    ss << readDMIfile(std::string("/sys/class/dmi/id/bios_version"));
-    ss << readDMIfile(std::string("/sys/class/dmi/id/bios_vendor"));
-    return ss.str();
+#endif
 }
 
 std::string SystemInfo::retrieveMotherboard()
 {
+#ifdef _WIN32
+    return std::string();
+#else
     // Retrieve the infos of motherboard (name-vendor-version-serial number)
     std::stringstream ss;
 
@@ -123,27 +96,78 @@ std::string SystemInfo::retrieveMotherboard()
     }
 
     return ss.str();
+#endif
 }
 
-std::string SystemInfo::retrieveProduct()
+std::string SystemInfo::retrieveDisk()
 {
-    // Retrieve the infos of product (version-serial-uuid)
-    std::stringstream ss;
+#ifdef _WIN32
+    std::stringstream ss_volume;
 
-    // Check root privileges
-    if (getuid() == 0 || geteuid() == 0) {
-        //ss << readDMIfile(std::string("/sys/class/dmi/id/product_serial"));
-        //ss << readDMIfile(std::string("/sys/class/dmi/id/product_version"));
+    // Volume ID
+    WCHAR volumeName[MAX_PATH + 1] = { 0 };
+    WCHAR fileSystemName[MAX_PATH + 1] = { 0 };
+    DWORD serialNumber = 0;
+    DWORD maxComponentLen = 0;
+    DWORD fileSystemFlags = 0;
 
-        // Need root privileges
-        ss << readDMIfile(std::string("/sys/class/dmi/id/product_uuid"));
+    if (GetVolumeInformation(L"C:\\", // L"\\MyServer\MyShare\"
+                             volumeName,
+                             sizeof(volumeName),
+                             &serialNumber,
+                             &maxComponentLen,
+                             &fileSystemFlags,
+                             fileSystemName,
+                             sizeof(fileSystemName)) == TRUE)
+    {
+        ss_volume << volumeName << serialNumber << fileSystemName << maxComponentLen << fileSystemFlags;
     }
 
-    return ss.str();
+    return ss_volume.str();
+#else
+    return std::string();
+#endif
 }
 
-std::string SystemInfo::retrieveNetwork()
+std::string SystemInfo::retrieveMacAddress()
 {
+#ifdef _WIN32
+    std::stringstream ss_mac;
+
+    // Address MAC
+    IP_ADAPTER_INFO AdapterInfo[16];
+    DWORD dwBufLen = sizeof(AdapterInfo);
+    GetAdaptersInfo(AdapterInfo, &dwBufLen);
+    IP_ADAPTER_INFO *pAdapterInfo = AdapterInfo;
+
+    FIXED_INFO AdapterFixedInfo[16];
+    DWORD dwLen = sizeof(AdapterFixedInfo);
+    GetNetworkParams(AdapterFixedInfo, &dwLen);
+
+    ss_mac << "MAC:";
+    do
+    {
+        std::string temp = pAdapterInfo->Description;
+
+        if(temp.find("VirtualBox") == std::string::npos) {
+            char macaddr[32] = "";
+            sprintf(macaddr, "%02x%02x%02x%02x%02x%02x",
+                    pAdapterInfo->Address[0],
+                    pAdapterInfo->Address[1],
+                    pAdapterInfo->Address[2],
+                    pAdapterInfo->Address[3],
+                    pAdapterInfo->Address[4],
+                    pAdapterInfo->Address[5]);
+            ss_mac << macaddr;
+        }
+
+        pAdapterInfo = pAdapterInfo->Next;
+
+    } while(pAdapterInfo);
+
+    return ss_mac;
+
+#else
     // Retrieve the mac address of interfaces
     struct ifreq ifr;
     struct ifconf ifc;
@@ -181,15 +205,10 @@ std::string SystemInfo::retrieveNetwork()
                     std::stringstream ss;
                     ss << std::hex << std::setfill('0');
                     ss << std::setw(2) << static_cast<unsigned>(mac_address[0]);
-                    ss << ":";
                     ss << std::setw(2) << static_cast<unsigned>(mac_address[1]);
-                    ss << ":";
                     ss << std::setw(2) << static_cast<unsigned>(mac_address[2]);
-                    ss << ":";
                     ss << std::setw(2) << static_cast<unsigned>(mac_address[3]);
-                    ss << ":";
                     ss << std::setw(2) << static_cast<unsigned>(mac_address[4]);
-                    ss << ":";
                     ss << std::setw(2) << static_cast<unsigned>(mac_address[5]);
                     return ss.str();
                 }
@@ -198,10 +217,75 @@ std::string SystemInfo::retrieveNetwork()
     }
 
     return std::string();
+#endif
+}
+
+std::string SystemInfo::retrieveBios()
+{
+#ifdef _WIN32
+
+#else
+    // Retrieve the infos of bios (vendor-date-version)
+    std::stringstream ss;
+    ss << readDMIfile(std::string("/sys/class/dmi/id/bios_date"));
+    ss << readDMIfile(std::string("/sys/class/dmi/id/bios_version"));
+    ss << readDMIfile(std::string("/sys/class/dmi/id/bios_vendor"));
+    return ss.str();
+#endif
+}
+
+std::string SystemInfo::retrieveProduct()
+{
+#ifdef _WIN32
+    std::stringstream ss_hw;
+
+    // Hardware Info
+    SYSTEM_INFO siSysInfo;
+    GetSystemInfo(&siSysInfo);
+
+    ss_hw << "HW:" << siSysInfo.dwOemId <<
+             siSysInfo.dwNumberOfProcessors <<
+             siSysInfo.dwPageSize <<
+             siSysInfo.dwProcessorType <<
+             siSysInfo.lpMinimumApplicationAddress <<
+             siSysInfo.lpMaximumApplicationAddress <<
+             siSysInfo.dwActiveProcessorMask;
+
+    return ss_hw.str();
+
+#else
+    // Retrieve the infos of product (version-serial-uuid)
+    std::stringstream ss;
+
+    // Check root privileges
+    if (getuid() == 0 || geteuid() == 0) {
+        //ss << readDMIfile(std::string("/sys/class/dmi/id/product_serial"));
+        //ss << readDMIfile(std::string("/sys/class/dmi/id/product_version"));
+
+        // Need root privileges
+        ss << readDMIfile(std::string("/sys/class/dmi/id/product_uuid"));
+    }
+
+    return ss.str();
+#endif
 }
 
 std::string SystemInfo::retrieveName()
 {
+#ifdef _WIN32
+    std::stringstream ss_name;
+
+    TCHAR computerName[MAX_COMPUTERNAME_LENGTH + 1];
+    DWORD size = sizeof(computerName) / sizeof(computerName[0]);
+    GetComputerName(computerName, &size);
+
+    ss_name << "NAME:";
+    for(size_t i=0; i < size; i++) {
+        ss_name << computerName[i];
+    }
+
+    return ss_name.str();
+#else
     // Retrieve the infos of the machine
     struct utsname unameData;
     uname(&unameData);
@@ -212,7 +296,32 @@ std::string SystemInfo::retrieveName()
     ss << unameData.nodename << unameData.machine;
 
     return ss.str();
+#endif
 }
+
+#ifndef _WIN32
+std::string SystemInfo::readDMIfile(std::string _filename)
+{
+    std::string content;
+    std::ifstream file (_filename.c_str());
+
+    if (file.is_open()) {
+        std::getline (file, content);
+    }
+
+    file.close();
+
+    // Some content of dmi file can be fill with space character.
+    for(size_t i=0; i < content.size(); i++) {
+        if(!isblank(content[i])) {
+            return content;
+        }
+    }
+
+    return std::string();
+}
+#endif
 
 }
 }
+
