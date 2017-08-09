@@ -24,6 +24,7 @@
 
 #endif
 
+#include "tucucommon/utils.h"
 #include "tucucommon/systeminfo.h"
 
 namespace Tucuxi {
@@ -150,14 +151,13 @@ std::string SystemInfo::retrieveMacAddress()
         std::string temp = pAdapterInfo->Description;
 
         if(temp.find("VirtualBox") == std::string::npos) {
-            char macaddr[32] = "";
-            sprintf(macaddr, "%02x%02x%02x%02x%02x%02x",
-                    pAdapterInfo->Address[0],
-                    pAdapterInfo->Address[1],
-                    pAdapterInfo->Address[2],
-                    pAdapterInfo->Address[3],
-                    pAdapterInfo->Address[4],
-                    pAdapterInfo->Address[5]);
+            std::string macaddr = Utils::strFormat("%02x%02x%02x%02x%02x%02x",
+                pAdapterInfo->Address[0],
+                pAdapterInfo->Address[1],
+                pAdapterInfo->Address[2],
+                pAdapterInfo->Address[3],
+                pAdapterInfo->Address[4],
+                pAdapterInfo->Address[5]);
             ss_mac << macaddr;
         }
 

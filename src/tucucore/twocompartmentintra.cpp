@@ -50,6 +50,7 @@ bool TwoCompartmentIntra::checkInputs(const IntakeEvent& _intakeEvent, const Par
     bOK &= checkValue(!std::isnan(m_V2), "The V2 is NaN.");
     bOK &= checkValue(!std::isinf(m_V2), "The V2 is Inf.");
     bOK &= checkValue(m_Divider != 0.0, "Divide by zero.");
+    bOK &= checkValue(m_Tinf >= 0, "The infusion time is zero or negative.");
 
     return bOK;
 }
@@ -75,7 +76,7 @@ bool TwoCompartmentIntra::computeConcentrations(const Residuals& _inResiduals, C
 {
     bool bOK = true;
 
-    int forcesize = std::max(0.0, std::min(ceil(m_Tinf/m_Int * m_NbPoints), ceil(m_NbPoints)));
+    int forcesize = static_cast<int>(std::max(0.0, std::min(ceil(m_Tinf/m_Int * m_NbPoints), ceil(m_NbPoints))));
     int therest;
     Eigen::VectorXd& alphaLogV = m_precomputedLogarithms["Alpha"]; 
     Eigen::VectorXd& betaLogV = m_precomputedLogarithms["Beta"]; 
@@ -140,7 +141,7 @@ bool TwoCompartmentIntra::computeConcentrations(const Residuals& _inResiduals, C
         concentrations2.head(forcesize) + ((p2p1 * p2p2) / m_Divider).matrix();
 
     // After infusion
-    therest = concentrations1.size() - forcesize;
+    therest = static_cast<int>(concentrations1.size() - forcesize);
     concentrations1.tail(therest) = 
         concentrations1.tail(therest) 
 	+ (APostInf * alphaLogV.head(therest) + BPostInf * betaLogV.head(therest)) / (2 * m_RootK);

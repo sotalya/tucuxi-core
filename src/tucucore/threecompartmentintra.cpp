@@ -34,8 +34,8 @@ bool ThreeCompartmentIntra::checkInputs(const IntakeEvent& _intakeEvent, const P
     m_K21 = m_Q1 / m_V2;
     m_K13 = m_Q2 / m_V1;
     m_K31 = m_Q2 / m_V2;
-    m_Tinf = (_intakeEvent.getInfusionTime()).toMilliseconds();
-    m_Int = (_intakeEvent.getInterval()).toMilliseconds();
+    m_Tinf = _intakeEvent.getInfusionTime().toMilliseconds();
+    m_Int = _intakeEvent.getInterval().toMilliseconds();
     m_NbPoints = _intakeEvent.getNumberPoints();
 
     bOK &= checkValue(m_D >= 0, "The dose is negative.");
@@ -60,8 +60,6 @@ bool ThreeCompartmentIntra::checkInputs(const IntakeEvent& _intakeEvent, const P
     bOK &= checkValue(!std::isnan(m_V2), "The V2 is NaN.");
     bOK &= checkValue(!std::isinf(m_V2), "The V2 is Inf.");
     bOK &= checkValue(m_Tinf > 0, "The infusion time is not greater than zero.");
-    bOK &= checkValue(!std::isnan(m_Tinf), "The infusion time is NaN.");
-    bOK &= checkValue(!std::isinf(m_Tinf), "The infusion time is Inf.");
 
     a0 = m_Ke * m_K21 * m_K31;
     a1 = m_Ke * m_K31 + m_K21 * m_K31 + m_K21 * m_K13 + m_Ke * m_K21 + m_K31 * m_K12;

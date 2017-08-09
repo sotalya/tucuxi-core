@@ -123,7 +123,7 @@ public:
             writer.write(_fmt, _args...);
             info(writer.c_str());
         }
-        catch (const std::exception &ex) {
+        catch (const std::exception &) {
         }
     }
 
@@ -153,7 +153,7 @@ public:
             writer.write(_fmt, _args...);
             warn(writer.c_str());
         }
-        catch (const std::exception &ex) {
+        catch (const std::exception &) {
         }
     }
 
@@ -213,7 +213,7 @@ public:
             writer.write(_fmt, _args...);
             critical(writer.c_str());
         }
-        catch (const std::exception &ex) {
+        catch (const std::exception &) {
         }
     }
 
