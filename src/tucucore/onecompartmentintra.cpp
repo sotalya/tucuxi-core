@@ -17,8 +17,11 @@ OneCompartmentIntra::OneCompartmentIntra()
 
 bool OneCompartmentIntra::checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
 {
-//	PRECOND(parameters.size() >= 4, SHOULDNTGONEGATIVE, "The number of parameters should be equal to 4.")
+    bool bOK = true;
 
+    if(!checkValue(_parameters.size() >= 4, "The number of parameters should be equal to 4."))
+	    return false;
+    
     m_D = _intakeEvent.getDose() * 1000;
     m_Cl = _parameters[0].getValue();
     m_V = _parameters[1].getValue();
@@ -26,22 +29,21 @@ bool OneCompartmentIntra::checkInputs(const IntakeEvent& _intakeEvent, const Par
     m_Tinf = (_intakeEvent.getInfusionTime()).toMilliseconds();
     m_Int = (_intakeEvent.getInterval()).toMilliseconds();
     m_NbPoints = _intakeEvent.getNumberPoints();
-/*
-    PRECONDCONT(D >= 0, SHOULDNTGONEGATIVE, "The dose is negative.")
-    PRECONDCONT(!qIsNaN(D), NOTANUMBER, "The dose is NaN.")
-    PRECONDCONT(!qIsInf(D), ISINFINITY, "The dose is Inf.")
-    PRECONDCONT(V > 0, SHOULDNTGONEGATIVE, "The volume is not greater than zero.")
-    PRECONDCONT(!qIsNaN(V), NOTANUMBER, "The V is NaN.")
-    PRECONDCONT(!qIsInf(V), ISINFINITY, "The V is Inf.")
-    PRECONDCONT(Ke > 0, SHOULDNTGONEGATIVE, "The clearance is not greater than zero.")
-    PRECONDCONT(!qIsNaN(Ke), NOTANUMBER, "The CL is NaN.")
-    PRECONDCONT(!qIsInf(Ke), ISINFINITY, "The CL is Inf.")
-    PRECOND(m_Tinf >= 0, SHOULDNTGONEGATIVE, "The infusion time is zero or negative.")
-    PRECONDCONT(!qIsNaN(m_Tinf), NOTANUMBER, "The m_Tinf is NaN.")
-    PRECONDCONT(!qIsInf(m_Tinf), ISINFINITY, "The m_Tinf is Inf.")
 
-*/
-    return true;
+    bOK &= checkValue(m_D >= 0, "The dose is negative.");
+    bOK &= checkValue(!std::isnan(m_D), "The dose is NaN.");
+    bOK &= checkValue(!std::isinf(m_D), "The dose is Inf.");
+    bOK &= checkValue(m_V > 0, "The volume is not greater than zero.");
+    bOK &= checkValue(!std::isnan(m_V), "The volume is NaN.");
+    bOK &= checkValue(!std::isinf(m_V), "The volume is Inf.");
+    bOK &= checkValue(m_Ke > 0, "The clearance is not greater than zero.");
+    bOK &= checkValue(!std::isnan(m_Ke), "The CL is NaN.");
+    bOK &= checkValue(!std::isinf(m_Ke), "The CL is Inf.");
+    bOK &= checkValue(m_Tinf >= 0, "The infusion time is zero or negative.");
+    bOK &= checkValue(!std::isnan(m_Tinf), "The m_Tinf is NaN.");
+    bOK &= checkValue(!std::isinf(m_Tinf), "The m_Tinf is Inf.");
+
+    return bOK;
 }
 
 
@@ -78,10 +80,9 @@ bool OneCompartmentIntra::computeConcentrations(const Residuals& _inResiduals, C
 
     // Set the new residual
     _outResiduals.push_back(concentrations[m_NbPoints - 1]);
-    // POSTCONDCONT(finalResiduals[0] >= 0, SHOULDNTGONEGATIVE, "The concentration is negative.")
     _concentrations.assign(concentrations.data(), concentrations.data() + concentrations.size());	
 
-    return true;
+    return checkValue(_outResiduals[0] >= 0, "The concentration is negative.");
 }
 
 }

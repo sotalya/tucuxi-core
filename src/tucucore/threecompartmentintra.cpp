@@ -15,9 +15,11 @@ ThreeCompartmentIntra::ThreeCompartmentIntra()
 
 bool ThreeCompartmentIntra::checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
 {
-/*
-    PRECOND(parameters.size() >= 6, SHOULDNTGONEGATIVE, "The number of parameters should be equal to 6.")
-*/
+    bool bOK = true;
+
+    if(!checkValue(_parameters.size() >= 6, "The number of parameters should be equal to 6."))
+	    return false;
+    
     Value a0, a1, a2, p, q, r1, r2, phi;
 
     m_D = _intakeEvent.getDose() * 1000;
@@ -36,32 +38,30 @@ bool ThreeCompartmentIntra::checkInputs(const IntakeEvent& _intakeEvent, const P
     m_Int = (_intakeEvent.getInterval()).toMilliseconds();
     m_NbPoints = _intakeEvent.getNumberPoints();
 
-/*
-    PRECONDCONT(m_D >= 0, SHOULDNTGONEGATIVE, "The dose is negative.")
-    PRECONDCONT(!qIsNaN(m_D), NOTANUMBER, "The dose is NaN.")
-    PRECONDCONT(!qIsInf(m_D), ISINFINITY, "The dose is Inf.")
-    PRECONDCONT(m_Cl > 0, SHOULDNTGONEGATIVE, "The clearance is not greater than zero.")
-    PRECONDCONT(!qIsNaN(m_Cl), NOTANUMBER, "The CL is NaN.")
-    PRECONDCONT(!qIsInf(m_Cl), ISINFINITY, "The CL is Inf.")
-    PRECONDCONT(m_F > 0, SHOULDNTGONEGATIVE, "The F is not greater than zero.")
-    PRECONDCONT(!qIsNaN(m_F), NOTANUMBER, "The F is NaN.")
-    PRECONDCONT(!qIsInf(m_F), ISINFINITY, "The F is Inf.")
-    PRECONDCONT(m_Q1 > 0, SHOULDNTGONEGATIVE, "The Q1 is not greater than zero.")
-    PRECONDCONT(!qIsNaN(m_Q1), NOTANUMBER, "The Q1 is NaN.")
-    PRECONDCONT(!qIsInf(m_Q1), ISINFINITY, "The Q1 is Inf.")
-    PRECONDCONT(m_Q2 > 0, SHOULDNTGONEGATIVE, "The Q2 is not greater than zero.")
-    PRECONDCONT(!qIsNaN(m_Q2), NOTANUMBER, "The Q2 is NaN.")
-    PRECONDCONT(!qIsInf(m_Q2), ISINFINITY, "The Q2 is Inf.")
-    PRECONDCONT(m_V1 > 0, SHOULDNTGONEGATIVE, "The volume1 is not greater than zero.")
-    PRECONDCONT(!qIsNaN(m_V1), NOTANUMBER, "The V1 is NaN.")
-    PRECONDCONT(!qIsInf(m_V1), ISINFINITY, "The V1 is Inf.")
-    PRECONDCONT(m_V2 > 0, SHOULDNTGONEGATIVE, "The volume2 is not greater than zero.")
-    PRECONDCONT(!qIsNaN(m_V2), NOTANUMBER, "The V2 is NaN.")
-    PRECONDCONT(!qIsInf(m_V2), ISINFINITY, "The V2 is Inf.")
-    PRECONDCONT(m_Tinf > 0, SHOULDNTGONEGATIVE, "The infusion time is not greater than zero.")
-    PRECONDCONT(!qIsNaN(m_Tinf), NOTANUMBER, "The infusion time is NaN.")
-    PRECONDCONT(!qIsInf(m_Tinf), ISINFINITY, "The infusion time is Inf.")
-*/
+    bOK &= checkValue(m_D >= 0, "The dose is negative.");
+    bOK &= checkValue(!std::isnan(m_D), "The dose is NaN.");
+    bOK &= checkValue(!std::isinf(m_D), "The dose is Inf.");
+    bOK &= checkValue(m_Cl > 0, "The clearance is not greater than zero.");
+    bOK &= checkValue(!std::isnan(m_Cl), "The CL is NaN.");
+    bOK &= checkValue(!std::isinf(m_Cl), "The CL is Inf.");
+    bOK &= checkValue(m_F > 0, "The F is not greater than zero.");
+    bOK &= checkValue(!std::isnan(m_F), "The F is NaN.");
+    bOK &= checkValue(!std::isinf(m_F), "The F is Inf.");
+    bOK &= checkValue(m_Q1 > 0, "The Q1 is not greater than zero.");
+    bOK &= checkValue(!std::isnan(m_Q1), "The Q1 is NaN.");
+    bOK &= checkValue(!std::isinf(m_Q1), "The Q1 is Inf.");
+    bOK &= checkValue(m_Q2 > 0, "The Q2 is not greater than zero.");
+    bOK &= checkValue(!std::isnan(m_Q2), "The Q2 is NaN.");
+    bOK &= checkValue(!std::isinf(m_Q2), "The Q2 is Inf.");
+    bOK &= checkValue(m_V1 > 0, "The volume1 is not greater than zero.");
+    bOK &= checkValue(!std::isnan(m_V1), "The V1 is NaN.");
+    bOK &= checkValue(!std::isinf(m_V1), "The V1 is Inf.");
+    bOK &= checkValue(m_V2 > 0, "The volume2 is not greater than zero.");
+    bOK &= checkValue(!std::isnan(m_V2), "The V2 is NaN.");
+    bOK &= checkValue(!std::isinf(m_V2), "The V2 is Inf.");
+    bOK &= checkValue(m_Tinf > 0, "The infusion time is not greater than zero.");
+    bOK &= checkValue(!std::isnan(m_Tinf), "The infusion time is NaN.");
+    bOK &= checkValue(!std::isinf(m_Tinf), "The infusion time is Inf.");
 
     a0 = m_Ke * m_K21 * m_K31;
     a1 = m_Ke * m_K31 + m_K21 * m_K31 + m_K21 * m_K13 + m_Ke * m_K21 + m_K31 * m_K12;
@@ -95,6 +95,8 @@ void ThreeCompartmentIntra::computeLogarithms(const IntakeEvent& _intakeEvent, c
 
 bool ThreeCompartmentIntra::computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
 {
+    bool bOK = true;
+
     Value deltaD = (m_D / m_V1) / m_Tinf; 
     Value alphaTinf = std::exp(-m_Alpha* m_Tinf);
     Value betaTinf = std::exp(-m_Beta * m_Tinf);
@@ -151,13 +153,14 @@ bool ThreeCompartmentIntra::computeConcentrations(const Residuals& _inResiduals,
     _outResiduals.push_back(concentrations1[m_NbPoints - 1]);
     _outResiduals.push_back(concentrations2);
     _outResiduals.push_back(concentrations3);
-    //POSTCONDCONT(concentrations1[m_NbPoints - 1] >= 0, SHOULDNTGONEGATIVE, "The concentration1 is negative.")
-    //POSTCONDCONT(concentrations2 >= 0, SHOULDNTGONEGATIVE, "The concentration2 is negative.")
-    //POSTCONDCONT(concentrations3 >= 0, SHOULDNTGONEGATIVE, "The concentration3 is negative.")
 
     _concentrations.assign(concentrations1.data(), concentrations1.data() + concentrations1.size());	
 
-    return true;
+    bOK &= checkValue(_outResiduals[0] >= 0, "The concentration1 is negative.");
+    bOK &= checkValue(_outResiduals[1] >= 0, "The concentration2 is negative.");
+    bOK &= checkValue(_outResiduals[2] >= 0, "The concentration3 is negative.");
+
+    return bOK;
 }
 
 }
