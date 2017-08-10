@@ -92,6 +92,7 @@ bool OneCompartmentExtra::computeConcentration(const int64& _atTime, const Resid
     Concentration resid2 = _inResiduals[1] + m_F*m_D/m_V;
     Concentration part2 = m_Ka*resid2 / (-m_Ka + m_Ke);
 
+    // Calcuate concentrations
     Eigen::VectorXd concentrations;
     concentrations[0] = 
         m_precomputedLogarithms["Ke"](0) * resid1 
@@ -99,6 +100,7 @@ bool OneCompartmentExtra::computeConcentration(const int64& _atTime, const Resid
     concentrations[1] = 
         m_F * m_D / m_V * m_precomputedLogarithms["Ka"](0) / (1 - m_precomputedLogarithms["Ka"](0));
 
+    // return final residual
     _outResiduals.push_back
         (
 	    m_precomputedLogarithms["Ke"](0) * resid1 
