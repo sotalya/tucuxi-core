@@ -3,6 +3,7 @@
 */
 
 #include <Eigen/Dense>
+#include <Eigen/LU>
 
 #include "tucucore/onecompartmentextra.h"
 
@@ -93,22 +94,29 @@ bool OneCompartmentExtra::computeConcentration(const int64& _atTime, const Resid
     Concentration resid2 = _inResiduals[1] + m_F*m_D/m_V;
     Concentration part2 = m_Ka*resid2 / (-m_Ka + m_Ke);
 
-    // Calcuate concentrations
+    // Calcuate concentrations 1
     Eigen::VectorXd concentrations1 = 
         m_precomputedLogarithms["Ke"] * resid1 
 	+ (m_precomputedLogarithms["Ka"] - m_precomputedLogarithms["Ke"]) * part2;
+
+    // Calcuate concentrations 2
     // TODO check: why the equation is different from multiple points
+    // equation with _atTime
     Eigen::VectorXd concentrations2;
+    concentrations2[0] = 
+        m_F * m_D / m_V * m_precomputedLogarithms["Ka"](0) 
+	/ (1 - m_precomputedLogarithms["Ka"](0));
+    // equation with m_Int
+    concentrations2[1] = 
+        m_F * m_D / m_V * m_precomputedLogarithms["Ka"](1) 
+	/ (1 - m_precomputedLogarithms["Ka"](1));
+
+    // TODO check: how element-wise matrix / matrix  
 #if 0
     Eigen::VectorXd concentrations2 = 
-        m_F * m_D / m_V * m_precomputedLogarithms["Ka"] 
-	/ (1 - m_precomputedLogarithms["Ka"]);
-    Eigen::VectorXd concentrations2 = 
-        m_F * m_D / m_V * m_precomputedLogarithms["Ka"] 
-	/ (std::for_each(
-		m_precomputedLogarithms["Ka"].data(), 
-		m_precomputedLogarithms["Ka"].data() + m_precomputedLogarithms["Ka"].size(), 
-		[](Value& a) { a = 1 - a; }));
+        (m_F * m_D * m_precomputedLogarithms["Ka"]) 
+	/ (m_V * (1*Eigen::VectorXd::Ones(m_precomputedLogarithms["Ka"].size()) -
+		m_precomputedLogarithms["Ka"]));
 #endif
 
     // return concentraions (computation with atTime (current time))
