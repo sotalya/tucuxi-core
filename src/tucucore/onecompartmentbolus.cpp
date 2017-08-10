@@ -23,7 +23,6 @@ bool OneCompartmentBolus::checkInputs(const IntakeEvent& _intakeEvent, const Par
     m_D = _intakeEvent.getDose() * 1000;
     m_V = _parameters[0].getValue();
     m_Ke = _parameters[1].getValue();
-    m_Int = (_intakeEvent.getInterval()).toMilliseconds();
     m_NbPoints = _intakeEvent.getNumberPoints();
 
     // check the inputs
@@ -36,9 +35,8 @@ bool OneCompartmentBolus::checkInputs(const IntakeEvent& _intakeEvent, const Par
     bOK &= checkValue(m_Ke > 0, "The clearance is not greater than zero.");
     bOK &= checkValue(!std::isnan(m_Ke), "The CL is NaN.");
     bOK &= checkValue(!std::isinf(m_Ke), "The CL is Inf.");
-    bOK &= checkValue(m_Int >= 0, "The interval time is zero or negative.");
-    bOK &= checkValue(!std::isnan(m_Int), "The m_Int is NaN.");
-    bOK &= checkValue(!std::isinf(m_Int), "The m_Int is Inf.");
+    bOK &= checkValue(m_NbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkValue((_intakeEvent.getInterval()).toMilliseconds() >= 0, "The interval time is zero or negative.");
 
     return bOK;
 }
@@ -69,8 +67,11 @@ bool OneCompartmentBolus::computeConcentration(const int64& _atTime, const Resid
 {
     Eigen::VectorXd concentrations = (m_D / m_V + _inResiduals[0]) * m_precomputedLogarithms["Ke"];
 
-    _outResiduals.push_back((m_D / m_V + _inResiduals[0]) * exp(-m_Ke * m_Int));
-    _concentrations.assign(concentrations.data(), concentrations.data() + concentrations.size());	
+    // return concentraions (computation with atTime (current time))
+    _concentrations.push_back(concentrations[0]);
+
+    // return final residual (computation with m_Int (interval))
+    _outResiduals.push_back(concentrations[1]);
     
     return checkValue(_outResiduals[0] >= 0, "The concentration is negative.");
 }

@@ -105,8 +105,11 @@ bool OneCompartmentIntra::computeConcentration(const int64& _atTime, const Resid
         concentrations.tail(therest) 
 	+ part1 * (exp(m_Ke * m_Tinf) - 1) * m_precomputedLogarithms["Ke"].tail(therest);
 
+    // return concentraions (computation with atTime (current time))
+    _concentrations.push_back(concentrations[0]);
+
+    // return final residual (computation with m_Int (interval))
     _outResiduals.push_back(concentrations[1]);
-    _concentrations.assign(concentrations.data(), concentrations.data() + concentrations.size());	
     
     return checkValue(_outResiduals[0] >= 0, "The concentration is negative.");
 }
