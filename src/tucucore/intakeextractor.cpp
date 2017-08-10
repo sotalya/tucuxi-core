@@ -23,9 +23,10 @@ int IntakeExtractor::extract(const DosageHistory &_dosageHistory, const DateTime
 
     // Iterate on elements in dosage history that are in the appropriate time interval and add each of them to the
     // intake series
+    IntakeExtractor extractor;
     for (auto&& timeRange : _dosageHistory.m_history)
     {
-        extract(*timeRange, _start, _end, _series);
+        extractor.extract(*timeRange, _start, _end, _series);
     }
 
     std::sort(_series.begin(), _series.end());
