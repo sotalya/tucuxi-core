@@ -73,7 +73,26 @@ IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakeSingle
     const int64& _atTime,
     Residuals& _outResiduals)
 {
-    return Result::BadParameters;
+    if (!checkInputs(_intakeEvent, _parameters))
+    {
+        return Result::BadParameters;
+    }
+
+    prepareComputations(_intakeEvent, _parameters);
+    
+    // To reuse interface of computeLogarithms with multiple points, remaine time as a vector.
+    // !!! In case of "perfusion (intra)", following line should be replace with
+    // Eigen::VectorXd times(2); times << _atTime, (_intakeEvent.getInterval()).toMilliseconds();
+    Eigen::VectorXd times(1); 
+    times[0] =  _atTime;
+
+    computeLogarithms(_intakeEvent, _parameters, times);
+
+    if (!computeConcentration(_atTime, _inResiduals, _concentrations, _outResiduals)) {
+        return Result::BadConcentration;
+    }
+
+    return Result::Ok;
 }
 
 

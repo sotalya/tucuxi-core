@@ -26,6 +26,7 @@ bool OneCompartmentExtra::checkInputs(const IntakeEvent& _intakeEvent, const Par
     m_Ka = _parameters[2].getValue();
     m_V = _parameters[3].getValue();
     m_Ke = m_Cl / m_V;
+    m_Int = (_intakeEvent.getInterval()).toMilliseconds();
     m_NbPoints = _intakeEvent.getNumberPoints();
 
     // check the inputs
@@ -79,6 +80,39 @@ bool OneCompartmentExtra::computeConcentrations(const Residuals& _inResiduals, C
 
     bOK &= checkValue(_outResiduals[0] >= 0, "The concentration1 is negative.");
     bOK &= checkValue(_outResiduals[1] >= 0, "The concentration2 is negative.");
+
+    return bOK;
+}
+
+bool OneCompartmentExtra::computeConcentration(const int64& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
+{
+    bool bOK = true;
+
+    Concentration resid1 = _inResiduals[0];
+    Concentration resid2 = _inResiduals[1] + m_F*m_D/m_V;
+    Concentration part2 = m_Ka*resid2 / (-m_Ka + m_Ke);
+
+    Eigen::VectorXd concentrations;
+    concentrations[0] = 
+        m_precomputedLogarithms["Ke"](0) * resid1 
+	+ (m_precomputedLogarithms["Ka"](0) - m_precomputedLogarithms["Ke"](0)) * part2;
+    concentrations[1] = 
+        m_F * m_D / m_V * m_precomputedLogarithms["Ka"](0) / (1 - m_precomputedLogarithms["Ka"](0));
+
+    _outResiduals.push_back
+        (
+	    m_precomputedLogarithms["Ke"](0) * resid1 
+	    + (-m_precomputedLogarithms["Ke"](0) + exp(-m_Ka * m_Int)) * part2
+	);
+    // TODO check: why the equation is different from multiple points
+    _outResiduals.push_back(m_F * m_D / m_V * exp(-m_Ka * m_Int) / (1 - exp(-m_Ka * m_Int)));
+
+    _concentrations.assign(concentrations.data(), concentrations.data() + concentrations.size());	
+
+    bOK &= checkValue(_outResiduals[0] >= 0, "The final residual1 is negative.");
+    bOK &= checkValue(_outResiduals[1] >= 0, "The final residual2 is negative.");
+    bOK &= checkValue(_concentrations[0] >= 0, "The concentration1 is negative.");
+    bOK &= checkValue(_concentrations[1] >= 0, "The concentration2 is negative.");
 
     return bOK;
 }

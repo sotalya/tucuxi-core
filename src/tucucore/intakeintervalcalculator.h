@@ -97,6 +97,13 @@ protected:
     /// @param _outResiduals Final residual concentrations
     virtual bool computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) = 0;
 
+    /// \brief Compute concentrations using a specific algorithm
+    /// @param _atTime measure time
+    /// @param _inResiduals Initial residual concentrations
+    /// @param _concentrations vector of concentrations.
+    /// @param _outResiduals Final residual concentrations
+    virtual bool computeConcentration(const int64& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) = 0;
+
     /// \brief Check if a value is correct and log a message if it is not the case
     /// @param _isOk Indicates that the value is correct
     /// @param _errMsg Message to log in case of problem

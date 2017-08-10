@@ -40,6 +40,7 @@ bool OneCompartmentIntra::checkInputs(const IntakeEvent& _intakeEvent, const Par
     bOK &= checkValue(!std::isnan(m_Ke), "The CL is NaN.");
     bOK &= checkValue(!std::isinf(m_Ke), "The CL is Inf.");
     bOK &= checkValue(m_Tinf >= 0, "The infusion time is zero or negative.");
+    bOK &= checkValue(m_Int >= 0, "The interval time is zero or negative.");
 
     return bOK;
 }
@@ -80,6 +81,33 @@ bool OneCompartmentIntra::computeConcentrations(const Residuals& _inResiduals, C
     _outResiduals.push_back(concentrations[m_NbPoints - 1]);
     _concentrations.assign(concentrations.data(), concentrations.data() + concentrations.size());	
 
+    return checkValue(_outResiduals[0] >= 0, "The concentration is negative.");
+}
+
+bool OneCompartmentIntra::computeConcentration(const int64& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
+{
+    Concentration part1 = m_D/(m_Tinf*m_Cl);
+    size_t ke_size = m_precomputedLogarithms["Ke"].size();
+
+    // Calcaulate concentrations
+    Eigen::VectorXd concentrations = Eigen::VectorXd::Constant(ke_size, _inResiduals[0]);
+    concentrations = concentrations.cwiseProduct(m_precomputedLogarithms["Ke"]);
+
+    int therest = 2;
+
+    if(_atTime < m_Tinf)
+    {
+	concentrations.head(1) = 
+	    concentrations.head(1) + part1 * (1.0 - m_precomputedLogarithms["Ke"].head(1).array()).matrix();
+	therest = 1;
+    }
+    concentrations.tail(therest) = 
+        concentrations.tail(therest) 
+	+ part1 * (exp(m_Ke * m_Tinf) - 1) * m_precomputedLogarithms["Ke"].tail(therest);
+
+    _outResiduals.push_back(concentrations[1]);
+    _concentrations.assign(concentrations.data(), concentrations.data() + concentrations.size());	
+    
     return checkValue(_outResiduals[0] >= 0, "The concentration is negative.");
 }
 
