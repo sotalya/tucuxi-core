@@ -20,9 +20,21 @@ enum class PredictionType { Population, Apiori, Aposteriori };
 
 class ConcentrationPrediction
 {
+public:
+    bool allocate(const CycleSize _nbPoints, TimeOffsets &_times, Concentrations &_values)
+    {
+        _times.reserve(_nbPoints);
+        _values.reserve(_nbPoints);
+    }
+    void appendConcentrations(TimeOffsets &_times, Concentrations &_values)
+    {
+        m_times.push_back(_times);
+        m_values.push_back(_values);
+    }
+
 private:
-    std::vector<int> m_times;
-    std::vector<Value> m_values;
+    std::vector<TimeOffsets> m_times;
+    std::vector<Concentrations> m_values;
 };
 typedef std::unique_ptr<ConcentrationPrediction> ConcentrationPredictionPtr;
 

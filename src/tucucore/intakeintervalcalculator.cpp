@@ -13,7 +13,7 @@ namespace Core {
 IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakePoints(
     Concentrations& _concentrations,
     TimeOffsets & _times,
-    IntakeEvent& _intakeEvent,
+    const IntakeEvent& _intakeEvent,
     const Parameters& _parameters,
     const Residuals& _inResiduals,
     const CycleSize _cycleSize,

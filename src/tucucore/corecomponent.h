@@ -8,8 +8,10 @@
 #include <memory>
 
 #include "tucucommon/component.h"
+#include "tucucommon/loggerhelper.h"
 
-//#include "tucucore/icorecomponent.h"
+#include "tucucore/definitions.h"
+#include "tucucore/residualerrormodel.h"
 #include "tucucore/iprocessingservices.h"
 #include "tucucore/idatamodelservices.h"
 
@@ -19,8 +21,9 @@ namespace Core {
 class DrugModel;
 class DrugTreatment;
 
+enum class ComputationResult { Success, Failure, Aborted };
+
 class CoreComponent : public Tucuxi::Common::Component, 
-//                      public ICoreComponent, 
                       public IProcessingServices,
                       public IDataModelServices
 {
@@ -53,7 +56,46 @@ private:
     /// \brief Constructor call by LoggerHelper
     CoreComponent(const std::string &_filename);
 
+    ComputationResult computeConcentrations(
+        ConcentrationPredictionPtr &_prediction,
+        int _nbPoints,
+        const IntakeSeries &_intakes,
+        const ParametersSeries& _parameters,
+        const Etas& _etas = Etas(0),
+        const ResidualErrorModel &_residualErrorModel = EMPTY_RESIDUAL_ERROR_MODEL,
+        const Deviation& _eps = 0,
+        const bool _isFixedDensity = 0);
+
+    ComputationResult computePopulation(
+        ConcentrationPredictionPtr &_prediction,
+        int _nbPoints,
+        const IntakeSeries &_intakes,
+        const ParametersSeries& _parameters)
+    {
+        return computeConcentrations(_prediction, _nbPoints, _intakes, _parameters);
+    }
+
+    ComputationResult computeApriori(
+        ConcentrationPredictionPtr &_prediction,
+        int _nbPoints,
+        const IntakeSeries &_intakes,
+        const ParametersSeries& _parameters,
+        const Etas& _etas = Etas(0))
+    {
+        return computeConcentrations(_prediction, _nbPoints, _intakes, _parameters, _etas);
+    }
+    
+/*
+    ComputationResult computeAposteriori(
+        ConcentrationPredictionPtr _prediction,
+        int _nbPoints,
+        const IntakeSeries &_intakes,
+        const ParametersSeries& parameters,
+        const Etas& etas = Etas(0));
+*/
+
 private:
+    Tucuxi::Common::LoggerHelper m_logger;
     std::unique_ptr<DrugModel> m_drug;
     std::unique_ptr<DrugTreatment> m_treatment;
 };

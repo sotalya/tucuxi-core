@@ -44,7 +44,7 @@ public:
     /// (it would have been easier to simply empty the input _series, but this guarantees an uniform behavior across the
     /// whole set of calls)
     /// \post FORALL intake IN extracted_intakes, intake.time IN [_start, _end)
-    static int extract(const DosageHistory &_dosageHistory, const DateTime &_start, const DateTime &_end, IntakeSeries &_series);
+    static int extract(std::unique_ptr<const DosageHistory> &_dosageHistory, const DateTime &_start, const DateTime &_end, IntakeSeries &_series);
 
 private:
 

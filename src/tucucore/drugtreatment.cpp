@@ -2,6 +2,8 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
+#include <memory>
+
 #include "tucucore/drugtreatment.h"
 
 namespace Tucuxi {
@@ -12,9 +14,20 @@ DrugTreatment::DrugTreatment()
 }
 
 
-const DosageHistory& DrugTreatment::getDosageHistory() const
+std::unique_ptr<const DosageHistory> DrugTreatment::getDosageHistory(bool _useAdjustments) const
 {
-    return m_dosageHistory;
+    std::unique_ptr<const DosageHistory> dosageHistory;
+
+    if (!_useAdjustments || m_adjustmentDate.isUndefined()) {
+        dosageHistory = std::unique_ptr<const DosageHistory>(&m_dosageHistory);
+    }
+    else {
+        dosageHistory = std::make_unique<DosageHistory>();
+        // Build the dosage history based on the history as well as the selected adjustment
+        // Use the adjustment date to switch between history and adjustment.
+    }
+
+    return dosageHistory;
 }
 
 
@@ -29,6 +42,11 @@ const Samples& DrugTreatment::getSamples() const
     return m_samples;
 }
 
+
+const Targets& DrugTreatment::getTargets() const
+{
+    return m_targets;
+}
 
 }
 }

@@ -8,6 +8,7 @@
 #include "tucucore/dosage.h"
 #include "tucucore/covariate.h"
 #include "tucucore/sample.h"
+#include "tucucore/target.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -17,14 +18,20 @@ class DrugTreatment
 public:
     DrugTreatment();
 
-    const DosageHistory& getDosageHistory() const;
+    std::unique_ptr<const DosageHistory> getDosageHistory(bool _useAdjustments) const;
     const Covariates& getCovariates() const;
     const Samples& getSamples() const;
+    const Targets& getTargets() const;
 
 private:
     DosageHistory m_dosageHistory;
+
     Covariates m_covariates;
+    Targets m_targets;
     Samples m_samples;
+
+    DosageHistory m_adjustment;
+    DateTime m_adjustmentDate;
 };
 
 }

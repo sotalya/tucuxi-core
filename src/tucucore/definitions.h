@@ -91,6 +91,10 @@ typedef std::map<std::string, Eigen::VectorXd> PrecomputedLogarithms;
 /// \brief Input operand types.
 enum class InputType { BOOL, INTEGER, DOUBLE };
 
+
+typedef Value Deviation;                // Used for deviations (e.g. std dev)
+typedef std::vector<Deviation> Etas;    // Used for values in eta and error vectors
+
 }
 }
 
