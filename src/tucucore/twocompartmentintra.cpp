@@ -51,6 +51,8 @@ bool TwoCompartmentIntra::checkInputs(const IntakeEvent& _intakeEvent, const Par
     bOK &= checkValue(!std::isinf(m_V2), "The V2 is Inf.");
     bOK &= checkValue(m_Divider != 0.0, "Divide by zero.");
     bOK &= checkValue(m_Tinf >= 0, "The infusion time is zero or negative.");
+    bOK &= checkValue(m_Int >= 0, "The interval time is zero or negative.");
+    bOK &= checkValue(m_NbPoints >= 0, "The number of points is zero or negative.");
 
     return bOK;
 }
@@ -115,10 +117,8 @@ bool TwoCompartmentIntra::computeConcentrations(const Residuals& _inResiduals, C
     Value APostInf = (m_K12 - m_K21 + m_Ke + m_RootK)*residInf1 - 2*m_K21*residInf2;
 
     // Calculate concentrations for comp1 and comp2
-    Eigen::VectorXd concentrations1 = 
-	((A * alphaLogV) + (B * betaLogV)) / (2 * m_RootK);
-    Eigen::VectorXd concentrations2 = 
-	((A2 * alphaLogV) + (BB2 * betaLogV)) / (2 * m_RootK);
+    Eigen::VectorXd concentrations1 = ((A * alphaLogV) + (B * betaLogV)) / (2 * m_RootK);
+    Eigen::VectorXd concentrations2 = ((A2 * alphaLogV) + (BB2 * betaLogV)) / (2 * m_RootK);
 
     // During infusion
     Eigen::ArrayXd p1p1 = (2 * deltaD * m_K21 * betaInfLogV.head(forcesize)).array();
@@ -154,6 +154,110 @@ bool TwoCompartmentIntra::computeConcentrations(const Residuals& _inResiduals, C
     // return concentrations of comp1 and comp2
     _outResiduals.push_back(concentrations1[m_NbPoints - 1]);
     _outResiduals.push_back(concentrations2[m_NbPoints - 1]);
+
+    _concentrations.assign(concentrations1.data(), concentrations1.data() + concentrations1.size());	
+
+    bOK &= checkValue(_outResiduals[0] >= 0, "The concentration1 is negative.");
+    bOK &= checkValue(_outResiduals[1] >= 0, "The concentration2 is negative.");
+
+    return bOK;
+}
+
+
+bool TwoCompartmentIntra::computeConcentration(const int64& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
+{
+    bool bOK = true;
+
+    Eigen::VectorXd& alphaLogV = m_precomputedLogarithms["Alpha"]; 
+    Eigen::VectorXd& betaLogV = m_precomputedLogarithms["Beta"]; 
+    Eigen::VectorXd& alphaInfLogV = m_precomputedLogarithms["AlphaInf"]; 
+    Eigen::VectorXd& betaInfLogV = m_precomputedLogarithms["BetaInf"]; 
+    Eigen::VectorXd& betaInf2LogV = m_precomputedLogarithms["BetaInf2"]; 
+    Eigen::VectorXd& rootLogV = m_precomputedLogarithms["Root"]; 
+
+    Concentration resid1 = _inResiduals[0];
+    Concentration resid2 = _inResiduals[1];
+
+    Value deltaD = (m_D / m_V1) / m_Tinf; 
+
+    Concentration residInf1 =
+        (2 * deltaD * std::exp(m_Beta * m_Tinf) * m_K21
+        * (std::exp(-m_Beta * m_Tinf) * (-m_K12 - m_K21 + m_Ke - m_RootK) 
+            + std::exp(-2 * m_Beta * m_Tinf) * (m_K12 + m_K21 - m_Ke + m_RootK)
+            + std::exp(m_RootK*m_Tinf - m_Alpha*m_Tinf) * (m_K12 + m_K21 - m_Ke - m_RootK)
+            + std::exp(-m_Alpha*m_Tinf - m_Beta*m_Tinf) * (-m_K12 - m_K21 + m_Ke + m_RootK))
+	) / m_Divider;
+    Concentration residInf2 = 
+        (2 * deltaD * std::exp(m_Beta * m_Tinf) * m_K12
+	* (std::exp(-m_Beta * m_Tinf) * (-m_SumK - m_RootK)
+	    + std::exp(-2 * m_Beta * m_Tinf) * (m_SumK + m_RootK)
+            + std::exp(m_RootK * m_Tinf - m_Alpha * m_Tinf) * (m_SumK - m_RootK)
+            + std::exp(-m_Alpha * m_Tinf - m_Beta * m_Tinf) * (-m_SumK + m_RootK))
+        ) / m_Divider;
+
+    Value A = ((m_K12 - m_K21 + m_Ke + m_RootK) * resid1) - (2 * m_K21 * resid2);
+    Value B = ((-m_K12 + m_K21 - m_Ke + m_RootK) * resid1) + (2 * m_K21 * resid2);
+    Value A2 = (-2 * m_K12 * resid1) + ((-m_K12 + m_K21 - m_Ke + m_RootK) * resid2);
+    Value BB2 = (2 * m_K12 * resid1) + ((m_K12 - m_K21 + m_Ke + m_RootK) * resid2);
+    Value AInf = -m_K12 - m_K21 + m_Ke - m_RootK;
+    Value BInf = m_K12 + m_K21 - m_Ke - m_RootK;
+    Value BPostInf = (-m_K12 + m_K21 - m_Ke + m_RootK)*residInf1 + 2*m_K21*residInf2;
+    Value APostInf = (m_K12 - m_K21 + m_Ke + m_RootK)*residInf1 - 2*m_K21*residInf2;
+
+    // Calculate concentrations for comp1 and comp2
+    Eigen::VectorXd concentrations1 = ((A * alphaLogV) + (B * betaLogV)) / (2 * m_RootK);
+    Eigen::VectorXd concentrations2 = ((A2 * alphaLogV) + (BB2 * betaLogV)) / (2 * m_RootK);
+
+    if (_atTime <= m_Tinf)
+    {
+	// During infusion
+	Value p1p1 = 2 * deltaD * m_K21 * betaInfLogV(0);
+	Value p1p2 = AInf * (betaLogV(0) - betaInf2LogV(0));
+	Value p1p3 = BInf * ((rootLogV(0) / alphaInfLogV(0)) - (alphaLogV(0) / betaInfLogV(0)));
+	Value p2p1 = 2 * deltaD * m_K12 * betaInfLogV(0);
+	Value p2p2 = 
+	    betaLogV(0) 
+	    * (-m_SumK - m_RootK) 
+	    + betaInf2LogV(0) * (m_SumK + m_RootK)
+	    + rootLogV(0)/alphaInfLogV(0) * (m_SumK - m_RootK) 
+	    + alphaLogV(0)/betaInfLogV(0) * (-m_SumK + m_RootK);
+	
+	concentrations1(0) = 
+	    concentrations1(0) + ((p1p1 * (p1p2 + p1p3)) / m_Divider);
+	concentrations2(0) = 
+	    concentrations2(0) + ((p2p1 * p2p2) / m_Divider);
+
+	// return concentrations of comp1 and comp2
+	_outResiduals.push_back
+	(concentrations1[0] + (APostInf * alphaLogV(1) + BPostInf * betaLogV(1)) / (2 * m_RootK));
+	// TODO: confirm the equation whether need to add concentrations2 or not.
+	// In case of ezechiel, finalResiduals[1] = (A2 * alphalogf + BB2 * betalogf) / (2*root);
+	_outResiduals.push_back((A2 * alphaLogV(1) + BB2 * betaLogV(1)) / (2 * m_RootK));
+    }
+    else
+    {
+	// After infusion
+	concentrations1 = 
+	    concentrations1 
+	    + (APostInf * alphaLogV + BPostInf * betaLogV) / (2 * m_RootK);
+	
+	BB2 = 2 * m_K12 * residInf1 + (m_K12 - m_K21 + m_Ke + m_RootK)*residInf2;
+	A2 = -2 * m_K12 * residInf1 + (-m_K12 + m_K21 - m_Ke + m_RootK)*residInf2;
+	concentrations2 = 
+	    concentrations2 
+	    + (A2 * alphaLogV + BB2 * betaLogV) / (2 * m_RootK);
+
+	// return concentrations of comp1 and comp2
+	_outResiduals.push_back(concentrations1[1]);
+	// TODO: confirm the equation whether need to add concentrations2 or not.
+	// In case of ezechiel, finalResiduals[1] = (A2 * alphalogf + BB2 * betalogf) / (2*root);
+	_outResiduals.push_back(concentrations2[1]);
+    }
+
+    // return concentraions (computation with atTime (current time))
+    _concentrations.push_back(concentrations1[0]);
+    _concentrations.push_back(concentrations2[0]);
+
 
     _concentrations.assign(concentrations1.data(), concentrations1.data() + concentrations1.size());	
 
