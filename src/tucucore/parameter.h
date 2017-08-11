@@ -7,6 +7,7 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 
 #include "tucucore/definitions.h"
 #include "tucucore/timedevent.h"
@@ -16,40 +17,89 @@ namespace Core {
 
 /// \ingroup TucuCore
 /// \brief Represents a pharmacokinetics parameter.
-class Parameter
+class ParameterDefinition
 {
 public:
+    enum class ErrorModel { Additive, Proportional, Exponential };
+
+public:    
     /// \brief Constructor
     /// @param _name The name of the parameter
-    /// @param _name It's value
-    Parameter(const std::string _name, Value _value)
+    /// @param _name It's default value
+    ParameterDefinition(const std::string _name, Value _value, ErrorModel _errType)
         : m_name(_name), 
           m_value(_value), 
-          m_isVariable(false) 
+          m_isVariable(false),
+          m_errorModel(_errType)
     {}
 
     /// \brief Get the parameter value
     /// @return Returns the parameter value
     Value getValue() const { return m_value; }
 
+    const std::string& getName() const { return m_name; }
     bool isVariable() const { return m_isVariable; }
+    ErrorModel getErrorModel() const { return m_errorModel; }
 
 private:
-    std::string m_name;     /// Name like "CL" or "V1"
-    Value m_value;          /// The value (0.0 or 1.0 in case of booleans)	
-    bool m_isVariable;      /// Indicates whether there is an eta on this parameter
+    std::string m_name;      /// Name like "CL" or "V1"
+    Value m_value;           /// The value (0.0 or 1.0 in case of booleans)	
+    bool m_isVariable;       /// Indicates whether there is an eta on this parameter
+    ErrorModel m_errorModel;
 
     //error_type_enum m_error_type;
 };
 
 /// \brief A list of parameters
+typedef std::vector<ParameterDefinition> ParameterDefinitions;
+
+class Parameter
+{
+public:
+    Parameter(const ParameterDefinition &_def) : m_definition(_def), m_value(_def.getValue())  {}
+    void applyEta(Deviation eta);
+    Value getValue() const { return m_value; }
+    bool isVariable() { return m_definition.isVariable(); }    
+
+private:
+    const ParameterDefinition &m_definition;
+    Value m_value;
+};
 typedef std::vector<Parameter> Parameters;
 
-class ParametersEvent : public TimedEvent
+class ParameterSetEvent : public TimedEvent
 {
+public:
+    ParameterSetEvent(const DateTime& _date, const ParameterDefinitions &_definitions)
+        : TimedEvent(_date)
+    {
+        ParameterDefinitions::const_iterator it;
+        for (it = _definitions.begin(); it != _definitions.end(); it++) {
+            m_parameters.push_back(Parameter(*it));
+        }
+    }
+
+    void applyEtas(const Etas& _etas);
+    Parameters::const_iterator begin() const { return m_parameters.begin(); }
+    Parameters::const_iterator end() const { return m_parameters.end(); }
+    void setValue(int index, Value _value) { }
+    Value getValue(int index) const { return m_parameters[index].getValue(); }
+    int size() const { return static_cast<int>(m_parameters.size()); }    
+
+private:
+    Parameters m_parameters;
+};
+typedef std::unique_ptr<const ParameterSetEvent> ParameterSetEventPtr;
+
+class ParameterSetSeries
+{
+public:
+    ParameterSetEventPtr getAtTime(const DateTime &_date, const Etas &_etas) const;
+
+private:
+    std::vector<ParameterSetEvent> m_parameterSets;
 };
 
-typedef std::vector<ParametersEvent> ParametersSeries;
 
 }
 }

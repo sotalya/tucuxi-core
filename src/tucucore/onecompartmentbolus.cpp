@@ -5,6 +5,7 @@
 #include <Eigen/Dense>
 
 #include "tucucore/onecompartmentbolus.h"
+#include "tucucore/intakeevent.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -13,7 +14,7 @@ OneCompartmentBolus::OneCompartmentBolus()
 {
 }
 
-bool OneCompartmentBolus::checkInputs(const IntakeEvent& _intakeEvent, const Parameters& _parameters)
+bool OneCompartmentBolus::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
     bool bOK = true;
     
@@ -21,9 +22,9 @@ bool OneCompartmentBolus::checkInputs(const IntakeEvent& _intakeEvent, const Par
 	    return false;
     
     m_D = _intakeEvent.getDose() * 1000;
-    m_V = _parameters[0].getValue();
-    m_Ke = _parameters[1].getValue();
-    m_NbPoints = _intakeEvent.getNumberPoints();
+    m_V = _parameters.getValue(0);
+    m_Ke = _parameters.getValue(1);
+    m_NbPoints = _intakeEvent.getNbPoints();
 
     // check the inputs
     bOK &= checkValue(m_D >= 0, "The dose is negative.");
@@ -40,12 +41,7 @@ bool OneCompartmentBolus::checkInputs(const IntakeEvent& _intakeEvent, const Par
 }
 
 
-void OneCompartmentBolus::prepareComputations(const IntakeEvent& _intakeEvent, const Parameters& _parameters)
-{
-}
-
-
-void OneCompartmentBolus::computeLogarithms(const IntakeEvent& _intakeEvent, const Parameters& _parameters, Eigen::VectorXd& _times)
+void OneCompartmentBolus::computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters, Eigen::VectorXd& _times)
 {
     m_precomputedLogarithms["Ke"] = (-m_Ke * _times).array().exp();
 }

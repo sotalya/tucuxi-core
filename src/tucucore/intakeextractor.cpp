@@ -21,14 +21,14 @@ auto as_integer(Enumeration const value)
     assert (end.isUndefined() || start < end);
 
 
-int IntakeExtractor::extract(std::unique_ptr<const DosageHistory> &_dosageHistory, const DateTime &_start, const DateTime &_end, IntakeSeries &_series)
+int IntakeExtractor::extract(const DosageHistory& _dosageHistory, const DateTime &_start, const DateTime &_end, IntakeSeries &_series)
 {
     EXTRACT_PRECONDITIONS(_start, _end, _series);
 
     // Iterate on elements in dosage history that are in the appropriate time interval and add each of them to the
     // intake series
     IntakeExtractor extractor;
-    for (auto&& timeRange : _dosageHistory->m_history)
+    for (auto&& timeRange : _dosageHistory.m_history)
     {
         extractor.extract(*timeRange, _start, _end, _series);
     }

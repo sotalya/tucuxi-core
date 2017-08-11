@@ -4,6 +4,7 @@
 
 #include "tucucommon/loggerhelper.h"
 
+#include "tucucore/intakeevent.h"
 #include "tucucore/intakeintervalcalculator.h"
 #include "tucucore/cachedlogarithms.h"
 
@@ -14,7 +15,7 @@ IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakePoints
     Concentrations& _concentrations,
     TimeOffsets & _times,
     const IntakeEvent& _intakeEvent,
-    const Parameters& _parameters,
+    const ParameterSetEvent& _parameters,
     const Residuals& _inResiduals,
     const CycleSize _cycleSize,
     Residuals & _outResiduals,
@@ -24,8 +25,6 @@ IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakePoints
     {
         return Result::BadParameters;
     }
-
-    prepareComputations(_intakeEvent, _parameters);
 
     // Create our serie of times
     Eigen::VectorXd times = Eigen::VectorXd::LinSpaced(_cycleSize, 0, static_cast<int>(_intakeEvent.getInterval().toMilliseconds()));
@@ -68,7 +67,7 @@ IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakePoints
 IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakeSinglePoint(
     Concentrations& _concentrations,
     const IntakeEvent& _intakeEvent,
-    const Parameters& _parameters,
+    const ParameterSetEvent& _parameters,
     const Residuals& _inResiduals,
     const int64& _atTime,
     Residuals& _outResiduals)

@@ -5,6 +5,7 @@
 #include <Eigen/Dense>
 
 #include "tucucore/threecompartmentintra.h"
+#include "tucucore/intakeevent.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -13,7 +14,7 @@ ThreeCompartmentIntra::ThreeCompartmentIntra()
 {
 }
 
-bool ThreeCompartmentIntra::checkInputs(const IntakeEvent& _intakeEvent, const Parameters& _parameters)
+bool ThreeCompartmentIntra::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
     bool bOK = true;
 
@@ -23,12 +24,12 @@ bool ThreeCompartmentIntra::checkInputs(const IntakeEvent& _intakeEvent, const P
     Value a0, a1, a2, p, q, r1, r2, phi;
 
     m_D = _intakeEvent.getDose() * 1000;
-    m_Cl = _parameters[0].getValue();
-    m_F = _parameters[1].getValue();
-    m_Q1 = _parameters[2].getValue();
-    m_Q2 = _parameters[3].getValue();
-    m_V1 = _parameters[4].getValue();
-    m_V2 = _parameters[5].getValue();
+    m_Cl = _parameters.getValue(0);
+    m_F = _parameters.getValue(1);
+    m_Q1 = _parameters.getValue(2);
+    m_Q2 = _parameters.getValue(3);
+    m_V1 = _parameters.getValue(4);
+    m_V2 = _parameters.getValue(5);
     m_Ke = m_Cl / m_V1;
     m_K12 = m_Q1 / m_V1;
     m_K21 = m_Q1 / m_V2;
@@ -36,7 +37,7 @@ bool ThreeCompartmentIntra::checkInputs(const IntakeEvent& _intakeEvent, const P
     m_K31 = m_Q2 / m_V2;
     m_Tinf = _intakeEvent.getInfusionTime().toMilliseconds();
     m_Int = _intakeEvent.getInterval().toMilliseconds();
-    m_NbPoints = _intakeEvent.getNumberPoints();
+    m_NbPoints = _intakeEvent.getNbPoints();
 
     bOK &= checkValue(m_D >= 0, "The dose is negative.");
     bOK &= checkValue(!std::isnan(m_D), "The dose is NaN.");
@@ -78,12 +79,7 @@ bool ThreeCompartmentIntra::checkInputs(const IntakeEvent& _intakeEvent, const P
 }
 
 
-void ThreeCompartmentIntra::prepareComputations(const IntakeEvent& _intakeEvent, const Parameters& _parameters)
-{
-}
-
-
-void ThreeCompartmentIntra::computeLogarithms(const IntakeEvent& _intakeEvent, const Parameters& _parameters, Eigen::VectorXd& _times)
+void ThreeCompartmentIntra::computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters, Eigen::VectorXd& _times)
 {
     m_precomputedLogarithms["Alpha"] = (-m_Alpha * _times).array().exp();
     m_precomputedLogarithms["Beta"] = (-m_Beta * _times).array().exp();

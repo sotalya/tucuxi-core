@@ -10,12 +10,14 @@
 #include "Eigen/Dense"
 
 #include "tucucore/definitions.h"
-#include "tucucore/intakeevent.h"
+//#include "tucucore/intakeevent.h"
 #include "tucucore/parameter.h"
 #include "tucucore/cachedlogarithms.h"
 
 namespace Tucuxi {
 namespace Core {
+
+class IntakeEvent;
 
 /// \ingroup TucuCore
 /// \brief Base class for the computation of a single intake
@@ -47,11 +49,11 @@ public:
     /// @param _outResiduals Final residual concentrations
     /// @param _isDensityConstant Flag to indicate if initial number of points should be used with a constant density
     /// @return An indication if the computation was successful
-    virtual Result calculateIntakePoints(
+    Result calculateIntakePoints(
         Concentrations& _concentrations,
         TimeOffsets & _times,
         const IntakeEvent& _intakeEvent,
-        const Parameters& _parameters,
+        const ParameterSetEvent& _parameters,
         const Residuals& _inResiduals,
         const CycleSize _cycleSize,
         Residuals& _outResiduals,
@@ -65,10 +67,10 @@ public:
     /// @param _atTime The time of the point of interest
     /// @param _outResiduals Final residual concentrations
     /// @return Returns an indication if the computation was successful
-    virtual Result calculateIntakeSinglePoint(
+    Result calculateIntakeSinglePoint(
         Concentrations& _concentrations,
         const IntakeEvent& _intakeEvent,
-        const Parameters& _parameters,
+        const ParameterSetEvent& _parameters,
         const Residuals& _inResiduals,
         const int64& _atTime,
         Residuals& _outResiduals);
@@ -78,18 +80,13 @@ protected:
     /// @param _intakeEvent intake for the cycle (all cyles start with an intake)
     /// @param _parameters Parameters for the cycle (all cycles have constant parameters)
     /// @return Returns true if inputs are ok
-    virtual bool checkInputs(const IntakeEvent& _intakeEvent, const Parameters& _parameters) = 0;
-
-    /// \brief Computation of algorithm's variables based on input data
-    /// @param _intakeEvent intake for the cycle (all cyles start with an intake)
-    /// @param _parameters Parameters for the cycle (all cycles have constant parameters)
-    virtual void prepareComputations(const IntakeEvent& _intakeEvent, const Parameters& _parameters) = 0;
+    virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) = 0;
 
     /// \brief Computation of logarithm values that will may be shared by severall successive computations	
     /// @param _intakeEvent intake for the cycle (all cyles start with an intake)
     /// @param _parameters Parameters for the cycle (all cycles have constant parameters)
     /// @param _times Vector of times
-    virtual void computeLogarithms(const IntakeEvent& _intakeEvent, const Parameters& _parameters, Eigen::VectorXd& _times) = 0;
+    virtual void computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters, Eigen::VectorXd& _times) = 0;
 
     /// \brief Compute concentrations using a specific algorithm
     /// @param _inResiduals Initial residual concentrations

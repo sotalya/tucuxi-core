@@ -5,6 +5,7 @@
 #include <Eigen/Dense>
 
 #include "tucucore/onecompartmentextra.h"
+#include "tucucore/intakeevent.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -13,7 +14,7 @@ OneCompartmentExtra::OneCompartmentExtra()
 {
 }
 
-bool OneCompartmentExtra::checkInputs(const IntakeEvent& _intakeEvent, const Parameters& _parameters)
+bool OneCompartmentExtra::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
     bool bOK = true;
 
@@ -21,12 +22,12 @@ bool OneCompartmentExtra::checkInputs(const IntakeEvent& _intakeEvent, const Par
 	    return false;
     
     m_D = _intakeEvent.getDose() * 1000;
-    m_Cl = _parameters[0].getValue();
-    m_F = _parameters[1].getValue();
-    m_Ka = _parameters[2].getValue();
-    m_V = _parameters[3].getValue();
+    m_Cl = _parameters.getValue(0);
+    m_F = _parameters.getValue(1);
+    m_Ka = _parameters.getValue(2);
+    m_V = _parameters.getValue(3);
     m_Ke = m_Cl / m_V;
-    m_NbPoints = _intakeEvent.getNumberPoints();
+    m_NbPoints = _intakeEvent.getNbPoints();
 
     // check the inputs
     bOK &= checkValue(m_D >= 0, "The dose is negative.");
@@ -49,12 +50,7 @@ bool OneCompartmentExtra::checkInputs(const IntakeEvent& _intakeEvent, const Par
 }
 
 
-void OneCompartmentExtra::prepareComputations(const IntakeEvent& _intakeEvent, const Parameters& _parameters)
-{
-}
-
-
-void OneCompartmentExtra::computeLogarithms(const IntakeEvent& _intakeEvent, const Parameters& _parameters, Eigen::VectorXd& _times)
+void OneCompartmentExtra::computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters, Eigen::VectorXd& _times)
 {
     m_precomputedLogarithms["Ka"] = (-m_Ka * _times).array().exp();
     m_precomputedLogarithms["Ke"] = (-m_Ke * _times).array().exp();

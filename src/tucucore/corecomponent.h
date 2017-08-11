@@ -12,6 +12,8 @@
 
 #include "tucucore/definitions.h"
 #include "tucucore/residualerrormodel.h"
+#include "tucucore/dosage.h"
+#include "tucucore/sample.h"
 #include "tucucore/iprocessingservices.h"
 #include "tucucore/idatamodelservices.h"
 
@@ -19,7 +21,9 @@ namespace Tucuxi {
 namespace Core {
 
 class DrugModel;
+class DrugErrorModel;
 class DrugTreatment;
+class ParameterSetSeries;
 
 enum class ComputationResult { Success, Failure, Aborted };
 
@@ -60,7 +64,7 @@ private:
         ConcentrationPredictionPtr &_prediction,
         int _nbPoints,
         const IntakeSeries &_intakes,
-        const ParametersSeries& _parameters,
+        const ParameterSetSeries& _parameters,
         const Etas& _etas = Etas(0),
         const ResidualErrorModel &_residualErrorModel = EMPTY_RESIDUAL_ERROR_MODEL,
         const Deviation& _eps = 0,
@@ -70,7 +74,7 @@ private:
         ConcentrationPredictionPtr &_prediction,
         int _nbPoints,
         const IntakeSeries &_intakes,
-        const ParametersSeries& _parameters)
+        const ParameterSetSeries& _parameters)
     {
         return computeConcentrations(_prediction, _nbPoints, _intakes, _parameters);
     }
@@ -79,20 +83,42 @@ private:
         ConcentrationPredictionPtr &_prediction,
         int _nbPoints,
         const IntakeSeries &_intakes,
-        const ParametersSeries& _parameters,
-        const Etas& _etas = Etas(0))
+        const ParameterSetSeries& _parameters)
+    {
+        return computeConcentrations(_prediction, _nbPoints, _intakes, _parameters);
+    }
+
+    ComputationResult computeAposteriori(
+        ConcentrationPredictionPtr &_prediction,
+        int _nbPoints,
+        const IntakeSeries &_intakes,
+        const ParameterSetSeries& _parameters,
+        const Etas& _etas)
     {
         return computeConcentrations(_prediction, _nbPoints, _intakes, _parameters, _etas);
     }
-    
-/*
-    ComputationResult computeAposteriori(
-        ConcentrationPredictionPtr _prediction,
-        int _nbPoints,
+
+    ComputationResult extractError(
+        const DrugErrorModel &_errorMode,
+        const ParameterDefinitions &_parameterDefs,
+        Omega &_omega,
+        ResidualErrorModel &residualErrorModel)
+    {
+        // TODO YJE
+        return ComputationResult::Failure;
+    }
+
+    ComputationResult computeAposterioriEtas(
         const IntakeSeries &_intakes,
-        const ParametersSeries& parameters,
-        const Etas& etas = Etas(0));
-*/
+        const ParameterSetSeries &_parameters,
+        const Omega &_omega,
+        const ResidualErrorModel &_residualErrorModel,
+        const SampleSeries &_samples,
+        Etas &_etas)
+    {
+        // TODO YJE
+        return ComputationResult::Failure;
+    }
 
 private:
     Tucuxi::Common::LoggerHelper m_logger;

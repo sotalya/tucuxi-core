@@ -5,10 +5,11 @@
 #ifndef TUCUXI_CORE_INTAKEEVENT_H
 #define TUCUXI_CORE_INTAKEEVENT_H
 
-#include "tucucore/timedevent.h"
-
 #include "tucucommon/datetime.h"
 #include "tucucommon/duration.h"
+
+#include "tucucore/timedevent.h"
+#include "tucucore/intakeintervalcalculator.h"
 
 using Tucuxi::Common::DateTime;
 using Tucuxi::Common::Duration;
@@ -16,12 +17,11 @@ using Tucuxi::Common::Duration;
 namespace Tucuxi {
 namespace Core {
 
-class IntakeIntervalCalculator;
-
 /// \ingroup TucuCore
 /// \brief A class reprensting the event of taking a dose.
 /// Represents a Dose, as extracted from a DAL Dosage.
-class IntakeEvent : public TimedEvent {
+class IntakeEvent : public TimedEvent 
+{
 public:
     /// \brief The default constructor is not needed
     IntakeEvent() = delete;
@@ -131,13 +131,13 @@ public:
         Concentrations& _concentrations,
         TimeOffsets & _times,
         const IntakeEvent& _intakeEvent,
-        const Parameters& _parameters,
+        const ParameterSetEvent& _parameters,
         const Residuals& _inResiduals,
         const CycleSize _cycleSize,
         Residuals& _outResiduals,
         const bool _isDensityConstant) const
     {
-        m_calculator->calculateIntakePoints(_concentrations, _times, _intakeEvent, _parameters, _inResiduals, _cycleSize, _outResiduals, _isDensityConstant);
+        return m_calculator->calculateIntakePoints(_concentrations, _times, _intakeEvent, _parameters, _inResiduals, _cycleSize, _outResiduals, _isDensityConstant);
     }
 
 

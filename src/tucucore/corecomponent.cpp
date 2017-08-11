@@ -50,10 +50,10 @@ ConcentrationPredictionPtr CoreComponent::computeConcentrations(
 
     IntakeSeries intakes;
     CovariateSeries covariates;
-    ParametersSeries parameters;
+    ParameterSetSeries parameters;
        
     // Extract intakes, covariates, parameters and samples
-    IntakeExtractor::extract(m_treatment->getDosageHistory(_type != PredictionType::Population), _start, _end, intakes);
+    IntakeExtractor::extract(*m_treatment->getDosageHistory(_type != PredictionType::Population), _start, _end, intakes);
     CovariateExtractor::extract(m_drug->getCovariates(), m_treatment->getCovariates(), _start, _end, covariates);
     ParametersExtractor::extract(covariates, _start, _end, parameters);
 
@@ -83,16 +83,15 @@ ConcentrationPredictionPtr CoreComponent::computeConcentrations(
                 lastSampleDate = _smpend->getEventTime();
             }
             IntakeSeries intakesForEtas;
-            IntakeExtractor::extract(m_treatment->getDosageHistory(_type != PredictionType::Population), _start, lastSampleDate, intakesForEtas);
+            IntakeExtractor::extract(*m_treatment->getDosageHistory(_type != PredictionType::Population), _start, lastSampleDate, intakesForEtas);
 
+            /// TODO YJE
             Etas etas;
             Omega omega;
             ResidualErrorModel residualErrorModel;
-            extractError(analysis->getDrugModel(), omega, residualErrorModel);
-
-            calculator.calculateAposterioriEtas(omega, residualErrorModel, etas, samples, intakesForEtas, parameters);
-
-            computeApriori(prediction, _nbPoints, intakes, parameters, etas);
+            extractError(m_drug->getErrorModel(), m_drug->getParemeters(), omega, residualErrorModel);
+            computeAposterioriEtas(intakesForEtas, parameters, omega, residualErrorModel, samples, etas);
+            computeAposteriori(prediction, _nbPoints, intakes, parameters, etas);
             break;
         }
 
@@ -130,50 +129,37 @@ ComputationResult CoreComponent::computeConcentrations(
     ConcentrationPredictionPtr &_prediction,
     const int _nbPoints,
     const IntakeSeries &_intakes,
-    const ParametersSeries &_parameters,
+    const ParameterSetSeries &_parameterSets,
     const Etas &_etas,
     const ResidualErrorModel &_residualErrorModel,
     const Deviation& _eps,
     const bool _isFixedDensity)
-{
-    // Allocates according to a guess that the density will not increase
-    double t = 0;  
-    
+{   
     // The size of residuals vectors equals the number of compartments. This shouldnt be hardcoded here.
     Residuals r1(3);
     Residuals r2(3);
-    ComputationResult result;
-    for (IntakeSeries::const_iterator it = _intakes.begin(); it != _intakes.end(); it++) {
-        
-        // Do a call to IntakeIntervalCalculator to get concentrations for a cycle        
-        IntakeEvent intake = (*it);
+
+    // Go through all intakes
+    for (IntakeSeries::const_iterator it = _intakes.begin(); it != _intakes.end(); it++) {                
+        const IntakeEvent &intake = *it;
         
         // Get parameters at intake start time
         // For population calculation, could be done only once at the beginning        
-        ParametersEvent _pset = _parameters.getSetAtTime(it->time).second;
-        
-        // Loop the parameters, check if variable, then apply eta. Etas and variable parameters should be in the same order.
-        if (!_etas.empty() > 0) {
-            int k = 0;
-            for (std::vector<parameter>::iterator pit = _pset.values.begin(); pit != _pset.values.end(); ++pit) {
-                if (pit->isVariable) {
-                    pit->value = applyEtaToParameter(*pit, eta[k]);
-                    k++;
-                }
-            }
-            if (_etas.size() != k) {
-                m_logger.error("The eta vector does not fit the variable parameters size.");
-            }
+        ParameterSetEventPtr parameters = _parameterSets.getAtTime(intake.getEventTime(), _etas);
+        if (parameters == nullptr) {
+            m_logger.error("No parameters found!");
+            return ComputationResult::Failure;
         }
-
+        
         // Use nbpoints for the minimum pt density
         // Must use an odd number
-        const int density = (int(floor(intake.getNbPoints())) % 2 != 0) ? floor(intake.getNbPoints()) : ceil(intake.getNbPoints());
+        const int density = static_cast<int>((int(floor(intake.getNbPoints())) % 2 != 0) ? floor(intake.getNbPoints()) : ceil(intake.getNbPoints()));
 
+        // Compute concentrations for the current cycle        
         TimeOffsets times;
         Concentrations values;
         _prediction->allocate(density, times, values);
-        IntakeIntervalCalculator::Result result = it->calculateIntakePoints(times, values, intake, _pset.values, r1, ink.getNbPoints(), r2, _isFixedDensity);
+        IntakeIntervalCalculator::Result result = it->calculateIntakePoints(times, values, intake, *parameters, r1, intake.getNbPoints(), r2, _isFixedDensity);
         switch (result)
         {
             case IntakeIntervalCalculator::Result::Ok:
@@ -199,9 +185,13 @@ ComputationResult CoreComponent::computeConcentrations(
             _residualErrorModel.applyEpsToArray(values, _eps);
         }
 
+        // Append computed values to our prediction
         _prediction->appendConcentrations(times, values);
+
+        // Prepare residuals for the next cycle
         r1 = r2;
     }
+
     return ComputationResult::Success;
 }
 

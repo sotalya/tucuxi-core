@@ -8,6 +8,8 @@
 #include "tucucommon/utils.h"
 #include "tucucommon/loggerhelper.h"
 #include "tucucore/definitions.h"
+#include "tucucore/intakeevent.h"
+#include "tucucore/parameter.h"
 #include "tucucore/onecompartmentextra.h"
 
 using namespace std::chrono_literals;
@@ -39,17 +41,18 @@ int main(int argc, char** argv)
     Tucuxi::Core::Concentrations concentrations;
     Tucuxi::Core::TimeOffsets times;
     Tucuxi::Core::IntakeEvent intakeEvent(now, 0s, 0.2, 24h, Tucuxi::Core::RouteOfAdministration::INTRAVASCULAR, 0s, 250);
-    Tucuxi::Core::Parameters parameters;
+    Tucuxi::Core::ParameterDefinitions parameterDefs;    
     Tucuxi::Core::Residuals inResiduals;
     Tucuxi::Core::Residuals outResiduals;
 
     inResiduals.push_back(0);
     inResiduals.push_back(1);
 
-    parameters.push_back(Tucuxi::Core::Parameter("CL", 14.3));
-    parameters.push_back(Tucuxi::Core::Parameter("F", 1));
-    parameters.push_back(Tucuxi::Core::Parameter("Ka", 0.609));
-    parameters.push_back(Tucuxi::Core::Parameter("V", 347));
+    parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("CL", 14.3, Tucuxi::Core::ParameterDefinition::ErrorModel::Additive));
+    parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterDefinition::ErrorModel::Additive));
+    parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterDefinition::ErrorModel::Additive));
+    parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterDefinition::ErrorModel::Additive));
+    Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
 
     res = calculator.calculateIntakePoints(
         concentrations,

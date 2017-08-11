@@ -14,7 +14,7 @@ namespace Core {
 class ParametersExtractor
 {
 public:
-    static int extract(const CovariateSeries &_covariates, const DateTime &_start, const DateTime &_end, ParametersSeries &_series);
+    static int extract(const CovariateSeries &_covariates, const DateTime &_start, const DateTime &_end, ParameterSetSeries &_series);
 };
 
 }

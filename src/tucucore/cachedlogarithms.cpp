@@ -15,7 +15,7 @@ CachedLogarithms::CachedLogarithms()
 }
 
 
-bool CachedLogarithms::get(const Tucuxi::Common::Duration& _cycleDuration, const Parameters& _parameters, CycleSize _nbPoints, PrecomputedLogarithms& _logarithms)
+bool CachedLogarithms::get(const Tucuxi::Common::Duration& _cycleDuration, const ParameterSetEvent& _parameters, CycleSize _nbPoints, PrecomputedLogarithms& _logarithms)
 {
     std::size_t h = hash(_cycleDuration, _parameters, _nbPoints);
     if (m_cache.end() != m_cache.find(h)) {
@@ -26,13 +26,13 @@ bool CachedLogarithms::get(const Tucuxi::Common::Duration& _cycleDuration, const
 }
 
 
-void CachedLogarithms::set(const Tucuxi::Common::Duration& _cycleDuration, const Parameters& _parameters, CycleSize _nbPoints, const PrecomputedLogarithms& _logarithms)
+void CachedLogarithms::set(const Tucuxi::Common::Duration& _cycleDuration, const ParameterSetEvent& _parameters, CycleSize _nbPoints, const PrecomputedLogarithms& _logarithms)
 {
     m_cache[hash(_cycleDuration, _parameters, _nbPoints)] = _logarithms;
 }
 
 
-std::size_t CachedLogarithms::hash(const Tucuxi::Common::Duration& _cycleDuration, const Parameters& _parameters, CycleSize _nbPoints) const
+std::size_t CachedLogarithms::hash(const Tucuxi::Common::Duration& _cycleDuration, const ParameterSetEvent& _parameters, CycleSize _nbPoints) const
 {
     std::size_t seed = 0;
     boost::hash<double> hasher;

@@ -25,6 +25,7 @@ public:
     {
         _times.reserve(_nbPoints);
         _values.reserve(_nbPoints);
+        return true;
     }
     void appendConcentrations(TimeOffsets &_times, Concentrations &_values)
     {

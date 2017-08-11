@@ -7,6 +7,7 @@
 #include <algorithm>
 
 #include "tucucore/onecompartmentintra.h"
+#include "tucucore/intakeevent.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -15,7 +16,7 @@ OneCompartmentIntra::OneCompartmentIntra()
 {
 }
 
-bool OneCompartmentIntra::checkInputs(const IntakeEvent& _intakeEvent, const Parameters& _parameters)
+bool OneCompartmentIntra::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
     bool bOK = true;
 
@@ -23,12 +24,12 @@ bool OneCompartmentIntra::checkInputs(const IntakeEvent& _intakeEvent, const Par
 	    return false;
     
     m_D = _intakeEvent.getDose() * 1000;
-    m_Cl = _parameters[0].getValue();
-    m_V = _parameters[1].getValue();
+    m_Cl = _parameters.getValue(0);
+    m_V = _parameters.getValue(1);
     m_Ke = m_Cl / m_V;
     m_Tinf = (_intakeEvent.getInfusionTime()).toMilliseconds();
     m_Int = (_intakeEvent.getInterval()).toMilliseconds();
-    m_NbPoints = _intakeEvent.getNumberPoints();
+    m_NbPoints = _intakeEvent.getNbPoints();
 
     bOK &= checkValue(m_D >= 0, "The dose is negative.");
     bOK &= checkValue(!std::isnan(m_D), "The dose is NaN.");
@@ -45,12 +46,7 @@ bool OneCompartmentIntra::checkInputs(const IntakeEvent& _intakeEvent, const Par
 }
 
 
-void OneCompartmentIntra::prepareComputations(const IntakeEvent& _intakeEvent, const Parameters& _parameters)
-{
-}
-
-
-void OneCompartmentIntra::computeLogarithms(const IntakeEvent& _intakeEvent, const Parameters& _parameters, Eigen::VectorXd& _times)
+void OneCompartmentIntra::computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters, Eigen::VectorXd& _times)
 {
     m_precomputedLogarithms["Ke"] = (-m_Ke * _times).array().exp();
 }
