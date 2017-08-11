@@ -10,6 +10,7 @@
 
 #include "test_dosage.h"
 #include "test_intakeextractor.h"
+#include "test_operation.h"
 
 int main(int argc, char** argv) 
 {
@@ -51,6 +52,20 @@ int main(int argc, char** argv)
         exit(1);
     }
     std::cout << "IntakeExtractor test succeeded\n";
+
+    // --- OPERATION --- //
+    TestOperation operationTests;
+    operationTests.add_test("OperationInput test", &TestOperation::testOperationInput);
+    operationTests.add_test("HardcodedOperation test", &TestOperation::testHardcodedOperation);
+    operationTests.add_test("DynamicOperation test", &TestOperation::testDynamicOperation);
+    operationTests.add_test("JSOperation test", &TestOperation::testJSOperation);
+
+    res = operationTests.run(argc, argv);
+    if (res != 0) {
+        std::cerr << "Operation test failed\n";
+        exit(1);
+    }
+    std::cout << "Operation test succeeded\n";
 
     return 0;
 }

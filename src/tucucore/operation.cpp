@@ -11,23 +11,43 @@ OperationInput::OperationInput(const std::string &_name, const InputType &_type)
 
 
 OperationInput::OperationInput(const std::string &_name, const bool &_value)
-    : m_name{_name}, m_type{InputType::BOOL}, m_isDefined{false}
+    : m_name{_name}, m_type{InputType::BOOL}, m_isDefined{true}
 {
     m_value.b = _value;
 }
 
 
 OperationInput::OperationInput(const std::string &_name, const int &_value)
-    : m_name{_name}, m_type{InputType::INTEGER}, m_isDefined{false}
+    : m_name{_name}, m_type{InputType::INTEGER}, m_isDefined{true}
 {
     m_value.i = _value;
 }
 
 
 OperationInput::OperationInput(const std::string &_name, const double &_value)
-    : m_name{_name}, m_type{InputType::DOUBLE}, m_isDefined{false}
+    : m_name{_name}, m_type{InputType::DOUBLE}, m_isDefined{true}
 {
     m_value.d = _value;
+}
+
+
+bool
+OperationInput::operator==(const OperationInput &_rhs) const
+{
+    return (this->m_name == _rhs.m_name &&
+            this->m_isDefined == _rhs.m_isDefined &&
+            (!this->m_isDefined ||
+            ((this->m_type == InputType::BOOL && this->m_value.b == _rhs.m_value.b) ||
+             (this->m_type == InputType::INTEGER && this->m_value.i == _rhs.m_value.i) ||
+             (this->m_type == InputType::DOUBLE && fabs(this->m_value.d - _rhs.m_value.d) < std::numeric_limits<double>::min()))) &&
+            this->m_type == _rhs.m_type);
+}
+
+
+bool
+OperationInput::operator!=(const OperationInput &_rhs) const
+{
+    return !(*this == _rhs);
 }
 
 
@@ -135,6 +155,15 @@ Operation::check(const OperationInputList &_inputs) const
         // Early-stop if the number of given inputs is below the required one
         return false;
     }
+    // Reject inputs with multiple definitions (perform the check on a copy to avoid side effects).
+    OperationInputList givenInputs = _inputs;
+    std::sort(givenInputs.begin(), givenInputs.end(),
+              [](const OperationInput &_a, const OperationInput &_b) { return _a.getName() < _b.getName(); });
+    if (std::adjacent_find(givenInputs.begin(), givenInputs.end(),
+                           [](const OperationInput &_a, const OperationInput &_b) { return _a.getName() == _b.getName(); }) != givenInputs.end()) {
+        return false;
+    }
+
     // Check that all the inputs are there and they are valid:
     // For each required input, scan the list for a valid input with the same name and type.
     for (auto reqIn : m_requiredInputs) {
@@ -167,7 +196,16 @@ checkInputIsDefined(const OperationInputList &_inputs, const std::string &_input
 bool
 checkInputIsPresent(const OperationInputList &_inputs, const std::string &_inputName, const InputType &_type)
 {
-    return findInputInList(_inputs, _inputName, _type) == _inputs.end();
+    return findInputInList(_inputs, _inputName, _type) != _inputs.end();
+}
+
+
+OperationInputIt
+findInputInList(const OperationInputList &_inputs, const std::string &_inputName)
+{
+    OperationInputIt it = std::find_if(_inputs.begin(), _inputs.end(),
+                                       [&_inputName](const OperationInput &_in) -> bool { return _inputName == _in.getName(); });
+    return it;
 }
 
 
@@ -213,99 +251,24 @@ getInputValue(const OperationInputList &_inputs, const std::string &_inputName, 
 }
 
 
+HardcodedOperation::HardcodedOperation()
+    : m_filledInputs{false}
+{
+
+}
+
+
 bool
 HardcodedOperation::evaluate(const OperationInputList &_inputs, double &_result)
 {
-    fillRequiredInputs();
+    if (!m_filledInputs) {
+        fillRequiredInputs();
+        m_filledInputs = true;
+    }
     if (!check(_inputs)) {
         return false;
     }
     return compute(_inputs, _result);
-}
-
-
-DynamicOperation::DynamicOperation(const DynamicOperation &_other)
-    : Operation(_other)
-{
-    for (auto&& op: _other.m_operations) {
-        m_operations.push_back(std::make_pair(op.first->clone(), op.second));
-    }
-}
-
-
-std::unique_ptr<Operation>
-DynamicOperation::clone() const
-{
-    return std::unique_ptr<Operation>(new DynamicOperation(*this));
-}
-
-
-bool
-DynamicOperation::addOperation(const Operation &_operation, const unsigned int _preferenceLevel)
-{
-    m_operations.push_back(std::make_pair(_operation.clone(), _preferenceLevel));
-    return true;
-}
-
-
-bool
-DynamicOperation::check(const OperationInputList &_inputs) const
-{
-    for (auto&& op: m_operations) {
-        if (op.first->check(_inputs)) {
-            return true;
-        }
-    }
-    return false;
-}
-
-
-bool
-DynamicOperation::evaluate(const OperationInputList &_inputs, double &_result)
-{
-    // Initialize values that will be used in the search for the best matching operation
-    int idxBest = -1;
-    unsigned int nInputsBest = -1;
-    unsigned int prefLevelBest = -1;
-
-    // Find the 'best' operation to perform
-    for (int i = 0; i < (int)m_operations.size(); ++i) {
-        // Check that the given operation can run with the inputs passed as parameter
-        if (m_operations.at(i).first->check(_inputs)) {
-            const unsigned int nInputs = m_operations.at(i).first->getInputs().size();
-            const unsigned int prefLevel = m_operations.at(i).second;
-            if (nInputs > nInputsBest || (nInputs == nInputsBest && prefLevel > prefLevelBest)) {
-                // We have found an operation with either more matching inputs or the same number but with higher
-                // preferability
-                idxBest = i;
-                nInputsBest = nInputs;
-                prefLevelBest = prefLevel;
-            }
-        }
-    }
-    if (idxBest < 0) {
-        // Could not find a suitable operation
-        return false;
-    }
-
-    return m_operations.at(idxBest).first->evaluate(_inputs, _result);
-}
-
-
-OperationInputList
-DynamicOperation::getInputs() const
-{
-    OperationInputList ret;
-    for (auto&& op: m_operations) {
-        OperationInputList tmp = op.first->getInputs();
-        for (auto input: tmp) {
-            // Push missing inputs, skipping duplicates
-            if (!checkInputIsPresent(ret, input.getName(), input.getType())) {
-                ret.push_back(input);
-            }
-        }
-    }
-    return ret;
 }
 
 
@@ -340,6 +303,13 @@ JSOperation::clone() const
 bool
 JSOperation::evaluate(const OperationInputList &_inputs, double &_result)
 {
+    /// \warning The JS engine does not return an error if variables are missing -- it will silently assume that they
+    ///          are zeroes and happily perform the computation. This could go horribly bad if no precautions are taken,
+    ///          therefore we validate hereby the inputs to ensure that everything is in order.
+    if (!check(_inputs)) {
+        return false;
+    }
+
     JSEngine jsEngine;
     // Push the inputs
     for (auto inVar: _inputs) {
@@ -360,6 +330,105 @@ JSOperation::evaluate(const OperationInputList &_inputs, double &_result)
     }
     _result = std::stod(resAsString);
     return true;
+}
+
+
+DynamicOperation::DynamicOperation(const DynamicOperation &_other)
+    : Operation(_other)
+{
+    for (auto&& op: _other.m_operations) {
+        m_operations.push_back(std::make_pair(op.first->clone(), op.second));
+    }
+}
+
+
+std::unique_ptr<Operation>
+DynamicOperation::clone() const
+{
+    return std::unique_ptr<Operation>(new DynamicOperation(*this));
+}
+
+
+bool
+DynamicOperation::addOperation(const Operation &_operation, const unsigned int _preferenceLevel)
+{
+    // Check that inputs do not conflict with exiting ones (that is, same name but different type).
+    OperationInputList alreadyPresentInputs = getInputs();
+    OperationInputList newInputs = _operation.getInputs();
+
+    for (auto newIn: newInputs) {
+        OperationInputIt it = findInputInList(alreadyPresentInputs, newIn.getName());
+        if (it != alreadyPresentInputs.end()) {
+            if (it->getType() != newIn.getType()) {
+                return false;
+            }
+        }
+    }
+
+    m_operations.push_back(std::make_pair(_operation.clone(), _preferenceLevel));
+    return true;
+}
+
+
+bool
+DynamicOperation::check(const OperationInputList &_inputs) const
+{
+    for (auto&& op: m_operations) {
+        if (op.first->check(_inputs)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+
+bool
+DynamicOperation::evaluate(const OperationInputList &_inputs, double &_result)
+{
+    // Initialize values that will be used in the search for the best matching operation
+    int idxBest = -1;
+    int nInputsBest = -1;
+    int prefLevelBest = -1;
+
+    // Find the 'best' operation to perform
+    for (int i = 0; i < (int)m_operations.size(); ++i) {
+        // Check that the given operation can run with the inputs passed as parameter
+        if (m_operations.at(i).first->check(_inputs)) {
+            const int nInputs = (int)m_operations.at(i).first->getInputs().size();
+            const int prefLevel = (int)m_operations.at(i).second;
+
+            if (nInputs > nInputsBest || (nInputs == nInputsBest && prefLevel < prefLevelBest)) {
+                // We have found an operation with either more matching inputs or the same number but with higher
+                // preferability
+                idxBest = i;
+                nInputsBest = nInputs;
+                prefLevelBest = prefLevel;
+            }
+        }
+    }
+    if (idxBest < 0) {
+        // Could not find a suitable operation
+        return false;
+    }
+
+    return m_operations.at(idxBest).first->evaluate(_inputs, _result);
+}
+
+
+OperationInputList
+DynamicOperation::getInputs() const
+{
+    OperationInputList ret;
+    for (auto&& op: m_operations) {
+        OperationInputList tmp = op.first->getInputs();
+        for (auto input: tmp) {
+            // Push missing inputs, skipping duplicates
+            if (!checkInputIsPresent(ret, input.getName(), input.getType())) {
+                ret.push_back(input);
+            }
+        }
+    }
+    return ret;
 }
 
 
