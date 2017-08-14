@@ -31,7 +31,7 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
         // Path
         m_path = _path;
 
-        //Key
+        // Key
         m_key = "86685E7AA62844102FC7FAD5D6DDF46C9CA7777BF4E0153FDF5F86463EAC0D75";
 
         // Build Fingerprint
