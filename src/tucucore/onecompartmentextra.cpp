@@ -3,6 +3,7 @@
 */
 
 #include <Eigen/Dense>
+#include <Eigen/LU>
 
 #include "tucucore/onecompartmentextra.h"
 #include "tucucore/intakeevent.h"
@@ -45,6 +46,8 @@ bool OneCompartmentExtra::checkInputs(const IntakeEvent& _intakeEvent, const Par
     bOK &= checkValue(m_Ka > 0, "The clearance is not greater than zero.");
     bOK &= checkValue(!std::isnan(m_Ka), "The m_Ka is NaN.");
     bOK &= checkValue(!std::isinf(m_Ka), "The m_Ka is Inf.");
+    bOK &= checkValue(m_NbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkValue((_intakeEvent.getInterval()).toMilliseconds() >= 0, "The interval time is zero or negative.");
 
     return bOK;
 }
@@ -75,6 +78,55 @@ bool OneCompartmentExtra::computeConcentrations(const Residuals& _inResiduals, C
 
     bOK &= checkValue(_outResiduals[0] >= 0, "The concentration1 is negative.");
     bOK &= checkValue(_outResiduals[1] >= 0, "The concentration2 is negative.");
+
+    return bOK;
+}
+
+bool OneCompartmentExtra::computeConcentration(const int64& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
+{
+    bool bOK = true;
+
+    Concentration resid1 = _inResiduals[0];
+    Concentration resid2 = _inResiduals[1] + m_F*m_D/m_V;
+    Concentration part2 = m_Ka*resid2 / (-m_Ka + m_Ke);
+
+    // Calcuate concentrations 1
+    Eigen::VectorXd concentrations1 = 
+        m_precomputedLogarithms["Ke"] * resid1 
+	+ (m_precomputedLogarithms["Ka"] - m_precomputedLogarithms["Ke"]) * part2;
+
+    // Calcuate concentrations 2
+    // TODO check: why the equation is different from multiple points
+    // equation with _atTime
+    Eigen::VectorXd concentrations2;
+    concentrations2[0] = 
+        m_F * m_D / m_V * m_precomputedLogarithms["Ka"](0) 
+	/ (1 - m_precomputedLogarithms["Ka"](0));
+    // equation with m_Int
+    concentrations2[1] = 
+        m_F * m_D / m_V * m_precomputedLogarithms["Ka"](1) 
+	/ (1 - m_precomputedLogarithms["Ka"](1));
+
+    // TODO check: how element-wise matrix / matrix  
+#if 0
+    Eigen::VectorXd concentrations2 = 
+        (m_F * m_D * m_precomputedLogarithms["Ka"]) 
+	/ (m_V * (1*Eigen::VectorXd::Ones(m_precomputedLogarithms["Ka"].size()) -
+		m_precomputedLogarithms["Ka"]));
+#endif
+
+    // return concentraions (computation with atTime (current time))
+    _concentrations.push_back(concentrations1[0]);
+    _concentrations.push_back(concentrations2[0]);
+
+    // return final residual (computation with m_Int (interval))
+    _outResiduals.push_back(concentrations1[1]);
+    _outResiduals.push_back(concentrations2[1]);
+
+    bOK &= checkValue(_outResiduals[0] >= 0, "The final residual1 is negative.");
+    bOK &= checkValue(_outResiduals[1] >= 0, "The final residual2 is negative.");
+    bOK &= checkValue(_concentrations[0] >= 0, "The concentration1 is negative.");
+    bOK &= checkValue(_concentrations[1] >= 0, "The concentration2 is negative.");
 
     return bOK;
 }

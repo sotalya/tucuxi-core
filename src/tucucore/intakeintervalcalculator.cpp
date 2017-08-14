@@ -72,7 +72,24 @@ IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakeSingle
     const int64& _atTime,
     Residuals& _outResiduals)
 {
-    return Result::BadParameters;
+    if (!checkInputs(_intakeEvent, _parameters))
+    {
+        return Result::BadParameters;
+    }
+
+    prepareComputations(_intakeEvent, _parameters);
+    
+    // To reuse interface of computeLogarithms with multiple points, remaine time as a vector.
+    Eigen::VectorXd times(2); 
+    times << _atTime, (_intakeEvent.getInterval()).toMilliseconds();
+
+    computeLogarithms(_intakeEvent, _parameters, times);
+
+    if (!computeConcentration(_atTime, _inResiduals, _concentrations, _outResiduals)) {
+        return Result::BadConcentration;
+    }
+
+    return Result::Ok;
 }
 
 

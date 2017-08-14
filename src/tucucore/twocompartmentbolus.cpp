@@ -46,6 +46,8 @@ bool TwoCompartmentBolus::checkInputs(const IntakeEvent& _intakeEvent, const Par
     bOK &= checkValue(m_V2 > 0, "The volume2 is not greater than zero.");
     bOK &= checkValue(!std::isnan(m_V2), "The V2 is NaN.");
     bOK &= checkValue(!std::isinf(m_V2), "The V2 is Inf.");
+    bOK &= checkValue(m_NbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkValue((_intakeEvent.getInterval()).toMilliseconds() >= 0, "The interval time is zero or negative.");
 
     Value sumK = m_Ke + m_K12 + m_K21;
     m_RootK = std::sqrt((sumK * sumK) - (4 * m_K21 * m_Ke));
@@ -93,6 +95,38 @@ bool TwoCompartmentBolus::computeConcentrations(const Residuals& _inResiduals, C
     return bOK;
 }
 
+
+bool TwoCompartmentBolus::computeConcentration(const int64& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
+{
+    bool bOK = true;
+
+    Concentration resid1 = _inResiduals[0] + (m_D/m_V1);
+    Concentration resid2 = _inResiduals[1];
+
+    Value A = ((m_K12 - m_K21 + m_Ke + m_RootK) * resid1) - (2 * m_K21 * resid2);
+    Value B = ((-m_K12 + m_K21 - m_Ke + m_RootK) * resid1) + (2 * m_K21 * resid2);
+    Value A2 = (-2 * m_K12 * resid1) + ((-m_K12 + m_K21 - m_Ke + m_RootK) * resid2);
+    Value BB2 = (2 * m_K12 * resid1) + ((m_K12 - m_K21 + m_Ke + m_RootK) * resid2);
+
+    // Calculate concentrations for comp1 and comp2
+    Eigen::VectorXd concentrations1 = 
+        ((A * m_precomputedLogarithms["Alpha"]) + (B * m_precomputedLogarithms["Beta"])) / (2 * m_RootK);
+    Eigen::VectorXd concentrations2 = 
+        ((A2 * m_precomputedLogarithms["Alpha"]) + (BB2 * m_precomputedLogarithms["Beta"])) / (2 * m_RootK);
+
+    // return concentraions (computation with atTime (current time))
+    _concentrations.push_back(concentrations1[0]);
+    _concentrations.push_back(concentrations2[0]);
+
+    // return final residual (computation with m_Int (interval))
+    _outResiduals.push_back(concentrations1[1]);
+    _outResiduals.push_back(concentrations2[1]);
+
+    bOK &= checkValue(_outResiduals[0] >= 0, "The concentration1 is negative.");
+    bOK &= checkValue(_outResiduals[1] >= 0, "The concentration2 is negative.");
+
+    return bOK;
+}
 }
 }
 

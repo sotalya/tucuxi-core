@@ -3,9 +3,11 @@
 HEADERS += \
     $$PWD/../../src/tucucommon/component.h \
     $$PWD/../../src/tucucommon/componentmanager.h \
+    $$PWD/../../src/tucucommon/cryptohelper.h \
     $$PWD/../../src/tucucommon/ilogger.h \
     $$PWD/../../src/tucucommon/interface.h \
     $$PWD/../../src/tucucommon/logger.h \
+    $$PWD/../../src/tucucommon/licensemanager.h \
     $$PWD/../../src/tucucommon/loggerhelper.h \
     $$PWD/../../src/tucucommon/utils.h \
     $$PWD/../../src/tucucommon/datetime.h \
@@ -17,7 +19,9 @@ HEADERS += \
 
 SOURCES += \
     $$PWD/../../src/tucucommon/componentmanager.cpp \
+    $$PWD/../../src/tucucommon/cryptohelper.cpp \
     $$PWD/../../src/tucucommon/logger.cpp \
+    $$PWD/../../src/tucucommon/licensemanager.cpp \
     $$PWD/../../src/tucucommon/utils.cpp \
     $$PWD/../../src/tucucommon/datetime.cpp \
     $$PWD/../../src/tucucommon/duration.cpp \

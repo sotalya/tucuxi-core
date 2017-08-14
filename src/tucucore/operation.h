@@ -2,8 +2,11 @@
 #define TUCUXI_OPERATION_H
 
 #include <algorithm>
+#include <cmath>
 #include <iostream>
+#include <limits>
 #include <memory>
+#include <string>
 #include <utility>
 #include <vector>
 
@@ -51,6 +54,14 @@ public:
     /// \brief Default operator assignment function.
     /// \param _rhs Source operation input.
     OperationInput& operator=(const OperationInput &_rhs) = default;
+
+    /// \brief Comparison (equality) operator.
+    /// param _rhs OperationInput to compare to.
+    bool operator==(const OperationInput &_rhs) const;
+
+    /// \brief Comparison (difference) operator.
+    /// param _rhs OperationInput to compare to.
+    bool operator!=(const OperationInput &_rhs) const;
 
     /// \brief Return whether the input value is defined or not.
     /// \return true if the value is defined, false otherwise.
@@ -139,6 +150,12 @@ bool checkInputIsDefined(const OperationInputList &_inputs, const std::string &_
 /// \param _type Sought input type.
 /// \return true if the sought input is present, false otherwise.
 bool checkInputIsPresent(const OperationInputList &_inputs, const std::string &_inputName, const InputType &_type);
+
+/// \brief Helper function to check if an input is present in a list of inputs, considering the name alone.
+/// \param _inputs Input list to scan.
+/// \param _inputName Sought input name.
+/// \return true if the sought input is present, false otherwise.
+OperationInputIt findInputInList(const OperationInputList &_inputs, const std::string &_inputName);
 
 /// \brief Helper function to check if an input is present in a list of inputs.
 /// \param _inputs Input list to scan.
@@ -239,6 +256,9 @@ typedef std::vector<std::pair<std::unique_ptr<Operation>, unsigned int>> Operati
 class HardcodedOperation : public Operation
 {
 public:
+    /// \brief Initialize the flag marking required inputs as not yet entered.
+    HardcodedOperation();
+
     /// \brief Default destructor.
     virtual ~HardcodedOperation() = default;
 
@@ -267,6 +287,41 @@ protected:
 
     /// \brief Force the user of the class to implement a function filling the vector of required inputs.
     virtual void fillRequiredInputs() = 0;
+
+protected:
+    /// \brief Flag marking required inputs as not yet entered.
+    bool m_filledInputs;
+};
+
+
+/// \ingroup TucuCore
+/// \brief Operation that uses the JavaScript engine for computation.
+class JSOperation : public Operation
+{
+public:
+    /// \brief Build a JS operation from an expression and a set of required inputs.
+    /// \param _expression Expression to evaluate.
+    /// \param _requiredInputs List of required inputs.
+    JSOperation(const std::string &_expression, const OperationInputList &_requiredInputs);
+
+    /// \brief Clone function returning a pointer to the base class.
+    /// \return Pointer to the base Operation class.
+    virtual std::unique_ptr<Operation> clone() const;
+
+    /// \brief Evaluate the operation on the given inputs using the JSEngine.
+    /// \warning No control on types is performed -- you can for instance divide a boolean by a double without the
+    ///          system raising a warning.
+    /// \param _inputList List of inputs that have to be used by the operation.
+    /// \param _result Result of the operation.
+    /// \return true if the operation could be performed, false otherwise.
+    /// \post if (check(_inputs) && m_jsEngine.evaluate(m_expression) == true) { _result == [OPERATION_RESULT] && [RETURN] == true }
+    ///       else { [RETURN] == false };
+    virtual bool evaluate(const OperationInputList &_inputs, double &_result) override;
+
+
+protected:
+    /// \brief JavaScript expression representing the operation to perform.
+    std::string m_expression;
 };
 
 
@@ -275,6 +330,9 @@ protected:
 class DynamicOperation : public Operation
 {
 public:
+    /// \brief Default Constructor.
+    DynamicOperation() = default;
+
     /// \brief Copy-construct a dynamic operation.
     /// \param _other Operation used for copy-construction.
     DynamicOperation(const DynamicOperation &_other);
@@ -333,36 +391,6 @@ protected:
     OperationList m_operations;
 };
 
-
-/// \ingroup TucuCore
-/// \brief Operation that uses the JavaScript engine for computation.
-class JSOperation : public Operation
-{
-public:
-    /// \brief Build a JS operation from an expression and a set of required inputs.
-    /// \param _expression Expression to evaluate.
-    /// \param _requiredInputs List of required inputs.
-    JSOperation(const std::string &_expression, const OperationInputList &_requiredInputs);
-
-    /// \brief Clone function returning a pointer to the base class.
-    /// \return Pointer to the base Operation class.
-    virtual std::unique_ptr<Operation> clone() const;
-
-    /// \brief Evaluate the operation on the given inputs using the JSEngine.
-    /// \warning No control on types is performed -- you can for instance divide a boolean by a double without the
-    ///          system raising a warning.
-    /// \param _inputList List of inputs that have to be used by the operation.
-    /// \param _result Result of the operation.
-    /// \return true if the operation could be performed, false otherwise.
-    /// \post if (check(_inputs) && m_jsEngine.evaluate(m_expression) == true) { _result == [OPERATION_RESULT] && [RETURN] == true }
-    ///       else { [RETURN] == false };
-    virtual bool evaluate(const OperationInputList &_inputs, double &_result) override;
-
-
-protected:
-    /// \brief JavaScript expression representing the operation to perform.
-    std::string m_expression;
-};
 
 }
 }
