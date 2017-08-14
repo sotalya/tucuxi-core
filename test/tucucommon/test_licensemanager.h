@@ -160,6 +160,9 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
         id = Tucuxi::Common::SystemInfo::retrieveFingerPrint(Tucuxi::Common::MachineIdType::MOTHERBOARD);
         std::cout << "MOTHERBOARD : " << id << std::endl;
 
+        id = Tucuxi::Common::SystemInfo::retrieveFingerPrint(Tucuxi::Common::MachineIdType::DISK);
+        std::cout << "DISK : " << id << std::endl;
+
         id = Tucuxi::Common::SystemInfo::retrieveFingerPrint(Tucuxi::Common::MachineIdType::BIOS);
         std::cout << "BIOS : " << id << std::endl;
 
