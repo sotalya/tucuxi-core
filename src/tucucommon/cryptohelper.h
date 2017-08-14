@@ -16,7 +16,7 @@ namespace Tucuxi {
 namespace Common {
 
 /// \ingroup TucuCommon
-/// \brief Helper class to simplify cryptographic operation
+/// \brief Helper class to simplify cryptographic operation.
 ///
 /// This is a wrapper around the botan library. This class provide methods to hash, encrypt or decrypt messages.
 ///
