@@ -67,17 +67,13 @@ void OneCompartmentExtra::computeLogarithms(const IntakeEvent& _intakeEvent, con
 bool OneCompartmentExtra::computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
 {
     bool bOK = true;
+    Eigen::VectorXd concentrations1, concentrations2;
 
-    Concentration resid1 = _inResiduals[0];
-    Concentration resid2 = _inResiduals[1] + m_F*m_D/m_V;
-    Concentration part2 = m_Ka*resid2 / (-m_Ka + m_Ke);
+    // compute concenration1 and 2
+    compute(_inResiduals, concentrations1, concentrations2);
 
-    Eigen::VectorXd concentrations1 = 
-        m_precomputedLogarithms["Ke"] * resid1 
-	+ (m_precomputedLogarithms["Ka"] - m_precomputedLogarithms["Ke"]) * part2;
-    
     _outResiduals.push_back(concentrations1[m_NbPoints - 1]);
-    _outResiduals.push_back(resid2 * m_precomputedLogarithms["Ka"][m_NbPoints - 1]);
+    _outResiduals.push_back(concentrations2[m_NbPoints - 1]);
     _concentrations.assign(concentrations1.data(), concentrations1.data() + concentrations1.size());	
 
     bOK &= checkValue(_outResiduals[0] >= 0, "The concentration1 is negative.");
@@ -89,24 +85,10 @@ bool OneCompartmentExtra::computeConcentrations(const Residuals& _inResiduals, C
 bool OneCompartmentExtra::computeConcentration(const int64& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
 {
     bool bOK = true;
+    Eigen::VectorXd concentrations1, concentrations2;
 
-    Concentration resid1 = _inResiduals[0];
-    Concentration resid2 = _inResiduals[1] + m_F*m_D/m_V;
-    Concentration part2 = m_Ka*resid2 / (-m_Ka + m_Ke);
-
-    // Calcuate concentrations 1
-    Eigen::VectorXd concentrations1 = 
-        m_precomputedLogarithms["Ke"] * resid1 
-	+ (m_precomputedLogarithms["Ka"] - m_precomputedLogarithms["Ke"]) * part2;
-
-    // Calcuate concentrations 2
-    // a.cwiseQuotient(b): 
-    // TODO check: why the equation is different from multiple points
-    // equation with _atTime
-    Eigen::VectorXd concentrations2 = 
-        (m_F * m_D * m_precomputedLogarithms["Ka"]).
-	cwiseQuotient((m_V * (1*Eigen::VectorXd::Ones(m_precomputedLogarithms["Ka"].size()) -
-	    m_precomputedLogarithms["Ka"])));
+    // compute concenration1 and 2
+    compute(_inResiduals, concentrations1, concentrations2);
 
     // return concentraions (computation with atTime (current time))
     _concentrations.push_back(concentrations1[0]);

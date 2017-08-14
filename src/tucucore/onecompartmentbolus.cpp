@@ -55,7 +55,7 @@ void OneCompartmentBolus::computeLogarithms(const IntakeEvent& _intakeEvent, con
 
 bool OneCompartmentBolus::computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
 {
-    Eigen::VectorXd concentrations = (m_D / m_V + _inResiduals[0]) * m_precomputedLogarithms["Ke"];
+    Eigen::VectorXd concentrations = compute(_inResiduals);
 
     _outResiduals.push_back(concentrations[m_NbPoints - 1]);    
     _concentrations.assign(concentrations.data(), concentrations.data() + concentrations.size());	
@@ -65,7 +65,7 @@ bool OneCompartmentBolus::computeConcentrations(const Residuals& _inResiduals, C
 
 bool OneCompartmentBolus::computeConcentration(const int64& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
 {
-    Eigen::VectorXd concentrations = (m_D / m_V + _inResiduals[0]) * m_precomputedLogarithms["Ke"];
+    Eigen::VectorXd concentrations = compute(_inResiduals);
 
     // return concentraions (computation with atTime (current time))
     _concentrations.push_back(concentrations[0]);
