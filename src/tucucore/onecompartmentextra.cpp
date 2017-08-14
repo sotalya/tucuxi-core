@@ -85,7 +85,6 @@ bool OneCompartmentExtra::computeConcentrations(const Residuals& _inResiduals, C
 
 bool OneCompartmentExtra::computeConcentration(const int64& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
 {
-    bool bOK = true;
     Eigen::VectorXd concentrations1, concentrations2;
 
     // compute concenration1 and 2
@@ -96,17 +95,16 @@ bool OneCompartmentExtra::computeConcentration(const int64& _atTime, const Resid
     _concentrations.push_back(concentrations2[0]);
     
     // interval=0 means that it is the last cycle, so final residual = 0
-    if (m_Int == 0) 
-    {
-	concentrations1[1] = 0;
-	concentrations2[1] = 0;
+    if (m_Int == 0) {
+        concentrations1[1] = 0;
+        concentrations2[1] = 0;
     }
 
     // Return final residual (computation with m_Int (interval))
     _outResiduals.push_back(concentrations1[1]);
     _outResiduals.push_back(concentrations2[1]);
 
-    bOK &= checkValue(_outResiduals[0] >= 0, "The final residual1 is negative.");
+    bool bOK = checkValue(_outResiduals[0] >= 0, "The final residual1 is negative.");
     bOK &= checkValue(_outResiduals[1] >= 0, "The final residual2 is negative.");
     bOK &= checkValue(_concentrations[0] >= 0, "The concentration1 is negative.");
     bOK &= checkValue(_concentrations[1] >= 0, "The concentration2 is negative.");

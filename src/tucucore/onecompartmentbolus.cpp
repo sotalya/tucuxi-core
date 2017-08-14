@@ -70,17 +70,18 @@ bool OneCompartmentBolus::computeConcentrations(const Residuals& _inResiduals, C
 
 bool OneCompartmentBolus::computeConcentration(const int64& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
 {
-    Eigen::VectorXd concentrations(2);  // need only 2 
+    Eigen::VectorXd concentrations;
 
     // Compute concentrations
     compute(_inResiduals, concentrations);
 
-    // Return concentraions (computation with atTime (current time))
+    // Return concentrations (computation with atTime (current time))
     _concentrations.push_back(concentrations[0]);
     
     // interval=0 means that it is the last cycle, so final residual = 0
-    if (m_Int == 0) 
-	concentrations[1] = 0;
+    if (m_Int == 0) {
+        concentrations[1] = 0;
+    }
 
     // Return final residual (computation with m_Int (interval))
     _outResiduals.push_back(concentrations[1]);
