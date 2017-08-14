@@ -3,6 +3,8 @@
 */
 
 #include "TinyJS.h"
+#include "TinyJS_Functions.h"
+#include "TinyJS_MathFunctions.h"
 
 #include "jsengine.h"
 #include "utils.h"
@@ -14,11 +16,12 @@ namespace Common {
 JSEngine::JSEngine() 
     : m_pEngine(nullptr)
 {    
-    reset();   
+    reset();
 }
 
 
-bool JSEngine::getVariable(const std::string& _name, std::string& _value)
+template <>
+bool JSEngine::getVariable<std::string>(const std::string& _name, std::string& _value)
 {
     if (m_pEngine != nullptr) {
         CScriptVar* pVar = m_pEngine->getScriptVariable(_name);
@@ -26,6 +29,47 @@ bool JSEngine::getVariable(const std::string& _name, std::string& _value)
             _value = pVar->getString();
             return true;
         }
+    }
+    return false;
+}
+
+template <>
+bool JSEngine::getVariable<int>(const std::string& _name, int& _value)
+{
+    std::string value;
+    if (getVariable(_name, value)) {
+        try {
+            _value = std::stoi(value);
+            return true;
+        }
+        catch (...) {
+        }
+    }
+    return false;
+}
+
+template <>
+bool JSEngine::getVariable<double>(const std::string& _name, double& _value)
+{
+    std::string value;
+    if (getVariable(_name, value)) {
+        try {
+            _value = std::stod(value);
+            return true;
+        }
+        catch (...) {
+        }
+    }
+    return false;
+}
+
+
+template <>
+bool JSEngine::getVariable<bool>(const std::string& _name, bool& _value)
+{
+    std::string value;
+    if (getVariable(_name, value)) {
+        _value = (value == "1");
     }
     return false;
 }
@@ -57,6 +101,8 @@ void JSEngine::reset()
         delete m_pEngine;
     }
     m_pEngine = new CTinyJS();
+    registerFunctions(m_pEngine);
+    registerMathFunctions(m_pEngine);
 }
 
 }
