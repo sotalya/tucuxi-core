@@ -21,7 +21,8 @@ SOURCES := concentrationcalculator.cpp \
            threecompartmentextra.cpp \
            threecompartmentintra.cpp \
            intakeextractor.cpp \
-           dosage.cpp
+           dosage.cpp \
+           operation.cpp
 INCLUDES := . \
             ../../libs/eigen-3.3.2 \
             ../../libs/boost-1.63.0 \
