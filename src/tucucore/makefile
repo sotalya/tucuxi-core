@@ -22,7 +22,15 @@ SOURCES := concentrationcalculator.cpp \
            threecompartmentintra.cpp \
            intakeextractor.cpp \
            dosage.cpp \
-           operation.cpp
+           operation.cpp \
+           corecomponent.cpp \
+           covariateextractor.cpp \
+           drugmodel.cpp \
+           drugtreatment.cpp \
+           parameter.cpp \
+           parametersextractor.cpp \
+           sampleextractor.cpp \
+           targetextractor.cpp
 INCLUDES := . \
             ../../libs/eigen-3.3.2 \
             ../../libs/boost-1.63.0 \
