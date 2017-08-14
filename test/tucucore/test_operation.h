@@ -930,8 +930,7 @@ struct TestOperation : public fructose::test_base<TestOperation>
         JSOperation jsJelliffe_eGFR("(1 - 0.1 * isFemale) * (98 - (0.8 * age - 20)) / (0.0113 * creatinine)",
         { OperationInput("creatinine", InputType::DOUBLE),
           OperationInput("age", InputType::INTEGER),
-          OperationInput("isFemale", InputType::BOOL),
-          OperationInput("isAB", InputType::BOOL) });
+          OperationInput("isFemale", InputType::BOOL) });
 
         JSOperation jsJelliffe_BSA("0.007184 * Math.pow(height, 0.725) * Math.pow(weight, 0.425)",
         { OperationInput("height", InputType::INTEGER),
