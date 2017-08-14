@@ -62,6 +62,11 @@ int main(int argc, char** argv)
     operationTests.add_test("Cockcroft-Gault general equation test", &TestOperation::testCockcroftGaultGeneral);
     operationTests.add_test("Cockcroft-Gault IBW equation test", &TestOperation::testCockcroftGaultIBW);
     operationTests.add_test("Cockcroft-Gault Adjusted IBW equation test", &TestOperation::testCockcroftGaultAdjIBW);
+    operationTests.add_test("MDRD test", &TestOperation::testMDRD);
+    operationTests.add_test("CKD-EPI test", &TestOperation::testCKD_EPI);
+    operationTests.add_test("Schwartz test", &TestOperation::testSchwartz);
+    operationTests.add_test("Jelliffe test", &TestOperation::testJelliffe);
+    operationTests.add_test("Salazar-Corcoran test", &TestOperation::testSalazarCorcoran);
 
     res = operationTests.run(argc, argv);
     if (res != 0) {
