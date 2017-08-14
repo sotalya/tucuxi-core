@@ -26,7 +26,8 @@ public:
     /// @param _name The name of the variable
     /// @param _value Its value
     /// @return True if the variable was found
-    bool getVariable(const std::string& _name, std::string& _value);
+    template < typename T>
+    bool getVariable(const std::string& _name, T& _value);
 
     /// \brief Create a new variable or change the value of an existing one.
     /// @param _name The name of the variable

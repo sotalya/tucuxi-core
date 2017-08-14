@@ -12,8 +12,8 @@ for %%i in (tiny-js-master-20170629 botan-2.1.0) do (
 	echo *********************************************
 	echo *** Compiling %%i
 	cd "%TUCUXI_ROOT%\libs\%%i"
-	%MAKE% TARGET=VS2015 -f "%TUCUXI_ROOT%\libs\%%i\makefile" clean
-	%MAKE% TARGET=VS2015 -f "%TUCUXI_ROOT%\libs\%%i\makefile"
+REM 	%MAKE% TARGET=VS2015 -f "%TUCUXI_ROOT%\libs\%%i\makefile" clean
+REM	%MAKE% TARGET=VS2015 -f "%TUCUXI_ROOT%\libs\%%i\makefile"
 )
 
 for %%i in (tucucommon tucucore tucucli) do (
