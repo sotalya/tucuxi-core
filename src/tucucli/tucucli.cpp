@@ -37,18 +37,19 @@ int main(int argc, char** argv)
     Tucuxi::Core::OneCompartmentExtra calculator;
 
     DateTime now;
+    int nbPoints = 251;
 
     Tucuxi::Core::Concentrations concentrations;
     Tucuxi::Core::TimeOffsets times;
-    Tucuxi::Core::IntakeEvent intakeEvent(now, 0s, 0.2, 24h, Tucuxi::Core::RouteOfAdministration::INTRAVASCULAR, 0s, 250);
-    Tucuxi::Core::ParameterDefinitions parameterDefs;    
+    Tucuxi::Core::IntakeEvent intakeEvent(now, 0s, 400, 24h, Tucuxi::Core::RouteOfAdministration::INTRAVASCULAR, 0s, nbPoints);
+    Tucuxi::Core::ParameterDefinitions parameterDefs;
     Tucuxi::Core::Residuals inResiduals;
-    Tucuxi::Core::Residuals outResiduals;
+    Tucuxi::Core::Residuals outResiduals1, outResiduals2;
 
     inResiduals.push_back(0);
-    inResiduals.push_back(1);
+    inResiduals.push_back(0);
 
-    parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("CL", 14.3, Tucuxi::Core::ParameterDefinition::ErrorModel::Additive));
+    parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("CL", 15.6, Tucuxi::Core::ParameterDefinition::ErrorModel::Additive));
     parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterDefinition::ErrorModel::Additive));
     parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterDefinition::ErrorModel::Additive));
     parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterDefinition::ErrorModel::Additive));
@@ -60,11 +61,28 @@ int main(int argc, char** argv)
         intakeEvent,
         parameters,
         inResiduals,
-        250,
-        outResiduals,
+        nbPoints,
+        nbPoints,
+        outResiduals1,
         true);
+    printf("Out residual = %f\n", outResiduals1[0]);
+    printf("Out residual = %f\n", outResiduals1[1]);
 
-    printf("Out residual = %f\n", outResiduals[0]);
+    res = calculator.calculateIntakeSinglePoint(
+        concentrations,
+        intakeEvent,
+        parameters,
+        inResiduals,
+        nbPoints,
+        outResiduals2);
+    printf("Out residual = %f\n", outResiduals2[0]);
+    printf("Out residual = %f\n", outResiduals2[1]);
+
+    for (int i = 0; i < 2; i++) {
+        if (abs(outResiduals1[i]/outResiduals2[i]-1) > 0.000001) {
+            logHelper.info("Error: Mismatch in computed residuals: {} != {}", outResiduals1[i], outResiduals2[i]);
+        }
+    }
 
     logHelper.info("Tucuxi console application is exiting...");
     return 0;

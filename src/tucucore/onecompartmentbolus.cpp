@@ -25,6 +25,7 @@ bool OneCompartmentBolus::checkInputs(const IntakeEvent& _intakeEvent, const Par
     m_V = _parameters.getValue(0);
     m_Ke = _parameters.getValue(1);
     m_NbPoints = _intakeEvent.getNbPoints();
+    m_Int = (_intakeEvent.getInterval()).toMilliseconds();
 
     // check the inputs
     bOK &= checkValue(m_D >= 0, "The dose is negative.");
@@ -37,7 +38,7 @@ bool OneCompartmentBolus::checkInputs(const IntakeEvent& _intakeEvent, const Par
     bOK &= checkValue(!std::isnan(m_Ke), "The CL is NaN.");
     bOK &= checkValue(!std::isinf(m_Ke), "The CL is Inf.");
     bOK &= checkValue(m_NbPoints >= 0, "The number of points is zero or negative.");
-    bOK &= checkValue((_intakeEvent.getInterval()).toMilliseconds() >= 0, "The interval time is zero or negative.");
+    bOK &= checkValue(m_Int > 0, "The interval time is negative.");
 
     return bOK;
 }
@@ -51,25 +52,37 @@ void OneCompartmentBolus::computeLogarithms(const IntakeEvent& _intakeEvent, con
 
 bool OneCompartmentBolus::computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
 {
-    Eigen::VectorXd concentrations = (m_D / m_V + _inResiduals[0]) * m_precomputedLogarithms["Ke"];
+    Eigen::VectorXd concentrations;
 
-    _outResiduals.push_back(concentrations[m_NbPoints - 1]);    
+    // Compute concentrations
+    compute(_inResiduals, concentrations);
+
+    // Return concentraions nd finla residual
+    _outResiduals.push_back(concentrations[m_NbPoints - 1]);
     _concentrations.assign(concentrations.data(), concentrations.data() + concentrations.size());	
     
-    return checkValue(_outResiduals[0] >= 0, "The concentration is negative.");
+    return checkValue(_outResiduals[0] > 0, "The concentration is negative.");
 }
 
 bool OneCompartmentBolus::computeConcentration(const int64& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
 {
-    Eigen::VectorXd concentrations = (m_D / m_V + _inResiduals[0]) * m_precomputedLogarithms["Ke"];
+    Eigen::VectorXd concentrations;
 
-    // return concentraions (computation with atTime (current time))
+    // Compute concentrations
+    compute(_inResiduals, concentrations);
+
+    // Return concentrations (computation with atTime (current time))
     _concentrations.push_back(concentrations[0]);
+    
+    // interval=0 means that it is the last cycle, so final residual = 0
+    if (m_Int == 0) {
+        concentrations[1] = 0;
+    }
 
-    // return final residual (computation with m_Int (interval))
+    // Return final residual (computation with m_Int (interval))
     _outResiduals.push_back(concentrations[1]);
     
-    return checkValue(_outResiduals[0] >= 0, "The concentration is negative.");
+    return checkValue(_outResiduals[0] > 0, "The concentration is negative.");
 }
 
 }

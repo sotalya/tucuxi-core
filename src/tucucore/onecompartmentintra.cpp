@@ -41,7 +41,7 @@ bool OneCompartmentIntra::checkInputs(const IntakeEvent& _intakeEvent, const Par
     bOK &= checkValue(!std::isnan(m_Ke), "The CL is NaN.");
     bOK &= checkValue(!std::isinf(m_Ke), "The CL is Inf.");
     bOK &= checkValue(m_Tinf >= 0, "The infusion time is zero or negative.");
-    bOK &= checkValue(m_Int >= 0, "The interval time is zero or negative.");
+    bOK &= checkValue(m_Int > 0, "The interval time is negative.");
 
     return bOK;
 }
@@ -55,23 +55,11 @@ void OneCompartmentIntra::computeLogarithms(const IntakeEvent& _intakeEvent, con
 
 bool OneCompartmentIntra::computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
 {
-    Concentration part1 = m_D/(m_Tinf*m_Cl);
-    size_t ke_size = m_precomputedLogarithms["Ke"].size();
-    int forcesize = static_cast<int>(std::min(ceil(m_Tinf/m_Int * ke_size), ceil(ke_size)));
-    int therest;
+    Eigen::VectorXd concentrations;
+    int forcesize = static_cast<int>(std::min(ceil(m_Tinf/m_Int * m_NbPoints), ceil(m_NbPoints)));
 
     // Calcaulate concentrations
-    Eigen::VectorXd concentrations = Eigen::VectorXd::Constant(ke_size, _inResiduals[0]);
-    concentrations = concentrations.cwiseProduct(m_precomputedLogarithms["Ke"]);
-
-    concentrations.head(forcesize) = 
-        concentrations.head(forcesize) 
-	+ part1 * (1.0 - m_precomputedLogarithms["Ke"].head(forcesize).array()).matrix();
-    
-    therest = static_cast<int>(concentrations.size() - forcesize);
-    concentrations.tail(therest) = 
-        concentrations.tail(therest) 
-	+ part1 * (exp(m_Ke * m_Tinf) - 1) * m_precomputedLogarithms["Ke"].tail(therest);
+    compute(_inResiduals, forcesize, concentrations);
 
     // Set the new residual
     _outResiduals.push_back(concentrations[m_NbPoints - 1]);
@@ -82,27 +70,23 @@ bool OneCompartmentIntra::computeConcentrations(const Residuals& _inResiduals, C
 
 bool OneCompartmentIntra::computeConcentration(const int64& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
 {
-    Concentration part1 = m_D/(m_Tinf*m_Cl);
-    size_t ke_size = m_precomputedLogarithms["Ke"].size();
+    Eigen::VectorXd concentrations;
+    int forcesize = 0;
+
+    if (_atTime < m_Tinf) {
+        forcesize = 1;
+    }
 
     // Calcaulate concentrations
-    Eigen::VectorXd concentrations = Eigen::VectorXd::Constant(ke_size, _inResiduals[0]);
-    concentrations = concentrations.cwiseProduct(m_precomputedLogarithms["Ke"]);
+    compute(_inResiduals, forcesize, concentrations);
 
-    int therest = 2;
-
-    if(_atTime < m_Tinf)
-    {
-	concentrations.head(1) = 
-	    concentrations.head(1) + part1 * (1.0 - m_precomputedLogarithms["Ke"].head(1).array()).matrix();
-	therest = 1;
-    }
-    concentrations.tail(therest) = 
-        concentrations.tail(therest) 
-	+ part1 * (exp(m_Ke * m_Tinf) - 1) * m_precomputedLogarithms["Ke"].tail(therest);
-
-    // return concentraions (computation with atTime (current time))
+    // return concentrations (computation with atTime (current time))
     _concentrations.push_back(concentrations[0]);
+
+    // interval=0 means that it is the last cycle, so final residual = 0
+    if (m_Int == 0) {
+        concentrations[1] = 0;
+    }
 
     // return final residual (computation with m_Int (interval))
     _outResiduals.push_back(concentrations[1]);

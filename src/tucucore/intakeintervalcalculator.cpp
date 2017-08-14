@@ -27,7 +27,7 @@ IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakePoints
     }
 
     // Create our serie of times
-    Eigen::VectorXd times = Eigen::VectorXd::LinSpaced(_cycleSize, 0, static_cast<int>(_intakeEvent.getInterval().toMilliseconds()));
+    Eigen::VectorXd times = Eigen::VectorXd::LinSpaced(_cycleSize, 0, static_cast<int>(_intakeEvent.getInterval().toHours()));
 
     // Can we reuse cached logarithms? 
     if (!m_cache.get(_intakeEvent.getInterval(), _parameters, _cycleSize, m_precomputedLogarithms))	{
@@ -81,7 +81,7 @@ IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakeSingle
     
     // To reuse interface of computeLogarithms with multiple points, remaine time as a vector.
     Eigen::VectorXd times(2); 
-    times << _atTime, (_intakeEvent.getInterval()).toMilliseconds();
+    times << _atTime, (_intakeEvent.getInterval()).toHours();
 
     computeLogarithms(_intakeEvent, _parameters, times);
 

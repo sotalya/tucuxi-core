@@ -8,6 +8,7 @@
 #include "tucucommon/datetime.h"
 #include "tucucommon/duration.h"
 
+#include "tucucore/definitions.h"
 #include "tucucore/timedevent.h"
 #include "tucucore/intakeintervalcalculator.h"
 
