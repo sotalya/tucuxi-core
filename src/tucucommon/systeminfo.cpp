@@ -3,7 +3,6 @@
  */
 
 #include <stdio.h>
-#include <iostream>
 #include <iomanip>
 #include <sstream>
 
@@ -145,7 +144,6 @@ std::string SystemInfo::retrieveMacAddress()
     DWORD dwLen = sizeof(AdapterFixedInfo);
     GetNetworkParams(AdapterFixedInfo, &dwLen);
 
-    ss_mac << "MAC:";
     do
     {
         std::string temp = pAdapterInfo->Description;
@@ -279,7 +277,6 @@ std::string SystemInfo::retrieveName()
     DWORD size = sizeof(computerName) / sizeof(computerName[0]);
     GetComputerName(computerName, &size);
 
-    ss_name << "NAME:";
     for(size_t i=0; i < size; i++) {
         ss_name << computerName[i];
     }
