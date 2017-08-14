@@ -76,8 +76,6 @@ IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakeSingle
     {
         return Result::BadParameters;
     }
-
-    prepareComputations(_intakeEvent, _parameters);
     
     // To reuse interface of computeLogarithms with multiple points, remaine time as a vector.
     Eigen::VectorXd times(2); 

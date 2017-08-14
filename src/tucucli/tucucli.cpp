@@ -62,7 +62,6 @@ int main(int argc, char** argv)
         parameters,
         inResiduals,
         nbPoints,
-        nbPoints,
         outResiduals1,
         true);
     printf("Out residual = %f\n", outResiduals1[0]);
