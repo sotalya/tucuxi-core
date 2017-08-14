@@ -57,8 +57,11 @@ int main(int argc, char** argv)
     TestOperation operationTests;
     operationTests.add_test("OperationInput test", &TestOperation::testOperationInput);
     operationTests.add_test("HardcodedOperation test", &TestOperation::testHardcodedOperation);
-    operationTests.add_test("DynamicOperation test", &TestOperation::testDynamicOperation);
     operationTests.add_test("JSOperation test", &TestOperation::testJSOperation);
+    operationTests.add_test("DynamicOperation test", &TestOperation::testDynamicOperation);
+    operationTests.add_test("Cockcroft-Gault general equation test", &TestOperation::testCockcroftGaultGeneral);
+    operationTests.add_test("Cockcroft-Gault IBW equation test", &TestOperation::testCockcroftGaultIBW);
+    operationTests.add_test("Cockcroft-Gault Adjusted IBW equation test", &TestOperation::testCockcroftGaultAdjIBW);
 
     res = operationTests.run(argc, argv);
     if (res != 0) {

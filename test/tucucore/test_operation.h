@@ -19,7 +19,7 @@ using namespace Tucuxi::Core;
 class DiffOperation : public HardcodedOperation
 {
 public:
-    /// \brief Implementation of the inherited clone operation
+    /// \brief Implementation of the inherited clone operation.
     /// \return Pointer to a new object of subclass' type.
     std::unique_ptr<Operation> clone() const
     {
@@ -56,6 +56,54 @@ protected:
         OperationInput b("b", InputType::INTEGER);
         m_requiredInputs.push_back(a);
         m_requiredInputs.push_back(b);
+    }
+};
+
+/// \brief Example implementation of an hardcoded computation of the Ideal Body Weight
+class IBWOperation : public HardcodedOperation
+{
+public:
+    /// \brief Implementation of the inherited clone operation.
+    /// \return Pointer to a new object of subclass' type.
+    std::unique_ptr<Operation> clone() const
+    {
+        return std::unique_ptr<Operation>(new IBWOperation(*this));
+    }
+
+
+protected:
+    /// \brief Perform the desired IBW computation.
+    /// \param _inputs List of inputs that have to be used by the operation.
+    /// \param _result Result of the operation.
+    /// \return true if the operation could be performed (that is, inputs can be successfully retrieved), false
+    ///         otherwise.
+    /// \pre check(_inputs) == true
+    bool compute(const OperationInputList &_inputs, double &_result) const
+    {
+        int height;
+        bool isMale;
+
+        if (!getInputValue(_inputs, "height", height) || !getInputValue(_inputs, "isMale", isMale)) {
+            return false;
+        }
+
+        if (isMale) {
+            _result = height - 100 - (height - 150) / 4.0;
+        } else {
+            _result = height - 100 - (height - 150) / 2.5;
+        }
+
+        return true;
+    }
+
+
+    /// \brief Fill the vector of required inputs.
+    void fillRequiredInputs()
+    {
+        OperationInput height("height", InputType::INTEGER);
+        OperationInput isMale("isMale", InputType::BOOL);
+        m_requiredInputs.push_back(height);
+        m_requiredInputs.push_back(isMale);
     }
 };
 
@@ -363,6 +411,191 @@ struct TestOperation : public fructose::test_base<TestOperation>
         rc = d3.evaluate({ b, c, d }, res); // Expect a call to jsOp4 (higher preference)
         fructose_assert (rc == true);
         fructose_assert_double_eq (-0.544, res);
+    }
+
+    /// \brief Test: creatinine clearance using the Cockcroft-Gault general equation.
+    void testCockcroftGaultGeneral(const std::string& /* _testName */)
+    {
+        bool rc;
+        double eGFR;
+
+        // Required parameters.
+        OperationInput weight("weight", InputType::DOUBLE);
+        OperationInput age("age", InputType::INTEGER);
+        OperationInput creatinine("creatinine", InputType::DOUBLE);
+        OperationInput isMale("isMale", InputType::BOOL);
+        const OperationInput A_male("A_male", 1.23);
+        const OperationInput A_female("A_female", 1.04);
+
+        JSOperation jsCG_general("(140 - age * weight) / creatinine * (A_male * isMale + A_female * (!isMale))", { OperationInput("weight", InputType::DOUBLE),
+                                                                                                                   OperationInput("age", InputType::INTEGER),
+                                                                                                                   OperationInput("creatinine", InputType::DOUBLE),
+                                                                                                                   OperationInput("isMale", InputType::BOOL),
+                                                                                                                   OperationInput("A_male", InputType::DOUBLE),
+                                                                                                                   OperationInput("A_female", InputType::DOUBLE) });
+
+        // Male, 49 years old, 71.4kg, creatinine 23.4umol/l
+        rc = isMale.setValue(true);
+        fructose_assert (rc == true);
+        rc = age.setValue(49);
+        fructose_assert (rc == true);
+        rc = weight.setValue(71.4);
+        fructose_assert (rc == true);
+        rc = creatinine.setValue(23.4);
+        fructose_assert (rc == true);
+
+        fructose_assert (jsCG_general.evaluate({ creatinine, weight, age }, eGFR) == false);
+        rc = jsCG_general.evaluate({ creatinine, weight, age, isMale, A_male, A_female }, eGFR);
+        fructose_assert (rc == true);
+        fructose_assert_double_eq (-176.541795, eGFR);
+
+        // Female, 53 years old, 51.3kg, creatinine 13.4umol/l
+        rc = isMale.setValue(false);
+        fructose_assert (rc == true);
+        rc = age.setValue(53);
+        fructose_assert (rc == true);
+        rc = weight.setValue(51.3);
+        fructose_assert (rc == true);
+        rc = creatinine.setValue(13.4);
+        fructose_assert (rc == true);
+
+        rc = jsCG_general.evaluate({ creatinine, weight, age, isMale, A_male, A_female }, eGFR);
+        fructose_assert (rc == true);
+        fructose_assert_double_eq (-200.153433, eGFR);
+    }
+
+    /// \brief Test: creatinine clearance using the Cockcroft-Gault equation with IBW.
+    void testCockcroftGaultIBW(const std::string& /* _testName */)
+    {
+        bool rc;
+        double eGFR;
+
+        // Required parameters.
+        OperationInput weight("weight", InputType::DOUBLE);
+        OperationInput IBW("IBW", InputType::DOUBLE);
+        OperationInput height("height", InputType::INTEGER);
+        OperationInput age("age", InputType::INTEGER);
+        OperationInput creatinine("creatinine", InputType::DOUBLE);
+        OperationInput isMale("isMale", InputType::BOOL);
+        const OperationInput A_male("A_male", 1.23);
+        const OperationInput A_female("A_female", 1.04);
+
+        double IBWvalue;
+        IBWOperation IBWComputation;
+
+        JSOperation jsCG_IBW("(140 - age * (weight*(weight < IBW) + IBW*(weight >= IBW))) / creatinine * (A_male * isMale + A_female * (!isMale))", { OperationInput("weight", InputType::DOUBLE),
+                                                                                                                                                      OperationInput("IBW", InputType::DOUBLE),
+                                                                                                                                                      OperationInput("age", InputType::INTEGER),
+                                                                                                                                                      OperationInput("creatinine", InputType::DOUBLE),
+                                                                                                                                                      OperationInput("isMale", InputType::BOOL),
+                                                                                                                                                      OperationInput("A_male", InputType::DOUBLE),
+                                                                                                                                                      OperationInput("A_female", InputType::DOUBLE) });
+
+        // Male, 49 years old, 71.4kg, creatinine 23.4umol/l, 165cm
+        rc = IBWComputation.evaluate({ OperationInput("height", 165), OperationInput("isMale", true) }, IBWvalue);
+        fructose_assert (rc == true);
+        fructose_assert_double_eq (61.25, IBWvalue);
+
+        rc = isMale.setValue(true);
+        fructose_assert (rc == true);
+        rc = age.setValue(49);
+        fructose_assert (rc == true);
+        rc = weight.setValue(71.4);
+        fructose_assert (rc == true);
+        rc = creatinine.setValue(23.4);
+        fructose_assert (rc == true);
+        rc = IBW.setValue(IBWvalue);
+        fructose_assert (rc == true);
+
+        rc = jsCG_IBW.evaluate({ creatinine, weight, age, isMale, A_male, A_female, IBW }, eGFR);
+        fructose_assert (rc == true);
+        fructose_assert_double_eq (-150.399038, eGFR);
+
+        // Female, 53 years old, 51.3kg, creatinine 13.4umol/l, 191cm
+        rc = IBWComputation.evaluate({ OperationInput("height", 191), OperationInput("isMale", false) }, IBWvalue);
+        fructose_assert (rc == true);
+        fructose_assert_double_eq (74.6, IBWvalue);
+
+        rc = isMale.setValue(false);
+        fructose_assert (rc == true);
+        rc = age.setValue(53);
+        fructose_assert (rc == true);
+        rc = weight.setValue(51.3);
+        fructose_assert (rc == true);
+        rc = creatinine.setValue(13.4);
+        fructose_assert (rc == true);
+
+        rc = jsCG_IBW.evaluate({ creatinine, weight, age, isMale, A_male, A_female, IBW }, eGFR);
+        fructose_assert (rc == true);
+        fructose_assert_double_eq (-200.153433, eGFR);
+    }
+
+    /// \brief Test: creatinine clearance using the Cockcroft-Gault equation with adjusted IBW.
+    void testCockcroftGaultAdjIBW(const std::string& /* _testName */)
+    {
+        bool rc;
+        double eGFR;
+
+        // Required parameters.
+        OperationInput weight("weight", InputType::DOUBLE);
+        OperationInput IBW("IBW", InputType::DOUBLE);
+        OperationInput height("height", InputType::INTEGER);
+        OperationInput age("age", InputType::INTEGER);
+        OperationInput creatinine("creatinine", InputType::DOUBLE);
+        OperationInput isMale("isMale", InputType::BOOL);
+        const OperationInput A_male("A_male", 1.23);
+        const OperationInput A_female("A_female", 1.04);
+
+        double IBWvalue;
+        IBWOperation IBWComputation;
+
+        JSOperation jsCG_IBW("(140 - age * (IBW + 0.4 * (weight - IBW))) / creatinine * (A_male * isMale + A_female * (!isMale))", { OperationInput("weight", InputType::DOUBLE),
+                                                                                                                                     OperationInput("IBW", InputType::DOUBLE),
+                                                                                                                                     OperationInput("age", InputType::INTEGER),
+                                                                                                                                     OperationInput("creatinine", InputType::DOUBLE),
+                                                                                                                                     OperationInput("isMale", InputType::BOOL),
+                                                                                                                                     OperationInput("A_male", InputType::DOUBLE),
+                                                                                                                                     OperationInput("A_female", InputType::DOUBLE) });
+
+        // Male, 49 years old, 71.4kg, creatinine 23.4umol/l, 165cm
+        rc = IBWComputation.evaluate({ OperationInput("height", 165), OperationInput("isMale", true) }, IBWvalue);
+        fructose_assert (rc == true);
+        fructose_assert_double_eq (61.25, IBWvalue);
+
+        rc = isMale.setValue(true);
+        fructose_assert (rc == true);
+        rc = age.setValue(49);
+        fructose_assert (rc == true);
+        rc = weight.setValue(71.4);
+        fructose_assert (rc == true);
+        rc = creatinine.setValue(23.4);
+        fructose_assert (rc == true);
+        rc = IBW.setValue(IBWvalue);
+        fructose_assert (rc == true);
+
+        rc = jsCG_IBW.evaluate({ creatinine, weight, age, isMale, A_male, A_female, IBW }, eGFR);
+        fructose_assert (rc == true);
+        fructose_assert_double_eq (-160.856141, eGFR);
+
+        // Female, 53 years old, 51.3kg, creatinine 13.4umol/l, 191cm
+        rc = IBWComputation.evaluate({ OperationInput("height", 191), OperationInput("isMale", false) }, IBWvalue);
+        fructose_assert (rc == true);
+        fructose_assert_double_eq (74.6, IBWvalue);
+
+        rc = isMale.setValue(false);
+        fructose_assert (rc == true);
+        rc = age.setValue(53);
+        fructose_assert (rc == true);
+        rc = weight.setValue(51.3);
+        fructose_assert (rc == true);
+        rc = creatinine.setValue(13.4);
+        fructose_assert (rc == true);
+        rc = IBW.setValue(IBWvalue);
+        fructose_assert (rc == true);
+
+        rc = jsCG_IBW.evaluate({ creatinine, weight, age, isMale, A_male, A_female, IBW }, eGFR);
+        fructose_assert (rc == true);
+        fructose_assert_double_eq (-257.659224, eGFR);
     }
 };
 
