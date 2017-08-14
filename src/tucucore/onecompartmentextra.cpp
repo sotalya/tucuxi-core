@@ -100,24 +100,13 @@ bool OneCompartmentExtra::computeConcentration(const int64& _atTime, const Resid
 	+ (m_precomputedLogarithms["Ka"] - m_precomputedLogarithms["Ke"]) * part2;
 
     // Calcuate concentrations 2
+    // a.cwiseQuotient(b): 
     // TODO check: why the equation is different from multiple points
     // equation with _atTime
-    Eigen::VectorXd concentrations2;
-    concentrations2[0] = 
-        m_F * m_D / m_V * m_precomputedLogarithms["Ka"](0) 
-	/ (1 - m_precomputedLogarithms["Ka"](0));
-    // equation with m_Int
-    concentrations2[1] = 
-        m_F * m_D / m_V * m_precomputedLogarithms["Ka"](1) 
-	/ (1 - m_precomputedLogarithms["Ka"](1));
-
-    // TODO check: how element-wise matrix / matrix  
-#if 0
     Eigen::VectorXd concentrations2 = 
-        (m_F * m_D * m_precomputedLogarithms["Ka"]) 
-	/ (m_V * (1*Eigen::VectorXd::Ones(m_precomputedLogarithms["Ka"].size()) -
-		m_precomputedLogarithms["Ka"]));
-#endif
+        (m_F * m_D * m_precomputedLogarithms["Ka"]).
+	cwiseQuotient((m_V * (1*Eigen::VectorXd::Ones(m_precomputedLogarithms["Ka"].size()) -
+	    m_precomputedLogarithms["Ka"])));
 
     // return concentraions (computation with atTime (current time))
     _concentrations.push_back(concentrations1[0]);
