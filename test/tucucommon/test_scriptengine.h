@@ -45,15 +45,11 @@ struct TestScriptEngine : public fructose::test_base<TestScriptEngine>
         fructose_assert(strValue == "Tcho les topiots");
 
         engine.evaluate("f = 2 == 3");
-        engine.getVariable("f", value);
-        std::cout << "f = " << value << std::endl;
         bool bValue;
         engine.getVariable("f", bValue);
         fructose_assert(!bValue);
 
         engine.evaluate("f = 3 == 3");
-        engine.getVariable("f", value);
-        std::cout << "f = " << value << std::endl;
         engine.getVariable("f", bValue);
         fructose_assert(bValue);
     }
