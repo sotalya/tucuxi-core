@@ -32,7 +32,7 @@ private:
     Value m_V;	/// Volume of the compartment
     Value m_Ke; /// Elimination constant rate = Cl/V where Cl is the clearance and V is the volume of the compartment
     int m_NbPoints; /// Number measure points during interval
-    int m_Int; /// Interval time
+    int64 m_Int; /// Interval (milliseconds)
 };
 
 inline void OneCompartmentBolus::compute(const Residuals& _inResiduals, Eigen::VectorXd& _concentrations)

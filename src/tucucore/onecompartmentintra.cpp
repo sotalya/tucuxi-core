@@ -63,7 +63,7 @@ bool OneCompartmentIntra::computeConcentrations(const Residuals& _inResiduals, C
     int forcesize = static_cast<int>(std::min(ceil(static_cast<double>(m_Tinf)/static_cast<double>(m_Int) * static_cast<double>(m_NbPoints)), ceil(m_NbPoints)));
 
     // Calculate concentrations
-    compute(_inResiduals, forcesize, m_NbPoints, concentrations);
+    compute(_inResiduals, forcesize, concentrations);
 
     // Set the new residual
     _outResiduals.push_back(concentrations[m_NbPoints - 1]);
@@ -82,7 +82,7 @@ bool OneCompartmentIntra::computeConcentration(const int64& _atTime, const Resid
     }
 
     // Calculate concentrations
-    compute(_inResiduals, forcesize, 2, concentrations);
+    compute(_inResiduals, forcesize, concentrations);
 
     // return concentrations (computation with atTime (current time))
     _concentrations.push_back(concentrations[0]);

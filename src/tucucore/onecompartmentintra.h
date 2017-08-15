@@ -25,7 +25,7 @@ protected:
     virtual void computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterList& _parameters, Eigen::VectorXd& _times) override;
     virtual bool computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) override;
     virtual bool computeConcentration(const int64& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) override;
-    void compute(const Residuals& _inResiduals, const int _forcesize, const int nbTot, Eigen::VectorXd& _concentrations);
+    void compute(const Residuals& _inResiduals, const int _forcesize, Eigen::VectorXd& _concentrations);
 
 private:
     Value m_D;	/// Quantity of drug
@@ -37,17 +37,19 @@ private:
     int m_NbPoints; /// number measure points during interval
 };
 
-inline void OneCompartmentIntra::compute(const Residuals& _inResiduals, const int _forcesize, const int nbTot, Eigen::VectorXd& _concentrations)
+inline void OneCompartmentIntra::compute(const Residuals& _inResiduals, const int _forcesize, Eigen::VectorXd& _concentrations)
 {
     Concentration part1 = m_D / (m_Tinf * m_Cl);
 
     // Calcaulate concentrations
-    _concentrations = Eigen::VectorXd::Constant(nbTot, _inResiduals[0]);
+    _concentrations = Eigen::VectorXd::Constant(m_precomputedLogarithms["Ke"].size(), _inResiduals[0]);
     _concentrations = _concentrations.cwiseProduct(m_precomputedLogarithms["Ke"]);
 
-    _concentrations.head(_forcesize) =
-        _concentrations.head(_forcesize)
-	+ part1 * (1.0 - m_precomputedLogarithms["Ke"].head(_forcesize).array()).matrix();
+    if(_forcesize != 0) {
+	_concentrations.head(_forcesize) =
+		_concentrations.head(_forcesize)
+		+ part1 * (1.0 - m_precomputedLogarithms["Ke"].head(_forcesize).array()).matrix();
+    }
     
     int therest = static_cast<int>(_concentrations.size() - _forcesize);
     _concentrations.tail(therest) =
