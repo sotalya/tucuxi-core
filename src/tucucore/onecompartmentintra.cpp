@@ -49,7 +49,7 @@ bool OneCompartmentIntra::checkInputs(const IntakeEvent& _intakeEvent, const Par
 
 void OneCompartmentIntra::computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters, Eigen::VectorXd& _times)
 {
-    m_precomputedLogarithms["Ke"] = (-m_Ke * _times).array().exp();
+    setLogs(Logarithms::Ke, (-m_Ke * _times).array().exp());
 }
 
 

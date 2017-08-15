@@ -25,7 +25,7 @@ bool OneCompartmentBolus::checkInputs(const IntakeEvent& _intakeEvent, const Par
     m_V = _parameters.getValue(0);
     m_Ke = _parameters.getValue(1);
     m_NbPoints = _intakeEvent.getNbPoints();
-    m_Int = (_intakeEvent.getInterval()).toMilliseconds();
+    m_Int = static_cast<int>((_intakeEvent.getInterval()).toMilliseconds());
 
     // check the inputs
     bOK &= checkValue(m_D >= 0, "The dose is negative.");
@@ -46,7 +46,7 @@ bool OneCompartmentBolus::checkInputs(const IntakeEvent& _intakeEvent, const Par
 
 void OneCompartmentBolus::computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters, Eigen::VectorXd& _times)
 {
-    m_precomputedLogarithms["Ke"] = (-m_Ke * _times).array().exp();
+    setLogs(Logarithms::Ke, (-m_Ke * _times).array().exp());
 }
 
 

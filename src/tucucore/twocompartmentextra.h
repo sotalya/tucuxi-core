@@ -10,14 +10,18 @@
 namespace Tucuxi {
 namespace Core {
 
+enum class TwoCompartmentExtraLogarithms : int { Alpha, Beta, Ka };
+
 /// \ingroup TucuCore
 /// \brief Intake interval calculator for the two compartment extra algorithm
 /// \sa IntakeIntervalCalculator
-class TwoCompartmentExtra : public IntakeIntervalCalculator
+class TwoCompartmentExtra : public IntakeIntervalCalculatorBase<TwoCompartmentExtraLogarithms>
 {
 public:
     /// \brief Constructor
     TwoCompartmentExtra();
+
+    typedef TwoCompartmentExtraLogarithms Logarithms;
 
 protected:
     virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;

@@ -106,13 +106,26 @@ protected:
     /// @param _errMsg Message to log in case of problem
     bool checkValue(bool _isOk,  const std::string& _errMsg);
 
-
 protected:
     PrecomputedLogarithms m_precomputedLogarithms;      /// List of precomputed logarithms
 
 private:
     CachedLogarithms m_cache;                           /// The cache of precomputed logarithms
 };
+
+template<typename EParameters>
+class IntakeIntervalCalculatorBase : public IntakeIntervalCalculator
+{
+protected:
+    void setLogs(EParameters _param, Eigen::VectorXd &&_logs) {
+        m_precomputedLogarithms[static_cast<int>(_param)] = _logs;
+    }
+
+    Eigen::VectorXd& logs(EParameters _param) {
+        return m_precomputedLogarithms.at(static_cast<int>(_param));
+    }
+};
+
 
 }
 }

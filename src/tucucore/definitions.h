@@ -85,7 +85,7 @@ typedef int CycleSize;
 
 /// \ingroup TucuCore
 /// \brief A structure to store precomputed logarithms.
-typedef std::map<std::string, Eigen::VectorXd> PrecomputedLogarithms;
+typedef std::vector<Eigen::VectorXd> PrecomputedLogarithms;
 
 /// \ingroup TucuCore
 /// \brief Input operand types.

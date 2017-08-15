@@ -64,9 +64,9 @@ bool TwoCompartmentExtra::checkInputs(const IntakeEvent& _intakeEvent, const Par
 
 void TwoCompartmentExtra::computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters, Eigen::VectorXd& _times)
 {
-    m_precomputedLogarithms["Ka"] = (-m_Ka * _times).array().exp();
-    m_precomputedLogarithms["Alpha"] = (-m_Alpha * _times).array().exp();
-    m_precomputedLogarithms["Beta"] = (-m_Beta * _times).array().exp();
+    setLogs(Logarithms::Alpha, (-m_Alpha * _times).array().exp());
+    setLogs(Logarithms::Beta, (-m_Beta * _times).array().exp());
+    setLogs(Logarithms::Ka, (-m_Ka * _times).array().exp());
 }
 
 
@@ -124,8 +124,8 @@ bool TwoCompartmentExtra::computeConcentrations(const Residuals& _inResiduals, C
 
     // Calculate concentrations of compartment 1
     Eigen::VectorXd concentrations1 = 
-	-2 * (B * m_precomputedLogarithms["Beta"] 
-		+ A * m_precomputedLogarithms["Alpha"] + C * m_precomputedLogarithms["Ka"]) / divider;
+	-2 * (B * logs(Logarithms::Beta) 
+		+ A * logs(Logarithms::Alpha) + C * logs(Logarithms::Ka)) / divider;
 
     // For compartment1, calculate A, B, C and divider
     A = 
@@ -152,11 +152,11 @@ bool TwoCompartmentExtra::computeConcentrations(const Residuals& _inResiduals, C
 
     // Calculate concentrations of compartment 2 and 3
     Value concentrations2 = 
-        2 * (B * m_precomputedLogarithms["Beta"](m_precomputedLogarithms["Beta"].size() - 1) 
-        + A * m_precomputedLogarithms["Alpha"](m_precomputedLogarithms["Alpha"].size() - 1) 
-        + C * m_precomputedLogarithms["Ka"](m_precomputedLogarithms["Ka"].size() - 1)) / divider;
+        2 * (B * logs(Logarithms::Beta)(logs(Logarithms::Beta).size() - 1) 
+        + A * logs(Logarithms::Alpha)(logs(Logarithms::Alpha).size() - 1) 
+        + C * logs(Logarithms::Ka)(logs(Logarithms::Ka).size() - 1)) / divider;
     Value concentrations3 = 
-	m_precomputedLogarithms["Ka"](m_precomputedLogarithms["Ka"].size() - 1) * resid3;
+            logs(Logarithms::Ka)(logs(Logarithms::Ka).size() - 1) * resid3;
 
     // Return concentrations of comp1, comp2 and comp3
     _outResiduals.push_back(concentrations1[m_NbPoints - 1]);
@@ -227,8 +227,8 @@ bool TwoCompartmentExtra::computeConcentration(const int64& _atTime, const Resid
 
     // Calculate concentrations of compartment 1
     Eigen::VectorXd concentrations1 = 
-	-2 * (B * m_precomputedLogarithms["Beta"] 
-		+ A * m_precomputedLogarithms["Alpha"] + C * m_precomputedLogarithms["Ka"]) / divider;
+	-2 * (B * logs(Logarithms::Beta) 
+		+ A * logs(Logarithms::Alpha) + C * logs(Logarithms::Ka)) / divider;
 
     // For compartment1, calculate A, B, C and divider
     A = 
@@ -255,11 +255,11 @@ bool TwoCompartmentExtra::computeConcentration(const int64& _atTime, const Resid
 
     // Calculate concentrations of compartment 2 and 3
     Value concentrations2 = 
-        2 * (B * m_precomputedLogarithms["Beta"](m_precomputedLogarithms["Beta"].size() - 1) 
-        + A * m_precomputedLogarithms["Alpha"](m_precomputedLogarithms["Alpha"].size() - 1) 
-        + C * m_precomputedLogarithms["Ka"](m_precomputedLogarithms["Ka"].size() - 1)) / divider;
+        2 * (B * logs(Logarithms::Beta)(logs(Logarithms::Beta).size() - 1) 
+        + A * logs(Logarithms::Alpha)(logs(Logarithms::Alpha).size() - 1) 
+        + C * logs(Logarithms::Ka)(logs(Logarithms::Ka).size() - 1)) / divider;
     Value concentrations3 = 
-	m_precomputedLogarithms["Ka"](m_precomputedLogarithms["Ka"].size() - 1) * resid3;
+        logs(Logarithms::Ka)(logs(Logarithms::Ka).size() - 1) * resid3;
 
     // return concentraions (computation with atTime (current time))
     _concentrations.push_back(concentrations1[0]);

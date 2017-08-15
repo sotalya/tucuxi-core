@@ -10,14 +10,18 @@
 namespace Tucuxi {
 namespace Core {
 
+enum class EOneCompartmentIntraLogarithms : int { Ke };
+
 /// \ingroup TucuCore
 /// \brief Intake interval calculator for the one compartment extravascular algorithm
 /// \sa IntakeIntervalCalculator
-class OneCompartmentIntra : public IntakeIntervalCalculator
+class OneCompartmentIntra : public IntakeIntervalCalculatorBase<EOneCompartmentIntraLogarithms>
 {
 public:
     /// \brief Constructor
     OneCompartmentIntra();
+
+    typedef EOneCompartmentIntraLogarithms Logarithms;
 
 protected:
     virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
@@ -42,16 +46,16 @@ inline void OneCompartmentIntra::compute(const Residuals& _inResiduals, const in
 
     // Calcaulate concentrations
     Eigen::VectorXd concentrations = Eigen::VectorXd::Constant(m_NbPoints, _inResiduals[0]);
-    concentrations = concentrations.cwiseProduct(m_precomputedLogarithms["Ke"]);
+    concentrations = concentrations.cwiseProduct(logs(Logarithms::Ke));
 
     concentrations.head(_forcesize) = 
         concentrations.head(_forcesize) 
-	+ part1 * (1.0 - m_precomputedLogarithms["Ke"].head(_forcesize).array()).matrix();
+	+ part1 * (1.0 - logs(Logarithms::Ke).head(_forcesize).array()).matrix();
     
     int therest = static_cast<int>(concentrations.size() - _forcesize);
     concentrations.tail(therest) = 
         concentrations.tail(therest) 
-	+ part1 * (exp(m_Ke * m_Tinf) - 1) * m_precomputedLogarithms["Ke"].tail(therest);
+	+ part1 * (exp(m_Ke * m_Tinf) - 1) * logs(Logarithms::Ke).tail(therest);
 }
 
 }

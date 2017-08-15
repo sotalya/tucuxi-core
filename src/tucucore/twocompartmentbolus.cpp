@@ -60,8 +60,8 @@ bool TwoCompartmentBolus::checkInputs(const IntakeEvent& _intakeEvent, const Par
 
 void TwoCompartmentBolus::computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters, Eigen::VectorXd& _times)
 {
-    m_precomputedLogarithms["Alpha"] = (-m_Alpha * _times).array().exp();
-    m_precomputedLogarithms["Beta"] = (-m_Beta * _times).array().exp();
+    setLogs(Logarithms::Alpha, (-m_Alpha * _times).array().exp());
+    setLogs(Logarithms::Beta, (-m_Beta * _times).array().exp());
 }
 
 
@@ -79,9 +79,9 @@ bool TwoCompartmentBolus::computeConcentrations(const Residuals& _inResiduals, C
 
     // Calculate concentrations for comp1 and comp2
     Eigen::VectorXd concentrations1 = 
-        ((A * m_precomputedLogarithms["Alpha"]) + (B * m_precomputedLogarithms["Beta"])) / (2 * m_RootK);
+        ((A * logs(Logarithms::Alpha)) + (B * logs(Logarithms::Beta))) / (2 * m_RootK);
     Eigen::VectorXd concentrations2 = 
-        ((A2 * m_precomputedLogarithms["Alpha"]) + (BB2 * m_precomputedLogarithms["Beta"])) / (2 * m_RootK);
+        ((A2 * logs(Logarithms::Alpha)) + (BB2 * logs(Logarithms::Beta))) / (2 * m_RootK);
 
     // return concentrations of comp1 and comp2
     _outResiduals.push_back(concentrations1[m_NbPoints - 1]);
@@ -110,9 +110,9 @@ bool TwoCompartmentBolus::computeConcentration(const int64& _atTime, const Resid
 
     // Calculate concentrations for comp1 and comp2
     Eigen::VectorXd concentrations1 = 
-        ((A * m_precomputedLogarithms["Alpha"]) + (B * m_precomputedLogarithms["Beta"])) / (2 * m_RootK);
+        ((A * logs(Logarithms::Alpha)) + (B * logs(Logarithms::Beta))) / (2 * m_RootK);
     Eigen::VectorXd concentrations2 = 
-        ((A2 * m_precomputedLogarithms["Alpha"]) + (BB2 * m_precomputedLogarithms["Beta"])) / (2 * m_RootK);
+        ((A2 * logs(Logarithms::Alpha)) + (BB2 * logs(Logarithms::Beta))) / (2 * m_RootK);
 
     // return concentraions (computation with atTime (current time))
     _concentrations.push_back(concentrations1[0]);

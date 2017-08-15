@@ -10,14 +10,18 @@
 namespace Tucuxi {
 namespace Core {
 
+enum class ThreeCompartmentBolusLogarithms : int { Alpha, Beta, Gamma };
+
 /// \ingroup TucuCore
 /// \brief Intake interval calculator for the three compartment bolus algorithm
 /// \sa IntakeIntervalCalculator
-class ThreeCompartmentBolus : public IntakeIntervalCalculator
+class ThreeCompartmentBolus : public IntakeIntervalCalculatorBase<ThreeCompartmentBolusLogarithms>
 {
 public:
     /// \brief Constructor
     ThreeCompartmentBolus();
+
+    typedef ThreeCompartmentBolusLogarithms Logarithms;
 
 protected:
     virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;

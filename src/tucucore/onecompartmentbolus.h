@@ -10,14 +10,18 @@
 namespace Tucuxi {
 namespace Core {
 
+enum class EOneCompartmentBolusLogarithms : int { Ke };
+
 /// \ingroup TucuCore
 /// \brief Intake interval calculator for the one compartment bolus algorithm
 /// \sa IntakeIntervalCalculator
-class OneCompartmentBolus : public IntakeIntervalCalculator
+class OneCompartmentBolus : public IntakeIntervalCalculatorBase<EOneCompartmentBolusLogarithms>
 {
 public:
     /// \brief Constructor
     OneCompartmentBolus();
+
+    typedef EOneCompartmentBolusLogarithms Logarithms;
 
 protected:
     virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
@@ -35,8 +39,8 @@ private:
 };
 
 inline void OneCompartmentBolus::compute(const Residuals& _inResiduals, Eigen::VectorXd& _concentrations)
-{
-    _concentrations = (m_D / m_V + _inResiduals[0]) * m_precomputedLogarithms["Ke"];
+{    
+    _concentrations = (m_D / m_V + _inResiduals[0]) * logs(Logarithms::Ke);
 }
 
 }

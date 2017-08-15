@@ -79,7 +79,7 @@ IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakeSingle
     
     // To reuse interface of computeLogarithms with multiple points, remaine time as a vector.
     Eigen::VectorXd times(2); 
-    times << _atTime, (_intakeEvent.getInterval()).toHours();
+    times << static_cast<double>(_atTime), static_cast<double>(_intakeEvent.getInterval().toHours());
 
     computeLogarithms(_intakeEvent, _parameters, times);
 

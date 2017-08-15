@@ -61,12 +61,12 @@ bool TwoCompartmentIntra::checkInputs(const IntakeEvent& _intakeEvent, const Par
 
 void TwoCompartmentIntra::computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters, Eigen::VectorXd& _times)
 {
-    m_precomputedLogarithms["Alpha"] = (-m_Alpha * _times).array().exp();
-    m_precomputedLogarithms["Beta"] = (-m_Beta * _times).array().exp();
-    m_precomputedLogarithms["AlphaInf"] = (m_Alpha * _times).array().exp();
-    m_precomputedLogarithms["BetaInf"] = (m_Beta * _times).array().exp();
-    m_precomputedLogarithms["BetaInf2"] = (-2 * m_Beta * _times).array().exp();
-    m_precomputedLogarithms["Root"] = (m_RootK * _times).array().exp();
+    setLogs(Logarithms::Alpha, (-m_Alpha * _times).array().exp());
+    setLogs(Logarithms::Beta, (-m_Beta * _times).array().exp());
+    setLogs(Logarithms::AlphaInf, (m_Alpha * _times).array().exp());
+    setLogs(Logarithms::BetaInf, (m_Beta * _times).array().exp());
+    setLogs(Logarithms::BetaInf2, (-2 * m_Beta * _times).array().exp());
+    setLogs(Logarithms::Root, (m_RootK * _times).array().exp());
 }
 
 
@@ -76,12 +76,12 @@ bool TwoCompartmentIntra::computeConcentrations(const Residuals& _inResiduals, C
 
     int forcesize = static_cast<int>(std::max(0.0, std::min(ceil(m_Tinf/m_Int * m_NbPoints), ceil(m_NbPoints))));
     int therest;
-    Eigen::VectorXd& alphaLogV = m_precomputedLogarithms["Alpha"]; 
-    Eigen::VectorXd& betaLogV = m_precomputedLogarithms["Beta"]; 
-    Eigen::VectorXd& alphaInfLogV = m_precomputedLogarithms["AlphaInf"]; 
-    Eigen::VectorXd& betaInfLogV = m_precomputedLogarithms["BetaInf"]; 
-    Eigen::VectorXd& betaInf2LogV = m_precomputedLogarithms["BetaInf2"]; 
-    Eigen::VectorXd& rootLogV = m_precomputedLogarithms["Root"]; 
+    Eigen::VectorXd& alphaLogV = logs(Logarithms::Alpha); 
+    Eigen::VectorXd& betaLogV = logs(Logarithms::Beta); 
+    Eigen::VectorXd& alphaInfLogV = logs(Logarithms::AlphaInf); 
+    Eigen::VectorXd& betaInfLogV = logs(Logarithms::BetaInf); 
+    Eigen::VectorXd& betaInf2LogV = logs(Logarithms::BetaInf2); 
+    Eigen::VectorXd& rootLogV = logs(Logarithms::Root); 
 
     Concentration resid1 = _inResiduals[0];
     Concentration resid2 = _inResiduals[1];
@@ -164,12 +164,12 @@ bool TwoCompartmentIntra::computeConcentration(const int64& _atTime, const Resid
 {
     bool bOK = true;
 
-    Eigen::VectorXd& alphaLogV = m_precomputedLogarithms["Alpha"]; 
-    Eigen::VectorXd& betaLogV = m_precomputedLogarithms["Beta"]; 
-    Eigen::VectorXd& alphaInfLogV = m_precomputedLogarithms["AlphaInf"]; 
-    Eigen::VectorXd& betaInfLogV = m_precomputedLogarithms["BetaInf"]; 
-    Eigen::VectorXd& betaInf2LogV = m_precomputedLogarithms["BetaInf2"]; 
-    Eigen::VectorXd& rootLogV = m_precomputedLogarithms["Root"]; 
+    Eigen::VectorXd& alphaLogV = logs(Logarithms::Alpha); 
+    Eigen::VectorXd& betaLogV = logs(Logarithms::Beta); 
+    Eigen::VectorXd& alphaInfLogV = logs(Logarithms::AlphaInf); 
+    Eigen::VectorXd& betaInfLogV = logs(Logarithms::BetaInf); 
+    Eigen::VectorXd& betaInf2LogV = logs(Logarithms::BetaInf2); 
+    Eigen::VectorXd& rootLogV = logs(Logarithms::Root); 
 
     Concentration resid1 = _inResiduals[0];
     Concentration resid2 = _inResiduals[1];
