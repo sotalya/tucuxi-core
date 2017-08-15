@@ -18,7 +18,8 @@ HEADERS += \
     $$PWD/../../src/tucucore/threecompartmentintra.h \
     $$PWD/../../src/tucucore/twocompartmentbolus.h \
     $$PWD/../../src/tucucore/twocompartmentextra.h \
-    $$PWD/../../src/tucucore/twocompartmentintra.h
+    $$PWD/../../src/tucucore/twocompartmentintra.h \
+    $$PWD/../../src/tucucore/hardcodedoperation.h
 
 SOURCES += \
     $$PWD/../../src/tucucore/cachedlogarithms.cpp \
@@ -35,4 +36,5 @@ SOURCES += \
     $$PWD/../../src/tucucore/threecompartmentintra.cpp \
     $$PWD/../../src/tucucore/twocompartmentbolus.cpp \
     $$PWD/../../src/tucucore/twocompartmentextra.cpp \
-    $$PWD/../../src/tucucore/twocompartmentintra.cpp
+    $$PWD/../../src/tucucore/twocompartmentintra.cpp \
+    $$PWD/../../src/tucucore/hardcodedoperation.cpp

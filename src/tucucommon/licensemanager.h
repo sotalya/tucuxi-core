@@ -2,8 +2,8 @@
  * Copyright (C) 2017 Tucuxi SA
  */
 
-#ifndef TUCUXI_TUCUCOMMON_LICENSECHECKER_H
-#define TUCUXI_TUCUCOMMON_LICENSECHECKER_H
+#ifndef TUCUXI_TUCUCOMMON_LICENSEMANAGER_H
+#define TUCUXI_TUCUCOMMON_LICENSEMANAGER_H
 
 /// \defgroup TucuCommon Tucuxi common library
 /// \brief Common classes and components for Tucuxi applications
