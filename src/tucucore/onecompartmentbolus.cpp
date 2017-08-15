@@ -65,7 +65,7 @@ bool OneCompartmentBolus::computeConcentrations(const Residuals& _inResiduals, C
     _outResiduals.push_back(concentrations[m_NbPoints - 1]);    
     _concentrations.assign(concentrations.data(), concentrations.data() + concentrations.size());	
     
-    return checkValue(_outResiduals[0] > 0, "The concentration is negative.");
+    return checkValue(_outResiduals[0] >= 0, "The concentration is negative.");
 }
 
 bool OneCompartmentBolus::computeConcentration(const int64& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
@@ -86,7 +86,7 @@ bool OneCompartmentBolus::computeConcentration(const int64& _atTime, const Resid
     // Return final residual (computation with m_Int (interval))
     _outResiduals.push_back(concentrations[1]);
     
-    return checkValue(_outResiduals[0] > 0, "The concentration is negative.");
+    return checkValue(_outResiduals[0] >= 0, "The concentration is negative.");
 }
 
 }
