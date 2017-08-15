@@ -11,11 +11,26 @@
 #include "test_dosage.h"
 #include "test_intakeextractor.h"
 #include "test_operation.h"
+#include "test_intakeintervalcalculator.h"
 
 int main(int argc, char** argv) 
 {
     // Get application folder
     std::string appFolder = Tucuxi::Common::Utils::getAppFolder(argv);
+
+    int res = 0;
+
+    TestIntervalCalculator calculatorsTests;
+    calculatorsTests.add_test("1 comp bolus single vs multiple test", &TestIntervalCalculator::test1compBolusSingleVsMultiple);
+    calculatorsTests.add_test("1 comp extra single vs multiple test", &TestIntervalCalculator::test1compExtraSingleVsMultiple);
+    calculatorsTests.add_test("1 comp infusion single vs multiple test", &TestIntervalCalculator::test1compInfusionSingleVsMultiple);
+
+    res = calculatorsTests.run(argc, argv);
+    if (res != 0) {
+        std::cerr << "Calculators test failed\n";
+        exit(1);
+    }
+    std::cout << "Calculators test succeeded\n";
 
     // --- DOSAGE --- //
     TestDosage dosageTests;
@@ -25,7 +40,7 @@ int main(int argc, char** argv)
     dosageTests.add_test("WeeklyDose test", &TestDosage::testWeeklyDose);
     dosageTests.add_test("DosageTimeRange test", &TestDosage::testDosageTimeRange);
 
-    int res = dosageTests.run(argc, argv);
+    res = dosageTests.run(argc, argv);
     if (res != 0) {
         std::cerr << "Dosage test failed\n";
         exit(1);
