@@ -248,7 +248,7 @@ int LicenseManager::generateRequestString(std::string* request)
     *request += ":";
     *request += iDhash;
     *request += ":";
-    *request += std::to_string(today.year()) + std::to_string(today.month()) + std::to_string(today.day());
+    *request += std::to_string(today.year()) + "-" + std::to_string(today.month()) + "-" + std::to_string(today.day());
     *request += ":";
     *request += "1.0";
 

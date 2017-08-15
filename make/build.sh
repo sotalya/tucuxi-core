@@ -34,7 +34,7 @@ if [ $BUILD_LIBS -eq 1 ] ; then
    done
 fi
 
-for MODULE in tucucommon tucucore tucucli
+for MODULE in tucucommon tucucore tucucli tuculicense
 do
    cd $TUCUXI_ROOT/src/$MODULE
    mkdir -p objs
@@ -44,7 +44,7 @@ do
    fi
 done
 
-for MODULE in tucucommon tucucore
+for MODULE in tucucommon tucucore tuculicense
 do
    cd $TUCUXI_ROOT/test/$MODULE
    mkdir -p objs

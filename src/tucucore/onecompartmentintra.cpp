@@ -19,7 +19,7 @@ bool OneCompartmentIntra::checkInputs(const IntakeEvent& _intakeEvent, const Par
 {
     bool bOK = true;
 
-    if(!checkValue(_parameters.size() >= 4, "The number of parameters should be equal to 4."))
+    if(!checkValue(_parameters.size() >= 2, "The number of parameters should be equal to 2."))
 	    return false;
     
     m_D = _intakeEvent.getDose() * 1000;
@@ -60,10 +60,10 @@ void OneCompartmentIntra::computeLogarithms(const IntakeEvent& _intakeEvent, con
 bool OneCompartmentIntra::computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations;
-    int forcesize = static_cast<int>(std::min(ceil(m_Tinf/m_Int * m_NbPoints), ceil(m_NbPoints)));
+    int forcesize = static_cast<int>(std::min(ceil(static_cast<double>(m_Tinf)/static_cast<double>(m_Int) * static_cast<double>(m_NbPoints)), ceil(m_NbPoints)));
 
-    // Calcaulate concentrations
-    compute(_inResiduals, forcesize, concentrations);
+    // Calculate concentrations
+    compute(_inResiduals, forcesize, m_NbPoints, concentrations);
 
     // Set the new residual
     _outResiduals.push_back(concentrations[m_NbPoints - 1]);
@@ -81,8 +81,8 @@ bool OneCompartmentIntra::computeConcentration(const int64& _atTime, const Resid
         forcesize = 1;
     }
 
-    // Calcaulate concentrations
-    compute(_inResiduals, forcesize, concentrations);
+    // Calculate concentrations
+    compute(_inResiduals, forcesize, 2, concentrations);
 
     // return concentrations (computation with atTime (current time))
     _concentrations.push_back(concentrations[0]);
