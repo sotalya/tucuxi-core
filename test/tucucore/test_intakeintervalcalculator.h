@@ -61,8 +61,9 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             nbPoints,
             outResiduals1,
             true);
-//        printf("Out residual = %f\n", outResiduals1[0]);
-//        printf("Out residual = %f\n", outResiduals1[1]);
+        if (verbose()) {
+            printf("Multiple Out residual = %f\n", outResiduals1[0]);
+        }
 
         fructose_assert(res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok);
 
@@ -73,8 +74,9 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             inResiduals,
             nbPoints,
             outResiduals2);
-//        printf("Out residual = %f\n", outResiduals2[0]);
-//        printf("Out residual = %f\n", outResiduals2[1]);
+        if (verbose()) {
+            printf("Single   Out residual = %f\n", outResiduals1[0]);
+        }
 
         fructose_assert(res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok);
 
@@ -124,8 +126,11 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             nbPoints,
             outResiduals1,
             true);
-//        printf("Out residual = %f\n", outResiduals1[0]);
-//        printf("Out residual = %f\n", outResiduals1[1]);
+
+        if (verbose()) {
+            printf("Multiple residual = %f\n", outResiduals1[0]);
+            printf("Multiple residual = %f\n", outResiduals1[1]);
+        }
 
         fructose_assert(res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok);
 
@@ -136,8 +141,11 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             inResiduals,
             nbPoints,
             outResiduals2);
-//        printf("Out residual = %f\n", outResiduals2[0]);
-//        printf("Out residual = %f\n", outResiduals2[1]);
+
+        if (verbose()) {
+            printf("Single   residual = %f\n", outResiduals1[0]);
+            printf("Single   residual = %f\n", outResiduals1[1]);
+        }
 
         fructose_assert(res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok);
 
@@ -184,8 +192,10 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             nbPoints,
             outResiduals1,
             true);
-//        printf("Out residual = %f\n", outResiduals1[0]);
-//        printf("Out residual = %f\n", outResiduals1[1]);
+
+        if (verbose()) {
+            printf("Multiple residual = %f\n", outResiduals1[0]);
+        }
 
         fructose_assert(res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok);
 
@@ -196,8 +206,10 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             inResiduals,
             nbPoints,
             outResiduals2);
-//        printf("Out residual = %f\n", outResiduals2[0]);
-//        printf("Out residual = %f\n", outResiduals2[1]);
+
+        if (verbose()) {
+            printf("Single   residual = %f\n", outResiduals1[0]);
+        }
 
         fructose_assert(res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok);
 
