@@ -40,7 +40,7 @@ bool OneCompartmentIntra::checkInputs(const IntakeEvent& _intakeEvent, const Par
     bOK &= checkValue(!std::isnan(m_Ke), "The CL is NaN.");
     bOK &= checkValue(!std::isinf(m_Ke), "The CL is Inf.");
     bOK &= checkValue(m_Tinf >= 0, "The infusion time is zero or negative.");
-    bOK &= checkValue(m_Int >= 0, "The interval time is zero or negative.");
+    bOK &= checkValue(m_Int > 0, "The interval time is negative.");
 
     return bOK;
 }
@@ -74,17 +74,23 @@ bool OneCompartmentIntra::computeConcentrations(const Residuals& _inResiduals, C
 
 bool OneCompartmentIntra::computeConcentration(const int64& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
 {
-    Eigen::VectorXd concentrations(2);
+    Eigen::VectorXd concentrations;
     int forcesize = 0;
 
-    if(_atTime < m_Tinf)
-	    forcesize = 1;
+    if (_atTime < m_Tinf) {
+        forcesize = 1;
+    }
 
     // Calcaulate concentrations
     compute(_inResiduals, forcesize, concentrations);
 
-    // return concentraions (computation with atTime (current time))
+    // return concentrations (computation with atTime (current time))
     _concentrations.push_back(concentrations[0]);
+
+    // interval=0 means that it is the last cycle, so final residual = 0
+    if (m_Int == 0) {
+        concentrations[1] = 0;
+    }
 
     // return final residual (computation with m_Int (interval))
     _outResiduals.push_back(concentrations[1]);

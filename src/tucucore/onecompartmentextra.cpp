@@ -28,6 +28,7 @@ bool OneCompartmentExtra::checkInputs(const IntakeEvent& _intakeEvent, const Par
     m_V = _parameters[3].getValue();
     m_Ke = m_Cl / m_V;
     m_NbPoints = _intakeEvent.getNumberPoints();
+    m_Int = (_intakeEvent.getInterval()).toMilliseconds();
 
     // check the inputs
     bOK &= checkValue(m_D >= 0, "The dose is negative.");
@@ -46,7 +47,7 @@ bool OneCompartmentExtra::checkInputs(const IntakeEvent& _intakeEvent, const Par
     bOK &= checkValue(!std::isnan(m_Ka), "The m_Ka is NaN.");
     bOK &= checkValue(!std::isinf(m_Ka), "The m_Ka is Inf.");
     bOK &= checkValue(m_NbPoints >= 0, "The number of points is zero or negative.");
-    bOK &= checkValue((_intakeEvent.getInterval()).toMilliseconds() >= 0, "The interval time is zero or negative.");
+    bOK &= checkValue(m_Int > 0, "The interval time is negative.");
 
     return bOK;
 }
@@ -84,7 +85,6 @@ bool OneCompartmentExtra::computeConcentrations(const Residuals& _inResiduals, C
 
 bool OneCompartmentExtra::computeConcentration(const int64& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
 {
-    bool bOK = true;
     Eigen::VectorXd concentrations1, concentrations2;
 
     // compute concenration1 and 2
@@ -93,12 +93,18 @@ bool OneCompartmentExtra::computeConcentration(const int64& _atTime, const Resid
     // return concentraions (computation with atTime (current time))
     _concentrations.push_back(concentrations1[0]);
     _concentrations.push_back(concentrations2[0]);
+    
+    // interval=0 means that it is the last cycle, so final residual = 0
+    if (m_Int == 0) {
+        concentrations1[1] = 0;
+        concentrations2[1] = 0;
+    }
 
-    // return final residual (computation with m_Int (interval))
+    // Return final residual (computation with m_Int (interval))
     _outResiduals.push_back(concentrations1[1]);
     _outResiduals.push_back(concentrations2[1]);
 
-    bOK &= checkValue(_outResiduals[0] >= 0, "The final residual1 is negative.");
+    bool bOK = checkValue(_outResiduals[0] >= 0, "The final residual1 is negative.");
     bOK &= checkValue(_outResiduals[1] >= 0, "The final residual2 is negative.");
     bOK &= checkValue(_concentrations[0] >= 0, "The concentration1 is negative.");
     bOK &= checkValue(_concentrations[1] >= 0, "The concentration2 is negative.");

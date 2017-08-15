@@ -5,10 +5,11 @@
 #ifndef TUCUXI_MATH_INTAKEEVENT_H
 #define TUCUXI_MATH_INTAKEEVENT_H
 
-#include "tucucore/timedevent.h"
-
 #include "tucucommon/datetime.h"
 #include "tucucommon/duration.h"
+
+#include "tucucore/definitions.h"
+#include "tucucore/timedevent.h"
 
 using Tucuxi::Common::DateTime;
 using Tucuxi::Common::Duration;
