@@ -28,23 +28,19 @@ CoreComponent::~CoreComponent()
 }
 
 
-bool CoreComponent::loadDrug()
+bool CoreComponent::loadDrug(const std::string& _xmlDrugDescription)
 {
     return false;
 }
 
 
-bool CoreComponent::loadTreatment()
+bool CoreComponent::loadTreatment(const std::string& _xmlTreatmentDescription)
 {
     return false;
 }
 
 
-ConcentrationPredictionPtr CoreComponent::computeConcentrations(
-    PredictionType _type,
-    Tucuxi::Common::DateTime _start,
-    Tucuxi::Common::DateTime _end,
-    int _nbPoints)
+ConcentrationPredictionPtr CoreComponent::computeConcentrations(const ConcentrationRequest &_request)
 {
     ConcentrationPredictionPtr prediction;
 
@@ -53,9 +49,9 @@ ConcentrationPredictionPtr CoreComponent::computeConcentrations(
     ParameterSetSeries parameters;
        
     // Extract intakes, covariates, parameters and samples
-    IntakeExtractor::extract(*m_treatment->getDosageHistory(_type != PredictionType::Population), _start, _end, intakes);
-    CovariateExtractor::extract(m_drug->getCovariates(), m_treatment->getCovariates(), _start, _end, covariates);
-    ParametersExtractor::extract(covariates, _start, _end, parameters);
+    IntakeExtractor::extract(*m_treatment->getDosageHistory(_request.getType() != PredictionType::Population), _request.getStart(), _request.getEnd(), intakes);
+    CovariateExtractor::extract(m_drug->getCovariates(), m_treatment->getCovariates(), _request.getStart(), _request.getEnd(), covariates);
+    ParametersExtractor::extract(covariates, _request.getStart(), _request.getEnd(), parameters);
 
     if (intakes.size() == 0) {
         m_logger.debug("No intakes, no calc.");
@@ -64,26 +60,26 @@ ConcentrationPredictionPtr CoreComponent::computeConcentrations(
 
     prediction = std::make_unique<ConcentrationPrediction>();
 
-    switch (_type)
+    switch (_request.getType())
     {
         case PredictionType::Population:
-            computePopulation(prediction, _nbPoints, intakes, parameters);
+            computePopulation(prediction, _request.getNbPoints(), intakes, parameters);
             break;
 
         case PredictionType::Apiori:
-            computeApriori(prediction, _nbPoints, intakes, parameters);
+            computeApriori(prediction, _request.getNbPoints(), intakes, parameters);
             break;
 
         case PredictionType::Aposteriori: {
             DateTime lastSampleDate;
             SampleSeries samples;
-            SampleExtractor::extract(m_treatment->getSamples(), _start, _end, samples);
+            SampleExtractor::extract(m_treatment->getSamples(), _request.getStart(), _request.getEnd(), samples);
             if (samples.size() > 0) {
                 SampleSeries::iterator _smpend = samples.end();
                 lastSampleDate = _smpend->getEventTime();
             }
             IntakeSeries intakesForEtas;
-            IntakeExtractor::extract(*m_treatment->getDosageHistory(_type != PredictionType::Population), _start, lastSampleDate, intakesForEtas);
+            IntakeExtractor::extract(*m_treatment->getDosageHistory(_request.getType() != PredictionType::Population), _request.getStart(), lastSampleDate, intakesForEtas);
 
             /// TODO YJE
             Etas etas;
@@ -91,7 +87,7 @@ ConcentrationPredictionPtr CoreComponent::computeConcentrations(
             ResidualErrorModel residualErrorModel;
             extractError(m_drug->getErrorModel(), m_drug->getParemeters(), omega, residualErrorModel);
             computeAposterioriEtas(intakesForEtas, parameters, omega, residualErrorModel, samples, etas);
-            computeAposteriori(prediction, _nbPoints, intakes, parameters, etas);
+            computeAposteriori(prediction, _request.getNbPoints(), intakes, parameters, etas);
             break;
         }
 
@@ -103,11 +99,7 @@ ConcentrationPredictionPtr CoreComponent::computeConcentrations(
 }
 
 
-PercentilesPredictionPtr CoreComponent::computePercentiles(PredictionType _type,
-    Tucuxi::Common::DateTime _start,
-    Tucuxi::Common::DateTime _end,
-    const PercentileRanks &_ranks,
-    int _nbPoints)
+PercentilesPredictionPtr CoreComponent::computePercentiles(const PercentilesRequest &_request)
 {
     PercentilesPredictionPtr result;
     return result;

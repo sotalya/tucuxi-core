@@ -13,8 +13,8 @@ namespace Core {
 class IDataModelServices : public Tucuxi::Common::Interface
 {
 public:
-    virtual bool loadDrug() = 0;
-    virtual bool loadTreatment() = 0;
+    virtual bool loadDrug(const std::string& _xmlDrugDescription) = 0;
+    virtual bool loadTreatment(const std::string& _xmlTreatmentDescription) = 0;
 };
 
 }

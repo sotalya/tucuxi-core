@@ -35,20 +35,11 @@ public:
     /// \brief Constructor call by LoggerHelper
     ~CoreComponent();
 
-    bool loadDrug() override;
-    bool loadTreatment() override;
+    bool loadDrug(const std::string& _xmlDrugDescription) override;
+    bool loadTreatment(const std::string& _xmlTreatmentDescription) override;
         
-
-    virtual ConcentrationPredictionPtr computeConcentrations(PredictionType _type, 
-                                                             Tucuxi::Common::DateTime _start, 
-                                                             Tucuxi::Common::DateTime _end, 
-                                                             int _nbPoints) override;
-
-    virtual PercentilesPredictionPtr computePercentiles(PredictionType _type,
-                                                        Tucuxi::Common::DateTime _start,
-                                                        Tucuxi::Common::DateTime _end,
-                                                        const PercentileRanks &_ranks,
-                                                        int _nbPoints) override;
+    virtual ConcentrationPredictionPtr computeConcentrations(const ConcentrationRequest &_request) override;
+    virtual PercentilesPredictionPtr computePercentiles(const PercentilesRequest &_request) override;
 
     void computeAdjustments() override;
 
