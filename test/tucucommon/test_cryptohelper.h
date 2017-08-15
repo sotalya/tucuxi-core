@@ -22,7 +22,7 @@ struct TestCryptoHelper : public fructose::test_base<TestCryptoHelper>
     {
         std::cout << _testName << std::endl;
 
-        int res;
+        bool res;
 
         std::string key;
         res = Tucuxi::Common::CryptoHelper::generateKey(&key);
