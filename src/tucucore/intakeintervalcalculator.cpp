@@ -40,7 +40,7 @@ IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakePoints
         return Result::BadConcentration;
     }
 
-    times = times.array() + _intakeEvent.getOffsetTime().toMilliseconds();
+    times = times.array() + _intakeEvent.getOffsetTime().toHours();
     _times.assign(times.data(), times.data() + times.size());
 
     return Result::Ok;

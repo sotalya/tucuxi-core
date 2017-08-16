@@ -29,7 +29,7 @@ bool TwoCompartmentBolus::checkInputs(const IntakeEvent& _intakeEvent, const Par
     m_K12 = m_Q / m_V1;
     m_K21 = m_Q / m_V2;
     m_NbPoints = _intakeEvent.getNumberPoints();
-    m_Int = (_intakeEvent.getInterval()).toMilliseconds();
+    m_Int = (_intakeEvent.getInterval()).toHours();
 
     bOK &= checkValue(m_D >= 0, "The dose is negative.");
     bOK &= checkValue(!std::isnan(m_D), "The dose is NaN.");
@@ -83,8 +83,8 @@ bool TwoCompartmentBolus::computeConcentrations(const Residuals& _inResiduals, C
 
     _concentrations.assign(concentrations1.data(), concentrations1.data() + concentrations1.size());	
 
-    bool bOK = checkValue(_outResiduals[0] > 0, "The concentration1 is negative.");
-    bOK &= checkValue(_outResiduals[1] > 0, "The concentration2 is negative.");
+    bool bOK = checkValue(_outResiduals[0] >= 0, "The concentration1 is negative.");
+    bOK &= checkValue(_outResiduals[1] >= 0, "The concentration2 is negative.");
 
     return bOK;
 }
@@ -111,8 +111,8 @@ bool TwoCompartmentBolus::computeConcentration(const int64& _atTime, const Resid
     _outResiduals.push_back(concentrations1[1]);
     _outResiduals.push_back(concentrations2[1]);
 
-    bool bOK = checkValue(_outResiduals[0] > 0, "The concentration1 is negative.");
-    bOK &= checkValue(_outResiduals[1] > 0, "The concentration2 is negative.");
+    bool bOK = checkValue(_outResiduals[0] >= 0, "The concentration1 is negative.");
+    bOK &= checkValue(_outResiduals[1] >= 0, "The concentration2 is negative.");
 
     return bOK;
 }

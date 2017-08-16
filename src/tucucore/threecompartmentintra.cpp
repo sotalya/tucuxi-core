@@ -34,8 +34,8 @@ bool ThreeCompartmentIntra::checkInputs(const IntakeEvent& _intakeEvent, const P
     m_K21 = m_Q1 / m_V2;
     m_K13 = m_Q2 / m_V1;
     m_K31 = m_Q2 / m_V2;
-    m_Tinf = _intakeEvent.getInfusionTime().toMilliseconds();
-    m_Int = _intakeEvent.getInterval().toMilliseconds();
+    m_Tinf = _intakeEvent.getInfusionTime().toHours();
+    m_Int = _intakeEvent.getInterval().toHours();
     m_NbPoints = _intakeEvent.getNumberPoints();
 
     bOK &= checkValue(m_D >= 0, "The dose is negative.");

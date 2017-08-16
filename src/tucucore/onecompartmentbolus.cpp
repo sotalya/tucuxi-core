@@ -15,8 +15,6 @@ OneCompartmentBolus::OneCompartmentBolus()
 
 bool OneCompartmentBolus::checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
 {
-    bool bOK = true;
-    
     if(!checkValue(_parameters.size() >= 2, "The number of parameters should be equal to 2."))
 	    return false;
     
@@ -24,18 +22,18 @@ bool OneCompartmentBolus::checkInputs(const IntakeEvent& _intakeEvent, const Par
     m_V = _parameters[0].getValue();
     m_Ke = _parameters[1].getValue();
     m_NbPoints = _intakeEvent.getNumberPoints();
-    m_Int = (_intakeEvent.getInterval()).toMilliseconds();
+    m_Int = (_intakeEvent.getInterval()).toHours();
 
     // check the inputs
-    bOK &= checkValue(m_D >= 0, "The dose is negative.");
+    bool bOK = checkValue(m_D >= 0, "The dose is negative.");
     bOK &= checkValue(!std::isnan(m_D), "The dose is NaN.");
     bOK &= checkValue(!std::isinf(m_D), "The dose is Inf.");
     bOK &= checkValue(m_V > 0, "The volume is not greater than zero.");
     bOK &= checkValue(!std::isnan(m_V), "The V is NaN.");
     bOK &= checkValue(!std::isinf(m_V), "The V is Inf.");
     bOK &= checkValue(m_Ke > 0, "The clearance is not greater than zero.");
-    bOK &= checkValue(!std::isnan(m_Ke), "The CL is NaN.");
-    bOK &= checkValue(!std::isinf(m_Ke), "The CL is Inf.");
+    bOK &= checkValue(!std::isnan(m_Ke), "The Ke is NaN.");
+    bOK &= checkValue(!std::isinf(m_Ke), "The Ke is Inf.");
     bOK &= checkValue(m_NbPoints >= 0, "The number of points is zero or negative.");
     bOK &= checkValue(m_Int > 0, "The interval time is negative.");
 

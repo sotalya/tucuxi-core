@@ -42,7 +42,7 @@ private:
     Value m_Alpha; /// (sumK + root)/2
     Value m_Beta; /// (sumK - root)/2
     int m_NbPoints; /// number measure points during interval
-    int64 m_Int; /// Interval (milliseconds)
+    int64 m_Int; /// Interval (hours)
 };
 
 inline bool TwoCompartmentExtra::compute(const Residuals& _inResiduals, Eigen::VectorXd&
