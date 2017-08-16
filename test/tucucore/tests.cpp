@@ -21,9 +21,14 @@ int main(int argc, char** argv)
     int res = 0;
 
     TestIntervalCalculator calculatorsTests;
+
+    // one compartment
     calculatorsTests.add_test("1 comp bolus single vs multiple test", &TestIntervalCalculator::test1compBolusSingleVsMultiple);
     calculatorsTests.add_test("1 comp extra single vs multiple test", &TestIntervalCalculator::test1compExtraSingleVsMultiple);
     calculatorsTests.add_test("1 comp infusion single vs multiple test", &TestIntervalCalculator::test1compInfusionSingleVsMultiple);
+
+    // two compartment
+    calculatorsTests.add_test("2 comp infusion single vs multiple test", &TestIntervalCalculator::test2compBolusSingleVsMultiple);
 
     res = calculatorsTests.run(argc, argv);
     if (res != 0) {
