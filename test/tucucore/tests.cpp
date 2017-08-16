@@ -6,6 +6,7 @@
 #include <string>
 
 #include "tucucommon/utils.h"
+#include "tucucommon/loggerhelper.h"
 #include "tucucore/dosage.h"
 
 #include "test_dosage.h"
@@ -17,6 +18,10 @@ int main(int argc, char** argv)
 {
     // Get application folder
     std::string appFolder = Tucuxi::Common::Utils::getAppFolder(argv);
+
+    // Initialize our logger
+    const std::string& fileName = Tucuxi::Common::Utils::strFormat("%s/TucuCore-Test.log", appFolder.c_str());
+    Tucuxi::Common::LoggerHelper::init(fileName);
 
     int res = 0;
 
