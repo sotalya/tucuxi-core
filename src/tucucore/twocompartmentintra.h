@@ -42,8 +42,8 @@ private:
     Value m_Divider; /// sqrt(sumK*sumK - 4*K21*Ke)
     Value m_Alpha; /// (sumK + root)/2
     Value m_Beta; /// (sumK - root)/2
-    int64 m_Tinf; /// Infusion time (milliseconds)
-    int64 m_Int; /// Interval (milliseconds)
+    int64 m_Tinf; /// Infusion time (Hours)
+    int64 m_Int; /// Interval (Hours)
     int m_NbPoints; /// number measure points during interval
 };
 
@@ -68,6 +68,7 @@ inline void TwoCompartmentIntra::compute(const Residuals& _inResiduals, const in
             + std::exp(m_RootK*m_Tinf - m_Alpha*m_Tinf) * (m_K12 + m_K21 - m_Ke - m_RootK)
             + std::exp(-m_Alpha*m_Tinf - m_Beta*m_Tinf) * (-m_K12 - m_K21 + m_Ke + m_RootK))
 	) / m_Divider;
+
     Concentration residInf2 = 
         (2 * deltaD * std::exp(m_Beta * m_Tinf) * m_K12
 	* (std::exp(-m_Beta * m_Tinf) * (-m_SumK - m_RootK)
@@ -88,7 +89,7 @@ inline void TwoCompartmentIntra::compute(const Residuals& _inResiduals, const in
     // Calculate concentrations for comp1 and comp2
     _concentrations1 = ((A * alphaLogV) + (B * betaLogV)) / (2 * m_RootK);
     _concentrations2 = ((A2 * alphaLogV) + (BB2 * betaLogV)) / (2 * m_RootK);
-
+    
     // During infusion
     if (_forcesize != 0) {
 	Eigen::ArrayXd p1p1 = (2 * deltaD * m_K21 * betaInfLogV.head(_forcesize)).array();

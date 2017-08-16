@@ -4,6 +4,7 @@
 
 #include <Eigen/Dense>
 
+#include "tucucommon/loggerhelper.h"
 #include "tucucore/twocompartmentintra.h"
 
 namespace Tucuxi {
@@ -19,7 +20,7 @@ bool TwoCompartmentIntra::checkInputs(const IntakeEvent& _intakeEvent, const Par
 
     if(!checkValue(_parameters.size() >= 4, "The number of parameters should be equal to 4."))
 	    return false;
-    
+
     m_D = _intakeEvent.getDose() * 1000;
     m_Cl = _parameters[0].getValue();
     m_Q = _parameters[1].getValue();
@@ -33,10 +34,29 @@ bool TwoCompartmentIntra::checkInputs(const IntakeEvent& _intakeEvent, const Par
     m_Divider = m_RootK * (-m_SumK + m_RootK) * (m_SumK + m_RootK);
     m_Alpha = (m_SumK + m_RootK)/2;
     m_Beta = (m_SumK - m_RootK)/2;
-    m_Tinf = (_intakeEvent.getInfusionTime()).toMilliseconds();
-    m_Int = (_intakeEvent.getInterval()).toMilliseconds();
+    m_Tinf = (_intakeEvent.getInfusionTime()).toHours();
+    m_Int = (_intakeEvent.getInterval()).toHours();
     m_NbPoints = _intakeEvent.getNumberPoints();
+    
+    Tucuxi::Common::LoggerHelper logHelper;
 
+    logHelper.debug("Input Values");
+    logHelper.debug("m_D: {}", m_D);
+    logHelper.debug("m_Cl: {}", m_Cl);
+    logHelper.debug("m_Q: {}", m_Q);
+    logHelper.debug("m_V1: {}", m_V1);
+    logHelper.debug("m_V2: {}", m_V2);
+    logHelper.debug("m_Ke: {}", m_Ke);
+    logHelper.debug("m_K12: {}", m_K12);
+    logHelper.debug("m_K21: {}", m_K21);
+    logHelper.debug("m_SumK: {}", m_SumK);
+    logHelper.debug("m_RootK: {}", m_RootK);
+    logHelper.debug("m_Divider: {}", m_Divider);
+    logHelper.debug("m_Alpha: {}", m_Alpha);
+    logHelper.debug("m_Beta: {}", m_Beta);
+    logHelper.debug("m_Tinf: {}", m_Tinf);
+    logHelper.debug("m_Int: {}", m_Int);
+    
     bOK &= checkValue(m_D >= 0, "The dose is negative.");
     bOK &= checkValue(!std::isnan(m_D), "The dose is NaN.");
     bOK &= checkValue(!std::isinf(m_D), "The dose is Inf.");
@@ -88,7 +108,7 @@ bool TwoCompartmentIntra::computeConcentrations(const Residuals& _inResiduals, C
     _outResiduals.push_back(concentrations2[m_NbPoints - 1]);
 
     // Return concentrations of comp1 and comp2
-    _concentrations.assign(concentrations1.data(), concentrations1.data() + concentrations1.size());	
+    _concentrations.assign(concentrations1.data(), concentrations1.data() + concentrations1.size());
 
     // Check output
     bool bOK = checkValue(_outResiduals[0] >= 0, "The concentration1 is negative.");

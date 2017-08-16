@@ -19,6 +19,7 @@ int main(int argc, char** argv)
     // Get application folder
     std::string appFolder = Tucuxi::Common::Utils::getAppFolder(argv);
 
+
     // Initialize our logger
     const std::string& fileName = Tucuxi::Common::Utils::strFormat("%s/TucuCore-Test.log", appFolder.c_str());
     Tucuxi::Common::LoggerHelper::init(fileName);
@@ -33,7 +34,9 @@ int main(int argc, char** argv)
     calculatorsTests.add_test("1 comp infusion single vs multiple test", &TestIntervalCalculator::test1compInfusionSingleVsMultiple);
 
     // two compartment
-    calculatorsTests.add_test("2 comp infusion single vs multiple test", &TestIntervalCalculator::test2compBolusSingleVsMultiple);
+    calculatorsTests.add_test("2 comp bolus single vs multiple test", &TestIntervalCalculator::test2compBolusSingleVsMultiple);
+    calculatorsTests.add_test("2 comp extra single vs multiple test", &TestIntervalCalculator::test2compExtraSingleVsMultiple);
+    calculatorsTests.add_test("2 comp intra single vs multiple test", &TestIntervalCalculator::test2compInfusionSingleVsMultiple);
 
     res = calculatorsTests.run(argc, argv);
     if (res != 0) {

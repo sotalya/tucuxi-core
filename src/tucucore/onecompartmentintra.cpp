@@ -26,8 +26,8 @@ bool OneCompartmentIntra::checkInputs(const IntakeEvent& _intakeEvent, const Par
     m_Cl = _parameters[0].getValue();
     m_V = _parameters[1].getValue();
     m_Ke = m_Cl / m_V;
-    m_Tinf = (_intakeEvent.getInfusionTime()).toMilliseconds();
-    m_Int = (_intakeEvent.getInterval()).toMilliseconds();
+    m_Tinf = (_intakeEvent.getInfusionTime()).toHours();
+    m_Int = (_intakeEvent.getInterval()).toHours();
     m_NbPoints = _intakeEvent.getNumberPoints();
 
     bOK &= checkValue(m_D >= 0, "The dose is negative.");

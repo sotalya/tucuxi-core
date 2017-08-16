@@ -40,7 +40,7 @@ private:
     Value m_Alpha; /// (sumK + root)/2
     Value m_Beta; /// (sumK - root)/2
     int m_NbPoints; /// Number measure points during interval
-    int64 m_Int; /// Interval (milliseconds)
+    int64 m_Int; /// Interval (hours)
 };
 
 inline void TwoCompartmentBolus::compute(const Residuals& _inResiduals, Eigen::VectorXd& _concentrations1, Eigen::VectorXd& _concentrations2)

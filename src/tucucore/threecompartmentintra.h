@@ -41,8 +41,8 @@ private:
     Value m_Alpha;
     Value m_Beta;
     Value m_Gamma;
-    int64 m_Tinf; /// Infusion time (milliseconds)
-    int64 m_Int; /// Interval (milliseconds)
+    int64 m_Tinf; /// Infusion time (hours)
+    int64 m_Int; /// Interval (hours)
     int m_NbPoints; /// number measure points during interval
 };
 
