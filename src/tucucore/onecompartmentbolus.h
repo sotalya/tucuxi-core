@@ -27,12 +27,13 @@ protected:
     virtual bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) override;
     void compute(const Residuals& _inResiduals, Eigen::VectorXd& _concentrations);
 
-protected:
     Value m_D;	/// Quantity of drug
     Value m_V;	/// Volume of the compartment
     Value m_Ke; /// Elimination constant rate = Cl/V where Cl is the clearance and V is the volume of the compartment
     int m_NbPoints; /// Number measure points during interval
     Value m_Int; /// Interval (hours)
+
+private:
 };
 
 inline void OneCompartmentBolusMicro::compute(const Residuals& _inResiduals, Eigen::VectorXd& _concentrations)
@@ -49,6 +50,7 @@ protected:
     virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters) override;
 
 };
+
 
 }
 }

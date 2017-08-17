@@ -34,7 +34,7 @@ int main(int argc, char** argv)
     logHelper.info("Tucuxi console application is starting up...");
     
     Tucuxi::Core::IntakeIntervalCalculator::Result res;
-    Tucuxi::Core::OneCompartmentExtra calculator;
+    Tucuxi::Core::OneCompartmentExtraMacro calculator;
 
     DateTime now;
     int nbPoints = 251;

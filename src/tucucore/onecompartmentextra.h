@@ -13,11 +13,11 @@ namespace Core {
 /// \ingroup TucuCore
 /// \brief Intake interval calculator for the one compartment extravascular algorithm
 /// \sa IntakeIntervalCalculator
-class OneCompartmentExtra : public IntakeIntervalCalculator
+class OneCompartmentExtraMicro : public IntakeIntervalCalculator
 {
 public:
     /// \brief Constructor
-    OneCompartmentExtra();
+    OneCompartmentExtraMicro();
 
 protected:
     virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters) override;
@@ -27,19 +27,18 @@ protected:
     virtual bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) override;
     void compute(const Residuals& _inResiduals, Eigen::VectorXd& _concentrations1, Eigen::VectorXd& _concentrations2);
 
-
-private:
     Value m_D;	/// Quantity of drug
-    Value m_Cl;	/// Clearance
     Value m_F;  /// Biodisponibility
     Value m_Ka; /// Absorption rate constant
     Value m_V;  /// Volume of the compartment
     Value m_Ke; /// Elimination constant rate = Cl/V where Cl is the clearance and V is the volume of the compartment
     int m_NbPoints; /// Number measure points during interval
     Value m_Int; /// Interval time (Hours)
+
+private:
 };
 
-inline void OneCompartmentExtra::compute(const Residuals& _inResiduals, Eigen::VectorXd& _concentrations1, Eigen::VectorXd& _concentrations2)
+inline void OneCompartmentExtraMicro::compute(const Residuals& _inResiduals, Eigen::VectorXd& _concentrations1, Eigen::VectorXd& _concentrations2)
 {
     Concentration resid1 = _inResiduals[0];
     Concentration resid2 = _inResiduals[1] + m_F * m_D / m_V;
@@ -61,6 +60,16 @@ inline void OneCompartmentExtra::compute(const Residuals& _inResiduals, Eigen::V
 	    m_precomputedLogarithms["Ka"])));
     #endif
 }
+
+class OneCompartmentExtraMacro : public OneCompartmentExtraMicro
+{
+public:
+    OneCompartmentExtraMacro();
+
+protected:
+    virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters) override;
+
+};
 
 }
 }

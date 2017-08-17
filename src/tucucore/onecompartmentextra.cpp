@@ -10,11 +10,11 @@
 namespace Tucuxi {
 namespace Core {
 
-OneCompartmentExtra::OneCompartmentExtra()
+OneCompartmentExtraMicro::OneCompartmentExtraMicro()
 {
 }
 
-bool OneCompartmentExtra::checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
+bool OneCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
 {
     bool bOK = true;
 
@@ -22,11 +22,10 @@ bool OneCompartmentExtra::checkInputs(const IntakeEvent& _intakeEvent, const Par
 	    return false;
     
     m_D = _intakeEvent.getDose() * 1000;
-    m_Cl = _parameters[0].getValue();
+    m_Ke = _parameters[0].getValue();
     m_F = _parameters[1].getValue();
     m_Ka = _parameters[2].getValue();
     m_V = _parameters[3].getValue();
-    m_Ke = m_Cl / m_V;
     m_NbPoints = _intakeEvent.getNumberPoints();
     m_Int = (_intakeEvent.getInterval()).toHours();
 
@@ -53,19 +52,19 @@ bool OneCompartmentExtra::checkInputs(const IntakeEvent& _intakeEvent, const Par
 }
 
 
-void OneCompartmentExtra::prepareComputations(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
+void OneCompartmentExtraMicro::prepareComputations(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
 {
 }
 
 
-void OneCompartmentExtra::computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterList& _parameters, Eigen::VectorXd& _times)
+void OneCompartmentExtraMicro::computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterList& _parameters, Eigen::VectorXd& _times)
 {
     m_precomputedLogarithms["Ka"] = (-m_Ka * _times).array().exp();
     m_precomputedLogarithms["Ke"] = (-m_Ke * _times).array().exp();
 }
 
 
-bool OneCompartmentExtra::computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
+bool OneCompartmentExtraMicro::computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
 {
     bool bOK = true;
     Eigen::VectorXd concentrations1, concentrations2;
@@ -83,7 +82,7 @@ bool OneCompartmentExtra::computeConcentrations(const Residuals& _inResiduals, C
     return bOK;
 }
 
-bool OneCompartmentExtra::computeConcentration(const Value& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
+bool OneCompartmentExtraMicro::computeConcentration(const Value& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1, concentrations2;
 
@@ -108,6 +107,48 @@ bool OneCompartmentExtra::computeConcentration(const Value& _atTime, const Resid
     bOK &= checkValue(_outResiduals[1] >= 0, "The final residual2 is negative.");
     bOK &= checkValue(_concentrations[0] >= 0, "The concentration1 is negative.");
     bOK &= checkValue(_concentrations[1] >= 0, "The concentration2 is negative.");
+
+    return bOK;
+}
+
+OneCompartmentExtraMacro::OneCompartmentExtraMacro() : OneCompartmentExtraMicro()
+{
+}
+
+bool OneCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
+{
+    bool bOK = true;
+
+    if(!checkValue(_parameters.size() >= 4, "The number of parameters should be equal to 4."))
+	    return false;
+    
+    m_D = _intakeEvent.getDose() * 1000;
+    Value cl = _parameters[0].getValue(); // clearance
+    m_F = _parameters[1].getValue();
+    m_Ka = _parameters[2].getValue();
+    m_V = _parameters[3].getValue();
+    m_Ke = cl / m_V;
+    m_NbPoints = _intakeEvent.getNumberPoints();
+    m_Int = (_intakeEvent.getInterval()).toHours();
+
+    // check the inputs
+    bOK &= checkValue(m_D >= 0, "The dose is negative.");
+    bOK &= checkValue(!std::isnan(m_D), "The dose is NaN.");
+    bOK &= checkValue(!std::isinf(m_D), "The dose is Inf.");
+    bOK &= checkValue(m_V > 0, "The volume is not greater than zero.");
+    bOK &= checkValue(!std::isnan(m_V), "The m_V is NaN.");
+    bOK &= checkValue(!std::isinf(m_V), "The _V is Inf.");
+    bOK &= checkValue(m_F > 0, "The volume is not greater than zero.");
+    bOK &= checkValue(!std::isnan(m_F), "The F is NaN.");
+    bOK &= checkValue(!std::isinf(m_F), "The F is Inf.");
+    bOK &= checkValue(cl > 0, "The clearance is not greater than zero.");
+    bOK &= checkValue(!std::isnan(cl), "The clearance is NaN.");
+    bOK &= checkValue(!std::isinf(cl), "The clearance is Inf.");
+    bOK &= checkValue(m_Ka > 0, "The ka is not greater than zero.");
+    bOK &= checkValue(!std::isnan(m_Ka), "The m_Ka is NaN.");
+    bOK &= checkValue(!std::isinf(m_Ka), "The m_Ka is Inf.");
+    bOK &= checkValue(m_NbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkValue(m_Int > 0, "The interval time is negative.");
 
     return bOK;
 }

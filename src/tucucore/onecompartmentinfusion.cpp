@@ -11,11 +11,11 @@
 namespace Tucuxi {
 namespace Core {
 
-OneCompartmentInfusion::OneCompartmentInfusion()
+OneCompartmentInfusionMicro::OneCompartmentInfusionMicro()
 {
 }
 
-bool OneCompartmentInfusion::checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
+bool OneCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
 {
     bool bOK = true;
 
@@ -23,9 +23,8 @@ bool OneCompartmentInfusion::checkInputs(const IntakeEvent& _intakeEvent, const 
 	    return false;
     
     m_D = _intakeEvent.getDose() * 1000;
-    m_Cl = _parameters[0].getValue();
+    m_Ke = _parameters[0].getValue();
     m_V = _parameters[1].getValue();
-    m_Ke = m_Cl / m_V;
     m_Tinf = (_intakeEvent.getInfusionTime()).toHours();
     m_Int = (_intakeEvent.getInterval()).toHours();
     m_NbPoints = _intakeEvent.getNumberPoints();
@@ -46,18 +45,18 @@ bool OneCompartmentInfusion::checkInputs(const IntakeEvent& _intakeEvent, const 
 }
 
 
-void OneCompartmentInfusion::prepareComputations(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
+void OneCompartmentInfusionMicro::prepareComputations(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
 {
 }
 
 
-void OneCompartmentInfusion::computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterList& _parameters, Eigen::VectorXd& _times)
+void OneCompartmentInfusionMicro::computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterList& _parameters, Eigen::VectorXd& _times)
 {
     m_precomputedLogarithms["Ke"] = (-m_Ke * _times).array().exp();
 }
 
 
-bool OneCompartmentInfusion::computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
+bool OneCompartmentInfusionMicro::computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations;
     int forcesize = static_cast<int>(std::min(ceil(static_cast<double>(m_Tinf)/static_cast<double>(m_Int) * static_cast<double>(m_NbPoints)), ceil(m_NbPoints)));
@@ -72,7 +71,7 @@ bool OneCompartmentInfusion::computeConcentrations(const Residuals& _inResiduals
     return checkValue(_outResiduals[0] >= 0, "The concentration is negative.");
 }
 
-bool OneCompartmentInfusion::computeConcentration(const Value& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
+bool OneCompartmentInfusionMicro::computeConcentration(const Value& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations;
     int forcesize = 0;
@@ -97,6 +96,41 @@ bool OneCompartmentInfusion::computeConcentration(const Value& _atTime, const Re
     
     return checkValue(_outResiduals[0] >= 0, "The concentration is negative.");
 }
+
+OneCompartmentInfusionMacro::OneCompartmentInfusionMacro() : OneCompartmentInfusionMicro()
+{
+}
+
+bool OneCompartmentInfusionMacro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
+{
+    bool bOK = true;
+
+    if(!checkValue(_parameters.size() >= 2, "The number of parameters should be equal to 2."))
+	    return false;
+    
+    m_D = _intakeEvent.getDose() * 1000;
+    double cl = _parameters[0].getValue();
+    m_V = _parameters[1].getValue();
+    m_Ke = cl / m_V;
+    m_Tinf = (_intakeEvent.getInfusionTime()).toHours();
+    m_Int = (_intakeEvent.getInterval()).toHours();
+    m_NbPoints = _intakeEvent.getNumberPoints();
+
+    bOK &= checkValue(m_D >= 0, "The dose is negative.");
+    bOK &= checkValue(!std::isnan(m_D), "The dose is NaN.");
+    bOK &= checkValue(!std::isinf(m_D), "The dose is Inf.");
+    bOK &= checkValue(m_V > 0, "The volume is not greater than zero.");
+    bOK &= checkValue(!std::isnan(m_V), "The volume is NaN.");
+    bOK &= checkValue(!std::isinf(m_V), "The volume is Inf.");
+    bOK &= checkValue(cl > 0, "The clearance is not greater than zero.");
+    bOK &= checkValue(!std::isnan(cl), "The clearance is NaN.");
+    bOK &= checkValue(!std::isinf(cl), "The clearance is Inf.");
+    bOK &= checkValue(m_Tinf >= 0, "The infusion time is zero or negative.");
+    bOK &= checkValue(m_Int > 0, "The interval time is negative.");
+
+    return bOK;
+}
+
 
 }
 }
