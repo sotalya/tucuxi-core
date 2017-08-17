@@ -38,7 +38,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
     {
 
         Tucuxi::Core::IntakeIntervalCalculator::Result res;
-        Tucuxi::Core::OneCompartmentBolus calculator;
+        Tucuxi::Core::OneCompartmentBolusMicro calculator;
 
         DateTime now;
         int nbPoints = 3;
