@@ -12,10 +12,10 @@
 
 #include "tucucore/onecompartmentbolus.h"
 #include "tucucore/onecompartmentextra.h"
-#include "tucucore/onecompartmentintra.h"
+#include "tucucore/onecompartmentinfusion.h"
 #include "tucucore/twocompartmentbolus.h"
 #include "tucucore/twocompartmentextra.h"
-#include "tucucore/twocompartmentintra.h"
+#include "tucucore/twocompartmentinfusion.h"
 
 
 using namespace Tucuxi::Core;
@@ -170,7 +170,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
     {
 
         Tucuxi::Core::IntakeIntervalCalculator::Result res;
-        Tucuxi::Core::OneCompartmentIntra calculator;
+        Tucuxi::Core::OneCompartmentInfusion calculator;
 
         DateTime now;
         int nbPoints = 251;
@@ -369,7 +369,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
     {
 
         Tucuxi::Core::IntakeIntervalCalculator::Result res;
-        Tucuxi::Core::TwoCompartmentIntra calculator;
+        Tucuxi::Core::TwoCompartmentInfusion calculator;
 
         DateTime now;
         int nbPoints = 251;

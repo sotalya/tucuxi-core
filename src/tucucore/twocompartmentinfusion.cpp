@@ -5,16 +5,16 @@
 #include <Eigen/Dense>
 
 #include "tucucommon/loggerhelper.h"
-#include "tucucore/twocompartmentintra.h"
+#include "tucucore/twocompartmentinfusion.h"
 
 namespace Tucuxi {
 namespace Core {
 
-TwoCompartmentIntra::TwoCompartmentIntra()
+TwoCompartmentInfusion::TwoCompartmentInfusion()
 {
 }
 
-bool TwoCompartmentIntra::checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
+bool TwoCompartmentInfusion::checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
 {
     bool bOK = true;
 
@@ -78,12 +78,12 @@ bool TwoCompartmentIntra::checkInputs(const IntakeEvent& _intakeEvent, const Par
 }
 
 
-void TwoCompartmentIntra::prepareComputations(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
+void TwoCompartmentInfusion::prepareComputations(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
 {
 }
 
 
-void TwoCompartmentIntra::computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterList& _parameters, Eigen::VectorXd& _times)
+void TwoCompartmentInfusion::computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterList& _parameters, Eigen::VectorXd& _times)
 {
     m_precomputedLogarithms["Alpha"] = (-m_Alpha * _times).array().exp();
     m_precomputedLogarithms["Beta"] = (-m_Beta * _times).array().exp();
@@ -94,7 +94,7 @@ void TwoCompartmentIntra::computeLogarithms(const IntakeEvent& _intakeEvent, con
 }
 
 
-bool TwoCompartmentIntra::computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
+bool TwoCompartmentInfusion::computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1, concentrations2;
 
@@ -118,7 +118,7 @@ bool TwoCompartmentIntra::computeConcentrations(const Residuals& _inResiduals, C
 }
 
 
-bool TwoCompartmentIntra::computeConcentration(const int64& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
+bool TwoCompartmentInfusion::computeConcentration(const int64& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1, concentrations2;
 

@@ -2,8 +2,8 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
-#ifndef TUCUXI_MATH_TWOCOMPARTMENTINTRA_H
-#define TUCUXI_MATH_TWOCOMPARTMENTINTRA_H
+#ifndef TUCUXI_MATH_TWOCOMPARTMENTINFUSION_H
+#define TUCUXI_MATH_TWOCOMPARTMENTINFUSION_H
 
 #include "tucucore/intakeintervalcalculator.h"
 
@@ -11,13 +11,13 @@ namespace Tucuxi {
 namespace Core {
 
 /// \ingroup TucuCore
-/// \brief Intake interval calculator for the two compartment intra algorithm
+/// \brief Intake interval calculator for the two compartment infusion algorithm
 /// \sa IntakeIntervalCalculator
-class TwoCompartmentIntra : public IntakeIntervalCalculator
+class TwoCompartmentInfusion : public IntakeIntervalCalculator
 {
 public:
     /// \brief Constructor
-    TwoCompartmentIntra();
+    TwoCompartmentInfusion();
 
 protected:
     virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters) override;
@@ -47,7 +47,7 @@ private:
     int m_NbPoints; /// number measure points during interval
 };
 
-inline void TwoCompartmentIntra::compute(const Residuals& _inResiduals, const int _forcesize, Eigen::VectorXd& _concentrations1, Eigen::VectorXd& _concentrations2)
+inline void TwoCompartmentInfusion::compute(const Residuals& _inResiduals, const int _forcesize, Eigen::VectorXd& _concentrations1, Eigen::VectorXd& _concentrations2)
 {
     Eigen::VectorXd& alphaLogV = m_precomputedLogarithms["Alpha"]; 
     Eigen::VectorXd& betaLogV = m_precomputedLogarithms["Beta"]; 
@@ -123,4 +123,4 @@ inline void TwoCompartmentIntra::compute(const Residuals& _inResiduals, const in
 }
 }
 
-#endif // TUCUXI_MATH_TWOCOMPARTMENTINTRA_H
+#endif // TUCUXI_MATH_TWOCOMPARTMENTINFUSION_H

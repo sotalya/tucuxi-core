@@ -2,8 +2,8 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
-#ifndef TUCUXI_MATH_THREECOMPARTMENTINTRA_H
-#define TUCUXI_MATH_THREECOMPARTMENTINTRA_H
+#ifndef TUCUXI_MATH_THREECOMPARTMENTINFUSION_H
+#define TUCUXI_MATH_THREECOMPARTMENTINFUSION_H
 
 #include "tucucore/intakeintervalcalculator.h"
 
@@ -11,13 +11,13 @@ namespace Tucuxi {
 namespace Core {
 
 /// \ingroup TucuCore
-/// \brief Intake interval calculator for the three compartment intra algorithm
+/// \brief Intake interval calculator for the three compartment infusion algorithm
 /// \sa IntakeIntervalCalculator
-class ThreeCompartmentIntra : public IntakeIntervalCalculator
+class ThreeCompartmentInfusion : public IntakeIntervalCalculator
 {
 public:
     /// \brief Constructor
-    ThreeCompartmentIntra();
+    ThreeCompartmentInfusion();
 
 protected:
     virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters) override;
@@ -49,4 +49,4 @@ private:
 }
 }
 
-#endif // TUCUXI_MATH_THREECOMPARTMENTINTRA_H
+#endif // TUCUXI_MATH_THREECOMPARTMENTINFUSION_H

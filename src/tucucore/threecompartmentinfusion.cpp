@@ -4,16 +4,16 @@
 
 #include <Eigen/Dense>
 
-#include "tucucore/threecompartmentintra.h"
+#include "tucucore/threecompartmentinfusion.h"
 
 namespace Tucuxi {
 namespace Core {
 
-ThreeCompartmentIntra::ThreeCompartmentIntra()
+ThreeCompartmentInfusion::ThreeCompartmentInfusion()
 {
 }
 
-bool ThreeCompartmentIntra::checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
+bool ThreeCompartmentInfusion::checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
 {
     bool bOK = true;
 
@@ -78,12 +78,12 @@ bool ThreeCompartmentIntra::checkInputs(const IntakeEvent& _intakeEvent, const P
 }
 
 
-void ThreeCompartmentIntra::prepareComputations(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
+void ThreeCompartmentInfusion::prepareComputations(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
 {
 }
 
 
-void ThreeCompartmentIntra::computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterList& _parameters, Eigen::VectorXd& _times)
+void ThreeCompartmentInfusion::computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterList& _parameters, Eigen::VectorXd& _times)
 {
     m_precomputedLogarithms["Alpha"] = (-m_Alpha * _times).array().exp();
     m_precomputedLogarithms["Beta"] = (-m_Beta * _times).array().exp();
@@ -91,7 +91,7 @@ void ThreeCompartmentIntra::computeLogarithms(const IntakeEvent& _intakeEvent, c
 }
 
 
-bool ThreeCompartmentIntra::computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
+bool ThreeCompartmentInfusion::computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
 {
     bool bOK = true;
 

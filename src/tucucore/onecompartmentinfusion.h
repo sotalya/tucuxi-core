@@ -2,8 +2,8 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
-#ifndef TUCUXI_MATH_ONECOMPARTMENTINTRA_H
-#define TUCUXI_MATH_ONECOMPARTMENTINTRA_H
+#ifndef TUCUXI_MATH_ONECOMPARTMENTINFUSION_H
+#define TUCUXI_MATH_ONECOMPARTMENTINFUSION_H
 
 #include "tucucore/intakeintervalcalculator.h"
 
@@ -13,11 +13,11 @@ namespace Core {
 /// \ingroup TucuCore
 /// \brief Intake interval calculator for the one compartment extravascular algorithm
 /// \sa IntakeIntervalCalculator
-class OneCompartmentIntra : public IntakeIntervalCalculator
+class OneCompartmentInfusion : public IntakeIntervalCalculator
 {
 public:
     /// \brief Constructor
-    OneCompartmentIntra();
+    OneCompartmentInfusion();
 
 protected:
     virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters) override;
@@ -37,7 +37,7 @@ private:
     int m_NbPoints; /// number measure points during interval
 };
 
-inline void OneCompartmentIntra::compute(const Residuals& _inResiduals, const int _forcesize, Eigen::VectorXd& _concentrations)
+inline void OneCompartmentInfusion::compute(const Residuals& _inResiduals, const int _forcesize, Eigen::VectorXd& _concentrations)
 {
     Concentration part1 = m_D / (m_Tinf * m_Cl);
 
@@ -60,4 +60,4 @@ inline void OneCompartmentIntra::compute(const Residuals& _inResiduals, const in
 }
 }
 
-#endif // TUCUXI_MATH_ONECOMPARTMENTINTRA_H
+#endif // TUCUXI_MATH_ONECOMPARTMENTINFUSION_H

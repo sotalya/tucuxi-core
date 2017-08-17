@@ -6,16 +6,16 @@
 #include <math.h>
 #include <algorithm>
 
-#include "tucucore/onecompartmentintra.h"
+#include "tucucore/onecompartmentinfusion.h"
 
 namespace Tucuxi {
 namespace Core {
 
-OneCompartmentIntra::OneCompartmentIntra()
+OneCompartmentInfusion::OneCompartmentInfusion()
 {
 }
 
-bool OneCompartmentIntra::checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
+bool OneCompartmentInfusion::checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
 {
     bool bOK = true;
 
@@ -46,18 +46,18 @@ bool OneCompartmentIntra::checkInputs(const IntakeEvent& _intakeEvent, const Par
 }
 
 
-void OneCompartmentIntra::prepareComputations(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
+void OneCompartmentInfusion::prepareComputations(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
 {
 }
 
 
-void OneCompartmentIntra::computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterList& _parameters, Eigen::VectorXd& _times)
+void OneCompartmentInfusion::computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterList& _parameters, Eigen::VectorXd& _times)
 {
     m_precomputedLogarithms["Ke"] = (-m_Ke * _times).array().exp();
 }
 
 
-bool OneCompartmentIntra::computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
+bool OneCompartmentInfusion::computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations;
     int forcesize = static_cast<int>(std::min(ceil(static_cast<double>(m_Tinf)/static_cast<double>(m_Int) * static_cast<double>(m_NbPoints)), ceil(m_NbPoints)));
@@ -72,7 +72,7 @@ bool OneCompartmentIntra::computeConcentrations(const Residuals& _inResiduals, C
     return checkValue(_outResiduals[0] >= 0, "The concentration is negative.");
 }
 
-bool OneCompartmentIntra::computeConcentration(const int64& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
+bool OneCompartmentInfusion::computeConcentration(const int64& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations;
     int forcesize = 0;
