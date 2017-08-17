@@ -13,11 +13,11 @@ namespace Core {
 /// \ingroup TucuCore
 /// \brief Intake interval calculator for the two compartment extra algorithm
 /// \sa IntakeIntervalCalculator
-class TwoCompartmentExtra : public IntakeIntervalCalculator
+class TwoCompartmentExtraMicro : public IntakeIntervalCalculator
 {
 public:
     /// \brief Constructor
-    TwoCompartmentExtra();
+    TwoCompartmentExtraMicro();
 
 protected:
     virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters) override;
@@ -27,14 +27,10 @@ protected:
     virtual bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) override;
     bool compute(const Residuals& _inResiduals, Eigen::VectorXd& _concentrations1, Value& _concentrations2, Value& _concentrations3);
 
-private:
     Value m_D;	/// Quantity of drug
-    Value m_Cl;	/// Clearance
     Value m_F;  /// Biodisponibility
+    Value m_V1;  /// Volume1
     Value m_Ka; /// Absorption rate constant
-    Value m_Q;	/// ???
-    Value m_V1;	/// Volume of the compartment 1
-    Value m_V2;	/// Volume of the compartment 2
     Value m_Ke; /// Elimination constant rate = Cl/V1 where Cl is the clearance and V1 is the volume of the compartment 1
     Value m_K12; /// Q/V1
     Value m_K21; /// Q/V2
@@ -43,9 +39,12 @@ private:
     Value m_Beta; /// (sumK - root)/2
     int m_NbPoints; /// number measure points during interval
     Value m_Int; /// Interval (hours)
+
+private:
+
 };
 
-inline bool TwoCompartmentExtra::compute(const Residuals& _inResiduals, Eigen::VectorXd&
+inline bool TwoCompartmentExtraMicro::compute(const Residuals& _inResiduals, Eigen::VectorXd&
 _concentrations1, Value& _concentrations2, Value& _concentrations3)
 {
     Value A, B, C, divider;
@@ -134,6 +133,17 @@ _concentrations1, Value& _concentrations2, Value& _concentrations3)
 
     return true;
 }
+
+
+class TwoCompartmentExtraMacro : public TwoCompartmentExtraMicro
+{
+public:
+    TwoCompartmentExtraMacro();
+
+protected:
+    virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters) override;
+
+};
 
 }
 }

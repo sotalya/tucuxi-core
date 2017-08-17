@@ -13,11 +13,11 @@ namespace Core {
 /// \ingroup TucuCore
 /// \brief Intake interval calculator for the two compartment bolus algorithm
 /// \sa IntakeIntervalCalculator
-class TwoCompartmentBolus : public IntakeIntervalCalculator
+class TwoCompartmentBolusMicro : public IntakeIntervalCalculator
 {
 public:
     /// \brief Constructor
-    TwoCompartmentBolus();
+    TwoCompartmentBolusMicro();
 
 protected:
     virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters) override;
@@ -27,12 +27,8 @@ protected:
     virtual bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) override;
     void compute(const Residuals& _inResiduals, Eigen::VectorXd& _concentrations1, Eigen::VectorXd& _concentrations2);
 
-private:
     Value m_D;	/// Quantity of drug
-    Value m_Cl;	/// Clearance
-    Value m_Q;	/// ???
-    Value m_V1;	/// Volume of the compartment 1
-    Value m_V2;	/// Volume of the compartment 2
+    Value m_V1; /// Volume
     Value m_Ke; /// Elimination constant rate = Cl/V1 where Cl is the clearance and V1 is the volume of the compartment 1
     Value m_K12; /// Q/V1
     Value m_K21; /// Q/V2
@@ -41,9 +37,12 @@ private:
     Value m_Beta; /// (sumK - root)/2
     int m_NbPoints; /// Number measure points during interval
     Value m_Int; /// Interval (hours)
+
+private:
+
 };
 
-inline void TwoCompartmentBolus::compute(const Residuals& _inResiduals, Eigen::VectorXd& _concentrations1, Eigen::VectorXd& _concentrations2)
+inline void TwoCompartmentBolusMicro::compute(const Residuals& _inResiduals, Eigen::VectorXd& _concentrations1, Eigen::VectorXd& _concentrations2)
 {
     Concentration resid1 = _inResiduals[0] + (m_D/m_V1);
     Concentration resid2 = _inResiduals[1];
@@ -59,6 +58,16 @@ inline void TwoCompartmentBolus::compute(const Residuals& _inResiduals, Eigen::V
     _concentrations2 = 
         ((A2 * m_precomputedLogarithms["Alpha"]) + (BB2 * m_precomputedLogarithms["Beta"])) / (2 * m_RootK);
 }
+
+class TwoCompartmentBolusMacro : public TwoCompartmentBolusMicro
+{
+public:
+    TwoCompartmentBolusMacro();
+
+protected:
+    virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters) override;
+
+};
 
 }
 }

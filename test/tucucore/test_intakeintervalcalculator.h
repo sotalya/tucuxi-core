@@ -242,7 +242,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
     void test2compBolusSingleVsMultiple(const std::string& /* _testName */)
     {
         Tucuxi::Core::IntakeIntervalCalculator::Result res;
-        Tucuxi::Core::TwoCompartmentBolus calculator;
+        Tucuxi::Core::TwoCompartmentBolusMacro calculator;
 
         DateTime now;
         int nbPoints = 251;
@@ -311,7 +311,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
     {
 
         Tucuxi::Core::IntakeIntervalCalculator::Result res;
-        Tucuxi::Core::TwoCompartmentExtra calculator;
+        Tucuxi::Core::TwoCompartmentExtraMacro calculator;
 
         DateTime now;
         int nbPoints = 251;
