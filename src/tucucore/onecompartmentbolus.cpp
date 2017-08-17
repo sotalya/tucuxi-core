@@ -4,6 +4,7 @@
 
 #include <Eigen/Dense>
 
+#include "tucucommon/loggerhelper.h"
 #include "tucucore/onecompartmentbolus.h"
 
 namespace Tucuxi {
@@ -24,6 +25,15 @@ bool OneCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
     m_NbPoints = _intakeEvent.getNumberPoints();
     m_Int = (_intakeEvent.getInterval()).toHours();
 
+    Tucuxi::Common::LoggerHelper logHelper;
+
+    logHelper.debug("<<Input Values>>");
+    logHelper.debug("m_D: {}", m_D);
+    logHelper.debug("m_V: {}", m_V);
+    logHelper.debug("m_Ke: {}", m_Ke);
+    logHelper.debug("m_NbPoints: {}", m_NbPoints);
+    logHelper.debug("m_Int: {}", m_Int);
+    
     // check the inputs
     bool bOK = checkValue(m_D >= 0, "The dose is negative.");
     bOK &= checkValue(!std::isnan(m_D), "The dose is NaN.");

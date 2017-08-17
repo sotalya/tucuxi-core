@@ -40,7 +40,7 @@ bool TwoCompartmentInfusion::checkInputs(const IntakeEvent& _intakeEvent, const 
     
     Tucuxi::Common::LoggerHelper logHelper;
 
-    logHelper.debug("Input Values");
+    logHelper.debug("<<Input Values>>");
     logHelper.debug("m_D: {}", m_D);
     logHelper.debug("m_Cl: {}", m_Cl);
     logHelper.debug("m_Q: {}", m_Q);

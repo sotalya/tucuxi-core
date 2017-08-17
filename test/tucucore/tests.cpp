@@ -19,7 +19,6 @@ int main(int argc, char** argv)
     // Get application folder
     std::string appFolder = Tucuxi::Common::Utils::getAppFolder(argv);
 
-
     // Initialize our logger
     const std::string& fileName = Tucuxi::Common::Utils::strFormat("%s/TucuCore-Test.log", appFolder.c_str());
     Tucuxi::Common::LoggerHelper::init(fileName);
