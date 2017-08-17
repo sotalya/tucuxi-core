@@ -41,7 +41,7 @@ bool OneCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
     bOK &= checkValue(m_V > 0, "The volume is not greater than zero.");
     bOK &= checkValue(!std::isnan(m_V), "The V is NaN.");
     bOK &= checkValue(!std::isinf(m_V), "The V is Inf.");
-    bOK &= checkValue(m_Ke > 0, "The clearance is not greater than zero.");
+    bOK &= checkValue(m_Ke > 0, "The Ke is not greater than zero.");
     bOK &= checkValue(!std::isnan(m_Ke), "The Ke is NaN.");
     bOK &= checkValue(!std::isinf(m_Ke), "The Ke is Inf.");
     bOK &= checkValue(m_NbPoints >= 0, "The number of points is zero or negative.");
@@ -108,7 +108,7 @@ bool OneCompartmentBolusMacro::checkInputs(const IntakeEvent& _intakeEvent, cons
 
     m_D = _intakeEvent.getDose() * 1000;
     m_V = _parameters[0].getValue();
-    double cl = _parameters[1].getValue();
+    Value cl = _parameters[1].getValue();
     m_Ke = cl / m_V;
     m_NbPoints = _intakeEvent.getNumberPoints();
     m_Int = (_intakeEvent.getInterval()).toHours();

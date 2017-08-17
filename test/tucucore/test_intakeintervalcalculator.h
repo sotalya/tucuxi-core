@@ -104,7 +104,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
     {
 
         Tucuxi::Core::IntakeIntervalCalculator::Result res;
-        Tucuxi::Core::OneCompartmentExtra calculator;
+        Tucuxi::Core::OneCompartmentExtraMacro calculator;
 
         DateTime now;
         int nbPoints = 251;
@@ -176,7 +176,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
     {
 
         Tucuxi::Core::IntakeIntervalCalculator::Result res;
-        Tucuxi::Core::OneCompartmentInfusion calculator;
+        Tucuxi::Core::OneCompartmentInfusionMacro calculator;
 
         DateTime now;
         int nbPoints = 251;
