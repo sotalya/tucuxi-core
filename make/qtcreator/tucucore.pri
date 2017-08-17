@@ -32,7 +32,8 @@ HEADERS += \
     $$PWD/../../src/tucucore/sampleextractor.h \
     $$PWD/../../src/tucucore/target.h \
     $$PWD/../../src/tucucore/targetextractor.h \
-    $$PWD/../../src/tucucore/pkmodel.h
+    $$PWD/../../src/tucucore/pkmodel.h \
+    $$PWD/../../src/tucucore/intaketocalculatorassociator.h
 
 SOURCES += \
     $$PWD/../../src/tucucore/cachedlogarithms.cpp \
@@ -58,4 +59,5 @@ SOURCES += \
     $$PWD/../../src/tucucore/parametersextractor.cpp \
     $$PWD/../../src/tucucore/sampleextractor.cpp \
     $$PWD/../../src/tucucore/targetextractor.cpp \
-    $$PWD/../../src/tucucore/pkmodel.cpp
+    $$PWD/../../src/tucucore/pkmodel.cpp \
+    $$PWD/../../src/tucucore/intaketocalculatorassociator.cpp
