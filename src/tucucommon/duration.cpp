@@ -205,27 +205,27 @@ int64 Duration::toMonths() const
 }
 
 
-int64 Duration::toDays() const
+double Duration::toDays() const
 {
-    return get<date::days>().count();
+    return static_cast<double>(get<std::chrono::milliseconds>().count()) / (24 * 60 * 60 * 1000);
 }
 
 
-int64 Duration::toHours() const
+double Duration::toHours() const
 {
-    return get<std::chrono::hours>().count();
+    return static_cast<double>(get<std::chrono::milliseconds>().count()) / (60 * 60 * 1000);
 }
 
 
-int64 Duration::toMinutes() const
+double Duration::toMinutes() const
 {
-    return get<std::chrono::minutes>().count();
+    return static_cast<double>(get<std::chrono::milliseconds>().count()) / (60*1000);
 }
 
 
-int64 Duration::toSeconds() const
+double Duration::toSeconds() const
 {
-    return get<std::chrono::seconds>().count();
+    return static_cast<double>(get<std::chrono::milliseconds>().count()) / 1000;
 }
 
 

@@ -146,19 +146,19 @@ public:
 
     /// \brief Retrieve the duration as a number of days
     /// @return The number of days reprensenting the duration.
-    int64 toDays() const;
+    double toDays() const;
 
     /// \brief Retrieve the duration as a number of hours
     /// @return The number of hours reprensenting the duration.
-    int64 toHours() const;
+    double toHours() const;
 
     /// \brief Retrieve the duration as a number of minutes
     /// @return The number of minutes reprensenting the duration.
-    int64 toMinutes() const;
+    double toMinutes() const;
 
     /// \brief Retrieve the duration as a number of seconds
     /// @return The number of seconds reprensenting the duration.
-    int64 toSeconds() const;
+    double toSeconds() const;
 
     /// \brief Retrieve the duration as a number of milliseconds
     /// @return The number of milliseconds reprensenting the duration.
