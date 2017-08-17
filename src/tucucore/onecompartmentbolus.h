@@ -17,6 +17,7 @@ enum class EOneCompartmentBolusLogarithms : int { Ke };
 /// \sa IntakeIntervalCalculator
 class OneCompartmentBolus : public IntakeIntervalCalculatorBase<EOneCompartmentBolusLogarithms>
 {
+    INTAKEINTERVALCALCULATOR_UTILS(OneCompartmentBolus)
 public:
     /// \brief Constructor
     OneCompartmentBolus();

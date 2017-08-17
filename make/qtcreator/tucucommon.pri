@@ -15,7 +15,11 @@ HEADERS += \
     $$PWD/../../src/tucucommon/jsengine.h \
     $$PWD/../../src/tucucommon/timeofday.h \
     $$PWD/../../src/tucucommon/basetypes.h \
-    $$PWD/../../src/tucucommon/systeminfo.h
+    $$PWD/../../src/tucucommon/systeminfo.h \
+    $$PWD/../../src/tucucommon/xmlattribute.h \
+    $$PWD/../../src/tucucommon/xmldocument.h \
+    $$PWD/../../src/tucucommon/xmliterator.h \
+    $$PWD/../../src/tucucommon/xmlnode.h
 
 SOURCES += \
     $$PWD/../../src/tucucommon/componentmanager.cpp \
@@ -27,7 +31,10 @@ SOURCES += \
     $$PWD/../../src/tucucommon/duration.cpp \
     $$PWD/../../src/tucucommon/jsengine.cpp \
     $$PWD/../../src/tucucommon/timeofday.cpp \
-    $$PWD/../../src/tucucommon/systeminfo.cpp
+    $$PWD/../../src/tucucommon/systeminfo.cpp \
+    $$PWD/../../src/tucucommon/xmlattribute.cpp \
+    $$PWD/../../src/tucucommon/xmldocument.cpp \
+    $$PWD/../../src/tucucommon/xmlnode.cpp
 
 DISTFILES += \
     $$PWD/../../src/tucucommon/makefile

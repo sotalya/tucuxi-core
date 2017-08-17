@@ -19,12 +19,43 @@ namespace Core {
 
 class IntakeEvent;
 
+class IntakeIntervalCalculator;
+
+///
+/// \brief The IntakeIntervalCalculatorCreator class
+/// This class is meant to be subclassed in each IntakeIntervalCalculator, thanks to the following macro.
+/// It will allow to store creators and use them to create specific calculators.
+class IntakeIntervalCalculatorCreator
+{
+public:
+    virtual IntakeIntervalCalculator *create() = 0;
+};
+
+/// This macro shall be inserted at the beginning of each class of IntakeIntervalCalculator, passing the class name
+/// as parameter to the macro
+#define INTAKEINTERVALCALCULATOR_UTILS(entity) \
+public: \
+    class IntakeCreator : public IntakeIntervalCalculatorCreator \
+    { \
+        virtual IntakeIntervalCalculator *create() { \
+            return new entity(); \
+        } \
+    }; \
+    \
+    static IntakeIntervalCalculatorCreator *getCreator() \
+    { \
+        static IntakeCreator *s_creator = new IntakeCreator(); \
+        return s_creator; \
+    }
+
+
 /// \ingroup TucuCore
 /// \brief Base class for the computation of a single intake
 /// This class implements the common computation process shared by the different algorithms and
 /// delegates specificities to derived classes. Each derived class will implement a specific algorithm.
 class IntakeIntervalCalculator
 {
+
 public:
     enum class Result {
         Ok,

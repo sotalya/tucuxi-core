@@ -18,7 +18,21 @@ HEADERS += \
     $$PWD/../../src/tucucore/threecompartmentintra.h \
     $$PWD/../../src/tucucore/twocompartmentbolus.h \
     $$PWD/../../src/tucucore/twocompartmentextra.h \
-    $$PWD/../../src/tucucore/twocompartmentintra.h
+    $$PWD/../../src/tucucore/twocompartmentintra.h \
+    $$PWD/../../src/tucucore/corecomponent.h \
+    $$PWD/../../src/tucucore/covariate.h \
+    $$PWD/../../src/tucucore/covariateextractor.h \
+    $$PWD/../../src/tucucore/drugmodel.h \
+    $$PWD/../../src/tucucore/drugtreatment.h \
+    $$PWD/../../src/tucucore/idatamodelservices.h \
+    $$PWD/../../src/tucucore/iprocessingservices.h \
+    $$PWD/../../src/tucucore/parametersextractor.h \
+    $$PWD/../../src/tucucore/residualerrormodel.h \
+    $$PWD/../../src/tucucore/sample.h \
+    $$PWD/../../src/tucucore/sampleextractor.h \
+    $$PWD/../../src/tucucore/target.h \
+    $$PWD/../../src/tucucore/targetextractor.h \
+    $$PWD/../../src/tucucore/pkmodel.h
 
 SOURCES += \
     $$PWD/../../src/tucucore/cachedlogarithms.cpp \
@@ -35,4 +49,13 @@ SOURCES += \
     $$PWD/../../src/tucucore/threecompartmentintra.cpp \
     $$PWD/../../src/tucucore/twocompartmentbolus.cpp \
     $$PWD/../../src/tucucore/twocompartmentextra.cpp \
-    $$PWD/../../src/tucucore/twocompartmentintra.cpp
+    $$PWD/../../src/tucucore/twocompartmentintra.cpp \
+    $$PWD/../../src/tucucore/corecomponent.cpp \
+    $$PWD/../../src/tucucore/covariateextractor.cpp \
+    $$PWD/../../src/tucucore/drugmodel.cpp \
+    $$PWD/../../src/tucucore/drugtreatment.cpp \
+    $$PWD/../../src/tucucore/parameter.cpp \
+    $$PWD/../../src/tucucore/parametersextractor.cpp \
+    $$PWD/../../src/tucucore/sampleextractor.cpp \
+    $$PWD/../../src/tucucore/targetextractor.cpp \
+    $$PWD/../../src/tucucore/pkmodel.cpp
