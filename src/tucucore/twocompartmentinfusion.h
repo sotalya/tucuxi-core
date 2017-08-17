@@ -24,7 +24,7 @@ protected:
     virtual void prepareComputations(const IntakeEvent& _intakeEvent, const ParameterList& _parameters) override;
     virtual void computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterList& _parameters, Eigen::VectorXd& _times) override;
     virtual bool computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) override;
-    virtual bool computeConcentration(const int64& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) override;
+    virtual bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) override;
     void compute(const Residuals& _inResiduals, const int _forcesize, Eigen::VectorXd& _concentrations1, Eigen::VectorXd& _concentrations2);
 
 
@@ -42,8 +42,8 @@ private:
     Value m_Divider; /// sqrt(sumK*sumK - 4*K21*Ke)
     Value m_Alpha; /// (sumK + root)/2
     Value m_Beta; /// (sumK - root)/2
-    int64 m_Tinf; /// Infusion time (Hours)
-    int64 m_Int; /// Interval (Hours)
+    Value m_Tinf; /// Infusion time (Hours)
+    Value m_Int; /// Interval (Hours)
     int m_NbPoints; /// number measure points during interval
 };
 

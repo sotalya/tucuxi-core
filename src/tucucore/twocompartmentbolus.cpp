@@ -90,7 +90,7 @@ bool TwoCompartmentBolus::computeConcentrations(const Residuals& _inResiduals, C
 }
 
 
-bool TwoCompartmentBolus::computeConcentration(const int64& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
+bool TwoCompartmentBolus::computeConcentration(const Value& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1, concentrations2;
 

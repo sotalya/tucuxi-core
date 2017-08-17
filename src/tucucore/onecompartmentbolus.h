@@ -24,7 +24,7 @@ protected:
     virtual void prepareComputations(const IntakeEvent& _intakeEvent, const ParameterList& _parameters) override;
     virtual void computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterList& _parameters, Eigen::VectorXd& _times) override;
     virtual bool computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) override;
-    virtual bool computeConcentration(const int64& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) override;
+    virtual bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) override;
     void compute(const Residuals& _inResiduals, Eigen::VectorXd& _concentrations);
 
 protected:
@@ -32,7 +32,7 @@ protected:
     Value m_V;	/// Volume of the compartment
     Value m_Ke; /// Elimination constant rate = Cl/V where Cl is the clearance and V is the volume of the compartment
     int m_NbPoints; /// Number measure points during interval
-    int64 m_Int; /// Interval (hours)
+    Value m_Int; /// Interval (hours)
 };
 
 inline void OneCompartmentBolusMicro::compute(const Residuals& _inResiduals, Eigen::VectorXd& _concentrations)

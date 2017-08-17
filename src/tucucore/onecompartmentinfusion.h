@@ -24,7 +24,7 @@ protected:
     virtual void prepareComputations(const IntakeEvent& _intakeEvent, const ParameterList& _parameters) override;
     virtual void computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterList& _parameters, Eigen::VectorXd& _times) override;
     virtual bool computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) override;
-    virtual bool computeConcentration(const int64& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) override;
+    virtual bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) override;
     void compute(const Residuals& _inResiduals, const int _forcesize, Eigen::VectorXd& _concentrations);
 
 private:
@@ -32,8 +32,8 @@ private:
     Value m_Cl;	/// Clearance
     Value m_V;  /// Volume of the compartment
     Value m_Ke; /// Elimination constant rate = Cl/V where Cl is the clearance and V is the volume of the compartment
-    int64 m_Tinf; /// Infusion time (hours)
-    int64 m_Int; /// Interval (hours)
+    Value m_Tinf; /// Infusion time (hours)
+    Value m_Int; /// Interval (hours)
     int m_NbPoints; /// number measure points during interval
 };
 

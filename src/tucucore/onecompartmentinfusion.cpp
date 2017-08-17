@@ -72,7 +72,7 @@ bool OneCompartmentInfusion::computeConcentrations(const Residuals& _inResiduals
     return checkValue(_outResiduals[0] >= 0, "The concentration is negative.");
 }
 
-bool OneCompartmentInfusion::computeConcentration(const int64& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
+bool OneCompartmentInfusion::computeConcentration(const Value& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations;
     int forcesize = 0;

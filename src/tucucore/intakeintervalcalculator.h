@@ -70,7 +70,7 @@ public:
         const IntakeEvent& _intakeEvent,
         const ParameterList& _parameters,
         const Residuals& _inResiduals,
-        const int64& _atTime,
+        const Value& _atTime,
         Residuals& _outResiduals);
 
 protected:
@@ -102,7 +102,7 @@ protected:
     /// @param _inResiduals Initial residual concentrations
     /// @param _concentrations vector of concentrations.
     /// @param _outResiduals Final residual concentrations
-    virtual bool computeConcentration(const int64& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) = 0;
+    virtual bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) = 0;
 
     /// \brief Check if a value is correct and log a message if it is not the case
     /// @param _isOk Indicates that the value is correct

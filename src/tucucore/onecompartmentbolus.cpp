@@ -76,7 +76,7 @@ bool OneCompartmentBolusMicro::computeConcentrations(const Residuals& _inResidua
     return checkValue(_outResiduals[0] >= 0, "The concentration is negative.");
 }
 
-bool OneCompartmentBolusMicro::computeConcentration(const int64& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
+bool OneCompartmentBolusMicro::computeConcentration(const Value& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations;
 

@@ -70,7 +70,7 @@ IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakeSingle
     const IntakeEvent& _intakeEvent,
     const ParameterList& _parameters,
     const Residuals& _inResiduals,
-    const int64& _atTime,
+    const Value& _atTime,
     Residuals& _outResiduals)
 {
     if (!checkInputs(_intakeEvent, _parameters))

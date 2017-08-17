@@ -83,7 +83,7 @@ bool OneCompartmentExtra::computeConcentrations(const Residuals& _inResiduals, C
     return bOK;
 }
 
-bool OneCompartmentExtra::computeConcentration(const int64& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
+bool OneCompartmentExtra::computeConcentration(const Value& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1, concentrations2;
 
