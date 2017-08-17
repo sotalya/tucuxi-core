@@ -14,7 +14,18 @@ namespace Core {
 class ParametersExtractor
 {
 public:
-    static int extract(const CovariateSeries &_covariates, const DateTime &_start, const DateTime &_end, ParameterSetSeries &_series);
+
+    ///
+    /// \brief extract Extract parameters, by calculating them based on covariates
+    /// \param _covariates A list of covariates
+    /// \param _drugParameters A list of drug parameters
+    /// \param _start From this date
+    /// \param _end To this date
+    /// \param _series Output parameters
+    /// \return An error code
+    /// This method shall extract the parameters each time covariates change. It has to use
+    /// the operations in order to do so.
+    static int extract(const CovariateSeries &_covariates, const ParameterDefinitions& _drugParameters, const DateTime &_start, const DateTime &_end, ParameterSetSeries &_series);
 };
 
 }

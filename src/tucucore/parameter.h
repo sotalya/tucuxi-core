@@ -11,6 +11,7 @@
 
 #include "tucucore/definitions.h"
 #include "tucucore/timedevent.h"
+#include "tucucore/operation.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -47,6 +48,8 @@ private:
     bool m_isVariable;       /// Indicates whether there is an eta on this parameter
     ErrorModel m_errorModel;
 
+    Operation *m_operation; /// Potential operation from covariates
+
     //error_type_enum m_error_type;
 };
 
@@ -82,8 +85,8 @@ public:
     void applyEtas(const Etas& _etas);
     Parameters::const_iterator begin() const { return m_parameters.begin(); }
     Parameters::const_iterator end() const { return m_parameters.end(); }
-    void setValue(int index, Value _value) { }
-    Value getValue(int index) const { return m_parameters[index].getValue(); }
+    void setValue(int _index, Value _value) { }
+    Value getValue(int _index) const { return m_parameters[_index].getValue(); }
     int size() const { return static_cast<int>(m_parameters.size()); }    
 
 private:
