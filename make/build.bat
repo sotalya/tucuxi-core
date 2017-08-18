@@ -45,7 +45,7 @@ for %%i in (tucucommon tucucore tucucli tuculicense) do (
   %MAKE% TARGET=VS2015 -f "%TUCUXI_ROOT%\src\%%i\makefile" %MakeCmd% 
 )
 
-for %%i in (tucucommon tucucore) do (
+for %%i in (tucucommon tucucore tuculicense) do (
   echo *********************************************
   echo *** Compiling %%i
   cd "%TUCUXI_ROOT%\Test\%%i"
