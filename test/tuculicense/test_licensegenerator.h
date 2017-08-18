@@ -45,9 +45,9 @@ struct TestLicenseGenerator : public fructose::test_base<TestLicenseGenerator>
         fructose_assert(res == int(Tucuxi::Common::LicenseError::REQUEST_SUCCESSFUL));
 
         Tucuxi::License::Request plainRequest;
-        res = Tucuxi::License::LicenseGenerator::decryptRequest(request, &plainRequest);
+        Tucuxi::License::RequestError res2 = Tucuxi::License::LicenseGenerator::decryptRequest(request, plainRequest);
 
-        fructose_assert(res == int(Tucuxi::License::RequestError::REQUEST_SUCCESSFUL));
+        fructose_assert(res == Tucuxi::License::RequestError::REQUEST_SUCCESSFUL);
 
         std::cout << "License : "
                   << plainRequest.m_keyWord << ":"
@@ -65,8 +65,7 @@ struct TestLicenseGenerator : public fructose::test_base<TestLicenseGenerator>
         if(!Tucuxi::Common::CryptoHelper::decrypt(m_key, license, &test))  {
             fructose_fail("Error encrypt failed.");
         }
-
-         std::cout << "Test : " << test << std::endl;
+        std::cout << "Test : " << test << std::endl;
 
         // Install a new license file
         res = Tucuxi::Common::LicenseManager::installLicense(license, fileName);
