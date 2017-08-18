@@ -47,7 +47,7 @@ struct TestLicenseGenerator : public fructose::test_base<TestLicenseGenerator>
         Tucuxi::License::Request plainRequest;
         Tucuxi::License::RequestError res2 = Tucuxi::License::LicenseGenerator::decryptRequest(request, plainRequest);
 
-        fructose_assert(res == Tucuxi::License::RequestError::REQUEST_SUCCESSFUL);
+        fructose_assert(res2 == Tucuxi::License::RequestError::REQUEST_SUCCESSFUL);
 
         std::cout << "License : "
                   << plainRequest.m_keyWord << ":"
