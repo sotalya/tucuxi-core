@@ -23,10 +23,10 @@ bool OneCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
 	    return false;
     
     m_D = _intakeEvent.getDose() * 1000;
-    m_Ke = _parameters.getValue(0);
-    m_F = _parameters.getValue(1);
+    m_V = _parameters.getValue(0);
+    m_Ke = _parameters.getValue(1);
     m_Ka = _parameters.getValue(2);
-    m_V = _parameters.getValue(3);
+    m_F = _parameters.getValue(3);
     m_NbPoints = _intakeEvent.getNbPoints();
     m_Int = static_cast<int>((_intakeEvent.getInterval()).toHours());
 
@@ -119,10 +119,10 @@ bool OneCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, cons
 	    return false;
     
     m_D = _intakeEvent.getDose() * 1000;
-    Value cl = _parameters.getValue(0); // clearance
-    m_F = _parameters.getValue(1);
+    m_V = _parameters.getValue(0);
+    Value cl = _parameters.getValue(1); // clearance
     m_Ka = _parameters.getValue(2);
-    m_V = _parameters.getValue(3);
+    m_F = _parameters.getValue(3);
     m_Ke = cl / m_V;
     m_NbPoints = _intakeEvent.getNbPoints();
     m_Int = (_intakeEvent.getInterval()).toHours();

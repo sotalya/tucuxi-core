@@ -21,7 +21,7 @@ namespace Core {
 class ParameterDefinition
 {
 public:
-    enum class ErrorModel { Additive, Proportional, Exponential };
+    enum class ErrorModel { Additive, Proportional, Exponential, None };
 
 public:    
     /// \brief Constructor

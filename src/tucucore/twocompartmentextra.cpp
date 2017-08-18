@@ -131,11 +131,11 @@ bool TwoCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, cons
     
     m_D = _intakeEvent.getDose() * 1000;
     Value cl = _parameters.getValue(0);
-    m_F = _parameters.getValue(1);
-    m_Ka = _parameters.getValue(2);
-    Value q = _parameters.getValue(3);
-    m_V1 = _parameters.getValue(4);
-    Value v2 = _parameters.getValue(5);
+    Value q = _parameters.getValue(1);
+    Value v2 = _parameters.getValue(2);
+    m_V1 = _parameters.getValue(3);
+    m_Ka = _parameters.getValue(4);
+    m_F = _parameters.getValue(5);
     m_Ke = cl / m_V1;
     m_K12 = q / m_V1;
     m_K21 = q / v2;

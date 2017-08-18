@@ -35,7 +35,7 @@ int main(int argc, char** argv)
     // two compartment
     calculatorsTests.add_test("2 comp bolus single vs multiple test", &TestIntervalCalculator::test2compBolusSingleVsMultiple);
     calculatorsTests.add_test("2 comp extra single vs multiple test", &TestIntervalCalculator::test2compExtraSingleVsMultiple);
-    calculatorsTests.add_test("2 comp intra single vs multiple test", &TestIntervalCalculator::test2compInfusionSingleVsMultiple);
+    calculatorsTests.add_test("2 comp infusion single vs multiple test", &TestIntervalCalculator::test2compInfusionSingleVsMultiple);
 
     res = calculatorsTests.run(argc, argv);
     if (res != 0) {

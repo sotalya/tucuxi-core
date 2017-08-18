@@ -150,10 +150,15 @@ class IntakeIntervalCalculatorBase : public IntakeIntervalCalculator
 protected:
     void setLogs(EParameters _param, Eigen::VectorXd &&_logs) {
         m_precomputedLogarithms[static_cast<int>(_param)] = _logs;
+//        m_precomputedLogarithms = PrecomputedLogarithms(4);
+//        m_precomputedLogarithms[0] = _logs;
+//        m_precomputedLogarithms[0] = Eigen::VectorXd(_logs.rows(), _logs.cols());
+//        m_precomputedLogarithms[static_cast<int>(_param)] = _logs;
     }
 
     Eigen::VectorXd& logs(EParameters _param) {
-        return m_precomputedLogarithms.at(static_cast<int>(_param));
+        return m_precomputedLogarithms[static_cast<int>(_param)];
+//        return m_precomputedLogarithms.at(static_cast<int>(_param));
     }
 };
 

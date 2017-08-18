@@ -43,7 +43,8 @@ private:
 
 inline void OneCompartmentInfusionMicro::compute(const Residuals& _inResiduals, const int _forcesize, Eigen::VectorXd& _concentrations)
 {
-    Concentration part1 = m_D / (m_Tinf * m_Cl);
+//    Concentration part1 = m_D / (m_Tinf * m_Cl);
+    Concentration part1 = m_D / (m_Tinf * m_Ke * m_V);
 
     // Calcaulate concentrations
     _concentrations = Eigen::VectorXd::Constant(logs(Logarithms::Ke).size(), _inResiduals[0]);
