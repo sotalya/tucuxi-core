@@ -16,6 +16,7 @@ SOURCES := cachedlogarithms.cpp \
            dosage.cpp \
 		   drugmodel.cpp \
            drugtreatment.cpp \
+           hardcodedoperation.cpp \
            intakeextractor.cpp \
            intakeintervalcalculator.cpp \
 		   intaketocalculatorassociator.cpp \

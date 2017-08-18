@@ -17,7 +17,7 @@ public:
     sigma_t sigma;
     ResidualErrorType errorModel;
 */
-    bool isEmpty() const {};
+    bool isEmpty() const { return true; };
     void applyEpsToArray(Concentrations &_concentrations, const Deviation &eps) const {};
 /*
     loglikelihood_t calculateSampleLikelihood(const cxn_t _y, const Sample& samp) const;

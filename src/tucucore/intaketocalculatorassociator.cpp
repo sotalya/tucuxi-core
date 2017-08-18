@@ -21,6 +21,7 @@ IntakeToCalculatorAssociator::Result IntakeToCalculatorAssociator::associate(
     // Iterate through the intake series, and get the calculator from pkModel.
     // Be careful, if routes are the same, we have to reuse the previous calculator
 
+    return IntakeToCalculatorAssociator::Result::UnsupportedRoute;
 }
 
 }
