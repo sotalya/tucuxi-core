@@ -49,7 +49,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
         Tucuxi::Core::Concentrations concentrations;
         Tucuxi::Core::TimeOffsets times;
         Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, 400, interval, Tucuxi::Core::RouteOfAdministration::INTRAVASCULAR, infusionTime, nbPoints);
-        Tucuxi::Core::ParameterList parameters;
+        Tucuxi::Core::ParameterSetEvent parameters;
         Tucuxi::Core::Residuals inResiduals;
         Tucuxi::Core::Residuals outMultiResiduals, outSingleResiduals;
 

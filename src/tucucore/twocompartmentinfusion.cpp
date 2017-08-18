@@ -6,7 +6,7 @@
 
 #include "tucucommon/loggerhelper.h"
 #include "tucucore/twocompartmentinfusion.h"
-#include "tucucore/intakeEvent.h"
+#include "tucucore/intakeevent.h"
 
 namespace Tucuxi {
 namespace Core {
