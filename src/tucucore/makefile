@@ -20,6 +20,7 @@ SOURCES := cachedlogarithms.cpp \
            intakeextractor.cpp \
            intakeintervalcalculator.cpp \
            intaketocalculatorassociator.cpp \
+		   montecarlopercentilecalculator.cpp \
            onecompartmentbolus.cpp \
            onecompartmentextra.cpp \
            onecompartmentintra.cpp \

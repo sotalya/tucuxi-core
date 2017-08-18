@@ -35,7 +35,8 @@ HEADERS += \
     $$PWD/../../src/tucucore/pkmodel.h \
     $$PWD/../../src/tucucore/intaketocalculatorassociator.h \
     $$PWD/../../src/tucucore/hardcodedoperation.h \
-    $$PWD/../../src/tucucore/onecompartmentinfusion_yta.h
+    $$PWD/../../src/tucucore/onecompartmentinfusion_yta.h \
+    $$PWD/../../src/tucucore/montecarlopercentilecalculator.h
 
 SOURCES += \
     $$PWD/../../src/tucucore/cachedlogarithms.cpp \
@@ -63,4 +64,5 @@ SOURCES += \
     $$PWD/../../src/tucucore/targetextractor.cpp \
     $$PWD/../../src/tucucore/pkmodel.cpp \
     $$PWD/../../src/tucucore/intaketocalculatorassociator.cpp \
-    $$PWD/../../src/tucucore/hardcodedoperation.cpp
+    $$PWD/../../src/tucucore/hardcodedoperation.cpp \
+    $$PWD/../../src/tucucore/montecarlopercentilecalculator.cpp
