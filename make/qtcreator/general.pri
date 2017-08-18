@@ -16,4 +16,5 @@ INCLUDEPATH += ../../../src \
     ../../../libs/eigen-3.3.2/ \
     ../../../libs/fructose-1.3/fructose/include \
     ../../../libs/date-master-20170711 \
-    ../../../libs/tiny-js-master-20170629
+    ../../../libs/tiny-js-master-20170629 \
+    ../../../libs/rapidxml-1.13

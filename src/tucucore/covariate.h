@@ -11,6 +11,7 @@
 
 #include "tucucore/definitions.h"
 #include "tucucore/timedevent.h"
+#include "tucucore/operation.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -22,12 +23,20 @@ enum class CovariateType {
     Operable            // The value depends on another covariate
 };
 
+///
+/// \brief The CovariateDefinition class
+/// The definition of a covariate
+class CovariateDefinition
+{
+
+};
+
 class Covariate
 {
 
 private:
     CovariateType m_type;
-    Tucuxi::Common::Duration m_refreshPeriod;   // Only in the case of CovariateType::Interpolated 
+    Tucuxi::Common::Duration m_refreshPeriod;   // Only in the case of CovariateType::Interpolated
 };
 
 typedef std::vector<Covariate> Covariates;
@@ -43,8 +52,14 @@ public:
 
     Value getValue() { return m_value; }
 
+    std::string getComputationId() { return m_computationId;}
+
+    void setComputationId(const std::string &id) { m_computationId = id;}
+
 private:
+    std::string m_computationId;
     Value m_value;
+    Operation *m_operation; // Operation depending on another covariate in case Operable
 };
 
 typedef std::vector<CovariateEvent> CovariateSeries;

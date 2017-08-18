@@ -43,7 +43,9 @@ public:
           m_nbPoints(_nbPoints),
           m_route(_route),
           m_interval(_interval),
-          m_infusionTime(_infusionTime) {}
+          m_infusionTime(_infusionTime),
+          m_calculator(nullptr)
+    {}
 
     /// \brief Destructor
     ~IntakeEvent() {}
@@ -126,6 +128,14 @@ public:
     bool operator<(const IntakeEvent& _other) const
     {
         return m_time < _other.m_time;
+    }
+
+    ///
+    /// \brief setCalculator Defines the calculator to be used for calculation
+    /// \param _calculator The calculator itself
+    void setCalculator(IntakeIntervalCalculator *_calculator)
+    {
+        m_calculator = _calculator;
     }
 
     IntakeIntervalCalculator::Result calculateIntakePoints(
