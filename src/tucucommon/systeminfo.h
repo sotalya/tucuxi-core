@@ -10,7 +10,7 @@
 /// This module defines a set of basic and application independent classes and components for
 /// use in other Tucuxi's libraries and applications.
 
-#include <string.h>
+#include <string>
 
 namespace Tucuxi {
 namespace Common {
