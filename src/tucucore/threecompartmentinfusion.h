@@ -2,8 +2,8 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
-#ifndef TUCUXI_CORE_THREECOMPARTMENTINTRA_H
-#define TUCUXI_CORE_THREECOMPARTMENTINTRA_H
+#ifndef TUCUXI_CORE_THREECOMPARTMENTINFUSION_H
+#define TUCUXI_CORE_THREECOMPARTMENTINFUSION_H
 
 #include "tucucore/intakeintervalcalculator.h"
 
@@ -13,13 +13,13 @@ namespace Core {
 enum class ThreeCompartmentIntraLogarithms : int { Alpha, Beta, Gamma };
 
 /// \ingroup TucuCore
-/// \brief Intake interval calculator for the three compartment intra algorithm
+/// \brief Intake interval calculator for the three compartment infusion algorithm
 /// \sa IntakeIntervalCalculator
-class ThreeCompartmentIntra : public IntakeIntervalCalculatorBase<ThreeCompartmentIntraLogarithms>
+class ThreeCompartmentInfusion : public IntakeIntervalCalculatorBase<ThreeCompartmentIntraLogarithms>
 {
 public:
     /// \brief Constructor
-    ThreeCompartmentIntra();
+    ThreeCompartmentInfusion();
 
     typedef ThreeCompartmentIntraLogarithms Logarithms;
 
@@ -44,12 +44,12 @@ private:
     Value m_Alpha;
     Value m_Beta;
     Value m_Gamma;
-    int64 m_Tinf; /// Infusion time (milliseconds)
-    int64 m_Int; /// Interval (milliseconds)
+    Value m_Tinf; /// Infusion time (hours)
+    Value m_Int; /// Interval (hours)
     int m_NbPoints; /// number measure points during interval
 };
 
 }
 }
 
-#endif // TUCUXI_CORE_THREECOMPARTMENTINTRA_H
+#endif // TUCUXI_CORE_THREECOMPARTMENTINFUSION_H

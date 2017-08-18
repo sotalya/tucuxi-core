@@ -10,29 +10,29 @@ TYPE := LIB
 
 # Let's keep it in alphabetical order
 SOURCES := cachedlogarithms.cpp \
-		   concentrationcalculator.cpp \
-		   corecomponent.cpp \
+           concentrationcalculator.cpp \
+           corecomponent.cpp \
            covariateextractor.cpp \
            dosage.cpp \
-		   drugmodel.cpp \
+           drugmodel.cpp \
            drugtreatment.cpp \
            hardcodedoperation.cpp \
            intakeextractor.cpp \
            intakeintervalcalculator.cpp \
-		   intaketocalculatorassociator.cpp \
-		   onecompartmentbolus.cpp \
+           intaketocalculatorassociator.cpp \
+           onecompartmentbolus.cpp \
            onecompartmentextra.cpp \
            onecompartmentintra.cpp \
-		   operation.cpp \
-		   parameter.cpp \
-		   parametersextractor.cpp \
-		   pkmodel.cpp \
-		   sampleextractor.cpp \
+           operation.cpp \
+           parameter.cpp \
+           parametersextractor.cpp \
+           pkmodel.cpp \
+           sampleextractor.cpp \
            targetextractor.cpp \
-		   threecompartmentbolus.cpp \
+           threecompartmentbolus.cpp \
            threecompartmentextra.cpp \
            threecompartmentintra.cpp \
-		   twocompartmentbolus.cpp \
+           twocompartmentbolus.cpp \
            twocompartmentextra.cpp \
            twocompartmentintra.cpp
 

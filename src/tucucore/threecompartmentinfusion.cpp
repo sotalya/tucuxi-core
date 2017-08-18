@@ -4,17 +4,17 @@
 
 #include <Eigen/Dense>
 
-#include "tucucore/threecompartmentintra.h"
+#include "tucucore/threecompartmentinfusion.h"
 #include "tucucore/intakeevent.h"
 
 namespace Tucuxi {
 namespace Core {
 
-ThreeCompartmentIntra::ThreeCompartmentIntra()
+ThreeCompartmentInfusion::ThreeCompartmentInfusion()
 {
 }
 
-bool ThreeCompartmentIntra::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
+bool ThreeCompartmentInfusion::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
     bool bOK = true;
 
@@ -35,8 +35,8 @@ bool ThreeCompartmentIntra::checkInputs(const IntakeEvent& _intakeEvent, const P
     m_K21 = m_Q1 / m_V2;
     m_K13 = m_Q2 / m_V1;
     m_K31 = m_Q2 / m_V2;
-    m_Tinf = _intakeEvent.getInfusionTime().toMilliseconds();
-    m_Int = _intakeEvent.getInterval().toMilliseconds();
+    m_Tinf = _intakeEvent.getInfusionTime().toHours();
+    m_Int = _intakeEvent.getInterval().toHours();
     m_NbPoints = _intakeEvent.getNbPoints();
 
     bOK &= checkValue(m_D >= 0, "The dose is negative.");
@@ -79,7 +79,7 @@ bool ThreeCompartmentIntra::checkInputs(const IntakeEvent& _intakeEvent, const P
 }
 
 
-void ThreeCompartmentIntra::computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters, Eigen::VectorXd& _times)
+void ThreeCompartmentInfusion::computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters, Eigen::VectorXd& _times)
 {
     setLogs(Logarithms::Alpha, (-m_Alpha * _times).array().exp());
     setLogs(Logarithms::Beta, (-m_Beta * _times).array().exp());
@@ -87,7 +87,7 @@ void ThreeCompartmentIntra::computeLogarithms(const IntakeEvent& _intakeEvent, c
 }
 
 
-bool ThreeCompartmentIntra::computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
+bool ThreeCompartmentInfusion::computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
 {
     bool bOK = true;
 

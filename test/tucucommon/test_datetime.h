@@ -170,13 +170,14 @@ private:
     {
         bool isEmpty = _nbSeconds == 0.0;
         bool isNegative = _nbSeconds < 0.0;
-        int nSeconds = (int)_nbSeconds;
+        double nSeconds = _nbSeconds;
         fructose_assert(_duration.isEmpty() == isEmpty);
         fructose_assert(_duration.isNegative() == isNegative);
-        fructose_assert(_duration.toSeconds() == nSeconds);
-        fructose_assert(_duration.toMinutes() == nSeconds/60);
-        fructose_assert(_duration.toHours() == nSeconds/60/60);
+        fructose_assert_double_eq(_duration.toSeconds(), nSeconds);
+        fructose_assert_double_eq(_duration.toMinutes(), nSeconds/60);
+        fructose_assert_double_eq(_duration.toHours(), nSeconds/60/60);
+        fructose_assert_double_eq(_duration.toDays(), nSeconds / 60 / 60 / 24);
         double d = _duration.toMilliseconds() / 1000.0;
-        fructose_assert(d == _nbSeconds);
+        fructose_assert_double_eq(d, _nbSeconds);
     }
 };

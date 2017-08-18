@@ -10,59 +10,56 @@
 namespace Tucuxi {
 namespace Core {
 
-TwoCompartmentExtra::TwoCompartmentExtra()
+TwoCompartmentExtraMicro::TwoCompartmentExtraMicro()
 {
 }
 
-bool TwoCompartmentExtra::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
+bool TwoCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
-    bool bOK = true;
-
     if(!checkValue(_parameters.size() >= 4, "The number of parameters should be equal to 4."))
 	    return false;
     
     m_D = _intakeEvent.getDose() * 1000;
-    m_Cl = _parameters.getValue(0);
-    m_F = _parameters.getValue(1);
+    m_F = _parameters.getValue(0);
+    m_V1 = _parameters.getValue(1);
     m_Ka = _parameters.getValue(2);
-    m_Q = _parameters.getValue(3);
-    m_V1 = _parameters.getValue(4);
-    m_V2 = _parameters.getValue(5);
-    m_Ke = m_Cl / m_V1;
-    m_K12 = m_Q / m_V1;
-    m_K21 = m_Q / m_V2;
+    m_Ke = _parameters.getValue(3);
+    m_K12 = _parameters.getValue(4);
+    m_K21 = _parameters.getValue(5);
+
     Value sumK = m_Ke + m_K12 + m_K21;
     m_RootK = std::sqrt((sumK * sumK) - (4 * m_K21 * m_Ke));
     m_Alpha = (sumK + m_RootK)/2;
     m_Beta = (sumK - m_RootK)/2;
     m_NbPoints = _intakeEvent.getNbPoints();
+    m_Int = (_intakeEvent.getInterval()).toHours();
 
-    bOK &= checkValue(m_D >= 0, "The dose is negative.");
+    bool bOK = checkValue(m_D >= 0, "The dose is negative.");
     bOK &= checkValue(!std::isnan(m_D), "The dose is NaN.");
     bOK &= checkValue(!std::isinf(m_D), "The dose is Inf.");
-    bOK &= checkValue(m_Cl > 0, "The clearance is not greater than zero.");
-    bOK &= checkValue(!std::isnan(m_Cl), "The CL is NaN.");
-    bOK &= checkValue(!std::isinf(m_Cl), "The CL is Inf.");
-    bOK &= checkValue(m_V1 > 0, "The volume1 is not greater than zero.");
-    bOK &= checkValue(!std::isnan(m_V1), "The V1 is NaN.");
-    bOK &= checkValue(!std::isinf(m_V1), "The V1 is Inf.");
-    bOK &= checkValue(m_V2 > 0, "The volume2 is not greater than zero.");
-    bOK &= checkValue(!std::isnan(m_V2), "The V2 is NaN.");
-    bOK &= checkValue(!std::isinf(m_V2), "The V2 is Inf.");
-    bOK &= checkValue(m_Ka > 0, "The Ka is not greater than zero.");
-    bOK &= checkValue(!std::isnan(m_Ka), "The Ka is NaN.");
-    bOK &= checkValue(!std::isinf(m_Ka), "The Ka is Inf.");
+    bOK &= checkValue(m_Ka > 0, "The m_Ka is not greater than zero.");
+    bOK &= checkValue(!std::isnan(m_Ka), "The m_Ka is NaN.");
+    bOK &= checkValue(!std::isinf(m_Ka), "The m_Ka is Inf.");
+    bOK &= checkValue(m_Ke > 0, "The m_Ke is not greater than zero.");
+    bOK &= checkValue(!std::isnan(m_Ke), "The m_Ke is NaN.");
+    bOK &= checkValue(!std::isinf(m_Ke), "The m_Ke is Inf.");
+    bOK &= checkValue(m_K12 > 0, "The K12 is not greater than zero.");
+    bOK &= checkValue(!std::isnan(m_K12), "The K12 is NaN.");
+    bOK &= checkValue(!std::isinf(m_K12), "The K12 is Inf.");
+    bOK &= checkValue(m_K21 > 0, "The K21 is not greater than zero.");
+    bOK &= checkValue(!std::isnan(m_K21), "The K21 is NaN.");
+    bOK &= checkValue(!std::isinf(m_K21), "The K21 is Inf.");
     bOK &= checkValue(m_F > 0, "The F is not greater than zero.");
     bOK &= checkValue(!std::isnan(m_F), "The F is NaN.");
     bOK &= checkValue(!std::isinf(m_F), "The F is Inf.");
     bOK &= checkValue(m_NbPoints >= 0, "The number of points is zero or negative.");
-    bOK &= checkValue((_intakeEvent.getInterval()).toMilliseconds() >= 0, "The interval time is zero or negative.");
+    bOK &= checkValue( m_Int > 0, "The interval time is negative.");
 
     return true;
 }
 
 
-void TwoCompartmentExtra::computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters, Eigen::VectorXd& _times)
+void TwoCompartmentExtraMicro::computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters, Eigen::VectorXd& _times)
 {
     setLogs(Logarithms::Alpha, (-m_Alpha * _times).array().exp());
     setLogs(Logarithms::Beta, (-m_Beta * _times).array().exp());
@@ -70,93 +67,13 @@ void TwoCompartmentExtra::computeLogarithms(const IntakeEvent& _intakeEvent, con
 }
 
 
-bool TwoCompartmentExtra::computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
+bool TwoCompartmentExtraMicro::computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
 {
-    bool bOK = true;
+    Eigen::VectorXd concentrations1;
+    Value concentrations2, concentrations3;
 
-    Value A, B, C, divider;
-    Concentration resid1 = _inResiduals[0];
-    Concentration resid2 = _inResiduals[1];
-    Concentration resid3 = _inResiduals[2] + (m_F * m_D / m_V1);
-    Value sumResid13 = resid1 + resid3;
-    Value sumK12K21 = m_K12 + m_K21;
-    Value sumK21Ke = m_K21 + m_Ke;
-    Value diffK21Ka = m_K21 - m_Ka;
-    Value diffK21Ke = m_K21 - m_Ke;
-    Value powDiffK21Ke = std::pow(diffK21Ke, 2);
-
-    // For compartment1, calculate A, B, C and divider
-    A = 
-        std::pow(m_K12, 3) * m_Ka * resid1 
-        + diffK21Ka * (powDiffK21Ke * (-m_Ke * resid1 + m_Ka * sumResid13) 
-            + ((m_Ka - m_Ke) * (m_Ke * resid1 - m_K21 * (resid1 + 2 * resid2)) 
-            + m_Ka * (-m_K21 + m_Ke) * resid3) * m_RootK) 
-        + std::pow(m_K12, 2) * (m_K21 * (-m_Ke * resid1 + m_Ka * (3 * resid1 + resid3))
-            + m_Ka * (-m_Ka * sumResid13 + resid1 * (3 * m_Ke + m_RootK))) 
-        + m_K12 * (std::pow(m_K21, 2) * (3 * m_Ka * resid1 - 2 * m_Ke * resid1 + 2 * m_Ka * resid3) 
-            - m_K21 * (2 * std::pow(m_Ka, 2) * sumResid13 - 2 * m_Ka * m_Ke * sumResid13 
-	        + m_Ka * (2 * resid2 + resid3) * m_RootK + m_Ke * resid1 * (2 * m_Ke + m_RootK)) 
-            - m_Ka * (m_Ka * sumResid13 * (2 * m_Ke + m_RootK) 
-	        - m_Ke * resid1 * (3 * m_Ke + 2 * m_RootK)));
-
-    B = 
-        std::pow(m_K12, 3) * m_Ka * resid1 
-        + diffK21Ka * (powDiffK21Ke * (-m_Ke * resid1 + m_Ka * sumResid13) 
-            + ((m_Ka - m_Ke) * (-m_Ke * resid1 + m_K21 * (resid1 + 2 * resid2)) 
-            + m_Ka * diffK21Ke * resid3) * m_RootK) 
-        + std::pow(m_K12, 2) * (m_K21 * (-m_Ke * resid1 + m_Ka * (3 * resid1 + resid3)) 
-            - m_Ka * (m_Ka * sumResid13 + resid1 * (-3 * m_Ke + m_RootK))) 
-        + m_K12 * (std::pow(m_K21, 2) * (3 * m_Ka * resid1 - 2 * m_Ke * resid1 + 2 * m_Ka * resid3) 
-            + m_Ka * (m_Ke * resid1 * (3 * m_Ke - 2 * m_RootK) 
-	        - m_Ka * sumResid13 * (2 * m_Ke - m_RootK)) 
-            + m_K21 * (-2 * std::pow(m_Ka, 2) * sumResid13 + 2 * m_Ka * m_Ke * sumResid13 
-	        + m_Ka * (2 * resid2 + resid3) * m_RootK + m_Ke * resid1 * (-2 * m_Ke + m_RootK)));
-
-    C = 
-	- 2 * diffK21Ka * m_Ka * (std::pow(m_K12, 2) + powDiffK21Ke + 2 * m_K12 * sumK21Ke) * resid3;
-
-    divider = 
-	std::pow((sumK12K21 - 2 * m_Ka + m_Ke) * m_RootK,  2) 
-	- std::pow(std::pow(m_K12,2) + powDiffK21Ke + 2 * m_K12 * sumK21Ke, 2);
-
-    if(!checkValue(divider != 0.0, "Dividing by zero."))
-	    return false;
-
-    // Calculate concentrations of compartment 1
-    Eigen::VectorXd concentrations1 = 
-	-2 * (B * logs(Logarithms::Beta) 
-		+ A * logs(Logarithms::Alpha) + C * logs(Logarithms::Ka)) / divider;
-
-    // For compartment1, calculate A, B, C and divider
-    A = 
-        -(std::pow(m_K12, 2) + powDiffK21Ke + 2 * m_K12 * sumK21Ke) 
-        * (diffK21Ka * (m_Ka - m_Ke) * resid2 + m_K12 * m_Ka * (resid2 + resid3)) 
-        + ((m_K12 * m_Ka + diffK21Ka * (m_Ka -m_Ke)) * (2 * m_K12 * resid1 + (m_K12 - diffK21Ke) * resid2) 
-	    + m_K12 * m_Ka * (sumK12K21 - 2 * m_Ka + m_Ke) * resid3) * m_RootK;
-    
-    B = 
-        -(std::pow(m_K12, 2) + powDiffK21Ke + 2 * m_K12 * sumK21Ke) 
-        * (diffK21Ka * (m_Ka - m_Ke) * resid2 + m_K12 * m_Ka * (resid2 + resid3)) 
-        - ((m_K12 * m_Ka + diffK21Ka * (m_Ka - m_Ke)) * (2 * m_K12 * resid1 + (m_K12 - diffK21Ke) * resid2) 
-            + m_K12 * m_Ka * (sumK12K21 - 2 * m_Ka + m_Ke) * resid3) * m_RootK;
-    
-    C = 
-        2 * m_K12 * m_Ka * (std::pow(m_K12, 2) + powDiffK21Ke + 2 * m_K12 * sumK21Ke) *resid3;
-    
-    divider = 
-        -std::pow(std::pow(m_K12, 2) + powDiffK21Ke + 2 * m_K12 * sumK21Ke, 2) 
-        + std::pow(sumK12K21 - 2 * m_Ka + m_Ke, 2) * std::pow(m_RootK, 2);
-    
-    if(!checkValue(divider != 0.0, "Dividing by zero."))
-	    return false;
-
-    // Calculate concentrations of compartment 2 and 3
-    Value concentrations2 = 
-        2 * (B * logs(Logarithms::Beta)(logs(Logarithms::Beta).size() - 1) 
-        + A * logs(Logarithms::Alpha)(logs(Logarithms::Alpha).size() - 1) 
-        + C * logs(Logarithms::Ka)(logs(Logarithms::Ka).size() - 1)) / divider;
-    Value concentrations3 = 
-            logs(Logarithms::Ka)(logs(Logarithms::Ka).size() - 1) * resid3;
+    // Compute concentrations
+    bool bOK = compute(_inResiduals, concentrations1, concentrations2, concentrations3);
 
     // Return concentrations of comp1, comp2 and comp3
     _outResiduals.push_back(concentrations1[m_NbPoints - 1]);
@@ -172,99 +89,25 @@ bool TwoCompartmentExtra::computeConcentrations(const Residuals& _inResiduals, C
     return bOK;
 }
 
-
-bool TwoCompartmentExtra::computeConcentration(const int64& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
+bool TwoCompartmentExtraMicro::computeConcentration(const Value& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
 {
-    bool bOK = true;
+    Eigen::VectorXd concentrations1;
+    Value concentrations2, concentrations3;
 
-    Value A, B, C, divider;
-    Concentration resid1 = _inResiduals[0];
-    Concentration resid2 = _inResiduals[1];
-    Concentration resid3 = _inResiduals[2] + (m_F * m_D / m_V1);
-    Value sumResid13 = resid1 + resid3;
-    Value sumK12K21 = m_K12 + m_K21;
-    Value sumK21Ke = m_K21 + m_Ke;
-    Value diffK21Ka = m_K21 - m_Ka;
-    Value diffK21Ke = m_K21 - m_Ke;
-    Value powDiffK21Ke = std::pow(diffK21Ke, 2);
-
-    // For compartment1, calculate A, B, C and divider
-    A = 
-        std::pow(m_K12, 3) * m_Ka * resid1 
-        + diffK21Ka * (powDiffK21Ke * (-m_Ke * resid1 + m_Ka * sumResid13) 
-            + ((m_Ka - m_Ke) * (m_Ke * resid1 - m_K21 * (resid1 + 2 * resid2)) 
-            + m_Ka * (-m_K21 + m_Ke) * resid3) * m_RootK) 
-        + std::pow(m_K12, 2) * (m_K21 * (-m_Ke * resid1 + m_Ka * (3 * resid1 + resid3))
-            + m_Ka * (-m_Ka * sumResid13 + resid1 * (3 * m_Ke + m_RootK))) 
-        + m_K12 * (std::pow(m_K21, 2) * (3 * m_Ka * resid1 - 2 * m_Ke * resid1 + 2 * m_Ka * resid3) 
-            - m_K21 * (2 * std::pow(m_Ka, 2) * sumResid13 - 2 * m_Ka * m_Ke * sumResid13 
-	        + m_Ka * (2 * resid2 + resid3) * m_RootK + m_Ke * resid1 * (2 * m_Ke + m_RootK)) 
-            - m_Ka * (m_Ka * sumResid13 * (2 * m_Ke + m_RootK) 
-	        - m_Ke * resid1 * (3 * m_Ke + 2 * m_RootK)));
-
-    B = 
-        std::pow(m_K12, 3) * m_Ka * resid1 
-        + diffK21Ka * (powDiffK21Ke * (-m_Ke * resid1 + m_Ka * sumResid13) 
-            + ((m_Ka - m_Ke) * (-m_Ke * resid1 + m_K21 * (resid1 + 2 * resid2)) 
-            + m_Ka * diffK21Ke * resid3) * m_RootK) 
-        + std::pow(m_K12, 2) * (m_K21 * (-m_Ke * resid1 + m_Ka * (3 * resid1 + resid3)) 
-            - m_Ka * (m_Ka * sumResid13 + resid1 * (-3 * m_Ke + m_RootK))) 
-        + m_K12 * (std::pow(m_K21, 2) * (3 * m_Ka * resid1 - 2 * m_Ke * resid1 + 2 * m_Ka * resid3) 
-            + m_Ka * (m_Ke * resid1 * (3 * m_Ke - 2 * m_RootK) 
-	        - m_Ka * sumResid13 * (2 * m_Ke - m_RootK)) 
-            + m_K21 * (-2 * std::pow(m_Ka, 2) * sumResid13 + 2 * m_Ka * m_Ke * sumResid13 
-	        + m_Ka * (2 * resid2 + resid3) * m_RootK + m_Ke * resid1 * (-2 * m_Ke + m_RootK)));
-
-    C = 
-	- 2 * diffK21Ka * m_Ka * (std::pow(m_K12, 2) + powDiffK21Ke + 2 * m_K12 * sumK21Ke) * resid3;
-
-    divider = 
-	std::pow((sumK12K21 - 2 * m_Ka + m_Ke) * m_RootK,  2) 
-	- std::pow(std::pow(m_K12,2) + powDiffK21Ke + 2 * m_K12 * sumK21Ke, 2);
-
-    if(!checkValue(divider != 0.0, "Dividing by zero."))
-	    return false;
-
-    // Calculate concentrations of compartment 1
-    Eigen::VectorXd concentrations1 = 
-	-2 * (B * logs(Logarithms::Beta) 
-		+ A * logs(Logarithms::Alpha) + C * logs(Logarithms::Ka)) / divider;
-
-    // For compartment1, calculate A, B, C and divider
-    A = 
-        -(std::pow(m_K12, 2) + powDiffK21Ke + 2 * m_K12 * sumK21Ke) 
-        * (diffK21Ka * (m_Ka - m_Ke) * resid2 + m_K12 * m_Ka * (resid2 + resid3)) 
-        + ((m_K12 * m_Ka + diffK21Ka * (m_Ka -m_Ke)) * (2 * m_K12 * resid1 + (m_K12 - diffK21Ke) * resid2) 
-	    + m_K12 * m_Ka * (sumK12K21 - 2 * m_Ka + m_Ke) * resid3) * m_RootK;
-    
-    B = 
-        -(std::pow(m_K12, 2) + powDiffK21Ke + 2 * m_K12 * sumK21Ke) 
-        * (diffK21Ka * (m_Ka - m_Ke) * resid2 + m_K12 * m_Ka * (resid2 + resid3)) 
-        - ((m_K12 * m_Ka + diffK21Ka * (m_Ka - m_Ke)) * (2 * m_K12 * resid1 + (m_K12 - diffK21Ke) * resid2) 
-            + m_K12 * m_Ka * (sumK12K21 - 2 * m_Ka + m_Ke) * resid3) * m_RootK;
-    
-    C = 
-        2 * m_K12 * m_Ka * (std::pow(m_K12, 2) + powDiffK21Ke + 2 * m_K12 * sumK21Ke) *resid3;
-    
-    divider = 
-        -std::pow(std::pow(m_K12, 2) + powDiffK21Ke + 2 * m_K12 * sumK21Ke, 2) 
-        + std::pow(sumK12K21 - 2 * m_Ka + m_Ke, 2) * std::pow(m_RootK, 2);
-    
-    if(!checkValue(divider != 0.0, "Dividing by zero."))
-	    return false;
-
-    // Calculate concentrations of compartment 2 and 3
-    Value concentrations2 = 
-        2 * (B * logs(Logarithms::Beta)(logs(Logarithms::Beta).size() - 1) 
-        + A * logs(Logarithms::Alpha)(logs(Logarithms::Alpha).size() - 1) 
-        + C * logs(Logarithms::Ka)(logs(Logarithms::Ka).size() - 1)) / divider;
-    Value concentrations3 = 
-        logs(Logarithms::Ka)(logs(Logarithms::Ka).size() - 1) * resid3;
+    // Compute concentrations
+    bool bOK = compute(_inResiduals, concentrations1, concentrations2, concentrations3);
 
     // return concentraions (computation with atTime (current time))
     _concentrations.push_back(concentrations1[0]);
 
-    // Return concentrations of comp1, comp2 and comp3
+    // interval=0 means that it is the last cycle, so final residual = 0
+    if (m_Int == 0) {
+        concentrations1[1] = 0;
+        concentrations2 = 0;
+        concentrations3 = 0;
+    }
+
+    // Return final residual of comp1, comp2 and comp3 (computation with m_Int (interval))
     _outResiduals.push_back(concentrations1[1]);
     _outResiduals.push_back(concentrations2);
     _outResiduals.push_back(concentrations3);
@@ -274,6 +117,57 @@ bool TwoCompartmentExtra::computeConcentration(const int64& _atTime, const Resid
     bOK &= checkValue(_outResiduals[2] >= 0, "The concentration is negative.");
 
     return bOK;
+}
+
+TwoCompartmentExtraMacro::TwoCompartmentExtraMacro() : TwoCompartmentExtraMicro()
+{
+}
+
+bool TwoCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
+{
+    if(!checkValue(_parameters.size() >= 4, "The number of parameters should be equal to 4.")) {
+        return false;
+    }
+    
+    m_D = _intakeEvent.getDose() * 1000;
+    Value cl = _parameters.getValue(0);
+    m_F = _parameters.getValue(1);
+    m_Ka = _parameters.getValue(2);
+    Value q = _parameters.getValue(3);
+    m_V1 = _parameters.getValue(4);
+    Value v2 = _parameters.getValue(5);
+    m_Ke = cl / m_V1;
+    m_K12 = q / m_V1;
+    m_K21 = q / v2;
+    Value sumK = m_Ke + m_K12 + m_K21;
+    m_RootK = std::sqrt((sumK * sumK) - (4 * m_K21 * m_Ke));
+    m_Alpha = (sumK + m_RootK)/2;
+    m_Beta = (sumK - m_RootK)/2;
+    m_NbPoints = _intakeEvent.getNbPoints();
+    m_Int = (_intakeEvent.getInterval()).toHours();
+
+    bool bOK = checkValue(m_D >= 0, "The dose is negative.");
+    bOK &= checkValue(!std::isnan(m_D), "The dose is NaN.");
+    bOK &= checkValue(!std::isinf(m_D), "The dose is Inf.");
+    bOK &= checkValue(cl > 0, "The clearance is not greater than zero.");
+    bOK &= checkValue(!std::isnan(cl), "The CL is NaN.");
+    bOK &= checkValue(!std::isinf(cl), "The CL is Inf.");
+    bOK &= checkValue(m_V1 > 0, "The volume1 is not greater than zero.");
+    bOK &= checkValue(!std::isnan(m_V1), "The m_V1 is NaN.");
+    bOK &= checkValue(!std::isinf(m_V1), "The m_V1 is Inf.");
+    bOK &= checkValue(v2 > 0, "The volume2 is not greater than zero.");
+    bOK &= checkValue(!std::isnan(v2), "The V2 is NaN.");
+    bOK &= checkValue(!std::isinf(v2), "The V2 is Inf.");
+    bOK &= checkValue(m_Ka > 0, "The Ka is not greater than zero.");
+    bOK &= checkValue(!std::isnan(m_Ka), "The Ka is NaN.");
+    bOK &= checkValue(!std::isinf(m_Ka), "The Ka is Inf.");
+    bOK &= checkValue(m_F > 0, "The F is not greater than zero.");
+    bOK &= checkValue(!std::isnan(m_F), "The F is NaN.");
+    bOK &= checkValue(!std::isinf(m_F), "The F is Inf.");
+    bOK &= checkValue(m_NbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkValue( m_Int > 0, "The interval time is negative.");
+
+    return true;
 }
 
 }

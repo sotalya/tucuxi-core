@@ -44,14 +44,12 @@ public:
     /// @param _encryptedRequest : encrypted request from application.
     /// @param _plainRequest : request from application.
     /// @return 0 in case of Success, -1 otherwise.
-    static int decryptRequest(std::string _encryptedRequest, Request* _plainRequest);
+    static RequestError decryptRequest(const std::string &_encryptedRequest, Request& _plainRequest);
 
     /// \brief Return a license to be sent to the application.
     /// @param _request : request from application.
     /// @return license, in case of error : an empty string.
-    static std::string generateLicense(Request _request);
-
-
+    static std::string generateLicense(const Request &_request);
 
 private:
     static const std::string m_key;

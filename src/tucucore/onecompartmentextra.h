@@ -15,11 +15,11 @@ enum class EOneCompartmentExtraLogarithms : int { Ke, Ka };
 /// \ingroup TucuCore
 /// \brief Intake interval calculator for the one compartment extravascular algorithm
 /// \sa IntakeIntervalCalculator
-class OneCompartmentExtra : public IntakeIntervalCalculatorBase<EOneCompartmentExtraLogarithms>
+class OneCompartmentExtraMicro : public IntakeIntervalCalculatorBase<EOneCompartmentExtraLogarithms>
 {
 public:
     /// \brief Constructor
-    OneCompartmentExtra();
+    OneCompartmentExtraMicro();
 
     typedef EOneCompartmentExtraLogarithms Logarithms;
 
@@ -27,22 +27,21 @@ protected:
     virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
     virtual void computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters, Eigen::VectorXd& _times) override;
     virtual bool computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) override;
-    virtual bool computeConcentration(const int64& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) override;
+    virtual bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) override;
     void compute(const Residuals& _inResiduals, Eigen::VectorXd& _concentrations1, Eigen::VectorXd& _concentrations2);
 
-
-private:
     Value m_D;	/// Quantity of drug
-    Value m_Cl;	/// Clearance
     Value m_F;  /// Biodisponibility
     Value m_Ka; /// Absorption rate constant
     Value m_V;  /// Volume of the compartment
     Value m_Ke; /// Elimination constant rate = Cl/V where Cl is the clearance and V is the volume of the compartment
     int m_NbPoints; /// Number measure points during interval
-    int m_Int; /// Interval time
+    Value m_Int; /// Interval time (Hours)
+
+private:
 };
 
-inline void OneCompartmentExtra::compute(const Residuals& _inResiduals, Eigen::VectorXd& _concentrations1, Eigen::VectorXd& _concentrations2)
+inline void OneCompartmentExtraMicro::compute(const Residuals& _inResiduals, Eigen::VectorXd& _concentrations1, Eigen::VectorXd& _concentrations2)
 {
     Concentration resid1 = _inResiduals[0];
     Concentration resid2 = _inResiduals[1] + m_F * m_D / m_V;
@@ -64,6 +63,16 @@ inline void OneCompartmentExtra::compute(const Residuals& _inResiduals, Eigen::V
         logs(Logarithms::Ka))));
     #endif
 }
+
+class OneCompartmentExtraMacro : public OneCompartmentExtraMicro
+{
+public:
+    OneCompartmentExtraMacro();
+
+protected:
+    virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
+
+};
 
 }
 }

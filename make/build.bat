@@ -38,7 +38,7 @@ if "%BuildLibs%" == "1" (
   )
 )
 
-for %%i in (tucucommon tucucore tucucli) do (
+for %%i in (tucucommon tucucore tucucli tuculicense) do (
   echo *********************************************
   echo *** Compiling %%i
   cd "%TUCUXI_ROOT%\Src\%%i"
@@ -57,5 +57,3 @@ if "%BuildDoc%" == "1" (
   echo *** Generating documentation
   doxygen "%TUCUXI_ROOT%\src\doxyfile"
 )
-
-pause

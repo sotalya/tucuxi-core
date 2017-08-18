@@ -6,16 +6,43 @@
 #include <string>
 
 #include "tucucommon/utils.h"
+#include "tucucommon/loggerhelper.h"
 #include "tucucore/dosage.h"
 
 #include "test_dosage.h"
 #include "test_intakeextractor.h"
 #include "test_operation.h"
+#include "test_intakeintervalcalculator.h"
 
 int main(int argc, char** argv) 
 {
     // Get application folder
     std::string appFolder = Tucuxi::Common::Utils::getAppFolder(argv);
+
+    // Initialize our logger
+    const std::string& fileName = Tucuxi::Common::Utils::strFormat("%s/TucuCore-Test.log", appFolder.c_str());
+    Tucuxi::Common::LoggerHelper::init(fileName);
+
+    int res = 0;
+
+    TestIntervalCalculator calculatorsTests;
+
+    // one compartment
+    calculatorsTests.add_test("1 comp bolus single vs multiple test", &TestIntervalCalculator::test1compBolusSingleVsMultiple);
+    calculatorsTests.add_test("1 comp extra single vs multiple test", &TestIntervalCalculator::test1compExtraSingleVsMultiple);
+    calculatorsTests.add_test("1 comp infusion single vs multiple test", &TestIntervalCalculator::test1compInfusionSingleVsMultiple);
+
+    // two compartment
+    calculatorsTests.add_test("2 comp bolus single vs multiple test", &TestIntervalCalculator::test2compBolusSingleVsMultiple);
+    calculatorsTests.add_test("2 comp extra single vs multiple test", &TestIntervalCalculator::test2compExtraSingleVsMultiple);
+    calculatorsTests.add_test("2 comp intra single vs multiple test", &TestIntervalCalculator::test2compInfusionSingleVsMultiple);
+
+    res = calculatorsTests.run(argc, argv);
+    if (res != 0) {
+        std::cerr << "Calculators test failed\n";
+        exit(1);
+    }
+    std::cout << "Calculators test succeeded\n";
 
     // --- DOSAGE --- //
     TestDosage dosageTests;
@@ -25,7 +52,7 @@ int main(int argc, char** argv)
     dosageTests.add_test("WeeklyDose test", &TestDosage::testWeeklyDose);
     dosageTests.add_test("DosageTimeRange test", &TestDosage::testDosageTimeRange);
 
-    int res = dosageTests.run(argc, argv);
+    res = dosageTests.run(argc, argv);
     if (res != 0) {
         std::cerr << "Dosage test failed\n";
         exit(1);

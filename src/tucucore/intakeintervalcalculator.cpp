@@ -39,7 +39,7 @@ IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakePoints
         return Result::BadConcentration;
     }
 
-    times = times.array() + _intakeEvent.getOffsetTime().toMilliseconds();
+    times = times.array() + _intakeEvent.getOffsetTime().toHours();
     _times.assign(times.data(), times.data() + times.size());
 
     return Result::Ok;
@@ -69,7 +69,7 @@ IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakeSingle
     const IntakeEvent& _intakeEvent,
     const ParameterSetEvent& _parameters,
     const Residuals& _inResiduals,
-    const int64& _atTime,
+    const Value& _atTime,
     Residuals& _outResiduals)
 {
     if (!checkInputs(_intakeEvent, _parameters))

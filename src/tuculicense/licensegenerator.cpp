@@ -16,7 +16,7 @@ namespace License {
 // Symmetric key between Tucuxi and Server
 const std::string LicenseGenerator::m_key = "86685E7AA62844102FC7FAD5D6DDF46C9CA7777BF4E0153FDF5F86463EAC0D75";
 
-int LicenseGenerator::decryptRequest(std::string _encryptedRequest, Request* _plainRequest)
+RequestError LicenseGenerator::decryptRequest(const std::string &_encryptedRequest, Request& _plainRequest)
 {
     Tucuxi::Common::LoggerHelper logger;
 
@@ -25,7 +25,7 @@ int LicenseGenerator::decryptRequest(std::string _encryptedRequest, Request* _pl
     // Decrypt content of licence file
     if(!Tucuxi::Common::CryptoHelper::decrypt(Tucuxi::License::LicenseGenerator::m_key, _encryptedRequest, &request)) {
         logger.error("Cannot decrypt request.");
-        return int(Tucuxi::License::RequestError::ERROR_CRYPTO);
+        return RequestError::ERROR_CRYPTO;
     }
 
     // Read request : key_word:type:fingerprint:request date:version app
@@ -40,7 +40,7 @@ int LicenseGenerator::decryptRequest(std::string _encryptedRequest, Request* _pl
             field3 == std::string::npos ||
             field4 == std::string::npos) {
         logger.error("Request is invalid.");
-        return int(Tucuxi::License::RequestError::ERROR_CRYPTO);
+        return RequestError::ERROR_CRYPTO;
     }
 
     std::string keyWord     = request.substr(0, field1);
@@ -51,30 +51,30 @@ int LicenseGenerator::decryptRequest(std::string _encryptedRequest, Request* _pl
 
     if(keyWord != "request") {
         logger.error("Request is invalid.");
-        return int(Tucuxi::License::RequestError::INVALID_LICENSE);
+        return RequestError::INVALID_LICENSE;
     }
 
-    _plainRequest->m_keyWord = keyWord;
+    _plainRequest.m_keyWord = keyWord;
 
     try {
-        _plainRequest->m_type = std::stoi(type);
+        _plainRequest.m_type = std::stoi(type);
     }
     catch (...) {
         logger.error("Request is invalid.");
-        return int(Tucuxi::License::RequestError::INVALID_LICENSE);
+        return RequestError::INVALID_LICENSE;
     }
 
-    _plainRequest->m_fingerprint = fingerprint;
-    _plainRequest->m_date = Tucuxi::Common::DateTime(date, "Y-m-d");
-    _plainRequest->m_version = version;
+    _plainRequest.m_fingerprint = fingerprint;
+    _plainRequest.m_date = Tucuxi::Common::DateTime(date, "Y-m-d");
+    _plainRequest.m_version = version;
 
-    return 0;
+    return RequestError::REQUEST_SUCCESSFUL;
 }
 
 /// \brief Return a license to be sent to the application.
 /// @param _request : request from application.
 /// @return license, in case of error : an empty string.
-std::string LicenseGenerator::generateLicense(Request _request)
+std::string LicenseGenerator::generateLicense(const Request &_request)
 {
     Tucuxi::Common::LoggerHelper logger;
 

@@ -10,11 +10,11 @@
 namespace Tucuxi {
 namespace Core {
 
-TwoCompartmentBolus::TwoCompartmentBolus()
+TwoCompartmentBolusMicro::TwoCompartmentBolusMicro()
 {
 }
 
-bool TwoCompartmentBolus::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
+bool TwoCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
     bool bOK = true;
 
@@ -22,32 +22,27 @@ bool TwoCompartmentBolus::checkInputs(const IntakeEvent& _intakeEvent, const Par
 	    return false;
     
     m_D = _intakeEvent.getDose() * 1000;
-    m_Cl = _parameters.getValue(0);
-    m_Q = _parameters.getValue(1);
-    m_V1 = _parameters.getValue(2);
-    m_V2 = _parameters.getValue(3);
-    m_Ke = m_Cl / m_V1;
-    m_K12 = m_Q / m_V1;
-    m_K21 = m_Q / m_V2;
+    m_V1 = _parameters.getValue(0);
+    m_Ke = _parameters.getValue(1);
+    m_K12 = _parameters.getValue(2);
+    m_K21 = _parameters.getValue(3);
     m_NbPoints = _intakeEvent.getNbPoints();
+    m_Int = (_intakeEvent.getInterval()).toHours();
 
     bOK &= checkValue(m_D >= 0, "The dose is negative.");
     bOK &= checkValue(!std::isnan(m_D), "The dose is NaN.");
     bOK &= checkValue(!std::isinf(m_D), "The dose is Inf.");
-    bOK &= checkValue(m_Cl > 0, "The clearance is not greater than zero.");
-    bOK &= checkValue(!std::isnan(m_Cl), "The CL is NaN.");
-    bOK &= checkValue(!std::isinf(m_Cl), "The CL is Inf.");
-    bOK &= checkValue(m_Q > 0, "The Q is not greater than zero.");
-    bOK &= checkValue(!std::isnan(m_Q), "The Q is NaN.");
-    bOK &= checkValue(!std::isinf(m_Q), "The Q is Inf.");
-    bOK &= checkValue(m_V1 > 0, "The volume1 is not greater than zero.");
-    bOK &= checkValue(!std::isnan(m_V1), "The V1 is NaN.");
-    bOK &= checkValue(!std::isinf(m_V1), "The V1 is Inf.");
-    bOK &= checkValue(m_V2 > 0, "The volume2 is not greater than zero.");
-    bOK &= checkValue(!std::isnan(m_V2), "The V2 is NaN.");
-    bOK &= checkValue(!std::isinf(m_V2), "The V2 is Inf.");
+    bOK &= checkValue(m_Ke > 0, "The Ke is not greater than zero.");
+    bOK &= checkValue(!std::isnan(m_Ke), "The Ke is NaN.");
+    bOK &= checkValue(!std::isinf(m_Ke), "The Ke is Inf.");
+    bOK &= checkValue(m_K12 > 0, "The K12 is not greater than zero.");
+    bOK &= checkValue(!std::isnan(m_K12), "The K12 is NaN.");
+    bOK &= checkValue(!std::isinf(m_K12), "The K12 is Inf.");
+    bOK &= checkValue(m_K21 > 0, "The K21 is not greater than zero.");
+    bOK &= checkValue(!std::isnan(m_K21), "The K21 is NaN.");
+    bOK &= checkValue(!std::isinf(m_K21), "The K21 is Inf.");
     bOK &= checkValue(m_NbPoints >= 0, "The number of points is zero or negative.");
-    bOK &= checkValue((_intakeEvent.getInterval()).toMilliseconds() >= 0, "The interval time is zero or negative.");
+    bOK &= checkValue(m_Int > 0, "The interval time is negative.");
 
     Value sumK = m_Ke + m_K12 + m_K21;
     m_RootK = std::sqrt((sumK * sumK) - (4 * m_K21 * m_Ke));
@@ -58,30 +53,19 @@ bool TwoCompartmentBolus::checkInputs(const IntakeEvent& _intakeEvent, const Par
 }
 
 
-void TwoCompartmentBolus::computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters, Eigen::VectorXd& _times)
+void TwoCompartmentBolusMicro::computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters, Eigen::VectorXd& _times)
 {
     setLogs(Logarithms::Alpha, (-m_Alpha * _times).array().exp());
     setLogs(Logarithms::Beta, (-m_Beta * _times).array().exp());
 }
 
 
-bool TwoCompartmentBolus::computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
+bool TwoCompartmentBolusMicro::computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
 {
-    bool bOK = true;
-
-    Concentration resid1 = _inResiduals[0] + (m_D/m_V1);
-    Concentration resid2 = _inResiduals[1];
-
-    Value A = ((m_K12 - m_K21 + m_Ke + m_RootK) * resid1) - (2 * m_K21 * resid2);
-    Value B = ((-m_K12 + m_K21 - m_Ke + m_RootK) * resid1) + (2 * m_K21 * resid2);
-    Value A2 = (-2 * m_K12 * resid1) + ((-m_K12 + m_K21 - m_Ke + m_RootK) * resid2);
-    Value BB2 = (2 * m_K12 * resid1) + ((m_K12 - m_K21 + m_Ke + m_RootK) * resid2);
+    Eigen::VectorXd concentrations1, concentrations2;
 
     // Calculate concentrations for comp1 and comp2
-    Eigen::VectorXd concentrations1 = 
-        ((A * logs(Logarithms::Alpha)) + (B * logs(Logarithms::Beta))) / (2 * m_RootK);
-    Eigen::VectorXd concentrations2 = 
-        ((A2 * logs(Logarithms::Alpha)) + (BB2 * logs(Logarithms::Beta))) / (2 * m_RootK);
+    compute(_inResiduals, concentrations1, concentrations2);
 
     // return concentrations of comp1 and comp2
     _outResiduals.push_back(concentrations1[m_NbPoints - 1]);
@@ -89,44 +73,90 @@ bool TwoCompartmentBolus::computeConcentrations(const Residuals& _inResiduals, C
 
     _concentrations.assign(concentrations1.data(), concentrations1.data() + concentrations1.size());	
 
-    bOK &= checkValue(_outResiduals[0] >= 0, "The concentration1 is negative.");
+    bool bOK = checkValue(_outResiduals[0] >= 0, "The concentration1 is negative.");
     bOK &= checkValue(_outResiduals[1] >= 0, "The concentration2 is negative.");
 
     return bOK;
 }
 
 
-bool TwoCompartmentBolus::computeConcentration(const int64& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
+bool TwoCompartmentBolusMicro::computeConcentration(const Value& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
 {
-    bool bOK = true;
-
-    Concentration resid1 = _inResiduals[0] + (m_D/m_V1);
-    Concentration resid2 = _inResiduals[1];
-
-    Value A = ((m_K12 - m_K21 + m_Ke + m_RootK) * resid1) - (2 * m_K21 * resid2);
-    Value B = ((-m_K12 + m_K21 - m_Ke + m_RootK) * resid1) + (2 * m_K21 * resid2);
-    Value A2 = (-2 * m_K12 * resid1) + ((-m_K12 + m_K21 - m_Ke + m_RootK) * resid2);
-    Value BB2 = (2 * m_K12 * resid1) + ((m_K12 - m_K21 + m_Ke + m_RootK) * resid2);
+    Eigen::VectorXd concentrations1, concentrations2;
 
     // Calculate concentrations for comp1 and comp2
-    Eigen::VectorXd concentrations1 = 
-        ((A * logs(Logarithms::Alpha)) + (B * logs(Logarithms::Beta))) / (2 * m_RootK);
-    Eigen::VectorXd concentrations2 = 
-        ((A2 * logs(Logarithms::Alpha)) + (BB2 * logs(Logarithms::Beta))) / (2 * m_RootK);
+    compute(_inResiduals, concentrations1, concentrations2);
 
     // return concentraions (computation with atTime (current time))
     _concentrations.push_back(concentrations1[0]);
     _concentrations.push_back(concentrations2[0]);
 
+    // interval=0 means that it is the last cycle, so final residual = 0
+    if (m_Int == 0) {
+        concentrations1[1] = 0;
+        concentrations2[1] = 0;
+    }
+
     // return final residual (computation with m_Int (interval))
     _outResiduals.push_back(concentrations1[1]);
     _outResiduals.push_back(concentrations2[1]);
 
-    bOK &= checkValue(_outResiduals[0] >= 0, "The concentration1 is negative.");
+    bool bOK = checkValue(_outResiduals[0] >= 0, "The concentration1 is negative.");
     bOK &= checkValue(_outResiduals[1] >= 0, "The concentration2 is negative.");
 
     return bOK;
 }
+
+TwoCompartmentBolusMacro::TwoCompartmentBolusMacro() : TwoCompartmentBolusMicro()
+{
+}
+
+bool TwoCompartmentBolusMacro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
+{
+    bool bOK = true;
+
+    if(!checkValue(_parameters.size() >= 4, "The number of parameters should be equal to 4.")) {
+        return false;
+    }
+    
+    m_D = _intakeEvent.getDose() * 1000;
+    Value cl = _parameters.getValue(0); /// clearance
+    Value q = _parameters.getValue(1); /// speed between c1 and c2
+    m_V1 = _parameters.getValue(2); /// volume of first compartment
+    Value v2 = _parameters.getValue(3); /// volue of second ompartment
+    m_Ke = cl / m_V1;
+    m_K12 = q / m_V1;
+    m_K21 = q / v2;
+    m_NbPoints = _intakeEvent.getNbPoints();
+    m_Int = (_intakeEvent.getInterval()).toHours();
+
+    bOK &= checkValue(m_D >= 0, "The dose is negative.");
+    bOK &= checkValue(!std::isnan(m_D), "The dose is NaN.");
+    bOK &= checkValue(!std::isinf(m_D), "The dose is Inf.");
+    bOK &= checkValue(cl > 0, "The clearance is not greater than zero.");
+    bOK &= checkValue(!std::isnan(cl), "The CL is NaN.");
+    bOK &= checkValue(!std::isinf(cl), "The CL is Inf.");
+    bOK &= checkValue(q > 0, "The Q is not greater than zero.");
+    bOK &= checkValue(!std::isnan(q), "The Q is NaN.");
+    bOK &= checkValue(!std::isinf(q), "The Q is Inf.");
+    bOK &= checkValue(m_V1 > 0, "The volume1 is not greater than zero.");
+    bOK &= checkValue(!std::isnan(m_V1), "The m_V1 is NaN.");
+    bOK &= checkValue(!std::isinf(m_V1), "The m_V1 is Inf.");
+    bOK &= checkValue(v2 > 0, "The volume2 is not greater than zero.");
+    bOK &= checkValue(!std::isnan(v2), "The V2 is NaN.");
+    bOK &= checkValue(!std::isinf(v2), "The V2 is Inf.");
+    bOK &= checkValue(m_NbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkValue(m_Int > 0, "The interval time is negative.");
+
+    Value sumK = m_Ke + m_K12 + m_K21;
+    m_RootK = std::sqrt((sumK * sumK) - (4 * m_K21 * m_Ke));
+    m_Alpha = (sumK + m_RootK)/2;
+    m_Beta = (sumK - m_RootK)/2;
+
+    return bOK;
+}
+
+
 }
 }
 

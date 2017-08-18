@@ -11,6 +11,7 @@
 /// use in other Tucuxi's libraries and applications.
 
 #include <string.h>
+#include <string>
 
 namespace Tucuxi {
 namespace Common {
