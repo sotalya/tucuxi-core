@@ -96,7 +96,8 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
 
         if (res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok) {
             for (int i = 0; i < nbComp; i++) {
-                fructose_assert (abs(outMultiResiduals[i]/outSingleResiduals[i]-1) < DELTA);
+                fructose_assert_double_eq(outMultiResiduals[i], outSingleResiduals[i])
+//                fructose_assert (abs(outMultiResiduals[i]/outSingleResiduals[i]-1.0) < DELTA);
             }
         }
     }
