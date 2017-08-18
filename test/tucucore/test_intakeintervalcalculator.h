@@ -29,7 +29,60 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
 
 
     template <class CalculatorClass, int nbComp>
-    void testSingleVsMultipleResiduals(const Tucuxi::Core::ParameterSetEvent &_parameters,
+    void testSteadyState(const Tucuxi::Core::ParameterSetEvent &_parameters,
+                                       double _dose,
+                                       Tucuxi::Core::RouteOfAdministration _route,
+                                       std::chrono::hours _interval,
+                                       std::chrono::seconds _infusionTime,
+                                       int _nbPoints)
+    {
+
+        Tucuxi::Core::IntakeIntervalCalculator::Result res;
+        CalculatorClass calculator;
+
+        DateTime now;
+        Tucuxi::Common::Duration offsetTime = 0s;
+        Tucuxi::Common::Duration interval = _interval;
+        Tucuxi::Common::Duration infusionTime = _infusionTime;
+
+        Tucuxi::Core::Concentrations concentrations;
+        Tucuxi::Core::TimeOffsets times;
+        Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, _dose, interval, _route, infusionTime, _nbPoints);
+
+        // Checking if steady state is reached by iterative 100 times a calculation and
+        // passing residuals to the next iteration
+        Tucuxi::Core::Residuals inResiduals;
+        Tucuxi::Core::Residuals outResiduals;
+
+        for(int i = 0; i < nbComp; i++)
+            outResiduals.push_back(0);
+
+        for(int cycle = 0; cycle < 100; cycle ++)
+        {
+            inResiduals = outResiduals;
+            res = calculator.calculateIntakeSinglePoint(
+                        concentrations,
+                        intakeEvent,
+                        _parameters,
+                        inResiduals,
+                        interval.toHours(),
+                        outResiduals);
+            fructose_assert(res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok);
+
+
+        }
+
+        if (res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok) {
+            for (int i = 0; i < nbComp; i++) {
+                fructose_assert_double_eq(inResiduals[i], outResiduals[i])
+            }
+        }
+
+    }
+
+
+    template <class CalculatorClass, int nbComp>
+    void testSingleVsMultiple(const Tucuxi::Core::ParameterSetEvent &_parameters,
                                        double _dose,
                                        Tucuxi::Core::RouteOfAdministration _route,
                                        std::chrono::hours _interval,
@@ -102,6 +155,21 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
         }
     }
 
+
+    template <class CalculatorClass, int nbComp>
+    void testCalculator(const Tucuxi::Core::ParameterSetEvent &_parameters,
+                                       double _dose,
+                                       Tucuxi::Core::RouteOfAdministration _route,
+                                       std::chrono::hours _interval,
+                                       std::chrono::seconds _infusionTime,
+                                       int _nbPoints)
+    {
+
+        testSingleVsMultiple<CalculatorClass, nbComp>(_parameters, _dose, _route, _interval, _infusionTime, _nbPoints);
+        testSteadyState<CalculatorClass, nbComp>(_parameters, _dose, _route, _interval, _infusionTime, _nbPoints);
+    }
+
+
     /// \brief Test the residual calculation of Bolus. Compares single point vs multiple points
     /// \param _testName Test name.
     /// A calculator is instanciated, and residuals are computed with both
@@ -115,7 +183,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Ke", 22.97, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
             Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
 
-            testSingleVsMultipleResiduals<Tucuxi::Core::OneCompartmentBolusMicro, 1>
+            testCalculator<Tucuxi::Core::OneCompartmentBolusMicro, 1>
                     (parameters,
                      400.0,
                      Tucuxi::Core::RouteOfAdministration::INTRAVASCULAR,
@@ -130,7 +198,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Cl", 15.106, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
             Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
 
-            testSingleVsMultipleResiduals<Tucuxi::Core::OneCompartmentBolusMacro, 1>
+            testCalculator<Tucuxi::Core::OneCompartmentBolusMacro, 1>
                     (parameters,
                      400.0,
                      Tucuxi::Core::RouteOfAdministration::INTRAVASCULAR,
@@ -157,7 +225,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
             Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
 
-            testSingleVsMultipleResiduals<Tucuxi::Core::OneCompartmentExtraMicro, 2>
+            testCalculator<Tucuxi::Core::OneCompartmentExtraMicro, 2>
                     (parameters,
                      400.0,
                      Tucuxi::Core::RouteOfAdministration::INTRAVASCULAR,
@@ -174,7 +242,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
             Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
 
-            testSingleVsMultipleResiduals<Tucuxi::Core::OneCompartmentExtraMacro, 2>
+            testCalculator<Tucuxi::Core::OneCompartmentExtraMacro, 2>
                     (parameters,
                      400.0,
                      Tucuxi::Core::RouteOfAdministration::INTRAVASCULAR,
@@ -200,7 +268,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Ke", 22.97, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
             Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
 
-            testSingleVsMultipleResiduals<Tucuxi::Core::OneCompartmentInfusionMicro, 1>
+            testCalculator<Tucuxi::Core::OneCompartmentInfusionMicro, 1>
                     (parameters,
                      400.0,
                      Tucuxi::Core::RouteOfAdministration::INFUSION,
@@ -215,7 +283,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Cl", 15.106, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
             Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
 
-            testSingleVsMultipleResiduals<Tucuxi::Core::OneCompartmentInfusionMacro, 1>
+            testCalculator<Tucuxi::Core::OneCompartmentInfusionMacro, 1>
                     (parameters,
                      400.0,
                      Tucuxi::Core::RouteOfAdministration::INFUSION,
@@ -240,7 +308,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("V2", 342, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
             Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
 
-            testSingleVsMultipleResiduals<Tucuxi::Core::TwoCompartmentBolusMacro, 2>
+            testCalculator<Tucuxi::Core::TwoCompartmentBolusMacro, 2>
                     (parameters,
                      400.0,
                      Tucuxi::Core::RouteOfAdministration::INTRAVASCULAR,
@@ -268,7 +336,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
             Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
 
-            testSingleVsMultipleResiduals<Tucuxi::Core::TwoCompartmentExtraMacro, 3>
+            testCalculator<Tucuxi::Core::TwoCompartmentExtraMacro, 3>
                     (parameters,
                      400.0,
                      Tucuxi::Core::RouteOfAdministration::EXTRAVASCULAR,
@@ -294,7 +362,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("V2", 342, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
             Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
 
-            testSingleVsMultipleResiduals<Tucuxi::Core::TwoCompartmentInfusion, 2>
+            testCalculator<Tucuxi::Core::TwoCompartmentInfusion, 2>
                     (parameters,
                      400.0,
                      Tucuxi::Core::RouteOfAdministration::INFUSION,

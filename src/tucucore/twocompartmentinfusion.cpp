@@ -40,7 +40,7 @@ bool TwoCompartmentInfusion::checkInputs(const IntakeEvent& _intakeEvent, const 
     m_NbPoints = _intakeEvent.getNbPoints();
     
     Tucuxi::Common::LoggerHelper logHelper;
-
+/*
     logHelper.debug("<<Input Values>>");
     logHelper.debug("m_D: {}", m_D);
     logHelper.debug("m_Cl: {}", m_Cl);
@@ -57,7 +57,7 @@ bool TwoCompartmentInfusion::checkInputs(const IntakeEvent& _intakeEvent, const 
     logHelper.debug("m_Beta: {}", m_Beta);
     logHelper.debug("m_Tinf: {}", m_Tinf);
     logHelper.debug("m_Int: {}", m_Int);
-    
+  */
     bOK &= checkValue(m_D >= 0, "The dose is negative.");
     bOK &= checkValue(!std::isnan(m_D), "The dose is NaN.");
     bOK &= checkValue(!std::isinf(m_D), "The dose is Inf.");

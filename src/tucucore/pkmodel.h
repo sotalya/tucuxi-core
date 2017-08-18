@@ -60,10 +60,10 @@ public:
 
 protected:
 
-    /// \brief m_pkModelId Id of the PkModel
+    /// \brief Id of the PkModel
     std::string m_pkModelId;
 
-    /// \brief m_calculatorCreators a map of available calculators creators linked to there route of administration
+    /// \brief A map of available calculators creators linked to there route of administration
     std::map<RouteOfAdministration, IntakeIntervalCalculatorCreator* > m_calculatorCreators;
 };
 
