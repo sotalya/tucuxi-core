@@ -13,6 +13,7 @@
 #include "test_intakeextractor.h"
 #include "test_operation.h"
 #include "test_intakeintervalcalculator.h"
+#include "test_concentrationcalculator.h"
 
 int main(int argc, char** argv) 
 {
@@ -43,6 +44,11 @@ int main(int argc, char** argv)
         exit(1);
     }
     std::cout << "Calculators test succeeded\n";
+
+    TestConcentrationCalculator concentrationCalculatorTests;
+    concentrationCalculatorTests.add_test("1 comp bolus test", &TestConcentrationCalculator::test1compBolus);
+    concentrationCalculatorTests.add_test("1 comp extra test", &TestConcentrationCalculator::test1compExtra);
+    concentrationCalculatorTests.add_test("1 comp infusion test", &TestConcentrationCalculator::test1compInfusion);
 
     // --- DOSAGE --- //
     TestDosage dosageTests;
