@@ -23,7 +23,7 @@ SOURCES := cachedlogarithms.cpp \
 		   montecarlopercentilecalculator.cpp \
            onecompartmentbolus.cpp \
            onecompartmentextra.cpp \
-           onecompartmentintra.cpp \
+           onecompartmentinfusion.cpp \
            operation.cpp \
            parameter.cpp \
            parametersextractor.cpp \
@@ -32,10 +32,10 @@ SOURCES := cachedlogarithms.cpp \
            targetextractor.cpp \
            threecompartmentbolus.cpp \
            threecompartmentextra.cpp \
-           threecompartmentintra.cpp \
+           threecompartmentinfusion.cpp \
            twocompartmentbolus.cpp \
            twocompartmentextra.cpp \
-           twocompartmentintra.cpp
+           twocompartmentinfusion.cpp
 
 INCLUDES := . \
             ../../libs/eigen-3.3.2 \
