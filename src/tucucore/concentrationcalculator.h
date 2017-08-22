@@ -53,11 +53,11 @@ public:
     /// It just calculates the final residuals for the next cycle,
     /// and the values at the time points requested. If the eta vector is not empty, then
     /// the etas are applied to the parameters.
-    /// @param _concentrations concentrations 2d vector allocated within
-    /// @param _intakes intakes for entire curve
-    /// @param _parameters parameters for entire curve
-    /// @param _samples samples (measures) for the entire curve
-    /// @param _eta vector of etas
+    /// \param _concentrations concentrations 2d vector allocated within
+    /// \param _intakes intakes for entire curve
+    /// \param _parameters parameters for entire curve
+    /// \param _samples samples (measures) for the entire curve
+    /// \param _eta vector of etas
     /// \return The status of computation
     ///
     static ComputationResult computeConcentrationsAtTimes(

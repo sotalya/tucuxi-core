@@ -28,26 +28,26 @@ public:
     CachedLogarithms();
     
     /// \brief Get cached logarithms corresponding to the specified factors
-    /// @param _cycleDuration Duration of a cycle
-    /// @param _parameters The list of parameters computed from the intake, patient's data and measured drug concentrations
-    /// @param _nbPoints The number of points to compute within the cycle
-    /// @param _logarithms Cached logarithms if found
-    /// @return Returns true if something has been found in the cache
+    /// \param _cycleDuration Duration of a cycle
+    /// \param _parameters The list of parameters computed from the intake, patient's data and measured drug concentrations
+    /// \param _nbPoints The number of points to compute within the cycle
+    /// \param _logarithms Cached logarithms if found
+    /// \return Returns true if something has been found in the cache
     bool get(const Tucuxi::Common::Duration& _cycleDuration, const ParameterSetEvent& _parameters, CycleSize _nbPoints, PrecomputedLogarithms& _logarithms);
     
     /// \brief Store logarithms into the cache for the specified factors
-    /// @param _cycleDuration Duration of a cycle
-    /// @param _parameters The list of parameters computed from the intake, patient's data and measured drug concentrations
-    /// @param _nbPoints The number of points to compute within the cycle
-    /// @param _logarithms Logarithms to be cached
+    /// \param _cycleDuration Duration of a cycle
+    /// \param _parameters The list of parameters computed from the intake, patient's data and measured drug concentrations
+    /// \param _nbPoints The number of points to compute within the cycle
+    /// \param _logarithms Logarithms to be cached
     void set(const Tucuxi::Common::Duration& _cycleDuration, const ParameterSetEvent& _parameters, CycleSize _nbPoints, const PrecomputedLogarithms& _logarithms);
     
 private:
     /// \brief Compute a hash based on the specified factors
-    /// @param _cycleDuration Duration of a cycle
-    /// @param _parameters The list of parameters computed from the intake, patient's data and measured drug concentrations
-    /// @param _nbPoints The number of points to compute within the cycle
-    /// @return Returns the computed hash
+    /// \param _cycleDuration Duration of a cycle
+    /// \param _parameters The list of parameters computed from the intake, patient's data and measured drug concentrations
+    /// \param _nbPoints The number of points to compute within the cycle
+    /// \return Returns the computed hash
     std::size_t hash(const Tucuxi::Common::Duration& _cycleDuration, const ParameterSetEvent& _parameters, CycleSize _nbPoints) const;
 
 private:

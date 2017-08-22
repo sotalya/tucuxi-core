@@ -25,8 +25,8 @@ public:
 
 public:    
     /// \brief Constructor
-    /// @param _name The name of the parameter
-    /// @param _name It's default value
+    /// \param _name The name of the parameter
+    /// \param _name It's default value
     ParameterDefinition(const std::string _name, Value _value, ErrorModel _errType)
         : m_name(_name), 
           m_value(_value), 
@@ -35,7 +35,7 @@ public:
     {}
 
     /// \brief Get the parameter value
-    /// @return Returns the parameter value
+    /// \return Returns the parameter value
     Value getValue() const { return m_value; }
 
     const std::string& getName() const { return m_name; }

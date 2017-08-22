@@ -28,14 +28,14 @@ namespace Core {
 /// 	Must have implementeed operator()
 /// @tparam x the type of dependent variable(s)
 ///
-/// @param fxn object of func (f(x))
-/// @param loc where to take the derivative
-/// @param is_ptr whether x has pointer type
-/// @param is_array whether x has array type
-/// @param is_class whether x has class type
-/// @param tol value of derivative calculation step (as h in f(x+h)...)
+/// \param fxn object of func (f(x))
+/// \param loc where to take the derivative
+/// \param is_ptr whether x has pointer type
+/// \param is_array whether x has array type
+/// \param is_class whether x has class type
+/// \param tol value of derivative calculation step (as h in f(x+h)...)
 ///
-/// @return x derivative
+/// \return x derivative
 template <typename func, typename x = double, bool is_ptr, bool is_array, bool is_class>
 inline x deriv1_impl(func fxn,
          x loc,
@@ -54,14 +54,14 @@ inline x deriv1_impl(func fxn,
 /// 	Must have implemented operator()
 /// @tparam x the type of dependent variable(s)
 ///
-/// @param fxn object of func (f(x))
-/// @param loc where to take the derivative
-/// @param is_ptr whether x has pointer type
-/// @param is_array whether x has array type
-/// @param is_class whether x has class type
-/// @param tol value of derivative calculation step (as h in f(x+h)...)
+/// \param fxn object of func (f(x))
+/// \param loc where to take the derivative
+/// \param is_ptr whether x has pointer type
+/// \param is_array whether x has array type
+/// \param is_class whether x has class type
+/// \param tol value of derivative calculation step (as h in f(x+h)...)
 ///
-/// @return x derivative
+/// \return x derivative
 template <typename func, typename x>
 inline x deriv1_impl(func fxn,
          x loc,
@@ -83,14 +83,14 @@ inline x deriv1_impl(func fxn,
 /// @tparam func the objective function type for the derivatecalculations (f(x)).
 /// 	Must have implemented operator()
 /// @tparam x the type of dependent variable(s)
-/// @param fxn object of func (f(x))
-/// @param loc where to take the derivative
-/// @param is_ptr whether x has pointer type
-/// @param is_array whether x has array type
-/// @param is_class whether x has class type
-/// @param answer where to put the results
-/// @param tol value of derivative calculation step (as h in f(x+h)...)
-/// @return x& derivative
+/// \param fxn object of func (f(x))
+/// \param loc where to take the derivative
+/// \param is_ptr whether x has pointer type
+/// \param is_array whether x has array type
+/// \param is_class whether x has class type
+/// \param answer where to put the results
+/// \param tol value of derivative calculation step (as h in f(x+h)...)
+/// \return x& derivative
 template <typename func, typename x = ValueVector>
 inline x& deriv1_impl(x& ans,
          func fxn,
@@ -122,15 +122,15 @@ inline x& deriv1_impl(x& ans,
 /// 	Must have implemented operator()
 /// @tparam x the type of dependent variable(s)
 ///
-/// @param ans the resulting derivative
-/// @param fxn object of func (f(x))
-/// @param loc where to take the derivative
-/// @param is_ptr whether x has pointer type
-/// @param is_array whether x has array type
-/// @param is_class whether x has class type
-/// @param tol value of derivative calculation step (as h in f(x+h)...)
+/// \param ans the resulting derivative
+/// \param fxn object of func (f(x))
+/// \param loc where to take the derivative
+/// \param is_ptr whether x has pointer type
+/// \param is_array whether x has array type
+/// \param is_class whether x has class type
+/// \param tol value of derivative calculation step (as h in f(x+h)...)
 ///
-/// @return x& derivative
+/// \return x& derivative
 template <typename func, typename x = ValueVector>
 inline x& deriv1_impl(x& ans,
          func fxn,
@@ -163,12 +163,12 @@ inline x& deriv1_impl(x& ans,
 /// 	Must have implemented operator()
 /// @tparam x the type of dependent variable(s)
 ///
-/// @param fxn object of func (f(x))
-/// @param loc where to take the derivative
-/// @param ans the resulting derivative
-/// @param tol value of derivative calculation step (as h in f(x+h)...)
+/// \param fxn object of func (f(x))
+/// \param loc where to take the derivative
+/// \param ans the resulting derivative
+/// \param tol value of derivative calculation step (as h in f(x+h)...)
 ///
-/// @return x derivative
+/// \return x derivative
 template <typename func, typename x = ValueVector>
 inline x deriv1(func fxn, x& loc, x& ans, const Value tol = DEFAULT_DERIV_TOL)
 {
@@ -183,11 +183,11 @@ inline x deriv1(func fxn, x& loc, x& ans, const Value tol = DEFAULT_DERIV_TOL)
 /// 	Must have implemented operator()
 /// @tparam x the type of dependent variable(s)
 ///
-/// @param fxn object of func (f(x))
-/// @param loc where to take the derivative
-/// @param tol value of derivative calculation step (as h in f(x+h)...)
+/// \param fxn object of func (f(x))
+/// \param loc where to take the derivative
+/// \param tol value of derivative calculation step (as h in f(x+h)...)
 ///
-/// @return x derivative
+/// \return x derivative
 template <typename func, typename x = ValueVector>
 inline x deriv1(func fxn, x& loc, const Value tol = DEFAULT_DERIV_TOL)
 {
@@ -205,10 +205,10 @@ inline x deriv1(func fxn, x& loc, const Value tol = DEFAULT_DERIV_TOL)
 /// @tparam x the type of dependent variable(s)
 /// @tparam y the type of the result
 ///
-/// @param fxn object of func (f(x))
-/// @param loc where to take the derivative
-/// @param answer where to put the results
-/// @param tol value of derivative calculation step (as h in f(x+h)...)
+/// \param fxn object of func (f(x))
+/// \param loc where to take the derivative
+/// \param answer where to put the results
+/// \param tol value of derivative calculation step (as h in f(x+h)...)
 template <typename func, typename x, typename y>
 void deriv2_impl(func fxn, x& loc, y& answer, const Value tol) {
     int size = loc.size();
@@ -248,10 +248,10 @@ void deriv2_impl(func fxn, x& loc, y& answer, const Value tol) {
 /// @tparam func the objective function type for the derivatecalculations (f(x)).
 /// 	Must have implementeed operator()
 ///
-/// @param fxn object of func (f(x))
-/// @param loc where to take the derivative
-/// @param answer where to put the results
-/// @param tol value of derivative calculation step (as h in f(x+h)...)
+/// \param fxn object of func (f(x))
+/// \param loc where to take the derivative
+/// \param answer where to put the results
+/// \param tol value of derivative calculation step (as h in f(x+h)...)
 template <typename func>
 void deriv2_impl(func fxn, Eigen::VectorXd& loc, Eigen::MatrixXd& answer, const Value tol) {
     int size = loc.size();
@@ -294,10 +294,10 @@ void deriv2_impl(func fxn, Eigen::VectorXd& loc, Eigen::MatrixXd& answer, const 
 /// @tparam x the type of dependent variable(s)
 /// @tparam y the type of the result
 ///
-/// @param fxn object of func (f(x))
-/// @param loc where to take the derivative
-/// @param ret where to put the results
-/// @param tol value of derivative calculation step (as h in f(x+h)...)
+/// \param fxn object of func (f(x))
+/// \param loc where to take the derivative
+/// \param ret where to put the results
+/// \param tol value of derivative calculation step (as h in f(x+h)...)
 template <typename func, typename x = ValueVector, typename y /*= simple_matrix_t*/>
 inline void deriv2(func fxn, x& loc, y& ret, const Value tol = DEFAULT_DERIV_TOL)
 {

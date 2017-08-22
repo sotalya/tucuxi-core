@@ -29,36 +29,36 @@ class SystemInfo
 {
 public:
     /// \brief Retrieve a unique id of Machine.
-    /// @return Id, In case of error : the returned string is empty.
+    /// \return Id, In case of error : the returned string is empty.
     static std::string retrieveFingerPrint(MachineIdType _machineIdType);
 
 private:
     /// \brief Retrieve a unique id of CPU.
-    /// @return Id, In case of error : the returned string is empty.
+    /// \return Id, In case of error : the returned string is empty.
     static std::string retrieveCpu();
 
     /// \brief Retrieve a unique id of Motherboard.
-    /// @return Id, In case of error : the returned string is empty.
+    /// \return Id, In case of error : the returned string is empty.
     static std::string retrieveMotherboard();
 
     /// \brief Retrieve a unique id of Disks.
-    /// @return Id, In case of error : the returned string is empty.
+    /// \return Id, In case of error : the returned string is empty.
     static std::string retrieveDisk();
 
     /// \brief Retrieve Mac Address.
-    /// @return Id, In case of error : the returned string is empty.
+    /// \return Id, In case of error : the returned string is empty.
     static std::string retrieveMacAddress();
 
     /// \brief Retrieve some infos of BIOS.
-    /// @return Id, In case of error : the returned string is empty.
+    /// \return Id, In case of error : the returned string is empty.
     static std::string retrieveBios();
 
     /// \brief Retrieve some infos of product.
-    /// @return Id, In case of error : the returned string is empty.
+    /// \return Id, In case of error : the returned string is empty.
     static std::string retrieveProduct();
 
     /// \brief Retrieve the name of machine.
-    /// @return Id, In case of error : the returned string is empty.
+    /// \return Id, In case of error : the returned string is empty.
     static std::string retrieveName();
 
 #ifndef _WIN32

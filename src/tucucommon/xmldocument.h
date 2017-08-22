@@ -35,7 +35,7 @@ public:
     ~XmlDocument();
     
     /// \brief Check if the document is valid
-    /// @return True if the document is valid
+    /// \return True if the document is valid
     bool isValid() const;
     
     /// \brief Load and parse XML data from the specified file
@@ -51,29 +51,29 @@ public:
     bool fromString(const std::string& _xml);
 
     /// \brief Save XML data into the specified string
-    /// @param _xml The string where XML data should be written
-    /// @param _prettyPrint Make the output pretty (line breaks, indenting, ...)
+    /// \param _xml The string where XML data should be written
+    /// \param _prettyPrint Make the output pretty (line breaks, indenting, ...)
     bool toString(std::string& _xml, bool _prettyPrint = false);
 
     /// \brief Returns the root element of the document
-    /// @return The rool element
+    /// \return The rool element
     XmlNode getRoot() const;
 
     /// \brief Set the root element of the document
-    /// @param The new root element
-    /// @return True if ok.
+    /// \param The new root element
+    /// \return True if ok.
     bool setRoot(const XmlNode& _root);
     
     /// \brief Create a new node
-    /// @param _type The type of node to be created
-    /// @param _name The name of the node
-    /// @param _value The value of the node
-    /// @return The newly created node or nullptr in case of problem
+    /// \param _type The type of node to be created
+    /// \param _name The name of the node
+    /// \param _value The value of the node
+    /// \return The newly created node or nullptr in case of problem
     XmlNode createNode(EXmlNodeType _type, const std::string& _name = "", const std::string& _value = "");
 
     /// \brief Create a new attribute
-    /// @param _name The name of the attribute
-    /// @param _value The value of the attribute
+    /// \param _name The name of the attribute
+    /// \param _value The value of the attribute
     XmlAttribute createAttribute(const std::string& _name, const std::string& _value = "");
 
 private:
@@ -81,7 +81,7 @@ private:
     void reset();
 
     /// \brief Create a new document
-    /// @return True if the document was created
+    /// \return True if the document was created
     bool createDocument();
 
 private:

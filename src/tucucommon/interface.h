@@ -18,8 +18,8 @@ class Interface
 {
 public:	
     /// \brief The method to use to switch between interface of a given component.
-    /// @param T The type of the desired interface
-    /// @return A pointer to the specified interface
+    /// \param T The type of the desired interface
+    /// \return A pointer to the specified interface
     template <class T> T* getInterface()
      {
         std::string name = typeid(T*).name();
@@ -32,8 +32,8 @@ public:
 
 protected:
     /// \brief Abstract method allowing the templated version of getInterface to access other interfaces of the same component.
-    /// @param _name The name of the interface as returned by typeid.
-    /// @return A pointer to the specified interface
+    /// \param _name The name of the interface as returned by typeid.
+    /// \return A pointer to the specified interface
     virtual Interface* getInterface(const std::string &_name) = 0;
 };
 

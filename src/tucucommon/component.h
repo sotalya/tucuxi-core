@@ -46,8 +46,8 @@ class Component
 {
 protected:
     /// \brief Allows a component to store the correct pointer to the given interface.
-    /// @param _interface The interface. The calling component should use "dynamic_cast" to pass the correct pointer.
-    /// @return None
+    /// \param _interface The interface. The calling component should use "dynamic_cast" to pass the correct pointer.
+    /// \return None
     template <typename T> void registerInterface(T* _interface)
     {
         std::string name = typeid(_interface).name();
@@ -61,8 +61,8 @@ protected:
     /// Interface1 i1 = ...;
     /// Interface2 i2 = i1.getInterface<Interface2>();   // Calling getInterface with the correct name is done automatically.
     /// \endcode
-    /// @param _name The name of the interface to retrieve. 
-    /// @return None
+    /// \param _name The name of the interface to retrieve. 
+    /// \return None
     Interface* getInterfaceImpl(const std::string &_name)
     {
         if (m_interfaces.end() != m_interfaces.find(_name)) {

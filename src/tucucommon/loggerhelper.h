@@ -45,8 +45,8 @@ public:
 
     /// \brief Initialize the Logger component 
     /// Call this method once at startup to enable logging.
-    /// @param _logFilePath Path of the generated rotating log file
-    /// @return True if initialization succeeded
+    /// \param _logFilePath Path of the generated rotating log file
+    /// \return True if initialization succeeded
     static bool init(const std::string& _logFilePath)
     {
         // Initialization of the logger
@@ -68,7 +68,7 @@ public:
 
 public:
     /// \brief Log a "debug" message.
-    /// @param _msg The message to log
+    /// \param _msg The message to log
     void debug(const char* _msg)
     {
         if (m_pLogger != nullptr) {
@@ -77,15 +77,15 @@ public:
     }
 
     /// \brief Log a "debug" message.
-    /// @param _msg The message to log
+    /// \param _msg The message to log
     void debug(const std::string& _msg)
     {
         debug(_msg.c_str());
     }
     
     /// \brief Log a formatted "debug" message.
-    /// @param _fmt The message format
-    /// @param _args List of values referenced by _fmt
+    /// \param _fmt The message format
+    /// \param _args List of values referenced by _fmt
     template<typename... Args> void debug(const char* _fmt, const Args&... _args)
     {
         try {
@@ -98,7 +98,7 @@ public:
     }
 
     /// \brief Log an "information" message.
-    /// @param _msg The message to log
+    /// \param _msg The message to log
     void info(const char* _msg)
     {
         if (m_pLogger != nullptr) {
@@ -107,15 +107,15 @@ public:
     }
 
     /// \brief Log an "information" message.
-    /// @param _msg The message to log
+    /// \param _msg The message to log
     void info(const std::string& _msg)
     {
         info(_msg.c_str());
     }
 
     /// \brief Log a formatted "information" message.
-    /// @param _fmt The message format
-    /// @param _args List of values referenced by _fmt
+    /// \param _fmt The message format
+    /// \param _args List of values referenced by _fmt
     template<typename... Args> void info(const char* _fmt, const Args&... _args)
     {
         try {
@@ -128,7 +128,7 @@ public:
     }
 
     /// \brief Log a "warning" message.
-    /// @param _msg The message to log
+    /// \param _msg The message to log
     void warn(const char* _msg)
     {
         if (m_pLogger != nullptr) {
@@ -137,15 +137,15 @@ public:
     }
 
     /// \brief Log a "warning" message.
-    /// @param _msg The message to log
+    /// \param _msg The message to log
     void warn(const std::string& _msg)
     {
         warn(_msg.c_str());
     }
 
     /// \brief Log a formatted "warning" message.
-    /// @param _fmt The message format
-    /// @param _args List of values referenced by _fmt
+    /// \param _fmt The message format
+    /// \param _args List of values referenced by _fmt
     template<typename... Args> void warn(const char* _fmt, const Args&... _args)
     {
         try {
@@ -158,7 +158,7 @@ public:
     }
 
     /// \brief Log an "error" message.
-    /// @param _msg The message to log
+    /// \param _msg The message to log
     void error(const char* _msg)
     {
         if (m_pLogger != nullptr) {
@@ -167,15 +167,15 @@ public:
     }
 
     /// \brief Log an "error" message.
-    /// @param _msg The message to log
+    /// \param _msg The message to log
     void error(const std::string& _msg)
     {
         error(_msg.c_str());
     }
 
     /// \brief Log a formatted "error" message.
-    /// @param _fmt The message format
-    /// @param _args List of values referenced by _fmt
+    /// \param _fmt The message format
+    /// \param _args List of values referenced by _fmt
     template<typename... Args> void error(const char* _fmt, const Args&... _args)
     {
         try {
@@ -188,7 +188,7 @@ public:
     }
 
     /// \brief Log a "critical error" message.
-    /// @param _msg The message to log
+    /// \param _msg The message to log
     void critical(const char* _msg)
     {
         if (m_pLogger != nullptr) {
@@ -197,15 +197,15 @@ public:
     }
 
     /// \brief Log a "critical" message.
-    /// @param _msg The message to log
+    /// \param _msg The message to log
     void critical(const std::string& _msg)
     {
         critical(_msg.c_str());
     }
 
     /// \brief Log a formatted "critical" message.
-    /// @param _fmt The message format
-    /// @param _args List of values referenced by _fmt
+    /// \param _fmt The message format
+    /// \param _args List of values referenced by _fmt
     template<typename... Args> void critical(const char* _fmt, const Args&... _args)
     {
         try {

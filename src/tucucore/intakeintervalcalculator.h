@@ -71,15 +71,15 @@ public:
     /// \brief Calculate all points for the given time serie
     /// Variable denisty is used by default, which means IntakeEvent is not constant as the final density 
     /// is stored there. Cornish Fisher cumulants calculated within
-    /// @param _concentrations Vector of concentrations
-    /// @param _times Vector of times
-    /// @param _intakeEvent Intake for the cycle (all cyles start with an intake)
-    /// @param _parameters Parameters for the cycle (all cycles have constant parameters)
-    /// @param _inResiduals Initial residual concentrations
-    /// @param _cycleSize The initial (if set to variable) number of points, always odd
-    /// @param _outResiduals Final residual concentrations
-    /// @param _isDensityConstant Flag to indicate if initial number of points should be used with a constant density
-    /// @return An indication if the computation was successful
+    /// \param _concentrations Vector of concentrations
+    /// \param _times Vector of times
+    /// \param _intakeEvent Intake for the cycle (all cyles start with an intake)
+    /// \param _parameters Parameters for the cycle (all cycles have constant parameters)
+    /// \param _inResiduals Initial residual concentrations
+    /// \param _cycleSize The initial (if set to variable) number of points, always odd
+    /// \param _outResiduals Final residual concentrations
+    /// \param _isDensityConstant Flag to indicate if initial number of points should be used with a constant density
+    /// \return An indication if the computation was successful
     Result calculateIntakePoints(
         Concentrations& _concentrations,
         TimeOffsets & _times,
@@ -91,13 +91,13 @@ public:
         const bool _isDensityConstant);
 
     /// \brief Compute one single point at the specified time as well as final residuals
-    /// @param _concentrations vector of concentrations. 
-    /// @param _intakeEvent intake for the cycle (all cyles start with an intake)
-    /// @param _parameters Parameters for the cycle (all cycles have constant parameters)
-    /// @param _inResiduals Initial residual concentrations
-    /// @param _atTime The time of the point of interest
-    /// @param _outResiduals Final residual concentrations
-    /// @return Returns an indication if the computation was successful
+    /// \param _concentrations vector of concentrations. 
+    /// \param _intakeEvent intake for the cycle (all cyles start with an intake)
+    /// \param _parameters Parameters for the cycle (all cycles have constant parameters)
+    /// \param _inResiduals Initial residual concentrations
+    /// \param _atTime The time of the point of interest
+    /// \param _outResiduals Final residual concentrations
+    /// \return Returns an indication if the computation was successful
     Result calculateIntakeSinglePoint(
         Concentrations& _concentrations,
         const IntakeEvent& _intakeEvent,
@@ -108,33 +108,33 @@ public:
 
 protected:
     /// \brief Allows derived classes to make some checks on input data	
-    /// @param _intakeEvent intake for the cycle (all cyles start with an intake)
-    /// @param _parameters Parameters for the cycle (all cycles have constant parameters)
-    /// @return Returns true if inputs are ok
+    /// \param _intakeEvent intake for the cycle (all cyles start with an intake)
+    /// \param _parameters Parameters for the cycle (all cycles have constant parameters)
+    /// \return Returns true if inputs are ok
     virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) = 0;
 
     /// \brief Computation of logarithm values that will may be shared by severall successive computations	
-    /// @param _intakeEvent intake for the cycle (all cyles start with an intake)
-    /// @param _parameters Parameters for the cycle (all cycles have constant parameters)
-    /// @param _times Vector of times
+    /// \param _intakeEvent intake for the cycle (all cyles start with an intake)
+    /// \param _parameters Parameters for the cycle (all cycles have constant parameters)
+    /// \param _times Vector of times
     virtual void computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters, Eigen::VectorXd& _times) = 0;
 
     /// \brief Compute concentrations using a specific algorithm
-    /// @param _inResiduals Initial residual concentrations
-    /// @param _concentrations vector of concentrations.
-    /// @param _outResiduals Final residual concentrations
+    /// \param _inResiduals Initial residual concentrations
+    /// \param _concentrations vector of concentrations.
+    /// \param _outResiduals Final residual concentrations
     virtual bool computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) = 0;
 
     /// \brief Compute concentrations using a specific algorithm
-    /// @param _atTime measure time
-    /// @param _inResiduals Initial residual concentrations
-    /// @param _concentrations vector of concentrations.
-    /// @param _outResiduals Final residual concentrations
+    /// \param _atTime measure time
+    /// \param _inResiduals Initial residual concentrations
+    /// \param _concentrations vector of concentrations.
+    /// \param _outResiduals Final residual concentrations
     virtual bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) = 0;
 
     /// \brief Check if a value is correct and log a message if it is not the case
-    /// @param _isOk Indicates that the value is correct
-    /// @param _errMsg Message to log in case of problem
+    /// \param _isOk Indicates that the value is correct
+    /// \param _errMsg Message to log in case of problem
     bool checkValue(bool _isOk,  const std::string& _errMsg);
 
 protected:
