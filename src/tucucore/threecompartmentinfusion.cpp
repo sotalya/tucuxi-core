@@ -5,6 +5,7 @@
 #include <Eigen/Dense>
 
 #include "tucucore/threecompartmentinfusion.h"
+#include "tucucore/intakeevent.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -13,7 +14,7 @@ ThreeCompartmentInfusion::ThreeCompartmentInfusion()
 {
 }
 
-bool ThreeCompartmentInfusion::checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
+bool ThreeCompartmentInfusion::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
     bool bOK = true;
 
@@ -23,12 +24,12 @@ bool ThreeCompartmentInfusion::checkInputs(const IntakeEvent& _intakeEvent, cons
     Value a0, a1, a2, p, q, r1, r2, phi;
 
     m_D = _intakeEvent.getDose() * 1000;
-    m_Cl = _parameters[0].getValue();
-    m_F = _parameters[1].getValue();
-    m_Q1 = _parameters[2].getValue();
-    m_Q2 = _parameters[3].getValue();
-    m_V1 = _parameters[4].getValue();
-    m_V2 = _parameters[5].getValue();
+    m_Cl = _parameters.getValue(0);
+    m_F = _parameters.getValue(1);
+    m_Q1 = _parameters.getValue(2);
+    m_Q2 = _parameters.getValue(3);
+    m_V1 = _parameters.getValue(4);
+    m_V2 = _parameters.getValue(5);
     m_Ke = m_Cl / m_V1;
     m_K12 = m_Q1 / m_V1;
     m_K21 = m_Q1 / m_V2;
@@ -36,7 +37,7 @@ bool ThreeCompartmentInfusion::checkInputs(const IntakeEvent& _intakeEvent, cons
     m_K31 = m_Q2 / m_V2;
     m_Tinf = _intakeEvent.getInfusionTime().toHours();
     m_Int = _intakeEvent.getInterval().toHours();
-    m_NbPoints = _intakeEvent.getNumberPoints();
+    m_NbPoints = _intakeEvent.getNbPoints();
 
     bOK &= checkValue(m_D >= 0, "The dose is negative.");
     bOK &= checkValue(!std::isnan(m_D), "The dose is NaN.");
@@ -78,16 +79,11 @@ bool ThreeCompartmentInfusion::checkInputs(const IntakeEvent& _intakeEvent, cons
 }
 
 
-void ThreeCompartmentInfusion::prepareComputations(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
+void ThreeCompartmentInfusion::computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters, Eigen::VectorXd& _times)
 {
-}
-
-
-void ThreeCompartmentInfusion::computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterList& _parameters, Eigen::VectorXd& _times)
-{
-    m_precomputedLogarithms["Alpha"] = (-m_Alpha * _times).array().exp();
-    m_precomputedLogarithms["Beta"] = (-m_Beta * _times).array().exp();
-    m_precomputedLogarithms["Gamma"] = (-m_Gamma * _times).array().exp();
+    setLogs(Logarithms::Alpha, (-m_Alpha * _times).array().exp());
+    setLogs(Logarithms::Beta, (-m_Beta * _times).array().exp());
+    setLogs(Logarithms::Gamma, (-m_Gamma * _times).array().exp());
 }
 
 
@@ -121,31 +117,31 @@ bool ThreeCompartmentInfusion::computeConcentrations(const Residuals& _inResidua
        {
             concentrations1(t) = 
 	        deltaD 
-	        * (A/m_Alpha * (1 - m_precomputedLogarithms["Alpha"](t)) 
-		    + B/m_Beta * (1 - m_precomputedLogarithms["Beta"](t)) 
-	            + C/m_Gamma * (1 - m_precomputedLogarithms["Gamma"](t)));
+	        * (A/m_Alpha * (1 - logs(Logarithms::Alpha)(t)) 
+		    + B/m_Beta * (1 - logs(Logarithms::Beta)(t)) 
+	            + C/m_Gamma * (1 - logs(Logarithms::Gamma)(t)));
        } 
        else 
        {
             concentrations1(t) = 
 	        deltaD 
-	        * (A/m_Alpha * (1 - alphaTinf) * m_precomputedLogarithms["Alpha"](t) / alphaTinf 
-	            + B/m_Beta * (1 - betaTinf) * m_precomputedLogarithms["Beta"](t) / betaTinf 
-	            + C/m_Gamma * (1 - gammaTinf) *    m_precomputedLogarithms["Gamma"](t) / gammaTinf);
+	        * (A/m_Alpha * (1 - alphaTinf) * logs(Logarithms::Alpha)(t) / alphaTinf 
+	            + B/m_Beta * (1 - betaTinf) * logs(Logarithms::Beta)(t) / betaTinf 
+	            + C/m_Gamma * (1 - gammaTinf) *    logs(Logarithms::Gamma)(t) / gammaTinf);
        }
     }
 
     Value concentrations2 =
         deltaD * 
-        (A2/m_Alpha * (1 - alphaTinf) * m_precomputedLogarithms["Alpha"](m_NbPoints - 1) / alphaTinf 
-	    + B2/m_Beta * (1 - betaTinf) * m_precomputedLogarithms["Beta"](m_NbPoints - 1) / betaTinf 
-            + C2/m_Gamma * (1 - gammaTinf) * m_precomputedLogarithms["Gamma"](m_NbPoints - 1) / gammaTinf);
+        (A2/m_Alpha * (1 - alphaTinf) * logs(Logarithms::Alpha)(m_NbPoints - 1) / alphaTinf 
+	    + B2/m_Beta * (1 - betaTinf) * logs(Logarithms::Beta)(m_NbPoints - 1) / betaTinf 
+            + C2/m_Gamma * (1 - gammaTinf) * logs(Logarithms::Gamma)(m_NbPoints - 1) / gammaTinf);
 
     Value concentrations3 = 
         deltaD * 
-        (A3/m_Alpha * (1 - alphaTinf) * m_precomputedLogarithms["Alpha"](m_NbPoints - 1) / alphaTinf 
-	    + B3/m_Beta * (1 - betaTinf) * m_precomputedLogarithms["Beta"](m_NbPoints - 1) / betaTinf 
-            + C3/m_Gamma * (1 - gammaTinf) * m_precomputedLogarithms["Gamma"](m_NbPoints - 1) / gammaTinf);
+        (A3/m_Alpha * (1 - alphaTinf) * logs(Logarithms::Alpha)(m_NbPoints - 1) / alphaTinf 
+	    + B3/m_Beta * (1 - betaTinf) * logs(Logarithms::Beta)(m_NbPoints - 1) / betaTinf 
+            + C3/m_Gamma * (1 - gammaTinf) * logs(Logarithms::Gamma)(m_NbPoints - 1) / gammaTinf);
 
     // return concentrations of comp1, comp2 and comp3
     _outResiduals.push_back(concentrations1[m_NbPoints - 1]);

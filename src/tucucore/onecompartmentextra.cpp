@@ -6,6 +6,7 @@
 #include <Eigen/LU>
 
 #include "tucucore/onecompartmentextra.h"
+#include "tucucore/intakeevent.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -14,7 +15,7 @@ OneCompartmentExtraMicro::OneCompartmentExtraMicro()
 {
 }
 
-bool OneCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
+bool OneCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
     bool bOK = true;
 
@@ -22,12 +23,12 @@ bool OneCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
 	    return false;
     
     m_D = _intakeEvent.getDose() * 1000;
-    m_Ke = _parameters[0].getValue();
-    m_F = _parameters[1].getValue();
-    m_Ka = _parameters[2].getValue();
-    m_V = _parameters[3].getValue();
-    m_NbPoints = _intakeEvent.getNumberPoints();
-    m_Int = (_intakeEvent.getInterval()).toHours();
+    m_V = _parameters.getValue(0);
+    m_Ke = _parameters.getValue(1);
+    m_Ka = _parameters.getValue(2);
+    m_F = _parameters.getValue(3);
+    m_NbPoints = _intakeEvent.getNbPoints();
+    m_Int = static_cast<int>((_intakeEvent.getInterval()).toHours());
 
     // check the inputs
     bOK &= checkValue(m_D >= 0, "The dose is negative.");
@@ -52,15 +53,10 @@ bool OneCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
 }
 
 
-void OneCompartmentExtraMicro::prepareComputations(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
+void OneCompartmentExtraMicro::computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters, Eigen::VectorXd& _times)
 {
-}
-
-
-void OneCompartmentExtraMicro::computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterList& _parameters, Eigen::VectorXd& _times)
-{
-    m_precomputedLogarithms["Ka"] = (-m_Ka * _times).array().exp();
-    m_precomputedLogarithms["Ke"] = (-m_Ke * _times).array().exp();
+    setLogs(Logarithms::Ka, (-m_Ka * _times).array().exp());
+    setLogs(Logarithms::Ke, (-m_Ke * _times).array().exp());
 }
 
 
@@ -115,7 +111,7 @@ OneCompartmentExtraMacro::OneCompartmentExtraMacro() : OneCompartmentExtraMicro(
 {
 }
 
-bool OneCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
+bool OneCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
     bool bOK = true;
 
@@ -123,12 +119,12 @@ bool OneCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, cons
 	    return false;
     
     m_D = _intakeEvent.getDose() * 1000;
-    Value cl = _parameters[0].getValue(); // clearance
-    m_F = _parameters[1].getValue();
-    m_Ka = _parameters[2].getValue();
-    m_V = _parameters[3].getValue();
+    m_V = _parameters.getValue(0);
+    Value cl = _parameters.getValue(1); // clearance
+    m_Ka = _parameters.getValue(2);
+    m_F = _parameters.getValue(3);
     m_Ke = cl / m_V;
-    m_NbPoints = _intakeEvent.getNumberPoints();
+    m_NbPoints = _intakeEvent.getNbPoints();
     m_Int = (_intakeEvent.getInterval()).toHours();
 
     // check the inputs

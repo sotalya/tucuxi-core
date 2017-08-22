@@ -5,6 +5,7 @@
 #include <Eigen/Dense>
 
 #include "tucucore/twocompartmentextra.h"
+#include "tucucore/intakeevent.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -13,24 +14,24 @@ TwoCompartmentExtraMicro::TwoCompartmentExtraMicro()
 {
 }
 
-bool TwoCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
+bool TwoCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
     if(!checkValue(_parameters.size() >= 4, "The number of parameters should be equal to 4."))
 	    return false;
     
     m_D = _intakeEvent.getDose() * 1000;
-    m_F = _parameters[0].getValue();
-    m_V1 = _parameters[1].getValue();
-    m_Ka = _parameters[2].getValue();
-    m_Ke = _parameters[3].getValue();
-    m_K12 = _parameters[4].getValue();
-    m_K21 = _parameters[5].getValue();
+    m_F = _parameters.getValue(0);
+    m_V1 = _parameters.getValue(1);
+    m_Ka = _parameters.getValue(2);
+    m_Ke = _parameters.getValue(3);
+    m_K12 = _parameters.getValue(4);
+    m_K21 = _parameters.getValue(5);
 
     Value sumK = m_Ke + m_K12 + m_K21;
     m_RootK = std::sqrt((sumK * sumK) - (4 * m_K21 * m_Ke));
     m_Alpha = (sumK + m_RootK)/2;
     m_Beta = (sumK - m_RootK)/2;
-    m_NbPoints = _intakeEvent.getNumberPoints();
+    m_NbPoints = _intakeEvent.getNbPoints();
     m_Int = (_intakeEvent.getInterval()).toHours();
 
     bool bOK = checkValue(m_D >= 0, "The dose is negative.");
@@ -58,16 +59,11 @@ bool TwoCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
 }
 
 
-void TwoCompartmentExtraMicro::prepareComputations(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
+void TwoCompartmentExtraMicro::computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters, Eigen::VectorXd& _times)
 {
-}
-
-
-void TwoCompartmentExtraMicro::computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterList& _parameters, Eigen::VectorXd& _times)
-{
-    m_precomputedLogarithms["Ka"] = (-m_Ka * _times).array().exp();
-    m_precomputedLogarithms["Alpha"] = (-m_Alpha * _times).array().exp();
-    m_precomputedLogarithms["Beta"] = (-m_Beta * _times).array().exp();
+    setLogs(Logarithms::Alpha, (-m_Alpha * _times).array().exp());
+    setLogs(Logarithms::Beta, (-m_Beta * _times).array().exp());
+    setLogs(Logarithms::Ka, (-m_Ka * _times).array().exp());
 }
 
 
@@ -106,9 +102,9 @@ bool TwoCompartmentExtraMicro::computeConcentration(const Value& _atTime, const 
 
     // interval=0 means that it is the last cycle, so final residual = 0
     if (m_Int == 0) {
-	concentrations1[1] = 0;
-	concentrations2 = 0;
-	concentrations3 = 0;
+        concentrations1[1] = 0;
+        concentrations2 = 0;
+        concentrations3 = 0;
     }
 
     // Return final residual of comp1, comp2 and comp3 (computation with m_Int (interval))
@@ -127,18 +123,19 @@ TwoCompartmentExtraMacro::TwoCompartmentExtraMacro() : TwoCompartmentExtraMicro(
 {
 }
 
-bool TwoCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
+bool TwoCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
-    if(!checkValue(_parameters.size() >= 4, "The number of parameters should be equal to 4."))
-	    return false;
+    if(!checkValue(_parameters.size() >= 4, "The number of parameters should be equal to 4.")) {
+        return false;
+    }
     
     m_D = _intakeEvent.getDose() * 1000;
-    Value cl = _parameters[0].getValue();
-    m_F = _parameters[1].getValue();
-    m_Ka = _parameters[2].getValue();
-    Value q = _parameters[3].getValue();
-    m_V1 = _parameters[4].getValue();
-    Value v2 = _parameters[5].getValue();
+    Value cl = _parameters.getValue(0);
+    Value q = _parameters.getValue(1);
+    Value v2 = _parameters.getValue(2);
+    m_V1 = _parameters.getValue(3);
+    m_Ka = _parameters.getValue(4);
+    m_F = _parameters.getValue(5);
     m_Ke = cl / m_V1;
     m_K12 = q / m_V1;
     m_K21 = q / v2;
@@ -146,7 +143,7 @@ bool TwoCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, cons
     m_RootK = std::sqrt((sumK * sumK) - (4 * m_K21 * m_Ke));
     m_Alpha = (sumK + m_RootK)/2;
     m_Beta = (sumK - m_RootK)/2;
-    m_NbPoints = _intakeEvent.getNumberPoints();
+    m_NbPoints = _intakeEvent.getNbPoints();
     m_Int = (_intakeEvent.getInterval()).toHours();
 
     bool bOK = checkValue(m_D >= 0, "The dose is negative.");

@@ -63,9 +63,9 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
         assert(!timeRangesOverlap(*june2017, *july2017));
 
         // Create the dosage history
-        DosageHistory dh;
-        dh.addTimeRange(*june2017);
-        dh.addTimeRange(*july2017);
+        std::unique_ptr<DosageHistory> dh = std::make_unique<DosageHistory>();
+        dh->addTimeRange(*june2017);
+        dh->addTimeRange(*july2017);
 
         // Expected intake series
         IntakeSeries expectedIntakes;
@@ -124,7 +124,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
         DateTime fullPeriodEnd(date::year_month_day(date::year(2017), date::month(7), date::day(16)),
                                std::chrono::seconds(0));
         IntakeSeries iSeries;
-        IntakeExtractor::extract(dh, fullPeriodStart, fullPeriodEnd, iSeries);
+        IntakeExtractor::extract(*dh, fullPeriodStart, fullPeriodEnd, iSeries);
 
         fructose_assert(iSeries.size() == expectedIntakes.size());
 

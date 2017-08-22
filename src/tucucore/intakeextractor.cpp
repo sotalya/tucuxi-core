@@ -1,3 +1,7 @@
+/*
+* Copyright (C) 2017 Tucuxi SA
+*/
+
 #include "tucucore/intakeextractor.h"
 
 #define DBC_VERIFICATION
@@ -17,7 +21,7 @@ auto as_integer(Enumeration const value)
     assert (end.isUndefined() || start < end);
 
 
-int IntakeExtractor::extract(const DosageHistory &_dosageHistory, const DateTime &_start, const DateTime &_end, IntakeSeries &_series)
+int IntakeExtractor::extract(const DosageHistory& _dosageHistory, const DateTime &_start, const DateTime &_end, IntakeSeries &_series)
 {
     EXTRACT_PRECONDITIONS(_start, _end, _series);
 

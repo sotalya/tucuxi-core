@@ -2,27 +2,30 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
-#ifndef TUCUXI_MATH_THREECOMPARTMENTINFUSION_H
-#define TUCUXI_MATH_THREECOMPARTMENTINFUSION_H
+#ifndef TUCUXI_CORE_THREECOMPARTMENTINFUSION_H
+#define TUCUXI_CORE_THREECOMPARTMENTINFUSION_H
 
 #include "tucucore/intakeintervalcalculator.h"
 
 namespace Tucuxi {
 namespace Core {
 
+enum class ThreeCompartmentIntraLogarithms : int { Alpha, Beta, Gamma };
+
 /// \ingroup TucuCore
 /// \brief Intake interval calculator for the three compartment infusion algorithm
 /// \sa IntakeIntervalCalculator
-class ThreeCompartmentInfusion : public IntakeIntervalCalculator
+class ThreeCompartmentInfusion : public IntakeIntervalCalculatorBase<ThreeCompartmentIntraLogarithms>
 {
 public:
     /// \brief Constructor
     ThreeCompartmentInfusion();
 
+    typedef ThreeCompartmentIntraLogarithms Logarithms;
+
 protected:
-    virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters) override;
-    virtual void prepareComputations(const IntakeEvent& _intakeEvent, const ParameterList& _parameters) override;
-    virtual void computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterList& _parameters, Eigen::VectorXd& _times) override;
+    virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
+    virtual void computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters, Eigen::VectorXd& _times) override;
     virtual bool computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) override;
 
 private:
@@ -41,12 +44,12 @@ private:
     Value m_Alpha;
     Value m_Beta;
     Value m_Gamma;
-    int64 m_Tinf; /// Infusion time (hours)
-    int64 m_Int; /// Interval (hours)
+    Value m_Tinf; /// Infusion time (hours)
+    Value m_Int; /// Interval (hours)
     int m_NbPoints; /// number measure points during interval
 };
 
 }
 }
 
-#endif // TUCUXI_MATH_THREECOMPARTMENTINFUSION_H
+#endif // TUCUXI_CORE_THREECOMPARTMENTINFUSION_H

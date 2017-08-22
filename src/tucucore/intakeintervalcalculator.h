@@ -2,20 +2,52 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
-#ifndef TUCUXI_MATH_INTAKEINTERVALCALCULATOR_H
-#define TUCUXI_MATH_INTAKEINTERVALCALCULATOR_H
+#ifndef TUCUXI_CORE_INTAKEINTERVALCALCULATOR_H
+#define TUCUXI_CORE_INTAKEINTERVALCALCULATOR_H
 
 #include <map>
 
 #include "Eigen/Dense"
 
 #include "tucucore/definitions.h"
-#include "tucucore/intakeevent.h"
+//#include "tucucore/intakeevent.h"
 #include "tucucore/parameter.h"
 #include "tucucore/cachedlogarithms.h"
 
 namespace Tucuxi {
 namespace Core {
+
+class IntakeEvent;
+
+class IntakeIntervalCalculator;
+
+///
+/// \brief The IntakeIntervalCalculatorCreator class
+/// This class is meant to be subclassed in each IntakeIntervalCalculator, thanks to the following macro.
+/// It will allow to store creators and use them to create specific calculators.
+class IntakeIntervalCalculatorCreator
+{
+public:
+    virtual IntakeIntervalCalculator *create() = 0;
+};
+
+/// This macro shall be inserted at the beginning of each class of IntakeIntervalCalculator, passing the class name
+/// as parameter to the macro
+#define INTAKEINTERVALCALCULATOR_UTILS(entity) \
+public: \
+    class IntakeCreator : public IntakeIntervalCalculatorCreator \
+    { \
+        virtual IntakeIntervalCalculator *create() { \
+            return new entity(); \
+        } \
+    }; \
+    \
+    static IntakeIntervalCalculatorCreator *getCreator() \
+    { \
+        static IntakeCreator *s_creator = new IntakeCreator(); \
+        return s_creator; \
+    }
+
 
 /// \ingroup TucuCore
 /// \brief Base class for the computation of a single intake
@@ -23,6 +55,7 @@ namespace Core {
 /// delegates specificities to derived classes. Each derived class will implement a specific algorithm.
 class IntakeIntervalCalculator
 {
+
 public:
     enum class Result {
         Ok,
@@ -47,11 +80,11 @@ public:
     /// @param _outResiduals Final residual concentrations
     /// @param _isDensityConstant Flag to indicate if initial number of points should be used with a constant density
     /// @return An indication if the computation was successful
-    virtual Result calculateIntakePoints(
+    Result calculateIntakePoints(
         Concentrations& _concentrations,
         TimeOffsets & _times,
-        IntakeEvent& _intakeEvent,
-        const ParameterList& _parameters,
+        const IntakeEvent& _intakeEvent,
+        const ParameterSetEvent& _parameters,
         const Residuals& _inResiduals,
         const CycleSize _cycleSize,
         Residuals& _outResiduals,
@@ -65,10 +98,10 @@ public:
     /// @param _atTime The time of the point of interest
     /// @param _outResiduals Final residual concentrations
     /// @return Returns an indication if the computation was successful
-    virtual Result calculateIntakeSinglePoint(
+    Result calculateIntakeSinglePoint(
         Concentrations& _concentrations,
         const IntakeEvent& _intakeEvent,
-        const ParameterList& _parameters,
+        const ParameterSetEvent& _parameters,
         const Residuals& _inResiduals,
         const Value& _atTime,
         Residuals& _outResiduals);
@@ -78,18 +111,13 @@ protected:
     /// @param _intakeEvent intake for the cycle (all cyles start with an intake)
     /// @param _parameters Parameters for the cycle (all cycles have constant parameters)
     /// @return Returns true if inputs are ok
-    virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters) = 0;
-
-    /// \brief Computation of algorithm's variables based on input data
-    /// @param _intakeEvent intake for the cycle (all cyles start with an intake)
-    /// @param _parameters Parameters for the cycle (all cycles have constant parameters)
-    virtual void prepareComputations(const IntakeEvent& _intakeEvent, const ParameterList& _parameters) = 0;
+    virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) = 0;
 
     /// \brief Computation of logarithm values that will may be shared by severall successive computations	
     /// @param _intakeEvent intake for the cycle (all cyles start with an intake)
     /// @param _parameters Parameters for the cycle (all cycles have constant parameters)
     /// @param _times Vector of times
-    virtual void computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterList& _parameters, Eigen::VectorXd& _times) = 0;
+    virtual void computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters, Eigen::VectorXd& _times) = 0;
 
     /// \brief Compute concentrations using a specific algorithm
     /// @param _inResiduals Initial residual concentrations
@@ -109,7 +137,6 @@ protected:
     /// @param _errMsg Message to log in case of problem
     bool checkValue(bool _isOk,  const std::string& _errMsg);
 
-
 protected:
     PrecomputedLogarithms m_precomputedLogarithms;      /// List of precomputed logarithms
 
@@ -117,7 +144,26 @@ private:
     CachedLogarithms m_cache;                           /// The cache of precomputed logarithms
 };
 
+template<typename EParameters>
+class IntakeIntervalCalculatorBase : public IntakeIntervalCalculator
+{
+protected:
+    void setLogs(EParameters _param, Eigen::VectorXd &&_logs) {
+        m_precomputedLogarithms[static_cast<int>(_param)] = _logs;
+//        m_precomputedLogarithms = PrecomputedLogarithms(4);
+//        m_precomputedLogarithms[0] = _logs;
+//        m_precomputedLogarithms[0] = Eigen::VectorXd(_logs.rows(), _logs.cols());
+//        m_precomputedLogarithms[static_cast<int>(_param)] = _logs;
+    }
+
+    Eigen::VectorXd& logs(EParameters _param) {
+        return m_precomputedLogarithms[static_cast<int>(_param)];
+//        return m_precomputedLogarithms.at(static_cast<int>(_param));
+    }
+};
+
+
 }
 }
 
-#endif // TUCUXI_MATH_INTAKEINTERVALCALCULATOR_H
+#endif // TUCUXI_CORE_INTAKEINTERVALCALCULATOR_H
