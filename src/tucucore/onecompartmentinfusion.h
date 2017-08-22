@@ -10,19 +10,19 @@
 namespace Tucuxi {
 namespace Core {
 
-enum class EOneCompartmentIntraLogarithms : int { Ke };
+enum class OneCompartmentIntraLogarithms : int { Ke };
 
 /// \ingroup TucuCore
 /// \brief Intake interval calculator for the one compartment extravascular algorithm
 /// \sa IntakeIntervalCalculator
-class OneCompartmentInfusionMicro : public IntakeIntervalCalculatorBase<EOneCompartmentIntraLogarithms>
+class OneCompartmentInfusionMicro : public IntakeIntervalCalculatorBase<OneCompartmentIntraLogarithms>
 {
     INTAKEINTERVALCALCULATOR_UTILS(OneCompartmentInfusionMicro)
 public:
     /// \brief Constructor
     OneCompartmentInfusionMicro();
 
-    typedef EOneCompartmentIntraLogarithms Logarithms;
+    typedef OneCompartmentIntraLogarithms Logarithms;
 
 protected:
     virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
