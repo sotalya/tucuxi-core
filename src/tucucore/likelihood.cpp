@@ -78,7 +78,7 @@ Value Likelihood::negativeLogLikelihood(const ValueVector& _etas) const
     SampleSeries::const_iterator sit_end = m_samples->end();
     int _count = 0;
     while( sit != sit_end ) {
-        SampleEvent s = *sit;
+        // SampleEvent s = *sit;
         gll += calculateSampleNegativeLogLikelihood(_cxns[_count], *sit, *m_residualErrorModel);
         _count++;
         sit++;

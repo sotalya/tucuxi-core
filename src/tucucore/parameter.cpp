@@ -4,6 +4,7 @@
 
 #include <memory>
 
+#include "tucucommon/general.h"
 #include "tucucommon/loggerhelper.h"
 #include "tucucore/parameter.h"
 
@@ -41,7 +42,7 @@ ParameterSetEventPtr ParameterSetSeries::getAtTime(const DateTime &_date, const 
 
 void ParameterSetEvent::applyEtas(const Etas& _etas)
 {
-    int k = 0;
+    unsigned int k = 0;
     Parameters::iterator it;
     for (it = m_parameters.begin(); it != m_parameters.end(); it++) {
         if (it->isVariable()) {

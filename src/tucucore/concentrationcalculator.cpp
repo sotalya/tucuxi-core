@@ -17,6 +17,7 @@ ConcentrationCalculator::ComputationResult ConcentrationCalculator::computeConce
     const Deviation& _eps,
     const bool _isFixedDensity)
 {
+    TMP_UNUSED_PARAMETER(_nbPoints);
     // The size of residuals vectors equals the number of compartments. This shouldnt be hardcoded here.
     Residuals r1(3);
     Residuals r2(3);
@@ -82,8 +83,13 @@ ConcentrationCalculator::ComputationResult ConcentrationCalculator::computeConce
         const IntakeSeries &_intakes,
         const ParameterSetSeries &_parameters,
         const SampleSeries &_samples,
-        const Etas &_eta)
+        const Etas &_etas)
 {
+    TMP_UNUSED_PARAMETER(_concentrations);
+    TMP_UNUSED_PARAMETER(_intakes);
+    TMP_UNUSED_PARAMETER(_parameters);
+    TMP_UNUSED_PARAMETER(_samples);
+    TMP_UNUSED_PARAMETER(_etas);
 
     return ComputationResult::Failure;
 }

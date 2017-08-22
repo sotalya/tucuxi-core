@@ -5,6 +5,8 @@
 #include <boost/type_traits.hpp>
 #include <boost/type_traits/remove_pointer.hpp>
 
+#include "tucucommon/general.h"
+
 #include "definitions.h"
 
 namespace Tucuxi {
@@ -172,6 +174,7 @@ inline x& deriv1_impl(x& ans,
 template <typename func, typename x = ValueVector>
 inline x deriv1(func fxn, x& loc, x& ans, const Value tol = DEFAULT_DERIV_TOL)
 {
+    TMP_UNUSED_PARAMETER(tol);
     // Using boost typetraits here to better handle typical specializations
     return deriv1_impl(ans, fxn, loc, boost::is_pointer<x>(), boost::is_array<x>(), boost::is_class<x>());
 }

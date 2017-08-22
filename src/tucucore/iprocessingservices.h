@@ -11,6 +11,7 @@
 
 #include "tucucommon/interface.h"
 #include "tucucommon/datetime.h"
+#include "tucucommon/general.h"
 
 #include "tucucore/definitions.h"
 
@@ -46,7 +47,7 @@ class ConcentrationRequest : public PredictionRequest
 {
 public:
     ConcentrationRequest() = delete;
-    ConcentrationRequest(const std::string& _xmlRequest) {}
+    ConcentrationRequest(const std::string& _xmlRequest) { TMP_UNUSED_PARAMETER(_xmlRequest);}
     ConcentrationRequest(PredictionType _type,
         Tucuxi::Common::DateTime _start,
         Tucuxi::Common::DateTime _end,
@@ -63,7 +64,7 @@ class PercentilesRequest : public PredictionRequest
 {
 public:
     PercentilesRequest() = delete;
-    PercentilesRequest(const std::string& _xmlRequest) {}
+    PercentilesRequest(const std::string& _xmlRequest) { TMP_UNUSED_PARAMETER(_xmlRequest);}
     PercentilesRequest(PredictionType _type,
         Tucuxi::Common::DateTime _start,
         Tucuxi::Common::DateTime _end,

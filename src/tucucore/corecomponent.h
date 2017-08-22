@@ -9,6 +9,7 @@
 
 #include "tucucommon/component.h"
 #include "tucucommon/loggerhelper.h"
+#include "tucucommon/general.h"
 
 #include "tucucore/definitions.h"
 #include "tucucore/residualerrormodel.h"
@@ -93,8 +94,12 @@ private:
         const DrugErrorModel &_errorMode,
         const ParameterDefinitions &_parameterDefs,
         OmegaMatrix &_omega,
-        ResidualErrorModel &residualErrorModel)
+        ResidualErrorModel &_residualErrorModel)
     {
+        TMP_UNUSED_PARAMETER(_errorMode);
+        TMP_UNUSED_PARAMETER(_parameterDefs);
+        TMP_UNUSED_PARAMETER(_omega);
+        TMP_UNUSED_PARAMETER(_residualErrorModel);
         // TODO YJE
         return ComputationResult::Failure;
     }

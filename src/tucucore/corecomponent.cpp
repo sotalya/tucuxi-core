@@ -20,6 +20,7 @@ namespace Core {
 
 CoreComponent::CoreComponent(const std::string &_filename)
 {
+    TMP_UNUSED_PARAMETER(_filename);
     registerInterface(dynamic_cast<IDataModelServices*>(this));
     registerInterface(dynamic_cast<IProcessingServices*>(this));
 }
@@ -32,12 +33,14 @@ CoreComponent::~CoreComponent()
 
 bool CoreComponent::loadDrug(const std::string& _xmlDrugDescription)
 {
+    TMP_UNUSED_PARAMETER(_xmlDrugDescription);
     return false;
 }
 
 
 bool CoreComponent::loadTreatment(const std::string& _xmlTreatmentDescription)
 {
+    TMP_UNUSED_PARAMETER(_xmlTreatmentDescription);
     return false;
 }
 
@@ -104,6 +107,8 @@ ConcentrationPredictionPtr CoreComponent::computeConcentrations(const Concentrat
 
 PercentilesPredictionPtr CoreComponent::computePercentiles(const PercentilesRequest &_request)
 {
+    TMP_UNUSED_PARAMETER(_request);
+
     PercentilesPredictionPtr result;
     return result;
 }

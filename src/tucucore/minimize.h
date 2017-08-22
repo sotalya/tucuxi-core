@@ -1,6 +1,7 @@
 #ifndef MINIMIZE_H
 #define MINIMIZE_H
 
+#include "tucucommon/general.h"
 #include "tucucore/definitions.h"
 
 namespace Tucuxi {
@@ -178,6 +179,7 @@ struct Df1dim {
         return funcd(xt);
         }
     double df(const Value x){
+        TMP_UNUSED_PARAMETER(x);
         double df1=0.0;
         funcd.df(xt,dft);
         for (int j=0;j<n;j++)
