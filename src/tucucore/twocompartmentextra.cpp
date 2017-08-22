@@ -20,12 +20,12 @@ bool TwoCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
 	    return false;
     
     m_D = _intakeEvent.getDose() * 1000;
-    m_F = _parameters.getValue(0);
-    m_V1 = _parameters.getValue(1);
-    m_Ka = _parameters.getValue(2);
-    m_Ke = _parameters.getValue(3);
-    m_K12 = _parameters.getValue(4);
-    m_K21 = _parameters.getValue(5);
+    m_V1 = _parameters.getValue(0);
+    m_Ke = _parameters.getValue(1);
+    m_K12 = _parameters.getValue(2);
+    m_K21 = _parameters.getValue(3);
+    m_Ka = _parameters.getValue(4);
+    m_F = _parameters.getValue(5);
 
     Value sumK = m_Ke + m_K12 + m_K21;
     m_RootK = std::sqrt((sumK * sumK) - (4 * m_K21 * m_Ke));

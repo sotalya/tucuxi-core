@@ -15,11 +15,11 @@ enum class EOneCompartmentInfusionLogarithms : int { Alpha, Beta, AlphaInf, Beta
 /// \ingroup TucuCore
 /// \brief Intake interval calculator for the two compartment infusion algorithm
 /// \sa IntakeIntervalCalculator
-class TwoCompartmentInfusion : public IntakeIntervalCalculatorBase<EOneCompartmentInfusionLogarithms>
+class TwoCompartmentInfusionMicro : public IntakeIntervalCalculatorBase<EOneCompartmentInfusionLogarithms>
 {
 public:
     /// \brief Constructor
-    TwoCompartmentInfusion();
+    TwoCompartmentInfusionMicro();
 
     typedef EOneCompartmentInfusionLogarithms Logarithms;
 
@@ -30,13 +30,8 @@ protected:
     virtual bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) override;
     void compute(const Residuals& _inResiduals, const int _forcesize, Eigen::VectorXd& _concentrations1, Eigen::VectorXd& _concentrations2);
 
-
-private:
     Value m_D;	/// Quantity of drug
-    Value m_Cl;	/// Clearance
-    Value m_Q;	/// ???
     Value m_V1;	/// Volume of the compartment 1
-    Value m_V2;	/// Volume of the compartment 2
     Value m_Ke; /// Elimination constant rate = Cl/V1 where Cl is the clearance and V1 is the volume of the compartment 1
     Value m_K12; /// Q/V1
     Value m_K21; /// Q/V2
@@ -48,9 +43,12 @@ private:
     Value m_Tinf; /// Infusion time (Hours)
     Value m_Int; /// Interval (Hours)
     int m_NbPoints; /// number measure points during interval
+
+private:
+
 };
 
-inline void TwoCompartmentInfusion::compute(const Residuals& _inResiduals, const int _forcesize, Eigen::VectorXd& _concentrations1, Eigen::VectorXd& _concentrations2)
+inline void TwoCompartmentInfusionMicro::compute(const Residuals& _inResiduals, const int _forcesize, Eigen::VectorXd& _concentrations1, Eigen::VectorXd& _concentrations2)
 {
     Eigen::VectorXd& alphaLogV = logs(Logarithms::Alpha); 
     Eigen::VectorXd& betaLogV = logs(Logarithms::Beta); 
@@ -133,6 +131,16 @@ inline void TwoCompartmentInfusion::compute(const Residuals& _inResiduals, const
     _concentrations2.tail(therest) += (A2 * alphaLogV.tail(therest) + BB2 * betaLogV.tail(therest)) / (2 * m_RootK);
 #endif
 }
+
+class TwoCompartmentInfusionMacro : public TwoCompartmentInfusionMicro
+{
+public:
+    TwoCompartmentInfusionMacro();
+
+protected:
+    virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
+
+};
 
 }
 }

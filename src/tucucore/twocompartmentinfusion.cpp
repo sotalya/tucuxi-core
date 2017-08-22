@@ -15,23 +15,20 @@ namespace Core {
 #define DEBUG
 #endif
 
-TwoCompartmentInfusion::TwoCompartmentInfusion()
+TwoCompartmentInfusionMicro::TwoCompartmentInfusionMicro()
 {
 }
 
-bool TwoCompartmentInfusion::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
+bool TwoCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
     if(!checkValue(_parameters.size() >= 4, "The number of parameters should be equal to 4."))
 	    return false;
 
     m_D = _intakeEvent.getDose() * 1000;
-    m_Cl = _parameters.getValue(0);
-    m_Q = _parameters.getValue(1);
-    m_V1 = _parameters.getValue(2);
-    m_V2 = _parameters.getValue(3);
-    m_Ke = m_Cl / m_V1;
-    m_K12 = m_Q / m_V1;
-    m_K21 = m_Q / m_V2;
+    m_V1 = _parameters.getValue(0);
+    m_Ke = _parameters.getValue(1);
+    m_K12 = _parameters.getValue(2);
+    m_K21 = _parameters.getValue(3);
     m_SumK = m_Ke + m_K12 + m_K21;
     m_RootK = std::sqrt((m_SumK * m_SumK) - (4 * m_K21 * m_Ke));
     m_Divider = m_RootK * (-m_SumK + m_RootK) * (m_SumK + m_RootK);
@@ -46,10 +43,7 @@ bool TwoCompartmentInfusion::checkInputs(const IntakeEvent& _intakeEvent, const 
 
     logHelper.debug("<<Input Values>>");
     logHelper.debug("m_D: {}", m_D);
-    logHelper.debug("m_Cl: {}", m_Cl);
-    logHelper.debug("m_Q: {}", m_Q);
     logHelper.debug("m_V1: {}", m_V1);
-    logHelper.debug("m_V2: {}", m_V2);
     logHelper.debug("m_Ke: {}", m_Ke);
     logHelper.debug("m_K12: {}", m_K12);
     logHelper.debug("m_K21: {}", m_K21);
@@ -65,15 +59,18 @@ bool TwoCompartmentInfusion::checkInputs(const IntakeEvent& _intakeEvent, const 
     bool bOK = checkValue(m_D >= 0, "The dose is negative.");
     bOK &= checkValue(!std::isnan(m_D), "The dose is NaN.");
     bOK &= checkValue(!std::isinf(m_D), "The dose is Inf.");
-    bOK &= checkValue(m_Cl > 0, "The clearance is not greater than zero.");
-    bOK &= checkValue(!std::isnan(m_Cl), "The CL is NaN.");
-    bOK &= checkValue(!std::isinf(m_Cl), "The CL is Inf.");
     bOK &= checkValue(m_V1 > 0, "The volume1 is not greater than zero.");
     bOK &= checkValue(!std::isnan(m_V1), "The V1 is NaN.");
     bOK &= checkValue(!std::isinf(m_V1), "The V1 is Inf.");
-    bOK &= checkValue(m_V2 > 0, "The volume2 is not greater than zero.");
-    bOK &= checkValue(!std::isnan(m_V2), "The V2 is NaN.");
-    bOK &= checkValue(!std::isinf(m_V2), "The V2 is Inf.");
+    bOK &= checkValue(m_Ke > 0, "The Ke is not greater than zero.");
+    bOK &= checkValue(!std::isnan(m_Ke), "The Ke is NaN.");
+    bOK &= checkValue(!std::isinf(m_Ke), "The Ke is Inf.");
+    bOK &= checkValue(m_K12 > 0, "The K12 is not greater than zero.");
+    bOK &= checkValue(!std::isnan(m_K12), "The K12 is NaN.");
+    bOK &= checkValue(!std::isinf(m_K12), "The K12 is Inf.");
+    bOK &= checkValue(m_K21 > 0, "The K21 is not greater than zero.");
+    bOK &= checkValue(!std::isnan(m_K21), "The K21 is NaN.");
+    bOK &= checkValue(!std::isinf(m_K21), "The K21 is Inf.");
     bOK &= checkValue(m_Divider != 0.0, "Divide by zero.");
     bOK &= checkValue(m_Tinf >= 0, "The infusion time is zero or negative.");
     bOK &= checkValue(m_Int > 0, "The interval time is negative.");
@@ -82,9 +79,7 @@ bool TwoCompartmentInfusion::checkInputs(const IntakeEvent& _intakeEvent, const 
     return bOK;
 }
 
-
-
-void TwoCompartmentInfusion::computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters, Eigen::VectorXd& _times)
+void TwoCompartmentInfusionMicro::computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters, Eigen::VectorXd& _times)
 {
     setLogs(Logarithms::Alpha, (-m_Alpha * _times).array().exp());
     setLogs(Logarithms::Beta, (-m_Beta * _times).array().exp());
@@ -95,7 +90,7 @@ void TwoCompartmentInfusion::computeLogarithms(const IntakeEvent& _intakeEvent, 
 }
 
 
-bool TwoCompartmentInfusion::computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
+bool TwoCompartmentInfusionMicro::computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1, concentrations2;
 
@@ -119,7 +114,7 @@ bool TwoCompartmentInfusion::computeConcentrations(const Residuals& _inResiduals
 }
 
 
-bool TwoCompartmentInfusion::computeConcentration(const Value& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
+bool TwoCompartmentInfusionMicro::computeConcentration(const Value& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1, concentrations2;
 
@@ -244,6 +239,76 @@ bool TwoCompartmentInfusion::computeConcentration(const Value& _atTime, const Re
     // Check output
     bool bOK = checkValue(_outResiduals[0] >= 0, "The concentration1 is negative.");
     bOK &= checkValue(_outResiduals[1] >= 0, "The concentration2 is negative.");
+
+    return bOK;
+}
+
+TwoCompartmentInfusionMacro::TwoCompartmentInfusionMacro()
+{
+}
+
+bool TwoCompartmentInfusionMacro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
+{
+    if(!checkValue(_parameters.size() >= 4, "The number of parameters should be equal to 4."))
+	    return false;
+
+    m_D = _intakeEvent.getDose() * 1000;
+    Value cl = _parameters.getValue(0);
+    Value q = _parameters.getValue(1);
+    m_V1 = _parameters.getValue(2);
+    Value v2 = _parameters.getValue(3);
+    m_Ke = cl / m_V1;
+    m_K12 = q / m_V1;
+    m_K21 = q / v2;
+    m_SumK = m_Ke + m_K12 + m_K21;
+    m_RootK = std::sqrt((m_SumK * m_SumK) - (4 * m_K21 * m_Ke));
+    m_Divider = m_RootK * (-m_SumK + m_RootK) * (m_SumK + m_RootK);
+    m_Alpha = (m_SumK + m_RootK)/2;
+    m_Beta = (m_SumK - m_RootK)/2;
+    m_Tinf = (_intakeEvent.getInfusionTime()).toHours();
+    m_Int = (_intakeEvent.getInterval()).toHours();
+    m_NbPoints = _intakeEvent.getNbPoints();
+    
+#ifdef DEBUG
+    Tucuxi::Common::LoggerHelper logHelper;
+
+    logHelper.debug("<<Input Values>>");
+    logHelper.debug("m_D: {}", m_D);
+    logHelper.debug("cl: {}", cl);
+    logHelper.debug("q: {}", q);
+    logHelper.debug("m_V1: {}", m_V1);
+    logHelper.debug("v2: {}", v2);
+    logHelper.debug("m_Ke: {}", m_Ke);
+    logHelper.debug("m_K12: {}", m_K12);
+    logHelper.debug("m_K21: {}", m_K21);
+    logHelper.debug("m_SumK: {}", m_SumK);
+    logHelper.debug("m_RootK: {}", m_RootK);
+    logHelper.debug("m_Divider: {}", m_Divider);
+    logHelper.debug("m_Alpha: {}", m_Alpha);
+    logHelper.debug("m_Beta: {}", m_Beta);
+    logHelper.debug("m_Tinf: {}", m_Tinf);
+    logHelper.debug("m_Int: {}", m_Int);
+#endif
+
+    bool bOK = checkValue(m_D >= 0, "The dose is negative.");
+    bOK &= checkValue(!std::isnan(m_D), "The dose is NaN.");
+    bOK &= checkValue(!std::isinf(m_D), "The dose is Inf.");
+    bOK &= checkValue(cl > 0, "The clearance is not greater than zero.");
+    bOK &= checkValue(!std::isnan(cl), "The CL is NaN.");
+    bOK &= checkValue(!std::isinf(cl), "The CL is Inf.");
+    bOK &= checkValue(q > 0, "The Q is not greater than zero.");
+    bOK &= checkValue(!std::isnan(q), "The Q is NaN.");
+    bOK &= checkValue(!std::isinf(q), "The Q is Inf.");
+    bOK &= checkValue(m_V1 > 0, "The volume1 is not greater than zero.");
+    bOK &= checkValue(!std::isnan(m_V1), "The V1 is NaN.");
+    bOK &= checkValue(!std::isinf(m_V1), "The V1 is Inf.");
+    bOK &= checkValue(v2 > 0, "The volume2 is not greater than zero.");
+    bOK &= checkValue(!std::isnan(v2), "The V2 is NaN.");
+    bOK &= checkValue(!std::isinf(v2), "The V2 is Inf.");
+    bOK &= checkValue(m_Divider != 0.0, "Divide by zero.");
+    bOK &= checkValue(m_Tinf >= 0, "The infusion time is zero or negative.");
+    bOK &= checkValue(m_Int > 0, "The interval time is negative.");
+    bOK &= checkValue(m_NbPoints >= 0, "The number of points is zero or negative.");
 
     return bOK;
 }

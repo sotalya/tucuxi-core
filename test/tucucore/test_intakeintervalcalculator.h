@@ -179,10 +179,14 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
     /// The residuals are then compared and shall be identical.
     void test1compBolusSingleVsMultiple(const std::string& /* _testName */)
     {
+        if (verbose()) {
+	    std::cout << "Micro"<< std::endl;
+        }
+
         {
             Tucuxi::Core::ParameterDefinitions parameterDefs;
             parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
-            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Ke", 0.0435, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Ke", 0.0435331, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
             Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
 
             testCalculator<Tucuxi::Core::OneCompartmentBolusMicro, 1>
@@ -192,6 +196,10 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
                      1h,
                      0s,
                      250);
+        }
+
+        if (verbose()) {
+	    std::cout << "\nMacro"<< std::endl;
         }
 
         {
@@ -219,10 +227,14 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
     /// The residuals are then compared and shall be identical.
     void test1compExtraSingleVsMultiple(const std::string& /* _testName */)
     {
+        if (verbose()) {
+	    std::cout << "Micro"<< std::endl;
+        }
+
         {
             Tucuxi::Core::ParameterDefinitions parameterDefs;
             parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
-            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Ke", 0.0435, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Ke", 0.0435331, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
             parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
             parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
             Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
@@ -230,10 +242,14 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             testCalculator<Tucuxi::Core::OneCompartmentExtraMicro, 2>
                     (parameters,
                      400.0,
-                     Tucuxi::Core::RouteOfAdministration::INTRAVASCULAR,
+                     Tucuxi::Core::RouteOfAdministration::EXTRAVASCULAR,
                      12h,
                      0s,
                      250);
+        }
+
+        if (verbose()) {
+	    std::cout << "\nMacro"<< std::endl;
         }
 
         {
@@ -247,7 +263,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             testCalculator<Tucuxi::Core::OneCompartmentExtraMacro, 2>
                     (parameters,
                      400.0,
-                     Tucuxi::Core::RouteOfAdministration::INTRAVASCULAR,
+                     Tucuxi::Core::RouteOfAdministration::EXTRAVASCULAR,
                      12h,
                      0s,
                      250);
@@ -264,9 +280,13 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
     void test1compInfusionSingleVsMultiple(const std::string& /* _testName */)
     {
 
+        if (verbose()) {
+	    std::cout << "Micro"<< std::endl;
+        }
+
         {
             Tucuxi::Core::ParameterDefinitions parameterDefs;
-            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Ke", 0.0435, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Ke", 0.0435331, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
             parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
             Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
 
@@ -277,6 +297,10 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
                      12h,
                      1h,
                      250);
+        }
+
+        if (verbose()) {
+	    std::cout << "\nMacro"<< std::endl;
         }
 
         {
@@ -302,6 +326,31 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
     /// The residuals are then compared and shall be identical.
     void test2compBolusSingleVsMultiple(const std::string& /* _testName */)
     {
+        if (verbose()) {
+	    std::cout << "Micro"<< std::endl;
+        }
+
+        {
+            Tucuxi::Core::ParameterDefinitions parameterDefs;
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("V1", 340, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Ke", 0.0444294, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("K12", 0.0588235, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("K21", 0.0584795, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
+
+            testCalculator<Tucuxi::Core::TwoCompartmentBolusMicro, 2>
+                    (parameters,
+                     400.0,
+                     Tucuxi::Core::RouteOfAdministration::INTRAVASCULAR,
+                     12h,
+                     0s,
+                     250);
+        }
+
+        if (verbose()) {
+	    std::cout << "\nMacro"<< std::endl;
+        }
+
         {
             Tucuxi::Core::ParameterDefinitions parameterDefs;
             parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Cl", 15.106, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
@@ -327,6 +376,32 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
     /// The residuals are then compared and shall be identical.
     void test2compExtraSingleVsMultiple(const std::string& /* _testName */)
     {
+        if (verbose()) {
+	    std::cout << "Micro"<< std::endl;
+        }
+
+        {
+            Tucuxi::Core::ParameterDefinitions parameterDefs;
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("V1", 340, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Ke", 0.0444294, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("K12", 0.0588235, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("K21", 0.0584795, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
+
+            testCalculator<Tucuxi::Core::TwoCompartmentExtraMicro, 3>
+                    (parameters,
+                     400.0,
+                     Tucuxi::Core::RouteOfAdministration::EXTRAVASCULAR,
+                     12h,
+                     0s,
+                     250);
+        }
+
+        if (verbose()) {
+	    std::cout << "\nMacro"<< std::endl;
+        }
 
         {
             Tucuxi::Core::ParameterDefinitions parameterDefs;
@@ -355,6 +430,30 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
     /// The residuals are then compared and shall be identical.
     void test2compInfusionSingleVsMultiple(const std::string& /* _testName */)
     {
+        if (verbose()) {
+	    std::cout << "Micro"<< std::endl;
+        }
+
+        {
+            Tucuxi::Core::ParameterDefinitions parameterDefs;
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("V1", 340, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Ke", 0.0444294, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("K12", 0.0588235, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("K21", 0.0584795, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
+
+            testCalculator<Tucuxi::Core::TwoCompartmentInfusionMicro, 2>
+                    (parameters,
+                     400.0,
+                     Tucuxi::Core::RouteOfAdministration::INFUSION,
+                     12h,
+                     1h,
+                     250);
+        }
+
+        if (verbose()) {
+	    std::cout << "\nMacro"<< std::endl;
+        }
 
         {
             Tucuxi::Core::ParameterDefinitions parameterDefs;
@@ -364,7 +463,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("V2", 342, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
             Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
 
-            testCalculator<Tucuxi::Core::TwoCompartmentInfusion, 2>
+            testCalculator<Tucuxi::Core::TwoCompartmentInfusionMacro, 2>
                     (parameters,
                      400.0,
                      Tucuxi::Core::RouteOfAdministration::INFUSION,
