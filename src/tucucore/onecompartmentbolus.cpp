@@ -11,6 +11,10 @@
 namespace Tucuxi {
 namespace Core {
 
+#if 1
+#define DEBUG
+#endif
+
 OneCompartmentBolusMicro::OneCompartmentBolusMicro()
 {
 }
@@ -26,15 +30,17 @@ bool OneCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
     m_NbPoints = _intakeEvent.getNbPoints();
     m_Int = static_cast<int>((_intakeEvent.getInterval()).toHours());
 
+#ifdef DEBUG
     Tucuxi::Common::LoggerHelper logHelper;
-/*
+
     logHelper.debug("<<Input Values>>");
     logHelper.debug("m_D: {}", m_D);
     logHelper.debug("m_V: {}", m_V);
     logHelper.debug("m_Ke: {}", m_Ke);
     logHelper.debug("m_NbPoints: {}", m_NbPoints);
     logHelper.debug("m_Int: {}", m_Int);
-  */
+#endif
+
     // check the inputs
     bool bOK = checkValue(m_D >= 0, "The dose is negative.");
     bOK &= checkValue(!std::isnan(m_D), "The dose is NaN.");
@@ -108,6 +114,18 @@ bool OneCompartmentBolusMacro::checkInputs(const IntakeEvent& _intakeEvent, cons
     m_Ke = cl / m_V;
     m_NbPoints = _intakeEvent.getNbPoints();
     m_Int = (_intakeEvent.getInterval()).toHours();
+
+#ifdef DEBUG
+    Tucuxi::Common::LoggerHelper logHelper;
+
+    logHelper.debug("<<Input Values>>");
+    logHelper.debug("m_D: {}", m_D);
+    logHelper.debug("m_V: {}", m_V);
+    logHelper.debug("cl: {}", cl);
+    logHelper.debug("m_Ke: {}", m_Ke);
+    logHelper.debug("m_NbPoints: {}", m_NbPoints);
+    logHelper.debug("m_Int: {}", m_Int);
+#endif
 
     // check the inputs
     bool bOK = checkValue(m_D >= 0, "The dose is negative.");

@@ -6,11 +6,16 @@
 #include <math.h>
 #include <algorithm>
 
+#include "tucucommon/loggerhelper.h"
 #include "tucucore/onecompartmentinfusion.h"
 #include "tucucore/intakeevent.h"
 
 namespace Tucuxi {
 namespace Core {
+
+#if 1
+#define DEBUG
+#endif
 
 OneCompartmentInfusionMicro::OneCompartmentInfusionMicro()
 {
@@ -29,6 +34,18 @@ bool OneCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent, c
     m_Tinf = (_intakeEvent.getInfusionTime()).toHours();
     m_Int = (_intakeEvent.getInterval()).toHours();
     m_NbPoints = _intakeEvent.getNbPoints();
+
+#ifdef DEBUG
+    Tucuxi::Common::LoggerHelper logHelper;
+
+    logHelper.debug("<<Input Values>>");
+    logHelper.debug("m_D: {}", m_D);
+    logHelper.debug("m_V: {}", m_V);
+    logHelper.debug("m_Ke: {}", m_Ke);
+    logHelper.debug("m_Tinf: {}", m_Tinf);
+    logHelper.debug("m_Int: {}", m_Int);
+    logHelper.debug("m_NbPoints: {}", m_NbPoints);
+#endif
 
     bOK &= checkValue(m_D >= 0, "The dose is negative.");
     bOK &= checkValue(!std::isnan(m_D), "The dose is NaN.");
@@ -112,6 +129,19 @@ bool OneCompartmentInfusionMacro::checkInputs(const IntakeEvent& _intakeEvent, c
     m_Tinf = (_intakeEvent.getInfusionTime()).toHours();
     m_Int = (_intakeEvent.getInterval()).toHours();
     m_NbPoints = _intakeEvent.getNbPoints();
+
+#ifdef DEBUG
+    Tucuxi::Common::LoggerHelper logHelper;
+
+    logHelper.debug("<<Input Values>>");
+    logHelper.debug("m_D: {}", m_D);
+    logHelper.debug("m_V: {}", m_V);
+    logHelper.debug("cl: {}", cl);
+    logHelper.debug("m_Ke: {}", m_Ke);
+    logHelper.debug("m_Tinf: {}", m_Tinf);
+    logHelper.debug("m_Int: {}", m_Int);
+    logHelper.debug("m_NbPoints: {}", m_NbPoints);
+#endif
 
     bOK &= checkValue(m_D >= 0, "The dose is negative.");
     bOK &= checkValue(!std::isnan(m_D), "The dose is NaN.");
