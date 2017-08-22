@@ -47,6 +47,7 @@ inline void OneCompartmentBolusMicro::compute(const Residuals& _inResiduals, Eig
 
 class OneCompartmentBolusMacro : public OneCompartmentBolusMicro
 {
+    INTAKEINTERVALCALCULATOR_UTILS(OneCompartmentBolusMacro)
 public:
     OneCompartmentBolusMacro();
 

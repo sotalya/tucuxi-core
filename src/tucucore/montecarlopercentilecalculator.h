@@ -101,19 +101,18 @@ public:
     /// \param _parameters Initial parameters series
     /// \param _omega covariance matrix for inter-individual variability
     /// \param _residualErrorModel Residual error model
-    /// \param _initialEta Set of initial Etas, used in case of a posteriori
+    /// \param _initialEtas Set of initial Etas, used in case of a posteriori
     /// \param _percentileRanks List of percentiles ranks
     /// \param _aborter An aborter object allowing to abort the calculation
     /// \return The status of calculation
     ///
-    ProcessingResult calculate(
-            PercentilesPrediction _percentiles,
+    ProcessingResult calculate(PercentilesPrediction _percentiles,
             const int _nbPoints,
             const IntakeSeries &_intakes,
             const ParameterSetSeries &_parameters,
             const OmegaMatrix& _omega,
             const ResidualErrorModel &_residualErrorModel,
-            const Etas& _initialEta,
+            const Etas& _initialEtas,
             const PercentileRanks &_percentileRanks,
             ProcessingAborter *_aborter);
 
@@ -135,19 +134,18 @@ public:
     /// \param _parameters Initial parameters series
     /// \param _omega covariance matrix for inter-individual variability
     /// \param _residualErrorModel Residual error model
-    /// \param _Eta Etas pre-calculated by the aposteriori calculator
+    /// \param _etas Etas pre-calculated by the aposteriori calculator
     /// \param _samples List of samples
     /// \param _percentileRanks List of percentiles ranks
     /// \param _aborter An aborter object allowing to abort the calculation
     /// \return The status of calculation
-    ProcessingResult calculate(
-            PercentilesPrediction _percentiles,
+    ProcessingResult calculate(PercentilesPrediction _percentiles,
             const int _nbPoints,
             const IntakeSeries &_intakes,
             const ParameterSetSeries &_parameters,
             const OmegaMatrix& _omega,
             const ResidualErrorModel &_residualErrorModel,
-            const Etas& _Eta,
+            const Etas& _etas,
             const SampleSeries &_samples,
             const PercentileRanks &_percentileRanks,
             ProcessingAborter *_aborter);

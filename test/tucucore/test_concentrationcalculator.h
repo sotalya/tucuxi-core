@@ -10,6 +10,8 @@
 
 #include "fructose/fructose.h"
 
+#include "tucucommon/general.h"
+
 #include "tucucore/dosage.h"
 #include "tucucore/intakeextractor.h"
 #include "tucucore/intakeintervalcalculator.h"
@@ -28,6 +30,12 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
                         std::chrono::seconds _infusionTime,
                         int _nbPoints)
     {
+        TMP_UNUSED_PARAMETER(_parameters);
+        TMP_UNUSED_PARAMETER(_dose);
+        TMP_UNUSED_PARAMETER(_route);
+        TMP_UNUSED_PARAMETER(_interval);
+        TMP_UNUSED_PARAMETER(_infusionTime);
+        TMP_UNUSED_PARAMETER(_nbPoints);
         // Compare the result on one interval
         // with ConcentrationCalculator vs directly with the IntakeIntervalCalculator
 

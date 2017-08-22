@@ -7,6 +7,7 @@
 
 #include "tucucore/definitions.h"
 #include "tucucore/sample.h"
+#include "tucucommon/general.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -19,9 +20,16 @@ public:
     ResidualErrorType errorModel;
 */
     bool isEmpty() const { return true; };
-    void applyEpsToArray(Concentrations &__concentrations, const Deviation &_eps) const {};
+    void applyEpsToArray(Concentrations &_concentrations, const Deviation &_eps) const {
+        TMP_UNUSED_PARAMETER(_concentrations);
+        TMP_UNUSED_PARAMETER(_eps);
+    };
 
-    Value calculateSampleLikelihood(const Value _expected, const SampleEvent& _observed) const {};
+    Value calculateSampleLikelihood(const Value _expected, const SampleEvent& _observed) const {
+        TMP_UNUSED_PARAMETER(_expected);
+        TMP_UNUSED_PARAMETER(_observed);
+        return 0.0;
+    };
 
 };
 

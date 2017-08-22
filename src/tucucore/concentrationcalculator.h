@@ -57,15 +57,14 @@ public:
     /// \param _intakes intakes for entire curve
     /// \param _parameters parameters for entire curve
     /// \param _samples samples (measures) for the entire curve
-    /// \param _eta vector of etas
+    /// \param _etas vector of etas
     /// \return The status of computation
     ///
-    static ComputationResult computeConcentrationsAtTimes(
-            Concentrations& _concentrations,
+    static ComputationResult computeConcentrationsAtTimes(Concentrations& _concentrations,
             const IntakeSeries& _intakes,
             const ParameterSetSeries& _parameters,
             const SampleSeries& _samples,
-            const Etas& _eta = Etas(0));
+            const Etas& _etas = Etas(0));
 
 };
 

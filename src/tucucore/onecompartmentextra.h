@@ -17,6 +17,7 @@ enum class EOneCompartmentExtraLogarithms : int { Ke, Ka };
 /// \sa IntakeIntervalCalculator
 class OneCompartmentExtraMicro : public IntakeIntervalCalculatorBase<EOneCompartmentExtraLogarithms>
 {
+    INTAKEINTERVALCALCULATOR_UTILS(OneCompartmentExtraMicro)
 public:
     /// \brief Constructor
     OneCompartmentExtraMicro();
@@ -66,6 +67,7 @@ inline void OneCompartmentExtraMicro::compute(const Residuals& _inResiduals, Eig
 
 class OneCompartmentExtraMacro : public OneCompartmentExtraMicro
 {
+    INTAKEINTERVALCALCULATOR_UTILS(OneCompartmentExtraMacro)
 public:
     OneCompartmentExtraMacro();
 

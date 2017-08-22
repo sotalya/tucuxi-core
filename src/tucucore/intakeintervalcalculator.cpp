@@ -3,6 +3,7 @@
 */
 
 #include "tucucommon/loggerhelper.h"
+#include "tucucommon/general.h"
 
 #include "tucucore/intakeevent.h"
 #include "tucucore/intakeintervalcalculator.h"
@@ -21,6 +22,7 @@ IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakePoints
     Residuals & _outResiduals,
     const bool _isDensityConstant)
 {
+    TMP_UNUSED_PARAMETER(_isDensityConstant);
     if (!checkInputs(_intakeEvent, _parameters))
     {
         return Result::BadParameters;

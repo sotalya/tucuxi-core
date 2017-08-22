@@ -14,6 +14,7 @@
 #include "test_operation.h"
 #include "test_intakeintervalcalculator.h"
 #include "test_concentrationcalculator.h"
+#include "test_pkmodel.h"
 
 int main(int argc, char** argv) 
 {
@@ -107,6 +108,17 @@ int main(int argc, char** argv)
         exit(1);
     }
     std::cout << "Operation test succeeded\n";
+
+    // --- PkModel --- //
+    TestPkModel pkmodelTest;
+    pkmodelTest.add_test("testPkModelFunctions test", &TestPkModel::testPkModelFunctions);
+
+    res = pkmodelTest.run(argc, argv);
+    if (res != 0) {
+        std::cerr << "PkModel test failed\n";
+        exit(1);
+    }
+    std::cout << "PkModel test succeeded\n";
 
     return 0;
 }

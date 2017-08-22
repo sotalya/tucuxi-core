@@ -19,7 +19,8 @@ HEADERS += \
     $$PWD/../../src/tucucommon/xmlattribute.h \
     $$PWD/../../src/tucucommon/xmldocument.h \
     $$PWD/../../src/tucucommon/xmliterator.h \
-    $$PWD/../../src/tucucommon/xmlnode.h
+    $$PWD/../../src/tucucommon/xmlnode.h \
+    $$PWD/../../src/tucucommon/general.h
 
 SOURCES += \
     $$PWD/../../src/tucucommon/componentmanager.cpp \

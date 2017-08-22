@@ -17,6 +17,7 @@ enum class EOneCompartmentIntraLogarithms : int { Ke };
 /// \sa IntakeIntervalCalculator
 class OneCompartmentInfusionMicro : public IntakeIntervalCalculatorBase<EOneCompartmentIntraLogarithms>
 {
+    INTAKEINTERVALCALCULATOR_UTILS(OneCompartmentInfusionMicro)
 public:
     /// \brief Constructor
     OneCompartmentInfusionMicro();
@@ -64,6 +65,7 @@ inline void OneCompartmentInfusionMicro::compute(const Residuals& _inResiduals, 
 
 class OneCompartmentInfusionMacro : public OneCompartmentInfusionMicro
 {
+    INTAKEINTERVALCALCULATOR_UTILS(OneCompartmentInfusionMacro)
 public:
     OneCompartmentInfusionMacro();
 

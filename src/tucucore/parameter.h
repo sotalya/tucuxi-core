@@ -12,6 +12,7 @@
 #include "tucucore/definitions.h"
 #include "tucucore/timedevent.h"
 #include "tucucore/operation.h"
+#include "tucucommon/general.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -85,7 +86,7 @@ public:
     void applyEtas(const Etas& _etas);
     Parameters::const_iterator begin() const { return m_parameters.begin(); }
     Parameters::const_iterator end() const { return m_parameters.end(); }
-    void setValue(int _index, Value _value) { }
+    void setValue(int _index, Value _value) { TMP_UNUSED_PARAMETER(_index); TMP_UNUSED_PARAMETER(_value);}
     Value getValue(int _index) const { return m_parameters[_index].getValue(); }
     int size() const { return static_cast<int>(m_parameters.size()); }    
 
