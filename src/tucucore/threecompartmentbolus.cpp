@@ -10,54 +10,51 @@
 namespace Tucuxi {
 namespace Core {
 
-ThreeCompartmentBolus::ThreeCompartmentBolus()
+ThreeCompartmentBolusMicro::ThreeCompartmentBolusMicro()
 {
 }
 
-bool ThreeCompartmentBolus::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
+bool ThreeCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
-    bool bOK = true;
-
     if(!checkValue(_parameters.size() >= 6, "The number of parameters should be equal to 6."))
 	    return false;
     
     Value a0, a1, a2, p, q, r1, r2, phi;
 
     m_D = _intakeEvent.getDose() * 1000;
-    m_Cl = _parameters.getValue(0);
-    m_F = _parameters.getValue(1);
-    m_Q1 = _parameters.getValue(2);
-    m_Q2 = _parameters.getValue(3);
-    m_V1 = _parameters.getValue(4);
-    m_V2 = _parameters.getValue(5);
-    m_Ke = m_Cl / m_V1;
-    m_K12 = m_Q1 / m_V1;
-    m_K21 = m_Q1 / m_V2;
-    m_K13 = m_Q2 / m_V1;
-    m_K31 = m_Q2 / m_V2;
+    m_F = _parameters.getValue(0);
+    m_V1 = _parameters.getValue(1);
+    m_Ke = _parameters.getValue(2);
+    m_K12 = _parameters.getValue(3);
+    m_K21 = _parameters.getValue(4);
+    m_K13 = _parameters.getValue(5);
+    m_K31 = _parameters.getValue(6);
     m_NbPoints = _intakeEvent.getNbPoints();
 
-    bOK &= checkValue(m_D >= 0, "The dose is negative.");
+    bool bOK = checkValue(m_D >= 0, "The dose is negative.");
     bOK &= checkValue(!std::isnan(m_D), "The dose is NaN.");
     bOK &= checkValue(!std::isinf(m_D), "The dose is Inf.");
-    bOK &= checkValue(m_Cl > 0, "The clearance is not greater than zero.");
-    bOK &= checkValue(!std::isnan(m_Cl), "The CL is NaN.");
-    bOK &= checkValue(!std::isinf(m_Cl), "The CL is Inf.");
     bOK &= checkValue(m_F > 0, "The F is not greater than zero.");
     bOK &= checkValue(!std::isnan(m_F), "The F is NaN.");
     bOK &= checkValue(!std::isinf(m_F), "The F is Inf.");
-    bOK &= checkValue(m_Q1 > 0, "The Q1 is not greater than zero.");
-    bOK &= checkValue(!std::isnan(m_Q1), "The Q1 is NaN.");
-    bOK &= checkValue(!std::isinf(m_Q1), "The Q1 is Inf.");
-    bOK &= checkValue(m_Q2 > 0, "The Q2 is not greater than zero.");
-    bOK &= checkValue(!std::isnan(m_Q2), "The Q2 is NaN.");
-    bOK &= checkValue(!std::isinf(m_Q2), "The Q2 is Inf.");
     bOK &= checkValue(m_V1 > 0, "The volume1 is not greater than zero.");
     bOK &= checkValue(!std::isnan(m_V1), "The V1 is NaN.");
     bOK &= checkValue(!std::isinf(m_V1), "The V1 is Inf.");
-    bOK &= checkValue(m_V2 > 0, "The volume2 is not greater than zero.");
-    bOK &= checkValue(!std::isnan(m_V2), "The V2 is NaN.");
-    bOK &= checkValue(!std::isinf(m_V2), "The V2 is Inf.");
+    bOK &= checkValue(m_Ke > 0, "The Ke is not greater than zero.");
+    bOK &= checkValue(!std::isnan(m_Ke), "The Ke is NaN.");
+    bOK &= checkValue(!std::isinf(m_Ke), "The Ke is Inf.");
+    bOK &= checkValue(m_K12 > 0, "The K12 is not greater than zero.");
+    bOK &= checkValue(!std::isnan(m_K12), "The K12 is NaN.");
+    bOK &= checkValue(!std::isinf(m_K12), "The K12 is Inf.");
+    bOK &= checkValue(m_K21 > 0, "The K21 is not greater than zero.");
+    bOK &= checkValue(!std::isnan(m_K21), "The K21 is NaN.");
+    bOK &= checkValue(!std::isinf(m_K21), "The K21 is Inf.");
+    bOK &= checkValue(m_K13 > 0, "The K13 is not greater than zero.");
+    bOK &= checkValue(!std::isnan(m_K13), "The K13 is NaN.");
+    bOK &= checkValue(!std::isinf(m_K13), "The K13 is Inf.");
+    bOK &= checkValue(m_K31 > 0, "The K31 is not greater than zero.");
+    bOK &= checkValue(!std::isnan(m_K31), "The K31 is NaN.");
+    bOK &= checkValue(!std::isinf(m_K31), "The K31 is Inf.");
 
     a0 = m_Ke * m_K21 * m_K31;
     a1 = m_Ke * m_K31 + m_K21 * m_K31 + m_K21 * m_K13 + m_Ke * m_K21 + m_K31 * m_K12;
@@ -76,7 +73,7 @@ bool ThreeCompartmentBolus::checkInputs(const IntakeEvent& _intakeEvent, const P
 }
 
 
-void ThreeCompartmentBolus::computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters, Eigen::VectorXd& _times)
+void ThreeCompartmentBolusMicro::computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters, Eigen::VectorXd& _times)
 {
     setLogs(Logarithms::Alpha, (-m_Alpha * _times).array().exp());
     setLogs(Logarithms::Beta, (-m_Beta * _times).array().exp());
@@ -84,7 +81,7 @@ void ThreeCompartmentBolus::computeLogarithms(const IntakeEvent& _intakeEvent, c
 }
 
 
-bool ThreeCompartmentBolus::computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
+bool ThreeCompartmentBolusMicro::computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
 {
     bool bOK = true;
 
@@ -131,6 +128,70 @@ bool ThreeCompartmentBolus::computeConcentrations(const Residuals& _inResiduals,
 
     return bOK;
 }
+
+ThreeCompartmentBolusMacro::ThreeCompartmentBolusMacro() : ThreeCompartmentBolusMicro()
+{
+}
+
+bool ThreeCompartmentBolusMacro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
+{
+    if(!checkValue(_parameters.size() >= 6, "The number of parameters should be equal to 6."))
+	    return false;
+    
+    Value a0, a1, a2, p, q, r1, r2, phi;
+
+    m_D = _intakeEvent.getDose() * 1000;
+    Value cl = _parameters.getValue(0);
+    m_F = _parameters.getValue(1);
+    Value q1 = _parameters.getValue(2);
+    Value q2 = _parameters.getValue(3);
+    m_V1 = _parameters.getValue(4);
+    Value v2 = _parameters.getValue(5);
+    m_Ke = cl / m_V1;
+    m_K12 = q1 / m_V1;
+    m_K21 = q1 / v2;
+    m_K13 = q2 / m_V1;
+    m_K31 = q2 / v2;
+    m_NbPoints = _intakeEvent.getNbPoints();
+
+    bool bOK = checkValue(m_D >= 0, "The dose is negative.");
+    bOK &= checkValue(!std::isnan(m_D), "The dose is NaN.");
+    bOK &= checkValue(!std::isinf(m_D), "The dose is Inf.");
+    bOK &= checkValue(cl > 0, "The clearance is not greater than zero.");
+    bOK &= checkValue(!std::isnan(cl), "The CL is NaN.");
+    bOK &= checkValue(!std::isinf(cl), "The CL is Inf.");
+    bOK &= checkValue(m_F > 0, "The F is not greater than zero.");
+    bOK &= checkValue(!std::isnan(m_F), "The F is NaN.");
+    bOK &= checkValue(!std::isinf(m_F), "The F is Inf.");
+    bOK &= checkValue(q1 > 0, "The Q1 is not greater than zero.");
+    bOK &= checkValue(!std::isnan(q1), "The Q1 is NaN.");
+    bOK &= checkValue(!std::isinf(q1), "The Q1 is Inf.");
+    bOK &= checkValue(q2 > 0, "The Q2 is not greater than zero.");
+    bOK &= checkValue(!std::isnan(q2), "The Q2 is NaN.");
+    bOK &= checkValue(!std::isinf(q2), "The Q2 is Inf.");
+    bOK &= checkValue(m_V1 > 0, "The volume1 is not greater than zero.");
+    bOK &= checkValue(!std::isnan(m_V1), "The V1 is NaN.");
+    bOK &= checkValue(!std::isinf(m_V1), "The V1 is Inf.");
+    bOK &= checkValue(v2 > 0, "The volume2 is not greater than zero.");
+    bOK &= checkValue(!std::isnan(v2), "The V2 is NaN.");
+    bOK &= checkValue(!std::isinf(v2), "The V2 is Inf.");
+
+    a0 = m_Ke * m_K21 * m_K31;
+    a1 = m_Ke * m_K31 + m_K21 * m_K31 + m_K21 * m_K13 + m_Ke * m_K21 + m_K31 * m_K12;
+    a2 = m_Ke + m_K12 + m_K13 + m_K21 + m_K31;
+    p = a1 - std::pow(a2,2) / 3;
+    q = 2 * std::pow(a2,3) / 27 - a1 * a2 / 3 + a0;
+    r1 = std::sqrt(-(std::pow(p,3) / 27));
+    r2 = 2 * std::pow(r1,1/3);
+    phi = std::acos(- q / (2 * r1)) / 3;
+
+    m_Alpha = - (std::cos(phi) * r2 - a2 / 3);
+    m_Beta = - (std::cos(phi + 2 * 3.1428 / 3) * r2 - a2/3);
+    m_Gamma = - (std::cos(phi + 4 * 3.1428/3) * r2 - a2/3);
+
+    return bOK;
+}
+
 
 }
 }

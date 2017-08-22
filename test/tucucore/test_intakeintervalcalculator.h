@@ -166,9 +166,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
     {
 
         testSingleVsMultiple<CalculatorClass, nbComp>(_parameters, _dose, _route, _interval, _infusionTime, _nbPoints);
-#if 0
         testSteadyState<CalculatorClass, nbComp>(_parameters, _dose, _route, _interval, _infusionTime, _nbPoints);
-#endif
     }
 
 

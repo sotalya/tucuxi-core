@@ -15,11 +15,11 @@ enum class ThreeCompartmentExtraLogarithms : int { Alpha, Beta, Gamma, Ka };
 /// \ingroup TucuCore
 /// \brief Intake interval calculator for the three compartment extra algorithm
 /// \sa IntakeIntervalCalculator
-class ThreeCompartmentExtra : public IntakeIntervalCalculatorBase<ThreeCompartmentExtraLogarithms>
+class ThreeCompartmentExtraMicro : public IntakeIntervalCalculatorBase<ThreeCompartmentExtraLogarithms>
 {
 public:
     /// \brief Constructor
-    ThreeCompartmentExtra();
+    ThreeCompartmentExtraMicro();
 
     typedef ThreeCompartmentExtraLogarithms Logarithms;
 
@@ -28,14 +28,9 @@ protected:
     virtual void computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters, Eigen::VectorXd& _times) override;
     virtual bool computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) override;
 
-private:
     Value m_D;	/// Quantity of drug
-    Value m_Cl;	/// Clearance
     Value m_F;	/// ???
-    Value m_Q1;	/// ???
-    Value m_Q2;	/// ???
     Value m_V1;	/// Volume of the compartment 1
-    Value m_V2;	/// Volume of the compartment 2
     Value m_Ka; /// Absorption rate constant
     Value m_Ke; /// Elimination constant rate = Cl/V1 where Cl is the clearance and V1 is the volume of the compartment 1
     Value m_K12; /// Q/V1
@@ -46,6 +41,19 @@ private:
     Value m_Beta;
     Value m_Gamma;
     int m_NbPoints; /// number measure points during interval
+
+private:
+
+};
+
+class ThreeCompartmentExtraMacro : public ThreeCompartmentExtraMicro
+{
+public:
+    ThreeCompartmentExtraMacro();
+
+protected:
+    virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
+
 };
 
 }
