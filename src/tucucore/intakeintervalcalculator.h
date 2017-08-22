@@ -6,6 +6,7 @@
 #define TUCUXI_CORE_INTAKEINTERVALCALCULATOR_H
 
 #include <map>
+#include <memory>
 
 #include "Eigen/Dense"
 
@@ -28,7 +29,7 @@ class IntakeIntervalCalculator;
 class IntakeIntervalCalculatorCreator
 {
 public:
-    virtual IntakeIntervalCalculator *create() = 0;
+    virtual std::unique_ptr<IntakeIntervalCalculator> create() = 0;
 };
 
 /// This macro shall be inserted at the beginning of each class of IntakeIntervalCalculator, passing the class name
@@ -37,15 +38,16 @@ public:
 public: \
     class IntakeCreator : public IntakeIntervalCalculatorCreator \
     { \
-        virtual IntakeIntervalCalculator *create() { \
-            return new entity(); \
+        virtual std::unique_ptr<IntakeIntervalCalculator> create() { \
+            auto ptr = std::make_unique<entity>(); \
+            return std::move(ptr); \
         } \
     }; \
     \
-    static IntakeIntervalCalculatorCreator *getCreator() \
+    static std::shared_ptr<IntakeIntervalCalculatorCreator> getCreator() \
     { \
-        static IntakeCreator *s_creator = new IntakeCreator(); \
-        return s_creator; \
+        static std::shared_ptr<IntakeCreator> instance(new IntakeCreator()); \
+        return instance; \
     }
 
 

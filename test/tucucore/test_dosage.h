@@ -300,34 +300,34 @@ struct TestDosage : public fructose::test_base<TestDosage>
         std::unique_ptr<Tucuxi::Core::DosageTimeRange> beforeToMiddle(new Tucuxi::Core::DosageTimeRange(beforeStartDate,
                                                                                                         afterStartBeforeEndDate,
                                                                                                         fakeDose));
-        assert(timeRangesOverlap(*ptr2, *beforeToMiddle));
+        fructose_assert(timeRangesOverlap(*ptr2, *beforeToMiddle));
 
         std::unique_ptr<Tucuxi::Core::DosageTimeRange> middleToAfter(new Tucuxi::Core::DosageTimeRange(afterStartBeforeEndDate,
                                                                                                        afterEndDate,
                                                                                                        fakeDose));
-        assert(timeRangesOverlap(*ptr2, *middleToAfter));
+        fructose_assert(timeRangesOverlap(*ptr2, *middleToAfter));
 
         std::unique_ptr<Tucuxi::Core::DosageTimeRange> beforeToAfter(new Tucuxi::Core::DosageTimeRange(beforeStartDate,
                                                                                                        afterEndDate,
                                                                                                        fakeDose));
-        assert(timeRangesOverlap(*ptr2, *beforeToAfter));
+        fructose_assert(timeRangesOverlap(*ptr2, *beforeToAfter));
 
         std::unique_ptr<Tucuxi::Core::DosageTimeRange> insideInterval(new Tucuxi::Core::DosageTimeRange(afterStartBeforeEndDate,
                                                                                                         afterMiddleBeforeEndDate,
                                                                                                         fakeDose));
-        assert(timeRangesOverlap(*ptr2, *insideInterval));
+        fructose_assert(timeRangesOverlap(*ptr2, *insideInterval));
 
         std::unique_ptr<Tucuxi::Core::DosageTimeRange> beforeToOpenEnd(new Tucuxi::Core::DosageTimeRange(beforeStartDate,
                                                                                                          fakeDose));
-        assert(timeRangesOverlap(*ptr2, *beforeToOpenEnd));
+        fructose_assert(timeRangesOverlap(*ptr2, *beforeToOpenEnd));
 
         std::unique_ptr<Tucuxi::Core::DosageTimeRange> middleToOpenEnd(new Tucuxi::Core::DosageTimeRange(afterStartBeforeEndDate,
                                                                                                          fakeDose));
-        assert(timeRangesOverlap(*ptr2, *middleToOpenEnd));
+        fructose_assert(timeRangesOverlap(*ptr2, *middleToOpenEnd));
 
         std::unique_ptr<Tucuxi::Core::DosageTimeRange> afterToOpenEnd(new Tucuxi::Core::DosageTimeRange(afterEndDate,
                                                                                                         fakeDose));
-        assert(!timeRangesOverlap(*ptr2, *afterToOpenEnd));
+        fructose_assert(!timeRangesOverlap(*ptr2, *afterToOpenEnd));
 
         // Check that two neighboring time ranges are not considered as overlapping
         DateTime neigh1Start(date::year_month_day(date::year(2017), date::month(6), date::day(17)),
@@ -338,7 +338,7 @@ struct TestDosage : public fructose::test_base<TestDosage>
                              std::chrono::seconds(12345));
         std::unique_ptr<Tucuxi::Core::DosageTimeRange> neigh1(new Tucuxi::Core::DosageTimeRange(neigh1Start, neigh1End, fakeDose));
         std::unique_ptr<Tucuxi::Core::DosageTimeRange> neigh2(new Tucuxi::Core::DosageTimeRange(neigh2Start, fakeDose));
-        assert(!timeRangesOverlap(*neigh1, *neigh2));
+        fructose_assert(!timeRangesOverlap(*neigh1, *neigh2));
 
         // Check the overlap detection for a time range against a list of time ranges
         DateTime before1(date::year_month_day(date::year(2017), date::month(1), date::day(17)),
@@ -361,10 +361,10 @@ struct TestDosage : public fructose::test_base<TestDosage>
         trList.emplace_back(new Tucuxi::Core::DosageTimeRange(before4, before5, fakeDose));
         trList.emplace_back(new Tucuxi::Core::DosageTimeRange(before5, before6, fakeDose));
 
-        assert(!timeRangesOverlap(*ptr2, trList));
+        fructose_assert(!timeRangesOverlap(*ptr2, trList));
 
         trList.emplace_back(new Tucuxi::Core::DosageTimeRange(before5, fakeDose));
-        assert(timeRangesOverlap(*ptr2, trList));
+        fructose_assert(timeRangesOverlap(*ptr2, trList));
     }
 };
 
