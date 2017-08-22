@@ -36,7 +36,11 @@ HEADERS += \
     $$PWD/../../src/tucucore/intaketocalculatorassociator.h \
     $$PWD/../../src/tucucore/hardcodedoperation.h \
     $$PWD/../../src/tucucore/onecompartmentinfusion_yta.h \
-    $$PWD/../../src/tucucore/montecarlopercentilecalculator.h
+    $$PWD/../../src/tucucore/montecarlopercentilecalculator.h \
+    $$PWD/../../src/tucucore/deriv.h \
+    $$PWD/../../src/tucucore/likelihood.h \
+    $$PWD/../../src/tucucore/minimize.h \
+    $$PWD/../../src/tucucore/aposteriorietascalculator.h
 
 SOURCES += \
     $$PWD/../../src/tucucore/cachedlogarithms.cpp \
@@ -65,4 +69,6 @@ SOURCES += \
     $$PWD/../../src/tucucore/pkmodel.cpp \
     $$PWD/../../src/tucucore/intaketocalculatorassociator.cpp \
     $$PWD/../../src/tucucore/hardcodedoperation.cpp \
-    $$PWD/../../src/tucucore/montecarlopercentilecalculator.cpp
+    $$PWD/../../src/tucucore/montecarlopercentilecalculator.cpp \
+    $$PWD/../../src/tucucore/likelihood.cpp \
+    $$PWD/../../src/tucucore/aposteriorietascalculator.cpp

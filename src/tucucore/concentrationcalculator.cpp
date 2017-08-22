@@ -77,5 +77,16 @@ ConcentrationCalculator::ComputationResult ConcentrationCalculator::computeConce
     return ComputationResult::Success;
 }
 
+ConcentrationCalculator::ComputationResult ConcentrationCalculator::computeConcentrationsAtTimes(
+        Concentrations &_concentrations,
+        const IntakeSeries &_intakes,
+        const ParameterSetSeries &_parameters,
+        const SampleSeries &_samples,
+        const Etas &_eta)
+{
+
+    return ComputationResult::Failure;
+}
+
 }
 }

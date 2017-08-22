@@ -12,6 +12,7 @@
 #include "tucucore/parametersextractor.h"
 #include "tucucore/intakeintervalcalculator.h"
 #include "tucucore/concentrationcalculator.h"
+#include "tucucore/aposteriorietascalculator.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -85,10 +86,10 @@ ConcentrationPredictionPtr CoreComponent::computeConcentrations(const Concentrat
 
             /// TODO YJE
             Etas etas;
-            Omega omega;
+            OmegaMatrix omega;
             ResidualErrorModel residualErrorModel;
             extractError(m_drug->getErrorModel(), m_drug->getParemeters(), omega, residualErrorModel);
-            computeAposterioriEtas(intakesForEtas, parameters, omega, residualErrorModel, samples, etas);
+            APosterioriEtasCalculator().computeAposterioriEtas(intakesForEtas, parameters, omega, residualErrorModel, samples, etas);
             computeAposteriori(prediction, _request.getNbPoints(), intakes, parameters, etas);
             break;
         }

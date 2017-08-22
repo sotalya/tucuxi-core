@@ -49,7 +49,7 @@ public:
         const bool _isFixedDensity = 0);
 
     ///
-    /// \brief pointsAtTimes Calculates concentrations at specific times
+    /// \brief Calculates concentrations at specific times
     /// It just calculates the final residuals for the next cycle,
     /// and the values at the time points requested. If the eta vector is not empty, then
     /// the etas are applied to the parameters.
@@ -60,7 +60,7 @@ public:
     /// @param _eta vector of etas
     /// \return The status of computation
     ///
-    static ComputationResult pointsAtTimes(
+    static ComputationResult computeConcentrationsAtTimes(
             Concentrations& _concentrations,
             const IntakeSeries& _intakes,
             const ParameterSetSeries& _parameters,

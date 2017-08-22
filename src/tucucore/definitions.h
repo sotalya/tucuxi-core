@@ -96,8 +96,22 @@ enum class InputType { BOOL, INTEGER, DOUBLE };
 typedef Value Deviation;                // Used for deviations (e.g. std dev)
 typedef std::vector<Deviation> Etas;    // Used for values in eta and error vectors
 
-typedef Eigen::Matrix<Deviation, Eigen::Dynamic, Eigen::Dynamic> Omega;
+typedef Eigen::Matrix<Deviation, Eigen::Dynamic, Eigen::Dynamic> OmegaMatrix;
 typedef Eigen::Matrix<Deviation, Eigen::Dynamic, 1> Sigma;
+
+typedef Eigen::Matrix<Value, Eigen::Dynamic, Eigen::Dynamic> EigenMatrix;
+typedef Eigen::Matrix<Value, Eigen::Dynamic, 1> EigenVector;
+
+
+typedef std::vector<Value> ValueVector;
+
+
+// The three following defines could be moved somewhere else
+#define isOmegaEmpty(matrix) (matrix.rows() == 0)
+
+#define isOmegaSquare(matrix) (matrix.rows() == matrix.cols())
+
+#define omegaSize(matrix) (matrix.rows())
 
 }
 }

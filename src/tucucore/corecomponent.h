@@ -92,20 +92,8 @@ private:
     ComputationResult extractError(
         const DrugErrorModel &_errorMode,
         const ParameterDefinitions &_parameterDefs,
-        Omega &_omega,
+        OmegaMatrix &_omega,
         ResidualErrorModel &residualErrorModel)
-    {
-        // TODO YJE
-        return ComputationResult::Failure;
-    }
-
-    ComputationResult computeAposterioriEtas(
-        const IntakeSeries &_intakes,
-        const ParameterSetSeries &_parameters,
-        const Omega &_omega,
-        const ResidualErrorModel &_residualErrorModel,
-        const SampleSeries &_samples,
-        Etas &_etas)
     {
         // TODO YJE
         return ComputationResult::Failure;

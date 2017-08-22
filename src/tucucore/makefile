@@ -9,7 +9,8 @@ NAME := tucucore
 TYPE := LIB
 
 # Let's keep it in alphabetical order
-SOURCES := cachedlogarithms.cpp \
+SOURCES := aposteriorietascalculator.cpp \
+           cachedlogarithms.cpp \
            concentrationcalculator.cpp \
            corecomponent.cpp \
            covariateextractor.cpp \
@@ -20,6 +21,7 @@ SOURCES := cachedlogarithms.cpp \
            intakeextractor.cpp \
            intakeintervalcalculator.cpp \
            intaketocalculatorassociator.cpp \
+		   likelihood.cpp \
 		   montecarlopercentilecalculator.cpp \
            onecompartmentbolus.cpp \
            onecompartmentextra.cpp \

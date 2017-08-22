@@ -2,7 +2,7 @@
 @echo off
 
 REM Handle command line arguments
-set MakeCmd= 
+set MakeCmd=
 set BuildLibs=1
 set BuildDoc=1
 FOR %%a IN (%*) do (
@@ -34,7 +34,7 @@ if "%BuildLibs%" == "1" (
     echo *********************************************
     echo *** Compiling %%i
     cd "%TUCUXI_ROOT%\libs\%%i"
-    %MAKE% TARGET=VS2015 -f "%TUCUXI_ROOT%\libs\%%i\makefile" %MakeCmd% 
+    %MAKE% TARGET=VS2015 -f "%TUCUXI_ROOT%\libs\%%i\makefile" %MakeCmd%
   )
 )
 
@@ -42,14 +42,14 @@ for %%i in (tucucommon tucucore tucucli tuculicense) do (
   echo *********************************************
   echo *** Compiling %%i
   cd "%TUCUXI_ROOT%\Src\%%i"
-  %MAKE% TARGET=VS2015 -f "%TUCUXI_ROOT%\src\%%i\makefile" %MakeCmd% 
+  %MAKE% TARGET=VS2015 -f "%TUCUXI_ROOT%\src\%%i\makefile" %MakeCmd%
 )
 
-for %%i in (tucucommon tucucore tuculicense) do (
+for %%i in (tucucommon tucucore) do (
   echo *********************************************
   echo *** Compiling %%i
   cd "%TUCUXI_ROOT%\Test\%%i"
-  %MAKE% TARGET=VS2015 -f "%TUCUXI_ROOT%\test\%%i\makefile" %MakeCmd% 
+  %MAKE% TARGET=VS2015 -f "%TUCUXI_ROOT%\test\%%i\makefile" %MakeCmd%
 )
 
 if "%BuildDoc%" == "1" (

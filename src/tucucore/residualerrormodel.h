@@ -6,6 +6,7 @@
 #define TUCUXI_ROOT_RESIDUALERRORMODEL_H
 
 #include "tucucore/definitions.h"
+#include "tucucore/sample.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -18,10 +19,10 @@ public:
     ResidualErrorType errorModel;
 */
     bool isEmpty() const { return true; };
-    void applyEpsToArray(Concentrations &_concentrations, const Deviation &eps) const {};
-/*
-    loglikelihood_t calculateSampleLikelihood(const cxn_t _y, const Sample& samp) const;
-*/
+    void applyEpsToArray(Concentrations &__concentrations, const Deviation &_eps) const {};
+
+    Value calculateSampleLikelihood(const Value _expected, const SampleEvent& _observed) const {};
+
 };
 
 //#define EMPTY_RESIDUAL_ERROR_MODEL ResidualErrorModel{EMPTY_SIGMA, ResidualErrorType::NONE}
