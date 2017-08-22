@@ -166,7 +166,9 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
     {
 
         testSingleVsMultiple<CalculatorClass, nbComp>(_parameters, _dose, _route, _interval, _infusionTime, _nbPoints);
+#if 0
         testSteadyState<CalculatorClass, nbComp>(_parameters, _dose, _route, _interval, _infusionTime, _nbPoints);
+#endif
     }
 
 
@@ -180,14 +182,14 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
         {
             Tucuxi::Core::ParameterDefinitions parameterDefs;
             parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
-            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Ke", 22.97, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Ke", 0.0435, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
             Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
 
             testCalculator<Tucuxi::Core::OneCompartmentBolusMicro, 1>
                     (parameters,
                      400.0,
                      Tucuxi::Core::RouteOfAdministration::INTRAVASCULAR,
-                     12h,
+                     1h,
                      0s,
                      250);
         }
@@ -202,7 +204,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
                     (parameters,
                      400.0,
                      Tucuxi::Core::RouteOfAdministration::INTRAVASCULAR,
-                     12h,
+                     1h,
                      0s,
                      250);
         }
@@ -220,7 +222,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
         {
             Tucuxi::Core::ParameterDefinitions parameterDefs;
             parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
-            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Ke", 22.97, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Ke", 0.0435, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
             parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
             parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
             Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
@@ -264,8 +266,8 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
 
         {
             Tucuxi::Core::ParameterDefinitions parameterDefs;
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Ke", 0.0435, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
             parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
-            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Ke", 22.97, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
             Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
 
             testCalculator<Tucuxi::Core::OneCompartmentInfusionMicro, 1>
@@ -279,8 +281,8 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
 
         {
             Tucuxi::Core::ParameterDefinitions parameterDefs;
-            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
             parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Cl", 15.106, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
             Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
 
             testCalculator<Tucuxi::Core::OneCompartmentInfusionMacro, 1>
@@ -330,8 +332,8 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             Tucuxi::Core::ParameterDefinitions parameterDefs;
             parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Cl", 15.106, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
             parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Q", 20, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
-            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("V1", 347, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
-            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("V2", 200, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("V2", 342, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("V1", 340, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
             parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
             parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
             Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
