@@ -32,42 +32,42 @@ public:
     ~XmlAttribute();
     
     /// \brief Check if the attribute is valid
-    /// @return True if the attribute is valid
+    /// \return True if the attribute is valid
     bool isValid() const;
 
     /// \brief Retrieve the associated node
-    /// @return The associated node
+    /// \return The associated node
     XmlNode getNode();
 
     /// \brief Retrieve the name of the attribute
-    /// @return The name of the attribute
+    /// \return The name of the attribute
     std::string getName() const;
 
     /// \brief Change the name of the attribute
-    /// @param _name The new name
-    /// @return True if successful
+    /// \param _name The new name
+    /// \return True if successful
     bool setName(const std::string& _name);
 
     /// \brief Retrieve the value of the attribute.
-    /// @return The value of the attribute.
+    /// \return The value of the attribute.
     std::string getValue() const;
 
     /// \brief Change the value of the attribute
-    /// @param _value The new value
-    /// @return True if successful
+    /// \param _value The new value
+    /// \return True if successful
     bool setValue(const std::string& _value);
     
     /// \brief Share the reference with the specified node (this method copies the wrapper not the actual underlying xml attribute!)
-    /// @param _other The attribute to share the reference with
-    /// @return The attribute itself
+    /// \param _other The attribute to share the reference with
+    /// \return The attribute itself
     XmlAttribute& operator=(const XmlAttribute& _other);
 
     /// \brief Compare if two XmlAttribute instances share the same reference to the actual XML attribute.
-    /// @return True if both objects are sharing the same reference.
+    /// \return True if both objects are sharing the same reference.
     bool operator==(const XmlAttribute& _other) const;
 
     /// \brief Compare if two XmlAttribute instances share the same reference to the actual XML attribute.
-    /// @return False if both objects are sharing the same reference.
+    /// \return False if both objects are sharing the same reference.
     bool operator!=(const XmlAttribute& _other) const;
 
 private:
@@ -75,7 +75,7 @@ private:
     XmlAttribute(rapidxml::xml_attribute<char>* _pAttribute);
     
     /// \brief Used by XmlAttributeIterator to move to the next sibling.
-    /// @return The next sibling. The returned node will be invalid if there is no more sibling.
+    /// \return The next sibling. The returned node will be invalid if there is no more sibling.
     XmlAttribute next() const;
     
     /// \brief Helper method asking the associated docuement to allocate a string.

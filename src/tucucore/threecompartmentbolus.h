@@ -2,27 +2,30 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
-#ifndef TUCUXI_MATH_THREECOMPARTMENTBOLUS_H
-#define TUCUXI_MATH_THREECOMPARTMENTBOLUS_H
+#ifndef TUCUXI_CORE_THREECOMPARTMENTBOLUS_H
+#define TUCUXI_CORE_THREECOMPARTMENTBOLUS_H
 
 #include "tucucore/intakeintervalcalculator.h"
 
 namespace Tucuxi {
 namespace Core {
 
+enum class ThreeCompartmentBolusLogarithms : int { Alpha, Beta, Gamma };
+
 /// \ingroup TucuCore
 /// \brief Intake interval calculator for the three compartment bolus algorithm
 /// \sa IntakeIntervalCalculator
-class ThreeCompartmentBolus : public IntakeIntervalCalculator
+class ThreeCompartmentBolus : public IntakeIntervalCalculatorBase<ThreeCompartmentBolusLogarithms>
 {
 public:
     /// \brief Constructor
     ThreeCompartmentBolus();
 
+    typedef ThreeCompartmentBolusLogarithms Logarithms;
+
 protected:
-    virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters) override;
-    virtual void prepareComputations(const IntakeEvent& _intakeEvent, const ParameterList& _parameters) override;
-    virtual void computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterList& _parameters, Eigen::VectorXd& _times) override;
+    virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
+    virtual void computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters, Eigen::VectorXd& _times) override;
     virtual bool computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) override;
 
 private:
@@ -47,4 +50,4 @@ private:
 }
 }
 
-#endif // TUCUXI_MATH_THREECOMPARTMENTBOLUS_H
+#endif // TUCUXI_CORE_THREECOMPARTMENTBOLUS_H

@@ -34,28 +34,28 @@ public:
     TimeOfDay(std::chrono::seconds& _time);
 
     /// \brief Returns the duration since 0h00 in milliseconds 
-    /// @return The duration in milliseconds.
+    /// \return The duration in milliseconds.
     int64 getDuration() const;
 
     /// \brief Computes the duration between two times
-    /// @param _time A time to compare to.
-    /// @return The millisecond.
+    /// \param _time A time to compare to.
+    /// \return The millisecond.
     const Duration operator-(const TimeOfDay& _time) const;
 
     /// \brief Return the hour of the contained time
-    /// @return The hour.
+    /// \return The hour.
     int hour() const;
 
     /// \brief Return the minute of the contained time
-    /// @return The minute.
+    /// \return The minute.
     int minute() const;
 
     /// \brief Return the second of the contained time
-    /// @return The second.
+    /// \return The second.
     int64 second() const;
 
     /// \brief Return the millisecond of the contained time
-    /// @return The millisecond.
+    /// \return The millisecond.
     int64 millisecond() const;
 
     /// \brief Is the date smaller?

@@ -28,6 +28,147 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
     TestIntervalCalculator() { }
 
 
+    template <class CalculatorClass, int nbComp>
+    void testSteadyState(const Tucuxi::Core::ParameterSetEvent &_parameters,
+                                       double _dose,
+                                       Tucuxi::Core::RouteOfAdministration _route,
+                                       std::chrono::hours _interval,
+                                       std::chrono::seconds _infusionTime,
+                                       int _nbPoints)
+    {
+
+        Tucuxi::Core::IntakeIntervalCalculator::Result res;
+        CalculatorClass calculator;
+
+        DateTime now;
+        Tucuxi::Common::Duration offsetTime = 0s;
+        Tucuxi::Common::Duration interval = _interval;
+        Tucuxi::Common::Duration infusionTime = _infusionTime;
+
+        Tucuxi::Core::Concentrations concentrations;
+        Tucuxi::Core::TimeOffsets times;
+        Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, _dose, interval, _route, infusionTime, _nbPoints);
+
+        // Checking if steady state is reached by iterative 100 times a calculation and
+        // passing residuals to the next iteration
+        Tucuxi::Core::Residuals inResiduals;
+        Tucuxi::Core::Residuals outResiduals;
+
+        for(int i = 0; i < nbComp; i++)
+            outResiduals.push_back(0);
+
+        for(int cycle = 0; cycle < 100; cycle ++)
+        {
+            inResiduals = outResiduals;
+            res = calculator.calculateIntakeSinglePoint(
+                        concentrations,
+                        intakeEvent,
+                        _parameters,
+                        inResiduals,
+                        interval.toHours(),
+                        outResiduals);
+            fructose_assert(res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok);
+
+
+        }
+
+        if (res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok) {
+            for (int i = 0; i < nbComp; i++) {
+                fructose_assert_double_eq(inResiduals[i], outResiduals[i])
+            }
+        }
+
+    }
+
+
+    template <class CalculatorClass, int nbComp>
+    void testSingleVsMultiple(const Tucuxi::Core::ParameterSetEvent &_parameters,
+                                       double _dose,
+                                       Tucuxi::Core::RouteOfAdministration _route,
+                                       std::chrono::hours _interval,
+                                       std::chrono::seconds _infusionTime,
+                                       int _nbPoints)
+    {
+
+        Tucuxi::Core::IntakeIntervalCalculator::Result res;
+        CalculatorClass calculator;
+
+        DateTime now;
+        Tucuxi::Common::Duration offsetTime = 0s;
+        Tucuxi::Common::Duration interval = _interval;
+        Tucuxi::Common::Duration infusionTime = _infusionTime;
+
+        Tucuxi::Core::Concentrations concentrations;
+        Tucuxi::Core::TimeOffsets times;
+        Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, _dose, interval, _route, infusionTime, _nbPoints);
+        Tucuxi::Core::Residuals inResiduals;
+        Tucuxi::Core::Residuals outMultiResiduals, outSingleResiduals;
+
+        for(int i = 0; i < nbComp; i++)
+            inResiduals.push_back(0);
+
+        res = calculator.calculateIntakePoints(
+                    concentrations,
+                    times,
+                    intakeEvent,
+                    _parameters,
+                    inResiduals,
+                    _nbPoints,
+                    outMultiResiduals,
+                    true);
+        if (verbose()) {
+            for(int i = 0; i < nbComp; i++) {
+                std::cout << "Multiple Out residual["
+                          << i
+                          << "] = "
+                          << outMultiResiduals[i]
+                          << std::endl;
+            }
+        }
+
+        fructose_assert(res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok);
+
+        res = calculator.calculateIntakeSinglePoint(
+                    concentrations,
+                    intakeEvent,
+                    _parameters,
+                    inResiduals,
+                    interval.toHours(),
+                    outSingleResiduals);
+        if (verbose()) {
+            for(int i = 0; i < nbComp; i++) {
+                std::cout << "Single   Out residual["
+                          << i
+                          << "] = "
+                          << outSingleResiduals[i]
+                          << std::endl;
+            }
+        }
+
+        fructose_assert(res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok);
+
+        if (res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok) {
+            for (int i = 0; i < nbComp; i++) {
+                fructose_assert_double_eq(outMultiResiduals[i], outSingleResiduals[i])
+//                fructose_assert (abs(outMultiResiduals[i]/outSingleResiduals[i]-1.0) < DELTA);
+            }
+        }
+    }
+
+
+    template <class CalculatorClass, int nbComp>
+    void testCalculator(const Tucuxi::Core::ParameterSetEvent &_parameters,
+                                       double _dose,
+                                       Tucuxi::Core::RouteOfAdministration _route,
+                                       std::chrono::hours _interval,
+                                       std::chrono::seconds _infusionTime,
+                                       int _nbPoints)
+    {
+
+        testSingleVsMultiple<CalculatorClass, nbComp>(_parameters, _dose, _route, _interval, _infusionTime, _nbPoints);
+        testSteadyState<CalculatorClass, nbComp>(_parameters, _dose, _route, _interval, _infusionTime, _nbPoints);
+    }
+
 
     /// \brief Test the residual calculation of Bolus. Compares single point vs multiple points
     /// \param _testName Test name.
@@ -36,62 +177,36 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
     /// The residuals are then compared and shall be identical.
     void test1compBolusSingleVsMultiple(const std::string& /* _testName */)
     {
+        {
+            Tucuxi::Core::ParameterDefinitions parameterDefs;
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Ke", 22.97, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
 
-        Tucuxi::Core::IntakeIntervalCalculator::Result res;
-        Tucuxi::Core::OneCompartmentBolusMicro calculator;
-
-        DateTime now;
-        int nbPoints = 251;
-        Tucuxi::Common::Duration offsetTime = 0s;
-        Tucuxi::Common::Duration interval = 1h;
-        Tucuxi::Common::Duration infusionTime = 0s;
-
-        Tucuxi::Core::Concentrations concentrations;
-        Tucuxi::Core::TimeOffsets times;
-        Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, 400, interval, Tucuxi::Core::RouteOfAdministration::INTRAVASCULAR, infusionTime, nbPoints);
-        Tucuxi::Core::ParameterList parameters;
-        Tucuxi::Core::Residuals inResiduals;
-        Tucuxi::Core::Residuals outMultiResiduals, outSingleResiduals;
-
-        inResiduals.push_back(0);
-
-        parameters.push_back(Tucuxi::Core::Parameter("V", 347));
-        // TODO: check whether input needs to be changed to Cl or not
-        parameters.push_back(Tucuxi::Core::Parameter("Ke", 15.106));
-
-        res = calculator.calculateIntakePoints(
-                    concentrations,
-                    times,
-                    intakeEvent,
-                    parameters,
-                    inResiduals,
-                    nbPoints,
-                    outMultiResiduals,
-                    true);
-        if (verbose()) {
-            printf("Multiple Out residual = %f\n", outMultiResiduals[0]);
+            testCalculator<Tucuxi::Core::OneCompartmentBolusMicro, 1>
+                    (parameters,
+                     400.0,
+                     Tucuxi::Core::RouteOfAdministration::INTRAVASCULAR,
+                     12h,
+                     0s,
+                     250);
         }
 
-        fructose_assert(res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok);
+        {
+            Tucuxi::Core::ParameterDefinitions parameterDefs;
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Cl", 15.106, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
 
-        res = calculator.calculateIntakeSinglePoint(
-                    concentrations,
-                    intakeEvent,
-                    parameters,
-                    inResiduals,
-                    interval.toHours(),
-                    outSingleResiduals);
-        if (verbose()) {
-            printf("Single   Out residual = %f\n", outSingleResiduals[0]);
+            testCalculator<Tucuxi::Core::OneCompartmentBolusMacro, 1>
+                    (parameters,
+                     400.0,
+                     Tucuxi::Core::RouteOfAdministration::INTRAVASCULAR,
+                     12h,
+                     0s,
+                     250);
         }
 
-        fructose_assert(res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok);
-
-        if (res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok) {
-            for (int i = 0; i < 1; i++) {
-                fructose_assert (abs(outMultiResiduals[i]/outSingleResiduals[i]-1) < DELTA);
-            }
-        }
     }
 
 
@@ -102,68 +217,40 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
     /// The residuals are then compared and shall be identical.
     void test1compExtraSingleVsMultiple(const std::string& /* _testName */)
     {
+        {
+            Tucuxi::Core::ParameterDefinitions parameterDefs;
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Ke", 22.97, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
 
-        Tucuxi::Core::IntakeIntervalCalculator::Result res;
-        Tucuxi::Core::OneCompartmentExtraMacro calculator;
-
-        DateTime now;
-        int nbPoints = 251;
-        Tucuxi::Common::Duration offsetTime = 0s;
-        Tucuxi::Common::Duration interval = 12h;
-        Tucuxi::Common::Duration infusionTime = 0s;
-
-        Tucuxi::Core::Concentrations concentrations;
-        Tucuxi::Core::TimeOffsets times;
-        Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, 400, interval, Tucuxi::Core::RouteOfAdministration::EXTRAVASCULAR, infusionTime, nbPoints);
-        Tucuxi::Core::ParameterList parameters;
-        Tucuxi::Core::Residuals inResiduals;
-        Tucuxi::Core::Residuals outMultiResiduals, outSingleResiduals;
-
-        inResiduals.push_back(0);
-        inResiduals.push_back(0);
-
-        parameters.push_back(Tucuxi::Core::Parameter("CL", 15.106));
-        parameters.push_back(Tucuxi::Core::Parameter("F", 1));
-        parameters.push_back(Tucuxi::Core::Parameter("Ka", 0.609));
-        parameters.push_back(Tucuxi::Core::Parameter("V", 347));
-
-        res = calculator.calculateIntakePoints(
-                    concentrations,
-                    times,
-                    intakeEvent,
-                    parameters,
-                    inResiduals,
-                    nbPoints,
-                    outMultiResiduals,
-                    true);
-
-        if (verbose()) {
-            printf("Multiple residual = %f\n", outMultiResiduals[0]);
-            printf("Multiple residual = %f\n", outMultiResiduals[1]);
+            testCalculator<Tucuxi::Core::OneCompartmentExtraMicro, 2>
+                    (parameters,
+                     400.0,
+                     Tucuxi::Core::RouteOfAdministration::INTRAVASCULAR,
+                     12h,
+                     0s,
+                     250);
         }
 
-        fructose_assert(res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok);
+        {
+            Tucuxi::Core::ParameterDefinitions parameterDefs;
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Cl", 15.106, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
 
-        res = calculator.calculateIntakeSinglePoint(
-                    concentrations,
-                    intakeEvent,
-                    parameters,
-                    inResiduals,
-                    nbPoints,
-                    outSingleResiduals);
-
-        if (verbose()) {
-            printf("Single   residual = %f\n", outSingleResiduals[0]);
-            printf("Single   residual = %f\n", outSingleResiduals[1]);
+            testCalculator<Tucuxi::Core::OneCompartmentExtraMacro, 2>
+                    (parameters,
+                     400.0,
+                     Tucuxi::Core::RouteOfAdministration::INTRAVASCULAR,
+                     12h,
+                     0s,
+                     250);
         }
 
-        fructose_assert(res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok);
-
-        if (res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok) {
-            for (int i = 0; i < 2; i++) {
-                fructose_assert (abs(outMultiResiduals[i]/outSingleResiduals[i]-1) < DELTA);
-            }
-        }
     }
 
 
@@ -175,62 +262,34 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
     void test1compInfusionSingleVsMultiple(const std::string& /* _testName */)
     {
 
-        Tucuxi::Core::IntakeIntervalCalculator::Result res;
-        Tucuxi::Core::OneCompartmentInfusionMacro calculator;
+        {
+            Tucuxi::Core::ParameterDefinitions parameterDefs;
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Ke", 22.97, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
 
-        DateTime now;
-        int nbPoints = 251;
-        Tucuxi::Common::Duration offsetTime = 0s;
-        Tucuxi::Common::Duration interval = 12h;
-        Tucuxi::Common::Duration infusionTime = 1h;
-
-
-        Tucuxi::Core::Concentrations concentrations;
-        Tucuxi::Core::TimeOffsets times;
-        Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, 400, interval, Tucuxi::Core::RouteOfAdministration::INFUSION, infusionTime, nbPoints);
-        Tucuxi::Core::ParameterList parameters;
-        Tucuxi::Core::Residuals inResiduals;
-        Tucuxi::Core::Residuals outMultiResiduals, outSingleResiduals;
-
-        inResiduals.push_back(0);
-
-        parameters.push_back(Tucuxi::Core::Parameter("CL", 15.106));
-        parameters.push_back(Tucuxi::Core::Parameter("V", 347));
-
-        res = calculator.calculateIntakePoints(
-                    concentrations,
-                    times,
-                    intakeEvent,
-                    parameters,
-                    inResiduals,
-                    nbPoints,
-                    outMultiResiduals,
-                    true);
-
-        if (verbose()) {
-            printf("Multiple residual = %f\n", outMultiResiduals[0]);
+            testCalculator<Tucuxi::Core::OneCompartmentInfusionMicro, 1>
+                    (parameters,
+                     400.0,
+                     Tucuxi::Core::RouteOfAdministration::INFUSION,
+                     12h,
+                     1h,
+                     250);
         }
 
-        fructose_assert(res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok);
+        {
+            Tucuxi::Core::ParameterDefinitions parameterDefs;
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Cl", 15.106, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
 
-        res = calculator.calculateIntakeSinglePoint(
-                    concentrations,
-                    intakeEvent,
-                    parameters,
-                    inResiduals,
-                    nbPoints,
-                    outSingleResiduals);
-
-        if (verbose()) {
-            printf("Single   residual = %f\n", outSingleResiduals[0]);
-        }
-
-        fructose_assert(res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok);
-
-        if (res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok) {
-            for (int i = 0; i < 1; i++) {
-                fructose_assert (abs(outMultiResiduals[i]/outSingleResiduals[i]-1) < DELTA);
-            }
+            testCalculator<Tucuxi::Core::OneCompartmentInfusionMacro, 1>
+                    (parameters,
+                     400.0,
+                     Tucuxi::Core::RouteOfAdministration::INFUSION,
+                     12h,
+                     1h,
+                     250);
         }
     }
 
@@ -241,64 +300,21 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
     /// The residuals are then compared and shall be identical.
     void test2compBolusSingleVsMultiple(const std::string& /* _testName */)
     {
-        Tucuxi::Core::IntakeIntervalCalculator::Result res;
-        Tucuxi::Core::TwoCompartmentBolusMacro calculator;
+        {
+            Tucuxi::Core::ParameterDefinitions parameterDefs;
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Cl", 15.106, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Q", 20, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("V1", 340, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("V2", 342, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
 
-        DateTime now;
-        int nbPoints = 251;
-        Tucuxi::Common::Duration offsetTime = 0s;
-        Tucuxi::Common::Duration interval = 12h;
-        Tucuxi::Common::Duration infusionTime = 0s;
-
-
-        Tucuxi::Core::Concentrations concentrations;
-        Tucuxi::Core::TimeOffsets times;
-        Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, 400, interval, Tucuxi::Core::RouteOfAdministration::INTRAVASCULAR, infusionTime, nbPoints);
-        Tucuxi::Core::ParameterList parameters;
-        Tucuxi::Core::Residuals inResiduals;
-        Tucuxi::Core::Residuals outMultiResiduals, outSingleResiduals;
-
-        inResiduals.push_back(0);
-
-        parameters.push_back(Tucuxi::Core::Parameter("CL", 15.106));
-        parameters.push_back(Tucuxi::Core::Parameter("Q", 20));
-        parameters.push_back(Tucuxi::Core::Parameter("V1", 340));
-        parameters.push_back(Tucuxi::Core::Parameter("V2", 342));
-
-        res = calculator.calculateIntakePoints(
-                    concentrations,
-                    times,
-                    intakeEvent,
-                    parameters,
-                    inResiduals,
-                    nbPoints,
-                    outMultiResiduals,
-                    true);
-        if (verbose()) {
-            printf("Multiple Out residual = %f\n", outMultiResiduals[0]);
-            printf("Multiple Out residual = %f\n", outMultiResiduals[1]);
-        }
-
-        fructose_assert(res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok);
-
-        res = calculator.calculateIntakeSinglePoint(
-                    concentrations,
-                    intakeEvent,
-                    parameters,
-                    inResiduals,
-                    nbPoints,
-                    outSingleResiduals);
-        if (verbose()) {
-            printf("Single   Out residual = %f\n", outSingleResiduals[0]);
-            printf("Single   Out residual = %f\n", outSingleResiduals[1]);
-        }
-
-        fructose_assert(res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok);
-
-        if (res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok) {
-            for (int i = 0; i < 1; i++) {
-                fructose_assert (abs(outMultiResiduals[i]/outSingleResiduals[i]-1) < DELTA);
-            }
+            testCalculator<Tucuxi::Core::TwoCompartmentBolusMacro, 2>
+                    (parameters,
+                     400.0,
+                     Tucuxi::Core::RouteOfAdministration::INTRAVASCULAR,
+                     12h,
+                     0s,
+                     250);
         }
     }
 
@@ -310,71 +326,23 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
     void test2compExtraSingleVsMultiple(const std::string& /* _testName */)
     {
 
-        Tucuxi::Core::IntakeIntervalCalculator::Result res;
-        Tucuxi::Core::TwoCompartmentExtraMacro calculator;
+        {
+            Tucuxi::Core::ParameterDefinitions parameterDefs;
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Cl", 15.106, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Q", 20, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("V1", 347, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("V2", 200, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
 
-        DateTime now;
-        int nbPoints = 251;
-        Tucuxi::Common::Duration offsetTime = 0s;
-        Tucuxi::Common::Duration interval = 12h;
-        Tucuxi::Common::Duration infusionTime = 0s;
-
-
-        Tucuxi::Core::Concentrations concentrations;
-        Tucuxi::Core::TimeOffsets times;
-        Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, 400, interval, Tucuxi::Core::RouteOfAdministration::EXTRAVASCULAR, infusionTime, nbPoints);
-        Tucuxi::Core::ParameterList parameters;
-        Tucuxi::Core::Residuals inResiduals;
-        Tucuxi::Core::Residuals outMultiResiduals, outSingleResiduals;
-
-        inResiduals.push_back(0);
-        inResiduals.push_back(0);
-
-        parameters.push_back(Tucuxi::Core::Parameter("CL", 15.106));
-        parameters.push_back(Tucuxi::Core::Parameter("F", 1));
-        parameters.push_back(Tucuxi::Core::Parameter("Ka", 0.609));
-        parameters.push_back(Tucuxi::Core::Parameter("Q", 20));
-        parameters.push_back(Tucuxi::Core::Parameter("V1", 347));
-        parameters.push_back(Tucuxi::Core::Parameter("V2", 200));
-
-        res = calculator.calculateIntakePoints(
-                    concentrations,
-                    times,
-                    intakeEvent,
-                    parameters,
-                    inResiduals,
-                    nbPoints,
-                    outMultiResiduals,
-                    true);
-
-        if (verbose()) {
-            printf("Multiple residual = %f\n", outMultiResiduals[0]);
-            printf("Multiple residual = %f\n", outMultiResiduals[1]);
-            printf("Multiple residual = %f\n", outMultiResiduals[2]);
-        }
-
-        fructose_assert(res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok);
-
-        res = calculator.calculateIntakeSinglePoint(
-                    concentrations,
-                    intakeEvent,
-                    parameters,
-                    inResiduals,
-                    nbPoints,
-                    outSingleResiduals);
-
-        if (verbose()) {
-            printf("Single   residual = %f\n", outSingleResiduals[0]);
-            printf("Single   residual = %f\n", outSingleResiduals[1]);
-            printf("Multiple residual = %f\n", outSingleResiduals[2]);
-        }
-
-        fructose_assert(res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok);
-
-        if (res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok) {
-            for (int i = 0; i < 3; i++) {
-                fructose_assert (abs(outMultiResiduals[i]/outSingleResiduals[i]-1) < DELTA);
-            }
+            testCalculator<Tucuxi::Core::TwoCompartmentExtraMacro, 3>
+                    (parameters,
+                     400.0,
+                     Tucuxi::Core::RouteOfAdministration::EXTRAVASCULAR,
+                     12h,
+                     0s,
+                     250);
         }
     }
 
@@ -386,66 +354,21 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
     void test2compInfusionSingleVsMultiple(const std::string& /* _testName */)
     {
 
-        Tucuxi::Core::IntakeIntervalCalculator::Result res;
-        Tucuxi::Core::TwoCompartmentInfusion calculator;
+        {
+            Tucuxi::Core::ParameterDefinitions parameterDefs;
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Cl", 15.106, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Q", 20, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("V1", 340, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("V2", 342, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
 
-        DateTime now;
-        int nbPoints = 251;
-        Tucuxi::Common::Duration offsetTime = 0s;
-        Tucuxi::Common::Duration interval = 12h;
-        Tucuxi::Common::Duration infusionTime = 1h;
-
-
-        Tucuxi::Core::Concentrations concentrations;
-        Tucuxi::Core::TimeOffsets times;
-        Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, 400, interval, Tucuxi::Core::RouteOfAdministration::INFUSION, infusionTime, nbPoints);
-        Tucuxi::Core::ParameterList parameters;
-        Tucuxi::Core::Residuals inResiduals;
-        Tucuxi::Core::Residuals outMultiResiduals, outSingleResiduals;
-
-        inResiduals.push_back(0);
-
-        parameters.push_back(Tucuxi::Core::Parameter("CL", 15.106));
-        parameters.push_back(Tucuxi::Core::Parameter("Q", 20));
-        parameters.push_back(Tucuxi::Core::Parameter("V1", 347));
-        parameters.push_back(Tucuxi::Core::Parameter("V2", 200));
-
-        res = calculator.calculateIntakePoints(
-                    concentrations,
-                    times,
-                    intakeEvent,
-                    parameters,
-                    inResiduals,
-                    nbPoints,
-                    outMultiResiduals,
-                    true);
-
-        if (verbose()) {
-            printf("Multiple residual = %f\n", outMultiResiduals[0]);
-            printf("Multiple residual = %f\n", outMultiResiduals[1]);
-        }
-
-        fructose_assert(res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok);
-
-        res = calculator.calculateIntakeSinglePoint(
-                    concentrations,
-                    intakeEvent,
-                    parameters,
-                    inResiduals,
-                    nbPoints,
-                    outSingleResiduals);
-
-        if (verbose()) {
-            printf("Single   residual = %f\n", outSingleResiduals[0]);
-            printf("Multiple residual = %f\n", outSingleResiduals[1]);
-        }
-
-        fructose_assert(res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok);
-
-        if (res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok) {
-            for (int i = 0; i < 1; i++) {
-                fructose_assert (abs(outMultiResiduals[i]/outSingleResiduals[i]-1) < DELTA);
-            }
+            testCalculator<Tucuxi::Core::TwoCompartmentInfusion, 2>
+                    (parameters,
+                     400.0,
+                     Tucuxi::Core::RouteOfAdministration::INFUSION,
+                     12h,
+                     1h,
+                     250);
         }
     }
 

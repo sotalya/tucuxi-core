@@ -2,14 +2,15 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
-#ifndef TUCUXI_MATH_INTAKEEVENT_H
-#define TUCUXI_MATH_INTAKEEVENT_H
+#ifndef TUCUXI_CORE_INTAKEEVENT_H
+#define TUCUXI_CORE_INTAKEEVENT_H
 
 #include "tucucommon/datetime.h"
 #include "tucucommon/duration.h"
 
 #include "tucucore/definitions.h"
 #include "tucucore/timedevent.h"
+#include "tucucore/intakeintervalcalculator.h"
 
 using Tucuxi::Common::DateTime;
 using Tucuxi::Common::Duration;
@@ -20,7 +21,8 @@ namespace Core {
 /// \ingroup TucuCore
 /// \brief A class reprensting the event of taking a dose.
 /// Represents a Dose, as extracted from a DAL Dosage.
-class IntakeEvent : public TimedEvent {
+class IntakeEvent : public TimedEvent 
+{
 public:
     /// \brief The default constructor is not needed
     IntakeEvent() = delete;
@@ -41,7 +43,9 @@ public:
           m_nbPoints(_nbPoints),
           m_route(_route),
           m_interval(_interval),
-          m_infusionTime(_infusionTime) {}
+          m_infusionTime(_infusionTime),
+          m_calculator(nullptr)
+    {}
 
     /// \brief Destructor
     ~IntakeEvent() {}
@@ -84,7 +88,7 @@ public:
 
     /// \brief Get the number of points to compute for this intake
     /// \return Number of points to compute for this intake
-    int getNumberPoints() const
+    int getNbPoints() const
     {
         return m_nbPoints;
     }
@@ -126,6 +130,28 @@ public:
         return m_time < _other.m_time;
     }
 
+    ///
+    /// \brief setCalculator Defines the calculator to be used for calculation
+    /// \param _calculator The calculator itself
+    void setCalculator(IntakeIntervalCalculator *_calculator)
+    {
+        m_calculator = _calculator;
+    }
+
+    IntakeIntervalCalculator::Result calculateIntakePoints(
+        Concentrations& _concentrations,
+        TimeOffsets & _times,
+        const IntakeEvent& _intakeEvent,
+        const ParameterSetEvent& _parameters,
+        const Residuals& _inResiduals,
+        const CycleSize _cycleSize,
+        Residuals& _outResiduals,
+        const bool _isDensityConstant) const
+    {
+        return m_calculator->calculateIntakePoints(_concentrations, _times, _intakeEvent, _parameters, _inResiduals, _cycleSize, _outResiduals, _isDensityConstant);
+    }
+
+
     // The association with intakeintervalcalculator happens here
     // The intaketocalculatorassociator sets this value
     // void setCalc(IntakeIntervalCalculator& _calc) { calc = &_calc; }
@@ -144,10 +170,10 @@ private:
     /// The duration in case of an infusion
     Duration m_infusionTime;
 
-    // IntakeIntervalCalculator* calc;
+    IntakeIntervalCalculator* m_calculator;
 };
 
 }
 }
 
-#endif // TUCUXI_MATH_INTAKEEVENT_H
+#endif // TUCUXI_CORE_INTAKEEVENT_H

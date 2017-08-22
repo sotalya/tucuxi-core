@@ -2,27 +2,30 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
-#ifndef TUCUXI_MATH_TWOCOMPARTMENTEXTRA_H
-#define TUCUXI_MATH_TWOCOMPARTMENTEXTRA_H
+#ifndef TUCUXI_CORE_TWOCOMPARTMENTEXTRA_H
+#define TUCUXI_CORE_TWOCOMPARTMENTEXTRA_H
 
 #include "tucucore/intakeintervalcalculator.h"
 
 namespace Tucuxi {
 namespace Core {
 
+enum class TwoCompartmentExtraLogarithms : int { Alpha, Beta, Ka };
+
 /// \ingroup TucuCore
 /// \brief Intake interval calculator for the two compartment extra algorithm
 /// \sa IntakeIntervalCalculator
-class TwoCompartmentExtraMicro : public IntakeIntervalCalculator
+class TwoCompartmentExtraMicro : public IntakeIntervalCalculatorBase<TwoCompartmentExtraLogarithms>
 {
 public:
     /// \brief Constructor
     TwoCompartmentExtraMicro();
 
+    typedef TwoCompartmentExtraLogarithms Logarithms;
+
 protected:
-    virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters) override;
-    virtual void prepareComputations(const IntakeEvent& _intakeEvent, const ParameterList& _parameters) override;
-    virtual void computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterList& _parameters, Eigen::VectorXd& _times) override;
+    virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
+    virtual void computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters, Eigen::VectorXd& _times) override;
     virtual bool computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) override;
     virtual bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) override;
     bool compute(const Residuals& _inResiduals, Eigen::VectorXd& _concentrations1, Value& _concentrations2, Value& _concentrations3);
@@ -97,8 +100,8 @@ _concentrations1, Value& _concentrations2, Value& _concentrations3)
 
     // Calculate concentrations of compartment 1
     _concentrations1 = 
-	-2 * (B * m_precomputedLogarithms["Beta"] 
-		+ A * m_precomputedLogarithms["Alpha"] + C * m_precomputedLogarithms["Ka"]) / divider;
+	-2 * (B * logs(Logarithms::Beta) 
+		+ A * logs(Logarithms::Alpha) + C * logs(Logarithms::Ka)) / divider;
 
     // For compartment1, calculate A, B, C and divider
     A = 
@@ -125,11 +128,11 @@ _concentrations1, Value& _concentrations2, Value& _concentrations3)
 
     // Calculate concentrations of compartment 2 and 3
     _concentrations2 = 
-        2 * (B * m_precomputedLogarithms["Beta"](m_precomputedLogarithms["Beta"].size() - 1) 
-        + A * m_precomputedLogarithms["Alpha"](m_precomputedLogarithms["Alpha"].size() - 1) 
-        + C * m_precomputedLogarithms["Ka"](m_precomputedLogarithms["Ka"].size() - 1)) / divider;
+        2 * (B * logs(Logarithms::Beta)(logs(Logarithms::Beta).size() - 1)
+        + A * logs(Logarithms::Alpha)(logs(Logarithms::Alpha).size() - 1)
+        + C * logs(Logarithms::Ka)(logs(Logarithms::Ka).size() - 1)) / divider;
     _concentrations3 = 
-	m_precomputedLogarithms["Ka"](m_precomputedLogarithms["Ka"].size() - 1) * resid3;
+    logs(Logarithms::Ka)(logs(Logarithms::Ka).size() - 1) * resid3;
 
     return true;
 }
@@ -141,11 +144,11 @@ public:
     TwoCompartmentExtraMacro();
 
 protected:
-    virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters) override;
+    virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
 
 };
 
 }
 }
 
-#endif // TUCUXI_MATH_TWOCOMPARTMENTEXTRA_H
+#endif // TUCUXI_CORE_TWOCOMPARTMENTEXTRA_H

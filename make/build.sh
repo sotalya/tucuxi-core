@@ -44,7 +44,7 @@ do
    fi
 done
 
-for MODULE in tucucommon tucucore tuculicense
+for MODULE in tucucommon tucucore # tuculicense
 do
    cd $TUCUXI_ROOT/test/$MODULE
    mkdir -p objs

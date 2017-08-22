@@ -5,6 +5,7 @@
 #include <Eigen/Dense>
 
 #include "tucucore/twocompartmentbolus.h"
+#include "tucucore/intakeevent.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -13,7 +14,7 @@ TwoCompartmentBolusMicro::TwoCompartmentBolusMicro()
 {
 }
 
-bool TwoCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
+bool TwoCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
     bool bOK = true;
 
@@ -21,11 +22,11 @@ bool TwoCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
 	    return false;
     
     m_D = _intakeEvent.getDose() * 1000;
-    m_V1 = _parameters[0].getValue();
-    m_Ke = _parameters[1].getValue();
-    m_K12 = _parameters[2].getValue();
-    m_K21 = _parameters[3].getValue();
-    m_NbPoints = _intakeEvent.getNumberPoints();
+    m_V1 = _parameters.getValue(0);
+    m_Ke = _parameters.getValue(1);
+    m_K12 = _parameters.getValue(2);
+    m_K21 = _parameters.getValue(3);
+    m_NbPoints = _intakeEvent.getNbPoints();
     m_Int = (_intakeEvent.getInterval()).toHours();
 
     bOK &= checkValue(m_D >= 0, "The dose is negative.");
@@ -52,15 +53,10 @@ bool TwoCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
 }
 
 
-void TwoCompartmentBolusMicro::prepareComputations(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
+void TwoCompartmentBolusMicro::computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters, Eigen::VectorXd& _times)
 {
-}
-
-
-void TwoCompartmentBolusMicro::computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterList& _parameters, Eigen::VectorXd& _times)
-{
-    m_precomputedLogarithms["Alpha"] = (-m_Alpha * _times).array().exp();
-    m_precomputedLogarithms["Beta"] = (-m_Beta * _times).array().exp();
+    setLogs(Logarithms::Alpha, (-m_Alpha * _times).array().exp());
+    setLogs(Logarithms::Beta, (-m_Beta * _times).array().exp());
 }
 
 
@@ -97,8 +93,8 @@ bool TwoCompartmentBolusMicro::computeConcentration(const Value& _atTime, const 
 
     // interval=0 means that it is the last cycle, so final residual = 0
     if (m_Int == 0) {
-	concentrations1[1] = 0;
-	concentrations2[1] = 0;
+        concentrations1[1] = 0;
+        concentrations2[1] = 0;
     }
 
     // return final residual (computation with m_Int (interval))
@@ -115,22 +111,23 @@ TwoCompartmentBolusMacro::TwoCompartmentBolusMacro() : TwoCompartmentBolusMicro(
 {
 }
 
-bool TwoCompartmentBolusMacro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
+bool TwoCompartmentBolusMacro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
     bool bOK = true;
 
-    if(!checkValue(_parameters.size() >= 4, "The number of parameters should be equal to 4."))
-	    return false;
+    if(!checkValue(_parameters.size() >= 4, "The number of parameters should be equal to 4.")) {
+        return false;
+    }
     
     m_D = _intakeEvent.getDose() * 1000;
-    Value cl = _parameters[0].getValue(); /// clearance
-    Value q = _parameters[1].getValue(); /// speed between c1 and c2
-    m_V1 = _parameters[2].getValue(); /// volume of first compartment
-    Value v2 = _parameters[3].getValue(); /// volue of second ompartment
+    Value cl = _parameters.getValue(0); /// clearance
+    Value q = _parameters.getValue(1); /// speed between c1 and c2
+    m_V1 = _parameters.getValue(2); /// volume of first compartment
+    Value v2 = _parameters.getValue(3); /// volue of second ompartment
     m_Ke = cl / m_V1;
     m_K12 = q / m_V1;
     m_K21 = q / v2;
-    m_NbPoints = _intakeEvent.getNumberPoints();
+    m_NbPoints = _intakeEvent.getNbPoints();
     m_Int = (_intakeEvent.getInterval()).toHours();
 
     bOK &= checkValue(m_D >= 0, "The dose is negative.");

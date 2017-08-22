@@ -22,7 +22,7 @@ namespace Common {
 
 /// \ingroup TucuCommon
 /// \brief Signature of a component factory function.
-/// @return A pointer on one of the component's interface
+/// \return A pointer on one of the component's interface
 typedef Interface* (*TComponentFactory)();
 
 /// \ingroup TucuCommon
@@ -40,31 +40,31 @@ class ComponentManager
 {
 public:
     /// \brief The only way to get a hold on the component manager
-    /// @return The component manager itself
+    /// \return The component manager itself
     static ComponentManager* getInstance();
 
 public:
     /// \brief Register a factory and associate it with a name.
-    /// @param _name The name that will allow creating instances via method createComponent
-    /// @param _pFactory A pointer to a function that "knows" how to create a component of the given type.
-    /// @return None
+    /// \param _name The name that will allow creating instances via method createComponent
+    /// \param _pFactory A pointer to a function that "knows" how to create a component of the given type.
+    /// \return None
     void registerComponentFactory(const std::string &_name, TComponentFactory _pFactory);
 
     /// \brief Register a component so to make it available globally to the rest of the application.
-    /// @param _name The name that will allow other parts of the software to retrieve the component.
-    /// @param _pComponent A pointer to the interface of an existing component.
-    /// @return None
+    /// \param _name The name that will allow other parts of the software to retrieve the component.
+    /// \param _pComponent A pointer to the interface of an existing component.
+    /// \return None
     void registerComponent(const std::string &_name, Interface *_pComponent);
 
     /// \brief Unregister a previously registered component.
-    /// @param _name The name of the component
-    /// @return None
+    /// \param _name The name of the component
+    /// \return None
     void unregisterComponent(const std::string &_name);
 
     /// \brief Create an instance of a component from a previously registered factory.
-    /// @param _factoryName The name of the factory.
-    /// @param T The type of the desired interface
-    /// @return A pointer on the specified interface of the newly created component
+    /// \param _factoryName The name of the factory.
+    /// \param T The type of the desired interface
+    /// \return A pointer on the specified interface of the newly created component
     template <typename T> T* createComponent(const std::string &_factoryName)
     {
         if (m_factories.end() != m_factories.find(_factoryName))
@@ -78,9 +78,9 @@ public:
     }
 
     /// \brief Get a previously registered component.
-    /// @param _name The name of the component.
-    /// @param T The type of the desired interface
-    /// @return A pointer on the specified interface of the specified component
+    /// \param _name The name of the component.
+    /// \param T The type of the desired interface
+    /// \return A pointer on the specified interface of the specified component
     template <typename T> T* getComponent(const std::string &_name)
     {
         if (m_components.end() != m_components.find(_name))

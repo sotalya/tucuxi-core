@@ -21,30 +21,30 @@ public:
     T* operator->() { return &m_current; }
     
     /// \brief Move to the next item
-    /// @return The iterator
+    /// \return The iterator
     XmlIterator operator++(int) { next(); return *this; }
     
     /// \brief Move to the next item
-    /// @return The iterator
+    /// \return The iterator
     XmlIterator& operator++() { next(); return *this; }
     
     /// \brief Check if both iterators reference the same item
-    /// @param The other iterator
-    /// @return True if both iterator reference the same item
+    /// \param The other iterator
+    /// \return True if both iterator reference the same item
     bool operator==(const XmlIterator& _other) { return m_current == _other.m_current; }
     
     /// \brief Check if both iterators reference the same item
-    /// @param The other iterator
-    /// @return False if both iterator reference the same item
+    /// \param The other iterator
+    /// \return False if both iterator reference the same item
     bool operator!=(const XmlIterator& _other) { return m_current != _other.m_current; }
 
     /// \brief Gives an "empty" iterator. Useful to check the end of an iteration.
-    /// @return An "empty" iterator
+    /// \return An "empty" iterator
     static XmlIterator<T> none() { return XmlIterator<T>(T()); }
 
 protected:
     /// \brief Constuctor used by XmlNode to build new iterators
-    /// @param The first item of the collection.
+    /// \param The first item of the collection.
     XmlIterator(T _first, const std::string& _name = "") 
         : m_current(_first), m_name(_name), m_type(EXmlNodeType::Undefined)
     {
@@ -74,7 +74,7 @@ private:
     }
 
     /// \brief Check if the current item should be filtered out
-    /// @return True if the current item should be returned by the iterator
+    /// \return True if the current item should be returned by the iterator
     bool isInSubgroup()
     {
         return true;  // No filter by default
@@ -89,7 +89,7 @@ protected:
 
 
 /// \brief Partial specialization to handle filtering nodes
-/// @return True if the current item should be returned by the iterator
+/// \return True if the current item should be returned by the iterator
 template<>
 inline bool XmlIterator<XmlNode>::isInSubgroup()
 {

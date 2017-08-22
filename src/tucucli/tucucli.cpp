@@ -42,17 +42,18 @@ int main(int argc, char** argv)
     Tucuxi::Core::Concentrations concentrations;
     Tucuxi::Core::TimeOffsets times;
     Tucuxi::Core::IntakeEvent intakeEvent(now, 0s, 400, 24h, Tucuxi::Core::RouteOfAdministration::INTRAVASCULAR, 0s, nbPoints);
-    Tucuxi::Core::ParameterList parameters;
+    Tucuxi::Core::ParameterDefinitions parameterDefs;
     Tucuxi::Core::Residuals inResiduals;
     Tucuxi::Core::Residuals outResiduals1, outResiduals2;
 
     inResiduals.push_back(0);
     inResiduals.push_back(0);
 
-    parameters.push_back(Tucuxi::Core::Parameter("CL", 15.106));
-    parameters.push_back(Tucuxi::Core::Parameter("F", 1));
-    parameters.push_back(Tucuxi::Core::Parameter("Ka", 0.609));
-    parameters.push_back(Tucuxi::Core::Parameter("V", 347));
+    parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("CL", 15.6, Tucuxi::Core::ParameterDefinition::ErrorModel::Additive));
+    parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterDefinition::ErrorModel::Additive));
+    parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterDefinition::ErrorModel::Additive));
+    parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterDefinition::ErrorModel::Additive));
+    Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
 
     res = calculator.calculateIntakePoints(
         concentrations,

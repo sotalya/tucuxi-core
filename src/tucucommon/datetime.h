@@ -39,22 +39,22 @@ public:
 
     /// \brief Build a date from the specified string
     /// This constructor uses std::get_time internally. See get_time documentation for information about the _format  parameter.
-    /// @param _date The string to be parsed
-    /// @param _date The parsing format (see std::get_time documentation). 
+    /// \param _date The string to be parsed
+    /// \param _date The parsing format (see std::get_time documentation). 
     DateTime(const std::string &_date, const std::string& _format);
 
     /// \brief Build a date with the specified data at 0h00.
-    /// @param _date The date to be used. 
+    /// \param _date The date to be used. 
     DateTime(const date::year_month_day& _date);
 
     /// \brief Build a date and time with the specified data and time.
-    /// @param _date The date to be used. 
-    /// @param _time The time to be used. 
+    /// \param _date The date to be used. 
+    /// \param _time The time to be used. 
     DateTime(const date::year_month_day& _date, const TimeOfDay& _time);
 
     /// \brief Build a date and time with the specified data and time.
-    /// @param _date The date to be used. 
-    /// @param _time The time to be used (as a number of seconds since 0h00.
+    /// \param _date The date to be used. 
+    /// \param _time The time to be used (as a number of seconds since 0h00.
     DateTime(const date::year_month_day& _date, const std::chrono::seconds& _time);
 
     /// \brief Returns the date part of the object.
@@ -64,46 +64,46 @@ public:
     TimeOfDay getTimeOfDay() const;
 
     /// \brief Set the date part of the object.
-    /// @param _newDate The date to be used. 
+    /// \param _newDate The date to be used. 
     void setDate(const date::year_month_day& _newDate);
 
     /// \brief Set the time of the day part of the object.
-    /// @param _newTime The time to be used. 
+    /// \param _newTime The time to be used. 
     void setTimeOfDay(const TimeOfDay& _newTime);
 
     /// \brief Return a new DateTime object with the addition of the date and the specified duration.
-    /// @param _duration The duration to be added. 
-    /// @return The result of the addition.
+    /// \param _duration The duration to be added. 
+    /// \return The result of the addition.
     const DateTime operator+(const Duration& _duration) const;
 
     /// \brief Return a new DateTime object with the addition of the date and the specified date.
-    /// @param _dateTime The date to be added.
-    /// @return The result of the addition.
+    /// \param _dateTime The date to be added.
+    /// \return The result of the addition.
     const DateTime operator+(const DateTime& _dateTime) const;
 
     /// \brief Add a duration to the date.
-    /// @param _duration The duration to be added. 
-    /// @return A reference to the modified DateTime.
+    /// \param _duration The duration to be added. 
+    /// \return A reference to the modified DateTime.
     DateTime& operator+=(const Duration& _duration);
 
     /// \brief Add another date to the date.
-    /// @param _dateTime The date to be added.
-    /// @return A reference to the modified DateTime.
+    /// \param _dateTime The date to be added.
+    /// \return A reference to the modified DateTime.
     DateTime& operator+=(const DateTime& _dateTime);
 
     /// \brief Return a new DateTime object with the substraction of the date and the specified duration.
-    /// @param _duration The duration to be substracted.
-    /// @return The result of the substraction.
+    /// \param _duration The duration to be substracted.
+    /// \return The result of the substraction.
     const DateTime operator-(const Duration& _duration) const;
 
     /// \brief Substract a duration from the date.
-    /// @param _duration The duration to be substracted. 
-    /// @return A reference to the modified DateTime.
+    /// \param _duration The duration to be substracted. 
+    /// \return A reference to the modified DateTime.
     DateTime& operator-=(const Duration& _duration);
 
     /// \brief Compute the duration between two dates.
-    /// @param _date The other date to compute the difference with. 
-    /// @return The computed duration.
+    /// \param _date The other date to compute the difference with. 
+    /// \return The computed duration.
     const Duration operator-(const DateTime& _date) const;
 
     /// \brief Is the date smaller?
@@ -125,44 +125,44 @@ public:
     bool operator!=(const DateTime& _other) const;
 
     /// \brief Return the year of the contained date
-    /// @return The year.
+    /// \return The year.
     int year() const;
 
     /// \brief Return the month of the contained date
-    /// @return The month.
+    /// \return The month.
     int month() const;
 
     /// \brief Return the day of the contained date
-    /// @return The day.
+    /// \return The day.
     int day() const;
 
     /// \brief Return the hour of the contained date
-    /// @return The hour.
+    /// \return The hour.
     int hour() const;
 
     /// \brief Return the minute of the contained date
-    /// @return The minute.
+    /// \return The minute.
     int minute() const;
 
     /// \brief Return the second of the contained date
-    /// @return The second.
+    /// \return The second.
     int64 second() const;
 
     /// \brief Return the millisecond of the contained date
-    /// @return The millisecond.
+    /// \return The millisecond.
     int64 millisecond() const;
 
     /// \brief Clear the date to internal value 0
     void reset();
 
     /// \brief Check if the value is empty (internal value is 0). See method Reset().
-    /// @return Returns true if the internal value is 0.
+    /// \return Returns true if the internal value is 0.
     bool isUndefined() const;
 
 private:
 
     /// \brief Returns the duration in one of the std::chrono duration class (years, months, days, ...)    
-    /// @return The duration in the specified T unit.
+    /// \return The duration in the specified T unit.
     template<class T> T get() const
     {
         return std::chrono::duration_cast<T>(m_date.time_since_epoch());

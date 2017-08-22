@@ -61,33 +61,33 @@ class LicenseManager
 public:
 
     /// \brief Check if license file is valid.
-    /// @param _filename : full path of license file.
-    /// @return VALID_LICENSE or INVALID_LICENSE, In case of error : MISSING_LICENSE_FILE, ERROR_CRYPTO.
+    /// \param _filename : full path of license file.
+    /// \return VALID_LICENSE or INVALID_LICENSE, In case of error : MISSING_LICENSE_FILE, ERROR_CRYPTO.
     static int checkLicenseFile(std::string _filename);
 
     /// \brief Check if license is valid and install it in license file.
-    /// @param _license  : encrypt string provided by the server.
-    /// @param _filename : full path of license file.
-    /// @return INSTALLATION_SUCCESSFUL, In case of error : INVALID_LICENSE, MISSING_LICENSE_FILE, ERROR_CRYPTO.
+    /// \param _license  : encrypt string provided by the server.
+    /// \param _filename : full path of license file.
+    /// \return INSTALLATION_SUCCESSFUL, In case of error : INVALID_LICENSE, MISSING_LICENSE_FILE, ERROR_CRYPTO.
     static int installLicense(std::string _license, std::string _filename);
 
 
     /// \brief Return a request to be sent to the server.
-    /// @param _request : encrypt string.
-    /// @return REQUEST_SUCCESSFUL, In case of error : NO_MACHINE_ID_FOUND, ERROR_CRYPTO.
+    /// \param _request : encrypt string.
+    /// \return REQUEST_SUCCESSFUL, In case of error : NO_MACHINE_ID_FOUND, ERROR_CRYPTO.
     static int generateRequestString(std::string* _request);
 
 private:
 
     /// \brief Check if license is valid.
-    /// @param _request : encrypt string.
-    /// @return VALID_LICENSE or INVALID_LICENSE, In case of error : ERROR_CRYPTO.
+    /// \param _request : encrypt string.
+    /// \return VALID_LICENSE or INVALID_LICENSE, In case of error : ERROR_CRYPTO.
     static int checklicense(std::string _request);
 
     /// \brief Update the field of Last used date file.
-    /// @param _license  : encrypt string provided by the server.
-    /// @param _filename : full path of license file.
-    /// @return INSTALLATION_SUCCESSFUL, In case of error : INVALID_LICENSE, MISSING_LICENSE_FILE, ERROR_CRYPTO.
+    /// \param _license  : encrypt string provided by the server.
+    /// \param _filename : full path of license file.
+    /// \return INSTALLATION_SUCCESSFUL, In case of error : INVALID_LICENSE, MISSING_LICENSE_FILE, ERROR_CRYPTO.
     static int rewriteLicense(std::string _license, std::string _filename);
 
 private:

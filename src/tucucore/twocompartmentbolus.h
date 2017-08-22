@@ -2,27 +2,30 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
-#ifndef TUCUXI_MATH_TWOCOMPARTMENTBOLUS_H
-#define TUCUXI_MATH_TWOCOMPARTMENTBOLUS_H
+#ifndef TUCUXI_CORE_TWOCOMPARTMENTBOLUS_H
+#define TUCUXI_CORE_TWOCOMPARTMENTBOLUS_H
 
 #include "tucucore/intakeintervalcalculator.h"
 
 namespace Tucuxi {
 namespace Core {
 
+enum class TwoCompartmentBolusLogarithms : int { Alpha, Beta };
+
 /// \ingroup TucuCore
 /// \brief Intake interval calculator for the two compartment bolus algorithm
 /// \sa IntakeIntervalCalculator
-class TwoCompartmentBolusMicro : public IntakeIntervalCalculator
+class TwoCompartmentBolusMicro : public IntakeIntervalCalculatorBase<TwoCompartmentBolusLogarithms>
 {
 public:
     /// \brief Constructor
     TwoCompartmentBolusMicro();
 
+    typedef TwoCompartmentBolusLogarithms Logarithms;
+
 protected:
-    virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters) override;
-    virtual void prepareComputations(const IntakeEvent& _intakeEvent, const ParameterList& _parameters) override;
-    virtual void computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterList& _parameters, Eigen::VectorXd& _times) override;
+    virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
+    virtual void computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters, Eigen::VectorXd& _times) override;
     virtual bool computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) override;
     virtual bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) override;
     void compute(const Residuals& _inResiduals, Eigen::VectorXd& _concentrations1, Eigen::VectorXd& _concentrations2);
@@ -54,9 +57,9 @@ inline void TwoCompartmentBolusMicro::compute(const Residuals& _inResiduals, Eig
 
     // Calculate concentrations for comp1 and comp2
     _concentrations1 = 
-        ((A * m_precomputedLogarithms["Alpha"]) + (B * m_precomputedLogarithms["Beta"])) / (2 * m_RootK);
+        ((A * logs(Logarithms::Alpha)) + (B * logs(Logarithms::Beta))) / (2 * m_RootK);
     _concentrations2 = 
-        ((A2 * m_precomputedLogarithms["Alpha"]) + (BB2 * m_precomputedLogarithms["Beta"])) / (2 * m_RootK);
+        ((A2 * logs(Logarithms::Alpha)) + (BB2 * logs(Logarithms::Beta))) / (2 * m_RootK);
 }
 
 class TwoCompartmentBolusMacro : public TwoCompartmentBolusMicro
@@ -65,11 +68,11 @@ public:
     TwoCompartmentBolusMacro();
 
 protected:
-    virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters) override;
+    virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
 
 };
 
 }
 }
 
-#endif // TUCUXI_MATH_TWOCOMPARTMENTBOLUS_H
+#endif // TUCUXI_CORE_TWOCOMPARTMENTBOLUS_H

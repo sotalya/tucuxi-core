@@ -4,6 +4,7 @@
 
 #include "tucucommon/loggerhelper.h"
 
+#include "tucucore/intakeevent.h"
 #include "tucucore/intakeintervalcalculator.h"
 #include "tucucore/cachedlogarithms.h"
 
@@ -13,8 +14,8 @@ namespace Core {
 IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakePoints(
     Concentrations& _concentrations,
     TimeOffsets & _times,
-    IntakeEvent& _intakeEvent,
-    const ParameterList& _parameters,
+    const IntakeEvent& _intakeEvent,
+    const ParameterSetEvent& _parameters,
     const Residuals& _inResiduals,
     const CycleSize _cycleSize,
     Residuals & _outResiduals,
@@ -24,8 +25,6 @@ IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakePoints
     {
         return Result::BadParameters;
     }
-
-    prepareComputations(_intakeEvent, _parameters);
 
     // Create our serie of times
     Eigen::VectorXd times = Eigen::VectorXd::LinSpaced(_cycleSize, 0, static_cast<int>(_intakeEvent.getInterval().toHours()));
@@ -68,7 +67,7 @@ IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakePoints
 IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakeSinglePoint(
     Concentrations& _concentrations,
     const IntakeEvent& _intakeEvent,
-    const ParameterList& _parameters,
+    const ParameterSetEvent& _parameters,
     const Residuals& _inResiduals,
     const Value& _atTime,
     Residuals& _outResiduals)
@@ -77,12 +76,10 @@ IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakeSingle
     {
         return Result::BadParameters;
     }
-
-    prepareComputations(_intakeEvent, _parameters);
     
     // To reuse interface of computeLogarithms with multiple points, remaine time as a vector.
     Eigen::VectorXd times(2); 
-    times << _atTime, (_intakeEvent.getInterval()).toHours();
+    times << static_cast<double>(_atTime), static_cast<double>(_intakeEvent.getInterval().toHours());
 
     computeLogarithms(_intakeEvent, _parameters, times);
 

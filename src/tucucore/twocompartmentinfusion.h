@@ -2,27 +2,30 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
-#ifndef TUCUXI_MATH_TWOCOMPARTMENTINFUSION_H
-#define TUCUXI_MATH_TWOCOMPARTMENTINFUSION_H
+#ifndef TUCUXI_CORE_TWOCOMPARTMENTINFUSION_H
+#define TUCUXI_CORE_TWOCOMPARTMENTINFUSION_H
 
 #include "tucucore/intakeintervalcalculator.h"
 
 namespace Tucuxi {
 namespace Core {
 
+enum class EOneCompartmentInfusionLogarithms : int { Alpha, Beta, AlphaInf, BetaInf, BetaInf2, Root };
+
 /// \ingroup TucuCore
 /// \brief Intake interval calculator for the two compartment infusion algorithm
 /// \sa IntakeIntervalCalculator
-class TwoCompartmentInfusion : public IntakeIntervalCalculator
+class TwoCompartmentInfusion : public IntakeIntervalCalculatorBase<EOneCompartmentInfusionLogarithms>
 {
 public:
     /// \brief Constructor
     TwoCompartmentInfusion();
 
+    typedef EOneCompartmentInfusionLogarithms Logarithms;
+
 protected:
-    virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters) override;
-    virtual void prepareComputations(const IntakeEvent& _intakeEvent, const ParameterList& _parameters) override;
-    virtual void computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterList& _parameters, Eigen::VectorXd& _times) override;
+    virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
+    virtual void computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters, Eigen::VectorXd& _times) override;
     virtual bool computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) override;
     virtual bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) override;
     void compute(const Residuals& _inResiduals, const int _forcesize, Eigen::VectorXd& _concentrations1, Eigen::VectorXd& _concentrations2);
@@ -49,12 +52,12 @@ private:
 
 inline void TwoCompartmentInfusion::compute(const Residuals& _inResiduals, const int _forcesize, Eigen::VectorXd& _concentrations1, Eigen::VectorXd& _concentrations2)
 {
-    Eigen::VectorXd& alphaLogV = m_precomputedLogarithms["Alpha"]; 
-    Eigen::VectorXd& betaLogV = m_precomputedLogarithms["Beta"]; 
-    Eigen::VectorXd& alphaInfLogV = m_precomputedLogarithms["AlphaInf"]; 
-    Eigen::VectorXd& betaInfLogV = m_precomputedLogarithms["BetaInf"]; 
-    Eigen::VectorXd& betaInf2LogV = m_precomputedLogarithms["BetaInf2"]; 
-    Eigen::VectorXd& rootLogV = m_precomputedLogarithms["Root"]; 
+    Eigen::VectorXd& alphaLogV = logs(Logarithms::Alpha); 
+    Eigen::VectorXd& betaLogV = logs(Logarithms::Beta); 
+    Eigen::VectorXd& alphaInfLogV = logs(Logarithms::AlphaInf); 
+    Eigen::VectorXd& betaInfLogV = logs(Logarithms::BetaInf); 
+    Eigen::VectorXd& betaInf2LogV = logs(Logarithms::BetaInf2); 
+    Eigen::VectorXd& rootLogV = logs(Logarithms::Root); 
 
     Concentration resid1 = _inResiduals[0];
     Concentration resid2 = _inResiduals[1];
@@ -123,4 +126,4 @@ inline void TwoCompartmentInfusion::compute(const Residuals& _inResiduals, const
 }
 }
 
-#endif // TUCUXI_MATH_TWOCOMPARTMENTINFUSION_H
+#endif // TUCUXI_CORE_TWOCOMPARTMENTINFUSION_H

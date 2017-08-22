@@ -37,8 +37,8 @@ public:
     ~Logger();
 
     /// \brief Set minimal level of logging message.
-    /// @param _level Minimal level
-    /// @return None
+    /// \param _level Minimal level
+    /// \return None
     void setLevel(spdlog::level::level_enum _level);
 
     virtual void debug(const char* _msg);

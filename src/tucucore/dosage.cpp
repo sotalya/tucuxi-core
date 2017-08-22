@@ -1,3 +1,7 @@
+/*
+* Copyright (C) 2017 Tucuxi SA
+*/
+
 #include "tucucore/dosage.h"
 #include "tucucore/intakeextractor.h"
 

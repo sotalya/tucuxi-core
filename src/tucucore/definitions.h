@@ -2,8 +2,8 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
-#ifndef TUCUXI_MATH_DEFINITIONS_H
-#define TUCUXI_MATH_DEFINITIONS_H
+#ifndef TUCUXI_CORE_DEFINITIONS_H
+#define TUCUXI_CORE_DEFINITIONS_H
 
 /// \defgroup TucuCore Tucuxi core library
 /// \brief Tucuxi core classes for the computation of predictions of drug concentrations
@@ -85,13 +85,35 @@ typedef int CycleSize;
 
 /// \ingroup TucuCore
 /// \brief A structure to store precomputed logarithms.
-typedef std::map<std::string, Eigen::VectorXd> PrecomputedLogarithms;
+//typedef std::vector<Eigen::VectorXd> PrecomputedLogarithms;
+typedef std::map<int, Eigen::VectorXd> PrecomputedLogarithms;
 
 /// \ingroup TucuCore
 /// \brief Input operand types.
 enum class InputType { BOOL, INTEGER, DOUBLE };
 
+
+typedef Value Deviation;                // Used for deviations (e.g. std dev)
+typedef std::vector<Deviation> Etas;    // Used for values in eta and error vectors
+
+typedef Eigen::Matrix<Deviation, Eigen::Dynamic, Eigen::Dynamic> OmegaMatrix;
+typedef Eigen::Matrix<Deviation, Eigen::Dynamic, 1> Sigma;
+
+typedef Eigen::Matrix<Value, Eigen::Dynamic, Eigen::Dynamic> EigenMatrix;
+typedef Eigen::Matrix<Value, Eigen::Dynamic, 1> EigenVector;
+
+
+typedef std::vector<Value> ValueVector;
+
+
+// The three following defines could be moved somewhere else
+#define isOmegaEmpty(matrix) (matrix.rows() == 0)
+
+#define isOmegaSquare(matrix) (matrix.rows() == matrix.cols())
+
+#define omegaSize(matrix) (matrix.rows())
+
 }
 }
 
-#endif // TUCUXI_MATH_DEFINITIONS_H
+#endif // TUCUXI_CORE_DEFINITIONS_H

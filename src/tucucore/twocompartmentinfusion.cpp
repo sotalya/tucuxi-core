@@ -6,6 +6,7 @@
 
 #include "tucucommon/loggerhelper.h"
 #include "tucucore/twocompartmentinfusion.h"
+#include "tucucore/intakeevent.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -14,7 +15,7 @@ TwoCompartmentInfusion::TwoCompartmentInfusion()
 {
 }
 
-bool TwoCompartmentInfusion::checkInputs(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
+bool TwoCompartmentInfusion::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
     bool bOK = true;
 
@@ -22,10 +23,10 @@ bool TwoCompartmentInfusion::checkInputs(const IntakeEvent& _intakeEvent, const 
 	    return false;
 
     m_D = _intakeEvent.getDose() * 1000;
-    m_Cl = _parameters[0].getValue();
-    m_Q = _parameters[1].getValue();
-    m_V1 = _parameters[2].getValue();
-    m_V2 = _parameters[3].getValue();
+    m_Cl = _parameters.getValue(0);
+    m_Q = _parameters.getValue(1);
+    m_V1 = _parameters.getValue(2);
+    m_V2 = _parameters.getValue(3);
     m_Ke = m_Cl / m_V1;
     m_K12 = m_Q / m_V1;
     m_K21 = m_Q / m_V2;
@@ -36,10 +37,10 @@ bool TwoCompartmentInfusion::checkInputs(const IntakeEvent& _intakeEvent, const 
     m_Beta = (m_SumK - m_RootK)/2;
     m_Tinf = (_intakeEvent.getInfusionTime()).toHours();
     m_Int = (_intakeEvent.getInterval()).toHours();
-    m_NbPoints = _intakeEvent.getNumberPoints();
+    m_NbPoints = _intakeEvent.getNbPoints();
     
     Tucuxi::Common::LoggerHelper logHelper;
-
+/*
     logHelper.debug("<<Input Values>>");
     logHelper.debug("m_D: {}", m_D);
     logHelper.debug("m_Cl: {}", m_Cl);
@@ -56,7 +57,7 @@ bool TwoCompartmentInfusion::checkInputs(const IntakeEvent& _intakeEvent, const 
     logHelper.debug("m_Beta: {}", m_Beta);
     logHelper.debug("m_Tinf: {}", m_Tinf);
     logHelper.debug("m_Int: {}", m_Int);
-    
+  */
     bOK &= checkValue(m_D >= 0, "The dose is negative.");
     bOK &= checkValue(!std::isnan(m_D), "The dose is NaN.");
     bOK &= checkValue(!std::isinf(m_D), "The dose is Inf.");
@@ -78,19 +79,15 @@ bool TwoCompartmentInfusion::checkInputs(const IntakeEvent& _intakeEvent, const 
 }
 
 
-void TwoCompartmentInfusion::prepareComputations(const IntakeEvent& _intakeEvent, const ParameterList& _parameters)
-{
-}
 
-
-void TwoCompartmentInfusion::computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterList& _parameters, Eigen::VectorXd& _times)
+void TwoCompartmentInfusion::computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters, Eigen::VectorXd& _times)
 {
-    m_precomputedLogarithms["Alpha"] = (-m_Alpha * _times).array().exp();
-    m_precomputedLogarithms["Beta"] = (-m_Beta * _times).array().exp();
-    m_precomputedLogarithms["AlphaInf"] = (m_Alpha * _times).array().exp();
-    m_precomputedLogarithms["BetaInf"] = (m_Beta * _times).array().exp();
-    m_precomputedLogarithms["BetaInf2"] = (-2 * m_Beta * _times).array().exp();
-    m_precomputedLogarithms["Root"] = (m_RootK * _times).array().exp();
+    setLogs(Logarithms::Alpha, (-m_Alpha * _times).array().exp());
+    setLogs(Logarithms::Beta, (-m_Beta * _times).array().exp());
+    setLogs(Logarithms::AlphaInf, (m_Alpha * _times).array().exp());
+    setLogs(Logarithms::BetaInf, (m_Beta * _times).array().exp());
+    setLogs(Logarithms::BetaInf2, (-2 * m_Beta * _times).array().exp());
+    setLogs(Logarithms::Root, (m_RootK * _times).array().exp());
 }
 
 
