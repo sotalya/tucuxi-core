@@ -17,8 +17,6 @@ OneCompartmentExtraMicro::OneCompartmentExtraMicro()
 
 bool OneCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
-    bool bOK = true;
-
     if(!checkValue(_parameters.size() >= 4, "The number of parameters should be equal to 4."))
 	    return false;
     
@@ -31,7 +29,7 @@ bool OneCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
     m_Int = static_cast<int>((_intakeEvent.getInterval()).toHours());
 
     // check the inputs
-    bOK &= checkValue(m_D >= 0, "The dose is negative.");
+    bool bOK = checkValue(m_D >= 0, "The dose is negative.");
     bOK &= checkValue(!std::isnan(m_D), "The dose is NaN.");
     bOK &= checkValue(!std::isinf(m_D), "The dose is Inf.");
     bOK &= checkValue(m_V > 0, "The volume is not greater than zero.");
@@ -62,7 +60,6 @@ void OneCompartmentExtraMicro::computeLogarithms(const IntakeEvent& _intakeEvent
 
 bool OneCompartmentExtraMicro::computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
 {
-    bool bOK = true;
     Eigen::VectorXd concentrations1, concentrations2;
 
     // compute concenration1 and 2
@@ -72,7 +69,7 @@ bool OneCompartmentExtraMicro::computeConcentrations(const Residuals& _inResidua
     _outResiduals.push_back(concentrations2[m_NbPoints - 1]);
     _concentrations.assign(concentrations1.data(), concentrations1.data() + concentrations1.size());	
 
-    bOK &= checkValue(_outResiduals[0] >= 0, "The concentration1 is negative.");
+    bool bOK = checkValue(_outResiduals[0] >= 0, "The concentration1 is negative.");
     bOK &= checkValue(_outResiduals[1] >= 0, "The concentration2 is negative.");
 
     return bOK;
@@ -113,8 +110,6 @@ OneCompartmentExtraMacro::OneCompartmentExtraMacro() : OneCompartmentExtraMicro(
 
 bool OneCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
-    bool bOK = true;
-
     if(!checkValue(_parameters.size() >= 4, "The number of parameters should be equal to 4."))
 	    return false;
     
@@ -128,7 +123,7 @@ bool OneCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, cons
     m_Int = (_intakeEvent.getInterval()).toHours();
 
     // check the inputs
-    bOK &= checkValue(m_D >= 0, "The dose is negative.");
+    bool bOK = checkValue(m_D >= 0, "The dose is negative.");
     bOK &= checkValue(!std::isnan(m_D), "The dose is NaN.");
     bOK &= checkValue(!std::isinf(m_D), "The dose is Inf.");
     bOK &= checkValue(m_V > 0, "The volume is not greater than zero.");

@@ -13,7 +13,7 @@
 namespace Tucuxi {
 namespace Core {
 
-#if 1
+#if 0
 #define DEBUG
 #endif
 
@@ -23,8 +23,6 @@ OneCompartmentInfusionMicro::OneCompartmentInfusionMicro()
 
 bool OneCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
-    bool bOK = true;
-
     if(!checkValue(_parameters.size() >= 2, "The number of parameters should be equal to 2."))
         return false;
     
@@ -47,7 +45,7 @@ bool OneCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent, c
     logHelper.debug("m_NbPoints: {}", m_NbPoints);
 #endif
 
-    bOK &= checkValue(m_D >= 0, "The dose is negative.");
+    bool bOK = checkValue(m_D >= 0, "The dose is negative.");
     bOK &= checkValue(!std::isnan(m_D), "The dose is NaN.");
     bOK &= checkValue(!std::isinf(m_D), "The dose is Inf.");
     bOK &= checkValue(m_V > 0, "The volume is not greater than zero.");
@@ -117,8 +115,6 @@ OneCompartmentInfusionMacro::OneCompartmentInfusionMacro() : OneCompartmentInfus
 
 bool OneCompartmentInfusionMacro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
-    bool bOK = true;
-
     if(!checkValue(_parameters.size() >= 2, "The number of parameters should be equal to 2."))
 	    return false;
     
@@ -143,7 +139,7 @@ bool OneCompartmentInfusionMacro::checkInputs(const IntakeEvent& _intakeEvent, c
     logHelper.debug("m_NbPoints: {}", m_NbPoints);
 #endif
 
-    bOK &= checkValue(m_D >= 0, "The dose is negative.");
+    bool bOK = checkValue(m_D >= 0, "The dose is negative.");
     bOK &= checkValue(!std::isnan(m_D), "The dose is NaN.");
     bOK &= checkValue(!std::isinf(m_D), "The dose is Inf.");
     bOK &= checkValue(m_V > 0, "The volume is not greater than zero.");
