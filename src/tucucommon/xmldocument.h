@@ -39,15 +39,15 @@ public:
     bool isValid() const;
     
     /// \brief Load and parse XML data from the specified file
-    /// @ param _fileName The location of the XML file
+    /// \param _fileName The location of the XML file
     bool open(const std::string& _fileName);
 
     /// \brief Save XML data into the specified file
-    /// @ param _fileName The location of the XML file
+    /// \param _fileName The location of the XML file
     bool save(const std::string& _fileName);
     
     /// \brief Parse XML data from the specified string
-    /// @ param _xml The string containing XML data
+    /// \param _xml The string containing XML data
     bool fromString(const std::string& _xml);
 
     /// \brief Save XML data into the specified string

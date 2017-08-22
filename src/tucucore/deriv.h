@@ -24,9 +24,9 @@ namespace Core {
 ///////////////////////////////////////////////////////////////////////////////
 
 /// General case specialization of first derivatives for resolving typetraits
-/// @tparam func the objective function type for the derivatecalculations (f(x)).
+/// \tparam func the objective function type for the derivatecalculations (f(x)).
 /// 	Must have implementeed operator()
-/// @tparam x the type of dependent variable(s)
+/// \tparam x the type of dependent variable(s)
 ///
 /// \param fxn object of func (f(x))
 /// \param loc where to take the derivative
@@ -50,9 +50,9 @@ inline x deriv1_impl(func fxn,
 
 /// General case specialization for is pointer, not array, not class
 /// of first derivatives after typetraits resolved
-/// @tparam func the objective function type for the derivatecalculations (f(x)).
+/// \tparam func the objective function type for the derivatecalculations (f(x)).
 /// 	Must have implemented operator()
-/// @tparam x the type of dependent variable(s)
+/// \tparam x the type of dependent variable(s)
 ///
 /// \param fxn object of func (f(x))
 /// \param loc where to take the derivative
@@ -80,9 +80,9 @@ inline x deriv1_impl(func fxn,
 
 /// Partial specialization for the vector case not pointer, not array, is class type
 /// of first derivatives after typetraits resolved
-/// @tparam func the objective function type for the derivatecalculations (f(x)).
+/// \tparam func the objective function type for the derivatecalculations (f(x)).
 /// 	Must have implemented operator()
-/// @tparam x the type of dependent variable(s)
+/// \tparam x the type of dependent variable(s)
 /// \param fxn object of func (f(x))
 /// \param loc where to take the derivative
 /// \param is_ptr whether x has pointer type
@@ -118,9 +118,9 @@ inline x& deriv1_impl(x& ans,
 
 /// Partial specialization for the vector case is pointer, not array, is class type
 /// of first derivatives after typetraits resolved
-/// @tparam func the objective function type for the derivatecalculations (f(x)).
+/// \tparam func the objective function type for the derivatecalculations (f(x)).
 /// 	Must have implemented operator()
-/// @tparam x the type of dependent variable(s)
+/// \tparam x the type of dependent variable(s)
 ///
 /// \param ans the resulting derivative
 /// \param fxn object of func (f(x))
@@ -159,9 +159,9 @@ inline x& deriv1_impl(x& ans,
 
 /// The following is a part of first derivatives that would actually be called from outside.
 /// The methods above are for choosing implementations for different types of inputs
-/// @tparam func the objective function type for the derivatecalculations (f(x)).
+/// \tparam func the objective function type for the derivatecalculations (f(x)).
 /// 	Must have implemented operator()
-/// @tparam x the type of dependent variable(s)
+/// \tparam x the type of dependent variable(s)
 ///
 /// \param fxn object of func (f(x))
 /// \param loc where to take the derivative
@@ -179,9 +179,9 @@ inline x deriv1(func fxn, x& loc, x& ans, const Value tol = DEFAULT_DERIV_TOL)
 
 /// The following is a part of first derivatives that would actually be called from outside.
 /// The methods above are for choosing implementations for different types of inputs
-/// @tparam func the objective function type for the derivatecalculations (f(x)).
+/// \tparam func the objective function type for the derivatecalculations (f(x)).
 /// 	Must have implemented operator()
-/// @tparam x the type of dependent variable(s)
+/// \tparam x the type of dependent variable(s)
 ///
 /// \param fxn object of func (f(x))
 /// \param loc where to take the derivative
@@ -200,10 +200,10 @@ inline x deriv1(func fxn, x& loc, const Value tol = DEFAULT_DERIV_TOL)
 ///////////////////////////////////////////////////////////////////////////////
 
 /// General case specialization of second derivatives
-/// @tparam func the objective function type for the derivatecalculations (f(x)).
+/// \tparam func the objective function type for the derivatecalculations (f(x)).
 /// 	Must have implementeed operator()
-/// @tparam x the type of dependent variable(s)
-/// @tparam y the type of the result
+/// \tparam x the type of dependent variable(s)
+/// \tparam y the type of the result
 ///
 /// \param fxn object of func (f(x))
 /// \param loc where to take the derivative
@@ -245,7 +245,7 @@ void deriv2_impl(func fxn, x& loc, y& answer, const Value tol) {
 
 
 /// Partial specialization for the Eigen VectorXd/MatrixXd case of second derivatives
-/// @tparam func the objective function type for the derivatecalculations (f(x)).
+/// \tparam func the objective function type for the derivatecalculations (f(x)).
 /// 	Must have implementeed operator()
 ///
 /// \param fxn object of func (f(x))
@@ -289,10 +289,10 @@ void deriv2_impl(func fxn, Eigen::VectorXd& loc, Eigen::MatrixXd& answer, const 
 
 /// The following is the part of second derivatives that would actually be called from outside.
 /// The methods above are for choosing implementations for different types of inputs
-/// @tparam func the objective function type for the derivatecalculations (f(x)).
+/// \tparam func the objective function type for the derivatecalculations (f(x)).
 /// 	Must have implementeed operator()
-/// @tparam x the type of dependent variable(s)
-/// @tparam y the type of the result
+/// \tparam x the type of dependent variable(s)
+/// \tparam y the type of the result
 ///
 /// \param fxn object of func (f(x))
 /// \param loc where to take the derivative
