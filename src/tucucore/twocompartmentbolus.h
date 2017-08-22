@@ -17,6 +17,7 @@ enum class TwoCompartmentBolusLogarithms : int { Alpha, Beta };
 /// \sa IntakeIntervalCalculator
 class TwoCompartmentBolusMicro : public IntakeIntervalCalculatorBase<TwoCompartmentBolusLogarithms>
 {
+    INTAKEINTERVALCALCULATOR_UTILS(TwoCompartmentBolusMicro)
 public:
     /// \brief Constructor
     TwoCompartmentBolusMicro();
@@ -64,6 +65,7 @@ inline void TwoCompartmentBolusMicro::compute(const Residuals& _inResiduals, Eig
 
 class TwoCompartmentBolusMacro : public TwoCompartmentBolusMicro
 {
+    INTAKEINTERVALCALCULATOR_UTILS(TwoCompartmentBolusMacro)
 public:
     TwoCompartmentBolusMacro();
 

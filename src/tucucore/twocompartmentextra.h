@@ -17,6 +17,7 @@ enum class TwoCompartmentExtraLogarithms : int { Alpha, Beta, Ka };
 /// \sa IntakeIntervalCalculator
 class TwoCompartmentExtraMicro : public IntakeIntervalCalculatorBase<TwoCompartmentExtraLogarithms>
 {
+    INTAKEINTERVALCALCULATOR_UTILS(TwoCompartmentExtraMicro)
 public:
     /// \brief Constructor
     TwoCompartmentExtraMicro();
@@ -140,6 +141,7 @@ _concentrations1, Value& _concentrations2, Value& _concentrations3)
 
 class TwoCompartmentExtraMacro : public TwoCompartmentExtraMicro
 {
+    INTAKEINTERVALCALCULATOR_UTILS(TwoCompartmentExtraMacro)
 public:
     TwoCompartmentExtraMacro();
 

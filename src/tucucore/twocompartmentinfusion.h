@@ -17,6 +17,7 @@ enum class EOneCompartmentInfusionLogarithms : int { Alpha, Beta, AlphaInf, Beta
 /// \sa IntakeIntervalCalculator
 class TwoCompartmentInfusionMicro : public IntakeIntervalCalculatorBase<EOneCompartmentInfusionLogarithms>
 {
+    INTAKEINTERVALCALCULATOR_UTILS(TwoCompartmentInfusionMicro)
 public:
     /// \brief Constructor
     TwoCompartmentInfusionMicro();
@@ -134,6 +135,7 @@ inline void TwoCompartmentInfusionMicro::compute(const Residuals& _inResiduals, 
 
 class TwoCompartmentInfusionMacro : public TwoCompartmentInfusionMicro
 {
+    INTAKEINTERVALCALCULATOR_UTILS(TwoCompartmentInfusionMicro)
 public:
     TwoCompartmentInfusionMacro();
 
