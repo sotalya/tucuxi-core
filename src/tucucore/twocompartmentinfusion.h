@@ -114,6 +114,8 @@ inline void TwoCompartmentInfusion::compute(const Residuals& _inResiduals, const
     }
 
     // After infusion
+    //TODO: check which equation needs to be used. (use tail or head with therest)
+#if 0
     int therest = static_cast<int>(_concentrations1.size() - _forcesize);
     _concentrations1.tail(therest) += (APostInf * alphaLogV.head(therest) + BPostInf * betaLogV.head(therest)) / (2 * m_RootK);
 
@@ -121,6 +123,15 @@ inline void TwoCompartmentInfusion::compute(const Residuals& _inResiduals, const
     A2 = -2 * m_K12 * residInf1 + (-m_K12 + m_K21 - m_Ke + m_RootK)*residInf2;
 
     _concentrations2.tail(therest) += (A2 * alphaLogV.head(therest) + BB2 * betaLogV.head(therest)) / (2 * m_RootK);
+#else
+    int therest = static_cast<int>(_concentrations1.size() - _forcesize);
+    _concentrations1.tail(therest) += (APostInf * alphaLogV.tail(therest) + BPostInf * betaLogV.tail(therest)) / (2 * m_RootK);
+
+    BB2 = 2 * m_K12 * residInf1 + (m_K12 - m_K21 + m_Ke + m_RootK)*residInf2;
+    A2 = -2 * m_K12 * residInf1 + (-m_K12 + m_K21 - m_Ke + m_RootK)*residInf2;
+
+    _concentrations2.tail(therest) += (A2 * alphaLogV.tail(therest) + BB2 * betaLogV.tail(therest)) / (2 * m_RootK);
+#endif
 }
 
 }

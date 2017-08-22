@@ -16,8 +16,6 @@ TwoCompartmentBolusMicro::TwoCompartmentBolusMicro()
 
 bool TwoCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
-    bool bOK = true;
-
     if(!checkValue(_parameters.size() >= 4, "The number of parameters should be equal to 4."))
 	    return false;
     
@@ -29,7 +27,7 @@ bool TwoCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
     m_NbPoints = _intakeEvent.getNbPoints();
     m_Int = (_intakeEvent.getInterval()).toHours();
 
-    bOK &= checkValue(m_D >= 0, "The dose is negative.");
+    bool bOK = checkValue(m_D >= 0, "The dose is negative.");
     bOK &= checkValue(!std::isnan(m_D), "The dose is NaN.");
     bOK &= checkValue(!std::isinf(m_D), "The dose is Inf.");
     bOK &= checkValue(m_Ke > 0, "The Ke is not greater than zero.");
@@ -113,8 +111,6 @@ TwoCompartmentBolusMacro::TwoCompartmentBolusMacro() : TwoCompartmentBolusMicro(
 
 bool TwoCompartmentBolusMacro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
-    bool bOK = true;
-
     if(!checkValue(_parameters.size() >= 4, "The number of parameters should be equal to 4.")) {
         return false;
     }
@@ -130,7 +126,7 @@ bool TwoCompartmentBolusMacro::checkInputs(const IntakeEvent& _intakeEvent, cons
     m_NbPoints = _intakeEvent.getNbPoints();
     m_Int = (_intakeEvent.getInterval()).toHours();
 
-    bOK &= checkValue(m_D >= 0, "The dose is negative.");
+    bool bOK = checkValue(m_D >= 0, "The dose is negative.");
     bOK &= checkValue(!std::isnan(m_D), "The dose is NaN.");
     bOK &= checkValue(!std::isinf(m_D), "The dose is Inf.");
     bOK &= checkValue(cl > 0, "The clearance is not greater than zero.");

@@ -11,7 +11,7 @@
 namespace Tucuxi {
 namespace Core {
 
-#if 1
+#if 0
 #define DEBUG
 #endif
 
@@ -21,8 +21,6 @@ TwoCompartmentInfusion::TwoCompartmentInfusion()
 
 bool TwoCompartmentInfusion::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
-    bool bOK = true;
-
     if(!checkValue(_parameters.size() >= 4, "The number of parameters should be equal to 4."))
 	    return false;
 
@@ -64,7 +62,7 @@ bool TwoCompartmentInfusion::checkInputs(const IntakeEvent& _intakeEvent, const 
     logHelper.debug("m_Int: {}", m_Int);
 #endif
 
-    bOK &= checkValue(m_D >= 0, "The dose is negative.");
+    bool bOK = checkValue(m_D >= 0, "The dose is negative.");
     bOK &= checkValue(!std::isnan(m_D), "The dose is NaN.");
     bOK &= checkValue(!std::isinf(m_D), "The dose is Inf.");
     bOK &= checkValue(m_Cl > 0, "The clearance is not greater than zero.");
@@ -129,6 +127,47 @@ bool TwoCompartmentInfusion::computeConcentration(const Value& _atTime, const Re
 
     // remove following code after verification with unit test
 #if 0
+    Eigen::VectorXd& alphaLogV = logs(Logarithms::Alpha); 
+    Eigen::VectorXd& betaLogV = logs(Logarithms::Beta); 
+    Eigen::VectorXd& alphaInfLogV = logs(Logarithms::AlphaInf); 
+    Eigen::VectorXd& betaInfLogV = logs(Logarithms::BetaInf); 
+    Eigen::VectorXd& betaInf2LogV = logs(Logarithms::BetaInf2); 
+    Eigen::VectorXd& rootLogV = logs(Logarithms::Root); 
+
+    Concentration resid1 = _inResiduals[0];
+    Concentration resid2 = _inResiduals[1];
+
+    Value deltaD = (m_D / m_V1) / m_Tinf; 
+
+    Concentration residInf1 =
+        (2 * deltaD * std::exp(m_Beta * m_Tinf) * m_K21
+        * (std::exp(-m_Beta * m_Tinf) * (-m_K12 - m_K21 + m_Ke - m_RootK) 
+            + std::exp(-2 * m_Beta * m_Tinf) * (m_K12 + m_K21 - m_Ke + m_RootK)
+            + std::exp(m_RootK*m_Tinf - m_Alpha*m_Tinf) * (m_K12 + m_K21 - m_Ke - m_RootK)
+            + std::exp(-m_Alpha*m_Tinf - m_Beta*m_Tinf) * (-m_K12 - m_K21 + m_Ke + m_RootK))
+	) / m_Divider;
+
+    Concentration residInf2 = 
+        (2 * deltaD * std::exp(m_Beta * m_Tinf) * m_K12
+	* (std::exp(-m_Beta * m_Tinf) * (-m_SumK - m_RootK)
+	    + std::exp(-2 * m_Beta * m_Tinf) * (m_SumK + m_RootK)
+            + std::exp(m_RootK * m_Tinf - m_Alpha * m_Tinf) * (m_SumK - m_RootK)
+            + std::exp(-m_Alpha * m_Tinf - m_Beta * m_Tinf) * (-m_SumK + m_RootK))
+        ) / m_Divider;
+
+    Value A = ((m_K12 - m_K21 + m_Ke + m_RootK) * resid1) - (2 * m_K21 * resid2);
+    Value B = ((-m_K12 + m_K21 - m_Ke + m_RootK) * resid1) + (2 * m_K21 * resid2);
+    Value A2 = (-2 * m_K12 * resid1) + ((-m_K12 + m_K21 - m_Ke + m_RootK) * resid2);
+    Value BB2 = (2 * m_K12 * resid1) + ((m_K12 - m_K21 + m_Ke + m_RootK) * resid2);
+    Value AInf = -m_K12 - m_K21 + m_Ke - m_RootK;
+    Value BInf = m_K12 + m_K21 - m_Ke - m_RootK;
+    Value BPostInf = (-m_K12 + m_K21 - m_Ke + m_RootK)*residInf1 + 2*m_K21*residInf2;
+    Value APostInf = (m_K12 - m_K21 + m_Ke + m_RootK)*residInf1 - 2*m_K21*residInf2;
+
+    // Calculate concentrations for comp1 and comp2
+    concentrations1 = ((A * alphaLogV) + (B * betaLogV)) / (2 * m_RootK);
+    concentrations2 = ((A2 * alphaLogV) + (BB2 * betaLogV)) / (2 * m_RootK);
+    
     if (_atTime <= m_Tinf)
     {
 	// During infusion
@@ -173,6 +212,14 @@ bool TwoCompartmentInfusion::computeConcentration(const Value& _atTime, const Re
     // TODO: confirm the equation whether need to add concentrations2 or not.
     // In case of ezechiel, finalResiduals[1] = (A2 * alphalogf + BB2 * betalogf) / (2*root);
     _outResiduals.push_back((A2 * alphaLogV(1) + BB2 * betaLogV(1)) / (2 * m_RootK));
+
+    for (int i = 0; i < 2; i++)
+    {
+	    printf("alphaLogV[%d]: %f\n", i, logs(Logarithms::Alpha)[i]);
+	    printf("_concentrations[%d]: %f\n", i, _concentrations[i]);
+	    printf("_outResiduals[%d]: %f\n", i, _outResiduals[i]);
+    }
+
 #else
     if (_atTime <= m_Tinf) {
 	    forcesize = 1;
