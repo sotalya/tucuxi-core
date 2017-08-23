@@ -33,7 +33,7 @@ IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakePoints
 
     // Can we reuse cached logarithms? 
     if (!m_cache.get(_intakeEvent.getInterval(), _parameters, _cycleSize, m_precomputedLogarithms))	{
-        computeLogarithms(_intakeEvent, _parameters, times);
+        computeLogarithms(times);
         m_cache.set(_intakeEvent.getInterval(), _parameters, _cycleSize, m_precomputedLogarithms);
     }
 
@@ -83,7 +83,7 @@ IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakeSingle
     Eigen::VectorXd times(2); 
     times << static_cast<double>(_atTime), static_cast<double>(_intakeEvent.getInterval().toHours());
 
-    computeLogarithms(_intakeEvent, _parameters, times);
+    computeLogarithms(times);
 
     if (!computeConcentration(_atTime, _inResiduals, _concentrations, _outResiduals)) {
         return Result::BadConcentration;

@@ -58,7 +58,7 @@ bool OneCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
 }
 
 
-void OneCompartmentBolusMicro::computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters, Eigen::VectorXd& _times)
+void OneCompartmentBolusMicro::computeLogarithms(Eigen::VectorXd& _times)
 {
     setLogs(Logarithms::Ke, (-m_Ke * _times).array().exp());
 }

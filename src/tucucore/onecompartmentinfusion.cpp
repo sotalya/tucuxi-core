@@ -62,7 +62,7 @@ bool OneCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent, c
 
 
 
-void OneCompartmentInfusionMicro::computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters, Eigen::VectorXd& _times)
+void OneCompartmentInfusionMicro::computeLogarithms(Eigen::VectorXd& _times)
 {
     setLogs(Logarithms::Ke, (-m_Ke * _times).array().exp());
 }
