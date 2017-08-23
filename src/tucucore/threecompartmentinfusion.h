@@ -17,7 +17,7 @@ enum class ThreeCompartmentIntraLogarithms : int { Alpha, Beta, Gamma };
 /// \sa IntakeIntervalCalculator
 class ThreeCompartmentInfusionMicro : public IntakeIntervalCalculatorBase<ThreeCompartmentIntraLogarithms>
 {
-//    INTAKEINTERVALCALCULATOR_UTILS(ThreeCompartmentInfusionMicro)
+    INTAKEINTERVALCALCULATOR_UTILS(ThreeCompartmentInfusionMicro)
 public:
     /// \brief Constructor
     ThreeCompartmentInfusionMicro();
@@ -108,7 +108,7 @@ _concentrations1, Value& _concentrations2, Value& _concentrations3)
 
 class ThreeCompartmentInfusionMacro : public ThreeCompartmentInfusionMicro
 {
-//    INTAKEINTERVALCALCULATOR_UTILS(ThreeCompartmentInfusionMacro)
+    INTAKEINTERVALCALCULATOR_UTILS(ThreeCompartmentInfusionMacro)
 public:
     ThreeCompartmentInfusionMacro();
 
