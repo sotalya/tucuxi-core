@@ -529,6 +529,62 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
         }
     }
 
+    /// \brief Test the residual calculation of Extra. Compares single point vs multiple points
+    /// \param _testName Test name.
+    /// A calculator is instanciated, and residuals are computed with both
+    ///     calculateIntakePoints and calculateIntakeSinglePoint.
+    /// The residuals are then compared and shall be identical.
+    void test3compExtraSingleVsMultiple(const std::string& /* _testName */)
+    {
+        if (verbose()) {
+	    std::cout << "Micro"<< std::endl;
+        }
+
+        {
+            Tucuxi::Core::ParameterDefinitions parameterDefs;
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("F", 2, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("V1", 340, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Ke", 0.0444294, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("K12", 0.0588235, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("K21", 0.0584795, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("K13", 0.0882353, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("K31", 0.0877193, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
+
+            testCalculator<Tucuxi::Core::ThreeCompartmentExtraMicro, 3>
+                    (parameters,
+                     400.0,
+                     Tucuxi::Core::RouteOfAdministration::INTRAVASCULAR,
+                     12h,
+                     0s,
+                     250);
+        }
+
+        if (verbose()) {
+	    std::cout << "\nMacro"<< std::endl;
+        }
+
+        {
+            Tucuxi::Core::ParameterDefinitions parameterDefs;
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Cl", 15.106, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("F", 2, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Q1", 20, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Q2", 30, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("V1", 340, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("V2", 342, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
+
+            testCalculator<Tucuxi::Core::ThreeCompartmentExtraMacro, 3>
+                    (parameters,
+                     400.0,
+                     Tucuxi::Core::RouteOfAdministration::INTRAVASCULAR,
+                     12h,
+                     0s,
+                     250);
+        }
+    }
 
 };
 

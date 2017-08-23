@@ -113,11 +113,12 @@ bool ThreeCompartmentBolusMicro::computeConcentrations(const Residuals& _inResid
     // Calculate concentrations for comp1 and comp2
     compute(_inResiduals, concentrations1, concentrations2, concentrations3);
 
-    // return concentrations of comp1, comp2 and comp3
+    // return residual of comp1, comp2 and comp3
     _outResiduals.push_back(concentrations1[m_NbPoints - 1]);
     _outResiduals.push_back(concentrations2);
     _outResiduals.push_back(concentrations3);
 
+    // return concentration
     _concentrations.assign(concentrations1.data(), concentrations1.data() + concentrations1.size());	
 
     bool bOK = checkValue(_outResiduals[0] >= 0, "The concentration1 is negative.");
