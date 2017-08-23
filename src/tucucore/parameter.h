@@ -98,7 +98,8 @@ typedef std::unique_ptr<const ParameterSetEvent> ParameterSetEventPtr;
 class ParameterSetSeries
 {
 public:
-    ParameterSetEventPtr getAtTime(const DateTime &_date, const Etas &_etas) const;
+    ParameterSetEventPtr getAtTime(const DateTime &_date, const Etas &_etas = Etas(0)) const;
+    void addParameterSetEvent(ParameterSetEvent parameterSetEvent);
 
 private:
     std::vector<ParameterSetEvent> m_parameterSets;

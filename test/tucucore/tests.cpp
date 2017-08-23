@@ -46,10 +46,18 @@ int main(int argc, char** argv)
     }
     std::cout << "Calculators test succeeded\n";
 
+    // --- ConcentrationCalculator --- //
     TestConcentrationCalculator concentrationCalculatorTests;
     concentrationCalculatorTests.add_test("1 comp bolus test", &TestConcentrationCalculator::test1compBolus);
     concentrationCalculatorTests.add_test("1 comp extra test", &TestConcentrationCalculator::test1compExtra);
     concentrationCalculatorTests.add_test("1 comp infusion test", &TestConcentrationCalculator::test1compInfusion);
+
+    res = concentrationCalculatorTests.run(argc, argv);
+    if (res != 0) {
+        std::cerr << "ConcentrationCalculator test failed\n";
+        exit(1);
+    }
+    std::cout << "ConcentrationCalculator test succeeded\n";
 
     // --- DOSAGE --- //
     TestDosage dosageTests;

@@ -42,7 +42,7 @@ ConcentrationCalculator::ComputationResult ConcentrationCalculator::computeConce
         TimeOffsets times;
         Concentrations values;
         _prediction->allocate(density, times, values);
-        IntakeIntervalCalculator::Result result = it->calculateIntakePoints(times, values, intake, *parameters, r1, intake.getNbPoints(), r2, _isFixedDensity);
+        IntakeIntervalCalculator::Result result = it->calculateIntakePoints(values, times, intake, *parameters, r1, intake.getNbPoints(), r2, _isFixedDensity);
         switch (result)
         {
             case IntakeIntervalCalculator::Result::Ok:
