@@ -100,7 +100,7 @@ bool ThreeCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, co
     return bOK;
 }
 
-void ThreeCompartmentExtraMicro::computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters, Eigen::VectorXd& _times)
+void ThreeCompartmentExtraMicro::computeLogarithms(Eigen::VectorXd& _times) 
 {
     setLogs(Logarithms::Alpha, (-m_Alpha * _times).array().exp());
     setLogs(Logarithms::Beta, (-m_Beta * _times).array().exp());

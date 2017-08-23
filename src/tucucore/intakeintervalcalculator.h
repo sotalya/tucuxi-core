@@ -124,7 +124,7 @@ protected:
     /// \param _intakeEvent intake for the cycle (all cyles start with an intake)
     /// \param _parameters Parameters for the cycle (all cycles have constant parameters)
     /// \param _times Vector of times
-    virtual void computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters, Eigen::VectorXd& _times) = 0;
+    virtual void computeLogarithms(Eigen::VectorXd& _times) = 0;
 
     /// \brief Compute concentrations using a specific algorithm
     /// \param _inResiduals Initial residual concentrations
