@@ -72,7 +72,7 @@ _concentrations1, Value& _concentrations2, Value& _concentrations3)
 	    + A * logs(Logarithms::Alpha)
 	    + C * logs(Logarithms::Gamma));
 
-    // don't use m_NbPoints because in case of single calculation "m_NbPoints = 0"
+    // Do NOT use m_NbPoints because in case of single calculation "m_NbPoints = 0"
     _concentrations2 = 
         resid2 + resid1 * (B2 * logs(Logarithms::Beta)((logs(Logarithms::Beta)).size() - 1) 
             + A2 * logs(Logarithms::Alpha)((logs(Logarithms::Alpha)).size() - 1)

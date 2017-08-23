@@ -4,15 +4,21 @@
 
 #include <Eigen/Dense>
 
+#include "tucucommon/loggerhelper.h"
 #include "tucucore/threecompartmentinfusion.h"
 #include "tucucore/intakeevent.h"
 
 namespace Tucuxi {
 namespace Core {
 
+#if 0
+#define DEBUG
+#endif
+
 ThreeCompartmentInfusionMicro::ThreeCompartmentInfusionMicro()
 {
 }
+
 
 bool ThreeCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
@@ -32,6 +38,23 @@ bool ThreeCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent,
     m_Tinf = _intakeEvent.getInfusionTime().toHours();
     m_Int = _intakeEvent.getInterval().toHours();
     m_NbPoints = _intakeEvent.getNbPoints();
+
+#ifdef DEBUG
+    Tucuxi::Common::LoggerHelper logHelper;
+
+    logHelper.debug("<<Input Values>>");
+    logHelper.debug("m_D: {}", m_D);
+    logHelper.debug("m_F: {}", m_F);
+    logHelper.debug("m_V1: {}", m_V1);
+    logHelper.debug("m_Ke: {}", m_Ke);
+    logHelper.debug("m_K12: {}", m_K12);
+    logHelper.debug("m_K21: {}", m_K21);
+    logHelper.debug("m_K13: {}", m_K13);
+    logHelper.debug("m_K31: {}", m_K31);
+    logHelper.debug("m_Tinf: {}", m_Tinf);
+    logHelper.debug("m_NbPoints: {}", m_NbPoints);
+    logHelper.debug("m_Int: {}", m_Int);
+#endif
 
     bool bOK = checkValue(m_D >= 0, "The dose is negative.");
     bOK &= checkValue(!std::isnan(m_D), "The dose is NaN.");
@@ -75,7 +98,6 @@ bool ThreeCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent,
     return true;
 }
 
-
 void ThreeCompartmentInfusionMicro::computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters, Eigen::VectorXd& _times)
 {
     setLogs(Logarithms::Alpha, (-m_Alpha * _times).array().exp());
@@ -83,60 +105,13 @@ void ThreeCompartmentInfusionMicro::computeLogarithms(const IntakeEvent& _intake
     setLogs(Logarithms::Gamma, (-m_Gamma * _times).array().exp());
 }
 
-
 bool ThreeCompartmentInfusionMicro::computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
 {
-    Value deltaD = (m_D / m_V1) / m_Tinf; 
-    Value alphaTinf = std::exp(-m_Alpha* m_Tinf);
-    Value betaTinf = std::exp(-m_Beta * m_Tinf);
-    Value gammaTinf = std::exp(-m_Gamma * m_Tinf);
+    Eigen::VectorXd concentrations1(m_NbPoints);
+    Value concentrations2, concentrations3;
 
-    Value A = (1 / m_V1) * (m_K21 - m_Alpha) * (m_K31 - m_Alpha) / (m_Alpha - m_Beta) / (m_Alpha - m_Gamma);
-    Value B = (1 / m_V1) * (m_K21 - m_Beta) * (m_K31 - m_Beta) / (m_Beta - m_Alpha) / (m_Beta - m_Gamma);
-    Value C = (1 / m_V1) * (m_K21 - m_Gamma) * (m_K31 - m_Gamma) / (m_Gamma - m_Beta) / (m_Gamma - m_Alpha);
-    Value A2 = m_K12 / (m_K21 - m_Alpha) * A;
-    Value B2 = m_K12 / (m_K21 - m_Beta) * B;
-    Value C2 = m_K12 / (m_K21 - m_Gamma) * C;
-    Value A3 = m_K13 / (m_K31 - m_Alpha) * A;
-    Value B3 = m_K13 / (m_K31 - m_Beta) * B;
-    Value C3 = m_K13 / (m_K31 - m_Gamma) * C;
-
-
-    // Calculate concentrations for comp1, comp2 and comp3
-    Eigen::VectorXd concentrations1;
-
-    for (int t = 0; t < m_NbPoints; ++t) 
-    {
-       // Compare the point is outside of infusion time or not
-       if ((t * (m_Int/m_NbPoints)) < m_Tinf)
-       {
-            concentrations1(t) = 
-	        deltaD 
-	        * (A/m_Alpha * (1 - logs(Logarithms::Alpha)(t)) 
-		    + B/m_Beta * (1 - logs(Logarithms::Beta)(t)) 
-	            + C/m_Gamma * (1 - logs(Logarithms::Gamma)(t)));
-       } 
-       else 
-       {
-            concentrations1(t) = 
-	        deltaD 
-	        * (A/m_Alpha * (1 - alphaTinf) * logs(Logarithms::Alpha)(t) / alphaTinf 
-	            + B/m_Beta * (1 - betaTinf) * logs(Logarithms::Beta)(t) / betaTinf 
-	            + C/m_Gamma * (1 - gammaTinf) *    logs(Logarithms::Gamma)(t) / gammaTinf);
-       }
-    }
-
-    Value concentrations2 =
-        deltaD * 
-        (A2/m_Alpha * (1 - alphaTinf) * logs(Logarithms::Alpha)(m_NbPoints - 1) / alphaTinf 
-	    + B2/m_Beta * (1 - betaTinf) * logs(Logarithms::Beta)(m_NbPoints - 1) / betaTinf 
-            + C2/m_Gamma * (1 - gammaTinf) * logs(Logarithms::Gamma)(m_NbPoints - 1) / gammaTinf);
-
-    Value concentrations3 = 
-        deltaD * 
-        (A3/m_Alpha * (1 - alphaTinf) * logs(Logarithms::Alpha)(m_NbPoints - 1) / alphaTinf 
-	    + B3/m_Beta * (1 - betaTinf) * logs(Logarithms::Beta)(m_NbPoints - 1) / betaTinf 
-            + C3/m_Gamma * (1 - gammaTinf) * logs(Logarithms::Gamma)(m_NbPoints - 1) / gammaTinf);
+    // Calculate concentrations for comp1 and comp2
+    compute(_inResiduals, concentrations1, concentrations2, concentrations3);
 
     // return concentrations of comp1, comp2 and comp3
     _outResiduals.push_back(concentrations1[m_NbPoints - 1]);
@@ -144,6 +119,36 @@ bool ThreeCompartmentInfusionMicro::computeConcentrations(const Residuals& _inRe
     _outResiduals.push_back(concentrations3);
 
     _concentrations.assign(concentrations1.data(), concentrations1.data() + concentrations1.size());	
+
+    bool bOK = checkValue(_outResiduals[0] >= 0, "The concentration1 is negative.");
+    bOK &= checkValue(_outResiduals[1] >= 0, "The concentration2 is negative.");
+    bOK &= checkValue(_outResiduals[2] >= 0, "The concentration3 is negative.");
+
+    return bOK;
+}
+
+bool ThreeCompartmentInfusionMicro::computeConcentration(const Value& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
+{
+    Eigen::VectorXd concentrations1(2);
+    Value concentrations2, concentrations3;
+
+    // Calculate concentrations for comp1 and comp2
+    compute(_inResiduals, concentrations1, concentrations2, concentrations3);
+
+    // return concentraions (computation with atTime (current time))
+    _concentrations.push_back(concentrations1[0]);
+
+    // interval=0 means that it is the last cycle, so final residual = 0
+    if (m_Int == 0) {
+        concentrations1[1] = 0;
+        concentrations2 = 0;
+        concentrations3 = 0;
+    }
+
+    // return final residual (computation with m_Int (interval))
+    _outResiduals.push_back(concentrations1[1]);
+    _outResiduals.push_back(concentrations2);
+    _outResiduals.push_back(concentrations3);
 
     bool bOK = checkValue(_outResiduals[0] >= 0, "The concentration1 is negative.");
     bOK &= checkValue(_outResiduals[1] >= 0, "The concentration2 is negative.");

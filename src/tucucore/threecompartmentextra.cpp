@@ -46,6 +46,7 @@ bool ThreeCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, co
     logHelper.debug("m_F: {}", m_F);
     logHelper.debug("m_V1: {}", m_V1);
     logHelper.debug("m_Ke: {}", m_Ke);
+    logHelper.debug("m_Ka: {}", m_Ka);
     logHelper.debug("m_K12: {}", m_K12);
     logHelper.debug("m_K21: {}", m_K21);
     logHelper.debug("m_K13: {}", m_K13);
@@ -156,7 +157,7 @@ bool ThreeCompartmentExtraMicro::computeConcentration(const Value& _atTime, cons
 
     bool bOK = checkValue(_outResiduals[0] >= 0, "The concentration1 is negative.");
     bOK &= checkValue(_outResiduals[1] >= 0, "The concentration2 is negative.");
-    bOK &= checkValue(_outResiduals[2] >= 0, "The concentration2 is negative.");
+    bOK &= checkValue(_outResiduals[2] >= 0, "The concentration3 is negative.");
 
     return bOK;
 }
@@ -186,6 +187,28 @@ bool ThreeCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, co
     m_K13 = q2 / m_V1;
     m_K31 = q2 / v2;
     m_NbPoints = _intakeEvent.getNbPoints();
+    m_Int = (_intakeEvent.getInterval()).toHours();
+
+#ifdef DEBUG
+    Tucuxi::Common::LoggerHelper logHelper;
+
+    logHelper.debug("<<Input Values>>");
+    logHelper.debug("m_D: {}", m_D);
+    logHelper.debug("cl: {}", cl);
+    logHelper.debug("m_F: {}", m_F);
+    logHelper.debug("q1: {}", q1);
+    logHelper.debug("q2: {}", q2);
+    logHelper.debug("m_V1: {}", m_V1);
+    logHelper.debug("v2: {}", v2);
+    logHelper.debug("m_Ka: {}", m_Ka);
+    logHelper.debug("m_Ke: {}", m_Ke);
+    logHelper.debug("m_K12: {}", m_K12);
+    logHelper.debug("m_K21: {}", m_K21);
+    logHelper.debug("m_K13: {}", m_K13);
+    logHelper.debug("m_K31: {}", m_K31);
+    logHelper.debug("m_NbPoints: {}", m_NbPoints);
+    logHelper.debug("m_Int: {}", m_Int);
+#endif
 
     bool bOK = checkValue(m_D >= 0, "The dose is negative.");
     bOK &= checkValue(!std::isnan(m_D), "The dose is NaN.");
