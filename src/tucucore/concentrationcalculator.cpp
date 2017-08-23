@@ -18,9 +18,14 @@ ConcentrationCalculator::ComputationResult ConcentrationCalculator::computeConce
     const bool _isFixedDensity)
 {
     TMP_UNUSED_PARAMETER(_nbPoints);
-    // The size of residuals vectors equals the number of compartments. This shouldnt be hardcoded here.
-    Residuals r1(3);
-    Residuals r2(3);
+
+    // First calculate the size of residuals
+    unsigned int residualSize = 0;
+    for (IntakeSeries::const_iterator it = _intakes.begin(); it != _intakes.end(); it++) {
+        residualSize = std::max(residualSize, (*it).getCalculator()->getResidualSize());
+    }
+    Residuals r1(residualSize);
+    Residuals r2(residualSize);
 
     // Go through all intakes
     for (IntakeSeries::const_iterator it = _intakes.begin(); it != _intakes.end(); it++) {

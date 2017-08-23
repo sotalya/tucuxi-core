@@ -15,7 +15,7 @@ enum class TwoCompartmentBolusLogarithms : int { Alpha, Beta };
 /// \ingroup TucuCore
 /// \brief Intake interval calculator for the two compartment bolus algorithm
 /// \sa IntakeIntervalCalculator
-class TwoCompartmentBolusMicro : public IntakeIntervalCalculatorBase<TwoCompartmentBolusLogarithms>
+class TwoCompartmentBolusMicro : public IntakeIntervalCalculatorBase<2, TwoCompartmentBolusLogarithms>
 {
     INTAKEINTERVALCALCULATOR_UTILS(TwoCompartmentBolusMicro)
 public:

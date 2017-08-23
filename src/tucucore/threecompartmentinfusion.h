@@ -15,7 +15,7 @@ enum class ThreeCompartmentIntraLogarithms : int { Alpha, Beta, Gamma };
 /// \ingroup TucuCore
 /// \brief Intake interval calculator for the three compartment infusion algorithm
 /// \sa IntakeIntervalCalculator
-class ThreeCompartmentInfusionMicro : public IntakeIntervalCalculatorBase<ThreeCompartmentIntraLogarithms>
+class ThreeCompartmentInfusionMicro : public IntakeIntervalCalculatorBase<3, ThreeCompartmentIntraLogarithms>
 {
 //    INTAKEINTERVALCALCULATOR_UTILS(ThreeCompartmentInfusionMicro)
 public:

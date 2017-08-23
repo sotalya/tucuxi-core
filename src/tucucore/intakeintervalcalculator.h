@@ -59,6 +59,7 @@ class IntakeIntervalCalculator
 {
 
 public:
+
     enum class Result {
         Ok,
         BadParameters,
@@ -108,6 +109,10 @@ public:
         const Value& _atTime,
         Residuals& _outResiduals);
 
+    /// \brief Returns the number of compartments needed for the residuals
+    /// \return the number of compartments for the residuals
+    virtual unsigned int getResidualSize() const = 0;
+
 protected:
     /// \brief Allows derived classes to make some checks on input data	
     /// \param _intakeEvent intake for the cycle (all cyles start with an intake)
@@ -146,9 +151,15 @@ private:
     CachedLogarithms m_cache;                           /// The cache of precomputed logarithms
 };
 
-template<typename EParameters>
+template<unsigned int ResidualSize, typename EParameters>
 class IntakeIntervalCalculatorBase : public IntakeIntervalCalculator
 {
+public:
+
+    unsigned int getResidualSize() const {
+        return ResidualSize;
+    }
+
 protected:
     void setLogs(EParameters _param, Eigen::VectorXd &&_logs) {
         m_precomputedLogarithms[static_cast<int>(_param)] = _logs;
@@ -162,6 +173,7 @@ protected:
         return m_precomputedLogarithms[static_cast<int>(_param)];
 //        return m_precomputedLogarithms.at(static_cast<int>(_param));
     }
+
 };
 
 

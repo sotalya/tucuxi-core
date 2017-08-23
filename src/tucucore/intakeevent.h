@@ -138,6 +138,11 @@ public:
         m_calculator = _calculator;
     }
 
+    IntakeIntervalCalculator *getCalculator() const
+    {
+        return m_calculator;
+    }
+
     IntakeIntervalCalculator::Result calculateIntakePoints(
         Concentrations& _concentrations,
         TimeOffsets & _times,

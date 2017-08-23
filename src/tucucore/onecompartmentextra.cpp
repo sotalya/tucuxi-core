@@ -53,6 +53,8 @@ bool OneCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
 
 void OneCompartmentExtraMicro::computeLogarithms(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters, Eigen::VectorXd& _times)
 {
+    UNUSED_PARAMETER(_intakeEvent);
+    UNUSED_PARAMETER(_parameters);
     setLogs(Logarithms::Ka, (-m_Ka * _times).array().exp());
     setLogs(Logarithms::Ke, (-m_Ke * _times).array().exp());
 }

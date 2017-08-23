@@ -15,7 +15,7 @@ enum class TwoCompartmentExtraLogarithms : int { Alpha, Beta, Ka };
 /// \ingroup TucuCore
 /// \brief Intake interval calculator for the two compartment extra algorithm
 /// \sa IntakeIntervalCalculator
-class TwoCompartmentExtraMicro : public IntakeIntervalCalculatorBase<TwoCompartmentExtraLogarithms>
+class TwoCompartmentExtraMicro : public IntakeIntervalCalculatorBase<3, TwoCompartmentExtraLogarithms>
 {
     INTAKEINTERVALCALCULATOR_UTILS(TwoCompartmentExtraMicro)
 public:
