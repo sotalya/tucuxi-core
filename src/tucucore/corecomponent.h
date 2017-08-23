@@ -59,7 +59,7 @@ private:
         const ParameterSetSeries& _parameters,
         const Etas& _etas = Etas(0),
         const IResidualErrorModel &_residualErrorModel = EMPTY_RESIDUAL_ERROR_MODEL,
-        const Deviation& _eps = 0,
+        const Deviations& _eps = Deviations(0),
         const bool _isFixedDensity = 0);
 
     ComputationResult computePopulation(

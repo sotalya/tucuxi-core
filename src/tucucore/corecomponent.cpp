@@ -132,7 +132,7 @@ ComputationResult CoreComponent::computeConcentrations(
     const ParameterSetSeries &_parameterSets,
     const Etas &_etas,
     const IResidualErrorModel &_residualErrorModel,
-    const Deviation& _eps,
+    const Deviations& _eps,
     const bool _isFixedDensity)
 {   
     ConcentrationCalculator::computeConcentrations(_prediction,

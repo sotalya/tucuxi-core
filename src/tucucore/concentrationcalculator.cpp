@@ -14,7 +14,7 @@ ConcentrationCalculator::ComputationResult ConcentrationCalculator::computeConce
     const ParameterSetSeries &_parameterSets,
     const Etas &_etas,
     const IResidualErrorModel &_residualErrorModel,
-    const Deviation& _eps,
+    const Deviations& _epsilons,
     const bool _isFixedDensity)
 {
     TMP_UNUSED_PARAMETER(_nbPoints);
@@ -71,7 +71,7 @@ ConcentrationCalculator::ComputationResult ConcentrationCalculator::computeConce
 
         // Apply the intra-individual error
         if (!_residualErrorModel.isEmpty()) {
-            _residualErrorModel.applyEpsToArray(values, _eps);
+            _residualErrorModel.applyEpsToArray(values, _epsilons);
         }
 
         // Append computed values to our prediction

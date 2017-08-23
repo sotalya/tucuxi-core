@@ -71,4 +71,5 @@ SOURCES += \
     $$PWD/../../src/tucucore/hardcodedoperation.cpp \
     $$PWD/../../src/tucucore/montecarlopercentilecalculator.cpp \
     $$PWD/../../src/tucucore/likelihood.cpp \
-    $$PWD/../../src/tucucore/aposteriorietascalculator.cpp
+    $$PWD/../../src/tucucore/aposteriorietascalculator.cpp \
+    $$PWD/../../src/tucucore/residualerrormodel.cpp
