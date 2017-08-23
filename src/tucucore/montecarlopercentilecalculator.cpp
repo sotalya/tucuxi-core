@@ -25,7 +25,7 @@ MonteCarloPercentileCalculator::ProcessingResult MonteCarloPercentileCalculator:
         const PercentileRanks &_percentileRanks,
         int _nbPatients,
         const std::vector<Etas> _etas,
-        const std::vector<Deviation> _epsilons,
+        const std::vector<Deviations> _epsilons,
         int _curvelength,
         ProcessingAborter *_aborter)
 {

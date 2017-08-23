@@ -25,7 +25,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
 
     TestConcentrationCalculator() { }
 
-    template<class CalculatorClass, int residualSize>
+    template<class CalculatorClass>
     void testCalculator(const Tucuxi::Core::ParameterSetSeries &_parameters,
                         double _dose,
                         Tucuxi::Core::RouteOfAdministration _route,
@@ -55,7 +55,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
 
                 Tucuxi::Core::Residuals inResiduals;
                 Tucuxi::Core::Residuals outResiduals;
-                for(int i = 0; i < residualSize; i++)
+                for(unsigned int i = 0; i < calculator.getResidualSize(); i++)
                     inResiduals.push_back(0);
 
                 Tucuxi::Core::ParameterSetEvent event = *(_parameters.getAtTime(now));
@@ -123,7 +123,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
 
                 Tucuxi::Core::Residuals inResiduals;
                 Tucuxi::Core::Residuals outResiduals;
-                for(int i = 0; i < residualSize; i++)
+                for(unsigned int i = 0; i < calculator.getResidualSize(); i++)
                     inResiduals.push_back(0);
 
                 Tucuxi::Core::ParameterSetEvent event = *(_parameters.getAtTime(now));
@@ -194,7 +194,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
             Tucuxi::Core::ParameterSetSeries parametersSeries;
             parametersSeries.addParameterSetEvent(parameters);
 
-            testCalculator<Tucuxi::Core::OneCompartmentBolusMicro, 1>
+            testCalculator<Tucuxi::Core::OneCompartmentBolusMicro>
                     (parametersSeries,
                      400.0,
                      Tucuxi::Core::RouteOfAdministration::INTRAVASCULAR,
@@ -219,7 +219,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
             Tucuxi::Core::ParameterSetSeries parametersSeries;
             parametersSeries.addParameterSetEvent(parameters);
 
-            testCalculator<Tucuxi::Core::OneCompartmentExtraMicro, 2>
+            testCalculator<Tucuxi::Core::OneCompartmentExtraMicro>
                     (parametersSeries,
                      400.0,
                      Tucuxi::Core::RouteOfAdministration::EXTRAVASCULAR,
@@ -240,7 +240,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
             Tucuxi::Core::ParameterSetSeries parametersSeries;
             parametersSeries.addParameterSetEvent(parameters);
 
-            testCalculator<Tucuxi::Core::OneCompartmentInfusionMicro, 1>
+            testCalculator<Tucuxi::Core::OneCompartmentInfusionMicro>
                     (parametersSeries,
                      400.0,
                      Tucuxi::Core::RouteOfAdministration::INFUSION,
