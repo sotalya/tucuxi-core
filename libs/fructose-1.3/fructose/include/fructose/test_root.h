@@ -511,7 +511,8 @@ private:
     void split(std::vector<std::string> &tokens, const std::string& text, char sep)
     {
         int start = 0, end = 0;
-        while ((end = text.find(sep, start)) != std::string::npos) {
+        // YTA: Added the cast to int
+        while ((end = text.find(sep, start)) != (int)std::string::npos) {
             tokens.push_back(text.substr(start, end - start));
             start = end + 1;
         }
@@ -773,7 +774,7 @@ test_root::do_get_suite(const test_root::suite& available_tests,
     test_info current_test_info;
     bool include_all = false;
 
-    for (size_t i = 1; i < argc; i++)
+    for (size_t i = 1; i < (unsigned int)argc; i++)
     {
         if (found_tests)
         {
@@ -781,7 +782,7 @@ test_root::do_get_suite(const test_root::suite& available_tests,
             {
                 if (strcmp(argv[i], "-a") == 0 || strcmp(argv[i], "--args") == 0)
                 {
-                    if ((i+1) < argc)
+                    if ((i+1) < (unsigned int) argc)
                     {
                         std::vector<test_info>::iterator it = result.begin();
                         for (; it != result.end(); ++it)
@@ -915,7 +916,7 @@ std::string test_root::underline(const std::string& title, char c)
 inline \
 void test_root::test_assert_double_##comparison_function(double lhs, \
                                    double rhs, \
-                                   const std::string& test_case_name, \
+                                   const std::string& /*test_case_name*/, \
                                    const char* lhs_name, \
                                    const char* rhs_name,\
                                    const char* filename, int line_number) \
@@ -1063,7 +1064,7 @@ inline
 void test_root::test_assert_same_data(const void* lhs, const void* rhs,
                                       unsigned int data_length,
                                       const std::string& test_case_name, 
-                                      const char *msg1, const char* msg2,
+                                      const char */*msg1*/, const char* /*msg2*/,
                                       const char* filename, int line_number)
 {
     set_assertion_tested();
