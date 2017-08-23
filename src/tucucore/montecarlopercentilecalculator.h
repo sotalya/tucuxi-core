@@ -14,7 +14,7 @@
 namespace Tucuxi {
 namespace Core {
 
-class ResidualErrorModel;
+class IResidualErrorModel;
 
 
 ///
@@ -73,7 +73,7 @@ protected:
             const int _nbPoints,
             const IntakeSeries &_intakes,
             const ParameterSetSeries &_parameters,
-            const ResidualErrorModel &_residualErrorModel,
+            const IResidualErrorModel &_residualErrorModel,
             const PercentileRanks &_percentileRanks,
             int _nbPatients,
             const std::vector<Etas> _etas,
@@ -111,7 +111,7 @@ public:
             const IntakeSeries &_intakes,
             const ParameterSetSeries &_parameters,
             const OmegaMatrix& _omega,
-            const ResidualErrorModel &_residualErrorModel,
+            const IResidualErrorModel &_residualErrorModel,
             const Etas& _initialEtas,
             const PercentileRanks &_percentileRanks,
             ProcessingAborter *_aborter);
@@ -144,7 +144,7 @@ public:
             const IntakeSeries &_intakes,
             const ParameterSetSeries &_parameters,
             const OmegaMatrix& _omega,
-            const ResidualErrorModel &_residualErrorModel,
+            const IResidualErrorModel &_residualErrorModel,
             const Etas& _etas,
             const SampleSeries &_samples,
             const PercentileRanks &_percentileRanks,

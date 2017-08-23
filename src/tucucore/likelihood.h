@@ -17,7 +17,7 @@
 namespace Tucuxi {
 namespace Core {
 
-class ResidualErrorModel;
+class IResidualErrorModel;
 
 /// \brief The Likelihood class
 /// This is the class that calculates the log-likelihood for aposteriori
@@ -26,7 +26,7 @@ class Likelihood {
 public:
     Likelihood() {}
     Likelihood(const OmegaMatrix& _omega,
-               const ResidualErrorModel& _residualErrorModel,
+               const IResidualErrorModel& _residualErrorModel,
                const SampleSeries& _samples,
                const IntakeSeries& _intakes,
                const ParameterSetSeries& _parameters);
@@ -93,7 +93,7 @@ public:
     /// \return the negative log-likelihood of a concentration at the sample time
     Value calculateSampleNegativeLogLikelihood(const Value _expected,
                                                const SampleEvent& _observed,
-                                               const ResidualErrorModel &_residualErrorModel) const;
+                                               const IResidualErrorModel &_residualErrorModel) const;
 
     /// Sets the bounds on etas to extreme values of normal distribution
     /// using the equation for the inverse of the cdf for normal distribution
@@ -127,7 +127,7 @@ private:
     const OmegaMatrix* m_omega;
 
     /// intra-individual error model
-    const ResidualErrorModel* m_residualErrorModel;
+    const IResidualErrorModel* m_residualErrorModel;
 
     /// multi-index of samples for entire curve
     const SampleSeries* m_samples;

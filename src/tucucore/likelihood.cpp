@@ -18,7 +18,7 @@ static const float PI = 3.14159;
 
 
 Likelihood::Likelihood(const OmegaMatrix& _omega,
-                       const ResidualErrorModel& _residualErrorModel,
+                       const IResidualErrorModel& _residualErrorModel,
                        const SampleSeries& _samples,
                        const IntakeSeries& _intakes,
                        const ParameterSetSeries& _parameters)
@@ -96,10 +96,10 @@ Value Likelihood::negativeLogLikelihood(const ValueVector& _etas) const
 
 Value Likelihood::calculateSampleNegativeLogLikelihood(const Value _expected,
                                                        const SampleEvent& _observed,
-                                                       const ResidualErrorModel &_residualErrorModel) const
+                                                       const IResidualErrorModel &_residualErrorModel) const
 {
 
-    return - _residualErrorModel.calculateSampleLikelihood(_expected, _observed);
+    return - _residualErrorModel.calculateSampleLikelihood(_expected, _observed.getValue());
 }
 
 Value Likelihood::negativeLogPrior(const EigenVector& _etas, const OmegaMatrix &_omega) const

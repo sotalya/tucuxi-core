@@ -13,7 +13,7 @@ ConcentrationCalculator::ComputationResult ConcentrationCalculator::computeConce
     const IntakeSeries &_intakes,
     const ParameterSetSeries &_parameterSets,
     const Etas &_etas,
-    const ResidualErrorModel &_residualErrorModel,
+    const IResidualErrorModel &_residualErrorModel,
     const Deviation& _eps,
     const bool _isFixedDensity)
 {

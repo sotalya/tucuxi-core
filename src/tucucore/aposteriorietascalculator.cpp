@@ -19,7 +19,7 @@ APosterioriEtasCalculator::ComputationResult APosterioriEtasCalculator::computeA
         const IntakeSeries &_intakes,
         const ParameterSetSeries &_parameters,
         const OmegaMatrix &_omega,
-        const ResidualErrorModel &_residualErrorModel,
+        const IResidualErrorModel &_residualErrorModel,
         const SampleSeries &_samples,
         Etas &_aPosterioriEtas)
 {

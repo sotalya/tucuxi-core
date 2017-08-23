@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "tucucore/timedevent.h"
+#include "tucucore/definitions.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -20,6 +21,8 @@ typedef std::vector<Sample> Samples;
 
 class SampleEvent : public TimedEvent
 {
+public:
+    Value getValue() const { return 0.0;}
 };
 
 typedef std::vector<SampleEvent> SampleSeries;

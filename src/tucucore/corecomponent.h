@@ -58,7 +58,7 @@ private:
         const IntakeSeries &_intakes,
         const ParameterSetSeries& _parameters,
         const Etas& _etas = Etas(0),
-        const ResidualErrorModel &_residualErrorModel = EMPTY_RESIDUAL_ERROR_MODEL,
+        const IResidualErrorModel &_residualErrorModel = EMPTY_RESIDUAL_ERROR_MODEL,
         const Deviation& _eps = 0,
         const bool _isFixedDensity = 0);
 
@@ -94,7 +94,7 @@ private:
         const DrugErrorModel &_errorMode,
         const ParameterDefinitions &_parameterDefs,
         OmegaMatrix &_omega,
-        ResidualErrorModel &_residualErrorModel)
+        IResidualErrorModel &_residualErrorModel)
     {
         TMP_UNUSED_PARAMETER(_errorMode);
         TMP_UNUSED_PARAMETER(_parameterDefs);
