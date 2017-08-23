@@ -30,6 +30,7 @@ SOURCES := aposteriorietascalculator.cpp \
            parameter.cpp \
            parametersextractor.cpp \
            pkmodel.cpp \
+		   residualerrormodel.cpp \
            sampleextractor.cpp \
            targetextractor.cpp \
            threecompartmentbolus.cpp \
