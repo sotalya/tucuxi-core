@@ -68,6 +68,8 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
                             _nbPoints,
                             outResiduals,
                             true);
+
+                fructose_assert(res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok);
             }
 
             Tucuxi::Core::ConcentrationPredictionPtr predictionPtr;
@@ -98,7 +100,81 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
         // and compare it with the sum of individual calculations made with the
         // IntakeIntervalCalculators. Be careful, the interval for the later need
         // to be longer, and the number of points modified accordingly
+        {
 
+            int nbCycles = 10;
+
+            Tucuxi::Core::IntakeIntervalCalculator::Result res;
+            CalculatorClass calculator;
+
+            DateTime now;
+            Tucuxi::Common::Duration offsetTime = 0s;
+            Tucuxi::Common::Duration interval = _interval;
+            Tucuxi::Common::Duration infusionTime = _infusionTime;
+
+            Tucuxi::Core::Concentrations concentrations;
+            Tucuxi::Core::TimeOffsets times;
+
+            {
+                // TOCHECK : Be careful, the intakeEvent embedds the nb of points, but the intervalintakecalculator also. They have to agree
+                // Bad design for this.
+
+                Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, _dose, interval * nbCycles, _route, infusionTime, (_nbPoints - 1 ) * nbCycles + 1);
+
+                Tucuxi::Core::Residuals inResiduals;
+                Tucuxi::Core::Residuals outResiduals;
+                for(int i = 0; i < residualSize; i++)
+                    inResiduals.push_back(0);
+
+                Tucuxi::Core::ParameterSetEvent event = *(_parameters.getAtTime(now));
+                res = calculator.calculateIntakePoints(
+                            concentrations,
+                            times,
+                            intakeEvent,
+                            event,
+                            inResiduals,
+                            (_nbPoints - 1 ) * nbCycles + 1,
+                            outResiduals,
+                            true);
+
+                fructose_assert(res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok);
+            }
+
+            Tucuxi::Core::ConcentrationPredictionPtr predictionPtr;
+            {
+                predictionPtr = std::make_unique<Tucuxi::Core::ConcentrationPrediction>();
+
+                Tucuxi::Core::IntakeSeries intakeSeries;
+                CalculatorClass calculator2;
+
+                for(int i = 0; i < nbCycles; i++) {
+                    Tucuxi::Core::IntakeEvent event(now + interval * i, offsetTime, _dose, interval, _route, infusionTime, _nbPoints);
+                    event.setCalculator(&calculator2);
+                    intakeSeries.push_back(event);
+                }
+                Tucuxi::Core::ConcentrationCalculator::computeConcentrations(
+                            predictionPtr,
+                            _nbPoints,
+                            intakeSeries,
+                            _parameters);
+            }
+
+
+            for(int cycle = 0; cycle < nbCycles; cycle ++) {
+                Tucuxi::Core::Concentrations concentration2;
+                concentration2 = predictionPtr->getValues()[cycle];
+                for(int i = 0; i < _nbPoints - 1; i++) {
+
+                    double sumConcentration = 0.0;
+                    for(int c = 0; c < cycle + 1; c++)
+                        sumConcentration += concentrations[c * (_nbPoints - 1) + i];
+
+               //     std::cout << cycle <<  " : " << i << " :: " << predictionPtr->getTimes()[cycle][i] << " . " << sumConcentration << " : " << concentration2[i] << std::endl;
+
+                    fructose_assert_double_eq(sumConcentration, concentration2[i]);
+                }
+            }
+        }
 
 
 
