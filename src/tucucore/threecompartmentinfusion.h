@@ -29,7 +29,7 @@ protected:
     virtual void computeLogarithms(Eigen::VectorXd& _times) override;
     virtual bool computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) override;
     virtual bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) override;
-    void compute(const Residuals& _inResiduals, Eigen::VectorXd& _concentrations1, Value& _concentrations2, Value& _concentrations3);
+    void compute(const Residuals& _inResiduals, const int _forcesize, Eigen::VectorXd& _concentrations1, Value& _concentrations2, Value& _concentrations3);
 
     Value m_D;	/// Quantity of drug
     Value m_F;	/// ???
@@ -50,9 +50,13 @@ private:
 
 };
 
-inline void ThreeCompartmentInfusionMicro::compute(const Residuals& _inResiduals, Eigen::VectorXd&
+inline void ThreeCompartmentInfusionMicro::compute(const Residuals& _inResiduals, const int _forcesize, Eigen::VectorXd&
 _concentrations1, Value& _concentrations2, Value& _concentrations3)
 {
+    Eigen::VectorXd& alphaLogV = logs(Logarithms::Alpha); 
+    Eigen::VectorXd& betaLogV = logs(Logarithms::Beta); 
+    Eigen::VectorXd& gammaLogV = logs(Logarithms::Gamma); 
+
     Value deltaD = (m_D / m_V1) / m_Tinf; 
     Value alphaTinf = std::exp(-m_Alpha* m_Tinf);
     Value betaTinf = std::exp(-m_Beta * m_Tinf);
@@ -68,41 +72,35 @@ _concentrations1, Value& _concentrations2, Value& _concentrations3)
     Value B3 = m_K13 / (m_K31 - m_Beta) * B;
     Value C3 = m_K13 / (m_K31 - m_Gamma) * C;
 
-    int logSize = (logs(Logarithms::Alpha)).size();
-
-    for (int t = 0; t < logSize; ++t) 
+    if (_forcesize != 0)
     {
-       // Compare the point is outside of infusion time or not
-       if ((t * (m_Int/logSize)) < m_Tinf)
-       {
-            _concentrations1(t) = 
+	    _concentrations1.head(_forcesize) = 
 	        deltaD 
-	        * (A/m_Alpha * (1 - logs(Logarithms::Alpha)(t)) 
-		    + B/m_Beta * (1 - logs(Logarithms::Beta)(t)) 
-	            + C/m_Gamma * (1 - logs(Logarithms::Gamma)(t)));
-       } 
-       else 
-       {
-            _concentrations1(t) = 
-	        deltaD 
-	        * (A/m_Alpha * (1 - alphaTinf) * logs(Logarithms::Alpha)(t) / alphaTinf 
-	            + B/m_Beta * (1 - betaTinf) * logs(Logarithms::Beta)(t) / betaTinf 
-	            + C/m_Gamma * (1 - gammaTinf) *    logs(Logarithms::Gamma)(t) / gammaTinf);
-       }
-    }
+	        * (A/m_Alpha * (1*Eigen::VectorXd::Ones(_forcesize)- alphaLogV.head(_forcesize)) 
+		    + B/m_Beta * (1*Eigen::VectorXd::Ones(_forcesize) - betaLogV.head(_forcesize)) 
+	            + C/m_Gamma * (1*Eigen::VectorXd::Ones(_forcesize) - gammaLogV.head(_forcesize)));
+    } 
+
+    int therest = static_cast<int>(alphaLogV.size() - _forcesize);
+    
+    _concentrations1.tail(therest) = 
+	deltaD 
+	* (A/m_Alpha * (1 - alphaTinf) * alphaLogV.tail(therest) / alphaTinf 
+		+ B/m_Beta * (1 - betaTinf) * betaLogV.tail(therest) / betaTinf 
+	        + C/m_Gamma * (1 - gammaTinf) * gammaLogV.tail(therest) / gammaTinf);
 
     // Do NOT use m_NbPoints because in case of single calculation "m_NbPoints = 0"
     _concentrations2 =
         deltaD * 
-        (A2/m_Alpha * (1 - alphaTinf) * logs(Logarithms::Alpha)(logSize - 1) / alphaTinf 
-	    + B2/m_Beta * (1 - betaTinf) * logs(Logarithms::Beta)(logSize - 1) / betaTinf 
-            + C2/m_Gamma * (1 - gammaTinf) * logs(Logarithms::Gamma)(logSize - 1) / gammaTinf);
+        (A2/m_Alpha * (1 - alphaTinf) * alphaLogV(alphaLogV.size() - 1) / alphaTinf 
+	    + B2/m_Beta * (1 - betaTinf) * betaLogV(betaLogV.size() - 1) / betaTinf 
+            + C2/m_Gamma * (1 - gammaTinf) * gammaLogV(gammaLogV.size() - 1) / gammaTinf);
 
     _concentrations3 = 
         deltaD * 
-        (A3/m_Alpha * (1 - alphaTinf) * logs(Logarithms::Alpha)(logSize - 1) / alphaTinf 
-	    + B3/m_Beta * (1 - betaTinf) * logs(Logarithms::Beta)(logSize - 1) / betaTinf 
-            + C3/m_Gamma * (1 - gammaTinf) * logs(Logarithms::Gamma)(logSize - 1) / gammaTinf);
+        (A3/m_Alpha * (1 - alphaTinf) * alphaLogV(alphaLogV.size() - 1) / alphaTinf 
+	    + B3/m_Beta * (1 - betaTinf) * betaLogV(betaLogV.size() - 1) / betaTinf 
+            + C3/m_Gamma * (1 - gammaTinf) * gammaLogV(gammaLogV.size() - 1) / gammaTinf);
 
 }
 
