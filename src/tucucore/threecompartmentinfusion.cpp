@@ -110,8 +110,10 @@ bool ThreeCompartmentInfusionMicro::computeConcentrations(const Residuals& _inRe
     Eigen::VectorXd concentrations1(m_NbPoints);
     Value concentrations2, concentrations3;
 
+    int forcesize = static_cast<int>(std::min(ceil(m_Tinf/m_Int * m_NbPoints), ceil(m_NbPoints)));
+
     // Calculate concentrations for comp1 and comp2
-    compute(_inResiduals, concentrations1, concentrations2, concentrations3);
+    compute(_inResiduals, forcesize, concentrations1, concentrations2, concentrations3);
 
     // return concentrations of comp1, comp2 and comp3
     _outResiduals.push_back(concentrations1[m_NbPoints - 1]);
@@ -132,8 +134,14 @@ bool ThreeCompartmentInfusionMicro::computeConcentration(const Value& _atTime, c
     Eigen::VectorXd concentrations1(2);
     Value concentrations2, concentrations3;
 
+    int forcesize = 0;
+
+    if (_atTime <= m_Tinf) {
+	    forcesize = 1;
+    }
+
     // Calculate concentrations for comp1 and comp2
-    compute(_inResiduals, concentrations1, concentrations2, concentrations3);
+    compute(_inResiduals, forcesize, concentrations1, concentrations2, concentrations3);
 
     // return concentraions (computation with atTime (current time))
     _concentrations.push_back(concentrations1[0]);
