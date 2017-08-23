@@ -153,7 +153,7 @@ bool ThreeCompartmentBolusMicro::computeConcentration(const Value& _atTime, cons
 
     bool bOK = checkValue(_outResiduals[0] >= 0, "The concentration1 is negative.");
     bOK &= checkValue(_outResiduals[1] >= 0, "The concentration2 is negative.");
-    bOK &= checkValue(_outResiduals[2] >= 0, "The concentration2 is negative.");
+    bOK &= checkValue(_outResiduals[2] >= 0, "The concentration3 is negative.");
 
     return bOK;
 }
