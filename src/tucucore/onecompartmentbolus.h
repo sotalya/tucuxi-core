@@ -38,6 +38,7 @@ protected:
     Value m_Int; /// Interval (hours)
 
 private:
+
 };
 
 inline void OneCompartmentBolusMicro::compute(const Residuals& _inResiduals, Eigen::VectorXd& _concentrations)
