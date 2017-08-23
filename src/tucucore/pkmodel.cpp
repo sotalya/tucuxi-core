@@ -125,8 +125,8 @@ populate(PkModelCollection &_collection)
 
     ADD_PKMODEL_TO_COLLECTION(_collection, 1, One, Macro, macro, rc);
     ADD_PKMODEL_TO_COLLECTION(_collection, 1, One, Micro, micro, rc);
-//    ADD_PKMODEL_TO_COLLECTION(_collection, 2, Two, Macro, macro, rc);
-//    ADD_PKMODEL_TO_COLLECTION(_collection, 2, Two, Micro, micro, rc);
+    ADD_PKMODEL_TO_COLLECTION(_collection, 2, Two, Macro, macro, rc);
+    ADD_PKMODEL_TO_COLLECTION(_collection, 2, Two, Micro, micro, rc);
 //    ADD_PKMODEL_TO_COLLECTION(_collection, 3, Three, Macro, macro, rc);
 //    ADD_PKMODEL_TO_COLLECTION(_collection, 3, Three, Micro, micro, rc);
     return rc;

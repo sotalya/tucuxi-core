@@ -135,7 +135,7 @@ inline void TwoCompartmentInfusionMicro::compute(const Residuals& _inResiduals, 
 
 class TwoCompartmentInfusionMacro : public TwoCompartmentInfusionMicro
 {
-    INTAKEINTERVALCALCULATOR_UTILS(TwoCompartmentInfusionMicro)
+    INTAKEINTERVALCALCULATOR_UTILS(TwoCompartmentInfusionMacro)
 public:
     TwoCompartmentInfusionMacro();
 
