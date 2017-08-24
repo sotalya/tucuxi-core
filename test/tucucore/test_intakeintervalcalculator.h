@@ -31,8 +31,9 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
     TestIntervalCalculator() { }
 
 
-    template <class CalculatorClass>
-    void testSteadyState(const Tucuxi::Core::ParameterSetEvent &_parameters,
+    template <class CalculatorMicroClass, class CalculatorMacroClass, int nbComp>
+    void testSteadyState(const Tucuxi::Core::ParameterSetEvent &_microParameters,
+                                       const Tucuxi::Core::ParameterSetEvent &_macroParameters,
                                        double _dose,
                                        Tucuxi::Core::RouteOfAdministration _route,
                                        std::chrono::hours _interval,
@@ -41,7 +42,8 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
     {
 
         Tucuxi::Core::IntakeIntervalCalculator::Result res;
-        CalculatorClass calculator;
+        CalculatorMicroClass microCalculator;
+        CalculatorMacroClass macroCalculator;
 
         DateTime now;
         Tucuxi::Common::Duration offsetTime = 0s;
@@ -54,38 +56,53 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
 
         // Checking if steady state is reached by iterative 100 times a calculation and
         // passing residuals to the next iteration
-        Tucuxi::Core::Residuals inResiduals;
-        Tucuxi::Core::Residuals outResiduals;
+        Tucuxi::Core::Residuals inMicroResiduals, inMacroResiduals;
+        Tucuxi::Core::Residuals outMicroResiduals, outMacroResiduals;
 
-        for(unsigned int i = 0; i < calculator.getResidualSize(); i++)
-            outResiduals.push_back(0);
+        for(unsigned int i = 0; i < microCalculator.getResidualSize(); i++)
+	{
+            outMicroResiduals.push_back(0);
+            outMacroResiduals.push_back(0);
+	}
 
         for(int cycle = 0; cycle < 100; cycle ++)
         {
-            inResiduals = outResiduals;
-            res = calculator.calculateIntakeSinglePoint(
+	    	// Check Micro class
+            inMicroResiduals = outMicroResiduals;
+            res = microCalculator.calculateIntakeSinglePoint(
                         concentrations,
                         intakeEvent,
-                        _parameters,
-                        inResiduals,
+                        _microParameters,
+                        inMicroResiduals,
                         interval.toHours(),
-                        outResiduals);
+                        outMacroResiduals);
             fructose_assert(res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok);
 
-
+	    // Check Macro class
+            inMacroResiduals = outMacroResiduals;
+            res = macroCalculator.calculateIntakeSinglePoint(
+                        concentrations,
+                        intakeEvent,
+                        _macroParameters,
+                        inMacroResiduals,
+                        interval.toHours(),
+                        outMacroResiduals);
+            fructose_assert(res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok);
         }
 
         if (res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok) {
-            for (unsigned int i = 0; i < calculator.getResidualSize(); i++) {
-                fructose_assert_double_eq(inResiduals[i], outResiduals[i])
+            for (unsigned int i = 0; i < microCalculator.getResidualSize(); i++) {
+                fructose_assert_double_eq(inMicroResiduals[i], outMicroResiduals[i])
+                fructose_assert_double_eq(inMacroResiduals[i], outMacroResiduals[i])
             }
         }
 
     }
 
 
-    template <class CalculatorClass>
-    void testSingleVsMultiple(const Tucuxi::Core::ParameterSetEvent &_parameters,
+    template <class CalculatorMicroClass,class CalculatorMacroClass, int nbComp>
+    void testSingleVsMultiple(const Tucuxi::Core::ParameterSetEvent &_microParameters,
+                                       const Tucuxi::Core::ParameterSetEvent &_macroParameters,
                                        double _dose,
                                        Tucuxi::Core::RouteOfAdministration _route,
                                        std::chrono::hours _interval,
@@ -94,7 +111,8 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
     {
 
         Tucuxi::Core::IntakeIntervalCalculator::Result res;
-        CalculatorClass calculator;
+        CalculatorMicroClass microCalculator;
+        CalculatorMacroClass macroCalculator;
 
         DateTime now;
         Tucuxi::Common::Duration offsetTime = 0s;
@@ -105,45 +123,87 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
         Tucuxi::Core::TimeOffsets times;
         Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, _dose, interval, _route, infusionTime, _nbPoints);
         Tucuxi::Core::Residuals inResiduals;
-        Tucuxi::Core::Residuals outMultiResiduals, outSingleResiduals;
+        Tucuxi::Core::Residuals outMicroMultiResiduals, outMicroSingleResiduals, outMacroMultiResiduals, outMacroSingleResiduals;
 
-        for(unsigned int i = 0; i < calculator.getResidualSize(); i++)
+        for(unsigned int i = 0; i < microCalculator.getResidualSize(); i++)
             inResiduals.push_back(0);
 
-        res = calculator.calculateIntakePoints(
+        // Calculation of Micro Class
+        res = microCalculator.calculateIntakePoints(
                     concentrations,
                     times,
                     intakeEvent,
-                    _parameters,
+                    _microParameters,
                     inResiduals,
                     _nbPoints,
-                    outMultiResiduals,
+                    outMicroMultiResiduals,
                     true);
         if (verbose()) {
-            for(unsigned int i = 0; i < calculator.getResidualSize(); i++) {
-                std::cout << "Multiple Out residual["
+            for(unsigned int i = 0; i < microCalculator.getResidualSize(); i++) {
+                std::cout << "Micro Multiple Out residual["
                           << i
                           << "] = "
-                          << outMultiResiduals[i]
+                          << outMicroMultiResiduals[i]
                           << std::endl;
             }
         }
 
         fructose_assert(res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok);
 
-        res = calculator.calculateIntakeSinglePoint(
+        res = microCalculator.calculateIntakeSinglePoint(
                     concentrations,
                     intakeEvent,
-                    _parameters,
+                    _microParameters,
                     inResiduals,
                     interval.toHours(),
-                    outSingleResiduals);
+                    outMicroSingleResiduals);
         if (verbose()) {
-            for(unsigned int i = 0; i < calculator.getResidualSize(); i++) {
-                std::cout << "Single   Out residual["
+            for(unsigned int i = 0; i < microCalculator.getResidualSize(); i++) {
+                std::cout << "Micro Single   Out residual["
                           << i
                           << "] = "
-                          << outSingleResiduals[i]
+                          << outMicroSingleResiduals[i]
+                          << std::endl;
+            }
+        }
+
+        fructose_assert(res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok);
+
+        // Calculation of Macro Class
+        res = macroCalculator.calculateIntakePoints(
+                    concentrations,
+                    times,
+                    intakeEvent,
+                    _macroParameters,
+                    inResiduals,
+                    _nbPoints,
+                    outMacroMultiResiduals,
+                    true);
+        if (verbose()) {
+            for(int i = 0; i < nbComp; i++) {
+                std::cout << "Macro Multiple Out residual["
+                          << i
+                          << "] = "
+                          << outMacroMultiResiduals[i]
+                          << std::endl;
+            }
+        }
+
+        fructose_assert(res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok);
+
+        res = macroCalculator.calculateIntakeSinglePoint(
+                    concentrations,
+                    intakeEvent,
+                    _macroParameters,
+                    inResiduals,
+                    interval.toHours(),
+                    outMacroSingleResiduals);
+        if (verbose()) {
+            for(int i = 0; i < nbComp; i++) {
+                std::cout << "Macro Single   Out residual["
+                          << i
+                          << "] = "
+                          << outMacroSingleResiduals[i]
                           << std::endl;
             }
         }
@@ -151,16 +211,19 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
         fructose_assert(res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok);
 
         if (res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok) {
-            for (unsigned int i = 0; i < calculator.getResidualSize(); i++) {
-                fructose_assert_double_eq(outMultiResiduals[i], outSingleResiduals[i])
-//                fructose_assert (abs(outMultiResiduals[i]/outSingleResiduals[i]-1.0) < DELTA);
+            for (unsigned int i = 0; i < microCalculator.getResidualSize(); i++) {
+                fructose_assert_double_eq(outMicroMultiResiduals[i], outMicroSingleResiduals[i])
+                fructose_assert_double_eq(outMacroMultiResiduals[i], outMacroSingleResiduals[i])
+                fructose_assert_double_eq_rel_abs(outMicroMultiResiduals[i], outMacroMultiResiduals[i], 0.001, 0.001)
+                fructose_assert_double_eq_rel_abs(outMicroSingleResiduals[i], outMacroSingleResiduals[i], 0.001, 0.001)
             }
         }
     }
 
 
-    template <class CalculatorClass>
-    void testCalculator(const Tucuxi::Core::ParameterSetEvent &_parameters,
+    template <class CalculatorMicroClass, class CalculatorMacroClass, int nbComp>
+    void testCalculator(const Tucuxi::Core::ParameterSetEvent &_microParameters,
+                                       const Tucuxi::Core::ParameterSetEvent &_macroParameters,
                                        double _dose,
                                        Tucuxi::Core::RouteOfAdministration _route,
                                        std::chrono::hours _interval,
@@ -168,8 +231,8 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
                                        int _nbPoints)
     {
 
-        testSingleVsMultiple<CalculatorClass>(_parameters, _dose, _route, _interval, _infusionTime, _nbPoints);
-        testSteadyState<CalculatorClass>(_parameters, _dose, _route, _interval, _infusionTime, _nbPoints);
+        testSingleVsMultiple<CalculatorMicroClass, CalculatorMacroClass, nbComp>(_microParameters, _macroParameters, _dose, _route, _interval, _infusionTime, _nbPoints);
+        testSteadyState<CalculatorMicroClass, CalculatorMacroClass, nbComp>(_microParameters, _macroParameters, _dose, _route, _interval, _infusionTime, _nbPoints);
     }
 
 
@@ -180,37 +243,19 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
     /// The residuals are then compared and shall be identical.
     void test1compBolusSingleVsMultiple(const std::string& /* _testName */)
     {
-        if (verbose()) {
-	    std::cout << "Micro"<< std::endl;
-        }
-
         {
-            Tucuxi::Core::ParameterDefinitions parameterDefs;
-            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
-            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Ke", 0.0435331, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
-            Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
+            Tucuxi::Core::ParameterDefinitions microParameterDefs;
+            microParameterDefs.push_back(Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            microParameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Ke", 0.0435331, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            Tucuxi::Core::ParameterSetEvent microParameters(DateTime(), microParameterDefs);
 
-            testCalculator<Tucuxi::Core::OneCompartmentBolusMicro>
-                    (parameters,
-                     400.0,
-                     Tucuxi::Core::RouteOfAdministration::INTRAVASCULAR,
-                     1h,
-                     0s,
-                     250);
-        }
-
-        if (verbose()) {
-	    std::cout << "\nMacro"<< std::endl;
-        }
-
-        {
-            Tucuxi::Core::ParameterDefinitions parameterDefs;
-            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
-            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Cl", 15.106, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
-            Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
-
-            testCalculator<Tucuxi::Core::OneCompartmentBolusMacro>
-                    (parameters,
+            Tucuxi::Core::ParameterDefinitions macroParameterDefs;
+            macroParameterDefs.push_back(Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            macroParameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Cl", 15.106, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            Tucuxi::Core::ParameterSetEvent macroParameters(DateTime(), macroParameterDefs);
+            testCalculator<Tucuxi::Core::OneCompartmentBolusMicro, Tucuxi::Core::OneCompartmentBolusMacro, 1>
+                    (microParameters,
+					 macroParameters,
                      400.0,
                      Tucuxi::Core::RouteOfAdministration::INTRAVASCULAR,
                      1h,
@@ -219,6 +264,8 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
         }
 
     }
+
+#if 0
 
 
     /// \brief Test the residual calculation of extravascular. Compares single point vs multiple points
@@ -645,6 +692,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
                      250);
         }
     }
+#endif
 };
 
 #endif // TEST_INTAKEINTERVALCALCULATOR_H
