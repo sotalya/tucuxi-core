@@ -91,6 +91,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
             for(int i = 0; i < _nbPoints; i++) {
                 Tucuxi::Core::Concentrations concentration2;
                 concentration2 = predictionPtr->getValues()[0];
+		// printf("intake: %f, concentration: %f\n", concentrations[i], concentration2[i]);
                 fructose_assert_double_eq(concentrations[i], concentration2[i]);
             }
         }
@@ -170,6 +171,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
                         sumConcentration += concentrations[c * (_nbPoints - 1) + i];
 
                //     std::cout << cycle <<  " : " << i << " :: " << predictionPtr->getTimes()[cycle][i] << " . " << sumConcentration << " : " << concentration2[i] << std::endl;
+		// printf("intakeSum: %f, concentration: %f\n", sumConcentration, concentration2[i]);
 
                     fructose_assert_double_eq(sumConcentration, concentration2[i]);
                 }
@@ -251,6 +253,159 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
 
     }
 
+    void test2compBolus(const std::string& /* _testName */)
+    {
+        {
+            Tucuxi::Core::ParameterDefinitions parameterDefs;
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("V1", 340, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Ke", 0.0444294, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("K12", 0.0588235, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("K21", 0.0584795, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
+            Tucuxi::Core::ParameterSetSeries parametersSeries;
+            parametersSeries.addParameterSetEvent(parameters);
+
+            testCalculator<Tucuxi::Core::TwoCompartmentBolusMicro>
+                    (parametersSeries,
+                     400.0,
+                     Tucuxi::Core::RouteOfAdministration::INTRAVASCULAR,
+                     12h,
+                     0s,
+                     250);
+        }
+
+    }
+
+
+    void test2compExtra(const std::string& /* _testName */)
+    {
+
+        {
+            Tucuxi::Core::ParameterDefinitions parameterDefs;
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("V1", 340, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Ke", 0.0444294, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("K12", 0.0588235, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("K21", 0.0584795, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
+            Tucuxi::Core::ParameterSetSeries parametersSeries;
+            parametersSeries.addParameterSetEvent(parameters);
+
+            testCalculator<Tucuxi::Core::TwoCompartmentExtraMicro>
+                    (parametersSeries,
+                     400.0,
+                     Tucuxi::Core::RouteOfAdministration::EXTRAVASCULAR,
+                     12h,
+                     0s,
+                     250);
+        }
+    }
+
+
+    void test2compInfusion(const std::string& /* _testName */)
+    {
+        {
+            Tucuxi::Core::ParameterDefinitions parameterDefs;
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("V1", 340, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Ke", 0.0444294, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("K12", 0.0588235, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("K21", 0.0584795, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
+            Tucuxi::Core::ParameterSetSeries parametersSeries;
+            parametersSeries.addParameterSetEvent(parameters);
+
+            testCalculator<Tucuxi::Core::TwoCompartmentInfusionMicro>
+                    (parametersSeries,
+                     400.0,
+                     Tucuxi::Core::RouteOfAdministration::INFUSION,
+                     12h,
+                     1h,
+                     250);
+        }
+
+    }
+
+    void test3compBolus(const std::string& /* _testName */)
+    {
+        {
+            Tucuxi::Core::ParameterDefinitions parameterDefs;
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("F", 2, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("V1", 340, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Ke", 0.0444294, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("K12", 0.0588235, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("K21", 0.0584795, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("K13", 0.0882353, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("K31", 0.0877193, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
+            Tucuxi::Core::ParameterSetSeries parametersSeries;
+            parametersSeries.addParameterSetEvent(parameters);
+
+            testCalculator<Tucuxi::Core::ThreeCompartmentBolusMicro>
+                    (parametersSeries,
+                     400.0,
+                     Tucuxi::Core::RouteOfAdministration::INTRAVASCULAR,
+                     12h,
+                     0s,
+                     250);
+        }
+
+    }
+
+
+    void test3compExtra(const std::string& /* _testName */)
+    {
+
+        {
+            Tucuxi::Core::ParameterDefinitions parameterDefs;
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("F", 2, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("V1", 340, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Ke", 0.0444294, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("K12", 0.0588235, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("K21", 0.0584795, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("K13", 0.0882353, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("K31", 0.0877193, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
+            Tucuxi::Core::ParameterSetSeries parametersSeries;
+            parametersSeries.addParameterSetEvent(parameters);
+
+            testCalculator<Tucuxi::Core::ThreeCompartmentExtraMicro>
+                    (parametersSeries,
+                     400.0,
+                     Tucuxi::Core::RouteOfAdministration::EXTRAVASCULAR,
+                     12h,
+                     0s,
+                     250);
+        }
+    }
+
+
+    void test3compInfusion(const std::string& /* _testName */)
+    {
+        {
+            Tucuxi::Core::ParameterDefinitions parameterDefs;
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("F", 2, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("V1", 340, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Ke", 0.0444294, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("K12", 0.0588235, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("K21", 0.0584795, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("K13", 0.0882353, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("K31", 0.0877193, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
+            Tucuxi::Core::ParameterSetSeries parametersSeries;
+            parametersSeries.addParameterSetEvent(parameters);
+
+            testCalculator<Tucuxi::Core::ThreeCompartmentInfusionMicro>
+                    (parametersSeries,
+                     400.0,
+                     Tucuxi::Core::RouteOfAdministration::INFUSION,
+                     12h,
+                     1h,
+                     250);
+        }
+
+    }
 };
 
 #endif // TEST_CONCENTRATIONCALCULATOR_H
