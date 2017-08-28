@@ -49,7 +49,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
             Tucuxi::Core::TimeOffsets times;
             Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, _dose, interval, _route, infusionTime, _nbPoints);
 
-
+	    // std::cout << typeid(calculator).name() << std::endl;
 
             {
 
@@ -91,7 +91,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
             for(int i = 0; i < _nbPoints; i++) {
                 Tucuxi::Core::Concentrations concentration2;
                 concentration2 = predictionPtr->getValues()[0];
-		// printf("intake: %f, concentration: %f\n", concentrations[i], concentration2[i]);
+                // std::cout << i <<  " :: " << concentrations[i] << " : " << concentration2[i] << std::endl;
                 fructose_assert_double_eq(concentrations[i], concentration2[i]);
             }
         }
@@ -138,6 +138,11 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
                             outResiduals,
                             true);
 
+#if 0
+		for(int testPoint = 0; testPoint < (_nbPoints - 1 ) * nbCycles + 1; testPoint++) 
+			std::cout << "concentration[" << testPoint << "]: " << concentrations[testPoint] << std::endl;
+#endif
+
                 fructose_assert(res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok);
             }
 
@@ -158,6 +163,12 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
                             _nbPoints,
                             intakeSeries,
                             _parameters);
+
+#if 0
+		for(int testCycle = 0; testCycle < nbCycles; testCycle++) 
+			for(int testNbPoint = 0; testNbPoint < _nbPoints; testNbPoint++) 
+				std::cout << "concentration[" << testCycle << "]" << "[" << testNbPoint<< "]" << ": " << predictionPtr->getValues()[testCycle][testNbPoint] << std::endl;
+#endif
             }
 
 
@@ -167,11 +178,12 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
                 for(int i = 0; i < _nbPoints - 1; i++) {
 
                     double sumConcentration = 0.0;
-                    for(int c = 0; c < cycle + 1; c++)
+                    for(int c = 0; c < cycle + 1; c++) {
                         sumConcentration += concentrations[c * (_nbPoints - 1) + i];
+			// std::cout << c <<  " : " << sumConcentration << " : " << concentrations[c * (_nbPoints - 1) + i] << std::endl;
+		    }
 
-               //     std::cout << cycle <<  " : " << i << " :: " << predictionPtr->getTimes()[cycle][i] << " . " << sumConcentration << " : " << concentration2[i] << std::endl;
-		// printf("intakeSum: %f, concentration: %f\n", sumConcentration, concentration2[i]);
+                    // std::cout << cycle <<  " : " << i << " :: " << predictionPtr->getTimes()[cycle][i] << " . " << sumConcentration << " : " << concentration2[i] << std::endl;
 
                     fructose_assert_double_eq(sumConcentration, concentration2[i]);
                 }

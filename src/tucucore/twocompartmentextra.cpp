@@ -53,7 +53,10 @@ bool TwoCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
     bOK &= checkValue(!std::isnan(m_F), "The F is NaN.");
     bOK &= checkValue(!std::isinf(m_F), "The F is Inf.");
     bOK &= checkValue(m_NbPoints >= 0, "The number of points is zero or negative.");
-    bOK &= checkValue( m_Int > 0, "The interval time is negative.");
+    bOK &= checkValue(m_Int > 0, "The interval time is not greater than zero.");
+    bOK &= checkValue(m_Alpha >= 0, "Alpha is negative.");
+    bOK &= checkValue(m_Beta >= 0, "Beta is negative.");
+
 
     return true;
 }
@@ -165,7 +168,10 @@ bool TwoCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, cons
     bOK &= checkValue(!std::isnan(m_F), "The F is NaN.");
     bOK &= checkValue(!std::isinf(m_F), "The F is Inf.");
     bOK &= checkValue(m_NbPoints >= 0, "The number of points is zero or negative.");
-    bOK &= checkValue( m_Int > 0, "The interval time is negative.");
+    bOK &= checkValue(m_Int > 0, "The interval time is not greater than zero.");
+    bOK &= checkValue(m_Alpha >= 0, "Alpha is negative.");
+    bOK &= checkValue(m_Beta >= 0, "Beta is negative.");
+
 
     return true;
 }

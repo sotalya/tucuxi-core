@@ -73,8 +73,10 @@ bool TwoCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent, c
     bOK &= checkValue(!std::isinf(m_K21), "The K21 is Inf.");
     bOK &= checkValue(m_Divider != 0.0, "Divide by zero.");
     bOK &= checkValue(m_Tinf >= 0, "The infusion time is zero or negative.");
-    bOK &= checkValue(m_Int > 0, "The interval time is negative.");
     bOK &= checkValue(m_NbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkValue(m_Int > 0, "The interval time is not greater than zero.");
+    bOK &= checkValue(m_Alpha >= 0, "Alpha is negative.");
+    bOK &= checkValue(m_Beta >= 0, "Beta is negative.");
 
     return bOK;
 }
@@ -307,8 +309,11 @@ bool TwoCompartmentInfusionMacro::checkInputs(const IntakeEvent& _intakeEvent, c
     bOK &= checkValue(!std::isinf(v2), "The V2 is Inf.");
     bOK &= checkValue(m_Divider != 0.0, "Divide by zero.");
     bOK &= checkValue(m_Tinf >= 0, "The infusion time is zero or negative.");
-    bOK &= checkValue(m_Int > 0, "The interval time is negative.");
     bOK &= checkValue(m_NbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkValue(m_Int > 0, "The interval time is not greater than zero.");
+    bOK &= checkValue(m_Alpha >= 0, "Alpha is negative.");
+    bOK &= checkValue(m_Beta >= 0, "Beta is negative.");
+
 
     return bOK;
 }

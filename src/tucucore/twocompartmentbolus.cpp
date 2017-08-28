@@ -32,18 +32,10 @@ bool TwoCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
     m_NbPoints = _intakeEvent.getNbPoints();
     m_Int = (_intakeEvent.getInterval()).toHours();
 
-#ifdef DEBUG
-    Tucuxi::Common::LoggerHelper logHelper;
-
-    logHelper.debug("<<Input Values>>");
-    logHelper.debug("m_D: {}", m_D);
-    logHelper.debug("m_V1: {}", m_V1);
-    logHelper.debug("m_Ke: {}", m_Ke);
-    logHelper.debug("m_K12: {}", m_K12);
-    logHelper.debug("m_K21: {}", m_K21);
-    logHelper.debug("m_NbPoints: {}", m_NbPoints);
-    logHelper.debug("m_Int: {}", m_Int);
-#endif
+    Value sumK = m_Ke + m_K12 + m_K21;
+    m_RootK = std::sqrt((sumK * sumK) - (4 * m_K21 * m_Ke));
+    m_Alpha = (sumK + m_RootK)/2;
+    m_Beta = (sumK - m_RootK)/2;
 
     bool bOK = checkValue(m_D >= 0, "The dose is negative.");
     bOK &= checkValue(!std::isnan(m_D), "The dose is NaN.");
@@ -57,13 +49,25 @@ bool TwoCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
     bOK &= checkValue(m_K21 > 0, "The K21 is not greater than zero.");
     bOK &= checkValue(!std::isnan(m_K21), "The K21 is NaN.");
     bOK &= checkValue(!std::isinf(m_K21), "The K21 is Inf.");
-    bOK &= checkValue(m_NbPoints >= 0, "The number of points is zero or negative.");
-    bOK &= checkValue(m_Int > 0, "The interval time is negative.");
+    bOK &= checkValue(m_NbPoints >= 0, "The number of points is negative.");
+    bOK &= checkValue(m_Int > 0, "The interval time is not greater than zero.");
+    bOK &= checkValue(m_Alpha >= 0, "Alpha is negative.");
+    bOK &= checkValue(m_Beta >= 0, "Beta is negative.");
 
-    Value sumK = m_Ke + m_K12 + m_K21;
-    m_RootK = std::sqrt((sumK * sumK) - (4 * m_K21 * m_Ke));
-    m_Alpha = (sumK + m_RootK)/2;
-    m_Beta = (sumK - m_RootK)/2;
+#ifdef DEBUG
+    Tucuxi::Common::LoggerHelper logHelper;
+
+    logHelper.debug("<<Input Values>>");
+    logHelper.debug("m_D: {}", m_D);
+    logHelper.debug("m_V1: {}", m_V1);
+    logHelper.debug("m_Ke: {}", m_Ke);
+    logHelper.debug("m_K12: {}", m_K12);
+    logHelper.debug("m_K21: {}", m_K21);
+    logHelper.debug("m_NbPoints: {}", m_NbPoints);
+    logHelper.debug("m_Int: {}", m_Int);
+    logHelper.debug("m_Alpha: {}", m_Alpha);
+    logHelper.debug("m_Beta: {}", m_Beta);
+#endif
 
     return bOK;
 }
@@ -144,6 +148,11 @@ bool TwoCompartmentBolusMacro::checkInputs(const IntakeEvent& _intakeEvent, cons
     m_NbPoints = _intakeEvent.getNbPoints();
     m_Int = (_intakeEvent.getInterval()).toHours();
 
+    Value sumK = m_Ke + m_K12 + m_K21;
+    m_RootK = std::sqrt((sumK * sumK) - (4 * m_K21 * m_Ke));
+    m_Alpha = (sumK + m_RootK)/2;
+    m_Beta = (sumK - m_RootK)/2;
+
 #ifdef DEBUG
     Tucuxi::Common::LoggerHelper logHelper;
 
@@ -176,12 +185,9 @@ bool TwoCompartmentBolusMacro::checkInputs(const IntakeEvent& _intakeEvent, cons
     bOK &= checkValue(!std::isnan(v2), "The V2 is NaN.");
     bOK &= checkValue(!std::isinf(v2), "The V2 is Inf.");
     bOK &= checkValue(m_NbPoints >= 0, "The number of points is zero or negative.");
-    bOK &= checkValue(m_Int > 0, "The interval time is negative.");
-
-    Value sumK = m_Ke + m_K12 + m_K21;
-    m_RootK = std::sqrt((sumK * sumK) - (4 * m_K21 * m_Ke));
-    m_Alpha = (sumK + m_RootK)/2;
-    m_Beta = (sumK - m_RootK)/2;
+    bOK &= checkValue(m_Int > 0, "The interval time is not greater than zero.");
+    bOK &= checkValue(m_Alpha >= 0, "Alpha is negative.");
+    bOK &= checkValue(m_Beta >= 0, "Beta is negative.");
 
     return bOK;
 }

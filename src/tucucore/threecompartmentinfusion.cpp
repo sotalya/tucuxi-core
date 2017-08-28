@@ -39,6 +39,19 @@ bool ThreeCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent,
     m_Int = _intakeEvent.getInterval().toHours();
     m_NbPoints = _intakeEvent.getNbPoints();
 
+    a0 = m_Ke * m_K21 * m_K31;
+    a1 = m_Ke * m_K31 + m_K21 * m_K31 + m_K21 * m_K13 + m_Ke * m_K21 + m_K31 * m_K12;
+    a2 = m_Ke + m_K12 + m_K13 + m_K21 + m_K31;
+    p = a1 - std::pow(a2,2) / 3;
+    q = 2 * std::pow(a2,3) / 27 - a1 * a2 / 3 + a0;
+    r1 = std::sqrt(-(std::pow(p,3) / 27));
+    r2 = 2 * std::pow(r1,1/3);
+    phi = std::acos(- q / (2 * r1)) / 3;
+
+    m_Alpha = - (std::cos(phi) * r2 - a2 / 3);
+    m_Beta = - (std::cos(phi + 2 * 3.1428 / 3) * r2 - a2/3);
+    m_Gamma = - (std::cos(phi + 4 * 3.1428/3) * r2 - a2/3);
+
 #ifdef DEBUG
     Tucuxi::Common::LoggerHelper logHelper;
 
@@ -81,19 +94,12 @@ bool ThreeCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent,
     bOK &= checkValue(!std::isnan(m_K31), "The K31 is NaN.");
     bOK &= checkValue(!std::isinf(m_K31), "The K31 is Inf.");
     bOK &= checkValue(m_Tinf > 0, "The infusion time is not greater than zero.");
+    bOK &= checkValue(m_Int > 0, "The interval time is not greater than zero.");
+    bOK &= checkValue(m_Alpha >= 0, "Alpha is negative.");
+    bOK &= checkValue(m_Beta >= 0, "Beta is negative.");
+    bOK &= checkValue(m_Gamma >= 0, "Gamma is negative.");
 
-    a0 = m_Ke * m_K21 * m_K31;
-    a1 = m_Ke * m_K31 + m_K21 * m_K31 + m_K21 * m_K13 + m_Ke * m_K21 + m_K31 * m_K12;
-    a2 = m_Ke + m_K12 + m_K13 + m_K21 + m_K31;
-    p = a1 - std::pow(a2,2) / 3;
-    q = 2 * std::pow(a2,3) / 27 - a1 * a2 / 3 + a0;
-    r1 = std::sqrt(-(std::pow(p,3) / 27));
-    r2 = 2 * std::pow(r1,1/3);
-    phi = std::acos(- q / (2 * r1)) / 3;
 
-    m_Alpha = - (std::cos(phi) * r2 - a2 / 3);
-    m_Beta = - (std::cos(phi + 2 * 3.1428 / 3) * r2 - a2/3);
-    m_Gamma = - (std::cos(phi + 4 * 3.1428/3) * r2 - a2/3);
 
     return true;
 }
@@ -192,6 +198,19 @@ bool ThreeCompartmentInfusionMacro::checkInputs(const IntakeEvent& _intakeEvent,
     m_Int = _intakeEvent.getInterval().toHours();
     m_NbPoints = _intakeEvent.getNbPoints();
 
+    a0 = m_Ke * m_K21 * m_K31;
+    a1 = m_Ke * m_K31 + m_K21 * m_K31 + m_K21 * m_K13 + m_Ke * m_K21 + m_K31 * m_K12;
+    a2 = m_Ke + m_K12 + m_K13 + m_K21 + m_K31;
+    p = a1 - std::pow(a2,2) / 3;
+    q = 2 * std::pow(a2,3) / 27 - a1 * a2 / 3 + a0;
+    r1 = std::sqrt(-(std::pow(p,3) / 27));
+    r2 = 2 * std::pow(r1,1/3);
+    phi = std::acos(- q / (2 * r1)) / 3;
+
+    m_Alpha = - (std::cos(phi) * r2 - a2 / 3);
+    m_Beta = - (std::cos(phi + 2 * 3.1428 / 3) * r2 - a2/3);
+    m_Gamma = - (std::cos(phi + 4 * 3.1428/3) * r2 - a2/3);
+
     bool bOK = checkValue(m_D >= 0, "The dose is negative.");
     bOK &= checkValue(!std::isnan(m_D), "The dose is NaN.");
     bOK &= checkValue(!std::isinf(m_D), "The dose is Inf.");
@@ -214,19 +233,10 @@ bool ThreeCompartmentInfusionMacro::checkInputs(const IntakeEvent& _intakeEvent,
     bOK &= checkValue(!std::isnan(v2), "The V2 is NaN.");
     bOK &= checkValue(!std::isinf(v2), "The V2 is Inf.");
     bOK &= checkValue(m_Tinf > 0, "The infusion time is not greater than zero.");
-
-    a0 = m_Ke * m_K21 * m_K31;
-    a1 = m_Ke * m_K31 + m_K21 * m_K31 + m_K21 * m_K13 + m_Ke * m_K21 + m_K31 * m_K12;
-    a2 = m_Ke + m_K12 + m_K13 + m_K21 + m_K31;
-    p = a1 - std::pow(a2,2) / 3;
-    q = 2 * std::pow(a2,3) / 27 - a1 * a2 / 3 + a0;
-    r1 = std::sqrt(-(std::pow(p,3) / 27));
-    r2 = 2 * std::pow(r1,1/3);
-    phi = std::acos(- q / (2 * r1)) / 3;
-
-    m_Alpha = - (std::cos(phi) * r2 - a2 / 3);
-    m_Beta = - (std::cos(phi + 2 * 3.1428 / 3) * r2 - a2/3);
-    m_Gamma = - (std::cos(phi + 4 * 3.1428/3) * r2 - a2/3);
+    bOK &= checkValue(m_Int > 0, "The interval time is not greater than zero.");
+    bOK &= checkValue(m_Alpha >= 0, "Alpha is negative.");
+    bOK &= checkValue(m_Beta >= 0, "Beta is negative.");
+    bOK &= checkValue(m_Gamma >= 0, "Gamma is negative.");
 
     return true;
 }
