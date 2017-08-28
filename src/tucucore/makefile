@@ -10,7 +10,7 @@ TYPE := LIB
 
 # Let's keep it in alphabetical order
 SOURCES := aposteriorietascalculator.cpp \
-           cachedlogarithms.cpp \
+           cachedexponentials.cpp \
            concentrationcalculator.cpp \
            corecomponent.cpp \
            covariateextractor.cpp \

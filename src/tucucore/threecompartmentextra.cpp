@@ -100,12 +100,12 @@ bool ThreeCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, co
     return bOK;
 }
 
-void ThreeCompartmentExtraMicro::computeLogarithms(Eigen::VectorXd& _times) 
+void ThreeCompartmentExtraMicro::computeExponentials(Eigen::VectorXd& _times) 
 {
-    setLogs(Logarithms::Alpha, (-m_Alpha * _times).array().exp());
-    setLogs(Logarithms::Beta, (-m_Beta * _times).array().exp());
-    setLogs(Logarithms::Gamma, (-m_Gamma * _times).array().exp());
-    setLogs(Logarithms::Ka, (-m_Ka * _times).array().exp());
+    setExponentials(Exponentials::Alpha, (-m_Alpha * _times).array().exp());
+    setExponentials(Exponentials::Beta, (-m_Beta * _times).array().exp());
+    setExponentials(Exponentials::Gamma, (-m_Gamma * _times).array().exp());
+    setExponentials(Exponentials::Ka, (-m_Ka * _times).array().exp());
 }
 
 

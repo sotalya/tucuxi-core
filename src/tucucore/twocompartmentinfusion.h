@@ -10,23 +10,23 @@
 namespace Tucuxi {
 namespace Core {
 
-enum class TwoCompartmentInfusionLogarithms : int { Alpha, Beta, AlphaInf, BetaInf, BetaInf2, Root };
+enum class TwoCompartmentInfusionExponentials : int { Alpha, Beta, AlphaInf, BetaInf, BetaInf2, Root };
 
 /// \ingroup TucuCore
 /// \brief Intake interval calculator for the two compartment infusion algorithm
 /// \sa IntakeIntervalCalculator
-class TwoCompartmentInfusionMicro : public IntakeIntervalCalculatorBase<2, TwoCompartmentInfusionLogarithms>
+class TwoCompartmentInfusionMicro : public IntakeIntervalCalculatorBase<2, TwoCompartmentInfusionExponentials>
 {
     INTAKEINTERVALCALCULATOR_UTILS(TwoCompartmentInfusionMicro)
 public:
     /// \brief Constructor
     TwoCompartmentInfusionMicro();
 
-    typedef TwoCompartmentInfusionLogarithms Logarithms;
+    typedef TwoCompartmentInfusionExponentials Exponentials;
 
 protected:
     virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
-    virtual void computeLogarithms(Eigen::VectorXd& _times) override;
+    virtual void computeExponentials(Eigen::VectorXd& _times) override;
     virtual bool computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) override;
     virtual bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) override;
     void compute(const Residuals& _inResiduals, const int _forcesize, Eigen::VectorXd& _concentrations1, Eigen::VectorXd& _concentrations2);
@@ -51,12 +51,12 @@ private:
 
 inline void TwoCompartmentInfusionMicro::compute(const Residuals& _inResiduals, const int _forcesize, Eigen::VectorXd& _concentrations1, Eigen::VectorXd& _concentrations2)
 {
-    Eigen::VectorXd& alphaLogV = logs(Logarithms::Alpha); 
-    Eigen::VectorXd& betaLogV = logs(Logarithms::Beta); 
-    Eigen::VectorXd& alphaInfLogV = logs(Logarithms::AlphaInf); 
-    Eigen::VectorXd& betaInfLogV = logs(Logarithms::BetaInf); 
-    Eigen::VectorXd& betaInf2LogV = logs(Logarithms::BetaInf2); 
-    Eigen::VectorXd& rootLogV = logs(Logarithms::Root); 
+    Eigen::VectorXd& alphaLogV = exponentials(Exponentials::Alpha);
+    Eigen::VectorXd& betaLogV = exponentials(Exponentials::Beta);
+    Eigen::VectorXd& alphaInfLogV = exponentials(Exponentials::AlphaInf);
+    Eigen::VectorXd& betaInfLogV = exponentials(Exponentials::BetaInf);
+    Eigen::VectorXd& betaInf2LogV = exponentials(Exponentials::BetaInf2);
+    Eigen::VectorXd& rootLogV = exponentials(Exponentials::Root);
 
     Concentration resid1 = _inResiduals[0];
     Concentration resid2 = _inResiduals[1];

@@ -10,23 +10,23 @@
 namespace Tucuxi {
 namespace Core {
 
-enum class OneCompartmentExtraLogarithms : int { Ke, Ka };
+enum class OneCompartmentExtraExponentials : int { Ke, Ka };
 
 /// \ingroup TucuCore
 /// \brief Intake interval calculator for the one compartment extravascular algorithm
 /// \sa IntakeIntervalCalculator
-class OneCompartmentExtraMicro : public IntakeIntervalCalculatorBase<2, OneCompartmentExtraLogarithms>
+class OneCompartmentExtraMicro : public IntakeIntervalCalculatorBase<2, OneCompartmentExtraExponentials>
 {
     INTAKEINTERVALCALCULATOR_UTILS(OneCompartmentExtraMicro)
 public:
     /// \brief Constructor
     OneCompartmentExtraMicro();
 
-    typedef OneCompartmentExtraLogarithms Logarithms;
+    typedef OneCompartmentExtraExponentials Exponentials;
 
 protected:
     virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
-    virtual void computeLogarithms(Eigen::VectorXd& _times) override;
+    virtual void computeExponentials(Eigen::VectorXd& _times) override;
     virtual bool computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) override;
     virtual bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) override;
     void compute(const Residuals& _inResiduals, Eigen::VectorXd& _concentrations1, Eigen::VectorXd& _concentrations2);
@@ -49,9 +49,9 @@ inline void OneCompartmentExtraMicro::compute(const Residuals& _inResiduals, Eig
     Concentration part2 = m_Ka * resid2 / (-m_Ka + m_Ke);
 
     _concentrations1 = 
-        logs(Logarithms::Ke) * resid1
-	+ (logs(Logarithms::Ka) - logs(Logarithms::Ke)) * part2;
-    _concentrations2 = resid2 * logs(Logarithms::Ka);
+        exponentials(Exponentials::Ke) * resid1
+    + (exponentials(Exponentials::Ka) - exponentials(Exponentials::Ke)) * part2;
+    _concentrations2 = resid2 * exponentials(Exponentials::Ka);
 
     // In ezechiel, the equation of cencenrations2 for single points was different.
     // After the test, if the result is strange, 
@@ -59,9 +59,9 @@ inline void OneCompartmentExtraMicro::compute(const Residuals& _inResiduals, Eig
     #if 0
     // a.cwiseQuotient(b): element wise division of Matrix
     Eigen::VectorXd concentrations2 = 
-        (m_F * m_D * logs(Logarithms::Ka)).
-	cwiseQuotient((m_V * (1*Eigen::VectorXd::Ones(logs(Logarithms::Ka).size()) -
-        logs(Logarithms::Ka))));
+        (m_F * m_D * logs(Exponentials::Ka)).
+    cwiseQuotient((m_V * (1*Eigen::VectorXd::Ones(logs(Exponentials::Ka).size()) -
+        logs(Exponentials::Ka))));
     #endif
 }
 

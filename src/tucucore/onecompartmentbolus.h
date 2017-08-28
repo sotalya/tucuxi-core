@@ -10,23 +10,23 @@
 namespace Tucuxi {
 namespace Core {
 
-enum class OneCompartmentBolusLogarithms : int { Ke };
+enum class OneCompartmentBolusExponentials : int { Ke };
 
 /// \ingroup TucuCore
 /// \brief Intake interval calculator for the one compartment bolus algorithm
 /// \sa IntakeIntervalCalculator
-class OneCompartmentBolusMicro : public IntakeIntervalCalculatorBase<1, OneCompartmentBolusLogarithms>
+class OneCompartmentBolusMicro : public IntakeIntervalCalculatorBase<1, OneCompartmentBolusExponentials>
 {
     INTAKEINTERVALCALCULATOR_UTILS(OneCompartmentBolusMicro)
 public:
     /// \brief Constructor
     OneCompartmentBolusMicro();
 
-    typedef OneCompartmentBolusLogarithms Logarithms;
+    typedef OneCompartmentBolusExponentials Exponentials;
 
 protected:
     virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
-    virtual void computeLogarithms(Eigen::VectorXd& _times) override;
+    virtual void computeExponentials(Eigen::VectorXd& _times) override;
     virtual bool computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) override;
     virtual bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) override;
     void compute(const Residuals& _inResiduals, Eigen::VectorXd& _concentrations);
@@ -43,7 +43,7 @@ private:
 
 inline void OneCompartmentBolusMicro::compute(const Residuals& _inResiduals, Eigen::VectorXd& _concentrations)
 {    
-    _concentrations = (m_D / m_V + _inResiduals[0]) * logs(Logarithms::Ke);
+    _concentrations = (m_D / m_V + _inResiduals[0]) * exponentials(Exponentials::Ke);
 }
 
 class OneCompartmentBolusMacro : public OneCompartmentBolusMicro

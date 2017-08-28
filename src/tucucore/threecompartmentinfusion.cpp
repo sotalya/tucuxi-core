@@ -98,11 +98,11 @@ bool ThreeCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent,
     return true;
 }
 
-void ThreeCompartmentInfusionMicro::computeLogarithms(Eigen::VectorXd& _times)
+void ThreeCompartmentInfusionMicro::computeExponentials(Eigen::VectorXd& _times)
 {
-    setLogs(Logarithms::Alpha, (-m_Alpha * _times).array().exp());
-    setLogs(Logarithms::Beta, (-m_Beta * _times).array().exp());
-    setLogs(Logarithms::Gamma, (-m_Gamma * _times).array().exp());
+    setExponentials(Exponentials::Alpha, (-m_Alpha * _times).array().exp());
+    setExponentials(Exponentials::Beta, (-m_Beta * _times).array().exp());
+    setExponentials(Exponentials::Gamma, (-m_Gamma * _times).array().exp());
 }
 
 bool ThreeCompartmentInfusionMicro::computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)

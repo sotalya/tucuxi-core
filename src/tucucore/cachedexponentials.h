@@ -2,8 +2,8 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
-#ifndef TUCUXI_CORE_CACHEDLOGARITHMS_H
-#define TUCUXI_CORE_CACHEDLOGARITHMS_H
+#ifndef TUCUXI_CORE_CACHEDEXPONENTIALS_H
+#define TUCUXI_CORE_CACHEDEXPONENTIALS_H
 
 #include "tucucore/definitions.h"
 #include "tucucore/parameter.h"
@@ -12,35 +12,35 @@ namespace Tucuxi {
 namespace Core {
 
 /// \ingroup TucuCore
-/// \brief This class manages a cache of precomputated logarithms
-/// Equations for the different algorithms uses series of precomputed logarithms. These series of logarithms depends
+/// \brief This class manages a cache of precomputated exponentials
+/// Equations for the different algorithms uses series of precomputed exponentials. These series of exponentials depends
 /// on the following three factors:
 ///     - the duration of a cycle, 
 ///     - the number of points,
 ///     - parameters computed from the intake, patient data as well as measured drug concentration in the blood.
-/// The idea of CachedLogarithms is to try to avoid computing logarithms when possible. I.e. as long as the three factors  
+/// The idea of CachedExponentials is to try to avoid computing exponentials when possible. I.e. as long as the three factors
 /// listed above stay the same...
 /// The cache works with a hash values computed from these three factors.
-class CachedLogarithms
+class CachedExponentials
 {
 public:
     /// \brief Constructor
-    CachedLogarithms();
+    CachedExponentials();
     
-    /// \brief Get cached logarithms corresponding to the specified factors
+    /// \brief Get cached exponentials corresponding to the specified factors
     /// \param _cycleDuration Duration of a cycle
     /// \param _parameters The list of parameters computed from the intake, patient's data and measured drug concentrations
     /// \param _nbPoints The number of points to compute within the cycle
-    /// \param _logarithms Cached logarithms if found
+    /// \param _exponentials Cached exponentials if found
     /// \return Returns true if something has been found in the cache
-    bool get(const Tucuxi::Common::Duration& _cycleDuration, const ParameterSetEvent& _parameters, CycleSize _nbPoints, PrecomputedLogarithms& _logarithms);
+    bool get(const Tucuxi::Common::Duration& _cycleDuration, const ParameterSetEvent& _parameters, CycleSize _nbPoints, PrecomputedExponentials& _exponentials);
     
-    /// \brief Store logarithms into the cache for the specified factors
+    /// \brief Store exponentials into the cache for the specified factors
     /// \param _cycleDuration Duration of a cycle
     /// \param _parameters The list of parameters computed from the intake, patient's data and measured drug concentrations
     /// \param _nbPoints The number of points to compute within the cycle
-    /// \param _logarithms Logarithms to be cached
-    void set(const Tucuxi::Common::Duration& _cycleDuration, const ParameterSetEvent& _parameters, CycleSize _nbPoints, const PrecomputedLogarithms& _logarithms);
+    /// \param _exponentials exponentials to be cached
+    void set(const Tucuxi::Common::Duration& _cycleDuration, const ParameterSetEvent& _parameters, CycleSize _nbPoints, const PrecomputedExponentials& _exponentials);
     
 private:
     /// \brief Compute a hash based on the specified factors
@@ -51,11 +51,11 @@ private:
     std::size_t hash(const Tucuxi::Common::Duration& _cycleDuration, const ParameterSetEvent& _parameters, CycleSize _nbPoints) const;
 
 private:
-    std::map<std::size_t, PrecomputedLogarithms> m_cache; /// The actual cache of logarithms
+    std::map<std::size_t, PrecomputedExponentials> m_cache; /// The actual cache of exponentials
 };
 
 
 }
 }
 
-#endif // #ifndef TUCUXI_CORE_CACHEDLOGARITHMS_H
+#endif // #ifndef TUCUXI_CORE_CACHEDEXPONENTIALS_H

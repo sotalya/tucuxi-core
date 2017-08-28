@@ -7,7 +7,6 @@
 
 #include "tucucore/intakeevent.h"
 #include "tucucore/intakeintervalcalculator.h"
-#include "tucucore/cachedlogarithms.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -31,10 +30,10 @@ IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakePoints
     // Create our serie of times
     Eigen::VectorXd times = Eigen::VectorXd::LinSpaced(_cycleSize, 0, static_cast<int>(_intakeEvent.getInterval().toHours()));
 
-    // Can we reuse cached logarithms? 
-    if (!m_cache.get(_intakeEvent.getInterval(), _parameters, _cycleSize, m_precomputedLogarithms))	{
-        computeLogarithms(times);
-        m_cache.set(_intakeEvent.getInterval(), _parameters, _cycleSize, m_precomputedLogarithms);
+    // Can we reuse cached exponentials?
+    if (!m_cache.get(_intakeEvent.getInterval(), _parameters, _cycleSize, m_precomputedExponentials))	{
+        computeExponentials(times);
+        m_cache.set(_intakeEvent.getInterval(), _parameters, _cycleSize, m_precomputedExponentials);
     }
 
     if (!computeConcentrations(_inResiduals, _concentrations, _outResiduals)) {
@@ -79,11 +78,11 @@ IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakeSingle
         return Result::BadParameters;
     }
     
-    // To reuse interface of computeLogarithms with multiple points, remaine time as a vector.
+    // To reuse interface of computeExponentials with multiple points, remaine time as a vector.
     Eigen::VectorXd times(2); 
     times << static_cast<double>(_atTime), static_cast<double>(_intakeEvent.getInterval().toHours());
 
-    computeLogarithms(times);
+    computeExponentials(times);
 
     if (!computeConcentration(_atTime, _inResiduals, _concentrations, _outResiduals)) {
         return Result::BadConcentration;

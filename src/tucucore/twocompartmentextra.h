@@ -10,23 +10,23 @@
 namespace Tucuxi {
 namespace Core {
 
-enum class TwoCompartmentExtraLogarithms : int { Alpha, Beta, Ka };
+enum class TwoCompartmentExtraExponentials : int { Alpha, Beta, Ka };
 
 /// \ingroup TucuCore
 /// \brief Intake interval calculator for the two compartment extra algorithm
 /// \sa IntakeIntervalCalculator
-class TwoCompartmentExtraMicro : public IntakeIntervalCalculatorBase<3, TwoCompartmentExtraLogarithms>
+class TwoCompartmentExtraMicro : public IntakeIntervalCalculatorBase<3, TwoCompartmentExtraExponentials>
 {
     INTAKEINTERVALCALCULATOR_UTILS(TwoCompartmentExtraMicro)
 public:
     /// \brief Constructor
     TwoCompartmentExtraMicro();
 
-    typedef TwoCompartmentExtraLogarithms Logarithms;
+    typedef TwoCompartmentExtraExponentials Exponentials;
 
 protected:
     virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
-    virtual void computeLogarithms(Eigen::VectorXd& _times) override;
+    virtual void computeExponentials(Eigen::VectorXd& _times) override;
     virtual bool computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) override;
     virtual bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) override;
     bool compute(const Residuals& _inResiduals, Eigen::VectorXd& _concentrations1, Value& _concentrations2, Value& _concentrations3);
@@ -101,8 +101,8 @@ _concentrations1, Value& _concentrations2, Value& _concentrations3)
 
     // Calculate concentrations of compartment 1
     _concentrations1 = 
-	-2 * (B * logs(Logarithms::Beta) 
-		+ A * logs(Logarithms::Alpha) + C * logs(Logarithms::Ka)) / divider;
+    -2 * (B * exponentials(Exponentials::Beta)
+        + A * exponentials(Exponentials::Alpha) + C * exponentials(Exponentials::Ka)) / divider;
 
     // For compartment1, calculate A, B, C and divider
     A = 
@@ -129,11 +129,11 @@ _concentrations1, Value& _concentrations2, Value& _concentrations3)
 
     // Calculate concentrations of compartment 2 and 3
     _concentrations2 = 
-        2 * (B * logs(Logarithms::Beta)(logs(Logarithms::Beta).size() - 1)
-        + A * logs(Logarithms::Alpha)(logs(Logarithms::Alpha).size() - 1)
-        + C * logs(Logarithms::Ka)(logs(Logarithms::Ka).size() - 1)) / divider;
+        2 * (B * exponentials(Exponentials::Beta)(exponentials(Exponentials::Beta).size() - 1)
+        + A * exponentials(Exponentials::Alpha)(exponentials(Exponentials::Alpha).size() - 1)
+        + C * exponentials(Exponentials::Ka)(exponentials(Exponentials::Ka).size() - 1)) / divider;
     _concentrations3 = 
-    logs(Logarithms::Ka)(logs(Logarithms::Ka).size() - 1) * resid3;
+    exponentials(Exponentials::Ka)(exponentials(Exponentials::Ka).size() - 1) * resid3;
 
     return true;
 }

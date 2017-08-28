@@ -10,23 +10,23 @@
 namespace Tucuxi {
 namespace Core {
 
-enum class ThreeCompartmentIntraLogarithms : int { Alpha, Beta, Gamma };
+enum class ThreeCompartmentIntraExponentials : int { Alpha, Beta, Gamma };
 
 /// \ingroup TucuCore
 /// \brief Intake interval calculator for the three compartment infusion algorithm
 /// \sa IntakeIntervalCalculator
-class ThreeCompartmentInfusionMicro : public IntakeIntervalCalculatorBase<3, ThreeCompartmentIntraLogarithms>
+class ThreeCompartmentInfusionMicro : public IntakeIntervalCalculatorBase<3, ThreeCompartmentIntraExponentials>
 {
     INTAKEINTERVALCALCULATOR_UTILS(ThreeCompartmentInfusionMicro)
 public:
     /// \brief Constructor
     ThreeCompartmentInfusionMicro();
 
-    typedef ThreeCompartmentIntraLogarithms Logarithms;
+    typedef ThreeCompartmentIntraExponentials Exponentials;
 
 protected:
     virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
-    virtual void computeLogarithms(Eigen::VectorXd& _times) override;
+    virtual void computeExponentials(Eigen::VectorXd& _times) override;
     virtual bool computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) override;
     virtual bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) override;
     void compute(const Residuals& _inResiduals, const int _forcesize, Eigen::VectorXd& _concentrations1, Value& _concentrations2, Value& _concentrations3);
@@ -53,9 +53,9 @@ private:
 inline void ThreeCompartmentInfusionMicro::compute(const Residuals& _inResiduals, const int _forcesize, Eigen::VectorXd&
 _concentrations1, Value& _concentrations2, Value& _concentrations3)
 {
-    Eigen::VectorXd& alphaLogV = logs(Logarithms::Alpha); 
-    Eigen::VectorXd& betaLogV = logs(Logarithms::Beta); 
-    Eigen::VectorXd& gammaLogV = logs(Logarithms::Gamma); 
+    Eigen::VectorXd& alphaLogV = exponentials(Exponentials::Alpha);
+    Eigen::VectorXd& betaLogV = exponentials(Exponentials::Beta);
+    Eigen::VectorXd& gammaLogV = exponentials(Exponentials::Gamma);
 
     Value deltaD = (m_D / m_V1) / m_Tinf; 
     Value alphaTinf = std::exp(-m_Alpha* m_Tinf);

@@ -62,9 +62,9 @@ bool OneCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent, c
 
 
 
-void OneCompartmentInfusionMicro::computeLogarithms(Eigen::VectorXd& _times)
+void OneCompartmentInfusionMicro::computeExponentials(Eigen::VectorXd& _times)
 {
-    setLogs(Logarithms::Ke, (-m_Ke * _times).array().exp());
+    setExponentials(Exponentials::Ke, (-m_Ke * _times).array().exp());
 }
 
 

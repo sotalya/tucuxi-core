@@ -84,9 +84,9 @@ typedef std::vector<Concentration> Residuals;
 typedef int CycleSize;
 
 /// \ingroup TucuCore
-/// \brief A structure to store precomputed logarithms.
-//typedef std::vector<Eigen::VectorXd> PrecomputedLogarithms;
-typedef std::map<int, Eigen::VectorXd> PrecomputedLogarithms;
+/// \brief A structure to store precomputed exponentials.
+//typedef std::vector<Eigen::VectorXd> PrecomputedExponentials;
+typedef std::map<int, Eigen::VectorXd> PrecomputedExponentials;
 
 /// \ingroup TucuCore
 /// \brief Input operand types.

@@ -13,7 +13,7 @@
 #include "tucucore/definitions.h"
 //#include "tucucore/intakeevent.h"
 #include "tucucore/parameter.h"
-#include "tucucore/cachedlogarithms.h"
+#include "tucucore/cachedexponentials.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -120,11 +120,11 @@ protected:
     /// \return Returns true if inputs are ok
     virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) = 0;
 
-    /// \brief Computation of logarithm values that will may be shared by severall successive computations	
+    /// \brief Computation of exponentials values that will may be shared by severall successive computations
     /// \param _intakeEvent intake for the cycle (all cyles start with an intake)
     /// \param _parameters Parameters for the cycle (all cycles have constant parameters)
     /// \param _times Vector of times
-    virtual void computeLogarithms(Eigen::VectorXd& _times) = 0;
+    virtual void computeExponentials(Eigen::VectorXd& _times) = 0;
 
     /// \brief Compute concentrations using a specific algorithm
     /// \param _inResiduals Initial residual concentrations
@@ -145,10 +145,10 @@ protected:
     bool checkValue(bool _isOk,  const std::string& _errMsg);
 
 protected:
-    PrecomputedLogarithms m_precomputedLogarithms;      /// List of precomputed logarithms
+    PrecomputedExponentials m_precomputedExponentials;      /// List of precomputed exponentials
 
 private:
-    CachedLogarithms m_cache;                           /// The cache of precomputed logarithms
+    CachedExponentials m_cache;                           /// The cache of precomputed exponentials
 };
 
 template<unsigned int ResidualSize, typename EParameters>
@@ -161,17 +161,17 @@ public:
     }
 
 protected:
-    void setLogs(EParameters _param, Eigen::VectorXd &&_logs) {
-        m_precomputedLogarithms[static_cast<int>(_param)] = _logs;
-//        m_precomputedLogarithms = PrecomputedLogarithms(4);
-//        m_precomputedLogarithms[0] = _logs;
-//        m_precomputedLogarithms[0] = Eigen::VectorXd(_logs.rows(), _logs.cols());
-//        m_precomputedLogarithms[static_cast<int>(_param)] = _logs;
+    void setExponentials(EParameters _param, Eigen::VectorXd &&_logs) {
+        m_precomputedExponentials[static_cast<int>(_param)] = _logs;
+//        m_precomputedExponentials = PrecomputedExponentials(4);
+//        m_precomputedExponentials[0] = _logs;
+//        m_precomputedExponentials[0] = Eigen::VectorXd(_logs.rows(), _logs.cols());
+//        m_precomputedExponentials[static_cast<int>(_param)] = _logs;
     }
 
-    Eigen::VectorXd& logs(EParameters _param) {
-        return m_precomputedLogarithms[static_cast<int>(_param)];
-//        return m_precomputedLogarithms.at(static_cast<int>(_param));
+    Eigen::VectorXd& exponentials(EParameters _param) {
+        return m_precomputedExponentials[static_cast<int>(_param)];
+//        return m_precomputedExponentials.at(static_cast<int>(_param));
     }
 
 };

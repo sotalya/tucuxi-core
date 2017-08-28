@@ -51,10 +51,10 @@ bool OneCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
 }
 
 
-void OneCompartmentExtraMicro::computeLogarithms(Eigen::VectorXd& _times)       
+void OneCompartmentExtraMicro::computeExponentials(Eigen::VectorXd& _times)
 {
-    setLogs(Logarithms::Ka, (-m_Ka * _times).array().exp());
-    setLogs(Logarithms::Ke, (-m_Ke * _times).array().exp());
+    setExponentials(Exponentials::Ka, (-m_Ka * _times).array().exp());
+    setExponentials(Exponentials::Ke, (-m_Ke * _times).array().exp());
 }
 
 

@@ -69,10 +69,10 @@ bool TwoCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
 }
 
 
-void TwoCompartmentBolusMicro::computeLogarithms(Eigen::VectorXd& _times) 
+void TwoCompartmentBolusMicro::computeExponentials(Eigen::VectorXd& _times) 
 {
-    setLogs(Logarithms::Alpha, (-m_Alpha * _times).array().exp());
-    setLogs(Logarithms::Beta, (-m_Beta * _times).array().exp());
+    setExponentials(Exponentials::Alpha, (-m_Alpha * _times).array().exp());
+    setExponentials(Exponentials::Beta, (-m_Beta * _times).array().exp());
 }
 
 

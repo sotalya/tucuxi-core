@@ -14,15 +14,6 @@
 #include <vector>
 
 #include "tucucore/definitions.h"
-#include "tucucore/onecompartmentbolus.h"
-#include "tucucore/onecompartmentextra.h"
-#include "tucucore/onecompartmentinfusion.h"
-#include "tucucore/twocompartmentbolus.h"
-#include "tucucore/twocompartmentextra.h"
-#include "tucucore/twocompartmentinfusion.h"
-#include "tucucore/threecompartmentbolus.h"
-#include "tucucore/threecompartmentextra.h"
-#include "tucucore/threecompartmentinfusion.h"
 
 namespace Tucuxi {
 namespace Core {

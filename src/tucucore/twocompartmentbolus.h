@@ -10,23 +10,23 @@
 namespace Tucuxi {
 namespace Core {
 
-enum class TwoCompartmentBolusLogarithms : int { Alpha, Beta };
+enum class TwoCompartmentBolusExponentials : int { Alpha, Beta };
 
 /// \ingroup TucuCore
 /// \brief Intake interval calculator for the two compartment bolus algorithm
 /// \sa IntakeIntervalCalculator
-class TwoCompartmentBolusMicro : public IntakeIntervalCalculatorBase<2, TwoCompartmentBolusLogarithms>
+class TwoCompartmentBolusMicro : public IntakeIntervalCalculatorBase<2, TwoCompartmentBolusExponentials>
 {
     INTAKEINTERVALCALCULATOR_UTILS(TwoCompartmentBolusMicro)
 public:
     /// \brief Constructor
     TwoCompartmentBolusMicro();
 
-    typedef TwoCompartmentBolusLogarithms Logarithms;
+    typedef TwoCompartmentBolusExponentials Exponentials;
 
 protected:
     virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
-    virtual void computeLogarithms(Eigen::VectorXd& _times) override;
+    virtual void computeExponentials(Eigen::VectorXd& _times) override;
     virtual bool computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) override;
     virtual bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) override;
     void compute(const Residuals& _inResiduals, Eigen::VectorXd& _concentrations1, Eigen::VectorXd& _concentrations2);
@@ -58,9 +58,9 @@ inline void TwoCompartmentBolusMicro::compute(const Residuals& _inResiduals, Eig
 
     // Calculate concentrations for comp1 and comp2
     _concentrations1 = 
-        ((A * logs(Logarithms::Alpha)) + (B * logs(Logarithms::Beta))) / (2 * m_RootK);
+        ((A * exponentials(Exponentials::Alpha)) + (B * exponentials(Exponentials::Beta))) / (2 * m_RootK);
     _concentrations2 = 
-        ((A2 * logs(Logarithms::Alpha)) + (BB2 * logs(Logarithms::Beta))) / (2 * m_RootK);
+        ((A2 * exponentials(Exponentials::Alpha)) + (BB2 * exponentials(Exponentials::Beta))) / (2 * m_RootK);
 }
 
 class TwoCompartmentBolusMacro : public TwoCompartmentBolusMicro

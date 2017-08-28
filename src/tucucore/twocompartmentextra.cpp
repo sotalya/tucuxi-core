@@ -59,11 +59,11 @@ bool TwoCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
 }
 
 
-void TwoCompartmentExtraMicro::computeLogarithms(Eigen::VectorXd& _times) 
+void TwoCompartmentExtraMicro::computeExponentials(Eigen::VectorXd& _times) 
 {
-    setLogs(Logarithms::Alpha, (-m_Alpha * _times).array().exp());
-    setLogs(Logarithms::Beta, (-m_Beta * _times).array().exp());
-    setLogs(Logarithms::Ka, (-m_Ka * _times).array().exp());
+    setExponentials(Exponentials::Alpha, (-m_Alpha * _times).array().exp());
+    setExponentials(Exponentials::Beta, (-m_Beta * _times).array().exp());
+    setExponentials(Exponentials::Ka, (-m_Ka * _times).array().exp());
 }
 
 

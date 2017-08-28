@@ -1,6 +1,6 @@
 
 HEADERS += \
-    $$PWD/../../src/tucucore/cachedlogarithms.h \
+    $$PWD/../../src/tucucore/cachedexponentials.h \
     $$PWD/../../src/tucucore/concentrationcalculator.h \
     $$PWD/../../src/tucucore/definitions.h \
     $$PWD/../../src/tucucore/dosage.h \
@@ -43,7 +43,7 @@ HEADERS += \
     $$PWD/../../src/tucucore/aposteriorietascalculator.h
 
 SOURCES += \
-    $$PWD/../../src/tucucore/cachedlogarithms.cpp \
+    $$PWD/../../src/tucucore/cachedexponentials.cpp \
     $$PWD/../../src/tucucore/concentrationcalculator.cpp \
     $$PWD/../../src/tucucore/intakeintervalcalculator.cpp \
     $$PWD/../../src/tucucore/intakeextractor.cpp \

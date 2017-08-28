@@ -10,23 +10,23 @@
 namespace Tucuxi {
 namespace Core {
 
-enum class ThreeCompartmentExtraLogarithms : int { Alpha, Beta, Gamma, Ka };
+enum class ThreeCompartmentExtraExponentials : int { Alpha, Beta, Gamma, Ka };
 
 /// \ingroup TucuCore
 /// \brief Intake interval calculator for the three compartment extra algorithm
 /// \sa IntakeIntervalCalculator
-class ThreeCompartmentExtraMicro : public IntakeIntervalCalculatorBase<3, ThreeCompartmentExtraLogarithms>
+class ThreeCompartmentExtraMicro : public IntakeIntervalCalculatorBase<3, ThreeCompartmentExtraExponentials>
 {
     INTAKEINTERVALCALCULATOR_UTILS(ThreeCompartmentExtraMicro)
 public:
     /// \brief Constructor
     ThreeCompartmentExtraMicro();
 
-    typedef ThreeCompartmentExtraLogarithms Logarithms;
+    typedef ThreeCompartmentExtraExponentials Exponentials;
 
 protected:
     virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
-    virtual void computeLogarithms(Eigen::VectorXd& _times) override;
+    virtual void computeExponentials(Eigen::VectorXd& _times) override;
     virtual bool computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) override;
     virtual bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) override;
     void compute(const Residuals& _inResiduals, Eigen::VectorXd& _concentrations1, Value& _concentrations2, Value& _concentrations3);
@@ -70,23 +70,23 @@ _concentrations1, Value& _concentrations2, Value& _concentrations3)
 
     // Calculate concentrations for comp1, comp2 and comp3
     _concentrations1 = 
-        resid1 * (B * logs(Logarithms::Beta) 
-            + A * logs(Logarithms::Alpha) 
-            + C * logs(Logarithms::Gamma)
-            - (A + B + C) * logs(Logarithms::Ka));
+        resid1 * (B * exponentials(Exponentials::Beta)
+            + A * exponentials(Exponentials::Alpha)
+            + C * exponentials(Exponentials::Gamma)
+            - (A + B + C) * exponentials(Exponentials::Ka));
 
     // Do NOT use m_NbPoints because in case of single point calculation m_NbPoints = 0.
     _concentrations2 = 
-        resid2 + resid1 * (B2 * logs(Logarithms::Beta)((logs(Logarithms::Beta)).size() - 1) 
-            + A2 * logs(Logarithms::Alpha)((logs(Logarithms::Alpha)).size() - 1)
-            + C2 * logs(Logarithms::Gamma)((logs(Logarithms::Gamma)).size() - 1)
-            - (A2 + B2 + C2) * logs(Logarithms::Ka)((logs(Logarithms::Ka)).size() - 1));
+        resid2 + resid1 * (B2 * exponentials(Exponentials::Beta)((exponentials(Exponentials::Beta)).size() - 1)
+            + A2 * exponentials(Exponentials::Alpha)((exponentials(Exponentials::Alpha)).size() - 1)
+            + C2 * exponentials(Exponentials::Gamma)((exponentials(Exponentials::Gamma)).size() - 1)
+            - (A2 + B2 + C2) * exponentials(Exponentials::Ka)((exponentials(Exponentials::Ka)).size() - 1));
 
     _concentrations3 = 
-        resid3 + resid1 * (B3 * logs(Logarithms::Beta)((logs(Logarithms::Beta)).size() - 1) 
-            + A3 * logs(Logarithms::Alpha)((logs(Logarithms::Alpha)).size() - 1) 
-            + C3 * logs(Logarithms::Gamma)((logs(Logarithms::Gamma)).size() - 1)
-            - (A3 + B3 + C3) * logs(Logarithms::Ka)((logs(Logarithms::Ka)).size() - 1));
+        resid3 + resid1 * (B3 * exponentials(Exponentials::Beta)((exponentials(Exponentials::Beta)).size() - 1)
+            + A3 * exponentials(Exponentials::Alpha)((exponentials(Exponentials::Alpha)).size() - 1)
+            + C3 * exponentials(Exponentials::Gamma)((exponentials(Exponentials::Gamma)).size() - 1)
+            - (A3 + B3 + C3) * exponentials(Exponentials::Ka)((exponentials(Exponentials::Ka)).size() - 1));
 
 }
 

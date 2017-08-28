@@ -79,14 +79,14 @@ bool TwoCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent, c
     return bOK;
 }
 
-void TwoCompartmentInfusionMicro::computeLogarithms(Eigen::VectorXd& _times)
+void TwoCompartmentInfusionMicro::computeExponentials(Eigen::VectorXd& _times)
 {
-    setLogs(Logarithms::Alpha, (-m_Alpha * _times).array().exp());
-    setLogs(Logarithms::Beta, (-m_Beta * _times).array().exp());
-    setLogs(Logarithms::AlphaInf, (m_Alpha * _times).array().exp());
-    setLogs(Logarithms::BetaInf, (m_Beta * _times).array().exp());
-    setLogs(Logarithms::BetaInf2, (-2 * m_Beta * _times).array().exp());
-    setLogs(Logarithms::Root, (m_RootK * _times).array().exp());
+    setExponentials(Exponentials::Alpha, (-m_Alpha * _times).array().exp());
+    setExponentials(Exponentials::Beta, (-m_Beta * _times).array().exp());
+    setExponentials(Exponentials::AlphaInf, (m_Alpha * _times).array().exp());
+    setExponentials(Exponentials::BetaInf, (m_Beta * _times).array().exp());
+    setExponentials(Exponentials::BetaInf2, (-2 * m_Beta * _times).array().exp());
+    setExponentials(Exponentials::Root, (m_RootK * _times).array().exp());
 }
 
 
@@ -122,12 +122,12 @@ bool TwoCompartmentInfusionMicro::computeConcentration(const Value& _atTime, con
 
     // remove following code after verification with unit test
 #if 0
-    Eigen::VectorXd& alphaLogV = logs(Logarithms::Alpha); 
-    Eigen::VectorXd& betaLogV = logs(Logarithms::Beta); 
-    Eigen::VectorXd& alphaInfLogV = logs(Logarithms::AlphaInf); 
-    Eigen::VectorXd& betaInfLogV = logs(Logarithms::BetaInf); 
-    Eigen::VectorXd& betaInf2LogV = logs(Logarithms::BetaInf2); 
-    Eigen::VectorXd& rootLogV = logs(Logarithms::Root); 
+    Eigen::VectorXd& alphaLogV = logs(Exponentials::Alpha); 
+    Eigen::VectorXd& betaLogV = logs(Exponentials::Beta); 
+    Eigen::VectorXd& alphaInfLogV = logs(Exponentials::AlphaInf); 
+    Eigen::VectorXd& betaInfLogV = logs(Exponentials::BetaInf); 
+    Eigen::VectorXd& betaInf2LogV = logs(Exponentials::BetaInf2); 
+    Eigen::VectorXd& rootLogV = logs(Exponentials::Root); 
 
     Concentration resid1 = _inResiduals[0];
     Concentration resid2 = _inResiduals[1];
@@ -210,7 +210,7 @@ bool TwoCompartmentInfusionMicro::computeConcentration(const Value& _atTime, con
 
     for (int i = 0; i < 2; i++)
     {
-	    printf("alphaLogV[%d]: %f\n", i, logs(Logarithms::Alpha)[i]);
+	    printf("alphaLogV[%d]: %f\n", i, logs(Exponentials::Alpha)[i]);
 	    printf("_concentrations[%d]: %f\n", i, _concentrations[i]);
 	    printf("_outResiduals[%d]: %f\n", i, _outResiduals[i]);
     }

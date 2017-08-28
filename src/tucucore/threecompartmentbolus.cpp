@@ -97,11 +97,11 @@ bool ThreeCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, co
 }
 
 
-void ThreeCompartmentBolusMicro::computeLogarithms(Eigen::VectorXd& _times) 
+void ThreeCompartmentBolusMicro::computeExponentials(Eigen::VectorXd& _times)
 {
-    setLogs(Logarithms::Alpha, (-m_Alpha * _times).array().exp());
-    setLogs(Logarithms::Beta, (-m_Beta * _times).array().exp());
-    setLogs(Logarithms::Gamma, (-m_Gamma * _times).array().exp());
+    setExponentials(Exponentials::Alpha, (-m_Alpha * _times).array().exp());
+    setExponentials(Exponentials::Beta, (-m_Beta * _times).array().exp());
+    setExponentials(Exponentials::Gamma, (-m_Gamma * _times).array().exp());
 }
 
 
