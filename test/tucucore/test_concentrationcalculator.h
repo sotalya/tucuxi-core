@@ -196,6 +196,72 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
 
 
 
+        // Create 2 samples and compare the result of computeConcentrations() and pointsAtTime().
+        {
+            CalculatorClass calculator;
+
+            int nbPoints = 201;
+
+            DateTime now;
+            Tucuxi::Common::Duration offsetTime = 0s;
+            Tucuxi::Common::Duration interval = _interval;
+            Tucuxi::Common::Duration infusionTime = _infusionTime;
+
+            Tucuxi::Core::Concentrations concentrations;
+            Tucuxi::Core::TimeOffsets times;
+            Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, _dose, interval, _route, infusionTime, nbPoints);
+
+            Tucuxi::Core::ConcentrationPredictionPtr predictionPtr;
+            {
+                predictionPtr = std::make_unique<Tucuxi::Core::ConcentrationPrediction>();
+
+                Tucuxi::Core::IntakeSeries intakeSeries;
+                CalculatorClass calculator2;
+                intakeEvent.setCalculator(&calculator2);
+                intakeSeries.push_back(intakeEvent);
+                Tucuxi::Core::IConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::ConcentrationCalculator();
+                concentrationCalculator->computeConcentrations(
+                            predictionPtr,
+                            nbPoints,
+                            intakeSeries,
+                            _parameters);
+                delete concentrationCalculator;
+            }
+            {
+
+                Tucuxi::Core::IntakeSeries intakeSeries;
+                CalculatorClass calculator2;
+                intakeEvent.setCalculator(&calculator2);
+                intakeSeries.push_back(intakeEvent);
+
+                Tucuxi::Core::SampleSeries sampleSeries;
+                DateTime date0 = now + interval/4.0;
+                Tucuxi::Core::SampleEvent s0(date0);
+                sampleSeries.push_back(s0);
+                DateTime date1 = now + interval * 3.0 /4.0;
+                Tucuxi::Core::SampleEvent s1(date1);
+                sampleSeries.push_back(s1);
+
+                Tucuxi::Core::IConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::ConcentrationCalculator();
+                concentrationCalculator->computeConcentrationsAtTimes(
+                            concentrations,
+                            intakeSeries,
+                            _parameters,
+                            sampleSeries);
+                delete concentrationCalculator;
+            }
+
+            int n0 = (nbPoints - 1) / 4;
+            int n1 = (nbPoints - 1) * 3 / 4;
+
+            TMP_UNUSED_PARAMETER(n0);
+            TMP_UNUSED_PARAMETER(n1);
+
+        //    fructose_assert_double_eq(concentrations[0], predictionPtr->getValues()[0][n0]);
+        //    fructose_assert_double_eq(concentrations[1], predictionPtr->getValues()[0][n1]);
+
+        }
+
         // Create samples and compare the result of computeConcentrations() and pointsAtTime().
         // This can be done by creating samples corresponding to the number of points asked, and
         // synchronized with the times at which the concentration points are expected
