@@ -15,6 +15,7 @@
 #include "test_intakeintervalcalculator.h"
 #include "test_concentrationcalculator.h"
 #include "test_pkmodel.h"
+#include "test_percentilecalculator.h"
 
 int main(int argc, char** argv) 
 {
@@ -144,6 +145,20 @@ int main(int argc, char** argv)
         exit(1);
     }
     std::cout << "PkModel test succeeded\n";
+
+
+
+    TestPercentileCalculator percentileCalculatorTests;
+
+    // one compartment
+    percentileCalculatorTests.add_test("test1", &TestPercentileCalculator::test1);
+
+    res = percentileCalculatorTests.run(argc, argv);
+    if (res != 0) {
+        std::cerr << "Percentile Calculators test failed\n";
+        exit(1);
+    }
+    std::cout << "Percentile Calculators test succeeded\n";
 
     return 0;
 }

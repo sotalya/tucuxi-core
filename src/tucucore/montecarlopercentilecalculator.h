@@ -36,10 +36,8 @@ public:
     virtual bool shouldAbort() { return false;}
 };
 
-
-
-class MonteCarloPercentileCalculator {
-
+class IPercentileCalculator
+{
 public:
 
     enum class ProcessingResult
@@ -48,8 +46,78 @@ public:
         Failure,
         Aborted
     };
+};
 
-    MonteCarloPercentileCalculator();
+
+class IAprioriPercentileCalculator : public IPercentileCalculator
+{
+public:
+
+    ///
+    /// \brief calculate
+    /// \param _percentiles percentiles calculated within the method
+    /// \param _nbPoints Number of points asked for each cycle
+    /// \param _intakes Intake series
+    /// \param _parameters Initial parameters series
+    /// \param _omega covariance matrix for inter-individual variability
+    /// \param _residualErrorModel Residual error model
+    /// \param _etas Etas pre-calculated by the aposteriori calculator
+    /// \param _samples List of samples
+    /// \param _percentileRanks List of percentiles ranks
+    /// \param _aborter An aborter object allowing to abort the calculation
+    /// \return The status of calculation
+    virtual ProcessingResult calculate(
+            PercentilesPrediction _percentiles,
+            const int _nbPoints,
+            const IntakeSeries &_intakes,
+            const ParameterSetSeries &_parameters,
+            const OmegaMatrix& _omega,
+            const IResidualErrorModel &_residualErrorModel,
+            const Etas& _etas,
+            const SampleSeries &_samples,
+            const PercentileRanks &_percentileRanks,
+            ProcessingAborter *_aborter) = 0;
+};
+
+class IAposterioriPercentileCalculator : public IPercentileCalculator
+{
+public:
+
+    ///
+    /// \brief calculate
+    /// \param _percentiles percentiles calculated within the method
+    /// \param _nbPoints Number of points asked for each cycle
+    /// \param _intakes Intake series
+    /// \param _parameters Initial parameters series
+    /// \param _omega covariance matrix for inter-individual variability
+    /// \param _residualErrorModel Residual error model
+    /// \param _etas Etas pre-calculated by the aposteriori calculator
+    /// \param _samples List of samples
+    /// \param _percentileRanks List of percentiles ranks
+    /// \param _aborter An aborter object allowing to abort the calculation
+    /// \return The status of calculation
+    virtual ProcessingResult calculate(
+            PercentilesPrediction _percentiles,
+            const int _nbPoints,
+            const IntakeSeries &_intakes,
+            const ParameterSetSeries &_parameters,
+            const OmegaMatrix& _omega,
+            const IResidualErrorModel &_residualErrorModel,
+            const Etas& _etas,
+            const SampleSeries &_samples,
+            const PercentileRanks &_percentileRanks,
+            ProcessingAborter *_aborter) = 0;
+};
+
+
+
+class MonteCarloPercentileCalculatorBase : public IPercentileCalculator
+{
+
+public:
+
+
+    MonteCarloPercentileCalculatorBase();
 
 protected:
 
@@ -68,7 +136,8 @@ protected:
     /// \param _aborter An aborter object allowing to abort the calculation
     /// \return The status of calculation
     ///
-    ProcessingResult computePredictionsAndSortPercentiles(PercentilesPrediction _percentiles,
+    ProcessingResult computePredictionsAndSortPercentiles(
+            PercentilesPrediction _percentiles,
             const int _nbPoints,
             const IntakeSeries &_intakes,
             const ParameterSetSeries &_parameters,
@@ -86,7 +155,7 @@ protected:
 * Used to calculated Monte Carlo of population or apriori curves
 * The number of simulated curves is hardcoded to be 10,000
 */
-class AprioriMonteCarloPercentileCalculator : public MonteCarloPercentileCalculator {
+class AprioriMonteCarloPercentileCalculator : public MonteCarloPercentileCalculatorBase {
 
 public:
 
@@ -105,7 +174,8 @@ public:
     /// \param _aborter An aborter object allowing to abort the calculation
     /// \return The status of calculation
     ///
-    ProcessingResult calculate(PercentilesPrediction _percentiles,
+    ProcessingResult calculate(
+            PercentilesPrediction _percentiles,
             const int _nbPoints,
             const IntakeSeries &_intakes,
             const ParameterSetSeries &_parameters,
@@ -119,7 +189,7 @@ public:
 };
 
 
-class AposterioriMonteCarloPercentileCalculator : public MonteCarloPercentileCalculator {
+class AposterioriMonteCarloPercentileCalculator : public MonteCarloPercentileCalculatorBase {
 
 public:
 
@@ -138,7 +208,46 @@ public:
     /// \param _percentileRanks List of percentiles ranks
     /// \param _aborter An aborter object allowing to abort the calculation
     /// \return The status of calculation
-    ProcessingResult calculate(PercentilesPrediction _percentiles,
+    ProcessingResult calculate(
+            PercentilesPrediction _percentiles,
+            const int _nbPoints,
+            const IntakeSeries &_intakes,
+            const ParameterSetSeries &_parameters,
+            const OmegaMatrix& _omega,
+            const IResidualErrorModel &_residualErrorModel,
+            const Etas& _etas,
+            const SampleSeries &_samples,
+            const PercentileRanks &_percentileRanks,
+            ProcessingAborter *_aborter);
+
+
+};
+
+
+/// \brief The AposterioriNormalApproximationMonteCarloPercentileCalculator class
+/// This class implements the normal approximation of the posterior, and
+/// only apply steps 1 and 2 of the Annex A of Aziz document (posteriori2.pdf)
+class AposterioriNormalApproximationMonteCarloPercentileCalculator : public MonteCarloPercentileCalculatorBase {
+
+public:
+
+    AposterioriNormalApproximationMonteCarloPercentileCalculator();
+
+    ///
+    /// \brief calculate
+    /// \param _percentiles percentiles calculated within the method
+    /// \param _nbPoints Number of points asked for each cycle
+    /// \param _intakes Intake series
+    /// \param _parameters Initial parameters series
+    /// \param _omega covariance matrix for inter-individual variability
+    /// \param _residualErrorModel Residual error model
+    /// \param _etas Etas pre-calculated by the aposteriori calculator
+    /// \param _samples List of samples
+    /// \param _percentileRanks List of percentiles ranks
+    /// \param _aborter An aborter object allowing to abort the calculation
+    /// \return The status of calculation
+    ProcessingResult calculate(
+            PercentilesPrediction _percentiles,
             const int _nbPoints,
             const IntakeSeries &_intakes,
             const ParameterSetSeries &_parameters,
