@@ -81,8 +81,10 @@ class ConcentrationPrediction
 {
 public:
 
-    bool streamToFile(const std::string fileName) {
-        std::ofstream ostrm(fileName, std::ios::binary);
+    bool streamToFile(const std::string _fileName) {
+        std::ofstream ostrm(_fileName, std::ios::binary);
+        if (ostrm.rdstate() & std::ios_base::failbit)
+            return false;
 
         int nbCycles = this->m_values.size();
         for(int cycle = 0; cycle < nbCycles; cycle ++) {
@@ -95,6 +97,8 @@ public:
                 ostrm << times2[i] + 24*cycle << " " << concentration2[i] << std::endl;
             }
         }
+
+        return true;
     }
 
     bool allocate(const CycleSize _nbPoints, TimeOffsets &_times, Concentrations &_values)
