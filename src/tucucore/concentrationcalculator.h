@@ -17,6 +17,8 @@
 namespace Tucuxi {
 namespace Core {
 
+#define total_second_in_hour 3600.0
+
 class IConcentrationCalculator
 {
 

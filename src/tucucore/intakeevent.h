@@ -156,6 +156,16 @@ public:
         return m_calculator->calculateIntakePoints(_concentrations, _times, _intakeEvent, _parameters, _inResiduals, _cycleSize, _outResiduals, _isDensityConstant);
     }
 
+    IntakeIntervalCalculator::Result calculateIntakeSinglePoint(
+	Concentrations& _concentrations,
+	const IntakeEvent& _intakeEvent,
+	const ParameterSetEvent& _parameters,
+	const Residuals& _inResiduals,
+	const Value& _atTime,
+	Residuals& _outResiduals) const
+    {
+        return m_calculator->calculateIntakeSinglePoint(_concentrations, _intakeEvent, _parameters, _inResiduals, _atTime, _outResiduals);
+    }
 
     // The association with intakeintervalcalculator happens here
     // The intaketocalculatorassociator sets this value

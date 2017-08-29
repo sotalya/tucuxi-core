@@ -87,17 +87,100 @@ ConcentrationCalculator::ComputationResult ConcentrationCalculator::computeConce
 ConcentrationCalculator::ComputationResult ConcentrationCalculator::computeConcentrationsAtTimes(
         Concentrations &_concentrations,
         const IntakeSeries &_intakes,
-        const ParameterSetSeries &_parameters,
+        const ParameterSetSeries &_parameterSets,
         const SampleSeries &_samples,
         const Etas &_etas)
 {
-    TMP_UNUSED_PARAMETER(_concentrations);
-    TMP_UNUSED_PARAMETER(_intakes);
-    TMP_UNUSED_PARAMETER(_parameters);
-    TMP_UNUSED_PARAMETER(_samples);
-    TMP_UNUSED_PARAMETER(_etas);
+    // First calculate the size of residuals
+    unsigned int residualSize = 0;
+    for (IntakeSeries::const_iterator it = _intakes.begin(); it != _intakes.end(); it++) {
+        residualSize = std::max(residualSize, (*it).getCalculator()->getResidualSize());
+    }
+    Residuals r1(residualSize);
+    Residuals r2(residualSize);
 
-    return ComputationResult::Failure;
+    //Allocates according to the number of samples
+    _concentrations.reserve(_samples.size());
+
+    IntakeSeries::const_iterator it, intakeEnd, intakeNext;
+
+    intakeEnd = _intakes.end();
+    intakeNext = it = _intakes.begin();
+    intakeNext++;
+
+    // The size of residuals vectors equals the number of compartments. This shouldnt be hardcoded here.
+    SampleSeries::const_iterator sampleEnd = _samples.end();
+    SampleSeries::const_iterator sit = _samples.begin();
+
+    Value nextSampleTime = ((sit->getEventTime()).second()) / total_second_in_hour;
+    // double _nextsampletime = intakes.begin()->time.secsTo(sit->time)/3600.0;
+
+    Concentrations concentrations(residualSize);
+    Concentrations::iterator cit = _concentrations.begin();
+
+    while (it != intakeEnd && sit != sampleEnd) {
+
+        // If there are samples, calculate cycles until there are no more samples or no more intakes
+        // Get the offset time of the current intake from the first dose
+	// (redundant because IntakeEvent now has offsettime)
+
+        Value currentIntakeTime = ((it->getEventTime()).second()) / total_second_in_hour;
+        // double _current = _intakes.begin()->time.secsTo(it->time) / total_second_in_hour;
+
+        // Get the offset time from the first dose
+        Value nextIntakeTime = currentIntakeTime + (it->getInterval()).toHours();
+
+        // Get parameters at intake start time
+        ParameterSetEventPtr parameters = _parameterSets.getAtTime(it->getEventTime(), _etas);
+        if (parameters == nullptr) {
+            //m_logger.error("No parameters found!");
+            return ComputationResult::Failure;
+        }
+
+        // If the next sample time greater than the next intake time, 
+	// the sample doesnt occur during this cycle, so we only care about residuals
+        if (nextSampleTime > nextIntakeTime) {
+            IntakeIntervalCalculator::Result result = it->calculateIntakeSinglePoint(concentrations, *it, *parameters, r1, currentIntakeTime, r2);
+
+            if (result != IntakeIntervalCalculator::Result::Ok) {
+                _concentrations.clear();
+
+		return ComputationResult::Failure;
+            }
+	    // Prepare residuals for the next cycle
+            r1 = r2;
+        }
+
+        while ((nextSampleTime >= currentIntakeTime) && (nextSampleTime <= nextIntakeTime)) {
+
+            // If the next sample time greater than the cycle start time 
+	    // and less than the next cycle start time, the sample occurs during this cycle. 
+	    // We care about residuals and the value at the next sample time.
+            IntakeIntervalCalculator::Result result = it->calculateIntakeSinglePoint(concentrations, *it, *parameters, r1, (nextSampleTime - currentIntakeTime), r2);
+
+            if (result != IntakeIntervalCalculator::Result::Ok) {
+                _concentrations.clear();
+
+		return ComputationResult::Failure;
+            }
+	    // Prepare residuals for the next cycle
+            r1 = r2;
+
+            // Set the output concentration
+            *cit = concentrations[0];
+
+            // We processed a sample so increment samples and output concentrations iterators.
+            cit++; sit++;
+
+            if (sit == sampleEnd) {
+                return ComputationResult::Success;
+            }
+            // Reset the next sample time
+            nextSampleTime = ((sit->getEventTime()).second()) / total_second_in_hour;
+        }
+        it++; intakeNext++;
+    }
+    return ComputationResult::Success;
 }
 
 }
