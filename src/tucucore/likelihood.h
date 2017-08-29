@@ -18,6 +18,7 @@ namespace Tucuxi {
 namespace Core {
 
 class IResidualErrorModel;
+class IConcentrationCalculator;
 
 /// \brief The Likelihood class
 /// This is the class that calculates the log-likelihood for aposteriori
@@ -29,7 +30,8 @@ public:
                const IResidualErrorModel& _residualErrorModel,
                const SampleSeries& _samples,
                const IntakeSeries& _intakes,
-               const ParameterSetSeries& _parameters);
+               const ParameterSetSeries& _parameters,
+               IConcentrationCalculator &_concentrationCalculator);
 
     /// \brief operator ()
     /// This method calculates the negative log of the posterior (its a misnomer to call it loglikelihood i guess).
@@ -137,6 +139,8 @@ private:
 
     /// multi-index of parameters for entire curve
     const ParameterSetSeries* m_parameters;
+
+    IConcentrationCalculator* m_concentrationCalculator;
 };
 
 

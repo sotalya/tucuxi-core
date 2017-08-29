@@ -21,12 +21,14 @@ Likelihood::Likelihood(const OmegaMatrix& _omega,
                        const IResidualErrorModel& _residualErrorModel,
                        const SampleSeries& _samples,
                        const IntakeSeries& _intakes,
-                       const ParameterSetSeries& _parameters)
+                       const ParameterSetSeries& _parameters,
+                       IConcentrationCalculator &_concentrationCalculator)
     : m_omega(&_omega),
       m_residualErrorModel(&_residualErrorModel),
       m_samples(&_samples),
       m_intakes(&_intakes),
-      m_parameters(&_parameters)
+      m_parameters(&_parameters),
+      m_concentrationCalculator(&_concentrationCalculator)
 {
     initBounds(_omega, m_omax, m_omin);
 }
@@ -63,7 +65,7 @@ Value Likelihood::negativeLogLikelihood(const ValueVector& _etas) const
 
 
     // Getting the concentration values at these _times and m_samples.
-    ConcentrationCalculator::ComputationResult result = Tucuxi::Core::ConcentrationCalculator::computeConcentrationsAtTimes(_cxns, *m_intakes, *m_parameters, *m_samples, _etas);
+    ConcentrationCalculator::ComputationResult result = m_concentrationCalculator->computeConcentrationsAtTimes(_cxns, *m_intakes, *m_parameters, *m_samples, _etas);
 
     // If the calculation fails, its highly unlikely so we return the largest number we can
 

@@ -80,11 +80,13 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
                 CalculatorClass calculator2;
                 intakeEvent.setCalculator(&calculator2);
                 intakeSeries.push_back(intakeEvent);
-                Tucuxi::Core::ConcentrationCalculator::computeConcentrations(
+                Tucuxi::Core::IConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::ConcentrationCalculator();
+                concentrationCalculator->computeConcentrations(
                             predictionPtr,
                             _nbPoints,
                             intakeSeries,
                             _parameters);
+                delete concentrationCalculator;
             }
 
 
@@ -158,11 +160,13 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
                     event.setCalculator(&calculator2);
                     intakeSeries.push_back(event);
                 }
-                Tucuxi::Core::ConcentrationCalculator::computeConcentrations(
+                Tucuxi::Core::IConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::ConcentrationCalculator();
+                concentrationCalculator->computeConcentrations(
                             predictionPtr,
                             _nbPoints,
                             intakeSeries,
                             _parameters);
+                delete concentrationCalculator;
 
 #if 0
 		for(int testCycle = 0; testCycle < nbCycles; testCycle++) 

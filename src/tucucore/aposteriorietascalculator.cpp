@@ -5,6 +5,7 @@
 #include "aposteriorietascalculator.h"
 #include "likelihood.h"
 #include "minimize.h"
+#include "concentrationcalculator.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -53,8 +54,10 @@ APosterioriEtasCalculator::ComputationResult APosterioriEtasCalculator::computeA
     //        pit++;
     //    }
 
+    // TODO : Use a factory for the calculator
+    ConcentrationCalculator calculator;
   // This is the object holding the state of minimization
-    Likelihood funcd(_omega, _residualErrorModel, _samples, _intakes, _parameters);
+    Likelihood funcd(_omega, _residualErrorModel, _samples, _intakes, _parameters, calculator);
 
     // This is the object responsible for minimization
     Frprmn<Likelihood> frprmn(funcd);

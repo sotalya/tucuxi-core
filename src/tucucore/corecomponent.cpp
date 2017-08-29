@@ -135,14 +135,16 @@ ComputationResult CoreComponent::computeConcentrations(
     const Deviations& _eps,
     const bool _isFixedDensity)
 {   
-    ConcentrationCalculator::computeConcentrations(_prediction,
-                                                   _nbPoints,
-                                                   _intakes,
-                                                   _parameterSets,
-                                                   _etas,
-                                                   _residualErrorModel,
-                                                   _eps,
-                                                   _isFixedDensity);
+    // TODO : Use a factory for the calculator
+    ConcentrationCalculator calculator;
+    calculator.computeConcentrations(_prediction,
+                                     _nbPoints,
+                                     _intakes,
+                                     _parameterSets,
+                                     _etas,
+                                     _residualErrorModel,
+                                     _eps,
+                                     _isFixedDensity);
     return ComputationResult::Success;
 }
 
