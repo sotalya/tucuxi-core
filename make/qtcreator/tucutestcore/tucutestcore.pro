@@ -16,7 +16,8 @@ HEADERS += \
     ../../../test/tucucore/test_intakeintervalcalculator.h \
     ../../../test/tucucore/test_operation.h \
     ../../../test/tucucore/test_percentilecalculator.h \
-    ../../../test/tucucore/test_pkmodel.h
+    ../../../test/tucucore/test_pkmodel.h \
+    ../../../test/tucucore/test_nonmemdrugs.h
 
 SOURCES += \
     ../../../test/tucucore/tests.cpp
