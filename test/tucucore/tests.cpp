@@ -16,6 +16,7 @@
 #include "test_concentrationcalculator.h"
 #include "test_pkmodel.h"
 #include "test_percentilecalculator.h"
+#include "test_nonmemdrugs.h"
 
 int main(int argc, char** argv) 
 {
@@ -159,6 +160,22 @@ int main(int argc, char** argv)
         exit(1);
     }
     std::cout << "Percentile Calculators test succeeded\n";
+
+
+
+
+    TestNonMemDrugs nonMemDrugsTests;
+
+    // one compartment
+    nonMemDrugsTests.add_test("testImatinib", &TestNonMemDrugs::testImatinib);
+
+    res = nonMemDrugsTests.run(argc, argv);
+    if (res != 0) {
+        std::cerr << "NonMem Drugs test failed\n";
+        exit(1);
+    }
+    std::cout << "NonMem Drugs test succeeded\n";
+
 
     return 0;
 }
