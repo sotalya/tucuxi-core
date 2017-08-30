@@ -26,7 +26,7 @@ bool OneCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
     m_Ka = _parameters.getValue(2);
     m_F = _parameters.getValue(3);
     m_NbPoints = _intakeEvent.getNbPoints();
-    m_Int = static_cast<int>((_intakeEvent.getInterval()).toHours());
+    m_Int = (_intakeEvent.getInterval()).toHours();
 
     // check the inputs
     bool bOK = checkValue(m_D >= 0, "The dose is negative.");
