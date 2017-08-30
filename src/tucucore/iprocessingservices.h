@@ -81,7 +81,7 @@ class ConcentrationPrediction
 {
 public:
 
-    bool streamToFile(const std::string fileName) {
+    void streamToFile(const std::string fileName) {
         std::ofstream ostrm(fileName, std::ios::binary);
 
         int nbCycles = this->m_values.size();

@@ -102,6 +102,8 @@ ConcentrationCalculator::ComputationResult ConcentrationCalculator::computeConce
     //Allocates according to the number of samples
     _concentrations.reserve(_samples.size());
 
+    Concentrations concentrations;
+
     IntakeSeries::const_iterator it, intakeEnd, intakeNext;
 
     intakeEnd = _intakes.end();
@@ -112,10 +114,9 @@ ConcentrationCalculator::ComputationResult ConcentrationCalculator::computeConce
     SampleSeries::const_iterator sampleEnd = _samples.end();
     SampleSeries::const_iterator sit = _samples.begin();
 
-    Value nextSampleTime = ((sit->getEventTime()).second()) / total_second_in_hour;
+    DateTime nextSampleTime = sit->getEventTime();
     // double _nextsampletime = intakes.begin()->time.secsTo(sit->time)/3600.0;
 
-    Concentrations concentrations(residualSize);
     Concentrations::iterator cit = _concentrations.begin();
 
     while (it != intakeEnd && sit != sampleEnd) {
@@ -124,11 +125,11 @@ ConcentrationCalculator::ComputationResult ConcentrationCalculator::computeConce
         // Get the offset time of the current intake from the first dose
 	// (redundant because IntakeEvent now has offsettime)
 
-        Value currentIntakeTime = ((it->getEventTime()).second()) / total_second_in_hour;
+        DateTime currentIntakeTime = it->getEventTime();
         // double _current = _intakes.begin()->time.secsTo(it->time) / total_second_in_hour;
 
         // Get the offset time from the first dose
-        Value nextIntakeTime = currentIntakeTime + (it->getInterval()).toHours();
+        DateTime nextIntakeTime = currentIntakeTime + it->getInterval();
 
         // Get parameters at intake start time
         ParameterSetEventPtr parameters = _parameterSets.getAtTime(it->getEventTime(), _etas);
@@ -139,6 +140,10 @@ ConcentrationCalculator::ComputationResult ConcentrationCalculator::computeConce
 
         // If the next sample time greater than the next intake time, 
 	// the sample doesnt occur during this cycle, so we only care about residuals
+#if 0
+	// clear locally defined concentration
+        concentrations.clear();
+
         if (nextSampleTime > nextIntakeTime) {
             IntakeIntervalCalculator::Result result = it->calculateIntakeSinglePoint(concentrations, *it, *parameters, r1, currentIntakeTime, r2);
 
@@ -150,19 +155,26 @@ ConcentrationCalculator::ComputationResult ConcentrationCalculator::computeConce
 	    // Prepare residuals for the next cycle
             r1 = r2;
         }
+#endif
 
         while ((nextSampleTime >= currentIntakeTime) && (nextSampleTime <= nextIntakeTime)) {
-
             // If the next sample time greater than the cycle start time 
 	    // and less than the next cycle start time, the sample occurs during this cycle. 
 	    // We care about residuals and the value at the next sample time.
-            IntakeIntervalCalculator::Result result = it->calculateIntakeSinglePoint(concentrations, *it, *parameters, r1, (nextSampleTime - currentIntakeTime), r2);
+	    Duration atTime = nextSampleTime - currentIntakeTime;
+
+	    // clear locally defined concentration
+            concentrations.clear();
+
+            IntakeIntervalCalculator::Result result =
+	    it->calculateIntakeSinglePoint(concentrations, *it, *parameters, r1, atTime.toHours(), r2);
 
             if (result != IntakeIntervalCalculator::Result::Ok) {
                 _concentrations.clear();
 
 		return ComputationResult::Failure;
             }
+
 	    // Prepare residuals for the next cycle
             r1 = r2;
 
@@ -176,10 +188,11 @@ ConcentrationCalculator::ComputationResult ConcentrationCalculator::computeConce
                 return ComputationResult::Success;
             }
             // Reset the next sample time
-            nextSampleTime = ((sit->getEventTime()).second()) / total_second_in_hour;
+            nextSampleTime = sit->getEventTime();
         }
         it++; intakeNext++;
     }
+
     return ComputationResult::Success;
 }
 

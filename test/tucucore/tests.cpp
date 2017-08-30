@@ -147,8 +147,6 @@ int main(int argc, char** argv)
     }
     std::cout << "PkModel test succeeded\n";
 
-
-
     TestPercentileCalculator percentileCalculatorTests;
 
     // one compartment

@@ -236,29 +236,28 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
 
                 Tucuxi::Core::SampleSeries sampleSeries;
                 DateTime date0 = now + interval/4.0;
+
                 Tucuxi::Core::SampleEvent s0(date0);
                 sampleSeries.push_back(s0);
                 DateTime date1 = now + interval * 3.0 /4.0;
+
                 Tucuxi::Core::SampleEvent s1(date1);
                 sampleSeries.push_back(s1);
 
                 Tucuxi::Core::IConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::ConcentrationCalculator();
-                concentrationCalculator->computeConcentrationsAtTimes(
+                if (Tucuxi::Core::IConcentrationCalculator::ComputationResult::Success != concentrationCalculator->computeConcentrationsAtTimes(
                             concentrations,
                             intakeSeries,
                             _parameters,
-                            sampleSeries);
+                            sampleSeries))
                 delete concentrationCalculator;
             }
 
             int n0 = (nbPoints - 1) / 4;
             int n1 = (nbPoints - 1) * 3 / 4;
-
-            TMP_UNUSED_PARAMETER(n0);
-            TMP_UNUSED_PARAMETER(n1);
-
-        //    fructose_assert_double_eq(concentrations[0], predictionPtr->getValues()[0][n0]);
-        //    fructose_assert_double_eq(concentrations[1], predictionPtr->getValues()[0][n1]);
+	
+        fructose_assert_double_eq(concentrations[0], predictionPtr->getValues()[0][n0]);
+        fructose_assert_double_eq(concentrations[1], predictionPtr->getValues()[0][n1]);
 
         }
 
