@@ -26,6 +26,7 @@ SOURCES := aposteriorietascalculator.cpp \
            onecompartmentbolus.cpp \
            onecompartmentextra.cpp \
            onecompartmentinfusion.cpp \
+		   operablegraphmanager.cpp \
            operation.cpp \
            parameter.cpp \
            parametersextractor.cpp \
