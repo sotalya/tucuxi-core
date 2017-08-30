@@ -40,7 +40,8 @@ HEADERS += \
     $$PWD/../../src/tucucore/deriv.h \
     $$PWD/../../src/tucucore/likelihood.h \
     $$PWD/../../src/tucucore/minimize.h \
-    $$PWD/../../src/tucucore/aposteriorietascalculator.h
+    $$PWD/../../src/tucucore/aposteriorietascalculator.h \
+    $$PWD/../../src/tucucore/operablegraphmanager.h
 
 SOURCES += \
     $$PWD/../../src/tucucore/cachedexponentials.cpp \
@@ -72,4 +73,5 @@ SOURCES += \
     $$PWD/../../src/tucucore/montecarlopercentilecalculator.cpp \
     $$PWD/../../src/tucucore/likelihood.cpp \
     $$PWD/../../src/tucucore/aposteriorietascalculator.cpp \
+    $$PWD/../../src/tucucore/operablegraphmanager.cpp \
     $$PWD/../../src/tucucore/residualerrormodel.cpp

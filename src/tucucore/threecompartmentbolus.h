@@ -17,7 +17,7 @@ enum class ThreeCompartmentBolusExponentials : int { Alpha, Beta, Gamma };
 /// \sa IntakeIntervalCalculator
 class ThreeCompartmentBolusMicro : public IntakeIntervalCalculatorBase<3, ThreeCompartmentBolusExponentials>
 {
-    INTAKEINTERVALCALCULATOR_UTILS(ThreeCompartmentBolusMicro)
+//    INTAKEINTERVALCALCULATOR_UTILS(ThreeCompartmentBolusMicro)
 public:
     /// \brief Constructor
     ThreeCompartmentBolusMicro();
@@ -87,7 +87,7 @@ _concentrations1, Value& _concentrations2, Value& _concentrations3)
 
 class ThreeCompartmentBolusMacro : public ThreeCompartmentBolusMicro
 {
-    INTAKEINTERVALCALCULATOR_UTILS(ThreeCompartmentBolusMacro)
+//    INTAKEINTERVALCALCULATOR_UTILS(ThreeCompartmentBolusMacro)
 public:
     ThreeCompartmentBolusMacro();
 

@@ -112,13 +112,14 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
 
         predictionPtr = std::make_unique<Tucuxi::Core::ConcentrationPrediction>();
 
-        int nbPoints = 100;
+        int nbPoints = 251;
 
         CalculatorClass calculator2;
 
 
         Tucuxi::Common::Duration offsetTime = 0s;
-        Tucuxi::Common::Duration interval = 24h;
+        Tucuxi::Common::Duration interval24 = 24h;
+        Tucuxi::Common::Duration interval6 = 6h;
         Tucuxi::Common::Duration infusionTime = 0h;
 
         Tucuxi::Core::Concentrations concentrations;
@@ -135,7 +136,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
                 Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-05-12:00:00","YYYY-MM-DD-HH:mm:ss"),
                                                       offsetTime,
                                                       600,
-                                                      interval,
+                                                      interval24,
                                                       route,
                                                       infusionTime,
                                                       nbPoints);
@@ -148,7 +149,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
                 Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-06-12:00:00","YYYY-MM-DD-HH:mm:ss"),
                                                       offsetTime,
                                                       600,
-                                                      interval,
+                                                      interval24,
                                                       route,
                                                       infusionTime,
                                                       nbPoints);
@@ -159,8 +160,185 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
             {
                 Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-07-12:00:00","YYYY-MM-DD-HH:mm:ss"),
                                                       offsetTime,
+                                                      600,
+                                                      interval24,
+                                                      route,
+                                                      infusionTime,
+                                                      nbPoints);
+
+                intakeEvent.setCalculator(&calculator2);
+                intakeSeries.push_back(intakeEvent);
+            }
+
+            Tucuxi::Common::Duration shortInterval = 370min;
+
+            {
+                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-08-12:00:00","YYYY-MM-DD-HH:mm:ss"),
+                                                      offsetTime,
+                                                      600,
+                                                      shortInterval,
+                                                      route,
+                                                      infusionTime,
+                                                      nbPoints);
+
+                intakeEvent.setCalculator(&calculator2);
+                intakeSeries.push_back(intakeEvent);
+            }
+
+
+            {
+                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-08-18:10:00","YYYY-MM-DD-HH:mm:ss"),
+                                                      offsetTime,
                                                       400,
-                                                      interval,
+                                                      interval6,
+                                                      route,
+                                                      infusionTime,
+                                                      nbPoints);
+
+                intakeEvent.setCalculator(&calculator2);
+                intakeSeries.push_back(intakeEvent);
+            }
+
+            {
+                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-09-00:10:00","YYYY-MM-DD-HH:mm:ss"),
+                                                      offsetTime,
+                                                      400,
+                                                      interval6,
+                                                      route,
+                                                      infusionTime,
+                                                      nbPoints);
+
+                intakeEvent.setCalculator(&calculator2);
+                intakeSeries.push_back(intakeEvent);
+            }
+
+            {
+                Tucuxi::Common::Duration shortInterval = 350min;
+
+                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-09-06:10:00","YYYY-MM-DD-HH:mm:ss"),
+                                                      offsetTime,
+                                                      400,
+                                                      shortInterval,
+                                                      route,
+                                                      infusionTime,
+                                                      nbPoints);
+
+                intakeEvent.setCalculator(&calculator2);
+                intakeSeries.push_back(intakeEvent);
+            }
+
+
+
+            {
+                Tucuxi::Common::Duration shortInterval = 10min;
+
+                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-09-12:00:00","YYYY-MM-DD-HH:mm:ss"),
+                                                      offsetTime,
+                                                      600,
+                                                      shortInterval,
+                                                      route,
+                                                      infusionTime,
+                                                      nbPoints);
+
+                intakeEvent.setCalculator(&calculator2);
+                intakeSeries.push_back(intakeEvent);
+            }
+
+
+            {
+                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-09-12:10:00","YYYY-MM-DD-HH:mm:ss"),
+                                                      offsetTime,
+                                                      400,
+                                                      interval6,
+                                                      route,
+                                                      infusionTime,
+                                                      nbPoints);
+
+                intakeEvent.setCalculator(&calculator2);
+                intakeSeries.push_back(intakeEvent);
+            }
+            {
+                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-09-18:10:00","YYYY-MM-DD-HH:mm:ss"),
+                                                      offsetTime,
+                                                      400,
+                                                      interval6,
+                                                      route,
+                                                      infusionTime,
+                                                      nbPoints);
+
+                intakeEvent.setCalculator(&calculator2);
+                intakeSeries.push_back(intakeEvent);
+            }
+
+
+            {
+                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-10-00:10:00","YYYY-MM-DD-HH:mm:ss"),
+                                                      offsetTime,
+                                                      400,
+                                                      interval6,
+                                                      route,
+                                                      infusionTime,
+                                                      nbPoints);
+
+                intakeEvent.setCalculator(&calculator2);
+                intakeSeries.push_back(intakeEvent);
+            }
+
+            {
+                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-10-06:10:00","YYYY-MM-DD-HH:mm:ss"),
+                                                      offsetTime,
+                                                      400,
+                                                      interval6,
+                                                      route,
+                                                      infusionTime,
+                                                      nbPoints);
+
+                intakeEvent.setCalculator(&calculator2);
+                intakeSeries.push_back(intakeEvent);
+            }
+            {
+                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-10-12:10:00","YYYY-MM-DD-HH:mm:ss"),
+                                                      offsetTime,
+                                                      400,
+                                                      interval6,
+                                                      route,
+                                                      infusionTime,
+                                                      nbPoints);
+
+                intakeEvent.setCalculator(&calculator2);
+                intakeSeries.push_back(intakeEvent);
+            }
+            {
+                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-10-18:10:00","YYYY-MM-DD-HH:mm:ss"),
+                                                      offsetTime,
+                                                      400,
+                                                      interval6,
+                                                      route,
+                                                      infusionTime,
+                                                      nbPoints);
+
+                intakeEvent.setCalculator(&calculator2);
+                intakeSeries.push_back(intakeEvent);
+            }
+
+            {
+                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-11-00:10:00","YYYY-MM-DD-HH:mm:ss"),
+                                                      offsetTime,
+                                                      400,
+                                                      interval6,
+                                                      route,
+                                                      infusionTime,
+                                                      nbPoints);
+
+                intakeEvent.setCalculator(&calculator2);
+                intakeSeries.push_back(intakeEvent);
+            }
+
+            {
+                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-11-06:10:00","YYYY-MM-DD-HH:mm:ss"),
+                                                      offsetTime,
+                                                      400,
+                                                      interval6,
                                                       route,
                                                       infusionTime,
                                                       nbPoints);
@@ -175,7 +353,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
         // Imatinib parameters, as in the XML drug file
         Tucuxi::Core::ParameterDefinitions parameterDefs;
         parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
-        parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("CL", 14.3, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+        parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("CL", 15.106, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
         parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
         parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
         Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);

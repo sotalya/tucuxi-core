@@ -12,13 +12,14 @@
 #include "test_dosage.h"
 #include "test_intakeextractor.h"
 #include "test_operation.h"
+#include "test_operablegraphmanager.h"
 #include "test_intakeintervalcalculator.h"
 #include "test_concentrationcalculator.h"
 #include "test_pkmodel.h"
 #include "test_percentilecalculator.h"
 #include "test_nonmemdrugs.h"
 
-int main(int argc, char** argv) 
+int main(int argc, char** argv)
 {
     // Get application folder
     std::string appFolder = Tucuxi::Common::Utils::getAppFolder(argv);
@@ -146,6 +147,21 @@ int main(int argc, char** argv)
         exit(1);
     }
     std::cout << "PkModel test succeeded\n";
+
+
+    // --- OperableGraphManager --- //
+    TestOpGraph opGraphTetst;
+    opGraphTetst.add_test("testOperableFunctions", &TestOpGraph::testOperableFunctions);
+    opGraphTetst.add_test("testOperableCockcroftGaultIBW", &TestOpGraph::testOperableCockcroftGaultIBW);
+    opGraphTetst.add_test("testOperableCyclic", &TestOpGraph::testOperableCyclic);
+
+    res = opGraphTetst.run(argc, argv);
+
+    if (res != 0) {
+        std::cerr << "Operable Graph Manager test failed\n";
+        exit(1);
+    }
+    std::cout << "Operable Graph Manager test succeeded\n";
 
     TestPercentileCalculator percentileCalculatorTests;
 

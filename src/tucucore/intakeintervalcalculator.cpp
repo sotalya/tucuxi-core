@@ -28,7 +28,7 @@ IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakePoints
     }
 
     // Create our serie of times
-    Eigen::VectorXd times = Eigen::VectorXd::LinSpaced(_cycleSize, 0, static_cast<int>(_intakeEvent.getInterval().toHours()));
+    Eigen::VectorXd times = Eigen::VectorXd::LinSpaced(_cycleSize, 0, _intakeEvent.getInterval().toHours());
 
     // Can we reuse cached exponentials?
     if (!m_cache.get(_intakeEvent.getInterval(), _parameters, _cycleSize, m_precomputedExponentials))	{
