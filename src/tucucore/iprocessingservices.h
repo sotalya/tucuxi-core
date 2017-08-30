@@ -87,15 +87,15 @@ public:
             return false;
 
         int nbCycles = this->m_values.size();
+        double offset = 0.0;
         for(int cycle = 0; cycle < nbCycles; cycle ++) {
-            Tucuxi::Core::Concentrations concentration2;
-            Tucuxi::Core::TimeOffsets times2;
-            concentration2 = getValues()[cycle];
-            times2 = getTimes()[cycle];
-            int nbPoints = concentration2.size();
+            const Tucuxi::Core::Concentrations concentrations = getValues()[cycle];
+            const Tucuxi::Core::TimeOffsets times = getTimes()[cycle];
+            int nbPoints = concentrations.size();
             for(int i = 0; i < nbPoints - 1; i++) {
-                ostrm << times2[i] + 24*cycle << " " << concentration2[i] << std::endl;
+                ostrm << (times[i]) + offset << " " << concentrations[i] << std::endl;
             }
+            offset += times[nbPoints - 1];
         }
 
         return true;

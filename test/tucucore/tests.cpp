@@ -29,6 +29,7 @@ int main(int argc, char** argv)
 
     int res = 0;
 
+
     TestIntervalCalculator calculatorsTests;
 
     // one compartment
@@ -175,6 +176,8 @@ int main(int argc, char** argv)
         exit(1);
     }
     std::cout << "NonMem Drugs test succeeded\n";
+
+
 
 
     return 0;
