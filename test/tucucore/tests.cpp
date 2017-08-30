@@ -12,7 +12,7 @@
 #include "test_dosage.h"
 #include "test_intakeextractor.h"
 #include "test_operation.h"
-#include "test_opgraphmanager.h"
+#include "test_operablegraphmanager.h"
 #include "test_intakeintervalcalculator.h"
 #include "test_concentrationcalculator.h"
 #include "test_pkmodel.h"
