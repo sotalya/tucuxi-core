@@ -59,6 +59,12 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
         Tucuxi::Core::Residuals inMicroResiduals, inMacroResiduals;
         Tucuxi::Core::Residuals outMicroResiduals, outMacroResiduals;
 
+        for(unsigned int i = 0; i < microCalculator.getResidualSize(); i++)
+	{
+            outMicroResiduals.push_back(0);
+            outMacroResiduals.push_back(0);
+	}
+
         for(int cycle = 0; cycle < 100; cycle ++)
         {
 	    	// Check Micro class
@@ -118,6 +124,9 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
         Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, _dose, interval, _route, infusionTime, _nbPoints);
         Tucuxi::Core::Residuals inResiduals;
         Tucuxi::Core::Residuals outMicroMultiResiduals, outMicroSingleResiduals, outMacroMultiResiduals, outMacroSingleResiduals;
+
+        for(unsigned int i = 0; i < microCalculator.getResidualSize(); i++)
+            inResiduals.push_back(0);
 
         // Calculation of Micro Class
         res = microCalculator.calculateIntakePoints(
