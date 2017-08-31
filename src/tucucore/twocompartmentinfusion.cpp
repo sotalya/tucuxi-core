@@ -234,8 +234,8 @@ bool TwoCompartmentInfusionMicro::computeConcentration(const Value& _atTime, con
     // In case of ezechiel, when forcesize = 1,
     // concentrations1[1] = concentrations1[0] + (APostInf * alphaLogV(1) + BPostInf * betaLogV(1)) / (2 * m_RootK)
     // concentrations2[1] = (A2 * alphaLogV(1) + BB2 * betaLogV(1)) / (2 * m_RootK)
-    _outResiduals.push_back(concentrations1[1]);
-    _outResiduals.push_back(concentrations2[1]);
+    _outResiduals[0] = concentrations1[1];
+    _outResiduals[1] = concentrations2[1];
 #endif
 
     // Check output

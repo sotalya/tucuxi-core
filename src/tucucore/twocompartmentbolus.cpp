@@ -118,8 +118,8 @@ bool TwoCompartmentBolusMicro::computeConcentration(const Value& _atTime, const 
     }
 
     // return final residual (computation with m_Int (interval))
-    _outResiduals.push_back(concentrations1[1]);
-    _outResiduals.push_back(concentrations2[1]);
+    _outResiduals[0] = concentrations1[1];
+    _outResiduals[1] = concentrations2[1];
 
     bool bOK = checkValue(_outResiduals[0] >= 0, "The concentration1 is negative.");
     bOK &= checkValue(_outResiduals[1] >= 0, "The concentration2 is negative.");

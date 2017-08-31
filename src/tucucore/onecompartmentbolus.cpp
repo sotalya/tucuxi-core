@@ -94,7 +94,7 @@ bool OneCompartmentBolusMicro::computeConcentration(const Value& _atTime, const 
     }
 
     // Return final residual (computation with m_Int (interval))
-    _outResiduals.push_back(concentrations[1]);
+    _outResiduals[0] = concentrations[1];
     
     return checkValue(_outResiduals[0] >= 0, "The concentration is negative.");
 }

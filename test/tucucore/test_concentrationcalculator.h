@@ -226,6 +226,11 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
                             intakeSeries,
                             _parameters);
                 delete concentrationCalculator;
+
+#if 0
+		for (int i = 0; i<nbPoints; i++)
+		    std::cout << i << ":" << predictionPtr->getValues()[0][i] << std::endl;
+#endif
             }
             {
 
@@ -255,7 +260,6 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
 
             int n0 = (nbPoints - 1) / 4;
             int n1 = (nbPoints - 1) * 3 / 4;
-	
         fructose_assert_double_eq(concentrations[0], predictionPtr->getValues()[0][n0]);
         fructose_assert_double_eq(concentrations[1], predictionPtr->getValues()[0][n1]);
 

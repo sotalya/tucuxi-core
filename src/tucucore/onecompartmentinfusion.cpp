@@ -103,8 +103,8 @@ bool OneCompartmentInfusionMicro::computeConcentration(const Value& _atTime, con
         concentrations[1] = 0;
     }
 
-    // return final residual (computation with m_Int (interval))
-    _outResiduals.push_back(concentrations[1]);
+    // Return final residual (computation with m_Int (interval))
+    _outResiduals[0] = concentrations[1];
     
     return checkValue(_outResiduals[0] >= 0, "The concentration is negative.");
 }

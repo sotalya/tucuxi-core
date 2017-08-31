@@ -93,8 +93,8 @@ bool OneCompartmentExtraMicro::computeConcentration(const Value& _atTime, const 
     }
 
     // Return final residual (computation with m_Int (interval))
-    _outResiduals.push_back(concentrations1[1]);
-    _outResiduals.push_back(concentrations2[1]);
+    _outResiduals[0] = concentrations1[1];
+    _outResiduals[1] = concentrations2[1];
 
     bool bOK = checkValue(_outResiduals[0] >= 0, "The final residual1 is negative.");
     bOK &= checkValue(_outResiduals[1] >= 0, "The final residual2 is negative.");

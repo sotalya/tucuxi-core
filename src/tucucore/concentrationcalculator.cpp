@@ -24,8 +24,8 @@ ConcentrationCalculator::ComputationResult ConcentrationCalculator::computeConce
     for (IntakeSeries::const_iterator it = _intakes.begin(); it != _intakes.end(); it++) {
         residualSize = std::max(residualSize, (*it).getCalculator()->getResidualSize());
     }
-    Residuals r1(residualSize);
-    Residuals r2(residualSize);
+    Residuals inResiduals(residualSize);
+    Residuals outResiduals(residualSize);
 
     // Go through all intakes
     for (IntakeSeries::const_iterator it = _intakes.begin(); it != _intakes.end(); it++) {
@@ -47,8 +47,8 @@ ConcentrationCalculator::ComputationResult ConcentrationCalculator::computeConce
         TimeOffsets times;
         Concentrations values;
         _prediction->allocate(density, times, values);
-        r2.clear();
-        IntakeIntervalCalculator::Result result = it->calculateIntakePoints(values, times, intake, *parameters, r1, intake.getNbPoints(), r2, _isFixedDensity);
+        outResiduals.clear();
+        IntakeIntervalCalculator::Result result = it->calculateIntakePoints(values, times, intake, *parameters, inResiduals, intake.getNbPoints(), outResiduals, _isFixedDensity);
         switch (result)
         {
             case IntakeIntervalCalculator::Result::Ok:
@@ -78,7 +78,7 @@ ConcentrationCalculator::ComputationResult ConcentrationCalculator::computeConce
         _prediction->appendConcentrations(times, values);
 
         // Prepare residuals for the next cycle
-        r1 = r2;
+        inResiduals = outResiduals;
     }
 
     return ComputationResult::Success;
@@ -96,8 +96,8 @@ ConcentrationCalculator::ComputationResult ConcentrationCalculator::computeConce
     for (IntakeSeries::const_iterator it = _intakes.begin(); it != _intakes.end(); it++) {
         residualSize = std::max(residualSize, (*it).getCalculator()->getResidualSize());
     }
-    Residuals r1(residualSize);
-    Residuals r2(residualSize);
+    Residuals inResiduals(residualSize);
+    Residuals outResiduals(residualSize);
 
     //Allocates according to the number of samples
     _concentrations.reserve(_samples.size());
@@ -145,15 +145,15 @@ ConcentrationCalculator::ComputationResult ConcentrationCalculator::computeConce
         concentrations.clear();
 
         if (nextSampleTime > nextIntakeTime) {
-            IntakeIntervalCalculator::Result result = it->calculateIntakeSinglePoint(concentrations, *it, *parameters, r1, currentIntakeTime, r2);
+            IntakeIntervalCalculator::Result result = it->calculateIntakeSinglePoint(concentrations, *it, *parameters, inResiduals, currentIntakeTime, outResiduals);
 
             if (result != IntakeIntervalCalculator::Result::Ok) {
                 _concentrations.clear();
 
 		return ComputationResult::Failure;
             }
-	    // Prepare residuals for the next cycle
-            r1 = r2;
+	    // Reset input residuals for the next cycle
+            inResiduals = outResiduals;
         }
 #endif
 
@@ -167,7 +167,7 @@ ConcentrationCalculator::ComputationResult ConcentrationCalculator::computeConce
             concentrations.clear();
 
             IntakeIntervalCalculator::Result result =
-	    it->calculateIntakeSinglePoint(concentrations, *it, *parameters, r1, atTime.toHours(), r2);
+	    it->calculateIntakeSinglePoint(concentrations, *it, *parameters, inResiduals, atTime.toHours(), outResiduals);
 
             if (result != IntakeIntervalCalculator::Result::Ok) {
                 _concentrations.clear();
@@ -175,8 +175,10 @@ ConcentrationCalculator::ComputationResult ConcentrationCalculator::computeConce
 		return ComputationResult::Failure;
             }
 
-	    // Prepare residuals for the next cycle
-            r1 = r2;
+	    // Reset input residuals for the next cycle
+	    for (unsigned int idx= 0; idx < residualSize; idx++) {
+		inResiduals[idx] = 0;
+	    }
 
             // Set the output concentration
             *cit = concentrations[0];
