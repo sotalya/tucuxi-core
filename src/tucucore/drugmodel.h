@@ -19,10 +19,19 @@ class Formulation
 
 };
 
+class Route
+{
+
+};
+
+// RouteOfAdministration shall be called AbsorptionModel
+
 struct FormulationAndRoute
 {
     Formulation m_formulation;
-    RouteOfAdministration m_route;
+    Route m_route;
+    RouteOfAdministration m_absorptionModel;
+
 };
 
 class Correlation
