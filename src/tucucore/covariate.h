@@ -12,6 +12,7 @@
 #include "tucucore/definitions.h"
 #include "tucucore/timedevent.h"
 #include "tucucore/operation.h"
+#include "tucucore/operablegraphmanager.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -35,31 +36,32 @@ class Covariate
 {
 
 private:
+    std::string m_covariateId;
     CovariateType m_type;
+    Value m_defaultValue;
+    // Unit ...
+
     Tucuxi::Common::Duration m_refreshPeriod;   // Only in the case of CovariateType::Interpolated
+    Operation *m_operation; // Operation depending on another covariate in case Operable
 };
 
 typedef std::vector<Covariate> Covariates;
 
 
-class CovariateEvent : public TimedEvent
+class CovariateEvent : public TimedEvent, Operable
 {
 public:
     CovariateEvent() = delete;
-    CovariateEvent(const DateTime& _date, Value _value)
-        : TimedEvent(_date), m_value(_value)
+    CovariateEvent(const Covariate& _covariate, const DateTime& _date, Value _value)
+        : TimedEvent(_date), Operable(_value), m_definition(_covariate), m_value(_value)
     {}
 
     Value getValue() { return m_value; }
 
-    std::string getComputationId() { return m_computationId;}
-
-    void setComputationId(const std::string &id) { m_computationId = id;}
-
 private:
-    std::string m_computationId;
+    const Covariate &m_definition;
+    // Should be removed, embedded in Operable
     Value m_value;
-    Operation *m_operation; // Operation depending on another covariate in case Operable
 };
 
 typedef std::vector<CovariateEvent> CovariateSeries;

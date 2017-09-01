@@ -91,7 +91,7 @@ ConcentrationPredictionPtr CoreComponent::computeConcentrations(const Concentrat
             Etas etas;
             OmegaMatrix omega;
             SigmaResidualErrorModel residualErrorModel;
-            extractError(m_drug->getErrorModel(), m_drug->getParemeters(), omega, residualErrorModel);
+//            extractError(m_drug->getErrorModel(), m_drug->getParemeters(), omega, residualErrorModel);
             APosterioriEtasCalculator().computeAposterioriEtas(intakesForEtas, parameters, omega, residualErrorModel, samples, etas);
             computeAposteriori(prediction, _request.getNbPoints(), intakes, parameters, etas);
             break;

@@ -7,14 +7,38 @@
 
 #include "tucucore/covariate.h"
 #include "tucucore/parameter.h"
+#include "tucucore/residualerrormodel.h"
+#include "tucucore/target.h"
 
 namespace Tucuxi {
 namespace Core {
 
-class DrugErrorModel
+
+class Formulation
 {
-    // TODO YJE
+
 };
+
+struct FormulationAndRoute
+{
+    Formulation m_formulation;
+    RouteOfAdministration m_route;
+};
+
+class Correlation
+{
+    Value m_correlation;
+    std::vector<int> m_parameterId[2];
+};
+
+typedef std::vector<Correlation> Correlations;
+
+struct AbsorptionParameters
+{
+    ParameterDefinitions m_parameters;
+    Correlations m_correlations;
+};
+
 
 class DrugModel
 {
@@ -22,13 +46,27 @@ public:
     DrugModel();    
 
     const Covariates& getCovariates() const;
-    const DrugErrorModel& getErrorModel() const { return m_errorModel; }
-    const ParameterDefinitions& getParemeters() { return m_parameters; }
+    const ParameterDefinitions& getEliminationParameters() const { return m_eliminationParameters; }
+    const IResidualErrorModel& getResidualErrorModel() const { return *m_residualErrorModel; }
+
+    ///
+    /// \brief getParameters
+    /// Returns a full set of parameters, adding the corresponding absorption parameters to the
+    /// elimination parameters
+    /// \param _formulationAndRoute
+    /// \return
+    ///
+    const ParameterDefinitions& getParameters(FormulationAndRoute _formulationAndRoute) const;
 
 private:
-    ParameterDefinitions m_parameters;
+    ParameterDefinitions m_eliminationParameters;
+    std::map<FormulationAndRoute, AbsorptionParameters> absorptionParameters;
+
     Covariates m_covariates;
-    DrugErrorModel m_errorModel;
+    IResidualErrorModel *m_residualErrorModel;
+    Targets m_targets;
+
+
 };
 
 }
