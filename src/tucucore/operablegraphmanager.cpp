@@ -186,9 +186,9 @@ OperableGraphManager::isCyclic(const std::string &_cur,
 }
 
 
-OperableGraphManager::OperableInputNode::OperableInputNode(std::shared_ptr<IOperableInput> _sptr,
+OperableGraphManager::OperableInputNode::OperableInputNode(std::shared_ptr<IOperableInput> _ptr,
                                                            const bool _isComputed, const IOperable_ID _id)
-    : m_sptr{_sptr}, m_isComputed{_isComputed}, m_id{_id}
+    : m_sptr{_ptr}, m_isComputed{_isComputed}, m_id{_id}
 {
 
 }
@@ -218,8 +218,8 @@ OperableGraphManager::OperableInputNode::isComputed() const
 }
 
 
-OperableGraphManager::OperableComputeNode::OperableComputeNode(std::shared_ptr<IOperable> _sptr)
-    : m_sptr{_sptr}
+OperableGraphManager::OperableComputeNode::OperableComputeNode(std::shared_ptr<IOperable> _ptr)
+    : m_sptr{_ptr}
 {
     OperationInputList inList = m_sptr->getInputs();
 
@@ -256,8 +256,8 @@ Operable::Operable(const double &_value)
 }
 
 
-Operable::Operable(const std::shared_ptr<Operation> &_sptr)
-    : m_sptr{_sptr}, m_value{0.0}
+Operable::Operable(const std::shared_ptr<Operation> &_ptr)
+    : m_sptr{_ptr}, m_value{0.0}
 {
 
 }
