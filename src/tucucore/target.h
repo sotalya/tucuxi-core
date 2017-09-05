@@ -61,8 +61,8 @@ class SubTarget : public IndividualValue<SubTargetDefinition>
 {
 public:
 
-    SubTarget(const SubTargetDefinition &_def) :
-        IndividualValue<SubTargetDefinition>(_def)
+    SubTarget(const SubTargetDefinition *_def) :
+        IndividualValue<SubTargetDefinition>(*_def)
     {}
 
 };
@@ -70,28 +70,27 @@ public:
 class Target
 {
 public:
-    Target(const TargetDefinition& _targetDef,
-           const SubTargetDefinition& _cMinDef) :
+    Target(const TargetDefinition& _targetDef) :
         m_targetDefinition(_targetDef),
-        m_cMin(_cMinDef)
-  //      m_cMaxDefinition(_targetDef.m_cMax),
-    //    m_cBestDefinition(_targetDef.m_cBest),
-    //    m_tMinDefinition(_targetDef.m_tMin),
-    //    m_tMaxDefinition(_targetDef.m_tMax),
-    //    m_tBestDefinition(_targetDef.m_tBest)
+        m_cMin(&_targetDef.m_cMin),
+        m_cMax(&_targetDef.m_cMax),
+        m_cBest(&_targetDef.m_cBest),
+        m_tMin(&_targetDef.m_tMin),
+        m_tMax(&_targetDef.m_tMax),
+        m_tBest(&_targetDef.m_tBest)
     {}
 
 protected:
 
     const TargetDefinition& m_targetDefinition;
 
-    const SubTarget& m_cMin;
-/*    const SubTarget& m_cMaxDefinition;
-    const SubTarget& m_cBestDefinition;
-    const SubTarget& m_tMinDefinition;
-    const SubTarget& m_tMaxDefinition;
-    const SubTarget& m_tBestDefinition;
-*/
+    SubTarget m_cMin;
+    SubTarget m_cMax;
+    SubTarget m_cBest;
+    SubTarget m_tMin;
+    SubTarget m_tMax;
+    SubTarget m_tBest;
+
 };
 
 typedef std::vector<Target*> Targets;
