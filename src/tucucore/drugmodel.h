@@ -14,25 +14,42 @@ namespace Tucuxi {
 namespace Core {
 
 
-class Formulation
+
+class Analyte
 {
+public:
+
+    std::string m_name;
+    std::string m_analyteId;
 
 };
 
-class Route
+class ActiveSubstance
 {
+public:
 
+    std::string m_pkModelId;
+    std::vector<Analyte> m_analytes;
 };
 
-// RouteOfAdministration shall be called AbsorptionModel
 
-struct FormulationAndRoute
+typedef std::string Formulation;
+
+
+enum class Route
 {
-    Formulation m_formulation;
-    Route m_route;
-    RouteOfAdministration m_absorptionModel;
-
+    Intramuscular,
+    IntravenousBolus,
+    IntravenousDrip,
+    Nasal,
+    Oral,
+    Rectal,
+    Subcutaneous,
+    Sublingual,
+    Transdermal,
+    Vaginal
 };
+
 
 class Correlation
 {
@@ -42,10 +59,31 @@ class Correlation
 
 typedef std::vector<Correlation> Correlations;
 
-struct AbsorptionParameters
+
+
+class AbsorptionParameters
 {
+public:
+
     ParameterDefinitions m_parameters;
     Correlations m_correlations;
+};
+
+
+// RouteOfAdministration shall be called AbsorptionModel
+
+class FormulationAndRoute
+{
+public:
+
+    Formulation m_formulation;
+    Route m_route;
+    RouteOfAdministration m_absorptionModel;
+
+    std::vector<ActiveSubstance* > m_activeSubstance;
+
+    AbsorptionParameters m_absorptionParameters;
+
 };
 
 
@@ -55,7 +93,7 @@ public:
     DrugModel();    
 
     const Covariates& getCovariates() const;
-    const ParameterDefinitions& getEliminationParameters() const { return m_eliminationParameters; }
+    const ParameterDefinitions& getDispositionParameters() const { return m_dispositionParameters; }
     const IResidualErrorModel& getResidualErrorModel() const { return *m_residualErrorModel; }
 
     ///
@@ -68,8 +106,13 @@ public:
     const ParameterDefinitions& getParameters(FormulationAndRoute _formulationAndRoute) const;
 
 private:
-    ParameterDefinitions m_eliminationParameters;
-    std::map<FormulationAndRoute, AbsorptionParameters> absorptionParameters;
+
+    std::vector<FormulationAndRoute* > m_formulationAndRoutes;
+
+    ParameterDefinitions m_dispositionParameters;
+
+    Correlations m_dispositionParametersCorrelations;
+
 
     Covariates m_covariates;
     IResidualErrorModel *m_residualErrorModel;

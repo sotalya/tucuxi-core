@@ -13,6 +13,7 @@
 #include "tucucore/timedevent.h"
 #include "tucucore/operation.h"
 #include "tucucore/operablegraphmanager.h"
+#include "tucucore/drugdefinitions.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -27,22 +28,19 @@ enum class CovariateType {
 ///
 /// \brief The CovariateDefinition class
 /// The definition of a covariate
-class CovariateDefinition
+class CovariateDefinition : public PopulationValue
 {
+    CovariateType m_type;
 
 };
 
-class Covariate
+class Covariate : public IndividualValue<CovariateDefinition>
 {
 
 private:
-    std::string m_covariateId;
-    CovariateType m_type;
-    Value m_defaultValue;
     // Unit ...
 
     Tucuxi::Common::Duration m_refreshPeriod;   // Only in the case of CovariateType::Interpolated
-    Operation *m_operation; // Operation depending on another covariate in case Operable
 };
 
 typedef std::vector<Covariate> Covariates;
