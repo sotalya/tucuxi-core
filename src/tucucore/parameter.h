@@ -13,13 +13,14 @@
 #include "tucucore/timedevent.h"
 #include "tucucore/operation.h"
 #include "tucucommon/general.h"
+#include "tucucore/drugdefinitions.h"
 
 namespace Tucuxi {
 namespace Core {
 
 /// \ingroup TucuCore
 /// \brief Represents a pharmacokinetics parameter.
-class ParameterDefinition
+class ParameterDefinition : public PopulationValue
 {
 public:
     enum class ErrorModel { Additive, Proportional, Exponential, None };
@@ -29,27 +30,26 @@ public:
     /// \param _name The name of the parameter
     /// \param _name It's default value
     ParameterDefinition(const std::string _name, Value _value, ErrorModel _errType)
-        : m_name(_name), 
-          m_value(_value), 
+        : PopulationValue(_name, _value, nullptr),
           m_isVariable(false),
           m_errorModel(_errType)
     {}
 
     /// \brief Get the parameter value
     /// \return Returns the parameter value
-    Value getValue() const { return m_value; }
+    //Value getValue() const { return m_value; }
 
-    const std::string& getName() const { return m_name; }
+    const std::string& getName() const { return m_id; }
     bool isVariable() const { return m_isVariable; }
     ErrorModel getErrorModel() const { return m_errorModel; }
 
 private:
-    std::string m_name;      /// Name like "CL" or "V1"
-    Value m_value;           /// The value (0.0 or 1.0 in case of booleans)	
+//    std::string m_name;      /// Name like "CL" or "V1"
+//    Value m_value;           /// The value (0.0 or 1.0 in case of booleans)
     bool m_isVariable;       /// Indicates whether there is an eta on this parameter
     ErrorModel m_errorModel;
 
-    Operation *m_operation; /// Potential operation from covariates
+//    Operation *m_operation; /// Potential operation from covariates
 
     //error_type_enum m_error_type;
 };
@@ -57,16 +57,19 @@ private:
 /// \brief A list of parameters
 typedef std::vector<ParameterDefinition> ParameterDefinitions;
 
-class Parameter
+class Parameter : public IndividualValue<ParameterDefinition>
 {
 public:
-    Parameter(const ParameterDefinition &_def) : m_definition(_def), m_value(_def.getValue())  {}
+    Parameter(const ParameterDefinition &_def) :
+        IndividualValue<ParameterDefinition>(_def)
+         {
+        m_value = _def.getValue();
+    }
     void applyEta(Deviation eta);
     Value getValue() const { return m_value; }
     bool isVariable() { return m_definition.isVariable(); }    
 
 private:
-    const ParameterDefinition &m_definition;
     Value m_value;
 };
 typedef std::vector<Parameter> Parameters;

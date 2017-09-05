@@ -264,19 +264,6 @@ private:
     double m_value;
 };
 
-class PopulationValue
-{
-    Operation *m_operation;
-    std::string m_id;
-    Value m_defaultValue;
-};
-
-template<class DefinitionClass>
-class IndividualValue
-{
-    DefinitionClass &m_definition;
-
-};
 
 }
 }

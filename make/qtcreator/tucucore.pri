@@ -41,7 +41,8 @@ HEADERS += \
     $$PWD/../../src/tucucore/likelihood.h \
     $$PWD/../../src/tucucore/minimize.h \
     $$PWD/../../src/tucucore/aposteriorietascalculator.h \
-    $$PWD/../../src/tucucore/operablegraphmanager.h
+    $$PWD/../../src/tucucore/operablegraphmanager.h \
+    $$PWD/../../src/tucucore/drugdefinitions.h
 
 SOURCES += \
     $$PWD/../../src/tucucore/cachedexponentials.cpp \
