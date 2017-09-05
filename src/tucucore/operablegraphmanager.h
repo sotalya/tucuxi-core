@@ -90,15 +90,15 @@ private:
     {
     public:
         /// \brief Build an Operable Input graph's node.
-        /// \param _sprt Shared pointer to the actual input.
+        /// \param _ptr Shared pointer to the actual input.
         /// \param _isComputed Flag marking the pointed element as the result of an operable node that has to be
         ///        computed.
         /// \param _id Identifier of the operable node in question.
         /// If we are considering a "simple" input, then we just have to record the shared ptr, while if it has to be
         /// computed then it has to be in the m_operables map too, and therefore it has an id too.
         /// \pre _isComputed == false || (_isComputed == true && _id >= 0 && m_operables.find(_id) != false)
-        /// \pre _sptr != nullptr
-        OperableInputNode(std::shared_ptr<IOperableInput> _sptr,
+        /// \pre _ptr != nullptr
+        OperableInputNode(std::shared_ptr<IOperableInput> _ptr,
                           const bool _isComputed = false, const IOperable_ID _id = -1);
 
         /// \brief If the node has to be computed, return the ID of the linked operable.
@@ -133,14 +133,14 @@ private:
     {
     public:
         /// \brief Build an Operable node starting from its shared pointer.
-        /// \param _sptr Shared pointer to the computation node.
+        /// \param _ptr Shared pointer to the computation node.
         /// \note The dependencies that are needed for the operations of this node are retrieved via getInputs().
         /// \warning Adding an Operable node might leave the system in an *inconsistent* state -- that is, a state when
         ///          some of the required inputs are absent. This is normal, as there is no imposed order in which to
         ///          insert the Operables and Inputs. However, this inconsistency has to be solved before performing the
         ///          evaluation.
-        /// \pre _sptr != nullptr
-        OperableComputeNode(std::shared_ptr<IOperable> _sptr);
+        /// \pre _ptr != nullptr
+        OperableComputeNode(std::shared_ptr<IOperable> _ptr);
 
         /// \brief Perform the evaluation on the Operable, retrieving the inputs (and the dependencies) from the
         ///        OperableGraphManager and computing the desired output.
@@ -230,8 +230,8 @@ public:
     Operable(const double &_value);
 
     /// \brief Create an operable from a shared pointer to an Operation.
-    /// \param _sptr Shared pointer to an Operation object.
-    Operable(const std::shared_ptr<Operation> &_sptr);
+    /// \param _ptr Shared pointer to an Operation object.
+    Operable(const std::shared_ptr<Operation> &_ptr);
 
     /// \brief Default virtual destructor, required for proper object's destruction.
     virtual ~Operable() = default;
