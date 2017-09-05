@@ -18,6 +18,9 @@ class SubTargetDefinition : public PopulationValue
 {
 public:
 
+    SubTargetDefinition(std::string _id, Value _value, Operation *_operation) :
+        PopulationValue(_id, _value, _operation) {}
+
     SubTargetDefinition() : PopulationValue("",0, nullptr) {}
 
 };
@@ -30,12 +33,31 @@ public:
     TargetDefinition()
     {m_cMin = SubTargetDefinition();}
 
+
     enum class TargetType {
         Residual,
         Peak,
         Mean,
         Auc
     };
+
+    TargetDefinition(TargetType _type,
+                     SubTargetDefinition &_cMin,
+                     SubTargetDefinition &_cMax,
+                     SubTargetDefinition &_cBest,
+                     SubTargetDefinition &_tMin,
+                     SubTargetDefinition &_tMax,
+                     SubTargetDefinition &_tBest) :
+        m_targetType(_type),
+        m_cMin(_cMin),
+        m_cMax(_cMax),
+        m_cBest(_cBest),
+        m_tMin(_tMin),
+        m_tMax(_tMax),
+        m_tBest(_tBest)
+    {
+
+    }
 
     TargetType getTargetType() const { return m_targetType;}
 
@@ -56,6 +78,9 @@ public:
     SubTargetDefinition m_tMax;
     SubTargetDefinition m_tBest;
 };
+
+
+typedef std::vector<TargetDefinition> TargetDefinitions;
 
 class SubTarget : public IndividualValue<SubTargetDefinition>
 {
@@ -92,6 +117,7 @@ protected:
     SubTarget m_tBest;
 
 };
+
 
 typedef std::vector<Target*> Targets;
 

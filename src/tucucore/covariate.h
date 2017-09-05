@@ -30,9 +30,16 @@ enum class CovariateType {
 /// The definition of a covariate
 class CovariateDefinition : public PopulationValue
 {
+public:
+
+    CovariateDefinition(const std::string _id, Value _value, Operation* _operation, CovariateType _type) :
+        PopulationValue(_id, _value, _operation), m_type(_type) {}
+
     CovariateType m_type;
 
 };
+
+typedef std::vector<CovariateDefinition> CovariateDefinitions;
 
 class Covariate : public IndividualValue<CovariateDefinition>
 {

@@ -13,7 +13,7 @@ namespace Core {
 
 bool SigmaResidualErrorModel::isEmpty() const
 {
-    return sigma.size() == 0;
+    return m_sigma.size() == 0;
 }
 
 
@@ -21,17 +21,17 @@ void SigmaResidualErrorModel::applyEpsToArray(Concentrations &_concentrations, c
 
     // Loop through the main compartment concentrations and apply the residual error
     for (auto it = _concentrations.begin(); it != _concentrations.end(); ++it) {
-        switch (errorModel) {
+        switch (m_errorModel) {
         case ResidualErrorType::EXPONENTIAL:
-            *it *= std::pow(sigma[0], 2) * std::exp(_eps[0]);
+            *it *= std::pow(m_sigma[0], 2) * std::exp(_eps[0]);
         case ResidualErrorType::PROPORTIONAL:
-            *it *= 1 + sigma[0] * _eps[0];
+            *it *= 1 + m_sigma[0] * _eps[0];
             break;
         case ResidualErrorType::ADDITIVE:
-            *it += sigma[0] * _eps[0];
+            *it += m_sigma[0] * _eps[0];
             break;
         case ResidualErrorType::MIXED:
-            *it += _eps[0] * std::sqrt(std::pow(*it * sigma[1], 2)  + std::pow(sigma[0], 2));
+            *it += _eps[0] * std::sqrt(std::pow(*it * m_sigma[1], 2)  + std::pow(m_sigma[0], 2));
             break;
         default:
             // Should never happen
@@ -49,22 +49,22 @@ Value SigmaResidualErrorModel::calculateSampleLikelihood(const Value _expected, 
     // Sig is calculated with _y here
     double sig = 0.0;
 
-    switch(errorModel) {
+    switch(m_errorModel) {
     case ResidualErrorType::ADDITIVE: {
         expectedObservedDiff = _observed - _expected;
-        sig = sigma(0);
+        sig = m_sigma(0);
     } break;
     case ResidualErrorType::PROPORTIONAL: {
         expectedObservedDiff = _observed - _expected;
-        sig = sigma(0) * _expected;
+        sig = m_sigma(0) * _expected;
     } break;
     case ResidualErrorType::EXPONENTIAL: {
         expectedObservedDiff = log(_observed) - log(_expected);
-        sig = sigma(0);
+        sig = m_sigma(0);
     } break;
     case ResidualErrorType::MIXED: {
         expectedObservedDiff = _observed - _expected;
-        sig = std::sqrt(std::pow(sigma(1) * _expected, 2) + std::pow(sigma(0),2));
+        sig = std::sqrt(std::pow(m_sigma(1) * _expected, 2) + std::pow(m_sigma(0),2));
     } break;
     default: {
         // Should never happen

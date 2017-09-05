@@ -35,6 +35,12 @@ public:
           m_errorModel(_errType)
     {}
 
+    ParameterDefinition(const std::string _name, Value _value, Operation* _operation, ErrorModel _errType)
+        : PopulationValue(_name, _value, _operation),
+          m_isVariable(false),
+          m_errorModel(_errType)
+    {}
+
     /// \brief Get the parameter value
     /// \return Returns the parameter value
     //Value getValue() const { return m_value; }

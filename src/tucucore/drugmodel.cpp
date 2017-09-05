@@ -14,7 +14,7 @@ DrugModel::DrugModel()
 }
 
 
-const Covariates& DrugModel::getCovariates() const
+const CovariateDefinitions& DrugModel::getCovariates() const
 {
     return m_covariates;
 }
