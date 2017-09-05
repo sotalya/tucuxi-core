@@ -16,10 +16,10 @@ using namespace std::chrono_literals;
 
 /// \defgroup TucuCli Tucuxi Console application
 /// \brief The Tucuxi console application
-/// 
-/// The Tucuxi console application offers a simple command line interface to 
+///
+/// The Tucuxi console application offers a simple command line interface to
 /// launch prediction and suggestion algorithms.
-/// 
+///
 /// This application is intended mainly to run automated test scripts
 
 int main(int argc, char** argv)
@@ -32,7 +32,7 @@ int main(int argc, char** argv)
 
     logHelper.info("********************************************************");
     logHelper.info("Tucuxi console application is starting up...");
-    
+
     Tucuxi::Core::IntakeIntervalCalculator::Result res;
     Tucuxi::Core::OneCompartmentExtraMacro calculator;
 
@@ -41,7 +41,7 @@ int main(int argc, char** argv)
 
     Tucuxi::Core::Concentrations concentrations;
     Tucuxi::Core::TimeOffsets times;
-    Tucuxi::Core::IntakeEvent intakeEvent(now, 0s, 400, 24h, Tucuxi::Core::RouteOfAdministration::INTRAVASCULAR, 0s, nbPoints);
+    Tucuxi::Core::IntakeEvent intakeEvent(now, 0s, 400, 24h, Tucuxi::Core::AbsorptionModel::INTRAVASCULAR, 0s, nbPoints);
     Tucuxi::Core::ParameterDefinitions parameterDefs;
     Tucuxi::Core::Residuals inResiduals;
     Tucuxi::Core::Residuals outResiduals1, outResiduals2;
@@ -86,4 +86,3 @@ int main(int argc, char** argv)
     logHelper.info("Tucuxi console application is exiting...");
     return 0;
 }
-
