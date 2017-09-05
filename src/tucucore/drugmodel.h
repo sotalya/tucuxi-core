@@ -78,7 +78,7 @@ public:
 
     Formulation m_formulation;
     Route m_route;
-    RouteOfAdministration m_absorptionModel;
+    AbsorptionModel m_absorptionModel;
 
     std::vector<ActiveSubstance* > m_activeSubstance;
 

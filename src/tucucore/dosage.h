@@ -335,18 +335,18 @@ public:
     /// \param _route Route of administration.
     /// \param _infusionTime Duration in case of an infusion.
     /// \pre _dose >= 0
-    /// \pre IF _routeOfAdministration == RouteOfAdministration::INFUSION THEN (!_infusionTime.isEmpty() && _infusionTime > 0)
+    /// \pre IF _routeOfAdministration == AbsorptionModel::INFUSION THEN (!_infusionTime.isEmpty() && _infusionTime > 0)
     SingleDose(const Dose &_dose,
-               const RouteOfAdministration &_routeOfAdministration,
+               const AbsorptionModel &_routeOfAdministration,
                const Duration &_infusionTime)
     {
         if (_dose < 0) {
             throw std::invalid_argument("Dose value = " + std::to_string(_dose) + " is invalid (must be >= 0).");
         }
-        if (_routeOfAdministration == RouteOfAdministration::INFUSION && _infusionTime.isNegative()) {
+        if (_routeOfAdministration == AbsorptionModel::INFUSION && _infusionTime.isNegative()) {
             throw std::invalid_argument("Infusion time for INFUSION is invalid (must be >= 0).");
         }
-        if (_routeOfAdministration == RouteOfAdministration::INFUSION && _infusionTime.isEmpty()) {
+        if (_routeOfAdministration == AbsorptionModel::INFUSION && _infusionTime.isEmpty()) {
             throw std::invalid_argument("Route of administration is INFUSION, but empty infusion time specified.");
         }
         m_dose = _dose;
@@ -361,7 +361,7 @@ protected:
     /// \brief Administered dose.
     Dose m_dose;
     /// \brief Route of administration.
-    RouteOfAdministration m_routeOfAdministration;
+    AbsorptionModel m_routeOfAdministration;
     /// \brief Duration in case of an infusion.
     Duration m_infusionTime;
 };
@@ -379,7 +379,7 @@ public:
     /// \param _interval Interval between two doses.
     /// \pre !_interval.isEmpty() && _interval > 0
     LastingDose(const Dose &_dose,
-                const RouteOfAdministration &_routeOfAdministration,
+                const AbsorptionModel &_routeOfAdministration,
                 const Duration &_infusionTime,
                 const Duration &_interval)
         : SingleDose(_dose, _routeOfAdministration, _infusionTime)
@@ -426,7 +426,7 @@ public:
     /// \param _infusionTime Duration in case of an infusion.
     /// \param _timeOfDay Time of the day when the dose is administered.
     DailyDose(const Dose &_dose,
-              const RouteOfAdministration &_routeOfAdministration,
+              const AbsorptionModel &_routeOfAdministration,
               const Duration &_infusionTime,
               const TimeOfDay &_timeOfDay)
         : SingleDose(_dose, _routeOfAdministration, _infusionTime)
@@ -477,7 +477,7 @@ public:
     /// \param _timeOfDay Time of the day when the dose is administered.
     /// \param _dayOfWeek Day of the week the dose has to be administered.
     WeeklyDose(const Dose &_dose,
-               const RouteOfAdministration &_routeOfAdministration,
+               const AbsorptionModel &_routeOfAdministration,
                const Duration &_infusionTime,
                const TimeOfDay &_timeOfDay,
                const DayOfWeek &_dayOfWeek)

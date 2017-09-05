@@ -28,7 +28,7 @@ struct TestDosage : public fructose::test_base<TestDosage>
     {
         const Dose validDose = 100.0;
         const Dose invalidDose = -100.0;
-        const RouteOfAdministration routePerfusion = RouteOfAdministration::INFUSION;
+        const AbsorptionModel routePerfusion = AbsorptionModel::INFUSION;
         const Duration emptyInfusionTime;
         const Duration invalidInfusionTime(-std::chrono::minutes(20));
         const Duration validInfusionTime(std::chrono::minutes(20));
@@ -59,7 +59,7 @@ struct TestDosage : public fructose::test_base<TestDosage>
     void testLastingDose(const std::string& /* _testName */)
     {
         const Dose validDose = 100.0;
-        const RouteOfAdministration routePerfusion = RouteOfAdministration::INFUSION;
+        const AbsorptionModel routePerfusion = AbsorptionModel::INFUSION;
         const Duration validInfusionTime(std::chrono::minutes(20));
         const Duration emptyInterval;
         const Duration invalidInterval(-std::chrono::hours(10));
@@ -97,7 +97,7 @@ struct TestDosage : public fructose::test_base<TestDosage>
     void testDailyDose(const std::string& /* _testName */)
     {
         const Dose validDose = 100.0;
-        const RouteOfAdministration routePerfusion = RouteOfAdministration::INFUSION;
+        const AbsorptionModel routePerfusion = AbsorptionModel::INFUSION;
         const Duration validInfusionTime(std::chrono::minutes(20));
         // Cannot have an invalid or invalid time of day (at worst, it simply takes the current time)
         const TimeOfDay validTimeOfDay(Duration(std::chrono::seconds(12345)));
@@ -146,7 +146,7 @@ struct TestDosage : public fructose::test_base<TestDosage>
     void testWeeklyDose(const std::string& /* _testName */)
     {
         const Dose validDose = 100.0;
-        const RouteOfAdministration routePerfusion = RouteOfAdministration::INFUSION;
+        const AbsorptionModel routePerfusion = AbsorptionModel::INFUSION;
         const Duration validInfusionTime(std::chrono::minutes(20));
         // Cannot have an invalid or invalid time of day (at worst, it simply takes the current time)
         const TimeOfDay validTimeOfDay(Duration(std::chrono::seconds(12345)));
@@ -260,7 +260,7 @@ struct TestDosage : public fructose::test_base<TestDosage>
         DateTime emptyDate;
         emptyDate.reset();
         LastingDose fakeDose(Dose(200.0),
-                             RouteOfAdministration::INFUSION,
+                             AbsorptionModel::INFUSION,
                              Duration(std::chrono::minutes(20)),
                              Duration(std::chrono::hours(240)));
         fructose_assert_exception(new Tucuxi::Core::DosageTimeRange(emptyDate, fakeDose), std::invalid_argument);

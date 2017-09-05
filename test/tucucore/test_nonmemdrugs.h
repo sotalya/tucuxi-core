@@ -32,7 +32,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
     template<class CalculatorClass>
     void testCalculator(const Tucuxi::Core::ParameterSetSeries &_parameters,
                         double _dose,
-                        Tucuxi::Core::RouteOfAdministration _route,
+                        Tucuxi::Core::AbsorptionModel _route,
                         std::chrono::hours _interval,
                         std::chrono::seconds _infusionTime,
                         int _nbPoints)
@@ -125,7 +125,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
         Tucuxi::Core::Concentrations concentrations;
         //            Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, _dose, interval, _route, infusionTime, nbPoints);
 
-        Tucuxi::Core::RouteOfAdministration route = Tucuxi::Core::RouteOfAdministration::INTRAVASCULAR;
+        Tucuxi::Core::AbsorptionModel route = Tucuxi::Core::AbsorptionModel::INTRAVASCULAR;
 
         Tucuxi::Core::IntakeSeries intakeSeries;
         {

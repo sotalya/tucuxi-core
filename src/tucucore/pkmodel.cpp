@@ -32,19 +32,19 @@ PkModel::getPkModelId() const
 
 
 bool
-PkModel::addIntakeIntervalCalculatorFactory(const RouteOfAdministration _route,
+PkModel::addIntakeIntervalCalculatorFactory(const AbsorptionModel _route,
                                             std::shared_ptr<IntakeIntervalCalculatorCreator> _creator)
 {
-    std::pair<std::map<RouteOfAdministration, std::shared_ptr<IntakeIntervalCalculatorCreator>>::iterator, bool> rc;
+    std::pair<std::map<AbsorptionModel, std::shared_ptr<IntakeIntervalCalculatorCreator>>::iterator, bool> rc;
     rc = m_calculatorCreators.insert(std::make_pair(_route, _creator));
     return rc.second;
 }
 
 
-std::vector<RouteOfAdministration>
+std::vector<AbsorptionModel>
 PkModel::getAvailableRoutes() const
 {
-    std::vector<RouteOfAdministration> routes;
+    std::vector<AbsorptionModel> routes;
     // Push keys in a vector.
     std::transform(m_calculatorCreators.begin(), m_calculatorCreators.end(),                              // Range to inspect
                    std::back_inserter(routes),                                                            // Backward iterator on returned vector
@@ -54,7 +54,7 @@ PkModel::getAvailableRoutes() const
 
 
 std::shared_ptr<IntakeIntervalCalculator>
-PkModel::getCalculatorForRoute(RouteOfAdministration _route) const
+PkModel::getCalculatorForRoute(AbsorptionModel _route) const
 {
     auto search = m_calculatorCreators.find(_route);
     if(search != m_calculatorCreators.end()) {
@@ -120,9 +120,9 @@ PkModelCollection::getPkModelList() const
 #define ADD_PKMODEL_TO_COLLECTION(_COLLECTION, _COMP_NO_NUM, _COMP_NO_LIT, _TYPE, _TYPE_NAME, _RC) \
 do { \
     std::shared_ptr<PkModel> pkmodel = std::make_shared<PkModel>("linear." #_COMP_NO_NUM "comp." #_TYPE_NAME); \
-    _RC |= pkmodel->addIntakeIntervalCalculatorFactory(RouteOfAdministration::EXTRAVASCULAR, Tucuxi::Core::_COMP_NO_LIT ## CompartmentExtra ## _TYPE::getCreator()); \
-    _RC |= pkmodel->addIntakeIntervalCalculatorFactory(RouteOfAdministration::INTRAVASCULAR, Tucuxi::Core::_COMP_NO_LIT ## CompartmentBolus ## _TYPE::getCreator()); \
-    _RC |= pkmodel->addIntakeIntervalCalculatorFactory(RouteOfAdministration::INFUSION, Tucuxi::Core::_COMP_NO_LIT ## CompartmentInfusion## _TYPE::getCreator());\
+    _RC |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::EXTRAVASCULAR, Tucuxi::Core::_COMP_NO_LIT ## CompartmentExtra ## _TYPE::getCreator()); \
+    _RC |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::INTRAVASCULAR, Tucuxi::Core::_COMP_NO_LIT ## CompartmentBolus ## _TYPE::getCreator()); \
+    _RC |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::INFUSION, Tucuxi::Core::_COMP_NO_LIT ## CompartmentInfusion## _TYPE::getCreator());\
     _COLLECTION.addPkModel(pkmodel); \
 } while (0);
 

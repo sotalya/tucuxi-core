@@ -56,7 +56,7 @@ typedef std::vector<Concentration> Concentrations;
 
 /// \ingroup TucuCore
 /// \brief Way a dose is administered.
-enum class RouteOfAdministration { INTRAVASCULAR, EXTRAVASCULAR, INFUSION };
+enum class AbsorptionModel { INTRAVASCULAR, EXTRAVASCULAR, INFUSION };
 
 /// \ingroup TucuCore
 /// \brief Operations on scheduled intakes.
