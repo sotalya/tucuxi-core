@@ -84,7 +84,7 @@ public:
     /// \param _isDensityConstant Flag to indicate if initial number of points should be used with a constant density
     /// \return An indication if the computation was successful
     Result calculateIntakePoints(
-        Concentrations& _concentrations,
+        std::vector<Concentrations>& _concentrations,
         TimeOffsets & _times,
         const IntakeEvent& _intakeEvent,
         const ParameterSetEvent& _parameters,
@@ -102,7 +102,7 @@ public:
     /// \param _outResiduals Final residual concentrations
     /// \return Returns an indication if the computation was successful
     Result calculateIntakeSinglePoint(
-        Concentrations& _concentrations,
+        std::vector<Concentrations>& _concentrations,
         const IntakeEvent& _intakeEvent,
         const ParameterSetEvent& _parameters,
         const Residuals& _inResiduals,
@@ -130,14 +130,14 @@ protected:
     /// \param _inResiduals Initial residual concentrations
     /// \param _concentrations vector of concentrations.
     /// \param _outResiduals Final residual concentrations
-    virtual bool computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) = 0;
+    virtual bool computeConcentrations(const Residuals& _inResiduals, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) = 0;
 
     /// \brief Compute concentrations using a specific algorithm
     /// \param _atTime measure time
     /// \param _inResiduals Initial residual concentrations
     /// \param _concentrations vector of concentrations.
     /// \param _outResiduals Final residual concentrations
-    virtual bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals) = 0;
+    virtual bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) = 0;
 
     /// \brief Check if a value is correct and log a message if it is not the case
     /// \param _isOk Indicates that the value is correct

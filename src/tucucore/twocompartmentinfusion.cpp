@@ -92,7 +92,7 @@ void TwoCompartmentInfusionMicro::computeExponentials(Eigen::VectorXd& _times)
 }
 
 
-bool TwoCompartmentInfusionMicro::computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
+bool TwoCompartmentInfusionMicro::computeConcentrations(const Residuals& _inResiduals, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1, concentrations2;
 
@@ -105,8 +105,8 @@ bool TwoCompartmentInfusionMicro::computeConcentrations(const Residuals& _inResi
     _outResiduals.push_back(concentrations1[m_NbPoints - 1]);
     _outResiduals.push_back(concentrations2[m_NbPoints - 1]);
 
-    // Return concentrations of comp1 and comp2
-    _concentrations.assign(concentrations1.data(), concentrations1.data() + concentrations1.size());
+    // Return concentrations of comp1
+    _concentrations[0].assign(concentrations1.data(), concentrations1.data() + concentrations1.size());
 
     // Check output
     bool bOK = checkValue(_outResiduals[0] >= 0, "The concentration1 is negative.");
@@ -116,7 +116,7 @@ bool TwoCompartmentInfusionMicro::computeConcentrations(const Residuals& _inResi
 }
 
 
-bool TwoCompartmentInfusionMicro::computeConcentration(const Value& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
+bool TwoCompartmentInfusionMicro::computeConcentration(const Value& _atTime, const Residuals& _inResiduals, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1, concentrations2;
 
@@ -226,8 +226,8 @@ bool TwoCompartmentInfusionMicro::computeConcentration(const Value& _atTime, con
     compute(_inResiduals, forcesize, concentrations1, concentrations2);
 
     // Return concentraions (computation with atTime (current time))
-    _concentrations.push_back(concentrations1[0]);
-    _concentrations.push_back(concentrations2[0]);
+    _concentrations[0].push_back(concentrations1[0]);
+    _concentrations[0].push_back(concentrations2[0]);
     
     // Return final residual of comp1 and comp2
     // TODO: check equation... 

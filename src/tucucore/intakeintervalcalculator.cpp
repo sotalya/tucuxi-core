@@ -12,7 +12,7 @@ namespace Tucuxi {
 namespace Core {
 
 IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakePoints(
-    Concentrations& _concentrations,
+    std::vector<Concentrations>& _concentrations,
     TimeOffsets & _times,
     const IntakeEvent& _intakeEvent,
     const ParameterSetEvent& _parameters,
@@ -66,7 +66,7 @@ IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakePoints
 
 
 IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakeSinglePoint(
-    Concentrations& _concentrations,
+    std::vector<Concentrations>& _concentrations,
     const IntakeEvent& _intakeEvent,
     const ParameterSetEvent& _parameters,
     const Residuals& _inResiduals,

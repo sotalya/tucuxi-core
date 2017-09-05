@@ -58,7 +58,7 @@ void OneCompartmentExtraMicro::computeExponentials(Eigen::VectorXd& _times)
 }
 
 
-bool OneCompartmentExtraMicro::computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
+bool OneCompartmentExtraMicro::computeConcentrations(const Residuals& _inResiduals, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1, concentrations2;
 
@@ -67,7 +67,9 @@ bool OneCompartmentExtraMicro::computeConcentrations(const Residuals& _inResidua
 
     _outResiduals.push_back(concentrations1[m_NbPoints - 1]);
     _outResiduals.push_back(concentrations2[m_NbPoints - 1]);
-    _concentrations.assign(concentrations1.data(), concentrations1.data() + concentrations1.size());	
+
+    // Return concentraions of first compartment
+    _concentrations[0].assign(concentrations1.data(), concentrations1.data() + concentrations1.size());	
 
     bool bOK = checkValue(_outResiduals[0] >= 0, "The concentration1 is negative.");
     bOK &= checkValue(_outResiduals[1] >= 0, "The concentration2 is negative.");
@@ -75,7 +77,7 @@ bool OneCompartmentExtraMicro::computeConcentrations(const Residuals& _inResidua
     return bOK;
 }
 
-bool OneCompartmentExtraMicro::computeConcentration(const Value& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
+bool OneCompartmentExtraMicro::computeConcentration(const Value& _atTime, const Residuals& _inResiduals, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1, concentrations2;
 
@@ -83,8 +85,8 @@ bool OneCompartmentExtraMicro::computeConcentration(const Value& _atTime, const 
     compute(_inResiduals, concentrations1, concentrations2);
 
     // return concentraions (computation with atTime (current time))
-    _concentrations.push_back(concentrations1[0]);
-    _concentrations.push_back(concentrations2[0]);
+    _concentrations[0].push_back(concentrations1[0]);
+    _concentrations[0].push_back(concentrations2[0]);
     
     // interval=0 means that it is the last cycle, so final residual = 0
     if (m_Int == 0) {
@@ -98,8 +100,8 @@ bool OneCompartmentExtraMicro::computeConcentration(const Value& _atTime, const 
 
     bool bOK = checkValue(_outResiduals[0] >= 0, "The final residual1 is negative.");
     bOK &= checkValue(_outResiduals[1] >= 0, "The final residual2 is negative.");
-    bOK &= checkValue(_concentrations[0] >= 0, "The concentration1 is negative.");
-    bOK &= checkValue(_concentrations[1] >= 0, "The concentration2 is negative.");
+    bOK &= checkValue(_concentrations[0][0] >= 0, "The concentration1 is negative.");
+    bOK &= checkValue(_concentrations[0][1] >= 0, "The concentration2 is negative.");
 
     return bOK;
 }

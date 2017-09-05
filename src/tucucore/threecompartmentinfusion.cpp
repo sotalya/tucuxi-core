@@ -111,7 +111,7 @@ void ThreeCompartmentInfusionMicro::computeExponentials(Eigen::VectorXd& _times)
     setExponentials(Exponentials::Gamma, (-m_Gamma * _times).array().exp());
 }
 
-bool ThreeCompartmentInfusionMicro::computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
+bool ThreeCompartmentInfusionMicro::computeConcentrations(const Residuals& _inResiduals, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1(m_NbPoints);
     Value concentrations2, concentrations3;
@@ -126,7 +126,7 @@ bool ThreeCompartmentInfusionMicro::computeConcentrations(const Residuals& _inRe
     _outResiduals.push_back(concentrations2);
     _outResiduals.push_back(concentrations3);
 
-    _concentrations.assign(concentrations1.data(), concentrations1.data() + concentrations1.size());	
+    _concentrations[0].assign(concentrations1.data(), concentrations1.data() + concentrations1.size());	
 
     bool bOK = checkValue(_outResiduals[0] >= 0, "The concentration1 is negative.");
     bOK &= checkValue(_outResiduals[1] >= 0, "The concentration2 is negative.");
@@ -135,7 +135,7 @@ bool ThreeCompartmentInfusionMicro::computeConcentrations(const Residuals& _inRe
     return bOK;
 }
 
-bool ThreeCompartmentInfusionMicro::computeConcentration(const Value& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
+bool ThreeCompartmentInfusionMicro::computeConcentration(const Value& _atTime, const Residuals& _inResiduals, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1(2);
     Value concentrations2, concentrations3;
@@ -150,7 +150,7 @@ bool ThreeCompartmentInfusionMicro::computeConcentration(const Value& _atTime, c
     compute(_inResiduals, forcesize, concentrations1, concentrations2, concentrations3);
 
     // return concentraions (computation with atTime (current time))
-    _concentrations.push_back(concentrations1[0]);
+    _concentrations[0].push_back(concentrations1[0]);
 
     // interval=0 means that it is the last cycle, so final residual = 0
     if (m_Int == 0) {

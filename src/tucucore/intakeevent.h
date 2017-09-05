@@ -144,7 +144,7 @@ public:
     }
 
     IntakeIntervalCalculator::Result calculateIntakePoints(
-        Concentrations& _concentrations,
+        std::vector<Concentrations>& _concentrations,
         TimeOffsets & _times,
         const IntakeEvent& _intakeEvent,
         const ParameterSetEvent& _parameters,
@@ -157,7 +157,7 @@ public:
     }
 
     IntakeIntervalCalculator::Result calculateIntakeSinglePoint(
-	Concentrations& _concentrations,
+	std::vector<Concentrations>& _concentrations,
 	const IntakeEvent& _intakeEvent,
 	const ParameterSetEvent& _parameters,
 	const Residuals& _inResiduals,

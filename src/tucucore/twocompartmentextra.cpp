@@ -70,7 +70,8 @@ void TwoCompartmentExtraMicro::computeExponentials(Eigen::VectorXd& _times)
 }
 
 
-bool TwoCompartmentExtraMicro::computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
+bool TwoCompartmentExtraMicro::computeConcentrations(const
+Residuals& _inResiduals, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1;
     Value concentrations2, concentrations3;
@@ -78,12 +79,13 @@ bool TwoCompartmentExtraMicro::computeConcentrations(const Residuals& _inResidua
     // Compute concentrations
     bool bOK = compute(_inResiduals, concentrations1, concentrations2, concentrations3);
 
-    // Return concentrations of comp1, comp2 and comp3
+    // Return residuals of comp1, comp2 and comp3
     _outResiduals.push_back(concentrations1[m_NbPoints - 1]);
     _outResiduals.push_back(concentrations2);
     _outResiduals.push_back(concentrations3);
 
-    _concentrations.assign(concentrations1.data(), concentrations1.data() + concentrations1.size());	
+    // Return concentrations of comp1, comp2 and comp3
+    _concentrations[0].assign(concentrations1.data(), concentrations1.data() + concentrations1.size());	
 
     bOK &= checkValue(_outResiduals[0] >= 0, "The concentration is negative.");
     bOK &= checkValue(_outResiduals[1] >= 0, "The concentration is negative.");
@@ -92,7 +94,7 @@ bool TwoCompartmentExtraMicro::computeConcentrations(const Residuals& _inResidua
     return bOK;
 }
 
-bool TwoCompartmentExtraMicro::computeConcentration(const Value& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
+bool TwoCompartmentExtraMicro::computeConcentration(const Value& _atTime, const Residuals& _inResiduals,    std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1;
     Value concentrations2, concentrations3;
@@ -101,7 +103,7 @@ bool TwoCompartmentExtraMicro::computeConcentration(const Value& _atTime, const 
     bool bOK = compute(_inResiduals, concentrations1, concentrations2, concentrations3);
 
     // return concentraions (computation with atTime (current time))
-    _concentrations.push_back(concentrations1[0]);
+    _concentrations[0].push_back(concentrations1[0]);
 
     // interval=0 means that it is the last cycle, so final residual = 0
     if (m_Int == 0) {

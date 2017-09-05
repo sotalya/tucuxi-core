@@ -100,10 +100,11 @@ public:
 	return true;
     }
  
-    bool allocate(const CycleSize _nbPoints, TimeOffsets &_times, Concentrations &_values)
+    bool allocate(const unsigned int _residualSize, const CycleSize _nbPoints, TimeOffsets &_times, std::vector<Concentrations> &_values)
     {
         _times.reserve(_nbPoints);
-        _values.reserve(_nbPoints);
+	for (unsigned int compartement= 0; compartement<_residualSize; compartement++)
+	    _values[compartement].reserve(_nbPoints);
         return true;
     }
     void appendConcentrations(TimeOffsets &_times, Concentrations &_values)

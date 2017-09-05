@@ -110,7 +110,7 @@ void ThreeCompartmentBolusMicro::computeExponentials(Eigen::VectorXd& _times)
 }
 
 
-bool ThreeCompartmentBolusMicro::computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
+bool ThreeCompartmentBolusMicro::computeConcentrations(const Residuals& _inResiduals, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1;
     Value concentrations2, concentrations3;
@@ -124,7 +124,7 @@ bool ThreeCompartmentBolusMicro::computeConcentrations(const Residuals& _inResid
     _outResiduals.push_back(concentrations3);
 
     // return concentration
-    _concentrations.assign(concentrations1.data(), concentrations1.data() + concentrations1.size());	
+    _concentrations[0].assign(concentrations1.data(), concentrations1.data() + concentrations1.size());	
 
     bool bOK = checkValue(_outResiduals[0] >= 0, "The concentration1 is negative.");
     bOK &= checkValue(_outResiduals[1] >= 0, "The concentration2 is negative.");
@@ -133,7 +133,7 @@ bool ThreeCompartmentBolusMicro::computeConcentrations(const Residuals& _inResid
     return bOK;
 }
 
-bool ThreeCompartmentBolusMicro::computeConcentration(const Value& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
+bool ThreeCompartmentBolusMicro::computeConcentration(const Value& _atTime, const Residuals& _inResiduals, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1;
     Value concentrations2, concentrations3;
@@ -142,7 +142,7 @@ bool ThreeCompartmentBolusMicro::computeConcentration(const Value& _atTime, cons
     compute(_inResiduals, concentrations1, concentrations2, concentrations3);
 
     // return concentraions (computation with atTime (current time))
-    _concentrations.push_back(concentrations1[0]);
+    _concentrations[0].push_back(concentrations1[0]);
 
     // interval=0 means that it is the last cycle, so final residual = 0
     if (m_Int == 0) {

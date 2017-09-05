@@ -39,7 +39,7 @@ int main(int argc, char** argv)
     DateTime now;
     int nbPoints = 251;
 
-    Tucuxi::Core::Concentrations concentrations;
+    std::vector<Tucuxi::Core::Concentrations> concentrations;
     Tucuxi::Core::TimeOffsets times;
     Tucuxi::Core::IntakeEvent intakeEvent(now, 0s, 400, 24h, Tucuxi::Core::AbsorptionModel::INTRAVASCULAR, 0s, nbPoints);
     Tucuxi::Core::ParameterDefinitions parameterDefs;
@@ -86,3 +86,4 @@ int main(int argc, char** argv)
     logHelper.info("Tucuxi console application is exiting...");
     return 0;
 }
+

@@ -36,7 +36,6 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
         // Compare the result on one interval
         // with ConcentrationCalculator vs directly with the IntakeIntervalCalculator
         {
-
             Tucuxi::Core::IntakeIntervalCalculator::Result res;
             CalculatorClass calculator;
 
@@ -45,7 +44,11 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
             Tucuxi::Common::Duration interval = _interval;
             Tucuxi::Common::Duration infusionTime = _infusionTime;
 
-            Tucuxi::Core::Concentrations concentrations;
+	    unsigned int residualSize = calculator.getResidualSize();
+
+            std::vector<Tucuxi::Core::Concentrations> concentrations;
+	    concentrations.resize(residualSize);
+
             Tucuxi::Core::TimeOffsets times;
             Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, _dose, interval, _route, infusionTime, _nbPoints);
 
@@ -55,7 +58,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
 
                 Tucuxi::Core::Residuals inResiduals;
                 Tucuxi::Core::Residuals outResiduals;
-                for(unsigned int i = 0; i < calculator.getResidualSize(); i++)
+                for(unsigned int i = 0; i < residualSize; i++)
                     inResiduals.push_back(0);
 
                 Tucuxi::Core::ParameterSetEvent event = *(_parameters.getAtTime(now));
@@ -89,12 +92,13 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
                 delete concentrationCalculator;
             }
 
-
             for(int i = 0; i < _nbPoints; i++) {
                 Tucuxi::Core::Concentrations concentration2;
                 concentration2 = predictionPtr->getValues()[0];
-                // std::cout << i <<  " :: " << concentrations[i] << " : " << concentration2[i] << std::endl;
-                fructose_assert_double_eq(concentrations[i], concentration2[i]);
+                // std::cout << i <<  " :: " << concentrations[0][i] << " : " << concentration2[i] << std::endl;
+
+		// compare concentrations of compartment 1
+                fructose_assert_double_eq(concentrations[0][i], concentration2[i]);
             }
         }
 
@@ -104,7 +108,6 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
         // IntakeIntervalCalculators. Be careful, the interval for the later need
         // to be longer, and the number of points modified accordingly
         {
-
             int nbCycles = 10;
 
             Tucuxi::Core::IntakeIntervalCalculator::Result res;
@@ -115,7 +118,9 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
             Tucuxi::Common::Duration interval = _interval;
             Tucuxi::Common::Duration infusionTime = _infusionTime;
 
-            Tucuxi::Core::Concentrations concentrations;
+	    unsigned int residualSize = calculator.getResidualSize();
+            std::vector<Tucuxi::Core::Concentrations> concentrations;
+	    concentrations.resize(residualSize);
             Tucuxi::Core::TimeOffsets times;
 
             {
@@ -126,7 +131,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
 
                 Tucuxi::Core::Residuals inResiduals;
                 Tucuxi::Core::Residuals outResiduals;
-                for(unsigned int i = 0; i < calculator.getResidualSize(); i++)
+                for(unsigned int i = 0; i < residualSize; i++)
                     inResiduals.push_back(0);
 
                 Tucuxi::Core::ParameterSetEvent event = *(_parameters.getAtTime(now));
@@ -142,7 +147,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
 
 #if 0
 		for(int testPoint = 0; testPoint < (_nbPoints - 1 ) * nbCycles + 1; testPoint++) 
-			std::cout << "concentration[" << testPoint << "]: " << concentrations[testPoint] << std::endl;
+			std::cout << "concentration[" << testPoint << "]: " << concentrations[0][testPoint] << std::endl;
 #endif
 
                 fructose_assert(res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok);
@@ -183,8 +188,8 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
 
                     double sumConcentration = 0.0;
                     for(int c = 0; c < cycle + 1; c++) {
-                        sumConcentration += concentrations[c * (_nbPoints - 1) + i];
-			// std::cout << c <<  " : " << sumConcentration << " : " << concentrations[c * (_nbPoints - 1) + i] << std::endl;
+                        sumConcentration += concentrations[0][c * (_nbPoints - 1) + i];
+			// std::cout << c <<  " : " << sumConcentration << " : " << concentrations[0][c * (_nbPoints - 1) + i] << std::endl;
 		    }
 
                     // std::cout << cycle <<  " : " << i << " :: " << predictionPtr->getTimes()[cycle][i] << " . " << sumConcentration << " : " << concentration2[i] << std::endl;
@@ -193,7 +198,6 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
                 }
             }
         }
-
 
 
         // Create 2 samples and compare the result of computeConcentrations() and pointsAtTime().
@@ -260,6 +264,8 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
 
             int n0 = (nbPoints - 1) / 4;
             int n1 = (nbPoints - 1) * 3 / 4;
+
+	// compare the result of compartment1
         fructose_assert_double_eq(concentrations[0], predictionPtr->getValues()[0][n0]);
         fructose_assert_double_eq(concentrations[1], predictionPtr->getValues()[0][n1]);
 

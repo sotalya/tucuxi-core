@@ -64,21 +64,24 @@ void OneCompartmentBolusMicro::computeExponentials(Eigen::VectorXd& _times)
 }
 
 
-bool OneCompartmentBolusMicro::computeConcentrations(const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
+bool OneCompartmentBolusMicro::computeConcentrations(const Residuals& _inResiduals, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations;
 
     // Compute concentrations
     compute(_inResiduals, concentrations);
 
-    // Return concentraions nd finla residual
+    // Return finla residual
     _outResiduals.push_back(concentrations[m_NbPoints - 1]);
-    _concentrations.assign(concentrations.data(), concentrations.data() + concentrations.size());
+
+    // Return concentraions of first compartment
+    _concentrations[0].assign(concentrations.data(), concentrations.data() + concentrations.size());
     
     return checkValue(_outResiduals[0] >= 0, "The concentration is negative.");
 }
 
-bool OneCompartmentBolusMicro::computeConcentration(const Value& _atTime, const Residuals& _inResiduals, Concentrations& _concentrations, Residuals& _outResiduals)
+bool OneCompartmentBolusMicro::computeConcentration(const Value& _atTime, const Residuals&
+_inResiduals, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations;
 
@@ -86,7 +89,7 @@ bool OneCompartmentBolusMicro::computeConcentration(const Value& _atTime, const 
     compute(_inResiduals, concentrations);
 
     // Return concentrations (computation with atTime (current time))
-    _concentrations.push_back(concentrations[0]);
+    _concentrations[0].push_back(concentrations[0]);
     
     // interval=0 means that it is the last cycle, so final residual = 0
     if (m_Int == 0) {
