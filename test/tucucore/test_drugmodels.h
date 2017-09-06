@@ -34,7 +34,8 @@ struct TestDrugModels : public fructose::test_base<TestDrugModels>
         { OperationInput("V", InputType::DOUBLE),
                     OperationInput("sex", InputType::DOUBLE)});
 
-        parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("V", 347, opV, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+        parameterDefs.push_back(std::unique_ptr<ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V", 347, opV, Tucuxi::Core::ParameterDefinition::ErrorModel::None)));
+        model->addDispositionParameter(new Tucuxi::Core::ParameterDefinition("V", 347, opV, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
         Operation *opCl = new JSOperation(" \
                                           theta1=CL; \
                 theta4=5.42; \
@@ -68,8 +69,9 @@ struct TestDrugModels : public fructose::test_base<TestDrugModels>
                     OperationInput("age", InputType::DOUBLE),
                     OperationInput("gist", InputType::BOOL)});
 
-        parameterDefs.push_back(Tucuxi::Core::ParameterDefinition("CL", 15.106, opCl, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
-        model->setDispositionParameters(parameterDefs);
+        parameterDefs.push_back(std::unique_ptr<ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("CL", 15.106, opCl, Tucuxi::Core::ParameterDefinition::ErrorModel::None)));
+        model->addDispositionParameter(new Tucuxi::Core::ParameterDefinition("CL", 15.106, opCl, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+        //model->setDispositionParameters(parameterDefs);
 
 
         ActiveSubstance *activeSubstance;
@@ -83,18 +85,11 @@ struct TestDrugModels : public fructose::test_base<TestDrugModels>
         activeSubstance->addAnalyte(analyte);
 
 
-        Tucuxi::Core::ParameterDefinitions absorptionParameters;
-        absorptionParameters.push_back(Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
-        absorptionParameters.push_back(Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
-
-        // We build the absorption parameters without correlations
-        AbsorptionParameters absorption;
-        absorption.setParameters(absorptionParameters);
-
         {
             FormulationAndRoute *formulationAndRoute;
             formulationAndRoute = new FormulationAndRoute();
-            formulationAndRoute->setAbsorptionParameters(absorption);
+            formulationAndRoute->addAbsorptionParameter(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            formulationAndRoute->addAbsorptionParameter(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
             formulationAndRoute->setRoute(Route::Oral);
             formulationAndRoute->setFormulation("To be defined");
             formulationAndRoute->setAbsorptionModel(AbsorptionModel::EXTRAVASCULAR);
@@ -107,8 +102,6 @@ struct TestDrugModels : public fructose::test_base<TestDrugModels>
         {
             FormulationAndRoute *formulationAndRoute;
             formulationAndRoute = new FormulationAndRoute();
-            // No absorption parameters
-            //formulationAndRoute->setAbsorptionParameters(absorption);
             formulationAndRoute->setRoute(Route::IntravenousBolus);
             formulationAndRoute->setFormulation("To be defined");
             formulationAndRoute->setAbsorptionModel(AbsorptionModel::INTRAVASCULAR);
@@ -121,8 +114,6 @@ struct TestDrugModels : public fructose::test_base<TestDrugModels>
         {
             FormulationAndRoute *formulationAndRoute;
             formulationAndRoute = new FormulationAndRoute();
-            // No absorption parameters
-            //formulationAndRoute->setAbsorptionParameters(absorption);
             formulationAndRoute->setRoute(Route::IntravenousDrip);
             formulationAndRoute->setFormulation("To be defined");
             formulationAndRoute->setAbsorptionModel(AbsorptionModel::INFUSION);
@@ -132,12 +123,11 @@ struct TestDrugModels : public fructose::test_base<TestDrugModels>
             model->addFormulationAndRoute(formulationAndRoute);
         }
 
-        CovariateDefinitions covariates;
-        covariates.push_back(Tucuxi::Core::CovariateDefinition("weight", 70, nullptr, CovariateType::Fixed));
-        covariates.push_back(Tucuxi::Core::CovariateDefinition("gist", 0, nullptr, CovariateType::Fixed));
-        covariates.push_back(Tucuxi::Core::CovariateDefinition("sex", 0.5, nullptr, CovariateType::Fixed));
-        covariates.push_back(Tucuxi::Core::CovariateDefinition("age", 50, nullptr, CovariateType::Fixed));
-        model->setCovariates(covariates);
+        model->addCovariate(new Tucuxi::Core::CovariateDefinition("weight", 70, nullptr, CovariateType::Fixed));
+        model->addCovariate(new Tucuxi::Core::CovariateDefinition("gist", 0, nullptr, CovariateType::Fixed));
+        model->addCovariate(new Tucuxi::Core::CovariateDefinition("sex", 0.5, nullptr, CovariateType::Fixed));
+        model->addCovariate(new Tucuxi::Core::CovariateDefinition("age", 50, nullptr, CovariateType::Fixed));
+
 
         SigmaResidualErrorModel *errorModel;
         errorModel = new SigmaResidualErrorModel();
@@ -154,18 +144,15 @@ struct TestDrugModels : public fructose::test_base<TestDrugModels>
         SubTargetDefinition cMin("cMin", 750.0, nullptr);
         SubTargetDefinition cMax("cMax", 1500.0, nullptr);
         SubTargetDefinition cBest("cBest", 1000.0, nullptr);
-        SubTargetDefinition emptySubTarget;
-        TargetDefinition target = TargetDefinition(TargetDefinition::TargetType::Residual,
-                                                   cMin,
-                                                   cMax,
-                                                   cBest,
-                                                   emptySubTarget,
-                                                   emptySubTarget,
-                                                   emptySubTarget);
+        TargetDefinition *target = new TargetDefinition(TargetType::Residual,
+                                                        &cMin,
+                                                        &cMax,
+                                                        &cBest,
+                                                        new SubTargetDefinition("cBest", 1000.0, nullptr),
+                                                        new SubTargetDefinition("cBest", 1000.0, nullptr),
+                                                        new SubTargetDefinition("cBest", 1000.0, nullptr));
 
-        TargetDefinitions targets;
-        targets.push_back(target);
-        model->setTargets(targets);
+        model->addTarget(target);
 
 
         // Add possible dosages

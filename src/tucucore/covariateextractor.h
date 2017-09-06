@@ -18,7 +18,7 @@ namespace Core {
 class CovariateExtractor
 {
 public:
-    static int extract(const CovariateDefinitions &_defaults, const Covariates &_patientCovariates, const DateTime &_start, const DateTime &_end, CovariateSeries &_series);
+    static int extract(const CovariateDefinitions &_defaults, const PatientVariates &_patientCovariates, const DateTime &_start, const DateTime &_end, CovariateSeries &_series);
 };
 
 }

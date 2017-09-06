@@ -19,14 +19,14 @@ public:
     DrugTreatment();
 
     std::unique_ptr<const DosageHistory> getDosageHistory(bool _useAdjustments) const;
-    const Covariates& getCovariates() const;
+    const PatientVariates& getCovariates() const;
     const Samples& getSamples() const;
     const Targets& getTargets() const;
 
 private:
     DosageHistory m_dosageHistory;
 
-    Covariates m_covariates;
+    PatientVariates m_covariates;
     Targets m_targets;
     Samples m_samples;
 

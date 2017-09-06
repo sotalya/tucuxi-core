@@ -31,7 +31,7 @@ std::unique_ptr<const DosageHistory> DrugTreatment::getDosageHistory(bool _useAd
 }
 
 
-const Covariates& DrugTreatment::getCovariates() const
+const PatientVariates& DrugTreatment::getCovariates() const
 {
     return m_covariates;
 }
