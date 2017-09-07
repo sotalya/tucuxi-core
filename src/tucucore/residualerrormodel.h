@@ -52,6 +52,8 @@ public:
         NONE
     };
 
+    void setSigma(Sigma _sigma) { m_sigma = _sigma;}
+    void setErrorModel(ResidualErrorType _errorModel) { m_errorModel = _errorModel;}
     virtual bool isEmpty() const;
     virtual void applyEpsToArray(Concentrations &_concentrations, const Deviations &_eps) const;
 
@@ -59,10 +61,10 @@ public:
 
 protected:
     /// The Sigma vector
-    Sigma sigma;
+    Sigma m_sigma;
 
     /// The residual error model type
-    ResidualErrorType errorModel;
+    ResidualErrorType m_errorModel;
 
 
 };

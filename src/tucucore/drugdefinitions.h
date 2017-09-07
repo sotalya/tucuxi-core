@@ -9,6 +9,11 @@ namespace Tucuxi {
 namespace Core {
 
 
+class Unit
+{
+
+};
+
 class PopulationValue
 {
 public:
@@ -18,19 +23,36 @@ public:
         m_value(_value),
         m_operation(_operation)
     {}
+/*
+    PopulationValue(PopulationValue&& other) :
+        m_operation(std::move(other.m_operation))
+    {
+        m_id = other.m_id;
+        m_value = other.m_value;
+//        m_operation = std::move(other.m_operation);
+    }
+
+    PopulationValue(const PopulationValue& other) :
+        m_operation(std::move(other.m_operation))
+    {
+        m_id = other.m_id;
+        m_value = other.m_value;
+//        m_operation = std::move(other.m_operation);
+    }
+*/
 
 
     /// \brief Get the parameter value
     /// \return Returns the parameter value
     Value getValue() const { return m_value; }
-    Operation *getOperation() const { return m_operation;}
-    void setOperation(Operation *_operation) {m_operation = _operation;};
+    const Operation &getOperation() const { return *m_operation;}
+//    void setOperation(Operation *_operation) {m_operation = _operation;};
     std::string getId() const { return m_id;}
 
 protected:
     std::string m_id;
     Value m_value;
-    Operation *m_operation;
+    std::unique_ptr<Operation const> m_operation;
 };
 
 template<typename DefinitionClass>
@@ -44,7 +66,7 @@ public:
 protected:
 
     const DefinitionClass &m_definition;
-    Operation *getOperation() const { return m_definition.getOperation(); }
+    const Operation& getOperation() const { return m_definition.getOperation(); }
 
 };
 

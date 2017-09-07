@@ -1064,7 +1064,7 @@ inline
 void test_root::test_assert_same_data(const void* lhs, const void* rhs,
                                       unsigned int data_length,
                                       const std::string& test_case_name, 
-                                      const char */*msg1*/, const char* /*msg2*/,
+                                      const char * /*msg1*/, const char* /*msg2*/,
                                       const char* filename, int line_number)
 {
     set_assertion_tested();

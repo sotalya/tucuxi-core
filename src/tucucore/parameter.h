@@ -18,6 +18,24 @@
 namespace Tucuxi {
 namespace Core {
 
+
+enum class ParameterVariabilityType
+{
+    Additive,
+    Proportional,
+    Exponential,
+    None
+};
+
+class ParameterVariability
+{
+    ParameterVariabilityType m_variabilityType;
+    std::vector<double> m_values;
+
+};
+
+// TOCHECK : Virer ErrorModel
+
 /// \ingroup TucuCore
 /// \brief Represents a pharmacokinetics parameter.
 class ParameterDefinition : public PopulationValue
@@ -27,10 +45,17 @@ public:
 
 public:    
     /// \brief Constructor
-    /// \param _name The name of the parameter
+    /// \param _id The name of the parameter
     /// \param _name It's default value
-    ParameterDefinition(const std::string _name, Value _value, ErrorModel _errType)
-        : PopulationValue(_name, _value, nullptr),
+    // TOCHECK : Passer l'opération
+    ParameterDefinition(const std::string _id, Value _value, ErrorModel _errType)
+        : PopulationValue(_id, _value, nullptr),
+          m_isVariable(false),
+          m_errorModel(_errType)
+    {}
+
+    ParameterDefinition(const std::string _name, Value _value, Operation* _operation, ErrorModel _errType)
+        : PopulationValue(_name, _value, _operation),
           m_isVariable(false),
           m_errorModel(_errType)
     {}
@@ -46,8 +71,12 @@ public:
 private:
 //    std::string m_name;      /// Name like "CL" or "V1"
 //    Value m_value;           /// The value (0.0 or 1.0 in case of booleans)
+    // TOCHECK : VIrer isVAriable
     bool m_isVariable;       /// Indicates whether there is an eta on this parameter
     ErrorModel m_errorModel;
+    Unit m_unit;
+
+    ParameterVariability m_variability;
 
 //    Operation *m_operation; /// Potential operation from covariates
 
@@ -55,7 +84,7 @@ private:
 };
 
 /// \brief A list of parameters
-typedef std::vector<ParameterDefinition> ParameterDefinitions;
+typedef std::vector<std::unique_ptr<ParameterDefinition> > ParameterDefinitions;
 
 class Parameter : public IndividualValue<ParameterDefinition>
 {
@@ -72,6 +101,7 @@ public:
 private:
     Value m_value;
 };
+
 typedef std::vector<Parameter> Parameters;
 
 class ParameterSetEvent : public TimedEvent
@@ -82,7 +112,7 @@ public:
     {
         ParameterDefinitions::const_iterator it;
         for (it = _definitions.begin(); it != _definitions.end(); it++) {
-            m_parameters.push_back(Parameter(*it));
+            m_parameters.push_back(Parameter(**it));
         }
     }
 

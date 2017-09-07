@@ -19,10 +19,16 @@ namespace Tucuxi {
 namespace Core {
 
 enum class CovariateType {
-    Fixed = 0,          // Use the default value or the one specified in the drug treatment if existing
-    Discret,            // Use changes of value as defined in the drug treatment
-    Interpolated,       // Discret values are interpolated
-    Operable            // The value depends on another covariate
+    Fixed = 0,          /// Use the default value or the one specified in the drug treatment if existing
+    Discret,            /// Use changes of value as defined in the drug treatment
+    Interpolated,       /// Discret values are interpolated
+    Operable            /// The value depends on another covariate
+};
+
+enum class DataType {
+    Bool = 0,
+    Int,
+    Double
 };
 
 ///
@@ -30,36 +36,45 @@ enum class CovariateType {
 /// The definition of a covariate
 class CovariateDefinition : public PopulationValue
 {
+public:
+
+    CovariateDefinition(const std::string _id, Value _value, Operation* _operation, CovariateType _type) :
+        PopulationValue(_id, _value, _operation), m_type(_type) {}
+
     CovariateType m_type;
-
-};
-
-class Covariate : public IndividualValue<CovariateDefinition>
-{
-
-private:
-    // Unit ...
-
+    DataType m_dataType;
+    Unit m_unit;
     Tucuxi::Common::Duration m_refreshPeriod;   // Only in the case of CovariateType::Interpolated
+
 };
 
-typedef std::vector<Covariate> Covariates;
+typedef std::vector<std::unique_ptr<CovariateDefinition> > CovariateDefinitions;
 
 
-class CovariateEvent : public TimedEvent, Operable
+class PatientCovariate : public TimedEvent
+{
+    Value m_value;
+    std::string m_id;
+    DataType m_dataType;
+    Unit m_unit;
+};
+
+typedef std::vector<std::unique_ptr<PatientCovariate> > PatientVariates;
+
+
+class CovariateEvent :  public IndividualValue<CovariateDefinition>, TimedEvent, Operable
 {
 public:
     CovariateEvent() = delete;
-    CovariateEvent(const Covariate& _covariate, const DateTime& _date, Value _value)
-        : TimedEvent(_date), Operable(_value), m_definition(_covariate), m_value(_value)
+    CovariateEvent(const CovariateDefinition& _covariateDef, const DateTime& _date, Value _value)
+        : IndividualValue(_covariateDef), TimedEvent(_date), Operable(_value), m_value(_value)
     {}
 
     Value getValue() { return m_value; }
 
 private:
-    const Covariate &m_definition;
-    // Should be removed, embedded in Operable
     Value m_value;
+
 };
 
 typedef std::vector<CovariateEvent> CovariateSeries;

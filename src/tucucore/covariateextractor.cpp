@@ -8,7 +8,7 @@
 namespace Tucuxi {
 namespace Core {
 
-int CovariateExtractor::extract(const Covariates &_defaults, const Covariates &_patientCovariates, const DateTime &_start, const DateTime &_end, CovariateSeries &_series)
+int CovariateExtractor::extract(const CovariateDefinitions &_defaults, const PatientVariates &_patientCovariates, const DateTime &_start, const DateTime &_end, CovariateSeries &_series)
 {
     TMP_UNUSED_PARAMETER(_defaults);
     TMP_UNUSED_PARAMETER(_patientCovariates);
