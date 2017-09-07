@@ -56,10 +56,10 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
 
             {
 
-                Tucuxi::Core::Residuals inResiduals;
-                Tucuxi::Core::Residuals outResiduals;
-                for(unsigned int i = 0; i < residualSize; i++)
-                    inResiduals.push_back(0);
+                Tucuxi::Core::Residuals inResiduals(residualSize);
+                Tucuxi::Core::Residuals outResiduals(residualSize);
+
+				std::fill(inResiduals.begin(), inResiduals.end(), 0);
 
                 Tucuxi::Core::ParameterSetEvent event = *(_parameters.getAtTime(now));
                 res = calculator.calculateIntakePoints(
@@ -129,10 +129,10 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
 
                 Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, _dose, interval * nbCycles, _route, infusionTime, (_nbPoints - 1 ) * nbCycles + 1);
 
-                Tucuxi::Core::Residuals inResiduals;
-                Tucuxi::Core::Residuals outResiduals;
-                for(unsigned int i = 0; i < residualSize; i++)
-                    inResiduals.push_back(0);
+                Tucuxi::Core::Residuals inResiduals(residualSize);
+                Tucuxi::Core::Residuals outResiduals(residualSize);
+
+				std::fill(inResiduals.begin(), inResiduals.end(), 0);
 
                 Tucuxi::Core::ParameterSetEvent event = *(_parameters.getAtTime(now));
                 res = calculator.calculateIntakePoints(

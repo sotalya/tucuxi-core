@@ -82,7 +82,10 @@ ConcentrationCalculator::ComputationResult ConcentrationCalculator::computeConce
         _prediction->appendConcentrations(times, concentrations[0]);
 
         // Prepare residuals for the next cycle
-        inResiduals = outResiduals;
+        // NOTICE: "inResiduals = outResiduals" and "std::copy(outResiduals.begin(),
+	// outResiduals.end(), inResiduals.begin())" are not working
+	for(unsigned int i = 0; i < residualSize; i++)
+	    inResiduals[i] = outResiduals[i];
     }
 
     return ComputationResult::Success;
@@ -171,7 +174,6 @@ ConcentrationCalculator::ComputationResult ConcentrationCalculator::computeConce
 	    Duration atTime = nextSampleTime - currentIntakeTime;
 
 	    // clear locally defined concentration
-	    // Reset input residuals for the next cycle
 	    for (unsigned int idx= 0; idx < residualSize; idx++) {
 		concentrations[idx].clear();
 	    }
@@ -186,9 +188,7 @@ ConcentrationCalculator::ComputationResult ConcentrationCalculator::computeConce
             }
 
 	    // Reset input residuals for the next cycle
-	    for (unsigned int idx= 0; idx < residualSize; idx++) {
-		inResiduals[idx] = 0;
-	    }
+	    std::fill(inResiduals.begin(), inResiduals.end(), 0);
 
             // Set the output concentration
             *cit = concentrations[0][0];

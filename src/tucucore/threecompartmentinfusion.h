@@ -10,19 +10,20 @@
 namespace Tucuxi {
 namespace Core {
 
-enum class ThreeCompartmentIntraExponentials : int { Alpha, Beta, Gamma };
+enum class ThreeCompartmentInfusionExponentials : int { Alpha, Beta, Gamma };
+enum class ThreeCompartmentInfusionCompartments : int { First, Second, Third };
 
 /// \ingroup TucuCore
 /// \brief Intake interval calculator for the three compartment infusion algorithm
 /// \sa IntakeIntervalCalculator
-class ThreeCompartmentInfusionMicro : public IntakeIntervalCalculatorBase<3, ThreeCompartmentIntraExponentials>
+class ThreeCompartmentInfusionMicro : public IntakeIntervalCalculatorBase<3, ThreeCompartmentInfusionExponentials>
 {
 //    INTAKEINTERVALCALCULATOR_UTILS(ThreeCompartmentInfusionMicro)
 public:
     /// \brief Constructor
     ThreeCompartmentInfusionMicro();
 
-    typedef ThreeCompartmentIntraExponentials Exponentials;
+    typedef ThreeCompartmentInfusionExponentials Exponentials;
 
 protected:
     virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
@@ -47,6 +48,7 @@ protected:
     int m_NbPoints; /// number measure points during interval
 
 private:
+    typedef ThreeCompartmentInfusionCompartments Compartments;
 
 };
 

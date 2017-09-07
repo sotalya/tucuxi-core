@@ -11,6 +11,7 @@ namespace Tucuxi {
 namespace Core {
 
 enum class OneCompartmentExtraExponentials : int { Ke, Ka };
+enum class OneCompartmentExtraCompartments : int { First, Second };
 
 /// \ingroup TucuCore
 /// \brief Intake interval calculator for the one compartment extravascular algorithm
@@ -40,6 +41,8 @@ protected:
     Value m_Int; /// Interval time (Hours)
 
 private:
+    typedef OneCompartmentExtraCompartments Compartments;
+
 };
 
 inline void OneCompartmentExtraMicro::compute(const Residuals& _inResiduals, Eigen::VectorXd& _concentrations1, Eigen::VectorXd& _concentrations2)

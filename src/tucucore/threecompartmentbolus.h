@@ -11,6 +11,7 @@ namespace Tucuxi {
 namespace Core {
 
 enum class ThreeCompartmentBolusExponentials : int { Alpha, Beta, Gamma };
+enum class ThreeCompartmentBolusCompartments : int { First, Second, Third };
 
 /// \ingroup TucuCore
 /// \brief Intake interval calculator for the three compartment bolus algorithm
@@ -46,6 +47,7 @@ protected:
     Value m_Int; /// Interval (hours)
 
 private:
+    typedef ThreeCompartmentBolusCompartments Compartments;
 
 };
 

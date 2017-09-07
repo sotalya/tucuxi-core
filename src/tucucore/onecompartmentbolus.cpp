@@ -67,39 +67,43 @@ void OneCompartmentBolusMicro::computeExponentials(Eigen::VectorXd& _times)
 bool OneCompartmentBolusMicro::computeConcentrations(const Residuals& _inResiduals, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations;
+    int firstCompartment = static_cast<int>(Compartments::First);
 
     // Compute concentrations
     compute(_inResiduals, concentrations);
 
     // Return finla residual
-    _outResiduals.push_back(concentrations[m_NbPoints - 1]);
+    _outResiduals[firstCompartment] = concentrations[m_NbPoints - 1];
 
     // Return concentraions of first compartment
-    _concentrations[0].assign(concentrations.data(), concentrations.data() + concentrations.size());
+    _concentrations[firstCompartment].assign(concentrations.data(), concentrations.data() + concentrations.size());
     
-    return checkValue(_outResiduals[0] >= 0, "The concentration is negative.");
+    return checkValue(_outResiduals[firstCompartment] >= 0, "The concentration is negative.");
 }
 
 bool OneCompartmentBolusMicro::computeConcentration(const Value& _atTime, const Residuals&
 _inResiduals, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations;
+    int firstCompartment = static_cast<int>(Compartments::First);
+    int atTime = static_cast<int>(SingleConcentrations::AtTime);
+    int atEndInterval = static_cast<int>(SingleConcentrations::AtEndInterval);
 
     // Compute concentrations
     compute(_inResiduals, concentrations);
 
     // Return concentrations (computation with atTime (current time))
-    _concentrations[0].push_back(concentrations[0]);
+    _concentrations[firstCompartment].push_back(concentrations[atTime]);
     
     // interval=0 means that it is the last cycle, so final residual = 0
     if (m_Int == 0) {
-        concentrations[1] = 0;
+        concentrations[atEndInterval] = 0;
     }
 
     // Return final residual (computation with m_Int (interval))
-    _outResiduals[0] = concentrations[1];
+    _outResiduals[firstCompartment] = concentrations[atEndInterval];
     
-    return checkValue(_outResiduals[0] >= 0, "The concentration is negative.");
+    return checkValue(_outResiduals[firstCompartment] >= 0, "The concentration is negative.");
 }
 
 OneCompartmentBolusMacro::OneCompartmentBolusMacro() : OneCompartmentBolusMicro()

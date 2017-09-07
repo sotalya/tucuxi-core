@@ -10,19 +10,20 @@
 namespace Tucuxi {
 namespace Core {
 
-enum class OneCompartmentIntraExponentials : int { Ke };
+enum class OneCompartmentInfusionExponentials : int { Ke };
+enum class OneCompartmentInfusionCompartments : int { First };
 
 /// \ingroup TucuCore
 /// \brief Intake interval calculator for the one compartment extravascular algorithm
 /// \sa IntakeIntervalCalculator
-class OneCompartmentInfusionMicro : public IntakeIntervalCalculatorBase<1, OneCompartmentIntraExponentials>
+class OneCompartmentInfusionMicro : public IntakeIntervalCalculatorBase<1, OneCompartmentInfusionExponentials>
 {
     INTAKEINTERVALCALCULATOR_UTILS(OneCompartmentInfusionMicro)
 public:
     /// \brief Constructor
     OneCompartmentInfusionMicro();
 
-    typedef OneCompartmentIntraExponentials Exponentials;
+    typedef OneCompartmentInfusionExponentials Exponentials;
 
 protected:
     virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
@@ -40,6 +41,8 @@ protected:
     int m_NbPoints; /// number measure points during interval
 
 private:
+    typedef OneCompartmentInfusionCompartments Compartments;
+
 };
 
 inline void OneCompartmentInfusionMicro::compute(const Residuals& _inResiduals, const int _forcesize, Eigen::VectorXd& _concentrations)

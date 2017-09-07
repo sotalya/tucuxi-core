@@ -11,6 +11,7 @@ namespace Tucuxi {
 namespace Core {
 
 enum class TwoCompartmentInfusionExponentials : int { Alpha, Beta, AlphaInf, BetaInf, BetaInf2, Root };
+enum class TwoCompartmentInfusionCompartments : int { First, Second };
 
 /// \ingroup TucuCore
 /// \brief Intake interval calculator for the two compartment infusion algorithm
@@ -46,6 +47,7 @@ protected:
     int m_NbPoints; /// number measure points during interval
 
 private:
+    typedef TwoCompartmentInfusionCompartments Compartments;
 
 };
 

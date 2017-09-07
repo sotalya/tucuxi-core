@@ -11,6 +11,7 @@ namespace Tucuxi {
 namespace Core {
 
 enum class ThreeCompartmentExtraExponentials : int { Alpha, Beta, Gamma, Ka };
+enum class ThreeCompartmentExtraCompartments : int { First, Second, Third };
 
 /// \ingroup TucuCore
 /// \brief Intake interval calculator for the three compartment extra algorithm
@@ -47,6 +48,7 @@ protected:
     Value m_Int; /// Interval (hours)
 
 private:
+    typedef ThreeCompartmentExtraCompartments Compartments;
 
 };
 

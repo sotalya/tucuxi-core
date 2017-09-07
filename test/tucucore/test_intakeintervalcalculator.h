@@ -49,24 +49,20 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
         Tucuxi::Common::Duration interval = _interval;
         Tucuxi::Common::Duration infusionTime = _infusionTime;
 
-        unsigned int residualSize = (microCalculator.getResidualSize() == microCalculator.getResidualSize()) ? microCalculator.getResidualSize() : maxResidualSize;
+		unsigned int residualSize = (microCalculator.getResidualSize() == microCalculator.getResidualSize()) ? microCalculator.getResidualSize() : maxResidualSize;
 
         std::vector<Tucuxi::Core::Concentrations> concentrations;
-        concentrations.resize(residualSize);
+		concentrations.resize(residualSize);
 
         Tucuxi::Core::TimeOffsets times;
         Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, _dose, interval, _route, infusionTime, _nbPoints);
 
         // Checking if steady state is reached by iterative 100 times a calculation and
         // passing residuals to the next iteration
-        Tucuxi::Core::Residuals inMicroResiduals(residualSize), inMacroResiduals(residualSize);
-        Tucuxi::Core::Residuals outMicroResiduals(residualSize), outMacroResiduals(residualSize);
+        Tucuxi::Core::Residuals inMicroResiduals(residualSize), inMacroResiduals(residualSize), outMicroResiduals(residualSize), outMacroResiduals(residualSize);
 
-        for(unsigned int i = 0; i < residualSize; i++)
-        {
-            outMicroResiduals[i] = 0;
-            outMacroResiduals[i] = 0;
-        }
+		std::fill(outMicroResiduals.begin(), outMicroResiduals.end(), 0);
+		std::fill(outMacroResiduals.begin(), outMacroResiduals.end(), 0);
 
         for(unsigned int cycle = 0; cycle < 300; cycle ++) 
         {
@@ -93,12 +89,12 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             fructose_assert(res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok);
 
 #if 0
-            std::cout << "[" << cycle << "]";
-            for(unsigned int i = 0; i < residualSize; i++)
-            {
-                std::cout << inMicroResiduals[i] << ":" << outMicroResiduals[i] << " " << inMacroResiduals[i] << ":" << outMacroResiduals[i] << " ";
-            }
-            std::cout << std::endl;
+	    std::cout << "[" << cycle << "]";
+	    for(unsigned int i = 0; i < residualSize; i++)
+	    {
+	        std::cout << inMicroResiduals[i] << ":" << outMicroResiduals[i] << " " << inMacroResiduals[i] << ":" << outMacroResiduals[i] << " ";
+	    }
+	    std::cout << std::endl;
 #endif
         }
 
@@ -138,14 +134,9 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
 
         Tucuxi::Core::TimeOffsets times;
         Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, _dose, interval, _route, infusionTime, _nbPoints);
-        Tucuxi::Core::Residuals inResiduals;
-        Tucuxi::Core::Residuals outMicroMultiResiduals,
-        outMicroSingleResiduals(residualSize),
-        outMacroMultiResiduals, outMacroSingleResiduals(residualSize);
+        Tucuxi::Core::Residuals inResiduals(residualSize), outMicroMultiResiduals(residualSize), outMicroSingleResiduals(residualSize), outMacroMultiResiduals(residualSize), outMacroSingleResiduals(residualSize);
 
-        for (unsigned int i = 0; i < residualSize; i++) {
-            inResiduals.push_back(0);
-        }
+		std::fill(inResiduals.begin(), inResiduals.end(), 0);
 
         // Calculation of Micro Class
         res = microCalculator.calculateIntakePoints(

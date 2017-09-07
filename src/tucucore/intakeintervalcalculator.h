@@ -18,6 +18,8 @@
 namespace Tucuxi {
 namespace Core {
 
+enum class IntakeCalculatorSingleConcentrations : int { AtTime, AtEndInterval };
+
 class IntakeEvent;
 
 class IntakeIntervalCalculator;
@@ -146,6 +148,7 @@ protected:
 
 protected:
     PrecomputedExponentials m_precomputedExponentials;      /// List of precomputed exponentials
+    typedef IntakeCalculatorSingleConcentrations SingleConcentrations;
 
 private:
     CachedExponentials m_cache;                           /// The cache of precomputed exponentials

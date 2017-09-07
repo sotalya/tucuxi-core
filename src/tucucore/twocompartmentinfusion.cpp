@@ -95,6 +95,8 @@ void TwoCompartmentInfusionMicro::computeExponentials(Eigen::VectorXd& _times)
 bool TwoCompartmentInfusionMicro::computeConcentrations(const Residuals& _inResiduals, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1, concentrations2;
+    int firstCompartment = static_cast<int>(Compartments::First);
+    int secondCompartment = static_cast<int>(Compartments::Second);
 
     int forcesize = static_cast<int>(std::min(ceil(m_Tinf/m_Int * m_NbPoints), ceil(m_NbPoints)));
 
@@ -102,15 +104,15 @@ bool TwoCompartmentInfusionMicro::computeConcentrations(const Residuals& _inResi
     compute(_inResiduals, forcesize, concentrations1, concentrations2);
 
     // Return final residuals of comp1 and comp2
-    _outResiduals.push_back(concentrations1[m_NbPoints - 1]);
-    _outResiduals.push_back(concentrations2[m_NbPoints - 1]);
+    _outResiduals[firstCompartment] = concentrations1[m_NbPoints - 1];
+    _outResiduals[secondCompartment] = concentrations2[m_NbPoints - 1];
 
     // Return concentrations of comp1
-    _concentrations[0].assign(concentrations1.data(), concentrations1.data() + concentrations1.size());
+    _concentrations[firstCompartment].assign(concentrations1.data(), concentrations1.data() + concentrations1.size());
 
     // Check output
-    bool bOK = checkValue(_outResiduals[0] >= 0, "The concentration1 is negative.");
-    bOK &= checkValue(_outResiduals[1] >= 0, "The concentration2 is negative.");
+    bool bOK = checkValue(_outResiduals[firstCompartment] >= 0, "The concentration1 is negative.");
+    bOK &= checkValue(_outResiduals[secondCompartment] >= 0, "The concentration2 is negative.");
 
     return bOK;
 }
@@ -119,6 +121,10 @@ bool TwoCompartmentInfusionMicro::computeConcentrations(const Residuals& _inResi
 bool TwoCompartmentInfusionMicro::computeConcentration(const Value& _atTime, const Residuals& _inResiduals, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1, concentrations2;
+    int firstCompartment = static_cast<int>(Compartments::First);
+    int secondCompartment = static_cast<int>(Compartments::Second);
+    int atTime = static_cast<int>(SingleConcentrations::AtTime);
+    int atEndInterval = static_cast<int>(SingleConcentrations::AtEndInterval);
 
     int forcesize = 0;
 
@@ -226,21 +232,21 @@ bool TwoCompartmentInfusionMicro::computeConcentration(const Value& _atTime, con
     compute(_inResiduals, forcesize, concentrations1, concentrations2);
 
     // Return concentraions (computation with atTime (current time))
-    _concentrations[0].push_back(concentrations1[0]);
-    _concentrations[0].push_back(concentrations2[0]);
+    _concentrations[firstCompartment].push_back(concentrations1[atTime]);
+    _concentrations[secondCompartment].push_back(concentrations2[atTime]);
     
     // Return final residual of comp1 and comp2
     // TODO: check equation... 
     // In case of ezechiel, when forcesize = 1,
     // concentrations1[1] = concentrations1[0] + (APostInf * alphaLogV(1) + BPostInf * betaLogV(1)) / (2 * m_RootK)
     // concentrations2[1] = (A2 * alphaLogV(1) + BB2 * betaLogV(1)) / (2 * m_RootK)
-    _outResiduals[0] = concentrations1[1];
-    _outResiduals[1] = concentrations2[1];
+    _outResiduals[firstCompartment] = concentrations1[atEndInterval];
+    _outResiduals[secondCompartment] = concentrations2[atEndInterval];
 #endif
 
     // Check output
-    bool bOK = checkValue(_outResiduals[0] >= 0, "The concentration1 is negative.");
-    bOK &= checkValue(_outResiduals[1] >= 0, "The concentration2 is negative.");
+    bool bOK = checkValue(_outResiduals[firstCompartment] >= 0, "The concentration1 is negative.");
+    bOK &= checkValue(_outResiduals[secondCompartment] >= 0, "The concentration2 is negative.");
 
     return bOK;
 }
