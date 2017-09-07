@@ -51,7 +51,7 @@ public:
 typedef std::vector<std::unique_ptr<CovariateDefinition> > CovariateDefinitions;
 
 
-class PatientVariate : public TimedEvent
+class PatientCovariate : public TimedEvent
 {
     Value m_value;
     std::string m_id;
@@ -59,18 +59,7 @@ class PatientVariate : public TimedEvent
     Unit m_unit;
 };
 
-typedef std::vector<std::unique_ptr<PatientVariate> > PatientVariates;
-/*
-class Covariate : public IndividualValue<CovariateDefinition>
-{
-
-private:
-    // Unit ...
-
-};
-*/
-
-//typedef std::vector<Covariate> Covariates;
+typedef std::vector<std::unique_ptr<PatientCovariate> > PatientVariates;
 
 
 class CovariateEvent :  public IndividualValue<CovariateDefinition>, TimedEvent, Operable
