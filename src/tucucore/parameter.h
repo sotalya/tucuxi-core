@@ -29,8 +29,13 @@ enum class ParameterVariabilityType
 
 class ParameterVariability
 {
+public:
+//    ParameterVariability() : m_variabilityType(ParameterVariabilityType::None), m_value(0) {}
+//    ParameterVariability(ParameterVariabilityType _type) : m_variabilityType(_type), m_value(0) {}
+    ParameterVariability(ParameterVariabilityType _type = ParameterVariabilityType::None, Value _value = 0.0) : m_variabilityType(_type), m_value(_value) {}
+
     ParameterVariabilityType m_variabilityType;
-    std::vector<double> m_values;
+    Value m_value;
 
 };
 
@@ -41,23 +46,33 @@ class ParameterVariability
 class ParameterDefinition : public PopulationValue
 {
 public:
-    enum class ErrorModel { Additive, Proportional, Exponential, None };
 
 public:    
     /// \brief Constructor
     /// \param _id The name of the parameter
     /// \param _name It's default value
-    // TOCHECK : Passer l'opération
-    ParameterDefinition(const std::string _id, Value _value, ErrorModel _errType)
+    ParameterDefinition(const std::string _id, Value _value, ParameterVariability _variabilityType)
         : PopulationValue(_id, _value, nullptr),
           m_isVariable(false),
-          m_errorModel(_errType)
+          m_variability(_variabilityType)
     {}
 
-    ParameterDefinition(const std::string _name, Value _value, Operation* _operation, ErrorModel _errType)
+    ParameterDefinition(const std::string _id, Value _value)
+        : PopulationValue(_id, _value, nullptr),
+          m_isVariable(false)
+    {}
+
+
+    ParameterDefinition(const std::string _id, Value _value, ParameterVariabilityType _variabilityType)
+        : PopulationValue(_id, _value, nullptr),
+          m_isVariable(false),
+          m_variability(ParameterVariability(_variabilityType))
+    {}
+
+    ParameterDefinition(const std::string _name, Value _value, Operation* _operation, ParameterVariability _variabilityType)
         : PopulationValue(_name, _value, _operation),
           m_isVariable(false),
-          m_errorModel(_errType)
+          m_variability(_variabilityType)
     {}
 
     /// \brief Get the parameter value
@@ -66,17 +81,15 @@ public:
 
     const std::string& getName() const { return m_id; }
     bool isVariable() const { return m_isVariable; }
-    ErrorModel getErrorModel() const { return m_errorModel; }
+    ParameterVariability getErrorModel() const { return m_variability; }
 
 private:
 //    std::string m_name;      /// Name like "CL" or "V1"
 //    Value m_value;           /// The value (0.0 or 1.0 in case of booleans)
     // TOCHECK : VIrer isVAriable
     bool m_isVariable;       /// Indicates whether there is an eta on this parameter
-    ErrorModel m_errorModel;
-    Unit m_unit;
-
     ParameterVariability m_variability;
+    Unit m_unit;
 
 //    Operation *m_operation; /// Potential operation from covariates
 

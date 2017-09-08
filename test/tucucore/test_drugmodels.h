@@ -34,8 +34,8 @@ struct TestDrugModels : public fructose::test_base<TestDrugModels>
         { OperationInput("V", InputType::DOUBLE),
                     OperationInput("sex", InputType::DOUBLE)});
 
-        parameterDefs.push_back(std::unique_ptr<ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V", 347, opV, Tucuxi::Core::ParameterDefinition::ErrorModel::None)));
-        model->addDispositionParameter(new Tucuxi::Core::ParameterDefinition("V", 347, opV, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+        parameterDefs.push_back(std::unique_ptr<ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V", 347, opV, Tucuxi::Core::ParameterVariabilityType::None)));
+        model->addDispositionParameter(new Tucuxi::Core::ParameterDefinition("V", 347, opV, Tucuxi::Core::ParameterVariabilityType::None));
         Operation *opCl = new JSOperation(" \
                                           theta1=CL; \
                 theta4=5.42; \
@@ -69,8 +69,8 @@ struct TestDrugModels : public fructose::test_base<TestDrugModels>
                     OperationInput("age", InputType::DOUBLE),
                     OperationInput("gist", InputType::BOOL)});
 
-        parameterDefs.push_back(std::unique_ptr<ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("CL", 15.106, opCl, Tucuxi::Core::ParameterDefinition::ErrorModel::None)));
-        model->addDispositionParameter(new Tucuxi::Core::ParameterDefinition("CL", 15.106, opCl, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+        parameterDefs.push_back(std::unique_ptr<ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("CL", 15.106, opCl, Tucuxi::Core::ParameterVariabilityType::None)));
+        model->addDispositionParameter(new Tucuxi::Core::ParameterDefinition("CL", 15.106, opCl, Tucuxi::Core::ParameterVariabilityType::None));
         //model->setDispositionParameters(parameterDefs);
 
 
@@ -88,8 +88,8 @@ struct TestDrugModels : public fructose::test_base<TestDrugModels>
         {
             FormulationAndRoute *formulationAndRoute;
             formulationAndRoute = new FormulationAndRoute();
-            formulationAndRoute->addAbsorptionParameter(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
-            formulationAndRoute->addAbsorptionParameter(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterDefinition::ErrorModel::None));
+            formulationAndRoute->addAbsorptionParameter(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
+            formulationAndRoute->addAbsorptionParameter(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None));
             formulationAndRoute->setRoute(Route::Oral);
             formulationAndRoute->setFormulation("To be defined");
             formulationAndRoute->setAbsorptionModel(AbsorptionModel::EXTRAVASCULAR);

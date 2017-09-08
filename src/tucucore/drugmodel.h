@@ -70,12 +70,14 @@ class AbsorptionParameters
 {
 public:
 
+    void addParameter(ParameterDefinition *_parameter) { m_parameters.push_back(std::unique_ptr<ParameterDefinition>(_parameter));}
+    void setCorrelations(Correlations _correlations) { m_correlations = _correlations;}
+
+protected:
+
     ParameterDefinitions m_parameters;
     Correlations m_correlations;
 
-    void addParameter(ParameterDefinition *_parameter) { m_parameters.push_back(std::unique_ptr<ParameterDefinition>(_parameter));}
-    //    void setParameters(ParameterDefinitions *_parameters) { m_parameters = _parameters;}
-    void setCorrelations(Correlations _correlations) { m_correlations = _correlations;}
 };
 
 
@@ -85,17 +87,15 @@ public:
 class FormulationAndRoute
 {
 public:
-/*
-    void setAbsorptionParameters(AbsorptionParameters _absorptionParameters)
-    {
-        m_absorptionParameters = _absorptionParameters;
-    }
-*/
+
     void setFormulation(Formulation _formulation) { m_formulation = _formulation;}
     void setRoute(Route _route){  m_route = _route;}
     void setAbsorptionModel(AbsorptionModel _absorptionModel) { m_absorptionModel = _absorptionModel;}
     void addActiveSubstance(ActiveSubstance *_activeSubstance) { m_activeSubstances.push_back(_activeSubstance);}
     void addAbsorptionParameter(ParameterDefinition *_parameter) {m_absorptionParameters.addParameter(_parameter);}
+    void setCorrelations(Correlations _correlations) { m_absorptionParameters.setCorrelations(_correlations);}
+
+protected:
 
     Formulation m_formulation;
     Route m_route;
@@ -107,6 +107,8 @@ public:
 
 };
 
+typedef std::vector<std::unique_ptr<FormulationAndRoute> > FormulationAndRoutes;
+
 
 class DrugModel
 {
@@ -116,6 +118,7 @@ public:
     const CovariateDefinitions &getCovariates() const;
     const ParameterDefinitions& getDispositionParameters() const { return m_dispositionParameters; }
     const IResidualErrorModel& getResidualErrorModel() const { return *m_residualErrorModel; }
+    const FormulationAndRoutes& getFormulationAndRoutes() const { return m_formulationAndRoutes; }
 
     ///
     /// \brief getParameters
@@ -130,24 +133,18 @@ public:
         m_dispositionParameters.push_back(std::unique_ptr<ParameterDefinition>(_definition));
     }
 
-//    void setDispositionParameters(ParameterDefinitions &_definitions) {
-//        m_dispositionParameters = _definitions;
-//    }
-
-    void addFormulationAndRoute(FormulationAndRoute *_formulationAndRoute) { m_formulationAndRoutes.push_back(_formulationAndRoute);}
-
-//    void setCovariates(CovariateDefinitions _covariates) { m_covariates = _covariates; }
+    void addFormulationAndRoute(FormulationAndRoute *_formulationAndRoute) { m_formulationAndRoutes.push_back(std::unique_ptr<FormulationAndRoute>(_formulationAndRoute));}
 
     void addCovariate(CovariateDefinition *_covariate) { m_covariates.push_back(std::unique_ptr<CovariateDefinition>(_covariate));}
 
-    void setResidualErrorMoedl(IResidualErrorModel *_residualErrorModel) { m_residualErrorModel = _residualErrorModel;}
 
     void addTarget(TargetDefinition *_target) { m_targets.push_back(std::unique_ptr<TargetDefinition>(_target));}
-   // void setTargets(TargetDefinitions _targets) { m_targets = _targets;}
+
+    void setResidualErrorMoedl(IResidualErrorModel *_residualErrorModel) { m_residualErrorModel = std::unique_ptr<IResidualErrorModel>(_residualErrorModel);}
 
 private:
 
-    std::vector<FormulationAndRoute* > m_formulationAndRoutes;
+    FormulationAndRoutes m_formulationAndRoutes;
 
     ParameterDefinitions m_dispositionParameters;
 
@@ -155,7 +152,7 @@ private:
 
 
     CovariateDefinitions m_covariates;
-    IResidualErrorModel *m_residualErrorModel;
+    std::unique_ptr<IResidualErrorModel> m_residualErrorModel;
     TargetDefinitions m_targets;
 
 
