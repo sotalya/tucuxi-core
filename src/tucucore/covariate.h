@@ -19,16 +19,29 @@ namespace Tucuxi {
 namespace Core {
 
 enum class CovariateType {
-    Fixed = 0,          /// Use the default value or the one specified in the drug treatment if existing
-    Discret,            /// Use changes of value as defined in the drug treatment
-    Interpolated,       /// Discret values are interpolated
-    Operable            /// The value depends on another covariate
+    Standard = 0,
+    AgeInYears,
+    AgeInDays,
+    AgeInMonths
+//    Fixed = 0,          /// Use the default value or the one specified in the drug treatment if existing
+//    Discret,            /// Use changes of value as defined in the drug treatment
+//    Interpolated,       /// Discret values are interpolated
+//    Operable            /// The value depends on another covariate
 };
 
 enum class DataType {
-    Bool = 0,
-    Int,
-    Double
+    Int = 0,
+    Double,
+    Bool,
+    Date
+};
+
+enum class InterpolationType
+{
+    Direct = 0,
+    Linear,
+    Sigmoid,
+    Tanh
 };
 
 ///
@@ -38,13 +51,17 @@ class CovariateDefinition : public PopulationValue
 {
 public:
 
+    // TODO : Make variables protected and write accessors
+
     CovariateDefinition(const std::string _id, Value _value, Operation* _operation, CovariateType _type) :
         PopulationValue(_id, _value, _operation), m_type(_type) {}
 
     CovariateType m_type;
     DataType m_dataType;
+    InterpolationType m_interpolationType;
     Unit m_unit;
     Tucuxi::Common::Duration m_refreshPeriod;   // Only in the case of CovariateType::Interpolated
+
 
 };
 
@@ -53,7 +70,9 @@ typedef std::vector<std::unique_ptr<CovariateDefinition> > CovariateDefinitions;
 
 class PatientCovariate : public TimedEvent
 {
-    Value m_value;
+    // TODO : Make variables protected and write accessors
+
+    std::string m_value;
     std::string m_id;
     DataType m_dataType;
     Unit m_unit;

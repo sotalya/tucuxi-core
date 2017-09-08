@@ -123,10 +123,10 @@ struct TestDrugModels : public fructose::test_base<TestDrugModels>
             model->addFormulationAndRoute(formulationAndRoute);
         }
 
-        model->addCovariate(new Tucuxi::Core::CovariateDefinition("weight", 70, nullptr, CovariateType::Fixed));
-        model->addCovariate(new Tucuxi::Core::CovariateDefinition("gist", 0, nullptr, CovariateType::Fixed));
-        model->addCovariate(new Tucuxi::Core::CovariateDefinition("sex", 0.5, nullptr, CovariateType::Fixed));
-        model->addCovariate(new Tucuxi::Core::CovariateDefinition("age", 50, nullptr, CovariateType::Fixed));
+        model->addCovariate(new Tucuxi::Core::CovariateDefinition("weight", 70, nullptr, CovariateType::Standard));
+        model->addCovariate(new Tucuxi::Core::CovariateDefinition("gist", 0, nullptr, CovariateType::Standard));
+        model->addCovariate(new Tucuxi::Core::CovariateDefinition("sex", 0.5, nullptr, CovariateType::Standard));
+        model->addCovariate(new Tucuxi::Core::CovariateDefinition("age", 50, nullptr, CovariateType::Standard));
 
 
         SigmaResidualErrorModel *errorModel;
