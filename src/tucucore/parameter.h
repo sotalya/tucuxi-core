@@ -39,8 +39,6 @@ public:
 
 };
 
-// TOCHECK : Virer ErrorModel
-
 /// \ingroup TucuCore
 /// \brief Represents a pharmacokinetics parameter.
 class ParameterDefinition : public PopulationValue
@@ -53,25 +51,21 @@ public:
     /// \param _name It's default value
     ParameterDefinition(const std::string _id, Value _value, ParameterVariability _variabilityType)
         : PopulationValue(_id, _value, nullptr),
-          m_isVariable(false),
           m_variability(_variabilityType)
     {}
 
     ParameterDefinition(const std::string _id, Value _value)
-        : PopulationValue(_id, _value, nullptr),
-          m_isVariable(false)
+        : PopulationValue(_id, _value, nullptr)
     {}
 
 
     ParameterDefinition(const std::string _id, Value _value, ParameterVariabilityType _variabilityType)
         : PopulationValue(_id, _value, nullptr),
-          m_isVariable(false),
           m_variability(ParameterVariability(_variabilityType))
     {}
 
     ParameterDefinition(const std::string _name, Value _value, Operation* _operation, ParameterVariability _variabilityType)
         : PopulationValue(_name, _value, _operation),
-          m_isVariable(false),
           m_variability(_variabilityType)
     {}
 
@@ -80,14 +74,13 @@ public:
     //Value getValue() const { return m_value; }
 
     const std::string& getName() const { return m_id; }
-    bool isVariable() const { return m_isVariable; }
-    ParameterVariability getErrorModel() const { return m_variability; }
+    bool isVariable() const { return m_variability.m_variabilityType != ParameterVariabilityType::None; }
+    ParameterVariability getVariability() const { return m_variability; }
 
 private:
 //    std::string m_name;      /// Name like "CL" or "V1"
 //    Value m_value;           /// The value (0.0 or 1.0 in case of booleans)
     // TOCHECK : VIrer isVAriable
-    bool m_isVariable;       /// Indicates whether there is an eta on this parameter
     ParameterVariability m_variability;
     Unit m_unit;
 

@@ -69,7 +69,7 @@ void ParameterSetEvent::applyEtas(const Etas& _etas)
 void Parameter::applyEta(Deviation _eta)
 {
     if (m_definition.isVariable()) {
-        switch (m_definition.getErrorModel().m_variabilityType) {
+        switch (m_definition.getVariability().m_variabilityType) {
             case ParameterVariabilityType::Additive:
                 m_value = m_value + _eta;
                 break;
