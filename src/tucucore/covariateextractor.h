@@ -15,10 +15,29 @@
 namespace Tucuxi {
 namespace Core {
 
-class CovariateExtractor
+class ICovariateExtractor
 {
 public:
-    static int extract(const CovariateDefinitions &_defaults, const PatientVariates &_patientCovariates, const DateTime &_start, const DateTime &_end, CovariateSeries &_series);
+
+    virtual int extract(
+            const CovariateDefinitions &_defaults,
+            const PatientVariates &_patientCovariates,
+            const DateTime &_start,
+            const DateTime &_end,
+            CovariateSeries &_series) = 0;
+
+};
+
+class CovariateExtractor : public ICovariateExtractor
+{
+public:
+
+    int extract(
+            const CovariateDefinitions &_defaults,
+            const PatientVariates &_patientCovariates,
+            const DateTime &_start,
+            const DateTime &_end,
+            CovariateSeries &_series) override;
 };
 
 }
