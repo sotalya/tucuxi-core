@@ -49,10 +49,10 @@ int main(int argc, char** argv)
     inResiduals.push_back(0);
     inResiduals.push_back(0);
 
-    parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("CL", 15.6, Tucuxi::Core::ParameterDefinition::ErrorModel::Additive)));
-    parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterDefinition::ErrorModel::Additive)));
-    parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterDefinition::ErrorModel::Additive)));
-    parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterDefinition::ErrorModel::Additive)));
+    parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("CL", 15.6, Tucuxi::Core::ParameterVariabilityType::Additive)));
+    parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::Additive)));
+    parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::Additive)));
+    parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterVariabilityType::Additive)));
     Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
 
     res = calculator.calculateIntakePoints(
@@ -86,4 +86,3 @@ int main(int argc, char** argv)
     logHelper.info("Tucuxi console application is exiting...");
     return 0;
 }
-

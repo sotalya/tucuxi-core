@@ -78,15 +78,9 @@ public:
     ParameterVariability getVariability() const { return m_variability; }
 
 private:
-//    std::string m_name;      /// Name like "CL" or "V1"
-//    Value m_value;           /// The value (0.0 or 1.0 in case of booleans)
-    // TOCHECK : VIrer isVAriable
+
     ParameterVariability m_variability;
     Unit m_unit;
-
-//    Operation *m_operation; /// Potential operation from covariates
-
-    //error_type_enum m_error_type;
 };
 
 /// \brief A list of parameters
