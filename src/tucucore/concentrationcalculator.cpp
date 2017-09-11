@@ -150,14 +150,17 @@ ConcentrationCalculator::ComputationResult ConcentrationCalculator::computeConce
 
         // If the next sample time greater than the next intake time, 
 	// the sample doesnt occur during this cycle, so we only care about residuals
-#if 0
 	// clear locally defined concentration
 	for (unsigned int idx= 0; idx < residualSize; idx++) {
 	    concentrations[idx].clear();
 	}
 
         if (nextSampleTime > nextIntakeTime) {
-            IntakeIntervalCalculator::Result result = it->calculateIntakeSinglePoint(concentrations, *it,    *parameters, inResiduals, currentIntakeTime,  isAll, outResiduals);
+
+	    Duration atTime = nextSampleTime - currentIntakeTime;
+
+            IntakeIntervalCalculator::Result result =
+	    it->calculateIntakeSinglePoint(concentrations, *it, *parameters, inResiduals, atTime.toHours(),  _isAll, outResiduals);
 
             if (result != IntakeIntervalCalculator::Result::Ok) {
                 _concentrations.clear();
@@ -167,12 +170,12 @@ ConcentrationCalculator::ComputationResult ConcentrationCalculator::computeConce
 	    // Reset input residuals for the next cycle
             inResiduals = outResiduals;
         }
-#endif
 
+        // If the next sample time greater than the cycle start time 
+	// and less than the next cycle start time, the sample occurs during this cycle. 
+	// We care about residuals and the value at the next sample time.
         while ((nextSampleTime >= currentIntakeTime) && (nextSampleTime <= nextIntakeTime)) {
-            // If the next sample time greater than the cycle start time 
-	    // and less than the next cycle start time, the sample occurs during this cycle. 
-	    // We care about residuals and the value at the next sample time.
+
 	    Duration atTime = nextSampleTime - currentIntakeTime;
 
 	    // clear locally defined concentration
