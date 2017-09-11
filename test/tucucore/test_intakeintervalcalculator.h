@@ -49,7 +49,8 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
         Tucuxi::Common::Duration interval = _interval;
         Tucuxi::Common::Duration infusionTime = _infusionTime;
 
-		unsigned int residualSize = (microCalculator.getResidualSize() == microCalculator.getResidualSize()) ? microCalculator.getResidualSize() : maxResidualSize;
+	unsigned int residualSize = (microCalculator.getResidualSize() == microCalculator.getResidualSize()) ? microCalculator.getResidualSize() : maxResidualSize;
+	bool isAll = false;
 
         std::vector<Tucuxi::Core::Concentrations> concentrations;
 		concentrations.resize(residualSize);
@@ -74,6 +75,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
                         _microParameters,
                         inMicroResiduals,
                         interval.toHours(),
+			isAll,
                         outMicroResiduals);
             fructose_assert(res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok);
 
@@ -85,6 +87,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
                         _macroParameters,
                         inMacroResiduals,
                         interval.toHours(),
+			isAll,
                         outMacroResiduals);
             fructose_assert(res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok);
 
@@ -128,6 +131,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
         Tucuxi::Common::Duration infusionTime = _infusionTime;
 
         unsigned int residualSize = (microCalculator.getResidualSize() == microCalculator.getResidualSize()) ? microCalculator.getResidualSize() : maxResidualSize;
+	bool isAll = false;
 
         std::vector<Tucuxi::Core::Concentrations> concentrations;
         concentrations.resize(residualSize);
@@ -136,39 +140,41 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
         Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, _dose, interval, _route, infusionTime, _nbPoints);
         Tucuxi::Core::Residuals inResiduals(residualSize), outMicroMultiResiduals(residualSize), outMicroSingleResiduals(residualSize), outMacroMultiResiduals(residualSize), outMacroSingleResiduals(residualSize);
 
-		std::fill(inResiduals.begin(), inResiduals.end(), 0);
+	std::fill(inResiduals.begin(), inResiduals.end(), 0);
 
         // Calculation of Micro Class
         res = microCalculator.calculateIntakePoints(
-                    concentrations,
-                    times,
-                    intakeEvent,
-                    _microParameters,
-                    inResiduals,
-                    _nbPoints,
-                    outMicroMultiResiduals,
-                    true);
+		concentrations,
+		times,
+		intakeEvent,
+		_microParameters,
+		inResiduals,
+		_nbPoints,
+		isAll,
+		outMicroMultiResiduals,
+		true);
 
         if (verbose()) {
             std::cout << "[Micro Class Calculation]"<< std::endl;
             for(unsigned int i = 0; i < residualSize; i++) {
                 std::cout << "Multiple Out residual["
-                          << i
-                          << "] = "
-                          << outMicroMultiResiduals[i]
-                          << std::endl;
+		    << i
+		    << "] = "
+		    << outMicroMultiResiduals[i]
+		    << std::endl;
             }
         }
 
         fructose_assert(res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok);
 
         res = microCalculator.calculateIntakeSinglePoint(
-                    concentrations,
-                    intakeEvent,
-                    _microParameters,
-                    inResiduals,
-                    interval.toHours(),
-                    outMicroSingleResiduals);
+		concentrations,
+		intakeEvent,
+		_microParameters,
+		inResiduals,
+		interval.toHours(),
+		isAll,
+		outMicroSingleResiduals);
 
         if (verbose()) {
             for(unsigned int i = 0; i < residualSize; i++) {
@@ -190,6 +196,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
                     _macroParameters,
                     inResiduals,
                     _nbPoints,
+		    isAll,
                     outMacroMultiResiduals,
                     true);
 
@@ -212,6 +219,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
                     _macroParameters,
                     inResiduals,
                     interval.toHours(),
+		    isAll,
                     outMacroSingleResiduals);
 
         if (verbose()) {

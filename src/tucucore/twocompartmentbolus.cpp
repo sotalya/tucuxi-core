@@ -80,7 +80,7 @@ void TwoCompartmentBolusMicro::computeExponentials(Eigen::VectorXd& _times)
 }
 
 
-bool TwoCompartmentBolusMicro::computeConcentrations(const Residuals& _inResiduals, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
+bool TwoCompartmentBolusMicro::computeConcentrations(const Residuals& _inResiduals, const bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1, concentrations2;
     int firstCompartment = static_cast<int>(Compartments::First);
@@ -95,6 +95,11 @@ bool TwoCompartmentBolusMicro::computeConcentrations(const Residuals& _inResidua
 
     // return concentration of comp1
     _concentrations[firstCompartment].assign(concentrations1.data(), concentrations1.data() + concentrations1.size());	
+    // Return concentrations of other compartments
+    if (_isAll == true) {
+	_concentrations[secondCompartment].assign(concentrations2.data(), concentrations2.data() + concentrations2.size());	
+    }
+
 
     bool bOK = checkValue(_outResiduals[firstCompartment] >= 0, "The concentration1 is negative.");
     bOK &= checkValue(_outResiduals[secondCompartment] >= 0, "The concentration2 is negative.");
@@ -103,7 +108,7 @@ bool TwoCompartmentBolusMicro::computeConcentrations(const Residuals& _inResidua
 }
 
 
-bool TwoCompartmentBolusMicro::computeConcentration(const Value& _atTime, const Residuals& _inResiduals, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
+bool TwoCompartmentBolusMicro::computeConcentration(const Value& _atTime, const Residuals& _inResiduals, const bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1, concentrations2;
     int firstCompartment = static_cast<int>(Compartments::First);
@@ -116,7 +121,9 @@ bool TwoCompartmentBolusMicro::computeConcentration(const Value& _atTime, const 
 
     // return concentraions (computation with atTime (current time))
     _concentrations[firstCompartment].push_back(concentrations1[atTime]);
-    _concentrations[secondCompartment].push_back(concentrations2[atTime]);
+    if (_isAll == true) {
+	_concentrations[secondCompartment].push_back(concentrations2[atTime]);
+    }
 
     // interval=0 means that it is the last cycle, so final residual = 0
     if (m_Int == 0) {

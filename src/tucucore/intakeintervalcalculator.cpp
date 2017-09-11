@@ -18,6 +18,7 @@ IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakePoints
     const ParameterSetEvent& _parameters,
     const Residuals& _inResiduals,
     const CycleSize _cycleSize,
+    const bool _isAll,
     Residuals & _outResiduals,
     const bool _isDensityConstant)
 {
@@ -36,7 +37,7 @@ IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakePoints
         m_cache.set(_intakeEvent.getInterval(), _parameters, _cycleSize, m_precomputedExponentials);
     }
 
-    if (!computeConcentrations(_inResiduals, _concentrations, _outResiduals)) {
+    if (!computeConcentrations(_inResiduals, _isAll, _concentrations, _outResiduals)) {
         return Result::BadConcentration;
     }
 
@@ -71,6 +72,7 @@ IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakeSingle
     const ParameterSetEvent& _parameters,
     const Residuals& _inResiduals,
     const Value& _atTime,
+    const bool _isAll,
     Residuals& _outResiduals)
 {
     if (!checkInputs(_intakeEvent, _parameters))
@@ -84,7 +86,7 @@ IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakeSingle
 
     computeExponentials(times);
 
-    if (!computeConcentration(_atTime, _inResiduals, _concentrations, _outResiduals)) {
+    if (!computeConcentration(_atTime, _inResiduals, _isAll, _concentrations, _outResiduals)) {
         return Result::BadConcentration;
     }
 

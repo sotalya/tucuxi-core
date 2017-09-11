@@ -9,6 +9,7 @@ namespace Core {
 
 ConcentrationCalculator::ComputationResult ConcentrationCalculator::computeConcentrations(
     ConcentrationPredictionPtr &_prediction,
+    const bool _isAll,
     const int _nbPoints,
     const IntakeSeries &_intakes,
     const ParameterSetSeries &_parameterSets,
@@ -52,7 +53,7 @@ ConcentrationCalculator::ComputationResult ConcentrationCalculator::computeConce
 
         outResiduals.clear();
 
-        IntakeIntervalCalculator::Result result = it->calculateIntakePoints(concentrations, times, intake, *parameters, inResiduals, intake.getNbPoints(), outResiduals, _isFixedDensity);
+        IntakeIntervalCalculator::Result result = it->calculateIntakePoints(concentrations, times, intake, *parameters, inResiduals, intake.getNbPoints(), _isAll, outResiduals, _isFixedDensity);
         switch (result)
         {
             case IntakeIntervalCalculator::Result::Ok:
@@ -93,6 +94,7 @@ ConcentrationCalculator::ComputationResult ConcentrationCalculator::computeConce
 
 ConcentrationCalculator::ComputationResult ConcentrationCalculator::computeConcentrationsAtTimes(
         Concentrations &_concentrations,
+	const bool _isAll,
         const IntakeSeries &_intakes,
         const ParameterSetSeries &_parameterSets,
         const SampleSeries &_samples,
@@ -155,7 +157,7 @@ ConcentrationCalculator::ComputationResult ConcentrationCalculator::computeConce
 	}
 
         if (nextSampleTime > nextIntakeTime) {
-            IntakeIntervalCalculator::Result result = it->calculateIntakeSinglePoint(concentrations, *it, *parameters, inResiduals, currentIntakeTime, outResiduals);
+            IntakeIntervalCalculator::Result result = it->calculateIntakeSinglePoint(concentrations, *it,    *parameters, inResiduals, currentIntakeTime,  isAll, outResiduals);
 
             if (result != IntakeIntervalCalculator::Result::Ok) {
                 _concentrations.clear();
@@ -179,7 +181,7 @@ ConcentrationCalculator::ComputationResult ConcentrationCalculator::computeConce
 	    }
 
             IntakeIntervalCalculator::Result result =
-	    it->calculateIntakeSinglePoint(concentrations, *it, *parameters, inResiduals, atTime.toHours(), outResiduals);
+	    it->calculateIntakeSinglePoint(concentrations, *it, *parameters, inResiduals, atTime.toHours(), _isAll, outResiduals);
 
             if (result != IntakeIntervalCalculator::Result::Ok) {
                 _concentrations.clear();

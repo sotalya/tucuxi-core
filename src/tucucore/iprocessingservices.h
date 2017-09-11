@@ -26,6 +26,7 @@ class PredictionRequest
 {    
 public:
     PredictionType getType() const { return m_type; }
+    bool getIsAll() const { return m_isAll; }
     const Tucuxi::Common::DateTime& getStart() const { return m_start; }
     const Tucuxi::Common::DateTime& getEnd() const { return m_end; }
     int getNbPoints() const { return m_nbPoints; }
@@ -33,13 +34,15 @@ public:
 protected:
     PredictionRequest() {}
     PredictionRequest(PredictionType _type,
+	bool _isAll,
         Tucuxi::Common::DateTime _start,
         Tucuxi::Common::DateTime _end,
         int _nbPoints) :
-        m_type(_type), m_start(_start), m_end(_end), m_nbPoints(_nbPoints) {}
+        m_type(_type), m_isAll(_isAll), m_start(_start), m_end(_end), m_nbPoints(_nbPoints) {}
  
 private:
     PredictionType m_type;
+    bool m_isAll;
     Tucuxi::Common::DateTime m_start;
     Tucuxi::Common::DateTime m_end;
     int m_nbPoints;
@@ -51,10 +54,11 @@ public:
     ConcentrationRequest() = delete;
     ConcentrationRequest(const std::string& _xmlRequest) { TMP_UNUSED_PARAMETER(_xmlRequest);}
     ConcentrationRequest(PredictionType _type,
+	bool _isAll,
         Tucuxi::Common::DateTime _start,
         Tucuxi::Common::DateTime _end,
         int _nbPoints) :
-        PredictionRequest(_type, _start, _end, _nbPoints) {}
+        PredictionRequest(_type, _isAll, _start, _end, _nbPoints) {}
 };
  
 typedef int PercentileRank;
@@ -68,11 +72,12 @@ public:
     PercentilesRequest() = delete;
     PercentilesRequest(const std::string& _xmlRequest) { TMP_UNUSED_PARAMETER(_xmlRequest);}
     PercentilesRequest(PredictionType _type,
+	bool _isAll,
         Tucuxi::Common::DateTime _start,
         Tucuxi::Common::DateTime _end,
         const PercentileRanks &_ranks,
         int _nbPoints) :
-        PredictionRequest(_type, _start, _end, _nbPoints), m_ranks(_ranks) {}
+        PredictionRequest(_type, _isAll, _start, _end, _nbPoints), m_ranks(_ranks) {}
 private:
     PercentileRanks m_ranks;
 };

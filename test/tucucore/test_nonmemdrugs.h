@@ -52,7 +52,9 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
             Tucuxi::Core::Concentrations concentrations;
             Tucuxi::Core::TimeOffsets times;
             Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, _dose, interval, _route, infusionTime, _nbPoints);
-
+	    
+	    bool isAll = false;
+	    
 	    // std::cout << typeid(calculator).name() << std::endl;
 
             {
@@ -70,6 +72,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
                             event,
                             inResiduals,
                             _nbPoints,
+			    isAll,
                             outResiduals,
                             true);
 
@@ -87,6 +90,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
                 Tucuxi::Core::IConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::ConcentrationCalculator();
                 concentrationCalculator->computeConcentrations(
                             predictionPtr,
+			    isAll,
                             _nbPoints,
                             intakeSeries,
                             _parameters);
@@ -113,6 +117,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
         predictionPtr = std::make_unique<Tucuxi::Core::ConcentrationPrediction>();
 
         int nbPoints = 251;
+	bool isAll = false;
 
         CalculatorClass calculator2;
 
@@ -365,6 +370,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
         Tucuxi::Core::IConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::ConcentrationCalculator();
         concentrationCalculator->computeConcentrations(
                     predictionPtr,
+		    isAll,
                     nbPoints,
                     intakeSeries,
                     parametersSeries);
