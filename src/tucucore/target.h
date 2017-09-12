@@ -18,7 +18,7 @@ class SubTargetDefinition : public PopulationValue
 {
 public:
 
-    SubTargetDefinition(std::string _id, Value _value, std::shared_ptr<const Operation> _operation) :
+    SubTargetDefinition(std::string _id, Value _value, Operation *_operation) :
         PopulationValue(_id, _value, _operation) {}
 
     SubTargetDefinition() : PopulationValue("",0, nullptr) {}

@@ -5,8 +5,6 @@
 #ifndef TUCUXI_CORE_DRUGMODEL_H
 #define TUCUXI_CORE_DRUGMODEL_H
 
-#include <memory.h>
-
 #include "tucucore/covariate.h"
 #include "tucucore/parameter.h"
 #include "tucucore/residualerrormodel.h"

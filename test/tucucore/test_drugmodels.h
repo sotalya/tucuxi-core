@@ -26,20 +26,20 @@ struct TestDrugModels : public fructose::test_base<TestDrugModels>
 
         // Imatinib parameters, as in the XML drug file
         Tucuxi::Core::ParameterDefinitions parameterDefs;
-        std::shared_ptr<Operation> opV = std::make_shared<JSOperation>(JSOperation(" \
-                                                                                   theta2=V; \
-                                                                       theta8=46.2; \
-                tvv = theta2+theta8*sex-theta8*(1-sex); \
+        Operation *opV = new JSOperation(" \
+                                         theta2=V; \
+                theta8=46.2; \
+        tvv = theta2+theta8*sex-theta8*(1-sex); \
         return tvv;",
         { OperationInput("V", InputType::DOUBLE),
-                    OperationInput("sex", InputType::DOUBLE)}));
+                    OperationInput("sex", InputType::DOUBLE)});
 
         parameterDefs.push_back(std::unique_ptr<ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V", 347, opV, Tucuxi::Core::ParameterVariabilityType::None)));
         model->addDispositionParameter(new Tucuxi::Core::ParameterDefinition("V", 347, opV, Tucuxi::Core::ParameterVariabilityType::None));
-        std::shared_ptr<Operation> opCl = std::make_shared<JSOperation>(JSOperation(" \
-                                                                                    theta1=CL; \
-                                                                        theta4=5.42; \
-                theta5=1.49; \
+        Operation *opCl = new JSOperation(" \
+                                          theta1=CL; \
+                theta4=5.42; \
+        theta5=1.49; \
         theta6=-5.81; \
         theta7=-.806; \
         \
@@ -67,7 +67,7 @@ struct TestDrugModels : public fructose::test_base<TestDrugModels>
                     OperationInput("sex", InputType::DOUBLE),
                     OperationInput("weight", InputType::DOUBLE),
                     OperationInput("age", InputType::DOUBLE),
-                    OperationInput("gist", InputType::BOOL)}));
+                    OperationInput("gist", InputType::BOOL)});
 
         parameterDefs.push_back(std::unique_ptr<ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("CL", 15.106, opCl, Tucuxi::Core::ParameterVariabilityType::None)));
         model->addDispositionParameter(new Tucuxi::Core::ParameterDefinition("CL", 15.106, opCl, Tucuxi::Core::ParameterVariabilityType::None));

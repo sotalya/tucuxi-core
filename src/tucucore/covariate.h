@@ -60,23 +60,42 @@ enum class InterpolationType
 };
 
 /// \brief Definition of a covariate for a given drug, using the information extracted from the drug's XML file.
-///
 class CovariateDefinition : public PopulationValue
 {
 public:
-
-    // TODO : Make variables protected and write accessors
-
-    CovariateDefinition(const std::string &_id, Value _value, std::shared_ptr<const Operation> _operation, CovariateType _type) :
+    CovariateDefinition(const std::string &_id, Value _value, Operation *_operation, CovariateType _type) :
         PopulationValue(_id, _value, _operation), m_type(_type) {}
 
+    /// \brief Get the covariate's type.
+    /// \return Covariate's type.
+    CovariateType getType() const { return m_type; }
+
+    /// \brief Get the data type.
+    /// \return Data type.
+    DataType getDataType() const { return m_dataType; }
+
+    /// \brief Get the interpolation type.
+    /// \return Selected interpolation type.
+    InterpolationType getInterpolationType() const { return m_interpolationType; }
+
+    /// \brief Get the data unit.
+    /// \return Data unit.
+    Unit getUnit() const { return m_unit; }
+
+    /// \brief Get the refresh period.
+    /// \return Refresh period.
+    Tucuxi::Common::Duration getRefreshPeriod() const { return m_refreshPeriod; }
+
+    /// \brief Set the refresh period.
+    /// \param _refreshPeriod Refresh period to set.
+    void setRefreshPeriod(const Tucuxi::Common::Duration &_refreshPeriod) { m_refreshPeriod = _refreshPeriod; }
+
+protected:
     CovariateType m_type;
     DataType m_dataType;
     InterpolationType m_interpolationType;
     Unit m_unit;
     Tucuxi::Common::Duration m_refreshPeriod;   // Only in the case of CovariateType::Interpolated
-
-
 };
 
 typedef std::vector<std::unique_ptr<CovariateDefinition> > CovariateDefinitions;
@@ -94,7 +113,7 @@ class PatientCovariate : public TimedEvent
 
 typedef std::vector<std::unique_ptr<PatientCovariate> > PatientVariates;
 
-
+/// \brief Models a change of a covariate.
 class CovariateEvent :  public IndividualValue<CovariateDefinition>, TimedEvent, Operable
 {
 public:
@@ -110,6 +129,7 @@ private:
 
 };
 
+/// \brief List of covariate series (that is, changes).
 typedef std::vector<CovariateEvent> CovariateSeries;
 
 }

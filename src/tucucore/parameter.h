@@ -64,7 +64,7 @@ public:
           m_variability(ParameterVariability(_variabilityType))
     {}
 
-    ParameterDefinition(const std::string _name, Value _value, std::shared_ptr<const Operation> _operation, ParameterVariability _variabilityType)
+    ParameterDefinition(const std::string _name, Value _value, Operation* _operation, ParameterVariability _variabilityType)
         : PopulationValue(_name, _value, _operation),
           m_variability(_variabilityType)
     {}
