@@ -30,7 +30,7 @@ protected:
     virtual void computeExponentials(Eigen::VectorXd& _times) override;
     virtual bool computeConcentrations(const Residuals& _inResiduals, const bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) override;
     virtual bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, const bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) override;
-    void compute(const Residuals& _inResiduals, const int _forcesize, Eigen::VectorXd& _concentrations1, Value& _concentrations2, Value& _concentrations3);
+    void compute(const int _forcesize, Eigen::VectorXd& _concentrations1, Value& _concentrations2, Value& _concentrations3);
 
     Value m_D;	/// Quantity of drug
     Value m_F;	/// ???
@@ -52,8 +52,7 @@ private:
 
 };
 
-inline void ThreeCompartmentInfusionMicro::compute(const Residuals& _inResiduals, const int _forcesize, Eigen::VectorXd&
-_concentrations1, Value& _concentrations2, Value& _concentrations3)
+inline void ThreeCompartmentInfusionMicro::compute(const int _forcesize, Eigen::VectorXd& _concentrations1, Value& _concentrations2, Value& _concentrations3)
 {
     Eigen::VectorXd& alphaLogV = exponentials(Exponentials::Alpha);
     Eigen::VectorXd& betaLogV = exponentials(Exponentials::Beta);

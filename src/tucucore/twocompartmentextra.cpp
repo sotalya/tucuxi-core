@@ -88,7 +88,9 @@ Residuals& _inResiduals, const bool _isAll, std::vector<Concentrations>& _concen
     _outResiduals[thirdCompartment] = concentrations3;
 
     // Return concentrations of comp1, comp2 and comp3
-    _concentrations[firstCompartment].assign(concentrations1.data(), concentrations1.data() + concentrations1.size());	
+    _concentrations[firstCompartment].assign(concentrations1.data(), concentrations1.data() + concentrations1.size());
+    // TODO: add calcuation concentrations of second and third compartment and condtions
+    TMP_UNUSED_PARAMETER(_isAll);
 
     bOK &= checkValue(_outResiduals[firstCompartment] >= 0, "The concentration is negative.");
     bOK &= checkValue(_outResiduals[secondCompartment] >= 0, "The concentration is negative.");
@@ -107,11 +109,15 @@ bool TwoCompartmentExtraMicro::computeConcentration(const Value& _atTime, const 
     int atTime = static_cast<int>(SingleConcentrations::AtTime);
     int atEndInterval = static_cast<int>(SingleConcentrations::AtEndInterval);
 
+    TMP_UNUSED_PARAMETER(_atTime);
+
     // Compute concentrations
     bool bOK = compute(_inResiduals, concentrations1, concentrations2, concentrations3);
 
     // return concentraions (computation with atTime (current time))
     _concentrations[firstCompartment].push_back(concentrations1[atTime]);
+    // TODO: add calcuation concentrations of second and third compartment and condtions
+    TMP_UNUSED_PARAMETER(_isAll);
 
     // interval=0 means that it is the last cycle, so final residual = 0
     if (m_Int == 0) {
