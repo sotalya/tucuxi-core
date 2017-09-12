@@ -18,7 +18,7 @@ class PopulationValue
 {
 public:
 
-    PopulationValue(std::string _id, Value _value, Operation *_operation) :
+    PopulationValue(std::string _id, Value _value, std::shared_ptr<const Operation> _operation) :
         m_id(_id),
         m_value(_value),
         m_operation(_operation)
@@ -45,14 +45,15 @@ public:
     /// \brief Get the parameter value
     /// \return Returns the parameter value
     Value getValue() const { return m_value; }
-    const Operation &getOperation() const { return *m_operation;}
+    std::shared_ptr<const Operation> getOperation() const { return m_operation;}
+//    const Operation &getOperation() const { return *m_operation;}
 //    void setOperation(Operation *_operation) {m_operation = _operation;};
     std::string getId() const { return m_id;}
 
 protected:
     std::string m_id;
     Value m_value;
-    std::unique_ptr<Operation const> m_operation;
+    std::shared_ptr<const Operation> m_operation;
 };
 
 template<typename DefinitionClass>

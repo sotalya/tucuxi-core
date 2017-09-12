@@ -18,17 +18,27 @@
 namespace Tucuxi {
 namespace Core {
 
+/// \brief Define the covariate types.
+/// - Standard: if no patient variate exist -> use operation in drug model to generate a new value each time one or more
+///                                            inputs of the operation are modified
+///             if cannot apply operation   -> use default value
+///             if >= 1 variate exists      -> if only one value -> use for the entire period
+///                                            else              -> interpolate with function defined in
+///                                                                 CovariateDefinition, using first observed value for
+///                                                                 the interval between start and the first observation
+///   \warning Look also at values outside the given period! The period itself limits the range of measures we are
+///            interested in, but does not affect the available variates.
+/// - AgeInYears: automatic calculation based on birth date, use default if not available, unit = years.
+/// - AgeInDays: automatic calculation based on birth date, use default if not available, unit = days.
+/// - AgeInMonths: automatic calculation based on birth date, use default if not available, unit = months.
 enum class CovariateType {
     Standard = 0,
     AgeInYears,
     AgeInDays,
     AgeInMonths
-//    Fixed = 0,          /// Use the default value or the one specified in the drug treatment if existing
-//    Discret,            /// Use changes of value as defined in the drug treatment
-//    Interpolated,       /// Discret values are interpolated
-//    Operable            /// The value depends on another covariate
 };
 
+/// \brief Allowed data types.
 enum class DataType {
     Int = 0,
     Double,
@@ -36,6 +46,11 @@ enum class DataType {
     Date
 };
 
+/// \brief Available interpolation functions.
+/// - Direct: when value observed, set it as current value.
+/// - Linear: between two occurrences of observed covariates, use linear interpolation.
+/// - Sigmoid: between two occurrences of observed covariates, use sigmoidal interpolation.
+/// - Tanh: between two occurrences of observed covariates, use hyperbolic tangent interpolation.
 enum class InterpolationType
 {
     Direct = 0,
@@ -44,16 +59,15 @@ enum class InterpolationType
     Tanh
 };
 
+/// \brief Definition of a covariate for a given drug, using the information extracted from the drug's XML file.
 ///
-/// \brief The CovariateDefinition class
-/// The definition of a covariate
 class CovariateDefinition : public PopulationValue
 {
 public:
 
     // TODO : Make variables protected and write accessors
 
-    CovariateDefinition(const std::string _id, Value _value, Operation* _operation, CovariateType _type) :
+    CovariateDefinition(const std::string &_id, Value _value, std::shared_ptr<const Operation> _operation, CovariateType _type) :
         PopulationValue(_id, _value, _operation), m_type(_type) {}
 
     CovariateType m_type;
