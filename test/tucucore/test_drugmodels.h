@@ -8,7 +8,7 @@
 
 #include "fructose/fructose.h"
 
-#include "tucucore/drugmodel.h"
+#include "tucucore/drugmodel/drugmodel.h"
 
 using namespace Tucuxi::Core;
 
@@ -172,7 +172,8 @@ struct TestDrugModels : public fructose::test_base<TestDrugModels>
                                                         new SubTargetDefinition("cBest", 1000.0, nullptr),
                                                         new SubTargetDefinition("cBest", 1000.0, nullptr));
 
-        model->addTarget(target);
+        std::unique_ptr<TargetDefinition> targetPtr(target);
+        model->addTarget(targetPtr);
 
 
         // Add possible dosages

@@ -1,5 +1,6 @@
 
 HEADERS += \
+    $$PWD/../../src/tucucore/drugmodel/drugmodel.h \
     $$PWD/../../src/tucucore/cachedexponentials.h \
     $$PWD/../../src/tucucore/concentrationcalculator.h \
     $$PWD/../../src/tucucore/definitions.h \
@@ -22,7 +23,6 @@ HEADERS += \
     $$PWD/../../src/tucucore/corecomponent.h \
     $$PWD/../../src/tucucore/covariate.h \
     $$PWD/../../src/tucucore/covariateextractor.h \
-    $$PWD/../../src/tucucore/drugmodel.h \
     $$PWD/../../src/tucucore/drugtreatment.h \
     $$PWD/../../src/tucucore/idatamodelservices.h \
     $$PWD/../../src/tucucore/iprocessingservices.h \
@@ -42,9 +42,16 @@ HEADERS += \
     $$PWD/../../src/tucucore/minimize.h \
     $$PWD/../../src/tucucore/aposteriorietascalculator.h \
     $$PWD/../../src/tucucore/operablegraphmanager.h \
-    $$PWD/../../src/tucucore/drugdefinitions.h
+    $$PWD/../../src/tucucore/drugdefinitions.h \
+    $$PWD/../../src/tucucore/drugmodel/analyte.h \
+    $$PWD/../../src/tucucore/drugmodel/activesubstance.h \
+    $$PWD/../../src/tucucore/drugmodel/drugmodeldomain.h \
+    $$PWD/../../src/tucucore/drugmodel/formulationandroute.h \
+    $$PWD/../../src/tucucore/drugmodel/parameterdefinition.h \
+    $$PWD/../../src/tucucore/drugmodel/targetdefinition.h
 
 SOURCES += \
+    $$PWD/../../src/tucucore/drugmodel/drugmodel.cpp \
     $$PWD/../../src/tucucore/cachedexponentials.cpp \
     $$PWD/../../src/tucucore/concentrationcalculator.cpp \
     $$PWD/../../src/tucucore/intakeintervalcalculator.cpp \
@@ -62,7 +69,6 @@ SOURCES += \
         $$PWD/../../src/tucucore/twocompartmentinfusion.cpp \
     $$PWD/../../src/tucucore/corecomponent.cpp \
     $$PWD/../../src/tucucore/covariateextractor.cpp \
-    $$PWD/../../src/tucucore/drugmodel.cpp \
     $$PWD/../../src/tucucore/drugtreatment.cpp \
     $$PWD/../../src/tucucore/parameter.cpp \
     $$PWD/../../src/tucucore/parametersextractor.cpp \
@@ -75,4 +81,10 @@ SOURCES += \
     $$PWD/../../src/tucucore/likelihood.cpp \
     $$PWD/../../src/tucucore/aposteriorietascalculator.cpp \
     $$PWD/../../src/tucucore/operablegraphmanager.cpp \
-    $$PWD/../../src/tucucore/residualerrormodel.cpp
+    $$PWD/../../src/tucucore/residualerrormodel.cpp \
+    $$PWD/../../src/tucucore/drugmodel/analyte.cpp \
+    $$PWD/../../src/tucucore/drugmodel/activesubstance.cpp \
+    $$PWD/../../src/tucucore/drugmodel/drugmodeldomain.cpp \
+    $$PWD/../../src/tucucore/drugmodel/formulationandroute.cpp \
+    $$PWD/../../src/tucucore/drugmodel/parameterdefinition.cpp \
+    $$PWD/../../src/tucucore/drugmodel/targetdefinition.cpp

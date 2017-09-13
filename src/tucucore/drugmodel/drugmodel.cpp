@@ -3,7 +3,7 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
-#include "tucucore/drugmodel.h"
+#include "tucucore/drugmodel/drugmodel.h"
 #include "tucucore/covariate.h"
 
 namespace Tucuxi {

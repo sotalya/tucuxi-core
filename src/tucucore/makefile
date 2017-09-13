@@ -9,13 +9,20 @@ NAME := tucucore
 TYPE := LIB
 
 # Let's keep it in alphabetical order
-SOURCES := aposteriorietascalculator.cpp \
+SOURCES := \
+           drugmodel/activesubstance.cpp \
+           drugmodel/analyte.cpp \
+           drugmodel/drugmodel.cpp \
+           drugmodel/drugmodeldomain.cpp \
+           drugmodel/formulationandroute.cpp \
+           drugmodel/parameterdefinition.cpp \
+           drugmodel/targetdefinition.cpp \
+		   aposteriorietascalculator.cpp \
            cachedexponentials.cpp \
            concentrationcalculator.cpp \
            corecomponent.cpp \
            covariateextractor.cpp \
            dosage.cpp \
-           drugmodel.cpp \
            drugtreatment.cpp \
            hardcodedoperation.cpp \
            intakeextractor.cpp \
