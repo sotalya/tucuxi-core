@@ -81,9 +81,6 @@ protected:
 };
 
 
-
-// RouteOfAdministration shall be called AbsorptionModel
-
 class FormulationAndRoute
 {
 public:
@@ -108,6 +105,19 @@ protected:
 };
 
 typedef std::vector<std::unique_ptr<FormulationAndRoute> > FormulationAndRoutes;
+
+
+class DrugModelDomain
+{
+public:
+    DrugModelDomain(std::unique_ptr<Operation> _constraint) :
+        m_constraint(std::move(_constraint)) {}
+
+    const Operation &getConstraint() { return *m_constraint;}
+
+protected:
+    std::unique_ptr<Operation> m_constraint;
+};
 
 
 class DrugModel
@@ -135,14 +145,18 @@ public:
 
     void addFormulationAndRoute(FormulationAndRoute *_formulationAndRoute) { m_formulationAndRoutes.push_back(std::unique_ptr<FormulationAndRoute>(_formulationAndRoute));}
 
-    void addCovariate(CovariateDefinition *_covariate) { m_covariates.push_back(std::unique_ptr<CovariateDefinition>(_covariate));}
+    void addCovariate(std::unique_ptr<CovariateDefinition> _covariate) { m_covariates.push_back(std::move(_covariate));}
 
 
     void addTarget(TargetDefinition *_target) { m_targets.push_back(std::unique_ptr<TargetDefinition>(_target));}
 
-    void setResidualErrorMoedl(IResidualErrorModel *_residualErrorModel) { m_residualErrorModel = std::unique_ptr<IResidualErrorModel>(_residualErrorModel);}
+    void setResidualErrorModel(std::unique_ptr<IResidualErrorModel>& _residualErrorModel) { m_residualErrorModel = std::move(_residualErrorModel);}
+
+    void setDomain(std::unique_ptr<DrugModelDomain>& _domain) {m_domain = std::move(_domain);}
 
 private:
+
+    std::unique_ptr<DrugModelDomain> m_domain;
 
     FormulationAndRoutes m_formulationAndRoutes;
 

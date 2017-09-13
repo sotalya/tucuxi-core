@@ -24,6 +24,16 @@ struct TestDrugModels : public fructose::test_base<TestDrugModels>
         model = new DrugModel();
 
 
+        // The following constraint is for tests only. Needs to be modified according to the paper
+        Operation *constraint = new JSOperation(" \
+                                         return (age > 0);",
+        { OperationInput("age", InputType::DOUBLE)});
+        std::unique_ptr<DrugModelDomain> drugDomain(new DrugModelDomain(std::unique_ptr<Operation>(constraint)));
+
+        model->setDomain(drugDomain);
+
+
+
         // Imatinib parameters, as in the XML drug file
         Tucuxi::Core::ParameterDefinitions parameterDefs;
         Operation *opV = new JSOperation(" \
@@ -123,20 +133,30 @@ struct TestDrugModels : public fructose::test_base<TestDrugModels>
             model->addFormulationAndRoute(formulationAndRoute);
         }
 
-        model->addCovariate(new Tucuxi::Core::CovariateDefinition("weight", 70, nullptr, CovariateType::Standard));
-        model->addCovariate(new Tucuxi::Core::CovariateDefinition("gist", 0, nullptr, CovariateType::Standard));
-        model->addCovariate(new Tucuxi::Core::CovariateDefinition("sex", 0.5, nullptr, CovariateType::Standard));
-        model->addCovariate(new Tucuxi::Core::CovariateDefinition("age", 50, nullptr, CovariateType::Standard));
+        model->addCovariate(
+                    std::unique_ptr<Tucuxi::Core::CovariateDefinition>(
+                        new Tucuxi::Core::CovariateDefinition("weight", 70, nullptr, CovariateType::Standard)));
+        model->addCovariate(
+                    std::unique_ptr<Tucuxi::Core::CovariateDefinition>(
+                        new Tucuxi::Core::CovariateDefinition("gist", 0, nullptr, CovariateType::Standard)));
+        model->addCovariate(
+                    std::unique_ptr<Tucuxi::Core::CovariateDefinition>(
+                        new Tucuxi::Core::CovariateDefinition("sex", 0.5, nullptr, CovariateType::Standard)));
+        model->addCovariate(
+                    std::unique_ptr<Tucuxi::Core::CovariateDefinition>(
+                        new Tucuxi::Core::CovariateDefinition("age", 50, nullptr, CovariateType::Standard)));
 
 
-        SigmaResidualErrorModel *errorModel;
-        errorModel = new SigmaResidualErrorModel();
+        SigmaResidualErrorModel* errorModel = new SigmaResidualErrorModel();
+//        std::unique_ptr<SigmaResidualErrorModel> errorModel(new SigmaResidualErrorModel());
         Sigma sigma(1);
         sigma(0) = 0.3138;
         errorModel->setErrorModel(SigmaResidualErrorModel::ResidualErrorType::PROPORTIONAL);
         errorModel->setSigma(sigma);
 
-        model->setResidualErrorMoedl(errorModel);
+        std::unique_ptr<IResidualErrorModel> err(errorModel);
+
+        model->setResidualErrorModel(err);
 
 
         // Add targets

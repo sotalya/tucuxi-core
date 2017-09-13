@@ -86,6 +86,22 @@ private:
 /// \brief A list of parameters
 typedef std::vector<std::unique_ptr<ParameterDefinition> > ParameterDefinitions;
 
+class ParameterSetDefinition
+{
+public:
+
+    void addParameter(std::unique_ptr<ParameterDefinition> & _parameter) { m_parameters.push_back(std::move(_parameter));}
+
+    void addAnalyteId(std::string _analyteId) { m_analyteIds.push_back(_analyteId);}
+
+
+protected:
+
+    ParameterDefinitions m_parameters;
+    std::vector<std::string> m_analyteIds;
+};
+
+
 class Parameter : public IndividualValue<ParameterDefinition>
 {
 public:
