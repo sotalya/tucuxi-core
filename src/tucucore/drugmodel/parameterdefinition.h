@@ -81,6 +81,7 @@ private:
 
     ParameterVariability m_variability;
     Unit m_unit;
+
 };
 
 /// \brief A list of parameters
@@ -95,6 +96,15 @@ class Correlation
 };
 
 typedef std::vector<Correlation> Correlations;
+
+class InterParameterSetCorrelation
+{
+    Value m_correlation;
+    std::vector<std::string> m_analyteSetId[2];
+    std::vector<std::string> m_parameterId[2];
+};
+
+typedef std::vector<InterParameterSetCorrelation> InterParameterSetCorrelations;
 
 
 

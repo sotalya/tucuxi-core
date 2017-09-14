@@ -24,6 +24,8 @@ struct TestDrugModels : public fructose::test_base<TestDrugModels>
         model = new DrugModel();
 
 
+        /*
+
         // The following constraint is for tests only. Needs to be modified according to the paper
         Operation *constraint = new JSOperation(" \
                                          return (age > 0);",
@@ -177,7 +179,7 @@ struct TestDrugModels : public fructose::test_base<TestDrugModels>
 
 
         // Add possible dosages
-
+*/
         return model;
     }
 

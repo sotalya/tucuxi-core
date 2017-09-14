@@ -7,24 +7,23 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 
 #include "analyte.h"
 
 namespace Tucuxi {
 namespace Core {
-
+/*
 class ActiveSubstance
 {
 public:
     ActiveSubstance();
 
-    void setPkModelId(std::string _pkModelId) { m_pkModelId = _pkModelId;}
-    void addAnalyte(Analyte _analyte) { m_analytes.push_back(_analyte);}
+    void addAnalyte(std::unique_ptr<Analyte> _analyte) { m_analytes.push_back(std::move(_analyte));}
 
-    std::string m_pkModelId;
-    std::vector<Analyte> m_analytes;
+    std::vector<std::unique_ptr<Analyte > > m_analytes;
 };
-
+*/
 
 
 }

@@ -33,7 +33,7 @@ enum class TargetType {
     Peak,
     Mean,
     Auc,
-    FullAuc
+    CumulativeAuc
 };
 
 

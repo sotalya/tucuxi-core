@@ -4,12 +4,12 @@
 
 namespace Tucuxi {
 namespace Core {
-
+/*
 ActiveSubstance::ActiveSubstance()
 {
 
 }
-
+*/
 
 }
 }
