@@ -86,6 +86,18 @@ private:
 /// \brief A list of parameters
 typedef std::vector<std::unique_ptr<ParameterDefinition> > ParameterDefinitions;
 
+
+
+class Correlation
+{
+    Value m_correlation;
+    std::vector<int> m_parameterId[2];
+};
+
+typedef std::vector<Correlation> Correlations;
+
+
+
 class ParameterSetDefinition
 {
 public:
@@ -98,6 +110,7 @@ public:
 protected:
 
     ParameterDefinitions m_parameters;
+    Correlations m_correlations;
     std::vector<std::string> m_analyteIds;
 };
 

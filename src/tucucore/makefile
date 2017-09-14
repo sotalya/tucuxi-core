@@ -17,6 +17,8 @@ SOURCES := \
            drugmodel/formulationandroute.cpp \
            drugmodel/parameterdefinition.cpp \
            drugmodel/targetdefinition.cpp \
+		   drugmodel/validdose.cpp \
+		   drugmodel/validduration.cpp \
 		   aposteriorietascalculator.cpp \
            cachedexponentials.cpp \
            concentrationcalculator.cpp \

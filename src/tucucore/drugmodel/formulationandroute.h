@@ -11,6 +11,8 @@
 #include "tucucore/definitions.h"
 #include "tucucore/drugmodel/parameterdefinition.h"
 #include "tucucore/drugmodel/activesubstance.h"
+#include "tucucore/drugmodel/validdose.h"
+#include "tucucore/drugmodel/validduration.h"
 
 
 namespace Tucuxi {
@@ -34,14 +36,6 @@ enum class Route
     Vaginal
 };
 
-
-class Correlation
-{
-    Value m_correlation;
-    std::vector<int> m_parameterId[2];
-};
-
-typedef std::vector<Correlation> Correlations;
 
 
 
@@ -72,6 +66,10 @@ public:
     void addAbsorptionParameter(ParameterDefinition *_parameter) {m_absorptionParameters.addParameter(_parameter);}
     void setCorrelations(Correlations _correlations) { m_absorptionParameters.setCorrelations(_correlations);}
 
+    void setValidDoses(std::unique_ptr<ValidDoses> _validDoses) {m_validDoses = std::move(_validDoses);}
+    void setValidIntervals(std::unique_ptr<ValidDurations> _validIntervals) {m_validIntervals = std::move(_validIntervals);}
+    void setValidInfusionTimes(std::unique_ptr<ValidDurations> _validInfusionTimes) {m_validInfusionTimes = std::move(_validInfusionTimes);}
+
 protected:
 
     Formulation m_formulation;
@@ -81,6 +79,10 @@ protected:
     std::vector<ActiveSubstance* > m_activeSubstances;
 
     AbsorptionParameters m_absorptionParameters;
+
+    std::unique_ptr<ValidDoses> m_validDoses;
+    std::unique_ptr<ValidDurations> m_validIntervals;
+    std::unique_ptr<ValidDurations> m_validInfusionTimes;
 
 };
 

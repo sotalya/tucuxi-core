@@ -48,7 +48,9 @@ HEADERS += \
     $$PWD/../../src/tucucore/drugmodel/drugmodeldomain.h \
     $$PWD/../../src/tucucore/drugmodel/formulationandroute.h \
     $$PWD/../../src/tucucore/drugmodel/parameterdefinition.h \
-    $$PWD/../../src/tucucore/drugmodel/targetdefinition.h
+    $$PWD/../../src/tucucore/drugmodel/targetdefinition.h \
+    $$PWD/../../src/tucucore/drugmodel/validdose.h \
+    $$PWD/../../src/tucucore/drugmodel/validduration.h
 
 SOURCES += \
     $$PWD/../../src/tucucore/drugmodel/drugmodel.cpp \
@@ -87,4 +89,6 @@ SOURCES += \
     $$PWD/../../src/tucucore/drugmodel/drugmodeldomain.cpp \
     $$PWD/../../src/tucucore/drugmodel/formulationandroute.cpp \
     $$PWD/../../src/tucucore/drugmodel/parameterdefinition.cpp \
-    $$PWD/../../src/tucucore/drugmodel/targetdefinition.cpp
+    $$PWD/../../src/tucucore/drugmodel/targetdefinition.cpp \
+    $$PWD/../../src/tucucore/drugmodel/validdose.cpp \
+    $$PWD/../../src/tucucore/drugmodel/validduration.cpp
