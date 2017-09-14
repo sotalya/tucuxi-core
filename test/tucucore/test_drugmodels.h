@@ -24,7 +24,7 @@ struct TestDrugModels : public fructose::test_base<TestDrugModels>
         model = new DrugModel();
 
 
-        /*
+
 
         // The following constraint is for tests only. Needs to be modified according to the paper
         Operation *constraint = new JSOperation(" \
@@ -35,9 +35,64 @@ struct TestDrugModels : public fructose::test_base<TestDrugModels>
         model->setDomain(drugDomain);
 
 
+        model->addCovariate(
+                    std::unique_ptr<Tucuxi::Core::CovariateDefinition>(
+                        new Tucuxi::Core::CovariateDefinition("weight", 70, nullptr, CovariateType::Standard)));
+        model->addCovariate(
+                    std::unique_ptr<Tucuxi::Core::CovariateDefinition>(
+                        new Tucuxi::Core::CovariateDefinition("gist", 0, nullptr, CovariateType::Standard)));
+        model->addCovariate(
+                    std::unique_ptr<Tucuxi::Core::CovariateDefinition>(
+                        new Tucuxi::Core::CovariateDefinition("sex", 0.5, nullptr, CovariateType::Standard)));
+        model->addCovariate(
+                    std::unique_ptr<Tucuxi::Core::CovariateDefinition>(
+                        new Tucuxi::Core::CovariateDefinition("age", 50, nullptr, CovariateType::Standard)));
+
+        std::unique_ptr<AnalyteSet> analyteSet(new AnalyteSet());
+
+        analyteSet->setPkModelId("linear.1comp.macro");
+
+
+        ActiveSubstance *analyte = new ActiveSubstance();
+        analyte->setAnalyteId("imatinib");
+
+        SigmaResidualErrorModel* errorModel = new SigmaResidualErrorModel();
+//        std::unique_ptr<SigmaResidualErrorModel> errorModel(new SigmaResidualErrorModel());
+        Sigma sigma(1);
+        sigma(0) = 0.3138;
+        errorModel->setErrorModel(SigmaResidualErrorModel::ResidualErrorType::PROPORTIONAL);
+        errorModel->setSigma(sigma);
+
+        std::unique_ptr<IResidualErrorModel> err(errorModel);
+
+        analyte->setResidualErrorModel(err);
+
+
+        // Add targets
+
+        SubTargetDefinition cMin("cMin", 750.0, nullptr);
+        SubTargetDefinition cMax("cMax", 1500.0, nullptr);
+        SubTargetDefinition cBest("cBest", 1000.0, nullptr);
+        TargetDefinition *target = new TargetDefinition(TargetType::Residual,
+                                                        &cMin,
+                                                        &cMax,
+                                                        &cBest,
+                                                        new SubTargetDefinition("cBest", 1000.0, nullptr),
+                                                        new SubTargetDefinition("cBest", 1000.0, nullptr),
+                                                        new SubTargetDefinition("cBest", 1000.0, nullptr));
+
+        std::unique_ptr<TargetDefinition> targetPtr(target);
+        analyte->addTarget(targetPtr);
+
+
+
+        analyteSet->addAnalyte(std::unique_ptr<Analyte>(analyte));
+
+
+
+        std::unique_ptr<ParameterSetDefinition> dispositionParameters(new ParameterSetDefinition());
 
         // Imatinib parameters, as in the XML drug file
-        Tucuxi::Core::ParameterDefinitions parameterDefs;
         Operation *opV = new JSOperation(" \
                                          theta2=V; \
                 theta8=46.2; \
@@ -46,8 +101,8 @@ struct TestDrugModels : public fructose::test_base<TestDrugModels>
         { OperationInput("V", InputType::DOUBLE),
                     OperationInput("sex", InputType::DOUBLE)});
 
-        parameterDefs.push_back(std::unique_ptr<ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V", 347, opV, Tucuxi::Core::ParameterVariabilityType::None)));
-        model->addDispositionParameter(new Tucuxi::Core::ParameterDefinition("V", 347, opV, Tucuxi::Core::ParameterVariabilityType::None));
+        std::unique_ptr<ParameterDefinition> PV(new Tucuxi::Core::ParameterDefinition("V", 347, opV, Tucuxi::Core::ParameterVariabilityType::None));
+        dispositionParameters->addParameter(PV);
         Operation *opCl = new JSOperation(" \
                                           theta1=CL; \
                 theta4=5.42; \
@@ -81,105 +136,83 @@ struct TestDrugModels : public fructose::test_base<TestDrugModels>
                     OperationInput("age", InputType::DOUBLE),
                     OperationInput("gist", InputType::BOOL)});
 
-        parameterDefs.push_back(std::unique_ptr<ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("CL", 15.106, opCl, Tucuxi::Core::ParameterVariabilityType::None)));
-        model->addDispositionParameter(new Tucuxi::Core::ParameterDefinition("CL", 15.106, opCl, Tucuxi::Core::ParameterVariabilityType::None));
-        //model->setDispositionParameters(parameterDefs);
+        std::unique_ptr<ParameterDefinition> PCL(new Tucuxi::Core::ParameterDefinition("CL", 15.106, opCl, Tucuxi::Core::ParameterVariabilityType::None));
+        dispositionParameters->addParameter(PCL);
 
+        analyteSet->setDispositionParameters(std::move(dispositionParameters));
 
-        ActiveSubstance *activeSubstance;
-        activeSubstance = new ActiveSubstance();
-        activeSubstance->setPkModelId("linear.1comp.macro");
-
-        Analyte analyte;
-        analyte.setName("Imatinib");
-        analyte.setAnalyteId("imatinib");
-
-        activeSubstance->addAnalyte(analyte);
 
 
         {
-            FormulationAndRoute *formulationAndRoute;
-            formulationAndRoute = new FormulationAndRoute();
-            formulationAndRoute->addAbsorptionParameter(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
-            formulationAndRoute->addAbsorptionParameter(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None));
+            AnalyteSetToAbsorptionAssociation *association;
+            association = new AnalyteSetToAbsorptionAssociation(*analyteSet);
+            association->setAbsorptionModel(AbsorptionModel::EXTRAVASCULAR);
+
+
+            std::unique_ptr<ParameterSetDefinition> absorptionParameters(new ParameterSetDefinition());
+            std::unique_ptr<ParameterDefinition> PKa(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
+            absorptionParameters->addParameter(PKa);
+            std::unique_ptr<ParameterDefinition> PF(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
+            absorptionParameters->addParameter(PF);
+
+            association->setAbsorptionParameters(std::move(absorptionParameters));
+            std::unique_ptr<FormulationAndRoute> formulationAndRoute(new FormulationAndRoute());
             formulationAndRoute->setRoute(Route::Oral);
             formulationAndRoute->setFormulation("To be defined");
-            formulationAndRoute->setAbsorptionModel(AbsorptionModel::EXTRAVASCULAR);
+            formulationAndRoute->addAssociation(std::unique_ptr<AnalyteSetToAbsorptionAssociation>(association));
 
-            formulationAndRoute->addActiveSubstance(activeSubstance);
+            // TODO : Add Valid doses and so
+            // std::unique_ptr<ValidDoses> m_validDoses;
+            // std::unique_ptr<ValidDurations> m_validIntervals;
+            // std::unique_ptr<ValidDurations> m_validInfusionTimes;
 
-            model->addFormulationAndRoute(formulationAndRoute);
+            model->addFormulationAndRoute(std::move(formulationAndRoute));
         }
 
         {
-            FormulationAndRoute *formulationAndRoute;
-            formulationAndRoute = new FormulationAndRoute();
+            AnalyteSetToAbsorptionAssociation *association;
+            association = new AnalyteSetToAbsorptionAssociation(*analyteSet);
+            association->setAbsorptionModel(AbsorptionModel::INTRAVASCULAR);
+
+
+            std::unique_ptr<ParameterSetDefinition> absorptionParameters(new ParameterSetDefinition());
+
+            association->setAbsorptionParameters(std::move(absorptionParameters));
+            std::unique_ptr<FormulationAndRoute> formulationAndRoute(new FormulationAndRoute());
             formulationAndRoute->setRoute(Route::IntravenousBolus);
             formulationAndRoute->setFormulation("To be defined");
-            formulationAndRoute->setAbsorptionModel(AbsorptionModel::INTRAVASCULAR);
+            formulationAndRoute->addAssociation(std::unique_ptr<AnalyteSetToAbsorptionAssociation>(association));
 
-            formulationAndRoute->addActiveSubstance(activeSubstance);
+            // TODO : Add Valid doses and so
+            // std::unique_ptr<ValidDoses> m_validDoses;
+            // std::unique_ptr<ValidDurations> m_validIntervals;
+            // std::unique_ptr<ValidDurations> m_validInfusionTimes;
 
-            model->addFormulationAndRoute(formulationAndRoute);
+            model->addFormulationAndRoute(std::move(formulationAndRoute));
         }
 
         {
-            FormulationAndRoute *formulationAndRoute;
-            formulationAndRoute = new FormulationAndRoute();
+            AnalyteSetToAbsorptionAssociation *association;
+            association = new AnalyteSetToAbsorptionAssociation(*analyteSet);
+            association->setAbsorptionModel(AbsorptionModel::INFUSION);
+
+
+            std::unique_ptr<ParameterSetDefinition> absorptionParameters(new ParameterSetDefinition());
+
+            association->setAbsorptionParameters(std::move(absorptionParameters));
+            std::unique_ptr<FormulationAndRoute> formulationAndRoute(new FormulationAndRoute());
             formulationAndRoute->setRoute(Route::IntravenousDrip);
             formulationAndRoute->setFormulation("To be defined");
-            formulationAndRoute->setAbsorptionModel(AbsorptionModel::INFUSION);
+            formulationAndRoute->addAssociation(std::unique_ptr<AnalyteSetToAbsorptionAssociation>(association));
 
-            formulationAndRoute->addActiveSubstance(activeSubstance);
+            // TODO : Add Valid doses and so
+            // std::unique_ptr<ValidDoses> m_validDoses;
+            // std::unique_ptr<ValidDurations> m_validIntervals;
+            // std::unique_ptr<ValidDurations> m_validInfusionTimes;
 
-            model->addFormulationAndRoute(formulationAndRoute);
+            model->addFormulationAndRoute(std::move(formulationAndRoute));
         }
 
-        model->addCovariate(
-                    std::unique_ptr<Tucuxi::Core::CovariateDefinition>(
-                        new Tucuxi::Core::CovariateDefinition("weight", 70, nullptr, CovariateType::Standard)));
-        model->addCovariate(
-                    std::unique_ptr<Tucuxi::Core::CovariateDefinition>(
-                        new Tucuxi::Core::CovariateDefinition("gist", 0, nullptr, CovariateType::Standard)));
-        model->addCovariate(
-                    std::unique_ptr<Tucuxi::Core::CovariateDefinition>(
-                        new Tucuxi::Core::CovariateDefinition("sex", 0.5, nullptr, CovariateType::Standard)));
-        model->addCovariate(
-                    std::unique_ptr<Tucuxi::Core::CovariateDefinition>(
-                        new Tucuxi::Core::CovariateDefinition("age", 50, nullptr, CovariateType::Standard)));
-
-
-        SigmaResidualErrorModel* errorModel = new SigmaResidualErrorModel();
-//        std::unique_ptr<SigmaResidualErrorModel> errorModel(new SigmaResidualErrorModel());
-        Sigma sigma(1);
-        sigma(0) = 0.3138;
-        errorModel->setErrorModel(SigmaResidualErrorModel::ResidualErrorType::PROPORTIONAL);
-        errorModel->setSigma(sigma);
-
-        std::unique_ptr<IResidualErrorModel> err(errorModel);
-
-        model->setResidualErrorModel(err);
-
-
-        // Add targets
-
-        SubTargetDefinition cMin("cMin", 750.0, nullptr);
-        SubTargetDefinition cMax("cMax", 1500.0, nullptr);
-        SubTargetDefinition cBest("cBest", 1000.0, nullptr);
-        TargetDefinition *target = new TargetDefinition(TargetType::Residual,
-                                                        &cMin,
-                                                        &cMax,
-                                                        &cBest,
-                                                        new SubTargetDefinition("cBest", 1000.0, nullptr),
-                                                        new SubTargetDefinition("cBest", 1000.0, nullptr),
-                                                        new SubTargetDefinition("cBest", 1000.0, nullptr));
-
-        std::unique_ptr<TargetDefinition> targetPtr(target);
-        model->addTarget(targetPtr);
-
-
-        // Add possible dosages
-*/
         return model;
     }
 

@@ -68,6 +68,9 @@ public:
     void addAnalyte(std::unique_ptr<Analyte> _analyte) { m_analytes.push_back(std::move(_analyte));}
     const std::vector<std::unique_ptr< Analyte > >& getAnalytes() const { return m_analytes;}
 
+    void setPkModelId(std::string _pkModelId) { m_pkModelId = _pkModelId;}
+    std::string getPkModelId() const { return m_pkModelId;}
+
 protected:
 
     ///
@@ -78,6 +81,8 @@ protected:
     std::vector<std::unique_ptr< Analyte > > m_analytes;
 
     std::unique_ptr<ParameterSetDefinition> m_dispositionParameters;
+
+    std::string m_pkModelId;
 };
 
 }
