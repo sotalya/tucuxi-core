@@ -57,6 +57,7 @@ public:
 
     SpecificDoses(Unit _unit, MultiAnalyteDose _defaultDose);
 
+    void addDose(MultiAnalyteDose _dose);
     std::vector<MultiAnalyteDose> getDoses() const override;
 
 protected:

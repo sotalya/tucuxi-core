@@ -91,17 +91,45 @@ typedef std::vector<std::unique_ptr<ParameterDefinition> > ParameterDefinitions;
 
 class Correlation
 {
+public:
+    Correlation(std::string _parameter1, std::string _parameter2, Value _correlation) :
+        m_correlation(_correlation)
+    {
+        m_parameterId.push_back(_parameter1);
+        m_parameterId.push_back(_parameter2);
+    }
+
+protected:
+
     Value m_correlation;
-    std::vector<int> m_parameterId[2];
+    std::vector<std::string> m_parameterId;
 };
 
 typedef std::vector<Correlation> Correlations;
 
 class InterParameterSetCorrelation
 {
+public:
+
+    InterParameterSetCorrelation(
+            std::string _analyteSetId1,
+            std::string _analyteSetId2,
+            std::string _parameterId1,
+            std::string _parameterId2,
+            Value _correlation) :
+        m_correlation(_correlation)
+    {
+        m_analyteSetId.push_back(_analyteSetId1);
+        m_analyteSetId.push_back(_analyteSetId2);
+        m_parameterId.push_back(_parameterId1);
+        m_parameterId.push_back(_parameterId2);
+    }
+
+protected:
+
     Value m_correlation;
-    std::vector<std::string> m_analyteSetId[2];
-    std::vector<std::string> m_parameterId[2];
+    std::vector<std::string> m_analyteSetId;
+    std::vector<std::string> m_parameterId;
 };
 
 typedef std::vector<InterParameterSetCorrelation> InterParameterSetCorrelations;
@@ -115,6 +143,8 @@ public:
     void addParameter(std::unique_ptr<ParameterDefinition> & _parameter) { m_parameters.push_back(std::move(_parameter));}
 
     void addAnalyteId(std::string _analyteId) { m_analyteIds.push_back(_analyteId);}
+
+    void addCorrelation(Correlation _correlation) { m_correlations.push_back(_correlation);}
 
 
 protected:

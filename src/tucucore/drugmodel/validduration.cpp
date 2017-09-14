@@ -4,6 +4,11 @@
 namespace Tucuxi {
 namespace Core {
 
+ValidDurations::ValidDurations(Common::Duration _defaultDuration) :
+    m_defaultDuration(_defaultDuration)
+{
+
+}
 
 void ValidDurations::setDefaultDuration(Tucuxi::Common::Duration _duration)
 {
@@ -17,9 +22,11 @@ Tucuxi::Common::Duration ValidDurations::getDefaultDuration() const
 
 
 AnyDurations::AnyDurations(
+        Tucuxi::Common::Duration _default,
         Tucuxi::Common::Duration _from,
         Tucuxi::Common::Duration _to,
         Tucuxi::Common::Duration _step) :
+    ValidDurations(_default),
     m_from(_from), m_to(_to), m_step(_step)
 {}
 
@@ -33,6 +40,13 @@ std::vector<Tucuxi::Common::Duration> AnyDurations::getDurations() const
         currentDuration += m_step;
     }
     return result;
+}
+
+
+SpecificDurations::SpecificDurations(Common::Duration _default) :
+    ValidDurations(_default)
+{
+
 }
 
 

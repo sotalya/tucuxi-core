@@ -15,7 +15,10 @@ namespace Core {
 class ValidDurations
 {
 public:
+    ValidDurations(Tucuxi::Common::Duration _defaultDuration);
+
     virtual ~ValidDurations() {};
+
 
     virtual std::vector<Tucuxi::Common::Duration> getDurations() const = 0;
     void setDefaultDuration(Tucuxi::Common::Duration _duration);
@@ -30,6 +33,7 @@ class AnyDurations : public ValidDurations
 {
 public:
     AnyDurations(
+            Tucuxi::Common::Duration _default,
             Tucuxi::Common::Duration _from,
             Tucuxi::Common::Duration _to,
             Tucuxi::Common::Duration _step);
@@ -45,11 +49,13 @@ class SpecificDurations : public ValidDurations
 {
 
 public:
+    SpecificDurations(Tucuxi::Common::Duration _default);
+
     virtual std::vector<Tucuxi::Common::Duration> getDurations() const;
 
     void addDuration(Tucuxi::Common::Duration _duration);
 
-    SpecificDurations() {};
+//    SpecificDurations() {};
 
 protected:
 

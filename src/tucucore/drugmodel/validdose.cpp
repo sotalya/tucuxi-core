@@ -63,6 +63,11 @@ SpecificDoses::SpecificDoses(Unit _unit, MultiAnalyteDose _defaultDose) :
 
 }
 
+void SpecificDoses::addDose(MultiAnalyteDose _dose)
+{
+    m_doses.push_back(_dose);
+}
+
 std::vector<MultiAnalyteDose> SpecificDoses::getDoses() const
 {
     return m_doses;

@@ -139,8 +139,8 @@ struct TestDrugModels : public fructose::test_base<TestDrugModels>
         std::unique_ptr<ParameterDefinition> PCL(new Tucuxi::Core::ParameterDefinition("CL", 15.106, opCl, Tucuxi::Core::ParameterVariabilityType::None));
         dispositionParameters->addParameter(PCL);
 
+        dispositionParameters->addCorrelation(Correlation("CL", "V", 0.798));
         analyteSet->setDispositionParameters(std::move(dispositionParameters));
-
 
 
         {
@@ -161,10 +161,21 @@ struct TestDrugModels : public fructose::test_base<TestDrugModels>
             formulationAndRoute->setFormulation("To be defined");
             formulationAndRoute->addAssociation(std::unique_ptr<AnalyteSetToAbsorptionAssociation>(association));
 
-            // TODO : Add Valid doses and so
-            // std::unique_ptr<ValidDoses> m_validDoses;
-            // std::unique_ptr<ValidDurations> m_validIntervals;
-            // std::unique_ptr<ValidDurations> m_validInfusionTimes;
+            std::unique_ptr<SpecificDoses> validDoses(new SpecificDoses(Unit("mg"), MultiAnalyteDose(400)));
+            validDoses->addDose(MultiAnalyteDose(100));
+            validDoses->addDose(MultiAnalyteDose(200));
+            validDoses->addDose(MultiAnalyteDose(300));
+            validDoses->addDose(MultiAnalyteDose(400));
+            validDoses->addDose(MultiAnalyteDose(600));
+            validDoses->addDose(MultiAnalyteDose(800));
+
+            formulationAndRoute->setValidDoses(std::move(validDoses));
+
+            std::unique_ptr<SpecificDurations> validIntervals(new SpecificDurations(24h));
+            validIntervals->addDuration(Duration(12h));
+            validIntervals->addDuration(Duration(24h));
+            formulationAndRoute->setValidIntervals(std::move(validIntervals));
+
 
             model->addFormulationAndRoute(std::move(formulationAndRoute));
         }
@@ -183,12 +194,32 @@ struct TestDrugModels : public fructose::test_base<TestDrugModels>
             formulationAndRoute->setFormulation("To be defined");
             formulationAndRoute->addAssociation(std::unique_ptr<AnalyteSetToAbsorptionAssociation>(association));
 
-            // TODO : Add Valid doses and so
-            // std::unique_ptr<ValidDoses> m_validDoses;
-            // std::unique_ptr<ValidDurations> m_validIntervals;
-            // std::unique_ptr<ValidDurations> m_validInfusionTimes;
+            // These are the extravascular doses and intervals. Only added the infusion times
+            std::unique_ptr<SpecificDoses> validDoses(new SpecificDoses(Unit("mg"), MultiAnalyteDose(400)));
+            validDoses->addDose(MultiAnalyteDose(100));
+            validDoses->addDose(MultiAnalyteDose(200));
+            validDoses->addDose(MultiAnalyteDose(300));
+            validDoses->addDose(MultiAnalyteDose(400));
+            validDoses->addDose(MultiAnalyteDose(600));
+            validDoses->addDose(MultiAnalyteDose(800));
+
+            formulationAndRoute->setValidDoses(std::move(validDoses));
+
+            std::unique_ptr<SpecificDurations> validIntervals(new SpecificDurations(24h));
+            validIntervals->addDuration(Duration(12h));
+            validIntervals->addDuration(Duration(24h));
+            formulationAndRoute->setValidIntervals(std::move(validIntervals));
 
             model->addFormulationAndRoute(std::move(formulationAndRoute));
+
+            // This is just here as an example.
+            std::unique_ptr<SpecificDurations> validInfusionTimes(new SpecificDurations(1h));
+            validInfusionTimes->addDuration(Duration(30min));
+            validInfusionTimes->addDuration(Duration(1h));
+            formulationAndRoute->setValidInfusionTimes(std::move(validInfusionTimes));
+
+            model->addFormulationAndRoute(std::move(formulationAndRoute));
+
         }
 
         {
@@ -205,10 +236,21 @@ struct TestDrugModels : public fructose::test_base<TestDrugModels>
             formulationAndRoute->setFormulation("To be defined");
             formulationAndRoute->addAssociation(std::unique_ptr<AnalyteSetToAbsorptionAssociation>(association));
 
-            // TODO : Add Valid doses and so
-            // std::unique_ptr<ValidDoses> m_validDoses;
-            // std::unique_ptr<ValidDurations> m_validIntervals;
-            // std::unique_ptr<ValidDurations> m_validInfusionTimes;
+            // These are the extravascular doses and intervals
+            std::unique_ptr<SpecificDoses> validDoses(new SpecificDoses(Unit("mg"), MultiAnalyteDose(400)));
+            validDoses->addDose(MultiAnalyteDose(100));
+            validDoses->addDose(MultiAnalyteDose(200));
+            validDoses->addDose(MultiAnalyteDose(300));
+            validDoses->addDose(MultiAnalyteDose(400));
+            validDoses->addDose(MultiAnalyteDose(600));
+            validDoses->addDose(MultiAnalyteDose(800));
+
+            formulationAndRoute->setValidDoses(std::move(validDoses));
+
+            std::unique_ptr<SpecificDurations> validIntervals(new SpecificDurations(24h));
+            validIntervals->addDuration(Duration(12h));
+            validIntervals->addDuration(Duration(24h));
+            formulationAndRoute->setValidIntervals(std::move(validIntervals));
 
             model->addFormulationAndRoute(std::move(formulationAndRoute));
         }
