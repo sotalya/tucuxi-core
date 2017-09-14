@@ -70,16 +70,16 @@ struct TestDrugModels : public fructose::test_base<TestDrugModels>
 
         // Add targets
 
-        SubTargetDefinition cMin("cMin", 750.0, nullptr);
-        SubTargetDefinition cMax("cMax", 1500.0, nullptr);
-        SubTargetDefinition cBest("cBest", 1000.0, nullptr);
+        std::unique_ptr<SubTargetDefinition> cMin(new SubTargetDefinition("cMin", 750.0, nullptr));
+        std::unique_ptr<SubTargetDefinition> cMax(new SubTargetDefinition("cMax", 1500.0, nullptr));
+        std::unique_ptr<SubTargetDefinition> cBest(new SubTargetDefinition("cBest", 1000.0, nullptr));
         TargetDefinition *target = new TargetDefinition(TargetType::Residual,
-                                                        &cMin,
-                                                        &cMax,
-                                                        &cBest,
-                                                        new SubTargetDefinition("cBest", 1000.0, nullptr),
-                                                        new SubTargetDefinition("cBest", 1000.0, nullptr),
-                                                        new SubTargetDefinition("cBest", 1000.0, nullptr));
+                                                        std::move(cMin),
+                                                        std::move(cMax),
+                                                        std::move(cBest),
+                                                        std::unique_ptr<SubTargetDefinition>(new SubTargetDefinition("cBest", 1000.0, nullptr)),
+                                                        std::unique_ptr<SubTargetDefinition>(new SubTargetDefinition("cBest", 1000.0, nullptr)),
+                                                        std::unique_ptr<SubTargetDefinition>(new SubTargetDefinition("cBest", 1000.0, nullptr)));
 
         std::unique_ptr<TargetDefinition> targetPtr(target);
         analyte->addTarget(targetPtr);
@@ -161,7 +161,7 @@ struct TestDrugModels : public fructose::test_base<TestDrugModels>
             formulationAndRoute->setFormulation("To be defined");
             formulationAndRoute->addAssociation(std::unique_ptr<AnalyteSetToAbsorptionAssociation>(association));
 
-            std::unique_ptr<SpecificDoses> validDoses(new SpecificDoses(Unit("mg"), MultiAnalyteDose(400)));
+            SpecificDoses* validDoses = new SpecificDoses(Unit("mg"), MultiAnalyteDose(400));
             validDoses->addDose(MultiAnalyteDose(100));
             validDoses->addDose(MultiAnalyteDose(200));
             validDoses->addDose(MultiAnalyteDose(300));
@@ -169,12 +169,16 @@ struct TestDrugModels : public fructose::test_base<TestDrugModels>
             validDoses->addDose(MultiAnalyteDose(600));
             validDoses->addDose(MultiAnalyteDose(800));
 
-            formulationAndRoute->setValidDoses(std::move(validDoses));
+            std::unique_ptr<ValidDoses> doses(validDoses);
 
-            std::unique_ptr<SpecificDurations> validIntervals(new SpecificDurations(24h));
+            formulationAndRoute->setValidDoses(std::move(doses));
+
+            SpecificDurations* validIntervals = new SpecificDurations(24h);
             validIntervals->addDuration(Duration(12h));
             validIntervals->addDuration(Duration(24h));
-            formulationAndRoute->setValidIntervals(std::move(validIntervals));
+
+            std::unique_ptr<ValidDurations> intervals(validIntervals);
+            formulationAndRoute->setValidIntervals(std::move(intervals));
 
 
             model->addFormulationAndRoute(std::move(formulationAndRoute));
@@ -209,8 +213,6 @@ struct TestDrugModels : public fructose::test_base<TestDrugModels>
             validIntervals->addDuration(Duration(12h));
             validIntervals->addDuration(Duration(24h));
             formulationAndRoute->setValidIntervals(std::move(validIntervals));
-
-            model->addFormulationAndRoute(std::move(formulationAndRoute));
 
             // This is just here as an example.
             std::unique_ptr<SpecificDurations> validInfusionTimes(new SpecificDurations(1h));

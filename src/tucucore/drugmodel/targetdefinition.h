@@ -45,19 +45,19 @@ public:
     {}
 
     TargetDefinition(TargetType _type,
-                     SubTargetDefinition *_valueMin,
-                     SubTargetDefinition *_valueMax,
-                     SubTargetDefinition *_valueBest,
-                     SubTargetDefinition *_tMin,
-                     SubTargetDefinition *_tMax,
-                     SubTargetDefinition *_tBest) :
+                     std::unique_ptr<SubTargetDefinition> _valueMin,
+                     std::unique_ptr<SubTargetDefinition> _valueMax,
+                     std::unique_ptr<SubTargetDefinition> _valueBest,
+                     std::unique_ptr<SubTargetDefinition> _tMin,
+                     std::unique_ptr<SubTargetDefinition> _tMax,
+                     std::unique_ptr<SubTargetDefinition> _tBest) :
         m_targetType(_type),
-        m_valueMin(_valueMin),
-        m_valueMax(_valueMax),
-        m_valueBest(_valueBest),
-        m_tMin(_tMin),
-        m_tMax(_tMax),
-        m_tBest(_tBest)
+        m_valueMin(std::move(_valueMin)),
+        m_valueMax(std::move(_valueMax)),
+        m_valueBest(std::move(_valueBest)),
+        m_tMin(std::move(_tMin)),
+        m_tMax(std::move(_tMax)),
+        m_tBest(std::move(_tBest))
     {
 
     }
