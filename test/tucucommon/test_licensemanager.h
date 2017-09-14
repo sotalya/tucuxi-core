@@ -200,13 +200,13 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
         std::remove(fileName.c_str());
 
         // Detect missing license file
-        int res = Tucuxi::Common::LicenseManager::checkLicenseFile(fileName);
-        fructose_assert(res == int(Tucuxi::Common::LicenseError::MISSING_LICENSE_FILE));
+        LicenseError res = Tucuxi::Common::LicenseManager::checkLicenseFile(fileName);
+        fructose_assert(res == Tucuxi::Common::LicenseError::MISSING_LICENSE_FILE);
 
         // Generate a request to get a new license file
         std::string request;
         res = Tucuxi::Common::LicenseManager::generateRequestString(&request);
-        fructose_assert(res == int(Tucuxi::Common::LicenseError::REQUEST_SUCCESSFUL));
+        fructose_assert(res == Tucuxi::Common::LicenseError::REQUEST_SUCCESSFUL);
 
         std::string test;
         if(!Tucuxi::Common::CryptoHelper::decrypt(m_key, m_licenses[0], &test))  {
@@ -217,22 +217,22 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
 
         // Install a new license file
         res = Tucuxi::Common::LicenseManager::installLicense(m_licenses[0], fileName);
-        fructose_assert(res == int(Tucuxi::Common::LicenseError::INSTALLATION_SUCCESSFUL));
+        fructose_assert(res == Tucuxi::Common::LicenseError::INSTALLATION_SUCCESSFUL);
 
         // Check license file
         res = Tucuxi::Common::LicenseManager::checkLicenseFile(fileName);
-        fructose_assert(res == int(Tucuxi::Common::LicenseError::VALID_LICENSE));
+        fructose_assert(res == Tucuxi::Common::LicenseError::VALID_LICENSE);
 
         // Check license file
         res = Tucuxi::Common::LicenseManager::checkLicenseFile(fileName);
-        fructose_assert(res == int(Tucuxi::Common::LicenseError::VALID_LICENSE));
+        fructose_assert(res == Tucuxi::Common::LicenseError::VALID_LICENSE);
     }
 
     void checkInvalidLicense(const std::string& _testName)
     {
         std::cout << _testName << std::endl;
 
-        int res = 0;
+        LicenseError res = LicenseError::INVALID_LICENSE;
 
         for(int i=1; i < 6; i++) {
 
@@ -249,7 +249,7 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
 
             // Install a invalid license file (wrong type)
             Tucuxi::Common::LicenseManager::installLicense(m_licenses[i], fileName);
-            fructose_assert(res == int(Tucuxi::Common::LicenseError::INVALID_LICENSE));
+            fructose_assert(res == Tucuxi::Common::LicenseError::INVALID_LICENSE);
 
             // Write result in license file
             std::ofstream file(fileName);
@@ -261,11 +261,11 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
 
             // Check license file
             res = Tucuxi::Common::LicenseManager::checkLicenseFile(fileName);
-            fructose_assert(res == int(Tucuxi::Common::LicenseError::INVALID_LICENSE));
+            fructose_assert(res == Tucuxi::Common::LicenseError::INVALID_LICENSE);
 
             // Check license file
             res = Tucuxi::Common::LicenseManager::checkLicenseFile(fileName);
-            fructose_assert(res == int(Tucuxi::Common::LicenseError::INVALID_LICENSE));
+            fructose_assert(res == Tucuxi::Common::LicenseError::INVALID_LICENSE);
         }
     }
 };
