@@ -18,7 +18,7 @@ enum class ThreeCompartmentBolusCompartments : int { First, Second, Third };
 /// \sa IntakeIntervalCalculator
 class ThreeCompartmentBolusMicro : public IntakeIntervalCalculatorBase<3, ThreeCompartmentBolusExponentials>
 {
-//    INTAKEINTERVALCALCULATOR_UTILS(ThreeCompartmentBolusMicro)
+    INTAKEINTERVALCALCULATOR_UTILS(ThreeCompartmentBolusMicro)
 public:
     /// \brief Constructor
     ThreeCompartmentBolusMicro();
@@ -28,8 +28,8 @@ public:
 protected:
     virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
     virtual void computeExponentials(Eigen::VectorXd& _times) override;
-    virtual bool computeConcentrations(const Residuals& _inResiduals, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) override;
-    virtual bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) override;
+    virtual bool computeConcentrations(const Residuals& _inResiduals, const bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) override;
+    virtual bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, const bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) override;
     void compute(const Residuals& _inResiduals, Eigen::VectorXd& _concentrations1, Value& _concentrations2, Value& _concentrations3);
 
     Value m_D;	/// Quantity of drug
@@ -89,7 +89,7 @@ _concentrations1, Value& _concentrations2, Value& _concentrations3)
 
 class ThreeCompartmentBolusMacro : public ThreeCompartmentBolusMicro
 {
-//    INTAKEINTERVALCALCULATOR_UTILS(ThreeCompartmentBolusMacro)
+    INTAKEINTERVALCALCULATOR_UTILS(ThreeCompartmentBolusMacro)
 public:
     ThreeCompartmentBolusMacro();
 

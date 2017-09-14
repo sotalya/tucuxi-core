@@ -9,6 +9,7 @@
 
 #include <boost/math/special_functions/erf.hpp>
 #include <Eigen/LU>
+#include <iostream>
 
 
 namespace Tucuxi {
@@ -62,10 +63,12 @@ Value Likelihood::negativeLogLikelihood(const ValueVector& _etas) const
 {
 
     ValueVector _cxns(m_samples->size());
+    bool isAll = false;
 
 
     // Getting the concentration values at these _times and m_samples.
-    ConcentrationCalculator::ComputationResult result = m_concentrationCalculator->computeConcentrationsAtTimes(_cxns, *m_intakes, *m_parameters, *m_samples, _etas);
+    ConcentrationCalculator::ComputationResult result =
+    m_concentrationCalculator->computeConcentrationsAtTimes(_cxns, isAll, *m_intakes, *m_parameters, *m_samples, _etas);
 
     // If the calculation fails, its highly unlikely so we return the largest number we can
 

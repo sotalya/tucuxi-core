@@ -29,6 +29,7 @@ public:
     ///
     /// \brief computeConcentrations
     /// \param _prediction The calculated concentrations
+    /// \param _inAll Need concentrations for all compartements or not
     /// \param _nbPoints The number of points asked
     /// \param _recordFrom Date from which we start recording the concentration
     /// \param _recordTo Date until which we record the concentration
@@ -43,7 +44,8 @@ public:
     ///
     virtual ComputationResult computeConcentrations(
             ConcentrationPredictionPtr &_prediction,
-            int _nbPoints,
+	    const bool _isAll,
+            const int _nbPoints,
             const DateTime &_recordFrom,
             const DateTime &_recordTo,
             const IntakeSeries &_intakes,
@@ -60,6 +62,7 @@ public:
     /// and the values at the time points requested. If the eta vector is not empty, then
     /// the etas are applied to the parameters.
     /// \param _concentrations concentrations 2d vector allocated within
+    /// \param _inAll Need concentrations for all compartements or not
     /// \param _intakes intakes for entire curve
     /// \param _parameters parameters for entire curve
     /// \param _samples samples (measures) for the entire curve
@@ -69,6 +72,7 @@ public:
     ///
     virtual ComputationResult computeConcentrationsAtTimes(
             Concentrations& _concentrations,
+	    const bool _isAll,
             const IntakeSeries& _intakes,
             const ParameterSetSeries& _parameters,
             const SampleSeries& _samples,
@@ -109,7 +113,8 @@ public:
     ///
     virtual ComputationResult computeConcentrations(
             ConcentrationPredictionPtr &_prediction,
-            int _nbPoints,
+	    const bool _isAll,
+            const int _nbPoints,
             const IntakeSeries &_intakes,
             const ParameterSetSeries& _parameters,
             const Etas& _etas = Etas(0),
@@ -131,6 +136,7 @@ public:
     ///
     virtual ComputationResult computeConcentrationsAtTimes(
             Concentrations& _concentrations,
+	    const bool _isAll,
             const IntakeSeries& _intakes,
             const ParameterSetSeries& _parameters,
             const SampleSeries& _samples,
@@ -158,7 +164,8 @@ public:
     ///
     virtual ComputationResult computeConcentrations(
             ConcentrationPredictionPtr &_prediction,
-            int _nbPoints,
+	    const bool _isAll,
+            const int _nbPoints,
             const IntakeSeries &_intakes,
             const ParameterSetSeries& _parameters,
             const Etas& _etas = Etas(0),
@@ -180,6 +187,7 @@ public:
     ///
     virtual ComputationResult computeConcentrationsAtTimes(
             Concentrations& _concentrations,
+	    const bool _isAll,
             const IntakeSeries& _intakes,
             const ParameterSetSeries& _parameters,
             const SampleSeries& _samples,

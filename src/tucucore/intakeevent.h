@@ -150,10 +150,11 @@ public:
         const ParameterSetEvent& _parameters,
         const Residuals& _inResiduals,
         const CycleSize _cycleSize,
+	const bool _isAll,
         Residuals& _outResiduals,
         const bool _isDensityConstant) const
     {
-        return m_calculator->calculateIntakePoints(_concentrations, _times, _intakeEvent, _parameters, _inResiduals, _cycleSize, _outResiduals, _isDensityConstant);
+        return m_calculator->calculateIntakePoints(_concentrations, _times, _intakeEvent, _parameters, _inResiduals, _cycleSize, _isAll, _outResiduals, _isDensityConstant);
     }
 
     IntakeIntervalCalculator::Result calculateIntakeSinglePoint(
@@ -162,9 +163,10 @@ public:
 	const ParameterSetEvent& _parameters,
 	const Residuals& _inResiduals,
 	const Value& _atTime,
+	const bool _isAll,
 	Residuals& _outResiduals) const
     {
-        return m_calculator->calculateIntakeSinglePoint(_concentrations, _intakeEvent, _parameters, _inResiduals, _atTime, _outResiduals);
+        return m_calculator->calculateIntakeSinglePoint(_concentrations, _intakeEvent, _parameters, _inResiduals, _atTime, _isAll, _outResiduals);
     }
 
     // The association with intakeintervalcalculator happens here

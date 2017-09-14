@@ -70,11 +70,11 @@ ConcentrationPredictionPtr CoreComponent::computeConcentrations(const Concentrat
     switch (_request.getType())
     {
         case PredictionType::Population:
-            computePopulation(prediction, _request.getNbPoints(), intakes, parameters);
+            computePopulation(prediction, _request.getIsAll(), _request.getNbPoints(), intakes, parameters);
             break;
 
         case PredictionType::Apiori:
-            computeApriori(prediction, _request.getNbPoints(), intakes, parameters);
+            computeApriori(prediction, _request.getIsAll(), _request.getNbPoints(), intakes, parameters);
             break;
 
         case PredictionType::Aposteriori: {
@@ -94,7 +94,7 @@ ConcentrationPredictionPtr CoreComponent::computeConcentrations(const Concentrat
             SigmaResidualErrorModel residualErrorModel;
 //            extractError(m_drug->getErrorModel(), m_drug->getParemeters(), omega, residualErrorModel);
             APosterioriEtasCalculator().computeAposterioriEtas(intakesForEtas, parameters, omega, residualErrorModel, samples, etas);
-            computeAposteriori(prediction, _request.getNbPoints(), intakes, parameters, etas);
+            computeAposteriori(prediction, _request.getIsAll(), _request.getNbPoints(), intakes, parameters, etas);
             break;
         }
 
@@ -128,6 +128,7 @@ Tucuxi::Common::Interface* CoreComponent::getInterface(const std::string &_name)
 
 ComputationResult CoreComponent::computeConcentrations(
     ConcentrationPredictionPtr &_prediction,
+    const bool _isAll,
     const int _nbPoints,
     const IntakeSeries &_intakes,
     const ParameterSetSeries &_parameterSets,
@@ -139,6 +140,7 @@ ComputationResult CoreComponent::computeConcentrations(
     // TODO : Use a factory for the calculator
     ConcentrationCalculator calculator;
     calculator.computeConcentrations(_prediction,
+				     _isAll,
                                      _nbPoints,
                                      _intakes,
                                      _parameterSets,

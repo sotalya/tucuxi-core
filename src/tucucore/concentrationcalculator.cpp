@@ -9,6 +9,7 @@ namespace Core {
 
 ConcentrationCalculator::ComputationResult ConcentrationCalculator::computeConcentrations(
     ConcentrationPredictionPtr &_prediction,
+    const bool _isAll,
     const int _nbPoints,
     const IntakeSeries &_intakes,
     const ParameterSetSeries &_parameterSets,
@@ -52,7 +53,7 @@ ConcentrationCalculator::ComputationResult ConcentrationCalculator::computeConce
 
         outResiduals.clear();
 
-        IntakeIntervalCalculator::Result result = it->calculateIntakePoints(concentrations, times, intake, *parameters, inResiduals, intake.getNbPoints(), outResiduals, _isFixedDensity);
+        IntakeIntervalCalculator::Result result = it->calculateIntakePoints(concentrations, times, intake, *parameters, inResiduals, intake.getNbPoints(), _isAll, outResiduals, _isFixedDensity);
         switch (result)
         {
             case IntakeIntervalCalculator::Result::Ok:
@@ -83,9 +84,9 @@ ConcentrationCalculator::ComputationResult ConcentrationCalculator::computeConce
 
         // Prepare residuals for the next cycle
         // NOTICE: "inResiduals = outResiduals" and "std::copy(outResiduals.begin(),
-	// outResiduals.end(), inResiduals.begin())" are not working
-	for(unsigned int i = 0; i < residualSize; i++)
-	    inResiduals[i] = outResiduals[i];
+        // outResiduals.end(), inResiduals.begin())" are not working
+        for(unsigned int i = 0; i < residualSize; i++)
+            inResiduals[i] = outResiduals[i];
     }
 
     return ComputationResult::Success;
@@ -93,6 +94,7 @@ ConcentrationCalculator::ComputationResult ConcentrationCalculator::computeConce
 
 ConcentrationCalculator::ComputationResult ConcentrationCalculator::computeConcentrationsAtTimes(
         Concentrations &_concentrations,
+	const bool _isAll,
         const IntakeSeries &_intakes,
         const ParameterSetSeries &_parameterSets,
         const SampleSeries &_samples,
@@ -148,14 +150,17 @@ ConcentrationCalculator::ComputationResult ConcentrationCalculator::computeConce
 
         // If the next sample time greater than the next intake time, 
 	// the sample doesnt occur during this cycle, so we only care about residuals
-#if 0
 	// clear locally defined concentration
 	for (unsigned int idx= 0; idx < residualSize; idx++) {
 	    concentrations[idx].clear();
 	}
 
         if (nextSampleTime > nextIntakeTime) {
-            IntakeIntervalCalculator::Result result = it->calculateIntakeSinglePoint(concentrations, *it, *parameters, inResiduals, currentIntakeTime, outResiduals);
+
+	    Duration atTime = nextSampleTime - currentIntakeTime;
+
+            IntakeIntervalCalculator::Result result =
+	    it->calculateIntakeSinglePoint(concentrations, *it, *parameters, inResiduals, atTime.toHours(),  _isAll, outResiduals);
 
             if (result != IntakeIntervalCalculator::Result::Ok) {
                 _concentrations.clear();
@@ -165,12 +170,12 @@ ConcentrationCalculator::ComputationResult ConcentrationCalculator::computeConce
 	    // Reset input residuals for the next cycle
             inResiduals = outResiduals;
         }
-#endif
 
+        // If the next sample time greater than the cycle start time 
+	// and less than the next cycle start time, the sample occurs during this cycle. 
+	// We care about residuals and the value at the next sample time.
         while ((nextSampleTime >= currentIntakeTime) && (nextSampleTime <= nextIntakeTime)) {
-            // If the next sample time greater than the cycle start time 
-	    // and less than the next cycle start time, the sample occurs during this cycle. 
-	    // We care about residuals and the value at the next sample time.
+
 	    Duration atTime = nextSampleTime - currentIntakeTime;
 
 	    // clear locally defined concentration
@@ -179,7 +184,7 @@ ConcentrationCalculator::ComputationResult ConcentrationCalculator::computeConce
 	    }
 
             IntakeIntervalCalculator::Result result =
-	    it->calculateIntakeSinglePoint(concentrations, *it, *parameters, inResiduals, atTime.toHours(), outResiduals);
+	    it->calculateIntakeSinglePoint(concentrations, *it, *parameters, inResiduals, atTime.toHours(), _isAll, outResiduals);
 
             if (result != IntakeIntervalCalculator::Result::Ok) {
                 _concentrations.clear();

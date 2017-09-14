@@ -54,6 +54,7 @@ private:
 
     ComputationResult computeConcentrations(
         ConcentrationPredictionPtr &_prediction,
+	const bool _isAll,
         int _nbPoints,
         const IntakeSeries &_intakes,
         const ParameterSetSeries& _parameters,
@@ -64,30 +65,33 @@ private:
 
     ComputationResult computePopulation(
         ConcentrationPredictionPtr &_prediction,
+	const bool _isAll,
         int _nbPoints,
         const IntakeSeries &_intakes,
         const ParameterSetSeries& _parameters)
     {
-        return computeConcentrations(_prediction, _nbPoints, _intakes, _parameters);
+        return computeConcentrations(_prediction, _isAll, _nbPoints, _intakes, _parameters);
     }
 
     ComputationResult computeApriori(
         ConcentrationPredictionPtr &_prediction,
+	const bool _isAll,
         int _nbPoints,
         const IntakeSeries &_intakes,
         const ParameterSetSeries& _parameters)
     {
-        return computeConcentrations(_prediction, _nbPoints, _intakes, _parameters);
+        return computeConcentrations(_prediction, _isAll, _nbPoints, _intakes, _parameters);
     }
 
     ComputationResult computeAposteriori(
         ConcentrationPredictionPtr &_prediction,
+	const bool _isAll,
         int _nbPoints,
         const IntakeSeries &_intakes,
         const ParameterSetSeries& _parameters,
         const Etas& _etas)
     {
-        return computeConcentrations(_prediction, _nbPoints, _intakes, _parameters, _etas);
+        return computeConcentrations(_prediction, _isAll, _nbPoints, _intakes, _parameters);
     }
 
     ComputationResult extractError(

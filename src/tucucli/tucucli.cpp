@@ -38,6 +38,7 @@ int main(int argc, char** argv)
 
     DateTime now;
     int nbPoints = 251;
+    bool isAll = false;
 
     std::vector<Tucuxi::Core::Concentrations> concentrations;
     Tucuxi::Core::TimeOffsets times;
@@ -62,6 +63,7 @@ int main(int argc, char** argv)
         parameters,
         inResiduals,
         nbPoints,
+	isAll,
         outResiduals1,
         true);
     printf("Out residual = %f\n", outResiduals1[0]);
@@ -73,6 +75,7 @@ int main(int argc, char** argv)
         parameters,
         inResiduals,
         nbPoints,
+	isAll,
         outResiduals2);
     printf("Out residual = %f\n", outResiduals2[0]);
     printf("Out residual = %f\n", outResiduals2[1]);

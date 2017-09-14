@@ -111,7 +111,7 @@ void ThreeCompartmentInfusionMicro::computeExponentials(Eigen::VectorXd& _times)
     setExponentials(Exponentials::Gamma, (-m_Gamma * _times).array().exp());
 }
 
-bool ThreeCompartmentInfusionMicro::computeConcentrations(const Residuals& _inResiduals, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
+bool ThreeCompartmentInfusionMicro::computeConcentrations(const Residuals& _inResiduals, const bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1(m_NbPoints);
     Value concentrations2, concentrations3;
@@ -121,8 +121,10 @@ bool ThreeCompartmentInfusionMicro::computeConcentrations(const Residuals& _inRe
 
     int forcesize = static_cast<int>(std::min(ceil(m_Tinf/m_Int * m_NbPoints), ceil(m_NbPoints)));
 
+    TMP_UNUSED_PARAMETER(_inResiduals);
+
     // Calculate concentrations for comp1 and comp2
-    compute(_inResiduals, forcesize, concentrations1, concentrations2, concentrations3);
+    compute(forcesize, concentrations1, concentrations2, concentrations3);
 
     // return concentrations of comp1, comp2 and comp3
     _outResiduals[firstCompartment] = concentrations1[m_NbPoints - 1];
@@ -130,6 +132,8 @@ bool ThreeCompartmentInfusionMicro::computeConcentrations(const Residuals& _inRe
     _outResiduals[thirdCompartment] = concentrations3;
 
     _concentrations[firstCompartment].assign(concentrations1.data(), concentrations1.data() + concentrations1.size());	
+    // TODO: add calcuation concentrations of second and third compartment and condtions
+    TMP_UNUSED_PARAMETER(_isAll);
 
     bool bOK = checkValue(_outResiduals[firstCompartment] >= 0, "The concentration1 is negative.");
     bOK &= checkValue(_outResiduals[secondCompartment] >= 0, "The concentration2 is negative.");
@@ -138,7 +142,7 @@ bool ThreeCompartmentInfusionMicro::computeConcentrations(const Residuals& _inRe
     return bOK;
 }
 
-bool ThreeCompartmentInfusionMicro::computeConcentration(const Value& _atTime, const Residuals& _inResiduals, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
+bool ThreeCompartmentInfusionMicro::computeConcentration(const Value& _atTime, const Residuals& _inResiduals, const bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1(2);
     Value concentrations2, concentrations3;
@@ -150,15 +154,19 @@ bool ThreeCompartmentInfusionMicro::computeConcentration(const Value& _atTime, c
 
     int forcesize = 0;
 
+    TMP_UNUSED_PARAMETER(_inResiduals);
+
     if (_atTime <= m_Tinf) {
 	    forcesize = 1;
     }
 
     // Calculate concentrations for comp1 and comp2
-    compute(_inResiduals, forcesize, concentrations1, concentrations2, concentrations3);
+    compute(forcesize, concentrations1, concentrations2, concentrations3);
 
     // return concentraions (computation with atTime (current time))
     _concentrations[firstCompartment].push_back(concentrations1[atTime]);
+    // TODO: add calcuation concentrations of second and third compartment and condtions
+    TMP_UNUSED_PARAMETER(_isAll);
 
     // interval=0 means that it is the last cycle, so final residual = 0
     if (m_Int == 0) {

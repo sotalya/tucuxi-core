@@ -92,6 +92,7 @@ public:
         const ParameterSetEvent& _parameters,
         const Residuals& _inResiduals,
         const CycleSize _cycleSize,
+	const bool _isAll,
         Residuals& _outResiduals,
         const bool _isDensityConstant);
 
@@ -109,6 +110,7 @@ public:
         const ParameterSetEvent& _parameters,
         const Residuals& _inResiduals,
         const Value& _atTime,
+	const bool _isAll,
         Residuals& _outResiduals);
 
     /// \brief Returns the number of compartments needed for the residuals
@@ -130,16 +132,18 @@ protected:
 
     /// \brief Compute concentrations using a specific algorithm
     /// \param _inResiduals Initial residual concentrations
+    /// \param _inAll Need concentrations for all compartements or not
     /// \param _concentrations vector of concentrations.
     /// \param _outResiduals Final residual concentrations
-    virtual bool computeConcentrations(const Residuals& _inResiduals, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) = 0;
+    virtual bool computeConcentrations(const Residuals& _inResiduals, const bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) = 0;
 
     /// \brief Compute concentrations using a specific algorithm
     /// \param _atTime measure time
     /// \param _inResiduals Initial residual concentrations
+    /// \param _inAll Need concentrations for all compartements or not
     /// \param _concentrations vector of concentrations.
     /// \param _outResiduals Final residual concentrations
-    virtual bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) = 0;
+    virtual bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, const bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) = 0;
 
     /// \brief Check if a value is correct and log a message if it is not the case
     /// \param _isOk Indicates that the value is correct

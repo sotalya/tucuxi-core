@@ -113,7 +113,7 @@ void ThreeCompartmentExtraMicro::computeExponentials(Eigen::VectorXd& _times)
 }
 
 
-bool ThreeCompartmentExtraMicro::computeConcentrations(const Residuals& _inResiduals, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
+bool ThreeCompartmentExtraMicro::computeConcentrations(const Residuals& _inResiduals, const bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1;
     Value concentrations2, concentrations3;
@@ -131,6 +131,8 @@ bool ThreeCompartmentExtraMicro::computeConcentrations(const Residuals& _inResid
 
     // return concentration
     _concentrations[firstCompartment].assign(concentrations1.data(), concentrations1.data() + concentrations1.size());	
+    // TODO: add calcuation concentrations of second and third compartment and condtions
+    TMP_UNUSED_PARAMETER(_isAll);
 
     bool bOK = checkValue(_outResiduals[firstCompartment] >= 0, "The concentration1 is negative.");
     bOK &= checkValue(_outResiduals[secondCompartment] >= 0, "The concentration2 is negative.");
@@ -139,7 +141,7 @@ bool ThreeCompartmentExtraMicro::computeConcentrations(const Residuals& _inResid
     return bOK;
 }
 
-bool ThreeCompartmentExtraMicro::computeConcentration(const Value& _atTime, const Residuals& _inResiduals,    std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
+bool ThreeCompartmentExtraMicro::computeConcentration(const Value& _atTime, const Residuals& _inResiduals, const bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1;
     Value concentrations2, concentrations3;
@@ -154,6 +156,8 @@ bool ThreeCompartmentExtraMicro::computeConcentration(const Value& _atTime, cons
 
     // return concentraions (computation with atTime (current time))
     _concentrations[firstCompartment].push_back(concentrations1[atTime]);
+    // TODO: add calcuation concentrations of second and third compartment and condtions
+    TMP_UNUSED_PARAMETER(_isAll);
 
     // interval=0 means that it is the last cycle, so final residual = 0
     if (m_Int == 0) {

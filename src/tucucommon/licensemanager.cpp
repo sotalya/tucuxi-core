@@ -16,7 +16,7 @@ namespace Common {
 // Symmetric key between Tucuxi and Server
 const std::string LicenseManager::m_key = "86685E7AA62844102FC7FAD5D6DDF46C9CA7777BF4E0153FDF5F86463EAC0D75";
 
-int LicenseManager::checkLicenseFile(std::string _filename)
+LicenseError LicenseManager::checkLicenseFile(std::string _filename)
 {
     LoggerHelper logger;
 
@@ -25,7 +25,7 @@ int LicenseManager::checkLicenseFile(std::string _filename)
 
     if (!license.is_open()) {
         logger.error("License file not found.");
-        return int(LicenseError::MISSING_LICENSE_FILE);
+        return LicenseError::MISSING_LICENSE_FILE;
     }
 
     std::string content;
@@ -34,31 +34,31 @@ int LicenseManager::checkLicenseFile(std::string _filename)
     license.close();
 
     // Check license file
-    int res = checklicense(content);
+    LicenseError res = checklicense(content);
 
-    if(res != int(LicenseError::VALID_LICENSE)) {
+    if (res != LicenseError::VALID_LICENSE) {
         return res;
     }
 
     // Update last used date in license file
     res = rewriteLicense(content, _filename);
 
-    if(res == int(LicenseError::INSTALLATION_SUCCESSFUL)) {
-        return int(LicenseError::VALID_LICENSE);
+    if (res == LicenseError::INSTALLATION_SUCCESSFUL) {
+        return LicenseError::VALID_LICENSE;
     }
     else {
         return res;
     }
 }
 
-int LicenseManager::checklicense(std::string _license)
+LicenseError LicenseManager::checklicense(std::string _license)
 {
     LoggerHelper logger;
 
     // Decrypt content of licence file
     if(!CryptoHelper::decrypt(LicenseManager::m_key, _license, &_license)) {
         logger.error("Cannot decrypt licence file.");
-        return int(LicenseError::ERROR_CRYPTO);
+        return LicenseError::ERROR_CRYPTO;
     }
 
     // Read license : license:0:ABCDABCDABCDABCDABCDABCD:yyyy/mm/dd:yyyy/mm/dd
@@ -74,13 +74,13 @@ int LicenseManager::checklicense(std::string _license)
             field3 == std::string::npos ||
             field4 == std::string::npos) {
         logger.error("License is invalid.");
-        return int(LicenseError::INVALID_LICENSE);
+        return LicenseError::INVALID_LICENSE;
     }
 
     // Check 1st field == license
     if(_license.substr(0, field1) != "license") {
         logger.error("License is invalid.");
-        return int(LicenseError::INVALID_LICENSE);
+        return LicenseError::INVALID_LICENSE;
     }
 
     try {
@@ -89,25 +89,25 @@ int LicenseManager::checklicense(std::string _license)
 
         if(type == MachineIdType::UNDEFINED) {
             logger.error("License is invalid.");
-            return int(LicenseError::INVALID_LICENSE);
+            return LicenseError::INVALID_LICENSE;
         }
 
         // Get hash of fingerprint from machine
         std::string hash;
         if(!CryptoHelper::hash(SystemInfo::retrieveFingerPrint(type), &hash)) {
             logger.error("Cannot encrypt licence file.");
-            return int(LicenseError::ERROR_CRYPTO);
+            return LicenseError::ERROR_CRYPTO;
         }
 
         // Check 3th field == fingerprint valid
         if(hash != _license.substr(field2 + 1, field3 - field2 - 1)) {
             logger.error("License is invalid.");
-            return int(LicenseError::INVALID_LICENSE);
+            return LicenseError::INVALID_LICENSE;
         }
     }
     catch (...) {
         logger.error("License is invalid.");
-        return int(LicenseError::INVALID_LICENSE);
+        return LicenseError::INVALID_LICENSE;
     }
 
     try {
@@ -123,27 +123,27 @@ int LicenseManager::checklicense(std::string _license)
         int lastUsed = std::stoi(_license.substr(field4 + 1, _license.length()));       // <= today
 
         if(endValidity >= today && lastUsed <= today) {
-            return int(LicenseError::VALID_LICENSE);
+            return LicenseError::VALID_LICENSE;
         }
         else {
             logger.error("License is invalid.");
-            return int(LicenseError::INVALID_LICENSE);
+            return LicenseError::INVALID_LICENSE;
         }
     }
     catch (...) {
         logger.error("License is invalid.");
-        return int(LicenseError::INVALID_LICENSE);
+        return LicenseError::INVALID_LICENSE;
     }
 }
 
-int LicenseManager::rewriteLicense(std::string _license, std::string _filename)
+LicenseError LicenseManager::rewriteLicense(std::string _license, std::string _filename)
 {
     LoggerHelper logger;
 
     // Decrypt content of licence file
     if(!CryptoHelper::decrypt(LicenseManager::m_key, _license, &_license)) {
         logger.error("Cannot decrypt licence file.");
-        return int(LicenseError::ERROR_CRYPTO);
+        return LicenseError::ERROR_CRYPTO;
     }
 
     // Read license : key_word:type:fingerprint:end validity date:last used date
@@ -152,7 +152,7 @@ int LicenseManager::rewriteLicense(std::string _license, std::string _filename)
     std::size_t pos = _license.find_last_of(":");
     if(pos == std::string::npos) {
         logger.error("License is invalid.");
-        return int(LicenseError::INVALID_LICENSE);
+        return LicenseError::INVALID_LICENSE;
     }
 
     // Update date
@@ -167,7 +167,7 @@ int LicenseManager::rewriteLicense(std::string _license, std::string _filename)
     // Encrypt content of licence file
     if(!CryptoHelper::encrypt(LicenseManager::m_key, _license, &_license)) {
         logger.error("Cannot encrypt licence file.");
-        return int(LicenseError::ERROR_CRYPTO);
+        return LicenseError::ERROR_CRYPTO;
     }
 
     // Write result in license file
@@ -175,22 +175,22 @@ int LicenseManager::rewriteLicense(std::string _license, std::string _filename)
 
     if (!file.is_open()) {
         logger.error("Cannot decrypt licence file.");
-        return int(LicenseError::MISSING_LICENSE_FILE);
+        return LicenseError::MISSING_LICENSE_FILE;
     }
 
     file << _license;
     file.close();
 
-    return int(LicenseError::INSTALLATION_SUCCESSFUL);
+    return LicenseError::INSTALLATION_SUCCESSFUL;
 }
 
-int LicenseManager::installLicense(std::string _request, std::string _filename)
+LicenseError LicenseManager::installLicense(std::string _request, std::string _filename)
 {
     LoggerHelper logger;
 
     // Check license before installation
-    int res = checklicense(_request);
-    if(res != int(LicenseError::VALID_LICENSE)) {
+    LicenseError res = checklicense(_request);
+    if(res != LicenseError::VALID_LICENSE) {
         return res;
     }
 
@@ -199,16 +199,16 @@ int LicenseManager::installLicense(std::string _request, std::string _filename)
 
     if (!file.is_open()) {
         logger.error("License file not found.");
-        return int(LicenseError::MISSING_LICENSE_FILE);
+        return LicenseError::MISSING_LICENSE_FILE;
     }
 
     file << _request;
     file.close();
 
-    return int(LicenseError::INSTALLATION_SUCCESSFUL);
+    return LicenseError::INSTALLATION_SUCCESSFUL;
 }
 
-int LicenseManager::generateRequestString(std::string* request)
+LicenseError LicenseManager::generateRequestString(std::string* request)
 {
     LoggerHelper logger;
 
@@ -228,14 +228,14 @@ int LicenseManager::generateRequestString(std::string* request)
     // Check if a valid ID is found
     if(idfromMachine.m_type == MachineIdType::UNDEFINED) {
         logger.error("No machine id found.");
-        return int(LicenseError::NO_MACHINE_ID_FOUND);
+        return LicenseError::NO_MACHINE_ID_FOUND;
     }
 
     // Get hash from fingerprint
     std::string iDhash;
     if(!CryptoHelper::hash(idfromMachine.m_fingerprint, &iDhash)) {
         logger.error("Cannot generate hash from fingerprint.");
-        return int(LicenseError::ERROR_CRYPTO);
+        return LicenseError::ERROR_CRYPTO;
     }
 
     // Get date of today
@@ -255,10 +255,10 @@ int LicenseManager::generateRequestString(std::string* request)
     // Encrypt content of licence file
     if(!CryptoHelper::encrypt(LicenseManager::m_key, *request, request)) {
         logger.error("Cannot encrypt license file.");
-        return int(LicenseError::ERROR_CRYPTO);
+        return LicenseError::ERROR_CRYPTO;
     }
 
-    return int(LicenseError::REQUEST_SUCCESSFUL);
+    return LicenseError::REQUEST_SUCCESSFUL;
 }
 
 

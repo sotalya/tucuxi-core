@@ -92,7 +92,7 @@ void TwoCompartmentInfusionMicro::computeExponentials(Eigen::VectorXd& _times)
 }
 
 
-bool TwoCompartmentInfusionMicro::computeConcentrations(const Residuals& _inResiduals, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
+bool TwoCompartmentInfusionMicro::computeConcentrations(const Residuals& _inResiduals, const bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1, concentrations2;
     int firstCompartment = static_cast<int>(Compartments::First);
@@ -109,6 +109,9 @@ bool TwoCompartmentInfusionMicro::computeConcentrations(const Residuals& _inResi
 
     // Return concentrations of comp1
     _concentrations[firstCompartment].assign(concentrations1.data(), concentrations1.data() + concentrations1.size());
+    if (_isAll == true) {
+	_concentrations[secondCompartment].assign(concentrations2.data(), concentrations2.data() + concentrations2.size());	
+    }
 
     // Check output
     bool bOK = checkValue(_outResiduals[firstCompartment] >= 0, "The concentration1 is negative.");
@@ -118,7 +121,7 @@ bool TwoCompartmentInfusionMicro::computeConcentrations(const Residuals& _inResi
 }
 
 
-bool TwoCompartmentInfusionMicro::computeConcentration(const Value& _atTime, const Residuals& _inResiduals, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
+bool TwoCompartmentInfusionMicro::computeConcentration(const Value& _atTime, const Residuals& _inResiduals, const bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1, concentrations2;
     int firstCompartment = static_cast<int>(Compartments::First);
@@ -233,7 +236,9 @@ bool TwoCompartmentInfusionMicro::computeConcentration(const Value& _atTime, con
 
     // Return concentraions (computation with atTime (current time))
     _concentrations[firstCompartment].push_back(concentrations1[atTime]);
-    _concentrations[secondCompartment].push_back(concentrations2[atTime]);
+    if (_isAll == true) {
+	_concentrations[secondCompartment].push_back(concentrations2[atTime]);
+    }
     
     // Return final residual of comp1 and comp2
     // TODO: check equation... 

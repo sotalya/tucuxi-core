@@ -45,6 +45,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
             Tucuxi::Common::Duration infusionTime = _infusionTime;
 
 	    unsigned int residualSize = calculator.getResidualSize();
+	    bool isAll = false;
 
             std::vector<Tucuxi::Core::Concentrations> concentrations;
 	    concentrations.resize(residualSize);
@@ -69,6 +70,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
                             event,
                             inResiduals,
                             _nbPoints,
+			    isAll,
                             outResiduals,
                             true);
 
@@ -86,6 +88,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
                 Tucuxi::Core::IConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::ConcentrationCalculator();
                 concentrationCalculator->computeConcentrations(
                             predictionPtr,
+			    isAll,
                             _nbPoints,
                             intakeSeries,
                             _parameters);
@@ -119,6 +122,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
             Tucuxi::Common::Duration infusionTime = _infusionTime;
 
 	    unsigned int residualSize = calculator.getResidualSize();
+	    bool isAll = false;
             std::vector<Tucuxi::Core::Concentrations> concentrations;
 	    concentrations.resize(residualSize);
             Tucuxi::Core::TimeOffsets times;
@@ -142,6 +146,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
                             event,
                             inResiduals,
                             (_nbPoints - 1 ) * nbCycles + 1,
+			    isAll,
                             outResiduals,
                             true);
 
@@ -168,6 +173,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
                 Tucuxi::Core::IConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::ConcentrationCalculator();
                 concentrationCalculator->computeConcentrations(
                             predictionPtr,
+			    isAll,
                             _nbPoints,
                             intakeSeries,
                             _parameters);
@@ -205,6 +211,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
             CalculatorClass calculator;
 
             int nbPoints = 201;
+	    bool isAll = false;
 
             DateTime now;
             Tucuxi::Common::Duration offsetTime = 0s;
@@ -226,6 +233,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
                 Tucuxi::Core::IConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::ConcentrationCalculator();
                 concentrationCalculator->computeConcentrations(
                             predictionPtr,
+			    isAll,
                             nbPoints,
                             intakeSeries,
                             _parameters);
@@ -256,6 +264,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
                 Tucuxi::Core::IConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::ConcentrationCalculator();
                 if (Tucuxi::Core::IConcentrationCalculator::ComputationResult::Success != concentrationCalculator->computeConcentrationsAtTimes(
                             concentrations,
+			    isAll,
                             intakeSeries,
                             _parameters,
                             sampleSeries))
