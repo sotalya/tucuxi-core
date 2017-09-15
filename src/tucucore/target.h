@@ -10,9 +10,27 @@
 #include "tucucore/timedevent.h"
 #include "tucucore/drugdefinitions.h"
 #include "tucucore/drugmodel/targetdefinition.h"
+#include "tucucommon/duration.h"
 
 namespace Tucuxi {
 namespace Core {
+
+
+class Target
+{
+    TargetType m_targetType;
+    Value m_valueMin;
+    Value m_valueMax;
+    Value m_valueBest;
+    Tucuxi::Common::Duration m_tMin;
+    Tucuxi::Common::Duration m_tMax;
+    Tucuxi::Common::Duration m_tBest;
+
+};
+
+
+typedef std::vector<Target*> Targets;
+
 
 
 class SubTarget : public IndividualValue<SubTargetDefinition>
@@ -25,10 +43,13 @@ public:
 
 };
 
-class Target
+
+class TargetEvent : public TimedEvent
 {
+
 public:
-    Target(const TargetDefinition& _targetDef) :
+    TargetEvent(const TargetDefinition& _targetDef, const DateTime& _date) :
+        TimedEvent(_date),
         m_targetDefinition(_targetDef),
         m_valueMin(_targetDef.getCMin()),
         m_valueMax(_targetDef.getCMin()),
@@ -49,13 +70,6 @@ protected:
     SubTarget m_tMax;
     SubTarget m_tBest;
 
-};
-
-
-typedef std::vector<Target*> Targets;
-
-class TargetEvent : public TimedEvent
-{
 };
 
 typedef std::vector<TargetEvent> TargetSeries;

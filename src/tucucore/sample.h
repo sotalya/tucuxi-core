@@ -9,12 +9,24 @@
 
 #include "tucucore/timedevent.h"
 #include "tucucore/definitions.h"
+#include "tucucore/drugdefinitions.h"
 
 namespace Tucuxi {
 namespace Core {
 
 class Sample
 {
+public:
+    Sample(DateTime _date, Value _value, Unit _unit);
+
+    DateTime getDate() const;
+    Value getValue() const;
+    Unit getUnit() const;
+
+protected:
+    DateTime m_date;
+    Value m_value;
+    Unit m_unit;
 };
 
 typedef std::vector<Sample> Samples;

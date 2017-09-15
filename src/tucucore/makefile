@@ -41,6 +41,7 @@ SOURCES := \
            parametersextractor.cpp \
            pkmodel.cpp \
 		   residualerrormodel.cpp \
+		   sample.cpp \
            sampleextractor.cpp \
            targetextractor.cpp \
            threecompartmentbolus.cpp \
