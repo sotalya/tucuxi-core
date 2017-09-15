@@ -24,6 +24,8 @@ class DrugModel
 public:
     DrugModel();
 
+    void setTimeToSteadyState(Tucuxi::Common::Duration _time) { m_timeToSteadyState = _time;}
+
     const CovariateDefinitions &getCovariates() const;
     const FormulationAndRoutes& getFormulationAndRoutes() const { return m_formulationAndRoutes; }
 
@@ -42,19 +44,19 @@ public:
 
 
 
-    void setDomain(std::unique_ptr<DrugModelDomain>& _domain) {m_domain = std::move(_domain);}
+    void setDomain(std::unique_ptr<DrugModelDomain> _domain) {m_domain = std::move(_domain);}
+
+    void setAnalyteSet(std::unique_ptr<AnalyteSet> _analyteSet) { m_analyteSets.push_back(std::move(_analyteSet));}
 
 private:
 
-    std::vector< std::unique_ptr<AnalyteSet > > m_analyteGroups;
+    Tucuxi::Common::Duration m_timeToSteadyState;
+
+    std::vector< std::unique_ptr<AnalyteSet > > m_analyteSets;
 
     std::unique_ptr<DrugModelDomain> m_domain;
 
     FormulationAndRoutes m_formulationAndRoutes;
-
-
-//    Correlations m_dispositionParametersCorrelations;
-
 
     CovariateDefinitions m_covariates;
 

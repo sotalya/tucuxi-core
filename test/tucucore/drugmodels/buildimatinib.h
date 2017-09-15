@@ -27,7 +27,7 @@ public:
         { OperationInput("age", InputType::DOUBLE)});
         std::unique_ptr<DrugModelDomain> drugDomain(new DrugModelDomain(std::unique_ptr<Operation>(constraint)));
 
-        model->setDomain(drugDomain);
+        model->setDomain(std::move(drugDomain));
 
 
         model->addCovariate(
@@ -252,6 +252,8 @@ public:
 
             model->addFormulationAndRoute(std::move(formulationAndRoute));
         }
+
+        model->setAnalyteSet(std::move(analyteSet));
 
         return model;
 
