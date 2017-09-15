@@ -10,7 +10,7 @@
 #include <Eigen/Dense>
 
 #include "deriv.h"
-#include "sample.h"
+#include "sampleevent.h"
 #include "dosage.h"
 #include "parameter.h"
 

@@ -4,7 +4,7 @@
 
 #include <memory>
 
-#include "tucucore/drugtreatment.h"
+#include "tucucore/drugtreatment/drugtreatment.h"
 
 namespace Tucuxi {
 namespace Core {

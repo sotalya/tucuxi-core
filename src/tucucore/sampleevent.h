@@ -2,8 +2,8 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
-#ifndef TUCUXI_CORE_SAMPLE_H
-#define TUCUXI_CORE_SAMPLE_H
+#ifndef TUCUXI_CORE_SAMPLEEVENT_H
+#define TUCUXI_CORE_SAMPLEEVENT_H
 
 #include <vector>
 
@@ -14,22 +14,6 @@
 namespace Tucuxi {
 namespace Core {
 
-class Sample
-{
-public:
-    Sample(DateTime _date, Value _value, Unit _unit);
-
-    DateTime getDate() const;
-    Value getValue() const;
-    Unit getUnit() const;
-
-protected:
-    DateTime m_date;
-    Value m_value;
-    Unit m_unit;
-};
-
-typedef std::vector<Sample> Samples;
 
 class SampleEvent : public TimedEvent
 {
@@ -57,4 +41,4 @@ typedef std::vector<SampleEvent> SampleSeries;
 }
 }
 
-#endif // TUCUXI_CORE_SAMPLE_H
+#endif // TUCUXI_CORE_SAMPLEEVENT_H

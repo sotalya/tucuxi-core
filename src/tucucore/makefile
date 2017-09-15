@@ -19,13 +19,15 @@ SOURCES := \
            drugmodel/targetdefinition.cpp \
 		   drugmodel/validdose.cpp \
 		   drugmodel/validduration.cpp \
+		   drugtreatment/drugtreatment.cpp \
+		   drugtreatment/sample.cpp \
+		   drugtreatment/target.cpp \
 		   aposteriorietascalculator.cpp \
            cachedexponentials.cpp \
            concentrationcalculator.cpp \
            corecomponent.cpp \
            covariateextractor.cpp \
            dosage.cpp \
-           drugtreatment.cpp \
            hardcodedoperation.cpp \
            intakeextractor.cpp \
            intakeintervalcalculator.cpp \
@@ -41,8 +43,9 @@ SOURCES := \
            parametersextractor.cpp \
            pkmodel.cpp \
 		   residualerrormodel.cpp \
-		   sample.cpp \
+		   sampleevent.cpp \
            sampleextractor.cpp \
+		   targetevent.cpp \
            targetextractor.cpp \
            threecompartmentbolus.cpp \
            threecompartmentextra.cpp \

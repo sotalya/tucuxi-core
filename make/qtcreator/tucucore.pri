@@ -23,12 +23,10 @@ HEADERS += \
     $$PWD/../../src/tucucore/corecomponent.h \
     $$PWD/../../src/tucucore/covariate.h \
     $$PWD/../../src/tucucore/covariateextractor.h \
-    $$PWD/../../src/tucucore/drugtreatment.h \
     $$PWD/../../src/tucucore/idatamodelservices.h \
     $$PWD/../../src/tucucore/iprocessingservices.h \
     $$PWD/../../src/tucucore/parametersextractor.h \
     $$PWD/../../src/tucucore/residualerrormodel.h \
-    $$PWD/../../src/tucucore/sample.h \
     $$PWD/../../src/tucucore/sampleextractor.h \
     $$PWD/../../src/tucucore/target.h \
     $$PWD/../../src/tucucore/targetextractor.h \
@@ -50,7 +48,12 @@ HEADERS += \
     $$PWD/../../src/tucucore/drugmodel/parameterdefinition.h \
     $$PWD/../../src/tucucore/drugmodel/targetdefinition.h \
     $$PWD/../../src/tucucore/drugmodel/validdose.h \
-    $$PWD/../../src/tucucore/drugmodel/validduration.h
+    $$PWD/../../src/tucucore/drugmodel/validduration.h \
+    $$PWD/../../src/tucucore/sampleevent.h \
+    $$PWD/../../src/tucucore/targetevent.h \
+    $$PWD/../../src/tucucore/drugtreatment/sample.h \
+    $$PWD/../../src/tucucore/drugtreatment/target.h \
+    $$PWD/../../src/tucucore/drugtreatment/drugtreatment.h
 
 SOURCES += \
     $$PWD/../../src/tucucore/drugmodel/drugmodel.cpp \
@@ -71,7 +74,6 @@ SOURCES += \
     $$PWD/../../src/tucucore/twocompartmentinfusion.cpp \
     $$PWD/../../src/tucucore/corecomponent.cpp \
     $$PWD/../../src/tucucore/covariateextractor.cpp \
-    $$PWD/../../src/tucucore/drugtreatment.cpp \
     $$PWD/../../src/tucucore/parameter.cpp \
     $$PWD/../../src/tucucore/parametersextractor.cpp \
     $$PWD/../../src/tucucore/sampleextractor.cpp \
@@ -92,4 +94,11 @@ SOURCES += \
     $$PWD/../../src/tucucore/drugmodel/targetdefinition.cpp \
     $$PWD/../../src/tucucore/drugmodel/validdose.cpp \
     $$PWD/../../src/tucucore/drugmodel/validduration.cpp \
-    $$PWD/../../src/tucucore/sample.cpp
+    $$PWD/../../src/tucucore/sampleevent.cpp \
+    $$PWD/../../src/tucucore/drugtreatment/sample.cpp \
+    $$PWD/../../src/tucucore/drugtreatment/drugtreatment.cpp \
+    $$PWD/../../src/tucucore/drugtreatment/target.cpp \
+    $$PWD/../../src/tucucore/targetevent.cpp
+
+DISTFILES += \
+    $$PWD/../../src/tucucore/makefile

@@ -5,7 +5,8 @@
 #ifndef TUCUXI_CORE_SAMPLEEXTRACTOR_H
 #define TUCUXI_CORE_SAMPLEEXTRACTOR_H
 
-#include "tucucore/sample.h"
+#include "tucucore/drugtreatment/sample.h"
+#include "tucucore/sampleevent.h"
 
 namespace Tucuxi {
 namespace Core {

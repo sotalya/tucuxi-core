@@ -5,7 +5,8 @@
 #ifndef TUCUXI_CORE_TARGETEXTRACTOR_H
 #define TUCUXI_CORE_TARGETEXTRACTOR_H
 
-#include "tucucore/target.h"
+#include "tucucore/drugtreatment/target.h"
+#include "tucucore/targetevent.h"
 
 namespace Tucuxi {
 namespace Core {

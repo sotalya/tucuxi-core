@@ -16,22 +16,6 @@ namespace Tucuxi {
 namespace Core {
 
 
-class Target
-{
-    TargetType m_targetType;
-    Value m_valueMin;
-    Value m_valueMax;
-    Value m_valueBest;
-    Tucuxi::Common::Duration m_tMin;
-    Tucuxi::Common::Duration m_tMax;
-    Tucuxi::Common::Duration m_tBest;
-
-};
-
-
-typedef std::vector<Target*> Targets;
-
-
 
 class SubTarget : public IndividualValue<SubTargetDefinition>
 {

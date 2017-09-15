@@ -6,7 +6,6 @@
 #define TUCUXI_ROOT_RESIDUALERRORMODEL_H
 
 #include "tucucore/definitions.h"
-#include "tucucore/sample.h"
 #include "tucucommon/general.h"
 
 namespace Tucuxi {

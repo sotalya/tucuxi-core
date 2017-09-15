@@ -9,7 +9,7 @@
 #include "parameter.h"
 #include "definitions.h"
 #include "residualerrormodel.h"
-#include "sample.h"
+#include "sampleevent.h"
 
 namespace Tucuxi {
 namespace Core {

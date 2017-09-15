@@ -7,7 +7,7 @@
 
 
 #include "tucucore/parameter.h"
-#include "tucucore/sample.h"
+#include "tucucore/sampleevent.h"
 #include "tucucore/dosage.h"
 #include "tucucore/iprocessingservices.h"
 

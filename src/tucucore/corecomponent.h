@@ -14,7 +14,7 @@
 #include "tucucore/definitions.h"
 #include "tucucore/residualerrormodel.h"
 #include "tucucore/dosage.h"
-#include "tucucore/sample.h"
+#include "tucucore/sampleevent.h"
 #include "tucucore/iprocessingservices.h"
 #include "tucucore/idatamodelservices.h"
 

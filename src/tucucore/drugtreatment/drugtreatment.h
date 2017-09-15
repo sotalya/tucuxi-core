@@ -7,8 +7,8 @@
 
 #include "tucucore/dosage.h"
 #include "tucucore/covariate.h"
-#include "tucucore/sample.h"
-#include "tucucore/target.h"
+#include "tucucore/drugtreatment/sample.h"
+#include "tucucore/drugtreatment/target.h"
 
 namespace Tucuxi {
 namespace Core {
