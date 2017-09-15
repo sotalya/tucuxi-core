@@ -15,21 +15,41 @@
 namespace Tucuxi {
 namespace Core {
 
-
+///
+/// \brief A target defined within a DrugTreatment
+/// It should be used to override the default DrugModel targets
+///
 class Target
 {
+
+    /// Id of the analyte on which applying the target
+    std::string m_analyteId;
+
+    /// Type of target
     TargetType m_targetType;
+
+    /// Target minimum acceptable value
     Value m_valueMin;
+
+    /// Target maximum acceptable value
     Value m_valueMax;
+
+    /// Target best value
     Value m_valueBest;
+
+    /// Target minimum time from last intake (for peak targets)
     Tucuxi::Common::Duration m_tMin;
+    /// Target maximum time from last intake (for peak targets)
     Tucuxi::Common::Duration m_tMax;
+    /// Target best time from last intake (for peak targets)
     Tucuxi::Common::Duration m_tBest;
 
 };
 
-
-typedef std::vector<Target*> Targets;
+///
+/// \brief Targets A simple vector of targets
+///
+typedef std::vector<std::unique_ptr<Target> > Targets;
 
 }
 }
