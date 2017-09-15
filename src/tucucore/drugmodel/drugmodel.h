@@ -17,17 +17,21 @@ namespace Tucuxi {
 namespace Core {
 
 
-
-
 class DrugModel
 {
 public:
     DrugModel();
 
-    void setTimeToSteadyState(Tucuxi::Common::Duration _time) { m_timeToSteadyState = _time;}
+    void setTimeToSteadyState(Tucuxi::Common::Duration _time);
 
-    const CovariateDefinitions &getCovariates() const;
-    const FormulationAndRoutes& getFormulationAndRoutes() const { return m_formulationAndRoutes; }
+    Tucuxi::Common::Duration getTimeToSteadyState() const;
+
+    void addCovariate(std::unique_ptr<CovariateDefinition> _covariate);
+
+    const CovariateDefinitions& getCovariates() const;
+
+
+    const FormulationAndRoutes& getFormulationAndRoutes() const;
 
     ///
     /// \brief getParameters
@@ -36,23 +40,23 @@ public:
     /// \param _formulationAndRoute
     /// \return
     ///
-    const ParameterDefinitions& getParameters(FormulationAndRoute _formulationAndRoute) const;
+    //const ParameterDefinitions& getParameters(FormulationAndRoute _formulationAndRoute) const;
 
-    void addFormulationAndRoute(std::unique_ptr<FormulationAndRoute> _formulationAndRoute) { m_formulationAndRoutes.push_back(std::move(_formulationAndRoute));}
-
-    void addCovariate(std::unique_ptr<CovariateDefinition> _covariate) { m_covariates.push_back(std::move(_covariate));}
+    void addFormulationAndRoute(std::unique_ptr<FormulationAndRoute> _formulationAndRoute);
 
 
 
-    void setDomain(std::unique_ptr<DrugModelDomain> _domain) {m_domain = std::move(_domain);}
 
-    void setAnalyteSet(std::unique_ptr<AnalyteSet> _analyteSet) { m_analyteSets.push_back(std::move(_analyteSet));}
+    void setDomain(std::unique_ptr<DrugModelDomain> _domain);
+
+    void setAnalyteSet(std::unique_ptr<AnalyteSet> _analyteSet);
+
 
 private:
 
     Tucuxi::Common::Duration m_timeToSteadyState;
 
-    std::vector< std::unique_ptr<AnalyteSet > > m_analyteSets;
+    std::vector< std::unique_ptr<AnalyteSet> > m_analyteSets;
 
     std::unique_ptr<DrugModelDomain> m_domain;
 
@@ -61,7 +65,6 @@ private:
     CovariateDefinitions m_covariates;
 
     InterParameterSetCorrelations m_interParameterSetCorrelations;
-
 
 };
 

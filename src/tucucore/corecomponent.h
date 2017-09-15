@@ -91,6 +91,7 @@ private:
         const ParameterSetSeries& _parameters,
         const Etas& _etas)
     {
+        TMP_UNUSED_PARAMETER(_etas);
         return computeConcentrations(_prediction, _isAll, _nbPoints, _intakes, _parameters);
     }
 
