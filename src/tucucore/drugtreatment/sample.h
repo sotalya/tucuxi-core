@@ -29,7 +29,7 @@ protected:
     Unit m_unit;
 };
 
-typedef std::vector<Sample> Samples;
+typedef std::vector<std::unique_ptr<Sample> > Samples;
 
 }
 }

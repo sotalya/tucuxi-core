@@ -18,7 +18,9 @@ HEADERS += \
     ../../../test/tucucore/test_pkmodel.h \
     ../../../test/tucucore/test_operablegraphmanager.h \
     ../../../test/tucucore/test_operation.h \
-    ../../../test/tucucore/test_nonmemdrugs.h
+    ../../../test/tucucore/test_nonmemdrugs.h \
+    ../../../test/tucucore/drugmodels/buildimatinib.h \
+    ../../../test/tucucore/drugmodels/drugmodelbuilder.h
 
 SOURCES += \
     ../../../test/tucucore/tests.cpp
