@@ -35,7 +35,7 @@ IPercentileCalculator::ProcessingResult MonteCarloPercentileCalculatorBase::comp
         const IResidualErrorModel &_residualErrorModel,
         const PercentileRanks &_percentileRanks,
         const std::vector<Etas> _etas,
-        const EigenVector _epsilons,
+        const std::vector<Deviations> _epsilons,
         int _curvelength,
         ProcessingAborter *_aborter)
 {
@@ -221,10 +221,15 @@ IPercentileCalculator::ProcessingResult AprioriMonteCarloPercentileCalculator::c
      * Generating the random numbers
      */
     EigenMatrix rands = EigenMatrix::Zero(nbPatients, omegaRank);
-    EigenVector epsilons = EigenVector::Zero(nbPatients);
+    
+    /* TODO: 
+    The size of vector epsilons can be changed depends on the implementation
+    Currently, epsilons[1][nbPatients] is initialised with normalised random number.
+    */
+    std::vector<Deviations> epsilons(1, Deviations(nbPatients, var_nor())); 
 
     for (int row = 0; row < rands.rows(); ++row) {
-        epsilons(row) = var_nor();
+        //epsilons(0, (row))= var_nor();
 
         for (int column = 0; column < rands.cols(); ++column) {
              rands(row, column) = var_nor();

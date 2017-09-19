@@ -152,7 +152,7 @@ protected:
             const IResidualErrorModel &_residualErrorModel,
             const PercentileRanks &_percentileRanks,
             const std::vector<Etas> _etas,
-            const EigenVector _epsilons,
+	    const std::vector<Deviations> _epsilons,
             int _curvelength,
             ProcessingAborter *_aborter);
 };
