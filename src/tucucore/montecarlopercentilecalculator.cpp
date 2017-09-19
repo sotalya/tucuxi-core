@@ -17,7 +17,7 @@ MonteCarloPercentileCalculatorBase::MonteCarloPercentileCalculatorBase()
 
 
 IPercentileCalculator::ProcessingResult MonteCarloPercentileCalculatorBase::computePredictionsAndSortPercentiles(
-        PercentilesPrediction _percentiles,
+        PercentilesPrediction &_percentiles,
         const int _nbPoints,
         const IntakeSeries &_intakes,
         const ParameterSetSeries &_parameters,
@@ -50,7 +50,7 @@ AprioriMonteCarloPercentileCalculator::AprioriMonteCarloPercentileCalculator()
 }
 
 IPercentileCalculator::ProcessingResult AprioriMonteCarloPercentileCalculator::calculate(
-        PercentilesPrediction _percentiles,
+        PercentilesPrediction &_percentiles,
         const int _nbPoints,
         const IntakeSeries &_intakes,
         const ParameterSetSeries &_parameters,
@@ -78,7 +78,7 @@ IPercentileCalculator::ProcessingResult AprioriMonteCarloPercentileCalculator::c
 
 
 IPercentileCalculator::ProcessingResult AposterioriMonteCarloPercentileCalculator::calculate(
-        PercentilesPrediction _percentiles,
+        PercentilesPrediction &_percentiles,
         const int _nbPoints,
         const IntakeSeries &_intakes,
         const ParameterSetSeries &_parameters,
@@ -106,7 +106,7 @@ IPercentileCalculator::ProcessingResult AposterioriMonteCarloPercentileCalculato
 
 
 IPercentileCalculator::ProcessingResult AposterioriNormalApproximationMonteCarloPercentileCalculator::calculate(
-        PercentilesPrediction _percentiles,
+        PercentilesPrediction &_percentiles,
         const int _nbPoints,
         const IntakeSeries &_intakes,
         const ParameterSetSeries &_parameters,

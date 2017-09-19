@@ -96,7 +96,7 @@ public:
         { OperationInput("V", InputType::DOUBLE),
                     OperationInput("sex", InputType::DOUBLE)});
 
-        std::unique_ptr<ParameterDefinition> PV(new Tucuxi::Core::ParameterDefinition("V", 347, opV, Tucuxi::Core::ParameterVariabilityType::None));
+        std::unique_ptr<ParameterDefinition> PV(new Tucuxi::Core::ParameterDefinition("V", 347, opV, Tucuxi::Core::ParameterVariability(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.629)));
         dispositionParameters->addParameter(PV);
         Operation *opCl = new JSOperation(" \
                                           theta1=CL; \
@@ -131,7 +131,7 @@ public:
                     OperationInput("age", InputType::DOUBLE),
                     OperationInput("gist", InputType::BOOL)});
 
-        std::unique_ptr<ParameterDefinition> PCL(new Tucuxi::Core::ParameterDefinition("CL", 15.106, opCl, Tucuxi::Core::ParameterVariabilityType::None));
+        std::unique_ptr<ParameterDefinition> PCL(new Tucuxi::Core::ParameterDefinition("CL", 15.106, opCl, Tucuxi::Core::ParameterVariability(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.356)));
         dispositionParameters->addParameter(PCL);
 
         dispositionParameters->addCorrelation(Correlation("CL", "V", 0.798));

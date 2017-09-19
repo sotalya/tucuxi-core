@@ -67,7 +67,7 @@ public:
     /// \param _aborter An aborter object allowing to abort the calculation
     /// \return The status of calculation
     virtual ProcessingResult calculate(
-            PercentilesPrediction _percentiles,
+            PercentilesPrediction &_percentiles,
             const int _nbPoints,
             const IntakeSeries &_intakes,
             const ParameterSetSeries &_parameters,
@@ -96,7 +96,7 @@ public:
     /// \param _aborter An aborter object allowing to abort the calculation
     /// \return The status of calculation
     virtual ProcessingResult calculate(
-            PercentilesPrediction _percentiles,
+            PercentilesPrediction &_percentiles,
             const int _nbPoints,
             const IntakeSeries &_intakes,
             const ParameterSetSeries &_parameters,
@@ -136,7 +136,7 @@ protected:
     /// \return The status of calculation
     ///
     ProcessingResult computePredictionsAndSortPercentiles(
-            PercentilesPrediction _percentiles,
+            PercentilesPrediction &_percentiles,
             const int _nbPoints,
             const IntakeSeries &_intakes,
             const ParameterSetSeries &_parameters,
@@ -175,7 +175,7 @@ public:
     /// \return The status of calculation
     ///
     ProcessingResult calculate(
-            PercentilesPrediction _percentiles,
+            PercentilesPrediction &_percentiles,
             const int _nbPoints,
             const IntakeSeries &_intakes,
             const ParameterSetSeries &_parameters,
@@ -209,7 +209,7 @@ public:
     /// \param _aborter An aborter object allowing to abort the calculation
     /// \return The status of calculation
     ProcessingResult calculate(
-            PercentilesPrediction _percentiles,
+            PercentilesPrediction &_percentiles,
             const int _nbPoints,
             const IntakeSeries &_intakes,
             const ParameterSetSeries &_parameters,
@@ -247,7 +247,7 @@ public:
     /// \param _aborter An aborter object allowing to abort the calculation
     /// \return The status of calculation
     ProcessingResult calculate(
-            PercentilesPrediction _percentiles,
+            PercentilesPrediction &_percentiles,
             const int _nbPoints,
             const IntakeSeries &_intakes,
             const ParameterSetSeries &_parameters,
