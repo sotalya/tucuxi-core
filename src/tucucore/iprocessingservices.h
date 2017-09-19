@@ -129,8 +129,14 @@ typedef std::unique_ptr<ConcentrationPrediction> ConcentrationPredictionPtr;
  
 class PercentilesPrediction
 {
+public:
+
+    const PercentileRanks getRanks() const { return m_ranks;}
+    const std::vector<TimeOffsets> getTimes() const { return m_times;}
+    const std::vector<Percentiles> getValues() const { return m_values;}
+
 private:
-    std::vector<int> m_times;
+    std::vector<TimeOffsets> m_times;
     PercentileRanks m_ranks;
     std::vector<Percentiles> m_values;
 };

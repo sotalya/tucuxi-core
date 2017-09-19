@@ -74,7 +74,6 @@ public:
             const OmegaMatrix& _omega,
             const IResidualErrorModel &_residualErrorModel,
             const Etas& _etas,
-            const SampleSeries &_samples,
             const PercentileRanks &_percentileRanks,
             ProcessingAborter *_aborter) = 0;
 };
@@ -155,7 +154,8 @@ protected:
 * Used to calculated Monte Carlo of population or apriori curves
 * The number of simulated curves is hardcoded to be 10,000
 */
-class AprioriMonteCarloPercentileCalculator : public MonteCarloPercentileCalculatorBase {
+class AprioriMonteCarloPercentileCalculator : public IAprioriPercentileCalculator,
+        public MonteCarloPercentileCalculatorBase {
 
 public:
 
@@ -183,7 +183,7 @@ public:
             const IResidualErrorModel &_residualErrorModel,
             const Etas& _initialEtas,
             const PercentileRanks &_percentileRanks,
-            ProcessingAborter *_aborter);
+            ProcessingAborter *_aborter) override;
 
 
 };

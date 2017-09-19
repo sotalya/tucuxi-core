@@ -12,13 +12,8 @@
 
 #include "tucucommon/general.h"
 
-#include "tucucore/dosage.h"
-#include "tucucore/intakeextractor.h"
-#include "tucucore/intakeintervalcalculator.h"
-#include "tucucore/concentrationcalculator.h"
-#include "tucucore/onecompartmentbolus.h"
-#include "tucucore/onecompartmentinfusion.h"
-#include "tucucore/onecompartmentextra.h"
+#include "tucucore/montecarlopercentilecalculator.h"
+#include "tucucore/residualerrormodel.h"
 
 struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalculator>
 {
@@ -27,7 +22,32 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
 
     void test1(const std::string& /* _testName */)
     {
+        // Simple test with imatinib values
 
+        Tucuxi::Core::PercentilesPrediction percentiles;
+        int nbPoints;
+        Tucuxi::Core::IntakeSeries intakeSeries;
+        Tucuxi::Core::ParameterSetSeries parameters;
+        Tucuxi::Core::OmegaMatrix omega;
+        Tucuxi::Core::SigmaResidualErrorModel residualErrorModel;
+        Tucuxi::Core::Etas etas;
+        Tucuxi::Core::PercentileRanks percentileRanks;
+        Tucuxi::Core::ProcessingAborter *aborter = nullptr;
+
+
+
+        Tucuxi::Core::AprioriMonteCarloPercentileCalculator calculator;
+
+        calculator.calculate(
+                    percentiles,
+                    nbPoints,
+                    intakeSeries,
+                    parameters,
+                    omega,
+                    residualErrorModel,
+                    etas,
+                    percentileRanks,
+                    aborter);
     }
 
 

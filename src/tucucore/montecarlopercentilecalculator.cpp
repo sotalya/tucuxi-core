@@ -44,6 +44,11 @@ IPercentileCalculator::ProcessingResult MonteCarloPercentileCalculatorBase::comp
     return ProcessingResult::Failure;
 }
 
+AprioriMonteCarloPercentileCalculator::AprioriMonteCarloPercentileCalculator()
+{
+
+}
+
 IPercentileCalculator::ProcessingResult AprioriMonteCarloPercentileCalculator::calculate(
         PercentilesPrediction _percentiles,
         const int _nbPoints,
