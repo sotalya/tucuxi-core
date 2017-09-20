@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <iomanip>
 #include <sstream>
+#include <iostream>
 
 #ifdef _WIN32
 
@@ -31,7 +32,8 @@ namespace Common {
 
 std::string SystemInfo::retrieveFingerPrint(MachineIdType _machineIdType)
 {
-    switch(_machineIdType) {
+    try {
+        switch (_machineIdType) {
         case MachineIdType::CPU:
             return retrieveCpu();
         case MachineIdType::MOTHERBOARD:
@@ -48,7 +50,13 @@ std::string SystemInfo::retrieveFingerPrint(MachineIdType _machineIdType)
             return retrieveName();
         default:
             return std::string();
-    };
+        };
+    }
+    catch (const std::exception& e)
+    {
+        std::cout << "Error in CryptoHelper::hash: " << e.what() << std::endl;
+        return false;
+    }
 }
 
 std::string SystemInfo::retrieveCpu()
@@ -111,7 +119,7 @@ std::string SystemInfo::retrieveDisk()
     DWORD maxComponentLen = 0;
     DWORD fileSystemFlags = 0;
 
-    if (GetVolumeInformation("C:\\", // L"\\MyServer\MyShare\"
+    if (GetVolumeInformation("C:\\",
                              volumeName,
                              sizeof(volumeName),
                              &serialNumber,

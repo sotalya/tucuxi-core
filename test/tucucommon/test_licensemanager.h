@@ -45,22 +45,17 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
         }
 
         // Get hash from fingerprint
-        CryptoHelper::hash(m_fingerprint, &m_fingerprint);
+        CryptoHelper::hash(m_fingerprint, m_fingerprint);
 
         // Build Date
         DateTime dateToday;
 
-        std::string today = std::to_string(dateToday.year());
-        today += std::to_string(dateToday.month());
-        today += std::to_string(dateToday.day());
-
-        std::string endLicense1 = std::to_string(dateToday.year()+1);
-        endLicense1 += std::to_string(dateToday.month());
-        endLicense1 += std::to_string(dateToday.day());
-
-        std::string endLicense2 = std::to_string(dateToday.year()-1);
-        endLicense2 += std::to_string(dateToday.month());
-        endLicense2 += std::to_string(dateToday.day());
+        char today[9];
+        char endLicense1[9];
+        char endLicense2[9];
+        sprintf(today, "%i%02i%02i", dateToday.year(), dateToday.month(), dateToday.day());
+        sprintf(endLicense1, "%i%02i%02i", dateToday.year()+1, dateToday.month(), dateToday.day());
+        sprintf(endLicense2, "%i%02i%02i", dateToday.year()-1, dateToday.month(), dateToday.day());
 
         // Valid licens
         m_licenses[0] = "license:";
@@ -72,7 +67,7 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
         m_licenses[0] += ":";
         m_licenses[0] += today;
 
-        if(!Tucuxi::Common::CryptoHelper::encrypt(m_key, m_licenses[0], &m_licenses[0]))  {
+        if(!Tucuxi::Common::CryptoHelper::encrypt(m_key, m_licenses[0], m_licenses[0]))  {
             fructose_fail("Error encrypt failed.");
         }
 
@@ -86,7 +81,7 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
         m_licenses[1] += ":";
         m_licenses[1] += today;
 
-        if(!Tucuxi::Common::CryptoHelper::encrypt(m_key, m_licenses[1], &m_licenses[1]))  {
+        if(!Tucuxi::Common::CryptoHelper::encrypt(m_key, m_licenses[1], m_licenses[1]))  {
             fructose_fail("Error encrypt failed.");
         }
 
@@ -100,7 +95,7 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
         m_licenses[2] += ":";
         m_licenses[2] += today;
 
-        if(!Tucuxi::Common::CryptoHelper::encrypt(m_key, m_licenses[2], &m_licenses[2]))  {
+        if(!Tucuxi::Common::CryptoHelper::encrypt(m_key, m_licenses[2], m_licenses[2]))  {
             fructose_fail("Error encrypt failed.");
         }
 
@@ -114,7 +109,7 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
         m_licenses[3] += ":";
         m_licenses[3] += today;
 
-        if(!Tucuxi::Common::CryptoHelper::encrypt(m_key, m_licenses[3], &m_licenses[3]))  {
+        if(!Tucuxi::Common::CryptoHelper::encrypt(m_key, m_licenses[3], m_licenses[3]))  {
             fructose_fail("Error encrypt failed.");
         }
 
@@ -128,7 +123,7 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
         m_licenses[4] += ":";
         m_licenses[4] += endLicense1;
 
-        if(!Tucuxi::Common::CryptoHelper::encrypt(m_key, m_licenses[4], &m_licenses[4]))  {
+        if(!Tucuxi::Common::CryptoHelper::encrypt(m_key, m_licenses[4], m_licenses[4]))  {
             fructose_fail("Error encrypt failed.");
         }
 
@@ -142,7 +137,7 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
         m_licenses[5] += ":";
         m_licenses[5] += endLicense2;
 
-        if(!Tucuxi::Common::CryptoHelper::encrypt(m_key, m_licenses[5], &m_licenses[5]))  {
+        if(!Tucuxi::Common::CryptoHelper::encrypt(m_key, m_licenses[5], m_licenses[5]))  {
             fructose_fail("Error encrypt failed.");
         }
     }
@@ -178,17 +173,18 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
         id = Tucuxi::Common::SystemInfo::retrieveFingerPrint(Tucuxi::Common::MachineIdType::UNDEFINED);
         std::cout << "UNDEFINED : " << id << std::endl;
 
-        MachineId idfromMachine;
+        MachineIdType idType;
+        std::string hashedFingerprint;
         for (int i = int(MachineIdType::CPU); i != int(MachineIdType::UNDEFINED); i++) {
-            idfromMachine.m_fingerprint = SystemInfo::retrieveFingerPrint(static_cast<MachineIdType>(i));
+            hashedFingerprint = SystemInfo::retrieveFingerPrint(static_cast<MachineIdType>(i));
 
-            if(!idfromMachine.m_fingerprint.empty()) {
-                idfromMachine.m_type = static_cast<MachineIdType>(i);
+            if(!hashedFingerprint.empty()) {
+                idType = static_cast<MachineIdType>(i);
                 break;
             }
         }
 
-        fructose_assert(idfromMachine.m_type != MachineIdType::UNDEFINED);
+        fructose_assert(idType != MachineIdType::UNDEFINED);
     }
 
     void installNewLicense(const std::string& _testName)
@@ -205,15 +201,15 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
 
         // Generate a request to get a new license file
         std::string request;
-        res = Tucuxi::Common::LicenseManager::generateRequestString(&request);
+        res = Tucuxi::Common::LicenseManager::generateRequestString(request, "1.0");
         fructose_assert(res == Tucuxi::Common::LicenseError::REQUEST_SUCCESSFUL);
+        std::cout << "Request string: " << request << std::endl;
 
-        std::string test;
-        if(!Tucuxi::Common::CryptoHelper::decrypt(m_key, m_licenses[0], &test))  {
+        std::string decryptedRequest;
+        if(!Tucuxi::Common::CryptoHelper::decrypt(m_key, m_licenses[0], decryptedRequest))  {
             fructose_fail("Error encrypt failed.");
         }
-
-         std::cout << "Test : " << test << std::endl;
+        std::cout << "Decrypted request: " << decryptedRequest << std::endl;
 
         // Install a new license file
         res = Tucuxi::Common::LicenseManager::installLicense(m_licenses[0], fileName);
@@ -237,7 +233,7 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
         for(int i=1; i < 6; i++) {
 
             std::string test;
-            if(!Tucuxi::Common::CryptoHelper::decrypt(m_key, m_licenses[i], &test))  {
+            if(!Tucuxi::Common::CryptoHelper::decrypt(m_key, m_licenses[i], test))  {
                 fructose_fail("Error encrypt failed.");
             }
 

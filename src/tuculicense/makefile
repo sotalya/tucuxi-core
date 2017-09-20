@@ -8,8 +8,7 @@
 NAME := tuculicense
 TYPE := APP
 
-SOURCES := licensegenerator.cpp \
-           main.cpp
+SOURCES := main.cpp
 
 INCLUDES := ../../libs/spdlog-master-20170622/include \
             ../../libs/date-master-20170711 \
