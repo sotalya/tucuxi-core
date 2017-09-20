@@ -12,24 +12,88 @@
 
 #include <string.h>
 
+#include "tucucommon/datetime.h"
+#include "tucucommon/duration.h"
 #include "tucucommon/systeminfo.h"
 
 namespace Tucuxi {
 namespace Common {
 
 enum class LicenseError {
-    VALID_LICENSE = 1,
     INVALID_LICENSE = 0,
-    REQUEST_SUCCESSFUL = 0,
-    INSTALLATION_SUCCESSFUL = 0,
+    VALID_LICENSE = 1,
+    REQUEST_SUCCESSFUL = 1,
+    INSTALLATION_SUCCESSFUL = 1,
     MISSING_LICENSE_FILE = -1,
     ERROR_CRYPTO = -2,
-    NO_MACHINE_ID_FOUND = -3
+    FINGERPRINT_ERROR = -3
 };
 
-struct MachineId {
-    std::string m_fingerprint;
-    MachineIdType m_type;
+enum class LicenseRequestError {
+    REQUEST_SUCCESSFUL = 0,
+    INVALID_REQUEST = -1,
+    ERROR_CRYPTO = -2
+};
+
+class StringBasedData
+{
+public:
+    StringBasedData() {}
+    const std::string& getKeyword() { return m_keyword; }
+
+protected:
+    bool extract(std::string& _license, std::string &_value) const;
+    bool extract(std::string& _license, int &_value) const;
+
+protected:
+    std::string m_keyword;
+};
+
+class LicenseRequest : public StringBasedData
+{
+public:
+    LicenseRequest() {}
+    LicenseRequest(MachineIdType _type, const std::string& _hashedFingerprint, const DateTime& _date, const std::string& _version);
+
+public:
+    bool fromString(const std::string& _strLisence);
+    std::string toString() const;
+
+public:
+    MachineIdType getIdType() const                     { return static_cast<MachineIdType>(m_type); }
+    const std::string& getHashedFingerprint() const     { return m_hashedFingerprint; }
+    int getDate() const                                 { return m_date; }
+    const std::string& getVersion() const               { return m_version; }
+
+private:
+    int m_type;                         // Provided by enum class MachineIdType.
+    std::string m_hashedFingerprint;    // It is a unique id that identifies the machine.
+    int m_date;                         // Date of request.
+    std::string m_version;              // Version of Tucuxi.
+};
+
+class License : public StringBasedData
+{
+public:
+    License() {}
+    License(const LicenseRequest& _request, const DateTime& _endDate);
+
+public:
+    bool fromString(const std::string& _strLisence);
+    std::string toString() const;
+
+    void update();
+
+    MachineIdType getIdType() const                     { return static_cast<MachineIdType>(m_type); }
+    const std::string& getHashedFingerprint() const     { return m_hashedFingerprint; }
+    int getValidityDate() const                         { return m_validityDate; }
+    int getLastUsedDate() const                         { return m_lastUsedDate; }
+
+private:
+    int m_type;                       // Provided by enum class MachineIdType
+    std::string m_hashedFingerprint;  // It is a unique id that identifies the machine
+    int m_validityDate;               // Date of validity
+    int m_lastUsedDate;               // Date of the last use
 };
 
 /// \ingroup LicenseManager
@@ -58,37 +122,56 @@ struct MachineId {
 ///
 class LicenseManager
 {
-public:
-
+// -------------------------------------------------------
+// Methods used by the application
+public: 
     /// \brief Check if license file is valid.
     /// \param _filename : full path of license file.
     /// \return VALID_LICENSE or INVALID_LICENSE, In case of error : MISSING_LICENSE_FILE, ERROR_CRYPTO.
-    static LicenseError checkLicenseFile(std::string _filename);
+    static LicenseError checkLicenseFile(const std::string &_filename);
 
     /// \brief Check if license is valid and install it in license file.
     /// \param _license  : encrypt string provided by the server.
     /// \param _filename : full path of license file.
     /// \return INSTALLATION_SUCCESSFUL, In case of error : INVALID_LICENSE, MISSING_LICENSE_FILE, ERROR_CRYPTO.
-    static LicenseError installLicense(std::string _license, std::string _filename);
+    static LicenseError installLicense(const std::string &_license, const std::string &_filename);
 
 
     /// \brief Return a request to be sent to the server.
     /// \param _request : encrypt string.
     /// \return REQUEST_SUCCESSFUL, In case of error : NO_MACHINE_ID_FOUND, ERROR_CRYPTO.
-    static LicenseError generateRequestString(std::string* _request);
+    static LicenseError generateRequestString(std::string& _request, const std::string& _version);
 
-private:
 
     /// \brief Check if license is valid.
     /// \param _request : encrypt string.
     /// \return VALID_LICENSE or INVALID_LICENSE, In case of error : ERROR_CRYPTO.
-    static LicenseError checklicense(std::string _request);
+    static LicenseError checklicense(const std::string &_request);
 
+// -------------------------------------------------------
+// Methods used by the server
+public: 
+    /// \brief Decrypt and return plain request.
+    /// @param _encryptedRequest : encrypted request from application.
+    /// @param _plainRequest : request from application.
+    /// @return 0 in case of Success, -1 otherwise.
+    static LicenseRequestError decryptRequest(const std::string &_encryptedRequest, LicenseRequest& _request);
+
+    /// \brief Return a license to be sent to the application.
+    /// @param _request : request from application.
+    /// @return license, in case of error : an empty string.
+    static LicenseRequestError generateLicense(const LicenseRequest &_request, std::string& _license, const Duration& _duration);
+
+
+private:
     /// \brief Update the field of Last used date file.
     /// \param _license  : encrypt string provided by the server.
     /// \param _filename : full path of license file.
     /// \return INSTALLATION_SUCCESSFUL, In case of error : INVALID_LICENSE, MISSING_LICENSE_FILE, ERROR_CRYPTO.
-    static LicenseError rewriteLicense(std::string _license, std::string _filename);
+    static LicenseError rewriteLicense(const std::string &_license, const std::string &_filename);
+
+
+    static bool getHashedFingerprint(MachineIdType &idType, std::string& _hashedFingerprint);
 
 private:
     static const std::string m_key;

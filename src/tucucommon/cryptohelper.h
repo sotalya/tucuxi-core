@@ -26,10 +26,10 @@ namespace Common {
 class CryptoHelper
 {
 public:
-    static bool generateKey(std::string* _key);
-    static bool hash(std::string plaintext, std::string* result);
-    static bool encrypt(std::string _key, std::string plaintext, std::string* result);
-    static bool decrypt(std::string _key, std::string cyphertext, std::string* result);
+    static bool generateKey(std::string& _key);
+    static bool hash(const std::string& plaintext, std::string& result);
+    static bool encrypt(const std::string& _key, const std::string& plaintext, std::string& result);
+    static bool decrypt(const std::string& _key, const std::string& cyphertext, std::string& result);
 };
 
 }

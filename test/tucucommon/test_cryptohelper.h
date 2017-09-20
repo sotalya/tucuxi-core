@@ -25,7 +25,7 @@ struct TestCryptoHelper : public fructose::test_base<TestCryptoHelper>
         bool res;
 
         std::string key;
-        res = Tucuxi::Common::CryptoHelper::generateKey(&key);
+        res = Tucuxi::Common::CryptoHelper::generateKey(key);
         std::cout << "Key: " << key << std::endl;
 
         fructose_assert(res == true);
@@ -34,7 +34,7 @@ struct TestCryptoHelper : public fructose::test_base<TestCryptoHelper>
         std::cout << "ID : " << credential << std::endl;
 
         std::string hashId;
-        res = Tucuxi::Common::CryptoHelper::hash(credential, &hashId);
+        res = Tucuxi::Common::CryptoHelper::hash(credential, hashId);
         std::cout << "SHA-1: " << hashId << std::endl;
 
         fructose_assert(res == true);
@@ -42,13 +42,13 @@ struct TestCryptoHelper : public fructose::test_base<TestCryptoHelper>
         std::string test = "Hey !! How are you ? I am an example =)";
 
         std::string secret;
-        res = Tucuxi::Common::CryptoHelper::encrypt(key, test, &secret);
+        res = Tucuxi::Common::CryptoHelper::encrypt(key, test, secret);
         std::cout << "Secret: " << secret << std::endl;
 
         fructose_assert(res == true);
 
         std::string plaintext;
-        Tucuxi::Common::CryptoHelper::decrypt(key, secret, &plaintext);
+        Tucuxi::Common::CryptoHelper::decrypt(key, secret, plaintext);
         std::cout << "Plaintext: " << plaintext << std::endl;
 
         fructose_assert(test == plaintext);
