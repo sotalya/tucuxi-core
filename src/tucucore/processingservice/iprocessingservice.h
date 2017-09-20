@@ -34,8 +34,9 @@ public:
     /// \param _request The request containing all information required for the computation
     /// \param _response The result of the computation
     /// \return Success if everything went well with the computation, Error else
+    /// The response is a reference to a unique pointer that has to be allocated within compute()
     ///
-    ProcessingResult compute(const ProcessingRequest &_request, ProcessingResponse &_response);
+    ProcessingResult compute(const ProcessingRequest &_request, std::unique_ptr<ProcessingResponse> &_response);
 
     ///
     /// \brief returns a description of the last error in case of failed computation

@@ -22,6 +22,10 @@ SOURCES := \
 		   drugtreatment/drugtreatment.cpp \
 		   drugtreatment/sample.cpp \
 		   drugtreatment/target.cpp \
+		   processingservice/iprocessingservice.cpp \
+		   processingservice/processingrequest.cpp \
+		   processingservice/processingresponse.cpp \
+		   processingservice/processingtrait.cpp \
 		   aposteriorietascalculator.cpp \
            cachedexponentials.cpp \
            concentrationcalculator.cpp \

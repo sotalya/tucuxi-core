@@ -19,18 +19,18 @@ class ProcessingRequest
 {
 public:
     ProcessingRequest(
-            std::string _id,
+            RequestResponseId _id,
             const DrugModel& _drugModel,
             const DrugTreatment& _drugTreatment,
             const ProcessingTraits& _processingTraits);
 
-    std::string getId() const;
+    RequestResponseId getId() const;
     const DrugModel& getDrugModel() const;
     const DrugTreatment& getDrugTreatment() const;
     const ProcessingTraits& getProcessingTraits() const;
 
 protected:
-    std::string m_id;
+    RequestResponseId m_id;
     const DrugModel &m_drugModel;
     const DrugTreatment &m_drugTreatment;
     const ProcessingTraits & m_processingTraits;

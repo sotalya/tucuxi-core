@@ -60,9 +60,7 @@ public:
         int _nbPoints) :
         PredictionRequest(_type, _isAll, _start, _end, _nbPoints) {}
 };
- 
-typedef int PercentileRank;
-typedef std::vector<PercentileRank> PercentileRanks;
+
 typedef Value Percentile;
 typedef std::vector<Percentile> Percentiles;
  

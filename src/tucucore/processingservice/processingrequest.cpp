@@ -11,7 +11,7 @@ namespace Core {
 
 
 
-ProcessingRequest::ProcessingRequest(std::string _id,
+ProcessingRequest::ProcessingRequest(RequestResponseId _id,
         const DrugModel& _drugModel,
         const DrugTreatment& _drugTreatment,
         const ProcessingTraits& _processingTraits) :
@@ -23,7 +23,7 @@ ProcessingRequest::ProcessingRequest(std::string _id,
 
 }
 
-std::string ProcessingRequest::getId() const
+RequestResponseId ProcessingRequest::getId() const
 {
     return m_id;
 }

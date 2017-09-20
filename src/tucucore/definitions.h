@@ -55,6 +55,14 @@ typedef Value Concentration;
 typedef std::vector<Concentration> Concentrations;
 
 /// \ingroup TucuCore
+/// Percentile rank, between 0.0 and 100.0
+typedef double PercentileRank;
+
+/// \ingroup TucuCore
+/// Vector of percentile ranks, each one being between 0.0 and 100.0
+typedef std::vector<PercentileRank> PercentileRanks;
+
+/// \ingroup TucuCore
 /// \brief Way a dose is administered.
 enum class AbsorptionModel { INTRAVASCULAR, EXTRAVASCULAR, INFUSION };
 
@@ -82,6 +90,10 @@ typedef std::vector<Concentration> Residuals;
 /// \ingroup TucuCore
 /// \brief The number of points in the cycle.
 typedef int CycleSize;
+
+/// \ingroup TucuCore
+/// \brief A type representing the Identifier of ProcessingRequests and ProcessingResponses
+typedef int RequestResponseId;
 
 /// \ingroup TucuCore
 /// \brief A structure to store precomputed exponentials.
