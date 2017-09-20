@@ -9,7 +9,7 @@
 #include "tucucore/parameter.h"
 #include "tucucore/dosage.h"
 #include "tucucore/residualerrormodel.h"
-#include "tucucore/sample.h"
+#include "tucucore/sampleevent.h"
 
 // For ConcentrationPredictionPtr. This class should be declared somewhere else
 #include "tucucore/iprocessingservices.h"

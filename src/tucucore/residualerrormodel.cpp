@@ -4,7 +4,7 @@
 
 #include "tucucore/residualerrormodel.h"
 #include "tucucore/definitions.h"
-#include "tucucore/sample.h"
+#include "tucucore/sampleevent.h"
 #include "tucucommon/general.h"
 
 namespace Tucuxi {

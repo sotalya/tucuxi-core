@@ -129,10 +129,39 @@ typedef std::unique_ptr<ConcentrationPrediction> ConcentrationPredictionPtr;
  
 class PercentilesPrediction
 {
-private:
-    std::vector<int> m_times;
+public:
+
+    bool streamToFile(const std::string _fileName) {
+        std::ofstream ostrm(_fileName, std::ios::binary);
+        if (ostrm.rdstate() & std::ios_base::failbit)
+            return false;
+
+        int nbCycles = this->m_times.size();
+        double offset = 0.0;
+        for(int cycle = 0; cycle < nbCycles; cycle ++) {
+            const Tucuxi::Core::TimeOffsets times = getTimes()[cycle];
+            int nbPoints = times.size();
+            for(int i = 0; i < nbPoints - 1; i++) {
+
+                ostrm << (times[i]) + offset << " ";
+                for(unsigned int perc = 0; perc < m_values.size() ; perc ++) {
+                    ostrm << m_values[perc][cycle][i] << " ";
+                }
+                ostrm << std::endl;
+            }
+            offset += times[nbPoints - 1];
+        }
+        return true;
+    }
+
+    const PercentileRanks getRanks() const { return m_ranks;}
+    const std::vector<TimeOffsets> getTimes() const { return m_times;}
+    const std::vector<std::vector<Concentrations> > getValues() const { return m_values;}
+
+//private:
+    std::vector<TimeOffsets> m_times;
     PercentileRanks m_ranks;
-    std::vector<Percentiles> m_values;
+    std::vector<std::vector<Concentrations> > m_values;
 };
 typedef std::unique_ptr<PercentilesPrediction> PercentilesPredictionPtr;
  

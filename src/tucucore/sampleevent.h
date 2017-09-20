@@ -2,22 +2,18 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
-#ifndef TUCUXI_CORE_SAMPLE_H
-#define TUCUXI_CORE_SAMPLE_H
+#ifndef TUCUXI_CORE_SAMPLEEVENT_H
+#define TUCUXI_CORE_SAMPLEEVENT_H
 
 #include <vector>
 
 #include "tucucore/timedevent.h"
 #include "tucucore/definitions.h"
+#include "tucucore/drugdefinitions.h"
 
 namespace Tucuxi {
 namespace Core {
 
-class Sample
-{
-};
-
-typedef std::vector<Sample> Samples;
 
 class SampleEvent : public TimedEvent
 {
@@ -45,4 +41,4 @@ typedef std::vector<SampleEvent> SampleSeries;
 }
 }
 
-#endif // TUCUXI_CORE_SAMPLE_H
+#endif // TUCUXI_CORE_SAMPLEEVENT_H

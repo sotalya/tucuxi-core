@@ -9,14 +9,25 @@ NAME := tucucore
 TYPE := LIB
 
 # Let's keep it in alphabetical order
-SOURCES := aposteriorietascalculator.cpp \
+SOURCES := \
+           drugmodel/activesubstance.cpp \
+           drugmodel/analyte.cpp \
+           drugmodel/drugmodel.cpp \
+           drugmodel/drugmodeldomain.cpp \
+           drugmodel/formulationandroute.cpp \
+           drugmodel/parameterdefinition.cpp \
+           drugmodel/targetdefinition.cpp \
+		   drugmodel/validdose.cpp \
+		   drugmodel/validduration.cpp \
+		   drugtreatment/drugtreatment.cpp \
+		   drugtreatment/sample.cpp \
+		   drugtreatment/target.cpp \
+		   aposteriorietascalculator.cpp \
            cachedexponentials.cpp \
            concentrationcalculator.cpp \
            corecomponent.cpp \
            covariateextractor.cpp \
            dosage.cpp \
-           drugmodel.cpp \
-           drugtreatment.cpp \
            hardcodedoperation.cpp \
            intakeextractor.cpp \
            intakeintervalcalculator.cpp \
@@ -32,7 +43,9 @@ SOURCES := aposteriorietascalculator.cpp \
            parametersextractor.cpp \
            pkmodel.cpp \
 		   residualerrormodel.cpp \
+		   sampleevent.cpp \
            sampleextractor.cpp \
+		   targetevent.cpp \
            targetextractor.cpp \
            threecompartmentbolus.cpp \
            threecompartmentextra.cpp \

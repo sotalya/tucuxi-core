@@ -2,8 +2,10 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
-#ifndef TUCUXI_CORE_TARGETEVENT_H
-#define TUCUXI_CORE_TARGETEVENT_H
+#ifndef TARGETDEFINITION_H
+#define TARGETDEFINITION_H
+
+
 
 #include <vector>
 
@@ -31,7 +33,7 @@ enum class TargetType {
     Peak,
     Mean,
     Auc,
-    FullAuc
+    CumulativeAuc
 };
 
 
@@ -43,19 +45,19 @@ public:
     {}
 
     TargetDefinition(TargetType _type,
-                     SubTargetDefinition *_valueMin,
-                     SubTargetDefinition *_valueMax,
-                     SubTargetDefinition *_valueBest,
-                     SubTargetDefinition *_tMin,
-                     SubTargetDefinition *_tMax,
-                     SubTargetDefinition *_tBest) :
+                     std::unique_ptr<SubTargetDefinition> _valueMin,
+                     std::unique_ptr<SubTargetDefinition> _valueMax,
+                     std::unique_ptr<SubTargetDefinition> _valueBest,
+                     std::unique_ptr<SubTargetDefinition> _tMin,
+                     std::unique_ptr<SubTargetDefinition> _tMax,
+                     std::unique_ptr<SubTargetDefinition> _tBest) :
         m_targetType(_type),
-        m_valueMin(_valueMin),
-        m_valueMax(_valueMax),
-        m_valueBest(_valueBest),
-        m_tMin(_tMin),
-        m_tMax(_tMax),
-        m_tBest(_tBest)
+        m_valueMin(std::move(_valueMin)),
+        m_valueMax(std::move(_valueMax)),
+        m_valueBest(std::move(_valueBest)),
+        m_tMin(std::move(_tMin)),
+        m_tMax(std::move(_tMax)),
+        m_tBest(std::move(_tBest))
     {
 
     }
@@ -83,51 +85,8 @@ public:
 
 typedef std::vector<std::unique_ptr<TargetDefinition>> TargetDefinitions;
 
-class SubTarget : public IndividualValue<SubTargetDefinition>
-{
-public:
-
-    SubTarget(const SubTargetDefinition &_def) :
-        IndividualValue<SubTargetDefinition>(_def)
-    {}
-
-};
-
-class Target
-{
-public:
-    Target(const TargetDefinition& _targetDef) :
-        m_targetDefinition(_targetDef),
-        m_valueMin(_targetDef.getCMin()),
-        m_valueMax(_targetDef.getCMin()),
-        m_valueBest(_targetDef.getCMin()),
-        m_tMin(_targetDef.getCMin()),
-        m_tMax(_targetDef.getCMin()),
-        m_tBest(_targetDef.getCMin())
-    {}
-
-protected:
-
-    const TargetDefinition& m_targetDefinition;
-
-    SubTarget m_valueMin;
-    SubTarget m_valueMax;
-    SubTarget m_valueBest;
-    SubTarget m_tMin;
-    SubTarget m_tMax;
-    SubTarget m_tBest;
-
-};
-
-
-typedef std::vector<Target*> Targets;
-
-class TargetEvent : public TimedEvent
-{
-};
-
-typedef std::vector<TargetEvent> TargetSeries;
 }
 }
 
-#endif // TUCUXI_CORE_TARGETEVENT_H
+
+#endif // TARGETDEFINITION_H

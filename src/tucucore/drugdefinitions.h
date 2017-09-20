@@ -11,6 +11,12 @@ namespace Core {
 
 class Unit
 {
+public:
+    Unit() {}
+    Unit(std::string _unitString) { m_unitString = _unitString; }
+
+protected:
+    std::string m_unitString;
 
 };
 

@@ -2,9 +2,10 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
+#include "tucucore/drugmodel/drugmodel.h"
+
 #include "tucucore/corecomponent.h"
-#include "tucucore/drugmodel.h"
-#include "tucucore/drugtreatment.h"
+#include "tucucore/drugtreatment/drugtreatment.h"
 #include "tucucore/intakeextractor.h"
 #include "tucucore/covariateextractor.h"
 #include "tucucore/targetextractor.h"

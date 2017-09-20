@@ -14,7 +14,7 @@
 #include "tucucore/definitions.h"
 #include "tucucore/residualerrormodel.h"
 #include "tucucore/dosage.h"
-#include "tucucore/sample.h"
+#include "tucucore/sampleevent.h"
 #include "tucucore/iprocessingservices.h"
 #include "tucucore/idatamodelservices.h"
 
@@ -91,6 +91,7 @@ private:
         const ParameterSetSeries& _parameters,
         const Etas& _etas)
     {
+        TMP_UNUSED_PARAMETER(_etas);
         return computeConcentrations(_prediction, _isAll, _nbPoints, _intakes, _parameters);
     }
 
