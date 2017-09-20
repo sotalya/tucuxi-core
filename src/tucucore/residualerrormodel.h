@@ -36,6 +36,10 @@ public:
     /// \return The calculated likelihood
     virtual Value calculateSampleLikelihood(const Value _expected, const Value& _observed) const = 0;
 
+    /// \brief Returns the number of epsilons requested by a specific implementation
+    /// \return The number of epsilons requested by applyEpsToArray
+    virtual int nbEpsilons() const = 0;
+
 };
 
 class SigmaResidualErrorModel : public IResidualErrorModel
@@ -51,6 +55,8 @@ public:
         NONE
     };
 
+    SigmaResidualErrorModel() : m_nbEpsilons(1) {}
+
     void setSigma(Sigma _sigma) { m_sigma = _sigma;}
     void setErrorModel(ResidualErrorType _errorModel) { m_errorModel = _errorModel;}
     virtual bool isEmpty() const;
@@ -58,12 +64,17 @@ public:
 
     virtual Value calculateSampleLikelihood(const Value _expected, const Value& _observed) const;
 
+    virtual int nbEpsilons() const { return m_nbEpsilons; }
+
 protected:
     /// The Sigma vector
     Sigma m_sigma;
 
     /// The residual error model type
     ResidualErrorType m_errorModel;
+
+    /// Number of epsilons requested by applyEpsToArray()
+    int m_nbEpsilons;
 
 
 };
@@ -83,6 +94,8 @@ public:
         UNUSED_PARAMETER(_observed);
         return 0.0;
     };
+
+    virtual int nbEpsilons() const { return 0; }
 
 };
 
