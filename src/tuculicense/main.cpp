@@ -49,14 +49,14 @@ int main(int argc, char* argv[])
     }
     
     // Generate the license
-    std::cout << "Generate license" << std::endl;
+//    std::cout << "Generate license" << std::endl;
     std::string license;
     reqResult = LicenseManager::generateLicense(licenseRequest, license, Tucuxi::Common::Duration(24h * nbDays));
     if (reqResult != LicenseRequestError::REQUEST_SUCCESSFUL) {
         std::cout << "Error while generating license: " << (int)reqResult << std::endl;
         return -3;
     }
-    
+/*
     // Check the generated license
     std::cout << "Checking license" << std::endl;
     LicenseError licResult = LicenseManager::checklicense(license);
@@ -64,9 +64,9 @@ int main(int argc, char* argv[])
         std::cout << "Error while checking the generated license" << (int)licResult << std::endl;
         return -4;
     }
-    
+*/
     // Print out the generated license
-    std::cout << "License for " << nbDays << ":" << std::endl;
+//    std::cout << "License for " << nbDays << ":" << std::endl;
     std::cout << license << std::endl;
     
     return 0;

@@ -26,7 +26,6 @@ static const std::string LICENSEREQUEST_KEYWORD = "request";
 
 int dateToInt(const DateTime& _date) {
     char strDate[9];
-    //sprintf_s(strDate, "%i%02i%02i", _date.year(), _date.month(), _date.day());
     sprintf(strDate, "%i%02i%02i", _date.year(), _date.month(), _date.day());
     try {
         return std::stoi(strDate);
