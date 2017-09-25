@@ -59,8 +59,8 @@ if (strpos($license[0], 'Error') !== false) {
 }
 
 // Insert record into our database
-if ($error != "") {
-	$sql = "INSERT INTO requests (date, firstname, lastname, title, company, email, request, duration, license) VALUES ('" .$date. "', '" . $firstName . "', '" . $lastName . "', '" . $title . "', '" . $company . "', '" . $email . "', '" .$request . "', " . $duration . ", '" . $license . "')";
+if ($error == "") {
+	$sql = "INSERT INTO requests (date, firstname, lastname, title, company, email, request, duration, license) VALUES ('" .$date. "', '" . $firstName . "', '" . $lastName . "', '" . $title . "', '" . $company . "', '" . $email . "', '" .$request . "', " . $duration . ", '" . $license[0] . "')";
 	if ($conn->query($sql) !== TRUE) {
 	    $error =  "Error: " . $sql . "<br>" . $conn->error;
 	}
@@ -84,7 +84,7 @@ else {
 			<p class="alert alert-danger" role="alert"> 
 <?php
 	echo $error;
-?>			
+?>
 			</p> <hr class="my-4">
 			<p>Please contact our technical support for help: <a href="mailto:support@tucuxi.ch">support@tucuxi.ch</a></p>
 <?php
