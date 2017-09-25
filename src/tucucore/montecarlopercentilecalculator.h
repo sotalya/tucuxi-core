@@ -49,6 +49,15 @@ public:
 
     void setNumberPatients(const unsigned int _nbPatients) { m_nbPatients = _nbPatients; };
     unsigned int getNumberPatients() { return m_nbPatients; };
+    ///
+    /// \brief calculate
+    /// \param _intakes Intake series
+    /// \param _parameters Initial parameters series
+    /// \param _omega covariance matrix for inter-individual variability
+    /// \param _residualErrorModel Residual error model
+    /// \param _etas Etas pre-calculated by the aposteriori calculator
+    /// \param _samples List of samples
+    /// \param _subomega Result of this function, non-negative hessian matrix
     void calculateSubomega(
 	    const IntakeSeries &_intakes,
 	    const ParameterSetSeries &_parameters,

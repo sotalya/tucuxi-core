@@ -333,7 +333,7 @@ IPercentileCalculator::ProcessingResult AposterioriMonteCarloPercentileCalculato
     TMP_UNUSED_PARAMETER(_percentileRanks);
     TMP_UNUSED_PARAMETER(_aborter);
 
-    /* Return value from calculateSubomega */
+    /* Return value from non-negative hessian matrix */
     EigenMatrix subomega;
 
     /* calculate hessian metrix and subomega */
