@@ -49,6 +49,14 @@ public:
 
     void setNumberPatients(const unsigned int _nbPatients) { m_nbPatients = _nbPatients; };
     unsigned int getNumberPatients() { return m_nbPatients; };
+    void calculateSubomega(
+	    const IntakeSeries &_intakes,
+	    const ParameterSetSeries &_parameters,
+	    const OmegaMatrix& _omega,
+	    const IResidualErrorModel &_residualErrorModel,
+	    const Etas& _etas,
+	    const SampleSeries &_samples,
+	    EigenMatrix &_subomega);
 
 protected: 
 

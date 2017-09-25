@@ -118,6 +118,9 @@ typedef Eigen::Matrix<Value, Eigen::Dynamic, 1> EigenVector;
 
 typedef std::vector<Value> ValueVector;
 
+/// \ingroup TucuCore
+/// \brief A type definition for typecasting from std::vector to Eigen::vector
+typedef Eigen::Map<const EigenVector> map2EigenVectorType;
 
 // The three following defines could be moved somewhere else
 #define isOmegaEmpty(matrix) (matrix.rows() == 0)

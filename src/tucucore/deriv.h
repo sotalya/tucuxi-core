@@ -289,7 +289,6 @@ void deriv2_impl(func fxn, Eigen::VectorXd& loc, Eigen::MatrixXd& answer, const 
     return;
 }
 
-
 /// The following is the part of second derivatives that would actually be called from outside.
 /// The methods above are for choosing implementations for different types of inputs
 /// \tparam func the objective function type for the derivatecalculations (f(x)).
@@ -301,7 +300,7 @@ void deriv2_impl(func fxn, Eigen::VectorXd& loc, Eigen::MatrixXd& answer, const 
 /// \param loc where to take the derivative
 /// \param ret where to put the results
 /// \param tol value of derivative calculation step (as h in f(x+h)...)
-template <typename func, typename x = ValueVector, typename y /*= simple_matrix_t*/>
+template <typename func, typename x = ValueVector, typename y>
 inline void deriv2(func fxn, x& loc, y& ret, const Value tol = DEFAULT_DERIV_TOL)
 {
     // Using boost typetraits here to better handle typical specializations
@@ -313,6 +312,22 @@ inline void deriv2(func fxn, x& loc, y& ret, const Value tol = DEFAULT_DERIV_TOL
 
     return deriv2_impl(fxn, loc, ret, tol);
 }
+
+/// The following is the part of second derivatives that would actually be called from outside.
+/// The methods above are for choosing implementations for different types of inputs
+/// \tparam func the objective function type for the derivatecalculations (f(x)).
+/// 	Must have implementeed operator()
+///
+/// \param fxn object of func (f(x))
+/// \param loc where to take the derivative
+/// \param ret where to put the results
+/// \param tol value of derivative calculation step (as h in f(x+h)...)
+template <typename func>
+inline void deriv2(func fxn, Eigen::VectorXd& loc, Eigen::MatrixXd& ret, const Value tol = DEFAULT_DERIV_TOL) {
+
+    return deriv2_impl(fxn, loc, ret, tol);
+}
+
 
 }
 }
