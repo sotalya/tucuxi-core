@@ -14,8 +14,13 @@
 		<br/>
 		
 		<div class="jumbotron">
-			<h1 class="display-3">Tucuxi License Server</h1>
-
+			<table>
+				<tr>
+					<td width='150px' ><img src="Tucuxi.png" style="vertical-align:bottom"/></td>
+					<td><h1 class="display-3">Tucuxi License Server</h1></td>
+				</tr>
+			</table>
+			<br/>
 <?php
 
 $servername = "localhost";
@@ -28,7 +33,7 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 
 // Check connection
 if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+	die("Connection failed: " . $conn->connect_error);
 }
 
 // Build data
@@ -65,13 +70,13 @@ if ($error != "") {
 if ($error == "") {
 ?>
 			<p class="alert alert-success" role="alert">Your Tuxuci License is ready!</p> <h3>
-    <p>
-    <textarea class="form-control" readonly>
+	<p>
+	<textarea class="form-control" readonly>
 <?php
 	echo $license[0];
 ?>	
-    </textarea>
-    </p>
+	</textarea>
+	</p>
 <?php
 }
 else {
@@ -87,9 +92,9 @@ else {
 ?>
 		</div>
 
-  <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+	<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
 </body>
 
 </html>
