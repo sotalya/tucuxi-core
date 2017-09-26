@@ -41,12 +41,16 @@ public:
     std::string getId() const { return m_id;}
 
     /// \brief Get the operation associated with the value.
-    /// \return Shared pointer to the operation associated with the parameter.
+    /// \return Instance of the operation associated with the value.
     const Operation &getOperation() const { return *m_operation;}
 
     /// \brief Get the value.
     /// \return Returns the value.
     Value getValue() const { return m_value; }
+
+    /// \brief Get if the value is computed via an operation or is a fixed value.
+    /// \return True if the value is a result of an operation, false otherwise.
+    bool isComputed() const { return m_operation != nullptr; }
 
 protected:
     std::string m_id;

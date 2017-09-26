@@ -58,7 +58,8 @@ HEADERS += \
     $$PWD/../../src/tucucore/processingservice/processingresponse.h \
     $$PWD/../../src/tucucore/processingservice/iprocessingservice.h \
     $$PWD/../../src/tucucore/processingservice/processingtrait.h \
-    $$PWD/../../src/tucucore/drugmodel/covariatedefinition.h
+    $$PWD/../../src/tucucore/drugmodel/covariatedefinition.h \
+    $$PWD/../../src/tucucore/drugtreatment/patientcovariate.h
 
 SOURCES += \
     $$PWD/../../src/tucucore/drugmodel/drugmodel.cpp \
