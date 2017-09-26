@@ -263,6 +263,13 @@ Operable::Operable(const std::shared_ptr<Operation> &_ptr)
 }
 
 
+Operable::Operable(const Operation &_op)
+    : m_value{0.0}
+{
+    //m_sptr = std::make_shared<Operation>(_op);
+}
+
+
 bool
 Operable::evaluate(const OperableGraphManager &_graphMgr)
 {

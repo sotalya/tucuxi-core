@@ -159,6 +159,10 @@ public:
     /// \return Returns true if the internal value is 0.
     bool isUndefined() const;
 
+    /// \brief Retrieve the duration as a number of seconds.
+    /// \return The number of seconds representing the duration.
+    double toSeconds() const;
+
 private:
 
     /// \brief Returns the duration in one of the std::chrono duration class (years, months, days, ...)    

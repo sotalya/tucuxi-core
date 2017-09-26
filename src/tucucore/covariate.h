@@ -15,118 +15,87 @@
 #include "tucucore/operablegraphmanager.h"
 #include "tucucore/drugdefinitions.h"
 
+#include "drugmodel/covariatedefinition.h"
+
 namespace Tucuxi {
 namespace Core {
 
-/// \brief Define the covariate types.
-/// - Standard: if no patient variate exist -> use operation in drug model to generate a new value each time one or more
-///                                            inputs of the operation are modified
-///             if cannot apply operation   -> use default value
-///             if >= 1 variate exists      -> if only one value -> use for the entire period
-///                                            else              -> interpolate with function defined in
-///                                                                 CovariateDefinition, using first observed value for
-///                                                                 the interval between start and the first observation
-///   \warning Look also at values outside the given period! The period itself limits the range of measures we are
-///            interested in, but does not affect the available variates.
-/// - AgeInYears: automatic calculation based on birth date, use default if not available, unit = years.
-/// - AgeInDays: automatic calculation based on birth date, use default if not available, unit = days.
-/// - AgeInMonths: automatic calculation based on birth date, use default if not available, unit = months.
-enum class CovariateType {
-    Standard = 0,
-    AgeInYears,
-    AgeInDays,
-    AgeInMonths
-};
-
-/// \brief Allowed data types.
-enum class DataType {
-    Int = 0,
-    Double,
-    Bool,
-    Date
-};
-
-/// \brief Available interpolation functions.
-/// - Direct: when value observed, set it as current value.
-/// - Linear: between two occurrences of observed covariates, use linear interpolation.
-/// - Sigmoid: between two occurrences of observed covariates, use sigmoidal interpolation.
-/// - Tanh: between two occurrences of observed covariates, use hyperbolic tangent interpolation.
-enum class InterpolationType
-{
-    Direct = 0,
-    Linear,
-    Sigmoid,
-    Tanh
-};
-
-/// \brief Definition of a covariate for a given drug, using the information extracted from the drug's XML file.
-class CovariateDefinition : public PopulationValue
+/// \brief Change of a covariate value for a patient.
+class PatientCovariate : public TimedEvent
 {
 public:
-    CovariateDefinition(const std::string &_id, Value _value, Operation *_operation, CovariateType _type) :
-        PopulationValue(_id, _value, _operation), m_type(_type) {}
+    /// \brief Create a change of a covariate value for a patient.
+    /// \param _id Identifier of the original covariate for which the change applies.
+    /// \param _value Recorded value expressed in string form.
+    /// \param _dataType Type of the data stored in the _value variable.
+    /// \param _unit Unit of measure of the value.
+    /// \param _date Time when the change happened.
+    PatientCovariate(const std::string &_id, const std::string &_value, const DataType _dataType,
+                     const Unit _unit, DateTime _date)
+        : TimedEvent(_date), m_id{_id}, m_value{_value}, m_dataType{_dataType}, m_unit{_unit} {}
 
-    /// \brief Get the covariate's type.
-    /// \return Covariate's type.
-    CovariateType getType() const { return m_type; }
+    /// \brief Return the identifier of the value.
+    /// \return Value's identifier.
+    std::string getId() const { return m_id;}
+
+    /// \brief Get the value (as string).
+    /// \return Returns the value.
+    std::string getValue() const { return m_value; }
 
     /// \brief Get the data type.
     /// \return Data type.
     DataType getDataType() const { return m_dataType; }
 
-    /// \brief Get the interpolation type.
-    /// \return Selected interpolation type.
-    InterpolationType getInterpolationType() const { return m_interpolationType; }
-
-    /// \brief Get the data unit.
-    /// \return Data unit.
+    /// \brief Get the data's unit of measure.
+    /// \return Data's unit of measure.
     Unit getUnit() const { return m_unit; }
 
-    /// \brief Get the refresh period.
-    /// \return Refresh period.
-    Tucuxi::Common::Duration getRefreshPeriod() const { return m_refreshPeriod; }
-
-    /// \brief Set the refresh period.
-    /// \param _refreshPeriod Refresh period to set.
-    void setRefreshPeriod(const Tucuxi::Common::Duration &_refreshPeriod) { m_refreshPeriod = _refreshPeriod; }
-
 protected:
-    CovariateType m_type;
-    DataType m_dataType;
-    InterpolationType m_interpolationType;
-    Unit m_unit;
-    Tucuxi::Common::Duration m_refreshPeriod;   // Only in the case of CovariateType::Interpolated
-};
-
-typedef std::vector<std::unique_ptr<CovariateDefinition> > CovariateDefinitions;
-
-
-class PatientCovariate : public TimedEvent
-{
-    // TODO : Make variables protected and write accessors
-
-    std::string m_value;
+    /// \brief Identifier of the original covariate for which the change applies.
     std::string m_id;
+    /// \brief Recorded value of the change.
+    std::string m_value;
+    /// \brief Type of the data stored.
     DataType m_dataType;
+    /// \brief Unit of measure of the value.
     Unit m_unit;
 };
 
-typedef std::vector<std::unique_ptr<PatientCovariate> > PatientVariates;
+/// \brief List of patient variates.
+typedef std::vector<std::unique_ptr<PatientCovariate>> PatientVariates;
 
-/// \brief Models a change of a covariate.
-class CovariateEvent :  public IndividualValue<CovariateDefinition>, TimedEvent, Operable
+/// \brief Iterator in the list of patient variates.
+typedef std::vector<std::unique_ptr<PatientCovariate>>::const_iterator pvIterator_t;
+
+/// \brief Model the change of a covariate.
+class CovariateEvent :  public IndividualValue<CovariateDefinition>, public TimedEvent, public Operable
 {
 public:
+    /// \brief Remove the default constructor.
     CovariateEvent() = delete;
-    CovariateEvent(const CovariateDefinition& _covariateDef, const DateTime& _date, Value _value)
-        : IndividualValue(_covariateDef), TimedEvent(_date), Operable(_value), m_value(_value)
+    /// \brief Create a change in a covariate given a reference to the desired covariate, a time, and the new value.
+    /// \param _covariateDef Covariate definition that is changed
+    /// \param _date Time of change.
+    /// \param _value New value of the covariate.
+    CovariateEvent(const CovariateDefinition &_covariateDef, const DateTime &_date, Value _value)
+        : IndividualValue(_covariateDef), TimedEvent(_date), Operable(_value),
+          m_id(_covariateDef.getId()), m_value(_value)
     {}
 
-    Value getValue() { return m_value; }
+    /// \brief Get the modified value of the covariate.
+    /// \return Modified value of the covariate.
+    Value getValue() const { return m_value; }
+
+    /// \brief Return the identifier of the covariate involved in the change.
+    /// \return Identifier of covariate involved in the change.
+    std::string getId() const { return m_id;}
 
 private:
-    Value m_value;
+    /// \brief Identifier of the covariate involved in the change
+    std::string m_id;
 
+    /// \brief New value of the covariate.
+    Value m_value;
 };
 
 /// \brief List of covariate series (that is, changes).
