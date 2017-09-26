@@ -6,6 +6,7 @@
 #include "likelihood.h"
 #include "concentrationcalculator.h"
 #include "definitions.h"
+#include "residualerrormodel.h"
 
 #include <thread>
 #include <Eigen/Cholesky>
@@ -63,9 +64,9 @@ IPercentileCalculator::ProcessingResult MonteCarloPercentileCalculatorBase::comp
     for(int thread = 0; thread < nbThreads; thread++) {
 
     /* TODO: after modifying header file, need to activate following code */
-#if 0
-        workers.push_back(std::thread([thread, nbPatients, &abort, _aborter, _etas, _curvelength, _epsilons, _parameters, _intakes, _nbPoints, _residualErrorModel, &concentrations, nbThreads]()
-#endif
+//#if 0
+        workers.push_back(std::thread([thread, nbPatients, &abort, _aborter, _etas, _curvelength, _epsilons, _parameters, _intakes, _nbPoints, &_residualErrorModel, &concentrations, nbThreads]()
+//#endif
         {
 	    /* get concentrations for each patients */
 	    ConcentrationPredictionPtr predictionPtr;
@@ -119,9 +120,9 @@ IPercentileCalculator::ProcessingResult MonteCarloPercentileCalculatorBase::comp
             }
         }
     /* TODO: after modifying header file, need to activate following code */
-#if 0
+//#if 0
 	));
-#endif
+//#endif
 
     }
     std::for_each(workers.begin(), workers.end(), [](std::thread &t)
