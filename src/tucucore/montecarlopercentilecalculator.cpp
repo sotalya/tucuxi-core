@@ -6,7 +6,6 @@
 #include "likelihood.h"
 #include "concentrationcalculator.h"
 #include "definitions.h"
-#include "residualerrormodel.h"
 
 #include <thread>
 #include <Eigen/Cholesky>
