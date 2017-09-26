@@ -5,8 +5,9 @@
 #include "montecarlopercentilecalculator.h"
 #include "likelihood.h"
 #include "concentrationcalculator.h"
-#include "tucucore/definitions.h"
+#include "definitions.h"
 
+#include <thread>
 #include <Eigen/Cholesky>
 //#include <boost/math/distributions/normal.hpp>
 #include <boost/random/mersenne_twister.hpp>
@@ -39,28 +40,19 @@ IPercentileCalculator::ProcessingResult MonteCarloPercentileCalculatorBase::comp
         int _curvelength,
         ProcessingAborter *_aborter)
 {
-    TMP_UNUSED_PARAMETER(_percentiles);
-    TMP_UNUSED_PARAMETER(_nbPoints);
-    TMP_UNUSED_PARAMETER(_intakes);
-    TMP_UNUSED_PARAMETER(_parameters);
-    TMP_UNUSED_PARAMETER(_residualErrorModel);
-    TMP_UNUSED_PARAMETER(_percentileRanks);
-    TMP_UNUSED_PARAMETER(_etas);
-    TMP_UNUSED_PARAMETER(_epsilons);
-    TMP_UNUSED_PARAMETER(_curvelength);
-    TMP_UNUSED_PARAMETER(_aborter);
-
-#if 0
-
     bool abort = false;
+    unsigned int nbPatients = Tucuxi::Core::MonteCarloPercentileCalculatorBase::getNumberPatients();
 
-    std::vector<cxn_1d_t> _res;
-    concs.clear();
-    for (int i = 0; i < curvelength; ++i) {
-        _res.push_back(cxn_1d_t(numpatients));
-        concs.push_back(perc_set_t());
+    std::vector<Concentrations> concentrations;
+
+    // TODO: check whether reset is needed or not
+#if 0
+    (_percentiles.getValues()).clear();
+    for (int i = 0; i < _curvelength; ++i) {
+        concentrations.push_back(std::vector<Concentrations>(nbPatients));
+        (_percentiles.getValue()).push_back(PercentileRanks());
     }
-
+#endif
 
     /*
      * Parallelize this for loop with some shared and some copied-to-each-thread-with-current-state (firstprivate) variables
@@ -68,48 +60,69 @@ IPercentileCalculator::ProcessingResult MonteCarloPercentileCalculatorBase::comp
     int nbThreads = std::max(std::thread::hardware_concurrency(), (unsigned int)1);
 
     std::vector<std::thread> workers;
-    for(int thread = 0;thread< nbThreads; thread++) {
-        workers.push_back(std::thread([thread, numpatients, &abort, aborter, etas,
-                                      curvelength,epsilons, parameters, intakes, _nbPoints,
-                                      _residualErrorModel, &_res, nbThreads]()
+    for(int thread = 0; thread < nbThreads; thread++) {
+
+    /* TODO: after modifying header file, need to activate following code */
+#if 0
+        workers.push_back(std::thread([thread, nbPatients, &abort, _aborter, _etas, _curvelength, _epsilons, _parameters, _intakes, _nbPoints, _residualErrorModel, &concentrations, nbThreads]()
+#endif
         {
+	    /* get concentrations for each patients */
+	    ConcentrationPredictionPtr predictionPtr;
+            std::vector<Time> times;
 
+            (predictionPtr->getValues()).reserve(_curvelength);
+            times.reserve(_curvelength);
 
-            cxn_1d_t _iconcs;
-            time_1d_t _itimes;
-            _iconcs.reserve(curvelength);
-            _itimes.reserve(curvelength);
-
-            int start = thread * (numpatients / nbThreads);
-            int end = (thread + 1 ) * (numpatients / nbThreads);
+            int start = thread * (nbPatients / nbThreads);
+            int end = (thread + 1) * (nbPatients / nbThreads);
             for (int i = start; i < end; ++i) {
                 if (!abort) {
-                    if ((aborter != nullptr) && (aborter->shouldAbort())) {
+                    if ((_aborter != nullptr) && (_aborter->shouldAbort())) {
                         abort = true;
                     }
 
-                    // Generate a random epsilon
-                    deviation_t eps = epsilons(i);
+                    (predictionPtr->getValues()).clear();
+                    times.clear();
 
-                    ParametersSeries _iparams = parameters;
-                    IntakeSeries _iinks = intakes;
-                    _iconcs.clear();
-                    _itimes.clear();
                     /*
                      * Call to apriori becomes population as its determined earlier in the parametersExtractor
                      */
-                    ProcessingResult procRes =
-		    ConcentrationCalculator::calculatePoints(_iconcs,_itimes, _nbPoints, _iinks,
-		    _iparams, etas[i], _residualErrorModel, eps, true);
-                    if (procRes == ProcessingResult::Success) {
-                        for (int k = 0; k < curvelength; ++k) {
-                            _res[k][i] = _iconcs[k];
+		    /* TODO: after modifying header file, need to activate following code */
+		    #if 0
+                    ProcessingResult processingResult = 
+			Tucuxi::Core::IConcentrationCalculator::computeConcentrations(
+						predictionPtr, 
+						false, /* fix to "false": */
+						_nbPoints,
+						_intakes,
+						_parameters,
+						_etas[i],
+						_residualErrorModel,
+						_epsilons[i],
+						false);
+		    #else
+                    ProcessingResult processingResult = ProcessingResult::Success;
+		    #endif
+
+                    if (processingResult == ProcessingResult::Success) {
+                        for (int k = 0; k < _curvelength; ++k) {
+			    /* TODO: temporary code. figugre out whether it is correct or not */
+#if 0
+                            concentrations[k][i] = (predictionPtr->getValues())[k];
+#else
+                            concentrations[k][i] = (predictionPtr->getValues())[k][i];
+#endif
                         }
                     }
                 }
             }
+        }
+    /* TODO: after modifying header file, need to activate following code */
+#if 0
+	));
+#endif
 
-        }));
     }
     std::for_each(workers.begin(), workers.end(), [](std::thread &t)
     {
@@ -125,25 +138,28 @@ IPercentileCalculator::ProcessingResult MonteCarloPercentileCalculatorBase::comp
 * The values at each time are sorted in increasing order, then
 * they are walked from low to high while counting, once
 * the count passes that of a quantile, the value is extracted
-* into the result (concs)
+* into the result (_percentiles.getValues())
 */
+#if 0
 #pragma omp parallel for
-    for (int i = 0; i < _res.size(); ++i) {
-        std::sort(_res[i].begin(), _res[i].end(), [&] (const double v1, const double v2) { return v1 < v2; });
+#endif
+    for (unsigned int i = 0; i < concentrations.size(); ++i) {
+        std::sort(concentrations[i].begin(), concentrations[i].end(), [&] (const double v1, const double v2) { return v1 < v2; });
 
-        perc_set_t::const_iterator pit = percs.cbegin();
-        for (int j = 0; j < numpatients; ++j) {
-            if (pit != percs.cend() && j >= *pit / 100.0 * numpatients) {
-                concs[i].push_back(_res[i][j]);
+        PercentileRanks::const_iterator pit = _percentileRanks.cbegin();
+        for (unsigned int j = 0; j < nbPatients; ++j) {
+            if (pit != _percentileRanks.cend() && j >= *pit / 100.0 * nbPatients) {
+		/* TODO: temporary code. figugre out whether it is correct or not */
+#if 0
+                (_percentiles.getValues())[i].push_back(concentrations[i][j]);
+#endif
                 pit++;
             }
         }
     }
 
     return ProcessingResult::Success;
-#endif
 
-    return ProcessingResult::Failure;
 } //MonteCarloPercentileCalculatorBase::computePredictionsAndSortPercentiles
 
 
@@ -228,7 +244,11 @@ IPercentileCalculator::ProcessingResult AprioriMonteCarloPercentileCalculator::c
     The size of vector epsilons can be changed depends on the implementation
     Currently, epsilons[1][nbPatients] is initialised with normalised random number.
     */
-    std::vector<Deviations> epsilons(1, Deviations(nbPatients, var_nor())); 
+#if 0
+    std::vector<Deviations> epsilons(_residualErrorModel.nbEpsilons(), Deviations(nbPatients, var_nor())); 
+#else
+    std::vector<Deviations> epsilons(1, Deviations(nbPatients, var_nor()));
+#endif
 
     for (int row = 0; row < rands.rows(); ++row) {
         //epsilons(0, (row))= var_nor();
