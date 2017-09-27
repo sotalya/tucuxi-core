@@ -6,7 +6,7 @@
 #define TUCUXI_CORE_DRUGTREATMENT_H
 
 #include "tucucore/dosage.h"
-#include "tucucore/covariate.h"
+#include "tucucore/covariateevent.h"
 #include "tucucore/drugtreatment/sample.h"
 #include "tucucore/drugtreatment/target.h"
 

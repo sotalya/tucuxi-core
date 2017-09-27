@@ -140,11 +140,15 @@ int CovariateExtractor::extract(
         ogm.registerInput(event, cdv.first);
     }
 
+    // Map holding the pointers to the events linked with computed covariates and their latest value.
+    std::map<std::string, std::pair<std::shared_ptr<CovariateEvent>, Value>> computedValuesMap;
+
     // Computed values.
     if (cdComputed.size() > 0) {
         // Push an Operable for each computed Covariate.
         for (const auto &cdc : cdComputed) {
-            std::shared_ptr<CovariateEvent> event = std::make_shared<CovariateEvent>(**(cdc.second), _start, 0);
+            std::shared_ptr<CovariateEvent> event = std::make_shared<CovariateEvent>(**(cdc.second), _start, 0.0);
+            computedValuesMap[cdc.first] = std::make_pair(event, 0.0);
             ogm.registerOperable(event, cdc.first);
         }
         // Call the evaluation once to generate the first set of values for the
@@ -153,11 +157,13 @@ int CovariateExtractor::extract(
         if (!rc) {
             return -6;
         }
-        for (const auto &cdc : cdComputed) {
-
+        for (auto &cvm : computedValuesMap) {
+            // Update the value in the map.
+            cvm.second.second = cvm.second.first->getValue();
+            // Push each computed covariate in the event series.
+            _series.push_back(*cvm.second.first);
         }
     }
-
 
     // *** Generate events past the default ones ***
     if (cdComputed.size() > 0) {
@@ -167,18 +173,18 @@ int CovariateExtractor::extract(
 
 
 
+    } else {
+        // Shortcut: no need to recompute the graph each time a patient variate is inserted, so we can just push the
+        // patient variates in the series.
+        for (const auto &pvMap : pvValued) {
+            for (const auto &pv : pvMap.second) {
+                std::shared_ptr<CovariateEvent> event = std::make_shared<CovariateEvent>(**(cdValued[pvMap.first]),
+                                                                                         (*pv)->getEventTime(),
+                                                                                         (*pv)->getValue());
+                _series.push_back(*event);
+            }
+        }
     }
-    // 1 - collect measure times (will be used to get interpolation times)
-
-    // 2 - initialize values at _start
-
-    // 3 - at every measure time, compute interpolated values for non-computed values
-
-    // 4 - at every measure time, set values and perform evaluate on OGM
-
-    // 5 - compute observation times for each variable with refresh time
-
-    // 6 - fill covariate series
 
     return 0;
 }

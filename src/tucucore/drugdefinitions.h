@@ -41,7 +41,7 @@ public:
     std::string getId() const { return m_id;}
 
     /// \brief Get the operation associated with the value.
-    /// \return Instance of the operation associated with the value.
+    /// \return Reference to the operation associated with the value.
     virtual Operation &getOperation() const { return *m_operation;}
 
     /// \brief Get the value.
@@ -69,6 +69,9 @@ public:
 protected:
 
     const DefinitionClass &m_definition;
+
+    /// \brief Get the operation associated with the value.
+    /// \return Reference to the operation associated with the value.
     virtual Operation& getOperation() const { return m_definition.getOperation(); }
 
 };

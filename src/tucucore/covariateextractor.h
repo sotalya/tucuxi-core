@@ -14,7 +14,7 @@
 #include "tucucommon/datetime.h"
 
 #include "tucucore/definitions.h"
-#include "tucucore/covariate.h"
+#include "tucucore/covariateevent.h"
 
 namespace Tucuxi {
 namespace Core {

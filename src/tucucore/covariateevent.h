@@ -36,11 +36,37 @@ public:
           m_id(_covariateDef.getId()), m_value(_value)
     {}
 
+    /// \brief Get the associated operation.
+    /// \return Reference to the associated operation.
     virtual Operation &getOperation() const override { return m_definition.getOperation(); }
 
     /// \brief Get the modified value of the covariate.
     /// \return Modified value of the covariate.
     Value getValue() const { return m_value; }
+
+    /// \brief Perform the evaluation on the Operable, retrieving the inputs (and the dependencies) from the
+    ///        OperableGraphManager.
+    /// \param _graphMgr Reference to the graph manager where the Operable has to seek its inputs.
+    /// \return True if the evaluation could be performed, false in case of errors.
+    virtual bool evaluate(const OperableGraphManager &_graphMgr)
+    {
+        Operation &op = getOperation();
+
+        // Collect inputs
+        OperationInputList inputs = getInputs();
+
+        for (auto &input : inputs) {
+            double val;
+            bool rc;
+            rc = _graphMgr.getValue(input.getName(), val);
+            if (!rc) {
+                return false;
+            }
+            input.setValue(val);
+        }
+
+        return op.evaluate(inputs, m_value);
+    }
 
     /// \brief Return the identifier of the covariate involved in the change.
     /// \return Identifier of covariate involved in the change.

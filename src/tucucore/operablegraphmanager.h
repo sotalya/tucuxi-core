@@ -221,7 +221,8 @@ public:
 };
 
 
-/// \brief Actual sample implementation of an Operable node, useful for testing purposes.
+/// \brief Operable node, which is either subclassed for testing purposes, or subclassed by a CovariateDefinition to get
+///        Operable-like capabilities.
 class Operable : public IOperable
 {
 public:
@@ -243,6 +244,8 @@ public:
     /// This list can be filled by the caller to have all the values ready for evaluation.
     virtual OperationInputList getInputs() const;
 
+    /// \brief Get the associated operation.
+    /// \return Reference to the associated operation.
     virtual Operation &getOperation() const = 0;
 
     /// \brief Return the latest value computed by the node.
@@ -277,6 +280,8 @@ public:
    /// \brief Default virtual destructor, required for proper object's destruction.
    virtual ~OperableImpl() = default;
 
+   /// \brief Get the associated operation.
+   /// \return Reference to the associated operation.
    virtual Operation &getOperation() const override { return *m_sptr; }
 
 
