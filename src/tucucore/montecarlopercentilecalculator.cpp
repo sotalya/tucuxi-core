@@ -220,7 +220,7 @@ IPercentileCalculator::ProcessingResult AprioriMonteCarloPercentileCalculator::c
     ConcentrationCalculator::computeConcentrations(predictionPtr, isAll, _nbPoints, _intakes, _parameters, eta, _residualErrorModel);
 #endif
 
-    unsigned int nbPatients = Tucuxi::Core::IAprioriPercentileCalculator::getNumberPatients();
+    unsigned int nbPatients = getNumberPatients();
     /*
     TODO: remove following code. From ezechiel, not used in the function
     And also think about remove curvelength after creating thread and factorizing code of sorting
@@ -357,7 +357,7 @@ IPercentileCalculator::ProcessingResult AposterioriMonteCarloPercentileCalculato
     EigenMatrix subomega;
 
     /* calculate hessian metrix and subomega */
-    Tucuxi::Core::IPercentileCalculator::calculateSubomega(
+    calculateSubomega(
                 _intakes,
                 _parameters,
                 _omega,
@@ -583,7 +583,7 @@ IPercentileCalculator::ProcessingResult AposterioriNormalApproximationMonteCarlo
     EigenMatrix subomega;
 
     /* calculate hessian metrix and subomega */
-    Tucuxi::Core::IPercentileCalculator::calculateSubomega(
+    calculateSubomega(
                 _intakes,
                 _parameters,
                 _omega,
