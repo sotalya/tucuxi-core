@@ -36,6 +36,15 @@ public:
           m_id(_covariateDef.getId()), m_value(_value)
     {}
 
+    /// \brief Create a change in a covariate given a reference to the desired covariate, a time, and an operation.
+    /// \param _covariateDef Covariate definition that is changed
+    /// \param _date Time of change.
+    /// \param _op Shared pointer to an Operation used to compute the value.
+    CovariateEvent(const CovariateDefinition &_covariateDef, const DateTime &_date, std::shared_ptr<Operation> _op)
+        : IndividualValue(_covariateDef), TimedEvent(_date), Operable(_op),
+          m_id(_covariateDef.getId()), m_value(0.0)
+    {}
+
     /// \brief Get the modified value of the covariate.
     /// \return Modified value of the covariate.
     Value getValue() const { return m_value; }

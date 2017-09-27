@@ -56,6 +56,8 @@ public:
             const DateTime &_end,
             CovariateSeries &_series) override;
 
+
+private:
     /// \brief Perform the chosen interpolation between the given values.
     /// \param _val1 First value.
     /// \param _date1 Time of the first measurement.

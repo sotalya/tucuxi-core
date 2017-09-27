@@ -233,10 +233,6 @@ public:
     /// \param _ptr Shared pointer to an Operation object.
     Operable(const std::shared_ptr<Operation> &_ptr);
 
-    /// \brief Create an operable from a reference to an Operation.
-    /// \param _op Reference to an Operation object.
-    Operable(const Operation &_op);
-
     /// \brief Default virtual destructor, required for proper object's destruction.
     virtual ~Operable() = default;
 
@@ -260,7 +256,7 @@ public:
     virtual void setValue(const double _value);
 
 
-private:
+protected:
     /// \brief Pointer to the operation.
     std::shared_ptr<Operation> m_sptr;
 
@@ -269,52 +265,20 @@ private:
 };
 
 
-///// \brief Actual sample implementation of an Operable node, useful for testing purposes.
-//class Operable : public IOperable
-//{
-//public:
-//    /// \brief Create an operable from a fixed value.
-//    /// \param _value Value of the operable.
-//    Operable(const double &_value);
+/// \brief Actual sample implementation of an Operable node, useful for testing purposes.
+class OperableImpl : public Operable
+{
+public:
+    /// \brief Create an operable from a fixed value.
+    /// \param _value Value of the operable.
+    OperableImpl(const double &_value)
+        : Operable(_value) {};
 
-//    /// \brief Create an operable from a shared pointer to an Operation.
-//    /// \param _ptr Shared pointer to an Operation object.
-//    Operable(const std::shared_ptr<Operation> &_ptr);
-
-//    /// \brief Create an operable from a reference to an Operation.
-//    /// \param _op Reference to an Operation object.
-//    Operable(const Operation &_op);
-
-//    /// \brief Default virtual destructor, required for proper object's destruction.
-//    virtual ~Operable() = default;
-
-//    /// \brief Perform the evaluation on the Operable, retrieving the inputs (and the dependencies) from the
-//    ///        OperableGraphManager.
-//    /// \param _graphMgr Reference to the graph manager where the Operable has to seek its inputs.
-//    /// \return True if the evaluation could be performed, false in case of errors.
-//    virtual bool evaluate(const OperableGraphManager &_graphMgr);
-
-//    /// \brief Return the list of required input operands.
-//    /// \return Vector containing a list of the operands required for the operation.
-//    /// This list can be filled by the caller to have all the values ready for evaluation.
-//    virtual OperationInputList getInputs() const;
-
-//    /// \brief Return the latest value computed by the node.
-//    /// \return Value computed by the node.
-//    virtual double getValue() const;
-
-//    /// \brief Manually set an Operable's value.
-//    /// \param _value Value to set.
-//    virtual void setValue(const double _value);
-
-
-//private:
-//    /// \brief Pointer to the operation.
-//    std::shared_ptr<Operation> m_sptr;
-
-//    /// \brief Latest computed value.
-//    double m_value;
-//};
+    /// \brief Create an operable from a shared pointer to an Operation.
+    /// \param _ptr Shared pointer to an Operation object.
+    OperableImpl(const std::shared_ptr<Operation> &_ptr)
+        : Operable(_ptr) {};
+};
 
 
 }

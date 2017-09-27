@@ -228,6 +228,7 @@ OperableGraphManager::OperableComputeNode::OperableComputeNode(std::shared_ptr<I
     }
 }
 
+
 bool
 OperableGraphManager::OperableComputeNode::evaluate(const OperableGraphManager &_graphMgr)
 {
@@ -260,13 +261,6 @@ Operable::Operable(const std::shared_ptr<Operation> &_ptr)
     : m_sptr{_ptr}, m_value{0.0}
 {
 
-}
-
-
-Operable::Operable(const Operation &_op)
-    : m_value{0.0}
-{
-    m_sptr = std::make_shared<Operation>(_op);
 }
 
 

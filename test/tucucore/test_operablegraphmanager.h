@@ -25,9 +25,9 @@ struct TestOpGraph : public fructose::test_base<TestOpGraph>
     void testOperableFunctions(const std::string& /* _testName */)
     {
         // Register three inputs, then perform a simple operation with them.
-        std::shared_ptr<Operable> a = std::make_shared<Operable>(1.234);
-        std::shared_ptr<Operable> b = std::make_shared<Operable>(2);
-        std::shared_ptr<Operable> c = std::make_shared<Operable>(1);
+        std::shared_ptr<OperableImpl> a = std::make_shared<OperableImpl>(1.234);
+        std::shared_ptr<OperableImpl> b = std::make_shared<OperableImpl>(2);
+        std::shared_ptr<OperableImpl> c = std::make_shared<OperableImpl>(1);
 
         OperableGraphManager ogm;
 
@@ -42,7 +42,7 @@ struct TestOpGraph : public fructose::test_base<TestOpGraph>
                                                                          OperationInput("b", InputType::DOUBLE),
                                                                          OperationInput("c", InputType::DOUBLE) }));
 
-        std::shared_ptr<Operable> op1 = std::make_shared<Operable>(jsOp1);
+        std::shared_ptr<OperableImpl> op1 = std::make_shared<OperableImpl>(jsOp1);
 
         fructose_assert (ogm.registerOperable(op1) == true);
         fructose_assert (ogm.evaluate() == true);
@@ -55,7 +55,7 @@ struct TestOpGraph : public fructose::test_base<TestOpGraph>
                 = std::make_shared<JSOperation>(JSOperation("a*(b+c)", { OperationInput("a", InputType::DOUBLE),
                                                                          OperationInput("b", InputType::DOUBLE),
                                                                          OperationInput("c", InputType::DOUBLE) }));
-        std::shared_ptr<Operable> op1_bis = std::make_shared<Operable>(Operable(jsOp1_bis));
+        std::shared_ptr<OperableImpl> op1_bis = std::make_shared<OperableImpl>(OperableImpl(jsOp1_bis));
         fructose_assert (ogm.registerOperable(op1_bis, "op1_bis") == true);
         // Check that we cannot register it twice.
         fructose_assert (ogm.registerOperable(op1_bis, "op1_bis") == false);
@@ -64,11 +64,11 @@ struct TestOpGraph : public fructose::test_base<TestOpGraph>
                 = std::make_shared<JSOperation>(JSOperation("op1_bis - d", { OperationInput("op1_bis", InputType::DOUBLE),
                                                                              OperationInput("d", InputType::DOUBLE) }));
 
-        std::shared_ptr<Operable> op2 = std::make_shared<Operable>(Operable(jsOp2));
+        std::shared_ptr<OperableImpl> op2 = std::make_shared<OperableImpl>(OperableImpl(jsOp2));
         // Check that we can register the operation even before all the inputs are available.
         fructose_assert (ogm.registerOperable(op2, "op2") == true);
 
-        std::shared_ptr<Operable> d = std::make_shared<Operable>(4.321);
+        std::shared_ptr<OperableImpl> d = std::make_shared<OperableImpl>(4.321);
         fructose_assert (ogm.registerInput(d, "d") == true);
 
         fructose_assert (ogm.evaluate() == true);
@@ -107,11 +107,11 @@ struct TestOpGraph : public fructose::test_base<TestOpGraph>
 
     void testOperableCockcroftGaultIBW(const std::string& /* _testName */)
     {
-        std::shared_ptr<Operable> weight = std::make_shared<Operable>(71.4);
-        std::shared_ptr<Operable> height = std::make_shared<Operable>(165);
-        std::shared_ptr<Operable> age = std::make_shared<Operable>(49);
-        std::shared_ptr<Operable> creatinine = std::make_shared<Operable>(23.4);
-        std::shared_ptr<Operable> isMale = std::make_shared<Operable>(1);
+        std::shared_ptr<OperableImpl> weight = std::make_shared<OperableImpl>(71.4);
+        std::shared_ptr<OperableImpl> height = std::make_shared<OperableImpl>(165);
+        std::shared_ptr<OperableImpl> age = std::make_shared<OperableImpl>(49);
+        std::shared_ptr<OperableImpl> creatinine = std::make_shared<OperableImpl>(23.4);
+        std::shared_ptr<OperableImpl> isMale = std::make_shared<OperableImpl>(1);
 
         OperableGraphManager ogm;
 
@@ -125,7 +125,7 @@ struct TestOpGraph : public fructose::test_base<TestOpGraph>
                 = std::make_shared<JSOperation>(JSOperation("height - 100 - (height - 150) / ((isMale > 0.5)*4.0 + (!(isMale > 0.5))*2.5)",
         { OperationInput("height", InputType::DOUBLE),
           OperationInput("isMale", InputType::DOUBLE) }));
-        std::shared_ptr<Operable> opIBW = std::make_shared<Operable>(jsIBW);
+        std::shared_ptr<OperableImpl> opIBW = std::make_shared<OperableImpl>(jsIBW);
         fructose_assert (ogm.registerOperable(opIBW, "IBW") == true);
 
         std::shared_ptr<JSOperation> jsCG_IBW
@@ -135,7 +135,7 @@ struct TestOpGraph : public fructose::test_base<TestOpGraph>
           OperationInput("age", InputType::DOUBLE),
           OperationInput("creatinine", InputType::DOUBLE),
           OperationInput("isMale", InputType::DOUBLE) }));
-        std::shared_ptr<Operable> opCG_IBW = std::make_shared<Operable>(jsCG_IBW);
+        std::shared_ptr<OperableImpl> opCG_IBW = std::make_shared<OperableImpl>(jsCG_IBW);
         fructose_assert (ogm.registerOperable(opCG_IBW) == true);
 
         fructose_assert (ogm.evaluate() == true);
@@ -148,10 +148,10 @@ struct TestOpGraph : public fructose::test_base<TestOpGraph>
     void testOperableCyclic(const std::string& /* _testName */)
     {
         // Register three inputs, then perform a simple operation with them.
-        std::shared_ptr<Operable> a = std::make_shared<Operable>(1.234);
-        std::shared_ptr<Operable> b = std::make_shared<Operable>(2);
-        std::shared_ptr<Operable> c = std::make_shared<Operable>(1);
-        std::shared_ptr<Operable> d = std::make_shared<Operable>(143);
+        std::shared_ptr<OperableImpl> a = std::make_shared<OperableImpl>(1.234);
+        std::shared_ptr<OperableImpl> b = std::make_shared<OperableImpl>(2);
+        std::shared_ptr<OperableImpl> c = std::make_shared<OperableImpl>(1);
+        std::shared_ptr<OperableImpl> d = std::make_shared<OperableImpl>(143);
 
         OperableGraphManager ogm;
 
@@ -165,13 +165,13 @@ struct TestOpGraph : public fructose::test_base<TestOpGraph>
                                                                              OperationInput("b", InputType::DOUBLE),
                                                                              OperationInput("c", InputType::DOUBLE),
                                                                              OperationInput("op2", InputType::DOUBLE) }));
-        std::shared_ptr<Operable> op1 = std::make_shared<Operable>(jsOp1);
+        std::shared_ptr<OperableImpl> op1 = std::make_shared<OperableImpl>(jsOp1);
         fructose_assert (ogm.registerOperable(op1, "op1") == true);
 
         std::shared_ptr<JSOperation> jsOp2
                 = std::make_shared<JSOperation>(JSOperation("op1 - d", { OperationInput("op1", InputType::DOUBLE),
                                                                          OperationInput("d", InputType::DOUBLE) }));
-        std::shared_ptr<Operable> op2 = std::make_shared<Operable>(jsOp2);
+        std::shared_ptr<OperableImpl> op2 = std::make_shared<OperableImpl>(jsOp2);
         fructose_assert (ogm.registerOperable(op2, "op2") == true);
 
         fructose_assert (ogm.evaluate() == false);
