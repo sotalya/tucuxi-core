@@ -180,7 +180,8 @@ int CovariateExtractor::extract(
             for (const auto &pv : pvMap.second) {
                 std::shared_ptr<CovariateEvent> event = std::make_shared<CovariateEvent>(**(cdValued[pvMap.first]),
                                                                                          (*pv)->getEventTime(),
-                                                                                         (*pv)->getValue());
+                                                                                         Tucuxi::Common::Utils::stringToValue((*pv)->getValue(),
+                                                                                                                              (*pv)->getDataType()));
                 _series.push_back(*event);
             }
         }

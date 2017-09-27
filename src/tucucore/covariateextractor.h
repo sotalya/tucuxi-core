@@ -12,6 +12,7 @@
 #include <vector>
 
 #include "tucucommon/datetime.h"
+#include "tucucommon/utils.h"
 
 #include "tucucore/definitions.h"
 #include "tucucore/covariateevent.h"
