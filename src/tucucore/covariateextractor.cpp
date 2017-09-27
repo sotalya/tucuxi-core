@@ -14,6 +14,7 @@ namespace Core {
 // -3 : invalid date (start > end).
 // -4 : duplicate ID in covariate definitions.
 // -5 : interpolation failure.
+// -6 : initial evaluation of computed values failed.
 
 int CovariateExtractor::extract(
         const CovariateDefinitions &_defaults,
@@ -146,10 +147,19 @@ int CovariateExtractor::extract(
             std::shared_ptr<CovariateEvent> event = std::make_shared<CovariateEvent>(**(cdc.second), _start, 0);
             ogm.registerOperable(event, cdc.first);
         }
+        // Call the evaluation once to generate the first set of values for the
+        // computed events.
+        bool rc = ogm.evaluate();
+        if (!rc) {
+            return -6;
+        }
+        for (const auto &cdc : cdComputed) {
+
+        }
     }
 
 
-    // *** ***
+    // *** Generate events past the default ones ***
     if (cdComputed.size() > 0) {
         // Unfortunately discovering all the relations among covariates is too difficult -- it would mean redoing the
         // job of the OperableGraphManager. We will therefore need to throw everything inside the OGM, and then call an

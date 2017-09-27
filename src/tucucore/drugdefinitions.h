@@ -42,7 +42,7 @@ public:
 
     /// \brief Get the operation associated with the value.
     /// \return Instance of the operation associated with the value.
-    const Operation &getOperation() const { return *m_operation;}
+    virtual Operation &getOperation() const { return *m_operation;}
 
     /// \brief Get the value.
     /// \return Returns the value.
@@ -55,7 +55,7 @@ public:
 protected:
     std::string m_id;
     Value m_value;
-    std::unique_ptr<Operation const> m_operation;
+    std::unique_ptr<Operation> m_operation;
 };
 
 template<typename DefinitionClass>
@@ -69,7 +69,7 @@ public:
 protected:
 
     const DefinitionClass &m_definition;
-    const Operation& getOperation() const { return m_definition.getOperation(); }
+    virtual Operation& getOperation() const { return m_definition.getOperation(); }
 
 };
 

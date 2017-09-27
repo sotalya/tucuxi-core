@@ -229,10 +229,6 @@ public:
     /// \param _value Value of the operable.
     Operable(const double &_value);
 
-    /// \brief Create an operable from a shared pointer to an Operation.
-    /// \param _ptr Shared pointer to an Operation object.
-    Operable(const std::shared_ptr<Operation> &_ptr);
-
     /// \brief Default virtual destructor, required for proper object's destruction.
     virtual ~Operable() = default;
 
@@ -247,6 +243,8 @@ public:
     /// This list can be filled by the caller to have all the values ready for evaluation.
     virtual OperationInputList getInputs() const;
 
+    virtual Operation &getOperation() const = 0;
+
     /// \brief Return the latest value computed by the node.
     /// \return Value computed by the node.
     virtual double getValue() const;
@@ -257,9 +255,6 @@ public:
 
 
 protected:
-    /// \brief Pointer to the operation.
-    std::shared_ptr<Operation> m_sptr;
-
     /// \brief Latest computed value.
     double m_value;
 };
@@ -272,12 +267,22 @@ public:
     /// \brief Create an operable from a fixed value.
     /// \param _value Value of the operable.
     OperableImpl(const double &_value)
-        : Operable(_value) {};
+        : Operable(_value) {}
 
-    /// \brief Create an operable from a shared pointer to an Operation.
-    /// \param _ptr Shared pointer to an Operation object.
-    OperableImpl(const std::shared_ptr<Operation> &_ptr)
-        : Operable(_ptr) {};
+   /// \brief Create an operable from a shared pointer to an Operation.
+   /// \param _ptr Shared pointer to an Operation object.
+   OperableImpl(const std::shared_ptr<Operation> &_ptr)
+       : Operable(0), m_sptr{_ptr} {}
+
+   /// \brief Default virtual destructor, required for proper object's destruction.
+   virtual ~OperableImpl() = default;
+
+   virtual Operation &getOperation() const override { return *m_sptr; }
+
+
+protected:
+   /// \brief Pointer to the operation.
+   std::shared_ptr<Operation> m_sptr;
 };
 
 
