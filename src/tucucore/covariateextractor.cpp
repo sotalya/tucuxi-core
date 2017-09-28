@@ -8,6 +8,18 @@
 namespace Tucuxi {
 namespace Core {
 
+/// \brief Create an event and push it in the event series.
+/// \param COV_DEF Corresponding covariate definition.
+/// \param TIME Time of the event.
+/// \param VALUE Observed value.
+/// \param SERIES Series to push to.
+#define PUSH_EVENT(COV_DEF, TIME, VALUE, SERIES)            \
+do {                                                        \
+    std::shared_ptr<CovariateEvent> event =                 \
+    std::make_shared<CovariateEvent>(COV_DEF, TIME, VALUE); \
+    SERIES.push_back(*event);                               \
+} while(0);
+
 // Error codes:
 // -1 : null pointer in covariate definitions.
 // -2 : null pointer in patient variates.
@@ -178,17 +190,88 @@ int CovariateExtractor::extract(
         // Shortcut: no need to recompute the graph each time a patient variate is inserted, so we can just push the
         // patient variates in the series.
         for (const auto &pvMap : pvValued) {
-            if ((*cdValued[pvMap.first])->getRefreshPeriod().isEmpty()) {
+            Duration refreshPeriod = (*cdValued[pvMap.first])->getRefreshPeriod();
+            if (refreshPeriod.isEmpty()) {
                 // If no refresh period set, then just push the values as they are.
                 for (const auto &pv : pvMap.second) {
-                    std::shared_ptr<CovariateEvent> event = std::make_shared<CovariateEvent>(**(cdValued[pvMap.first]),
-                            (*pv)->getEventTime(),
-                            Tucuxi::Common::Utils::stringToValue((*pv)->getValue(),
-                                                                 (*pv)->getDataType()));
-                    _series.push_back(*event);
+                    if (pvMap.second.size() > 1) {
+                        // If we have a single value, this value is set as initial default and used for the entire
+                        // period, so we can ignore it here.
+                        PUSH_EVENT(**cdValued[pvMap.first],             // Covariate Definition
+                                   (*pv)->getEventTime(),               // Time
+                                   stringToValue((*pv)->getValue(),
+                                                 (*pv)->getDataType()), // Value
+                                   _series);                            // Series
+                    }
                 }
             } else {
                 // We need to compute the interpolated values and push them at the appropriate time.
+                // The "appropriate time" is represented by the initial time plus the refresh period, therefore we have
+                // to interpolate the correct values for each refresh period.
+                std::vector<pvIterator_t>::const_iterator pvIt = pvMap.second.begin();
+
+                // Use the first observed value for the whole period up to it, and the last observed value for the whole
+                // period after it.
+                // Example:
+                //
+                // |------1----2---3--------|
+                // |----a----b----c----d----|
+                //
+                // where a, b, c, and d are time intervals given by the refresh period, and 1, 2, and 3 are
+                // measurements, gives:
+                // * a == 1
+                // * b == interp(1, 2)
+                // * c == interp(2, 3)
+                // * d == 3
+                // If we had a measurement before the start of the interval, we would have kept it in the vector and
+                // thus we would interpolate and not set a fixed value. The same reasoning applies if we had a
+                // measurement after the end of the interval.
+                for (auto timeIt = _start + refreshPeriod; timeIt < _end; timeIt += refreshPeriod) {
+                    if (timeIt <= (**(pvMap.second.begin()))->getEventTime()) {
+                        // Before first measurement use the value of the first measurement.
+                        PUSH_EVENT(**cdValued[pvMap.first],                                  // Covariate Definition
+                                   timeIt,                                                   // Time
+                                   stringToValue((**(pvMap.second.begin()))->getValue(),
+                                                 (**(pvMap.second.begin()))->getDataType()), // Value
+                                   _series);                                                 // Series
+                    } else {
+                        // Advance until we pass the measurement just before the chosen time, or until we get to the
+                        // last available measurement.
+                        while (timeIt >= (**pvIt)->getEventTime() && std::next(pvIt) != pvMap.second.end()) {
+                            ++pvIt;
+                        }
+                        if (std::next(pvIt) == pvMap.second.end()) {
+                            // We are past in time after the last measurement we have, so we have to keep the value.
+                            PUSH_EVENT(**cdValued[pvMap.first],                  // Covariate Definition
+                                       timeIt,                                   // Time
+                                       stringToValue((**(pvIt))->getValue(),
+                                                     (**(pvIt))->getDataType()), // Value
+                                       _series);                                 // Series
+                        } else {
+                            // We have two measurements to interpolate from (we have dealt with the case of the first
+                            // measurement being past the desired time, so we can safely assume we have a previous
+                            // measurement.
+                            double newVal = 0.0;
+                            if (!interpolateValues(stringToValue((**(std::prev(pvIt)))->getValue(),
+                                                                 (**(std::prev(pvIt)))->getDataType()), // val1
+                                                   (**(std::prev(pvIt)))->getEventTime(),               // date1
+                                                   stringToValue((**(pvIt))->getValue(),
+                                                                 (**(pvIt))->getDataType()),            // val2
+                                                   (**(pvIt))->getEventTime(),                          // date2
+                                                   timeIt,                                              // dateRes
+                                                   (*cdValued[pvMap.first])->getInterpolationType(),    // interpolationType
+                                                   newVal)) {                                           // valRes
+                                return -5;
+                            }
+                            PUSH_EVENT(**cdValued[pvMap.first], // Covariate Definition
+                                       timeIt,                  // Time
+                                       newVal,                  // Value
+                                       _series);                // Series
+                        }
+                    }
+                    // Do not forget to increment the vector iterator here if needed!
+                    ++pvIt;
+                }
             }
         }
     }
@@ -240,6 +323,46 @@ bool CovariateExtractor::interpolateValues(const double _val1, const DateTime &_
         return false;
     }
     return true;
+}
+
+Value CovariateExtractor::stringToValue(std::string _str, const DataType &_dataType)
+{
+    Value v;
+    std::transform(_str.begin(), _str.end(), _str.begin(), ::tolower);
+    switch (_dataType)
+    {
+    case DataType::Int:
+    {
+        int tmp = std::stoi(_str);
+        v = tmp;
+    }
+        break;
+
+    case DataType::Double:
+        v = std::stod(_str);
+        break;
+
+    case DataType::Bool:
+        if (_str == "0" || _str == "false") {
+            v = 0.0;
+        } else {
+            v = 1.0;
+        }
+        break;
+
+    case DataType::Date:
+    {
+        DateTime dt(_str, "%Y-%b-%d %H:%M:%S");
+        v = dt.toSeconds();
+    }
+        break;
+
+    default:
+        // Invalid type, set the value to 0.0.
+        v = 0.0;
+        break;
+    }
+    return v;
 }
 
 

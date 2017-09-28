@@ -20,6 +20,8 @@
 namespace Tucuxi {
 namespace Core {
 
+using Tucuxi::Common::Duration;
+
 /// \brief Interface for the covariate extractor.
 class ICovariateExtractor
 {
@@ -70,10 +72,19 @@ private:
     /// \return True if the interpolation was successful, false otherwise.
     /// \pre _date1 < _date2 || (_date1 == _date2 && _val1 == _val2)
     bool interpolateValues(const double _val1, const DateTime &_date1,
-                             const double _val2, const DateTime &_date2,
-                             const DateTime &_dateRes,
-                             const InterpolationType _interpolationType,
-                             double &_valRes);
+                           const double _val2, const DateTime &_date2,
+                           const DateTime &_dateRes,
+                           const InterpolationType _interpolationType,
+                           double &_valRes);
+
+    /// \brief Convert a std::string to a Value.
+    /// \param _str String to convert.
+    /// \param _type Type of the value given in the string.
+    /// \return Value contained in the string.
+    /// \pre _str contains a string that can be converted to a Value.
+    static Value stringToValue(std::string _str,
+                               const DataType &_dataType = DataType::Double);
+
 };
 
 

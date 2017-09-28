@@ -8,13 +8,8 @@
 #include <memory>
 #include <string>
 
-#include "tucucore/definitions.h"
-
 namespace Tucuxi {
 namespace Common {
-
-using Tucuxi::Core::Value;
-using Tucuxi::Core::DataType;
 
 class Utils
 {
@@ -30,13 +25,6 @@ public:
         return std::string(buf.get(), buf.get() + size - 1);                    // We don't want the '\0' inside
     }
 
-    /// \brief Convert a std::string to a Value.
-    /// \param _str String to convert.
-    /// \param _type Type of the value given in the string.
-    /// \return Value contained in the string.
-    /// \pre _str contains a string that can be converted to a Value.
-    static Value stringToValue(std::string _str,
-                               const DataType &_dataType = DataType::Double);
 };
 
 }
