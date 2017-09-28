@@ -35,8 +35,8 @@ public:
     /// \param _type Type of the value given in the string.
     /// \return Value contained in the string.
     /// \pre _str contains a string that can be converted to a Value.
-    Value stringToValue(std::string _str,
-                        const DataType &_dataType = DataType::Double);
+    static Value stringToValue(std::string _str,
+                               const DataType &_dataType = DataType::Double);
 };
 
 }

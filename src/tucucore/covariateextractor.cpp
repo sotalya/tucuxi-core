@@ -166,10 +166,11 @@ int CovariateExtractor::extract(
     }
 
     // *** Generate events past the default ones ***
+    // (consider that patient variates are already sorted by date (for each patient variate type)).
     if (cdComputed.size() > 0) {
         // Unfortunately discovering all the relations among covariates is too difficult -- it would mean redoing the
-        // job of the OperableGraphManager. We will therefore need to throw everything inside the OGM, and then call an
-        // evaluate() each time the update is needed.
+        // job of the OperableGraphManager. We will therefore iterate over the PatientVariates and call an evaluate()
+        // each time the update is needed.
 
 
 
@@ -177,12 +178,17 @@ int CovariateExtractor::extract(
         // Shortcut: no need to recompute the graph each time a patient variate is inserted, so we can just push the
         // patient variates in the series.
         for (const auto &pvMap : pvValued) {
-            for (const auto &pv : pvMap.second) {
-                std::shared_ptr<CovariateEvent> event = std::make_shared<CovariateEvent>(**(cdValued[pvMap.first]),
-                                                                                         (*pv)->getEventTime(),
-                                                                                         Tucuxi::Common::Utils::stringToValue((*pv)->getValue(),
-                                                                                                                              (*pv)->getDataType()));
-                _series.push_back(*event);
+            if ((*cdValued[pvMap.first])->getRefreshPeriod().isEmpty()) {
+                // If no refresh period set, then just push the values as they are.
+                for (const auto &pv : pvMap.second) {
+                    std::shared_ptr<CovariateEvent> event = std::make_shared<CovariateEvent>(**(cdValued[pvMap.first]),
+                            (*pv)->getEventTime(),
+                            Tucuxi::Common::Utils::stringToValue((*pv)->getValue(),
+                                                                 (*pv)->getDataType()));
+                    _series.push_back(*event);
+                }
+            } else {
+                // We need to compute the interpolated values and push them at the appropriate time.
             }
         }
     }
