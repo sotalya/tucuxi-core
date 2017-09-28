@@ -9,6 +9,7 @@
 #include "tucucommon/loggerhelper.h"
 #include "tucucore/dosage.h"
 
+#include "test_covariateextractor.h"
 #include "test_dosage.h"
 #include "test_intakeextractor.h"
 #include "test_operation.h"
@@ -150,13 +151,25 @@ int main(int argc, char** argv)
     std::cout << "PkModel test succeeded\n";
 
 
-    // --- OperableGraphManager --- //
-    TestOpGraph opGraphTetst;
-    opGraphTetst.add_test("testOperableFunctions", &TestOpGraph::testOperableFunctions);
-    opGraphTetst.add_test("testOperableCockcroftGaultIBW", &TestOpGraph::testOperableCockcroftGaultIBW);
-    opGraphTetst.add_test("testOperableCyclic", &TestOpGraph::testOperableCyclic);
+    // --- CovariateExtractor --- //
+    TestCovariateExtractor ceTests;
+    ceTests.add_test("testOperableFunctions", &TestCovariateExtractor::testCovariateExtraction);
 
-    res = opGraphTetst.run(argc, argv);
+    res = ceTests.run(argc, argv);
+
+    if (res != 0) {
+        std::cerr << "Covariate Extractor test failed\n";
+        exit(1);
+    }
+    std::cout << "Covariate Extractor test succeeded\n";
+
+    // --- OperableGraphManager --- //
+    TestOpGraph opGraphTests;
+    opGraphTests.add_test("testOperableFunctions", &TestOpGraph::testOperableFunctions);
+    opGraphTests.add_test("testOperableCockcroftGaultIBW", &TestOpGraph::testOperableCockcroftGaultIBW);
+    opGraphTests.add_test("testOperableCyclic", &TestOpGraph::testOperableCyclic);
+
+    res = opGraphTests.run(argc, argv);
 
     if (res != 0) {
         std::cerr << "Operable Graph Manager test failed\n";

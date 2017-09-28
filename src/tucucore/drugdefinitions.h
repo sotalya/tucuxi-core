@@ -48,9 +48,14 @@ public:
     /// \return Returns the value.
     Value getValue() const { return m_value; }
 
+    /// \brief Set the value.
+    /// \param _value Value to set.
+    void setValue(const Value _value) { m_value = _value; }
+
     /// \brief Get if the value is computed via an operation or is a fixed value.
     /// \return True if the value is a result of an operation, false otherwise.
     bool isComputed() const { return m_operation != nullptr; }
+
 
 protected:
     std::string m_id;
