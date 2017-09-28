@@ -56,6 +56,8 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
     /// \brief Test covariate extraction using the example presented in the specs.
     void testCovariateExtraction(const std::string& /* _testName */)
     {
+        std::cerr << "******************** INIT ******************** \n";
+
         std::unique_ptr<CovariateDefinition> gist(new CovariateDefinition("Gist", 0, nullptr, CovariateType::Standard, DataType::Bool));
         gist->setInterpolationType(InterpolationType::Direct);
 
@@ -63,6 +65,8 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
         std::unique_ptr<CovariateDefinition> weight(new CovariateDefinition("Weight", 3.5, nullptr));
         weight->setRefreshPeriod(Tucuxi::Common::days(1));
         weight->setInterpolationType(InterpolationType::Linear);
+
+        std::cerr << "******************** S1 ******************** \n";
 
         std::unique_ptr<CovariateDefinition> isMale(new CovariateDefinition("IsMale", 1, nullptr, CovariateType::Standard, DataType::Bool));
 
@@ -72,11 +76,15 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
         { OperationInput("Weight", InputType::DOUBLE), OperationInput("IsMale", InputType::BOOL)});
         std::unique_ptr<CovariateDefinition> special(new CovariateDefinition("Special", 17.0, opSpecial));
 
+        std::cerr << "******************** S2 ******************** \n";
+
         CovariateDefinitions cDefinitions;
         cDefinitions.push_back(std::move(gist));
         cDefinitions.push_back(std::move(weight));
         cDefinitions.push_back(std::move(isMale));
         cDefinitions.push_back(std::move(special));
+
+        std::cerr << "******************** S3 ******************** \n";
 
         const DATE_TIME_VAR(startDate, 2017, 8, 12, 8, 0, 0);
         const DATE_TIME_VAR(endDate,   2017, 8, 17, 8, 0, 0);
@@ -95,6 +103,9 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
 
         // Test 1: call the extractor with the two patient covariates above.
         // We expect the first one to be "back-propagated" to the beginning of the interval.
+
+        std::cerr << "******************** T1 ******************** \n";
+
         CovariateExtractor extractor;
         CovariateSeries series;
         int rc;
@@ -131,6 +142,9 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
         /// \todo test1 with second event also before start interval -> must start with zero!
 
         // Test 2: call the extractor with no patient covariates.
+
+        std::cerr << "******************** T2 ******************** \n";
+
         PatientVariates pVariates2;
         series.clear();
         extractor.extract(cDefinitions, pVariates2, startDate, endDate, series);
@@ -157,6 +171,7 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
 
         // Test 3: add gist and model weight and special changes.
 
+        std::cerr << "******************** T3 ******************** \n";
 
         // weight = 3.8 @ 13.08.2017, 9h00.
         std::unique_ptr<PatientCovariate> patient_weight_1(new PatientCovariate("Weight", "3.8", DataType::Double, Unit(),

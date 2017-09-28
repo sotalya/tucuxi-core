@@ -54,6 +54,8 @@ int CovariateExtractor::extract(
         return -3;
     }
 
+    std::cerr << "A\n";
+
     // ** Fill internal structures with ID and position in vector, splitting between computed and not **
     // Covariate Definitions which are independent (that is, have their own value).
     std::map<std::string, cdIterator_t> cdValued;
@@ -75,13 +77,23 @@ int CovariateExtractor::extract(
             return -4;
         }
     }
+
+    std::cerr << "A1\n";
+
     // Push patient variates -- not computed by definition.
     for (pvIterator_t it = _patientCovariates.begin(); it != _patientCovariates.end(); ++it) {
         // If we cannot find a corresponding covariate definition, we can safely drop a patient variate.
         if (cdValued.find((*it)->getId()) != cdValued.end()) {
+            if (pvValued.find((*it)->getId()) == pvValued.end()) {
+                pvValued.insert(std::pair<std::string, std::vector<pvIterator_t>>((*it)->getId(),
+                                                                                  std::vector<pvIterator_t>()));
+            }
             pvValued.at((*it)->getId()).push_back(it);
         }
     }
+
+    std::cerr << "A2\n";
+
     // For each patient variate, sort by date the list of values, then discard those not of interest (e.g., those before
     // the beginning of the interval, except the very last one before the start of the interval).
     for (auto &pvV : pvValued) {
@@ -114,6 +126,8 @@ int CovariateExtractor::extract(
             }
         }
     }
+
+    std::cerr << "B\n";
 
     // ** Push the covariates at the initial time in the covariate serie and in the OGM ***
     OperableGraphManager ogm;
@@ -153,6 +167,8 @@ int CovariateExtractor::extract(
         ogm.registerInput(event, cdv.first);
     }
 
+    std::cerr << "C\n";
+
     // Map holding the pointers to the events linked with computed covariates and their latest value.
     std::map<std::string, std::pair<std::shared_ptr<CovariateEvent>, Value>> computedValuesMap;
 
@@ -177,6 +193,8 @@ int CovariateExtractor::extract(
             _series.push_back(*cvm.second.first);
         }
     }
+
+    std::cerr << "D\n";
 
     // *** Generate events past the default ones ***
     // Unfortunately discovering all the relations among covariates is too difficult -- it would mean redoing the
@@ -312,6 +330,8 @@ int CovariateExtractor::extract(
         }
     }
 
+    std::cerr << "E\n";
+
     // Now deal with the Computed Covariates with a fixed refresh period.
     // The least expensive approach is to get a list of the refresh times and perform the update (indeed, several
     // different computed covariates might want to refresh at the same time, and we do want to do their update once).
@@ -326,6 +346,8 @@ int CovariateExtractor::extract(
         }
     }
     // Create a vector containing the refresh times.
+
+    std::cerr << "F\n";
 
 
     return 0;
