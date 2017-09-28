@@ -31,7 +31,7 @@ public:
                const SampleSeries& _samples,
                const IntakeSeries& _intakes,
                const ParameterSetSeries& _parameters,
-               IConcentrationCalculator &_concentrationCalculator);
+               IConcentrationCalculator& _concentrationCalculator);
 
     /// \brief operator ()
     /// This method calculates the negative log of the posterior (its a misnomer to call it loglikelihood i guess).
