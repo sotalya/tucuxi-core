@@ -138,7 +138,7 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
                                                 series));
         // Second measure at the moment it is performed.
         fructose_assert(covariateEventIsPresent("Gist",
-                                                DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0),
+                                                DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0),
                                                 0,
                                                 series));
         // Remaining values propagated back to the start of the interval.

@@ -212,13 +212,6 @@ findInputInList(const OperationInputList &_inputs, const std::string &_inputName
 OperationInputIt
 findInputInList(const OperationInputList &_inputs, const std::string &_inputName, const InputType &_type)
 {
-
-    std::cerr << "Seeking input " << _inputName << " with type: " << (int)_type << "\n";
-
-    for (const auto &ii : _inputs) {
-        std::cerr << "Have input " << ii.getName() << " with type " << (int)ii.getType() << "\n";
-    }
-
     OperationInputIt it = std::find_if(_inputs.begin(), _inputs.end(),
                                        [&_inputName,&_type](const OperationInput &_in) -> bool { return _inputName == _in.getName() && _type == _in.getType(); });
     return it;
@@ -310,25 +303,16 @@ JSOperation::clone() const
 bool
 JSOperation::evaluate(const OperationInputList &_inputs, double &_result)
 {
-
-    std::cerr << "Called JSOperation::evaluate()\n";
-
     /// \warning The JS engine does not return an error if variables are missing -- it will silently assume that they
     ///          are zeroes and happily perform the computation. This could go horribly bad if no precautions are taken,
     ///          therefore we validate hereby the inputs to ensure that everything is in order.
     if (!check(_inputs)) {
-
-        std::cerr << "MISSING INPUTS!\n";
-
         return false;
     }
 
     JSEngine jsEngine;
     // Push the inputs
     for (auto inVar: _inputs) {
-
-        std::cerr << "Pushing input: " << inVar.getName() << "\n";
-
         switch (inVar.getType()) {
         ADD_VAR_CASE(InputType::BOOL, bool);
         ADD_VAR_CASE(InputType::INTEGER, int);
@@ -337,22 +321,13 @@ JSOperation::evaluate(const OperationInputList &_inputs, double &_result)
             return false;
         }
     }
-
-    std::cerr << "Done with the inputs\n";
-
     if (!jsEngine.evaluate(m_expression)) {
         return false;
     }
-
-    std::cerr << "Ok with the JS engine eval!\n";
-
     std::string resAsString;
     if(!jsEngine.getVariable("result", resAsString)) {
         return false;
     }
-
-    std::cerr << "resAsString = " << resAsString << "\n";
-
     _result = std::stod(resAsString);
     return true;
 }

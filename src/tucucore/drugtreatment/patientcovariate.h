@@ -40,6 +40,10 @@ public:
     /// \return Data type.
     DataType getDataType() const { return m_dataType; }
 
+    /// \brief Set the time the event happened.
+    /// \return Time of the event.
+    void setEventTime(const DateTime &_time) { m_time = _time; }
+
     /// \brief Get the data's unit of measure.
     /// \return Data's unit of measure.
     Unit getUnit() const { return m_unit; }

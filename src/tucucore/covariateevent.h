@@ -50,43 +50,26 @@ public:
     /// \return True if the evaluation could be performed, false in case of errors.
     virtual bool evaluate(const OperableGraphManager &_graphMgr)
     {
-
-        std::cerr << "CALLED CovariateEvent::evaluate()\n";
-
         Operation &op = getOperation();
 
         // Collect inputs
         OperationInputList inputs = getInputs();
 
-        std::cerr << "Got op with " << inputs.size() << " inputs\n";
-
         for (auto &input : inputs) {
             double val;
             bool rc;
+
             rc = _graphMgr.getValue(input.getName(), val);
-
-            std::cerr << "\tSeeking input: " << input.getName() << "\n";
-
             if (!rc) {
-
-                std::cerr << "Failed to get input!!!\n";
-
                 return false;
             }
 
-            std::cerr << "\tGot value = " << val << "\n";
-
             rc = input.setValue(val);
-
             if (!rc) {
-
-                std::cerr << "AAAAAAAAAAARGGGGGGGGHHHHHHHHHHHHHHHH!!!!!!!\n";
-
+                return false;
             }
 
         }
-
-        std::cerr << "Ok with inputs!\n";
 
         return op.evaluate(inputs, m_value);
     }
