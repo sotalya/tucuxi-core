@@ -108,7 +108,8 @@ SOURCES += \
     $$PWD/../../src/tucucore/processingservice/processingrequest.cpp \
     $$PWD/../../src/tucucore/processingservice/processingresponse.cpp \
     $$PWD/../../src/tucucore/processingservice/iprocessingservice.cpp \
-    $$PWD/../../src/tucucore/processingservice/processingtrait.cpp
+    $$PWD/../../src/tucucore/processingservice/processingtrait.cpp \
+    $$PWD/../../src/tucucore/covariateevent.cpp
 
 DISTFILES += \
     $$PWD/../../src/tucucore/makefile

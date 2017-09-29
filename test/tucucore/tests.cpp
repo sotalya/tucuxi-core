@@ -92,9 +92,9 @@ int main(int argc, char** argv)
     res = dosageTests.run(argc, argv);
     if (res != 0) {
         std::cerr << "Dosage test failed\n";
-        exit(1);
+    } else {
+        std::cout << "Dosage test succeeded\n";
     }
-    std::cout << "Dosage test succeeded\n";
 
     // --- INTAKE EXTRACTOR --- //
     TestIntakeExtractor intakeExtractorTests;
@@ -113,9 +113,9 @@ int main(int argc, char** argv)
     res = intakeExtractorTests.run(argc, argv);
     if (res != 0) {
         std::cerr << "IntakeExtractor test failed\n";
-        exit(1);
+    } else {
+        std::cout << "IntakeExtractor test succeeded\n";
     }
-    std::cout << "IntakeExtractor test succeeded\n";
 
     // --- OPERATION --- //
     TestOperation operationTests;
@@ -135,9 +135,9 @@ int main(int argc, char** argv)
     res = operationTests.run(argc, argv);
     if (res != 0) {
         std::cerr << "Operation test failed\n";
-        exit(1);
+    } else {
+        std::cout << "Operation test succeeded\n";
     }
-    std::cout << "Operation test succeeded\n";
 
     // --- PkModel --- //
     TestPkModel pkmodelTest;
@@ -146,10 +146,9 @@ int main(int argc, char** argv)
     res = pkmodelTest.run(argc, argv);
     if (res != 0) {
         std::cerr << "PkModel test failed\n";
-        exit(1);
+    } else {
+        std::cout << "PkModel test succeeded\n";
     }
-    std::cout << "PkModel test succeeded\n";
-
 
     // --- CovariateExtractor --- //
     TestCovariateExtractor ceTests;
@@ -159,9 +158,9 @@ int main(int argc, char** argv)
 
     if (res != 0) {
         std::cerr << "Covariate Extractor test failed\n";
-        exit(1);
+    } else {
+        std::cout << "Covariate Extractor test succeeded\n";
     }
-    std::cout << "Covariate Extractor test succeeded\n";
 
     // --- OperableGraphManager --- //
     TestOpGraph opGraphTests;
@@ -173,9 +172,9 @@ int main(int argc, char** argv)
 
     if (res != 0) {
         std::cerr << "Operable Graph Manager test failed\n";
-        exit(1);
+    } else {
+        std::cout << "Operable Graph Manager test succeeded\n";
     }
-    std::cout << "Operable Graph Manager test succeeded\n";
 
     TestPercentileCalculator percentileCalculatorTests;
 

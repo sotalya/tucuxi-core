@@ -157,7 +157,7 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
 
         PatientVariates pVariates2;
         series.clear();
-        extractor.extract(cDefinitions, pVariates2, startDate, endDate, series);
+        rc = extractor.extract(cDefinitions, pVariates2, startDate, endDate, series);
 
         printCovariateSeries(series);
 
@@ -205,9 +205,7 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
         pVariates3.push_back(std::move(patient_weight_3));
 
         series.clear();
-        int ee = extractor.extract(cDefinitions, pVariates3, startDate, endDate, series);
-
-        std::cerr << "EE: " << ee << "\n";
+        rc = extractor.extract(cDefinitions, pVariates3, startDate, endDate, series);
 
         printCovariateSeries(series);
 

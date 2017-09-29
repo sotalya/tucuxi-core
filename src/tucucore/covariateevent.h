@@ -44,37 +44,16 @@ public:
     ///        OperableGraphManager.
     /// \param _graphMgr Reference to the graph manager where the Operable has to seek its inputs.
     /// \return True if the evaluation could be performed, false in case of errors.
-    virtual bool evaluate(const OperableGraphManager &_graphMgr)
-    {
-        Operation &op = getOperation();
-
-        // Collect inputs
-        OperationInputList inputs = getInputs();
-
-        for (auto &input : inputs) {
-            double val;
-            bool rc;
-
-            rc = _graphMgr.getValue(input.getName(), val);
-            if (!rc) {
-                return false;
-            }
-
-            std::cerr << "Value of input " << input.getName() << ": " << val << "\n";
-
-            rc = input.setValue(val);
-            if (!rc) {
-                return false;
-            }
-
-        }
-
-        return op.evaluate(inputs, m_value);
-    }
+    virtual bool evaluate(const OperableGraphManager &_graphMgr);
 
     /// \brief Return the identifier of the covariate involved in the change.
     /// \return Identifier of covariate involved in the change.
     std::string getId() const { return m_id; }
+
+    /// \brief Set the time the event happened.
+    /// \param _time Time of the event.
+    void setEventTime(const DateTime &_time) { m_time = _time; }
+
 
 private:
     /// \brief Identifier of the covariate involved in the change
