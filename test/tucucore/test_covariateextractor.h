@@ -72,8 +72,6 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
     /// \brief Test covariate extraction using the example presented in the specs.
     void testCovariateExtraction(const std::string& /* _testName */)
     {
-        std::cerr << "******************** INIT ******************** \n";
-
         std::unique_ptr<CovariateDefinition> gist(new CovariateDefinition("Gist", 0, nullptr, CovariateType::Standard, DataType::Bool));
         gist->setInterpolationType(InterpolationType::Direct);
 
@@ -81,8 +79,6 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
         std::unique_ptr<CovariateDefinition> weight(new CovariateDefinition("Weight", 3.5, nullptr));
         weight->setRefreshPeriod(Tucuxi::Common::days(1));
         weight->setInterpolationType(InterpolationType::Linear);
-
-        std::cerr << "******************** S1 ******************** \n";
 
         std::unique_ptr<CovariateDefinition> isMale(new CovariateDefinition("IsMale", 1, nullptr, CovariateType::Standard, DataType::Bool));
 
@@ -92,15 +88,11 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
         { OperationInput("Weight", InputType::DOUBLE), OperationInput("IsMale", InputType::DOUBLE)});
         std::unique_ptr<CovariateDefinition> special(new CovariateDefinition("Special", 17.0, opSpecial));
 
-        std::cerr << "******************** S2 ******************** \n";
-
         CovariateDefinitions cDefinitions;
         cDefinitions.push_back(std::move(gist));
         cDefinitions.push_back(std::move(weight));
         cDefinitions.push_back(std::move(isMale));
         cDefinitions.push_back(std::move(special));
-
-        std::cerr << "******************** S3 ******************** \n";
 
         const DATE_TIME_VAR(startDate, 2017, 8, 12, 8, 0, 0);
         const DATE_TIME_VAR(endDate,   2017, 8, 17, 8, 0, 0);
@@ -193,6 +185,10 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
 
         std::cerr << "******************** T3 ******************** \n";
 
+        // gist == true @ 13.08.2017, 12h32.
+        std::unique_ptr<PatientCovariate> patient_gist_3(new PatientCovariate("Gist", "1", DataType::Bool, Unit(),
+                                                                              DATE_TIME_NO_VAR(2017, 8, 13, 12, 32, 0)));
+
         // weight = 3.8 @ 13.08.2017, 9h00.
         std::unique_ptr<PatientCovariate> patient_weight_1(new PatientCovariate("Weight", "3.8", DataType::Double, Unit(),
                                                                                 DATE_TIME_NO_VAR(2017, 8, 13, 9, 0, 0)));
@@ -203,13 +199,15 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
         std::unique_ptr<PatientCovariate> patient_weight_3(new PatientCovariate("Weight", "4.25", DataType::Double, Unit(),
                                                                                 DATE_TIME_NO_VAR(2017, 8, 16, 21, 0, 0)));
         PatientVariates pVariates3;
-        pVariates3.push_back(std::move(patient_gist_1));
+        pVariates3.push_back(std::move(patient_gist_3));
         pVariates3.push_back(std::move(patient_weight_1));
         pVariates3.push_back(std::move(patient_weight_2));
         pVariates3.push_back(std::move(patient_weight_3));
 
         series.clear();
-        extractor.extract(cDefinitions, pVariates3, startDate, endDate, series);
+        int ee = extractor.extract(cDefinitions, pVariates3, startDate, endDate, series);
+
+        std::cerr << "EE: " << ee << "\n";
 
         printCovariateSeries(series);
 

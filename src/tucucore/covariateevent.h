@@ -33,16 +33,12 @@ public:
     /// \param _value New value of the covariate.
     CovariateEvent(const CovariateDefinition &_covariateDef, const DateTime &_date, Value _value)
         : IndividualValue(_covariateDef), TimedEvent(_date), Operable(_value),
-          m_id(_covariateDef.getId()), m_value(_value)
+          m_id(_covariateDef.getId())
     {}
 
     /// \brief Get the associated operation.
     /// \return Reference to the associated operation.
     virtual Operation &getOperation() const override { return m_definition.getOperation(); }
-
-    /// \brief Get the modified value of the covariate.
-    /// \return Modified value of the covariate.
-    Value getValue() const { return m_value; }
 
     /// \brief Perform the evaluation on the Operable, retrieving the inputs (and the dependencies) from the
     ///        OperableGraphManager.
@@ -64,6 +60,8 @@ public:
                 return false;
             }
 
+            std::cerr << "Value of input " << input.getName() << ": " << val << "\n";
+
             rc = input.setValue(val);
             if (!rc) {
                 return false;
@@ -81,9 +79,6 @@ public:
 private:
     /// \brief Identifier of the covariate involved in the change
     std::string m_id;
-
-    /// \brief New value of the covariate.
-    Value m_value;
 };
 
 /// \brief List of covariate series (that is, changes).

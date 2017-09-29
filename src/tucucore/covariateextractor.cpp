@@ -161,11 +161,14 @@ int CovariateExtractor::extract(
     // ** Push the covariates at the initial time in the covariate serie and in the OGM ***
     OperableGraphManager ogm;
 
+    // Map holding the pointers to the events linked with non-computed covariates.
+    std::map<std::string, std::shared_ptr<CovariateEvent>> nccValuesMap;
+
     // Standard values (no computations involved).
     for (const auto &cdv : cdValued) {
         std::map<std::string, std::vector<pvIterator_t>>::iterator it;
         it = pvValued.find(cdv.first);
-        std::shared_ptr<CovariateEvent> event;
+        std::shared_ptr<CovariateEvent> event = nullptr;
         if (it == pvValued.end()) {
             // If no patient variates associated, then take default value (it won't be touched afterwards).
             event = std::make_shared<CovariateEvent>(**(cdv.second), _start, (*(cdv.second))->getValue());
@@ -190,13 +193,14 @@ int CovariateExtractor::extract(
                 }
             }
             event = std::make_shared<CovariateEvent>(**(cdv.second), _start, newVal);
-
         }
+
         _series.push_back(*event);
         ogm.registerInput(event, cdv.first);
+        nccValuesMap.insert(std::pair<std::string, std::shared_ptr<CovariateEvent>>(cdv.first, event));
     }
 
-    // Map holding the pointers to the events linked with computed covariates and their latest value.
+    // Map holding the pointers to the events linked with covariates and their latest value.
     std::map<std::string, std::pair<std::shared_ptr<CovariateEvent>, Value>> computedValuesMap;
 
     // Computed values.
@@ -204,7 +208,7 @@ int CovariateExtractor::extract(
         // Push an Operable for each computed Covariate.
         for (const auto &cdc : cdComputed) {
             std::shared_ptr<CovariateEvent> event = std::make_shared<CovariateEvent>(**(cdc.second), _start, 0.0);
-            computedValuesMap[cdc.first] = std::make_pair(event, 0.0);
+            computedValuesMap.insert(std::pair<std::string, std::pair<std::shared_ptr<CovariateEvent>, Value>>(cdc.first, std::make_pair(event, 0.0)));
             ogm.registerOperable(event, cdc.first);
         }
 
@@ -221,6 +225,12 @@ int CovariateExtractor::extract(
             // Push each computed covariate in the event series.
             _series.push_back(*cvm.second.first);
         }
+    }
+
+    for (const auto &aa : computedValuesMap) {
+
+        std::cerr << "IN MAP: " << aa.first << "\n";
+
     }
 
     // *** Generate events past the default ones ***
@@ -247,12 +257,15 @@ int CovariateExtractor::extract(
                         // We have a change in a value and some of the values are computed -> we need to do an update of
                         // the operable graph with this new value, then trigger a recomputation, and update the values
                         // that changed.
-                        (*cdValued[pvMap.first])->setValue(stringToValue((*pv)->getValue(), (*pv)->getDataType()));
+                        (*(cdValued.at(pvMap.first)))->setValue(stringToValue((*pv)->getValue(), (*pv)->getDataType()));
                         ogm.evaluate();
                         for (auto &cvm : computedValuesMap) {
+
+                            std::cerr << "cvm.first: " << cvm.first << "\n";
+
                             // We do the update here *only* for the Computed Variates that have no refresh period.
                             // We will deal with those with a refresh period set afterwards.
-                            if ((*(cdComputed[cvm.first]))->getRefreshPeriod().isEmpty()) {
+                            if ((*(cdComputed.at(cvm.first)))->getRefreshPeriod().isEmpty()) {
                                 double cvVal;
                                 if (!ogm.getValue(cvm.second.first->getId(), cvVal)) {
                                     return -7;
@@ -330,11 +343,23 @@ int CovariateExtractor::extract(
                         _series);                   // Series
 
                 if (cdComputed.size() > 0) {
+
+                    std::cerr << "We have computed values!\n";
+
                     // We have a change in a value and some of the values are computed -> we need to do an update of
                     // the operable graph with this new value, then trigger a recomputation, and update the values
-                    // that changed.
-                    (*cdValued[pvMap.first])->setValue(newVal);
+                    // that changed. This is done by updating the value of the event pushed in the ogm.
+
+                    (nccValuesMap.at(pvMap.first))->setValue(newVal);
+
+                    std::cerr << "The value of " << pvMap.first << " in the OGM has been changed to "
+                              << newVal << "\n";
+                    double bb;
+                    ogm.getValue(pvMap.first, bb);
+                    std::cerr << "Checking with OGM: " << bb << "\n";
+
                     ogm.evaluate();
+
                     for (auto &cvm : computedValuesMap) {
                         // We do the update here *only* for the Computed Variates that have no refresh period.
                         // We will deal with those with a refresh period set afterwards.
@@ -343,6 +368,9 @@ int CovariateExtractor::extract(
                             if (!ogm.getValue(cvm.second.first->getId(), cvVal)) {
                                 return -7;
                             }
+
+                            std::cerr << "$$$ New value = " << cvVal << " (was " << cvm.second.second << ")\n";
+
                             // Check if the new value is different than the old one. If this is the case, create a
                             // new event.
                             if (cvVal != cvm.second.second) {
