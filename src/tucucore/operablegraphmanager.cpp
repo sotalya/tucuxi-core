@@ -21,6 +21,7 @@ OperableGraphManager::evaluate()
     // loop). To save computations, the result is cached and won't change unless the graph's structure changes.
     if (!m_validGraph) {
         if (!isValid()) {
+            std::cerr << "INVALID GRAPH!\n";
             return false;
         }
     }
@@ -33,12 +34,21 @@ OperableGraphManager::evaluate()
     // Initialize the map to false since all the nodes still have to be computed.
     for (const auto &it : m_operables) {
         alreadyComputed.insert(std::pair<IOperable_ID, bool>(it.first, false));
+
+        std::cerr << "Inserting " << it.first << " as not computed yet!\n";
+
     }
 
     // Now, for practicality, iterate directly on the alreadyComputed map.
     for (auto const &current : alreadyComputed) {
+
+        std::cerr << "Evaluating node: " << current.first << "\n";
+
         bool rc = evaluateOperableNode(current.first, alreadyComputed);
         if (!rc) {
+
+            std::cerr << "evaluate failure...\n";
+
             return false;
         }
     }
@@ -108,20 +118,34 @@ bool
 OperableGraphManager::evaluateOperableNode(const IOperable_ID _id, std::map<IOperable_ID, bool> &_alreadyComputed)
 {
     if (_alreadyComputed.at(_id)) {
+
+        std::cerr << _id << " already evaluated, returning success...\n";
+
         // Operable already evaluated, so return success.
         return true;
     }
+
+    std::cerr << _id << ": retrieving dependencies...\n";
 
     // Retrieve the list of dependencies.
     std::vector<std::string> deps = m_operables.at(_id).getDependencies();
     // Iterate over the dependencies and check each of them:
     // If the m_operableInputs map marks it as a "simple" input, then just skip to the subsequent one. Otherwise check
     // in the _alreadyComputed map if it has already been computed. If this is not the case, recursively evaluate it.
+
+    std::cerr << "Got " << deps.size() << " deps!\n";
+
     for (auto const &it : deps) {
         if (m_operableInputs.at(it).isComputed()) {
+
+            std::cerr << "\tInput " << it << " is a computed one!\n";
+
             IOperable_ID opNodeId;
             opNodeId = m_operableInputs.at(it).getOperableID();
             if (!_alreadyComputed.at(opNodeId)) {
+
+                std::cerr << "\t\tNot yet computed, computing it...\n";
+
                 bool rc = evaluateOperableNode(opNodeId, _alreadyComputed);
                 if (!rc) {
                     return false;
@@ -129,6 +153,9 @@ OperableGraphManager::evaluateOperableNode(const IOperable_ID _id, std::map<IOpe
             }
         }
     }
+
+    std::cerr << "ALL deps satisfied for " << _id << ", perform the evaluation!\n";
+
     // At this point all dependencies have been satisfied, so we can safely perform our evaluation.
     _alreadyComputed.at(_id) = m_operables.at(_id).evaluate(*this);
     return _alreadyComputed.at(_id);

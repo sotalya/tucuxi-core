@@ -8,6 +8,16 @@
 namespace Tucuxi {
 namespace Core {
 
+void printDate(const Tucuxi::Common::DateTime &_dt)
+{
+    std::cerr << _dt.day() << "."
+              << _dt.month() << "."
+              << _dt.year() << " "
+              << _dt.hour() << "h"
+              << _dt.minute() << "m"
+              << _dt.second() << "s";
+}
+
 /// \brief Create an event and push it in the event series.
 /// \param COV_DEF Corresponding covariate definition.
 /// \param TIME Time of the event.
@@ -54,8 +64,6 @@ int CovariateExtractor::extract(
         return -3;
     }
 
-    std::cerr << "A\n";
-
     // ** Fill internal structures with ID and position in vector, splitting between computed and not **
     // Covariate Definitions which are independent (that is, have their own value).
     std::map<std::string, cdIterator_t> cdValued;
@@ -64,12 +72,20 @@ int CovariateExtractor::extract(
     // Patient Variates (measured values, therefore cannot be computed!). We normally have multiple patient variates.
     std::map<std::string, std::vector<pvIterator_t>> pvValued;
 
+    std::cerr << "______________________________________________________________________\n";
+
     // Push covariate definitions, splitting between computed and not.
     for (cdIterator_t it = _defaults.begin(); it != _defaults.end(); ++it) {
         std::pair<std::map<std::string, cdIterator_t>::iterator, bool> rc;
         if ((*it)->isComputed()) {
+
+            std::cerr << "COMPUTED: " << (*it)->getId() << "\n";
+
             rc = cdComputed.insert(std::pair<std::string, cdIterator_t>((*it)->getId(), it));
         } else {
+
+            std::cerr << "NOT COMPUTED: " << (*it)->getId() << "\n";
+
             rc = cdValued.insert(std::pair<std::string, cdIterator_t>((*it)->getId(), it));
         }
         if (rc.second == false) {
@@ -78,25 +94,36 @@ int CovariateExtractor::extract(
         }
     }
 
-    std::cerr << "A1\n";
-
     // Push patient variates -- not computed by definition.
     for (pvIterator_t it = _patientCovariates.begin(); it != _patientCovariates.end(); ++it) {
         // If we cannot find a corresponding covariate definition, we can safely drop a patient variate.
         if (cdValued.find((*it)->getId()) != cdValued.end()) {
             if (pvValued.find((*it)->getId()) == pvValued.end()) {
+
+                std::cerr << "Creating new patient variate: " << (*it)->getId() << "\n";
+
                 pvValued.insert(std::pair<std::string, std::vector<pvIterator_t>>((*it)->getId(),
                                                                                   std::vector<pvIterator_t>()));
             }
+
+            std::cerr << "Pushing value for patient variate (" << (*it)->getId() << ") = " << (*it)->getValue() << "\n";
+
             pvValued.at((*it)->getId()).push_back(it);
         }
     }
 
-    std::cerr << "A2\n";
-
     // For each patient variate, sort by date the list of values, then discard those not of interest (e.g., those before
     // the beginning of the interval, except the very last one before the start of the interval).
     for (auto &pvV : pvValued) {
+
+        std::cerr << "\n" << pvV.first << " before sorting:\n";
+        int aa = 0;
+        for (const auto &pval : pvV.second) {
+            std::cerr << aa++ << " ";
+            printDate((*pval)->getEventTime());
+            std::cerr << "\n";
+        }
+
         // Sort by increasing date.
         std::sort(pvV.second.begin(), pvV.second.end(),
                   [](pvIterator_t &_a, pvIterator_t &_b) { return (*_a)->getEventTime() < (*_b)->getEventTime(); });
@@ -125,12 +152,21 @@ int CovariateExtractor::extract(
                 ++it;
             }
         }
-    }
 
-    std::cerr << "B\n";
+        std::cerr << "\n" << pvV.first << " after sorting:\n";
+        aa = 0;
+        for (const auto &pval : pvV.second) {
+            std::cerr << aa++ << " ";
+            printDate((*pval)->getEventTime());
+            std::cerr << "\n";
+        }
+
+    }
 
     // ** Push the covariates at the initial time in the covariate serie and in the OGM ***
     OperableGraphManager ogm;
+
+    std::cerr << "-- Pushing standard values with NO computations --\n";
 
     // Standard values (no computations involved).
     for (const auto &cdv : cdValued) {
@@ -138,6 +174,10 @@ int CovariateExtractor::extract(
         it = pvValued.find(cdv.first);
         std::shared_ptr<CovariateEvent> event;
         if (it == pvValued.end()) {
+
+            std::cerr << cdv.first << ": no associated PV, taking default value = "
+                      << (*(cdv.second))->getValue() << "\n";
+
             // If no patient variates associated, then take default value (it won't be touched afterwards).
             event = std::make_shared<CovariateEvent>(**(cdv.second), _start, (*(cdv.second))->getValue());
 
@@ -146,6 +186,9 @@ int CovariateExtractor::extract(
             if (it->second.size() == 1 || (*(it->second.at(0)))->getEventTime() >= _start) {
                 // If single patient variate value or measurement start after _start, then take the first value.
                 newVal = std::stod((*(it->second.at(0)))->getValue());
+
+                std::cerr << cdv.first << ": SINGLE PV or first after start, therefore taking first value = " << newVal << "\n";
+
             } else {
                 // If multiple values with the first before _start, then use the value interpolated using the first two
                 // elements of the vector.
@@ -159,18 +202,24 @@ int CovariateExtractor::extract(
                 if (rc == false) {
                     return -5;
                 }
+
+                std::cerr << cdv.first << ": using INTERPOLATED value = " << newVal << "\n";
+
             }
             event = std::make_shared<CovariateEvent>(**(cdv.second), _start, newVal);
 
         }
         _series.push_back(*event);
         ogm.registerInput(event, cdv.first);
-    }
 
-    std::cerr << "C\n";
+        std::cerr << "Registered OGM input " << cdv.first << "\n";
+    }
 
     // Map holding the pointers to the events linked with computed covariates and their latest value.
     std::map<std::string, std::pair<std::shared_ptr<CovariateEvent>, Value>> computedValuesMap;
+
+    std::cerr << "-- Pushing initial values for COMPUTED covariates --\n";
+    std::cerr << cdComputed.size() << " computed values available!\n";
 
     // Computed values.
     if (cdComputed.size() > 0) {
@@ -179,18 +228,34 @@ int CovariateExtractor::extract(
             std::shared_ptr<CovariateEvent> event = std::make_shared<CovariateEvent>(**(cdc.second), _start, 0.0);
             computedValuesMap[cdc.first] = std::make_pair(event, 0.0);
             ogm.registerOperable(event, cdc.first);
+
+            std::cerr << "Registered OGM operable " << cdc.first << "\n";
+
         }
+
+        std::cerr << "Calling evaluate()\n";
+
         // Call the evaluation once to generate the first set of values for the
         // computed events.
         bool rc = ogm.evaluate();
-        if (!rc) {
+
+        std::cerr << "done! rc = " << rc << "\n";
+
+        if (rc == false) {
             return -6;
         }
+
+        std::cerr << computedValuesMap.size() << " elements in computedValuesMap\n";
+
         for (auto &cvm : computedValuesMap) {
             // Update the value in the map.
             cvm.second.second = cvm.second.first->getValue();
             // Push each computed covariate in the event series.
             _series.push_back(*cvm.second.first);
+
+            std::cerr << "COMPUTED covariate " << cvm.second.first->getId()
+                      << " = " << cvm.second.first->getValue() << "\n";
+
         }
     }
 

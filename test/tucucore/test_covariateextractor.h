@@ -48,6 +48,22 @@ bool covariateEventIsPresent(const std::string &_id,
     return false;
 }
 
+void printCovariateSeries(const CovariateSeries &_series)
+{
+    std::cerr << "--------- " << _series.size() << " ----------\n";
+    for (const auto &covEl : _series) {
+        std::cerr << covEl.getId() << " @ "
+                  << covEl.getEventTime().day() << "."
+                  << covEl.getEventTime().month() << "."
+                  << covEl.getEventTime().year() << " "
+                  << covEl.getEventTime().hour() << "h"
+                  << covEl.getEventTime().minute() << "m"
+                  << covEl.getEventTime().second() << "s"
+                  << " = " << covEl.getValue() << "\n";
+    }
+    std::cerr << "==============================================\n";
+}
+
 struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtractor>
 {
 
@@ -73,7 +89,7 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
         /// \todo Change the plain-old-pointer below when unique_ptr will be in place!
         Operation *opSpecial =
                 new JSOperation("Weight * 0.5 + IsMale * 15",
-        { OperationInput("Weight", InputType::DOUBLE), OperationInput("IsMale", InputType::BOOL)});
+        { OperationInput("Weight", InputType::DOUBLE), OperationInput("IsMale", InputType::DOUBLE)});
         std::unique_ptr<CovariateDefinition> special(new CovariateDefinition("Special", 17.0, opSpecial));
 
         std::cerr << "******************** S2 ******************** \n";
@@ -110,6 +126,8 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
         CovariateSeries series;
         int rc;
         rc = extractor.extract(cDefinitions, pVariates1, startDate, endDate, series);
+
+        printCovariateSeries(series);
 
         fructose_assert(series.size() == 5);
         fructose_assert(rc == 0);
@@ -148,6 +166,8 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
         PatientVariates pVariates2;
         series.clear();
         extractor.extract(cDefinitions, pVariates2, startDate, endDate, series);
+
+        printCovariateSeries(series);
 
         fructose_assert(series.size() == 4);
         fructose_assert(rc == 0);
@@ -190,6 +210,9 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
 
         series.clear();
         extractor.extract(cDefinitions, pVariates3, startDate, endDate, series);
+
+        printCovariateSeries(series);
+
         fructose_assert(series.size() == 16);
         fructose_assert(rc == 0);
 
