@@ -50,6 +50,10 @@ public: \
     { \
         static std::shared_ptr<IntakeCreator> instance(new IntakeCreator()); \
         return instance; \
+    } \
+    \
+    virtual IntakeIntervalCalculator *getLightClone() { \
+        return new entity(); \
     }
 
 
@@ -72,6 +76,12 @@ public:
 public:
     /// \brief Constructor
     IntakeIntervalCalculator() {}
+
+    ///
+    /// \brief clone
+    /// \return a clone of the object, without copy of the member variables, only the object itself
+    ///
+    virtual IntakeIntervalCalculator * getLightClone() = 0;
     
     /// \brief Calculate all points for the given time serie
     /// Variable denisty is used by default, which means IntakeEvent is not constant as the final density 
