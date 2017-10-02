@@ -41,7 +41,7 @@ bool covariateEventIsPresent(const std::string &_id,
                              const CovariateSeries &_series)
 {
     for (const auto &covEl : _series) {
-        if (covEl.getId() == _id && covEl.getValue() == _value && covEl.getEventTime() == _date) {
+        if (covEl.getId() == _id && fabs(covEl.getValue() - _value) < 1e-4 && covEl.getEventTime() == _date) {
             return true;
         }
     }
@@ -75,10 +75,10 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
         std::unique_ptr<CovariateDefinition> gist(new CovariateDefinition("Gist", 0, nullptr, CovariateType::Standard, DataType::Bool));
         gist->setInterpolationType(InterpolationType::Direct);
 
-        /// \todo Add "kg" to test when units available!
         std::unique_ptr<CovariateDefinition> weight(new CovariateDefinition("Weight", 3.5, nullptr));
         weight->setRefreshPeriod(Tucuxi::Common::days(1));
         weight->setInterpolationType(InterpolationType::Linear);
+        weight->setUnit(Unit("kg"));
 
         std::unique_ptr<CovariateDefinition> isMale(new CovariateDefinition("IsMale", 1, nullptr, CovariateType::Standard, DataType::Bool));
 
@@ -186,17 +186,17 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
         std::cerr << "******************** T3 ******************** \n";
 
         // gist == true @ 13.08.2017, 12h32.
-        std::unique_ptr<PatientCovariate> patient_gist_3(new PatientCovariate("Gist", "1", DataType::Bool, Unit(),
+        std::unique_ptr<PatientCovariate> patient_gist_3(new PatientCovariate("Gist", "1", DataType::Bool, Unit("kg"),
                                                                               DATE_TIME_NO_VAR(2017, 8, 13, 12, 32, 0)));
 
         // weight = 3.8 @ 13.08.2017, 9h00.
-        std::unique_ptr<PatientCovariate> patient_weight_1(new PatientCovariate("Weight", "3.8", DataType::Double, Unit(),
+        std::unique_ptr<PatientCovariate> patient_weight_1(new PatientCovariate("Weight", "3.8", DataType::Double, Unit("kg"),
                                                                                 DATE_TIME_NO_VAR(2017, 8, 13, 9, 0, 0)));
         // weight = 4.05 @ 15.08.2017, 21h00.
-        std::unique_ptr<PatientCovariate> patient_weight_2(new PatientCovariate("Weight", "4.05", DataType::Double, Unit(),
+        std::unique_ptr<PatientCovariate> patient_weight_2(new PatientCovariate("Weight", "4.05", DataType::Double, Unit("kg"),
                                                                                 DATE_TIME_NO_VAR(2017, 8, 15, 21, 0, 0)));
         // weight = 4.25 @ 16.08.2017, 21h00.
-        std::unique_ptr<PatientCovariate> patient_weight_3(new PatientCovariate("Weight", "4.25", DataType::Double, Unit(),
+        std::unique_ptr<PatientCovariate> patient_weight_3(new PatientCovariate("Weight", "4.25", DataType::Double, Unit("kg"),
                                                                                 DATE_TIME_NO_VAR(2017, 8, 16, 21, 0, 0)));
         PatientVariates pVariates3;
         pVariates3.push_back(std::move(patient_gist_3));
@@ -209,12 +209,12 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
 
         printCovariateSeries(series);
 
-        fructose_assert(series.size() == 16);
+        fructose_assert(series.size() == 12);
         fructose_assert(rc == 0);
 
         fructose_assert(covariateEventIsPresent("Gist",
                                                 DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0),
-                                                0,
+                                                1,
                                                 series));
         fructose_assert(covariateEventIsPresent("IsMale",
                                                 DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0),
@@ -225,60 +225,44 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
         // day before, but that could have been weird).
         fructose_assert(covariateEventIsPresent("Weight",
                                                 DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0),
-                                                3.7,
-                                                series));
-        fructose_assert(covariateEventIsPresent("Weight",
-                                                DATE_TIME_NO_VAR(2017, 8, 12, 9, 0, 0),
-                                                3.7,
-                                                series));
-        fructose_assert(covariateEventIsPresent("Weight",
-                                                DATE_TIME_NO_VAR(2017, 8, 13, 9, 0, 0),
                                                 3.8,
                                                 series));
         fructose_assert(covariateEventIsPresent("Weight",
-                                                DATE_TIME_NO_VAR(2017, 8, 14, 9, 0, 0),
-                                                3.9,
+                                                DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
+                                                3.89583,
                                                 series));
         fructose_assert(covariateEventIsPresent("Weight",
-                                                DATE_TIME_NO_VAR(2017, 8, 15, 9, 0, 0),
-                                                4.0,
+                                                DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0),
+                                                3.99583,
                                                 series));
         fructose_assert(covariateEventIsPresent("Weight",
-                                                DATE_TIME_NO_VAR(2017, 8, 16, 9, 0, 0),
-                                                4.2,
+                                                DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0),
+                                                4.14167,
                                                 series));
         fructose_assert(covariateEventIsPresent("Weight",
-                                                DATE_TIME_NO_VAR(2017, 8, 17, 9, 0, 0),
-                                                4.4,
+                                                DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0),
+                                                4.25,
                                                 series));
         // Computed value at the beginning of the interval.
         fructose_assert(covariateEventIsPresent("Special",
                                                 DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0),
-                                                16.85,
-                                                series));
-        fructose_assert(covariateEventIsPresent("Special",
-                                                DATE_TIME_NO_VAR(2017, 8, 12, 9, 0, 0),
-                                                16.85,
-                                                series));
-        fructose_assert(covariateEventIsPresent("Special",
-                                                DATE_TIME_NO_VAR(2017, 8, 13, 9, 0, 0),
                                                 16.9,
                                                 series));
         fructose_assert(covariateEventIsPresent("Special",
-                                                DATE_TIME_NO_VAR(2017, 8, 14, 9, 0, 0),
-                                                16.95,
+                                                DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
+                                                16.9479,
                                                 series));
         fructose_assert(covariateEventIsPresent("Special",
-                                                DATE_TIME_NO_VAR(2017, 8, 15, 9, 0, 0),
-                                                17.0,
+                                                DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0),
+                                                16.9979,
                                                 series));
         fructose_assert(covariateEventIsPresent("Special",
-                                                DATE_TIME_NO_VAR(2017, 8, 16, 9, 0, 0),
-                                                17.1,
+                                                DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0),
+                                                17.0708,
                                                 series));
         fructose_assert(covariateEventIsPresent("Special",
-                                                DATE_TIME_NO_VAR(2017, 8, 17, 9, 0, 0),
-                                                17.2,
+                                                DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0),
+                                                17.125,
                                                 series));
     }
 
