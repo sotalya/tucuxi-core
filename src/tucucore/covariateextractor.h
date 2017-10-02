@@ -87,6 +87,9 @@ private:
     static Value stringToValue(std::string _str,
                                const DataType &_dataType = DataType::Double);
 
+    Value getPatientVariateValue(const std::vector<pvIterator_t>& _PV,
+                                 const DateTime &_t,
+                                 const InterpolationType _interpolationType);
 };
 
 
