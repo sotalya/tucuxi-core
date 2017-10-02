@@ -103,13 +103,13 @@ int CovariateExtractor::extract(
     // of the interval.
     for (auto &pvV : pvValued) {
 
-//        std::cerr << "\n" << pvV.first << " before sorting:\n";
-//        int aa = 0;
-//        for (const auto &pval : pvV.second) {
-//            std::cerr << aa++ << " ";
-//            printDate((*pval)->getEventTime());
-//            std::cerr << "\n";
-//        }
+        //        std::cerr << "\n" << pvV.first << " before sorting:\n";
+        //        int aa = 0;
+        //        for (const auto &pval : pvV.second) {
+        //            std::cerr << aa++ << " ";
+        //            printDate((*pval)->getEventTime());
+        //            std::cerr << "\n";
+        //        }
 
         // Sort by increasing date.
         std::sort(pvV.second.begin(), pvV.second.end(),
@@ -146,13 +146,13 @@ int CovariateExtractor::extract(
             (*(pvV.second.at(0)))->setEventTime(_start);
         }
 
-//        std::cerr << "\n" << pvV.first << " after sorting:\n";
-//        aa = 0;
-//        for (const auto &pval : pvV.second) {
-//            std::cerr << aa++ << " ";
-//            printDate((*pval)->getEventTime());
-//            std::cerr << "\n";
-//        }
+        //        std::cerr << "\n" << pvV.first << " after sorting:\n";
+        //        aa = 0;
+        //        for (const auto &pval : pvV.second) {
+        //            std::cerr << aa++ << " ";
+        //            printDate((*pval)->getEventTime());
+        //            std::cerr << "\n";
+        //        }
 
     }
 
@@ -232,6 +232,9 @@ int CovariateExtractor::extract(
     // each time the update is needed.
 
     for (const auto &pvMap : pvValued) {
+
+        std::cerr << "## VARIABLE: " << pvMap.first << " ##\n";
+
         // Consider that patient variates are already sorted by date (for each patient variate type).
         Duration refreshPeriod = (*cdValued[pvMap.first])->getRefreshPeriod();
         if (refreshPeriod.isEmpty()) {
@@ -295,21 +298,43 @@ int CovariateExtractor::extract(
             // If we had a measurement before the start of the interval, we would have kept it in the vector and
             // thus we would interpolate and not set a fixed value. The same reasoning applies if we had a
             // measurement after the end of the interval.
-            for (auto timeIt = _start + refreshPeriod; timeIt < _end; timeIt += refreshPeriod) {
+            for (auto timeIt = _start + refreshPeriod; timeIt <= _end; timeIt += refreshPeriod) {
+
+                std::cerr << "** TIME: "; printDate(timeIt); std::cerr << " **\n";
+
                 if (timeIt <= (**(pvMap.second.begin()))->getEventTime()) {
-                    // Before first measurement use the value of the first measurement.
-                    newVal = stringToValue((**(pvMap.second.begin()))->getValue(),
-                                           (**(pvMap.second.begin()))->getDataType());
+
+                    std::cerr << "\tWe are before the time of the first measurement (";
+                    printDate((**(pvMap.second.begin()))->getEventTime());
+                    std::cerr << "), we SKIP the measurement to avoid duplicata.";
+                    //                    std::cerr << "), we we use the value of the first measurement = "
+                    //                              << (**(pvMap.second.begin()))->getValue() << "\n";
+
+                    //                    // Before first measurement use the value of the first measurement.
+                    //                    newVal = stringToValue((**(pvMap.second.begin()))->getValue(),
+                    //                                           (**(pvMap.second.begin()))->getDataType());
                 } else {
                     // Advance until we pass the measurement just before the chosen time, or until we get to the
                     // last available measurement.
-                    while (timeIt >= (**pvIt)->getEventTime() && std::next(pvIt) != pvMap.second.end()) {
+                    while (pvIt != pvMap.second.end() && (**pvIt)->getEventTime() <= timeIt) {
+
+                        std::cerr << "\tCurrent event time: ";
+                        printDate((**pvIt)->getEventTime());
+                        std::cerr << ", advancing...\n";
+
                         ++pvIt;
                     }
-                    if (std::next(pvIt) == pvMap.second.end()) {
+
+                    std::cerr << "DONE!\n";
+
+                    if (pvIt == pvMap.second.end()) {
+
+                        std::cerr << "We are past in time after the last measurement we have, so we have to keep the value = "
+                                  << (**(std::prev(pvIt)))->getValue() << "\n";
+
                         // We are past in time after the last measurement we have, so we have to keep the value.
-                        newVal = stringToValue((**(pvIt))->getValue(),
-                                               (**(pvIt))->getDataType());
+                        newVal = stringToValue((**(std::prev(pvIt)))->getValue(),
+                                               (**(std::prev(pvIt)))->getDataType());
                     } else {
                         // We have two measurements to interpolate from (we have dealt with the case of the first
                         // measurement being past the desired time, so we can safely assume we have a previous
@@ -325,41 +350,54 @@ int CovariateExtractor::extract(
                                                newVal)) {                                           // valRes
                             return -5;
                         }
+
+                        std::cerr << "We have two measurements to interpolate from\n"
+                                  << "\t" << (**(std::prev(pvIt)))->getValue() << " @ ";
+                        printDate((**(std::prev(pvIt)))->getEventTime());
+                        std::cerr << "\n"
+                                  << "\t" << (**(pvIt))->getValue() << " @ ";
+                        printDate((**(pvIt))->getEventTime());
+                        std::cerr << "\n"
+                                  << "=>" << newVal << " @ ";
+                        printDate(timeIt);
+                        std::cerr << "\n";
+
                     }
-                }
-                PUSH_EVENT(**cdValued[pvMap.first], // Covariate Definition
-                        timeIt,                     // Time
-                        newVal,                     // Value
-                        _series);                   // Series
+                    PUSH_EVENT(**cdValued[pvMap.first], // Covariate Definition
+                            timeIt,                     // Time
+                            newVal,                     // Value
+                            _series);                   // Series
 
-                if (cdComputed.size() > 0) {
 
-                    std::cerr << "We have computed values!\n";
+                    if (cdComputed.size() > 0) {
 
-                    // We have a change in a value and some of the values are computed -> we need to do an update of
-                    // the operable graph with this new value, then trigger a recomputation, and update the values
-                    // that changed. This is done by updating the value of the event pushed in the ogm.
-                    (nccValuesMap.at(pvMap.first))->setValue(newVal);
-                    ogm.evaluate();
+                        std::cerr << "We have computed values!\n";
 
-                    for (auto &cvm : computedValuesMap) {
-                        // We do the update here *only* for the Computed Variates that have no refresh period.
-                        // We will deal with those with a refresh period set afterwards.
-                        if ((*(cdComputed[cvm.first]))->getRefreshPeriod().isEmpty()) {
-                            double cvVal;
-                            if (!ogm.getValue(cvm.second.first->getId(), cvVal)) {
-                                return -7;
-                            }
+                        // We have a change in a value and some of the values are computed -> we need to do an update of
+                        // the operable graph with this new value, then trigger a recomputation, and update the values
+                        // that changed. This is done by updating the value of the event pushed in the ogm.
+                        (nccValuesMap.at(pvMap.first))->setValue(newVal);
+                        ogm.evaluate();
 
-                            // Check if the new value is different than the old one. If this is the case, create a
-                            // new event.
-                            if (cvVal != cvm.second.second) {
-                                // Update the value in the map.
-                                cvm.second.second = cvVal;
-                                // Update the date in the event.
-                                cvm.second.first->setEventTime(timeIt);
-                                // Push the covariate in the event series.
-                                _series.push_back(*cvm.second.first);
+                        for (auto &cvm : computedValuesMap) {
+                            // We do the update here *only* for the Computed Variates that have no refresh period.
+                            // We will deal with those with a refresh period set afterwards.
+                            if ((*(cdComputed[cvm.first]))->getRefreshPeriod().isEmpty()) {
+                                double cvVal;
+                                if (!ogm.getValue(cvm.second.first->getId(), cvVal)) {
+                                    return -7;
+                                }
+
+                                // Check if the new value is different than the old one. If this is the case, create a
+                                // new event.
+                                if (cvVal != cvm.second.second) {
+                                    // Update the value in the map.
+                                    cvm.second.second = cvVal;
+                                    // Update the date in the event.
+                                    cvm.second.first->setEventTime(timeIt);
+                                    // Push the covariate in the event series.
+                                    _series.push_back(*cvm.second.first);
+                                }
                             }
                         }
                     }
