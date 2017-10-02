@@ -14,8 +14,9 @@
 namespace Tucuxi {
 namespace Core {
 
-class IResidualErrorModel;
+class IConcentrationCalculator;
 
+class IResidualErrorModel;
 
 ///
 /// \brief The ProcessingAborter class
@@ -47,32 +48,6 @@ public:
         Aborted
     };
 
-    void setNumberPatients(const unsigned int _nbPatients) { m_nbPatients = _nbPatients; };
-    unsigned int getNumberPatients() { return m_nbPatients; };
-    ///
-    /// \brief calculate
-    /// \param _intakes Intake series
-    /// \param _parameters Initial parameters series
-    /// \param _omega covariance matrix for inter-individual variability
-    /// \param _residualErrorModel Residual error model
-    /// \param _etas Etas pre-calculated by the aposteriori calculator
-    /// \param _samples List of samples
-    /// \param _subomega Result of this function, non-negative hessian matrix
-    void calculateSubomega(
-	    const IntakeSeries &_intakes,
-	    const ParameterSetSeries &_parameters,
-	    const OmegaMatrix& _omega,
-	    const IResidualErrorModel &_residualErrorModel,
-	    const Etas& _etas,
-	    const SampleSeries &_samples,
-	    EigenMatrix &_subomega);
-
-protected: 
-
-private: 
-    unsigned int m_nbPatients;
-
-
 };
 
 
@@ -102,6 +77,7 @@ public:
             const IResidualErrorModel &_residualErrorModel,
             const Etas& _etas,
             const PercentileRanks &_percentileRanks,
+	    IConcentrationCalculator &_concentrationCalculator,
             ProcessingAborter *_aborter) = 0;
 };
 
@@ -132,6 +108,7 @@ public:
             const Etas& _etas,
             const SampleSeries &_samples,
             const PercentileRanks &_percentileRanks,
+	    IConcentrationCalculator &_concentrationCalculator,
             ProcessingAborter *_aborter) = 0;
 };
 
@@ -145,6 +122,33 @@ public:
 
     MonteCarloPercentileCalculatorBase();
 
+    void setNumberPatients(const unsigned int _nbPatients) { m_nbPatients = _nbPatients; };
+
+    unsigned int getNumberPatients() { return m_nbPatients; };
+
+
+
+protected:
+
+    ///
+    /// \brief calculate
+    /// \param _intakes Intake series
+    /// \param _parameters Initial parameters series
+    /// \param _omega covariance matrix for inter-individual variability
+    /// \param _residualErrorModel Residual error model
+    /// \param _etas Etas pre-calculated by the aposteriori calculator
+    /// \param _samples List of samples
+    /// \param _subomega Result of this function, non-negative hessian matrix
+    void calculateSubomega(
+	    const IntakeSeries &_intakes,
+	    const ParameterSetSeries &_parameters,
+	    const OmegaMatrix& _omega,
+	    const IResidualErrorModel &_residualErrorModel,
+	    const Etas& _etas,
+	    const SampleSeries &_samples,
+	    IConcentrationCalculator &_concentrationCalculator,
+	    EigenMatrix &_subomega);
+
 protected:
 
     ///
@@ -157,7 +161,6 @@ protected:
     /// \param _percentileRanks List of percentiles ranks
     /// \param _etas Set of Etas to apply for each specific patient
     /// \param _epsilons Set of epsilons, one vector per patient
-    /// \param _curvelength Total number of points to be returned
     /// \param _aborter An aborter object allowing to abort the calculation
     /// \return The status of calculation
     ///
@@ -170,8 +173,12 @@ protected:
             const PercentileRanks &_percentileRanks,
             const std::vector<Etas> _etas,
 	    const std::vector<Deviations> _epsilons,
-            int _curvelength,
+	    IConcentrationCalculator &_concentrationCalculator,
             ProcessingAborter *_aborter);
+
+private:
+    unsigned int m_nbPatients;
+
 };
 
 
@@ -208,6 +215,7 @@ public:
             const IResidualErrorModel &_residualErrorModel,
             const Etas& _initialEtas,
             const PercentileRanks &_percentileRanks,
+	    IConcentrationCalculator &_concentrationCalculator,
             ProcessingAborter *_aborter) override;
 
 
@@ -243,6 +251,7 @@ public:
             const Etas& _etas,
             const SampleSeries &_samples,
             const PercentileRanks &_percentileRanks,
+	    IConcentrationCalculator &_concentrationCalculator,
             ProcessingAborter *_aborter);
 
 
@@ -281,6 +290,7 @@ public:
             const Etas& _etas,
             const SampleSeries &_samples,
             const PercentileRanks &_percentileRanks,
+	    IConcentrationCalculator &_concentrationCalculator,
             ProcessingAborter *_aborter);
 
 

@@ -18,7 +18,6 @@ namespace Tucuxi {
 namespace Core {
 
 
-
 class IConcentrationCalculatorNew
 {
 

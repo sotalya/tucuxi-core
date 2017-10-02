@@ -5,8 +5,9 @@
 #include "montecarlopercentilecalculator.h"
 #include "likelihood.h"
 #include "concentrationcalculator.h"
-#include "tucucore/definitions.h"
+#include "definitions.h"
 
+#include <thread>
 #include <Eigen/Cholesky>
 //#include <boost/math/distributions/normal.hpp>
 #include <boost/random/mersenne_twister.hpp>
@@ -36,80 +37,85 @@ IPercentileCalculator::ProcessingResult MonteCarloPercentileCalculatorBase::comp
         const PercentileRanks &_percentileRanks,
         const std::vector<Etas> _etas,
         const std::vector<Deviations> _epsilons,
-        int _curvelength,
+	IConcentrationCalculator &_concentrationCalculator,
         ProcessingAborter *_aborter)
 {
-    TMP_UNUSED_PARAMETER(_percentiles);
-    TMP_UNUSED_PARAMETER(_nbPoints);
-    TMP_UNUSED_PARAMETER(_intakes);
-    TMP_UNUSED_PARAMETER(_parameters);
-    TMP_UNUSED_PARAMETER(_residualErrorModel);
-    TMP_UNUSED_PARAMETER(_percentileRanks);
-    TMP_UNUSED_PARAMETER(_etas);
-    TMP_UNUSED_PARAMETER(_epsilons);
-    TMP_UNUSED_PARAMETER(_curvelength);
-    TMP_UNUSED_PARAMETER(_aborter);
+    bool abort = false;
+    unsigned int nbPatients = Tucuxi::Core::MonteCarloPercentileCalculatorBase::getNumberPatients();
+
+    std::vector<std::vector<Concentrations>> concentrations;
 
 #if 0
-
-    bool abort = false;
-
-    std::vector<cxn_1d_t> _res;
-    concs.clear();
-    for (int i = 0; i < curvelength; ++i) {
-        _res.push_back(cxn_1d_t(numpatients));
-        concs.push_back(perc_set_t());
+    (_percentiles.getValues()).clear();
+    for (int i = 0; i < _curvelength; ++i) {
+        concentrations.push_back(std::vector<Concentrations>(nbPatients));
+        (_percentiles.getValue()).push_back(PercentileRanks());
     }
-
+#endif
 
     /*
      * Parallelize this for loop with some shared and some copied-to-each-thread-with-current-state (firstprivate) variables
      */
+     /* TODO: need to discuss for member variables in a class for multi thread */
     int nbThreads = std::max(std::thread::hardware_concurrency(), (unsigned int)1);
 
     std::vector<std::thread> workers;
-    for(int thread = 0;thread< nbThreads; thread++) {
-        workers.push_back(std::thread([thread, numpatients, &abort, aborter, etas,
-                                      curvelength,epsilons, parameters, intakes, _nbPoints,
-                                      _residualErrorModel, &_res, nbThreads]()
+    for(int thread = 0; thread < nbThreads; thread++) {
+
+        workers.push_back(std::thread([thread, nbPatients, &abort, _aborter, _etas, _epsilons, _parameters, _intakes, _nbPoints, &_residualErrorModel, &concentrations, nbThreads, &_concentrationCalculator]()
         {
+            /* get concentrations for each patients */
+            ConcentrationPredictionPtr predictionPtr;
+            std::vector<Time> times;
 
+#if 0
+            (predictionPtr->getValues()).reserve(_curvelength);
+            times.reserve(_curvelength);
+#endif
 
-            cxn_1d_t _iconcs;
-            time_1d_t _itimes;
-            _iconcs.reserve(curvelength);
-            _itimes.reserve(curvelength);
+            int start = thread * (nbPatients / nbThreads);
+            int end = (thread + 1) * (nbPatients / nbThreads);
+		for (int patient = start; patient < end; ++patient) {
+		    if (!abort) {
+			if ((_aborter != nullptr) && (_aborter->shouldAbort())) {
+			    abort = true;
+			}
+#if 0
+			(predictionPtr->getValues()).clear();
+			times.clear();
+#endif
 
-            int start = thread * (numpatients / nbThreads);
-            int end = (thread + 1 ) * (numpatients / nbThreads);
-            for (int i = start; i < end; ++i) {
-                if (!abort) {
-                    if ((aborter != nullptr) && (aborter->shouldAbort())) {
-                        abort = true;
-                    }
+			/*
+			 * Call to apriori becomes population as its determined earlier in the parametersExtractor
+			 */
+			ConcentrationCalculator::ComputationResult computationResult = 
+				_concentrationCalculator.computeConcentrations(
+					    predictionPtr,
+					    false, /* fix to "false": */
+					    _nbPoints,
+					    _intakes,
+					    _parameters,
+					    _etas[patient],
+					    _residualErrorModel,
+					    _epsilons[patient],
+					    false);
 
-                    // Generate a random epsilon
-                    deviation_t eps = epsilons(i);
+			/* 
+			 * save the series of result of 
+			 * concentrations[cycle][nbPoints][patient] for each cycle
+			 */
+			if (computationResult == ConcentrationCalculator::ComputationResult::Success) {
+			    for (unsigned int cycle = 0; cycle < _intakes.size(); ++cycle) {
+				for (int point = 0; point < _nbPoints; ++point ) {
+				    concentrations[cycle][point][patient] = (predictionPtr->getValues())[cycle][point];
+				}
+			    }
+			}
+		    } /* if (!abort) */
+		} /* for (patient) */
+        }
+        ));
 
-                    ParametersSeries _iparams = parameters;
-                    IntakeSeries _iinks = intakes;
-                    _iconcs.clear();
-                    _itimes.clear();
-                    /*
-                     * Call to apriori becomes population as its determined earlier in the parametersExtractor
-                     */
-                    ProcessingResult procRes =
-		    ConcentrationCalculator::calculatePoints(_iconcs,_itimes, _nbPoints, _iinks,
-		    _iparams, etas[i], _residualErrorModel, eps, true);
-                    if (procRes == ProcessingResult::Success) {
-                        for (int k = 0; k < curvelength; ++k) {
-                            _res[k][i] = _iconcs[k];
-                        }
-                    }
-                }
-            }
-
-        }));
     }
     std::for_each(workers.begin(), workers.end(), [](std::thread &t)
     {
@@ -120,30 +126,36 @@ IPercentileCalculator::ProcessingResult MonteCarloPercentileCalculatorBase::comp
         return ProcessingResult::Aborted;
     }
 
-/*
+    /*
 * Parallelize this loop where quantiles are extracted.
 * The values at each time are sorted in increasing order, then
 * they are walked from low to high while counting, once
 * the count passes that of a quantile, the value is extracted
-* into the result (concs)
+* into the result (_percentiles.getValues())
 */
+#if 0
 #pragma omp parallel for
-    for (int i = 0; i < _res.size(); ++i) {
-        std::sort(_res[i].begin(), _res[i].end(), [&] (const double v1, const double v2) { return v1 < v2; });
+#endif
+    for (unsigned int cycle = 0; cycle < _intakes.size(); ++cycle) {
+	for (int point = 0; point < _nbPoints; ++point ) {
+	    std::sort(concentrations[cycle][point].begin(), concentrations[cycle][point].end(), [&] (const double v1, const double v2) { return v1 < v2; });
+	}
+    }
 
-        perc_set_t::const_iterator pit = percs.cbegin();
-        for (int j = 0; j < numpatients; ++j) {
-            if (pit != percs.cend() && j >= *pit / 100.0 * numpatients) {
-                concs[i].push_back(_res[i][j]);
+    /* TODO: need to discuss how return the percentile */
+#if 0
+        PercentileRanks::const_iterator pit = _percentileRanks.cbegin();
+        for (unsigned int patient = 0; patient < nbPatients; ++patient) {
+            if (pit != _percentileRanks.cend() && patient >= *pit / 100.0 * nbPatients) {
+                /* TODO: temporary code. figugre out whether it is correct or not */
+                (_percentiles.getValues())[i].push_back(concentrations[i][patient]);
                 pit++;
             }
         }
-    }
-
-    return ProcessingResult::Success;
 #endif
 
-    return ProcessingResult::Failure;
+    return ProcessingResult::Success;
+
 } //MonteCarloPercentileCalculatorBase::computePredictionsAndSortPercentiles
 
 
@@ -162,6 +174,7 @@ IPercentileCalculator::ProcessingResult AprioriMonteCarloPercentileCalculator::c
         const IResidualErrorModel &_residualErrorModel,
         const Etas& _initialEtas,
         const PercentileRanks &_percentileRanks,
+	IConcentrationCalculator &_concentrationCalculator,
         ProcessingAborter *_aborter)
 {
     EigenMatrix choleskyMatrix; // Cholesky matrix after decomposition
@@ -204,8 +217,8 @@ IPercentileCalculator::ProcessingResult AprioriMonteCarloPercentileCalculator::c
     ConcentrationCalculator::computeConcentrations(predictionPtr, isAll, _nbPoints, _intakes, _parameters, eta, _residualErrorModel);
 #endif
 
-    unsigned int nbPatients = Tucuxi::Core::IAprioriPercentileCalculator::getNumberPatients();
-    /* 
+    unsigned int nbPatients = getNumberPatients();
+    /*
     TODO: remove following code. From ezechiel, not used in the function
     And also think about remove curvelength after creating thread and factorizing code of sorting
     */
@@ -217,24 +230,26 @@ IPercentileCalculator::ProcessingResult AprioriMonteCarloPercentileCalculator::c
     }
 #endif
 
-    const int curvelength = (predictionPtr->getTimes()).size();
-
     /*
      * Generating the random numbers
      */
     EigenMatrix rands = EigenMatrix::Zero(nbPatients, omegaRank);
     
-    /* TODO: 
+    /* TODO:
     The size of vector epsilons can be changed depends on the implementation
     Currently, epsilons[1][nbPatients] is initialised with normalised random number.
     */
-    std::vector<Deviations> epsilons(1, Deviations(nbPatients, var_nor())); 
+#if 0
+    std::vector<Deviations> epsilons(_residualErrorModel.nbEpsilons(), Deviations(nbPatients, var_nor()));
+#else
+    std::vector<Deviations> epsilons(1, Deviations(nbPatients, var_nor()));
+#endif
 
     for (int row = 0; row < rands.rows(); ++row) {
         //epsilons(0, (row))= var_nor();
 
         for (int column = 0; column < rands.cols(); ++column) {
-             rands(row, column) = var_nor();
+            rands(row, column) = var_nor();
         }
     }
 
@@ -242,7 +257,7 @@ IPercentileCalculator::ProcessingResult AprioriMonteCarloPercentileCalculator::c
     std::vector<Etas> eta_samples(nbPatients);
 
     for(unsigned int patient = 0; patient < nbPatients; ++patient) {
-            EigenVector matrixY = rands.row(patient);
+        EigenVector matrixY = rands.row(patient);
         /*
          * Cholesky is applied here to get correlated random deviates
          */
@@ -251,31 +266,32 @@ IPercentileCalculator::ProcessingResult AprioriMonteCarloPercentileCalculator::c
 
         for(unsigned int eta = 0; eta < _initialEtas.size(); eta++) {
             eta_samples[patient][eta] += _initialEtas[eta];
-	}
+        }
     }
 
     return computePredictionsAndSortPercentiles
-	    (_percentiles, 
-	    _nbPoints, 
-	    _intakes, 
-	    _parameters, 
-	    _residualErrorModel, 
-	    _percentileRanks, 
-	    eta_samples, 
-	    epsilons, 
-	    curvelength, 
-	    _aborter);
+            (_percentiles,
+             _nbPoints,
+             _intakes,
+             _parameters,
+             _residualErrorModel,
+             _percentileRanks,
+             eta_samples,
+             epsilons,
+	     _concentrationCalculator,
+             _aborter);
 } //AprioriMonteCarloPercentileCalculator::calculate
 
 
-void IPercentileCalculator::calculateSubomega(
+void MonteCarloPercentileCalculatorBase::calculateSubomega(
         const IntakeSeries &_intakes,
         const ParameterSetSeries &_parameters,
-	const OmegaMatrix &_omega,
-	const IResidualErrorModel &_residualErrorModel,
-	const Etas &_etas,
-	const SampleSeries &_samples,
-	EigenMatrix &_subomega)
+        const OmegaMatrix &_omega,
+        const IResidualErrorModel &_residualErrorModel,
+        const Etas &_etas,
+        const SampleSeries &_samples,
+	IConcentrationCalculator &_concentrationCalculator,
+        EigenMatrix &_subomega)
 {
     /*
     * posterior mode (resulting eta vector from calculating aposteriori) 'eta' in args
@@ -291,9 +307,7 @@ void IPercentileCalculator::calculateSubomega(
     EigenVector eta_min = EigenVector::Zero(_omega.rows());
     EigenVector eta_max = EigenVector::Zero(_omega.rows());
 
-    Tucuxi::Core::ConcentrationCalculator concentrationCalculator;
-
-    Likelihood likelihood(_omega, _residualErrorModel, _samples, _intakes, _parameters, concentrationCalculator);
+    Likelihood likelihood(_omega, _residualErrorModel, _samples, _intakes, _parameters, _concentrationCalculator);
     likelihood.initBounds(_omega, eta_max, eta_min);
 
     /*
@@ -326,6 +340,7 @@ IPercentileCalculator::ProcessingResult AposterioriMonteCarloPercentileCalculato
         const Etas& _etas,
         const SampleSeries &_samples,
         const PercentileRanks &_percentileRanks,
+	IConcentrationCalculator &_concentrationCalculator,
         ProcessingAborter *_aborter)
 {
     TMP_UNUSED_PARAMETER(_percentiles);
@@ -337,14 +352,15 @@ IPercentileCalculator::ProcessingResult AposterioriMonteCarloPercentileCalculato
     EigenMatrix subomega;
 
     /* calculate hessian metrix and subomega */
-    Tucuxi::Core::IPercentileCalculator::calculateSubomega(
-        _intakes,
-        _parameters,
-	_omega,
-	_residualErrorModel,
-	_etas,
-	_samples,
-	subomega);
+    calculateSubomega(
+                _intakes,
+                _parameters,
+                _omega,
+                _residualErrorModel,
+                _etas,
+                _samples,
+		_concentrationCalculator,
+                subomega);
 
     /*
     * Get lower cholesky of omega
@@ -396,7 +412,7 @@ IPercentileCalculator::ProcessingResult AposterioriMonteCarloPercentileCalculato
     dy_mat_t avecs = dy_mat_t::Zero(nbSamples, eta.size());
     for (int r = 0; r < avecs.rows(); ++r) {
         for (int c = 0; c < avecs.cols(); ++c) {
-             avecs(r,c) = var_t(gen);
+            avecs(r,c) = var_t(gen);
         }
     }
 
@@ -431,7 +447,7 @@ IPercentileCalculator::ProcessingResult AposterioriMonteCarloPercentileCalculato
 
                     for (int i = 0; i < eta.size(); ++i) {
                         // Removing the boundaries makes the step disappear
-                    //    _avec_mat.push_back(qBound(_eta_min[i], avec[i], _eta_max[i]));
+                        //    _avec_mat.push_back(qBound(_eta_min[i], avec[i], _eta_max[i]));
                         _avec_mat.push_back(avec[i]);
                     }
 
@@ -478,7 +494,7 @@ IPercentileCalculator::ProcessingResult AposterioriMonteCarloPercentileCalculato
     });
 
     if (abort) {
-    //    EXLOG(QtDebugMsg, ezechiel::math::NOEZERROR, QString("Aborted stale calc: avail: %1").arg(aborter.available()));
+        //    EXLOG(QtDebugMsg, ezechiel::math::NOEZERROR, QString("Aborted stale calc: avail: %1").arg(aborter.available()));
         return ProcessingResult::Aborted;
     }
 
@@ -539,7 +555,9 @@ IPercentileCalculator::ProcessingResult AposterioriMonteCarloPercentileCalculato
                 nbReSamples,
                 real_eta_samples,
                 epsilons,
-                curvelength);
+		_concentrationCalculator,
+                curvelength,
+		_aborter);
 
 #endif
 
@@ -557,20 +575,22 @@ IPercentileCalculator::ProcessingResult AposterioriNormalApproximationMonteCarlo
         const Etas& _etas,
         const SampleSeries &_samples,
         const PercentileRanks &_percentileRanks,
+	IConcentrationCalculator &_concentrationCalculator,
         ProcessingAborter *_aborter)
 {
     /* Return value from calculateSubomega */
     EigenMatrix subomega;
 
     /* calculate hessian metrix and subomega */
-    Tucuxi::Core::IPercentileCalculator::calculateSubomega(
-        _intakes,
-        _parameters,
-	_omega,
-	_residualErrorModel,
-	_etas,
-	_samples,
-	subomega);
+    calculateSubomega(
+                _intakes,
+                _parameters,
+                _omega,
+                _residualErrorModel,
+                _etas,
+                _samples,
+		_concentrationCalculator,
+                subomega);
 
     /* TODO: figure out whether we need to clear or not */
 #if 0
@@ -581,17 +601,18 @@ IPercentileCalculator::ProcessingResult AposterioriNormalApproximationMonteCarlo
     * Only apply steps 1 and 2 of the Annex A of Aziz document (posteriori2.pdf)
     */
     AprioriMonteCarloPercentileCalculator aprioriMC;
-    return aprioriMC.calculate
-	    (_percentiles, 
-	    _nbPoints,
-	    _intakes,
-	    _parameters,
-	    subomega,
-	    _residualErrorModel,
-	    _etas,
-	    _percentileRanks,
-	    _aborter);
-
+    return aprioriMC.calculate(
+		_percentiles,
+		_nbPoints,
+		_intakes,
+		_parameters,
+		subomega,
+		_residualErrorModel,
+		_etas,
+		_percentileRanks,
+		_concentrationCalculator,
+		_aborter);
+	    
 } //AposterioriNormalApproximationMonteCarloPercentileCalculator::calculate
 
 

@@ -15,6 +15,7 @@
 #include "tucucore/montecarlopercentilecalculator.h"
 #include "tucucore/residualerrormodel.h"
 #include "tucucore/onecompartmentextra.h"
+#include "tucucore/concentrationcalculator.h"
 
 
 
@@ -49,6 +50,7 @@ public:
             const Tucuxi::Core::IResidualErrorModel &_residualErrorModel,
             const Tucuxi::Core::Etas& _initialEtas,
             const Tucuxi::Core::PercentileRanks &_percentileRanks,
+	    IConcentrationCalculator &_concentrationCalculator,
             Tucuxi::Core::ProcessingAborter *_aborter) override
     {
         TMP_UNUSED_PARAMETER(_intakes);
@@ -190,6 +192,7 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
 
         Tucuxi::Core::IPercentileCalculator::ProcessingResult res;
 
+        Tucuxi::Core::ConcentrationCalculator concentrationCalculator;
         res = calculator->calculate(
                     percentiles,
                     nbPoints,
@@ -199,6 +202,7 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
                     residualErrorModel,
                     etas,
                     percentileRanks,
+		    concentrationCalculator,
                     aborter);
 
         percentiles.streamToFile("percentiles_imatinib.dat");
