@@ -8,6 +8,8 @@
 #include <iostream>
 #include <vector>
 
+#include "tucucommon/utils.h"
+
 #include "tucucore/definitions.h"
 #include "tucucore/drugdefinitions.h"
 #include "tucucore/operation.h"
@@ -16,13 +18,21 @@
 namespace Tucuxi {
 namespace Core {
 
+using namespace Tucuxi::Common::Utils;
+
 /// \brief Definition of a covariate for a given drug, using the information extracted from the drug's XML file.
 class CovariateDefinition : public PopulationValue
 {
 public:
-    CovariateDefinition(const std::string &_id, const Value _value, Operation *_operation,
+    /// \brief Create a covariate from its name and value (or operation).
+    /// \param _id Name of the covariate.
+    /// \param _value Default value given to the covariate, given as a string.
+    /// \param _operation Operation used to compute the value of the covariate.
+    /// \param _type Type of the covariate.
+    /// \param _dataType Type of data contained in the variable
+    CovariateDefinition(const std::string &_id, const std::string &_value, Operation *_operation,
                         const CovariateType _type = CovariateType::Standard, const DataType _dataType = DataType::Double) :
-        PopulationValue(_id, _value, _operation), m_type(_type), m_dataType(_dataType) {}
+        PopulationValue(_id, stringToValue(_value, _dataType), _operation), m_type(_type), m_dataType(_dataType) {}
 
     /// \brief Get the covariate's type.
     /// \return Covariate's type.

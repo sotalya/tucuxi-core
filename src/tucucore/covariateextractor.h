@@ -23,6 +23,7 @@ namespace Tucuxi {
 namespace Core {
 
 using Tucuxi::Common::Duration;
+using namespace Tucuxi::Common::Utils;
 
 /// \brief Interface for the covariate extractor.
 class ICovariateExtractor
@@ -61,7 +62,6 @@ public:
             const DateTime &_end,
             CovariateSeries &_series) override;
 
-
 private:
     /// \brief Perform the chosen interpolation between the given values.
     /// \param _val1 First value.
@@ -78,14 +78,6 @@ private:
                            const DateTime &_dateRes,
                            const InterpolationType _interpolationType,
                            double &_valRes);
-
-    /// \brief Convert a std::string to a Value.
-    /// \param _str String to convert.
-    /// \param _type Type of the value given in the string.
-    /// \return Value contained in the string.
-    /// \pre _str contains a string that can be converted to a Value.
-    static Value stringToValue(std::string _str,
-                               const DataType &_dataType = DataType::Double);
 
     Value getPatientVariateValue(const std::vector<pvIterator_t>& _PV,
                                  const DateTime &_t,

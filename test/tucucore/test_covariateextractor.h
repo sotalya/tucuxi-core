@@ -70,23 +70,23 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
     TestCovariateExtractor() { }
 
     /// \brief Test covariate extraction using the example presented in the specs.
-    void testCovariateExtraction(const std::string& /* _testName */)
+    void testCovariateExtraction_test1(const std::string& /* _testName */)
     {
-        std::unique_ptr<CovariateDefinition> gist(new CovariateDefinition("Gist", 0, nullptr, CovariateType::Standard, DataType::Bool));
+        std::unique_ptr<CovariateDefinition> gist(new CovariateDefinition("Gist", valueToString(false), nullptr, CovariateType::Standard, DataType::Bool));
         gist->setInterpolationType(InterpolationType::Direct);
 
-        std::unique_ptr<CovariateDefinition> weight(new CovariateDefinition("Weight", 3.5, nullptr));
+        std::unique_ptr<CovariateDefinition> weight(new CovariateDefinition("Weight", valueToString(3.5), nullptr));
         weight->setRefreshPeriod(Tucuxi::Common::days(1));
         weight->setInterpolationType(InterpolationType::Linear);
         weight->setUnit(Unit("kg"));
 
-        std::unique_ptr<CovariateDefinition> isMale(new CovariateDefinition("IsMale", 1, nullptr, CovariateType::Standard, DataType::Bool));
+        std::unique_ptr<CovariateDefinition> isMale(new CovariateDefinition("IsMale", valueToString(true), nullptr, CovariateType::Standard, DataType::Bool));
 
         /// \todo Change the plain-old-pointer below when unique_ptr will be in place!
         Operation *opSpecial =
                 new JSOperation("Weight * 0.5 + IsMale * 15",
         { OperationInput("Weight", InputType::DOUBLE), OperationInput("IsMale", InputType::DOUBLE)});
-        std::unique_ptr<CovariateDefinition> special(new CovariateDefinition("Special", 17.0, opSpecial));
+        std::unique_ptr<CovariateDefinition> special(new CovariateDefinition("Special", valueToString(16.75), opSpecial));
 
         CovariateDefinitions cDefinitions;
         cDefinitions.push_back(std::move(gist));
@@ -100,10 +100,10 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
         // -- Patient covariates #1 --
 
         // gist == true @ 13.08.2017, 12h32.
-        std::unique_ptr<PatientCovariate> patient_gist_1(new PatientCovariate("Gist", "1", DataType::Bool, Unit(),
+        std::unique_ptr<PatientCovariate> patient_gist_1(new PatientCovariate("Gist", valueToString(true), DataType::Bool, Unit(),
                                                                               DATE_TIME_NO_VAR(2017, 8, 13, 12, 32, 0)));
         // gist == false @ 13.08.2017, 14h32.
-        std::unique_ptr<PatientCovariate> patient_gist_2(new PatientCovariate("Gist", "0", DataType::Bool, Unit(),
+        std::unique_ptr<PatientCovariate> patient_gist_2(new PatientCovariate("Gist", valueToString(false), DataType::Bool, Unit(),
                                                                                DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
         PatientVariates pVariates1;
         pVariates1.push_back(std::move(patient_gist_1));
@@ -112,14 +112,12 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
         // Test 1: call the extractor with the two patient covariates above.
         // We expect the first one to be "back-propagated" to the beginning of the interval.
 
-        std::cerr << "******************** T1 ******************** \n";
-
         CovariateExtractor extractor;
         CovariateSeries series;
         int rc;
         rc = extractor.extract(cDefinitions, pVariates1, startDate, endDate, series);
 
-        printCovariateSeries(series);
+//        printCovariateSeries(series);
 
         fructose_assert(series.size() == 5);
         fructose_assert(rc == 0);
@@ -153,13 +151,11 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
 
         // Test 2: call the extractor with no patient covariates.
 
-        std::cerr << "******************** T2 ******************** \n";
-
         PatientVariates pVariates2;
         series.clear();
         rc = extractor.extract(cDefinitions, pVariates2, startDate, endDate, series);
 
-        printCovariateSeries(series);
+//        printCovariateSeries(series);
 
         fructose_assert(series.size() == 4);
         fructose_assert(rc == 0);
@@ -183,20 +179,18 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
 
         // Test 3: add gist and model weight and special changes.
 
-        std::cerr << "******************** T3 ******************** \n";
-
         // gist == true @ 13.08.2017, 12h32.
-        std::unique_ptr<PatientCovariate> patient_gist_3(new PatientCovariate("Gist", "1", DataType::Bool, Unit("kg"),
+        std::unique_ptr<PatientCovariate> patient_gist_3(new PatientCovariate("Gist", valueToString(true), DataType::Bool, Unit("kg"),
                                                                               DATE_TIME_NO_VAR(2017, 8, 13, 12, 32, 0)));
 
         // weight = 3.8 @ 13.08.2017, 9h00.
-        std::unique_ptr<PatientCovariate> patient_weight_1(new PatientCovariate("Weight", "3.8", DataType::Double, Unit("kg"),
+        std::unique_ptr<PatientCovariate> patient_weight_1(new PatientCovariate("Weight", valueToString(3.8), DataType::Double, Unit("kg"),
                                                                                 DATE_TIME_NO_VAR(2017, 8, 13, 9, 0, 0)));
         // weight = 4.05 @ 15.08.2017, 21h00.
-        std::unique_ptr<PatientCovariate> patient_weight_2(new PatientCovariate("Weight", "4.05", DataType::Double, Unit("kg"),
+        std::unique_ptr<PatientCovariate> patient_weight_2(new PatientCovariate("Weight", valueToString(4.05), DataType::Double, Unit("kg"),
                                                                                 DATE_TIME_NO_VAR(2017, 8, 15, 21, 0, 0)));
         // weight = 4.25 @ 16.08.2017, 21h00.
-        std::unique_ptr<PatientCovariate> patient_weight_3(new PatientCovariate("Weight", "4.25", DataType::Double, Unit("kg"),
+        std::unique_ptr<PatientCovariate> patient_weight_3(new PatientCovariate("Weight", valueToString(4.25), DataType::Double, Unit("kg"),
                                                                                 DATE_TIME_NO_VAR(2017, 8, 16, 21, 0, 0)));
         PatientVariates pVariates3;
         pVariates3.push_back(std::move(patient_gist_3));
@@ -207,7 +201,7 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
         series.clear();
         rc = extractor.extract(cDefinitions, pVariates3, startDate, endDate, series);
 
-        printCovariateSeries(series);
+//        printCovariateSeries(series);
 
         fructose_assert(series.size() == 12);
         fructose_assert(rc == 0);
@@ -266,6 +260,111 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
                                                 series));
     }
 
+
+    /// \brief Perform the second test in the spreadsheet.
+    /// - Different end time (changes wrt weight periodicity).
+    /// - Added a date variable.
+    /// - Added another computed covariate (VerySpecial)
+    void testCovariateExtraction_test2(const std::string& /* _testName */)
+    {
+        std::unique_ptr<CovariateDefinition> gist(new CovariateDefinition("Gist", valueToString(false), nullptr, CovariateType::Standard, DataType::Bool));
+        gist->setInterpolationType(InterpolationType::Direct);
+
+        std::unique_ptr<CovariateDefinition> weight(new CovariateDefinition("Weight", valueToString(3.5), nullptr));
+        weight->setRefreshPeriod(Tucuxi::Common::days(1));
+        weight->setInterpolationType(InterpolationType::Linear);
+        weight->setUnit(Unit("kg"));
+
+        std::unique_ptr<CovariateDefinition> isMale(new CovariateDefinition("IsMale", valueToString(true), nullptr, CovariateType::Standard, DataType::Bool));
+
+        std::unique_ptr<CovariateDefinition> birthDate(new CovariateDefinition("BirthDate",
+                                                                               valueToString(DATE_TIME_NO_VAR(2017, 8, 5, 8, 0, 0)),
+                                                                               nullptr,
+                                                                               CovariateType::Standard,
+                                                                               DataType::Date));
+
+        /// \todo Change the plain-old-pointers below when unique_ptr will be in place!
+        Operation *opSpecial =
+                new JSOperation("Weight * 0.5 + IsMale * 15",
+        { OperationInput("Weight", InputType::DOUBLE),
+          OperationInput("IsMale", InputType::DOUBLE)});
+        std::unique_ptr<CovariateDefinition> special(new CovariateDefinition("Special", valueToString(16.75), opSpecial));
+
+        Operation *opVerySpecial =
+                new JSOperation("Weight * 0.5 + IsMale * 15 + Gist * 25",
+        { OperationInput("Weight", InputType::DOUBLE),
+          OperationInput("IsMale", InputType::DOUBLE),
+          OperationInput("Gist", InputType::DOUBLE)});
+        std::unique_ptr<CovariateDefinition> verySpecial(new CovariateDefinition("VerySpecial", valueToString(16.75), opVerySpecial));
+
+        CovariateDefinitions cDefinitions;
+        cDefinitions.push_back(std::move(gist));
+        cDefinitions.push_back(std::move(weight));
+        cDefinitions.push_back(std::move(isMale));
+        cDefinitions.push_back(std::move(birthDate));
+        cDefinitions.push_back(std::move(special));
+        cDefinitions.push_back(std::move(verySpecial));
+
+        const DATE_TIME_VAR(startDate, 2017, 8, 12, 8, 0, 0);
+        const DATE_TIME_VAR(endDate,   2017, 8, 17, 21, 0, 0);
+
+        // gist == true @ 13.08.2017, 12h32.
+        std::unique_ptr<PatientCovariate> patient_gist_1(new PatientCovariate("Gist", valueToString(true), DataType::Bool, Unit(),
+                                                                              DATE_TIME_NO_VAR(2017, 8, 13, 12, 32, 0)));
+        // gist == false @ 13.08.2017, 14h32.
+        std::unique_ptr<PatientCovariate> patient_gist_2(new PatientCovariate("Gist", valueToString(false), DataType::Bool, Unit(),
+                                                                               DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+        PatientVariates pVariates1;
+        pVariates1.push_back(std::move(patient_gist_1));
+        pVariates1.push_back(std::move(patient_gist_2));
+
+        CovariateExtractor extractor;
+        CovariateSeries series;
+        int rc;
+        rc = extractor.extract(cDefinitions, pVariates1, startDate, endDate, series);
+
+        printCovariateSeries(series);
+
+        fructose_assert(series.size() == 8);
+        fructose_assert(rc == 0);
+        // First measure propagated back to the start of the interval.
+        fructose_assert(covariateEventIsPresent("Gist",
+                                                DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0),
+                                                1,
+                                                series));
+        // Second measure at the moment it is performed.
+        fructose_assert(covariateEventIsPresent("Gist",
+                                                DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0),
+                                                0,
+                                                series));
+        // Remaining values propagated back to the start of the interval.
+        fructose_assert(covariateEventIsPresent("Weight",
+                                                DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0),
+                                                3.5,
+                                                series));
+        fructose_assert(covariateEventIsPresent("IsMale",
+                                                DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0),
+                                                1,
+                                                series));
+        fructose_assert(covariateEventIsPresent("BirthDate",
+                                                DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0),
+                                                stringToValue("2017-08-05 08:00:00", DataType::Date),
+                                                series));
+        // This should be computed from IsMale and Weight.
+        fructose_assert(covariateEventIsPresent("Special",
+                                                DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0),
+                                                16.75,
+                                                series));
+        // This should be computed from IsMale, Weight, and Gist.
+        fructose_assert(covariateEventIsPresent("VerySpecial",
+                                                DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0),
+                                                41.75,
+                                                series));
+        fructose_assert(covariateEventIsPresent("VerySpecial",
+                                                DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0),
+                                                16.75,
+                                                series));
+    }
 };
 
 #endif // TEST_COVARIATEEXTRACTOR_H

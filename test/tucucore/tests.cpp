@@ -152,7 +152,8 @@ int main(int argc, char** argv)
 
     // --- CovariateExtractor --- //
     TestCovariateExtractor ceTests;
-    ceTests.add_test("testOperableFunctions", &TestCovariateExtractor::testCovariateExtraction);
+    ceTests.add_test("testOperableFunctions_1", &TestCovariateExtractor::testCovariateExtraction_test1);
+//    ceTests.add_test("testOperableFunctions_2", &TestCovariateExtractor::testCovariateExtraction_test2);
 
     res = ceTests.run(argc, argv);
 

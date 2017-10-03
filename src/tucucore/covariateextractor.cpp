@@ -98,6 +98,8 @@ int CovariateExtractor::extract(
         }
     }
 
+    // $$$$$$$$$$$$ ROB_MOVE_TO_FUN $$$$$$$$$$$$$$$
+
     // For each patient variate, sort by date the list of values, then discard those not of interest.
     // If the variable is not interpolated, then its first observation is replaced by an observation at the beginning
     // of the interval.
@@ -161,6 +163,8 @@ int CovariateExtractor::extract(
 
     // Map holding the pointers to the events linked with non-computed covariates.
     std::map<std::string, std::shared_ptr<CovariateEvent>> nccValuesMap;
+
+    // $$$$$$$$$$$$ ROB_MOVE_TO_FUN $$$$$$$$$$$$$$$
 
     // Standard values (no computations involved).
     for (const auto &cdv : cdValued) {
@@ -238,6 +242,9 @@ int CovariateExtractor::extract(
         // Consider that patient variates are already sorted by date (for each patient variate type).
         Duration refreshPeriod = (*cdValued[pvMap.first])->getRefreshPeriod();
         if (refreshPeriod.isEmpty()) {
+
+            // $$$$$$$$$$$$ ROB_MOVE_TO_FUN $$$$$$$$$$$$$$$
+
             // If no refresh period set, then just push the values as they are.
             for (const auto &pv : pvMap.second) {
                 // If we have a single value, this value is set as initial default and used for the entire
@@ -277,6 +284,9 @@ int CovariateExtractor::extract(
                 }
             }
         } else {
+
+            // $$$$$$$$$$$$ ROB_MOVE_TO_FUN $$$$$$$$$$$$$$$
+
             // We need to compute the interpolated values and push them at the appropriate time.
             // The "appropriate time" is represented by the initial time plus the refresh period, therefore we have
             // to interpolate the correct values for each refresh period.
@@ -410,6 +420,8 @@ int CovariateExtractor::extract(
     // The least expensive approach is to get a list of the refresh times and perform the update (indeed, several
     // different computed covariates might want to refresh at the same time, and we do want to do their update once).
 
+    // $$$$$$$$$$$$ ROB_MOVE_TO_FUN $$$$$$$$$$$$$$$
+
     // Collect refresh intervals. For each date, we can have multiple covariates that want to be refreshed.
     std::map<DateTime, std::vector<std::string>> refreshMap;
     for (const auto &cvm : computedValuesMap) {
@@ -426,6 +438,9 @@ int CovariateExtractor::extract(
     }
     // If we have any computed covariate with a fixed refresh period...
     if (refreshMap.size() > 0) {
+
+        // $$$$$$$$$$$$ ROB_MOVE_TO_FUN $$$$$$$$$$$$$$$
+
         // Iterate on the map, setting all patient covariates to the appropriate values and relaunching the computation
         // via the Operable Graph Manager.
         for (const auto &refresh_t : refreshMap) {
@@ -477,13 +492,13 @@ Value CovariateExtractor::getPatientVariateValue(const std::vector<pvIterator_t>
         std::vector<pvIterator_t>::const_iterator pvIt = _PV.begin();
         // Advance until we pass the measurement just before the chosen time, or until we get to the
         // last available measurement.
-        while (_t < (**pvIt)->getEventTime() && std::next(pvIt) != _PV.end()) {
+        while (pvIt != _PV.end() && _t < (**pvIt)->getEventTime()) {
             ++pvIt;
         }
-        if (std::next(pvIt) == _PV.end()) {
-            // We are past in time after the last measurement we have, so we have to keep the value.
-            newVal = stringToValue((**(pvIt))->getValue(),
-                                   (**(pvIt))->getDataType());
+        if (pvIt == _PV.end()) {
+            // We are past in time after the last measurement we have, so we have to keep the last value.
+            newVal = stringToValue((**(std::prev(pvIt)))->getValue(),
+                                   (**(std::prev(pvIt)))->getDataType());
         } else {
             interpolateValues(stringToValue((**(std::prev(pvIt)))->getValue(),
                                             (**(std::prev(pvIt)))->getDataType()), // val1
@@ -545,45 +560,6 @@ bool CovariateExtractor::interpolateValues(const double _val1, const DateTime &_
     return true;
 }
 
-Value CovariateExtractor::stringToValue(std::string _str, const DataType &_dataType)
-{
-    Value v;
-    std::transform(_str.begin(), _str.end(), _str.begin(), ::tolower);
-    switch (_dataType)
-    {
-    case DataType::Int:
-    {
-        int tmp = std::stoi(_str);
-        v = tmp;
-    }
-        break;
-
-    case DataType::Double:
-        v = std::stod(_str);
-        break;
-
-    case DataType::Bool:
-        if (_str == "0" || _str == "false") {
-            v = 0.0;
-        } else {
-            v = 1.0;
-        }
-        break;
-
-    case DataType::Date:
-    {
-        DateTime dt(_str, "%Y-%b-%d %H:%M:%S");
-        v = dt.toSeconds();
-    }
-        break;
-
-    default:
-        // Invalid type, set the value to 0.0.
-        v = 0.0;
-        break;
-    }
-    return v;
-}
 
 
 }
