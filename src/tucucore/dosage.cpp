@@ -8,6 +8,17 @@
 namespace Tucuxi {
 namespace Core {
 
+
+
+void cloneIntakeSeries(std::vector<IntakeEvent> _input, std::vector<IntakeEvent> _output)
+{
+    for (auto intake : _input) {
+        IntakeEvent newIntakeEvent = intake;
+        newIntakeEvent.setCalculator(intake.getCalculator()->getLightClone());
+        _output.push_back(newIntakeEvent);
+    }
+}
+
 // Virtual destructor whose implementation is required for well-formed C++.
 SingleDose::~SingleDose() { }
 
