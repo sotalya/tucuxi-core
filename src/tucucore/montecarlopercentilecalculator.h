@@ -5,6 +5,7 @@
 #ifndef TUCUXI_CORE_MONTECARLOPERCENTILECALCULATOR_H
 #define TUCUXI_CORE_MONTECARLOPERCENTILECALCULATOR_H
 
+#include "likelihood.h"
 
 #include "tucucore/parameter.h"
 #include "tucucore/sampleevent.h"
@@ -140,13 +141,9 @@ protected:
     /// \param _samples List of samples
     /// \param _subomega Result of this function, non-negative hessian matrix
     void calculateSubomega(
-	    const IntakeSeries &_intakes,
-	    const ParameterSetSeries &_parameters,
 	    const OmegaMatrix& _omega,
-	    const IResidualErrorModel &_residualErrorModel,
 	    const Etas& _etas,
-	    const SampleSeries &_samples,
-	    IConcentrationCalculator &_concentrationCalculator,
+	    Likelihood &_logLikelihood,
 	    EigenMatrix &_subomega);
 
 protected:

@@ -156,6 +156,7 @@ public:
     const std::vector<TimeOffsets> getTimes() const { return m_times;}
     const std::vector<std::vector<Concentrations> > getValues() const { return m_values;}
 
+    void appendPercentile(int _percentileRank, int _cycle, int _point, Concentration _concentration) { m_values[_percentileRank][_cycle][_point] = _concentration; }
 //private:
     std::vector<TimeOffsets> m_times;
     PercentileRanks m_ranks;
