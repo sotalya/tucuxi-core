@@ -170,7 +170,9 @@ private:
                            Value &_valRes);
 
     /// \brief Sort available Patient Variates, discarding those not of interest.
-    int sortPatientVariates();
+    /// If the covariate is not interpolated, then its first observation is replaced by an observation at the beginning
+    /// of the interval.
+    void sortPatientVariates();
 };
 
 

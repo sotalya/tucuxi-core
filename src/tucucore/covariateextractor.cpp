@@ -324,67 +324,6 @@ int CovariateExtractor::createInitialEvents(std::map<std::string, std::pair<std:
 }
 
 
-int CovariateExtractor::sortPatientVariates()
-{
-    // For each patient variate, sort by date the list of values, then discard those not of interest.
-    // If the covariate is not interpolated, then its first observation is replaced by an observation at the beginning
-    // of the interval.
-    for (auto &pvV : m_pvValued) {
-
-        //        std::cerr << "\n" << pvV.first << " before sorting:\n";
-        //        int aa = 0;
-        //        for (const auto &pval : pvV.second) {
-        //            std::cerr << aa++ << " " << ((*pval)->getEventTime());
-        //            std::cerr << "\n";
-        //        }
-
-        // Sort by increasing date.
-        std::sort(pvV.second.begin(), pvV.second.end(),
-                  [](pvIterator_t &_a, pvIterator_t &_b) { return (*_a)->getEventTime() < (*_b)->getEventTime(); });
-        // If just one value, keep it, else do a cleanup.
-        if (pvV.second.size() > 1) {
-            // Drop all values before m_start and past m_end, except the one on the border (we will use them for the
-            // interpolation).
-            std::vector<pvIterator_t>::iterator it = pvV.second.begin();
-            // Remove before m_start.
-            while (std::next(it) != pvV.second.end() && (**it)->getEventTime() < m_start) {
-                if ((**(std::next(it)))->getEventTime() >= m_start && it != pvV.second.begin()) {
-                    pvV.second.erase(pvV.second.begin(), std::prev(it));
-                    break;
-                }
-                ++it;
-            }
-            // Remove past m_end.
-            it = pvV.second.begin();
-            while (std::next(it) != pvV.second.end() && (**it)->getEventTime() < m_end) {
-                if ((**(std::next(it)))->getEventTime() >= m_end) {
-                    if (std::next(++it) != pvV.second.end()) {
-                        pvV.second.erase(std::next(it), pvV.second.end());
-                        break;
-                    }
-                }
-                ++it;
-            }
-        }
-
-        // If InterpolationType == InterpolationType::Direct or a single value is present, then no interpolation is
-        // performed and we can change the time of the first measurement with the initial interval time.
-        if ((*(m_cdValued.at(pvV.first)))->getInterpolationType() == InterpolationType::Direct || pvV.second.size() == 1) {
-            (*(pvV.second.at(0)))->setEventTime(m_start);
-        }
-
-        //        std::cerr << "\n" << pvV.first << " after sorting:\n";
-        //        aa = 0;
-        //        for (const auto &pval : pvV.second) {
-        //            std::cerr << aa++ << " " << ((*pval)->getEventTime());
-        //            std::cerr << "\n";
-        //        }
-
-    }
-
-    return 0;
-}
-
 // Error codes:
 // -1 : null pointer in covariate definitions.
 // -2 : null pointer in patient variates.
@@ -584,6 +523,51 @@ bool CovariateExtractor::interpolateValues(const Value _val1, const DateTime &_d
         return false;
     }
     return true;
+}
+
+
+void CovariateExtractor::sortPatientVariates()
+{
+    // For each patient variate, sort by date the list of values, then discard those not of interest.
+    for (auto &pvV : m_pvValued) {
+        // Sort by increasing date.
+        std::sort(pvV.second.begin(), pvV.second.end(),
+                  [](pvIterator_t &_a, pvIterator_t &_b) { return (*_a)->getEventTime() < (*_b)->getEventTime(); });
+
+        // If just one value, keep it, else do a cleanup.
+        if (pvV.second.size() > 1) {
+            // Drop all values before m_start and past m_end, except the ones on the border (we will use them for the
+            // interpolation).
+            std::vector<pvIterator_t>::iterator it = pvV.second.begin();
+            // Remove before m_start.
+            while (std::next(it) != pvV.second.end() && (**it)->getEventTime() < m_start) {
+                if ((**(std::next(it)))->getEventTime() >= m_start && it != pvV.second.begin()) {
+                    pvV.second.erase(pvV.second.begin(), it);
+                    break;
+                }
+                ++it;
+            }
+            // Remove past m_end.
+            it = pvV.second.begin();
+            while (std::next(it) != pvV.second.end() && (**it)->getEventTime() < m_end) {
+                if ((**(std::next(it)))->getEventTime() >= m_end) {
+                    ++it;
+                    if (std::next(it) != pvV.second.end()) {
+                        pvV.second.erase(std::next(it), pvV.second.end());
+                    }
+                    break;
+                }
+                ++it;
+            }
+        }
+
+        // If InterpolationType == InterpolationType::Direct or a single value is present, then no interpolation is
+        // performed and we can change the time of the first measurement with the initial interval time.
+        if ((*(m_cdValued.at(pvV.first)))->getInterpolationType() == InterpolationType::Direct ||
+                pvV.second.size() == 1) {
+            (*(pvV.second.at(0)))->setEventTime(m_start);
+        }
+    }
 }
 
 

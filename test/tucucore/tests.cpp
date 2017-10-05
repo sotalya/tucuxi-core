@@ -154,6 +154,7 @@ int main(int argc, char** argv)
     TestCovariateExtractor ceTests;
     ceTests.add_test("testCE_constructor", &TestCovariateExtractor::testCE_constructor);
     ceTests.add_test("testCE_interpolateValues", &TestCovariateExtractor::testCE_interpolateValues);
+    ceTests.add_test("testCE_sortPatientVariates", &TestCovariateExtractor::testCE_sortPatientVariates);
     ceTests.add_test("testOperableFunctions_1", &TestCovariateExtractor::testCovariateExtraction_test1);
     ceTests.add_test("testOperableFunctions_2", &TestCovariateExtractor::testCovariateExtraction_test2);
 

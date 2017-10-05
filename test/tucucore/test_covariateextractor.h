@@ -198,6 +198,156 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
 
     TestCovariateExtractor() { }
 
+    /// \brief Check that patient variates are properly sorted and cleaned up.
+    void testCE_sortPatientVariates(const std::string& /* _testName */)
+    {
+        // The weight measurement the 11.08 and the one at 16h30 on the 30.08 should disappear. The remaining ones
+        // should be sorted.
+        {
+            CovariateDefinitions cDefinitions;
+            PatientVariates pVariates;
+
+            ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+            ADD_CDEF_W_R_UNIT(Weight, 6.5, Standard, Double, Linear, Tucuxi::Common::days(1), kg, cDefinitions);
+            ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
+            ADD_PV_NO_UNIT(Weight, 6.3, Double, DATE_TIME_NO_VAR(2017, 8, 19, 22, 32, 0), pVariates);
+            ADD_PV_NO_UNIT(Weight, 7.2, Double, DATE_TIME_NO_VAR(2017, 8, 19, 12, 32, 0), pVariates);
+            ADD_PV_NO_UNIT(Weight, 7.4, Double, DATE_TIME_NO_VAR(2017, 8, 21, 12, 32, 0), pVariates);
+            ADD_PV_NO_UNIT(Weight, 7.6, Double, DATE_TIME_NO_VAR(2017, 8, 12, 12, 32, 0), pVariates);
+            ADD_PV_NO_UNIT(Weight, 7.9, Double, DATE_TIME_NO_VAR(2017, 8, 11, 12, 32, 0), pVariates);
+            ADD_PV_NO_UNIT(Weight, 7.0, Double, DATE_TIME_NO_VAR(2017, 8, 30, 12, 32, 0), pVariates);
+            ADD_PV_NO_UNIT(Weight, 7.8, Double, DATE_TIME_NO_VAR(2017, 8, 30, 16, 32, 0), pVariates);
+
+            CovariateExtractor extractor(cDefinitions, pVariates,
+                                         DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0),
+                                         DATE_TIME_NO_VAR(2017, 8, 29, 14, 0, 0));
+            extractor.sortPatientVariates();
+
+            std::vector<std::unique_ptr<PatientCovariate>> res_pvVec;
+            res_pvVec.push_back(std::unique_ptr<PatientCovariate>(new PatientCovariate("Weight", valueToString(7.6), DataType::Double, Unit(), DATE_TIME_NO_VAR(2017, 8, 12, 12, 32, 0))));
+            res_pvVec.push_back(std::unique_ptr<PatientCovariate>(new PatientCovariate("Weight", valueToString(7.2), DataType::Double, Unit(), DATE_TIME_NO_VAR(2017, 8, 19, 12, 32, 0))));
+            res_pvVec.push_back(std::unique_ptr<PatientCovariate>(new PatientCovariate("Weight", valueToString(6.3), DataType::Double, Unit(), DATE_TIME_NO_VAR(2017, 8, 19, 22, 32, 0))));
+            res_pvVec.push_back(std::unique_ptr<PatientCovariate>(new PatientCovariate("Weight", valueToString(7.4), DataType::Double, Unit(), DATE_TIME_NO_VAR(2017, 8, 21, 12, 32, 0))));
+            res_pvVec.push_back(std::unique_ptr<PatientCovariate>(new PatientCovariate("Weight", valueToString(7.0), DataType::Double, Unit(), DATE_TIME_NO_VAR(2017, 8, 30, 12, 32, 0))));
+
+            const auto &pvVals = extractor.m_pvValued.at("Weight");
+
+            fructose_assert(pvVals.size() == res_pvVec.size());
+            for (size_t i = 0; i < std::min(pvVals.size(), res_pvVec.size()); ++i) {
+                fructose_assert(**(pvVals.at(i)) == *(res_pvVec.at(i)));
+            }
+        }
+
+        // We should keep all the measurements, properly sorted.
+        {
+            CovariateDefinitions cDefinitions;
+            PatientVariates pVariates;
+
+            ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+            ADD_CDEF_W_R_UNIT(Weight, 6.5, Standard, Double, Linear, Tucuxi::Common::days(1), kg, cDefinitions);
+            ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
+            ADD_PV_NO_UNIT(Weight, 6.3, Double, DATE_TIME_NO_VAR(2017, 8, 19, 22, 32, 0), pVariates);
+            ADD_PV_NO_UNIT(Weight, 7.2, Double, DATE_TIME_NO_VAR(2017, 8, 19, 12, 32, 0), pVariates);
+            ADD_PV_NO_UNIT(Weight, 7.4, Double, DATE_TIME_NO_VAR(2017, 8, 21, 12, 32, 0), pVariates);
+            ADD_PV_NO_UNIT(Weight, 7.6, Double, DATE_TIME_NO_VAR(2017, 8, 12, 12, 32, 0), pVariates);
+            ADD_PV_NO_UNIT(Weight, 7.9, Double, DATE_TIME_NO_VAR(2017, 8, 11, 12, 32, 0), pVariates);
+            ADD_PV_NO_UNIT(Weight, 7.0, Double, DATE_TIME_NO_VAR(2017, 8, 30, 12, 32, 0), pVariates);
+            ADD_PV_NO_UNIT(Weight, 7.8, Double, DATE_TIME_NO_VAR(2017, 8, 30, 16, 32, 0), pVariates);
+
+            CovariateExtractor extractor(cDefinitions, pVariates,
+                                         DATE_TIME_NO_VAR(2017, 8, 12, 12, 0, 0),
+                                         DATE_TIME_NO_VAR(2017, 8, 30, 14, 0, 0));
+            extractor.sortPatientVariates();
+
+            std::vector<std::unique_ptr<PatientCovariate>> res_pvVec;
+            res_pvVec.push_back(std::unique_ptr<PatientCovariate>(new PatientCovariate("Weight", valueToString(7.9), DataType::Double, Unit(), DATE_TIME_NO_VAR(2017, 8, 11, 12, 32, 0))));
+            res_pvVec.push_back(std::unique_ptr<PatientCovariate>(new PatientCovariate("Weight", valueToString(7.6), DataType::Double, Unit(), DATE_TIME_NO_VAR(2017, 8, 12, 12, 32, 0))));
+            res_pvVec.push_back(std::unique_ptr<PatientCovariate>(new PatientCovariate("Weight", valueToString(7.2), DataType::Double, Unit(), DATE_TIME_NO_VAR(2017, 8, 19, 12, 32, 0))));
+            res_pvVec.push_back(std::unique_ptr<PatientCovariate>(new PatientCovariate("Weight", valueToString(6.3), DataType::Double, Unit(), DATE_TIME_NO_VAR(2017, 8, 19, 22, 32, 0))));
+            res_pvVec.push_back(std::unique_ptr<PatientCovariate>(new PatientCovariate("Weight", valueToString(7.4), DataType::Double, Unit(), DATE_TIME_NO_VAR(2017, 8, 21, 12, 32, 0))));
+            res_pvVec.push_back(std::unique_ptr<PatientCovariate>(new PatientCovariate("Weight", valueToString(7.0), DataType::Double, Unit(), DATE_TIME_NO_VAR(2017, 8, 30, 12, 32, 0))));
+            res_pvVec.push_back(std::unique_ptr<PatientCovariate>(new PatientCovariate("Weight", valueToString(7.8), DataType::Double, Unit(), DATE_TIME_NO_VAR(2017, 8, 30, 16, 32, 0))));
+
+            const auto &pvVals = extractor.m_pvValued.at("Weight");
+
+            fructose_assert(pvVals.size() == res_pvVec.size());
+            for (size_t i = 0; i < std::min(pvVals.size(), res_pvVec.size()); ++i) {
+                fructose_assert(**(pvVals.at(i)) == *(res_pvVec.at(i)));
+            }
+        }
+
+        // We should keep all the measurements, properly sorted.
+        {
+            CovariateDefinitions cDefinitions;
+            PatientVariates pVariates;
+
+            ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+            ADD_CDEF_W_R_UNIT(Weight, 6.5, Standard, Double, Linear, Tucuxi::Common::days(1), kg, cDefinitions);
+            ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
+            ADD_PV_NO_UNIT(Weight, 6.3, Double, DATE_TIME_NO_VAR(2017, 8, 19, 22, 32, 0), pVariates);
+            ADD_PV_NO_UNIT(Weight, 7.2, Double, DATE_TIME_NO_VAR(2017, 8, 19, 12, 32, 0), pVariates);
+            ADD_PV_NO_UNIT(Weight, 7.4, Double, DATE_TIME_NO_VAR(2017, 8, 21, 12, 32, 0), pVariates);
+            ADD_PV_NO_UNIT(Weight, 7.6, Double, DATE_TIME_NO_VAR(2017, 8, 12, 12, 32, 0), pVariates);
+            ADD_PV_NO_UNIT(Weight, 7.9, Double, DATE_TIME_NO_VAR(2017, 8, 11, 12, 32, 0), pVariates);
+            ADD_PV_NO_UNIT(Weight, 7.0, Double, DATE_TIME_NO_VAR(2017, 8, 30, 12, 32, 0), pVariates);
+            ADD_PV_NO_UNIT(Weight, 7.8, Double, DATE_TIME_NO_VAR(2017, 8, 30, 16, 32, 0), pVariates);
+
+            CovariateExtractor extractor(cDefinitions, pVariates,
+                                         DATE_TIME_NO_VAR(2017, 8, 10, 12, 0, 0),
+                                         DATE_TIME_NO_VAR(2017, 8, 31, 14, 0, 0));
+            extractor.sortPatientVariates();
+
+            std::vector<std::unique_ptr<PatientCovariate>> res_pvVec;
+            res_pvVec.push_back(std::unique_ptr<PatientCovariate>(new PatientCovariate("Weight", valueToString(7.9), DataType::Double, Unit(), DATE_TIME_NO_VAR(2017, 8, 11, 12, 32, 0))));
+            res_pvVec.push_back(std::unique_ptr<PatientCovariate>(new PatientCovariate("Weight", valueToString(7.6), DataType::Double, Unit(), DATE_TIME_NO_VAR(2017, 8, 12, 12, 32, 0))));
+            res_pvVec.push_back(std::unique_ptr<PatientCovariate>(new PatientCovariate("Weight", valueToString(7.2), DataType::Double, Unit(), DATE_TIME_NO_VAR(2017, 8, 19, 12, 32, 0))));
+            res_pvVec.push_back(std::unique_ptr<PatientCovariate>(new PatientCovariate("Weight", valueToString(6.3), DataType::Double, Unit(), DATE_TIME_NO_VAR(2017, 8, 19, 22, 32, 0))));
+            res_pvVec.push_back(std::unique_ptr<PatientCovariate>(new PatientCovariate("Weight", valueToString(7.4), DataType::Double, Unit(), DATE_TIME_NO_VAR(2017, 8, 21, 12, 32, 0))));
+            res_pvVec.push_back(std::unique_ptr<PatientCovariate>(new PatientCovariate("Weight", valueToString(7.0), DataType::Double, Unit(), DATE_TIME_NO_VAR(2017, 8, 30, 12, 32, 0))));
+            res_pvVec.push_back(std::unique_ptr<PatientCovariate>(new PatientCovariate("Weight", valueToString(7.8), DataType::Double, Unit(), DATE_TIME_NO_VAR(2017, 8, 30, 16, 32, 0))));
+
+            const auto &pvVals = extractor.m_pvValued.at("Weight");
+
+            fructose_assert(pvVals.size() == res_pvVec.size());
+            for (size_t i = 0; i < std::min(pvVals.size(), res_pvVec.size()); ++i) {
+                fructose_assert(**(pvVals.at(i)) == *(res_pvVec.at(i)));
+            }
+        }
+
+        // We should drop all measurements except those of the 19.08.
+        {
+            CovariateDefinitions cDefinitions;
+            PatientVariates pVariates;
+
+            ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+            ADD_CDEF_W_R_UNIT(Weight, 6.5, Standard, Double, Linear, Tucuxi::Common::days(1), kg, cDefinitions);
+            ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
+            ADD_PV_NO_UNIT(Weight, 6.3, Double, DATE_TIME_NO_VAR(2017, 8, 19, 22, 32, 0), pVariates);
+            ADD_PV_NO_UNIT(Weight, 7.2, Double, DATE_TIME_NO_VAR(2017, 8, 19, 12, 32, 0), pVariates);
+            ADD_PV_NO_UNIT(Weight, 7.4, Double, DATE_TIME_NO_VAR(2017, 8, 21, 12, 32, 0), pVariates);
+            ADD_PV_NO_UNIT(Weight, 7.6, Double, DATE_TIME_NO_VAR(2017, 8, 12, 12, 32, 0), pVariates);
+            ADD_PV_NO_UNIT(Weight, 7.9, Double, DATE_TIME_NO_VAR(2017, 8, 11, 12, 32, 0), pVariates);
+            ADD_PV_NO_UNIT(Weight, 7.0, Double, DATE_TIME_NO_VAR(2017, 8, 30, 12, 32, 0), pVariates);
+            ADD_PV_NO_UNIT(Weight, 7.8, Double, DATE_TIME_NO_VAR(2017, 8, 30, 16, 32, 0), pVariates);
+
+            CovariateExtractor extractor(cDefinitions, pVariates,
+                                         DATE_TIME_NO_VAR(2017, 8, 19, 13, 0, 0),
+                                         DATE_TIME_NO_VAR(2017, 8, 19, 17, 0, 0));
+            extractor.sortPatientVariates();
+
+            std::vector<std::unique_ptr<PatientCovariate>> res_pvVec;
+            res_pvVec.push_back(std::unique_ptr<PatientCovariate>(new PatientCovariate("Weight", valueToString(7.2), DataType::Double, Unit(), DATE_TIME_NO_VAR(2017, 8, 19, 12, 32, 0))));
+            res_pvVec.push_back(std::unique_ptr<PatientCovariate>(new PatientCovariate("Weight", valueToString(6.3), DataType::Double, Unit(), DATE_TIME_NO_VAR(2017, 8, 19, 22, 32, 0))));
+
+            const auto &pvVals = extractor.m_pvValued.at("Weight");
+
+            fructose_assert(pvVals.size() == res_pvVec.size());
+            for (size_t i = 0; i < std::min(pvVals.size(), res_pvVec.size()); ++i) {
+                fructose_assert(**(pvVals.at(i)) == *(res_pvVec.at(i)));
+            }
+        }
+    }
+
 
     /// \brief Check that objects are correctly constructed by the constructor.
     void testCE_constructor(const std::string& /* _testName */)

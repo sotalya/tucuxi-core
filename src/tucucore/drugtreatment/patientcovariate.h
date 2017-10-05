@@ -28,6 +28,35 @@ public:
                      const Unit _unit, DateTime _date)
         : TimedEvent(_date), m_id{_id}, m_value{_value}, m_dataType{_dataType}, m_unit{_unit} {}
 
+    /// \brief Comparison (equality) operator.
+    /// param _rhs PatientCovariate to compare to.
+    bool operator==(const PatientCovariate &_rhs) const
+    {
+        return  this->getId() == _rhs.getId() &&
+                this->getValue() == _rhs.getValue() &&
+                this->getDataType() == _rhs.getDataType() &&
+                this->getEventTime() == _rhs.getEventTime();
+    }
+
+    /// \brief Comparison (difference) operator.
+    /// param _rhs PatientCovariate to compare to.
+    bool operator!=(const PatientCovariate &_rhs) const
+    {
+        return !(*this == _rhs);
+    }
+
+    /// \brief Class' output operator.
+    /// \param _output Output stream.
+    /// \param _pv Self reference to the PatientCovariate to print.
+    /// \return Output stream given as input (for output chaining).
+    friend std::ostream& operator<<(std::ostream &_output, const PatientCovariate &_pv) {
+        _output << "Patient Variate:\n\tID = " << _pv.getId()
+                << "\n\tValue = " << _pv.getValue()
+                << "\n\tDataType = " << (int)_pv.getDataType()
+                << "\n\tEventTime = " << _pv.getEventTime() << "\n";
+        return _output;
+    }
+
     /// \brief Return the identifier of the value.
     /// \return Value's identifier.
     std::string getId() const { return m_id;}
