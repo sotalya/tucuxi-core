@@ -107,7 +107,7 @@ enum class InputType { BOOL, INTEGER, DOUBLE };
 
 typedef Value Deviation;		    // Used for deviations (e.g. std dev)
 typedef std::vector<Deviation> Deviations;  // Used for epsilons array (e.g. std dev)
-typedef std::vector<Deviation> Etas;    // Used for values in eta and error vectors
+typedef std::vector<Deviation> Etas;	    // Used for values in eta and error vectors
 
 typedef Eigen::Matrix<Deviation, Eigen::Dynamic, Eigen::Dynamic> OmegaMatrix;
 typedef Eigen::Matrix<Deviation, Eigen::Dynamic, 1> Sigma;

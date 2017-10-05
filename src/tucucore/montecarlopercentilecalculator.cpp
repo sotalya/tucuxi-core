@@ -3,16 +3,16 @@
 */
 
 #include "montecarlopercentilecalculator.h"
-#include "likelihood.h"
 #include "concentrationcalculator.h"
 #include "definitions.h"
 
 #include <thread>
 #include <Eigen/Cholesky>
+#include <random>
 //#include <boost/math/distributions/normal.hpp>
-#include <boost/random/mersenne_twister.hpp>
-#include <boost/random/normal_distribution.hpp>
-#include <boost/random/variate_generator.hpp>
+//#include <boost/random/mersenne_twister.hpp>
+//#include <boost/random/normal_distribution.hpp>
+//#include <boost/random/variate_generator.hpp>
 
 namespace Tucuxi {
 namespace Core {
@@ -43,35 +43,50 @@ IPercentileCalculator::ProcessingResult MonteCarloPercentileCalculatorBase::comp
     bool abort = false;
     unsigned int nbPatients = Tucuxi::Core::MonteCarloPercentileCalculatorBase::getNumberPatients();
 
-    std::vector<std::vector<Concentrations>> concentrations;
+    std::vector< std::vector<Concentrations> > concentrations;
 
-#if 0
-    (_percentiles.getValues()).clear();
-    for (int i = 0; i < _curvelength; ++i) {
-        concentrations.push_back(std::vector<Concentrations>(nbPatients));
-        (_percentiles.getValue()).push_back(PercentileRanks());
+    /* Reset percentile */
+    (_percentiles.m_values).clear();
+
+    /* Set the size of vector "concentrations" */
+    for (unsigned int cycle = 0; cycle < _intakes.size(); cycle++) {
+
+	std::vector< std::vector<Concentration> > vec;
+	for (int point = 0; point < _nbPoints; point++) {
+	    vec.push_back(std::vector<Concentration>(nbPatients));
+	}
+	concentrations.push_back(vec);
     }
-#endif
+
+    /* Set the size of vector "percentile" */
+    for(unsigned percRankIdx = 0; percRankIdx < _percentileRanks.size(); percRankIdx++) {
+
+	std::vector< std::vector<Concentration> > vec;
+	for (unsigned int cycle = 0; cycle < _intakes.size(); cycle++) {
+	    vec.push_back(std::vector<Concentration>(_nbPoints));
+	}
+	_percentiles.m_values.push_back(vec);
+    }
 
     /*
      * Parallelize this for loop with some shared and some copied-to-each-thread-with-current-state (firstprivate) variables
      */
-     /* TODO: need to discuss for member variables in a class for multi thread */
     int nbThreads = std::max(std::thread::hardware_concurrency(), (unsigned int)1);
 
     std::vector<std::thread> workers;
     for(int thread = 0; thread < nbThreads; thread++) {
 
-        workers.push_back(std::thread([thread, nbPatients, &abort, _aborter, _etas, _epsilons, _parameters, _intakes, _nbPoints, &_residualErrorModel, &concentrations, nbThreads, &_concentrationCalculator]()
-        {
-            /* get concentrations for each patients */
-            ConcentrationPredictionPtr predictionPtr;
-            std::vector<Time> times;
+	/* Duplicate an IntakeSeries for avoid a possible problem with multi-thread */
+        IntakeSeries newIntakes;
+	cloneIntakeSeries(_intakes, newIntakes);
 
-#if 0
-            (predictionPtr->getValues()).reserve(_curvelength);
-            times.reserve(_curvelength);
-#endif
+        workers.push_back(std::thread([thread, nbPatients, &abort, _aborter, _etas, _epsilons, _parameters, newIntakes, _nbPoints, &_residualErrorModel, &concentrations, nbThreads, &_concentrationCalculator]()
+        {
+            /* 
+	     * Get concentrations for each patients, allocation will be done in
+	     * computeConcentrations
+	     */
+            ConcentrationPredictionPtr predictionPtr;
 
             int start = thread * (nbPatients / nbThreads);
             int end = (thread + 1) * (nbPatients / nbThreads);
@@ -80,10 +95,6 @@ IPercentileCalculator::ProcessingResult MonteCarloPercentileCalculatorBase::comp
 			if ((_aborter != nullptr) && (_aborter->shouldAbort())) {
 			    abort = true;
 			}
-#if 0
-			(predictionPtr->getValues()).clear();
-			times.clear();
-#endif
 
 			/*
 			 * Call to apriori becomes population as its determined earlier in the parametersExtractor
@@ -93,7 +104,7 @@ IPercentileCalculator::ProcessingResult MonteCarloPercentileCalculatorBase::comp
 					    predictionPtr,
 					    false, /* fix to "false": */
 					    _nbPoints,
-					    _intakes,
+					    newIntakes,
 					    _parameters,
 					    _etas[patient],
 					    _residualErrorModel,
@@ -105,7 +116,7 @@ IPercentileCalculator::ProcessingResult MonteCarloPercentileCalculatorBase::comp
 			 * concentrations[cycle][nbPoints][patient] for each cycle
 			 */
 			if (computationResult == ConcentrationCalculator::ComputationResult::Success) {
-			    for (unsigned int cycle = 0; cycle < _intakes.size(); ++cycle) {
+			    for (unsigned int cycle = 0; cycle < newIntakes.size(); ++cycle) {
 				for (int point = 0; point < _nbPoints; ++point ) {
 				    concentrations[cycle][point][patient] = (predictionPtr->getValues())[cycle][point];
 				}
@@ -116,7 +127,7 @@ IPercentileCalculator::ProcessingResult MonteCarloPercentileCalculatorBase::comp
         }
         ));
 
-    }
+    } /* for (thread) */
     std::for_each(workers.begin(), workers.end(), [](std::thread &t)
     {
         t.join();
@@ -126,33 +137,26 @@ IPercentileCalculator::ProcessingResult MonteCarloPercentileCalculatorBase::comp
         return ProcessingResult::Aborted;
     }
 
-    /*
-* Parallelize this loop where quantiles are extracted.
-* The values at each time are sorted in increasing order, then
-* they are walked from low to high while counting, once
-* the count passes that of a quantile, the value is extracted
-* into the result (_percentiles.getValues())
-*/
+    /* Parallelize this loop where quantiles are extracted. */
 #if 0
 #pragma omp parallel for
 #endif
     for (unsigned int cycle = 0; cycle < _intakes.size(); ++cycle) {
-	for (int point = 0; point < _nbPoints; ++point ) {
+	for (int point = 0; point < _nbPoints; ++point) {
+
+	    /* sort concentrations in increasing order at each time (at the cycle and at the point) */
 	    std::sort(concentrations[cycle][point].begin(), concentrations[cycle][point].end(), [&] (const double v1, const double v2) { return v1 < v2; });
+
+	    /* rebuild pecentile array [percentile][cycle][point] */
+	    unsigned int percRankIdx = 0;
+	    for (unsigned int sortPosition = 0; sortPosition < nbPatients; ++sortPosition) {
+	        if ((percRankIdx < _percentileRanks.size()) && (sortPosition >= _percentileRanks[percRankIdx] / 100.0 * nbPatients)) {
+		    _percentiles.appendPercentile(percRankIdx, cycle, point, concentrations[cycle][point][sortPosition]);
+	            percRankIdx++;
+	        }
+	    }
 	}
     }
-
-    /* TODO: need to discuss how return the percentile */
-#if 0
-        PercentileRanks::const_iterator pit = _percentileRanks.cbegin();
-        for (unsigned int patient = 0; patient < nbPatients; ++patient) {
-            if (pit != _percentileRanks.cend() && patient >= *pit / 100.0 * nbPatients) {
-                /* TODO: temporary code. figugre out whether it is correct or not */
-                (_percentiles.getValues())[i].push_back(concentrations[i][patient]);
-                pit++;
-            }
-        }
-#endif
 
     return ProcessingResult::Success;
 
@@ -197,38 +201,18 @@ IPercentileCalculator::ProcessingResult AprioriMonteCarloPercentileCalculator::c
     /*
      * Static random number generator
      */
-    static boost::mt19937 rng(static_cast<unsigned>(std::time(0)));
+    static std::random_device randomDevice;
+    std::mt19937 rnGenerator(randomDevice());
     /*
      * The variables are normally distributed, we use boost standard normal,
      * then apply lower cholesky
      */
-    boost::normal_distribution<> norm(0, 1.0);
-    boost::variate_generator<boost::mt19937&, boost::normal_distribution < > > var_nor(rng, norm);
+    std::normal_distribution<> normalDistribution(0, 1.0);
 
     Etas eta(omegaRank);
     Tucuxi::Core::ConcentrationPredictionPtr predictionPtr = std::make_unique<Tucuxi::Core::ConcentrationPrediction>();
 
-    /*
-     * This call to apriori is to get the times and determine a better-than-initial
-     * fixed density to be used for all the simulated patients
-     */
-    /* TODO: remove following code. After adding code for calculating size */
-#if  0
-    ConcentrationCalculator::computeConcentrations(predictionPtr, isAll, _nbPoints, _intakes, _parameters, eta, _residualErrorModel);
-#endif
-
     unsigned int nbPatients = getNumberPatients();
-    /*
-    TODO: remove following code. From ezechiel, not used in the function
-    And also think about remove curvelength after creating thread and factorizing code of sorting
-    */
-#if 0
-    _percentiles.clear();
-    for (int i = 0; i < predictionPtr.size(); ++i) {
-        results.push_back(EigenMatrix(nbPatients));
-        concs.push_back(perc_set_t());
-    }
-#endif
 
     /*
      * Generating the random numbers
@@ -240,21 +224,21 @@ IPercentileCalculator::ProcessingResult AprioriMonteCarloPercentileCalculator::c
     Currently, epsilons[1][nbPatients] is initialised with normalised random number.
     */
 #if 0
-    std::vector<Deviations> epsilons(_residualErrorModel.nbEpsilons(), Deviations(nbPatients, var_nor()));
+    std::vector<Deviations> epsilons(_residualErrorModel.nbEpsilons(), Deviations(nbPatients, normalDistribution(rnGenerator)));
 #else
-    std::vector<Deviations> epsilons(1, Deviations(nbPatients, var_nor()));
+    std::vector<Deviations> epsilons(1, Deviations(nbPatients, normalDistribution(rnGenerator)));
 #endif
 
     for (int row = 0; row < rands.rows(); ++row) {
-        //epsilons(0, (row))= var_nor();
+        //epsilons(0, (row))= normalDistribution();
 
         for (int column = 0; column < rands.cols(); ++column) {
-            rands(row, column) = var_nor();
+            rands(row, column) = normalDistribution(rnGenerator);
         }
     }
 
 
-    std::vector<Etas> eta_samples(nbPatients);
+    std::vector<Etas> etaSamples(nbPatients);
 
     for(unsigned int patient = 0; patient < nbPatients; ++patient) {
         EigenVector matrixY = rands.row(patient);
@@ -262,10 +246,10 @@ IPercentileCalculator::ProcessingResult AprioriMonteCarloPercentileCalculator::c
          * Cholesky is applied here to get correlated random deviates
          */
         EigenVector matrixX = choleskyMatrix * matrixY;
-        eta_samples[patient].assign(&matrixX(0), &matrixX(0) + omegaRank);
+        etaSamples[patient].assign(&matrixX(0), &matrixX(0) + omegaRank);
 
         for(unsigned int eta = 0; eta < _initialEtas.size(); eta++) {
-            eta_samples[patient][eta] += _initialEtas[eta];
+            etaSamples[patient][eta] += _initialEtas[eta];
         }
     }
 
@@ -276,7 +260,7 @@ IPercentileCalculator::ProcessingResult AprioriMonteCarloPercentileCalculator::c
              _parameters,
              _residualErrorModel,
              _percentileRanks,
-             eta_samples,
+             etaSamples,
              epsilons,
 	     _concentrationCalculator,
              _aborter);
@@ -284,22 +268,15 @@ IPercentileCalculator::ProcessingResult AprioriMonteCarloPercentileCalculator::c
 
 
 void MonteCarloPercentileCalculatorBase::calculateSubomega(
-        const IntakeSeries &_intakes,
-        const ParameterSetSeries &_parameters,
         const OmegaMatrix &_omega,
-        const IResidualErrorModel &_residualErrorModel,
         const Etas &_etas,
-        const SampleSeries &_samples,
-	IConcentrationCalculator &_concentrationCalculator,
+	Likelihood &_logLikelihood,
         EigenMatrix &_subomega)
 {
     /*
     * posterior mode (resulting eta vector from calculating aposteriori) 'eta' in args
     */
-    /* TODO check Map functions correctly or not when test MC */
     const Value* etasPtr = &_etas[0]; /* get _etas pointer */
-
-    map2EigenVectorType mean_etas(etasPtr, _etas.size());
 
     /*
     * evaluate inverse of hessian of loglikelihood
@@ -307,8 +284,7 @@ void MonteCarloPercentileCalculatorBase::calculateSubomega(
     EigenVector eta_min = EigenVector::Zero(_omega.rows());
     EigenVector eta_max = EigenVector::Zero(_omega.rows());
 
-    Likelihood likelihood(_omega, _residualErrorModel, _samples, _intakes, _parameters, _concentrationCalculator);
-    likelihood.initBounds(_omega, eta_max, eta_min);
+    _logLikelihood.initBounds(_omega, eta_max, eta_min);
 
     /*
     * Get working eta
@@ -320,7 +296,7 @@ void MonteCarloPercentileCalculatorBase::calculateSubomega(
     /*
     * Get the hessian
     */
-    deriv2(likelihood, (EigenVector&)etas, (EigenMatrix&)hessian);
+    deriv2(_logLikelihood, (EigenVector&)etas, (EigenMatrix&)hessian);
 
     /*
     * Negative inverse
@@ -343,80 +319,64 @@ IPercentileCalculator::ProcessingResult AposterioriMonteCarloPercentileCalculato
 	IConcentrationCalculator &_concentrationCalculator,
         ProcessingAborter *_aborter)
 {
-    TMP_UNUSED_PARAMETER(_percentiles);
-    TMP_UNUSED_PARAMETER(_nbPoints);
-    TMP_UNUSED_PARAMETER(_percentileRanks);
-    TMP_UNUSED_PARAMETER(_aborter);
-
-    /* Return value from non-negative hessian matrix */
+    /* Return value from non-negative hessian matrix and loglikelihood */
     EigenMatrix subomega;
+    Likelihood logLikelihood(_omega, _residualErrorModel, _samples, _intakes, _parameters, _concentrationCalculator);
 
-    /* calculate hessian metrix and subomega */
+    /* 
+     * 1. Calculate hessian metrix and subomega
+     */
     calculateSubomega(
-                _intakes,
-                _parameters,
                 _omega,
-                _residualErrorModel,
                 _etas,
-                _samples,
-		_concentrationCalculator,
+		logLikelihood,
                 subomega);
 
     /*
-    * Get lower cholesky of omega
-    */
-    Eigen::LLT<EigenMatrix> _subomega_llt(subomega);
-    EigenMatrix eta_lchol = _subomega_llt.matrixL().transpose();
-
-#if 0
-    /* TODO: figure out whether we need to clear or not */
-    (_percentiles.getValues()).clear();
-
-    /*
-    * 3. draw initial sample from multivariate students t-dist w/ 1 degree freedom
-    * A standard multivariate Student's t random vector can be written as a
-    * multivariate normal vector whose covariance matrix is scaled by the reciprocal of a Gamma random variable
-    * ( source: http://www.statlect.com/mcdstu1.htm )
-    * generating the multivariate normal starts the same as mcarls
-    */
-
-    static std::random_device rd;
-    std::mt19937 gen(rd());
-
-    /*
-     * The variables are normally distributed, we use standard normal,
-     * then apply lower cholesky
+     * 2. Get meanEtas and lower cholesky of omega
      */
-    // Could be 2 for instance
-    int student_liberty = 1;
-    std::student_t_distribution<> var_t(student_liberty);
+    /* TODO check Map functions correctly or not when test MC */
+    const Value* etasPtr = &_etas[0]; /* get _etas pointer */
 
+    map2EigenVectorType meanEtas(etasPtr, _etas.size());
+
+    Eigen::LLT<EigenMatrix> subomegaLLT(subomega);
+    EigenMatrix etaLowerChol = subomegaLLT.matrixL().transpose();
 
     /*
-    * Now we start making a sample. How many samples to take?
-    */
+     * 3. draw initial sample from multivariate students t-dist w/ 1 degree freedom
+     * A standard multivariate Student's t random vector can be written as a
+     * multivariate normal vector whose covariance matrix is scaled by the reciprocal of a Gamma random variable
+     * ( source: http://www.statlect.com/mcdstu1.htm )
+     * generating the multivariate normal starts the same as mcarls
+     */
+    static std::random_device randomDevice;
+    std::mt19937 rnGenerator(randomDevice());
+
+    /* The variables are normally distributed, we use standard normal, then apply lower cholesky */
+    int studentLiberty = 1;
+    std::student_t_distribution<> standardNormalDist(studentLiberty);
+
+    /* Now we start making a sample. How many samples to take? */
     const int nbSamples = 100000; // Rename : samples
     const int nbReSamples = 10000;  // Rename : reSamples
 
-    std::vector<error_vector_t> _eta_samples(nbSamples);
+    std::vector<Etas> etaSamples(nbSamples);
     /*
-    * This is r for the ratios in step 4
+    * This is ratio for the ratios in step 4
     */
-    dy_vec_t _r(nbSamples);
-    dy_vec_t _w(nbSamples);
-
+    EigenVector ratio(nbSamples);
+    EigenVector weight(nbSamples);
 
     /*
     * Loading random numbers as omp doesnt like it
     */
-    dy_mat_t avecs = dy_mat_t::Zero(nbSamples, eta.size());
-    for (int r = 0; r < avecs.rows(); ++r) {
-        for (int c = 0; c < avecs.cols(); ++c) {
-            avecs(r,c) = var_t(gen);
+    EigenMatrix avecs = EigenMatrix::Zero(nbSamples, _etas.size());
+    for (int row = 0; row < avecs.rows(); ++row) {
+        for (int column = 0; column < avecs.cols(); ++column) {
+            avecs(row,column) = standardNormalDist(rnGenerator);
         }
     }
-
-    exportToFile(statPath + "avecs.dat", avecs);
 
     bool abort = false;
 
@@ -426,32 +386,26 @@ IPercentileCalculator::ProcessingResult AposterioriMonteCarloPercentileCalculato
     int nbThreads = std::max(std::thread::hardware_concurrency(), (unsigned int)1);
 
     std::vector<std::thread> workers;
-    for(int thread = 0;thread< nbThreads; thread++) {
-        workers.push_back(std::thread([thread, nbSamples, &abort, aborter, nbThreads, eta, _mean_etas, avecs, eta_lchol,
-                                      &_eta_samples, _cgm, student_liberty, subomega, &_r]()
+    for(int thread = 0;thread < nbThreads; thread++) {
+        workers.push_back(std::thread([thread, nbSamples, &abort, _aborter, nbThreads, _etas, meanEtas, avecs, etaLowerChol,
+                                      &etaSamples, logLikelihood, studentLiberty, subomega, &ratio]()
         {
             int start = thread * (nbSamples / nbThreads);
             int end = (thread + 1 ) * (nbSamples / nbThreads);
-            for (int j = start; j < end; ++j) {
+            for (int sample = start; sample < end; ++sample) {
                 if (!abort) {
-                    if ((aborter != nullptr) && (aborter->shouldAbort())) {
+                    if ((_aborter != nullptr) && (_aborter->shouldAbort())) {
                         abort = true;
                     }
 
-                    //dy_vec_t avec = dy_vec_t::Zero(eta.size());
+                    EigenVector avec = meanEtas.transpose() + avecs.row(sample) * etaLowerChol;
+                    Etas avec_mat;
 
-                    // TOCHECK : voir si transpose est nécessaire et pourquoi
-                    dy_vec_t avec = _mean_etas.transpose() + avecs.row(j) * eta_lchol;
-
-                    error_vector_t _avec_mat;
-
-                    for (int i = 0; i < eta.size(); ++i) {
-                        // Removing the boundaries makes the step disappear
-                        //    _avec_mat.push_back(qBound(_eta_min[i], avec[i], _eta_max[i]));
-                        _avec_mat.push_back(avec[i]);
+                    for (unsigned int etasIdx = 0; etasIdx < _etas.size(); ++etasIdx) {
+                        avec_mat.push_back(avec[etasIdx]);
                     }
 
-                    _eta_samples[j] = _avec_mat;
+                    etaSamples[sample] = avec_mat;
 
                     /*
                     * 4. calculate the ratios for weighting
@@ -459,30 +413,27 @@ IPercentileCalculator::ProcessingResult AposterioriMonteCarloPercentileCalculato
                     */
                     // Be careful: hstart should be a logLikelihood, however we are minimizing the
                     // negative loglikelyhood, so it is a negative h start.
-                    loglikelihood_t _h_star = _cgm.negativeLogLikelihood(_avec_mat);
+                    Value hstart = logLikelihood.negativeLogLikelihood(avec_mat);
 
                     /*
                     * this is g
                     * Using the multi-t-dist pdf directly from this source: http://www.statlect.com/mcdstu1.htm
                     * because the multi-t-dist doesnt exist in boost
-
                     * using the multi-t dist from wikipedia
                     */
-                    double v = student_liberty;
-                    double p = eta.size();
+                    double v = studentLiberty;
+                    double p = _etas.size();
                     double top = tgamma((v + p)/2);
                     double part2 = std::sqrt(subomega.determinant());
                     double part3 = tgamma(v / 2) * std::pow(v * 3.14159, p/2);
-                    double part35 = 1 + 1/v * (avec - _mean_etas).transpose() * subomega.inverse() * (avec - _mean_etas);
+                    double part35 = 1 + 1/v * (avec - meanEtas).transpose() * subomega.inverse() * (avec - meanEtas);
                     double part4 = std::pow(part35,(v + p)/2);
-                    double _g = top / (part2 * part3 * part4);
+                    double g = top / (part2 * part3 * part4);
 
                     /*
                     * Set the ratio
                     */
-                    //_r[j] = -_h_star / _g;
-                    // _r[j] =  exp(-_h_star - log(_g));
-                    _r[j] =  exp(-_h_star) / _g;
+                    ratio[sample] =  exp(-hstart) / g;
                 }
             }
 
@@ -494,74 +445,41 @@ IPercentileCalculator::ProcessingResult AposterioriMonteCarloPercentileCalculato
     });
 
     if (abort) {
-        //    EXLOG(QtDebugMsg, ezechiel::math::NOEZERROR, QString("Aborted stale calc: avail: %1").arg(aborter.available()));
         return ProcessingResult::Aborted;
     }
 
     /*
     * 5. calculate the weights
     */
-    _w = _r / _r.sum();
+    weight = ratio / ratio.sum();
 
     /*
     * 6. draw samples from discrete distribution using weights
     */
-    std::discrete_distribution<> var_discrete(&_w(0), &_w(0) + _w.size());
+    std::normal_distribution<> normalDistribution(0,1.0);
+    std::discrete_distribution<> discreteDistribution(&weight(0), &weight(0) + weight.size());
 
-    /*
-    * this is just to get the number of points in curve
-    */
-    error_vector_t _err_at_w = _eta_samples[var_discrete(gen)];
+    std::vector<Deviations> epsilons(1, Deviations(nbReSamples, normalDistribution(rnGenerator)));
+    std::vector<Etas> RealEtaSamples(nbReSamples);
 
-    double eps = 0.0;
-
-    std::normal_distribution<> var_nor(0,1.0);
-
-    cxn_1d_t _forsize;
-    ConcentrationCalculator::calculatePoints(_forsize,times, _nbPoints, intakes, parameters, _err_at_w, _residualErrorModel, eps);
-    cxn_2d_t individualPredictions;
-    for (unsigned int i = 0; i < _forsize.size(); ++i) {
-        individualPredictions.push_back(cxn_1d_t(nbReSamples));
-        percentileCurves.push_back(perc_set_t(percs.size()));
-    }
-
-    /*
-    * this is where we do the monte carlo
-    * omp doesnt like the caches
-    */
-    const int curvelength = _forsize.size();
-    cxn_1d_t _iconcs;
-    time_1d_t _itimes;
-    _iconcs.reserve(curvelength);
-    _itimes.reserve(curvelength);
-
-    dy_vec_t epsilons = dy_vec_t::Zero(nbReSamples);
-    std::vector<error_vector_t> real_eta_samples(nbReSamples);
-
+    /* TODO: think about whether we can use push_back or not */
     for(int patient = 0; patient < nbReSamples; ++patient) {
-        real_eta_samples[patient] = _eta_samples[var_discrete(gen)];
-        epsilons(patient) = var_nor(gen);
+	RealEtaSamples[patient] = etaSamples[discreteDistribution(rnGenerator)];
+        //epsilons(patient) = normalDistribution(rnGenerator);
     }
 
     return computePredictionsAndSortPercentiles(
-                percentileCurves,
-                times,
+                _percentiles,
                 _nbPoints,
-                intakes,
-                parameters,
+                _intakes,
+                _parameters,
                 _residualErrorModel,
-                percs,
-                aborter,
-                nbReSamples,
-                real_eta_samples,
-                epsilons,
+                _percentileRanks,
+		RealEtaSamples,
+		epsilons,
 		_concentrationCalculator,
-                curvelength,
 		_aborter);
 
-#endif
-
-    return ProcessingResult::Failure;
 } // AposterioriMonteCarloPercentileCalculator::calculate
 
 
@@ -578,18 +496,17 @@ IPercentileCalculator::ProcessingResult AposterioriNormalApproximationMonteCarlo
 	IConcentrationCalculator &_concentrationCalculator,
         ProcessingAborter *_aborter)
 {
-    /* Return value from calculateSubomega */
+    /* Return value from non-negative hessian matrix and loglikelihood */
     EigenMatrix subomega;
+    Likelihood logLikelihood(_omega, _residualErrorModel, _samples, _intakes, _parameters, _concentrationCalculator);
 
-    /* calculate hessian metrix and subomega */
+    /* 
+     * 1. Calculate hessian metrix and subomega
+     */
     calculateSubomega(
-                _intakes,
-                _parameters,
                 _omega,
-                _residualErrorModel,
                 _etas,
-                _samples,
-		_concentrationCalculator,
+		logLikelihood,
                 subomega);
 
     /* TODO: figure out whether we need to clear or not */
