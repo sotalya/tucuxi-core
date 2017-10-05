@@ -86,5 +86,12 @@ std::string Utils::valueToString(const DateTime &_value)
 }
 
 
+DateTime Utils::ValueToDate(const Value &_value)
+{
+    DateTime dt;
+    dt += Duration(std::chrono::seconds((long int)_value));
+    return dt;
+}
+
 }
 }

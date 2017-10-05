@@ -10,6 +10,9 @@
 
 #include "tucucore/definitions.h"
 
+#include "tucucommon/datetime.h"
+#include "tucucommon/duration.h"
+
 namespace Tucuxi {
 namespace Common {
 
@@ -33,6 +36,8 @@ std::string valueToString(const bool &_value);
 std::string valueToString(const int &_value);
 std::string valueToString(const double &_value);
 std::string valueToString(const DateTime &_value);
+
+DateTime ValueToDate(const Value &_value);
 
 std::string getAppFolder(char** _argv);
 

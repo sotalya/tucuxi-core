@@ -58,8 +58,10 @@ void printCovariateSeries(const CovariateSeries &_series)
                   << covEl.getEventTime().year() << " "
                   << covEl.getEventTime().hour() << "h"
                   << covEl.getEventTime().minute() << "m"
-                  << covEl.getEventTime().second() << "s"
-                  << " = " << covEl.getValue() << "\n";
+                  << covEl.getEventTime().second() << "s";
+        std::cerr << " = " << covEl.getValue() << "\n";
+
+
     }
     std::cerr << "==============================================\n";
 }
@@ -68,6 +70,77 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
 {
 
     TestCovariateExtractor() { }
+
+    void testCE_interpolateValues(const std::string& /* _testName */)
+    {
+        CovariateExtractor extractor(CovariateDefinitions(), PatientVariates(),
+                                     DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0),
+                                     DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0));
+        bool rc;
+        Value valRes;
+
+        // Violate precondition.
+        rc = extractor.interpolateValues(0, DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0),
+                                         1, DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0),
+                                         DATE_TIME_NO_VAR(2017, 8, 15, 14, 32, 0),
+                                         InterpolationType::Linear,
+                                         valRes);
+        fructose_assert(rc == false);
+
+        // Interpolate in the middle.
+        rc = extractor.interpolateValues(0, DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0),
+                                         10, DATE_TIME_NO_VAR(2017, 8, 23, 14, 32, 0),
+                                         DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
+                                         InterpolationType::Linear,
+                                         valRes);
+        fructose_assert(rc == true);
+        fructose_assert(valRes == 5.0);
+
+        // Extrapolate before.
+        rc = extractor.interpolateValues(5, DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
+                                         10, DATE_TIME_NO_VAR(2017, 8, 23, 14, 32, 0),
+                                         DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0),
+                                         InterpolationType::Linear,
+                                         valRes);
+        fructose_assert(rc == true);
+        fructose_assert(valRes == 0.0);
+
+        // Extrapolate after.
+        rc = extractor.interpolateValues(5, DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0),
+                                         10, DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
+                                         DATE_TIME_NO_VAR(2017, 8, 23, 14, 32, 0),
+                                         InterpolationType::Linear,
+                                         valRes);
+        fructose_assert(rc == true);
+        fructose_assert(valRes == 15.0);
+
+        // Test direct interpolation (before _date1).
+        rc = extractor.interpolateValues(5, DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
+                                         10, DATE_TIME_NO_VAR(2017, 8, 19, 14, 32, 0),
+                                         DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0),
+                                         InterpolationType::Direct,
+                                         valRes);
+        fructose_assert(rc == true);
+        fructose_assert(valRes == 5.0);
+
+        // Test direct interpolation (between _date1 and _date2).
+        rc = extractor.interpolateValues(5, DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
+                                         10, DATE_TIME_NO_VAR(2017, 8, 29, 14, 32, 0),
+                                         DATE_TIME_NO_VAR(2017, 8, 19, 14, 32, 0),
+                                         InterpolationType::Direct,
+                                         valRes);
+        fructose_assert(rc == true);
+        fructose_assert(valRes == 5.0);
+
+        // Test direct interpolation (after _date2).
+        rc = extractor.interpolateValues(5, DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
+                                         10, DATE_TIME_NO_VAR(2017, 8, 19, 14, 32, 0),
+                                         DATE_TIME_NO_VAR(2017, 8, 23, 14, 32, 0),
+                                         InterpolationType::Direct,
+                                         valRes);
+        fructose_assert(rc == true);
+        fructose_assert(valRes == 10.0);
+    }
 
     /// \brief Test covariate extraction using the example presented in the specs.
     void testCovariateExtraction_test1(const std::string& /* _testName */)
@@ -104,7 +177,7 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
                                                                               DATE_TIME_NO_VAR(2017, 8, 13, 12, 32, 0)));
         // gist == false @ 13.08.2017, 14h32.
         std::unique_ptr<PatientCovariate> patient_gist_2(new PatientCovariate("Gist", valueToString(false), DataType::Bool, Unit(),
-                                                                               DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+                                                                              DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
         PatientVariates pVariates1;
         pVariates1.push_back(std::move(patient_gist_1));
         pVariates1.push_back(std::move(patient_gist_2));
@@ -112,10 +185,10 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
         // Test 1: call the extractor with the two patient covariates above.
         // We expect the first one to be "back-propagated" to the beginning of the interval.
 
-        CovariateExtractor extractor;
+        CovariateExtractor extractor1(cDefinitions, pVariates1, startDate, endDate);
         CovariateSeries series;
         int rc;
-        rc = extractor.extract(cDefinitions, pVariates1, startDate, endDate, series);
+        rc = extractor1.extract(series);
 
 //        printCovariateSeries(series);
 
@@ -152,8 +225,9 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
         // Test 2: call the extractor with no patient covariates.
 
         PatientVariates pVariates2;
+        CovariateExtractor extractor2(cDefinitions, pVariates2, startDate, endDate);
         series.clear();
-        rc = extractor.extract(cDefinitions, pVariates2, startDate, endDate, series);
+        rc = extractor2.extract(series);
 
 //        printCovariateSeries(series);
 
@@ -198,8 +272,9 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
         pVariates3.push_back(std::move(patient_weight_2));
         pVariates3.push_back(std::move(patient_weight_3));
 
+        CovariateExtractor extractor3(cDefinitions, pVariates3, startDate, endDate);
         series.clear();
-        rc = extractor.extract(cDefinitions, pVariates3, startDate, endDate, series);
+        rc = extractor3.extract(series);
 
 //        printCovariateSeries(series);
 
@@ -267,6 +342,8 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
     /// - Added another computed covariate (VerySpecial)
     void testCovariateExtraction_test2(const std::string& /* _testName */)
     {
+        std::cerr << "++++++++++++++ TEST2 +++++++++++++++\n";
+
         std::unique_ptr<CovariateDefinition> gist(new CovariateDefinition("Gist", valueToString(false), nullptr, CovariateType::Standard, DataType::Bool));
         gist->setInterpolationType(InterpolationType::Direct);
 
@@ -318,10 +395,19 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
         pVariates1.push_back(std::move(patient_gist_1));
         pVariates1.push_back(std::move(patient_gist_2));
 
-        CovariateExtractor extractor;
+        CovariateExtractor extractor1(cDefinitions, pVariates1, startDate, endDate);
         CovariateSeries series;
         int rc;
-        rc = extractor.extract(cDefinitions, pVariates1, startDate, endDate, series);
+        rc = extractor1.extract(series);
+
+        double _valRes;
+        std::cerr << extractor1.interpolateValues(1, DATE_TIME_NO_VAR(2017, 8, 13, 12, 32, 0),
+                                                  3, DATE_TIME_NO_VAR(2017, 8, 15, 12, 32, 0),
+                                                  DATE_TIME_NO_VAR(2017, 8, 14, 12, 32, 0),
+                                                  InterpolationType::Linear,
+                                                  _valRes) << " <<<<<\n";
+        std::cerr << _valRes << "\n";
+
 
         printCovariateSeries(series);
 
