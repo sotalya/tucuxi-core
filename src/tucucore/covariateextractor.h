@@ -79,9 +79,7 @@ public:
     CovariateExtractor(const CovariateDefinitions &_defaults,
                        const PatientVariates &_patientCovariates,
                        const DateTime &_start,
-                       const DateTime &_end)
-        : ICovariateExtractor(_defaults, _patientCovariates, _start, _end)
-    { }
+                       const DateTime &_end);
 
     /// \brief Default destructor for the Covariate Extractor.
     virtual ~CovariateExtractor() = default;
@@ -96,6 +94,20 @@ public:
 
 private:
 
+    /// \brief Operable Graph Manager, in charge of performing all the computations needed to derive covariate values.
+    OperableGraphManager m_ogm;
+
+    /// \brief Covariate Definitions that have their own independent value (that is, not computed).
+    std::map<std::string, cdIterator_t> m_cdValued;
+
+    /// \brief Covariate Definitions that are computed.
+    std::map<std::string, cdIterator_t> m_cdComputed;
+
+    /// \brief Patient Variates (measured values, therefore cannot be computed!).
+    /// We normally have multiple values for each patient variate (corresponding to multiple measurements of the same
+    /// physical quantity).
+    std::map<std::string, std::vector<pvIterator_t>> m_pvValued;
+
     Value getPatientVariateValue(const std::vector<pvIterator_t>& _PV,
                                  const DateTime &_t,
                                  const InterpolationType _interpolationType);
@@ -103,42 +115,28 @@ private:
 
 
 
-    int createInitialEvents(const std::map<std::string, cdIterator_t> &_cdValued,
-                            const std::map<std::string, cdIterator_t> &_cdComputed,
-                            const std::map<std::string, std::vector<pvIterator_t>> &_pvValued,
-                            std::map<std::string, std::pair<std::shared_ptr<CovariateEvent>, Value>> &_computedValuesMap,
+    int createInitialEvents(std::map<std::string, std::pair<std::shared_ptr<CovariateEvent>, Value>> &_computedValuesMap,
                             std::map<std::string, std::shared_ptr<CovariateEvent>> &_nccValuesMap,
-                            OperableGraphManager &_ogm,
                             CovariateSeries &_series);
 
-    void collectRefreshIntervals(const std::map<std::string, cdIterator_t> &_cdComputed,
-                                 const std::map<std::string, std::pair<std::shared_ptr<CovariateEvent>, Value>> &_computedValuesMap,
+    void collectRefreshIntervals(const std::map<std::string, std::pair<std::shared_ptr<CovariateEvent>, Value>> &_computedValuesMap,
                                  std::map<DateTime, std::vector<std::string>> &_refreshMap);
 
     int generatePeriodicComputedCovariates(const std::map<DateTime, std::vector<std::string>> _refreshMap,
-                                           const std::map<std::string, cdIterator_t> &_cdValued,
-                                           const std::map<std::string, std::vector<pvIterator_t>> &_pvValued,
                                            std::map<std::string, std::pair<std::shared_ptr<CovariateEvent>, Value>> &_computedValuesMap,
                                            std::map<std::string, std::shared_ptr<CovariateEvent>> &_nccValuesMap,
-                                           OperableGraphManager &_ogm,
                                            CovariateSeries &_series);
 
     int addPatientVariateNoRefresh(const std::string &_pvName,
                                    const std::vector<pvIterator_t> &_pvValues,
-                                   const std::map<std::string, cdIterator_t> &_cdValued,
-                                   const std::map<std::string, cdIterator_t> &_cdComputed,
                                    std::map<std::string, std::pair<std::shared_ptr<CovariateEvent>, Value>> &_computedValuesMap,
-                                   OperableGraphManager &_ogm,
                                    CovariateSeries &_series);
 
     int addPatientVariateWithRefresh(const Duration &_refreshPeriod,
                                      const std::string &_pvName,
                                      const std::vector<pvIterator_t> &_pvValues,
-                                     const std::map<std::string, cdIterator_t> &_cdValued,
-                                     const std::map<std::string, cdIterator_t> &_cdComputed,
                                      std::map<std::string, std::pair<std::shared_ptr<CovariateEvent>, Value>> &_computedValuesMap,
                                      std::map<std::string, std::shared_ptr<CovariateEvent>> &_nccValuesMap,
-                                     OperableGraphManager &_ogm,
                                      CovariateSeries &_series);
 
     /*******************************************************************************************************************
@@ -168,8 +166,7 @@ private:
                            Value &_valRes);
 
     /// \brief Sort available Patient Variates, discarding those not of interest.
-    int sortPatientVariates(const std::map<std::string, cdIterator_t> &_cdValued,
-                            std::map<std::string, std::vector<pvIterator_t>> &_pvValued);
+    int sortPatientVariates();
 };
 
 
