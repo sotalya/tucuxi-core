@@ -76,6 +76,10 @@ public:
     /// \param _patientCovariates Patient-specific covariates.
     /// \param _start Start time of the considered interval.
     /// \param _end End time of the considered interval.
+    /// \pre FORALL(d : _defaults) { d != nullptr }
+    /// \pre FORALL(p : _patientCovariates) { p != nullptr }
+    /// \pre _start <= _end
+    /// \pre No duplicates in _defaults
     CovariateExtractor(const CovariateDefinitions &_defaults,
                        const PatientVariates &_patientCovariates,
                        const DateTime &_start,

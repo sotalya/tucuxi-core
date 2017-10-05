@@ -109,9 +109,9 @@ int CovariateExtractor::addPatientVariateWithRefresh(const Duration &_refreshPer
 
             }
             PUSH_EVENT(**m_cdValued.at(_pvName), // Covariate Definition
-                    timeIt,                     // Time
-                    newVal,                     // Value
-                    _series);                   // Series
+                       timeIt,                     // Time
+                       newVal,                     // Value
+                       _series);                   // Series
 
 
             if (m_cdComputed.size() > 0) {
@@ -163,10 +163,10 @@ int CovariateExtractor::addPatientVariateNoRefresh(const std::string &_pvName,
         // The same applies if the first value happens at m_start.
         if (_pvValues.size() > 1 && (*pv)->getEventTime() != m_start) {
             PUSH_EVENT(**m_cdValued.at(_pvName),          // Covariate Definition
-                    (*pv)->getEventTime(),               // Time
-                    stringToValue((*pv)->getValue(),
-                                  (*pv)->getDataType()), // Value
-                    _series);                            // Series
+                       (*pv)->getEventTime(),               // Time
+                       stringToValue((*pv)->getValue(),
+                                     (*pv)->getDataType()), // Value
+                       _series);                            // Series
             if (m_cdComputed.size() > 0) {
                 // We have a change in a value and some of the values are computed -> we need to do an update of
                 // the operable graph with this new value, then trigger a recomputation, and update the values
@@ -227,7 +227,7 @@ int CovariateExtractor::generatePeriodicComputedCovariates(const std::map<DateTi
         for (const auto &pvMap : m_pvValued) {
             // Get the new value for the patient variate.
             Value newVal = getPatientVariateValue(m_pvValued.at(pvMap.first), refresh_t.first,
-                    (*m_cdValued.at(pvMap.first))->getInterpolationType());
+                                                  (*m_cdValued.at(pvMap.first))->getInterpolationType());
             // Set the value in the non-computed covariate event whose pointer is stored in nccValuesMap.
             (_nccValuesMap.at(pvMap.first))->setValue(newVal);
         }

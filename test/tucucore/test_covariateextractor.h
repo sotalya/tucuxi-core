@@ -23,18 +23,143 @@
 
 using namespace Tucuxi::Core;
 
+
+/// \brief Create a DateTime temporary variable (without creating an explicit named variable for this).
+/// \param YY Year in 4 digits format.
+/// \param MM Month in 2 digits format.
+/// \param DD Day in 2 digits format.
+/// \param hh Hour in 2 digits format.
+/// \param mm Minutes in 2 digits format.
+/// \param ss Seconds in 2 digits format.
 #define DATE_TIME_NO_VAR(YY, MM, DD, hh, mm, ss)                                                            \
     Tucuxi::Common::DateTime(date::year_month_day(date::year(YY), date::month(MM), date::day(DD)),          \
-                             Tucuxi::Common::TimeOfDay(Tucuxi::Common::Duration(std::chrono::hours(hh),     \
-                                                                                std::chrono::minutes(mm),   \
-                                                                                std::chrono::seconds(ss))))
+    Tucuxi::Common::TimeOfDay(Tucuxi::Common::Duration(std::chrono::hours(hh),     \
+    std::chrono::minutes(mm),   \
+    std::chrono::seconds(ss))))
 
+
+/// \brief Create a named DateTime variable.
+/// \param YY Year in 4 digits format.
+/// \param MM Month in 2 digits format.
+/// \param DD Day in 2 digits format.
+/// \param hh Hour in 2 digits format.
+/// \param mm Minutes in 2 digits format.
+/// \param ss Seconds in 2 digits format.
 #define DATE_TIME_VAR(varName, YY, MM, DD, hh, mm, ss)                                                              \
     Tucuxi::Common::DateTime varName(date::year_month_day(date::year(YY), date::month(MM), date::day(DD)),          \
-                                     Tucuxi::Common::TimeOfDay(Tucuxi::Common::Duration(std::chrono::hours(hh),     \
-                                                                                        std::chrono::minutes(mm),   \
-                                                                                        std::chrono::seconds(ss))))
+    Tucuxi::Common::TimeOfDay(Tucuxi::Common::Duration(std::chrono::hours(hh),     \
+    std::chrono::minutes(mm),   \
+    std::chrono::seconds(ss))))
 
+
+/// \brief Add a covariate definition (without a refresh period or unit) to a given covariate definitions vector.
+/// \param NAME Name of the covariate to add.
+/// \param VALUE Default value of the covariate to add.
+/// \param C_TYPE Type of the covariate (from CovariateType).
+/// \param D_TYPE Data type of the covariate (from DataType).
+/// \param INTER_TYPE Interpolation type for the values (from InterpolationType).
+/// \param CD_VEC Covariate definitions vector in which the covariate has to be pushed.
+#define ADD_CDEF_NO_R(NAME, VALUE, C_TYPE, D_TYPE, INTER_TYPE, CD_VEC)                                          \
+    do {                                                                                                        \
+    std::unique_ptr<CovariateDefinition> tmp(new CovariateDefinition(#NAME, valueToString(VALUE), nullptr,      \
+    CovariateType::C_TYPE, DataType::D_TYPE)); \
+    tmp->setInterpolationType(InterpolationType::INTER_TYPE);                                                   \
+    CD_VEC.push_back(std::move(tmp));                                                                           \
+    } while (0);
+
+
+/// \brief Add a covariate definition (without a refresh period) to a given covariate definitions vector.
+/// \param NAME Name of the covariate to add.
+/// \param VALUE Default value of the covariate to add.
+/// \param C_TYPE Type of the covariate (from CovariateType).
+/// \param D_TYPE Data type of the covariate (from DataType).
+/// \param INTER_TYPE Interpolation type for the values (from InterpolationType).
+/// \param UNIT Unit of measure of the covariate.
+/// \param CD_VEC Covariate definitions vector in which the covariate has to be pushed.
+#define ADD_CDEF_NO_R_UNIT(NAME, VALUE, C_TYPE, D_TYPE, INTER_TYPE, UNIT, CD_VEC)                               \
+    do {                                                                                                        \
+    std::unique_ptr<CovariateDefinition> tmp(new CovariateDefinition(#NAME, valueToString(VALUE), nullptr,      \
+    CovariateType::C_TYPE, DataType::D_TYPE)); \
+    tmp->setInterpolationType(InterpolationType::INTER_TYPE);                                                   \
+    tmp->->setUnit(Unit(#UNIT));                                                                                \
+    CD_VEC.push_back(std::move(tmp));                                                                           \
+    } while (0);
+
+
+/// \brief Add a covariate definition (with a refresh period but without a unit) to a given covariate definitions
+/// vector.
+/// \param NAME Name of the covariate to add.
+/// \param VALUE Default value of the covariate to add.
+/// \param C_TYPE Type of the covariate (from CovariateType).
+/// \param D_TYPE Data type of the covariate (from DataType).
+/// \param INTER_TYPE Interpolation type for the values (from InterpolationType).
+/// \param REFR_INT Refresh interval for the covariate.
+/// \param CD_VEC Covariate definitions vector in which the covariate has to be pushed.
+#define ADD_CDEF_W_R(NAME, VALUE, C_TYPE, D_TYPE, INTER_TYPE, REFR_INT, CD_VEC)                                 \
+    do {                                                                                                        \
+    std::unique_ptr<CovariateDefinition> tmp(new CovariateDefinition(#NAME, valueToString(VALUE), nullptr,      \
+    CovariateType::C_TYPE, DataType::D_TYPE)); \
+    tmp->setInterpolationType(InterpolationType::INTER_TYPE);                                                   \
+    tmp->setRefreshPeriod(REFR_INT);                                                                            \
+    CD_VEC.push_back(std::move(tmp));                                                                           \
+    } while (0);
+
+
+/// \brief Add a covariate definition (with both a refresh period and unit) to a given covariate definitions vector.
+/// \param NAME Name of the covariate to add.
+/// \param VALUE Default value of the covariate to add.
+/// \param C_TYPE Type of the covariate (from CovariateType).
+/// \param D_TYPE Data type of the covariate (from DataType).
+/// \param INTER_TYPE Interpolation type for the values (from InterpolationType).
+/// \param REFR_INT Refresh interval for the covariate.
+/// \param UNIT Unit of measure of the covariate.
+/// \param CD_VEC Covariate definitions vector in which the covariate has to be pushed.
+#define ADD_CDEF_W_R_UNIT(NAME, VALUE, C_TYPE, D_TYPE, INTER_TYPE, REFR_INT, UNIT, CD_VEC)                      \
+    do {                                                                                                        \
+    std::unique_ptr<CovariateDefinition> tmp(new CovariateDefinition(#NAME, valueToString(VALUE), nullptr,      \
+    CovariateType::C_TYPE, DataType::D_TYPE)); \
+    tmp->setInterpolationType(InterpolationType::INTER_TYPE);                                                   \
+    tmp->setRefreshPeriod(REFR_INT);                                                                            \
+    tmp->setUnit(Unit(#UNIT));                                                                                  \
+    CD_VEC.push_back(std::move(tmp));                                                                           \
+    } while (0);
+
+
+/// \brief Add a patient variate (without a specified unit of measure) to a given patient variates vector.
+/// \param NAME Name of the patient variate to add.
+/// \param VALUE Default value of the patient variate to add.
+/// \param D_TYPE Data type of the patient variate (from DataType).
+/// \param DATE Date of the measurement.
+/// \param PV_VEC Patient variates vector in which the variate has to be pushed.
+#define ADD_PV_NO_UNIT(NAME, VALUE, D_TYPE, DATE, PV_VEC)                                   \
+    do {                                                                                    \
+    std::unique_ptr<PatientCovariate> tmp(new PatientCovariate(#NAME, valueToString(VALUE), \
+    DataType::D_TYPE, Unit(), DATE));                                                       \
+    PV_VEC.push_back(std::move(tmp));                                                       \
+    } while (0);
+
+
+/// \brief Add a patient variate (with a specified unit of measure) to a given patient variates vector.
+/// \param NAME Name of the patient variate to add.
+/// \param VALUE Default value of the patient variate to add.
+/// \param D_TYPE Data type of the patient variate (from DataType).
+/// \param UNIT Unit of measure of the patient variate.
+/// \param DATE Date of the measurement.
+/// \param PV_VEC Patient variates vector in which the variate has to be pushed.
+#define ADD_PV_W_UNIT(NAME, VALUE, D_TYPE, UNIT, DATE, PV_VEC)                                   \
+    do {                                                                                    \
+    std::unique_ptr<PatientCovariate> tmp(new PatientCovariate(#NAME, valueToString(VALUE), \
+    DataType::D_TYPE, Unit(#UNIT), DATE));                                                       \
+    PV_VEC.push_back(std::move(tmp));                                                       \
+    } while (0);
+
+
+/// \brief Check whether a covariate event with a given name, date, and value is present in a series.
+/// \param _id Name of the covariate to check.
+/// \param _date Expected date of the covariate event.
+/// \param _value Expected value of the covariate at the time of the event.
+/// \param _series Vector of events in which the event is sought.
+/// \return True if the event is present, false otherwise.
 bool covariateEventIsPresent(const std::string &_id,
                              const DateTime &_date,
                              const Value &_value,
@@ -48,6 +173,9 @@ bool covariateEventIsPresent(const std::string &_id,
     return false;
 }
 
+
+/// \brief Print the elements of a covariate series.
+/// \param _series Series to print.
 void printCovariateSeries(const CovariateSeries &_series)
 {
     std::cerr << "--------- " << _series.size() << " ----------\n";
@@ -60,17 +188,116 @@ void printCovariateSeries(const CovariateSeries &_series)
                   << covEl.getEventTime().minute() << "m"
                   << covEl.getEventTime().second() << "s";
         std::cerr << " = " << covEl.getValue() << "\n";
-
-
     }
-    std::cerr << "==============================================\n";
+    std::cerr << "-----------------------------------------\n";
 }
+
 
 struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtractor>
 {
 
     TestCovariateExtractor() { }
 
+
+    /// \brief Check that objects are correctly constructed by the constructor.
+    void testCE_constructor(const std::string& /* _testName */)
+    {
+        // Even without covariates, no exception should be raised.
+        {
+            fructose_assert_no_exception(CovariateExtractor(CovariateDefinitions(), PatientVariates(),
+                                                            DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0),
+                                                            DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0)));
+        }
+
+        // Start date past end date.
+        {
+            fructose_assert_exception(CovariateExtractor(CovariateDefinitions(), PatientVariates(),
+                                                         DATE_TIME_NO_VAR(2017, 8, 19, 14, 32, 0),
+                                                         DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0)),
+                                      std::runtime_error);
+        }
+
+        // Build a covariate extractor from a set of covariate definitions.
+        {
+            CovariateDefinitions cDefinitions;
+
+            ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+            ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), kg, cDefinitions);
+            ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
+
+            fructose_assert_no_exception(CovariateExtractor(cDefinitions, PatientVariates(),
+                                                            DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
+                                                            DATE_TIME_NO_VAR(2017, 8, 19, 14, 32, 0)));
+        }
+
+        // Build a covariate extractor from a set of covariate definitions and patient variates.
+        {
+            CovariateDefinitions cDefinitions;
+            PatientVariates pVariates;
+
+            ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+            ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), kg, cDefinitions);
+            ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
+            ADD_PV_NO_UNIT(Gist, true, Bool, DATE_TIME_NO_VAR(2017, 8, 19, 12, 32, 0), pVariates);
+            ADD_PV_NO_UNIT(Gist, false, Bool, DATE_TIME_NO_VAR(2017, 8, 19, 22, 32, 0), pVariates);
+
+            fructose_assert_no_exception(CovariateExtractor(cDefinitions, pVariates,
+                                                            DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
+                                                            DATE_TIME_NO_VAR(2017, 8, 29, 14, 32, 0)));
+        }
+
+
+        // Add twice the same covariate definition (with different values).
+        {
+            CovariateDefinitions cDefinitions;
+
+            ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+            ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), kg, cDefinitions);
+            ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
+            ADD_CDEF_W_R_UNIT(Weight, 3500, Standard, Bool, Linear, Tucuxi::Common::days(2), mg, cDefinitions);
+
+            fructose_assert_exception(CovariateExtractor(cDefinitions, PatientVariates(),
+                                                         DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
+                                                         DATE_TIME_NO_VAR(2017, 8, 19, 14, 32, 0)),
+                                      std::runtime_error);
+        }
+
+        // Try build a covariate extractor from a set of covariate definitions with a null pointer included.
+        {
+            CovariateDefinitions cDefinitions;
+
+            ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+            ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), kg, cDefinitions);
+            cDefinitions.push_back(nullptr);
+            ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
+
+            fructose_assert_exception(CovariateExtractor(cDefinitions, PatientVariates(),
+                                                         DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
+                                                         DATE_TIME_NO_VAR(2017, 8, 19, 14, 32, 0)),
+                                      std::runtime_error);
+        }
+
+        // Try build a covariate extractor from a set of patient variates with a null pointer included.
+        {
+            CovariateDefinitions cDefinitions;
+            PatientVariates pVariates;
+
+            ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+            ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), kg, cDefinitions);
+            ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
+            ADD_PV_NO_UNIT(Gist, true, Bool, DATE_TIME_NO_VAR(2017, 8, 19, 12, 32, 0), pVariates);
+            pVariates.push_back(nullptr);
+            ADD_PV_NO_UNIT(Gist, false, Bool, DATE_TIME_NO_VAR(2017, 8, 19, 22, 32, 0), pVariates);
+
+            fructose_assert_exception(CovariateExtractor(cDefinitions, pVariates,
+                                                         DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
+                                                         DATE_TIME_NO_VAR(2017, 8, 29, 14, 32, 0)),
+                                      std::runtime_error);
+        }
+    }
+
+
+    /// \brief Test the interpolateValues helper function.
     void testCE_interpolateValues(const std::string& /* _testName */)
     {
         CovariateExtractor extractor(CovariateDefinitions(), PatientVariates(),
@@ -142,45 +369,32 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
         fructose_assert(valRes == 10.0);
     }
 
+
     /// \brief Test covariate extraction using the example presented in the specs.
     void testCovariateExtraction_test1(const std::string& /* _testName */)
     {
-        std::unique_ptr<CovariateDefinition> gist(new CovariateDefinition("Gist", valueToString(false), nullptr, CovariateType::Standard, DataType::Bool));
-        gist->setInterpolationType(InterpolationType::Direct);
+        CovariateDefinitions cDefinitions;
 
-        std::unique_ptr<CovariateDefinition> weight(new CovariateDefinition("Weight", valueToString(3.5), nullptr));
-        weight->setRefreshPeriod(Tucuxi::Common::days(1));
-        weight->setInterpolationType(InterpolationType::Linear);
-        weight->setUnit(Unit("kg"));
-
-        std::unique_ptr<CovariateDefinition> isMale(new CovariateDefinition("IsMale", valueToString(true), nullptr, CovariateType::Standard, DataType::Bool));
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), kg, cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
 
         /// \todo Change the plain-old-pointer below when unique_ptr will be in place!
         Operation *opSpecial =
                 new JSOperation("Weight * 0.5 + IsMale * 15",
         { OperationInput("Weight", InputType::DOUBLE), OperationInput("IsMale", InputType::DOUBLE)});
         std::unique_ptr<CovariateDefinition> special(new CovariateDefinition("Special", valueToString(16.75), opSpecial));
-
-        CovariateDefinitions cDefinitions;
-        cDefinitions.push_back(std::move(gist));
-        cDefinitions.push_back(std::move(weight));
-        cDefinitions.push_back(std::move(isMale));
         cDefinitions.push_back(std::move(special));
 
         const DATE_TIME_VAR(startDate, 2017, 8, 12, 8, 0, 0);
         const DATE_TIME_VAR(endDate,   2017, 8, 17, 8, 0, 0);
 
         // -- Patient covariates #1 --
-
-        // gist == true @ 13.08.2017, 12h32.
-        std::unique_ptr<PatientCovariate> patient_gist_1(new PatientCovariate("Gist", valueToString(true), DataType::Bool, Unit(),
-                                                                              DATE_TIME_NO_VAR(2017, 8, 13, 12, 32, 0)));
-        // gist == false @ 13.08.2017, 14h32.
-        std::unique_ptr<PatientCovariate> patient_gist_2(new PatientCovariate("Gist", valueToString(false), DataType::Bool, Unit(),
-                                                                              DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
         PatientVariates pVariates1;
-        pVariates1.push_back(std::move(patient_gist_1));
-        pVariates1.push_back(std::move(patient_gist_2));
+        // gist == true @ 13.08.2017, 12h32.
+        ADD_PV_NO_UNIT(Gist, true, Bool, DATE_TIME_NO_VAR(2017, 8, 13, 12, 32, 0), pVariates1);
+        // gist == false @ 13.08.2017, 14h32.
+        ADD_PV_NO_UNIT(Gist, false, Bool, DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0), pVariates1);
 
         // Test 1: call the extractor with the two patient covariates above.
         // We expect the first one to be "back-propagated" to the beginning of the interval.
@@ -190,7 +404,7 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
         int rc;
         rc = extractor1.extract(series);
 
-//        printCovariateSeries(series);
+        //        printCovariateSeries(series);
 
         fructose_assert(series.size() == 5);
         fructose_assert(rc == 0);
@@ -229,7 +443,7 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
         series.clear();
         rc = extractor2.extract(series);
 
-//        printCovariateSeries(series);
+        //        printCovariateSeries(series);
 
         fructose_assert(series.size() == 4);
         fructose_assert(rc == 0);
@@ -254,17 +468,21 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
         // Test 3: add gist and model weight and special changes.
 
         // gist == true @ 13.08.2017, 12h32.
-        std::unique_ptr<PatientCovariate> patient_gist_3(new PatientCovariate("Gist", valueToString(true), DataType::Bool, Unit("kg"),
+        std::unique_ptr<PatientCovariate> patient_gist_3(new PatientCovariate("Gist", valueToString(true),
+                                                                              DataType::Bool, Unit("kg"),
                                                                               DATE_TIME_NO_VAR(2017, 8, 13, 12, 32, 0)));
 
         // weight = 3.8 @ 13.08.2017, 9h00.
-        std::unique_ptr<PatientCovariate> patient_weight_1(new PatientCovariate("Weight", valueToString(3.8), DataType::Double, Unit("kg"),
+        std::unique_ptr<PatientCovariate> patient_weight_1(new PatientCovariate("Weight", valueToString(3.8),
+                                                                                DataType::Double, Unit("kg"),
                                                                                 DATE_TIME_NO_VAR(2017, 8, 13, 9, 0, 0)));
         // weight = 4.05 @ 15.08.2017, 21h00.
-        std::unique_ptr<PatientCovariate> patient_weight_2(new PatientCovariate("Weight", valueToString(4.05), DataType::Double, Unit("kg"),
+        std::unique_ptr<PatientCovariate> patient_weight_2(new PatientCovariate("Weight", valueToString(4.05),
+                                                                                DataType::Double, Unit("kg"),
                                                                                 DATE_TIME_NO_VAR(2017, 8, 15, 21, 0, 0)));
         // weight = 4.25 @ 16.08.2017, 21h00.
-        std::unique_ptr<PatientCovariate> patient_weight_3(new PatientCovariate("Weight", valueToString(4.25), DataType::Double, Unit("kg"),
+        std::unique_ptr<PatientCovariate> patient_weight_3(new PatientCovariate("Weight", valueToString(4.25),
+                                                                                DataType::Double, Unit("kg"),
                                                                                 DATE_TIME_NO_VAR(2017, 8, 16, 21, 0, 0)));
         PatientVariates pVariates3;
         pVariates3.push_back(std::move(patient_gist_3));
@@ -276,7 +494,7 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
         series.clear();
         rc = extractor3.extract(series);
 
-//        printCovariateSeries(series);
+        //        printCovariateSeries(series);
 
         fructose_assert(series.size() == 12);
         fructose_assert(rc == 0);
@@ -344,7 +562,8 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
     {
         std::cerr << "++++++++++++++ TEST2 +++++++++++++++\n";
 
-        std::unique_ptr<CovariateDefinition> gist(new CovariateDefinition("Gist", valueToString(false), nullptr, CovariateType::Standard, DataType::Bool));
+        std::unique_ptr<CovariateDefinition> gist(new CovariateDefinition("Gist", valueToString(false), nullptr,
+                                                                          CovariateType::Standard, DataType::Bool));
         gist->setInterpolationType(InterpolationType::Direct);
 
         std::unique_ptr<CovariateDefinition> weight(new CovariateDefinition("Weight", valueToString(3.5), nullptr));
@@ -352,7 +571,8 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
         weight->setInterpolationType(InterpolationType::Linear);
         weight->setUnit(Unit("kg"));
 
-        std::unique_ptr<CovariateDefinition> isMale(new CovariateDefinition("IsMale", valueToString(true), nullptr, CovariateType::Standard, DataType::Bool));
+        std::unique_ptr<CovariateDefinition> isMale(new CovariateDefinition("IsMale", valueToString(true), nullptr,
+                                                                            CovariateType::Standard, DataType::Bool));
 
         std::unique_ptr<CovariateDefinition> birthDate(new CovariateDefinition("BirthDate",
                                                                                valueToString(DATE_TIME_NO_VAR(2017, 8, 5, 8, 0, 0)),
@@ -386,11 +606,13 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
         const DATE_TIME_VAR(endDate,   2017, 8, 17, 21, 0, 0);
 
         // gist == true @ 13.08.2017, 12h32.
-        std::unique_ptr<PatientCovariate> patient_gist_1(new PatientCovariate("Gist", valueToString(true), DataType::Bool, Unit(),
+        std::unique_ptr<PatientCovariate> patient_gist_1(new PatientCovariate("Gist", valueToString(true),
+                                                                              DataType::Bool, Unit(),
                                                                               DATE_TIME_NO_VAR(2017, 8, 13, 12, 32, 0)));
         // gist == false @ 13.08.2017, 14h32.
-        std::unique_ptr<PatientCovariate> patient_gist_2(new PatientCovariate("Gist", valueToString(false), DataType::Bool, Unit(),
-                                                                               DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+        std::unique_ptr<PatientCovariate> patient_gist_2(new PatientCovariate("Gist", valueToString(false),
+                                                                              DataType::Bool, Unit(),
+                                                                              DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
         PatientVariates pVariates1;
         pVariates1.push_back(std::move(patient_gist_1));
         pVariates1.push_back(std::move(patient_gist_2));
