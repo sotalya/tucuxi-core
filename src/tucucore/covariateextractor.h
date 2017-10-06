@@ -116,9 +116,6 @@ private:
                                  const DateTime &_t,
                                  const InterpolationType _interpolationType);
 
-    void collectRefreshIntervals(const std::map<std::string, std::pair<std::shared_ptr<CovariateEvent>, Value>> &_computedValuesMap,
-                                 std::map<DateTime, std::vector<std::string>> &_refreshMap);
-
     int generatePeriodicComputedCovariates(const std::map<DateTime, std::vector<std::string>> _refreshMap,
                                            std::map<std::string, std::pair<std::shared_ptr<CovariateEvent>, Value>> &_computedValuesMap,
                                            std::map<std::string, std::shared_ptr<CovariateEvent>> &_nccValuesMap,
@@ -140,12 +137,12 @@ private:
      *                                           OK VERIFIED AND TESTED                                                *
      ******************************************************************************************************************/
 
-    /// \brief Create the events linked with the initial value of non-computed covariates.
-    /// \param _nccValuesMap Map that will hold the pointers to the events due to non-computed covariates.
-    /// \param _series Produced event series.
-    /// \return True if the creation was successful, false otherwise.
-    bool createNonComputedCEvents(std::map<std::string, std::shared_ptr<CovariateEvent>> &_nccValuesMap,
-                                  CovariateSeries &_series);
+    /// \brief Collect the time instants when the computed covariates have to be re-evaluated.
+    /// \param _computedValuesMap Map that holds the pointers to the events due to computed covariates, as well as their
+    ///                           latest value.
+    /// \param _refreshMap Mat containing, for each selected time instant, the list of covariates to update.
+    void collectRefreshIntervals(const std::map<std::string, std::pair<std::shared_ptr<CovariateEvent>, Value>> &_computedValuesMap,
+                                 std::map<DateTime, std::vector<std::string>> &_refreshMap);
 
     /// \brief Create the events linked with the initial value of computed covariates.
     /// \param _computedValuesMap Map that will hold the pointers to the events due to computed covariates, as well as
@@ -154,6 +151,13 @@ private:
     /// \return True if the creation was successful, false otherwise.
     bool createComputedCEvents(std::map<std::string, std::pair<std::shared_ptr<CovariateEvent>, Value>> &_computedValuesMap,
                                CovariateSeries &_series);
+
+    /// \brief Create the events linked with the initial value of non-computed covariates.
+    /// \param _nccValuesMap Map that will hold the pointers to the events due to non-computed covariates.
+    /// \param _series Produced event series.
+    /// \return True if the creation was successful, false otherwise.
+    bool createNonComputedCEvents(std::map<std::string, std::shared_ptr<CovariateEvent>> &_nccValuesMap,
+                                  CovariateSeries &_series);
 
     /// \brief Create the initial set of events (those imposed by either computed and non-computed covariates).
     /// \param _nccValuesMap Map that will hold the pointers to the events due to non-computed covariates.

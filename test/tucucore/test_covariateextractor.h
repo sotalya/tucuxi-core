@@ -154,7 +154,7 @@ using namespace Tucuxi::Core;
     } while (0);
 
 
-/// \brief Add a computed covariate definition to a given covariate definitions vector.
+/// \brief Add a computed covariate definition, with no refresh interval, to a given covariate definitions vector.
 /// The operation has 3 inputs whose names are specified as parameters.
 /// \param NAME Name of the covariate to add.
 /// \param OPERATION Operation performed to get the values of the computed covariate.
@@ -171,6 +171,39 @@ using namespace Tucuxi::Core;
     OperationInput(OP3, InputType::DOUBLE)}); \
     std::unique_ptr<CovariateDefinition> tmp(new CovariateDefinition(#NAME, valueToString(0), op)); \
     CD_VEC.push_back(std::move(tmp)); \
+    } while (0);
+
+
+/// \brief Add a computed covariate definition, with a refresh interval, to a given covariate definitions vector.
+/// The operation has 3 inputs whose names are specified as parameters.
+/// \param NAME Name of the covariate to add.
+/// \param OPERATION Operation performed to get the values of the computed covariate.
+/// \param OP1 Name of the first operand.
+/// \param OP2 Name of the second operand.
+/// \param OP3 Name of the third operand.
+/// \param REFR_INT Refresh interval for the covariate.
+/// \param CD_VEC Covariate definitions vector in which the covariate has to be pushed.
+#define ADD_OP3_CDEF_W_R(NAME, OPERATION, OP1, OP2, OP3, REFR_INT, CD_VEC) \
+    do { \
+    Operation *op = \
+    new JSOperation(OPERATION, { \
+    OperationInput(OP1, InputType::DOUBLE), \
+    OperationInput(OP2, InputType::DOUBLE), \
+    OperationInput(OP3, InputType::DOUBLE)}); \
+    std::unique_ptr<CovariateDefinition> tmp(new CovariateDefinition(#NAME, valueToString(0), op)); \
+    tmp->setRefreshPeriod(REFR_INT); \
+    CD_VEC.push_back(std::move(tmp)); \
+    } while (0);
+
+
+/// \brief Check a refresh map for the presence of a given covariate at a specified time.
+/// \param NAME Name of the covariate to search.
+/// \param DATE Time instant when the covariate is supposed to show up.
+/// \param REFRESH_MAP Refresh map where the covariate has be to sought.
+#define CHECK_CCV_REFRESH(NAME, DATE, REFRESH_MAP) \
+    do { \
+    fructose_assert(std::find(REFRESH_MAP[DATE].begin(), \
+                              REFRESH_MAP[DATE].end(), #NAME) != REFRESH_MAP[DATE].end()); \
     } while (0);
 
 
@@ -311,6 +344,71 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
                                                          DATE_TIME_NO_VAR(2017, 8, 29, 14, 32, 0)),
                                       std::runtime_error);
         }
+    }
+
+
+    /// \brief Test the collectRefreshIntervals helper function.
+    void testCE_collectRefreshIntervals(const std::string& /* _testName */)
+    {
+        CovariateDefinitions cDefinitions;
+        PatientVariates pVariates;
+
+        ADD_CDEF_NO_R(A1, 1.0, Standard, Double, Linear, cDefinitions);
+        ADD_CDEF_NO_R(B2, 2.0, Standard, Double, Linear, cDefinitions);
+        ADD_CDEF_NO_R(C3, 3.0, Standard, Double, Linear, cDefinitions);
+
+        ADD_OP3_CDEF_W_R(op1, "A1 + B2 + C3", "A1", "B2", "C3", Tucuxi::Common::days(1), cDefinitions);
+        ADD_OP3_CDEF_W_R(op2, "A1 + B2 * C3", "A1", "B2", "C3", Tucuxi::Common::days(2), cDefinitions);
+        ADD_OP3_CDEF_W_R(op3, "A1 - B2 * C3", "A1", "B2", "C3", Tucuxi::Common::days(3), cDefinitions);
+
+        CovariateExtractor extractor(cDefinitions, pVariates,
+                                     DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0),
+                                     DATE_TIME_NO_VAR(2017, 8, 23, 14, 0, 0));
+        extractor.sortPatientVariates();
+        std::map<std::string, std::shared_ptr<CovariateEvent>> nccValuesMap;
+        CovariateSeries series;
+        extractor.createNonComputedCEvents(nccValuesMap, series);
+        std::map<std::string, std::pair<std::shared_ptr<CovariateEvent>, Value>> computedValuesMap;
+        extractor.createComputedCEvents(computedValuesMap, series);
+
+        std::map<DateTime, std::vector<std::string>> refreshMap;
+        extractor.collectRefreshIntervals(computedValuesMap, refreshMap);
+
+        fructose_assert(refreshMap.size() == 7);
+        // 17.08.2017
+        fructose_assert(refreshMap[DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0)].size() == 3);
+        CHECK_CCV_REFRESH(op1, DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0), refreshMap);
+        CHECK_CCV_REFRESH(op2, DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0), refreshMap);
+        CHECK_CCV_REFRESH(op3, DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0), refreshMap);
+
+        // 18.08.2017
+        fructose_assert(refreshMap[DATE_TIME_NO_VAR(2017, 8, 18, 14, 0, 0)].size() == 1);
+        CHECK_CCV_REFRESH(op1, DATE_TIME_NO_VAR(2017, 8, 18, 14, 0, 0), refreshMap);
+
+        // 19.08.2017
+        fructose_assert(refreshMap[DATE_TIME_NO_VAR(2017, 8, 19, 14, 0, 0)].size() == 2);
+        CHECK_CCV_REFRESH(op1, DATE_TIME_NO_VAR(2017, 8, 19, 14, 0, 0), refreshMap);
+        CHECK_CCV_REFRESH(op2, DATE_TIME_NO_VAR(2017, 8, 19, 14, 0, 0), refreshMap);
+
+        // 20.08.2017
+        fructose_assert(refreshMap[DATE_TIME_NO_VAR(2017, 8, 20, 14, 0, 0)].size() == 2);
+        CHECK_CCV_REFRESH(op1, DATE_TIME_NO_VAR(2017, 8, 20, 14, 0, 0), refreshMap);
+        CHECK_CCV_REFRESH(op3, DATE_TIME_NO_VAR(2017, 8, 20, 14, 0, 0), refreshMap);
+
+        // 21.08.2017
+        fructose_assert(refreshMap[DATE_TIME_NO_VAR(2017, 8, 21, 14, 0, 0)].size() == 2);
+        CHECK_CCV_REFRESH(op1, DATE_TIME_NO_VAR(2017, 8, 21, 14, 0, 0), refreshMap);
+        CHECK_CCV_REFRESH(op2, DATE_TIME_NO_VAR(2017, 8, 21, 14, 0, 0), refreshMap);
+
+        // 22.08.2017
+        fructose_assert(refreshMap[DATE_TIME_NO_VAR(2017, 8, 22, 14, 0, 0)].size() == 1);
+        CHECK_CCV_REFRESH(op1, DATE_TIME_NO_VAR(2017, 8, 22, 14, 0, 0), refreshMap);
+
+        // 23.08.2017
+        fructose_assert(refreshMap[DATE_TIME_NO_VAR(2017, 8, 23, 14, 0, 0)].size() == 3);
+        CHECK_CCV_REFRESH(op1, DATE_TIME_NO_VAR(2017, 8, 23, 14, 0, 0), refreshMap);
+        CHECK_CCV_REFRESH(op2, DATE_TIME_NO_VAR(2017, 8, 23, 14, 0, 0), refreshMap);
+        CHECK_CCV_REFRESH(op3, DATE_TIME_NO_VAR(2017, 8, 23, 14, 0, 0), refreshMap);
     }
 
 

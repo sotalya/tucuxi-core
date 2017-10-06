@@ -198,24 +198,6 @@ int CovariateExtractor::addPatientVariateNoRefresh(const std::string &_pvName,
 }
 
 
-void CovariateExtractor::collectRefreshIntervals(const std::map<std::string, std::pair<std::shared_ptr<CovariateEvent>, Value>> &_computedValuesMap,
-                                                 std::map<DateTime, std::vector<std::string>> &_refreshMap)
-{
-    for (const auto &cvm : _computedValuesMap) {
-        Duration refreshInterval;
-        refreshInterval = (*(m_cdComputed.at(cvm.first)))->getRefreshPeriod();
-        if (!refreshInterval.isEmpty()) {
-            for (DateTime t = m_start; t < m_end; t += refreshInterval) {
-                if (_refreshMap.find(t) == _refreshMap.end()) {
-                    _refreshMap.insert(std::pair<DateTime, std::vector<std::string>>(t, std::vector<std::string>()));
-                }
-                _refreshMap.at(t).push_back(cvm.first);
-            }
-        }
-    }
-}
-
-
 int CovariateExtractor::generatePeriodicComputedCovariates(const std::map<DateTime, std::vector<std::string>> _refreshMap,
                                                            std::map<std::string, std::pair<std::shared_ptr<CovariateEvent>, Value>> &_computedValuesMap,
                                                            std::map<std::string, std::shared_ptr<CovariateEvent>> &_nccValuesMap,
@@ -307,7 +289,6 @@ int CovariateExtractor::extract(CovariateSeries &_series)
 
     // Collect refresh intervals. For each date, we can have multiple covariates that want to be refreshed.
     std::map<DateTime, std::vector<std::string>> refreshMap;
-
     collectRefreshIntervals(computedValuesMap, refreshMap);
 
 
@@ -411,10 +392,30 @@ CovariateExtractor::CovariateExtractor(const CovariateDefinitions &_defaults,
 }
 
 
+void CovariateExtractor::collectRefreshIntervals(const std::map<std::string, std::pair<std::shared_ptr<CovariateEvent>, Value>> &_computedValuesMap,
+                                                 std::map<DateTime, std::vector<std::string>> &_refreshMap)
+{
+    for (const auto &cvm : _computedValuesMap) {
+        Duration refreshInterval;
+        refreshInterval = (*(m_cdComputed.at(cvm.first)))->getRefreshPeriod();
+        if (!refreshInterval.isEmpty()) {
+            for (DateTime t = m_start; t <= m_end; t += refreshInterval) {
+                if (_refreshMap.find(t) == _refreshMap.end()) {
+                    _refreshMap.insert(std::pair<DateTime, std::vector<std::string>>(t, std::vector<std::string>()));
+                }
+                _refreshMap.at(t).push_back(cvm.first);
+            }
+        }
+    }
+}
+
+
 bool CovariateExtractor::createInitialEvents(std::map<std::string, std::shared_ptr<CovariateEvent>> &_nccValuesMap,
                                              std::map<std::string, std::pair<std::shared_ptr<CovariateEvent>, Value>> &_computedValuesMap,
                                              CovariateSeries &_series)
 {
+    // The order here is important -- computed covariates need the default value of non-computed ones to get their
+    // value!
     if (!createNonComputedCEvents(_nccValuesMap, _series)) {
         return false;
     }
