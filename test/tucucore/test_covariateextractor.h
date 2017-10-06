@@ -154,6 +154,26 @@ using namespace Tucuxi::Core;
     } while (0);
 
 
+/// \brief Add a computed covariate definition to a given covariate definitions vector.
+/// The operation has 3 inputs whose names are specified as parameters.
+/// \param NAME Name of the covariate to add.
+/// \param OPERATION Operation performed to get the values of the computed covariate.
+/// \param OP1 Name of the first operand.
+/// \param OP2 Name of the second operand.
+/// \param OP3 Name of the third operand.
+/// \param CD_VEC Covariate definitions vector in which the covariate has to be pushed.
+#define ADD_OP3_CDEF_NO_R(NAME, OPERATION, OP1, OP2, OP3, CD_VEC) \
+    do { \
+    Operation *op = \
+    new JSOperation(OPERATION, { \
+    OperationInput(OP1, InputType::DOUBLE), \
+    OperationInput(OP2, InputType::DOUBLE), \
+    OperationInput(OP3, InputType::DOUBLE)}); \
+    std::unique_ptr<CovariateDefinition> tmp(new CovariateDefinition(#NAME, valueToString(0), op)); \
+    CD_VEC.push_back(std::move(tmp)); \
+    } while (0);
+
+
 /// \brief Check whether a covariate event with a given name, date, and value is present in a series.
 /// \param _id Name of the covariate to check.
 /// \param _date Expected date of the covariate event.
@@ -294,89 +314,238 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
     }
 
 
+    /// \brief Test the createComputedCEvents helper function.
+    /// Check that:
+    /// - the values of the computed covariates is correct given the non-computed covariate's default values.
+    /// - the Operable Graph Manager contains the good values.
+    /// - the computed values map contains the correct values.
+    void testCE_createComputedCEvents(const std::string& /* _testName */)
+    {
+        CovariateDefinitions cDefinitions;
+        PatientVariates pVariates;
+
+        ADD_CDEF_NO_R(A1, 1.0, Standard, Double, Linear, cDefinitions);
+        ADD_CDEF_NO_R(B2, 2.0, Standard, Double, Linear, cDefinitions);
+        ADD_CDEF_NO_R(C3, 3.0, Standard, Double, Linear, cDefinitions);
+
+        ADD_OP3_CDEF_NO_R(op1, "A1 + B2 + C3", "A1", "B2", "C3", cDefinitions);
+        ADD_OP3_CDEF_NO_R(op2, "A1 + B2 * C3", "A1", "B2", "C3", cDefinitions);
+        ADD_OP3_CDEF_NO_R(op3, "A1 - B2 * C3", "A1", "B2", "C3", cDefinitions);
+
+        CovariateExtractor extractor(cDefinitions, pVariates,
+                                     DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0),
+                                     DATE_TIME_NO_VAR(2017, 8, 25, 14, 0, 0));
+        extractor.sortPatientVariates();
+        std::map<std::string, std::shared_ptr<CovariateEvent>> nccValuesMap;
+        CovariateSeries series;
+        extractor.createNonComputedCEvents(nccValuesMap, series);
+        std::map<std::string, std::pair<std::shared_ptr<CovariateEvent>, Value>> computedValuesMap;
+        extractor.createComputedCEvents(computedValuesMap, series);
+
+        // Check that the expected events are present.
+        fructose_assert(series.size() == 6);
+        fructose_assert(covariateEventIsPresent("A1", DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0),
+                                                1.0, series));
+        fructose_assert(covariateEventIsPresent("B2", DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0),
+                                                2.0, series));
+        fructose_assert(covariateEventIsPresent("C3", DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0),
+                                                3.0, series));
+        fructose_assert(covariateEventIsPresent("op1", DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0),
+                                                6.0, series));
+        fructose_assert(covariateEventIsPresent("op2", DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0),
+                                                7.0, series));
+        fructose_assert(covariateEventIsPresent("op3", DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0),
+                                                -5.0, series));
+
+        // Check that the Operable Graph Manager contains the good values.
+        bool rc;
+        double val;
+
+        rc = extractor.m_ogm.getValue("A1", val);
+        fructose_assert(rc == true);
+        fructose_assert(val == 1.0);
+
+        rc = extractor.m_ogm.getValue("B2", val);
+        fructose_assert(rc == true);
+        fructose_assert(val == 2.0);
+
+        rc = extractor.m_ogm.getValue("C3", val);
+        fructose_assert(rc == true);
+        fructose_assert(val == 3.0);
+
+        rc = extractor.m_ogm.getValue("op1", val);
+        fructose_assert(rc == true);
+        fructose_assert(val == 6.0);
+
+        rc = extractor.m_ogm.getValue("op2", val);
+        fructose_assert(rc == true);
+        fructose_assert(val == 7.0);
+
+        rc = extractor.m_ogm.getValue("op3", val);
+        fructose_assert(rc == true);
+        fructose_assert(val == -5.0);
+
+        // Check that the computedValuesMap has all the good values.
+        fructose_assert(nccValuesMap.size() == 3);
+
+        fructose_assert((computedValuesMap["op1"].first)->getId() == "op1");
+        fructose_assert((computedValuesMap["op1"].first)->getValue() == 6.0);
+        fructose_assert((computedValuesMap["op1"].first)->getEventTime() == DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0));
+        fructose_assert(computedValuesMap["op1"].second == 6.0);
+
+        fructose_assert((computedValuesMap["op2"].first)->getId() == "op2");
+        fructose_assert((computedValuesMap["op2"].first)->getValue() == 7.0);
+        fructose_assert((computedValuesMap["op2"].first)->getEventTime() == DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0));
+        fructose_assert(computedValuesMap["op2"].second == 7.0);
+
+        fructose_assert((computedValuesMap["op3"].first)->getId() == "op3");
+        fructose_assert((computedValuesMap["op3"].first)->getValue() == -5.0);
+        fructose_assert((computedValuesMap["op3"].first)->getEventTime() == DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0));
+        fructose_assert(computedValuesMap["op3"].second == -5.0);
+    }
+
     /// \brief Test the createNonComputedCEvents helper function.
+    /// Test the following cases:
+    /// - no patient variate associated -> take the default value.
+    /// - a single patient variate value associated -> take it as initial value and keep it constant.
+    /// - first available measurement past m_start (other measurements available afterwards) -> take the value of the
+    ///   first measurement as initial value.
+    /// - two measurements across m_start (one before, one after) -> use interpolation to get initial value.
+    /// - two measurements across the whole interval -> use interpolation to get initial value.
+    /// The corresponding events have to be created, and the covariates have to be registered in the Operable Graph
+    /// Manager and in the map recording their values.
     void testCE_createNonComputedCEvents(const std::string& /* _testName */)
     {
-        // Test the following cases:
-        // - no patient variate associated -> take the default value.
-        // - a single patient variate value associated -> take it as initial value and keep it constant.
-        // - first available measurement past m_start (other measurements available afterwards) -> take the value of the
-        //   first measurement as initial value.
-        // - two measurements across m_start (one before, one after) -> use interpolation to get initial value.
-        // - two measurements across the whole interval -> use interpolation to get initial value.
-        // The corresponding events have to be created, and the covariates have to be registered in the Operable Graph
-        // Manager and in the map recording their values.
-        {
-            CovariateDefinitions cDefinitions;
-            PatientVariates pVariates;
+        CovariateDefinitions cDefinitions;
+        PatientVariates pVariates;
 
-            ADD_CDEF_NO_R(NoPVAssociated, false, Standard, Bool, Direct, cDefinitions);
-            ADD_CDEF_W_R_UNIT(SinglePVAssociated, 6.5, Standard, Double, Linear, Tucuxi::Common::days(1), kg, cDefinitions);
-            ADD_CDEF_NO_R(StartPVAfterStart, 5, Standard, Int, Direct, cDefinitions);
-            ADD_CDEF_NO_R(InterpPVDirect, 1.0, Standard, Double, Direct, cDefinitions);
-            ADD_CDEF_NO_R(InterpPVLinear, 10.0, Standard, Double, Linear, cDefinitions);
-            ADD_CDEF_NO_R(InterpPVDirectInterv, 0.0, Standard, Double, Direct, cDefinitions);
-            ADD_CDEF_NO_R(InterpPVLinearInterv, 11.0, Standard, Double, Linear, cDefinitions);
+        ADD_CDEF_NO_R(NoPVAssociated, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_W_R_UNIT(SinglePVAssociated, 6.5, Standard, Double, Linear, Tucuxi::Common::days(1), kg, cDefinitions);
+        ADD_CDEF_NO_R(StartPVAfterStart, 5, Standard, Int, Direct, cDefinitions);
+        ADD_CDEF_NO_R(InterpPVDirect, 1.0, Standard, Double, Direct, cDefinitions);
+        ADD_CDEF_NO_R(InterpPVLinear, 10.0, Standard, Double, Linear, cDefinitions);
+        ADD_CDEF_NO_R(InterpPVDirectInterv, 0.0, Standard, Double, Direct, cDefinitions);
+        ADD_CDEF_NO_R(InterpPVLinearInterv, 11.0, Standard, Double, Linear, cDefinitions);
 
-            // No PV for NoPVAssociated.
+        // No PV for NoPVAssociated.
 
-            // Single PV for SinglePVAssociated.
-            ADD_PV_NO_UNIT(SinglePVAssociated, true, Bool, DATE_TIME_NO_VAR(2017, 8, 19, 22, 32, 0), pVariates);
+        // Single PV for SinglePVAssociated.
+        ADD_PV_NO_UNIT(SinglePVAssociated, true, Bool, DATE_TIME_NO_VAR(2017, 8, 19, 22, 32, 0), pVariates);
 
-            // Multiple PVs for StartPVAfterStart, with the first after m_start.
-            ADD_PV_NO_UNIT(StartPVAfterStart, 7, Int, DATE_TIME_NO_VAR(2017, 8, 19, 12, 32, 0), pVariates);
-            ADD_PV_NO_UNIT(StartPVAfterStart, 9, Int, DATE_TIME_NO_VAR(2017, 8, 25, 12, 32, 0), pVariates);
+        // Multiple PVs for StartPVAfterStart, with the first after m_start.
+        ADD_PV_NO_UNIT(StartPVAfterStart, 7, Int, DATE_TIME_NO_VAR(2017, 8, 19, 12, 32, 0), pVariates);
+        ADD_PV_NO_UNIT(StartPVAfterStart, 9, Int, DATE_TIME_NO_VAR(2017, 8, 25, 12, 32, 0), pVariates);
 
-            // Two values across m_start to interpolate from (direct).
-            ADD_PV_NO_UNIT(InterpPVDirect, 7.4, Double, DATE_TIME_NO_VAR(2017, 8, 16, 14, 0, 0), pVariates);
-            ADD_PV_NO_UNIT(InterpPVDirect, 7.6, Double, DATE_TIME_NO_VAR(2017, 8, 18, 14, 0, 0), pVariates);
+        // Two values across m_start to interpolate from (direct).
+        ADD_PV_NO_UNIT(InterpPVDirect, 7.4, Double, DATE_TIME_NO_VAR(2017, 8, 16, 14, 0, 0), pVariates);
+        ADD_PV_NO_UNIT(InterpPVDirect, 7.6, Double, DATE_TIME_NO_VAR(2017, 8, 18, 14, 0, 0), pVariates);
 
-            // Two values across m_start to interpolate from (linear).
-            ADD_PV_NO_UNIT(InterpPVLinear, 7.6, Double, DATE_TIME_NO_VAR(2017, 8, 16, 14, 0, 0), pVariates);
-            ADD_PV_NO_UNIT(InterpPVLinear, 7.4, Double, DATE_TIME_NO_VAR(2017, 8, 18, 14, 0, 0), pVariates);
+        // Two values across m_start to interpolate from (linear).
+        ADD_PV_NO_UNIT(InterpPVLinear, 7.6, Double, DATE_TIME_NO_VAR(2017, 8, 16, 14, 0, 0), pVariates);
+        ADD_PV_NO_UNIT(InterpPVLinear, 7.4, Double, DATE_TIME_NO_VAR(2017, 8, 18, 14, 0, 0), pVariates);
 
-            // Two values across the whole interval to interpolate from (direct).
-            ADD_PV_NO_UNIT(InterpPVDirectInterv, 0.0, Double, DATE_TIME_NO_VAR(2017, 8, 16, 14, 0, 0), pVariates);
-            ADD_PV_NO_UNIT(InterpPVDirectInterv, 10.0, Double, DATE_TIME_NO_VAR(2017, 8, 26, 14, 0, 0), pVariates);
+        // Two values across the whole interval to interpolate from (direct).
+        ADD_PV_NO_UNIT(InterpPVDirectInterv, 0.0, Double, DATE_TIME_NO_VAR(2017, 8, 16, 14, 0, 0), pVariates);
+        ADD_PV_NO_UNIT(InterpPVDirectInterv, 10.0, Double, DATE_TIME_NO_VAR(2017, 8, 26, 14, 0, 0), pVariates);
 
-            // Two values across the whole interval to interpolate from (linear).
-            ADD_PV_NO_UNIT(InterpPVLinearInterv, 10.0, Double, DATE_TIME_NO_VAR(2017, 8, 16, 14, 0, 0), pVariates);
-            ADD_PV_NO_UNIT(InterpPVLinearInterv, 0.0, Double, DATE_TIME_NO_VAR(2017, 8, 26, 14, 0, 0), pVariates);
+        // Two values across the whole interval to interpolate from (linear).
+        ADD_PV_NO_UNIT(InterpPVLinearInterv, 10.0, Double, DATE_TIME_NO_VAR(2017, 8, 16, 14, 0, 0), pVariates);
+        ADD_PV_NO_UNIT(InterpPVLinearInterv, 0.0, Double, DATE_TIME_NO_VAR(2017, 8, 26, 14, 0, 0), pVariates);
 
-            CovariateExtractor extractor(cDefinitions, pVariates,
-                                         DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0),
-                                         DATE_TIME_NO_VAR(2017, 8, 25, 14, 0, 0));
-            extractor.sortPatientVariates();
-            std::map<std::string, std::shared_ptr<CovariateEvent>> nccValuesMap;
-            CovariateSeries series;
-            extractor.createNonComputedCEvents(nccValuesMap, series);
+        CovariateExtractor extractor(cDefinitions, pVariates,
+                                     DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0),
+                                     DATE_TIME_NO_VAR(2017, 8, 25, 14, 0, 0));
+        extractor.sortPatientVariates();
+        std::map<std::string, std::shared_ptr<CovariateEvent>> nccValuesMap;
+        CovariateSeries series;
+        extractor.createNonComputedCEvents(nccValuesMap, series);
 
-            printCovariateSeries(series);
+        // Check that the expected events are present.
+        fructose_assert(series.size() == 7);
+        // NoPVAssociated.
+        fructose_assert(covariateEventIsPresent("NoPVAssociated", DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0),
+                                                false, series));
+        // SinglePVAssociated.
+        fructose_assert(covariateEventIsPresent("SinglePVAssociated", DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0),
+                                                true, series));
+        // StartPVAfterStart.
+        fructose_assert(covariateEventIsPresent("StartPVAfterStart", DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0),
+                                                7, series));
+        // InterpPVDirect.
+        fructose_assert(covariateEventIsPresent("InterpPVDirect", DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0),
+                                                7.4, series));
+        // InterpPVLinear
+        fructose_assert(covariateEventIsPresent("InterpPVLinear", DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0),
+                                                7.5, series));
+        // InterpPVDirectInterv
+        fructose_assert(covariateEventIsPresent("InterpPVDirectInterv", DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0),
+                                                0.0, series));
+        // InterpPVLinearInterv
+        fructose_assert(covariateEventIsPresent("InterpPVLinearInterv", DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0),
+                                                9.0, series));
 
-            // Check that expected events are present.
-            fructose_assert(series.size() == 7);
-            // NoPVAssociated.
-            fructose_assert(covariateEventIsPresent("NoPVAssociated", DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0),
-                                                    false, series));
-            // SinglePVAssociated.
-            fructose_assert(covariateEventIsPresent("SinglePVAssociated", DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0),
-                                                    true, series));
-            // StartPVAfterStart.
-            fructose_assert(covariateEventIsPresent("StartPVAfterStart", DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0),
-                                                    7, series));
-            // InterpPVDirect.
-            fructose_assert(covariateEventIsPresent("InterpPVDirect", DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0),
-                                                    7.4, series));
-            // InterpPVLinear
-            fructose_assert(covariateEventIsPresent("InterpPVLinear", DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0),
-                                                    7.5, series));
-            // InterpPVDirectInterv
-            fructose_assert(covariateEventIsPresent("InterpPVDirectInterv", DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0),
-                                                    0.0, series));
-            // InterpPVLinearInterv
-            fructose_assert(covariateEventIsPresent("InterpPVLinearInterv", DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0),
-                                                    9.0, series));
-        }
+        // Check that the Operable Graph Manager contains the good values.
+        bool rc;
+        double val;
+
+        rc = extractor.m_ogm.getValue("NoPVAssociated", val);
+        fructose_assert(rc == true);
+        fructose_assert(val == 0.0);
+
+        rc = extractor.m_ogm.getValue("SinglePVAssociated", val);
+        fructose_assert(rc == true);
+        fructose_assert(val == 1.0);
+
+        rc = extractor.m_ogm.getValue("StartPVAfterStart", val);
+        fructose_assert(rc == true);
+        fructose_assert(val == 7.0);
+
+        rc = extractor.m_ogm.getValue("InterpPVDirect", val);
+        fructose_assert(rc == true);
+        fructose_assert(val == 7.4);
+
+        rc = extractor.m_ogm.getValue("InterpPVLinear", val);
+        fructose_assert(rc == true);
+        fructose_assert(val == 7.5);
+
+        rc = extractor.m_ogm.getValue("InterpPVDirectInterv", val);
+        fructose_assert(rc == true);
+        fructose_assert(val == 0.0);
+
+        rc = extractor.m_ogm.getValue("InterpPVLinearInterv", val);
+        fructose_assert(rc == true);
+        fructose_assert(val == 9.0);
+
+        // Check that the nccValuesMap has all the good values.
+        fructose_assert(nccValuesMap.size() == 7);
+
+        fructose_assert(nccValuesMap["NoPVAssociated"]->getId() == "NoPVAssociated");
+        fructose_assert(nccValuesMap["NoPVAssociated"]->getValue() == 0.0);
+        fructose_assert(nccValuesMap["NoPVAssociated"]->getEventTime() == DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0));
+
+        fructose_assert(nccValuesMap["SinglePVAssociated"]->getId() == "SinglePVAssociated");
+        fructose_assert(nccValuesMap["SinglePVAssociated"]->getValue() == 1.0);
+        fructose_assert(nccValuesMap["SinglePVAssociated"]->getEventTime() == DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0));
+
+        fructose_assert(nccValuesMap["StartPVAfterStart"]->getId() == "StartPVAfterStart");
+        fructose_assert(nccValuesMap["StartPVAfterStart"]->getValue() == 7.0);
+        fructose_assert(nccValuesMap["StartPVAfterStart"]->getEventTime() == DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0));
+
+        fructose_assert(nccValuesMap["InterpPVDirect"]->getId() == "InterpPVDirect");
+        fructose_assert(nccValuesMap["InterpPVDirect"]->getValue() == 7.4);
+        fructose_assert(nccValuesMap["InterpPVDirect"]->getEventTime() == DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0));
+
+        fructose_assert(nccValuesMap["InterpPVLinear"]->getId() == "InterpPVLinear");
+        fructose_assert(nccValuesMap["InterpPVLinear"]->getValue() == 7.5);
+        fructose_assert(nccValuesMap["InterpPVLinear"]->getEventTime() == DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0));
+
+        fructose_assert(nccValuesMap["InterpPVDirectInterv"]->getId() == "InterpPVDirectInterv");
+        fructose_assert(nccValuesMap["InterpPVDirectInterv"]->getValue() == 0.0);
+        fructose_assert(nccValuesMap["InterpPVDirectInterv"]->getEventTime() == DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0));
+
+        fructose_assert(nccValuesMap["InterpPVLinearInterv"]->getId() == "InterpPVLinearInterv");
+        fructose_assert(nccValuesMap["InterpPVLinearInterv"]->getValue() == 9.0);
+        fructose_assert(nccValuesMap["InterpPVLinearInterv"]->getEventTime() == DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0));
     }
 
     /// \brief Test the interpolateValues helper function.
