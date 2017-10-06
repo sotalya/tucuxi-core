@@ -121,15 +121,7 @@ private:
                                            std::map<std::string, std::shared_ptr<CovariateEvent>> &_nccValuesMap,
                                            CovariateSeries &_series);
 
-    int addPatientVariateNoRefresh(const std::string &_pvName,
-                                   const std::vector<pvIterator_t> &_pvValues,
-                                   std::map<std::string, std::pair<std::shared_ptr<CovariateEvent>, Value>> &_computedValuesMap,
-                                   CovariateSeries &_series);
-
-    int addPatientVariateWithRefresh(const Duration &_refreshPeriod,
-                                     const std::string &_pvName,
-                                     const std::vector<pvIterator_t> &_pvValues,
-                                     std::map<std::string, std::pair<std::shared_ptr<CovariateEvent>, Value>> &_computedValuesMap,
+    int addPatientVariateWithRefresh(std::map<std::string, std::pair<std::shared_ptr<CovariateEvent>, Value>> &_computedValuesMap,
                                      std::map<std::string, std::shared_ptr<CovariateEvent>> &_nccValuesMap,
                                      CovariateSeries &_series);
 
@@ -143,6 +135,9 @@ private:
     /// \param _refreshMap Mat containing, for each selected time instant, the list of covariates to update.
     void collectRefreshIntervals(const std::map<std::string, std::pair<std::shared_ptr<CovariateEvent>, Value>> &_computedValuesMap,
                                  std::map<DateTime, std::vector<std::string>> &_refreshMap);
+
+    int addPatientVariateNoRefresh(std::map<std::string, std::pair<std::shared_ptr<CovariateEvent>, Value>> &_computedValuesMap,
+                                   CovariateSeries &_series);
 
     /// \brief Create the events linked with the initial value of computed covariates.
     /// \param _computedValuesMap Map that will hold the pointers to the events due to computed covariates, as well as

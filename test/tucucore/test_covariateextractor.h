@@ -502,6 +502,7 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
         fructose_assert(computedValuesMap["op3"].second == -5.0);
     }
 
+
     /// \brief Test the createNonComputedCEvents helper function.
     /// Test the following cases:
     /// - no patient variate associated -> take the default value.
@@ -645,6 +646,7 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
         fructose_assert(nccValuesMap["InterpPVLinearInterv"]->getValue() == 9.0);
         fructose_assert(nccValuesMap["InterpPVLinearInterv"]->getEventTime() == DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0));
     }
+
 
     /// \brief Test the interpolateValues helper function.
     void testCE_interpolateValues(const std::string& /* _testName */)
