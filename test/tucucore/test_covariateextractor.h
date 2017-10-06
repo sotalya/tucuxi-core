@@ -195,8 +195,262 @@ void printCovariateSeries(const CovariateSeries &_series)
 
 struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtractor>
 {
-
     TestCovariateExtractor() { }
+
+    /// \brief Check that objects are correctly constructed by the constructor.
+    void testCE_constructor(const std::string& /* _testName */)
+    {
+        // Even without covariates, no exception should be raised.
+        {
+            fructose_assert_no_exception(CovariateExtractor(CovariateDefinitions(), PatientVariates(),
+                                                            DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0),
+                                                            DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0)));
+        }
+
+        // Start date past end date.
+        {
+            fructose_assert_exception(CovariateExtractor(CovariateDefinitions(), PatientVariates(),
+                                                         DATE_TIME_NO_VAR(2017, 8, 19, 14, 32, 0),
+                                                         DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0)),
+                                      std::runtime_error);
+        }
+
+        // Build a covariate extractor from a set of covariate definitions.
+        {
+            CovariateDefinitions cDefinitions;
+
+            ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+            ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), kg, cDefinitions);
+            ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
+
+            fructose_assert_no_exception(CovariateExtractor(cDefinitions, PatientVariates(),
+                                                            DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
+                                                            DATE_TIME_NO_VAR(2017, 8, 19, 14, 32, 0)));
+        }
+
+        // Build a covariate extractor from a set of covariate definitions and patient variates.
+        {
+            CovariateDefinitions cDefinitions;
+            PatientVariates pVariates;
+
+            ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+            ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), kg, cDefinitions);
+            ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
+            ADD_PV_NO_UNIT(Gist, true, Bool, DATE_TIME_NO_VAR(2017, 8, 19, 12, 32, 0), pVariates);
+            ADD_PV_NO_UNIT(Gist, false, Bool, DATE_TIME_NO_VAR(2017, 8, 19, 22, 32, 0), pVariates);
+
+            fructose_assert_no_exception(CovariateExtractor(cDefinitions, pVariates,
+                                                            DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
+                                                            DATE_TIME_NO_VAR(2017, 8, 29, 14, 32, 0)));
+        }
+
+        // Add twice the same covariate definition (with different values).
+        {
+            CovariateDefinitions cDefinitions;
+
+            ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+            ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), kg, cDefinitions);
+            ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
+            ADD_CDEF_W_R_UNIT(Weight, 3500, Standard, Bool, Linear, Tucuxi::Common::days(2), mg, cDefinitions);
+
+            fructose_assert_exception(CovariateExtractor(cDefinitions, PatientVariates(),
+                                                         DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
+                                                         DATE_TIME_NO_VAR(2017, 8, 19, 14, 32, 0)),
+                                      std::runtime_error);
+        }
+
+        // Try build a covariate extractor from a set of covariate definitions with a null pointer included.
+        {
+            CovariateDefinitions cDefinitions;
+
+            ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+            ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), kg, cDefinitions);
+            cDefinitions.push_back(nullptr);
+            ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
+
+            fructose_assert_exception(CovariateExtractor(cDefinitions, PatientVariates(),
+                                                         DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
+                                                         DATE_TIME_NO_VAR(2017, 8, 19, 14, 32, 0)),
+                                      std::runtime_error);
+        }
+
+        // Try build a covariate extractor from a set of patient variates with a null pointer included.
+        {
+            CovariateDefinitions cDefinitions;
+            PatientVariates pVariates;
+
+            ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+            ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), kg, cDefinitions);
+            ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
+            ADD_PV_NO_UNIT(Gist, true, Bool, DATE_TIME_NO_VAR(2017, 8, 19, 12, 32, 0), pVariates);
+            pVariates.push_back(nullptr);
+            ADD_PV_NO_UNIT(Gist, false, Bool, DATE_TIME_NO_VAR(2017, 8, 19, 22, 32, 0), pVariates);
+
+            fructose_assert_exception(CovariateExtractor(cDefinitions, pVariates,
+                                                         DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
+                                                         DATE_TIME_NO_VAR(2017, 8, 29, 14, 32, 0)),
+                                      std::runtime_error);
+        }
+    }
+
+
+    /// \brief Test the createNonComputedCEvents helper function.
+    void testCE_createNonComputedCEvents(const std::string& /* _testName */)
+    {
+        // Test the following cases:
+        // - no patient variate associated -> take the default value.
+        // - a single patient variate value associated -> take it as initial value and keep it constant.
+        // - first available measurement past m_start (other measurements available afterwards) -> take the value of the
+        //   first measurement as initial value.
+        // - two measurements across m_start (one before, one after) -> use interpolation to get initial value.
+        // - two measurements across the whole interval -> use interpolation to get initial value.
+        // The corresponding events have to be created, and the covariates have to be registered in the Operable Graph
+        // Manager and in the map recording their values.
+        {
+            CovariateDefinitions cDefinitions;
+            PatientVariates pVariates;
+
+            ADD_CDEF_NO_R(NoPVAssociated, false, Standard, Bool, Direct, cDefinitions);
+            ADD_CDEF_W_R_UNIT(SinglePVAssociated, 6.5, Standard, Double, Linear, Tucuxi::Common::days(1), kg, cDefinitions);
+            ADD_CDEF_NO_R(StartPVAfterStart, 5, Standard, Int, Direct, cDefinitions);
+            ADD_CDEF_NO_R(InterpPVDirect, 1.0, Standard, Double, Direct, cDefinitions);
+            ADD_CDEF_NO_R(InterpPVLinear, 10.0, Standard, Double, Linear, cDefinitions);
+            ADD_CDEF_NO_R(InterpPVDirectInterv, 0.0, Standard, Double, Direct, cDefinitions);
+            ADD_CDEF_NO_R(InterpPVLinearInterv, 11.0, Standard, Double, Linear, cDefinitions);
+
+            // No PV for NoPVAssociated.
+
+            // Single PV for SinglePVAssociated.
+            ADD_PV_NO_UNIT(SinglePVAssociated, true, Bool, DATE_TIME_NO_VAR(2017, 8, 19, 22, 32, 0), pVariates);
+
+            // Multiple PVs for StartPVAfterStart, with the first after m_start.
+            ADD_PV_NO_UNIT(StartPVAfterStart, 7, Int, DATE_TIME_NO_VAR(2017, 8, 19, 12, 32, 0), pVariates);
+            ADD_PV_NO_UNIT(StartPVAfterStart, 9, Int, DATE_TIME_NO_VAR(2017, 8, 25, 12, 32, 0), pVariates);
+
+            // Two values across m_start to interpolate from (direct).
+            ADD_PV_NO_UNIT(InterpPVDirect, 7.4, Double, DATE_TIME_NO_VAR(2017, 8, 16, 14, 0, 0), pVariates);
+            ADD_PV_NO_UNIT(InterpPVDirect, 7.6, Double, DATE_TIME_NO_VAR(2017, 8, 18, 14, 0, 0), pVariates);
+
+            // Two values across m_start to interpolate from (linear).
+            ADD_PV_NO_UNIT(InterpPVLinear, 7.6, Double, DATE_TIME_NO_VAR(2017, 8, 16, 14, 0, 0), pVariates);
+            ADD_PV_NO_UNIT(InterpPVLinear, 7.4, Double, DATE_TIME_NO_VAR(2017, 8, 18, 14, 0, 0), pVariates);
+
+            // Two values across the whole interval to interpolate from (direct).
+            ADD_PV_NO_UNIT(InterpPVDirectInterv, 0.0, Double, DATE_TIME_NO_VAR(2017, 8, 16, 14, 0, 0), pVariates);
+            ADD_PV_NO_UNIT(InterpPVDirectInterv, 10.0, Double, DATE_TIME_NO_VAR(2017, 8, 26, 14, 0, 0), pVariates);
+
+            // Two values across the whole interval to interpolate from (linear).
+            ADD_PV_NO_UNIT(InterpPVLinearInterv, 10.0, Double, DATE_TIME_NO_VAR(2017, 8, 16, 14, 0, 0), pVariates);
+            ADD_PV_NO_UNIT(InterpPVLinearInterv, 0.0, Double, DATE_TIME_NO_VAR(2017, 8, 26, 14, 0, 0), pVariates);
+
+            CovariateExtractor extractor(cDefinitions, pVariates,
+                                         DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0),
+                                         DATE_TIME_NO_VAR(2017, 8, 25, 14, 0, 0));
+            extractor.sortPatientVariates();
+            std::map<std::string, std::shared_ptr<CovariateEvent>> nccValuesMap;
+            CovariateSeries series;
+            extractor.createNonComputedCEvents(nccValuesMap, series);
+
+            printCovariateSeries(series);
+
+            // Check that expected events are present.
+            fructose_assert(series.size() == 7);
+            // NoPVAssociated.
+            fructose_assert(covariateEventIsPresent("NoPVAssociated", DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0),
+                                                    false, series));
+            // SinglePVAssociated.
+            fructose_assert(covariateEventIsPresent("SinglePVAssociated", DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0),
+                                                    true, series));
+            // StartPVAfterStart.
+            fructose_assert(covariateEventIsPresent("StartPVAfterStart", DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0),
+                                                    7, series));
+            // InterpPVDirect.
+            fructose_assert(covariateEventIsPresent("InterpPVDirect", DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0),
+                                                    7.4, series));
+            // InterpPVLinear
+            fructose_assert(covariateEventIsPresent("InterpPVLinear", DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0),
+                                                    7.5, series));
+            // InterpPVDirectInterv
+            fructose_assert(covariateEventIsPresent("InterpPVDirectInterv", DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0),
+                                                    0.0, series));
+            // InterpPVLinearInterv
+            fructose_assert(covariateEventIsPresent("InterpPVLinearInterv", DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0),
+                                                    9.0, series));
+        }
+    }
+
+    /// \brief Test the interpolateValues helper function.
+    void testCE_interpolateValues(const std::string& /* _testName */)
+    {
+        CovariateExtractor extractor(CovariateDefinitions(), PatientVariates(),
+                                     DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0),
+                                     DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0));
+        bool rc;
+        Value valRes;
+
+        // Violate precondition.
+        rc = extractor.interpolateValues(0, DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0),
+                                         1, DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0),
+                                         DATE_TIME_NO_VAR(2017, 8, 15, 14, 32, 0),
+                                         InterpolationType::Linear,
+                                         valRes);
+        fructose_assert(rc == false);
+
+        // Interpolate in the middle.
+        rc = extractor.interpolateValues(0, DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0),
+                                         10, DATE_TIME_NO_VAR(2017, 8, 23, 14, 32, 0),
+                                         DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
+                                         InterpolationType::Linear,
+                                         valRes);
+        fructose_assert(rc == true);
+        fructose_assert(valRes == 5.0);
+
+        // Extrapolate before.
+        rc = extractor.interpolateValues(5, DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
+                                         10, DATE_TIME_NO_VAR(2017, 8, 23, 14, 32, 0),
+                                         DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0),
+                                         InterpolationType::Linear,
+                                         valRes);
+        fructose_assert(rc == true);
+        fructose_assert(valRes == 0.0);
+
+        // Extrapolate after.
+        rc = extractor.interpolateValues(5, DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0),
+                                         10, DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
+                                         DATE_TIME_NO_VAR(2017, 8, 23, 14, 32, 0),
+                                         InterpolationType::Linear,
+                                         valRes);
+        fructose_assert(rc == true);
+        fructose_assert(valRes == 15.0);
+
+        // Test direct interpolation (before _date1).
+        rc = extractor.interpolateValues(5, DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
+                                         10, DATE_TIME_NO_VAR(2017, 8, 19, 14, 32, 0),
+                                         DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0),
+                                         InterpolationType::Direct,
+                                         valRes);
+        fructose_assert(rc == true);
+        fructose_assert(valRes == 5.0);
+
+        // Test direct interpolation (between _date1 and _date2).
+        rc = extractor.interpolateValues(5, DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
+                                         10, DATE_TIME_NO_VAR(2017, 8, 29, 14, 32, 0),
+                                         DATE_TIME_NO_VAR(2017, 8, 19, 14, 32, 0),
+                                         InterpolationType::Direct,
+                                         valRes);
+        fructose_assert(rc == true);
+        fructose_assert(valRes == 5.0);
+
+        // Test direct interpolation (after _date2).
+        rc = extractor.interpolateValues(5, DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
+                                         10, DATE_TIME_NO_VAR(2017, 8, 19, 14, 32, 0),
+                                         DATE_TIME_NO_VAR(2017, 8, 23, 14, 32, 0),
+                                         InterpolationType::Direct,
+                                         valRes);
+        fructose_assert(rc == true);
+        fructose_assert(valRes == 10.0);
+    }
+
 
     /// \brief Check that patient variates are properly sorted and cleaned up.
     void testCE_sortPatientVariates(const std::string& /* _testName */)
@@ -229,6 +483,30 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
             res_pvVec.push_back(std::unique_ptr<PatientCovariate>(new PatientCovariate("Weight", valueToString(6.3), DataType::Double, Unit(), DATE_TIME_NO_VAR(2017, 8, 19, 22, 32, 0))));
             res_pvVec.push_back(std::unique_ptr<PatientCovariate>(new PatientCovariate("Weight", valueToString(7.4), DataType::Double, Unit(), DATE_TIME_NO_VAR(2017, 8, 21, 12, 32, 0))));
             res_pvVec.push_back(std::unique_ptr<PatientCovariate>(new PatientCovariate("Weight", valueToString(7.0), DataType::Double, Unit(), DATE_TIME_NO_VAR(2017, 8, 30, 12, 32, 0))));
+
+            const auto &pvVals = extractor.m_pvValued.at("Weight");
+
+            fructose_assert(pvVals.size() == res_pvVec.size());
+            for (size_t i = 0; i < std::min(pvVals.size(), res_pvVec.size()); ++i) {
+                fructose_assert(**(pvVals.at(i)) == *(res_pvVec.at(i)));
+            }
+        }
+
+        // No patient variates -- the sort just has to be nice and smile.
+        {
+            CovariateDefinitions cDefinitions;
+            PatientVariates pVariates;
+
+            ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+            ADD_CDEF_W_R_UNIT(Weight, 6.5, Standard, Double, Linear, Tucuxi::Common::days(1), kg, cDefinitions);
+            ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
+
+            CovariateExtractor extractor(cDefinitions, pVariates,
+                                         DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0),
+                                         DATE_TIME_NO_VAR(2017, 8, 29, 14, 0, 0));
+            extractor.sortPatientVariates();
+
+            std::vector<std::unique_ptr<PatientCovariate>> res_pvVec;
 
             const auto &pvVals = extractor.m_pvValued.at("Weight");
 
@@ -314,6 +592,34 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
             }
         }
 
+        // One measure before m_start and one after m_end. We should keep both to interpolate.
+        {
+            CovariateDefinitions cDefinitions;
+            PatientVariates pVariates;
+
+            ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+            ADD_CDEF_W_R_UNIT(Weight, 6.5, Standard, Double, Linear, Tucuxi::Common::days(1), kg, cDefinitions);
+            ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
+            ADD_PV_NO_UNIT(Weight, 6.3, Double, DATE_TIME_NO_VAR(2017, 8, 9, 22, 32, 0), pVariates);
+            ADD_PV_NO_UNIT(Weight, 7.2, Double, DATE_TIME_NO_VAR(2017, 8, 12, 12, 32, 0), pVariates);
+
+            CovariateExtractor extractor(cDefinitions, pVariates,
+                                         DATE_TIME_NO_VAR(2017, 8, 10, 12, 0, 0),
+                                         DATE_TIME_NO_VAR(2017, 8, 11, 14, 0, 0));
+            extractor.sortPatientVariates();
+
+            std::vector<std::unique_ptr<PatientCovariate>> res_pvVec;
+            res_pvVec.push_back(std::unique_ptr<PatientCovariate>(new PatientCovariate("Weight", valueToString(6.3), DataType::Double, Unit(), DATE_TIME_NO_VAR(2017, 8, 9, 22, 32, 0))));
+            res_pvVec.push_back(std::unique_ptr<PatientCovariate>(new PatientCovariate("Weight", valueToString(7.2), DataType::Double, Unit(), DATE_TIME_NO_VAR(2017, 8, 12, 12, 32, 0))));
+
+            const auto &pvVals = extractor.m_pvValued.at("Weight");
+
+            fructose_assert(pvVals.size() == res_pvVec.size());
+            for (size_t i = 0; i < std::min(pvVals.size(), res_pvVec.size()); ++i) {
+                fructose_assert(**(pvVals.at(i)) == *(res_pvVec.at(i)));
+            }
+        }
+
         // We should drop all measurements except those of the 19.08.
         {
             CovariateDefinitions cDefinitions;
@@ -346,177 +652,6 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
                 fructose_assert(**(pvVals.at(i)) == *(res_pvVec.at(i)));
             }
         }
-    }
-
-
-    /// \brief Check that objects are correctly constructed by the constructor.
-    void testCE_constructor(const std::string& /* _testName */)
-    {
-        // Even without covariates, no exception should be raised.
-        {
-            fructose_assert_no_exception(CovariateExtractor(CovariateDefinitions(), PatientVariates(),
-                                                            DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0),
-                                                            DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0)));
-        }
-
-        // Start date past end date.
-        {
-            fructose_assert_exception(CovariateExtractor(CovariateDefinitions(), PatientVariates(),
-                                                         DATE_TIME_NO_VAR(2017, 8, 19, 14, 32, 0),
-                                                         DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0)),
-                                      std::runtime_error);
-        }
-
-        // Build a covariate extractor from a set of covariate definitions.
-        {
-            CovariateDefinitions cDefinitions;
-
-            ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
-            ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), kg, cDefinitions);
-            ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
-
-            fructose_assert_no_exception(CovariateExtractor(cDefinitions, PatientVariates(),
-                                                            DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
-                                                            DATE_TIME_NO_VAR(2017, 8, 19, 14, 32, 0)));
-        }
-
-        // Build a covariate extractor from a set of covariate definitions and patient variates.
-        {
-            CovariateDefinitions cDefinitions;
-            PatientVariates pVariates;
-
-            ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
-            ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), kg, cDefinitions);
-            ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
-            ADD_PV_NO_UNIT(Gist, true, Bool, DATE_TIME_NO_VAR(2017, 8, 19, 12, 32, 0), pVariates);
-            ADD_PV_NO_UNIT(Gist, false, Bool, DATE_TIME_NO_VAR(2017, 8, 19, 22, 32, 0), pVariates);
-
-            fructose_assert_no_exception(CovariateExtractor(cDefinitions, pVariates,
-                                                            DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
-                                                            DATE_TIME_NO_VAR(2017, 8, 29, 14, 32, 0)));
-        }
-
-
-        // Add twice the same covariate definition (with different values).
-        {
-            CovariateDefinitions cDefinitions;
-
-            ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
-            ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), kg, cDefinitions);
-            ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
-            ADD_CDEF_W_R_UNIT(Weight, 3500, Standard, Bool, Linear, Tucuxi::Common::days(2), mg, cDefinitions);
-
-            fructose_assert_exception(CovariateExtractor(cDefinitions, PatientVariates(),
-                                                         DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
-                                                         DATE_TIME_NO_VAR(2017, 8, 19, 14, 32, 0)),
-                                      std::runtime_error);
-        }
-
-        // Try build a covariate extractor from a set of covariate definitions with a null pointer included.
-        {
-            CovariateDefinitions cDefinitions;
-
-            ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
-            ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), kg, cDefinitions);
-            cDefinitions.push_back(nullptr);
-            ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
-
-            fructose_assert_exception(CovariateExtractor(cDefinitions, PatientVariates(),
-                                                         DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
-                                                         DATE_TIME_NO_VAR(2017, 8, 19, 14, 32, 0)),
-                                      std::runtime_error);
-        }
-
-        // Try build a covariate extractor from a set of patient variates with a null pointer included.
-        {
-            CovariateDefinitions cDefinitions;
-            PatientVariates pVariates;
-
-            ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
-            ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), kg, cDefinitions);
-            ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
-            ADD_PV_NO_UNIT(Gist, true, Bool, DATE_TIME_NO_VAR(2017, 8, 19, 12, 32, 0), pVariates);
-            pVariates.push_back(nullptr);
-            ADD_PV_NO_UNIT(Gist, false, Bool, DATE_TIME_NO_VAR(2017, 8, 19, 22, 32, 0), pVariates);
-
-            fructose_assert_exception(CovariateExtractor(cDefinitions, pVariates,
-                                                         DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
-                                                         DATE_TIME_NO_VAR(2017, 8, 29, 14, 32, 0)),
-                                      std::runtime_error);
-        }
-    }
-
-
-    /// \brief Test the interpolateValues helper function.
-    void testCE_interpolateValues(const std::string& /* _testName */)
-    {
-        CovariateExtractor extractor(CovariateDefinitions(), PatientVariates(),
-                                     DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0),
-                                     DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0));
-        bool rc;
-        Value valRes;
-
-        // Violate precondition.
-        rc = extractor.interpolateValues(0, DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0),
-                                         1, DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0),
-                                         DATE_TIME_NO_VAR(2017, 8, 15, 14, 32, 0),
-                                         InterpolationType::Linear,
-                                         valRes);
-        fructose_assert(rc == false);
-
-        // Interpolate in the middle.
-        rc = extractor.interpolateValues(0, DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0),
-                                         10, DATE_TIME_NO_VAR(2017, 8, 23, 14, 32, 0),
-                                         DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
-                                         InterpolationType::Linear,
-                                         valRes);
-        fructose_assert(rc == true);
-        fructose_assert(valRes == 5.0);
-
-        // Extrapolate before.
-        rc = extractor.interpolateValues(5, DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
-                                         10, DATE_TIME_NO_VAR(2017, 8, 23, 14, 32, 0),
-                                         DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0),
-                                         InterpolationType::Linear,
-                                         valRes);
-        fructose_assert(rc == true);
-        fructose_assert(valRes == 0.0);
-
-        // Extrapolate after.
-        rc = extractor.interpolateValues(5, DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0),
-                                         10, DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
-                                         DATE_TIME_NO_VAR(2017, 8, 23, 14, 32, 0),
-                                         InterpolationType::Linear,
-                                         valRes);
-        fructose_assert(rc == true);
-        fructose_assert(valRes == 15.0);
-
-        // Test direct interpolation (before _date1).
-        rc = extractor.interpolateValues(5, DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
-                                         10, DATE_TIME_NO_VAR(2017, 8, 19, 14, 32, 0),
-                                         DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0),
-                                         InterpolationType::Direct,
-                                         valRes);
-        fructose_assert(rc == true);
-        fructose_assert(valRes == 5.0);
-
-        // Test direct interpolation (between _date1 and _date2).
-        rc = extractor.interpolateValues(5, DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
-                                         10, DATE_TIME_NO_VAR(2017, 8, 29, 14, 32, 0),
-                                         DATE_TIME_NO_VAR(2017, 8, 19, 14, 32, 0),
-                                         InterpolationType::Direct,
-                                         valRes);
-        fructose_assert(rc == true);
-        fructose_assert(valRes == 5.0);
-
-        // Test direct interpolation (after _date2).
-        rc = extractor.interpolateValues(5, DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
-                                         10, DATE_TIME_NO_VAR(2017, 8, 19, 14, 32, 0),
-                                         DATE_TIME_NO_VAR(2017, 8, 23, 14, 32, 0),
-                                         InterpolationType::Direct,
-                                         valRes);
-        fructose_assert(rc == true);
-        fructose_assert(valRes == 10.0);
     }
 
 

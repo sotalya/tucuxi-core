@@ -256,72 +256,9 @@ int CovariateExtractor::generatePeriodicComputedCovariates(const std::map<DateTi
     return 0;
 }
 
-/// \TODO SPLIT!!!!
-int CovariateExtractor::createInitialEvents(std::map<std::string, std::pair<std::shared_ptr<CovariateEvent>, Value>> &_computedValuesMap,
-                                            std::map<std::string, std::shared_ptr<CovariateEvent>> &_nccValuesMap,
-                                            CovariateSeries &_series)
-{
-    // Standard values (no computations involved).
-    for (const auto &cdv : m_cdValued) {
-        std::map<std::string, std::vector<pvIterator_t>>::const_iterator it;
-        it = m_pvValued.find(cdv.first);
-        std::shared_ptr<CovariateEvent> event;
-        if (it == m_pvValued.end()) {
-            // If no patient variates associated, then take default value (it won't be touched afterwards).
-            event = std::make_shared<CovariateEvent>(**(cdv.second), m_start, (*(cdv.second))->getValue());
-        } else {
-            Value newVal = 0.0;
-            if (it->second.size() == 1 || (*(it->second.at(0)))->getEventTime() >= m_start) {
-                // If single patient variate value or measurement start after m_start, then take the first value.
-                newVal = std::stod((*(it->second.at(0)))->getValue());
-            } else {
-                // If multiple values with the first before m_start, then use the value interpolated using the first two
-                // elements of the vector.
-                Value val1 = std::stod((*(it->second.at(0)))->getValue());
-                Value val2 = std::stod((*(it->second.at(1)))->getValue());
-                bool rc = interpolateValues(val1, (*(it->second.at(0)))->getEventTime(),
-                                            val2, (*(it->second.at(1)))->getEventTime(),
-                                            m_start,
-                                            (*(cdv.second))->getInterpolationType(),
-                                            newVal);
-                if (rc == false) {
-                    return -5;
-                }
-            }
-            event = std::make_shared<CovariateEvent>(**(cdv.second), m_start, newVal);
-        }
 
-        _series.push_back(*event);
-        m_ogm.registerInput(event, cdv.first);
-        _nccValuesMap.insert(std::pair<std::string, std::shared_ptr<CovariateEvent>>(cdv.first, event));
-    }
 
-    // Computed values.
-    if (m_cdComputed.size() > 0) {
-        // Push an Operable for each computed Covariate.
-        for (const auto &cdc : m_cdComputed) {
-            std::shared_ptr<CovariateEvent> event = std::make_shared<CovariateEvent>(**(cdc.second), m_start, 0.0);
-            _computedValuesMap.insert(std::pair<std::string, std::pair<std::shared_ptr<CovariateEvent>, Value>>(cdc.first,
-                                                                                                                std::make_pair(event, 0.0)));
-            m_ogm.registerOperable(event, cdc.first);
-        }
 
-        // Call the evaluation once to generate the first set of values for the
-        // computed events.
-        bool rc = m_ogm.evaluate();
-        if (rc == false) {
-            return -6;
-        }
-
-        for (auto &cvm : _computedValuesMap) {
-            // Update the value in the map.
-            cvm.second.second = cvm.second.first->getValue();
-            // Push each computed covariate in the event series.
-            _series.push_back(*cvm.second.first);
-        }
-    }
-    return 0;
-}
 
 
 // Error codes:
@@ -337,16 +274,13 @@ int CovariateExtractor::extract(CovariateSeries &_series)
 {
     sortPatientVariates();
 
-    // ** Push the covariates at the initial time in the covariate serie and in the OGM ***
-    OperableGraphManager ogm;
-
     // Map holding the pointers to the events linked with non-computed covariates.
     std::map<std::string, std::shared_ptr<CovariateEvent>> nccValuesMap;
 
-    // Map holding the pointers to the events linked with covariates and their latest value.
+    // Map holding the pointers to the events linked with computed covariates and their latest value.
     std::map<std::string, std::pair<std::shared_ptr<CovariateEvent>, Value>> computedValuesMap;
 
-    createInitialEvents(computedValuesMap, nccValuesMap, _series);
+    createInitialEvents(nccValuesMap, computedValuesMap, _series);
 
     // *** Generate events past the default ones ***
     // Unfortunately discovering all the relations among covariates is too difficult -- it would mean redoing the
@@ -477,11 +411,97 @@ CovariateExtractor::CovariateExtractor(const CovariateDefinitions &_defaults,
 }
 
 
+bool CovariateExtractor::createInitialEvents(std::map<std::string, std::shared_ptr<CovariateEvent>> &_nccValuesMap,
+                                             std::map<std::string, std::pair<std::shared_ptr<CovariateEvent>, Value>> &_computedValuesMap,
+                                             CovariateSeries &_series)
+{
+    if (!createNonComputedCEvents(_nccValuesMap, _series)) {
+        return false;
+    }
+    if (!createComputedCEvents(_computedValuesMap, _series)) {
+        return false;
+    }
+    return true;
+}
+
+
+bool CovariateExtractor::createNonComputedCEvents(std::map<std::string, std::shared_ptr<CovariateEvent>> &_nccValuesMap,
+                                                  CovariateSeries &_series)
+{
+    // Standard values (no computations involved).
+    for (const auto &cdv : m_cdValued) {
+        std::map<std::string, std::vector<pvIterator_t>>::const_iterator it;
+        it = m_pvValued.find(cdv.first);
+        std::shared_ptr<CovariateEvent> event;
+        if (it == m_pvValued.end()) {
+            // If no patient variates associated, then take default value (it won't be touched afterwards).
+            event = std::make_shared<CovariateEvent>(**(cdv.second), m_start, (*(cdv.second))->getValue());
+        } else {
+            Value newVal = 0.0;
+            if (it->second.size() == 1 || (*(it->second.at(0)))->getEventTime() >= m_start) {
+                // If single patient variate value or measurement start after m_start, then take the first value.
+                newVal = stringToValue((*(it->second.at(0)))->getValue(), (*(it->second.at(0)))->getDataType());
+            } else {
+                // If multiple values with the first before m_start, then use the value interpolated using the first two
+                // elements of the vector.
+                Value val1 = stringToValue((*(it->second.at(0)))->getValue(), (*(it->second.at(0)))->getDataType());
+                Value val2 = stringToValue((*(it->second.at(1)))->getValue(), (*(it->second.at(1)))->getDataType());
+                bool rc = interpolateValues(val1, (*(it->second.at(0)))->getEventTime(),
+                                            val2, (*(it->second.at(1)))->getEventTime(),
+                                            m_start,
+                                            (*(cdv.second))->getInterpolationType(),
+                                            newVal);
+                if (rc == false) {
+                    return false;
+                }
+            }
+            event = std::make_shared<CovariateEvent>(**(cdv.second), m_start, newVal);
+        }
+
+        _series.push_back(*event);
+        m_ogm.registerInput(event, cdv.first);
+        _nccValuesMap.insert(std::pair<std::string, std::shared_ptr<CovariateEvent>>(cdv.first, event));
+    }
+    return true;
+}
+
+
+bool CovariateExtractor::createComputedCEvents(std::map<std::string, std::pair<std::shared_ptr<CovariateEvent>, Value>> &_computedValuesMap,
+                                               CovariateSeries &_series)
+{
+    // Computed values.
+    if (m_cdComputed.size() > 0) {
+        // Push an Operable for each computed Covariate.
+        for (const auto &cdc : m_cdComputed) {
+            std::shared_ptr<CovariateEvent> event = std::make_shared<CovariateEvent>(**(cdc.second), m_start, 0.0);
+            _computedValuesMap.insert(std::pair<std::string, std::pair<std::shared_ptr<CovariateEvent>, Value>>(cdc.first,
+                                                                                                                std::make_pair(event, 0.0)));
+            m_ogm.registerOperable(event, cdc.first);
+        }
+
+        // Call the evaluation once to generate the first set of values for the computed events, using the default
+        // values for the covariates.
+        bool rc = m_ogm.evaluate();
+        if (rc == false) {
+            return false;
+        }
+
+        for (auto &cvm : _computedValuesMap) {
+            // Update the value in the map.
+            cvm.second.second = cvm.second.first->getValue();
+            // Push each computed covariate in the event series.
+            _series.push_back(*cvm.second.first);
+        }
+    }
+    return true;
+}
+
+
 bool CovariateExtractor::interpolateValues(const Value _val1, const DateTime &_date1,
                                            const Value _val2, const DateTime &_date2,
                                            const DateTime &_dateRes,
                                            const InterpolationType _interpolationType,
-                                           Value &_valRes)
+                                           Value &_valRes) const
 {
     // Check precondition: dates are sorted.
     if (_date2 < _date1) {

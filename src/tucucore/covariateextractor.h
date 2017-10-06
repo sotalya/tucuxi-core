@@ -116,13 +116,6 @@ private:
                                  const DateTime &_t,
                                  const InterpolationType _interpolationType);
 
-
-
-
-    int createInitialEvents(std::map<std::string, std::pair<std::shared_ptr<CovariateEvent>, Value>> &_computedValuesMap,
-                            std::map<std::string, std::shared_ptr<CovariateEvent>> &_nccValuesMap,
-                            CovariateSeries &_series);
-
     void collectRefreshIntervals(const std::map<std::string, std::pair<std::shared_ptr<CovariateEvent>, Value>> &_computedValuesMap,
                                  std::map<DateTime, std::vector<std::string>> &_refreshMap);
 
@@ -147,6 +140,31 @@ private:
      *                                           OK VERIFIED AND TESTED                                                *
      ******************************************************************************************************************/
 
+    /// \brief Create the events linked with the initial value of non-computed covariates.
+    /// \param _nccValuesMap Map that will hold the pointers to the events due to non-computed covariates.
+    /// \param _series Produced event series.
+    /// \return True if the creation was successful, false otherwise.
+    bool createNonComputedCEvents(std::map<std::string, std::shared_ptr<CovariateEvent>> &_nccValuesMap,
+                                  CovariateSeries &_series);
+
+    /// \brief Create the events linked with the initial value of computed covariates.
+    /// \param _computedValuesMap Map that will hold the pointers to the events due to computed covariates, as well as
+    ///                           their latest value (to choose whether to update them or not).
+    /// \param _series Produced event series.
+    /// \return True if the creation was successful, false otherwise.
+    bool createComputedCEvents(std::map<std::string, std::pair<std::shared_ptr<CovariateEvent>, Value>> &_computedValuesMap,
+                               CovariateSeries &_series);
+
+    /// \brief Create the initial set of events (those imposed by either computed and non-computed covariates).
+    /// \param _nccValuesMap Map that will hold the pointers to the events due to non-computed covariates.
+    /// \param _computedValuesMap Map that will hold the pointers to the events due to computed covariates, as well as
+    ///                           their latest value (to choose whether to update them or not).
+    /// \param _series Produced event series.
+    /// \return True if the creation was successful, false otherwise.
+    bool createInitialEvents(std::map<std::string, std::shared_ptr<CovariateEvent>> &_nccValuesMap,
+                             std::map<std::string, std::pair<std::shared_ptr<CovariateEvent>, Value>> &_computedValuesMap,
+                             CovariateSeries &_series);
+
     /// \brief Perform the chosen interpolation between the given values.
     /// \note The desired time can be *before* the lower date or *after* the higher date. This results in extrapolation,
     ///       and can be used to extend the initial or final value. However, care must be taken to avoid invalid values
@@ -167,7 +185,7 @@ private:
                            const Value _val2, const DateTime &_date2,
                            const DateTime &_dateRes,
                            const InterpolationType _interpolationType,
-                           Value &_valRes);
+                           Value &_valRes) const;
 
     /// \brief Sort available Patient Variates, discarding those not of interest.
     /// If the covariate is not interpolated, then its first observation is replaced by an observation at the beginning
