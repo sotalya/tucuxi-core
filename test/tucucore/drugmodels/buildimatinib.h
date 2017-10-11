@@ -32,16 +32,16 @@ public:
 
         model->addCovariate(
                     std::unique_ptr<Tucuxi::Core::CovariateDefinition>(
-                        new Tucuxi::Core::CovariateDefinition("weight", 70, nullptr, CovariateType::Standard)));
+                        new Tucuxi::Core::CovariateDefinition("weight", "70", nullptr, CovariateType::Standard)));
         model->addCovariate(
                     std::unique_ptr<Tucuxi::Core::CovariateDefinition>(
-                        new Tucuxi::Core::CovariateDefinition("gist", 0, nullptr, CovariateType::Standard)));
+                        new Tucuxi::Core::CovariateDefinition("gist", "0", nullptr, CovariateType::Standard)));
         model->addCovariate(
                     std::unique_ptr<Tucuxi::Core::CovariateDefinition>(
-                        new Tucuxi::Core::CovariateDefinition("sex", 0.5, nullptr, CovariateType::Standard)));
+                        new Tucuxi::Core::CovariateDefinition("sex", "0.5", nullptr, CovariateType::Standard)));
         model->addCovariate(
                     std::unique_ptr<Tucuxi::Core::CovariateDefinition>(
-                        new Tucuxi::Core::CovariateDefinition("age", 50, nullptr, CovariateType::Standard)));
+                        new Tucuxi::Core::CovariateDefinition("age", "50", nullptr, CovariateType::Standard)));
 
         std::unique_ptr<AnalyteSet> analyteSet(new AnalyteSet());
 

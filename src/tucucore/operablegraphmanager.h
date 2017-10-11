@@ -221,17 +221,14 @@ public:
 };
 
 
-/// \brief Actual sample implementation of an Operable node, useful for testing purposes.
+/// \brief Operable node, which is either subclassed for testing purposes, or subclassed by a CovariateDefinition to get
+///        Operable-like capabilities.
 class Operable : public IOperable
 {
 public:
     /// \brief Create an operable from a fixed value.
     /// \param _value Value of the operable.
     Operable(const double &_value);
-
-    /// \brief Create an operable from a shared pointer to an Operation.
-    /// \param _ptr Shared pointer to an Operation object.
-    Operable(const std::shared_ptr<Operation> &_ptr);
 
     /// \brief Default virtual destructor, required for proper object's destruction.
     virtual ~Operable() = default;
@@ -247,6 +244,10 @@ public:
     /// This list can be filled by the caller to have all the values ready for evaluation.
     virtual OperationInputList getInputs() const;
 
+    /// \brief Get the associated operation.
+    /// \return Reference to the associated operation.
+    virtual Operation &getOperation() const = 0;
+
     /// \brief Return the latest value computed by the node.
     /// \return Value computed by the node.
     virtual double getValue() const;
@@ -256,12 +257,37 @@ public:
     virtual void setValue(const double _value);
 
 
-private:
-    /// \brief Pointer to the operation.
-    std::shared_ptr<Operation> m_sptr;
-
+protected:
     /// \brief Latest computed value.
     double m_value;
+};
+
+
+/// \brief Actual sample implementation of an Operable node, useful for testing purposes.
+class OperableImpl : public Operable
+{
+public:
+    /// \brief Create an operable from a fixed value.
+    /// \param _value Value of the operable.
+    OperableImpl(const double &_value)
+        : Operable(_value) {}
+
+   /// \brief Create an operable from a shared pointer to an Operation.
+   /// \param _ptr Shared pointer to an Operation object.
+   OperableImpl(const std::shared_ptr<Operation> &_ptr)
+       : Operable(0), m_sptr{_ptr} {}
+
+   /// \brief Default virtual destructor, required for proper object's destruction.
+   virtual ~OperableImpl() = default;
+
+   /// \brief Get the associated operation.
+   /// \return Reference to the associated operation.
+   virtual Operation &getOperation() const override { return *m_sptr; }
+
+
+protected:
+   /// \brief Pointer to the operation.
+   std::shared_ptr<Operation> m_sptr;
 };
 
 

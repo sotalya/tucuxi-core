@@ -129,6 +129,7 @@ OperableGraphManager::evaluateOperableNode(const IOperable_ID _id, std::map<IOpe
             }
         }
     }
+
     // At this point all dependencies have been satisfied, so we can safely perform our evaluation.
     _alreadyComputed.at(_id) = m_operables.at(_id).evaluate(*this);
     return _alreadyComputed.at(_id);
@@ -228,6 +229,7 @@ OperableGraphManager::OperableComputeNode::OperableComputeNode(std::shared_ptr<I
     }
 }
 
+
 bool
 OperableGraphManager::OperableComputeNode::evaluate(const OperableGraphManager &_graphMgr)
 {
@@ -250,14 +252,7 @@ OperableGraphManager::OperableComputeNode::getValue() const
 
 
 Operable::Operable(const double &_value)
-    : m_sptr{nullptr}, m_value{_value}
-{
-
-}
-
-
-Operable::Operable(const std::shared_ptr<Operation> &_ptr)
-    : m_sptr{_ptr}, m_value{0.0}
+    : m_value{_value}
 {
 
 }
@@ -266,9 +261,7 @@ Operable::Operable(const std::shared_ptr<Operation> &_ptr)
 bool
 Operable::evaluate(const OperableGraphManager &_graphMgr)
 {
-    if (m_sptr == nullptr) {
-        return true;
-    }
+    Operation &op = getOperation();
 
     // Collect inputs
     OperationInputList inputs = getInputs();
@@ -283,17 +276,15 @@ Operable::evaluate(const OperableGraphManager &_graphMgr)
         input.setValue(val);
     }
 
-    return m_sptr->evaluate(inputs, m_value);
+    return op.evaluate(inputs, m_value);
 }
 
 
 OperationInputList
 Operable::getInputs() const
 {
-    if (m_sptr == nullptr) {
-        return { };
-    }
-    return m_sptr->getInputs();
+    Operation &op = getOperation();
+    return op.getInputs();
 }
 
 

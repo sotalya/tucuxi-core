@@ -5,7 +5,7 @@
 #ifndef TUCUXI_CORE_DRUGMODEL_H
 #define TUCUXI_CORE_DRUGMODEL_H
 
-#include "tucucore/covariate.h"
+#include "tucucore/covariateevent.h"
 #include "tucucore/drugmodel/parameterdefinition.h"
 
 

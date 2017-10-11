@@ -30,6 +30,7 @@ SOURCES := \
            cachedexponentials.cpp \
            concentrationcalculator.cpp \
            corecomponent.cpp \
+           covariateevent.cpp \
            covariateextractor.cpp \
            dosage.cpp \
            hardcodedoperation.cpp \

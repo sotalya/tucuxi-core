@@ -231,5 +231,10 @@ bool DateTime::isUndefined() const
 }
 
 
+double DateTime::toSeconds() const
+{
+    return static_cast<double>(get<std::chrono::milliseconds>().count()) / 1000;
+}
+
 }
 }

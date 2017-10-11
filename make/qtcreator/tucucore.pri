@@ -21,7 +21,6 @@ HEADERS += \
     $$PWD/../../src/tucucore/twocompartmentextra.h \
     $$PWD/../../src/tucucore/twocompartmentinfusion.h \
     $$PWD/../../src/tucucore/corecomponent.h \
-    $$PWD/../../src/tucucore/covariate.h \
     $$PWD/../../src/tucucore/covariateextractor.h \
     $$PWD/../../src/tucucore/idatamodelservices.h \
     $$PWD/../../src/tucucore/iprocessingservices.h \
@@ -57,7 +56,10 @@ HEADERS += \
     $$PWD/../../src/tucucore/processingservice/processingrequest.h \
     $$PWD/../../src/tucucore/processingservice/processingresponse.h \
     $$PWD/../../src/tucucore/processingservice/iprocessingservice.h \
-    $$PWD/../../src/tucucore/processingservice/processingtrait.h
+    $$PWD/../../src/tucucore/processingservice/processingtrait.h \
+    $$PWD/../../src/tucucore/drugmodel/covariatedefinition.h \
+    $$PWD/../../src/tucucore/drugtreatment/patientcovariate.h \
+    $$PWD/../../src/tucucore/covariateevent.h
 
 SOURCES += \
     $$PWD/../../src/tucucore/drugmodel/drugmodel.cpp \
@@ -106,7 +108,8 @@ SOURCES += \
     $$PWD/../../src/tucucore/processingservice/processingrequest.cpp \
     $$PWD/../../src/tucucore/processingservice/processingresponse.cpp \
     $$PWD/../../src/tucucore/processingservice/iprocessingservice.cpp \
-    $$PWD/../../src/tucucore/processingservice/processingtrait.cpp
+    $$PWD/../../src/tucucore/processingservice/processingtrait.cpp \
+    $$PWD/../../src/tucucore/covariateevent.cpp
 
 DISTFILES += \
     $$PWD/../../src/tucucore/makefile

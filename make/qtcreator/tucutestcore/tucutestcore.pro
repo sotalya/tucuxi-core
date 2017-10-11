@@ -21,7 +21,8 @@ HEADERS += \
     ../../../test/tucucore/test_nonmemdrugs.h \
     ../../../test/tucucore/drugmodels/buildimatinib.h \
     ../../../test/tucucore/drugmodels/drugmodelbuilder.h \
-    ../../../test/tucucore/test_percentilecalculator.h
+    ../../../test/tucucore/test_percentilecalculator.h \
+    ../../../test/tucucore/test_covariateextractor.h
 
 SOURCES += \
     ../../../test/tucucore/tests.cpp

@@ -159,6 +159,24 @@ public:
     /// \return Returns true if the internal value is 0.
     bool isUndefined() const;
 
+    /// \brief Retrieve the duration as a number of seconds.
+    /// \return The number of seconds representing the duration.
+    double toSeconds() const;
+
+    /// \brief Class' output operator.
+    /// \param _output Output stream.
+    /// \param _dt Self reference to the DateTime to print.
+    /// \return Output stream given as input (for output chaining).
+    friend std::ostream& operator<<(std::ostream &_output, const DateTime &_dt) {
+        _output << _dt.day() << "."
+                << _dt.month() << "."
+                << _dt.year() << " "
+                << _dt.hour() << "h"
+                << _dt.minute() << "m"
+                << _dt.second() << "s";
+        return _output;
+    }
+
 private:
 
     /// \brief Returns the duration in one of the std::chrono duration class (years, months, days, ...)    

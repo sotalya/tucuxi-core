@@ -129,6 +129,47 @@ typedef Eigen::Map<const EigenVector> map2EigenVectorType;
 
 #define omegaSize(matrix) (matrix.rows())
 
+/// \brief Define the covariate types.
+/// - Standard: if no patient variate exist -> use operation in drug model to generate a new value each time one or more
+///                                            inputs of the operation are modified
+///             if cannot apply operation   -> use default value
+///             if >= 1 variate exists      -> if only one value -> use for the entire period
+///                                            else              -> interpolate with function defined in
+///                                                                 CovariateDefinition, using first observed value for
+///                                                                 the interval between start and the first observation
+///   \warning Look also at values outside the given period! The period itself limits the range of measures we are
+///            interested in, but does not affect the available variates.
+/// - AgeInYears: automatic calculation based on birth date, use default if not available, unit = years.
+/// - AgeInDays: automatic calculation based on birth date, use default if not available, unit = days.
+/// - AgeInMonths: automatic calculation based on birth date, use default if not available, unit = months.
+enum class CovariateType {
+    Standard = 0,
+    AgeInYears,
+    AgeInDays,
+    AgeInMonths
+};
+
+/// \brief Allowed data types.
+enum class DataType {
+    Int = 0,
+    Double,
+    Bool,
+    Date
+};
+
+/// \brief Available interpolation functions.
+/// - Direct: when value observed, set it as current value.
+/// - Linear: between two occurrences of observed covariates, use linear interpolation.
+/// - Sigmoid: between two occurrences of observed covariates, use sigmoidal interpolation.
+/// - Tanh: between two occurrences of observed covariates, use hyperbolic tangent interpolation.
+enum class InterpolationType
+{
+    Direct = 0,
+    Linear,
+    Sigmoid,
+    Tanh
+};
+
 }
 }
 

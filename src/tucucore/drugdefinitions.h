@@ -41,17 +41,26 @@ public:
     std::string getId() const { return m_id;}
 
     /// \brief Get the operation associated with the value.
-    /// \return Shared pointer to the operation associated with the parameter.
-    const Operation &getOperation() const { return *m_operation;}
+    /// \return Reference to the operation associated with the value.
+    virtual Operation &getOperation() const { return *m_operation;}
 
     /// \brief Get the value.
     /// \return Returns the value.
     Value getValue() const { return m_value; }
 
+    /// \brief Set the value.
+    /// \param _value Value to set.
+    void setValue(const Value _value) { m_value = _value; }
+
+    /// \brief Get if the value is computed via an operation or is a fixed value.
+    /// \return True if the value is a result of an operation, false otherwise.
+    bool isComputed() const { return m_operation != nullptr; }
+
+
 protected:
     std::string m_id;
     Value m_value;
-    std::unique_ptr<Operation const> m_operation;
+    std::unique_ptr<Operation> m_operation;
 };
 
 template<typename DefinitionClass>
@@ -65,7 +74,10 @@ public:
 protected:
 
     const DefinitionClass &m_definition;
-    const Operation& getOperation() const { return m_definition.getOperation(); }
+
+    /// \brief Get the operation associated with the value.
+    /// \return Reference to the operation associated with the value.
+    virtual Operation& getOperation() const { return m_definition.getOperation(); }
 
 };
 

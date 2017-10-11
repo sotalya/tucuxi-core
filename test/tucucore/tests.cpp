@@ -9,6 +9,7 @@
 #include "tucucommon/loggerhelper.h"
 #include "tucucore/dosage.h"
 
+#include "test_covariateextractor.h"
 #include "test_dosage.h"
 #include "test_intakeextractor.h"
 #include "test_operation.h"
@@ -91,9 +92,9 @@ int main(int argc, char** argv)
     res = dosageTests.run(argc, argv);
     if (res != 0) {
         std::cerr << "Dosage test failed\n";
-        exit(1);
+    } else {
+        std::cout << "Dosage test succeeded\n";
     }
-    std::cout << "Dosage test succeeded\n";
 
     // --- INTAKE EXTRACTOR --- //
     TestIntakeExtractor intakeExtractorTests;
@@ -112,9 +113,9 @@ int main(int argc, char** argv)
     res = intakeExtractorTests.run(argc, argv);
     if (res != 0) {
         std::cerr << "IntakeExtractor test failed\n";
-        exit(1);
+    } else {
+        std::cout << "IntakeExtractor test succeeded\n";
     }
-    std::cout << "IntakeExtractor test succeeded\n";
 
     // --- OPERATION --- //
     TestOperation operationTests;
@@ -134,9 +135,9 @@ int main(int argc, char** argv)
     res = operationTests.run(argc, argv);
     if (res != 0) {
         std::cerr << "Operation test failed\n";
-        exit(1);
+    } else {
+        std::cout << "Operation test succeeded\n";
     }
-    std::cout << "Operation test succeeded\n";
 
     // --- PkModel --- //
     TestPkModel pkmodelTest;
@@ -145,24 +146,42 @@ int main(int argc, char** argv)
     res = pkmodelTest.run(argc, argv);
     if (res != 0) {
         std::cerr << "PkModel test failed\n";
-        exit(1);
+    } else {
+        std::cout << "PkModel test succeeded\n";
     }
-    std::cout << "PkModel test succeeded\n";
 
+    // --- CovariateExtractor --- //
+    TestCovariateExtractor ceTests;
+    ceTests.add_test("testCE_constructor", &TestCovariateExtractor::testCE_constructor);
+    ceTests.add_test("testCE_collectRefreshIntervals", &TestCovariateExtractor::testCE_collectRefreshIntervals);
+    ceTests.add_test("testCE_createComputedCEvents", &TestCovariateExtractor::testCE_createComputedCEvents);
+    ceTests.add_test("testCE_createNonComputedCEvents", &TestCovariateExtractor::testCE_createNonComputedCEvents);
+    ceTests.add_test("testCE_interpolateValues", &TestCovariateExtractor::testCE_interpolateValues);
+    ceTests.add_test("testCE_sortPatientVariates", &TestCovariateExtractor::testCE_sortPatientVariates);
+    ceTests.add_test("testOperableFunctions_1", &TestCovariateExtractor::testCovariateExtraction_test1);
+    ceTests.add_test("testOperableFunctions_2", &TestCovariateExtractor::testCovariateExtraction_test2);
+
+    res = ceTests.run(argc, argv);
+
+    if (res != 0) {
+        std::cerr << "Covariate Extractor test failed\n";
+    } else {
+        std::cout << "Covariate Extractor test succeeded\n";
+    }
 
     // --- OperableGraphManager --- //
-    TestOpGraph opGraphTetst;
-    opGraphTetst.add_test("testOperableFunctions", &TestOpGraph::testOperableFunctions);
-    opGraphTetst.add_test("testOperableCockcroftGaultIBW", &TestOpGraph::testOperableCockcroftGaultIBW);
-    opGraphTetst.add_test("testOperableCyclic", &TestOpGraph::testOperableCyclic);
+    TestOpGraph opGraphTests;
+    opGraphTests.add_test("testOperableFunctions", &TestOpGraph::testOperableFunctions);
+    opGraphTests.add_test("testOperableCockcroftGaultIBW", &TestOpGraph::testOperableCockcroftGaultIBW);
+    opGraphTests.add_test("testOperableCyclic", &TestOpGraph::testOperableCyclic);
 
-    res = opGraphTetst.run(argc, argv);
+    res = opGraphTests.run(argc, argv);
 
     if (res != 0) {
         std::cerr << "Operable Graph Manager test failed\n";
-        exit(1);
+    } else {
+        std::cout << "Operable Graph Manager test succeeded\n";
     }
-    std::cout << "Operable Graph Manager test succeeded\n";
 
     TestPercentileCalculator percentileCalculatorTests;
 

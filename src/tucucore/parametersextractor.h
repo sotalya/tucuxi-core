@@ -6,7 +6,7 @@
 #define TUCUXI_CORE_PARAMETERSEXTRACTOR_H
 
 #include "tucucore/parameter.h"
-#include "tucucore/covariate.h"
+#include "tucucore/covariateevent.h"
 
 namespace Tucuxi {
 namespace Core {

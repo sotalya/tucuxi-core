@@ -4,7 +4,7 @@
 */
 
 #include "tucucore/drugmodel/drugmodel.h"
-#include "tucucore/covariate.h"
+#include "tucucore/covariateevent.h"
 
 namespace Tucuxi {
 namespace Core {
