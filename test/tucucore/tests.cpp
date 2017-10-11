@@ -158,8 +158,8 @@ int main(int argc, char** argv)
     ceTests.add_test("testCE_createNonComputedCEvents", &TestCovariateExtractor::testCE_createNonComputedCEvents);
     ceTests.add_test("testCE_interpolateValues", &TestCovariateExtractor::testCE_interpolateValues);
     ceTests.add_test("testCE_sortPatientVariates", &TestCovariateExtractor::testCE_sortPatientVariates);
-    ceTests.add_test("testOperableFunctions_1", &TestCovariateExtractor::testCovariateExtraction_test1);
-    ceTests.add_test("testOperableFunctions_2", &TestCovariateExtractor::testCovariateExtraction_test2);
+    /*ceTests.add_test("testOperableFunctions_1", &TestCovariateExtractor::testCovariateExtraction_test1);
+    ceTests.add_test("testOperableFunctions_2", &TestCovariateExtractor::testCovariateExtraction_test2);*/
 
     res = ceTests.run(argc, argv);
 

@@ -24,6 +24,7 @@ SOURCES := componentmanager.cpp \
            xmlnode.cpp
 
 INCLUDES := ../../libs/spdlog-master-20170622/include \
+            ../../libs/eigen-3.3.2 \
             ../../libs/tiny-js-master-20170629 \
             ../../libs/date-master-20170711 \
             ../../libs/rapidxml-1.13 \
