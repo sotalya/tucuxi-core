@@ -6,6 +6,8 @@
 #include <sstream>
 #include <iomanip>
 
+#undef min  // Prevent problems with date.h
+#undef max  // Prevent problems with date.h
 #include "date/date.h"
 
 #include "tucucommon/timeofday.h"

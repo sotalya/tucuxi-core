@@ -16,6 +16,8 @@
 #include <vector>
 #include <map>
 
+#undef min  // Prevent problems with date.h
+#undef max  // Prevent problems with date.h
 #include "date/iso_week.h"
 
 #include "Eigen/Dense"

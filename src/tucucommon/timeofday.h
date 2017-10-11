@@ -6,6 +6,9 @@
 #define TUCUXI_TUCUCOMMON_TIME_H
 
 #include <chrono>
+
+#undef min  // Prevent problems with date.h
+#undef max  // Prevent problems with date.h
 #include <date/date.h>
 
 #include "tucucommon/basetypes.h"

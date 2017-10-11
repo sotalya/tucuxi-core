@@ -47,7 +47,7 @@ ConcentrationCalculator::ComputationResult ConcentrationCalculator::computeConce
         // Compute concentrations for the current cycle
         TimeOffsets times;
         std::vector<Concentrations> concentrations;
-	concentrations.resize(residualSize);
+        concentrations.resize(residualSize);
 
         _prediction->allocate(residualSize, density, times, concentrations);
 
