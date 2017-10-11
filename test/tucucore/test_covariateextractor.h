@@ -773,16 +773,7 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
             CovariateExtractor extractor(cDefinitions, pVariates,
                                          DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0),
                                          DATE_TIME_NO_VAR(2017, 8, 29, 14, 0, 0));
-            extractor.sortPatientVariates();
-
-            std::vector<std::unique_ptr<PatientCovariate>> res_pvVec;
-
-            const auto &pvVals = extractor.m_pvValued.at("Weight");
-
-            fructose_assert(pvVals.size() == res_pvVec.size());
-            for (size_t i = 0; i < std::min(pvVals.size(), res_pvVec.size()); ++i) {
-                fructose_assert(**(pvVals.at(i)) == *(res_pvVec.at(i)));
-            }
+            fructose_assert_no_exception(extractor.sortPatientVariates());
         }
 
         // We should keep all the measurements, properly sorted.

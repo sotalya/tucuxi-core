@@ -24,8 +24,6 @@ bool CovariateEvent::evaluate(const OperableGraphManager &_graphMgr)
             return false;
         }
 
-        std::cerr << "Value of input " << input.getName() << ": " << val << "\n";
-
         rc = input.setValue(val);
         if (!rc) {
             return false;
