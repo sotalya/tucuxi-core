@@ -1,0 +1,387 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Headers">
+      <UniqueIdentifier>{32d5a7b1-682b-4c6c-bc80-a2d7136345f3}</UniqueIdentifier>
+      <Extensions>h</Extensions>
+    </Filter>
+    <Filter Include="Sources">
+      <UniqueIdentifier>{7b02cf34-d4dc-4757-b9dd-816d2a4cd5ad}</UniqueIdentifier>
+      <Extensions>cpp</Extensions>
+    </Filter>
+    <Filter Include="Sources\Processing">
+      <UniqueIdentifier>{40709b3d-999f-47fc-b67f-a9a82fa196cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\Processing">
+      <UniqueIdentifier>{347c9286-db90-472d-a698-20868c177355}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\DrugModel">
+      <UniqueIdentifier>{15c9cb35-c5d7-4ec8-8be4-cbefeb8a9ab3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\DrugTreatment">
+      <UniqueIdentifier>{6868af1d-647c-41a0-a8d5-a65d2e72993d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\DrugModel">
+      <UniqueIdentifier>{47114eaf-41c9-4af9-af04-e49d7c4503e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\DrugTreatment">
+      <UniqueIdentifier>{21d86de5-ce15-4f6d-bc53-29d3b96339a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tga;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\tucucore\drugmodel\activesubstance.cpp">
+      <Filter>Sources\DrugModel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucore\drugmodel\analyte.cpp">
+      <Filter>Sources\DrugModel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucore\drugmodel\drugmodel.cpp">
+      <Filter>Sources\DrugModel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucore\drugmodel\drugmodeldomain.cpp">
+      <Filter>Sources\DrugModel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucore\drugmodel\formulationandroute.cpp">
+      <Filter>Sources\DrugModel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucore\drugmodel\parameterdefinition.cpp">
+      <Filter>Sources\DrugModel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucore\drugmodel\targetdefinition.cpp">
+      <Filter>Sources\DrugModel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucore\drugmodel\validdose.cpp">
+      <Filter>Sources\DrugModel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucore\drugmodel\validduration.cpp">
+      <Filter>Sources\DrugModel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucore\drugtreatment\drugtreatment.cpp">
+      <Filter>Sources\DrugTreatment</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucore\drugtreatment\sample.cpp">
+      <Filter>Sources\DrugTreatment</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucore\drugtreatment\target.cpp">
+      <Filter>Sources\DrugTreatment</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucore\processingservice\iprocessingservice.cpp">
+      <Filter>Sources\Processing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucore\processingservice\processingrequest.cpp">
+      <Filter>Sources\Processing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucore\processingservice\processingresponse.cpp">
+      <Filter>Sources\Processing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucore\processingservice\processingtrait.cpp">
+      <Filter>Sources\Processing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucore\aposteriorietascalculator.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucore\cachedexponentials.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucore\concentrationcalculator.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucore\corecomponent.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucore\covariateextractor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucore\covariateevent.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucore\hardcodedoperation.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucore\dosage.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucore\intakeintervalcalculator.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucore\intaketocalculatorassociator.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucore\likelihood.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucore\montecarlopercentilecalculator.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucore\onecompartmentbolus.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucore\onecompartmentextra.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucore\onecompartmentinfusion.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucore\operablegraphmanager.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucore\operation.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucore\parameter.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucore\parametersextractor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucore\pkmodel.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucore\residualerrormodel.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucore\sampleevent.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucore\sampleextractor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucore\targetevent.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucore\targetextractor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucore\threecompartmentbolus.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucore\threecompartmentextra.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucore\threecompartmentinfusion.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucore\twocompartmentbolus.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucore\twocompartmentextra.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucore\twocompartmentinfusion.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucore\intakeextractor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="processingservice\iprocessingservice.h">
+      <Filter>Headers\Processing</Filter>
+    </ClInclude>
+    <ClInclude Include="iprocessingservices.h">
+      <Filter>Headers\Processing</Filter>
+    </ClInclude>
+    <ClInclude Include="processingservice\processingrequest.h">
+      <Filter>Headers\Processing</Filter>
+    </ClInclude>
+    <ClInclude Include="processingservice\processingresponse.h">
+      <Filter>Headers\Processing</Filter>
+    </ClInclude>
+    <ClInclude Include="processingservice\processingtrait.h">
+      <Filter>Headers\Processing</Filter>
+    </ClInclude>
+    <ClInclude Include="drugtreatment\drugtreatment.h">
+      <Filter>Headers\DrugTreatment</Filter>
+    </ClInclude>
+    <ClInclude Include="drugtreatment\patientcovariate.h">
+      <Filter>Headers\DrugTreatment</Filter>
+    </ClInclude>
+    <ClInclude Include="drugtreatment\sample.h">
+      <Filter>Headers\DrugTreatment</Filter>
+    </ClInclude>
+    <ClInclude Include="drugtreatment\target.h">
+      <Filter>Headers\DrugTreatment</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\drugmodel\activesubstance.h">
+      <Filter>Headers\DrugModel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\drugmodel\analyte.h">
+      <Filter>Headers\DrugModel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\drugmodel\covariatedefinition.h">
+      <Filter>Headers\DrugModel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\drugmodel\drugmodel.h">
+      <Filter>Headers\DrugModel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\drugmodel\drugmodeldomain.h">
+      <Filter>Headers\DrugModel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\drugmodel\formulationandroute.h">
+      <Filter>Headers\DrugModel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\drugmodel\parameterdefinition.h">
+      <Filter>Headers\DrugModel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\drugmodel\targetdefinition.h">
+      <Filter>Headers\DrugModel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\drugmodel\validdose.h">
+      <Filter>Headers\DrugModel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\drugmodel\validduration.h">
+      <Filter>Headers\DrugModel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\drugtreatment\drugtreatment.h">
+      <Filter>Headers\DrugTreatment</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\drugtreatment\patientcovariate.h">
+      <Filter>Headers\DrugTreatment</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\drugtreatment\sample.h">
+      <Filter>Headers\DrugTreatment</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\drugtreatment\target.h">
+      <Filter>Headers\DrugTreatment</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\processingservice\iprocessingservice.h">
+      <Filter>Headers\Processing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\processingservice\processingrequest.h">
+      <Filter>Headers\Processing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\processingservice\processingresponse.h">
+      <Filter>Headers\Processing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\processingservice\processingtrait.h">
+      <Filter>Headers\Processing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\aposteriorietascalculator.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\cachedexponentials.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\concentrationcalculator.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\corecomponent.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\covariateevent.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\covariateextractor.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\definitions.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\deriv.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\dosage.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\drugdefinitions.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\hardcodedoperation.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\icorecomponent.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\idatamodelservices.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\intakeevent.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\intakeextractor.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\intakeintervalcalculator.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\intaketocalculatorassociator.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\iprocessingservices.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\likelihood.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\minimize.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\montecarlopercentilecalculator.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\onecompartmentbolus.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\onecompartmentextra.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\onecompartmentinfusion.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\operablegraphmanager.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\operation.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\parameter.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\parametersextractor.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\pkmodel.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\residualerrormodel.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\sampleevent.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\sampleextractor.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\targetevent.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\targetextractor.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\threecompartmentbolus.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\threecompartmentextra.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\threecompartmentinfusion.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\timedevent.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\twocompartmentbolus.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\twocompartmentextra.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\twocompartmentinfusion.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

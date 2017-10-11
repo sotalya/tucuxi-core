@@ -1,0 +1,296 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\tucucore\aposteriorietascalculator.cpp" />
+    <ClCompile Include="..\..\..\src\tucucore\cachedexponentials.cpp" />
+    <ClCompile Include="..\..\..\src\tucucore\concentrationcalculator.cpp" />
+    <ClCompile Include="..\..\..\src\tucucore\corecomponent.cpp" />
+    <ClCompile Include="..\..\..\src\tucucore\covariateevent.cpp" />
+    <ClCompile Include="..\..\..\src\tucucore\covariateextractor.cpp" />
+    <ClCompile Include="..\..\..\src\tucucore\dosage.cpp" />
+    <ClCompile Include="..\..\..\src\tucucore\drugmodel\activesubstance.cpp" />
+    <ClCompile Include="..\..\..\src\tucucore\drugmodel\analyte.cpp" />
+    <ClCompile Include="..\..\..\src\tucucore\drugmodel\drugmodel.cpp" />
+    <ClCompile Include="..\..\..\src\tucucore\drugmodel\drugmodeldomain.cpp" />
+    <ClCompile Include="..\..\..\src\tucucore\drugmodel\formulationandroute.cpp" />
+    <ClCompile Include="..\..\..\src\tucucore\drugmodel\parameterdefinition.cpp" />
+    <ClCompile Include="..\..\..\src\tucucore\drugmodel\targetdefinition.cpp" />
+    <ClCompile Include="..\..\..\src\tucucore\drugmodel\validdose.cpp" />
+    <ClCompile Include="..\..\..\src\tucucore\drugmodel\validduration.cpp" />
+    <ClCompile Include="..\..\..\src\tucucore\drugtreatment\drugtreatment.cpp" />
+    <ClCompile Include="..\..\..\src\tucucore\drugtreatment\sample.cpp" />
+    <ClCompile Include="..\..\..\src\tucucore\drugtreatment\target.cpp" />
+    <ClCompile Include="..\..\..\src\tucucore\hardcodedoperation.cpp" />
+    <ClCompile Include="..\..\..\src\tucucore\intakeextractor.cpp" />
+    <ClCompile Include="..\..\..\src\tucucore\intakeintervalcalculator.cpp" />
+    <ClCompile Include="..\..\..\src\tucucore\intaketocalculatorassociator.cpp" />
+    <ClCompile Include="..\..\..\src\tucucore\likelihood.cpp" />
+    <ClCompile Include="..\..\..\src\tucucore\montecarlopercentilecalculator.cpp" />
+    <ClCompile Include="..\..\..\src\tucucore\onecompartmentbolus.cpp" />
+    <ClCompile Include="..\..\..\src\tucucore\onecompartmentextra.cpp" />
+    <ClCompile Include="..\..\..\src\tucucore\onecompartmentinfusion.cpp" />
+    <ClCompile Include="..\..\..\src\tucucore\operablegraphmanager.cpp" />
+    <ClCompile Include="..\..\..\src\tucucore\operation.cpp" />
+    <ClCompile Include="..\..\..\src\tucucore\parameter.cpp" />
+    <ClCompile Include="..\..\..\src\tucucore\parametersextractor.cpp" />
+    <ClCompile Include="..\..\..\src\tucucore\pkmodel.cpp" />
+    <ClCompile Include="..\..\..\src\tucucore\processingservice\iprocessingservice.cpp" />
+    <ClCompile Include="..\..\..\src\tucucore\processingservice\processingrequest.cpp" />
+    <ClCompile Include="..\..\..\src\tucucore\processingservice\processingresponse.cpp" />
+    <ClCompile Include="..\..\..\src\tucucore\processingservice\processingtrait.cpp" />
+    <ClCompile Include="..\..\..\src\tucucore\residualerrormodel.cpp" />
+    <ClCompile Include="..\..\..\src\tucucore\sampleevent.cpp" />
+    <ClCompile Include="..\..\..\src\tucucore\sampleextractor.cpp" />
+    <ClCompile Include="..\..\..\src\tucucore\targetevent.cpp" />
+    <ClCompile Include="..\..\..\src\tucucore\targetextractor.cpp" />
+    <ClCompile Include="..\..\..\src\tucucore\threecompartmentbolus.cpp" />
+    <ClCompile Include="..\..\..\src\tucucore\threecompartmentextra.cpp" />
+    <ClCompile Include="..\..\..\src\tucucore\threecompartmentinfusion.cpp" />
+    <ClCompile Include="..\..\..\src\tucucore\twocompartmentbolus.cpp" />
+    <ClCompile Include="..\..\..\src\tucucore\twocompartmentextra.cpp" />
+    <ClCompile Include="..\..\..\src\tucucore\twocompartmentinfusion.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\src\tucucore\aposteriorietascalculator.h" />
+    <ClInclude Include="..\..\..\src\tucucore\cachedexponentials.h" />
+    <ClInclude Include="..\..\..\src\tucucore\concentrationcalculator.h" />
+    <ClInclude Include="..\..\..\src\tucucore\corecomponent.h" />
+    <ClInclude Include="..\..\..\src\tucucore\covariateevent.h" />
+    <ClInclude Include="..\..\..\src\tucucore\covariateextractor.h" />
+    <ClInclude Include="..\..\..\src\tucucore\definitions.h" />
+    <ClInclude Include="..\..\..\src\tucucore\deriv.h" />
+    <ClInclude Include="..\..\..\src\tucucore\dosage.h" />
+    <ClInclude Include="..\..\..\src\tucucore\drugdefinitions.h" />
+    <ClInclude Include="..\..\..\src\tucucore\drugmodel\activesubstance.h" />
+    <ClInclude Include="..\..\..\src\tucucore\drugmodel\analyte.h" />
+    <ClInclude Include="..\..\..\src\tucucore\drugmodel\covariatedefinition.h" />
+    <ClInclude Include="..\..\..\src\tucucore\drugmodel\drugmodel.h" />
+    <ClInclude Include="..\..\..\src\tucucore\drugmodel\drugmodeldomain.h" />
+    <ClInclude Include="..\..\..\src\tucucore\drugmodel\formulationandroute.h" />
+    <ClInclude Include="..\..\..\src\tucucore\drugmodel\parameterdefinition.h" />
+    <ClInclude Include="..\..\..\src\tucucore\drugmodel\targetdefinition.h" />
+    <ClInclude Include="..\..\..\src\tucucore\drugmodel\validdose.h" />
+    <ClInclude Include="..\..\..\src\tucucore\drugmodel\validduration.h" />
+    <ClInclude Include="..\..\..\src\tucucore\drugtreatment\drugtreatment.h" />
+    <ClInclude Include="..\..\..\src\tucucore\drugtreatment\patientcovariate.h" />
+    <ClInclude Include="..\..\..\src\tucucore\drugtreatment\sample.h" />
+    <ClInclude Include="..\..\..\src\tucucore\drugtreatment\target.h" />
+    <ClInclude Include="..\..\..\src\tucucore\hardcodedoperation.h" />
+    <ClInclude Include="..\..\..\src\tucucore\icorecomponent.h" />
+    <ClInclude Include="..\..\..\src\tucucore\idatamodelservices.h" />
+    <ClInclude Include="..\..\..\src\tucucore\intakeevent.h" />
+    <ClInclude Include="..\..\..\src\tucucore\intakeextractor.h" />
+    <ClInclude Include="..\..\..\src\tucucore\intakeintervalcalculator.h" />
+    <ClInclude Include="..\..\..\src\tucucore\intaketocalculatorassociator.h" />
+    <ClInclude Include="..\..\..\src\tucucore\iprocessingservices.h" />
+    <ClInclude Include="..\..\..\src\tucucore\likelihood.h" />
+    <ClInclude Include="..\..\..\src\tucucore\minimize.h" />
+    <ClInclude Include="..\..\..\src\tucucore\montecarlopercentilecalculator.h" />
+    <ClInclude Include="..\..\..\src\tucucore\onecompartmentbolus.h" />
+    <ClInclude Include="..\..\..\src\tucucore\onecompartmentextra.h" />
+    <ClInclude Include="..\..\..\src\tucucore\onecompartmentinfusion.h" />
+    <ClInclude Include="..\..\..\src\tucucore\operablegraphmanager.h" />
+    <ClInclude Include="..\..\..\src\tucucore\operation.h" />
+    <ClInclude Include="..\..\..\src\tucucore\parameter.h" />
+    <ClInclude Include="..\..\..\src\tucucore\parametersextractor.h" />
+    <ClInclude Include="..\..\..\src\tucucore\pkmodel.h" />
+    <ClInclude Include="..\..\..\src\tucucore\processingservice\iprocessingservice.h" />
+    <ClInclude Include="..\..\..\src\tucucore\processingservice\processingrequest.h" />
+    <ClInclude Include="..\..\..\src\tucucore\processingservice\processingresponse.h" />
+    <ClInclude Include="..\..\..\src\tucucore\processingservice\processingtrait.h" />
+    <ClInclude Include="..\..\..\src\tucucore\residualerrormodel.h" />
+    <ClInclude Include="..\..\..\src\tucucore\sampleevent.h" />
+    <ClInclude Include="..\..\..\src\tucucore\sampleextractor.h" />
+    <ClInclude Include="..\..\..\src\tucucore\targetevent.h" />
+    <ClInclude Include="..\..\..\src\tucucore\targetextractor.h" />
+    <ClInclude Include="..\..\..\src\tucucore\threecompartmentbolus.h" />
+    <ClInclude Include="..\..\..\src\tucucore\threecompartmentextra.h" />
+    <ClInclude Include="..\..\..\src\tucucore\threecompartmentinfusion.h" />
+    <ClInclude Include="..\..\..\src\tucucore\timedevent.h" />
+    <ClInclude Include="..\..\..\src\tucucore\twocompartmentbolus.h" />
+    <ClInclude Include="..\..\..\src\tucucore\twocompartmentextra.h" />
+    <ClInclude Include="..\..\..\src\tucucore\twocompartmentinfusion.h" />
+    <ClInclude Include="drugtreatment\drugtreatment.h" />
+    <ClInclude Include="drugtreatment\patientcovariate.h" />
+    <ClInclude Include="drugtreatment\sample.h" />
+    <ClInclude Include="drugtreatment\target.h" />
+    <ClInclude Include="iprocessingservices.h" />
+    <ClInclude Include="processingservice\iprocessingservice.h" />
+    <ClInclude Include="processingservice\processingrequest.h" />
+    <ClInclude Include="processingservice\processingresponse.h" />
+    <ClInclude Include="processingservice\processingtrait.h" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{927dafca-e4c7-45ae-9c20-28262f8e5307}</ProjectGuid>
+    <Keyword>StaticLibrary</Keyword>
+    <RootNamespace>TucuCore</RootNamespace>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
+    <AppContainerApplication>true</AppContainerApplication>
+    <ApplicationType>Windows Store</ApplicationType>
+    <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformMinVersion>10.0.14393.0</WindowsTargetPlatformMinVersion>
+    <ApplicationTypeRevision>10.0</ApplicationTypeRevision>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <GenerateManifest>false</GenerateManifest>
+    <OutDir>$(ProjectDir)$(Configuration)\$(MSBuildProjectName)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <GenerateManifest>false</GenerateManifest>
+    <OutDir>$(ProjectDir)$(Configuration)\$(MSBuildProjectName)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <GenerateManifest>false</GenerateManifest>
+    <OutDir>$(ProjectDir)$(Platform)\$(Configuration)\$(MSBuildProjectName)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <GenerateManifest>false</GenerateManifest>
+    <OutDir>$(ProjectDir)$(Platform)\$(Configuration)\$(MSBuildProjectName)\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\..\..\src;..\..\..\Libs\eigen-3.3.2;..\..\..\Libs\boost-1.63.0;..\..\..\libs\date-master-20170711;..\..\..\libs\spdlog-master-20170622\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\..\Libs\eigen-3.3.2;..\..\Libs\boost-1.63.0;..;..\..\libs\date-master-20170711;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|arm'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\..\Libs\eigen;..\..\Libs\boost;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|arm'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\..\Libs\eigen;..\..\Libs\boost;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\..\..\src;..\..\..\Libs\eigen-3.3.2;..\..\..\Libs\boost-1.63.0;..\..\..\libs\date-master-20170711;..\..\..\libs\spdlog-master-20170622\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions />
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\..\Libs\eigen-3.3.2;..\..\Libs\boost-1.63.0;..;..\..\libs\date-master-20170711;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -1,0 +1,221 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\libs\tiny-js-master-20170629\TinyJS.h" />
+    <ClInclude Include="..\..\..\libs\tiny-js-master-20170629\TinyJS_Functions.h" />
+    <ClInclude Include="..\..\..\libs\tiny-js-master-20170629\TinyJS_MathFunctions.h" />
+    <ClInclude Include="..\..\..\libs\tiny-js-master-20170629\TinyJS_SyntaxTree.h" />
+    <ClInclude Include="..\..\..\src\tucucommon\basetypes.h" />
+    <ClInclude Include="..\..\..\src\tucucommon\component.h" />
+    <ClInclude Include="..\..\..\src\tucucommon\componentmanager.h" />
+    <ClInclude Include="..\..\..\src\tucucommon\cryptohelper.h" />
+    <ClInclude Include="..\..\..\src\tucucommon\datetime.h" />
+    <ClInclude Include="..\..\..\src\tucucommon\duration.h" />
+    <ClInclude Include="..\..\..\src\tucucommon\general.h" />
+    <ClInclude Include="..\..\..\src\tucucommon\ilogger.h" />
+    <ClInclude Include="..\..\..\src\tucucommon\interface.h" />
+    <ClInclude Include="..\..\..\src\tucucommon\jsengine.h" />
+    <ClInclude Include="..\..\..\src\tucucommon\licensemanager.h" />
+    <ClInclude Include="..\..\..\src\tucucommon\logger.h" />
+    <ClInclude Include="..\..\..\src\tucucommon\loggerhelper.h" />
+    <ClInclude Include="..\..\..\src\tucucommon\systeminfo.h" />
+    <ClInclude Include="..\..\..\src\tucucommon\timeofday.h" />
+    <ClInclude Include="..\..\..\src\tucucommon\utils.h" />
+    <ClInclude Include="..\..\..\src\tucucommon\xmlattribute.h" />
+    <ClInclude Include="..\..\..\src\tucucommon\xmldocument.h" />
+    <ClInclude Include="..\..\..\src\tucucommon\xmliterator.h" />
+    <ClInclude Include="..\..\..\src\tucucommon\xmlnode.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\libs\tiny-js-master-20170629\TinyJS.cpp" />
+    <ClCompile Include="..\..\..\libs\tiny-js-master-20170629\TinyJS_Functions.cpp" />
+    <ClCompile Include="..\..\..\libs\tiny-js-master-20170629\TinyJS_MathFunctions.cpp" />
+    <ClCompile Include="..\..\..\libs\tiny-js-master-20170629\TinyJS_SyntaxTree.cpp" />
+    <ClCompile Include="..\..\..\src\tucucommon\componentmanager.cpp" />
+    <ClCompile Include="..\..\..\src\tucucommon\cryptohelper.cpp" />
+    <ClCompile Include="..\..\..\src\tucucommon\datetime.cpp" />
+    <ClCompile Include="..\..\..\src\tucucommon\duration.cpp" />
+    <ClCompile Include="..\..\..\src\tucucommon\jsengine.cpp" />
+    <ClCompile Include="..\..\..\src\tucucommon\licensemanager.cpp" />
+    <ClCompile Include="..\..\..\src\tucucommon\logger.cpp" />
+    <ClCompile Include="..\..\..\src\tucucommon\systeminfo.cpp" />
+    <ClCompile Include="..\..\..\src\tucucommon\timeofday.cpp" />
+    <ClCompile Include="..\..\..\src\tucucommon\utils.cpp" />
+    <ClCompile Include="..\..\..\src\tucucommon\xmlattribute.cpp" />
+    <ClCompile Include="..\..\..\src\tucucommon\xmldocument.cpp" />
+    <ClCompile Include="..\..\..\src\tucucommon\xmlnode.cpp" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{60e7dd91-7124-4318-9f08-d6e8260baf9a}</ProjectGuid>
+    <Keyword>StaticLibrary</Keyword>
+    <RootNamespace>TucuCommon</RootNamespace>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
+    <AppContainerApplication>true</AppContainerApplication>
+    <ApplicationType>Windows Store</ApplicationType>
+    <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformMinVersion>10.0.14393.0</WindowsTargetPlatformMinVersion>
+    <ApplicationTypeRevision>10.0</ApplicationTypeRevision>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <GenerateManifest>false</GenerateManifest>
+    <OutDir>$(ProjectDir)$(Configuration)\$(MSBuildProjectName)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <GenerateManifest>false</GenerateManifest>
+    <OutDir>$(ProjectDir)$(Configuration)\$(MSBuildProjectName)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <GenerateManifest>false</GenerateManifest>
+    <OutDir>$(ProjectDir)$(Platform)\$(Configuration)\$(MSBuildProjectName)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <GenerateManifest>false</GenerateManifest>
+    <OutDir>$(ProjectDir)$(Platform)\$(Configuration)\$(MSBuildProjectName)\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\..\..\src;..\..\..\libs\tiny-js-master-20170629;..\..\..\libs\date-master-20170711;..\..\..\libs\rapidxml-1.13;..\..\..\libs\spdlog-master-20170622\include;..\..\..\libs\botan-2.1.0\build\include;..\..\..\libs\eigen-3.3.2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..;..\..\Libs\tiny-js-master-20170629;..\..\libs\date-master-20170711;..\..\libs\rapidxml-1.13;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|arm'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..;..\..\Libs\tiny-js-master-20170629;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|arm'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..;..\..\Libs\tiny-js-master-20170629;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\..\..\src;..\..\..\libs\tiny-js-master-20170629;..\..\..\libs\date-master-20170711;..\..\..\libs\rapidxml-1.13;..\..\..\libs\spdlog-master-20170622\include;..\..\..\libs\botan-2.1.0\build\include;..\..\..\libs\eigen-3.3.2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..;..\..\Libs\tiny-js-master-20170629;..\..\libs\date-master-20170711;..\..\libs\rapidxml-1.13;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

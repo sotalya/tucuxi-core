@@ -1,0 +1,150 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tga;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Headers">
+      <UniqueIdentifier>{66c1fe42-e4ff-44e7-b1c3-ede59694bd66}</UniqueIdentifier>
+      <Extensions>h</Extensions>
+    </Filter>
+    <Filter Include="Sources">
+      <UniqueIdentifier>{770aa637-0510-4b90-8428-f3c0220114b6}</UniqueIdentifier>
+      <Extensions>cpp</Extensions>
+    </Filter>
+    <Filter Include="Headers\TinyJS">
+      <UniqueIdentifier>{558eb425-0166-47ac-bb5e-944d37a3e98b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\TinyJS">
+      <UniqueIdentifier>{9aeb7b7f-b58a-439f-8508-1ecc626154ed}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\src\tucucommon\basetypes.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucommon\component.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucommon\componentmanager.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucommon\cryptohelper.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucommon\datetime.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucommon\duration.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucommon\general.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucommon\ilogger.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucommon\interface.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucommon\jsengine.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucommon\licensemanager.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucommon\logger.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucommon\loggerhelper.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucommon\systeminfo.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucommon\timeofday.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucommon\utils.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucommon\xmlattribute.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucommon\xmldocument.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucommon\xmliterator.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucommon\xmlnode.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libs\tiny-js-master-20170629\TinyJS.h">
+      <Filter>Headers\TinyJS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libs\tiny-js-master-20170629\TinyJS_Functions.h">
+      <Filter>Headers\TinyJS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libs\tiny-js-master-20170629\TinyJS_MathFunctions.h">
+      <Filter>Headers\TinyJS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libs\tiny-js-master-20170629\TinyJS_SyntaxTree.h">
+      <Filter>Headers\TinyJS</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\tucucommon\utils.cpp">
+      <Filter>Headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucommon\componentmanager.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucommon\cryptohelper.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucommon\duration.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucommon\jsengine.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucommon\licensemanager.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucommon\systeminfo.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucommon\timeofday.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucommon\xmlattribute.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucommon\xmldocument.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucommon\xmlnode.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucommon\datetime.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucommon\logger.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libs\tiny-js-master-20170629\TinyJS.cpp">
+      <Filter>Sources\TinyJS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libs\tiny-js-master-20170629\TinyJS_Functions.cpp">
+      <Filter>Sources\TinyJS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libs\tiny-js-master-20170629\TinyJS_MathFunctions.cpp">
+      <Filter>Sources\TinyJS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libs\tiny-js-master-20170629\TinyJS_SyntaxTree.cpp">
+      <Filter>Sources\TinyJS</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
