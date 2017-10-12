@@ -150,7 +150,7 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
                         parametersSeries);
             delete concentrationCalculator;
 
-            predictionPtr->streamToFile("values_imatinib.dat");
+            predictionPtr->streamToFile("values_imatinib_percentile.dat");
         }
 /*
         for(int i = 0; i < _nbPoints; i++) {

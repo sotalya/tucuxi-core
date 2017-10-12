@@ -376,7 +376,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
                     parametersSeries);
         delete concentrationCalculator;
 
-        predictionPtr->streamToFile("values_imatinib.dat");
+        predictionPtr->streamToFile("values_imatinib_nonmemdrugs.dat");
     }
 };
 
