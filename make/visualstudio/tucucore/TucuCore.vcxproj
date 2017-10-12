@@ -132,11 +132,6 @@
     <ClInclude Include="drugtreatment\patientcovariate.h" />
     <ClInclude Include="drugtreatment\sample.h" />
     <ClInclude Include="drugtreatment\target.h" />
-    <ClInclude Include="iprocessingservices.h" />
-    <ClInclude Include="processingservice\iprocessingservice.h" />
-    <ClInclude Include="processingservice\processingrequest.h" />
-    <ClInclude Include="processingservice\processingresponse.h" />
-    <ClInclude Include="processingservice\processingtrait.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{927dafca-e4c7-45ae-9c20-28262f8e5307}</ProjectGuid>

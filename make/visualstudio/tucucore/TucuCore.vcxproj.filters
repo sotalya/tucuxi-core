@@ -179,21 +179,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="processingservice\iprocessingservice.h">
-      <Filter>Headers\Processing</Filter>
-    </ClInclude>
-    <ClInclude Include="iprocessingservices.h">
-      <Filter>Headers\Processing</Filter>
-    </ClInclude>
-    <ClInclude Include="processingservice\processingrequest.h">
-      <Filter>Headers\Processing</Filter>
-    </ClInclude>
-    <ClInclude Include="processingservice\processingresponse.h">
-      <Filter>Headers\Processing</Filter>
-    </ClInclude>
-    <ClInclude Include="processingservice\processingtrait.h">
-      <Filter>Headers\Processing</Filter>
-    </ClInclude>
     <ClInclude Include="drugtreatment\drugtreatment.h">
       <Filter>Headers\DrugTreatment</Filter>
     </ClInclude>
@@ -247,18 +232,6 @@
     </ClInclude>
     <ClInclude Include="..\..\..\src\tucucore\drugtreatment\target.h">
       <Filter>Headers\DrugTreatment</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\tucucore\processingservice\iprocessingservice.h">
-      <Filter>Headers\Processing</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\tucucore\processingservice\processingrequest.h">
-      <Filter>Headers\Processing</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\tucucore\processingservice\processingresponse.h">
-      <Filter>Headers\Processing</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\tucucore\processingservice\processingtrait.h">
-      <Filter>Headers\Processing</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\tucucore\aposteriorietascalculator.h">
       <Filter>Headers</Filter>
@@ -382,6 +355,18 @@
     </ClInclude>
     <ClInclude Include="..\..\..\src\tucucore\twocompartmentinfusion.h">
       <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\processingservice\iprocessingservice.h">
+      <Filter>Headers\Processing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\processingservice\processingrequest.h">
+      <Filter>Headers\Processing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\processingservice\processingresponse.h">
+      <Filter>Headers\Processing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\processingservice\processingtrait.h">
+      <Filter>Headers\Processing</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
