@@ -70,6 +70,11 @@ struct TestDateTime : public fructose::test_base<TestDateTime>
         fructose_assert(d1.isUndefined());
         d1.setDate(d2.getDate());
         fructose_assert(!d1.isUndefined());
+
+        // Test to and from seconds
+        double nSeconds = d10.toSeconds();
+        Tucuxi::Common::DateTime d30(Tucuxi::Common::Duration(std::chrono::seconds((int64)nSeconds)));
+        checkDateTime(d30, 2017, 12, 17, 17, 34, 20);
     }
 
     void timeofday(const std::string& _testName)

@@ -57,6 +57,14 @@ DateTime::DateTime(const date::year_month_day& _date, const std::chrono::seconds
 }
 
 
+DateTime::DateTime(const Duration &_durationSinceEpoch)
+{
+    int64 ms = _durationSinceEpoch.toMilliseconds();
+    const std::chrono::system_clock::duration d = std::chrono::milliseconds(ms);
+    m_date = std::chrono::time_point<std::chrono::system_clock>(d);
+}
+
+
 date::year_month_day DateTime::getDate() const
 {
     return date::year_month_day(date::floor<date::days>(m_date));
