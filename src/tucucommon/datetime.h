@@ -57,6 +57,10 @@ public:
     /// \param _time The time to be used (as a number of seconds since 0h00.
     DateTime(const date::year_month_day& _date, const std::chrono::seconds& _time);
 
+    /// \brief Build a date and time with the specified duration 
+    /// \param _date The duration since epoch (see documentation of std::chrono::time_point)
+    DateTime(const Duration &_durationSinceEpoch);
+
     /// \brief Returns the date part of the object.
     date::year_month_day getDate() const;
 

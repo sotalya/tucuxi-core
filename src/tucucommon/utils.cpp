@@ -17,7 +17,7 @@ std::string Utils::getAppFolder(char** _argv)
     return appFolder;
 }
 
-Value Utils::stringToValue(const std::__cxx11::string &_str, const DataType &_dataType)
+Value Utils::stringToValue(const std::string &_str, const DataType &_dataType)
 {
     Value v;
     std::string str = _str;
