@@ -219,15 +219,7 @@ IPercentileCalculator::ProcessingResult AprioriMonteCarloPercentileCalculator::c
      */
     EigenMatrix rands = EigenMatrix::Zero(nbPatients, omegaRank);
     
-    /* TODO:
-    The size of vector epsilons can be changed depends on the implementation
-    Currently, epsilons[1][nbPatients] is initialised with normalised random number.
-    */
-#if 0
     std::vector<Deviations> epsilons(_residualErrorModel.nbEpsilons(), Deviations(nbPatients, normalDistribution(rnGenerator)));
-#else
-    std::vector<Deviations> epsilons(1, Deviations(nbPatients, normalDistribution(rnGenerator)));
-#endif
 
     for (int row = 0; row < rands.rows(); ++row) {
         //epsilons(0, (row))= normalDistribution();
@@ -358,20 +350,20 @@ IPercentileCalculator::ProcessingResult AposterioriMonteCarloPercentileCalculato
     std::student_t_distribution<> standardNormalDist(studentLiberty);
 
     /* Now we start making a sample. How many samples to take? */
-    const int nbSamples = 100000; // Rename : samples
-    const int nbReSamples = 10000;  // Rename : reSamples
+    const int samples = 100000;
+    const int reSamples = 10000;
 
-    std::vector<Etas> etaSamples(nbSamples);
+    std::vector<Etas> etaSamples(samples);
     /*
     * This is ratio for the ratios in step 4
     */
-    EigenVector ratio(nbSamples);
-    EigenVector weight(nbSamples);
+    EigenVector ratio(samples);
+    EigenVector weight(samples);
 
     /*
     * Loading random numbers as omp doesnt like it
     */
-    EigenMatrix avecs = EigenMatrix::Zero(nbSamples, _etas.size());
+    EigenMatrix avecs = EigenMatrix::Zero(samples, _etas.size());
     for (int row = 0; row < avecs.rows(); ++row) {
         for (int column = 0; column < avecs.cols(); ++column) {
             avecs(row,column) = standardNormalDist(rnGenerator);
@@ -387,11 +379,11 @@ IPercentileCalculator::ProcessingResult AposterioriMonteCarloPercentileCalculato
 
     std::vector<std::thread> workers;
     for(int thread = 0;thread < nbThreads; thread++) {
-        workers.push_back(std::thread([thread, nbSamples, &abort, _aborter, nbThreads, _etas, meanEtas, avecs, etaLowerChol,
+        workers.push_back(std::thread([thread, samples, &abort, _aborter, nbThreads, _etas, meanEtas, avecs, etaLowerChol,
                                       &etaSamples, logLikelihood, studentLiberty, subomega, &ratio]()
         {
-            int start = thread * (nbSamples / nbThreads);
-            int end = (thread + 1 ) * (nbSamples / nbThreads);
+            int start = thread * (samples / nbThreads);
+            int end = (thread + 1 ) * (samples / nbThreads);
             for (int sample = start; sample < end; ++sample) {
                 if (!abort) {
                     if ((_aborter != nullptr) && (_aborter->shouldAbort())) {
@@ -459,11 +451,11 @@ IPercentileCalculator::ProcessingResult AposterioriMonteCarloPercentileCalculato
     std::normal_distribution<> normalDistribution(0,1.0);
     std::discrete_distribution<> discreteDistribution(&weight(0), &weight(0) + weight.size());
 
-    std::vector<Deviations> epsilons(1, Deviations(nbReSamples, normalDistribution(rnGenerator)));
-    std::vector<Etas> RealEtaSamples(nbReSamples);
+    std::vector<Deviations> epsilons(_residualErrorModel.nbEpsilons(), Deviations(reSamples, normalDistribution(rnGenerator)));
+    std::vector<Etas> RealEtaSamples(reSamples);
 
     /* TODO: think about whether we can use push_back or not */
-    for(int patient = 0; patient < nbReSamples; ++patient) {
+    for(int patient = 0; patient < reSamples; ++patient) {
 	RealEtaSamples[patient] = etaSamples[discreteDistribution(rnGenerator)];
         //epsilons(patient) = normalDistribution(rnGenerator);
     }
