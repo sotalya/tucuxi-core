@@ -9,10 +9,6 @@
 #include <thread>
 #include <Eigen/Cholesky>
 #include <random>
-//#include <boost/math/distributions/normal.hpp>
-//#include <boost/random/mersenne_twister.hpp>
-//#include <boost/random/normal_distribution.hpp>
-//#include <boost/random/variate_generator.hpp>
 
 namespace Tucuxi {
 namespace Core {

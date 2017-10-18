@@ -32,6 +32,7 @@ SOURCES := \
            corecomponent.cpp \
            covariateevent.cpp \
            covariateextractor.cpp \
+	   cyclestatisticscalculator.cpp \
            dosage.cpp \
            hardcodedoperation.cpp \
            intakeextractor.cpp \

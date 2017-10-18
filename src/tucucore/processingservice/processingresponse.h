@@ -37,7 +37,7 @@ public:
     /// \brief A vector of vector of concentrations
     /// Each inner vector contains the concentrations of an analyte or a compartment
     /// The size of each inner vector has to be the same as m_times.
-    std::vector<std::vector<Concentration> > m_concentrations;
+    std::vector< std::vector<Concentration> > m_concentrations;
 
     /// \brief Absolute end time of the cycle
     /// This value could be computed from m_start and m_times, but it is more convenient
