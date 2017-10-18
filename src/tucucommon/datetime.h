@@ -75,6 +75,18 @@ public:
     /// \param _newTime The time to be used. 
     void setTimeOfDay(const TimeOfDay& _newTime);
 
+    /// \brief Add the specified number of years to the date.
+    /// \param _nYears The number of years to be added 
+    void addYears(int _nYears);
+
+    /// \brief Add the specified number of months to the date.
+    /// \param _nMonths The number of months to be added 
+    void addMonths(int _nMonths);
+
+    /// \brief Add the specified number of days to the date.
+    /// \param _nDays The number of days to be added 
+    void addDays(int _nDays);
+
     /// \brief Return a new DateTime object with the addition of the date and the specified duration.
     /// \param _duration The duration to be added. 
     /// \return The result of the addition.

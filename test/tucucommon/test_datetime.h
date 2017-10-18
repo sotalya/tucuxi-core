@@ -75,6 +75,31 @@ struct TestDateTime : public fructose::test_base<TestDateTime>
         double nSeconds = d10.toSeconds();
         Tucuxi::Common::DateTime d30(Tucuxi::Common::Duration(std::chrono::seconds((int64)nSeconds)));
         checkDateTime(d30, 2017, 12, 17, 17, 34, 20);
+
+        // Test addDays, addMonth and addYears
+        Tucuxi::Common::DateTime d31 = d10;
+        d31.addDays(3);
+        checkDateTime(d31, 2017, 12, 20, 17, 34, 20);
+        d31.addDays(31);
+        checkDateTime(d31, 2018, 1, 20, 17, 34, 20);
+        d31.addDays(365);
+        checkDateTime(d31, 2019, 1, 20, 17, 34, 20);
+        d31.addDays(-399);
+        checkDateTime(d31, 2017, 12, 17, 17, 34, 20);
+        
+        Tucuxi::Common::DateTime d32 = d10;
+        d32.addMonths(3);
+        checkDateTime(d32, 2018, 3, 17, 17, 34, 20);
+        d32.addMonths(25);
+        checkDateTime(d32, 2020, 4, 17, 17, 34, 20);
+        d32.addMonths(-12);
+        checkDateTime(d32, 2019, 4, 17, 17, 34, 20);
+        
+        Tucuxi::Common::DateTime d33 = d10;
+        d33.addYears(3);
+        checkDateTime(d33, 2020, 12, 17, 17, 34, 20);
+        d33.addYears(-5);
+        checkDateTime(d33, 2015, 12, 17, 17, 34, 20);
     }
 
     void timeofday(const std::string& _testName)

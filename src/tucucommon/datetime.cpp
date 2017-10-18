@@ -93,6 +93,34 @@ void DateTime::setTimeOfDay(const TimeOfDay& _newTime)
 }
 
 
+void DateTime::addYears(int _nYears)
+{    
+    date::year_month_day curDate = DateTime::getDate();
+    TimeOfDay t = getTimeOfDay();
+    int years = year() + _nYears;
+    m_date = date::sys_days(date::year_month_day(date::year(years), curDate.month(), curDate.day()));
+    m_date += std::chrono::milliseconds(t.getDuration());
+}
+
+
+void DateTime::addMonths(int _nMonths)
+{
+    date::year_month_day curDate = DateTime::getDate();
+    TimeOfDay t = getTimeOfDay();
+    int nMonths = year() *12 + month() + _nMonths;
+    int nYears = nMonths / 12;
+    nMonths = nMonths % 12;
+    m_date = date::sys_days(date::year_month_day(date::year(nYears), date::month(nMonths), curDate.day()));
+    m_date += std::chrono::milliseconds(t.getDuration());
+}
+
+
+void DateTime::addDays(int _nDays)
+{
+    m_date += std::chrono::hours(_nDays*24);
+}
+
+
 const DateTime DateTime::operator+(const Duration& _duration) const
 {
     DateTime tmp(*this);
