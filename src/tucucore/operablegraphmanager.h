@@ -40,6 +40,11 @@ public:
     /// \return True if the value could be retrieved, false otherwise.
     bool getValue(const std::string &_name, double &_value) const;
 
+    /// \brief Check if a given input is present in the Operable Graph.
+    /// \param _name Name of the sought value.
+    /// \return True if the input is present, false otherwise.
+    bool isInputPresent(const std::string &_name) const;
+
     /// \brief Record an input to an operable in the operable graph.
     /// \param _input Shared pointer to the Operable input.
     /// \param _scriptVarName Input name.
@@ -62,6 +67,26 @@ public:
     ///           { m_operables += _operable && (if (_scriptVarName != "") { m_operableInputs.find(_scriptVarName) == true }) && [RETURN] == true }
     ///       else { m_operableInputs == PREV(m_operableInputs) && m_operables == PREV(m_operables) && [RETURN] == false };
     bool registerOperable(std::shared_ptr<IOperable> _operable, const std::string &_scriptVarName = "");
+
+
+    /// \brief Class' output operator.
+    /// \param _output Output stream.
+    /// \param _dt Self reference to the OperableGraphManager to print.
+    /// \return Output stream given as input (for output chaining).
+    friend std::ostream& operator<<(std::ostream &_output, const OperableGraphManager &_ogm) {
+        _output << "-- OperableGraphManager INPUTS --\n";
+        for (const auto &i : _ogm.m_operableInputs) {
+            _output << "\t" << i.first << "\n"
+                    << "\t\tValue = " << i.second.getValue() << "\n"
+                    << "\t\tID = " << i.second.getOperableID() << "\n"
+                    << "\t\tisComputed = " << i.second.isComputed() << "\n";
+        }
+        _output << "-- OperableGraphManager m_operables --\n";
+        for (const auto &i : _ogm.m_operableInputs) {
+            _output << "\t" << i.first << "\n";
+        }
+        return _output;
+    }
 
 
 private:

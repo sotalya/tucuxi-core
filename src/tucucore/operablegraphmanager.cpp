@@ -58,6 +58,16 @@ OperableGraphManager::getValue(const std::string &_name, double &_value) const
 
 
 bool
+OperableGraphManager::isInputPresent(const std::string &_name) const
+{
+    if (m_operableInputs.find(_name) != m_operableInputs.end()) {
+        return true;
+    }
+    return false;
+}
+
+
+bool
 OperableGraphManager::registerInput(std::shared_ptr<IOperableInput> _input, const std::string &_scriptVarName,
                                     const bool _isComputed, const IOperable_ID _id)
 {
@@ -142,7 +152,7 @@ OperableGraphManager::isValid()
     // Check that no loops are present by checking if any back-edge is present.
     std::map<std::string, bool> visited;
     for (auto it : m_operableInputs) {
-        visited.insert(std::pair<std::string, bool> (it.first, false));
+        visited.insert(std::make_pair(it.first, false));
     }
 
     std::map<std::string, bool> gotBack = visited;

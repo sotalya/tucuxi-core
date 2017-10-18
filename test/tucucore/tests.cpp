@@ -154,12 +154,16 @@ int main(int argc, char** argv)
     TestCovariateExtractor ceTests;
     ceTests.add_test("testCE_constructor", &TestCovariateExtractor::testCE_constructor);
     ceTests.add_test("testCE_collectRefreshIntervals", &TestCovariateExtractor::testCE_collectRefreshIntervals);
-    ceTests.add_test("testCE_createComputedCEvents", &TestCovariateExtractor::testCE_createComputedCEvents);
-    ceTests.add_test("testCE_createNonComputedCEvents", &TestCovariateExtractor::testCE_createNonComputedCEvents);
     ceTests.add_test("testCE_interpolateValues", &TestCovariateExtractor::testCE_interpolateValues);
     ceTests.add_test("testCE_sortPatientVariates", &TestCovariateExtractor::testCE_sortPatientVariates);
-    /*ceTests.add_test("testOperableFunctions_1", &TestCovariateExtractor::testCovariateExtraction_test1);
-    ceTests.add_test("testOperableFunctions_2", &TestCovariateExtractor::testCovariateExtraction_test2);*/
+    ceTests.add_test("testOperableFunctions_1_0", &TestCovariateExtractor::testCovariateExtraction_test1_0);
+    ceTests.add_test("testOperableFunctions_2_0", &TestCovariateExtractor::testCovariateExtraction_test2_0);
+    ceTests.add_test("testOperableFunctions_2_1", &TestCovariateExtractor::testCovariateExtraction_test2_1);
+    ceTests.add_test("testOperableFunctions_2_2", &TestCovariateExtractor::testCovariateExtraction_test2_2);
+    ceTests.add_test("testOperableFunctions_2_3", &TestCovariateExtractor::testCovariateExtraction_test2_3);
+    ceTests.add_test("testOperableFunctions_3_0", &TestCovariateExtractor::testCovariateExtraction_test3_0);
+    ceTests.add_test("testOperableFunctions_3_1", &TestCovariateExtractor::testCovariateExtraction_test3_1);
+    ceTests.add_test("testOperableFunctions_3_2", &TestCovariateExtractor::testCovariateExtraction_test3_2);
 
     res = ceTests.run(argc, argv);
 

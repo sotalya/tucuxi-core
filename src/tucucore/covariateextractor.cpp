@@ -8,6 +8,8 @@
 namespace Tucuxi {
 namespace Core {
 
+const std::string CovariateExtractor::m_birthDateCName = "BirthDate";
+
 /// \brief Create an event and push it in the event series.
 /// \param COV_DEF Corresponding covariate definition.
 /// \param TIME Time of the event.
@@ -20,292 +22,12 @@ namespace Core {
     SERIES.push_back(*event);                               \
 } while(0);
 
-int CovariateExtractor::addPatientVariateWithRefresh(std::map<std::string, std::pair<std::shared_ptr<CovariateEvent>, Value>> &_computedValuesMap,
-                                                     std::map<std::string, std::shared_ptr<CovariateEvent>> &_nccValuesMap,
-                                                     CovariateSeries &_series)
-{
-    for (const auto &pvMap : m_pvValued) {
-        const std::string &pvName = pvMap.first;
-        const std::vector<pvIterator_t> &pvValues = pvMap.second;
-        Duration refreshPeriod = (*m_cdValued.at(pvName))->getRefreshPeriod();
-        if (!refreshPeriod.isEmpty()) {
-
-            // We need to compute the interpolated values and push them at the appropriate time.
-            // The "appropriate time" is represented by the initial time plus the refresh period, therefore we have
-            // to interpolate the correct values for each refresh period.
-            std::vector<pvIterator_t>::const_iterator pvIt = pvValues.begin();
-            double newVal = 0.0;
-            // Use the first observed value for the whole period up to it, and the last observed value for the whole
-            // period after it.
-            // Example:
-            //
-            // |------1----2---3--------|
-            // |----a----b----c----d----|
-            //
-            // where a, b, c, and d are time intervals given by the refresh period, and 1, 2, and 3 are
-            // measurements, gives:
-            // * a == 1
-            // * b == interp(1, 2)
-            // * c == interp(2, 3)
-            // * d == 3
-            // If we had a measurement before the start of the interval, we would have kept it in the vector and
-            // thus we would interpolate and not set a fixed value. The same reasoning applies if we had a
-            // measurement after the end of the interval.
-            for (auto timeIt = m_start + refreshPeriod; timeIt <= m_end; timeIt += refreshPeriod) {
-
-                std::cerr << "** TIME: " << timeIt << " **\n";
-
-                if (timeIt <= (**(pvValues.begin()))->getEventTime()) {
-
-                    std::cerr << "\tWe are before the time of the first measurement ("
-                              << ((**(pvValues.begin()))->getEventTime())
-                              << "), we SKIP the measurement to avoid duplicata.";
-                    //                    std::cerr << "), we we use the value of the first measurement = "
-                    //                              << (**(pvMap.second.begin()))->getValue() << "\n";
-
-                    //                    // Before first measurement use the value of the first measurement.
-                    //                    newVal = stringToValue((**(pvMap.second.begin()))->getValue(),
-                    //                                           (**(pvMap.second.begin()))->getDataType());
-                } else {
-                    // Advance until we pass the measurement just before the chosen time, or until we get to the
-                    // last available measurement.
-                    while (pvIt != pvValues.end() && (**pvIt)->getEventTime() <= timeIt) {
-
-                        std::cerr << "\tCurrent event time: "<< ((**pvIt)->getEventTime()) << ", advancing...\n";
-
-                        ++pvIt;
-                    }
-
-                    std::cerr << "DONE!\n";
-
-                    if (pvIt == pvValues.end()) {
-
-                        std::cerr << "We are past in time after the last measurement we have, so we have to keep the value = "
-                                  << (**(std::prev(pvIt)))->getValue() << "\n";
-
-                        // We are past in time after the last measurement we have, so we have to keep the value.
-                        newVal = stringToValue((**(std::prev(pvIt)))->getValue(),
-                                               (**(std::prev(pvIt)))->getDataType());
-                    } else {
-                        // We have two measurements to interpolate from (we have dealt with the case of the first
-                        // measurement being past the desired time, so we can safely assume we have a previous
-                        // measurement.
-                        if (!interpolateValues(stringToValue((**(std::prev(pvIt)))->getValue(),
-                                                             (**(std::prev(pvIt)))->getDataType()), // val1
-                                               (**(std::prev(pvIt)))->getEventTime(),               // date1
-                                               stringToValue((**(pvIt))->getValue(),
-                                                             (**(pvIt))->getDataType()),            // val2
-                                               (**(pvIt))->getEventTime(),                          // date2
-                                               timeIt,                                              // dateRes
-                                               (*m_cdValued.at(pvName))->getInterpolationType(),    // interpolationType
-                                               newVal)) {                                           // valRes
-                            return -5;
-                        }
-
-                        std::cerr << "We have two measurements to interpolate from\n"
-                                  << "\t" << (**(std::prev(pvIt)))->getValue() << " @ "
-                                  << ((**(std::prev(pvIt)))->getEventTime())
-                                  << "\n"
-                                  << "\t" << (**(pvIt))->getValue() << " @ "<< ((**(pvIt))->getEventTime())
-                                  << "\n"
-                                  << "=>" << newVal << " @ " << (timeIt) << "\n";
-
-                    }
-                    PUSH_EVENT(**m_cdValued.at(pvName), // Covariate Definition
-                               timeIt,                     // Time
-                               newVal,                     // Value
-                               _series);                   // Series
-
-
-                    if (m_cdComputed.size() > 0) {
-
-                        std::cerr << "We have computed values!\n";
-
-                        // We have a change in a value and some of the values are computed -> we need to do an update of
-                        // the operable graph with this new value, then trigger a recomputation, and update the values
-                        // that changed. This is done by updating the value of the event pushed in the ogm.
-                        (_nccValuesMap.at(pvName))->setValue(newVal);
-                        m_ogm.evaluate();
-
-                        for (auto &cvm : _computedValuesMap) {
-                            // We do the update here *only* for the Computed Variates that have no refresh period.
-                            // We will deal with those with a refresh period set afterwards.
-                            if ((*(m_cdComputed.at(cvm.first)))->getRefreshPeriod().isEmpty()) {
-                                double cvVal;
-                                if (!m_ogm.getValue(cvm.second.first->getId(), cvVal)) {
-                                    return -7;
-                                }
-
-                                // Check if the new value is different than the old one. If this is the case, create a
-                                // new event.
-                                if (cvVal != cvm.second.second) {
-                                    // Update the value in the map.
-                                    cvm.second.second = cvVal;
-                                    // Update the date in the event.
-                                    cvm.second.first->setEventTime(timeIt);
-                                    // Push the covariate in the event series.
-                                    _series.push_back(*cvm.second.first);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    return 0;
-}
-
-
-int CovariateExtractor::generatePeriodicComputedCovariates(const std::map<DateTime, std::vector<std::string>> _refreshMap,
-                                                           std::map<std::string, std::pair<std::shared_ptr<CovariateEvent>, Value>> &_computedValuesMap,
-                                                           std::map<std::string, std::shared_ptr<CovariateEvent>> &_nccValuesMap,
-                                                           CovariateSeries &_series)
-{
-    // Iterate on the map, setting all patient covariates to the appropriate values and relaunching the computation
-    // via the Operable Graph Manager.
-    for (const auto &refresh_t : _refreshMap) {
-        for (const auto &pvMap : m_pvValued) {
-            // Get the new value for the patient variate.
-            Value newVal = getPatientVariateValue(m_pvValued.at(pvMap.first), refresh_t.first,
-                                                  (*m_cdValued.at(pvMap.first))->getInterpolationType());
-            // Set the value in the non-computed covariate event whose pointer is stored in nccValuesMap.
-            (_nccValuesMap.at(pvMap.first))->setValue(newVal);
-        }
-        // Run the evaluation for the desired time instant.
-        m_ogm.evaluate();
-
-        for (const auto &cvName : refresh_t.second) {
-            double cvVal;
-            if (!m_ogm.getValue(cvName, cvVal)) {
-                return -7;
-            }
-
-            // Check if the new value is different than the old one. If this is the case, create a
-            // new event.
-            if (cvVal != _computedValuesMap.at(cvName).second) {
-                // Update the value in the map.
-                _computedValuesMap.at(cvName).second = cvVal;
-                // Update the date in the event.
-                _computedValuesMap.at(cvName).first->setEventTime(refresh_t.first);
-                // Push the covariate in the event series.
-                _series.push_back(*_computedValuesMap.at(cvName).first);
-            }
-        }
-
-    }
-    return 0;
-}
-
-
-
-
-
-
-// Error codes:
-// -1 : null pointer in covariate definitions.
-// -2 : null pointer in patient variates.
-// -3 : invalid date (start > end).
-// -4 : duplicate ID in covariate definitions.
-// -5 : interpolation failure.
-// -6 : initial evaluation of computed values failed.
-// -7 : missing value in map.
-
-int CovariateExtractor::extract(CovariateSeries &_series)
-{
-    sortPatientVariates();
-
-    // Map holding the pointers to the events linked with non-computed covariates.
-    std::map<std::string, std::shared_ptr<CovariateEvent>> nccValuesMap;
-
-    // Map holding the pointers to the events linked with computed covariates and their latest value.
-    std::map<std::string, std::pair<std::shared_ptr<CovariateEvent>, Value>> computedValuesMap;
-
-    createInitialEvents(nccValuesMap, computedValuesMap, _series);
-
-    // *** Generate events past the default ones ***
-    // Unfortunately discovering all the relations among covariates is too difficult -- it would mean redoing the
-    // job of the OperableGraphManager. We will therefore iterate over the PatientVariates and call an evaluate()
-    // each time the update is needed.
-
-    addPatientVariateNoRefresh(computedValuesMap, _series);
-    addPatientVariateWithRefresh(computedValuesMap, nccValuesMap, _series);
-
-    //    for (const auto &pvMap : m_pvValued) {
-
-    //        std::cerr << "## VARIABLE: " << pvMap.first << " ##\n";
-
-    //        // Consider that patient variates are already sorted by date (for each patient variate type).
-    //        Duration refreshPeriod = (*m_cdValued.at(pvMap.first))->getRefreshPeriod();
-    //        if (refreshPeriod.isEmpty()) {
-    //            addPatientVariateNoRefresh(pvMap.first, pvMap.second, computedValuesMap, _series);
-    //        } else {
-    //            addPatientVariateWithRefresh(refreshPeriod, pvMap.first, pvMap.second,
-    //                                         computedValuesMap, nccValuesMap, _series);
-    //        }
-    //    }
-
-    // Now deal with the Computed Covariates with a fixed refresh period.
-    // The least expensive approach is to get a list of the refresh times and perform the update (indeed, several
-    // different computed covariates might want to refresh at the same time, and we do want to do their update once).
-
-    // Collect refresh intervals. For each date, we can have multiple covariates that want to be refreshed.
-    std::map<DateTime, std::vector<std::string>> refreshMap;
-    collectRefreshIntervals(computedValuesMap, refreshMap);
-
-
-    // If we have any computed covariate with a fixed refresh period...
-    if (refreshMap.size() > 0) {
-        generatePeriodicComputedCovariates(refreshMap, computedValuesMap, nccValuesMap, _series);
-    }
-
-    return 0;
-}
-
-Value CovariateExtractor::getPatientVariateValue(const std::vector<pvIterator_t>& _PV,
-                                                 const DateTime &_t,
-                                                 const InterpolationType _interpolationType)
-{
-    Value newVal = 0.0;
-    if (_PV.size() == 1 || (*(_PV.at(0)))->getEventTime() >= _t) {
-        // If single patient variate value or first variate measured after the refresh interval, then take the value of
-        // the first variate.
-        newVal = std::stod((*(_PV.at(0)))->getValue());
-    } else {
-        std::vector<pvIterator_t>::const_iterator pvIt = _PV.begin();
-        // Advance until we pass the measurement just before the chosen time, or until we get to the
-        // last available measurement.
-        while (pvIt != _PV.end() && _t < (**pvIt)->getEventTime()) {
-            ++pvIt;
-        }
-        if (pvIt == _PV.end()) {
-            // We are past in time after the last measurement we have, so we have to keep the last value.
-            newVal = stringToValue((**(std::prev(pvIt)))->getValue(),
-                                   (**(std::prev(pvIt)))->getDataType());
-        } else {
-            interpolateValues(stringToValue((**(std::prev(pvIt)))->getValue(),
-                                            (**(std::prev(pvIt)))->getDataType()), // val1
-                              (**(std::prev(pvIt)))->getEventTime(),               // date1
-                              stringToValue((**(pvIt))->getValue(),
-                                            (**(pvIt))->getDataType()),            // val2
-                              (**(pvIt))->getEventTime(),                          // date2
-                              _t,                                                  // dateRes
-                              _interpolationType,                                  // interpolationType
-                              newVal);                                             // valRes
-        }
-    }
-    return newVal;
-}
-
-/***********************************************************************************************************************
- *                                           OK VERIFIED AND TESTED                                                    *
- **********************************************************************************************************************/
-
 CovariateExtractor::CovariateExtractor(const CovariateDefinitions &_defaults,
                                        const PatientVariates &_patientCovariates,
                                        const DateTime &_start,
                                        const DateTime &_end)
-    : ICovariateExtractor(_defaults, _patientCovariates, _start, _end)
+    : ICovariateExtractor(_defaults, _patientCovariates, _start, _end),
+      m_hasBirthDate{false}, m_initAgeInDays{-1.0}, m_initAgeInMonths{-1.0}, m_initAgeInYears{-1.0}
 {
     // *** Verify preconditions ***
     // Invalid ptrs in covariate definitions.
@@ -334,6 +56,48 @@ CovariateExtractor::CovariateExtractor(const CovariateDefinitions &_defaults,
         } else {
             rc = m_cdValued.insert(std::pair<std::string, cdIterator_t>((*it)->getId(), it));
         }
+        // In case on non-standard covariates set the initial values.
+        if ((*it)->getType() != CovariateType::Standard) {
+            switch ((*it)->getType()) {
+            case CovariateType::AgeInDays:
+                if (m_initAgeInDays >= 0) {
+                    throw std::runtime_error("[CovariateExtractor] Too many AgeInDays-type covariates");
+                }
+                if ((*it)->getValue() < 0) {
+                    throw std::runtime_error("[CovariateExtractor] Invalid default value ("
+                                             + std::to_string((*it)->getValue())
+                                             + ") for an age expressed in days.");
+                }
+                m_initAgeInDays = (*it)->getValue();
+                break;
+            case CovariateType::AgeInMonths:
+                if (m_initAgeInMonths >= 0) {
+                    throw std::runtime_error("[CovariateExtractor] Too many AgeInMonths-type covariates");
+                }
+                if ((*it)->getValue() < 0) {
+                    throw std::runtime_error("[CovariateExtractor] Invalid default value ("
+                                             + std::to_string((*it)->getValue())
+                                             + ") for an age expressed in months.");
+                }
+                m_initAgeInMonths = (*it)->getValue();
+                break;
+            case CovariateType::AgeInYears:
+                if (m_initAgeInYears >= 0) {
+                    throw std::runtime_error("[CovariateExtractor] Too many AgeInYears-type covariates");
+                }
+                if ((*it)->getValue() < 0) {
+                    throw std::runtime_error("[CovariateExtractor] Invalid default value ("
+                                             + std::to_string((*it)->getValue())
+                                             + ") for an age expressed in years.");
+                }
+                m_initAgeInYears = (*it)->getValue();
+                break;
+            default:
+                throw std::runtime_error("[CovariateExtractor] Invalid covariate type (" + std::to_string((int)(*it)->getType()) + ")");
+                break;
+            }
+        }
+
         if (rc.second == false) {
             // Duplicate ID!
             throw std::runtime_error("[CovariateExtractor] Duplicate covariate variable (" + (*it)->getId() + ")");
@@ -342,8 +106,10 @@ CovariateExtractor::CovariateExtractor(const CovariateDefinitions &_defaults,
 
     // Push patient variates -- not computed by definition.
     for (pvIterator_t it = m_patientCovariates.begin(); it != m_patientCovariates.end(); ++it) {
-        // If we cannot find a corresponding covariate definition, we can safely drop a patient variate.
-        if (m_cdValued.find((*it)->getId()) != m_cdValued.end()) {
+        // If we cannot find a corresponding covariate definition or if it is a non-standard type, we can safely drop a
+        // patient variate.
+        if (m_cdValued.find((*it)->getId()) != m_cdValued.end() &&
+                (*m_cdValued.at((*it)->getId()))->getType() == CovariateType::Standard) {
             if (m_pvValued.find((*it)->getId()) == m_pvValued.end()) {
                 m_pvValued.insert(std::pair<std::string, std::vector<pvIterator_t>>((*it)->getId(),
                                                                                     std::vector<pvIterator_t>()));
@@ -351,168 +117,291 @@ CovariateExtractor::CovariateExtractor(const CovariateDefinitions &_defaults,
             m_pvValued.at((*it)->getId()).push_back(it);
         }
     }
+
+    // If a birth date is present, then set it.
+    if (m_cdValued.find(m_birthDateCName) != m_cdValued.end()) {
+        if ((*m_cdValued.at(m_birthDateCName))->getDataType() != DataType::Date) {
+            throw std::runtime_error("[CovariateExtractor] Invalid data type for birth date variable " + m_birthDateCName);
+        }
+        m_birthDate = Tucuxi::Common::Utils::ValueToDate((*m_cdValued.at(m_birthDateCName))->getValue());
+
+        if (m_birthDate > m_start) {
+            throw std::runtime_error("[CovariateExtractor] The birth date covariate (" + m_birthDateCName
+                                     + ") is past the starting date.");
+        }
+
+        m_hasBirthDate = true;
+        // Remove the birth date from the map.
+        m_cdValued.erase(m_birthDateCName);
+    }
 }
 
 
-int CovariateExtractor::addPatientVariateNoRefresh(std::map<std::string, std::pair<std::shared_ptr<CovariateEvent>, Value>> &_computedValuesMap,
-                                                   CovariateSeries &_series)
+bool CovariateExtractor::computeEvents(const std::map<DateTime, std::vector<std::string>> &_refreshMap,
+                                       CovariateSeries &_series)
 {
-    for (const auto &pvMap : m_pvValued) {
-        const std::string &pvName = pvMap.first;
-        const std::vector<pvIterator_t> &pvValues = pvMap.second;
-        Duration refreshPeriod = (*m_cdValued.at(pvName))->getRefreshPeriod();
-        if (refreshPeriod.isEmpty()) {
-            // Ignore the patient variates with a refresh period set. For those without a refresh period, just push the
-            // values as they are.
+    // Map holding the pointers to the events linked with covariates and their latest values.
+    std::map<std::string, std::pair<std::shared_ptr<CovariateEvent>, Value>> cEventsMap;
 
-            for (const auto &pv : pvValues) {
-                // If we have a single value, this value is set as initial default and used for the entire
-                // period, so we can ignore it here.
-                // The same applies if the first value happens at m_start.
-                if (pvValues.size() > 1 && (*pv)->getEventTime() != m_start) {
-                    PUSH_EVENT(**m_cdValued.at(pvName),          // Covariate Definition
-                               (*pv)->getEventTime(),               // Time
-                               stringToValue((*pv)->getValue(),
-                                             (*pv)->getDataType()), // Value
-                               _series);                            // Series
-                    if (m_cdComputed.size() > 0) {
-                        // We have a change in a value and some of the values are computed -> we need to do an update of
-                        // the operable graph with this new value, then trigger a recomputation, and update the values
-                        // that changed.
-                        (*(m_cdValued.at(pvName)))->setValue(stringToValue((*pv)->getValue(), (*pv)->getDataType()));
-                        m_ogm.evaluate();
-                        for (auto &cvm : _computedValuesMap) {
-                            // We do the update here *only* for the Computed Variates that have no refresh period.
-                            // We will deal with those with a refresh period set afterwards.
-                            if ((*(m_cdComputed.at(cvm.first)))->getRefreshPeriod().isEmpty()) {
-                                double cvVal;
-                                if (!m_ogm.getValue(cvm.second.first->getId(), cvVal)) {
-                                    return -7;
-                                }
-                                // Check if the new value is different than the old one. If this is the case, create a
-                                // new event.
-                                if (cvVal != cvm.second.second) {
-                                    // Update the value in the map.
-                                    cvm.second.second = cvVal;
-                                    // Push the covariate in the event series.
-                                    _series.push_back(*cvm.second.first);
-                                }
-                            }
+    // For each date in the refresh map, set all the values appropriately and then (if needed) launch the computation
+    // via the Operable Graph Manager.
+    for (const auto &refresh_event : _refreshMap) {
+        const DateTime refreshTime = refresh_event.first;
+        std::vector<std::string> updatedCVs;
+        // Look at every non-computed covariate we are supposed to refresh.
+        for (const auto &cvName : refresh_event.second) {
+            Value newVal = 0.0;
+            if ((*m_cdValued.at(cvName))->getType() == CovariateType::Standard) {
+                // Standard covariate -- get its value from the Patient Variates or from default values.
+                std::map<std::string, std::vector<pvIterator_t>>::iterator pvCurrentC = m_pvValued.find(cvName);
+                if (pvCurrentC == m_pvValued.end()) {
+                    // If no patient variates associated, take the default value.
+                    newVal = (*m_cdValued.at(cvName))->getValue();
+                } else if (pvCurrentC->second.size() == 1) {
+                    // If single patient variate value, then take the first value.
+                    newVal = stringToValue((*(pvCurrentC->second.at(0)))->getValue(),
+                                           (*(pvCurrentC->second.at(0)))->getDataType());
+                } else {
+                    // We have more Patient Variates, therefore we have to compute the good value.
+                    std::vector<pvIterator_t>::const_iterator pvIt = pvCurrentC->second.begin();
+
+                    while (pvIt != pvCurrentC->second.end() && (**pvIt)->getEventTime() <= refreshTime) {
+                        ++pvIt;
+                    }
+
+                    if (pvIt == pvCurrentC->second.end()) {
+                        // We are past in time after the last measurement we have, so we have to keep the value.
+                        newVal = stringToValue((**(std::prev(pvIt)))->getValue(),
+                                               (**(std::prev(pvIt)))->getDataType());
+                    } else if (pvIt == pvCurrentC->second.begin()) {
+                        // The first measurement is already past the desired time -- we simply have to keep the level.
+                        newVal = stringToValue((**(pvIt))->getValue(),
+                                               (**(pvIt))->getDataType());
+                    } else {
+                        // We have two measurements to interpolate from (we have dealt with the case of the first
+                        // measurement being past the desired time, so we can safely assume we have a previous
+                        // measurement.
+                        if (!interpolateValues(stringToValue((**(std::prev(pvIt)))->getValue(),
+                                                             (**(std::prev(pvIt)))->getDataType()), // val1
+                                               (**(std::prev(pvIt)))->getEventTime(),               // date1
+                                               stringToValue((**(pvIt))->getValue(),
+                                                             (**(pvIt))->getDataType()),            // val2
+                                               (**(pvIt))->getEventTime(),                          // date2
+                                               refreshTime,                                         // dateRes
+                                               (*m_cdValued.at(cvName))->getInterpolationType(),    // interpolationType
+                                               newVal)) {                                           // valRes
+                            return false;
                         }
                     }
                 }
+            } else {
+                // Age covariate -- compute its value from either the birth date (if present) or the default values.
+
+                // If we have a birth date, then everything is referred to it. Otherwise, do computations relatives to
+                // the start of the period, and then add the initial default values.
+                DateTime tmp_birthDate = m_hasBirthDate ? m_birthDate : m_start;
+
+                switch ((*m_cdValued.at(cvName))->getType()) {
+                case CovariateType::AgeInDays:
+                    newVal = dateDiffInDays(refreshTime, tmp_birthDate);
+                    newVal += m_hasBirthDate ? 0 : m_initAgeInDays;
+                    break;
+                case CovariateType::AgeInMonths:
+                    newVal = dateDiffInMonths(refreshTime, tmp_birthDate);
+                    newVal += m_hasBirthDate ? 0 : m_initAgeInMonths;
+                    break;
+                case CovariateType::AgeInYears:
+                    newVal = dateDiffInYears(refreshTime, tmp_birthDate);
+                    newVal += m_hasBirthDate ? 0 : m_initAgeInYears;
+                    break;
+                default:
+                    // Cannot get here.
+                    break;
+                }
             }
 
+            // Now check if this update changed the covariate's value, and if it is the case then update the OGM.
+            if (cEventsMap.count(cvName) == 0 || cEventsMap.at(cvName).second != newVal) {
+                // Add the covariate to the list of changed values.
+                updatedCVs.push_back(cvName);
+                // If no event related to this covariate is present in the covariate graph, then add it, otherwise
+                // just update the stored value.
+                if (!m_ogm.isInputPresent(cvName)) {
+                    // Create the event.
+                    std::shared_ptr<CovariateEvent> event =
+                            std::make_shared<CovariateEvent>(**m_cdValued.at(cvName), refreshTime, newVal);
+                    cEventsMap.insert(std::make_pair(cvName, std::make_pair(event, newVal)));
+                    m_ogm.registerInput(event, cvName);
+                } else {
+                    (cEventsMap.at(cvName).first)->setValue(newVal);
+                }
+
+                // Update the event date.
+                (cEventsMap.at(cvName).first)->setEventTime(refreshTime);
+
+                // Add copy of an event to the list of events to return.
+                _series.push_back(*(cEventsMap.at(cvName).first));
+
+                // Update the event map.
+                cEventsMap.at(cvName).second = newVal;
+            }
+        }
+
+        if (m_cdComputed.size() > 0 && updatedCVs.size() > 0) {
+            // If we are at start, we still have to create the events associated with computed CVs and push them in the
+            // OGM!
+            if (refreshTime == m_start) {
+                for (const auto &cvm : m_cdComputed) {
+                    std::shared_ptr<CovariateEvent> event = std::make_shared<CovariateEvent>(**(cvm.second),
+                                                                                             m_start,
+                                                                                             0.0);
+                    cEventsMap.insert(std::make_pair(cvm.first, std::make_pair(event, 0.0)));
+                    m_ogm.registerOperable(event, cvm.first);
+                }
+            }
+
+            // We have a change in at least a value and some of the values are computed:
+            // -> we need to trigger a recomputation, and update the values that changed.
+            m_ogm.evaluate();
+
+            // If we are at the first iteration, then simply push all events, otherwise check those whose value has been
+            // updated.
+            for (auto &cvm : m_cdComputed) {
+                double cvVal;
+                if (!m_ogm.getValue(cvm.first, cvVal)) {
+                    return false;
+                }
+                // We either have no events associated or the newly-computed value differ from the previous one,
+                // therefore we update the stored value and create an associated event.
+                if (refreshTime == m_start || cEventsMap.at(cvm.first).second != cvVal) {
+                    (cEventsMap.at(cvm.first).first)->setValue(cvVal);
+                    (cEventsMap.at(cvm.first).first)->setEventTime(refreshTime);
+                    _series.push_back(*(cEventsMap.at(cvm.first).first));
+                    cEventsMap.at(cvm.first).second = cvVal;
+                }
+            }
         }
     }
-
-    return 0;
+    return true;
 }
 
 
-void CovariateExtractor::collectRefreshIntervals(const std::map<std::string, std::pair<std::shared_ptr<CovariateEvent>, Value>> &_computedValuesMap,
-                                                 std::map<DateTime, std::vector<std::string>> &_refreshMap)
+int CovariateExtractor::extract(CovariateSeries &_series)
 {
-    for (const auto &cvm : _computedValuesMap) {
+    bool rc;
+
+    // Patient Variates have to be sorted by date (dropping all non-interesting ones).
+    sortPatientVariates();
+
+    // Collect refresh intervals. For each date, we can have multiple covariates that want to be refreshed.
+    std::map<DateTime, std::vector<std::string>> refreshMap;
+    collectRefreshIntervals(refreshMap);
+
+    rc = computeEvents(refreshMap, _series);
+
+    if (!rc) {
+        return EXIT_FAILURE;
+    }
+
+    return EXIT_SUCCESS;
+}
+
+
+void CovariateExtractor::collectRefreshIntervals(std::map<DateTime, std::vector<std::string>> &_refreshMap)
+{
+    for (const auto &cdv : m_cdValued) {
         Duration refreshInterval;
-        refreshInterval = (*(m_cdComputed.at(cvm.first)))->getRefreshPeriod();
+        refreshInterval = (*(cdv.second))->getRefreshPeriod();
         if (!refreshInterval.isEmpty()) {
+            // When we have a refresh interval set, use it and ignore the patient variates.
             for (DateTime t = m_start; t <= m_end; t += refreshInterval) {
                 if (_refreshMap.find(t) == _refreshMap.end()) {
                     _refreshMap.insert(std::pair<DateTime, std::vector<std::string>>(t, std::vector<std::string>()));
                 }
-                _refreshMap.at(t).push_back(cvm.first);
+                _refreshMap.at(t).push_back(cdv.first);
             }
-        }
-    }
-}
-
-
-bool CovariateExtractor::createInitialEvents(std::map<std::string, std::shared_ptr<CovariateEvent>> &_nccValuesMap,
-                                             std::map<std::string, std::pair<std::shared_ptr<CovariateEvent>, Value>> &_computedValuesMap,
-                                             CovariateSeries &_series)
-{
-    // The order here is important -- computed covariates need the default value of non-computed ones to get their
-    // value!
-    if (!createNonComputedCEvents(_nccValuesMap, _series)) {
-        return false;
-    }
-    if (!createComputedCEvents(_computedValuesMap, _series)) {
-        return false;
-    }
-    return true;
-}
-
-
-bool CovariateExtractor::createNonComputedCEvents(std::map<std::string, std::shared_ptr<CovariateEvent>> &_nccValuesMap,
-                                                  CovariateSeries &_series)
-{
-    // Standard values (no computations involved).
-    for (const auto &cdv : m_cdValued) {
-        std::map<std::string, std::vector<pvIterator_t>>::const_iterator it;
-        it = m_pvValued.find(cdv.first);
-        std::shared_ptr<CovariateEvent> event;
-        if (it == m_pvValued.end()) {
-            // If no patient variates associated, then take default value (it won't be touched afterwards).
-            event = std::make_shared<CovariateEvent>(**(cdv.second), m_start, (*(cdv.second))->getValue());
         } else {
-            Value newVal = 0.0;
-            if (it->second.size() == 1 || (*(it->second.at(0)))->getEventTime() >= m_start) {
-                // If single patient variate value or measurement start after m_start, then take the first value.
-                newVal = stringToValue((*(it->second.at(0)))->getValue(), (*(it->second.at(0)))->getDataType());
+            // No refresh interval set, so we get the time instants given by patient variates:
+            // # standard covariates #
+            // - if no patient variates, then just add start (the default value won't change afterwards).
+            // - if only a single value, then move it to the start.
+            // - if more values, then add start (if not already there) and those in the (start, end] interval.
+            // # ages #
+            // - if a covariate named m_birthDateCName is present, then use it to set the refresh dates.
+            // - else use the start interval and the type to set them.
+            if ((*(cdv.second))->getType() == CovariateType::Standard) {
+                DateTime t = m_start;
+                if (_refreshMap.find(t) == _refreshMap.end()) {
+                    _refreshMap.insert(std::pair<DateTime, std::vector<std::string>>(t, std::vector<std::string>()));
+                }
+                _refreshMap.at(t).push_back(cdv.first);
+                if (m_pvValued.count(cdv.first) > 0) {
+                    const std::vector<pvIterator_t> &pvValues = m_pvValued.at(cdv.first);
+                    if (pvValues.size() > 1) {
+                        for (const auto &pv : pvValues) {
+                            DateTime t = (*pv)->getEventTime();
+                            if (t > m_start && t <= m_end) {
+                                if (_refreshMap.find(t) == _refreshMap.end()) {
+                                    _refreshMap.insert(std::pair<DateTime, std::vector<std::string>>(t, std::vector<std::string>()));
+                                }
+                                _refreshMap.at(t).push_back(cdv.first);
+                            }
+                        }
+                    }
+                }
             } else {
-                // If multiple values with the first before m_start, then use the value interpolated using the first two
-                // elements of the vector.
-                Value val1 = stringToValue((*(it->second.at(0)))->getValue(), (*(it->second.at(0)))->getDataType());
-                Value val2 = stringToValue((*(it->second.at(1)))->getValue(), (*(it->second.at(1)))->getDataType());
-                bool rc = interpolateValues(val1, (*(it->second.at(0)))->getEventTime(),
-                                            val2, (*(it->second.at(1)))->getEventTime(),
-                                            m_start,
-                                            (*(cdv.second))->getInterpolationType(),
-                                            newVal);
-                if (rc == false) {
-                    return false;
+                DateTime startDate = m_start;
+                if (m_hasBirthDate) {
+                    startDate = m_birthDate;
+                }
+
+                DateTime t = startDate;
+                while (t <= m_end) {
+                    if (t >= m_start) {
+                        if (_refreshMap.find(t) == _refreshMap.end()) {
+                            _refreshMap.insert(std::pair<DateTime, std::vector<std::string>>(t, std::vector<std::string>()));
+                        }
+                        _refreshMap.at(t).push_back(cdv.first);
+                    }
+                    switch ((*(cdv.second))->getType()) {
+                    case CovariateType::AgeInDays:
+                        t.addDays(1);
+                        break;
+                    case CovariateType::AgeInMonths:
+                        t.addMonths(1);
+                        break;
+                    case CovariateType::AgeInYears:
+                        t.addYears(1);
+                        break;
+                    default:
+                        break;
+                    }
+                }
+
+                // The age has still to be computed at the start time, so we add it there if this is not the case.
+                if (_refreshMap.find(m_start) == _refreshMap.end()) {
+                    _refreshMap.insert(std::pair<DateTime, std::vector<std::string>>(m_start, std::vector<std::string>()));
+                }
+                if (std::find(_refreshMap.at(m_start).begin(), _refreshMap.at(m_start).end(), cdv.first) == _refreshMap.at(m_start).end()) {
+                    _refreshMap.at(m_start).push_back(cdv.first);
                 }
             }
-            event = std::make_shared<CovariateEvent>(**(cdv.second), m_start, newVal);
-        }
-
-        _series.push_back(*event);
-        m_ogm.registerInput(event, cdv.first);
-        _nccValuesMap.insert(std::pair<std::string, std::shared_ptr<CovariateEvent>>(cdv.first, event));
-    }
-    return true;
-}
-
-
-bool CovariateExtractor::createComputedCEvents(std::map<std::string, std::pair<std::shared_ptr<CovariateEvent>, Value>> &_computedValuesMap,
-                                               CovariateSeries &_series)
-{
-    // Computed values.
-    if (m_cdComputed.size() > 0) {
-        // Push an Operable for each computed Covariate.
-        for (const auto &cdc : m_cdComputed) {
-            std::shared_ptr<CovariateEvent> event = std::make_shared<CovariateEvent>(**(cdc.second), m_start, 0.0);
-            _computedValuesMap.insert(std::pair<std::string, std::pair<std::shared_ptr<CovariateEvent>, Value>>(cdc.first,
-                                                                                                                std::make_pair(event, 0.0)));
-            m_ogm.registerOperable(event, cdc.first);
-        }
-
-        // Call the evaluation once to generate the first set of values for the computed events, using the default
-        // values for the covariates.
-        bool rc = m_ogm.evaluate();
-        if (rc == false) {
-            return false;
-        }
-
-        for (auto &cvm : _computedValuesMap) {
-            // Update the value in the map.
-            cvm.second.second = cvm.second.first->getValue();
-            // Push each computed covariate in the event series.
-            _series.push_back(*cvm.second.first);
         }
     }
-    return true;
+
+    // Now iterate on the produced refresh intervals, and add non-directly interpolated values to each interval if
+    // absent. We do this because we must have the best guess for each value at the time of the computation of new
+    // values, and if the values is interpolated, so be it. This should have no impact on the computations performed,
+    // since in any case we would have to redo the computations for the given time instant.
+    for (const auto &cv : m_cdValued) {
+        if ((*(cv.second))->getInterpolationType() != InterpolationType::Direct) {
+            for (auto &t : _refreshMap) {
+                if (std::find(t.second.begin(), t.second.end(), cv.first) == t.second.end()) {
+                    t.second.push_back(cv.first);
+                }
+            }
+        }
+    }
 }
 
 
@@ -536,6 +425,16 @@ bool CovariateExtractor::interpolateValues(const Value _val1, const DateTime &_d
         } else {
             return false;
         }
+    }
+
+    // If the result's date corresponds to either date1 or date2, then return the corresponding value immediately.
+    if (_dateRes == _date1) {
+        _valRes = _val1;
+        return true;
+    }
+    if (_dateRes == _date2) {
+        _valRes = _val2;
+        return true;
     }
 
     switch (_interpolationType) {
@@ -609,7 +508,5 @@ void CovariateExtractor::sortPatientVariates()
     }
 }
 
-
 }
 }
-

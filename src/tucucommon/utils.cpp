@@ -17,6 +17,61 @@ std::string Utils::getAppFolder(char** _argv)
     return appFolder;
 }
 
+
+double Utils::dateDiffInDays(const DateTime &_t1, const DateTime &_t2)
+{
+    DateTime t1;
+    DateTime t2;
+
+    if (_t1 > _t2) {
+        t1 = _t1;
+        t2 = _t2;
+    } else {
+        t1 = _t2;
+        t2 = _t1;
+    }
+    return ValueToDate(varToValue(t1)- varToValue(t2)).toDays();
+}
+
+
+double Utils::dateDiffInMonths(const DateTime &_t1, const DateTime &_t2)
+{
+    DateTime t1;
+    DateTime t2;
+
+    if (_t1 > _t2) {
+        t1 = _t1;
+        t2 = _t2;
+    } else {
+        t1 = _t2;
+        t2 = _t1;
+    }
+    return ((t1.year() - t2.year()) * 12 + (t1.month() - t2.month()) - ((t1.day() > t2.day()) ? 0 : 1));
+}
+
+
+double Utils::dateDiffInYears(const DateTime &_t1, const DateTime &_t2)
+{
+    DateTime t1;
+    DateTime t2;
+
+    if (_t1 > _t2) {
+        t1 = _t1;
+        t2 = _t2;
+    } else {
+        t1 = _t2;
+        t2 = _t1;
+    }
+    return (t1.year() - t2.year() - ((t1.month() < t2.month() && (t1.year() > t2.year())) ? 1 : 0));
+}
+
+
+Value Utils::varToValue(const DateTime &_value)
+{
+    return stringToValue(varToString(_value), DataType::Date);
+}
+
+
 Value Utils::stringToValue(const std::string &_str, const DataType &_dataType)
 {
     Value v;
@@ -45,7 +100,7 @@ Value Utils::stringToValue(const std::string &_str, const DataType &_dataType)
 
     case DataType::Date:
     {
-        DateTime dt(str, "%Y-%b-%d %H:%M:%S");
+        DateTime dt(str, "%Y-%m-%d %H:%M:%S");
         v = dt.toSeconds();
     }
         break;
@@ -59,28 +114,28 @@ Value Utils::stringToValue(const std::string &_str, const DataType &_dataType)
 }
 
 
-std::string Utils::valueToString(const bool &_value)
+std::string Utils::varToString(const bool &_value)
 {
     return _value == true ? "1" : "0";
 }
 
 
-std::string Utils::valueToString(const int &_value)
+std::string Utils::varToString(const int &_value)
 {
     return std::to_string(_value);
 }
 
 
-std::string Utils::valueToString(const double &_value)
+std::string Utils::varToString(const double &_value)
 {
     return std::to_string(_value);
 }
 
 
-std::string Utils::valueToString(const DateTime &_value)
+std::string Utils::varToString(const DateTime &_value)
 {
     char buf[64];
-    sprintf(buf, "%4d-%2d-%2d %2d:%2d:%2d",
+    sprintf(buf, "%04d-%02d-%02d %02d:%02d:%02d",
             _value.year(), _value.month(), _value.day(),
             _value.hour(), _value.minute(), (int)_value.second());
     return std::string(buf);
@@ -89,8 +144,8 @@ std::string Utils::valueToString(const DateTime &_value)
 
 DateTime Utils::ValueToDate(const Value &_value)
 {
-    DateTime dt;
-    dt += Duration(std::chrono::seconds((long int)_value));
+    DateTime dt(Duration(std::chrono::seconds((int64)_value)));
+
     return dt;
 }
 

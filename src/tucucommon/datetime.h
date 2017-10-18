@@ -179,6 +179,10 @@ public:
     /// \return The number of seconds representing the duration.
     double toSeconds() const;
 
+    /// \brief Convert a date in days.
+    /// \return Number of days representing the duration.
+    double toDays() const;
+
     /// \brief Class' output operator.
     /// \param _output Output stream.
     /// \param _dt Self reference to the DateTime to print.

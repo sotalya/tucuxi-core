@@ -164,6 +164,20 @@ public:
     /// \return The number of milliseconds reprensenting the duration.
     int64 toMilliseconds() const;
 
+    /// \brief Class' output operator.
+    /// \param _output Output stream.
+    /// \param _dt Self reference to the Duration to print.
+    /// \return Output stream given as input (for output chaining).
+    friend std::ostream& operator<<(std::ostream &_output, const Duration &_dt) {
+        _output << "Years: " << _dt.toYears() << ";\n"
+                << "Months: " << _dt.toMonths() << ";\n"
+                << "Days: " << _dt.toDays() << ";\n"
+                << "Hours: " << _dt.toHours() << ";\n"
+                << "Minutes: " << _dt.toMinutes() << ";\n"
+                << "Seconds: " << _dt.toSeconds() << ".\n";
+        return _output;
+    }
+
 private:
     /// \brief Returns the duration in one of the std::chrono duration class (hours, minutes, seconds, ...)
     /// \return The duration in the specified T unit.

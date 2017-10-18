@@ -28,7 +28,7 @@ public:
     /// \brief Remove the default constructor.
     CovariateEvent() = delete;
     /// \brief Create a change in a covariate given a reference to the desired covariate, a time, and the new value.
-    /// \param _covariateDef Covariate definition that is changed
+    /// \param _covariateDef Covariate definition that is changed.
     /// \param _date Time of change.
     /// \param _value New value of the covariate.
     CovariateEvent(const CovariateDefinition &_covariateDef, const DateTime &_date, Value _value)
