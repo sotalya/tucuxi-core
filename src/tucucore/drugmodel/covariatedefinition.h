@@ -14,7 +14,6 @@
 #include "tucucore/drugdefinitions.h"
 #include "tucucore/operation.h"
 
-
 namespace Tucuxi {
 namespace Core {
 
@@ -32,7 +31,15 @@ public:
     /// \param _dataType Type of data contained in the variable
     CovariateDefinition(const std::string &_id, const std::string &_value, Operation *_operation,
                         const CovariateType _type = CovariateType::Standard, const DataType _dataType = DataType::Double) :
-        PopulationValue(_id, stringToValue(_value, _dataType), _operation), m_type(_type), m_dataType(_dataType) {}
+        PopulationValue(_id, stringToValue(_value, _dataType), _operation),
+        m_type{_type}, m_dataType{_dataType}, m_interpolationType{InterpolationType::Direct}
+    {
+        if (_type != CovariateType::Standard) {
+            // For the age, reset all the values set by the user to appropriate ones.
+            m_refreshPeriod.clear();
+            m_operation = nullptr;
+        }
+    }
 
     /// \brief Get the covariate's type.
     /// \return Covariate's type.
@@ -84,7 +91,6 @@ typedef std::vector<std::unique_ptr<CovariateDefinition>> CovariateDefinitions;
 
 /// \brief Iterator in the list of covariate definitions.
 typedef std::vector<std::unique_ptr<CovariateDefinition>>::const_iterator cdIterator_t;
-
 
 }
 }

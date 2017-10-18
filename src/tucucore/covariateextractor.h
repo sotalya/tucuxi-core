@@ -90,79 +90,27 @@ public:
 
     /// \brief Extract covariate events.
     /// \param _series Set of extracted covariate events.
-    /// \return 0 on success, an error code in case an issue arised.
+    /// \return EXIT_SUCCESS on success, EXIT_FAILURE in case an issue arised.
     int extract(CovariateSeries &_series) override;
 
     // Make the test class friend, as this will allow us to test the helper methods (which are private).
     friend TestCovariateExtractor;
 
+    /// \brief Standard name for a covariate that carries the birth date.
+    static const std::string m_birthDateCName;
+
 private:
-
-    /// \brief Operable Graph Manager, in charge of performing all the computations needed to derive covariate values.
-    OperableGraphManager m_ogm;
-
-    /// \brief Covariate Definitions that have their own independent value (that is, not computed).
-    std::map<std::string, cdIterator_t> m_cdValued;
-
-    /// \brief Covariate Definitions that are computed.
-    std::map<std::string, cdIterator_t> m_cdComputed;
-
-    /// \brief Patient Variates (measured values, therefore cannot be computed!).
-    /// We normally have multiple values for each patient variate (corresponding to multiple measurements of the same
-    /// physical quantity).
-    std::map<std::string, std::vector<pvIterator_t>> m_pvValued;
-
-    Value getPatientVariateValue(const std::vector<pvIterator_t>& _PV,
-                                 const DateTime &_t,
-                                 const InterpolationType _interpolationType);
-
-    int generatePeriodicComputedCovariates(const std::map<DateTime, std::vector<std::string>> _refreshMap,
-                                           std::map<std::string, std::pair<std::shared_ptr<CovariateEvent>, Value>> &_computedValuesMap,
-                                           std::map<std::string, std::shared_ptr<CovariateEvent>> &_nccValuesMap,
-                                           CovariateSeries &_series);
-
-    int addPatientVariateWithRefresh(std::map<std::string, std::pair<std::shared_ptr<CovariateEvent>, Value>> &_computedValuesMap,
-                                     std::map<std::string, std::shared_ptr<CovariateEvent>> &_nccValuesMap,
-                                     CovariateSeries &_series);
-
-    /*******************************************************************************************************************
-     *                                           OK VERIFIED AND TESTED                                                *
-     ******************************************************************************************************************/
-
     /// \brief Collect the time instants when the computed covariates have to be re-evaluated.
     /// \param _computedValuesMap Map that holds the pointers to the events due to computed covariates, as well as their
     ///                           latest value.
-    /// \param _refreshMap Mat containing, for each selected time instant, the list of covariates to update.
-    void collectRefreshIntervals(const std::map<std::string, std::pair<std::shared_ptr<CovariateEvent>, Value>> &_computedValuesMap,
-                                 std::map<DateTime, std::vector<std::string>> &_refreshMap);
+    /// \param _refreshMap Map containing, for each selected time instant, the list of covariates to update.
+    void collectRefreshIntervals(std::map<DateTime, std::vector<std::string>> &_refreshMap);
 
-    int addPatientVariateNoRefresh(std::map<std::string, std::pair<std::shared_ptr<CovariateEvent>, Value>> &_computedValuesMap,
-                                   CovariateSeries &_series);
-
-    /// \brief Create the events linked with the initial value of computed covariates.
-    /// \param _computedValuesMap Map that will hold the pointers to the events due to computed covariates, as well as
-    ///                           their latest value (to choose whether to update them or not).
-    /// \param _series Produced event series.
-    /// \return True if the creation was successful, false otherwise.
-    bool createComputedCEvents(std::map<std::string, std::pair<std::shared_ptr<CovariateEvent>, Value>> &_computedValuesMap,
-                               CovariateSeries &_series);
-
-    /// \brief Create the events linked with the initial value of non-computed covariates.
-    /// \param _nccValuesMap Map that will hold the pointers to the events due to non-computed covariates.
-    /// \param _series Produced event series.
-    /// \return True if the creation was successful, false otherwise.
-    bool createNonComputedCEvents(std::map<std::string, std::shared_ptr<CovariateEvent>> &_nccValuesMap,
-                                  CovariateSeries &_series);
-
-    /// \brief Create the initial set of events (those imposed by either computed and non-computed covariates).
-    /// \param _nccValuesMap Map that will hold the pointers to the events due to non-computed covariates.
-    /// \param _computedValuesMap Map that will hold the pointers to the events due to computed covariates, as well as
-    ///                           their latest value (to choose whether to update them or not).
-    /// \param _series Produced event series.
-    /// \return True if the creation was successful, false otherwise.
-    bool createInitialEvents(std::map<std::string, std::shared_ptr<CovariateEvent>> &_nccValuesMap,
-                             std::map<std::string, std::pair<std::shared_ptr<CovariateEvent>, Value>> &_computedValuesMap,
-                             CovariateSeries &_series);
+    /// \brief Generate the events due to the covariates and the patient variates.
+    /// \param _refreshMap Map containing, for each selected time instant, the list of covariates to update.
+    /// \param _series Set of extracted covariate events.
+    /// \return True if the events have been successfully extracted, false in case of errors.
+    bool computeEvents(const std::map<DateTime, std::vector<std::string>> &_refreshMap, CovariateSeries &_series);
 
     /// \brief Perform the chosen interpolation between the given values.
     /// \note The desired time can be *before* the lower date or *after* the higher date. This results in extrapolation,
@@ -190,6 +138,35 @@ private:
     /// If the covariate is not interpolated, then its first observation is replaced by an observation at the beginning
     /// of the interval.
     void sortPatientVariates();
+
+    /// \brief Flag that marks that a birth date has been found.
+    bool m_hasBirthDate;
+
+    /// \brief Birth date (if found).
+    DateTime m_birthDate;
+
+    /// \brief Default value for an AgeInDays variable (if present).
+    double m_initAgeInDays;
+
+    /// \brief Default value for an AgeInMonths variable (if present).
+    double m_initAgeInMonths;
+
+    /// \brief Default value for an AgeInYears variable (if present).
+    double m_initAgeInYears;
+
+    /// \brief Operable Graph Manager, in charge of performing all the computations needed to derive covariate values.
+    OperableGraphManager m_ogm;
+
+    /// \brief Covariate Definitions that have their own independent value (that is, not computed).
+    std::map<std::string, cdIterator_t> m_cdValued;
+
+    /// \brief Covariate Definitions that are computed.
+    std::map<std::string, cdIterator_t> m_cdComputed;
+
+    /// \brief Patient Variates (measured values, therefore cannot be computed!).
+    /// We normally have multiple values for each patient variate (corresponding to multiple measurements of the same
+    /// physical quantity).
+    std::map<std::string, std::vector<pvIterator_t>> m_pvValued;
 };
 
 

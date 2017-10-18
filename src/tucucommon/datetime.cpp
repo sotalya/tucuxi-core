@@ -271,7 +271,12 @@ bool DateTime::isUndefined() const
 
 double DateTime::toSeconds() const
 {
-    return static_cast<double>(get<std::chrono::milliseconds>().count()) / 1000;
+    return static_cast<double>(get<std::chrono::seconds>().count());
+}
+
+double DateTime::toDays() const
+{
+    return floor(static_cast<double>(get<std::chrono::hours>().count()) / 24);
 }
 
 }
