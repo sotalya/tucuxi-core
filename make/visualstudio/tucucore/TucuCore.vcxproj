@@ -25,6 +25,7 @@
     <ClCompile Include="..\..\..\src\tucucore\corecomponent.cpp" />
     <ClCompile Include="..\..\..\src\tucucore\covariateevent.cpp" />
     <ClCompile Include="..\..\..\src\tucucore\covariateextractor.cpp" />
+    <ClCompile Include="..\..\..\src\tucucore\cyclestatisticscalculator.cpp" />
     <ClCompile Include="..\..\..\src\tucucore\dosage.cpp" />
     <ClCompile Include="..\..\..\src\tucucore\drugmodel\activesubstance.cpp" />
     <ClCompile Include="..\..\..\src\tucucore\drugmodel\analyte.cpp" />
@@ -75,6 +76,7 @@
     <ClInclude Include="..\..\..\src\tucucore\corecomponent.h" />
     <ClInclude Include="..\..\..\src\tucucore\covariateevent.h" />
     <ClInclude Include="..\..\..\src\tucucore\covariateextractor.h" />
+    <ClInclude Include="..\..\..\src\tucucore\cyclestatisticscalculator.h" />
     <ClInclude Include="..\..\..\src\tucucore\definitions.h" />
     <ClInclude Include="..\..\..\src\tucucore\deriv.h" />
     <ClInclude Include="..\..\..\src\tucucore\dosage.h" />

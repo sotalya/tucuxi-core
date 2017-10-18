@@ -177,6 +177,9 @@
     <ClCompile Include="..\..\..\src\tucucore\intakeextractor.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucore\cyclestatisticscalculator.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="drugtreatment\drugtreatment.h">
@@ -367,6 +370,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\src\tucucore\processingservice\processingtrait.h">
       <Filter>Headers\Processing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\cyclestatisticscalculator.h">
+      <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
