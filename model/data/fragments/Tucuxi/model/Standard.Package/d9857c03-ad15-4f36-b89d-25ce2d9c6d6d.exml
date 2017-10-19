@@ -28,6 +28,7 @@
       <COMP relation="Product">
         <COMPID name="CoreServices" mc="Standard.ClassDiagram" uid="dfd27fe7-7d5d-4fcc-ba21-e1309bdf9694"/>
         <COMPID name="Processing" mc="Standard.ClassDiagram" uid="ce7c5261-6e3b-41b4-b6d7-8154befffa8a"/>
+        <COMPID name="Parameters" mc="Standard.ClassDiagram" uid="82ab1aa3-d18a-40f1-99f9-2c40e0940aba"/>
       </COMP>
     </DEPENDENCIES>
   </OBJECT>

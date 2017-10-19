@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
-<!--GENERATED FILE, PLEASE DO NOT EDIT!!!--><EXT object="ParameterSerie" version="4">
+<!--GENERATED FILE, PLEASE DO NOT EDIT!!!--><EXT object="ParameterSetSeries" version="4">
   <OBJECT>
-    <ID name="ParameterSerie" mc="Standard.Class" uid="2d5c7ef4-de81-4580-aaea-68e7951379a0"/>
+    <ID name="ParameterSetSeries" mc="Standard.Class" uid="2d5c7ef4-de81-4580-aaea-68e7951379a0"/>
     <PID name="TucuMath" mc="Standard.Package" uid="c76f11a6-ee2a-4567-877d-3b836f448e13"/>
     <ATTRIBUTES>
       <ATT name="IsActive">false</ATT>
@@ -11,7 +11,7 @@
       <ATT name="IsLeaf">false</ATT>
       <ATT name="IsRoot">false</ATT>
       <ATT name="Visibility">Public</ATT>
-      <ATT name="Name"><![CDATA[ParameterSerie]]></ATT>
+      <ATT name="Name"><![CDATA[ParameterSetSeries]]></ATT>
       <ATT name="status">1970354901745664</ATT>
     </ATTRIBUTES>
     <DEPENDENCIES>
@@ -35,7 +35,7 @@
           </ATTRIBUTES>
           <DEPENDENCIES>
             <LINK relation="Target">
-              <ID name="ParameterEvent" mc="Standard.Class" uid="758efd9d-4a39-48e4-aabd-5ac1c2867c52"/>
+              <ID name="ParameterSetEvent" mc="Standard.Class" uid="758efd9d-4a39-48e4-aabd-5ac1c2867c52"/>
             </LINK>
             <COMP relation="Opposite">
               <OBJECT>

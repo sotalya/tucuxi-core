@@ -18,24 +18,27 @@
         <COMPID name="ConcentrationCalculator" mc="Standard.Class" uid="140c5466-1886-4964-b1af-b2edb1cb144f"/>
         <COMPID name="TimedEvent" mc="Standard.Class" uid="ab85727b-3399-4d19-8af9-ee52b637b18c"/>
         <COMPID name="IntakeEvent" mc="Standard.Class" uid="777e5c2d-2000-4610-b89d-828af9ac33bd"/>
-        <COMPID name="ParameterEvent" mc="Standard.Class" uid="758efd9d-4a39-48e4-aabd-5ac1c2867c52"/>
+        <COMPID name="ParameterSetEvent" mc="Standard.Class" uid="758efd9d-4a39-48e4-aabd-5ac1c2867c52"/>
         <COMPID name="CovariateEvent" mc="Standard.Class" uid="98c7ae51-c76c-4fe1-9d72-66868ac76d6e"/>
         <COMPID name="SampleEvent" mc="Standard.Class" uid="25ef5d01-a13b-4caf-875d-3e944f3ee9e5"/>
-        <COMPID name="IntakeSerie" mc="Standard.Class" uid="2a44d98c-d40c-4861-9e6d-b82c98b4ad7b"/>
-        <COMPID name="ParameterSerie" mc="Standard.Class" uid="2d5c7ef4-de81-4580-aaea-68e7951379a0"/>
-        <COMPID name="CovariateSerie" mc="Standard.Class" uid="b5e68993-6e62-428d-b042-35990d1efef0"/>
-        <COMPID name="SampleSerie" mc="Standard.Class" uid="cf94312d-292d-4b28-8d1b-ce4e5a3f1f44"/>
+        <COMPID name="IntakeSeries" mc="Standard.Class" uid="2a44d98c-d40c-4861-9e6d-b82c98b4ad7b"/>
+        <COMPID name="ParameterSetSeries" mc="Standard.Class" uid="2d5c7ef4-de81-4580-aaea-68e7951379a0"/>
+        <COMPID name="CovariateSeries" mc="Standard.Class" uid="b5e68993-6e62-428d-b042-35990d1efef0"/>
+        <COMPID name="SampleSeries" mc="Standard.Class" uid="cf94312d-292d-4b28-8d1b-ce4e5a3f1f44"/>
         <COMPID name="ConjugateGradientMethod" mc="Standard.Class" uid="ef443ae7-057f-4981-b707-1a2740d76f8b"/>
         <COMPID name="MonteCarloPercentileCalculator" mc="Standard.Class" uid="0c4d9328-5dea-4863-8a61-ce960307c63e"/>
         <COMPID name="OneCompartmentBolus" mc="Standard.Class" uid="a5864d2e-df2f-45ef-a908-c7085e85a078"/>
         <COMPID name="OneCompartmentExtra" mc="Standard.Class" uid="8ddad03d-ebc4-4485-b5b7-7ef3d3b79b54"/>
         <COMPID name="OneCompartmentInfusion" mc="Standard.Class" uid="1159fb07-7ef1-498c-b196-b3a5fe16f6c0"/>
         <COMPID name="TwoCompartmentsBolus" mc="Standard.Class" uid="d9ccffca-929f-4c03-a059-00da2cfa99d5"/>
-        <COMPID name="2CompartmentsExtra" mc="Standard.Class" uid="1bba1b4b-80f5-46ba-963c-8adfd7dde249"/>
-        <COMPID name="2CompartmentsInfusion" mc="Standard.Class" uid="1a2f4662-850a-4a8b-9245-013936c3ef01"/>
-        <COMPID name="3CompartmentsBolus" mc="Standard.Class" uid="2acbb9d5-4bc4-4e17-bb7c-fb3cfb7adbb6"/>
-        <COMPID name="3CompartmentsExtra" mc="Standard.Class" uid="3dd7a631-c11f-47f3-bb44-8ba64ef4c447"/>
-        <COMPID name="3CompartmentsInfusion" mc="Standard.Class" uid="5b15eaee-03a6-48d3-bef3-641f7ef38c2a"/>
+        <COMPID name="TwoCompartmentsExtra" mc="Standard.Class" uid="1bba1b4b-80f5-46ba-963c-8adfd7dde249"/>
+        <COMPID name="TwoCompartmentsInfusion" mc="Standard.Class" uid="1a2f4662-850a-4a8b-9245-013936c3ef01"/>
+        <COMPID name="ThreeCompartmentsBolus" mc="Standard.Class" uid="2acbb9d5-4bc4-4e17-bb7c-fb3cfb7adbb6"/>
+        <COMPID name="ThreeCompartmentsExtra" mc="Standard.Class" uid="3dd7a631-c11f-47f3-bb44-8ba64ef4c447"/>
+        <COMPID name="ThreeCompartmentsInfusion" mc="Standard.Class" uid="5b15eaee-03a6-48d3-bef3-641f7ef38c2a"/>
+        <COMPID name="Parameter" mc="Standard.Class" uid="0a48b48a-ebb3-4ae0-87fa-ac328923da4d"/>
+        <COMPID name="ParameterDefinition" mc="Standard.Class" uid="facd005c-f435-4dbb-a8b8-0969fd08269c"/>
+        <COMPID name="IndividualValue" mc="Standard.Class" uid="d91e515a-3bd0-468e-b426-da2a84bab6dd"/>
       </COMP>
       <COMP relation="Product">
         <COMPID name="TucuMath" mc="Standard.ClassDiagram" uid="af849f2c-a968-463a-9b66-9294a4493d1e"/>
