@@ -26,20 +26,15 @@ ParameterSetEventPtr ParameterSetSeries::getAtTime(const DateTime &_date, const 
     // Did we find something?
     if (it != m_parameterSets.end())
     {
+        // Make a copy to hold values with applied etas
+        ParameterSetEvent *pParameters = new ParameterSetEvent(*it);
+
         // Apply etas if available
         if (_etas.size() > 0) {
-            // Make a copy to hold values with applied etas
-            ParameterSetEvent *pParameters = new ParameterSetEvent(*it);
-            // Apply etas
             pParameters->applyEtas(_etas);
-            return ParameterSetEventPtr(pParameters);
         }
 
-        // YTA: I do a copy of the parameters, else there is a segmentation fault later on.
-        // I guess this is related to the use of unique_ptr<>()
-        ParameterSetEvent *pParameters = new ParameterSetEvent(*it);
         return ParameterSetEventPtr(pParameters);
-      //  return ParameterSetEventPtr(&(*it));
     }
 
     return nullptr;

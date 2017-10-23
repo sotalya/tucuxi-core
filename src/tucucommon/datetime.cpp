@@ -5,6 +5,7 @@
 #include <string>
 #include <sstream>
 #include <iomanip>
+#include <cmath>
 
 #undef min  // Prevent problems with date.h
 #undef max  // Prevent problems with date.h
@@ -276,7 +277,7 @@ double DateTime::toSeconds() const
 
 double DateTime::toDays() const
 {
-    return floor(static_cast<double>(get<std::chrono::hours>().count()) / 24);
+    return std::floor(static_cast<double>(get<std::chrono::hours>().count()) / 24);
 }
 
 }
