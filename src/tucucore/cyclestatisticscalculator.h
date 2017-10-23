@@ -11,7 +11,7 @@
 namespace Tucuxi {
 namespace Core {
 
-enum class CycleStatisticType : int { Mean, Peak, Maximum, Minimum, AUC };
+enum class CycleStatisticType : int { Mean, Peak, Maximum, Minimum, AUC, CYCLE_STATISTIC_TYPE_SIZE};
 
 ///
 /// \brief The CycleStatistic class
@@ -102,15 +102,11 @@ public:
     /// \param _type mean, peak, maximum, minimum or AUC
     /// \return The list of statistics
     ///
-    CycleStatistic getStatistic(CycleStatisticType _type) { return m_stats[0][static_cast<int>(_type)]; }
+    CycleStatistic getStatistic(int compartment, CycleStatisticType _type) { return m_stats[compartment][static_cast<int>(_type)]; }
 
-    void calculateMean(const std::vector<Concentrations> &_concentrations);
-    void calculateAUC(const std::vector<Concentrations> &_concentrations, const std::vector<TimeOffsets> &_times);
-    void searchPeak(const std::vector<Concentrations> &_concentrations, const std::vector<TimeOffsets> &_times);
-    void searchMaximumsMinimums(const std::vector<Concentrations> &_concentrations, const std::vector<TimeOffsets> &_times);
+    void calculateCycleStatistics(const std::vector<Concentrations> &_concentrations, const std::vector<TimeOffsets> &_times);
 
 private:
-    // TODO: currently it's only for first compartment, but need to change for all compartment
     // The list of statistics for each compartments (e.g m_stats[0][]: 1st compartment, m_stats[1][]: 2nd compartment etc)
     std::vector< std::vector<CycleStatistic> > m_stats;
 };
