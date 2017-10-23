@@ -11,7 +11,7 @@
 namespace Tucuxi {
 namespace Core {
 
-enum class CycleStatisticType : int { Mean, Peak, Maximum, Minimum, AUC, CYCLE_STATISTIC_TYPE_SIZE};
+enum class CycleStatisticType : int { Mean, Peak, Maximum, Minimum, AUC, CYCLE_STATISTIC_TYPE_SIZE };
 
 ///
 /// \brief The CycleStatistic class
@@ -98,17 +98,34 @@ public:
     CycleStatistics(const CycleData &_data);
 
     ///
-    /// \brief Get the statistic for the specified type
+    /// \brief Get the statistic for the specified compartment and type
+    /// \param _compartment 0: first, 1: second or 2: third compartment
     /// \param _type mean, peak, maximum, minimum or AUC
     /// \return The list of statistics
     ///
-    CycleStatistic getStatistic(int compartment, CycleStatisticType _type) { return m_stats[compartment][static_cast<int>(_type)]; }
+    CycleStatistic getStatistic(int _compartment, CycleStatisticType _type) { return m_stats[_compartment][static_cast<int>(_type)]; }
 
-    void calculateCycleStatistics(const std::vector<Concentrations> &_concentrations, const std::vector<TimeOffsets> &_times);
+    ///
+    /// \brief Get the statistics of all compartments for the specified type
+    /// \param _type mean, peak, maximum, minimum or AUC
+    /// \return The list of statistics
+    ///
+    bool getStatistics(CycleStatisticType _type, std::vector< std::vector<CycleStatistic> >
+    &_stats) { 
+	if(_type >= CycleStatisticType::CYCLE_STATISTIC_TYPE_SIZE)
+	    return false;
+
+	for (unsigned int compartment = 0; compartment < m_stats.size(); compartment++)
+	_stats[compartment][static_cast<int>(_type)] = m_stats[compartment][static_cast<int>(_type)]; 
+
+	return true;
+    }
 
 private:
     // The list of statistics for each compartments (e.g m_stats[0][]: 1st compartment, m_stats[1][]: 2nd compartment etc)
     std::vector< std::vector<CycleStatistic> > m_stats;
+    void calculate(const std::vector<Concentrations> &_concentrations, const std::vector<TimeOffsets> &_times);
+
 };
 
 }

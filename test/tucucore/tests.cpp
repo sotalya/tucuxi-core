@@ -20,6 +20,7 @@
 #include "test_percentilecalculator.h"
 #include "test_nonmemdrugs.h"
 #include "test_drugmodels.h"
+#include "test_cyclestatistics.h"
 
 int main(int argc, char** argv)
 {
@@ -187,6 +188,7 @@ int main(int argc, char** argv)
         std::cout << "Operable Graph Manager test succeeded\n";
     }
 
+    // --- percentile calculator --- //
     TestPercentileCalculator percentileCalculatorTests;
 
     // one compartment
@@ -199,9 +201,7 @@ int main(int argc, char** argv)
     }
     std::cout << "Percentile Calculators test succeeded\n";
 
-
-
-
+    // --- NonMemDrugs --- //
     TestNonMemDrugs nonMemDrugsTests;
 
     // one compartment
@@ -214,8 +214,6 @@ int main(int argc, char** argv)
     }
     std::cout << "NonMem Drugs test succeeded\n";
 
-
-
     TestDrugModels drugModelsTests;
 
     // one compartment
@@ -227,6 +225,19 @@ int main(int argc, char** argv)
         exit(1);
     }
     std::cout << "DrugModels test succeeded\n";
+
+    // --- cycle statistics --- //
+    TestCycleStatistics cycleStatisticsTests;
+
+    // one compartment
+    cycleStatisticsTests.add_test("test1", &TestCycleStatistics::test1);
+
+    res = cycleStatisticsTests.run(argc, argv);
+    if (res != 0) {
+        std::cerr << "Cycle Statistics Calculators test failed\n";
+        exit(1);
+    }
+    std::cout << "Cycle Statistics Calculators test succeeded\n";
 
     return 0;
 }

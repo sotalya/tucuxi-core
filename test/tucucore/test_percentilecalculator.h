@@ -107,7 +107,6 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
 
         nbPoints = 200;
 
-
         // Build parameters as Imatinib ones
         Tucuxi::Core::ParameterDefinitions parameterDefs;
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("CL", 15.106, Tucuxi::Core::ParameterVariability(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.356))));
@@ -117,16 +116,12 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
         Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
         parametersSeries.addParameterSetEvent(parameters);
 
-
-
-
         DateTime now;
         Tucuxi::Common::Duration offsetTime = 0s;
         Tucuxi::Common::Duration interval = 24h;
         Tucuxi::Common::Duration infusionTime = 0h;
         double dose = 400;
         Tucuxi::Core::AbsorptionModel route = Tucuxi::Core::AbsorptionModel::EXTRAVASCULAR;
-
 
         Tucuxi::Core::TimeOffsets times;
         Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, dose, interval, route, infusionTime, nbPoints);
@@ -182,13 +177,15 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
         etas.push_back(0.0);
 
 
+#if 0
         std::unique_ptr<Tucuxi::Core::IAprioriPercentileCalculator> calculator =
                 std::unique_ptr<Tucuxi::Core::IAprioriPercentileCalculator>(
                     new MockAprioriPercentileCalculator());
+#endif
 
-//        std::unique_ptr<Tucuxi::Core::IAprioriPercentileCalculator> calculator =
-//                std::unique_ptr<Tucuxi::Core::IAprioriPercentileCalculator>(
-//                    new Tucuxi::Core::AprioriMonteCarloPercentileCalculator());
+        std::unique_ptr<Tucuxi::Core::IAprioriPercentileCalculator> calculator =
+                std::unique_ptr<Tucuxi::Core::IAprioriPercentileCalculator>(
+                    new Tucuxi::Core::AprioriMonteCarloPercentileCalculator());
 
         Tucuxi::Core::IPercentileCalculator::ProcessingResult res;
 
