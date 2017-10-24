@@ -31,50 +31,66 @@ struct TestCycleStatistics : public fructose::test_base<TestCycleStatistics>
 	
 	cycleData.m_start = now;
 
-	Value concentrations[nbCompartments][nbPoints] = {{0, 10.2, 20.5, 15.0, 9.7, 10, 12.7, 15.2, 13.2, 14}};
-	Value times[nbCompartments][nbPoints] = {{0, 10, 20, 30, 40, 50, 60, 70, 80, 90}};
+	std::vector<Concentrations> concentrations{{0, 10.2, 20.5, 15.0, 9.7, 10, 12.7, 15.2, 13.2, 14}};
+	std::vector<TimeOffsets> times{{0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5}};
 
-	// reserve vectors of concentrations and times
-	cycleData.m_concentrations.reserve(nbCompartments);
-	cycleData.m_times.reserve(nbCompartments);
-	stats.reserve(nbCompartments);
 	for (int compartment = 0; compartment < nbCompartments; compartment++) {
+	    // assign concentration data
+	    cycleData.m_concentrations.push_back(Concentrations ());
 	    cycleData.m_concentrations[compartment].reserve(nbPoints);
+	    cycleData.m_concentrations[compartment].assign(concentrations[compartment].begin(),concentrations[compartment].end());
+
+	    // assign time data
+	    cycleData.m_times.push_back(TimeOffsets ());
 	    cycleData.m_times[compartment].reserve(nbPoints);
+	    cycleData.m_times[compartment].assign(times[compartment].begin(),times[compartment].end());
 
-	    // assign data of concentrations and times
-	    cycleData.m_concentrations[compartment].assign(concentrations[compartment][0], concentrations[compartment][nbPoints-1]);
-	    cycleData.m_times[compartment].assign(times[compartment][0], times[compartment][nbPoints-1]);
-
-	    stats[compartment].reserve(static_cast<int>(CycleStatisticType::CYCLE_STATISTIC_TYPE_SIZE));
+	    // allocate memory for local variable stats
+	    stats.push_back(std::vector<Tucuxi::Core::CycleStatistic> ());
+	    for (unsigned int type= 0; type< static_cast<int>(CycleStatisticType::CYCLE_STATISTIC_TYPE_SIZE); type++) {
+	        stats[compartment].push_back(CycleStatistic(cycleData.m_start, (CycleStatisticType)type));
+	    }
 	}
 
 	// calculate cycle statistics
 	DateTime dateTime;
 	Value value;
 	Tucuxi::Core::CycleStatistics cycleStatistics(cycleData);
-	for (int compartment = 0; compartment < nbCompartments; compartment++) {
-	}
 	
+	// AUC
 	cycleStatistics.getStatistics(CycleStatisticType::AUC, stats);
 	stats[0][static_cast<int>(CycleStatisticType::AUC)].getValue(dateTime, value, 0);
-	//std::cout << "AUC: dataTime: " << dateTime << ", value" << value << std::endl;
+	//std::cout << "[AUC] dataTime: " << dateTime << ", value: " << value << std::endl;
+        fructose_assert_double_eq_rel_abs(56.75, value, 0.01, 0.01);
 
+	// Mean
 	cycleStatistics.getStatistics(CycleStatisticType::Mean, stats);
 	stats[0][static_cast<int>(CycleStatisticType::Mean)].getValue(dateTime, value, 0);
-	//std::cout << "Mean: " << dateTime << ", value" << value << std::endl;
+	//std::cout << "[Mean] dateTime: " << dateTime << ", value: " << value << std::endl;
+        fructose_assert_double_eq_rel_abs(12.61, value, 0.01, 0.01);
 
+	// Peak
 	cycleStatistics.getStatistics(CycleStatisticType::Peak, stats);
 	stats[0][static_cast<int>(CycleStatisticType::Peak)].getValue(dateTime, value, 0);
-	//std::cout << "Peak: " << dateTime << ", value" << value << std::endl;
+	//std::cout << "[Peak] dateTime: " << dateTime << ", value: " << value << std::endl;
+        fructose_assert_double_eq(20.5, value);
 
+	// Max
+	int nbValue;
 	cycleStatistics.getStatistics(CycleStatisticType::Maximum, stats);
-	stats[0][static_cast<int>(CycleStatisticType::Maximum)].getValue(dateTime, value, 0);
-	//std::cout << "Maximum: " << dateTime << ", value" << value << std::endl;
+	for (nbValue=0; nbValue<stats[0][static_cast<int>(CycleStatisticType::Maximum)].getNbValue(); nbValue++) {
+	    stats[0][static_cast<int>(CycleStatisticType::Maximum)].getValue(dateTime, value, nbValue);
+	    //std::cout << "[Maximum] dateTime: " << dateTime << ", value: " << value << std::endl;
+	}
+	fructose_assert_eq(nbValue, 2);
 
+	// Min
 	cycleStatistics.getStatistics(CycleStatisticType::Minimum, stats);
-	stats[0][static_cast<int>(CycleStatisticType::Minimum)].getValue(dateTime, value, 0);
-	//std::cout << "Minimum: " << dateTime << ", value" << value << std::endl;
+	for (nbValue=0; nbValue<stats[0][static_cast<int>(CycleStatisticType::Minimum)].getNbValue(); nbValue++) {
+	    stats[0][static_cast<int>(CycleStatisticType::Minimum)].getValue(dateTime, value, nbValue);
+	    //std::cout << "[Minimum] dateTime: " << dateTime << ", value: " << value << std::endl;
+	}
+	fructose_assert_eq(nbValue, 2);
     }
 };
 
