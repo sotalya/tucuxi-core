@@ -10,6 +10,7 @@
 #include "tucucore/dosage.h"
 
 #include "test_covariateextractor.h"
+#include "test_parameterextractor.h"
 #include "test_dosage.h"
 #include "test_intakeextractor.h"
 #include "test_operation.h"
@@ -172,6 +173,20 @@ int main(int argc, char** argv)
         std::cerr << "Covariate Extractor test failed\n";
     } else {
         std::cout << "Covariate Extractor test succeeded\n";
+    }
+
+    // --- ParameterExtractor --- //
+    TestParameterExtractor peTests;
+    peTests.add_test("testPE_constructor", &TestParameterExtractor::testPE_constructor);
+    peTests.add_test("testPE_extract1_0", &TestParameterExtractor::testPE_extract1_0);
+    peTests.add_test("testPE_extract1_1", &TestParameterExtractor::testPE_extract1_1);
+
+    res = peTests.run(argc, argv);
+
+    if (res != 0) {
+        std::cerr << "Parameter Extractor test failed\n";
+    } else {
+        std::cout << "Parameter Extractor test succeeded\n";
     }
 
     // --- OperableGraphManager --- //

@@ -66,6 +66,12 @@ double Utils::dateDiffInYears(const DateTime &_t1, const DateTime &_t2)
 }
 
 
+Value Utils::varToValue(const bool &_value)
+{
+    return _value ? 1.0 : 0.0;
+}
+
+
 Value Utils::varToValue(const DateTime &_value)
 {
     return stringToValue(varToString(_value), DataType::Date);

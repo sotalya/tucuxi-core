@@ -36,6 +36,8 @@ public:
         m_operation(_operation)
     {}
 
+    virtual ~PopulationValue() { }
+
     /// \brief Return the identifier of the value.
     /// \return Value's identifier.
     std::string getId() const { return m_id;}
@@ -70,6 +72,8 @@ public:
     IndividualValue(const DefinitionClass &_definition) :
         m_definition(_definition)
     {    }
+
+    virtual ~IndividualValue() { }
 
 protected:
 
