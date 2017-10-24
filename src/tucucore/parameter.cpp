@@ -40,9 +40,9 @@ ParameterSetEventPtr ParameterSetSeries::getAtTime(const DateTime &_date, const 
     return nullptr;
 }
 
-void ParameterSetSeries::addParameterSetEvent(ParameterSetEvent parameterSetEvent)
+void ParameterSetSeries::addParameterSetEvent(const ParameterSetEvent &_parameterSetEvent)
 {
-    m_parameterSets.push_back(parameterSetEvent);
+    m_parameterSets.push_back(_parameterSetEvent);
 }
 
 void ParameterSetEvent::applyEtas(const Etas& _etas)
@@ -76,23 +76,23 @@ void Parameter::applyEta(Deviation _eta)
                 break;
             default: {
                 Tucuxi::Common::LoggerHelper logger;
-                logger.warn("Parameter {} has an unknown error model", m_definition.getName());
+                logger.warn("Parameter {} has an unknown error model", m_definition.getId());
                 break;
             }
         }
         if (m_value <= 0.0) {
             m_value = 0.00000001;
             Tucuxi::Common::LoggerHelper logger;
-            logger.warn("Parameter {} is negative", m_definition.getName());
+            logger.warn("Parameter {} is negative", m_definition.getId());
         }
         else if (std::isinf(m_value)) {
             m_value = std::numeric_limits<double>::max();
             Tucuxi::Common::LoggerHelper logger;
-            logger.warn("Parameter {} is infinite", m_definition.getName());
+            logger.warn("Parameter {} is infinite", m_definition.getId());
         }
         else if (std::isnan(m_value)) {
             Tucuxi::Common::LoggerHelper logger;
-            logger.warn("Parameter {} is not a number", m_definition.getName());
+            logger.warn("Parameter {} is not a number", m_definition.getId());
         }
     }
 }

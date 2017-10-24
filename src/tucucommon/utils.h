@@ -31,6 +31,11 @@ using Tucuxi::Core::Value;
 /// \pre _str contains a string that can be converted to a Value.
 Value stringToValue(const std::string &_str, const DataType &_dataType);
 
+/// \brief Convert a boolean to a Value.
+/// \param _value Input boolean to convert.
+/// \return Boolean converted into a value (that is, either 0 or 1).
+Value varToValue(const bool &_value);
+
 /// \brief Convert a date to a Value.
 /// \param _value Input date to convert.
 /// \return Date converted into a value (that is, corresponding number of seconds).

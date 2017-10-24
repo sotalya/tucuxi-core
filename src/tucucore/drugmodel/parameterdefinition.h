@@ -6,14 +6,15 @@
 #define PARAMETERDEFINITION_H
 
 #include <string>
-#include <vector>
 #include <memory>
+#include <vector>
 
 #include "tucucore/definitions.h"
-#include "tucucore/timedevent.h"
-#include "tucucore/operation.h"
-#include "tucucommon/general.h"
 #include "tucucore/drugdefinitions.h"
+#include "tucucore/operablegraphmanager.h"
+#include "tucucore/operation.h"
+#include "tucucore/timedevent.h"
+#include "tucucommon/general.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -44,11 +45,9 @@ public:
 class ParameterDefinition : public PopulationValue
 {
 public:
-
-public:
     /// \brief Constructor
     /// \param _id The name of the parameter
-    /// \param _name It's default value
+    /// \param _name Its default value
     ParameterDefinition(const std::string _id, Value _value, ParameterVariability _variabilityType)
         : PopulationValue(_id, _value, nullptr),
           m_variability(_variabilityType)
@@ -69,11 +68,12 @@ public:
           m_variability(_variabilityType)
     {}
 
+    virtual ~ParameterDefinition() { }
+
     /// \brief Get the parameter value
     /// \return Returns the parameter value
     //Value getValue() const { return m_value; }
 
-    const std::string& getName() const { return m_id; }
     bool isVariable() const { return m_variability.m_variabilityType != ParameterVariabilityType::None; }
     ParameterVariability getVariability() const { return m_variability; }
 
@@ -87,6 +87,38 @@ private:
 /// \brief A list of parameters
 typedef std::vector<std::unique_ptr<ParameterDefinition> > ParameterDefinitions;
 
+/// \brief Iterator on the list of parameters.
+typedef std::vector<std::unique_ptr<ParameterDefinition>>::iterator pDefIterator;
+
+
+/// \brief Parameter the context of an Operable Graph Manager. The timing information is missing since it is handled by
+///        the parameter set itself.
+class ParameterEvent : public IndividualValue<ParameterDefinition>, public Operable
+{
+public:
+    /// \brief Remove the default constructor.
+    ParameterEvent() = delete;
+    /// \brief Create a change in a parameter given a reference to the desired parameter and the new value.
+    /// \param _parameterDef Parameter definition that hass changed.
+    /// \param _value New value of the parameter.
+    ParameterEvent(const ParameterDefinition &_parameterDef, Value _value)
+        : IndividualValue(_parameterDef), Operable(_value)
+    {}
+
+    /// \brief Get the associated operation.
+    /// \return Reference to the associated operation.
+    virtual Operation &getOperation() const override { return m_definition.getOperation(); }
+
+    /// \brief Perform the evaluation on the Operable, retrieving the inputs (and the dependencies) from the
+    ///        OperableGraphManager.
+    /// \param _graphMgr Reference to the graph manager where the Operable has to seek its inputs.
+    /// \return True if the evaluation could be performed, false in case of errors.
+    virtual bool evaluate(const OperableGraphManager &_graphMgr) override;
+
+    /// \brief Return the identifier of the parameter involved in the change.
+    /// \return Identifier of parameter involved in the change.
+    std::string getId() const { return m_definition.getId(); }
+};
 
 
 class Correlation
