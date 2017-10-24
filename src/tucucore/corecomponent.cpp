@@ -58,7 +58,7 @@ ConcentrationPredictionPtr CoreComponent::computeConcentrations(const Concentrat
     // Extract intakes, covariates, parameters and samples
     IntakeExtractor::extract(*m_treatment->getDosageHistory(_request.getType() != PredictionType::Population), _request.getStart(), _request.getEnd(), intakes);
     CovariateExtractor(m_drug->getCovariates(), m_treatment->getCovariates(), _request.getStart(), _request.getEnd()).extract(covariates);
-    ParametersExtractor::extract(covariates, drugParameters, _request.getStart(), _request.getEnd(), parameters);
+    ParametersExtractor(covariates, drugParameters, _request.getStart(), _request.getEnd()).extract(parameters);
 
     if (intakes.size() == 0) {
         m_logger.debug("No intakes, no calc.");

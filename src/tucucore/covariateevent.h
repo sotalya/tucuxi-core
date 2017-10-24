@@ -32,8 +32,7 @@ public:
     /// \param _date Time of change.
     /// \param _value New value of the covariate.
     CovariateEvent(const CovariateDefinition &_covariateDef, const DateTime &_date, Value _value)
-        : IndividualValue(_covariateDef), TimedEvent(_date), Operable(_value),
-          m_id(_covariateDef.getId())
+        : IndividualValue(_covariateDef), TimedEvent(_date), Operable(_value)
     {}
 
     /// \brief Get the associated operation.
@@ -44,20 +43,15 @@ public:
     ///        OperableGraphManager.
     /// \param _graphMgr Reference to the graph manager where the Operable has to seek its inputs.
     /// \return True if the evaluation could be performed, false in case of errors.
-    virtual bool evaluate(const OperableGraphManager &_graphMgr);
+    virtual bool evaluate(const OperableGraphManager &_graphMgr) override;
 
     /// \brief Return the identifier of the covariate involved in the change.
     /// \return Identifier of covariate involved in the change.
-    std::string getId() const { return m_id; }
+    std::string getId() const { return m_definition.getId(); }
 
     /// \brief Set the time the event happened.
     /// \param _time Time of the event.
     void setEventTime(const DateTime &_time) { m_time = _time; }
-
-
-private:
-    /// \brief Identifier of the covariate involved in the change
-    std::string m_id;
 };
 
 /// \brief List of covariate series (that is, changes).
