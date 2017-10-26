@@ -54,6 +54,7 @@ ConcentrationCalculator::ComputationResult ConcentrationCalculator::computeConce
         outResiduals.clear();
 
         IntakeIntervalCalculator::Result result = it->calculateIntakePoints(concentrations, times, intake, *parameters, inResiduals, intake.getNbPoints(), _isAll, outResiduals, _isFixedDensity);
+
         switch (result)
         {
             case IntakeIntervalCalculator::Result::Ok:

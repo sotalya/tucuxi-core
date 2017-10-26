@@ -33,7 +33,7 @@ class IntakeExtractor;
 /// underlying std::vector, thus the transition will be painless.
 typedef std::vector<IntakeEvent> IntakeSeries;
 
-void cloneIntakeSeries(std::vector<IntakeEvent> _input, std::vector<IntakeEvent> _output);
+void cloneIntakeSeries(std::vector<IntakeEvent> _input, std::vector<IntakeEvent> &_output);
 
 /// \brief Implement the extract and clone operations for Dosage subclasses.
 #define DOSAGE_UTILS(BaseClassName, ClassName) \
