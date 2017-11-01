@@ -21,7 +21,11 @@ MonteCarloPercentileCalculatorBase::MonteCarloPercentileCalculatorBase()
      * Aziz says this is an approximate number to assure a reasonable result
      * for most cases
      */
+#if 0
     setNumberPatients(10000);
+#else
+    setNumberPatients(2); // for test: need to fix unit test
+#endif
 }
 
 IPercentileCalculator::ProcessingResult MonteCarloPercentileCalculatorBase::computePredictionsAndSortPercentiles(
@@ -83,10 +87,13 @@ IPercentileCalculator::ProcessingResult MonteCarloPercentileCalculatorBase::comp
 	     * computeConcentrations
 	     */
             ConcentrationPredictionPtr predictionPtr;
+            predictionPtr = std::make_unique<Tucuxi::Core::ConcentrationPrediction>();
 
             int start = thread * (nbPatients / nbThreads);
             int end = (thread + 1) * (nbPatients / nbThreads);
+
 		for (int patient = start; patient < end; ++patient) {
+
 		    if (!abort) {
 			if ((_aborter != nullptr) && (_aborter->shouldAbort())) {
 			    abort = true;
@@ -95,7 +102,7 @@ IPercentileCalculator::ProcessingResult MonteCarloPercentileCalculatorBase::comp
 			/*
 			 * Call to apriori becomes population as its determined earlier in the parametersExtractor
 			 */
-			ConcentrationCalculator::ComputationResult computationResult = 
+		    ConcentrationCalculator::ComputationResult computationResult = 
 				_concentrationCalculator.computeConcentrations(
 					    predictionPtr,
 					    false, /* fix to "false": */
@@ -104,22 +111,24 @@ IPercentileCalculator::ProcessingResult MonteCarloPercentileCalculatorBase::comp
 					    _parameters,
 					    _etas[patient],
 					    _residualErrorModel,
-					    _epsilons[patient],
+					    _epsilons[0], // TODO: check the size of epsilons with YTA
 					    false);
 
-			/* 
-			 * save the series of result of 
-			 * concentrations[cycle][nbPoints][patient] for each cycle
-			 */
-			if (computationResult == ConcentrationCalculator::ComputationResult::Success) {
-			    for (unsigned int cycle = 0; cycle < newIntakes.size(); ++cycle) {
-				for (int point = 0; point < _nbPoints; ++point ) {
-				    concentrations[cycle][point][patient] = (predictionPtr->getValues())[cycle][point];
-				}
+		    //predictionPtr->streamToFile("values_imatinib_percentile_concentrations.dat");
+
+		    /* 
+		     * save the series of result of 
+		     * concentrations[cycle][nbPoints][patient] for each cycle
+		     */
+		    if (computationResult == ConcentrationCalculator::ComputationResult::Success) {
+			for (unsigned int cycle = 0; cycle < newIntakes.size(); ++cycle) {
+			    for (int point = 0; point < _nbPoints; ++point ) {
+				concentrations[cycle][point][patient] = (predictionPtr->getValues())[cycle][point];
 			    }
 			}
-		    } /* if (!abort) */
-		} /* for (patient) */
+		    }
+		} /* if (!abort) */
+	    } /* for (patient) */
         }
         ));
 
@@ -137,22 +146,28 @@ IPercentileCalculator::ProcessingResult MonteCarloPercentileCalculatorBase::comp
 #if 0
 #pragma omp parallel for
 #endif
+
     for (unsigned int cycle = 0; cycle < _intakes.size(); ++cycle) {
 	for (int point = 0; point < _nbPoints; ++point) {
 
 	    /* sort concentrations in increasing order at each time (at the cycle and at the point) */
 	    std::sort(concentrations[cycle][point].begin(), concentrations[cycle][point].end(), [&] (const double v1, const double v2) { return v1 < v2; });
 
+	    //std::cout << concentrations[cycle][point][0] << " ";
+
 	    /* rebuild pecentile array [percentile][cycle][point] */
 	    unsigned int percRankIdx = 0;
 	    for (unsigned int sortPosition = 0; sortPosition < nbPatients; ++sortPosition) {
+		//std::cout << _percentileRanks.size() << ", " << _percentileRanks[percRankIdx] / 100.0 * nbPatients     << std::endl;
 	        if ((percRankIdx < _percentileRanks.size()) && (sortPosition >= _percentileRanks[percRankIdx] / 100.0 * nbPatients)) {
 		    _percentiles.appendPercentile(percRankIdx, cycle, point, concentrations[cycle][point][sortPosition]);
 	            percRankIdx++;
+		    //std::cout << percRankIdx << ": " << concentrations[cycle][point][sortPosition] << std::endl;
 	        }
 	    }
 	}
     }
+    //std::cout << std::endl;
 
     return ProcessingResult::Success;
 
@@ -453,7 +468,7 @@ IPercentileCalculator::ProcessingResult AposterioriMonteCarloPercentileCalculato
     /* TODO: think about whether we can use push_back or not */
     for(int patient = 0; patient < reSamples; ++patient) {
 	RealEtaSamples[patient] = etaSamples[discreteDistribution(rnGenerator)];
-        //epsilons(patient) = normalDistribution(rnGenerator);
+        //epsilons[patient] = normalDistribution(rnGenerator);
     }
 
     return computePredictionsAndSortPercentiles(
