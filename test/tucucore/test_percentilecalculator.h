@@ -18,80 +18,12 @@
 #include "tucucore/concentrationcalculator.h"
 
 
-
-/*
-* A fake A priori percentiles calculator
-*/
-class MockAprioriPercentileCalculator : public Tucuxi::Core::IAprioriPercentileCalculator {
-
-public:
-
-    MockAprioriPercentileCalculator() {}
-
-    ///
-    /// \brief calculate
-    /// \param _percentiles percentiles calculated within the method
-    /// \param _nbPoints Number of points asked for each cycle
-    /// \param _intakes Intake series
-    /// \param _parameters Initial parameters series
-    /// \param _omega covariance matrix for inter-individual variability
-    /// \param _residualErrorModel Residual error model
-    /// \param _initialEtas Set of initial Etas, used in case of a posteriori
-    /// \param _percentileRanks List of percentiles ranks
-    /// \param _aborter An aborter object allowing to abort the calculation
-    /// \return The status of calculation
-    ///
-    ProcessingResult calculate(
-            Tucuxi::Core::PercentilesPrediction& _percentiles,
-            const int _nbPoints,
-            const Tucuxi::Core::IntakeSeries &_intakes,
-            const Tucuxi::Core::ParameterSetSeries &_parameters,
-            const Tucuxi::Core::OmegaMatrix& _omega,
-            const Tucuxi::Core::IResidualErrorModel &_residualErrorModel,
-            const Tucuxi::Core::Etas& _initialEtas,
-            const Tucuxi::Core::PercentileRanks &_percentileRanks,
-	    IConcentrationCalculator &_concentrationCalculator,
-            Tucuxi::Core::ProcessingAborter *_aborter) override
-    {
-        TMP_UNUSED_PARAMETER(_intakes);
-        UNUSED_PARAMETER(_parameters);
-        UNUSED_PARAMETER(_omega);
-        UNUSED_PARAMETER(_residualErrorModel);
-        UNUSED_PARAMETER(_initialEtas);
-        UNUSED_PARAMETER(_aborter);
-
-        std::vector<double> times;
-        for(int i = 0; i < _nbPoints; i++) {
-            times.push_back(((double)i)*0.120603);
-        }
-        _percentiles.m_times.push_back(times);
-        for(unsigned perc = 0; perc < _percentileRanks.size(); perc ++) {
-            int percValue = _percentileRanks[perc];
-            _percentiles.m_ranks.push_back(percValue);
-            std::vector<double> vec;
-            for(int i = 0; i < _nbPoints; i++) {
-                vec.push_back(percValue + i);
-            }
-            std::vector<std::vector<double> > cycleVec;
-            cycleVec.push_back(vec);
-            _percentiles.m_values.push_back(cycleVec);
-
-        }
-
-        return ProcessingResult::Success;
-
-
-    }
-
-
-};
-
 struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalculator>
 {
 
     TestPercentileCalculator() { }
 
-    void test1(const std::string& /* _testName */)
+    void test1Apriori(const std::string& /* _testName */)
     {
         // Simple test with imatinib values
 
@@ -130,7 +62,6 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
         intakeSeries.push_back(intakeEvent);
 
         // std::cout << typeid(calculator).name() << std::endl;
-
 
         Tucuxi::Core::ConcentrationPredictionPtr predictionPtr;
         {
@@ -175,13 +106,6 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
         // Set initial etas to 0 for CL and V
         etas.push_back(0.0);
         etas.push_back(0.0);
-
-
-#if 0
-        std::unique_ptr<Tucuxi::Core::IAprioriPercentileCalculator> calculator =
-                std::unique_ptr<Tucuxi::Core::IAprioriPercentileCalculator>(
-                    new MockAprioriPercentileCalculator());
-#endif
 
         std::unique_ptr<Tucuxi::Core::IAprioriPercentileCalculator> calculator =
                 std::unique_ptr<Tucuxi::Core::IAprioriPercentileCalculator>(

@@ -206,8 +206,7 @@ int main(int argc, char** argv)
     // --- percentile calculator --- //
     TestPercentileCalculator percentileCalculatorTests;
 
-    // one compartment
-    percentileCalculatorTests.add_test("test1", &TestPercentileCalculator::test1);
+    percentileCalculatorTests.add_test("test1Apriori", &TestPercentileCalculator::test1Apriori);
 
     res = percentileCalculatorTests.run(argc, argv);
     if (res != 0) {
@@ -245,7 +244,7 @@ int main(int argc, char** argv)
     TestCycleStatistics cycleStatisticsTests;
 
     // one compartment
-    cycleStatisticsTests.add_test("test1", &TestCycleStatistics::test1);
+    cycleStatisticsTests.add_test("test1CycleStatistics", &TestCycleStatistics::test1CycleStatistics);
 
     res = cycleStatisticsTests.run(argc, argv);
     if (res != 0) {

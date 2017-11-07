@@ -24,7 +24,7 @@ MonteCarloPercentileCalculatorBase::MonteCarloPercentileCalculatorBase()
 #if 0
     setNumberPatients(10000);
 #else
-    setNumberPatients(2); // for test: need to fix unit test
+    setNumberPatients(8); // for test: need to fix unit test
 #endif
 }
 
@@ -65,7 +65,7 @@ IPercentileCalculator::ProcessingResult MonteCarloPercentileCalculatorBase::comp
 	for (unsigned int cycle = 0; cycle < _intakes.size(); cycle++) {
 	    vec.push_back(std::vector<Concentration>(_nbPoints));
 	}
-	_percentiles.m_values.push_back(vec);
+	(_percentiles.m_values).push_back(vec);
     }
 
     /*
@@ -80,7 +80,7 @@ IPercentileCalculator::ProcessingResult MonteCarloPercentileCalculatorBase::comp
         IntakeSeries newIntakes;
 	cloneIntakeSeries(_intakes, newIntakes);
 
-        workers.push_back(std::thread([thread, nbPatients, &abort, _aborter, _etas, _epsilons, _parameters, newIntakes, _nbPoints, &_residualErrorModel, &concentrations, nbThreads, &_concentrationCalculator]()
+        workers.push_back(std::thread([thread, nbPatients, &abort, _aborter, _etas, _epsilons, _parameters, newIntakes, _nbPoints, &_residualErrorModel, &concentrations, nbThreads, &_concentrationCalculator, &_percentiles]()
         {
             /* 
 	     * Get concentrations for each patients, allocation will be done in
@@ -99,9 +99,9 @@ IPercentileCalculator::ProcessingResult MonteCarloPercentileCalculatorBase::comp
 			    abort = true;
 			}
 
-			/*
-			 * Call to apriori becomes population as its determined earlier in the parametersExtractor
-			 */
+		    /*
+		     * Call to apriori becomes population as its determined earlier in the parametersExtractor
+		     */
 		    ConcentrationCalculator::ComputationResult computationResult = 
 				_concentrationCalculator.computeConcentrations(
 					    predictionPtr,
@@ -114,23 +114,38 @@ IPercentileCalculator::ProcessingResult MonteCarloPercentileCalculatorBase::comp
 					    _epsilons[0], // TODO: check the size of epsilons with YTA
 					    false);
 
-		    //predictionPtr->streamToFile("values_imatinib_percentile_concentrations.dat");
-
 		    /* 
 		     * save the series of result of 
 		     * concentrations[cycle][nbPoints][patient] for each cycle
 		     */
 		    if (computationResult == ConcentrationCalculator::ComputationResult::Success) {
+
+			// save concentrations to array of [patient] for using sort() function
 			for (unsigned int cycle = 0; cycle < newIntakes.size(); ++cycle) {
+
+			    // save times only one time (when patient is equal to 0)
+			    if (!patient) {
+				(_percentiles.m_times).push_back((predictionPtr->getTimes())[cycle]);
+			    }
+
 			    for (int point = 0; point < _nbPoints; ++point ) {
 				concentrations[cycle][point][patient] = (predictionPtr->getValues())[cycle][point];
 			    }
 			}
 		    }
 		} /* if (!abort) */
+
+		// for debugging
+#if 0
+		char filename[30];
+		sprintf(filename, "result%d.dat", patient);
+		predictionPtr->streamToFile(filename);
+#endif
+
 	    } /* for (patient) */
         }
         ));
+
 
     } /* for (thread) */
     std::for_each(workers.begin(), workers.end(), [](std::thread &t)
@@ -142,32 +157,38 @@ IPercentileCalculator::ProcessingResult MonteCarloPercentileCalculatorBase::comp
         return ProcessingResult::Aborted;
     }
 
-    /* Parallelize this loop where quantiles are extracted. */
-#if 0
-#pragma omp parallel for
-#endif
+    // set m_ranks with input
+    for (unsigned int percRankIdx = 0; percRankIdx < _percentileRanks.size(); percRankIdx++) {
+	(_percentiles.m_ranks).push_back(_percentileRanks[percRankIdx]);
+    }
 
+    // sort and set percentile
     for (unsigned int cycle = 0; cycle < _intakes.size(); ++cycle) {
 	for (int point = 0; point < _nbPoints; ++point) {
 
 	    /* sort concentrations in increasing order at each time (at the cycle and at the point) */
 	    std::sort(concentrations[cycle][point].begin(), concentrations[cycle][point].end(), [&] (const double v1, const double v2) { return v1 < v2; });
 
-	    //std::cout << concentrations[cycle][point][0] << " ";
-
 	    /* rebuild pecentile array [percentile][cycle][point] */
 	    unsigned int percRankIdx = 0;
 	    for (unsigned int sortPosition = 0; sortPosition < nbPatients; ++sortPosition) {
-		//std::cout << _percentileRanks.size() << ", " << _percentileRanks[percRankIdx] / 100.0 * nbPatients     << std::endl;
-	        if ((percRankIdx < _percentileRanks.size()) && (sortPosition >= _percentileRanks[percRankIdx] / 100.0 * nbPatients)) {
+
+	        if ((percRankIdx < _percentileRanks.size()) && ((sortPosition + 1) >= _percentileRanks[percRankIdx] / 100.0 * nbPatients)) {
 		    _percentiles.appendPercentile(percRankIdx, cycle, point, concentrations[cycle][point][sortPosition]);
+
 	            percRankIdx++;
-		    //std::cout << percRankIdx << ": " << concentrations[cycle][point][sortPosition] << std::endl;
+
+		    // if percentile is not completely filled, it fills with the last one
+		    if ((percRankIdx < _percentileRanks.size()) && ((sortPosition +1) == nbPatients)){ 
+			while(percRankIdx < _percentileRanks.size()) {
+			    _percentiles.appendPercentile(percRankIdx, cycle, point, concentrations[cycle][point][sortPosition]);
+			    percRankIdx++;
+			}
+		    }
 	        }
 	    }
 	}
     }
-    //std::cout << std::endl;
 
     return ProcessingResult::Success;
 
