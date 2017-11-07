@@ -92,7 +92,7 @@ IPercentileCalculator::ProcessingResult MonteCarloPercentileCalculatorBase::comp
             int start = thread * (nbPatients / nbThreads);
             int end = (thread + 1) * (nbPatients / nbThreads);
 
-		for (int patient = start; patient < end; ++patient) {
+		for (int patient = start; patient < end; patient++) {
 
 		    if (!abort) {
 			if ((_aborter != nullptr) && (_aborter->shouldAbort())) {
@@ -121,14 +121,14 @@ IPercentileCalculator::ProcessingResult MonteCarloPercentileCalculatorBase::comp
 		    if (computationResult == ConcentrationCalculator::ComputationResult::Success) {
 
 			// save concentrations to array of [patient] for using sort() function
-			for (unsigned int cycle = 0; cycle < newIntakes.size(); ++cycle) {
+			for (unsigned int cycle = 0; cycle < newIntakes.size(); cycle++) {
 
 			    // save times only one time (when patient is equal to 0)
 			    if (!patient) {
 				(_percentiles.m_times).push_back((predictionPtr->getTimes())[cycle]);
 			    }
 
-			    for (int point = 0; point < _nbPoints; ++point ) {
+			    for (int point = 0; point < _nbPoints; point++) {
 				concentrations[cycle][point][patient] = (predictionPtr->getValues())[cycle][point];
 			    }
 			}
@@ -163,15 +163,15 @@ IPercentileCalculator::ProcessingResult MonteCarloPercentileCalculatorBase::comp
     }
 
     // sort and set percentile
-    for (unsigned int cycle = 0; cycle < _intakes.size(); ++cycle) {
-	for (int point = 0; point < _nbPoints; ++point) {
+    for (unsigned int cycle = 0; cycle < _intakes.size(); cycle++) {
+	for (int point = 0; point < _nbPoints; point++) {
 
 	    /* sort concentrations in increasing order at each time (at the cycle and at the point) */
 	    std::sort(concentrations[cycle][point].begin(), concentrations[cycle][point].end(), [&] (const double v1, const double v2) { return v1 < v2; });
 
 	    /* rebuild pecentile array [percentile][cycle][point] */
 	    unsigned int percRankIdx = 0;
-	    for (unsigned int sortPosition = 0; sortPosition < nbPatients; ++sortPosition) {
+	    for (unsigned int sortPosition = 0; sortPosition < nbPatients; sortPosition++) {
 
 	        if ((percRankIdx < _percentileRanks.size()) && ((sortPosition + 1) >= _percentileRanks[percRankIdx] / 100.0 * nbPatients)) {
 		    _percentiles.appendPercentile(percRankIdx, cycle, point, concentrations[cycle][point][sortPosition]);
@@ -253,8 +253,8 @@ IPercentileCalculator::ProcessingResult AprioriMonteCarloPercentileCalculator::c
     
     std::vector<Deviations> epsilons(nbPatients, Deviations(_residualErrorModel.nbEpsilons(), normalDistribution(rnGenerator)));
 
-    for (int row = 0; row < rands.rows(); ++row) {
-        for (int column = 0; column < rands.cols(); ++column) {
+    for (int row = 0; row < rands.rows(); row++) {
+        for (int column = 0; column < rands.cols(); column++) {
             rands(row, column) = normalDistribution(rnGenerator);
         }
     }
@@ -262,7 +262,7 @@ IPercentileCalculator::ProcessingResult AprioriMonteCarloPercentileCalculator::c
 
     std::vector<Etas> etaSamples(nbPatients);
 
-    for(unsigned int patient = 0; patient < nbPatients; ++patient) {
+    for(unsigned int patient = 0; patient < nbPatients; patient++) {
         EigenVector matrixY = rands.row(patient);
         /*
          * Cholesky is applied here to get correlated random deviates
@@ -394,8 +394,8 @@ IPercentileCalculator::ProcessingResult AposterioriMonteCarloPercentileCalculato
     * Loading random numbers as omp doesnt like it
     */
     EigenMatrix avecs = EigenMatrix::Zero(samples, _etas.size());
-    for (int row = 0; row < avecs.rows(); ++row) {
-        for (int column = 0; column < avecs.cols(); ++column) {
+    for (int row = 0; row < avecs.rows(); row++) {
+        for (int column = 0; column < avecs.cols(); column++) {
             avecs(row,column) = standardNormalDist(rnGenerator);
         }
     }
@@ -414,7 +414,7 @@ IPercentileCalculator::ProcessingResult AposterioriMonteCarloPercentileCalculato
         {
             int start = thread * (samples / nbThreads);
             int end = (thread + 1 ) * (samples / nbThreads);
-            for (int sample = start; sample < end; ++sample) {
+            for (int sample = start; sample < end; sample++) {
                 if (!abort) {
                     if ((_aborter != nullptr) && (_aborter->shouldAbort())) {
                         abort = true;
@@ -423,7 +423,7 @@ IPercentileCalculator::ProcessingResult AposterioriMonteCarloPercentileCalculato
                     EigenVector avec = meanEtas.transpose() + avecs.row(sample) * etaLowerChol;
                     Etas avec_mat;
 
-                    for (unsigned int etasIdx = 0; etasIdx < _etas.size(); ++etasIdx) {
+                    for (unsigned int etasIdx = 0; etasIdx < _etas.size(); etasIdx++) {
                         avec_mat.push_back(avec[etasIdx]);
                     }
 
@@ -485,7 +485,7 @@ IPercentileCalculator::ProcessingResult AposterioriMonteCarloPercentileCalculato
     std::vector<Etas> RealEtaSamples(reSamples);
 
     /* TODO: think about whether we can use push_back or not */
-    for(int patient = 0; patient < reSamples; ++patient) {
+    for(int patient = 0; patient < reSamples; patient++) {
 	RealEtaSamples[patient] = etaSamples[discreteDistribution(rnGenerator)];
         //epsilons[patient] = normalDistribution(rnGenerator);
     }
