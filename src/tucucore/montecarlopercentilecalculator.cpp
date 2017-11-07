@@ -111,7 +111,7 @@ IPercentileCalculator::ProcessingResult MonteCarloPercentileCalculatorBase::comp
 					    _parameters,
 					    _etas[patient],
 					    _residualErrorModel,
-					    _epsilons[0], // TODO: check the size of epsilons with YTA
+					    _epsilons[patient],
 					    false);
 
 		    /* 
@@ -251,11 +251,9 @@ IPercentileCalculator::ProcessingResult AprioriMonteCarloPercentileCalculator::c
      */
     EigenMatrix rands = EigenMatrix::Zero(nbPatients, omegaRank);
     
-    std::vector<Deviations> epsilons(_residualErrorModel.nbEpsilons(), Deviations(nbPatients, normalDistribution(rnGenerator)));
+    std::vector<Deviations> epsilons(nbPatients, Deviations(_residualErrorModel.nbEpsilons(), normalDistribution(rnGenerator)));
 
     for (int row = 0; row < rands.rows(); ++row) {
-        //epsilons(0, (row))= normalDistribution();
-
         for (int column = 0; column < rands.cols(); ++column) {
             rands(row, column) = normalDistribution(rnGenerator);
         }
