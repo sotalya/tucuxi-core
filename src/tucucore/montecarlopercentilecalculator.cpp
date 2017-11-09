@@ -200,7 +200,6 @@ AprioriMonteCarloPercentileCalculator::AprioriMonteCarloPercentileCalculator()
 
 }
 
-
 IPercentileCalculator::ProcessingResult AprioriMonteCarloPercentileCalculator::calculate(
         PercentilesPrediction &_percentiles,
         const int _nbPoints,
@@ -327,6 +326,11 @@ void MonteCarloPercentileCalculatorBase::calculateSubomega(
     _subomega = hessian.inverse();
 }
 
+
+AposterioriMonteCarloPercentileCalculator::AposterioriMonteCarloPercentileCalculator()
+{
+
+}
 
 IPercentileCalculator::ProcessingResult AposterioriMonteCarloPercentileCalculator::calculate(
         PercentilesPrediction &_percentiles,
@@ -478,16 +482,15 @@ IPercentileCalculator::ProcessingResult AposterioriMonteCarloPercentileCalculato
     /*
     * 6. draw samples from discrete distribution using weights
     */
-    std::normal_distribution<> normalDistribution(0,1.0);
+    std::normal_distribution<> normalDistribution(0, 1.0);
     std::discrete_distribution<> discreteDistribution(&weight(0), &weight(0) + weight.size());
 
-    std::vector<Deviations> epsilons(_residualErrorModel.nbEpsilons(), Deviations(reSamples, normalDistribution(rnGenerator)));
+    std::vector<Deviations> epsilons(reSamples, Deviations(_residualErrorModel.nbEpsilons(), normalDistribution(rnGenerator)));
     std::vector<Etas> RealEtaSamples(reSamples);
 
     /* TODO: think about whether we can use push_back or not */
     for(int patient = 0; patient < reSamples; patient++) {
 	RealEtaSamples[patient] = etaSamples[discreteDistribution(rnGenerator)];
-        //epsilons[patient] = normalDistribution(rnGenerator);
     }
 
     return computePredictionsAndSortPercentiles(
@@ -504,6 +507,10 @@ IPercentileCalculator::ProcessingResult AposterioriMonteCarloPercentileCalculato
 
 } // AposterioriMonteCarloPercentileCalculator::calculate
 
+AposterioriNormalApproximationMonteCarloPercentileCalculator::AposterioriNormalApproximationMonteCarloPercentileCalculator()
+{
+
+}
 
 IPercentileCalculator::ProcessingResult AposterioriNormalApproximationMonteCarloPercentileCalculator::calculate(
         PercentilesPrediction &_percentiles,
@@ -530,11 +537,6 @@ IPercentileCalculator::ProcessingResult AposterioriNormalApproximationMonteCarlo
                 _etas,
 		logLikelihood,
                 subomega);
-
-    /* TODO: figure out whether we need to clear or not */
-#if 0
-    (_percentiles.getValues()).clear();
-#endif
 
     /*
     * Only apply steps 1 and 2 of the Annex A of Aziz document (posteriori2.pdf)

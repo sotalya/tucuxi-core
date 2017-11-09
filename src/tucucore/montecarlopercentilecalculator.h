@@ -113,6 +113,37 @@ public:
             ProcessingAborter *_aborter) = 0;
 };
 
+class IAposterioriNormalApproximationMonteCarloPercentileCalculator : public IPercentileCalculator
+{
+public:
+
+    ///
+    /// \brief calculate
+    /// \param _percentiles percentiles calculated within the method
+    /// \param _nbPoints Number of points asked for each cycle
+    /// \param _intakes Intake series
+    /// \param _parameters Initial parameters series
+    /// \param _omega covariance matrix for inter-individual variability
+    /// \param _residualErrorModel Residual error model
+    /// \param _etas Etas pre-calculated by the aposteriori calculator
+    /// \param _samples List of samples
+    /// \param _percentileRanks List of percentiles ranks
+    /// \param _aborter An aborter object allowing to abort the calculation
+    /// \return The status of calculation
+    virtual ProcessingResult calculate(
+            PercentilesPrediction &_percentiles,
+            const int _nbPoints,
+            const IntakeSeries &_intakes,
+            const ParameterSetSeries &_parameters,
+            const OmegaMatrix& _omega,
+            const IResidualErrorModel &_residualErrorModel,
+            const Etas& _etas,
+            const SampleSeries &_samples,
+            const PercentileRanks &_percentileRanks,
+	    IConcentrationCalculator &_concentrationCalculator,
+            ProcessingAborter *_aborter) = 0;
+};
+
 
 
 class MonteCarloPercentileCalculatorBase : public IPercentileCalculator
@@ -219,7 +250,7 @@ public:
 };
 
 
-class AposterioriMonteCarloPercentileCalculator : public MonteCarloPercentileCalculatorBase {
+class AposterioriMonteCarloPercentileCalculator : public IAposterioriPercentileCalculator, public MonteCarloPercentileCalculatorBase {
 
 public:
 
@@ -258,7 +289,7 @@ public:
 /// \brief The AposterioriNormalApproximationMonteCarloPercentileCalculator class
 /// This class implements the normal approximation of the posterior, and
 /// only apply steps 1 and 2 of the Annex A of Aziz document (posteriori2.pdf)
-class AposterioriNormalApproximationMonteCarloPercentileCalculator : public MonteCarloPercentileCalculatorBase {
+class AposterioriNormalApproximationMonteCarloPercentileCalculator : public IAposterioriNormalApproximationMonteCarloPercentileCalculator, public MonteCarloPercentileCalculatorBase {
 
 public:
 
