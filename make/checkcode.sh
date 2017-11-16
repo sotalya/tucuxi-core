@@ -1,5 +1,5 @@
 clang-tidy \
-	-config="{Checks: '-*,readability-identifier-naming', \
+	-config="{Checks: '-*,readability-braces-around-statements,readability-identifier-naming', \
 		CheckOptions: [ \
 			{ key: readability-identifier-naming.ClassCase,           value: CamelCase }, \
 			{ key: readability-identifier-naming.MemberPrefix,        value: m_        }, \
@@ -19,4 +19,6 @@ clang-tidy \
 	-I../libs/date-master-20170711 \
 	-I../libs/spdlog-master-20170622/include \
     -I../libs/botan-2.1.0/build/include \
+    -I../libs/tiny-js-master-20170629 \
+    -I../libs/rapidxml-1.13 \
 	-std=c++14
