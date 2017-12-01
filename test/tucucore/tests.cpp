@@ -206,14 +206,33 @@ int main(int argc, char** argv)
     // --- percentile calculator --- //
     TestPercentileCalculator percentileCalculatorTests;
 
-    // one compartment
-    percentileCalculatorTests.add_test("test1", &TestPercentileCalculator::test1);
+    percentileCalculatorTests.add_test("Apriori Monte Carlo Percentile", &TestPercentileCalculator::testApriori);
 
     res = percentileCalculatorTests.run(argc, argv);
     if (res != 0) {
-        std::cerr << "Percentile Calculators test failed\n";
+        std::cerr << "Apriori Percentile Calculators test failed\n";
         exit(1);
     }
+
+    percentileCalculatorTests.add_test("Aposteriori Normal Monte Carlo Percentile", &TestPercentileCalculator::testAposterioriNormal);
+
+    res = percentileCalculatorTests.run(argc, argv);
+    if (res != 0) {
+        std::cerr << "Aposteriori normal Percentile Calculators test failed\n";
+        exit(1);
+    }
+
+    // TODO: currently V and CV is negative with input parameters. Need to modify the parameters and
+    // active following test of aposteriori.
+#if 0
+    percentileCalculatorTests.add_test("Aposteriori Monte Carlo Percentile", &TestPercentileCalculator::testAposteriori);
+
+    res = percentileCalculatorTests.run(argc, argv);
+    if (res != 0) {
+        std::cerr << "Aposteriori Percentile Calculators test failed\n";
+        exit(1);
+    }
+#endif
     std::cout << "Percentile Calculators test succeeded\n";
 
     // --- NonMemDrugs --- //
@@ -245,7 +264,7 @@ int main(int argc, char** argv)
     TestCycleStatistics cycleStatisticsTests;
 
     // one compartment
-    cycleStatisticsTests.add_test("test1", &TestCycleStatistics::test1);
+    cycleStatisticsTests.add_test("test1CycleStatistics", &TestCycleStatistics::test1CycleStatistics);
 
     res = cycleStatisticsTests.run(argc, argv);
     if (res != 0) {

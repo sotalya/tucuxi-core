@@ -21,7 +21,7 @@ struct TestCycleStatistics : public fructose::test_base<TestCycleStatistics>
 
     TestCycleStatistics() { }
 
-    void test1(const std::string& /* _testName */)
+    void test1CycleStatistics(const std::string& /* _testName */)
     {
 	// set cycleData
         DateTime now;
