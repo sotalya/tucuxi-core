@@ -15,7 +15,7 @@
 
 #include "tucucommon/utils.h"
 
-class TestParameterExtractor;
+struct TestParameterExtractor;
 
 namespace Tucuxi {
 namespace Core {

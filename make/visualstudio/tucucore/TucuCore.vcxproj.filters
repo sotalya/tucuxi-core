@@ -182,18 +182,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="drugtreatment\drugtreatment.h">
-      <Filter>Headers\DrugTreatment</Filter>
-    </ClInclude>
-    <ClInclude Include="drugtreatment\patientcovariate.h">
-      <Filter>Headers\DrugTreatment</Filter>
-    </ClInclude>
-    <ClInclude Include="drugtreatment\sample.h">
-      <Filter>Headers\DrugTreatment</Filter>
-    </ClInclude>
-    <ClInclude Include="drugtreatment\target.h">
-      <Filter>Headers\DrugTreatment</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\tucucore\drugmodel\activesubstance.h">
       <Filter>Headers\DrugModel</Filter>
     </ClInclude>

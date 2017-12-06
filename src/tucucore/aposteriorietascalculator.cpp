@@ -38,7 +38,7 @@ APosterioriEtasCalculator::ComputationResult APosterioriEtasCalculator::computeA
         return ComputationResult::Failure;
     }
 
-    const int omegaSize = omegaSize(_omega);
+    const size_t omegaSize = omegaSize(_omega);
 
 // Prints out the parameter values
     //    parameters_series_t::const_iterator pit, pit_end;

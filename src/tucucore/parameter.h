@@ -16,7 +16,7 @@
 #include "tucucore/drugdefinitions.h"
 #include "tucucore/drugmodel/parameterdefinition.h"
 
-class TestParameterExtractor;
+struct TestParameterExtractor;
 
 namespace Tucuxi {
 namespace Core {

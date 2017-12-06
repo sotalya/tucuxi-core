@@ -56,6 +56,12 @@ public:
     ///
     const Targets& getTargets() const;
 
+
+    void addCovariate(std::unique_ptr<PatientCovariate> _covariate);
+    void addDosageTimeRange(std::unique_ptr<DosageTimeRange> _timeRange);
+    void addTarget(std::unique_ptr<Target> _target);
+    void addSample(std::unique_ptr<Sample> _sample);
+    
 private:
 
     /// The patient dosage history

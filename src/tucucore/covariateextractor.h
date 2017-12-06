@@ -19,7 +19,7 @@
 #include "tucucore/definitions.h"
 #include "tucucore/covariateevent.h"
 
-class TestCovariateExtractor;
+struct TestCovariateExtractor;
 
 namespace Tucuxi {
 namespace Core {

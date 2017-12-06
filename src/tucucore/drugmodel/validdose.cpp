@@ -43,11 +43,11 @@ std::vector<MultiAnalyteDose> AnyDoses::getDoses() const
     MultiAnalyteDose currentDose = m_from;
     std::vector<MultiAnalyteDose> result;
 
-    int nbAnalytes = m_from.size();
+    size_t nbAnalytes = m_from.size();
 
     while (currentDose <= m_to) {
         result.push_back(currentDose);
-        for(int i = 0; i < nbAnalytes; i++) {
+        for(size_t i = 0; i < nbAnalytes; i++) {
             currentDose[i] += m_step[i];
         }
     }

@@ -22,6 +22,8 @@
     <ClCompile Include="..\..\..\test\tucucore\tests.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\test\tucucore\drugmodels\buildimatinib.h" />
+    <ClInclude Include="..\..\..\test\tucucore\drugmodels\drugmodelbuilder.h" />
     <ClInclude Include="..\..\..\test\tucucore\test_concentrationcalculator.h" />
     <ClInclude Include="..\..\..\test\tucucore\test_covariateextractor.h" />
     <ClInclude Include="..\..\..\test\tucucore\test_dosage.h" />

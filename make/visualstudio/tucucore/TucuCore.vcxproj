@@ -130,10 +130,6 @@
     <ClInclude Include="..\..\..\src\tucucore\twocompartmentbolus.h" />
     <ClInclude Include="..\..\..\src\tucucore\twocompartmentextra.h" />
     <ClInclude Include="..\..\..\src\tucucore\twocompartmentinfusion.h" />
-    <ClInclude Include="drugtreatment\drugtreatment.h" />
-    <ClInclude Include="drugtreatment\patientcovariate.h" />
-    <ClInclude Include="drugtreatment\sample.h" />
-    <ClInclude Include="drugtreatment\target.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{927dafca-e4c7-45ae-9c20-28262f8e5307}</ProjectGuid>

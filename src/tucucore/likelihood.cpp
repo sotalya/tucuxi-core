@@ -15,9 +15,6 @@
 namespace Tucuxi {
 namespace Core {
 
-static const float PI = 3.14159;
-
-
 Likelihood::Likelihood(const OmegaMatrix& _omega,
                        const IResidualErrorModel& _residualErrorModel,
                        const SampleSeries& _samples,

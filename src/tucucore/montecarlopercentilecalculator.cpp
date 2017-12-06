@@ -218,7 +218,7 @@ IPercentileCalculator::ProcessingResult AprioriMonteCarloPercentileCalculator::c
     /*
      * Extracting the variances from error matrix into vector
      */
-    int omegaRank = omegaSize(_omega);
+    size_t omegaRank = omegaSize(_omega);
     errorMatrix = _omega;
 
     choleskyMatrix = EigenMatrix::Zero(omegaRank, omegaRank);
@@ -448,7 +448,7 @@ IPercentileCalculator::ProcessingResult AposterioriMonteCarloPercentileCalculato
                     * using the multi-t dist from wikipedia
                     */
                     double v = studentLiberty;
-                    double p = _etas.size();
+                    size_t p = _etas.size();
                     double top = tgamma((v + p)/2);
                     double part2 = std::sqrt(subomega.determinant());
                     double part3 = tgamma(v / 2) * std::pow(v * 3.14159, p/2);

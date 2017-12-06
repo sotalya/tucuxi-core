@@ -89,13 +89,13 @@ public:
         if (ostrm.rdstate() & std::ios_base::failbit)
 	    return false;
 
-	int nbCycles = this->m_values.size();
+	size_t nbCycles = this->m_values.size();
 	double offset = 0.0;
-	for(int cycle = 0; cycle < nbCycles; cycle ++) {
+	for(size_t cycle = 0; cycle < nbCycles; cycle ++) {
 	    const Tucuxi::Core::Concentrations concentrations = getValues()[cycle];
 	    const Tucuxi::Core::TimeOffsets times = getTimes()[cycle];
-	    int nbPoints = concentrations.size();
-	    for(int i = 0; i < nbPoints - 1; i++) {
+	    size_t nbPoints = concentrations.size();
+	    for(size_t i = 0; i < nbPoints - 1; i++) {
 		ostrm << (times[i]) + offset << " " << concentrations[i] << std::endl;
 	    }
 	    offset += times[nbPoints - 1];
@@ -134,11 +134,11 @@ public:
         if (ostrm.rdstate() & std::ios_base::failbit)
             return false;
 
-        int nbCycles = this->m_times.size();
+        size_t nbCycles = this->m_times.size();
         double offset = 0.0;
         for(int cycle = 0; cycle < nbCycles; cycle ++) {
             const Tucuxi::Core::TimeOffsets times = getTimes()[cycle];
-            int nbPoints = times.size();
+            size_t nbPoints = times.size();
             for(int i = 0; i < nbPoints - 1; i++) {
 
                 ostrm << (times[i]) + offset << " ";

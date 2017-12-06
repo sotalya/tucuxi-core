@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\DrugModel">
+      <UniqueIdentifier>{45fb9808-d44d-4154-b25d-0f7e3d7576b3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\test\tucucore\tests.cpp">
@@ -52,6 +55,12 @@
     </ClInclude>
     <ClInclude Include="..\..\..\test\tucucore\test_pkmodel.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\test\tucucore\drugmodels\buildimatinib.h">
+      <Filter>Header Files\DrugModel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\test\tucucore\drugmodels\drugmodelbuilder.h">
+      <Filter>Header Files\DrugModel</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

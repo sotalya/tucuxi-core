@@ -27,7 +27,7 @@ namespace Core {
 
 /// General case specialization of first derivatives for resolving typetraits
 /// \tparam func the objective function type for the derivatecalculations (f(x)).
-/// 	Must have implementeed operator()
+///  Must have implementeed operator()
 /// \tparam x the type of dependent variable(s)
 ///
 /// \param fxn object of func (f(x))
@@ -53,7 +53,7 @@ inline x deriv1_impl(func fxn,
 /// General case specialization for is pointer, not array, not class
 /// of first derivatives after typetraits resolved
 /// \tparam func the objective function type for the derivatecalculations (f(x)).
-/// 	Must have implemented operator()
+///  Must have implemented operator()
 /// \tparam x the type of dependent variable(s)
 ///
 /// \param fxn object of func (f(x))
@@ -83,7 +83,7 @@ inline x deriv1_impl(func fxn,
 /// Partial specialization for the vector case not pointer, not array, is class type
 /// of first derivatives after typetraits resolved
 /// \tparam func the objective function type for the derivatecalculations (f(x)).
-/// 	Must have implemented operator()
+///  Must have implemented operator()
 /// \tparam x the type of dependent variable(s)
 /// \param fxn object of func (f(x))
 /// \param loc where to take the derivative
@@ -103,11 +103,11 @@ inline x& deriv1_impl(x& ans,
          const Value tol = DEFAULT_DERIV_TOL)
 {
 
-    int vecsize = loc.size();
+    size_t vecsize = loc.size();
 
     x xm, xp;
     xm = xp = loc;
-    for (int i = 0; i < vecsize; ++i) {
+    for (size_t i = 0; i < vecsize; ++i) {
         xp[i] = loc[i] + tol;
         xm[i] = loc[i] - tol;
         ans[i] = (fxn(xp) - fxn(xm)) / (2 * tol);
@@ -121,7 +121,7 @@ inline x& deriv1_impl(x& ans,
 /// Partial specialization for the vector case is pointer, not array, is class type
 /// of first derivatives after typetraits resolved
 /// \tparam func the objective function type for the derivatecalculations (f(x)).
-/// 	Must have implemented operator()
+///  Must have implemented operator()
 /// \tparam x the type of dependent variable(s)
 ///
 /// \param ans the resulting derivative
@@ -162,7 +162,7 @@ inline x& deriv1_impl(x& ans,
 /// The following is a part of first derivatives that would actually be called from outside.
 /// The methods above are for choosing implementations for different types of inputs
 /// \tparam func the objective function type for the derivatecalculations (f(x)).
-/// 	Must have implemented operator()
+///  Must have implemented operator()
 /// \tparam x the type of dependent variable(s)
 ///
 /// \param fxn object of func (f(x))
@@ -183,7 +183,7 @@ inline x deriv1(func fxn, x& loc, x& ans, const Value tol = DEFAULT_DERIV_TOL)
 /// The following is a part of first derivatives that would actually be called from outside.
 /// The methods above are for choosing implementations for different types of inputs
 /// \tparam func the objective function type for the derivatecalculations (f(x)).
-/// 	Must have implemented operator()
+///  Must have implemented operator()
 /// \tparam x the type of dependent variable(s)
 ///
 /// \param fxn object of func (f(x))
@@ -243,13 +243,12 @@ void deriv2_impl(func fxn, x& loc, y& answer, const Value tol) {
             }
         }
     }
-    return;
 }
 
 
 /// Partial specialization for the Eigen VectorXd/MatrixXd case of second derivatives
 /// \tparam func the objective function type for the derivatecalculations (f(x)).
-/// 	Must have implementeed operator()
+///  Must have implementeed operator()
 ///
 /// \param fxn object of func (f(x))
 /// \param loc where to take the derivative
@@ -257,7 +256,7 @@ void deriv2_impl(func fxn, x& loc, y& answer, const Value tol) {
 /// \param tol value of derivative calculation step (as h in f(x+h)...)
 template <typename func>
 void deriv2_impl(func fxn, Eigen::VectorXd& loc, Eigen::MatrixXd& answer, const Value tol) {
-    int size = loc.size();
+    size_t size = loc.size();
 
     // Diagonal elements
     for (int i = 0; i < size; ++i) {
@@ -286,13 +285,12 @@ void deriv2_impl(func fxn, Eigen::VectorXd& loc, Eigen::MatrixXd& answer, const 
             }
         }
     }
-    return;
 }
 
 /// The following is the part of second derivatives that would actually be called from outside.
 /// The methods above are for choosing implementations for different types of inputs
 /// \tparam func the objective function type for the derivatecalculations (f(x)).
-/// 	Must have implementeed operator()
+///  Must have implementeed operator()
 /// \tparam x the type of dependent variable(s)
 /// \tparam y the type of the result
 ///
@@ -310,22 +308,22 @@ inline void deriv2(func fxn, x& loc, y& ret, const Value tol = DEFAULT_DERIV_TOL
 //    bool lala2 = boost::is_array<x>();
 //    bool lala3 = boost::is_class<x>();
 
-    return deriv2_impl(fxn, loc, ret, tol);
+    deriv2_impl(fxn, loc, ret, tol);
 }
 
 /// The following is the part of second derivatives that would actually be called from outside.
 /// The methods above are for choosing implementations for different types of inputs
 /// \tparam func the objective function type for the derivatecalculations (f(x)).
-/// 	Must have implementeed operator()
+///  Must have implemented operator()
 ///
 /// \param fxn object of func (f(x))
 /// \param loc where to take the derivative
 /// \param ret where to put the results
 /// \param tol value of derivative calculation step (as h in f(x+h)...)
 template <typename func>
-inline void deriv2(func fxn, Eigen::VectorXd& loc, Eigen::MatrixXd& ret, const Value tol = DEFAULT_DERIV_TOL) {
-
-    return deriv2_impl(fxn, loc, ret, tol);
+inline void deriv2(func fxn, Eigen::VectorXd& loc, Eigen::MatrixXd& ret, const Value tol = DEFAULT_DERIV_TOL) 
+{
+    deriv2_impl(fxn, loc, ret, tol);
 }
 
 

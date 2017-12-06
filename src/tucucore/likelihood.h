@@ -73,7 +73,7 @@ public:
     ///
     void df(ValueVector &_x, ValueVector &_deriv)
     {
-        deriv1([&](const ValueVector & in) -> Value {return (*this)(in);}, _x, _deriv, _x.size());
+        deriv1([&](const ValueVector & in) -> Value {return (*this)(in);}, _x, _deriv, static_cast<Value>(_x.size()));
         for (unsigned int i = 0; i < _x.size(); i++) {
             // bounds the value:
             _deriv[i] = std::max(m_omin[i], std::min(_deriv[i], m_omax[i]));

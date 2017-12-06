@@ -510,9 +510,9 @@ protected:
 private:
     void split(std::vector<std::string> &tokens, const std::string& text, char sep)
     {
-        int start = 0, end = 0;
+        size_t start = 0, end = 0;
         // YTA: Added the cast to int
-        while ((end = text.find(sep, start)) != (int)std::string::npos) {
+        while ((end = text.find(sep, start)) != std::string::npos) {
             tokens.push_back(text.substr(start, end - start));
             start = end + 1;
         }

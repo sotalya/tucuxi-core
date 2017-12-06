@@ -41,9 +41,8 @@ void SigmaResidualErrorModel::applyEpsToArray(Concentrations &_concentrations, c
     return;
 };
 
-Value SigmaResidualErrorModel::calculateSampleLikelihood(const Value _expected, const Value& _observed) const {
-
-    static const float PI = 3.14159;
+Value SigmaResidualErrorModel::calculateSampleLikelihood(const Value _expected, const Value& _observed) const 
+{
     // This first part gets the difference between the predicted mean and the measured value
     Value expectedObservedDiff = std::abs(_observed - _expected);
     // Sig is calculated with _y here

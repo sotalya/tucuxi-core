@@ -167,14 +167,14 @@ template <typename T>
 struct Df1dim {
     const ValueVector &p;
     const ValueVector &xi;
-    int n;
+    size_t n;
     T &funcd;
     ValueVector xt;
     ValueVector dft;
     Df1dim(ValueVector &pp, ValueVector &xii, T &funcdd) : p(pp),
         xi(xii), n(pp.size()), funcd(funcdd), xt(n), dft(n) {}
     double operator()(const Value x){
-        for (int j=0;j<n;j++)
+        for (size_t j=0;j<n;j++)
             xt[j]=p[j]+x*xi[j];
         return funcd(xt);
         }
@@ -182,7 +182,7 @@ struct Df1dim {
         TMP_UNUSED_PARAMETER(x);
         double df1=0.0;
         funcd.df(xt,dft);
-        for (int j=0;j<n;j++)
+        for (size_t j=0;j<n;j++)
             df1 += dft[j]*xi[j];
         return df1;
     }
@@ -193,7 +193,7 @@ struct Dlinemethod {
     ValueVector p;
     ValueVector xi;
     T &func;
-    int n;
+    size_t n;
     Dlinemethod(T &funcc) : func(funcc) {}
     double linmin() {
         double ax,xx,xmin;
@@ -204,7 +204,7 @@ struct Dlinemethod {
         Dbrent dbrent;
         dbrent.bracket(ax,xx,df1dim);
         xmin=dbrent.minimize(df1dim);
-        for (int j=0;j<n;j++) {
+        for (size_t j=0;j<n;j++) {
             xi[j] *= xmin;
             p[j] += xi[j];
         }
@@ -229,14 +229,14 @@ struct Frprmn : Dlinemethod<T> {
         const double EPS=1.0e-18;
         const double GTOL=1.0e-8;
         double gg,dgg;
-        int n=pp.size();
+        size_t n=pp.size();
         p=pp;
         ValueVector g(n),h(n);
         xi.resize(n);
         double fp=func(p);
         func.df(p,xi);
 
-        for (int j=0;j<n;j++) {
+        for (size_t j=0;j<n;j++) {
             g[j] = -xi[j];
             xi[j]=h[j]=g[j];
         }

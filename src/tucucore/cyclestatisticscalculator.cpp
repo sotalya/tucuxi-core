@@ -81,7 +81,7 @@ CycleStatistics::CycleStatistics(const CycleData &_data)
     //
     // Build a new statistics with the given type
     //
-    unsigned int nbCompartments = _data.m_concentrations.size();
+    size_t nbCompartments = _data.m_concentrations.size();
 
     // m_stats.reserve(nbCompartments);
     for (unsigned int compartment = 0; compartment < nbCompartments; compartment++) {

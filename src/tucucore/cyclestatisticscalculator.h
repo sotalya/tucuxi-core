@@ -46,7 +46,7 @@ public:
     /// \brief Return the number of values
     /// \return number of values
     ///
-    int getNbValue() const { return m_data.size(); }
+    size_t getNbValue() const { return m_data.size(); }
 
     ///
     /// \brief Return cycle start date

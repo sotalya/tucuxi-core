@@ -95,9 +95,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\src\tucucommon\utils.cpp">
-      <Filter>Headers</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\tucucommon\componentmanager.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
@@ -145,6 +142,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\libs\tiny-js-master-20170629\TinyJS_SyntaxTree.cpp">
       <Filter>Sources\TinyJS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\tucucommon\utils.cpp">
+      <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
