@@ -24,12 +24,12 @@ public:
 
         size_t nbCycles = this->m_times.size();
         double offset = 0.0;
-        for (int cycle = 0; cycle < nbCycles; cycle++) {
+        for (size_t cycle = 0; cycle < nbCycles; cycle++) {
             const Tucuxi::Core::TimeOffsets times = m_times[cycle];
             size_t nbPoints = times.size();
-            for (int i = 0; i < nbPoints - 1; i++) {
+            for (size_t i = 0; i < nbPoints - 1; i++) {
                 ostrm << (times[i]) + offset << " ";
-                for (unsigned int perc = 0; perc < m_values.size(); perc++) {
+                for (size_t perc = 0; perc < m_values.size(); perc++) {
                     ostrm << m_values[perc][cycle][i] << " ";
                 }
                 ostrm << std::endl;

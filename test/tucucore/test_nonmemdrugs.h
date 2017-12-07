@@ -26,7 +26,6 @@
 
 struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
 {
-
     TestNonMemDrugs() { }
 
     template<class CalculatorClass>
@@ -92,6 +91,8 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
                     predictionPtr,
                     isAll,
                     _nbPoints,
+                    DateTime(), // YJ: Fix this with a meaningfull date
+                    DateTime(), // YJ: Fix this with a meaningfull date
                     intakeSeries,
                     _parameters);
                 delete concentrationCalculator;

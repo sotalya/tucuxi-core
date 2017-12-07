@@ -62,5 +62,8 @@
     <ClInclude Include="..\..\..\test\tucucore\drugmodels\drugmodelbuilder.h">
       <Filter>Header Files\DrugModel</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\test\tucucore\test_cyclestatistics.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

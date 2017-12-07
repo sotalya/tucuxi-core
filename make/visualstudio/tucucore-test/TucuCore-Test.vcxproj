@@ -26,6 +26,7 @@
     <ClInclude Include="..\..\..\test\tucucore\drugmodels\drugmodelbuilder.h" />
     <ClInclude Include="..\..\..\test\tucucore\test_concentrationcalculator.h" />
     <ClInclude Include="..\..\..\test\tucucore\test_covariateextractor.h" />
+    <ClInclude Include="..\..\..\test\tucucore\test_cyclestatistics.h" />
     <ClInclude Include="..\..\..\test\tucucore\test_dosage.h" />
     <ClInclude Include="..\..\..\test\tucucore\test_drugmodels.h" />
     <ClInclude Include="..\..\..\test\tucucore\test_intakeextractor.h" />

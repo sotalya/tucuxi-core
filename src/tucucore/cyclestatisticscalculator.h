@@ -36,10 +36,10 @@ public:
     /// \param _value new value (mean, peak, maximum, minimum or AUC)
     ///
     void addValue(const Duration _time, const Value _value) { 
-	Data newData;
-	newData.offset = _time;
-	newData.value = _value;
-	m_data.push_back(newData);
+        Data newData;
+        newData.offset = _time;
+        newData.value = _value;
+        m_data.push_back(newData);
     }
 
     ///
@@ -61,25 +61,24 @@ public:
     /// \param index
     /// \return True if there is a value at given index. otherwise False
     ///
-    bool getValue(DateTime &_dateTime, Value &_value, int index = 0) const {
-	// if the required index is bigger than the stored value...
-	if (index >= getNbValue())
-	    return false;
-
-	_dateTime = m_cycleStartDate + m_data[index].offset;
-	_value = m_data[index].value;
-
-	return true;
+    bool getValue(DateTime &_dateTime, Value &_value, size_t index = 0) const 
+    {
+        // if the required index is bigger than the stored value...
+        if (index >= getNbValue()) {
+            return false;
+        }
+        _dateTime = m_cycleStartDate + m_data[index].offset;
+        _value = m_data[index].value;
+        return true;
     }
 
 private:
-
     DateTime m_cycleStartDate; // Date and time of the start of the corresponding cycle
     CycleStatisticType m_type; // The type of statistic
     
     struct Data {
-	Duration offset;
-	Value value;
+        Duration offset;
+        Value value;
     };
     std::vector<Data> m_data; // The list of values (in case of maximum and minimum, we can have a list)
 };
@@ -110,23 +109,25 @@ public:
     /// \param _type mean, peak, maximum, minimum or AUC
     /// \return The list of statistics
     ///
-    bool getStatistics(CycleStatisticType _type, std::vector< std::vector<CycleStatistic> >
-    &_stats) { 
-	if(_type >= CycleStatisticType::CYCLE_STATISTIC_TYPE_SIZE)
-	    return false;
+    bool getStatistics(CycleStatisticType _type, std::vector< std::vector<CycleStatistic> > &_stats) 
+    { 
+        if (_type >= CycleStatisticType::CYCLE_STATISTIC_TYPE_SIZE) {
+            return false;
+        }
 
-	for (unsigned int compartment = 0; compartment < m_stats.size(); compartment++)
-	_stats[compartment][static_cast<int>(_type)] = m_stats[compartment][static_cast<int>(_type)]; 
+        for (unsigned int compartment = 0; compartment < m_stats.size(); compartment++) {
+            _stats[compartment][static_cast<int>(_type)] = m_stats[compartment][static_cast<int>(_type)];
+        }
 
-	return true;
+        return true;
     }
 
 private:
     // The list of statistics for each compartments (e.g m_stats[0][]: 1st compartment, m_stats[1][]: 2nd compartment etc)
     std::vector< std::vector<CycleStatistic> > m_stats;
     void calculate(const std::vector<Concentrations> &_concentrations, const std::vector<TimeOffsets> &_times);
-
 };
+
 
 }
 }
