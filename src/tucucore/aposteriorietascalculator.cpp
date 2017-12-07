@@ -12,7 +12,6 @@ namespace Core {
 
 APosterioriEtasCalculator::APosterioriEtasCalculator()
 {
-
 }
 
 
@@ -24,15 +23,13 @@ ComputationResult APosterioriEtasCalculator::computeAposterioriEtas(
         const SampleSeries &_samples,
         Etas &_aPosterioriEtas)
 {
-
-
-// Verify we have a var-covar matrix
+    // Verify we have a var-covar matrix
     if (isOmegaEmpty(_omega)) {
         //throw something
         return ComputationResult::Failure;
     }
 
-// Verify is square matrix
+    // Verify is square matrix
     if ( !isOmegaSquare(_omega)) {
         //throw something
         return ComputationResult::Failure;
@@ -56,7 +53,7 @@ ComputationResult APosterioriEtasCalculator::computeAposterioriEtas(
 
     // TODO : Use a factory for the calculator
     ConcentrationCalculator calculator;
-  // This is the object holding the state of minimization
+    // This is the object holding the state of minimization
     Likelihood funcd(_omega, _residualErrorModel, _samples, _intakes, _parameters, calculator);
 
     // This is the object responsible for minimization
@@ -65,11 +62,11 @@ ComputationResult APosterioriEtasCalculator::computeAposterioriEtas(
     // Initial etas (0)
     ValueVector initialEtas(omegaSize);
 
-// Execute the minimizer
+    // Execute the minimizer
     _aPosterioriEtas = frprmn.minimize(initialEtas);
 
 
-// Prints out the eta values
+    // Prints out the eta values
     //    QTextStream(stdout) << "Eta: " << endl;
     //    for (int i = 0; i < _eta.size(); ++i) {
     //        QTextStream(stdout) << (double)_eta[i] << " " << endl;

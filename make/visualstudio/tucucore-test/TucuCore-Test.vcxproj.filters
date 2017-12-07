@@ -65,5 +65,11 @@
     <ClInclude Include="..\..\..\test\tucucore\test_cyclestatistics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\test\tucucore\testutils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\test\tucucore\test_parameterextractor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

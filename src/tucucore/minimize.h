@@ -251,7 +251,7 @@ struct Frprmn : Dlinemethod<T> {
             double test=0.0;
             double den=std::max(fp,1.0);
 
-            for (int j=0;j<n;j++) {
+            for (size_t j=0;j<n;j++) {
                 double temp=std::abs(xi[j])*std::max(std::abs(p[j]),Value(1.0))/den;
                 if (temp > test) test=temp;
             }
@@ -260,7 +260,7 @@ struct Frprmn : Dlinemethod<T> {
 
             dgg=gg=0.0;
 
-            for (int j=0;j<n;j++) {
+            for (size_t j=0;j<n;j++) {
                 gg += g[j]*g[j];
 //                dgg += xi[j]*xi[j]; //This statement for Fletcher-Reeves.
                 dgg += (xi[j]+g[j])*xi[j]; //This statement for Polak-Ribiere.
@@ -270,7 +270,7 @@ struct Frprmn : Dlinemethod<T> {
                 return p;
 
             double gam=dgg/gg;
-            for (int j=0;j<n;j++) {
+            for (size_t j=0;j<n;j++) {
                 g[j] = -xi[j];
                 xi[j]=h[j]=g[j]+gam*h[j];
             }

@@ -24,6 +24,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\test\tucucore\drugmodels\buildimatinib.h" />
     <ClInclude Include="..\..\..\test\tucucore\drugmodels\drugmodelbuilder.h" />
+    <ClInclude Include="..\..\..\test\tucucore\testutils.h" />
     <ClInclude Include="..\..\..\test\tucucore\test_concentrationcalculator.h" />
     <ClInclude Include="..\..\..\test\tucucore\test_covariateextractor.h" />
     <ClInclude Include="..\..\..\test\tucucore\test_cyclestatistics.h" />
@@ -34,6 +35,7 @@
     <ClInclude Include="..\..\..\test\tucucore\test_nonmemdrugs.h" />
     <ClInclude Include="..\..\..\test\tucucore\test_operablegraphmanager.h" />
     <ClInclude Include="..\..\..\test\tucucore\test_operation.h" />
+    <ClInclude Include="..\..\..\test\tucucore\test_parameterextractor.h" />
     <ClInclude Include="..\..\..\test\tucucore\test_percentilecalculator.h" />
     <ClInclude Include="..\..\..\test\tucucore\test_pkmodel.h" />
   </ItemGroup>

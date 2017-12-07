@@ -34,29 +34,29 @@ std::string SystemInfo::retrieveFingerPrint(MachineIdType _machineIdType)
 {
     try {
         switch (_machineIdType) {
-        case MachineIdType::CPU:
-            return retrieveCpu();
-        case MachineIdType::MOTHERBOARD:
-            return retrieveMotherboard();
-        case MachineIdType::DISK:
-            return retrieveDisk();
-        case MachineIdType::MAC:
-            return retrieveMacAddress();
-        case MachineIdType::BIOS:
-            return retrieveBios();
-        case MachineIdType::PRODUCT:
-            return retrieveProduct();
-        case MachineIdType::NAME:
-            return retrieveName();
-        default:
-            return std::string();
+            case MachineIdType::CPU:
+                return retrieveCpu();
+            case MachineIdType::MOTHERBOARD:
+                return retrieveMotherboard();
+            case MachineIdType::DISK:
+                return retrieveDisk();
+            case MachineIdType::MAC:
+                return retrieveMacAddress();
+            case MachineIdType::BIOS:
+                return retrieveBios();
+            case MachineIdType::PRODUCT:
+                return retrieveProduct();
+            case MachineIdType::NAME:
+                return retrieveName();
+            default:
+                break;
         };
     }
     catch (const std::exception& e)
     {
-        std::cout << "Error in CryptoHelper::hash: " << e.what() << std::endl;
-        return false;
+        std::cout << "Error in CryptoHelper::hash: " << e.what() << std::endl;        
     }
+    return "";
 }
 
 std::string SystemInfo::retrieveCpu()

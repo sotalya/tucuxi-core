@@ -259,7 +259,7 @@ void deriv2_impl(func fxn, Eigen::VectorXd& loc, Eigen::MatrixXd& answer, const 
     size_t size = loc.size();
 
     // Diagonal elements
-    for (int i = 0; i < size; ++i) {
+    for (size_t i = 0; i < size; ++i) {
         Eigen::VectorXd xm, xp;
         xm = xp = loc;
         xp(i) = loc(i) + tol;
@@ -269,8 +269,8 @@ void deriv2_impl(func fxn, Eigen::VectorXd& loc, Eigen::MatrixXd& answer, const 
 
     // Off-diagonal elements
     if (size > 1) {
-        for (int i = 0; i < size - 1; ++i) {
-            for (int j = i + 1; j < size; ++j) {
+        for (size_t i = 0; i < size - 1; ++i) {
+            for (size_t j = i + 1; j < size; ++j) {
                 Eigen::VectorXd xpp, xmm, xpm, xmp;
                 xpp = xmm = xpm = xmp = loc;
                 xpp(i) = loc(i) + tol;
