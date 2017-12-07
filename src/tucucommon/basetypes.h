@@ -5,6 +5,8 @@
 #ifndef TUCUXI_TUCUCOMMON_BASETYPES_H
 #define TUCUXI_TUCUCOMMON_BASETYPES_H
 
+#include <math.h>
+
 typedef long long int int64;
 
 typedef double ChronoBaseType;
