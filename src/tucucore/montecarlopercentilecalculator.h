@@ -16,8 +16,8 @@ namespace Tucuxi {
 namespace Core {
 
 class IConcentrationCalculator;
-
 class IResidualErrorModel;
+class PercentilesPrediction;
 
 ///
 /// \brief The ProcessingAborter class
@@ -28,7 +28,6 @@ class IResidualErrorModel;
 class ProcessingAborter
 {
 public:
-
     ///
     /// \brief Indicates if the calculation should be aborted
     /// \return true if the calculation should be aborted, false else
@@ -41,21 +40,18 @@ public:
 class IPercentileCalculator
 {
 public:
-
     enum class ProcessingResult
     {
         Success,
         Failure,
         Aborted
     };
-
 };
 
 
 class IAprioriPercentileCalculator : public IPercentileCalculator
 {
 public:
-
     ///
     /// \brief calculate
     /// \param _percentiles percentiles calculated within the method
@@ -70,16 +66,16 @@ public:
     /// \param _aborter An aborter object allowing to abort the calculation
     /// \return The status of calculation
     virtual ProcessingResult calculate(
-            PercentilesPrediction &_percentiles,
-            const int _nbPoints,
-            const IntakeSeries &_intakes,
-            const ParameterSetSeries &_parameters,
-            const OmegaMatrix& _omega,
-            const IResidualErrorModel &_residualErrorModel,
-            const Etas& _etas,
-            const PercentileRanks &_percentileRanks,
-	    IConcentrationCalculator &_concentrationCalculator,
-            ProcessingAborter *_aborter) = 0;
+        PercentilesPrediction &_percentiles,
+        const int _nbPoints,
+        const IntakeSeries &_intakes,
+        const ParameterSetSeries &_parameters,
+        const OmegaMatrix& _omega,
+        const IResidualErrorModel &_residualErrorModel,
+        const Etas& _etas,
+        const PercentileRanks &_percentileRanks,
+        IConcentrationCalculator &_concentrationCalculator,
+        ProcessingAborter *_aborter) = 0;
 };
 
 class IAposterioriPercentileCalculator : public IPercentileCalculator
@@ -100,17 +96,17 @@ public:
     /// \param _aborter An aborter object allowing to abort the calculation
     /// \return The status of calculation
     virtual ProcessingResult calculate(
-            PercentilesPrediction &_percentiles,
-            const int _nbPoints,
-            const IntakeSeries &_intakes,
-            const ParameterSetSeries &_parameters,
-            const OmegaMatrix& _omega,
-            const IResidualErrorModel &_residualErrorModel,
-            const Etas& _etas,
-            const SampleSeries &_samples,
-            const PercentileRanks &_percentileRanks,
-	    IConcentrationCalculator &_concentrationCalculator,
-            ProcessingAborter *_aborter) = 0;
+        PercentilesPrediction &_percentiles,
+        const int _nbPoints,
+        const IntakeSeries &_intakes,
+        const ParameterSetSeries &_parameters,
+        const OmegaMatrix& _omega,
+        const IResidualErrorModel &_residualErrorModel,
+        const Etas& _etas,
+        const SampleSeries &_samples,
+        const PercentileRanks &_percentileRanks,
+        IConcentrationCalculator &_concentrationCalculator,
+        ProcessingAborter *_aborter) = 0;
 };
 
 class IAposterioriNormalApproximationMonteCarloPercentileCalculator : public IPercentileCalculator
@@ -131,37 +127,30 @@ public:
     /// \param _aborter An aborter object allowing to abort the calculation
     /// \return The status of calculation
     virtual ProcessingResult calculate(
-            PercentilesPrediction &_percentiles,
-            const int _nbPoints,
-            const IntakeSeries &_intakes,
-            const ParameterSetSeries &_parameters,
-            const OmegaMatrix& _omega,
-            const IResidualErrorModel &_residualErrorModel,
-            const Etas& _etas,
-            const SampleSeries &_samples,
-            const PercentileRanks &_percentileRanks,
-	    IConcentrationCalculator &_concentrationCalculator,
-            ProcessingAborter *_aborter) = 0;
+        PercentilesPrediction &_percentiles,
+        const int _nbPoints,
+        const IntakeSeries &_intakes,
+        const ParameterSetSeries &_parameters,
+        const OmegaMatrix& _omega,
+        const IResidualErrorModel &_residualErrorModel,
+        const Etas& _etas,
+        const SampleSeries &_samples,
+        const PercentileRanks &_percentileRanks,
+        IConcentrationCalculator &_concentrationCalculator,
+        ProcessingAborter *_aborter) = 0;
 };
 
 
 
 class MonteCarloPercentileCalculatorBase : public IPercentileCalculator
 {
-
 public:
-
-
     MonteCarloPercentileCalculatorBase();
 
     void setNumberPatients(const unsigned int _nbPatients) { m_nbPatients = _nbPatients; };
-
     unsigned int getNumberPatients() { return m_nbPatients; };
 
-
-
 protected:
-
     ///
     /// \brief calculate
     /// \param _intakes Intake series
@@ -193,20 +182,19 @@ protected:
     /// \return The status of calculation
     ///
     ProcessingResult computePredictionsAndSortPercentiles(
-            PercentilesPrediction &_percentiles,
-            const int _nbPoints,
-            const IntakeSeries &_intakes,
-            const ParameterSetSeries &_parameters,
-            const IResidualErrorModel &_residualErrorModel,
-            const PercentileRanks &_percentileRanks,
-            const std::vector<Etas> _etas,
-	    const std::vector<Deviations> _epsilons,
-	    IConcentrationCalculator &_concentrationCalculator,
-            ProcessingAborter *_aborter);
+        PercentilesPrediction &_percentiles,
+        const int _nbPoints,
+        const IntakeSeries &_intakes,
+        const ParameterSetSeries &_parameters,
+        const IResidualErrorModel &_residualErrorModel,
+        const PercentileRanks &_percentileRanks,
+        const std::vector<Etas> _etas,
+        const std::vector<Deviations> _epsilons,
+        IConcentrationCalculator &_concentrationCalculator,
+        ProcessingAborter *_aborter);
 
 private:
     unsigned int m_nbPatients;
-
 };
 
 
@@ -215,10 +203,9 @@ private:
 * The number of simulated curves is hardcoded to be 10,000
 */
 class AprioriMonteCarloPercentileCalculator : public IAprioriPercentileCalculator,
-        public MonteCarloPercentileCalculatorBase {
-
+        public MonteCarloPercentileCalculatorBase 
+{
 public:
-
     AprioriMonteCarloPercentileCalculator();
 
     ///
@@ -235,25 +222,22 @@ public:
     /// \return The status of calculation
     ///
     ProcessingResult calculate(
-            PercentilesPrediction &_percentiles,
-            const int _nbPoints,
-            const IntakeSeries &_intakes,
-            const ParameterSetSeries &_parameters,
-            const OmegaMatrix& _omega,
-            const IResidualErrorModel &_residualErrorModel,
-            const Etas& _initialEtas,
-            const PercentileRanks &_percentileRanks,
-	    IConcentrationCalculator &_concentrationCalculator,
-            ProcessingAborter *_aborter) override;
-
-
+        PercentilesPrediction &_percentiles,
+        const int _nbPoints,
+        const IntakeSeries &_intakes,
+        const ParameterSetSeries &_parameters,
+        const OmegaMatrix& _omega,
+        const IResidualErrorModel &_residualErrorModel,
+        const Etas& _initialEtas,
+        const PercentileRanks &_percentileRanks,
+        IConcentrationCalculator &_concentrationCalculator,
+        ProcessingAborter *_aborter) override;
 };
 
 
-class AposterioriMonteCarloPercentileCalculator : public IAposterioriPercentileCalculator, public MonteCarloPercentileCalculatorBase {
-
+class AposterioriMonteCarloPercentileCalculator : public IAposterioriPercentileCalculator, public MonteCarloPercentileCalculatorBase 
+{
 public:
-
     AposterioriMonteCarloPercentileCalculator();
 
     ///
@@ -270,19 +254,17 @@ public:
     /// \param _aborter An aborter object allowing to abort the calculation
     /// \return The status of calculation
     ProcessingResult calculate(
-            PercentilesPrediction &_percentiles,
-            const int _nbPoints,
-            const IntakeSeries &_intakes,
-            const ParameterSetSeries &_parameters,
-            const OmegaMatrix& _omega,
-            const IResidualErrorModel &_residualErrorModel,
-            const Etas& _etas,
-            const SampleSeries &_samples,
-            const PercentileRanks &_percentileRanks,
-	    IConcentrationCalculator &_concentrationCalculator,
-            ProcessingAborter *_aborter);
-
-
+        PercentilesPrediction &_percentiles,
+        const int _nbPoints,
+        const IntakeSeries &_intakes,
+        const ParameterSetSeries &_parameters,
+        const OmegaMatrix& _omega,
+        const IResidualErrorModel &_residualErrorModel,
+        const Etas& _etas,
+        const SampleSeries &_samples,
+        const PercentileRanks &_percentileRanks,
+        IConcentrationCalculator &_concentrationCalculator,
+        ProcessingAborter *_aborter);
 };
 
 
@@ -318,7 +300,7 @@ public:
             const Etas& _etas,
             const SampleSeries &_samples,
             const PercentileRanks &_percentileRanks,
-	    IConcentrationCalculator &_concentrationCalculator,
+            IConcentrationCalculator &_concentrationCalculator,
             ProcessingAborter *_aborter);
 
 

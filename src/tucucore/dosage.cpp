@@ -10,7 +10,7 @@ namespace Core {
 
 
 
-void cloneIntakeSeries(std::vector<IntakeEvent> _input, std::vector<IntakeEvent> &_output)
+void cloneIntakeSeries(const std::vector<IntakeEvent> &_input, std::vector<IntakeEvent> &_output)
 {
     for (auto intake : _input) {
         IntakeEvent newIntakeEvent = intake;

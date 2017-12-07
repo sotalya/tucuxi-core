@@ -16,11 +16,11 @@
 #include "tucucore/residualerrormodel.h"
 #include "tucucore/onecompartmentextra.h"
 #include "tucucore/concentrationcalculator.h"
+#include "tucucore/percentilesprediction.h"
 
 
 struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalculator>
 {
-
     TestPercentileCalculator() { }
 
     void testApriori(const std::string& /* _testName */)
@@ -72,6 +72,8 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
                         predictionPtr,
                         false,
                         nbPoints,
+                        DateTime(), // YJ: Fix this with a meaningfull date
+                        DateTime(), // YJ: Fix this with a meaningfull date
                         intakeSeries,
                         parametersSeries);
             delete concentrationCalculator;
@@ -107,9 +109,7 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
         etas.push_back(0.0);
         etas.push_back(0.0);
 
-        std::unique_ptr<Tucuxi::Core::IAprioriPercentileCalculator> calculator =
-                std::unique_ptr<Tucuxi::Core::IAprioriPercentileCalculator>(
-                    new Tucuxi::Core::AprioriMonteCarloPercentileCalculator());
+        std::unique_ptr<Tucuxi::Core::IAprioriPercentileCalculator> calculator(new Tucuxi::Core::AprioriMonteCarloPercentileCalculator());
 
         Tucuxi::Core::IPercentileCalculator::ProcessingResult res;
 
@@ -123,12 +123,12 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
                     residualErrorModel,
                     etas,
                     percentileRanks,
-		    concentrationCalculator,
+                    concentrationCalculator,
                     aborter);
 
         percentiles.streamToFile("apriori_percentiles_imatinib.dat");
 
-	std::cout << "Apriori Percentile result is saved" << std::endl;
+        std::cout << "Apriori Percentile result is saved" << std::endl;
 
         fructose_assert(res == Tucuxi::Core::IPercentileCalculator::ProcessingResult::Success);
     }
@@ -136,15 +136,15 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
 
     void testAposterioriNormal(const std::string& /* _testName */)
     {
-	Tucuxi::Core::IntakeSeries intakeSeries;
-	int nbPoints;
-	Tucuxi::Core::ParameterSetSeries parametersSeries;
-	Tucuxi::Core::OmegaMatrix omega;
-	Tucuxi::Core::SigmaResidualErrorModel residualErrorModel;
-	Tucuxi::Core::Etas etas;
-	Tucuxi::Core::PercentilesPrediction percentiles;
-	Tucuxi::Core::PercentileRanks percentileRanks;
-	Tucuxi::Core::ProcessingAborter *aborter = nullptr;
+        Tucuxi::Core::IntakeSeries intakeSeries;
+        int nbPoints;
+        Tucuxi::Core::ParameterSetSeries parametersSeries;
+        Tucuxi::Core::OmegaMatrix omega;
+        Tucuxi::Core::SigmaResidualErrorModel residualErrorModel;
+        Tucuxi::Core::Etas etas;
+        Tucuxi::Core::PercentilesPrediction percentiles;
+        Tucuxi::Core::PercentileRanks percentileRanks;
+        Tucuxi::Core::ProcessingAborter *aborter = nullptr;
 
         nbPoints = 200;
 
@@ -181,6 +181,8 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
                         predictionPtr,
                         false,
                         nbPoints,
+                        DateTime(), // YJ: Fix this with a meaningfull date
+                        DateTime(), // YJ: Fix this with a meaningfull date
                         intakeSeries,
                         parametersSeries);
             delete concentrationCalculator;
@@ -205,11 +207,10 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
         etas.push_back(0.0);
         etas.push_back(0.0);
 
-	Tucuxi::Common::Duration sampleOffset = 2h;
-	Tucuxi::Core::SampleEvent sampleEvent(now + sampleOffset, 200);
-	SampleSeries sampleSeries;
-	sampleSeries.push_back(sampleEvent);
-
+        Tucuxi::Common::Duration sampleOffset = 2h;
+        Tucuxi::Core::SampleEvent sampleEvent(now + sampleOffset, 200);
+        SampleSeries sampleSeries;
+        sampleSeries.push_back(sampleEvent);
 
         std::unique_ptr<Tucuxi::Core::IAposterioriNormalApproximationMonteCarloPercentileCalculator> calculator =
                 std::unique_ptr<Tucuxi::Core::IAposterioriNormalApproximationMonteCarloPercentileCalculator>(
@@ -226,29 +227,29 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
                     omega,
                     residualErrorModel,
                     etas,
-		    sampleSeries,
+                    sampleSeries,
                     percentileRanks,
-		    concentrationCalculator,
+                    concentrationCalculator,
                     aborter);
 
         percentiles.streamToFile("aposteriori_normal_percentiles_imatinib.dat");
 
-	std::cout << "Aposteriori Normal Percentile result is saved" << std::endl;
+        std::cout << "Aposteriori Normal Percentile result is saved" << std::endl;
 
         fructose_assert(res == Tucuxi::Core::IPercentileCalculator::ProcessingResult::Success);
     }
 
     void testAposteriori(const std::string& /* _testName */)
     {
-	Tucuxi::Core::IntakeSeries intakeSeries;
-	int nbPoints;
-	Tucuxi::Core::ParameterSetSeries parametersSeries;
-	Tucuxi::Core::OmegaMatrix omega;
-	Tucuxi::Core::SigmaResidualErrorModel residualErrorModel;
-	Tucuxi::Core::Etas etas;
-	Tucuxi::Core::PercentilesPrediction percentiles;
-	Tucuxi::Core::PercentileRanks percentileRanks;
-	Tucuxi::Core::ProcessingAborter *aborter = nullptr;
+        Tucuxi::Core::IntakeSeries intakeSeries;
+        int nbPoints;
+        Tucuxi::Core::ParameterSetSeries parametersSeries;
+        Tucuxi::Core::OmegaMatrix omega;
+        Tucuxi::Core::SigmaResidualErrorModel residualErrorModel;
+        Tucuxi::Core::Etas etas;
+        Tucuxi::Core::PercentilesPrediction percentiles;
+        Tucuxi::Core::PercentileRanks percentileRanks;
+        Tucuxi::Core::ProcessingAborter *aborter = nullptr;
 
         nbPoints = 200;
 
@@ -285,6 +286,8 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
                         predictionPtr,
                         false,
                         nbPoints,
+                        DateTime(), // YJ: Fix this with a meaningfull date
+                        DateTime(), // YJ: Fix this with a meaningfull date
                         intakeSeries,
                         parametersSeries);
             delete concentrationCalculator;
@@ -309,11 +312,10 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
         etas.push_back(0.0);
         etas.push_back(0.0);
 
-	Tucuxi::Common::Duration sampleOffset = 2h;
-	Tucuxi::Core::SampleEvent sampleEvent(now + sampleOffset, 1000);
-	SampleSeries sampleSeries;
-	sampleSeries.push_back(sampleEvent);
-
+        Tucuxi::Common::Duration sampleOffset = 2h;
+        Tucuxi::Core::SampleEvent sampleEvent(now + sampleOffset, 1000);
+        SampleSeries sampleSeries;
+        sampleSeries.push_back(sampleEvent);
 
         std::unique_ptr<Tucuxi::Core::IAposterioriPercentileCalculator> calculator =
                 std::unique_ptr<Tucuxi::Core::IAposterioriPercentileCalculator>(
@@ -330,14 +332,14 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
                     omega,
                     residualErrorModel,
                     etas,
-		    sampleSeries,
+                    sampleSeries,
                     percentileRanks,
-		    concentrationCalculator,
+                    concentrationCalculator,
                     aborter);
 
         percentiles.streamToFile("aposteriori_percentiles_imatinib.dat");
 
-	std::cout << "Aposteriori Percentile result is saved" << std::endl;
+        std::cout << "Aposteriori Percentile result is saved" << std::endl;
 
         fructose_assert(res == Tucuxi::Core::IPercentileCalculator::ProcessingResult::Success);
     }

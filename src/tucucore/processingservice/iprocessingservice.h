@@ -5,6 +5,8 @@
 #ifndef IPROCESSINGSERVICE_H
 #define IPROCESSINGSERVICE_H
 
+#include "tucucommon/interface.h"
+
 #include "processingrequest.h"
 #include "processingresponse.h"
 
@@ -25,7 +27,7 @@ enum class ProcessingResult {
 /// \brief The IProcessingService class
 /// This interface exposes the entry point for any computation. All information is embedded into
 /// the classes ProcessingRequest and ProcessingResponse
-class IProcessingService
+class IProcessingService : public Tucuxi::Common::Interface
 {
 public:
 
@@ -36,14 +38,14 @@ public:
     /// \return Success if everything went well with the computation, Error else
     /// The response is a reference to a unique pointer that has to be allocated within compute()
     ///
-    ProcessingResult compute(const ProcessingRequest &_request, std::unique_ptr<ProcessingResponse> &_response);
+    virtual ProcessingResult compute(const ProcessingRequest &_request, std::unique_ptr<ProcessingResponse> &_response) = 0;
 
     ///
     /// \brief returns a description of the last error in case of failed computation
     /// \return A description of the last error
     /// This function should only be called if compute() returned something different from Success
     ///
-    std::string getErrorString() const;
+    virtual std::string getErrorString() const = 0;
 
 };
 

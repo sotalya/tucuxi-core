@@ -53,7 +53,6 @@
     <ClCompile Include="..\..\..\src\tucucore\parameter.cpp" />
     <ClCompile Include="..\..\..\src\tucucore\parametersextractor.cpp" />
     <ClCompile Include="..\..\..\src\tucucore\pkmodel.cpp" />
-    <ClCompile Include="..\..\..\src\tucucore\processingservice\iprocessingservice.cpp" />
     <ClCompile Include="..\..\..\src\tucucore\processingservice\processingrequest.cpp" />
     <ClCompile Include="..\..\..\src\tucucore\processingservice\processingresponse.cpp" />
     <ClCompile Include="..\..\..\src\tucucore\processingservice\processingtrait.cpp" />
@@ -73,6 +72,7 @@
     <ClInclude Include="..\..\..\src\tucucore\aposteriorietascalculator.h" />
     <ClInclude Include="..\..\..\src\tucucore\cachedexponentials.h" />
     <ClInclude Include="..\..\..\src\tucucore\concentrationcalculator.h" />
+    <ClInclude Include="..\..\..\src\tucucore\concentrationprediction.h" />
     <ClInclude Include="..\..\..\src\tucucore\corecomponent.h" />
     <ClInclude Include="..\..\..\src\tucucore\covariateevent.h" />
     <ClInclude Include="..\..\..\src\tucucore\covariateextractor.h" />
@@ -113,6 +113,7 @@
     <ClInclude Include="..\..\..\src\tucucore\operation.h" />
     <ClInclude Include="..\..\..\src\tucucore\parameter.h" />
     <ClInclude Include="..\..\..\src\tucucore\parametersextractor.h" />
+    <ClInclude Include="..\..\..\src\tucucore\percentilesprediction.h" />
     <ClInclude Include="..\..\..\src\tucucore\pkmodel.h" />
     <ClInclude Include="..\..\..\src\tucucore\processingservice\iprocessingservice.h" />
     <ClInclude Include="..\..\..\src\tucucore\processingservice\processingrequest.h" />

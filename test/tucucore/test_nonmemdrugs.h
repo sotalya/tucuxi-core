@@ -52,29 +52,29 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
             Tucuxi::Core::Concentrations concentrations;
             Tucuxi::Core::TimeOffsets times;
             Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, _dose, interval, _route, infusionTime, _nbPoints);
-	    
-	    bool isAll = false;
-	    
-	    // std::cout << typeid(calculator).name() << std::endl;
+
+            bool isAll = false;
+
+            // std::cout << typeid(calculator).name() << std::endl;
 
             {
-
                 Tucuxi::Core::Residuals inResiduals;
                 Tucuxi::Core::Residuals outResiduals;
-                for(unsigned int i = 0; i < calculator.getResidualSize(); i++)
+                for (unsigned int i = 0; i < calculator.getResidualSize(); i++) {
                     inResiduals.push_back(0);
+                }
 
                 Tucuxi::Core::ParameterSetEvent event = *(_parameters.getAtTime(now));
                 res = calculator.calculateIntakePoints(
-                            concentrations,
-                            times,
-                            intakeEvent,
-                            event,
-                            inResiduals,
-                            _nbPoints,
-			    isAll,
-                            outResiduals,
-                            true);
+                    concentrations,
+                    times,
+                    intakeEvent,
+                    event,
+                    inResiduals,
+                    _nbPoints,
+                    isAll,
+                    outResiduals,
+                    true);
 
                 fructose_assert(res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok);
             }
@@ -89,11 +89,11 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
                 intakeSeries.push_back(intakeEvent);
                 Tucuxi::Core::IConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::ConcentrationCalculator();
                 concentrationCalculator->computeConcentrations(
-                            predictionPtr,
-			    isAll,
-                            _nbPoints,
-                            intakeSeries,
-                            _parameters);
+                    predictionPtr,
+                    isAll,
+                    _nbPoints,
+                    intakeSeries,
+                    _parameters);
                 delete concentrationCalculator;
             }
 
@@ -117,10 +117,9 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
         predictionPtr = std::make_unique<Tucuxi::Core::ConcentrationPrediction>();
 
         int nbPoints = 251;
-	bool isAll = false;
+        bool isAll = false;
 
         CalculatorClass calculator2;
-
 
         Tucuxi::Common::Duration offsetTime = 0s;
         Tucuxi::Common::Duration interval24 = 24h;
@@ -351,9 +350,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
                 intakeEvent.setCalculator(&calculator2);
                 intakeSeries.push_back(intakeEvent);
             }
-
         }
-
 
         // Imatinib parameters, as in the XML drug file
         Tucuxi::Core::ParameterDefinitions parameterDefs;
@@ -365,15 +362,15 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
         Tucuxi::Core::ParameterSetSeries parametersSeries;
         parametersSeries.addParameterSetEvent(parameters);
 
-
-
         Tucuxi::Core::IConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::ConcentrationCalculator();
         concentrationCalculator->computeConcentrations(
-                    predictionPtr,
-		    isAll,
-                    nbPoints,
-                    intakeSeries,
-                    parametersSeries);
+            predictionPtr,
+            isAll,
+            nbPoints,
+            DateTime(), // YJ: Fix this with a meaningfull date
+            DateTime(), // YJ: Fix this with a meaningfull date
+            intakeSeries,
+            parametersSeries);
         delete concentrationCalculator;
 
         predictionPtr->streamToFile("values_imatinib_nonmemdrugs.dat");

@@ -16,7 +16,7 @@ APosterioriEtasCalculator::APosterioriEtasCalculator()
 }
 
 
-APosterioriEtasCalculator::ComputationResult APosterioriEtasCalculator::computeAposterioriEtas(
+ComputationResult APosterioriEtasCalculator::computeAposterioriEtas(
         const IntakeSeries &_intakes,
         const ParameterSetSeries &_parameters,
         const OmegaMatrix &_omega,

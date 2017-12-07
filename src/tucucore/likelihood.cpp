@@ -33,7 +33,6 @@ Likelihood::Likelihood(const OmegaMatrix& _omega,
 
 void Likelihood::initBounds(const OmegaMatrix& _omega, EigenVector& _o_max, EigenVector& _o_min, double _high_x, double _low_x)
 {
-
     _o_min = _omega.diagonal().array().sqrt() * sqrt(2) * boost::math::erf_inv(2 * _low_x - 1);
     _o_max = _omega.diagonal().array().sqrt() * sqrt(2) * boost::math::erf_inv(2 * _high_x - 1);
 }
@@ -41,7 +40,6 @@ void Likelihood::initBounds(const OmegaMatrix& _omega, EigenVector& _o_max, Eige
 
 Value Likelihood::operator()(const Eigen::VectorXd& _etas)
 {
-
     ValueVector etasmd(_etas.size());
     for (int i = 0; i < _etas.size(); ++i) {
         etasmd[i] = _etas[i];
@@ -58,18 +56,21 @@ Value Likelihood::operator()(const ValueVector& _etas)
 
 Value Likelihood::negativeLogLikelihood(const ValueVector& _etas) const
 {
-
     ValueVector _cxns(m_samples->size());
     bool isAll = false;
 
-
     // Getting the concentration values at these _times and m_samples.
-    ConcentrationCalculator::ComputationResult result =
-    m_concentrationCalculator->computeConcentrationsAtTimes(_cxns, isAll, *m_intakes, *m_parameters, *m_samples, _etas);
+    ComputationResult result = m_concentrationCalculator->computeConcentrationsAtTimes(
+        _cxns,
+        isAll,
+        *m_intakes,
+        *m_parameters,
+        *m_samples,
+        _etas);
 
     // If the calculation fails, its highly unlikely so we return the largest number we can
 
-    if (result != ConcentrationCalculator::ComputationResult::Success) {
+    if (result != ComputationResult::Success) {
         return std::numeric_limits<double>::max();
     }
     Value gll = 0;
@@ -100,18 +101,16 @@ Value Likelihood::calculateSampleNegativeLogLikelihood(const Value _expected,
                                                        const SampleEvent& _observed,
                                                        const IResidualErrorModel &_residualErrorModel) const
 {
-
     return - _residualErrorModel.calculateSampleLikelihood(_expected, _observed.getValue());
 }
 
 Value Likelihood::negativeLogPrior(const EigenVector& _etas, const OmegaMatrix &_omega) const
 {
-
     //here we calculate the log of all the parts and sum them, neglecting the negative because we minimize
     return 0.5 *
-            (_etas.transpose() * _omega.inverse() * _etas +
-             _omega.rows() * log(2 * PI) +
-             log(_omega.determinant()));
+           (_etas.transpose() * _omega.inverse() * _etas +
+            _omega.rows() * log(2 * PI) +
+            log(_omega.determinant()));
 }
 
 }

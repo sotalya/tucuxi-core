@@ -17,41 +17,40 @@ SOURCES := \
            drugmodel/formulationandroute.cpp \
            drugmodel/parameterdefinition.cpp \
            drugmodel/targetdefinition.cpp \
-		   drugmodel/validdose.cpp \
-		   drugmodel/validduration.cpp \
-		   drugtreatment/drugtreatment.cpp \
-		   drugtreatment/sample.cpp \
-		   drugtreatment/target.cpp \
-		   processingservice/iprocessingservice.cpp \
-		   processingservice/processingrequest.cpp \
-		   processingservice/processingresponse.cpp \
-		   processingservice/processingtrait.cpp \
-		   aposteriorietascalculator.cpp \
+           drugmodel/validdose.cpp \
+           drugmodel/validduration.cpp \
+           drugtreatment/drugtreatment.cpp \
+           drugtreatment/sample.cpp \
+           drugtreatment/target.cpp \
+           processingservice/processingrequest.cpp \
+           processingservice/processingresponse.cpp \
+           processingservice/processingtrait.cpp \
+           aposteriorietascalculator.cpp \
            cachedexponentials.cpp \
            concentrationcalculator.cpp \
            corecomponent.cpp \
            covariateevent.cpp \
            covariateextractor.cpp \
-	   cyclestatisticscalculator.cpp \
+           cyclestatisticscalculator.cpp \
            dosage.cpp \
            hardcodedoperation.cpp \
            intakeextractor.cpp \
            intakeintervalcalculator.cpp \
            intaketocalculatorassociator.cpp \
-		   likelihood.cpp \
-		   montecarlopercentilecalculator.cpp \
+           likelihood.cpp \
+           montecarlopercentilecalculator.cpp \
            onecompartmentbolus.cpp \
            onecompartmentextra.cpp \
            onecompartmentinfusion.cpp \
-		   operablegraphmanager.cpp \
+           operablegraphmanager.cpp \
            operation.cpp \
            parameter.cpp \
            parametersextractor.cpp \
            pkmodel.cpp \
-		   residualerrormodel.cpp \
-		   sampleevent.cpp \
+           residualerrormodel.cpp \
+           sampleevent.cpp \
            sampleextractor.cpp \
-		   targetevent.cpp \
+           targetevent.cpp \
            targetextractor.cpp \
            threecompartmentbolus.cpp \
            threecompartmentextra.cpp \

@@ -15,7 +15,8 @@
 #include "tucucore/residualerrormodel.h"
 #include "tucucore/dosage.h"
 #include "tucucore/sampleevent.h"
-#include "tucucore/iprocessingservices.h"
+#include "tucucore/processingservice/iprocessingservice.h"
+#include "tucucore/concentrationprediction.h"
 #include "tucucore/idatamodelservices.h"
 
 namespace Tucuxi {
@@ -26,10 +27,8 @@ class DrugErrorModel;
 class DrugTreatment;
 class ParameterSetSeries;
 
-enum class ComputationResult { Success, Failure, Aborted };
-
-class CoreComponent : public Tucuxi::Common::Component, 
-                      public IProcessingServices,
+class CoreComponent : public Tucuxi::Common::Component,
+                      public IProcessingService,
                       public IDataModelServices
 {
 public:
@@ -38,11 +37,9 @@ public:
 
     bool loadDrug(const std::string& _xmlDrugDescription) override;
     bool loadTreatment(const std::string& _xmlTreatmentDescription) override;
-        
-    virtual ConcentrationPredictionPtr computeConcentrations(const ConcentrationRequest &_request) override;
-    virtual PercentilesPredictionPtr computePercentiles(const PercentilesRequest &_request) override;
-
-    void computeAdjustments() override;
+    
+    ProcessingResult compute(const ProcessingRequest &_request, std::unique_ptr<ProcessingResponse> &_response);
+    std::string getErrorString() const;
 
 protected:
     /// \brief Access other interfaces of the same component.
@@ -54,8 +51,10 @@ private:
 
     ComputationResult computeConcentrations(
         ConcentrationPredictionPtr &_prediction,
-	const bool _isAll,
+        const bool _isAll,
         int _nbPoints,
+        const DateTime &_recordFrom,
+        const DateTime &_recordTo,
         const IntakeSeries &_intakes,
         const ParameterSetSeries& _parameters,
         const Etas& _etas = Etas(0),
@@ -65,34 +64,40 @@ private:
 
     ComputationResult computePopulation(
         ConcentrationPredictionPtr &_prediction,
-	const bool _isAll,
+        const bool _isAll,
         int _nbPoints,
+        const DateTime &_recordFrom,
+        const DateTime &_recordTo,
         const IntakeSeries &_intakes,
         const ParameterSetSeries& _parameters)
     {
-        return computeConcentrations(_prediction, _isAll, _nbPoints, _intakes, _parameters);
+        return computeConcentrations(_prediction, _isAll, _nbPoints, _recordFrom, _recordTo, _intakes, _parameters);
     }
 
     ComputationResult computeApriori(
         ConcentrationPredictionPtr &_prediction,
-	const bool _isAll,
+        const bool _isAll,
         int _nbPoints,
+        const DateTime &_recordFrom,
+        const DateTime &_recordTo,
         const IntakeSeries &_intakes,
         const ParameterSetSeries& _parameters)
     {
-        return computeConcentrations(_prediction, _isAll, _nbPoints, _intakes, _parameters);
+        return computeConcentrations(_prediction, _isAll, _nbPoints, _recordFrom, _recordTo, _intakes, _parameters);
     }
 
     ComputationResult computeAposteriori(
         ConcentrationPredictionPtr &_prediction,
-	const bool _isAll,
+        const bool _isAll,
         int _nbPoints,
+        const DateTime &_recordFrom,
+        const DateTime &_recordTo,
         const IntakeSeries &_intakes,
         const ParameterSetSeries& _parameters,
         const Etas& _etas)
     {
         TMP_UNUSED_PARAMETER(_etas);
-        return computeConcentrations(_prediction, _isAll, _nbPoints, _intakes, _parameters);
+        return computeConcentrations(_prediction, _isAll, _nbPoints, _recordFrom, _recordTo, _intakes, _parameters);
     }
 
     ComputationResult extractError(

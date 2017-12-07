@@ -17,12 +17,8 @@ namespace Core {
 
 class APosterioriEtasCalculator
 {
-public:
-
-    enum class ComputationResult { Success, Failure, Aborted };
-
+public:    
     APosterioriEtasCalculator();
-
 
     ComputationResult computeAposterioriEtas(
             const IntakeSeries &_intakes,

@@ -19,7 +19,7 @@
  
 namespace Tucuxi {
 namespace Core {
- 
+/* 
 enum class PredictionType { Population, Apiori, Aposteriori };
  
 class PredictionRequest 
@@ -79,91 +79,11 @@ public:
 private:
     PercentileRanks m_ranks;
 };
- 
-class ConcentrationPrediction
-{
-public:
- 
-    bool streamToFile(const std::string _fileName) {
-        std::ofstream ostrm(_fileName, std::ios::binary);
-        if (ostrm.rdstate() & std::ios_base::failbit)
-	    return false;
+*/ 
 
-	size_t nbCycles = this->m_values.size();
-	double offset = 0.0;
-	for(size_t cycle = 0; cycle < nbCycles; cycle ++) {
-	    const Tucuxi::Core::Concentrations concentrations = getValues()[cycle];
-	    const Tucuxi::Core::TimeOffsets times = getTimes()[cycle];
-	    size_t nbPoints = concentrations.size();
-	    for(size_t i = 0; i < nbPoints - 1; i++) {
-		ostrm << (times[i]) + offset << " " << concentrations[i] << std::endl;
-	    }
-	    offset += times[nbPoints - 1];
-	}
-	return true;
-    }
- 
-    bool allocate(const unsigned int _residualSize, const CycleSize _nbPoints, TimeOffsets &_times, std::vector<Concentrations> &_values)
-    {
-        _times.reserve(_nbPoints);
-	for (unsigned int compartement= 0; compartement<_residualSize; compartement++)
-	    _values[compartement].reserve(_nbPoints);
-        return true;
-    }
-    void appendConcentrations(TimeOffsets &_times, Concentrations &_values)
-    {
-        m_times.push_back(_times);
-        m_values.push_back(_values);
-    }
- 
-    std::vector<TimeOffsets> getTimes() const { return m_times;}
-    std::vector<Concentrations> getValues() const { return m_values;}
- 
-private:
-    std::vector<TimeOffsets> m_times;
-    std::vector<Concentrations> m_values;
-};
-typedef std::unique_ptr<ConcentrationPrediction> ConcentrationPredictionPtr;
- 
-class PercentilesPrediction
-{
-public:
 
-    bool streamToFile(const std::string _fileName) {
-        std::ofstream ostrm(_fileName, std::ios::binary);
-        if (ostrm.rdstate() & std::ios_base::failbit)
-            return false;
-
-        size_t nbCycles = this->m_times.size();
-        double offset = 0.0;
-        for(int cycle = 0; cycle < nbCycles; cycle ++) {
-            const Tucuxi::Core::TimeOffsets times = getTimes()[cycle];
-            size_t nbPoints = times.size();
-            for(int i = 0; i < nbPoints - 1; i++) {
-
-                ostrm << (times[i]) + offset << " ";
-                for(unsigned int perc = 0; perc < m_values.size() ; perc ++) {
-                    ostrm << m_values[perc][cycle][i] << " ";
-                }
-                ostrm << std::endl;
-            }
-            offset += times[nbPoints - 1];
-        }
-        return true;
-    }
-
-    const PercentileRanks getRanks() const { return m_ranks;}
-    const std::vector<TimeOffsets> getTimes() const { return m_times;}
-    const std::vector<std::vector<Concentrations> > getValues() const { return m_values;}
-
-    void appendPercentile(int _percentileRank, int _cycle, int _point, Concentration _concentration) { m_values[_percentileRank][_cycle][_point] = _concentration; }
-//private:
-    std::vector<TimeOffsets> m_times;
-    PercentileRanks m_ranks;
-    std::vector<std::vector<Concentrations> > m_values;
-};
-typedef std::unique_ptr<PercentilesPrediction> PercentilesPredictionPtr;
  
+/*
 class IProcessingServices : public Tucuxi::Common::Interface
 {
 public:
@@ -171,6 +91,7 @@ public:
     virtual PercentilesPredictionPtr computePercentiles(const PercentilesRequest& request) = 0;
     virtual void computeAdjustments() = 0;
 };
+*/
  
 }
 }

@@ -69,9 +69,6 @@
     <ClCompile Include="..\..\..\src\tucucore\drugtreatment\target.cpp">
       <Filter>Sources\DrugTreatment</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\tucucore\processingservice\iprocessingservice.cpp">
-      <Filter>Sources\Processing</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\tucucore\processingservice\processingrequest.cpp">
       <Filter>Sources\Processing</Filter>
     </ClCompile>
@@ -347,9 +344,6 @@
     <ClInclude Include="..\..\..\src\tucucore\twocompartmentinfusion.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\tucucore\processingservice\iprocessingservice.h">
-      <Filter>Headers\Processing</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\tucucore\processingservice\processingrequest.h">
       <Filter>Headers\Processing</Filter>
     </ClInclude>
@@ -360,6 +354,15 @@
       <Filter>Headers\Processing</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\tucucore\cyclestatisticscalculator.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\processingservice\iprocessingservice.h">
+      <Filter>Headers\Processing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\concentrationprediction.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\percentilesprediction.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>
