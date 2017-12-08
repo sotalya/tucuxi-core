@@ -375,7 +375,7 @@ IPercentileCalculator::ProcessingResult AposterioriMonteCarloPercentileCalculato
                 // Using the multi-t-dist pdf directly from this source: http://www.statlect.com/mcdstu1.htm
                 // because the multi-t-dist doesnt exist in boost using the multi-t dist from wikipedia
                 double v = studentLiberty;
-                size_t p = _etas.size();
+                double p = static_cast<double>(_etas.size());
                 double top = tgamma((v + p)/2);
                 double part2 = std::sqrt(subomega.determinant());
                 double part3 = tgamma(v / 2) * std::pow(v * 3.14159, p/2);
