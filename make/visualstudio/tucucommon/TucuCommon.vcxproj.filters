@@ -93,6 +93,9 @@
     <ClInclude Include="..\..\..\libs\tiny-js-master-20170629\TinyJS_SyntaxTree.h">
       <Filter>Headers\TinyJS</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucommon\iterator.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\src\tucucommon\componentmanager.cpp">

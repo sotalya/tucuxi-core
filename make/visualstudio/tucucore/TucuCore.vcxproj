@@ -112,6 +112,7 @@
     <ClInclude Include="..\..\..\src\tucucore\operablegraphmanager.h" />
     <ClInclude Include="..\..\..\src\tucucore\operation.h" />
     <ClInclude Include="..\..\..\src\tucucore\parameter.h" />
+    <ClInclude Include="..\..\..\src\tucucore\parameterids.h" />
     <ClInclude Include="..\..\..\src\tucucore\parametersextractor.h" />
     <ClInclude Include="..\..\..\src\tucucore\percentilesprediction.h" />
     <ClInclude Include="..\..\..\src\tucucore\pkmodel.h" />
@@ -276,7 +277,8 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <CompileAsWinRT>false</CompileAsWinRT>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\Libs\eigen-3.3.2;..\..\Libs\boost-1.63.0;..;..\..\libs\date-master-20170711;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\src;..\..\..\Libs\eigen-3.3.2;..\..\..\Libs\boost-1.63.0;..\..\..\libs\date-master-20170711;..\..\..\libs\spdlog-master-20170622\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

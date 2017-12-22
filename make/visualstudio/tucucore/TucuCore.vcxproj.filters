@@ -365,5 +365,8 @@
     <ClInclude Include="..\..\..\src\tucucore\percentilesprediction.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\src\tucucore\parameterids.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

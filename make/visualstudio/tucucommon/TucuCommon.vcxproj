@@ -32,6 +32,7 @@
     <ClInclude Include="..\..\..\src\tucucommon\general.h" />
     <ClInclude Include="..\..\..\src\tucucommon\ilogger.h" />
     <ClInclude Include="..\..\..\src\tucucommon\interface.h" />
+    <ClInclude Include="..\..\..\src\tucucommon\iterator.h" />
     <ClInclude Include="..\..\..\src\tucucommon\jsengine.h" />
     <ClInclude Include="..\..\..\src\tucucommon\licensemanager.h" />
     <ClInclude Include="..\..\..\src\tucucommon\logger.h" />
@@ -207,7 +208,8 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <CompileAsWinRT>false</CompileAsWinRT>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..;..\..\Libs\tiny-js-master-20170629;..\..\libs\date-master-20170711;..\..\libs\rapidxml-1.13;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\src;..\..\..\libs\tiny-js-master-20170629;..\..\..\libs\date-master-20170711;..\..\..\libs\rapidxml-1.13;..\..\..\libs\spdlog-master-20170622\include;..\..\..\libs\botan-2.1.0\build\include;..\..\..\libs\eigen-3.3.2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

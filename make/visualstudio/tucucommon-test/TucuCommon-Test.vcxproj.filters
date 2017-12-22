@@ -36,6 +36,9 @@
     <ClInclude Include="..\..\..\test\tucucommon\test_xml.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\test\tucucommon\test_iterator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\test\tucucommon\tests.cpp">
