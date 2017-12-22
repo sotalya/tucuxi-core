@@ -8,23 +8,21 @@
 namespace Tucuxi {
 namespace Core {
 
-IntakeToCalculatorAssociator::IntakeToCalculatorAssociator()
-{
-
-}
-
 
 IntakeToCalculatorAssociator::Result IntakeToCalculatorAssociator::associate(
         Tucuxi::Core::IntakeSeries& _intakes,
         const Tucuxi::Core::PkModel &_pkModel)
 {
-    // Iterate through the intake series, and get the calculator from pkModel.
-    // Be careful, if routes are the same, we have to reuse the previous calculator
-
-    TMP_UNUSED_PARAMETER(_intakes);
-    TMP_UNUSED_PARAMETER(_pkModel);
-
-    return IntakeToCalculatorAssociator::Result::UnsupportedRoute;
+    IntakeSeries::iterator it = _intakes.begin();
+    while (it != _intakes.end()) {
+        std::shared_ptr<IntakeIntervalCalculator> pCalc = _pkModel.getCalculatorForRoute(it->getRoute());
+        if (pCalc == nullptr) {
+            return IntakeToCalculatorAssociator::Result::UnsupportedRoute;
+        }
+        it->setCalculator(pCalc);
+        it++;
+    }
+    return IntakeToCalculatorAssociator::Result::Ok;
 }
 
 }
