@@ -15,6 +15,7 @@
 #include "tucucommon/general.h"
 #include "tucucore/drugdefinitions.h"
 #include "tucucore/drugmodel/parameterdefinition.h"
+#include "tucucore/parameterids.h"
 
 struct TestParameterExtractor;
 
@@ -24,10 +25,10 @@ namespace Core {
 class Parameter : public IndividualValue<ParameterDefinition>
 {
 public:
-    Parameter(const ParameterDefinition &_def) :
-        IndividualValue<ParameterDefinition>(_def)
+    Parameter(const ParameterDefinition &_def, const Value _value) :
+        IndividualValue<ParameterDefinition>(_def),
+        m_value(_value)
     {
-        m_value = _def.getValue();
     }
     void applyEta(Deviation eta);
     Value getValue() const { return m_value; }
@@ -49,14 +50,23 @@ public:
     /// \param _date Timing information for the parameter set event.
     ParameterSetEvent(const DateTime &_date)
         : TimedEvent(_date)
-    { }
+    {
+        for (int i = 0; i < ParameterId::size; i++) {
+            m_IdToIndex[i] = -1;
+        }
+    }
 
 
     /// \brief Add a parameter event to the event set.
     /// \param _definition Parameter definition for the parameter event occurred.
-    void addParameterEvent(const ParameterDefinition &_definition)
+    void addParameterEvent(const ParameterDefinition &_definition, const Value value)
     {
-        m_parameters.push_back(Parameter(_definition));
+        m_parameters.push_back(Parameter(_definition, value));
+
+        // Update our mapping between id (string) to index
+        ParameterId::Enum id = ParameterId::fromString(_definition.getId());
+        int index = static_cast<int>(m_parameters.size()-1);
+        m_IdToIndex[id] = index;
     }
 
 
@@ -65,7 +75,7 @@ public:
     {
         ParameterDefinitions::const_iterator it;
         for (it = _definitions.begin(); it != _definitions.end(); it++) {
-            m_parameters.push_back(Parameter(**it));
+            m_parameters.push_back(Parameter(**it, (*it)->getValue()));
         }
     }
 
@@ -73,8 +83,14 @@ public:
     void applyEtas(const Etas& _etas);
     Parameters::const_iterator begin() const { return m_parameters.begin(); }
     Parameters::const_iterator end() const { return m_parameters.end(); }
-    void setValue(int _index, Value _value) { TMP_UNUSED_PARAMETER(_index); TMP_UNUSED_PARAMETER(_value);}
-    Value getValue(int _index) const { return m_parameters[_index].getValue(); }
+    Value getValue(ParameterId::Enum _id) const
+    {
+        int index = m_IdToIndex[_id];
+        if (index >= 0) {
+            return m_parameters.at(index).getValue();
+        }
+        return 0;
+    }
     int size() const { return static_cast<int>(m_parameters.size()); }
 
     // Make the test class friend, as this will allow us to manually check the available events.
@@ -82,6 +98,7 @@ public:
 
 private:
     Parameters m_parameters;
+    int m_IdToIndex[ParameterId::size];
 };
 typedef std::unique_ptr<const ParameterSetEvent> ParameterSetEventPtr;
 

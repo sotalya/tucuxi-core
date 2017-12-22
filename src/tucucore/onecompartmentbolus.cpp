@@ -25,8 +25,8 @@ bool OneCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
 	    return false;
     
     m_D = _intakeEvent.getDose() * 1000;
-    m_V = _parameters.getValue(0);
-    m_Ke = _parameters.getValue(1);
+    m_V = _parameters.getValue(ParameterId::V);
+    m_Ke = _parameters.getValue(ParameterId::Ke);
     m_NbPoints = _intakeEvent.getNbPoints();
     m_Int = static_cast<int>((_intakeEvent.getInterval()).toHours());
 
@@ -121,8 +121,8 @@ bool OneCompartmentBolusMacro::checkInputs(const IntakeEvent& _intakeEvent, cons
         return false;
 
     m_D = _intakeEvent.getDose() * 1000;
-    m_V = _parameters.getValue(0);
-    Value cl = _parameters.getValue(1);
+    m_V = _parameters.getValue(ParameterId::V);
+    Value cl = _parameters.getValue(ParameterId::Cl);
     m_Ke = cl / m_V;
     m_NbPoints = _intakeEvent.getNbPoints();
     m_Int = (_intakeEvent.getInterval()).toHours();

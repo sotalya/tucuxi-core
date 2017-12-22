@@ -27,14 +27,14 @@ bool ThreeCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, co
     Value a0, a1, a2, p, q, r1, r2, phi;
 
     m_D = _intakeEvent.getDose() * 1000;
-    m_F = _parameters.getValue(0);
-    m_V1 = _parameters.getValue(1);
-    m_Ka = _parameters.getValue(2);
-    m_Ke = _parameters.getValue(3);
-    m_K12 =_parameters.getValue(4);
-    m_K21 =_parameters.getValue(5);
-    m_K13 =_parameters.getValue(6);
-    m_K31 =_parameters.getValue(7);
+    m_F = _parameters.getValue(ParameterId::F);
+    m_V1 = _parameters.getValue(ParameterId::V1);
+    m_Ka = _parameters.getValue(ParameterId::Ka);
+    m_Ke = _parameters.getValue(ParameterId::Ke);
+    m_K12 =_parameters.getValue(ParameterId::K12);
+    m_K21 =_parameters.getValue(ParameterId::K21);
+    m_K13 =_parameters.getValue(ParameterId::K13);
+    m_K31 =_parameters.getValue(ParameterId::K31);
     m_NbPoints = _intakeEvent.getNbPoints();
     m_Int = (_intakeEvent.getInterval()).toHours();
 
@@ -190,13 +190,13 @@ bool ThreeCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, co
     Value a0, a1, a2, p, q, r1, r2, phi;
 
     m_D = _intakeEvent.getDose() * 1000;
-    Value cl = _parameters.getValue(0);
-    m_F = _parameters.getValue(1);
-    Value q1 = _parameters.getValue(2);
-    Value q2 = _parameters.getValue(3);
-    m_V1 = _parameters.getValue(4);
-    Value v2 = _parameters.getValue(5);
-    m_Ka = _parameters.getValue(6);
+    Value cl = _parameters.getValue(ParameterId::Cl);
+    m_F = _parameters.getValue(ParameterId::F);
+    Value q1 = _parameters.getValue(ParameterId::Q1);
+    Value q2 = _parameters.getValue(ParameterId::Q2);
+    m_V1 = _parameters.getValue(ParameterId::V1);
+    Value v2 = _parameters.getValue(ParameterId::V2);
+    m_Ka = _parameters.getValue(ParameterId::Ka);
     m_Ke = cl / m_V1;
     m_K12 = q1 / m_V1;
     m_K21 = q1 / v2;

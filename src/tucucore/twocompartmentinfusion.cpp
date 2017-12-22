@@ -25,10 +25,10 @@ bool TwoCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent, c
 	    return false;
 
     m_D = _intakeEvent.getDose() * 1000;
-    m_V1 = _parameters.getValue(0);
-    m_Ke = _parameters.getValue(1);
-    m_K12 = _parameters.getValue(2);
-    m_K21 = _parameters.getValue(3);
+    m_V1 = _parameters.getValue(ParameterId::V1);
+    m_Ke = _parameters.getValue(ParameterId::Ke);
+    m_K12 = _parameters.getValue(ParameterId::K12);
+    m_K21 = _parameters.getValue(ParameterId::K21);
     m_SumK = m_Ke + m_K12 + m_K21;
     m_RootK = std::sqrt((m_SumK * m_SumK) - (4 * m_K21 * m_Ke));
     m_Divider = m_RootK * (-m_SumK + m_RootK) * (m_SumK + m_RootK);
@@ -266,10 +266,10 @@ bool TwoCompartmentInfusionMacro::checkInputs(const IntakeEvent& _intakeEvent, c
 	    return false;
 
     m_D = _intakeEvent.getDose() * 1000;
-    Value cl = _parameters.getValue(0);
-    Value q = _parameters.getValue(1);
-    m_V1 = _parameters.getValue(2);
-    Value v2 = _parameters.getValue(3);
+    Value cl = _parameters.getValue(ParameterId::Cl);
+    Value q = _parameters.getValue(ParameterId::Q);
+    m_V1 = _parameters.getValue(ParameterId::V1);
+    Value v2 = _parameters.getValue(ParameterId::V2);
     m_Ke = cl / m_V1;
     m_K12 = q / m_V1;
     m_K21 = q / v2;

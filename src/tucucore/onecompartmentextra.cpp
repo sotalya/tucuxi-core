@@ -21,10 +21,10 @@ bool OneCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
 	    return false;
     
     m_D = _intakeEvent.getDose() * 1000;
-    m_V = _parameters.getValue(0);
-    m_Ke = _parameters.getValue(1);
-    m_Ka = _parameters.getValue(2);
-    m_F = _parameters.getValue(3);
+    m_V = _parameters.getValue(ParameterId::V);
+    m_Ke = _parameters.getValue(ParameterId::Ke);
+    m_Ka = _parameters.getValue(ParameterId::Ka);
+    m_F = _parameters.getValue(ParameterId::F);
     m_NbPoints = _intakeEvent.getNbPoints();
     m_Int = (_intakeEvent.getInterval()).toHours();
 
@@ -66,6 +66,9 @@ bool OneCompartmentExtraMicro::computeConcentrations(const Residuals& _inResidua
 
     // compute concenration1 and 2
     compute(_inResiduals, concentrations1, concentrations2);
+
+    double a = concentrations1[m_NbPoints - 1];
+    double b = concentrations2[m_NbPoints - 1];
 
     _outResiduals[firstCompartment] = concentrations1[m_NbPoints - 1];
     _outResiduals[secondCompartment] = concentrations2[m_NbPoints - 1];
@@ -126,10 +129,10 @@ bool OneCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, cons
 	    return false;
     
     m_D = _intakeEvent.getDose() * 1000;
-    m_V = _parameters.getValue(0);
-    Value cl = _parameters.getValue(1); // clearance
-    m_Ka = _parameters.getValue(2);
-    m_F = _parameters.getValue(3);
+    m_V = _parameters.getValue(ParameterId::V);
+    Value cl = _parameters.getValue(ParameterId::Cl); // clearance
+    m_Ka = _parameters.getValue(ParameterId::Ka);
+    m_F = _parameters.getValue(ParameterId::F);
     m_Ke = cl / m_V;
     m_NbPoints = _intakeEvent.getNbPoints();
     m_Int = (_intakeEvent.getInterval()).toHours();
