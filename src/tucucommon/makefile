@@ -11,15 +11,15 @@ TYPE := LIB
 # Let's keep it in alphabetical order
 SOURCES := componentmanager.cpp \
            cryptohelper.cpp \
-		   datetime.cpp \
-		   duration.cpp \
-		   jsengine.cpp \
-		   licensemanager.cpp \
+           datetime.cpp \
+           duration.cpp \
+           jsengine.cpp \
+           licensemanager.cpp \
            logger.cpp \
-		   systeminfo.cpp \
-		   timeofday.cpp \
+           systeminfo.cpp \
+           timeofday.cpp \
            utils.cpp \
-		   xmlattribute.cpp \
+           xmlattribute.cpp \
            xmldocument.cpp \
            xmlnode.cpp
 
