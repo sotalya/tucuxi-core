@@ -72,7 +72,6 @@ public:
     std::string getPkModelId() const { return m_pkModelId;}
 
 protected:
-
     ///
     /// \brief m_analyteSetId
     /// If it contains only a single analyte, then should have the same Id as the analyte

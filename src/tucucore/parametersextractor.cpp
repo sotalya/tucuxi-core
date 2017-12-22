@@ -4,15 +4,16 @@
 
 #include "tucucommon/general.h"
 #include "tucucore/parametersextractor.h"
+#include "tucucore/drugmodel/drugmodel.h"
 
 namespace Tucuxi {
 namespace Core {
 
 ParametersExtractor::ParametersExtractor(const CovariateSeries &_covariates,
-                                         ParameterDefinitions &_drugParameters,
+                                         Tucuxi::Common::Iterator<const ParameterDefinition*> &_paramsIterator,
                                          const DateTime &_start,
                                          const DateTime &_end)
-    : m_drugParameters{_drugParameters}, m_start{_start}, m_end{_end}
+    : m_paramsIterator{ _paramsIterator }, m_start{_start}, m_end{_end}
 {
     // Check that start time is past end time.
     if (m_start > m_end) {
@@ -107,13 +108,21 @@ ParametersExtractor::ParametersExtractor(const CovariateSeries &_covariates,
             }
         }
     }
+
+    // Add default values of all parameters
+    m_paramsIterator.reset();
+    while (!m_paramsIterator.isDone()) {
+        std::shared_ptr<ParameterEvent> event = std::make_shared<ParameterEvent>(ParameterEvent(**m_paramsIterator, (*m_paramsIterator)->getValue()));
+        m_ogm.registerInput(event, (*m_paramsIterator)->getId() + "_population");
+        m_paramsIterator.next();
+    }
 }
 
 
 int ParametersExtractor::extract(ParameterSetSeries &_series)
 {
     // Map containing the computed parameters along with their latest value.
-    std::map<std::string, std::pair<pDefIterator, Value>> cParamMap;
+    std::map<std::string, std::pair<const ParameterDefinition*, Value>> cParamMap;
 
     // Map linking covariate events with their representative inside the OGM.
     std::map<std::string, std::shared_ptr<CovariateEvent>> cEvMap;
@@ -126,18 +135,20 @@ int ParametersExtractor::extract(ParameterSetSeries &_series)
         if (tcv.first == m_timedCValues.begin()->first) {
             // Generate all events related to non-computed parameters, while adding computed ones as operables in the
             // OGM.
-            for (pDefIterator pDefIt = m_drugParameters.begin(); pDefIt != m_drugParameters.end(); ++pDefIt) {
-                if (!(*pDefIt)->isComputed()) {
+            m_paramsIterator.reset();
+            while (!m_paramsIterator.isDone()) {
+                if (!(*m_paramsIterator)->isComputed()) {
                     // Add the parameter to the event set without change.
-                    pSetEvent.addParameterEvent(**pDefIt);
+                    pSetEvent.addParameterEvent(**m_paramsIterator, (*m_paramsIterator)->getValue());
                 } else {
                     // Add the parameter to the OGM for later computation of its value. Also, add its name to a map that
                     // keeps track of the computed parameters and their values.
-                    std::shared_ptr<ParameterEvent> event = std::make_shared<ParameterEvent>(ParameterEvent(**pDefIt, 0.0));
-                    m_ogm.registerOperable(event, (*pDefIt)->getId());
+                    std::shared_ptr<ParameterEvent> event = std::make_shared<ParameterEvent>(ParameterEvent(**m_paramsIterator, 0.0));
+                    m_ogm.registerOperable(event, (*m_paramsIterator)->getId());
 
-                    cParamMap.insert(std::make_pair((*pDefIt)->getId(), std::make_pair(pDefIt, 0.0)));
+                    cParamMap.insert(std::make_pair((*m_paramsIterator)->getId(), std::make_pair(*m_paramsIterator, 0.0)));
                 }
+                m_paramsIterator.next();
             }
             // Add all covariates at the first time instant as inputs of the OGM.
             for (const auto &cv : tcv.second) {
@@ -170,8 +181,7 @@ int ParametersExtractor::extract(ParameterSetSeries &_series)
             if (newVal != cp.second.second || tcv.first == m_timedCValues.begin()->first) {
                 // The value has changed or we are at the first time instant, therefore update the stored values and
                 // generate the parameter event.
-                (*(cp.second.first))->setValue(newVal);
-                pSetEvent.addParameterEvent(**(cp.second.first));
+                pSetEvent.addParameterEvent(*cp.second.first, newVal);
                 cp.second.second = newVal;
             }
         }

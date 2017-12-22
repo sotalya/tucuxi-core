@@ -37,7 +37,6 @@ enum class Route
 };
 
 
-
 class AnalyteSetToAbsorptionAssociation
 {
 public:
@@ -49,28 +48,30 @@ public:
     void setAbsorptionParameters(std::unique_ptr<ParameterSetDefinition> _parameters) {m_absorptionParameters = std::move(_parameters);}
 
 protected:
-
     std::unique_ptr<ParameterSetDefinition> m_absorptionParameters;
     const AnalyteSet &m_analyteSet;
     AbsorptionModel m_absorptionModel;
+
+    friend class FormulationAndRoute;
 };
 
+class ForumulationAndRoutes;
 
 class FormulationAndRoute
 {
 public:
-
-    void setFormulation(Formulation _formulation) { m_formulation = _formulation;}
-    void setRoute(Route _route){  m_route = _route;}
+    FormulationAndRoute(const Formulation& _formulation, const Route _route) 
+        : m_formulation(_formulation), m_route(_route)
+    {}
 
     void setValidDoses(std::unique_ptr<ValidDoses> _validDoses) {m_validDoses = std::move(_validDoses);}
     void setValidIntervals(std::unique_ptr<ValidDurations> _validIntervals) {m_validIntervals = std::move(_validIntervals);}
     void setValidInfusionTimes(std::unique_ptr<ValidDurations> _validInfusionTimes) {m_validInfusionTimes = std::move(_validInfusionTimes);}
     void addAssociation(std::unique_ptr< AnalyteSetToAbsorptionAssociation > _association) {m_associations.push_back(std::move(_association));}
-    const std::vector<std::unique_ptr< AnalyteSetToAbsorptionAssociation > > & getAssociations() { return m_associations;}
+
+    const ParameterSetDefinition* getParameterDefinitions(const std::string &_analyteId) const;
 
 protected:
-
     Formulation m_formulation;
     Route m_route;
 
@@ -78,11 +79,20 @@ protected:
     std::unique_ptr<ValidDurations> m_validIntervals;
     std::unique_ptr<ValidDurations> m_validInfusionTimes;
 
-    std::vector<std::unique_ptr< AnalyteSetToAbsorptionAssociation > > m_associations;
+    std::vector<std::unique_ptr< AnalyteSetToAbsorptionAssociation > > m_associations;    
 
+    friend class FormulationAndRoutes;
 };
 
-typedef std::vector<std::unique_ptr<FormulationAndRoute> > FormulationAndRoutes;
+class FormulationAndRoutes
+{
+public:
+    void add(std::unique_ptr<FormulationAndRoute> _far);
+    const FormulationAndRoute* get(const Formulation& _formulation, const Route _route) const;
+
+private:
+    std::vector<std::unique_ptr<FormulationAndRoute> > m_fars;
+};
 
 }
 }

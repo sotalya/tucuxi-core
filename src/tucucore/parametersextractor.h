@@ -10,6 +10,8 @@
 #include <map>
 #include <vector>
 
+#include "tucucommon/iterator.h"
+
 #include "tucucore/parameter.h"
 #include "tucucore/covariateevent.h"
 
@@ -19,6 +21,8 @@ struct TestParameterExtractor;
 
 namespace Tucuxi {
 namespace Core {
+
+class ParameterDefinitionIterator;
 
 class ParametersExtractor
 {
@@ -35,7 +39,7 @@ public:
     /// \pre No duplicates in _drugParameters.
     /// \warning _drugParameters gets modified by the call to this function! This is mandatory, as we
     ParametersExtractor(const CovariateSeries &_covariates,
-                        ParameterDefinitions &_drugParameters,
+                        Tucuxi::Common::Iterator<const ParameterDefinition*> &paramsIterator,
                         const DateTime &_start,
                         const DateTime &_end);
 
@@ -53,7 +57,7 @@ public:
 
 private:
     /// \brief Set of parameter definitions, used to construct parameters from the covariate values.
-    ParameterDefinitions &m_drugParameters;
+    Tucuxi::Common::Iterator<const ParameterDefinition*> &m_paramsIterator;
 
     /// \brief Start date of the parameter extraction interval.
     const DateTime m_start;

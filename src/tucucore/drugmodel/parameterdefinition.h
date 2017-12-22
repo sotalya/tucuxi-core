@@ -31,13 +31,14 @@ enum class ParameterVariabilityType
 class ParameterVariability
 {
 public:
-//    ParameterVariability() : m_variabilityType(ParameterVariabilityType::None), m_value(0) {}
-//    ParameterVariability(ParameterVariabilityType _type) : m_variabilityType(_type), m_value(0) {}
-    ParameterVariability(ParameterVariabilityType _type = ParameterVariabilityType::None, Value _value = 0.0) : m_variabilityType(_type), m_value(_value) {}
+    ParameterVariability(ParameterVariabilityType _type = ParameterVariabilityType::None, Value _value = 0.0) : m_type(_type), m_value(_value) {}
 
-    ParameterVariabilityType m_variabilityType;
+    ParameterVariabilityType getType() const { return m_type; }
+    Value getValue() const { return m_value; }
+
+private:
+    ParameterVariabilityType m_type;
     Value m_value;
-
 };
 
 /// \ingroup TucuCore
@@ -74,21 +75,17 @@ public:
     /// \return Returns the parameter value
     //Value getValue() const { return m_value; }
 
-    bool isVariable() const { return m_variability.m_variabilityType != ParameterVariabilityType::None; }
+    bool isVariable() const { return m_variability.getType() != ParameterVariabilityType::None; }
     ParameterVariability getVariability() const { return m_variability; }
 
 private:
-
     ParameterVariability m_variability;
     Unit m_unit;
-
 };
 
 /// \brief A list of parameters
 typedef std::vector<std::unique_ptr<ParameterDefinition> > ParameterDefinitions;
 
-/// \brief Iterator on the list of parameters.
-typedef std::vector<std::unique_ptr<ParameterDefinition>>::iterator pDefIterator;
 
 
 /// \brief Parameter the context of an Operable Graph Manager. The timing information is missing since it is handled by
@@ -132,7 +129,6 @@ public:
     }
 
 protected:
-
     Value m_correlation;
     std::vector<std::string> m_parameterId;
 };
@@ -142,7 +138,6 @@ typedef std::vector<Correlation> Correlations;
 class InterParameterSetCorrelation
 {
 public:
-
     InterParameterSetCorrelation(
             std::string _analyteSetId1,
             std::string _analyteSetId2,
@@ -158,7 +153,6 @@ public:
     }
 
 protected:
-
     Value m_correlation;
     std::vector<std::string> m_analyteSetId;
     std::vector<std::string> m_parameterId;
@@ -166,21 +160,24 @@ protected:
 
 typedef std::vector<InterParameterSetCorrelation> InterParameterSetCorrelations;
 
-
-
 class ParameterSetDefinition
 {
 public:
-
     void addParameter(std::unique_ptr<ParameterDefinition> & _parameter) { m_parameters.push_back(std::move(_parameter));}
 
     void addAnalyteId(std::string _analyteId) { m_analyteIds.push_back(_analyteId);}
 
     void addCorrelation(Correlation _correlation) { m_correlations.push_back(_correlation);}
 
+    size_t getNbParameters() const { return m_parameters.size(); }
+    const ParameterDefinition* getParameter(size_t index) const { 
+        if (index < m_parameters.size()) {
+            return m_parameters.at(index).get();
+        }
+        return nullptr;
+    }
 
 protected:
-
     ParameterDefinitions m_parameters;
     Correlations m_correlations;
     std::vector<std::string> m_analyteIds;
