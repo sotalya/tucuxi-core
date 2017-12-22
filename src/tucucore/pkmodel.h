@@ -102,6 +102,23 @@ protected:
 };
 
 
+/// \brief Add a PkModel to a collection.
+/// \param _COLLECTION Collection to which the PkModel has to be added.
+/// \param _COMP_NO_NUM Number of components (expressed in numerical form).
+/// \param _COMP_NO_LIT Number of components (expressed in literal form).
+/// \param _TYPE Type (either Micro or Macro).
+/// \param _TYPE_NAME Type in litereal form (either micro or macro).
+/// \param _RC Boolean return type (ORed result of all the add operations).
+#define ADD_PKMODEL_TO_COLLECTION(_COLLECTION, _COMP_NO_NUM, _COMP_NO_LIT, _TYPE, _TYPE_NAME, _RC) \
+do { \
+    std::shared_ptr<PkModel> pkmodel = std::make_shared<PkModel>("linear." #_COMP_NO_NUM "comp." #_TYPE_NAME); \
+    _RC |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::EXTRAVASCULAR, Tucuxi::Core::_COMP_NO_LIT ## CompartmentExtra ## _TYPE::getCreator()); \
+    _RC |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::INTRAVASCULAR, Tucuxi::Core::_COMP_NO_LIT ## CompartmentBolus ## _TYPE::getCreator()); \
+    _RC |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::INFUSION, Tucuxi::Core::_COMP_NO_LIT ## CompartmentInfusion## _TYPE::getCreator());\
+    _COLLECTION.addPkModel(pkmodel); \
+} while (0);
+
+
 }
 }
 

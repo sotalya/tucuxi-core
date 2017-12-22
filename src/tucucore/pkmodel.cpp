@@ -20,20 +20,17 @@ namespace Core {
 PkModel::PkModel(const std::string &_pkModelId)
     : m_pkModelId(_pkModelId)
 {
-
 }
 
 
-std::string
-PkModel::getPkModelId() const
+std::string PkModel::getPkModelId() const
 {
     return m_pkModelId;
 }
 
 
-bool
-PkModel::addIntakeIntervalCalculatorFactory(const AbsorptionModel _route,
-                                            std::shared_ptr<IntakeIntervalCalculatorCreator> _creator)
+bool PkModel::addIntakeIntervalCalculatorFactory(const AbsorptionModel _route,
+                                                 std::shared_ptr<IntakeIntervalCalculatorCreator> _creator)
 {
     std::pair<std::map<AbsorptionModel, std::shared_ptr<IntakeIntervalCalculatorCreator>>::iterator, bool> rc;
     rc = m_calculatorCreators.insert(std::make_pair(_route, _creator));
@@ -41,8 +38,7 @@ PkModel::addIntakeIntervalCalculatorFactory(const AbsorptionModel _route,
 }
 
 
-std::vector<AbsorptionModel>
-PkModel::getAvailableRoutes() const
+std::vector<AbsorptionModel> PkModel::getAvailableRoutes() const
 {
     std::vector<AbsorptionModel> routes;
     // Push keys in a vector.
@@ -53,12 +49,11 @@ PkModel::getAvailableRoutes() const
 }
 
 
-std::shared_ptr<IntakeIntervalCalculator>
-PkModel::getCalculatorForRoute(AbsorptionModel _route) const
+std::shared_ptr<IntakeIntervalCalculator> PkModel::getCalculatorForRoute(AbsorptionModel _route) const
 {
     auto search = m_calculatorCreators.find(_route);
-    if(search != m_calculatorCreators.end()) {
-        return search->second->create();
+    if (search != m_calculatorCreators.end()) {
+        return std::move(search->second->create());
     }
     else {
         return nullptr;
@@ -66,8 +61,7 @@ PkModel::getCalculatorForRoute(AbsorptionModel _route) const
 }
 
 
-bool
-PkModelCollection::addPkModel(std::shared_ptr<PkModel> _pkModel)
+bool PkModelCollection::addPkModel(std::shared_ptr<PkModel> _pkModel)
 {
     // Check that no previous PkModel with the same Id was inserted in the collection.
     auto it = std::find_if(m_collection.begin(), m_collection.end(),
@@ -80,8 +74,7 @@ PkModelCollection::addPkModel(std::shared_ptr<PkModel> _pkModel)
 }
 
 
-std::shared_ptr<PkModel>
-PkModelCollection::getPkModelFromId(const std::string &_pkModelId) const
+std::shared_ptr<PkModel> PkModelCollection::getPkModelFromId(const std::string &_pkModelId) const
 {
     auto it = std::find_if(m_collection.begin(), m_collection.end(),
                            [_pkModelId](const std::shared_ptr<PkModel> &_mod) { return _mod->getPkModelId() == _pkModelId; });
@@ -92,8 +85,7 @@ PkModelCollection::getPkModelFromId(const std::string &_pkModelId) const
 }
 
 
-std::vector<std::string>
-PkModelCollection::getPkModelIdList() const
+std::vector<std::string> PkModelCollection::getPkModelIdList() const
 {
     std::vector<std::string> ids;
     std::transform(m_collection.begin(), m_collection.end(),
@@ -103,31 +95,13 @@ PkModelCollection::getPkModelIdList() const
 }
 
 
-std::vector<std::shared_ptr<PkModel>>
-PkModelCollection::getPkModelList() const
+std::vector<std::shared_ptr<PkModel>> PkModelCollection::getPkModelList() const
 {
     return m_collection;
 }
 
 
-/// \brief Add a PkModel to a collection.
-/// \param _COLLECTION Collection to which the PkModel has to be added.
-/// \param _COMP_NO_NUM Number of components (expressed in numerical form).
-/// \param _COMP_NO_LIT Number of components (expressed in literal form).
-/// \param _TYPE Type (either Micro or Macro).
-/// \param _TYPE_NAME Type in litereal form (either micro or macro).
-/// \param _RC Boolean return type (ORed result of all the add operations).
-#define ADD_PKMODEL_TO_COLLECTION(_COLLECTION, _COMP_NO_NUM, _COMP_NO_LIT, _TYPE, _TYPE_NAME, _RC) \
-do { \
-    std::shared_ptr<PkModel> pkmodel = std::make_shared<PkModel>("linear." #_COMP_NO_NUM "comp." #_TYPE_NAME); \
-    _RC |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::EXTRAVASCULAR, Tucuxi::Core::_COMP_NO_LIT ## CompartmentExtra ## _TYPE::getCreator()); \
-    _RC |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::INTRAVASCULAR, Tucuxi::Core::_COMP_NO_LIT ## CompartmentBolus ## _TYPE::getCreator()); \
-    _RC |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::INFUSION, Tucuxi::Core::_COMP_NO_LIT ## CompartmentInfusion## _TYPE::getCreator());\
-    _COLLECTION.addPkModel(pkmodel); \
-} while (0);
-
-bool
-populate(PkModelCollection &_collection)
+bool populate(PkModelCollection &_collection)
 {
     bool rc = true;
 
