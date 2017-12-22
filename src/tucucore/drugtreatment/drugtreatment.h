@@ -35,7 +35,7 @@ public:
     /// \param _useAdjustments
     /// \return TBD
     ///
-    std::unique_ptr<const DosageHistory> getDosageHistory(bool _useAdjustments) const;
+    const DosageHistory& getDosageHistory(bool _useAdjustments) const;
 
     ///
     ////// \brief Returns the patient covariates

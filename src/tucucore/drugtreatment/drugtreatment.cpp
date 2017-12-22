@@ -14,20 +14,13 @@ DrugTreatment::DrugTreatment()
 }
 
 
-std::unique_ptr<const DosageHistory> DrugTreatment::getDosageHistory(bool _useAdjustments) const
+const DosageHistory& DrugTreatment::getDosageHistory(bool _useAdjustments) const
 {
-    std::unique_ptr<const DosageHistory> dosageHistory;
-
-    if (!_useAdjustments || m_adjustmentDate.isUndefined()) {
-        dosageHistory = std::unique_ptr<const DosageHistory>(&m_dosageHistory);
-    }
-    else {
-        dosageHistory = std::make_unique<DosageHistory>();
+    if (_useAdjustments && !m_adjustmentDate.isUndefined()) {
         // Build the dosage history based on the history as well as the selected adjustment
         // Use the adjustment date to switch between history and adjustment.
     }
-
-    return dosageHistory;
+    return m_dosageHistory;
 }
 
 
@@ -49,23 +42,27 @@ const Targets& DrugTreatment::getTargets() const
 }
 
 
-void addCovariate(std::unique_ptr<PatientCovariate> _covariate)
+void DrugTreatment::addCovariate(std::unique_ptr<PatientCovariate> _covariate)
 {
+    m_covariates.push_back(std::move(_covariate));
 }
 
 
-void addDosageTimeRange(std::unique_ptr<DosageTimeRange> _timeRange)
+void DrugTreatment::addDosageTimeRange(std::unique_ptr<DosageTimeRange> _timeRange)
 {
+    m_dosageHistory.addTimeRange(*_timeRange.get());
 }
 
 
-void addTarget(std::unique_ptr<Target> _target)
+void DrugTreatment::addTarget(std::unique_ptr<Target> _target)
 {
+    m_targets.push_back(std::move(_target));
 }
 
 
-void addSample(std::unique_ptr<Sample> _sample)
+void DrugTreatment::addSample(std::unique_ptr<Sample> _sample)
 {
+    m_samples.push_back(std::move(_sample));
 }
 
 
