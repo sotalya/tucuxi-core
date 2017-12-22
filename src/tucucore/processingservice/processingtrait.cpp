@@ -3,6 +3,7 @@
 */
 #include "processingtrait.h"
 
+#include "tucucore/corecomponent.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -12,11 +13,6 @@ namespace Core {
 void ProcessingTraits::addTrait(std::unique_ptr<ProcessingTrait> _trait)
 {
     m_traits.push_back(std::move(_trait));
-}
-
-const std::vector<std::unique_ptr<ProcessingTrait> > &ProcessingTraits::getTraits() const
-{
-    return m_traits;
 }
 
 
@@ -103,6 +99,11 @@ ProcessingTraitConcentration::ProcessingTraitConcentration(RequestResponseId _id
     ProcessingTraitStandard(_id, _type, _start, _end, _nbPoints, _processingOption)
 {
 
+}
+
+ProcessingResult ProcessingTraitConcentration::compute(CoreComponent &_coreComponent) const
+{     
+    return ProcessingResult::Error;
 }
 
 ProcessingTraitPercentiles::ProcessingTraitPercentiles(RequestResponseId _id,

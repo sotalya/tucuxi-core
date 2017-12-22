@@ -9,18 +9,15 @@ namespace Tucuxi {
 namespace Core {
 
 
-
-
 ProcessingRequest::ProcessingRequest(RequestResponseId _id,
-        const DrugModel& _drugModel,
-        const DrugTreatment& _drugTreatment,
-        const ProcessingTraits& _processingTraits) :
+    const DrugModel& _drugModel,
+    const DrugTreatment& _drugTreatment,
+    const ProcessingTraits& _processingTraits) :
     m_id(_id),
     m_drugModel(_drugModel),
     m_drugTreatment(_drugTreatment),
     m_processingTraits(_processingTraits)
 {
-
 }
 
 RequestResponseId ProcessingRequest::getId() const

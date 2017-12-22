@@ -8,13 +8,14 @@
 
 #include "tucucore/drugtreatment/drugtreatment.h"
 #include "tucucore/drugmodel/drugmodel.h"
+#include "tucucore/processingservice/iprocessingservice.h"
 
 
 namespace Tucuxi {
 namespace Core {
 
 enum class PredictionParameterType { Population, Apiori, Aposteriori };
-
+class CoreComponent;
 
 ///
 /// \brief The ProcessingTrait class
@@ -23,15 +24,13 @@ enum class PredictionParameterType { Population, Apiori, Aposteriori };
 class ProcessingTrait
 {
 public:
-
     ///
     /// \brief get the Id of the ProcessingTrait
     /// \return The Id
     ///
     RequestResponseId getId() const;
-
+    
 protected:
-
     ///
     /// \brief ProcessingTrait constructor
     /// \param _id Id of the ProcessingTrait
@@ -40,6 +39,10 @@ protected:
     ProcessingTrait(RequestResponseId _id);
 
     RequestResponseId m_id;
+
+private:
+    friend class CoreComponent;
+    virtual ProcessingResult compute(CoreComponent &_coreComponent) const = 0;    
 };
 
 /// This shall be better thought. I think there are more options such as:
@@ -61,7 +64,6 @@ enum class ProcessingOption {
 ///
 class ProcessingTraitStandard : public ProcessingTrait
 {
-
 public:
     PredictionParameterType getType() const;
     ProcessingOption getProcessingOption() const;
@@ -95,14 +97,15 @@ class ProcessingTraitSinglePoints : public ProcessingTrait
 public:
     ProcessingTraitSinglePoints(RequestResponseId _id,
                                 std::vector<Tucuxi::Common::DateTime> _times,
-                                ProcessingOption _processingOption
-                                );
+                                ProcessingOption _processingOption);
 
 protected:
-
     std::vector<Tucuxi::Common::DateTime> m_times;
     PredictionParameterType m_type;
     ProcessingOption m_processingOption;
+
+private:
+    ProcessingResult compute(CoreComponent &_coreComponent) const override { return ProcessingResult::Error; }
 };
 
 ///
@@ -114,14 +117,14 @@ protected:
 class ProcessingTraitAtMeasures : public ProcessingTrait
 {
 public:
-    ProcessingTraitAtMeasures(RequestResponseId _id,
-                              ProcessingOption _processingOption
-                              );
+    ProcessingTraitAtMeasures(RequestResponseId _id, ProcessingOption _processingOption);
 
 protected:
-
     PredictionParameterType m_type;
     ProcessingOption m_processingOption;
+
+private:
+    ProcessingResult compute(CoreComponent &_coreComponent) const override { return ProcessingResult::Error; }
 };
 
 ///
@@ -172,6 +175,9 @@ public:
 protected:
     Tucuxi::Common::DateTime& m_adjustmentTime;
     AdjustmentOption m_adjustmentOption;
+
+private:
+    ProcessingResult compute(CoreComponent &_coreComponent) const override { return ProcessingResult::Error; }
 };
 
 ///
@@ -180,13 +186,15 @@ protected:
 ///
 class ProcessingTraitConcentration : public ProcessingTraitStandard
 {
+public:
     ProcessingTraitConcentration(RequestResponseId _id,
                                  PredictionParameterType _type,
                                  Tucuxi::Common::DateTime _start,
                                  Tucuxi::Common::DateTime _end,
                                  int _nbPoints,
                                  ProcessingOption _processingOption);
-
+private:
+    ProcessingResult compute(CoreComponent &_coreComponent) const override;
 };
 
 
@@ -197,7 +205,7 @@ class ProcessingTraitConcentration : public ProcessingTraitStandard
 /// This list is a vector of values in [0.0, 100.0]
 class ProcessingTraitPercentiles : public ProcessingTraitStandard
 {
-
+public:
     ProcessingTraitPercentiles(RequestResponseId _id,
                                PredictionParameterType _type,
                                Tucuxi::Common::DateTime _start,
@@ -207,8 +215,10 @@ class ProcessingTraitPercentiles : public ProcessingTraitStandard
                                ProcessingOption _processingOption);
 
 private:
-
     PercentileRanks m_ranks;
+
+private:
+    ProcessingResult compute(CoreComponent &_coreComponent) const override { return ProcessingResult::Error; }
 };
 
 
@@ -222,13 +232,16 @@ private:
 class ProcessingTraits
 {
 public:
-
     void addTrait(std::unique_ptr<ProcessingTrait> _trait);
-    const std::vector<std::unique_ptr<ProcessingTrait> > &getTraits() const;
+    //const std::vector<std::unique_ptr<ProcessingTrait> > &getTraits() const;
+
+    typedef std::vector<std::unique_ptr<ProcessingTrait> > Traits;
+    typedef Traits::const_iterator Iterator;
+    Iterator begin() const { return m_traits.begin(); };
+    Iterator end() const { return m_traits.end(); };
 
 protected:
-
-    std::vector<std::unique_ptr<ProcessingTrait> > m_traits;
+    Traits m_traits;
 };
 
 }

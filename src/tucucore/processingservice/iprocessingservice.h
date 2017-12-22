@@ -7,11 +7,11 @@
 
 #include "tucucommon/interface.h"
 
-#include "processingrequest.h"
-#include "processingresponse.h"
-
 namespace Tucuxi {
 namespace Core {
+
+class ProcessingRequest;
+class ProcessingResponse;
 
 ///
 /// \brief The ProcessingResult enum

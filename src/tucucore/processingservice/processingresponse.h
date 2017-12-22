@@ -22,6 +22,18 @@ namespace Core {
 class CycleData
 {
 public:
+    CycleData() {}
+    CycleData(const Tucuxi::Common::DateTime &_start, const Tucuxi::Common::DateTime &_end, const Unit &_unit)
+        : m_start(_start), m_end(_end), m_unit(_unit)
+    {
+    }
+
+    void addData(TimeOffsets &_offsets, std::vector<Concentration> _concentrations, Value _auc)
+    {
+        m_times.push_back(_offsets);
+        m_concentrations.push_back(_concentrations);
+        m_aucs.push_back(_auc);
+    }
 
     /// \brief Absolute start time of the cycle
     Tucuxi::Common::DateTime m_start;
@@ -57,7 +69,8 @@ public:
 class SingleProcessingResponse
 {
 public:
-
+    SingleProcessingResponse() = default;
+    virtual ~SingleProcessingResponse() = 0 {}
     RequestResponseId getId() const;
 
 protected:
@@ -95,6 +108,10 @@ class SinglePointsResponse : public SingleProcessingResponse
 /// It contains data of a single prediction, as a vector of CycleData.
 class SinglePredictionResponse : public SingleProcessingResponse
 {
+public:
+    SinglePredictionResponse() = default;
+    void addCycleData(const CycleData &_data) { m_data.push_back(_data); }
+    const std::vector<CycleData>& getData() { return m_data; }
 
 private:
     std::vector<CycleData> m_data;
