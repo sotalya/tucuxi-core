@@ -52,8 +52,8 @@ public: \
         return instance; \
     } \
     \
-    virtual IntakeIntervalCalculator *getLightClone() { \
-        return new entity(); \
+    virtual std::shared_ptr<IntakeIntervalCalculator> getLightClone() { \
+        return std::shared_ptr<IntakeIntervalCalculator>(new entity()); \
     }
 
 
@@ -81,7 +81,7 @@ public:
     /// \brief clone
     /// \return a clone of the object, without copy of the member variables, only the object itself
     ///
-    virtual IntakeIntervalCalculator * getLightClone() = 0;
+    virtual std::shared_ptr<IntakeIntervalCalculator> getLightClone() = 0;
     
     /// \brief Calculate all points for the given time serie
     /// Variable denisty is used by default, which means IntakeEvent is not constant as the final density 
@@ -172,7 +172,6 @@ template<unsigned int ResidualSize, typename EParameters>
 class IntakeIntervalCalculatorBase : public IntakeIntervalCalculator
 {
 public:
-
     unsigned int getResidualSize() const {
         return ResidualSize;
     }

@@ -40,7 +40,7 @@ public:
         : TimedEvent(_time), 
           m_dose(_dose),
           m_offsetTime(_offsetTime),
-          m_nbPoints(_nbPoints),
+          m_nbPoints(251),
           m_route(_route),
           m_interval(_interval),
           m_infusionTime(_infusionTime),
@@ -133,12 +133,12 @@ public:
     ///
     /// \brief setCalculator Defines the calculator to be used for calculation
     /// \param _calculator The calculator itself
-    void setCalculator(IntakeIntervalCalculator *_calculator)
+    void setCalculator(std::shared_ptr<IntakeIntervalCalculator> _calculator)
     {
         m_calculator = _calculator;
     }
 
-    IntakeIntervalCalculator *getCalculator() const
+    std::shared_ptr<IntakeIntervalCalculator> getCalculator() const
     {
         return m_calculator;
     }
@@ -150,7 +150,7 @@ public:
         const ParameterSetEvent& _parameters,
         const Residuals& _inResiduals,
         const CycleSize _cycleSize,
-	const bool _isAll,
+        const bool _isAll,
         Residuals& _outResiduals,
         const bool _isDensityConstant) const
     {
@@ -169,10 +169,6 @@ public:
         return m_calculator->calculateIntakeSinglePoint(_concentrations, _intakeEvent, _parameters, _inResiduals, _atTime, _isAll, _outResiduals);
     }
 
-    // The association with intakeintervalcalculator happens here
-    // The intaketocalculatorassociator sets this value
-    // void setCalc(IntakeIntervalCalculator& _calc) { calc = &_calc; }
-
 private:
     /// The dose in mg
     Dose m_dose;
@@ -187,7 +183,7 @@ private:
     /// The duration in case of an infusion
     Duration m_infusionTime;
 
-    IntakeIntervalCalculator* m_calculator;
+    std::shared_ptr<IntakeIntervalCalculator> m_calculator;
 };
 
 }
