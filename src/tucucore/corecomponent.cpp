@@ -14,14 +14,36 @@
 #include "tucucore/intakeintervalcalculator.h"
 #include "tucucore/concentrationcalculator.h"
 #include "tucucore/aposteriorietascalculator.h"
+#include "tucucore/processingservice/iprocessingservice.h"
+#include "tucucore/processingservice/processingrequest.h"
+#include "tucucore/processingservice/processingresponse.h"
+#include "tucucore/processingservice/processingtrait.h"
+#include "tucucore/intaketocalculatorassociator.h"
+#include "tucucore/pkmodel.h"
+
+#include "tucucore/onecompartmentbolus.h"
+#include "tucucore/onecompartmentextra.h"
+#include "tucucore/onecompartmentinfusion.h"
+#include "tucucore/twocompartmentbolus.h"
+#include "tucucore/twocompartmentextra.h"
+#include "tucucore/twocompartmentinfusion.h"
+#include "tucucore/threecompartmentbolus.h"
+#include "tucucore/threecompartmentextra.h"
+#include "tucucore/threecompartmentinfusion.h"
 
 namespace Tucuxi {
 namespace Core {
 
 
-CoreComponent::CoreComponent(const std::string &_filename)
+Tucuxi::Common::Interface* CoreComponent::createComponent()
 {
-    TMP_UNUSED_PARAMETER(_filename);
+    CoreComponent *cmp = new CoreComponent();
+    return dynamic_cast<IProcessingService*>(cmp);
+}
+
+
+CoreComponent::CoreComponent()
+{
     registerInterface(dynamic_cast<IDataModelServices*>(this));
     registerInterface(dynamic_cast<IProcessingService*>(this));
 }
@@ -47,7 +69,82 @@ bool CoreComponent::loadTreatment(const std::string& _xmlTreatmentDescription)
 
 ProcessingResult CoreComponent::compute(const ProcessingRequest &_request, std::unique_ptr<ProcessingResponse> &_response)
 {
-    return ProcessingResult::Error;
+    ProcessingTraits::Iterator it = _request.getProcessingTraits().begin();
+    while (it != _request.getProcessingTraits().end()) {
+        ProcessingTraitConcentration *pTrait = dynamic_cast<ProcessingTraitConcentration*>(it->get());
+        if (pTrait != nullptr) {
+
+            IntakeSeries intakeSeries;
+            int nIntakes = IntakeExtractor::extract(_request.getDrugTreatment().getDosageHistory(false), pTrait->getStart(), pTrait->getEnd(), intakeSeries);
+            
+            static const std::string analyteId = "imatinib";
+            static const std::string pkModelId = _request.getDrugModel().getPkModelId();
+            static const std::string formulation = "???";
+            static const Route route = Route::IntravenousBolus; // ???
+
+            PkModelCollection models;
+            bool rc = true;
+            ADD_PKMODEL_TO_COLLECTION(models, 1, One, Macro, macro, rc);
+            ADD_PKMODEL_TO_COLLECTION(models, 1, One, Micro, micro, rc);
+            ADD_PKMODEL_TO_COLLECTION(models, 2, Two, Macro, macro, rc);
+            ADD_PKMODEL_TO_COLLECTION(models, 2, Two, Micro, micro, rc);
+            ADD_PKMODEL_TO_COLLECTION(models, 3, Three, Macro, macro, rc);
+            ADD_PKMODEL_TO_COLLECTION(models, 3, Three, Micro, micro, rc);
+            if (!rc) {
+                return ProcessingResult::Error;
+            }
+            std::shared_ptr<PkModel> pkModel = models.getPkModelFromId(pkModelId);
+
+            IntakeToCalculatorAssociator::Result res = IntakeToCalculatorAssociator::associate(intakeSeries, *pkModel.get());
+
+            CovariateSeries covariateSeries;
+            CovariateExtractor covariateExtractor(_request.getDrugModel().getCovariates(),
+                                                  _request.getDrugTreatment().getCovariates(),
+                                                  pTrait->getStart(),
+                                                  pTrait->getEnd());
+            covariateExtractor.extract(covariateSeries);
+
+            ParameterDefinitionIterator it = _request.getDrugModel().getParameterDefinitions(analyteId, formulation, route);
+
+            ParameterSetSeries parameterSeries;
+            ParametersExtractor parameterExtractor(covariateSeries,
+                                                   it,
+                                                   pTrait->getStart(),
+                                                   pTrait->getEnd());
+            parameterExtractor.extract(parameterSeries);
+
+            ConcentrationPredictionPtr pPrediction = std::make_unique<ConcentrationPrediction>();
+            ComputationResult result = computePopulation(
+                pPrediction,
+                false,
+                pTrait->getNbPoints(),
+                pTrait->getStart(),
+                pTrait->getEnd(),
+                intakeSeries,
+                parameterSeries);
+
+            if (result == ComputationResult::Success &&
+                intakeSeries.size() == pPrediction->getTimes().size() &&
+                intakeSeries.size() == pPrediction->getValues().size())
+            {
+                std::unique_ptr<SinglePredictionResponse> resp = std::make_unique<SinglePredictionResponse>();
+
+                for (int i = 0; i < intakeSeries.size(); i++) {
+                    TimeOffsets times = pPrediction->getTimes().at(i);
+                    DateTime start = intakeSeries.at(i).getEventTime();
+                    DateTime end = start + std::chrono::milliseconds((int)times.at(times.size() - 1) * 1000);
+                    CycleData cycle(start, end, Unit("ug/l"));
+                    cycle.addData(times, pPrediction->getValues().at(i), 0);
+                    resp->addCycleData(cycle);
+                }
+
+                _response->addResponse(std::move(resp));
+            }
+        }
+        it++;
+    }
+
+    return ProcessingResult::Success;
 /*
     ConcentrationPredictionPtr prediction;
 

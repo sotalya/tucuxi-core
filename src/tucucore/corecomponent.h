@@ -32,7 +32,9 @@ class CoreComponent : public Tucuxi::Common::Component,
                       public IDataModelServices
 {
 public:
-    /// \brief Constructor call by LoggerHelper
+    static Tucuxi::Common::Interface* createComponent();
+
+    /// \brief Destructor
     ~CoreComponent();
 
     bool loadDrug(const std::string& _xmlDrugDescription) override;
@@ -43,11 +45,12 @@ public:
 
 protected:
     /// \brief Access other interfaces of the same component.
-    virtual Tucuxi::Common::Interface* getInterface(const std::string &_name);
+    virtual Tucuxi::Common::Interface* getInterface(const std::string &_name) override;
+    
 
 private:
-    /// \brief Constructor call by LoggerHelper
-    CoreComponent(const std::string &_filename);
+    /// \brief Constructor called from createComponent()
+    CoreComponent();
 
     ComputationResult computeConcentrations(
         ConcentrationPredictionPtr &_prediction,
@@ -118,9 +121,16 @@ private:
     Tucuxi::Common::LoggerHelper m_logger;
     std::unique_ptr<DrugModel> m_drug;
     std::unique_ptr<DrugTreatment> m_treatment;
+
+    friend class ProcessingTraitSinglePoints;
+    friend class ProcessingTraitAtMeasures;
+    friend class ProcessingTraitAdjustment;
+    friend class ProcessingTraitConcentration;
+    friend class ProcessingTraitPercentiles;
 };
 
 }
 }
 
 #endif // TUCUXI_CORE_CORECOMPONENT_H
+

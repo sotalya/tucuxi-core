@@ -26,7 +26,9 @@ ComputationResult ConcentrationCalculator::computeConcentrations(
     // First calculate the size of residuals
     unsigned int residualSize = 0;
     for (IntakeSeries::const_iterator it = _intakes.begin(); it != _intakes.end(); it++) {
-        residualSize = std::max(residualSize, (*it).getCalculator()->getResidualSize());
+        std::shared_ptr<IntakeIntervalCalculator> pCalculator = (*it).getCalculator();
+        unsigned int s = pCalculator->getResidualSize();
+        residualSize = std::max(residualSize, s);
     }
     Residuals inResiduals(residualSize);
     Residuals outResiduals(residualSize);
@@ -54,7 +56,7 @@ ComputationResult ConcentrationCalculator::computeConcentrations(
 
         _prediction->allocate(residualSize, density, times, concentrations);
 
-        outResiduals.clear();
+//        outResiduals.clear();
 
         IntakeIntervalCalculator::Result result = it->calculateIntakePoints(concentrations, times, intake, *parameters, inResiduals, intake.getNbPoints(), _isAll, outResiduals, _isFixedDensity);
 
