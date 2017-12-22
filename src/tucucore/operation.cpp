@@ -114,6 +114,11 @@ OperationInput::setValue(const int &_value)
         m_isDefined = true;
         return true;
     }
+    if (m_type == InputType::BOOL) {
+        m_value.b = _value != 0;
+        m_isDefined = true;
+        return true;
+    }
     return false;
 }
 
@@ -134,6 +139,16 @@ OperationInput::setValue(const double &_value)
 {
     if (m_type == InputType::DOUBLE) {
         m_value.d = _value;
+        m_isDefined = true;
+        return true;
+    }
+    if (m_type == InputType::INTEGER) {
+        m_value.i = static_cast<int>(_value);
+        m_isDefined = true;
+        return true;
+    }
+    if (m_type == InputType::BOOL) {
+        m_value.b = static_cast<int>(_value) != 0;
         m_isDefined = true;
         return true;
     }
