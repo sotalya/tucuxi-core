@@ -18,9 +18,6 @@ public:
         DrugModel *model;
         model = new DrugModel();
 
-
-
-
         // The following constraint is for tests only. Needs to be modified according to the paper
         Operation *constraint = new JSOperation(" \
                                                 return (age > 0);",
@@ -28,7 +25,6 @@ public:
         std::unique_ptr<DrugModelDomain> drugDomain(new DrugModelDomain(std::unique_ptr<Operation>(constraint)));
 
         model->setDomain(std::move(drugDomain));
-
 
         model->addCovariate(
                     std::unique_ptr<Tucuxi::Core::CovariateDefinition>(
@@ -47,7 +43,6 @@ public:
 
         analyteSet->setPkModelId("linear.1comp.macro");
 
-
         ActiveSubstance *analyte = new ActiveSubstance();
         analyte->setAnalyteId("imatinib");
 
@@ -62,9 +57,7 @@ public:
 
         analyte->setResidualErrorModel(err);
 
-
         // Add targets
-
         std::unique_ptr<SubTargetDefinition> cMin(new SubTargetDefinition("cMin", 750.0, nullptr));
         std::unique_ptr<SubTargetDefinition> cMax(new SubTargetDefinition("cMax", 1500.0, nullptr));
         std::unique_ptr<SubTargetDefinition> cBest(new SubTargetDefinition("cBest", 1000.0, nullptr));
@@ -79,70 +72,49 @@ public:
         std::unique_ptr<TargetDefinition> targetPtr(target);
         analyte->addTarget(targetPtr);
 
-
-
         analyteSet->addAnalyte(std::unique_ptr<Analyte>(analyte));
-
-
 
         std::unique_ptr<ParameterSetDefinition> dispositionParameters(new ParameterSetDefinition());
 
         // Imatinib parameters, as in the XML drug file
-        Operation *opV = new JSOperation(" \
-                                         theta2=V; \
-                theta8=46.2; \
-        tvv = theta2+theta8*sex-theta8*(1-sex); \
-        return tvv;",
-        { OperationInput("V", InputType::DOUBLE),
-                    OperationInput("sex", InputType::DOUBLE)});
+        Operation *opV = new JSOperation("theta2=V_population; theta8=46.2; tvv = theta2+theta8*sex-theta8*(1-sex); V = tvv;",
+                                         { OperationInput("V_population", InputType::DOUBLE),
+                                           OperationInput("sex", InputType::DOUBLE)});
 
         std::unique_ptr<ParameterDefinition> PV(new Tucuxi::Core::ParameterDefinition("V", 347, opV, Tucuxi::Core::ParameterVariability(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.629)));
         dispositionParameters->addParameter(PV);
         Operation *opCl = new JSOperation(" \
-                                          theta1=CL; \
-                theta4=5.42; \
-        theta5=1.49; \
-        theta6=-5.81; \
-        theta7=-.806; \
-        \
-        MEANBW=70; \
-        FBW=(weight-MEANBW)/MEANBW; \
-        \
-        MEANAG=50; \
-        FAGE=(age-MEANAG)/MEANAG; \
-        \
-        if (gist) \
-            PATH=1; \
-        else \
-            PATH=0; \
-        \
-        PATH = gist; \
-        \
-        MALE = sex; \
-        \
-        TVCL = theta1+theta4*FBW+theta5*MALE-theta5*(1-MALE)+theta6*FAGE + theta7*PATH-theta7*(1-PATH); \
-        return TVCL; \
-        ",
-        { OperationInput("CL", InputType::DOUBLE),
+                                            theta1=Cl_population; \
+                                            theta4=5.42; \
+                                            theta5=1.49; \
+                                            theta6=-5.81; \
+                                            theta7=-0.806; \
+                                            \
+                                            MEANBW=70; \
+                                            FBW=(weight-MEANBW)/MEANBW; \
+                                            \
+                                            MEANAG=50; \
+                                            FAGE=(age-MEANAG)/MEANAG; \
+                                            \
+                                            PATH = gist; \
+                                            MALE = sex; \
+                                            \
+                                            Cl = theta1+theta4*FBW+theta5*MALE-theta5*(1-MALE)+theta6*FAGE + theta7*PATH-theta7*(1-PATH);",
+                                            { OperationInput("Cl_population", InputType::DOUBLE),
+                                              OperationInput("sex", InputType::DOUBLE),
+                                              OperationInput("weight", InputType::DOUBLE),
+                                              OperationInput("age", InputType::DOUBLE),
+                                              OperationInput("gist", InputType::BOOL)});
 
-
-                    OperationInput("sex", InputType::DOUBLE),
-                    OperationInput("weight", InputType::DOUBLE),
-                    OperationInput("age", InputType::DOUBLE),
-                    OperationInput("gist", InputType::BOOL)});
-
-        std::unique_ptr<ParameterDefinition> PCL(new Tucuxi::Core::ParameterDefinition("CL", 15.106, opCl, Tucuxi::Core::ParameterVariability(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.356)));
+        std::unique_ptr<ParameterDefinition> PCL(new Tucuxi::Core::ParameterDefinition("Cl", 15.106, opCl, Tucuxi::Core::ParameterVariability(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.356)));
         dispositionParameters->addParameter(PCL);
 
-        dispositionParameters->addCorrelation(Correlation("CL", "V", 0.798));
+        dispositionParameters->addCorrelation(Correlation("Cl", "V", 0.798));
         analyteSet->setDispositionParameters(std::move(dispositionParameters));
-
-
 
         AnalyteSetToAbsorptionAssociation *association;
         association = new AnalyteSetToAbsorptionAssociation(*analyteSet);
         association->setAbsorptionModel(AbsorptionModel::EXTRAVASCULAR);
-
 
         std::unique_ptr<ParameterSetDefinition> absorptionParameters(new ParameterSetDefinition());
         std::unique_ptr<ParameterDefinition> PKa(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
@@ -151,9 +123,7 @@ public:
         absorptionParameters->addParameter(PF);
 
         association->setAbsorptionParameters(std::move(absorptionParameters));
-        std::unique_ptr<FormulationAndRoute> formulationAndRoute(new FormulationAndRoute());
-        formulationAndRoute->setRoute(Route::Oral);
-        formulationAndRoute->setFormulation("To be defined");
+        std::unique_ptr<FormulationAndRoute> formulationAndRoute(new FormulationAndRoute("To be defined", Route::Oral));
         formulationAndRoute->addAssociation(std::unique_ptr<AnalyteSetToAbsorptionAssociation>(association));
 
         SpecificDoses* validDoses = new SpecificDoses(Unit("mg"), MultiAnalyteDose(400));
@@ -176,7 +146,6 @@ public:
             std::unique_ptr<ValidDurations> intervals(validIntervals);
             formulationAndRoute->setValidIntervals(std::move(intervals));
 
-
             model->addFormulationAndRoute(std::move(formulationAndRoute));
         }
 
@@ -185,13 +154,15 @@ public:
             association = new AnalyteSetToAbsorptionAssociation(*analyteSet);
             association->setAbsorptionModel(AbsorptionModel::INTRAVASCULAR);
 
-
             std::unique_ptr<ParameterSetDefinition> absorptionParameters(new ParameterSetDefinition());
 
+            std::unique_ptr<ParameterDefinition> PKa(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
+            absorptionParameters->addParameter(PKa);
+            std::unique_ptr<ParameterDefinition> PF(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
+            absorptionParameters->addParameter(PF);
+
             association->setAbsorptionParameters(std::move(absorptionParameters));
-            std::unique_ptr<FormulationAndRoute> formulationAndRoute(new FormulationAndRoute());
-            formulationAndRoute->setRoute(Route::IntravenousBolus);
-            formulationAndRoute->setFormulation("To be defined");
+            std::unique_ptr<FormulationAndRoute> formulationAndRoute(new FormulationAndRoute("To be defined", Route::IntravenousBolus));
             formulationAndRoute->addAssociation(std::unique_ptr<AnalyteSetToAbsorptionAssociation>(association));
 
             // These are the extravascular doses and intervals. Only added the infusion times
@@ -217,7 +188,6 @@ public:
             formulationAndRoute->setValidInfusionTimes(std::move(validInfusionTimes));
 
             model->addFormulationAndRoute(std::move(formulationAndRoute));
-
         }
 
         {
@@ -225,13 +195,15 @@ public:
             association = new AnalyteSetToAbsorptionAssociation(*analyteSet);
             association->setAbsorptionModel(AbsorptionModel::INFUSION);
 
-
             std::unique_ptr<ParameterSetDefinition> absorptionParameters(new ParameterSetDefinition());
 
+            std::unique_ptr<ParameterDefinition> PKa(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
+            absorptionParameters->addParameter(PKa);
+            std::unique_ptr<ParameterDefinition> PF(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
+            absorptionParameters->addParameter(PF);
+
             association->setAbsorptionParameters(std::move(absorptionParameters));
-            std::unique_ptr<FormulationAndRoute> formulationAndRoute(new FormulationAndRoute());
-            formulationAndRoute->setRoute(Route::IntravenousDrip);
-            formulationAndRoute->setFormulation("To be defined");
+            std::unique_ptr<FormulationAndRoute> formulationAndRoute(new FormulationAndRoute("To be defined", Route::IntravenousDrip));
             formulationAndRoute->addAssociation(std::unique_ptr<AnalyteSetToAbsorptionAssociation>(association));
 
             // These are the extravascular doses and intervals
@@ -254,9 +226,7 @@ public:
         }
 
         model->setAnalyteSet(std::move(analyteSet));
-
         return model;
-
     }
 };
 
