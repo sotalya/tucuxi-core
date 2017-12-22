@@ -14,6 +14,7 @@
 #include "test_scriptengine.h"
 #include "test_datetime.h"
 #include "test_xml.h"
+#include "test_iterator.h"
 
 int main(int argc, char** argv) 
 {
@@ -80,6 +81,14 @@ int main(int argc, char** argv)
     res = xmlTests.run(argc, argv);
     if (res != 0) {
         printf("XML test failed\n");
+        exit(1);
+    }
+
+    TestIterator iteratorTests;
+    iteratorTests.add_test("Iterators", &TestIterator::basic);
+    res = iteratorTests.run(argc, argv);
+    if (res != 0) {
+        printf("Iterator test failed\n");
         exit(1);
     }
     return 0;

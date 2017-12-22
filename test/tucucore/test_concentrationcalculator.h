@@ -36,14 +36,14 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
         // with ConcentrationCalculator vs directly with the IntakeIntervalCalculator
         {
             Tucuxi::Core::IntakeIntervalCalculator::Result res;
-            CalculatorClass calculator;
+            std::shared_ptr<IntakeIntervalCalculator> calculator = std::make_shared<CalculatorClass>();
 
             DateTime now;
             Tucuxi::Common::Duration offsetTime = 0s;
             Tucuxi::Common::Duration interval = _interval;
             Tucuxi::Common::Duration infusionTime = _infusionTime;
 
-            unsigned int residualSize = calculator.getResidualSize();
+            unsigned int residualSize = calculator->getResidualSize();
             bool isAll = false;
 
             std::vector<Tucuxi::Core::Concentrations> concentrations;
@@ -61,7 +61,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
                 std::fill(inResiduals.begin(), inResiduals.end(), 0);
 
                 Tucuxi::Core::ParameterSetEvent event = *(_parameters.getAtTime(now));
-                res = calculator.calculateIntakePoints(
+                res = calculator->calculateIntakePoints(
                     concentrations,
                     times,
                     intakeEvent,
@@ -80,8 +80,8 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
                 predictionPtr = std::make_unique<Tucuxi::Core::ConcentrationPrediction>();
 
                 Tucuxi::Core::IntakeSeries intakeSeries;
-                CalculatorClass calculator2;
-                intakeEvent.setCalculator(&calculator2);
+                std::shared_ptr<IntakeIntervalCalculator> calculator2 = std::make_shared<CalculatorClass>();
+                intakeEvent.setCalculator(calculator2);
                 intakeSeries.push_back(intakeEvent);
                 Tucuxi::Core::IConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::ConcentrationCalculator();
                 concentrationCalculator->computeConcentrations(
@@ -162,11 +162,11 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
                 predictionPtr = std::make_unique<Tucuxi::Core::ConcentrationPrediction>();
 
                 Tucuxi::Core::IntakeSeries intakeSeries;
-                CalculatorClass calculator2;
+                std::shared_ptr<IntakeIntervalCalculator> calculator2 = std::make_shared<CalculatorClass>();
 
                 for(int i = 0; i < nbCycles; i++) {
                     Tucuxi::Core::IntakeEvent event(now + interval * i, offsetTime, _dose, interval, _route, infusionTime, _nbPoints);
-                    event.setCalculator(&calculator2);
+                    event.setCalculator(calculator2);
                     intakeSeries.push_back(event);
                 }
                 Tucuxi::Core::IConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::ConcentrationCalculator();
@@ -226,8 +226,8 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
                 predictionPtr = std::make_unique<Tucuxi::Core::ConcentrationPrediction>();
 
                 Tucuxi::Core::IntakeSeries intakeSeries;
-                CalculatorClass calculator2;
-                intakeEvent.setCalculator(&calculator2);
+                std::shared_ptr<IntakeIntervalCalculator> calculator2 = std::make_shared<CalculatorClass>();
+                intakeEvent.setCalculator(calculator2);
                 intakeSeries.push_back(intakeEvent);
                 Tucuxi::Core::IConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::ConcentrationCalculator();
                 concentrationCalculator->computeConcentrations(
@@ -248,8 +248,8 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
             }
             {
                 Tucuxi::Core::IntakeSeries intakeSeries;
-                CalculatorClass calculator2;
-                intakeEvent.setCalculator(&calculator2);
+                std::shared_ptr<IntakeIntervalCalculator> calculator2 = std::make_shared<CalculatorClass>();
+                intakeEvent.setCalculator(calculator2);
                 intakeSeries.push_back(intakeEvent);
 
                 Tucuxi::Core::SampleSeries sampleSeries;

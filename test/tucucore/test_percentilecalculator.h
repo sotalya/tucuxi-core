@@ -57,8 +57,8 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
 
         Tucuxi::Core::TimeOffsets times;
         Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, dose, interval, route, infusionTime, nbPoints);
-        Tucuxi::Core::OneCompartmentExtraMacro calculator2;
-        intakeEvent.setCalculator(&calculator2);
+        std::shared_ptr<IntakeIntervalCalculator> calculator2 = std::make_shared<Tucuxi::Core::OneCompartmentExtraMacro>();
+        intakeEvent.setCalculator(calculator2);
         intakeSeries.push_back(intakeEvent);
 
         // std::cout << typeid(calculator).name() << std::endl;
@@ -166,8 +166,8 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
 
         Tucuxi::Core::TimeOffsets times;
         Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, dose, interval, route, infusionTime, nbPoints);
-        Tucuxi::Core::OneCompartmentExtraMacro calculator2;
-        intakeEvent.setCalculator(&calculator2);
+        std::shared_ptr<IntakeIntervalCalculator> calculator2 = std::make_shared<Tucuxi::Core::OneCompartmentExtraMacro>();
+        intakeEvent.setCalculator(calculator2);
         intakeSeries.push_back(intakeEvent);
 
         // std::cout << typeid(calculator).name() << std::endl;
@@ -271,8 +271,8 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
 
         Tucuxi::Core::TimeOffsets times;
         Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, dose, interval, route, infusionTime, nbPoints);
-        Tucuxi::Core::OneCompartmentExtraMacro calculator2;
-        intakeEvent.setCalculator(&calculator2);
+        std::shared_ptr<IntakeIntervalCalculator> calculator2 = std::make_shared<Tucuxi::Core::OneCompartmentExtraMacro>();
+        intakeEvent.setCalculator(calculator2);
         intakeSeries.push_back(intakeEvent);
 
         // std::cout << typeid(calculator).name() << std::endl;

@@ -8,6 +8,7 @@
 #include "fructose/fructose.h"
 
 #include "tucucommon/utils.h"
+#include "tucucommon/iterator.h"
 
 #include "tucucore/covariateextractor.h"
 #include "tucucore/parametersextractor.h"
@@ -55,6 +56,40 @@ void printCovariateSeries(const std::map<DateTime, std::vector<std::pair<std::st
     }
     std::cerr << "-----------------------------------------\n";
 }
+
+class MyParameterDefinitionIterator : public Tucuxi::Common::Iterator<const ParameterDefinition*>
+{    
+public:
+    typedef ParameterDefinitions::const_iterator iteratorType;
+
+    MyParameterDefinitionIterator(iteratorType _first, iteratorType _last)
+        : m_first(_first), m_last(_last)
+    {
+        reset();
+    }
+    Tucuxi::Common::Iterator<const ParameterDefinition*>& next() override
+    {
+        m_it++;
+        return *this;
+    }
+    bool isDone() const override
+    {
+        return (m_it == m_last);
+    }
+    const ParameterDefinition* operator*() override
+    {
+        return m_it->get();
+    }
+    void reset() override
+    {
+        m_it = m_first;
+    }
+
+private:
+    iteratorType m_first;
+    iteratorType m_last;
+    iteratorType m_it;
+};
 
 
 struct TestParameterExtractor : public fructose::test_base<TestParameterExtractor>
@@ -114,6 +149,7 @@ struct TestParameterExtractor : public fructose::test_base<TestParameterExtracto
         pDefinitions.push_back(std::make_unique<ParameterDefinition>("ParamB", 2));
         pDefinitions.push_back(std::make_unique<ParameterDefinition>("ParamC", 3));
         pDefinitions.push_back(std::make_unique<ParameterDefinition>("ParamD", 4));
+        MyParameterDefinitionIterator itDefinitions(pDefinitions.begin(), pDefinitions.end());
 
         // Invalid definition (_start > _end).
         {
@@ -132,8 +168,8 @@ struct TestParameterExtractor : public fructose::test_base<TestParameterExtracto
             cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 123));
             // This one is past _end -> should be discarded.
             cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
-
-            fructose_assert_exception(ParametersExtractor(cSeries, pDefinitions,
+            
+            fructose_assert_exception(ParametersExtractor(cSeries, itDefinitions,
                                                           DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0),
                                                           DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0)),
                                       std::runtime_error);
@@ -160,7 +196,7 @@ struct TestParameterExtractor : public fructose::test_base<TestParameterExtracto
             // Event appearing out of nowhere.
             cSeries.push_back(CovariateEvent(*(cDefinitions.at(3)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0),
                                              varToValue(false)));
-            fructose_assert_exception(ParametersExtractor(cSeries, pDefinitions,
+            fructose_assert_exception(ParametersExtractor(cSeries, itDefinitions,
                                                           DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
                                                           DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0)),
                                       std::runtime_error);
@@ -186,7 +222,7 @@ struct TestParameterExtractor : public fructose::test_base<TestParameterExtracto
             // This one is past _end -> should be discarded.
             cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
 
-            fructose_assert_exception(ParametersExtractor(cSeries, pDefinitions,
+            fructose_assert_exception(ParametersExtractor(cSeries, itDefinitions,
                                                           DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
                                                           DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0)),
                                       std::runtime_error);
@@ -212,7 +248,7 @@ struct TestParameterExtractor : public fructose::test_base<TestParameterExtracto
             // This one is past _end -> should be discarded.
             cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
 
-            fructose_assert_exception(ParametersExtractor(cSeries, pDefinitions,
+            fructose_assert_exception(ParametersExtractor(cSeries, itDefinitions,
                                                           DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
                                                           DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0)),
                                       std::runtime_error);
@@ -237,7 +273,7 @@ struct TestParameterExtractor : public fructose::test_base<TestParameterExtracto
             // This one is past _end -> should be discarded.
             cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
 
-            fructose_assert_no_exception(ParametersExtractor(cSeries, pDefinitions,
+            fructose_assert_no_exception(ParametersExtractor(cSeries, itDefinitions,
                                                              DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
                                                              DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0)));
         }
@@ -261,11 +297,12 @@ struct TestParameterExtractor : public fructose::test_base<TestParameterExtracto
             cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
 
             ParameterDefinitions pDef;
-            fructose_assert_no_exception(ParametersExtractor(CovariateSeries(), pDef,
+            MyParameterDefinitionIterator itDefinitions(pDef.begin(), pDef.end());
+            fructose_assert_no_exception(ParametersExtractor(CovariateSeries(), itDefinitions,
                                                              DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
                                                              DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0)));
 
-            ParametersExtractor extractor = ParametersExtractor(CovariateSeries(), pDef,
+            ParametersExtractor extractor = ParametersExtractor(CovariateSeries(), itDefinitions,
                                                                 DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
                                                                 DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0));
 
@@ -294,11 +331,12 @@ struct TestParameterExtractor : public fructose::test_base<TestParameterExtracto
             cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
 
             ParameterDefinitions pDef;
-            fructose_assert_no_exception(ParametersExtractor(cSeries, pDef,
+            MyParameterDefinitionIterator itDefinitions(pDef.begin(), pDef.end());
+            fructose_assert_no_exception(ParametersExtractor(cSeries, itDefinitions,
                                                              DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
                                                              DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0)));
 
-            ParametersExtractor extractor = ParametersExtractor(cSeries, pDef,
+            ParametersExtractor extractor = ParametersExtractor(cSeries, itDefinitions,
                                                                 DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
                                                                 DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0));
 
@@ -352,11 +390,11 @@ struct TestParameterExtractor : public fructose::test_base<TestParameterExtracto
             // This one is past _end -> should be discarded.
             cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
 
-            fructose_assert_no_exception(ParametersExtractor(CovariateSeries(), pDefinitions,
+            fructose_assert_no_exception(ParametersExtractor(CovariateSeries(), itDefinitions,
                                                              DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
                                                              DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0)));
 
-            ParametersExtractor extractor = ParametersExtractor(CovariateSeries(), pDefinitions,
+            ParametersExtractor extractor = ParametersExtractor(CovariateSeries(), itDefinitions,
                                                                 DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
                                                                 DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0));
 
@@ -383,7 +421,7 @@ struct TestParameterExtractor : public fructose::test_base<TestParameterExtracto
             // This one is past _end -> should be discarded.
             cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
 
-            ParametersExtractor extractor = ParametersExtractor(cSeries, pDefinitions,
+            ParametersExtractor extractor = ParametersExtractor(cSeries, itDefinitions,
                                                                 DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
                                                                 DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0));
 
@@ -436,7 +474,7 @@ struct TestParameterExtractor : public fructose::test_base<TestParameterExtracto
             // This one is past _end -> should be discarded.
             cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
 
-            ParametersExtractor extractor = ParametersExtractor(cSeries, pDefinitions,
+            ParametersExtractor extractor = ParametersExtractor(cSeries, itDefinitions,
                                                                 DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
                                                                 DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0));
 
@@ -493,7 +531,7 @@ struct TestParameterExtractor : public fructose::test_base<TestParameterExtracto
             // This one is past _end -> should be discarded.
             cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
 
-            fructose_assert_exception(ParametersExtractor(cSeries, pDefinitions,
+            fructose_assert_exception(ParametersExtractor(cSeries, itDefinitions,
                                                           DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
                                                           DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0)),
                                       std::runtime_error);
@@ -521,7 +559,7 @@ struct TestParameterExtractor : public fructose::test_base<TestParameterExtracto
             // This one is past _end -> should be discarded.
             cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
 
-            fructose_assert_exception(ParametersExtractor(cSeries, pDefinitions,
+            fructose_assert_exception(ParametersExtractor(cSeries, itDefinitions,
                                                           DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
                                                           DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0)),
                                       std::runtime_error);
@@ -551,7 +589,7 @@ struct TestParameterExtractor : public fructose::test_base<TestParameterExtracto
             cSeries.push_back(CovariateEvent(*(cDefinitions.at(1)), DATE_TIME_NO_VAR(2017, 8, 13, 8, 45, 0), 33));
             cSeries.push_back(CovariateEvent(*(cDefinitions.at(1)), DATE_TIME_NO_VAR(2017, 8, 14, 8, 45, 0), 44));
 
-            ParametersExtractor extractor = ParametersExtractor(cSeries, pDefinitions,
+            ParametersExtractor extractor = ParametersExtractor(cSeries, itDefinitions,
                                                                 DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
                                                                 DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0));
 
@@ -621,10 +659,11 @@ struct TestParameterExtractor : public fructose::test_base<TestParameterExtracto
         ADD_OP2_PDEF(Param_C_C, "Gist * 15 + Weight", "Gist", "Weight", pDefinitions);
         ADD_OP2_PDEF(Param_C_D, "Gist * 2 + Height", "Height", "Gist", pDefinitions);
 
-        fructose_assert_no_exception(ParametersExtractor(cSeries, pDefinitions,
+        MyParameterDefinitionIterator itDefinitions(pDefinitions.begin(), pDefinitions.end());
+        fructose_assert_no_exception(ParametersExtractor(cSeries, itDefinitions,
                                                          DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
                                                          DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0)));
-        ParametersExtractor extractor = ParametersExtractor(cSeries, pDefinitions,
+        ParametersExtractor extractor = ParametersExtractor(cSeries, itDefinitions,
                                                             DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
                                                             DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0));
 
@@ -691,10 +730,11 @@ struct TestParameterExtractor : public fructose::test_base<TestParameterExtracto
         ADD_OP2_PDEF(Param_C_C, "Gist * 15 + Weight", "Gist", "Weight", pDefinitions);
         ADD_OP2_PDEF(Param_C_D, "Gist * 2 + Height", "Height", "Gist", pDefinitions);
 
-        fructose_assert_no_exception(ParametersExtractor(cSeries, pDefinitions,
+        MyParameterDefinitionIterator itDefinitions(pDefinitions.begin(), pDefinitions.end());
+        fructose_assert_no_exception(ParametersExtractor(cSeries, itDefinitions,
                                                          DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
                                                          DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0)));
-        ParametersExtractor extractor = ParametersExtractor(cSeries, pDefinitions,
+        ParametersExtractor extractor = ParametersExtractor(cSeries, itDefinitions,
                                                             DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
                                                             DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0));
 

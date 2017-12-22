@@ -120,7 +120,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
         int nbPoints = 251;
         bool isAll = false;
 
-        CalculatorClass calculator2;
+        std::shared_ptr<Tucuxi::Core::IntakeIntervalCalculator> calculator2 = std::make_shared<CalculatorClass>();
 
         Tucuxi::Common::Duration offsetTime = 0s;
         Tucuxi::Common::Duration interval24 = 24h;
@@ -146,7 +146,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
                                                       infusionTime,
                                                       nbPoints);
 
-                intakeEvent.setCalculator(&calculator2);
+                intakeEvent.setCalculator(calculator2);
                 intakeSeries.push_back(intakeEvent);
             }
 
@@ -159,7 +159,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
                                                       infusionTime,
                                                       nbPoints);
 
-                intakeEvent.setCalculator(&calculator2);
+                intakeEvent.setCalculator(calculator2);
                 intakeSeries.push_back(intakeEvent);
             }
             {
@@ -171,7 +171,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
                                                       infusionTime,
                                                       nbPoints);
 
-                intakeEvent.setCalculator(&calculator2);
+                intakeEvent.setCalculator(calculator2);
                 intakeSeries.push_back(intakeEvent);
             }
 
@@ -186,7 +186,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
                                                       infusionTime,
                                                       nbPoints);
 
-                intakeEvent.setCalculator(&calculator2);
+                intakeEvent.setCalculator(calculator2);
                 intakeSeries.push_back(intakeEvent);
             }
 
@@ -200,7 +200,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
                                                       infusionTime,
                                                       nbPoints);
 
-                intakeEvent.setCalculator(&calculator2);
+                intakeEvent.setCalculator(calculator2);
                 intakeSeries.push_back(intakeEvent);
             }
 
@@ -213,7 +213,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
                                                       infusionTime,
                                                       nbPoints);
 
-                intakeEvent.setCalculator(&calculator2);
+                intakeEvent.setCalculator(calculator2);
                 intakeSeries.push_back(intakeEvent);
             }
 
@@ -228,7 +228,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
                                                       infusionTime,
                                                       nbPoints);
 
-                intakeEvent.setCalculator(&calculator2);
+                intakeEvent.setCalculator(calculator2);
                 intakeSeries.push_back(intakeEvent);
             }
 
@@ -245,7 +245,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
                                                       infusionTime,
                                                       nbPoints);
 
-                intakeEvent.setCalculator(&calculator2);
+                intakeEvent.setCalculator(calculator2);
                 intakeSeries.push_back(intakeEvent);
             }
 
@@ -259,7 +259,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
                                                       infusionTime,
                                                       nbPoints);
 
-                intakeEvent.setCalculator(&calculator2);
+                intakeEvent.setCalculator(calculator2);
                 intakeSeries.push_back(intakeEvent);
             }
             {
@@ -271,7 +271,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
                                                       infusionTime,
                                                       nbPoints);
 
-                intakeEvent.setCalculator(&calculator2);
+                intakeEvent.setCalculator(calculator2);
                 intakeSeries.push_back(intakeEvent);
             }
 
@@ -285,7 +285,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
                                                       infusionTime,
                                                       nbPoints);
 
-                intakeEvent.setCalculator(&calculator2);
+                intakeEvent.setCalculator(calculator2);
                 intakeSeries.push_back(intakeEvent);
             }
 
@@ -298,7 +298,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
                                                       infusionTime,
                                                       nbPoints);
 
-                intakeEvent.setCalculator(&calculator2);
+                intakeEvent.setCalculator(calculator2);
                 intakeSeries.push_back(intakeEvent);
             }
             {
@@ -310,7 +310,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
                                                       infusionTime,
                                                       nbPoints);
 
-                intakeEvent.setCalculator(&calculator2);
+                intakeEvent.setCalculator(calculator2);
                 intakeSeries.push_back(intakeEvent);
             }
             {
@@ -322,7 +322,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
                                                       infusionTime,
                                                       nbPoints);
 
-                intakeEvent.setCalculator(&calculator2);
+                intakeEvent.setCalculator(calculator2);
                 intakeSeries.push_back(intakeEvent);
             }
 
@@ -335,7 +335,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
                                                       infusionTime,
                                                       nbPoints);
 
-                intakeEvent.setCalculator(&calculator2);
+                intakeEvent.setCalculator(calculator2);
                 intakeSeries.push_back(intakeEvent);
             }
 
@@ -348,7 +348,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
                                                       infusionTime,
                                                       nbPoints);
 
-                intakeEvent.setCalculator(&calculator2);
+                intakeEvent.setCalculator(calculator2);
                 intakeSeries.push_back(intakeEvent);
             }
         }
