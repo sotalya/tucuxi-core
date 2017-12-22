@@ -21,7 +21,25 @@ namespace Core {
 ///
 class Target
 {
+public:
+    Target() = delete;
 
+    Target(const std::string& _analyteId, 
+           const TargetType _type, 
+           const Value _min, 
+           const Value _best, 
+           const Value _max);
+
+    Target(const std::string& _analyteId, 
+           const TargetType _type, 
+           const Value _vmin, 
+           const Value _vbest, 
+           const Value _vmax,
+           const Tucuxi::Common::Duration &_tmin, 
+           const Tucuxi::Common::Duration &_tbest, 
+           const Tucuxi::Common::Duration &_tmax);
+
+private:
     /// Id of the analyte on which applying the target
     std::string m_analyteId;
 
@@ -39,11 +57,12 @@ class Target
 
     /// Target minimum time from last intake (for peak targets)
     Tucuxi::Common::Duration m_tMin;
+
     /// Target maximum time from last intake (for peak targets)
     Tucuxi::Common::Duration m_tMax;
+
     /// Target best time from last intake (for peak targets)
     Tucuxi::Common::Duration m_tBest;
-
 };
 
 ///
