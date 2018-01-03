@@ -70,7 +70,7 @@ class SingleProcessingResponse
 {
 public:
     SingleProcessingResponse() = default;
-    virtual ~SingleProcessingResponse() = 0 {}
+    virtual ~SingleProcessingResponse() = 0;
     RequestResponseId getId() const;
 
 protected:
