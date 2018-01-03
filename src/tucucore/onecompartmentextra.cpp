@@ -66,10 +66,6 @@ bool OneCompartmentExtraMicro::computeConcentrations(const Residuals& _inResidua
 
     // compute concenration1 and 2
     compute(_inResiduals, concentrations1, concentrations2);
-
-    double a = concentrations1[m_NbPoints - 1];
-    double b = concentrations2[m_NbPoints - 1];
-
     _outResiduals[firstCompartment] = concentrations1[m_NbPoints - 1];
     _outResiduals[secondCompartment] = concentrations2[m_NbPoints - 1];
 

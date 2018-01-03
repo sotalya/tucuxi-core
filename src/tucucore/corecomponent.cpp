@@ -129,7 +129,7 @@ ProcessingResult CoreComponent::compute(const ProcessingRequest &_request, std::
             {
                 std::unique_ptr<SinglePredictionResponse> resp = std::make_unique<SinglePredictionResponse>();
 
-                for (int i = 0; i < intakeSeries.size(); i++) {
+                for (size_t i = 0; i < intakeSeries.size(); i++) {
                     TimeOffsets times = pPrediction->getTimes().at(i);
                     DateTime start = intakeSeries.at(i).getEventTime();
                     DateTime end = start + std::chrono::milliseconds((int)times.at(times.size() - 1) * 1000);

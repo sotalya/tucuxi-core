@@ -17,8 +17,8 @@ Target::Target(const std::string& _analyteId,
     : m_analyteId(_analyteId),
       m_targetType(_type),
       m_valueMin(_min),
-      m_valueBest(_best),
-      m_valueMax(_max)
+      m_valueMax(_max),
+      m_valueBest(_best)
 {
 }
 
@@ -33,11 +33,11 @@ Target::Target(const std::string& _analyteId,
     : m_analyteId(_analyteId),
       m_targetType(_type),
       m_valueMin(_vmin),
-      m_valueBest(_vbest),
       m_valueMax(_vmax),
+      m_valueBest(_vbest),
       m_tMin(_tmin),
-      m_tBest(_tbest),
-      m_tMax(_tmax)
+      m_tMax(_tmax),
+      m_tBest(_tbest)
 {
 }
 

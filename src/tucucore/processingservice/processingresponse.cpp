@@ -25,5 +25,9 @@ void ProcessingResponse::addResponse(std::unique_ptr<SingleProcessingResponse> _
     m_responses.push_back(std::move(_response));
 }
 
+SingleProcessingResponse::~SingleProcessingResponse()
+{
+}
+
 }
 }
