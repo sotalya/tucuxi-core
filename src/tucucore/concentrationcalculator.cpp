@@ -115,8 +115,6 @@ ComputationResult ConcentrationCalculator::computeConcentrationsAtTimes(
     Residuals inResiduals(residualSize);
     Residuals outResiduals(residualSize);
 
-    //Allocates according to the number of samples
-    _concentrations.reserve(_samples.size());
 
     std::vector<Concentrations> concentrations;
     concentrations.resize(residualSize);
@@ -133,8 +131,6 @@ ComputationResult ConcentrationCalculator::computeConcentrationsAtTimes(
 
     DateTime nextSampleTime = sit->getEventTime();
     // double _nextsampletime = intakes.begin()->time.secsTo(sit->time)/3600.0;
-
-    Concentrations::iterator cit = _concentrations.begin();
 
     while (it != intakeEnd && sit != sampleEnd) {
         // If there are samples, calculate cycles until there are no more samples or no more intakes
@@ -205,11 +201,10 @@ ComputationResult ConcentrationCalculator::computeConcentrationsAtTimes(
             // Reset input residuals for the next cycle
             std::fill(inResiduals.begin(), inResiduals.end(), 0);
 
-            // Set the output concentration
-            *cit = concentrations[0][0];
+            _concentrations.push_back(concentrations[0][0]);
 
             // We processed a sample so increment samples and output concentrations iterators.
-            cit++; sit++;
+            sit++;
 
             if (sit == sampleEnd) {
                 return ComputationResult::Success;

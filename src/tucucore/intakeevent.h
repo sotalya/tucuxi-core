@@ -40,7 +40,7 @@ public:
         : TimedEvent(_time), 
           m_dose(_dose),
           m_offsetTime(_offsetTime),
-          m_nbPoints(251),
+          m_nbPoints(_nbPoints),
           m_route(_route),
           m_interval(_interval),
           m_infusionTime(_infusionTime),

@@ -75,7 +75,7 @@ public:
     {
         ParameterDefinitions::const_iterator it;
         for (it = _definitions.begin(); it != _definitions.end(); it++) {
-            m_parameters.push_back(Parameter(**it, (*it)->getValue()));
+            addParameterEvent(**it, (*it)->getValue());
         }
     }
 
