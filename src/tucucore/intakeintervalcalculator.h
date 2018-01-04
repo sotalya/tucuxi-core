@@ -132,7 +132,7 @@ protected:
     /// \param _intakeEvent intake for the cycle (all cyles start with an intake)
     /// \param _parameters Parameters for the cycle (all cycles have constant parameters)
     /// \return Returns true if inputs are ok
-    virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) = 0;
+    virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters, CycleSize _cycleSize) = 0;
 
     /// \brief Computation of exponentials values that will may be shared by severall successive computations
     /// \param _intakeEvent intake for the cycle (all cyles start with an intake)

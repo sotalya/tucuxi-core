@@ -14,7 +14,7 @@
 namespace Tucuxi {
 namespace Core {
 
-enum class PredictionParameterType { Population, Apiori, Aposteriori };
+enum class PredictionParameterType { Population, Apriori, Aposteriori };
 class CoreComponent;
 
 ///

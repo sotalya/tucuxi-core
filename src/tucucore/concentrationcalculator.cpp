@@ -45,9 +45,9 @@ ComputationResult ConcentrationCalculator::computeConcentrations(
             return ComputationResult::Failure;
         }
 
-        // Use nbpoints for the minimum pt density
-        // Must use an odd number
-        const int density = static_cast<int>((int(floor(intake.getNbPoints())) % 2 != 0) ? floor(intake.getNbPoints()) : ceil(intake.getNbPoints()));
+        // Use nbpoints for the minimum pt density        
+        int nbPoints = intake.getNbPoints() != 0 ? intake.getNbPoints() : _nbPoints; // YJE: Todo: Check if that's really how we want to work with these two different values
+        const int density = nbPoints % 2 != 0 ? nbPoints : nbPoints+1;  // Must use an odd number
 
         // Compute concentrations for the current cycle
         TimeOffsets times;
@@ -58,7 +58,7 @@ ComputationResult ConcentrationCalculator::computeConcentrations(
 
 //        outResiduals.clear();
 
-        IntakeIntervalCalculator::Result result = it->calculateIntakePoints(concentrations, times, intake, *parameters, inResiduals, intake.getNbPoints(), _isAll, outResiduals, _isFixedDensity);
+        IntakeIntervalCalculator::Result result = it->calculateIntakePoints(concentrations, times, intake, *parameters, inResiduals, density, _isAll, outResiduals, _isFixedDensity);
 
         switch (result)
         {

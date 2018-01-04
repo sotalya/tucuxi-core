@@ -19,7 +19,7 @@ OneCompartmentBolusMicro::OneCompartmentBolusMicro()
 {
 }
 
-bool OneCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
+bool OneCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters, int _nbPoints)
 {
     if(!checkValue(_parameters.size() >= 2, "The number of parameters should be equal to 2.")) {
         return false;
@@ -28,7 +28,7 @@ bool OneCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
     m_D = _intakeEvent.getDose() * 1000;
     m_V = _parameters.getValue(ParameterId::V);
     m_Ke = _parameters.getValue(ParameterId::Ke);
-    m_NbPoints = _intakeEvent.getNbPoints();
+    m_NbPoints = _nbPoints; // _intakeEvent.getNbPoints();
     m_Int = static_cast<int>((_intakeEvent.getInterval()).toHours());
 
 #ifdef DEBUG
@@ -116,16 +116,17 @@ OneCompartmentBolusMacro::OneCompartmentBolusMacro() : OneCompartmentBolusMicro(
 {
 }
 
-bool OneCompartmentBolusMacro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
+bool OneCompartmentBolusMacro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters, int _nbPoints)
 {
-    if(!checkValue(_parameters.size() >= 2, "The number of parameters should be equal to 2."))
+    if (!checkValue(_parameters.size() >= 2, "The number of parameters should be equal to 2.")) {
         return false;
+    }
 
     m_D = _intakeEvent.getDose() * 1000;
     m_V = _parameters.getValue(ParameterId::V);
     Value cl = _parameters.getValue(ParameterId::Cl);
     m_Ke = cl / m_V;
-    m_NbPoints = _intakeEvent.getNbPoints();
+    m_NbPoints = _nbPoints; //  _intakeEvent.getNbPoints();
     m_Int = (_intakeEvent.getInterval()).toHours();
 
 #ifdef DEBUG

@@ -23,7 +23,7 @@ IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakePoints
     const bool _isDensityConstant)
 {
     TMP_UNUSED_PARAMETER(_isDensityConstant);
-    if (!checkInputs(_intakeEvent, _parameters))
+    if (!checkInputs(_intakeEvent, _parameters, _cycleSize))
     {
         return Result::BadParameters;
     }
@@ -75,7 +75,7 @@ IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakeSingle
     const bool _isAll,
     Residuals& _outResiduals)
 {
-    if (!checkInputs(_intakeEvent, _parameters))
+    if (!checkInputs(_intakeEvent, _parameters, 251))   // YJ, do something better than 251 here !!!
     {
         return Result::BadParameters;
     }

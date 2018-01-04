@@ -15,17 +15,18 @@ OneCompartmentExtraMicro::OneCompartmentExtraMicro()
 {
 }
 
-bool OneCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
+bool OneCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters, int _nbPoints)
 {
-    if(!checkValue(_parameters.size() >= 4, "The number of parameters should be equal to 4."))
-	    return false;
-    
+    if (!checkValue(_parameters.size() >= 4, "The number of parameters should be equal to 4.")) {
+        return false;
+    }
+
     m_D = _intakeEvent.getDose() * 1000;
     m_V = _parameters.getValue(ParameterId::V);
     m_Ke = _parameters.getValue(ParameterId::Ke);
     m_Ka = _parameters.getValue(ParameterId::Ka);
     m_F = _parameters.getValue(ParameterId::F);
-    m_NbPoints = _intakeEvent.getNbPoints();
+    m_NbPoints = _nbPoints; // _intakeEvent.getNbPoints();
     m_Int = (_intakeEvent.getInterval()).toHours();
 
     // check the inputs
@@ -69,11 +70,11 @@ bool OneCompartmentExtraMicro::computeConcentrations(const Residuals& _inResidua
     _outResiduals[firstCompartment] = concentrations1[m_NbPoints - 1];
     _outResiduals[secondCompartment] = concentrations2[m_NbPoints - 1];
 
-    // Return concentraions of first compartment
+    // Return concentrations of first compartment
     _concentrations[firstCompartment].assign(concentrations1.data(), concentrations1.data() + concentrations1.size());	
     // Return concentrations of other compartments
     if (_isAll == true) {
-	_concentrations[secondCompartment].assign(concentrations2.data(), concentrations2.data() + concentrations2.size());	
+        _concentrations[secondCompartment].assign(concentrations2.data(), concentrations2.data() + concentrations2.size());	
     }
 
     bool bOK = checkValue(_outResiduals[firstCompartment] >= 0, "The concentration1 is negative.");
@@ -119,18 +120,19 @@ OneCompartmentExtraMacro::OneCompartmentExtraMacro() : OneCompartmentExtraMicro(
 {
 }
 
-bool OneCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
+bool OneCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters, int _nbPoints)
 {
-    if(!checkValue(_parameters.size() >= 4, "The number of parameters should be equal to 4."))
-	    return false;
-    
+    if (!checkValue(_parameters.size() >= 4, "The number of parameters should be equal to 4.")) {
+        return false;
+    }
+
     m_D = _intakeEvent.getDose() * 1000;
     m_V = _parameters.getValue(ParameterId::V);
     Value cl = _parameters.getValue(ParameterId::Cl); // clearance
     m_Ka = _parameters.getValue(ParameterId::Ka);
     m_F = _parameters.getValue(ParameterId::F);
     m_Ke = cl / m_V;
-    m_NbPoints = _intakeEvent.getNbPoints();
+    m_NbPoints = _nbPoints; // _intakeEvent.getNbPoints();
     m_Int = (_intakeEvent.getInterval()).toHours();
 
     // check the inputs

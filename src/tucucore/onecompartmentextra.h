@@ -26,7 +26,7 @@ public:
     typedef OneCompartmentExtraExponentials Exponentials;
 
 protected:
-    virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
+    virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters, int _nbPoints) override;
     virtual void computeExponentials(Eigen::VectorXd& _times) override;
     virtual bool computeConcentrations(const Residuals& _inResiduals, const bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) override;
     virtual bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, const bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) override;
@@ -42,7 +42,6 @@ protected:
 
 private:
     typedef OneCompartmentExtraCompartments Compartments;
-
 };
 
 inline void OneCompartmentExtraMicro::compute(const Residuals& _inResiduals, Eigen::VectorXd& _concentrations1, Eigen::VectorXd& _concentrations2)
@@ -75,8 +74,7 @@ public:
     OneCompartmentExtraMacro();
 
 protected:
-    virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
-
+    virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters, int _nbPoints) override;
 };
 
 }
