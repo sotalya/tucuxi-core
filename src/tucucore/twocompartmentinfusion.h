@@ -48,7 +48,6 @@ protected:
 
 private:
     typedef TwoCompartmentInfusionCompartments Compartments;
-
 };
 
 inline void TwoCompartmentInfusionMicro::compute(const Residuals& _inResiduals, const int _forcesize, Eigen::VectorXd& _concentrations1, Eigen::VectorXd& _concentrations2)
@@ -143,7 +142,6 @@ public:
 
 protected:
     virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
-
 };
 
 }

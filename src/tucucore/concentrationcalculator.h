@@ -37,7 +37,6 @@ public:
     virtual ComputationResult computeConcentrations(
         ConcentrationPredictionPtr &_prediction,
         const bool _isAll,
-        const int _nbPoints,
         const DateTime &_recordFrom,
         const DateTime &_recordTo,
         const IntakeSeries &_intakes,
@@ -96,7 +95,6 @@ public:
     virtual ComputationResult computeConcentrations(
         ConcentrationPredictionPtr &_prediction,
         const bool _isAll,
-        const int _nbPoints,
         const DateTime &_recordFrom,
         const DateTime &_recordTo,
         const IntakeSeries &_intakes,

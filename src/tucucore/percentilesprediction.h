@@ -39,7 +39,7 @@ public:
         return true;
     }
 
-    void init(const PercentileRanks& _ranks, const std::vector<TimeOffsets> &_times, size_t _nCycles, int _nPoints)
+    void init(const PercentileRanks& _ranks, const std::vector<TimeOffsets> &_times, const IntakeSeries &_intakes)
     {
         m_ranks = _ranks;
         m_times = _times;
@@ -48,8 +48,8 @@ public:
         PercentileRanks::iterator itRank = m_ranks.begin();
         while (itRank != m_ranks.end()) {
             std::vector< std::vector<Concentration> > vec;
-            for (size_t cycle = 0; cycle < _nCycles; cycle++) {
-                vec.push_back(std::vector<Concentration>(_nPoints));
+            for (size_t cycle = 0; cycle < _intakes.size(); cycle++) {
+                vec.push_back(std::vector<Concentration>(_intakes.at(cycle).getNbPoints()));
             }
             m_values.push_back(vec);
             itRank++;

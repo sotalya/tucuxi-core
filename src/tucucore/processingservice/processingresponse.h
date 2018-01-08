@@ -156,12 +156,15 @@ protected:
 ///
 class PercentilesResponse : public SinglePredictionResponse
 {
+public:
+    const size_t getNbRanks() const { return m_ranks.size(); }
+    const PercentileRank getRank(int _index) const { return m_ranks.at(_index); }
+    const CycleData& getData(int _index) const {
+        return m_data.at(_index);
+    }
 
-    const PercentileRanks getRanks() const { return m_ranks;}
-
-
+private:
     std::vector<CycleData> m_data;
-
     PercentileRanks m_ranks;
 };
 

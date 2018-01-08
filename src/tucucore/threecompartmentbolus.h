@@ -48,7 +48,6 @@ protected:
 
 private:
     typedef ThreeCompartmentBolusCompartments Compartments;
-
 };
 
 inline void ThreeCompartmentBolusMicro::compute(const Residuals& _inResiduals, Eigen::VectorXd&
@@ -95,7 +94,6 @@ public:
 
 protected:
     virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
-
 };
 
 }

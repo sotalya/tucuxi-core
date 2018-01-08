@@ -21,8 +21,9 @@ TwoCompartmentInfusionMicro::TwoCompartmentInfusionMicro()
 
 bool TwoCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
-    if(!checkValue(_parameters.size() >= 4, "The number of parameters should be equal to 4."))
-	    return false;
+    if (!checkValue(_parameters.size() >= 4, "The number of parameters should be equal to 4.")) {
+        return false;
+    }
 
     m_D = _intakeEvent.getDose() * 1000;
     m_V1 = _parameters.getValue(ParameterId::V1);
@@ -262,8 +263,9 @@ TwoCompartmentInfusionMacro::TwoCompartmentInfusionMacro()
 
 bool TwoCompartmentInfusionMacro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
-    if(!checkValue(_parameters.size() >= 4, "The number of parameters should be equal to 4."))
-	    return false;
+    if (!checkValue(_parameters.size() >= 4, "The number of parameters should be equal to 4.")) {
+        return false;
+    }
 
     m_D = _intakeEvent.getDose() * 1000;
     Value cl = _parameters.getValue(ParameterId::Cl);
@@ -324,7 +326,6 @@ bool TwoCompartmentInfusionMacro::checkInputs(const IntakeEvent& _intakeEvent, c
     bOK &= checkValue(m_Int > 0, "The interval time is not greater than zero.");
     bOK &= checkValue(m_Alpha >= 0, "Alpha is negative.");
     bOK &= checkValue(m_Beta >= 0, "Beta is negative.");
-
 
     return bOK;
 }

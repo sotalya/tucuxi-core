@@ -69,7 +69,6 @@ int main(int argc, char** argv)
         intakeEvent,
         parameters,
         inResiduals,
-        nbPoints,
         isAll,
         outResiduals1,
         true);

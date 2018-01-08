@@ -15,7 +15,7 @@ OneCompartmentExtraMicro::OneCompartmentExtraMicro()
 {
 }
 
-bool OneCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters, int _nbPoints)
+bool OneCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
     if (!checkValue(_parameters.size() >= 4, "The number of parameters should be equal to 4.")) {
         return false;
@@ -26,7 +26,7 @@ bool OneCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
     m_Ke = _parameters.getValue(ParameterId::Ke);
     m_Ka = _parameters.getValue(ParameterId::Ka);
     m_F = _parameters.getValue(ParameterId::F);
-    m_NbPoints = _nbPoints; // _intakeEvent.getNbPoints();
+    m_NbPoints = _intakeEvent.getNbPoints();
     m_Int = (_intakeEvent.getInterval()).toHours();
 
     // check the inputs
@@ -120,7 +120,7 @@ OneCompartmentExtraMacro::OneCompartmentExtraMacro() : OneCompartmentExtraMicro(
 {
 }
 
-bool OneCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters, int _nbPoints)
+bool OneCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
     if (!checkValue(_parameters.size() >= 4, "The number of parameters should be equal to 4.")) {
         return false;
@@ -132,7 +132,7 @@ bool OneCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, cons
     m_Ka = _parameters.getValue(ParameterId::Ka);
     m_F = _parameters.getValue(ParameterId::F);
     m_Ke = cl / m_V;
-    m_NbPoints = _nbPoints; // _intakeEvent.getNbPoints();
+    m_NbPoints = _intakeEvent.getNbPoints();
     m_Int = (_intakeEvent.getInterval()).toHours();
 
     // check the inputs

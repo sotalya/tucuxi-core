@@ -45,7 +45,6 @@ protected:
 
 private:
     typedef TwoCompartmentBolusCompartments Compartments;
-
 };
 
 inline void TwoCompartmentBolusMicro::compute(const Residuals& _inResiduals, Eigen::VectorXd& _concentrations1, Eigen::VectorXd& _concentrations2)
@@ -73,7 +72,6 @@ public:
 
 protected:
     virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
-
 };
 
 }

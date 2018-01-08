@@ -21,8 +21,9 @@ TwoCompartmentBolusMicro::TwoCompartmentBolusMicro()
 
 bool TwoCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
-    if(!checkValue(_parameters.size() >= 4, "The number of parameters should be equal to 4."))
-	    return false;
+    if (!checkValue(_parameters.size() >= 4, "The number of parameters should be equal to 4.")) {
+        return false;
+    }
     
     m_D = _intakeEvent.getDose() * 1000;
     m_V1 = _parameters.getValue(ParameterId::V1);

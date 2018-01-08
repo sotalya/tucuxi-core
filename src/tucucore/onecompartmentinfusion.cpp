@@ -23,9 +23,10 @@ OneCompartmentInfusionMicro::OneCompartmentInfusionMicro()
 
 bool OneCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
-    if(!checkValue(_parameters.size() >= 2, "The number of parameters should be equal to 2."))
+    if (!checkValue(_parameters.size() >= 2, "The number of parameters should be equal to 2.")) {
         return false;
-    
+    }
+
     m_D = _intakeEvent.getDose() * 1000;
     m_Ke = _parameters.getValue(ParameterId::Ke);
     m_V = _parameters.getValue(ParameterId::V);
@@ -127,9 +128,10 @@ OneCompartmentInfusionMacro::OneCompartmentInfusionMacro() : OneCompartmentInfus
 
 bool OneCompartmentInfusionMacro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
-    if(!checkValue(_parameters.size() >= 2, "The number of parameters should be equal to 2."))
-	    return false;
-    
+    if (!checkValue(_parameters.size() >= 2, "The number of parameters should be equal to 2.")) {
+        return false;
+    }
+
     m_D = _intakeEvent.getDose() * 1000;
     double cl = _parameters.getValue(ParameterId::Cl);
     m_V = _parameters.getValue(ParameterId::V);

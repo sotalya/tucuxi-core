@@ -16,9 +16,10 @@ TwoCompartmentExtraMicro::TwoCompartmentExtraMicro()
 
 bool TwoCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
-    if(!checkValue(_parameters.size() >= 4, "The number of parameters should be equal to 4."))
-	    return false;
-    
+    if (!checkValue(_parameters.size() >= 4, "The number of parameters should be equal to 4.")) {
+        return false;
+    }
+
     m_D = _intakeEvent.getDose() * 1000;
     m_V1 = _parameters.getValue(ParameterId::V1);
     m_Ke = _parameters.getValue(ParameterId::Ke);
@@ -57,7 +58,6 @@ bool TwoCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
     bOK &= checkValue(m_Alpha >= 0, "Alpha is negative.");
     bOK &= checkValue(m_Beta >= 0, "Beta is negative.");
 
-
     return true;
 }
 
@@ -70,8 +70,7 @@ void TwoCompartmentExtraMicro::computeExponentials(Eigen::VectorXd& _times)
 }
 
 
-bool TwoCompartmentExtraMicro::computeConcentrations(const
-Residuals& _inResiduals, const bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
+bool TwoCompartmentExtraMicro::computeConcentrations(const Residuals& _inResiduals, const bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1;
     Value concentrations2, concentrations3;
@@ -187,7 +186,6 @@ bool TwoCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, cons
     bOK &= checkValue(m_Int > 0, "The interval time is not greater than zero.");
     bOK &= checkValue(m_Alpha >= 0, "Alpha is negative.");
     bOK &= checkValue(m_Beta >= 0, "Beta is negative.");
-
 
     return true;
 }

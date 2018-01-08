@@ -28,7 +28,6 @@ MonteCarloPercentileCalculatorBase::MonteCarloPercentileCalculatorBase()
 
 IPercentileCalculator::ProcessingResult MonteCarloPercentileCalculatorBase::computePredictionsAndSortPercentiles(
     PercentilesPrediction &_percentiles,
-    const int _nbPoints,
     const IntakeSeries &_intakes,
     const ParameterSetSeries &_parameters,
     const IResidualErrorModel &_residualErrorModel,
@@ -43,15 +42,17 @@ IPercentileCalculator::ProcessingResult MonteCarloPercentileCalculatorBase::comp
     std::vector<TimeOffsets> times;
 
     std::vector< std::vector< std::vector<Concentration> > > concentrations; // Structure of cycles->points->patients->concentration
-
+    
     // Set the size of vector "concentrations"
     for (unsigned int cycle = 0; cycle < _intakes.size(); cycle++) {
         std::vector< std::vector<Concentration> > vec;
-        for (int point = 0; point < _nbPoints; point++) {
+        for (int point = 0; point < _intakes.at(cycle).getNbPoints(); point++) {
             vec.push_back(std::vector<Concentration>(nbPatients));
         }
         concentrations.push_back(vec);
     }
+
+    int nbPoints = 0;
 
     // Parallelize this for loop with some shared and some copied-to-each-thread-with-current-state (firstprivate) variables
     int nbThreads = std::max(std::thread::hardware_concurrency(), (unsigned int)1);
@@ -61,7 +62,7 @@ IPercentileCalculator::ProcessingResult MonteCarloPercentileCalculatorBase::comp
         IntakeSeries newIntakes;
         cloneIntakeSeries(_intakes, newIntakes);
 
-        workers.push_back(std::thread([thread, nbPatients, &abort, _aborter, _etas, _epsilons, _parameters, newIntakes, _nbPoints, &_residualErrorModel, &times, &concentrations, nbThreads, &_concentrationCalculator, &_percentiles]()
+        workers.push_back(std::thread([thread, nbPatients, &abort, _aborter, &nbPoints, _etas, _epsilons, _parameters, newIntakes, &_residualErrorModel, &times, &concentrations, nbThreads, &_concentrationCalculator, &_percentiles]()
         {
             // Get concentrations for each patients, allocation will be done in computeConcentrations
             ConcentrationPredictionPtr predictionPtr;
@@ -81,7 +82,6 @@ IPercentileCalculator::ProcessingResult MonteCarloPercentileCalculatorBase::comp
                     ComputationResult computationResult = _concentrationCalculator.computeConcentrations(
                         predictionPtr,
                         false, // fix to "false"
-                        _nbPoints,
                         DateTime(), // YJ: fixed this with a meaningfull date
                         DateTime(), // YJ: fixed this with a meaningfull date
                         newIntakes,
@@ -97,12 +97,15 @@ IPercentileCalculator::ProcessingResult MonteCarloPercentileCalculatorBase::comp
                         // Save concentrations to array of [patient] for using sort() function
                         for (unsigned int cycle = 0; cycle < newIntakes.size(); cycle++) {
 
+                            int cyclePoints = newIntakes.at(cycle).getNbPoints();
+                            nbPoints += cyclePoints;
+
                             // Save times only one time (when patient is equal to 0)
                             if (patient == 0) {
                                 times.push_back((predictionPtr->getTimes())[cycle]);
                             }
 
-                            for (int point = 0; point < _nbPoints; point++) {
+                            for (int point = 0; point < cyclePoints; point++) {
                                 concentrations[cycle][point][patient] = (predictionPtr->getValues())[cycle][point];
                             }
                         }
@@ -127,11 +130,11 @@ IPercentileCalculator::ProcessingResult MonteCarloPercentileCalculatorBase::comp
     }
 
     // Init our percentile prediction object
-    _percentiles.init(_percentileRanks, times, _intakes.size(), _nbPoints);
+    _percentiles.init(_percentileRanks, times, _intakes);
 
     // Sort and set percentile
     for (unsigned int cycle = 0; cycle < _intakes.size(); cycle++) {
-        for (int point = 0; point < _nbPoints; point++) {
+        for (int point = 0; point < _intakes.at(cycle).getNbPoints(); point++) {
 
             // Sort concentrations in increasing order at each time (at the cycle and at the point)
             std::sort(concentrations[cycle][point].begin(), concentrations[cycle][point].end(), [&] (const double v1, const double v2) { return v1 < v2; });
@@ -167,7 +170,6 @@ AprioriMonteCarloPercentileCalculator::AprioriMonteCarloPercentileCalculator()
 
 IPercentileCalculator::ProcessingResult AprioriMonteCarloPercentileCalculator::calculate(
     PercentilesPrediction &_percentiles,
-    const int _nbPoints,
     const IntakeSeries &_intakes,
     const ParameterSetSeries &_parameters,
     const OmegaMatrix& _omega,
@@ -229,7 +231,6 @@ IPercentileCalculator::ProcessingResult AprioriMonteCarloPercentileCalculator::c
 
     return computePredictionsAndSortPercentiles(
         _percentiles,
-        _nbPoints,
         _intakes,
         _parameters,
         _residualErrorModel,
@@ -276,7 +277,6 @@ AposterioriMonteCarloPercentileCalculator::AposterioriMonteCarloPercentileCalcul
 
 IPercentileCalculator::ProcessingResult AposterioriMonteCarloPercentileCalculator::calculate(
     PercentilesPrediction &_percentiles,
-    const int _nbPoints,
     const IntakeSeries &_intakes,
     const ParameterSetSeries &_parameters,
     const OmegaMatrix& _omega,
@@ -415,7 +415,6 @@ IPercentileCalculator::ProcessingResult AposterioriMonteCarloPercentileCalculato
 
     return computePredictionsAndSortPercentiles(
         _percentiles,
-        _nbPoints,
         _intakes,
         _parameters,
         _residualErrorModel,
@@ -432,7 +431,6 @@ AposterioriNormalApproximationMonteCarloPercentileCalculator::AposterioriNormalA
 
 IPercentileCalculator::ProcessingResult AposterioriNormalApproximationMonteCarloPercentileCalculator::calculate(
     PercentilesPrediction &_percentiles,
-    const int _nbPoints,
     const IntakeSeries &_intakes,
     const ParameterSetSeries &_parameters,
     const OmegaMatrix& _omega,
@@ -458,7 +456,6 @@ IPercentileCalculator::ProcessingResult AposterioriNormalApproximationMonteCarlo
     AprioriMonteCarloPercentileCalculator aprioriMC;
     return aprioriMC.calculate(
         _percentiles,
-        _nbPoints,
         _intakes,
         _parameters,
         subomega,

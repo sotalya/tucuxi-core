@@ -22,9 +22,10 @@ ThreeCompartmentInfusionMicro::ThreeCompartmentInfusionMicro()
 
 bool ThreeCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
-    if(!checkValue(_parameters.size() >= 6, "The number of parameters should be equal to 6."))
-	    return false;
-    
+    if (!checkValue(_parameters.size() >= 6, "The number of parameters should be equal to 6.")) {
+        return false;
+    }
+
     Value a0, a1, a2, p, q, r1, r2, phi;
 
     m_D = _intakeEvent.getDose() * 1000;
@@ -98,8 +99,6 @@ bool ThreeCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent,
     bOK &= checkValue(m_Alpha >= 0, "Alpha is negative.");
     bOK &= checkValue(m_Beta >= 0, "Beta is negative.");
     bOK &= checkValue(m_Gamma >= 0, "Gamma is negative.");
-
-
 
     return true;
 }
@@ -193,8 +192,9 @@ ThreeCompartmentInfusionMacro::ThreeCompartmentInfusionMacro()
 
 bool ThreeCompartmentInfusionMacro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
-    if(!checkValue(_parameters.size() >= 6, "The number of parameters should be equal to 6."))
-	    return false;
+    if (!checkValue(_parameters.size() >= 6, "The number of parameters should be equal to 6.")) {
+        return false;
+    }
     
     Value a0, a1, a2, p, q, r1, r2, phi;
 

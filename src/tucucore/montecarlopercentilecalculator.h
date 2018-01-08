@@ -67,7 +67,6 @@ public:
     /// \return The status of calculation
     virtual ProcessingResult calculate(
         PercentilesPrediction &_percentiles,
-        const int _nbPoints,
         const IntakeSeries &_intakes,
         const ParameterSetSeries &_parameters,
         const OmegaMatrix& _omega,
@@ -97,7 +96,6 @@ public:
     /// \return The status of calculation
     virtual ProcessingResult calculate(
         PercentilesPrediction &_percentiles,
-        const int _nbPoints,
         const IntakeSeries &_intakes,
         const ParameterSetSeries &_parameters,
         const OmegaMatrix& _omega,
@@ -128,7 +126,6 @@ public:
     /// \return The status of calculation
     virtual ProcessingResult calculate(
         PercentilesPrediction &_percentiles,
-        const int _nbPoints,
         const IntakeSeries &_intakes,
         const ParameterSetSeries &_parameters,
         const OmegaMatrix& _omega,
@@ -183,7 +180,6 @@ protected:
     ///
     ProcessingResult computePredictionsAndSortPercentiles(
         PercentilesPrediction &_percentiles,
-        const int _nbPoints,
         const IntakeSeries &_intakes,
         const ParameterSetSeries &_parameters,
         const IResidualErrorModel &_residualErrorModel,
@@ -223,7 +219,6 @@ public:
     ///
     ProcessingResult calculate(
         PercentilesPrediction &_percentiles,
-        const int _nbPoints,
         const IntakeSeries &_intakes,
         const ParameterSetSeries &_parameters,
         const OmegaMatrix& _omega,
@@ -255,7 +250,6 @@ public:
     /// \return The status of calculation
     ProcessingResult calculate(
         PercentilesPrediction &_percentiles,
-        const int _nbPoints,
         const IntakeSeries &_intakes,
         const ParameterSetSeries &_parameters,
         const OmegaMatrix& _omega,
@@ -292,7 +286,6 @@ public:
     /// \return The status of calculation
     ProcessingResult calculate(
             PercentilesPrediction &_percentiles,
-            const int _nbPoints,
             const IntakeSeries &_intakes,
             const ParameterSetSeries &_parameters,
             const OmegaMatrix& _omega,
@@ -302,8 +295,6 @@ public:
             const PercentileRanks &_percentileRanks,
             IConcentrationCalculator &_concentrationCalculator,
             ProcessingAborter *_aborter);
-
-
 };
 
 

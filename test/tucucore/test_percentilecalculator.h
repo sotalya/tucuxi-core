@@ -18,9 +18,10 @@
 #include "tucucore/concentrationcalculator.h"
 #include "tucucore/percentilesprediction.h"
 
-
 struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalculator>
 {
+    static const int CYCLE_SIZE = 251;
+
     TestPercentileCalculator() { }
 
     void testApriori(const std::string& /* _testName */)
@@ -28,7 +29,6 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
         // Simple test with imatinib values
 
         Tucuxi::Core::PercentilesPrediction percentiles;
-        int nbPoints;
         Tucuxi::Core::IntakeSeries intakeSeries;
         Tucuxi::Core::ParameterSetSeries parametersSeries;
         Tucuxi::Core::OmegaMatrix omega;
@@ -36,8 +36,6 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
         Tucuxi::Core::Etas etas;
         Tucuxi::Core::PercentileRanks percentileRanks;
         Tucuxi::Core::ProcessingAborter *aborter = nullptr;
-
-        nbPoints = 200;
 
         // Build parameters as Imatinib ones
         Tucuxi::Core::ParameterDefinitions parameterDefs;
@@ -56,7 +54,7 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
         Tucuxi::Core::AbsorptionModel route = Tucuxi::Core::AbsorptionModel::EXTRAVASCULAR;
 
         Tucuxi::Core::TimeOffsets times;
-        Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, dose, interval, route, infusionTime, nbPoints);
+        Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, dose, interval, route, infusionTime, CYCLE_SIZE);
         std::shared_ptr<IntakeIntervalCalculator> calculator2 = std::make_shared<Tucuxi::Core::OneCompartmentExtraMacro>();
         intakeEvent.setCalculator(calculator2);
         intakeSeries.push_back(intakeEvent);
@@ -71,7 +69,6 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
             concentrationCalculator->computeConcentrations(
                         predictionPtr,
                         false,
-                        nbPoints,
                         DateTime(), // YJ: Fix this with a meaningfull date
                         DateTime(), // YJ: Fix this with a meaningfull date
                         intakeSeries,
@@ -116,7 +113,6 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
         Tucuxi::Core::ConcentrationCalculator concentrationCalculator;
         res = calculator->calculate(
                     percentiles,
-                    nbPoints,
                     intakeSeries,
                     parametersSeries,
                     omega,
@@ -137,7 +133,6 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
     void testAposterioriNormal(const std::string& /* _testName */)
     {
         Tucuxi::Core::IntakeSeries intakeSeries;
-        int nbPoints;
         Tucuxi::Core::ParameterSetSeries parametersSeries;
         Tucuxi::Core::OmegaMatrix omega;
         Tucuxi::Core::SigmaResidualErrorModel residualErrorModel;
@@ -145,8 +140,6 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
         Tucuxi::Core::PercentilesPrediction percentiles;
         Tucuxi::Core::PercentileRanks percentileRanks;
         Tucuxi::Core::ProcessingAborter *aborter = nullptr;
-
-        nbPoints = 200;
 
         // Build parameters as Imatinib ones
         Tucuxi::Core::ParameterDefinitions parameterDefs;
@@ -165,7 +158,7 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
         Tucuxi::Core::AbsorptionModel route = Tucuxi::Core::AbsorptionModel::EXTRAVASCULAR;
 
         Tucuxi::Core::TimeOffsets times;
-        Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, dose, interval, route, infusionTime, nbPoints);
+        Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, dose, interval, route, infusionTime, CYCLE_SIZE);
         std::shared_ptr<IntakeIntervalCalculator> calculator2 = std::make_shared<Tucuxi::Core::OneCompartmentExtraMacro>();
         intakeEvent.setCalculator(calculator2);
         intakeSeries.push_back(intakeEvent);
@@ -180,7 +173,6 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
             concentrationCalculator->computeConcentrations(
                         predictionPtr,
                         false,
-                        nbPoints,
                         DateTime(), // YJ: Fix this with a meaningfull date
                         DateTime(), // YJ: Fix this with a meaningfull date
                         intakeSeries,
@@ -221,7 +213,6 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
         Tucuxi::Core::ConcentrationCalculator concentrationCalculator;
         res = calculator->calculate(
                     percentiles,
-                    nbPoints,
                     intakeSeries,
                     parametersSeries,
                     omega,
@@ -242,7 +233,6 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
     void testAposteriori(const std::string& /* _testName */)
     {
         Tucuxi::Core::IntakeSeries intakeSeries;
-        int nbPoints;
         Tucuxi::Core::ParameterSetSeries parametersSeries;
         Tucuxi::Core::OmegaMatrix omega;
         Tucuxi::Core::SigmaResidualErrorModel residualErrorModel;
@@ -250,8 +240,6 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
         Tucuxi::Core::PercentilesPrediction percentiles;
         Tucuxi::Core::PercentileRanks percentileRanks;
         Tucuxi::Core::ProcessingAborter *aborter = nullptr;
-
-        nbPoints = 200;
 
         // Build parameters as Imatinib ones
         Tucuxi::Core::ParameterDefinitions parameterDefs;
@@ -270,7 +258,7 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
         Tucuxi::Core::AbsorptionModel route = Tucuxi::Core::AbsorptionModel::EXTRAVASCULAR;
 
         Tucuxi::Core::TimeOffsets times;
-        Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, dose, interval, route, infusionTime, nbPoints);
+        Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, dose, interval, route, infusionTime, CYCLE_SIZE);
         std::shared_ptr<IntakeIntervalCalculator> calculator2 = std::make_shared<Tucuxi::Core::OneCompartmentExtraMacro>();
         intakeEvent.setCalculator(calculator2);
         intakeSeries.push_back(intakeEvent);
@@ -285,7 +273,6 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
             concentrationCalculator->computeConcentrations(
                         predictionPtr,
                         false,
-                        nbPoints,
                         DateTime(), // YJ: Fix this with a meaningfull date
                         DateTime(), // YJ: Fix this with a meaningfull date
                         intakeSeries,
@@ -326,7 +313,6 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
         Tucuxi::Core::ConcentrationCalculator concentrationCalculator;
         res = calculator->calculate(
                     percentiles,
-                    nbPoints,
                     intakeSeries,
                     parametersSeries,
                     omega,

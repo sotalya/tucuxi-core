@@ -10,7 +10,6 @@ namespace Core {
 ComputationResult ConcentrationCalculator::computeConcentrations(
     ConcentrationPredictionPtr &_prediction,
     const bool _isAll,
-    const int _nbPoints,
     const DateTime &_recordFrom,
     const DateTime &_recordTo,
     const IntakeSeries &_intakes,
@@ -21,8 +20,6 @@ ComputationResult ConcentrationCalculator::computeConcentrations(
     const bool _onlyAnalytes,
     const bool _isFixedDensity)
 {
-    TMP_UNUSED_PARAMETER(_nbPoints);
-
     // First calculate the size of residuals
     unsigned int residualSize = 0;
     for (IntakeSeries::const_iterator it = _intakes.begin(); it != _intakes.end(); it++) {
@@ -45,20 +42,16 @@ ComputationResult ConcentrationCalculator::computeConcentrations(
             return ComputationResult::Failure;
         }
 
-        // Use nbpoints for the minimum pt density        
-        int nbPoints = intake.getNbPoints() != 0 ? intake.getNbPoints() : _nbPoints; // YJE: Todo: Check if that's really how we want to work with these two different values
-        const int density = nbPoints % 2 != 0 ? nbPoints : nbPoints+1;  // Must use an odd number
-
         // Compute concentrations for the current cycle
         TimeOffsets times;
         std::vector<Concentrations> concentrations;
         concentrations.resize(residualSize);
 
-        _prediction->allocate(residualSize, density, times, concentrations);
+        _prediction->allocate(residualSize, intake.getNbPoints(), times, concentrations);
 
 //        outResiduals.clear();
 
-        IntakeIntervalCalculator::Result result = it->calculateIntakePoints(concentrations, times, intake, *parameters, inResiduals, density, _isAll, outResiduals, _isFixedDensity);
+        IntakeIntervalCalculator::Result result = it->calculateIntakePoints(concentrations, times, intake, *parameters, inResiduals, _isAll, outResiduals, _isFixedDensity);
 
         switch (result)
         {

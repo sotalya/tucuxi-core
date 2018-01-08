@@ -49,7 +49,6 @@ protected:
 
 private:
     typedef ThreeCompartmentInfusionCompartments Compartments;
-
 };
 
 inline void ThreeCompartmentInfusionMicro::compute(const int _forcesize, Eigen::VectorXd& _concentrations1, Value& _concentrations2, Value& _concentrations3)
@@ -113,7 +112,6 @@ public:
 
 protected:
     virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
-
 };
 
 }

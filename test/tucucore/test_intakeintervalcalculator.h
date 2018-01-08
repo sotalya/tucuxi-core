@@ -24,6 +24,8 @@ using namespace Tucuxi::Core;
 
 struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculator>
 {
+    static const int CYCLE_SIZE = 251;
+
     const double DELTA = 0.000001;
     const int maxResidualSize = 3;
 
@@ -144,7 +146,6 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             intakeEvent,
             _microParameters,
             inResiduals,
-            _nbPoints,
             isAll,
             outMicroMultiResiduals,
             true);
@@ -190,7 +191,6 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             intakeEvent,
             _macroParameters,
             inResiduals,
-            _nbPoints,
             isAll,
             outMacroMultiResiduals,
             true);
@@ -283,7 +283,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             Tucuxi::Core::AbsorptionModel::INTRAVASCULAR,
             1h,
             0s,
-            250);
+            CYCLE_SIZE);
     }
 
     /// \brief Test the residual calculation of extravascular. Compares single point vs multiple points
@@ -316,7 +316,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             Tucuxi::Core::AbsorptionModel::EXTRAVASCULAR,
             12h,
             0s,
-            250);
+            CYCLE_SIZE);
     }
 
 
@@ -346,7 +346,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             Tucuxi::Core::AbsorptionModel::INFUSION,
             12h,
             1h,
-            250);
+            CYCLE_SIZE);
     }
 
     /// \brief Test the residual calculation of Bolus. Compares single point vs multiple points
@@ -379,7 +379,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             Tucuxi::Core::AbsorptionModel::INTRAVASCULAR,
             12h,
             0s,
-            250);
+            CYCLE_SIZE);
     }
 
     /// \brief Test the residual calculation of extravascular. Compares single point vs multiple points
@@ -416,7 +416,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             Tucuxi::Core::AbsorptionModel::EXTRAVASCULAR,
             12h,
             0s,
-            250);
+            CYCLE_SIZE);
     }
 
     /// \brief Test the residual calculation of infusion. Compares single point vs multiple points
@@ -449,7 +449,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             Tucuxi::Core::AbsorptionModel::INFUSION,
             12h,
             1h,
-            250);
+            CYCLE_SIZE);
     }
 
     /// \brief Test the residual calculation of Bolus. Compares single point vs multiple points
@@ -487,7 +487,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             Tucuxi::Core::AbsorptionModel::INTRAVASCULAR,
             12h,
             0s,
-            250);
+            CYCLE_SIZE);
     }
 
     /// \brief Test the residual calculation of Extra. Compares single point vs multiple points
@@ -527,7 +527,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             Tucuxi::Core::AbsorptionModel::EXTRAVASCULAR,
             12h,
             0s,
-            250);
+            CYCLE_SIZE);
     }
 
 
@@ -566,7 +566,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             Tucuxi::Core::AbsorptionModel::INFUSION,
             12h,
             1h,
-            250);
+            CYCLE_SIZE);
     }
 };
 

@@ -69,14 +69,14 @@ public:
     ProcessingOption getProcessingOption() const;
     const Tucuxi::Common::DateTime& getStart() const;
     const Tucuxi::Common::DateTime& getEnd() const;
-    int getNbPoints() const;
+    CycleSize getCycleSize() const;
 
 protected:
     ProcessingTraitStandard(RequestResponseId _id,
                             PredictionParameterType _type,
                             Tucuxi::Common::DateTime _start,
                             Tucuxi::Common::DateTime _end,
-                            int _nbPoints,
+                            const CycleSize _cycleSize,
                             ProcessingOption _processingOption);
 
 private:
@@ -84,7 +84,7 @@ private:
     ProcessingOption m_processingOption;
     Tucuxi::Common::DateTime m_start;
     Tucuxi::Common::DateTime m_end;
-    int m_nbPoints;
+    CycleSize m_cycleSize;
 };
 
 ///
@@ -164,7 +164,7 @@ public:
                               PredictionParameterType _type,
                               Tucuxi::Common::DateTime _start,
                               Tucuxi::Common::DateTime _end,
-                              int _nbPoints,
+                              const CycleSize _cycleSize,
                               ProcessingOption _processingOption,
                               Tucuxi::Common::DateTime _adjustmentTime,
                               AdjustmentOption _adjustmentOption);
@@ -191,7 +191,7 @@ public:
                                  PredictionParameterType _type,
                                  Tucuxi::Common::DateTime _start,
                                  Tucuxi::Common::DateTime _end,
-                                 int _nbPoints,
+                                 const CycleSize _cycleSize,
                                  ProcessingOption _processingOption);
 private:
     ProcessingResult compute(CoreComponent &_coreComponent) const override;
@@ -211,7 +211,7 @@ public:
                                Tucuxi::Common::DateTime _start,
                                Tucuxi::Common::DateTime _end,
                                const PercentileRanks &_ranks,
-                               int _nbPoints,
+                               const CycleSize _cycleSize,
                                ProcessingOption _processingOption);
 
 private:

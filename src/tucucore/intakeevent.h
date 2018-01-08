@@ -40,12 +40,13 @@ public:
         : TimedEvent(_time), 
           m_dose(_dose),
           m_offsetTime(_offsetTime),
-          m_nbPoints(_nbPoints),
           m_route(_route),
           m_interval(_interval),
           m_infusionTime(_infusionTime),
           m_calculator(nullptr)
-    {}
+    {
+        m_nbPoints = _nbPoints % 2 != 0 ? _nbPoints : _nbPoints + 1;  // Must use an odd number
+    }
 
     /// \brief Destructor
     ~IntakeEvent() {}
@@ -149,12 +150,11 @@ public:
         const IntakeEvent& _intakeEvent,
         const ParameterSetEvent& _parameters,
         const Residuals& _inResiduals,
-        const CycleSize _cycleSize,
         const bool _isAll,
         Residuals& _outResiduals,
         const bool _isDensityConstant) const
     {
-        return m_calculator->calculateIntakePoints(_concentrations, _times, _intakeEvent, _parameters, _inResiduals, _cycleSize, _isAll, _outResiduals, _isDensityConstant);
+        return m_calculator->calculateIntakePoints(_concentrations, _times, _intakeEvent, _parameters, _inResiduals, _isAll, _outResiduals, _isDensityConstant);
     }
 
     IntakeIntervalCalculator::Result calculateIntakeSinglePoint(
@@ -175,7 +175,7 @@ private:
     /// Number of hours since the first dose
     Duration m_offsetTime;
     /// Number of points to compute for this intake
-    int m_nbPoints;
+    CycleSize m_nbPoints;
     /// The route of administration
     AbsorptionModel m_route;
     /// The time before the next intake

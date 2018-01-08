@@ -42,7 +42,6 @@ protected:
 
 private:
     typedef OneCompartmentInfusionCompartments Compartments;
-
 };
 
 inline void OneCompartmentInfusionMicro::compute(const Residuals& _inResiduals, const int _forcesize, Eigen::VectorXd& _concentrations)
@@ -74,7 +73,6 @@ public:
 
 protected:
     virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
-
 };
 
 

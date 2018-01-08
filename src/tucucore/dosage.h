@@ -38,7 +38,7 @@ void cloneIntakeSeries(const std::vector<IntakeEvent> &_input, std::vector<Intak
 /// \brief Implement the extract and clone operations for Dosage subclasses.
 #define DOSAGE_UTILS(BaseClassName, ClassName) \
     friend IntakeExtractor; \
-    virtual int extract(IntakeExtractor &_extractor, const DateTime &_start, const DateTime &_end, IntakeSeries &_series) const; \
+    virtual int extract(IntakeExtractor &_extractor, const DateTime &_start, const DateTime &_end, IntakeSeries &_series, CycleSize _cycleSize) const; \
     virtual std::unique_ptr<BaseClassName> clone() const \
     { \
         return std::unique_ptr<BaseClassName>(new ClassName(*this)); \
@@ -70,7 +70,7 @@ public:
     /// whole set of calls)
     /// \post FORALL intake IN extracted_intakes, intake.time IN [_start, _end)
     /// \see IntakeExtractor::extract()
-    virtual int extract(IntakeExtractor &_extractor, const DateTime &_start, const DateTime &_end, IntakeSeries &_series) const = 0;
+    virtual int extract(IntakeExtractor &_extractor, const DateTime &_start, const DateTime &_end, IntakeSeries &_series, CycleSize _cycleSize) const = 0;
 
     /// \brief Return a pointer to a clone of the correct subclass.
     /// \return Pointer to a new object of subclass' type.
@@ -95,7 +95,7 @@ class DosageBounded : public Dosage
 public:
     friend IntakeExtractor;
 
-    virtual int extract(IntakeExtractor &_extractor, const DateTime &_start, const DateTime &_end, IntakeSeries &_series) const;
+    virtual int extract(IntakeExtractor &_extractor, const DateTime &_start, const DateTime &_end, IntakeSeries &_series, CycleSize _cycleSize) const;
 
     /// \brief Return the instant of the first intake in the given interval.
     /// \param _intervalStart Starting point of the interval.

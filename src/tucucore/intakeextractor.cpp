@@ -21,7 +21,7 @@ auto as_integer(Enumeration const value)
     assert (end.isUndefined() || start < end);
 
 
-int IntakeExtractor::extract(const DosageHistory& _dosageHistory, const DateTime &_start, const DateTime &_end, IntakeSeries &_series)
+int IntakeExtractor::extract(const DosageHistory& _dosageHistory, const DateTime &_start, const DateTime &_end, IntakeSeries &_series, CycleSize _cycleSize)
 {
     EXTRACT_PRECONDITIONS(_start, _end, _series);
 
@@ -30,7 +30,7 @@ int IntakeExtractor::extract(const DosageHistory& _dosageHistory, const DateTime
     IntakeExtractor extractor;
     for (auto&& timeRange : _dosageHistory.m_history)
     {
-        extractor.extract(*timeRange, _start, _end, _series);
+        extractor.extract(*timeRange, _start, _end, _series, _cycleSize);
     }
 
     std::sort(_series.begin(), _series.end());
@@ -39,7 +39,7 @@ int IntakeExtractor::extract(const DosageHistory& _dosageHistory, const DateTime
 }
 
 
-int IntakeExtractor::extract(const DosageTimeRange &_timeRange, const DateTime &_start, const DateTime &_end, IntakeSeries &_series)
+int IntakeExtractor::extract(const DosageTimeRange &_timeRange, const DateTime &_start, const DateTime &_end, IntakeSeries &_series, CycleSize _cycleSize)
 {
     EXTRACT_PRECONDITIONS(_start, _end, _series);
 
@@ -54,7 +54,7 @@ int IntakeExtractor::extract(const DosageTimeRange &_timeRange, const DateTime &
         iEnd = std::min(_end, _timeRange.m_endDate);
     }
 
-    nbIntakes = _timeRange.m_dosage->extract(*this, iStart, iEnd, _series);
+    nbIntakes = _timeRange.m_dosage->extract(*this, iStart, iEnd, _series, _cycleSize);
 
     // Add unplanned intakes that fall in the desired interval
     for (auto& intake: _timeRange.m_addedIntakes) {
@@ -81,13 +81,13 @@ int IntakeExtractor::extract(const DosageTimeRange &_timeRange, const DateTime &
 
 
 int IntakeExtractor::extract(const DosageBounded &_dosageBounded, const DateTime &_start,
-                             const DateTime &_end, IntakeSeries &_series)
+                             const DateTime &_end, IntakeSeries &_series, CycleSize _cycleSize)
 {
-    return _dosageBounded.extract(*this, _start, _end, _series);
+    return _dosageBounded.extract(*this, _start, _end, _series, _cycleSize);
 }
 
 
-int IntakeExtractor::extract(const DosageLoop &_dosageLoop, const DateTime &_start, const DateTime &_end, IntakeSeries &_series)
+int IntakeExtractor::extract(const DosageLoop &_dosageLoop, const DateTime &_start, const DateTime &_end, IntakeSeries &_series, CycleSize _cycleSize)
 {
     EXTRACT_PRECONDITIONS(_start, _end, _series);
 
@@ -98,7 +98,7 @@ int IntakeExtractor::extract(const DosageLoop &_dosageLoop, const DateTime &_sta
     DateTime iEnd = _end.isUndefined() ? DateTime() : _end;
 
     while (currentTime < iEnd) {
-        nbIntakes += extract(*(_dosageLoop.m_dosage), currentTime, iEnd, _series);
+        nbIntakes += extract(*(_dosageLoop.m_dosage), currentTime, iEnd, _series, _cycleSize);
         currentTime += _dosageLoop.m_dosage->getTimeStep();
     }
 
@@ -108,7 +108,7 @@ int IntakeExtractor::extract(const DosageLoop &_dosageLoop, const DateTime &_sta
 }
 
 
-int IntakeExtractor::extract(const DosageRepeat &_dosageRepeat, const DateTime &_start, const DateTime &_end, IntakeSeries &_series)
+int IntakeExtractor::extract(const DosageRepeat &_dosageRepeat, const DateTime &_start, const DateTime &_end, IntakeSeries &_series, CycleSize _cycleSize)
 {
     EXTRACT_PRECONDITIONS(_start, _end, _series);
 
@@ -116,7 +116,7 @@ int IntakeExtractor::extract(const DosageRepeat &_dosageRepeat, const DateTime &
 
     DateTime currentTime = _dosageRepeat.m_dosage->getFirstIntakeInterval(_start);
     for (unsigned int nbIt = 0; nbIt < _dosageRepeat.m_nbTimes && currentTime < _end; ++nbIt) {
-        nbIntakes += extract(*(_dosageRepeat.m_dosage), currentTime, _end, _series);
+        nbIntakes += extract(*(_dosageRepeat.m_dosage), currentTime, _end, _series, _cycleSize);
         currentTime += _dosageRepeat.m_dosage->getTimeStep();
     }
 
@@ -126,7 +126,7 @@ int IntakeExtractor::extract(const DosageRepeat &_dosageRepeat, const DateTime &
 }
 
 
-int IntakeExtractor::extract(const DosageSequence &_dosageSequence, const DateTime &_start, const DateTime &_end, IntakeSeries &_series)
+int IntakeExtractor::extract(const DosageSequence &_dosageSequence, const DateTime &_start, const DateTime &_end, IntakeSeries &_series, CycleSize _cycleSize)
 {
     EXTRACT_PRECONDITIONS(_start, _end, _series);
 
@@ -134,7 +134,7 @@ int IntakeExtractor::extract(const DosageSequence &_dosageSequence, const DateTi
     DateTime currentTime = _dosageSequence.m_dosages.at(0)->getFirstIntakeInterval(_start);
     for (auto&& dosage : _dosageSequence.m_dosages)
     {
-        nbIntakes += dosage->extract(*this, currentTime, _end, _series);
+        nbIntakes += dosage->extract(*this, currentTime, _end, _series, _cycleSize);
         currentTime += dosage->getTimeStep();
         if (currentTime > _end) {
             break;
@@ -147,7 +147,7 @@ int IntakeExtractor::extract(const DosageSequence &_dosageSequence, const DateTi
 }
 
 
-int IntakeExtractor::extract(const ParallelDosageSequence &_parallelDosageSequence, const DateTime &_start, const DateTime &_end, IntakeSeries &_series)
+int IntakeExtractor::extract(const ParallelDosageSequence &_parallelDosageSequence, const DateTime &_start, const DateTime &_end, IntakeSeries &_series, CycleSize _cycleSize)
 {
     EXTRACT_PRECONDITIONS(_start, _end, _series);
 
@@ -156,7 +156,7 @@ int IntakeExtractor::extract(const ParallelDosageSequence &_parallelDosageSequen
     for (size_t i = 0; i < _parallelDosageSequence.m_dosages.size(); ++i) {
         DateTime newIntervalStart = _parallelDosageSequence.m_dosages.at(i)->getFirstIntakeInterval(_start + _parallelDosageSequence.m_offsets.at(i));
         if (newIntervalStart < _end) {
-            nbIntakes += _parallelDosageSequence.m_dosages.at(i)->extract(*this, newIntervalStart, _end, _series);
+            nbIntakes += _parallelDosageSequence.m_dosages.at(i)->extract(*this, newIntervalStart, _end, _series, _cycleSize);
         }
     }
 
@@ -166,28 +166,28 @@ int IntakeExtractor::extract(const ParallelDosageSequence &_parallelDosageSequen
 }
 
 
-int IntakeExtractor::extract(const LastingDose &_dosage, const DateTime &_start, const DateTime & /*_end*/, IntakeSeries &_series)
+int IntakeExtractor::extract(const LastingDose &_dosage, const DateTime &_start, const DateTime & /*_end*/, IntakeSeries &_series, CycleSize _cycleSize)
 {
     IntakeEvent intake(_start, Duration(), _dosage.m_dose, _dosage.getTimeStep(), _dosage.m_routeOfAdministration,
-                       _dosage.m_infusionTime, 0);
+                       _dosage.m_infusionTime, _cycleSize);
     _series.push_back(intake);
     return 1;
 }
 
 
-int IntakeExtractor::extract(const DailyDose &_dosage, const DateTime &_start, const DateTime & /*_end*/, IntakeSeries &_series)
+int IntakeExtractor::extract(const DailyDose &_dosage, const DateTime &_start, const DateTime & /*_end*/, IntakeSeries &_series, CycleSize _cycleSize)
 {
     IntakeEvent intake(_start, Duration(), _dosage.m_dose, _dosage.getTimeStep(), _dosage.m_routeOfAdministration,
-                       _dosage.m_infusionTime, 0);
+                       _dosage.m_infusionTime, _cycleSize);
     _series.push_back(intake);
     return 1;
 }
 
 
-int IntakeExtractor::extract(const WeeklyDose &_dosage, const DateTime &_start, const DateTime & /*_end*/, IntakeSeries &_series)
+int IntakeExtractor::extract(const WeeklyDose &_dosage, const DateTime &_start, const DateTime & /*_end*/, IntakeSeries &_series, CycleSize _cycleSize)
 {
     IntakeEvent intake(_start, Duration(), _dosage.m_dose, _dosage.getTimeStep(), _dosage.m_routeOfAdministration,
-                       _dosage.m_infusionTime, 0);
+                       _dosage.m_infusionTime, _cycleSize);
     _series.push_back(intake);
     return 1;
 }

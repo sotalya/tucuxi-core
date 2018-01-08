@@ -55,7 +55,6 @@ private:
     ComputationResult computeConcentrations(
         ConcentrationPredictionPtr &_prediction,
         const bool _isAll,
-        int _nbPoints,
         const DateTime &_recordFrom,
         const DateTime &_recordTo,
         const IntakeSeries &_intakes,
@@ -68,31 +67,29 @@ private:
     ComputationResult computePopulation(
         ConcentrationPredictionPtr &_prediction,
         const bool _isAll,
-        int _nbPoints,
         const DateTime &_recordFrom,
         const DateTime &_recordTo,
         const IntakeSeries &_intakes,
         const ParameterSetSeries& _parameters)
     {
-        return computeConcentrations(_prediction, _isAll, _nbPoints, _recordFrom, _recordTo, _intakes, _parameters);
+        return computeConcentrations(_prediction, _isAll, _recordFrom, _recordTo, _intakes, _parameters);
     }
 
     ComputationResult computeApriori(
         ConcentrationPredictionPtr &_prediction,
         const bool _isAll,
-        int _nbPoints,
+        CycleSize _nbPoints,
         const DateTime &_recordFrom,
         const DateTime &_recordTo,
         const IntakeSeries &_intakes,
         const ParameterSetSeries& _parameters)
     {
-        return computeConcentrations(_prediction, _isAll, _nbPoints, _recordFrom, _recordTo, _intakes, _parameters);
+        return computeConcentrations(_prediction, _isAll, _recordFrom, _recordTo, _intakes, _parameters);
     }
 
     ComputationResult computeAposteriori(
         ConcentrationPredictionPtr &_prediction,
         const bool _isAll,
-        int _nbPoints,
         const DateTime &_recordFrom,
         const DateTime &_recordTo,
         const IntakeSeries &_intakes,
@@ -100,7 +97,7 @@ private:
         const Etas& _etas)
     {
         TMP_UNUSED_PARAMETER(_etas);
-        return computeConcentrations(_prediction, _isAll, _nbPoints, _recordFrom, _recordTo, _intakes, _parameters);
+        return computeConcentrations(_prediction, _isAll, _recordFrom, _recordTo, _intakes, _parameters);
     }
 
     ComputationResult extractError(

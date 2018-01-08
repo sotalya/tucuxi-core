@@ -21,9 +21,10 @@ ThreeCompartmentBolusMicro::ThreeCompartmentBolusMicro()
 
 bool ThreeCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
-    if(!checkValue(_parameters.size() >= 6, "The number of parameters should be equal to 6."))
-	    return false;
-    
+    if (!checkValue(_parameters.size() >= 6, "The number of parameters should be equal to 6.")) {
+        return false;
+    }
+
     Value a0, a1, a2, p, q, r1, r2, phi;
 
     m_D = _intakeEvent.getDose() * 1000;
@@ -183,9 +184,10 @@ ThreeCompartmentBolusMacro::ThreeCompartmentBolusMacro() : ThreeCompartmentBolus
 
 bool ThreeCompartmentBolusMacro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
-    if(!checkValue(_parameters.size() >= 6, "The number of parameters should be equal to 6."))
-	    return false;
-    
+    if (!checkValue(_parameters.size() >= 6, "The number of parameters should be equal to 6.")) {
+        return false;
+    }
+
     Value a0, a1, a2, p, q, r1, r2, phi;
 
     m_D = _intakeEvent.getDose() * 1000;

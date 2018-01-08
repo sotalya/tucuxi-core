@@ -22,6 +22,8 @@
 
 struct TestConcentrationCalculator : public fructose::test_base<TestConcentrationCalculator>
 {
+    static const int CYCLE_SIZE = 251;
+
     TestConcentrationCalculator() { }
 
     template<class CalculatorClass>
@@ -67,7 +69,6 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
                     intakeEvent,
                     event,
                     inResiduals,
-                    _nbPoints,
                     isAll,
                     outResiduals,
                     true);
@@ -87,7 +88,6 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
                 concentrationCalculator->computeConcentrations(
                     predictionPtr,
                     isAll,
-                    _nbPoints,
                     DateTime(), // YJ: Fix this with a meaningfull date
                     DateTime(), // YJ: Fix this with a meaningfull date
                     intakeSeries,
@@ -143,7 +143,6 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
                     intakeEvent,
                     event,
                     inResiduals,
-                    (_nbPoints - 1 ) * nbCycles + 1,
                     isAll,
                     outResiduals,
                     true);
@@ -173,7 +172,6 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
                 concentrationCalculator->computeConcentrations(
                     predictionPtr,
                     isAll,
-                    _nbPoints,
                     DateTime(), // YJ: Fix this with a meaningfull date
                     DateTime(), // YJ: Fix this with a meaningfull date
                     intakeSeries,
@@ -233,7 +231,6 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
                 concentrationCalculator->computeConcentrations(
                     predictionPtr,
                     isAll,
-                    nbPoints,
                     DateTime(), // YJ: Fix this with a meaningfull date
                     DateTime(), // YJ: Fix this with a meaningfull date
                     intakeSeries,
@@ -302,7 +299,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
             Tucuxi::Core::AbsorptionModel::INTRAVASCULAR,
             12h,
             0s,
-            250);
+            CYCLE_SIZE);
     }
 
 
@@ -323,7 +320,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
             Tucuxi::Core::AbsorptionModel::EXTRAVASCULAR,
             12h,
             0s,
-            250);
+            CYCLE_SIZE);
     }
 
 
@@ -342,7 +339,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
             Tucuxi::Core::AbsorptionModel::INFUSION,
             12h,
             1h,
-            250);
+            CYCLE_SIZE);
     }
 
     void test2compBolus(const std::string& /* _testName */)
@@ -362,7 +359,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
             Tucuxi::Core::AbsorptionModel::INTRAVASCULAR,
             12h,
             0s,
-            250);
+            CYCLE_SIZE);
     }
 
 
@@ -385,7 +382,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
             Tucuxi::Core::AbsorptionModel::EXTRAVASCULAR,
             12h,
             0s,
-            250);
+            CYCLE_SIZE);
     }
 
 
@@ -406,7 +403,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
             Tucuxi::Core::AbsorptionModel::INFUSION,
             12h,
             1h,
-            250);
+            CYCLE_SIZE);
     }
 
     void test3compBolus(const std::string& /* _testName */)
@@ -429,7 +426,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
             Tucuxi::Core::AbsorptionModel::INTRAVASCULAR,
             12h,
             0s,
-            250);
+            CYCLE_SIZE);
     }
 
 
@@ -454,7 +451,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
             Tucuxi::Core::AbsorptionModel::EXTRAVASCULAR,
             12h,
             0s,
-            250);
+            CYCLE_SIZE);
     }
 
 
@@ -478,7 +475,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
             Tucuxi::Core::AbsorptionModel::INFUSION,
             12h,
             1h,
-            250);
+            CYCLE_SIZE);
     }
 };
 

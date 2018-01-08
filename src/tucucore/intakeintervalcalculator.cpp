@@ -17,24 +17,23 @@ IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakePoints
     const IntakeEvent& _intakeEvent,
     const ParameterSetEvent& _parameters,
     const Residuals& _inResiduals,
-    const CycleSize _cycleSize,
     const bool _isAll,
     Residuals & _outResiduals,
     const bool _isDensityConstant)
 {
     TMP_UNUSED_PARAMETER(_isDensityConstant);
-    if (!checkInputs(_intakeEvent, _parameters, _cycleSize))
+    if (!checkInputs(_intakeEvent, _parameters))
     {
         return Result::BadParameters;
     }
 
     // Create our serie of times
-    Eigen::VectorXd times = Eigen::VectorXd::LinSpaced(_cycleSize, 0, _intakeEvent.getInterval().toHours());
+    Eigen::VectorXd times = Eigen::VectorXd::LinSpaced(_intakeEvent.getNbPoints(), 0, _intakeEvent.getInterval().toHours());
 
     // Can we reuse cached exponentials?
-    if (!m_cache.get(_intakeEvent.getInterval(), _parameters, _cycleSize, m_precomputedExponentials))	{
+    if (!m_cache.get(_intakeEvent.getInterval(), _parameters, _intakeEvent.getNbPoints(), m_precomputedExponentials))	{
         computeExponentials(times);
-        m_cache.set(_intakeEvent.getInterval(), _parameters, _cycleSize, m_precomputedExponentials);
+        m_cache.set(_intakeEvent.getInterval(), _parameters, _intakeEvent.getNbPoints(), m_precomputedExponentials);
     }
 
     if (!computeConcentrations(_inResiduals, _isAll, _concentrations, _outResiduals)) {
@@ -75,8 +74,7 @@ IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakeSingle
     const bool _isAll,
     Residuals& _outResiduals)
 {
-    if (!checkInputs(_intakeEvent, _parameters, 251))   // YJ, do something better than 251 here !!!
-    {
+    if (!checkInputs(_intakeEvent, _parameters)) {
         return Result::BadParameters;
     }
     

@@ -101,8 +101,7 @@ public:
         const IntakeEvent& _intakeEvent,
         const ParameterSetEvent& _parameters,
         const Residuals& _inResiduals,
-        const CycleSize _cycleSize,
-	const bool _isAll,
+        const bool _isAll,
         Residuals& _outResiduals,
         const bool _isDensityConstant);
 
@@ -120,7 +119,7 @@ public:
         const ParameterSetEvent& _parameters,
         const Residuals& _inResiduals,
         const Value& _atTime,
-	const bool _isAll,
+        const bool _isAll,
         Residuals& _outResiduals);
 
     /// \brief Returns the number of compartments needed for the residuals
@@ -132,7 +131,7 @@ protected:
     /// \param _intakeEvent intake for the cycle (all cyles start with an intake)
     /// \param _parameters Parameters for the cycle (all cycles have constant parameters)
     /// \return Returns true if inputs are ok
-    virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters, CycleSize _cycleSize) = 0;
+    virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) = 0;
 
     /// \brief Computation of exponentials values that will may be shared by severall successive computations
     /// \param _intakeEvent intake for the cycle (all cyles start with an intake)

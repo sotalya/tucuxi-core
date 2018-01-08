@@ -75,7 +75,7 @@ ProcessingResult CoreComponent::compute(const ProcessingRequest &_request, std::
         if (pTrait != nullptr) {
 
             IntakeSeries intakeSeries;
-            int nIntakes = IntakeExtractor::extract(_request.getDrugTreatment().getDosageHistory(false), pTrait->getStart(), pTrait->getEnd(), intakeSeries);
+            int nIntakes = IntakeExtractor::extract(_request.getDrugTreatment().getDosageHistory(false), pTrait->getStart(), pTrait->getEnd(), intakeSeries, pTrait->getCycleSize());
             
             static const std::string analyteId = "imatinib";
             static const std::string pkModelId = _request.getDrugModel().getPkModelId();
@@ -117,7 +117,6 @@ ProcessingResult CoreComponent::compute(const ProcessingRequest &_request, std::
             ComputationResult result = computePopulation(
                 pPrediction,
                 false,
-                pTrait->getNbPoints(),
                 pTrait->getStart(),
                 pTrait->getEnd(),
                 intakeSeries,
@@ -217,7 +216,6 @@ Tucuxi::Common::Interface* CoreComponent::getInterface(const std::string &_name)
 ComputationResult CoreComponent::computeConcentrations(
     ConcentrationPredictionPtr &_prediction,
     const bool _isAll,
-    const int _nbPoints,
     const DateTime &_recordFrom,
     const DateTime &_recordTo,
     const IntakeSeries &_intakes,
@@ -232,7 +230,6 @@ ComputationResult CoreComponent::computeConcentrations(
     calculator.computeConcentrations(
         _prediction,
         _isAll,
-        _nbPoints,
         _recordFrom,
         _recordTo,
         _intakes,
