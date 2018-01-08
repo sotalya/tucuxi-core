@@ -72,7 +72,6 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
                     intakeEvent,
                     event,
                     inResiduals,
-                    _nbPoints,
                     isAll,
                     outResiduals,
                     true);
@@ -92,7 +91,6 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
                 concentrationCalculator->computeConcentrations(
                     predictionPtr,
                     isAll,
-                    _nbPoints,
                     DateTime(), // YJ: Fix this with a meaningfull date
                     DateTime(), // YJ: Fix this with a meaningfull date
                     intakeSeries,
