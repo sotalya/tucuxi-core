@@ -100,6 +100,9 @@ ComputationResult ConcentrationCalculator::computeConcentrationsAtTimes(
     const Etas &_etas,
     const bool _onlyAnalytes)
 {
+
+    _concentrations.clear();
+
     // First calculate the size of residuals
     unsigned int residualSize = 0;
     for (IntakeSeries::const_iterator it = _intakes.begin(); it != _intakes.end(); it++) {
