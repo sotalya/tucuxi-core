@@ -5,6 +5,8 @@
 #ifndef IPROCESSINGSERVICE_H
 #define IPROCESSINGSERVICE_H
 
+#include <memory>
+
 #include "tucucommon/interface.h"
 
 namespace Tucuxi {

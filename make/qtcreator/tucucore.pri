@@ -3,6 +3,7 @@ HEADERS += \
     $$PWD/../../src/tucucore/drugmodel/drugmodel.h \
     $$PWD/../../src/tucucore/cachedexponentials.h \
     $$PWD/../../src/tucucore/concentrationcalculator.h \
+    $$PWD/../../src/tucucore/cyclestatisticscalculator.h \
     $$PWD/../../src/tucucore/definitions.h \
     $$PWD/../../src/tucucore/dosage.h \
     $$PWD/../../src/tucucore/intakeevent.h \
@@ -65,6 +66,7 @@ SOURCES += \
     $$PWD/../../src/tucucore/drugmodel/drugmodel.cpp \
     $$PWD/../../src/tucucore/cachedexponentials.cpp \
     $$PWD/../../src/tucucore/concentrationcalculator.cpp \
+    $$PWD/../../src/tucucore/cyclestatisticscalculator.cpp \
     $$PWD/../../src/tucucore/intakeintervalcalculator.cpp \
     $$PWD/../../src/tucucore/intakeextractor.cpp \
     $$PWD/../../src/tucucore/dosage.cpp \
