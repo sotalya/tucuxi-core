@@ -19,7 +19,7 @@ namespace Common {
 ///
 /// This is a helper class focusing on making the implementation of components easier. Mainly it manages a map of 
 /// interface pointers. Since users of components can only access components via their interfaces, using dynamic_cast
-/// to switch interface is not possible has neither the compiler nor the runtime can understand the relation between a
+/// to switch interface is not possible as neither the compiler nor the runtime can understand the relation between a
 /// component and its interfaces. As a result, switching from one interface is only possible by using 
 /// Interface::getInterface. The actual implementation of getInterface is provided by the component itself via 
 /// dynamic_cast. In order to simplify this code, Component offers methods registerInterface and getInterfaceImpl. 

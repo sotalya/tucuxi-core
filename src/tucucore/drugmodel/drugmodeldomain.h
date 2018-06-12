@@ -16,13 +16,14 @@ class DrugModelDomain
 {
 public:
 
-    DrugModelDomain(std::unique_ptr<Operation> _constraint);
+    DrugModelDomain(std::unique_ptr<Operation> _constraint = nullptr);
     virtual ~DrugModelDomain();
 
-    const Operation &getConstraint();
+    void addConstraint(std::unique_ptr<Operation> _constraint) { m_constraints.push_back(std::move(_constraint));}
+    const std::vector<std::unique_ptr< Operation > >& getConstraints() const { return m_constraints;}
 
 protected:
-    std::unique_ptr<Operation> m_constraint;
+    std::vector<std::unique_ptr<Operation> > m_constraints;
 };
 
 

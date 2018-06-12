@@ -28,7 +28,15 @@ IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakePoints
     }
 
     // Create our serie of times
-    Eigen::VectorXd times = Eigen::VectorXd::LinSpaced(_intakeEvent.getNbPoints(), 0, _intakeEvent.getInterval().toHours());
+    int nbPoints = _intakeEvent.getNbPoints();
+    int toHours = _intakeEvent.getInterval().toHours();
+    // YTA : This LinSpaced function crashes on Linux, so using a custom
+    // method...
+//    Eigen::VectorXd times = Eigen::VectorXd::LinSpaced(_intakeEvent.getNbPoints(), 0, _intakeEvent.getInterval().toHours());
+    Eigen::VectorXd times(_intakeEvent.getNbPoints());
+    // Shall we use nbPoints-1 or nbPoints?
+    for(int i=0;i< _intakeEvent.getNbPoints(); i++)
+        times[i] = ((double) i)/((double)_intakeEvent.getNbPoints()-1)*(double)_intakeEvent.getInterval().toHours();
 
     // Can we reuse cached exponentials?
     if (!m_cache.get(_intakeEvent.getInterval(), _parameters, _intakeEvent.getNbPoints(), m_precomputedExponentials))	{
