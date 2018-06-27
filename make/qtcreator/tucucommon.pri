@@ -20,7 +20,8 @@ HEADERS += \
     $$PWD/../../src/tucucommon/xmldocument.h \
     $$PWD/../../src/tucucommon/xmliterator.h \
     $$PWD/../../src/tucucommon/xmlnode.h \
-    $$PWD/../../src/tucucommon/general.h
+    $$PWD/../../src/tucucommon/general.h \
+    $$PWD/../../src/tucucommon/translatablestring.h
 
 SOURCES += \
     $$PWD/../../src/tucucommon/componentmanager.cpp \
@@ -35,7 +36,8 @@ SOURCES += \
     $$PWD/../../src/tucucommon/systeminfo.cpp \
     $$PWD/../../src/tucucommon/xmlattribute.cpp \
     $$PWD/../../src/tucucommon/xmldocument.cpp \
-    $$PWD/../../src/tucucommon/xmlnode.cpp
+    $$PWD/../../src/tucucommon/xmlnode.cpp \
+    $$PWD/../../src/tucucommon/translatablestring.cpp
 
 DISTFILES += \
     $$PWD/../../src/tucucommon/makefile

@@ -18,6 +18,7 @@ SOURCES := componentmanager.cpp \
            logger.cpp \
            systeminfo.cpp \
            timeofday.cpp \
+					 translatablestring.cpp \
            utils.cpp \
            xmlattribute.cpp \
            xmldocument.cpp \

@@ -19,10 +19,16 @@ public:
         model = new DrugModel();
 
         // The following constraint is for tests only. Needs to be modified according to the paper
-        Operation *constraint = new JSOperation(" \
+        Operation *operationConstraint = new JSOperation(" \
                                                 return (age > 0);",
         { OperationInput("age", InputType::DOUBLE)});
-        std::unique_ptr<DrugModelDomain> drugDomain(new DrugModelDomain(std::unique_ptr<Operation>(constraint)));
+
+        Constraint *constraint = new Constraint();
+        constraint->addRequiredCovariateId("age");
+        constraint->setCheckOperation(std::unique_ptr<Operation>(operationConstraint));
+        constraint->setType(ConstraintType::HARD);
+
+        std::unique_ptr<DrugModelDomain> drugDomain(new DrugModelDomain(std::unique_ptr<Constraint>(constraint)));
 
         model->setDomain(std::move(drugDomain));
 
