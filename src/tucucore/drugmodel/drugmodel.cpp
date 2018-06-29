@@ -82,6 +82,11 @@ void DrugModel::addFormulationAndRoute(std::unique_ptr<FormulationAndRoute> _for
 }
 
 
+void DrugModel::addActiveMoiety(std::unique_ptr<ActiveMoiety> _activeMoiety)
+{
+    m_activeMoieties.push_back(std::move(_activeMoiety));
+}
+
 void DrugModel::setDomain(std::unique_ptr<DrugModelDomain> _domain)
 {
     m_domain = std::move(_domain);

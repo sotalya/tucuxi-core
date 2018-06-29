@@ -11,6 +11,7 @@
 #include "tucucore/drugmodel/parameterdefinition.h"
 #include "tucucore/drugmodel/drugmodeldomain.h"
 #include "tucucore/drugmodel/formulationandroute.h"
+#include "tucucore/drugmodel/activemoiety.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -91,6 +92,8 @@ public:
         return "";
     }
 
+    void addActiveMoiety(std::unique_ptr<ActiveMoiety> _activeMoiety);
+
 private:
     const AnalyteSet* getAnalyteSet(const std::string &_analyteId) const {
         for (const std::unique_ptr<AnalyteSet> &set : m_analyteSets) {
@@ -134,6 +137,8 @@ private:
     CovariateDefinitions m_covariates;
 
     InterParameterSetCorrelations m_interParameterSetCorrelations;
+
+    ActiveMoieties m_activeMoieties;
 
     friend ParameterDefinitionIterator;
 };

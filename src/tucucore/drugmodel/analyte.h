@@ -31,8 +31,8 @@ public:
     void setResidualErrorModel(std::unique_ptr<IResidualErrorModel>& _residualErrorModel) { m_residualErrorModel = std::move(_residualErrorModel);}
     const IResidualErrorModel& getResidualErrorModel() const { return *m_residualErrorModel; }
 
-    void addTarget(std::unique_ptr<TargetDefinition>& _target) { m_targets.push_back(std::move(_target));}
-    const TargetDefinitions & getTargetDefinitions() const { return m_targets;}
+//    void addTarget(std::unique_ptr<TargetDefinition>& _target) { m_targets.push_back(std::move(_target));}
+//    const TargetDefinitions & getTargetDefinitions() const { return m_targets;}
 
 protected:
 
@@ -41,7 +41,7 @@ protected:
 
     std::unique_ptr<IResidualErrorModel> m_residualErrorModel;
 
-    TargetDefinitions m_targets;
+//    TargetDefinitions m_targets;
 
     ActiveSubstance *m_activeSubstance;
 

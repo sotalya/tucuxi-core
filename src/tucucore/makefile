@@ -10,7 +10,8 @@ TYPE := LIB
 
 # Let's keep it in alphabetical order
 SOURCES := \
-           drugmodel/activesubstance.cpp \
+           drugmodel/activemoiety.cpp \
+		   drugmodel/activesubstance.cpp \
            drugmodel/analyte.cpp \
            drugmodel/drugmodel.cpp \
            drugmodel/drugmodeldomain.cpp \
