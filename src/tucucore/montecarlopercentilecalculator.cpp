@@ -193,9 +193,12 @@ IPercentileCalculator::ProcessingResult AprioriMonteCarloPercentileCalculator::c
     choleskyMatrix = llt.matrixL().transpose();
 
     // Static random number generator
-    static std::random_device randomDevice;
-    std::mt19937 rnGenerator(randomDevice());
-    
+    // This method does not work anymore (Linux Ubuntu 16.04, gcc 5.4.0, changing it to a time seed
+    //static std::random_device randomDevice;
+    //std::mt19937 rnGenerator(randomDevice());
+    unsigned seed1 = std::chrono::system_clock::now().time_since_epoch().count();
+    std::mt19937 rnGenerator(seed1);
+
     // The variables are normally distributed, we use boost standard normal, then apply lower cholesky
     std::normal_distribution<> normalDistribution(0, 1.0);
 

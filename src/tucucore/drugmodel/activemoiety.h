@@ -19,6 +19,7 @@ public:
 
 
 protected:
+    std::string m_id;
     TranslatableString m_name;
     Unit m_unit;
     std::vector<std::string> m_analyteIds;
