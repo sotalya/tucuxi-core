@@ -8,7 +8,7 @@
 
 #include "tucucore/drugtreatment/drugtreatment.h"
 #include "tucucore/drugmodel/drugmodel.h"
-#include "tucucore/processingservice/iprocessingservice.h"
+#include "tucucore/computingservice/icomputingservice.h"
 
 
 namespace Tucuxi {
@@ -18,42 +18,42 @@ enum class PredictionParameterType { Population, Apriori, Aposteriori };
 class CoreComponent;
 
 ///
-/// \brief The ProcessingTrait class
+/// \brief The ComputingTrait class
 /// This is the base class for all traits. It only has an identifier.
 ///
-class ProcessingTrait
+class ComputingTrait
 {
 public:
     ///
-    /// \brief get the Id of the ProcessingTrait
+    /// \brief get the Id of the ComputingTrait
     /// \return The Id
     ///
     RequestResponseId getId() const;
     
 protected:
     ///
-    /// \brief ProcessingTrait constructor
-    /// \param _id Id of the ProcessingTrait
+    /// \brief ComputingTrait constructor
+    /// \param _id Id of the ComputingTrait
     /// The constructor is protected, as this class shall not be instanciated.
     /// Only subclasses are relevant.
-    ProcessingTrait(RequestResponseId _id);
+    ComputingTrait(RequestResponseId _id);
 
     RequestResponseId m_id;
 
 private:
     friend class CoreComponent;
-    virtual ProcessingResult compute(CoreComponent &_coreComponent) const = 0;    
+    virtual ComputingResult compute(CoreComponent &_coreComponent) const = 0;
 };
 
 /// This shall be better thought. I think there are more options such as:
 /// compute parameter values or not
-enum class ProcessingOption {
+enum class ComputingOption {
     MainCompartment = 0,
     AllCompartments
 };
 
 ///
-/// \brief The ProcessingTraitStandard class
+/// \brief The ComputingTraitStandard class
 /// This is a base class for other Traits. It embeds information about:
 /// 1. Type of parameters
 /// 2. Start date of prediction calculation
@@ -62,69 +62,69 @@ enum class ProcessingOption {
 /// 5. Some processing options
 /// It shall not be instanciated, and this fact is assured by the protected constructor.
 ///
-class ProcessingTraitStandard : public ProcessingTrait
+class ComputingTraitStandard : public ComputingTrait
 {
 public:
     PredictionParameterType getType() const;
-    ProcessingOption getProcessingOption() const;
+    ComputingOption getComputingOption() const;
     const Tucuxi::Common::DateTime& getStart() const;
     const Tucuxi::Common::DateTime& getEnd() const;
     CycleSize getCycleSize() const;
 
 protected:
-    ProcessingTraitStandard(RequestResponseId _id,
+    ComputingTraitStandard(RequestResponseId _id,
                             PredictionParameterType _type,
                             Tucuxi::Common::DateTime _start,
                             Tucuxi::Common::DateTime _end,
                             const CycleSize _cycleSize,
-                            ProcessingOption _processingOption);
+                            ComputingOption _processingOption);
 
 private:
     PredictionParameterType m_type;
-    ProcessingOption m_processingOption;
+    ComputingOption m_processingOption;
     Tucuxi::Common::DateTime m_start;
     Tucuxi::Common::DateTime m_end;
     CycleSize m_cycleSize;
 };
 
 ///
-/// \brief The ProcessingTraitSinglePoints class
+/// \brief The ComputingTraitSinglePoints class
 /// This class embeds the information required to compute concentrations at
 /// specific time points.
 ///
-class ProcessingTraitSinglePoints : public ProcessingTrait
+class ComputingTraitSinglePoints : public ComputingTrait
 {
 public:
-    ProcessingTraitSinglePoints(RequestResponseId _id,
+    ComputingTraitSinglePoints(RequestResponseId _id,
                                 std::vector<Tucuxi::Common::DateTime> _times,
-                                ProcessingOption _processingOption);
+                                ComputingOption _processingOption);
 
 protected:
     std::vector<Tucuxi::Common::DateTime> m_times;
     PredictionParameterType m_type;
-    ProcessingOption m_processingOption;
+    ComputingOption m_processingOption;
 
 private:
-    ProcessingResult compute(CoreComponent &_coreComponent) const override { return ProcessingResult::Error; }
+    ComputingResult compute(CoreComponent &_coreComponent) const override { return ComputingResult::Error; }
 };
 
 ///
-/// \brief The ProcessingTraitAtMeasures class
+/// \brief The ComputingTraitAtMeasures class
 /// This class shall be used for computing concentrations at the times of
 /// the DrugTreatment measures. Typically used for comparing the measured
 /// concentrations with a posteriori predictions.
 ///
-class ProcessingTraitAtMeasures : public ProcessingTrait
+class ComputingTraitAtMeasures : public ComputingTrait
 {
 public:
-    ProcessingTraitAtMeasures(RequestResponseId _id, ProcessingOption _processingOption);
+    ComputingTraitAtMeasures(RequestResponseId _id, ComputingOption _processingOption);
 
 protected:
     PredictionParameterType m_type;
-    ProcessingOption m_processingOption;
+    ComputingOption m_processingOption;
 
 private:
-    ProcessingResult compute(CoreComponent &_coreComponent) const override { return ProcessingResult::Error; }
+    ComputingResult compute(CoreComponent &_coreComponent) const override { return ComputingResult::Error; }
 };
 
 ///
@@ -140,17 +140,17 @@ enum class AdjustmentOption
 };
 
 ///
-/// \brief The ProcessingTraitAdjustment class
+/// \brief The ComputingTraitAdjustment class
 /// This class embeds all information required for computing adjustments. It can return
 /// potential dosages, and future concentration calculations, depending on the options.
 ///
 /// If nbPoints = 0, then no curve will be returned by the computation, only the dosages
 ///
-class ProcessingTraitAdjustment : public ProcessingTraitStandard
+class ComputingTraitAdjustment : public ComputingTraitStandard
 {
 public:
     ///
-    /// \brief ProcessingTraitAdjustment
+    /// \brief ComputingTraitAdjustment
     /// \param _id
     /// \param _type
     /// \param _start
@@ -160,12 +160,12 @@ public:
     /// \param _adjustmentTime
     /// \param _adjustmentOption
     /// If nbPoints = 0, then no curve will be returned by the computation, only the dosages
-    ProcessingTraitAdjustment(RequestResponseId _id,
+    ComputingTraitAdjustment(RequestResponseId _id,
                               PredictionParameterType _type,
                               Tucuxi::Common::DateTime _start,
                               Tucuxi::Common::DateTime _end,
                               const CycleSize _cycleSize,
-                              ProcessingOption _processingOption,
+                              ComputingOption _processingOption,
                               Tucuxi::Common::DateTime _adjustmentTime,
                               AdjustmentOption _adjustmentOption);
 
@@ -177,65 +177,65 @@ protected:
     AdjustmentOption m_adjustmentOption;
 
 private:
-    ProcessingResult compute(CoreComponent &_coreComponent) const override { return ProcessingResult::Error; }
+    ComputingResult compute(CoreComponent &_coreComponent) const override { return ComputingResult::Error; }
 };
 
 ///
-/// \brief The ProcessingTraitConcentration class
+/// \brief The ComputingTraitConcentration class
 /// This class represents a request for a single prediction
 ///
-class ProcessingTraitConcentration : public ProcessingTraitStandard
+class ComputingTraitConcentration : public ComputingTraitStandard
 {
 public:
-    ProcessingTraitConcentration(RequestResponseId _id,
+    ComputingTraitConcentration(RequestResponseId _id,
                                  PredictionParameterType _type,
                                  Tucuxi::Common::DateTime _start,
                                  Tucuxi::Common::DateTime _end,
                                  const CycleSize _cycleSize,
-                                 ProcessingOption _processingOption);
+                                 ComputingOption _processingOption);
 private:
-    ProcessingResult compute(CoreComponent &_coreComponent) const override;
+    ComputingResult compute(CoreComponent &_coreComponent) const override;
 };
 
 
 ///
-/// \brief The ProcessingTraitPercentiles class
+/// \brief The ComputingTraitPercentiles class
 /// This class embeds all information for calculating percentiles. Additionnaly to
 /// standard single predictions, it requires the list of asked percentiles.
 /// This list is a vector of values in [0.0, 100.0]
-class ProcessingTraitPercentiles : public ProcessingTraitStandard
+class ComputingTraitPercentiles : public ComputingTraitStandard
 {
 public:
-    ProcessingTraitPercentiles(RequestResponseId _id,
+    ComputingTraitPercentiles(RequestResponseId _id,
                                PredictionParameterType _type,
                                Tucuxi::Common::DateTime _start,
                                Tucuxi::Common::DateTime _end,
                                const PercentileRanks &_ranks,
                                const CycleSize _cycleSize,
-                               ProcessingOption _processingOption);
+                               ComputingOption _processingOption);
 
 private:
     PercentileRanks m_ranks;
 
 private:
-    ProcessingResult compute(CoreComponent &_coreComponent) const override { return ProcessingResult::Error; }
+    ComputingResult compute(CoreComponent &_coreComponent) const override { return ComputingResult::Error; }
 };
 
 
 ///
-/// \brief The ProcessingTraits class
-/// This class is a collection of ProcessingTrait. It is meant to group various
+/// \brief The ComputingTraits class
+/// This class is a collection of ComputingTrait. It is meant to group various
 /// calculations that will be applied on a single DrugTreatment and a single
 /// DrugModel.
 /// For instance, if a client needs a prediction, percentiles, and a proposition
-/// of dosage adjustment, then three ProcessingTrait will be added to a ProcessingTraits
-class ProcessingTraits
+/// of dosage adjustment, then three ComputingTrait will be added to a ComputingTraits
+class ComputingTraits
 {
 public:
-    void addTrait(std::unique_ptr<ProcessingTrait> _trait);
-    //const std::vector<std::unique_ptr<ProcessingTrait> > &getTraits() const;
+    void addTrait(std::unique_ptr<ComputingTrait> _trait);
+    //const std::vector<std::unique_ptr<ComputingTrait> > &getTraits() const;
 
-    typedef std::vector<std::unique_ptr<ProcessingTrait> > Traits;
+    typedef std::vector<std::unique_ptr<ComputingTrait> > Traits;
     typedef Traits::const_iterator Iterator;
     Iterator begin() const { return m_traits.begin(); };
     Iterator end() const { return m_traits.end(); };

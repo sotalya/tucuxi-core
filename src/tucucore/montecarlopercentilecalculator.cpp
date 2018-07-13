@@ -26,7 +26,7 @@ MonteCarloPercentileCalculatorBase::MonteCarloPercentileCalculatorBase()
 #endif
 }
 
-IPercentileCalculator::ProcessingResult MonteCarloPercentileCalculatorBase::computePredictionsAndSortPercentiles(
+IPercentileCalculator::ComputingResult MonteCarloPercentileCalculatorBase::computePredictionsAndSortPercentiles(
     PercentilesPrediction &_percentiles,
     const IntakeSeries &_intakes,
     const ParameterSetSeries &_parameters,
@@ -35,7 +35,7 @@ IPercentileCalculator::ProcessingResult MonteCarloPercentileCalculatorBase::comp
     const std::vector<Etas> _etas,
     const std::vector<Deviations> _epsilons,
     IConcentrationCalculator &_concentrationCalculator,
-    ProcessingAborter *_aborter)
+    ComputingAborter *_aborter)
 {
     bool abort = false;
     unsigned int nbPatients = Tucuxi::Core::MonteCarloPercentileCalculatorBase::getNumberPatients();
@@ -126,7 +126,7 @@ IPercentileCalculator::ProcessingResult MonteCarloPercentileCalculatorBase::comp
     });
 
     if (abort) {
-        return ProcessingResult::Aborted;
+        return ComputingResult::Aborted;
     }
 
     // Init our percentile prediction object
@@ -159,7 +159,7 @@ IPercentileCalculator::ProcessingResult MonteCarloPercentileCalculatorBase::comp
             }
         }
     }
-    return ProcessingResult::Success;
+    return ComputingResult::Success;
 } 
 
 
@@ -168,7 +168,7 @@ AprioriMonteCarloPercentileCalculator::AprioriMonteCarloPercentileCalculator()
 
 }
 
-IPercentileCalculator::ProcessingResult AprioriMonteCarloPercentileCalculator::calculate(
+IPercentileCalculator::ComputingResult AprioriMonteCarloPercentileCalculator::calculate(
     PercentilesPrediction &_percentiles,
     const IntakeSeries &_intakes,
     const ParameterSetSeries &_parameters,
@@ -177,7 +177,7 @@ IPercentileCalculator::ProcessingResult AprioriMonteCarloPercentileCalculator::c
     const Etas& _initialEtas,
     const PercentileRanks &_percentileRanks,
     IConcentrationCalculator &_concentrationCalculator,
-    ProcessingAborter *_aborter)
+    ComputingAborter *_aborter)
 {
     EigenMatrix choleskyMatrix; // Cholesky matrix after decomposition
     EigenMatrix errorMatrix; // Error matrix of both omega and sigma combined (inter and intra errors)
@@ -278,7 +278,7 @@ AposterioriMonteCarloPercentileCalculator::AposterioriMonteCarloPercentileCalcul
 {
 }
 
-IPercentileCalculator::ProcessingResult AposterioriMonteCarloPercentileCalculator::calculate(
+IPercentileCalculator::ComputingResult AposterioriMonteCarloPercentileCalculator::calculate(
     PercentilesPrediction &_percentiles,
     const IntakeSeries &_intakes,
     const ParameterSetSeries &_parameters,
@@ -288,7 +288,7 @@ IPercentileCalculator::ProcessingResult AposterioriMonteCarloPercentileCalculato
     const SampleSeries &_samples,
     const PercentileRanks &_percentileRanks,
     IConcentrationCalculator &_concentrationCalculator,
-    ProcessingAborter *_aborter)
+    ComputingAborter *_aborter)
 {
     // Return value from non-negative hessian matrix and loglikelihood
     EigenMatrix subomega;
@@ -398,7 +398,7 @@ IPercentileCalculator::ProcessingResult AposterioriMonteCarloPercentileCalculato
     });
 
     if (abort) {
-        return ProcessingResult::Aborted;
+        return ComputingResult::Aborted;
     }
 
     // 5. Calculate the weights
@@ -432,7 +432,7 @@ AposterioriNormalApproximationMonteCarloPercentileCalculator::AposterioriNormalA
 {
 }
 
-IPercentileCalculator::ProcessingResult AposterioriNormalApproximationMonteCarloPercentileCalculator::calculate(
+IPercentileCalculator::ComputingResult AposterioriNormalApproximationMonteCarloPercentileCalculator::calculate(
     PercentilesPrediction &_percentiles,
     const IntakeSeries &_intakes,
     const ParameterSetSeries &_parameters,
@@ -442,7 +442,7 @@ IPercentileCalculator::ProcessingResult AposterioriNormalApproximationMonteCarlo
     const SampleSeries &_samples,
     const PercentileRanks &_percentileRanks,
     IConcentrationCalculator &_concentrationCalculator,
-    ProcessingAborter *_aborter)
+    ComputingAborter *_aborter)
 {
     // Return value from non-negative hessian matrix and loglikelihood
     EigenMatrix subomega;

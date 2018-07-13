@@ -84,7 +84,7 @@ private:
 
  
 /*
-class IProcessingServices : public Tucuxi::Common::Interface
+class IComputingServices : public Tucuxi::Common::Interface
 {
 public:
     virtual ConcentrationPredictionPtr computeConcentrations(const ConcentrationRequest& request) = 0;

@@ -12,13 +12,13 @@
 namespace Tucuxi {
 namespace Core {
 
-class ProcessingRequest;
-class ProcessingResponse;
+class ComputingRequest;
+class ComputingResponse;
 
 ///
-/// \brief The ProcessingResult enum
+/// \brief The ComputingResult enum
 /// Describes the return value of a computation
-enum class ProcessingResult {
+enum class ComputingResult {
     /// Everything went well
     Success = 0,
     /// There was an error
@@ -26,10 +26,10 @@ enum class ProcessingResult {
 };
 
 ///
-/// \brief The IProcessingService class
+/// \brief The IComputingService class
 /// This interface exposes the entry point for any computation. All information is embedded into
-/// the classes ProcessingRequest and ProcessingResponse
-class IProcessingService : public Tucuxi::Common::Interface
+/// the classes ComputingRequest and ComputingResponse
+class IComputingService : public Tucuxi::Common::Interface
 {
 public:
 
@@ -40,7 +40,7 @@ public:
     /// \return Success if everything went well with the computation, Error else
     /// The response is a reference to a unique pointer that has to be allocated within compute()
     ///
-    virtual ProcessingResult compute(const ProcessingRequest &_request, std::unique_ptr<ProcessingResponse> &_response) = 0;
+    virtual ComputingResult compute(const ComputingRequest &_request, std::unique_ptr<ComputingResponse> &_response) = 0;
 
     ///
     /// \brief returns a description of the last error in case of failed computation

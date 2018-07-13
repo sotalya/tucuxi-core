@@ -2,17 +2,17 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
-#include "processingrequest.h"
+#include "computingrequest.h"
 
 
 namespace Tucuxi {
 namespace Core {
 
 
-ProcessingRequest::ProcessingRequest(RequestResponseId _id,
+ComputingRequest::ComputingRequest(RequestResponseId _id,
     const DrugModel& _drugModel,
     const DrugTreatment& _drugTreatment,
-    const ProcessingTraits& _processingTraits) :
+    const ComputingTraits& _processingTraits) :
     m_id(_id),
     m_drugModel(_drugModel),
     m_drugTreatment(_drugTreatment),
@@ -20,22 +20,22 @@ ProcessingRequest::ProcessingRequest(RequestResponseId _id,
 {
 }
 
-RequestResponseId ProcessingRequest::getId() const
+RequestResponseId ComputingRequest::getId() const
 {
     return m_id;
 }
 
-const DrugModel& ProcessingRequest::getDrugModel() const
+const DrugModel& ComputingRequest::getDrugModel() const
 {
     return m_drugModel;
 }
 
-const DrugTreatment& ProcessingRequest::getDrugTreatment() const
+const DrugTreatment& ComputingRequest::getDrugTreatment() const
 {
     return m_drugTreatment;
 }
 
-const ProcessingTraits& ProcessingRequest::getProcessingTraits() const
+const ComputingTraits& ComputingRequest::getComputingTraits() const
 {
     return m_processingTraits;
 }

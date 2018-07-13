@@ -15,7 +15,7 @@
 #include "tucucore/residualerrormodel.h"
 #include "tucucore/dosage.h"
 #include "tucucore/sampleevent.h"
-#include "tucucore/processingservice/iprocessingservice.h"
+#include "tucucore/computingservice/icomputingservice.h"
 #include "tucucore/concentrationprediction.h"
 #include "tucucore/idatamodelservices.h"
 
@@ -28,7 +28,7 @@ class DrugTreatment;
 class ParameterSetSeries;
 
 class CoreComponent : public Tucuxi::Common::Component,
-                      public IProcessingService,
+                      public IComputingService,
                       public IDataModelServices
 {
 public:
@@ -40,7 +40,7 @@ public:
     bool loadDrug(const std::string& _xmlDrugDescription) override;
     bool loadTreatment(const std::string& _xmlTreatmentDescription) override;
     
-    ProcessingResult compute(const ProcessingRequest &_request, std::unique_ptr<ProcessingResponse> &_response);
+    ComputingResult compute(const ComputingRequest &_request, std::unique_ptr<ComputingResponse> &_response);
     std::string getErrorString() const;
 
 protected:
@@ -119,11 +119,11 @@ private:
     std::unique_ptr<DrugModel> m_drug;
     std::unique_ptr<DrugTreatment> m_treatment;
 
-    friend class ProcessingTraitSinglePoints;
-    friend class ProcessingTraitAtMeasures;
-    friend class ProcessingTraitAdjustment;
-    friend class ProcessingTraitConcentration;
-    friend class ProcessingTraitPercentiles;
+    friend class ComputingTraitSinglePoints;
+    friend class ComputingTraitAtMeasures;
+    friend class ComputingTraitAdjustment;
+    friend class ComputingTraitConcentration;
+    friend class ComputingTraitPercentiles;
 };
 
 }

@@ -23,9 +23,9 @@ SOURCES := \
            drugtreatment/drugtreatment.cpp \
            drugtreatment/sample.cpp \
            drugtreatment/target.cpp \
-           processingservice/processingrequest.cpp \
-           processingservice/processingresponse.cpp \
-           processingservice/processingtrait.cpp \
+           computingservice/computingrequest.cpp \
+           computingservice/computingresponse.cpp \
+           computingservice/computingtrait.cpp \
            aposteriorietascalculator.cpp \
            cachedexponentials.cpp \
            concentrationcalculator.cpp \

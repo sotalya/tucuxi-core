@@ -7,30 +7,30 @@
 
 #include "tucucore/drugtreatment/drugtreatment.h"
 #include "tucucore/drugmodel/drugmodel.h"
-#include "tucucore/processingservice/processingtrait.h"
+#include "tucucore/computingservice/computingtrait.h"
 
 namespace Tucuxi {
 namespace Core {
 
 
-class ProcessingRequest
+class ComputingRequest
 {
 public:
-    ProcessingRequest(RequestResponseId _id,
+    ComputingRequest(RequestResponseId _id,
                       const DrugModel& _drugModel,
                       const DrugTreatment& _drugTreatment,
-                      const ProcessingTraits& _processingTraits);
+                      const ComputingTraits& _processingTraits);
 
     RequestResponseId getId() const;
     const DrugModel& getDrugModel() const;
     const DrugTreatment& getDrugTreatment() const;
-    const ProcessingTraits& getProcessingTraits() const;
+    const ComputingTraits& getComputingTraits() const;
 
 protected:
     RequestResponseId m_id;
     const DrugModel &m_drugModel;
     const DrugTreatment &m_drugTreatment;
-    const ProcessingTraits & m_processingTraits;
+    const ComputingTraits & m_processingTraits;
 };
 
 }

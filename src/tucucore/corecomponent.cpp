@@ -14,10 +14,10 @@
 #include "tucucore/intakeintervalcalculator.h"
 #include "tucucore/concentrationcalculator.h"
 #include "tucucore/aposteriorietascalculator.h"
-#include "tucucore/processingservice/iprocessingservice.h"
-#include "tucucore/processingservice/processingrequest.h"
-#include "tucucore/processingservice/processingresponse.h"
-#include "tucucore/processingservice/processingtrait.h"
+#include "tucucore/computingservice/icomputingservice.h"
+#include "tucucore/computingservice/computingrequest.h"
+#include "tucucore/computingservice/computingresponse.h"
+#include "tucucore/computingservice/computingtrait.h"
 #include "tucucore/intaketocalculatorassociator.h"
 #include "tucucore/pkmodel.h"
 
@@ -38,14 +38,14 @@ namespace Core {
 Tucuxi::Common::Interface* CoreComponent::createComponent()
 {
     CoreComponent *cmp = new CoreComponent();
-    return dynamic_cast<IProcessingService*>(cmp);
+    return dynamic_cast<IComputingService*>(cmp);
 }
 
 
 CoreComponent::CoreComponent()
 {
     registerInterface(dynamic_cast<IDataModelServices*>(this));
-    registerInterface(dynamic_cast<IProcessingService*>(this));
+    registerInterface(dynamic_cast<IComputingService*>(this));
 }
 
 
@@ -67,11 +67,11 @@ bool CoreComponent::loadTreatment(const std::string& _xmlTreatmentDescription)
     return false;
 }
 
-ProcessingResult CoreComponent::compute(const ProcessingRequest &_request, std::unique_ptr<ProcessingResponse> &_response)
+ComputingResult CoreComponent::compute(const ComputingRequest &_request, std::unique_ptr<ComputingResponse> &_response)
 {
-    ProcessingTraits::Iterator it = _request.getProcessingTraits().begin();
-    while (it != _request.getProcessingTraits().end()) {
-        ProcessingTraitConcentration *pTrait = dynamic_cast<ProcessingTraitConcentration*>(it->get());
+    ComputingTraits::Iterator it = _request.getComputingTraits().begin();
+    while (it != _request.getComputingTraits().end()) {
+        ComputingTraitConcentration *pTrait = dynamic_cast<ComputingTraitConcentration*>(it->get());
         if (pTrait != nullptr) {
 
             IntakeSeries intakeSeries;
@@ -91,7 +91,7 @@ ProcessingResult CoreComponent::compute(const ProcessingRequest &_request, std::
             ADD_PKMODEL_TO_COLLECTION(models, 3, Three, Macro, macro, rc);
             ADD_PKMODEL_TO_COLLECTION(models, 3, Three, Micro, micro, rc);
             if (!rc) {
-                return ProcessingResult::Error;
+                return ComputingResult::Error;
             }
             std::shared_ptr<PkModel> pkModel = models.getPkModelFromId(pkModelId);
 
@@ -143,7 +143,7 @@ ProcessingResult CoreComponent::compute(const ProcessingRequest &_request, std::
         it++;
     }
 
-    return ProcessingResult::Success;
+    return ComputingResult::Success;
 /*
     ConcentrationPredictionPtr prediction;
 

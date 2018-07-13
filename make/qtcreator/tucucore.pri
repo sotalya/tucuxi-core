@@ -55,13 +55,13 @@ HEADERS += \
     $$PWD/../../src/tucucore/drugtreatment/sample.h \
     $$PWD/../../src/tucucore/drugtreatment/target.h \
     $$PWD/../../src/tucucore/drugtreatment/drugtreatment.h \
-    $$PWD/../../src/tucucore/processingservice/processingrequest.h \
-    $$PWD/../../src/tucucore/processingservice/processingresponse.h \
-    $$PWD/../../src/tucucore/processingservice/iprocessingservice.h \
-    $$PWD/../../src/tucucore/processingservice/processingtrait.h \
     $$PWD/../../src/tucucore/drugmodel/covariatedefinition.h \
     $$PWD/../../src/tucucore/drugtreatment/patientcovariate.h \
-    $$PWD/../../src/tucucore/covariateevent.h
+    $$PWD/../../src/tucucore/covariateevent.h \
+    $$PWD/../../src/tucucore/computingservice/computingrequest.h \
+    $$PWD/../../src/tucucore/computingservice/computingresponse.h \
+    $$PWD/../../src/tucucore/computingservice/computingtrait.h \
+    $$PWD/../../src/tucucore/computingservice/icomputingservice.h
 
 SOURCES += \
     $$PWD/../../src/tucucore/drugmodel/drugmodel.cpp \
@@ -109,11 +109,11 @@ SOURCES += \
     $$PWD/../../src/tucucore/drugtreatment/drugtreatment.cpp \
     $$PWD/../../src/tucucore/drugtreatment/target.cpp \
     $$PWD/../../src/tucucore/targetevent.cpp \
-    $$PWD/../../src/tucucore/processingservice/processingrequest.cpp \
-    $$PWD/../../src/tucucore/processingservice/processingresponse.cpp \
-    $$PWD/../../src/tucucore/processingservice/iprocessingservice.cpp \
-    $$PWD/../../src/tucucore/processingservice/processingtrait.cpp \
-    $$PWD/../../src/tucucore/covariateevent.cpp
+    $$PWD/../../src/tucucore/covariateevent.cpp \
+    $$PWD/../../src/tucucore/computingservice/computingrequest.cpp \
+    $$PWD/../../src/tucucore/computingservice/computingresponse.cpp \
+    $$PWD/../../src/tucucore/computingservice/computingtrait.cpp \
+    $$PWD/../../src/tucucore/computingservice/icomputingservice.cpp
 
 DISTFILES += \
     $$PWD/../../src/tucucore/makefile
