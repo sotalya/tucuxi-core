@@ -31,9 +31,9 @@ ComputingTraitStandard::ComputingTraitStandard(RequestResponseId _id,
                         Tucuxi::Common::DateTime _start,
                         Tucuxi::Common::DateTime _end,
                         const CycleSize _cycleSize,
-                        ComputingOption _processingOption) :
+                        ComputingOption _computingOption) :
     ComputingTrait(_id),
-    m_type(_type), m_processingOption(_processingOption), m_start(_start), m_end(_end), m_cycleSize(_cycleSize)
+    m_type(_type), m_computingOption(_computingOption), m_start(_start), m_end(_end), m_cycleSize(_cycleSize)
 {
 }
 
@@ -46,7 +46,7 @@ PredictionParameterType ComputingTraitStandard::getType() const
 
 ComputingOption ComputingTraitStandard::getComputingOption() const
 {
-    return m_processingOption;
+    return m_computingOption;
 }
 
 
@@ -73,10 +73,10 @@ ComputingTraitAdjustment::ComputingTraitAdjustment(RequestResponseId _id,
                           Tucuxi::Common::DateTime _start,
                           Tucuxi::Common::DateTime _end,
                           const CycleSize _cycleSize,
-                          ComputingOption _processingOption,
+                          ComputingOption _computingOption,
                           Tucuxi::Common::DateTime _adjustmentTime,
                           AdjustmentOption _adjustmentOption) :
-    ComputingTraitStandard(_id, _type, _start, _end, _cycleSize, _processingOption),
+    ComputingTraitStandard(_id, _type, _start, _end, _cycleSize, _computingOption),
     m_adjustmentTime(_adjustmentTime),
     m_adjustmentOption(_adjustmentOption)
 {
@@ -100,8 +100,8 @@ ComputingTraitConcentration::ComputingTraitConcentration(RequestResponseId _id,
                              Tucuxi::Common::DateTime _start,
                              Tucuxi::Common::DateTime _end,
                              const CycleSize _cycleSize,
-                             ComputingOption _processingOption) :
-    ComputingTraitStandard(_id, _type, _start, _end, _cycleSize, _processingOption)
+                             ComputingOption _computingOption) :
+    ComputingTraitStandard(_id, _type, _start, _end, _cycleSize, _computingOption)
 {
 }
 
@@ -118,14 +118,14 @@ ComputingTraitPercentiles::ComputingTraitPercentiles(RequestResponseId _id,
                            Tucuxi::Common::DateTime _end,
                            const PercentileRanks &_ranks,
                            const CycleSize _cycleSize,
-                           ComputingOption _processingOption) :
-    ComputingTraitStandard(_id, _type, _start, _end, _cycleSize, _processingOption), m_ranks(_ranks)
+                           ComputingOption _computingOption) :
+    ComputingTraitStandard(_id, _type, _start, _end, _cycleSize, _computingOption), m_ranks(_ranks)
 {
 }
 
 
-ComputingTraitAtMeasures::ComputingTraitAtMeasures(RequestResponseId _id, ComputingOption _processingOption) 
-    : ComputingTrait(_id), m_processingOption(_processingOption)
+ComputingTraitAtMeasures::ComputingTraitAtMeasures(RequestResponseId _id, ComputingOption _computingOption)
+    : ComputingTrait(_id), m_computingOption(_computingOption)
 {
 }
 

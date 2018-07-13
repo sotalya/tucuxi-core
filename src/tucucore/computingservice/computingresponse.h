@@ -2,8 +2,8 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
-#ifndef PROCESSINGRESPONSE_H
-#define PROCESSINGRESPONSE_H
+#ifndef COMPUTINGRESPONSE_H
+#define COMPUTINGRESPONSE_H
 
 #include <string>
 #include <vector>
@@ -196,4 +196,4 @@ protected:
 }
 }
 
-#endif // PROCESSINGRESPONSE_H
+#endif // COMPUTINGRESPONSE_H

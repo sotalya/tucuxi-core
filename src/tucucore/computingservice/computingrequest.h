@@ -2,8 +2,8 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
-#ifndef PROCESSINGREQUEST_H
-#define PROCESSINGREQUEST_H
+#ifndef COMPUTINGREQUEST_H
+#define COMPUTINGREQUEST_H
 
 #include "tucucore/drugtreatment/drugtreatment.h"
 #include "tucucore/drugmodel/drugmodel.h"
@@ -19,7 +19,7 @@ public:
     ComputingRequest(RequestResponseId _id,
                       const DrugModel& _drugModel,
                       const DrugTreatment& _drugTreatment,
-                      const ComputingTraits& _processingTraits);
+                      const ComputingTraits& _computingTraits);
 
     RequestResponseId getId() const;
     const DrugModel& getDrugModel() const;
@@ -30,10 +30,10 @@ protected:
     RequestResponseId m_id;
     const DrugModel &m_drugModel;
     const DrugTreatment &m_drugTreatment;
-    const ComputingTraits & m_processingTraits;
+    const ComputingTraits & m_computingTraits;
 };
 
 }
 }
 
-#endif // PROCESSINGREQUEST_H
+#endif // COMPUTINGREQUEST_H

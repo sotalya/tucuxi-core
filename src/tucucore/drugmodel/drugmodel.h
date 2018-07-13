@@ -12,6 +12,7 @@
 #include "tucucore/drugmodel/drugmodeldomain.h"
 #include "tucucore/drugmodel/formulationandroute.h"
 #include "tucucore/drugmodel/activemoiety.h"
+#include "tucucore/drugmodel/timeconsiderations.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -126,6 +127,10 @@ private:
 
 private:
 
+    std::string m_drugId;
+
+    std::string m_drugModelId;
+
     Tucuxi::Common::Duration m_timeToSteadyState;
 
     AnalyteSets m_analyteSets;
@@ -139,6 +144,8 @@ private:
     InterParameterSetCorrelations m_interParameterSetCorrelations;
 
     ActiveMoieties m_activeMoieties;
+
+    std::unique_ptr<TimeConsiderations> m_timeConsiderations;
 
     friend ParameterDefinitionIterator;
 };

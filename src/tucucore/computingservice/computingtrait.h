@@ -2,8 +2,8 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
-#ifndef PROCESSINGTRAIT_H
-#define PROCESSINGTRAIT_H
+#ifndef COMPUTINGTRAIT_H
+#define COMPUTINGTRAIT_H
 
 
 #include "tucucore/drugtreatment/drugtreatment.h"
@@ -77,11 +77,11 @@ protected:
                             Tucuxi::Common::DateTime _start,
                             Tucuxi::Common::DateTime _end,
                             const CycleSize _cycleSize,
-                            ComputingOption _processingOption);
+                            ComputingOption _computingOption);
 
 private:
     PredictionParameterType m_type;
-    ComputingOption m_processingOption;
+    ComputingOption m_computingOption;
     Tucuxi::Common::DateTime m_start;
     Tucuxi::Common::DateTime m_end;
     CycleSize m_cycleSize;
@@ -97,12 +97,12 @@ class ComputingTraitSinglePoints : public ComputingTrait
 public:
     ComputingTraitSinglePoints(RequestResponseId _id,
                                 std::vector<Tucuxi::Common::DateTime> _times,
-                                ComputingOption _processingOption);
+                                ComputingOption _computingOption);
 
 protected:
     std::vector<Tucuxi::Common::DateTime> m_times;
     PredictionParameterType m_type;
-    ComputingOption m_processingOption;
+    ComputingOption m_computingOption;
 
 private:
     ComputingResult compute(CoreComponent &_coreComponent) const override { return ComputingResult::Error; }
@@ -117,11 +117,11 @@ private:
 class ComputingTraitAtMeasures : public ComputingTrait
 {
 public:
-    ComputingTraitAtMeasures(RequestResponseId _id, ComputingOption _processingOption);
+    ComputingTraitAtMeasures(RequestResponseId _id, ComputingOption _computingOption);
 
 protected:
     PredictionParameterType m_type;
-    ComputingOption m_processingOption;
+    ComputingOption m_computingOption;
 
 private:
     ComputingResult compute(CoreComponent &_coreComponent) const override { return ComputingResult::Error; }
@@ -156,7 +156,7 @@ public:
     /// \param _start
     /// \param _end
     /// \param _nbPoints
-    /// \param _processingOption
+    /// \param _computingOption
     /// \param _adjustmentTime
     /// \param _adjustmentOption
     /// If nbPoints = 0, then no curve will be returned by the computation, only the dosages
@@ -165,7 +165,7 @@ public:
                               Tucuxi::Common::DateTime _start,
                               Tucuxi::Common::DateTime _end,
                               const CycleSize _cycleSize,
-                              ComputingOption _processingOption,
+                              ComputingOption _computingOption,
                               Tucuxi::Common::DateTime _adjustmentTime,
                               AdjustmentOption _adjustmentOption);
 
@@ -192,7 +192,7 @@ public:
                                  Tucuxi::Common::DateTime _start,
                                  Tucuxi::Common::DateTime _end,
                                  const CycleSize _cycleSize,
-                                 ComputingOption _processingOption);
+                                 ComputingOption _computingOption);
 private:
     ComputingResult compute(CoreComponent &_coreComponent) const override;
 };
@@ -212,7 +212,7 @@ public:
                                Tucuxi::Common::DateTime _end,
                                const PercentileRanks &_ranks,
                                const CycleSize _cycleSize,
-                               ComputingOption _processingOption);
+                               ComputingOption _computingOption);
 
 private:
     PercentileRanks m_ranks;
@@ -248,4 +248,4 @@ protected:
 }
 
 
-#endif // PROCESSINGTRAIT_H
+#endif // COMPUTINGTRAIT_H

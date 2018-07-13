@@ -2,8 +2,8 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
-#ifndef IPROCESSINGSERVICE_H
-#define IPROCESSINGSERVICE_H
+#ifndef ICOMPUTINGSERVICE_H
+#define ICOMPUTINGSERVICE_H
 
 #include <memory>
 
@@ -54,4 +54,4 @@ public:
 }
 }
 
-#endif // IPROCESSINGSERVICE_H
+#endif // ICOMPUTINGSERVICE_H

@@ -24,7 +24,6 @@ HEADERS += \
     $$PWD/../../src/tucucore/corecomponent.h \
     $$PWD/../../src/tucucore/covariateextractor.h \
     $$PWD/../../src/tucucore/idatamodelservices.h \
-    $$PWD/../../src/tucucore/iprocessingservices.h \
     $$PWD/../../src/tucucore/parametersextractor.h \
     $$PWD/../../src/tucucore/residualerrormodel.h \
     $$PWD/../../src/tucucore/sampleextractor.h \

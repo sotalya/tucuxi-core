@@ -6,7 +6,7 @@
 #define TUCUXI_CORE_CYCLESTATISTICSCALCULATOR_H
 
 #include "tucucore/definitions.h"
-#include "tucucore/processingservice/processingresponse.h"
+#include "tucucore/computingservice/computingresponse.h"
 
 namespace Tucuxi {
 namespace Core {
