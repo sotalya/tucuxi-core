@@ -14,7 +14,7 @@ class ActiveMoiety
 public:
     ActiveMoiety();
 
-    void addTarget(std::unique_ptr<TargetDefinition>& _target) { m_targets.push_back(std::move(_target));}
+    void addTarget(std::unique_ptr<TargetDefinition> _target) { m_targets.push_back(std::move(_target));}
     const TargetDefinitions & getTargetDefinitions() const { return m_targets;}
 
 

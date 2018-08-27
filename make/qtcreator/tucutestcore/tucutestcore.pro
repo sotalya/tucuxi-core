@@ -24,9 +24,7 @@ HEADERS += \
     ../../../test/tucucore/test_percentilecalculator.h \
     ../../../test/tucucore/test_covariateextractor.h \
     ../../../test/tucucore/test_parameterextractor.h \
-    ../../../test/tucucore/testutils.h \
-    ../../../src/tucucore/drugmodel/timeconsiderations.h
+    ../../../test/tucucore/testutils.h
 
 SOURCES += \
-    ../../../test/tucucore/tests.cpp \
-    ../../../src/tucucore/drugmodel/timeconsiderations.cpp
+    ../../../test/tucucore/tests.cpp

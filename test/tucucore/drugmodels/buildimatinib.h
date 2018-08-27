@@ -75,11 +75,9 @@ public:
                                                         std::unique_ptr<SubTargetDefinition>(new SubTargetDefinition("cBest", 1000.0, nullptr)),
                                                         std::unique_ptr<SubTargetDefinition>(new SubTargetDefinition("cBest", 1000.0, nullptr)));
 
-        std::unique_ptr<TargetDefinition> targetPtr(target);
-
         ActiveMoiety *activeMoiety = new ActiveMoiety();
 
-        activeMoiety->addTarget(targetPtr);
+        activeMoiety->addTarget(std::unique_ptr<TargetDefinition>(target));
         model->addActiveMoiety(std::unique_ptr<ActiveMoiety>(activeMoiety));
 
         analyteSet->addAnalyte(std::unique_ptr<Analyte>(analyte));

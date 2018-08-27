@@ -49,6 +49,7 @@ HEADERS += \
     $$PWD/../../src/tucucore/drugmodel/targetdefinition.h \
     $$PWD/../../src/tucucore/drugmodel/validdose.h \
     $$PWD/../../src/tucucore/drugmodel/validduration.h \
+    $$PWD/../../src/tucucore/drugmodel/timeconsiderations.h \
     $$PWD/../../src/tucucore/sampleevent.h \
     $$PWD/../../src/tucucore/targetevent.h \
     $$PWD/../../src/tucucore/drugtreatment/sample.h \
@@ -103,6 +104,7 @@ SOURCES += \
     $$PWD/../../src/tucucore/drugmodel/targetdefinition.cpp \
     $$PWD/../../src/tucucore/drugmodel/validdose.cpp \
     $$PWD/../../src/tucucore/drugmodel/validduration.cpp \
+    $$PWD/../../src/tucucore/drugmodel/timeconsiderations.cpp \
     $$PWD/../../src/tucucore/sampleevent.cpp \
     $$PWD/../../src/tucucore/drugtreatment/sample.cpp \
     $$PWD/../../src/tucucore/drugtreatment/drugtreatment.cpp \

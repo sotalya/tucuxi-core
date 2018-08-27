@@ -83,7 +83,7 @@ public:
 };
 
 
-typedef std::vector<std::unique_ptr<TargetDefinition>> TargetDefinitions;
+typedef std::vector<std::unique_ptr<TargetDefinition> > TargetDefinitions;
 
 }
 }

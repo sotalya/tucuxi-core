@@ -17,6 +17,10 @@
 namespace Tucuxi {
 namespace Core {
 
+enum class Invariants {
+    INV_0001 = 0,
+    INV_0002
+};
 
 typedef std::vector< std::unique_ptr<AnalyteSet>> AnalyteSets;
 
@@ -49,9 +53,20 @@ private:
     size_t m_index;
 };
 
+#define INVARIANT(invariant, expression) ok &= expression;
+#define INVARIANTS(decl) public : bool checkInvariants() const {bool ok=true;decl;return ok;}
+#define CHECKINVARIANTS checkInvariants()
+
 
 class DrugModel
 {
+
+    INVARIANTS(
+            INVARIANT(Invariants::INV_0001, (m_drugId.size() != 0))
+            INVARIANT(Invariants::INV_0002, (m_drugModelId.size() != 0))
+            )
+
+
 public:
     DrugModel();
 
@@ -118,6 +133,7 @@ private:
     }
 
     const ParameterSetDefinition* getDispositionParameters(const std::string &_analyteId) const {
+        CHECKINVARIANTS;
         const AnalyteSet* pSet = getAnalyteSet("" /*_analyteId*/);
         if (pSet != nullptr) {
             return &pSet->getDispositionParameters();

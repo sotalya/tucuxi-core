@@ -33,6 +33,7 @@ int main(int argc, char** argv)
     Tucuxi::Common::LoggerHelper::init(fileName);
 
     int res = 0;
+    int tot_res = 0;
 
     TestIntervalCalculator calculatorsTests;
 
@@ -55,6 +56,7 @@ int main(int argc, char** argv)
 #endif
 
     res = calculatorsTests.run(argc, argv);
+    tot_res |= res;
     if (res != 0) {
         std::cerr << "Calculators test failed\n";
         exit(1);
@@ -77,6 +79,7 @@ int main(int argc, char** argv)
 #endif
 
     res = concentrationCalculatorTests.run(argc, argv);
+    tot_res |= res;
     if (res != 0) {
         std::cerr << "ConcentrationCalculator test failed\n";
         exit(1);
@@ -92,6 +95,7 @@ int main(int argc, char** argv)
     dosageTests.add_test("DosageTimeRange test", &TestDosage::testDosageTimeRange);
 
     res = dosageTests.run(argc, argv);
+    tot_res |= res;
     if (res != 0) {
         std::cerr << "Dosage test failed\n";
     } else {
@@ -113,6 +117,7 @@ int main(int argc, char** argv)
     intakeExtractorTests.add_test("FullWeekExceptMonday test", &TestIntakeExtractor::testFullWeekExceptMonday);
 
     res = intakeExtractorTests.run(argc, argv);
+    tot_res |= res;
     if (res != 0) {
         std::cerr << "IntakeExtractor test failed\n";
     } else {
@@ -135,6 +140,7 @@ int main(int argc, char** argv)
     operationTests.add_test("Salazar-Corcoran test", &TestOperation::testSalazarCorcoran);
 
     res = operationTests.run(argc, argv);
+    tot_res |= res;
     if (res != 0) {
         std::cerr << "Operation test failed\n";
     } else {
@@ -146,6 +152,7 @@ int main(int argc, char** argv)
     pkmodelTest.add_test("testPkModelFunctions test", &TestPkModel::testPkModelFunctions);
 
     res = pkmodelTest.run(argc, argv);
+    tot_res |= res;
     if (res != 0) {
         std::cerr << "PkModel test failed\n";
     } else {
@@ -168,6 +175,7 @@ int main(int argc, char** argv)
     ceTests.add_test("testOperableFunctions_3_2", &TestCovariateExtractor::testCovariateExtraction_test3_2);
 
     res = ceTests.run(argc, argv);
+    tot_res |= res;
 
     if (res != 0) {
         std::cerr << "Covariate Extractor test failed\n";
@@ -182,6 +190,7 @@ int main(int argc, char** argv)
     peTests.add_test("testPE_extract1_1", &TestParameterExtractor::testPE_extract1_1);
 
     res = peTests.run(argc, argv);
+    tot_res |= res;
 
     if (res != 0) {
         std::cerr << "Parameter Extractor test failed\n";
@@ -196,6 +205,7 @@ int main(int argc, char** argv)
     opGraphTests.add_test("testOperableCyclic", &TestOpGraph::testOperableCyclic);
 
     res = opGraphTests.run(argc, argv);
+    tot_res |= res;
 
     if (res != 0) {
         std::cerr << "Operable Graph Manager test failed\n";
@@ -209,17 +219,17 @@ int main(int argc, char** argv)
     percentileCalculatorTests.add_test("Apriori Monte Carlo Percentile", &TestPercentileCalculator::testApriori);
 
     res = percentileCalculatorTests.run(argc, argv);
+    tot_res |= res;
     if (res != 0) {
         std::cerr << "Apriori Percentile Calculators test failed\n";
-        exit(1);
     }
 
     percentileCalculatorTests.add_test("Aposteriori Normal Monte Carlo Percentile", &TestPercentileCalculator::testAposterioriNormal);
 
     res = percentileCalculatorTests.run(argc, argv);
+    tot_res |= res;
     if (res != 0) {
         std::cerr << "Aposteriori normal Percentile Calculators test failed\n";
-        exit(1);
     }
 
     // TODO: currently V and CV is negative with input parameters. Need to modify the parameters and
@@ -228,9 +238,9 @@ int main(int argc, char** argv)
     percentileCalculatorTests.add_test("Aposteriori Monte Carlo Percentile", &TestPercentileCalculator::testAposteriori);
 
     res = percentileCalculatorTests.run(argc, argv);
+    tot_res |= res;
     if (res != 0) {
         std::cerr << "Aposteriori Percentile Calculators test failed\n";
-        exit(1);
     }
 #endif
     std::cout << "Percentile Calculators test succeeded\n";
@@ -242,9 +252,9 @@ int main(int argc, char** argv)
     nonMemDrugsTests.add_test("testImatinib", &TestNonMemDrugs::testImatinib);
 
     res = nonMemDrugsTests.run(argc, argv);
+    tot_res |= res;
     if (res != 0) {
         std::cerr << "NonMem Drugs test failed\n";
-        exit(1);
     }
     std::cout << "NonMem Drugs test succeeded\n";
 
@@ -254,9 +264,9 @@ int main(int argc, char** argv)
     drugModelsTests.add_test("testDrugModelImatinib", &TestDrugModels::testImatinib);
 
     res = drugModelsTests.run(argc, argv);
+    tot_res |= res;
     if (res != 0) {
         std::cerr << "DrugModels test failed\n";
-        exit(1);
     }
     std::cout << "DrugModels test succeeded\n";
 
@@ -269,9 +279,9 @@ int main(int argc, char** argv)
     res = cycleStatisticsTests.run(argc, argv);
     if (res != 0) {
         std::cerr << "Cycle Statistics Calculators test failed\n";
-        exit(1);
+        tot_res |= res;
     }
     std::cout << "Cycle Statistics Calculators test succeeded\n";
 
-    return 0;
+    return tot_res;
 }

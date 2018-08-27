@@ -10,7 +10,6 @@
 #include "tucucore/parameter.h"
 #include "tucucore/sampleevent.h"
 #include "tucucore/dosage.h"
-#include "tucucore/iprocessingservices.h"
 
 namespace Tucuxi {
 namespace Core {
