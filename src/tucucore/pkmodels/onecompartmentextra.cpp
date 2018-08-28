@@ -5,7 +5,7 @@
 #include <Eigen/Dense>
 #include <Eigen/LU>
 
-#include "tucucore/onecompartmentextra.h"
+#include "tucucore/pkmodels/onecompartmentextra.h"
 #include "tucucore/intakeevent.h"
 
 namespace Tucuxi {

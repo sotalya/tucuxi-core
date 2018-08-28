@@ -9,18 +9,18 @@ HEADERS += \
     $$PWD/../../src/tucucore/intakeevent.h \
     $$PWD/../../src/tucucore/intakeintervalcalculator.h \
     $$PWD/../../src/tucucore/intakeextractor.h \
-    $$PWD/../../src/tucucore/onecompartmentbolus.h \
-    $$PWD/../../src/tucucore/onecompartmentextra.h \
     $$PWD/../../src/tucucore/parameter.h \
     $$PWD/../../src/tucucore/timedevent.h \
     $$PWD/../../src/tucucore/operation.h \
-    $$PWD/../../src/tucucore/onecompartmentinfusion.h \
-    $$PWD/../../src/tucucore/threecompartmentbolus.h \
-    $$PWD/../../src/tucucore/threecompartmentextra.h \
-    $$PWD/../../src/tucucore/threecompartmentinfusion.h \
-    $$PWD/../../src/tucucore/twocompartmentbolus.h \
-    $$PWD/../../src/tucucore/twocompartmentextra.h \
-    $$PWD/../../src/tucucore/twocompartmentinfusion.h \
+    $$PWD/../../src/tucucore/pkmodels/onecompartmentbolus.h \
+    $$PWD/../../src/tucucore/pkmodels/onecompartmentextra.h \
+    $$PWD/../../src/tucucore/pkmodels/onecompartmentinfusion.h \
+    $$PWD/../../src/tucucore/pkmodels/threecompartmentbolus.h \
+    $$PWD/../../src/tucucore/pkmodels/threecompartmentextra.h \
+    $$PWD/../../src/tucucore/pkmodels/threecompartmentinfusion.h \
+    $$PWD/../../src/tucucore/pkmodels/twocompartmentbolus.h \
+    $$PWD/../../src/tucucore/pkmodels/twocompartmentextra.h \
+    $$PWD/../../src/tucucore/pkmodels/twocompartmentinfusion.h \
     $$PWD/../../src/tucucore/corecomponent.h \
     $$PWD/../../src/tucucore/covariateextractor.h \
     $$PWD/../../src/tucucore/idatamodelservices.h \
@@ -32,7 +32,6 @@ HEADERS += \
     $$PWD/../../src/tucucore/pkmodel.h \
     $$PWD/../../src/tucucore/intaketocalculatorassociator.h \
     $$PWD/../../src/tucucore/hardcodedoperation.h \
-    $$PWD/../../src/tucucore/onecompartmentinfusion_yta.h \
     $$PWD/../../src/tucucore/montecarlopercentilecalculator.h \
     $$PWD/../../src/tucucore/deriv.h \
     $$PWD/../../src/tucucore/likelihood.h \
@@ -71,16 +70,16 @@ SOURCES += \
     $$PWD/../../src/tucucore/intakeintervalcalculator.cpp \
     $$PWD/../../src/tucucore/intakeextractor.cpp \
     $$PWD/../../src/tucucore/dosage.cpp \
-    $$PWD/../../src/tucucore/onecompartmentbolus.cpp \
-    $$PWD/../../src/tucucore/onecompartmentextra.cpp \
     $$PWD/../../src/tucucore/operation.cpp \
-    $$PWD/../../src/tucucore/onecompartmentinfusion.cpp \
-    $$PWD/../../src/tucucore/threecompartmentbolus.cpp \
-    $$PWD/../../src/tucucore/threecompartmentextra.cpp \
-    $$PWD/../../src/tucucore/threecompartmentinfusion.cpp \
-    $$PWD/../../src/tucucore/twocompartmentbolus.cpp \
-    $$PWD/../../src/tucucore/twocompartmentextra.cpp \
-    $$PWD/../../src/tucucore/twocompartmentinfusion.cpp \
+    $$PWD/../../src/tucucore/pkmodels/onecompartmentbolus.cpp \
+    $$PWD/../../src/tucucore/pkmodels/onecompartmentextra.cpp \
+    $$PWD/../../src/tucucore/pkmodels/onecompartmentinfusion.cpp \
+    $$PWD/../../src/tucucore/pkmodels/threecompartmentbolus.cpp \
+    $$PWD/../../src/tucucore/pkmodels/threecompartmentextra.cpp \
+    $$PWD/../../src/tucucore/pkmodels/threecompartmentinfusion.cpp \
+    $$PWD/../../src/tucucore/pkmodels/twocompartmentbolus.cpp \
+    $$PWD/../../src/tucucore/pkmodels/twocompartmentextra.cpp \
+    $$PWD/../../src/tucucore/pkmodels/twocompartmentinfusion.cpp \
     $$PWD/../../src/tucucore/corecomponent.cpp \
     $$PWD/../../src/tucucore/covariateextractor.cpp \
     $$PWD/../../src/tucucore/parameter.cpp \

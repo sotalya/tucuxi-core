@@ -21,15 +21,15 @@
 #include "tucucore/intaketocalculatorassociator.h"
 #include "tucucore/pkmodel.h"
 
-#include "tucucore/onecompartmentbolus.h"
-#include "tucucore/onecompartmentextra.h"
-#include "tucucore/onecompartmentinfusion.h"
-#include "tucucore/twocompartmentbolus.h"
-#include "tucucore/twocompartmentextra.h"
-#include "tucucore/twocompartmentinfusion.h"
-#include "tucucore/threecompartmentbolus.h"
-#include "tucucore/threecompartmentextra.h"
-#include "tucucore/threecompartmentinfusion.h"
+#include "tucucore/pkmodels/onecompartmentbolus.h"
+#include "tucucore/pkmodels/onecompartmentextra.h"
+#include "tucucore/pkmodels/onecompartmentinfusion.h"
+#include "tucucore/pkmodels/twocompartmentbolus.h"
+#include "tucucore/pkmodels/twocompartmentextra.h"
+#include "tucucore/pkmodels/twocompartmentinfusion.h"
+#include "tucucore/pkmodels/threecompartmentbolus.h"
+#include "tucucore/pkmodels/threecompartmentextra.h"
+#include "tucucore/pkmodels/threecompartmentinfusion.h"
 
 namespace Tucuxi {
 namespace Core {

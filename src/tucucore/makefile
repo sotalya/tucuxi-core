@@ -11,7 +11,7 @@ TYPE := LIB
 # Let's keep it in alphabetical order
 SOURCES := \
            drugmodel/activemoiety.cpp \
-		   drugmodel/activesubstance.cpp \
+           drugmodel/activesubstance.cpp \
            drugmodel/analyte.cpp \
            drugmodel/drugmodel.cpp \
            drugmodel/drugmodeldomain.cpp \
@@ -40,9 +40,6 @@ SOURCES := \
            intaketocalculatorassociator.cpp \
            likelihood.cpp \
            montecarlopercentilecalculator.cpp \
-           onecompartmentbolus.cpp \
-           onecompartmentextra.cpp \
-           onecompartmentinfusion.cpp \
            operablegraphmanager.cpp \
            operation.cpp \
            parameter.cpp \
@@ -53,12 +50,15 @@ SOURCES := \
            sampleextractor.cpp \
            targetevent.cpp \
            targetextractor.cpp \
-           threecompartmentbolus.cpp \
-           threecompartmentextra.cpp \
-           threecompartmentinfusion.cpp \
-           twocompartmentbolus.cpp \
-           twocompartmentextra.cpp \
-           twocompartmentinfusion.cpp
+           pkmodels/onecompartmentbolus.cpp \
+           pkmodels/onecompartmentextra.cpp \
+           pkmodels/onecompartmentinfusion.cpp \
+           pkmodels/threecompartmentbolus.cpp \
+           pkmodels/threecompartmentextra.cpp \
+           pkmodels/threecompartmentinfusion.cpp \
+           pkmodels/twocompartmentbolus.cpp \
+           pkmodels/twocompartmentextra.cpp \
+           pkmodels/twocompartmentinfusion.cpp
 
 INCLUDES := . \
             ../../libs/eigen-3.3.2 \

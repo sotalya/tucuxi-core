@@ -5,7 +5,7 @@
 #include <Eigen/Dense>
 
 #include "tucucommon/loggerhelper.h"
-#include "tucucore/twocompartmentinfusion.h"
+#include "tucucore/pkmodels/twocompartmentinfusion.h"
 #include "tucucore/intakeevent.h"
 
 namespace Tucuxi {

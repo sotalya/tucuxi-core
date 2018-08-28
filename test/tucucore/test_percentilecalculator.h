@@ -14,7 +14,7 @@
 
 #include "tucucore/montecarlopercentilecalculator.h"
 #include "tucucore/residualerrormodel.h"
-#include "tucucore/onecompartmentextra.h"
+#include "tucucore/pkmodels/onecompartmentextra.h"
 #include "tucucore/concentrationcalculator.h"
 #include "tucucore/percentilesprediction.h"
 

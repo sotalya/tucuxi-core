@@ -13,7 +13,7 @@
 #include "tucucommon/general.h"
 
 #include "tucucore/residualerrormodel.h"
-#include "tucucore/onecompartmentextra.h"
+#include "tucucore/pkmodels/onecompartmentextra.h"
 #include "tucucore/cyclestatisticscalculator.h"
 
 struct TestCycleStatistics : public fructose::test_base<TestCycleStatistics>

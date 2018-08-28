@@ -5,7 +5,7 @@
 #include <Eigen/Dense>
 
 #include "tucucommon/loggerhelper.h"
-#include "tucucore/onecompartmentbolus.h"
+#include "tucucore/pkmodels/onecompartmentbolus.h"
 #include "tucucore/intakeevent.h"
 
 namespace Tucuxi {

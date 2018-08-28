@@ -7,7 +7,7 @@
 #include <algorithm>
 
 #include "tucucommon/loggerhelper.h"
-#include "tucucore/onecompartmentinfusion.h"
+#include "tucucore/pkmodels/onecompartmentinfusion.h"
 #include "tucucore/intakeevent.h"
 
 namespace Tucuxi {

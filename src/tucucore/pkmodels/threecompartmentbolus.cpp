@@ -5,7 +5,7 @@
 #include <Eigen/Dense>
 
 #include "tucucommon/loggerhelper.h"
-#include "tucucore/threecompartmentextra.h"
+#include "tucucore/pkmodels/threecompartmentbolus.h"
 #include "tucucore/intakeevent.h"
 
 namespace Tucuxi {
@@ -15,11 +15,11 @@ namespace Core {
 #define DEBUG
 #endif
 
-ThreeCompartmentExtraMicro::ThreeCompartmentExtraMicro()
+ThreeCompartmentBolusMicro::ThreeCompartmentBolusMicro()
 {
 }
 
-bool ThreeCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
+bool ThreeCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
     if (!checkValue(_parameters.size() >= 6, "The number of parameters should be equal to 6.")) {
         return false;
@@ -30,12 +30,11 @@ bool ThreeCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, co
     m_D = _intakeEvent.getDose() * 1000;
     m_F = _parameters.getValue(ParameterId::F);
     m_V1 = _parameters.getValue(ParameterId::V1);
-    m_Ka = _parameters.getValue(ParameterId::Ka);
     m_Ke = _parameters.getValue(ParameterId::Ke);
-    m_K12 =_parameters.getValue(ParameterId::K12);
-    m_K21 =_parameters.getValue(ParameterId::K21);
-    m_K13 =_parameters.getValue(ParameterId::K13);
-    m_K31 =_parameters.getValue(ParameterId::K31);
+    m_K12 = _parameters.getValue(ParameterId::K12);
+    m_K21 = _parameters.getValue(ParameterId::K21);
+    m_K13 = _parameters.getValue(ParameterId::K13);
+    m_K31 = _parameters.getValue(ParameterId::K31);
     m_NbPoints = _intakeEvent.getNbPoints();
     m_Int = (_intakeEvent.getInterval()).toHours();
 
@@ -60,26 +59,25 @@ bool ThreeCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, co
     logHelper.debug("m_F: {}", m_F);
     logHelper.debug("m_V1: {}", m_V1);
     logHelper.debug("m_Ke: {}", m_Ke);
-    logHelper.debug("m_Ka: {}", m_Ka);
     logHelper.debug("m_K12: {}", m_K12);
     logHelper.debug("m_K21: {}", m_K21);
     logHelper.debug("m_K13: {}", m_K13);
     logHelper.debug("m_K31: {}", m_K31);
     logHelper.debug("m_NbPoints: {}", m_NbPoints);
     logHelper.debug("m_Int: {}", m_Int);
+    logHelper.debug("m_Alpha: {}", m_Alpha);
+    logHelper.debug("m_Beta: {}", m_Beta);
+    logHelper.debug("m_Gamma: {}", m_Gamma);
 #endif
-
     bool bOK = checkValue(m_D >= 0, "The dose is negative.");
     bOK &= checkValue(!std::isnan(m_D), "The dose is NaN.");
     bOK &= checkValue(!std::isinf(m_D), "The dose is Inf.");
+    bOK &= checkValue(m_F > 0, "The F is not greater than zero.");
     bOK &= checkValue(!std::isnan(m_F), "The F is NaN.");
     bOK &= checkValue(!std::isinf(m_F), "The F is Inf.");
     bOK &= checkValue(m_V1 > 0, "The volume1 is not greater than zero.");
     bOK &= checkValue(!std::isnan(m_V1), "The V1 is NaN.");
     bOK &= checkValue(!std::isinf(m_V1), "The V1 is Inf.");
-    bOK &= checkValue(m_Ka > 0, "The Ka is not greater than zero.");
-    bOK &= checkValue(!std::isnan(m_Ka), "The Ka is NaN.");
-    bOK &= checkValue(!std::isinf(m_Ka), "The Ka is Inf.");
     bOK &= checkValue(m_Ke > 0, "The Ke is not greater than zero.");
     bOK &= checkValue(!std::isnan(m_Ke), "The Ke is NaN.");
     bOK &= checkValue(!std::isinf(m_Ke), "The Ke is Inf.");
@@ -104,16 +102,16 @@ bool ThreeCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, co
     return bOK;
 }
 
-void ThreeCompartmentExtraMicro::computeExponentials(Eigen::VectorXd& _times) 
+
+void ThreeCompartmentBolusMicro::computeExponentials(Eigen::VectorXd& _times)
 {
     setExponentials(Exponentials::Alpha, (-m_Alpha * _times).array().exp());
     setExponentials(Exponentials::Beta, (-m_Beta * _times).array().exp());
     setExponentials(Exponentials::Gamma, (-m_Gamma * _times).array().exp());
-    setExponentials(Exponentials::Ka, (-m_Ka * _times).array().exp());
 }
 
 
-bool ThreeCompartmentExtraMicro::computeConcentrations(const Residuals& _inResiduals, const bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
+bool ThreeCompartmentBolusMicro::computeConcentrations(const Residuals& _inResiduals, const bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1;
     Value concentrations2, concentrations3;
@@ -124,7 +122,7 @@ bool ThreeCompartmentExtraMicro::computeConcentrations(const Residuals& _inResid
     // Calculate concentrations for comp1 and comp2
     compute(_inResiduals, concentrations1, concentrations2, concentrations3);
 
-    // return residuals of comp1, comp2 and comp3
+    // return residual of comp1, comp2 and comp3
     _outResiduals[firstCompartment] = concentrations1[m_NbPoints - 1];
     _outResiduals[secondCompartment] = concentrations2;
     _outResiduals[thirdCompartment] = concentrations3;
@@ -141,7 +139,7 @@ bool ThreeCompartmentExtraMicro::computeConcentrations(const Residuals& _inResid
     return bOK;
 }
 
-bool ThreeCompartmentExtraMicro::computeConcentration(const Value& _atTime, const Residuals& _inResiduals, const bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
+bool ThreeCompartmentBolusMicro::computeConcentration(const Value& _atTime, const Residuals& _inResiduals, const bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1;
     Value concentrations2, concentrations3;
@@ -150,6 +148,8 @@ bool ThreeCompartmentExtraMicro::computeConcentration(const Value& _atTime, cons
     int thirdCompartment = static_cast<int>(Compartments::Third);
     int atTime = static_cast<int>(SingleConcentrations::AtTime);
     int atEndInterval = static_cast<int>(SingleConcentrations::AtEndInterval);
+
+    TMP_UNUSED_PARAMETER(_atTime);
 
     // Calculate concentrations for comp1 and comp2
     compute(_inResiduals, concentrations1, concentrations2, concentrations3);
@@ -178,11 +178,11 @@ bool ThreeCompartmentExtraMicro::computeConcentration(const Value& _atTime, cons
     return bOK;
 }
 
-ThreeCompartmentExtraMacro::ThreeCompartmentExtraMacro()
+ThreeCompartmentBolusMacro::ThreeCompartmentBolusMacro() : ThreeCompartmentBolusMicro()
 {
 }
 
-bool ThreeCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
+bool ThreeCompartmentBolusMacro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
     if (!checkValue(_parameters.size() >= 6, "The number of parameters should be equal to 6.")) {
         return false;
@@ -197,7 +197,6 @@ bool ThreeCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, co
     Value q2 = _parameters.getValue(ParameterId::Q2);
     m_V1 = _parameters.getValue(ParameterId::V1);
     Value v2 = _parameters.getValue(ParameterId::V2);
-    m_Ka = _parameters.getValue(ParameterId::Ka);
     m_Ke = cl / m_V1;
     m_K12 = q1 / m_V1;
     m_K21 = q1 / v2;
@@ -230,7 +229,6 @@ bool ThreeCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, co
     logHelper.debug("q2: {}", q2);
     logHelper.debug("m_V1: {}", m_V1);
     logHelper.debug("v2: {}", v2);
-    logHelper.debug("m_Ka: {}", m_Ka);
     logHelper.debug("m_Ke: {}", m_Ke);
     logHelper.debug("m_K12: {}", m_K12);
     logHelper.debug("m_K21: {}", m_K21);
@@ -261,6 +259,7 @@ bool ThreeCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, co
     bOK &= checkValue(v2 > 0, "The volume2 is not greater than zero.");
     bOK &= checkValue(!std::isnan(v2), "The V2 is NaN.");
     bOK &= checkValue(!std::isinf(v2), "The V2 is Inf.");
+    bOK &= checkValue(m_NbPoints >= 0, "The number of points is zero or negative.");
     bOK &= checkValue(m_Int > 0, "The interval time is not greater than zero.");
     bOK &= checkValue(m_Alpha >= 0, "Alpha is negative.");
     bOK &= checkValue(m_Beta >= 0, "Beta is negative.");
@@ -268,6 +267,7 @@ bool ThreeCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, co
 
     return bOK;
 }
+
 
 }
 }

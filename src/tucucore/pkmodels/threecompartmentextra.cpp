@@ -5,7 +5,7 @@
 #include <Eigen/Dense>
 
 #include "tucucommon/loggerhelper.h"
-#include "tucucore/threecompartmentinfusion.h"
+#include "tucucore/pkmodels/threecompartmentextra.h"
 #include "tucucore/intakeevent.h"
 
 namespace Tucuxi {
@@ -15,12 +15,11 @@ namespace Core {
 #define DEBUG
 #endif
 
-ThreeCompartmentInfusionMicro::ThreeCompartmentInfusionMicro()
+ThreeCompartmentExtraMicro::ThreeCompartmentExtraMicro()
 {
 }
 
-
-bool ThreeCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
+bool ThreeCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
     if (!checkValue(_parameters.size() >= 6, "The number of parameters should be equal to 6.")) {
         return false;
@@ -31,14 +30,14 @@ bool ThreeCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent,
     m_D = _intakeEvent.getDose() * 1000;
     m_F = _parameters.getValue(ParameterId::F);
     m_V1 = _parameters.getValue(ParameterId::V1);
+    m_Ka = _parameters.getValue(ParameterId::Ka);
     m_Ke = _parameters.getValue(ParameterId::Ke);
     m_K12 =_parameters.getValue(ParameterId::K12);
     m_K21 =_parameters.getValue(ParameterId::K21);
     m_K13 =_parameters.getValue(ParameterId::K13);
     m_K31 =_parameters.getValue(ParameterId::K31);
-    m_Tinf = _intakeEvent.getInfusionTime().toHours();
-    m_Int = _intakeEvent.getInterval().toHours();
     m_NbPoints = _intakeEvent.getNbPoints();
+    m_Int = (_intakeEvent.getInterval()).toHours();
 
     a0 = m_Ke * m_K21 * m_K31;
     a1 = m_Ke * m_K31 + m_K21 * m_K31 + m_K21 * m_K13 + m_Ke * m_K21 + m_K31 * m_K12;
@@ -61,11 +60,11 @@ bool ThreeCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent,
     logHelper.debug("m_F: {}", m_F);
     logHelper.debug("m_V1: {}", m_V1);
     logHelper.debug("m_Ke: {}", m_Ke);
+    logHelper.debug("m_Ka: {}", m_Ka);
     logHelper.debug("m_K12: {}", m_K12);
     logHelper.debug("m_K21: {}", m_K21);
     logHelper.debug("m_K13: {}", m_K13);
     logHelper.debug("m_K31: {}", m_K31);
-    logHelper.debug("m_Tinf: {}", m_Tinf);
     logHelper.debug("m_NbPoints: {}", m_NbPoints);
     logHelper.debug("m_Int: {}", m_Int);
 #endif
@@ -73,12 +72,14 @@ bool ThreeCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent,
     bool bOK = checkValue(m_D >= 0, "The dose is negative.");
     bOK &= checkValue(!std::isnan(m_D), "The dose is NaN.");
     bOK &= checkValue(!std::isinf(m_D), "The dose is Inf.");
-    bOK &= checkValue(m_F > 0, "The F is not greater than zero.");
     bOK &= checkValue(!std::isnan(m_F), "The F is NaN.");
     bOK &= checkValue(!std::isinf(m_F), "The F is Inf.");
     bOK &= checkValue(m_V1 > 0, "The volume1 is not greater than zero.");
     bOK &= checkValue(!std::isnan(m_V1), "The V1 is NaN.");
     bOK &= checkValue(!std::isinf(m_V1), "The V1 is Inf.");
+    bOK &= checkValue(m_Ka > 0, "The Ka is not greater than zero.");
+    bOK &= checkValue(!std::isnan(m_Ka), "The Ka is NaN.");
+    bOK &= checkValue(!std::isinf(m_Ka), "The Ka is Inf.");
     bOK &= checkValue(m_Ke > 0, "The Ke is not greater than zero.");
     bOK &= checkValue(!std::isnan(m_Ke), "The Ke is NaN.");
     bOK &= checkValue(!std::isinf(m_Ke), "The Ke is Inf.");
@@ -94,42 +95,41 @@ bool ThreeCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent,
     bOK &= checkValue(m_K31 > 0, "The K31 is not greater than zero.");
     bOK &= checkValue(!std::isnan(m_K31), "The K31 is NaN.");
     bOK &= checkValue(!std::isinf(m_K31), "The K31 is Inf.");
-    bOK &= checkValue(m_Tinf > 0, "The infusion time is not greater than zero.");
+    bOK &= checkValue(m_NbPoints >= 0, "The number of points is zero or negative.");
     bOK &= checkValue(m_Int > 0, "The interval time is not greater than zero.");
     bOK &= checkValue(m_Alpha >= 0, "Alpha is negative.");
     bOK &= checkValue(m_Beta >= 0, "Beta is negative.");
     bOK &= checkValue(m_Gamma >= 0, "Gamma is negative.");
 
-    return true;
+    return bOK;
 }
 
-void ThreeCompartmentInfusionMicro::computeExponentials(Eigen::VectorXd& _times)
+void ThreeCompartmentExtraMicro::computeExponentials(Eigen::VectorXd& _times) 
 {
     setExponentials(Exponentials::Alpha, (-m_Alpha * _times).array().exp());
     setExponentials(Exponentials::Beta, (-m_Beta * _times).array().exp());
     setExponentials(Exponentials::Gamma, (-m_Gamma * _times).array().exp());
+    setExponentials(Exponentials::Ka, (-m_Ka * _times).array().exp());
 }
 
-bool ThreeCompartmentInfusionMicro::computeConcentrations(const Residuals& _inResiduals, const bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
+
+bool ThreeCompartmentExtraMicro::computeConcentrations(const Residuals& _inResiduals, const bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
 {
-    Eigen::VectorXd concentrations1(m_NbPoints);
+    Eigen::VectorXd concentrations1;
     Value concentrations2, concentrations3;
     int firstCompartment = static_cast<int>(Compartments::First);
     int secondCompartment = static_cast<int>(Compartments::Second);
     int thirdCompartment = static_cast<int>(Compartments::Third);
 
-    int forcesize = static_cast<int>(std::min(ceil(m_Tinf/m_Int * m_NbPoints), ceil(m_NbPoints)));
-
-    TMP_UNUSED_PARAMETER(_inResiduals);
-
     // Calculate concentrations for comp1 and comp2
-    compute(forcesize, concentrations1, concentrations2, concentrations3);
+    compute(_inResiduals, concentrations1, concentrations2, concentrations3);
 
-    // return concentrations of comp1, comp2 and comp3
+    // return residuals of comp1, comp2 and comp3
     _outResiduals[firstCompartment] = concentrations1[m_NbPoints - 1];
     _outResiduals[secondCompartment] = concentrations2;
     _outResiduals[thirdCompartment] = concentrations3;
 
+    // return concentration
     _concentrations[firstCompartment].assign(concentrations1.data(), concentrations1.data() + concentrations1.size());	
     // TODO: add calcuation concentrations of second and third compartment and condtions
     TMP_UNUSED_PARAMETER(_isAll);
@@ -141,9 +141,9 @@ bool ThreeCompartmentInfusionMicro::computeConcentrations(const Residuals& _inRe
     return bOK;
 }
 
-bool ThreeCompartmentInfusionMicro::computeConcentration(const Value& _atTime, const Residuals& _inResiduals, const bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
+bool ThreeCompartmentExtraMicro::computeConcentration(const Value& _atTime, const Residuals& _inResiduals, const bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
 {
-    Eigen::VectorXd concentrations1(2);
+    Eigen::VectorXd concentrations1;
     Value concentrations2, concentrations3;
     int firstCompartment = static_cast<int>(Compartments::First);
     int secondCompartment = static_cast<int>(Compartments::Second);
@@ -151,16 +151,8 @@ bool ThreeCompartmentInfusionMicro::computeConcentration(const Value& _atTime, c
     int atTime = static_cast<int>(SingleConcentrations::AtTime);
     int atEndInterval = static_cast<int>(SingleConcentrations::AtEndInterval);
 
-    int forcesize = 0;
-
-    TMP_UNUSED_PARAMETER(_inResiduals);
-
-    if (_atTime <= m_Tinf) {
-	    forcesize = 1;
-    }
-
     // Calculate concentrations for comp1 and comp2
-    compute(forcesize, concentrations1, concentrations2, concentrations3);
+    compute(_inResiduals, concentrations1, concentrations2, concentrations3);
 
     // return concentraions (computation with atTime (current time))
     _concentrations[firstCompartment].push_back(concentrations1[atTime]);
@@ -186,16 +178,16 @@ bool ThreeCompartmentInfusionMicro::computeConcentration(const Value& _atTime, c
     return bOK;
 }
 
-ThreeCompartmentInfusionMacro::ThreeCompartmentInfusionMacro()
+ThreeCompartmentExtraMacro::ThreeCompartmentExtraMacro()
 {
 }
 
-bool ThreeCompartmentInfusionMacro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
+bool ThreeCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
     if (!checkValue(_parameters.size() >= 6, "The number of parameters should be equal to 6.")) {
         return false;
     }
-    
+
     Value a0, a1, a2, p, q, r1, r2, phi;
 
     m_D = _intakeEvent.getDose() * 1000;
@@ -205,14 +197,14 @@ bool ThreeCompartmentInfusionMacro::checkInputs(const IntakeEvent& _intakeEvent,
     Value q2 = _parameters.getValue(ParameterId::Q2);
     m_V1 = _parameters.getValue(ParameterId::V1);
     Value v2 = _parameters.getValue(ParameterId::V2);
+    m_Ka = _parameters.getValue(ParameterId::Ka);
     m_Ke = cl / m_V1;
     m_K12 = q1 / m_V1;
     m_K21 = q1 / v2;
     m_K13 = q2 / m_V1;
     m_K31 = q2 / v2;
-    m_Tinf = _intakeEvent.getInfusionTime().toHours();
-    m_Int = _intakeEvent.getInterval().toHours();
     m_NbPoints = _intakeEvent.getNbPoints();
+    m_Int = (_intakeEvent.getInterval()).toHours();
 
     a0 = m_Ke * m_K21 * m_K31;
     a1 = m_Ke * m_K31 + m_K21 * m_K31 + m_K21 * m_K13 + m_Ke * m_K21 + m_K31 * m_K12;
@@ -226,6 +218,27 @@ bool ThreeCompartmentInfusionMacro::checkInputs(const IntakeEvent& _intakeEvent,
     m_Alpha = - (std::cos(phi) * r2 - a2 / 3);
     m_Beta = - (std::cos(phi + 2 * 3.1428 / 3) * r2 - a2/3);
     m_Gamma = - (std::cos(phi + 4 * 3.1428/3) * r2 - a2/3);
+
+#ifdef DEBUG
+    Tucuxi::Common::LoggerHelper logHelper;
+
+    logHelper.debug("<<Input Values>>");
+    logHelper.debug("m_D: {}", m_D);
+    logHelper.debug("cl: {}", cl);
+    logHelper.debug("m_F: {}", m_F);
+    logHelper.debug("q1: {}", q1);
+    logHelper.debug("q2: {}", q2);
+    logHelper.debug("m_V1: {}", m_V1);
+    logHelper.debug("v2: {}", v2);
+    logHelper.debug("m_Ka: {}", m_Ka);
+    logHelper.debug("m_Ke: {}", m_Ke);
+    logHelper.debug("m_K12: {}", m_K12);
+    logHelper.debug("m_K21: {}", m_K21);
+    logHelper.debug("m_K13: {}", m_K13);
+    logHelper.debug("m_K31: {}", m_K31);
+    logHelper.debug("m_NbPoints: {}", m_NbPoints);
+    logHelper.debug("m_Int: {}", m_Int);
+#endif
 
     bool bOK = checkValue(m_D >= 0, "The dose is negative.");
     bOK &= checkValue(!std::isnan(m_D), "The dose is NaN.");
@@ -248,13 +261,12 @@ bool ThreeCompartmentInfusionMacro::checkInputs(const IntakeEvent& _intakeEvent,
     bOK &= checkValue(v2 > 0, "The volume2 is not greater than zero.");
     bOK &= checkValue(!std::isnan(v2), "The V2 is NaN.");
     bOK &= checkValue(!std::isinf(v2), "The V2 is Inf.");
-    bOK &= checkValue(m_Tinf > 0, "The infusion time is not greater than zero.");
     bOK &= checkValue(m_Int > 0, "The interval time is not greater than zero.");
     bOK &= checkValue(m_Alpha >= 0, "Alpha is negative.");
     bOK &= checkValue(m_Beta >= 0, "Beta is negative.");
     bOK &= checkValue(m_Gamma >= 0, "Gamma is negative.");
 
-    return true;
+    return bOK;
 }
 
 }

@@ -20,9 +20,9 @@
 #include "tucucore/intakeextractor.h"
 #include "tucucore/intakeintervalcalculator.h"
 #include "tucucore/concentrationcalculator.h"
-#include "tucucore/onecompartmentbolus.h"
-#include "tucucore/onecompartmentinfusion.h"
-#include "tucucore/onecompartmentextra.h"
+#include "tucucore/pkmodels/onecompartmentbolus.h"
+#include "tucucore/pkmodels/onecompartmentinfusion.h"
+#include "tucucore/pkmodels/onecompartmentextra.h"
 
 struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
 {
