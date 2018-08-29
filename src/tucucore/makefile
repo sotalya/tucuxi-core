@@ -30,6 +30,7 @@ SOURCES := \
            cachedexponentials.cpp \
            concentrationcalculator.cpp \
            corecomponent.cpp \
+           computingcomponent.cpp \
            covariateevent.cpp \
            covariateextractor.cpp \
            cyclestatisticscalculator.cpp \
