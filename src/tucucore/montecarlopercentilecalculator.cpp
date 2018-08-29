@@ -24,7 +24,7 @@ MonteCarloPercentileCalculatorBase::MonteCarloPercentileCalculatorBase()
 {
      // Here, hardcoded number of simulated patients
      // Aziz says this is an approximate number to assure a reasonable result for most cases
-#if 0
+#if 1
     setNumberPatients(10000);
 #else
     setNumberPatients(8); // For test: need to fix unit test
@@ -69,9 +69,6 @@ IPercentileCalculator::ComputingResult MonteCarloPercentileCalculatorBase::compu
 
         workers.push_back(std::thread([thread, nbPatients, &abort, _aborter, &nbPoints, _etas, _epsilons, _parameters, newIntakes, &_residualErrorModel, &times, &concentrations, nbThreads, &_concentrationCalculator, &_percentiles]()
         {
-            // Get concentrations for each patients, allocation will be done in computeConcentrations
-            ConcentrationPredictionPtr predictionPtr;
-            predictionPtr = std::make_unique<Tucuxi::Core::ConcentrationPrediction>();
 
             int start = thread * (nbPatients / nbThreads);
             int end = (thread + 1) * (nbPatients / nbThreads);
@@ -82,6 +79,13 @@ IPercentileCalculator::ComputingResult MonteCarloPercentileCalculatorBase::compu
                         abort = true;
                         return;
                     }
+
+
+                    // Get concentrations for each patients, allocation will be done in computeConcentrations
+                    // Be carefull with this pointer. If declared at the beginning of the thread, then
+                    // only a single computation is stored instead of (end-start)
+                    ConcentrationPredictionPtr predictionPtr;
+                    predictionPtr = std::make_unique<Tucuxi::Core::ConcentrationPrediction>();
 
                     // Call to apriori becomes population as its determined earlier in the parametersExtractor
                     ComputationResult computationResult = _concentrationCalculator.computeConcentrations(
@@ -137,6 +141,12 @@ IPercentileCalculator::ComputingResult MonteCarloPercentileCalculatorBase::compu
     // Init our percentile prediction object
     _percentiles.init(_percentileRanks, times, _intakes);
 
+    std::vector<int> positions;
+    for (unsigned int percRankIdx = 0; percRankIdx < _percentileRanks.size(); percRankIdx++) {
+        positions.push_back( ((double) _percentileRanks[percRankIdx]) / 100.0
+                            * ((double) nbPatients));
+    }
+
     // Sort and set percentile
     for (unsigned int cycle = 0; cycle < _intakes.size(); cycle++) {
         for (int point = 0; point < _intakes.at(cycle).getNbPoints(); point++) {
@@ -145,6 +155,13 @@ IPercentileCalculator::ComputingResult MonteCarloPercentileCalculatorBase::compu
             std::sort(concentrations[cycle][point].begin(), concentrations[cycle][point].end(), [&] (const double v1, const double v2) { return v1 < v2; });
 
             // Rebuild pecentile array [percentile][cycle][point]
+
+            for (unsigned int percRankIdx = 0; percRankIdx < _percentileRanks.size(); percRankIdx++) {
+                int pos = positions[percRankIdx];
+                double conc = concentrations[cycle][point][pos];
+                _percentiles.appendPercentile(percRankIdx, cycle, point, conc);
+            }
+            /*
             unsigned int percRankIdx = 0;
             for (unsigned int sortPosition = 0; sortPosition < nbPatients; sortPosition++) {
 
@@ -162,6 +179,7 @@ IPercentileCalculator::ComputingResult MonteCarloPercentileCalculatorBase::compu
                     }
                 }
             }
+            */
         }
     }
     return ComputingResult::Success;
@@ -215,7 +233,11 @@ IPercentileCalculator::ComputingResult AprioriMonteCarloPercentileCalculator::ca
     // Generating the random numbers
     EigenMatrix rands = EigenMatrix::Zero(nbPatients, omegaRank);
     
-    std::vector<Deviations> epsilons(nbPatients, Deviations(_residualErrorModel.nbEpsilons(), normalDistribution(rnGenerator)));
+    std::vector<Deviations> epsilons(nbPatients);
+    // We fill the epsilons
+    for (unsigned int p = 0; p < nbPatients; p++) {
+        epsilons[p] = Deviations(_residualErrorModel.nbEpsilons(), normalDistribution(rnGenerator));
+    }
 
     for (int row = 0; row < rands.rows(); row++) {
         for (int column = 0; column < rands.cols(); column++) {
@@ -413,7 +435,12 @@ IPercentileCalculator::ComputingResult AposterioriMonteCarloPercentileCalculator
     std::normal_distribution<> normalDistribution(0, 1.0);
     std::discrete_distribution<> discreteDistribution(&weight(0), &weight(0) + weight.size());
 
-    std::vector<Deviations> epsilons(reSamples, Deviations(_residualErrorModel.nbEpsilons(), normalDistribution(rnGenerator)));
+    std::vector<Deviations> epsilons(reSamples);
+    // We fill the epsilons
+    for (unsigned int p = 0; p < reSamples; p++) {
+        epsilons[p] = Deviations(_residualErrorModel.nbEpsilons(), normalDistribution(rnGenerator));
+    }
+
     std::vector<Etas> RealEtaSamples(reSamples);
 
     // TODO: think about whether we can use push_back or not

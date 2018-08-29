@@ -22,16 +22,9 @@
 #include "tucucore/computingservice/computingtrait.h"
 #include "tucucore/intaketocalculatorassociator.h"
 #include "tucucore/pkmodel.h"
+#include "tucucore/montecarlopercentilecalculator.h"
+#include "tucucore/percentilesprediction.h"
 
-#include "tucucore/pkmodels/onecompartmentbolus.h"
-#include "tucucore/pkmodels/onecompartmentextra.h"
-#include "tucucore/pkmodels/onecompartmentinfusion.h"
-#include "tucucore/pkmodels/twocompartmentbolus.h"
-#include "tucucore/pkmodels/twocompartmentextra.h"
-#include "tucucore/pkmodels/twocompartmentinfusion.h"
-#include "tucucore/pkmodels/threecompartmentbolus.h"
-#include "tucucore/pkmodels/threecompartmentextra.h"
-#include "tucucore/pkmodels/threecompartmentinfusion.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -148,7 +141,7 @@ ComputingResult ComputingComponent::compute(const ComputingRequest &_request, st
 }
 
 ComputingResult ComputingComponent::generalExtractions(
-        const ComputingTraitConcentration *_traits,
+        const ComputingTraitStandard *_traits,
         const ComputingRequest &_request,
         std::shared_ptr<PkModel> &_pkModel,
         IntakeSeries &_intakeSeries,
@@ -280,10 +273,120 @@ ComputingResult ComputingComponent::compute(
         const ComputingRequest &_request,
         std::unique_ptr<ComputingResponse> &_response)
 {
-    TMP_UNUSED_PARAMETER(_traits);
-    TMP_UNUSED_PARAMETER(_request);
-    TMP_UNUSED_PARAMETER(_response);
-    return ComputingResult::Error;
+    if (_traits == nullptr) {
+        m_logger.error("The computing traits sent for computation are nullptr");
+        return ComputingResult::Error;
+    }
+
+    std::shared_ptr<PkModel> pkModel;
+
+    IntakeSeries intakeSeries;
+    CovariateSeries covariateSeries;
+    ParameterSetSeries parameterSeries;
+
+    ComputingResult extractionResult = generalExtractions(_traits,
+                                                _request,
+                                                pkModel,
+                                                intakeSeries,
+                                                covariateSeries,
+                                                parameterSeries);
+
+    if (extractionResult != ComputingResult::Success) {
+        return extractionResult;
+    }
+
+    // Now ready to do the real computing with all the extracted values
+
+
+    std::unique_ptr<Tucuxi::Core::IAprioriPercentileCalculator> calculator(new Tucuxi::Core::AprioriMonteCarloPercentileCalculator());
+
+
+
+    Tucuxi::Core::PercentilesPrediction percentiles;
+
+    Tucuxi::Core::PercentileRanks percentileRanks;
+    Tucuxi::Core::OmegaMatrix omega;
+    Tucuxi::Core::SigmaResidualErrorModel residualErrorModel;
+    Tucuxi::Core::Etas etas;
+    Tucuxi::Core::ComputingAborter *aborter = nullptr;
+
+    //percentileRanks = {5, 10, 25, 50, 75, 90, 95};
+    //percentileRanks = {10, 25, 75, 90};
+    percentileRanks = {5, 25, 75, 95};
+    percentileRanks = _traits->getRanks();
+
+    Sigma sigma(1);
+    sigma(0) = 0.3138;
+    residualErrorModel.setErrorModel(SigmaResidualErrorModel::ResidualErrorType::PROPORTIONAL);
+    residualErrorModel.setSigma(sigma);
+
+
+    omega = Tucuxi::Core::OmegaMatrix(2,2);
+    omega(0,0) = 0.356 * 0.356; // Variance of CL
+    omega(0,1) = 0.798 * 0.356 * 0.629; // Covariance of CL and V
+    omega(1,1) = 0.629 * 0.629; // Variance of V
+    omega(1,0) = 0.798 * 0.356 * 0.629; // Covariance of CL and V
+
+    // Set initial etas to 0 for CL and V
+    etas.push_back(0.0);
+    etas.push_back(0.0);
+
+    Tucuxi::Core::IPercentileCalculator::ComputingResult computationResult;
+
+    Tucuxi::Core::ConcentrationCalculator concentrationCalculator;
+    computationResult = calculator->calculate(
+                percentiles,
+                intakeSeries,
+                parameterSeries,
+                omega,
+                residualErrorModel,
+                etas,
+                percentileRanks,
+                concentrationCalculator,
+                aborter);
+
+    // We use a single prediction to get back time offsets. Could be optimized
+    ConcentrationPredictionPtr pPrediction = std::make_unique<ConcentrationPrediction>();
+    ComputationResult predictonComputationResult = computePopulation(
+                pPrediction,
+                false,
+                _traits->getStart(),
+                _traits->getEnd(),
+                intakeSeries,
+                parameterSeries);
+
+
+    if (computationResult == IPercentileCalculator::ComputingResult::Success &&
+            intakeSeries.size() == pPrediction->getTimes().size() &&
+            intakeSeries.size() == pPrediction->getValues().size())
+    {
+        std::unique_ptr<PercentilesResponse> resp = std::make_unique<PercentilesResponse>();
+
+        const std::vector<std::vector<std::vector<Value> > > allValues = percentiles.getValues();
+
+        for (unsigned int p = 0; p < percentiles.getRanks().size(); p++) {
+            std::vector<CycleData> percData;
+
+            for (unsigned int cycle = 0; cycle < allValues[p].size(); cycle ++) {
+
+                TimeOffsets times = pPrediction->getTimes().at(cycle);
+                DateTime start = intakeSeries.at(cycle).getEventTime();
+                DateTime end = start + std::chrono::milliseconds(static_cast<int>(times.at(times.size() - 1)) * 1000);
+
+                CycleData cycleData(start, end, Unit("ug/l"));
+                cycleData.addData(times, allValues[p].at(cycle), 0);
+                percData.push_back(cycleData);
+            }
+            resp->addPercentileData(percData);
+        }
+        resp->setRanks(percentileRanks);
+
+        _response->addResponse(std::move(resp));
+        return ComputingResult::Success;
+    }
+    else {
+        return ComputingResult::Error;
+    }
 }
 
 ComputingResult ComputingComponent::compute(

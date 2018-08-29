@@ -232,6 +232,8 @@ public:
                                const CycleSize _cycleSize,
                                ComputingOption _computingOption);
 
+    const PercentileRanks &getRanks() const { return m_ranks;}
+
 private:
     PercentileRanks m_ranks;
 

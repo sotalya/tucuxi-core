@@ -154,17 +154,28 @@ protected:
 /// 2. The concentration of percentiles, as a vector of CycleMultiData,
 ///    one CycleData per percentile
 ///
-class PercentilesResponse : public SinglePredictionResponse
+class PercentilesResponse : public SingleComputingResponse
 {
 public:
-    const size_t getNbRanks() const { return m_ranks.size(); }
-    const PercentileRank getRank(int _index) const { return m_ranks.at(_index); }
-    const CycleData& getData(int _index) const {
-        return m_data.at(_index);
+
+    void setRanks(const PercentileRanks &_ranks) { m_ranks = _ranks;}
+
+    size_t getNbRanks() const { return m_ranks.size(); }
+
+    PercentileRank getRank(unsigned int _index) const { return m_ranks.at(_index); }
+
+    void addPercentileData(const std::vector<CycleData> &_data) { m_data.push_back(_data);}
+
+    const CycleData& getData(unsigned int _percentileIndex, unsigned int _cycleIndex) const {
+        return m_data.at(_percentileIndex).at(_cycleIndex);
+    }
+
+    const std::vector<CycleData>& getPercentileData(unsigned int _percentileIndex) const {
+        return m_data.at(_percentileIndex);
     }
 
 private:
-    std::vector<CycleData> m_data;
+    std::vector<std::vector<CycleData> > m_data;
     PercentileRanks m_ranks;
 };
 

@@ -68,7 +68,7 @@ public:
 private:
     std::vector<TimeOffsets> m_times;
     PercentileRanks m_ranks;
-    std::vector<std::vector<std::vector<Value> > >m_values; // Cylces->Points->Value
+    std::vector<std::vector<std::vector<Value> > >m_values; // Cycles->Points->Value
 };
 typedef std::unique_ptr<PercentilesPrediction> PercentilesPredictionPtr;
 

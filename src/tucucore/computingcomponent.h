@@ -31,6 +31,7 @@ class ComputingTraitConcentration;
 class ComputingTraitAdjustment;
 class ComputingTraitAtMeasures;
 class ComputingTraitSinglePoints;
+class ComputingTraitStandard;
 
 class ComputingComponent : public Tucuxi::Common::Component,
         public IComputingService
@@ -88,8 +89,7 @@ private:
             const ComputingRequest &_request,
             std::unique_ptr<ComputingResponse> &_response);
 
-    ComputingResult generalExtractions(
-            const ComputingTraitConcentration *_traits,
+    ComputingResult generalExtractions(const Tucuxi::Core::ComputingTraitStandard *_traits,
             const ComputingRequest &_request,
             std::shared_ptr<PkModel> &_pkModel,
             IntakeSeries &_intakeSeries,

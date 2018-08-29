@@ -65,6 +65,7 @@ void ParameterSetEvent::applyEtas(const Etas& _etas)
 void Parameter::applyEta(Deviation _eta)
 {
     if (m_definition.isVariable()) {
+        Value oldValue = m_value;
         switch (m_definition.getVariability().getType()) {
             case ParameterVariabilityType::Additive:
                 m_value = m_value + _eta;
@@ -73,7 +74,10 @@ void Parameter::applyEta(Deviation _eta)
                 m_value = m_value * exp(_eta);
                 break;
             case ParameterVariabilityType::Proportional:
-                m_value = m_value * (1 + _eta);
+                m_value = m_value * exp(_eta);
+                // TODO : Check that.
+                // Actually if _eta is less than -1, then there is an issue
+                //m_value = m_value * (1 + _eta);
                 break;
             default: {
                 Tucuxi::Common::LoggerHelper logger;
