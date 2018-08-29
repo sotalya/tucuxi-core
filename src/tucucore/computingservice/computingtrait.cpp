@@ -3,11 +3,15 @@
 */
 #include "computingtrait.h"
 
-#include "tucucore/corecomponent.h"
+#include "tucucore/computingcomponent.h"
 
 namespace Tucuxi {
 namespace Core {
 
+ComputingTrait::~ComputingTrait()
+{
+
+}
 
 void ComputingTraits::addTrait(std::unique_ptr<ComputingTrait> _trait)
 {
@@ -35,6 +39,11 @@ ComputingTraitStandard::ComputingTraitStandard(RequestResponseId _id,
     ComputingTrait(_id),
     m_type(_type), m_computingOption(_computingOption), m_start(_start), m_end(_end), m_cycleSize(_cycleSize)
 {
+}
+
+ComputingTraitStandard::~ComputingTraitStandard()
+{
+
 }
 
 
@@ -106,12 +115,6 @@ ComputingTraitConcentration::ComputingTraitConcentration(RequestResponseId _id,
 }
 
 
-ComputingResult ComputingTraitConcentration::compute(CoreComponent &_coreComponent) const
-{     
-    return ComputingResult::Error;
-}
-
-
 ComputingTraitPercentiles::ComputingTraitPercentiles(RequestResponseId _id,
                            PredictionParameterType _type,
                            Tucuxi::Common::DateTime _start,
@@ -128,6 +131,55 @@ ComputingTraitAtMeasures::ComputingTraitAtMeasures(RequestResponseId _id, Comput
     : ComputingTrait(_id), m_computingOption(_computingOption)
 {
 }
+
+
+
+ComputingResult ComputingTraitConcentration::compute(
+        ComputingComponent &_computingComponent,
+        const ComputingRequest &_request,
+        std::unique_ptr<ComputingResponse> &_response) const
+{
+    return _computingComponent.compute(this, _request, _response);
+}
+
+
+ComputingResult ComputingTraitPercentiles::compute(
+        ComputingComponent &_computingComponent,
+        const ComputingRequest &_request,
+        std::unique_ptr<ComputingResponse> &_response) const
+{
+    return _computingComponent.compute(this, _request, _response);
+}
+
+
+ComputingResult ComputingTraitAdjustment::compute(
+        ComputingComponent &_computingComponent,
+        const ComputingRequest &_request,
+        std::unique_ptr<ComputingResponse> &_response) const
+{
+    return _computingComponent.compute(this, _request, _response);
+}
+
+
+ComputingResult ComputingTraitAtMeasures::compute(
+        ComputingComponent &_computingComponent,
+        const ComputingRequest &_request,
+        std::unique_ptr<ComputingResponse> &_response) const
+{
+    return _computingComponent.compute(this, _request, _response);
+}
+
+
+ComputingResult ComputingTraitSinglePoints::compute(
+        ComputingComponent &_computingComponent,
+        const ComputingRequest &_request,
+        std::unique_ptr<ComputingResponse> &_response) const
+{
+    return _computingComponent.compute(this, _request, _response);
+}
+
+
+
 
 }
 }

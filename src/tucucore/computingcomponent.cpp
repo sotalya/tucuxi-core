@@ -40,6 +40,9 @@ namespace Core {
 Tucuxi::Common::Interface* ComputingComponent::createComponent()
 {
     ComputingComponent *cmp = new ComputingComponent();
+
+    cmp->initialize();
+
     return dynamic_cast<IComputingService*>(cmp);
 }
 
@@ -54,84 +57,37 @@ ComputingComponent::~ComputingComponent()
 {
 }
 
+bool ComputingComponent::initialize()
+{
+    m_models = new PkModelCollection();
+    if (!defaultPopulate(*m_models)) {
+        m_logger.error("Could not populate the Pk models collection. No model will be available");
+        return false;
+    }
+    return true;
+}
+
+
 ComputingResult ComputingComponent::compute(const ComputingRequest &_request, std::unique_ptr<ComputingResponse> &_response)
 {
+    // First ensure there is at least a Pk Model available
+    if (m_models->getPkModelList().size() == 0) {
+        m_logger.error("No Pk Model loaded. Impossible to perform computation");
+        return ComputingResult::Error;
+    }
+
+    // A simple iteration on the ComputingTraits. Each one is responsible to fill the _response object with
+    // a new computing response
     ComputingTraits::Iterator it = _request.getComputingTraits().begin();
+    ComputingResult result = ComputingResult::Success;
     while (it != _request.getComputingTraits().end()) {
-        ComputingTraitConcentration *pTrait = dynamic_cast<ComputingTraitConcentration*>(it->get());
-        if (pTrait != nullptr) {
 
-            IntakeSeries intakeSeries;
-            int nIntakes = IntakeExtractor::extract(_request.getDrugTreatment().getDosageHistory(false), pTrait->getStart(), pTrait->getEnd(), intakeSeries, pTrait->getCycleSize());
-            TMP_UNUSED_PARAMETER(nIntakes);
-
-            static const std::string analyteId = "imatinib";
-            static const std::string pkModelId = _request.getDrugModel().getPkModelId();
-            static const std::string formulation = "???";
-            static const Route route = Route::IntravenousBolus; // ???
-
-            PkModelCollection models;
-            bool rc = true;
-            ADD_PKMODEL_TO_COLLECTION(models, 1, One, Macro, macro, rc);
-            ADD_PKMODEL_TO_COLLECTION(models, 1, One, Micro, micro, rc);
-            ADD_PKMODEL_TO_COLLECTION(models, 2, Two, Macro, macro, rc);
-            ADD_PKMODEL_TO_COLLECTION(models, 2, Two, Micro, micro, rc);
-            ADD_PKMODEL_TO_COLLECTION(models, 3, Three, Macro, macro, rc);
-            ADD_PKMODEL_TO_COLLECTION(models, 3, Three, Micro, micro, rc);
-            if (!rc) {
-                return ComputingResult::Error;
-            }
-            std::shared_ptr<PkModel> pkModel = models.getPkModelFromId(pkModelId);
-
-            IntakeToCalculatorAssociator::Result res = IntakeToCalculatorAssociator::associate(intakeSeries, *pkModel.get());
-
-            CovariateSeries covariateSeries;
-            CovariateExtractor covariateExtractor(_request.getDrugModel().getCovariates(),
-                                                  _request.getDrugTreatment().getCovariates(),
-                                                  pTrait->getStart(),
-                                                  pTrait->getEnd());
-            covariateExtractor.extract(covariateSeries);
-
-            ParameterDefinitionIterator it = _request.getDrugModel().getParameterDefinitions(analyteId, formulation, route);
-
-            ParameterSetSeries parameterSeries;
-            ParametersExtractor parameterExtractor(covariateSeries,
-                                                   it,
-                                                   pTrait->getStart(),
-                                                   pTrait->getEnd());
-            parameterExtractor.extract(parameterSeries);
-
-            ConcentrationPredictionPtr pPrediction = std::make_unique<ConcentrationPrediction>();
-            ComputationResult result = computePopulation(
-                pPrediction,
-                false,
-                pTrait->getStart(),
-                pTrait->getEnd(),
-                intakeSeries,
-                parameterSeries);
-
-            if (result == ComputationResult::Success &&
-                intakeSeries.size() == pPrediction->getTimes().size() &&
-                intakeSeries.size() == pPrediction->getValues().size())
-            {
-                std::unique_ptr<SinglePredictionResponse> resp = std::make_unique<SinglePredictionResponse>();
-
-                for (size_t i = 0; i < intakeSeries.size(); i++) {
-                    TimeOffsets times = pPrediction->getTimes().at(i);
-                    DateTime start = intakeSeries.at(i).getEventTime();
-                    DateTime end = start + std::chrono::milliseconds((int)times.at(times.size() - 1) * 1000);
-                    CycleData cycle(start, end, Unit("ug/l"));
-                    cycle.addData(times, pPrediction->getValues().at(i), 0);
-                    resp->addCycleData(cycle);
-                }
-
-                _response->addResponse(std::move(resp));
-            }
-        }
+        if (it->get()->compute(*this, _request, _response) != ComputingResult::Success)
+            result = ComputingResult::Error;
         it++;
     }
 
-    return ComputingResult::Success;
+    return result;
 /*
     ConcentrationPredictionPtr prediction;
 
@@ -190,6 +146,144 @@ ComputingResult ComputingComponent::compute(const ComputingRequest &_request, st
     return prediction;
 */
 }
+
+
+ComputingResult ComputingComponent::compute(
+        const ComputingTraitConcentration *_traits,
+        const ComputingRequest &_request,
+        std::unique_ptr<ComputingResponse> &_response)
+{
+    if (_traits == nullptr) {
+        m_logger.error("The computing traits sent for computation are nullptr");
+        return ComputingResult::Error;
+    }
+
+
+    IntakeSeries intakeSeries;
+    int nIntakes = IntakeExtractor::extract(_request.getDrugTreatment().getDosageHistory(false), _traits->getStart(), _traits->getEnd(), intakeSeries, _traits->getCycleSize());
+    TMP_UNUSED_PARAMETER(nIntakes);
+
+    static const std::string analyteId = "imatinib";
+    static const std::string pkModelId = _request.getDrugModel().getPkModelId();
+    static const std::string formulation = "???";
+    static const Route route = Route::IntravenousBolus; // ???
+
+    std::shared_ptr<PkModel> pkModel = m_models->getPkModelFromId(pkModelId);
+
+    if (pkModel == nullptr) {
+        m_logger.error("Can not find a Pk Model for the calculation");
+        return ComputingResult::Error;
+    }
+
+
+    IntakeToCalculatorAssociator::Result intakeExtractionResult = IntakeToCalculatorAssociator::associate(intakeSeries, *pkModel.get());
+
+    if (intakeExtractionResult != IntakeToCalculatorAssociator::Result::Ok) {
+        m_logger.error("Can not associate intake calculators for the specified route");
+        return ComputingResult::Error;
+    }
+
+    CovariateSeries covariateSeries;
+    CovariateExtractor covariateExtractor(_request.getDrugModel().getCovariates(),
+                                          _request.getDrugTreatment().getCovariates(),
+                                          _traits->getStart(),
+                                          _traits->getEnd());
+    CovariateExtractor::Result covariateExtractionResult = covariateExtractor.extract(covariateSeries);
+
+    if (covariateExtractionResult != CovariateExtractor::Result::Ok) {
+        m_logger.error("Can not extract covariates");
+        return ComputingResult::Error;
+    }
+
+    ParameterDefinitionIterator it = _request.getDrugModel().getParameterDefinitions(analyteId, formulation, route);
+
+    ParameterSetSeries parameterSeries;
+    ParametersExtractor parameterExtractor(covariateSeries,
+                                           it,
+                                           _traits->getStart(),
+                                           _traits->getEnd());
+
+    ParametersExtractor::Result parametersExtractionResult = parameterExtractor.extract(parameterSeries);
+
+    if (parametersExtractionResult != ParametersExtractor::Result::Ok) {
+        m_logger.error("Can not extract parameters");
+        return ComputingResult::Error;
+    }
+
+    ConcentrationPredictionPtr pPrediction = std::make_unique<ConcentrationPrediction>();
+    ComputationResult result = computePopulation(
+                pPrediction,
+                false,
+                _traits->getStart(),
+                _traits->getEnd(),
+                intakeSeries,
+                parameterSeries);
+
+    if (result == ComputationResult::Success &&
+            intakeSeries.size() == pPrediction->getTimes().size() &&
+            intakeSeries.size() == pPrediction->getValues().size())
+    {
+        std::unique_ptr<SinglePredictionResponse> resp = std::make_unique<SinglePredictionResponse>();
+
+        for (size_t i = 0; i < intakeSeries.size(); i++) {
+            TimeOffsets times = pPrediction->getTimes().at(i);
+            DateTime start = intakeSeries.at(i).getEventTime();
+            DateTime end = start + std::chrono::milliseconds(static_cast<int>(times.at(times.size() - 1)) * 1000);
+            CycleData cycle(start, end, Unit("ug/l"));
+            cycle.addData(times, pPrediction->getValues().at(i), 0);
+            resp->addCycleData(cycle);
+        }
+
+        _response->addResponse(std::move(resp));
+    }
+
+    return ComputingResult::Success;
+}
+
+ComputingResult ComputingComponent::compute(
+        const ComputingTraitPercentiles *_traits,
+        const ComputingRequest &_request,
+        std::unique_ptr<ComputingResponse> &_response)
+{
+    TMP_UNUSED_PARAMETER(_traits);
+    TMP_UNUSED_PARAMETER(_request);
+    TMP_UNUSED_PARAMETER(_response);
+    return ComputingResult::Error;
+}
+
+ComputingResult ComputingComponent::compute(
+        const ComputingTraitAdjustment *_traits,
+        const ComputingRequest &_request,
+        std::unique_ptr<ComputingResponse> &_response)
+{
+    TMP_UNUSED_PARAMETER(_traits);
+    TMP_UNUSED_PARAMETER(_request);
+    TMP_UNUSED_PARAMETER(_response);
+    return ComputingResult::Error;
+}
+
+ComputingResult ComputingComponent::compute(
+        const ComputingTraitAtMeasures *_traits,
+        const ComputingRequest &_request,
+        std::unique_ptr<ComputingResponse> &_response)
+{
+    TMP_UNUSED_PARAMETER(_traits);
+    TMP_UNUSED_PARAMETER(_request);
+    TMP_UNUSED_PARAMETER(_response);
+    return ComputingResult::Error;
+}
+
+ComputingResult ComputingComponent::compute(
+        const ComputingTraitSinglePoints *_traits,
+        const ComputingRequest &_request,
+        std::unique_ptr<ComputingResponse> &_response)
+{
+    TMP_UNUSED_PARAMETER(_traits);
+    TMP_UNUSED_PARAMETER(_request);
+    TMP_UNUSED_PARAMETER(_response);
+    return ComputingResult::Error;
+}
+
 
 std::string ComputingComponent::getErrorString() const
 {

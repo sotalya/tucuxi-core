@@ -14,6 +14,11 @@
 namespace Tucuxi {
 namespace Core {
 
+ComputingAborter::~ComputingAborter()
+{
+
+}
+
 
 MonteCarloPercentileCalculatorBase::MonteCarloPercentileCalculatorBase()
 {

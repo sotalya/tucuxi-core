@@ -9,6 +9,7 @@
 
 #include "tucucommon/utils.h"
 #include "tucucommon/iterator.h"
+#include "tucucommon/timeofday.h"
 
 #include "tucucore/covariateextractor.h"
 #include "tucucore/parametersextractor.h"
@@ -668,12 +669,12 @@ struct TestParameterExtractor : public fructose::test_base<TestParameterExtracto
                                                             DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0));
 
         ParameterSetSeries series;
-        int rc;
+        ParametersExtractor::Result rc;
         rc = extractor.extract(series);
 
 //        printParameterSetSeries(series);
 
-        fructose_assert(rc == EXIT_SUCCESS);
+        fructose_assert(rc == ParametersExtractor::Result::Ok);
         fructose_assert(series.m_parameterSets.size() == 2);
 
         fructose_assert(parameterEventIsPresent("Param_NC_A",
@@ -739,12 +740,12 @@ struct TestParameterExtractor : public fructose::test_base<TestParameterExtracto
                                                             DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0));
 
         ParameterSetSeries series;
-        int rc;
+        ParametersExtractor::Result rc;
         rc = extractor.extract(series);
 
 //        printParameterSetSeries(series);
 
-        fructose_assert(rc == EXIT_SUCCESS);
+        fructose_assert(rc == ParametersExtractor::Result::Ok);
         fructose_assert(series.m_parameterSets.size() == 3);
 
         fructose_assert(parameterEventIsPresent("Param_NC_A",

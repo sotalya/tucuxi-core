@@ -31,6 +31,11 @@ using namespace Tucuxi::Common::Utils;
 class ICovariateExtractor
 {
 public:
+    enum class Result {
+        Ok,
+        ExtractionError
+    };
+
     /// \brief Create a Covariate Extractor for the specified interval and covariate set.
     /// \param _defaults Default covariate events.
     /// \param _patientCovariates Patient-specific covariates.
@@ -50,7 +55,7 @@ public:
     /// \brief Extract covariate events.
     /// \param _series Set of extracted covariate events.
     /// \return 0 on success, an error code in case an issue arised.
-    virtual int extract(CovariateSeries &_series) = 0;
+    virtual Result extract(CovariateSeries &_series) = 0;
 
 
 protected:
@@ -71,6 +76,7 @@ protected:
 class CovariateExtractor : public ICovariateExtractor
 {
 public:
+
     /// \brief Create a Covariate Extractor for the specified interval and covariate set.
     /// \param _defaults Default covariate events.
     /// \param _patientCovariates Patient-specific covariates.
@@ -90,8 +96,8 @@ public:
 
     /// \brief Extract covariate events.
     /// \param _series Set of extracted covariate events.
-    /// \return EXIT_SUCCESS on success, EXIT_FAILURE in case an issue arised.
-    int extract(CovariateSeries &_series) override;
+    /// \return Result::Ok on success, Result::ExtractionError in case an issue arised.
+    Result extract(CovariateSeries &_series) override;
 
     // Make the test class friend, as this will allow us to test the helper methods (which are private).
     friend TestCovariateExtractor;

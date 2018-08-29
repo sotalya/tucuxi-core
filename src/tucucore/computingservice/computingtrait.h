@@ -15,7 +15,7 @@ namespace Tucuxi {
 namespace Core {
 
 enum class PredictionParameterType { Population, Apriori, Aposteriori };
-class CoreComponent;
+class ComputingComponent;
 
 ///
 /// \brief The ComputingTrait class
@@ -29,6 +29,8 @@ public:
     /// \return The Id
     ///
     RequestResponseId getId() const;
+
+    virtual ~ComputingTrait();
     
 protected:
     ///
@@ -41,8 +43,10 @@ protected:
     RequestResponseId m_id;
 
 private:
-    friend class CoreComponent;
-    virtual ComputingResult compute(CoreComponent &_coreComponent) const = 0;
+    friend class ComputingComponent;
+    virtual ComputingResult compute(ComputingComponent &_computingComponent,
+                                    const ComputingRequest &_request,
+                                    std::unique_ptr<ComputingResponse> &_response) const = 0;
 };
 
 /// This shall be better thought. I think there are more options such as:
@@ -65,6 +69,9 @@ enum class ComputingOption {
 class ComputingTraitStandard : public ComputingTrait
 {
 public:
+
+    ~ComputingTraitStandard();
+
     PredictionParameterType getType() const;
     ComputingOption getComputingOption() const;
     const Tucuxi::Common::DateTime& getStart() const;
@@ -85,6 +92,7 @@ private:
     Tucuxi::Common::DateTime m_start;
     Tucuxi::Common::DateTime m_end;
     CycleSize m_cycleSize;
+
 };
 
 ///
@@ -105,7 +113,11 @@ protected:
     ComputingOption m_computingOption;
 
 private:
-    ComputingResult compute(CoreComponent &_coreComponent) const override { return ComputingResult::Error; }
+    ComputingResult compute(ComputingComponent &_computingComponent,
+                            const ComputingRequest &_request,
+                            std::unique_ptr<ComputingResponse> &_response) const override;
+
+    friend ComputingComponent;
 };
 
 ///
@@ -124,7 +136,9 @@ protected:
     ComputingOption m_computingOption;
 
 private:
-    ComputingResult compute(CoreComponent &_coreComponent) const override { return ComputingResult::Error; }
+    ComputingResult compute(ComputingComponent &_computingComponent,
+                            const ComputingRequest &_request,
+                            std::unique_ptr<ComputingResponse> &_response) const override;
 };
 
 ///
@@ -177,7 +191,9 @@ protected:
     AdjustmentOption m_adjustmentOption;
 
 private:
-    ComputingResult compute(CoreComponent &_coreComponent) const override { return ComputingResult::Error; }
+    ComputingResult compute(ComputingComponent &_computingComponent,
+                            const ComputingRequest &_request,
+                            std::unique_ptr<ComputingResponse> &_response) const override;
 };
 
 ///
@@ -194,7 +210,9 @@ public:
                                  const CycleSize _cycleSize,
                                  ComputingOption _computingOption);
 private:
-    ComputingResult compute(CoreComponent &_coreComponent) const override;
+    ComputingResult compute(ComputingComponent &_computingComponent,
+                            const ComputingRequest &_request,
+                            std::unique_ptr<ComputingResponse> &_response) const override;
 };
 
 
@@ -218,7 +236,9 @@ private:
     PercentileRanks m_ranks;
 
 private:
-    ComputingResult compute(CoreComponent &_coreComponent) const override { return ComputingResult::Error; }
+    ComputingResult compute(ComputingComponent &_computingComponent,
+                            const ComputingRequest &_request,
+                            std::unique_ptr<ComputingResponse> &_response) const override;
 };
 
 
@@ -237,8 +257,8 @@ public:
 
     typedef std::vector<std::unique_ptr<ComputingTrait> > Traits;
     typedef Traits::const_iterator Iterator;
-    Iterator begin() const { return m_traits.begin(); };
-    Iterator end() const { return m_traits.end(); };
+    Iterator begin() const { return m_traits.begin(); }
+    Iterator end() const { return m_traits.end(); }
 
 protected:
     Traits m_traits;

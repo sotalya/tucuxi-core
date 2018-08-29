@@ -101,7 +101,7 @@ std::vector<std::shared_ptr<PkModel>> PkModelCollection::getPkModelList() const
 }
 
 
-bool populate(PkModelCollection &_collection)
+bool defaultPopulate(PkModelCollection &_collection)
 {
     bool rc = true;
 

@@ -27,6 +27,12 @@ class ParameterDefinitionIterator;
 class ParametersExtractor
 {
 public:
+
+    enum class Result {
+        Ok,
+        ExtractionError
+    };
+
     /// \brief Create a Parameters Extractor for the specified interval, covariate events set, and parameter
     ///        definitions.
     ///        The time instants at which the parameter set events will be extracted is also computed at this stage.
@@ -45,11 +51,11 @@ public:
 
     /// \brief Extract parameter set events in a given interval from covariate events and parameter definitions.
     /// \param _series Extracted set of parameter set events.
-    /// \return EXIT_SUCCESS if the extraction was successful, EXIT_FAILURE otherwise.
+    /// \return Result::Ok if the extraction was successful, Result::ExtractionError otherwise.
     /// \warning No checks are made on the initial content of _series. If it contains already some events, they will
     ///          still be there at the end of the function. It is up to the user to guarantee the consistency of the
     ///          _series element.
-    int extract(ParameterSetSeries &_series);
+    Result extract(ParameterSetSeries &_series);
 
     // Make the test class friend, as this will allow us to test the helper methods (which are private).
     friend TestParameterExtractor;

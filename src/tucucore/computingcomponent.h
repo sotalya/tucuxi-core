@@ -22,7 +22,13 @@ namespace Core {
 class DrugModel;
 class DrugErrorModel;
 class DrugTreatment;
+class PkModelCollection;
 class ParameterSetSeries;
+class ComputingTraitPercentiles;
+class ComputingTraitConcentration;
+class ComputingTraitAdjustment;
+class ComputingTraitAtMeasures;
+class ComputingTraitSinglePoints;
 
 class ComputingComponent : public Tucuxi::Common::Component,
         public IComputingService
@@ -32,10 +38,10 @@ public:
     static Tucuxi::Common::Interface* createComponent();
 
     /// \brief Destructor
-    ~ComputingComponent();
+    virtual ~ComputingComponent();
 
-    ComputingResult compute(const ComputingRequest &_request, std::unique_ptr<ComputingResponse> &_response);
-    std::string getErrorString() const;
+    ComputingResult compute(const ComputingRequest &_request, std::unique_ptr<ComputingResponse> &_response) override;
+    std::string getErrorString() const override;
 
 protected:
     /// \brief Access other interfaces of the same component.
@@ -43,11 +49,42 @@ protected:
 
 
 private:
+
+
+    PkModelCollection *m_models;
+
+    Tucuxi::Common::LoggerHelper m_logger;
+
     /// \brief Constructor called from createComponent()
     ComputingComponent();
 
+    bool initialize();
 
 
+    ComputingResult compute(
+            const ComputingTraitConcentration *_traits,
+            const ComputingRequest &_request,
+            std::unique_ptr<ComputingResponse> &_response);
+
+    ComputingResult compute(
+            const ComputingTraitPercentiles *_traits,
+            const ComputingRequest &_request,
+            std::unique_ptr<ComputingResponse> &_response);
+
+    ComputingResult compute(
+            const ComputingTraitAdjustment *_traits,
+            const ComputingRequest &_request,
+            std::unique_ptr<ComputingResponse> &_response);
+
+    ComputingResult compute(
+            const ComputingTraitAtMeasures *_traits,
+            const ComputingRequest &_request,
+            std::unique_ptr<ComputingResponse> &_response);
+
+    ComputingResult compute(
+            const ComputingTraitSinglePoints *_traits,
+            const ComputingRequest &_request,
+            std::unique_ptr<ComputingResponse> &_response);
 
 
 
@@ -112,6 +149,14 @@ private:
         // TODO YJE
         return ComputationResult::Failure;
     }
+
+
+    friend class ComputingTraitSinglePoints;
+    friend class ComputingTraitAtMeasures;
+    friend class ComputingTraitAdjustment;
+    friend class ComputingTraitConcentration;
+    friend class ComputingTraitPercentiles;
+
 
 };
 

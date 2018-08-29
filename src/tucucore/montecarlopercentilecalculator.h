@@ -34,6 +34,8 @@ public:
     /// when asked by an external component
     ///
     virtual bool shouldAbort() { return false;}
+
+    virtual ~ComputingAborter();
 };
 
 class IPercentileCalculator
@@ -74,6 +76,8 @@ public:
         const PercentileRanks &_percentileRanks,
         IConcentrationCalculator &_concentrationCalculator,
         ComputingAborter *_aborter) = 0;
+
+    virtual ~IAprioriPercentileCalculator() {};
 };
 
 class IAposterioriPercentileCalculator : public IPercentileCalculator
@@ -104,6 +108,8 @@ public:
         const PercentileRanks &_percentileRanks,
         IConcentrationCalculator &_concentrationCalculator,
         ComputingAborter *_aborter) = 0;
+
+    virtual ~IAposterioriPercentileCalculator() {};
 };
 
 class IAposterioriNormalApproximationMonteCarloPercentileCalculator : public IPercentileCalculator
@@ -134,6 +140,8 @@ public:
         const PercentileRanks &_percentileRanks,
         IConcentrationCalculator &_concentrationCalculator,
         ComputingAborter *_aborter) = 0;
+
+    virtual ~IAposterioriNormalApproximationMonteCarloPercentileCalculator() {};
 };
 
 
@@ -143,8 +151,8 @@ class MonteCarloPercentileCalculatorBase : public IPercentileCalculator
 public:
     MonteCarloPercentileCalculatorBase();
 
-    void setNumberPatients(const unsigned int _nbPatients) { m_nbPatients = _nbPatients; };
-    unsigned int getNumberPatients() { return m_nbPatients; };
+    void setNumberPatients(const unsigned int _nbPatients) { m_nbPatients = _nbPatients; }
+    unsigned int getNumberPatients() { return m_nbPatients; }
 
 protected:
     ///

@@ -20,6 +20,9 @@ class JSEngine
 public:
     /// \brief Default constructor
     JSEngine();
+
+    /// \brief Destructor deleting pointers
+    ~JSEngine();
     
     /// \brief Retrieve a variable managed by the engine.
     /// The variable may have been added via setVariable or during the execution of a script.

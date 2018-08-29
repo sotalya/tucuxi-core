@@ -286,7 +286,7 @@ bool CovariateExtractor::computeEvents(const std::map<DateTime, std::vector<std:
 }
 
 
-int CovariateExtractor::extract(CovariateSeries &_series)
+CovariateExtractor::Result CovariateExtractor::extract(CovariateSeries &_series)
 {
     bool rc;
 
@@ -300,10 +300,10 @@ int CovariateExtractor::extract(CovariateSeries &_series)
     rc = computeEvents(refreshMap, _series);
 
     if (!rc) {
-        return EXIT_FAILURE;
+        return Result::ExtractionError;
     }
 
-    return EXIT_SUCCESS;
+    return Result::Ok;
 }
 
 

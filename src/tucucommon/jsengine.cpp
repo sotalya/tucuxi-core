@@ -19,6 +19,12 @@ JSEngine::JSEngine()
     reset();
 }
 
+JSEngine::~JSEngine()
+{
+    if (m_pEngine != nullptr)
+        delete m_pEngine;
+}
+
 
 template <>
 bool JSEngine::getVariable<std::string>(const std::string& _name, std::string& _value)

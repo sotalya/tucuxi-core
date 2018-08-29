@@ -119,7 +119,7 @@ ParametersExtractor::ParametersExtractor(const CovariateSeries &_covariates,
 }
 
 
-int ParametersExtractor::extract(ParameterSetSeries &_series)
+ParametersExtractor::Result ParametersExtractor::extract(ParameterSetSeries &_series)
 {
     // Map containing the computed parameters along with their latest value.
     std::map<std::string, std::pair<const ParameterDefinition*, Value>> cParamMap;
@@ -175,7 +175,7 @@ int ParametersExtractor::extract(ParameterSetSeries &_series)
         for (auto &cp : cParamMap) {
             rc = m_ogm.getValue(cp.first, newVal);
             if (!rc) {
-                return EXIT_FAILURE;
+                return Result::ExtractionError;
             }
 
             if (newVal != cp.second.second || tcv.first == m_timedCValues.begin()->first) {
@@ -190,7 +190,7 @@ int ParametersExtractor::extract(ParameterSetSeries &_series)
         _series.addParameterSetEvent(pSetEvent);
     }
 
-    return EXIT_SUCCESS;
+    return Result::Ok;
 }
 
 }

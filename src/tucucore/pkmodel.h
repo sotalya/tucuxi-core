@@ -101,6 +101,7 @@ protected:
     std::vector<std::shared_ptr<PkModel>> m_collection;
 };
 
+bool defaultPopulate(PkModelCollection &_collection);
 
 /// \brief Add a PkModel to a collection.
 /// \param _COLLECTION Collection to which the PkModel has to be added.
