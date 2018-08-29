@@ -147,6 +147,70 @@ ComputingResult ComputingComponent::compute(const ComputingRequest &_request, st
 */
 }
 
+ComputingResult ComputingComponent::generalExtractions(
+        const ComputingTraitConcentration *_traits,
+        const ComputingRequest &_request,
+        std::shared_ptr<PkModel> &_pkModel,
+        IntakeSeries &_intakeSeries,
+        CovariateSeries &_covariatesSeries,
+        ParameterSetSeries &_parameterSeries
+        )
+{
+
+    int nIntakes = IntakeExtractor::extract(_request.getDrugTreatment().getDosageHistory(false), _traits->getStart(), _traits->getEnd(), _intakeSeries, _traits->getCycleSize());
+    TMP_UNUSED_PARAMETER(nIntakes);
+
+
+    const std::string pkModelId = _request.getDrugModel().getPkModelId();
+
+    // Should get rid of the next 3 lines
+    const std::string analyteId = "imatinib";
+    const std::string formulation = "???";
+    const Route route = Route::IntravenousBolus; // ???
+
+    _pkModel = m_models->getPkModelFromId(pkModelId);
+
+    if (_pkModel == nullptr) {
+        m_logger.error("Can not find a Pk Model for the calculation");
+        return ComputingResult::Error;
+    }
+
+
+    IntakeToCalculatorAssociator::Result intakeExtractionResult = IntakeToCalculatorAssociator::associate(_intakeSeries, *_pkModel.get());
+
+    if (intakeExtractionResult != IntakeToCalculatorAssociator::Result::Ok) {
+        m_logger.error("Can not associate intake calculators for the specified route");
+        return ComputingResult::Error;
+    }
+
+    CovariateExtractor covariateExtractor(_request.getDrugModel().getCovariates(),
+                                          _request.getDrugTreatment().getCovariates(),
+                                          _traits->getStart(),
+                                          _traits->getEnd());
+    CovariateExtractor::Result covariateExtractionResult = covariateExtractor.extract(_covariatesSeries);
+
+    if (covariateExtractionResult != CovariateExtractor::Result::Ok) {
+        m_logger.error("Can not extract covariates");
+        return ComputingResult::Error;
+    }
+
+    ParameterDefinitionIterator it = _request.getDrugModel().getParameterDefinitions(analyteId, formulation, route);
+
+    ParametersExtractor parameterExtractor(_covariatesSeries,
+                                           it,
+                                           _traits->getStart(),
+                                           _traits->getEnd());
+
+    ParametersExtractor::Result parametersExtractionResult = parameterExtractor.extract(_parameterSeries);
+
+    if (parametersExtractionResult != ParametersExtractor::Result::Ok) {
+        m_logger.error("Can not extract parameters");
+        return ComputingResult::Error;
+    }
+
+    return ComputingResult::Success;
+
+}
 
 ComputingResult ComputingComponent::compute(
         const ComputingTraitConcentration *_traits,
@@ -159,60 +223,27 @@ ComputingResult ComputingComponent::compute(
         return ComputingResult::Error;
     }
 
+    std::shared_ptr<PkModel> pkModel;
 
     IntakeSeries intakeSeries;
-    int nIntakes = IntakeExtractor::extract(_request.getDrugTreatment().getDosageHistory(false), _traits->getStart(), _traits->getEnd(), intakeSeries, _traits->getCycleSize());
-    TMP_UNUSED_PARAMETER(nIntakes);
-
-    static const std::string analyteId = "imatinib";
-    static const std::string pkModelId = _request.getDrugModel().getPkModelId();
-    static const std::string formulation = "???";
-    static const Route route = Route::IntravenousBolus; // ???
-
-    std::shared_ptr<PkModel> pkModel = m_models->getPkModelFromId(pkModelId);
-
-    if (pkModel == nullptr) {
-        m_logger.error("Can not find a Pk Model for the calculation");
-        return ComputingResult::Error;
-    }
-
-
-    IntakeToCalculatorAssociator::Result intakeExtractionResult = IntakeToCalculatorAssociator::associate(intakeSeries, *pkModel.get());
-
-    if (intakeExtractionResult != IntakeToCalculatorAssociator::Result::Ok) {
-        m_logger.error("Can not associate intake calculators for the specified route");
-        return ComputingResult::Error;
-    }
-
     CovariateSeries covariateSeries;
-    CovariateExtractor covariateExtractor(_request.getDrugModel().getCovariates(),
-                                          _request.getDrugTreatment().getCovariates(),
-                                          _traits->getStart(),
-                                          _traits->getEnd());
-    CovariateExtractor::Result covariateExtractionResult = covariateExtractor.extract(covariateSeries);
-
-    if (covariateExtractionResult != CovariateExtractor::Result::Ok) {
-        m_logger.error("Can not extract covariates");
-        return ComputingResult::Error;
-    }
-
-    ParameterDefinitionIterator it = _request.getDrugModel().getParameterDefinitions(analyteId, formulation, route);
-
     ParameterSetSeries parameterSeries;
-    ParametersExtractor parameterExtractor(covariateSeries,
-                                           it,
-                                           _traits->getStart(),
-                                           _traits->getEnd());
 
-    ParametersExtractor::Result parametersExtractionResult = parameterExtractor.extract(parameterSeries);
+    ComputingResult extractionResult = generalExtractions(_traits,
+                                                _request,
+                                                pkModel,
+                                                intakeSeries,
+                                                covariateSeries,
+                                                parameterSeries);
 
-    if (parametersExtractionResult != ParametersExtractor::Result::Ok) {
-        m_logger.error("Can not extract parameters");
-        return ComputingResult::Error;
+    if (extractionResult != ComputingResult::Success) {
+        return extractionResult;
     }
+
+    // Now ready to do the real computing with all the extracted values
 
     ConcentrationPredictionPtr pPrediction = std::make_unique<ConcentrationPrediction>();
-    ComputationResult result = computePopulation(
+    ComputationResult computationResult = computePopulation(
                 pPrediction,
                 false,
                 _traits->getStart(),
@@ -220,7 +251,7 @@ ComputingResult ComputingComponent::compute(
                 intakeSeries,
                 parameterSeries);
 
-    if (result == ComputationResult::Success &&
+    if (computationResult == ComputationResult::Success &&
             intakeSeries.size() == pPrediction->getTimes().size() &&
             intakeSeries.size() == pPrediction->getValues().size())
     {
@@ -236,9 +267,12 @@ ComputingResult ComputingComponent::compute(
         }
 
         _response->addResponse(std::move(resp));
+        return ComputingResult::Success;
+    }
+    else {
+        return ComputingResult::Error;
     }
 
-    return ComputingResult::Success;
 }
 
 ComputingResult ComputingComponent::compute(

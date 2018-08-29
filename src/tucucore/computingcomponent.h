@@ -15,6 +15,8 @@
 #include "tucucore/computingservice/icomputingservice.h"
 #include "tucucore/concentrationprediction.h"
 #include "tucucore/idatamodelservices.h"
+#include "tucucore/pkmodel.h"
+#include "tucucore/covariateevent.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -86,7 +88,13 @@ private:
             const ComputingRequest &_request,
             std::unique_ptr<ComputingResponse> &_response);
 
-
+    ComputingResult generalExtractions(
+            const ComputingTraitConcentration *_traits,
+            const ComputingRequest &_request,
+            std::shared_ptr<PkModel> &_pkModel,
+            IntakeSeries &_intakeSeries,
+            CovariateSeries &_covariatesSeries,
+            ParameterSetSeries &_parameterSeries);
 
     ComputationResult computeConcentrations(
         ConcentrationPredictionPtr &_prediction,
