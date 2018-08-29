@@ -1824,7 +1824,6 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
         // weight = 6.0 @ 12.08.2017, 14h00
         ADD_PV_W_UNIT(Weight, 4.0, Double, kg, DATE_TIME_NO_VAR(2017, 8, 13, 12, 0, 0), pVariates);
         // weight = 30.0 @ 13.08.2017, 14h00
-#include "tucucommon/timeofday.h"
         ADD_PV_W_UNIT(Weight, 100.0, Double, kg, DATE_TIME_NO_VAR(2017, 8, 17, 12, 0, 0), pVariates);
 
         const DATE_TIME_VAR(startDate, 2017, 8, 12, 8, 0, 0);
@@ -1902,8 +1901,7 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
                                                 14.0,
                                                 series));
         fructose_assert(covariateEventIsPresent("DepOnAge",
-
-                                        #include "tucucommon/timeofday.h"      DATE_TIME_NO_VAR(2017, 8, 12, 18, 0, 0),
+                                                DATE_TIME_NO_VAR(2017, 8, 12, 18, 0, 0),
                                                 15.0,
                                                 series));
         fructose_assert(covariateEventIsPresent("DepOnAge",

@@ -153,6 +153,7 @@ ComputingResult ComputingComponent::compute(
         const ComputingRequest &_request,
         std::unique_ptr<ComputingResponse> &_response)
 {
+
     if (_traits == nullptr) {
         m_logger.error("The computing traits sent for computation are nullptr");
         return ComputingResult::Error;
