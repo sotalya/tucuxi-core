@@ -21,14 +21,12 @@ HEADERS += \
     $$PWD/../../src/tucucore/pkmodels/twocompartmentbolus.h \
     $$PWD/../../src/tucucore/pkmodels/twocompartmentextra.h \
     $$PWD/../../src/tucucore/pkmodels/twocompartmentinfusion.h \
-    $$PWD/../../src/tucucore/corecomponent.h \
     $$PWD/../../src/tucucore/computingcomponent.h \
     $$PWD/../../src/tucucore/covariateextractor.h \
     $$PWD/../../src/tucucore/idatamodelservices.h \
     $$PWD/../../src/tucucore/parametersextractor.h \
     $$PWD/../../src/tucucore/residualerrormodel.h \
     $$PWD/../../src/tucucore/sampleextractor.h \
-    $$PWD/../../src/tucucore/target.h \
     $$PWD/../../src/tucucore/targetextractor.h \
     $$PWD/../../src/tucucore/pkmodel.h \
     $$PWD/../../src/tucucore/intaketocalculatorassociator.h \
@@ -81,7 +79,6 @@ SOURCES += \
     $$PWD/../../src/tucucore/pkmodels/twocompartmentbolus.cpp \
     $$PWD/../../src/tucucore/pkmodels/twocompartmentextra.cpp \
     $$PWD/../../src/tucucore/pkmodels/twocompartmentinfusion.cpp \
-    $$PWD/../../src/tucucore/corecomponent.cpp \
     $$PWD/../../src/tucucore/computingcomponent.cpp \
     $$PWD/../../src/tucucore/covariateextractor.cpp \
     $$PWD/../../src/tucucore/parameter.cpp \

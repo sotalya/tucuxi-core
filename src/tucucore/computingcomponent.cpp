@@ -29,7 +29,6 @@
 namespace Tucuxi {
 namespace Core {
 
-
 Tucuxi::Common::Interface* ComputingComponent::createComponent()
 {
     ComputingComponent *cmp = new ComputingComponent();
@@ -150,7 +149,8 @@ ComputingResult ComputingComponent::generalExtractions(
         )
 {
 
-    int nIntakes = IntakeExtractor::extract(_request.getDrugTreatment().getDosageHistory(false), _traits->getStart(), _traits->getEnd(), _intakeSeries, _traits->getCycleSize());
+    IntakeExtractor intakeExtractor;
+    int nIntakes = intakeExtractor.extract(_request.getDrugTreatment().getDosageHistory(false), _traits->getStart(), _traits->getEnd(), _intakeSeries, _traits->getCycleSize());
     TMP_UNUSED_PARAMETER(nIntakes);
 
 
