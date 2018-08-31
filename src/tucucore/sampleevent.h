@@ -38,7 +38,7 @@ protected:
 
 typedef std::vector<SampleEvent> SampleSeries;
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 
 #endif // TUCUXI_CORE_SAMPLEEVENT_H

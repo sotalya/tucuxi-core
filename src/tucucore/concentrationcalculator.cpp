@@ -214,5 +214,5 @@ ComputationResult ConcentrationCalculator::computeConcentrationsAtTimes(
     return ComputationResult::Success;
 }
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi

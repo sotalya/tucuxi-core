@@ -53,7 +53,7 @@ private:
     iteratorType m_it;
 };
 
-}
-}
+} // namespace Common
+} // namespace Tucuxi
 
 #endif // TUCUXI_TUCUCOMMON_ITERATOR_H

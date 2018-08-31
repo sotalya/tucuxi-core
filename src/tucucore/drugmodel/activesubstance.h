@@ -26,8 +26,8 @@ public:
 */
 
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 
 
 #endif // ACTIVESUBSTANCE_H

@@ -62,8 +62,8 @@ private:
 };
 typedef std::unique_ptr<ConcentrationPrediction> ConcentrationPredictionPtr;
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 
 #endif // TUCUXI_CORE_CONCENTRATIONPREDICTION_H
 

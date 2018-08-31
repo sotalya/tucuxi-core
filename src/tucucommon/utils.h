@@ -16,8 +16,7 @@
 namespace Tucuxi {
 namespace Common {
 
-namespace Utils
-{
+namespace Utils {
 
 using namespace Tucuxi::Core;
 using Tucuxi::Core::Value;
@@ -98,9 +97,8 @@ std::string strFormat(const std::string& _format, Args ... _args)
     return std::string(buf.get(), buf.get() + size - 1);                    // We don't want the '\0' inside
 }
 
-};
-
-}
-}
+} // namespace Utils
+} // namespace Common
+} // namespace Tucuxi
 
 #endif // TUCUXI_TUCUCOMMON_UTILS_H

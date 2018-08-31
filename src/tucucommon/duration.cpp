@@ -234,5 +234,5 @@ int64 Duration::toMilliseconds() const
     return get<std::chrono::milliseconds>().count();
 }
 
-}
-}
+} // namespace Common
+} // namespace Tucuxi

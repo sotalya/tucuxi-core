@@ -196,7 +196,7 @@ private:
     int extract(const WeeklyDose &_dosage, const DateTime &_start, const DateTime &_end, IntakeSeries &_series, CycleSize _cycleSize);
 };
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 
 #endif // TUCUXI_CORE_INTAKEEXTRACTOR_H

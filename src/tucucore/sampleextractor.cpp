@@ -20,6 +20,6 @@ int SampleExtractor::extract(const Samples &_samples, const DateTime &_start, co
 }
 
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 

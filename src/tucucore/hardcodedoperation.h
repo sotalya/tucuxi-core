@@ -66,7 +66,7 @@ HARDCODED_OPERATION(GFR_Jelliffe);
 /// \brief Compute the eGFR value using the Salazar-Corcoran method (obese patients).
 HARDCODED_OPERATION(eGFR_SalazarCorcoran);
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 
 #endif // HARDCODEDOPERATION_H

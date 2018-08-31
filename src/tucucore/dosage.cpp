@@ -64,5 +64,5 @@ bool timeRangesOverlap(const DosageTimeRange &_first, const DosageTimeRange &_se
     }
 }
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi

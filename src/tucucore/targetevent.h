@@ -57,7 +57,7 @@ protected:
 };
 
 typedef std::vector<TargetEvent> TargetSeries;
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 
 #endif // TUCUXI_CORE_TARGETEVENT_H

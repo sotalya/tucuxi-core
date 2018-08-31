@@ -87,7 +87,7 @@ private:
     std::chrono::duration<ChronoBaseType> m_time;  /// The encapsulated time (a duration from 0h00)
 };
 
-}
-}
+} // namespace Common
+} // namespace Tucuxi
 
 #endif // TUCUXI_TUCUCOMMON_TIME_H

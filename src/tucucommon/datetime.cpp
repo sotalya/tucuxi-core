@@ -280,5 +280,5 @@ double DateTime::toDays() const
     return std::floor(static_cast<double>(get<std::chrono::hours>().count()) / 24);
 }
 
-}
-}
+} // namespace Common
+} // namespace Tucuxi

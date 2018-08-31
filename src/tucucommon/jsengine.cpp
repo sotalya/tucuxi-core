@@ -112,7 +112,7 @@ void JSEngine::reset()
     registerMathFunctions(m_pEngine);
 }
 
-}
-}
+} // namespace Common
+} // namespace Tucuxi
 
 

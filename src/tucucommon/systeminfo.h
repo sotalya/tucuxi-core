@@ -67,7 +67,7 @@ private:
 
 };
 
-}
-}
+} // namespace Common
+} // namespace Tucuxi
 
 #endif // TUCUXI_TUCUCOMMON_SYSTEMINFO_H

@@ -191,5 +191,5 @@ void XmlDocument::reset()
     }
 }
 
-}
-}
+} // namespace Common
+} // namespace Tucuxi

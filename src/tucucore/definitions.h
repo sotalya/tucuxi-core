@@ -174,7 +174,7 @@ enum class InterpolationType
     Tanh
 };
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 
 #endif // TUCUXI_CORE_DEFINITIONS_H

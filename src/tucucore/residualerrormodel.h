@@ -103,7 +103,7 @@ public:
 // static const ResidualErrorModel EMPTY_RESIDUAL_ERROR_MODEL;
 #define EMPTY_RESIDUAL_ERROR_MODEL EmptyResidualErrorModel()
 
-} 
-} 
+} // namespace Core
+} // namespace Tucuxi
 
 #endif // TUCUXI_ROOT_RESIDUALERRORMODEL_H

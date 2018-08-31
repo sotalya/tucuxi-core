@@ -60,7 +60,7 @@ private:
     std::shared_ptr<spdlog::logger> m_logger; /// The pointer to the instance of spdlog logger
 };
 
-}
-}
+} // namespace Common
+} // namespace Tucuxi
 
 #endif // TUCUXI_TUCUCOMMON_LOGGER_H

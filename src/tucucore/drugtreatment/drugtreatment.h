@@ -83,7 +83,7 @@ private:
     DateTime m_adjustmentDate;
 };
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 
 #endif // TUCUXI_CORE_DRUGTREATMENT_H

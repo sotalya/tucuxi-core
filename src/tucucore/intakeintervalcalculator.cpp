@@ -109,6 +109,6 @@ bool IntakeIntervalCalculator::checkValue(bool _isOk, const std::string& _errMsg
     return _isOk;
 }
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 

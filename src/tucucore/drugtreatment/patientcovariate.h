@@ -94,7 +94,7 @@ typedef std::vector<std::unique_ptr<PatientCovariate>> PatientVariates;
 /// \brief Iterator in the list of patient variates.
 typedef std::vector<std::unique_ptr<PatientCovariate>>::const_iterator pvIterator_t;
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 
 #endif // PATIENTCOVARIATE_H

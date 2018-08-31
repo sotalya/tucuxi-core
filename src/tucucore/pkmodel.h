@@ -120,7 +120,7 @@ do { \
 } while (0);
 
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 
 #endif // TUCUXI_CORE_PKMODEL_H

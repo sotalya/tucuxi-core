@@ -85,7 +85,7 @@ protected:
 
 };
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 
 #endif // DRUGDEFINITIONS_H

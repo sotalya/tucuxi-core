@@ -670,7 +670,7 @@ private:
     DosageTimeRangeList m_history;
 };
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 
 #endif // TUCUXI_CORE_DOSAGE_H

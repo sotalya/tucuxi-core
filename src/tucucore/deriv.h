@@ -327,7 +327,7 @@ inline void deriv2(func fxn, Eigen::VectorXd& loc, Eigen::MatrixXd& ret, const V
 }
 
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 
 #endif // TUCUXI_CORE_

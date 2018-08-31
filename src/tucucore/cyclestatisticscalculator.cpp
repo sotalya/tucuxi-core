@@ -98,5 +98,5 @@ CycleStatistics::CycleStatistics(const CycleData &_data)
     calculate(_data.m_concentrations, _data.m_times);
 }
 
-} // Core
-} // Tucuxi
+} // namespace Core
+} // namespace Tucuxi

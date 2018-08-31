@@ -33,7 +33,7 @@ protected:
 
 typedef std::vector<std::unique_ptr<ActiveMoiety>> ActiveMoieties;
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 
 #endif // ACTIVEMOIETY_H

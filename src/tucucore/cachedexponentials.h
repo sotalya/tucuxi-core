@@ -55,7 +55,7 @@ private:
 };
 
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 
 #endif // #ifndef TUCUXI_CORE_CACHEDEXPONENTIALS_H

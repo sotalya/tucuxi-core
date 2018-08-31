@@ -128,5 +128,5 @@ Logger::Logger(const std::string &_filename)
     }
 }
 
-}
-}
+} // namespace Common
+} // namespace Tucuxi

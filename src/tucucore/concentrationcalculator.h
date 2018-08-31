@@ -128,7 +128,7 @@ public:
 
 };
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 
 #endif // TUCUXI_CORE_CONCENTRATIONCALCULATOR_H

@@ -193,6 +193,6 @@ ParametersExtractor::Result ParametersExtractor::extract(ParameterSetSeries &_se
     return Result::Ok;
 }
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 

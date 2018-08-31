@@ -190,7 +190,7 @@ private:
     std::chrono::duration<ChronoBaseType> m_duration;  /// The encapsulated duration
 };
 
-}
-}
+} // namespace Common
+} // namespace Tucuxi
 
 #endif // TUCUXI_TUCUCOMMON_DURATION_H

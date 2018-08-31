@@ -42,7 +42,7 @@ public:
     virtual void critical(const char* _msg) = 0;
 };
 
-}
-}
+} // namespace Common
+} // namespace Tucuxi
 
 #endif // TUCUXI_TUCUCOMMON_ILOGGER_H

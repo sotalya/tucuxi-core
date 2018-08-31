@@ -18,7 +18,7 @@ public:
     static int extract(const CovariateSeries &_covariates, const TargetDefinitions& _targetDefinitions, const Targets &_targets, const DateTime &_start, const DateTime &_end, TargetSeries &_series);
 };
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 
 #endif // TUCUXI_CORE_TARGETEXTRACTOR_H

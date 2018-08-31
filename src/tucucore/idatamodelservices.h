@@ -17,7 +17,7 @@ public:
     virtual bool loadTreatment(const std::string& _xmlTreatmentDescription) = 0;
 };
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 
 #endif // TUCUXI_CORE_IDATAMODELSERVICES_H

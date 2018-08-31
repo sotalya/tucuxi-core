@@ -76,7 +76,7 @@ protected:
 };
 
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 
 #endif // TUCUXI_CORE_ONECOMPARTMENTINFUSION_H

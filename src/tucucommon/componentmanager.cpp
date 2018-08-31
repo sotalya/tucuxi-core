@@ -37,5 +37,5 @@ void ComponentManager::unregisterComponent(const std::string &_name)
     m_components.erase(_name);
 }
 
-}
-}
+} // namespace Common
+} // namespace Tucuxi

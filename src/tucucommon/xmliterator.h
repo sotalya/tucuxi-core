@@ -102,7 +102,7 @@ inline bool XmlIterator<XmlNode>::isInSubgroup()
     return true;
 }
 
-}
-}
+} // namespace Common
+} // namespace Tucuxi
 
 #endif // TUCUXI_TUCUCOMMON_XMLITERATOR_H

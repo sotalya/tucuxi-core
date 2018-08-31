@@ -38,7 +38,7 @@ private:
     std::unique_ptr<OutdatedMeasure> m_outdatedMeasure;
 };
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 
 #endif // TIMECONSIDERATIONS_H

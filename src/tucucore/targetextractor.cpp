@@ -20,5 +20,5 @@ int TargetExtractor::extract(const CovariateSeries &_covariates, const TargetDef
     return 0;
 }
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi

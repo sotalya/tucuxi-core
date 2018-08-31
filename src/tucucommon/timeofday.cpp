@@ -113,5 +113,5 @@ void TimeOfDay::normalize()
     }
 }
 
-}
-}
+} // namespace Common
+} // namespace Tucuxi

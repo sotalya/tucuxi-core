@@ -42,7 +42,7 @@ public:
     }
 };
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 
 #endif // TUCUXI_CORE_PARAMTERIDS_H

@@ -464,5 +464,5 @@ ComputationResult ComputingComponent::computeConcentrations(
 }
 
 
-} // Core
-} // Tucuxi
+} // namespace Core
+} // namespace Tucuxi

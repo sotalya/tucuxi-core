@@ -501,5 +501,5 @@ IPercentileCalculator::ComputingResult AposterioriNormalApproximationMonteCarloP
         _aborter);
 }
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi

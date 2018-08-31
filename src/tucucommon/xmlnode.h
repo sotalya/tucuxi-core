@@ -11,7 +11,7 @@
 
 namespace rapidxml {
     template<class Ch> class xml_node;
-}
+} // namespace rapidxml
 
 namespace Tucuxi {
 namespace Common {
@@ -151,7 +151,7 @@ private:
     friend class XmlIterator<XmlNode>;
 };
 
-}
-}
+} // namespace Common
+} // namespace Tucuxi
 
 #endif // TUCUXI_TUCUCOMMON_XMLNODE_H

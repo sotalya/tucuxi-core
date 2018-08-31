@@ -114,5 +114,5 @@ bool defaultPopulate(PkModelCollection &_collection)
     return rc;
 }
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi

@@ -92,7 +92,7 @@ typedef std::vector<std::unique_ptr<CovariateDefinition>> CovariateDefinitions;
 /// \brief Iterator in the list of covariate definitions.
 typedef std::vector<std::unique_ptr<CovariateDefinition>>::const_iterator cdIterator_t;
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 
 #endif // COVARIATEDEFINITION_H

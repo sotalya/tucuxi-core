@@ -80,7 +80,7 @@ protected:
     const ComputingTraits & m_computingTraits;
 };
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 
 #endif // COMPUTINGREQUEST_H

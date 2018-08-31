@@ -177,7 +177,7 @@ private:
     static const std::string m_key;
 };
 
-}
-}
+} // namespace Common
+} // namespace Tucuxi
 
 #endif // TUCUXI_TUCUCOMMON_LICENSECHECKER_H

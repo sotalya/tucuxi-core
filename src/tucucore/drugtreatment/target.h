@@ -70,7 +70,7 @@ private:
 ///
 typedef std::vector<std::unique_ptr<Target> > Targets;
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 
 #endif // TUCUXI_CORE_TARGET_H

@@ -508,5 +508,5 @@ void CovariateExtractor::sortPatientVariates()
     }
 }
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi

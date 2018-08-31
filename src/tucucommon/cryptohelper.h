@@ -32,7 +32,7 @@ public:
     static bool decrypt(const std::string& _key, const std::string& cyphertext, std::string& result);
 };
 
-}
-}
+} // namespace Common
+} // namespace Tucuxi
 
 #endif // TUCUXI_TUCUCOMMON_LOGGER_H

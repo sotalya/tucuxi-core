@@ -447,5 +447,5 @@ DynamicOperation::getInputs() const
 }
 
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi

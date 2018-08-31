@@ -155,5 +155,5 @@ DateTime Utils::ValueToDate(const Value &_value)
     return dt;
 }
 
-}
-}
+} // namespace Common
+} // namespace Tucuxi

@@ -280,8 +280,8 @@ struct Frprmn : Dlinemethod<T> {
     }
 };
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 
 #endif // MINIMIZE_H
 

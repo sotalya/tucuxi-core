@@ -103,5 +103,5 @@ void Parameter::applyEta(Deviation _eta)
 }
 
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi

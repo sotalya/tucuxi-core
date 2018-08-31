@@ -102,7 +102,7 @@ private:
     std::map<std::string, Interface*> m_components;         /// The lisf of registered components
 };
 
-}
-}
+} // namespace Common
+} // namespace Tucuxi
 
 #endif // TUCUXI_TUCUCOMMON_COMPONENTMANAGER_H

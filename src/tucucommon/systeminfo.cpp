@@ -327,6 +327,6 @@ std::string SystemInfo::readDMIfile(std::string _filename)
 }
 #endif
 
-}
-}
+} // namespace Common
+} // namespace Tucuxi
 

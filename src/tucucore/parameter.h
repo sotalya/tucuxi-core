@@ -116,6 +116,6 @@ private:
 };
 
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 #endif // TUCUXI_CORE_PARAMETER_H

@@ -51,7 +51,7 @@ public:
 
 };
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 
 #endif // ICOMPUTINGSERVICE_H

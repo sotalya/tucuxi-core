@@ -220,5 +220,5 @@ char* XmlNode::allocateString(const std::string& _string)
     return nullptr;
 }
 
-}
-}
+} // namespace Common
+} // namespace Tucuxi

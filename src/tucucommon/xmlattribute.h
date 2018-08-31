@@ -9,7 +9,7 @@
 
 namespace rapidxml {
     template<class Ch> class xml_attribute;
-}
+} // namespace rapidxml
 
 namespace Tucuxi {
 namespace Common {
@@ -89,7 +89,7 @@ private:
     friend class XmlIterator<XmlAttribute>;
 };
 
-}
-}
+} // namespace Common
+} // namespace Tucuxi
 
 #endif // TUCUXI_TUCUCOMMON_XMLATTRIBUTE_H

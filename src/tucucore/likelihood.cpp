@@ -113,5 +113,5 @@ Value Likelihood::negativeLogPrior(const EigenVector& _etas, const OmegaMatrix &
             log(_omega.determinant()));
 }
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi

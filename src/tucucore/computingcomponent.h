@@ -168,7 +168,7 @@ private:
 
 };
 
-} // Core
-} // Tucuxi
+} // namespace Core
+} // namespace Tucuxi
 
 #endif // TUCUXI_CORE_COMPUTINGCOMPONENT_H

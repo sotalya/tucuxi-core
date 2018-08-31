@@ -192,7 +192,7 @@ protected:
 };
 
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 
 #endif // TUCUXI_CORE_INTAKEINTERVALCALCULATOR_H

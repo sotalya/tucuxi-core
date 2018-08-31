@@ -191,5 +191,5 @@ int IntakeExtractor::extract(const WeeklyDose &_dosage, const DateTime &_start, 
     return 1;
 }
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi

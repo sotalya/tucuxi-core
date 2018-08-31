@@ -43,7 +43,7 @@ protected:
     DateTime m_time;    /// The time of the event
 };
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 
 #endif // TUCUXI_CORE_TIMEDEVENT_H

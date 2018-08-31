@@ -9,7 +9,7 @@
 
 namespace rapidxml {
     template<class Ch> class xml_document;
-}
+} // namespace rapidxml
 
 namespace Tucuxi {
 namespace Common {
@@ -89,7 +89,7 @@ private:
     rapidxml::xml_document<char>* m_pDocument;  /// A pointer to the actual "rapidxml" document object
 };
 
-}
-}
+} // namespace Common
+} // namespace Tucuxi
 
 #endif // TUCUXI_TUCUCOMMON_XMLDOCUMENT_H

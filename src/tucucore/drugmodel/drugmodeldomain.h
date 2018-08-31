@@ -59,8 +59,8 @@ protected:
 };
 
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 
 
 #endif // DRUGMODELDOMAIN_H

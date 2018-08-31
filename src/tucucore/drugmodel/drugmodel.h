@@ -166,7 +166,7 @@ private:
     friend ParameterDefinitionIterator;
 };
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 
 #endif // TUCUXI_CORE_DRUGMODEL_H

@@ -73,7 +73,7 @@ private:
 };
 typedef std::unique_ptr<PercentilesPrediction> PercentilesPredictionPtr;
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 
 #endif // TUCUXI_CORE_PERCENTILESPREDICTION_H

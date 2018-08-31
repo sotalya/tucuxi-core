@@ -84,8 +84,8 @@ protected:
     std::string m_pkModelId;
 };
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 
 
 #endif // ANALYTE_H

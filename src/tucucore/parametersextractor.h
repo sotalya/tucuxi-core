@@ -78,7 +78,7 @@ private:
     OperableGraphManager m_ogm;
 };
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 
 #endif // TUCUXI_CORE_PARAMETERSEXTRACTOR_H

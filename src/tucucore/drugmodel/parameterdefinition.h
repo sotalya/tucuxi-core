@@ -184,8 +184,8 @@ protected:
 };
 
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 
 
 #endif // PARAMETERDEFINITION_H

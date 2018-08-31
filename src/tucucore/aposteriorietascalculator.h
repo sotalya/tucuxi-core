@@ -29,7 +29,7 @@ public:
             Etas &_aPosterioriEtas);
 };
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 
 #endif // APOSTERIORIETASCALCULATOR_H

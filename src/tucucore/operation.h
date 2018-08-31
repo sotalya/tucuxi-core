@@ -392,7 +392,7 @@ protected:
 };
 
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 
 #endif // TUCUXI_OPERATION_H

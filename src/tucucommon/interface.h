@@ -37,7 +37,7 @@ protected:
     virtual Interface* getInterface(const std::string &_name) = 0;
 };
 
-}
-}
+} // namespace Common
+} // namespace Tucuxi
 
 #endif // TUCUXI_TUCUCOMMON_INTERFACE_H

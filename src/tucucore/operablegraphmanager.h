@@ -316,7 +316,7 @@ protected:
 };
 
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 
 #endif // OPERABLEGRAPHMANAGER_H

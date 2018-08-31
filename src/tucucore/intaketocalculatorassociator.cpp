@@ -25,5 +25,5 @@ IntakeToCalculatorAssociator::Result IntakeToCalculatorAssociator::associate(
     return IntakeToCalculatorAssociator::Result::Ok;
 }
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi

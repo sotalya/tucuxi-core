@@ -79,7 +79,7 @@ protected:
 /// A vector of unique_ptr on Sample objects
 typedef std::vector<std::unique_ptr<Sample> > Samples;
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 
 #endif // TUCUXI_CORE_SAMPLE_H

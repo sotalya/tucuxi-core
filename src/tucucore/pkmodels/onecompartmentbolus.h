@@ -58,7 +58,7 @@ protected:
 };
 
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 
 #endif // TUCUXI_CORE_ONECOMPARTMENTBOLUS_H

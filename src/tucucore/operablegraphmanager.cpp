@@ -311,5 +311,5 @@ Operable::setValue(const double _value)
     m_value = _value;
 }
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi

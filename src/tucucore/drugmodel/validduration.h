@@ -62,8 +62,8 @@ protected:
     std::vector<Tucuxi::Common::Duration> m_durations;
 };
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 
 
 #endif // VALIDDURATION_H

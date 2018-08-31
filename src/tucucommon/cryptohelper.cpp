@@ -116,5 +116,5 @@ bool CryptoHelper::decrypt(const std::string &_key, const std::string &_cipherte
     }
 }
 
-}
-}
+} // namespace Common
+} // namespace Tucuxi

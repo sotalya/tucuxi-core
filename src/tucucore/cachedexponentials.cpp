@@ -45,5 +45,5 @@ std::size_t CachedExponentials::hash(const Tucuxi::Common::Duration& _cycleDurat
     return seed;
 }
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi

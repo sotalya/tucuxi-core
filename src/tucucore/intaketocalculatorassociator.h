@@ -32,6 +32,6 @@ public:
     static Result associate(Tucuxi::Core::IntakeSeries& _intakes, const Tucuxi::Core::PkModel &_pkModel);
 };
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 #endif // TUCUXI_CORE_INTAKETOCALCULATORASSOCIATOR_H

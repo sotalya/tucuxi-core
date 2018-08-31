@@ -144,8 +144,8 @@ private:
 };
 
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 
 #endif // TUCUXI_CORE_LIKELIHOOD_H
 

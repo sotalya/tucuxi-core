@@ -387,5 +387,5 @@ bool LicenseManager::getHashedFingerprint(MachineIdType &idType, std::string& _h
 }
 
 
-}
-}
+} // namespace Common
+} // namespace Tucuxi

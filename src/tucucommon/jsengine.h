@@ -50,7 +50,7 @@ private:
     CTinyJS* m_pEngine; /// The "wrapped" Tiny JS script engine
 };
 
-}
-}
+} // namespace Common
+} // namespace Tucuxi
 
 #endif // TUCUXI_TUCUCOMMON_JSENGINE_H

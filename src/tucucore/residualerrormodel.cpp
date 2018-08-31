@@ -99,5 +99,5 @@ Value SigmaResidualErrorModel::calculateSampleLikelihood(const Value _expected, 
     return - phi;
 }
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi

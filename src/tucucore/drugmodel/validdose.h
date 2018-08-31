@@ -64,8 +64,8 @@ protected:
     std::vector<MultiAnalyteDose> m_doses;
 };
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 
 
 #endif // VALIDDOSE_H

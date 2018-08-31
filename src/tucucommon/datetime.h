@@ -12,7 +12,7 @@
 
 namespace date {
     class year_month_day;
-}
+} // namespace date
 
 namespace Tucuxi {
 namespace Common {
@@ -210,7 +210,7 @@ private:
     std::chrono::time_point<std::chrono::system_clock> m_date;  /// The date managed by the class
 };
 
-}
-}
+} // namespace Common
+} // namespace Tucuxi
 
 #endif // TUCUXI_TUCUCOMMON_DATETIME_H

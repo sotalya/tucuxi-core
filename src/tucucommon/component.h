@@ -75,7 +75,7 @@ private:
     std::map<std::string, Interface*> m_interfaces;     /// The list of correctly initialized interface pointers
 };
 
-}
-}
+} // namespace Common
+} // namespace Tucuxi
 
 #endif // TUCUXI_TUCUCOMMON_COMPONENT_H

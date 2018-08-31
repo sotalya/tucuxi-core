@@ -34,5 +34,5 @@ bool CovariateEvent::evaluate(const OperableGraphManager &_graphMgr)
     return op.evaluate(inputs, m_value);
 }
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi

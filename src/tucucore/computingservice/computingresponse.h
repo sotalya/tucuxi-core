@@ -204,7 +204,7 @@ protected:
 
 };
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 
 #endif // COMPUTINGRESPONSE_H

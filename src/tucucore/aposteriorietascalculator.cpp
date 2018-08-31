@@ -76,5 +76,5 @@ ComputationResult APosterioriEtasCalculator::computeAposterioriEtas(
 }
 
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi

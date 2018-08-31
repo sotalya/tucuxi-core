@@ -94,8 +94,8 @@ private:
     std::vector<std::unique_ptr<FormulationAndRoute> > m_fars;
 };
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 
 
 #endif // FORMULATIONANDROUTE_H

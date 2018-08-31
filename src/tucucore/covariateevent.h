@@ -57,7 +57,7 @@ public:
 /// \brief List of covariate series (that is, changes).
 typedef std::vector<CovariateEvent> CovariateSeries;
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 
 #endif // TUCUXI_CORE_COVARIATEEVENT_H

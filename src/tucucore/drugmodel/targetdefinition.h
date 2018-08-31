@@ -85,8 +85,8 @@ public:
 
 typedef std::vector<std::unique_ptr<TargetDefinition> > TargetDefinitions;
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 
 
 #endif // TARGETDEFINITION_H

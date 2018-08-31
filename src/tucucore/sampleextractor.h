@@ -17,7 +17,7 @@ public:
     static int extract(const Samples &_samples, const DateTime &_start, const DateTime &_end, SampleSeries &_series);
 };
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 
 #endif // TUCUXI_CORE_SAMPLEEXTRACTOR_H

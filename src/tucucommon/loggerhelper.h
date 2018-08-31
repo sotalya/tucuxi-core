@@ -221,7 +221,7 @@ private:
     ILogger *m_pLogger; /// The pointer to the actual logger component
 };
 
-}
-}
+} // namespace Common
+} // namespace Tucuxi
 
 #endif // TUCUXI_COMMON_LOOGER

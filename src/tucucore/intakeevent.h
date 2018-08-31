@@ -186,7 +186,7 @@ private:
     std::shared_ptr<IntakeIntervalCalculator> m_calculator;
 };
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 
 #endif // TUCUXI_CORE_INTAKEEVENT_H
