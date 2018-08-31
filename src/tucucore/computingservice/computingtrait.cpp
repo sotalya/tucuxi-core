@@ -8,6 +8,16 @@
 namespace Tucuxi {
 namespace Core {
 
+
+ComputingOption::ComputingOption(
+        PredictionParameterType _parameterType,
+        CompartmentsOption _compartmentsOption) :
+    m_parameterType(_parameterType),
+    m_compartmentsOption(_compartmentsOption)
+{
+
+}
+
 ComputingTrait::~ComputingTrait()
 {
 
@@ -31,25 +41,18 @@ RequestResponseId ComputingTrait::getId() const
 
 
 ComputingTraitStandard::ComputingTraitStandard(RequestResponseId _id,
-                        PredictionParameterType _type,
                         Tucuxi::Common::DateTime _start,
                         Tucuxi::Common::DateTime _end,
                         const CycleSize _cycleSize,
                         ComputingOption _computingOption) :
     ComputingTrait(_id),
-    m_type(_type), m_computingOption(_computingOption), m_start(_start), m_end(_end), m_cycleSize(_cycleSize)
+    m_computingOption(_computingOption), m_start(_start), m_end(_end), m_cycleSize(_cycleSize)
 {
 }
 
 ComputingTraitStandard::~ComputingTraitStandard()
 {
 
-}
-
-
-PredictionParameterType ComputingTraitStandard::getType() const
-{
-    return m_type;
 }
 
 
@@ -78,21 +81,20 @@ CycleSize ComputingTraitStandard::getCycleSize() const
 
 
 ComputingTraitAdjustment::ComputingTraitAdjustment(RequestResponseId _id,
-                          PredictionParameterType _type,
                           Tucuxi::Common::DateTime _start,
                           Tucuxi::Common::DateTime _end,
                           const CycleSize _cycleSize,
                           ComputingOption _computingOption,
                           Tucuxi::Common::DateTime _adjustmentTime,
                           AdjustmentOption _adjustmentOption) :
-    ComputingTraitStandard(_id, _type, _start, _end, _cycleSize, _computingOption),
+    ComputingTraitStandard(_id, _start, _end, _cycleSize, _computingOption),
     m_adjustmentTime(_adjustmentTime),
     m_adjustmentOption(_adjustmentOption)
 {
 }
 
 
-const Tucuxi::Common::DateTime& ComputingTraitAdjustment::getAdjustmentTime() const
+Tucuxi::Common::DateTime ComputingTraitAdjustment::getAdjustmentTime() const
 {
     return m_adjustmentTime;
 }
@@ -105,24 +107,22 @@ AdjustmentOption ComputingTraitAdjustment::getAdjustmentOption() const
 
 
 ComputingTraitConcentration::ComputingTraitConcentration(RequestResponseId _id,
-                             PredictionParameterType _type,
                              Tucuxi::Common::DateTime _start,
                              Tucuxi::Common::DateTime _end,
                              const CycleSize _cycleSize,
                              ComputingOption _computingOption) :
-    ComputingTraitStandard(_id, _type, _start, _end, _cycleSize, _computingOption)
+    ComputingTraitStandard(_id, _start, _end, _cycleSize, _computingOption)
 {
 }
 
 
 ComputingTraitPercentiles::ComputingTraitPercentiles(RequestResponseId _id,
-                           PredictionParameterType _type,
                            Tucuxi::Common::DateTime _start,
                            Tucuxi::Common::DateTime _end,
                            const PercentileRanks &_ranks,
                            const CycleSize _cycleSize,
                            ComputingOption _computingOption) :
-    ComputingTraitStandard(_id, _type, _start, _end, _cycleSize, _computingOption), m_ranks(_ranks)
+    ComputingTraitStandard(_id, _start, _end, _cycleSize, _computingOption), m_ranks(_ranks)
 {
 }
 
@@ -132,6 +132,21 @@ ComputingTraitAtMeasures::ComputingTraitAtMeasures(RequestResponseId _id, Comput
 {
 }
 
+ComputingOption ComputingTraitAtMeasures::getComputingOption() const
+{
+    return m_computingOption;
+}
+
+ComputingOption ComputingTraitSinglePoints::getComputingOption() const
+{
+    return m_computingOption;
+}
+
+
+const std::vector<Tucuxi::Common::DateTime> &ComputingTraitSinglePoints::getTimes() const
+{
+    return m_times;
+}
 
 
 ComputingResult ComputingTraitConcentration::compute(

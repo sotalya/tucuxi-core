@@ -170,9 +170,9 @@ public:
     void addCorrelation(Correlation _correlation) { m_correlations.push_back(_correlation);}
 
     size_t getNbParameters() const { return m_parameters.size(); }
-    const ParameterDefinition* getParameter(size_t index) const { 
-        if (index < m_parameters.size()) {
-            return m_parameters.at(index).get();
+    const ParameterDefinition* getParameter(size_t _index) const {
+        if (_index < m_parameters.size()) {
+            return m_parameters.at(_index).get();
         }
         return nullptr;
     }

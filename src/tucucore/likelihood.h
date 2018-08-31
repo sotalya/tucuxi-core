@@ -73,7 +73,7 @@ public:
     ///
     void df(ValueVector &_x, ValueVector &_deriv)
     {
-        deriv1([&](const ValueVector & in) -> Value {return (*this)(in);}, _x, _deriv, static_cast<Value>(_x.size()));
+        deriv1([&](const ValueVector & _in) -> Value {return (*this)(_in);}, _x, _deriv, static_cast<Value>(_x.size()));
         for (unsigned int i = 0; i < _x.size(); i++) {
             // bounds the value:
             _deriv[i] = std::max(m_omin[i], std::min(_deriv[i], m_omax[i]));
@@ -101,18 +101,18 @@ public:
     /// using the equation for the inverse of the cdf for normal distribution
     /// (here by default it is set to 99.9 percentile and 0.1 percentile)
     /// \param _omega
-    /// \param _o_max
-    /// \param _o_min
-    /// \param _high_x
-    /// \param _low_x
+    /// \param _oMax
+    /// \param _oMin
+    /// \param _highX
+    /// \param _lowX
     void initBounds(const OmegaMatrix& _omega,
-                    EigenVector& _o_max,
-                    EigenVector& _o_min,
-                    double _high_x = 0.999,
-                    double _low_x = 0.001);
+                    EigenVector& _oMax,
+                    EigenVector& _oMin,
+                    double _highX = 0.999,
+                    double _lowX = 0.001);
 
     /// \brief Calculates the negative log of the prior from Bayes theorem
-    /// \param _eta vector of eta values being optimized
+    /// \param _etas vector of eta values being optimized
     /// \param _omega covariance matrix of inter-individual error
     /// \return The calculated negative log of the prior
     Value negativeLogPrior(const EigenVector& _etas, const OmegaMatrix &_omega) const;

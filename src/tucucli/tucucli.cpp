@@ -11,7 +11,7 @@
 #include "tucucore/definitions.h"
 #include "tucucore/intakeevent.h"
 #include "tucucore/parameter.h"
-#include "tucucore/onecompartmentextra.h"
+#include "tucucore/pkmodels/onecompartmentextra.h"
 
 using namespace std::chrono_literals;
 

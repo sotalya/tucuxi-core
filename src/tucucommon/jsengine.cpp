@@ -21,8 +21,9 @@ JSEngine::JSEngine()
 
 JSEngine::~JSEngine()
 {
-    if (m_pEngine != nullptr)
+    if (m_pEngine != nullptr) {
         delete m_pEngine;
+    }
 }
 
 

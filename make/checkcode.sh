@@ -1,5 +1,14 @@
 clang-tidy \
-	-config="{Checks: '-*,readability-braces-around-statements,readability-identifier-naming', \
+	-config="{Checks: '-*,readability-braces-around-statements, \
+                              readability-identifier-naming, \
+                              readability-avoid-const-params-in-decls, \
+                              google-readability-casting, \
+                              llvm-namespace-comment, \
+                              google-global-names-in-headers, \
+                              misc-unused-parameters,
+                              modernize-make-unique,
+                              modernize-use-nullptr,
+                              modernize-use-override', \
 		CheckOptions: [ \
 			{ key: readability-identifier-naming.ClassCase,           value: CamelCase }, \
 			{ key: readability-identifier-naming.MemberPrefix,        value: m_        }, \
@@ -21,4 +30,13 @@ clang-tidy \
     -I../libs/botan-2.1.0/build/include \
     -I../libs/tiny-js-master-20170629 \
     -I../libs/rapidxml-1.13 \
-	-std=c++14
+	-std=c++14 \
+> clang-warnings.txt
+
+
+grep "\.h" clang-warnings.txt | sort -u > clang-warnings-shorts.txt
+
+
+
+# The following, if used instead of -header-filter, will only display warnings for these two files
+#    -line-filter="[{\"name\" : \"../src/tucucore/deriv.h\"},{\"name\" : \"../src/tucucore/minimize.h\"}]" \

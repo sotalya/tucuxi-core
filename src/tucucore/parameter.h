@@ -30,7 +30,7 @@ public:
         m_value(_value)
     {
     }
-    void applyEta(Deviation eta);
+    void applyEta(Deviation _eta);
     Value getValue() const { return m_value; }
     bool isVariable() { return m_definition.isVariable(); }
 
@@ -59,9 +59,9 @@ public:
 
     /// \brief Add a parameter event to the event set.
     /// \param _definition Parameter definition for the parameter event occurred.
-    void addParameterEvent(const ParameterDefinition &_definition, const Value value)
+    void addParameterEvent(const ParameterDefinition &_definition, const Value _value)
     {
-        m_parameters.push_back(Parameter(_definition, value));
+        m_parameters.push_back(Parameter(_definition, _value));
 
         // Update our mapping between id (string) to index
         ParameterId::Enum id = ParameterId::fromString(_definition.getId());

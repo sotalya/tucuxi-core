@@ -53,24 +53,24 @@ public:
 
     /// \brief Default copy constructor.
     /// \param _other Source object to copy from.
-    IntakeEvent(const IntakeEvent &other) = default;
+    IntakeEvent(const IntakeEvent &_other) = default;
 
     /// \brief Default assignment operator.
     /// \param _other Source object to copy from.
-    IntakeEvent& operator=(const IntakeEvent &other) = default;
+    IntakeEvent& operator=(const IntakeEvent &_other) = default;
 
     /// \brief Comparison operator.
     /// \param _other Object to compare to.
     /// \return true if the two objects are equal, false otherwise.
-    bool operator==(const IntakeEvent &other) const
+    bool operator==(const IntakeEvent &_other) const
     {
-        return (m_time == other.m_time &&
-                m_dose == other.m_dose &&
-                m_offsetTime == other.m_offsetTime &&
-                m_nbPoints == other.m_nbPoints &&
-                m_route == other.m_route &&
-                m_interval == other.m_interval &&
-                m_infusionTime == other.m_infusionTime);
+        return (m_time == _other.m_time &&
+                m_dose == _other.m_dose &&
+                m_offsetTime == _other.m_offsetTime &&
+                m_nbPoints == _other.m_nbPoints &&
+                m_route == _other.m_route &&
+                m_interval == _other.m_interval &&
+                m_infusionTime == _other.m_infusionTime);
     }
 
     /// \brief Change the time before the next intake.

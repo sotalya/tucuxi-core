@@ -31,10 +31,10 @@ Likelihood::Likelihood(const OmegaMatrix& _omega,
     initBounds(_omega, m_omax, m_omin);
 }
 
-void Likelihood::initBounds(const OmegaMatrix& _omega, EigenVector& _o_max, EigenVector& _o_min, double _high_x, double _low_x)
+void Likelihood::initBounds(const OmegaMatrix& _omega, EigenVector& _oMax, EigenVector& _oMin, double _highX, double _lowX)
 {
-    _o_min = _omega.diagonal().array().sqrt() * sqrt(2) * boost::math::erf_inv(2 * _low_x - 1);
-    _o_max = _omega.diagonal().array().sqrt() * sqrt(2) * boost::math::erf_inv(2 * _high_x - 1);
+    _oMin = _omega.diagonal().array().sqrt() * sqrt(2) * boost::math::erf_inv(2 * _lowX - 1);
+    _oMax = _omega.diagonal().array().sqrt() * sqrt(2) * boost::math::erf_inv(2 * _highX - 1);
 }
 
 

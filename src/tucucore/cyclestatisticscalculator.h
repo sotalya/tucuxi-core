@@ -58,17 +58,17 @@ public:
     /// \brief Find one of the values with index and return the value and its dateTime
     /// \param _dateTime Absolute time
     /// \param _value stored value
-    /// \param index
+    /// \param _iindex
     /// \return True if there is a value at given index. otherwise False
     ///
-    bool getValue(DateTime &_dateTime, Value &_value, size_t index = 0) const 
+    bool getValue(DateTime &_dateTime, Value &_value, size_t _index = 0) const
     {
         // if the required index is bigger than the stored value...
-        if (index >= getNbValue()) {
+        if (_index >= getNbValue()) {
             return false;
         }
-        _dateTime = m_cycleStartDate + m_data[index].offset;
-        _value = m_data[index].value;
+        _dateTime = m_cycleStartDate + m_data[_index].offset;
+        _value = m_data[_index].value;
         return true;
     }
 

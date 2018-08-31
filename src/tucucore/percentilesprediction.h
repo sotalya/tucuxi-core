@@ -19,8 +19,9 @@ public:
     bool streamToFile(const std::string _fileName) 
     {
         std::ofstream ostrm(_fileName, std::ios::binary);
-        if (ostrm.rdstate() & std::ios_base::failbit)
+        if (ostrm.rdstate() & std::ios_base::failbit) {
             return false;
+        }
 
         size_t nbCycles = this->m_times.size();
         double offset = 0.0;

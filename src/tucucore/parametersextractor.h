@@ -37,7 +37,7 @@ public:
     ///        definitions.
     ///        The time instants at which the parameter set events will be extracted is also computed at this stage.
     /// \param _covariates A list of covariate events.
-    /// \param _drugParameters A list of parameter definitions.
+    /// \param _paramsIterator An iterator on the list of parameter definitions.
     /// \param _start Start time of the considered interval.
     /// \param _end End time of the considered interval.
     /// \pre _start <= _end
@@ -45,7 +45,7 @@ public:
     /// \pre No duplicates in _drugParameters.
     /// \warning _drugParameters gets modified by the call to this function! This is mandatory, as we
     ParametersExtractor(const CovariateSeries &_covariates,
-                        Tucuxi::Common::Iterator<const ParameterDefinition*> &paramsIterator,
+                        Tucuxi::Common::Iterator<const ParameterDefinition*> &_paramsIterator,
                         const DateTime &_start,
                         const DateTime &_end);
 

@@ -5,16 +5,77 @@
 #ifndef COMPUTINGTRAIT_H
 #define COMPUTINGTRAIT_H
 
+#include "tucucommon/datetime.h"
 
-#include "tucucore/drugtreatment/drugtreatment.h"
-#include "tucucore/drugmodel/drugmodel.h"
+#include "tucucore/definitions.h"
 #include "tucucore/computingservice/icomputingservice.h"
 
 
 namespace Tucuxi {
 namespace Core {
 
-enum class PredictionParameterType { Population, Apriori, Aposteriori };
+///
+/// \brief The PredictionParameterType enum
+/// This enum represents the type of Pk parameters to use for computation.
+/// It can be:
+/// 1. Population : Only the default parameters values are used
+/// 2. Apriori : The covariates modify the parameters
+/// 3. Aposteriori : The covariates and the existing measures modify the parameters
+///
+enum class PredictionParameterType {
+    Population = 0, //!< Population parameters
+    Apriori,        //!< Covariates modify the parameters
+    Aposteriori     //!< Covariates and mesaures modify the parameters
+};
+
+///
+/// \brief The CompartmentsOption enum
+/// This enum allows to select if only the main compartment concentration has to be
+/// calculated or if the concentrations of all compartments are required
+enum class CompartmentsOption {
+    MainCompartment = 0, //!< Only interested in the main compartment
+    AllCompartments      //!< Interested in all compartments
+};
+
+///
+/// \brief The ComputingOption class
+/// This class embeds some general options for computation. It is used by all requests.
+/// Currently it offers choice for the type of parameters and which compartment we are
+/// interested in.
+///
+class ComputingOption {
+public:
+
+    ///
+    /// \brief ComputingOption Simple constructor
+    /// \param _parameterType Type of parameters (population, aPriori, aPosteriori)
+    /// \param _compartmentsOption What compartments are of interest (main or all)
+    ///
+    ComputingOption(
+            PredictionParameterType _parameterType,
+            CompartmentsOption _compartmentsOption);
+
+    ///
+    /// \brief getParametersType Gets the type of parameters
+    /// \return The type of parameters
+    ///
+    PredictionParameterType getParametersType() const { return m_parameterType;}
+
+    ///
+    /// \brief getCompartmentsOption Gets what compartment is of interest
+    /// \return The type of compartments of interest
+    ///
+    CompartmentsOption getCompartmentsOption() const { return m_compartmentsOption;}
+protected:
+
+    //! Type of parameters
+    PredictionParameterType m_parameterType;
+
+    //! What compartments are of interest
+    CompartmentsOption m_compartmentsOption;
+};
+
+
 class ComputingComponent;
 
 ///
@@ -30,6 +91,9 @@ public:
     ///
     RequestResponseId getId() const;
 
+    ///
+    /// \brief ~ComputingTrait virtual destructor
+    ///
     virtual ~ComputingTrait();
     
 protected:
@@ -38,59 +102,100 @@ protected:
     /// \param _id Id of the ComputingTrait
     /// The constructor is protected, as this class shall not be instanciated.
     /// Only subclasses are relevant.
+    ///
     ComputingTrait(RequestResponseId _id);
 
+    //! Id of the request
     RequestResponseId m_id;
 
 private:
     friend class ComputingComponent;
+
+    ///
+    /// \brief compute Calls the compute() method in ComputingComponent
+    /// \param _computingComponent The computing component that will do the computing job
+    /// \param _request The request that has to be processed
+    /// \param _response The response list in which we will add the new response
+    /// \return ComputingResult::Success if everything went well, ComputingResult::Error else
+    /// This abstract function has to be overriden in each and every real class.
+    /// It allows the use of a visitor pattern from the ComputingComponent that can then
+    /// iterate on the list of ComputingRequest for starting the computations.
+    ///
     virtual ComputingResult compute(ComputingComponent &_computingComponent,
                                     const ComputingRequest &_request,
                                     std::unique_ptr<ComputingResponse> &_response) const = 0;
 };
 
-/// This shall be better thought. I think there are more options such as:
-/// compute parameter values or not
-enum class ComputingOption {
-    MainCompartment = 0,
-    AllCompartments
-};
 
 ///
 /// \brief The ComputingTraitStandard class
 /// This is a base class for other Traits. It embeds information about:
-/// 1. Type of parameters
-/// 2. Start date of prediction calculation
-/// 3. End date of prediction calculation
-/// 4. Number of points for the calculation
-/// 5. Some processing options
+/// 1. Start date of prediction calculation
+/// 2. End date of prediction calculation
+/// 3. Number of points for the calculation
+/// 4. Some processing options (type of parameters, what compartments)
 /// It shall not be instanciated, and this fact is assured by the protected constructor.
 ///
 class ComputingTraitStandard : public ComputingTrait
 {
 public:
 
+    //! Emtpy destructor
     ~ComputingTraitStandard();
 
-    PredictionParameterType getType() const;
+    ///
+    /// \brief getComputingOption Get the computing options
+    /// \return The computing options
+    ///
     ComputingOption getComputingOption() const;
+
+    ///
+    /// \brief getStart Get the start time of the range of interest
+    /// \return The start time of the range of interest
+    ///
     const Tucuxi::Common::DateTime& getStart() const;
+
+    ///
+    /// \brief getEnd Get the end time of the range of interest
+    /// \return The end time of the range of interest
+    ///
     const Tucuxi::Common::DateTime& getEnd() const;
+
+    ///
+    /// \brief getCycleSize Get the number of points to be calculated for each cycle
+    /// \return The number of points to be calculated for each cycle
+    ///
     CycleSize getCycleSize() const;
 
 protected:
+
+    ///
+    /// \brief ComputingTraitStandard A simple protected constructor
+    /// \param _id Id of the request
+    /// \param _start Start date of prediction calculation
+    /// \param _end End date of prediction calculation
+    /// \param _cycleSize Number of points for the calculation of each cycle
+    /// \param _computingOption Some processing options (type of parameters, what compartments)
+    /// The constructor is protected, so that this class can not be directly created
+    ///
     ComputingTraitStandard(RequestResponseId _id,
-                            PredictionParameterType _type,
                             Tucuxi::Common::DateTime _start,
                             Tucuxi::Common::DateTime _end,
                             const CycleSize _cycleSize,
                             ComputingOption _computingOption);
 
 private:
-    PredictionParameterType m_type;
+
+    //! Some processing options (type of parameters, what compartments)
     ComputingOption m_computingOption;
+
+    //! Start date of prediction calculation
     Tucuxi::Common::DateTime m_start;
+
+    //! End date of prediction calculation
     Tucuxi::Common::DateTime m_end;
+
+    //! _cycleSize Number of points for the calculation of each cycle
     CycleSize m_cycleSize;
 
 };
@@ -103,16 +208,42 @@ private:
 class ComputingTraitSinglePoints : public ComputingTrait
 {
 public:
+
+    ///
+    /// \brief ComputingTraitSinglePoints Simple constructor
+    /// \param _id Id of the request
+    /// \param _times A vector of times of interest
+    /// \param _computingOption Computing options (parameters type, compartments)
+    ///
     ComputingTraitSinglePoints(RequestResponseId _id,
                                 std::vector<Tucuxi::Common::DateTime> _times,
                                 ComputingOption _computingOption);
 
+    const std::vector<Tucuxi::Common::DateTime> &getTimes() const;
+
+    ///
+    /// \brief getComputingOption Get the computing options
+    /// \return The computing options
+    ///
+    ComputingOption getComputingOption() const;
+
 protected:
+
+    //! Vector of the times of interest
     std::vector<Tucuxi::Common::DateTime> m_times;
-    PredictionParameterType m_type;
+
+    //! Some processing options (type of parameters, what compartments)
     ComputingOption m_computingOption;
 
 private:
+
+    ///
+    /// \brief compute Calls the compute() method in ComputingComponent
+    /// \param _computingComponent The computing component that will do the computing job
+    /// \param _request The request that has to be processed
+    /// \param _response The response list in which we will add the new response
+    /// \return ComputingResult::Success if everything went well, ComputingResult::Error else
+    ///
     ComputingResult compute(ComputingComponent &_computingComponent,
                             const ComputingRequest &_request,
                             std::unique_ptr<ComputingResponse> &_response) const override;
@@ -129,13 +260,34 @@ private:
 class ComputingTraitAtMeasures : public ComputingTrait
 {
 public:
+
+    ///
+    /// \brief ComputingTraitAtMeasures Simple constructor
+    /// \param _id Id of the request
+    /// \param _computingOption Computing options (parameters type, compartments)
+    ///
     ComputingTraitAtMeasures(RequestResponseId _id, ComputingOption _computingOption);
 
+    ///
+    /// \brief getComputingOption Get the computing options
+    /// \return The computing options
+    ///
+    ComputingOption getComputingOption() const;
+
 protected:
-    PredictionParameterType m_type;
+
+    //! Some processing options (type of parameters, what compartments)
     ComputingOption m_computingOption;
 
 private:
+
+    ///
+    /// \brief compute Calls the compute() method in ComputingComponent
+    /// \param _computingComponent The computing component that will do the computing job
+    /// \param _request The request that has to be processed
+    /// \param _response The response list in which we will add the new response
+    /// \return ComputingResult::Success if everything went well, ComputingResult::Error else
+    ///
     ComputingResult compute(ComputingComponent &_computingComponent,
                             const ComputingRequest &_request,
                             std::unique_ptr<ComputingResponse> &_response) const override;
@@ -166,7 +318,6 @@ public:
     ///
     /// \brief ComputingTraitAdjustment
     /// \param _id
-    /// \param _type
     /// \param _start
     /// \param _end
     /// \param _nbPoints
@@ -174,8 +325,8 @@ public:
     /// \param _adjustmentTime
     /// \param _adjustmentOption
     /// If nbPoints = 0, then no curve will be returned by the computation, only the dosages
+    ///
     ComputingTraitAdjustment(RequestResponseId _id,
-                              PredictionParameterType _type,
                               Tucuxi::Common::DateTime _start,
                               Tucuxi::Common::DateTime _end,
                               const CycleSize _cycleSize,
@@ -183,14 +334,30 @@ public:
                               Tucuxi::Common::DateTime _adjustmentTime,
                               AdjustmentOption _adjustmentOption);
 
-    const Tucuxi::Common::DateTime& getAdjustmentTime() const;
+    ///
+    /// \brief getAdjustmentTime Get the time of adjustment
+    /// \return Time of the adjustment
+    ///
+    Tucuxi::Common::DateTime getAdjustmentTime() const;
     AdjustmentOption getAdjustmentOption() const;
 
 protected:
-    Tucuxi::Common::DateTime& m_adjustmentTime;
+
+    //! Date of the adjustment
+    Tucuxi::Common::DateTime m_adjustmentTime;
+
+    //! Adjustment options : only the best, or all possible ones
     AdjustmentOption m_adjustmentOption;
 
 private:
+
+    ///
+    /// \brief compute Calls the compute() method in ComputingComponent
+    /// \param _computingComponent The computing component that will do the computing job
+    /// \param _request The request that has to be processed
+    /// \param _response The response list in which we will add the new response
+    /// \return ComputingResult::Success if everything went well, ComputingResult::Error else
+    ///
     ComputingResult compute(ComputingComponent &_computingComponent,
                             const ComputingRequest &_request,
                             std::unique_ptr<ComputingResponse> &_response) const override;
@@ -203,13 +370,29 @@ private:
 class ComputingTraitConcentration : public ComputingTraitStandard
 {
 public:
+
+    ///
+    /// \brief ComputingTraitConcentration Simple constructor
+    /// \param _id Id of the request
+    /// \param _start Start time of the range to be calculated
+    /// \param _end End time of the range to be calculated
+    /// \param _cycleSize Number of points to calculate for each cycle
+    /// \param _computingOption Some computing options
+    ///
     ComputingTraitConcentration(RequestResponseId _id,
-                                 PredictionParameterType _type,
                                  Tucuxi::Common::DateTime _start,
                                  Tucuxi::Common::DateTime _end,
                                  const CycleSize _cycleSize,
                                  ComputingOption _computingOption);
 private:
+
+    ///
+    /// \brief compute Calls the compute() method in ComputingComponent
+    /// \param _computingComponent The computing component that will do the computing job
+    /// \param _request The request that has to be processed
+    /// \param _response The response list in which we will add the new response
+    /// \return ComputingResult::Success if everything went well, ComputingResult::Error else
+    ///
     ComputingResult compute(ComputingComponent &_computingComponent,
                             const ComputingRequest &_request,
                             std::unique_ptr<ComputingResponse> &_response) const override;
@@ -221,26 +404,52 @@ private:
 /// This class embeds all information for calculating percentiles. Additionnaly to
 /// standard single predictions, it requires the list of asked percentiles.
 /// This list is a vector of values in [0.0, 100.0]
+///
 class ComputingTraitPercentiles : public ComputingTraitStandard
 {
 public:
-    ComputingTraitPercentiles(RequestResponseId _id,
-                               PredictionParameterType _type,
-                               Tucuxi::Common::DateTime _start,
-                               Tucuxi::Common::DateTime _end,
-                               const PercentileRanks &_ranks,
-                               const CycleSize _cycleSize,
-                               ComputingOption _computingOption);
 
+    ///
+    /// \brief ComputingTraitPercentiles Simple constructor
+    /// \param _id Id of the request
+    /// \param _start Start time of the range to be calculated
+    /// \param _end End time of the range to be calculated
+    /// \param _ranks The percentile ranks as a vector of double
+    /// \param _cycleSize Number of points to calculate for each cycle
+    /// \param _computingOption Some computing options
+    ///
+    ComputingTraitPercentiles(
+            RequestResponseId _id,
+            Tucuxi::Common::DateTime _start,
+            Tucuxi::Common::DateTime _end,
+            const PercentileRanks &_ranks,
+            const CycleSize _cycleSize,
+            ComputingOption _computingOption);
+
+    ///
+    /// \brief getRanks Retrieves the vector of percentile ranks
+    /// \return The vector of percentiles ranks
+    ///
     const PercentileRanks &getRanks() const { return m_ranks;}
 
 private:
+
+    //! A vector of percentile ranks
     PercentileRanks m_ranks;
 
 private:
-    ComputingResult compute(ComputingComponent &_computingComponent,
-                            const ComputingRequest &_request,
-                            std::unique_ptr<ComputingResponse> &_response) const override;
+
+    ///
+    /// \brief compute Calls the compute() method in ComputingComponent
+    /// \param _computingComponent The computing component that will do the computing job
+    /// \param _request The request that has to be processed
+    /// \param _response The response list in which we will add the new response
+    /// \return ComputingResult::Success if everything went well, ComputingResult::Error else
+    ///
+    ComputingResult compute(
+            ComputingComponent &_computingComponent,
+            const ComputingRequest &_request,
+            std::unique_ptr<ComputingResponse> &_response) const override;
 };
 
 
@@ -251,23 +460,87 @@ private:
 /// DrugModel.
 /// For instance, if a client needs a prediction, percentiles, and a proposition
 /// of dosage adjustment, then three ComputingTrait will be added to a ComputingTraits
+///
+/// The ComputingTrait objects are stored as a vector of unique_ptr on ComputingTrait.
+///
+/// An iterator is supplied to access the ComputingTraits instead of a standard getter.
+///
+/// Example:
+///
+/// \code
+/// ComputingTraits::Iterator it = computingTraits.begin();
+/// ComputingResult result = ComputingResult::Success;
+/// while (it != computingTraits.end()) {
+///     ComputingTraits *traits = it->get();
+///     // Do whatever needed with the iterator
+///
+///     it++;
+/// }
+/// \endcode
+///
 class ComputingTraits
 {
 public:
+
+    ///
+    /// \brief addTrait Adds a ComputingTrait to the list
+    /// \param _trait The ComputingTrait to pass, as a unique_ptr
+    /// Passing a unique pointer is mandatory here, so the caller should use
+    /// std::move() to give ownership to the ComputingTraits.
+    ///
+    /// For instance:
+    ///
+    /// \code
+    /// // Creation of a unique pointer
+    /// std::unique_ptr<Tucuxi::Core::ComputingTrait> computingTrait = std::make_unique<Tucuxi::Core::ComputingTraitConcentration>(
+    ///             m_requestID,
+    ///             _type,
+    ///             _startDate,
+    ///             _endDate,
+    ///             nbPoints,
+    ///             Tucuxi::Core::ComputingOption::MainCompartment);
+    ///
+    /// Tucuxi::Core::ComputingTraits traits;
+    ///
+    /// // Addition of the new computing trait by transfering ownership
+    /// traits.addTrait(std::move(computingTrait));
+    /// \endcode
+    ///
     void addTrait(std::unique_ptr<ComputingTrait> _trait);
+
+    // This getter is not used anymore. Please use the iterator
     //const std::vector<std::unique_ptr<ComputingTrait> > &getTraits() const;
 
+    ///
+    /// \brief Traits Definition of a type for storing the ComputingTraits
+    ///
     typedef std::vector<std::unique_ptr<ComputingTrait> > Traits;
+
+    ///
+    /// \brief Iterator Definition of an iterator for the ComputingTrait objects
+    ///
     typedef Traits::const_iterator Iterator;
+
+    ///
+    /// \brief begin returns an iterator on the beginning of the list
+    /// \return The iterator on the beginning of the list
+    ///
     Iterator begin() const { return m_traits.begin(); }
+
+    ///
+    /// \brief end returns an iterator on the end of the list
+    /// \return The iterator on the end of the list
+    ///
     Iterator end() const { return m_traits.end(); }
 
 protected:
+
+    //! A vector of ComputingTraits
     Traits m_traits;
 };
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 
 
 #endif // COMPUTINGTRAIT_H
