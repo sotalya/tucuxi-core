@@ -97,7 +97,7 @@ Value Likelihood::negativeLogLikelihood(const ValueVector& _etas) const
     return gll;
 }
 
-Value Likelihood::calculateSampleNegativeLogLikelihood(const Value _expected,
+Value Likelihood::calculateSampleNegativeLogLikelihood(Value _expected,
                                                        const SampleEvent& _observed,
                                                        const IResidualErrorModel &_residualErrorModel) const
 {

@@ -88,7 +88,7 @@ class FormulationAndRoutes
 {
 public:
     void add(std::unique_ptr<FormulationAndRoute> _far);
-    const FormulationAndRoute* get(const Formulation& _formulation, const Route _route) const;
+    const FormulationAndRoute* get(const Formulation& _formulation, Route _route) const;
 
 private:
     std::vector<std::unique_ptr<FormulationAndRoute> > m_fars;

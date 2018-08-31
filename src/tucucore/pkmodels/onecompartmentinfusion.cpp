@@ -69,7 +69,7 @@ void OneCompartmentInfusionMicro::computeExponentials(Eigen::VectorXd& _times)
 }
 
 
-bool OneCompartmentInfusionMicro::computeConcentrations(const Residuals& _inResiduals, const bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
+bool OneCompartmentInfusionMicro::computeConcentrations(const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations;
     int firstCompartment = static_cast<int>(Compartments::First);
@@ -89,7 +89,7 @@ bool OneCompartmentInfusionMicro::computeConcentrations(const Residuals& _inResi
     return checkValue(_outResiduals[firstCompartment] >= 0, "The concentration is negative.");
 }
 
-bool OneCompartmentInfusionMicro::computeConcentration(const Value& _atTime, const Residuals& _inResiduals, const bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
+bool OneCompartmentInfusionMicro::computeConcentration(const Value& _atTime, const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations;
     int firstCompartment = static_cast<int>(Compartments::First);

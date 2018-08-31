@@ -69,7 +69,7 @@ OperableGraphManager::isInputPresent(const std::string &_name) const
 
 bool
 OperableGraphManager::registerInput(std::shared_ptr<IOperableInput> _input, const std::string &_scriptVarName,
-                                    const bool _isComputed, const IOperable_ID _id)
+                                    bool _isComputed, IOperable_ID _id)
 {
     if (_input == nullptr || (_isComputed && _id < 0)) {
         return false;
@@ -115,7 +115,7 @@ OperableGraphManager::registerOperable(std::shared_ptr<IOperable> _operable, con
 
 
 bool
-OperableGraphManager::evaluateOperableNode(const IOperable_ID _id, std::map<IOperable_ID, bool> &_alreadyComputed)
+OperableGraphManager::evaluateOperableNode(IOperable_ID _id, std::map<IOperable_ID, bool> &_alreadyComputed)
 {
     if (_alreadyComputed.at(_id)) {
         // Operable already evaluated, so return success.
@@ -198,7 +198,7 @@ OperableGraphManager::isCyclic(const std::string &_cur,
 
 
 OperableGraphManager::OperableInputNode::OperableInputNode(std::shared_ptr<IOperableInput> _ptr,
-                                                           const bool _isComputed, const IOperable_ID _id)
+                                                           bool _isComputed, IOperable_ID _id)
     : m_sptr{_ptr}, m_isComputed{_isComputed}, m_id{_id}
 {
 
@@ -306,7 +306,7 @@ Operable::getValue() const
 
 
 void
-Operable::setValue(const double _value)
+Operable::setValue(double _value)
 {
     m_value = _value;
 }

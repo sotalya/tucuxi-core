@@ -25,16 +25,16 @@ public:
     Target() = delete;
 
     Target(const std::string& _analyteId, 
-           const TargetType _type, 
-           const Value _min, 
-           const Value _best, 
-           const Value _max);
+           TargetType _type, 
+           Value _min, 
+           Value _best, 
+           Value _max);
 
     Target(const std::string& _analyteId, 
-           const TargetType _type, 
-           const Value _vmin, 
-           const Value _vbest, 
-           const Value _vmax,
+           TargetType _type, 
+           Value _vmin, 
+           Value _vbest, 
+           Value _vmax,
            const Tucuxi::Common::Duration &_tmin, 
            const Tucuxi::Common::Duration &_tbest, 
            const Tucuxi::Common::Duration &_tmax);

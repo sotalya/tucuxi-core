@@ -365,7 +365,7 @@ DynamicOperation::clone() const
 
 
 bool
-DynamicOperation::addOperation(const Operation &_operation, const unsigned int _preferenceLevel)
+DynamicOperation::addOperation(const Operation &_operation, unsigned int _preferenceLevel)
 {
     // Check that inputs do not conflict with exiting ones (that is, same name but different type).
     OperationInputList alreadyPresentInputs = getInputs();

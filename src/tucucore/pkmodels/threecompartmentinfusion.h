@@ -28,9 +28,9 @@ public:
 protected:
     virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
     virtual void computeExponentials(Eigen::VectorXd& _times) override;
-    virtual bool computeConcentrations(const Residuals& _inResiduals, const bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) override;
-    virtual bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, const bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) override;
-    void compute(const int _forcesize, Eigen::VectorXd& _concentrations1, Value& _concentrations2, Value& _concentrations3);
+    virtual bool computeConcentrations(const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) override;
+    virtual bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) override;
+    void compute(int _forceSize, Eigen::VectorXd& _concentrations1, Value& _concentrations2, Value& _concentrations3);
 
     Value m_D;	/// Quantity of drug
     Value m_F;	/// ???
@@ -51,7 +51,7 @@ private:
     typedef ThreeCompartmentInfusionCompartments Compartments;
 };
 
-inline void ThreeCompartmentInfusionMicro::compute(const int _forcesize, Eigen::VectorXd& _concentrations1, Value& _concentrations2, Value& _concentrations3)
+inline void ThreeCompartmentInfusionMicro::compute(int _forceSize, Eigen::VectorXd& _concentrations1, Value& _concentrations2, Value& _concentrations3)
 {
     Eigen::VectorXd& alphaLogV = exponentials(Exponentials::Alpha);
     Eigen::VectorXd& betaLogV = exponentials(Exponentials::Beta);
@@ -72,16 +72,16 @@ inline void ThreeCompartmentInfusionMicro::compute(const int _forcesize, Eigen::
     Value B3 = m_K13 / (m_K31 - m_Beta) * B;
     Value C3 = m_K13 / (m_K31 - m_Gamma) * C;
 
-    if (_forcesize != 0)
+    if (_forceSize != 0)
     {
-	    _concentrations1.head(_forcesize) = 
+	    _concentrations1.head(_forceSize) = 
 	        deltaD 
-	        * (A/m_Alpha * (1*Eigen::VectorXd::Ones(_forcesize)- alphaLogV.head(_forcesize)) 
-		    + B/m_Beta * (1*Eigen::VectorXd::Ones(_forcesize) - betaLogV.head(_forcesize)) 
-	            + C/m_Gamma * (1*Eigen::VectorXd::Ones(_forcesize) - gammaLogV.head(_forcesize)));
+	        * (A/m_Alpha * (1*Eigen::VectorXd::Ones(_forceSize)- alphaLogV.head(_forceSize)) 
+		    + B/m_Beta * (1*Eigen::VectorXd::Ones(_forceSize) - betaLogV.head(_forceSize)) 
+	            + C/m_Gamma * (1*Eigen::VectorXd::Ones(_forceSize) - gammaLogV.head(_forceSize)));
     } 
 
-    int therest = static_cast<int>(alphaLogV.size() - _forcesize);
+    int therest = static_cast<int>(alphaLogV.size() - _forceSize);
     
     _concentrations1.tail(therest) = 
 	deltaD 

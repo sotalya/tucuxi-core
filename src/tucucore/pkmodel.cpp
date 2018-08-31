@@ -29,7 +29,7 @@ std::string PkModel::getPkModelId() const
 }
 
 
-bool PkModel::addIntakeIntervalCalculatorFactory(const AbsorptionModel _route,
+bool PkModel::addIntakeIntervalCalculatorFactory(AbsorptionModel _route,
                                                  std::shared_ptr<IntakeIntervalCalculatorCreator> _creator)
 {
     std::pair<std::map<AbsorptionModel, std::shared_ptr<IntakeIntervalCalculatorCreator>>::iterator, bool> rc;

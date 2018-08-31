@@ -181,7 +181,7 @@ protected:
     ComputingTraitStandard(RequestResponseId _id,
                             Tucuxi::Common::DateTime _start,
                             Tucuxi::Common::DateTime _end,
-                            const CycleSize _cycleSize,
+                            CycleSize _cycleSize,
                             ComputingOption _computingOption);
 
 private:
@@ -329,7 +329,7 @@ public:
     ComputingTraitAdjustment(RequestResponseId _id,
                               Tucuxi::Common::DateTime _start,
                               Tucuxi::Common::DateTime _end,
-                              const CycleSize _cycleSize,
+                              CycleSize _cycleSize,
                               ComputingOption _computingOption,
                               Tucuxi::Common::DateTime _adjustmentTime,
                               AdjustmentOption _adjustmentOption);
@@ -382,7 +382,7 @@ public:
     ComputingTraitConcentration(RequestResponseId _id,
                                  Tucuxi::Common::DateTime _start,
                                  Tucuxi::Common::DateTime _end,
-                                 const CycleSize _cycleSize,
+                                 CycleSize _cycleSize,
                                  ComputingOption _computingOption);
 private:
 
@@ -423,7 +423,7 @@ public:
             Tucuxi::Common::DateTime _start,
             Tucuxi::Common::DateTime _end,
             const PercentileRanks &_ranks,
-            const CycleSize _cycleSize,
+            CycleSize _cycleSize,
             ComputingOption _computingOption);
 
     ///

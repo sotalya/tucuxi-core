@@ -11,28 +11,31 @@
 namespace Tucuxi {
 namespace Core {
 
+IntakeIntervalCalculator::~IntakeIntervalCalculator()
+{}
+
 IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakePoints(
     std::vector<Concentrations>& _concentrations,
     TimeOffsets & _times,
     const IntakeEvent& _intakeEvent,
     const ParameterSetEvent& _parameters,
-    const Residuals& _inResiduals,
-    const bool _isAll,
-    Residuals & _outResiduals,
-    const bool _isDensityConstant)
-{
-    TMP_UNUSED_PARAMETER(_isDensityConstant);
-    if (!checkInputs(_intakeEvent, _parameters))
-    {
-        return Result::BadParameters;
-    }
+     const Residuals& _inResiduals,
+     bool _isAll,
+     Residuals & _outResiduals,
+     const bool _isDensityConstant)
+ {
+     TMP_UNUSED_PARAMETER(_isDensityConstant);
+     if (!checkInputs(_intakeEvent, _parameters))
+     {
+         return Result::BadParameters;
+     }
 
-    // Create our serie of times
-    int nbPoints = _intakeEvent.getNbPoints();
-    int toHours = _intakeEvent.getInterval().toHours();
+     // Create our serie of times
+     int nbPoints = _intakeEvent.getNbPoints();
+     int toHours = _intakeEvent.getInterval().toHours();
 
-    TMP_UNUSED_PARAMETER(nbPoints);
-    TMP_UNUSED_PARAMETER(toHours);
+     TMP_UNUSED_PARAMETER(nbPoints);
+     TMP_UNUSED_PARAMETER(toHours);
 
     // YTA : This LinSpaced function crashes on Linux, so using a custom
     // method...
@@ -83,7 +86,7 @@ IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakeSingle
     const ParameterSetEvent& _parameters,
     const Residuals& _inResiduals,
     const Value& _atTime,
-    const bool _isAll,
+    bool _isAll,
     Residuals& _outResiduals)
 {
     if (!checkInputs(_intakeEvent, _parameters)) {

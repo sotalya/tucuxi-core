@@ -65,7 +65,7 @@ void OneCompartmentBolusMicro::computeExponentials(Eigen::VectorXd& _times)
 }
 
 
-bool OneCompartmentBolusMicro::computeConcentrations(const Residuals& _inResiduals, const bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
+bool OneCompartmentBolusMicro::computeConcentrations(const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations;
     int firstCompartment = static_cast<int>(Compartments::First);
@@ -86,7 +86,7 @@ bool OneCompartmentBolusMicro::computeConcentrations(const Residuals& _inResidua
 }
 
 bool OneCompartmentBolusMicro::computeConcentration(const Value& _atTime, const Residuals&
-_inResiduals, const bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
+_inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
 {
     TMP_UNUSED_PARAMETER(_atTime);
 

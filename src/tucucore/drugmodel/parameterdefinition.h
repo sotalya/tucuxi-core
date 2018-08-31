@@ -49,13 +49,13 @@ public:
     /// \brief Constructor
     /// \param _id The name of the parameter
     /// \param _name Its default value
-    ParameterDefinition(const std::string _id, Value _value, ParameterVariability _variabilityType);
+    ParameterDefinition(std::string _id, Value _value, ParameterVariability _variabilityType);
 
-    ParameterDefinition(const std::string _id, Value _value);
+    ParameterDefinition(std::string _id, Value _value);
 
-    ParameterDefinition(const std::string _id, Value _value, ParameterVariabilityType _variabilityType);
+    ParameterDefinition(std::string _id, Value _value, ParameterVariabilityType _variabilityType);
 
-    ParameterDefinition(const std::string _name, Value _value, Operation* _operation, ParameterVariability _variabilityType);
+    ParameterDefinition(std::string _name, Value _value, Operation* _operation, ParameterVariability _variabilityType);
 
     virtual ~ParameterDefinition();
 

@@ -40,7 +40,7 @@ public:
 public: \
     class IntakeCreator : public IntakeIntervalCalculatorCreator \
     { \
-        virtual std::unique_ptr<IntakeIntervalCalculator> create() { \
+        std::unique_ptr<IntakeIntervalCalculator> create() override { \
             auto ptr = std::make_unique<entity>(); \
             return std::move(ptr); \
         } \
@@ -52,7 +52,7 @@ public: \
         return instance; \
     } \
     \
-    virtual std::shared_ptr<IntakeIntervalCalculator> getLightClone() { \
+    std::shared_ptr<IntakeIntervalCalculator> getLightClone() override { \
         return std::shared_ptr<IntakeIntervalCalculator>(new entity()); \
     }
 
@@ -76,6 +76,8 @@ public:
 public:
     /// \brief Constructor
     IntakeIntervalCalculator() {}
+
+    virtual ~IntakeIntervalCalculator();
 
     ///
     /// \brief clone
@@ -101,9 +103,9 @@ public:
         const IntakeEvent& _intakeEvent,
         const ParameterSetEvent& _parameters,
         const Residuals& _inResiduals,
-        const bool _isAll,
+        bool _isAll,
         Residuals& _outResiduals,
-        const bool _isDensityConstant);
+        bool _isDensityConstant);
 
     /// \brief Compute one single point at the specified time as well as final residuals
     /// \param _concentrations vector of concentrations. 
@@ -119,7 +121,7 @@ public:
         const ParameterSetEvent& _parameters,
         const Residuals& _inResiduals,
         const Value& _atTime,
-        const bool _isAll,
+        bool _isAll,
         Residuals& _outResiduals);
 
     /// \brief Returns the number of compartments needed for the residuals
@@ -144,7 +146,7 @@ protected:
     /// \param _inAll Need concentrations for all compartements or not
     /// \param _concentrations vector of concentrations.
     /// \param _outResiduals Final residual concentrations
-    virtual bool computeConcentrations(const Residuals& _inResiduals, const bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) = 0;
+    virtual bool computeConcentrations(const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) = 0;
 
     /// \brief Compute concentrations using a specific algorithm
     /// \param _atTime measure time
@@ -152,7 +154,7 @@ protected:
     /// \param _inAll Need concentrations for all compartements or not
     /// \param _concentrations vector of concentrations.
     /// \param _outResiduals Final residual concentrations
-    virtual bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, const bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) = 0;
+    virtual bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) = 0;
 
     /// \brief Check if a value is correct and log a message if it is not the case
     /// \param _isOk Indicates that the value is correct

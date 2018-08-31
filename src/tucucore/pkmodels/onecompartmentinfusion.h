@@ -28,9 +28,9 @@ public:
 protected:
     virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
     virtual void computeExponentials(Eigen::VectorXd& _times) override;
-    virtual bool computeConcentrations(const Residuals& _inResiduals, const bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) override;
-    virtual bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, const bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) override;
-    void compute(const Residuals& _inResiduals, const int _forcesize, Eigen::VectorXd& _concentrations);
+    virtual bool computeConcentrations(const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) override;
+    virtual bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) override;
+    void compute(const Residuals& _inResiduals, int _forceSize, Eigen::VectorXd& _concentrations);
 
     Value m_D;	/// Quantity of drug
     Value m_Cl;	/// Clearance
@@ -44,7 +44,7 @@ private:
     typedef OneCompartmentInfusionCompartments Compartments;
 };
 
-inline void OneCompartmentInfusionMicro::compute(const Residuals& _inResiduals, const int _forcesize, Eigen::VectorXd& _concentrations)
+inline void OneCompartmentInfusionMicro::compute(const Residuals& _inResiduals, int _forceSize, Eigen::VectorXd& _concentrations)
 {
 //    Concentration part1 = m_D / (m_Tinf * m_Cl);
     Concentration part1 = m_D / (m_Tinf * m_Ke * m_V);
@@ -53,13 +53,13 @@ inline void OneCompartmentInfusionMicro::compute(const Residuals& _inResiduals, 
     _concentrations = Eigen::VectorXd::Constant(exponentials(Exponentials::Ke).size(), _inResiduals[0]);
     _concentrations = _concentrations.cwiseProduct(exponentials(Exponentials::Ke));
 
-    if(_forcesize != 0) {
-	_concentrations.head(_forcesize) =
-		_concentrations.head(_forcesize)
-        + part1 * (1.0 - exponentials(Exponentials::Ke).head(_forcesize).array()).matrix();
+    if(_forceSize != 0) {
+	_concentrations.head(_forceSize) =
+		_concentrations.head(_forceSize)
+        + part1 * (1.0 - exponentials(Exponentials::Ke).head(_forceSize).array()).matrix();
     }
     
-    int therest = static_cast<int>(_concentrations.size() - _forcesize);
+    int therest = static_cast<int>(_concentrations.size() - _forceSize);
     _concentrations.tail(therest) =
         _concentrations.tail(therest)
     + part1 * (exp(m_Ke * m_Tinf) - 1) * exponentials(Exponentials::Ke).tail(therest);

@@ -438,7 +438,7 @@ Tucuxi::Common::Interface* ComputingComponent::getInterface(const std::string &_
 
 ComputationResult ComputingComponent::computeConcentrations(
     ConcentrationPredictionPtr &_prediction,
-    const bool _isAll,
+    bool _isAll,
     const DateTime &_recordFrom,
     const DateTime &_recordTo,
     const IntakeSeries &_intakes,

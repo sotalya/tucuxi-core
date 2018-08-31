@@ -36,7 +36,7 @@ public:
     ///
     virtual ComputationResult computeConcentrations(
         ConcentrationPredictionPtr &_prediction,
-        const bool _isAll,
+        bool _isAll,
         const DateTime &_recordFrom,
         const DateTime &_recordTo,
         const IntakeSeries &_intakes,
@@ -44,8 +44,8 @@ public:
         const Etas& _etas = Etas(0),
         const IResidualErrorModel &_residualErrorModel = EMPTY_RESIDUAL_ERROR_MODEL,
         const Deviations& _epsilons = Deviations(0),
-        const bool _onlyAnalytes = true,
-        const bool _isFixedDensity = 0) = 0;
+        bool _onlyAnalytes = true,
+        bool _isFixedDensity = 0) = 0;
 
     ///
     /// \brief Calculates concentrations at specific times
@@ -63,12 +63,12 @@ public:
     ///
     virtual ComputationResult computeConcentrationsAtTimes(
         Concentrations& _concentrations,
-        const bool _isAll,
+        bool _isAll,
         const IntakeSeries& _intakes,
         const ParameterSetSeries& _parameters,
         const SampleSeries& _samples,
         const Etas& _etas = Etas(0),
-        const bool _onlyAnalytes = true) = 0;
+        bool _onlyAnalytes = true) = 0;
 
     /// \brief virtual empty destructor
     virtual ~IConcentrationCalculator() {}
@@ -94,7 +94,7 @@ public:
     ///
     virtual ComputationResult computeConcentrations(
         ConcentrationPredictionPtr &_prediction,
-        const bool _isAll,
+        bool _isAll,
         const DateTime &_recordFrom,
         const DateTime &_recordTo,
         const IntakeSeries &_intakes,
@@ -102,8 +102,8 @@ public:
         const Etas& _etas = Etas(0),
         const IResidualErrorModel &_residualErrorModel = EMPTY_RESIDUAL_ERROR_MODEL,
         const Deviations& _epsilons = Deviations(0),
-        const bool _onlyAnalytes = true,
-        const bool _isFixedDensity = 0) override;
+        bool _onlyAnalytes = true,
+        bool _isFixedDensity = 0) override;
 
     ///
     /// \brief Calculates concentrations at specific times
@@ -119,12 +119,12 @@ public:
     ///
     virtual ComputationResult computeConcentrationsAtTimes(
         Concentrations& _concentrations,
-        const bool _isAll,
+        bool _isAll,
         const IntakeSeries& _intakes,
         const ParameterSetSeries& _parameters,
         const SampleSeries& _samples,
         const Etas& _etas = Etas(0),
-        const bool _onlyAnalytes = true) override;
+        bool _onlyAnalytes = true) override;
 
 };
 

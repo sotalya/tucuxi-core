@@ -150,7 +150,7 @@ public:
         const IntakeEvent& _intakeEvent,
         const ParameterSetEvent& _parameters,
         const Residuals& _inResiduals,
-        const bool _isAll,
+        bool _isAll,
         Residuals& _outResiduals,
         const bool _isDensityConstant) const
     {
@@ -163,7 +163,7 @@ public:
 	const ParameterSetEvent& _parameters,
 	const Residuals& _inResiduals,
 	const Value& _atTime,
-	const bool _isAll,
+	bool _isAll,
 	Residuals& _outResiduals) const
     {
         return m_calculator->calculateIntakeSinglePoint(_concentrations, _intakeEvent, _parameters, _inResiduals, _atTime, _isAll, _outResiduals);

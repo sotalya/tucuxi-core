@@ -56,7 +56,7 @@ public:
     /// \post if (m_operableInputs.find(_scriptVarName) == false && (_isComputed == false || _id >= 0)) { m_operableInputs += _input && [RETURN] == true }
     ///       else { m_operableInputs == PREV(m_operableInputs) && m_operables == PREV(m_operables) && [RETURN] == false };
     bool registerInput(std::shared_ptr<IOperableInput> _input, const std::string &_scriptVarName,
-                       const bool _isComputed = false, const IOperable_ID _id = -1);
+                       bool _isComputed = false, IOperable_ID _id = -1);
 
     /// \brief Record an operable in the operable graph.
     /// \param _operable Operable to insert.
@@ -94,7 +94,7 @@ private:
     /// \param _id ID of the node that has to be evaluated.
     /// \param _alreadyComputed Map containing the evaluation state of the graph's nodes.
     /// \return True if the evaluation was successful, false otherwise.
-    bool evaluateOperableNode(const IOperable_ID _id, std::map<IOperable_ID, bool> &_alreadyComputed);
+    bool evaluateOperableNode(IOperable_ID _id, std::map<IOperable_ID, bool> &_alreadyComputed);
 
     /// \brief Helper function that checks if a subgraph starting at the given node gets back to a previously visited
     ///        node.
@@ -124,7 +124,7 @@ private:
         /// \pre _isComputed == false || (_isComputed == true && _id >= 0 && m_operables.find(_id) != false)
         /// \pre _ptr != nullptr
         OperableInputNode(std::shared_ptr<IOperableInput> _ptr,
-                          const bool _isComputed = false, const IOperable_ID _id = -1);
+                          bool _isComputed = false, IOperable_ID _id = -1);
 
         /// \brief If the node has to be computed, return the ID of the linked operable.
         /// \return ID of the linked operable if the node has to be computed, -1 otherwise.
@@ -279,7 +279,7 @@ public:
 
     /// \brief Manually set an Operable's value.
     /// \param _value Value to set.
-    virtual void setValue(const double _value);
+    virtual void setValue(double _value);
 
 
 protected:

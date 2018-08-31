@@ -353,7 +353,7 @@ public:
     /// \param _preferenceLevel Preference level of the operation (if another one with the same number of matching
     ///                         inputs is available)
     /// \return true if the operation was successfully added to the list, false otherwise.
-    bool addOperation(const Operation &_operation, const unsigned int _preferenceLevel);
+    bool addOperation(const Operation &_operation, unsigned int _preferenceLevel);
 
     /// \brief Check if the given input list satisfies the requirements of at least one of the operations stored.
     /// \param _inputList List of inputs that have to be checked.

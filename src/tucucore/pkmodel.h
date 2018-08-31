@@ -42,7 +42,7 @@ public:
     /// \param _creator A creator able to create a calculator of a specific class.
     /// \return True if the insertion was performed successfully, false if the route already had an associated creator.
     ///         In either cases, the creator is recorded.
-    bool addIntakeIntervalCalculatorFactory(const AbsorptionModel _route,
+    bool addIntakeIntervalCalculatorFactory(AbsorptionModel _route,
                                             std::shared_ptr<IntakeIntervalCalculatorCreator> _creator);
 
     /// \brief Get the available routes of administration.
@@ -53,7 +53,7 @@ public:
     /// \param _route Route of administration for which an intake calculator is requested.
     /// \return An instance of an IntakeIntervalCalculator responsible for the specific route if available, nullptr
     ///         otherwise.
-    std::shared_ptr<IntakeIntervalCalculator> getCalculatorForRoute(const AbsorptionModel _route) const;
+    std::shared_ptr<IntakeIntervalCalculator> getCalculatorForRoute(AbsorptionModel _route) const;
 
 
 protected:

@@ -98,7 +98,7 @@ private:
 
     ComputationResult computeConcentrations(
         ConcentrationPredictionPtr &_prediction,
-        const bool _isAll,
+        bool _isAll,
         const DateTime &_recordFrom,
         const DateTime &_recordTo,
         const IntakeSeries &_intakes,
@@ -106,11 +106,11 @@ private:
         const Etas& _etas = Etas(0),
         const IResidualErrorModel &_residualErrorModel = EMPTY_RESIDUAL_ERROR_MODEL,
         const Deviations& _eps = Deviations(0),
-        const bool _isFixedDensity = 0);
+        bool _isFixedDensity = 0);
 
     ComputationResult computePopulation(
         ConcentrationPredictionPtr &_prediction,
-        const bool _isAll,
+        bool _isAll,
         const DateTime &_recordFrom,
         const DateTime &_recordTo,
         const IntakeSeries &_intakes,
@@ -121,7 +121,7 @@ private:
 
     ComputationResult computeApriori(
         ConcentrationPredictionPtr &_prediction,
-        const bool _isAll,
+        bool _isAll,
         CycleSize _nbPoints,
         const DateTime &_recordFrom,
         const DateTime &_recordTo,
@@ -134,7 +134,7 @@ private:
 
     ComputationResult computeAposteriori(
         ConcentrationPredictionPtr &_prediction,
-        const bool _isAll,
+        bool _isAll,
         const DateTime &_recordFrom,
         const DateTime &_recordTo,
         const IntakeSeries &_intakes,

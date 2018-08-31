@@ -26,11 +26,11 @@ public:
     typedef TwoCompartmentInfusionExponentials Exponentials;
 
 protected:
-    virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
-    virtual void computeExponentials(Eigen::VectorXd& _times) override;
-    virtual bool computeConcentrations(const Residuals& _inResiduals, const bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) override;
-    virtual bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, const bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) override;
-    void compute(const Residuals& _inResiduals, const int _forcesize, Eigen::VectorXd& _concentrations1, Eigen::VectorXd& _concentrations2);
+    bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
+    void computeExponentials(Eigen::VectorXd& _times) override;
+    bool computeConcentrations(const Residuals& _inResiduals,bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) override;
+    bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) override;
+    void compute(const Residuals& _inResiduals, int _forceSize, Eigen::VectorXd& _concentrations1, Eigen::VectorXd& _concentrations2);
 
     Value m_D;	/// Quantity of drug
     Value m_V1;	/// Volume of the compartment 1
@@ -50,7 +50,7 @@ private:
     typedef TwoCompartmentInfusionCompartments Compartments;
 };
 
-inline void TwoCompartmentInfusionMicro::compute(const Residuals& _inResiduals, const int _forcesize, Eigen::VectorXd& _concentrations1, Eigen::VectorXd& _concentrations2)
+inline void TwoCompartmentInfusionMicro::compute(const Residuals& _inResiduals, int _forceSize, Eigen::VectorXd& _concentrations1, Eigen::VectorXd& _concentrations2)
 {
     Eigen::VectorXd& alphaLogV = exponentials(Exponentials::Alpha);
     Eigen::VectorXd& betaLogV = exponentials(Exponentials::Beta);
@@ -94,29 +94,29 @@ inline void TwoCompartmentInfusionMicro::compute(const Residuals& _inResiduals, 
     _concentrations2 = ((A2 * alphaLogV) + (BB2 * betaLogV)) / (2 * m_RootK);
     
     // During infusion
-    if (_forcesize != 0) {
-	Eigen::ArrayXd p1p1 = (2 * deltaD * m_K21 * betaInfLogV.head(_forcesize)).array();
-	Eigen::ArrayXd p1p2 = AInf * (betaLogV.head(_forcesize) - betaInf2LogV.head(_forcesize));
+    if (_forceSize != 0) {
+    Eigen::ArrayXd p1p1 = (2 * deltaD * m_K21 * betaInfLogV.head(_forceSize)).array();
+    Eigen::ArrayXd p1p2 = AInf * (betaLogV.head(_forceSize) - betaInf2LogV.head(_forceSize));
 	Eigen::ArrayXd p1p3 = 
 	    (BInf 
-	    * (rootLogV.head(_forcesize).cwiseQuotient(alphaInfLogV.head(_forcesize)) 
-	    - alphaLogV.head(_forcesize).cwiseQuotient(betaInfLogV.head(_forcesize)))).array();
-	Eigen::ArrayXd p2p1 = (2 * deltaD * m_K12 * betaInfLogV.head(_forcesize)).array();
+        * (rootLogV.head(_forceSize).cwiseQuotient(alphaInfLogV.head(_forceSize))
+        - alphaLogV.head(_forceSize).cwiseQuotient(betaInfLogV.head(_forceSize)))).array();
+    Eigen::ArrayXd p2p1 = (2 * deltaD * m_K12 * betaInfLogV.head(_forceSize)).array();
 	Eigen::ArrayXd p2p2 = 
-	    betaLogV.head(_forcesize) 
+        betaLogV.head(_forceSize)
 	    * (-m_SumK - m_RootK) 
-	    + betaInf2LogV.head(_forcesize) * (m_SumK + m_RootK)
-	    + rootLogV.head(_forcesize).cwiseQuotient(alphaInfLogV.head(_forcesize)) * (m_SumK - m_RootK) 
-	    + alphaLogV.head(_forcesize).cwiseQuotient(betaInfLogV.head(_forcesize)) * (-m_SumK + m_RootK);
+        + betaInf2LogV.head(_forceSize) * (m_SumK + m_RootK)
+        + rootLogV.head(_forceSize).cwiseQuotient(alphaInfLogV.head(_forceSize)) * (m_SumK - m_RootK)
+        + alphaLogV.head(_forceSize).cwiseQuotient(betaInfLogV.head(_forceSize)) * (-m_SumK + m_RootK);
 	
-	_concentrations1.head(_forcesize) += ((p1p1 * (p1p2 + p1p3)) / m_Divider).matrix();
-	_concentrations2.head(_forcesize) += ((p2p1 * p2p2) / m_Divider).matrix();
+    _concentrations1.head(_forceSize) += ((p1p1 * (p1p2 + p1p3)) / m_Divider).matrix();
+    _concentrations2.head(_forceSize) += ((p2p1 * p2p2) / m_Divider).matrix();
     }
 
     // After infusion
     //TODO: check which equation needs to be used. (use tail or head with therest)
 #if 0
-    int therest = static_cast<int>(_concentrations1.size() - _forcesize);
+    int therest = static_cast<int>(_concentrations1.size() - _forceSize);
     _concentrations1.tail(therest) += (APostInf * alphaLogV.head(therest) + BPostInf * betaLogV.head(therest)) / (2 * m_RootK);
 
     BB2 = 2 * m_K12 * residInf1 + (m_K12 - m_K21 + m_Ke + m_RootK)*residInf2;
@@ -124,7 +124,7 @@ inline void TwoCompartmentInfusionMicro::compute(const Residuals& _inResiduals, 
 
     _concentrations2.tail(therest) += (A2 * alphaLogV.head(therest) + BB2 * betaLogV.head(therest)) / (2 * m_RootK);
 #else
-    int therest = static_cast<int>(_concentrations1.size() - _forcesize);
+    int therest = static_cast<int>(_concentrations1.size() - _forceSize);
     _concentrations1.tail(therest) += (APostInf * alphaLogV.tail(therest) + BPostInf * betaLogV.tail(therest)) / (2 * m_RootK);
 
     BB2 = 2 * m_K12 * residInf1 + (m_K12 - m_K21 + m_Ke + m_RootK)*residInf2;
@@ -141,7 +141,7 @@ public:
     TwoCompartmentInfusionMacro();
 
 protected:
-    virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
+    bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
 };
 
 } // namespace Core

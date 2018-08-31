@@ -7,9 +7,8 @@
 namespace Tucuxi {
 namespace Core {
 
-ComputationResult ConcentrationCalculator::computeConcentrations(
-    ConcentrationPredictionPtr &_prediction,
-    const bool _isAll,
+ComputationResult ConcentrationCalculator::computeConcentrations(ConcentrationPredictionPtr &_prediction,
+    bool _isAll,
     const DateTime &_recordFrom,
     const DateTime &_recordTo,
     const IntakeSeries &_intakes,
@@ -17,8 +16,8 @@ ComputationResult ConcentrationCalculator::computeConcentrations(
     const Etas &_etas,
     const IResidualErrorModel &_residualErrorModel,
     const Deviations& _epsilons,
-    const bool _onlyAnalytes,
-    const bool _isFixedDensity)
+    bool _onlyAnalytes,
+    bool _isFixedDensity)
 {
     TMP_UNUSED_PARAMETER(_recordFrom);
     TMP_UNUSED_PARAMETER(_recordTo);
@@ -94,14 +93,13 @@ ComputationResult ConcentrationCalculator::computeConcentrations(
     return ComputationResult::Success;
 }
 
-ComputationResult ConcentrationCalculator::computeConcentrationsAtTimes(
-    Concentrations &_concentrations,
-    const bool _isAll,
+ComputationResult ConcentrationCalculator::computeConcentrationsAtTimes(Concentrations &_concentrations,
+    bool _isAll,
     const IntakeSeries &_intakes,
     const ParameterSetSeries &_parameterSets,
     const SampleSeries &_samples,
     const Etas &_etas,
-    const bool _onlyAnalytes)
+    bool _onlyAnalytes)
 {
     TMP_UNUSED_PARAMETER(_onlyAnalytes);
 

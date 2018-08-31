@@ -134,10 +134,10 @@ private:
     /// \post if (_date1 < _date2) { _valRes = INTERPOLATED_VALUE && [RETURN] == true }
     ///       else  if (_date1 == _date2 && _val1 == _val2) { _valRes = _val1 && [RETURN] == true }
     ///       else { [RETURN] == false }
-    bool interpolateValues(const Value _val1, const DateTime &_date1,
-                           const Value _val2, const DateTime &_date2,
+    bool interpolateValues(Value _val1, const DateTime &_date1,
+                           Value _val2, const DateTime &_date2,
                            const DateTime &_dateRes,
-                           const InterpolationType _interpolationType,
+                           InterpolationType _interpolationType,
                            Value &_valRes) const;
 
     /// \brief Sort available Patient Variates, discarding those not of interest.

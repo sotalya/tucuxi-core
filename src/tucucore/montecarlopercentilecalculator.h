@@ -191,8 +191,8 @@ protected:
         const ParameterSetSeries &_parameters,
         const IResidualErrorModel &_residualErrorModel,
         const PercentileRanks &_percentileRanks,
-        const std::vector<Etas> _etas,
-        const std::vector<Deviations> _epsilons,
+        const std::vector<Etas> &_etas,
+        const std::vector<Deviations> &_epsilons,
         IConcentrationCalculator &_concentrationCalculator,
         ComputingAborter *_aborter);
 

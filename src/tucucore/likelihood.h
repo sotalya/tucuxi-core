@@ -93,7 +93,7 @@ public:
     /// \param _observed Observed concentration values
     /// \param _residualErrorModel Residual error model to be used for calculation
     /// \return the negative log-likelihood of a concentration at the sample time
-    Value calculateSampleNegativeLogLikelihood(const Value _expected,
+    Value calculateSampleNegativeLogLikelihood(Value _expected,
                                                const SampleEvent& _observed,
                                                const IResidualErrorModel &_residualErrorModel) const;
 

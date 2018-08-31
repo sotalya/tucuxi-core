@@ -31,14 +31,13 @@ MonteCarloPercentileCalculatorBase::MonteCarloPercentileCalculatorBase()
 #endif
 }
 
-IPercentileCalculator::ComputingResult MonteCarloPercentileCalculatorBase::computePredictionsAndSortPercentiles(
-    PercentilesPrediction &_percentiles,
+IPercentileCalculator::ComputingResult MonteCarloPercentileCalculatorBase::computePredictionsAndSortPercentiles(PercentilesPrediction &_percentiles,
     const IntakeSeries &_intakes,
     const ParameterSetSeries &_parameters,
     const IResidualErrorModel &_residualErrorModel,
     const PercentileRanks &_percentileRanks,
-    const std::vector<Etas> _etas,
-    const std::vector<Deviations> _epsilons,
+    const std::vector<Etas> &_etas,
+    const std::vector<Deviations> &_epsilons,
     IConcentrationCalculator &_concentrationCalculator,
     ComputingAborter *_aborter)
 {
@@ -67,7 +66,7 @@ IPercentileCalculator::ComputingResult MonteCarloPercentileCalculatorBase::compu
         IntakeSeries newIntakes;
         cloneIntakeSeries(_intakes, newIntakes);
 
-        workers.push_back(std::thread([thread, nbPatients, &abort, _aborter, &nbPoints, _etas, _epsilons, _parameters, newIntakes, &_residualErrorModel, &times, &concentrations, nbThreads, &_concentrationCalculator, &_percentiles]()
+        workers.push_back(std::thread([thread, nbPatients, &abort, _aborter, &nbPoints, _etas, _epsilons, _parameters, newIntakes, &_residualErrorModel, &times, &concentrations, nbThreads, &_concentrationCalculator]()
         {
 
             int start = thread * (nbPatients / nbThreads);

@@ -25,7 +25,7 @@ void FormulationAndRoutes::add(std::unique_ptr<FormulationAndRoute> _far)
 }
 
 
-const FormulationAndRoute* FormulationAndRoutes::get(const Formulation& _formulation, const Route _route) const
+const FormulationAndRoute* FormulationAndRoutes::get(const Formulation& _formulation, Route _route) const
 {
     TMP_UNUSED_PARAMETER(_formulation);
 
