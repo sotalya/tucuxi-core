@@ -85,6 +85,7 @@ bool OneCompartmentExtraMicro::computeConcentrations(const Residuals& _inResidua
 
 bool OneCompartmentExtraMicro::computeConcentration(const Value& _atTime, const Residuals& _inResiduals, const bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
 {
+    TMP_UNUSED_PARAMETER(_atTime);
     Eigen::VectorXd concentrations1, concentrations2;
     int firstCompartment = static_cast<int>(Compartments::First);
     int secondCompartment = static_cast<int>(Compartments::Second);

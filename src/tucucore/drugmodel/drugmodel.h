@@ -133,6 +133,7 @@ private:
     }
 
     const ParameterSetDefinition* getDispositionParameters(const std::string &_analyteId) const {
+        TMP_UNUSED_PARAMETER(_analyteId);
         CHECKINVARIANTS;
         const AnalyteSet* pSet = getAnalyteSet("" /*_analyteId*/);
         if (pSet != nullptr) {

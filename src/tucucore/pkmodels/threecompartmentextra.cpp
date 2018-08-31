@@ -143,6 +143,7 @@ bool ThreeCompartmentExtraMicro::computeConcentrations(const Residuals& _inResid
 
 bool ThreeCompartmentExtraMicro::computeConcentration(const Value& _atTime, const Residuals& _inResiduals, const bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
 {
+    TMP_UNUSED_PARAMETER(_atTime);
     Eigen::VectorXd concentrations1;
     Value concentrations2, concentrations3;
     int firstCompartment = static_cast<int>(Compartments::First);

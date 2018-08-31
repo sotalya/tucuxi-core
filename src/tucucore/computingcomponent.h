@@ -128,6 +128,7 @@ private:
         const IntakeSeries &_intakes,
         const ParameterSetSeries& _parameters)
     {
+        TMP_UNUSED_PARAMETER(_nbPoints);
         return computeConcentrations(_prediction, _isAll, _recordFrom, _recordTo, _intakes, _parameters);
     }
 

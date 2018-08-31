@@ -1,6 +1,8 @@
 #include "formulationandroute.h"
 #include "parameterdefinition.h"
 
+#include "tucucommon/general.h"
+
 namespace Tucuxi {
 namespace Core {
 
@@ -25,6 +27,8 @@ void FormulationAndRoutes::add(std::unique_ptr<FormulationAndRoute> _far)
 
 const FormulationAndRoute* FormulationAndRoutes::get(const Formulation& _formulation, const Route _route) const
 {
+    TMP_UNUSED_PARAMETER(_formulation);
+
     for (const std::unique_ptr<FormulationAndRoute>& far : m_fars) {
         if (/*far->m_formulation == _formulation &&*/
             far->m_route == _route) {

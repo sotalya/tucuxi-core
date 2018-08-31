@@ -347,7 +347,7 @@ ComputingResult ComputingComponent::compute(
 
     // We use a single prediction to get back time offsets. Could be optimized
     ConcentrationPredictionPtr pPrediction = std::make_unique<ConcentrationPrediction>();
-    ComputationResult predictonComputationResult = computePopulation(
+    ComputationResult predictionComputationResult = computePopulation(
                 pPrediction,
                 false,
                 _traits->getStart(),
@@ -355,6 +355,7 @@ ComputingResult ComputingComponent::compute(
                 intakeSeries,
                 parameterSeries);
 
+    TMP_UNUSED_PARAMETER(predictionComputationResult);
 
     if (computationResult == IPercentileCalculator::ComputingResult::Success &&
             intakeSeries.size() == pPrediction->getTimes().size() &&

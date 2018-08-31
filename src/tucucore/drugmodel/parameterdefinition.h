@@ -49,27 +49,15 @@ public:
     /// \brief Constructor
     /// \param _id The name of the parameter
     /// \param _name Its default value
-    ParameterDefinition(const std::string _id, Value _value, ParameterVariability _variabilityType)
-        : PopulationValue(_id, _value, nullptr),
-          m_variability(_variabilityType)
-    {}
+    ParameterDefinition(const std::string _id, Value _value, ParameterVariability _variabilityType);
 
-    ParameterDefinition(const std::string _id, Value _value)
-        : PopulationValue(_id, _value, nullptr)
-    {}
+    ParameterDefinition(const std::string _id, Value _value);
 
+    ParameterDefinition(const std::string _id, Value _value, ParameterVariabilityType _variabilityType);
 
-    ParameterDefinition(const std::string _id, Value _value, ParameterVariabilityType _variabilityType)
-        : PopulationValue(_id, _value, nullptr),
-          m_variability(ParameterVariability(_variabilityType))
-    {}
+    ParameterDefinition(const std::string _name, Value _value, Operation* _operation, ParameterVariability _variabilityType);
 
-    ParameterDefinition(const std::string _name, Value _value, Operation* _operation, ParameterVariability _variabilityType)
-        : PopulationValue(_name, _value, _operation),
-          m_variability(_variabilityType)
-    {}
-
-    virtual ~ParameterDefinition() { }
+    virtual ~ParameterDefinition();
 
     /// \brief Get the parameter value
     /// \return Returns the parameter value

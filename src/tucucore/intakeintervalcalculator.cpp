@@ -30,6 +30,10 @@ IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakePoints
     // Create our serie of times
     int nbPoints = _intakeEvent.getNbPoints();
     int toHours = _intakeEvent.getInterval().toHours();
+
+    TMP_UNUSED_PARAMETER(nbPoints);
+    TMP_UNUSED_PARAMETER(toHours);
+
     // YTA : This LinSpaced function crashes on Linux, so using a custom
     // method...
 //    Eigen::VectorXd times = Eigen::VectorXd::LinSpaced(_intakeEvent.getNbPoints(), 0, _intakeEvent.getInterval().toHours());

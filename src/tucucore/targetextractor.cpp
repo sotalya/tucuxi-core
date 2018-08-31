@@ -13,6 +13,7 @@ int TargetExtractor::extract(const CovariateSeries &_covariates, const TargetDef
 {
     TMP_UNUSED_PARAMETER(_covariates);
     TMP_UNUSED_PARAMETER(_targetDefinitions);
+    TMP_UNUSED_PARAMETER(_targets);
     TMP_UNUSED_PARAMETER(_start);
     TMP_UNUSED_PARAMETER(_end);
     TMP_UNUSED_PARAMETER(_series);

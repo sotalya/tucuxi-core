@@ -16,7 +16,6 @@ clang-tidy \
 			{ key: readability-identifier-naming.ParameterCase,       value: camelBack }, \
 			{ key: readability-identifier-naming.ParameterPrefix,     value: '_'       }, \
 		]}" \
--fix-errors  \
 	-header-filter="../src/tucucore/|../src/tucucommon/|../src/tucucli/|../src/tuculicense/" \
 	../src/tucucore/*.cpp \
 	../src/tucucommon/*.cpp \

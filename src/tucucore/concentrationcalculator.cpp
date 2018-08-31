@@ -20,6 +20,9 @@ ComputationResult ConcentrationCalculator::computeConcentrations(
     const bool _onlyAnalytes,
     const bool _isFixedDensity)
 {
+    TMP_UNUSED_PARAMETER(_recordFrom);
+    TMP_UNUSED_PARAMETER(_recordTo);
+    TMP_UNUSED_PARAMETER(_onlyAnalytes);
     // First calculate the size of residuals
     unsigned int residualSize = 0;
     for (IntakeSeries::const_iterator it = _intakes.begin(); it != _intakes.end(); it++) {
@@ -100,6 +103,7 @@ ComputationResult ConcentrationCalculator::computeConcentrationsAtTimes(
     const Etas &_etas,
     const bool _onlyAnalytes)
 {
+    TMP_UNUSED_PARAMETER(_onlyAnalytes);
 
     _concentrations.clear();
 

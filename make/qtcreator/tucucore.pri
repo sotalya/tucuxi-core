@@ -3,6 +3,7 @@ HEADERS += \
     $$PWD/../../src/tucucore/drugmodel/drugmodel.h \
     $$PWD/../../src/tucucore/cachedexponentials.h \
     $$PWD/../../src/tucucore/concentrationcalculator.h \
+    $$PWD/../../src/tucucore/concentrationprediction.h \
     $$PWD/../../src/tucucore/cyclestatisticscalculator.h \
     $$PWD/../../src/tucucore/definitions.h \
     $$PWD/../../src/tucucore/dosage.h \
@@ -25,6 +26,7 @@ HEADERS += \
     $$PWD/../../src/tucucore/covariateextractor.h \
     $$PWD/../../src/tucucore/idatamodelservices.h \
     $$PWD/../../src/tucucore/parametersextractor.h \
+    $$PWD/../../src/tucucore/percentilesprediction.h \
     $$PWD/../../src/tucucore/residualerrormodel.h \
     $$PWD/../../src/tucucore/sampleextractor.h \
     $$PWD/../../src/tucucore/targetextractor.h \

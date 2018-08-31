@@ -8,6 +8,8 @@
 #include <fstream>
 #include <memory>
 
+#include "tucucommon/general.h"
+
 #include "tucucore/definitions.h"
 
 namespace Tucuxi {
@@ -42,6 +44,7 @@ public:
 
     void init(const PercentileRanks& _ranks, const std::vector<TimeOffsets> &_times, const IntakeSeries &_intakes)
     {
+        TMP_UNUSED_PARAMETER(_times);
         m_ranks = _ranks;
         m_times = _times;
         m_values.clear();
