@@ -54,14 +54,14 @@ struct Bracketmethod {
                     shft3(fb,fc,fu,func(u));
                 }
             } else if ((u-ulim)*(ulim-cx) >= 0.0) {
-                    u=ulim;
-                    fu=func(u);
-                } else {
-                    u=cx+GOLD*(cx-bx);
-                    fu=func(u);
-                }
-                shft3(ax,bx,cx,u);
-                shft3(fa,fb,fc,fu);
+                u=ulim;
+                fu=func(u);
+            } else {
+                u=cx+GOLD*(cx-bx);
+                fu=func(u);
+            }
+            shft3(ax,bx,cx,u);
+            shft3(fa,fb,fc,fu);
         }
     }
 
@@ -103,8 +103,12 @@ struct Dbrent : Bracketmethod {
             if (std::abs(e) > tol1) {
                 d1=2.0*(b-a);
                 d2=d1;
-                if (dw != dx) d1=(w-x)*dx/(dx-dw);
-                if (dv != dx) d2=(v-x)*dx/(dx-dv);
+                if (dw != dx) {
+                    d1=(w-x)*dx/(dx-dw);
+                }
+                if (dv != dx) {
+                    d2=(v-x)*dx/(dx-dv);
+                }
                 u1=x+d1;
                 u2=x+d2;
                 ok1 = (a-u1)*(u1-b) > 0.0 && dx*d1 <= 0.0;
@@ -112,19 +116,21 @@ struct Dbrent : Bracketmethod {
                 olde=e;
                 e=d;
                 if (ok1 || ok2) {
-                    if (ok1 && ok2)
+                    if (ok1 && ok2) {
                         d=(std::abs(d1) < std::abs(d2) ? d1 : d2);
-                    else if (ok1)
+                    } else if (ok1) {
                         d=d1;
-                    else
+                    } else {
                         d=d2;
+                    }
                     if (std::abs(d) <= std::abs(0.5*olde)) {
                         u=x+d;
-                        if (u-a < tol2 || b-u < tol2)
+                        if (u-a < tol2 || b-u < tol2) {
                             d=copysign(tol1,xm-x);
-                        } else {
-                            d=0.5*(e=(dx >= 0.0 ? a-x : b-x));
                         }
+                    } else {
+                        d=0.5*(e=(dx >= 0.0 ? a-x : b-x));
+                    }
                 } else {
                     d=0.5*(e=(dx >= 0.0 ? a-x : b-x));
                 }
@@ -144,12 +150,20 @@ struct Dbrent : Bracketmethod {
             }
             du=funcd.df(u);
             if (fu <= fx) {
-                if (u >= x) a=x; else b=x;
+                if (u >= x) {
+                    a=x;
+                } else {
+                    b=x;
+                }
                 mov3(v,fv,dv,w,fw,dw);
                 mov3(w,fw,dw,x,fx,dx);
                 mov3(x,fx,dx,u,fu,du);
             } else {
-                if (u < x) a=u; else b=u;
+                if (u < x) {
+                    a=u; }
+                else {
+                    b=u;
+                }
                 if (fu <= fw || w == x) {
                     mov3(v,fv,dv,w,fw,dw);
                     mov3(w,fw,dw,u,fu,du);
@@ -159,7 +173,7 @@ struct Dbrent : Bracketmethod {
             }
         }
         return xmin=x;
-//        throw("Too many iterations in routine dbrent");
+        //        throw("Too many iterations in routine dbrent");
     }
 };
 
@@ -174,16 +188,18 @@ struct Df1dim {
     Df1dim(ValueVector &pp, ValueVector &xii, T &funcdd) : p(pp),
         xi(xii), n(pp.size()), funcd(funcdd), xt(n), dft(n) {}
     double operator()(const Value x){
-        for (size_t j=0;j<n;j++)
+        for (size_t j=0;j<n;j++) {
             xt[j]=p[j]+x*xi[j];
-        return funcd(xt);
         }
+        return funcd(xt);
+    }
     double df(const Value x){
         TMP_UNUSED_PARAMETER(x);
         double df1=0.0;
         funcd.df(xt,dft);
-        for (size_t j=0;j<n;j++)
+        for (size_t j=0;j<n;j++) {
             df1 += dft[j]*xi[j];
+        }
         return df1;
     }
 };
@@ -222,7 +238,7 @@ struct Frprmn : Dlinemethod<T> {
     using Dlinemethod<T>::xi;
     const double ftol;
     Frprmn(T &funcd, const double ftoll=3.0e-8) : Dlinemethod<T>(funcd),
-    ftol(ftoll) {}
+        ftol(ftoll) {}
 
     ValueVector minimize(const ValueVector &pp) {
         const int ITMAX=200;
@@ -242,10 +258,11 @@ struct Frprmn : Dlinemethod<T> {
         }
 
         for (int its=0;its<ITMAX;its++) {
-           // iter=its;
+            // iter=its;
             fret=linmin();
-            if (2.0*std::abs(fret-fp) <= ftol*(std::abs(fret)+std::abs(fp)+EPS))
+            if (2.0*std::abs(fret-fp) <= ftol*(std::abs(fret)+std::abs(fp)+EPS)) {
                 return p;
+            }
             fp=fret;
             func.df(p,xi);
             double test=0.0;
@@ -253,21 +270,26 @@ struct Frprmn : Dlinemethod<T> {
 
             for (size_t j=0;j<n;j++) {
                 double temp=std::abs(xi[j])*std::max(std::abs(p[j]),Value(1.0))/den;
-                if (temp > test) test=temp;
+                if (temp > test) {
+                    test=temp;
+                }
             }
 
-            if (test < GTOL) return p;
+            if (test < GTOL) {
+                return p;
+            }
 
             dgg=gg=0.0;
 
             for (size_t j=0;j<n;j++) {
                 gg += g[j]*g[j];
-//                dgg += xi[j]*xi[j]; //This statement for Fletcher-Reeves.
+                //                dgg += xi[j]*xi[j]; //This statement for Fletcher-Reeves.
                 dgg += (xi[j]+g[j])*xi[j]; //This statement for Polak-Ribiere.
             }
 
-            if (gg == 0.0)
+            if (gg == 0.0) {
                 return p;
+            }
 
             double gam=dgg/gg;
             for (size_t j=0;j<n;j++) {
@@ -276,7 +298,7 @@ struct Frprmn : Dlinemethod<T> {
             }
         }
         return p;
-//        throw("Too many iterations in frprmn");
+        //        throw("Too many iterations in frprmn");
     }
 };
 
