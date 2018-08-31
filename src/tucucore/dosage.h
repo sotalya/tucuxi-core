@@ -95,7 +95,7 @@ class DosageBounded : public Dosage
 public:
     friend IntakeExtractor;
 
-    virtual int extract(IntakeExtractor &_extractor, const DateTime &_start, const DateTime &_end, IntakeSeries &_series, CycleSize _cycleSize) const;
+    int extract(IntakeExtractor &_extractor, const DateTime &_start, const DateTime &_end, IntakeSeries &_series, CycleSize _cycleSize) const override;
 
     /// \brief Return the instant of the first intake in the given interval.
     /// \param _intervalStart Starting point of the interval.
@@ -172,7 +172,7 @@ public:
 
     /// \brief Get the time step between two bounded dosages.
     /// \return Time step of the whole repeated sequence.
-    virtual Duration getTimeStep() const
+    Duration getTimeStep() const override
     {
         return m_dosage->getTimeStep() * m_nbTimes;
     }
@@ -180,7 +180,7 @@ public:
     /// \brief Return the instant of the first intake in the given interval.
     /// \param _intervalStart Starting point of the repeated sequence.
     /// \return Time of the first intake.
-    virtual DateTime getFirstIntakeInterval(const DateTime &_intervalStart) const
+    DateTime getFirstIntakeInterval(const DateTime &_intervalStart) const override
     {
         return m_dosage->getFirstIntakeInterval(_intervalStart);
     }
@@ -226,7 +226,7 @@ public:
 
     /// \brief Get the time step between two bounded dosages.
     /// \return Time step of the whole repeated sequence.
-    virtual Duration getTimeStep() const
+    Duration getTimeStep() const override
     {
         Duration totalDuration;
         for (auto&& dosage : m_dosages) {
@@ -238,7 +238,7 @@ public:
     /// \brief Return the instant of the first intake in the given interval.
     /// \param _intervalStart Starting point of the first element of the sequence (it is ordered).
     /// \return Time of the first intake.
-    virtual DateTime getFirstIntakeInterval(const DateTime &_intervalStart) const
+    DateTime getFirstIntakeInterval(const DateTime &_intervalStart) const override
     {
         return (m_dosages.at(0))->getFirstIntakeInterval(_intervalStart);
     }
@@ -297,7 +297,7 @@ public:
 
     /// \brief Get the time step between two bounded dosages.
     /// \return Time step of the whole repeated sequence.
-    virtual Duration getTimeStep() const
+    Duration getTimeStep() const override
     {
         Duration totalDuration;
         // We have to consider the time it takes for the dosage with the biggest time step
@@ -313,7 +313,7 @@ public:
     /// \brief Return the instant of the first intake in the given interval.
     /// \param _intervalStart Starting point of the first element of the sequence.
     /// \return Time of the first intake in the ordered list.
-    virtual DateTime getFirstIntakeInterval(const DateTime &_intervalStart) const
+    DateTime getFirstIntakeInterval(const DateTime &_intervalStart) const override
     {
         // We consider that a ParallelSequence starts immediately
         return _intervalStart;
@@ -399,7 +399,7 @@ public:
 
     /// \brief Return the increment between two successive intakes.
     /// \return Interval between two lasting doses.
-    virtual Duration getTimeStep() const
+    Duration getTimeStep() const override
     {
         return m_interval;
     }
@@ -407,7 +407,7 @@ public:
     /// \brief Return the instant of the first intake in the given interval.
     /// \param _intervalStart Starting point of the interval.
     /// \return Time of the first intake.
-    virtual DateTime getFirstIntakeInterval(const DateTime &_intervalStart) const
+    DateTime getFirstIntakeInterval(const DateTime &_intervalStart) const override
     {
         return _intervalStart;
     }
@@ -440,7 +440,7 @@ public:
 
     /// \brief Return the increment between two successive intakes.
     /// \return Interval between two daily doses.
-    virtual Duration getTimeStep() const
+    Duration getTimeStep() const override
     {
         return Duration(std::chrono::hours(24));
     }
@@ -448,7 +448,7 @@ public:
     /// \brief Return the instant of the first intake in the given interval.
     /// \param _intervalStart Starting point of the interval.
     /// \return Time of the first intake.
-    virtual DateTime getFirstIntakeInterval(const DateTime &_intervalStart) const
+    DateTime getFirstIntakeInterval(const DateTime &_intervalStart) const override
     {
         DateTime intakeTime = _intervalStart;
         // The hour is fixed
@@ -495,7 +495,7 @@ public:
 
     /// \brief Return the increment between two successive intakes.
     /// \return Interval between two weekly doses.
-    virtual Duration getTimeStep() const
+    Duration getTimeStep() const override
     {
         return Duration(std::chrono::hours(7 * 24));
     }
@@ -503,7 +503,7 @@ public:
     /// \brief Return the instant of the first intake in the given interval.
     /// \param _intervalStart Starting point of the interval.
     /// \return Time of the first intake.
-    virtual DateTime getFirstIntakeInterval(const DateTime &_intervalStart) const
+    DateTime getFirstIntakeInterval(const DateTime &_intervalStart) const override
     {
         // Really ugly cast required by the library to extract the day of week from the date
         const int numStartDayOfWeek = (unsigned)(DayOfWeek(_intervalStart.getDate()));

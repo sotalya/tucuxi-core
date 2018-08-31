@@ -57,7 +57,7 @@ public:
 
     ParameterDefinition(std::string _name, Value _value, Operation* _operation, ParameterVariability _variabilityType);
 
-    virtual ~ParameterDefinition();
+    ~ParameterDefinition() override;
 
     /// \brief Get the parameter value
     /// \return Returns the parameter value
@@ -92,13 +92,13 @@ public:
 
     /// \brief Get the associated operation.
     /// \return Reference to the associated operation.
-    virtual Operation &getOperation() const override { return m_definition.getOperation(); }
+    Operation &getOperation() const override { return m_definition.getOperation(); }
 
     /// \brief Perform the evaluation on the Operable, retrieving the inputs (and the dependencies) from the
     ///        OperableGraphManager.
     /// \param _graphMgr Reference to the graph manager where the Operable has to seek its inputs.
     /// \return True if the evaluation could be performed, false in case of errors.
-    virtual bool evaluate(const OperableGraphManager &_graphMgr) override;
+    bool evaluate(const OperableGraphManager &_graphMgr) override;
 
     /// \brief Return the identifier of the parameter involved in the change.
     /// \return Identifier of parameter involved in the change.

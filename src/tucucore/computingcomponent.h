@@ -48,7 +48,7 @@ public:
 
 protected:
     /// \brief Access other interfaces of the same component.
-    virtual Tucuxi::Common::Interface* getInterface(const std::string &_name) override;
+    Tucuxi::Common::Interface* getInterface(const std::string &_name) override;
 
 
 private:

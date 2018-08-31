@@ -17,7 +17,7 @@ enum class CycleStatisticType : int { Mean, Peak, Maximum, Minimum, AUC, CYCLE_S
 /// \brief The CycleStatistic class
 /// A siglle statistic with a type (mean, peak, maximum, minimum and AUC),
 /// a time (offset from start of cycle), a value, a unit.
-/// The time is not relaevant in the case of MEan and AUC.
+/// The time is not relaevant in the case of Mean and AUC.
 /// 
 class CycleStatistic
 {

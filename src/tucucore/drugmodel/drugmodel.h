@@ -37,7 +37,7 @@ public:
     {
     }
     const ParameterDefinition* operator*() override;
-    Tucuxi::Common::Iterator<const ParameterDefinition*>& next()
+    Tucuxi::Common::Iterator<const ParameterDefinition*>& next() override
     {
         m_index++;
         return *this;

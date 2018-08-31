@@ -59,12 +59,12 @@ public:
 
     void setSigma(Sigma _sigma) { m_sigma = _sigma;}
     void setErrorModel(ResidualErrorType _errorModel) { m_errorModel = _errorModel;}
-    virtual bool isEmpty() const;
-    virtual void applyEpsToArray(Concentrations &_concentrations, const Deviations &_eps) const;
+    bool isEmpty() const override;
+    void applyEpsToArray(Concentrations &_concentrations, const Deviations &_eps) const override;
 
-    virtual Value calculateSampleLikelihood(const Value _expected, const Value& _observed) const;
+    Value calculateSampleLikelihood(const Value _expected, const Value& _observed) const override;
 
-    virtual int nbEpsilons() const { return m_nbEpsilons; }
+    int nbEpsilons() const override { return m_nbEpsilons; }
 
 protected:
     /// The Sigma vector
@@ -82,20 +82,20 @@ protected:
 class EmptyResidualErrorModel : public IResidualErrorModel
 {
 public:
-    virtual bool isEmpty() const { return true;}
+    bool isEmpty() const override { return true;}
 
-    virtual void applyEpsToArray(Concentrations &_concentrations, const Deviations &_eps) const {
+    void applyEpsToArray(Concentrations &_concentrations, const Deviations &_eps) const override {
         UNUSED_PARAMETER(_concentrations);
         UNUSED_PARAMETER(_eps);
     };
 
-    virtual Value calculateSampleLikelihood(const Value _expected, const Value& _observed) const {
+    Value calculateSampleLikelihood(const Value _expected, const Value& _observed) const override {
         UNUSED_PARAMETER(_expected);
         UNUSED_PARAMETER(_observed);
         return 0.0;
     };
 
-    virtual int nbEpsilons() const { return 0; }
+    int nbEpsilons() const override { return 0; }
 
 };
 

@@ -265,7 +265,7 @@ public:
         const SampleSeries &_samples,
         const PercentileRanks &_percentileRanks,
         IConcentrationCalculator &_concentrationCalculator,
-        ComputingAborter *_aborter);
+        ComputingAborter *_aborter) override;
 };
 
 
@@ -301,7 +301,7 @@ public:
             const SampleSeries &_samples,
             const PercentileRanks &_percentileRanks,
             IConcentrationCalculator &_concentrationCalculator,
-            ComputingAborter *_aborter);
+            ComputingAborter *_aborter) override;
 };
 
 

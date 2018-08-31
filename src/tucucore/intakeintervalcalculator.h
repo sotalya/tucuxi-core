@@ -32,6 +32,8 @@ class IntakeIntervalCalculatorCreator
 {
 public:
     virtual std::unique_ptr<IntakeIntervalCalculator> create() = 0;
+
+    virtual ~IntakeIntervalCalculatorCreator() = default;
 };
 
 /// This macro shall be inserted at the beginning of each class of IntakeIntervalCalculator, passing the class name
@@ -173,7 +175,7 @@ template<unsigned int ResidualSize, typename EParameters>
 class IntakeIntervalCalculatorBase : public IntakeIntervalCalculator
 {
 public:
-    unsigned int getResidualSize() const {
+    unsigned int getResidualSize() const override {
         return ResidualSize;
     }
 

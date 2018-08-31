@@ -92,7 +92,7 @@ public:
                        const DateTime &_end);
 
     /// \brief Default destructor for the Covariate Extractor.
-    virtual ~CovariateExtractor() = default;
+    ~CovariateExtractor() override = default;
 
     /// \brief Extract covariate events.
     /// \param _series Set of extracted covariate events.

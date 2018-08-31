@@ -41,15 +41,15 @@ public:
     /// \return None
     void setLevel(spdlog::level::level_enum _level);
 
-    virtual void debug(const char* _msg);
-    virtual void info(const char* _msg);
-    virtual void warn(const char* _msg);
-    virtual void error(const char* _msg);
-    virtual void critical(const char* _msg);
+    void debug(const char* _msg) override;
+    void info(const char* _msg) override;
+    void warn(const char* _msg) override;
+    void error(const char* _msg) override;
+    void critical(const char* _msg) override;
 
 protected:
     /// \brief Access other interfaces of the same component.
-    virtual Tucuxi::Common::Interface* getInterface(const std::string &_name);
+    Tucuxi::Common::Interface* getInterface(const std::string &_name) override;
 
 private:
     /// \brief Constructor call by LoggerHelper

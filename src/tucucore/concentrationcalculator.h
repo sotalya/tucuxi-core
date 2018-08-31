@@ -92,7 +92,7 @@ public:
     /// \param _isFixedDensity Indicates if the density of points could be changed within the method
     /// \return The status of computation
     ///
-    virtual ComputationResult computeConcentrations(
+    ComputationResult computeConcentrations(
         ConcentrationPredictionPtr &_prediction,
         bool _isAll,
         const DateTime &_recordFrom,
@@ -117,7 +117,7 @@ public:
     /// \param _etas vector of etas
     /// \return The status of computation
     ///
-    virtual ComputationResult computeConcentrationsAtTimes(
+    ComputationResult computeConcentrationsAtTimes(
         Concentrations& _concentrations,
         bool _isAll,
         const IntakeSeries& _intakes,

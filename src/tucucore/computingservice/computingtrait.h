@@ -141,7 +141,7 @@ class ComputingTraitStandard : public ComputingTrait
 public:
 
     //! Emtpy destructor
-    ~ComputingTraitStandard();
+    ~ComputingTraitStandard() override;
 
     ///
     /// \brief getComputingOption Get the computing options

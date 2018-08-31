@@ -15,6 +15,8 @@ clang-tidy \
 			{ key: readability-identifier-naming.VariableCase,        value: camelBack }, \
 			{ key: readability-identifier-naming.ParameterCase,       value: camelBack }, \
 			{ key: readability-identifier-naming.ParameterPrefix,     value: '_'       }, \
+                        { key: readability-identifier-naming.StaticVariableCase,  value: camelBack }, \
+                        { key: readability-identifier-naming.EnumCase,            value: CamelCase }, \
 		]}" \
 	-header-filter="../src/tucucore/|../src/tucucommon/|../src/tucucli/|../src/tuculicense/" \
 	../src/tucucore/*.cpp \
@@ -40,3 +42,6 @@ grep "\.h" clang-warnings.txt | sort -u > clang-warnings-shorts.txt
 
 # The following, if used instead of -header-filter, will only display warnings for these two files
 #    -line-filter="[{\"name\" : \"../src/tucucore/deriv.h\"},{\"name\" : \"../src/tucucore/minimize.h\"}]" \
+
+
+#                        { key: readability-identifier-naming.EnumConstantCase,    value: CamelCase }, \

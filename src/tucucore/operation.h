@@ -260,11 +260,11 @@ public:
     HardcodedOperation();
 
     /// \brief Default destructor.
-    virtual ~HardcodedOperation() = default;
+    ~HardcodedOperation() override = default;
 
     /// \brief Clone function returning a pointer to the base class.
     /// \return Pointer to the base Operation class.
-    virtual std::unique_ptr<Operation> clone() const = 0;
+    std::unique_ptr<Operation> clone() const override = 0;
 
     /// \brief Evaluate the operation on the given inputs.
     /// \warning No control on types is performed -- you can for instance divide a boolean by a double without the
@@ -274,7 +274,7 @@ public:
     /// \return true if the operation could be performed, false otherwise.
     /// \post if (check(_inputs) == true) { _result == [OPERATION_RESULT] && [RETURN] == true }
     ///       else { [RETURN] == false };
-    virtual bool evaluate(const OperationInputList &_inputs, double &_result) override final;
+    bool evaluate(const OperationInputList &_inputs, double &_result) final;
 
 
 protected:
@@ -306,7 +306,7 @@ public:
 
     /// \brief Clone function returning a pointer to the base class.
     /// \return Pointer to the base Operation class.
-    virtual std::unique_ptr<Operation> clone() const;
+    std::unique_ptr<Operation> clone() const override;
 
     /// \brief Evaluate the operation on the given inputs using the JSEngine.
     /// \warning No control on types is performed -- you can for instance divide a boolean by a double without the
@@ -316,7 +316,7 @@ public:
     /// \return true if the operation could be performed, false otherwise.
     /// \post if (check(_inputs) && m_jsEngine.evaluate(m_expression) == true) { _result == [OPERATION_RESULT] && [RETURN] == true }
     ///       else { [RETURN] == false };
-    virtual bool evaluate(const OperationInputList &_inputs, double &_result) override;
+    bool evaluate(const OperationInputList &_inputs, double &_result) override;
 
 
 protected:
@@ -338,11 +338,11 @@ public:
     DynamicOperation(const DynamicOperation &_other);
 
     /// \brief Default destructor.
-    virtual ~DynamicOperation() = default;
+    ~DynamicOperation() override = default;
 
     /// \brief Clone function returning a pointer to the base class.
     /// \return Pointer to the base Operation class.
-    virtual std::unique_ptr<Operation> clone() const;
+    std::unique_ptr<Operation> clone() const override;
 
     /// \brief Default operator assignment function.
     /// \param _rhs Source operation.
@@ -361,7 +361,7 @@ public:
     ///         otherwise.
     /// \post if (ANY(operation: m_operations) { operation.check(_inputs) } { [RETURN] == true }
     ///       else { [RETURN] == false };
-    virtual bool check(const OperationInputList &_inputs) const override;
+    bool check(const OperationInputList &_inputs) const override;
 
     /// \brief Evaluate an operation on the given inputs, choosing the one that suits best.
     /// The parameter match is taken as a first match measure, using the preference level as a second discrimination
@@ -377,13 +377,13 @@ public:
     ///                                                 PREFERENCE(operation) <= { PREFERENCE({op2 IN m_operations | op2.check(_inputs == true) && op2 != operation })} };
     ///       if (EXISTS(bestMatch)) { _result == [RESULT(bestMatch)] && [RETURN] == true }
     ///       else { [RETURN] == false };
-    virtual bool evaluate(const OperationInputList &_inputs, double &_result) override;
+    bool evaluate(const OperationInputList &_inputs, double &_result) override;
 
     /// \brief Return the list of *possibly* required input operands.
     /// This list contains *ALL* the operands that could be needed by *ALL* the stored operations -- only a subset might
     /// be needed for an operation to be performed. *NO* duplicates are present.
     /// \return Vector containing a list of the operands required by the whole set of stored operations.
-    virtual OperationInputList getInputs() const override;
+    OperationInputList getInputs() const override;
 
 
 protected:

@@ -38,7 +38,7 @@ public:
             Tucuxi::Common::Duration _to,
             Tucuxi::Common::Duration _step);
 
-    virtual std::vector<Tucuxi::Common::Duration> getDurations() const;
+    std::vector<Tucuxi::Common::Duration> getDurations() const override;
 protected:
     Tucuxi::Common::Duration m_from;
     Tucuxi::Common::Duration m_to;
@@ -51,7 +51,7 @@ class SpecificDurations : public ValidDurations
 public:
     SpecificDurations(Tucuxi::Common::Duration _default);
 
-    virtual std::vector<Tucuxi::Common::Duration> getDurations() const;
+    std::vector<Tucuxi::Common::Duration> getDurations() const override;
 
     void addDuration(Tucuxi::Common::Duration _duration);
 

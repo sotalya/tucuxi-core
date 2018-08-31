@@ -227,7 +227,7 @@ class IOperable : public IOperableInput
 {
 public:
     /// \brief Default virtual destructor, required for proper object's destruction.
-    virtual ~IOperable() = default;
+    ~IOperable() override = default;
 
     /// \brief Perform the evaluation on the Operable, retrieving the inputs (and the dependencies) from the
     ///        OperableGraphManager.
@@ -242,7 +242,7 @@ public:
 
     /// \brief Return the value computed by the node.
     /// \return Value computed by the node.
-    virtual double getValue() const = 0;
+    double getValue() const override = 0;
 };
 
 
@@ -256,18 +256,18 @@ public:
     Operable(const double &_value);
 
     /// \brief Default virtual destructor, required for proper object's destruction.
-    virtual ~Operable() = default;
+    ~Operable() override = default;
 
     /// \brief Perform the evaluation on the Operable, retrieving the inputs (and the dependencies) from the
     ///        OperableGraphManager.
     /// \param _graphMgr Reference to the graph manager where the Operable has to seek its inputs.
     /// \return True if the evaluation could be performed, false in case of errors.
-    virtual bool evaluate(const OperableGraphManager &_graphMgr);
+    bool evaluate(const OperableGraphManager &_graphMgr) override;
 
     /// \brief Return the list of required input operands.
     /// \return Vector containing a list of the operands required for the operation.
     /// This list can be filled by the caller to have all the values ready for evaluation.
-    virtual OperationInputList getInputs() const;
+    OperationInputList getInputs() const override;
 
     /// \brief Get the associated operation.
     /// \return Reference to the associated operation.
@@ -275,7 +275,7 @@ public:
 
     /// \brief Return the latest value computed by the node.
     /// \return Value computed by the node.
-    virtual double getValue() const;
+    double getValue() const override;
 
     /// \brief Manually set an Operable's value.
     /// \param _value Value to set.
@@ -303,11 +303,11 @@ public:
        : Operable(0), m_sptr{_ptr} {}
 
    /// \brief Default virtual destructor, required for proper object's destruction.
-   virtual ~OperableImpl() = default;
+   ~OperableImpl() override = default;
 
    /// \brief Get the associated operation.
    /// \return Reference to the associated operation.
-   virtual Operation &getOperation() const override { return *m_sptr; }
+   Operation &getOperation() const override { return *m_sptr; }
 
 
 protected:
