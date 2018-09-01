@@ -4,8 +4,6 @@
 
 #include "tucucommon/cryptohelper.h"
 
-#include <stdlib.h>
-#include <string.h>
 #include <iostream>
 
 #include <botan/auto_rng.h>
