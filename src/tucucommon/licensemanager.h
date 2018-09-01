@@ -10,7 +10,6 @@
 /// This module defines a set of basic and application independent classes and components for
 /// use in other Tucuxi's libraries and applications.
 
-#include <string.h>
 
 #include "tucucommon/datetime.h"
 #include "tucucommon/duration.h"

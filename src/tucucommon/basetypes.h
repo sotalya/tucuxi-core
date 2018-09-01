@@ -5,7 +5,7 @@
 #ifndef TUCUXI_TUCUCOMMON_BASETYPES_H
 #define TUCUXI_TUCUCOMMON_BASETYPES_H
 
-#include <math.h>
+#include <cmath>
 
 typedef long long int int64;
 

@@ -8,7 +8,8 @@ clang-tidy \
                               misc-unused-parameters,
                               modernize-make-unique,
                               modernize-use-nullptr,
-                              modernize-use-override', \
+                              modernize-use-override,
+                              modernize-raw-string-literal', \
 		CheckOptions: [ \
 			{ key: readability-identifier-naming.ClassCase,           value: CamelCase }, \
 			{ key: readability-identifier-naming.MemberPrefix,        value: m_        }, \

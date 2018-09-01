@@ -2,9 +2,6 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
-#include <stdio.h>
-#include <time.h>
-
 #include "tucucommon/utils.h"
 #include "tucucommon/loggerhelper.h"
 #include "tucucommon/licensemanager.h"

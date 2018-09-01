@@ -2,7 +2,6 @@
  * Copyright (C) 2017 Tucuxi SA
  */
 
-#include <stdio.h>
 #include <iomanip>
 #include <sstream>
 #include <iostream>
