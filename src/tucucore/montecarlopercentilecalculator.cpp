@@ -5,6 +5,7 @@
 #include <thread>
 #include <Eigen/Cholesky>
 #include <random>
+#include <time.h>
 
 #include "definitions.h"
 #include "concentrationcalculator.h"
@@ -148,7 +149,7 @@ IPercentileCalculator::ComputingResult MonteCarloPercentileCalculatorBase::compu
 
     // Sort and set percentile
     for (unsigned int cycle = 0; cycle < _intakes.size(); cycle++) {
-        for (int point = 0; point < _intakes.at(cycle).getNbPoints(); point++) {
+        for (unsigned int point = 0; point < _intakes.at(cycle).getNbPoints(); point++) {
 
             // Sort concentrations in increasing order at each time (at the cycle and at the point)
             std::sort(concentrations[cycle][point].begin(), concentrations[cycle][point].end(), [&] (const double v1, const double v2) { return v1 < v2; });
@@ -229,20 +230,33 @@ IPercentileCalculator::ComputingResult AprioriMonteCarloPercentileCalculator::ca
 
     unsigned int nbPatients = getNumberPatients();
 
+    
+    //clock_t t1 = clock();
+
+
+    // TODO : epsilons and rands could be static, in a cache to save time
+
     // Generating the random numbers
     EigenMatrix rands = EigenMatrix::Zero(nbPatients, omegaRank);
-    
+
     std::vector<Deviations> epsilons(nbPatients);
     // We fill the epsilons
     for (unsigned int p = 0; p < nbPatients; p++) {
         epsilons[p] = Deviations(_residualErrorModel.nbEpsilons(), normalDistribution(rnGenerator));
     }
 
+    //clock_t t2 = clock();
+
     for (int row = 0; row < rands.rows(); row++) {
         for (int column = 0; column < rands.cols(); column++) {
             rands(row, column) = normalDistribution(rnGenerator);
         }
     }
+
+    //clock_t t3 = clock();
+
+    //std::cout << "Time : " << t2 - t1 << ", " << t3 - t1 << std::endl;
+    //std::cout << "Time : " << ((double)t2 - t1)/((double)CLOCKS_PER_SEC) << ", " << ((double)t3 - t1)/((double)CLOCKS_PER_SEC) << std::endl;
 
     std::vector<Etas> etaSamples(nbPatients);
 
@@ -358,6 +372,10 @@ IPercentileCalculator::ComputingResult AposterioriMonteCarloPercentileCalculator
     EigenVector ratio(samples);
     EigenVector weight(samples);
 
+    //clock_t t1 = clock();
+
+    // TODO : This EigenMatrix could be static, in a cache to save time
+
     // Loading random numbers as omp doesnt like it
     EigenMatrix avecs = EigenMatrix::Zero(samples, _etas.size());
     for (int row = 0; row < avecs.rows(); row++) {
@@ -366,19 +384,26 @@ IPercentileCalculator::ComputingResult AposterioriMonteCarloPercentileCalculator
         }
     }
 
+
+    //clock_t t2 = clock();
+
+    //std::cout << "Time : " << t2 - t1 << std::endl;
+    //std::cout << "Time : " << ((double)t2 - t1)/((double)CLOCKS_PER_SEC) << std::endl;
+
+
     bool abort = false;
 
     // Parallelizing this for loop with shared variables
-    int nbThreads = std::max(std::thread::hardware_concurrency(), (unsigned int)1);
+    unsigned int nbThreads = std::max(std::thread::hardware_concurrency(), unsigned{1});
 
     std::vector<std::thread> workers;
-    for(int thread = 0;thread < nbThreads; thread++) {
-        workers.push_back(std::thread([thread, samples, &abort, _aborter, nbThreads, _etas, meanEtas, avecs, etaLowerChol,
+    for(unsigned thread = 0;thread < nbThreads; thread++) {
+        workers.push_back(std::thread([thread, &abort, _aborter, nbThreads, _etas, meanEtas, avecs, etaLowerChol,
                                       &etaSamples, logLikelihood, studentLiberty, subomega, &ratio]()
         {
-            int start = thread * (samples / nbThreads);
-            int end = (thread + 1 ) * (samples / nbThreads);
-            for (int sample = start; sample < end; sample++) {
+            unsigned start = thread * (samples / nbThreads);
+            unsigned end = (thread + 1 ) * (samples / nbThreads);
+            for (unsigned sample = start; sample < end; sample++) {
             if (!abort) {
                 if ((_aborter != nullptr) && (_aborter->shouldAbort())) {
                     abort = true;
@@ -432,18 +457,20 @@ IPercentileCalculator::ComputingResult AposterioriMonteCarloPercentileCalculator
 
     // 6. Draw samples from discrete distribution using weights
     std::normal_distribution<> normalDistribution(0, 1.0);
-    std::discrete_distribution<> discreteDistribution(&weight(0), &weight(0) + weight.size());
+    std::discrete_distribution<std::size_t> discreteDistribution(&weight(0), &weight(0) + weight.size());
 
+    // TODO : These epsilons could be stored in a cache to save time
     std::vector<Deviations> epsilons(reSamples);
     // We fill the epsilons
-    for (unsigned int p = 0; p < reSamples; p++) {
+    for (std::size_t p = 0; p < reSamples; p++) {
+        // TODO : I think we will have the same value for each epsilon of a specific sample
         epsilons[p] = Deviations(_residualErrorModel.nbEpsilons(), normalDistribution(rnGenerator));
     }
 
     std::vector<Etas> RealEtaSamples(reSamples);
 
     // TODO: think about whether we can use push_back or not
-    for(int patient = 0; patient < reSamples; patient++) {
+    for(std::size_t patient = 0; patient < reSamples; patient++) {
         RealEtaSamples[patient] = etaSamples[discreteDistribution(rnGenerator)];
     }
 

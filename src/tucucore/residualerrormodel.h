@@ -34,7 +34,7 @@ public:
     /// \param _expected Expected value
     /// \param _observed Observed value
     /// \return The calculated likelihood
-    virtual Value calculateSampleLikelihood(const Value _expected, const Value& _observed) const = 0;
+    virtual Value calculateSampleLikelihood(Value _expected, Value _observed) const = 0;
 
     /// \brief Returns the number of epsilons requested by a specific implementation
     /// \return The number of epsilons requested by applyEpsToArray
@@ -62,7 +62,7 @@ public:
     bool isEmpty() const override;
     void applyEpsToArray(Concentrations &_concentrations, const Deviations &_eps) const override;
 
-    Value calculateSampleLikelihood(const Value _expected, const Value& _observed) const override;
+    Value calculateSampleLikelihood(Value _expected, Value _observed) const override;
 
     int nbEpsilons() const override { return m_nbEpsilons; }
 
@@ -89,7 +89,7 @@ public:
         UNUSED_PARAMETER(_eps);
     };
 
-    Value calculateSampleLikelihood(const Value _expected, const Value& _observed) const override {
+    Value calculateSampleLikelihood(Value _expected, Value _observed) const override {
         UNUSED_PARAMETER(_expected);
         UNUSED_PARAMETER(_observed);
         return 0.0;

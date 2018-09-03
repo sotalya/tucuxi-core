@@ -9,7 +9,13 @@ clang-tidy \
                               modernize-make-unique,
                               modernize-use-nullptr,
                               modernize-use-override,
-                              modernize-raw-string-literal', \
+                              modernize-raw-string-literal,
+                              readability-implicit-bool-conversion,
+                              cppcoreguidelines-narrowing-conversions,
+                              readability-magic-numbers,
+                              bugprone-multiple-statement-macro,
+                              bugprone-integer-division,
+                              readability-inconsistent-declaration-parameter-name', \
 		CheckOptions: [ \
 			{ key: readability-identifier-naming.ClassCase,           value: CamelCase }, \
 			{ key: readability-identifier-naming.MemberPrefix,        value: m_        }, \
