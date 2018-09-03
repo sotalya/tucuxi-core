@@ -14,6 +14,16 @@
 
 #include "tucucore/pkmodel.h"
 
+#include "tucucore/pkmodels/onecompartmentbolus.h"
+#include "tucucore/pkmodels/onecompartmentinfusion.h"
+#include "tucucore/pkmodels/onecompartmentextra.h"
+#include "tucucore/pkmodels/twocompartmentbolus.h"
+#include "tucucore/pkmodels/twocompartmentinfusion.h"
+#include "tucucore/pkmodels/twocompartmentextra.h"
+#include "tucucore/pkmodels/threecompartmentbolus.h"
+#include "tucucore/pkmodels/threecompartmentinfusion.h"
+#include "tucucore/pkmodels/threecompartmentextra.h"
+
 using namespace Tucuxi::Core;
 
 #define ADD_CALCULATOR_FACTORIES(_PK_MODEL, _COMP_NO_LIT, _TYPE_NAME)  \

@@ -12,11 +12,11 @@ namespace Core {
 ComputingRequest::ComputingRequest(RequestResponseId _id,
     const DrugModel& _drugModel,
     const DrugTreatment& _drugTreatment,
-    const ComputingTraits& _computingTraits) :
+     std::unique_ptr<ComputingTraits> _computingTraits) :
     m_id(_id),
     m_drugModel(_drugModel),
     m_drugTreatment(_drugTreatment),
-    m_computingTraits(_computingTraits)
+    m_computingTraits(std::move(_computingTraits))
 {
 }
 
@@ -37,7 +37,7 @@ const DrugTreatment& ComputingRequest::getDrugTreatment() const
 
 const ComputingTraits& ComputingRequest::getComputingTraits() const
 {
-    return m_computingTraits;
+    return *m_computingTraits;
 }
 
 }

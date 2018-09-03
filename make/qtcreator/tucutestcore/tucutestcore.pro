@@ -10,6 +10,7 @@ include(../tucucommon.pri)
 include(../tucucore.pri)
 
 HEADERS += \
+    ../../../test/tucucore/test_computingcomponentadjustments.h \
     ../../../test/tucucore/test_concentrationcalculator.h \ \
     ../../../test/tucucore/test_dosage.h \
     ../../../test/tucucore/test_drugmodels.h \
@@ -24,9 +25,7 @@ HEADERS += \
     ../../../test/tucucore/test_percentilecalculator.h \
     ../../../test/tucucore/test_covariateextractor.h \
     ../../../test/tucucore/test_parameterextractor.h \
-    ../../../test/tucucore/testutils.h \
-    ../../../src/tucucore/validvalues.h
+    ../../../test/tucucore/testutils.h
 
 SOURCES += \
-    ../../../test/tucucore/tests.cpp \
-    ../../../src/tucucore/validvalues.cpp
+    ../../../test/tucucore/tests.cpp

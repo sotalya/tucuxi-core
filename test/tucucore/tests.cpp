@@ -9,19 +9,20 @@
 #include "tucucommon/loggerhelper.h"
 #include "tucucore/dosage.h"
 
-#include "test_covariateextractor.h"
-#include "test_parameterextractor.h"
-#include "test_dosage.h"
-#include "test_intakeextractor.h"
-#include "test_operation.h"
-#include "test_operablegraphmanager.h"
-#include "test_intakeintervalcalculator.h"
+#include "test_computingcomponentadjustments.h"
 #include "test_concentrationcalculator.h"
-#include "test_pkmodel.h"
-#include "test_percentilecalculator.h"
-#include "test_nonmemdrugs.h"
-#include "test_drugmodels.h"
+#include "test_covariateextractor.h"
 #include "test_cyclestatistics.h"
+#include "test_dosage.h"
+#include "test_drugmodels.h"
+#include "test_intakeextractor.h"
+#include "test_intakeintervalcalculator.h"
+#include "test_nonmemdrugs.h"
+#include "test_operablegraphmanager.h"
+#include "test_operation.h"
+#include "test_parameterextractor.h"
+#include "test_percentilecalculator.h"
+#include "test_pkmodel.h"
 
 int main(int argc, char** argv)
 {
@@ -34,6 +35,21 @@ int main(int argc, char** argv)
 
     int res = 0;
     int tot_res = 0;
+
+
+    TestComputingComponentAdjusements computingComponentAdjusementsTests;
+
+    // one compartment
+    computingComponentAdjusementsTests.add_test("Simple test", &TestComputingComponentAdjusements::testSimpleDrug);
+
+    res = computingComponentAdjusementsTests.run(argc, argv);
+    tot_res |= res;
+    if (res != 0) {
+        std::cerr << "Computing Component Adjusements test failed\n";
+        exit(1);
+    }
+    std::cout << "Computing Component Adjusements test succeeded\n";
+
 
     TestIntervalCalculator calculatorsTests;
 

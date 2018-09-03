@@ -437,13 +437,19 @@ ComputingResult ComputingComponent::compute(
 //         break;
 //    }
     const ValidDoses * doses = selectedFormulationAndRoute->getValidDoses();
-    doseValues = doses->getValues();
+    if (doses) {
+        doseValues = doses->getValues();
+    }
 
     const ValidDurations * intervals = selectedFormulationAndRoute->getValidIntervals();
-    intervalValues = intervals->getDurations();
+    if (intervals) {
+        intervalValues = intervals->getDurations();
+    }
 
     const ValidDurations * infusions = selectedFormulationAndRoute->getValidInfusionTimes();
-    infusionTimes = infusions->getDurations();
+    if (infusions) {
+        infusionTimes = infusions->getDurations();
+    }
 
     if (doseValues.size() == 0) {
         m_logger.error("No available potential dose");
@@ -457,7 +463,7 @@ ComputingResult ComputingComponent::compute(
 
     if (infusionTimes.size() == 0) {
         m_logger.error("No available infusion, but I don't care");
-        infusionTimes.push_back(0);
+        infusionTimes.push_back(Duration(0h));
     }
 
     for(std::vector<Value>::iterator dose = doseValues.begin(); dose != doseValues.end(); dose++) {
@@ -465,6 +471,12 @@ ComputingResult ComputingComponent::compute(
         for(std::vector<Duration>::iterator interval = intervalValues.begin(); interval != intervalValues.end(); interval++) {
 
             for(std::vector<Duration>::iterator infusion = infusionTimes.begin(); infusion != infusionTimes.end(); infusion++) {
+
+                std::string mess;
+                mess = "Potential adjustment. Dose :  \t" + std::to_string(*dose)
+                        + " , Interval: \t" + std::to_string((*interval).toHours()) + "Hours. "
+                        + " , Infusion: \t" + std::to_string((*infusion).toMinutes()) + " minutes";
+                m_logger.info(mess);
 
             }
         }

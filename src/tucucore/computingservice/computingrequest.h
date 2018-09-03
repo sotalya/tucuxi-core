@@ -39,8 +39,7 @@ public:
     ComputingRequest(RequestResponseId _id,
                       const DrugModel& _drugModel,
                       const DrugTreatment& _drugTreatment,
-                      const ComputingTraits& _computingTraits);
-
+                      std::unique_ptr<ComputingTraits> _computingTraits);
     ///
     /// \brief getId Retrieves the Id of the request
     /// \return The Id of the request
@@ -77,7 +76,7 @@ protected:
     const DrugTreatment &m_drugTreatment;
 
     //! Reference to the list of computing traits
-    const ComputingTraits & m_computingTraits;
+    std::unique_ptr<ComputingTraits> m_computingTraits;
 };
 
 } // namespace Core

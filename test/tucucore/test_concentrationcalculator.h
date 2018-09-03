@@ -19,6 +19,12 @@
 #include "tucucore/pkmodels/onecompartmentbolus.h"
 #include "tucucore/pkmodels/onecompartmentinfusion.h"
 #include "tucucore/pkmodels/onecompartmentextra.h"
+#include "tucucore/pkmodels/twocompartmentbolus.h"
+#include "tucucore/pkmodels/twocompartmentinfusion.h"
+#include "tucucore/pkmodels/twocompartmentextra.h"
+#include "tucucore/pkmodels/threecompartmentbolus.h"
+#include "tucucore/pkmodels/threecompartmentinfusion.h"
+#include "tucucore/pkmodels/threecompartmentextra.h"
 
 struct TestConcentrationCalculator : public fructose::test_base<TestConcentrationCalculator>
 {
