@@ -43,7 +43,7 @@ typedef double Time;
 
 /// \ingroup TucuCore
 /// \brief The type used to represent a dose in mg
-typedef Value Dose;
+typedef Value DoseValue;
 
 /// \ingroup TucuCore
 /// \brief The type used to represent a concentration in mg

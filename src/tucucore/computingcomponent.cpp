@@ -159,7 +159,7 @@ ComputingResult ComputingComponent::generalExtractions(
     // Should get rid of the next 3 lines
     const std::string analyteId = "imatinib";
     const std::string formulation = "???";
-    const Route route = Route::IntravenousBolus; // ???
+    const AdministrationRoute route = AdministrationRoute::IntravenousBolus; // ???
 
     _pkModel = m_models->getPkModelFromId(pkModelId);
 
@@ -395,9 +395,83 @@ ComputingResult ComputingComponent::compute(
         const ComputingRequest &_request,
         std::unique_ptr<ComputingResponse> &_response)
 {
-    TMP_UNUSED_PARAMETER(_traits);
-    TMP_UNUSED_PARAMETER(_request);
-    TMP_UNUSED_PARAMETER(_response);
+
+    if (_traits == nullptr) {
+        m_logger.error("The computing traits sent for computation are nullptr");
+        return ComputingResult::Error;
+    }
+
+    std::shared_ptr<PkModel> pkModel;
+
+    IntakeSeries intakeSeries;
+    CovariateSeries covariateSeries;
+    ParameterSetSeries parameterSeries;
+
+    ComputingResult extractionResult = generalExtractions(_traits,
+                                                _request,
+                                                pkModel,
+                                                intakeSeries,
+                                                covariateSeries,
+                                                parameterSeries);
+
+    if (extractionResult != ComputingResult::Success) {
+        return extractionResult;
+    }
+
+    const FormulationAndRoutes &formulationAndRoutes = _request.getDrugModel().getFormulationAndRoutes();
+
+    // Currently only support a single formulation and route. We simply select the first one
+    std::vector<Value> doseValues;
+    std::vector<Duration> intervalValues;
+    std::vector<Duration> infusionTimes;
+
+    const FormulationAndRoute *selectedFormulationAndRoute = formulationAndRoutes.getDefault();
+    if (selectedFormulationAndRoute == nullptr) {
+        m_logger.error("No default Formulation and Route");
+        return ComputingResult::Error;
+    }
+
+//    FormulationAndRoutes::Iterator it = formulationAndRoutes.begin();
+//    while (it != formulationAndRoutes.end()) {
+//        FormulationAndRoute *f = it->get();
+//         break;
+//    }
+    const ValidDoses * doses = selectedFormulationAndRoute->getValidDoses();
+    doseValues = doses->getValues();
+
+    const ValidDurations * intervals = selectedFormulationAndRoute->getValidIntervals();
+    intervalValues = intervals->getDurations();
+
+    const ValidDurations * infusions = selectedFormulationAndRoute->getValidInfusionTimes();
+    infusionTimes = infusions->getDurations();
+
+    if (doseValues.size() == 0) {
+        m_logger.error("No available potential dose");
+        return ComputingResult::Error;
+    }
+
+    if (intervalValues.size() == 0) {
+        m_logger.error("No available interval");
+        return ComputingResult::Error;
+    }
+
+    if (infusionTimes.size() == 0) {
+        m_logger.error("No available infusion, but I don't care");
+        infusionTimes.push_back(0);
+    }
+
+    for(std::vector<Value>::iterator dose = doseValues.begin(); dose != doseValues.end(); dose++) {
+
+        for(std::vector<Duration>::iterator interval = intervalValues.begin(); interval != intervalValues.end(); interval++) {
+
+            for(std::vector<Duration>::iterator infusion = infusionTimes.begin(); infusion != infusionTimes.end(); infusion++) {
+
+            }
+        }
+
+    }
+
+
     return ComputingResult::Error;
 }
 

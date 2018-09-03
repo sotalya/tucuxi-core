@@ -17,7 +17,7 @@ class ValidDurations
 public:
     ValidDurations(Tucuxi::Common::Duration _defaultDuration);
 
-    virtual ~ValidDurations() {};
+    virtual ~ValidDurations();
 
 
     virtual std::vector<Tucuxi::Common::Duration> getDurations() const = 0;

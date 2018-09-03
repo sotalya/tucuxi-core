@@ -76,9 +76,9 @@ const FormulationAndRoutes& DrugModel::getFormulationAndRoutes() const
 }
 
 
-void DrugModel::addFormulationAndRoute(std::unique_ptr<FormulationAndRoute> _formulationAndRoute)
+void DrugModel::addFormulationAndRoute(std::unique_ptr<FormulationAndRoute> _formulationAndRoute, bool _isDefault)
 {
-    m_formulationAndRoutes.add(std::move(_formulationAndRoute));
+    m_formulationAndRoutes.add(std::move(_formulationAndRoute), _isDefault);
 }
 
 

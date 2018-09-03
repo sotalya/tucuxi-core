@@ -26,8 +26,8 @@ struct TestDosage : public fructose::test_base<TestDosage>
     /// LastingDose and focus on the capabilities of a pure SingleDose (i.e., the Dose, the Route, ...)
     void testSingleDose(const std::string& /* _testName */)
     {
-        const Dose validDose = 100.0;
-        const Dose invalidDose = -100.0;
+        const DoseValue validDose = 100.0;
+        const DoseValue invalidDose = -100.0;
         const AbsorptionModel routePerfusion = AbsorptionModel::INFUSION;
         const Duration emptyInfusionTime;
         const Duration invalidInfusionTime(-std::chrono::minutes(20));
@@ -58,7 +58,7 @@ struct TestDosage : public fructose::test_base<TestDosage>
     /// \param _testName Test name.
     void testLastingDose(const std::string& /* _testName */)
     {
-        const Dose validDose = 100.0;
+        const DoseValue validDose = 100.0;
         const AbsorptionModel routePerfusion = AbsorptionModel::INFUSION;
         const Duration validInfusionTime(std::chrono::minutes(20));
         const Duration emptyInterval;
@@ -96,7 +96,7 @@ struct TestDosage : public fructose::test_base<TestDosage>
     /// \param _testName Test name.
     void testDailyDose(const std::string& /* _testName */)
     {
-        const Dose validDose = 100.0;
+        const DoseValue validDose = 100.0;
         const AbsorptionModel routePerfusion = AbsorptionModel::INFUSION;
         const Duration validInfusionTime(std::chrono::minutes(20));
         // Cannot have an invalid or invalid time of day (at worst, it simply takes the current time)
@@ -145,7 +145,7 @@ struct TestDosage : public fructose::test_base<TestDosage>
     /// \param _testName Test name.
     void testWeeklyDose(const std::string& /* _testName */)
     {
-        const Dose validDose = 100.0;
+        const DoseValue validDose = 100.0;
         const AbsorptionModel routePerfusion = AbsorptionModel::INFUSION;
         const Duration validInfusionTime(std::chrono::minutes(20));
         // Cannot have an invalid or invalid time of day (at worst, it simply takes the current time)
@@ -259,7 +259,7 @@ struct TestDosage : public fructose::test_base<TestDosage>
         // Give an undefined start date, expect an exception
         DateTime emptyDate;
         emptyDate.reset();
-        LastingDose fakeDose(Dose(200.0),
+        LastingDose fakeDose(DoseValue(200.0),
                              AbsorptionModel::INFUSION,
                              Duration(std::chrono::minutes(20)),
                              Duration(std::chrono::hours(240)));

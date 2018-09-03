@@ -2,8 +2,8 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
-#ifndef FORMULATIONANDROUTE_H
-#define FORMULATIONANDROUTE_H
+#ifndef TUCUXI_TUCUCORE_FORMULATIONANDROUTE_H
+#define TUCUXI_TUCUCORE_FORMULATIONANDROUTE_H
 
 #include <string>
 #include <vector>
@@ -22,7 +22,7 @@ namespace Core {
 typedef std::string Formulation;
 
 
-enum class Route
+enum class AdministrationRoute
 {
     Intramuscular,
     IntravenousBolus,
@@ -50,6 +50,10 @@ public:
 protected:
     std::unique_ptr<ParameterSetDefinition> m_absorptionParameters;
     const AnalyteSet &m_analyteSet;
+
+    ///
+    /// \brief m_absorptionModel Computation absorption model
+    /// This variable is an enum class and is closely related to the available Pk models implemented in the software
     AbsorptionModel m_absorptionModel;
 
     friend class FormulationAndRoute;
@@ -60,7 +64,7 @@ class ForumulationAndRoutes;
 class FormulationAndRoute
 {
 public:
-    FormulationAndRoute(const Formulation& _formulation, const Route _route) 
+    FormulationAndRoute(const Formulation& _formulation, const AdministrationRoute _route)
         : m_formulation(_formulation), m_route(_route)
     {}
 
@@ -71,9 +75,16 @@ public:
 
     const ParameterSetDefinition* getParameterDefinitions(const std::string &_analyteId) const;
 
+    const ValidDoses* getValidDoses() const { return m_validDoses.get();}
+
+    const ValidDurations* getValidIntervals() const { return m_validIntervals.get();}
+    const ValidDurations* getValidInfusionTimes() const { return m_validInfusionTimes.get();}
+
+    void setId() {m_route = AdministrationRoute::Intramuscular;}
+
 protected:
     Formulation m_formulation;
-    Route m_route;
+    AdministrationRoute m_route;
 
     std::unique_ptr<ValidDoses> m_validDoses;
     std::unique_ptr<ValidDurations> m_validIntervals;
@@ -84,18 +95,77 @@ protected:
     friend class FormulationAndRoutes;
 };
 
+///
+/// \brief The FormulationAndRoutes class
+/// This class embeds a vector of FormulationAndRoute objects. It also offers a mechanism to identify the default to be used.
+///
 class FormulationAndRoutes
 {
 public:
-    void add(std::unique_ptr<FormulationAndRoute> _far);
-    const FormulationAndRoute* get(const Formulation& _formulation, Route _route) const;
+
+    ///
+    /// \brief FormulationAndRoutes Empty constructor
+    ///
+    FormulationAndRoutes();
+
+    ///
+    /// \brief add Adds a new formulation and route to the set
+    /// \param _far A unique pointer to the formulation and route
+    /// \param isDefault If true, then the newly added is the default formulation and route, else not.
+    /// If there is a single formulation and route in the set, then the single one is the default.
+    ///
+    void add(std::unique_ptr<FormulationAndRoute> _far, bool isDefault = false);
+
+    ///
+    /// \brief get Get a formulation and route object based on the formulation and the route
+    /// \param _formulation Formulation to look for
+    /// \param _route Route to look for
+    /// \return A pointer to a FormulationAndRoute, nullptr if not in the set
+    ///
+    const FormulationAndRoute* get(const Formulation& _formulation, AdministrationRoute _route) const;
+
+    ///
+    /// \brief getDefault Get the default formulation and route object.
+    /// \return  The default formulation and route, nullptr if the set is empty
+    ///
+    const FormulationAndRoute* getDefault() const;
+
+    ///
+    /// \brief getList Get a reference to the vector of formulation and routes
+    /// \return A vector of Formulation and routes
+    ///
+    const std::vector<std::unique_ptr<FormulationAndRoute> >& getList() const;
+
+
+    ///
+    /// \brief Iterator Definition of an iterator for the FormulationAndRoute objects
+    ///
+    typedef std::vector<std::unique_ptr<FormulationAndRoute> >::const_iterator Iterator;
+
+    ///
+    /// \brief begin returns an iterator on the beginning of the list
+    /// \return The iterator on the beginning of the list
+    ///
+    Iterator begin() const { return m_fars.begin(); }
+
+    ///
+    /// \brief end returns an iterator on the end of the list
+    /// \return The iterator on the end of the list
+    ///
+    Iterator end() const { return m_fars.end(); }
+
 
 private:
+
+    //! Vector of formulation and routes
     std::vector<std::unique_ptr<FormulationAndRoute> > m_fars;
+
+    //! Index of the default formulation and route. 0 by default
+    std::size_t m_defaultIndex;
 };
 
 } // namespace Core
 } // namespace Tucuxi
 
 
-#endif // FORMULATIONANDROUTE_H
+#endif // TUCUXI_TUCUCORE_FORMULATIONANDROUTE_H

@@ -10,6 +10,11 @@ ValidDurations::ValidDurations(Common::Duration _defaultDuration) :
 
 }
 
+ValidDurations::~ValidDurations()
+{
+
+}
+
 void ValidDurations::setDefaultDuration(Tucuxi::Common::Duration _duration)
 {
     m_defaultDuration = _duration;

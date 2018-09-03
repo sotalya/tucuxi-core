@@ -338,7 +338,7 @@ public:
     /// \param _infusionTime Duration in case of an infusion.
     /// \pre _dose >= 0
     /// \pre IF _routeOfAdministration == AbsorptionModel::INFUSION THEN (!_infusionTime.isEmpty() && _infusionTime > 0)
-    SingleDose(const Dose &_dose,
+    SingleDose(const DoseValue &_dose,
                const AbsorptionModel &_routeOfAdministration,
                const Duration &_infusionTime)
     {
@@ -361,7 +361,7 @@ public:
 
 protected:
     /// \brief Administered dose.
-    Dose m_dose;
+    DoseValue m_dose;
     /// \brief Route of administration.
     AbsorptionModel m_routeOfAdministration;
     /// \brief Duration in case of an infusion.
@@ -380,7 +380,7 @@ public:
     /// \param _infusionTime Duration in case of an infusion.
     /// \param _interval Interval between two doses.
     /// \pre !_interval.isEmpty() && _interval > 0
-    LastingDose(const Dose &_dose,
+    LastingDose(const DoseValue &_dose,
                 const AbsorptionModel &_routeOfAdministration,
                 const Duration &_infusionTime,
                 const Duration &_interval)
@@ -427,7 +427,7 @@ public:
     /// \param _route Route of administration.
     /// \param _infusionTime Duration in case of an infusion.
     /// \param _timeOfDay Time of the day when the dose is administered.
-    DailyDose(const Dose &_dose,
+    DailyDose(const DoseValue &_dose,
               const AbsorptionModel &_routeOfAdministration,
               const Duration &_infusionTime,
               const TimeOfDay &_timeOfDay)
@@ -478,7 +478,7 @@ public:
     /// \param _infusionTime Duration in case of an infusion.
     /// \param _timeOfDay Time of the day when the dose is administered.
     /// \param _dayOfWeek Day of the week the dose has to be administered.
-    WeeklyDose(const Dose &_dose,
+    WeeklyDose(const DoseValue &_dose,
                const AbsorptionModel &_routeOfAdministration,
                const Duration &_infusionTime,
                const TimeOfDay &_timeOfDay,

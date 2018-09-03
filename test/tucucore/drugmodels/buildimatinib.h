@@ -131,16 +131,21 @@ public:
         absorptionParameters->addParameter(PF);
 
         association->setAbsorptionParameters(std::move(absorptionParameters));
-        std::unique_ptr<FormulationAndRoute> formulationAndRoute(new FormulationAndRoute("To be defined", Route::Oral));
+        std::unique_ptr<FormulationAndRoute> formulationAndRoute(new FormulationAndRoute("To be defined", AdministrationRoute::Oral));
         formulationAndRoute->addAssociation(std::unique_ptr<AnalyteSetToAbsorptionAssociation>(association));
 
-        SpecificDoses* validDoses = new SpecificDoses(Unit("mg"), MultiAnalyteDose(400));
-        validDoses->addDose(MultiAnalyteDose(100));
-        validDoses->addDose(MultiAnalyteDose(200));
-        validDoses->addDose(MultiAnalyteDose(300));
-        validDoses->addDose(MultiAnalyteDose(400));
-        validDoses->addDose(MultiAnalyteDose(600));
-        validDoses->addDose(MultiAnalyteDose(800));
+        ValidDoses *validDoses = new ValidDoses(Unit("mg"), std::make_unique<PopulationValue>(400));
+        std::unique_ptr<ValidValuesFixed> specificDoses = std::make_unique<ValidValuesFixed>();
+        specificDoses->addValue(DoseValue(100));
+        specificDoses->addValue(DoseValue(200));
+        specificDoses->addValue(DoseValue(300));
+        specificDoses->addValue(DoseValue(400));
+        specificDoses->addValue(DoseValue(600));
+        specificDoses->addValue(DoseValue(800));
+
+        validDoses->addValues(std::move(specificDoses));
+
+
 
         {
             std::unique_ptr<ValidDoses> doses(validDoses);
@@ -170,17 +175,20 @@ public:
             absorptionParameters->addParameter(PF);
 
             association->setAbsorptionParameters(std::move(absorptionParameters));
-            std::unique_ptr<FormulationAndRoute> formulationAndRoute(new FormulationAndRoute("To be defined", Route::IntravenousBolus));
+            std::unique_ptr<FormulationAndRoute> formulationAndRoute(new FormulationAndRoute("To be defined", AdministrationRoute::IntravenousBolus));
             formulationAndRoute->addAssociation(std::unique_ptr<AnalyteSetToAbsorptionAssociation>(association));
 
-            // These are the extravascular doses and intervals. Only added the infusion times
-            std::unique_ptr<SpecificDoses> validDoses(new SpecificDoses(Unit("mg"), MultiAnalyteDose(400)));
-            validDoses->addDose(MultiAnalyteDose(100));
-            validDoses->addDose(MultiAnalyteDose(200));
-            validDoses->addDose(MultiAnalyteDose(300));
-            validDoses->addDose(MultiAnalyteDose(400));
-            validDoses->addDose(MultiAnalyteDose(600));
-            validDoses->addDose(MultiAnalyteDose(800));
+
+            std::unique_ptr<ValidDoses> validDoses = std::make_unique<ValidDoses>(Unit("mg"), std::make_unique<PopulationValue>(400));
+            std::unique_ptr<ValidValuesFixed> specificDoses = std::make_unique<ValidValuesFixed>();
+            specificDoses->addValue(DoseValue(100));
+            specificDoses->addValue(DoseValue(200));
+            specificDoses->addValue(DoseValue(300));
+            specificDoses->addValue(DoseValue(400));
+            specificDoses->addValue(DoseValue(600));
+            specificDoses->addValue(DoseValue(800));
+
+            validDoses->addValues(std::move(specificDoses));
 
             formulationAndRoute->setValidDoses(std::move(validDoses));
 
@@ -211,17 +219,19 @@ public:
             absorptionParameters->addParameter(PF);
 
             association->setAbsorptionParameters(std::move(absorptionParameters));
-            std::unique_ptr<FormulationAndRoute> formulationAndRoute(new FormulationAndRoute("To be defined", Route::IntravenousDrip));
+            std::unique_ptr<FormulationAndRoute> formulationAndRoute(new FormulationAndRoute("To be defined", AdministrationRoute::IntravenousDrip));
             formulationAndRoute->addAssociation(std::unique_ptr<AnalyteSetToAbsorptionAssociation>(association));
 
-            // These are the extravascular doses and intervals
-            std::unique_ptr<SpecificDoses> validDoses(new SpecificDoses(Unit("mg"), MultiAnalyteDose(400)));
-            validDoses->addDose(MultiAnalyteDose(100));
-            validDoses->addDose(MultiAnalyteDose(200));
-            validDoses->addDose(MultiAnalyteDose(300));
-            validDoses->addDose(MultiAnalyteDose(400));
-            validDoses->addDose(MultiAnalyteDose(600));
-            validDoses->addDose(MultiAnalyteDose(800));
+            std::unique_ptr<ValidDoses> validDoses = std::make_unique<ValidDoses>(Unit("mg"), std::make_unique<PopulationValue>(400));
+            std::unique_ptr<ValidValuesFixed> specificDoses = std::make_unique<ValidValuesFixed>();
+            specificDoses->addValue(DoseValue(100));
+            specificDoses->addValue(DoseValue(200));
+            specificDoses->addValue(DoseValue(300));
+            specificDoses->addValue(DoseValue(400));
+            specificDoses->addValue(DoseValue(600));
+            specificDoses->addValue(DoseValue(800));
+
+            validDoses->addValues(std::move(specificDoses));
 
             formulationAndRoute->setValidDoses(std::move(validDoses));
 

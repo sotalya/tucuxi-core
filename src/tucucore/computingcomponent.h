@@ -41,7 +41,7 @@ public:
     static Tucuxi::Common::Interface* createComponent();
 
     /// \brief Destructor
-    virtual ~ComputingComponent();
+    virtual ~ComputingComponent() override;
 
     ComputingResult compute(const ComputingRequest &_request, std::unique_ptr<ComputingResponse> &_response) override;
     std::string getErrorString() const override;

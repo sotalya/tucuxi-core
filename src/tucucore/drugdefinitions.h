@@ -30,10 +30,20 @@ public:
     /// \param _id Identifier of the value.
     /// \param _value Default value.
     /// \param _operation Operation associated with the parameter.
-    PopulationValue(const std::string &_id, const Value _value, Operation *_operation) :
+    /// The operation has a default value of nullptr
+    PopulationValue(const std::string &_id, const Value _value, Operation *_operation = nullptr) :
         m_id(_id),
         m_value(_value),
         m_operation(_operation)
+    {}
+
+    /// \brief Create a population value with a fixed value.
+    /// \param _value Default value.
+    /// The value is not operable
+    PopulationValue(const Value _value) :
+        m_id(""),
+        m_value(_value),
+        m_operation(nullptr)
     {}
 
     virtual ~PopulationValue() { }

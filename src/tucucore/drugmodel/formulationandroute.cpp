@@ -19,13 +19,30 @@ const ParameterSetDefinition* FormulationAndRoute::getParameterDefinitions(const
 }
 
 
-void FormulationAndRoutes::add(std::unique_ptr<FormulationAndRoute> _far)
+FormulationAndRoutes::FormulationAndRoutes() :
+    m_defaultIndex(0)
 {
-    m_fars.push_back(std::move(_far));
+
 }
 
 
-const FormulationAndRoute* FormulationAndRoutes::get(const Formulation& _formulation, Route _route) const
+void FormulationAndRoutes::add(std::unique_ptr<FormulationAndRoute> _far, bool isDefault)
+{
+    m_fars.push_back(std::move(_far));
+    if (isDefault) {
+        m_defaultIndex = m_fars.size() - 1;
+    }
+}
+
+const FormulationAndRoute* FormulationAndRoutes::getDefault() const
+{
+    if (m_fars.size() == 0) {
+        return nullptr;
+    }
+    return m_fars.at(m_defaultIndex).get();
+}
+
+const FormulationAndRoute* FormulationAndRoutes::get(const Formulation& _formulation, AdministrationRoute _route) const
 {
     TMP_UNUSED_PARAMETER(_formulation);
 
@@ -36,6 +53,11 @@ const FormulationAndRoute* FormulationAndRoutes::get(const Formulation& _formula
         }
     }
     return nullptr;
+}
+
+const std::vector<std::unique_ptr<FormulationAndRoute> >& FormulationAndRoutes::getList() const
+{
+    return m_fars;
 }
 
 }

@@ -7,23 +7,19 @@
 
 #include "tucucore/definitions.h"
 #include "tucucore/drugdefinitions.h"
+#include "tucucore/validvalues.h"
 
 namespace Tucuxi {
 namespace Core {
 
-typedef std::vector<Value> MultiAnalyteDose;
 
-class ValidDoses
+
+class ValidDoses : public ValidValues
 {
 public:
-    ValidDoses(Unit _unit, MultiAnalyteDose _defaultDose);
+    ValidDoses(Unit _unit, std::unique_ptr<PopulationValue> _defaultDose);
 
-    virtual ~ValidDoses() {};
-
-    Unit getUnit() const;
-    MultiAnalyteDose getDefaultDose() const;
-
-    virtual std::vector<MultiAnalyteDose> getDoses() const = 0;
+    virtual ~ValidDoses();
 
     const std::vector<std::string>& getAnalyteIds() const;
 
@@ -31,41 +27,14 @@ public:
 
 protected:
 
-    Unit m_unit;
-    MultiAnalyteDose m_defaultDose;
     std::vector<std::string> m_analyteIds;
 };
 
-class AnyDoses : public ValidDoses
-{
-public:
-    AnyDoses(Unit _unit, MultiAnalyteDose _defaultDose, MultiAnalyteDose _from, MultiAnalyteDose _to, MultiAnalyteDose _step);
 
-    std::vector<MultiAnalyteDose> getDoses() const override;
-
-protected:
-    MultiAnalyteDose m_from;
-    MultiAnalyteDose m_to;
-    MultiAnalyteDose m_step;
-};
-
-
-class SpecificDoses : public ValidDoses
-{
-
-public:
-
-    SpecificDoses(Unit _unit, MultiAnalyteDose _defaultDose);
-
-    void addDose(MultiAnalyteDose _dose);
-    std::vector<MultiAnalyteDose> getDoses() const override;
-
-protected:
-    std::vector<MultiAnalyteDose> m_doses;
-};
 
 } // namespace Core
 } // namespace Tucuxi
 
 
 #endif // VALIDDOSE_H
+

@@ -35,7 +35,7 @@ public:
     /// \param _route Route of administration.
     /// \param _infusionTime Duration in case of an infusion.
     /// \param _nbPoints Number of points to compute for this intake.
-    IntakeEvent(DateTime _time, Duration _offsetTime, Dose _dose, Duration _interval,
+    IntakeEvent(DateTime _time, Duration _offsetTime, DoseValue _dose, Duration _interval,
                 AbsorptionModel _route, Duration _infusionTime, int _nbPoints)
         : TimedEvent(_time), 
           m_dose(_dose),
@@ -96,7 +96,7 @@ public:
     
     /// \brief Get the dose.
     /// \return Dose value.
-    Dose getDose() const
+    DoseValue getDose() const
     {
         return m_dose;
     }
@@ -171,7 +171,7 @@ public:
 
 private:
     /// The dose in mg
-    Dose m_dose;
+    DoseValue m_dose;
     /// Number of hours since the first dose
     Duration m_offsetTime;
     /// Number of points to compute for this intake
