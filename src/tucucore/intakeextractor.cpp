@@ -167,7 +167,7 @@ int IntakeExtractor::extract(const ParallelDosageSequence &_parallelDosageSequen
 
 int IntakeExtractor::extract(const LastingDose &_dosage, const DateTime &_start, const DateTime & /*_end*/, IntakeSeries &_series, CycleSize _cycleSize)
 {
-    IntakeEvent intake(_start, Duration(), _dosage.m_dose, _dosage.getTimeStep(), _dosage.m_routeOfAdministration,
+    IntakeEvent intake(_start, Duration(), _dosage.m_dose, _dosage.getTimeStep(), _dosage.m_routeOfAdministration.getAbsorptionModel(),
                        _dosage.m_infusionTime, _cycleSize);
     _series.push_back(intake);
     return 1;
@@ -176,7 +176,7 @@ int IntakeExtractor::extract(const LastingDose &_dosage, const DateTime &_start,
 
 int IntakeExtractor::extract(const DailyDose &_dosage, const DateTime &_start, const DateTime & /*_end*/, IntakeSeries &_series, CycleSize _cycleSize)
 {
-    IntakeEvent intake(_start, Duration(), _dosage.m_dose, _dosage.getTimeStep(), _dosage.m_routeOfAdministration,
+    IntakeEvent intake(_start, Duration(), _dosage.m_dose, _dosage.getTimeStep(), _dosage.m_routeOfAdministration.getAbsorptionModel(),
                        _dosage.m_infusionTime, _cycleSize);
     _series.push_back(intake);
     return 1;
@@ -185,7 +185,7 @@ int IntakeExtractor::extract(const DailyDose &_dosage, const DateTime &_start, c
 
 int IntakeExtractor::extract(const WeeklyDose &_dosage, const DateTime &_start, const DateTime & /*_end*/, IntakeSeries &_series, CycleSize _cycleSize)
 {
-    IntakeEvent intake(_start, Duration(), _dosage.m_dose, _dosage.getTimeStep(), _dosage.m_routeOfAdministration,
+    IntakeEvent intake(_start, Duration(), _dosage.m_dose, _dosage.getTimeStep(), _dosage.m_routeOfAdministration.getAbsorptionModel(),
                        _dosage.m_infusionTime, _cycleSize);
     _series.push_back(intake);
     return 1;

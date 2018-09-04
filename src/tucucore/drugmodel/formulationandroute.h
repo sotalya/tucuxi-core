@@ -56,7 +56,7 @@ protected:
     /// This variable is an enum class and is closely related to the available Pk models implemented in the software
     AbsorptionModel m_absorptionModel;
 
-    friend class FormulationAndRoute;
+    friend class FullFormulationAndRoute;
 };
 
 class ForumulationAndRoutes;
@@ -64,8 +64,52 @@ class ForumulationAndRoutes;
 class FormulationAndRoute
 {
 public:
-    FormulationAndRoute(const Formulation& _formulation, const AdministrationRoute _route)
-        : m_formulation(_formulation), m_route(_route)
+
+    FormulationAndRoute(
+            Formulation _formulation,
+            AdministrationRoute _route,
+            AbsorptionModel _absorptionModel,
+            std::string _id = "",
+            std::string _administrationName = "") :
+        m_id(_id), m_formulation(_formulation), m_route(_route), m_absorptionModel(_absorptionModel),
+        m_administrationName(_administrationName)
+    {}
+
+    std::string getId() const { return m_id;}
+
+    Formulation getFormulation() const { return m_formulation;}
+
+    AdministrationRoute getAdministrationRoute() const { return m_route;}
+
+    AbsorptionModel getAbsorptionModel() const { return m_absorptionModel;}
+
+    std::string getAdministrationName() const { return m_administrationName;}
+
+protected:
+
+    /// A unique Id, useful when a DrugModel embeds more than one Formulation
+    std::string m_id;
+
+    /// Formulation, based on an Enum type
+    Formulation m_formulation;
+
+    /// Route of administration, based on an Enum type
+    AdministrationRoute m_route;
+    ///
+    /// \brief m_absorptionModel Computation absorption model
+    /// This variable is an enum class and is closely related to the available Pk models implemented in the software
+    AbsorptionModel m_absorptionModel;
+
+    /// Administration name, as a free text field
+    std::string m_administrationName;
+};
+
+
+class FullFormulationAndRoute
+{
+public:
+    FullFormulationAndRoute(const FormulationAndRoute& _specs)
+        : m_specs(_specs)
     {}
 
     void setValidDoses(std::unique_ptr<ValidDoses> _validDoses) {m_validDoses = std::move(_validDoses);}
@@ -80,11 +124,8 @@ public:
     const ValidDurations* getValidIntervals() const { return m_validIntervals.get();}
     const ValidDurations* getValidInfusionTimes() const { return m_validInfusionTimes.get();}
 
-    void setId() {m_route = AdministrationRoute::Intramuscular;}
-
 protected:
-    Formulation m_formulation;
-    AdministrationRoute m_route;
+    FormulationAndRoute m_specs;
 
     std::unique_ptr<ValidDoses> m_validDoses;
     std::unique_ptr<ValidDurations> m_validIntervals;
@@ -114,7 +155,7 @@ public:
     /// \param isDefault If true, then the newly added is the default formulation and route, else not.
     /// If there is a single formulation and route in the set, then the single one is the default.
     ///
-    void add(std::unique_ptr<FormulationAndRoute> _far, bool isDefault = false);
+    void add(std::unique_ptr<FullFormulationAndRoute> _far, bool isDefault = false);
 
     ///
     /// \brief get Get a formulation and route object based on the formulation and the route
@@ -122,25 +163,25 @@ public:
     /// \param _route Route to look for
     /// \return A pointer to a FormulationAndRoute, nullptr if not in the set
     ///
-    const FormulationAndRoute* get(const Formulation& _formulation, AdministrationRoute _route) const;
+    const FullFormulationAndRoute* get(const Formulation& _formulation, AdministrationRoute _route) const;
 
     ///
     /// \brief getDefault Get the default formulation and route object.
     /// \return  The default formulation and route, nullptr if the set is empty
     ///
-    const FormulationAndRoute* getDefault() const;
+    const FullFormulationAndRoute* getDefault() const;
 
     ///
     /// \brief getList Get a reference to the vector of formulation and routes
     /// \return A vector of Formulation and routes
     ///
-    const std::vector<std::unique_ptr<FormulationAndRoute> >& getList() const;
+    const std::vector<std::unique_ptr<FullFormulationAndRoute> >& getList() const;
 
 
     ///
     /// \brief Iterator Definition of an iterator for the FormulationAndRoute objects
     ///
-    typedef std::vector<std::unique_ptr<FormulationAndRoute> >::const_iterator Iterator;
+    typedef std::vector<std::unique_ptr<FullFormulationAndRoute> >::const_iterator Iterator;
 
     ///
     /// \brief begin returns an iterator on the beginning of the list
@@ -158,7 +199,7 @@ public:
 private:
 
     //! Vector of formulation and routes
-    std::vector<std::unique_ptr<FormulationAndRoute> > m_fars;
+    std::vector<std::unique_ptr<FullFormulationAndRoute> > m_fars;
 
     //! Index of the default formulation and route. 0 by default
     std::size_t m_defaultIndex;

@@ -17,6 +17,7 @@
 #include "tucucore/pkmodels/onecompartmentextra.h"
 #include "tucucore/concentrationcalculator.h"
 #include "tucucore/percentilesprediction.h"
+#include "tucucore/intakeintervalcalculator.h"
 
 struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalculator>
 {
@@ -55,7 +56,7 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
 
         Tucuxi::Core::TimeOffsets times;
         Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, dose, interval, route, infusionTime, CYCLE_SIZE);
-        std::shared_ptr<IntakeIntervalCalculator> calculator2 = std::make_shared<Tucuxi::Core::OneCompartmentExtraMacro>();
+        std::shared_ptr<Tucuxi::Core::IntakeIntervalCalculator> calculator2 = std::make_shared<Tucuxi::Core::OneCompartmentExtraMacro>();
         intakeEvent.setCalculator(calculator2);
         intakeSeries.push_back(intakeEvent);
 
@@ -90,9 +91,9 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
 
         percentileRanks = {5, 10, 25, 50, 75, 90, 95};
 
-        Sigma sigma(1);
+        Tucuxi::Core::Sigma sigma(1);
         sigma(0) = 0.3138;
-        residualErrorModel.setErrorModel(SigmaResidualErrorModel::ResidualErrorType::PROPORTIONAL);
+        residualErrorModel.setErrorModel(Tucuxi::Core::SigmaResidualErrorModel::ResidualErrorType::PROPORTIONAL);
         residualErrorModel.setSigma(sigma);
 
 
@@ -159,7 +160,7 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
 
         Tucuxi::Core::TimeOffsets times;
         Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, dose, interval, route, infusionTime, CYCLE_SIZE);
-        std::shared_ptr<IntakeIntervalCalculator> calculator2 = std::make_shared<Tucuxi::Core::OneCompartmentExtraMacro>();
+        std::shared_ptr<Tucuxi::Core::IntakeIntervalCalculator> calculator2 = std::make_shared<Tucuxi::Core::OneCompartmentExtraMacro>();
         intakeEvent.setCalculator(calculator2);
         intakeSeries.push_back(intakeEvent);
 
@@ -184,9 +185,9 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
 
         percentileRanks = {5, 10, 25, 50, 75, 90, 95};
 
-        Sigma sigma(1);
+        Tucuxi::Core::Sigma sigma(1);
         sigma(0) = 0.3138;
-        residualErrorModel.setErrorModel(SigmaResidualErrorModel::ResidualErrorType::PROPORTIONAL);
+        residualErrorModel.setErrorModel(Tucuxi::Core::SigmaResidualErrorModel::ResidualErrorType::PROPORTIONAL);
         residualErrorModel.setSigma(sigma);
 
         omega = Tucuxi::Core::OmegaMatrix(2,2);
@@ -201,7 +202,7 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
 
         Tucuxi::Common::Duration sampleOffset = 2h;
         Tucuxi::Core::SampleEvent sampleEvent(now + sampleOffset, 200);
-        SampleSeries sampleSeries;
+        Tucuxi::Core::SampleSeries sampleSeries;
         sampleSeries.push_back(sampleEvent);
 
         std::unique_ptr<Tucuxi::Core::IAposterioriNormalApproximationMonteCarloPercentileCalculator> calculator =
@@ -259,7 +260,7 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
 
         Tucuxi::Core::TimeOffsets times;
         Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, dose, interval, route, infusionTime, CYCLE_SIZE);
-        std::shared_ptr<IntakeIntervalCalculator> calculator2 = std::make_shared<Tucuxi::Core::OneCompartmentExtraMacro>();
+        std::shared_ptr<Tucuxi::Core::IntakeIntervalCalculator> calculator2 = std::make_shared<Tucuxi::Core::OneCompartmentExtraMacro>();
         intakeEvent.setCalculator(calculator2);
         intakeSeries.push_back(intakeEvent);
 
@@ -284,9 +285,9 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
 
         percentileRanks = {5, 10, 25, 50, 75, 90, 95};
 
-        Sigma sigma(1);
+        Tucuxi::Core::Sigma sigma(1);
         sigma(0) = 0.3138;
-        residualErrorModel.setErrorModel(SigmaResidualErrorModel::ResidualErrorType::PROPORTIONAL);
+        residualErrorModel.setErrorModel(Tucuxi::Core::SigmaResidualErrorModel::ResidualErrorType::PROPORTIONAL);
         residualErrorModel.setSigma(sigma);
 
         omega = Tucuxi::Core::OmegaMatrix(2,2);
@@ -301,7 +302,7 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
 
         Tucuxi::Common::Duration sampleOffset = 2h;
         Tucuxi::Core::SampleEvent sampleEvent(now + sampleOffset, 1000);
-        SampleSeries sampleSeries;
+        Tucuxi::Core::SampleSeries sampleSeries;
         sampleSeries.push_back(sampleEvent);
 
         std::unique_ptr<Tucuxi::Core::IAposterioriPercentileCalculator> calculator =

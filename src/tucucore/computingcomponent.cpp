@@ -390,6 +390,27 @@ ComputingResult ComputingComponent::compute(
     }
 }
 
+typedef struct {
+    Value m_dose;
+    Duration m_interval;
+    Duration m_infusionTime;
+} AdjustmentCandidate;
+
+
+DosageTimeRange *createDosage(
+        AdjustmentCandidate &_candidate,
+        DateTime _startTime,
+        DateTime _endTime,
+        FormulationAndRoute _routeOfAdministration)
+{
+    unsigned int nbTimes;
+    nbTimes = (_endTime - _startTime) / _candidate.m_interval;
+    LastingDose *lastingDose = new LastingDose(_candidate.m_dose, _routeOfAdministration, _candidate.m_infusionTime, _candidate.m_interval);
+    DosageRepeat *repeat = new DosageRepeat(*lastingDose, nbTimes);
+    DosageTimeRange *newTimeRange = new DosageTimeRange(_startTime, _endTime, *repeat);
+    return newTimeRange;
+}
+
 ComputingResult ComputingComponent::compute(
         const ComputingTraitAdjustment *_traits,
         const ComputingRequest &_request,
@@ -425,7 +446,7 @@ ComputingResult ComputingComponent::compute(
     std::vector<Duration> intervalValues;
     std::vector<Duration> infusionTimes;
 
-    const FormulationAndRoute *selectedFormulationAndRoute = formulationAndRoutes.getDefault();
+    const FullFormulationAndRoute *selectedFormulationAndRoute = formulationAndRoutes.getDefault();
     if (selectedFormulationAndRoute == nullptr) {
         m_logger.error("No default Formulation and Route");
         return ComputingResult::Error;
@@ -466,26 +487,33 @@ ComputingResult ComputingComponent::compute(
         infusionTimes.push_back(Duration(0h));
     }
 
-    for(std::vector<Value>::iterator dose = doseValues.begin(); dose != doseValues.end(); dose++) {
+    std::vector<AdjustmentCandidate> candidates;
 
-        for(std::vector<Duration>::iterator interval = intervalValues.begin(); interval != intervalValues.end(); interval++) {
-
-            for(std::vector<Duration>::iterator infusion = infusionTimes.begin(); infusion != infusionTimes.end(); infusion++) {
-
+    for(auto dose : doseValues) {
+        for(auto interval : intervalValues) {
+            for(auto infusion : infusionTimes) {
+                candidates.push_back({dose, interval, infusion});
                 std::string mess;
-                mess = "Potential adjustment. Dose :  \t" + std::to_string(*dose)
-                        + " , Interval: \t" + std::to_string((*interval).toHours()) + "Hours. "
-                        + " , Infusion: \t" + std::to_string((*infusion).toMinutes()) + " minutes";
+                mess = "Potential adjustment. Dose :  \t" + std::to_string(dose)
+                        + " , Interval: \t" + std::to_string((interval).toHours()) + "Hours. "
+                        + " , Infusion: \t" + std::to_string((infusion).toMinutes()) + " minutes";
                 m_logger.info(mess);
 
             }
         }
+    }
 
+    for (auto candidate : candidates) {
+        //DosageHistory *newHistory = _request.getDrugTreatment().getDosageHistory().clone();
+        //DateTime newEndTime;
+//        DosageTimeRange *newDosage = createDosage(candidate, _traits->getAdjustmentTime(), newEndTime,
+  //                                                selectedFormulationAndRoute->);
     }
 
 
     return ComputingResult::Error;
 }
+
 
 ComputingResult ComputingComponent::compute(
         const ComputingTraitAtMeasures *_traits,

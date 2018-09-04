@@ -131,7 +131,8 @@ public:
         absorptionParameters->addParameter(PF);
 
         association->setAbsorptionParameters(std::move(absorptionParameters));
-        std::unique_ptr<FormulationAndRoute> formulationAndRoute(new FormulationAndRoute("To be defined", AdministrationRoute::Oral));
+        FormulationAndRoute formulationSpecs("oral administration", AdministrationRoute::Oral, AbsorptionModel::EXTRAVASCULAR, "emptyId", "No details");
+        std::unique_ptr<FullFormulationAndRoute> formulationAndRoute(new FullFormulationAndRoute(formulationSpecs));
         formulationAndRoute->addAssociation(std::unique_ptr<AnalyteSetToAbsorptionAssociation>(association));
 
         ValidDoses *validDoses = new ValidDoses(Unit("mg"), std::make_unique<PopulationValue>(400));
@@ -175,7 +176,8 @@ public:
             absorptionParameters->addParameter(PF);
 
             association->setAbsorptionParameters(std::move(absorptionParameters));
-            std::unique_ptr<FormulationAndRoute> formulationAndRoute(new FormulationAndRoute("To be defined", AdministrationRoute::IntravenousBolus));
+            FormulationAndRoute formulationSpecs("bolus administration", AdministrationRoute::IntravenousBolus, AbsorptionModel::INTRAVASCULAR, "emptyId", "No details");
+            std::unique_ptr<FullFormulationAndRoute> formulationAndRoute(new FullFormulationAndRoute(formulationSpecs));
             formulationAndRoute->addAssociation(std::unique_ptr<AnalyteSetToAbsorptionAssociation>(association));
 
 
@@ -219,7 +221,8 @@ public:
             absorptionParameters->addParameter(PF);
 
             association->setAbsorptionParameters(std::move(absorptionParameters));
-            std::unique_ptr<FormulationAndRoute> formulationAndRoute(new FormulationAndRoute("To be defined", AdministrationRoute::IntravenousDrip));
+            FormulationAndRoute formulationSpecs("infusion administration", AdministrationRoute::IntravenousDrip, AbsorptionModel::INFUSION, "emptyId", "No details");
+            std::unique_ptr<FullFormulationAndRoute> formulationAndRoute(new FullFormulationAndRoute(formulationSpecs));
             formulationAndRoute->addAssociation(std::unique_ptr<AnalyteSetToAbsorptionAssociation>(association));
 
             std::unique_ptr<ValidDoses> validDoses = std::make_unique<ValidDoses>(Unit("mg"), std::make_unique<PopulationValue>(400));

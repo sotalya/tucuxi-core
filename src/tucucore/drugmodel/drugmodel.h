@@ -95,7 +95,7 @@ public:
     ///
     //const ParameterDefinitions& getParameters(FormulationAndRoute _formulationAndRoute) const;
 
-    void addFormulationAndRoute(std::unique_ptr<FormulationAndRoute> _formulationAndRoute, bool _isDefault = false);
+    void addFormulationAndRoute(std::unique_ptr<FullFormulationAndRoute> _formulationAndRoute, bool _isDefault = false);
     
     void setDomain(std::unique_ptr<DrugModelDomain> _domain);
 
@@ -120,12 +120,12 @@ private:
         return nullptr;
     }
 
-    const FormulationAndRoute* getFormulationAndRoute(const std::string &_formulation, const AdministrationRoute _route) const {
+    const FullFormulationAndRoute* getFormulationAndRoute(const std::string &_formulation, const AdministrationRoute _route) const {
         return m_formulationAndRoutes.get(_formulation, _route);
     }
 
     const ParameterSetDefinition* getAbsorptionParameters(const std::string &_analyteId, const std::string &_formulation, const AdministrationRoute _route) const {
-        const FormulationAndRoute* fr = getFormulationAndRoute(_formulation, _route);
+        const FullFormulationAndRoute* fr = getFormulationAndRoute(_formulation, _route);
         if (fr != nullptr) {
             return fr->getParameterDefinitions(_analyteId);
         }

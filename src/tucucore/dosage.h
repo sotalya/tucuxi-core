@@ -11,6 +11,7 @@
 
 #include "tucucore/definitions.h"
 #include "tucucore/intakeevent.h"
+#include "tucucore/drugmodel/formulationandroute.h"
 
 #include "tucucommon/datetime.h"
 #include "tucucommon/duration.h"
@@ -339,20 +340,20 @@ public:
     /// \pre _dose >= 0
     /// \pre IF _routeOfAdministration == AbsorptionModel::INFUSION THEN (!_infusionTime.isEmpty() && _infusionTime > 0)
     SingleDose(const DoseValue &_dose,
-               const AbsorptionModel &_routeOfAdministration,
-               const Duration &_infusionTime)
+               const FormulationAndRoute &_routeOfAdministration,
+               const Duration &_infusionTime) :
+        m_routeOfAdministration(_routeOfAdministration)
     {
         if (_dose < 0) {
             throw std::invalid_argument("Dose value = " + std::to_string(_dose) + " is invalid (must be >= 0).");
         }
-        if (_routeOfAdministration == AbsorptionModel::INFUSION && _infusionTime.isNegative()) {
+        if (_routeOfAdministration.getAbsorptionModel() == AbsorptionModel::INFUSION && _infusionTime.isNegative()) {
             throw std::invalid_argument("Infusion time for INFUSION is invalid (must be >= 0).");
         }
-        if (_routeOfAdministration == AbsorptionModel::INFUSION && _infusionTime.isEmpty()) {
+        if (_routeOfAdministration.getAbsorptionModel() == AbsorptionModel::INFUSION && _infusionTime.isEmpty()) {
             throw std::invalid_argument("Route of administration is INFUSION, but empty infusion time specified.");
         }
         m_dose = _dose;
-        m_routeOfAdministration = _routeOfAdministration;
         m_infusionTime = _infusionTime;
     }
 
@@ -363,7 +364,7 @@ protected:
     /// \brief Administered dose.
     DoseValue m_dose;
     /// \brief Route of administration.
-    AbsorptionModel m_routeOfAdministration;
+    FormulationAndRoute m_routeOfAdministration;
     /// \brief Duration in case of an infusion.
     Duration m_infusionTime;
 };
@@ -381,7 +382,7 @@ public:
     /// \param _interval Interval between two doses.
     /// \pre !_interval.isEmpty() && _interval > 0
     LastingDose(const DoseValue &_dose,
-                const AbsorptionModel &_routeOfAdministration,
+                const FormulationAndRoute &_routeOfAdministration,
                 const Duration &_infusionTime,
                 const Duration &_interval)
         : SingleDose(_dose, _routeOfAdministration, _infusionTime)
@@ -428,7 +429,7 @@ public:
     /// \param _infusionTime Duration in case of an infusion.
     /// \param _timeOfDay Time of the day when the dose is administered.
     DailyDose(const DoseValue &_dose,
-              const AbsorptionModel &_routeOfAdministration,
+              const FormulationAndRoute &_routeOfAdministration,
               const Duration &_infusionTime,
               const TimeOfDay &_timeOfDay)
         : SingleDose(_dose, _routeOfAdministration, _infusionTime)
@@ -479,7 +480,7 @@ public:
     /// \param _timeOfDay Time of the day when the dose is administered.
     /// \param _dayOfWeek Day of the week the dose has to be administered.
     WeeklyDose(const DoseValue &_dose,
-               const AbsorptionModel &_routeOfAdministration,
+               const FormulationAndRoute &_routeOfAdministration,
                const Duration &_infusionTime,
                const TimeOfDay &_timeOfDay,
                const DayOfWeek &_dayOfWeek)
@@ -662,6 +663,19 @@ public:
     void addTimeRange(const DosageTimeRange &_timeRange)
     {
         m_history.emplace_back(new DosageTimeRange(_timeRange));
+    }
+
+    ///
+    /// \brief Clone the dosage history
+    /// \return The clone
+    /// TODO : A test for this function needs to be written
+    ///
+    DosageHistory *clone() const
+    {
+        DosageHistory *newDosageHistory;
+        for (const auto& timeRange : m_history) {
+            newDosageHistory->addTimeRange(*timeRange.get());
+        }
     }
 
 private:

@@ -30,12 +30,16 @@ public:
     ///
     DrugTreatment();
 
+
     ///
     /// \brief TBD
     /// \param _useAdjustments
     /// \return TBD
     ///
-    const DosageHistory& getDosageHistory(bool _useAdjustments) const;
+    const DosageHistory& getDosageHistory(bool _useAdjustments = false) const;
+
+
+    DosageHistory& getModifiableDosageHistory(bool _useAdjustments = false);
 
     ///
     ////// \brief Returns the patient covariates

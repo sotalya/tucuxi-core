@@ -14,7 +14,7 @@ DrugTreatment::DrugTreatment()
 }
 
 
-const DosageHistory& DrugTreatment::getDosageHistory(bool _useAdjustments) const
+const DosageHistory &DrugTreatment::getDosageHistory(bool _useAdjustments) const
 {
     if (_useAdjustments && !m_adjustmentDate.isUndefined()) {
         // Build the dosage history based on the history as well as the selected adjustment
@@ -23,6 +23,12 @@ const DosageHistory& DrugTreatment::getDosageHistory(bool _useAdjustments) const
     return m_dosageHistory;
 }
 
+
+DosageHistory& DrugTreatment::getModifiableDosageHistory(bool _useAdjustments)
+{
+    TMP_UNUSED_PARAMETER(_useAdjustments);
+    return m_dosageHistory;
+}
 
 const PatientVariates& DrugTreatment::getCovariates() const
 {

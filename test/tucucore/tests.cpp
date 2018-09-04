@@ -46,7 +46,6 @@ int main(int argc, char** argv)
     tot_res |= res;
     if (res != 0) {
         std::cerr << "Computing Component Adjusements test failed\n";
-        exit(1);
     }
     std::cout << "Computing Component Adjusements test succeeded\n";
 
