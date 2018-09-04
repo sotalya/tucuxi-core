@@ -80,16 +80,23 @@ CycleSize ComputingTraitStandard::getCycleSize() const
 }
 
 
-ComputingTraitAdjustment::ComputingTraitAdjustment(RequestResponseId _id,
-                          Tucuxi::Common::DateTime _start,
-                          Tucuxi::Common::DateTime _end,
-                          const CycleSize _cycleSize,
-                          ComputingOption _computingOption,
-                          Tucuxi::Common::DateTime _adjustmentTime,
-                          AdjustmentOption _adjustmentOption) :
+ComputingTraitAdjustment::ComputingTraitAdjustment(
+        RequestResponseId _id,
+        Tucuxi::Common::DateTime _start,
+        Tucuxi::Common::DateTime _end,
+        const CycleSize _cycleSize,
+        ComputingOption _computingOption,
+        Tucuxi::Common::DateTime _adjustmentTime,
+        AdjustmentOption _adjustmentOption,
+        ChargingOption _chargingOption,
+        RestPeriodOption _restPeriodOption,
+        SteadyStateTargetOption _steadyStateTargetOption) :
     ComputingTraitStandard(_id, _start, _end, _cycleSize, _computingOption),
     m_adjustmentTime(_adjustmentTime),
-    m_adjustmentOption(_adjustmentOption)
+    m_adjustmentOption(_adjustmentOption),
+    m_chargingOption(_chargingOption),
+    m_restPeriodOption(_restPeriodOption),
+    m_steadyStateTargetOption(_steadyStateTargetOption)
 {
 }
 

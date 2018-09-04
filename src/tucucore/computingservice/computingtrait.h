@@ -306,6 +306,45 @@ enum class AdjustmentOption
 };
 
 ///
+/// \brief The ChargingOption enum
+/// This option allows to authorize or not a charging dose to rapidly attain steady state
+///
+enum class ChargingOption
+{
+    /// No charging dose is allowed
+    NoChargingDose = 0,
+
+    /// A charging dose shall be proposed if relevant
+    ChargingDoseAllowed
+};
+
+///
+/// \brief The RestPeriodOption enum
+/// This option allows to authorize or not a resting period to rapidly attain steady state
+enum class RestPeriodOption
+{
+    /// No resting period is allowed
+    NoRestPeriod = 0,
+
+    /// A resting period shall be proposed if relevant
+    RestPeriodAllowed
+};
+
+///
+/// \brief The SteadyStateTargetOption enum
+/// This indicates if the target shall be evaluated at steady state or within the original
+/// drug treatment time range
+enum class SteadyStateTargetOption
+{
+    /// Target evaluated at steady state
+    AtSteadyState = 0,
+
+    /// Target evaluated within the original time range
+    WithinTreatmentTimeRange
+
+};
+
+///
 /// \brief The ComputingTraitAdjustment class
 /// This class embeds all information required for computing adjustments. It can return
 /// potential dosages, and future concentration calculations, depending on the options.
@@ -324,15 +363,21 @@ public:
     /// \param _computingOption
     /// \param _adjustmentTime
     /// \param _adjustmentOption
+    /// \param _chargingOption
+    /// \param _restPeriodOption
+    /// \param _steadyStateTargetOption
     /// If nbPoints = 0, then no curve will be returned by the computation, only the dosages
     ///
     ComputingTraitAdjustment(RequestResponseId _id,
-                              Tucuxi::Common::DateTime _start,
-                              Tucuxi::Common::DateTime _end,
-                              CycleSize _cycleSize,
-                              ComputingOption _computingOption,
-                              Tucuxi::Common::DateTime _adjustmentTime,
-                              AdjustmentOption _adjustmentOption);
+                             Tucuxi::Common::DateTime _start,
+                             Tucuxi::Common::DateTime _end,
+                             CycleSize _cycleSize,
+                             ComputingOption _computingOption,
+                             Tucuxi::Common::DateTime _adjustmentTime,
+                             AdjustmentOption _adjustmentOption,
+                             ChargingOption _chargingOption,
+                             RestPeriodOption _restPeriodOption,
+                             SteadyStateTargetOption _steadyStateTargetOption);
 
     ///
     /// \brief getAdjustmentTime Get the time of adjustment
@@ -348,6 +393,12 @@ protected:
 
     //! Adjustment options : only the best, or all possible ones
     AdjustmentOption m_adjustmentOption;
+
+    ChargingOption m_chargingOption;
+
+    RestPeriodOption m_restPeriodOption;
+
+    SteadyStateTargetOption m_steadyStateTargetOption;
 
 private:
 
