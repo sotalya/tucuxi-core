@@ -158,7 +158,7 @@ ComputingResult ComputingComponent::generalExtractions(
 
     // Should get rid of the next 3 lines
     const std::string analyteId = "imatinib";
-    const std::string formulation = "???";
+    const Formulation formulation = Formulation::ParenteralSolution;
     const AdministrationRoute route = AdministrationRoute::IntravenousBolus; // ???
 
     _pkModel = m_models->getPkModelFromId(pkModelId);

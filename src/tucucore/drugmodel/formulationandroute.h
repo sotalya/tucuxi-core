@@ -19,7 +19,13 @@ namespace Tucuxi {
 namespace Core {
 
 
-typedef std::string Formulation;
+enum class Formulation
+{
+    Undefined,
+    ParenteralSolution,
+    OralSolution,
+    Test
+};
 
 
 enum class AdministrationRoute

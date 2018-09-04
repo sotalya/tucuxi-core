@@ -131,7 +131,7 @@ public:
         absorptionParameters->addParameter(PF);
 
         association->setAbsorptionParameters(std::move(absorptionParameters));
-        FormulationAndRoute formulationSpecs("oral administration", AdministrationRoute::Oral, AbsorptionModel::EXTRAVASCULAR, "emptyId", "No details");
+        FormulationAndRoute formulationSpecs(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::EXTRAVASCULAR, "emptyId", "No details");
         std::unique_ptr<FullFormulationAndRoute> formulationAndRoute(new FullFormulationAndRoute(formulationSpecs));
         formulationAndRoute->addAssociation(std::unique_ptr<AnalyteSetToAbsorptionAssociation>(association));
 
@@ -176,7 +176,7 @@ public:
             absorptionParameters->addParameter(PF);
 
             association->setAbsorptionParameters(std::move(absorptionParameters));
-            FormulationAndRoute formulationSpecs("bolus administration", AdministrationRoute::IntravenousBolus, AbsorptionModel::INTRAVASCULAR, "emptyId", "No details");
+            FormulationAndRoute formulationSpecs(Formulation::ParenteralSolution, AdministrationRoute::IntravenousBolus, AbsorptionModel::INTRAVASCULAR, "emptyId", "No details");
             std::unique_ptr<FullFormulationAndRoute> formulationAndRoute(new FullFormulationAndRoute(formulationSpecs));
             formulationAndRoute->addAssociation(std::unique_ptr<AnalyteSetToAbsorptionAssociation>(association));
 
@@ -221,7 +221,7 @@ public:
             absorptionParameters->addParameter(PF);
 
             association->setAbsorptionParameters(std::move(absorptionParameters));
-            FormulationAndRoute formulationSpecs("infusion administration", AdministrationRoute::IntravenousDrip, AbsorptionModel::INFUSION, "emptyId", "No details");
+            FormulationAndRoute formulationSpecs(Formulation::ParenteralSolution, AdministrationRoute::IntravenousDrip, AbsorptionModel::INFUSION, "emptyId", "No details");
             std::unique_ptr<FullFormulationAndRoute> formulationAndRoute(new FullFormulationAndRoute(formulationSpecs));
             formulationAndRoute->addAssociation(std::unique_ptr<AnalyteSetToAbsorptionAssociation>(association));
 

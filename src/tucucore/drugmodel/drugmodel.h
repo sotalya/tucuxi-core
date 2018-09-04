@@ -28,7 +28,7 @@ class DrugModel;
 class ParameterDefinitionIterator : public Tucuxi::Common::Iterator<const ParameterDefinition*>
 {
 public:
-    ParameterDefinitionIterator(const DrugModel &_model, const std::string& _analyteId, const std::string &_formulation, const AdministrationRoute _route)
+    ParameterDefinitionIterator(const DrugModel &_model, const std::string& _analyteId, const Formulation &_formulation, const AdministrationRoute _route)
         : m_model(_model), m_analyteId(_analyteId), m_formulation(_formulation), m_route(_route)
     {
     }
@@ -48,7 +48,7 @@ public:
 private:
     const DrugModel &m_model;
     const std::string m_analyteId;
-    const std::string m_formulation;
+    const Formulation m_formulation;
     const AdministrationRoute m_route;
     size_t m_index;
 };
@@ -80,7 +80,7 @@ public:
 
     const FormulationAndRoutes& getFormulationAndRoutes() const;
 
-    ParameterDefinitionIterator getParameterDefinitions(const std::string& _analyteId, const std::string &_formulation, const AdministrationRoute _route) const
+    ParameterDefinitionIterator getParameterDefinitions(const std::string& _analyteId, const Formulation &_formulation, const AdministrationRoute _route) const
     {
         ParameterDefinitionIterator iterator(*this, _analyteId, _formulation, _route);
         return iterator;
@@ -120,11 +120,11 @@ private:
         return nullptr;
     }
 
-    const FullFormulationAndRoute* getFormulationAndRoute(const std::string &_formulation, const AdministrationRoute _route) const {
+    const FullFormulationAndRoute* getFormulationAndRoute(const Formulation &_formulation, const AdministrationRoute _route) const {
         return m_formulationAndRoutes.get(_formulation, _route);
     }
 
-    const ParameterSetDefinition* getAbsorptionParameters(const std::string &_analyteId, const std::string &_formulation, const AdministrationRoute _route) const {
+    const ParameterSetDefinition* getAbsorptionParameters(const std::string &_analyteId, const Formulation &_formulation, const AdministrationRoute _route) const {
         const FullFormulationAndRoute* fr = getFormulationAndRoute(_formulation, _route);
         if (fr != nullptr) {
             return fr->getParameterDefinitions(_analyteId);

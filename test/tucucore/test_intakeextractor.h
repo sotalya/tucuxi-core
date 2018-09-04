@@ -24,7 +24,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
     Tucuxi::Core::FormulationAndRoute getInfusionFormulationAndRoute()
     {
         return Tucuxi::Core::FormulationAndRoute(
-                    "formulation",
+                    Formulation::Test,
                     AdministrationRoute::IntravenousDrip,
                     AbsorptionModel::INFUSION);
     }
@@ -32,14 +32,14 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
     FormulationAndRoute getBolusFormulationAndRoute()
     {
         return FormulationAndRoute(
-                    "formulation",
+                    Formulation::Test,
                     AdministrationRoute::IntravenousBolus,
                     AbsorptionModel::INTRAVASCULAR);
     }
 
     FormulationAndRoute getExtraFormulationAndRoute() {
         return FormulationAndRoute(
-                    "formulation",
+                    Formulation::Test,
                     AdministrationRoute::Intramuscular,
                     AbsorptionModel::EXTRAVASCULAR);
     }
