@@ -442,21 +442,32 @@ ComputingResult ComputingComponent::compute(
     const FormulationAndRoutes &formulationAndRoutes = _request.getDrugModel().getFormulationAndRoutes();
 
     // Currently only support a single formulation and route. We simply select the first one
-    std::vector<Value> doseValues;
-    std::vector<Duration> intervalValues;
-    std::vector<Duration> infusionTimes;
 
+/*
     const FullFormulationAndRoute *selectedFormulationAndRoute = formulationAndRoutes.getDefault();
     if (selectedFormulationAndRoute == nullptr) {
         m_logger.error("No default Formulation and Route");
         return ComputingResult::Error;
     }
+*/
 
-//    FormulationAndRoutes::Iterator it = formulationAndRoutes.begin();
-//    while (it != formulationAndRoutes.end()) {
-//        FormulationAndRoute *f = it->get();
-//         break;
-//    }
+
+    const DosageHistory &dosageHistory = _request.getDrugTreatment().getDosageHistory();
+
+
+    FormulationAndRoute last = dosageHistory.getLastFormulationAndRoute();
+    const FullFormulationAndRoute *selectedFormulationAndRoute = formulationAndRoutes.get(last);
+
+    if (selectedFormulationAndRoute == nullptr) {
+        m_logger.error("Can not find a formulation and route for adjustment");
+        return ComputingResult::Error;
+    }
+
+
+    std::vector<Value> doseValues;
+    std::vector<Duration> intervalValues;
+    std::vector<Duration> infusionTimes;
+
     const ValidDoses * doses = selectedFormulationAndRoute->getValidDoses();
     if (doses) {
         doseValues = doses->getValues();
@@ -503,15 +514,59 @@ ComputingResult ComputingComponent::compute(
         }
     }
 
+    int index = 0;
     for (auto candidate : candidates) {
-        //DosageHistory *newHistory = _request.getDrugTreatment().getDosageHistory().clone();
-        //DateTime newEndTime;
-//        DosageTimeRange *newDosage = createDosage(candidate, _traits->getAdjustmentTime(), newEndTime,
-  //                                                selectedFormulationAndRoute->);
+        DosageHistory *newHistory = _request.getDrugTreatment().getDosageHistory().clone();
+        DateTime newEndTime = _traits->getEnd();
+        DosageTimeRange *newDosage = createDosage(candidate, _traits->getAdjustmentTime(), newEndTime,
+                                                  selectedFormulationAndRoute->getFormulationAndRoute());
+//        newHistory = new DosageHistory();
+  //      newHistory->addTimeRange(*newDosage);
+        newHistory->mergeDosage(newDosage);
+
+
+        IntakeSeries intakeSeries;
+        IntakeExtractor intakeExtractor;
+        int nIntakes = intakeExtractor.extract(*newHistory, _traits->getStart(), _traits->getEnd(),
+                                               intakeSeries, _traits->getCycleSize());
+        TMP_UNUSED_PARAMETER(nIntakes);
+
+        IntakeToCalculatorAssociator::Result intakeExtractionResult =
+                IntakeToCalculatorAssociator::associate(intakeSeries, *pkModel.get());
+
+        if (intakeExtractionResult != IntakeToCalculatorAssociator::Result::Ok) {
+            m_logger.error("Can not associate intake calculators for the specified route");
+            return ComputingResult::Error;
+        }
+
+
+        // We use a single prediction to get back time offsets. Could be optimized
+        ConcentrationPredictionPtr pPrediction = std::make_unique<ConcentrationPrediction>();
+        ComputationResult predictionComputationResult = computePopulation(
+                    pPrediction,
+                    false,
+                    _traits->getStart(),
+                    _traits->getEnd(),
+                    intakeSeries,
+                    parameterSeries);
+
+        std::string fileName = "candidate_" + std::to_string(index) + ".dat";
+        pPrediction.get()->streamToFile(fileName);
+        for(auto values : pPrediction.get()->getValues()) {
+            for (auto val : values) {
+                std::cout << val << " ";
+            }
+        }
+        std::cout << std::endl;
+
+        if (predictionComputationResult != ComputationResult::Success) {
+            m_logger.error("Error with the computation of a single adjustment candidate");
+            return ComputingResult::Error;
+        }
+        index ++;
     }
 
-
-    return ComputingResult::Error;
+    return ComputingResult::Success;
 }
 
 

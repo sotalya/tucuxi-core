@@ -64,5 +64,27 @@ bool timeRangesOverlap(const DosageTimeRange &_first, const DosageTimeRange &_se
     }
 }
 
+
+void DosageHistory::mergeDosage(DosageTimeRange *newDosage)
+{
+    for (const auto& existing : m_history) {
+        if (existing->getEndDate().isUndefined()) {
+            existing->m_endDate = newDosage->getStartDate();
+        }
+        else if (existing->getEndDate() > newDosage->getStartDate()) {
+            existing->m_endDate = newDosage->getStartDate();
+        }
+    }
+    addTimeRange(*newDosage);
+}
+
+FormulationAndRoute DosageHistory::getLastFormulationAndRoute() const
+{
+    if (m_history.size() == 0) {
+        return FormulationAndRoute("", AdministrationRoute::Undefined, AbsorptionModel::UNDEFINED);
+    }
+    return m_history.at(m_history.size() - 1)->m_dosage->getLastFormulationAndRoute();
+}
+
 } // namespace Core
 } // namespace Tucuxi

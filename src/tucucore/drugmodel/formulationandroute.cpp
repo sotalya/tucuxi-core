@@ -47,8 +47,19 @@ const FullFormulationAndRoute* FormulationAndRoutes::get(const Formulation& _for
     TMP_UNUSED_PARAMETER(_formulation);
 
     for (const std::unique_ptr<FullFormulationAndRoute>& far : m_fars) {
-        if (/*far->m_formulation == _formulation &&*/
+        if (
             far->m_specs.getAdministrationRoute() == _route) {
+            return far.get();
+        }
+    }
+    return nullptr;
+}
+
+
+const FullFormulationAndRoute* FormulationAndRoutes::get(const FormulationAndRoute& _formulation) const
+{
+    for (const std::unique_ptr<FullFormulationAndRoute>& far : m_fars) {
+        if (far->m_specs == _formulation) {
             return far.get();
         }
     }

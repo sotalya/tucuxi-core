@@ -24,6 +24,8 @@ typedef std::string Formulation;
 
 enum class AdministrationRoute
 {
+
+    Undefined,
     Intramuscular,
     IntravenousBolus,
     IntravenousDrip,
@@ -85,6 +87,12 @@ public:
 
     std::string getAdministrationName() const { return m_administrationName;}
 
+    friend bool operator==(const FormulationAndRoute& v1, const FormulationAndRoute& v2)
+    {
+        return (v1.m_absorptionModel == v2.m_absorptionModel) &&
+                (v1.m_route == v2.m_route);
+    }
+
 protected:
 
     /// A unique Id, useful when a DrugModel embeds more than one Formulation
@@ -123,6 +131,7 @@ public:
 
     const ValidDurations* getValidIntervals() const { return m_validIntervals.get();}
     const ValidDurations* getValidInfusionTimes() const { return m_validInfusionTimes.get();}
+    const FormulationAndRoute& getFormulationAndRoute() const { return m_specs;}
 
 protected:
     FormulationAndRoute m_specs;
@@ -164,6 +173,13 @@ public:
     /// \return A pointer to a FormulationAndRoute, nullptr if not in the set
     ///
     const FullFormulationAndRoute* get(const Formulation& _formulation, AdministrationRoute _route) const;
+
+    ///
+    /// \brief get Get a formulation and route object based on the formulation and the route
+    /// \param _formulation Formulation and route to look for
+    /// \return A pointer to a FullFormulationAndRoute, nullptr if not in the set
+    ///
+    const FullFormulationAndRoute* get(const FormulationAndRoute& _formulation) const;
 
     ///
     /// \brief getDefault Get the default formulation and route object.

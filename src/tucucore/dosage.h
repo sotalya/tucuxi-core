@@ -39,12 +39,12 @@ void cloneIntakeSeries(const std::vector<IntakeEvent> &_input, std::vector<Intak
 /// \brief Implement the extract and clone operations for Dosage subclasses.
 #define DOSAGE_UTILS(BaseClassName, ClassName) \
     friend IntakeExtractor; \
-    virtual int extract(IntakeExtractor &_extractor, const DateTime &_start, const DateTime &_end, IntakeSeries &_series, CycleSize _cycleSize) const; \
-    virtual std::unique_ptr<BaseClassName> clone() const \
+    int extract(IntakeExtractor &_extractor, const DateTime &_start, const DateTime &_end, IntakeSeries &_series, CycleSize _cycleSize) const override; \
+    std::unique_ptr<BaseClassName> clone() const override \
     { \
         return std::unique_ptr<BaseClassName>(new ClassName(*this)); \
     } \
-    virtual std::unique_ptr<Dosage> cloneDosage() const \
+    std::unique_ptr<Dosage> cloneDosage() const override \
     { \
         return clone(); \
     }
@@ -76,6 +76,13 @@ public:
     /// \brief Return a pointer to a clone of the correct subclass.
     /// \return Pointer to a new object of subclass' type.
     virtual std::unique_ptr<Dosage> cloneDosage() const = 0;
+
+    ///
+    /// \brief Returns the last formulation and route of the dosage
+    /// \return  The last formulation and route of the dosage
+    /// TODO : A test should be written for that
+    ///
+    virtual FormulationAndRoute getLastFormulationAndRoute() const = 0;
 };
 
 
@@ -140,6 +147,11 @@ public:
         m_dosage = _other.m_dosage->clone();
     }
 
+    FormulationAndRoute getLastFormulationAndRoute() const override
+    {
+        return m_dosage->getLastFormulationAndRoute();
+    }
+
     DOSAGE_UTILS(DosageUnbounded, DosageLoop);
 
 private:
@@ -167,6 +179,11 @@ public:
     {
         m_dosage = _other.m_dosage->clone();
         m_nbTimes = _other.m_nbTimes;
+    }
+
+    FormulationAndRoute getLastFormulationAndRoute() const override
+    {
+        return m_dosage->getLastFormulationAndRoute();
     }
 
     DOSAGE_UTILS(DosageBounded, DosageRepeat);
@@ -221,6 +238,14 @@ public:
     void addDosage(const DosageBounded &_dosage)
     {
         m_dosages.emplace_back(_dosage.clone());
+    }
+
+    FormulationAndRoute getLastFormulationAndRoute() const override
+    {
+        if (m_dosages.size() == 0) {
+            return FormulationAndRoute("", AdministrationRoute::Undefined, AbsorptionModel::UNDEFINED);
+        }
+        return m_dosages.at(m_dosages.size() - 1)->getLastFormulationAndRoute();
     }
 
     DOSAGE_UTILS(DosageBounded, DosageSequence);
@@ -292,6 +317,13 @@ public:
         m_offsets.emplace_back(_offset);
     }
 
+    FormulationAndRoute getLastFormulationAndRoute() const override
+    {
+        if (m_dosages.size() == 0) {
+            return FormulationAndRoute("", AdministrationRoute::Undefined, AbsorptionModel::UNDEFINED);
+        }
+        return m_dosages.at(m_dosages.size() - 1)->getLastFormulationAndRoute();
+    }
 
     DOSAGE_UTILS(DosageBounded, ParallelDosageSequence);
 
@@ -359,6 +391,11 @@ public:
 
     /// \brief Empty destructor, used to make the class abstract (and thus force the instantiation of subclasses).
     virtual ~SingleDose() = 0;
+
+    FormulationAndRoute getLastFormulationAndRoute() const override
+    {
+        return m_routeOfAdministration;
+    }
 
 protected:
     /// \brief Administered dose.
@@ -537,11 +574,14 @@ class DosageTimeRange;
 /// \brief A list of dosage time range
 typedef std::vector<std::unique_ptr<DosageTimeRange>> DosageTimeRangeList;
 
+class DosageHistory;
+
 /// \ingroup TucuCore
 /// \brief Doses administered in a given time interval (which might have no upper bound).
 class DosageTimeRange
 {
     friend IntakeExtractor;
+    friend DosageHistory;
 
 public:
     /// \brief Initialize an open-ended list of doses (the end date is not specified).
@@ -672,11 +712,23 @@ public:
     ///
     DosageHistory *clone() const
     {
-        DosageHistory *newDosageHistory;
+        DosageHistory *newDosageHistory = new DosageHistory();
         for (const auto& timeRange : m_history) {
             newDosageHistory->addTimeRange(*timeRange.get());
         }
+        return newDosageHistory;
     }
+
+    ///
+    /// \brief mergeDosage Add a new dosage and modifies the existing
+    /// \param newDosage The new dosage to be added
+    /// This function will modify the existing dosages in order to
+    /// replace them by the new one in case of overlapping.
+    /// TODO : A test for this function needs to be written
+    ///
+    void mergeDosage(DosageTimeRange *newDosage);
+
+    FormulationAndRoute getLastFormulationAndRoute() const;
 
 private:
     /// Usage history, expressed as a list of non-overlapping time intervals. The last one might have no end date (if
