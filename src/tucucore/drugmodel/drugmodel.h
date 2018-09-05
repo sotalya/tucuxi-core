@@ -110,7 +110,11 @@ public:
 
     void addActiveMoiety(std::unique_ptr<ActiveMoiety> _activeMoiety);
 
+    const ActiveMoieties& getActiveMoieties() const { return m_activeMoieties;}
+
 private:
+
+
     const AnalyteSet* getAnalyteSet(const std::string &_analyteId) const {
         for (const std::unique_ptr<AnalyteSet> &set : m_analyteSets) {
             if (set->getId() == _analyteId) {

@@ -16,6 +16,7 @@ namespace Tucuxi {
 namespace Core {
 
 class TargetExtractor;
+class TargetEvaluator;
 
 ///
 /// \brief A target defined within a DrugTreatment
@@ -69,6 +70,7 @@ private:
     Tucuxi::Common::Duration m_tBest;
 
     friend TargetExtractor;
+    friend TargetEvaluator;
 };
 
 ///

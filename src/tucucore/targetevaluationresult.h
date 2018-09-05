@@ -15,6 +15,7 @@ namespace Core {
 class TargetEvaluationResult
 {
 public:
+    explicit TargetEvaluationResult() : m_targetType(TargetType::UnknownTarget){}
     explicit TargetEvaluationResult(TargetType _targetType, double _score, Value _value);
 
     TargetType getTargetType() const { return m_targetType;}

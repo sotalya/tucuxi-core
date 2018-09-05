@@ -15,6 +15,10 @@
 #include "tucucore/residualerrormodel.h"
 #include "tucucore/pkmodels/onecompartmentextra.h"
 #include "tucucore/cyclestatisticscalculator.h"
+#include "tucucore/concentrationprediction.h"
+#include "tucucore/definitions.h"
+
+// TODO : Add a test for residual value CycleStatisticType::Residual
 
 struct TestCycleStatistics : public fructose::test_base<TestCycleStatistics>
 {

@@ -29,6 +29,7 @@ public:
 
 
 enum class TargetType {
+    UnknownTarget = 0,
     Residual,
     Peak,
     Mean,

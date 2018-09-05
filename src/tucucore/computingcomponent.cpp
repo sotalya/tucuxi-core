@@ -24,6 +24,8 @@
 #include "tucucore/pkmodel.h"
 #include "tucucore/montecarlopercentilecalculator.h"
 #include "tucucore/percentilesprediction.h"
+#include "tucucore/targetevaluationresult.h"
+#include "tucucore/targetevaluator.h"
 
 
 namespace Tucuxi {
@@ -507,7 +509,7 @@ ComputingResult ComputingComponent::compute(
                 candidates.push_back({dose, interval, infusion});
                 std::string mess;
                 mess = "Potential adjustment. Dose :  \t" + std::to_string(dose)
-                        + " , Interval: \t" + std::to_string((interval).toHours()) + "Hours. "
+                        + " , Interval: \t" + std::to_string((interval).toHours()) + " hours. "
                         + " , Infusion: \t" + std::to_string((infusion).toMinutes()) + " minutes";
                 m_logger.info(mess);
 
@@ -515,6 +517,19 @@ ComputingResult ComputingComponent::compute(
         }
     }
 
+    TargetExtractor targetExtractor;
+    TargetSeries targetSeries;
+
+    TargetExtractionOption targetExtractionOption = TargetExtractionOption::PopulationValues;
+
+    targetExtractor.extract(covariateSeries, _request.getDrugModel().getActiveMoieties().at(0).get()->getTargetDefinitions(),
+                            _request.getDrugTreatment().getTargets(), _traits->getStart(), _traits->getEnd(),
+                            targetExtractionOption, targetSeries);
+
+    // A vector of vector because each adjustment candidate can have various targets
+    std::vector< std::vector< TargetEvaluationResult> > evaluationResults;
+
+    TargetEvaluator targetEvaluator;
     int index = 0;
     for (auto candidate : candidates) {
         DosageHistory *newHistory = _request.getDrugTreatment().getDosageHistory().clone();
@@ -562,8 +577,32 @@ ComputingResult ComputingComponent::compute(
             return ComputingResult::Error;
         }
 
+         std::vector< TargetEvaluationResult> candidateResults;
 
-        // Now the score calculation
+         for(const auto & target : targetSeries) {
+             TargetEvaluationResult localResult;
+
+            // Now the score calculation
+            TargetEvaluator::Result evaluationResult = targetEvaluator.evaluate(*pPrediction.get(), intakeSeries, target, localResult);
+
+            if (evaluationResult != TargetEvaluator::Result::Ok) {
+                m_logger.error("Error in the evaluation of targets");
+                return ComputingResult::Error;
+            }
+
+            candidateResults.push_back(localResult);
+         }
+
+         evaluationResults.push_back(candidateResults);
+
+    }
+
+    for (const auto & evaluationResult : evaluationResults)
+    {
+        for (const auto & targetEvaluationResult : evaluationResult) {
+            std::cout << "Evaluation. Score : " << targetEvaluationResult.getScore() <<
+                         " . Value : " << targetEvaluationResult.getValue() << std::endl;
+        }
     }
 
     return ComputingResult::Success;
