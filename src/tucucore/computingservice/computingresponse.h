@@ -11,6 +11,7 @@
 
 #include "tucucore/definitions.h"
 #include "tucucore/dosage.h"
+#include "tucucore/targetevaluationresult.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -127,8 +128,17 @@ class FullDosage
 {
 public:
 
+    double getGlobalScore() const {
+        if (m_targetsEvaluation.size() == 0)
+            return 0.0;
+        double sum = 0.0;
+        for (const auto& target: m_targetsEvaluation)
+            sum += target.getScore();
+        return sum / static_cast<double>(m_targetsEvaluation.size());
+    }
+
     DosageHistory m_history;
-    double m_score;
+    std::vector<TargetEvaluationResult> m_targetsEvaluation;
     std::vector<CycleData> m_data;
 };
 
@@ -139,6 +149,11 @@ public:
 ///
 class AdjustmentResponse : public SinglePredictionResponse
 {
+public:
+
+    void addAdjustment(FullDosage adjustment) { m_adjustments.push_back(adjustment);}
+
+    void setAdjustments(std::vector<FullDosage> &_adjustments) { m_adjustments = _adjustments;}
 
 protected:
 

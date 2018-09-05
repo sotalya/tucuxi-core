@@ -82,7 +82,7 @@ ComputingResult ComputingComponent::compute(const ComputingRequest &_request, st
     }
 
     return result;
-/*
+    /*
     ConcentrationPredictionPtr prediction;
 
     IntakeSeries intakes;
@@ -225,11 +225,11 @@ ComputingResult ComputingComponent::compute(
     ParameterSetSeries parameterSeries;
 
     ComputingResult extractionResult = generalExtractions(_traits,
-                                                _request,
-                                                pkModel,
-                                                intakeSeries,
-                                                covariateSeries,
-                                                parameterSeries);
+                                                          _request,
+                                                          pkModel,
+                                                          intakeSeries,
+                                                          covariateSeries,
+                                                          parameterSeries);
 
     if (extractionResult != ComputingResult::Success) {
         return extractionResult;
@@ -287,11 +287,11 @@ ComputingResult ComputingComponent::compute(
     ParameterSetSeries parameterSeries;
 
     ComputingResult extractionResult = generalExtractions(_traits,
-                                                _request,
-                                                pkModel,
-                                                intakeSeries,
-                                                covariateSeries,
-                                                parameterSeries);
+                                                          _request,
+                                                          pkModel,
+                                                          intakeSeries,
+                                                          covariateSeries,
+                                                          parameterSeries);
 
     if (extractionResult != ComputingResult::Success) {
         return extractionResult;
@@ -413,6 +413,11 @@ DosageTimeRange *createDosage(
     return newTimeRange;
 }
 
+bool compareCandidates(const FullDosage &a, const FullDosage &b)
+{
+    return a.getGlobalScore() < b.getGlobalScore();
+}
+
 ComputingResult ComputingComponent::compute(
         const ComputingTraitAdjustment *_traits,
         const ComputingRequest &_request,
@@ -431,11 +436,11 @@ ComputingResult ComputingComponent::compute(
     ParameterSetSeries parameterSeries;
 
     ComputingResult extractionResult = generalExtractions(_traits,
-                                                _request,
-                                                pkModel,
-                                                intakeSeries,
-                                                covariateSeries,
-                                                parameterSeries);
+                                                          _request,
+                                                          pkModel,
+                                                          intakeSeries,
+                                                          covariateSeries,
+                                                          parameterSeries);
 
     if (extractionResult != ComputingResult::Success) {
         return extractionResult;
@@ -445,7 +450,7 @@ ComputingResult ComputingComponent::compute(
 
     // Currently only support a single formulation and route. We simply select the first one
 
-/*
+    /*
     const FullFormulationAndRoute *selectedFormulationAndRoute = formulationAndRoutes.getDefault();
     if (selectedFormulationAndRoute == nullptr) {
         m_logger.error("No default Formulation and Route");
@@ -529,6 +534,8 @@ ComputingResult ComputingComponent::compute(
     // A vector of vector because each adjustment candidate can have various targets
     std::vector< std::vector< TargetEvaluationResult> > evaluationResults;
 
+    std::vector<FullDosage> dosageCandidates;
+
     TargetEvaluator targetEvaluator;
     int index = 0;
     for (auto candidate : candidates) {
@@ -536,8 +543,8 @@ ComputingResult ComputingComponent::compute(
         DateTime newEndTime = _traits->getEnd();
         DosageTimeRange *newDosage = createDosage(candidate, _traits->getAdjustmentTime(), newEndTime,
                                                   selectedFormulationAndRoute->getFormulationAndRoute());
-//        newHistory = new DosageHistory();
-  //      newHistory->addTimeRange(*newDosage);
+        //        newHistory = new DosageHistory();
+        //      newHistory->addTimeRange(*newDosage);
         newHistory->mergeDosage(newDosage);
 
 
@@ -566,10 +573,12 @@ ComputingResult ComputingComponent::compute(
                     intakeSeries,
                     parameterSeries);
 
+#if 0
         // Stream that to file, only for debugging purpose
         // To be removed later on, or at least commented
         std::string fileName = "candidate_" + std::to_string(index) + ".dat";
         pPrediction.get()->streamToFile(fileName);
+#endif // 0
         index ++;
 
         if (predictionComputationResult != ComputationResult::Success) {
@@ -577,10 +586,11 @@ ComputingResult ComputingComponent::compute(
             return ComputingResult::Error;
         }
 
-         std::vector< TargetEvaluationResult> candidateResults;
+        std::vector< TargetEvaluationResult> candidateResults;
+        bool isValidCandidate = false;
 
-         for(const auto & target : targetSeries) {
-             TargetEvaluationResult localResult;
+        for(const auto & target : targetSeries) {
+            TargetEvaluationResult localResult;
 
             // Now the score calculation
             TargetEvaluator::Result evaluationResult = targetEvaluator.evaluate(*pPrediction.get(), intakeSeries, target, localResult);
@@ -590,13 +600,41 @@ ComputingResult ComputingComponent::compute(
                 return ComputingResult::Error;
             }
 
-            candidateResults.push_back(localResult);
-         }
+            if (localResult.getScore() != 0.0) {
+                isValidCandidate = true;
+            }
 
-         evaluationResults.push_back(candidateResults);
+            candidateResults.push_back(localResult);
+        }
+
+        if (isValidCandidate) {
+            FullDosage dosage;
+            dosage.m_targetsEvaluation = candidateResults;
+            dosage.m_history.addTimeRange(*newDosage);
+
+
+            for (size_t i = 0; i < intakeSeries.size(); i++) {
+                TimeOffsets times = pPrediction->getTimes().at(i);
+                DateTime start = intakeSeries.at(i).getEventTime();
+                DateTime end = start + std::chrono::milliseconds(static_cast<int>(times.at(times.size() - 1)) * 1000);
+                if (start >= _traits->getAdjustmentTime()) {
+                    CycleData cycle(start, end, Unit("ug/l"));
+                    cycle.addData(times, pPrediction->getValues().at(i), 0);
+                    dosage.m_data.push_back(cycle);
+                }
+            }
+
+            dosageCandidates.push_back(dosage);
+
+        }
+
+        evaluationResults.push_back(candidateResults);
+
 
     }
 
+#if 0
+    // For debugging purpose only
     for (const auto & evaluationResult : evaluationResults)
     {
         for (const auto & targetEvaluationResult : evaluationResult) {
@@ -604,6 +642,31 @@ ComputingResult ComputingComponent::compute(
                          " . Value : " << targetEvaluationResult.getValue() << std::endl;
         }
     }
+#endif // 0
+
+
+    // For debugging purpose only
+    for (const auto & candidates : dosageCandidates)
+    {
+            std::cout << "Evaluation. Score : " << candidates.getGlobalScore()  << std::endl;
+    }
+
+    std::sort(dosageCandidates.begin(), dosageCandidates.end(), compareCandidates);
+
+    std::cout << "Sorted..." << std::endl;
+    // For debugging purpose only
+    for (const auto & candidates : dosageCandidates)
+    {
+            std::cout << "Evaluation. Score : " << candidates.getGlobalScore()  << std::endl;
+    }
+
+
+    // Now we have adjustments, predictions, and target evaluation results, let's build the response
+    std::unique_ptr<AdjustmentResponse> resp = std::make_unique<AdjustmentResponse>();
+    resp->setAdjustments(dosageCandidates);
+
+    // Finally add the response to the set of responses
+    _response->addResponse(std::move(resp));
 
     return ComputingResult::Success;
 }
@@ -645,30 +708,30 @@ Tucuxi::Common::Interface* ComputingComponent::getInterface(const std::string &_
 
 
 ComputationResult ComputingComponent::computeConcentrations(
-    ConcentrationPredictionPtr &_prediction,
-    bool _isAll,
-    const DateTime &_recordFrom,
-    const DateTime &_recordTo,
-    const IntakeSeries &_intakes,
-    const ParameterSetSeries &_parameterSets,
-    const Etas &_etas,
-    const IResidualErrorModel &_residualErrorModel,
-    const Deviations& _eps,
-    const bool _isFixedDensity)
+        ConcentrationPredictionPtr &_prediction,
+        bool _isAll,
+        const DateTime &_recordFrom,
+        const DateTime &_recordTo,
+        const IntakeSeries &_intakes,
+        const ParameterSetSeries &_parameterSets,
+        const Etas &_etas,
+        const IResidualErrorModel &_residualErrorModel,
+        const Deviations& _eps,
+        const bool _isFixedDensity)
 {
     // TODO : Use a factory for the calculator
     ConcentrationCalculator calculator;
     calculator.computeConcentrations(
-        _prediction,
-        _isAll,
-        _recordFrom,
-        _recordTo,
-        _intakes,
-        _parameterSets,
-        _etas,
-        _residualErrorModel,
-        _eps,
-        _isFixedDensity);
+                _prediction,
+                _isAll,
+                _recordFrom,
+                _recordTo,
+                _intakes,
+                _parameterSets,
+                _etas,
+                _residualErrorModel,
+                _eps,
+                _isFixedDensity);
     return ComputationResult::Success;
 }
 

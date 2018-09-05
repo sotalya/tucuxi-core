@@ -697,6 +697,29 @@ public:
     /// \brief Create a new empty dosage history.
     DosageHistory() { }
 
+    DosageHistory( const DosageHistory &obj)
+    {
+        for (const auto& timeRange : obj.m_history) {
+            this->addTimeRange(*timeRange.get());
+        }
+    }
+
+    DosageHistory( const DosageHistory &&obj)
+    {
+        for (const auto& timeRange : obj.m_history) {
+            this->addTimeRange(*timeRange.get());
+        }
+    }
+
+    DosageHistory& operator=(DosageHistory other)
+    {
+        for (const auto& timeRange : other.m_history) {
+            this->addTimeRange(*timeRange.get());
+        }
+        return *this;
+    }
+
+
 
     /// \brief Add a time range to the history.
     /// \param _timeRange Time range to add.
