@@ -30,6 +30,8 @@ HEADERS += \
     $$PWD/../../src/tucucore/residualerrormodel.h \
     $$PWD/../../src/tucucore/sampleextractor.h \
     $$PWD/../../src/tucucore/targetextractor.h \
+    $$PWD/../../src/tucucore/targetevaluator.h \
+    $$PWD/../../src/tucucore/targetevaluationresult.h \
     $$PWD/../../src/tucucore/pkmodel.h \
     $$PWD/../../src/tucucore/intaketocalculatorassociator.h \
     $$PWD/../../src/tucucore/hardcodedoperation.h \
@@ -88,6 +90,8 @@ SOURCES += \
     $$PWD/../../src/tucucore/parametersextractor.cpp \
     $$PWD/../../src/tucucore/sampleextractor.cpp \
     $$PWD/../../src/tucucore/targetextractor.cpp \
+    $$PWD/../../src/tucucore/targetevaluator.cpp \
+    $$PWD/../../src/tucucore/targetevaluationresult.cpp \
     $$PWD/../../src/tucucore/pkmodel.cpp \
     $$PWD/../../src/tucucore/intaketocalculatorassociator.cpp \
     $$PWD/../../src/tucucore/hardcodedoperation.cpp \

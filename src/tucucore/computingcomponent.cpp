@@ -500,6 +500,7 @@ ComputingResult ComputingComponent::compute(
 
     std::vector<AdjustmentCandidate> candidates;
 
+    // Creation of all candidates
     for(auto dose : doseValues) {
         for(auto interval : intervalValues) {
             for(auto infusion : infusionTimes) {
@@ -550,20 +551,19 @@ ComputingResult ComputingComponent::compute(
                     intakeSeries,
                     parameterSeries);
 
+        // Stream that to file, only for debugging purpose
+        // To be removed later on, or at least commented
         std::string fileName = "candidate_" + std::to_string(index) + ".dat";
         pPrediction.get()->streamToFile(fileName);
-        for(auto values : pPrediction.get()->getValues()) {
-            for (auto val : values) {
-                std::cout << val << " ";
-            }
-        }
-        std::cout << std::endl;
+        index ++;
 
         if (predictionComputationResult != ComputationResult::Success) {
             m_logger.error("Error with the computation of a single adjustment candidate");
             return ComputingResult::Error;
         }
-        index ++;
+
+
+        // Now the score calculation
     }
 
     return ComputingResult::Success;

@@ -45,6 +45,7 @@ public:
     {}
 
     TargetDefinition(TargetType _type,
+                     std::string _activeMoietyId,
                      std::unique_ptr<SubTargetDefinition> _valueMin,
                      std::unique_ptr<SubTargetDefinition> _valueMax,
                      std::unique_ptr<SubTargetDefinition> _valueBest,
@@ -52,6 +53,7 @@ public:
                      std::unique_ptr<SubTargetDefinition> _tMax,
                      std::unique_ptr<SubTargetDefinition> _tBest) :
         m_targetType(_type),
+        m_activeMoietyId(_activeMoietyId),
         m_valueMin(std::move(_valueMin)),
         m_valueMax(std::move(_valueMax)),
         m_valueBest(std::move(_valueBest)),
@@ -63,6 +65,7 @@ public:
     }
 
     TargetType getTargetType() const { return m_targetType;}
+    std::string getActiveMoietyId() const { return m_activeMoietyId;}
 
     const SubTargetDefinition & getCMin() const { return *m_valueMin;}
     const SubTargetDefinition & getCMax() const { return *m_valueMax;}
@@ -73,6 +76,7 @@ public:
 
 //protected:
     TargetType m_targetType;
+    std::string m_activeMoietyId;
 
     std::unique_ptr<SubTargetDefinition> m_valueMin;
     std::unique_ptr<SubTargetDefinition> m_valueMax;

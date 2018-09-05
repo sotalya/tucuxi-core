@@ -345,6 +345,25 @@ enum class SteadyStateTargetOption
 };
 
 ///
+/// \brief The TargetExtactionOption enum
+/// This enum describes the way the targets shall be extracted
+enum class TargetExtractionOption
+{
+    /// Forces the population values to be used
+    PopulationValues = 0,
+
+    /// Forces the a priori values to be calculated and used
+    AprioriValues,
+
+    /// Only use the individual targets
+    IndividualTargets,
+
+    /// Use the individual target, and if for an active moiety and a target type no
+    /// individual target exists, then use the definition
+    DefinitionIfNoIndividualTarget
+};
+
+///
 /// \brief The ComputingTraitAdjustment class
 /// This class embeds all information required for computing adjustments. It can return
 /// potential dosages, and future concentration calculations, depending on the options.
@@ -366,6 +385,7 @@ public:
     /// \param _chargingOption
     /// \param _restPeriodOption
     /// \param _steadyStateTargetOption
+    /// \param _targetExtractionOption
     /// If nbPoints = 0, then no curve will be returned by the computation, only the dosages
     ///
     ComputingTraitAdjustment(RequestResponseId _id,
@@ -377,7 +397,8 @@ public:
                              AdjustmentOption _adjustmentOption,
                              ChargingOption _chargingOption,
                              RestPeriodOption _restPeriodOption,
-                             SteadyStateTargetOption _steadyStateTargetOption);
+                             SteadyStateTargetOption _steadyStateTargetOption,
+                             TargetExtractionOption _targetExtractionOption);
 
     ///
     /// \brief getAdjustmentTime Get the time of adjustment
@@ -399,6 +420,8 @@ protected:
     RestPeriodOption m_restPeriodOption;
 
     SteadyStateTargetOption m_steadyStateTargetOption;
+
+    TargetExtractionOption m_targetExtractionOption;
 
 private:
 

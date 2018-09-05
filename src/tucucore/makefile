@@ -34,7 +34,7 @@ SOURCES := \
            covariateextractor.cpp \
            cyclestatisticscalculator.cpp \
            dosage.cpp \
-					 formulationandroute.cpp \
+           formulationandroute.cpp \
            hardcodedoperation.cpp \
            intakeextractor.cpp \
            intakeintervalcalculator.cpp \
@@ -51,7 +51,9 @@ SOURCES := \
            sampleextractor.cpp \
            targetevent.cpp \
            targetextractor.cpp \
-					 validvalues.cpp \
+           targetevaluator.cpp \
+           targetevaluationresult.cpp \
+           validvalues.cpp \
            pkmodels/onecompartmentbolus.cpp \
            pkmodels/onecompartmentextra.cpp \
            pkmodels/onecompartmentinfusion.cpp \

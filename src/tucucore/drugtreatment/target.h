@@ -15,6 +15,8 @@
 namespace Tucuxi {
 namespace Core {
 
+class TargetExtractor;
+
 ///
 /// \brief A target defined within a DrugTreatment
 /// It should be used to override the default DrugModel targets
@@ -24,13 +26,13 @@ class Target
 public:
     Target() = delete;
 
-    Target(const std::string& _analyteId, 
+    Target(const std::string& _activeMoietyId,
            TargetType _type, 
            Value _min, 
            Value _best, 
            Value _max);
 
-    Target(const std::string& _analyteId, 
+    Target(const std::string& _activeMoietyId,
            TargetType _type, 
            Value _vmin, 
            Value _vbest, 
@@ -39,9 +41,11 @@ public:
            const Tucuxi::Common::Duration &_tbest, 
            const Tucuxi::Common::Duration &_tmax);
 
+    std::string getActiveMoietyId() const { return m_activeMoietyId;}
+
 private:
-    /// Id of the analyte on which applying the target
-    std::string m_analyteId;
+    /// Id of the active moiety on which applying the target
+    std::string m_activeMoietyId;
 
     /// Type of target
     TargetType m_targetType;
@@ -63,6 +67,8 @@ private:
 
     /// Target best time from last intake (for peak targets)
     Tucuxi::Common::Duration m_tBest;
+
+    friend TargetExtractor;
 };
 
 ///

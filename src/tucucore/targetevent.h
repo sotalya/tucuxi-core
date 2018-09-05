@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "tucucore/timedevent.h"
+#include "tucucore/drugtreatment/target.h"
 #include "tucucore/drugdefinitions.h"
 #include "tucucore/drugmodel/targetdefinition.h"
 #include "tucucommon/duration.h"
@@ -15,7 +16,7 @@
 namespace Tucuxi {
 namespace Core {
 
-
+/*
 
 class SubTarget : public IndividualValue<SubTargetDefinition>
 {
@@ -55,6 +56,9 @@ protected:
     SubTarget m_tBest;
 
 };
+*/
+
+typedef Target TargetEvent;
 
 typedef std::vector<TargetEvent> TargetSeries;
 } // namespace Core

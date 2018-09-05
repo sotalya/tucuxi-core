@@ -90,13 +90,15 @@ ComputingTraitAdjustment::ComputingTraitAdjustment(
         AdjustmentOption _adjustmentOption,
         ChargingOption _chargingOption,
         RestPeriodOption _restPeriodOption,
-        SteadyStateTargetOption _steadyStateTargetOption) :
+        SteadyStateTargetOption _steadyStateTargetOption,
+        TargetExtractionOption _targetExtractionOption) :
     ComputingTraitStandard(_id, _start, _end, _cycleSize, _computingOption),
     m_adjustmentTime(_adjustmentTime),
     m_adjustmentOption(_adjustmentOption),
     m_chargingOption(_chargingOption),
     m_restPeriodOption(_restPeriodOption),
-    m_steadyStateTargetOption(_steadyStateTargetOption)
+    m_steadyStateTargetOption(_steadyStateTargetOption),
+    m_targetExtractionOption(_targetExtractionOption)
 {
 }
 

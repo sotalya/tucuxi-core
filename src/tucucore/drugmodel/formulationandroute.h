@@ -77,13 +77,11 @@ public:
             Formulation _formulation,
             AdministrationRoute _route,
             AbsorptionModel _absorptionModel,
-            std::string _id = "",
             std::string _administrationName = "") :
-        m_id(_id), m_formulation(_formulation), m_route(_route), m_absorptionModel(_absorptionModel),
+        m_formulation(_formulation), m_route(_route), m_absorptionModel(_absorptionModel),
         m_administrationName(_administrationName)
     {}
 
-    std::string getId() const { return m_id;}
 
     Formulation getFormulation() const { return m_formulation;}
 
@@ -101,8 +99,6 @@ public:
 
 protected:
 
-    /// A unique Id, useful when a DrugModel embeds more than one Formulation
-    std::string m_id;
 
     /// Formulation, based on an Enum type
     Formulation m_formulation;
@@ -122,8 +118,9 @@ protected:
 class FullFormulationAndRoute
 {
 public:
-    FullFormulationAndRoute(const FormulationAndRoute& _specs)
-        : m_specs(_specs)
+
+    FullFormulationAndRoute(const FormulationAndRoute& _specs, std::string _id)
+        : m_id(_id), m_specs(_specs)
     {}
 
     void setValidDoses(std::unique_ptr<ValidDoses> _validDoses) {m_validDoses = std::move(_validDoses);}
@@ -133,6 +130,8 @@ public:
 
     const ParameterSetDefinition* getParameterDefinitions(const std::string &_analyteId) const;
 
+    std::string getId() const { return m_id;}
+
     const ValidDoses* getValidDoses() const { return m_validDoses.get();}
 
     const ValidDurations* getValidIntervals() const { return m_validIntervals.get();}
@@ -140,6 +139,10 @@ public:
     const FormulationAndRoute& getFormulationAndRoute() const { return m_specs;}
 
 protected:
+
+    /// A unique Id, useful when a DrugModel embeds more than one Formulation
+    std::string m_id;
+
     FormulationAndRoute m_specs;
 
     std::unique_ptr<ValidDoses> m_validDoses;
