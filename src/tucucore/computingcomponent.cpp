@@ -512,12 +512,13 @@ ComputingResult ComputingComponent::compute(
         for(auto interval : intervalValues) {
             for(auto infusion : infusionTimes) {
                 candidates.push_back({dose, interval, infusion});
+#ifdef 0
                 std::string mess;
                 mess = "Potential adjustment. Dose :  \t" + std::to_string(dose)
                         + " , Interval: \t" + std::to_string((interval).toHours()) + " hours. "
                         + " , Infusion: \t" + std::to_string((infusion).toMinutes()) + " minutes";
                 m_logger.info(mess);
-
+#endif // 0
             }
         }
     }
@@ -587,7 +588,11 @@ ComputingResult ComputingComponent::compute(
         }
 
         std::vector< TargetEvaluationResult> candidateResults;
-        bool isValidCandidate = false;
+        bool isValidCandidate = true;
+
+        if (targetSeries.size() == 0) {
+            isValidCandidate = false;
+        }
 
         for(const auto & target : targetSeries) {
             TargetEvaluationResult localResult;
@@ -595,16 +600,20 @@ ComputingResult ComputingComponent::compute(
             // Now the score calculation
             TargetEvaluator::Result evaluationResult = targetEvaluator.evaluate(*pPrediction.get(), intakeSeries, target, localResult);
 
-            if (evaluationResult != TargetEvaluator::Result::Ok) {
+            // Here we do not compare to Result::Ok, because the result can also be
+            // Result::InvalidCandidate
+            if (evaluationResult == TargetEvaluator::Result::EvaluationError) {
                 m_logger.error("Error in the evaluation of targets");
                 return ComputingResult::Error;
             }
 
-            if (localResult.getScore() != 0.0) {
-                isValidCandidate = true;
+            // If the candidate is valid:
+            if (evaluationResult == TargetEvaluator::Result::Ok) {
+                candidateResults.push_back(localResult);
             }
-
-            candidateResults.push_back(localResult);
+            else {
+                isValidCandidate = false;
+            }
         }
 
         if (isValidCandidate) {
@@ -642,24 +651,27 @@ ComputingResult ComputingComponent::compute(
                          " . Value : " << targetEvaluationResult.getValue() << std::endl;
         }
     }
-#endif // 0
-
 
     // For debugging purpose only
     for (const auto & candidates : dosageCandidates)
     {
             std::cout << "Evaluation. Score : " << candidates.getGlobalScore()  << std::endl;
     }
+#endif // 0
 
-    std::sort(dosageCandidates.begin(), dosageCandidates.end(), compareCandidates);
 
+
+    // Sort in reverse order. The highest score will be the first element
+    std::sort(dosageCandidates.rbegin(), dosageCandidates.rend(), compareCandidates);
+
+#if 0
     std::cout << "Sorted..." << std::endl;
     // For debugging purpose only
     for (const auto & candidates : dosageCandidates)
     {
             std::cout << "Evaluation. Score : " << candidates.getGlobalScore()  << std::endl;
     }
-
+#endif // 0
 
     // Now we have adjustments, predictions, and target evaluation results, let's build the response
     std::unique_ptr<AdjustmentResponse> resp = std::make_unique<AdjustmentResponse>();

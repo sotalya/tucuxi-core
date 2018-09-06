@@ -17,6 +17,7 @@ public:
 
     enum class Result {
         Ok,
+        InvalidCandidate,
         EvaluationError
     };
 

@@ -141,6 +141,10 @@ TargetEvaluator::Result TargetEvaluator::evaluate(
 
     }
 
+    if (!bOk) {
+        return Result::InvalidCandidate;
+    }
+
     // We build the result, as there was no error
     _result = TargetEvaluationResult(_target.m_targetType, score, value);
     return Result::Ok;

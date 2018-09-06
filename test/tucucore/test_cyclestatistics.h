@@ -86,7 +86,7 @@ struct TestCycleStatistics : public fructose::test_base<TestCycleStatistics>
             stats[0][static_cast<int>(CycleStatisticType::Maximum)].getValue(dateTime, value, nbValue);
             //std::cout << "[Maximum] dateTime: " << dateTime << ", value: " << value << std::endl;
         }
-        fructose_assert_eq(nbValue, 2);
+        fructose_assert_eq(nbValue, size_t{2});
 
         // Min
         cycleStatistics.getStatistics(CycleStatisticType::Minimum, stats);
@@ -94,7 +94,7 @@ struct TestCycleStatistics : public fructose::test_base<TestCycleStatistics>
             stats[0][static_cast<int>(CycleStatisticType::Minimum)].getValue(dateTime, value, nbValue);
             //std::cout << "[Minimum] dateTime: " << dateTime << ", value: " << value << std::endl;
         }
-        fructose_assert_eq(nbValue, 2);
+        fructose_assert_eq(nbValue, size_t{2});
     }
 };
 

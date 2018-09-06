@@ -155,6 +155,8 @@ public:
 
     void setAdjustments(std::vector<FullDosage> &_adjustments) { m_adjustments = _adjustments;}
 
+    const std::vector<FullDosage> getAdjustments() const { return m_adjustments;}
+
 protected:
 
     /// A vector of possible dosage adjustments
