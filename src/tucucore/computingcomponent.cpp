@@ -512,7 +512,7 @@ ComputingResult ComputingComponent::compute(
         for(auto interval : intervalValues) {
             for(auto infusion : infusionTimes) {
                 candidates.push_back({dose, interval, infusion});
-#ifdef 0
+#if 0
                 std::string mess;
                 mess = "Potential adjustment. Dose :  \t" + std::to_string(dose)
                         + " , Interval: \t" + std::to_string((interval).toHours()) + " hours. "
