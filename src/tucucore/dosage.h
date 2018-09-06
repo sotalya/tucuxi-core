@@ -719,6 +719,15 @@ public:
         return *this;
     }
 
+    ///
+    /// \brief isEmpty Indicates if the dosage history is empty
+    /// \return true if the dosage history is empty, false else
+    ///
+    bool isEmpty() const
+    {
+        return (m_history.size() == 0);
+    }
+
 
 
     /// \brief Add a time range to the history.

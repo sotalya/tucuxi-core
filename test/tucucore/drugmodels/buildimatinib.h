@@ -244,6 +244,11 @@ public:
             validIntervals->addDuration(Duration(24h));
             formulationAndRoute->setValidIntervals(std::move(validIntervals));
 
+            std::unique_ptr<SpecificDurations> validInfusions(new SpecificDurations(1h));
+            validInfusions->addDuration(Duration(30min));
+            validInfusions->addDuration(Duration(1h));
+            formulationAndRoute->setValidInfusionTimes(std::move(validInfusions));
+
             model->addFormulationAndRoute(std::move(formulationAndRoute));
         }
 

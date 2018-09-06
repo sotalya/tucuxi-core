@@ -294,9 +294,9 @@ private:
 };
 
 ///
-/// \brief The AdjustmentOption enum
+/// \brief The BestCandidatesOption enum
 /// This option allow to ask for a single dosage adjustement or for all acceptable adjustments
-enum class AdjustmentOption
+enum class BestCandidatesOption
 {
     /// Only return the best dosage
     BestDosage = 0,
@@ -364,6 +364,24 @@ enum class TargetExtractionOption
 };
 
 ///
+/// \brief The FormulationAndRouteSelectionOption enum
+/// This enum describes the options for selecting the candidate formulation and routes
+///
+enum class FormulationAndRouteSelectionOption
+{
+    /// Use only the last formulation and route used in the current treatment
+    /// If the treatment is empty, then use the default formulation and route of the
+    /// drug model
+    LastFormulationAndRoute = 0,
+
+    /// Use only the default formulation and route of the drug model
+    DefaultFormulationAndRoute,
+
+    /// Use all available formulation and routes of the drug model
+    AllFormulationAndRoutes
+};
+
+///
 /// \brief The ComputingTraitAdjustment class
 /// This class embeds all information required for computing adjustments. It can return
 /// potential dosages, and future concentration calculations, depending on the options.
@@ -386,6 +404,7 @@ public:
     /// \param _restPeriodOption
     /// \param _steadyStateTargetOption
     /// \param _targetExtractionOption
+    /// \param _formulationAndRouteSelectionOption
     /// If nbPoints = 0, then no curve will be returned by the computation, only the dosages
     ///
     ComputingTraitAdjustment(RequestResponseId _id,
@@ -394,18 +413,20 @@ public:
                              CycleSize _cycleSize,
                              ComputingOption _computingOption,
                              Tucuxi::Common::DateTime _adjustmentTime,
-                             AdjustmentOption _adjustmentOption,
+                             BestCandidatesOption _adjustmentOption,
                              ChargingOption _chargingOption,
                              RestPeriodOption _restPeriodOption,
                              SteadyStateTargetOption _steadyStateTargetOption,
-                             TargetExtractionOption _targetExtractionOption);
+                             TargetExtractionOption _targetExtractionOption,
+                             FormulationAndRouteSelectionOption _formulationAndRouteSelectionOption);
 
     ///
     /// \brief getAdjustmentTime Get the time of adjustment
     /// \return Time of the adjustment
     ///
     Tucuxi::Common::DateTime getAdjustmentTime() const;
-    AdjustmentOption getAdjustmentOption() const;
+    BestCandidatesOption getBestCandidatesOption() const;
+    FormulationAndRouteSelectionOption getFormulationAndRouteSelectionOption() const;
 
 protected:
 
@@ -413,7 +434,7 @@ protected:
     Tucuxi::Common::DateTime m_adjustmentTime;
 
     //! Adjustment options : only the best, or all possible ones
-    AdjustmentOption m_adjustmentOption;
+    BestCandidatesOption m_adjustmentOption;
 
     ChargingOption m_chargingOption;
 
@@ -422,6 +443,8 @@ protected:
     SteadyStateTargetOption m_steadyStateTargetOption;
 
     TargetExtractionOption m_targetExtractionOption;
+
+    FormulationAndRouteSelectionOption m_formulationAndRouteSelectionOption;
 
 private:
 

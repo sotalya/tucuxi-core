@@ -40,14 +40,19 @@ int main(int argc, char** argv)
     TestComputingComponentAdjusements computingComponentAdjusementsTests;
 
     // one compartment
-    computingComponentAdjusementsTests.add_test("Simple test", &TestComputingComponentAdjusements::testSimpleDrug);
+    computingComponentAdjusementsTests.add_test("Simple test 1", &TestComputingComponentAdjusements::testImatinibLastFormulationAndRouteAllDosages);
+    computingComponentAdjusementsTests.add_test("Simple test 2", &TestComputingComponentAdjusements::testImatinibDefaultFormulationAndRouteAllDosages);
+    computingComponentAdjusementsTests.add_test("Simple test 3", &TestComputingComponentAdjusements::testImatinibAllFormulationAndRouteAllDosages);
+    computingComponentAdjusementsTests.add_test("Simple test 4", &TestComputingComponentAdjusements::testImatinibLastFormulationAndRouteBestDosage);
+    computingComponentAdjusementsTests.add_test("Simple test 5", &TestComputingComponentAdjusements::testImatinibDefaultFormulationAndRouteBestDosage);
+    computingComponentAdjusementsTests.add_test("Simple test 6", &TestComputingComponentAdjusements::testImatinibAllFormulationAndRouteBestDosage);
 
     res = computingComponentAdjusementsTests.run(argc, argv);
     tot_res |= res;
     if (res != 0) {
-        std::cerr << "Computing Component Adjusements test failed\n";
+        std::cerr << "Computing Component Adjustments test failed\n";
     }
-    std::cout << "Computing Component Adjusements test succeeded\n";
+    std::cout << "Computing Component Adjustments test succeeded\n";
 
 
     TestIntervalCalculator calculatorsTests;

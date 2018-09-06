@@ -87,18 +87,20 @@ ComputingTraitAdjustment::ComputingTraitAdjustment(
         const CycleSize _cycleSize,
         ComputingOption _computingOption,
         Tucuxi::Common::DateTime _adjustmentTime,
-        AdjustmentOption _adjustmentOption,
+        BestCandidatesOption _adjustmentOption,
         ChargingOption _chargingOption,
         RestPeriodOption _restPeriodOption,
         SteadyStateTargetOption _steadyStateTargetOption,
-        TargetExtractionOption _targetExtractionOption) :
+        TargetExtractionOption _targetExtractionOption,
+        FormulationAndRouteSelectionOption _formulationAndRouteSelectionOption) :
     ComputingTraitStandard(_id, _start, _end, _cycleSize, _computingOption),
     m_adjustmentTime(_adjustmentTime),
     m_adjustmentOption(_adjustmentOption),
     m_chargingOption(_chargingOption),
     m_restPeriodOption(_restPeriodOption),
     m_steadyStateTargetOption(_steadyStateTargetOption),
-    m_targetExtractionOption(_targetExtractionOption)
+    m_targetExtractionOption(_targetExtractionOption),
+    m_formulationAndRouteSelectionOption(_formulationAndRouteSelectionOption)
 {
 }
 
@@ -109,9 +111,14 @@ Tucuxi::Common::DateTime ComputingTraitAdjustment::getAdjustmentTime() const
 }
 
 
-AdjustmentOption ComputingTraitAdjustment::getAdjustmentOption() const
+BestCandidatesOption ComputingTraitAdjustment::getBestCandidatesOption() const
 {
     return m_adjustmentOption;
+}
+
+FormulationAndRouteSelectionOption ComputingTraitAdjustment::getFormulationAndRouteSelectionOption() const
+{
+    return m_formulationAndRouteSelectionOption;
 }
 
 
