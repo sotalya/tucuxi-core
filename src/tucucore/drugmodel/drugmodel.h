@@ -112,6 +112,13 @@ public:
 
     const ActiveMoieties& getActiveMoieties() const { return m_activeMoieties;}
 
+    void setTimeConsiderations(std::unique_ptr<TimeConsiderations> _timeConsiderations)
+    {
+        m_timeConsiderations = std::move(_timeConsiderations);
+    }
+
+    const TimeConsiderations &getTimeConsiderations() const { return *m_timeConsiderations;}
+
 private:
 
 

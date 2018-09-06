@@ -121,35 +121,44 @@ public:
         dispositionParameters->addCorrelation(Correlation("Cl", "V", 0.798));
         analyteSet->setDispositionParameters(std::move(dispositionParameters));
 
-        AnalyteSetToAbsorptionAssociation *association;
-        association = new AnalyteSetToAbsorptionAssociation(*analyteSet);
-        association->setAbsorptionModel(AbsorptionModel::EXTRAVASCULAR);
 
-        std::unique_ptr<ParameterSetDefinition> absorptionParameters(new ParameterSetDefinition());
-        std::unique_ptr<ParameterDefinition> PKa(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
-        absorptionParameters->addParameter(PKa);
-        std::unique_ptr<ParameterDefinition> PF(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
-        absorptionParameters->addParameter(PF);
+        std::unique_ptr<TimeConsiderations> timeConsiderations = std::make_unique<TimeConsiderations>();
 
-        association->setAbsorptionParameters(std::move(absorptionParameters));
-        FormulationAndRoute formulationSpecs(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::EXTRAVASCULAR, "No details");
-        std::unique_ptr<FullFormulationAndRoute> formulationAndRoute(new FullFormulationAndRoute(formulationSpecs, "extraId"));
-        formulationAndRoute->addAssociation(std::unique_ptr<AnalyteSetToAbsorptionAssociation>(association));
+        // Arbitrary 20h half life. To be checked. Multiplier of 10
+        std::unique_ptr<HalfLife> halfLife = std::make_unique<HalfLife>("halflife", 20, Tucuxi::Core::Unit("h"), 10);
+        timeConsiderations->setHalfLife(std::move(halfLife));
+        model->setTimeConsiderations(std::move(timeConsiderations));
 
-        ValidDoses *validDoses = new ValidDoses(Unit("mg"), std::make_unique<PopulationValue>(400));
-        std::unique_ptr<ValidValuesFixed> specificDoses = std::make_unique<ValidValuesFixed>();
-        specificDoses->addValue(DoseValue(100));
-        specificDoses->addValue(DoseValue(200));
-        specificDoses->addValue(DoseValue(300));
-        specificDoses->addValue(DoseValue(400));
-        specificDoses->addValue(DoseValue(600));
-        specificDoses->addValue(DoseValue(800));
-
-        validDoses->addValues(std::move(specificDoses));
 
 
 
         {
+            AnalyteSetToAbsorptionAssociation *association;
+            association = new AnalyteSetToAbsorptionAssociation(*analyteSet);
+            association->setAbsorptionModel(AbsorptionModel::EXTRAVASCULAR);
+
+            std::unique_ptr<ParameterSetDefinition> absorptionParameters(new ParameterSetDefinition());
+            std::unique_ptr<ParameterDefinition> PKa(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
+            absorptionParameters->addParameter(PKa);
+            std::unique_ptr<ParameterDefinition> PF(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
+            absorptionParameters->addParameter(PF);
+
+            association->setAbsorptionParameters(std::move(absorptionParameters));
+            FormulationAndRoute formulationSpecs(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::EXTRAVASCULAR, "No details");
+            std::unique_ptr<FullFormulationAndRoute> formulationAndRoute(new FullFormulationAndRoute(formulationSpecs, "extraId"));
+            formulationAndRoute->addAssociation(std::unique_ptr<AnalyteSetToAbsorptionAssociation>(association));
+
+            ValidDoses *validDoses = new ValidDoses(Unit("mg"), std::make_unique<PopulationValue>(400));
+            std::unique_ptr<ValidValuesFixed> specificDoses = std::make_unique<ValidValuesFixed>();
+            specificDoses->addValue(DoseValue(100));
+            specificDoses->addValue(DoseValue(200));
+            specificDoses->addValue(DoseValue(300));
+            specificDoses->addValue(DoseValue(400));
+            specificDoses->addValue(DoseValue(600));
+            specificDoses->addValue(DoseValue(800));
+
+            validDoses->addValues(std::move(specificDoses));
+
             std::unique_ptr<ValidDoses> doses(validDoses);
 
             formulationAndRoute->setValidDoses(std::move(doses));

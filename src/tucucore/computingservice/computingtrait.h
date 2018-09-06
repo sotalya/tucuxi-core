@@ -427,6 +427,10 @@ public:
     Tucuxi::Common::DateTime getAdjustmentTime() const;
     BestCandidatesOption getBestCandidatesOption() const;
     FormulationAndRouteSelectionOption getFormulationAndRouteSelectionOption() const;
+    SteadyStateTargetOption getSteadyStateTargetOption() const;
+    ChargingOption getChargingOption() const;
+    RestPeriodOption getRestPeriodOption() const;
+    TargetExtractionOption getTargetExtractionOption() const;
 
 protected:
 

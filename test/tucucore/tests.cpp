@@ -46,6 +46,11 @@ int main(int argc, char** argv)
     computingComponentAdjusementsTests.add_test("Simple test 4", &TestComputingComponentAdjusements::testImatinibLastFormulationAndRouteBestDosage);
     computingComponentAdjusementsTests.add_test("Simple test 5", &TestComputingComponentAdjusements::testImatinibDefaultFormulationAndRouteBestDosage);
     computingComponentAdjusementsTests.add_test("Simple test 6", &TestComputingComponentAdjusements::testImatinibAllFormulationAndRouteBestDosage);
+    computingComponentAdjusementsTests.add_test("Simple test 7", &TestComputingComponentAdjusements::testImatinibEmptyTreatmentDefaultFormulationAndRouteAllDosages);
+    computingComponentAdjusementsTests.add_test("Simple test 8", &TestComputingComponentAdjusements::testImatinibSteadyStateLastFormulationAndRouteAllDosages);
+
+
+
 
     res = computingComponentAdjusementsTests.run(argc, argv);
     tot_res |= res;

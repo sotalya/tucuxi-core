@@ -406,8 +406,9 @@ DosageTimeRange *createDosage(
         FormulationAndRoute _routeOfAdministration)
 {
     unsigned int nbTimes;
-    // TODO : Think about this: ceil or floor?
-    nbTimes = (_endTime - _startTime) / _candidate.m_interval;
+
+    // At least a number of intervals allowing to fill the interval asked
+    nbTimes = static_cast<unsigned int>(std::ceil((_endTime - _startTime) / _candidate.m_interval));
     LastingDose *lastingDose = new LastingDose(_candidate.m_dose, _routeOfAdministration, _candidate.m_infusionTime, _candidate.m_interval);
     DosageRepeat *repeat = new DosageRepeat(*lastingDose, nbTimes);
     DosageTimeRange *newTimeRange = new DosageTimeRange(_startTime, _endTime, *repeat);
@@ -471,6 +472,7 @@ ComputingResult ComputingComponent::compute(
     CovariateSeries covariateSeries;
     ParameterSetSeries parameterSeries;
 
+    // Be carefull here, as the endTime could be different...
     ComputingResult extractionResult = generalExtractions(_traits,
                                                           _request,
                                                           pkModel,
@@ -568,7 +570,7 @@ ComputingResult ComputingComponent::compute(
         TargetExtractor targetExtractor;
         TargetSeries targetSeries;
 
-        TargetExtractionOption targetExtractionOption = TargetExtractionOption::PopulationValues;
+        TargetExtractionOption targetExtractionOption = _traits->getTargetExtractionOption();
 
         targetExtractor.extract(covariateSeries, _request.getDrugModel().getActiveMoieties().at(0).get()->getTargetDefinitions(),
                                 _request.getDrugTreatment().getTargets(), _traits->getStart(), _traits->getEnd(),
@@ -581,17 +583,44 @@ ComputingResult ComputingComponent::compute(
         TargetEvaluator targetEvaluator;
         for (auto candidate : candidates) {
             DosageHistory *newHistory = _request.getDrugTreatment().getDosageHistory().clone();
-            DateTime newEndTime = _traits->getEnd();
+            DateTime newEndTime;
+
+            // If in steady state mode, then calculate the real end time
+            if (_traits->getSteadyStateTargetOption() == SteadyStateTargetOption::AtSteadyState) {
+
+                const HalfLife &halfLife = _request.getDrugModel().getTimeConsiderations().getHalfLife();
+
+                Duration newDuration;
+                if (halfLife.getUnit() == Unit("d")) {
+                    newDuration = Duration(24h) * halfLife.getValue() * halfLife.getMultiplier();
+                }
+                else if (halfLife.getUnit() == Unit("h")) {
+                    newDuration = Duration(1h) * halfLife.getValue() * halfLife.getMultiplier();
+                }
+                else if (halfLife.getUnit() == Unit("m")) {
+                    newDuration = Duration(1min) * halfLife.getValue() * halfLife.getMultiplier();
+                }
+                else if (halfLife.getUnit() == Unit("s")) {
+                    newDuration = Duration(1s) * halfLife.getValue() * halfLife.getMultiplier();
+                }
+
+                // Rounding the new duration to be a multiple of the new interval
+                int nbIntervals = static_cast<int>(newDuration / candidate.m_interval);
+                Duration roundedNewDuration = candidate.m_interval * nbIntervals;
+                newEndTime = _traits->getAdjustmentTime() + roundedNewDuration;
+            }
+            else {
+                newEndTime = _traits->getEnd();
+            }
+
             DosageTimeRange *newDosage = createDosage(candidate, _traits->getAdjustmentTime(), newEndTime,
                                                       selectedFormulationAndRoute->getFormulationAndRoute());
-            //        newHistory = new DosageHistory();
-            //      newHistory->addTimeRange(*newDosage);
             newHistory->mergeDosage(newDosage);
 
 
             IntakeSeries intakeSeries;
             IntakeExtractor intakeExtractor;
-            int nIntakes = intakeExtractor.extract(*newHistory, _traits->getStart(), _traits->getEnd(),
+            int nIntakes = intakeExtractor.extract(*newHistory, _traits->getStart(), newEndTime,
                                                    intakeSeries, _traits->getCycleSize());
             TMP_UNUSED_PARAMETER(nIntakes);
 
@@ -610,11 +639,9 @@ ComputingResult ComputingComponent::compute(
                         pPrediction,
                         false,
                         _traits->getStart(),
-                        _traits->getEnd(),
+                        newEndTime,
                         intakeSeries,
                         parameterSeries);
-
-            index ++;
 
             if (predictionComputationResult != ComputationResult::Success) {
                 m_logger.error("Error with the computation of a single adjustment candidate");
@@ -658,6 +685,7 @@ ComputingResult ComputingComponent::compute(
                 std::string fileName = "candidate_" + std::to_string(index) + ".dat";
                 pPrediction.get()->streamToFile(fileName);
 #endif // 0
+                index ++;
 
                 FullDosage dosage;
                 dosage.m_targetsEvaluation = candidateResults;
@@ -676,7 +704,6 @@ ComputingResult ComputingComponent::compute(
                 }
 
                 dosageCandidates.push_back(dosage);
-
             }
 
             evaluationResults.push_back(candidateResults);

@@ -122,6 +122,27 @@ FormulationAndRouteSelectionOption ComputingTraitAdjustment::getFormulationAndRo
 }
 
 
+SteadyStateTargetOption ComputingTraitAdjustment::getSteadyStateTargetOption() const
+{
+    return m_steadyStateTargetOption;
+}
+
+ChargingOption ComputingTraitAdjustment::getChargingOption() const
+{
+    return m_chargingOption;
+}
+
+RestPeriodOption ComputingTraitAdjustment::getRestPeriodOption() const
+{
+    return m_restPeriodOption;
+}
+
+TargetExtractionOption ComputingTraitAdjustment::getTargetExtractionOption() const
+{
+    return m_targetExtractionOption;
+}
+
+
 ComputingTraitConcentration::ComputingTraitConcentration(RequestResponseId _id,
                              Tucuxi::Common::DateTime _start,
                              Tucuxi::Common::DateTime _end,
