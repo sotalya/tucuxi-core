@@ -244,14 +244,14 @@ int DateTime::minute() const
 }
 
 
-int64 DateTime::second() const
+int DateTime::second() const
 {
     date::sys_days days = date::floor<date::days>(m_date);
     return std::chrono::duration_cast<std::chrono::seconds>(m_date - days).count() % 60;
 }
 
 
-int64 DateTime::millisecond() const
+int DateTime::millisecond() const
 {
     date::sys_days days = date::floor<date::days>(m_date);
     return std::chrono::duration_cast<std::chrono::milliseconds>(m_date - days).count() % 1000;

@@ -70,21 +70,24 @@ DateTime ValueToDate(const Value &_value);
 /// \param _t2 Second date in the difference.
 /// \note The absolute value of the difference is returned!
 /// \return Number of days by which the two dates differ.
-double dateDiffInDays(const DateTime &_t1, const DateTime &_t2);
+/// Be careful, the returned value is an int, and as such is floored.
+int dateDiffInDays(const DateTime &_t1, const DateTime &_t2);
 
 /// \brief Express the difference between two dates in months.
 /// \param _t1 First date in the difference.
 /// \param _t2 Second date in the difference.
 /// \note The absolute value of the difference is returned!
 /// \return Number of months by which the two dates differ.
-double dateDiffInMonths(const DateTime &_t1, const DateTime &_t2);
+/// Be careful, the returned value is an int, and as such is floored.
+int dateDiffInMonths(const DateTime &_t1, const DateTime &_t2);
 
 /// \brief Express the difference between two dates in years.
 /// \param _t1 First date in the difference.
 /// \param _t2 Second date in the difference.
 /// \note The absolute value of the difference is returned!
 /// \return Number of years by which the two dates differ.
-double dateDiffInYears(const DateTime &_t1, const DateTime &_t2);
+/// Be careful, the returned value is an int, and as such is floored.
+int dateDiffInYears(const DateTime &_t1, const DateTime &_t2);
 
 std::string getAppFolder(char** _argv);
 

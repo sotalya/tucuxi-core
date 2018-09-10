@@ -162,11 +162,11 @@ public:
 
     /// \brief Return the second of the contained date
     /// \return The second.
-    int64 second() const;
+    int second() const;
 
     /// \brief Return the millisecond of the contained date
     /// \return The millisecond.
-    int64 millisecond() const;
+    int millisecond() const;
 
     /// \brief Clear the date to internal value 0
     void reset();

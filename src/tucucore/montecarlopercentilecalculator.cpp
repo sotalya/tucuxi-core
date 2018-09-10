@@ -149,7 +149,7 @@ IPercentileCalculator::ComputingResult MonteCarloPercentileCalculatorBase::compu
 
     // Sort and set percentile
     for (unsigned int cycle = 0; cycle < _intakes.size(); cycle++) {
-        for (unsigned int point = 0; point < _intakes.at(cycle).getNbPoints(); point++) {
+        for (unsigned int point = 0; point < static_cast<unsigned int>(_intakes.at(cycle).getNbPoints()); point++) {
 
             // Sort concentrations in increasing order at each time (at the cycle and at the point)
             std::sort(concentrations[cycle][point].begin(), concentrations[cycle][point].end(), [&] (const double v1, const double v2) { return v1 < v2; });

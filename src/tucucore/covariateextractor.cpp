@@ -203,15 +203,15 @@ bool CovariateExtractor::computeEvents(const std::map<DateTime, std::vector<std:
 
                 switch ((*m_cdValued.at(cvName))->getType()) {
                 case CovariateType::AgeInDays:
-                    newVal = dateDiffInDays(refreshTime, tmp_birthDate);
+                    newVal = static_cast<double>(dateDiffInDays(refreshTime, tmp_birthDate));
                     newVal += m_hasBirthDate ? 0 : m_initAgeInDays;
                     break;
                 case CovariateType::AgeInMonths:
-                    newVal = dateDiffInMonths(refreshTime, tmp_birthDate);
+                    newVal = static_cast<double>(dateDiffInMonths(refreshTime, tmp_birthDate));
                     newVal += m_hasBirthDate ? 0 : m_initAgeInMonths;
                     break;
                 case CovariateType::AgeInYears:
-                    newVal = dateDiffInYears(refreshTime, tmp_birthDate);
+                    newVal = static_cast<double>(dateDiffInYears(refreshTime, tmp_birthDate));
                     newVal += m_hasBirthDate ? 0 : m_initAgeInYears;
                     break;
                 default:

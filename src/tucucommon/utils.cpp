@@ -18,7 +18,7 @@ std::string Utils::getAppFolder(char** _argv)
 }
 
 
-double Utils::dateDiffInDays(const DateTime &_t1, const DateTime &_t2)
+int Utils::dateDiffInDays(const DateTime &_t1, const DateTime &_t2)
 {
     DateTime t1;
     DateTime t2;
@@ -34,7 +34,7 @@ double Utils::dateDiffInDays(const DateTime &_t1, const DateTime &_t2)
 }
 
 
-double Utils::dateDiffInMonths(const DateTime &_t1, const DateTime &_t2)
+int Utils::dateDiffInMonths(const DateTime &_t1, const DateTime &_t2)
 {
     DateTime t1;
     DateTime t2;
@@ -50,7 +50,7 @@ double Utils::dateDiffInMonths(const DateTime &_t1, const DateTime &_t2)
 }
 
 
-double Utils::dateDiffInYears(const DateTime &_t1, const DateTime &_t2)
+int Utils::dateDiffInYears(const DateTime &_t1, const DateTime &_t2)
 {
     DateTime t1;
     DateTime t2;
