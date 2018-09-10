@@ -103,7 +103,7 @@ CycleStatistics::CycleStatistics(const CycleData &_data)
     }
 
     //
-    // calcualte cylcle statistics and add values
+    // calculate cycle statistics and add values
     //
     calculate(_data.m_concentrations, _data.m_times);
 }

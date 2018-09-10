@@ -433,11 +433,14 @@ std::vector<const FullFormulationAndRoute*> selectFormulationAndRoutes(
             // If the dosage history is empty, then use the default of DrugModel
             result.push_back(_availableFormulationAndRoutes.getDefault());
         }
-
-        // We get the last formulation and retrieve the corresponding full spec from the available ones
-        FormulationAndRoute formulation = _dosageHistory.getLastFormulationAndRoute();
-        const FullFormulationAndRoute *selectedFormulationAndRoute = _availableFormulationAndRoutes.get(formulation);
-        result.push_back(selectedFormulationAndRoute);
+        else {
+            // We get the last formulation and retrieve the corresponding full spec from the available ones
+            FormulationAndRoute formulation = _dosageHistory.getLastFormulationAndRoute();
+            const FullFormulationAndRoute *selectedFormulationAndRoute = _availableFormulationAndRoutes.get(formulation);
+            if (selectedFormulationAndRoute != nullptr) {
+                result.push_back(selectedFormulationAndRoute);
+            }
+        }
     } break;
 
     case FormulationAndRouteSelectionOption::DefaultFormulationAndRoute : {
@@ -732,6 +735,7 @@ ComputingResult ComputingComponent::compute(
 
 
     // Sort in reverse order. The highest score will be the first element
+    // There is an issue with DosageHistory as the copy don't work correctly
     std::sort(dosageCandidates.rbegin(), dosageCandidates.rend(), compareCandidates);
 
 #if 0

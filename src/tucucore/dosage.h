@@ -203,6 +203,10 @@ public:
         return m_dosage->getFirstIntakeInterval(_intervalStart);
     }
 
+    const DosageBounded * getDosage() const {
+        return m_dosage.get();
+    }
+
 private:
     /// \brief Dosage that is repeated.
     std::unique_ptr<DosageBounded> m_dosage;
@@ -395,6 +399,17 @@ public:
     FormulationAndRoute getLastFormulationAndRoute() const override
     {
         return m_routeOfAdministration;
+    }
+
+
+    Duration getInfusionTime() const
+    {
+        return m_infusionTime;
+    }
+
+    DoseValue getDose() const
+    {
+        return m_dose;
     }
 
 protected:
@@ -673,6 +688,10 @@ public:
     /// \return true if the two time ranges overlap, false otherwise.
     friend bool timeRangesOverlap(const DosageTimeRange &_first, const DosageTimeRange &_second);
 
+    const Dosage* getDosage() const {
+        return m_dosage.get();
+    }
+
 private:
     /// Doses administered in the interval.
     std::unique_ptr<Dosage> m_dosage;
@@ -697,6 +716,11 @@ public:
     /// \brief Create a new empty dosage history.
     DosageHistory() { }
 
+    ///
+    /// \brief DosageHistory copy constructor
+    /// \param obj original DosageHistory object
+    ///
+    /// TODO : A test for this function needs to be written
     DosageHistory( const DosageHistory &obj)
     {
         for (const auto& timeRange : obj.m_history) {
@@ -704,6 +728,11 @@ public:
         }
     }
 
+    ///
+    /// \brief DosageHistory copy constructor
+    /// \param obj original DosageHistory object
+    ///
+    /// TODO : A test for this function needs to be written
     DosageHistory( const DosageHistory &&obj)
     {
         for (const auto& timeRange : obj.m_history) {
@@ -711,8 +740,15 @@ public:
         }
     }
 
+    ///
+    /// \brief operator = assignement operator
+    /// \param other original DosageHistory object
+    /// \return The modified DosageHistory
+    ///
+    /// TODO : A test for this function needs to be written
     DosageHistory& operator=(DosageHistory other)
     {
+        this->m_history.clear();
         for (const auto& timeRange : other.m_history) {
             this->addTimeRange(*timeRange.get());
         }
@@ -761,6 +797,10 @@ public:
     void mergeDosage(DosageTimeRange *newDosage);
 
     FormulationAndRoute getLastFormulationAndRoute() const;
+
+    const DosageTimeRangeList& getDosageTimeRanges() const {
+        return m_history;
+    }
 
 private:
     /// Usage history, expressed as a list of non-overlapping time intervals. The last one might have no end date (if
