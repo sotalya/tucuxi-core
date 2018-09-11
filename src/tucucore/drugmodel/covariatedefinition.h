@@ -17,8 +17,6 @@
 namespace Tucuxi {
 namespace Core {
 
-using namespace Tucuxi::Common::Utils;
-
 /// \brief Definition of a covariate for a given drug, using the information extracted from the drug's XML file.
 class CovariateDefinition : public PopulationValue
 {
@@ -31,7 +29,7 @@ public:
     /// \param _dataType Type of data contained in the variable
     CovariateDefinition(const std::string &_id, const std::string &_value, Operation *_operation,
                         const CovariateType _type = CovariateType::Standard, const DataType _dataType = DataType::Double) :
-        PopulationValue(_id, stringToValue(_value, _dataType), _operation),
+        PopulationValue(_id, Tucuxi::Common::Utils::stringToValue(_value, _dataType), _operation),
         m_type{_type}, m_dataType{_dataType}, m_interpolationType{InterpolationType::Direct}
     {
         if (_type != CovariateType::Standard) {

@@ -8,7 +8,6 @@
 
 #include "tucucore/operation.h"
 
-using namespace Tucuxi::Core;
 
 namespace Tucuxi {
 namespace Core {

@@ -18,7 +18,6 @@ namespace Common {
 
 namespace Utils {
 
-using namespace Tucuxi::Core;
 using Tucuxi::Core::Value;
 
 //public:
@@ -28,7 +27,7 @@ using Tucuxi::Core::Value;
 /// \param _type Type of the value given in the string.
 /// \return Value contained in the string.
 /// \pre _str contains a string that can be converted to a Value.
-Value stringToValue(const std::string &_str, const DataType &_dataType);
+Value stringToValue(const std::string &_str, const Tucuxi::Core::DataType &_dataType);
 
 /// \brief Convert a boolean to a Value.
 /// \param _value Input boolean to convert.

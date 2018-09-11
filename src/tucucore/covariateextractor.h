@@ -25,7 +25,6 @@ namespace Tucuxi {
 namespace Core {
 
 using Tucuxi::Common::Duration;
-using namespace Tucuxi::Common::Utils;
 
 /// \brief Interface for the covariate extractor.
 class ICovariateExtractor

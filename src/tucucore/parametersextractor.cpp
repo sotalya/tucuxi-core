@@ -154,7 +154,7 @@ ParametersExtractor::Result ParametersExtractor::extract(ParameterSetSeries &_se
             for (const auto &cv : tcv.second) {
                 // Create ex-novo a fake covariate.
                 std::shared_ptr<CovariateEvent> event =
-                        std::make_shared<CovariateEvent>(CovariateEvent(CovariateDefinition(cv.first, varToString(cv.second), nullptr),
+                        std::make_shared<CovariateEvent>(CovariateEvent(CovariateDefinition(cv.first, Tucuxi::Common::Utils::varToString(cv.second), nullptr),
                                                                         tcv.first, cv.second));
                 m_ogm.registerInput(event, cv.first);
                 cEvMap.insert(std::make_pair(cv.first, event));

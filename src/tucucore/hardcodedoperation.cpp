@@ -1,5 +1,7 @@
 #include "tucucore/hardcodedoperation.h"
 
+using namespace Tucuxi::Core;
+
 bool
 IdealBodyWeight::compute(const OperationInputList &_inputs, double &_result) const
 {

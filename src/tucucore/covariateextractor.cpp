@@ -8,6 +8,8 @@
 namespace Tucuxi {
 namespace Core {
 
+using namespace Tucuxi::Common::Utils;
+
 const std::string CovariateExtractor::m_birthDateCName = "BirthDate";
 
 /// \brief Create an event and push it in the event series.

@@ -5,7 +5,6 @@
 
 #include "tucucore/drugmodel/drugmodel.h"
 
-
 using namespace Tucuxi::Core;
 
 class BuildImatinib
@@ -13,13 +12,13 @@ class BuildImatinib
 public:
     BuildImatinib() {}
 
-    DrugModel *buildDrugModel()
+    Tucuxi::Core::DrugModel *buildDrugModel()
     {
-        DrugModel *model;
-        model = new DrugModel();
+        Tucuxi::Core::DrugModel *model;
+        model = new Tucuxi::Core::DrugModel();
 
         // The following constraint is for tests only. Needs to be modified according to the paper
-        Operation *operationConstraint = new JSOperation(" \
+        Tucuxi::Core::Operation *operationConstraint = new Tucuxi::Core::JSOperation(" \
                                                 return (age > 0);",
         { OperationInput("age", InputType::DOUBLE)});
 

@@ -24,6 +24,7 @@
 
 #include "testutils.h"
 
+using namespace Tucuxi::Common::Utils;
 using namespace Tucuxi::Core;
 
 /// \brief Check whether a covariate event with a given name, date, and value is present in a series.
