@@ -7,6 +7,7 @@
 #include "tucucore/drugmodel/drugmodel.h"
 #include "tucucore/drugdefinitions.h"
 #include "tucucore/drugmodel/drugmodeldomain.h"
+#include "tucucore/definitions.h"
 
 #include <iostream>
 
@@ -135,14 +136,18 @@ Operation* DrugModelImport::extractOperation(Tucuxi::Common::XmlNodeIterator _no
         }
     }
 
+    if (operation == nullptr) {
+        m_result = Result::Error;
+    }
+
     return operation;
 }
 
-PopulationValue* DrugModelImport::extractPopulationValue(Tucuxi::Common::XmlNodeIterator _node)
+LightPopulationValue *DrugModelImport::extractPopulationValue(Tucuxi::Common::XmlNodeIterator _node)
 {
-    PopulationValue *populationValue;
+    LightPopulationValue *populationValue;
     Value value;
-    Operation *operation;
+    Operation *operation = nullptr;
     std::string id = "";
 
     XmlNodeIterator it = _node->getChildren();
@@ -159,7 +164,12 @@ PopulationValue* DrugModelImport::extractPopulationValue(Tucuxi::Common::XmlNode
         it ++;
     }
 
-    populationValue = new PopulationValue(id, value, operation);
+    // No check for operation, as it is not a mandatory field.
+    // It is simply nullptr by default
+
+    populationValue = new LightPopulationValue();
+    populationValue->m_value = value;
+    populationValue->m_operation = operation;
 
     return populationValue;
 }
@@ -222,6 +232,7 @@ DrugModel* DrugModelImport::extractDrugModel(Tucuxi::Common::XmlNodeIterator _no
 
     TimeConsiderations *timeConsiderations;
     DrugModelDomain *domain;
+    std::vector<CovariateDefinition *> covariates;
 
     DrugModel *drugModel = new DrugModel();
     while (it != XmlNodeIterator::none()) {
@@ -237,7 +248,7 @@ DrugModel* DrugModelImport::extractDrugModel(Tucuxi::Common::XmlNodeIterator _no
             domain = extractDrugDomain(it);
         }
         else if (nodeName == "covariates") {
-            drugModel->setDrugId(it->getValue());
+            covariates = extractCovariates(it);
         }
         else if (nodeName == "activeMoieties") {
             drugModel->setDrugId(it->getValue());
@@ -261,6 +272,9 @@ DrugModel* DrugModelImport::extractDrugModel(Tucuxi::Common::XmlNodeIterator _no
 
     drugModel->setTimeConsiderations(std::unique_ptr<TimeConsiderations>(timeConsiderations));
     drugModel->setDomain(std::unique_ptr<DrugModelDomain>(domain));
+    for (const auto & covariate : covariates) {
+        drugModel->addCovariate(std::unique_ptr<CovariateDefinition>(covariate));
+    }
 
     return drugModel;
 
@@ -300,7 +314,7 @@ HalfLife* DrugModelImport::extractHalfLife(Tucuxi::Common::XmlNodeIterator _node
     Unit unit;
     double multiplier;
 //    Operation *operation;
-    PopulationValue *value;
+    LightPopulationValue *value;
 
     XmlNodeIterator it = _node->getChildren();
 
@@ -319,7 +333,7 @@ HalfLife* DrugModelImport::extractHalfLife(Tucuxi::Common::XmlNodeIterator _node
         it ++;
     }
 
-    HalfLife *halfLife = new HalfLife(id, value->getValue(), unit, multiplier, &value->getOperation());
+    HalfLife *halfLife = new HalfLife(id, value->getValue(), unit, multiplier, value->getOperation());
     return halfLife;
 }
 
@@ -327,7 +341,7 @@ OutdatedMeasure* DrugModelImport::extractOutdatedMeasure(Tucuxi::Common::XmlNode
 {
     OutdatedMeasure *outdatedMeasure;
     Unit unit;
-    PopulationValue *value;
+    LightPopulationValue *value;
     std::string id;
 
     XmlNodeIterator it = _node->getChildren();
@@ -348,7 +362,7 @@ OutdatedMeasure* DrugModelImport::extractOutdatedMeasure(Tucuxi::Common::XmlNode
         return nullptr;
     }
 
-    outdatedMeasure = new OutdatedMeasure(id, value->getValue(), unit, &value->getOperation());
+    outdatedMeasure = new OutdatedMeasure(id, value->getValue(), unit, value->getOperation());
     return outdatedMeasure;
 }
 
@@ -380,7 +394,6 @@ DrugModelDomain* DrugModelImport::extractDrugDomain(Tucuxi::Common::XmlNodeItera
     }
 
     return domain;
-
 }
 
 
@@ -455,6 +468,163 @@ Constraint* DrugModelImport::extractConstraint(Tucuxi::Common::XmlNodeIterator _
 
     return constraint;
 }
+
+std::vector<CovariateDefinition*> DrugModelImport::extractCovariates(Tucuxi::Common::XmlNodeIterator _node)
+{
+
+    std::vector<CovariateDefinition *> covariates;
+
+    XmlNodeIterator it = _node->getChildren();
+
+    while (it != XmlNodeIterator::none()) {
+        std::cout << it->getName()  << " : "  << it->getValue() << std::endl;
+        std::string nodeName = it->getName();
+        if (nodeName == "covariate") {
+            CovariateDefinition *covariate;
+            covariate = extractCovariate(it);
+            if (covariate) {
+                covariates.push_back(covariate);
+            }
+        }
+        it ++;
+    }
+
+    return covariates;
+}
+
+CovariateDefinition* DrugModelImport::extractCovariate(Tucuxi::Common::XmlNodeIterator _node)
+{
+    CovariateDefinition* covariate;
+
+    std::string id;
+    CovariateType type;
+    DataType dataType;
+    Unit unit;
+    InterpolationType interpolationType;
+    LightPopulationValue *value = nullptr;
+    Operation *validation = nullptr;
+
+    XmlNodeIterator it = _node->getChildren();
+
+    while (it != XmlNodeIterator::none()) {
+        std::cout << it->getName()  << " : "  << it->getValue() << std::endl;
+        std::string nodeName = it->getName();
+        if (nodeName == "id") {
+            id = it->getValue();
+        }
+        else if (nodeName == "unit") {
+            unit = extractUnit(it);
+        }
+        else if (nodeName == "type") {
+            type = extractCovariateType(it);
+        }
+        else if (nodeName == "dataType") {
+            dataType = extractDataType(it);
+        }
+        else if (nodeName == "interpolationType") {
+            interpolationType = extractInterpolationType(it);
+        }
+        else if (nodeName == "value") {
+            value = extractPopulationValue(it);
+        }
+        else if (nodeName == "validation") {
+
+            XmlNodeIterator validationIt = it->getChildren();
+
+            while (validationIt != XmlNodeIterator::none()) {
+                if (validationIt->getName() == "operation") {
+                    validation = extractOperation(validationIt);
+                }
+                validationIt ++;
+            }
+        }
+
+        it ++;
+    }
+
+    if (m_result != Result::Ok) {
+        if (validation != nullptr) {
+            delete validation;
+        }
+        if (value != nullptr) {
+            delete value;
+        }
+        return nullptr;
+    }
+
+    // TODO : Try to find a way to allow flexible covariate values. This is odd
+    std::string valueString = std::to_string(value->getValue());
+
+    covariate = new CovariateDefinition(id, valueString, value->getOperation(), type, dataType);
+//    covariate = new CovariateDefinition(id, valueString, nullptr, type, dataType);
+    covariate->setInterpolationType(interpolationType);
+    covariate->setUnit(unit);
+    covariate->setValidation(std::unique_ptr<Operation>(validation));
+
+    return covariate;
+
+}
+
+
+CovariateType DrugModelImport::extractCovariateType(Tucuxi::Common::XmlNodeIterator _node)
+{
+    static std::map<std::string, CovariateType> m =
+    {
+        {"standard", CovariateType::Standard},
+        //{"sex", CovariateType::Sex},
+        {"ageInYears", CovariateType::AgeInYears},
+        {"ageInDays", CovariateType::AgeInDays},
+        {"ageInMonths", CovariateType::AgeInMonths}
+    };
+
+
+    auto it = m.find(_node->getValue());
+    if (it != m.end())
+        return it->second;
+
+    m_result = Result::Error;
+    return CovariateType::Standard;
+}
+
+DataType DrugModelImport::extractDataType(Tucuxi::Common::XmlNodeIterator _node)
+{
+
+    static std::map<std::string, DataType> m =
+    {
+        {"int", DataType::Int},
+        {"double", DataType::Double},
+        {"bool", DataType::Bool},
+        {"date", DataType::Date}
+    };
+
+
+    auto it = m.find(_node->getValue());
+    if (it != m.end())
+        return it->second;
+
+    m_result = Result::Error;
+    return DataType::Double;
+}
+
+InterpolationType DrugModelImport::extractInterpolationType(Tucuxi::Common::XmlNodeIterator _node)
+{
+
+    static std::map<std::string, InterpolationType> m =
+    {
+        {"direct", InterpolationType::Direct},
+        {"linear", InterpolationType::Linear},
+        {"sigmoid", InterpolationType::Sigmoid},
+        {"tanh", InterpolationType::Tanh}
+    };
+
+    auto it = m.find(_node->getValue());
+    if (it != m.end())
+        return it->second;
+
+    m_result = Result::Error;
+    return InterpolationType::Direct;
+}
+
 
 } // namespace Core
 } // namespace Tucuxi

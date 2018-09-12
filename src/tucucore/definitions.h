@@ -146,11 +146,14 @@ typedef Eigen::Map<const EigenVector> map2EigenVectorType;
 /// - AgeInYears: automatic calculation based on birth date, use default if not available, unit = years.
 /// - AgeInDays: automatic calculation based on birth date, use default if not available, unit = days.
 /// - AgeInMonths: automatic calculation based on birth date, use default if not available, unit = months.
+/// - Sex: Sex of the person, based on his administrative data. 1 for male, 0 for female.
+/// Strangely, if Sex is at the second position, the test_covariateextractor.h tests will fail.
 enum class CovariateType {
     Standard = 0,
     AgeInYears,
     AgeInDays,
-    AgeInMonths
+    AgeInMonths,
+    Sex
 };
 
 /// \brief Allowed data types.

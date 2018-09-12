@@ -14,8 +14,10 @@
 #include "tucucore/drugdefinitions.h"
 #include "tucucore/operation.h"
 
+
 namespace Tucuxi {
 namespace Core {
+
 
 /// \brief Definition of a covariate for a given drug, using the information extracted from the drug's XML file.
 class CovariateDefinition : public PopulationValue
@@ -71,6 +73,9 @@ public:
     /// \param _refreshPeriod Refresh period to set.
     void setRefreshPeriod(const Tucuxi::Common::Duration &_refreshPeriod) { m_refreshPeriod = _refreshPeriod; }
 
+    /// \brief Set the validation operation
+    /// \param _operation Operation used to validate the covariate value
+    void setValidation(std::unique_ptr<Operation> _validation) { m_validation = std::move(_validation);}
 protected:
     /// \brief Covariate type.
     CovariateType m_type;
@@ -82,6 +87,8 @@ protected:
     Unit m_unit;
     /// \brief Interval between two interpolated values.
     Tucuxi::Common::Duration m_refreshPeriod;
+    /// \brief Operation to validate the value of the covariate
+    std::unique_ptr<Operation> m_validation;
 };
 
 /// \brief List of covariate definitions.

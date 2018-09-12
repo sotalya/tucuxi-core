@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "tucucommon/xmlnode.h"
+#include "tucucore/definitions.h"
 
 
 namespace Tucuxi {
@@ -20,6 +21,23 @@ class Operation;
 class DrugModelDomain;
 class Constraint;
 class JSOperation;
+class CovariateDefinition;
+enum class CovariateType;
+enum class DataType;
+enum class InterpolationType;
+
+class LightPopulationValue
+{
+public:
+    LightPopulationValue() {}
+
+    Operation* getOperation() { return m_operation;}
+    Value getValue() { return m_value;}
+
+    Operation *m_operation;
+    Value m_value;
+};
+
 
 class DrugModelImport
 {
@@ -47,11 +65,19 @@ protected:
     std::vector<Constraint*> extractConstraints(Tucuxi::Common::XmlNodeIterator _node);
     Constraint* extractConstraint(Tucuxi::Common::XmlNodeIterator _node);
 
-    PopulationValue* extractPopulationValue(Tucuxi::Common::XmlNodeIterator _node);
+    std::vector<CovariateDefinition*> extractCovariates(Tucuxi::Common::XmlNodeIterator _node);
+    CovariateDefinition* extractCovariate(Tucuxi::Common::XmlNodeIterator _node);
+
+    LightPopulationValue* extractPopulationValue(Tucuxi::Common::XmlNodeIterator _node);
     Unit extractUnit(Tucuxi::Common::XmlNodeIterator _node);
     double extractDouble(Tucuxi::Common::XmlNodeIterator _node);
     Operation* extractOperation(Tucuxi::Common::XmlNodeIterator _node);
     JSOperation* extractJSOperation(Tucuxi::Common::XmlNodeIterator _node);
+
+
+    CovariateType extractCovariateType(Tucuxi::Common::XmlNodeIterator _node);
+    DataType extractDataType(Tucuxi::Common::XmlNodeIterator _node);
+    InterpolationType extractInterpolationType(Tucuxi::Common::XmlNodeIterator _node);
 
 
 };
