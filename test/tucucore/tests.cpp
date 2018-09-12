@@ -23,6 +23,7 @@
 #include "test_parameterextractor.h"
 #include "test_percentilecalculator.h"
 #include "test_pkmodel.h"
+#include "test_drugmodelimport.h"
 
 int main(int argc, char** argv)
 {
@@ -35,6 +36,20 @@ int main(int argc, char** argv)
 
     int res = 0;
     int tot_res = 0;
+
+    TestDrugModelImport drugModelImportTests;
+    drugModelImportTests.add_test("Simple test 1", &TestDrugModelImport::testImatinib);
+
+    res = drugModelImportTests.run(argc, argv);
+    tot_res |= res;
+    if (res != 0) {
+        std::cerr << "Drug model import test failed\n";
+    }
+    else {
+        std::cout << "Drug model import test succeeded\n";
+    }
+
+
 
 
     TestComputingComponentAdjusements computingComponentAdjusementsTests;
@@ -57,7 +72,9 @@ int main(int argc, char** argv)
     if (res != 0) {
         std::cerr << "Computing Component Adjustments test failed\n";
     }
-    std::cout << "Computing Component Adjustments test succeeded\n";
+    else {
+        std::cout << "Computing Component Adjustments test succeeded\n";
+    }
 
 
     TestIntervalCalculator calculatorsTests;

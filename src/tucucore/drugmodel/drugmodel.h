@@ -70,6 +70,9 @@ class DrugModel
 public:
     DrugModel();
 
+    void setDrugId(std::string _drugId) { m_drugId = _drugId;}
+    void setDrugModelId(std::string _drugModelId) { m_drugModelId = _drugModelId;}
+
     void setTimeToSteadyState(Tucuxi::Common::Duration _time);
 
     Tucuxi::Common::Duration getTimeToSteadyState() const;

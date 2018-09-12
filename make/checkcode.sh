@@ -2,6 +2,7 @@ clang-tidy \
 	-config="{Checks: '-*,readability-braces-around-statements, \
                               readability-identifier-naming, \
                               readability-avoid-const-params-in-decls, \
+                              bugprone-integer-division, \
                               google-readability-casting, \
                               llvm-namespace-comment, \
                               google-global-names-in-headers, \

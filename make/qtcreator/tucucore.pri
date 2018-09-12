@@ -58,6 +58,7 @@ HEADERS += \
     $$PWD/../../src/tucucore/drugtreatment/target.h \
     $$PWD/../../src/tucucore/drugtreatment/drugtreatment.h \
     $$PWD/../../src/tucucore/drugmodel/covariatedefinition.h \
+    $$PWD/../../src/tucucore/drugmodelimport.h \
     $$PWD/../../src/tucucore/drugtreatment/patientcovariate.h \
     $$PWD/../../src/tucucore/covariateevent.h \
     $$PWD/../../src/tucucore/computingservice/computingrequest.h \
@@ -110,6 +111,7 @@ SOURCES += \
     $$PWD/../../src/tucucore/drugmodel/validdose.cpp \
     $$PWD/../../src/tucucore/drugmodel/validduration.cpp \
     $$PWD/../../src/tucucore/drugmodel/timeconsiderations.cpp \
+    $$PWD/../../src/tucucore/drugmodelimport.cpp \
     $$PWD/../../src/tucucore/sampleevent.cpp \
     $$PWD/../../src/tucucore/drugtreatment/sample.cpp \
     $$PWD/../../src/tucucore/drugtreatment/drugtreatment.cpp \
