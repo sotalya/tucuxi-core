@@ -118,7 +118,7 @@ std::string SystemInfo::retrieveDisk()
     DWORD maxComponentLen = 0;
     DWORD fileSystemFlags = 0;
 
-    if (GetVolumeInformation("C:\\",
+    if (GetVolumeInformationA("C:\\",
                              volumeName,
                              sizeof(volumeName),
                              &serialNumber,
