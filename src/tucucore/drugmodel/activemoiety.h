@@ -12,6 +12,7 @@ namespace Core {
 class ActiveMoiety
 {
 public:
+    ActiveMoiety(std::string _id, Unit _unit, std::vector<std::string> _analyteIds,std::unique_ptr<Operation> _formula);
     ActiveMoiety();
 
     void addTarget(std::unique_ptr<TargetDefinition> _target) { m_targets.push_back(std::move(_target));}

@@ -22,14 +22,18 @@ class DrugModelDomain;
 class Constraint;
 class JSOperation;
 class CovariateDefinition;
+class ActiveMoiety;
+class TargetDefinition;
+
 enum class CovariateType;
 enum class DataType;
 enum class InterpolationType;
+enum class TargetType;
 
 class LightPopulationValue
 {
 public:
-    LightPopulationValue() {}
+    LightPopulationValue() : m_operation(nullptr), m_value(0.0) {}
 
     Operation* getOperation() { return m_operation;}
     Value getValue() { return m_value;}
@@ -64,6 +68,10 @@ protected:
     DrugModelDomain* extractDrugDomain(Tucuxi::Common::XmlNodeIterator _node);
     std::vector<Constraint*> extractConstraints(Tucuxi::Common::XmlNodeIterator _node);
     Constraint* extractConstraint(Tucuxi::Common::XmlNodeIterator _node);
+    std::vector<ActiveMoiety*> extractActiveMoieties(Tucuxi::Common::XmlNodeIterator _node);
+    ActiveMoiety* extractActiveMoiety(Tucuxi::Common::XmlNodeIterator _node);
+    std::vector<TargetDefinition*> extractTargets(Tucuxi::Common::XmlNodeIterator _node);
+    TargetDefinition* extractTarget(Tucuxi::Common::XmlNodeIterator _node);
 
     std::vector<CovariateDefinition*> extractCovariates(Tucuxi::Common::XmlNodeIterator _node);
     CovariateDefinition* extractCovariate(Tucuxi::Common::XmlNodeIterator _node);
@@ -78,6 +86,7 @@ protected:
     CovariateType extractCovariateType(Tucuxi::Common::XmlNodeIterator _node);
     DataType extractDataType(Tucuxi::Common::XmlNodeIterator _node);
     InterpolationType extractInterpolationType(Tucuxi::Common::XmlNodeIterator _node);
+    TargetType extractTargetType(Tucuxi::Common::XmlNodeIterator _node);
 
 
 };

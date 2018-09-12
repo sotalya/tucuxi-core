@@ -34,7 +34,11 @@ enum class TargetType {
     Peak,
     Mean,
     Auc,
-    CumulativeAuc
+    CumulativeAuc,
+    AucOverMic,
+    TimeOverMic,
+    AucDividedByMic,
+    PeakDividedByMic
 };
 
 
@@ -52,7 +56,9 @@ public:
                      std::unique_ptr<SubTargetDefinition> _valueBest,
                      std::unique_ptr<SubTargetDefinition> _tMin,
                      std::unique_ptr<SubTargetDefinition> _tMax,
-                     std::unique_ptr<SubTargetDefinition> _tBest) :
+                     std::unique_ptr<SubTargetDefinition> _tBest,
+                     std::unique_ptr<SubTargetDefinition> _toxicityAlarm,
+                     std::unique_ptr<SubTargetDefinition> _inefficacyAlarm) :
         m_targetType(_type),
         m_activeMoietyId(_activeMoietyId),
         m_valueMin(std::move(_valueMin)),
@@ -60,7 +66,9 @@ public:
         m_valueBest(std::move(_valueBest)),
         m_tMin(std::move(_tMin)),
         m_tMax(std::move(_tMax)),
-        m_tBest(std::move(_tBest))
+        m_tBest(std::move(_tBest)),
+        m_toxicityAlarm(std::move(_toxicityAlarm)),
+        m_inefficacyAlarm(std::move(_inefficacyAlarm))
     {
 
     }
@@ -74,6 +82,8 @@ public:
     const SubTargetDefinition & getTMin() const { return *m_tMin;}
     const SubTargetDefinition & getTMax() const { return *m_tMax;}
     const SubTargetDefinition & getTBest() const { return *m_tBest;}
+    const SubTargetDefinition & getToxicityAlarm() const { return *m_toxicityAlarm;}
+    const SubTargetDefinition & getInefficacyAlarm() const { return *m_inefficacyAlarm;}
 
 //protected:
     TargetType m_targetType;
@@ -85,6 +95,8 @@ public:
     std::unique_ptr<SubTargetDefinition> m_tMin;
     std::unique_ptr<SubTargetDefinition> m_tMax;
     std::unique_ptr<SubTargetDefinition> m_tBest;
+    std::unique_ptr<SubTargetDefinition> m_toxicityAlarm;
+    std::unique_ptr<SubTargetDefinition> m_inefficacyAlarm;
 };
 
 

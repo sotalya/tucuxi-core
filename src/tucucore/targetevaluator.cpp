@@ -132,6 +132,26 @@ TargetEvaluator::Result TargetEvaluator::evaluate(
         }
     } break;
 
+    case TargetType::AucDividedByMic :
+    {
+        return Result::EvaluationError;
+    } break;
+
+    case TargetType::AucOverMic :
+    {
+        return Result::EvaluationError;
+    } break;
+
+    case TargetType::TimeOverMic :
+    {
+        return Result::EvaluationError;
+    } break;
+
+    case TargetType::PeakDividedByMic :
+    {
+        return Result::EvaluationError;
+    } break;
+
     case TargetType::UnknownTarget :
     {
         return Result::EvaluationError;

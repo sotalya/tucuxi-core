@@ -71,9 +71,11 @@ public:
                                                         std::move(cMin),
                                                         std::move(cMax),
                                                         std::move(cBest),
-                                                        std::unique_ptr<SubTargetDefinition>(new SubTargetDefinition("cBest", 1000.0, nullptr)),
-                                                        std::unique_ptr<SubTargetDefinition>(new SubTargetDefinition("cBest", 1000.0, nullptr)),
-                                                        std::unique_ptr<SubTargetDefinition>(new SubTargetDefinition("cBest", 1000.0, nullptr)));
+                                                        std::unique_ptr<SubTargetDefinition>(new SubTargetDefinition("tMin", 1000.0, nullptr)),
+                                                        std::unique_ptr<SubTargetDefinition>(new SubTargetDefinition("tMax", 1000.0, nullptr)),
+                                                        std::unique_ptr<SubTargetDefinition>(new SubTargetDefinition("tBest", 1000.0, nullptr)),
+                                                        std::unique_ptr<SubTargetDefinition>(new SubTargetDefinition("toxicity", 10000.0, nullptr)),
+                                                        std::unique_ptr<SubTargetDefinition>(new SubTargetDefinition("inefficacy", 000.0, nullptr)));
 
         ActiveMoiety *activeMoiety = new ActiveMoiety();
 
