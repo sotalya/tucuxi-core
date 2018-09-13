@@ -17,10 +17,28 @@ namespace Core {
 
 class ActiveSubstance;
 
+class MolarMass
+{
+public:
+    MolarMass(Value _value, Unit _unit) : m_value(_value), m_unit(_unit)
+    {}
+
+    MolarMass() {}
+
+protected:
+
+    Value m_value;
+    Unit m_unit;
+};
+
 class Analyte
 {
 public:
     Analyte();
+
+    Analyte(std::string _id, Unit _unit, MolarMass _molarMass) :
+        m_analyteId(_id), m_unit(_unit), m_molarMass(_molarMass) {
+    }
 
 //    void setName(std::string _name) { m_name = _name;}
 //    std::string getName() const { return m_name;}
@@ -28,7 +46,7 @@ public:
     void setAnalyteId(std::string _analyteId) { m_analyteId = _analyteId;}
     std::string getAnalyteId() const { return m_analyteId;}
 
-    void setResidualErrorModel(std::unique_ptr<IResidualErrorModel>& _residualErrorModel) { m_residualErrorModel = std::move(_residualErrorModel);}
+    void setResidualErrorModel(std::unique_ptr<IResidualErrorModel> _residualErrorModel) { m_residualErrorModel = std::move(_residualErrorModel);}
     const IResidualErrorModel& getResidualErrorModel() const { return *m_residualErrorModel; }
 
 //    void addTarget(std::unique_ptr<TargetDefinition>& _target) { m_targets.push_back(std::move(_target));}
@@ -39,11 +57,15 @@ protected:
 //    std::string m_name;
     std::string m_analyteId;
 
+    Unit m_unit;
+
     std::unique_ptr<IResidualErrorModel> m_residualErrorModel;
 
 //    TargetDefinitions m_targets;
 
     ActiveSubstance *m_activeSubstance;
+
+    MolarMass m_molarMass;
 
 };
 

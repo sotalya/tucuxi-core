@@ -102,7 +102,7 @@ public:
     
     void setDomain(std::unique_ptr<DrugModelDomain> _domain);
 
-    void setAnalyteSet(std::unique_ptr<AnalyteSet> _analyteSet);
+    void addAnalyteSet(std::unique_ptr<AnalyteSet> _analyteSet);
 
     std::string getPkModelId() const {
         if (m_analyteSets.size() > 0) {
@@ -120,6 +120,11 @@ public:
         m_timeConsiderations = std::move(_timeConsiderations);
     }
 
+    void setFormulationAndRoutes(std::unique_ptr<FormulationAndRoutes> _formulationAndRoutes)
+    {
+        m_formulationAndRoutes = std::move(_formulationAndRoutes);
+    }
+
     const TimeConsiderations &getTimeConsiderations() const { return *m_timeConsiderations;}
 
 private:
@@ -135,7 +140,7 @@ private:
     }
 
     const FullFormulationAndRoute* getFormulationAndRoute(const Formulation &_formulation, const AdministrationRoute _route) const {
-        return m_formulationAndRoutes.get(_formulation, _route);
+        return m_formulationAndRoutes->get(_formulation, _route);
     }
 
     const ParameterSetDefinition* getAbsorptionParameters(const std::string &_analyteId, const Formulation &_formulation, const AdministrationRoute _route) const {
@@ -168,7 +173,7 @@ private:
 
     std::unique_ptr<DrugModelDomain> m_domain;
 
-    FormulationAndRoutes m_formulationAndRoutes;
+    std::unique_ptr<FormulationAndRoutes> m_formulationAndRoutes;
 
     CovariateDefinitions m_covariates;
 

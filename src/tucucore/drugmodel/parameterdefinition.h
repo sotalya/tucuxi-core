@@ -22,23 +22,36 @@ namespace Core {
 
 enum class ParameterVariabilityType
 {
+    None = 0,
+    Normal,
+    LogNormal,
     Additive,
     Proportional,
-    Exponential,
-    None
+    Exponential
 };
 
+///
+/// \brief The ParameterVariability class
+/// The variability will usually only embed a single standard deviation.
+/// However, it is possible to use more than one standard deviation if required.
+///
 class ParameterVariability
 {
 public:
-    ParameterVariability(ParameterVariabilityType _type = ParameterVariabilityType::None, Value _value = 0.0) : m_type(_type), m_value(_value) {}
+    ParameterVariability(ParameterVariabilityType _type = ParameterVariabilityType::None, Value _value = 0.0) : m_type(_type) {
+        m_values.push_back(_value);
+    }
+
+    ParameterVariability(ParameterVariabilityType _type, std::vector<Value> _values) : m_type(_type), m_values(_values) {
+    }
 
     ParameterVariabilityType getType() const { return m_type; }
-    Value getValue() const { return m_value; }
+    Value getValue() const { return m_values.at(0); }
+    std::vector<Value> getValues() const { return m_values;}
 
 private:
     ParameterVariabilityType m_type;
-    Value m_value;
+    std::vector<Value> m_values;
 };
 
 /// \ingroup TucuCore
@@ -66,9 +79,16 @@ public:
     bool isVariable() const { return m_variability.getType() != ParameterVariabilityType::None; }
     ParameterVariability getVariability() const { return m_variability; }
 
+    /// \brief Set the validation operation
+    /// \param _operation Operation used to validate the covariate value
+    void setValidation(std::unique_ptr<Operation> _validation) { m_validation = std::move(_validation);}
+
 private:
     ParameterVariability m_variability;
     Unit m_unit;
+
+    /// \brief Operation to validate the value of the covariate
+    std::unique_ptr<Operation> m_validation;
 };
 
 /// \brief A list of parameters
@@ -151,7 +171,7 @@ typedef std::vector<InterParameterSetCorrelation> InterParameterSetCorrelations;
 class ParameterSetDefinition
 {
 public:
-    void addParameter(std::unique_ptr<ParameterDefinition> & _parameter) { m_parameters.push_back(std::move(_parameter));}
+    void addParameter(std::unique_ptr<ParameterDefinition> _parameter) { m_parameters.push_back(std::move(_parameter));}
 
     void addAnalyteId(std::string _analyteId) { m_analyteIds.push_back(_analyteId);}
 

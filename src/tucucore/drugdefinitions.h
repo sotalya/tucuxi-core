@@ -15,7 +15,7 @@ public:
     Unit() {}
     Unit(std::string _unitString) { m_unitString = _unitString; }
 
-    inline bool operator==(const Unit& rhs){ return this->m_unitString == rhs.m_unitString; }
+    inline bool operator==(const Unit& rhs) const { return this->m_unitString == rhs.m_unitString; }
 
 protected:
     std::string m_unitString;

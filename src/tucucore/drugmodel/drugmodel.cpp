@@ -43,6 +43,7 @@ const ParameterDefinition* ParameterDefinitionIterator::operator*()
 
 DrugModel::DrugModel()
 {
+    m_formulationAndRoutes = std::make_unique<FormulationAndRoutes>();
 }
 
 
@@ -72,13 +73,13 @@ const CovariateDefinitions& DrugModel::getCovariates() const
 
 const FormulationAndRoutes& DrugModel::getFormulationAndRoutes() const
 {
-    return m_formulationAndRoutes;
+    return *m_formulationAndRoutes;
 }
 
 
 void DrugModel::addFormulationAndRoute(std::unique_ptr<FullFormulationAndRoute> _formulationAndRoute, bool _isDefault)
 {
-    m_formulationAndRoutes.add(std::move(_formulationAndRoute), _isDefault);
+    m_formulationAndRoutes->add(std::move(_formulationAndRoute), _isDefault);
 }
 
 
@@ -93,7 +94,7 @@ void DrugModel::setDomain(std::unique_ptr<DrugModelDomain> _domain)
 }
 
 
-void DrugModel::setAnalyteSet(std::unique_ptr<AnalyteSet> _analyteSet)
+void DrugModel::addAnalyteSet(std::unique_ptr<AnalyteSet> _analyteSet)
 {
     m_analyteSets.push_back(std::move(_analyteSet));
 }

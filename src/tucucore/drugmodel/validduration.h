@@ -8,58 +8,28 @@
 #include <vector>
 
 #include "tucucommon/duration.h"
+#include "tucucore/drugdefinitions.h"
+#include "tucucore/validvalues.h"
 
 namespace Tucuxi {
 namespace Core {
 
-class ValidDurations
+
+class ValidDurations : public ValidValues
 {
 public:
-    ValidDurations(Tucuxi::Common::Duration _defaultDuration);
+    ValidDurations(Unit _unit, std::unique_ptr<PopulationValue> _defaultValue);
 
     virtual ~ValidDurations();
 
-
-    virtual std::vector<Tucuxi::Common::Duration> getDurations() const = 0;
-    void setDefaultDuration(Tucuxi::Common::Duration _duration);
     Tucuxi::Common::Duration getDefaultDuration() const;
 
-protected:
-    Tucuxi::Common::Duration m_defaultDuration;
-
-};
-
-class AnyDurations : public ValidDurations
-{
-public:
-    AnyDurations(
-            Tucuxi::Common::Duration _default,
-            Tucuxi::Common::Duration _from,
-            Tucuxi::Common::Duration _to,
-            Tucuxi::Common::Duration _step);
-
-    std::vector<Tucuxi::Common::Duration> getDurations() const override;
-protected:
-    Tucuxi::Common::Duration m_from;
-    Tucuxi::Common::Duration m_to;
-    Tucuxi::Common::Duration m_step;
-};
-
-class SpecificDurations : public ValidDurations
-{
-
-public:
-    SpecificDurations(Tucuxi::Common::Duration _default);
-
-    std::vector<Tucuxi::Common::Duration> getDurations() const override;
-
-    void addDuration(Tucuxi::Common::Duration _duration);
-
-//    SpecificDurations() {};
+    virtual std::vector<Tucuxi::Common::Duration> getDurations() const;
 
 protected:
 
-    std::vector<Tucuxi::Common::Duration> m_durations;
+    Tucuxi::Common::Duration valueToDuration(Value _value) const;
+
 };
 
 } // namespace Core

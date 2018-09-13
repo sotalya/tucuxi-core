@@ -7,6 +7,7 @@
 
 #include "tucucore/definitions.h"
 #include "tucucommon/general.h"
+#include "tucucore/drugdefinitions.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -19,6 +20,9 @@ namespace Core {
 class IResidualErrorModel
 {
 public:
+
+    /// \brief virtual destructor
+    virtual ~IResidualErrorModel() {}
 
     /// \brief Indicates if there is really an error model in it
     /// \return true if no error model is implemented within the class, false else
@@ -52,11 +56,14 @@ public:
         EXPONENTIAL,
         ADDITIVE,
         MIXED,
+        SOFTCODED,
         NONE
     };
 
     SigmaResidualErrorModel() : m_nbEpsilons(1) {}
 
+    void setFormula(std::unique_ptr<Operation> _formula) {m_formula = std::move(_formula);}
+    void addOriginalSigma(std::unique_ptr<PopulationValue> _sigma) {m_originalSigmas.push_back(std::move(_sigma));}
     void setSigma(Sigma _sigma) { m_sigma = _sigma;}
     void setErrorModel(ResidualErrorType _errorModel) { m_errorModel = _errorModel;}
     bool isEmpty() const override;
@@ -67,6 +74,11 @@ public:
     int nbEpsilons() const override { return m_nbEpsilons; }
 
 protected:
+
+    std::unique_ptr<Operation> m_formula;
+
+    std::vector<std::unique_ptr<PopulationValue> > m_originalSigmas;
+
     /// The Sigma vector
     Sigma m_sigma;
 

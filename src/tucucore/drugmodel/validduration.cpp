@@ -1,70 +1,68 @@
 #include "validduration.h"
 
+#include <chrono>
+
+#include "tucucore/drugdefinitions.h"
 
 namespace Tucuxi {
 namespace Core {
 
-ValidDurations::ValidDurations(Common::Duration _defaultDuration) :
-    m_defaultDuration(_defaultDuration)
+using Tucuxi::Common::Duration;
+
+using namespace std::chrono_literals;
+
+ValidDurations::ValidDurations(Unit _unit, std::unique_ptr<PopulationValue> _defaultValue) : ValidValues(_unit, std::move(_defaultValue))
 {
 
 }
+
 
 ValidDurations::~ValidDurations()
 {
 
 }
 
+/*
 void ValidDurations::setDefaultDuration(Tucuxi::Common::Duration _duration)
 {
     m_defaultDuration = _duration;
 }
+*/
 
 Tucuxi::Common::Duration ValidDurations::getDefaultDuration() const
 {
-    return m_defaultDuration;
+    // TODO : Manage covariates
+    return valueToDuration(m_defaultValue->getValue() );
 }
 
 
-AnyDurations::AnyDurations(
-        Tucuxi::Common::Duration _default,
-        Tucuxi::Common::Duration _from,
-        Tucuxi::Common::Duration _to,
-        Tucuxi::Common::Duration _step) :
-    ValidDurations(_default),
-    m_from(_from), m_to(_to), m_step(_step)
-{}
-
-std::vector<Tucuxi::Common::Duration> AnyDurations::getDurations() const
+std::vector<Tucuxi::Common::Duration> ValidDurations::getDurations() const
 {
-    Tucuxi::Common::Duration currentDuration = m_from;
-    std::vector<Tucuxi::Common::Duration> result;
-
-    while (currentDuration <= m_to) {
-        result.push_back(currentDuration);
-        currentDuration += m_step;
+    std::vector<Value> values = getValues();
+    std::vector<Tucuxi::Common::Duration> durations(values.size());
+    for (size_t i = 0; i < values.size(); i++) {
+        durations[i] = valueToDuration(values[i]);
     }
-    return result;
+    return durations;
 }
 
-
-SpecificDurations::SpecificDurations(Common::Duration _default) :
-    ValidDurations(_default)
+Tucuxi::Common::Duration ValidDurations::valueToDuration(Value _value) const
 {
-
+    if (m_unit == Unit("d")) {
+        return Duration(24h) * _value;
+    }
+    else if (m_unit == Unit("h")) {
+        return Duration(1h) * _value;
+    }
+    else if (m_unit == Unit("m")) {
+        return Duration(1min) * _value;
+    }
+    else if (m_unit == Unit("s")) {
+        return Duration(1s) * _value;
+    }
+    assert(false);
+    return Duration(0h);
 }
-
-
-std::vector<Tucuxi::Common::Duration> SpecificDurations::getDurations() const
-{
-    return m_durations;
-}
-
-void SpecificDurations::addDuration(Common::Duration _duration)
-{
-    m_durations.push_back(_duration);
-}
-
 
 
 }

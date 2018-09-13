@@ -60,7 +60,7 @@ public:
 
         std::unique_ptr<IResidualErrorModel> err(errorModel);
 
-        analyte->setResidualErrorModel(err);
+        analyte->setResidualErrorModel(std::move(err));
 
         // Add targets
         std::unique_ptr<SubTargetDefinition> cMin(new SubTargetDefinition("cMin", 750.0, nullptr));
@@ -92,7 +92,7 @@ public:
                                            OperationInput("sex", InputType::DOUBLE)});
 
         std::unique_ptr<ParameterDefinition> PV(new Tucuxi::Core::ParameterDefinition("V", 347, opV, Tucuxi::Core::ParameterVariability(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.629)));
-        dispositionParameters->addParameter(PV);
+        dispositionParameters->addParameter(std::move(PV));
         Operation *opCl = new JSOperation(" \
                                             theta1=Cl_population; \
                                             theta4=5.42; \
@@ -117,7 +117,7 @@ public:
                                               OperationInput("gist", InputType::BOOL)});
 
         std::unique_ptr<ParameterDefinition> PCL(new Tucuxi::Core::ParameterDefinition("Cl", 15.106, opCl, Tucuxi::Core::ParameterVariability(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.356)));
-        dispositionParameters->addParameter(PCL);
+        dispositionParameters->addParameter(std::move(PCL));
 
         dispositionParameters->addCorrelation(Correlation("Cl", "V", 0.798));
         analyteSet->setDispositionParameters(std::move(dispositionParameters));
@@ -140,9 +140,9 @@ public:
 
             std::unique_ptr<ParameterSetDefinition> absorptionParameters(new ParameterSetDefinition());
             std::unique_ptr<ParameterDefinition> PKa(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
-            absorptionParameters->addParameter(PKa);
+            absorptionParameters->addParameter(std::move(PKa));
             std::unique_ptr<ParameterDefinition> PF(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
-            absorptionParameters->addParameter(PF);
+            absorptionParameters->addParameter(std::move(PF));
 
             association->setAbsorptionParameters(std::move(absorptionParameters));
             FormulationAndRoute formulationSpecs(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::EXTRAVASCULAR, "No details");
@@ -164,9 +164,13 @@ public:
 
             formulationAndRoute->setValidDoses(std::move(doses));
 
-            SpecificDurations* validIntervals = new SpecificDurations(24h);
-            validIntervals->addDuration(Duration(12h));
-            validIntervals->addDuration(Duration(24h));
+            ValidValuesFixed *fixedIntervals = new ValidValuesFixed();
+            fixedIntervals->addValue(12);
+            fixedIntervals->addValue(24);
+
+            ValidDurations *validIntervals = new ValidDurations(Unit("h"), std::make_unique<PopulationValue>("", 24));
+            validIntervals->addValues(std::unique_ptr<IValidValues>(fixedIntervals));
+
 
             std::unique_ptr<ValidDurations> intervals(validIntervals);
             formulationAndRoute->setValidIntervals(std::move(intervals));
@@ -182,9 +186,9 @@ public:
             std::unique_ptr<ParameterSetDefinition> absorptionParameters(new ParameterSetDefinition());
 
             std::unique_ptr<ParameterDefinition> PKa(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
-            absorptionParameters->addParameter(PKa);
+            absorptionParameters->addParameter(std::move(PKa));
             std::unique_ptr<ParameterDefinition> PF(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
-            absorptionParameters->addParameter(PF);
+            absorptionParameters->addParameter(std::move(PF));
 
             association->setAbsorptionParameters(std::move(absorptionParameters));
             FormulationAndRoute formulationSpecs(Formulation::ParenteralSolution, AdministrationRoute::IntravenousBolus, AbsorptionModel::INTRAVASCULAR, "No details");
@@ -205,16 +209,24 @@ public:
 
             formulationAndRoute->setValidDoses(std::move(validDoses));
 
-            std::unique_ptr<SpecificDurations> validIntervals(new SpecificDurations(24h));
-            validIntervals->addDuration(Duration(12h));
-            validIntervals->addDuration(Duration(24h));
-            formulationAndRoute->setValidIntervals(std::move(validIntervals));
+
+            ValidValuesFixed *fixedIntervals = new ValidValuesFixed();
+            fixedIntervals->addValue(12);
+            fixedIntervals->addValue(24);
+
+            ValidDurations *validIntervals = new ValidDurations(Unit("h"), std::make_unique<PopulationValue>("", 24));
+            validIntervals->addValues(std::unique_ptr<IValidValues>(fixedIntervals));
+            formulationAndRoute->setValidIntervals(std::unique_ptr<ValidDurations>(validIntervals));
+
 
             // This is just here as an example.
-            std::unique_ptr<SpecificDurations> validInfusionTimes(new SpecificDurations(1h));
-            validInfusionTimes->addDuration(Duration(30min));
-            validInfusionTimes->addDuration(Duration(1h));
-            formulationAndRoute->setValidInfusionTimes(std::move(validInfusionTimes));
+            ValidValuesFixed *fixedInfusions = new ValidValuesFixed();
+            fixedInfusions->addValue(0.5);
+            fixedInfusions->addValue(1);
+
+            ValidDurations *validInfusionTimes = new ValidDurations(Unit("h"), std::make_unique<PopulationValue>("", 1));
+            validInfusionTimes->addValues(std::unique_ptr<IValidValues>(fixedInfusions));
+            formulationAndRoute->setValidInfusionTimes(std::unique_ptr<ValidDurations>(validInfusionTimes));
 
             model->addFormulationAndRoute(std::move(formulationAndRoute));
         }
@@ -227,9 +239,9 @@ public:
             std::unique_ptr<ParameterSetDefinition> absorptionParameters(new ParameterSetDefinition());
 
             std::unique_ptr<ParameterDefinition> PKa(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
-            absorptionParameters->addParameter(PKa);
+            absorptionParameters->addParameter(std::move(PKa));
             std::unique_ptr<ParameterDefinition> PF(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
-            absorptionParameters->addParameter(PF);
+            absorptionParameters->addParameter(std::move(PF));
 
             association->setAbsorptionParameters(std::move(absorptionParameters));
             FormulationAndRoute formulationSpecs(Formulation::ParenteralSolution, AdministrationRoute::IntravenousDrip, AbsorptionModel::INFUSION, "No details");
@@ -249,6 +261,7 @@ public:
 
             formulationAndRoute->setValidDoses(std::move(validDoses));
 
+            /*
             std::unique_ptr<SpecificDurations> validIntervals(new SpecificDurations(24h));
             validIntervals->addDuration(Duration(12h));
             validIntervals->addDuration(Duration(24h));
@@ -258,11 +271,31 @@ public:
             validInfusions->addDuration(Duration(30min));
             validInfusions->addDuration(Duration(1h));
             formulationAndRoute->setValidInfusionTimes(std::move(validInfusions));
+*/
+
+
+            ValidValuesFixed *fixedIntervals = new ValidValuesFixed();
+            fixedIntervals->addValue(12);
+            fixedIntervals->addValue(24);
+
+            ValidDurations *validIntervals = new ValidDurations(Unit("h"), std::make_unique<PopulationValue>("", 24));
+            validIntervals->addValues(std::unique_ptr<IValidValues>(fixedIntervals));
+            formulationAndRoute->setValidInfusionTimes(std::unique_ptr<ValidDurations>(validIntervals));
+
+
+            // This is just here as an example.
+            ValidValuesFixed *fixedInfusions = new ValidValuesFixed();
+            fixedInfusions->addValue(0.5);
+            fixedInfusions->addValue(1);
+
+            ValidDurations *validInfusionTimes = new ValidDurations(Unit("h"), std::make_unique<PopulationValue>("", 1));
+            validInfusionTimes->addValues(std::unique_ptr<IValidValues>(fixedInfusions));
+            formulationAndRoute->setValidIntervals(std::unique_ptr<ValidDurations>(validInfusionTimes));
 
             model->addFormulationAndRoute(std::move(formulationAndRoute));
         }
 
-        model->setAnalyteSet(std::move(analyteSet));
+        model->addAnalyteSet(std::move(analyteSet));
         return model;
     }
 };
