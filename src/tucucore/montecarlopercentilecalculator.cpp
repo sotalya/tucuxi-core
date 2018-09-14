@@ -399,7 +399,7 @@ IPercentileCalculator::ComputingResult AposterioriMonteCarloPercentileCalculator
     std::vector<std::thread> workers;
     for(unsigned thread = 0;thread < nbThreads; thread++) {
         workers.push_back(std::thread([thread, &abort, _aborter, nbThreads, _etas, meanEtas, avecs, etaLowerChol,
-                                      &etaSamples, logLikelihood, studentLiberty, subomega, &ratio]()
+                                      samples, &etaSamples, logLikelihood, studentLiberty, subomega, &ratio]()
         {
             unsigned start = thread * (samples / nbThreads);
             unsigned end = (thread + 1 ) * (samples / nbThreads);
