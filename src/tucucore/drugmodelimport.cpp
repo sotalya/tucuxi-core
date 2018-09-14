@@ -1,5 +1,7 @@
 #include "drugmodelimport.h"
 
+#include <iostream>
+
 #include "tucucommon/xmldocument.h"
 #include "tucucommon/xmlnode.h"
 #include "tucucommon/xmlattribute.h"
@@ -12,7 +14,6 @@
 #include "tucucore/hardcodedoperation.h"
 #include "tucucore/residualerrormodel.h"
 
-#include <iostream>
 
 using namespace Tucuxi::Common;
 using namespace Tucuxi::Core;
@@ -21,7 +22,11 @@ namespace Tucuxi {
 namespace Core {
 
 
+/// Macro to delete a pointer if it is not nullptr
 #define DELETE_IF_NON_NULL(p) {if (p != nullptr) { delete p;}}
+
+/// Macro to delete a vector of pointers.
+/// It deletes every pointed value and emptied the vector.
 #define DELETE_PVECTOR(v) { \
     while (v.size() != 0) { \
     delete v.at(v.size() - 1); \
@@ -30,10 +35,307 @@ namespace Core {
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
+/// public methods
+///////////////////////////////////////////////////////////////////////////////
+
 DrugModelImport::DrugModelImport()
 {
 
 }
+
+
+
+DrugModelImport::Result DrugModelImport::importFromFile(Tucuxi::Core::DrugModel *&_drugModel, std::string _fileName)
+{
+    // Ensure the function is reentrant
+    std::lock_guard<std::mutex> lock(m_mutex);
+
+    setResult(Result::Ok);
+    _drugModel = nullptr;
+
+    XmlDocument document;
+    if (!document.open(_fileName)) {
+        return Result::CantOpenFile;
+    }
+
+    return importDocument(_drugModel, document);
+}
+
+
+DrugModelImport::Result DrugModelImport::importFromString(Tucuxi::Core::DrugModel *&_drugModel, std::string _xml)
+{
+    // Ensure the function is reentrant
+    std::lock_guard<std::mutex> lock(m_mutex);
+
+    setResult(Result::Ok);
+    _drugModel = nullptr;
+
+    XmlDocument document;
+
+    if (!document.fromString(_xml)) {
+        return Result::Error;
+    }
+
+    return importDocument(_drugModel, document);
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+/// General methods
+///////////////////////////////////////////////////////////////////////////////
+
+DrugModelImport::Result DrugModelImport::importDocument(
+        Tucuxi::Core::DrugModel *&_drugModel,
+        Tucuxi::Common::XmlDocument & _document)
+{
+    XmlNode root = _document.getRoot();
+
+    XmlNodeIterator drugModelIterator = root.getChildren("drugModel");
+
+    if (drugModelIterator == XmlNodeIterator::none()) {
+        return Result::Error;
+    }
+
+    _drugModel = extractDrugModel(drugModelIterator);
+
+    return getResult();
+
+}
+
+
+
+const std::vector<std::string>& DrugModelImport::ignoredTags() const {
+    static std::vector<std::string> ignoredTags =
+    {"comments", "description", "errorMessage", "name", "activeMoietyName"};
+    return ignoredTags;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// basic types imports
+///////////////////////////////////////////////////////////////////////////////
+
+
+Unit DrugModelImport::extractUnit(Tucuxi::Common::XmlNodeIterator _node)
+{
+    Unit result(_node->getValue());
+    return result;
+}
+
+double DrugModelImport::extractDouble(Tucuxi::Common::XmlNodeIterator _node)
+{
+    double result;
+    try {
+        result = std::stod(_node->getValue());
+    } catch (...) {
+        setResult(Result::Error);
+        result = 0.0;
+    }
+    return result;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// enum class imports
+///////////////////////////////////////////////////////////////////////////////
+
+
+CovariateType DrugModelImport::extractCovariateType(Tucuxi::Common::XmlNodeIterator _node)
+{
+    static std::map<std::string, CovariateType> m =
+    {
+        {"standard", CovariateType::Standard},
+        //{"sex", CovariateType::Sex},
+        {"ageInYears", CovariateType::AgeInYears},
+        {"ageInDays", CovariateType::AgeInDays},
+        {"ageInMonths", CovariateType::AgeInMonths}
+    };
+
+
+    auto it = m.find(_node->getValue());
+    if (it != m.end())
+        return it->second;
+
+    setResult(Result::Error);
+    return CovariateType::Standard;
+}
+
+DataType DrugModelImport::extractDataType(Tucuxi::Common::XmlNodeIterator _node)
+{
+
+    static std::map<std::string, DataType> m =
+    {
+        {"int", DataType::Int},
+        {"double", DataType::Double},
+        {"bool", DataType::Bool},
+        {"date", DataType::Date}
+    };
+
+
+    auto it = m.find(_node->getValue());
+    if (it != m.end())
+        return it->second;
+
+    setResult(Result::Error);
+    return DataType::Double;
+}
+
+TargetType DrugModelImport::extractTargetType(Tucuxi::Common::XmlNodeIterator _node)
+{
+    static std::map<std::string, TargetType> m =
+    {
+        {"peak", TargetType::Peak},
+        {"residual", TargetType::Residual},
+        {"mean", TargetType::Mean},
+        {"auc", TargetType::Auc},
+        {"cumulativeAuc", TargetType::CumulativeAuc},
+        {"aucOverMic", TargetType::AucOverMic},
+        {"timeOverMic", TargetType::TimeOverMic},
+        {"aucDividedByMic", TargetType::AucDividedByMic},
+        {"peakDividedByMic", TargetType::PeakDividedByMic}
+    };
+
+    auto it = m.find(_node->getValue());
+    if (it != m.end())
+        return it->second;
+
+    setResult(Result::Error);
+    return TargetType::UnknownTarget;
+}
+
+InterpolationType DrugModelImport::extractInterpolationType(Tucuxi::Common::XmlNodeIterator _node)
+{
+
+    static std::map<std::string, InterpolationType> m =
+    {
+        {"direct", InterpolationType::Direct},
+        {"linear", InterpolationType::Linear},
+        {"sigmoid", InterpolationType::Sigmoid},
+        {"tanh", InterpolationType::Tanh}
+    };
+
+    auto it = m.find(_node->getValue());
+    if (it != m.end())
+        return it->second;
+
+    setResult(Result::Error);
+    return InterpolationType::Direct;
+}
+
+
+SigmaResidualErrorModel::ResidualErrorType DrugModelImport::extractResidualErrorType(Tucuxi::Common::XmlNodeIterator _node)
+{
+    static std::map<std::string, SigmaResidualErrorModel::ResidualErrorType> m =
+    {
+        {"additive", SigmaResidualErrorModel::ResidualErrorType::ADDITIVE},
+        {"proportional", SigmaResidualErrorModel::ResidualErrorType::PROPORTIONAL},
+        {"exponential", SigmaResidualErrorModel::ResidualErrorType::EXPONENTIAL},
+        {"mixed", SigmaResidualErrorModel::ResidualErrorType::MIXED},
+        {"softcoded", SigmaResidualErrorModel::ResidualErrorType::SOFTCODED},
+        {"none", SigmaResidualErrorModel::ResidualErrorType::NONE}
+    };
+
+    auto it = m.find(_node->getValue());
+    if (it != m.end())
+        return it->second;
+
+    setResult(Result::Error);
+    return SigmaResidualErrorModel::ResidualErrorType::NONE;
+}
+
+
+ParameterVariabilityType DrugModelImport::extractParameterVariabilityType(Tucuxi::Common::XmlNodeIterator _node)
+{
+    static std::map<std::string, ParameterVariabilityType> m =
+    {
+        {"normal", ParameterVariabilityType::Normal},
+        {"lognormal", ParameterVariabilityType::LogNormal},
+        {"proportional", ParameterVariabilityType::Proportional},
+        {"additive", ParameterVariabilityType::Additive},
+        {"none", ParameterVariabilityType::None}
+    };
+
+    auto it = m.find(_node->getValue());
+    if (it != m.end())
+        return it->second;
+
+    setResult(Result::Error);
+    return ParameterVariabilityType::None;
+}
+
+Formulation DrugModelImport::extractFormulation(Tucuxi::Common::XmlNodeIterator _node)
+{
+
+    static std::map<std::string, Formulation> m =
+    {
+        {"undefined", Formulation::Undefined},
+        {"parenteral solution", Formulation::ParenteralSolution},
+        {"oral solution", Formulation::OralSolution},
+        {"test", Formulation::Test}
+    };
+
+    auto it = m.find(_node->getValue());
+    if (it != m.end())
+        return it->second;
+
+    setResult(Result::Error);
+    return Formulation::Undefined;
+}
+
+
+AdministrationRoute DrugModelImport::extractAdministrationRoute(Tucuxi::Common::XmlNodeIterator _node)
+{
+
+    static std::map<std::string, AdministrationRoute> m =
+    {
+        {"undefined", AdministrationRoute::Undefined},
+        {"intramuscular", AdministrationRoute::Intramuscular},
+        {"intravenousBolus", AdministrationRoute::IntravenousBolus},
+        {"intravenousDrip", AdministrationRoute::IntravenousDrip},
+        {"nasal", AdministrationRoute::Nasal},
+        {"oral", AdministrationRoute::Oral},
+        {"rectal", AdministrationRoute::Rectal},
+        {"subcutaneous", AdministrationRoute::Subcutaneous},
+        {"sublingual", AdministrationRoute::Sublingual},
+        {"transdermal", AdministrationRoute::Transdermal},
+        {"vaginal", AdministrationRoute::Vaginal}
+    };
+
+    auto it = m.find(_node->getValue());
+    if (it != m.end())
+        return it->second;
+
+    setResult(Result::Error);
+    return AdministrationRoute::Undefined;
+}
+
+
+RouteModel DrugModelImport::extractRouteModel(Tucuxi::Common::XmlNodeIterator _node)
+{
+
+    static std::map<std::string, RouteModel> m =
+    {
+        {"undefined", RouteModel::UNDEFINED},
+        {"bolus", RouteModel::INTRAVASCULAR},
+        {"extra", RouteModel::EXTRAVASCULAR},
+        {"infus", RouteModel::INFUSION}
+    };
+
+    auto it = m.find(_node->getValue());
+    if (it != m.end())
+        return it->second;
+
+    setResult(Result::Error);
+    return RouteModel::UNDEFINED;
+
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+/// objects imports
+///////////////////////////////////////////////////////////////////////////////
+
+
 
 JSOperation* DrugModelImport::extractJSOperation(Tucuxi::Common::XmlNodeIterator _node)
 {
@@ -197,71 +499,7 @@ LightPopulationValue *DrugModelImport::extractPopulationValue(Tucuxi::Common::Xm
     return populationValue;
 }
 
-Unit DrugModelImport::extractUnit(Tucuxi::Common::XmlNodeIterator _node)
-{
-    Unit result(_node->getValue());
-    return result;
-}
 
-double DrugModelImport::extractDouble(Tucuxi::Common::XmlNodeIterator _node)
-{
-    double result;
-    try {
-        result = std::stod(_node->getValue());
-    } catch (...) {
-        setResult(Result::Error);
-        result = 0.0;
-    }
-    return result;
-}
-
-DrugModelImport::Result DrugModelImport::importFromFile(Tucuxi::Core::DrugModel *&_drugModel, std::string _fileName)
-{
-    setResult(Result::Ok);
-    _drugModel = nullptr;
-
-    XmlDocument document;
-    if (!document.open(_fileName)) {
-        return Result::CantOpenFile;
-    }
-
-    XmlNode root = document.getRoot();
-
-    XmlNodeIterator drugModelIterator = root.getChildren("drugModel");
-
-    if (drugModelIterator == XmlNodeIterator::none()) {
-        return Result::Error;
-    }
-
-    _drugModel = extractDrugModel(drugModelIterator);
-
-    return getResult();
-}
-
-
-DrugModelImport::Result DrugModelImport::importFromString(Tucuxi::Core::DrugModel *&_drugModel, std::string _xml)
-{
-    setResult(Result::Ok);
-    _drugModel = nullptr;
-
-    XmlDocument document;
-
-    if (!document.fromString(_xml)) {
-        return Result::Error;
-    }
-
-    XmlNode root = document.getRoot();
-
-    XmlNodeIterator drugModelIterator = root.getChildren("drugModel");
-
-    if (drugModelIterator == XmlNodeIterator::none()) {
-        return Result::Error;
-    }
-
-    _drugModel = extractDrugModel(drugModelIterator);
-
-    return getResult();
-}
 
 DrugModel* DrugModelImport::extractDrugModel(Tucuxi::Common::XmlNodeIterator _node)
 {
@@ -645,197 +883,6 @@ CovariateDefinition* DrugModelImport::extractCovariate(Tucuxi::Common::XmlNodeIt
     covariate->setValidation(std::unique_ptr<Operation>(validation));
 
     return covariate;
-
-}
-
-
-CovariateType DrugModelImport::extractCovariateType(Tucuxi::Common::XmlNodeIterator _node)
-{
-    static std::map<std::string, CovariateType> m =
-    {
-        {"standard", CovariateType::Standard},
-        //{"sex", CovariateType::Sex},
-        {"ageInYears", CovariateType::AgeInYears},
-        {"ageInDays", CovariateType::AgeInDays},
-        {"ageInMonths", CovariateType::AgeInMonths}
-    };
-
-
-    auto it = m.find(_node->getValue());
-    if (it != m.end())
-        return it->second;
-
-    setResult(Result::Error);
-    return CovariateType::Standard;
-}
-
-DataType DrugModelImport::extractDataType(Tucuxi::Common::XmlNodeIterator _node)
-{
-
-    static std::map<std::string, DataType> m =
-    {
-        {"int", DataType::Int},
-        {"double", DataType::Double},
-        {"bool", DataType::Bool},
-        {"date", DataType::Date}
-    };
-
-
-    auto it = m.find(_node->getValue());
-    if (it != m.end())
-        return it->second;
-
-    setResult(Result::Error);
-    return DataType::Double;
-}
-
-TargetType DrugModelImport::extractTargetType(Tucuxi::Common::XmlNodeIterator _node)
-{
-    static std::map<std::string, TargetType> m =
-    {
-        {"peak", TargetType::Peak},
-        {"residual", TargetType::Residual},
-        {"mean", TargetType::Mean},
-        {"auc", TargetType::Auc},
-        {"cumulativeAuc", TargetType::CumulativeAuc},
-        {"aucOverMic", TargetType::AucOverMic},
-        {"timeOverMic", TargetType::TimeOverMic},
-        {"aucDividedByMic", TargetType::AucDividedByMic},
-        {"peakDividedByMic", TargetType::PeakDividedByMic}
-    };
-
-    auto it = m.find(_node->getValue());
-    if (it != m.end())
-        return it->second;
-
-    setResult(Result::Error);
-    return TargetType::UnknownTarget;
-}
-
-InterpolationType DrugModelImport::extractInterpolationType(Tucuxi::Common::XmlNodeIterator _node)
-{
-
-    static std::map<std::string, InterpolationType> m =
-    {
-        {"direct", InterpolationType::Direct},
-        {"linear", InterpolationType::Linear},
-        {"sigmoid", InterpolationType::Sigmoid},
-        {"tanh", InterpolationType::Tanh}
-    };
-
-    auto it = m.find(_node->getValue());
-    if (it != m.end())
-        return it->second;
-
-    setResult(Result::Error);
-    return InterpolationType::Direct;
-}
-
-
-SigmaResidualErrorModel::ResidualErrorType DrugModelImport::extractResidualErrorType(Tucuxi::Common::XmlNodeIterator _node)
-{
-    static std::map<std::string, SigmaResidualErrorModel::ResidualErrorType> m =
-    {
-        {"additive", SigmaResidualErrorModel::ResidualErrorType::ADDITIVE},
-        {"proportional", SigmaResidualErrorModel::ResidualErrorType::PROPORTIONAL},
-        {"exponential", SigmaResidualErrorModel::ResidualErrorType::EXPONENTIAL},
-        {"mixed", SigmaResidualErrorModel::ResidualErrorType::MIXED},
-        {"softcoded", SigmaResidualErrorModel::ResidualErrorType::SOFTCODED},
-        {"none", SigmaResidualErrorModel::ResidualErrorType::NONE}
-    };
-
-    auto it = m.find(_node->getValue());
-    if (it != m.end())
-        return it->second;
-
-    setResult(Result::Error);
-    return SigmaResidualErrorModel::ResidualErrorType::NONE;
-}
-
-
-ParameterVariabilityType DrugModelImport::extractParameterVariabilityType(Tucuxi::Common::XmlNodeIterator _node)
-{
-    static std::map<std::string, ParameterVariabilityType> m =
-    {
-        {"normal", ParameterVariabilityType::Normal},
-        {"lognormal", ParameterVariabilityType::LogNormal},
-        {"proportional", ParameterVariabilityType::Proportional},
-        {"additive", ParameterVariabilityType::Additive},
-        {"none", ParameterVariabilityType::None}
-    };
-
-    auto it = m.find(_node->getValue());
-    if (it != m.end())
-        return it->second;
-
-    setResult(Result::Error);
-    return ParameterVariabilityType::None;
-}
-
-Formulation DrugModelImport::extractFormulation(Tucuxi::Common::XmlNodeIterator _node)
-{
-
-    static std::map<std::string, Formulation> m =
-    {
-        {"undefined", Formulation::Undefined},
-        {"parenteral solution", Formulation::ParenteralSolution},
-        {"oral solution", Formulation::OralSolution},
-        {"test", Formulation::Test}
-    };
-
-    auto it = m.find(_node->getValue());
-    if (it != m.end())
-        return it->second;
-
-    setResult(Result::Error);
-    return Formulation::Undefined;
-}
-
-
-AdministrationRoute DrugModelImport::extractAdministrationRoute(Tucuxi::Common::XmlNodeIterator _node)
-{
-
-    static std::map<std::string, AdministrationRoute> m =
-    {
-        {"undefined", AdministrationRoute::Undefined},
-        {"intramuscular", AdministrationRoute::Intramuscular},
-        {"intravenousBolus", AdministrationRoute::IntravenousBolus},
-        {"intravenousDrip", AdministrationRoute::IntravenousDrip},
-        {"nasal", AdministrationRoute::Nasal},
-        {"oral", AdministrationRoute::Oral},
-        {"rectal", AdministrationRoute::Rectal},
-        {"subcutaneous", AdministrationRoute::Subcutaneous},
-        {"sublingual", AdministrationRoute::Sublingual},
-        {"transdermal", AdministrationRoute::Transdermal},
-        {"vaginal", AdministrationRoute::Vaginal}
-    };
-
-    auto it = m.find(_node->getValue());
-    if (it != m.end())
-        return it->second;
-
-    setResult(Result::Error);
-    return AdministrationRoute::Undefined;
-}
-
-
-RouteModel DrugModelImport::extractRouteModel(Tucuxi::Common::XmlNodeIterator _node)
-{
-
-    static std::map<std::string, RouteModel> m =
-    {
-        {"undefined", RouteModel::UNDEFINED},
-        {"bolus", RouteModel::INTRAVASCULAR},
-        {"extra", RouteModel::EXTRAVASCULAR},
-        {"infus", RouteModel::INFUSION}
-    };
-
-    auto it = m.find(_node->getValue());
-    if (it != m.end())
-        return it->second;
-
-    setResult(Result::Error);
-    return RouteModel::UNDEFINED;
 
 }
 

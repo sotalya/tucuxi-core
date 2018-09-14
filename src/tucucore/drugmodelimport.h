@@ -3,8 +3,11 @@
 
 #include <string>
 #include <vector>
+#include <mutex>
 
 #include "tucucommon/xmlnode.h"
+#include "tucucommon/xmldocument.h"
+
 #include "tucucore/definitions.h"
 #include "tucucore/residualerrormodel.h"
 #include "tucucore/drugmodel/parameterdefinition.h"
@@ -13,6 +16,11 @@
 
 namespace Tucuxi {
 namespace Core {
+
+enum class CovariateType;
+enum class DataType;
+enum class InterpolationType;
+enum class TargetType;
 
 class DrugModel;
 class TimeConsiderations;
@@ -37,10 +45,6 @@ class Correlation;
 class FullFormulationAndRoute;
 class FormulationAndRoutes;
 
-enum class CovariateType;
-enum class DataType;
-enum class InterpolationType;
-enum class TargetType;
 
 class LightPopulationValue
 {
@@ -65,6 +69,8 @@ public:
 
 protected:
 
+    virtual ~IImport() = default;
+
     void setResult(Result _result) {
         // Totally unuseful test, bug good to add a breakpoint in the else during debugging
         if (_result == Result::Ok) {
@@ -76,8 +82,8 @@ protected:
     }
 
     void unexpectedTag(std::string tagName) {
-        std::vector<std::string> unused = {"comments", "description", "errorMessage", "name", "activeMoietyName"};
-        for(const auto & s : unused) {
+        std::vector<std::string> ignored = ignoredTags();
+        for(const auto & s : ignored) {
             if (s == tagName) {
                 return;
             }
@@ -86,6 +92,9 @@ protected:
     }
 
     Result getResult() const { return m_result;}
+
+
+    virtual const std::vector<std::string> &ignoredTags() const = 0;
 
 private:
 
@@ -97,13 +106,73 @@ class DrugModelImport : public IImport
 public:
 
 
+    ///
+    /// \brief DrugModelImport empty constructor
+    ///
     DrugModelImport();
 
+    ///
+    /// \brief importFromFile
+    /// \param _drugModel A reference to a DrugModel pointer that will be allocated within the function
+    /// \param _fileName The name of the file in which the drug model is stored
+    /// \return Result::Ok if the import went well, another Result else.
+    /// This function is reentrant.
+    ///
     Result importFromFile(Tucuxi::Core::DrugModel *&_drugModel, std::string _fileName);
+
+    ///
+    /// \brief importFromString
+    /// \param _drugModel A reference to a DrugModel pointer that will be allocated within the function
+    /// \param _xml A string in which the drug model is stored
+    /// \return Result::Ok if the import went well, another Result else.
+    /// This function is reentrant.
+    ///
     Result importFromString(Tucuxi::Core::DrugModel *&_drugModel, std::string _xml);
 
 protected:
 
+    const std::vector<std::string> &ignoredTags() const override;
+
+    /// A mutex to ensure the public methods are reentrant
+    std::mutex m_mutex;
+
+    ///
+    /// \brief importFromString
+    /// \param _drugModel A reference to a DrugModel pointer that will be allocated within the function
+    /// \param _document An XmlDocument in which the drug model is stored
+    /// \return Result::Ok if the import went well, another Result else.
+    /// This function is reentrant.
+    ///
+    Result importDocument(Tucuxi::Core::DrugModel *&_drugModel, Tucuxi::Common::XmlDocument & _document);
+
+    ///////////////////////////////////////////////////////////////////////////////
+    /// basic types imports
+    ///////////////////////////////////////////////////////////////////////////////
+
+    Unit extractUnit(Tucuxi::Common::XmlNodeIterator _node);
+    double extractDouble(Tucuxi::Common::XmlNodeIterator _node);
+
+
+    ///////////////////////////////////////////////////////////////////////////////
+    /// enum class imports
+    ///////////////////////////////////////////////////////////////////////////////
+
+    CovariateType extractCovariateType(Tucuxi::Common::XmlNodeIterator _node);
+    DataType extractDataType(Tucuxi::Common::XmlNodeIterator _node);
+    InterpolationType extractInterpolationType(Tucuxi::Common::XmlNodeIterator _node);
+    TargetType extractTargetType(Tucuxi::Common::XmlNodeIterator _node);
+    SigmaResidualErrorModel::ResidualErrorType extractResidualErrorType(Tucuxi::Common::XmlNodeIterator _node);
+    ParameterVariabilityType extractParameterVariabilityType(Tucuxi::Common::XmlNodeIterator _node);
+    Formulation extractFormulation(Tucuxi::Common::XmlNodeIterator _node);
+    AdministrationRoute extractAdministrationRoute(Tucuxi::Common::XmlNodeIterator _node);
+    RouteModel extractRouteModel(Tucuxi::Common::XmlNodeIterator _node);
+
+
+
+
+    ///////////////////////////////////////////////////////////////////////////////
+    /// objects imports
+    ///////////////////////////////////////////////////////////////////////////////
 
     DrugModel* extractDrugModel(Tucuxi::Common::XmlNodeIterator _node);
     TimeConsiderations* extractTimeConsiderations(Tucuxi::Common::XmlNodeIterator _node);
@@ -134,29 +203,11 @@ protected:
     ValidDoses* extractValidDoses(Tucuxi::Common::XmlNodeIterator _node);
     ValidValuesRange* extractValuesRange(Tucuxi::Common::XmlNodeIterator _node);
     ValidValuesFixed* extractValuesFixed(Tucuxi::Common::XmlNodeIterator _node);
-
     std::vector<CovariateDefinition*> extractCovariates(Tucuxi::Common::XmlNodeIterator _node);
     CovariateDefinition* extractCovariate(Tucuxi::Common::XmlNodeIterator _node);
-
     LightPopulationValue* extractPopulationValue(Tucuxi::Common::XmlNodeIterator _node);
-    Unit extractUnit(Tucuxi::Common::XmlNodeIterator _node);
-    double extractDouble(Tucuxi::Common::XmlNodeIterator _node);
     Operation* extractOperation(Tucuxi::Common::XmlNodeIterator _node);
     JSOperation* extractJSOperation(Tucuxi::Common::XmlNodeIterator _node);
-
-
-    CovariateType extractCovariateType(Tucuxi::Common::XmlNodeIterator _node);
-    DataType extractDataType(Tucuxi::Common::XmlNodeIterator _node);
-    InterpolationType extractInterpolationType(Tucuxi::Common::XmlNodeIterator _node);
-    TargetType extractTargetType(Tucuxi::Common::XmlNodeIterator _node);
-    SigmaResidualErrorModel::ResidualErrorType extractResidualErrorType(Tucuxi::Common::XmlNodeIterator _node);
-    ParameterVariabilityType extractParameterVariabilityType(Tucuxi::Common::XmlNodeIterator _node);
-
-    Formulation extractFormulation(Tucuxi::Common::XmlNodeIterator _node);
-    AdministrationRoute extractAdministrationRoute(Tucuxi::Common::XmlNodeIterator _node);
-    RouteModel extractRouteModel(Tucuxi::Common::XmlNodeIterator _node);
-
-
 
 };
 
