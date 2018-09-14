@@ -7,9 +7,9 @@
 namespace Tucuxi {
 namespace Core {
 
-ParameterDefinition::ParameterDefinition(const std::string _id, Value _value, ParameterVariability _variabilityType)
+ParameterDefinition::ParameterDefinition(const std::string _id, Value _value, std::unique_ptr<ParameterVariability> _variabilityType)
     : PopulationValue(_id, _value, nullptr),
-      m_variability(_variabilityType)
+      m_variability(std::move(_variabilityType))
 {}
 
 ParameterDefinition::ParameterDefinition(const std::string _id, Value _value)
@@ -19,13 +19,20 @@ ParameterDefinition::ParameterDefinition(const std::string _id, Value _value)
 
 ParameterDefinition::ParameterDefinition(const std::string _id, Value _value, ParameterVariabilityType _variabilityType)
     : PopulationValue(_id, _value, nullptr),
-      m_variability(ParameterVariability(_variabilityType))
+      m_variability(std::make_unique<ParameterVariability>(_variabilityType))
 {}
 
-ParameterDefinition::ParameterDefinition(const std::string _name, Value _value, Operation* _operation, ParameterVariability _variabilityType)
+ParameterDefinition::ParameterDefinition(const std::string _name, Value _value, Operation* _operation, std::unique_ptr<ParameterVariability> _variabilityType)
     : PopulationValue(_name, _value, _operation),
-      m_variability(_variabilityType)
+     m_variability(std::move(_variabilityType))
 {}
+
+ParameterDefinition::ParameterDefinition(std::string _name, Value _value, Operation* _operation, ParameterVariabilityType _variabilityType)
+    : PopulationValue(_name, _value, _operation),
+      m_variability(std::make_unique<ParameterVariability>(_variabilityType))
+{
+
+}
 
 ParameterDefinition::~ParameterDefinition()
 {}

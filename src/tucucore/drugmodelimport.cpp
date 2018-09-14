@@ -637,6 +637,9 @@ HalfLife* DrugModelImport::extractHalfLife(Tucuxi::Common::XmlNodeIterator _node
     }
 
     HalfLife *halfLife = new HalfLife(id, value->getValue(), unit, multiplier, value->getOperation());
+
+    DELETE_IF_NON_NULL(value);
+
     return halfLife;
 }
 
@@ -668,6 +671,9 @@ OutdatedMeasure* DrugModelImport::extractOutdatedMeasure(Tucuxi::Common::XmlNode
     }
 
     outdatedMeasure = new OutdatedMeasure(id, value->getValue(), unit, value->getOperation());
+
+    DELETE_IF_NON_NULL(value);
+
     return outdatedMeasure;
 }
 
@@ -864,12 +870,8 @@ CovariateDefinition* DrugModelImport::extractCovariate(Tucuxi::Common::XmlNodeIt
     }
 
     if (getResult() != Result::Ok) {
-        if (validation != nullptr) {
-            delete validation;
-        }
-        if (value != nullptr) {
-            delete value;
-        }
+        DELETE_IF_NON_NULL(validation);
+        DELETE_IF_NON_NULL(value);
         return nullptr;
     }
 
@@ -881,6 +883,8 @@ CovariateDefinition* DrugModelImport::extractCovariate(Tucuxi::Common::XmlNodeIt
     covariate->setInterpolationType(interpolationType);
     covariate->setUnit(unit);
     covariate->setValidation(std::unique_ptr<Operation>(validation));
+
+    DELETE_IF_NON_NULL(value);
 
     return covariate;
 
@@ -1127,6 +1131,16 @@ TargetDefinition* DrugModelImport::extractTarget(Tucuxi::Common::XmlNodeIterator
                                   std::make_unique<SubTargetDefinition>("inefficacy", inefficacyAlarm->getValue(), inefficacyAlarm->getOperation())
                                   );
 
+
+    DELETE_IF_NON_NULL(minValue);
+    DELETE_IF_NON_NULL(maxValue);
+    DELETE_IF_NON_NULL(bestValue);
+    DELETE_IF_NON_NULL(tMin);
+    DELETE_IF_NON_NULL(tMax);
+    DELETE_IF_NON_NULL(tBest);
+    DELETE_IF_NON_NULL(toxicityAlarm);
+    DELETE_IF_NON_NULL(inefficacyAlarm);
+
     return target;
 }
 
@@ -1351,6 +1365,7 @@ IResidualErrorModel* DrugModelImport::extractErrorModel(Tucuxi::Common::XmlNodeI
     }
 
     if (getResult() != Result::Ok) {
+        DELETE_PVECTOR(sigmas);
         return nullptr;
     }
 
@@ -1360,6 +1375,8 @@ IResidualErrorModel* DrugModelImport::extractErrorModel(Tucuxi::Common::XmlNodeI
         errorModel->addOriginalSigma(std::make_unique<PopulationValue>("", sigma->getValue(), sigma->getOperation()));
     }
     errorModel->setFormula(std::unique_ptr<Operation>(formula));
+
+    DELETE_PVECTOR(sigmas);
 
 
     return errorModel;
@@ -1487,8 +1504,10 @@ ParameterDefinition* DrugModelImport::extractParameter(Tucuxi::Common::XmlNodeIt
         return nullptr;
     }
 
-    parameter = new ParameterDefinition(id, value->getValue(), value->getOperation(), *variability);
+    parameter = new ParameterDefinition(id, value->getValue(), value->getOperation(), std::unique_ptr<ParameterVariability>(variability));
     parameter->setValidation(std::unique_ptr<Operation>(validation));
+
+    DELETE_IF_NON_NULL(value);
 
     return parameter;
 }
@@ -1840,6 +1859,8 @@ ValidDurations* DrugModelImport::extractValidDurations(Tucuxi::Common::XmlNodeIt
         validDurations->addValues(std::unique_ptr<IValidValues>(valuesFixed));
     }
 
+    DELETE_IF_NON_NULL(defaultValue);
+
     return validDurations;
 
 }
@@ -1899,6 +1920,8 @@ ValidDoses* DrugModelImport::extractValidDoses(Tucuxi::Common::XmlNodeIterator _
         validDoses->addValues(std::unique_ptr<IValidValues>(valuesFixed));
     }
 
+    DELETE_IF_NON_NULL(defaultValue);
+
     return validDoses;
 }
 
@@ -1946,12 +1969,16 @@ ValidValuesRange* DrugModelImport::extractValuesRange(Tucuxi::Common::XmlNodeIte
                 std::make_unique<PopulationValue>("step", step->getValue(), step->getOperation())
                 );
 
+    DELETE_IF_NON_NULL(from);
+    DELETE_IF_NON_NULL(to);
+    DELETE_IF_NON_NULL(step);
+
     return valuesRange;
 }
 
 ValidValuesFixed* DrugModelImport::extractValuesFixed(Tucuxi::Common::XmlNodeIterator _node)
 {
-    ValidValuesFixed *valuesFixed;
+    ValidValuesFixed *valuesFixed = nullptr;
     std::vector<Value> values;
 
     XmlNodeIterator it = _node->getChildren();
@@ -1972,6 +1999,7 @@ ValidValuesFixed* DrugModelImport::extractValuesFixed(Tucuxi::Common::XmlNodeIte
     }
 
     if (getResult() != Result::Ok){
+        DELETE_IF_NON_NULL(valuesFixed);
         return nullptr;
     }
 

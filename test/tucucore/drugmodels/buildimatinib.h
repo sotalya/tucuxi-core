@@ -91,7 +91,7 @@ public:
                                          { OperationInput("V_population", InputType::DOUBLE),
                                            OperationInput("sex", InputType::DOUBLE)});
 
-        std::unique_ptr<ParameterDefinition> PV(new Tucuxi::Core::ParameterDefinition("V", 347, opV, Tucuxi::Core::ParameterVariability(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.629)));
+        std::unique_ptr<ParameterDefinition> PV(new Tucuxi::Core::ParameterDefinition("V", 347, opV, std::make_unique<ParameterVariability>(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.629)));
         dispositionParameters->addParameter(std::move(PV));
         Operation *opCl = new JSOperation(" \
                                             theta1=Cl_population; \
@@ -116,7 +116,7 @@ public:
                                               OperationInput("age", InputType::DOUBLE),
                                               OperationInput("gist", InputType::BOOL)});
 
-        std::unique_ptr<ParameterDefinition> PCL(new Tucuxi::Core::ParameterDefinition("Cl", 15.106, opCl, Tucuxi::Core::ParameterVariability(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.356)));
+        std::unique_ptr<ParameterDefinition> PCL(new Tucuxi::Core::ParameterDefinition("Cl", 15.106, opCl, std::make_unique<ParameterVariability>(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.356)));
         dispositionParameters->addParameter(std::move(PCL));
 
         dispositionParameters->addCorrelation(Correlation("Cl", "V", 0.798));

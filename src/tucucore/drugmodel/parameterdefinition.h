@@ -62,13 +62,15 @@ public:
     /// \brief Constructor
     /// \param _id The name of the parameter
     /// \param _name Its default value
-    ParameterDefinition(std::string _id, Value _value, ParameterVariability _variabilityType);
+    ParameterDefinition(std::string _id, Value _value, std::unique_ptr<ParameterVariability> _variabilityType);
 
     ParameterDefinition(std::string _id, Value _value);
 
     ParameterDefinition(std::string _id, Value _value, ParameterVariabilityType _variabilityType);
 
-    ParameterDefinition(std::string _name, Value _value, Operation* _operation, ParameterVariability _variabilityType);
+    ParameterDefinition(std::string _name, Value _value, Operation* _operation, std::unique_ptr<ParameterVariability> _variabilityType);
+
+    ParameterDefinition(std::string _name, Value _value, Operation* _operation, ParameterVariabilityType _variabilityType);
 
     ~ParameterDefinition() override;
 
@@ -76,15 +78,15 @@ public:
     /// \return Returns the parameter value
     //Value getValue() const { return m_value; }
 
-    bool isVariable() const { return m_variability.getType() != ParameterVariabilityType::None; }
-    ParameterVariability getVariability() const { return m_variability; }
+    bool isVariable() const { return m_variability->getType() != ParameterVariabilityType::None; }
+    const ParameterVariability& getVariability() const { return *m_variability; }
 
     /// \brief Set the validation operation
     /// \param _operation Operation used to validate the covariate value
     void setValidation(std::unique_ptr<Operation> _validation) { m_validation = std::move(_validation);}
 
 private:
-    ParameterVariability m_variability;
+    std::unique_ptr<ParameterVariability> m_variability;
     Unit m_unit;
 
     /// \brief Operation to validate the value of the covariate

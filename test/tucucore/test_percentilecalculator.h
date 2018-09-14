@@ -40,8 +40,8 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
 
         // Build parameters as Imatinib ones
         Tucuxi::Core::ParameterDefinitions parameterDefs;
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Cl", 15.106, Tucuxi::Core::ParameterVariability(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.356))));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterVariability(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.629))));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Cl", 15.106, std::make_unique<Tucuxi::Core::ParameterVariability>(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.356))));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V", 347, std::make_unique<Tucuxi::Core::ParameterVariability>(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.629))));
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
         Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
@@ -144,8 +144,8 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
 
         // Build parameters as Imatinib ones
         Tucuxi::Core::ParameterDefinitions parameterDefs;
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Cl", 15.106, Tucuxi::Core::ParameterVariability(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.356))));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterVariability(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.629))));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Cl", 15.106, std::make_unique<Tucuxi::Core::ParameterVariability>(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.356))));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V", 347, std::make_unique<Tucuxi::Core::ParameterVariability>(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.629))));
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
         Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
@@ -244,8 +244,8 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
 
         // Build parameters as Imatinib ones
         Tucuxi::Core::ParameterDefinitions parameterDefs;
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Cl", 15.106, Tucuxi::Core::ParameterVariability(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.356))));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterVariability(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.629))));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Cl", 15.106, std::make_unique<Tucuxi::Core::ParameterVariability>(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.356))));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V", 347, std::make_unique<Tucuxi::Core::ParameterVariability>(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.629))));
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
         Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);

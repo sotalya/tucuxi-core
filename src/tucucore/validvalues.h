@@ -14,7 +14,7 @@ public:
 
     virtual std::vector<Value> getValues() const = 0;
 
-    virtual ~IValidValues() = default;
+    virtual ~IValidValues() {};
 };
 
 

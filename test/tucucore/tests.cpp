@@ -51,8 +51,6 @@ int main(int argc, char** argv)
     }
 
 
-
-
     TestComputingComponentAdjusements computingComponentAdjusementsTests;
 
     // one compartment

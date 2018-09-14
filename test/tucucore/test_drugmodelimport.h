@@ -1245,6 +1245,8 @@ struct TestDrugModelImport : public fructose::test_base<TestDrugModelImport>
         fructose_assert(fake != nullptr);
 
         delete importer;
+
+        delete fake;
     }
 
     void testBusulfan1(const std::string& /* _testName */)
@@ -1259,6 +1261,8 @@ struct TestDrugModelImport : public fructose::test_base<TestDrugModelImport>
         fructose_assert(busulfan != nullptr);
 
         delete importer;
+
+        delete busulfan;
     }
 
 };
