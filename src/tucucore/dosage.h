@@ -247,7 +247,7 @@ public:
     FormulationAndRoute getLastFormulationAndRoute() const override
     {
         if (m_dosages.size() == 0) {
-            return FormulationAndRoute(Formulation::Undefined, AdministrationRoute::Undefined, AbsorptionModel::UNDEFINED);
+            return FormulationAndRoute(Formulation::Undefined, AdministrationRoute::Undefined, RouteModel::UNDEFINED);
         }
         return m_dosages.at(m_dosages.size() - 1)->getLastFormulationAndRoute();
     }
@@ -324,7 +324,7 @@ public:
     FormulationAndRoute getLastFormulationAndRoute() const override
     {
         if (m_dosages.size() == 0) {
-            return FormulationAndRoute(Formulation::Undefined, AdministrationRoute::Undefined, AbsorptionModel::UNDEFINED);
+            return FormulationAndRoute(Formulation::Undefined, AdministrationRoute::Undefined, RouteModel::UNDEFINED);
         }
         return m_dosages.at(m_dosages.size() - 1)->getLastFormulationAndRoute();
     }
@@ -374,7 +374,7 @@ public:
     /// \param _route Route of administration.
     /// \param _infusionTime Duration in case of an infusion.
     /// \pre _dose >= 0
-    /// \pre IF _routeOfAdministration == AbsorptionModel::INFUSION THEN (!_infusionTime.isEmpty() && _infusionTime > 0)
+    /// \pre IF _routeOfAdministration == RouteModel::INFUSION THEN (!_infusionTime.isEmpty() && _infusionTime > 0)
     SingleDose(const DoseValue &_dose,
                const FormulationAndRoute &_routeOfAdministration,
                const Duration &_infusionTime) :
@@ -383,10 +383,10 @@ public:
         if (_dose < 0) {
             throw std::invalid_argument("Dose value = " + std::to_string(_dose) + " is invalid (must be >= 0).");
         }
-        if (_routeOfAdministration.getAbsorptionModel() == AbsorptionModel::INFUSION && _infusionTime.isNegative()) {
+        if (_routeOfAdministration.getRouteModel() == RouteModel::INFUSION && _infusionTime.isNegative()) {
             throw std::invalid_argument("Infusion time for INFUSION is invalid (must be >= 0).");
         }
-        if (_routeOfAdministration.getAbsorptionModel() == AbsorptionModel::INFUSION && _infusionTime.isEmpty()) {
+        if (_routeOfAdministration.getRouteModel() == RouteModel::INFUSION && _infusionTime.isEmpty()) {
             throw std::invalid_argument("Route of administration is INFUSION, but empty infusion time specified.");
         }
         m_dose = _dose;

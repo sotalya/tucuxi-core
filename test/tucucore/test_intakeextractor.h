@@ -26,7 +26,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
         return Tucuxi::Core::FormulationAndRoute(
                     Formulation::Test,
                     AdministrationRoute::IntravenousDrip,
-                    AbsorptionModel::INFUSION);
+                    RouteModel::INFUSION);
     }
 
     FormulationAndRoute getBolusFormulationAndRoute()
@@ -34,14 +34,14 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
         return FormulationAndRoute(
                     Formulation::Test,
                     AdministrationRoute::IntravenousBolus,
-                    AbsorptionModel::INTRAVASCULAR);
+                    RouteModel::INTRAVASCULAR);
     }
 
     FormulationAndRoute getExtraFormulationAndRoute() {
         return FormulationAndRoute(
                     Formulation::Test,
                     AdministrationRoute::Intramuscular,
-                    AbsorptionModel::EXTRAVASCULAR);
+                    RouteModel::EXTRAVASCULAR);
     }
 
 
@@ -101,7 +101,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(7 * 24)),
-                                              getInfusionFormulationAndRoute().getAbsorptionModel(),
+                                              getInfusionFormulationAndRoute().getRouteModel(),
                                               Duration(std::chrono::minutes(20)),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(13)),
@@ -109,7 +109,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(7 * 24)),
-                                              getInfusionFormulationAndRoute().getAbsorptionModel(),
+                                              getInfusionFormulationAndRoute().getRouteModel(),
                                               Duration(std::chrono::minutes(20)),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(20)),
@@ -117,7 +117,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(7 * 24)),
-                                              getInfusionFormulationAndRoute().getAbsorptionModel(),
+                                              getInfusionFormulationAndRoute().getRouteModel(),
                                               Duration(std::chrono::minutes(20)),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(27)),
@@ -125,7 +125,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(7 * 24)),
-                                              getInfusionFormulationAndRoute().getAbsorptionModel(),
+                                              getInfusionFormulationAndRoute().getRouteModel(),
                                               Duration(std::chrono::minutes(20)),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(7), date::day(5)),
@@ -133,7 +133,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(7 * 24)),
-                                              getInfusionFormulationAndRoute().getAbsorptionModel(),
+                                              getInfusionFormulationAndRoute().getRouteModel(),
                                               Duration(std::chrono::minutes(10)),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(7), date::day(12)),
@@ -141,7 +141,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(7 * 24)),
-                                              getInfusionFormulationAndRoute().getAbsorptionModel(),
+                                              getInfusionFormulationAndRoute().getRouteModel(),
                                               Duration(std::chrono::minutes(10)),
                                               CYCLE_SIZE));
 
@@ -213,7 +213,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(10 * 24)),
-                                              getInfusionFormulationAndRoute().getAbsorptionModel(),
+                                              getInfusionFormulationAndRoute().getRouteModel(),
                                               Duration(std::chrono::minutes(20)),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(11)),
@@ -221,7 +221,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(10 * 24)),
-                                              getInfusionFormulationAndRoute().getAbsorptionModel(),
+                                              getInfusionFormulationAndRoute().getRouteModel(),
                                               Duration(std::chrono::minutes(20)),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(21)),
@@ -229,7 +229,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(10 * 24)),
-                                              getInfusionFormulationAndRoute().getAbsorptionModel(),
+                                              getInfusionFormulationAndRoute().getRouteModel(),
                                               Duration(std::chrono::minutes(20)),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(7), date::day(4)),
@@ -237,7 +237,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(4 * 24)),
-                                              getInfusionFormulationAndRoute().getAbsorptionModel(),
+                                              getInfusionFormulationAndRoute().getRouteModel(),
                                               Duration(std::chrono::minutes(10)),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(7), date::day(8)),
@@ -245,7 +245,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(4 * 24)),
-                                              getInfusionFormulationAndRoute().getAbsorptionModel(),
+                                              getInfusionFormulationAndRoute().getRouteModel(),
                                               Duration(std::chrono::minutes(10)),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(7), date::day(12)),
@@ -253,7 +253,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(4 * 24)),
-                                              getInfusionFormulationAndRoute().getAbsorptionModel(),
+                                              getInfusionFormulationAndRoute().getRouteModel(),
                                               Duration(std::chrono::minutes(10)),
                                               CYCLE_SIZE));
         // The 16.07.2017 must be EXCLUDED (the intervals are closed on the left, but opened on the right side!)
@@ -307,7 +307,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(36)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(2)),
@@ -315,7 +315,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(36)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(4)),
@@ -323,7 +323,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(36)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(5)),
@@ -331,7 +331,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(36)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(7)),
@@ -339,7 +339,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(36)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
 
@@ -393,7 +393,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(12)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(1)),
@@ -401,7 +401,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(12)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(2)),
@@ -409,7 +409,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(12)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(2)),
@@ -417,7 +417,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(12)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(3)),
@@ -425,7 +425,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(12)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
 
@@ -475,7 +475,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(12)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(1)),
@@ -483,7 +483,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(12)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(2)),
@@ -491,7 +491,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(12)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
 
@@ -550,7 +550,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(10)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(1)),
@@ -558,7 +558,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(10 * 23)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(11)),
@@ -566,7 +566,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(10)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(11)),
@@ -574,7 +574,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(10 * 23)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(21)),
@@ -582,7 +582,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(10)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(21)),
@@ -590,7 +590,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(10 * 23)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
 
@@ -641,7 +641,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(24)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(3)),
@@ -649,7 +649,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(24)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(4)),
@@ -657,7 +657,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(24)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(5)),
@@ -665,7 +665,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(24)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(6)),
@@ -673,7 +673,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(24)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(7)),
@@ -681,7 +681,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(24)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(8)),
@@ -689,7 +689,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(24)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
 
@@ -755,7 +755,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(24)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(2)),
@@ -763,7 +763,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(24)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(2)),
@@ -771,7 +771,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(24)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
 
@@ -781,7 +781,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(24)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(3)),
@@ -789,7 +789,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(24)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(3)),
@@ -797,7 +797,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(24)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
 
@@ -806,7 +806,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(24)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(4)),
@@ -814,7 +814,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(24)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(4)),
@@ -822,7 +822,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(24)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
 
@@ -832,7 +832,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(24)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(5)),
@@ -840,7 +840,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(24)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(5)),
@@ -848,7 +848,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(24)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
 
@@ -857,7 +857,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(24)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(6)),
@@ -865,7 +865,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(24)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(6)),
@@ -873,7 +873,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(24)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
 
@@ -883,7 +883,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(24)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(7)),
@@ -891,7 +891,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(24)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(7)),
@@ -899,7 +899,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(24)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
 
@@ -908,7 +908,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(24)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(8)),
@@ -916,7 +916,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(24)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(8)),
@@ -924,7 +924,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(24)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
 
@@ -1005,7 +1005,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(2)),
@@ -1013,7 +1013,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(2)),
@@ -1021,7 +1021,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(2)),
@@ -1029,7 +1029,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(2)),
@@ -1037,7 +1037,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(2)),
@@ -1045,7 +1045,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(2)),
@@ -1053,7 +1053,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(2)),
@@ -1061,7 +1061,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(3)),
@@ -1069,7 +1069,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(3)),
@@ -1077,7 +1077,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         // Second repeat
@@ -1086,7 +1086,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(3)),
@@ -1094,7 +1094,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(3)),
@@ -1102,7 +1102,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(3)),
@@ -1110,7 +1110,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(3)),
@@ -1118,7 +1118,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(4)),
@@ -1126,7 +1126,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(4)),
@@ -1134,7 +1134,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(4)),
@@ -1142,7 +1142,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(4)),
@@ -1150,7 +1150,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(4)),
@@ -1158,7 +1158,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
 
@@ -1169,7 +1169,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(6)),
-                                              getExtraFormulationAndRoute().getAbsorptionModel(),
+                                              getExtraFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(2)),
@@ -1177,7 +1177,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(6)),
-                                              getExtraFormulationAndRoute().getAbsorptionModel(),
+                                              getExtraFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(2)),
@@ -1185,7 +1185,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(6)),
-                                              getExtraFormulationAndRoute().getAbsorptionModel(),
+                                              getExtraFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(3)),
@@ -1193,7 +1193,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(6)),
-                                              getExtraFormulationAndRoute().getAbsorptionModel(),
+                                              getExtraFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         // Second repeat
@@ -1202,7 +1202,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(6)),
-                                              getExtraFormulationAndRoute().getAbsorptionModel(),
+                                              getExtraFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(3)),
@@ -1210,7 +1210,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(6)),
-                                              getExtraFormulationAndRoute().getAbsorptionModel(),
+                                              getExtraFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(4)),
@@ -1218,7 +1218,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(6)),
-                                              getExtraFormulationAndRoute().getAbsorptionModel(),
+                                              getExtraFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(4)),
@@ -1226,7 +1226,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(6)),
-                                              getExtraFormulationAndRoute().getAbsorptionModel(),
+                                              getExtraFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
 
@@ -1237,7 +1237,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(100.0),
                                               Duration(std::chrono::hours(24)),
-                                              getInfusionFormulationAndRoute().getAbsorptionModel(),
+                                              getInfusionFormulationAndRoute().getRouteModel(),
                                               Duration(std::chrono::minutes(20)),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(2)),
@@ -1245,7 +1245,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(24)),
-                                              getInfusionFormulationAndRoute().getAbsorptionModel(),
+                                              getInfusionFormulationAndRoute().getRouteModel(),
                                               Duration(std::chrono::minutes(10)),
                                               CYCLE_SIZE));
         // Second repeat
@@ -1254,7 +1254,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(100.0),
                                               Duration(std::chrono::hours(24)),
-                                              getInfusionFormulationAndRoute().getAbsorptionModel(),
+                                              getInfusionFormulationAndRoute().getRouteModel(),
                                               Duration(std::chrono::minutes(20)),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(3)),
@@ -1262,7 +1262,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(24)),
-                                              getInfusionFormulationAndRoute().getAbsorptionModel(),
+                                              getInfusionFormulationAndRoute().getRouteModel(),
                                               Duration(std::chrono::minutes(10)),
                                               CYCLE_SIZE));
 
@@ -1339,7 +1339,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE), ScheduledIntakeOp::SKIP);
         june2017->addIntakeChange(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(3)),
@@ -1347,7 +1347,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(350.0),
                                               Duration(std::chrono::hours(3)),
-                                              getExtraFormulationAndRoute().getAbsorptionModel(),
+                                              getExtraFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE), ScheduledIntakeOp::ADD);
         june2017->addIntakeChange(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(3)),
@@ -1355,7 +1355,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(100.0),
                                               Duration(std::chrono::hours(24)),
-                                              getInfusionFormulationAndRoute().getAbsorptionModel(),
+                                              getInfusionFormulationAndRoute().getRouteModel(),
                                               Duration(std::chrono::minutes(20)),
                                               CYCLE_SIZE), ScheduledIntakeOp::SKIP);
 
@@ -1372,7 +1372,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(2)),
@@ -1380,7 +1380,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(2)),
@@ -1388,7 +1388,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(2)),
@@ -1396,7 +1396,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(2)),
@@ -1404,7 +1404,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(2)),
@@ -1412,7 +1412,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(2)),
@@ -1420,7 +1420,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(2)),
@@ -1428,7 +1428,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(3)),
@@ -1436,7 +1436,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(350.0),
                                               Duration(std::chrono::hours(3)),
-                                              getExtraFormulationAndRoute().getAbsorptionModel(),
+                                              getExtraFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(3)),
@@ -1444,7 +1444,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         // Second repeat
@@ -1453,7 +1453,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(3)),
@@ -1461,7 +1461,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(3)),
@@ -1469,7 +1469,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(3)),
@@ -1477,7 +1477,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(3)),
@@ -1485,7 +1485,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(4)),
@@ -1493,7 +1493,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(4)),
@@ -1501,7 +1501,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(4)),
@@ -1509,7 +1509,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(4)),
@@ -1517,7 +1517,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(4)),
@@ -1525,7 +1525,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
 
@@ -1536,7 +1536,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(6)),
-                                              getExtraFormulationAndRoute().getAbsorptionModel(),
+                                              getExtraFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(2)),
@@ -1544,7 +1544,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(6)),
-                                              getExtraFormulationAndRoute().getAbsorptionModel(),
+                                              getExtraFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(2)),
@@ -1552,7 +1552,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(6)),
-                                              getExtraFormulationAndRoute().getAbsorptionModel(),
+                                              getExtraFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(3)),
@@ -1560,7 +1560,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(6)),
-                                              getExtraFormulationAndRoute().getAbsorptionModel(),
+                                              getExtraFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         // Second repeat
@@ -1569,7 +1569,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(6)),
-                                              getExtraFormulationAndRoute().getAbsorptionModel(),
+                                              getExtraFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(3)),
@@ -1577,7 +1577,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(6)),
-                                              getExtraFormulationAndRoute().getAbsorptionModel(),
+                                              getExtraFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(4)),
@@ -1585,7 +1585,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(6)),
-                                              getExtraFormulationAndRoute().getAbsorptionModel(),
+                                              getExtraFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(4)),
@@ -1593,7 +1593,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(6)),
-                                              getExtraFormulationAndRoute().getAbsorptionModel(),
+                                              getExtraFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
 
@@ -1604,7 +1604,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(100.0),
                                               Duration(std::chrono::hours(24)),
-                                              getInfusionFormulationAndRoute().getAbsorptionModel(),
+                                              getInfusionFormulationAndRoute().getRouteModel(),
                                               Duration(std::chrono::minutes(20)),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(2)),
@@ -1612,7 +1612,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(24)),
-                                              getInfusionFormulationAndRoute().getAbsorptionModel(),
+                                              getInfusionFormulationAndRoute().getRouteModel(),
                                               Duration(std::chrono::minutes(10)),
                                               CYCLE_SIZE));
         // Second repeat
@@ -1621,7 +1621,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(24)),
-                                              getInfusionFormulationAndRoute().getAbsorptionModel(),
+                                              getInfusionFormulationAndRoute().getRouteModel(),
                                               Duration(std::chrono::minutes(10)),
                                               CYCLE_SIZE));
 
@@ -1704,7 +1704,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(100.0),
                                               Duration(std::chrono::hours(7 * 24)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(7), date::day(4)),
@@ -1712,7 +1712,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(7 * 24)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(7), date::day(5)),
@@ -1720,7 +1720,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(7 * 24)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(7), date::day(6)),
@@ -1728,7 +1728,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(7 * 24)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(7), date::day(7)),
@@ -1736,7 +1736,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(500.0),
                                               Duration(std::chrono::hours(7 * 24)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(7), date::day(8)),
@@ -1744,7 +1744,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(600.0),
                                               Duration(std::chrono::hours(7 * 24)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(7), date::day(9)),
@@ -1752,7 +1752,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(100.0),
                                               Duration(std::chrono::hours(7 * 24)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(7), date::day(11)),
@@ -1760,7 +1760,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(7 * 24)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(7), date::day(12)),
@@ -1768,7 +1768,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(7 * 24)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(7), date::day(13)),
@@ -1776,7 +1776,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(7 * 24)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(7), date::day(14)),
@@ -1784,7 +1784,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(500.0),
                                               Duration(std::chrono::hours(7 * 24)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
         expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(7), date::day(15)),
@@ -1792,7 +1792,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(600.0),
                                               Duration(std::chrono::hours(7 * 24)),
-                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              getBolusFormulationAndRoute().getRouteModel(),
                                               Duration(),
                                               CYCLE_SIZE));
 

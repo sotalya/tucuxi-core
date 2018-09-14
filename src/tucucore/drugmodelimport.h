@@ -99,7 +99,8 @@ public:
 
     DrugModelImport();
 
-    Result import(Tucuxi::Core::DrugModel *&_drugModel, std::string _fileName);
+    Result importFromFile(Tucuxi::Core::DrugModel *&_drugModel, std::string _fileName);
+    Result importFromString(Tucuxi::Core::DrugModel *&_drugModel, std::string _xml);
 
 protected:
 
@@ -153,7 +154,7 @@ protected:
 
     Formulation extractFormulation(Tucuxi::Common::XmlNodeIterator _node);
     AdministrationRoute extractAdministrationRoute(Tucuxi::Common::XmlNodeIterator _node);
-    AbsorptionModel extractAbsorptionModel(Tucuxi::Common::XmlNodeIterator _node);
+    RouteModel extractRouteModel(Tucuxi::Common::XmlNodeIterator _node);
 
 
 

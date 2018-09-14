@@ -215,7 +215,7 @@ double DrugModelImport::extractDouble(Tucuxi::Common::XmlNodeIterator _node)
     return result;
 }
 
-DrugModelImport::Result DrugModelImport::import(Tucuxi::Core::DrugModel *&_drugModel, std::string _fileName)
+DrugModelImport::Result DrugModelImport::importFromFile(Tucuxi::Core::DrugModel *&_drugModel, std::string _fileName)
 {
     setResult(Result::Ok);
     _drugModel = nullptr;
@@ -238,6 +238,30 @@ DrugModelImport::Result DrugModelImport::import(Tucuxi::Core::DrugModel *&_drugM
     return getResult();
 }
 
+
+DrugModelImport::Result DrugModelImport::importFromString(Tucuxi::Core::DrugModel *&_drugModel, std::string _xml)
+{
+    setResult(Result::Ok);
+    _drugModel = nullptr;
+
+    XmlDocument document;
+
+    if (!document.fromString(_xml)) {
+        return Result::Error;
+    }
+
+    XmlNode root = document.getRoot();
+
+    XmlNodeIterator drugModelIterator = root.getChildren("drugModel");
+
+    if (drugModelIterator == XmlNodeIterator::none()) {
+        return Result::Error;
+    }
+
+    _drugModel = extractDrugModel(drugModelIterator);
+
+    return getResult();
+}
 
 DrugModel* DrugModelImport::extractDrugModel(Tucuxi::Common::XmlNodeIterator _node)
 {
@@ -795,15 +819,15 @@ AdministrationRoute DrugModelImport::extractAdministrationRoute(Tucuxi::Common::
 }
 
 
-AbsorptionModel DrugModelImport::extractAbsorptionModel(Tucuxi::Common::XmlNodeIterator _node)
+RouteModel DrugModelImport::extractRouteModel(Tucuxi::Common::XmlNodeIterator _node)
 {
 
-    static std::map<std::string, AbsorptionModel> m =
+    static std::map<std::string, RouteModel> m =
     {
-        {"undefined", AbsorptionModel::UNDEFINED},
-        {"bolus", AbsorptionModel::INTRAVASCULAR},
-        {"extra", AbsorptionModel::EXTRAVASCULAR},
-        {"infus", AbsorptionModel::INFUSION}
+        {"undefined", RouteModel::UNDEFINED},
+        {"bolus", RouteModel::INTRAVASCULAR},
+        {"extra", RouteModel::EXTRAVASCULAR},
+        {"infus", RouteModel::INFUSION}
     };
 
     auto it = m.find(_node->getValue());
@@ -811,7 +835,7 @@ AbsorptionModel DrugModelImport::extractAbsorptionModel(Tucuxi::Common::XmlNodeI
         return it->second;
 
     setResult(Result::Error);
-    return AbsorptionModel::UNDEFINED;
+    return RouteModel::UNDEFINED;
 
 }
 
@@ -1586,7 +1610,7 @@ FullFormulationAndRoute* DrugModelImport::extractFullFormulationAndRoute(
     Formulation formulation;
     std::string administrationName;
     AdministrationRoute administrationRoute;
-    AbsorptionModel routeModelId;
+    RouteModel routeModelId;
     ParameterSetDefinition *absorptionParameters = nullptr;
     std::vector<AnalyteSetToAbsorptionAssociation *> associations;
 
@@ -1611,7 +1635,7 @@ FullFormulationAndRoute* DrugModelImport::extractFullFormulationAndRoute(
             administrationRoute = extractAdministrationRoute(it);
         }
         else if (nodeName == "routeModelId") {
-            routeModelId = extractAbsorptionModel(it);
+            routeModelId = extractRouteModel(it);
         }
         else if (nodeName == "dosages") {
             XmlNodeIterator dosageIt = it->getChildren();
@@ -1643,11 +1667,12 @@ FullFormulationAndRoute* DrugModelImport::extractFullFormulationAndRoute(
 
             std::string analyteGroupId;
             AnalyteSet *selectedAnalyteSet = nullptr;
+            RouteModel absorptionModelId;
 
             while (absorptionIt != XmlNodeIterator::none()) {
 
                 std::string nName = absorptionIt->getName();
-                if (nName == "parameterSetGroup") {
+                if (nName == "parameterSetAnalyteGroup") {
 
                     XmlNodeIterator pIt = absorptionIt->getChildren();
 
@@ -1660,6 +1685,9 @@ FullFormulationAndRoute* DrugModelImport::extractFullFormulationAndRoute(
                                     selectedAnalyteSet = analyteSet;
                                 }
                             }
+                        }
+                        else if (pName == "routeModelId") {
+                            absorptionModelId = extractRouteModel(pIt);
                         }
                         else if (pName == "parameterSet") {
                             absorptionParameters = extractParameterSet(pIt);
@@ -1676,6 +1704,7 @@ FullFormulationAndRoute* DrugModelImport::extractFullFormulationAndRoute(
             if (getResult() == Result::Ok) {
                 AnalyteSetToAbsorptionAssociation *association = new AnalyteSetToAbsorptionAssociation(*selectedAnalyteSet);
                 association->setAbsorptionParameters(std::unique_ptr<ParameterSetDefinition>(absorptionParameters));
+                association->setRouteModel(absorptionModelId);
                 associations.push_back(association);
             }
 

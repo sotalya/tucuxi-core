@@ -29,18 +29,18 @@ std::string PkModel::getPkModelId() const
 }
 
 
-bool PkModel::addIntakeIntervalCalculatorFactory(AbsorptionModel _route,
+bool PkModel::addIntakeIntervalCalculatorFactory(RouteModel _route,
                                                  std::shared_ptr<IntakeIntervalCalculatorCreator> _creator)
 {
-    std::pair<std::map<AbsorptionModel, std::shared_ptr<IntakeIntervalCalculatorCreator>>::iterator, bool> rc;
+    std::pair<std::map<RouteModel, std::shared_ptr<IntakeIntervalCalculatorCreator>>::iterator, bool> rc;
     rc = m_calculatorCreators.insert(std::make_pair(_route, _creator));
     return rc.second;
 }
 
 
-std::vector<AbsorptionModel> PkModel::getAvailableRoutes() const
+std::vector<RouteModel> PkModel::getAvailableRoutes() const
 {
-    std::vector<AbsorptionModel> routes;
+    std::vector<RouteModel> routes;
     // Push keys in a vector.
     std::transform(m_calculatorCreators.begin(), m_calculatorCreators.end(),                              // Range to inspect
                    std::back_inserter(routes),                                                            // Backward iterator on returned vector
@@ -49,7 +49,7 @@ std::vector<AbsorptionModel> PkModel::getAvailableRoutes() const
 }
 
 
-std::shared_ptr<IntakeIntervalCalculator> PkModel::getCalculatorForRoute(AbsorptionModel _route) const
+std::shared_ptr<IntakeIntervalCalculator> PkModel::getCalculatorForRoute(RouteModel _route) const
 {
     auto search = m_calculatorCreators.find(_route);
     if (search != m_calculatorCreators.end()) {

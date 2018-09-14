@@ -52,7 +52,7 @@ public:
         m_analyteSet(_analyteSet)
     {}
 
-    void setAbsorptionModel(AbsorptionModel _absorptionModel) { m_absorptionModel = _absorptionModel;}
+    void setRouteModel(RouteModel _absorptionModel) { m_routeModel = _absorptionModel;}
     void setAbsorptionParameters(std::unique_ptr<ParameterSetDefinition> _parameters) {m_absorptionParameters = std::move(_parameters);}
 
 protected:
@@ -62,7 +62,7 @@ protected:
     ///
     /// \brief m_absorptionModel Computation absorption model
     /// This variable is an enum class and is closely related to the available Pk models implemented in the software
-    AbsorptionModel m_absorptionModel;
+    RouteModel m_routeModel;
 
     friend class FullFormulationAndRoute;
 };
@@ -76,7 +76,7 @@ public:
     FormulationAndRoute(
             Formulation _formulation,
             AdministrationRoute _route,
-            AbsorptionModel _absorptionModel,
+            RouteModel _absorptionModel,
             std::string _administrationName = "") :
         m_formulation(_formulation), m_route(_route), m_absorptionModel(_absorptionModel),
         m_administrationName(_administrationName)
@@ -87,7 +87,7 @@ public:
 
     AdministrationRoute getAdministrationRoute() const { return m_route;}
 
-    AbsorptionModel getAbsorptionModel() const { return m_absorptionModel;}
+    RouteModel getRouteModel() const { return m_absorptionModel;}
 
     std::string getAdministrationName() const { return m_administrationName;}
 
@@ -108,7 +108,7 @@ protected:
     ///
     /// \brief m_absorptionModel Computation absorption model
     /// This variable is an enum class and is closely related to the available Pk models implemented in the software
-    AbsorptionModel m_absorptionModel;
+    RouteModel m_absorptionModel;
 
     /// Administration name, as a free text field
     std::string m_administrationName;

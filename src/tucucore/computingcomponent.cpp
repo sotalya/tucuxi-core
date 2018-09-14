@@ -545,7 +545,7 @@ ComputingResult ComputingComponent::compute(
         }
 
         if (infusionTimes.size() == 0) {
-            if (selectedFormulationAndRoute->getFormulationAndRoute().getAbsorptionModel() == AbsorptionModel::INFUSION) {
+            if (selectedFormulationAndRoute->getFormulationAndRoute().getRouteModel() == RouteModel::INFUSION) {
                 m_logger.error("Infusion selected, but no potential infusion time");
                 return ComputingResult::Error;
             }

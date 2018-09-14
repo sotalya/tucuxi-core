@@ -18,6 +18,7 @@ SOURCES := \
 					 drugmodel/formulationandroute.cpp \
            drugmodel/parameterdefinition.cpp \
            drugmodel/targetdefinition.cpp \
+           drugmodel/timeconsiderations.cpp \
            drugmodel/validdose.cpp \
            drugmodel/validduration.cpp \
            drugtreatment/drugtreatment.cpp \
@@ -34,6 +35,7 @@ SOURCES := \
            covariateextractor.cpp \
            cyclestatisticscalculator.cpp \
            dosage.cpp \
+           drugmodelimport.cpp \
            hardcodedoperation.cpp \
            intakeextractor.cpp \
            intakeintervalcalculator.cpp \
