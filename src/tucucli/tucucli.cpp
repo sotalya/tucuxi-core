@@ -46,7 +46,7 @@ int main(int argc, char** argv)
 
     std::vector<Tucuxi::Core::Concentrations> concentrations;
     Tucuxi::Core::TimeOffsets times;
-    Tucuxi::Core::IntakeEvent intakeEvent(now, 0s, 400, 24h, Tucuxi::Core::AbsorptionModel::INTRAVASCULAR, 0s, nbPoints);
+    Tucuxi::Core::IntakeEvent intakeEvent(now, 0s, 400, 24h, Tucuxi::Core::RouteModel::INTRAVASCULAR, 0s, nbPoints);
     Tucuxi::Core::ParameterDefinitions parameterDefs;
     Tucuxi::Core::Residuals inResiduals;
     Tucuxi::Core::Residuals outResiduals1, outResiduals2;
