@@ -1,0 +1,44 @@
+<covariate>
+  <id>bodyweight</id>
+  <name>
+    <name lang="en">Total Body Weight</name>
+    <name lang="fr">Poids total</name>
+  </name>
+  <description>
+    <desc lang="en">Total body weight of patient, in kilogramms</desc>
+    <desc lang="fr">Poids total du patient, en kilogramme</desc>
+  </description>
+  <unit>kg</unit>
+  <type>standard</type>
+  <dataType>double</dataType>
+  <interpolationType>linear</interpolationType>
+  <value>
+    <standardValue>75</standardValue>
+    <aprioriComputation>
+      <formula type="softcoded">asdfasdfasdf</formula>
+      <comments/>
+    </aprioriComputation>
+  </value>
+  <validation>
+    <errorMessage><text lang="fr"></text></errorMessage>
+    <operation>
+      <softFormula>
+        <inputs>
+          <input>
+            <id>bodyweight</id>
+            <type>double</type>
+          </input>
+        </inputs>
+        <formula><![CDATA[
+            return bodyweight < 300 and bodyweight > 0;
+            ]]>
+        </formula>
+      </softFormula>
+      <comments/>
+    </operation>
+    <comments/>
+  </validation>
+  <comments>
+    <comment lang="en">About the mean value in the study population group A</comment>
+  </comments>
+</covariate>

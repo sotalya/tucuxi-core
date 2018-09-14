@@ -1,0 +1,44 @@
+h1, h2, h3, h4
+{
+	font-family: Arial;
+}
+
+p
+{
+	text-align: justify;
+}
+
+.orange
+{
+	color: #f28b37;
+}
+
+/*
+table
+{
+	text-align: center;
+}
+*/
+
+/*sert à rien apparement
+head > title
+{
+	font-family: Arial;
+}
+*/
+
+/* YTA added this to wrap in tables */
+
+/* override table width restrictions */
+@media screen and (min-width: 767px) {
+
+   .wy-table-responsive table td {
+      /* !important prevents the common CSS stylesheets from overriding
+         this as on RTD they are loaded after this stylesheet */
+      white-space: normal !important;
+   }
+
+   .wy-table-responsive {
+      overflow: visible !important;
+   }
+}

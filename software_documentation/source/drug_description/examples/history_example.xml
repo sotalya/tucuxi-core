@@ -1,0 +1,20 @@
+<history>
+  <revisions>
+    <revision>
+      <revisionAction>creation</revisionAction>
+      <revisionAuthorName>John Doe</revisionAuthorName>
+      <institution>Name of his institution</institution>
+      <email>john@doe.com</email>
+      <date>2014-07-17</date>
+      <comments/>
+    </revision>
+    <revision>
+      <revisionAction>modification</revisionAction>
+      <revisionAuthorName>Jane Doe</revisionAuthorName>
+      <institution>Name of her institution</institution>
+      <email>jane@doe.com</email>
+      <date>2014-07-30</date>
+      <comments/>
+    </revision>
+  </revisions>
+</history>

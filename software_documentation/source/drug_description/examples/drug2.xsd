@@ -1,0 +1,817 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+
+    <!-- Global Attributes -->
+
+    <xs:attribute name="lang">
+        <xs:simpleType>
+            <xs:restriction base="xs:language">
+                <xs:enumeration value="fr" />
+                <xs:enumeration value="en" />
+            </xs:restriction>
+        </xs:simpleType>
+    </xs:attribute>
+
+    <!-- Global Types -->
+
+
+    <xs:simpleType name="revisionType">
+        <xs:annotation>
+            <xs:documentation>
+                This type is only used in the revision element, in order to indicate what is the revision purpose.
+            </xs:documentation>
+        </xs:annotation>
+
+        <xs:restriction base="xs:normalizedString">
+            <xs:enumeration value="creation" />
+            <xs:enumeration value="review" />
+            <xs:enumeration value="validation" />
+            <xs:enumeration value="modification" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="covariateType">
+        <xs:restriction base="xs:normalizedString">
+            <xs:enumeration value="standard" />
+            <xs:enumeration value="sex" />
+            <xs:enumeration value="ageInYears" />
+            <xs:enumeration value="ageInDays" />
+            <xs:enumeration value="ageInMonths" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="covariateDataType">
+        <xs:restriction base="xs:normalizedString">
+            <xs:enumeration value="int" />
+            <xs:enumeration value="double" />
+            <xs:enumeration value="bool" />
+            <xs:enumeration value="date" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="interpolationType">
+        <xs:restriction base="xs:normalizedString">
+            <xs:enumeration value="direct" />
+            <xs:enumeration value="linear" />
+            <xs:enumeration value="sigmoid" />
+            <xs:enumeration value="tanh" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="constraintType">
+        <xs:restriction base="xs:normalizedString">
+            <xs:enumeration value="soft" />
+            <xs:enumeration value="hard" />
+        </xs:restriction>
+    </xs:simpleType>
+    
+    
+    <xs:simpleType name="formulaType">
+        <xs:restriction base="xs:normalizedString">
+            <xs:enumeration value="softcoded" />
+            <xs:enumeration value="hardcoded" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="formula">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="type" type="formulaType" use="required"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="operation">
+        <xs:sequence>
+            <xs:element name="formula" type="formula" maxOccurs="unbounded"/>
+            <xs:element ref="comments" />
+        </xs:sequence>
+    </xs:complexType>
+
+
+    <xs:simpleType name="positiveInteger">
+        <xs:restriction base="xs:integer">
+            <xs:minExclusive value="0" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="routeModelId">
+        <xs:restriction base="notEmptyToken">
+            <xs:enumeration value="extra" />
+            <xs:enumeration value="infu" />
+            <xs:enumeration value="bolus" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="targetType">
+        <xs:restriction base="xs:normalizedString">
+            <xs:enumeration value="peak" />
+            <xs:enumeration value="residual" />
+            <xs:enumeration value="mean" />
+            <xs:enumeration value="auc" />
+            <xs:enumeration value="aucOverMic" /> <!-- In that case MIC should be a covariate -->
+            <xs:enumeration value="timeOverMic" /> <!-- In that case MIC should be a covariate -->
+            <xs:enumeration value="aucDividedByMic" /> <!-- In that case MIC should be a covariate -->
+            <xs:enumeration value="peakDividedByMic" /> <!-- In that case MIC should be a covariate -->
+        </xs:restriction>
+    </xs:simpleType>
+
+
+    <xs:simpleType name="errorModelType">
+        <xs:restriction base="xs:normalizedString">
+            <xs:enumeration value="additive" />
+            <xs:enumeration value="proportional" />
+            <xs:enumeration value="mixed" />
+            <xs:enumeration value="softcoded" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="bsvType">
+        <xs:restriction base="xs:normalizedString">
+            <xs:enumeration value="none" />
+            <xs:enumeration value="normal" />
+            <xs:enumeration value="lognormal" />
+            <xs:enumeration value="proportional" />
+            <xs:enumeration value="additive" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="referenceType">
+        <xs:restriction base="xs:token">
+            <xs:enumeration value="plain" />
+            <xs:enumeration value="bibtex" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="notEmptyString">
+        <xs:restriction base="xs:normalizedString">
+            <xs:minLength value="1" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="notEmptyToken">
+        <xs:restriction base="xs:token">
+            <xs:minLength value="1" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="translatedText">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute ref="lang" use="required"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="unitValue">
+        <xs:simpleContent>
+            <xs:extension base="xs:double">
+                <xs:attribute name="unit" type="xs:string" />
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+
+    <xs:simpleType name="unitType">
+        <xs:restriction base="xs:normalizedString">
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="valueAndUnit">
+        <xs:sequence>
+            <xs:element name="value" type="xs:double" />
+            <xs:element name="unit" type="unitType"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="translatedNames">
+        <xs:sequence>
+            <xs:element name="name" type="translatedText" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="translatedTexts">
+        <xs:sequence>
+            <xs:element name="text" type="translatedText" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="translatedDescs">
+        <xs:sequence>
+            <xs:element name="desc" type="translatedText" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="stdAprioriValue">
+        <xs:sequence>
+            <xs:element name="standardValue" type="xs:double" />
+            <xs:element name="aprioriComputation" type="operation" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- Global Elements -->
+
+
+
+    <xs:element name="comments">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="comment" type="translatedText" minOccurs="0" maxOccurs="unbounded" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="references">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="reference" minOccurs="0" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:simpleContent>
+                            <xs:extension base="xs:string">
+                                <xs:attribute name="type" type="referenceType" use="required" />
+                            </xs:extension>
+                        </xs:simpleContent>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Structure Elements -->
+
+
+    <xs:complexType name="requiredCovariates">
+        <xs:sequence>
+            <xs:element name="covariateId" type="xs:string" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+
+
+
+    <xs:complexType name="constraint">
+        <xs:sequence>
+            <xs:element name="constraintType" type="constraintType"/>
+            <xs:element name="errorMessage" type="translatedTexts"/>
+            <xs:element name="requiredCovariates" type="requiredCovariates" />
+            <xs:element name="formula" type="formula"/>
+            <xs:element ref="comments" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="constraints">
+        <xs:sequence>
+            <xs:element name="constraint" type="constraint" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+
+    <xs:element name="domain">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="description" type="translatedDescs" />
+                <xs:element name="constraints" type="constraints" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="activeSubstances">
+        <xs:sequence>
+            <xs:element name="activeSubstance" type="notEmptyString" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="atcs">
+        <xs:sequence>
+            <xs:element name="atc" type="notEmptyToken" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="drug">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="atcs" type="atcs" />
+                <xs:element name="activeSubstances" type="activeSubstances" />
+                <xs:element name="drugName" type="translatedNames" />
+                <xs:element name="drugDescription" type="translatedDescs" />
+                <xs:element name="tdmStrategy" type="translatedTexts" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="study">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="studyName" type="translatedNames" />
+                <xs:element name="studyAuthors" type="notEmptyString" />
+                <xs:element name="description" type="translatedDescs" />
+                <xs:element ref="references" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+
+
+    <xs:element name="head">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="drug" />
+                <xs:element ref="study" />
+                <xs:element ref="comments" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="halfLife">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="unit" type="unitType" />
+                <xs:element name="value" type="stdAprioriValue" />
+                <xs:element name="multiplier" type="xs:nonNegativeInteger" />
+                <xs:element ref="comments" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="outdatedMeasure">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="unit" type="unitType" />
+                <xs:element name="value" type="stdAprioriValue" />
+                <xs:element ref="comments" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+
+    <xs:element name="timeConsiderations">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="halfLife" />
+                <xs:element ref="outdatedMeasure" />
+            </xs:sequence></xs:complexType>
+        </xs:element>
+
+        <xs:element name="conversions">
+            <xs:complexType>
+                <xs:sequence>
+                    <xs:element name="units">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="concentration" type="xs:string" />
+                                <xs:element name="result" type="xs:string" />
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+
+                    <xs:element name="factors">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="concentration" type="xs:double" />
+                                <xs:element name="result" type="xs:double" />
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+
+                    <xs:element ref="comments" />
+                </xs:sequence>
+            </xs:complexType>
+        </xs:element>
+
+
+        <xs:element name="doseRange">
+            <xs:complexType>
+                <xs:sequence>
+                    <xs:element name="from" type="stdAprioriValue" />
+                    <xs:element name="to" type="stdAprioriValue" />
+                    <xs:element name="step" type="stdAprioriValue" />
+                </xs:sequence>
+            </xs:complexType>
+        </xs:element>
+
+
+        <xs:element name="intervalRange">
+            <xs:complexType>
+                <xs:sequence>
+                    <xs:element name="from" type="stdAprioriValue" />
+                    <xs:element name="to" type="stdAprioriValue" />
+                    <xs:element name="step" type="stdAprioriValue" />
+                </xs:sequence>
+            </xs:complexType>
+        </xs:element>
+
+        <xs:element name="infusionRange">
+            <xs:complexType>
+                <xs:sequence>
+                    <xs:element name="from" type="stdAprioriValue" />
+                    <xs:element name="to" type="stdAprioriValue" />
+                    <xs:element name="step" type="stdAprioriValue" />
+                </xs:sequence>
+            </xs:complexType>
+        </xs:element>
+
+        <xs:element name="fixedDoses">
+            <xs:complexType>
+                <xs:sequence>
+                    <xs:element name="dose" type="xs:double" minOccurs="0" maxOccurs="unbounded" />
+                </xs:sequence>
+                <xs:attribute name="default" type="xs:double" />
+                <xs:attribute name="unit" type="unitType" />
+                <xs:attribute name="any" type="xs:boolean" />
+                <xs:attribute name="from" type="xs:double" />
+                <xs:attribute name="to" type="xs:double" />
+                <xs:attribute name="step" type="xs:double" />
+            </xs:complexType>
+        </xs:element>
+
+        <xs:element name="fixedIntervals">
+            <xs:complexType>
+                <xs:sequence>
+                    <xs:element name="interval" type="xs:double" minOccurs="0" maxOccurs="unbounded" />
+                </xs:sequence>
+                <xs:attribute name="default" type="xs:double" />
+                <xs:attribute name="unit" type="unitType" />
+                <xs:attribute name="any" type="xs:boolean" />
+                <xs:attribute name="from" type="xs:double" />
+                <xs:attribute name="to" type="xs:double" />
+                <xs:attribute name="step" type="xs:double" />
+            </xs:complexType>
+        </xs:element>
+
+        <xs:element name="fixedInfusions">
+            <xs:complexType>
+                <xs:sequence>
+                    <xs:element name="infusion" type="xs:double" minOccurs="0" maxOccurs="unbounded" />
+                </xs:sequence>
+                <xs:attribute name="default" type="xs:double" />
+                <xs:attribute name="unit" type="unitType" />
+                <xs:attribute name="any" type="xs:boolean" />
+                <xs:attribute name="from" type="xs:double" />
+                <xs:attribute name="to" type="xs:double" />
+                <xs:attribute name="step" type="xs:double" />
+            </xs:complexType>
+        </xs:element>
+
+
+        <xs:element name="dosages">
+            <xs:complexType>
+                <xs:sequence>
+                    <xs:element name="analyteConversions">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="analyteConversion" minOccurs="1" maxOccurs="unbounded">
+                                    <xs:complexType>
+                                        <xs:sequence>
+                                            <xs:element name="analyteId" type="notEmptyString" />
+                                            <xs:element name="factor" type="xs:double" />
+                                        </xs:sequence>
+                                    </xs:complexType>
+                                </xs:element>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+
+
+                    <xs:element name="availableDoses">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="unit" type="unitType" />
+                                <xs:element name="default" type="stdAprioriValue" />
+                                <xs:element ref="doseRange" minOccurs="0"/>
+                                <xs:element ref="fixedDoses" minOccurs="0" />
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+
+                    <xs:element name="intervals">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="unit" type="unitType" />
+                                <xs:element name="default" type="stdAprioriValue" />
+                                <xs:element ref="intervalRange" minOccurs="0"/>
+                                <xs:element ref="fixedIntervals" minOccurs="0" />
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+
+                    <xs:element name="infusions">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="unit" type="unitType" />
+                                <xs:element name="default" type="stdAprioriValue" />
+                                <xs:element ref="infusionRange" minOccurs="0"/>
+                                <xs:element ref="fixedInfusions" minOccurs="0" />
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+
+                    <xs:element ref="comments" />
+                </xs:sequence>
+            </xs:complexType>
+        </xs:element>
+
+        <xs:element name="targetValues">
+            <xs:complexType>
+                <xs:sequence>
+                    <xs:element name="min" type="stdAprioriValue" />
+                    <xs:element name="max" type="stdAprioriValue" />
+                    <xs:element name="best" type="stdAprioriValue" />
+                    <xs:element name="toxicityAlarm" type="stdAprioriValue" minOccurs="0"/>
+                    <xs:element name="inefficacyAlarm" type="stdAprioriValue" minOccurs="0"/>
+                </xs:sequence>
+                <xs:attribute name="unit" type="unitType" />
+            </xs:complexType>
+        </xs:element>
+
+        <xs:element name="times">
+            <xs:complexType>
+                <xs:sequence>
+                    <xs:element name="min" type="stdAprioriValue" />
+                    <xs:element name="max" type="stdAprioriValue" />
+                    <xs:element name="best" type="stdAprioriValue" />
+                </xs:sequence>
+                <xs:attribute name="unit" type="unitType" />
+            </xs:complexType>
+        </xs:element>
+
+
+        <xs:element name="target">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="targetType" type="targetType" />
+                                <xs:element ref="targetValues" />
+                                <xs:element ref="times" minOccurs="0" />
+                                <xs:element ref="comments" />
+                            </xs:sequence>
+                        </xs:complexType>
+        </xs:element>
+
+
+        <xs:element name="targets">
+            <xs:complexType>
+                <xs:sequence>
+                    <xs:element name="target" minOccurs="0" maxOccurs="unbounded" />
+                </xs:sequence>
+            </xs:complexType>
+        </xs:element>
+
+        <xs:complexType name="validation">
+            <xs:sequence>
+                <xs:element name="errorMessage" type="translatedTexts" />
+                <xs:element name="formula" type="formula" />
+                <xs:element ref="comments" />
+            </xs:sequence>
+        </xs:complexType>
+
+       <xs:element name="covariate">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="id" type="notEmptyString" />
+                                <xs:element name="name" type="translatedNames" />
+                                <xs:element name="description" type="translatedDescs" />
+                                <xs:element name="unit" type="unitType" />
+                                <xs:element name="type" type="covariateType" />
+                                <xs:element name="dataType" type="covariateDataType" />
+                                <xs:element name="interpolationType" type="interpolationType" />
+                                <xs:element name="value" type="stdAprioriValue" />
+                                <xs:element name="validation" type="validation" />
+                                <xs:element ref="comments" />
+                            </xs:sequence>
+                        </xs:complexType>
+       </xs:element>
+
+        <xs:element name="covariates">
+            <xs:complexType>
+                <xs:sequence>
+                    <xs:element ref="covariate" minOccurs="0" maxOccurs="unbounded" />
+                </xs:sequence>
+            </xs:complexType>
+        </xs:element>
+
+        <xs:element name="errorModel">
+            <xs:complexType>
+                <xs:sequence>
+                    <xs:element name="errorModelType" type="errorModelType"/>
+                    <xs:element name="formula" type="operation" minOccurs="0"/>
+                    <xs:element name="sigmas">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="sigma" type="stdAprioriValue" minOccurs="0" maxOccurs="unbounded"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element ref="comments" />
+                </xs:sequence>
+            </xs:complexType>
+        </xs:element>
+
+
+        <xs:complexType name="parametersList">
+            <xs:sequence>
+                <xs:element name="parameter" minOccurs="0" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="id" type="notEmptyString" />
+                            <xs:element name="unit" type="unitType" />
+                            <xs:element name="value" type="stdAprioriValue" />
+
+                            <xs:element name="bsv">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="bsvType" type="bsvType" />
+                                        <xs:element name="stdDevs">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="stdDev" type="xs:double" />
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="validation" type="validation" />
+                            <xs:element ref="comments" />
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+
+        <xs:complexType name="correlations">
+            <xs:sequence>
+                <xs:element name="correlation" minOccurs="0" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="param1" type="notEmptyString" /> <!-- We know, depending on the location of the correlations, what analyteGroupId it refers to, as well as the formulationAndRoute -->
+                            <xs:element name="param2" type="notEmptyString" />
+                            <xs:element name="value" type="xs:double" />
+                            <xs:element ref="comments" />
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+
+        <xs:complexType name="parameterSet">
+            <xs:sequence>
+                <xs:element name="parameters" type="parametersList"/>
+                <xs:element name="correlations" type="correlations"/>
+            </xs:sequence>
+        </xs:complexType>
+
+
+        <xs:complexType name="parameterSetAnalyteGroup">
+            <xs:sequence>
+                <xs:element name="analyteGroupId" type="notEmptyString" />
+                <xs:element name="parameters" type="parametersList"/>
+                <xs:element name="correlations" type="correlations"/>
+            </xs:sequence>
+        </xs:complexType>
+
+        <xs:complexType name="groupParameters">
+            <xs:sequence>
+                <xs:element name="parameterSet" type="parameterSetAnalyteGroup" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+
+        <xs:element name="history">
+            <xs:complexType>
+                <xs:sequence>
+
+                    <xs:element name="revisions">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="revision" minOccurs="0" maxOccurs="unbounded">
+                                    <xs:complexType>
+                                        <xs:sequence>
+                                            <xs:element name="revisionAction" type="revisionType" />
+                                            <xs:element name="revisionAuthorName" type="xs:string" />
+                                            <xs:element name="institution" type="xs:string" />
+                                            <xs:element name="email" type="xs:anyURI" />
+                                            <xs:element name="date" type="xs:date" />
+                                            <xs:element ref="comments" />
+                                        </xs:sequence>
+                                    </xs:complexType>
+                                </xs:element>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:sequence>
+            </xs:complexType>
+        </xs:element>
+
+
+<xs:element name="analyte">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="analyteId" type="notEmptyString" />
+                <xs:element name="unit" type="unitType" />
+                <xs:element name="molarMass" type="valueAndUnit" />
+                <xs:element name="description" type="translatedDescs" />
+                <xs:element ref="errorModel" />
+                <xs:element ref="comments" />
+            </xs:sequence>
+        </xs:complexType>
+        </xs:element>
+
+        <xs:complexType name="analytes">
+            <xs:sequence>
+                <xs:element ref="analyte" minOccurs="1" maxOccurs="unbounded" />
+            </xs:sequence>
+        </xs:complexType>
+
+        <xs:complexType name="analyteGroup">
+            <xs:sequence>
+                <xs:element name="groupId" type="notEmptyString" />
+                <xs:element name="pkModelId" type="notEmptyString" />
+                <xs:element name="analytes" type="analytes" />
+                <xs:element name="dispositionParameters" type="parameterSet"/>
+            </xs:sequence>
+        </xs:complexType>
+
+
+        <xs:element name="analyteGroups">
+            <xs:complexType>
+                <xs:sequence>
+                    <xs:element name="analyteGroup" type="analyteGroup" minOccurs="1" maxOccurs="unbounded"/>
+                </xs:sequence>
+            </xs:complexType>
+        </xs:element>
+
+<xs:element name="formulationAndRoutes">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="formulationAndRoute" type="formulationAndRoute" minOccurs="1" maxOccurs="unbounded" />
+            </xs:sequence>
+            <xs:attribute name="default" type="xs:string"/>
+        </xs:complexType>
+</xs:element>
+
+        <xs:complexType name="formulationAndRoute">
+            <xs:sequence>
+                <xs:element name="formulationAndRouteId" type="xs:string" />
+                <xs:element name="formulation" type="xs:string" />
+                <xs:element name="administrationName" type="xs:string" />
+                <xs:element name="administrationRoute" type="xs:string" />
+                <xs:element name="routeModelId" type="routeModelId" />
+                <xs:element ref="dosages" />
+                <xs:element name="absorptionParameters" type="groupParameters" />
+            </xs:sequence>
+        </xs:complexType>
+
+
+
+        <xs:element name="activeMoieties">
+            <xs:complexType>
+                <xs:sequence>
+                    <xs:element name="activeMoiety" type="activeMoiety" maxOccurs="unbounded" />
+                </xs:sequence>
+            </xs:complexType>
+        </xs:element>
+
+        <xs:complexType name="analyteIdList">
+            <xs:sequence>
+                <xs:element name="analyteId" type="xs:string" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+
+        <xs:complexType name="activeMoiety">
+            <xs:sequence>
+                <xs:element name="activeMoietyId" type="xs:string" />
+                <xs:element name="activeMoietyName" type="translatedNames" />
+                <xs:element name="unit" type="unitType" />
+                <xs:element name="analyteIdList" type="analyteIdList" />
+                <xs:element name="formula" type="formula" />
+                <xs:element ref="targets" />
+            </xs:sequence>
+        </xs:complexType>
+
+
+        <xs:element name="drugModel">
+            <xs:complexType>
+                <xs:sequence>
+                    <xs:element name="drugId" type="notEmptyString" />
+                    <xs:element name="drugModelId" type="notEmptyString" />
+                    <xs:element ref="domain" />
+                    <xs:element ref="covariates" />
+                    <xs:element ref="activeMoieties" />
+                    <xs:element ref="analyteGroups" />
+                    <xs:element ref="formulationAndRoutes" />
+                    <xs:element ref="timeConsiderations" />
+                    <xs:element ref="comments" />
+                </xs:sequence>
+            </xs:complexType>
+        </xs:element>
+
+        <xs:element name="model">
+            <xs:complexType>
+                <xs:sequence>
+                    <xs:element ref="history" />
+                    <xs:element ref="head" />
+                    <xs:element ref="drugModel" />
+                </xs:sequence>
+                <xs:attribute name="version" type="xs:decimal" />
+            </xs:complexType>
+        </xs:element>
+
+    </xs:schema>

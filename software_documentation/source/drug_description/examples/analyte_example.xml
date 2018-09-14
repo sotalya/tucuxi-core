@@ -1,0 +1,34 @@
+<analyte>
+  <analyteId>vanco</analyteId>
+  <unit>mg/l</unit>
+  <molarMass>
+    <value>0</value>
+    <unit>g/mol</unit>
+  </molarMass>
+  <description>
+    <desc lang="fr"></desc>
+  </description> <!-- peut être vide -->
+
+  <errorModel> <!-- optional -->
+    <errorModelType>formula</errorModelType>
+    <formula>
+      <formula type="softcoded"><![CDATA[
+        return eps * sigma0 + eps * exp(sigma1);
+        ]]>
+      </formula> <!-- probablement une autre formule pour Bayes -->
+      <comments/>
+    </formula>
+    <sigmas>
+      <sigma>
+        <standardValue>0.239</standardValue>
+      </sigma>
+      <sigma>
+        <standardValue>0.185</standardValue>
+      </sigma>
+    </sigmas>
+    <comments>
+      <comment lang="fr">Une fonction d'erreur model définie par la fiche médicament</comment>
+    </comments>
+  </errorModel>
+  <comments/>
+</analyte>

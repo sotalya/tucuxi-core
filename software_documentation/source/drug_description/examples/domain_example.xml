@@ -1,0 +1,55 @@
+<domain>
+    <description>
+        <desc lang="en">This is the domain, bla bla bla</desc>
+    </description>
+    <constraints>
+        <constraint>
+            <constraintType>hard</constraintType>
+            <errorMessage>
+                <text lang="en">The age shall be positive</text>
+            </errorMessage>
+            <requiredCovariates>
+                <covariateId>age</covariateId>
+            </requiredCovariates>
+            <checkOperation>
+                <softFormula>
+                    <inputs>
+                        <input>
+                            <id>age</id>
+                            <type>int</type>
+                        </input>
+                    </inputs>
+                    <formula><![CDATA[return (age > 0);
+                        ]]>
+                    </formula>
+                </softFormula>
+                <comments/>
+            </checkOperation>
+            <comments/>
+        </constraint>
+        <constraint>
+            <constraintType>soft</constraintType>
+            <errorMessage>
+                <text lang="en">The weight should not be too much</text>
+            </errorMessage>
+            <requiredCovariates>
+                <covariateId>bodyweight</covariateId>
+            </requiredCovariates>
+            <checkOperation>
+                <softFormula>
+                    <inputs>
+                        <input>
+                            <id>bodyweight</id>
+                            <type>double</type>
+                        </input>
+                    </inputs>
+                    <formula><![CDATA[return (return (bodyweight < 100);
+                        ]]>
+                    </formula>
+                </softFormula>
+                <comments/>
+            </checkOperation>
+            <comments/>
+        </constraint>
+    </constraints>
+</domain>

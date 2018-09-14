@@ -1,0 +1,20 @@
+<timeConsiderations>
+  <!-- Drug half-life -->
+  <halfLife>
+    <unit>h</unit>
+    <value>
+      <standardValue>12</standardValue>
+    </value>
+    <multiplier>10</multiplier>
+    <comments/>
+  </halfLife>
+
+
+  <outdatedMeasure>
+    <unit>d</unit>
+    <value>
+      <standardValue>100</standardValue>
+    </value>
+    <comments/>
+  </outdatedMeasure>
+</timeConsiderations>

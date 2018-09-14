@@ -1,0 +1,37 @@
+<parameter>
+  <id>CL</id>
+  <unit>l/h</unit>
+  <value>
+    <standardValue>3.505</standardValue>
+    <aprioriComputation>
+      <formula type="softcoded"><![CDATA[
+        CCR = covariate_CLcr
+        BW = covariate_bodyweight
+        theta_1 = 0.034;
+        theta_2 = 0.015;
+
+        TVCL = theta_1*CCR+theta_2*BW;
+        return TVCL;
+        ]]>
+      </formula>
+      <comments/>
+    </aprioriComputation>
+  </value>
+  <bsv>
+    <bsvType>normal</bsvType> <!-- même chose que le modèle d'erreur -->
+    <stdDevs>
+      <stdDev>0.292</stdDev>
+    </stdDevs>
+  </bsv>
+  <validation>
+    <errorMessage><text lang="fr"></text></errorMessage>
+    <formula type="softcoded"><![CDATA[
+      return bodyweight < 300 and bodyweight > 20;
+      ]]>
+    </formula>
+    <comments/>
+  </validation>
+  <comments>
+    <comment lang="en">Typical clearance calculated for a patients with weight = 75 kg et CCR = 70 ml/min</comment>
+  </comments>
+</parameter>

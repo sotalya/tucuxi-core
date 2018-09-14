@@ -1,0 +1,18 @@
+<activeMoieties>
+  <activeMoiety>
+    <activeMoietyId>vancomycin</activeMoietyId>
+    <activeMoietyName>
+      <name lang="fr">        </name>
+    </activeMoietyName>
+    <unit>mg/l</unit>
+    <analyteIdList>
+      <analyteId>vancomycin</analyteId>
+    </analyteIdList>
+    <formula>...</formula>
+    <!-- Drug targets -->
+    <targets>
+    </targets>
+
+
+  </activeMoiety> <!--fraction active -->
+</activeMoieties>
