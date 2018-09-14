@@ -38,7 +38,8 @@ int main(int argc, char** argv)
     int tot_res = 0;
 
     TestDrugModelImport drugModelImportTests;
-    drugModelImportTests.add_test("Simple test 1", &TestDrugModelImport::testImatinib);
+    drugModelImportTests.add_test("DrugModelImportFake", &TestDrugModelImport::testFake);
+    drugModelImportTests.add_test("DrugModelImportBusulfan1", &TestDrugModelImport::testBusulfan1);
 
     res = drugModelImportTests.run(argc, argv);
     tot_res |= res;

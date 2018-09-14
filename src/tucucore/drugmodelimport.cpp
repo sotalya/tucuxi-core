@@ -317,7 +317,7 @@ RouteModel DrugModelImport::extractRouteModel(Tucuxi::Common::XmlNodeIterator _n
         {"undefined", RouteModel::UNDEFINED},
         {"bolus", RouteModel::INTRAVASCULAR},
         {"extra", RouteModel::EXTRAVASCULAR},
-        {"infus", RouteModel::INFUSION}
+        {"infusion", RouteModel::INFUSION}
     };
 
     auto it = m.find(_node->getValue());
