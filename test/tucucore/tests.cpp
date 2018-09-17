@@ -14,6 +14,8 @@
 #include "test_covariateextractor.h"
 #include "test_cyclestatistics.h"
 #include "test_dosage.h"
+#include "test_drugdomainconstraintsevaluator.h"
+#include "test_drugmodelimport.h"
 #include "test_drugmodels.h"
 #include "test_intakeextractor.h"
 #include "test_intakeintervalcalculator.h"
@@ -23,7 +25,6 @@
 #include "test_parameterextractor.h"
 #include "test_percentilecalculator.h"
 #include "test_pkmodel.h"
-#include "test_drugmodelimport.h"
 
 int main(int argc, char** argv)
 {
@@ -36,6 +37,24 @@ int main(int argc, char** argv)
 
     int res = 0;
     int tot_res = 0;
+
+
+
+    TestDrugDomainConstraintsEvaluator drugDomainConstraintsEvaluatorTests;
+
+    drugDomainConstraintsEvaluatorTests.add_test("simpleTest1", &TestDrugDomainConstraintsEvaluator::test1);
+    drugDomainConstraintsEvaluatorTests.add_test("simpleTest2", &TestDrugDomainConstraintsEvaluator::test2);
+    drugDomainConstraintsEvaluatorTests.add_test("simpleTest3", &TestDrugDomainConstraintsEvaluator::test3);
+
+    res = drugDomainConstraintsEvaluatorTests.run(argc, argv);
+    tot_res |= res;
+    if (res != 0) {
+        std::cerr << "Drug model domain constraints evaluator test failed\n";
+    }
+    else {
+        std::cout << "Drug model domain constraints evaluator test succeeded\n";
+    }
+
 
     TestDrugModelImport drugModelImportTests;
     drugModelImportTests.add_test("DrugModelImportFake", &TestDrugModelImport::testFake);

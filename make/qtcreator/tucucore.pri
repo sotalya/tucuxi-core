@@ -7,6 +7,7 @@ HEADERS += \
     $$PWD/../../src/tucucore/cyclestatisticscalculator.h \
     $$PWD/../../src/tucucore/definitions.h \
     $$PWD/../../src/tucucore/dosage.h \
+    $$PWD/../../src/tucucore/drugdomainconstraintsevaluator.h \
     $$PWD/../../src/tucucore/intakeevent.h \
     $$PWD/../../src/tucucore/intakeintervalcalculator.h \
     $$PWD/../../src/tucucore/intakeextractor.h \
@@ -75,6 +76,7 @@ SOURCES += \
     $$PWD/../../src/tucucore/intakeintervalcalculator.cpp \
     $$PWD/../../src/tucucore/intakeextractor.cpp \
     $$PWD/../../src/tucucore/dosage.cpp \
+    $$PWD/../../src/tucucore/drugdomainconstraintsevaluator.cpp \
     $$PWD/../../src/tucucore/operation.cpp \
     $$PWD/../../src/tucucore/pkmodels/onecompartmentbolus.cpp \
     $$PWD/../../src/tucucore/pkmodels/onecompartmentextra.cpp \

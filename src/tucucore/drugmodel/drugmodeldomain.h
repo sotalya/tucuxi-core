@@ -34,6 +34,8 @@ public:
 
     void setType(ConstraintType _type) {m_type = _type;}
 
+    ConstraintType getType() const { return m_type;}
+
     void setDescription(TranslatableString _description) {m_description = _description;}
 
 protected:
