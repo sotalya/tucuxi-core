@@ -2,9 +2,14 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
+#include <chrono>
+
 #include "tucucommon/general.h"
 #include "tucucore/parametersextractor.h"
 #include "tucucore/drugmodel/drugmodel.h"
+#include "tucucommon/duration.h"
+
+using namespace std::chrono_literals;
 
 namespace Tucuxi {
 namespace Core {
@@ -190,6 +195,23 @@ ParametersExtractor::Result ParametersExtractor::extract(ParameterSetSeries &_se
         _series.addParameterSetEvent(pSetEvent);
     }
 
+    return Result::Ok;
+}
+
+
+ParametersExtractor::Result ParametersExtractor::extractPopulation(ParameterSetSeries &_series)
+{
+    // Parameters valid since the epoch
+    ParameterSetEvent pSetEvent(DateTime(Tucuxi::Common::Duration(0h)));
+    // Add default values of all parameters
+    m_paramsIterator.reset();
+    while (!m_paramsIterator.isDone()) {
+        pSetEvent.addParameterEvent(**m_paramsIterator, (*m_paramsIterator)->getValue());
+        m_paramsIterator.next();
+    }
+
+    // Add the parameter set event to the series of events.
+    _series.addParameterSetEvent(pSetEvent);
     return Result::Ok;
 }
 

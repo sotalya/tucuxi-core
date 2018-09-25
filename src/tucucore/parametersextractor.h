@@ -57,6 +57,14 @@ public:
     ///          _series element.
     Result extract(ParameterSetSeries &_series);
 
+    /// \brief Extract parameter set events in a given interval from population values of parameter definitions.
+    /// \param _series Extracted set of parameter set events.
+    /// \return Result::Ok if the extraction was successful, Result::ExtractionError otherwise.
+    /// \warning No checks are made on the initial content of _series. If it contains already some events, they will
+    ///          still be there at the end of the function. It is up to the user to guarantee the consistency of the
+    ///          _series element.
+    Result extractPopulation(ParameterSetSeries &_series);
+
     // Make the test class friend, as this will allow us to test the helper methods (which are private).
     friend TestParameterExtractor;
 
