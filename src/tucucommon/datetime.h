@@ -27,7 +27,7 @@ class TimeOfDay;
 /// \code
 /// DateTime date(2016_y/mar/17, 20h+3min+2s);
 /// \endcode
-/// It is possible to add/substract a Duration form a DateTime as well as substract two DateTime to obtain the Duration
+/// It is possible to add/substract a Duration from a DateTime as well as substract two DateTime to obtain the Duration
 /// between the two.
 /// Methods year, month, day, hour, minute, second can be used to extract the different components of a date.
 /// \sa TimeOfDay, Duration

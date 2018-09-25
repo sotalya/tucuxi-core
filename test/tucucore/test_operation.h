@@ -198,7 +198,7 @@ struct TestOperation : public fructose::test_base<TestOperation>
         double res;
         bool rc;
 
-        JSOperation jsOp1("a*(b+c)", { OperationInput("a", InputType::DOUBLE), OperationInput("b", InputType::DOUBLE), OperationInput("c", InputType::DOUBLE) });
+        JSExpression jsOp1("a*(b+c)", { OperationInput("a", InputType::DOUBLE), OperationInput("b", InputType::DOUBLE), OperationInput("c", InputType::DOUBLE) });
         // Operation ok ?
         rc = jsOp1.evaluate({ OperationInput("c", 3.45), OperationInput("a", 1.23), OperationInput("b", 2.34) }, res);
         fructose_assert (rc == true);
@@ -207,7 +207,7 @@ struct TestOperation : public fructose::test_base<TestOperation>
         rc = jsOp1.evaluate({ OperationInput("a", 1.23), OperationInput("b", 2.34) }, res);
         fructose_assert (rc == false);
 
-        JSOperation jsOp2("a*b", { OperationInput("a", InputType::DOUBLE), OperationInput("b", InputType::DOUBLE) });
+        JSExpression jsOp2("a*b", { OperationInput("a", InputType::DOUBLE), OperationInput("b", InputType::DOUBLE) });
         // Operation ok ?
         rc = jsOp2.evaluate({ OperationInput("a", 1.23), OperationInput("b", 2.34) }, res);
         fructose_assert (rc == true);
@@ -218,7 +218,7 @@ struct TestOperation : public fructose::test_base<TestOperation>
         fructose_assert (rc == true);
         fructose_assert_double_eq (2.8782, res);
 
-        JSOperation jsOp3("result-b", { OperationInput("result", InputType::DOUBLE), OperationInput("b", InputType::DOUBLE) });
+        JSExpression jsOp3("result-b", { OperationInput("result", InputType::DOUBLE), OperationInput("b", InputType::DOUBLE) });
         // Operation ok even if one of the variables has the same name as the output variable in the code ?
         rc = jsOp3.evaluate({ OperationInput("result", 1.23), OperationInput("b", 2.34) }, res);
         fructose_assert (rc == true);
@@ -229,10 +229,10 @@ struct TestOperation : public fructose::test_base<TestOperation>
     /// \brief Test DynamicOperation base capabilities.
     void testDynamicOperation(const std::string& /* _testName */)
     {
-        JSOperation jsOp1("a*b+c", { OperationInput("a"), OperationInput("b", InputType::INTEGER), OperationInput("c") });
-        JSOperation jsOp2("c+d", { OperationInput("c"), OperationInput("d", InputType::INTEGER) });
-        JSOperation jsOp3("a*c-b*d", { OperationInput("a"), OperationInput("b", InputType::INTEGER), OperationInput("c"), OperationInput("d", InputType::INTEGER) });
-        JSOperation jsOp4("c-d", { OperationInput("c"), OperationInput("d", InputType::INTEGER) });
+        JSExpression jsOp1("a*b+c", { OperationInput("a"), OperationInput("b", InputType::INTEGER), OperationInput("c") });
+        JSExpression jsOp2("c+d", { OperationInput("c"), OperationInput("d", InputType::INTEGER) });
+        JSExpression jsOp3("a*c-b*d", { OperationInput("a"), OperationInput("b", InputType::INTEGER), OperationInput("c"), OperationInput("d", InputType::INTEGER) });
+        JSExpression jsOp4("c-d", { OperationInput("c"), OperationInput("d", InputType::INTEGER) });
         DiffOperation diff; // This will be 'a - b', with integer b
         OperationInput a("a", 1.234);
         OperationInput b("b", 2);
@@ -384,7 +384,7 @@ struct TestOperation : public fructose::test_base<TestOperation>
         const OperationInput A_male("A_male", 1.23);
         const OperationInput A_female("A_female", 1.04);
 
-        JSOperation jsCG_general("(140 - age) * weight / creatinine * (A_male * isMale + A_female * (!isMale))",
+        JSExpression jsCG_general("(140 - age) * weight / creatinine * (A_male * isMale + A_female * (!isMale))",
         { OperationInput("weight", InputType::DOUBLE),
           OperationInput("age", InputType::INTEGER),
           OperationInput("creatinine", InputType::DOUBLE),
@@ -452,7 +452,7 @@ struct TestOperation : public fructose::test_base<TestOperation>
         double IBWvalue;
         IdealBodyWeight IBWComputation;
 
-        JSOperation jsCG_IBW("(140 - age) * (weight * (weight < IBW) + IBW * (weight >= IBW)) / creatinine * (A_male * isMale + A_female * (!isMale))",
+        JSExpression jsCG_IBW("(140 - age) * (weight * (weight < IBW) + IBW * (weight >= IBW)) / creatinine * (A_male * isMale + A_female * (!isMale))",
         { OperationInput("weight", InputType::DOUBLE),
           OperationInput("IBW", InputType::DOUBLE),
           OperationInput("age", InputType::INTEGER),
@@ -529,7 +529,7 @@ struct TestOperation : public fructose::test_base<TestOperation>
         double IBWvalue;
         IdealBodyWeight IBWComputation;
 
-        JSOperation jsCG_IBW("(140 - age) * (IBW + 0.4 * (weight - IBW)) / creatinine * (A_male * isMale + A_female * (!isMale))",
+        JSExpression jsCG_IBW("(140 - age) * (IBW + 0.4 * (weight - IBW)) / creatinine * (A_male * isMale + A_female * (!isMale))",
         { OperationInput("weight", InputType::DOUBLE),
           OperationInput("IBW", InputType::DOUBLE),
           OperationInput("age", InputType::INTEGER),
@@ -606,17 +606,17 @@ struct TestOperation : public fructose::test_base<TestOperation>
         OperationInput isMale("isMale", InputType::BOOL);
         OperationInput isAB("isAB", InputType::BOOL);
 
-        JSOperation jsMDRD_eGFR("175 * Math.pow(0.0113 * creatinine, -1.154) * Math.pow(age, -0.203) * ((1 * (isMale)) + (0.742 * !isMale)) * ((1 * (!isAB)) + (1.212 * isAB))",
+        JSExpression jsMDRD_eGFR("175 * Math.pow(0.0113 * creatinine, -1.154) * Math.pow(age, -0.203) * ((1 * (isMale)) + (0.742 * !isMale)) * ((1 * (!isAB)) + (1.212 * isAB))",
         { OperationInput("creatinine", InputType::DOUBLE),
           OperationInput("age", InputType::INTEGER),
           OperationInput("isMale", InputType::BOOL),
           OperationInput("isAB", InputType::BOOL) });
 
-        JSOperation jsMDRD_BSA("0.007184 * Math.pow(height, 0.725) * Math.pow(weight, 0.425)",
+        JSExpression jsMDRD_BSA("0.007184 * Math.pow(height, 0.725) * Math.pow(weight, 0.425)",
         { OperationInput("height", InputType::INTEGER),
           OperationInput("weight", InputType::DOUBLE) });
 
-        JSOperation jsMDRD_GFR("eGFR * BSA / 1.73",
+        JSExpression jsMDRD_GFR("eGFR * BSA / 1.73",
         { OperationInput("eGFR", InputType::DOUBLE),
           OperationInput("BSA", InputType::DOUBLE) });
 
@@ -708,7 +708,7 @@ struct TestOperation : public fructose::test_base<TestOperation>
         OperationInput isMale("isMale", InputType::BOOL);
         OperationInput isAB("isAB", InputType::BOOL);
 
-        JSOperation jsCKD_EPI_eGFR("141 * \
+        JSExpression jsCKD_EPI_eGFR("141 * \
                                    Math.pow(Math.min(0.0113 * creatinine / (0.7 * !isMale + 0.9 * isMale), 1), (-0.329 * !isMale - 0.411 * isMale)) * \
                                    Math.pow(Math.max(0.0113 * creatinine / (0.7 * !isMale + 0.9 * isMale), 1), (-1.209)) * \
                                    Math.pow(0.993, age) * \
@@ -719,11 +719,11 @@ struct TestOperation : public fructose::test_base<TestOperation>
           OperationInput("isMale", InputType::BOOL),
           OperationInput("isAB", InputType::BOOL) });
 
-        JSOperation jsCKD_EPI_BSA("0.007184 * Math.pow(height, 0.725) * Math.pow(weight, 0.425)",
+        JSExpression jsCKD_EPI_BSA("0.007184 * Math.pow(height, 0.725) * Math.pow(weight, 0.425)",
         { OperationInput("height", InputType::INTEGER),
           OperationInput("weight", InputType::DOUBLE) });
 
-        JSOperation jsCKD_EPI_GFR("eGFR * BSA / 1.73",
+        JSExpression jsCKD_EPI_GFR("eGFR * BSA / 1.73",
         { OperationInput("eGFR", InputType::DOUBLE),
           OperationInput("BSA", InputType::DOUBLE) });
 
@@ -812,7 +812,7 @@ struct TestOperation : public fructose::test_base<TestOperation>
         OperationInput isMale("isMale", InputType::BOOL);
 
         /// \warning This equations misses some intervals (e.g., 1 < age <= 2 or age <= 1 && weight <= 2.5 && bornAtTerm) !!!
-        JSOperation jsCG_Schwartz("height / creatinine * \
+        JSExpression jsCG_Schwartz("height / creatinine * \
                                   (0.33 * (age <= 1 && weight <= 2.5) + \
                                    0.45 * (age <= 1 && bornAtTerm) + \
                                    0.55 * (age > 2 && (age <= 13 || (age <= 20 && !isMale))) + \
@@ -950,16 +950,16 @@ struct TestOperation : public fructose::test_base<TestOperation>
         OperationInput creatinine("creatinine", InputType::DOUBLE);
         OperationInput isMale("isMale", InputType::BOOL);
 
-        JSOperation jsJelliffe_eGFR("(1 - 0.1 * !isMale) * (98 - (0.8 * age - 20)) / (0.0113 * creatinine)",
+        JSExpression jsJelliffe_eGFR("(1 - 0.1 * !isMale) * (98 - (0.8 * age - 20)) / (0.0113 * creatinine)",
         { OperationInput("creatinine", InputType::DOUBLE),
           OperationInput("age", InputType::INTEGER),
           OperationInput("isMale", InputType::BOOL) });
 
-        JSOperation jsJelliffe_BSA("0.007184 * Math.pow(height, 0.725) * Math.pow(weight, 0.425)",
+        JSExpression jsJelliffe_BSA("0.007184 * Math.pow(height, 0.725) * Math.pow(weight, 0.425)",
         { OperationInput("height", InputType::INTEGER),
           OperationInput("weight", InputType::DOUBLE) });
 
-        JSOperation jsJelliffe_GFR("eGFR * BSA / 1.73",
+        JSExpression jsJelliffe_GFR("eGFR * BSA / 1.73",
         { OperationInput("eGFR", InputType::DOUBLE),
           OperationInput("BSA", InputType::DOUBLE) });
 
@@ -1043,7 +1043,7 @@ struct TestOperation : public fructose::test_base<TestOperation>
         OperationInput isMale("isMale", InputType::BOOL);
 
         /// \warning This equations returns huge values!
-        JSOperation jsCG_SalazarCorcoran("isMale * ((137 - age) * (0.285 * weight + 12.1 * height * height) * 0.0113 / (51 * creatinine)) + \
+        JSExpression jsCG_SalazarCorcoran("isMale * ((137 - age) * (0.285 * weight + 12.1 * height * height) * 0.0113 / (51 * creatinine)) + \
                                          !isMale * ((146 - age) * (0.287 * weight + 9.74 * height * height) * 0.0113 / (60 * creatinine))",
         { OperationInput("weight", InputType::DOUBLE),
           OperationInput("age", InputType::INTEGER),

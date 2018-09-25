@@ -127,10 +127,12 @@ public:
 
     const TimeConsiderations &getTimeConsiderations() const { return *m_timeConsiderations;}
 
-private:
 
 
-    const AnalyteSet* getAnalyteSet(const std::string &_analyteId) const {
+    const AnalyteSet* getAnalyteSet(const std::string &_analyteId = "") const {
+        if ((_analyteId == "") && (m_analyteSets.size() == 1)) {
+            return m_analyteSets.at(0).get();
+        }
         for (const std::unique_ptr<AnalyteSet> &set : m_analyteSets) {
             if (set->getId() == _analyteId) {
                 return set.get();
@@ -138,6 +140,8 @@ private:
         }
         return nullptr;
     }
+
+private:
 
     const FullFormulationAndRoute* getFormulationAndRoute(const Formulation &_formulation, const AdministrationRoute _route) const {
         return m_formulationAndRoutes->get(_formulation, _route);
@@ -154,7 +158,8 @@ private:
     const ParameterSetDefinition* getDispositionParameters(const std::string &_analyteId) const {
         TMP_UNUSED_PARAMETER(_analyteId);
         CHECKINVARIANTS;
-        const AnalyteSet* pSet = getAnalyteSet("" /*_analyteId*/);
+        // TODO : Now we send an analyteId, while it should be a analyteGroupId
+        const AnalyteSet* pSet = getAnalyteSet(_analyteId);
         if (pSet != nullptr) {
             return &pSet->getDispositionParameters();
         }

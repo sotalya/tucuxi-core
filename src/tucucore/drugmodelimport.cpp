@@ -118,7 +118,10 @@ const std::vector<std::string>& DrugModelImport::ignoredTags() const {
 
 Unit DrugModelImport::extractUnit(Tucuxi::Common::XmlNodeIterator _node)
 {
-    Unit result(_node->getValue());
+    std::string unitString = _node->getValue();
+    if (unitString == "min")
+        unitString = "m";
+    Unit result(unitString);
     return result;
 }
 
@@ -1375,6 +1378,7 @@ IResidualErrorModel* DrugModelImport::extractErrorModel(Tucuxi::Common::XmlNodeI
         errorModel->addOriginalSigma(std::make_unique<PopulationValue>("", sigma->getValue(), sigma->getOperation()));
     }
     errorModel->setFormula(std::unique_ptr<Operation>(formula));
+    errorModel->generatePopulationSigma();
 
     DELETE_PVECTOR(sigmas);
 
@@ -1734,6 +1738,7 @@ FullFormulationAndRoute* DrugModelImport::extractFullFormulationAndRoute(
             std::string analyteGroupId;
             AnalyteSet *selectedAnalyteSet = nullptr;
             RouteModel absorptionModelId;
+            absorptionParameters = nullptr;
 
             while (absorptionIt != XmlNodeIterator::none()) {
 
@@ -1767,7 +1772,7 @@ FullFormulationAndRoute* DrugModelImport::extractFullFormulationAndRoute(
                 absorptionIt ++;
             }
 
-            if (getResult() == Result::Ok) {
+            if ((getResult() == Result::Ok) && (absorptionParameters != nullptr)) {
                 AnalyteSetToAbsorptionAssociation *association = new AnalyteSetToAbsorptionAssociation(*selectedAnalyteSet);
                 association->setAbsorptionParameters(std::unique_ptr<ParameterSetDefinition>(absorptionParameters));
                 association->setRouteModel(absorptionModelId);

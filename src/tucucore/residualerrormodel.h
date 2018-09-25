@@ -73,6 +73,10 @@ public:
 
     int nbEpsilons() const override { return m_nbEpsilons; }
 
+    void generatePopulationSigma() {m_sigma = Sigma(m_originalSigmas.size());for(std::size_t i = 0;i < m_originalSigmas.size(); i++) {
+            m_sigma[i] = m_originalSigmas.at(i)->getValue();
+        }}
+
 protected:
 
     std::unique_ptr<Operation> m_formula;

@@ -95,7 +95,7 @@ bool JSEngine::setVariable(const std::string& _name, const std::string& _express
 bool JSEngine::evaluate(const std::string& _code)
 {
     if (m_pEngine != nullptr) {
-        m_pEngine->evaluate(_code);
+        m_pEngine->execute(_code);
         return true;
     }
     return false;

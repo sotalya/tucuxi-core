@@ -76,7 +76,7 @@ ComputationResult ConcentrationCalculator::computeConcentrations(ConcentrationPr
 
 
         // Apply the intra-individual error
-        if (!_residualErrorModel.isEmpty()) {
+        if ((!_residualErrorModel.isEmpty()) && (_epsilons.size() != 0)) {
             _residualErrorModel.applyEpsToArray(concentrations[0], _epsilons);
         }
 

@@ -152,16 +152,22 @@ ComputingResult ComputingComponent::generalExtractions(
 {
 
     IntakeExtractor intakeExtractor;
-    int nIntakes = intakeExtractor.extract(_request.getDrugTreatment().getDosageHistory(false), _traits->getStart(), _traits->getEnd(), _intakeSeries, _traits->getCycleSize());
+    int nIntakes = intakeExtractor.extract(_request.getDrugTreatment().getDosageHistory(false), _traits->getStart(), _traits->getEnd() + Duration(24h), _intakeSeries, _traits->getCycleSize());
     TMP_UNUSED_PARAMETER(nIntakes);
 
+    // TODO : Specific to busulfan here. Should be handled differently
+    if (_request.getDrugModel().getAnalyteSet()->getAnalytes().at(0)->getAnalyteId() == "busulfan") {
+        _intakeSeries.at(nIntakes - 1).setInterval(72h);
+        _intakeSeries.at(nIntakes - 1).setNbPoints(250*10);
+    }
 
     const std::string pkModelId = _request.getDrugModel().getPkModelId();
 
+    // TODO : This should not necessarily be the default formulation and route
     // Should get rid of the next 3 lines
-    const std::string analyteId = "imatinib";
-    const Formulation formulation = Formulation::ParenteralSolution;
-    const AdministrationRoute route = AdministrationRoute::IntravenousBolus; // ???
+    const std::string analyteId = _request.getDrugModel().getAnalyteSet()->getId();
+    const Formulation formulation = _request.getDrugModel().getFormulationAndRoutes().getDefault()->getFormulationAndRoute().getFormulation();
+    const AdministrationRoute route = _request.getDrugModel().getFormulationAndRoutes().getDefault()->getFormulationAndRoute().getAdministrationRoute();
 
     _pkModel = m_models->getPkModelFromId(pkModelId);
 
@@ -196,8 +202,14 @@ ComputingResult ComputingComponent::generalExtractions(
                                            _traits->getStart(),
                                            _traits->getEnd());
 
-    ParametersExtractor::Result parametersExtractionResult = parameterExtractor.extract(_parameterSeries);
+    ParametersExtractor::Result parametersExtractionResult;
 
+    if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Population) {
+        parametersExtractionResult = parameterExtractor.extractPopulation(_parameterSeries);
+    }
+    else {
+        parametersExtractionResult = parameterExtractor.extract(_parameterSeries);
+    }
     if (parametersExtractionResult != ParametersExtractor::Result::Ok) {
         m_logger.error("Can not extract parameters");
         return ComputingResult::Error;
@@ -206,6 +218,8 @@ ComputingResult ComputingComponent::generalExtractions(
     return ComputingResult::Success;
 
 }
+
+
 
 ComputingResult ComputingComponent::compute(
         const ComputingTraitConcentration *_traits,
@@ -238,13 +252,47 @@ ComputingResult ComputingComponent::compute(
     // Now ready to do the real computing with all the extracted values
 
     ConcentrationPredictionPtr pPrediction = std::make_unique<ConcentrationPrediction>();
-    ComputationResult computationResult = computePopulation(
-                pPrediction,
-                false,
-                _traits->getStart(),
-                _traits->getEnd(),
-                intakeSeries,
-                parameterSeries);
+
+    ComputationResult computationResult;
+
+    if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Aposteriori) {
+
+        Etas etas;
+
+        Tucuxi::Core::OmegaMatrix omega = Tucuxi::Core::OmegaMatrix(2,2);
+        omega(0,0) = 0.356 * 0.356; // Variance of CL
+        omega(0,1) = 0.798 * 0.356 * 0.629; // Covariance of CL and V
+        omega(1,1) = 0.629 * 0.629; // Variance of V
+        omega(1,0) = 0.798 * 0.356 * 0.629; // Covariance of CL and V
+
+        const Tucuxi::Core::IResidualErrorModel &residualErrorModel =_request.getDrugModel().getAnalyteSet()->getAnalytes().at(0)->getResidualErrorModel();
+
+
+        SampleSeries sampleSeries;
+        SampleExtractor sampleExtractor;
+        sampleExtractor.extract(_request.getDrugTreatment().getSamples(), _traits->getStart(), _traits->getEnd(), sampleSeries);
+
+        APosterioriEtasCalculator etasCalculator;
+        etasCalculator.computeAposterioriEtas(intakeSeries, parameterSeries, omega, residualErrorModel, sampleSeries, etas);
+        computationResult = computeAposteriori(
+                    pPrediction,
+                    false,
+                    _traits->getStart(),
+                    _traits->getEnd(),
+                    intakeSeries,
+                    parameterSeries,
+                    etas,
+                    residualErrorModel);
+    }
+    else {
+        computationResult = computePopulation(
+                    pPrediction,
+                    false,
+                    _traits->getStart(),
+                    _traits->getEnd(),
+                    intakeSeries,
+                    parameterSeries);
+    }
 
     if (computationResult == ComputationResult::Success &&
             intakeSeries.size() == pPrediction->getTimes().size() &&
@@ -275,6 +323,9 @@ ComputingResult ComputingComponent::compute(
         const ComputingRequest &_request,
         std::unique_ptr<ComputingResponse> &_response)
 {
+#ifdef NO_PERCENTILES
+    return ComputingResult::Error;
+#endif
     if (_traits == nullptr) {
         m_logger.error("The computing traits sent for computation are nullptr");
         return ComputingResult::Error;
@@ -308,7 +359,6 @@ ComputingResult ComputingComponent::compute(
 
     Tucuxi::Core::PercentileRanks percentileRanks;
     Tucuxi::Core::OmegaMatrix omega;
-    Tucuxi::Core::SigmaResidualErrorModel residualErrorModel;
     Tucuxi::Core::Etas etas;
     Tucuxi::Core::ComputingAborter *aborter = nullptr;
 
@@ -317,11 +367,7 @@ ComputingResult ComputingComponent::compute(
     percentileRanks = {5, 25, 75, 95};
     percentileRanks = _traits->getRanks();
 
-    Sigma sigma(1);
-    sigma(0) = 0.3138;
-    residualErrorModel.setErrorModel(SigmaResidualErrorModel::ResidualErrorType::PROPORTIONAL);
-    residualErrorModel.setSigma(sigma);
-
+    const Tucuxi::Core::IResidualErrorModel &residualErrorModel =_request.getDrugModel().getAnalyteSet()->getAnalytes().at(0)->getResidualErrorModel();
 
     omega = Tucuxi::Core::OmegaMatrix(2,2);
     omega(0,0) = 0.356 * 0.356; // Variance of CL
@@ -818,7 +864,7 @@ ComputationResult ComputingComponent::computeConcentrations(
 {
     // TODO : Use a factory for the calculator
     ConcentrationCalculator calculator;
-    calculator.computeConcentrations(
+    return calculator.computeConcentrations(
                 _prediction,
                 _isAll,
                 _recordFrom,
@@ -829,7 +875,6 @@ ComputationResult ComputingComponent::computeConcentrations(
                 _residualErrorModel,
                 _eps,
                 _isFixedDensity);
-    return ComputationResult::Success;
 }
 
 

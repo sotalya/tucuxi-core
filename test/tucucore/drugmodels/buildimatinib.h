@@ -46,6 +46,7 @@ public:
 
         std::unique_ptr<AnalyteSet> analyteSet(new AnalyteSet());
 
+        analyteSet->setId("imatinib");
         analyteSet->setPkModelId("linear.1comp.macro");
 
         ActiveSubstance *analyte = new ActiveSubstance();
@@ -87,7 +88,7 @@ public:
         std::unique_ptr<ParameterSetDefinition> dispositionParameters(new ParameterSetDefinition());
 
         // Imatinib parameters, as in the XML drug file
-        Operation *opV = new JSOperation("theta2=V_population; theta8=46.2; tvv = theta2+theta8*sex-theta8*(1-sex); V = tvv;",
+        Operation *opV = new JSOperation("theta2=V_population; theta8=46.2; tvv = theta2+theta8*sex-theta8*(1-sex); V = tvv; return V;",
                                          { OperationInput("V_population", InputType::DOUBLE),
                                            OperationInput("sex", InputType::DOUBLE)});
 
@@ -109,7 +110,8 @@ public:
                                             PATH = gist; \
                                             MALE = sex; \
                                             \
-                                            Cl = theta1+theta4*FBW+theta5*MALE-theta5*(1-MALE)+theta6*FAGE + theta7*PATH-theta7*(1-PATH);",
+                                            Cl = theta1+theta4*FBW+theta5*MALE-theta5*(1-MALE)+theta6*FAGE + theta7*PATH-theta7*(1-PATH);\
+                                            return Cl;",
                                             { OperationInput("Cl_population", InputType::DOUBLE),
                                               OperationInput("sex", InputType::DOUBLE),
                                               OperationInput("weight", InputType::DOUBLE),

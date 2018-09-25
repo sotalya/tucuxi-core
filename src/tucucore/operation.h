@@ -296,6 +296,8 @@ protected:
 
 /// \ingroup TucuCore
 /// \brief Operation that uses the JavaScript engine for computation.
+/// It to express complex computation and shall end up with a
+/// return statement.
 class JSOperation : public Operation
 {
 public:
@@ -322,6 +324,27 @@ public:
 protected:
     /// \brief JavaScript expression representing the operation to perform.
     std::string m_expression;
+
+    /// \brief Build a JS operation from a set of required inputs.
+    /// \param _requiredInputs List of required inputs.
+    /// Only used as super class constructor for JSExpression
+    JSOperation(const OperationInputList &_requiredInputs);
+};
+
+
+/// \ingroup TucuCore
+/// \brief Expression that uses the JavaScript engine for computation.
+/// While JSOperation allow to express complex computation and shall end up with a
+/// return statement, a JSExpression is only a simple expression, such as "a+b".
+/// It shall not contain a return statement.
+class JSExpression : public JSOperation
+{
+public:
+    /// \brief Build a JS expression from an expression and a set of required inputs.
+    /// \param _expression Expression to evaluate.
+    /// \param _requiredInputs List of required inputs.
+    JSExpression(const std::string &_expression, const OperationInputList &_requiredInputs);
+
 };
 
 

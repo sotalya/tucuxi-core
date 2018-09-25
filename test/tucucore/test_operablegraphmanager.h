@@ -38,7 +38,7 @@ struct TestOpGraph : public fructose::test_base<TestOpGraph>
         fructose_assert (ogm.registerInput(a, "a") == false);
 
         std::shared_ptr<JSOperation> jsOp1
-                = std::make_shared<JSOperation>(JSOperation("a*(b+c)", { OperationInput("a", InputType::DOUBLE),
+                = std::make_shared<JSOperation>(JSExpression("a*(b+c)", { OperationInput("a", InputType::DOUBLE),
                                                                          OperationInput("b", InputType::DOUBLE),
                                                                          OperationInput("c", InputType::DOUBLE) }));
 
@@ -52,7 +52,7 @@ struct TestOpGraph : public fructose::test_base<TestOpGraph>
 
         // Reuse the previous operation, giving it a name, as input for another one.
         std::shared_ptr<JSOperation> jsOp1_bis
-                = std::make_shared<JSOperation>(JSOperation("a*(b+c)", { OperationInput("a", InputType::DOUBLE),
+                = std::make_shared<JSOperation>(JSExpression("a*(b+c)", { OperationInput("a", InputType::DOUBLE),
                                                                          OperationInput("b", InputType::DOUBLE),
                                                                          OperationInput("c", InputType::DOUBLE) }));
         std::shared_ptr<OperableImpl> op1_bis = std::make_shared<OperableImpl>(OperableImpl(jsOp1_bis));
@@ -61,7 +61,7 @@ struct TestOpGraph : public fructose::test_base<TestOpGraph>
         fructose_assert (ogm.registerOperable(op1_bis, "op1_bis") == false);
 
         std::shared_ptr<JSOperation> jsOp2
-                = std::make_shared<JSOperation>(JSOperation("op1_bis - d", { OperationInput("op1_bis", InputType::DOUBLE),
+                = std::make_shared<JSOperation>(JSExpression("op1_bis - d", { OperationInput("op1_bis", InputType::DOUBLE),
                                                                              OperationInput("d", InputType::DOUBLE) }));
 
         std::shared_ptr<OperableImpl> op2 = std::make_shared<OperableImpl>(OperableImpl(jsOp2));
@@ -122,14 +122,14 @@ struct TestOpGraph : public fructose::test_base<TestOpGraph>
         fructose_assert (ogm.registerInput(isMale, "isMale") == true);
 
         std::shared_ptr<JSOperation> jsIBW
-                = std::make_shared<JSOperation>(JSOperation("height - 100 - (height - 150) / ((isMale > 0.5)*4.0 + (!(isMale > 0.5))*2.5)",
+                = std::make_shared<JSOperation>(JSExpression("height - 100 - (height - 150) / ((isMale > 0.5)*4.0 + (!(isMale > 0.5))*2.5)",
         { OperationInput("height", InputType::DOUBLE),
           OperationInput("isMale", InputType::DOUBLE) }));
         std::shared_ptr<OperableImpl> opIBW = std::make_shared<OperableImpl>(jsIBW);
         fructose_assert (ogm.registerOperable(opIBW, "IBW") == true);
 
         std::shared_ptr<JSOperation> jsCG_IBW
-                = std::make_shared<JSOperation>(JSOperation("(140 - age) * (weight * (weight < IBW) + IBW * (weight >= IBW)) / creatinine * (1.23 * (isMale > 0.5) + 1.04 * (!(isMale > 0.5)))",
+                = std::make_shared<JSOperation>(JSExpression("(140 - age) * (weight * (weight < IBW) + IBW * (weight >= IBW)) / creatinine * (1.23 * (isMale > 0.5) + 1.04 * (!(isMale > 0.5)))",
         { OperationInput("weight", InputType::DOUBLE),
           OperationInput("IBW", InputType::DOUBLE),
           OperationInput("age", InputType::DOUBLE),
@@ -161,7 +161,7 @@ struct TestOpGraph : public fructose::test_base<TestOpGraph>
         fructose_assert (ogm.registerInput(d, "d") == true);
 
         std::shared_ptr<JSOperation> jsOp1
-                = std::make_shared<JSOperation>(JSOperation("a*(b+c)-op2", { OperationInput("a", InputType::DOUBLE),
+                = std::make_shared<JSOperation>(JSExpression("a*(b+c)-op2", { OperationInput("a", InputType::DOUBLE),
                                                                              OperationInput("b", InputType::DOUBLE),
                                                                              OperationInput("c", InputType::DOUBLE),
                                                                              OperationInput("op2", InputType::DOUBLE) }));
@@ -169,7 +169,7 @@ struct TestOpGraph : public fructose::test_base<TestOpGraph>
         fructose_assert (ogm.registerOperable(op1, "op1") == true);
 
         std::shared_ptr<JSOperation> jsOp2
-                = std::make_shared<JSOperation>(JSOperation("op1 - d", { OperationInput("op1", InputType::DOUBLE),
+                = std::make_shared<JSOperation>(JSExpression("op1 - d", { OperationInput("op1", InputType::DOUBLE),
                                                                          OperationInput("d", InputType::DOUBLE) }));
         std::shared_ptr<OperableImpl> op2 = std::make_shared<OperableImpl>(jsOp2);
         fructose_assert (ogm.registerOperable(op2, "op2") == true);

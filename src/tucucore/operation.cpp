@@ -290,8 +290,22 @@ HardcodedOperation::evaluate(const OperationInputList &_inputs, double &_result)
 JSOperation::JSOperation(const std::string &_expression, const OperationInputList &_requiredInputs)
     : Operation(_requiredInputs)
 {
+    // Do not add result =
+    // m_expression = _expression;
+    m_expression = "function calc() {" + _expression + "} result = calc();";
     // Append the prefix that will store the result of the evaluation in the 'result' variable
-    m_expression = "result = " + _expression;
+   // m_expression = "result = " + _expression;
+}
+
+JSOperation::JSOperation(const OperationInputList &_requiredInputs)
+    : Operation(_requiredInputs)
+{
+}
+
+JSExpression::JSExpression(const std::string &_expression, const OperationInputList &_requiredInputs):
+    JSOperation(_requiredInputs)
+{
+    m_expression = "result = " + _expression + ";";
 }
 
 
@@ -325,6 +339,9 @@ JSOperation::evaluate(const OperationInputList &_inputs, double &_result)
         return false;
     }
 
+
+    try {
+
     JSEngine jsEngine;
     // Push the inputs
     for (auto inVar: _inputs) {
@@ -343,7 +360,12 @@ JSOperation::evaluate(const OperationInputList &_inputs, double &_result)
     if(!jsEngine.getVariable("result", resAsString)) {
         return false;
     }
-    _result = std::stod(resAsString);
+
+        _result = std::stod(resAsString);
+    } catch (...) {
+        return false;
+    }
+    // _result = std::stod(resAsString);
     return true;
 }
 

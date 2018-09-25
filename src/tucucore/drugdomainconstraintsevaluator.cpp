@@ -16,7 +16,7 @@ DrugDomainConstraintsEvaluator::Result DrugDomainConstraintsEvaluator::evaluate(
                                                                                 const DateTime &_start,
                                                                                 const DateTime &_end)
 {
-    DateTime m_start = _start;
+     DateTime m_start = _start;
     DateTime m_end = _end;
     /// \brief Collection of timed covariate events, used to build the set of parameters.
     std::map<DateTime, std::vector<std::pair<std::string, Value>>> m_timedCValues;

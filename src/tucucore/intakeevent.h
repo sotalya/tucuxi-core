@@ -87,6 +87,13 @@ public:
         return m_interval;
     }
 
+    /// \brief Change the number of points to compute for this intake
+    /// \param _interval New number of points
+    void setNbPoints(int _nbPoints)
+    {
+        m_nbPoints = _nbPoints;
+    }
+
     /// \brief Get the number of points to compute for this intake
     /// \return Number of points to compute for this intake
     int getNbPoints() const

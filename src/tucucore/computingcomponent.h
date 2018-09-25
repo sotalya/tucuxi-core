@@ -139,10 +139,10 @@ private:
         const DateTime &_recordTo,
         const IntakeSeries &_intakes,
         const ParameterSetSeries& _parameters,
-        const Etas& _etas)
+        const Etas& _etas,
+        const IResidualErrorModel &_residualErrorModel)
     {
-        TMP_UNUSED_PARAMETER(_etas);
-        return computeConcentrations(_prediction, _isAll, _recordFrom, _recordTo, _intakes, _parameters);
+        return computeConcentrations(_prediction, _isAll, _recordFrom, _recordTo, _intakes, _parameters, _etas, _residualErrorModel);
     }
 
     ComputationResult extractError(

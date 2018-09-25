@@ -165,6 +165,23 @@
     CD_VEC.push_back(std::move(tmp)); \
     } while (0);
 
+/// \brief Add a computed covariate definition to a given covariate definitions vector.
+///        The operation has 2 inputs whose names are specified as parameters.
+/// \param NAME Name of the covariate to add.
+/// \param EXPRESSION Expression performed to get the values of the computed covariate.
+/// \param OP1 Name of the first operand.
+/// \param OP2 Name of the second operand.
+/// \param CD_VEC Covariate definitions vector in which the covariate has to be pushed.
+#define ADD_EXPR2_CDEF(NAME, EXPRESSION, OP1, OP2, CD_VEC) \
+    do { \
+    Operation *op = \
+    new JSExpression(EXPRESSION, { \
+    OperationInput(OP1, InputType::DOUBLE), \
+    OperationInput(OP2, InputType::DOUBLE)}); \
+    std::unique_ptr<CovariateDefinition> tmp(new CovariateDefinition(#NAME, varToString(0), op)); \
+    CD_VEC.push_back(std::move(tmp)); \
+    } while (0);
+
 
 /// \brief Add a computed covariate definition to a given covariate definitions vector.
 ///        The operation has 3 inputs whose names are specified as parameters.
@@ -185,6 +202,24 @@
     CD_VEC.push_back(std::move(tmp)); \
     } while (0);
 
+/// \brief Add a computed covariate definition to a given covariate definitions vector.
+///        The expression has 3 inputs whose names are specified as parameters.
+/// \param NAME Name of the covariate to add.
+/// \param EXPRESSION Expression performed to get the values of the computed covariate.
+/// \param OP1 Name of the first operand.
+/// \param OP2 Name of the second operand.
+/// \param OP3 Name of the third operand.
+/// \param CD_VEC Covariate definitions vector in which the covariate has to be pushed.
+#define ADD_EXPR3_CDEF(NAME, EXPRESSION, OP1, OP2, OP3, CD_VEC) \
+    do { \
+    Operation *op = \
+    new JSExpression(EXPRESSION, { \
+    OperationInput(OP1, InputType::DOUBLE), \
+    OperationInput(OP2, InputType::DOUBLE), \
+    OperationInput(OP3, InputType::DOUBLE)}); \
+    std::unique_ptr<CovariateDefinition> tmp(new CovariateDefinition(#NAME, varToString(0), op)); \
+    CD_VEC.push_back(std::move(tmp)); \
+    } while (0);
 
 /// \brief Check a refresh map for the presence of a given covariate at a specified time.
 /// \param NAME Name of the covariate to search.
@@ -214,4 +249,20 @@
     PD_VEC.push_back(std::move(tmp)); \
     } while (0);
 
+/// \brief Add a computed parameter definition to a given parameter definitions vector.
+///        The operation has 2 inputs whose names are specified as parameters.
+/// \param NAME Name of the parameter to add.
+/// \param EXPRESSION Expression performed to get the values of the computed parameter.
+/// \param OP1 Name of the first operand.
+/// \param OP2 Name of the second operand.
+/// \param PD_VEC Parameter definitions vector in which the parameter has to be pushed.
+#define ADD_EXPR2_PDEF(NAME, EXPRESSION, OP1, OP2, PD_VEC) \
+    do { \
+    Operation *op = \
+    new JSExpression(EXPRESSION, { \
+    OperationInput(OP1, InputType::DOUBLE), \
+    OperationInput(OP2, InputType::DOUBLE)}); \
+    std::unique_ptr<ParameterDefinition> tmp(new ParameterDefinition(#NAME, 0, op, ParameterVariabilityType::None)); \
+    PD_VEC.push_back(std::move(tmp)); \
+    } while (0);
 #endif // TESTUTILS_H

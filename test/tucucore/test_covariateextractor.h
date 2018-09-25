@@ -541,8 +541,8 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
             ADD_CDEF_W_R(B2, 2.0, Standard, Double, Linear, Tucuxi::Common::days(2), cDefinitions);
             ADD_CDEF_W_R(C3, 3.0, Standard, Double, Linear, Tucuxi::Common::days(3), cDefinitions);
 
-            ADD_OP3_CDEF(op1, "A1 + B2 + C3", "A1", "B2", "C3", cDefinitions);
-            ADD_OP3_CDEF(op2, "A1 + B2 * C3", "A1", "B2", "C3", cDefinitions);
+            ADD_EXPR3_CDEF(op1, "A1 + B2 + C3", "A1", "B2", "C3", cDefinitions);
+            ADD_EXPR3_CDEF(op2, "A1 + B2 * C3", "A1", "B2", "C3", cDefinitions);
 
             CovariateExtractor extractor(cDefinitions, pVariates,
                                          DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0),
@@ -1042,7 +1042,7 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
         ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), kg, cDefinitions);
         ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
 
-        ADD_OP2_CDEF(Special, "Weight * 0.5 + IsMale * 15", "Weight", "IsMale", cDefinitions);
+        ADD_EXPR2_CDEF(Special, "Weight * 0.5 + IsMale * 15", "Weight", "IsMale", cDefinitions);
 
         const DATE_TIME_VAR(startDate, 2017, 8, 12, 8, 0, 0);
         const DATE_TIME_VAR(endDate,   2017, 8, 17, 8, 0, 0);
@@ -1225,8 +1225,8 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
         ADD_CDEF_NO_R_STR(CovariateExtractor::m_birthDateCName, DATE_TIME_NO_VAR(2017, 8, 5, 8, 0, 0), Standard,
                           Date, Direct, cDefinitions);
 
-        ADD_OP2_CDEF(Special, "Weight * 0.5 + IsMale * 15", "Weight", "IsMale", cDefinitions);
-        ADD_OP3_CDEF(VerySpecial, "Weight * 0.5 + IsMale * 15 + Gist * 25", "Weight", "IsMale", "Gist", cDefinitions);
+        ADD_EXPR2_CDEF(Special, "Weight * 0.5 + IsMale * 15", "Weight", "IsMale", cDefinitions);
+        ADD_EXPR3_CDEF(VerySpecial, "Weight * 0.5 + IsMale * 15 + Gist * 25", "Weight", "IsMale", "Gist", cDefinitions);
 
         // gist == true @ 13.08.2017, 12h32.
         PatientVariates pVariates;
@@ -1295,8 +1295,8 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
         ADD_CDEF_NO_R_UNIT(Weight, 3.5, Standard, Double, Linear, kg, cDefinitions);
         ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
 
-        ADD_OP2_CDEF(Special, "Weight * 0.5 + IsMale * 15", "Weight", "IsMale", cDefinitions);
-        ADD_OP3_CDEF(VerySpecial, "Weight * 0.5 + IsMale * 15 + Gist * 25", "Weight", "IsMale", "Gist", cDefinitions);
+        ADD_EXPR2_CDEF(Special, "Weight * 0.5 + IsMale * 15", "Weight", "IsMale", cDefinitions);
+        ADD_EXPR3_CDEF(VerySpecial, "Weight * 0.5 + IsMale * 15 + Gist * 25", "Weight", "IsMale", "Gist", cDefinitions);
 
         // gist == true @ 13.08.2017, 12h32.
         PatientVariates pVariates;
@@ -1400,8 +1400,8 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
         ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), kg, cDefinitions);
         ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
 
-        ADD_OP2_CDEF(Special, "Weight * 0.5 + IsMale * 15", "Weight", "IsMale", cDefinitions);
-        ADD_OP3_CDEF(VerySpecial, "Weight * 0.5 + IsMale * 15 + Gist * 25", "Weight", "IsMale", "Gist", cDefinitions);
+        ADD_EXPR2_CDEF(Special, "Weight * 0.5 + IsMale * 15", "Weight", "IsMale", cDefinitions);
+        ADD_EXPR3_CDEF(VerySpecial, "Weight * 0.5 + IsMale * 15 + Gist * 25", "Weight", "IsMale", "Gist", cDefinitions);
 
         // gist == true @ 13.08.2017, 12h32.
         PatientVariates pVariates;
@@ -1529,7 +1529,7 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
         ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), kg, cDefinitions);
         ADD_CDEF_NO_R_UNIT(Height, 100, Standard, Double, Linear, cm, cDefinitions);
 
-        ADD_OP2_CDEF(Special, "Weight * 0.5 + Height", "Weight", "Height", cDefinitions);
+        ADD_EXPR2_CDEF(Special, "Weight * 0.5 + Height", "Weight", "Height", cDefinitions);
 
         // gist == true @ 13.08.2017, 12h32.
         PatientVariates pVariates;
@@ -1687,7 +1687,7 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
         ADD_CDEF_NO_R_STR(CovariateExtractor::m_birthDateCName, DATE_TIME_NO_VAR(2017, 8, 5, 18, 0, 0), Standard,
                           Date, Direct, cDefinitions);
 
-        ADD_OP2_CDEF(DepOnAge, "AgeDays + Weight * 2", "AgeDays", "Weight", cDefinitions);
+        ADD_EXPR2_CDEF(DepOnAge, "AgeDays + Weight * 2", "AgeDays", "Weight", cDefinitions);
 
         PatientVariates pVariates;
         // weight = 6.0 @ 12.08.2017, 14h00
@@ -1818,8 +1818,8 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
         ADD_CDEF_NO_R_STR(CovariateExtractor::m_birthDateCName, DATE_TIME_NO_VAR(2017, 8, 5, 18, 0, 0), Standard,
                           Date, Direct, cDefinitions);
 
-        ADD_OP2_CDEF(DepOnAge, "AgeDays + Weight * 2", "AgeDays", "Weight", cDefinitions);
-        ADD_OP2_CDEF(DepDep, "DepOnAge + 42 + AgeDays", "AgeDays", "DepOnAge", cDefinitions);
+        ADD_EXPR2_CDEF(DepOnAge, "AgeDays + Weight * 2", "AgeDays", "Weight", cDefinitions);
+        ADD_EXPR2_CDEF(DepDep, "DepOnAge + 42 + AgeDays", "AgeDays", "DepOnAge", cDefinitions);
 
         PatientVariates pVariates;
         // weight = 6.0 @ 12.08.2017, 14h00
@@ -1985,7 +1985,7 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
         ADD_CDEF_NO_R_UNIT(Weight, 3.5, Standard, Double, Linear, kg, cDefinitions);
         ADD_CDEF_NO_R(AgeDays, 42, AgeInDays, Double, Direct, cDefinitions);
 
-        ADD_OP2_CDEF(DepOnAge, "AgeDays + Weight * 2", "AgeDays", "Weight", cDefinitions);
+        ADD_EXPR2_CDEF(DepOnAge, "AgeDays + Weight * 2", "AgeDays", "Weight", cDefinitions);
 
         PatientVariates pVariates;
         // weight = 6.0 @ 12.08.2017, 14h00

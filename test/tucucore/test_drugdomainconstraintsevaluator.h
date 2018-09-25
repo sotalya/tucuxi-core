@@ -72,8 +72,8 @@ struct TestDrugDomainConstraintsEvaluator : public fructose::test_base<TestDrugD
         DrugModelDomain domain;
 
         // Computed parameters
-        ADD_OP2_CONSTRAINT(domain, "Gist", "Gist", "Weight", ConstraintType::HARD);
-        ADD_OP2_CONSTRAINT(domain, "Weight < 100", "Weight", "Gist", ConstraintType::HARD);
+        ADD_OP2_CONSTRAINT(domain, "return Gist;", "Gist", "Weight", ConstraintType::HARD);
+        ADD_OP2_CONSTRAINT(domain, "return Weight < 100;", "Weight", "Gist", ConstraintType::HARD);
 
 
 
@@ -112,8 +112,8 @@ struct TestDrugDomainConstraintsEvaluator : public fructose::test_base<TestDrugD
         DrugModelDomain domain;
 
         // Computed parameters
-        ADD_OP2_CONSTRAINT(domain, "Gist", "Gist", "Weight", ConstraintType::HARD);
-        ADD_OP2_CONSTRAINT(domain, "Weight < 100", "Weight", "Gist", ConstraintType::HARD);
+        ADD_OP2_CONSTRAINT(domain, "return Gist;", "Gist", "Weight", ConstraintType::HARD);
+        ADD_OP2_CONSTRAINT(domain, "return Weight < 100;", "Weight", "Gist", ConstraintType::HARD);
 
 
 
@@ -153,8 +153,8 @@ struct TestDrugDomainConstraintsEvaluator : public fructose::test_base<TestDrugD
         DrugModelDomain domain;
 
         // Computed parameters
-        ADD_OP2_CONSTRAINT(domain, "Gist", "Gist", "Weight", ConstraintType::SOFT);
-        ADD_OP2_CONSTRAINT(domain, "Weight < 100", "Weight", "Gist", ConstraintType::HARD);
+        ADD_OP2_CONSTRAINT(domain, "return Gist;", "Gist", "Weight", ConstraintType::SOFT);
+        ADD_OP2_CONSTRAINT(domain, "return Weight < 100;", "Weight", "Gist", ConstraintType::HARD);
 
 
 

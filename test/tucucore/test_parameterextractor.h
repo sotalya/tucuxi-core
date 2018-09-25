@@ -657,8 +657,8 @@ struct TestParameterExtractor : public fructose::test_base<TestParameterExtracto
         pDefinitions.push_back(std::make_unique<ParameterDefinition>("Param_NC_B", 5678));
 
         // Computed parameters
-        ADD_OP2_PDEF(Param_C_C, "Gist * 15 + Weight", "Gist", "Weight", pDefinitions);
-        ADD_OP2_PDEF(Param_C_D, "Gist * 2 + Height", "Height", "Gist", pDefinitions);
+        ADD_EXPR2_PDEF(Param_C_C, "Gist * 15 + Weight", "Gist", "Weight", pDefinitions);
+        ADD_EXPR2_PDEF(Param_C_D, "Gist * 2 + Height", "Height", "Gist", pDefinitions);
 
         MyParameterDefinitionIterator itDefinitions(pDefinitions.begin(), pDefinitions.end());
         fructose_assert_no_exception(ParametersExtractor(cSeries, itDefinitions,
@@ -728,8 +728,8 @@ struct TestParameterExtractor : public fructose::test_base<TestParameterExtracto
         pDefinitions.push_back(std::make_unique<ParameterDefinition>("Param_NC_B", 5678));
 
         // Computed parameters
-        ADD_OP2_PDEF(Param_C_C, "Gist * 15 + Weight", "Gist", "Weight", pDefinitions);
-        ADD_OP2_PDEF(Param_C_D, "Gist * 2 + Height", "Height", "Gist", pDefinitions);
+        ADD_EXPR2_PDEF(Param_C_C, "Gist * 15 + Weight", "Gist", "Weight", pDefinitions);
+        ADD_EXPR2_PDEF(Param_C_D, "Gist * 2 + Height", "Height", "Gist", pDefinitions);
 
         MyParameterDefinitionIterator itDefinitions(pDefinitions.begin(), pDefinitions.end());
         fructose_assert_no_exception(ParametersExtractor(cSeries, itDefinitions,
