@@ -290,11 +290,9 @@ HardcodedOperation::evaluate(const OperationInputList &_inputs, double &_result)
 JSOperation::JSOperation(const std::string &_expression, const OperationInputList &_requiredInputs)
     : Operation(_requiredInputs)
 {
-    // Do not add result =
-    // m_expression = _expression;
+    // Put the code in a function, and call the function to store the result
+    // of the evaluation in the 'result' variable
     m_expression = "function calc() {" + _expression + "} result = calc();";
-    // Append the prefix that will store the result of the evaluation in the 'result' variable
-   // m_expression = "result = " + _expression;
 }
 
 JSOperation::JSOperation(const OperationInputList &_requiredInputs)
@@ -305,6 +303,7 @@ JSOperation::JSOperation(const OperationInputList &_requiredInputs)
 JSExpression::JSExpression(const std::string &_expression, const OperationInputList &_requiredInputs):
     JSOperation(_requiredInputs)
 {
+    // Append the prefix that will store the result of the evaluation in the 'result' variable
     m_expression = "result = " + _expression + ";";
 }
 
@@ -340,32 +339,39 @@ JSOperation::evaluate(const OperationInputList &_inputs, double &_result)
     }
 
 
+    // The next lines could generate an exception.
+    // If the jsEngine.evaluate() goes wrong, we intercept the exception and
+    // simply return false.
+    // Also the cast of result can go wrong.
     try {
 
-    JSEngine jsEngine;
-    // Push the inputs
-    for (auto inVar: _inputs) {
-        switch (inVar.getType()) {
-        ADD_VAR_CASE(InputType::BOOL, bool);
-        ADD_VAR_CASE(InputType::INTEGER, int);
-        ADD_VAR_CASE(InputType::DOUBLE, double);
-        default:
+        JSEngine jsEngine;
+        // Push the inputs
+        for (auto inVar: _inputs) {
+            switch (inVar.getType()) {
+            ADD_VAR_CASE(InputType::BOOL, bool);
+            ADD_VAR_CASE(InputType::INTEGER, int);
+            ADD_VAR_CASE(InputType::DOUBLE, double);
+            default:
+                return false;
+            }
+        }
+
+        if (!jsEngine.evaluate(m_expression)) {
             return false;
         }
-    }
-    if (!jsEngine.evaluate(m_expression)) {
-        return false;
-    }
-    std::string resAsString;
-    if(!jsEngine.getVariable("result", resAsString)) {
-        return false;
-    }
+
+        std::string resAsString;
+
+        if(!jsEngine.getVariable("result", resAsString)) {
+            return false;
+        }
 
         _result = std::stod(resAsString);
+
     } catch (...) {
         return false;
     }
-    // _result = std::stod(resAsString);
     return true;
 }
 
