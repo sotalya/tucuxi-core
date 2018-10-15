@@ -35,6 +35,7 @@ SOURCES := \
            covariateextractor.cpp \
            cyclestatisticscalculator.cpp \
            dosage.cpp \
+           drugdomainconstraintsevaluator.cpp \
            drugmodelimport.cpp \
            hardcodedoperation.cpp \
            intakeextractor.cpp \
