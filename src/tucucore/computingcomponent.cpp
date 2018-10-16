@@ -249,6 +249,76 @@ ComputingResult ComputingComponent::generalExtractions(
 
 }
 
+ComputationResult ComputingComponent::extractOmega(
+    const DrugModel &_drugModel,
+    OmegaMatrix &_omega)
+{
+
+    // TODO : This should not necessarily be the default formulation and route
+    // Should get rid of the next 3 lines
+    const std::string analyteId = _drugModel.getAnalyteSet()->getId();
+    const Formulation formulation = _drugModel.getFormulationAndRoutes().getDefault()->getFormulationAndRoute().getFormulation();
+    const AdministrationRoute route = _drugModel.getFormulationAndRoutes().getDefault()->getFormulationAndRoute().getAdministrationRoute();
+
+    ParameterDefinitionIterator it = _drugModel.getParameterDefinitions(analyteId, formulation, route);
+
+
+    int nbVariableParameters = 0;
+
+    it.reset();
+    while (!it.isDone()) {
+        if ((*it)->getVariability().getType() != ParameterVariabilityType::None) {
+            nbVariableParameters ++;
+        }
+        it.next();
+    }
+
+    _omega = Tucuxi::Core::OmegaMatrix(nbVariableParameters, nbVariableParameters);
+
+    for(int x = 0; x < nbVariableParameters; x++) {
+        for(int y = 0; y < nbVariableParameters; y++) {
+            _omega(x,y) = 0.0;
+        }
+    }
+
+    std::map<std::string, int> paramMap;
+    int nbParameter = 0;
+    it.reset();
+    while (!it.isDone()) {
+        if ((*it)->getVariability().getType() != ParameterVariabilityType::None) {
+            _omega(nbParameter, nbParameter) = (*it)->getVariability().getValue() * (*it)->getVariability().getValue();
+            paramMap[(*it)->getId()] = nbParameter;
+            nbParameter ++;
+        }
+        it.next();
+    }
+
+    const AnalyteSet *analyteSet = _drugModel.getAnalyteSet(analyteId);
+    Correlations correlations = analyteSet->getDispositionParameters().getCorrelations();
+    for(size_t i = 0; i < correlations.size(); i++) {
+        std::string p1 = correlations[i].getParamId1();
+        std::string p2 = correlations[i].getParamId2();
+        Value correlation = correlations[i].getValue();
+
+        int index1 = paramMap[p1];
+        int index2 = paramMap[p2];
+
+        Value covariance = correlation * (std::sqrt(_omega(index1, index1) * _omega(index2, index2)));
+        _omega(index1, index2) = covariance;
+        _omega(index2, index1) = covariance;
+    }
+
+
+
+
+    /*
+    _omega(0,0) = 0.356 * 0.356; // Variance of CL
+    _omega(0,1) = 0.798 * 0.356 * 0.629; // Covariance of CL and V
+    _omega(1,1) = 0.629 * 0.629; // Variance of V
+    _omega(1,0) = 0.798 * 0.356 * 0.629; // Covariance of CL and V
+*/
+    return ComputationResult::Success;
+}
 
 
 ComputingResult ComputingComponent::compute(
@@ -291,11 +361,11 @@ ComputingResult ComputingComponent::compute(
 
         Etas etas;
 
-        Tucuxi::Core::OmegaMatrix omega = Tucuxi::Core::OmegaMatrix(2,2);
-        omega(0,0) = 0.356 * 0.356; // Variance of CL
-        omega(0,1) = 0.798 * 0.356 * 0.629; // Covariance of CL and V
-        omega(1,1) = 0.629 * 0.629; // Variance of V
-        omega(1,0) = 0.798 * 0.356 * 0.629; // Covariance of CL and V
+        Tucuxi::Core::OmegaMatrix omega;
+        ComputationResult omegaComputationResult = extractOmega(_request.getDrugModel(), omega);
+        if (omegaComputationResult != ComputationResult::Success) {
+            return ComputingResult::Error;
+        }
 
         const Tucuxi::Core::IResidualErrorModel &residualErrorModel =_request.getDrugModel().getAnalyteSet()->getAnalytes().at(0)->getResidualErrorModel();
 
@@ -309,7 +379,8 @@ ComputingResult ComputingComponent::compute(
         computationResult = computeAposteriori(
                     pPrediction,
                     false,
-                    _traits->getStart(),
+ //                    _traits->getStart(),
+                    calculationStartTime,
                     _traits->getEnd(),
                     intakeSeries,
                     parameterSeries,
@@ -414,12 +485,22 @@ ComputingResult ComputingComponent::compute(
     percentileRanks = _traits->getRanks();
 
     const Tucuxi::Core::IResidualErrorModel &residualErrorModel =_request.getDrugModel().getAnalyteSet()->getAnalytes().at(0)->getResidualErrorModel();
+/*
+    Tucuxi::Core::OmegaMatrix fakeOmega;
+    fakeOmega = Tucuxi::Core::OmegaMatrix(2,2);
+    fakeOmega(0,0) = 0.356 * 0.356; // Variance of CL
+    fakeOmega(0,1) = 0.798 * 0.356 * 0.629; // Covariance of CL and V
+    fakeOmega(1,1) = 0.629 * 0.629; // Variance of V
+    fakeOmega(1,0) = 0.798 * 0.356 * 0.629; // Covariance of CL and V
+*/
+    ComputationResult omegaComputationResult = extractOmega(_request.getDrugModel(), omega);
+    if (omegaComputationResult != ComputationResult::Success) {
+        return ComputingResult::Error;
+    }
 
-    omega = Tucuxi::Core::OmegaMatrix(2,2);
-    omega(0,0) = 0.356 * 0.356; // Variance of CL
-    omega(0,1) = 0.798 * 0.356 * 0.629; // Covariance of CL and V
-    omega(1,1) = 0.629 * 0.629; // Variance of V
-    omega(1,0) = 0.798 * 0.356 * 0.629; // Covariance of CL and V
+    //assert(fakeOmega == omega);
+
+
 
     // Set initial etas to 0 for CL and V
     etas.push_back(0.0);
@@ -444,7 +525,8 @@ ComputingResult ComputingComponent::compute(
     ComputationResult predictionComputationResult = computePopulation(
                 pPrediction,
                 false,
-                _traits->getStart(),
+//                    _traits->getStart(),
+                calculationStartTime,
                 _traits->getEnd(),
                 intakeSeries,
                 parameterSeries);
@@ -466,7 +548,10 @@ ComputingResult ComputingComponent::compute(
 
                 TimeOffsets times = pPrediction->getTimes().at(cycle);
                 DateTime start = intakeSeries.at(cycle).getEventTime();
-                DateTime end = start + std::chrono::milliseconds(static_cast<int>(times.at(times.size() - 1)) * 1000);
+
+                std::chrono::milliseconds ms = std::chrono::milliseconds(static_cast<int>(times.at(times.size() - 1))) * 3600 * 1000;
+                Duration ds(ms);
+                DateTime end = start + ds;
 
                 if (end > _traits->getStart()) {
                     CycleData cycleData(start, end, Unit("ug/l"));

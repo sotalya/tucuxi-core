@@ -11,6 +11,7 @@
 
 #include "test_computingcomponentadjustments.h"
 #include "test_computingcomponentconcentration.h"
+#include "test_computingcomponentpercentiles.h"
 #include "test_concentrationcalculator.h"
 #include "test_covariateextractor.h"
 #include "test_cyclestatistics.h"
@@ -87,6 +88,21 @@ int main(int argc, char** argv)
         std::cout << "Computing Component Concentration test succeeded\n";
     }
 
+    TestComputingComponentPercentiles computingComponentPercentilesTests;
+
+    // one compartment
+    computingComponentPercentilesTests.add_test("Simple1", &TestComputingComponentPercentiles::testImatinib1);
+
+
+
+    res = computingComponentPercentilesTests.run(argc, argv);
+    tot_res |= res;
+    if (res != 0) {
+        std::cerr << "Computing Component Percentiles test failed\n";
+    }
+    else {
+        std::cout << "Computing Component Percentiles test succeeded\n";
+    }
 
     TestComputingComponentAdjusements computingComponentAdjusementsTests;
 

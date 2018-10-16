@@ -138,6 +138,10 @@ public:
         m_parameterId.push_back(_parameter2);
     }
 
+    Value getValue() const { return m_correlation;}
+    std::string getParamId1() const { return m_parameterId[0];}
+    std::string getParamId2() const { return m_parameterId[1];}
+
 protected:
     Value m_correlation;
     std::vector<std::string> m_parameterId;
@@ -186,6 +190,8 @@ public:
         }
         return nullptr;
     }
+
+    const Correlations & getCorrelations() const { return m_correlations;}
 
 protected:
     ParameterDefinitions m_parameters;

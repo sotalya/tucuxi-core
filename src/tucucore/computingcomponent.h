@@ -164,6 +164,10 @@ private:
         return ComputationResult::Failure;
     }
 
+    ComputationResult extractOmega(
+        const DrugModel &_drugModel,
+        OmegaMatrix &_omega);
+
 
     friend class ComputingTraitSinglePoints;
     friend class ComputingTraitAtMeasures;
