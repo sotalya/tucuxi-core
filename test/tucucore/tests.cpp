@@ -10,6 +10,7 @@
 #include "tucucore/dosage.h"
 
 #include "test_computingcomponentadjustments.h"
+#include "test_computingcomponentconcentration.h"
 #include "test_concentrationcalculator.h"
 #include "test_covariateextractor.h"
 #include "test_cyclestatistics.h"
@@ -67,6 +68,23 @@ int main(int argc, char** argv)
     }
     else {
         std::cout << "Drug model import test succeeded\n";
+    }
+
+
+    TestComputingComponentConcentration computingComponentConcentrationTests;
+
+    // one compartment
+    computingComponentConcentrationTests.add_test("Simple1", &TestComputingComponentConcentration::testImatinib1);
+
+
+
+    res = computingComponentConcentrationTests.run(argc, argv);
+    tot_res |= res;
+    if (res != 0) {
+        std::cerr << "Computing Component Concentration test failed\n";
+    }
+    else {
+        std::cout << "Computing Component Concentration test succeeded\n";
     }
 
 

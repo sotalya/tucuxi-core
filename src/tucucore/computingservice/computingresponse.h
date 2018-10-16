@@ -112,7 +112,7 @@ class SinglePredictionResponse : public SingleComputingResponse
 public:
     SinglePredictionResponse() = default;
     void addCycleData(const CycleData &_data) { m_data.push_back(_data); }
-    const std::vector<CycleData>& getData() { return m_data; }
+    const std::vector<CycleData>& getData() const { return m_data; }
 
 private:
     std::vector<CycleData> m_data;

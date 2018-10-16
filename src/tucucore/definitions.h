@@ -8,7 +8,7 @@
 /// \defgroup TucuCore Tucuxi core library
 /// \brief Tucuxi core classes for the computation of predictions of drug concentrations
 /// This module defines all classes needed for:
-///    - computing predicitions of drug concentrations
+///    - computing predictions of drug concentrations
 ///    - computing percentiles for the above predictions
 ///    - computing suggestions for the adaptation of treatments
 ///    - modeling relevant data for above computations
@@ -49,7 +49,7 @@ typedef Value DoseValue;
 /// \brief The type used to represent a concentration in mg
 typedef Value Concentration;
 
-/// \brief The type used to represent a serie of times exrpressed as offsets in millisecond to the start of a cycle
+/// \brief The type used to represent a serie of times exrpressed as offsets in hours to the start of a cycle
  typedef std::vector<double> TimeOffsets;
 
 /// \ingroup TucuCore

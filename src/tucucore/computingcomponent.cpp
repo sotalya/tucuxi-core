@@ -141,24 +141,54 @@ ComputingResult ComputingComponent::compute(const ComputingRequest &_request, st
 */
 }
 
+
+Duration ComputingComponent::secureStartDuration(const HalfLife &_halfLife)
+{
+    Duration duration;
+    if (_halfLife.getUnit() == Unit("d")) {
+        duration = Duration(24h) * _halfLife.getValue() * _halfLife.getMultiplier();
+    }
+    else if (_halfLife.getUnit() == Unit("h")) {
+        duration = Duration(1h) * _halfLife.getValue() * _halfLife.getMultiplier();
+    }
+    else if (_halfLife.getUnit() == Unit("m")) {
+        duration = Duration(1min) * _halfLife.getValue() * _halfLife.getMultiplier();
+    }
+    else if (_halfLife.getUnit() == Unit("s")) {
+        duration = Duration(1s) * _halfLife.getValue() * _halfLife.getMultiplier();
+    }
+    return duration;
+}
+
 ComputingResult ComputingComponent::generalExtractions(
         const ComputingTraitStandard *_traits,
         const ComputingRequest &_request,
         std::shared_ptr<PkModel> &_pkModel,
         IntakeSeries &_intakeSeries,
         CovariateSeries &_covariatesSeries,
-        ParameterSetSeries &_parameterSeries
+        ParameterSetSeries &_parameterSeries,
+        DateTime &_calculationStartTime
         )
 {
 
+
+    const HalfLife &halfLife = _request.getDrugModel().getTimeConsiderations().getHalfLife();
+
+    Duration fantomDuration = secureStartDuration(halfLife);
+
+    Tucuxi::Common::DateTime fantomStart = _traits->getStart() - fantomDuration;
+
+    _calculationStartTime = fantomStart;
+
     IntakeExtractor intakeExtractor;
-    int nIntakes = intakeExtractor.extract(_request.getDrugTreatment().getDosageHistory(false), _traits->getStart(), _traits->getEnd() + Duration(24h), _intakeSeries, _traits->getCycleSize());
-    TMP_UNUSED_PARAMETER(nIntakes);
+    int nIntakes = intakeExtractor.extract(_request.getDrugTreatment().getDosageHistory(false), fantomStart /*_traits->getStart()*/, _traits->getEnd() + Duration(24h), _intakeSeries, _traits->getCycleSize());
 
     // TODO : Specific to busulfan here. Should be handled differently
     if (_request.getDrugModel().getAnalyteSet()->getAnalytes().at(0)->getAnalyteId() == "busulfan") {
-        _intakeSeries.at(nIntakes - 1).setInterval(72h);
-        _intakeSeries.at(nIntakes - 1).setNbPoints(250*10);
+        if (nIntakes > 0) {
+            _intakeSeries.at(nIntakes - 1).setInterval(72h);
+            _intakeSeries.at(nIntakes - 1).setNbPoints(250*10);
+        }
     }
 
     const std::string pkModelId = _request.getDrugModel().getPkModelId();
@@ -186,7 +216,7 @@ ComputingResult ComputingComponent::generalExtractions(
 
     CovariateExtractor covariateExtractor(_request.getDrugModel().getCovariates(),
                                           _request.getDrugTreatment().getCovariates(),
-                                          _traits->getStart(),
+                                          fantomStart,
                                           _traits->getEnd());
     CovariateExtractor::Result covariateExtractionResult = covariateExtractor.extract(_covariatesSeries);
 
@@ -199,7 +229,7 @@ ComputingResult ComputingComponent::generalExtractions(
 
     ParametersExtractor parameterExtractor(_covariatesSeries,
                                            it,
-                                           _traits->getStart(),
+                                           fantomStart,
                                            _traits->getEnd());
 
     ParametersExtractor::Result parametersExtractionResult;
@@ -237,13 +267,15 @@ ComputingResult ComputingComponent::compute(
     IntakeSeries intakeSeries;
     CovariateSeries covariateSeries;
     ParameterSetSeries parameterSeries;
+    DateTime calculationStartTime;
 
     ComputingResult extractionResult = generalExtractions(_traits,
                                                           _request,
                                                           pkModel,
                                                           intakeSeries,
                                                           covariateSeries,
-                                                          parameterSeries);
+                                                          parameterSeries,
+                                                          calculationStartTime);
 
     if (extractionResult != ComputingResult::Success) {
         return extractionResult;
@@ -288,7 +320,8 @@ ComputingResult ComputingComponent::compute(
         computationResult = computePopulation(
                     pPrediction,
                     false,
-                    _traits->getStart(),
+//                    _traits->getStart(),
+                    calculationStartTime,
                     _traits->getEnd(),
                     intakeSeries,
                     parameterSeries);
@@ -300,13 +333,24 @@ ComputingResult ComputingComponent::compute(
     {
         std::unique_ptr<SinglePredictionResponse> resp = std::make_unique<SinglePredictionResponse>();
 
+        // std::cout << "Start Time : " << _traits->getStart() << std::endl;
         for (size_t i = 0; i < intakeSeries.size(); i++) {
+
             TimeOffsets times = pPrediction->getTimes().at(i);
             DateTime start = intakeSeries.at(i).getEventTime();
-            DateTime end = start + std::chrono::milliseconds(static_cast<int>(times.at(times.size() - 1)) * 1000);
-            CycleData cycle(start, end, Unit("ug/l"));
-            cycle.addData(times, pPrediction->getValues().at(i), 0);
-            resp->addCycleData(cycle);
+            // std::cout << "Time index " << i << " : " << start << std::endl;
+            // times values are in hours
+            std::chrono::milliseconds ms = std::chrono::milliseconds(static_cast<int>(times.at(times.size() - 1))) * 3600 * 1000;
+            Duration ds(ms);
+            DateTime end = start + ds;
+            // std::cout << "End Time index " << i << " : " << end << std::endl;
+
+            if (end > _traits->getStart()) {
+                // std::cout << "Selected Time index " << i << " : " << start << std::endl;
+                CycleData cycle(start, end, Unit("ug/l"));
+                cycle.addData(times, pPrediction->getValues().at(i), 0);
+                resp->addCycleData(cycle);
+            }
         }
 
         _response->addResponse(std::move(resp));
@@ -336,13 +380,15 @@ ComputingResult ComputingComponent::compute(
     IntakeSeries intakeSeries;
     CovariateSeries covariateSeries;
     ParameterSetSeries parameterSeries;
+    DateTime calculationStartTime;
 
     ComputingResult extractionResult = generalExtractions(_traits,
                                                           _request,
                                                           pkModel,
                                                           intakeSeries,
                                                           covariateSeries,
-                                                          parameterSeries);
+                                                          parameterSeries,
+                                                          calculationStartTime);
 
     if (extractionResult != ComputingResult::Success) {
         return extractionResult;
@@ -422,9 +468,11 @@ ComputingResult ComputingComponent::compute(
                 DateTime start = intakeSeries.at(cycle).getEventTime();
                 DateTime end = start + std::chrono::milliseconds(static_cast<int>(times.at(times.size() - 1)) * 1000);
 
-                CycleData cycleData(start, end, Unit("ug/l"));
-                cycleData.addData(times, allValues[p].at(cycle), 0);
-                percData.push_back(cycleData);
+                if (end > _traits->getStart()) {
+                    CycleData cycleData(start, end, Unit("ug/l"));
+                    cycleData.addData(times, allValues[p].at(cycle), 0);
+                    percData.push_back(cycleData);
+                }
             }
             resp->addPercentileData(percData);
         }
@@ -520,6 +568,7 @@ ComputingResult ComputingComponent::compute(
     IntakeSeries intakeSeries;
     CovariateSeries covariateSeries;
     ParameterSetSeries parameterSeries;
+    DateTime calculationStartTime;
 
     // Be carefull here, as the endTime could be different...
     ComputingResult extractionResult = generalExtractions(_traits,
@@ -527,7 +576,8 @@ ComputingResult ComputingComponent::compute(
                                                           pkModel,
                                                           intakeSeries,
                                                           covariateSeries,
-                                                          parameterSeries);
+                                                          parameterSeries,
+                                                          calculationStartTime);
 
     if (extractionResult != ComputingResult::Success) {
         return extractionResult;

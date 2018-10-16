@@ -43,7 +43,8 @@ int IntakeExtractor::extract(const DosageTimeRange &_timeRange, const DateTime &
     EXTRACT_PRECONDITIONS(_start, _end, _series);
 
     int nbIntakes = 0;
-    DateTime iStart = std::max(_start, _timeRange.m_startDate);
+//    DateTime iStart = std::max(_start, _timeRange.m_startDate);
+    DateTime iStart = _timeRange.m_startDate;
     DateTime iEnd;
     if (_end.isUndefined()) {
         iEnd = _timeRange.m_endDate;
@@ -70,6 +71,15 @@ int IntakeExtractor::extract(const DosageTimeRange &_timeRange, const DateTime &
                 std::swap(*intakeToRemove, _series.back());
                 _series.pop_back();
             }
+        }
+    }
+
+
+    for (auto it = _series.begin(); it != _series.end(); ) {
+        if ((*it).getEventTime() + (*it).getInterval() < _start) {
+            it = _series.erase(it);
+        } else {
+            ++it;
         }
     }
 

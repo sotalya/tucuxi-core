@@ -27,7 +27,8 @@ HEADERS += \
     ../../../test/tucucore/test_parameterextractor.h \
     ../../../test/tucucore/testutils.h \
     ../../../test/tucucore/test_drugmodelimport.h \
-    ../../../test/tucucore/test_drugdomainconstraintsevaluator.h
+    ../../../test/tucucore/test_drugdomainconstraintsevaluator.h \
+    ../../../test/tucucore/test_computingcomponentconcentration.h
 
 SOURCES += \
     ../../../test/tucucore/tests.cpp
