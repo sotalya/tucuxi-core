@@ -804,7 +804,7 @@ ComputingResult ComputingComponent::compute(
 
             IntakeSeries intakeSeries;
             IntakeExtractor intakeExtractor;
-            int nIntakes = intakeExtractor.extract(*newHistory, _traits->getStart(), newEndTime,
+            int nIntakes = intakeExtractor.extract(*newHistory, calculationStartTime, newEndTime,
                                                    intakeSeries, _traits->getCycleSize());
             TMP_UNUSED_PARAMETER(nIntakes);
 
@@ -822,7 +822,7 @@ ComputingResult ComputingComponent::compute(
             ComputationResult predictionComputationResult = computePopulation(
                         pPrediction,
                         false,
-                        _traits->getStart(),
+                        calculationStartTime,
                         newEndTime,
                         intakeSeries,
                         parameterSeries);

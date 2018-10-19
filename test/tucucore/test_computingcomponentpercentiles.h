@@ -101,6 +101,7 @@ struct TestComputingComponentPercentiles : public fructose::test_base<TestComput
         for(std::size_t i = 0; i < responses.size(); i++) {
             fructose_assert(dynamic_cast<PercentilesResponse*>(responses[i].get()) != nullptr);
             const PercentilesResponse *resp = dynamic_cast<PercentilesResponse*>(responses[i].get());
+            TMP_UNUSED_PARAMETER(resp);
             /*
             std::vector<CycleData> data = resp->getData();
             fructose_assert(data.size() == 16);

@@ -472,7 +472,7 @@ Operation* DrugModelImport::extractOperation(Tucuxi::Common::XmlNodeIterator _no
 LightPopulationValue *DrugModelImport::extractPopulationValue(Tucuxi::Common::XmlNodeIterator _node)
 {
     LightPopulationValue *populationValue;
-    Value value;
+    Value value = 0.0;
     Operation *operation = nullptr;
     std::string id = "";
 
@@ -513,7 +513,7 @@ DrugModel* DrugModelImport::extractDrugModel(Tucuxi::Common::XmlNodeIterator _no
     std::vector<CovariateDefinition *> covariates;
     std::vector<ActiveMoiety *> activeMoieties;
     std::vector<AnalyteSet *> analyteSets;
-    FormulationAndRoutes *formulationAndRoutes;
+    FormulationAndRoutes *formulationAndRoutes = nullptr;
 
     std::string drugId;
     std::string drugModelId;
@@ -616,9 +616,9 @@ HalfLife* DrugModelImport::extractHalfLife(Tucuxi::Common::XmlNodeIterator _node
     std::string id;
     //    Value value;
     Unit unit;
-    double multiplier;
+    double multiplier = 1.0;
     //    Operation *operation;
-    LightPopulationValue *value;
+    LightPopulationValue *value = nullptr;
 
     XmlNodeIterator it = _node->getChildren();
 
@@ -648,9 +648,9 @@ HalfLife* DrugModelImport::extractHalfLife(Tucuxi::Common::XmlNodeIterator _node
 
 OutdatedMeasure* DrugModelImport::extractOutdatedMeasure(Tucuxi::Common::XmlNodeIterator _node)
 {
-    OutdatedMeasure *outdatedMeasure;
+    OutdatedMeasure *outdatedMeasure = nullptr;
     Unit unit;
-    LightPopulationValue *value;
+    LightPopulationValue *value = nullptr;
     std::string id;
 
     XmlNodeIterator it = _node->getChildren();
@@ -822,10 +822,10 @@ CovariateDefinition* DrugModelImport::extractCovariate(Tucuxi::Common::XmlNodeIt
     CovariateDefinition* covariate;
 
     std::string id;
-    CovariateType type;
-    DataType dataType;
+    CovariateType type = CovariateType::Standard;
+    DataType dataType = DataType::Int;
     Unit unit;
-    InterpolationType interpolationType;
+    InterpolationType interpolationType = InterpolationType::Direct;
     LightPopulationValue *value = nullptr;
     Operation *validation = nullptr;
 
@@ -1016,7 +1016,7 @@ TargetDefinition* DrugModelImport::extractTarget(Tucuxi::Common::XmlNodeIterator
 {
 
     TargetDefinition *target = nullptr;
-    TargetType type;
+    TargetType type = TargetType::UnknownTarget;
     LightPopulationValue *minValue = nullptr;
     LightPopulationValue *maxValue = nullptr;
     LightPopulationValue *bestValue = nullptr;
@@ -1175,12 +1175,12 @@ std::vector<AnalyteSet*> DrugModelImport::extractAnalyteGroups(Tucuxi::Common::X
 
 AnalyteSet* DrugModelImport::extractAnalyteGroup(Tucuxi::Common::XmlNodeIterator _node)
 {
-    AnalyteSet *analyteGroup;
+    AnalyteSet *analyteGroup = nullptr;
     std::string groupId;
     std::string pkModelId;
     Unit unit;
     std::vector<Analyte*> analytes;
-    ParameterSetDefinition* parameters;
+    ParameterSetDefinition* parameters = nullptr;
     std::vector<TargetDefinition *> targets;
 
     XmlNodeIterator it = _node->getChildren();
@@ -1298,7 +1298,7 @@ Analyte* DrugModelImport::extractAnalyte(Tucuxi::Common::XmlNodeIterator _node)
 MolarMass* DrugModelImport::extractMolarMass(Tucuxi::Common::XmlNodeIterator _node)
 {
     MolarMass *molarMass = nullptr;
-    Value value;
+    Value value = 0.0;
     Unit unit;
 
     XmlNodeIterator it = _node->getChildren();
@@ -1328,8 +1328,8 @@ MolarMass* DrugModelImport::extractMolarMass(Tucuxi::Common::XmlNodeIterator _no
 
 IResidualErrorModel* DrugModelImport::extractErrorModel(Tucuxi::Common::XmlNodeIterator _node)
 {
-    SigmaResidualErrorModel *errorModel;
-    SigmaResidualErrorModel::ResidualErrorType type;
+    SigmaResidualErrorModel *errorModel = nullptr;
+    SigmaResidualErrorModel::ResidualErrorType type = SigmaResidualErrorModel::ResidualErrorType::NONE;
     Operation *formula = nullptr;
     std::vector<LightPopulationValue*> sigmas;
 
@@ -1547,7 +1547,7 @@ Correlation* DrugModelImport::extractCorrelation(Tucuxi::Common::XmlNodeIterator
     Correlation *correlation;
     std::string param1;
     std::string param2;
-    Value value;
+    Value value = 0.0;
 
     XmlNodeIterator it = _node->getChildren();
 
@@ -1580,8 +1580,8 @@ Correlation* DrugModelImport::extractCorrelation(Tucuxi::Common::XmlNodeIterator
 
 ParameterVariability* DrugModelImport::extractVariability(Tucuxi::Common::XmlNodeIterator _node)
 {
-    ParameterVariability *variability;
-    ParameterVariabilityType type;
+    ParameterVariability *variability = nullptr;
+    ParameterVariabilityType type = ParameterVariabilityType::None;
     std::vector<Value> stdDevs;
 
     XmlNodeIterator it = _node->getChildren();
@@ -1675,12 +1675,12 @@ FullFormulationAndRoute* DrugModelImport::extractFullFormulationAndRoute(
         const std::vector<AnalyteSet *>& _analyteSets)
 {
 
-    FullFormulationAndRoute *formulationAndRoute;
-    std::string formulationAndRouteId;
-    Formulation formulation;
-    std::string administrationName;
-    AdministrationRoute administrationRoute;
-    RouteModel routeModelId;
+    FullFormulationAndRoute *formulationAndRoute = nullptr;
+    std::string formulationAndRouteId = "";
+    Formulation formulation = Formulation::Undefined;
+    std::string administrationName = "";
+    AdministrationRoute administrationRoute = AdministrationRoute::Undefined;
+    RouteModel routeModelId = RouteModel::UNDEFINED;
     ParameterSetDefinition *absorptionParameters = nullptr;
     std::vector<AnalyteSetToAbsorptionAssociation *> associations;
 
@@ -1735,9 +1735,9 @@ FullFormulationAndRoute* DrugModelImport::extractFullFormulationAndRoute(
 
             XmlNodeIterator absorptionIt = it->getChildren();
 
-            std::string analyteGroupId;
+            std::string analyteGroupId = "";
             AnalyteSet *selectedAnalyteSet = nullptr;
-            RouteModel absorptionModelId;
+            RouteModel absorptionModelId = RouteModel::UNDEFINED;
             absorptionParameters = nullptr;
 
             while (absorptionIt != XmlNodeIterator::none()) {

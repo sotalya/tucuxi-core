@@ -43,9 +43,11 @@ TargetEvaluator::Result TargetEvaluator::evaluate(
     switch( _target.m_targetType) {
     case TargetType::Peak :
     {
-        double peakConcentration;
+        double peakConcentration = 0.0;
         CycleStatistic cycleStatistic = statisticsCalculator.getStatistic(0, CycleStatisticType::Peak);
-        cycleStatistic.getValue(dateTime, peakConcentration);
+        if (!cycleStatistic.getValue(dateTime, peakConcentration)) {
+            // Something wrong here
+        }
 
         double peakTime = (dateTime - cycleStatistic.getCycleStartDate()).toMinutes();
 
@@ -67,29 +69,33 @@ TargetEvaluator::Result TargetEvaluator::evaluate(
         // Take compartment 0, could be different in the future
         //double lastResidual = cycle.m_concentrations[0][cycle.m_concentrations[0].size() - 1];
         // We have two options, I choose the cycle statistic calculator here
-        double lastResidual;
+        double lastResidual = -1.0;
         CycleStatistic cycleStatistic = statisticsCalculator.getStatistic(0, CycleStatisticType::Residual);
-        cycleStatistic.getValue(dateTime, lastResidual);
+        bOk = cycleStatistic.getValue(dateTime, lastResidual);
 
-        // Check if concentration is within the target range
-        bOk = (lastResidual < _target.m_valueMax) && (lastResidual > _target.m_valueMin);
         if (bOk) {
-            score = 1.0 - pow(log(lastResidual) - log(_target.m_valueBest), 2) / pow(0.5 *(log(_target.m_valueMax) - log(_target.m_valueMin)), 2);
-            value = lastResidual;
+            // Check if concentration is within the target range
+            bOk = (lastResidual < _target.m_valueMax) && (lastResidual > _target.m_valueMin);
+            if (bOk) {
+                score = 1.0 - pow(log(lastResidual) - log(_target.m_valueBest), 2) / pow(0.5 *(log(_target.m_valueMax) - log(_target.m_valueMin)), 2);
+                value = lastResidual;
+            }
         }
     } break;
 
     case TargetType::Auc :
     {
-        double auc;
+        double auc = -1.0;
         CycleStatistic cycleStatistic = statisticsCalculator.getStatistic(0, CycleStatisticType::AUC);
-        cycleStatistic.getValue(dateTime, auc);
+        bOk = cycleStatistic.getValue(dateTime, auc);
 
-        // Check if concentration is within the target range
-        bOk = (auc < _target.m_valueMax) && (auc > _target.m_valueMin);
         if (bOk) {
-            score = 1.0 - pow(log(auc) - log(_target.m_valueBest), 2) / pow(0.5 *(log(_target.m_valueMax) - log(_target.m_valueMin)), 2);
-            value = auc;
+            // Check if concentration is within the target range
+            bOk = (auc < _target.m_valueMax) && (auc > _target.m_valueMin);
+            if (bOk) {
+                score = 1.0 - pow(log(auc) - log(_target.m_valueBest), 2) / pow(0.5 *(log(_target.m_valueMax) - log(_target.m_valueMin)), 2);
+                value = auc;
+            }
         }
     } break;
 
@@ -104,10 +110,14 @@ TargetEvaluator::Result TargetEvaluator::evaluate(
             cycle.addData(times, _prediction.getValues().at(i), 0);
 
             CycleStatistics statisticsCalculator(cycle);
-            double auc;
+            double auc = 0.0;
             CycleStatistic cycleStatistic = statisticsCalculator.getStatistic(0, CycleStatisticType::AUC);
-            cycleStatistic.getValue(dateTime, auc);
-            cumulativeAuc += auc;
+            if (cycleStatistic.getValue(dateTime, auc)) {
+                cumulativeAuc += auc;
+            }
+            else {
+                // There is an error, should not happen
+            }
         }
 
         // Check if concentration is within the target range
@@ -120,15 +130,17 @@ TargetEvaluator::Result TargetEvaluator::evaluate(
 
     case TargetType::Mean :
     {
-        double mean;
+        double mean = -1.0;
         CycleStatistic cycleStatistic = statisticsCalculator.getStatistic(0, CycleStatisticType::Mean);
-        cycleStatistic.getValue(dateTime, mean);
+        bOk = cycleStatistic.getValue(dateTime, mean);
 
-        // Check if concentration is within the target range
-        bOk = (mean < _target.m_valueMax) && (mean > _target.m_valueMin);
         if (bOk) {
-            score = 1.0 - pow(log(mean) - log(_target.m_valueBest), 2) / pow(0.5 *(log(_target.m_valueMax) - log(_target.m_valueMin)), 2);
-            value = mean;
+            // Check if concentration is within the target range
+            bOk = (mean < _target.m_valueMax) && (mean > _target.m_valueMin);
+            if (bOk) {
+                score = 1.0 - pow(log(mean) - log(_target.m_valueBest), 2) / pow(0.5 *(log(_target.m_valueMax) - log(_target.m_valueMin)), 2);
+                value = mean;
+            }
         }
     } break;
 
