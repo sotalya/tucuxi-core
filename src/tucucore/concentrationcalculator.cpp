@@ -135,12 +135,6 @@ ComputationResult ConcentrationCalculator::computeConcentrations(ConcentrationPr
 
         }
 
-        // Apply the intra-individual error on residual
-        if ((!_residualErrorModel.isEmpty()) && (_epsilons.size() != 0)) {
-            _residualErrorModel.applyEpsToValue(outResiduals[0], _epsilons);
-        }
-
-
 
         // Prepare residuals for the next cycle
         // NOTICE: "inResiduals = outResiduals" and "std::copy(outResiduals.begin(),

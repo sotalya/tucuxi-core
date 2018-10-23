@@ -55,13 +55,25 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
         Tucuxi::Core::RouteModel route = Tucuxi::Core::RouteModel::EXTRAVASCULAR;
 
         DateTime recordFrom = now;
-        DateTime recordTo = now + 24h;
+        DateTime recordTo = now + 96h;
 
         Tucuxi::Core::TimeOffsets times;
         Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, dose, interval, route, infusionTime, CYCLE_SIZE);
         std::shared_ptr<Tucuxi::Core::IntakeIntervalCalculator> calculator2 = std::make_shared<Tucuxi::Core::OneCompartmentExtraMacro>();
         intakeEvent.setCalculator(calculator2);
         intakeSeries.push_back(intakeEvent);
+
+        Tucuxi::Core::IntakeEvent intakeEvent2(now + 24h, offsetTime, dose, interval, route, infusionTime, CYCLE_SIZE);
+        intakeEvent2.setCalculator(calculator2);
+        intakeSeries.push_back(intakeEvent2);
+
+        Tucuxi::Core::IntakeEvent intakeEvent3(now + 48h, offsetTime, dose, interval, route, infusionTime, CYCLE_SIZE);
+        intakeEvent3.setCalculator(calculator2);
+        intakeSeries.push_back(intakeEvent3);
+
+        Tucuxi::Core::IntakeEvent intakeEvent4(now + 72h, offsetTime, dose, interval, route, infusionTime, CYCLE_SIZE);
+        intakeEvent4.setCalculator(calculator2);
+        intakeSeries.push_back(intakeEvent4);
 
         // std::cout << typeid(calculator).name() << std::endl;
 

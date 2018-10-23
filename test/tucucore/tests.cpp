@@ -297,19 +297,12 @@ int main(int argc, char** argv)
     TestPercentileCalculator percentileCalculatorTests;
 
     percentileCalculatorTests.add_test("Apriori Monte Carlo Percentile", &TestPercentileCalculator::testApriori);
-
-    res = percentileCalculatorTests.run(argc, argv);
-    tot_res |= res;
-    if (res != 0) {
-        std::cerr << "Apriori Percentile Calculators test failed\n";
-    }
-
     percentileCalculatorTests.add_test("Aposteriori Normal Monte Carlo Percentile", &TestPercentileCalculator::testAposterioriNormal);
 
     res = percentileCalculatorTests.run(argc, argv);
     tot_res |= res;
     if (res != 0) {
-        std::cerr << "Aposteriori normal Percentile Calculators test failed\n";
+        std::cerr << "Apriori Percentile Calculators or Aposteriori normal Percentile Calculators test failed\n";
     }
 
     // TODO: currently V and CV is negative with input parameters. Need to modify the parameters and
