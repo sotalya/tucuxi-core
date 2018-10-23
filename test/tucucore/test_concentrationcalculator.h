@@ -86,6 +86,9 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
             {
                 predictionPtr = std::make_unique<Tucuxi::Core::ConcentrationPrediction>();
 
+                DateTime recordFrom = now;
+                DateTime recordTo = now + intakeEvent.getInterval();
+
                 Tucuxi::Core::IntakeSeries intakeSeries;
                 std::shared_ptr<IntakeIntervalCalculator> calculator2 = std::make_shared<CalculatorClass>();
                 intakeEvent.setCalculator(calculator2);
@@ -94,8 +97,8 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
                 concentrationCalculator->computeConcentrations(
                     predictionPtr,
                     isAll,
-                    DateTime(), // YJ: Fix this with a meaningfull date
-                    DateTime(), // YJ: Fix this with a meaningfull date
+                    recordFrom,
+                    recordTo,
                     intakeSeries,
                     _parameters);
                 delete concentrationCalculator;
@@ -169,6 +172,9 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
                 Tucuxi::Core::IntakeSeries intakeSeries;
                 std::shared_ptr<IntakeIntervalCalculator> calculator2 = std::make_shared<CalculatorClass>();
 
+                DateTime recordFrom = now;
+                DateTime recordTo = now + interval * nbCycles;
+
                 for(int i = 0; i < nbCycles; i++) {
                     Tucuxi::Core::IntakeEvent event(now + interval * i, offsetTime, _dose, interval, _route, infusionTime, _nbPoints);
                     event.setCalculator(calculator2);
@@ -178,8 +184,8 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
                 concentrationCalculator->computeConcentrations(
                     predictionPtr,
                     isAll,
-                    DateTime(), // YJ: Fix this with a meaningfull date
-                    DateTime(), // YJ: Fix this with a meaningfull date
+                    recordFrom,
+                    recordTo,
                     intakeSeries,
                     _parameters);
                 delete concentrationCalculator;
@@ -229,6 +235,9 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
             {
                 predictionPtr = std::make_unique<Tucuxi::Core::ConcentrationPrediction>();
 
+                DateTime recordFrom = now;
+                DateTime recordTo = recordFrom + interval;
+
                 Tucuxi::Core::IntakeSeries intakeSeries;
                 std::shared_ptr<IntakeIntervalCalculator> calculator2 = std::make_shared<CalculatorClass>();
                 intakeEvent.setCalculator(calculator2);
@@ -237,8 +246,8 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
                 concentrationCalculator->computeConcentrations(
                     predictionPtr,
                     isAll,
-                    DateTime(), // YJ: Fix this with a meaningfull date
-                    DateTime(), // YJ: Fix this with a meaningfull date
+                    recordFrom,
+                    recordTo,
                     intakeSeries,
                     _parameters);
                 delete concentrationCalculator;

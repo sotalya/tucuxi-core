@@ -88,21 +88,6 @@ int main(int argc, char** argv)
         std::cout << "Computing Component Concentration test succeeded\n";
     }
 
-    TestComputingComponentPercentiles computingComponentPercentilesTests;
-
-    // one compartment
-    computingComponentPercentilesTests.add_test("Simple1", &TestComputingComponentPercentiles::testImatinib1);
-
-
-
-    res = computingComponentPercentilesTests.run(argc, argv);
-    tot_res |= res;
-    if (res != 0) {
-        std::cerr << "Computing Component Percentiles test failed\n";
-    }
-    else {
-        std::cout << "Computing Component Percentiles test succeeded\n";
-    }
 
     TestComputingComponentAdjusements computingComponentAdjusementsTests;
 
@@ -115,6 +100,7 @@ int main(int argc, char** argv)
     computingComponentAdjusementsTests.add_test("Simple test 6", &TestComputingComponentAdjusements::testImatinibAllFormulationAndRouteBestDosage);
     computingComponentAdjusementsTests.add_test("Simple test 7", &TestComputingComponentAdjusements::testImatinibEmptyTreatmentDefaultFormulationAndRouteAllDosages);
     computingComponentAdjusementsTests.add_test("Simple test 8", &TestComputingComponentAdjusements::testImatinibSteadyStateLastFormulationAndRouteAllDosages);
+    computingComponentAdjusementsTests.add_test("Simple test 9", &TestComputingComponentAdjusements::testImatinibLastFormulationAndRouteAllDosagesAtSteadyState);
 
 
 
@@ -376,6 +362,24 @@ int main(int argc, char** argv)
         tot_res |= res;
     }
     std::cout << "Cycle Statistics Calculators test succeeded\n";
+
+    TestComputingComponentPercentiles computingComponentPercentilesTests;
+
+    // one compartment
+    computingComponentPercentilesTests.add_test("ImatinibPercentiles", &TestComputingComponentPercentiles::testImatinib1);
+    computingComponentPercentilesTests.add_test("ImatinibSteadyStatePercentiles", &TestComputingComponentPercentiles::testImatinibSteadyState);
+
+
+
+    res = computingComponentPercentilesTests.run(argc, argv);
+    tot_res |= res;
+    if (res != 0) {
+        std::cerr << "Computing Component Percentiles test failed\n";
+    }
+    else {
+        std::cout << "Computing Component Percentiles test succeeded\n";
+    }
+
 
     return tot_res;
 }

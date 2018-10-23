@@ -54,6 +54,9 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
         double dose = 400;
         Tucuxi::Core::RouteModel route = Tucuxi::Core::RouteModel::EXTRAVASCULAR;
 
+        DateTime recordFrom = now;
+        DateTime recordTo = now + 24h;
+
         Tucuxi::Core::TimeOffsets times;
         Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, dose, interval, route, infusionTime, CYCLE_SIZE);
         std::shared_ptr<Tucuxi::Core::IntakeIntervalCalculator> calculator2 = std::make_shared<Tucuxi::Core::OneCompartmentExtraMacro>();
@@ -70,8 +73,8 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
             concentrationCalculator->computeConcentrations(
                         predictionPtr,
                         false,
-                        DateTime(), // YJ: Fix this with a meaningfull date
-                        DateTime(), // YJ: Fix this with a meaningfull date
+                        recordFrom,
+                        recordTo,
                         intakeSeries,
                         parametersSeries);
             delete concentrationCalculator;
@@ -114,6 +117,8 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
         Tucuxi::Core::ConcentrationCalculator concentrationCalculator;
         res = calculator->calculate(
                     percentiles,
+                    recordFrom,
+                    recordTo,
                     intakeSeries,
                     parametersSeries,
                     omega,
@@ -158,6 +163,9 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
         double dose = 400;
         Tucuxi::Core::RouteModel route = Tucuxi::Core::RouteModel::EXTRAVASCULAR;
 
+        DateTime recordFrom = now;
+        DateTime recordTo = now + 24h;
+
         Tucuxi::Core::TimeOffsets times;
         Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, dose, interval, route, infusionTime, CYCLE_SIZE);
         std::shared_ptr<Tucuxi::Core::IntakeIntervalCalculator> calculator2 = std::make_shared<Tucuxi::Core::OneCompartmentExtraMacro>();
@@ -174,8 +182,8 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
             concentrationCalculator->computeConcentrations(
                         predictionPtr,
                         false,
-                        DateTime(), // YJ: Fix this with a meaningfull date
-                        DateTime(), // YJ: Fix this with a meaningfull date
+                        recordFrom,
+                        recordTo,
                         intakeSeries,
                         parametersSeries);
             delete concentrationCalculator;
@@ -214,6 +222,8 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
         Tucuxi::Core::ConcentrationCalculator concentrationCalculator;
         res = calculator->calculate(
                     percentiles,
+                    recordFrom,
+                    recordTo,
                     intakeSeries,
                     parametersSeries,
                     omega,
@@ -258,6 +268,9 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
         double dose = 400;
         Tucuxi::Core::RouteModel route = Tucuxi::Core::RouteModel::EXTRAVASCULAR;
 
+        DateTime recordFrom = now;
+        DateTime recordTo = now + 24h;
+
         Tucuxi::Core::TimeOffsets times;
         Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, dose, interval, route, infusionTime, CYCLE_SIZE);
         std::shared_ptr<Tucuxi::Core::IntakeIntervalCalculator> calculator2 = std::make_shared<Tucuxi::Core::OneCompartmentExtraMacro>();
@@ -274,8 +287,8 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
             concentrationCalculator->computeConcentrations(
                         predictionPtr,
                         false,
-                        DateTime(), // YJ: Fix this with a meaningfull date
-                        DateTime(), // YJ: Fix this with a meaningfull date
+                        recordFrom,
+                        recordTo,
                         intakeSeries,
                         parametersSeries);
             delete concentrationCalculator;
@@ -314,6 +327,8 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
         Tucuxi::Core::ConcentrationCalculator concentrationCalculator;
         res = calculator->calculate(
                     percentiles,
+                    recordFrom,
+                    recordTo,
                     intakeSeries,
                     parametersSeries,
                     omega,

@@ -28,6 +28,12 @@ public:
     /// \return true if no error model is implemented within the class, false else
     virtual bool isEmpty() const = 0;
 
+    /// \brief Applies the epsilons to a single concentrations
+    /// \param _concentration The concentration to be modified.
+    /// \param _eps The vector of epsilons
+    /// This method supports a vector of epsilons and is responsible to modify the concentration.
+    virtual void applyEpsToValue(Concentration &_concentration, const Deviations &_eps) const = 0;
+
     /// \brief Applies the epsilons to a set of concentrations
     /// \param _concentrations The set of concentrations.
     /// \param _eps The vector of epsilons
@@ -67,6 +73,7 @@ public:
     void setSigma(Sigma _sigma) { m_sigma = _sigma;}
     void setErrorModel(ResidualErrorType _errorModel) { m_errorModel = _errorModel;}
     bool isEmpty() const override;
+    void applyEpsToValue(Concentration &_concentration, const Deviations &_eps) const override;
     void applyEpsToArray(Concentrations &_concentrations, const Deviations &_eps) const override;
 
     Value calculateSampleLikelihood(Value _expected, Value _observed) const override;
@@ -100,16 +107,22 @@ class EmptyResidualErrorModel : public IResidualErrorModel
 public:
     bool isEmpty() const override { return true;}
 
+
+    void applyEpsToValue(Concentration &_concentration, const Deviations &_eps) const override {
+        UNUSED_PARAMETER(_concentration);
+        UNUSED_PARAMETER(_eps);
+    }
+
     void applyEpsToArray(Concentrations &_concentrations, const Deviations &_eps) const override {
         UNUSED_PARAMETER(_concentrations);
         UNUSED_PARAMETER(_eps);
-    };
+    }
 
     Value calculateSampleLikelihood(Value _expected, Value _observed) const override {
         UNUSED_PARAMETER(_expected);
         UNUSED_PARAMETER(_observed);
         return 0.0;
-    };
+    }
 
     int nbEpsilons() const override { return 0; }
 

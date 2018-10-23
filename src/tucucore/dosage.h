@@ -36,6 +36,12 @@ typedef std::vector<IntakeEvent> IntakeSeries;
 
 void cloneIntakeSeries(const std::vector<IntakeEvent> &_input, std::vector<IntakeEvent> &_output);
 
+
+void selectRecordedIntakes(
+        IntakeSeries &_selectionSeries, const IntakeSeries &_intakeSeries,
+        DateTime _recordFrom, DateTime _recordTo);
+
+
 /// \brief Implement the extract and clone operations for Dosage subclasses.
 #define DOSAGE_UTILS(BaseClassName, ClassName) \
     friend IntakeExtractor; \

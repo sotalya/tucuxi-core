@@ -17,6 +17,26 @@ bool SigmaResidualErrorModel::isEmpty() const
 }
 
 
+void SigmaResidualErrorModel::applyEpsToValue(Concentration &_concentration, const Deviations &_eps) const {
+
+    switch (m_errorModel) {
+    case ResidualErrorType::EXPONENTIAL:
+        _concentration *= std::pow(m_sigma[0], 2) * std::exp(_eps[0]);
+    case ResidualErrorType::PROPORTIONAL:
+        _concentration *= 1 + m_sigma[0] * _eps[0];
+        break;
+    case ResidualErrorType::ADDITIVE:
+        _concentration += m_sigma[0] * _eps[0];
+        break;
+    case ResidualErrorType::MIXED:
+        _concentration += _eps[0] * std::sqrt(std::pow(_concentration * m_sigma[1], 2)  + std::pow(m_sigma[0], 2));
+        break;
+    default:
+        // Should never happen
+        break;
+    }
+};
+
 void SigmaResidualErrorModel::applyEpsToArray(Concentrations &_concentrations, const Deviations &_eps) const {
 
     // Loop through the main compartment concentrations and apply the residual error

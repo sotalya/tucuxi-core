@@ -56,26 +56,28 @@ public:
     ///
     /// \brief calculate
     /// \param _percentiles percentiles calculated within the method
-    /// \param _nbPoints Number of points asked for each cycle
+    /// \param _recordFrom Date from which we start recording the concentration
+    /// \param _recordTo Date until which we record the concentration
     /// \param _intakes Intake series
     /// \param _parameters Initial parameters series
     /// \param _omega covariance matrix for inter-individual variability
     /// \param _residualErrorModel Residual error model
     /// \param _etas Etas pre-calculated by the aposteriori calculator
-    /// \param _samples List of samples
     /// \param _percentileRanks List of percentiles ranks
     /// \param _aborter An aborter object allowing to abort the calculation
     /// \return The status of calculation
     virtual ComputingResult calculate(
-        PercentilesPrediction &_percentiles,
-        const IntakeSeries &_intakes,
-        const ParameterSetSeries &_parameters,
-        const OmegaMatrix& _omega,
-        const IResidualErrorModel &_residualErrorModel,
-        const Etas& _etas,
-        const PercentileRanks &_percentileRanks,
-        IConcentrationCalculator &_concentrationCalculator,
-        ComputingAborter *_aborter) = 0;
+            PercentilesPrediction &_percentiles,
+            const DateTime &_recordFrom,
+            const DateTime &_recordTo,
+            const IntakeSeries &_intakes,
+            const ParameterSetSeries &_parameters,
+            const OmegaMatrix& _omega,
+            const IResidualErrorModel &_residualErrorModel,
+            const Etas& _etas,
+            const PercentileRanks &_percentileRanks,
+            IConcentrationCalculator &_concentrationCalculator,
+            ComputingAborter *_aborter) = 0;
 
     virtual ~IAprioriPercentileCalculator() {};
 };
@@ -87,6 +89,8 @@ public:
     ///
     /// \brief calculate
     /// \param _percentiles percentiles calculated within the method
+    /// \param _recordFrom Date from which we start recording the concentration
+    /// \param _recordTo Date until which we record the concentration
     /// \param _nbPoints Number of points asked for each cycle
     /// \param _intakes Intake series
     /// \param _parameters Initial parameters series
@@ -98,16 +102,18 @@ public:
     /// \param _aborter An aborter object allowing to abort the calculation
     /// \return The status of calculation
     virtual ComputingResult calculate(
-        PercentilesPrediction &_percentiles,
-        const IntakeSeries &_intakes,
-        const ParameterSetSeries &_parameters,
-        const OmegaMatrix& _omega,
-        const IResidualErrorModel &_residualErrorModel,
-        const Etas& _etas,
-        const SampleSeries &_samples,
-        const PercentileRanks &_percentileRanks,
-        IConcentrationCalculator &_concentrationCalculator,
-        ComputingAborter *_aborter) = 0;
+            PercentilesPrediction &_percentiles,
+            const DateTime &_recordFrom,
+            const DateTime &_recordTo,
+            const IntakeSeries &_intakes,
+            const ParameterSetSeries &_parameters,
+            const OmegaMatrix& _omega,
+            const IResidualErrorModel &_residualErrorModel,
+            const Etas& _etas,
+            const SampleSeries &_samples,
+            const PercentileRanks &_percentileRanks,
+            IConcentrationCalculator &_concentrationCalculator,
+            ComputingAborter *_aborter) = 0;
 
     virtual ~IAposterioriPercentileCalculator() {};
 };
@@ -119,6 +125,8 @@ public:
     ///
     /// \brief calculate
     /// \param _percentiles percentiles calculated within the method
+    /// \param _recordFrom Date from which we start recording the concentration
+    /// \param _recordTo Date until which we record the concentration
     /// \param _nbPoints Number of points asked for each cycle
     /// \param _intakes Intake series
     /// \param _parameters Initial parameters series
@@ -130,16 +138,18 @@ public:
     /// \param _aborter An aborter object allowing to abort the calculation
     /// \return The status of calculation
     virtual ComputingResult calculate(
-        PercentilesPrediction &_percentiles,
-        const IntakeSeries &_intakes,
-        const ParameterSetSeries &_parameters,
-        const OmegaMatrix& _omega,
-        const IResidualErrorModel &_residualErrorModel,
-        const Etas& _etas,
-        const SampleSeries &_samples,
-        const PercentileRanks &_percentileRanks,
-        IConcentrationCalculator &_concentrationCalculator,
-        ComputingAborter *_aborter) = 0;
+            PercentilesPrediction &_percentiles,
+            const DateTime &_recordFrom,
+            const DateTime &_recordTo,
+            const IntakeSeries &_intakes,
+            const ParameterSetSeries &_parameters,
+            const OmegaMatrix& _omega,
+            const IResidualErrorModel &_residualErrorModel,
+            const Etas& _etas,
+            const SampleSeries &_samples,
+            const PercentileRanks &_percentileRanks,
+            IConcentrationCalculator &_concentrationCalculator,
+            ComputingAborter *_aborter) = 0;
 
     virtual ~IAposterioriNormalApproximationMonteCarloPercentileCalculator() {};
 };
@@ -150,6 +160,10 @@ class MonteCarloPercentileCalculatorBase : public IPercentileCalculator
 {
 public:
     MonteCarloPercentileCalculatorBase();
+
+    static void setStaticNumberPatients(const unsigned int _nbPatients) {
+        sm_nbPatients = _nbPatients;
+    }
 
     void setNumberPatients(const unsigned int _nbPatients) { m_nbPatients = _nbPatients; }
     unsigned int getNumberPatients() { return m_nbPatients; }
@@ -165,16 +179,18 @@ protected:
     /// \param _samples List of samples
     /// \param _subomega Result of this function, non-negative hessian matrix
     void calculateSubomega(
-	    const OmegaMatrix& _omega,
-	    const Etas& _etas,
-	    Likelihood &_logLikelihood,
-	    EigenMatrix &_subomega);
+            const OmegaMatrix& _omega,
+            const Etas& _etas,
+            Likelihood &_logLikelihood,
+            EigenMatrix &_subomega);
 
 protected:
 
     ///
     /// \brief computePredictionsAndSortPercentiles
     /// \param _percentiles percentiles calculated within the method
+    /// \param _recordFrom Date from which we start recording the concentration
+    /// \param _recordTo Date until which we record the concentration
     /// \param _nbPoints Number of points asked for each cycle
     /// \param _intakes Intake series
     /// \param _parameters Initial parameters series
@@ -186,18 +202,22 @@ protected:
     /// \return The status of calculation
     ///
     ComputingResult computePredictionsAndSortPercentiles(
-        PercentilesPrediction &_percentiles,
-        const IntakeSeries &_intakes,
-        const ParameterSetSeries &_parameters,
-        const IResidualErrorModel &_residualErrorModel,
-        const PercentileRanks &_percentileRanks,
-        const std::vector<Etas> &_etas,
-        const std::vector<Deviations> &_epsilons,
-        IConcentrationCalculator &_concentrationCalculator,
-        ComputingAborter *_aborter);
+            PercentilesPrediction &_percentiles,
+            const DateTime &_recordFrom,
+            const DateTime &_recordTo,
+            const IntakeSeries &_intakes,
+            const ParameterSetSeries &_parameters,
+            const IResidualErrorModel &_residualErrorModel,
+            const PercentileRanks &_percentileRanks,
+            const std::vector<Etas> &_etas,
+            const std::vector<Deviations> &_epsilons,
+            IConcentrationCalculator &_concentrationCalculator,
+            ComputingAborter *_aborter);
 
 private:
     unsigned int m_nbPatients;
+
+    static unsigned int sm_nbPatients;
 };
 
 
@@ -206,7 +226,7 @@ private:
 * The number of simulated curves is hardcoded to be 10,000
 */
 class AprioriMonteCarloPercentileCalculator : public IAprioriPercentileCalculator,
-        public MonteCarloPercentileCalculatorBase 
+        public MonteCarloPercentileCalculatorBase
 {
 public:
     AprioriMonteCarloPercentileCalculator();
@@ -214,6 +234,8 @@ public:
     ///
     /// \brief calculate
     /// \param _percentiles percentiles calculated within the method
+    /// \param _recordFrom Date from which we start recording the concentration
+    /// \param _recordTo Date until which we record the concentration
     /// \param _nbPoints Number of points asked for each cycle
     /// \param _intakes Intake series
     /// \param _parameters Initial parameters series
@@ -225,15 +247,17 @@ public:
     /// \return The status of calculation
     ///
     ComputingResult calculate(
-        PercentilesPrediction &_percentiles,
-        const IntakeSeries &_intakes,
-        const ParameterSetSeries &_parameters,
-        const OmegaMatrix& _omega,
-        const IResidualErrorModel &_residualErrorModel,
-        const Etas& _initialEtas,
-        const PercentileRanks &_percentileRanks,
-        IConcentrationCalculator &_concentrationCalculator,
-        ComputingAborter *_aborter) override;
+            PercentilesPrediction &_percentiles,
+            const DateTime &_recordFrom,
+            const DateTime &_recordTo,
+            const IntakeSeries &_intakes,
+            const ParameterSetSeries &_parameters,
+            const OmegaMatrix& _omega,
+            const IResidualErrorModel &_residualErrorModel,
+            const Etas& _initialEtas,
+            const PercentileRanks &_percentileRanks,
+            IConcentrationCalculator &_concentrationCalculator,
+            ComputingAborter *_aborter) override;
 };
 
 
@@ -245,6 +269,8 @@ public:
     ///
     /// \brief calculate
     /// \param _percentiles percentiles calculated within the method
+    /// \param _recordFrom Date from which we start recording the concentration
+    /// \param _recordTo Date until which we record the concentration
     /// \param _nbPoints Number of points asked for each cycle
     /// \param _intakes Intake series
     /// \param _parameters Initial parameters series
@@ -256,16 +282,18 @@ public:
     /// \param _aborter An aborter object allowing to abort the calculation
     /// \return The status of calculation
     ComputingResult calculate(
-        PercentilesPrediction &_percentiles,
-        const IntakeSeries &_intakes,
-        const ParameterSetSeries &_parameters,
-        const OmegaMatrix& _omega,
-        const IResidualErrorModel &_residualErrorModel,
-        const Etas& _etas,
-        const SampleSeries &_samples,
-        const PercentileRanks &_percentileRanks,
-        IConcentrationCalculator &_concentrationCalculator,
-        ComputingAborter *_aborter) override;
+            PercentilesPrediction &_percentiles,
+            const DateTime &_recordFrom,
+            const DateTime &_recordTo,
+            const IntakeSeries &_intakes,
+            const ParameterSetSeries &_parameters,
+            const OmegaMatrix& _omega,
+            const IResidualErrorModel &_residualErrorModel,
+            const Etas& _etas,
+            const SampleSeries &_samples,
+            const PercentileRanks &_percentileRanks,
+            IConcentrationCalculator &_concentrationCalculator,
+            ComputingAborter *_aborter) override;
 };
 
 
@@ -281,6 +309,8 @@ public:
     ///
     /// \brief calculate
     /// \param _percentiles percentiles calculated within the method
+    /// \param _recordFrom Date from which we start recording the concentration
+    /// \param _recordTo Date until which we record the concentration
     /// \param _nbPoints Number of points asked for each cycle
     /// \param _intakes Intake series
     /// \param _parameters Initial parameters series
@@ -293,6 +323,8 @@ public:
     /// \return The status of calculation
     ComputingResult calculate(
             PercentilesPrediction &_percentiles,
+            const DateTime &_recordFrom,
+            const DateTime &_recordTo,
             const IntakeSeries &_intakes,
             const ParameterSetSeries &_parameters,
             const OmegaMatrix& _omega,

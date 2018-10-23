@@ -2,6 +2,9 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
+
+#include <chrono>
+
 #include "concentrationcalculator.h"
 
 namespace Tucuxi {
@@ -19,8 +22,16 @@ ComputationResult ConcentrationCalculator::computeConcentrations(ConcentrationPr
     bool _onlyAnalytes,
     bool _isFixedDensity)
 {
-    TMP_UNUSED_PARAMETER(_recordFrom);
-    TMP_UNUSED_PARAMETER(_recordTo);
+    if (_recordFrom == DateTime()) {
+        std::cout  << "Invalid record from" <<  std::endl;
+    }
+    if (_recordTo == DateTime()) {
+        std::cout  << "Invalid record to" <<  std::endl;
+    }
+    assert(_recordFrom != DateTime());
+    assert(_recordTo != DateTime());
+//    TMP_UNUSED_PARAMETER(_recordFrom);
+//    TMP_UNUSED_PARAMETER(_recordTo);
     TMP_UNUSED_PARAMETER(_onlyAnalytes);
     // First calculate the size of residuals
     unsigned int residualSize = 0;
@@ -44,44 +55,92 @@ ComputationResult ConcentrationCalculator::computeConcentrations(ConcentrationPr
             return ComputationResult::Failure;
         }
 
-        // Compute concentrations for the current cycle
-        TimeOffsets times;
-        std::vector<Concentrations> concentrations;
-        concentrations.resize(residualSize);
+        DateTime intakeStartTime = intake.getEventTime();
+        DateTime intakeEndTime = intakeStartTime + intake.getInterval();
 
-        _prediction->allocate(residualSize, intake.getNbPoints(), times, concentrations);
+        if ((intakeEndTime > _recordFrom) && (intakeStartTime < _recordTo)) {
+            // Record data
 
-//        outResiduals.clear();
+            // Compute concentrations for the current cycle
+            TimeOffsets times;
+            std::vector<Concentrations> concentrations;
+            concentrations.resize(residualSize);
 
-        IntakeIntervalCalculator::Result result = it->calculateIntakePoints(concentrations, times, intake, *parameters, inResiduals, _isAll, outResiduals, _isFixedDensity);
+            _prediction->allocate(residualSize, intake.getNbPoints(), times, concentrations);
 
-        switch (result)
-        {
-            case IntakeIntervalCalculator::Result::Ok:
-                break;
-            case IntakeIntervalCalculator::Result::DensityError:
-                // Restart computation with more points...
+    //        outResiduals.clear();
 
-                // If nbpoints has changed (initial density was not the final density), change the density in the intakeevent
-                // so it can be used if this intake is recalculated.
-                //if (it->getNbPoints() != ink.getNbPoints()) {
-                //    intake_series_t::index<tags::times>::type& intakes_times_index = intakes.get<tags::times>();
-                //    intakes_times_index.modify(it, IntakeEvent::change_density(ink.nbPoints));
-                //}
-                break;
-            default:
-                //m_logger.error("Failed in calculation with given parameter values.");
-                return ComputationResult::Failure;
+            IntakeIntervalCalculator::Result result = it->calculateIntakePoints(concentrations, times, intake, *parameters, inResiduals, _isAll, outResiduals, _isFixedDensity);
+
+            switch (result)
+            {
+                case IntakeIntervalCalculator::Result::Ok:
+                    break;
+                case IntakeIntervalCalculator::Result::DensityError:
+                    // Restart computation with more points...
+
+                    // If nbpoints has changed (initial density was not the final density), change the density in the intakeevent
+                    // so it can be used if this intake is recalculated.
+                    //if (it->getNbPoints() != ink.getNbPoints()) {
+                    //    intake_series_t::index<tags::times>::type& intakes_times_index = intakes.get<tags::times>();
+                    //    intakes_times_index.modify(it, IntakeEvent::change_density(ink.nbPoints));
+                    //}
+                    break;
+                default:
+                    //m_logger.error("Failed in calculation with given parameter values.");
+                    return ComputationResult::Failure;
+            }
+
+
+            // Apply the intra-individual error
+            if ((!_residualErrorModel.isEmpty()) && (_epsilons.size() != 0)) {
+                _residualErrorModel.applyEpsToArray(concentrations[0], _epsilons);
+            }
+
+            // Append computed values to our prediction
+            _prediction->appendConcentrations(times, concentrations[0]);
+        }
+        else {
+            // Do not record data, only get residual
+
+            // Compute concentrations for the current cycle
+            TimeOffsets times;
+            std::vector<Concentrations> concentrations;
+            concentrations.resize(residualSize);
+
+            _prediction->allocate(residualSize, intake.getNbPoints(), times, concentrations);
+
+            IntakeIntervalCalculator::Result result = it->calculateIntakePoints(concentrations, times, intake, *parameters, inResiduals, _isAll, outResiduals, _isFixedDensity);
+
+            switch (result)
+            {
+                case IntakeIntervalCalculator::Result::Ok:
+                    break;
+                case IntakeIntervalCalculator::Result::DensityError:
+                    // Restart computation with more points...
+
+                    // If nbpoints has changed (initial density was not the final density), change the density in the intakeevent
+                    // so it can be used if this intake is recalculated.
+                    //if (it->getNbPoints() != ink.getNbPoints()) {
+                    //    intake_series_t::index<tags::times>::type& intakes_times_index = intakes.get<tags::times>();
+                    //    intakes_times_index.modify(it, IntakeEvent::change_density(ink.nbPoints));
+                    //}
+                    break;
+                default:
+                    //m_logger.error("Failed in calculation with given parameter values.");
+                    return ComputationResult::Failure;
+            }
+
+
+
         }
 
-
-        // Apply the intra-individual error
+        // Apply the intra-individual error on residual
         if ((!_residualErrorModel.isEmpty()) && (_epsilons.size() != 0)) {
-            _residualErrorModel.applyEpsToArray(concentrations[0], _epsilons);
+            _residualErrorModel.applyEpsToValue(outResiduals[0], _epsilons);
         }
 
-        // Append computed values to our prediction
-        _prediction->appendConcentrations(times, concentrations[0]);
+
 
         // Prepare residuals for the next cycle
         // NOTICE: "inResiduals = outResiduals" and "std::copy(outResiduals.begin(),

@@ -19,6 +19,19 @@ void cloneIntakeSeries(const std::vector<IntakeEvent> &_input, std::vector<Intak
     }
 }
 
+void selectRecordedIntakes(
+        IntakeSeries &_selectionSeries, const IntakeSeries &_intakeSeries,
+        DateTime _recordFrom, DateTime _recordTo)
+{
+    for (const auto & intake : _intakeSeries) {
+        DateTime eventTime = intake.getEventTime();
+        if ((eventTime + intake.getInterval() > _recordFrom) && (eventTime < _recordTo)) {
+            _selectionSeries.push_back(IntakeEvent(intake));
+        }
+    }
+}
+
+
 // Virtual destructor whose implementation is required for well-formed C++.
 SingleDose::~SingleDose() { }
 

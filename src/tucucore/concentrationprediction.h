@@ -38,7 +38,7 @@ public:
         return true;
     }
 
-    bool allocate(const unsigned int _residualSize, const CycleSize _nbPoints, TimeOffsets &_times, std::vector<Concentrations> &_values)
+    bool allocate(const unsigned int _residualSize, const CycleSize _nbPoints, TimeOffsets &_times, std::vector<Concentrations> &_values) const
     {
         _times.reserve(_nbPoints);
         for (unsigned int compartement = 0; compartement < _residualSize; compartement++) {

@@ -379,8 +379,8 @@ ComputingResult ComputingComponent::compute(
         computationResult = computeAposteriori(
                     pPrediction,
                     false,
- //                    _traits->getStart(),
-                    calculationStartTime,
+                     _traits->getStart(),
+ //                   calculationStartTime,
                     _traits->getEnd(),
                     intakeSeries,
                     parameterSeries,
@@ -391,24 +391,30 @@ ComputingResult ComputingComponent::compute(
         computationResult = computePopulation(
                     pPrediction,
                     false,
-//                    _traits->getStart(),
-                    calculationStartTime,
+                    _traits->getStart(),
+//                    calculationStartTime,
                     _traits->getEnd(),
                     intakeSeries,
                     parameterSeries);
     }
 
-    if (computationResult == ComputationResult::Success &&
-            intakeSeries.size() == pPrediction->getTimes().size() &&
-            intakeSeries.size() == pPrediction->getValues().size())
+    if (computationResult == ComputationResult::Success)
     {
         std::unique_ptr<SinglePredictionResponse> resp = std::make_unique<SinglePredictionResponse>();
 
+        IntakeSeries recordedIntakes;
+        selectRecordedIntakes(recordedIntakes, intakeSeries, _traits->getStart(), _traits->getEnd());
+
+        if ((recordedIntakes.size() != pPrediction->getTimes().size()) ||
+                (recordedIntakes.size() != pPrediction->getValues().size())) {
+            return ComputingResult::Error;
+        }
+
         // std::cout << "Start Time : " << _traits->getStart() << std::endl;
-        for (size_t i = 0; i < intakeSeries.size(); i++) {
+        for (size_t i = 0; i < recordedIntakes.size(); i++) {
 
             TimeOffsets times = pPrediction->getTimes().at(i);
-            DateTime start = intakeSeries.at(i).getEventTime();
+            DateTime start = recordedIntakes.at(i).getEventTime();
             // std::cout << "Time index " << i << " : " << start << std::endl;
             // times values are in hours
             std::chrono::milliseconds ms = std::chrono::milliseconds(static_cast<int>(times.at(times.size() - 1))) * 3600 * 1000;
@@ -479,38 +485,30 @@ ComputingResult ComputingComponent::compute(
     Tucuxi::Core::Etas etas;
     Tucuxi::Core::ComputingAborter *aborter = nullptr;
 
-    //percentileRanks = {5, 10, 25, 50, 75, 90, 95};
-    //percentileRanks = {10, 25, 75, 90};
-    percentileRanks = {5, 25, 75, 95};
     percentileRanks = _traits->getRanks();
 
     const Tucuxi::Core::IResidualErrorModel &residualErrorModel =_request.getDrugModel().getAnalyteSet()->getAnalytes().at(0)->getResidualErrorModel();
-/*
-    Tucuxi::Core::OmegaMatrix fakeOmega;
-    fakeOmega = Tucuxi::Core::OmegaMatrix(2,2);
-    fakeOmega(0,0) = 0.356 * 0.356; // Variance of CL
-    fakeOmega(0,1) = 0.798 * 0.356 * 0.629; // Covariance of CL and V
-    fakeOmega(1,1) = 0.629 * 0.629; // Variance of V
-    fakeOmega(1,0) = 0.798 * 0.356 * 0.629; // Covariance of CL and V
-*/
+
+
     ComputationResult omegaComputationResult = extractOmega(_request.getDrugModel(), omega);
     if (omegaComputationResult != ComputationResult::Success) {
         return ComputingResult::Error;
     }
 
-    //assert(fakeOmega == omega);
 
-
-
-    // Set initial etas to 0 for CL and V
-    etas.push_back(0.0);
-    etas.push_back(0.0);
+    // Set initial etas to 0 for all variable parameters
+    int etaSize = omega.cols();
+    for (int i = 0; i < etaSize; i++) {
+        etas.push_back(0.0);
+    }
 
     Tucuxi::Core::IPercentileCalculator::ComputingResult computationResult;
 
     Tucuxi::Core::ConcentrationCalculator concentrationCalculator;
     computationResult = calculator->calculate(
                 percentiles,
+                _traits->getStart(),
+                _traits->getEnd(),
                 intakeSeries,
                 parameterSeries,
                 omega,
@@ -521,33 +519,47 @@ ComputingResult ComputingComponent::compute(
                 aborter);
 
     // We use a single prediction to get back time offsets. Could be optimized
+    // YTA: I do not think this is relevant. It could be deleted I guess
     ConcentrationPredictionPtr pPrediction = std::make_unique<ConcentrationPrediction>();
     ComputationResult predictionComputationResult = computePopulation(
                 pPrediction,
                 false,
-//                    _traits->getStart(),
-                calculationStartTime,
+                _traits->getStart(),
                 _traits->getEnd(),
                 intakeSeries,
                 parameterSeries);
 
-    TMP_UNUSED_PARAMETER(predictionComputationResult);
+    if (predictionComputationResult != ComputationResult::Success) {
+        return ComputingResult::Error;
+    }
+
+    IntakeSeries selectedIntakes;
+    selectRecordedIntakes(selectedIntakes, intakeSeries, _traits->getStart(), _traits->getEnd());
 
     if (computationResult == IPercentileCalculator::ComputingResult::Success &&
-            intakeSeries.size() == pPrediction->getTimes().size() &&
-            intakeSeries.size() == pPrediction->getValues().size())
+            selectedIntakes.size() == pPrediction->getTimes().size() &&
+            selectedIntakes.size() == pPrediction->getValues().size())
     {
         std::unique_ptr<PercentilesResponse> resp = std::make_unique<PercentilesResponse>();
 
         const std::vector<std::vector<std::vector<Value> > > allValues = percentiles.getValues();
 
+
+
         for (unsigned int p = 0; p < percentiles.getRanks().size(); p++) {
             std::vector<CycleData> percData;
+
+            if (selectedIntakes.size() != allValues[p].size()) {
+                return ComputingResult::Error;
+            }
+            if (selectedIntakes.size() != pPrediction->getTimes().size()) {
+                return ComputingResult::Error;
+            }
 
             for (unsigned int cycle = 0; cycle < allValues[p].size(); cycle ++) {
 
                 TimeOffsets times = pPrediction->getTimes().at(cycle);
-                DateTime start = intakeSeries.at(cycle).getEventTime();
+                DateTime start = selectedIntakes.at(cycle).getEventTime();
 
                 std::chrono::milliseconds ms = std::chrono::milliseconds(static_cast<int>(times.at(times.size() - 1))) * 3600 * 1000;
                 Duration ds(ms);
