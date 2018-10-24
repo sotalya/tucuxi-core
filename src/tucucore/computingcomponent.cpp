@@ -681,6 +681,31 @@ ComputingResult ComputingComponent::compute(
         return extractionResult;
     }
 
+
+    Etas etas;
+
+    if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Aposteriori) {
+
+        Tucuxi::Core::OmegaMatrix omega;
+        ComputationResult omegaComputationResult = extractOmega(_request.getDrugModel(), omega);
+        if (omegaComputationResult != ComputationResult::Success) {
+            return ComputingResult::Error;
+        }
+
+        const Tucuxi::Core::IResidualErrorModel &residualErrorModel =_request.getDrugModel().getAnalyteSet()->getAnalytes().at(0)->getResidualErrorModel();
+
+
+        SampleSeries sampleSeries;
+        SampleExtractor sampleExtractor;
+        sampleExtractor.extract(_request.getDrugTreatment().getSamples(), _traits->getStart(), _traits->getEnd(), sampleSeries);
+
+        APosterioriEtasCalculator etasCalculator;
+        etasCalculator.computeAposterioriEtas(intakeSeries, parameterSeries, omega, residualErrorModel, sampleSeries, etas);
+    }
+
+
+
+
     std::vector<FullDosage> dosageCandidates;
 
     const FormulationAndRoutes &formulationAndRoutes = _request.getDrugModel().getFormulationAndRoutes();
@@ -832,13 +857,34 @@ ComputingResult ComputingComponent::compute(
 
             // We use a single prediction to get back time offsets. Could be optimized
             ConcentrationPredictionPtr pPrediction = std::make_unique<ConcentrationPrediction>();
-            ComputationResult predictionComputationResult = computePopulation(
-                        pPrediction,
-                        false,
-                        calculationStartTime,
-                        newEndTime,
-                        intakeSeries,
-                        parameterSeries);
+
+            ComputationResult predictionComputationResult;
+
+            if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Aposteriori) {
+
+                const Tucuxi::Core::IResidualErrorModel &residualErrorModel =_request.getDrugModel().getAnalyteSet()->getAnalytes().at(0)->getResidualErrorModel();
+
+                predictionComputationResult = computeAposteriori(
+                            pPrediction,
+                            false,
+         //                    _traits->getStart(),
+                            calculationStartTime,
+                            newEndTime,
+                            intakeSeries,
+                            parameterSeries,
+                            etas,
+                            residualErrorModel);
+            }
+            else {
+                predictionComputationResult = computePopulation(
+                            pPrediction,
+                            false,
+        //                    _traits->getStart(),
+                            calculationStartTime,
+                            newEndTime,
+                            intakeSeries,
+                            parameterSeries);
+            }
 
             if (predictionComputationResult != ComputationResult::Success) {
                 m_logger.error("Error with the computation of a single adjustment candidate");

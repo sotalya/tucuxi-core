@@ -30,7 +30,6 @@ typedef struct {
 
 const ParameterDefinition* ParameterDefinitionIterator::operator*()
 {
-    size_t index = m_index;
     const ParameterSetDefinition* params1 = m_model.getAbsorptionParameters(m_analyteId, m_formulation, m_route);
     const ParameterSetDefinition* params2 = m_model.getDispositionParameters(m_analyteId);
 

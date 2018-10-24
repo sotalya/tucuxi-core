@@ -45,6 +45,68 @@ void ParameterSetSeries::addParameterSetEvent(const ParameterSetEvent &_paramete
     m_parameterSets.push_back(_parameterSetEvent);
 }
 
+void ParameterSetEvent::addParameterEvent(const ParameterDefinition &_definition, const Value _value)
+{
+    // This method ensures the parameters are always sorted:
+    // variable parameters first, then fixed parameters.
+    // Within a category, alphabetical order is applied.
+    size_t insertIndex = 0;
+
+    auto it = m_parameters.begin();
+
+    if (m_parameters.size() == 0) {
+        m_parameters.push_back(Parameter(_definition, _value));
+    }
+    else {
+
+        for (it = m_parameters.begin(); it != m_parameters.end(); it++) {
+            if (_definition.isVariable() && !it->isVariable()) {
+                break;
+            }
+            if (!_definition.isVariable() && it->isVariable()) {
+                insertIndex ++;
+                continue;
+            }
+            if (_definition.getId() < it->getParameterId()) {
+                break;
+            }
+
+            insertIndex ++;
+        }
+
+        Parameters oldParams;
+        for (it = m_parameters.begin(); it != m_parameters.end(); it++) {
+            oldParams.push_back(Parameter(*it));
+        }
+
+        m_parameters.clear();
+
+        size_t pIndex = 0;
+        for (it = oldParams.begin(); it != oldParams.end(); it++) {
+            if (insertIndex == pIndex) {
+                m_parameters.push_back(Parameter(_definition, _value));
+            }
+            m_parameters.push_back(Parameter(*it));
+            pIndex ++;
+        }
+        if (insertIndex == oldParams.size()) {
+            m_parameters.push_back(Parameter(_definition, _value));
+        }
+    }
+
+    // Update index
+
+    int index = 0;
+    for (it = m_parameters.begin(); it != m_parameters.end(); it++) {
+
+        // Update our mapping between id (string) to index
+        ParameterId::Enum id = ParameterId::fromString(it->getParameterId());
+        m_IdToIndex[id] = index;
+
+        index++;
+    }
+
+}
 
 void ParameterSetEvent::applyEtas(const Etas& _etas)
 {

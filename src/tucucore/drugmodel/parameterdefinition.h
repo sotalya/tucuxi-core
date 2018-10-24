@@ -78,7 +78,12 @@ public:
     /// \return Returns the parameter value
     //Value getValue() const { return m_value; }
 
-    bool isVariable() const { return m_variability->getType() != ParameterVariabilityType::None; }
+    bool isVariable() const {
+        if (m_variability == nullptr)
+            return false;
+        return m_variability->getType() != ParameterVariabilityType::None;
+    }
+
     const ParameterVariability& getVariability() const { return *m_variability; }
 
     /// \brief Set the validation operation
