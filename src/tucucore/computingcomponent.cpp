@@ -475,7 +475,6 @@ ComputingResult ComputingComponent::compute(
     // Now ready to do the real computing with all the extracted values
 
 
-    std::unique_ptr<Tucuxi::Core::IAprioriPercentileCalculator> calculator(new Tucuxi::Core::AprioriMonteCarloPercentileCalculator());
 
 
 
@@ -506,18 +505,47 @@ ComputingResult ComputingComponent::compute(
     Tucuxi::Core::IPercentileCalculator::ComputingResult computationResult;
 
     Tucuxi::Core::ConcentrationCalculator concentrationCalculator;
-    computationResult = calculator->calculate(
-                percentiles,
-                _traits->getStart(),
-                _traits->getEnd(),
-                intakeSeries,
-                parameterSeries,
-                omega,
-                residualErrorModel,
-                etas,
-                percentileRanks,
-                concentrationCalculator,
-                aborter);
+
+    if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Aposteriori)   {
+
+        SampleSeries sampleSeries;
+        SampleExtractor sampleExtractor;
+        sampleExtractor.extract(_request.getDrugTreatment().getSamples(), _traits->getStart(), _traits->getEnd(), sampleSeries);
+
+        APosterioriEtasCalculator etasCalculator;
+        etasCalculator.computeAposterioriEtas(intakeSeries, parameterSeries, omega, residualErrorModel, sampleSeries, etas);
+
+        std::unique_ptr<Tucuxi::Core::IAposterioriPercentileCalculator> calculator(new Tucuxi::Core::AposterioriMonteCarloPercentileCalculator());
+        computationResult = calculator->calculate(
+                    percentiles,
+                    _traits->getStart(),
+                    _traits->getEnd(),
+                    intakeSeries,
+                    parameterSeries,
+                    omega,
+                    residualErrorModel,
+                    etas,
+                    sampleSeries,
+                    percentileRanks,
+                    concentrationCalculator,
+                    aborter);
+
+    }
+    else {
+        std::unique_ptr<Tucuxi::Core::IAprioriPercentileCalculator> calculator(new Tucuxi::Core::AprioriMonteCarloPercentileCalculator());
+        computationResult = calculator->calculate(
+                    percentiles,
+                    _traits->getStart(),
+                    _traits->getEnd(),
+                    intakeSeries,
+                    parameterSeries,
+                    omega,
+                    residualErrorModel,
+                    etas,
+                    percentileRanks,
+                    concentrationCalculator,
+                    aborter);
+    }
 
     // We use a single prediction to get back time offsets. Could be optimized
     // YTA: I do not think this is relevant. It could be deleted I guess
