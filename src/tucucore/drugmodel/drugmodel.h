@@ -25,6 +25,20 @@ enum class Invariants {
 typedef std::vector< std::unique_ptr<AnalyteSet>> AnalyteSets;
 
 class DrugModel;
+
+///
+/// \brief The ParameterDefinitionIterator class
+/// This class is the only way to access Pk parameters from the DrugModel.
+///     /// It ensures the parameters are ordered correctly:
+/// - first the variable parameters, then the fixed parameters
+/// - Within a categoy, alphabetical order is respected.
+///
+/// For instance, with Ka fixed, F fixed, CL variable, V variable, the iterotor will give:
+/// 1. CL
+/// 2. V
+/// 3. F
+/// 4. Ka
+///
 class ParameterDefinitionIterator : public Tucuxi::Common::Iterator<const ParameterDefinition*>
 {
 public:

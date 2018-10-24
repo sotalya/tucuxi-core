@@ -23,12 +23,48 @@ bool ParameterDefinitionIterator::isDone() const
     return (m_index >= nTotal);
 }
 
+typedef struct {
+    std::string id;
+    bool isVariable;
+} ddd;
+
 const ParameterDefinition* ParameterDefinitionIterator::operator*()
 {
     size_t index = m_index;
     const ParameterSetDefinition* params1 = m_model.getAbsorptionParameters(m_analyteId, m_formulation, m_route);
     const ParameterSetDefinition* params2 = m_model.getDispositionParameters(m_analyteId);
 
+    std::vector<ddd> vector;
+    for (size_t i = 0;i < params1->getNbParameters(); i++) {
+        vector.push_back({params1->getParameter(i)->getId(), params1->getParameter(i)->isVariable()});
+    }
+    for (size_t i = 0;i < params2->getNbParameters(); i++) {
+        vector.push_back({params2->getParameter(i)->getId(), params2->getParameter(i)->isVariable()});
+    }
+
+    std::sort(vector.begin(), vector.end(), [&] (const ddd v1, const ddd v2) {
+        if (v1.isVariable && !v2.isVariable)
+            return true;
+        if (!v1.isVariable && v2.isVariable)
+            return false;
+        return v1.id < v2.id;
+    });
+
+    std::string curId = vector[m_index].id;
+
+    for (size_t i = 0;i < params1->getNbParameters(); i++) {
+        if (params1->getParameter(i)->getId() == curId)
+            return params1->getParameter(i);
+    }
+    for (size_t i = 0;i < params2->getNbParameters(); i++) {
+        if (params2->getParameter(i)->getId() == curId)
+            return params2->getParameter(i);
+    }
+
+    assert (false);
+
+
+/*
     if (params1 != nullptr) {
         if (index < params1->getNbParameters()) {
             return params1->getParameter(index);
@@ -38,6 +74,7 @@ const ParameterDefinition* ParameterDefinitionIterator::operator*()
     if (params2 != nullptr && index < params2->getNbParameters()) {
         return params2->getParameter(index);
     }
+            */
     return nullptr;
 }
 

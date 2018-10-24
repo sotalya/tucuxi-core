@@ -240,6 +240,7 @@ ComputingResult ComputingComponent::generalExtractions(
     else {
         parametersExtractionResult = parameterExtractor.extract(_parameterSeries);
     }
+
     if (parametersExtractionResult != ParametersExtractor::Result::Ok) {
         m_logger.error("Can not extract parameters");
         return ComputingResult::Error;

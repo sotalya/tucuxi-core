@@ -30,9 +30,24 @@ public:
         m_value(_value)
     {
     }
+
+    Parameter(Parameter && other) = default;
+    Parameter(const Parameter & other) = default;
+/*
+    const Parameter& operator=(const Parameter& other) {
+        if (this != &other) { // protect against invalid self-assignment
+            m_value = other.m_value;
+            this-
+            m_definition = other.m_definition;
+        }
+        return *this;
+    }
+*/
     void applyEta(Deviation _eta);
     Value getValue() const { return m_value; }
-    bool isVariable() { return m_definition.isVariable(); }
+    bool isVariable() const { return m_definition.isVariable(); }
+
+    std::string getParameterId() const {return m_definition.getId();}
 
     // Make the test class friend, as this will allow us to manually check the available events.
     friend TestParameterExtractor;
@@ -59,14 +74,76 @@ public:
 
     /// \brief Add a parameter event to the event set.
     /// \param _definition Parameter definition for the parameter event occurred.
+    /// This function ensures the parameters are ordered correctly:
+    /// - first the variable parameters, then the fixed parameters
+    /// - Within a categoy, alphabetical order is respected.
+    ///
+    /// For instance, with Ka fixed, F fixed, CL variable, V variable, the storing will be:
+    /// 1. CL
+    /// 2. V
+    /// 3. F
+    /// 4. Ka
     void addParameterEvent(const ParameterDefinition &_definition, const Value _value)
     {
-        m_parameters.push_back(Parameter(_definition, _value));
+        // This method ensures the parameters are always sorted:
+        // variable parameters first, then fixed parameters.
+        // Within a category, alphabetical order is applied.
+        int insertIndex = 0;
 
-        // Update our mapping between id (string) to index
-        ParameterId::Enum id = ParameterId::fromString(_definition.getId());
-        int index = static_cast<int>(m_parameters.size()-1);
-        m_IdToIndex[id] = index;
+        auto it = m_parameters.begin();
+
+        if (m_parameters.size() == 0) {
+            m_parameters.push_back(Parameter(_definition, _value));
+        }
+        else {
+
+            for (it = m_parameters.begin(); it != m_parameters.end(); it++) {
+                if (_definition.isVariable() && !it->isVariable()) {
+                    break;
+                }
+                if (!_definition.isVariable() && it->isVariable()) {
+                    insertIndex ++;
+                    continue;
+                }
+                if (_definition.getId() < it->getParameterId()) {
+                    break;
+                }
+
+                insertIndex ++;
+            }
+
+            Parameters oldParams;
+            for (it = m_parameters.begin(); it != m_parameters.end(); it++) {
+                oldParams.push_back(Parameter(*it));
+            }
+
+            m_parameters.clear();
+
+            int pIndex = 0;
+            for (it = oldParams.begin(); it != oldParams.end(); it++) {
+                if (insertIndex == pIndex) {
+                    m_parameters.push_back(Parameter(_definition, _value));
+                }
+                m_parameters.push_back(Parameter(*it));
+                pIndex ++;
+            }
+            if (insertIndex == oldParams.size()) {
+                m_parameters.push_back(Parameter(_definition, _value));
+            }
+        }
+
+        // Update index
+
+        int index = 0;
+        for (it = m_parameters.begin(); it != m_parameters.end(); it++) {
+
+            // Update our mapping between id (string) to index
+            ParameterId::Enum id = ParameterId::fromString(it->getParameterId());
+            m_IdToIndex[id] = index;
+
+            index++;
+        }
+
     }
 
 
@@ -83,6 +160,7 @@ public:
     void applyEtas(const Etas& _etas);
     Parameters::const_iterator begin() const { return m_parameters.begin(); }
     Parameters::const_iterator end() const { return m_parameters.end(); }
+
     Value getValue(ParameterId::Enum _id) const
     {
         int index = m_IdToIndex[_id];

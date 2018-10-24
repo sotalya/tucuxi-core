@@ -210,6 +210,7 @@ ParametersExtractor::Result ParametersExtractor::extractPopulation(ParameterSetS
         m_paramsIterator.next();
     }
 
+
     // Add the parameter set event to the series of events.
     _series.addParameterSetEvent(pSetEvent);
     return Result::Ok;

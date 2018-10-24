@@ -172,7 +172,7 @@ IPercentileCalculator::ComputingResult MonteCarloPercentileCalculatorBase::compu
             // Sort concentrations in increasing order at each time (at the cycle and at the point)
             std::sort(concentrations[cycle][point].begin(), concentrations[cycle][point].end(), [&] (const double v1, const double v2) { return v1 < v2; });
 
-            // Rebuild pecentile array [percentile][cycle][point]
+            // Rebuild percentile array [percentile][cycle][point]
 
             for (unsigned int percRankIdx = 0; percRankIdx < _percentileRanks.size(); percRankIdx++) {
                 int pos = positions[percRankIdx];
