@@ -158,8 +158,9 @@ ComputingTraitPercentiles::ComputingTraitPercentiles(RequestResponseId _id,
                            Tucuxi::Common::DateTime _end,
                            const PercentileRanks &_ranks,
                            const CycleSize _cycleSize,
-                           ComputingOption _computingOption) :
-    ComputingTraitStandard(_id, _start, _end, _cycleSize, _computingOption), m_ranks(_ranks)
+                           ComputingOption _computingOption,
+                           ComputingAborter *_aborter) :
+    ComputingTraitStandard(_id, _start, _end, _cycleSize, _computingOption), m_ranks(_ranks), m_aborter(_aborter)
 {
 }
 

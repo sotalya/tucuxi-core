@@ -9,6 +9,7 @@
 
 #include "tucucore/definitions.h"
 #include "tucucore/computingservice/icomputingservice.h"
+#include "tucucore/computingservice/computingaborter.h"
 
 
 namespace Tucuxi {
@@ -518,6 +519,7 @@ public:
     /// \param _ranks The percentile ranks as a vector of double
     /// \param _cycleSize Number of points to calculate for each cycle
     /// \param _computingOption Some computing options
+    /// \param _aborter An aborter objet to to cancel computation
     ///
     ComputingTraitPercentiles(
             RequestResponseId _id,
@@ -525,7 +527,8 @@ public:
             Tucuxi::Common::DateTime _end,
             const PercentileRanks &_ranks,
             CycleSize _cycleSize,
-            ComputingOption _computingOption);
+            ComputingOption _computingOption,
+            ComputingAborter *_aborter = nullptr);
 
     ///
     /// \brief getRanks Retrieves the vector of percentile ranks
@@ -533,10 +536,19 @@ public:
     ///
     const PercentileRanks &getRanks() const { return m_ranks;}
 
+    ///
+    /// \brief getAborter Retrieves the aborter
+    /// \return The current aborter that should be used by the computing engine
+    ///
+    ComputingAborter *getAborter() const { return m_aborter;}
+
 private:
 
     //! A vector of percentile ranks
     PercentileRanks m_ranks;
+
+    //! An aborter to cancel current computing
+    ComputingAborter *m_aborter;
 
 private:
 

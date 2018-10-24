@@ -483,7 +483,7 @@ ComputingResult ComputingComponent::compute(
     Tucuxi::Core::PercentileRanks percentileRanks;
     Tucuxi::Core::OmegaMatrix omega;
     Tucuxi::Core::Etas etas;
-    Tucuxi::Core::ComputingAborter *aborter = nullptr;
+    Tucuxi::Core::ComputingAborter *aborter = _traits->getAborter();
 
     percentileRanks = _traits->getRanks();
 
