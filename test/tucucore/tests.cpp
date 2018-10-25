@@ -76,6 +76,7 @@ int main(int argc, char** argv)
 
     // one compartment
     computingComponentConcentrationTests.add_test("Simple1", &TestComputingComponentConcentration::testImatinib1);
+    computingComponentConcentrationTests.add_test("ImatinibSteadyState", &TestComputingComponentConcentration::testImatinibSteadyState);
 
 
 
