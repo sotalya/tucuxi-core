@@ -11,11 +11,11 @@
 namespace Tucuxi {
 namespace Core {
 
-enum class CycleStatisticType : int { Mean = 0, Peak, Maximum, Minimum, AUC, Residual, CYCLE_STATISTIC_TYPE_SIZE };
+enum class CycleStatisticType : int { Mean = 0, Peak, Maximum, Minimum, AUC, CumulativeAuc, Residual, CYCLE_STATISTIC_TYPE_SIZE };
 
 ///
 /// \brief The CycleStatistic class
-/// A siglle statistic with a type (mean, peak, maximum, minimum and AUC),
+/// A single statistic with a type (mean, peak, maximum, minimum and AUC),
 /// a time (offset from start of cycle), a value, a unit.
 /// The time is not relaevant in the case of Mean and AUC.
 /// 
@@ -93,8 +93,11 @@ public:
     ///
     /// \brief Constructor. Computes statistics about the given cycle
     /// \param _data Cycle Data
+    /// \param _cumulativeAuc Cumulative Auc of the previous cycle, modified in the computation
+    /// When returning, _cumulativeAuc corresponds to its previous value, with the addition
+    /// of the current cycle Auc.
     ///
-    CycleStatistics(const CycleData &_data);
+    CycleStatistics(const CycleData &_data, Value &_cumulativeAuc);
 
     ///
     /// \brief Get the statistic for the specified compartment and type
@@ -125,7 +128,9 @@ public:
 private:
     // The list of statistics for each compartments (e.g m_stats[0][]: 1st compartment, m_stats[1][]: 2nd compartment etc)
     std::vector< std::vector<CycleStatistic> > m_stats;
-    void calculate(const std::vector<Concentrations> &_concentrations, const std::vector<TimeOffsets> &_times);
+    void calculate(const std::vector<Concentrations> &_concentrations,
+                   const std::vector<TimeOffsets> &_times,
+                   Value &_cumulativeAuc);
 };
 
 

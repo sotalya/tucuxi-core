@@ -36,7 +36,10 @@ TargetEvaluator::Result TargetEvaluator::evaluate(
     cycle.addData(times, _prediction.getValues().at(lastCycleIndex), 0);
 
 
-    CycleStatistics statisticsCalculator(cycle);
+    // Only valid for a single cycle, so 0.0 as cumulative AUC here.
+    // It cannot be used as is for cumulative AUC of multiple cycles.
+    Value fakeCumulativeAuc = 0.0;
+    CycleStatistics statisticsCalculator(cycle, fakeCumulativeAuc);
     DateTime dateTime;
     std::vector< std::vector<Tucuxi::Core::CycleStatistic> > stats;
 
@@ -109,7 +112,10 @@ TargetEvaluator::Result TargetEvaluator::evaluate(
             CycleData cycle(start, end, Unit("ug/l"));
             cycle.addData(times, _prediction.getValues().at(i), 0);
 
-            CycleStatistics statisticsCalculator(cycle);
+            // Only valid for a single cycle, so 0.0 as cumulative AUC here.
+            // It cannot be used as is for cumulative AUC of multiple cycles.
+            Value fakeCumulativeAuc = 0.0;
+            CycleStatistics statisticsCalculator(cycle, fakeCumulativeAuc);
             double auc = 0.0;
             CycleStatistic cycleStatistic = statisticsCalculator.getStatistic(0, CycleStatisticType::AUC);
             if (cycleStatistic.getValue(dateTime, auc)) {

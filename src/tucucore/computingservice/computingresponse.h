@@ -52,9 +52,7 @@ public:
     /// The size of each inner vector has to be the same as m_times.
     std::vector< std::vector<Concentration> > m_concentrations;
 
-    /// \brief Absolute end time of the cycle
-    /// This value could be computed from m_start and m_times, but it is more convenient
-    /// To have it as a member variable
+    /// \brief Area under curve for each prediction
     /// Area under curve for each prediction, in m_unit x hours
     std::vector<Value> m_aucs;
 

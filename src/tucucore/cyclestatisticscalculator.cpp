@@ -20,7 +20,7 @@ CycleStatistic::CycleStatistic(const DateTime &_cycleStartDate, const CycleStati
 
 
 void CycleStatistics::calculate(const std::vector<Concentrations> &_concentrations, const
-                                std::vector<TimeOffsets> &_times)
+                                std::vector<TimeOffsets> &_times, Value &_cumulativeAuc)
 {
     // Outer vetor size is equal to number of compartments
     for (unsigned int compartment = 0; compartment < _concentrations.size(); compartment++) {
@@ -66,6 +66,8 @@ void CycleStatistics::calculate(const std::vector<Concentrations> &_concentratio
             }
         }
 
+        _cumulativeAuc += auc;
+
         // add residual value
         m_stats[compartment][static_cast<int>(CycleStatisticType::Residual)].addValue(
                     Duration(std::chrono::seconds((int)(_times[compartment][_times[compartment].size() - 1])*60*60)),
@@ -74,6 +76,10 @@ void CycleStatistics::calculate(const std::vector<Concentrations> &_concentratio
         m_stats[compartment][static_cast<int>(CycleStatisticType::AUC)].addValue(
                     Duration(),
                     auc);
+        // add cumulative AUC value with time 0
+        m_stats[compartment][static_cast<int>(CycleStatisticType::CumulativeAuc)].addValue(
+                    Duration(),
+                    _cumulativeAuc);
         // add mean value with time 0
         m_stats[compartment][static_cast<int>(CycleStatisticType::Mean)].addValue(
                     Duration(),
@@ -86,7 +92,7 @@ void CycleStatistics::calculate(const std::vector<Concentrations> &_concentratio
 }
 
 
-CycleStatistics::CycleStatistics(const CycleData &_data)
+CycleStatistics::CycleStatistics(const CycleData &_data, Value& _cumulativeAuc)
 {
     //
     // Build a new statistics with the given type
@@ -97,15 +103,17 @@ CycleStatistics::CycleStatistics(const CycleData &_data)
     for (unsigned int compartment = 0; compartment < nbCompartments; compartment++) {
 
         m_stats.push_back(std::vector<Tucuxi::Core::CycleStatistic> ());
+
         for (unsigned int type= 0; type< static_cast<int>(CycleStatisticType::CYCLE_STATISTIC_TYPE_SIZE); type++) {
-            m_stats[compartment].push_back(CycleStatistic(_data.m_start, (CycleStatisticType)type));
+                m_stats[compartment].push_back(CycleStatistic(_data.m_start, (CycleStatisticType)type));
         }
+
     }
 
     //
     // calculate cycle statistics and add values
     //
-    calculate(_data.m_concentrations, _data.m_times);
+    calculate(_data.m_concentrations, _data.m_times, _cumulativeAuc);
 }
 
 } // namespace Core
