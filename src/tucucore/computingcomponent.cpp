@@ -183,6 +183,12 @@ ComputingResult ComputingComponent::generalExtractions(
     IntakeExtractor intakeExtractor;
     int nIntakes = intakeExtractor.extract(_request.getDrugTreatment().getDosageHistory(false), fantomStart /*_traits->getStart()*/, _traits->getEnd() + Duration(24h), _intakeSeries, _traits->getCycleSize());
 
+    for (int i = 0; i < nIntakes; i++) {
+        if (_intakeSeries.at(i).getEventTime() + _intakeSeries.at(i).getInterval() < _traits->getStart()) {
+            _intakeSeries[i].setNbPoints(2);
+        }
+    }
+
     // TODO : Specific to busulfan here. Should be handled differently
     if (_request.getDrugModel().getAnalyteSet()->getAnalytes().at(0)->getAnalyteId() == "busulfan") {
         if (nIntakes > 0) {

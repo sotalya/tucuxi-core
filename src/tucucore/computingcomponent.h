@@ -127,13 +127,11 @@ private:
     ComputationResult computeApriori(
         ConcentrationPredictionPtr &_prediction,
         bool _isAll,
-        CycleSize _nbPoints,
         const DateTime &_recordFrom,
         const DateTime &_recordTo,
         const IntakeSeries &_intakes,
         const ParameterSetSeries& _parameters)
     {
-        TMP_UNUSED_PARAMETER(_nbPoints);
         return computeConcentrations(_prediction, _isAll, _recordFrom, _recordTo, _intakes, _parameters);
     }
 

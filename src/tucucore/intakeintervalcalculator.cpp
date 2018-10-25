@@ -34,21 +34,20 @@ IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakePoints
      int nbPoints = _intakeEvent.getNbPoints();
      int toHours = _intakeEvent.getInterval().toHours();
 
-     TMP_UNUSED_PARAMETER(nbPoints);
      TMP_UNUSED_PARAMETER(toHours);
 
     // YTA : This LinSpaced function crashes on Linux, so using a custom
     // method...
 //    Eigen::VectorXd times = Eigen::VectorXd::LinSpaced(_intakeEvent.getNbPoints(), 0, _intakeEvent.getInterval().toHours());
-    Eigen::VectorXd times(_intakeEvent.getNbPoints());
+    Eigen::VectorXd times(nbPoints);
     // Shall we use nbPoints-1 or nbPoints?
-    for(int i=0;i< _intakeEvent.getNbPoints(); i++)
-        times[i] = ((double) i)/((double)_intakeEvent.getNbPoints()-1)*(double)_intakeEvent.getInterval().toHours();
+    for(int i=0;i< nbPoints; i++)
+        times[i] = ((double) i)/((double)nbPoints-1)*(double)_intakeEvent.getInterval().toHours();
 
     // Can we reuse cached exponentials?
-    if (!m_cache.get(_intakeEvent.getInterval(), _parameters, _intakeEvent.getNbPoints(), m_precomputedExponentials))	{
+    if (!m_cache.get(_intakeEvent.getInterval(), _parameters, nbPoints, m_precomputedExponentials))	{
         computeExponentials(times);
-        m_cache.set(_intakeEvent.getInterval(), _parameters, _intakeEvent.getNbPoints(), m_precomputedExponentials);
+        m_cache.set(_intakeEvent.getInterval(), _parameters, nbPoints, m_precomputedExponentials);
     }
 
     if (!computeConcentrations(_inResiduals, _isAll, _concentrations, _outResiduals)) {

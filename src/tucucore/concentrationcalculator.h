@@ -22,7 +22,6 @@ public:
     /// \brief computeConcentrations
     /// \param _prediction The calculated concentrations
     /// \param _inAll Need concentrations for all compartements or not
-    /// \param _nbPoints The number of points asked
     /// \param _recordFrom Date from which we start recording the concentration
     /// \param _recordTo Date until which we record the concentration
     /// \param _intakes The intakes series
@@ -83,7 +82,6 @@ public:
     ///
     /// \brief computeConcentrations
     /// \param _prediction The calculated concentrations
-    /// \param _nbPoints The number of points asked
     /// \param _intakes The intakes series
     /// \param _parameters The parameters series
     /// \param _etas The etas to apply to the parameters

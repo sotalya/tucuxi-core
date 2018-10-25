@@ -73,7 +73,6 @@ public:
     /// \param _percentiles percentiles calculated within the method
     /// \param _recordFrom Date from which we start recording the concentration
     /// \param _recordTo Date until which we record the concentration
-    /// \param _nbPoints Number of points asked for each cycle
     /// \param _intakes Intake series
     /// \param _parameters Initial parameters series
     /// \param _omega covariance matrix for inter-individual variability
@@ -109,7 +108,6 @@ public:
     /// \param _percentiles percentiles calculated within the method
     /// \param _recordFrom Date from which we start recording the concentration
     /// \param _recordTo Date until which we record the concentration
-    /// \param _nbPoints Number of points asked for each cycle
     /// \param _intakes Intake series
     /// \param _parameters Initial parameters series
     /// \param _omega covariance matrix for inter-individual variability
@@ -173,7 +171,6 @@ protected:
     /// \param _percentiles percentiles calculated within the method
     /// \param _recordFrom Date from which we start recording the concentration
     /// \param _recordTo Date until which we record the concentration
-    /// \param _nbPoints Number of points asked for each cycle
     /// \param _intakes Intake series
     /// \param _parameters Initial parameters series
     /// \param _residualErrorModel Residual error model
@@ -218,7 +215,6 @@ public:
     /// \param _percentiles percentiles calculated within the method
     /// \param _recordFrom Date from which we start recording the concentration
     /// \param _recordTo Date until which we record the concentration
-    /// \param _nbPoints Number of points asked for each cycle
     /// \param _intakes Intake series
     /// \param _parameters Initial parameters series
     /// \param _omega covariance matrix for inter-individual variability
@@ -253,7 +249,6 @@ public:
     /// \param _percentiles percentiles calculated within the method
     /// \param _recordFrom Date from which we start recording the concentration
     /// \param _recordTo Date until which we record the concentration
-    /// \param _nbPoints Number of points asked for each cycle
     /// \param _intakes Intake series
     /// \param _parameters Initial parameters series
     /// \param _omega covariance matrix for inter-individual variability
@@ -293,7 +288,6 @@ public:
     /// \param _percentiles percentiles calculated within the method
     /// \param _recordFrom Date from which we start recording the concentration
     /// \param _recordTo Date until which we record the concentration
-    /// \param _nbPoints Number of points asked for each cycle
     /// \param _intakes Intake series
     /// \param _parameters Initial parameters series
     /// \param _omega covariance matrix for inter-individual variability

@@ -28,11 +28,8 @@ ComputationResult ConcentrationCalculator::computeConcentrations(ConcentrationPr
     if (_recordTo == DateTime()) {
         std::cout  << "Invalid record to" <<  std::endl;
     }
-    assert(_recordFrom != DateTime());
-    assert(_recordTo != DateTime());
-//    TMP_UNUSED_PARAMETER(_recordFrom);
-//    TMP_UNUSED_PARAMETER(_recordTo);
     TMP_UNUSED_PARAMETER(_onlyAnalytes);
+
     // First calculate the size of residuals
     unsigned int residualSize = 0;
     for (IntakeSeries::const_iterator it = _intakes.begin(); it != _intakes.end(); it++) {
@@ -40,6 +37,7 @@ ComputationResult ConcentrationCalculator::computeConcentrations(ConcentrationPr
         unsigned int s = pCalculator->getResidualSize();
         residualSize = std::max(residualSize, s);
     }
+
     Residuals inResiduals(residualSize);
     Residuals outResiduals(residualSize);
 
