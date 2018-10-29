@@ -90,6 +90,11 @@ void TwoCompartmentInfusionMicro::computeExponentials(Eigen::VectorXd& _times)
     setExponentials(Exponentials::BetaInf, (m_Beta * _times).array().exp());
     setExponentials(Exponentials::BetaInf2, (-2 * m_Beta * _times).array().exp());
     setExponentials(Exponentials::Root, (m_RootK * _times).array().exp());
+
+    Eigen::VectorXd times(_times.size());
+    times = _times - m_Tinf * Eigen::VectorXd::Ones(_times.size());
+    setExponentials(Exponentials::AlphaPostInf,  (-m_Alpha * times).array().exp());
+    setExponentials(Exponentials::BetaPostInf, (-m_Beta * times).array().exp());
 }
 
 

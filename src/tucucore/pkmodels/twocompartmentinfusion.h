@@ -10,7 +10,7 @@
 namespace Tucuxi {
 namespace Core {
 
-enum class TwoCompartmentInfusionExponentials : int { Alpha, Beta, AlphaInf, BetaInf, BetaInf2, Root };
+enum class TwoCompartmentInfusionExponentials : int { Alpha, Beta, AlphaInf, BetaInf, BetaInf2, Root, AlphaPostInf, BetaPostInf };
 enum class TwoCompartmentInfusionCompartments : int { First, Second };
 
 /// \ingroup TucuCore
@@ -58,6 +58,8 @@ inline void TwoCompartmentInfusionMicro::compute(const Residuals& _inResiduals, 
     Eigen::VectorXd& betaInfLogV = exponentials(Exponentials::BetaInf);
     Eigen::VectorXd& betaInf2LogV = exponentials(Exponentials::BetaInf2);
     Eigen::VectorXd& rootLogV = exponentials(Exponentials::Root);
+    Eigen::VectorXd& alphaPostInfLogV = exponentials(Exponentials::AlphaPostInf);
+    Eigen::VectorXd& betaPostInfLogV = exponentials(Exponentials::BetaPostInf);
 
     Concentration resid1 = _inResiduals[0];
     Concentration resid2 = _inResiduals[1];
@@ -88,8 +90,11 @@ inline void TwoCompartmentInfusionMicro::compute(const Residuals& _inResiduals, 
     Value BInf = m_K12 + m_K21 - m_Ke - m_RootK;
     Value BPostInf = (-m_K12 + m_K21 - m_Ke + m_RootK)*residInf1 + 2*m_K21*residInf2;
     Value APostInf = (m_K12 - m_K21 + m_Ke + m_RootK)*residInf1 - 2*m_K21*residInf2;
+    Value B2PostInf = 2 * m_K12 * residInf1 + (m_K12 - m_K21 + m_Ke + m_RootK)*residInf2;
+    Value A2PostInf  = -2 * m_K12 * residInf1 + (-m_K12 + m_K21 - m_Ke + m_RootK)*residInf2;
 
     // Calculate concentrations for comp1 and comp2
+    // This only involves the initial residuals
     _concentrations1 = ((A * alphaLogV) + (B * betaLogV)) / (2 * m_RootK);
     _concentrations2 = ((A2 * alphaLogV) + (BB2 * betaLogV)) / (2 * m_RootK);
     
@@ -109,29 +114,17 @@ inline void TwoCompartmentInfusionMicro::compute(const Residuals& _inResiduals, 
         + rootLogV.head(_forceSize).cwiseQuotient(alphaInfLogV.head(_forceSize)) * (m_SumK - m_RootK)
         + alphaLogV.head(_forceSize).cwiseQuotient(betaInfLogV.head(_forceSize)) * (-m_SumK + m_RootK);
 	
+    // Add the concentration part related to the dose during infusion
     _concentrations1.head(_forceSize) += ((p1p1 * (p1p2 + p1p3)) / m_Divider).matrix();
     _concentrations2.head(_forceSize) += ((p2p1 * p2p2) / m_Divider).matrix();
     }
 
     // After infusion
-    //TODO: check which equation needs to be used. (use tail or head with therest)
-#if 0
-    int therest = static_cast<int>(_concentrations1.size() - _forceSize);
-    _concentrations1.tail(therest) += (APostInf * alphaLogV.head(therest) + BPostInf * betaLogV.head(therest)) / (2 * m_RootK);
+    int nbPostInfusionPoints = static_cast<int>(_concentrations1.size() - _forceSize);
 
-    BB2 = 2 * m_K12 * residInf1 + (m_K12 - m_K21 + m_Ke + m_RootK)*residInf2;
-    A2 = -2 * m_K12 * residInf1 + (-m_K12 + m_K21 - m_Ke + m_RootK)*residInf2;
-
-    _concentrations2.tail(therest) += (A2 * alphaLogV.head(therest) + BB2 * betaLogV.head(therest)) / (2 * m_RootK);
-#else
-    int therest = static_cast<int>(_concentrations1.size() - _forceSize);
-    _concentrations1.tail(therest) += (APostInf * alphaLogV.tail(therest) + BPostInf * betaLogV.tail(therest)) / (2 * m_RootK);
-
-    BB2 = 2 * m_K12 * residInf1 + (m_K12 - m_K21 + m_Ke + m_RootK)*residInf2;
-    A2 = -2 * m_K12 * residInf1 + (-m_K12 + m_K21 - m_Ke + m_RootK)*residInf2;
-
-    _concentrations2.tail(therest) += (A2 * alphaLogV.tail(therest) + BB2 * betaLogV.tail(therest)) / (2 * m_RootK);
-#endif
+    // Add the concentration part related to the dose after infusion
+    _concentrations1.tail(nbPostInfusionPoints) += (APostInf * alphaPostInfLogV.tail(nbPostInfusionPoints) + BPostInf * betaPostInfLogV.tail(nbPostInfusionPoints)) / (2 * m_RootK);
+    _concentrations2.tail(nbPostInfusionPoints) += (A2PostInf * alphaPostInfLogV.tail(nbPostInfusionPoints) + B2PostInf * betaPostInfLogV.tail(nbPostInfusionPoints)) / (2 * m_RootK);
 }
 
 class TwoCompartmentInfusionMacro : public TwoCompartmentInfusionMicro
