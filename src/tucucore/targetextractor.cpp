@@ -27,19 +27,37 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(const TargetDefinit
             (_target->m_targetType == TargetType::Residual)) {
 
         // Here we consider times as minutes. This has to be fixed once
-    return TargetEvent(
-                _target->getActiveMoietyId(),
-                _target->getTargetType(),
+        return TargetEvent(
+                    _target->getActiveMoietyId(),
+                    _target->getTargetType(),
 
-                translateToUnit(_target->getCMin().getValue(), _target->getUnit(), Unit("ug/l")),
-                translateToUnit(_target->getCBest().getValue(), _target->getUnit(), Unit("ug/l")),
-                translateToUnit(_target->getCMax().getValue(), _target->getUnit(), Unit("ug/l")),
-                Tucuxi::Common::Duration(
-                    std::chrono::minutes(static_cast<int>(_target->getTMin().getValue()))),
-                Tucuxi::Common::Duration(
-                    std::chrono::minutes(static_cast<int>(_target->getTBest().getValue()))),
-                Tucuxi::Common::Duration(
-                    std::chrono::minutes(static_cast<int>(_target->getTMax().getValue()))));
+                    translateToUnit(_target->getCMin().getValue(), _target->getUnit(), Unit("ug/l")),
+                    translateToUnit(_target->getCBest().getValue(), _target->getUnit(), Unit("ug/l")),
+                    translateToUnit(_target->getCMax().getValue(), _target->getUnit(), Unit("ug/l")),
+                    Tucuxi::Common::Duration(
+                        std::chrono::minutes(static_cast<int>(_target->getTMin().getValue()))),
+                    Tucuxi::Common::Duration(
+                        std::chrono::minutes(static_cast<int>(_target->getTBest().getValue()))),
+                    Tucuxi::Common::Duration(
+                        std::chrono::minutes(static_cast<int>(_target->getTMax().getValue()))));
+    }
+    else if ((_target->m_targetType == TargetType::Auc) ||
+             (_target->m_targetType == TargetType::CumulativeAuc)) {
+
+        // Here we consider times as minutes. This has to be fixed once
+        return TargetEvent(
+                    _target->getActiveMoietyId(),
+                    _target->getTargetType(),
+
+                    translateToUnit(_target->getCMin().getValue(), _target->getUnit(), Unit("ug*h/l")),
+                    translateToUnit(_target->getCBest().getValue(), _target->getUnit(), Unit("ug*h/l")),
+                    translateToUnit(_target->getCMax().getValue(), _target->getUnit(), Unit("ug*h/l")),
+                    Tucuxi::Common::Duration(
+                        std::chrono::minutes(static_cast<int>(_target->getTMin().getValue()))),
+                    Tucuxi::Common::Duration(
+                        std::chrono::minutes(static_cast<int>(_target->getTBest().getValue()))),
+                    Tucuxi::Common::Duration(
+                        std::chrono::minutes(static_cast<int>(_target->getTMax().getValue()))));
     }
     else {
 

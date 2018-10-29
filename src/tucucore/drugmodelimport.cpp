@@ -1027,6 +1027,8 @@ TargetDefinition* DrugModelImport::extractTarget(Tucuxi::Common::XmlNodeIterator
     LightPopulationValue *toxicityAlarm = nullptr;
     LightPopulationValue *inefficacyAlarm = nullptr;
 
+    std::string tUnit = "h";
+
     XmlNodeIterator it = _node->getChildren();
 
     while (it != XmlNodeIterator::none()) {
@@ -1070,19 +1072,25 @@ TargetDefinition* DrugModelImport::extractTarget(Tucuxi::Common::XmlNodeIterator
         }
         else if (nodeName == "times") {
 
-            XmlNodeIterator timesIt = _node->getChildren();
+            XmlAttribute timeUnit = it->getAttribute("unit");
+            if (!timeUnit.isValid()) {
+                // Error
+            }
+            tUnit = timeUnit.getValue();
+
+            XmlNodeIterator timesIt = it->getChildren();
 
             while (timesIt != XmlNodeIterator::none()) {
                 std::string valueName = timesIt->getName();
 
                 if (valueName == "min") {
-                    tMin = extractPopulationValue(it);
+                    tMin = extractPopulationValue(timesIt);
                 }
                 else if (valueName == "max") {
-                    tMax = extractPopulationValue(it);
+                    tMax = extractPopulationValue(timesIt);
                 }
                 else if (valueName == "best") {
-                    tBest = extractPopulationValue(it);
+                    tBest = extractPopulationValue(timesIt);
                 }
                 else {
                     unexpectedTag(valueName);
@@ -1131,9 +1139,9 @@ TargetDefinition* DrugModelImport::extractTarget(Tucuxi::Common::XmlNodeIterator
                                   std::make_unique<SubTargetDefinition>("cMin", minValue->getValue(), minValue->getOperation()),
                                   std::make_unique<SubTargetDefinition>("cMax", maxValue->getValue(), maxValue->getOperation()),
                                   std::make_unique<SubTargetDefinition>("cBest", bestValue->getValue(), bestValue->getOperation()),
-                                  std::make_unique<SubTargetDefinition>("tMin", tMin->getValue(), tMin->getOperation()),
-                                  std::make_unique<SubTargetDefinition>("tMax", tMax->getValue(), tMax->getOperation()),
-                                  std::make_unique<SubTargetDefinition>("tBest", tBest->getValue(), tBest->getOperation()),
+                                  std::make_unique<SubTargetDefinition>("tMin", translateToUnit(tMin->getValue(), Unit(tUnit), Unit("m")), tMin->getOperation()),
+                                  std::make_unique<SubTargetDefinition>("tMax", translateToUnit(tMax->getValue(), Unit(tUnit), Unit("m")), tMax->getOperation()),
+                                  std::make_unique<SubTargetDefinition>("tBest", translateToUnit(tBest->getValue(), Unit(tUnit), Unit("m")), tBest->getOperation()),
                                   std::make_unique<SubTargetDefinition>("toxicity", toxicityAlarm->getValue(), toxicityAlarm->getOperation()),
                                   std::make_unique<SubTargetDefinition>("inefficacy", inefficacyAlarm->getValue(), inefficacyAlarm->getOperation())
                                   );

@@ -42,6 +42,10 @@ enum class TargetType {
 };
 
 
+///
+/// \brief The TargetDefinition class
+///
+/// Time is in minutes
 class TargetDefinition
 {
 public:
