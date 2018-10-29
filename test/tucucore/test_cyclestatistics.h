@@ -59,7 +59,8 @@ struct TestCycleStatistics : public fructose::test_base<TestCycleStatistics>
         // calculate cycle statistics
         DateTime dateTime;
         Value value;
-        Tucuxi::Core::CycleStatistics cycleStatistics(cycleData);
+        Value cumulativeAuc = 0.0;
+        Tucuxi::Core::CycleStatistics cycleStatistics(cycleData, cumulativeAuc);
 
         // AUC
         cycleStatistics.getStatistics(CycleStatisticType::AUC, stats);
