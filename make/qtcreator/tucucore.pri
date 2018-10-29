@@ -67,7 +67,8 @@ HEADERS += \
     $$PWD/../../src/tucucore/computingservice/computingtrait.h \
     $$PWD/../../src/tucucore/computingservice/icomputingservice.h \
     $$PWD/../../src/tucucore/validvalues.h \
-    $$PWD/../../src/tucucore/computingservice/computingaborter.h
+    $$PWD/../../src/tucucore/computingservice/computingaborter.h \
+    $$PWD/../../src/tucucore/unit.h
 
 SOURCES += \
     $$PWD/../../src/tucucore/drugmodel/drugmodel.cpp \
@@ -126,7 +127,8 @@ SOURCES += \
     $$PWD/../../src/tucucore/computingservice/computingtrait.cpp \
     $$PWD/../../src/tucucore/computingservice/icomputingservice.cpp \
     $$PWD/../../src/tucucore/validvalues.cpp \
-    $$PWD/../../src/tucucore/computingservice/computingaborter.cpp
+    $$PWD/../../src/tucucore/computingservice/computingaborter.cpp \
+    $$PWD/../../src/tucucore/unit.cpp
 
 DISTFILES += \
     $$PWD/../../src/tucucore/makefile

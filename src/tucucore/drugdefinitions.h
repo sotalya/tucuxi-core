@@ -3,24 +3,10 @@
 
 #include "tucucore/operation.h"
 #include "tucucore/definitions.h"
-
+#include "unit.h"
 
 namespace Tucuxi {
 namespace Core {
-
-
-class Unit
-{
-public:
-    Unit() {}
-    Unit(std::string _unitString) { m_unitString = _unitString; }
-
-    inline bool operator==(const Unit& rhs) const { return this->m_unitString == rhs.m_unitString; }
-
-protected:
-    std::string m_unitString;
-
-};
 
 /// \brief Default value for a drug (given either as a numerical value, or as an operation to obtain it).
 /// A PopulationValue represents the value of a parameter needed for computing a drug's dosage, and is the default value
