@@ -76,6 +76,9 @@ TargetEvaluator::Result TargetEvaluator::evaluate(
         CycleStatistic cycleStatistic = statisticsCalculator.getStatistic(0, CycleStatisticType::Residual);
         bOk = cycleStatistic.getValue(dateTime, lastResidual);
 
+        // The following was to test vancomycin (Unit issue)
+        // lastResidual /= 1000.0;
+
         if (bOk) {
             // Check if concentration is within the target range
             bOk = (lastResidual < _target.m_valueMax) && (lastResidual > _target.m_valueMin);

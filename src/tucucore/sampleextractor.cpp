@@ -17,7 +17,8 @@ int SampleExtractor::extract(const Samples &_samples, const DateTime &_start, co
     int nbRelevantSamples = 0;
     for (const auto & sample : _samples) {
         if ((sample->getDate() > _start) && (sample->getDate() < _end)) {
-            _series.push_back(SampleEvent(sample->getDate(), sample->getValue()));
+//            _series.push_back(SampleEvent(sample->getDate(), sample->getValue()));
+            _series.push_back(SampleEvent(sample->getDate(), translateToUnit(sample->getValue(), sample->getUnit(), Unit("ug/l"))));
             nbRelevantSamples ++;
         }
     }

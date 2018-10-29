@@ -293,6 +293,8 @@ ComputationResult ComputingComponent::extractOmega(
     it.reset();
     while (!it.isDone()) {
         if ((*it)->getVariability().getType() != ParameterVariabilityType::None) {
+            // const ParameterDefinition *p = (*it);
+            // Value v = (*it)->getVariability().getValue() ;
             _omega(nbParameter, nbParameter) = (*it)->getVariability().getValue() * (*it)->getVariability().getValue();
             paramMap[(*it)->getId()] = nbParameter;
             nbParameter ++;
@@ -966,6 +968,7 @@ ComputingResult ComputingComponent::compute(
 
                 FullDosage dosage;
                 dosage.m_targetsEvaluation = candidateResults;
+//                dosage.m_history = *newHistory->clone();
                 dosage.m_history.addTimeRange(*newDosage);
 
 

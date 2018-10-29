@@ -158,6 +158,10 @@ public:
         return m_dosage->getLastFormulationAndRoute();
     }
 
+    const DosageBounded * getDosage() const {
+        return m_dosage.get();
+    }
+
     DOSAGE_UTILS(DosageUnbounded, DosageLoop);
 
 private:

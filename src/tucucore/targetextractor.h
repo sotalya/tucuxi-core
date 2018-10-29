@@ -45,6 +45,12 @@ public:
             const DateTime &_end,
             TargetExtractionOption _extractionOption,
             TargetSeries &_series);
+
+protected:
+
+    TargetEvent targetEventFromTarget(const Target *_target);
+
+    TargetEvent targetEventFromTargetDefinition(const TargetDefinition *_target);
 };
 
 } // namespace Core

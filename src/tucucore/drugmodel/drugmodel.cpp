@@ -34,9 +34,14 @@ const ParameterDefinition* ParameterDefinitionIterator::operator*()
     const ParameterSetDefinition* params2 = m_model.getDispositionParameters(m_analyteId);
 
     std::vector<ddd> vector;
-    for (size_t i = 0;i < params1->getNbParameters(); i++) {
-        vector.push_back({params1->getParameter(i)->getId(), params1->getParameter(i)->isVariable()});
+
+    // Check that there are absorption parameters (not the case for every model)
+    if (params1 != nullptr) {
+        for (size_t i = 0;i < params1->getNbParameters(); i++) {
+            vector.push_back({params1->getParameter(i)->getId(), params1->getParameter(i)->isVariable()});
+        }
     }
+
     for (size_t i = 0;i < params2->getNbParameters(); i++) {
         vector.push_back({params2->getParameter(i)->getId(), params2->getParameter(i)->isVariable()});
     }
@@ -51,9 +56,11 @@ const ParameterDefinition* ParameterDefinitionIterator::operator*()
 
     std::string curId = vector[m_index].id;
 
-    for (size_t i = 0;i < params1->getNbParameters(); i++) {
-        if (params1->getParameter(i)->getId() == curId)
-            return params1->getParameter(i);
+    if (params1 != nullptr) {
+        for (size_t i = 0;i < params1->getNbParameters(); i++) {
+            if (params1->getParameter(i)->getId() == curId)
+                return params1->getParameter(i);
+        }
     }
     for (size_t i = 0;i < params2->getNbParameters(); i++) {
         if (params2->getParameter(i)->getId() == curId)

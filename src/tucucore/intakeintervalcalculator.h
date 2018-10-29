@@ -18,7 +18,7 @@
 namespace Tucuxi {
 namespace Core {
 
-enum class IntakeCalculatorSingleConcentrations : int { AtTime, AtEndInterval };
+enum class IntakeCalculatorSingleConcentrations : int { AtTime = 0, AtEndInterval };
 
 class IntakeEvent;
 

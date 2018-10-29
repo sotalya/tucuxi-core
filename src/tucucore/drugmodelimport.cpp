@@ -1016,6 +1016,7 @@ TargetDefinition* DrugModelImport::extractTarget(Tucuxi::Common::XmlNodeIterator
 {
 
     TargetDefinition *target = nullptr;
+    Unit unit("ug/l");
     TargetType type = TargetType::UnknownTarget;
     LightPopulationValue *minValue = nullptr;
     LightPopulationValue *maxValue = nullptr;
@@ -1032,6 +1033,9 @@ TargetDefinition* DrugModelImport::extractTarget(Tucuxi::Common::XmlNodeIterator
         std::string nodeName = it->getName();
         if (nodeName == "targetType") {
             type = extractTargetType(it);
+        }
+        else if (nodeName == "unit") {
+            unit = extractUnit(it);
         }
         else if (nodeName == "targetValues") {
 
@@ -1123,7 +1127,7 @@ TargetDefinition* DrugModelImport::extractTarget(Tucuxi::Common::XmlNodeIterator
         inefficacyAlarm = new LightPopulationValue();
     }
 
-    target = new TargetDefinition(type, "",
+    target = new TargetDefinition(type, unit, "",
                                   std::make_unique<SubTargetDefinition>("cMin", minValue->getValue(), minValue->getOperation()),
                                   std::make_unique<SubTargetDefinition>("cMax", maxValue->getValue(), maxValue->getOperation()),
                                   std::make_unique<SubTargetDefinition>("cBest", bestValue->getValue(), bestValue->getOperation()),
@@ -1178,7 +1182,6 @@ AnalyteSet* DrugModelImport::extractAnalyteGroup(Tucuxi::Common::XmlNodeIterator
     AnalyteSet *analyteGroup = nullptr;
     std::string groupId;
     std::string pkModelId;
-    Unit unit;
     std::vector<Analyte*> analytes;
     ParameterSetDefinition* parameters = nullptr;
     std::vector<TargetDefinition *> targets;
