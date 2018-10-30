@@ -127,11 +127,13 @@ class FullDosage
 public:
 
     double getGlobalScore() const {
-        if (m_targetsEvaluation.size() == 0)
+        if (m_targetsEvaluation.size() == 0) {
             return 0.0;
+        }
         double sum = 0.0;
-        for (const auto& target: m_targetsEvaluation)
+        for (const auto& target: m_targetsEvaluation) {
             sum += target.getScore();
+        }
         return sum / static_cast<double>(m_targetsEvaluation.size());
     }
 
@@ -149,7 +151,7 @@ class AdjustmentResponse : public SinglePredictionResponse
 {
 public:
 
-    void addAdjustment(FullDosage adjustment) { m_adjustments.push_back(adjustment);}
+    void addAdjustment(FullDosage _adjustment) { m_adjustments.push_back(_adjustment);}
 
     void setAdjustments(std::vector<FullDosage> &_adjustments) { m_adjustments = _adjustments;}
 

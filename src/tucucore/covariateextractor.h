@@ -102,7 +102,7 @@ public:
     friend TestCovariateExtractor;
 
     /// \brief Standard name for a covariate that carries the birth date.
-    static const std::string m_birthDateCName;
+    static const std::string sm_birthDateCName;
 
 private:
     /// \brief Collect the time instants when the computed covariates have to be re-evaluated.

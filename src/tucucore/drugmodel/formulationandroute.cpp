@@ -26,10 +26,10 @@ FormulationAndRoutes::FormulationAndRoutes() :
 }
 
 
-void FormulationAndRoutes::add(std::unique_ptr<FullFormulationAndRoute> _far, bool isDefault)
+void FormulationAndRoutes::add(std::unique_ptr<FullFormulationAndRoute> _far, bool _isDefault)
 {
     m_fars.push_back(std::move(_far));
-    if (isDefault) {
+    if (_isDefault) {
         m_defaultIndex = m_fars.size() - 1;
     }
 }

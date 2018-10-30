@@ -15,7 +15,7 @@ SOURCES := \
            drugmodel/analyte.cpp \
            drugmodel/drugmodel.cpp \
            drugmodel/drugmodeldomain.cpp \
-					 drugmodel/formulationandroute.cpp \
+           drugmodel/formulationandroute.cpp \
            drugmodel/parameterdefinition.cpp \
            drugmodel/targetdefinition.cpp \
            drugmodel/timeconsiderations.cpp \
@@ -55,6 +55,7 @@ SOURCES := \
            targetextractor.cpp \
            targetevaluator.cpp \
            targetevaluationresult.cpp \
+           unit.cpp \
            validvalues.cpp \
            pkmodels/onecompartmentbolus.cpp \
            pkmodels/onecompartmentextra.cpp \

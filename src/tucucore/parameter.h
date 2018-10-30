@@ -31,8 +31,8 @@ public:
     {
     }
 
-    Parameter(Parameter && other) = default;
-    Parameter(const Parameter & other) = default;
+    Parameter(Parameter && _other) = default;
+    Parameter(const Parameter & _other) = default;
 /*
     const Parameter& operator=(const Parameter& other) {
         if (this != &other) { // protect against invalid self-assignment
@@ -83,7 +83,7 @@ public:
     /// 2. V
     /// 3. F
     /// 4. Ka
-    void addParameterEvent(const ParameterDefinition &_definition, const Value _value);
+    void addParameterEvent(const ParameterDefinition &_definition, Value _value);
 
     ParameterSetEvent(const DateTime& _date, const ParameterDefinitions &_definitions)
         : TimedEvent(_date)

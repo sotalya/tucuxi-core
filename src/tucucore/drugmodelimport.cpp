@@ -147,7 +147,7 @@ CovariateType DrugModelImport::extractCovariateType(Tucuxi::Common::XmlNodeItera
     static std::map<std::string, CovariateType> m =
     {
         {"standard", CovariateType::Standard},
-        //{"sex", CovariateType::Sex},
+        {"sex", CovariateType::Sex},
         {"ageInYears", CovariateType::AgeInYears},
         {"ageInDays", CovariateType::AgeInDays},
         {"ageInMonths", CovariateType::AgeInMonths}

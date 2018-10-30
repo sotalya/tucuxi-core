@@ -10,7 +10,7 @@ namespace Core {
 
 using namespace Tucuxi::Common::Utils;
 
-const std::string CovariateExtractor::m_birthDateCName = "BirthDate";
+const std::string CovariateExtractor::sm_birthDateCName = "BirthDate";
 
 /// \brief Create an event and push it in the event series.
 /// \param COV_DEF Corresponding covariate definition.
@@ -59,7 +59,7 @@ CovariateExtractor::CovariateExtractor(const CovariateDefinitions &_defaults,
             rc = m_cdValued.insert(std::pair<std::string, cdIterator_t>((*it)->getId(), it));
         }
         // In case on non-standard covariates set the initial values.
-        if ((*it)->getType() != CovariateType::Standard) {
+        if (((*it)->getType() != CovariateType::Standard) && ((*it)->getType() != CovariateType::Sex)) {
             switch ((*it)->getType()) {
             case CovariateType::AgeInDays:
                 if (m_initAgeInDays >= 0) {
@@ -111,7 +111,8 @@ CovariateExtractor::CovariateExtractor(const CovariateDefinitions &_defaults,
         // If we cannot find a corresponding covariate definition or if it is a non-standard type, we can safely drop a
         // patient variate.
         if (m_cdValued.find((*it)->getId()) != m_cdValued.end() &&
-                (*m_cdValued.at((*it)->getId()))->getType() == CovariateType::Standard) {
+                ((*m_cdValued.at((*it)->getId()))->getType() == CovariateType::Standard ||
+                 (*m_cdValued.at((*it)->getId()))->getType() == CovariateType::Sex)) {
             if (m_pvValued.find((*it)->getId()) == m_pvValued.end()) {
                 m_pvValued.insert(std::pair<std::string, std::vector<pvIterator_t>>((*it)->getId(),
                                                                                     std::vector<pvIterator_t>()));
@@ -121,20 +122,20 @@ CovariateExtractor::CovariateExtractor(const CovariateDefinitions &_defaults,
     }
 
     // If a birth date is present, then set it.
-    if (m_cdValued.find(m_birthDateCName) != m_cdValued.end()) {
-        if ((*m_cdValued.at(m_birthDateCName))->getDataType() != DataType::Date) {
-            throw std::runtime_error("[CovariateExtractor] Invalid data type for birth date variable " + m_birthDateCName);
+    if (m_cdValued.find(sm_birthDateCName) != m_cdValued.end()) {
+        if ((*m_cdValued.at(sm_birthDateCName))->getDataType() != DataType::Date) {
+            throw std::runtime_error("[CovariateExtractor] Invalid data type for birth date variable " + sm_birthDateCName);
         }
-        m_birthDate = Tucuxi::Common::Utils::ValueToDate((*m_cdValued.at(m_birthDateCName))->getValue());
+        m_birthDate = Tucuxi::Common::Utils::ValueToDate((*m_cdValued.at(sm_birthDateCName))->getValue());
 
         if (m_birthDate > m_start) {
-            throw std::runtime_error("[CovariateExtractor] The birth date covariate (" + m_birthDateCName
+            throw std::runtime_error("[CovariateExtractor] The birth date covariate (" + sm_birthDateCName
                                      + ") is past the starting date.");
         }
 
         m_hasBirthDate = true;
         // Remove the birth date from the map.
-        m_cdValued.erase(m_birthDateCName);
+        m_cdValued.erase(sm_birthDateCName);
     }
 }
 
@@ -153,7 +154,7 @@ bool CovariateExtractor::computeEvents(const std::map<DateTime, std::vector<std:
         // Look at every non-computed covariate we are supposed to refresh.
         for (const auto &cvName : refresh_event.second) {
             Value newVal = 0.0;
-            if ((*m_cdValued.at(cvName))->getType() == CovariateType::Standard) {
+            if (((*m_cdValued.at(cvName))->getType() == CovariateType::Standard) || ((*m_cdValued.at(cvName))->getType() == CovariateType::Sex)) {
                 // Standard covariate -- get its value from the Patient Variates or from default values.
                 std::map<std::string, std::vector<pvIterator_t>>::iterator pvCurrentC = m_pvValued.find(cvName);
                 if (pvCurrentC == m_pvValued.end()) {
@@ -331,7 +332,7 @@ void CovariateExtractor::collectRefreshIntervals(std::map<DateTime, std::vector<
             // # ages #
             // - if a covariate named m_birthDateCName is present, then use it to set the refresh dates.
             // - else use the start interval and the type to set them.
-            if ((*(cdv.second))->getType() == CovariateType::Standard) {
+            if (((*(cdv.second))->getType() == CovariateType::Standard) || ((*(cdv.second))->getType() == CovariateType::Sex)) {
                 DateTime t = m_start;
                 if (_refreshMap.find(t) == _refreshMap.end()) {
                     _refreshMap.insert(std::pair<DateTime, std::vector<std::string>>(t, std::vector<std::string>()));

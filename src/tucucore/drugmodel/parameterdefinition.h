@@ -79,8 +79,9 @@ public:
     //Value getValue() const { return m_value; }
 
     bool isVariable() const {
-        if (m_variability == nullptr)
+        if (m_variability == nullptr) {
             return false;
+        }
         return m_variability->getType() != ParameterVariabilityType::None;
     }
 

@@ -52,7 +52,7 @@ public:
     friend std::ostream& operator<<(std::ostream &_output, const PatientCovariate &_pv) {
         _output << "Patient Variate:\n\tID = " << _pv.getId()
                 << "\n\tValue = " << _pv.getValue()
-                << "\n\tDataType = " << (int)_pv.getDataType()
+                << "\n\tDataType = " << static_cast<int>(_pv.getDataType())
                 << "\n\tEventTime = " << _pv.getEventTime() << "\n";
         return _output;
     }

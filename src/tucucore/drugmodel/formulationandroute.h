@@ -91,10 +91,10 @@ public:
 
     std::string getAdministrationName() const { return m_administrationName;}
 
-    friend bool operator==(const FormulationAndRoute& v1, const FormulationAndRoute& v2)
+    friend bool operator==(const FormulationAndRoute& _v1, const FormulationAndRoute& _v2)
     {
-        return (v1.m_absorptionModel == v2.m_absorptionModel) &&
-                (v1.m_route == v2.m_route);
+        return (_v1.m_absorptionModel == _v2.m_absorptionModel) &&
+                (_v1.m_route == _v2.m_route);
     }
 
 protected:
@@ -173,7 +173,7 @@ public:
     /// \param isDefault If true, then the newly added is the default formulation and route, else not.
     /// If there is a single formulation and route in the set, then the single one is the default.
     ///
-    void add(std::unique_ptr<FullFormulationAndRoute> _far, bool isDefault = false);
+    void add(std::unique_ptr<FullFormulationAndRoute> _far, bool _isDefault = false);
 
     ///
     /// \brief get Get a formulation and route object based on the formulation and the route

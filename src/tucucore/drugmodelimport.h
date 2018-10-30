@@ -81,10 +81,10 @@ protected:
         }
     }
 
-    void unexpectedTag(std::string tagName) {
+    void unexpectedTag(std::string _tagName) {
         std::vector<std::string> ignored = ignoredTags();
         for(const auto & s : ignored) {
-            if (s == tagName) {
+            if (s == _tagName) {
                 return;
             }
         }

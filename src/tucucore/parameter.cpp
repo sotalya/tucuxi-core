@@ -45,7 +45,7 @@ void ParameterSetSeries::addParameterSetEvent(const ParameterSetEvent &_paramete
     m_parameterSets.push_back(_parameterSetEvent);
 }
 
-void ParameterSetEvent::addParameterEvent(const ParameterDefinition &_definition, const Value _value)
+void ParameterSetEvent::addParameterEvent(const ParameterDefinition &_definition, Value _value)
 {
     // This method ensures the parameters are always sorted:
     // variable parameters first, then fixed parameters.
