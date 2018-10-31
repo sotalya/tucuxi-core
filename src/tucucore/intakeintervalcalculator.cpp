@@ -111,6 +111,7 @@ bool IntakeIntervalCalculator::checkValue(bool _isOk, const std::string& _errMsg
     if (!_isOk) {
         static Tucuxi::Common::LoggerHelper logger;
         logger.error(_errMsg);
+        //assert(false);
     }
     return _isOk;
 }

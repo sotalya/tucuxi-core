@@ -96,12 +96,22 @@ Value Utils::stringToValue(const std::string &_str, const DataType &_dataType)
         v = std::stod(str);
         break;
 
-    case DataType::Bool:
-        if (str == "0" || str == "false") {
+    case DataType::Bool: {
+        bool is0 = false;
+        try {
+            double val = std::stod(str);
+            if (val == 0.0) {
+                is0 = true;
+            }
+        }
+        catch (...) {
+        }
+        if (str == "0" || str == "false" || is0) {
             v = 0.0;
         } else {
             v = 1.0;
         }
+    }
         break;
 
     case DataType::Date:

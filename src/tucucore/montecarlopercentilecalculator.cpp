@@ -420,11 +420,36 @@ IPercentileCalculator::ComputingResult AposterioriMonteCarloPercentileCalculator
     // Parallelizing this for loop with shared variables
     unsigned int nbThreads = std::max(std::thread::hardware_concurrency(), unsigned{1});
 
+    // TODO : Should get rid of this, but claculation does not work as is, because of
+    // race condition in the calculation.
+    nbThreads = 1;
+
+    auto meanEtasTransposed = meanEtas.transpose();
+
+    // This is g
+    // Using the multi-t-dist pdf directly from this source: http://www.statlect.com/mcdstu1.htm
+    // because the multi-t-dist doesnt exist in boost using the multi-t dist from wikipedia
+    double v = studentLiberty;
+    double p = static_cast<double>(_etas.size());
+    double top = tgamma((v + p)/2);
+    double part2 = std::sqrt(subomega.determinant());
+    double part3 = tgamma(v / 2) * std::pow(v * 3.14159, p/2);
+
     std::vector<std::thread> workers;
     for(unsigned thread = 0;thread < nbThreads; thread++) {
+
+        // Duplicate an IntakeSeries for avoid a possible problem with multi-thread
+        //IntakeSeries newIntakes;
+        //cloneIntakeSeries(_intakes, newIntakes);
+        //Likelihood logLikelihood(_omega, _residualErrorModel, _samples, newIntakes, _parameters, _concentrationCalculator);
+
         workers.push_back(std::thread([thread, &abort, _aborter, nbThreads, _etas, meanEtas, avecs, etaLowerChol,
-                                      samples, &etaSamples, logLikelihood, studentLiberty, subomega, &ratio]()
+                                      samples, &etaSamples, logLikelihood, studentLiberty, subomega, &ratio, &meanEtasTransposed,
+                                      v,p,top,part2,part3]()
         {
+
+
+
             unsigned start = thread * (samples / nbThreads);
             unsigned end = (thread + 1 ) * (samples / nbThreads);
             for (unsigned sample = start; sample < end; sample++) {
@@ -434,7 +459,7 @@ IPercentileCalculator::ComputingResult AposterioriMonteCarloPercentileCalculator
                         return;
                     }
 
-                    EigenVector avec = meanEtas.transpose() + avecs.row(sample) * etaLowerChol;
+                    EigenVector avec = meanEtasTransposed + avecs.row(sample) * etaLowerChol;
                     Etas avec_mat;
 
                     for (unsigned int etasIdx = 0; etasIdx < _etas.size(); etasIdx++) {
@@ -452,11 +477,11 @@ IPercentileCalculator::ComputingResult AposterioriMonteCarloPercentileCalculator
                     // This is g
                     // Using the multi-t-dist pdf directly from this source: http://www.statlect.com/mcdstu1.htm
                     // because the multi-t-dist doesnt exist in boost using the multi-t dist from wikipedia
-                    double v = studentLiberty;
-                    double p = static_cast<double>(_etas.size());
-                    double top = tgamma((v + p)/2);
-                    double part2 = std::sqrt(subomega.determinant());
-                    double part3 = tgamma(v / 2) * std::pow(v * 3.14159, p/2);
+                    //double v = studentLiberty;
+                    //double p = static_cast<double>(_etas.size());
+                    //double top = tgamma((v + p)/2);
+                    //double part2 = std::sqrt(subomega.determinant());
+                    //double part3 = tgamma(v / 2) * std::pow(v * 3.14159, p/2);
                     double part35 = 1 + 1/v * (avec - meanEtas).transpose() * subomega.inverse() * (avec - meanEtas);
                     double part4 = std::pow(part35,(v + p)/2);
                     double g = top / (part2 * part3 * part4);

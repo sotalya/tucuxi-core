@@ -55,7 +55,7 @@ do
 done
 
 if [ $BUILD_DOC -eq 1 ] ; then
-   doxygen $TUCUXI_ROOT/src/doxyfile 2>&1 | tee objs/doxigen.log
+   doxygen $TUCUXI_ROOT/src/doxyfile 2>&1 | tee objs/doxygen.log
    if [ ${PIPESTATUS[0]} -ne 0 ] ; then
      RESULT=1
    fi

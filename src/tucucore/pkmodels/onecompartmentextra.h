@@ -10,8 +10,8 @@
 namespace Tucuxi {
 namespace Core {
 
-enum class OneCompartmentExtraExponentials : int { Ke, Ka };
-enum class OneCompartmentExtraCompartments : int { First, Second };
+enum class OneCompartmentExtraExponentials : int { Ke = 0, Ka };
+enum class OneCompartmentExtraCompartments : int { First = 0, Second };
 
 /// \ingroup TucuCore
 /// \brief Intake interval calculator for the one compartment extravascular algorithm

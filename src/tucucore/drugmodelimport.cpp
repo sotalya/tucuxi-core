@@ -924,7 +924,7 @@ std::vector<ActiveMoiety*> DrugModelImport::extractActiveMoieties(Tucuxi::Common
 ActiveMoiety* DrugModelImport::extractActiveMoiety(Tucuxi::Common::XmlNodeIterator _node)
 {
 
-    ActiveMoiety *activeMoiety;
+    ActiveMoiety *activeMoiety = nullptr;
     std::string activeMoietyId;
     Unit unit;
     std::vector<std::string> analyteIdList;
@@ -1068,7 +1068,6 @@ TargetDefinition* DrugModelImport::extractTarget(Tucuxi::Common::XmlNodeIterator
 
                 targetValuesIt ++;
             }
-            TargetType extractTargetType(Tucuxi::Common::XmlNodeIterator _node);
         }
         else if (nodeName == "times") {
 

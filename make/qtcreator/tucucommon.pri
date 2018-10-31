@@ -1,4 +1,6 @@
 
+SOURCES +=  \
+    $$PWD/../../libs/spdlog-master-20170622/include/spdlog/fmt/bundled/format.cc
 
 HEADERS += \
     $$PWD/../../src/tucucommon/component.h \

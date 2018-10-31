@@ -5,8 +5,6 @@
 #ifndef TUCUXI_COMMON_LOOGER
 #define TUCUXI_COMMON_LOOGER
 
-#include "spdlog/fmt/bundled/format.h"
-
 #include "tucucommon/componentmanager.h"
 #include "tucucommon/logger.h"
 #include "tucucommon/ilogger.h"

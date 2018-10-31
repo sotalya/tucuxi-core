@@ -164,6 +164,9 @@ ComputationResult ConcentrationCalculator::computeConcentrationsAtTimes(Concentr
     Residuals inResiduals(residualSize);
     Residuals outResiduals(residualSize);
 
+    // Reset input residuals for the next cycle
+    std::fill(inResiduals.begin(), inResiduals.end(), 0);
+
 
     std::vector<Concentrations> concentrations;
     concentrations.resize(residualSize);
@@ -214,7 +217,9 @@ ComputationResult ConcentrationCalculator::computeConcentrationsAtTimes(Concentr
                 *it,
                 *parameters,
                 inResiduals,
-                atTime.toHours(),
+                // We only need the residuals, so we don't care about a specific time
+                0.0,
+//                atTime.toHours(),
                 _isAll,
                 outResiduals);
 
@@ -230,37 +235,38 @@ ComputationResult ConcentrationCalculator::computeConcentrationsAtTimes(Concentr
         // If the next sample time greater than the cycle start time 
         // and less than the next cycle start time, the sample occurs during this cycle.
         // We care about residuals and the value at the next sample time.
-        while ((nextSampleTime >= currentIntakeTime) && (nextSampleTime <= nextIntakeTime)) {
-        
-            Duration atTime = nextSampleTime - currentIntakeTime;
+        if ((nextSampleTime >= currentIntakeTime) && (nextSampleTime <= nextIntakeTime)) {
+            while ((nextSampleTime >= currentIntakeTime) && (nextSampleTime <= nextIntakeTime)) {
 
-            // clear locally defined concentration
-            for (unsigned int idx= 0; idx < residualSize; idx++) {
-                concentrations[idx].clear();
+                Duration atTime = nextSampleTime - currentIntakeTime;
+
+                // clear locally defined concentration
+                for (unsigned int idx= 0; idx < residualSize; idx++) {
+                    concentrations[idx].clear();
+                }
+
+                IntakeIntervalCalculator::Result result =
+                it->calculateIntakeSinglePoint(concentrations, *it, *parameters, inResiduals, atTime.toHours(), _isAll, outResiduals);
+
+                if (result != IntakeIntervalCalculator::Result::Ok) {
+                    _concentrations.clear();
+                    return ComputationResult::Failure;
+                }
+
+                _concentrations.push_back(concentrations[0][0]);
+
+                // We processed a sample so increment samples and output concentrations iterators.
+                sit++;
+
+                if (sit == sampleEnd) {
+                    return ComputationResult::Success;
+                }
+
+                // Reset the next sample time
+                nextSampleTime = sit->getEventTime();
             }
 
-            IntakeIntervalCalculator::Result result =
-            it->calculateIntakeSinglePoint(concentrations, *it, *parameters, inResiduals, atTime.toHours(), _isAll, outResiduals);
-
-            if (result != IntakeIntervalCalculator::Result::Ok) {
-                _concentrations.clear();
-                return ComputationResult::Failure;
-            }
-
-            // Reset input residuals for the next cycle
-            std::fill(inResiduals.begin(), inResiduals.end(), 0);
-
-            _concentrations.push_back(concentrations[0][0]);
-
-            // We processed a sample so increment samples and output concentrations iterators.
-            sit++;
-
-            if (sit == sampleEnd) {
-                return ComputationResult::Success;
-            }
-
-            // Reset the next sample time
-            nextSampleTime = sit->getEventTime();
+            inResiduals = outResiduals;
         }
         it++; intakeNext++;
     }
