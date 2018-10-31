@@ -24,6 +24,16 @@ IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakePoints
      Residuals & _outResiduals,
      const bool _isDensityConstant)
  {
+    if (m_firstCalculation) {
+        m_firstCalculation = false;
+        m_lastThreadId = std::this_thread::get_id();
+    }
+    else {
+        if (m_lastThreadId != std::this_thread::get_id()) {
+            // Somthing strange. It should not be used by another thread
+            // Maybe raise an error here
+        }
+    }
      TMP_UNUSED_PARAMETER(_isDensityConstant);
      if (!checkInputs(_intakeEvent, _parameters))
      {
@@ -88,6 +98,17 @@ IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakeSingle
     bool _isAll,
     Residuals& _outResiduals)
 {
+    if (m_firstCalculation) {
+        m_firstCalculation = false;
+        m_lastThreadId = std::this_thread::get_id();
+    }
+    else {
+        if (m_lastThreadId != std::this_thread::get_id()) {
+            // Somthing strange. It should not be used by another thread
+            // Maybe raise an error here
+        }
+    }
+
     if (!checkInputs(_intakeEvent, _parameters)) {
         return Result::BadParameters;
     }

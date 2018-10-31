@@ -8,6 +8,8 @@
 #include <map>
 #include <memory>
 
+#include <thread>
+
 #include "Eigen/Dense"
 
 #include "tucucore/definitions.h"
@@ -77,7 +79,7 @@ public:
 
 public:
     /// \brief Constructor
-    IntakeIntervalCalculator() {}
+    IntakeIntervalCalculator() : m_firstCalculation(true) {}
 
     virtual ~IntakeIntervalCalculator();
 
@@ -166,6 +168,9 @@ protected:
 protected:
     PrecomputedExponentials m_precomputedExponentials;      /// List of precomputed exponentials
     typedef IntakeCalculatorSingleConcentrations SingleConcentrations;
+
+    std::thread::id m_lastThreadId;
+    bool m_firstCalculation;
 
 private:
     CachedExponentials m_cache;                           /// The cache of precomputed exponentials

@@ -210,7 +210,6 @@ ComputationResult ConcentrationCalculator::computeConcentrationsAtTimes(Concentr
         }
 
         if (nextSampleTime > nextIntakeTime) {
-            Duration atTime = nextSampleTime - currentIntakeTime;
 
             IntakeIntervalCalculator::Result result = it->calculateIntakeSinglePoint(
                 concentrations,
@@ -219,7 +218,6 @@ ComputationResult ConcentrationCalculator::computeConcentrationsAtTimes(Concentr
                 inResiduals,
                 // We only need the residuals, so we don't care about a specific time
                 0.0,
-//                atTime.toHours(),
                 _isAll,
                 outResiduals);
 

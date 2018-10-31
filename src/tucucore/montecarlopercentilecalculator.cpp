@@ -438,16 +438,19 @@ IPercentileCalculator::ComputingResult AposterioriMonteCarloPercentileCalculator
     std::vector<std::thread> workers;
     for(unsigned thread = 0;thread < nbThreads; thread++) {
 
-        // Duplicate an IntakeSeries for avoid a possible problem with multi-thread
-        //IntakeSeries newIntakes;
-        //cloneIntakeSeries(_intakes, newIntakes);
-        //Likelihood logLikelihood(_omega, _residualErrorModel, _samples, newIntakes, _parameters, _concentrationCalculator);
 
         workers.push_back(std::thread([thread, &abort, _aborter, nbThreads, _etas, meanEtas, avecs, etaLowerChol,
-                                      samples, &etaSamples, logLikelihood, studentLiberty, subomega, &ratio, &meanEtasTransposed,
-                                      v,p,top,part2,part3]()
+                                      samples, &etaSamples, studentLiberty, subomega, &ratio, &meanEtasTransposed,
+                                      v,p,top,part2,part3, &_intakes, &_omega, &_samples, &_residualErrorModel,
+                                      &_parameters, &_concentrationCalculator]()
         {
 
+            // Duplicate an IntakeSeries for avoid a possible problem with multi-thread
+            IntakeSeries newIntakes;
+            cloneIntakeSeries(_intakes, newIntakes);
+
+            // Also duplicate the Likelihood
+            Likelihood threadLogLikelihood(_omega, _residualErrorModel, _samples, newIntakes, _parameters, _concentrationCalculator);
 
 
             unsigned start = thread * (samples / nbThreads);
@@ -471,7 +474,7 @@ IPercentileCalculator::ComputingResult AposterioriMonteCarloPercentileCalculator
                     // 4. Calculate the ratios for weighting this is h*
                     // Be careful: hstart should be a logLikelihood, however we are minimizing the
                     // negative loglikelyhood, so it is a negative h start.
-                    Value hstart = logLikelihood.negativeLogLikelihood(avec_mat);
+                    Value hstart = threadLogLikelihood.negativeLogLikelihood(avec_mat);
 
 
                     // This is g

@@ -558,6 +558,7 @@ ComputingResult ComputingComponent::compute(
     // We use a single prediction to get back time offsets. Could be optimized
     // YTA: I do not think this is relevant. It could be deleted I guess
     ConcentrationPredictionPtr pPrediction = std::make_unique<ConcentrationPrediction>();
+
     ComputationResult predictionComputationResult = computePopulation(
                 pPrediction,
                 false,
