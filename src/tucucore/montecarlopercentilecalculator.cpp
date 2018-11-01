@@ -422,7 +422,7 @@ IPercentileCalculator::ComputingResult AposterioriMonteCarloPercentileCalculator
 
     // TODO : Should get rid of this, but claculation does not work as is, because of
     // race condition in the calculation.
-    nbThreads = 1;
+    //nbThreads = 1;
 
     auto meanEtasTransposed = meanEtas.transpose();
 
