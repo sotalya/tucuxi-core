@@ -17,6 +17,11 @@ namespace Tucuxi {
 namespace Core {
 
 
+typedef struct {
+    std::string m_parameterId;
+    Value m_value;
+} ParameterValue;
+
 ///
 /// \brief The CycleData class, meant to embed data about a cycle
 /// It contains concentrations and times for a single cycle (or interval)
@@ -59,6 +64,10 @@ public:
     /// \brief Unit of concentrations
     /// The area under curve corresponds to this unit times hours
     Unit m_unit;
+
+    /// \brief Pk parameter values for this cycle
+    /// Can be used or not to store the values of the Pk parameters used for this cycle
+    std::vector<ParameterValue> m_parameters;
 };
 
 ///

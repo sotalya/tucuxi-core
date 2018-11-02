@@ -366,9 +366,10 @@ ComputingResult ComputingComponent::compute(
 
     ComputationResult computationResult;
 
+    Etas etas;
+
     if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Aposteriori) {
 
-        Etas etas;
 
         Tucuxi::Core::OmegaMatrix omega;
         ComputationResult omegaComputationResult = extractOmega(_request.getDrugModel(), omega);
@@ -435,6 +436,17 @@ ComputingResult ComputingComponent::compute(
                 // std::cout << "Selected Time index " << i << " : " << start << std::endl;
                 CycleData cycle(start, end, Unit("ug/l"));
                 cycle.addData(times, pPrediction->getValues().at(i), 0);
+
+
+                ParameterSetEventPtr params = parameterSeries.getAtTime(start, etas);
+
+                for (auto p = params.get()->begin() ; p < params.get()->end() ; p++) {
+                    cycle.m_parameters.push_back({(*p).getParameterId(), (*p).getValue()});
+                }
+
+                std::sort(cycle.m_parameters.begin(), cycle.m_parameters.end(),
+                           [&] (const ParameterValue &v1, const ParameterValue &v2) { return v1.m_parameterId < v2.m_parameterId; });
+
                 resp->addCycleData(cycle);
             }
         }
