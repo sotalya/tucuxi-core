@@ -59,6 +59,7 @@ public:
                      std::unique_ptr<SubTargetDefinition> _valueMin,
                      std::unique_ptr<SubTargetDefinition> _valueMax,
                      std::unique_ptr<SubTargetDefinition> _valueBest,
+                     std::unique_ptr<SubTargetDefinition> _mic,
                      std::unique_ptr<SubTargetDefinition> _tMin,
                      std::unique_ptr<SubTargetDefinition> _tMax,
                      std::unique_ptr<SubTargetDefinition> _tBest,
@@ -70,6 +71,7 @@ public:
         m_valueMin(std::move(_valueMin)),
         m_valueMax(std::move(_valueMax)),
         m_valueBest(std::move(_valueBest)),
+        m_mic(std::move(_mic)),
         m_tMin(std::move(_tMin)),
         m_tMax(std::move(_tMax)),
         m_tBest(std::move(_tBest)),
@@ -86,6 +88,7 @@ public:
     const SubTargetDefinition & getCMin() const { return *m_valueMin;}
     const SubTargetDefinition & getCMax() const { return *m_valueMax;}
     const SubTargetDefinition & getCBest() const { return *m_valueBest;}
+    const SubTargetDefinition & getMic() const { return *m_mic;}
     const SubTargetDefinition & getTMin() const { return *m_tMin;}
     const SubTargetDefinition & getTMax() const { return *m_tMax;}
     const SubTargetDefinition & getTBest() const { return *m_tBest;}
@@ -100,6 +103,7 @@ public:
     std::unique_ptr<SubTargetDefinition> m_valueMin;
     std::unique_ptr<SubTargetDefinition> m_valueMax;
     std::unique_ptr<SubTargetDefinition> m_valueBest;
+    std::unique_ptr<SubTargetDefinition> m_mic;
     std::unique_ptr<SubTargetDefinition> m_tMin;
     std::unique_ptr<SubTargetDefinition> m_tMax;
     std::unique_ptr<SubTargetDefinition> m_tBest;

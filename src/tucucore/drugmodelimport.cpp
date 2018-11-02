@@ -1021,6 +1021,7 @@ TargetDefinition* DrugModelImport::extractTarget(Tucuxi::Common::XmlNodeIterator
     LightPopulationValue *minValue = nullptr;
     LightPopulationValue *maxValue = nullptr;
     LightPopulationValue *bestValue = nullptr;
+    LightPopulationValue *mic = nullptr;
     LightPopulationValue *tMin = nullptr;
     LightPopulationValue *tMax = nullptr;
     LightPopulationValue *tBest = nullptr;
@@ -1053,6 +1054,9 @@ TargetDefinition* DrugModelImport::extractTarget(Tucuxi::Common::XmlNodeIterator
                     maxValue = extractPopulationValue(targetValuesIt);
                 }
                 else if (valueName == "best") {
+                    bestValue = extractPopulationValue(targetValuesIt);
+                }
+                else if (valueName == "mic") {
                     bestValue = extractPopulationValue(targetValuesIt);
                 }
                 else if (valueName == "toxicityAlarm") {
@@ -1110,6 +1114,7 @@ TargetDefinition* DrugModelImport::extractTarget(Tucuxi::Common::XmlNodeIterator
         DELETE_IF_NON_NULL(minValue);
         DELETE_IF_NON_NULL(maxValue);
         DELETE_IF_NON_NULL(bestValue);
+        DELETE_IF_NON_NULL(mic);
         DELETE_IF_NON_NULL(tMin);
         DELETE_IF_NON_NULL(tMax);
         DELETE_IF_NON_NULL(tBest);
@@ -1118,6 +1123,9 @@ TargetDefinition* DrugModelImport::extractTarget(Tucuxi::Common::XmlNodeIterator
         return nullptr;
     }
 
+    if (mic == nullptr) {
+        mic = new LightPopulationValue();
+    }
     if (tMin == nullptr) {
         tMin = new LightPopulationValue();
     }
@@ -1138,6 +1146,7 @@ TargetDefinition* DrugModelImport::extractTarget(Tucuxi::Common::XmlNodeIterator
                                   std::make_unique<SubTargetDefinition>("cMin", minValue->getValue(), minValue->getOperation()),
                                   std::make_unique<SubTargetDefinition>("cMax", maxValue->getValue(), maxValue->getOperation()),
                                   std::make_unique<SubTargetDefinition>("cBest", bestValue->getValue(), bestValue->getOperation()),
+                                  std::make_unique<SubTargetDefinition>("mic", mic->getValue(), mic->getOperation()),
                                   std::make_unique<SubTargetDefinition>("tMin", translateToUnit(tMin->getValue(), Unit(tUnit), Unit("m")), tMin->getOperation()),
                                   std::make_unique<SubTargetDefinition>("tMax", translateToUnit(tMax->getValue(), Unit(tUnit), Unit("m")), tMax->getOperation()),
                                   std::make_unique<SubTargetDefinition>("tBest", translateToUnit(tBest->getValue(), Unit(tUnit), Unit("m")), tBest->getOperation()),
@@ -1149,6 +1158,7 @@ TargetDefinition* DrugModelImport::extractTarget(Tucuxi::Common::XmlNodeIterator
     DELETE_IF_NON_NULL(minValue);
     DELETE_IF_NON_NULL(maxValue);
     DELETE_IF_NON_NULL(bestValue);
+    DELETE_IF_NON_NULL(mic);
     DELETE_IF_NON_NULL(tMin);
     DELETE_IF_NON_NULL(tMax);
     DELETE_IF_NON_NULL(tBest);

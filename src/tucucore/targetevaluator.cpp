@@ -155,7 +155,27 @@ TargetEvaluator::Result TargetEvaluator::evaluate(
 
     case TargetType::AucDividedByMic :
     {
-        return Result::EvaluationError;
+        double auc = -1.0;
+        CycleStatistic cycleStatistic = statisticsCalculator.getStatistic(0, CycleStatisticType::AUC);
+        bOk = cycleStatistic.getValue(dateTime, auc);
+
+        double intervalInHours = 0.0;
+        CycleStatistic cycleStatisticForCycleInterval = statisticsCalculator.getStatistic(0, CycleStatisticType::CycleInterval);
+        bOk &= cycleStatisticForCycleInterval.getValue(dateTime, intervalInHours);
+
+
+        if (bOk) {
+            // Calculate the AUC on 24h
+            double auc24 = auc * 24.0 / intervalInHours;
+            double aucDividedByMic = auc24 / _target.m_mic;
+
+            // Check if concentration is within the target range
+            bOk = (aucDividedByMic < _target.m_valueMax) && (aucDividedByMic > _target.m_valueMin);
+            if (bOk) {
+                score = 1.0 - pow(log(aucDividedByMic) - log(_target.m_valueBest), 2) / pow(0.5 *(log(_target.m_valueMax) - log(_target.m_valueMin)), 2);
+                value = aucDividedByMic;
+            }
+        }
     } break;
 
     case TargetType::AucOverMic :

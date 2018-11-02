@@ -16,6 +16,7 @@ TargetEvent TargetExtractor::targetEventFromTarget(const Target *_target) {
                 _target->m_valueMin,
                 _target->m_valueBest,
                 _target->m_valueMax,
+                _target->m_mic,
                 _target->m_tMin,
                 _target->m_tBest,
                 _target->m_tMax);
@@ -34,6 +35,8 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(const TargetDefinit
                     translateToUnit(_target->getCMin().getValue(), _target->getUnit(), Unit("ug/l")),
                     translateToUnit(_target->getCBest().getValue(), _target->getUnit(), Unit("ug/l")),
                     translateToUnit(_target->getCMax().getValue(), _target->getUnit(), Unit("ug/l")),
+                    // TODO : Manage units of MIC targets
+                    _target->getMic().getValue(),
                     Tucuxi::Common::Duration(
                         std::chrono::minutes(static_cast<int>(_target->getTMin().getValue()))),
                     Tucuxi::Common::Duration(
@@ -52,6 +55,8 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(const TargetDefinit
                     translateToUnit(_target->getCMin().getValue(), _target->getUnit(), Unit("ug*h/l")),
                     translateToUnit(_target->getCBest().getValue(), _target->getUnit(), Unit("ug*h/l")),
                     translateToUnit(_target->getCMax().getValue(), _target->getUnit(), Unit("ug*h/l")),
+                    // TODO : Manager units of MIC
+                    _target->getMic().getValue(),
                     Tucuxi::Common::Duration(
                         std::chrono::minutes(static_cast<int>(_target->getTMin().getValue()))),
                     Tucuxi::Common::Duration(
@@ -68,6 +73,8 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(const TargetDefinit
                     _target->getCMin().getValue(),
                     _target->getCBest().getValue(),
                     _target->getCMax().getValue(),
+                    // TODO : Manager units of MIC
+                    _target->getMic().getValue(),
                     Tucuxi::Common::Duration(
                         std::chrono::minutes(static_cast<int>(_target->getTMin().getValue()))),
                     Tucuxi::Common::Duration(

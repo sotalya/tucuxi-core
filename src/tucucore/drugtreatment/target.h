@@ -34,10 +34,18 @@ public:
            Value _max);
 
     Target(const std::string& _activeMoietyId,
+           TargetType _type,
+           Value _min,
+           Value _best,
+           Value _max,
+           Value _mic);
+
+    Target(const std::string& _activeMoietyId,
            TargetType _type, 
            Value _vmin, 
-           Value _vbest, 
+           Value _vbest,
            Value _vmax,
+           Value _mic,
            const Tucuxi::Common::Duration &_tmin, 
            const Tucuxi::Common::Duration &_tbest, 
            const Tucuxi::Common::Duration &_tmax);
@@ -59,6 +67,9 @@ private:
 
     /// Target best value
     Value m_valueBest;
+
+    /// Minimum inhibitory concentration (for antibiotics)
+    Value m_mic;
 
     /// Target minimum time from last intake (for peak targets)
     Tucuxi::Common::Duration m_tMin;

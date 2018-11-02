@@ -88,6 +88,11 @@ void CycleStatistics::calculate(const std::vector<Concentrations> &_concentratio
         m_stats[compartment][static_cast<int>(CycleStatisticType::Peak)].addValue(
                     Duration(std::chrono::seconds((int)(_times[compartment][peakPosition])*60*60)),
                     peak);
+
+        // add cycle interval, in hours
+        m_stats[compartment][static_cast<int>(CycleStatisticType::CycleInterval)].addValue(
+                    Duration(),
+                    (_times[compartment][_times[compartment].size() - 1] - _times[compartment][0]));
     }
 }
 

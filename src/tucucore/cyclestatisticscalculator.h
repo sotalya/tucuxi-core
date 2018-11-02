@@ -11,7 +11,7 @@
 namespace Tucuxi {
 namespace Core {
 
-enum class CycleStatisticType : int { Mean = 0, Peak, Maximum, Minimum, AUC, CumulativeAuc, Residual, CYCLE_STATISTIC_TYPE_SIZE };
+enum class CycleStatisticType : int { Mean = 0, Peak, Maximum, Minimum, AUC, CumulativeAuc, Residual, CycleInterval, CYCLE_STATISTIC_TYPE_SIZE };
 
 ///
 /// \brief The CycleStatistic class
