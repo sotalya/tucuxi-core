@@ -22,7 +22,7 @@ public:
             { "V",   ParameterId::V },
             { "V1",  ParameterId::V1 },
             { "V2",  ParameterId::V2 },
-            { "Cl",  ParameterId::Cl },
+            { "CL",  ParameterId::Cl },
             { "Ka",  ParameterId::Ka },
             { "Ke",  ParameterId::Ke },
             { "K12", ParameterId::K12 },

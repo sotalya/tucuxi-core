@@ -350,7 +350,7 @@ JSOperation* DrugModelImport::extractJSOperation(Tucuxi::Common::XmlNodeIterator
 
     while (it != XmlNodeIterator::none()) {
         std::string nodeName = it->getName();
-        if (nodeName == "formula") {
+        if (nodeName == "code") {
             XmlNodeIterator cdataIt = it->getChildren();
             if (cdataIt == XmlNodeIterator::none()) {
                 setResult(Result::Error);
@@ -839,7 +839,7 @@ CovariateDefinition* DrugModelImport::extractCovariate(Tucuxi::Common::XmlNodeIt
         else if (nodeName == "unit") {
             unit = extractUnit(it);
         }
-        else if (nodeName == "type") {
+        else if (nodeName == "covariateType") {
             type = extractCovariateType(it);
         }
         else if (nodeName == "dataType") {

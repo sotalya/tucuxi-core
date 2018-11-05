@@ -382,20 +382,34 @@ ComputingResult ComputingComponent::compute(
 
         SampleSeries sampleSeries;
         SampleExtractor sampleExtractor;
-        sampleExtractor.extract(_request.getDrugTreatment().getSamples(), _traits->getStart(), _traits->getEnd(), sampleSeries);
+        sampleExtractor.extract(_request.getDrugTreatment().getSamples(), calculationStartTime, _traits->getEnd(), sampleSeries);
 
-        APosterioriEtasCalculator etasCalculator;
-        etasCalculator.computeAposterioriEtas(intakeSeries, parameterSeries, omega, residualErrorModel, sampleSeries, etas);
-        computationResult = computeAposteriori(
-                    pPrediction,
-                    false,
-                     _traits->getStart(),
- //                   calculationStartTime,
-                    _traits->getEnd(),
-                    intakeSeries,
-                    parameterSeries,
-                    etas,
-                    residualErrorModel);
+        if (sampleSeries.size() == 0) {
+            // Surprising. Somthing maybe wrong with the sample extractor
+
+            computationResult = computePopulation(
+                        pPrediction,
+                        false,
+                        _traits->getStart(),
+    //                    calculationStartTime,
+                        _traits->getEnd(),
+                        intakeSeries,
+                        parameterSeries);
+        }
+        else {
+            APosterioriEtasCalculator etasCalculator;
+            etasCalculator.computeAposterioriEtas(intakeSeries, parameterSeries, omega, residualErrorModel, sampleSeries, etas);
+            computationResult = computeAposteriori(
+                        pPrediction,
+                        false,
+                         _traits->getStart(),
+     //                   calculationStartTime,
+                        _traits->getEnd(),
+                        intakeSeries,
+                        parameterSeries,
+                        etas,
+                        residualErrorModel);
+        }
     }
     else {
         computationResult = computePopulation(
@@ -746,10 +760,15 @@ ComputingResult ComputingComponent::compute(
 
         SampleSeries sampleSeries;
         SampleExtractor sampleExtractor;
-        sampleExtractor.extract(_request.getDrugTreatment().getSamples(), _traits->getStart(), _traits->getEnd(), sampleSeries);
+        sampleExtractor.extract(_request.getDrugTreatment().getSamples(), calculationStartTime, _traits->getEnd(), sampleSeries);
 
-        APosterioriEtasCalculator etasCalculator;
-        etasCalculator.computeAposterioriEtas(intakeSeries, parameterSeries, omega, residualErrorModel, sampleSeries, etas);
+        if (sampleSeries.size() == 0) {
+            // Something strange here
+        }
+        else {
+            APosterioriEtasCalculator etasCalculator;
+            etasCalculator.computeAposterioriEtas(intakeSeries, parameterSeries, omega, residualErrorModel, sampleSeries, etas);
+        }
     }
 
 
