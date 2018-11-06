@@ -64,10 +64,10 @@ These three options are mutually exclusive, so the possible styles of operations
 	        <type>double</type>
 	      </input>
 	    </inputs>
-	    <formula><![CDATA[
+	    <code><![CDATA[
 	        return bodyweight < 100.0 and bodyweight > 0.0;
 	            ]]>
-	    </formula>
+	    </code>
 	  </softFormula>
 	  <comments/>
 	</operation>
@@ -92,10 +92,10 @@ These three options are mutually exclusive, so the possible styles of operations
 	          <type>double</type>
 	        </input>
 	      </inputs>
-	      <formula><![CDATA[
+	      <code><![CDATA[
 	          return bodyweight < 100.0 and bodyweight > 0.0;
 	              ]]>
-	      </formula>
+	      </code>
 	    </softFormula>
 	    <hardFormula>formulaId</hardFormula>
 	  </multiFormula>
@@ -104,27 +104,31 @@ These three options are mutually exclusive, so the possible styles of operations
 
 |
 
-+--------------------+----------------+-----+--------------------------------------------+
-| Tag name           | Format         | Occ.| Description                                |
-+====================+================+=====+============================================+
-| <operation>        |                |     | Description of an operation                |
-+--------------------+----------------+-----+--------------------------------------------+
-|____<Softformula>   |                | 1:∞ | An Javascript operation                    |
-+--------------------+----------------+-----+--------------------------------------------+
-|________<inputs>    |                | 1:1 | The list of required inputs                |
-+--------------------+----------------+-----+--------------------------------------------+
-|____________<input> |                | 1:∞ | The Id of a required input for the formula |
-+--------------------+----------------+-----+--------------------------------------------+
-|________<formula>   | :ref:`formula` | 1:∞ | The operation formula                      |
-+--------------------+----------------+-----+--------------------------------------------+
-|____<hardFormula>   | string         | 0:1 | A hardcoded operation                      |
-+--------------------+----------------+-----+--------------------------------------------+
-|____<multiFormula>  |                | 0:1 | A multi-operation formula                  |
-+--------------------+----------------+-----+--------------------------------------------+
-|________<...>       |                | 1:∞ | Any of softFormula and hardFormula         |
-+--------------------+----------------+-----+--------------------------------------------+
-|____<comments>      |                | 1:1 | Comments about the operation               |
-+--------------------+----------------+-----+--------------------------------------------+
++-----------------------+----------------+-----+---------------------------------------------+
+| Tag name              | Format         | Occ.| Description                                 |
++=======================+================+=====+=============================================+
+| <operation>           |                |     | Description of an operation                 |
++-----------------------+----------------+-----+---------------------------------------------+
+|____<Softformula>      |                | 1:∞ | An Javascript operation                     |
++-----------------------+----------------+-----+---------------------------------------------+
+|________<inputs>       |                | 1:1 | The list of required inputs                 |
++-----------------------+----------------+-----+---------------------------------------------+
+|____________<input>    |                | 1:∞ | An input for the formula                    |
++-----------------------+----------------+-----+---------------------------------------------+
+|________________<id>   |                | 1:1 | The Id of the required input for the formula|
++-----------------------+----------------+-----+---------------------------------------------+
+|________________<type> |                | 1:1 | The type of data : double, int or bool      |
++-----------------------+----------------+-----+---------------------------------------------+
+|________<code>      | :ref:`formulaCode` | 1:∞ | The operation formula                      |
++-----------------------+----------------+-----+---------------------------------------------+
+|____<hardFormula>      | string         | 0:1 | A hardcoded operation                       |
++-----------------------+----------------+-----+---------------------------------------------+
+|____<multiFormula>     |                | 0:1 | A multi-operation formula                   |
++-----------------------+----------------+-----+---------------------------------------------+
+|________<...>          |                | 1:∞ | Any of softFormula and hardFormula          |
++-----------------------+----------------+-----+---------------------------------------------+
+|____<comments>         |                | 1:1 | Comments about the operation                |
++-----------------------+----------------+-----+---------------------------------------------+
 
 |
 
@@ -137,17 +141,15 @@ The formula must always be surrounded by the *<![CDATA[* and *]]* markers. The l
 When an operation can contain a list of formula the computing engine shall try to apply the first formula. If there are missing covariates for such formula, then the second formula is tried, and so on, until a valid formula is found.
 
 
-.. _formula:
+.. _formulaCode:
 
-Formula
+Code
 ^^^^^^^
 
 A formula is an operation returning a value, based on some inputs.
-The content of the element is then a formula in the correct format.
+The content of the element is then a source code in the correct format.
 
-The formula must always be surrounded by the *<![CDATA[* and *]]* markers. The language used to express the formula is based on the ECMAScript scripting language, as defined in standard ECMA.262. You can find more information about the language EMCA website (http://www.ecma-international.org/publications/standards/Ecma-262.htm) or directly in the Qt documentation (http://qt-project.org/doc/qt-5/qtscript-index.html#language-overview). A formula must always return a value.
-
-
+The source code must always be surrounded by the *<![CDATA[* and *]]* markers. The language used to express the formula is based on the ECMAScript scripting language, as defined in standard ECMA.262. You can find more information about the language EMCA website (http://www.ecma-international.org/publications/standards/Ecma-262.htm) or directly in the Qt documentation (http://qt-project.org/doc/qt-5/qtscript-index.html#language-overview). A formula must always return a value.
 
 
 .. _comments:
@@ -520,16 +522,16 @@ A covariate is a medical information about the patient. A drug can contain from 
    :widths: 15, 10, 5, 30
 
  	 "<covariate>             ",          , 0:∞ , Description of a covariate
-	 "____<id>                 ", string   , 1:1 , The covariate's unique identifier
+	 "____<covariateId>                 ", string   , 1:1 , The covariate's unique identifier
 	 "____<name>               ",          , 1:1 , The translated covariate's names
 	 "_______<name>            ", string   , 1:1 , Name of the covariate for the specified language
 	 "____<description>        ",          , 1:1 , The translated covariate's descriptions
 	 "_______<desc>            ", string   , 1:1 , Description of the covariate for the specified language
 	 "____<unit>               ", string   , 1:1 , The covariate's unit
-	 "____<type>               ", :ref:`covariateType` , 1:1 , The covariate's type
+	 "____<covariateType>               ", :ref:`covariateType` , 1:1 , The covariate's type
 	 "____<dataType>           ", :ref:`covariateDataType` , 1:1 , The covariate's type
-	 "____<type>", :ref:`interpolationType` , 1:1 , The covariate's type
-	 "____<value>", :ref:`stdAprioriValue`   , 1:1 , "The covariate's value, that can be modified by other covariates"
+	 "____<interpolationType>", :ref:`interpolationType` , 1:1 , The covariate's type
+	 "____<covariateValue>", :ref:`stdAprioriValue`   , 1:1 , "The covariate's value, that can be modified by other covariates"
 	 "____<validation>", ref:`validation` , 1:1 , Potential validation function for the covariate value
 	 "____<comments>", :ref:`comments` , 1:1 , Comments about the covariate
 
@@ -652,7 +654,7 @@ ActiveMoieties
 	 "____<unit>               ", string   , 1:1 , "The active moiety's unit"
 	 "____<analyteIdList>               ",          , 1:1 , "The list of analytes influencing this active moiety"
 	 "_______<analyteId>            ", string   , 1:∞ , "The Id of an analyte required to compute this active moiety"
-	 "____<formula>               ", :ref:`operation` , 1:1 , "The formula for calculating the active moiety concentration based on the analytes"
+	 "____<analytesToMoietyFormula>               ", :ref:`operation` , 1:1 , "The formula for calculating the active moiety concentration based on the analytes"
 	 "____<targets>           ", :ref:`targets` , 1:1 , "A list of targets"
 	 "________<target>           ", :ref:`target` , 0:∞ , "A target to be reached"
 
@@ -683,12 +685,15 @@ The structure is as follows:
  	 "<target>             ",          ,  , "A target"
 	 "____<targetType>                 ", :ref:`targetType`   , 1:1 , "Type of target, from an enumaration"
 	 "____<targetValues>               ",          , 1:1 , "The translated active moiety's names"
+	 "____<unit>               ", string   , 1:1 , "The target unit"
 	 "_______<min>            ", :ref:`stdAprioriValue`   , 1:1 , "Minimum targeted value"
 	 "_______<max>            ", :ref:`stdAprioriValue`   , 1:1 , "Maximum targeted value"
 	 "_______<best>            ", :ref:`stdAprioriValue`   , 1:1 , "Best targeted value"
+	 "_______<mic>            ", :ref:`stdAprioriValue`   , 0:1 , "The MIC value, optional"
 	 "_______<toxicityAlarm>            ", :ref:`stdAprioriValue`   , 1:1 , "Threshold over which an alarm shall be triggered"
 	 "_______<inefficacyAlarm>            ", :ref:`stdAprioriValue`   , 1:1 , "Threshold under which an alarm shall be triggered"
 	 "____<times>               ",          , 0:1 , "Time targets when required by the target type"
+	 "_______<unit>               ", string   , 1:1 , "The time unit"
 	 "_______<min>            ", :ref:`stdAprioriValue`   , 1:1 , "Minimum targeted time"
 	 "_______<max>            ", :ref:`stdAprioriValue`   , 1:1 , "Maximum targeted time"
 	 "_______<best>            ", :ref:`stdAprioriValue`   , 1:1 , "Best targeted time"
@@ -836,7 +841,7 @@ The structure is the following:
 
  	 "<errorModel>             ",          ,  , Some time considerations
 		 "____<errorModelType>                 ", :ref:`errorModelType`   , 1:1 , "Type of error model, an enum"
-		 "____<formula>               ",  :ref:`operation`        , 0:1 , A formula if required by the errorModelType
+		 "____<errorModelFormula>               ",  :ref:`operation`        , 0:1 , A formula if required by the errorModelType
 		 "____<sigmas>            ",    , 1:1 , A list of sigmas
 		 "________<sigma>        ",     double     , 1:∞ , A sigma used by the error model
 		 "____<comments>            ", :ref:`comments`   , 1:1 , Comments about the error model
@@ -901,9 +906,29 @@ The *formulationAndRouteId* is an Id identifying this formulation and route.
 
 The *formulation* is taken from a dictionary that still has to be defined. Example: *parenteral solution*.
 
+For now it supports the following values:
+
+* "undefined"
+* "parenteral solution"
+* "oral solution"
+
 The *administrationName* is a free string, and can allow to differentiate between identical formulations offered by different vendors.
 
 The *administrationRoute* is taken from a dictionary that still has to be defined. Example : *i.v.*.
+
+For now it supports the following values:
+
+* "undefined"
+* "intramuscular"
+* "intravenousBolus"
+* "intravenousDrip"
+* "nasal"
+* "oral"
+* "rectal"
+* "subcutaneous"
+* "sublingual"
+* "transdermal"
+* "vaginal"
 
 The *routeModelId* can be either *extra*, *infu* or *bolus*, respectiveley for extravascular, infusion or bolus.
 
@@ -1066,15 +1091,18 @@ The second part of the time considerations consists in the time after which a me
  	 "<timeConsideration>             ",          ,  , Some time considerations
 		 "____<halfLife>                 ", halfLife   , 1:1 , Half life of the drug
 		 "_______<unit>               ",          , 1:1 , Time unit of the half life
-		 "_______<value>            ", :ref:`stdAprioriValue`   , 1:1 , value of the half life
+		 "_______<duration>            ", :ref:`stdAprioriValue`   , 1:1 , value of the half life
 		 "_______<multiplier>        ",          , 1:1 , Number of half lifes to reach steady state
+		 "_______<comments>            ", :ref:`comments`   , 1:1 , "Comments about the half life"
 		 "____<outdatedMeasure>            ", outdatedMeasure   , 1:1 , Indication about the relevance of a measure
 		 "_______<unit>               ", string   , 1:1 , Time unit
-		 "_______<value>               ", :ref:`covariateType` , 1:1 , Time after which a measure shall be considered as irrelevant
+		 "_______<duration>               ", :ref:`covariateType` , 1:1 , Time after which a measure shall be considered as irrelevant
+		 "_______<comments>            ", :ref:`comments`   , 1:1 , "Comments about the outdate measure fields"
 
 
 
-In previous versions of Tucuxi, the half-life was used to determine the residual concentration of a drug at steady-state. If used again in the futuer, for the models that cannot provide an equation to compute it directly, the half-life duration given above will be multiplied by the cycle multiplier in order to find out how many cycles need to be completed before reaching the steady-state. It is then possible to compute the residual concentration of the drug at steady-state. In most cases, a multiplier of 10 is sufficient.
+The half-life was used to determine the residual concentration of a drug at steady-state.
+The half-life duration given above is multiplied by the cycle multiplier in order to find out how many cycles need to be completed before reaching the steady-state. It is then possible to compute the residual concentration of the drug at steady-state. In most cases, a multiplier of 10 is sufficient.
 
 
 
@@ -1114,9 +1142,9 @@ Finally, if the prediction is made *a posteriori*, the *a priori* parameters wil
    :widths: 15, 10, 5, 30
 
  	 "<parameter>             ",          ,  , "A Pk parameter"
-		 "____<id>                 ", string  , 1:1 , "Id of the parameter"
+		 "____<parameterId>                 ", string  , 1:1 , "Id of the parameter"
 		 "____<unit>               ",  string     , 1:1 , "the unit of the parameter value"
-		 "____<value>            ",  :ref:`stdAprioriValue`  , 1:1 , "The parameter value and its optional apriori computation"
+		 "____<parameterValue>            ",  :ref:`stdAprioriValue`  , 1:1 , "The parameter value and its optional apriori computation"
 		 "____<bsv>        ",     string     , 1:1 , "Between Subject Variability (BSV) "
 		 "________<bsvType>            ", :ref:`bsvType`   , 1:1 , "Type of BSV"
 		 "________<stdDevs>            ",  , 1:1 , "A list of standard deviations"
