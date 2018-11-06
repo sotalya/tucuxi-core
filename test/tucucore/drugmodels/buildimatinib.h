@@ -97,7 +97,7 @@ public:
         std::unique_ptr<ParameterDefinition> PV(new Tucuxi::Core::ParameterDefinition("V", 347, opV, std::make_unique<ParameterVariability>(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.629)));
         dispositionParameters->addParameter(std::move(PV));
         Operation *opCl = new JSOperation(" \
-                                            theta1=Cl_population; \
+                                            theta1=CL_population; \
                                             theta4=5.42; \
                                             theta5=1.49; \
                                             theta6=-5.81; \
@@ -114,16 +114,16 @@ public:
                                             \
                                             Cl = theta1+theta4*FBW+theta5*MALE-theta5*(1-MALE)+theta6*FAGE + theta7*PATH-theta7*(1-PATH);\
                                             return Cl;",
-                                            { OperationInput("Cl_population", InputType::DOUBLE),
+                                            { OperationInput("CL_population", InputType::DOUBLE),
                                               OperationInput("sex", InputType::DOUBLE),
                                               OperationInput("weight", InputType::DOUBLE),
                                               OperationInput("age", InputType::DOUBLE),
                                               OperationInput("gist", InputType::BOOL)});
 
-        std::unique_ptr<ParameterDefinition> PCL(new Tucuxi::Core::ParameterDefinition("Cl", 15.106, opCl, std::make_unique<ParameterVariability>(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.356)));
+        std::unique_ptr<ParameterDefinition> PCL(new Tucuxi::Core::ParameterDefinition("CL", 15.106, opCl, std::make_unique<ParameterVariability>(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.356)));
         dispositionParameters->addParameter(std::move(PCL));
 
-        dispositionParameters->addCorrelation(Correlation("Cl", "V", 0.798));
+        dispositionParameters->addCorrelation(Correlation("CL", "V", 0.798));
         analyteSet->setDispositionParameters(std::move(dispositionParameters));
 
 

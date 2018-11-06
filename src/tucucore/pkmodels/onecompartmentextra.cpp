@@ -129,7 +129,7 @@ bool OneCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, cons
 
     m_D = _intakeEvent.getDose() * 1000;
     m_V = _parameters.getValue(ParameterId::V);
-    Value cl = _parameters.getValue(ParameterId::Cl); // clearance
+    Value cl = _parameters.getValue(ParameterId::CL); // clearance
     m_Ka = _parameters.getValue(ParameterId::Ka);
     m_F = _parameters.getValue(ParameterId::F);
     m_Ke = cl / m_V;

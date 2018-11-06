@@ -126,7 +126,7 @@ bool OneCompartmentBolusMacro::checkInputs(const IntakeEvent& _intakeEvent, cons
 
     m_D = _intakeEvent.getDose() * 1000;
     m_V = _parameters.getValue(ParameterId::V);
-    Value cl = _parameters.getValue(ParameterId::Cl);
+    Value cl = _parameters.getValue(ParameterId::CL);
     m_Ke = cl / m_V;
     m_NbPoints = _intakeEvent.getNbPoints();
     m_Int = (_intakeEvent.getInterval()).toHours();

@@ -133,7 +133,7 @@ bool OneCompartmentInfusionMacro::checkInputs(const IntakeEvent& _intakeEvent, c
     }
 
     m_D = _intakeEvent.getDose() * 1000;
-    double cl = _parameters.getValue(ParameterId::Cl);
+    double cl = _parameters.getValue(ParameterId::CL);
     m_V = _parameters.getValue(ParameterId::V);
     m_Ke = cl / m_V;
     m_Tinf = (_intakeEvent.getInfusionTime()).toHours();

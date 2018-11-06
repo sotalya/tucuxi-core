@@ -273,7 +273,7 @@ bool TwoCompartmentInfusionMacro::checkInputs(const IntakeEvent& _intakeEvent, c
     }
 
     m_D = _intakeEvent.getDose() * 1000;
-    Value cl = _parameters.getValue(ParameterId::Cl);
+    Value cl = _parameters.getValue(ParameterId::CL);
     Value q = _parameters.getValue(ParameterId::Q);
     m_V1 = _parameters.getValue(ParameterId::V1);
     Value v2 = _parameters.getValue(ParameterId::V2);
