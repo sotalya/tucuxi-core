@@ -35,6 +35,7 @@ public:
     /// \param _dosageHistory Dosage history.
     /// \param _start Start time/date for the considered interval.
     /// \param _end End time/date for the considered interval, could be unset.
+    /// \param _nbPointsPerHour Expected density of points in number of points per hour.
     /// \param _series Returned series of intake in the considered interval.
     /// \return number of intakes in the given interval, -1 in case of error.
     ///
@@ -44,7 +45,7 @@ public:
     /// (it would have been easier to simply empty the input _series, but this guarantees an uniform behavior across the
     /// whole set of calls)
     /// \post FORALL intake IN extracted_intakes, intake.time IN [_start, _end)
-    int extract(const DosageHistory &_dosageHistory, const DateTime &_start, const DateTime &_end, IntakeSeries &_series, CycleSize _cycleSize);
+    int extract(const DosageHistory &_dosageHistory, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, IntakeSeries &_series);
 
 private:
 
@@ -56,6 +57,7 @@ private:
     /// \param _timeRange Specified time range.
     /// \param _start Start time/date for the considered interval.
     /// \param _end End time/date for the considered interval, could be unset.
+    /// \param _nbPointsPerHour Expected density of points in number of points per hour.
     /// \param _series Returned series of intake in the considered interval.
     /// \return number of intakes in the given interval, -1 in case of error.
     ///
@@ -65,7 +67,7 @@ private:
     /// (it would have been easier to simply empty the input _series, but this guarantees an uniform behavior across the
     /// whole set of calls)
     /// \post FORALL intake IN extracted_intakes, intake.time IN [_start, _end)
-    int extract(const DosageTimeRange &_timeRange, const DateTime &_start, const DateTime &_end, IntakeSeries &_series, CycleSize _cycleSize);
+    int extract(const DosageTimeRange &_timeRange, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, IntakeSeries &_series);
 
     /// \ingroup TucuCore
     /// \brief Abstract function that is needed to properly represent the hierarchy.
@@ -73,9 +75,10 @@ private:
     /// \param _dosageBounded Bounded dosage.
     /// \param _start Start time/date for the considered interval.
     /// \param _end End time/date for the considered interval, could be unset.
+    /// \param _nbPointsPerHour Expected density of points in number of points per hour.
     /// \param _series Returned series of intake in the considered interval.
     /// \return number of intakes in the given interval, -1 in case of error.
-    int extract(const DosageBounded &, const DateTime &, const DateTime &, IntakeSeries &, CycleSize);
+    int extract(const DosageBounded &_dosageBounded, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, IntakeSeries &_series);
 
     /// \ingroup TucuCore
     /// \brief Iterate over a loop of dosages and extract the list of intakes.
@@ -85,6 +88,7 @@ private:
     /// \param _dosageLoop Dosage loop.
     /// \param _start Start time/date for the considered interval.
     /// \param _end End time/date for the considered interval, could be unset.
+    /// \param _nbPointsPerHour Expected density of points in number of points per hour.
     /// \param _series Returned series of intake in the considered interval.
     /// \return number of intakes in the given interval, -1 in case of error.
     ///
@@ -94,7 +98,7 @@ private:
     /// (it would have been easier to simply empty the input _series, but this guarantees an uniform behavior across the
     /// whole set of calls)
     /// \post FORALL intake IN extracted_intakes, intake.time IN [_start, _end)
-    int extract(const DosageLoop &_dosageLoop, const DateTime &_start, const DateTime &_end, IntakeSeries &_series, CycleSize _cycleSize);
+    int extract(const DosageLoop &_dosageLoop, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, IntakeSeries &_series);
 
     /// \ingroup TucuCore
     /// \brief Iterate over a list of repeated dosages and extract the list of intakes.
@@ -102,6 +106,7 @@ private:
     /// \param _dosageRepeat Repeated dosages.
     /// \param _start Start time/date for the considered interval.
     /// \param _end End time/date for the considered interval, could be unset.
+    /// \param _nbPointsPerHour Expected density of points in number of points per hour.
     /// \param _series Returned series of intake in the considered interval.
     /// \return number of intakes in the given interval, -1 in case of error.
     ///
@@ -111,7 +116,7 @@ private:
     /// (it would have been easier to simply empty the input _series, but this guarantees an uniform behavior across the
     /// whole set of calls)
     /// \post FORALL intake IN extracted_intakes, intake.time IN [_start, _end)
-    int extract(const DosageRepeat &_dosageRepeat, const DateTime &_start, const DateTime &_end, IntakeSeries &_series, CycleSize _cycleSize);
+    int extract(const DosageRepeat &_dosageRepeat, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, IntakeSeries &_series);
 
     /// \ingroup TucuCore
     /// \brief Iterate over an ordered sequence of dosages and extract the list of intakes.
@@ -119,6 +124,7 @@ private:
     /// \param _dosageSequence Ordered sequence of dosages.
     /// \param _start Start time/date for the considered interval.
     /// \param _end End time/date for the considered interval, could be unset.
+    /// \param _nbPointsPerHour Expected density of points in number of points per hour.
     /// \param _series Returned series of intake in the considered interval.
     /// \return number of intakes in the given interval, -1 in case of error.
     ///
@@ -128,7 +134,7 @@ private:
     /// (it would have been easier to simply empty the input _series, but this guarantees an uniform behavior across the
     /// whole set of calls)
     /// \post FORALL intake IN extracted_intakes, intake.time IN [_start, _end)
-    int extract(const DosageSequence &_dosageSequence, const DateTime &_start, const DateTime &_end, IntakeSeries &_series, CycleSize _cycleSize);
+    int extract(const DosageSequence &_dosageSequence, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, IntakeSeries &_series);
 
     /// \ingroup TucuCore
     /// \brief Iterate over an ordered sequence of parallel dosages and extract the list of intakes.
@@ -136,6 +142,7 @@ private:
     /// \param _parallelDosageSequence Ordered sequence of parallel dosages.
     /// \param _start Start time/date for the considered interval.
     /// \param _end End time/date for the considered interval, could be unset.
+    /// \param _nbPointsPerHour Expected density of points in number of points per hour.
     /// \param _series Returned series of intake in the considered interval.
     /// \return number of intakes in the given interval, -1 in case of error.
     ///
@@ -145,7 +152,7 @@ private:
     /// (it would have been easier to simply empty the input _series, but this guarantees an uniform behavior across the
     /// whole set of calls)
     /// \post FORALL intake IN extracted_intakes, intake.time IN [_start, _end)
-    int extract(const ParallelDosageSequence &_parallelDosageSequence, const DateTime &_start, const DateTime &_end, IntakeSeries &_series, CycleSize _cycleSize);
+    int extract(const ParallelDosageSequence &_parallelDosageSequence, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, IntakeSeries &_series);
 
     /// \ingroup TucuCore
     /// \brief Extract a dose supposed to last for a certain time and add it to a list of intakes.
@@ -154,6 +161,7 @@ private:
     /// \param _dosage Dose to extract.
     /// \param _start Start time/date for the considered interval.
     /// \param _end End time/date for the considered interval, could be unset.
+    /// \param _nbPointsPerHour Expected density of points in number of points per hour.
     /// \param _series Returned series of intake in the considered interval.
     /// \return 1 if the intake lies in the specified interval, 0 otherwise.
     ///
@@ -161,7 +169,7 @@ private:
     /// \pre _end IS unset OR _end > _start
     /// \post if (inside time bounds) { _series[OUT] = _series[IN] + intake } else { _series[OUT] = _series[IN] }
     /// \post FORALL intake IN extracted_intakes, intake.time IN [_start, _end)
-    int extract(const LastingDose &_dosage, const DateTime &_start, const DateTime &_end, IntakeSeries &_series, CycleSize _cycleSize);
+    int extract(const LastingDose &_dosage, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, IntakeSeries &_series);
 
     /// \ingroup TucuCore
     /// \brief Extract a daily dose and add it to a list of intakes.
@@ -170,6 +178,7 @@ private:
     /// \param _dosage Dose to extract.
     /// \param _start Start time/date for the considered interval.
     /// \param _end End time/date for the considered interval, could be unset.
+    /// \param _nbPointsPerHour Expected density of points in number of points per hour.
     /// \param _series Returned series of intake in the considered interval.
     /// \return 1 if the intake lies in the specified interval, 0 otherwise.
     ///
@@ -177,7 +186,7 @@ private:
     /// \pre _end IS unset OR _end > _start
     /// \post if (inside time bounds) { _series[OUT] = _series[IN] + intake } else { _series[OUT] = _series[IN] }
     /// \post FORALL intake IN extracted_intakes, intake.time IN [_start, _end)
-    int extract(const DailyDose &_dosage, const DateTime &_start, const DateTime &_end, IntakeSeries &_series, CycleSize _cycleSize);
+    int extract(const DailyDose &_dosage, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, IntakeSeries &_series);
 
     /// \ingroup TucuCore
     /// \brief Extract a weekly dose and add it to a list of intakes.
@@ -186,6 +195,7 @@ private:
     /// \param _dosage Dose to extract.
     /// \param _start Start time/date for the considered interval.
     /// \param _end End time/date for the considered interval, could be unset.
+    /// \param _nbPointsPerHour Expected density of points in number of points per hour.
     /// \param _series Returned series of intake in the considered interval.
     /// \return 1 if the intake lies in the specified interval, 0 otherwise.
     ///
@@ -193,7 +203,7 @@ private:
     /// \pre _end IS unset OR _end > _start
     /// \post if (inside time bounds) { _series[OUT] = _series[IN] + intake } else { _series[OUT] = _series[IN] }
     /// \post FORALL intake IN extracted_intakes, intake.time IN [_start, _end)
-    int extract(const WeeklyDose &_dosage, const DateTime &_start, const DateTime &_end, IntakeSeries &_series, CycleSize _cycleSize);
+    int extract(const WeeklyDose &_dosage, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, IntakeSeries &_series);
 };
 
 } // namespace Core

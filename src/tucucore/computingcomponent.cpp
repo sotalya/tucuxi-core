@@ -181,7 +181,8 @@ ComputingResult ComputingComponent::generalExtractions(
     _calculationStartTime = fantomStart;
 
     IntakeExtractor intakeExtractor;
-    int nIntakes = intakeExtractor.extract(_request.getDrugTreatment().getDosageHistory(false), fantomStart /*_traits->getStart()*/, _traits->getEnd() + Duration(24h), _intakeSeries, _traits->getCycleSize());
+    double nbPointsPerHour = _traits->getCycleSize() / 24;
+    int nIntakes = intakeExtractor.extract(_request.getDrugTreatment().getDosageHistory(false), fantomStart /*_traits->getStart()*/, _traits->getEnd() + Duration(24h), nbPointsPerHour, _intakeSeries);
 
     for (int i = 0; i < nIntakes; i++) {
         if (_intakeSeries.at(i).getEventTime() + _intakeSeries.at(i).getInterval() < _traits->getStart()) {
@@ -910,8 +911,9 @@ ComputingResult ComputingComponent::compute(
 
             IntakeSeries intakeSeries;
             IntakeExtractor intakeExtractor;
+            double nbPointsPerHour = _traits->getCycleSize() / 24;
             int nIntakes = intakeExtractor.extract(*newHistory, calculationStartTime, newEndTime,
-                                                   intakeSeries, _traits->getCycleSize());
+                                                   nbPointsPerHour, intakeSeries);
             TMP_UNUSED_PARAMETER(nIntakes);
 
             IntakeToCalculatorAssociator::Result intakeExtractionResult =

@@ -45,7 +45,7 @@ void selectRecordedIntakes(
 /// \brief Implement the extract and clone operations for Dosage subclasses.
 #define DOSAGE_UTILS(BaseClassName, ClassName) \
     friend IntakeExtractor; \
-    int extract(IntakeExtractor &_extractor, const DateTime &_start, const DateTime &_end, IntakeSeries &_series, CycleSize _cycleSize) const override; \
+    int extract(IntakeExtractor &_extractor, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, IntakeSeries &_series) const override; \
     std::unique_ptr<BaseClassName> clone() const override \
     { \
         return std::unique_ptr<BaseClassName>(new ClassName(*this)); \
@@ -67,6 +67,7 @@ public:
     /// \param _extractor Intake extractor.
     /// \param _start Start time/date for the considered interval.
     /// \param _end End time/date for the considered interval, could be unset.
+    /// \param _nbPointsPerHour Expected density of points in number of points per hour.
     /// \param _series Returned series of intake in the considered interval.
     /// \return number of intakes in the given interval, -1 in case of error.
     ///
@@ -77,7 +78,7 @@ public:
     /// whole set of calls)
     /// \post FORALL intake IN extracted_intakes, intake.time IN [_start, _end)
     /// \see IntakeExtractor::extract()
-    virtual int extract(IntakeExtractor &_extractor, const DateTime &_start, const DateTime &_end, IntakeSeries &_series, CycleSize _cycleSize) const = 0;
+    virtual int extract(IntakeExtractor &_extractor, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, IntakeSeries &_series) const = 0;
 
     /// \brief Return a pointer to a clone of the correct subclass.
     /// \return Pointer to a new object of subclass' type.
@@ -109,7 +110,7 @@ class DosageBounded : public Dosage
 public:
     friend IntakeExtractor;
 
-    int extract(IntakeExtractor &_extractor, const DateTime &_start, const DateTime &_end, IntakeSeries &_series, CycleSize _cycleSize) const override;
+    int extract(IntakeExtractor &_extractor, const DateTime &_start, const DateTime &_end,double _nbPointsPerHour, IntakeSeries &_series) const override;
 
     /// \brief Return the instant of the first intake in the given interval.
     /// \param _intervalStart Starting point of the interval.

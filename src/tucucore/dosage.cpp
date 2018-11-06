@@ -37,9 +37,9 @@ SingleDose::~SingleDose() { }
 
 /// \brief Visitor function's implementation.
 #define DOSAGE_UTILS_IMPL(className) \
-int className::extract(IntakeExtractor &_extractor, const DateTime &_start, const DateTime &_end, IntakeSeries &_series, CycleSize _cycleSize) const \
+int className::extract(IntakeExtractor &_extractor, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, IntakeSeries &_series) const \
 { \
-    return _extractor.extract(*this, _start, _end, _series, _cycleSize); \
+    return _extractor.extract(*this, _start, _end, _nbPointsPerHour, _series); \
 }
 
 DOSAGE_UTILS_IMPL(DosageBounded)
