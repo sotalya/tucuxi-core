@@ -43,10 +43,10 @@ RequestResponseId ComputingTrait::getId() const
 ComputingTraitStandard::ComputingTraitStandard(RequestResponseId _id,
                         Tucuxi::Common::DateTime _start,
                         Tucuxi::Common::DateTime _end,
-                        const CycleSize _cycleSize,
+                        double _nbPointsPerHour,
                         ComputingOption _computingOption) :
     ComputingTrait(_id),
-    m_computingOption(_computingOption), m_start(_start), m_end(_end), m_cycleSize(_cycleSize)
+    m_computingOption(_computingOption), m_start(_start), m_end(_end), m_nbPointsPerHour(_nbPointsPerHour)
 {
 }
 
@@ -74,9 +74,9 @@ const Tucuxi::Common::DateTime& ComputingTraitStandard::getEnd() const
 }
 
 
-CycleSize ComputingTraitStandard::getCycleSize() const
+double ComputingTraitStandard::getNbPointsPerHour() const
 {
-    return m_cycleSize;
+    return m_nbPointsPerHour;
 }
 
 
@@ -84,7 +84,7 @@ ComputingTraitAdjustment::ComputingTraitAdjustment(
         RequestResponseId _id,
         Tucuxi::Common::DateTime _start,
         Tucuxi::Common::DateTime _end,
-        const CycleSize _cycleSize,
+        double _nbPointsPerHour,
         ComputingOption _computingOption,
         Tucuxi::Common::DateTime _adjustmentTime,
         BestCandidatesOption _adjustmentOption,
@@ -93,7 +93,7 @@ ComputingTraitAdjustment::ComputingTraitAdjustment(
         SteadyStateTargetOption _steadyStateTargetOption,
         TargetExtractionOption _targetExtractionOption,
         FormulationAndRouteSelectionOption _formulationAndRouteSelectionOption) :
-    ComputingTraitStandard(_id, _start, _end, _cycleSize, _computingOption),
+    ComputingTraitStandard(_id, _start, _end, _nbPointsPerHour, _computingOption),
     m_adjustmentTime(_adjustmentTime),
     m_adjustmentOption(_adjustmentOption),
     m_chargingOption(_chargingOption),
@@ -146,9 +146,9 @@ TargetExtractionOption ComputingTraitAdjustment::getTargetExtractionOption() con
 ComputingTraitConcentration::ComputingTraitConcentration(RequestResponseId _id,
                              Tucuxi::Common::DateTime _start,
                              Tucuxi::Common::DateTime _end,
-                             const CycleSize _cycleSize,
+                             double _nbPointsPerHour,
                              ComputingOption _computingOption) :
-    ComputingTraitStandard(_id, _start, _end, _cycleSize, _computingOption)
+    ComputingTraitStandard(_id, _start, _end, _nbPointsPerHour, _computingOption)
 {
 }
 
@@ -157,10 +157,10 @@ ComputingTraitPercentiles::ComputingTraitPercentiles(RequestResponseId _id,
                            Tucuxi::Common::DateTime _start,
                            Tucuxi::Common::DateTime _end,
                            const PercentileRanks &_ranks,
-                           const CycleSize _cycleSize,
+                           double _nbPointsPerHour,
                            ComputingOption _computingOption,
                            ComputingAborter *_aborter) :
-    ComputingTraitStandard(_id, _start, _end, _cycleSize, _computingOption), m_ranks(_ranks), m_aborter(_aborter)
+    ComputingTraitStandard(_id, _start, _end, _nbPointsPerHour, _computingOption), m_ranks(_ranks), m_aborter(_aborter)
 {
 }
 

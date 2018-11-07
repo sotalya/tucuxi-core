@@ -79,13 +79,13 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
         RequestResponseId requestResponseId = 1;
         Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
         Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
-        CycleSize cycleSize = 250;
+        double nbPointsPerHour = 10.0;
         ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
         Tucuxi::Common::DateTime adjustmentTime(2018_y / sep / 4, 8h + 0min);
         BestCandidatesOption adjustmentOption = BestCandidatesOption::AllDosages;
         std::unique_ptr<ComputingTraitAdjustment> adjustmentsTraits =
                 std::make_unique<ComputingTraitAdjustment>(
-                    requestResponseId, start, end, cycleSize, computingOption, adjustmentTime,
+                    requestResponseId, start, end, nbPointsPerHour, computingOption, adjustmentTime,
                     adjustmentOption, ChargingOption::NoChargingDose, RestPeriodOption::NoRestPeriod,
                     SteadyStateTargetOption::WithinTreatmentTimeRange,
                     TargetExtractionOption::PopulationValues,
@@ -144,13 +144,13 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
         RequestResponseId requestResponseId = 1;
         Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
         Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
-        CycleSize cycleSize = 250;
+        double nbPointsPerHour = 10.0;
         ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
         Tucuxi::Common::DateTime adjustmentTime(2018_y / sep / 4, 8h + 0min);
         BestCandidatesOption adjustmentOption = BestCandidatesOption::AllDosages;
         std::unique_ptr<ComputingTraitAdjustment> adjustmentsTraits =
                 std::make_unique<ComputingTraitAdjustment>(
-                    requestResponseId, start, end, cycleSize, computingOption, adjustmentTime,
+                    requestResponseId, start, end, nbPointsPerHour, computingOption, adjustmentTime,
                     adjustmentOption, ChargingOption::NoChargingDose, RestPeriodOption::NoRestPeriod,
                     SteadyStateTargetOption::WithinTreatmentTimeRange,
                     TargetExtractionOption::PopulationValues,
@@ -208,13 +208,13 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
         RequestResponseId requestResponseId = 1;
         Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
         Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
-        CycleSize cycleSize = 250;
+        double nbPointsPerHour = 10.0;
         ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
         Tucuxi::Common::DateTime adjustmentTime(2018_y / sep / 4, 8h + 0min);
         BestCandidatesOption adjustmentOption = BestCandidatesOption::AllDosages;
         std::unique_ptr<ComputingTraitAdjustment> adjustmentsTraits =
                 std::make_unique<ComputingTraitAdjustment>(
-                    requestResponseId, start, end, cycleSize, computingOption, adjustmentTime,
+                    requestResponseId, start, end, nbPointsPerHour, computingOption, adjustmentTime,
                     adjustmentOption, ChargingOption::NoChargingDose, RestPeriodOption::NoRestPeriod,
                     SteadyStateTargetOption::WithinTreatmentTimeRange,
                     TargetExtractionOption::PopulationValues,
@@ -268,13 +268,13 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
         RequestResponseId requestResponseId = 1;
         Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
         Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
-        CycleSize cycleSize = 250;
+        double nbPointsPerHour = 10.0;
         ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
         Tucuxi::Common::DateTime adjustmentTime(2018_y / sep / 4, 8h + 0min);
         BestCandidatesOption adjustmentOption = BestCandidatesOption::BestDosage;
         std::unique_ptr<ComputingTraitAdjustment> adjustmentsTraits =
                 std::make_unique<ComputingTraitAdjustment>(
-                    requestResponseId, start, end, cycleSize, computingOption, adjustmentTime,
+                    requestResponseId, start, end, nbPointsPerHour, computingOption, adjustmentTime,
                     adjustmentOption, ChargingOption::NoChargingDose, RestPeriodOption::NoRestPeriod,
                     SteadyStateTargetOption::WithinTreatmentTimeRange,
                     TargetExtractionOption::PopulationValues,
@@ -332,13 +332,13 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
         RequestResponseId requestResponseId = 1;
         Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
         Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
-        CycleSize cycleSize = 250;
+        double nbPointsPerHour = 10.0;
         ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
         Tucuxi::Common::DateTime adjustmentTime(2018_y / sep / 4, 8h + 0min);
         BestCandidatesOption adjustmentOption = BestCandidatesOption::BestDosage;
         std::unique_ptr<ComputingTraitAdjustment> adjustmentsTraits =
                 std::make_unique<ComputingTraitAdjustment>(
-                    requestResponseId, start, end, cycleSize, computingOption, adjustmentTime,
+                    requestResponseId, start, end, nbPointsPerHour, computingOption, adjustmentTime,
                     adjustmentOption, ChargingOption::NoChargingDose, RestPeriodOption::NoRestPeriod,
                     SteadyStateTargetOption::WithinTreatmentTimeRange,
                     TargetExtractionOption::PopulationValues,
@@ -396,13 +396,13 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
         RequestResponseId requestResponseId = 1;
         Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
         Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
-        CycleSize cycleSize = 250;
+        double nbPointsPerHour = 10.0;
         ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
         Tucuxi::Common::DateTime adjustmentTime(2018_y / sep / 4, 8h + 0min);
         BestCandidatesOption adjustmentOption = BestCandidatesOption::BestDosage;
         std::unique_ptr<ComputingTraitAdjustment> adjustmentsTraits =
                 std::make_unique<ComputingTraitAdjustment>(
-                    requestResponseId, start, end, cycleSize, computingOption, adjustmentTime,
+                    requestResponseId, start, end, nbPointsPerHour, computingOption, adjustmentTime,
                     adjustmentOption, ChargingOption::NoChargingDose, RestPeriodOption::NoRestPeriod,
                     SteadyStateTargetOption::WithinTreatmentTimeRange,
                     TargetExtractionOption::PopulationValues,
@@ -461,13 +461,13 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
         RequestResponseId requestResponseId = 1;
         Tucuxi::Common::DateTime start(2018_y / sep / 4, 8h + 0min);
         Tucuxi::Common::DateTime end(2018_y / sep / 10, 8h + 0min);
-        CycleSize cycleSize = 250;
+        double nbPointsPerHour = 10.0;
         ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
         Tucuxi::Common::DateTime adjustmentTime(2018_y / sep / 4, 8h + 0min);
         BestCandidatesOption adjustmentOption = BestCandidatesOption::AllDosages;
         std::unique_ptr<ComputingTraitAdjustment> adjustmentsTraits =
                 std::make_unique<ComputingTraitAdjustment>(
-                    requestResponseId, start, end, cycleSize, computingOption, adjustmentTime,
+                    requestResponseId, start, end, nbPointsPerHour, computingOption, adjustmentTime,
                     adjustmentOption, ChargingOption::NoChargingDose, RestPeriodOption::NoRestPeriod,
                     SteadyStateTargetOption::WithinTreatmentTimeRange,
                     TargetExtractionOption::PopulationValues,
@@ -528,13 +528,13 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
         RequestResponseId requestResponseId = 1;
         Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
         Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
-        CycleSize cycleSize = 250;
+        double nbPointsPerHour = 10.0;
         ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
         Tucuxi::Common::DateTime adjustmentTime(2018_y / sep / 4, 8h + 0min);
         BestCandidatesOption adjustmentOption = BestCandidatesOption::AllDosages;
         std::unique_ptr<ComputingTraitAdjustment> adjustmentsTraits =
                 std::make_unique<ComputingTraitAdjustment>(
-                    requestResponseId, start, end, cycleSize, computingOption, adjustmentTime,
+                    requestResponseId, start, end, nbPointsPerHour, computingOption, adjustmentTime,
                     adjustmentOption, ChargingOption::NoChargingDose, RestPeriodOption::NoRestPeriod,
                     SteadyStateTargetOption::AtSteadyState,
                     TargetExtractionOption::PopulationValues,
@@ -616,13 +616,13 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
         RequestResponseId requestResponseId = 1;
         Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
         Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
-        CycleSize cycleSize = 250;
+        double nbPointsPerHour = 10.0;
         ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
         Tucuxi::Common::DateTime adjustmentTime(2018_y / sep / 4, 8h + 0min);
         BestCandidatesOption adjustmentOption = BestCandidatesOption::AllDosages;
         std::unique_ptr<ComputingTraitAdjustment> adjustmentsTraits =
                 std::make_unique<ComputingTraitAdjustment>(
-                    requestResponseId, start, end, cycleSize, computingOption, adjustmentTime,
+                    requestResponseId, start, end, nbPointsPerHour, computingOption, adjustmentTime,
                     adjustmentOption, ChargingOption::NoChargingDose, RestPeriodOption::NoRestPeriod,
                     SteadyStateTargetOption::WithinTreatmentTimeRange,
                     TargetExtractionOption::PopulationValues,

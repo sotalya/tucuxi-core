@@ -163,10 +163,12 @@ public:
     const Tucuxi::Common::DateTime& getEnd() const;
 
     ///
-    /// \brief getCycleSize Get the number of points to be calculated for each cycle
-    /// \return The number of points to be calculated for each cycle
+    /// \brief getNbPointsPerHour Get the number of points to be calculated per hour
+    /// \return The number of points to be calculated per hour
+    /// This value is used by the IntakeExtractor to calculate the number of points
+    /// to be calculated for each intake
     ///
-    CycleSize getCycleSize() const;
+    double getNbPointsPerHour() const;
 
 protected:
 
@@ -175,14 +177,14 @@ protected:
     /// \param _id Id of the request
     /// \param _start Start date of prediction calculation
     /// \param _end End date of prediction calculation
-    /// \param _cycleSize Number of points for the calculation of each cycle
+    /// \param _nbPointsPerHour Requested number of points per hour
     /// \param _computingOption Some processing options (type of parameters, what compartments)
     /// The constructor is protected, so that this class can not be directly created
     ///
     ComputingTraitStandard(RequestResponseId _id,
                             Tucuxi::Common::DateTime _start,
                             Tucuxi::Common::DateTime _end,
-                            CycleSize _cycleSize,
+                            double _nbPointsPerHour,
                             ComputingOption _computingOption);
 
 private:
@@ -196,8 +198,9 @@ private:
     //! End date of prediction calculation
     Tucuxi::Common::DateTime m_end;
 
-    //! _cycleSize Number of points for the calculation of each cycle
-    CycleSize m_cycleSize;
+
+    //! _nbPointsPerHour Requested number of points per hour
+    double m_nbPointsPerHour;
 
 };
 
@@ -397,6 +400,7 @@ public:
     /// \param _id
     /// \param _start
     /// \param _end
+    /// \param _nbPointsPerHour Requested number of points per hour
     /// \param _nbPoints
     /// \param _computingOption
     /// \param _adjustmentTime
@@ -411,7 +415,7 @@ public:
     ComputingTraitAdjustment(RequestResponseId _id,
                              Tucuxi::Common::DateTime _start,
                              Tucuxi::Common::DateTime _end,
-                             CycleSize _cycleSize,
+                             double _nbPointsPerHour,
                              ComputingOption _computingOption,
                              Tucuxi::Common::DateTime _adjustmentTime,
                              BestCandidatesOption _adjustmentOption,
@@ -478,13 +482,13 @@ public:
     /// \param _id Id of the request
     /// \param _start Start time of the range to be calculated
     /// \param _end End time of the range to be calculated
-    /// \param _cycleSize Number of points to calculate for each cycle
+    /// \param _nbPointsPerHour Requested number of points per hour
     /// \param _computingOption Some computing options
     ///
     ComputingTraitConcentration(RequestResponseId _id,
                                  Tucuxi::Common::DateTime _start,
                                  Tucuxi::Common::DateTime _end,
-                                 CycleSize _cycleSize,
+                                 double _nbPointsPerHour,
                                  ComputingOption _computingOption);
 private:
 
@@ -517,7 +521,7 @@ public:
     /// \param _start Start time of the range to be calculated
     /// \param _end End time of the range to be calculated
     /// \param _ranks The percentile ranks as a vector of double
-    /// \param _cycleSize Number of points to calculate for each cycle
+    /// \param _nbPointsPerHour Requested number of points per hour
     /// \param _computingOption Some computing options
     /// \param _aborter An aborter objet to to cancel computation
     ///
@@ -526,7 +530,7 @@ public:
             Tucuxi::Common::DateTime _start,
             Tucuxi::Common::DateTime _end,
             const PercentileRanks &_ranks,
-            CycleSize _cycleSize,
+            double _nbPointsPerHour,
             ComputingOption _computingOption,
             ComputingAborter *_aborter = nullptr);
 

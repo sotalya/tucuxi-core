@@ -70,10 +70,9 @@ IPercentileCalculator::ComputingResult MonteCarloPercentileCalculatorBase::compu
         concentrations.push_back(vec);
     }
 
-    int nbPoints = 0;
-
     // Parallelize this for loop with some shared and some copied-to-each-thread-with-current-state (firstprivate) variables
     int nbThreads = std::max(std::thread::hardware_concurrency(), (unsigned int)1);
+
     std::vector<std::thread> workers;
     for(int thread = 0; thread < nbThreads; thread++) {
         // Duplicate an IntakeSeries for avoid a possible problem with multi-thread
@@ -81,7 +80,7 @@ IPercentileCalculator::ComputingResult MonteCarloPercentileCalculatorBase::compu
         cloneIntakeSeries(_intakes, newIntakes);
 
         workers.push_back(std::thread([thread, nbPatients, &abort, _aborter,
-                                      &nbPoints, _etas, _epsilons, _parameters,
+                                      _etas, _epsilons, _parameters,
                                       newIntakes, &_residualErrorModel, &times,
                                       &concentrations, nbThreads,
                                       &_concentrationCalculator, _recordFrom,
@@ -125,7 +124,6 @@ IPercentileCalculator::ComputingResult MonteCarloPercentileCalculatorBase::compu
                         for (unsigned int cycle = 0; cycle < recordedIntakes.size(); cycle++) {
 
                             int cyclePoints = recordedIntakes.at(cycle).getNbPoints();
-                            nbPoints += cyclePoints;
 
                             // Save times only one time (when patient is equal to 0)
                             if (patient == 0) {

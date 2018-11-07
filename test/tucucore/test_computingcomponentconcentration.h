@@ -78,11 +78,11 @@ struct TestComputingComponentConcentration : public fructose::test_base<TestComp
         RequestResponseId requestResponseId = 1;
         Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
         Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
-        CycleSize cycleSize = 250;
+        double nbPointsPerHour = 10.0;
         ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
         std::unique_ptr<ComputingTraitConcentration> traits =
                 std::make_unique<ComputingTraitConcentration>(
-                    requestResponseId, start, end, cycleSize, computingOption);
+                    requestResponseId, start, end, nbPointsPerHour, computingOption);
 
         std::unique_ptr<ComputingTraits> computingTraits = std::make_unique<ComputingTraits>();
         computingTraits->addTrait(std::move(traits));
@@ -117,11 +117,11 @@ struct TestComputingComponentConcentration : public fructose::test_base<TestComp
             RequestResponseId requestResponseId = 1;
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 14h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
-            CycleSize cycleSize = 250;
+            double nbPointsPerHour = 10.0;
             ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
             std::unique_ptr<ComputingTraitConcentration> traits =
                     std::make_unique<ComputingTraitConcentration>(
-                        requestResponseId, start, end, cycleSize, computingOption);
+                        requestResponseId, start, end, nbPointsPerHour, computingOption);
 
             std::unique_ptr<ComputingTraits> computingTraits = std::make_unique<ComputingTraits>();
             computingTraits->addTrait(std::move(traits));
@@ -200,11 +200,11 @@ struct TestComputingComponentConcentration : public fructose::test_base<TestComp
         RequestResponseId requestResponseId = 1;
         Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
         Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
-        CycleSize cycleSize = 250;
+        double nbPointsPerHour = 10.0;
         ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
         std::unique_ptr<ComputingTraitConcentration> traits =
                 std::make_unique<ComputingTraitConcentration>(
-                    requestResponseId, start, end, cycleSize, computingOption);
+                    requestResponseId, start, end, nbPointsPerHour, computingOption);
 
         std::unique_ptr<ComputingTraits> computingTraits = std::make_unique<ComputingTraits>();
         computingTraits->addTrait(std::move(traits));

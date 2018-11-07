@@ -97,7 +97,6 @@ public:
     /// \param _intakeEvent Intake for the cycle (all cyles start with an intake)
     /// \param _parameters Parameters for the cycle (all cycles have constant parameters)
     /// \param _inResiduals Initial residual concentrations
-    /// \param _cycleSize The initial (if set to variable) number of points, always odd
     /// \param _outResiduals Final residual concentrations
     /// \param _isDensityConstant Flag to indicate if initial number of points should be used with a constant density
     /// \return An indication if the computation was successful

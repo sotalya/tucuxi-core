@@ -181,8 +181,8 @@ ComputingResult ComputingComponent::generalExtractions(
     _calculationStartTime = fantomStart;
 
     IntakeExtractor intakeExtractor;
-    double nbPointsPerHour = _traits->getCycleSize() / 24;
-    int nIntakes = intakeExtractor.extract(_request.getDrugTreatment().getDosageHistory(false), fantomStart /*_traits->getStart()*/, _traits->getEnd() + Duration(24h), nbPointsPerHour, _intakeSeries);
+    double nbPointsPerHour = _traits->getNbPointsPerHour();
+    int nIntakes = intakeExtractor.extract(_request.getDrugTreatment().getDosageHistory(false), fantomStart /*_traits->getStart()*/, _traits->getEnd() /* + Duration(24h)*/, nbPointsPerHour, _intakeSeries);
 
     for (int i = 0; i < nIntakes; i++) {
         if (_intakeSeries.at(i).getEventTime() + _intakeSeries.at(i).getInterval() < _traits->getStart()) {
@@ -190,13 +190,55 @@ ComputingResult ComputingComponent::generalExtractions(
         }
     }
 
+    if (nIntakes > 0) {
+
+        const DosageTimeRangeList& timeRanges = _request.getDrugTreatment().getDosageHistory(false).getDosageTimeRanges();
+
+        IntakeEvent *lastIntake = &(_intakeSeries.at(nIntakes - 1));
+
+        // If the treatement end is before the last point we want to get, then we add an empty dose to get points
+
+//        if (_traits->getEnd() > timeRanges.at(timeRanges.size() - 1)->getEndDate()) {
+            if (_traits->getEnd() > lastIntake->getEventTime() + lastIntake->getInterval()) {
+
+            DateTime start = lastIntake->getEventTime() + lastIntake->getInterval();
+            Value dose = 0.0;
+            Duration interval = _traits->getEnd() - timeRanges.at(timeRanges.size() - 1)->getEndDate();
+            auto routeModel = lastIntake->getRoute();
+
+            Duration infusionTime;
+            if (routeModel == RouteModel::INFUSION) {
+                // We do this because the infusion calculators do not support infusionTime = 0
+                infusionTime = Duration(std::chrono::hours(1));
+            }
+            int nbPoints = nbPointsPerHour * interval.toHours();
+
+            IntakeEvent intake(start, Duration(), dose, interval, routeModel, infusionTime, nbPoints);
+            _intakeSeries.push_back(intake);
+        }
+
+    }
+/*
     // TODO : Specific to busulfan here. Should be handled differently
     if (_request.getDrugModel().getAnalyteSet()->getAnalytes().at(0)->getAnalyteId() == "busulfan") {
         if (nIntakes > 0) {
-            _intakeSeries.at(nIntakes - 1).setInterval(72h);
-            _intakeSeries.at(nIntakes - 1).setNbPoints(250*10);
+            IntakeEvent *lastIntake = &(_intakeSeries.at(nIntakes - 1));
+            DateTime start = lastIntake->getEventTime() + lastIntake->getInterval();
+            Value dose = 0.0;
+            Duration interval = Duration(std::chrono::hours(72));
+            auto routeModel = lastIntake->getRoute();
+            Duration infusionTime = Duration(std::chrono::hours(1));
+            int nbPoints = nbPointsPerHour * 72;
+
+            IntakeEvent intake(start, Duration(), dose, interval, routeModel, infusionTime, nbPoints);
+            _intakeSeries.push_back(intake);
+
+
+            //_intakeSeries.at(nIntakes - 1).setInterval(72h);
+            //_intakeSeries.at(nIntakes - 1).setNbPoints(250*10);
         }
     }
+*/
 
     const std::string pkModelId = _request.getDrugModel().getPkModelId();
 
@@ -911,7 +953,7 @@ ComputingResult ComputingComponent::compute(
 
             IntakeSeries intakeSeries;
             IntakeExtractor intakeExtractor;
-            double nbPointsPerHour = _traits->getCycleSize() / 24;
+            double nbPointsPerHour = _traits->getNbPointsPerHour();
             int nIntakes = intakeExtractor.extract(*newHistory, calculationStartTime, newEndTime,
                                                    nbPointsPerHour, intakeSeries);
             TMP_UNUSED_PARAMETER(nIntakes);
