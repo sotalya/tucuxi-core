@@ -108,6 +108,10 @@ TargetEvaluator::Result TargetEvaluator::evaluate(
     case TargetType::CumulativeAuc :
     {
         double cumulativeAuc = 0.0;
+
+
+
+        //Tucuxi::Core::CycleStatistics stats(cycleData, cumulativeAuc);
         for(std::size_t i = 0; i < _prediction.getTimes().size(); i++) {
             TimeOffsets times = _prediction.getTimes().at(i);
             DateTime start = _intakeSeries.at(i).getEventTime();
@@ -115,21 +119,11 @@ TargetEvaluator::Result TargetEvaluator::evaluate(
             CycleData cycle(start, end, Unit("ug/l"));
             cycle.addData(times, _prediction.getValues().at(i), 0);
 
-            // Only valid for a single cycle, so 0.0 as cumulative AUC here.
-            // It cannot be used as is for cumulative AUC of multiple cycles.
-            Value fakeCumulativeAuc = 0.0;
-            CycleStatistics statisticsCalculator(cycle, fakeCumulativeAuc);
-            double auc = 0.0;
-            CycleStatistic cycleStatistic = statisticsCalculator.getStatistic(0, CycleStatisticType::AUC);
-            if (cycleStatistic.getValue(dateTime, auc)) {
-                cumulativeAuc += auc;
-            }
-            else {
-                // There is an error, should not happen
-            }
+            // The constructor accumulates in cumulativeAuc.
+            CycleStatistics statisticsCalculator(cycle, cumulativeAuc);
         }
 
-        // Check if concentration is within the target range
+        // Check if cumulative AUC is within the target range
         bOk = (cumulativeAuc < _target.m_valueMax) && (cumulativeAuc > _target.m_valueMin);
         if (bOk) {
             score = 1.0 - pow(log(cumulativeAuc) - log(_target.m_valueBest), 2) / pow(0.5 *(log(_target.m_valueMax) - log(_target.m_valueMin)), 2);
