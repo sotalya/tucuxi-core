@@ -44,7 +44,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
                                 Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
 
 
-         //const FormulationAndRoute route("formulation", AdministrationRoute::IntravenousBolus, RouteModel::INTRAVASCULAR);
+         //const FormulationAndRoute route("formulation", AdministrationRoute::IntravenousBolus, AbsorptionModel::INTRAVASCULAR);
          // Add a treatment intake every ten days in June
          // 200mg via a intravascular at 08h30, starting the 01.06
          LastingDose periodicDose(DoseValue(200.0),
@@ -70,7 +70,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
         fructose_assert(drugModel != nullptr);
 
         DrugTreatment *drugTreatment;
-        const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, RouteModel::EXTRAVASCULAR);
+        const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::EXTRAVASCULAR);
 
         buildDrugTreatment(drugTreatment, route);
 
@@ -135,7 +135,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
         fructose_assert(drugModel != nullptr);
 
         DrugTreatment *drugTreatment;
-        const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, RouteModel::EXTRAVASCULAR);
+        const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::EXTRAVASCULAR);
 
         buildDrugTreatment(drugTreatment, route);
 
@@ -199,7 +199,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
         fructose_assert(drugModel != nullptr);
 
         DrugTreatment *drugTreatment;
-        const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, RouteModel::EXTRAVASCULAR);
+        const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::EXTRAVASCULAR);
 
         buildDrugTreatment(drugTreatment, route);
 
@@ -259,7 +259,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
         fructose_assert(drugModel != nullptr);
 
         DrugTreatment *drugTreatment;
-        const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, RouteModel::EXTRAVASCULAR);
+        const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::EXTRAVASCULAR);
 
         buildDrugTreatment(drugTreatment, route);
 
@@ -323,7 +323,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
         fructose_assert(drugModel != nullptr);
 
         DrugTreatment *drugTreatment;
-        const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, RouteModel::EXTRAVASCULAR);
+        const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::EXTRAVASCULAR);
 
         buildDrugTreatment(drugTreatment, route);
 
@@ -387,7 +387,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
         fructose_assert(drugModel != nullptr);
 
         DrugTreatment *drugTreatment;
-        const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, RouteModel::EXTRAVASCULAR);
+        const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::EXTRAVASCULAR);
 
         buildDrugTreatment(drugTreatment, route);
 
@@ -519,7 +519,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
         fructose_assert(drugModel != nullptr);
 
         DrugTreatment *drugTreatment;
-        const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, RouteModel::EXTRAVASCULAR);
+        const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::EXTRAVASCULAR);
 
         buildDrugTreatment(drugTreatment, route);
 
@@ -584,7 +584,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
         fructose_assert(drugModel != nullptr);
 
         DrugTreatment *drugTreatment;
-        const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, RouteModel::EXTRAVASCULAR);
+        const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::EXTRAVASCULAR);
 
 
         drugTreatment = new DrugTreatment();
@@ -598,7 +598,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
                                Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
 
 
-        //const FormulationAndRoute route("formulation", AdministrationRoute::IntravenousBolus, RouteModel::INTRAVASCULAR);
+        //const FormulationAndRoute route("formulation", AdministrationRoute::IntravenousBolus, AbsorptionModel::INTRAVASCULAR);
         // Add a treatment intake every ten days in June
         // 200mg via a intravascular at 08h30, starting the 01.06
         LastingDose periodicDose(DoseValue(200.0),

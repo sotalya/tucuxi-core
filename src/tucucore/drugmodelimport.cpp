@@ -312,15 +312,15 @@ AdministrationRoute DrugModelImport::extractAdministrationRoute(Tucuxi::Common::
 }
 
 
-RouteModel DrugModelImport::extractRouteModel(Tucuxi::Common::XmlNodeIterator _node)
+AbsorptionModel DrugModelImport::extractAbsorptionModel(Tucuxi::Common::XmlNodeIterator _node)
 {
 
-    static std::map<std::string, RouteModel> m =
+    static std::map<std::string, AbsorptionModel> m =
     {
-        {"undefined", RouteModel::UNDEFINED},
-        {"bolus", RouteModel::INTRAVASCULAR},
-        {"extra", RouteModel::EXTRAVASCULAR},
-        {"infusion", RouteModel::INFUSION}
+        {"undefined", AbsorptionModel::UNDEFINED},
+        {"bolus", AbsorptionModel::INTRAVASCULAR},
+        {"extra", AbsorptionModel::EXTRAVASCULAR},
+        {"infusion", AbsorptionModel::INFUSION}
     };
 
     auto it = m.find(_node->getValue());
@@ -328,7 +328,7 @@ RouteModel DrugModelImport::extractRouteModel(Tucuxi::Common::XmlNodeIterator _n
         return it->second;
 
     setResult(Result::Error);
-    return RouteModel::UNDEFINED;
+    return AbsorptionModel::UNDEFINED;
 
 }
 
@@ -1697,7 +1697,7 @@ FullFormulationAndRoute* DrugModelImport::extractFullFormulationAndRoute(
     Formulation formulation = Formulation::Undefined;
     std::string administrationName = "";
     AdministrationRoute administrationRoute = AdministrationRoute::Undefined;
-    RouteModel routeModelId = RouteModel::UNDEFINED;
+    AbsorptionModel absorptionModelId = AbsorptionModel::UNDEFINED;
     ParameterSetDefinition *absorptionParameters = nullptr;
     std::vector<AnalyteSetToAbsorptionAssociation *> associations;
 
@@ -1721,8 +1721,8 @@ FullFormulationAndRoute* DrugModelImport::extractFullFormulationAndRoute(
         else if (nodeName == "administrationRoute") {
             administrationRoute = extractAdministrationRoute(it);
         }
-        else if (nodeName == "routeModelId") {
-            routeModelId = extractRouteModel(it);
+        else if (nodeName == "absorptionModelId") {
+            absorptionModelId = extractAbsorptionModel(it);
         }
         else if (nodeName == "dosages") {
             XmlNodeIterator dosageIt = it->getChildren();
@@ -1754,7 +1754,7 @@ FullFormulationAndRoute* DrugModelImport::extractFullFormulationAndRoute(
 
             std::string analyteGroupId = "";
             AnalyteSet *selectedAnalyteSet = nullptr;
-            RouteModel absorptionModelId = RouteModel::UNDEFINED;
+            AbsorptionModel absorptionModelId = AbsorptionModel::UNDEFINED;
             absorptionParameters = nullptr;
 
             while (absorptionIt != XmlNodeIterator::none()) {
@@ -1774,8 +1774,8 @@ FullFormulationAndRoute* DrugModelImport::extractFullFormulationAndRoute(
                                 }
                             }
                         }
-                        else if (pName == "routeModelId") {
-                            absorptionModelId = extractRouteModel(pIt);
+                        else if (pName == "absorptionModelId") {
+                            absorptionModelId = extractAbsorptionModel(pIt);
                         }
                         else if (pName == "parameterSet") {
                             absorptionParameters = extractParameterSet(pIt);
@@ -1792,7 +1792,7 @@ FullFormulationAndRoute* DrugModelImport::extractFullFormulationAndRoute(
             if ((getResult() == Result::Ok) && (absorptionParameters != nullptr)) {
                 AnalyteSetToAbsorptionAssociation *association = new AnalyteSetToAbsorptionAssociation(*selectedAnalyteSet);
                 association->setAbsorptionParameters(std::unique_ptr<ParameterSetDefinition>(absorptionParameters));
-                association->setRouteModel(absorptionModelId);
+                association->setAbsorptionModel(absorptionModelId);
                 associations.push_back(association);
             }
 
@@ -1812,7 +1812,7 @@ FullFormulationAndRoute* DrugModelImport::extractFullFormulationAndRoute(
         return nullptr;
     }
 
-    FormulationAndRoute spec(formulation, administrationRoute, routeModelId, administrationName);
+    FormulationAndRoute spec(formulation, administrationRoute, absorptionModelId, administrationName);
 
     formulationAndRoute = new FullFormulationAndRoute(spec,formulationAndRouteId);
     formulationAndRoute->setValidDoses(std::unique_ptr<ValidDoses>(availableDoses));

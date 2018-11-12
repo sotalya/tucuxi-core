@@ -28,7 +28,7 @@ struct TestDosage : public fructose::test_base<TestDosage>
     {
         const DoseValue validDose = 100.0;
         const DoseValue invalidDose = -100.0;
-        const FormulationAndRoute routePerfusion(Formulation::Test, AdministrationRoute::IntravenousDrip, RouteModel::INFUSION);
+        const FormulationAndRoute routePerfusion(Formulation::Test, AdministrationRoute::IntravenousDrip, AbsorptionModel::INFUSION);
         const Duration emptyInfusionTime;
         const Duration invalidInfusionTime(-std::chrono::minutes(20));
         const Duration validInfusionTime(std::chrono::minutes(20));
@@ -59,7 +59,7 @@ struct TestDosage : public fructose::test_base<TestDosage>
     void testLastingDose(const std::string& /* _testName */)
     {
         const DoseValue validDose = 100.0;
-        const FormulationAndRoute routePerfusion(Formulation::Test, AdministrationRoute::IntravenousDrip, RouteModel::INFUSION);
+        const FormulationAndRoute routePerfusion(Formulation::Test, AdministrationRoute::IntravenousDrip, AbsorptionModel::INFUSION);
         const Duration validInfusionTime(std::chrono::minutes(20));
         const Duration emptyInterval;
         const Duration invalidInterval(-std::chrono::hours(10));
@@ -97,7 +97,7 @@ struct TestDosage : public fructose::test_base<TestDosage>
     void testDailyDose(const std::string& /* _testName */)
     {
         const DoseValue validDose = 100.0;
-        const FormulationAndRoute routePerfusion(Formulation::Test, AdministrationRoute::IntravenousDrip, RouteModel::INFUSION);
+        const FormulationAndRoute routePerfusion(Formulation::Test, AdministrationRoute::IntravenousDrip, AbsorptionModel::INFUSION);
         const Duration validInfusionTime(std::chrono::minutes(20));
         // Cannot have an invalid or invalid time of day (at worst, it simply takes the current time)
         const TimeOfDay validTimeOfDay(Duration(std::chrono::seconds(12345)));
@@ -146,7 +146,7 @@ struct TestDosage : public fructose::test_base<TestDosage>
     void testWeeklyDose(const std::string& /* _testName */)
     {
         const DoseValue validDose = 100.0;
-        const FormulationAndRoute routePerfusion(Formulation::Test, AdministrationRoute::IntravenousDrip, RouteModel::INFUSION);
+        const FormulationAndRoute routePerfusion(Formulation::Test, AdministrationRoute::IntravenousDrip, AbsorptionModel::INFUSION);
         const Duration validInfusionTime(std::chrono::minutes(20));
         // Cannot have an invalid or invalid time of day (at worst, it simply takes the current time)
         const TimeOfDay validTimeOfDay(Duration(std::chrono::seconds(12345)));
@@ -259,7 +259,7 @@ struct TestDosage : public fructose::test_base<TestDosage>
         // Give an undefined start date, expect an exception
         DateTime emptyDate;
         emptyDate.reset();
-        const FormulationAndRoute routePerfusion(Formulation::Test, AdministrationRoute::IntravenousDrip, RouteModel::INFUSION);
+        const FormulationAndRoute routePerfusion(Formulation::Test, AdministrationRoute::IntravenousDrip, AbsorptionModel::INFUSION);
         LastingDose fakeDose(DoseValue(200.0),
                              routePerfusion,
                              Duration(std::chrono::minutes(20)),

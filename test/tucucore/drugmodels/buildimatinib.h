@@ -140,7 +140,7 @@ public:
         {
             AnalyteSetToAbsorptionAssociation *association;
             association = new AnalyteSetToAbsorptionAssociation(*analyteSet);
-            association->setRouteModel(RouteModel::EXTRAVASCULAR);
+            association->setAbsorptionModel(AbsorptionModel::EXTRAVASCULAR);
 
             std::unique_ptr<ParameterSetDefinition> absorptionParameters(new ParameterSetDefinition());
             std::unique_ptr<ParameterDefinition> PKa(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
@@ -149,7 +149,7 @@ public:
             absorptionParameters->addParameter(std::move(PF));
 
             association->setAbsorptionParameters(std::move(absorptionParameters));
-            FormulationAndRoute formulationSpecs(Formulation::OralSolution, AdministrationRoute::Oral, RouteModel::EXTRAVASCULAR, "No details");
+            FormulationAndRoute formulationSpecs(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::EXTRAVASCULAR, "No details");
             std::unique_ptr<FullFormulationAndRoute> formulationAndRoute(new FullFormulationAndRoute(formulationSpecs, "extraId"));
             formulationAndRoute->addAssociation(std::unique_ptr<AnalyteSetToAbsorptionAssociation>(association));
 
@@ -185,7 +185,7 @@ public:
         {
             AnalyteSetToAbsorptionAssociation *association;
             association = new AnalyteSetToAbsorptionAssociation(*analyteSet);
-            association->setRouteModel(RouteModel::INTRAVASCULAR);
+            association->setAbsorptionModel(AbsorptionModel::INTRAVASCULAR);
 
             std::unique_ptr<ParameterSetDefinition> absorptionParameters(new ParameterSetDefinition());
 
@@ -195,7 +195,7 @@ public:
             absorptionParameters->addParameter(std::move(PF));
 
             association->setAbsorptionParameters(std::move(absorptionParameters));
-            FormulationAndRoute formulationSpecs(Formulation::ParenteralSolution, AdministrationRoute::IntravenousBolus, RouteModel::INTRAVASCULAR, "No details");
+            FormulationAndRoute formulationSpecs(Formulation::ParenteralSolution, AdministrationRoute::IntravenousBolus, AbsorptionModel::INTRAVASCULAR, "No details");
             std::unique_ptr<FullFormulationAndRoute> formulationAndRoute(new FullFormulationAndRoute(formulationSpecs, "intraId"));
             formulationAndRoute->addAssociation(std::unique_ptr<AnalyteSetToAbsorptionAssociation>(association));
 
@@ -238,7 +238,7 @@ public:
         {
             AnalyteSetToAbsorptionAssociation *association;
             association = new AnalyteSetToAbsorptionAssociation(*analyteSet);
-            association->setRouteModel(RouteModel::INFUSION);
+            association->setAbsorptionModel(AbsorptionModel::INFUSION);
 
             std::unique_ptr<ParameterSetDefinition> absorptionParameters(new ParameterSetDefinition());
 
@@ -248,7 +248,7 @@ public:
             absorptionParameters->addParameter(std::move(PF));
 
             association->setAbsorptionParameters(std::move(absorptionParameters));
-            FormulationAndRoute formulationSpecs(Formulation::ParenteralSolution, AdministrationRoute::IntravenousDrip, RouteModel::INFUSION, "No details");
+            FormulationAndRoute formulationSpecs(Formulation::ParenteralSolution, AdministrationRoute::IntravenousDrip, AbsorptionModel::INFUSION, "No details");
             std::unique_ptr<FullFormulationAndRoute> formulationAndRoute(new FullFormulationAndRoute(formulationSpecs, "infuId"));
             formulationAndRoute->addAssociation(std::unique_ptr<AnalyteSetToAbsorptionAssociation>(association));
 

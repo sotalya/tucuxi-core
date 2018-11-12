@@ -36,7 +36,7 @@ public:
     /// \param _infusionTime Duration in case of an infusion.
     /// \param _nbPoints Number of points to compute for this intake.
     IntakeEvent(DateTime _time, Duration _offsetTime, DoseValue _dose, Duration _interval,
-                RouteModel _route, Duration _infusionTime, int _nbPoints)
+                AbsorptionModel _route, Duration _infusionTime, int _nbPoints)
         : TimedEvent(_time), 
           m_dose(_dose),
           m_offsetTime(_offsetTime),
@@ -117,7 +117,7 @@ public:
     
     /// \brief Get the route of administration of the treatment.
     /// \return Route of administration.
-    RouteModel getRoute() const
+    AbsorptionModel getRoute() const
     {
         return m_route;
     }
@@ -184,7 +184,7 @@ private:
     /// Number of points to compute for this intake
     CycleSize m_nbPoints;
     /// The route of administration
-    RouteModel m_route;
+    AbsorptionModel m_route;
     /// The time before the next intake
     Duration m_interval;
     /// The duration in case of an infusion

@@ -52,7 +52,7 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
         Tucuxi::Common::Duration interval = 24h;
         Tucuxi::Common::Duration infusionTime = 0h;
         double dose = 400;
-        Tucuxi::Core::RouteModel route = Tucuxi::Core::RouteModel::EXTRAVASCULAR;
+        Tucuxi::Core::AbsorptionModel route = Tucuxi::Core::AbsorptionModel::EXTRAVASCULAR;
 
         DateTime recordFrom = now;
         DateTime recordTo = now + 96h;
@@ -173,7 +173,7 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
         Tucuxi::Common::Duration interval = 24h;
         Tucuxi::Common::Duration infusionTime = 0h;
         double dose = 400;
-        Tucuxi::Core::RouteModel route = Tucuxi::Core::RouteModel::EXTRAVASCULAR;
+        Tucuxi::Core::AbsorptionModel route = Tucuxi::Core::AbsorptionModel::EXTRAVASCULAR;
 
         DateTime recordFrom = now;
         DateTime recordTo = now + 24h;
@@ -278,7 +278,7 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
         Tucuxi::Common::Duration interval = 24h;
         Tucuxi::Common::Duration infusionTime = 0h;
         double dose = 400;
-        Tucuxi::Core::RouteModel route = Tucuxi::Core::RouteModel::EXTRAVASCULAR;
+        Tucuxi::Core::AbsorptionModel route = Tucuxi::Core::AbsorptionModel::EXTRAVASCULAR;
 
         DateTime recordFrom = now;
         DateTime recordTo = now + 24h;

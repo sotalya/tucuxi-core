@@ -204,16 +204,16 @@ ComputingResult ComputingComponent::generalExtractions(
             DateTime start = lastIntake->getEventTime() + lastIntake->getInterval();
             Value dose = 0.0;
             Duration interval = _traits->getEnd() - timeRanges.at(timeRanges.size() - 1)->getEndDate();
-            auto routeModel = lastIntake->getRoute();
+            auto absorptionModel = lastIntake->getRoute();
 
             Duration infusionTime;
-            if (routeModel == RouteModel::INFUSION) {
+            if (absorptionModel == AbsorptionModel::INFUSION) {
                 // We do this because the infusion calculators do not support infusionTime = 0
                 infusionTime = Duration(std::chrono::hours(1));
             }
             int nbPoints = nbPointsPerHour * interval.toHours();
 
-            IntakeEvent intake(start, Duration(), dose, interval, routeModel, infusionTime, nbPoints);
+            IntakeEvent intake(start, Duration(), dose, interval, absorptionModel, infusionTime, nbPoints);
             _intakeSeries.push_back(intake);
         }
 
@@ -226,11 +226,11 @@ ComputingResult ComputingComponent::generalExtractions(
             DateTime start = lastIntake->getEventTime() + lastIntake->getInterval();
             Value dose = 0.0;
             Duration interval = Duration(std::chrono::hours(72));
-            auto routeModel = lastIntake->getRoute();
+            auto absorptionModel = lastIntake->getRoute();
             Duration infusionTime = Duration(std::chrono::hours(1));
             int nbPoints = nbPointsPerHour * 72;
 
-            IntakeEvent intake(start, Duration(), dose, interval, routeModel, infusionTime, nbPoints);
+            IntakeEvent intake(start, Duration(), dose, interval, absorptionModel, infusionTime, nbPoints);
             _intakeSeries.push_back(intake);
 
 
@@ -875,7 +875,7 @@ ComputingResult ComputingComponent::compute(
         }
 
         if (infusionTimes.size() == 0) {
-            if (selectedFormulationAndRoute->getFormulationAndRoute().getRouteModel() == RouteModel::INFUSION) {
+            if (selectedFormulationAndRoute->getFormulationAndRoute().getAbsorptionModel() == AbsorptionModel::INFUSION) {
                 m_logger.error("Infusion selected, but no potential infusion time");
                 return ComputingResult::Error;
             }

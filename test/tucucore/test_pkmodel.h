@@ -29,17 +29,17 @@ using namespace Tucuxi::Core;
 #define ADD_CALCULATOR_FACTORIES(_PK_MODEL, _COMP_NO_LIT, _TYPE_NAME)  \
 do { \
     bool rc; \
-    rc = _PK_MODEL->addIntakeIntervalCalculatorFactory(RouteModel::EXTRAVASCULAR, \
+    rc = _PK_MODEL->addIntakeIntervalCalculatorFactory(AbsorptionModel::EXTRAVASCULAR, \
                                                        Tucuxi::Core::_COMP_NO_LIT ## CompartmentExtra ## _TYPE_NAME::getCreator()); \
     fructose_assert (rc == true); \
-    rc = _PK_MODEL->addIntakeIntervalCalculatorFactory(RouteModel::INTRAVASCULAR, \
+    rc = _PK_MODEL->addIntakeIntervalCalculatorFactory(AbsorptionModel::INTRAVASCULAR, \
                                                        Tucuxi::Core::_COMP_NO_LIT ## CompartmentBolus ## _TYPE_NAME::getCreator()); \
     fructose_assert (rc == true); \
     /* Avoid duplicate insertion */ \
-    rc = _PK_MODEL->addIntakeIntervalCalculatorFactory(RouteModel::INTRAVASCULAR, \
+    rc = _PK_MODEL->addIntakeIntervalCalculatorFactory(AbsorptionModel::INTRAVASCULAR, \
                                                        Tucuxi::Core::_COMP_NO_LIT ## CompartmentBolus ## _TYPE_NAME::getCreator()); \
     fructose_assert (rc == false); \
-    rc = _PK_MODEL->addIntakeIntervalCalculatorFactory(RouteModel::INFUSION, \
+    rc = _PK_MODEL->addIntakeIntervalCalculatorFactory(AbsorptionModel::INFUSION, \
                                                        Tucuxi::Core::_COMP_NO_LIT ## CompartmentInfusion ## _TYPE_NAME::getCreator()); \
     fructose_assert (rc == true); \
 } while (0);
@@ -47,13 +47,13 @@ do { \
 #define CHECK_CALCULATOR_TYPE(_PK_MODEL, _COMP_NO_LIT, _TYPE_NAME)  \
 do { \
     std::shared_ptr<IntakeIntervalCalculator> CExtraCalc = \
-            _PK_MODEL->getCalculatorForRoute(RouteModel::EXTRAVASCULAR); \
+            _PK_MODEL->getCalculatorForRoute(AbsorptionModel::EXTRAVASCULAR); \
     fructose_assert (typeid(*CExtraCalc) == typeid(_COMP_NO_LIT ## CompartmentExtra ## _TYPE_NAME)); \
     std::shared_ptr<IntakeIntervalCalculator> CBolusCalc = \
-            _PK_MODEL->getCalculatorForRoute(RouteModel::INTRAVASCULAR); \
+            _PK_MODEL->getCalculatorForRoute(AbsorptionModel::INTRAVASCULAR); \
     fructose_assert (typeid(*CBolusCalc) == typeid(_COMP_NO_LIT ## CompartmentBolus ## _TYPE_NAME)); \
     std::shared_ptr<IntakeIntervalCalculator> CInfusionCalc = \
-            _PK_MODEL->getCalculatorForRoute(RouteModel::INFUSION); \
+            _PK_MODEL->getCalculatorForRoute(AbsorptionModel::INFUSION); \
     fructose_assert (typeid(*CInfusionCalc) == typeid(_COMP_NO_LIT ## CompartmentInfusion ## _TYPE_NAME)); \
 } while (0);
 
@@ -79,14 +79,14 @@ struct TestPkModel : public fructose::test_base<TestPkModel>
         ADD_CALCULATOR_FACTORIES(l2CMacro, Two, Macro);
 
         // Check that there are no missing route of administration
-        std::vector<RouteModel> l1MicroROA = l1CMicro->getAvailableRoutes();
-        std::vector<RouteModel> l1MacroROA = l1CMacro->getAvailableRoutes();
-        fructose_assert (std::find(l1MicroROA.begin(), l1MicroROA.end(), RouteModel::EXTRAVASCULAR) != l1MicroROA.end());
-        fructose_assert (std::find(l1MacroROA.begin(), l1MacroROA.end(), RouteModel::EXTRAVASCULAR) != l1MacroROA.end());
-        fructose_assert (std::find(l1MicroROA.begin(), l1MicroROA.end(), RouteModel::INTRAVASCULAR) != l1MicroROA.end());
-        fructose_assert (std::find(l1MacroROA.begin(), l1MacroROA.end(), RouteModel::INTRAVASCULAR) != l1MacroROA.end());
-        fructose_assert (std::find(l1MicroROA.begin(), l1MicroROA.end(), RouteModel::INFUSION) != l1MicroROA.end());
-        fructose_assert (std::find(l1MacroROA.begin(), l1MacroROA.end(), RouteModel::INFUSION) != l1MacroROA.end());
+        std::vector<AbsorptionModel> l1MicroROA = l1CMicro->getAvailableRoutes();
+        std::vector<AbsorptionModel> l1MacroROA = l1CMacro->getAvailableRoutes();
+        fructose_assert (std::find(l1MicroROA.begin(), l1MicroROA.end(), AbsorptionModel::EXTRAVASCULAR) != l1MicroROA.end());
+        fructose_assert (std::find(l1MacroROA.begin(), l1MacroROA.end(), AbsorptionModel::EXTRAVASCULAR) != l1MacroROA.end());
+        fructose_assert (std::find(l1MicroROA.begin(), l1MicroROA.end(), AbsorptionModel::INTRAVASCULAR) != l1MicroROA.end());
+        fructose_assert (std::find(l1MacroROA.begin(), l1MacroROA.end(), AbsorptionModel::INTRAVASCULAR) != l1MacroROA.end());
+        fructose_assert (std::find(l1MicroROA.begin(), l1MicroROA.end(), AbsorptionModel::INFUSION) != l1MicroROA.end());
+        fructose_assert (std::find(l1MacroROA.begin(), l1MacroROA.end(), AbsorptionModel::INFUSION) != l1MacroROA.end());
 
         // Check that the retrieved calculator is of the correct type
         CHECK_CALCULATOR_TYPE(l1CMicro, One, Micro);

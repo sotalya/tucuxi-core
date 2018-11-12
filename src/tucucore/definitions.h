@@ -66,10 +66,7 @@ typedef std::vector<PercentileRank> PercentileRanks;
 
 /// \ingroup TucuCore
 /// \brief Way a dose is administered.
-enum class RouteModel { UNDEFINED, INTRAVASCULAR, EXTRAVASCULAR, INFUSION };
-
-// For compatibility with previous versions
-#define AbsorptionModel RouteModel
+enum class AbsorptionModel { UNDEFINED, INTRAVASCULAR, EXTRAVASCULAR, INFUSION };
 
 /// \ingroup TucuCore
 /// \brief Operations on scheduled intakes.

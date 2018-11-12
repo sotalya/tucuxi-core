@@ -165,7 +165,7 @@ protected:
     ParameterVariabilityType extractParameterVariabilityType(Tucuxi::Common::XmlNodeIterator _node);
     Formulation extractFormulation(Tucuxi::Common::XmlNodeIterator _node);
     AdministrationRoute extractAdministrationRoute(Tucuxi::Common::XmlNodeIterator _node);
-    RouteModel extractRouteModel(Tucuxi::Common::XmlNodeIterator _node);
+    AbsorptionModel extractAbsorptionModel(Tucuxi::Common::XmlNodeIterator _node);
 
 
 
