@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "tucucommon/utils.h"
+#include "tucucommon/translatablestring.h"
 
 #include "tucucore/definitions.h"
 #include "tucucore/drugdefinitions.h"
@@ -76,6 +77,15 @@ public:
     /// \brief Set the validation operation
     /// \param _operation Operation used to validate the covariate value
     void setValidation(std::unique_ptr<Operation> _validation) { m_validation = std::move(_validation);}
+
+    ///
+    /// \brief Set the name of the covariate
+    /// \param _name TranslatableString representing the covariate
+    ///
+    void setName(const Tucuxi::Common::TranslatableString &_name) { m_name = _name;}
+
+    const Tucuxi::Common::TranslatableString& getName() const {return m_name;}
+
 protected:
     /// \brief Covariate type.
     CovariateType m_type;
@@ -89,6 +99,8 @@ protected:
     Tucuxi::Common::Duration m_refreshPeriod;
     /// \brief Operation to validate the value of the covariate
     std::unique_ptr<Operation> m_validation;
+    /// \brief Name of the covariate
+    Tucuxi::Common::TranslatableString m_name;
 };
 
 /// \brief List of covariate definitions.

@@ -15,6 +15,7 @@ SOURCES := \
            drugmodel/analyte.cpp \
            drugmodel/drugmodel.cpp \
            drugmodel/drugmodeldomain.cpp \
+           drugmodel/drugmodelmetadata.cpp \
            drugmodel/formulationandroute.cpp \
            drugmodel/parameterdefinition.cpp \
            drugmodel/targetdefinition.cpp \

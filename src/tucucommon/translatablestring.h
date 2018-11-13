@@ -3,6 +3,10 @@
 
 #include <map>
 
+namespace Tucuxi {
+namespace Common {
+
+
 ///
 /// \brief The TranslatableString class
 /// This class is used to store texts that have translations.
@@ -63,5 +67,8 @@ protected:
     static std::string sm_language;
 
 };
+
+} // namespace Common
+} // namespace Tucuxi
 
 #endif // TRANSLATABLESTRING_H

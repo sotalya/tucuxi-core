@@ -7,6 +7,7 @@
 
 #include "tucucommon/xmlnode.h"
 #include "tucucommon/xmldocument.h"
+#include "tucucommon/translatablestring.h"
 
 #include "tucucore/definitions.h"
 #include "tucucore/residualerrormodel.h"
@@ -44,7 +45,7 @@ class ParameterDefinition;
 class Correlation;
 class FullFormulationAndRoute;
 class FormulationAndRoutes;
-
+class DrugModelMetadata;
 
 class LightPopulationValue
 {
@@ -208,6 +209,8 @@ protected:
     LightPopulationValue* extractPopulationValue(Tucuxi::Common::XmlNodeIterator _node);
     Operation* extractOperation(Tucuxi::Common::XmlNodeIterator _node);
     JSOperation* extractJSOperation(Tucuxi::Common::XmlNodeIterator _node);
+    Tucuxi::Common::TranslatableString extractTranslatableString(Tucuxi::Common::XmlNodeIterator _node, std::string _insideName);
+    DrugModelMetadata* extractHead(Tucuxi::Common::XmlNodeIterator _node);
 
 };
 

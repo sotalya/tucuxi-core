@@ -13,6 +13,8 @@
 #include <string>
 #include <vector>
 
+#include "tucucommon/translatablestring.h"
+
 #include "tucucore/definitions.h"
 
 namespace Tucuxi {
@@ -55,6 +57,14 @@ public:
     ///         otherwise.
     std::shared_ptr<IntakeIntervalCalculator> getCalculatorForRoute(AbsorptionModel _route) const;
 
+    //std::string getDistribution() const { return m_distribution.getString();}
+    //std::string getElimination() const { return m_elimination.getString();}
+
+    const Tucuxi::Common::TranslatableString& getDistribution() const { return m_distribution;}
+    const Tucuxi::Common::TranslatableString& getElimination() const { return m_elimination;}
+
+    void setDistribution(const Tucuxi::Common::TranslatableString& _distribution) { m_distribution = _distribution;}
+    void setElimination(const Tucuxi::Common::TranslatableString& _elimination) { m_elimination = _elimination;}
 
 protected:
     /// \brief Identifier of the PkModel.
@@ -62,6 +72,9 @@ protected:
 
     /// \brief A map of available calculators creators linked to the route of administration.
     std::map<AbsorptionModel, std::shared_ptr<IntakeIntervalCalculatorCreator>> m_calculatorCreators;
+
+    Tucuxi::Common::TranslatableString m_distribution;
+    Tucuxi::Common::TranslatableString m_elimination;
 };
 
 
@@ -116,6 +129,17 @@ do { \
     _RC |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::EXTRAVASCULAR, Tucuxi::Core::_COMP_NO_LIT ## CompartmentExtra ## _TYPE::getCreator()); \
     _RC |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::INTRAVASCULAR, Tucuxi::Core::_COMP_NO_LIT ## CompartmentBolus ## _TYPE::getCreator()); \
     _RC |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::INFUSION, Tucuxi::Core::_COMP_NO_LIT ## CompartmentInfusion## _TYPE::getCreator());\
+    Tucuxi::Common::TranslatableString distribution; \
+    Tucuxi::Common::TranslatableString elimination; \
+    std::string comps; \
+    if (_COMP_NO_NUM == 1) \
+        comps = "compartment"; \
+    else \
+        comps = "compartments"; \
+    distribution.setString(std::to_string(_COMP_NO_NUM) + " " + comps, "en"); \
+    elimination.setString("linear", "en"); \
+    pkmodel->setDistribution(distribution); \
+    pkmodel->setElimination(elimination); \
     _COLLECTION.addPkModel(pkmodel); \
 } while (0);
 

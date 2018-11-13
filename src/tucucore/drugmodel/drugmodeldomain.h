@@ -36,12 +36,12 @@ public:
 
     ConstraintType getType() const { return m_type;}
 
-    void setDescription(TranslatableString _description) {m_description = _description;}
+    void setDescription(Tucuxi::Common::TranslatableString _description) {m_description = _description;}
 
 protected:
 
     ConstraintType m_type;
-    TranslatableString m_description;
+    Tucuxi::Common::TranslatableString m_description;
     std::vector<std::string> m_requiredCovariateIds;
     std::unique_ptr<Operation> m_checkOperation;
 };
@@ -56,8 +56,14 @@ public:
     void addConstraint(std::unique_ptr<Constraint> _constraint) { m_constraints.push_back(std::move(_constraint));}
     const std::vector<std::unique_ptr< Constraint > >& getConstraints() const { return m_constraints;}
 
+    void setDescription(Tucuxi::Common::TranslatableString _description) { m_description = _description;}
+
+    const Tucuxi::Common::TranslatableString& getDescription() const { return m_description;}
+
 protected:
     std::vector<std::unique_ptr<Constraint> > m_constraints;
+
+    Tucuxi::Common::TranslatableString m_description;
 };
 
 

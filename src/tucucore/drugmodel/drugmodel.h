@@ -13,6 +13,7 @@
 #include "tucucore/drugmodel/formulationandroute.h"
 #include "tucucore/drugmodel/activemoiety.h"
 #include "tucucore/drugmodel/timeconsiderations.h"
+#include "tucucore/drugmodel/drugmodelmetadata.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -33,7 +34,7 @@ class DrugModel;
 /// - first the variable parameters, then the fixed parameters
 /// - Within a categoy, alphabetical order is respected.
 ///
-/// For instance, with Ka fixed, F fixed, CL variable, V variable, the iterotor will give:
+/// For instance, with Ka fixed, F fixed, CL variable, V variable, the iterator will give:
 /// 1. CL
 /// 2. V
 /// 3. F
@@ -87,6 +88,9 @@ public:
     void setDrugId(std::string _drugId) { m_drugId = _drugId;}
     void setDrugModelId(std::string _drugModelId) { m_drugModelId = _drugModelId;}
 
+    std::string getDrugId() const { return m_drugId;}
+    std::string getDrugModelId() const { return m_drugModelId;}
+
     void setTimeToSteadyState(Tucuxi::Common::Duration _time);
 
     Tucuxi::Common::Duration getTimeToSteadyState() const;
@@ -113,8 +117,12 @@ public:
     //const ParameterDefinitions& getParameters(FormulationAndRoute _formulationAndRoute) const;
 
     void addFormulationAndRoute(std::unique_ptr<FullFormulationAndRoute> _formulationAndRoute, bool _isDefault = false);
-    
+
     void setDomain(std::unique_ptr<DrugModelDomain> _domain);
+    const DrugModelDomain& getDomain() const { return *m_domain.get();}
+
+    void setMetadata(std::unique_ptr<DrugModelMetadata> _data);
+    const DrugModelMetadata& getMetadata() const { return *m_metadata.get();}
 
     void addAnalyteSet(std::unique_ptr<AnalyteSet> _analyteSet);
 
@@ -154,6 +162,7 @@ public:
         }
         return nullptr;
     }
+
 
 private:
 
@@ -201,6 +210,8 @@ private:
     ActiveMoieties m_activeMoieties;
 
     std::unique_ptr<TimeConsiderations> m_timeConsiderations;
+
+    std::unique_ptr<DrugModelMetadata> m_metadata;
 
     friend ParameterDefinitionIterator;
 };

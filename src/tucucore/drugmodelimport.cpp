@@ -6,6 +6,7 @@
 #include "tucucommon/xmlnode.h"
 #include "tucucommon/xmlattribute.h"
 #include "tucucommon/xmliterator.h"
+#include "tucucommon/translatablestring.h"
 
 #include "tucucore/drugmodel/drugmodel.h"
 #include "tucucore/drugdefinitions.h"
@@ -13,6 +14,7 @@
 #include "tucucore/definitions.h"
 #include "tucucore/hardcodedoperation.h"
 #include "tucucore/residualerrormodel.h"
+#include "tucucore/pkmodel.h"
 
 
 using namespace Tucuxi::Common;
@@ -99,6 +101,29 @@ DrugModelImport::Result DrugModelImport::importDocument(
 
     _drugModel = extractDrugModel(drugModelIterator);
 
+    DrugModelMetadata *metaData = nullptr;
+
+    XmlNodeIterator metadataIterator = root.getChildren("head");
+
+    if (metadataIterator == XmlNodeIterator::none()) {
+        return Result::Error;
+    }
+
+    metaData = extractHead(metadataIterator);
+
+
+    PkModelCollection *models = new PkModelCollection();
+    if (!defaultPopulate(*models)) {
+        setResult(Result::Error);
+    }
+    std::shared_ptr<PkModel> model = models->getPkModelFromId(_drugModel->getAnalyteSet()->getPkModelId());
+    metaData->setDistribution(model->getDistribution());
+    metaData->setElimination(model->getElimination());
+
+    if ((_drugModel != nullptr) && (metaData != nullptr)) {
+        _drugModel->setMetadata(std::unique_ptr<DrugModelMetadata>(metaData));
+    }
+
     return getResult();
 
 }
@@ -134,6 +159,34 @@ double DrugModelImport::extractDouble(Tucuxi::Common::XmlNodeIterator _node)
         setResult(Result::Error);
         result = 0.0;
     }
+    return result;
+}
+
+
+Tucuxi::Common::TranslatableString DrugModelImport::extractTranslatableString(Tucuxi::Common::XmlNodeIterator _node, std::string _insideName)
+{
+    Tucuxi::Common::TranslatableString result;
+
+    XmlNodeIterator it = _node->getChildren();
+
+    while (it != XmlNodeIterator::none()) {
+        std::string nodeName = it->getName();
+        if (nodeName == _insideName) {
+            XmlAttribute langAttribute = it->getAttribute("lang");
+            if (!langAttribute.isValid()) {
+                setResult(Result::Error);
+                return result;
+            }
+            std::string lang = langAttribute.getValue();
+            std::string value = it->getValue();
+            result.setString(value,lang);
+        }
+        else {
+            unexpectedTag(nodeName);
+        }
+        it ++;
+    }
+
     return result;
 }
 
@@ -684,6 +737,7 @@ DrugModelDomain* DrugModelImport::extractDrugDomain(Tucuxi::Common::XmlNodeItera
 {
     DrugModelDomain *domain;
     std::vector<Constraint*> constraints;
+    TranslatableString domainDescription;
 
     domain = new DrugModelDomain();
 
@@ -691,7 +745,10 @@ DrugModelDomain* DrugModelImport::extractDrugDomain(Tucuxi::Common::XmlNodeItera
 
     while (it != XmlNodeIterator::none()) {
         std::string nodeName = it->getName();
-        if (nodeName == "constraints") {
+        if (nodeName == "description") {
+            domainDescription = extractTranslatableString(it, "desc");
+        }
+        else if (nodeName == "constraints") {
             constraints = extractConstraints(it);
         }
         else {
@@ -704,6 +761,8 @@ DrugModelDomain* DrugModelImport::extractDrugDomain(Tucuxi::Common::XmlNodeItera
         DELETE_IF_NON_NULL(domain);
         return nullptr;
     }
+
+    domain->setDescription(domainDescription);
 
     for(const auto & constraint : constraints) {
         domain->addConstraint(std::unique_ptr<Constraint>(constraint));
@@ -828,6 +887,7 @@ CovariateDefinition* DrugModelImport::extractCovariate(Tucuxi::Common::XmlNodeIt
     InterpolationType interpolationType = InterpolationType::Direct;
     LightPopulationValue *value = nullptr;
     Operation *validation = nullptr;
+    TranslatableString name;
 
     XmlNodeIterator it = _node->getChildren();
 
@@ -838,6 +898,9 @@ CovariateDefinition* DrugModelImport::extractCovariate(Tucuxi::Common::XmlNodeIt
         }
         else if (nodeName == "unit") {
             unit = extractUnit(it);
+        }
+        else if (nodeName == "name") {
+            name = extractTranslatableString(it,"name");
         }
         else if (nodeName == "covariateType") {
             type = extractCovariateType(it);
@@ -886,6 +949,7 @@ CovariateDefinition* DrugModelImport::extractCovariate(Tucuxi::Common::XmlNodeIt
     covariate->setInterpolationType(interpolationType);
     covariate->setUnit(unit);
     covariate->setValidation(std::unique_ptr<Operation>(validation));
+    covariate->setName(name);
 
     DELETE_IF_NON_NULL(value);
 
@@ -2031,6 +2095,114 @@ ValidValuesFixed* DrugModelImport::extractValuesFixed(Tucuxi::Common::XmlNodeIte
     }
 
     return valuesFixed;
+}
+
+
+DrugModelMetadata* DrugModelImport::extractHead(Tucuxi::Common::XmlNodeIterator _node)
+{
+    TranslatableString drugName;
+    TranslatableString drugDescription;
+    TranslatableString studyName;
+    TranslatableString distribution;
+    TranslatableString elimination;
+    std::string authorName;
+    std::vector<std::string> atcs;
+
+    XmlNodeIterator it = _node->getChildren();
+
+    while (it != XmlNodeIterator::none()) {
+        std::string nodeName = it->getName();
+        if (nodeName == "drug") {
+            XmlNodeIterator drugIterator = it->getChildren();
+
+            while (drugIterator != XmlNodeIterator::none()) {
+
+                std::string insideName = drugIterator->getName();
+
+                if (insideName == "drugName") {
+                    drugName = extractTranslatableString(drugIterator, "name");
+                }
+                else if (insideName == "drugDescription") {
+                    drugDescription = extractTranslatableString(drugIterator, "desc");
+                }
+                else if (insideName == "atcs") {
+                    XmlNodeIterator atcIterator = drugIterator->getChildren();
+                    while (atcIterator != XmlNodeIterator::none()) {
+
+                        std::string atcName = atcIterator->getName();
+
+                        if (atcName == "atc") {
+                            atcs.push_back(atcIterator->getValue());
+                        }
+
+                        atcIterator ++;
+                    }
+                }
+
+                drugIterator ++;
+
+            }
+        }
+        else if (nodeName == "study") {
+
+            XmlNodeIterator studyIterator = it->getChildren();
+
+            while (studyIterator != XmlNodeIterator::none()) {
+
+                std::string insideName = studyIterator->getName();
+
+                if (insideName == "studyName") {
+                    studyName = extractTranslatableString(studyIterator, "name");
+                }
+                else if (insideName == "studyAuthors") {
+                    authorName = studyIterator->getValue();
+                }
+
+                studyIterator ++;
+
+            }
+        }
+        else if (nodeName == "modelDescription") {
+
+            XmlNodeIterator modelIterator = it->getChildren();
+
+            while (modelIterator != XmlNodeIterator::none()) {
+
+                std::string insideName = modelIterator->getName();
+
+                if (insideName == "distribution") {
+                    distribution = extractTranslatableString(modelIterator, "desc");
+                }
+                else if (insideName == "elimination") {
+                    elimination = extractTranslatableString(modelIterator, "desc");
+                }
+
+                modelIterator ++;
+
+            }
+        }
+        else {
+            unexpectedTag(nodeName);
+        }
+
+        it ++;
+    }
+
+    if (getResult() != Result::Ok){
+        return nullptr;
+    }
+
+    DrugModelMetadata *metaData = new DrugModelMetadata();
+    metaData->setAuthorName(authorName);
+    metaData->setDrugName(drugName);
+    metaData->setStudyName(studyName);
+    metaData->setDrugDescription(drugDescription);
+    metaData->setAtcs(atcs);
+    metaData->setElimination(elimination);
+    metaData->setDistribution(distribution);
+
+    return metaData;
+
 }
 
 

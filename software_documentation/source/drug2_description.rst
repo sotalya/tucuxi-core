@@ -891,7 +891,7 @@ Formulation and route
 		 "____<formulation>               ",  string     , 1:1 , "the formulation. Taken from a dictionary"
 		 "____<administrationName>            ",  string  , 1:1 , "A free field to discriminate vendors"
 		 "____<administrationRoute>        ",     string     , 1:1 , "The route of administration, taken from a dictionary"
-		 "____<routeModelId>            ", :ref:`routeModelId`   , 1:1 , Id of the route model
+		 "____<absorptionModelId>            ", :ref:`absorptionModelId`   , 1:1 , Id of the absorption model
 		 "____<dosages>            ", :ref:`dosages`   , 1:1 , Possible dosages
 		 "____<absorptionParameters>            ",  , 1:1 , Sets of absorption parameters
 		 "________<parameterSet>            ",    , 1:∞ , A set of absorption parameters for an analyte group
@@ -930,14 +930,14 @@ For now it supports the following values:
 * "transdermal"
 * "vaginal"
 
-The *routeModelId* can be either *extra*, *infu* or *bolus*, respectiveley for extravascular, infusion or bolus.
+The *absorptionModelId* can be either *extra*, *infu* or *bolus*, respectiveley for extravascular, infusion or bolus.
 
-.. _routeModelId:
+.. _absorptionModelId:
 
-routeModelId
-^^^^^^^^^^^^
+absorptionModelId
+^^^^^^^^^^^^^^^^^
 
-.. csv-table:: routeModelId
+.. csv-table:: absorptionModelId
    :header: "Value", "Description"
    :widths: 15, 30
 
@@ -948,7 +948,7 @@ routeModelId
 
 The *dosages* are the possible dosages, used for proposing dosage adaptation.
 
-Finally, the *absorptionParameters* are the absorption parameters corresponding to the *routeModelId* selected.
+Finally, the *absorptionParameters* are the absorption parameters corresponding to the *absorptionModelId* selected.
 
 For these absorption parameters, the *analyteGroupId* allows to identify the analytes group related to the parameter set.
 

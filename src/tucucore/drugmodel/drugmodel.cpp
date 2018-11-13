@@ -136,6 +136,10 @@ void DrugModel::setDomain(std::unique_ptr<DrugModelDomain> _domain)
     m_domain = std::move(_domain);
 }
 
+void DrugModel::setMetadata(std::unique_ptr<DrugModelMetadata> _metadata)
+{
+    m_metadata = std::move(_metadata);
+}
 
 void DrugModel::addAnalyteSet(std::unique_ptr<AnalyteSet> _analyteSet)
 {

@@ -1,5 +1,7 @@
 #include "translatablestring.h"
 
+using namespace Tucuxi::Common;
+
 std::string TranslatableString::sm_language = "en";
 
 TranslatableString::TranslatableString()
