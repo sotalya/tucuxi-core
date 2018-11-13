@@ -14,7 +14,11 @@ namespace Core {
 IntakeIntervalCalculator::~IntakeIntervalCalculator()
 {}
 
-IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakePoints(
+IntakeIntervalCalculatorAnalytical::~IntakeIntervalCalculatorAnalytical()
+{}
+
+
+IntakeIntervalCalculator::Result IntakeIntervalCalculatorAnalytical::calculateIntakePoints(
     std::vector<Concentrations>& _concentrations,
     TimeOffsets & _times,
     const IntakeEvent& _intakeEvent,
@@ -89,7 +93,7 @@ IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakePoints
 }
 
 
-IntakeIntervalCalculator::Result IntakeIntervalCalculator::calculateIntakeSinglePoint(
+IntakeIntervalCalculator::Result IntakeIntervalCalculatorAnalytical::calculateIntakeSinglePoint(
     std::vector<Concentrations>& _concentrations,
     const IntakeEvent& _intakeEvent,
     const ParameterSetEvent& _parameters,

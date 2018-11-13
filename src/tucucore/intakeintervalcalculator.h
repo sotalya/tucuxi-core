@@ -79,7 +79,7 @@ public:
 
 public:
     /// \brief Constructor
-    IntakeIntervalCalculator() : m_firstCalculation(true) {}
+    IntakeIntervalCalculator() {}
 
     virtual ~IntakeIntervalCalculator();
 
@@ -100,6 +100,77 @@ public:
     /// \param _outResiduals Final residual concentrations
     /// \param _isDensityConstant Flag to indicate if initial number of points should be used with a constant density
     /// \return An indication if the computation was successful
+    virtual Result calculateIntakePoints(
+        std::vector<Concentrations>& _concentrations,
+        TimeOffsets & _times,
+        const IntakeEvent& _intakeEvent,
+        const ParameterSetEvent& _parameters,
+        const Residuals& _inResiduals,
+        bool _isAll,
+        Residuals& _outResiduals,
+        bool _isDensityConstant) = 0;
+
+    /// \brief Compute one single point at the specified time as well as final residuals
+    /// \param _concentrations vector of concentrations. 
+    /// \param _intakeEvent intake for the cycle (all cyles start with an intake)
+    /// \param _parameters Parameters for the cycle (all cycles have constant parameters)
+    /// \param _inResiduals Initial residual concentrations
+    /// \param _atTime The time of the point of interest
+    /// \param _outResiduals Final residual concentrations
+    /// \return Returns an indication if the computation was successful
+    virtual Result calculateIntakeSinglePoint(
+        std::vector<Concentrations>& _concentrations,
+        const IntakeEvent& _intakeEvent,
+        const ParameterSetEvent& _parameters,
+        const Residuals& _inResiduals,
+        const Value& _atTime,
+        bool _isAll,
+        Residuals& _outResiduals) = 0;
+
+    /// \brief Returns the number of compartments needed for the residuals
+    /// \return the number of compartments for the residuals
+    virtual unsigned int getResidualSize() const = 0;
+
+protected:
+    /// \brief Allows derived classes to make some checks on input data	
+    /// \param _intakeEvent intake for the cycle (all cyles start with an intake)
+    /// \param _parameters Parameters for the cycle (all cycles have constant parameters)
+    /// \return Returns true if inputs are ok
+    virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) = 0;
+
+    /// \brief Check if a value is correct and log a message if it is not the case
+    /// \param _isOk Indicates that the value is correct
+    /// \param _errMsg Message to log in case of problem
+    bool checkValue(bool _isOk,  const std::string& _errMsg);
+
+protected:
+    typedef IntakeCalculatorSingleConcentrations SingleConcentrations;
+
+
+};
+
+
+class IntakeIntervalCalculatorAnalytical : public IntakeIntervalCalculator
+{
+
+public:
+    /// \brief Constructor
+    IntakeIntervalCalculatorAnalytical() : m_firstCalculation(true) {}
+
+    virtual ~IntakeIntervalCalculatorAnalytical();
+
+
+    /// \brief Calculate all points for the given time serie
+    /// Variable denisty is used by default, which means IntakeEvent is not constant as the final density
+    /// is stored there. Cornish Fisher cumulants calculated within
+    /// \param _concentrations Vector of concentrations
+    /// \param _times Vector of times
+    /// \param _intakeEvent Intake for the cycle (all cyles start with an intake)
+    /// \param _parameters Parameters for the cycle (all cycles have constant parameters)
+    /// \param _inResiduals Initial residual concentrations
+    /// \param _outResiduals Final residual concentrations
+    /// \param _isDensityConstant Flag to indicate if initial number of points should be used with a constant density
+    /// \return An indication if the computation was successful
     Result calculateIntakePoints(
         std::vector<Concentrations>& _concentrations,
         TimeOffsets & _times,
@@ -108,10 +179,10 @@ public:
         const Residuals& _inResiduals,
         bool _isAll,
         Residuals& _outResiduals,
-        bool _isDensityConstant);
+        bool _isDensityConstant) override;
 
     /// \brief Compute one single point at the specified time as well as final residuals
-    /// \param _concentrations vector of concentrations. 
+    /// \param _concentrations vector of concentrations.
     /// \param _intakeEvent intake for the cycle (all cyles start with an intake)
     /// \param _parameters Parameters for the cycle (all cycles have constant parameters)
     /// \param _inResiduals Initial residual concentrations
@@ -125,18 +196,9 @@ public:
         const Residuals& _inResiduals,
         const Value& _atTime,
         bool _isAll,
-        Residuals& _outResiduals);
-
-    /// \brief Returns the number of compartments needed for the residuals
-    /// \return the number of compartments for the residuals
-    virtual unsigned int getResidualSize() const = 0;
+        Residuals& _outResiduals) override;
 
 protected:
-    /// \brief Allows derived classes to make some checks on input data	
-    /// \param _intakeEvent intake for the cycle (all cyles start with an intake)
-    /// \param _parameters Parameters for the cycle (all cycles have constant parameters)
-    /// \return Returns true if inputs are ok
-    virtual bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) = 0;
 
     /// \brief Computation of exponentials values that will may be shared by severall successive computations
     /// \param _intakeEvent intake for the cycle (all cyles start with an intake)
@@ -159,11 +221,6 @@ protected:
     /// \param _outResiduals Final residual concentrations
     virtual bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) = 0;
 
-    /// \brief Check if a value is correct and log a message if it is not the case
-    /// \param _isOk Indicates that the value is correct
-    /// \param _errMsg Message to log in case of problem
-    bool checkValue(bool _isOk,  const std::string& _errMsg);
-
 protected:
     PrecomputedExponentials m_precomputedExponentials;      /// List of precomputed exponentials
     typedef IntakeCalculatorSingleConcentrations SingleConcentrations;
@@ -176,7 +233,7 @@ private:
 };
 
 template<unsigned int ResidualSize, typename EParameters>
-class IntakeIntervalCalculatorBase : public IntakeIntervalCalculator
+class IntakeIntervalCalculatorBase : public IntakeIntervalCalculatorAnalytical
 {
 public:
     unsigned int getResidualSize() const override {
