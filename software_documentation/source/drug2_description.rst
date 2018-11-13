@@ -971,6 +971,11 @@ This section contains all the information about the dosages, such as the default
    :widths: 15, 10, 5, 30
 
  	 "<dosages>             ",          ,  , "Available dosages associated with a formulation and route"
+		 "____<standardTreatment>                 ", , 0:1 , "A potential standard treatment"
+		 "________<isFixedDuration>                 ", bool, 1:1 , "Has the treatment a fixed duration?"
+		 "________<timeValue>                 ", , 0:1 , "The duration of the fixed duration"
+		 "____________<unit>                 ", , 1:1 , "The unit of the duration"
+		 "____________<value>                 ", , 1:1 , "The duration value"
 		 "____<analyteConversions>                 ", , 1:1 , "List of analyte conversions"
 		 "________<analyteConversion>               ",       , 1:∞ , "Conversion from the quantity of drug to the quantity of analyte"
 		 "____________<analyteId>            ",  string  , 1:1 , "The Id of the analyte"
