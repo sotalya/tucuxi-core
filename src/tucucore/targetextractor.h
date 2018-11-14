@@ -48,7 +48,7 @@ public:
 
 protected:
 
-    TargetEvent targetEventFromTarget(const Target *_target);
+    TargetEvent targetEventFromTarget(const Target *_target, const TargetDefinition *_targetDefinition);
 
     TargetEvent targetEventFromTargetDefinition(const TargetDefinition *_target);
 };

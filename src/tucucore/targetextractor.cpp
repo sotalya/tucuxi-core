@@ -9,33 +9,115 @@
 namespace Tucuxi {
 namespace Core {
 
-TargetEvent TargetExtractor::targetEventFromTarget(const Target *_target) {
-    return  TargetEvent(
-                _target->m_activeMoietyId,
-                _target->m_targetType,
-                _target->m_valueMin,
-                _target->m_valueBest,
-                _target->m_valueMax,
-                _target->m_mic,
-                _target->m_tMin,
-                _target->m_tBest,
-                _target->m_tMax);
+TargetEvent TargetExtractor::targetEventFromTarget(const Target *_target, const TargetDefinition *_targetDefinition) {
+
+    switch (_targetDefinition->m_targetType) {
+
+    case TargetType::Peak :
+    case TargetType::Residual :
+    case TargetType::Mean :
+    {
+        // Here we consider times as minutes. This has to be fixed once
+        return TargetEvent(
+                    _targetDefinition->getActiveMoietyId(),
+                    _targetDefinition->getTargetType(),
+                    translateToUnit(_target->m_valueMin, _targetDefinition->getUnit(), Unit("ug/l")),
+                    translateToUnit(_target->m_valueBest, _targetDefinition->getUnit(), Unit("ug/l")),
+                    translateToUnit(_target->m_valueMax, _targetDefinition->getUnit(), Unit("ug/l")),
+                    translateToUnit(_target->m_mic, _targetDefinition->getMicUnit(), Unit("ug/l")),
+                    _target->m_tMin,
+                    _target->m_tBest,
+                    _target->m_tMax);
+    } break;
+    case TargetType::Auc :
+    case TargetType::Auc24 :
+    case TargetType::CumulativeAuc :
+    case TargetType::AucOverMic :
+    case TargetType::Auc24OverMic :
+    {
+
+        // Here we consider times as minutes. This has to be fixed once
+        return TargetEvent(
+                    _targetDefinition->getActiveMoietyId(),
+                    _targetDefinition->getTargetType(),
+                    translateToUnit(_target->m_valueMin, _targetDefinition->getUnit(), Unit("ug*h/l")),
+                    translateToUnit(_target->m_valueBest, _targetDefinition->getUnit(), Unit("ug*h/l")),
+                    translateToUnit(_target->m_valueMax, _targetDefinition->getUnit(), Unit("ug*h/l")),
+                    translateToUnit(_target->m_mic, _targetDefinition->getMicUnit(), Unit("ug/l")),
+                    _target->m_tMin,
+                    _target->m_tBest,
+                    _target->m_tMax);
+    } break;
+    case TargetType::AucDividedByMic :
+    case TargetType::Auc24DividedByMic :
+    case TargetType::TimeOverMic :
+    {
+
+        // Here we consider times as minutes. This has to be fixed once
+        return TargetEvent(
+                    _targetDefinition->getActiveMoietyId(),
+                    _targetDefinition->getTargetType(),
+                    translateToUnit(_target->m_valueMin, _targetDefinition->getUnit(), Unit("h")),
+                    translateToUnit(_target->m_valueBest, _targetDefinition->getUnit(), Unit("h")),
+                    translateToUnit(_target->m_valueMax, _targetDefinition->getUnit(), Unit("h")),
+                    translateToUnit(_target->m_mic, _targetDefinition->getMicUnit(), Unit("ug/l")),
+                    _target->m_tMin,
+                    _target->m_tBest,
+                    _target->m_tMax);
+    } break;
+
+    case TargetType::PeakDividedByMic :
+    {
+
+        // Here we consider times as minutes. This has to be fixed once
+        return TargetEvent(
+                    _targetDefinition->getActiveMoietyId(),
+                    _targetDefinition->getTargetType(),
+                    translateToUnit(_target->m_valueMin, _targetDefinition->getUnit(), Unit("")),
+                    translateToUnit(_target->m_valueBest, _targetDefinition->getUnit(), Unit("")),
+                    translateToUnit(_target->m_valueMax, _targetDefinition->getUnit(), Unit("")),
+                    translateToUnit(_target->m_mic, _targetDefinition->getMicUnit(), Unit("ug/l")),
+                    _target->m_tMin,
+                    _target->m_tBest,
+                    _target->m_tMax);
+    } break;
+
+    case TargetType::UnknownTarget :
+    {
+        // TODO : Log something wrong here
+
+        return TargetEvent(
+                    _targetDefinition->getActiveMoietyId(),
+                    _targetDefinition->getTargetType(),
+                    _target->m_valueMin,
+                    _target->m_valueBest,
+                    _target->m_valueMax,
+                    _target->m_mic,
+                    _target->m_tMin,
+                    _target->m_tBest,
+                    _target->m_tMax);
+    } break;
+    }
 }
 
 
 TargetEvent TargetExtractor::targetEventFromTargetDefinition(const TargetDefinition *_target) {
-    if ((_target->m_targetType == TargetType::Peak) ||
-            (_target->m_targetType == TargetType::Residual)) {
+
+
+    switch (_target->m_targetType) {
+
+    case TargetType::Peak :
+    case TargetType::Residual :
+    case TargetType::Mean :
 
         // Here we consider times as minutes. This has to be fixed once
         return TargetEvent(
                     _target->getActiveMoietyId(),
                     _target->getTargetType(),
-
                     translateToUnit(_target->getCMin().getValue(), _target->getUnit(), Unit("ug/l")),
                     translateToUnit(_target->getCBest().getValue(), _target->getUnit(), Unit("ug/l")),
                     translateToUnit(_target->getCMax().getValue(), _target->getUnit(), Unit("ug/l")),
-                    // TODO : Manage units of MIC targets
+                    // Do not use Mic, so no unit translation
                     _target->getMic().getValue(),
                     Tucuxi::Common::Duration(
                         std::chrono::minutes(static_cast<int>(_target->getTMin().getValue()))),
@@ -43,22 +125,20 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(const TargetDefinit
                         std::chrono::minutes(static_cast<int>(_target->getTBest().getValue()))),
                     Tucuxi::Common::Duration(
                         std::chrono::minutes(static_cast<int>(_target->getTMax().getValue()))));
-    }
-    else if ((_target->m_targetType == TargetType::Auc) ||
-             (_target->m_targetType == TargetType::Auc24) ||
-             (_target->m_targetType == TargetType::CumulativeAuc) ||
-             (_target->m_targetType == TargetType::AucOverMic) ||
-             (_target->m_targetType == TargetType::Auc24OverMic)) {
+
+    case TargetType::Auc :
+    case TargetType::Auc24 :
+    case TargetType::CumulativeAuc :
+    case TargetType::AucOverMic :
+    case TargetType::Auc24OverMic :
 
         // Here we consider times as minutes. This has to be fixed once
         return TargetEvent(
                     _target->getActiveMoietyId(),
                     _target->getTargetType(),
-
                     translateToUnit(_target->getCMin().getValue(), _target->getUnit(), Unit("ug*h/l")),
                     translateToUnit(_target->getCBest().getValue(), _target->getUnit(), Unit("ug*h/l")),
                     translateToUnit(_target->getCMax().getValue(), _target->getUnit(), Unit("ug*h/l")),
-                    // TODO : Manager units of MIC
                     translateToUnit(_target->getMic().getValue(), _target->getMicUnit(), Unit("ug/l")),
                     Tucuxi::Common::Duration(
                         std::chrono::minutes(static_cast<int>(_target->getTMin().getValue()))),
@@ -66,19 +146,19 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(const TargetDefinit
                         std::chrono::minutes(static_cast<int>(_target->getTBest().getValue()))),
                     Tucuxi::Common::Duration(
                         std::chrono::minutes(static_cast<int>(_target->getTMax().getValue()))));
-    }
-    else if ((_target->m_targetType == TargetType::AucDividedByMic) ||
-             (_target->m_targetType == TargetType::Auc24DividedByMic)) {
+
+
+    case TargetType::AucDividedByMic :
+    case TargetType::Auc24DividedByMic :
+    case TargetType::TimeOverMic :
 
         // Here we consider times as minutes. This has to be fixed once
         return TargetEvent(
                     _target->getActiveMoietyId(),
                     _target->getTargetType(),
-
                     translateToUnit(_target->getCMin().getValue(), _target->getUnit(), Unit("h")),
                     translateToUnit(_target->getCBest().getValue(), _target->getUnit(), Unit("h")),
                     translateToUnit(_target->getCMax().getValue(), _target->getUnit(), Unit("h")),
-                    // TODO : Manager units of MIC
                     translateToUnit(_target->getMic().getValue(), _target->getMicUnit(), Unit("ug/l")),
                     Tucuxi::Common::Duration(
                         std::chrono::minutes(static_cast<int>(_target->getTMin().getValue()))),
@@ -86,8 +166,25 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(const TargetDefinit
                         std::chrono::minutes(static_cast<int>(_target->getTBest().getValue()))),
                     Tucuxi::Common::Duration(
                         std::chrono::minutes(static_cast<int>(_target->getTMax().getValue()))));
-    }
-    else {
+
+    case TargetType::PeakDividedByMic :
+
+        // Here we consider times as minutes. This has to be fixed once
+        return TargetEvent(
+                    _target->getActiveMoietyId(),
+                    _target->getTargetType(),
+                    translateToUnit(_target->getCMin().getValue(), _target->getUnit(), Unit("")),
+                    translateToUnit(_target->getCBest().getValue(), _target->getUnit(), Unit("")),
+                    translateToUnit(_target->getCMax().getValue(), _target->getUnit(), Unit("")),
+                    translateToUnit(_target->getMic().getValue(), _target->getMicUnit(), Unit("ug/l")),
+                    Tucuxi::Common::Duration(
+                        std::chrono::minutes(static_cast<int>(_target->getTMin().getValue()))),
+                    Tucuxi::Common::Duration(
+                        std::chrono::minutes(static_cast<int>(_target->getTBest().getValue()))),
+                    Tucuxi::Common::Duration(
+                        std::chrono::minutes(static_cast<int>(_target->getTMax().getValue()))));
+
+    case TargetType::UnknownTarget :
 
         // Here we consider times as minutes. This has to be fixed once
         return TargetEvent(
@@ -96,7 +193,7 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(const TargetDefinit
                     _target->getCMin().getValue(),
                     _target->getCBest().getValue(),
                     _target->getCMax().getValue(),
-                    // TODO : Manager units of MIC
+                    // No use of MIC, so no unit translation
                     _target->getMic().getValue(),
                     Tucuxi::Common::Duration(
                         std::chrono::minutes(static_cast<int>(_target->getTMin().getValue()))),
@@ -128,8 +225,22 @@ TargetExtractor::Result TargetExtractor::extract(
     case TargetExtractionOption::IndividualTargets :
     {
         for (const auto& target : _targets) {
-            // We create the TargetEvent with the target
-            _series.push_back(targetEventFromTarget(target.get()));
+
+            bool foundDefinition = false;
+            // First find the corresponding target definition
+            for (const auto& targetDefinition : _targetDefinitions) {
+                if ((targetDefinition.get()->getActiveMoietyId() == target.get()->m_activeMoietyId) &&
+                        (targetDefinition.get()->getTargetType() == target.get()->m_targetType)){
+                    // We create the TargetEvent with the target
+                    _series.push_back(targetEventFromTarget(target.get(), targetDefinition.get()));
+                    foundDefinition = true;
+                    break;
+                }
+            }
+            if (!foundDefinition) {
+                // TODO : Log, something went wrong
+                return Result::ExtractionError;
+            }
         }
     } break;
 
@@ -143,7 +254,7 @@ TargetExtractor::Result TargetExtractor::extract(
                         (targetDefinition.get()->getTargetType() == target.get()->m_targetType)){
                     foundTarget = true;
                     // We create the TargetEvent with the target
-                    _series.push_back(targetEventFromTarget(target.get()));
+                    _series.push_back(targetEventFromTarget(target.get(), targetDefinition.get()));
 
                 }
             }

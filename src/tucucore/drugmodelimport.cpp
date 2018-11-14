@@ -1071,6 +1071,7 @@ ActiveMoiety* DrugModelImport::extractActiveMoiety(Tucuxi::Common::XmlNodeIterat
 
     activeMoiety = new ActiveMoiety(activeMoietyId, unit, analyteIdList, std::unique_ptr<Operation>(formula));
     for (const auto & target : targets) {
+        target->setActiveMoietyId(activeMoietyId);
         activeMoiety->addTarget(std::unique_ptr<TargetDefinition>(target));
     }
     activeMoiety->setName(name);

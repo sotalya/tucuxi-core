@@ -86,6 +86,7 @@ public:
 
     }
 
+    void setActiveMoietyId(std::string _activeMoietyId) { m_activeMoietyId = _activeMoietyId;}
     TargetType getTargetType() const { return m_targetType;}
     std::string getActiveMoietyId() const { return m_activeMoietyId;}
     Unit getUnit() const { return m_unit;}
