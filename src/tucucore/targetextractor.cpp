@@ -45,7 +45,10 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(const TargetDefinit
                         std::chrono::minutes(static_cast<int>(_target->getTMax().getValue()))));
     }
     else if ((_target->m_targetType == TargetType::Auc) ||
-             (_target->m_targetType == TargetType::CumulativeAuc)) {
+             (_target->m_targetType == TargetType::Auc24) ||
+             (_target->m_targetType == TargetType::CumulativeAuc) ||
+             (_target->m_targetType == TargetType::AucOverMic) ||
+             (_target->m_targetType == TargetType::Auc24OverMic)) {
 
         // Here we consider times as minutes. This has to be fixed once
         return TargetEvent(
@@ -56,7 +59,27 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(const TargetDefinit
                     translateToUnit(_target->getCBest().getValue(), _target->getUnit(), Unit("ug*h/l")),
                     translateToUnit(_target->getCMax().getValue(), _target->getUnit(), Unit("ug*h/l")),
                     // TODO : Manager units of MIC
-                    _target->getMic().getValue(),
+                    translateToUnit(_target->getMic().getValue(), _target->getMicUnit(), Unit("ug/l")),
+                    Tucuxi::Common::Duration(
+                        std::chrono::minutes(static_cast<int>(_target->getTMin().getValue()))),
+                    Tucuxi::Common::Duration(
+                        std::chrono::minutes(static_cast<int>(_target->getTBest().getValue()))),
+                    Tucuxi::Common::Duration(
+                        std::chrono::minutes(static_cast<int>(_target->getTMax().getValue()))));
+    }
+    else if ((_target->m_targetType == TargetType::AucDividedByMic) ||
+             (_target->m_targetType == TargetType::Auc24DividedByMic)) {
+
+        // Here we consider times as minutes. This has to be fixed once
+        return TargetEvent(
+                    _target->getActiveMoietyId(),
+                    _target->getTargetType(),
+
+                    translateToUnit(_target->getCMin().getValue(), _target->getUnit(), Unit("h")),
+                    translateToUnit(_target->getCBest().getValue(), _target->getUnit(), Unit("h")),
+                    translateToUnit(_target->getCMax().getValue(), _target->getUnit(), Unit("h")),
+                    // TODO : Manager units of MIC
+                    translateToUnit(_target->getMic().getValue(), _target->getMicUnit(), Unit("ug/l")),
                     Tucuxi::Common::Duration(
                         std::chrono::minutes(static_cast<int>(_target->getTMin().getValue()))),
                     Tucuxi::Common::Duration(

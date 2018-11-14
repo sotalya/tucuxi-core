@@ -34,10 +34,13 @@ enum class TargetType {
     Peak,
     Mean,
     Auc,
+    Auc24,
     CumulativeAuc,
     AucOverMic,
+    Auc24OverMic,
     TimeOverMic,
     AucDividedByMic,
+    Auc24DividedByMic,
     PeakDividedByMic
 };
 
@@ -64,9 +67,11 @@ public:
                      std::unique_ptr<SubTargetDefinition> _tMax,
                      std::unique_ptr<SubTargetDefinition> _tBest,
                      std::unique_ptr<SubTargetDefinition> _toxicityAlarm,
-                     std::unique_ptr<SubTargetDefinition> _inefficacyAlarm) :
+                     std::unique_ptr<SubTargetDefinition> _inefficacyAlarm,
+                     Unit _micUnit = Unit()) :
         m_targetType(_type),
         m_unit(_unit),
+        m_micUnit(_micUnit),
         m_activeMoietyId(_activeMoietyId),
         m_valueMin(std::move(_valueMin)),
         m_valueMax(std::move(_valueMax)),
@@ -84,6 +89,7 @@ public:
     TargetType getTargetType() const { return m_targetType;}
     std::string getActiveMoietyId() const { return m_activeMoietyId;}
     Unit getUnit() const { return m_unit;}
+    Unit getMicUnit() const { return m_micUnit;}
 
     const SubTargetDefinition & getCMin() const { return *m_valueMin;}
     const SubTargetDefinition & getCMax() const { return *m_valueMax;}
@@ -98,6 +104,7 @@ public:
 //protected:
     TargetType m_targetType;
     Unit m_unit;
+    Unit m_micUnit;
     std::string m_activeMoietyId;
 
     std::unique_ptr<SubTargetDefinition> m_valueMin;

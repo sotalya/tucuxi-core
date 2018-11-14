@@ -105,6 +105,30 @@ TargetEvaluator::Result TargetEvaluator::evaluate(
         }
     } break;
 
+    case TargetType::Auc24 :
+    {
+        double auc = -1.0;
+        CycleStatistic cycleStatistic = statisticsCalculator.getStatistic(0, CycleStatisticType::AUC);
+        bOk = cycleStatistic.getValue(dateTime, auc);
+
+        double intervalInHours = 0.0;
+        CycleStatistic cycleStatisticForCycleInterval = statisticsCalculator.getStatistic(0, CycleStatisticType::CycleInterval);
+        bOk &= cycleStatisticForCycleInterval.getValue(dateTime, intervalInHours);
+
+
+        if (bOk) {
+            // Calculate the AUC on 24h
+            double auc24 = auc * 24.0 / intervalInHours;
+
+            // Check if concentration is within the target range
+            bOk = (auc24 < _target.m_valueMax) && (auc24 > _target.m_valueMin);
+            if (bOk) {
+                score = 1.0 - pow(log(auc24) - log(_target.m_valueBest), 2) / pow(0.5 *(log(_target.m_valueMax) - log(_target.m_valueMin)), 2);
+                value = auc24;
+            }
+        }
+    } break;
+
     case TargetType::CumulativeAuc :
     {
         double cumulativeAuc = 0.0;
@@ -159,6 +183,30 @@ TargetEvaluator::Result TargetEvaluator::evaluate(
 
 
         if (bOk) {
+            // Calculate the AUC
+            double aucDividedByMic = auc / _target.m_mic;
+
+            // Check if concentration is within the target range
+            bOk = (aucDividedByMic < _target.m_valueMax) && (aucDividedByMic > _target.m_valueMin);
+            if (bOk) {
+                score = 1.0 - pow(log(aucDividedByMic) - log(_target.m_valueBest), 2) / pow(0.5 *(log(_target.m_valueMax) - log(_target.m_valueMin)), 2);
+                value = aucDividedByMic;
+            }
+        }
+    } break;
+
+    case TargetType::Auc24DividedByMic :
+    {
+        double auc = -1.0;
+        CycleStatistic cycleStatistic = statisticsCalculator.getStatistic(0, CycleStatisticType::AUC);
+        bOk = cycleStatistic.getValue(dateTime, auc);
+
+        double intervalInHours = 0.0;
+        CycleStatistic cycleStatisticForCycleInterval = statisticsCalculator.getStatistic(0, CycleStatisticType::CycleInterval);
+        bOk &= cycleStatisticForCycleInterval.getValue(dateTime, intervalInHours);
+
+
+        if (bOk) {
             // Calculate the AUC on 24h
             double auc24 = auc * 24.0 / intervalInHours;
             double aucDividedByMic = auc24 / _target.m_mic;
@@ -173,6 +221,11 @@ TargetEvaluator::Result TargetEvaluator::evaluate(
     } break;
 
     case TargetType::AucOverMic :
+    {
+        return Result::EvaluationError;
+    } break;
+
+    case TargetType::Auc24OverMic :
     {
         return Result::EvaluationError;
     } break;

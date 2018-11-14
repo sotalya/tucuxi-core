@@ -101,6 +101,10 @@ DrugModelImport::Result DrugModelImport::importDocument(
 
     _drugModel = extractDrugModel(drugModelIterator);
 
+    if (getResult() != Result::Ok) {
+        return getResult();
+    }
+
     DrugModelMetadata *metaData = nullptr;
 
     XmlNodeIterator metadataIterator = root.getChildren("head");
@@ -261,10 +265,13 @@ TargetType DrugModelImport::extractTargetType(Tucuxi::Common::XmlNodeIterator _n
         {"residual", TargetType::Residual},
         {"mean", TargetType::Mean},
         {"auc", TargetType::Auc},
+        {"auc24", TargetType::Auc24},
         {"cumulativeAuc", TargetType::CumulativeAuc},
         {"aucOverMic", TargetType::AucOverMic},
+        {"auc24OverMic", TargetType::Auc24OverMic},
         {"timeOverMic", TargetType::TimeOverMic},
         {"aucDividedByMic", TargetType::AucDividedByMic},
+        {"auc24DividedByMic", TargetType::Auc24DividedByMic},
         {"peakDividedByMic", TargetType::PeakDividedByMic}
     };
 
@@ -1114,6 +1121,7 @@ TargetDefinition* DrugModelImport::extractTarget(Tucuxi::Common::XmlNodeIterator
     LightPopulationValue *tBest = nullptr;
     LightPopulationValue *toxicityAlarm = nullptr;
     LightPopulationValue *inefficacyAlarm = nullptr;
+    Unit micUnit("ug/l");
 
     Unit tUnit = Unit("h");
 
@@ -1144,7 +1152,22 @@ TargetDefinition* DrugModelImport::extractTarget(Tucuxi::Common::XmlNodeIterator
                     bestValue = extractPopulationValue(targetValuesIt);
                 }
                 else if (valueName == "mic") {
-                    bestValue = extractPopulationValue(targetValuesIt);
+
+                    XmlNodeIterator micIt = targetValuesIt->getChildren();
+
+                    while (micIt != XmlNodeIterator::none()) {
+                        std::string micName = micIt->getName();
+                        if (micName == "unit") {
+                            micUnit = extractUnit(micIt);
+                        }
+                        else if (micName == "micValue") {
+                            mic = extractPopulationValue(micIt);
+                        }
+                        else {
+                            unexpectedTag(micName);
+                        }
+                        micIt ++;
+                    }
                 }
                 else if (valueName == "toxicityAlarm") {
                     toxicityAlarm = extractPopulationValue(targetValuesIt);
@@ -1235,7 +1258,8 @@ TargetDefinition* DrugModelImport::extractTarget(Tucuxi::Common::XmlNodeIterator
                                   std::make_unique<SubTargetDefinition>("tMax", translateToUnit(tMax->getValue(), tUnit, Unit("m")), tMax->getOperation()),
                                   std::make_unique<SubTargetDefinition>("tBest", translateToUnit(tBest->getValue(), tUnit, Unit("m")), tBest->getOperation()),
                                   std::make_unique<SubTargetDefinition>("toxicity", toxicityAlarm->getValue(), toxicityAlarm->getOperation()),
-                                  std::make_unique<SubTargetDefinition>("inefficacy", inefficacyAlarm->getValue(), inefficacyAlarm->getOperation())
+                                  std::make_unique<SubTargetDefinition>("inefficacy", inefficacyAlarm->getValue(), inefficacyAlarm->getOperation()),
+                                  micUnit
                                   );
 
 
