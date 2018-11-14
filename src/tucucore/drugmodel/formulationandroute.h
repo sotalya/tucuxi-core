@@ -44,6 +44,22 @@ enum class AdministrationRoute
     Vaginal
 };
 
+class StandardTreatment
+{
+public:
+    StandardTreatment(bool _isFixedDuration = false, Value _duration = 0.0, Unit _unit = Unit("h")):
+        m_isFixedDuration(_isFixedDuration), m_duration(_duration), m_unit(_unit) {}
+
+    bool getIsFixedDuration() const { return m_isFixedDuration;}
+    //Tucuxi::Common::Duration getDuration() const { return m_duration;}
+    Value getDuration() const { return m_duration;}
+    Unit getUnit() const { return m_unit;}
+
+protected:
+    bool m_isFixedDuration;
+    Value m_duration;
+    Unit m_unit;
+};
 
 class AnalyteSetToAbsorptionAssociation
 {
@@ -128,6 +144,8 @@ public:
     void setValidInfusionTimes(std::unique_ptr<ValidDurations> _validInfusionTimes) {m_validInfusionTimes = std::move(_validInfusionTimes);}
     void addAssociation(std::unique_ptr< AnalyteSetToAbsorptionAssociation > _association) {m_associations.push_back(std::move(_association));}
 
+    void setStandardTreatment(std::unique_ptr<StandardTreatment> _standardTreatment) {m_standardTreatment = std::move(_standardTreatment);}
+
     const ParameterSetDefinition* getParameterDefinitions(const std::string &_analyteId) const;
 
     std::string getId() const { return m_id;}
@@ -137,6 +155,8 @@ public:
     const ValidDurations* getValidIntervals() const { return m_validIntervals.get();}
     const ValidDurations* getValidInfusionTimes() const { return m_validInfusionTimes.get();}
     const FormulationAndRoute& getFormulationAndRoute() const { return m_specs;}
+
+    const StandardTreatment* getStandardTreatment() const { return m_standardTreatment.get();}
 
 protected:
 
@@ -149,7 +169,9 @@ protected:
     std::unique_ptr<ValidDurations> m_validIntervals;
     std::unique_ptr<ValidDurations> m_validInfusionTimes;
 
-    std::vector<std::unique_ptr< AnalyteSetToAbsorptionAssociation > > m_associations;    
+    std::vector<std::unique_ptr< AnalyteSetToAbsorptionAssociation > > m_associations;
+
+    std::unique_ptr<StandardTreatment> m_standardTreatment;
 
     friend class FormulationAndRoutes;
 };

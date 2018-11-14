@@ -152,6 +152,7 @@ protected:
 
     Unit extractUnit(Tucuxi::Common::XmlNodeIterator _node);
     double extractDouble(Tucuxi::Common::XmlNodeIterator _node);
+    bool extractBool(Tucuxi::Common::XmlNodeIterator _node);
 
 
     ///////////////////////////////////////////////////////////////////////////////

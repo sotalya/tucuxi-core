@@ -91,6 +91,9 @@ public:
     /// \param _operation Operation used to validate the covariate value
     void setValidation(std::unique_ptr<Operation> _validation) { m_validation = std::move(_validation);}
 
+    void setUnit(Unit _unit) { m_unit = _unit;}
+    Unit getUnit() const { return m_unit;}
+
 private:
     std::unique_ptr<ParameterVariability> m_variability;
     Unit m_unit;

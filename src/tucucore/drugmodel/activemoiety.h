@@ -22,6 +22,8 @@ public:
    Tucuxi::Common:: TranslatableString getActiveMoietyName() const { return m_name;}
     const std::vector<std::string> & getAnalyteIds() const {return m_analyteIds;}
 
+    void setName(const Tucuxi::Common::TranslatableString &_name) { m_name = _name;}
+
 
 protected:
     std::string m_id;

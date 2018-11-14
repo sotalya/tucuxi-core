@@ -132,7 +132,7 @@ DrugModelImport::Result DrugModelImport::importDocument(
 
 const std::vector<std::string>& DrugModelImport::ignoredTags() const {
     static std::vector<std::string> ignoredTags =
-    {"comments", "description", "errorMessage", "name", "activeMoietyName"};
+    {"comments", "description", "errorMessage", "name"};
     return ignoredTags;
 }
 
@@ -162,6 +162,24 @@ double DrugModelImport::extractDouble(Tucuxi::Common::XmlNodeIterator _node)
     return result;
 }
 
+bool DrugModelImport::extractBool(Tucuxi::Common::XmlNodeIterator _node)
+{
+    bool result;
+    if (_node->getValue() == "true") {
+        return true;
+    }
+    if (_node->getValue() == "True") {
+        return true;
+    }
+    if (_node->getValue() == "false") {
+        return false;
+    }
+    if (_node->getValue() == "False") {
+        return false;
+    }
+    setResult(Result::Error);
+    return false;
+}
 
 Tucuxi::Common::TranslatableString DrugModelImport::extractTranslatableString(Tucuxi::Common::XmlNodeIterator _node, std::string _insideName)
 {
@@ -994,6 +1012,7 @@ ActiveMoiety* DrugModelImport::extractActiveMoiety(Tucuxi::Common::XmlNodeIterat
     std::vector<std::string> analyteIdList;
     Operation *formula = nullptr;
     std::vector<TargetDefinition *> targets;
+    TranslatableString name;
 
     XmlNodeIterator it = _node->getChildren();
 
@@ -1004,6 +1023,9 @@ ActiveMoiety* DrugModelImport::extractActiveMoiety(Tucuxi::Common::XmlNodeIterat
         }
         else if (nodeName == "unit") {
             unit = extractUnit(it);
+        }
+        else if (nodeName == "activeMoietyName") {
+            name = extractTranslatableString(it, "name");
         }
         else if (nodeName == "analyteIdList") {
 
@@ -1044,6 +1066,7 @@ ActiveMoiety* DrugModelImport::extractActiveMoiety(Tucuxi::Common::XmlNodeIterat
     for (const auto & target : targets) {
         activeMoiety->addTarget(std::unique_ptr<TargetDefinition>(target));
     }
+    activeMoiety->setName(name);
 
     return activeMoiety;
 }
@@ -1590,6 +1613,7 @@ ParameterDefinition* DrugModelImport::extractParameter(Tucuxi::Common::XmlNodeIt
     }
 
     parameter = new ParameterDefinition(id, value->getValue(), value->getOperation(), std::unique_ptr<ParameterVariability>(variability));
+    parameter->setUnit(unit);
     parameter->setValidation(std::unique_ptr<Operation>(validation));
 
     DELETE_IF_NON_NULL(value);
@@ -1768,6 +1792,7 @@ FullFormulationAndRoute* DrugModelImport::extractFullFormulationAndRoute(
     ValidDoses *availableDoses = nullptr;
     ValidDurations *intervals = nullptr;
     ValidDurations *infusions = nullptr;
+    StandardTreatment *standardTreatment = nullptr;
 
     XmlNodeIterator it = _node->getChildren();
 
@@ -1793,7 +1818,43 @@ FullFormulationAndRoute* DrugModelImport::extractFullFormulationAndRoute(
 
             while (dosageIt != XmlNodeIterator::none()) {
                 std::string nName = dosageIt->getName();
-                if (nName == "analyteConversions") {
+                if (nName == "standardTreatment") {
+                    XmlNodeIterator stdIt = dosageIt->getChildren();
+                    bool isFixedDuration = false;
+                    Unit unit;
+                    double value;
+                    while (stdIt != XmlNodeIterator::none()) {
+                        std::string stdName = stdIt->getName();
+                        if (stdName == "isFixedDuration"){
+                            isFixedDuration = extractBool(stdIt);
+                        }
+                        else if (stdName == "timeValue") {
+                            XmlNodeIterator timeIt = stdIt->getChildren();
+                            while (timeIt != XmlNodeIterator::none()) {
+                                std::string timeName = timeIt->getName();
+                                if (timeName == "unit") {
+                                    unit = extractUnit(timeIt);
+                                }
+                                else if (timeName == "value") {
+                                    value = extractDouble(timeIt);
+                                }
+                                else {
+                                    unexpectedTag(timeName);
+                                }
+                                timeIt ++;
+                            }
+                        }
+                        else {
+                            unexpectedTag(stdName);
+                        }
+
+                        stdIt ++;
+                    }
+
+                    standardTreatment = new StandardTreatment(isFixedDuration, value, unit);
+
+                }
+                else if (nName == "analyteConversions") {
 
                 }
                 else if (nName == "availableDoses") {
@@ -1873,6 +1934,7 @@ FullFormulationAndRoute* DrugModelImport::extractFullFormulationAndRoute(
         DELETE_IF_NON_NULL(availableDoses);
         DELETE_IF_NON_NULL(intervals);
         DELETE_IF_NON_NULL(infusions);
+        DELETE_IF_NON_NULL(standardTreatment);
         return nullptr;
     }
 
@@ -1884,6 +1946,9 @@ FullFormulationAndRoute* DrugModelImport::extractFullFormulationAndRoute(
     formulationAndRoute->setValidInfusionTimes(std::unique_ptr<ValidDurations>(infusions));
     for(const auto & association : associations) {
         formulationAndRoute->addAssociation(std::unique_ptr<AnalyteSetToAbsorptionAssociation>(association));
+    }
+    if (standardTreatment != nullptr) {
+        formulationAndRoute->setStandardTreatment(std::unique_ptr<StandardTreatment>(standardTreatment));
     }
 
     return formulationAndRoute;
@@ -1957,8 +2022,8 @@ ValidDoses* DrugModelImport::extractValidDoses(Tucuxi::Common::XmlNodeIterator _
     ValidDoses *validDoses;
     Unit unit;
     LightPopulationValue *defaultValue = nullptr;
-    ValidValuesRange *valuesRange = nullptr;
-    ValidValuesFixed *valuesFixed = nullptr;
+    std::vector<ValidValuesRange *> valuesRange;
+    std::vector<ValidValuesFixed *> valuesFixed;
 
     std::vector<FullFormulationAndRoute *> formulationAndRoutesVector;
 
@@ -1977,10 +2042,16 @@ ValidDoses* DrugModelImport::extractValidDoses(Tucuxi::Common::XmlNodeIterator _
             defaultValue = extractPopulationValue(it);
         }
         else if (nodeName == "rangeValues") {
-            valuesRange = extractValuesRange(it);
+            ValidValuesRange *v = extractValuesRange(it);
+            if (v != nullptr) {
+                valuesRange.push_back(v);
+            }
         }
         else if (nodeName == "fixedValues") {
-            valuesFixed = extractValuesFixed(it);
+            ValidValuesFixed *v = extractValuesFixed(it);
+            if (v != nullptr) {
+                valuesFixed.push_back(v);
+            }
         }
         else {
             unexpectedTag(nodeName);
@@ -1992,18 +2063,18 @@ ValidDoses* DrugModelImport::extractValidDoses(Tucuxi::Common::XmlNodeIterator _
     if (getResult() != Result::Ok) {
         DELETE_PVECTOR(formulationAndRoutesVector);
         DELETE_IF_NON_NULL(defaultValue);
-        DELETE_IF_NON_NULL(valuesRange);
-        DELETE_IF_NON_NULL(valuesFixed);
+        DELETE_PVECTOR(valuesRange);
+        DELETE_PVECTOR(valuesFixed);
         return nullptr;
     }
 
     validDoses = new ValidDoses(unit, std::make_unique<PopulationValue>("default", defaultValue->getValue(), defaultValue->getOperation()));
 
-    if (valuesRange != nullptr) {
-        validDoses->addValues(std::unique_ptr<IValidValues>(valuesRange));
+    for (const auto value : valuesRange) {
+        validDoses->addValues(std::unique_ptr<IValidValues>(value));
     }
-    if (valuesFixed != nullptr) {
-        validDoses->addValues(std::unique_ptr<IValidValues>(valuesFixed));
+    for (const auto value : valuesFixed) {
+        validDoses->addValues(std::unique_ptr<IValidValues>(value));
     }
 
     DELETE_IF_NON_NULL(defaultValue);
@@ -2105,6 +2176,7 @@ DrugModelMetadata* DrugModelImport::extractHead(Tucuxi::Common::XmlNodeIterator 
     TranslatableString studyName;
     TranslatableString distribution;
     TranslatableString elimination;
+    TranslatableString description;
     std::string authorName;
     std::vector<std::string> atcs;
 
@@ -2157,6 +2229,9 @@ DrugModelMetadata* DrugModelImport::extractHead(Tucuxi::Common::XmlNodeIterator 
                 else if (insideName == "studyAuthors") {
                     authorName = studyIterator->getValue();
                 }
+                else if (insideName == "description") {
+                    description = extractTranslatableString(studyIterator, "desc");
+                }
 
                 studyIterator ++;
 
@@ -2200,6 +2275,7 @@ DrugModelMetadata* DrugModelImport::extractHead(Tucuxi::Common::XmlNodeIterator 
     metaData->setAtcs(atcs);
     metaData->setElimination(elimination);
     metaData->setDistribution(distribution);
+    metaData->setDescription(description);
 
     return metaData;
 

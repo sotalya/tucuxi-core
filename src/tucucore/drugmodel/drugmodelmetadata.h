@@ -28,6 +28,9 @@ public:
     void setElimination(Tucuxi::Common::TranslatableString _elimination) { m_elimination = _elimination;}
     const Tucuxi::Common::TranslatableString& getElimination() const { return m_elimination;}
 
+    void setDescription(Tucuxi::Common::TranslatableString _description) { m_description = _description;}
+    const Tucuxi::Common::TranslatableString& getDescription() const { return m_description;}
+
     void setAuthorName(const std::string& _name) { m_authorName = _name;}
     const std::string& getAuthorName() const { return m_authorName;}
 
@@ -41,6 +44,7 @@ protected:
     Tucuxi::Common::TranslatableString m_studyName;
     Tucuxi::Common::TranslatableString m_distribution;
     Tucuxi::Common::TranslatableString m_elimination;
+    Tucuxi::Common::TranslatableString m_description;
     std::string m_authorName;
 
     std::vector<std::string> m_atcs;
