@@ -918,6 +918,7 @@ Duration castDuration(double duration, Unit unit)
     if (unit.toString() == "s") {
         return Duration(std::chrono::seconds((long)(duration)));
     }
+    return Duration();
 }
 
 CovariateDefinition* DrugModelImport::extractCovariate(Tucuxi::Common::XmlNodeIterator _node)
