@@ -531,6 +531,9 @@ A covariate is a medical information about the patient. A drug can contain from 
 	 "____<covariateType>               ", :ref:`covariateType` , 1:1 , The covariate's type
 	 "____<dataType>           ", :ref:`covariateDataType` , 1:1 , The covariate's type
 	 "____<interpolationType>", :ref:`interpolationType` , 1:1 , The covariate's type
+     "____<refreshPeriod>                 ", , 0:1 , "The refresh period for the covariate value"
+     "________<unit>                 ", , 1:1 , "The unit of the refresh period"
+     "________<value>                 ", , 1:1 , "The duration of the refresh period"
 	 "____<covariateValue>", :ref:`stdAprioriValue`   , 1:1 , "The covariate's value, that can be modified by other covariates"
 	 "____<validation>", ref:`validation` , 1:1 , Potential validation function for the covariate value
 	 "____<comments>", :ref:`comments` , 1:1 , Comments about the covariate
@@ -542,6 +545,8 @@ The interpolation type allow to decide how the calculation interprets covariates
 The covariate type allows to indicate if the covariate is standard, related to birth, or related to sex.
 
 The covariate data type allows to indicate the type in terms of int, double, bool or date.
+
+The refresh period is used when the interpolation type is not direct. The period defines the time between two modifications of the real covariate value to be used for adjusting other parameters.
 
 TODO : Check the next sentences
 
@@ -1108,7 +1113,7 @@ The second part of the time considerations consists in the time after which a me
 		 "_______<comments>            ", :ref:`comments`   , 1:1 , "Comments about the half life"
 		 "____<outdatedMeasure>            ", outdatedMeasure   , 1:1 , Indication about the relevance of a measure
 		 "_______<unit>               ", string   , 1:1 , Time unit
-		 "_______<duration>               ", :ref:`covariateType` , 1:1 , Time after which a measure shall be considered as irrelevant
+		 "_______<duration>               ", :ref:`stdAprioriValue` , 1:1 , Time after which a measure shall be considered as irrelevant
 		 "_______<comments>            ", :ref:`comments`   , 1:1 , "Comments about the outdate measure fields"
 
 
