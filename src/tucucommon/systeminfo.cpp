@@ -21,6 +21,15 @@
 #include <netinet/in.h>  // get mac address
 #include <sys/utsname.h> // get name
 
+#ifdef MACOS
+#include <sys/types.h>
+#include <ifaddrs.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <net/if_dl.h>
+#include <ifaddrs.h>
+#endif
+
 #endif
 
 #include "tucucommon/utils.h"
@@ -172,6 +181,29 @@ std::string SystemInfo::retrieveMacAddress()
 
     return ss_mac.str();
 
+#elif defined MACOS
+    struct ifaddrs *ifap, *ifaptr;
+    unsigned char *ptr;
+    if (getifaddrs(&ifap) == 0) {
+        for(ifaptr = ifap; ifaptr != NULL; ifaptr = (ifaptr)->ifa_next) {
+            if (ifaptr->ifa_addr->sa_family == AF_LINK 
+                    && !strcmp(ifaptr->ifa_name, "en0")) {
+                unsigned char * mac_address = (unsigned char *)LLADDR((struct sockaddr_dl *)(ifaptr)->ifa_addr);
+                std::stringstream ss;
+                ss << std::hex << std::setfill('0');
+                ss << std::setw(2) << static_cast<unsigned>(mac_address[0]);
+                ss << std::setw(2) << static_cast<unsigned>(mac_address[1]);
+                ss << std::setw(2) << static_cast<unsigned>(mac_address[2]);
+                ss << std::setw(2) << static_cast<unsigned>(mac_address[3]);
+                ss << std::setw(2) << static_cast<unsigned>(mac_address[4]);
+                ss << std::setw(2) << static_cast<unsigned>(mac_address[5]);
+                freeifaddrs(ifap);
+                return ss.str();
+                    }
+            }
+    } else {
+        return std::string();
+    }
 #else
     // Retrieve the mac address of interfaces
     struct ifreq ifr;

@@ -2,6 +2,7 @@
 #define TRANSLATABLESTRING_H
 
 #include <map>
+#include <string>
 
 namespace Tucuxi {
 namespace Common {
