@@ -16,6 +16,7 @@ HEADERS += \
     $$PWD/../../src/tucucore/operation.h \
     $$PWD/../../src/tucucore/pkmodels/onecompartmentbolus.h \
     $$PWD/../../src/tucucore/pkmodels/onecompartmentextra.h \
+    $$PWD/../../src/tucucore/pkmodels/rkonecompartmentextra.h \
     $$PWD/../../src/tucucore/pkmodels/onecompartmentinfusion.h \
     $$PWD/../../src/tucucore/pkmodels/threecompartmentbolus.h \
     $$PWD/../../src/tucucore/pkmodels/threecompartmentextra.h \
@@ -83,6 +84,7 @@ SOURCES += \
     $$PWD/../../src/tucucore/operation.cpp \
     $$PWD/../../src/tucucore/pkmodels/onecompartmentbolus.cpp \
     $$PWD/../../src/tucucore/pkmodels/onecompartmentextra.cpp \
+    $$PWD/../../src/tucucore/pkmodels/rkonecompartmentextra.cpp \
     $$PWD/../../src/tucucore/pkmodels/onecompartmentinfusion.cpp \
     $$PWD/../../src/tucucore/pkmodels/threecompartmentbolus.cpp \
     $$PWD/../../src/tucucore/pkmodels/threecompartmentextra.cpp \

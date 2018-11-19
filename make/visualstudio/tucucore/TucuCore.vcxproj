@@ -47,6 +47,7 @@
     <ClCompile Include="..\..\..\src\tucucore\montecarlopercentilecalculator.cpp" />
     <ClCompile Include="..\..\..\src\tucucore\onecompartmentbolus.cpp" />
     <ClCompile Include="..\..\..\src\tucucore\onecompartmentextra.cpp" />
+    <ClCompile Include="..\..\..\src\tucucore\rkonecompartmentextra.cpp" />
     <ClCompile Include="..\..\..\src\tucucore\onecompartmentinfusion.cpp" />
     <ClCompile Include="..\..\..\src\tucucore\operablegraphmanager.cpp" />
     <ClCompile Include="..\..\..\src\tucucore\operation.cpp" />
@@ -108,6 +109,7 @@
     <ClInclude Include="..\..\..\src\tucucore\montecarlopercentilecalculator.h" />
     <ClInclude Include="..\..\..\src\tucucore\onecompartmentbolus.h" />
     <ClInclude Include="..\..\..\src\tucucore\onecompartmentextra.h" />
+    <ClInclude Include="..\..\..\src\tucucore\rkonecompartmentextra.h" />
     <ClInclude Include="..\..\..\src\tucucore\onecompartmentinfusion.h" />
     <ClInclude Include="..\..\..\src\tucucore\operablegraphmanager.h" />
     <ClInclude Include="..\..\..\src\tucucore\operation.h" />

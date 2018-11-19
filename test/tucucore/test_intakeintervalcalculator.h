@@ -20,6 +20,8 @@
 #include "tucucore/pkmodels/threecompartmentextra.h"
 #include "tucucore/pkmodels/threecompartmentinfusion.h"
 
+#include "tucucore/pkmodels/rkonecompartmentextra.h"
+
 using namespace Tucuxi::Core;
 
 struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculator>
@@ -319,6 +321,39 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             CYCLE_SIZE);
     }
 
+
+    /// \brief Test the residual calculation of extravascular. Compares single point vs multiple points
+    /// \param _testName Test name.
+    /// A calculator is instanciated, and residuals are computed with both
+    ///     calculateIntakePoints and calculateIntakeSinglePoint.
+    /// The residuals are then compared and shall be identical.
+    void testRK41compExtraSingleVsMultiple(const std::string& /* _testName */)
+    {
+        // parameter for micro class
+        Tucuxi::Core::ParameterDefinitions microParameterDefs;
+        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterVariabilityType::None)));
+        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ke", 0.0435331, Tucuxi::Core::ParameterVariabilityType::None)));
+        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
+        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
+        Tucuxi::Core::ParameterSetEvent microParameters(DateTime(), microParameterDefs);
+
+        // parameter for macro class
+        Tucuxi::Core::ParameterDefinitions macroParameterDefs;
+        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterVariabilityType::None)));
+        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("CL", 15.106, Tucuxi::Core::ParameterVariabilityType::None)));
+        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
+        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
+        Tucuxi::Core::ParameterSetEvent macroParameters(DateTime(), macroParameterDefs);
+
+        testCalculator<Tucuxi::Core::RK4OneCompartmentExtraMicro, Tucuxi::Core::RK4OneCompartmentExtraMacro>(
+            microParameters,
+            macroParameters,
+            400.0,
+            Tucuxi::Core::AbsorptionModel::EXTRAVASCULAR,
+            12h,
+            0s,
+            CYCLE_SIZE);
+    }
 
     /// \brief Test the residual calculation of infusion. Compares single point vs multiple points
     /// \param _testName Test name.

@@ -3,7 +3,6 @@ project (tucuxi)
 
 set(TUCUXI_ROOT ${CMAKE_BINARY_DIR}/../../)
 
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -75,6 +74,7 @@ set(TUCUXICORE_SOURCES
     ${CORE_DIR}/operation.cpp
     ${CORE_DIR}/pkmodels/onecompartmentbolus.cpp
     ${CORE_DIR}/pkmodels/onecompartmentextra.cpp
+    ${CORE_DIR}/pkmodels/rkonecompartmentextra.cpp
     ${CORE_DIR}/pkmodels/onecompartmentinfusion.cpp
     ${CORE_DIR}/pkmodels/threecompartmentbolus.cpp
     ${CORE_DIR}/pkmodels/threecompartmentextra.cpp
