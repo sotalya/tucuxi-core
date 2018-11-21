@@ -6,6 +6,7 @@
 #include <Eigen/Cholesky>
 #include <random>
 #include <time.h>
+#include <mutex>
 
 #include "definitions.h"
 #include "concentrationcalculator.h"
@@ -39,6 +40,40 @@ MonteCarloPercentileCalculatorBase::MonteCarloPercentileCalculatorBase()
 }
 
 
+#define MULTITHREADEDSORT
+#define OPTIMALMULTI
+
+#ifndef MULTITHREADEDSORT
+
+// The following comparators are used in variants of sorting
+class Compa{
+    const std::vector<double>& m_values;
+public:
+    Compa(const std::vector<double>& _values) : m_values(_values){}
+    bool operator()(int t1, int t2) const {
+        return (m_values[t1] < m_values[t2]);
+    }
+};
+
+
+class CompPred{
+    int m_cycle;
+    int m_point;
+public:
+    CompPred(int _cycle, int _point) : m_cycle(_cycle), m_point(_point){}
+    bool operator()(ConcentrationPrediction* t1, ConcentrationPrediction* t2) const {
+        return (t2->getValues())[m_cycle][m_point] < (t1->getValues())[m_cycle][m_point];
+    }
+};
+
+void sortPercentiles(std::vector<ConcentrationPrediction*> &_predictions, int _cycle, int _point)
+{
+    // Sort and set percentile
+            std::sort(_predictions.begin(), _predictions.end(), CompPred(_cycle,_point));
+}
+
+#endif // MULTITHREADEDSORT
+
 IPercentileCalculator::ComputingResult MonteCarloPercentileCalculatorBase::computePredictionsAndSortPercentiles(
         PercentilesPrediction &_percentiles,
         const DateTime &_recordFrom,
@@ -52,6 +87,8 @@ IPercentileCalculator::ComputingResult MonteCarloPercentileCalculatorBase::compu
         IConcentrationCalculator &_concentrationCalculator,
         ComputingAborter *_aborter)
 {
+//    auto start = std::chrono::steady_clock::now();
+
     bool abort = false;
     unsigned int nbPatients = Tucuxi::Core::MonteCarloPercentileCalculatorBase::getNumberPatients();
     std::vector<TimeOffsets> times;
@@ -59,8 +96,8 @@ IPercentileCalculator::ComputingResult MonteCarloPercentileCalculatorBase::compu
     IntakeSeries recordedIntakes;
     selectRecordedIntakes(recordedIntakes, _intakes, _recordFrom, _recordTo);
 
-    std::vector< std::vector< std::vector<Concentration> > > concentrations; // Structure of cycles->points->patients->concentration
-    
+    std::vector< std::vector< std::vector<Concentration> > > concentrations;
+
     // Set the size of vector "concentrations"
     for (unsigned int cycle = 0; cycle < recordedIntakes.size(); cycle++) {
         std::vector< std::vector<Concentration> > vec;
@@ -69,6 +106,10 @@ IPercentileCalculator::ComputingResult MonteCarloPercentileCalculatorBase::compu
         }
         concentrations.push_back(vec);
     }
+
+//    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::steady_clock::now( ) - start );
+//    std::cout << "milliseconds for preparation: " << elapsed.count( ) << '\n';
+//    start = std::chrono::steady_clock::now();
 
     // Parallelize this for loop with some shared and some copied-to-each-thread-with-current-state (firstprivate) variables
     int nbThreads = std::max(std::thread::hardware_concurrency(), (unsigned int)1);
@@ -117,6 +158,7 @@ IPercentileCalculator::ComputingResult MonteCarloPercentileCalculatorBase::compu
                                 _epsilons[patient],
                                 false);
 
+
                     // Save the series of result of concentrations[cycle][nbPoints][patient] for each cycle
                     if (computationResult == ComputationResult::Success) {
 
@@ -135,8 +177,9 @@ IPercentileCalculator::ComputingResult MonteCarloPercentileCalculatorBase::compu
                             }
                         }
                     }
+
                 }
-#if 0           
+#if 0
                 // Debugging
                 char filename[30];
                 sprintf(filename, "result%d.dat", patient);
@@ -149,6 +192,10 @@ IPercentileCalculator::ComputingResult MonteCarloPercentileCalculatorBase::compu
     std::for_each(workers.begin(), workers.end(), [](std::thread &t) {
         t.join();
     });
+
+//    elapsed = std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::steady_clock::now( ) - start );
+//    std::cout << "milliseconds for predictions calculation : " << elapsed.count( ) << '\n';
+//    start = std::chrono::steady_clock::now();
 
     if (abort) {
         return ComputingResult::Aborted;
@@ -163,6 +210,145 @@ IPercentileCalculator::ComputingResult MonteCarloPercentileCalculatorBase::compu
                              * ((double) nbPatients));
     }
 
+
+#ifdef MULTITHREADEDSORT
+
+#ifdef OPTIMALMULTI
+
+    std::vector<std::thread> sortWorkers;
+    std::mutex mutex;
+    unsigned int currentCycle = 0;
+    unsigned int currentPoint = 0;
+    unsigned int nbCycles = recordedIntakes.size();
+    for(int thread = 0; thread < nbThreads; thread++) {
+
+        sortWorkers.push_back(std::thread([thread, nbPatients, &abort, _aborter,
+                                      _etas, _epsilons, _parameters, &times,
+                                      &concentrations, nbThreads,
+                                      &_concentrationCalculator, _recordFrom,
+                                      _recordTo, recordedIntakes, positions, _percentileRanks, &currentPoint,
+                                          &_percentiles, &mutex, &currentCycle, nbCycles]()
+        {
+            bool cont = true;
+            unsigned int cycle;
+            unsigned int point;
+
+            while (cont) {
+                mutex.lock();
+                if (currentCycle >= nbCycles) {
+                    cont = false;
+                }
+                else {
+                    point = currentPoint;
+                    cycle = currentCycle;
+                    if ((static_cast<int>(point)) == recordedIntakes.at(cycle).getNbPoints() - 1) {
+                        currentPoint = 0;
+                        currentCycle ++;
+                        if (currentCycle >= nbCycles) {
+                            cont = false;
+                        }
+                    }
+                    else {
+                        currentPoint ++;
+                    }
+                }
+                mutex.unlock();
+                if (!cont) {
+                    break;
+                }
+                // Sort and set percentile
+
+                        // Sort concentrations in increasing order at each time (at the cycle and at the point)
+                        std::sort(concentrations[cycle][point].begin(), concentrations[cycle][point].end(), [&] (const double v1, const double v2) { return v1 < v2; });
+
+                        for (unsigned int percRankIdx = 0; percRankIdx < _percentileRanks.size(); percRankIdx++) {
+                            int pos = positions[percRankIdx];
+                            double conc = concentrations[cycle][point][pos];
+                            _percentiles.appendPercentile(percRankIdx, cycle, point, conc);
+
+                }
+            }
+
+        }));
+    }
+
+    std::for_each(sortWorkers.begin(), sortWorkers.end(), [](std::thread &t) {
+        t.join();
+    });
+
+#else
+
+    std::vector<std::thread> sortWorkers;
+    std::mutex mutex;
+    int nextCycle = 0;
+    int nbCycles = recordedIntakes.size();
+    for(int thread = 0; thread < nbThreads; thread++) {
+
+        sortWorkers.push_back(std::thread([thread, nbPatients, &abort, _aborter,
+                                      _etas, _epsilons, _parameters, &times,
+                                      &concentrations, nbThreads,
+                                      &_concentrationCalculator, _recordFrom,
+                                      _recordTo, recordedIntakes, positions, _percentileRanks, &_percentiles, &mutex, &nextCycle, nbCycles]()
+        {
+            bool cont = true;
+            unsigned int cycle;
+
+            while (cont) {
+                mutex.lock();
+                cycle = nextCycle;
+                nextCycle ++;
+                mutex.unlock();
+                if (nextCycle > nbCycles) {
+                    break;
+                }
+                // Sort and set percentile
+                    for (unsigned int point = 0; point < static_cast<unsigned int>(recordedIntakes.at(cycle).getNbPoints()); point++) {
+
+                        // Sort concentrations in increasing order at each time (at the cycle and at the point)
+                        std::sort(concentrations[cycle][point].begin(), concentrations[cycle][point].end(), [&] (const double v1, const double v2) { return v1 < v2; });
+
+                        for (unsigned int percRankIdx = 0; percRankIdx < _percentileRanks.size(); percRankIdx++) {
+                            int pos = positions[percRankIdx];
+                            double conc = concentrations[cycle][point][pos];
+                            _percentiles.appendPercentile(percRankIdx, cycle, point, conc);
+                    }
+
+                }
+            }
+
+        }));
+    }
+
+    std::for_each(sortWorkers.begin(), sortWorkers.end(), [](std::thread &t) {
+        t.join();
+    });
+
+#endif // OPTIMALMULTI
+
+#else
+#ifdef SORT1
+    std::vector<int> pointers(nbPatients);
+    for(int i = 0; i < nbPatients; i++) {
+        pointers[i] = i;
+    }
+
+    // Sort and set percentile
+    for (unsigned int cycle = 0; cycle < recordedIntakes.size(); cycle++) {
+        for (unsigned int point = 0; point < static_cast<unsigned int>(recordedIntakes.at(cycle).getNbPoints()); point++) {
+
+
+            // Sort concentrations in increasing order at each time (at the cycle and at the point)
+            std::sort(pointers.begin(), pointers.end(), Compa(concentrations[cycle][point]));
+
+            for (unsigned int percRankIdx = 0; percRankIdx < _percentileRanks.size(); percRankIdx++) {
+                int pos = positions[percRankIdx];
+                double conc = concentrations[cycle][point][pointers[pos]];
+                _percentiles.appendPercentile(percRankIdx, cycle, point, conc);
+            }
+        }
+    }
+#else
+
     // Sort and set percentile
     for (unsigned int cycle = 0; cycle < recordedIntakes.size(); cycle++) {
         for (unsigned int point = 0; point < static_cast<unsigned int>(recordedIntakes.at(cycle).getNbPoints()); point++) {
@@ -170,34 +356,18 @@ IPercentileCalculator::ComputingResult MonteCarloPercentileCalculatorBase::compu
             // Sort concentrations in increasing order at each time (at the cycle and at the point)
             std::sort(concentrations[cycle][point].begin(), concentrations[cycle][point].end(), [&] (const double v1, const double v2) { return v1 < v2; });
 
-            // Rebuild percentile array [percentile][cycle][point]
-
             for (unsigned int percRankIdx = 0; percRankIdx < _percentileRanks.size(); percRankIdx++) {
                 int pos = positions[percRankIdx];
                 double conc = concentrations[cycle][point][pos];
                 _percentiles.appendPercentile(percRankIdx, cycle, point, conc);
             }
-            /*
-            unsigned int percRankIdx = 0;
-            for (unsigned int sortPosition = 0; sortPosition < nbPatients; sortPosition++) {
-
-                if ((percRankIdx < _percentileRanks.size()) && ((sortPosition + 1) >= _percentileRanks[percRankIdx] / 100.0 * nbPatients)) {
-                    _percentiles.appendPercentile(percRankIdx, cycle, point, concentrations[cycle][point][sortPosition]);
-
-                    percRankIdx++;
-
-                    // If percentile is not completely filled, it fills with the last one
-                    if ((percRankIdx < _percentileRanks.size()) && ((sortPosition +1) == nbPatients)){
-                        while(percRankIdx < _percentileRanks.size()) {
-                            _percentiles.appendPercentile(percRankIdx, cycle, point, concentrations[cycle][point][sortPosition]);
-                            percRankIdx++;
-                        }
-                    }
-                }
-            }
-            */
         }
     }
+#endif // SORT1
+#endif // MULTITHREADEDSORT
+
+//    elapsed = std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::steady_clock::now( ) - start );
+//    std::cout << "milliseconds for predictions sort : " << elapsed.count( ) << '\n';
     return ComputingResult::Success;
 } 
 
