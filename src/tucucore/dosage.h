@@ -397,9 +397,10 @@ public:
         if (_routeOfAdministration.getAbsorptionModel() == AbsorptionModel::INFUSION && _infusionTime.isNegative()) {
             throw std::invalid_argument("Infusion time for INFUSION is invalid (must be >= 0).");
         }
-        if (_routeOfAdministration.getAbsorptionModel() == AbsorptionModel::INFUSION && _infusionTime.isEmpty()) {
-            throw std::invalid_argument("Route of administration is INFUSION, but empty infusion time specified.");
-        }
+        // Let's tolerate infusion time 0
+//        if (_routeOfAdministration.getAbsorptionModel() == AbsorptionModel::INFUSION && _infusionTime.isEmpty()) {
+//            throw std::invalid_argument("Route of administration is INFUSION, but empty infusion time specified.");
+//        }
         m_dose = _dose;
         m_infusionTime = _infusionTime;
     }
