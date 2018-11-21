@@ -46,7 +46,7 @@ struct TestLogger : public fructose::test_base<TestLogger>
         checkLogfileLine(infile, "critical", "Tcho les topiots");
     }
 
-    void crashes(const std::string& _testName)
+    void crashes(const std::string& /*_testName*/)
     {
         // Work with an uninitialized logger
         Tucuxi::Common::LoggerHelper logger;

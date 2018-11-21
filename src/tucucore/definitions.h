@@ -134,46 +134,63 @@ typedef Eigen::Map<const EigenVector> map2EigenVectorType;
 #define omegaSize(matrix) (matrix.rows())
 
 /// \brief Define the covariate types.
-/// - Standard: if no patient variate exist -> use operation in drug model to generate a new value each time one or more
-///                                            inputs of the operation are modified
-///             if cannot apply operation   -> use default value
-///             if >= 1 variate exists      -> if only one value -> use for the entire period
-///                                            else              -> interpolate with function defined in
-///                                                                 CovariateDefinition, using first observed value for
-///                                                                 the interval between start and the first observation
-///   \warning Look also at values outside the given period! The period itself limits the range of measures we are
-///            interested in, but does not affect the available variates.
-/// - AgeInYears: automatic calculation based on birth date, use default if not available, unit = years.
-/// - AgeInDays: automatic calculation based on birth date, use default if not available, unit = days.
-/// - AgeInMonths: automatic calculation based on birth date, use default if not available, unit = months.
-/// - Sex: Sex of the person, based on his administrative data. 1 for male, 0 for female.
-/// Strangely, if Sex is at the second position, the test_covariateextractor.h tests will fail.
 enum class CovariateType {
+
+    /// \brief Standard, no particular treatment of the value
+    /// - if no patient variate exist -> use operation in drug model to generate a new value each time one or more
+    ///                                  inputs of the operation are modified
+    ///   if cannot apply operation   -> use default value
+    ///   if >= 1 variate exists      -> if only one value -> use for the entire period
+    ///                                  else              -> interpolate with function defined in
+    ///                                                       CovariateDefinition, using first observed value for
+    ///                                                       the interval between start and the first observation
+    ///   \warning Look also at values outside the given period! The period itself limits the range of measures we are
+    ///            interested in, but does not affect the available variates.
     Standard = 0,
+
+    /// Age in years. Automatic calculation based on birth date, use default if not available, unit = years.
     AgeInYears,
+
+    /// Age in days. Automatic calculation based on birth date, use default if not available, unit = days.
     AgeInDays,
+
+    /// Age in months. Automatic calculation based on birth date, use default if not available, unit = months.
     AgeInMonths,
+
+    /// \brief Sex of the person, based on his administrative data. 1 for male, 0 for female.
+    /// Strangely, if Sex is at the second position, the test_covariateextractor.h tests will fail.
     Sex
 };
 
 /// \brief Allowed data types.
 enum class DataType {
+
+    /// An integer
     Int = 0,
+
+    /// A double
     Double,
+
+    /// A boolean
     Bool,
+
+    /// A date (mainly for birthdate)
     Date
 };
 
 /// \brief Available interpolation functions.
-/// - Direct: when value observed, set it as current value.
-/// - Linear: between two occurrences of observed covariates, use linear interpolation.
-/// - Sigmoid: between two occurrences of observed covariates, use sigmoidal interpolation.
-/// - Tanh: between two occurrences of observed covariates, use hyperbolic tangent interpolation.
 enum class InterpolationType
 {
+    /// Direct: when value observed, set it as current value.
     Direct = 0,
+
+    /// Linear: between two occurrences of observed covariates, use linear interpolation.
     Linear,
+
+    /// Sigmoid: between two occurrences of observed covariates, use sigmoidal interpolation.
     Sigmoid,
+
+    /// Tanh: between two occurrences of observed covariates, use hyperbolic tangent interpolation.
     Tanh
 };
 

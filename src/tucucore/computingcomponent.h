@@ -34,6 +34,10 @@ class ComputingTraitSinglePoints;
 class ComputingTraitStandard;
 class HalfLife;
 
+///
+/// \brief The main entry point for any computation.
+/// It offers a method that takes as input a computing request, and that outputs a computing response.
+///
 class ComputingComponent : public Tucuxi::Common::Component,
         public IComputingService
 {

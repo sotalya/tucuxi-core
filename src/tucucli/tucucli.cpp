@@ -5,6 +5,8 @@
 #include "tucucommon/utils.h"
 #include "tucucommon/loggerhelper.h"
 #include "tucucommon/licensemanager.h"
+#include "tucucommon/general.h"
+
 #include "tucucore/definitions.h"
 #include "tucucore/intakeevent.h"
 #include "tucucore/parameter.h"
@@ -46,7 +48,7 @@ int main(int argc, char** argv)
 
     std::vector<Tucuxi::Core::Concentrations> concentrations;
     Tucuxi::Core::TimeOffsets times;
-    Tucuxi::Core::IntakeEvent intakeEvent(now, 0s, 400, 24h, Tucuxi::Core::RouteModel::INTRAVASCULAR, 0s, nbPoints);
+    Tucuxi::Core::IntakeEvent intakeEvent(now, 0s, 400, 24h, Tucuxi::Core::AbsorptionModel::INTRAVASCULAR, 0s, nbPoints);
     Tucuxi::Core::ParameterDefinitions parameterDefs;
     Tucuxi::Core::Residuals inResiduals;
     Tucuxi::Core::Residuals outResiduals1, outResiduals2;
@@ -80,11 +82,14 @@ int main(int argc, char** argv)
         nbPoints,
         isAll,
         outResiduals2);
+
+    TMP_UNUSED_PARAMETER(res);
+
     printf("Out residual = %f\n", outResiduals2[0]);
     printf("Out residual = %f\n", outResiduals2[1]);
 
     for (int i = 0; i < 2; i++) {
-        if (abs(outResiduals1[i]/outResiduals2[i]-1) > 0.000001) {
+        if (std::abs(outResiduals1[i]/outResiduals2[i]-1) > 0.000001) {
             logHelper.info("Error: Mismatch in computed residuals: {} != {}", outResiduals1[i], outResiduals2[i]);
         }
     }

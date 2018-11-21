@@ -168,7 +168,6 @@ double DrugModelImport::extractDouble(Tucuxi::Common::XmlNodeIterator _node)
 
 bool DrugModelImport::extractBool(Tucuxi::Common::XmlNodeIterator _node)
 {
-    bool result;
     if (_node->getValue() == "true") {
         return true;
     }

@@ -14,7 +14,13 @@
 namespace Tucuxi {
 namespace Core {
 
+///
 /// \brief Change of a covariate value for a patient.
+/// The value is saved as a string, as it can be any type (int, double, bool, Date).
+/// Specifically the Date type requires such a special way of storing it.
+/// It is then the responsibility of the user to cast and transform the covariate into
+/// something meaningfull.
+///
 class PatientCovariate : public TimedEvent
 {
 public:

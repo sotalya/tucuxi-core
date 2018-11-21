@@ -172,7 +172,12 @@ ParametersExtractor::Result ParametersExtractor::extract(ParameterSetSeries &_se
         }
 
         // Update computed values in the OGM.
-        m_ogm.evaluate();
+        if (!m_ogm.evaluate()) {
+            // Something went wrong
+            // TODO : Log something somewhere
+
+            return Result::ExtractionError;
+        }
 
         // Retrieve updated values.
         Value newVal;

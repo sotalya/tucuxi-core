@@ -182,7 +182,7 @@ ComputingResult ComputingComponent::generalExtractions(
 
     IntakeExtractor intakeExtractor;
     double nbPointsPerHour = _traits->getNbPointsPerHour();
-    int nIntakes = intakeExtractor.extract(_request.getDrugTreatment().getDosageHistory(false), fantomStart /*_traits->getStart()*/, _traits->getEnd() /* + Duration(24h)*/, nbPointsPerHour, _intakeSeries);
+    int nIntakes = intakeExtractor.extract(_request.getDrugTreatment().getDosageHistory(), fantomStart /*_traits->getStart()*/, _traits->getEnd() /* + Duration(24h)*/, nbPointsPerHour, _intakeSeries);
 
     for (int i = 0; i < nIntakes; i++) {
         if (_intakeSeries.at(i).getEventTime() + _intakeSeries.at(i).getInterval() < _traits->getStart()) {
@@ -192,7 +192,7 @@ ComputingResult ComputingComponent::generalExtractions(
 
     if (nIntakes > 0) {
 
-        const DosageTimeRangeList& timeRanges = _request.getDrugTreatment().getDosageHistory(false).getDosageTimeRanges();
+        const DosageTimeRangeList& timeRanges = _request.getDrugTreatment().getDosageHistory().getDosageTimeRanges();
 
         IntakeEvent *lastIntake = &(_intakeSeries.at(nIntakes - 1));
 
@@ -428,7 +428,7 @@ ComputingResult ComputingComponent::compute(
         sampleExtractor.extract(_request.getDrugTreatment().getSamples(), calculationStartTime, _traits->getEnd(), sampleSeries);
 
         if (sampleSeries.size() == 0) {
-            // Surprising. Somthing maybe wrong with the sample extractor
+            // Surprising. Something maybe wrong with the sample extractor
 
             computationResult = computePopulation(
                         pPrediction,
@@ -923,23 +923,14 @@ ComputingResult ComputingComponent::compute(
 
                 const HalfLife &halfLife = _request.getDrugModel().getTimeConsiderations().getHalfLife();
 
-                Duration newDuration;
-                if (halfLife.getUnit() == Unit("d")) {
-                    newDuration = Duration(24h) * halfLife.getValue() * halfLife.getMultiplier();
-                }
-                else if (halfLife.getUnit() == Unit("h")) {
-                    newDuration = Duration(1h) * halfLife.getValue() * halfLife.getMultiplier();
-                }
-                else if (halfLife.getUnit() == Unit("m")) {
-                    newDuration = Duration(1min) * halfLife.getValue() * halfLife.getMultiplier();
-                }
-                else if (halfLife.getUnit() == Unit("s")) {
-                    newDuration = Duration(1s) * halfLife.getValue() * halfLife.getMultiplier();
-                }
+                // Use the same function as for the start date of calculation when in steady state mode
+                Duration newDuration = secureStartDuration(halfLife);
 
                 // Rounding the new duration to be a multiple of the new interval
                 int nbIntervals = static_cast<int>(newDuration / candidate.m_interval);
+
                 Duration roundedNewDuration = candidate.m_interval * nbIntervals;
+
                 newEndTime = _traits->getAdjustmentTime() + roundedNewDuration;
             }
             else {
@@ -956,7 +947,7 @@ ComputingResult ComputingComponent::compute(
             double nbPointsPerHour = _traits->getNbPointsPerHour();
             int nIntakes = intakeExtractor.extract(*newHistory, calculationStartTime, newEndTime,
                                                    nbPointsPerHour, intakeSeries);
-            TMP_UNUSED_PARAMETER(nIntakes);
+            UNUSED_PARAMETER(nIntakes);
 
             IntakeToCalculatorAssociator::Result intakeExtractionResult =
                     IntakeToCalculatorAssociator::associate(intakeSeries, *pkModel.get());
@@ -979,7 +970,6 @@ ComputingResult ComputingComponent::compute(
                 predictionComputationResult = computeAposteriori(
                             pPrediction,
                             false,
-         //                    _traits->getStart(),
                             calculationStartTime,
                             newEndTime,
                             intakeSeries,
@@ -991,7 +981,6 @@ ComputingResult ComputingComponent::compute(
                 predictionComputationResult = computePopulation(
                             pPrediction,
                             false,
-        //                    _traits->getStart(),
                             calculationStartTime,
                             newEndTime,
                             intakeSeries,
