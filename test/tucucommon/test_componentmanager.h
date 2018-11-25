@@ -46,7 +46,7 @@ private:
 
 struct TestComponentManager : public fructose::test_base<TestComponentManager> 
 {
-	void createComponent(const std::string& _testName)
+    void createComponent(const std::string& /*_testName*/)
 	{
 		Tucuxi::Common::ComponentManager* cmpMgr = Tucuxi::Common::ComponentManager::getInstance();
 		cmpMgr->registerComponentFactory("TestComponent", &TestComponent::createComponent);

@@ -177,27 +177,58 @@ int IntakeExtractor::extract(const ParallelDosageSequence &_parallelDosageSequen
 
 int IntakeExtractor::extract(const LastingDose &_dosage, const DateTime &_start, const DateTime & /*_end*/, double _nbPointsPerHour, IntakeSeries &_series)
 {
-    IntakeEvent intake(_start, Duration(), _dosage.m_dose, _dosage.getTimeStep(), _dosage.m_routeOfAdministration.getAbsorptionModel(),
-                       _dosage.m_infusionTime, _dosage.getTimeStep().toHours() * _nbPointsPerHour);
-    _series.push_back(intake);
+    // If the absorption model is INFUSION but the infusion time is 0, then use INTRAVASCULAR instead
+    if ((_dosage.m_routeOfAdministration.getAbsorptionModel() == AbsorptionModel::INFUSION) &&
+            (_dosage.m_infusionTime.isEmpty())) {
+        IntakeEvent intake(_start, Duration(), _dosage.m_dose, _dosage.getTimeStep(), AbsorptionModel::INTRAVASCULAR,
+                           _dosage.m_infusionTime, _dosage.getTimeStep().toHours() * _nbPointsPerHour);
+        _series.push_back(intake);
+    }
+    else {
+        IntakeEvent intake(_start, Duration(), _dosage.m_dose, _dosage.getTimeStep(), _dosage.m_routeOfAdministration.getAbsorptionModel(),
+                           _dosage.m_infusionTime, _dosage.getTimeStep().toHours() * _nbPointsPerHour);
+        _series.push_back(intake);
+    }
     return 1;
 }
 
 
 int IntakeExtractor::extract(const DailyDose &_dosage, const DateTime &_start, const DateTime & /*_end*/, double _nbPointsPerHour, IntakeSeries &_series)
 {
-    IntakeEvent intake(_start, Duration(), _dosage.m_dose, _dosage.getTimeStep(), _dosage.m_routeOfAdministration.getAbsorptionModel(),
-                       _dosage.m_infusionTime, _dosage.getTimeStep().toHours() * _nbPointsPerHour);
-    _series.push_back(intake);
+    // If the absorption model is INFUSION but the infusion time is 0, then use INTRAVASCULAR instead
+    if ((_dosage.m_routeOfAdministration.getAbsorptionModel() == AbsorptionModel::INFUSION) &&
+            (_dosage.m_infusionTime.isEmpty())) {
+
+        IntakeEvent intake(_start, Duration(), _dosage.m_dose, _dosage.getTimeStep(), AbsorptionModel::INTRAVASCULAR,
+                           _dosage.m_infusionTime, _dosage.getTimeStep().toHours() * _nbPointsPerHour);
+        _series.push_back(intake);
+    }
+    else {
+
+        IntakeEvent intake(_start, Duration(), _dosage.m_dose, _dosage.getTimeStep(), _dosage.m_routeOfAdministration.getAbsorptionModel(),
+                           _dosage.m_infusionTime, _dosage.getTimeStep().toHours() * _nbPointsPerHour);
+        _series.push_back(intake);
+    }
     return 1;
 }
 
 
 int IntakeExtractor::extract(const WeeklyDose &_dosage, const DateTime &_start, const DateTime & /*_end*/, double _nbPointsPerHour, IntakeSeries &_series)
 {
-    IntakeEvent intake(_start, Duration(), _dosage.m_dose, _dosage.getTimeStep(), _dosage.m_routeOfAdministration.getAbsorptionModel(),
-                       _dosage.m_infusionTime, _dosage.getTimeStep().toHours() * _nbPointsPerHour);
-    _series.push_back(intake);
+    // If the absorption model is INFUSION but the infusion time is 0, then use INTRAVASCULAR instead
+    if ((_dosage.m_routeOfAdministration.getAbsorptionModel() == AbsorptionModel::INFUSION) &&
+            (_dosage.m_infusionTime.isEmpty())) {
+
+        IntakeEvent intake(_start, Duration(), _dosage.m_dose, _dosage.getTimeStep(), AbsorptionModel::INTRAVASCULAR,
+                           _dosage.m_infusionTime, _dosage.getTimeStep().toHours() * _nbPointsPerHour);
+        _series.push_back(intake);
+    }
+    else {
+
+        IntakeEvent intake(_start, Duration(), _dosage.m_dose, _dosage.getTimeStep(), _dosage.m_routeOfAdministration.getAbsorptionModel(),
+                           _dosage.m_infusionTime, _dosage.getTimeStep().toHours() * _nbPointsPerHour);
+        _series.push_back(intake);
+    }
     return 1;
 }
 
