@@ -20,6 +20,7 @@ namespace Core {
 /// Typically it is meant to be given to the processing service.
 /// It is typically constructed from a XML description that could be sent via
 /// a REST interface or via a file in command line.
+/// This class does not perform any calculation, it only embeds information.
 ///
 class DrugTreatment
 {
@@ -32,18 +33,21 @@ public:
 
 
     ///
-    /// \brief TBD
-    /// \param _useAdjustments
-    /// \return TBD
+    /// \brief Gets the treatment dosage history
+    /// \return The treatment dosage history, as a const reference
     ///
-    const DosageHistory& getDosageHistory(bool _useAdjustments = false) const;
+    const DosageHistory& getDosageHistory() const;
 
-
-    DosageHistory& getModifiableDosageHistory(bool _useAdjustments = false);
 
     ///
-    ////// \brief Returns the patient covariates
-    ////// \return The patient covariates as a const reference
+    /// \brief Gets the treatment dosage history
+    /// \return The treatment dosage history, as a modifiable element
+    ///
+    DosageHistory& getModifiableDosageHistory();
+
+    ///
+    /// \brief Returns the patient covariates
+    /// \return The patient covariates as a const reference
     ///
     const PatientVariates& getCovariates() const;
 
@@ -60,10 +64,29 @@ public:
     ///
     const Targets& getTargets() const;
 
-
+    ///
+    /// \brief Adds a patient covariate to the treatment
+    /// \param _covariate The new covariate
+    ///
     void addCovariate(std::unique_ptr<PatientCovariate> _covariate);
+
+    ///
+    /// \brief Adds a dosage time range to the dosage history
+    /// \param _timeRange The new dosage time range to add
+    ///
+    ///
     void addDosageTimeRange(std::unique_ptr<DosageTimeRange> _timeRange);
+
+    ///
+    /// \brief Adds a custom target
+    /// \param _target The custom target to add
+    ///
     void addTarget(std::unique_ptr<Target> _target);
+
+    ///
+    /// \brief Adds a sample measure
+    /// \param _sample The sample measure to add
+    ///
     void addSample(std::unique_ptr<Sample> _sample);
     
 private:
@@ -80,11 +103,6 @@ private:
     /// The measures samples
     Samples m_samples;
 
-    /// The dosage adjustments... TODO : Check if we really need that here. I don't think so
-    DosageHistory m_adjustment;
-
-    /// The date of adjustment. TODO : Check if we really need that here. I don't think so
-    DateTime m_adjustmentDate;
 };
 
 } // namespace Core

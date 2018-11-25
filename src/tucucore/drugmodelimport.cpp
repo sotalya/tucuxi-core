@@ -168,7 +168,6 @@ double DrugModelImport::extractDouble(Tucuxi::Common::XmlNodeIterator _node)
 
 bool DrugModelImport::extractBool(Tucuxi::Common::XmlNodeIterator _node)
 {
-    bool result;
     if (_node->getValue() == "true") {
         return true;
     }
@@ -901,6 +900,26 @@ std::vector<CovariateDefinition*> DrugModelImport::extractCovariates(Tucuxi::Com
     return covariates;
 }
 
+Duration castDuration(double duration, Unit unit)
+{
+    if (unit.toString() == "d") {
+        return Duration(std::chrono::seconds((long)(duration * 3600 * 24)));
+    }
+    if (unit.toString() == "min") {
+        return Duration(std::chrono::seconds((long)(duration * 60)));
+    }
+    if (unit.toString() == "m") {
+        return Duration(std::chrono::seconds((long)(duration * 60)));
+    }
+    if (unit.toString() == "h") {
+        return Duration(std::chrono::seconds((long)(duration * 3600)));
+    }
+    if (unit.toString() == "s") {
+        return Duration(std::chrono::seconds((long)(duration)));
+    }
+    return Duration();
+}
+
 CovariateDefinition* DrugModelImport::extractCovariate(Tucuxi::Common::XmlNodeIterator _node)
 {
     CovariateDefinition* covariate;
@@ -913,6 +932,8 @@ CovariateDefinition* DrugModelImport::extractCovariate(Tucuxi::Common::XmlNodeIt
     LightPopulationValue *value = nullptr;
     Operation *validation = nullptr;
     TranslatableString name;
+    Unit refreshPeriodUnit;
+    double refreshPeriodValue = 0.0;
 
     XmlNodeIterator it = _node->getChildren();
 
@@ -935,6 +956,22 @@ CovariateDefinition* DrugModelImport::extractCovariate(Tucuxi::Common::XmlNodeIt
         }
         else if (nodeName == "interpolationType") {
             interpolationType = extractInterpolationType(it);
+        }
+        else if (nodeName == "refreshPeriod") {
+
+            XmlNodeIterator refreshIt = it->getChildren();
+            while (refreshIt != XmlNodeIterator::none()) {
+                if (refreshIt->getName() == "unit") {
+                    refreshPeriodUnit = extractUnit(refreshIt);
+                }
+                else if (refreshIt->getName() == "value") {
+                    refreshPeriodValue = extractDouble(refreshIt);
+                }
+                else {
+                    unexpectedTag(refreshIt->getName());
+                }
+                refreshIt ++;
+            }
         }
         else if (nodeName == "covariateValue") {
             value = extractPopulationValue(it);
@@ -975,6 +1012,7 @@ CovariateDefinition* DrugModelImport::extractCovariate(Tucuxi::Common::XmlNodeIt
     covariate->setUnit(unit);
     covariate->setValidation(std::unique_ptr<Operation>(validation));
     covariate->setName(name);
+    covariate->setRefreshPeriod(castDuration(refreshPeriodValue, refreshPeriodUnit));
 
     DELETE_IF_NON_NULL(value);
 

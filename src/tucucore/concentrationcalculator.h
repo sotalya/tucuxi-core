@@ -34,7 +34,7 @@ public:
     /// \return The status of computation
     ///
     virtual ComputationResult computeConcentrations(
-        ConcentrationPredictionPtr &_prediction,
+        const ConcentrationPredictionPtr &_prediction,
         bool _isAll,
         const DateTime &_recordFrom,
         const DateTime &_recordTo,
@@ -90,8 +90,7 @@ public:
     /// \param _isFixedDensity Indicates if the density of points could be changed within the method
     /// \return The status of computation
     ///
-    ComputationResult computeConcentrations(
-        ConcentrationPredictionPtr &_prediction,
+    ComputationResult computeConcentrations(const ConcentrationPredictionPtr &_prediction,
         bool _isAll,
         const DateTime &_recordFrom,
         const DateTime &_recordTo,

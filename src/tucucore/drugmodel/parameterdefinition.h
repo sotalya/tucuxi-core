@@ -19,14 +19,30 @@
 namespace Tucuxi {
 namespace Core {
 
-
+///
+/// \brief The potential parameter variability types supported
+///
 enum class ParameterVariabilityType
 {
+    /// The parameter is fixed
     None = 0,
+
+    /// The parameter follows a Normal distribution
+    /// \warning Not supported
     Normal,
+
+    /// The parameter follows a LogNormal distribution
+    /// \warning Not supported
     LogNormal,
+
+    /// The parameter has an additive variability
     Additive,
+
+    /// The variability is proportional
+    /// \warning Actually we use Exponential variability instead.
     Proportional,
+
+    /// The variability is exponential
     Exponential
 };
 

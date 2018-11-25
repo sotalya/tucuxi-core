@@ -83,6 +83,7 @@ TargetEvent TargetExtractor::targetEventFromTarget(const Target *_target, const 
     } break;
 
     case TargetType::UnknownTarget :
+    default:
     {
         // TODO : Log something wrong here
 
@@ -185,8 +186,9 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(const TargetDefinit
                         std::chrono::minutes(static_cast<int>(_target->getTMax().getValue()))));
 
     case TargetType::UnknownTarget :
-
-        // Here we consider times as minutes. This has to be fixed once
+    default:
+        // Something wrong here.
+        // TODO : Should log something here
         return TargetEvent(
                     _target->getActiveMoietyId(),
                     _target->getTargetType(),

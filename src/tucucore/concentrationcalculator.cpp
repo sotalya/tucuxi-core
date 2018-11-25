@@ -10,7 +10,7 @@
 namespace Tucuxi {
 namespace Core {
 
-ComputationResult ConcentrationCalculator::computeConcentrations(ConcentrationPredictionPtr &_prediction,
+ComputationResult ConcentrationCalculator::computeConcentrations(const ConcentrationPredictionPtr &_prediction,
     bool _isAll,
     const DateTime &_recordFrom,
     const DateTime &_recordTo,

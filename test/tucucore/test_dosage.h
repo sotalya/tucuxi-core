@@ -40,12 +40,14 @@ struct TestDosage : public fructose::test_base<TestDosage>
                                                             validInterval),
                                   std::invalid_argument);
 
+        // An infusion absorption now supports 0 as infusion time
+        /*
         fructose_assert_exception(Tucuxi::Core::LastingDose(validDose,
                                                             routePerfusion,
                                                             emptyInfusionTime,
                                                             validInterval),
                                   std::invalid_argument);
-
+        */
         fructose_assert_exception(Tucuxi::Core::LastingDose(validDose,
                                                             routePerfusion,
                                                             invalidInfusionTime,

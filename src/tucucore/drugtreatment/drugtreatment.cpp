@@ -14,19 +14,14 @@ DrugTreatment::DrugTreatment()
 }
 
 
-const DosageHistory &DrugTreatment::getDosageHistory(bool _useAdjustments) const
+const DosageHistory &DrugTreatment::getDosageHistory() const
 {
-    if (_useAdjustments && !m_adjustmentDate.isUndefined()) {
-        // Build the dosage history based on the history as well as the selected adjustment
-        // Use the adjustment date to switch between history and adjustment.
-    }
     return m_dosageHistory;
 }
 
 
-DosageHistory& DrugTreatment::getModifiableDosageHistory(bool _useAdjustments)
+DosageHistory& DrugTreatment::getModifiableDosageHistory()
 {
-    TMP_UNUSED_PARAMETER(_useAdjustments);
     return m_dosageHistory;
 }
 

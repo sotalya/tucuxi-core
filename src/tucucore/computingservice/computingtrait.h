@@ -30,16 +30,16 @@ enum class PredictionParameterType {
 };
 
 ///
-/// \brief The CompartmentsOption enum
+/// \brief The CompartmentsOption enum.
 /// This enum allows to select if only the main compartment concentration has to be
-/// calculated or if the concentrations of all compartments are required
+/// calculated or if the concentrations of all compartments are required.
 enum class CompartmentsOption {
     MainCompartment = 0, //!< Only interested in the main compartment
     AllCompartments      //!< Interested in all compartments
 };
 
 ///
-/// \brief The ComputingOption class
+/// \brief The ComputingOption class.
 /// This class embeds some general options for computation. It is used by all requests.
 /// Currently it offers choice for the type of parameters and which compartment we are
 /// interested in.
@@ -48,7 +48,7 @@ class ComputingOption {
 public:
 
     ///
-    /// \brief ComputingOption Simple constructor
+    /// \brief ComputingOption Simple constructor.
     /// \param _parameterType Type of parameters (population, aPriori, aPosteriori)
     /// \param _compartmentsOption What compartments are of interest (main or all)
     ///
@@ -80,14 +80,14 @@ protected:
 class ComputingComponent;
 
 ///
-/// \brief The ComputingTrait class
+/// \brief The ComputingTrait class.
 /// This is the base class for all traits. It only has an identifier.
 ///
 class ComputingTrait
 {
 public:
     ///
-    /// \brief get the Id of the ComputingTrait
+    /// \brief get the Id of the ComputingTrait.
     /// \return The Id
     ///
     RequestResponseId getId() const;
@@ -99,7 +99,7 @@ public:
     
 protected:
     ///
-    /// \brief ComputingTrait constructor
+    /// \brief ComputingTrait constructor.
     /// \param _id Id of the ComputingTrait
     /// The constructor is protected, as this class shall not be instanciated.
     /// Only subclasses are relevant.
@@ -113,7 +113,7 @@ private:
     friend class ComputingComponent;
 
     ///
-    /// \brief compute Calls the compute() method in ComputingComponent
+    /// \brief compute Calls the compute() method in ComputingComponent.
     /// \param _computingComponent The computing component that will do the computing job
     /// \param _request The request that has to be processed
     /// \param _response The response list in which we will add the new response
@@ -129,7 +129,7 @@ private:
 
 
 ///
-/// \brief The ComputingTraitStandard class
+/// \brief The ComputingTraitStandard class.
 /// This is a base class for other Traits. It embeds information about:
 /// 1. Start date of prediction calculation
 /// 2. End date of prediction calculation
@@ -145,25 +145,25 @@ public:
     ~ComputingTraitStandard() override;
 
     ///
-    /// \brief getComputingOption Get the computing options
+    /// \brief getComputingOption Get the computing options.
     /// \return The computing options
     ///
     ComputingOption getComputingOption() const;
 
     ///
-    /// \brief getStart Get the start time of the range of interest
+    /// \brief getStart Get the start time of the range of interest.
     /// \return The start time of the range of interest
     ///
     const Tucuxi::Common::DateTime& getStart() const;
 
     ///
-    /// \brief getEnd Get the end time of the range of interest
+    /// \brief getEnd Get the end time of the range of interest.
     /// \return The end time of the range of interest
     ///
     const Tucuxi::Common::DateTime& getEnd() const;
 
     ///
-    /// \brief getNbPointsPerHour Get the number of points to be calculated per hour
+    /// \brief getNbPointsPerHour Get the number of points to be calculated per hour.
     /// \return The number of points to be calculated per hour
     /// This value is used by the IntakeExtractor to calculate the number of points
     /// to be calculated for each intake
@@ -173,7 +173,7 @@ public:
 protected:
 
     ///
-    /// \brief ComputingTraitStandard A simple protected constructor
+    /// \brief ComputingTraitStandard A simple protected constructor.
     /// \param _id Id of the request
     /// \param _start Start date of prediction calculation
     /// \param _end End date of prediction calculation
@@ -205,7 +205,7 @@ private:
 };
 
 ///
-/// \brief The ComputingTraitSinglePoints class
+/// \brief The ComputingTraitSinglePoints class.
 /// This class embeds the information required to compute concentrations at
 /// specific time points.
 ///
@@ -242,7 +242,7 @@ protected:
 private:
 
     ///
-    /// \brief compute Calls the compute() method in ComputingComponent
+    /// \brief Calls the compute() method in ComputingComponent.
     /// \param _computingComponent The computing component that will do the computing job
     /// \param _request The request that has to be processed
     /// \param _response The response list in which we will add the new response
@@ -256,7 +256,7 @@ private:
 };
 
 ///
-/// \brief The ComputingTraitAtMeasures class
+/// \brief The ComputingTraitAtMeasures class.
 /// This class shall be used for computing concentrations at the times of
 /// the DrugTreatment measures. Typically used for comparing the measured
 /// concentrations with a posteriori predictions.
@@ -266,7 +266,7 @@ class ComputingTraitAtMeasures : public ComputingTrait
 public:
 
     ///
-    /// \brief ComputingTraitAtMeasures Simple constructor
+    /// \brief ComputingTraitAtMeasures Simple constructor.
     /// \param _id Id of the request
     /// \param _computingOption Computing options (parameters type, compartments)
     ///
@@ -286,7 +286,7 @@ protected:
 private:
 
     ///
-    /// \brief compute Calls the compute() method in ComputingComponent
+    /// \brief Calls the compute() method in ComputingComponent.
     /// \param _computingComponent The computing component that will do the computing job
     /// \param _request The request that has to be processed
     /// \param _response The response list in which we will add the new response
@@ -298,7 +298,7 @@ private:
 };
 
 ///
-/// \brief The BestCandidatesOption enum
+/// \brief The BestCandidatesOption enum.
 /// This option allow to ask for a single dosage adjustement or for all acceptable adjustments
 enum class BestCandidatesOption
 {
@@ -310,8 +310,8 @@ enum class BestCandidatesOption
 };
 
 ///
-/// \brief The ChargingOption enum
-/// This option allows to authorize or not a charging dose to rapidly attain steady state
+/// \brief The ChargingOption enum.
+/// This option allows to authorize or not a charging dose to rapidly attain steady state.
 ///
 enum class ChargingOption
 {
@@ -323,8 +323,8 @@ enum class ChargingOption
 };
 
 ///
-/// \brief The RestPeriodOption enum
-/// This option allows to authorize or not a resting period to rapidly attain steady state
+/// \brief The RestPeriodOption enum.
+/// This option allows to authorize or not a resting period to rapidly attain steady state.
 enum class RestPeriodOption
 {
     /// No resting period is allowed
@@ -335,9 +335,9 @@ enum class RestPeriodOption
 };
 
 ///
-/// \brief The SteadyStateTargetOption enum
+/// \brief The SteadyStateTargetOption enum.
 /// This indicates if the target shall be evaluated at steady state or within the original
-/// drug treatment time range
+/// drug treatment time range.
 enum class SteadyStateTargetOption
 {
     /// Target evaluated at steady state
@@ -349,8 +349,8 @@ enum class SteadyStateTargetOption
 };
 
 ///
-/// \brief The TargetExtactionOption enum
-/// This enum describes the way the targets shall be extracted
+/// \brief The TargetExtactionOption enum.
+/// This enum describes the way the targets shall be extracted.
 enum class TargetExtractionOption
 {
     /// Forces the population values to be used
@@ -368,14 +368,14 @@ enum class TargetExtractionOption
 };
 
 ///
-/// \brief The FormulationAndRouteSelectionOption enum
-/// This enum describes the options for selecting the candidate formulation and routes
+/// \brief The FormulationAndRouteSelectionOption enum.
+/// This enum describes the options for selecting the candidate formulation and routes.
 ///
 enum class FormulationAndRouteSelectionOption
 {
     /// Use only the last formulation and route used in the current treatment
     /// If the treatment is empty, then use the default formulation and route of the
-    /// drug model
+    /// drug model.
     LastFormulationAndRoute = 0,
 
     /// Use only the default formulation and route of the drug model
@@ -386,11 +386,12 @@ enum class FormulationAndRouteSelectionOption
 };
 
 ///
-/// \brief The ComputingTraitAdjustment class
+/// \brief The ComputingTraitAdjustment class.
 /// This class embeds all information required for computing adjustments. It can return
 /// potential dosages, and future concentration calculations, depending on the options.
 ///
-/// If nbPoints = 0, then no curve will be returned by the computation, only the dosages
+/// If nbPoints = 0, then no curve will be returned by the computation, only the dosages.
+/// \test TestComputingComponentAdjusements::testImatinibLastFormulationAndRouteAllDosages
 ///
 class ComputingTraitAdjustment : public ComputingTraitStandard
 {
@@ -426,7 +427,7 @@ public:
                              FormulationAndRouteSelectionOption _formulationAndRouteSelectionOption);
 
     ///
-    /// \brief getAdjustmentTime Get the time of adjustment
+    /// \brief Gets the time of adjustment
     /// \return Time of the adjustment
     ///
     Tucuxi::Common::DateTime getAdjustmentTime() const;
@@ -458,7 +459,7 @@ protected:
 private:
 
     ///
-    /// \brief compute Calls the compute() method in ComputingComponent
+    /// \brief Calls the compute() method in ComputingComponent
     /// \param _computingComponent The computing component that will do the computing job
     /// \param _request The request that has to be processed
     /// \param _response The response list in which we will add the new response
@@ -493,7 +494,7 @@ public:
 private:
 
     ///
-    /// \brief compute Calls the compute() method in ComputingComponent
+    /// \brief Calls the compute() method in ComputingComponent
     /// \param _computingComponent The computing component that will do the computing job
     /// \param _request The request that has to be processed
     /// \param _response The response list in which we will add the new response
@@ -506,7 +507,7 @@ private:
 
 
 ///
-/// \brief The ComputingTraitPercentiles class
+/// \brief The ComputingTraitPercentiles class.
 /// This class embeds all information for calculating percentiles. Additionnaly to
 /// standard single predictions, it requires the list of asked percentiles.
 /// This list is a vector of values in [0.0, 100.0]
@@ -535,13 +536,13 @@ public:
             ComputingAborter *_aborter = nullptr);
 
     ///
-    /// \brief getRanks Retrieves the vector of percentile ranks
+    /// \brief Retrieves the vector of percentile ranks
     /// \return The vector of percentiles ranks
     ///
     const PercentileRanks &getRanks() const { return m_ranks;}
 
     ///
-    /// \brief getAborter Retrieves the aborter
+    /// \brief Retrieves the aborter
     /// \return The current aborter that should be used by the computing engine
     ///
     ComputingAborter *getAborter() const { return m_aborter;}
@@ -557,7 +558,7 @@ private:
 private:
 
     ///
-    /// \brief compute Calls the compute() method in ComputingComponent
+    /// \brief Calls the compute() method in ComputingComponent
     /// \param _computingComponent The computing component that will do the computing job
     /// \param _request The request that has to be processed
     /// \param _response The response list in which we will add the new response
@@ -571,12 +572,11 @@ private:
 
 
 ///
-/// \brief The ComputingTraits class
-/// This class is a collection of ComputingTrait. It is meant to group various
-/// calculations that will be applied on a single DrugTreatment and a single
-/// DrugModel.
+/// \brief This class is a collection of ComputingTrait.
+/// It is meant to group various calculations that will be applied on a single DrugTreatment
+/// and a single DrugModel.
 /// For instance, if a client needs a prediction, percentiles, and a proposition
-/// of dosage adjustment, then three ComputingTrait will be added to a ComputingTraits
+/// of dosage adjustment, then three ComputingTrait will be added to a ComputingTraits.
 ///
 /// The ComputingTrait objects are stored as a vector of unique_ptr on ComputingTrait.
 ///
@@ -600,7 +600,7 @@ class ComputingTraits
 public:
 
     ///
-    /// \brief addTrait Adds a ComputingTrait to the list
+    /// \brief Adds a ComputingTrait to the list
     /// \param _trait The ComputingTrait to pass, as a unique_ptr
     /// Passing a unique pointer is mandatory here, so the caller should use
     /// std::move() to give ownership to the ComputingTraits.
@@ -639,13 +639,13 @@ public:
     typedef Traits::const_iterator Iterator;
 
     ///
-    /// \brief begin returns an iterator on the beginning of the list
+    /// \brief Returns an iterator on the beginning of the list
     /// \return The iterator on the beginning of the list
     ///
     Iterator begin() const { return m_traits.begin(); }
 
     ///
-    /// \brief end returns an iterator on the end of the list
+    /// \brief Returns an iterator on the end of the list
     /// \return The iterator on the end of the list
     ///
     Iterator end() const { return m_traits.end(); }
