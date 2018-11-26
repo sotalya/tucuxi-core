@@ -24,6 +24,7 @@
 #include "test_nonmemdrugs.h"
 #include "test_operablegraphmanager.h"
 #include "test_operation.h"
+#include "test_operationcollection.h"
 #include "test_parameterextractor.h"
 #include "test_percentilecalculator.h"
 #include "test_pkmodel.h"
@@ -228,6 +229,19 @@ int main(int argc, char** argv)
         std::cout << "Operation test succeeded\n";
     }
 
+
+    // --- OPERATIONCOLLECTION --- //
+    TestOperationCollection operationCollectionTests;
+    operationCollectionTests.add_test("OperationCollection test", &TestOperationCollection::testOperationCollection);
+
+    res = operationCollectionTests.run(argc, argv);
+    tot_res |= res;
+    if (res != 0) {
+        std::cerr << "OperationCollection test failed\n";
+    } else {
+        std::cout << "OperationCollection test succeeded\n";
+    }
+
     // --- PkModel --- //
     TestPkModel pkmodelTest;
     pkmodelTest.add_test("testPkModelFunctions test", &TestPkModel::testPkModelFunctions);
@@ -269,6 +283,7 @@ int main(int argc, char** argv)
     peTests.add_test("testPE_constructor", &TestParameterExtractor::testPE_constructor);
     peTests.add_test("testPE_extract1_0", &TestParameterExtractor::testPE_extract1_0);
     peTests.add_test("testPE_extract1_1", &TestParameterExtractor::testPE_extract1_1);
+    peTests.add_test("testPE_extractParamFromParam", &TestParameterExtractor::testPE_extractParamFromParam);
 
     res = peTests.run(argc, argv);
     tot_res |= res;

@@ -460,3 +460,47 @@ eGFR_SalazarCorcoran::fillRequiredInputs()
     m_requiredInputs.push_back(creatinine);
     m_requiredInputs.push_back(isMale);
 }
+
+
+
+
+bool OperationCollection::addOperation(std::shared_ptr<Operation> _operation, std::string _operationId)
+{
+    m_collection[_operationId] = _operation;
+    return true;
+}
+
+std::shared_ptr<Operation> OperationCollection::getOperationFromId(const std::string &_operationId) const
+{
+    auto pos = m_collection.find(_operationId);
+    if (pos == m_collection.end()) {
+        return nullptr;
+    } else {
+        return pos->second;
+    }
+}
+
+#define ADD_OPERATION_TO_COLLECTION(_TYPE) \
+    do { \
+        std::shared_ptr<Operation> operation = std::make_shared<_TYPE>(); \
+        addOperation(operation, #_TYPE); \
+    } while (0);
+
+
+bool OperationCollection::populate()
+{
+    // Here we add all the known hardcoded operations.
+    // The Id of the operation is the name of the class.
+
+    ADD_OPERATION_TO_COLLECTION(IdealBodyWeight);
+    ADD_OPERATION_TO_COLLECTION(BodySurfaceArea);
+    ADD_OPERATION_TO_COLLECTION(eGFR_CockcroftGaultGeneral);
+    ADD_OPERATION_TO_COLLECTION(eGFR_CockcroftGaultIBW);
+    ADD_OPERATION_TO_COLLECTION(eGFR_CockcroftGaultAdjIBW);
+    ADD_OPERATION_TO_COLLECTION(GFR_MDRD);
+    ADD_OPERATION_TO_COLLECTION(GFR_CKD_EPI);
+    ADD_OPERATION_TO_COLLECTION(eGFR_Schwartz);
+    ADD_OPERATION_TO_COLLECTION(GFR_Jelliffe);
+    ADD_OPERATION_TO_COLLECTION(eGFR_SalazarCorcoran);
+    return true;
+}
