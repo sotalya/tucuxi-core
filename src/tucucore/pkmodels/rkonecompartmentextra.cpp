@@ -87,11 +87,11 @@ bool RK4OneCompartmentExtraMicro::computeConcentrations(const Residuals& _inResi
 bool RK4OneCompartmentExtraMicro::computeConcentration(const Value& _atTime, const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
 {
     TMP_UNUSED_PARAMETER(_atTime);
-    Eigen::VectorXd concentrations1(1), concentrations2(1);
+    Eigen::VectorXd concentrations1(m_NbPoints), concentrations2(m_NbPoints);
     int firstCompartment = static_cast<int>(Compartments::First);
     int secondCompartment = static_cast<int>(Compartments::Second);
     int atTime = static_cast<int>(SingleConcentrations::AtTime);
-    int atEndInterval = static_cast<int>(SingleConcentrations::AtEndInterval);
+    int atEndInterval = static_cast<int>(m_NbPoints-1);
 
     // compute concenration1 and 2
     compute(_inResiduals, concentrations1, concentrations2);

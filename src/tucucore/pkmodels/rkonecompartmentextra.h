@@ -46,7 +46,7 @@ private:
 
 inline void RK4OneCompartmentExtraMicro::compute(const Residuals& _inResiduals, Eigen::VectorXd& _concentrations1, Eigen::VectorXd& _concentrations2)
 {
-    const double h = 1;
+    const double h = m_Int/m_NbPoints;
 
     auto derive = [this](const double& c1, const double& c2, double& dc1dt, double& dc2dt)
     {
@@ -66,7 +66,7 @@ inline void RK4OneCompartmentExtraMicro::compute(const Residuals& _inResiduals, 
     double c1_k3, c2_k3;
     double c1_k4, c2_k4;
 
-    for (auto i = 0; i < m_NbPoints; i = i + h) {
+    for (auto i = 0; (i + 1) < m_NbPoints; i = i + 1) {
         derive(_concentrations1[i], 
                 _concentrations2[i],
                 dc1dt, dc2dt);
@@ -99,8 +99,8 @@ inline void RK4OneCompartmentExtraMicro::compute(const Residuals& _inResiduals, 
         auto c1_k4 = h * dc1dt; 
         auto c2_k4 = h * dc2dt;
 
-        _concentrations1[i+h] = _concentrations1[i] + c1_k1/6 + c1_k2/3 + c1_k3/3 + c1_k4/6;
-        _concentrations2[i+h] = _concentrations2[i] + c2_k1/6 + c2_k2/3 + c2_k3/3 + c2_k4/6;
+        _concentrations1[i+1] = _concentrations1[i] + c1_k1/6 + c1_k2/3 + c1_k3/3 + c1_k4/6;
+        _concentrations2[i+1] = _concentrations2[i] + c2_k1/6 + c2_k2/3 + c2_k3/3 + c2_k4/6;
     }
 
 }
