@@ -377,15 +377,15 @@ struct TestOperation : public fructose::test_base<TestOperation>
         double eGFR;
 
         // Required parameters.
-        OperationInput weight("weight", InputType::DOUBLE);
+        OperationInput bodyweight("bodyweight", InputType::DOUBLE);
         OperationInput age("age", InputType::INTEGER);
         OperationInput creatinine("creatinine", InputType::DOUBLE);
         OperationInput isMale("isMale", InputType::BOOL);
         const OperationInput A_male("A_male", 1.23);
         const OperationInput A_female("A_female", 1.04);
 
-        JSExpression jsCG_general("(140 - age) * weight / creatinine * (A_male * isMale + A_female * (!isMale))",
-        { OperationInput("weight", InputType::DOUBLE),
+        JSExpression jsCG_general("(140 - age) * bodyweight / creatinine * (A_male * isMale + A_female * (!isMale))",
+        { OperationInput("bodyweight", InputType::DOUBLE),
           OperationInput("age", InputType::INTEGER),
           OperationInput("creatinine", InputType::DOUBLE),
           OperationInput("isMale", InputType::BOOL),
@@ -397,19 +397,19 @@ struct TestOperation : public fructose::test_base<TestOperation>
         fructose_assert (rc == true);
         rc = age.setValue(49);
         fructose_assert (rc == true);
-        rc = weight.setValue(71.4);
+        rc = bodyweight.setValue(71.4);
         fructose_assert (rc == true);
         rc = creatinine.setValue(23.4);
         fructose_assert (rc == true);
 
-        fructose_assert (jsCG_general.evaluate({ creatinine, weight, age }, eGFR) == false);
-        rc = jsCG_general.evaluate({ creatinine, weight, age, isMale, A_male, A_female }, eGFR);
+        fructose_assert (jsCG_general.evaluate({ creatinine, bodyweight, age }, eGFR) == false);
+        rc = jsCG_general.evaluate({ creatinine, bodyweight, age, isMale, A_male, A_female }, eGFR);
         fructose_assert (rc == true);
         fructose_assert_double_eq (341.53, eGFR);
 
         eGFR_CockcroftGaultGeneral hc_CG_general;
         double hc_eGFR;
-        rc = hc_CG_general.evaluate({ creatinine, weight, age, isMale }, hc_eGFR);
+        rc = hc_CG_general.evaluate({ creatinine, bodyweight, age, isMale }, hc_eGFR);
         fructose_assert (rc == true);
         fructose_assert (fabs(eGFR - hc_eGFR) < 1e-6);
 
@@ -418,16 +418,16 @@ struct TestOperation : public fructose::test_base<TestOperation>
         fructose_assert (rc == true);
         rc = age.setValue(53);
         fructose_assert (rc == true);
-        rc = weight.setValue(51.3);
+        rc = bodyweight.setValue(51.3);
         fructose_assert (rc == true);
         rc = creatinine.setValue(13.4);
         fructose_assert (rc == true);
 
-        rc = jsCG_general.evaluate({ creatinine, weight, age, isMale, A_male, A_female }, eGFR);
+        rc = jsCG_general.evaluate({ creatinine, bodyweight, age, isMale, A_male, A_female }, eGFR);
         fructose_assert (rc == true);
         fructose_assert_double_eq (346.389851, eGFR);
 
-        rc = hc_CG_general.evaluate({ creatinine, weight, age, isMale }, hc_eGFR);
+        rc = hc_CG_general.evaluate({ creatinine, bodyweight, age, isMale }, hc_eGFR);
         fructose_assert (rc == true);
         fructose_assert (fabs(eGFR - hc_eGFR) < 1e-6);
     }
@@ -440,7 +440,7 @@ struct TestOperation : public fructose::test_base<TestOperation>
         double eGFR;
 
         // Required parameters.
-        OperationInput weight("weight", InputType::DOUBLE);
+        OperationInput bodyweight("bodyweight", InputType::DOUBLE);
         OperationInput IBW("IBW", InputType::DOUBLE);
         OperationInput height("height", InputType::INTEGER);
         OperationInput age("age", InputType::INTEGER);
@@ -452,8 +452,8 @@ struct TestOperation : public fructose::test_base<TestOperation>
         double IBWvalue;
         IdealBodyWeight IBWComputation;
 
-        JSExpression jsCG_IBW("(140 - age) * (weight * (weight < IBW) + IBW * (weight >= IBW)) / creatinine * (A_male * isMale + A_female * (!isMale))",
-        { OperationInput("weight", InputType::DOUBLE),
+        JSExpression jsCG_IBW("(140 - age) * (bodyweight * (bodyweight < IBW) + IBW * (bodyweight >= IBW)) / creatinine * (A_male * isMale + A_female * (!isMale))",
+        { OperationInput("bodyweight", InputType::DOUBLE),
           OperationInput("IBW", InputType::DOUBLE),
           OperationInput("age", InputType::INTEGER),
           OperationInput("creatinine", InputType::DOUBLE),
@@ -470,20 +470,20 @@ struct TestOperation : public fructose::test_base<TestOperation>
         fructose_assert (rc == true);
         rc = age.setValue(49);
         fructose_assert (rc == true);
-        rc = weight.setValue(71.4);
+        rc = bodyweight.setValue(71.4);
         fructose_assert (rc == true);
         rc = creatinine.setValue(23.4);
         fructose_assert (rc == true);
         rc = IBW.setValue(IBWvalue);
         fructose_assert (rc == true);
 
-        rc = jsCG_IBW.evaluate({ creatinine, weight, age, isMale, A_male, A_female, IBW }, eGFR);
+        rc = jsCG_IBW.evaluate({ creatinine, bodyweight, age, isMale, A_male, A_female, IBW }, eGFR);
         fructose_assert (rc == true);
         fructose_assert_double_eq (292.979167, eGFR);
 
         eGFR_CockcroftGaultIBW hc_CG_IBW;
         double hc_eGFR;
-        rc = hc_CG_IBW.evaluate({ creatinine, weight, age, isMale, OperationInput("height", 165) }, hc_eGFR);
+        rc = hc_CG_IBW.evaluate({ creatinine, bodyweight, age, isMale, OperationInput("height", 165) }, hc_eGFR);
         fructose_assert (rc == true);
         fructose_assert (fabs(eGFR - hc_eGFR) < 1e-6);
 
@@ -496,15 +496,15 @@ struct TestOperation : public fructose::test_base<TestOperation>
         fructose_assert (rc == true);
         rc = age.setValue(53);
         fructose_assert (rc == true);
-        rc = weight.setValue(51.3);
+        rc = bodyweight.setValue(51.3);
         fructose_assert (rc == true);
         rc = creatinine.setValue(13.4);
         fructose_assert (rc == true);
 
-        rc = jsCG_IBW.evaluate({ creatinine, weight, age, isMale, A_male, A_female, IBW }, eGFR);
+        rc = jsCG_IBW.evaluate({ creatinine, bodyweight, age, isMale, A_male, A_female, IBW }, eGFR);
         fructose_assert (rc == true);
         fructose_assert_double_eq (346.389851, eGFR);
-        rc = hc_CG_IBW.evaluate({ creatinine, weight, age, isMale, OperationInput("height", 191) }, hc_eGFR);
+        rc = hc_CG_IBW.evaluate({ creatinine, bodyweight, age, isMale, OperationInput("height", 191) }, hc_eGFR);
         fructose_assert (rc == true);
         fructose_assert (fabs(eGFR - hc_eGFR) < 1e-6);
     }
@@ -517,7 +517,7 @@ struct TestOperation : public fructose::test_base<TestOperation>
         double eGFR;
 
         // Required parameters.
-        OperationInput weight("weight", InputType::DOUBLE);
+        OperationInput bodyweight("bodyweight", InputType::DOUBLE);
         OperationInput IBW("IBW", InputType::DOUBLE);
         OperationInput height("height", InputType::INTEGER);
         OperationInput age("age", InputType::INTEGER);
@@ -529,8 +529,8 @@ struct TestOperation : public fructose::test_base<TestOperation>
         double IBWvalue;
         IdealBodyWeight IBWComputation;
 
-        JSExpression jsCG_IBW("(140 - age) * (IBW + 0.4 * (weight - IBW)) / creatinine * (A_male * isMale + A_female * (!isMale))",
-        { OperationInput("weight", InputType::DOUBLE),
+        JSExpression jsCG_IBW("(140 - age) * (IBW + 0.4 * (bodyweight - IBW)) / creatinine * (A_male * isMale + A_female * (!isMale))",
+        { OperationInput("bodyweight", InputType::DOUBLE),
           OperationInput("IBW", InputType::DOUBLE),
           OperationInput("age", InputType::INTEGER),
           OperationInput("creatinine", InputType::DOUBLE),
@@ -547,19 +547,19 @@ struct TestOperation : public fructose::test_base<TestOperation>
         fructose_assert (rc == true);
         rc = age.setValue(49);
         fructose_assert (rc == true);
-        rc = weight.setValue(71.4);
+        rc = bodyweight.setValue(71.4);
         fructose_assert (rc == true);
         rc = creatinine.setValue(23.4);
         fructose_assert (rc == true);
         rc = IBW.setValue(IBWvalue);
         fructose_assert (rc == true);
 
-        rc = jsCG_IBW.evaluate({ creatinine, weight, age, isMale, A_male, A_female, IBW }, eGFR);
+        rc = jsCG_IBW.evaluate({ creatinine, bodyweight, age, isMale, A_male, A_female, IBW }, eGFR);
         fructose_assert (rc == true);
         fructose_assert_double_eq (312.3995, eGFR);
         eGFR_CockcroftGaultAdjIBW hc_CG_AdjIBW;
         double hc_eGFR;
-        rc = hc_CG_AdjIBW.evaluate({ creatinine, weight, age, isMale, OperationInput("height", 165) }, hc_eGFR);
+        rc = hc_CG_AdjIBW.evaluate({ creatinine, bodyweight, age, isMale, OperationInput("height", 165) }, hc_eGFR);
         fructose_assert (rc == true);
         fructose_assert (fabs(eGFR - hc_eGFR) < 1e-6);
 
@@ -572,17 +572,17 @@ struct TestOperation : public fructose::test_base<TestOperation>
         fructose_assert (rc == true);
         rc = age.setValue(53);
         fructose_assert (rc == true);
-        rc = weight.setValue(51.3);
+        rc = bodyweight.setValue(51.3);
         fructose_assert (rc == true);
         rc = creatinine.setValue(13.4);
         fructose_assert (rc == true);
         rc = IBW.setValue(IBWvalue);
         fructose_assert (rc == true);
 
-        rc = jsCG_IBW.evaluate({ creatinine, weight, age, isMale, A_male, A_female, IBW }, eGFR);
+        rc = jsCG_IBW.evaluate({ creatinine, bodyweight, age, isMale, A_male, A_female, IBW }, eGFR);
         fructose_assert (rc == true);
         fructose_assert_double_eq (440.786149, eGFR);
-        rc = hc_CG_AdjIBW.evaluate({ creatinine, weight, age, isMale, OperationInput("height", 191) }, hc_eGFR);
+        rc = hc_CG_AdjIBW.evaluate({ creatinine, bodyweight, age, isMale, OperationInput("height", 191) }, hc_eGFR);
         fructose_assert (rc == true);
         fructose_assert (fabs(eGFR - hc_eGFR) < 1e-6);
     }
@@ -597,7 +597,7 @@ struct TestOperation : public fructose::test_base<TestOperation>
         double BSA_value;
 
         // Required parameters.
-        OperationInput weight("weight", InputType::DOUBLE);
+        OperationInput bodyweight("bodyweight", InputType::DOUBLE);
         OperationInput BSA("BSA", InputType::DOUBLE);
         OperationInput eGFR("eGFR", InputType::DOUBLE);
         OperationInput height("height", InputType::INTEGER);
@@ -612,9 +612,9 @@ struct TestOperation : public fructose::test_base<TestOperation>
           OperationInput("isMale", InputType::BOOL),
           OperationInput("isAB", InputType::BOOL) });
 
-        JSExpression jsMDRD_BSA("0.007184 * Math.pow(height, 0.725) * Math.pow(weight, 0.425)",
+        JSExpression jsMDRD_BSA("0.007184 * Math.pow(height, 0.725) * Math.pow(bodyweight, 0.425)",
         { OperationInput("height", InputType::INTEGER),
-          OperationInput("weight", InputType::DOUBLE) });
+          OperationInput("bodyweight", InputType::DOUBLE) });
 
         JSExpression jsMDRD_GFR("eGFR * BSA / 1.73",
         { OperationInput("eGFR", InputType::DOUBLE),
@@ -625,7 +625,7 @@ struct TestOperation : public fructose::test_base<TestOperation>
         fructose_assert (rc == true);
         rc = age.setValue(49);
         fructose_assert (rc == true);
-        rc = weight.setValue(71.4);
+        rc = bodyweight.setValue(71.4);
         fructose_assert (rc == true);
         rc = creatinine.setValue(23.4);
         fructose_assert (rc == true);
@@ -638,7 +638,7 @@ struct TestOperation : public fructose::test_base<TestOperation>
         fructose_assert (rc == true);
         fructose_assert_double_eq (368.638441, eGFR_value);
 
-        rc = jsMDRD_BSA.evaluate({ height, weight }, BSA_value);
+        rc = jsMDRD_BSA.evaluate({ height, bodyweight }, BSA_value);
         fructose_assert (rc == true);
         fructose_assert_double_eq (1.785928, BSA_value);
 
@@ -651,7 +651,7 @@ struct TestOperation : public fructose::test_base<TestOperation>
         fructose_assert_double_eq (380.555904, GFR_value);
         GFR_MDRD hc_MDRD;
         double hc_GFR;
-        rc = hc_MDRD.evaluate({ creatinine, weight, age, isMale, height, isAB }, hc_GFR);
+        rc = hc_MDRD.evaluate({ creatinine, bodyweight, age, isMale, height, isAB }, hc_GFR);
         fructose_assert (rc == true);
         fructose_assert (fabs(GFR_value - hc_GFR) < 2e-5);
 
@@ -660,7 +660,7 @@ struct TestOperation : public fructose::test_base<TestOperation>
         fructose_assert (rc == true);
         rc = age.setValue(53);
         fructose_assert (rc == true);
-        rc = weight.setValue(51.3);
+        rc = bodyweight.setValue(51.3);
         fructose_assert (rc == true);
         rc = creatinine.setValue(13.4);
         fructose_assert (rc == true);
@@ -673,7 +673,7 @@ struct TestOperation : public fructose::test_base<TestOperation>
         fructose_assert (rc == true);
         fructose_assert_double_eq (620.847749, eGFR_value);
 
-        rc = jsMDRD_BSA.evaluate({ height, weight }, BSA_value);
+        rc = jsMDRD_BSA.evaluate({ height, bodyweight }, BSA_value);
         fructose_assert (rc == true);
         fructose_assert_double_eq (1.725502, BSA_value);
 
@@ -684,7 +684,7 @@ struct TestOperation : public fructose::test_base<TestOperation>
         rc = jsMDRD_GFR.evaluate({ eGFR, BSA }, GFR_value);
         fructose_assert (rc == true);
         fructose_assert_double_eq (619.233545, GFR_value);
-        rc = hc_MDRD.evaluate({ creatinine, weight, age, isMale, height, isAB }, hc_GFR);
+        rc = hc_MDRD.evaluate({ creatinine, bodyweight, age, isMale, height, isAB }, hc_GFR);
         fructose_assert (rc == true);
         fructose_assert (fabs(GFR_value - hc_GFR) < 2e-4);
     }
@@ -701,7 +701,7 @@ struct TestOperation : public fructose::test_base<TestOperation>
         // Required parameters.
         OperationInput BSA("BSA", InputType::DOUBLE);
         OperationInput eGFR("eGFR", InputType::DOUBLE);
-        OperationInput weight("weight", InputType::DOUBLE);
+        OperationInput bodyweight("bodyweight", InputType::DOUBLE);
         OperationInput height("height", InputType::INTEGER);
         OperationInput age("age", InputType::INTEGER);
         OperationInput creatinine("creatinine", InputType::DOUBLE);
@@ -719,9 +719,9 @@ struct TestOperation : public fructose::test_base<TestOperation>
           OperationInput("isMale", InputType::BOOL),
           OperationInput("isAB", InputType::BOOL) });
 
-        JSExpression jsCKD_EPI_BSA("0.007184 * Math.pow(height, 0.725) * Math.pow(weight, 0.425)",
+        JSExpression jsCKD_EPI_BSA("0.007184 * Math.pow(height, 0.725) * Math.pow(bodyweight, 0.425)",
         { OperationInput("height", InputType::INTEGER),
-          OperationInput("weight", InputType::DOUBLE) });
+          OperationInput("bodyweight", InputType::DOUBLE) });
 
         JSExpression jsCKD_EPI_GFR("eGFR * BSA / 1.73",
         { OperationInput("eGFR", InputType::DOUBLE),
@@ -732,7 +732,7 @@ struct TestOperation : public fructose::test_base<TestOperation>
         fructose_assert (rc == true);
         rc = age.setValue(49);
         fructose_assert (rc == true);
-        rc = weight.setValue(71.4);
+        rc = bodyweight.setValue(71.4);
         fructose_assert (rc == true);
         rc = creatinine.setValue(23.4);
         fructose_assert (rc == true);
@@ -745,7 +745,7 @@ struct TestOperation : public fructose::test_base<TestOperation>
         fructose_assert (rc == true);
         fructose_assert_double_eq (165.334316, eGFR_value);
 
-        rc = jsCKD_EPI_BSA.evaluate({ height, weight }, BSA_value);
+        rc = jsCKD_EPI_BSA.evaluate({ height, bodyweight }, BSA_value);
         fructose_assert (rc == true);
         fructose_assert_double_eq (1.785928, BSA_value);
 
@@ -758,7 +758,7 @@ struct TestOperation : public fructose::test_base<TestOperation>
         fructose_assert_double_eq (170.679297, GFR_value);
         GFR_CKD_EPI hc_CKD_EPI;
         double hc_GFR;
-        rc = hc_CKD_EPI.evaluate({ creatinine, weight, age, isMale, height, isAB }, hc_GFR);
+        rc = hc_CKD_EPI.evaluate({ creatinine, bodyweight, age, isMale, height, isAB }, hc_GFR);
         fructose_assert (rc == true);
         fructose_assert (fabs(GFR_value - hc_GFR) < 2e-5);
 
@@ -767,7 +767,7 @@ struct TestOperation : public fructose::test_base<TestOperation>
         fructose_assert (rc == true);
         rc = age.setValue(53);
         fructose_assert (rc == true);
-        rc = weight.setValue(51.3);
+        rc = bodyweight.setValue(51.3);
         fructose_assert (rc == true);
         rc = creatinine.setValue(13.4);
         fructose_assert (rc == true);
@@ -780,7 +780,7 @@ struct TestOperation : public fructose::test_base<TestOperation>
         fructose_assert (rc == true);
         fructose_assert_double_eq (189.721900, eGFR_value);
 
-        rc = jsCKD_EPI_BSA.evaluate({ height, weight }, BSA_value);
+        rc = jsCKD_EPI_BSA.evaluate({ height, bodyweight }, BSA_value);
         fructose_assert (rc == true);
         fructose_assert_double_eq (1.725502, BSA_value);
 
@@ -791,7 +791,7 @@ struct TestOperation : public fructose::test_base<TestOperation>
         rc = jsCKD_EPI_GFR.evaluate({ eGFR, BSA }, GFR_value);
         fructose_assert (rc == true);
         fructose_assert_double_eq (189.228623, GFR_value);
-        rc = hc_CKD_EPI.evaluate({ creatinine, weight, age, isMale, height, isAB }, hc_GFR);
+        rc = hc_CKD_EPI.evaluate({ creatinine, bodyweight, age, isMale, height, isAB }, hc_GFR);
         fructose_assert (rc == true);
         fructose_assert (fabs(GFR_value - hc_GFR) < 2e-4);
     }
@@ -804,20 +804,20 @@ struct TestOperation : public fructose::test_base<TestOperation>
         double eGFR;
 
         // Required parameters.
-        OperationInput weight("weight", InputType::DOUBLE);
+        OperationInput bodyweight("bodyweight", InputType::DOUBLE);
         OperationInput bornAtTerm("bornAtTerm", InputType::BOOL);
         OperationInput height("height", InputType::INTEGER);
         OperationInput age("age", InputType::INTEGER);
         OperationInput creatinine("creatinine", InputType::DOUBLE);
         OperationInput isMale("isMale", InputType::BOOL);
 
-        /// \warning This equations misses some intervals (e.g., 1 < age <= 2 or age <= 1 && weight <= 2.5 && bornAtTerm) !!!
+        /// \warning This equations misses some intervals (e.g., 1 < age <= 2 or age <= 1 && bodyweight <= 2.5 && bornAtTerm) !!!
         JSExpression jsCG_Schwartz("height / creatinine * \
-                                  (0.33 * (age <= 1 && weight <= 2.5) + \
+                                  (0.33 * (age <= 1 && bodyweight <= 2.5) + \
                                    0.45 * (age <= 1 && bornAtTerm) + \
                                    0.55 * (age > 2 && (age <= 13 || (age <= 20 && !isMale))) + \
                                    0.70 * (age > 13 && age <= 20 && isMale))",
-        { OperationInput("weight", InputType::DOUBLE),
+        { OperationInput("bodyweight", InputType::DOUBLE),
           OperationInput("bornAtTerm", InputType::BOOL),
           OperationInput("age", InputType::INTEGER),
           OperationInput("height", InputType::INTEGER),
@@ -829,7 +829,7 @@ struct TestOperation : public fructose::test_base<TestOperation>
         fructose_assert (rc == true);
         rc = age.setValue(0);
         fructose_assert (rc == true);
-        rc = weight.setValue(2.4);
+        rc = bodyweight.setValue(2.4);
         fructose_assert (rc == true);
         rc = height.setValue(80);
         fructose_assert (rc == true);
@@ -838,12 +838,12 @@ struct TestOperation : public fructose::test_base<TestOperation>
         rc = bornAtTerm.setValue(false);
         fructose_assert (rc == true);
 
-        rc = jsCG_Schwartz.evaluate({ creatinine, weight, age, isMale, bornAtTerm, height }, eGFR);
+        rc = jsCG_Schwartz.evaluate({ creatinine, bodyweight, age, isMale, bornAtTerm, height }, eGFR);
         fructose_assert (rc == true);
         fructose_assert_double_eq (1.128205, eGFR);
         eGFR_Schwartz hc_Schwartz;
         double hc_eGFR;
-        rc = hc_Schwartz.evaluate({ creatinine, weight, age, isMale, bornAtTerm, height }, hc_eGFR);
+        rc = hc_Schwartz.evaluate({ creatinine, bodyweight, age, isMale, bornAtTerm, height }, hc_eGFR);
         fructose_assert (rc == true);
         fructose_assert (fabs(eGFR - hc_eGFR) < 1e-6);
 
@@ -852,7 +852,7 @@ struct TestOperation : public fructose::test_base<TestOperation>
         fructose_assert (rc == true);
         rc = age.setValue(0);
         fructose_assert (rc == true);
-        rc = weight.setValue(7.4);
+        rc = bodyweight.setValue(7.4);
         fructose_assert (rc == true);
         rc = height.setValue(80);
         fructose_assert (rc == true);
@@ -861,10 +861,10 @@ struct TestOperation : public fructose::test_base<TestOperation>
         rc = bornAtTerm.setValue(true);
         fructose_assert (rc == true);
 
-        rc = jsCG_Schwartz.evaluate({ creatinine, weight, age, isMale, bornAtTerm, height }, eGFR);
+        rc = jsCG_Schwartz.evaluate({ creatinine, bodyweight, age, isMale, bornAtTerm, height }, eGFR);
         fructose_assert (rc == true);
         fructose_assert_double_eq (1.538462, eGFR);
-        rc = hc_Schwartz.evaluate({ creatinine, weight, age, isMale, bornAtTerm, height }, hc_eGFR);
+        rc = hc_Schwartz.evaluate({ creatinine, bodyweight, age, isMale, bornAtTerm, height }, hc_eGFR);
         fructose_assert (rc == true);
         fructose_assert (fabs(eGFR - hc_eGFR) < 1e-6);
 
@@ -879,13 +879,13 @@ struct TestOperation : public fructose::test_base<TestOperation>
         fructose_assert (rc == true);
         rc = bornAtTerm.setValue(true);
         fructose_assert (rc == true);
-        rc = weight.setValue(27.4);
+        rc = bodyweight.setValue(27.4);
         fructose_assert (rc == true);
 
-        rc = jsCG_Schwartz.evaluate({ creatinine, weight, age, isMale, bornAtTerm, height }, eGFR);
+        rc = jsCG_Schwartz.evaluate({ creatinine, bodyweight, age, isMale, bornAtTerm, height }, eGFR);
         fructose_assert (rc == true);
         fructose_assert_double_eq (0.765661, eGFR);
-        rc = hc_Schwartz.evaluate({ creatinine, weight, age, isMale, bornAtTerm, height }, hc_eGFR);
+        rc = hc_Schwartz.evaluate({ creatinine, bodyweight, age, isMale, bornAtTerm, height }, hc_eGFR);
         fructose_assert (rc == true);
         fructose_assert (fabs(eGFR - hc_eGFR) < 1e-6);
 
@@ -900,13 +900,13 @@ struct TestOperation : public fructose::test_base<TestOperation>
         fructose_assert (rc == true);
         rc = bornAtTerm.setValue(true);
         fructose_assert (rc == true);
-        rc = weight.setValue(47.4);
+        rc = bodyweight.setValue(47.4);
         fructose_assert (rc == true);
 
-        rc = jsCG_Schwartz.evaluate({ creatinine, weight, age, isMale, bornAtTerm, height }, eGFR);
+        rc = jsCG_Schwartz.evaluate({ creatinine, bodyweight, age, isMale, bornAtTerm, height }, eGFR);
         fructose_assert (rc == true);
         fructose_assert_double_eq (1.136891, eGFR);
-        rc = hc_Schwartz.evaluate({ creatinine, weight, age, isMale, bornAtTerm, height }, hc_eGFR);
+        rc = hc_Schwartz.evaluate({ creatinine, bodyweight, age, isMale, bornAtTerm, height }, hc_eGFR);
         fructose_assert (rc == true);
         fructose_assert (fabs(eGFR - hc_eGFR) < 1e-6);
 
@@ -921,13 +921,13 @@ struct TestOperation : public fructose::test_base<TestOperation>
         fructose_assert (rc == true);
         rc = bornAtTerm.setValue(true);
         fructose_assert (rc == true);
-        rc = weight.setValue(37.4);
+        rc = bodyweight.setValue(37.4);
         fructose_assert (rc == true);
 
-        rc = jsCG_Schwartz.evaluate({ creatinine, weight, age, isMale, bornAtTerm, height }, eGFR);
+        rc = jsCG_Schwartz.evaluate({ creatinine, bodyweight, age, isMale, bornAtTerm, height }, eGFR);
         fructose_assert (rc == true);
         fructose_assert_double_eq (0.893271, eGFR);
-        rc = hc_Schwartz.evaluate({ creatinine, weight, age, isMale, bornAtTerm, height }, hc_eGFR);
+        rc = hc_Schwartz.evaluate({ creatinine, bodyweight, age, isMale, bornAtTerm, height }, hc_eGFR);
         fructose_assert (rc == true);
         fructose_assert (fabs(eGFR - hc_eGFR) < 1e-6);
     }
@@ -944,7 +944,7 @@ struct TestOperation : public fructose::test_base<TestOperation>
         // Required parameters.
         OperationInput BSA("BSA", InputType::DOUBLE);
         OperationInput eGFR("eGFR", InputType::DOUBLE);
-        OperationInput weight("weight", InputType::DOUBLE);
+        OperationInput bodyweight("bodyweight", InputType::DOUBLE);
         OperationInput height("height", InputType::INTEGER);
         OperationInput age("age", InputType::INTEGER);
         OperationInput creatinine("creatinine", InputType::DOUBLE);
@@ -955,9 +955,9 @@ struct TestOperation : public fructose::test_base<TestOperation>
           OperationInput("age", InputType::INTEGER),
           OperationInput("isMale", InputType::BOOL) });
 
-        JSExpression jsJelliffe_BSA("0.007184 * Math.pow(height, 0.725) * Math.pow(weight, 0.425)",
+        JSExpression jsJelliffe_BSA("0.007184 * Math.pow(height, 0.725) * Math.pow(bodyweight, 0.425)",
         { OperationInput("height", InputType::INTEGER),
-          OperationInput("weight", InputType::DOUBLE) });
+          OperationInput("bodyweight", InputType::DOUBLE) });
 
         JSExpression jsJelliffe_GFR("eGFR * BSA / 1.73",
         { OperationInput("eGFR", InputType::DOUBLE),
@@ -968,7 +968,7 @@ struct TestOperation : public fructose::test_base<TestOperation>
         fructose_assert (rc == true);
         rc = age.setValue(49);
         fructose_assert (rc == true);
-        rc = weight.setValue(71.4);
+        rc = bodyweight.setValue(71.4);
         fructose_assert (rc == true);
         rc = creatinine.setValue(123.4);
         fructose_assert (rc == true);
@@ -979,7 +979,7 @@ struct TestOperation : public fructose::test_base<TestOperation>
         fructose_assert (rc == true);
         fructose_assert_double_eq (56.510951, eGFR_value);
 
-        rc = jsJelliffe_BSA.evaluate({ height, weight }, BSA_value);
+        rc = jsJelliffe_BSA.evaluate({ height, bodyweight }, BSA_value);
         fructose_assert (rc == true);
         fructose_assert_double_eq (1.785928, BSA_value);
 
@@ -992,7 +992,7 @@ struct TestOperation : public fructose::test_base<TestOperation>
         fructose_assert_double_eq (58.337855, GFR_value);
         GFR_Jelliffe hc_Jelliffe;
         double hc_GFR;
-        rc = hc_Jelliffe.evaluate({ creatinine, age, isMale, height, weight }, hc_GFR);
+        rc = hc_Jelliffe.evaluate({ creatinine, age, isMale, height, bodyweight }, hc_GFR);
         fructose_assert (rc == true);
         fructose_assert (fabs(GFR_value - hc_GFR) < 2e-5);
 
@@ -1001,7 +1001,7 @@ struct TestOperation : public fructose::test_base<TestOperation>
         fructose_assert (rc == true);
         rc = age.setValue(53);
         fructose_assert (rc == true);
-        rc = weight.setValue(51.3);
+        rc = bodyweight.setValue(51.3);
         fructose_assert (rc == true);
         rc = creatinine.setValue(313.4);
         fructose_assert (rc == true);
@@ -1012,7 +1012,7 @@ struct TestOperation : public fructose::test_base<TestOperation>
         fructose_assert (rc == true);
         fructose_assert_double_eq (19.212632, eGFR_value);
 
-        rc = jsJelliffe_BSA.evaluate({ height, weight }, BSA_value);
+        rc = jsJelliffe_BSA.evaluate({ height, bodyweight }, BSA_value);
         fructose_assert (rc == true);
         fructose_assert_double_eq (1.725502, BSA_value);
 
@@ -1023,7 +1023,7 @@ struct TestOperation : public fructose::test_base<TestOperation>
         rc = jsJelliffe_GFR.evaluate({ eGFR, BSA }, GFR_value);
         fructose_assert (rc == true);
         fructose_assert_double_eq (19.162679, GFR_value);
-        rc = hc_Jelliffe.evaluate({ creatinine, age, isMale, height, weight }, hc_GFR);
+        rc = hc_Jelliffe.evaluate({ creatinine, age, isMale, height, bodyweight }, hc_GFR);
         fructose_assert (rc == true);
         fructose_assert (fabs(GFR_value - hc_GFR) < 2e-5);
     }
@@ -1036,16 +1036,16 @@ struct TestOperation : public fructose::test_base<TestOperation>
         double eGFR;
 
         // Required parameters.
-        OperationInput weight("weight", InputType::DOUBLE);
+        OperationInput bodyweight("bodyweight", InputType::DOUBLE);
         OperationInput height("height", InputType::INTEGER);
         OperationInput age("age", InputType::INTEGER);
         OperationInput creatinine("creatinine", InputType::DOUBLE);
         OperationInput isMale("isMale", InputType::BOOL);
 
         /// \warning This equations returns huge values!
-        JSExpression jsCG_SalazarCorcoran("isMale * ((137 - age) * (0.285 * weight + 12.1 * height * height) * 0.0113 / (51 * creatinine)) + \
-                                         !isMale * ((146 - age) * (0.287 * weight + 9.74 * height * height) * 0.0113 / (60 * creatinine))",
-        { OperationInput("weight", InputType::DOUBLE),
+        JSExpression jsCG_SalazarCorcoran("isMale * ((137 - age) * (0.285 * bodyweight + 12.1 * height * height) * 0.0113 / (51 * creatinine)) + \
+                                         !isMale * ((146 - age) * (0.287 * bodyweight + 9.74 * height * height) * 0.0113 / (60 * creatinine))",
+        { OperationInput("bodyweight", InputType::DOUBLE),
           OperationInput("age", InputType::INTEGER),
           OperationInput("height", InputType::INTEGER),
           OperationInput("creatinine", InputType::DOUBLE),
@@ -1056,19 +1056,19 @@ struct TestOperation : public fructose::test_base<TestOperation>
         fructose_assert (rc == true);
         rc = age.setValue(49);
         fructose_assert (rc == true);
-        rc = weight.setValue(122.4);
+        rc = bodyweight.setValue(122.4);
         fructose_assert (rc == true);
         rc = height.setValue(160);
         fructose_assert (rc == true);
         rc = creatinine.setValue(23.4);
         fructose_assert (rc == true);
 
-        rc = jsCG_SalazarCorcoran.evaluate({ creatinine, weight, age, isMale, height }, eGFR);
+        rc = jsCG_SalazarCorcoran.evaluate({ creatinine, bodyweight, age, isMale, height }, eGFR);
         fructose_assert (rc == true);
         fructose_assert_double_eq (258.136444, eGFR);
         eGFR_SalazarCorcoran hc_SalazarCorcoran;
         double hc_eGFR;
-        rc = hc_SalazarCorcoran.evaluate({ creatinine, weight, age, isMale, height }, hc_eGFR);
+        rc = hc_SalazarCorcoran.evaluate({ creatinine, bodyweight, age, isMale, height }, hc_eGFR);
         fructose_assert (rc == true);
         fructose_assert (fabs(eGFR - hc_eGFR) < 1e-6);
 
@@ -1077,17 +1077,17 @@ struct TestOperation : public fructose::test_base<TestOperation>
         fructose_assert (rc == true);
         rc = age.setValue(53);
         fructose_assert (rc == true);
-        rc = weight.setValue(162.4);
+        rc = bodyweight.setValue(162.4);
         fructose_assert (rc == true);
         rc = height.setValue(170);
         fructose_assert (rc == true);
         rc = creatinine.setValue(123.4);
         fructose_assert (rc == true);
 
-        rc = jsCG_SalazarCorcoran.evaluate({ creatinine, weight, age, isMale, height }, eGFR);
+        rc = jsCG_SalazarCorcoran.evaluate({ creatinine, bodyweight, age, isMale, height }, eGFR);
         fructose_assert (rc == true);
         fructose_assert_double_eq (39.959835, eGFR);
-        rc = hc_SalazarCorcoran.evaluate({ creatinine, weight, age, isMale, height }, hc_eGFR);
+        rc = hc_SalazarCorcoran.evaluate({ creatinine, bodyweight, age, isMale, height }, hc_eGFR);
         fructose_assert (rc == true);
         fructose_assert (fabs(eGFR - hc_eGFR) < 1e-6);
     }

@@ -33,7 +33,7 @@ public:
 
         model->addCovariate(
                     std::unique_ptr<Tucuxi::Core::CovariateDefinition>(
-                        new Tucuxi::Core::CovariateDefinition("weight", "70", nullptr, CovariateType::Standard)));
+                        new Tucuxi::Core::CovariateDefinition("bodyweight", "70", nullptr, CovariateType::Standard)));
         model->addCovariate(
                     std::unique_ptr<Tucuxi::Core::CovariateDefinition>(
                         new Tucuxi::Core::CovariateDefinition("gist", "0", nullptr, CovariateType::Standard)));
@@ -116,7 +116,7 @@ public:
                                             return Cl;",
                                             { OperationInput("CL_population", InputType::DOUBLE),
                                               OperationInput("sex", InputType::DOUBLE),
-                                              OperationInput("weight", InputType::DOUBLE),
+                                              OperationInput("bodyweight", InputType::DOUBLE),
                                               OperationInput("age", InputType::DOUBLE),
                                               OperationInput("gist", InputType::BOOL)});
 

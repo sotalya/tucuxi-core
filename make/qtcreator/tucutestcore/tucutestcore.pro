@@ -30,7 +30,9 @@ HEADERS += \
     ../../../test/tucucore/test_drugdomainconstraintsevaluator.h \
     ../../../test/tucucore/test_computingcomponentconcentration.h \
     ../../../test/tucucore/test_computingcomponentpercentiles.h \
-    ../../../test/tucucore/test_operationcollection.h
+    ../../../test/tucucore/test_operationcollection.h \
+    ../../../test/tucucore/drugmodels/test_drug_tobramycin.h \
+    ../../../test/tucucore/drugmodels/test_drug_vancomycin.h
 
 SOURCES += \
     ../../../test/tucucore/tests.cpp

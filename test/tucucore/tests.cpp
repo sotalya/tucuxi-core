@@ -29,6 +29,9 @@
 #include "test_percentilecalculator.h"
 #include "test_pkmodel.h"
 
+#include "drugmodels/test_drug_tobramycin.h"
+#include "drugmodels/test_drug_vancomycin.h"
+
 int main(int argc, char** argv)
 {
     // Get application folder
@@ -388,6 +391,34 @@ int main(int argc, char** argv)
     else {
         std::cout << "Computing Component Percentiles test succeeded\n";
     }
+
+
+    // --- Tobramycin drug tests --- //
+    TestDrugTobramycin tobramycinTests;
+
+    // one compartment
+    tobramycinTests.add_test("testTobramycin", &TestDrugTobramycin::testTobramycin);
+
+    res = tobramycinTests.run(argc, argv);
+    tot_res |= res;
+    if (res != 0) {
+        std::cerr << "Drug Tobramycin test failed\n";
+    }
+    std::cout << "Drug Tobramycin  test succeeded\n";
+
+
+    // --- Tobramycin drug tests --- //
+    TestDrugVancomycin vancomycinTests;
+
+    // one compartment
+    vancomycinTests.add_test("testTobramycin", &TestDrugVancomycin::testVancomycin);
+
+    res = vancomycinTests.run(argc, argv);
+    tot_res |= res;
+    if (res != 0) {
+        std::cerr << "Drug Vancomycin test failed\n";
+    }
+    std::cout << "Drug Vancomycin  test succeeded\n";
 
 
     return tot_res;

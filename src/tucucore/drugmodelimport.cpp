@@ -523,7 +523,12 @@ Operation* DrugModelImport::extractOperation(Tucuxi::Common::XmlNodeIterator _no
         else if (nodeName == "hardFormula") {
             // We should access a repository to get an existing hardcoded operation, based on a Id
             // operation = hardcodedOperationRepository->getOperationById(it->getValue());
-            operation = new GFR_MDRD();
+            OperationCollection collection;
+            collection.populate();
+            std::shared_ptr<Operation> sharedOperation = collection.getOperationFromId(it->getValue());
+            if (sharedOperation != nullptr) {
+                operation = sharedOperation.get()->clone().release();
+            }
         }
         else if (nodeName == "multiFormula") {
             // TODO : Implement multi formula parsing

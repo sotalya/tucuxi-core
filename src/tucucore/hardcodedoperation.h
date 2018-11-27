@@ -38,6 +38,12 @@ HARDCODED_OPERATION(BodySurfaceArea);
 HARDCODED_OPERATION(eGFR_CockcroftGaultGeneral);
 
 /// \ingroup TucuCore
+/// \brief Compute the eGFR value using the Cockcroft-Gault general equation.
+HARDCODED_OPERATION(OperationEGFRCockcroftGaultGeneral);
+
+
+
+/// \ingroup TucuCore
 /// \brief Compute the eGFR value using the Cockcroft-Gault equation based on IBW.
 HARDCODED_OPERATION(eGFR_CockcroftGaultIBW);
 
@@ -65,6 +71,9 @@ HARDCODED_OPERATION(GFR_Jelliffe);
 /// \brief Compute the eGFR value using the Salazar-Corcoran method (obese patients).
 HARDCODED_OPERATION(eGFR_SalazarCorcoran);
 
+/// \ingroup TucuCore
+/// \brief Compute an active moiety from a single analyte, so no calculation required.
+HARDCODED_OPERATION(direct);
 
 
 /// \brief Collection of operations -- groups hard coded operations so that they can be easily retrieved.
