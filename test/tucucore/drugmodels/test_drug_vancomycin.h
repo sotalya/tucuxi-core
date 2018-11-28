@@ -186,50 +186,183 @@ static std::string vancomycin_tdd = R"(<?xml version="1.0" encoding="UTF-8" stan
 
                                             <!-- Drug model covariates -->
                                             <covariates>
-                                    <covariate>
-                                        <covariateId>bodyweight</covariateId>
-                                        <name>
-                                            <name lang="en">Total Body Weight</name>
-                                            <name lang="fr">Poids total</name>
-                                        </name>
-                                        <description>
-                                            <desc lang="en">Total body weight of patient, in kilogramms</desc>
-                                            <desc lang="fr">Poids total du patient, en kilogramme</desc>
-                                        </description>
-                                        <unit>kg</unit>
-                                        <covariateType>standard</covariateType>
-                                        <dataType>double</dataType>
-                                        <interpolationType>linear</interpolationType>
-                                        <refreshPeriod>
-                                          <unit>d</unit>
-                                          <value>10</value>
-                                        </refreshPeriod>
-                                        <covariateValue>
-                                            <standardValue>75</standardValue>
-                                        </covariateValue>
-                                        <validation> <!-- pourrait être une contrainte -->
-                                            <errorMessage><text lang="fr"></text></errorMessage>
-                                            <operation>
-                                                <softFormula>
-                                                    <inputs>
-                                                        <input>
-                                                            <id>bodyweight</id>
-                                                            <type>double</type>
-                                                        </input>
-                                                    </inputs>
-                                                    <code><![CDATA[
-                                                        return ((bodyweight < 131) && (bodyweight > 49));
-                                                        ]]>
-                                                    </code>
-                                                </softFormula>
-                                                <comments/>
-                                            </operation>
-                                            <comments/>
-                                        </validation>
-                                        <comments>
-                                            <comment lang="en">About the mean value in the study population group A</comment>
-                                        </comments>
-                                    </covariate>
+                                                <covariate>
+                                                    <covariateId>bodyweight</covariateId>
+                                                    <name>
+                                                        <name lang="en">Total Body Weight</name>
+                                                        <name lang="fr">Poids total</name>
+                                                    </name>
+                                                    <description>
+                                                        <desc lang="en">Total body weight of patient, in kilogramms</desc>
+                                                        <desc lang="fr">Poids total du patient, en kilogramme</desc>
+                                                    </description>
+                                                    <unit>kg</unit>
+                                                    <covariateType>standard</covariateType>
+                                                    <dataType>double</dataType>
+                                                    <interpolationType>linear</interpolationType>
+                                                    <refreshPeriod>
+                                                      <unit>d</unit>
+                                                      <value>10</value>
+                                                    </refreshPeriod>
+                                                    <covariateValue>
+                                                        <standardValue>75</standardValue>
+                                                    </covariateValue>
+                                                    <validation> <!-- pourrait être une contrainte -->
+                                                        <errorMessage><text lang="fr"></text></errorMessage>
+                                                        <operation>
+                                                            <softFormula>
+                                                                <inputs>
+                                                                    <input>
+                                                                        <id>bodyweight</id>
+                                                                        <type>double</type>
+                                                                    </input>
+                                                                </inputs>
+                                                                <code><![CDATA[
+                                                                    return ((bodyweight < 131) && (bodyweight > 49));
+                                                                    ]]>
+                                                                </code>
+                                                            </softFormula>
+                                                            <comments/>
+                                                        </operation>
+                                                        <comments/>
+                                                    </validation>
+                                                    <comments>
+                                                        <comment lang="en">About the mean value in the study population group A</comment>
+                                                    </comments>
+                                                </covariate>
+                                                <covariate>
+                                                    <covariateId>sex</covariateId>
+                                                    <name>
+                                                        <name lang='en'>Sex</name>
+                                                    </name>
+                                                    <description>
+                                                        <desc lang='en'>Sex of the patient</desc>
+                                                    </description>
+                                                    <unit>y</unit>
+                                                    <covariateType>standard</covariateType>
+                                                    <dataType>double</dataType>
+                                                    <interpolationType>direct</interpolationType>
+                                                    <refreshPeriod>
+                                                      <unit>d</unit>
+                                                      <value>0</value>
+                                                    </refreshPeriod>
+                                                    <covariateValue>
+                                                        <standardValue>0.5</standardValue>
+                                                    </covariateValue>
+                                                    <validation>
+                                                        <errorMessage>
+                                                            <text lang='fr'>The age shall be in [0,1].</text>
+                                                        </errorMessage>
+                                                        <operation>
+                                                            <softFormula>
+                                                                <inputs>
+                                                                    <input>
+                                                                        <id>sex</id>
+                                                                        <type>double</type>
+                                                                    </input>
+                                                                </inputs>
+                                                                <code>
+                                                                    <![CDATA[if (sex < 0.0) return false;if (sex > 1.0) return false;return true;]]>
+                                                                </code>
+                                                            </softFormula>
+                                                            <comments/>
+                                                        </operation>
+                                                        <comments/>
+                                                    </validation>
+                                                    <comments>
+                                                        <comment lang='en'>The validation still needs to be defined precisely.</comment>
+                                                    </comments>
+                                                </covariate>
+
+                                                <covariate>
+                                                    <covariateId>age</covariateId>
+                                                    <name>
+                                                        <name lang='en'>Age</name>
+                                                    </name>
+                                                    <description>
+                                                        <desc lang='en'>Age in years</desc>
+                                                    </description>
+                                                    <unit>y</unit>
+                                                    <covariateType>standard</covariateType>
+                                                    <dataType>double</dataType>
+                                                    <interpolationType>linear</interpolationType>
+                                                    <refreshPeriod>
+                                                      <unit>y</unit>
+                                                      <value>1</value>
+                                                    </refreshPeriod>
+                                                    <covariateValue>
+                                                        <standardValue>18</standardValue>
+                                                    </covariateValue>
+                                                    <validation>
+                                                        <errorMessage>
+                                                            <text lang='fr'>The age shall be positive.</text>
+                                                        </errorMessage>
+                                                        <operation>
+                                                            <softFormula>
+                                                                <inputs>
+                                                                    <input>
+                                                                        <id>age</id>
+                                                                        <type>double</type>
+                                                                    </input>
+                                                                </inputs>
+                                                                <code>
+                                                                    <![CDATA[return age > 0.0;]]>
+                                                                </code>
+                                                            </softFormula>
+                                                            <comments/>
+                                                        </operation>
+                                                        <comments/>
+                                                    </validation>
+                                                    <comments>
+                                                        <comment lang='en'>The validation still needs to be defined precisely.</comment>
+                                                    </comments>
+                                                </covariate>
+
+                                                <covariate>
+                                                    <covariateId>creatinine</covariateId>
+                                                    <name>
+                                                        <name lang='en'>serum creatinine concentration</name>
+                                                    </name>
+                                                    <description>
+                                                        <desc lang='en'>Serum creatinine concentration.</desc>
+                                                    </description>
+                                                    <unit>umol/l</unit>
+                                                    <covariateType>standard</covariateType>
+                                                    <dataType>double</dataType>
+                                                    <interpolationType>linear</interpolationType>
+                                                    <refreshPeriod>
+                                                      <unit>d</unit>
+                                                      <value>1</value>
+                                                    </refreshPeriod>
+                                                    <covariateValue>
+                                                        <standardValue>37.2</standardValue>
+                                                    </covariateValue>
+                                                    <validation>
+                                                        <errorMessage>
+                                                            <text lang='fr'>The SCR shall be positive.</text>
+                                                        </errorMessage>
+                                                        <operation>
+                                                            <softFormula>
+                                                                <inputs>
+                                                                    <input>
+                                                                        <id>creatinine</id>
+                                                                        <type>double</type>
+                                                                    </input>
+                                                                </inputs>
+                                                                <code>
+                                                                    <![CDATA[return creatinine > 0.0;]]>
+                                                                </code>
+                                                            </softFormula>
+                                                            <comments/>
+                                                        </operation>
+                                                        <comments/>
+                                                    </validation>
+                                                    <comments>
+                                                        <comment lang='en'>The validation still needs to be defined precisely.</comment>
+                                                    </comments>
+                                                </covariate>
+
+
                                                 <covariate>
                                                     <covariateId>CLcr</covariateId>
                                                     <name>
@@ -250,11 +383,10 @@ static std::string vancomycin_tdd = R"(<?xml version="1.0" encoding="UTF-8" stan
                                                     </refreshPeriod>
                                                     <covariateValue>
                                                         <standardValue>70</standardValue>
-                                    <aprioriComputation>
-
-                                        <hardFormula>eGFR_CockcroftGaultGeneral</hardFormula>
-                                        <comments/>
-                                    </aprioriComputation>
+                                                        <aprioriComputation>
+                                                          <hardFormula>OperationEGFRCockcroftGaultGeneral</hardFormula>
+                                                          <comments/>
+                                                        </aprioriComputation>
                                                     </covariateValue>
                                                     <validation> <!-- pourrait être une contrainte -->
                                                         <errorMessage><text lang="fr"></text></errorMessage>
@@ -599,6 +731,7 @@ static std::string vancomycin_tdd = R"(<?xml version="1.0" encoding="UTF-8" stan
                                             </comments>
                                         </drugModel>
                                     </model>
+
         )";
 
 struct TestDrugVancomycin : public fructose::test_base<TestDrugVancomycin>
@@ -640,8 +773,8 @@ struct TestDrugVancomycin : public fructose::test_base<TestDrugVancomycin>
 
         DrugModel *drugModel;
 
-//        importer.importFromString(drugModel, vancomycin_tdd);
-        importer.importFromFile(drugModel, "/home/ythoma/docs/ezechiel/git/dev/src/drugs2/ch.tucuxi.vancomycin.tdd");
+        importer.importFromString(drugModel, vancomycin_tdd);
+//        importer.importFromFile(drugModel, "/home/ythoma/docs/ezechiel/git/dev/src/drugs2/ch.tucuxi.vancomycin.tdd");
 
         fructose_assert(drugModel != nullptr);
 
