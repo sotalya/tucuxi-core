@@ -28,6 +28,7 @@
 #include "test_parameterextractor.h"
 #include "test_percentilecalculator.h"
 #include "test_pkmodel.h"
+#include "test_targetextractor.h"
 
 #include "drugmodels/test_drug_tobramycin.h"
 #include "drugmodels/test_drug_vancomycin.h"
@@ -393,6 +394,21 @@ int main(int argc, char** argv)
     }
 
 
+    // --- TargetExtractor tests --- //
+    TestTargetExtractor targetExtractorTests;
+
+    // one compartment
+    targetExtractorTests.add_test("testTobramycin", &TestTargetExtractor::testTargetExtractor);
+
+    res = targetExtractorTests.run(argc, argv);
+    tot_res |= res;
+    if (res != 0) {
+        std::cerr << "TargetExtractor test failed\n";
+    }
+    else {
+        std::cout << "TargetExtractor test succeeded\n";
+    }
+
     // --- Tobramycin drug tests --- //
     TestDrugTobramycin tobramycinTests;
 
@@ -404,8 +420,9 @@ int main(int argc, char** argv)
     if (res != 0) {
         std::cerr << "Drug Tobramycin test failed\n";
     }
-    std::cout << "Drug Tobramycin  test succeeded\n";
-
+    else {
+        std::cout << "Drug Tobramycin test succeeded\n";
+    }
 
     // --- Tobramycin drug tests --- //
     TestDrugVancomycin vancomycinTests;
@@ -418,8 +435,9 @@ int main(int argc, char** argv)
     if (res != 0) {
         std::cerr << "Drug Vancomycin test failed\n";
     }
-    std::cout << "Drug Vancomycin  test succeeded\n";
-
+    else {
+        std::cout << "Drug Vancomycin test succeeded\n";
+    }
 
     return tot_res;
 }

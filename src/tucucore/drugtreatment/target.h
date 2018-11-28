@@ -12,6 +12,8 @@
 #include "tucucore/drugmodel/targetdefinition.h"
 #include "tucucommon/duration.h"
 
+struct TestTargetExtractor;
+
 namespace Tucuxi {
 namespace Core {
 
@@ -82,6 +84,8 @@ private:
 
     friend TargetExtractor;
     friend TargetEvaluator;
+
+    friend TestTargetExtractor;
 };
 
 ///

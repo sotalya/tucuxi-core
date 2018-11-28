@@ -10,6 +10,8 @@
 #include "tucucore/covariateevent.h"
 #include "tucucore/computingservice/computingtrait.h"
 
+struct TestTargetExtractor;
+
 namespace Tucuxi {
 namespace Core {
 
@@ -51,6 +53,8 @@ protected:
     TargetEvent targetEventFromTarget(const Target *_target, const TargetDefinition *_targetDefinition);
 
     TargetEvent targetEventFromTargetDefinition(const TargetDefinition *_target);
+
+    friend TestTargetExtractor;
 };
 
 } // namespace Core

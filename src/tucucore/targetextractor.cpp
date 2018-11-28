@@ -24,7 +24,7 @@ TargetEvent TargetExtractor::targetEventFromTarget(const Target *_target, const 
                     translateToUnit(_target->m_valueMin, _targetDefinition->getUnit(), Unit("ug/l")),
                     translateToUnit(_target->m_valueBest, _targetDefinition->getUnit(), Unit("ug/l")),
                     translateToUnit(_target->m_valueMax, _targetDefinition->getUnit(), Unit("ug/l")),
-                    translateToUnit(_target->m_mic, _targetDefinition->getMicUnit(), Unit("ug/l")),
+                    0.0, // we do not need the MIC
                     _target->m_tMin,
                     _target->m_tBest,
                     _target->m_tMax);
