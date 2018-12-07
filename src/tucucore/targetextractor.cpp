@@ -21,6 +21,8 @@ TargetEvent TargetExtractor::targetEventFromTarget(const Target *_target, const 
         return TargetEvent(
                     _targetDefinition->getActiveMoietyId(),
                     _targetDefinition->getTargetType(),
+                    Unit("ug/l"),
+                    _targetDefinition->getUnit(),
                     translateToUnit(_target->m_valueMin, _targetDefinition->getUnit(), Unit("ug/l")),
                     translateToUnit(_target->m_valueBest, _targetDefinition->getUnit(), Unit("ug/l")),
                     translateToUnit(_target->m_valueMax, _targetDefinition->getUnit(), Unit("ug/l")),
@@ -40,6 +42,8 @@ TargetEvent TargetExtractor::targetEventFromTarget(const Target *_target, const 
         return TargetEvent(
                     _targetDefinition->getActiveMoietyId(),
                     _targetDefinition->getTargetType(),
+                    Unit("ug*h/l"),
+                    _targetDefinition->getUnit(),
                     translateToUnit(_target->m_valueMin, _targetDefinition->getUnit(), Unit("ug*h/l")),
                     translateToUnit(_target->m_valueBest, _targetDefinition->getUnit(), Unit("ug*h/l")),
                     translateToUnit(_target->m_valueMax, _targetDefinition->getUnit(), Unit("ug*h/l")),
@@ -57,6 +61,8 @@ TargetEvent TargetExtractor::targetEventFromTarget(const Target *_target, const 
         return TargetEvent(
                     _targetDefinition->getActiveMoietyId(),
                     _targetDefinition->getTargetType(),
+                    Unit("h"),
+                    _targetDefinition->getUnit(),
                     translateToUnit(_target->m_valueMin, _targetDefinition->getUnit(), Unit("h")),
                     translateToUnit(_target->m_valueBest, _targetDefinition->getUnit(), Unit("h")),
                     translateToUnit(_target->m_valueMax, _targetDefinition->getUnit(), Unit("h")),
@@ -73,6 +79,8 @@ TargetEvent TargetExtractor::targetEventFromTarget(const Target *_target, const 
         return TargetEvent(
                     _targetDefinition->getActiveMoietyId(),
                     _targetDefinition->getTargetType(),
+                    Unit(""),
+                    _targetDefinition->getUnit(),
                     translateToUnit(_target->m_valueMin, _targetDefinition->getUnit(), Unit("")),
                     translateToUnit(_target->m_valueBest, _targetDefinition->getUnit(), Unit("")),
                     translateToUnit(_target->m_valueMax, _targetDefinition->getUnit(), Unit("")),
@@ -90,6 +98,8 @@ TargetEvent TargetExtractor::targetEventFromTarget(const Target *_target, const 
         return TargetEvent(
                     _targetDefinition->getActiveMoietyId(),
                     _targetDefinition->getTargetType(),
+                    Unit(""),
+                    _targetDefinition->getUnit(),
                     _target->m_valueMin,
                     _target->m_valueBest,
                     _target->m_valueMax,
@@ -115,6 +125,8 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(const TargetDefinit
         return TargetEvent(
                     _target->getActiveMoietyId(),
                     _target->getTargetType(),
+                    Unit("ug/l"),
+                    _target->getUnit(),
                     translateToUnit(_target->getCMin().getValue(), _target->getUnit(), Unit("ug/l")),
                     translateToUnit(_target->getCBest().getValue(), _target->getUnit(), Unit("ug/l")),
                     translateToUnit(_target->getCMax().getValue(), _target->getUnit(), Unit("ug/l")),
@@ -137,6 +149,8 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(const TargetDefinit
         return TargetEvent(
                     _target->getActiveMoietyId(),
                     _target->getTargetType(),
+                    Unit("ug*h/l"),
+                    _target->getUnit(),
                     translateToUnit(_target->getCMin().getValue(), _target->getUnit(), Unit("ug*h/l")),
                     translateToUnit(_target->getCBest().getValue(), _target->getUnit(), Unit("ug*h/l")),
                     translateToUnit(_target->getCMax().getValue(), _target->getUnit(), Unit("ug*h/l")),
@@ -157,6 +171,8 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(const TargetDefinit
         return TargetEvent(
                     _target->getActiveMoietyId(),
                     _target->getTargetType(),
+                    Unit("h"),
+                    _target->getUnit(),
                     translateToUnit(_target->getCMin().getValue(), _target->getUnit(), Unit("h")),
                     translateToUnit(_target->getCBest().getValue(), _target->getUnit(), Unit("h")),
                     translateToUnit(_target->getCMax().getValue(), _target->getUnit(), Unit("h")),
@@ -174,6 +190,8 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(const TargetDefinit
         return TargetEvent(
                     _target->getActiveMoietyId(),
                     _target->getTargetType(),
+                    Unit(""),
+                    _target->getUnit(),
                     translateToUnit(_target->getCMin().getValue(), _target->getUnit(), Unit("")),
                     translateToUnit(_target->getCBest().getValue(), _target->getUnit(), Unit("")),
                     translateToUnit(_target->getCMax().getValue(), _target->getUnit(), Unit("")),
@@ -192,6 +210,8 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(const TargetDefinit
         return TargetEvent(
                     _target->getActiveMoietyId(),
                     _target->getTargetType(),
+                    Unit(""),
+                    _target->getUnit(),
                     _target->getCMin().getValue(),
                     _target->getCBest().getValue(),
                     _target->getCMax().getValue(),

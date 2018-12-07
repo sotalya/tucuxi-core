@@ -109,6 +109,21 @@ public:
     }
     int size() const { return static_cast<int>(m_parameters.size()); }
 
+    bool equals(const ParameterSetEvent *_other) const {
+        if (m_parameters.size() != _other->m_parameters.size()) {
+            return false;
+        }
+        for(size_t i = 0; i < m_parameters.size(); i++) {
+            if (m_parameters.at(i).getValue() != _other->m_parameters.at(i).getValue()) {
+                return false;
+            }
+            if (m_parameters.at(i).getParameterId() != _other->m_parameters.at(i).getParameterId()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     // Make the test class friend, as this will allow us to manually check the available events.
     friend TestParameterExtractor;
 

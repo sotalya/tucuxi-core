@@ -254,7 +254,7 @@ TargetEvaluator::Result TargetEvaluator::evaluate(
     }
 
     // We build the result, as there was no error
-    _result = TargetEvaluationResult(_target.m_targetType, score, value);
+    _result = TargetEvaluationResult(_target.m_targetType, score, translateToUnit(value, _target.m_unit, _target.m_finalUnit), _target.m_finalUnit);
     return Result::Ok;
 }
 

@@ -64,81 +64,29 @@ bool ComputingComponent::initialize()
 
 ComputingResult ComputingComponent::compute(const ComputingRequest &_request, std::unique_ptr<ComputingResponse> &_response)
 {
-    // First ensure there is at least a Pk Model available
-    if (m_models->getPkModelList().size() == 0) {
-        m_logger.error("No Pk Model loaded. Impossible to perform computation");
+    try {
+        // First ensure there is at least a Pk Model available
+        if (m_models->getPkModelList().size() == 0) {
+            m_logger.error("No Pk Model loaded. Impossible to perform computation");
+            return ComputingResult::Error;
+        }
+
+        // A simple iteration on the ComputingTraits. Each one is responsible to fill the _response object with
+        // a new computing response
+        ComputingTraits::Iterator it = _request.getComputingTraits().begin();
+        ComputingResult result = ComputingResult::Success;
+        while (it != _request.getComputingTraits().end()) {
+
+            if (it->get()->compute(*this, _request, _response) != ComputingResult::Success)
+                result = ComputingResult::Error;
+            it++;
+        }
+
+        return result;
+
+    } catch (...) {
         return ComputingResult::Error;
     }
-
-    // A simple iteration on the ComputingTraits. Each one is responsible to fill the _response object with
-    // a new computing response
-    ComputingTraits::Iterator it = _request.getComputingTraits().begin();
-    ComputingResult result = ComputingResult::Success;
-    while (it != _request.getComputingTraits().end()) {
-
-        if (it->get()->compute(*this, _request, _response) != ComputingResult::Success)
-            result = ComputingResult::Error;
-        it++;
-    }
-
-    return result;
-    /*
-    ConcentrationPredictionPtr prediction;
-
-    IntakeSeries intakes;
-    CovariateSeries covariates;
-    ParameterSetSeries parameters;
-    // These drug parameters shall be the ones of the drugmodel
-    ParameterDefinitions drugParameters;
-    // Extract intakes, covariates, parameters and samples
-    IntakeExtractor::extract(*m_treatment->getDosageHistory(_request.getType() != PredictionType::Population), _request.getStart(), _request.getEnd(), intakes);
-    CovariateExtractor(m_drug->getCovariates(), m_treatment->getCovariates(), _request.getStart(), _request.getEnd()).extract(covariates);
-    ParametersExtractor(covariates, drugParameters, _request.getStart(), _request.getEnd()).extract(parameters);
-
-    if (intakes.size() == 0) {
-    m_logger.debug("No intakes, no calc.");
-    return nullptr;
-    }
-
-    prediction = std::make_unique<ConcentrationPrediction>();
-
-    switch (_request.getType())
-    {
-    case PredictionType::Population:
-    computePopulation(prediction, _request.getIsAll(), _request.getNbPoints(), intakes, parameters);
-    break;
-
-    case PredictionType::Apiori:
-    computeApriori(prediction, _request.getIsAll(), _request.getNbPoints(), intakes, parameters);
-    break;
-
-    case PredictionType::Aposteriori: {
-    DateTime lastSampleDate;
-    SampleSeries samples;
-    SampleExtractor::extract(m_treatment->getSamples(), _request.getStart(), _request.getEnd(), samples);
-    if (samples.size() > 0) {
-    SampleSeries::iterator _smpend = samples.end();
-    lastSampleDate = _smpend->getEventTime();
-    }
-    IntakeSeries intakesForEtas;
-    IntakeExtractor::extract(*m_treatment->getDosageHistory(_request.getType() != PredictionType::Population), _request.getStart(), lastSampleDate, intakesForEtas);
-
-    /// TODO YJE
-    Etas etas;
-    OmegaMatrix omega;
-    SigmaResidualErrorModel residualErrorModel;
-    //            extractError(m_drug->getErrorModel(), m_drug->getParemeters(), omega, residualErrorModel);
-    APosterioriEtasCalculator().computeAposterioriEtas(intakesForEtas, parameters, omega, residualErrorModel, samples, etas);
-    computeAposteriori(prediction, _request.getIsAll(), _request.getNbPoints(), intakes, parameters, etas);
-    break;
-    }
-
-    default:
-    break;
-    }
-
-    return prediction;
-*/
 }
 
 
