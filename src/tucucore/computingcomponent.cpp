@@ -535,7 +535,7 @@ ComputingResult ComputingComponent::compute(
 
         SampleSeries sampleSeries;
         SampleExtractor sampleExtractor;
-        sampleExtractor.extract(_request.getDrugTreatment().getSamples(), _traits->getStart(), _traits->getEnd(), sampleSeries);
+        sampleExtractor.extract(_request.getDrugTreatment().getSamples(), calculationStartTime, _traits->getEnd(), sampleSeries);
 
         APosterioriEtasCalculator etasCalculator;
         etasCalculator.computeAposterioriEtas(intakeSeries, parameterSeries, omega, residualErrorModel, sampleSeries, etas);

@@ -35,6 +35,14 @@ ComputationResult APosterioriEtasCalculator::computeAposterioriEtas(
         return ComputationResult::Failure;
     }
 
+    // Check that there is at least one measure
+    if (_samples.size() == 0) {
+        for(int i = 0; i < _aPosterioriEtas.size(); i++) {
+            _aPosterioriEtas[i] = 0.0;
+        }
+        return ComputationResult::Success;
+    }
+
     const size_t omegaSize = omegaSize(_omega);
 
 // Prints out the parameter values
