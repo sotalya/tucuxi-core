@@ -950,7 +950,7 @@ CovariateDefinition* DrugModelImport::extractCovariate(Tucuxi::Common::XmlNodeIt
         else if (nodeName == "unit") {
             unit = extractUnit(it);
         }
-        else if (nodeName == "name") {
+        else if (nodeName == "covariateName") {
             name = extractTranslatableString(it,"name");
         }
         else if (nodeName == "covariateType") {
