@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 2.6)
 project (tucuxi)
 
-set(TUCUXI_ROOT ${CMAKE_BINARY_DIR}/../../)
+set(TUCUXI_ROOT ${CMAKE_BINARY_DIR}/../)
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -75,6 +75,7 @@ set(TUCUXICORE_SOURCES
     ${CORE_DIR}/pkmodels/onecompartmentbolus.cpp
     ${CORE_DIR}/pkmodels/onecompartmentextra.cpp
     ${CORE_DIR}/pkmodels/rkonecompartmentextra.cpp
+    ${CORE_DIR}/pkmodels/rkonecompartmentgammaextra.cpp
     ${CORE_DIR}/pkmodels/onecompartmentinfusion.cpp
     ${CORE_DIR}/pkmodels/threecompartmentbolus.cpp
     ${CORE_DIR}/pkmodels/threecompartmentextra.cpp

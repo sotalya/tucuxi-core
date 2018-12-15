@@ -385,7 +385,7 @@ target_compile_options(${PROJECT_NAME}_shared PUBLIC ${COMPILER_WARNINGS} ${COMP
 target_include_directories(${PROJECT_NAME}_shared PUBLIC ${COMPILER_INCLUDE_DIRS})
 set_target_properties(${PROJECT_NAME}_shared PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
 
-set(CONFIGURATION_FILES configure.py .gitignore .astylerc authors.txt news.rst readme.rst)
+set(CONFIGURATION_FILES configure.py .astylerc authors.txt news.rst readme.rst)
 file(GLOB_RECURSE DOCUMENTATION_FILES doc/* )
 file(GLOB_RECURSE HEADER_FILES src/*.h )
 file(GLOB_RECURSE INFO_FILES src/lib/*info.txt )

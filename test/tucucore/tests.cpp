@@ -124,6 +124,7 @@ int main(int argc, char** argv)
     calculatorsTests.add_test("1 comp infusion single vs multiple test", &TestIntervalCalculator::test1compInfusionSingleVsMultiple);
 
     calculatorsTests.add_test("rk 1 comp extra single vs multiple test", &TestIntervalCalculator::testRK41compExtraSingleVsMultiple);
+    calculatorsTests.add_test("rk 1 comp gamma extra single vs multiple test", &TestIntervalCalculator::testRK41compGammaExtraSingleVsMultiple);
 
     // two compartment
     calculatorsTests.add_test("2 comp bolus single vs multiple test", &TestIntervalCalculator::test2compBolusSingleVsMultiple);

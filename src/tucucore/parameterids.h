@@ -14,8 +14,8 @@ namespace Core {
 class ParameterId 
 {
 public:
-    static const int size = 15;
-    enum Enum { V, V1, V2, CL, Ka, Ke, K12, K21, K13, K31, F, Q, Q1, Q2, Unknown };
+    static const int size = 17;
+    enum Enum { V, V1, V2, CL, Ka, Ke, K12, K21, K13, K31, F, Q, Q1, Q2, a, b, Unknown };
 
     static Enum fromString(const std::string &_id) {
         static const std::map<std::string, Enum> paramIds = {
@@ -32,7 +32,9 @@ public:
             { "F",   ParameterId::F },
             { "Q",   ParameterId::Q },
             { "Q1",  ParameterId::Q1 },
-            { "Q2",  ParameterId::Q2 }
+            { "Q2",  ParameterId::Q2 },
+            { "a",  ParameterId::a },
+            { "b",  ParameterId::b }
         };
         std::map<std::string, Enum>::const_iterator it = paramIds.find(_id);
         if (it != paramIds.end()) {
