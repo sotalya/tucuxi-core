@@ -211,15 +211,30 @@ ComputingResult ComputingComponent::generalExtractions(
         return ComputingResult::Error;
     }
 
-    CovariateExtractor covariateExtractor(_request.getDrugModel().getCovariates(),
-                                          _request.getDrugTreatment().getCovariates(),
-                                          fantomStart,
-                                          _traits->getEnd());
-    CovariateExtractor::Result covariateExtractionResult = covariateExtractor.extract(_covariatesSeries);
+    if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Population) {
+        PatientVariates emptyPatientVariates;
+        CovariateExtractor covariateExtractor(_request.getDrugModel().getCovariates(),
+                                              emptyPatientVariates,
+                                              fantomStart,
+                                              _traits->getEnd());
+        CovariateExtractor::Result covariateExtractionResult = covariateExtractor.extract(_covariatesSeries);
 
-    if (covariateExtractionResult != CovariateExtractor::Result::Ok) {
-        m_logger.error("Can not extract covariates");
-        return ComputingResult::Error;
+        if (covariateExtractionResult != CovariateExtractor::Result::Ok) {
+            m_logger.error("Can not extract covariates");
+            return ComputingResult::Error;
+        }
+    }
+    else {
+        CovariateExtractor covariateExtractor(_request.getDrugModel().getCovariates(),
+                                              _request.getDrugTreatment().getCovariates(),
+                                              fantomStart,
+                                              _traits->getEnd());
+        CovariateExtractor::Result covariateExtractionResult = covariateExtractor.extract(_covariatesSeries);
+
+        if (covariateExtractionResult != CovariateExtractor::Result::Ok) {
+            m_logger.error("Can not extract covariates");
+            return ComputingResult::Error;
+        }
     }
 
     ParameterDefinitionIterator it = _request.getDrugModel().getParameterDefinitions(analyteId, formulation, route);
@@ -231,17 +246,39 @@ ComputingResult ComputingComponent::generalExtractions(
 
     ParametersExtractor::Result parametersExtractionResult;
 
+
     if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Population) {
         parametersExtractionResult = parameterExtractor.extractPopulation(_parameterSeries);
+        //parametersExtractionResult = parameterExtractor.extract(intermediateParameterSeries);
+
+
+        if (parametersExtractionResult != ParametersExtractor::Result::Ok) {
+            m_logger.error("Can not extract parameters");
+            return ComputingResult::Error;
+        }
+
     }
     else {
-        parametersExtractionResult = parameterExtractor.extract(_parameterSeries);
+        ParameterSetSeries intermediateParameterSeries;
+
+        parametersExtractionResult = parameterExtractor.extract(intermediateParameterSeries);
+
+
+        if (parametersExtractionResult != ParametersExtractor::Result::Ok) {
+            m_logger.error("Can not extract parameters");
+            return ComputingResult::Error;
+        }
+
+        // The intermediateParameterSeries contains changes of parameters, so we build a full set of parameter
+        // for each event.
+        parametersExtractionResult = parameterExtractor.buildFullSet(intermediateParameterSeries, _parameterSeries);
+        if (parametersExtractionResult != ParametersExtractor::Result::Ok) {
+            m_logger.error("Can not consolidate parameters");
+            return ComputingResult::Error;
+        }
+
     }
 
-    if (parametersExtractionResult != ParametersExtractor::Result::Ok) {
-        m_logger.error("Can not extract parameters");
-        return ComputingResult::Error;
-    }
 
     return ComputingResult::Success;
 

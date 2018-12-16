@@ -27,8 +27,19 @@ ParametersExtractor::ParametersExtractor(const CovariateSeries &_covariates,
 
     // Create a list of time instants at which to compute the parameters, together with the covariate values that have
     // to be set at those instants.
+    //std::cout << "New" << std::endl;
     for (const auto &cv : _covariates) {
         const DateTime dt = cv.getEventTime();
+
+
+        //std::cout << dt.month() << " " << dt.day() << " " << dt.hour() << " " << dt.minute() << std::endl;
+
+        //if (dt <= m_end) {
+        //    std::cout << "In" << std::endl;
+        //}
+        //else {
+        //    std::cout << "Out" << std::endl;
+        //}
 
         // Covariate events past _end are discarded.
         if (dt <= m_end) {
@@ -200,6 +211,23 @@ ParametersExtractor::Result ParametersExtractor::extract(ParameterSetSeries &_se
         _series.addParameterSetEvent(pSetEvent);
     }
 
+    return Result::Ok;
+}
+
+
+ParametersExtractor::Result ParametersExtractor::buildFullSet(const ParameterSetSeries &_inputSeries, ParameterSetSeries &_outputSeries)
+{
+
+    ParameterSetEvent current(_inputSeries.m_parameterSets.at(0));
+    _outputSeries.addParameterSetEvent(current);
+    for(size_t i = 1; i < _inputSeries.m_parameterSets.size(); i++) {
+        auto it = _inputSeries.m_parameterSets.at(i).begin();
+        while (it != _inputSeries.m_parameterSets.at(i).end()) {
+            current.addParameterEvent((*it).getDefinition(), (*it).getValue());
+            it ++;
+        }
+        _outputSeries.addParameterSetEvent(current);
+    }
     return Result::Ok;
 }
 

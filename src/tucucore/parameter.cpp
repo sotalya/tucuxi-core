@@ -52,6 +52,9 @@ void ParameterSetEvent::addParameterEvent(const ParameterDefinition &_definition
     // Within a category, alphabetical order is applied.
     size_t insertIndex = 0;
 
+    // Will be true if we update a parameter instead of inserting it
+    bool updatingParameter = false;
+
     auto it = m_parameters.begin();
 
     if (m_parameters.size() == 0) {
@@ -60,6 +63,11 @@ void ParameterSetEvent::addParameterEvent(const ParameterDefinition &_definition
     else {
 
         for (it = m_parameters.begin(); it != m_parameters.end(); it++) {
+            if (_definition.getId() == it->getParameterId()) {
+                // We update the existing one with the new value
+                updatingParameter = true;
+                break;
+            }
             if (_definition.isVariable() && !it->isVariable()) {
                 break;
             }
@@ -85,8 +93,13 @@ void ParameterSetEvent::addParameterEvent(const ParameterDefinition &_definition
         for (it = oldParams.begin(); it != oldParams.end(); it++) {
             if (insertIndex == pIndex) {
                 m_parameters.push_back(Parameter(_definition, _value));
+                if (!updatingParameter) {
+                    m_parameters.push_back(Parameter(*it));
+                }
             }
-            m_parameters.push_back(Parameter(*it));
+            else {
+                m_parameters.push_back(Parameter(*it));
+            }
             pIndex ++;
         }
         if (insertIndex == oldParams.size()) {
