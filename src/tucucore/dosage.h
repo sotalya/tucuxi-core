@@ -170,6 +170,15 @@ protected:
     std::unique_ptr<DosageBounded> m_dosage;
 };
 
+/// \ingroup TucuCore
+/// \brief A single dosage at steady state.
+/// In addition to the dose, this object stores the time of the last dose. While it
+/// could be considered to be purely the last one, actually any dose is OK. So,
+/// there is no real restriction on what dose to choose.
+/// The time range pointing to a steady state dosage does not need to have a start
+/// and an end time. It can, however, have an end time, in case it is followed by
+/// another dosage. Therefore, a DosageSteadyState needs to be the first dosage
+/// in a DosageHistory, but can be followed by other dosages.
 class DosageSteadyState : public DosageLoop
 {
 public:

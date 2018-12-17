@@ -259,9 +259,11 @@ ComputingResult ComputingComponent::generalExtractions(
 
 
     if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Population) {
+#ifdef POPPARAMETERSFROMDEFAULTVALUES
         parametersExtractionResult = parameterExtractor.extractPopulation(_parameterSeries);
-        //parametersExtractionResult = parameterExtractor.extract(intermediateParameterSeries);
-
+#else
+        parametersExtractionResult = parameterExtractor.extract(_parameterSeries);
+#endif // POPPARAMETERSFROMDEFAULTVALUES
 
         if (parametersExtractionResult != ParametersExtractor::Result::Ok) {
             m_logger.error("Can not extract parameters");
@@ -957,6 +959,7 @@ ComputingResult ComputingComponent::compute(
                 predictionComputationResult = computeAposteriori(
                             pPrediction,
                             false,
+//                            _traits->getStart(),
                             calculationStartTime,
                             newEndTime,
                             intakeSeries,
@@ -968,6 +971,7 @@ ComputingResult ComputingComponent::compute(
                 predictionComputationResult = computePopulation(
                             pPrediction,
                             false,
+//                            _traits->getStart(),
                             calculationStartTime,
                             newEndTime,
                             intakeSeries,

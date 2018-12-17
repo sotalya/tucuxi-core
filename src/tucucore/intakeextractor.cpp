@@ -55,7 +55,7 @@ int IntakeExtractor::extract(const DosageTimeRange &_timeRange, const DateTime &
     }
 
     if (dynamic_cast<DosageSteadyState*>(_timeRange.m_dosage.get())) {
-        nbIntakes = _timeRange.m_dosage->extract(*this, _start, _end, _nbPointsPerHour, _series);
+        nbIntakes = _timeRange.m_dosage->extract(*this, _start, iEnd, _nbPointsPerHour, _series);
     }
     else {
         nbIntakes = _timeRange.m_dosage->extract(*this, iStart, iEnd, _nbPointsPerHour, _series);
@@ -130,11 +130,8 @@ int IntakeExtractor::extract(const DosageSteadyState &_dosageSteadyState, const 
 
     DateTime currentTime = _dosageSteadyState.getFirstIntakeInterval(_start);
 
-    // If the end time is undefined, then take the current instant, otherwise take the specified end time.
-    DateTime iEnd = _end.isUndefined() ? DateTime() : _end;
-
-    while (currentTime < iEnd) {
-        nbIntakes += extract(*(_dosageSteadyState.m_dosage), currentTime, iEnd, _nbPointsPerHour, _series);
+    while (currentTime < _end) {
+        nbIntakes += extract(*(_dosageSteadyState.m_dosage), currentTime, _end, _nbPointsPerHour, _series);
         currentTime += _dosageSteadyState.m_dosage->getTimeStep();
     }
 
