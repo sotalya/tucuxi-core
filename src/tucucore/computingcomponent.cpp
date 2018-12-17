@@ -124,7 +124,18 @@ ComputingResult ComputingComponent::generalExtractions(
 
     Duration fantomDuration = secureStartDuration(halfLife);
 
-    Tucuxi::Common::DateTime fantomStart = _traits->getStart() - fantomDuration;
+    Tucuxi::Common::DateTime firstEvent = _traits->getStart();
+
+    if ((_traits->getComputingOption().getParametersType() == PredictionParameterType::Aposteriori)
+            && (_request.getDrugTreatment().getSamples().size() > 0)) {
+        for (const auto &sample : _request.getDrugTreatment().getSamples()) {
+            if (sample->getDate() < firstEvent) {
+                firstEvent = sample->getDate();
+            }
+        }
+    }
+
+    Tucuxi::Common::DateTime fantomStart = firstEvent - fantomDuration;
 
     _calculationStartTime = fantomStart;
 
@@ -345,15 +356,6 @@ ComputationResult ComputingComponent::extractOmega(
         _omega(index2, index1) = covariance;
     }
 
-
-
-
-    /*
-    _omega(0,0) = 0.356 * 0.356; // Variance of CL
-    _omega(0,1) = 0.798 * 0.356 * 0.629; // Covariance of CL and V
-    _omega(1,1) = 0.629 * 0.629; // Variance of V
-    _omega(1,0) = 0.798 * 0.356 * 0.629; // Covariance of CL and V
-*/
     return ComputationResult::Success;
 }
 

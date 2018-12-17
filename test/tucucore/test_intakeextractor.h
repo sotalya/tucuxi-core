@@ -1816,6 +1816,111 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
             fructose_assert(iSeries.at(i) == expectedIntakes.at(i));
         }
     }
+
+
+    /// \brief Scenario where a treatment is given once every 36 hours.
+    /// \param _testName Test name.
+    void testOnceEvery36HoursAtSteadyState(const std::string& /* _testName */)
+    {
+        // List of time ranges that will be pushed into the history
+        DosageTimeRangeList timeRangeList;
+
+        // Create a time range for the first week of June 2017
+        DateTime emptyStart;
+        DateTime emptyEnd;
+
+        // Add a treatment intake every ten days in June
+        // 200mg via a intravascular at 08h30, starting the 01.06
+        LastingDose junePeriodicDose(DoseValue(200.0),
+                                     getBolusFormulationAndRoute(),
+                                     Duration(),
+                                     Duration(std::chrono::hours(36)));
+
+        DateTime lastDose(date::year_month_day(date::year(2017), date::month(6), date::day(4)),
+                          Duration(std::chrono::hours(8), std::chrono::minutes(30), std::chrono::seconds(0)));
+        DosageSteadyState juneDose(junePeriodicDose, lastDose);
+        std::unique_ptr<Tucuxi::Core::DosageTimeRange> june2017(new Tucuxi::Core::DosageTimeRange(emptyStart, emptyEnd, juneDose));
+
+        // Create the dosage history
+        DosageHistory dh;
+        dh.addTimeRange(*june2017);
+
+        // Expected intake series
+        IntakeSeries expectedIntakes;
+        expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(1)),
+                                                       Duration(std::chrono::hours(8), std::chrono::minutes(30), std::chrono::seconds(0))),
+                                              Duration(),
+                                              DoseValue(200.0),
+                                              Duration(std::chrono::hours(36)),
+                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              Duration(),
+                                              36 * NB_POINTS_PER_HOUR));
+        expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(2)),
+                                                       Duration(std::chrono::hours(20), std::chrono::minutes(30), std::chrono::seconds(0))),
+                                              Duration(),
+                                              DoseValue(200.0),
+                                              Duration(std::chrono::hours(36)),
+                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              Duration(),
+                                              36 * NB_POINTS_PER_HOUR));
+        expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(4)),
+                                                       Duration(std::chrono::hours(8), std::chrono::minutes(30), std::chrono::seconds(0))),
+                                              Duration(),
+                                              DoseValue(200.0),
+                                              Duration(std::chrono::hours(36)),
+                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              Duration(),
+                                              36 * NB_POINTS_PER_HOUR));
+        expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(5)),
+                                                       Duration(std::chrono::hours(20), std::chrono::minutes(30), std::chrono::seconds(0))),
+                                              Duration(),
+                                              DoseValue(200.0),
+                                              Duration(std::chrono::hours(36)),
+                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              Duration(),
+                                              36 * NB_POINTS_PER_HOUR));
+        expectedIntakes.push_back(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(7)),
+                                                       Duration(std::chrono::hours(8), std::chrono::minutes(30), std::chrono::seconds(0))),
+                                              Duration(),
+                                              DoseValue(200.0),
+                                              Duration(std::chrono::hours(36)),
+                                              getBolusFormulationAndRoute().getAbsorptionModel(),
+                                              Duration(),
+                                              36 * NB_POINTS_PER_HOUR));
+
+        // The 16.07.2017 must be EXCLUDED (the intervals are closed on the left, but opened on the right side!)
+        {
+            DateTime fullPeriodStart(date::year_month_day(date::year(2017), date::month(6), date::day(1)),
+                                     Duration(std::chrono::hours(8), std::chrono::minutes(30), std::chrono::seconds(0)));
+            DateTime fullPeriodEnd(date::year_month_day(date::year(2017), date::month(6), date::day(8)),
+                                   Duration(std::chrono::hours(8), std::chrono::minutes(30), std::chrono::seconds(0)));
+            IntakeSeries iSeries;
+            IntakeExtractor extractor;
+            extractor.extract(dh, fullPeriodStart, fullPeriodEnd, NB_POINTS_PER_HOUR, iSeries);
+
+            fructose_assert(iSeries.size() == expectedIntakes.size());
+
+            for (size_t i = 0; i < iSeries.size(); ++i) {
+                fructose_assert(iSeries.at(i) == expectedIntakes.at(i));
+            }
+        }
+        {
+            // Same test, but the start is 30 minutes before. The output should be the same
+            DateTime fullPeriodStart(date::year_month_day(date::year(2017), date::month(6), date::day(1)),
+                                     Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
+            DateTime fullPeriodEnd(date::year_month_day(date::year(2017), date::month(6), date::day(8)),
+                                   Duration(std::chrono::hours(8), std::chrono::minutes(30), std::chrono::seconds(0)));
+            IntakeSeries iSeries;
+            IntakeExtractor extractor;
+            extractor.extract(dh, fullPeriodStart, fullPeriodEnd, NB_POINTS_PER_HOUR, iSeries);
+
+            fructose_assert(iSeries.size() == expectedIntakes.size());
+
+            for (size_t i = 0; i < iSeries.size(); ++i) {
+                fructose_assert(iSeries.at(i) == expectedIntakes.at(i));
+            }
+        }
+    }
 };
 
 #endif // TEST_INTAKEEXTRACTOR_H

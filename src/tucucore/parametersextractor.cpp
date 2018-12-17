@@ -215,17 +215,23 @@ ParametersExtractor::Result ParametersExtractor::extract(ParameterSetSeries &_se
 }
 
 
-ParametersExtractor::Result ParametersExtractor::buildFullSet(const ParameterSetSeries &_inputSeries, ParameterSetSeries &_outputSeries)
+ParametersExtractor::Result ParametersExtractor::buildFullSet(const ParameterSetSeries &_inputSeries, ParameterSetSeries &_outputSeries) const
 {
-
+    // Start with the first set of parameters (it should contain the full set)
     ParameterSetEvent current(_inputSeries.m_parameterSets.at(0));
     _outputSeries.addParameterSetEvent(current);
+
+    // Then iterate over the modifications
     for(size_t i = 1; i < _inputSeries.m_parameterSets.size(); i++) {
+
+        // And for each event, update the parameters that change at that time
         auto it = _inputSeries.m_parameterSets.at(i).begin();
         while (it != _inputSeries.m_parameterSets.at(i).end()) {
             current.addParameterEvent((*it).getDefinition(), (*it).getValue());
             it ++;
         }
+
+        // Add the new event to the output series
         _outputSeries.addParameterSetEvent(current);
     }
     return Result::Ok;

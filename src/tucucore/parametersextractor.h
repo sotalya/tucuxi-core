@@ -67,7 +67,7 @@ public:
     /// \warning No cheks are made on the initial content of _inputSeries. This function is made to be called
     ///          after extract().
     ///
-    Result buildFullSet(const ParameterSetSeries &_inputSeries, ParameterSetSeries &_outputSeries);
+    Result buildFullSet(const ParameterSetSeries &_inputSeries, ParameterSetSeries &_outputSeries) const;
 
     /// \brief Extract parameter set events in a given interval from population values of parameter definitions.
     /// \param _series Extracted set of parameter set events.

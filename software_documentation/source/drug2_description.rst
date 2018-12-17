@@ -317,6 +317,8 @@ The head of the file contains general information about the drug, such as its ID
 
 |
 
+.. _activeSubstance:
+
 .. csv-table:: head content
    :header: "Tag name", "Format", "Occ.", "Description"
    :widths: 15, 10, 5, 30
@@ -638,6 +640,10 @@ Used by :ref:`covariate`.
 
 
 .. _activeMoieties:
+
+.. _activeMoiety:
+
+.. _activeMoietyName:
 
 ActiveMoieties
 ==============

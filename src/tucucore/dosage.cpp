@@ -44,6 +44,7 @@ int className::extract(IntakeExtractor &_extractor, const DateTime &_start, cons
 
 DOSAGE_UTILS_IMPL(DosageBounded)
 DOSAGE_UTILS_IMPL(DosageLoop)
+DOSAGE_UTILS_IMPL(DosageSteadyState)
 DOSAGE_UTILS_IMPL(DosageRepeat)
 DOSAGE_UTILS_IMPL(DosageSequence)
 DOSAGE_UTILS_IMPL(ParallelDosageSequence)

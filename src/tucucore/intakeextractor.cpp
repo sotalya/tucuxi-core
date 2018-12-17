@@ -54,7 +54,12 @@ int IntakeExtractor::extract(const DosageTimeRange &_timeRange, const DateTime &
         iEnd = std::min(_end, _timeRange.m_endDate);
     }
 
-    nbIntakes = _timeRange.m_dosage->extract(*this, iStart, iEnd, _nbPointsPerHour, _series);
+    if (dynamic_cast<DosageSteadyState*>(_timeRange.m_dosage.get())) {
+        nbIntakes = _timeRange.m_dosage->extract(*this, _start, _end, _nbPointsPerHour, _series);
+    }
+    else {
+        nbIntakes = _timeRange.m_dosage->extract(*this, iStart, iEnd, _nbPointsPerHour, _series);
+    }
 
     // Add unplanned intakes that fall in the desired interval
     for (auto& intake: _timeRange.m_addedIntakes) {
@@ -115,6 +120,29 @@ int IntakeExtractor::extract(const DosageLoop &_dosageLoop, const DateTime &_sta
 
     return nbIntakes;
 }
+
+
+int IntakeExtractor::extract(const DosageSteadyState &_dosageSteadyState, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, IntakeSeries &_series)
+{
+    EXTRACT_PRECONDITIONS(_start, _end, _series);
+
+    int nbIntakes = 0;
+
+    DateTime currentTime = _dosageSteadyState.getFirstIntakeInterval(_start);
+
+    // If the end time is undefined, then take the current instant, otherwise take the specified end time.
+    DateTime iEnd = _end.isUndefined() ? DateTime() : _end;
+
+    while (currentTime < iEnd) {
+        nbIntakes += extract(*(_dosageSteadyState.m_dosage), currentTime, iEnd, _nbPointsPerHour, _series);
+        currentTime += _dosageSteadyState.m_dosage->getTimeStep();
+    }
+
+    std::sort(_series.begin(), _series.end());
+
+    return nbIntakes;
+}
+
 
 
 int IntakeExtractor::extract(const DosageRepeat &_dosageRepeat, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, IntakeSeries &_series)
