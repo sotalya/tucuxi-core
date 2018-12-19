@@ -17,6 +17,8 @@
 #include "tucucore/idatamodelservices.h"
 #include "tucucore/pkmodel.h"
 #include "tucucore/covariateevent.h"
+#include "tucucore/computingservice/computingresponse.h"
+#include "tucucore/computingservice/computingtrait.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -33,6 +35,8 @@ class ComputingTraitAtMeasures;
 class ComputingTraitSinglePoints;
 class ComputingTraitStandard;
 class HalfLife;
+
+
 
 ///
 /// \brief The main entry point for any computation.
@@ -117,41 +121,6 @@ private:
         const Deviations& _eps = Deviations(0),
         bool _isFixedDensity = 0);
 
-    ComputationResult computePopulation(
-        ConcentrationPredictionPtr &_prediction,
-        bool _isAll,
-        const DateTime &_recordFrom,
-        const DateTime &_recordTo,
-        const IntakeSeries &_intakes,
-        const ParameterSetSeries& _parameters)
-    {
-        return computeConcentrations(_prediction, _isAll, _recordFrom, _recordTo, _intakes, _parameters);
-    }
-
-    ComputationResult computeApriori(
-        ConcentrationPredictionPtr &_prediction,
-        bool _isAll,
-        const DateTime &_recordFrom,
-        const DateTime &_recordTo,
-        const IntakeSeries &_intakes,
-        const ParameterSetSeries& _parameters)
-    {
-        return computeConcentrations(_prediction, _isAll, _recordFrom, _recordTo, _intakes, _parameters);
-    }
-
-    ComputationResult computeAposteriori(
-        ConcentrationPredictionPtr &_prediction,
-        bool _isAll,
-        const DateTime &_recordFrom,
-        const DateTime &_recordTo,
-        const IntakeSeries &_intakes,
-        const ParameterSetSeries& _parameters,
-        const Etas& _etas,
-        const IResidualErrorModel &_residualErrorModel)
-    {
-        return computeConcentrations(_prediction, _isAll, _recordFrom, _recordTo, _intakes, _parameters, _etas, _residualErrorModel);
-    }
-
     ComputationResult extractError(
         const DrugErrorModel &_errorMode,
         const ParameterDefinitions &_parameterDefs,
@@ -170,6 +139,22 @@ private:
         const DrugModel &_drugModel,
         OmegaMatrix &_omega);
 
+    std::vector<FullDosage> sortAndFilterCandidates(std::vector<FullDosage> &_candidates, BestCandidatesOption _option);
+
+    typedef struct {
+        Value m_dose;
+        Duration m_interval;
+        Duration m_infusionTime;
+    } AdjustmentCandidate;
+
+
+    ComputingResult buildCandidates(const FullFormulationAndRoute* _formulationAndRoute, std::vector<AdjustmentCandidate> &_candidates);
+
+    DosageTimeRange *createDosage(
+            ComputingComponent::AdjustmentCandidate &_candidate,
+            DateTime _startTime,
+            DateTime _endTime,
+            FormulationAndRoute _routeOfAdministration);
 
     friend class ComputingTraitSinglePoints;
     friend class ComputingTraitAtMeasures;

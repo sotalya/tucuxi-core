@@ -170,7 +170,7 @@ ComputingResult ComputingComponent::generalExtractions(
                 // We do this because the infusion calculators do not support infusionTime = 0
                 infusionTime = Duration(std::chrono::hours(1));
             }
-            int nbPoints = nbPointsPerHour * interval.toHours();
+            int nbPoints = static_cast<int>(nbPointsPerHour * interval.toHours());
 
             IntakeEvent intake(start, Duration(), dose, interval, absorptionModel, infusionTime, nbPoints);
             _intakeSeries.push_back(intake);
@@ -419,40 +419,23 @@ ComputingResult ComputingComponent::compute(
         if (sampleSeries.size() == 0) {
             // Surprising. Something maybe wrong with the sample extractor
 
-            computationResult = computePopulation(
-                        pPrediction,
-                        false,
-                        _traits->getStart(),
-    //                    calculationStartTime,
-                        _traits->getEnd(),
-                        intakeSeries,
-                        parameterSeries);
         }
         else {
             APosterioriEtasCalculator etasCalculator;
             etasCalculator.computeAposterioriEtas(intakeSeries, parameterSeries, omega, residualErrorModel, sampleSeries, etas);
-            computationResult = computeAposteriori(
-                        pPrediction,
-                        false,
-                         _traits->getStart(),
-     //                   calculationStartTime,
-                        _traits->getEnd(),
-                        intakeSeries,
-                        parameterSeries,
-                        etas,
-                        residualErrorModel);
         }
     }
-    else {
-        computationResult = computePopulation(
-                    pPrediction,
-                    false,
-                    _traits->getStart(),
-//                    calculationStartTime,
-                    _traits->getEnd(),
-                    intakeSeries,
-                    parameterSeries);
-    }
+
+    computationResult = computeConcentrations(
+                pPrediction,
+                false,
+                 _traits->getStart(),
+//                   calculationStartTime,
+                _traits->getEnd(),
+                intakeSeries,
+                parameterSeries,
+                etas);
+
 
     if (computationResult == ComputationResult::Success)
     {
@@ -617,7 +600,7 @@ ComputingResult ComputingComponent::compute(
     // YTA: I do not think this is relevant. It could be deleted I guess
     ConcentrationPredictionPtr pPrediction = std::make_unique<ConcentrationPrediction>();
 
-    ComputationResult predictionComputationResult = computePopulation(
+    ComputationResult predictionComputationResult = computeConcentrations(
                 pPrediction,
                 false,
                 _traits->getStart(),
@@ -679,15 +662,10 @@ ComputingResult ComputingComponent::compute(
     }
 }
 
-typedef struct {
-    Value m_dose;
-    Duration m_interval;
-    Duration m_infusionTime;
-} AdjustmentCandidate;
 
 
-DosageTimeRange *createDosage(
-        AdjustmentCandidate &_candidate,
+DosageTimeRange *ComputingComponent::createDosage(
+        ComputingComponent::AdjustmentCandidate &_candidate,
         DateTime _startTime,
         DateTime _endTime,
         FormulationAndRoute _routeOfAdministration)
@@ -702,9 +680,128 @@ DosageTimeRange *createDosage(
     return newTimeRange;
 }
 
+ComputingResult ComputingComponent::buildCandidates(const FullFormulationAndRoute* _formulationAndRoute, std::vector<ComputingComponent::AdjustmentCandidate> &_candidates)
+{
+    std::vector<Value> doseValues;
+    std::vector<Duration> intervalValues;
+    std::vector<Duration> infusionTimes;
+
+    const ValidDoses * doses = _formulationAndRoute->getValidDoses();
+    if (doses) {
+        doseValues = doses->getValues();
+    }
+
+    const ValidDurations * intervals = _formulationAndRoute->getValidIntervals();
+    if (intervals) {
+        intervalValues = intervals->getDurations();
+    }
+
+    const ValidDurations * infusions = _formulationAndRoute->getValidInfusionTimes();
+    if (infusions) {
+        infusionTimes = infusions->getDurations();
+    }
+
+    if (doseValues.size() == 0) {
+        m_logger.error("No available potential dose");
+        return ComputingResult::Error;
+    }
+
+    if (intervalValues.size() == 0) {
+        m_logger.error("No available interval");
+        return ComputingResult::Error;
+    }
+
+    if (infusionTimes.size() == 0) {
+        if (_formulationAndRoute->getFormulationAndRoute().getAbsorptionModel() == AbsorptionModel::INFUSION) {
+            m_logger.error("Infusion selected, but no potential infusion time");
+            return ComputingResult::Error;
+        }
+        infusionTimes.push_back(Duration(0h));
+    }
+
+
+    // Creation of all candidates
+    for(auto dose : doseValues) {
+        for(auto interval : intervalValues) {
+            for(auto infusion : infusionTimes) {
+                _candidates.push_back({dose, interval, infusion});
+#if 0
+                std::string mess;
+                mess = "Potential adjustment. Dose :  \t" + std::to_string(dose)
+                        + " , Interval: \t" + std::to_string((interval).toHours()) + " hours. "
+                        + " , Infusion: \t" + std::to_string((infusion).toMinutes()) + " minutes";
+                m_logger.info(mess);
+#endif // 0
+            }
+        }
+    }
+    return ComputingResult::Success;
+}
+
 bool compareCandidates(const FullDosage &a, const FullDosage &b)
 {
     return a.getGlobalScore() < b.getGlobalScore();
+}
+
+
+std::vector<FullDosage> ComputingComponent::sortAndFilterCandidates(std::vector<FullDosage> &_candidates, BestCandidatesOption _option)
+{
+    // Sort in reverse order. The highest score will be the first element
+    // There is an issue with DosageHistory as the copy don't work correctly
+    std::sort(_candidates.rbegin(), _candidates.rend(), compareCandidates);
+
+#if 0
+    std::cout << "Sorted..." << std::endl;
+    // For debugging purpose only
+    for (const auto & candidates : dosageCandidates)
+    {
+            std::cout << "Evaluation. Score : " << candidates.getGlobalScore()  << std::endl;
+    }
+#endif // 0
+
+    switch (_option) {
+    case BestCandidatesOption::AllDosages : {
+        return _candidates;
+    } break;
+    case BestCandidatesOption::BestDosage : {
+        std::vector<FullDosage> bestDosage;
+        if (_candidates.size() != 0) {
+            bestDosage.push_back(_candidates.at(0));
+        }
+        return bestDosage;
+    } break;
+    case BestCandidatesOption::BestDosagePerInterval : {
+        for(size_t i = 0; i < _candidates.size(); i++) {
+            const DosageRepeat *repeat = dynamic_cast<const DosageRepeat *>(_candidates.at(i).m_history.getDosageTimeRanges().at(_candidates.at(i).m_history.getDosageTimeRanges().size() - 1)
+                    ->getDosage());
+            if (repeat != nullptr) {
+                const LastingDose *dose = dynamic_cast<const LastingDose *>(repeat->getDosage());
+                if (dose != nullptr) {
+                    Duration interval = dose->getTimeStep();
+                    for(size_t j = i + 1; j < _candidates.size(); j++) {
+
+                        const DosageRepeat *repeat2 = dynamic_cast<const DosageRepeat *>(_candidates.at(j).m_history.getDosageTimeRanges().at(_candidates.at(j).m_history.getDosageTimeRanges().size() - 1)
+                                ->getDosage());
+                        if (repeat2 != nullptr) {
+                            const LastingDose *dose2 = dynamic_cast<const LastingDose *>(repeat2->getDosage());
+                            if (dose2 != nullptr) {
+                                if (dose2->getTimeStep() == interval) {
+                                    _candidates.erase(_candidates.begin() + j);
+                                    j = j - 1;
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+        return _candidates;
+    } break;
+    }
+
+    // This should not happen
+    return _candidates;
 }
 
 std::vector<const FullFormulationAndRoute*> selectFormulationAndRoutes(
@@ -833,70 +930,27 @@ ComputingResult ComputingComponent::compute(
             return ComputingResult::Error;
         }
 
-
-        std::vector<Value> doseValues;
-        std::vector<Duration> intervalValues;
-        std::vector<Duration> infusionTimes;
-
-        const ValidDoses * doses = selectedFormulationAndRoute->getValidDoses();
-        if (doses) {
-            doseValues = doses->getValues();
-        }
-
-        const ValidDurations * intervals = selectedFormulationAndRoute->getValidIntervals();
-        if (intervals) {
-            intervalValues = intervals->getDurations();
-        }
-
-        const ValidDurations * infusions = selectedFormulationAndRoute->getValidInfusionTimes();
-        if (infusions) {
-            infusionTimes = infusions->getDurations();
-        }
-
-        if (doseValues.size() == 0) {
-            m_logger.error("No available potential dose");
-            return ComputingResult::Error;
-        }
-
-        if (intervalValues.size() == 0) {
-            m_logger.error("No available interval");
-            return ComputingResult::Error;
-        }
-
-        if (infusionTimes.size() == 0) {
-            if (selectedFormulationAndRoute->getFormulationAndRoute().getAbsorptionModel() == AbsorptionModel::INFUSION) {
-                m_logger.error("Infusion selected, but no potential infusion time");
-                return ComputingResult::Error;
-            }
-            infusionTimes.push_back(Duration(0h));
-        }
-
         std::vector<AdjustmentCandidate> candidates;
 
-        // Creation of all candidates
-        for(auto dose : doseValues) {
-            for(auto interval : intervalValues) {
-                for(auto infusion : infusionTimes) {
-                    candidates.push_back({dose, interval, infusion});
-#if 0
-                    std::string mess;
-                    mess = "Potential adjustment. Dose :  \t" + std::to_string(dose)
-                            + " , Interval: \t" + std::to_string((interval).toHours()) + " hours. "
-                            + " , Infusion: \t" + std::to_string((infusion).toMinutes()) + " minutes";
-                    m_logger.info(mess);
-#endif // 0
-                }
-            }
+        ComputingResult buildingResult = buildCandidates(selectedFormulationAndRoute, candidates);
+
+        if (buildingResult != ComputingResult::Success) {
+            m_logger.error("Can not build adjustment candidates");
+            return buildingResult;
         }
 
         TargetExtractor targetExtractor;
         TargetSeries targetSeries;
-
         TargetExtractionOption targetExtractionOption = _traits->getTargetExtractionOption();
 
+        TargetExtractor::Result targetExtractionResult =
         targetExtractor.extract(covariateSeries, _request.getDrugModel().getActiveMoieties().at(0).get()->getTargetDefinitions(),
                                 _request.getDrugTreatment().getTargets(), _traits->getStart(), _traits->getEnd(),
                                 targetExtractionOption, targetSeries);
+
+        if (targetExtractionResult != TargetExtractor::Result::Ok) {
+            return ComputingResult::Error;
+        }
 
         // A vector of vector because each adjustment candidate can have various targets
         std::vector< std::vector< TargetEvaluationResult> > evaluationResults;
@@ -947,36 +1001,19 @@ ComputingResult ComputingComponent::compute(
             }
 
 
-            // We use a single prediction to get back time offsets. Could be optimized
             ConcentrationPredictionPtr pPrediction = std::make_unique<ConcentrationPrediction>();
 
             ComputationResult predictionComputationResult;
 
-            if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Aposteriori) {
-
-                const Tucuxi::Core::IResidualErrorModel &residualErrorModel =_request.getDrugModel().getAnalyteSet()->getAnalytes().at(0)->getResidualErrorModel();
-
-                predictionComputationResult = computeAposteriori(
-                            pPrediction,
-                            false,
-//                            _traits->getStart(),
-                            calculationStartTime,
-                            newEndTime,
-                            intakeSeries,
-                            parameterSeries,
-                            etas,
-                            residualErrorModel);
-            }
-            else {
-                predictionComputationResult = computePopulation(
-                            pPrediction,
-                            false,
-//                            _traits->getStart(),
-                            calculationStartTime,
-                            newEndTime,
-                            intakeSeries,
-                            parameterSeries);
-            }
+            predictionComputationResult = computeConcentrations(
+                        pPrediction,
+                        false,
+                        //                            _traits->getStart(),
+                        calculationStartTime,
+                        newEndTime,
+                        intakeSeries,
+                        parameterSeries,
+                        etas);
 
             if (predictionComputationResult != ComputationResult::Success) {
                 m_logger.error("Error with the computation of a single adjustment candidate");
@@ -1067,65 +1104,14 @@ ComputingResult ComputingComponent::compute(
 
 
 
-    // Sort in reverse order. The highest score will be the first element
-    // There is an issue with DosageHistory as the copy don't work correctly
-    std::sort(dosageCandidates.rbegin(), dosageCandidates.rend(), compareCandidates);
+    std::vector<FullDosage> finalCandidates;
+    finalCandidates = sortAndFilterCandidates(dosageCandidates, _traits->getBestCandidatesOption());
 
-#if 0
-    std::cout << "Sorted..." << std::endl;
-    // For debugging purpose only
-    for (const auto & candidates : dosageCandidates)
-    {
-            std::cout << "Evaluation. Score : " << candidates.getGlobalScore()  << std::endl;
-    }
-#endif // 0
 
     // Now we have adjustments, predictions, and target evaluation results, let's build the response
     std::unique_ptr<AdjustmentResponse> resp = std::make_unique<AdjustmentResponse>();
 
-
-    switch (_traits->getBestCandidatesOption()) {
-    case BestCandidatesOption::AllDosages : {
-        resp->setAdjustments(dosageCandidates);
-    } break;
-    case BestCandidatesOption::BestDosage : {
-        std::vector<FullDosage> bestDosage;
-        if (dosageCandidates.size() != 0) {
-            bestDosage.push_back(dosageCandidates.at(0));
-        }
-        resp->setAdjustments(bestDosage);
-    } break;
-    case BestCandidatesOption::BestDosagePerInterval : {
-        for(int i = 0; i < dosageCandidates.size(); i++) {
-            const DosageRepeat *repeat = dynamic_cast<const DosageRepeat *>(dosageCandidates.at(i).m_history.getDosageTimeRanges().at(dosageCandidates.at(i).m_history.getDosageTimeRanges().size() - 1)
-                    ->getDosage());
-            if (repeat != nullptr) {
-                const LastingDose *dose = dynamic_cast<const LastingDose *>(repeat->getDosage());
-                if (dose != nullptr) {
-                    Duration interval = dose->getTimeStep();
-                    for(int j = i + 1; j < dosageCandidates.size(); j++) {
-
-                        const DosageRepeat *repeat2 = dynamic_cast<const DosageRepeat *>(dosageCandidates.at(j).m_history.getDosageTimeRanges().at(dosageCandidates.at(j).m_history.getDosageTimeRanges().size() - 1)
-                                ->getDosage());
-                        if (repeat2 != nullptr) {
-                            const LastingDose *dose2 = dynamic_cast<const LastingDose *>(repeat2->getDosage());
-                            if (dose2 != nullptr) {
-                                if (dose2->getTimeStep() == interval) {
-                                    dosageCandidates.erase(dosageCandidates.begin() + j);
-                                    j = j - 1;
-                                }
-                            }
-                        }
-
-                    }
-                }
-            }
-        }
-
-        resp->setAdjustments(dosageCandidates);
-
-    } break;
-    }
+    resp->setAdjustments(finalCandidates);
 
     // Finally add the response to the set of responses
     _response->addResponse(std::move(resp));

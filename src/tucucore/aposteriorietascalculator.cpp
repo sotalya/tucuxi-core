@@ -37,13 +37,11 @@ ComputationResult APosterioriEtasCalculator::computeAposterioriEtas(
 
     // Check that there is at least one measure
     if (_samples.size() == 0) {
-        for(int i = 0; i < _aPosterioriEtas.size(); i++) {
-            _aPosterioriEtas[i] = 0.0;
-        }
+
+        _aPosterioriEtas.assign(_aPosterioriEtas.size(), 0.0);
+
         return ComputationResult::Success;
     }
-
-    const size_t omegaSize = omegaSize(_omega);
 
 // Prints out the parameter values
     //    parameters_series_t::const_iterator pit, pit_end;
@@ -68,7 +66,7 @@ ComputationResult APosterioriEtasCalculator::computeAposterioriEtas(
     Frprmn<Likelihood> frprmn(funcd);
 
     // Initial etas (0)
-    ValueVector initialEtas(omegaSize);
+    ValueVector initialEtas(omegaSize(_omega));
 
     // Execute the minimizer
     _aPosterioriEtas = frprmn.minimize(initialEtas);
