@@ -45,6 +45,10 @@ int IntakeExtractor::extract(const DosageTimeRange &_timeRange, const DateTime &
     int nbIntakes = 0;
 //    DateTime iStart = std::max(_start, _timeRange.m_startDate);
     DateTime iStart = _timeRange.m_startDate;
+    if (dynamic_cast<DosageSteadyState*>(_timeRange.m_dosage.get())) {
+        iStart = _start;
+    }
+
     DateTime iEnd;
     if (_end.isUndefined()) {
         iEnd = _timeRange.m_endDate;
@@ -54,10 +58,8 @@ int IntakeExtractor::extract(const DosageTimeRange &_timeRange, const DateTime &
         iEnd = std::min(_end, _timeRange.m_endDate);
     }
 
-    if (dynamic_cast<DosageSteadyState*>(_timeRange.m_dosage.get())) {
-        nbIntakes = _timeRange.m_dosage->extract(*this, _start, iEnd, _nbPointsPerHour, _series);
-    }
-    else {
+    // We check the extraction range
+    if (iEnd >= iStart) {
         nbIntakes = _timeRange.m_dosage->extract(*this, iStart, iEnd, _nbPointsPerHour, _series);
     }
 

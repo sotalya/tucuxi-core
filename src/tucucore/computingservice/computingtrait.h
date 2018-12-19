@@ -306,7 +306,10 @@ enum class BestCandidatesOption
     BestDosage = 0,
 
     /// Return all acceptable dosages
-    AllDosages
+    AllDosages,
+
+    /// Return the best dosage for each interval
+    BestDosagePerInterval,
 };
 
 ///

@@ -1084,15 +1084,47 @@ ComputingResult ComputingComponent::compute(
     std::unique_ptr<AdjustmentResponse> resp = std::make_unique<AdjustmentResponse>();
 
 
-    if (_traits->getBestCandidatesOption() == BestCandidatesOption::AllDosages) {
+    switch (_traits->getBestCandidatesOption()) {
+    case BestCandidatesOption::AllDosages : {
         resp->setAdjustments(dosageCandidates);
-    }
-    else {
+    } break;
+    case BestCandidatesOption::BestDosage : {
         std::vector<FullDosage> bestDosage;
         if (dosageCandidates.size() != 0) {
             bestDosage.push_back(dosageCandidates.at(0));
         }
         resp->setAdjustments(bestDosage);
+    } break;
+    case BestCandidatesOption::BestDosagePerInterval : {
+        for(int i = 0; i < dosageCandidates.size(); i++) {
+            const DosageRepeat *repeat = dynamic_cast<const DosageRepeat *>(dosageCandidates.at(i).m_history.getDosageTimeRanges().at(dosageCandidates.at(i).m_history.getDosageTimeRanges().size() - 1)
+                    ->getDosage());
+            if (repeat != nullptr) {
+                const LastingDose *dose = dynamic_cast<const LastingDose *>(repeat->getDosage());
+                if (dose != nullptr) {
+                    Duration interval = dose->getTimeStep();
+                    for(int j = i + 1; j < dosageCandidates.size(); j++) {
+
+                        const DosageRepeat *repeat2 = dynamic_cast<const DosageRepeat *>(dosageCandidates.at(j).m_history.getDosageTimeRanges().at(dosageCandidates.at(j).m_history.getDosageTimeRanges().size() - 1)
+                                ->getDosage());
+                        if (repeat2 != nullptr) {
+                            const LastingDose *dose2 = dynamic_cast<const LastingDose *>(repeat2->getDosage());
+                            if (dose2 != nullptr) {
+                                if (dose2->getTimeStep() == interval) {
+                                    dosageCandidates.erase(dosageCandidates.begin() + j);
+                                    j = j - 1;
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+
+        resp->setAdjustments(dosageCandidates);
+
+    } break;
     }
 
     // Finally add the response to the set of responses

@@ -78,6 +78,13 @@ public:
     void addDosageTimeRange(std::unique_ptr<DosageTimeRange> _timeRange);
 
     ///
+    /// \brief Merges a dosage time range to the dosage history
+    /// \param _timeRange The new dosage time range to merge
+    ///
+    ///
+    void mergeDosageTimeRange(std::unique_ptr<DosageTimeRange> _timeRange);
+
+    ///
     /// \brief Adds a custom target
     /// \param _target The custom target to add
     ///
