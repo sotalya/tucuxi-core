@@ -104,7 +104,7 @@ public:
                                             theta7=-0.806; \
                                             \
                                             MEANBW=70; \
-                                            FBW=(weight-MEANBW)/MEANBW; \
+                                            FBW=(bodyweight-MEANBW)/MEANBW; \
                                             \
                                             MEANAG=50; \
                                             FAGE=(age-MEANAG)/MEANAG; \
@@ -120,7 +120,7 @@ public:
                                               OperationInput("age", InputType::DOUBLE),
                                               OperationInput("gist", InputType::BOOL)});
 
-        std::unique_ptr<ParameterDefinition> PCL(new Tucuxi::Core::ParameterDefinition("CL", 15.106, opCl, std::make_unique<ParameterVariability>(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.356)));
+        std::unique_ptr<ParameterDefinition> PCL(new Tucuxi::Core::ParameterDefinition("CL", 14.3, opCl, std::make_unique<ParameterVariability>(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.356)));
         dispositionParameters->addParameter(std::move(PCL));
 
         dispositionParameters->addCorrelation(Correlation("CL", "V", 0.798));
@@ -129,8 +129,9 @@ public:
 
         std::unique_ptr<TimeConsiderations> timeConsiderations = std::make_unique<TimeConsiderations>();
 
-        // Arbitrary 20h half life. To be checked. Multiplier of 10
-        std::unique_ptr<HalfLife> halfLife = std::make_unique<HalfLife>("halflife", 20, Tucuxi::Core::Unit("h"), 10);
+        // Arbitrary 20h half life. To be checked. Multiplier of 20
+        // With a multiplier of 10 it fails
+        std::unique_ptr<HalfLife> halfLife = std::make_unique<HalfLife>("halflife", 20, Tucuxi::Core::Unit("h"), 20);
         timeConsiderations->setHalfLife(std::move(halfLife));
         model->setTimeConsiderations(std::move(timeConsiderations));
 
