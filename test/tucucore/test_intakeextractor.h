@@ -157,7 +157,8 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                std::chrono::seconds(0));
         IntakeSeries iSeries;
         IntakeExtractor extractor;
-        extractor.extract(*dh, fullPeriodStart, fullPeriodEnd, NB_POINTS_PER_HOUR, iSeries);
+        IntakeExtractor::Result result = extractor.extract(*dh, fullPeriodStart, fullPeriodEnd, NB_POINTS_PER_HOUR, iSeries);
+        fructose_assert(result == IntakeExtractor::Result::Ok);
 
         fructose_assert(iSeries.size() == expectedIntakes.size());
 
@@ -269,7 +270,8 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                Duration(std::chrono::hours(8), std::chrono::minutes(30), std::chrono::seconds(0)));
         IntakeSeries iSeries;
         IntakeExtractor extractor;
-        extractor.extract(dh, fullPeriodStart, fullPeriodEnd, NB_POINTS_PER_HOUR, iSeries);
+        IntakeExtractor::Result result = extractor.extract(dh, fullPeriodStart, fullPeriodEnd, NB_POINTS_PER_HOUR, iSeries);
+        fructose_assert(result == IntakeExtractor::Result::Ok);
 
         fructose_assert(iSeries.size() == expectedIntakes.size());
 
@@ -356,7 +358,8 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                Duration(std::chrono::hours(8), std::chrono::minutes(30), std::chrono::seconds(0)));
         IntakeSeries iSeries;
         IntakeExtractor extractor;
-        extractor.extract(dh, fullPeriodStart, fullPeriodEnd, NB_POINTS_PER_HOUR, iSeries);
+        IntakeExtractor::Result result = extractor.extract(dh, fullPeriodStart, fullPeriodEnd, NB_POINTS_PER_HOUR, iSeries);
+        fructose_assert(result == IntakeExtractor::Result::Ok);
 
         fructose_assert(iSeries.size() == expectedIntakes.size());
 
@@ -438,7 +441,8 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                  Duration(std::chrono::hours(8), std::chrono::minutes(30), std::chrono::seconds(0)));
         IntakeSeries iSeries;
         IntakeExtractor extractor;
-        extractor.extract(dh, fullPeriodStart, DateTime(), NB_POINTS_PER_HOUR, iSeries);
+        IntakeExtractor::Result result = extractor.extract(dh, fullPeriodStart, DateTime(), NB_POINTS_PER_HOUR, iSeries);
+        fructose_assert(result == IntakeExtractor::Result::Ok);
 
         fructose_assert(iSeries.size() == expectedIntakes.size());
 
@@ -507,7 +511,8 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                Duration(std::chrono::hours(20), std::chrono::minutes(30), std::chrono::seconds(0)));
         IntakeSeries iSeries;
         IntakeExtractor extractor;
-        extractor.extract(dh, fullPeriodStart, fullPeriodEnd, NB_POINTS_PER_HOUR, iSeries);
+        IntakeExtractor::Result result = extractor.extract(dh, fullPeriodStart, fullPeriodEnd, NB_POINTS_PER_HOUR, iSeries);
+        fructose_assert(result == IntakeExtractor::Result::Ok);
 
         fructose_assert(iSeries.size() == expectedIntakes.size());
 
@@ -603,7 +608,8 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                  Duration(std::chrono::hours(8), std::chrono::minutes(30), std::chrono::seconds(0)));
         IntakeSeries iSeries;
         IntakeExtractor extractor;
-        extractor.extract(dh, fullPeriodStart, DateTime(), NB_POINTS_PER_HOUR, iSeries);
+        IntakeExtractor::Result result = extractor.extract(dh, fullPeriodStart, DateTime(), NB_POINTS_PER_HOUR, iSeries);
+        fructose_assert(result == IntakeExtractor::Result::Ok);
 
         fructose_assert(iSeries.size() == expectedIntakes.size());
 
@@ -704,7 +710,8 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                Duration(std::chrono::hours(8), std::chrono::minutes(30), std::chrono::seconds(0)));
         IntakeSeries iSeries;
         IntakeExtractor extractor;
-        extractor.extract(dh, fullPeriodStart, fullPeriodEnd, NB_POINTS_PER_HOUR, iSeries);
+        IntakeExtractor::Result result = extractor.extract(dh, fullPeriodStart, fullPeriodEnd, NB_POINTS_PER_HOUR, iSeries);
+        fructose_assert(result == IntakeExtractor::Result::Ok);
 
         fructose_assert(iSeries.size() == expectedIntakes.size());
 
@@ -939,7 +946,8 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                Duration(std::chrono::hours(8), std::chrono::minutes(30), std::chrono::seconds(0)));
         IntakeSeries iSeries;
         IntakeExtractor extractor;
-        extractor.extract(dh, fullPeriodStart, fullPeriodEnd, NB_POINTS_PER_HOUR, iSeries);
+        IntakeExtractor::Result result = extractor.extract(dh, fullPeriodStart, fullPeriodEnd, NB_POINTS_PER_HOUR, iSeries);
+        fructose_assert(result == IntakeExtractor::Result::Ok);
 
         fructose_assert(iSeries.size() == expectedIntakes.size());
 
@@ -1277,7 +1285,8 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                  Duration(std::chrono::hours(0), std::chrono::minutes(0), std::chrono::seconds(0)));
         IntakeSeries iSeries;
         IntakeExtractor extractor;
-        extractor.extract(dh, fullPeriodStart, DateTime(), NB_POINTS_PER_HOUR, iSeries);
+        IntakeExtractor::Result result = extractor.extract(dh, fullPeriodStart, DateTime(), NB_POINTS_PER_HOUR, iSeries);
+        fructose_assert(result == IntakeExtractor::Result::Ok);
 
         fructose_assert(iSeries.size() == expectedIntakes.size());
 
@@ -1636,7 +1645,8 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                  Duration(std::chrono::hours(0), std::chrono::minutes(0), std::chrono::seconds(0)));
         IntakeSeries iSeries;
         IntakeExtractor extractor;
-        extractor.extract(dh, fullPeriodStart, DateTime(), NB_POINTS_PER_HOUR, iSeries);
+        IntakeExtractor::Result result = extractor.extract(dh, fullPeriodStart, DateTime(), NB_POINTS_PER_HOUR, iSeries);
+        fructose_assert(result == IntakeExtractor::Result::Ok);
 
         fructose_assert(iSeries.size() == expectedIntakes.size());
 
@@ -1808,7 +1818,8 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                Duration(std::chrono::hours(0), std::chrono::minutes(0), std::chrono::seconds(0)));
         IntakeSeries iSeries;
         IntakeExtractor extractor;
-        extractor.extract(dh, fullPeriodStart, fullPeriodEnd, NB_POINTS_PER_HOUR, iSeries);
+        IntakeExtractor::Result result = extractor.extract(dh, fullPeriodStart, fullPeriodEnd, NB_POINTS_PER_HOUR, iSeries);
+        fructose_assert(result == IntakeExtractor::Result::Ok);
 
         fructose_assert(iSeries.size() == expectedIntakes.size());
 
@@ -1896,7 +1907,8 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                    Duration(std::chrono::hours(8), std::chrono::minutes(30), std::chrono::seconds(0)));
             IntakeSeries iSeries;
             IntakeExtractor extractor;
-            extractor.extract(dh, fullPeriodStart, fullPeriodEnd, NB_POINTS_PER_HOUR, iSeries);
+            IntakeExtractor::Result result = extractor.extract(dh, fullPeriodStart, fullPeriodEnd, NB_POINTS_PER_HOUR, iSeries);
+            fructose_assert(result == IntakeExtractor::Result::Ok);
 
             fructose_assert(iSeries.size() == expectedIntakes.size());
 
@@ -1912,7 +1924,8 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                    Duration(std::chrono::hours(8), std::chrono::minutes(30), std::chrono::seconds(0)));
             IntakeSeries iSeries;
             IntakeExtractor extractor;
-            extractor.extract(dh, fullPeriodStart, fullPeriodEnd, NB_POINTS_PER_HOUR, iSeries);
+            IntakeExtractor::Result result = extractor.extract(dh, fullPeriodStart, fullPeriodEnd, NB_POINTS_PER_HOUR, iSeries);
+            fructose_assert(result == IntakeExtractor::Result::Ok);
 
             fructose_assert(iSeries.size() == expectedIntakes.size());
 

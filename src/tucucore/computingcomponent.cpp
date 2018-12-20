@@ -141,7 +141,13 @@ ComputingResult ComputingComponent::generalExtractions(
 
     IntakeExtractor intakeExtractor;
     double nbPointsPerHour = _traits->getNbPointsPerHour();
-    int nIntakes = intakeExtractor.extract(_request.getDrugTreatment().getDosageHistory(), fantomStart /*_traits->getStart()*/, _traits->getEnd() /* + Duration(24h)*/, nbPointsPerHour, _intakeSeries);
+    IntakeExtractor::Result intakeExtractionResult = intakeExtractor.extract(_request.getDrugTreatment().getDosageHistory(), fantomStart /*_traits->getStart()*/, _traits->getEnd() /* + Duration(24h)*/, nbPointsPerHour, _intakeSeries);
+
+    if (intakeExtractionResult != IntakeExtractor::Result::Ok) {
+        return ComputingResult::Error;
+    }
+
+    int nIntakes = _intakeSeries.size();
 
     for (int i = 0; i < nIntakes; i++) {
         if (_intakeSeries.at(i).getEventTime() + _intakeSeries.at(i).getInterval() < _traits->getStart()) {
@@ -215,9 +221,9 @@ ComputingResult ComputingComponent::generalExtractions(
     }
 
 
-    IntakeToCalculatorAssociator::Result intakeExtractionResult = IntakeToCalculatorAssociator::associate(_intakeSeries, *_pkModel.get());
+    IntakeToCalculatorAssociator::Result intakeAssociationResult = IntakeToCalculatorAssociator::associate(_intakeSeries, *_pkModel.get());
 
-    if (intakeExtractionResult != IntakeToCalculatorAssociator::Result::Ok) {
+    if (intakeAssociationResult != IntakeToCalculatorAssociator::Result::Ok) {
         m_logger.error("Can not associate intake calculators for the specified route");
         return ComputingResult::Error;
     }
@@ -988,14 +994,17 @@ ComputingResult ComputingComponent::compute(
             IntakeSeries intakeSeries;
             IntakeExtractor intakeExtractor;
             double nbPointsPerHour = _traits->getNbPointsPerHour();
-            int nIntakes = intakeExtractor.extract(*newHistory, calculationStartTime, newEndTime,
+            IntakeExtractor::Result intakeExtractionResult = intakeExtractor.extract(*newHistory, calculationStartTime, newEndTime,
                                                    nbPointsPerHour, intakeSeries);
-            UNUSED_PARAMETER(nIntakes);
 
-            IntakeToCalculatorAssociator::Result intakeExtractionResult =
+            if (intakeExtractionResult != IntakeExtractor::Result::Ok) {
+                return ComputingResult::Error;
+            }
+
+            IntakeToCalculatorAssociator::Result intakeAssociationResult =
                     IntakeToCalculatorAssociator::associate(intakeSeries, *pkModel.get());
 
-            if (intakeExtractionResult != IntakeToCalculatorAssociator::Result::Ok) {
+            if (intakeAssociationResult != IntakeToCalculatorAssociator::Result::Ok) {
                 m_logger.error("Can not associate intake calculators for the specified route");
                 return ComputingResult::Error;
             }

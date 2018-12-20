@@ -17,24 +17,35 @@ auto as_integer(Enumeration const value)
 }
 
 #define EXTRACT_PRECONDITIONS(start, end, series) \
-    assert (!start.isUndefined()); \
-    assert (end.isUndefined() || start < end);
+    if (start.isUndefined()) { \
+        throw std::runtime_error("[IntakeExtractor] Start time is undefined"); \
+    } \
+    if (!(end.isUndefined() || start < end)) { \
+        throw std::runtime_error("[IntakeExtractor] start is greater than end and end is defined"); \
+    }
+//    assert (!start.isUndefined()); \
+//    assert (end.isUndefined() || start < end);
 
 
-int IntakeExtractor::extract(const DosageHistory& _dosageHistory, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, IntakeSeries &_series)
+IntakeExtractor::Result IntakeExtractor::extract(const DosageHistory& _dosageHistory, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, IntakeSeries &_series)
 {
-    EXTRACT_PRECONDITIONS(_start, _end, _series);
+    try {
+        EXTRACT_PRECONDITIONS(_start, _end, _series);
 
-    // Iterate on elements in dosage history that are in the appropriate time interval and add each of them to the
-    // intake series
-    for (auto&& timeRange : _dosageHistory.m_history)
-    {
-        extract(*timeRange, _start, _end, _nbPointsPerHour, _series);
+        // Iterate on elements in dosage history that are in the appropriate time interval and add each of them to the
+        // intake series
+        for (auto&& timeRange : _dosageHistory.m_history)
+        {
+            extract(*timeRange, _start, _end, _nbPointsPerHour, _series);
+        }
+
+        std::sort(_series.begin(), _series.end());
+    }
+    catch (...) {
+        return Result::ExtractionError;
     }
 
-    std::sort(_series.begin(), _series.end());
-
-    return static_cast<int>(_series.size());
+    return Result::Ok;
 }
 
 

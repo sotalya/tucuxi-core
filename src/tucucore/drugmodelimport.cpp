@@ -752,6 +752,7 @@ OutdatedMeasure* DrugModelImport::extractOutdatedMeasure(Tucuxi::Common::XmlNode
     }
 
     if (getResult() != Result::Ok) {
+        DELETE_IF_NON_NULL(value);
         return nullptr;
     }
 
