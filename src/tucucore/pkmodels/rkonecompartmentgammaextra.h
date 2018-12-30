@@ -112,6 +112,13 @@ inline void RK4OneCompartmentGammaExtraMicro::compute(const Residuals& _inResidu
 
         _concentrations1[i+1] = _concentrations1[i] + c1_k1/6 + c1_k2/3 + c1_k3/3 + c1_k4/6;
         _concentrations2[i+1] = _concentrations2[i] + c2_k1/6 + c2_k2/3 + c2_k3/3 + c2_k4/6;
+
+        if (_concentrations1[i+1] < 0) {
+            _concentrations1[i+1] = 0;
+        }
+        if (_concentrations2[i+1] < 0) {
+            _concentrations2[i+1] = 0;
+        }
     }
 
 }

@@ -17,7 +17,7 @@ RK4OneCompartmentGammaExtraMicro::RK4OneCompartmentGammaExtraMicro()
 
 bool RK4OneCompartmentGammaExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
-    if (!checkValue(_parameters.size() >= 4, "The number of parameters should be equal to 4.")) {
+    if (!checkValue(_parameters.size() >= 5, "The number of parameters should be equal to 5.")) {
         return false;
     }
 
@@ -122,7 +122,7 @@ RK4OneCompartmentGammaExtraMacro::RK4OneCompartmentGammaExtraMacro() : RK4OneCom
 
 bool RK4OneCompartmentGammaExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
-    if (!checkValue(_parameters.size() >= 4, "The number of parameters should be equal to 4.")) {
+    if (!checkValue(_parameters.size() >= 5, "The number of parameters should be equal to 5.")) {
         return false;
     }
 
