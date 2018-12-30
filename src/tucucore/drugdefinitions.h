@@ -73,6 +73,8 @@ public:
 
     virtual ~IndividualValue() { }
 
+    const DefinitionClass & getDefinition() const { return m_definition;}
+
 protected:
 
     const DefinitionClass &m_definition;

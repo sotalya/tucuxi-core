@@ -315,7 +315,7 @@ void CovariateExtractor::collectRefreshIntervals(std::map<DateTime, std::vector<
     for (const auto &cdv : m_cdValued) {
         Duration refreshInterval;
         refreshInterval = (*(cdv.second))->getRefreshPeriod();
-        if (!refreshInterval.isEmpty()) {
+        if (((*(cdv.second))->getInterpolationType() != InterpolationType::Direct) && (!refreshInterval.isEmpty())) {
             // When we have a refresh interval set, use it and ignore the patient variates.
             for (DateTime t = m_start; t <= m_end; t += refreshInterval) {
                 if (_refreshMap.find(t) == _refreshMap.end()) {

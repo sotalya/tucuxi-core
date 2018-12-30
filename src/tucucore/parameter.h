@@ -22,6 +22,8 @@ struct TestParameterExtractor;
 namespace Tucuxi {
 namespace Core {
 
+class ParametersExtractor;
+
 class Parameter : public IndividualValue<ParameterDefinition>
 {
 public:
@@ -83,6 +85,10 @@ public:
     /// 2. V
     /// 3. F
     /// 4. Ka
+    ///
+    /// Finaly, if the parameter is already in the set, its value is updated. This feature
+    /// is useful to build the ParameterSetEvent after extraction of changing parameters
+    /// in the ParametersExtractor.
     void addParameterEvent(const ParameterDefinition &_definition, Value _value);
 
     ParameterSetEvent(const DateTime& _date, const ParameterDefinitions &_definitions)
@@ -109,6 +115,21 @@ public:
     }
     int size() const { return static_cast<int>(m_parameters.size()); }
 
+    bool equals(const ParameterSetEvent *_other) const {
+        if (m_parameters.size() != _other->m_parameters.size()) {
+            return false;
+        }
+        for(size_t i = 0; i < m_parameters.size(); i++) {
+            if (m_parameters.at(i).getValue() != _other->m_parameters.at(i).getValue()) {
+                return false;
+            }
+            if (m_parameters.at(i).getParameterId() != _other->m_parameters.at(i).getParameterId()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     // Make the test class friend, as this will allow us to manually check the available events.
     friend TestParameterExtractor;
 
@@ -126,6 +147,9 @@ public:
 
     // Make the test class friend, as this will allow us to manually check the available events.
     friend TestParameterExtractor;
+
+    // To allow the ParametersExtractor to manipulate m_parameterSets
+    friend ParametersExtractor;
 
 private:
     std::vector<ParameterSetEvent> m_parameterSets;

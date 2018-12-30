@@ -522,6 +522,11 @@ IPercentileCalculator::ComputingResult AposterioriMonteCarloPercentileCalculator
         IConcentrationCalculator &_concentrationCalculator,
         ComputingAborter *_aborter)
 {
+    // If there is no sample, then there is no reason to calculate a posteriori percentiles
+    if (_samples.size() == 0) {
+        return ComputingResult::Failure;
+    }
+
     // Return value from non-negative hessian matrix and loglikelihood
     EigenMatrix subomega;
     Likelihood logLikelihood(_omega, _residualErrorModel, _samples, _intakes, _parameters, _concentrationCalculator);

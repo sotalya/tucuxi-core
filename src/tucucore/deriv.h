@@ -75,7 +75,9 @@ inline x deriv1_impl(func fxn,
     auto xp = *loc + tol;
     auto xm = *loc - tol;
     auto ret = (fxn(&xp) - fxn(&xm)) / (2 * tol);
-    return &ret;
+    // Changed the return type
+    // return &ret;
+    return ret;
 }
 
 

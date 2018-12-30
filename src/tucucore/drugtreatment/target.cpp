@@ -40,13 +40,15 @@ Target::Target(const std::string& _activeMoietyId,
 }
 
 Target::Target(const std::string& _activeMoietyId,
-               const TargetType _type,
-               const Value _vmin, 
-               const Value _vbest,
-               const Value _vmax,
-               const Value _mic,
-               const Tucuxi::Common::Duration &_tmin, 
-               const Tucuxi::Common::Duration &_tbest, 
+               TargetType _type,
+               Unit _unit,
+               Unit _finalUnit,
+               Value _vmin,
+               Value _vbest,
+               Value _vmax,
+               Value _mic,
+               const Tucuxi::Common::Duration &_tmin,
+               const Tucuxi::Common::Duration &_tbest,
                const Tucuxi::Common::Duration &_tmax)
     : m_activeMoietyId(_activeMoietyId),
       m_targetType(_type),
@@ -56,7 +58,9 @@ Target::Target(const std::string& _activeMoietyId,
       m_mic(_mic),
       m_tMin(_tmin),
       m_tMax(_tmax),
-      m_tBest(_tbest)
+      m_tBest(_tbest),
+      m_unit(_unit),
+      m_finalUnit(_finalUnit)
 {
 }
 

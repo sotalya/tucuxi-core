@@ -24,9 +24,14 @@
 #include "test_nonmemdrugs.h"
 #include "test_operablegraphmanager.h"
 #include "test_operation.h"
+#include "test_operationcollection.h"
 #include "test_parameterextractor.h"
 #include "test_percentilecalculator.h"
 #include "test_pkmodel.h"
+#include "test_targetextractor.h"
+
+#include "drugmodels/test_drug_tobramycin.h"
+#include "drugmodels/test_drug_vancomycin.h"
 
 int main(int argc, char** argv)
 {
@@ -196,6 +201,7 @@ int main(int argc, char** argv)
     intakeExtractorTests.add_test("ComplexParallelSequence1 test", &TestIntakeExtractor::testComplexParallelSequence1);
     intakeExtractorTests.add_test("ComplexParallelSequence2 test", &TestIntakeExtractor::testComplexParallelSequence2);
     intakeExtractorTests.add_test("FullWeekExceptMonday test", &TestIntakeExtractor::testFullWeekExceptMonday);
+    intakeExtractorTests.add_test("OnceEvery36HoursAtSteadyState test", &TestIntakeExtractor::testOnceEvery36HoursAtSteadyState);
 
     res = intakeExtractorTests.run(argc, argv);
     tot_res |= res;
@@ -226,6 +232,19 @@ int main(int argc, char** argv)
         std::cerr << "Operation test failed\n";
     } else {
         std::cout << "Operation test succeeded\n";
+    }
+
+
+    // --- OPERATIONCOLLECTION --- //
+    TestOperationCollection operationCollectionTests;
+    operationCollectionTests.add_test("OperationCollection test", &TestOperationCollection::testOperationCollection);
+
+    res = operationCollectionTests.run(argc, argv);
+    tot_res |= res;
+    if (res != 0) {
+        std::cerr << "OperationCollection test failed\n";
+    } else {
+        std::cout << "OperationCollection test succeeded\n";
     }
 
     // --- PkModel --- //
@@ -269,6 +288,7 @@ int main(int argc, char** argv)
     peTests.add_test("testPE_constructor", &TestParameterExtractor::testPE_constructor);
     peTests.add_test("testPE_extract1_0", &TestParameterExtractor::testPE_extract1_0);
     peTests.add_test("testPE_extract1_1", &TestParameterExtractor::testPE_extract1_1);
+    peTests.add_test("testPE_extractParamFromParam", &TestParameterExtractor::testPE_extractParamFromParam);
 
     res = peTests.run(argc, argv);
     tot_res |= res;
@@ -374,6 +394,51 @@ int main(int argc, char** argv)
         std::cout << "Computing Component Percentiles test succeeded\n";
     }
 
+
+    // --- TargetExtractor tests --- //
+    TestTargetExtractor targetExtractorTests;
+
+    // one compartment
+    targetExtractorTests.add_test("testTobramycin", &TestTargetExtractor::testTargetExtractor);
+
+    res = targetExtractorTests.run(argc, argv);
+    tot_res |= res;
+    if (res != 0) {
+        std::cerr << "TargetExtractor test failed\n";
+    }
+    else {
+        std::cout << "TargetExtractor test succeeded\n";
+    }
+
+    // --- Tobramycin drug tests --- //
+    TestDrugTobramycin tobramycinTests;
+
+    // one compartment
+    tobramycinTests.add_test("testTobramycin", &TestDrugTobramycin::testTobramycin);
+
+    res = tobramycinTests.run(argc, argv);
+    tot_res |= res;
+    if (res != 0) {
+        std::cerr << "Drug Tobramycin test failed\n";
+    }
+    else {
+        std::cout << "Drug Tobramycin test succeeded\n";
+    }
+
+    // --- Tobramycin drug tests --- //
+    TestDrugVancomycin vancomycinTests;
+
+    // one compartment
+    vancomycinTests.add_test("testTobramycin", &TestDrugVancomycin::testVancomycin);
+
+    res = vancomycinTests.run(argc, argv);
+    tot_res |= res;
+    if (res != 0) {
+        std::cerr << "Drug Vancomycin test failed\n";
+    }
+    else {
+        std::cout << "Drug Vancomycin test succeeded\n";
+    }
 
     return tot_res;
 }

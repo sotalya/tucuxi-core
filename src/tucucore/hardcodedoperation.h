@@ -38,6 +38,12 @@ HARDCODED_OPERATION(BodySurfaceArea);
 HARDCODED_OPERATION(eGFR_CockcroftGaultGeneral);
 
 /// \ingroup TucuCore
+/// \brief Compute the eGFR value using the Cockcroft-Gault general equation.
+HARDCODED_OPERATION(OperationEGFRCockcroftGaultGeneral);
+
+
+
+/// \ingroup TucuCore
 /// \brief Compute the eGFR value using the Cockcroft-Gault equation based on IBW.
 HARDCODED_OPERATION(eGFR_CockcroftGaultIBW);
 
@@ -64,6 +70,39 @@ HARDCODED_OPERATION(GFR_Jelliffe);
 /// \ingroup TucuCore
 /// \brief Compute the eGFR value using the Salazar-Corcoran method (obese patients).
 HARDCODED_OPERATION(eGFR_SalazarCorcoran);
+
+/// \ingroup TucuCore
+/// \brief Compute an active moiety from a single analyte, so no calculation required.
+HARDCODED_OPERATION(direct);
+
+
+/// \brief Collection of operations -- groups hard coded operations so that they can be easily retrieved.
+class OperationCollection
+{
+public:
+    /// \brief Initialize an empty Operation collection.
+    OperationCollection() = default;
+
+    /// \brief Add an operation to the collection.
+    /// \param _operation A pointer to an Operation to add to the collection.
+    /// \param _operationId Id of the operation, used to retrieve it later on.
+    /// This function is typically used at startup to populate the collection with the existing hardcoded operations.
+    bool addOperation(std::shared_ptr<Operation> _operation, std::string _operationId);
+
+    /// \brief Given an Id, returns the operation with the corresponding identifier.
+    /// \param _operation ID of the PkModel asked by the caller.
+    /// \return A PkModel corresponding to the ID if available, nullptr if no PkModel is found for the specified ID.
+    std::shared_ptr<Operation> getOperationFromId(const std::string &_operationId) const;
+
+    /// \brief Adds all available hardcoded operations to a collection.
+    /// \param _collection The collection to populate.
+    /// \return True if the collection has been successfully populated, false otherwise.
+    /// This method shall be called at the beginning of the execution.
+    virtual bool populate();
+
+protected:
+    std::map<std::string, std::shared_ptr<Operation>> m_collection;
+};
 
 } // namespace Core
 } // namespace Tucuxi

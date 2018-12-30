@@ -19,6 +19,7 @@
 #include "testutils.h"
 
 using namespace Tucuxi::Core;
+using namespace Tucuxi::Common::Utils;
 
 /// \brief Check whether a covariate event with a given name, date, and value is present in a timed covariate series.
 /// \param _id Name of the covariate to check.
@@ -777,6 +778,84 @@ struct TestParameterExtractor : public fructose::test_base<TestParameterExtracto
                                                 125,
                                                 series));
     }
+
+    /// \brief Test the extraction capabilities of the Parameters extractor according to test 1_1.
+    void testPE_extractParamFromParam(const std::string& /* _testName */)
+    {
+        /*
+        CovariateDefinitions cDefinitions;
+        // Covariates of interest.
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), kg, cDefinitions);
+        ADD_CDEF_NO_R_UNIT(Height, 100, Standard, Double, Linear, cm, cDefinitions);
+
+        // Set of covariate events.
+        CovariateSeries cSeries;
+        cSeries.push_back(CovariateEvent(*(cDefinitions.at(0)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(false)));
+        cSeries.push_back(CovariateEvent(*(cDefinitions.at(1)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 15));
+        cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 111));
+        cSeries.push_back(CovariateEvent(*(cDefinitions.at(0)), DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), varToValue(true)));
+        cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 16, 9, 0, 0), 123));
+
+        ParameterDefinitions pDefinitions;
+
+        // Non-computed parameters.
+        pDefinitions.push_back(std::make_unique<ParameterDefinition>("Param_NC_A", 1234));
+        pDefinitions.push_back(std::make_unique<ParameterDefinition>("Param_NC_B", 5678));
+
+        // Computed parameters
+        ADD_EXPR2_PDEF(Param_C_C, "Gist * 15 + Weight", "Gist", "Weight", pDefinitions);
+        ADD_EXPR2_PDEF(Param_C_D, "Gist * 3 + Height", "Height", "Gist", pDefinitions);
+        //ADD_EXPR2_PDEF(Param_C_D, "Param_NC_A", "Param_NC_A", "Gist", pDefinitions);
+
+        MyParameterDefinitionIterator itDefinitions(pDefinitions.begin(), pDefinitions.end());
+        fructose_assert_no_exception(ParametersExtractor(cSeries, itDefinitions,
+                                                         DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
+                                                         DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0)));
+        ParametersExtractor extractor = ParametersExtractor(cSeries, itDefinitions,
+                                                            DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
+                                                            DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0));
+
+        ParameterSetSeries series;
+        ParametersExtractor::Result rc;
+        rc = extractor.extract(series);
+
+//        printParameterSetSeries(series);
+
+        fructose_assert(rc == ParametersExtractor::Result::Ok);
+        fructose_assert(series.m_parameterSets.size() == 3);
+
+        fructose_assert(parameterEventIsPresent("Param_NC_A",
+                                                DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0),
+                                                1234,
+                                                series));
+        fructose_assert(parameterEventIsPresent("Param_NC_B",
+                                                DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0),
+                                                5678,
+                                                series));
+        fructose_assert(parameterEventIsPresent("Param_C_C",
+                                                DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0),
+                                                15,
+                                                series));
+        fructose_assert(parameterEventIsPresent("Param_C_D",
+                                                DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0),
+                                                111,
+                                                series));
+        fructose_assert(parameterEventIsPresent("Param_C_C",
+                                                DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0),
+                                                30,
+                                                series));
+        fructose_assert(parameterEventIsPresent("Param_C_D",
+                                                DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0),
+                                                113,
+                                                series));
+        fructose_assert(parameterEventIsPresent("Param_C_D",
+                                                DATE_TIME_NO_VAR(2017, 8, 16, 9, 0, 0),
+                                                125,
+                                                series));
+                                                */
+    }
+
 };
 
 #endif // TEST_PARAMETEREXTRACTOR_H

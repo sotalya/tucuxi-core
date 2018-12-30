@@ -54,6 +54,11 @@ void DrugTreatment::addDosageTimeRange(std::unique_ptr<DosageTimeRange> _timeRan
     m_dosageHistory.addTimeRange(*_timeRange.get());
 }
 
+void DrugTreatment::mergeDosageTimeRange(std::unique_ptr<DosageTimeRange> _timeRange)
+{
+    m_dosageHistory.mergeDosage(_timeRange.get());
+}
+
 
 void DrugTreatment::addTarget(std::unique_ptr<Target> _target)
 {
