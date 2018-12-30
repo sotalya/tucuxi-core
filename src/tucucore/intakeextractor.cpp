@@ -17,24 +17,35 @@ auto as_integer(Enumeration const value)
 }
 
 #define EXTRACT_PRECONDITIONS(start, end, series) \
-    assert (!start.isUndefined()); \
-    assert (end.isUndefined() || start < end);
+    if (start.isUndefined()) { \
+        throw std::runtime_error("[IntakeExtractor] Start time is undefined"); \
+    } \
+    if (!(end.isUndefined() || start < end)) { \
+        throw std::runtime_error("[IntakeExtractor] start is greater than end and end is defined"); \
+    }
+//    assert (!start.isUndefined()); \
+//    assert (end.isUndefined() || start < end);
 
 
-int IntakeExtractor::extract(const DosageHistory& _dosageHistory, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, IntakeSeries &_series)
+IntakeExtractor::Result IntakeExtractor::extract(const DosageHistory& _dosageHistory, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, IntakeSeries &_series)
 {
-    EXTRACT_PRECONDITIONS(_start, _end, _series);
+    try {
+        EXTRACT_PRECONDITIONS(_start, _end, _series);
 
-    // Iterate on elements in dosage history that are in the appropriate time interval and add each of them to the
-    // intake series
-    for (auto&& timeRange : _dosageHistory.m_history)
-    {
-        extract(*timeRange, _start, _end, _nbPointsPerHour, _series);
+        // Iterate on elements in dosage history that are in the appropriate time interval and add each of them to the
+        // intake series
+        for (auto&& timeRange : _dosageHistory.m_history)
+        {
+            extract(*timeRange, _start, _end, _nbPointsPerHour, _series);
+        }
+
+        std::sort(_series.begin(), _series.end());
+    }
+    catch (...) {
+        return Result::ExtractionError;
     }
 
-    std::sort(_series.begin(), _series.end());
-
-    return static_cast<int>(_series.size());
+    return Result::Ok;
 }
 
 
@@ -45,6 +56,10 @@ int IntakeExtractor::extract(const DosageTimeRange &_timeRange, const DateTime &
     int nbIntakes = 0;
 //    DateTime iStart = std::max(_start, _timeRange.m_startDate);
     DateTime iStart = _timeRange.m_startDate;
+    if (dynamic_cast<DosageSteadyState*>(_timeRange.m_dosage.get())) {
+        iStart = _start;
+    }
+
     DateTime iEnd;
     if (_end.isUndefined()) {
         iEnd = _timeRange.m_endDate;
@@ -54,7 +69,10 @@ int IntakeExtractor::extract(const DosageTimeRange &_timeRange, const DateTime &
         iEnd = std::min(_end, _timeRange.m_endDate);
     }
 
-    nbIntakes = _timeRange.m_dosage->extract(*this, iStart, iEnd, _nbPointsPerHour, _series);
+    // We check the extraction range
+    if (iEnd >= iStart) {
+        nbIntakes = _timeRange.m_dosage->extract(*this, iStart, iEnd, _nbPointsPerHour, _series);
+    }
 
     // Add unplanned intakes that fall in the desired interval
     for (auto& intake: _timeRange.m_addedIntakes) {
@@ -115,6 +133,26 @@ int IntakeExtractor::extract(const DosageLoop &_dosageLoop, const DateTime &_sta
 
     return nbIntakes;
 }
+
+
+int IntakeExtractor::extract(const DosageSteadyState &_dosageSteadyState, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, IntakeSeries &_series)
+{
+    EXTRACT_PRECONDITIONS(_start, _end, _series);
+
+    int nbIntakes = 0;
+
+    DateTime currentTime = _dosageSteadyState.getFirstIntakeInterval(_start);
+
+    while (currentTime < _end) {
+        nbIntakes += extract(*(_dosageSteadyState.m_dosage), currentTime, _end, _nbPointsPerHour, _series);
+        currentTime += _dosageSteadyState.m_dosage->getTimeStep();
+    }
+
+    std::sort(_series.begin(), _series.end());
+
+    return nbIntakes;
+}
+
 
 
 int IntakeExtractor::extract(const DosageRepeat &_dosageRepeat, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, IntakeSeries &_series)

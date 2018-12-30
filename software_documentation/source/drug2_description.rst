@@ -317,6 +317,8 @@ The head of the file contains general information about the drug, such as its ID
 
 |
 
+.. _activeSubstance:
+
 .. csv-table:: head content
    :header: "Tag name", "Format", "Occ.", "Description"
    :widths: 15, 10, 5, 30
@@ -523,7 +525,7 @@ A covariate is a medical information about the patient. A drug can contain from 
 
  	 "<covariate>             ",          , 0:∞ , Description of a covariate
 	 "____<covariateId>                 ", string   , 1:1 , The covariate's unique identifier
-	 "____<name>               ",          , 1:1 , The translated covariate's names
+	 "____<covariateName>               ",          , 1:1 , The translated covariate's names
 	 "_______<name>            ", string   , 1:1 , Name of the covariate for the specified language
 	 "____<description>        ",          , 1:1 , The translated covariate's descriptions
 	 "_______<desc>            ", string   , 1:1 , Description of the covariate for the specified language
@@ -638,6 +640,10 @@ Used by :ref:`covariate`.
 
 
 .. _activeMoieties:
+
+.. _activeMoiety:
+
+.. _activeMoietyName:
 
 ActiveMoieties
 ==============

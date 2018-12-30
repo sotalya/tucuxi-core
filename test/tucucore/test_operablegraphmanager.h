@@ -115,7 +115,7 @@ struct TestOpGraph : public fructose::test_base<TestOpGraph>
 
         OperableGraphManager ogm;
 
-        fructose_assert (ogm.registerInput(weight, "weight") == true);
+        fructose_assert (ogm.registerInput(weight, "bodyweight") == true);
         fructose_assert (ogm.registerInput(height, "height") == true);
         fructose_assert (ogm.registerInput(age, "age") == true);
         fructose_assert (ogm.registerInput(creatinine, "creatinine") == true);
@@ -129,8 +129,8 @@ struct TestOpGraph : public fructose::test_base<TestOpGraph>
         fructose_assert (ogm.registerOperable(opIBW, "IBW") == true);
 
         std::shared_ptr<JSOperation> jsCG_IBW
-                = std::make_shared<JSOperation>(JSExpression("(140 - age) * (weight * (weight < IBW) + IBW * (weight >= IBW)) / creatinine * (1.23 * (isMale > 0.5) + 1.04 * (!(isMale > 0.5)))",
-        { OperationInput("weight", InputType::DOUBLE),
+                = std::make_shared<JSOperation>(JSExpression("(140 - age) * (bodyweight * (bodyweight < IBW) + IBW * (bodyweight >= IBW)) / creatinine * (1.23 * (isMale > 0.5) + 1.04 * (!(isMale > 0.5)))",
+        { OperationInput("bodyweight", InputType::DOUBLE),
           OperationInput("IBW", InputType::DOUBLE),
           OperationInput("age", InputType::DOUBLE),
           OperationInput("creatinine", InputType::DOUBLE),

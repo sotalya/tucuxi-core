@@ -44,6 +44,7 @@ int className::extract(IntakeExtractor &_extractor, const DateTime &_start, cons
 
 DOSAGE_UTILS_IMPL(DosageBounded)
 DOSAGE_UTILS_IMPL(DosageLoop)
+DOSAGE_UTILS_IMPL(DosageSteadyState)
 DOSAGE_UTILS_IMPL(DosageRepeat)
 DOSAGE_UTILS_IMPL(DosageSequence)
 DOSAGE_UTILS_IMPL(ParallelDosageSequence)
@@ -78,8 +79,25 @@ bool timeRangesOverlap(const DosageTimeRange &_first, const DosageTimeRange &_se
 }
 
 
+
 void DosageHistory::mergeDosage(DosageTimeRange *newDosage)
 {
+    // First remove the existing time ranges that are replaced because of
+    // the new dosage
+
+    DateTime newStart = newDosage->getStartDate();
+
+    auto iterator = std::remove_if(m_history.begin(), m_history.end(), [newStart](std::unique_ptr<DosageTimeRange> & val) {
+
+        if(val->m_startDate >= newStart) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    });
+    m_history.erase(iterator, m_history.end());
+
     for (const auto& existing : m_history) {
         if (existing->getEndDate().isUndefined()) {
             existing->m_endDate = newDosage->getStartDate();

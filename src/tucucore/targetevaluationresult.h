@@ -16,13 +16,15 @@ class TargetEvaluationResult
 {
 public:
     explicit TargetEvaluationResult() : m_targetType(TargetType::UnknownTarget){}
-    explicit TargetEvaluationResult(TargetType _targetType, double _score, Value _value);
+    explicit TargetEvaluationResult(TargetType _targetType, double _score, Value _value, Unit _unit);
 
     TargetType getTargetType() const { return m_targetType;}
 
     double getScore() const { return m_score;}
 
     Value getValue() const { return m_value;}
+
+    Unit getUnit() const { return m_unit;}
 
 protected:
 
@@ -34,6 +36,9 @@ protected:
 
     //! Target value calculated by the TargetEvaluator
     Value m_value;
+
+    //! Unit of the target
+    Unit m_unit;
 };
 
 

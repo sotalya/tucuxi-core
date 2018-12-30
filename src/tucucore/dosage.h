@@ -165,9 +165,64 @@ public:
 
     DOSAGE_UTILS(DosageUnbounded, DosageLoop);
 
-private:
+protected:
     /// \brief Dosage that is repeated in the unbounded interval.
     std::unique_ptr<DosageBounded> m_dosage;
+};
+
+/// \ingroup TucuCore
+/// \brief A single dosage at steady state.
+/// In addition to the dose, this object stores the time of the last dose. While it
+/// could be considered to be purely the last one, actually any dose is OK. So,
+/// there is no real restriction on what dose to choose.
+/// The time range pointing to a steady state dosage does not need to have a start
+/// and an end time. It can, however, have an end time, in case it is followed by
+/// another dosage. Therefore, a DosageSteadyState needs to be the first dosage
+/// in a DosageHistory, but can be followed by other dosages.
+class DosageSteadyState : public DosageLoop
+{
+public:
+
+    /// \brief Construct a dosage loop from a bounded dosage.
+    /// \param _dosage Dosage to add to the loop.
+    DosageSteadyState(const DosageBounded &_dosage, DateTime _lastDoseTime) : DosageLoop (_dosage)
+    {
+        m_lastDoseTime = _lastDoseTime;
+    }
+
+    /// \brief Copy-construct a dosage loop.
+    /// \param _other Dosage loop to clone.
+    DosageSteadyState(const DosageSteadyState &_other) : DosageLoop (_other)
+    {
+        m_lastDoseTime = _other.m_lastDoseTime;
+    }
+
+
+    /// \brief Return the instant of the first intake in the given interval.
+    /// \param _intervalStart Starting point of the first element of the sequence.
+    /// \return Time of the first intake immediately following _intervalStart.
+    DateTime getFirstIntakeInterval(const DateTime &_intervalStart) const
+    {
+
+        double intervalInSeconds = static_cast<double>(m_dosage->getTimeStep().toSeconds());
+
+        double intervalToFromLastDose = (m_lastDoseTime - _intervalStart).toSeconds();
+
+        // nbIntervals rounds the number of intervals to reach _intervalStart from the last dose
+        int nbIntervals = static_cast<int>(intervalToFromLastDose / intervalInSeconds);
+
+        DateTime start = m_lastDoseTime - Duration(std::chrono::seconds(static_cast<int>(intervalInSeconds * nbIntervals)));
+        if (start < _intervalStart)
+            start = start + m_dosage->getTimeStep();
+
+        return start;
+    }
+
+    DOSAGE_UTILS(DosageUnbounded, DosageSteadyState);
+
+private:
+    DateTime m_lastDoseTime;
+
 };
 
 /// \ingroup TucuCore

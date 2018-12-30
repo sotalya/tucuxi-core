@@ -50,12 +50,24 @@ public:
                         const DateTime &_end);
 
     /// \brief Extract parameter set events in a given interval from covariate events and parameter definitions.
+    /// The events will contain only the modified parameters. Therefore, in order to get events where every parameter
+    /// is defined, you should call buildFullSet() after extract.
     /// \param _series Extracted set of parameter set events.
     /// \return Result::Ok if the extraction was successful, Result::ExtractionError otherwise.
     /// \warning No checks are made on the initial content of _series. If it contains already some events, they will
     ///          still be there at the end of the function. It is up to the user to guarantee the consistency of the
     ///          _series element.
     Result extract(ParameterSetSeries &_series);
+
+    ///
+    /// \brief Builds a set with every parameter for each event
+    /// \param _inputSeries The input series, only containing changes of parameters
+    /// \param _outputSeries The output series that will contain every parameter for each event
+    /// \return Result::Ok if the building was successful, Result::ExtractionError otherwise.
+    /// \warning No cheks are made on the initial content of _inputSeries. This function is made to be called
+    ///          after extract().
+    ///
+    Result buildFullSet(const ParameterSetSeries &_inputSeries, ParameterSetSeries &_outputSeries) const;
 
     /// \brief Extract parameter set events in a given interval from population values of parameter definitions.
     /// \param _series Extracted set of parameter set events.

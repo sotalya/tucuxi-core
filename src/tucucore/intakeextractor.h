@@ -19,6 +19,7 @@ class IntakeExtractor
 {
     friend DosageBounded;
     friend DosageLoop;
+    friend DosageSteadyState;
     friend DosageRepeat;
     friend DosageSequence;
     friend ParallelDosageSequence;
@@ -29,6 +30,12 @@ class IntakeExtractor
 
 public:
 
+
+    enum class Result {
+        Ok,
+        ExtractionError
+    };
+
     /// \ingroup TucuCore
     /// \brief Iterate over the usage history in a given period, extracting a list of intakes.
     ///
@@ -37,7 +44,7 @@ public:
     /// \param _end End time/date for the considered interval, could be unset.
     /// \param _nbPointsPerHour Expected density of points in number of points per hour.
     /// \param _series Returned series of intake in the considered interval.
-    /// \return number of intakes in the given interval, -1 in case of error.
+    /// \return Result::Ok if everything went well, Result::ExtractionError else.
     ///
     /// \pre _start IS NOT unset
     /// \pre _end IS unset OR _end > _start
@@ -45,7 +52,7 @@ public:
     /// (it would have been easier to simply empty the input _series, but this guarantees an uniform behavior across the
     /// whole set of calls)
     /// \post FORALL intake IN extracted_intakes, intake.time IN [_start, _end)
-    int extract(const DosageHistory &_dosageHistory, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, IntakeSeries &_series);
+    Result extract(const DosageHistory &_dosageHistory, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, IntakeSeries &_series);
 
 private:
 
@@ -99,6 +106,28 @@ private:
     /// whole set of calls)
     /// \post FORALL intake IN extracted_intakes, intake.time IN [_start, _end)
     int extract(const DosageLoop &_dosageLoop, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, IntakeSeries &_series);
+
+
+    /// \ingroup TucuCore
+    /// \brief Iterate over a loop of dosages at steady state and extract the list of intakes.
+    /// For a dosage at steady state the bounds are given by the _start and _end arguments. The last dose
+    /// allows to calculate the time of each single dose.
+    /// The start and end times of the dosage time range are not used.
+    ///
+    /// \param _dosageSteadyState Dosage at steady state.
+    /// \param _start Start time/date for the considered interval.
+    /// \param _end End time/date for the considered interval, cannot be unset.
+    /// \param _nbPointsPerHour Expected density of points in number of points per hour.
+    /// \param _series Returned series of intake in the considered interval.
+    /// \return number of intakes in the given interval, -1 in case of error.
+    ///
+    /// \pre _start IS NOT unset
+    /// \pre _end IS NOT unset
+    /// \post _series[OUT] = _series[IN] + extracted_intakes
+    /// (it would have been easier to simply empty the input _series, but this guarantees an uniform behavior across the
+    /// whole set of calls)
+    /// \post FORALL intake IN extracted_intakes, intake.time IN [_start, _end)
+    int extract(const DosageSteadyState &_dosageSteadyState, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, IntakeSeries &_series);
 
     /// \ingroup TucuCore
     /// \brief Iterate over a list of repeated dosages and extract the list of intakes.
