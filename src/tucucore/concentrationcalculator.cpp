@@ -7,6 +7,8 @@
 
 #include "concentrationcalculator.h"
 
+#include "tucucommon/loggerhelper.h"
+
 namespace Tucuxi {
 namespace Core {
 
@@ -23,11 +25,14 @@ ComputationResult ConcentrationCalculator::computeConcentrations(const Concentra
     bool _isFixedDensity)
 {
     if (_recordFrom == DateTime()) {
-        std::cout  << "Invalid record from" <<  std::endl;
+        Tucuxi::Common::LoggerHelper logHelper;
+        logHelper.error("Invalid record from");
     }
     if (_recordTo == DateTime()) {
-        std::cout  << "Invalid record to" <<  std::endl;
+        Tucuxi::Common::LoggerHelper logHelper;
+        logHelper.error("Invalid record to");
     }
+
     TMP_UNUSED_PARAMETER(_onlyAnalytes);
 
     // First calculate the size of residuals

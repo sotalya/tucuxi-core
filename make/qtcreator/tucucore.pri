@@ -69,7 +69,9 @@ HEADERS += \
     $$PWD/../../src/tucucore/validvalues.h \
     $$PWD/../../src/tucucore/computingservice/computingaborter.h \
     $$PWD/../../src/tucucore/unit.h \
-    $$PWD/../../src/tucucore/drugmodel/drugmodelmetadata.h
+    $$PWD/../../src/tucucore/drugmodel/drugmodelmetadata.h \
+    $$PWD/../../src/tucucore/computingresponseexport.h \
+    $$PWD/../../src/tucucore/drugmodelrepository.h
 
 SOURCES += \
     $$PWD/../../src/tucucore/drugmodel/drugmodel.cpp \
@@ -130,7 +132,9 @@ SOURCES += \
     $$PWD/../../src/tucucore/validvalues.cpp \
     $$PWD/../../src/tucucore/computingservice/computingaborter.cpp \
     $$PWD/../../src/tucucore/unit.cpp \
-    $$PWD/../../src/tucucore/drugmodel/drugmodelmetadata.cpp
+    $$PWD/../../src/tucucore/drugmodel/drugmodelmetadata.cpp \
+    $$PWD/../../src/tucucore/computingresponseexport.cpp \
+    $$PWD/../../src/tucucore/drugmodelrepository.cpp
 
 DISTFILES += \
     $$PWD/../../src/tucucore/makefile

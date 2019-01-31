@@ -165,6 +165,13 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
         for (size_t i = 0; i < iSeries.size(); ++i) {
             fructose_assert(iSeries.at(i) == expectedIntakes.at(i));
         }
+
+        {
+            // Try with inverted end/start dates
+            IntakeExtractor extractor;
+            IntakeExtractor::Result result = extractor.extract(*dh, fullPeriodEnd, fullPeriodStart, NB_POINTS_PER_HOUR, iSeries);
+            fructose_assert(result == IntakeExtractor::Result::ExtractionError);
+        }
     }
 
 

@@ -8,6 +8,7 @@
 #include "tucucommon/xmlnode.h"
 #include "tucucommon/xmldocument.h"
 #include "tucucommon/translatablestring.h"
+#include "tucucommon/iimport.h"
 
 #include "tucucore/definitions.h"
 #include "tucucore/residualerrormodel.h"
@@ -59,50 +60,8 @@ public:
     Value m_value;
 };
 
-class IImport
-{
-public:
-    enum class Result {
-        Ok = 0,
-        Error,
-        CantOpenFile
-    };
 
-protected:
-
-    virtual ~IImport() = default;
-
-    void setResult(Result _result) {
-        // Totally unuseful test, bug good to add a breakpoint in the else during debugging
-        if (_result == Result::Ok) {
-            m_result = _result;
-        }
-        else {
-            m_result = _result;
-        }
-    }
-
-    void unexpectedTag(std::string _tagName) {
-        std::vector<std::string> ignored = ignoredTags();
-        for(const auto & s : ignored) {
-            if (s == _tagName) {
-                return;
-            }
-        }
-        std::cout << "Unexpected tag" << std::endl;
-    }
-
-    Result getResult() const { return m_result;}
-
-
-    virtual const std::vector<std::string> &ignoredTags() const = 0;
-
-private:
-
-    Result m_result;
-};
-
-class DrugModelImport : public IImport
+class DrugModelImport : public Tucuxi::Common::IImport
 {
 public:
 

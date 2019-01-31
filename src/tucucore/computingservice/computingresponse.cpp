@@ -25,9 +25,22 @@ void ComputingResponse::addResponse(std::unique_ptr<SingleComputingResponse> _re
     m_responses.push_back(std::move(_response));
 }
 
+
+SingleComputingResponse::SingleComputingResponse(RequestResponseId _id) :
+    m_id(_id)
+{
+
+}
+
 SingleComputingResponse::~SingleComputingResponse()
 {
 }
+
+RequestResponseId SingleComputingResponse::getId() const
+{
+    return m_id;
+}
+
 
 }
 }

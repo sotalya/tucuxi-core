@@ -11,6 +11,7 @@ Tucuxi documentation
    :caption: Contents:
 
    drug2_description
+   command_line
 
 
 

@@ -445,7 +445,7 @@ ComputingResult ComputingComponent::compute(
 
     if (computationResult == ComputationResult::Success)
     {
-        std::unique_ptr<SinglePredictionResponse> resp = std::make_unique<SinglePredictionResponse>();
+        std::unique_ptr<SinglePredictionResponse> resp = std::make_unique<SinglePredictionResponse>(_traits->getId());
 
         IntakeSeries recordedIntakes;
         selectRecordedIntakes(recordedIntakes, intakeSeries, _traits->getStart(), _traits->getEnd());
@@ -625,7 +625,7 @@ ComputingResult ComputingComponent::compute(
             selectedIntakes.size() == pPrediction->getTimes().size() &&
             selectedIntakes.size() == pPrediction->getValues().size())
     {
-        std::unique_ptr<PercentilesResponse> resp = std::make_unique<PercentilesResponse>();
+        std::unique_ptr<PercentilesResponse> resp = std::make_unique<PercentilesResponse>(_traits->getId());
 
         const std::vector<std::vector<std::vector<Value> > > allValues = percentiles.getValues();
 
@@ -1118,7 +1118,7 @@ ComputingResult ComputingComponent::compute(
 
 
     // Now we have adjustments, predictions, and target evaluation results, let's build the response
-    std::unique_ptr<AdjustmentResponse> resp = std::make_unique<AdjustmentResponse>();
+    std::unique_ptr<AdjustmentResponse> resp = std::make_unique<AdjustmentResponse>(_traits->getId());
 
     resp->setAdjustments(finalCandidates);
 

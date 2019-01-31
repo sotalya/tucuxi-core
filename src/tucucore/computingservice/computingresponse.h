@@ -77,7 +77,6 @@ public:
 class SingleComputingResponse
 {
 public:
-    SingleComputingResponse() = default;
     virtual ~SingleComputingResponse() = 0;
     RequestResponseId getId() const;
 
@@ -100,6 +99,7 @@ protected:
 ///
 class SinglePointsResponse : public SingleComputingResponse
 {
+    SinglePointsResponse(RequestResponseId _id) : SingleComputingResponse(_id) {}
 
     /// Absolute time of each concentration
     std::vector<Tucuxi::Common::DateTime> m_times;
@@ -117,7 +117,7 @@ class SinglePointsResponse : public SingleComputingResponse
 class SinglePredictionResponse : public SingleComputingResponse
 {
 public:
-    SinglePredictionResponse() = default;
+    SinglePredictionResponse(RequestResponseId _id) : SingleComputingResponse(_id) {}
     void addCycleData(const CycleData &_data) { m_data.push_back(_data); }
     const std::vector<CycleData>& getData() const { return m_data; }
 
@@ -159,6 +159,7 @@ public:
 class AdjustmentResponse : public SinglePredictionResponse
 {
 public:
+    AdjustmentResponse(RequestResponseId _id) : SinglePredictionResponse(_id) {}
 
     void addAdjustment(FullDosage _adjustment) { m_adjustments.push_back(_adjustment);}
 
@@ -183,6 +184,7 @@ protected:
 class PercentilesResponse : public SingleComputingResponse
 {
 public:
+    PercentilesResponse(RequestResponseId _id) : SingleComputingResponse(_id) {}
 
     void setRanks(const PercentileRanks &_ranks) { m_ranks = _ranks;}
 

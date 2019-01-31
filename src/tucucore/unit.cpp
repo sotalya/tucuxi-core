@@ -2,6 +2,9 @@
 
 #include <iostream>
 
+#include "tucucommon/loggerhelper.h"
+
+
 namespace Tucuxi {
 namespace Core {
 
@@ -21,8 +24,8 @@ Value translateToUnit(Value _value, Unit _initialUnit, Unit _finalUnit)
 
     std::string key = _initialUnit.toString() + "-" + _finalUnit.toString();
     if (factorMap.count(key) == 0) {
-        std::cout << "Error in unit conversion. No known conversion from " <<
-                     _initialUnit.toString() << " to "  << _finalUnit.toString() << std::endl;
+        Tucuxi::Common::LoggerHelper logHelper;
+        logHelper.error("Error in unit conversion. No known conversion from {} to {}", _initialUnit.toString(), _finalUnit.toString());
         return 0.0;
     }
 

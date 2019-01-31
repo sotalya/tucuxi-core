@@ -5,7 +5,10 @@
 #include <vector>
 #include <numeric>
 #include <iterator>
+
 #include "tucucommon/duration.h"
+#include "tucucommon/loggerhelper.h"
+
 #include "tucucore/cyclestatisticscalculator.h"
 
 namespace Tucuxi {
@@ -27,7 +30,8 @@ void CycleStatistics::calculate(const std::vector<Concentrations> &_concentratio
 
         // if no concentrations, return... no data in concentrations
         if (!(_concentrations[compartment]).size()) {
-            std::cout << "No data in concentrations" << std::endl;
+            Tucuxi::Common::LoggerHelper logHelper;
+            logHelper.error("No data in concentrations");
             return;
         }
 

@@ -32,12 +32,14 @@ SOURCES := \
            cachedexponentials.cpp \
            concentrationcalculator.cpp \
            computingcomponent.cpp \
+		   computingresponseexport.cpp \
            covariateevent.cpp \
            covariateextractor.cpp \
            cyclestatisticscalculator.cpp \
            dosage.cpp \
            drugdomainconstraintsevaluator.cpp \
            drugmodelimport.cpp \
+           drugmodelrepository.cpp \
            hardcodedoperation.cpp \
            intakeextractor.cpp \
            intakeintervalcalculator.cpp \
