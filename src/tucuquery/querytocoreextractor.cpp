@@ -55,7 +55,9 @@ Tucuxi::Core::Targets QueryToCoreExtractor::extractTargets(const Query &_query, 
                         td->getTargetType(),
                         td->getMin(),
                         td->getBest(),
-                        td->getMax()
+                        td->getMax(),
+                        td->getInefficacyAlarm(),
+                        td->getToxicityAlarm()
                         )
                     );
     }

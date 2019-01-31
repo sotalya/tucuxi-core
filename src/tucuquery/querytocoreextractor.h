@@ -43,7 +43,6 @@ public:
     /// \param _drugPosition
     /// \return
     ///
-    // TODO inefficacyAlarm and toxicityAlarm are not supported yet
     Tucuxi::Core::Targets extractTargets(const Query &_query, size_t _drugPosition) const;
 
     ///
