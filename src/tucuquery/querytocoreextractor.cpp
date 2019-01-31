@@ -200,10 +200,10 @@ Tucuxi::Core::ComputingTrait *QueryToCoreExtractor::extractPredictionTrait(const
     Tucuxi::Core::ComputingOption computingOption(predictionParameterType, Tucuxi::Core::CompartmentsOption::MainCompartment);
 
     Tucuxi::Core::ComputingTraitConcentration *trait = new Tucuxi::Core::ComputingTraitConcentration(
-                std::stoi(_request.getRequestID()),
+                _request.getRequestID(),
                 _request.getpDateInterval().getStart(),
                 _request.getpDateInterval().getEnd(),
-                10,
+                10, // TODO : Arbitrary number here, should be changed
                 computingOption);
 
     return trait;

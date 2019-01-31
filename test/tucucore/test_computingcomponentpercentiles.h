@@ -108,7 +108,7 @@ struct TestComputingComponentPercentiles : public fructose::test_base<TestComput
         buildDrugTreatment(drugTreatment, route);
 
 
-        RequestResponseId requestResponseId = 1;
+        RequestResponseId requestResponseId = "1";
         Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
         Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
         PercentileRanks percentileRanks({5, 25, 50, 75, 95});
@@ -151,7 +151,7 @@ struct TestComputingComponentPercentiles : public fructose::test_base<TestComput
 /*
         {
             // Ask for 15 intakes, without the first one.
-            RequestResponseId requestResponseId = 1;
+            RequestResponseId requestResponseId = "1";
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 14h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
         double nbPointsPerHour = 10.0;
@@ -212,7 +212,7 @@ struct TestComputingComponentPercentiles : public fructose::test_base<TestComput
         buildDrugTreatmentSteadyState(drugTreatment, route);
 
 
-        RequestResponseId requestResponseId = 1;
+        RequestResponseId requestResponseId = "1";
         Tucuxi::Common::DateTime start(2018_y / oct / 1, 8h + 0min);
         Tucuxi::Common::DateTime end(2018_y / oct / 5, 8h + 0min);
         PercentileRanks percentileRanks({5, 25, 50, 75, 95});
@@ -255,7 +255,7 @@ struct TestComputingComponentPercentiles : public fructose::test_base<TestComput
 /*
         {
             // Ask for 15 intakes, without the first one.
-            RequestResponseId requestResponseId = 1;
+            RequestResponseId requestResponseId = "1";
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 14h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
         double nbPointsPerHour = 10.0;

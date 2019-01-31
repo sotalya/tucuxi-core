@@ -95,7 +95,7 @@ typedef int CycleSize;
 
 /// \ingroup TucuCore
 /// \brief A type representing the Identifier of ComputingRequests and ComputingResponses
-typedef int RequestResponseId;
+typedef std::string RequestResponseId;
 
 /// \ingroup TucuCore
 /// \brief A structure to store precomputed exponentials.

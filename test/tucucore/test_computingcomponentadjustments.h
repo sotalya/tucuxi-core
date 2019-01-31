@@ -76,7 +76,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
 
 
         // TODO : Construct the adjustment traits object
-        RequestResponseId requestResponseId = 1;
+        RequestResponseId requestResponseId = "1";
         Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
         Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
         double nbPointsPerHour = 10.0;
@@ -141,7 +141,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
 
 
         // TODO : Construct the adjustment traits object
-        RequestResponseId requestResponseId = 1;
+        RequestResponseId requestResponseId = "1";
         Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
         Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
         double nbPointsPerHour = 10.0;
@@ -205,7 +205,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
 
 
         // TODO : Construct the adjustment traits object
-        RequestResponseId requestResponseId = 1;
+        RequestResponseId requestResponseId = "1";
         Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
         Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
         double nbPointsPerHour = 10.0;
@@ -265,7 +265,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
 
 
         // TODO : Construct the adjustment traits object
-        RequestResponseId requestResponseId = 1;
+        RequestResponseId requestResponseId = "1";
         Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
         Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
         double nbPointsPerHour = 10.0;
@@ -329,7 +329,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
 
 
         // TODO : Construct the adjustment traits object
-        RequestResponseId requestResponseId = 1;
+        RequestResponseId requestResponseId = "1";
         Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
         Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
         double nbPointsPerHour = 10.0;
@@ -393,7 +393,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
 
 
         // TODO : Construct the adjustment traits object
-        RequestResponseId requestResponseId = 1;
+        RequestResponseId requestResponseId = "1";
         Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
         Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
         double nbPointsPerHour = 10.0;
@@ -458,7 +458,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
 
 
         // TODO : Construct the adjustment traits object
-        RequestResponseId requestResponseId = 1;
+        RequestResponseId requestResponseId = "1";
         Tucuxi::Common::DateTime start(2018_y / sep / 4, 8h + 0min);
         Tucuxi::Common::DateTime end(2018_y / sep / 10, 8h + 0min);
         double nbPointsPerHour = 10.0;
@@ -525,7 +525,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
 
 
         // TODO : Construct the adjustment traits object
-        RequestResponseId requestResponseId = 1;
+        RequestResponseId requestResponseId = "1";
         Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
         Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
         double nbPointsPerHour = 10.0;
@@ -590,7 +590,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
 
 
             // TODO : Construct the adjustment traits object
-            RequestResponseId requestResponseId = 1;
+            RequestResponseId requestResponseId = "1";
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
             double nbPointsPerHour = 10.0;
@@ -679,7 +679,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
 
 
         // TODO : Construct the adjustment traits object
-        RequestResponseId requestResponseId = 1;
+        RequestResponseId requestResponseId = "1";
         Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
         Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
         double nbPointsPerHour = 10.0;

@@ -792,7 +792,7 @@ struct TestDrugVancomycin : public fructose::test_base<TestDrugVancomycin>
 
         {
 
-            RequestResponseId requestResponseId = 1;
+            RequestResponseId requestResponseId = "1";
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
             double nbPointsPerHour = 10.0;
@@ -829,7 +829,7 @@ struct TestDrugVancomycin : public fructose::test_base<TestDrugVancomycin>
 
         {
 
-            RequestResponseId requestResponseId = 1;
+            RequestResponseId requestResponseId = "1";
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
             double nbPointsPerHour = 10.0;

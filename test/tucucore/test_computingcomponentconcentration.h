@@ -75,7 +75,7 @@ struct TestComputingComponentConcentration : public fructose::test_base<TestComp
         buildDrugTreatment(drugTreatment, route);
 
 
-        RequestResponseId requestResponseId = 1;
+        RequestResponseId requestResponseId = "1";
         Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
         Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
         double nbPointsPerHour = 10.0;
@@ -114,7 +114,7 @@ struct TestComputingComponentConcentration : public fructose::test_base<TestComp
 
         {
             // Ask for 15 intakes, without the first one.
-            RequestResponseId requestResponseId = 1;
+            RequestResponseId requestResponseId = "1";
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 14h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
             double nbPointsPerHour = 10.0;
@@ -197,7 +197,7 @@ struct TestComputingComponentConcentration : public fructose::test_base<TestComp
         drugTreatment->getModifiableDosageHistory().addTimeRange(*jun2018);
 
 
-        RequestResponseId requestResponseId = 1;
+        RequestResponseId requestResponseId = "1";
         Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
         Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
         double nbPointsPerHour = 10.0;

@@ -23,7 +23,7 @@ bool ComputingResponseExport::exportToFiles(const ComputingResponse &computingRe
 
         std::ofstream file;
 
-        std::string fileName = filePath + "/" + std::to_string(computingResponse.getId()) + "_" + std::to_string(response->getId()) + ".dat";
+        std::string fileName = filePath + "/" + computingResponse.getId() + "_" + response->getId() + ".dat";
         file.open(fileName);
 
         if (dynamic_cast<Tucuxi::Core::SinglePredictionResponse*>(response.get())) {
