@@ -205,7 +205,7 @@ Tucuxi::Core::ComputingTrait *QueryToCoreExtractor::extractPredictionTrait(const
                 _request.getRequestID(),
                 _request.getpDateInterval().getStart(),
                 _request.getpDateInterval().getEnd(),
-                10, // TODO : Arbitrary number here, should be changed
+                100, // TODO : Arbitrary number here, should be changed
                 computingOption);
 
     return trait;

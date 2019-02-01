@@ -5,6 +5,14 @@
 
 #include "tucucommon/loggerhelper.h"
 
+
+#ifdef _WIN32
+#include <windows.h>
+#else
+#include <sys/types.h>
+#include <dirent.h>
+#endif
+
 namespace Tucuxi {
 namespace Core {
 
@@ -43,17 +51,46 @@ void DrugModelRepository::loadFile(std::string _fileName)
     }
 }
 
+// Solution taken here: http://www.martinbroadhurst.com/list-the-files-in-a-directory-in-c.html
+#ifdef _WIN32
+void read_directory(const std::string& name, std::vector<std::string>& v)
+{
+    std::string pattern(name);
+    pattern.append("\\*");
+    WIN32_FIND_DATA data;
+    HANDLE hFind;
+    if ((hFind = FindFirstFile(pattern.c_str(), &data)) != INVALID_HANDLE_VALUE) {
+        do {
+            v.push_back(data.cFileName);
+        } while (FindNextFile(hFind, &data) != 0);
+        FindClose(hFind);
+    }
+}
+#else
+void read_directory(const std::string& name, std::vector<std::string>& v)
+{
+    DIR* dirp = opendir(name.c_str());
+    struct dirent * dp;
+    while ((dp = readdir(dirp)) != NULL) {
+        v.push_back(dp->d_name);
+    }
+    closedir(dirp);
+}
+#endif // _WIN32
+
 void DrugModelRepository::loadFolder(std::string _folder)
 {
     Tucuxi::Common::LoggerHelper logHelper;
 
-    loadFile(_folder + "/ch.tucuxi.imatinib.tdd");
-    loadFile(_folder + "/ch.tucuxi.vancomycin.tdd");
-    loadFile(_folder + "/ch.tucuxi.busulfan_children.tdd");
-    loadFile(_folder + "/ch.tucuxi.vancomycin_adults.tdd");
-    loadFile(_folder + "/ch.tucuxi.vancomycin_adults_1CP.tdd");
-    loadFile(_folder + "/ch.tucuxi.tobramycin.tdd");
+    std::vector<std::string> list;
 
+    read_directory(_folder, list);
+
+    for (auto filename : list) {
+        if (filename.substr((filename.size() > 4) ? (filename.size() - 4) : 0, filename.size() - 1) == ".tdd") {
+            loadFile(_folder + "/" + filename);
+        }
+    }
 }
 
 void DrugModelRepository::addDrugModel(DrugModel *_drugModel)
