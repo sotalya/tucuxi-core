@@ -237,6 +237,8 @@ IPercentileCalculator::ComputingResult MonteCarloPercentileCalculatorBase::compu
                 mutex.lock();
                 if (currentCycle >= nbCycles) {
                     cont = false;
+                    mutex.unlock();
+                    break;
                 }
                 else {
                     point = currentPoint;
@@ -253,19 +255,21 @@ IPercentileCalculator::ComputingResult MonteCarloPercentileCalculatorBase::compu
                     }
                 }
                 mutex.unlock();
-                if (!cont) {
-                    break;
-                }
                 // Sort and set percentile
 
-                        // Sort concentrations in increasing order at each time (at the cycle and at the point)
-                        std::sort(concentrations[cycle][point].begin(), concentrations[cycle][point].end(), [&] (const double v1, const double v2) { return v1 < v2; });
 
-                        for (unsigned int percRankIdx = 0; percRankIdx < _percentileRanks.size(); percRankIdx++) {
-                            int pos = positions[percRankIdx];
-                            double conc = concentrations[cycle][point][pos];
-                            _percentiles.appendPercentile(percRankIdx, cycle, point, conc);
+                // Sort concentrations in increasing order at each time (at the cycle and at the point)
+                std::sort(concentrations[cycle][point].begin(), concentrations[cycle][point].end(), [&] (const double v1, const double v2) { return v1 < v2; });
 
+                for (unsigned int percRankIdx = 0; percRankIdx < _percentileRanks.size(); percRankIdx++) {
+                    int pos = positions[percRankIdx];
+                    double conc = concentrations[cycle][point][pos];
+                    _percentiles.appendPercentile(percRankIdx, cycle, point, conc);
+
+                }
+
+                if (!cont) {
+                    break;
                 }
             }
 
