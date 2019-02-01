@@ -87,6 +87,7 @@ public:
         std::string& _requestID,
         std::string& _drugID,
         std::string& _requestType,
+        int _nbPointsPerHour,
         std::unique_ptr<DateInterval> _pDateInterval,
         std::string& _predictionType,
         std::unique_ptr<GraphData> _pGraph,
@@ -100,6 +101,7 @@ public:
     const std::string getRequestID() const;
     const std::string getDrugID() const;
     const std::string getRequestType() const;
+    int getNbPointsPerHour() const;
     const DateInterval& getpDateInterval() const;
     const std::string getPredictionType() const;
     const GraphData& getpGraph() const;
@@ -110,6 +112,7 @@ protected:
     const std::string m_requestID;
     const std::string m_drugID;
     const std::string m_requestType;
+    int m_nbPointsPerHour;
     std::unique_ptr<DateInterval> m_pDateInterval;
     const std::string m_predictionType;
     std::unique_ptr<GraphData> m_pGraph;

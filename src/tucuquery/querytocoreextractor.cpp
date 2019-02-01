@@ -204,11 +204,16 @@ std::vector<Tucuxi::Core::ComputingTrait * > QueryToCoreExtractor::extractPredic
     */
     Tucuxi::Core::ComputingOption computingOption(predictionParameterType, Tucuxi::Core::CompartmentsOption::MainCompartment);
 
+    int nbPointsPerHour = 10;
+    if (_request.getNbPointsPerHour() > 0) {
+        nbPointsPerHour = _request.getNbPointsPerHour();
+    }
+
     Tucuxi::Core::ComputingTraitConcentration *trait = new Tucuxi::Core::ComputingTraitConcentration(
                 _request.getRequestID(),
                 _request.getpDateInterval().getStart(),
                 _request.getpDateInterval().getEnd(),
-                10, // TODO : Arbitrary number here, should be changed
+                nbPointsPerHour,
                 computingOption);
 
     traits.push_back(trait);
@@ -220,7 +225,7 @@ std::vector<Tucuxi::Core::ComputingTrait * > QueryToCoreExtractor::extractPredic
                     _request.getpDateInterval().getStart(),
                     _request.getpDateInterval().getEnd(),
                     _request.getPercentiles(),
-                    5, // TODO : Arbitrary number here, should be changed
+                    nbPointsPerHour,
                     computingOption);
 
         traits.push_back(trait);

@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:noNamespaceSchemaLocation="xml_query.xsd">
 	
-	<queryID>imatinib_1</queryID>
+	<queryID>tobramycin_1</queryID>
 	<clientID>124568</clientID>
 	<date>2018-07-11T13:45:30</date> <!-- Date the xml has been sent -->
 	<language>en</language>
@@ -138,7 +138,7 @@
 	    <drugs>
 	    	<!-- All the information regarding the drug -->
 	    	<drug>
-		    	<drugID>imatinib</drugID>
+		    	<drugID>tobramycin</drugID>
 		    	<activePrinciple>something</activePrinciple>
 		    	<brandName>somebrand</brandName>
 		    	<atc>something</atc>
@@ -151,17 +151,17 @@
 					    	<dosage>
 					    		<dosageLoop>
 						    		<dailyDosage>
-						    			<time>12:00:00</time>
+						    			<time>08:00:00</time>
 						    			<dose>
-							        		<value>250</value>
+							        		<value>400</value>
 							        		<unit>mg</unit>
-							        		<infusionTimeInMinutes>60</infusionTimeInMinutes>
+							        		<infusionTimeInMinutes>30</infusionTimeInMinutes>
 							        	</dose>
 							        	<formulationAndRoute>
 							        		<formulation>ParenteralSolution</formulation>
 							        		<administrationName>foo bar</administrationName>
-							        		<administrationRoute>IntravenousBolus</administrationRoute>
-							        		<absorbtionModel>Extravascular</absorbtionModel>
+							        		<administrationRoute>IntravenousDrip</administrationRoute>
+							        		<absorbtionModel>Infusion</absorbtionModel>
 							        	</formulationAndRoute>
 						    		</dailyDosage>
 					    		</dosageLoop>
@@ -173,12 +173,12 @@
 			    <samples>
 			    	<sample>
 			    		<sampleID>123456</sampleID>
-			    		<sampleDate>2018-07-07T20:00:00</sampleDate>
+			    		<sampleDate>2018-07-07T12:00:00</sampleDate>
 			    		<arrivalDate>2018-07-07T22:00:00</arrivalDate>
 			    		<concentrations>
 			    			<concentration>
-				    			<analyteID>imatinib</analyteID>
-				    			<value>1.0</value>
+				    			<analyteID>tobramycin</analyteID>
+				    			<value>10.0</value>
 				    			<unit>mg/l</unit>
 				    		</concentration>
 			    		</concentrations>
@@ -188,7 +188,7 @@
 			    <targets>
 			    	<!-- It's the same node we can find in the drug model xml file -->
 			    	<target>
-			    		<activeMoietyID>imatinib</activeMoietyID>
+			    		<activeMoietyID>tobramycin</activeMoietyID>
 			    		<targetType>residual</targetType>
 			    		<unit>mg</unit>
 			            <inefficacyAlarm>15</inefficacyAlarm>
@@ -208,7 +208,7 @@
 			<!-- Everything is optional except the request type -->
 			<!-- We use default values if the option isn't given -->
 			<requestID>population_1</requestID>
-			<drugID>imatinib</drugID>
+			<drugID>tobramycin</drugID>
 			<requestType>prediction</requestType>
 			<nbPointsPerHour>20</nbPointsPerHour>
 			<dateInterval>
@@ -226,19 +226,18 @@
 		    	</percentiles>
 	    	</graph>
 	    	<percentiles>
-	    		<percentile>5</percentile>
-	    		<percentile>10</percentile>
-	    		<percentile>25</percentile>
-	    		<percentile>50</percentile>
 	    		<percentile>75</percentile>
-	    		<percentile>90</percentile>
-	    		<percentile>95</percentile>
+	    		<percentile>50</percentile>
+	    		<percentile>25</percentile>
 	    	</percentiles>
 		</request>
-		
+
 		<request>
+			<!-- The options of the requests are subnodes of the request node -->
+			<!-- Everything is optional except the request type -->
+			<!-- We use default values if the option isn't given -->
 			<requestID>apriori_1</requestID>
-			<drugID>imatinib</drugID>
+			<drugID>tobramycin</drugID>
 			<requestType>prediction</requestType>
 			<nbPointsPerHour>20</nbPointsPerHour>
 			<dateInterval>
@@ -265,15 +264,18 @@
 	    		<percentile>95</percentile>
 	    	</percentiles>
 		</request>
-		
+
 		<request>
+			<!-- The options of the requests are subnodes of the request node -->
+			<!-- Everything is optional except the request type -->
+			<!-- We use default values if the option isn't given -->
 			<requestID>aposteriori_1</requestID>
-			<drugID>imatinib</drugID>
+			<drugID>tobramycin</drugID>
 			<requestType>prediction</requestType>
 			<nbPointsPerHour>20</nbPointsPerHour>
 			<dateInterval>
-	    		<start>2018-07-06T13:45:30</start>
-	    		<end>2018-07-08T13:45:30</end>
+	    		<start>2018-07-06T07:45:30</start>
+	    		<end>2018-07-08T07:45:30</end>
 	    	</dateInterval>
 	    	<predictionType>a posteriori</predictionType>
 	    	<graph>

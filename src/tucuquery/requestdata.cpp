@@ -59,12 +59,14 @@ const Core::Dosage& Backextrapolation::getpDosage() const
 RequestData::RequestData(string& _requestID,
         string& _drugID,
         string& _requestType,
+        int _nbPointsPerHour,
         unique_ptr<DateInterval> _pDateInterval,
         string& _predictionType,
         unique_ptr<GraphData> _pGraph,
         std::vector<double> &_percentiles,
         unique_ptr<Backextrapolation> _pBackextrapolation
 ) : m_requestID(_requestID), m_drugID(_drugID), m_requestType(_requestType),
+    m_nbPointsPerHour(_nbPointsPerHour),
     m_pDateInterval(move(_pDateInterval)), m_predictionType(_predictionType),
     m_pGraph(move(_pGraph)), m_percentiles(_percentiles),
     m_pBackextrapolation(move(_pBackextrapolation))
@@ -83,6 +85,11 @@ const string RequestData::getDrugID() const
 const string RequestData::getRequestType() const
 {
     return m_requestType;
+}
+
+int RequestData::getNbPointsPerHour() const
+{
+    return m_nbPointsPerHour;
 }
 
 const DateInterval& RequestData::getpDateInterval() const

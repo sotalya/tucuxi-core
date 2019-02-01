@@ -8,7 +8,7 @@
 <xs:element name="query">
 	<xs:complexType>
 		<xs:sequence>
-			<xs:element name="queryID" type="xs:unsignedInt" />
+			<xs:element name="queryID" type="xs:string" />
 			<xs:element name="clientID" type="xs:unsignedInt" />
 			<xs:element name="date" type="xs:dateTime" />
 			<xs:element name="language">
@@ -506,6 +506,7 @@ with the DosageHistory class and AbstractDosage subclasses -->
 		        </xs:restriction>
 			</xs:simpleType>
 		</xs:element>
+		<xs:element name="nbPointsPerHour" type="xs:int" minOccurs="0" />
 		<xs:element name="dateInterval" type="dateIntervalType" minOccurs="0" />
 		<xs:element name="predictionType" minOccurs="0">
 			<xs:simpleType>

@@ -750,6 +750,7 @@ unique_ptr<RequestData> QueryImport::createRequest(Tucuxi::Common::XmlNodeIterat
     const string REQUEST_ID_NODE_NAME           = "requestID";
     const string DRUG_ID_NODE_NAME              = "drugID";
     const string REQUEST_TYPE_NODE_NAME         = "requestType";
+    const string NBPOINTSPERHOUR_NODE_NAME         = "nbPointsPerHour";
     const string DATE_INTERVAL_NODE_NAME        = "dateInterval";
     const string DATE_INTERVAL_START_NODE_NAME  = "start";
     const string DATE_INTERVAL_END_NODE_NAME    = "end";
@@ -766,6 +767,8 @@ unique_ptr<RequestData> QueryImport::createRequest(Tucuxi::Common::XmlNodeIterat
     Common::DateTime start = getChildDateTimeValue(dateIntervalRootIterator, DATE_INTERVAL_START_NODE_NAME);
     Common::DateTime end = getChildDateTimeValue(dateIntervalRootIterator, DATE_INTERVAL_END_NODE_NAME);
     unique_ptr<DateInterval> dateInterval = make_unique<DateInterval>(start, end);
+
+    int nbPointsPerHour = getChildIntValue(_requestRootIterator, NBPOINTSPERHOUR_NODE_NAME);
 
     string predictionType = getChildStringValue(_requestRootIterator, PREDICTION_TYPE_NODE_NAME);
 
@@ -796,6 +799,7 @@ unique_ptr<RequestData> QueryImport::createRequest(Tucuxi::Common::XmlNodeIterat
                                  requestID,
                                  drugID,
                                  requestType,
+                                 nbPointsPerHour,
                                  move(dateInterval),
                                  predictionType,
                                  move(pGraphData),
