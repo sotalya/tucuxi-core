@@ -155,8 +155,10 @@ Tucuxi::Core::ComputingTraits *QueryToCoreExtractor::extractComputingTraits(cons
         std::string requestType = request->getRequestType();
 
         if (requestType == "prediction") {
-            Tucuxi::Core::ComputingTrait *trait = extractPredictionTrait(*request.get());
-            traits->addTrait(std::unique_ptr<Tucuxi::Core::ComputingTrait>(trait));
+            std::vector<Tucuxi::Core::ComputingTrait *> traitsList = extractPredictionTraits(*request.get());
+            for (auto trait : traitsList) {
+                traits->addTrait(std::unique_ptr<Tucuxi::Core::ComputingTrait>(trait));
+            }
         } else if (requestType == "dosageAdaptation") {
         } else if (requestType == "firstDosage") {
         } else {
@@ -170,8 +172,9 @@ Tucuxi::Core::ComputingTraits *QueryToCoreExtractor::extractComputingTraits(cons
     return traits;
 }
 
-Tucuxi::Core::ComputingTrait *QueryToCoreExtractor::extractPredictionTrait(const RequestData &_request) const
+std::vector<Tucuxi::Core::ComputingTrait * > QueryToCoreExtractor::extractPredictionTraits(const RequestData &_request) const
 {
+    std::vector<Tucuxi::Core::ComputingTrait * > traits;
 
     std::string predictionType =_request.getPredictionType();
     Tucuxi::Core::PredictionParameterType predictionParameterType = Tucuxi::Core::PredictionParameterType::Population;
@@ -205,10 +208,26 @@ Tucuxi::Core::ComputingTrait *QueryToCoreExtractor::extractPredictionTrait(const
                 _request.getRequestID(),
                 _request.getpDateInterval().getStart(),
                 _request.getpDateInterval().getEnd(),
-                100, // TODO : Arbitrary number here, should be changed
+                10, // TODO : Arbitrary number here, should be changed
                 computingOption);
 
-    return trait;
+    traits.push_back(trait);
+
+    if (_request.getPercentiles().size() != 0) {
+
+        Tucuxi::Core::ComputingTraitPercentiles *trait = new Tucuxi::Core::ComputingTraitPercentiles(
+                    _request.getRequestID() + "_p",
+                    _request.getpDateInterval().getStart(),
+                    _request.getpDateInterval().getEnd(),
+                    _request.getPercentiles(),
+                    5, // TODO : Arbitrary number here, should be changed
+                    computingOption);
+
+        traits.push_back(trait);
+    }
+
+
+    return traits;
 }
 
 

@@ -38,6 +38,23 @@ bool ComputingResponseExport::exportToFiles(const ComputingResponse &computingRe
             }
 
         }
+        else if (dynamic_cast<Tucuxi::Core::PercentilesResponse*>(response.get())) {
+            const Tucuxi::Core::PercentilesResponse* prediction =
+                    dynamic_cast<Tucuxi::Core::PercentilesResponse*>(response.get());
+
+            double firstTime = prediction->getPercentileData(0)[0].m_start.toSeconds();
+            for(size_t cycleIndex = 0; cycleIndex < prediction->getPercentileData(0).size(); cycleIndex ++) {
+                for (size_t i = 0; i < prediction->getPercentileData(0)[0].m_concentrations[0].size(); i++) {
+                    file <<  (prediction->getPercentileData(0)[cycleIndex].m_start.toSeconds() - firstTime) / 3600.0
+                             + prediction->getPercentileData(0)[cycleIndex].m_times[0][i] << "\t";
+                    for (size_t percIndex = 0; percIndex < prediction->getNbRanks(); percIndex ++) {
+                        file  << prediction->getPercentileData(percIndex)[cycleIndex].m_concentrations[0][i] << "\t";
+                    }
+                    file << std::endl;
+                }
+
+            }
+        }
 
 
         file.close();

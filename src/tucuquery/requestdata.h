@@ -90,7 +90,7 @@ public:
         std::unique_ptr<DateInterval> _pDateInterval,
         std::string& _predictionType,
         std::unique_ptr<GraphData> _pGraph,
-        std::vector<unsigned short>& _percentiles,
+        std::vector<double>& _percentiles,
         std::unique_ptr<Backextrapolation> _pBackextrapolation
     );
 
@@ -103,7 +103,7 @@ public:
     const DateInterval& getpDateInterval() const;
     const std::string getPredictionType() const;
     const GraphData& getpGraph() const;
-    const std::vector<unsigned short> getPercentiles() const;
+    const std::vector<double> getPercentiles() const;
     const Backextrapolation& getpBackextrapolation() const;
 
 protected:
@@ -113,7 +113,7 @@ protected:
     std::unique_ptr<DateInterval> m_pDateInterval;
     const std::string m_predictionType;
     std::unique_ptr<GraphData> m_pGraph;
-    const std::vector<unsigned short> m_percentiles;
+    const std::vector<double> m_percentiles;
     std::unique_ptr<Backextrapolation> m_pBackextrapolation;
 };
 

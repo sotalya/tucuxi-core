@@ -435,7 +435,7 @@ with the DosageHistory class and AbstractDosage subclasses -->
 	<xs:sequence>
 		<xs:element name="percentile" maxOccurs="unbounded">
 			<xs:simpleType>
-				<xs:restriction base="xs:int">
+				<xs:restriction base="xs:double">
 					<xs:minInclusive value="0" />
 					<xs:maxInclusive value="100" />
 				</xs:restriction>

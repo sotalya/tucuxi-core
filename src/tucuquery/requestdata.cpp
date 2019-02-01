@@ -56,14 +56,13 @@ const Core::Dosage& Backextrapolation::getpDosage() const
 
 // RequestData class
 
-RequestData::RequestData(
-        string& _requestID,
+RequestData::RequestData(string& _requestID,
         string& _drugID,
         string& _requestType,
         unique_ptr<DateInterval> _pDateInterval,
         string& _predictionType,
         unique_ptr<GraphData> _pGraph,
-        vector<unsigned short>& _percentiles,
+        std::vector<double> &_percentiles,
         unique_ptr<Backextrapolation> _pBackextrapolation
 ) : m_requestID(_requestID), m_drugID(_drugID), m_requestType(_requestType),
     m_pDateInterval(move(_pDateInterval)), m_predictionType(_predictionType),
@@ -101,7 +100,7 @@ const GraphData& RequestData::getpGraph() const
     return *m_pGraph;
 }
 
-const vector<unsigned short> RequestData::getPercentiles() const
+const vector<double> RequestData::getPercentiles() const
 {
     return m_percentiles;
 }

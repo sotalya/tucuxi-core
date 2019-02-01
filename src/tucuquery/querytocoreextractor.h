@@ -59,7 +59,7 @@ public:
 
     Tucuxi::Core::DrugModel *extractDrugModel(const Query &_query) const;
 
-    Tucuxi::Core::ComputingTrait *extractPredictionTrait(const RequestData &_request) const;
+    std::vector<Tucuxi::Core::ComputingTrait *> extractPredictionTraits(const RequestData &_request) const;
 
 };
 

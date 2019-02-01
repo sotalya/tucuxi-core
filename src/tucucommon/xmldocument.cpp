@@ -80,6 +80,7 @@ bool XmlDocument::fromString(const std::string& _xml)
             return true;
         }
         catch (rapidxml::parse_error) {
+            m_pDocument = nullptr;
             reset();
         }
     }

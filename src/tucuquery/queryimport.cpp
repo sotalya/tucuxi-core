@@ -774,12 +774,12 @@ unique_ptr<RequestData> QueryImport::createRequest(Tucuxi::Common::XmlNodeIterat
 
     Common::XmlNodeIterator percentilesRootIterator = _requestRootIterator->getChildren(PERCENTILES_NODE_NAME);
     Common::XmlNodeIterator percentilesIterator = percentilesRootIterator->getChildren();
-    vector<unsigned short> percentiles;
+    vector<double> percentiles;
     while(percentilesIterator != percentilesIterator.none()) {
         string percentileValue = percentilesIterator->getValue();
-        unsigned short percentile = 0;
+        double percentile = 0;
         try {
-            percentile = static_cast<unsigned short>(stoul(percentileValue));
+            percentile = static_cast<double>(std::stod(percentileValue));
         } catch (invalid_argument e) {
             percentile = 0;
         } catch (out_of_range e) {
