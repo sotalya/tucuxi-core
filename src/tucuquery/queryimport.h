@@ -83,8 +83,8 @@ protected:
     std::unique_ptr<ConcentrationData> createConcentrationData(Common::XmlNodeIterator& _concentrationDataRootIterator) const;
     std::unique_ptr<Treatment> createTreatment(Common::XmlNodeIterator& _treatmentRootIterator) const;
     std::unique_ptr<Core::DosageTimeRange> createDosageTimeRange(Common::XmlNodeIterator& _dosageTimeRangeRootIterator) const;
-    std::unique_ptr<Core::Dosage> createDosage(Common::XmlNodeIterator& _dosageRootIterator, Common::Duration _infustionTime) const;
-    std::unique_ptr<Core::DosageBounded> createDosageBounded(Common::XmlNodeIterator& _dosageBoundedRootIterator, Common::Duration _infustionTime) const;
+    std::unique_ptr<Core::Dosage> createDosage(Common::XmlNodeIterator& _dosageRootIterator) const;
+    std::unique_ptr<Core::DosageBounded> createDosageBounded(Common::XmlNodeIterator& _dosageBoundedRootIterator) const;
     std::unique_ptr<Core::FormulationAndRoute> createFormulationAndRoute(Common::XmlNodeIterator& _formulationAndRouteRootIterator) const;
 
     // Methods to separate the creation of the requests

@@ -41,7 +41,7 @@ void CliComputer::compute(std::string drugPath,
         return;
     }
 
-    requestResponseID = std::stoi(query->getQueryID());
+    requestResponseID = query->getQueryID();
 
     QueryToCoreExtractor extractor;
 
