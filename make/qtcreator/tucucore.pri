@@ -1,4 +1,9 @@
 
+win32:DEFINES += GIT_BIN='C:\\Git\\bin\\git'
+# or 'C:\\Progra~1\\Git\\bin\\git' - ymmv with putting spaces in here
+win32:DEFINES += TUCUXI_GIT_REVISION='\\"$$system($${GIT_BIN} rev-parse --short HEAD)\\"'
+unix:DEFINES += TUCUXI_GIT_REVISION='\\"$$system(git rev-parse --short HEAD)\\"'
+
 HEADERS += \
     $$PWD/../../src/tucucore/drugmodel/drugmodel.h \
     $$PWD/../../src/tucucore/cachedexponentials.h \
@@ -71,7 +76,9 @@ HEADERS += \
     $$PWD/../../src/tucucore/unit.h \
     $$PWD/../../src/tucucore/drugmodel/drugmodelmetadata.h \
     $$PWD/../../src/tucucore/computingresponseexport.h \
-    $$PWD/../../src/tucucore/drugmodelrepository.h
+    $$PWD/../../src/tucucore/drugmodelrepository.h \
+    $$PWD/../../src/tucucore/overloadevaluator.h \
+    $$PWD/../../src/tucucore/version.h
 
 SOURCES += \
     $$PWD/../../src/tucucore/drugmodel/drugmodel.cpp \
@@ -134,7 +141,9 @@ SOURCES += \
     $$PWD/../../src/tucucore/unit.cpp \
     $$PWD/../../src/tucucore/drugmodel/drugmodelmetadata.cpp \
     $$PWD/../../src/tucucore/computingresponseexport.cpp \
-    $$PWD/../../src/tucucore/drugmodelrepository.cpp
+    $$PWD/../../src/tucucore/drugmodelrepository.cpp \
+    $$PWD/../../src/tucucore/overloadevaluator.cpp \
+    $$PWD/../../src/tucucore/version.cpp
 
 DISTFILES += \
     $$PWD/../../src/tucucore/makefile
