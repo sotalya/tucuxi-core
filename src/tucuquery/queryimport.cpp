@@ -588,14 +588,12 @@ unique_ptr<Core::DosageBounded> QueryImport::createDosageBounded(Common::XmlNode
 
         pDosageBounded = make_unique<Core::DosageSequence>(*(dosageBoundedList.at(0)));
     } else if (dosageBoundedIterator->getName() == LASTING_DOSAGE_NODE_NAME) {
-        const string DATE_INTERVAL_NODE_NAME            = "dateInterval";
-        const string START_NODE_NAME                    = "start";
-        const string END_NODE_NAME                      = "end";
+        const string INTERVAL_NODE_NAME                 = "interval";
 
-        Common::XmlNodeIterator dateIntervalRootIterator = dosageBoundedIterator->getChildren(DATE_INTERVAL_NODE_NAME);
-        Common::DateTime start = getChildDateTimeValue(dateIntervalRootIterator, START_NODE_NAME);
-        Common::DateTime end = getChildDateTimeValue(dateIntervalRootIterator, END_NODE_NAME);
-        Common::Duration interval(end - start);
+
+        string intervalValue = dosageBoundedIterator->getChildren(INTERVAL_NODE_NAME)->getValue();
+        Common::TimeOfDay inter = Common::DateTime(intervalValue, "%H:%M:%S").getTimeOfDay();
+        Common::Duration interval =inter.getRealDuration();
 
         Common::XmlNodeIterator doseRootIterator = dosageBoundedIterator->getChildren(DOSE_NODE_NAME);
         Core::DoseValue doseValue = getChildDoubleValue(doseRootIterator, DOSE_VALUE_NODE_NAME);
