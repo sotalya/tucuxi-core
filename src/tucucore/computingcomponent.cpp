@@ -26,7 +26,7 @@
 #include "tucucore/percentilesprediction.h"
 #include "tucucore/targetevaluationresult.h"
 #include "tucucore/targetevaluator.h"
-
+#include "tucucore/overloadevaluator.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -183,6 +183,12 @@ ComputingResult ComputingComponent::generalExtractions(
         }
 
     }
+
+    OverloadEvaluator overloadEvaluator;
+    if (!overloadEvaluator.isAcceptable(_intakeSeries, _traits)) {
+        return ComputingResult::TooBig;
+    }
+
 /*
     // TODO : Specific to busulfan here. Should be handled differently
     if (_request.getDrugModel().getAnalyteSet()->getAnalytes().at(0)->getAnalyteId() == "busulfan") {

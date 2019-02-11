@@ -151,7 +151,7 @@ protected:
     std::vector<Analyte*> extractAnalytes(Tucuxi::Common::XmlNodeIterator _node);
     Analyte* extractAnalyte(Tucuxi::Common::XmlNodeIterator _node);
     MolarMass* extractMolarMass(Tucuxi::Common::XmlNodeIterator _node);
-    IResidualErrorModel* extractErrorModel(Tucuxi::Common::XmlNodeIterator _node);
+    IResidualErrorModel* extractErrorModel(Tucuxi::Common::XmlNodeIterator _node, const Unit &_fromUnit, const Unit &_toUnit);
     ParameterSetDefinition* extractParameterSet(Tucuxi::Common::XmlNodeIterator _node);
     std::vector<ParameterDefinition*> extractParameters(Tucuxi::Common::XmlNodeIterator _node);
     ParameterDefinition* extractParameter(Tucuxi::Common::XmlNodeIterator _node);

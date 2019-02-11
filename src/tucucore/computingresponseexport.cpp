@@ -44,7 +44,7 @@ bool ComputingResponseExport::exportToFiles(const ComputingResponse &computingRe
 
             double firstTime = prediction->getPercentileData(0)[0].m_start.toSeconds();
             for(size_t cycleIndex = 0; cycleIndex < prediction->getPercentileData(0).size(); cycleIndex ++) {
-                for (size_t i = 0; i < prediction->getPercentileData(0)[0].m_concentrations[0].size(); i++) {
+                for (size_t i = 0; i < prediction->getPercentileData(0)[cycleIndex].m_concentrations[0].size(); i++) {
                     file <<  (prediction->getPercentileData(0)[cycleIndex].m_start.toSeconds() - firstTime) / 3600.0
                              + prediction->getPercentileData(0)[cycleIndex].m_times[0][i] << "\t";
                     for (size_t percIndex = 0; percIndex < prediction->getNbRanks(); percIndex ++) {

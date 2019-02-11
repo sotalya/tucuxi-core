@@ -226,9 +226,13 @@
 		    	</percentiles>
 	    	</graph>
 	    	<percentiles>
-	    		<percentile>75</percentile>
-	    		<percentile>50</percentile>
+	    		<percentile>5</percentile>
+	    		<percentile>10</percentile>
 	    		<percentile>25</percentile>
+	    		<percentile>50</percentile>
+	    		<percentile>75</percentile>
+	    		<percentile>90</percentile>
+	    		<percentile>95</percentile>
 	    	</percentiles>
 		</request>
 

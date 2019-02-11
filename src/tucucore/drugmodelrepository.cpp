@@ -57,11 +57,16 @@ void read_directory(const std::string& name, std::vector<std::string>& v)
 {
     std::string pattern(name);
     pattern.append("\\*");
+    wchar_t winPattern[1000];
+    mbstowcs(winPattern, pattern.c_str(), strlen(pattern.c_str()) + 1);
     WIN32_FIND_DATA data;
     HANDLE hFind;
-    if ((hFind = FindFirstFile(pattern.c_str(), &data)) != INVALID_HANDLE_VALUE) {
+    if ((hFind = FindFirstFile(winPattern, &data)) != INVALID_HANDLE_VALUE) {
         do {
-            v.push_back(data.cFileName);
+            char ch[260];
+            char DefChar = ' ';
+            WideCharToMultiByte(CP_ACP,0,data.cFileName,-1, ch,260,&DefChar, NULL);
+            v.push_back(ch);
         } while (FindNextFile(hFind, &data) != 0);
         FindClose(hFind);
     }

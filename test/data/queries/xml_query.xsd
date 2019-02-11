@@ -293,7 +293,7 @@ with the DosageHistory class and AbstractDosage subclasses -->
 
 <xs:complexType name="lastingDosageType">
 	<xs:sequence>
-		<xs:element name="dateInterval" type="dateIntervalType" />
+		<xs:element name="interval" type="xs:time" />
 		<xs:group ref="intakeGroup" />
 	</xs:sequence>
 </xs:complexType>

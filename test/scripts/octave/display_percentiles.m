@@ -2,7 +2,7 @@
 
 function display_percentiles(baseFileName)
 
-figure(1);
+popFig = figure();
 clf;
 hold on;
 
@@ -17,8 +17,10 @@ title('Population prediction and percentiles');
 
 hold off;
 
+print(popFig, strcat(baseFileName , '_population.png'));
 
-figure(2);
+
+aprioriFig = figure();
 clf;
 hold on;
 
@@ -32,12 +34,13 @@ endfor
 title('A priori prediction and percentiles');
 
 hold off;
+print(aprioriFig, strcat(baseFileName , '_apriori.png'));
 
-figure(3);
+apostFig = figure();
 clf;
 hold on;
 
-val = load(strcat(baseFileName , '_aposteriori_1_p.dat'));
+val = load(strcat(baseFileName , '_aposteriori_1.dat'));
 plot(val(:,1), val(:,2), 'r');
 
 perc = load(strcat(baseFileName , '_aposteriori_1_p.dat'));
@@ -47,5 +50,6 @@ endfor
 title('A posteriori prediction and percentiles');
 
 hold off;
+print(apostFig, strcat(baseFileName , '_aposteriori.png'));
 
 endfunction

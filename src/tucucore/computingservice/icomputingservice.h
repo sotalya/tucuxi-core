@@ -22,7 +22,9 @@ enum class ComputingResult {
     /// Everything went well
     Success = 0,
     /// There was an error
-    Error
+    Error,
+    /// Too Big computation required
+    TooBig
 };
 
 ///

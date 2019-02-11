@@ -80,9 +80,17 @@ public:
 
     int nbEpsilons() const override { return m_nbEpsilons; }
 
-    void generatePopulationSigma() {m_sigma = Sigma(m_originalSigmas.size());for(std::size_t i = 0;i < m_originalSigmas.size(); i++) {
-            m_sigma[i] = m_originalSigmas.at(i)->getValue();
-        }}
+    void generatePopulationSigma(const Unit &_fromUnit, const Unit &_toUnit) {
+        m_sigma = Sigma(m_originalSigmas.size());
+        for(std::size_t i = 0;i < m_originalSigmas.size(); i++) {
+            if (m_errorModel == ResidualErrorType::ADDITIVE) {
+                m_sigma[i] = translateToUnit(m_originalSigmas.at(i)->getValue(), _fromUnit, _toUnit);
+            }
+            else {
+                m_sigma[i] = m_originalSigmas.at(i)->getValue();
+            }
+        }
+    }
 
 protected:
 

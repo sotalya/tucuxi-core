@@ -1445,7 +1445,7 @@ Analyte* DrugModelImport::extractAnalyte(Tucuxi::Common::XmlNodeIterator _node)
             molarMass = extractMolarMass(it);
         }
         else if (nodeName == "errorModel") {
-            errorModel = extractErrorModel(it);
+            errorModel = extractErrorModel(it, unit, Unit("ug/l"));
         }
         else {
             unexpectedTag(nodeName);
@@ -1499,7 +1499,7 @@ MolarMass* DrugModelImport::extractMolarMass(Tucuxi::Common::XmlNodeIterator _no
     return molarMass;
 }
 
-IResidualErrorModel* DrugModelImport::extractErrorModel(Tucuxi::Common::XmlNodeIterator _node)
+IResidualErrorModel* DrugModelImport::extractErrorModel(Tucuxi::Common::XmlNodeIterator _node, const Unit &_fromUnit, const Unit &_toUnit)
 {
     SigmaResidualErrorModel *errorModel = nullptr;
     SigmaResidualErrorModel::ResidualErrorType type = SigmaResidualErrorModel::ResidualErrorType::NONE;
@@ -1551,7 +1551,7 @@ IResidualErrorModel* DrugModelImport::extractErrorModel(Tucuxi::Common::XmlNodeI
         errorModel->addOriginalSigma(std::make_unique<PopulationValue>("", sigma->getValue(), sigma->getOperation()));
     }
     errorModel->setFormula(std::unique_ptr<Operation>(formula));
-    errorModel->generatePopulationSigma();
+    errorModel->generatePopulationSigma(_fromUnit, _toUnit);
 
     DELETE_PVECTOR(sigmas);
 

@@ -264,6 +264,9 @@ IPercentileCalculator::ComputingResult MonteCarloPercentileCalculatorBase::compu
                 for (unsigned int percRankIdx = 0; percRankIdx < _percentileRanks.size(); percRankIdx++) {
                     int pos = positions[percRankIdx];
                     double conc = concentrations[cycle][point][pos];
+                    if (conc < 0.0) {
+                        conc = 0.0;
+                    }
                     _percentiles.appendPercentile(percRankIdx, cycle, point, conc);
 
                 }
