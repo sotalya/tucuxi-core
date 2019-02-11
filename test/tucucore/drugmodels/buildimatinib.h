@@ -52,14 +52,12 @@ public:
         ActiveSubstance *analyte = new ActiveSubstance();
         analyte->setAnalyteId("imatinib");
 
-        SigmaResidualErrorModel* errorModel = new SigmaResidualErrorModel();
-        //        std::unique_ptr<SigmaResidualErrorModel> errorModel(new SigmaResidualErrorModel());
-        Sigma sigma(1);
-        sigma(0) = 0.3138;
-        errorModel->setErrorModel(SigmaResidualErrorModel::ResidualErrorType::PROPORTIONAL);
-        errorModel->setSigma(sigma);
+        ErrorModel* errorModel = new ErrorModel();
 
-        std::unique_ptr<IResidualErrorModel> err(errorModel);
+        errorModel->setErrorModel(ResidualErrorType::PROPORTIONAL);
+        errorModel->addOriginalSigma(std::make_unique<PopulationValue>("sigma0", 0.3138));
+
+        std::unique_ptr<ErrorModel> err(errorModel);
 
         analyte->setResidualErrorModel(std::move(err));
 

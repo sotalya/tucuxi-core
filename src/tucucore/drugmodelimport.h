@@ -11,7 +11,7 @@
 #include "tucucommon/iimport.h"
 
 #include "tucucore/definitions.h"
-#include "tucucore/residualerrormodel.h"
+#include "tucucore/drugmodel/errormodel.h"
 #include "tucucore/drugmodel/parameterdefinition.h"
 #include "tucucore/drugmodel/formulationandroute.h"
 
@@ -40,7 +40,7 @@ class TargetDefinition;
 class AnalyteSet;
 class Analyte;
 class MolarMass;
-class IResidualErrorModel;
+class ErrorModel;
 class ParameterSetDefinition;
 class ParameterDefinition;
 class Correlation;
@@ -122,7 +122,7 @@ protected:
     DataType extractDataType(Tucuxi::Common::XmlNodeIterator _node);
     InterpolationType extractInterpolationType(Tucuxi::Common::XmlNodeIterator _node);
     TargetType extractTargetType(Tucuxi::Common::XmlNodeIterator _node);
-    SigmaResidualErrorModel::ResidualErrorType extractResidualErrorType(Tucuxi::Common::XmlNodeIterator _node);
+    ResidualErrorType extractResidualErrorType(Tucuxi::Common::XmlNodeIterator _node);
     ParameterVariabilityType extractParameterVariabilityType(Tucuxi::Common::XmlNodeIterator _node);
     Formulation extractFormulation(Tucuxi::Common::XmlNodeIterator _node);
     AdministrationRoute extractAdministrationRoute(Tucuxi::Common::XmlNodeIterator _node);
@@ -151,7 +151,7 @@ protected:
     std::vector<Analyte*> extractAnalytes(Tucuxi::Common::XmlNodeIterator _node);
     Analyte* extractAnalyte(Tucuxi::Common::XmlNodeIterator _node);
     MolarMass* extractMolarMass(Tucuxi::Common::XmlNodeIterator _node);
-    IResidualErrorModel* extractErrorModel(Tucuxi::Common::XmlNodeIterator _node, const Unit &_fromUnit, const Unit &_toUnit);
+    ErrorModel* extractErrorModel(Tucuxi::Common::XmlNodeIterator _node);
     ParameterSetDefinition* extractParameterSet(Tucuxi::Common::XmlNodeIterator _node);
     std::vector<ParameterDefinition*> extractParameters(Tucuxi::Common::XmlNodeIterator _node);
     ParameterDefinition* extractParameter(Tucuxi::Common::XmlNodeIterator _node);

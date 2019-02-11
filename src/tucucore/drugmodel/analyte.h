@@ -8,7 +8,7 @@
 
 #include <string>
 
-#include "tucucore/residualerrormodel.h"
+#include "tucucore/drugmodel/errormodel.h"
 #include "tucucore/drugmodel/targetdefinition.h"
 #include "tucucore/drugmodel/parameterdefinition.h"
 
@@ -46,8 +46,10 @@ public:
     void setAnalyteId(std::string _analyteId) { m_analyteId = _analyteId;}
     std::string getAnalyteId() const { return m_analyteId;}
 
-    void setResidualErrorModel(std::unique_ptr<IResidualErrorModel> _residualErrorModel) { m_residualErrorModel = std::move(_residualErrorModel);}
-    const IResidualErrorModel& getResidualErrorModel() const { return *m_residualErrorModel; }
+    void setResidualErrorModel(std::unique_ptr<ErrorModel> _residualErrorModel) { m_residualErrorModel = std::move(_residualErrorModel);}
+    const ErrorModel& getResidualErrorModel() const { return *m_residualErrorModel; }
+
+    const Unit &getUnit() { return m_unit;}
 
 //    void addTarget(std::unique_ptr<TargetDefinition>& _target) { m_targets.push_back(std::move(_target));}
 //    const TargetDefinitions & getTargetDefinitions() const { return m_targets;}
@@ -59,7 +61,7 @@ protected:
 
     Unit m_unit;
 
-    std::unique_ptr<IResidualErrorModel> m_residualErrorModel;
+    std::unique_ptr<ErrorModel> m_residualErrorModel;
 
 //    TargetDefinitions m_targets;
 

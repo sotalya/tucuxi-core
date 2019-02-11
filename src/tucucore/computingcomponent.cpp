@@ -27,6 +27,7 @@
 #include "tucucore/targetevaluationresult.h"
 #include "tucucore/targetevaluator.h"
 #include "tucucore/overloadevaluator.h"
+#include "tucucore/residualerrormodelextractor.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -421,9 +422,6 @@ ComputingResult ComputingComponent::compute(
             return ComputingResult::Error;
         }
 
-        const Tucuxi::Core::IResidualErrorModel &residualErrorModel =_request.getDrugModel().getAnalyteSet()->getAnalytes().at(0)->getResidualErrorModel();
-
-
         SampleSeries sampleSeries;
         SampleExtractor sampleExtractor;
         sampleExtractor.extract(_request.getDrugTreatment().getSamples(), calculationStartTime, _traits->getEnd(), sampleSeries);
@@ -433,8 +431,17 @@ ComputingResult ComputingComponent::compute(
 
         }
         else {
+            ResidualErrorModelExtractor errorModelExtractor;
+            IResidualErrorModel *residualErrorModel = nullptr;
+            if (errorModelExtractor.extract(_request.getDrugModel().getAnalyteSet()->getAnalytes().at(0)->getResidualErrorModel(),
+                                            _request.getDrugModel().getAnalyteSet()->getAnalytes().at(0)->getUnit(),
+                                            covariateSeries, &residualErrorModel)
+                != ResidualErrorModelExtractor::Result::Ok) {
+                return ComputingResult::Error;
+            }
+
             APosterioriEtasCalculator etasCalculator;
-            etasCalculator.computeAposterioriEtas(intakeSeries, parameterSeries, omega, residualErrorModel, sampleSeries, etas);
+            etasCalculator.computeAposterioriEtas(intakeSeries, parameterSeries, omega, *residualErrorModel, sampleSeries, etas);
         }
     }
 
@@ -548,7 +555,17 @@ ComputingResult ComputingComponent::compute(
 
     percentileRanks = _traits->getRanks();
 
-    const Tucuxi::Core::IResidualErrorModel &residualErrorModel =_request.getDrugModel().getAnalyteSet()->getAnalytes().at(0)->getResidualErrorModel();
+
+    ResidualErrorModelExtractor errorModelExtractor;
+    IResidualErrorModel *residualErrorModel = nullptr;
+    if (errorModelExtractor.extract(_request.getDrugModel().getAnalyteSet()->getAnalytes().at(0)->getResidualErrorModel(),
+                                    _request.getDrugModel().getAnalyteSet()->getAnalytes().at(0)->getUnit(),
+                                    covariateSeries, &residualErrorModel)
+        != ResidualErrorModelExtractor::Result::Ok) {
+        return ComputingResult::Error;
+    }
+
+//    const Tucuxi::Core::IResidualErrorModel &residualErrorModel =_request.getDrugModel().getAnalyteSet()->getAnalytes().at(0)->getResidualErrorModel();
 
 
     ComputationResult omegaComputationResult = extractOmega(_request.getDrugModel(), omega);
@@ -574,7 +591,7 @@ ComputingResult ComputingComponent::compute(
         sampleExtractor.extract(_request.getDrugTreatment().getSamples(), calculationStartTime, _traits->getEnd(), sampleSeries);
 
         APosterioriEtasCalculator etasCalculator;
-        etasCalculator.computeAposterioriEtas(intakeSeries, parameterSeries, omega, residualErrorModel, sampleSeries, etas);
+        etasCalculator.computeAposterioriEtas(intakeSeries, parameterSeries, omega, *residualErrorModel, sampleSeries, etas);
 
         std::unique_ptr<Tucuxi::Core::IAposterioriPercentileCalculator> calculator(new Tucuxi::Core::AposterioriMonteCarloPercentileCalculator());
         computationResult = calculator->calculate(
@@ -584,7 +601,7 @@ ComputingResult ComputingComponent::compute(
                     intakeSeries,
                     parameterSeries,
                     omega,
-                    residualErrorModel,
+                    *residualErrorModel,
                     etas,
                     sampleSeries,
                     percentileRanks,
@@ -601,7 +618,7 @@ ComputingResult ComputingComponent::compute(
                     intakeSeries,
                     parameterSeries,
                     omega,
-                    residualErrorModel,
+                    *residualErrorModel,
                     etas,
                     percentileRanks,
                     concentrationCalculator,
@@ -896,7 +913,17 @@ ComputingResult ComputingComponent::compute(
             return ComputingResult::Error;
         }
 
-        const Tucuxi::Core::IResidualErrorModel &residualErrorModel =_request.getDrugModel().getAnalyteSet()->getAnalytes().at(0)->getResidualErrorModel();
+//        const Tucuxi::Core::IResidualErrorModel &residualErrorModel =_request.getDrugModel().getAnalyteSet()->getAnalytes().at(0)->getResidualErrorModel();
+
+
+        ResidualErrorModelExtractor errorModelExtractor;
+        IResidualErrorModel *residualErrorModel = nullptr;
+        if (errorModelExtractor.extract(_request.getDrugModel().getAnalyteSet()->getAnalytes().at(0)->getResidualErrorModel(),
+                                        _request.getDrugModel().getAnalyteSet()->getAnalytes().at(0)->getUnit(),
+                                        covariateSeries, &residualErrorModel)
+            != ResidualErrorModelExtractor::Result::Ok) {
+            return ComputingResult::Error;
+        }
 
 
         SampleSeries sampleSeries;
@@ -908,7 +935,7 @@ ComputingResult ComputingComponent::compute(
         }
         else {
             APosterioriEtasCalculator etasCalculator;
-            etasCalculator.computeAposterioriEtas(intakeSeries, parameterSeries, omega, residualErrorModel, sampleSeries, etas);
+            etasCalculator.computeAposterioriEtas(intakeSeries, parameterSeries, omega, *residualErrorModel, sampleSeries, etas);
         }
     }
 

@@ -16,6 +16,7 @@ SOURCES := \
            drugmodel/drugmodel.cpp \
            drugmodel/drugmodeldomain.cpp \
            drugmodel/drugmodelmetadata.cpp \
+           drugmodel/errormodel.cpp \
            drugmodel/formulationandroute.cpp \
            drugmodel/parameterdefinition.cpp \
            drugmodel/targetdefinition.cpp \
@@ -32,7 +33,7 @@ SOURCES := \
            cachedexponentials.cpp \
            concentrationcalculator.cpp \
            computingcomponent.cpp \
-		   computingresponseexport.cpp \
+           computingresponseexport.cpp \
            covariateevent.cpp \
            covariateextractor.cpp \
            cyclestatisticscalculator.cpp \
@@ -48,10 +49,12 @@ SOURCES := \
            montecarlopercentilecalculator.cpp \
            operablegraphmanager.cpp \
            operation.cpp \
+           overloadevaluator.cpp \
            parameter.cpp \
            parametersextractor.cpp \
            pkmodel.cpp \
            residualerrormodel.cpp \
+           residualerrormodelextractor.cpp \
            sampleevent.cpp \
            sampleextractor.cpp \
            targetevent.cpp \

@@ -108,7 +108,7 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
 
         Tucuxi::Core::Sigma sigma(1);
         sigma(0) = 0.3138;
-        residualErrorModel.setErrorModel(Tucuxi::Core::SigmaResidualErrorModel::ResidualErrorType::PROPORTIONAL);
+        residualErrorModel.setErrorModel(Tucuxi::Core::ResidualErrorType::PROPORTIONAL);
         residualErrorModel.setSigma(sigma);
 
 
@@ -207,7 +207,7 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
 
         Tucuxi::Core::Sigma sigma(1);
         sigma(0) = 0.3138;
-        residualErrorModel.setErrorModel(Tucuxi::Core::SigmaResidualErrorModel::ResidualErrorType::PROPORTIONAL);
+        residualErrorModel.setErrorModel(Tucuxi::Core::ResidualErrorType::PROPORTIONAL);
         residualErrorModel.setSigma(sigma);
 
         omega = Tucuxi::Core::OmegaMatrix(2,2);
@@ -312,7 +312,7 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
 
         Tucuxi::Core::Sigma sigma(1);
         sigma(0) = 0.3138;
-        residualErrorModel.setErrorModel(Tucuxi::Core::SigmaResidualErrorModel::ResidualErrorType::PROPORTIONAL);
+        residualErrorModel.setErrorModel(Tucuxi::Core::ResidualErrorType::PROPORTIONAL);
         residualErrorModel.setSigma(sigma);
 
         omega = Tucuxi::Core::OmegaMatrix(2,2);

@@ -15,7 +15,7 @@
 #include "tucucore/hardcodedoperation.h"
 #include "tucucore/residualerrormodel.h"
 #include "tucucore/pkmodel.h"
-
+#include "tucucore/iresidualerrormodel.h"
 
 using namespace Tucuxi::Common;
 using namespace Tucuxi::Core;
@@ -302,16 +302,16 @@ InterpolationType DrugModelImport::extractInterpolationType(Tucuxi::Common::XmlN
 }
 
 
-SigmaResidualErrorModel::ResidualErrorType DrugModelImport::extractResidualErrorType(Tucuxi::Common::XmlNodeIterator _node)
+ResidualErrorType DrugModelImport::extractResidualErrorType(Tucuxi::Common::XmlNodeIterator _node)
 {
-    static std::map<std::string, SigmaResidualErrorModel::ResidualErrorType> m =
+    static std::map<std::string, ResidualErrorType> m =
     {
-        {"additive", SigmaResidualErrorModel::ResidualErrorType::ADDITIVE},
-        {"proportional", SigmaResidualErrorModel::ResidualErrorType::PROPORTIONAL},
-        {"exponential", SigmaResidualErrorModel::ResidualErrorType::EXPONENTIAL},
-        {"mixed", SigmaResidualErrorModel::ResidualErrorType::MIXED},
-        {"softcoded", SigmaResidualErrorModel::ResidualErrorType::SOFTCODED},
-        {"none", SigmaResidualErrorModel::ResidualErrorType::NONE}
+        {"additive", ResidualErrorType::ADDITIVE},
+        {"proportional", ResidualErrorType::PROPORTIONAL},
+        {"exponential", ResidualErrorType::EXPONENTIAL},
+        {"mixed", ResidualErrorType::MIXED},
+        {"softcoded", ResidualErrorType::SOFTCODED},
+        {"none", ResidualErrorType::NONE}
     };
 
     auto it = m.find(_node->getValue());
@@ -319,7 +319,7 @@ SigmaResidualErrorModel::ResidualErrorType DrugModelImport::extractResidualError
         return it->second;
 
     setResult(Result::Error);
-    return SigmaResidualErrorModel::ResidualErrorType::NONE;
+    return ResidualErrorType::NONE;
 }
 
 
@@ -1429,7 +1429,7 @@ Analyte* DrugModelImport::extractAnalyte(Tucuxi::Common::XmlNodeIterator _node)
     std::string analyteId;
     Unit unit;
     MolarMass *molarMass = nullptr;
-    IResidualErrorModel *errorModel = nullptr;
+    ErrorModel *errorModel = nullptr;
 
     XmlNodeIterator it = _node->getChildren();
 
@@ -1445,7 +1445,7 @@ Analyte* DrugModelImport::extractAnalyte(Tucuxi::Common::XmlNodeIterator _node)
             molarMass = extractMolarMass(it);
         }
         else if (nodeName == "errorModel") {
-            errorModel = extractErrorModel(it, unit, Unit("ug/l"));
+            errorModel = extractErrorModel(it);
         }
         else {
             unexpectedTag(nodeName);
@@ -1461,7 +1461,7 @@ Analyte* DrugModelImport::extractAnalyte(Tucuxi::Common::XmlNodeIterator _node)
     }
 
     analyte = new Analyte(analyteId, unit, *molarMass);
-    analyte->setResidualErrorModel(std::unique_ptr<IResidualErrorModel>(errorModel));
+    analyte->setResidualErrorModel(std::unique_ptr<ErrorModel>(errorModel));
 
     DELETE_IF_NON_NULL(molarMass);
 
@@ -1499,11 +1499,12 @@ MolarMass* DrugModelImport::extractMolarMass(Tucuxi::Common::XmlNodeIterator _no
     return molarMass;
 }
 
-IResidualErrorModel* DrugModelImport::extractErrorModel(Tucuxi::Common::XmlNodeIterator _node, const Unit &_fromUnit, const Unit &_toUnit)
+ErrorModel *DrugModelImport::extractErrorModel(Tucuxi::Common::XmlNodeIterator _node)
 {
-    SigmaResidualErrorModel *errorModel = nullptr;
-    SigmaResidualErrorModel::ResidualErrorType type = SigmaResidualErrorModel::ResidualErrorType::NONE;
-    Operation *formula = nullptr;
+    ErrorModel *errorModel = nullptr;
+    ResidualErrorType type = ResidualErrorType::NONE;
+    Operation *applyFormula = nullptr;
+    Operation *likelyhoodFormula = nullptr;
     std::vector<LightPopulationValue*> sigmas;
 
     XmlNodeIterator it = _node->getChildren();
@@ -1513,8 +1514,11 @@ IResidualErrorModel* DrugModelImport::extractErrorModel(Tucuxi::Common::XmlNodeI
         if (nodeName == "errorModelType") {
             type = extractResidualErrorType(it);
         }
-        else if (nodeName == "errorModelFormula") {
-            formula = extractOperation(it);
+        else if (nodeName == "applyFormula") {
+            applyFormula = extractOperation(it);
+        }
+        else if (nodeName == "likelyHoodFormula") {
+            likelyhoodFormula = extractOperation(it);
         }
         else if (nodeName == "sigmas") {
             XmlNodeIterator sigmaIt = it->getChildren();
@@ -1545,13 +1549,13 @@ IResidualErrorModel* DrugModelImport::extractErrorModel(Tucuxi::Common::XmlNodeI
         return nullptr;
     }
 
-    errorModel = new SigmaResidualErrorModel();
+    errorModel = new ErrorModel();
     errorModel->setErrorModel(type);
     for (const auto & sigma : sigmas) {
         errorModel->addOriginalSigma(std::make_unique<PopulationValue>("", sigma->getValue(), sigma->getOperation()));
     }
-    errorModel->setFormula(std::unique_ptr<Operation>(formula));
-    errorModel->generatePopulationSigma(_fromUnit, _toUnit);
+    errorModel->setApplyFormula(std::unique_ptr<Operation>(applyFormula));
+    errorModel->setLikelyhoodFormula(std::unique_ptr<Operation>(likelyhoodFormula));
 
     DELETE_PVECTOR(sigmas);
 
