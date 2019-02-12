@@ -95,7 +95,7 @@ Value SigmaResidualErrorModel::calculateSampleLikelihood(Value _expected, Value 
     // The interindividual variance takes over and reaches the sample value
     if(sig == 0.0) {
         // Something wrong happened
-        if (expectedObservedDiff == 0)
+        if (expectedObservedDiff == 0.0)
         {
             return 0;
         } else {

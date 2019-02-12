@@ -32,6 +32,8 @@ ResidualErrorModelExtractor::Result ResidualErrorModelExtractor::extract(const E
         }
     }
 
+    newErrorModel->setSigma(sigma);
+
     *_residualErrorModel = newErrorModel;
 
     return Result::Ok;
