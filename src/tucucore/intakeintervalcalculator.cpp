@@ -27,6 +27,18 @@ void PertinentTimesCalculatorInfusion::calculateTimes(const IntakeEvent& _intake
 {
     double infusionTime = _intakeEvent.getInfusionTime().toHours();
     double interval = _intakeEvent.getInterval().toHours();
+
+    if (_nbPoints == 2) {
+        _times[0] = 0;
+        _times[1] = interval;
+        return;
+    }
+
+    if (_nbPoints == 1) {
+        _times[0] = interval;
+        return;
+    }
+
     double postTime = interval - infusionTime;
 
     int nbInfus = std::max(2, static_cast<int>((infusionTime / interval) * static_cast<double>(_nbPoints)));

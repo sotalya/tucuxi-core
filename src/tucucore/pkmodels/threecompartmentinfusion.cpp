@@ -117,9 +117,13 @@ bool ThreeCompartmentInfusionMicro::computeConcentrations(const Residuals& _inRe
     int firstCompartment = static_cast<int>(Compartments::First);
     int secondCompartment = static_cast<int>(Compartments::Second);
     int thirdCompartment = static_cast<int>(Compartments::Third);
-
-    int forcesize = static_cast<int>(std::min(ceil(m_Tinf/m_Int * m_NbPoints), ceil(m_NbPoints)));
-
+    int forcesize;
+    if (m_NbPoints == 2) {
+        forcesize = static_cast<int>(std::min(ceil(m_Tinf/m_Int * m_NbPoints), ceil(m_NbPoints)));
+    }
+    else {
+        forcesize = std::min(m_NbPoints, std::max(2, static_cast<int>((m_Tinf / m_Int) * static_cast<double>(m_NbPoints))));
+    }
     TMP_UNUSED_PARAMETER(_inResiduals);
 
     // Calculate concentrations for comp1 and comp2
