@@ -11,12 +11,55 @@
 namespace Tucuxi {
 namespace Core {
 
+
+
+void PertinentTimesCalculatorStandard::calculateTimes(const IntakeEvent& _intakeEvent,
+              int _nbPoints,
+              Eigen::VectorXd& _times)
+{
+    for(int i = 0; i < _nbPoints; i++)
+        _times[i] = ((double) i)/((double)_nbPoints-1)*(double)_intakeEvent.getInterval().toHours();
+}
+
+void PertinentTimesCalculatorInfusion::calculateTimes(const IntakeEvent& _intakeEvent,
+              int _nbPoints,
+              Eigen::VectorXd& _times)
+{
+    double infusionTime = _intakeEvent.getInfusionTime().toHours();
+    double interval = _intakeEvent.getInterval().toHours();
+    double postTime = interval - infusionTime;
+
+    int nbInfus = std::max(2, static_cast<int>((infusionTime / interval) * static_cast<double>(_nbPoints)));
+    int nbPost = _nbPoints - nbInfus;
+
+    for(int i = 0; i < nbInfus; i++)
+        _times[i] = ((double) i)/((double)nbInfus-1)*infusionTime;
+
+
+    for(int i = 0; i < nbPost; i++)
+        _times[i + nbInfus] = infusionTime + ((double) (i+1))/((double)nbPost)*postTime;
+
+//    for(int i = 0; i < _nbPoints; i++)
+//        _times[i] = ((double) i)/((double)_nbPoints-1)*(double)_intakeEvent.getInterval().toHours();
+}
+
+
 IntakeIntervalCalculator::~IntakeIntervalCalculator()
 {}
 
 IntakeIntervalCalculatorAnalytical::~IntakeIntervalCalculatorAnalytical()
-{}
+{
+    delete m_pertinentTimesCalculator;
+}
 
+
+void IntakeIntervalCalculatorAnalytical::calculateTimes(const IntakeEvent& _intakeEvent,
+              int _nbPoints,
+              Eigen::VectorXd& _times)
+{
+    for(int i = 0; i < _nbPoints; i++)
+        _times[i] = ((double) i)/((double)_nbPoints-1)*(double)_intakeEvent.getInterval().toHours();
+}
 
 IntakeIntervalCalculator::Result IntakeIntervalCalculatorAnalytical::calculateIntakePoints(
     std::vector<Concentrations>& _concentrations,
@@ -55,8 +98,7 @@ IntakeIntervalCalculator::Result IntakeIntervalCalculatorAnalytical::calculateIn
 //    Eigen::VectorXd times = Eigen::VectorXd::LinSpaced(_intakeEvent.getNbPoints(), 0, _intakeEvent.getInterval().toHours());
     Eigen::VectorXd times(nbPoints);
     // Shall we use nbPoints-1 or nbPoints?
-    for(int i=0;i< nbPoints; i++)
-        times[i] = ((double) i)/((double)nbPoints-1)*(double)_intakeEvent.getInterval().toHours();
+    m_pertinentTimesCalculator->calculateTimes(_intakeEvent, nbPoints, times);
 
     // Can we reuse cached exponentials?
     if (!m_cache.get(_intakeEvent.getInterval(), _parameters, nbPoints, m_precomputedExponentials))	{

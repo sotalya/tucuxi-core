@@ -17,7 +17,7 @@ namespace Core {
 #define DEBUG
 #endif
 
-OneCompartmentInfusionMicro::OneCompartmentInfusionMicro()
+OneCompartmentInfusionMicro::OneCompartmentInfusionMicro() : IntakeIntervalCalculatorBase<1, OneCompartmentInfusionExponentials> (new PertinentTimesCalculatorInfusion())
 {
 }
 
@@ -60,7 +60,6 @@ bool OneCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent, c
 
     return bOK;
 }
-
 
 
 void OneCompartmentInfusionMicro::computeExponentials(Eigen::VectorXd& _times)

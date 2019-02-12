@@ -283,7 +283,7 @@ public:
 
             ValidDurations *validIntervals = new ValidDurations(Unit("h"), std::make_unique<PopulationValue>("", 24));
             validIntervals->addValues(std::unique_ptr<IValidValues>(fixedIntervals));
-            formulationAndRoute->setValidInfusionTimes(std::unique_ptr<ValidDurations>(validIntervals));
+            formulationAndRoute->setValidIntervals(std::unique_ptr<ValidDurations>(validIntervals));
 
 
             // This is just here as an example.
@@ -293,7 +293,7 @@ public:
 
             ValidDurations *validInfusionTimes = new ValidDurations(Unit("h"), std::make_unique<PopulationValue>("", 1));
             validInfusionTimes->addValues(std::unique_ptr<IValidValues>(fixedInfusions));
-            formulationAndRoute->setValidIntervals(std::unique_ptr<ValidDurations>(validInfusionTimes));
+            formulationAndRoute->setValidInfusionTimes(std::unique_ptr<ValidDurations>(validInfusionTimes));
 
             model->addFormulationAndRoute(std::move(formulationAndRoute));
         }

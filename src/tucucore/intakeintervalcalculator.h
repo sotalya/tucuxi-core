@@ -149,16 +149,48 @@ protected:
 
 };
 
+class IPertinentTimesCalculator
+{
+public:
+
+    virtual void calculateTimes(const IntakeEvent& _intakeEvent,
+                        int _nbPoints,
+                        Eigen::VectorXd& _times) = 0;
+
+    virtual ~IPertinentTimesCalculator() = default;
+};
+
+class PertinentTimesCalculatorStandard : public IPertinentTimesCalculator
+{
+public:
+
+    void calculateTimes(const IntakeEvent& _intakeEvent,
+                        int _nbPoints,
+                        Eigen::VectorXd& _times) override;
+};
+
+class PertinentTimesCalculatorInfusion : public IPertinentTimesCalculator
+{
+public:
+
+    void calculateTimes(const IntakeEvent& _intakeEvent,
+                        int _nbPoints,
+                        Eigen::VectorXd& _times) override;
+};
 
 class IntakeIntervalCalculatorAnalytical : public IntakeIntervalCalculator
 {
 
 public:
     /// \brief Constructor
-    IntakeIntervalCalculatorAnalytical() : m_firstCalculation(true) {}
+    IntakeIntervalCalculatorAnalytical(IPertinentTimesCalculator *_pertinentTimesCalculator) :
+        m_firstCalculation(true), m_pertinentTimesCalculator(_pertinentTimesCalculator) {}
 
-    virtual ~IntakeIntervalCalculatorAnalytical();
+    ~IntakeIntervalCalculatorAnalytical() override;
 
+    virtual void calculateTimes(const IntakeEvent& _intakeEvent,
+                        int _nbPoints,
+                        Eigen::VectorXd& _times);
 
     /// \brief Calculate all points for the given time serie
     /// Variable denisty is used by default, which means IntakeEvent is not constant as the final density
@@ -228,6 +260,8 @@ protected:
     std::thread::id m_lastThreadId;
     bool m_firstCalculation;
 
+    IPertinentTimesCalculator *m_pertinentTimesCalculator;
+
 private:
     CachedExponentials m_cache;                           /// The cache of precomputed exponentials
 };
@@ -236,6 +270,9 @@ template<unsigned int ResidualSize, typename EParameters>
 class IntakeIntervalCalculatorBase : public IntakeIntervalCalculatorAnalytical
 {
 public:
+    IntakeIntervalCalculatorBase(IPertinentTimesCalculator *_pertinentTimesCalculator) :
+        IntakeIntervalCalculatorAnalytical(_pertinentTimesCalculator) {}
+
     unsigned int getResidualSize() const override {
         return ResidualSize;
     }

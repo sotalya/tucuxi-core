@@ -27,6 +27,7 @@
 #include "test_operationcollection.h"
 #include "test_parameterextractor.h"
 #include "test_percentilecalculator.h"
+#include "test_pertinenttimescalculator.h"
 #include "test_pkmodel.h"
 #include "test_targetextractor.h"
 
@@ -46,6 +47,20 @@ int main(int argc, char** argv)
     int tot_res = 0;
 
 
+
+    TestPertinentTimesCalculator pertinentTimesCalculatorTests;
+
+    pertinentTimesCalculatorTests.add_test("testStandard", &TestPertinentTimesCalculator::testStandard);
+    pertinentTimesCalculatorTests.add_test("testInfusion", &TestPertinentTimesCalculator::testInfusion);
+
+    res = pertinentTimesCalculatorTests.run(argc, argv);
+    tot_res |= res;
+    if (res != 0) {
+        std::cerr << "Pertinent times calculator test failed\n";
+    }
+    else {
+        std::cout << "Pertinent times calculator test succeeded\n";
+    }
 
     TestDrugDomainConstraintsEvaluator drugDomainConstraintsEvaluatorTests;
 
@@ -145,7 +160,6 @@ int main(int argc, char** argv)
     tot_res |= res;
     if (res != 0) {
         std::cerr << "Calculators test failed\n";
-        exit(1);
     }
     std::cout << "Calculators test succeeded\n";
 
@@ -168,7 +182,6 @@ int main(int argc, char** argv)
     tot_res |= res;
     if (res != 0) {
         std::cerr << "ConcentrationCalculator test failed\n";
-        exit(1);
     }
     std::cout << "ConcentrationCalculator test succeeded\n";
 

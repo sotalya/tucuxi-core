@@ -10,7 +10,7 @@
 namespace Tucuxi {
 namespace Core {
 
-TwoCompartmentExtraMicro::TwoCompartmentExtraMicro()
+TwoCompartmentExtraMicro::TwoCompartmentExtraMicro() : IntakeIntervalCalculatorBase<3, TwoCompartmentExtraExponentials> (new PertinentTimesCalculatorStandard())
 {
 }
 

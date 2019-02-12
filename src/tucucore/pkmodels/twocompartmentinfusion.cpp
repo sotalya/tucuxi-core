@@ -15,7 +15,7 @@ namespace Core {
 #define DEBUG
 #endif
 
-TwoCompartmentInfusionMicro::TwoCompartmentInfusionMicro()
+TwoCompartmentInfusionMicro::TwoCompartmentInfusionMicro() : IntakeIntervalCalculatorBase<2, TwoCompartmentInfusionExponentials> (new PertinentTimesCalculatorInfusion())
 {
 }
 
@@ -81,6 +81,8 @@ bool TwoCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent, c
 
     return bOK;
 }
+
+
 
 void TwoCompartmentInfusionMicro::computeExponentials(Eigen::VectorXd& _times)
 {

@@ -15,7 +15,7 @@ namespace Core {
 #define DEBUG
 #endif
 
-ThreeCompartmentInfusionMicro::ThreeCompartmentInfusionMicro()
+ThreeCompartmentInfusionMicro::ThreeCompartmentInfusionMicro() : IntakeIntervalCalculatorBase<3, ThreeCompartmentInfusionExponentials> (new PertinentTimesCalculatorInfusion())
 {
 }
 

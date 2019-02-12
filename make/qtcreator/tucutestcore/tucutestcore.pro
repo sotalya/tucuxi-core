@@ -33,7 +33,8 @@ HEADERS += \
     ../../../test/tucucore/test_operationcollection.h \
     ../../../test/tucucore/drugmodels/test_drug_tobramycin.h \
     ../../../test/tucucore/drugmodels/test_drug_vancomycin.h \
-    ../../../test/tucucore/test_targetextractor.h
+    ../../../test/tucucore/test_targetextractor.h \
+    ../../../test/tucucore/test_pertinenttimescalculator.h
 
 SOURCES += \
     ../../../test/tucucore/tests.cpp
