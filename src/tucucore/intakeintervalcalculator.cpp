@@ -81,10 +81,13 @@ IntakeIntervalCalculator::Result IntakeIntervalCalculatorAnalytical::calculateIn
         }
     }
     TMP_UNUSED_PARAMETER(_isDensityConstant);
+    m_loggingErrors = false;
     if (!checkInputs(_intakeEvent, _parameters))
     {
+        m_loggingErrors = true;
         return Result::BadParameters;
     }
+    m_loggingErrors = true;
 
     // Create our serie of times
     int nbPoints = _intakeEvent.getNbPoints();
@@ -150,8 +153,10 @@ IntakeIntervalCalculator::Result IntakeIntervalCalculatorAnalytical::calculateIn
 bool IntakeIntervalCalculator::checkValue(bool _isOk, const std::string& _errMsg)
 {
     if (!_isOk) {
-        static Tucuxi::Common::LoggerHelper logger;
-        logger.error(_errMsg);
+        if (m_loggingErrors) {
+            static Tucuxi::Common::LoggerHelper logger;
+            logger.error(_errMsg);
+        }
     }
     return _isOk;
 }

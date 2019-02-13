@@ -79,7 +79,7 @@ public:
 
 public:
     /// \brief Constructor
-    IntakeIntervalCalculator() {}
+    IntakeIntervalCalculator() : m_loggingErrors(true) {}
 
     virtual ~IntakeIntervalCalculator();
 
@@ -145,6 +145,11 @@ protected:
 
 protected:
     typedef IntakeCalculatorSingleConcentrations SingleConcentrations;
+
+    /// Indicates if we shall log errors or not. Unsed to disable it for single points
+    /// calculation. Mainly because it is used by LogLikelihood and that parameters
+    /// can be wrong because of big etas
+    bool m_loggingErrors;
 
 
 };
