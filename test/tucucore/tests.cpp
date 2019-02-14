@@ -29,6 +29,7 @@
 #include "test_percentilecalculator.h"
 #include "test_pertinenttimescalculator.h"
 #include "test_pkmodel.h"
+#include "test_residualerrormodel.h"
 #include "test_targetextractor.h"
 
 #include "drugmodels/test_drug_tobramycin.h"
@@ -47,6 +48,18 @@ int main(int argc, char** argv)
     int tot_res = 0;
 
 
+    TestResidualErrorModel residualErrorModelTests;
+
+    residualErrorModelTests.add_test("testLogLikelihood", &TestResidualErrorModel::testLogLikelihood);
+
+    res = residualErrorModelTests.run(argc, argv);
+    tot_res |= res;
+    if (res != 0) {
+        std::cerr << "ResidualErrorModel test failed\n";
+    }
+    else {
+        std::cout << "ResidualErrorModel test succeeded\n";
+    }
 
     TestPertinentTimesCalculator pertinentTimesCalculatorTests;
 
