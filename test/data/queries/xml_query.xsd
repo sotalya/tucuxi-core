@@ -494,6 +494,7 @@ with the DosageHistory class and AbstractDosage subclasses -->
 			<xs:simpleType>
 				<xs:restriction base="xs:string">
 		            <xs:enumeration value="prediction" />
+		            <xs:enumeration value="predictionAtSampleTime" />
 		            <xs:enumeration value="firstDosage" />
 		            <xs:enumeration value="dosageRisk" />
 		            <xs:enumeration value="dosageLikelyhood" />

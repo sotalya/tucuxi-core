@@ -79,6 +79,16 @@ double ComputingTraitStandard::getNbPointsPerHour() const
     return m_nbPointsPerHour;
 }
 
+ComputingResult ComputingTraitStandard::compute(ComputingComponent &_computingComponent,
+                                const ComputingRequest &_request,
+                        std::unique_ptr<ComputingResponse> &_response) const
+{
+    UNUSED_PARAMETER(_computingComponent);
+    UNUSED_PARAMETER(_request);
+    UNUSED_PARAMETER(_response);
+    return ComputingResult::Error;
+}
+
 
 ComputingTraitAdjustment::ComputingTraitAdjustment(
         RequestResponseId _id,
@@ -173,6 +183,14 @@ ComputingTraitAtMeasures::ComputingTraitAtMeasures(RequestResponseId _id, Comput
 ComputingOption ComputingTraitAtMeasures::getComputingOption() const
 {
     return m_computingOption;
+}
+
+
+ComputingTraitSinglePoints::ComputingTraitSinglePoints(RequestResponseId _id,
+                            std::vector<Tucuxi::Common::DateTime> _times,
+                            ComputingOption _computingOption) :
+    ComputingTrait (_id), m_times(_times), m_computingOption(_computingOption)
+{
 }
 
 ComputingOption ComputingTraitSinglePoints::getComputingOption() const

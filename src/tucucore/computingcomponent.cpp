@@ -1167,10 +1167,19 @@ ComputingResult ComputingComponent::compute(
         const ComputingRequest &_request,
         std::unique_ptr<ComputingResponse> &_response)
 {
-    TMP_UNUSED_PARAMETER(_traits);
-    TMP_UNUSED_PARAMETER(_request);
-    TMP_UNUSED_PARAMETER(_response);
-    return ComputingResult::Error;
+
+    // Simply extract the sample dates
+    std::vector<Tucuxi::Common::DateTime> sampleTimes;
+    for (const auto &sample : _request.getDrugTreatment().getSamples())
+    {
+        sampleTimes.push_back(sample->getDate());
+    }
+
+    // Create the corresponding object for single points calculation
+    ComputingTraitSinglePoints traits(_traits->getId(), sampleTimes, _traits->getComputingOption());
+
+    // And start the calculation
+    return compute(&traits, _request, _response);
 }
 
 ComputingResult ComputingComponent::compute(
@@ -1178,9 +1187,137 @@ ComputingResult ComputingComponent::compute(
         const ComputingRequest &_request,
         std::unique_ptr<ComputingResponse> &_response)
 {
-    TMP_UNUSED_PARAMETER(_traits);
-    TMP_UNUSED_PARAMETER(_request);
-    TMP_UNUSED_PARAMETER(_response);
+
+    if (_traits == nullptr) {
+        m_logger.error("The computing traits sent for computation are nullptr");
+        return ComputingResult::Error;
+    }
+
+    std::shared_ptr<PkModel> pkModel;
+
+    IntakeSeries intakeSeries;
+    CovariateSeries covariateSeries;
+    ParameterSetSeries parameterSeries;
+    DateTime calculationStartTime;
+
+    DateTime firstDate;
+    DateTime lastDate;
+
+    for (const auto &singleTime : _traits->getTimes()) {
+        if (firstDate.isUndefined() || (singleTime < firstDate)) {
+            firstDate = singleTime;
+        }
+        if (lastDate.isUndefined() || (singleTime > lastDate)) {
+            lastDate = singleTime;
+        }
+    }
+
+    lastDate = lastDate + Duration(std::chrono::hours(1));
+
+    // TODO : Check if 2 is necessary or not
+    ComputingTraitStandard standardTraits(_traits->getId(), firstDate, lastDate, 2, _traits->getComputingOption());
+
+    ComputingResult extractionResult = generalExtractions(&standardTraits,
+                                                          _request,
+                                                          pkModel,
+                                                          intakeSeries,
+                                                          covariateSeries,
+                                                          parameterSeries,
+                                                          calculationStartTime);
+
+    if (extractionResult != ComputingResult::Success) {
+        return extractionResult;
+    }
+
+    // Now ready to do the real computing with all the extracted values
+
+    ConcentrationPredictionPtr pPrediction = std::make_unique<ConcentrationPrediction>();
+
+    ComputationResult computationResult;
+
+    // TODO : Check what happens if etas is 0
+    Etas etas;
+
+
+    if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Aposteriori) {
+
+
+        Tucuxi::Core::OmegaMatrix omega;
+        ComputationResult omegaComputationResult = extractOmega(_request.getDrugModel(), omega);
+        if (omegaComputationResult != ComputationResult::Success) {
+            return ComputingResult::Error;
+        }
+
+        SampleSeries sampleSeries;
+        SampleExtractor sampleExtractor;
+        sampleExtractor.extract(_request.getDrugTreatment().getSamples(), calculationStartTime, lastDate, sampleSeries);
+
+        if (sampleSeries.size() == 0) {
+            // Surprising. Something maybe wrong with the sample extractor
+
+        }
+        else {
+            ResidualErrorModelExtractor errorModelExtractor;
+            IResidualErrorModel *residualErrorModel = nullptr;
+            if (errorModelExtractor.extract(_request.getDrugModel().getAnalyteSet()->getAnalytes().at(0)->getResidualErrorModel(),
+                                            _request.getDrugModel().getAnalyteSet()->getAnalytes().at(0)->getUnit(),
+                                            covariateSeries, &residualErrorModel)
+                != ResidualErrorModelExtractor::Result::Ok) {
+                return ComputingResult::Error;
+            }
+
+            APosterioriEtasCalculator etasCalculator;
+            etasCalculator.computeAposterioriEtas(intakeSeries, parameterSeries, omega, *residualErrorModel, sampleSeries, etas);
+        }
+    }
+
+    Concentrations concentrations;
+
+    SampleSeries timesSeries;
+
+    for (const auto &times : _traits->getTimes()) {
+        timesSeries.push_back(SampleEvent(times));
+    }
+
+    ConcentrationCalculator calculator;
+    computationResult = calculator.computeConcentrationsAtTimes(
+                concentrations,
+                false,
+                intakeSeries,
+                parameterSeries,
+                timesSeries,
+                etas,
+                true);
+
+
+    if (computationResult == ComputationResult::Success)
+    {
+        std::unique_ptr<SinglePointsResponse> resp = std::make_unique<SinglePointsResponse>(_traits->getId());
+
+        if (concentrations.size() != timesSeries.size()) {
+            // Something went wrong
+            m_logger.error("The number of concentrations calculated is not the same as the number of points asked");
+            return ComputingResult::Error;
+        }
+
+        // TODO : Check size of oncentration with respect to number of points
+
+        size_t nbTimes = concentrations.size();
+        Concentrations c;
+        for(size_t i = 0; i < nbTimes; i++) {
+            c.push_back(concentrations[i]);
+            resp->m_times.push_back(timesSeries[i].getEventTime());
+        }
+        resp->m_concentrations.push_back(c);
+        resp->m_unit = Unit("ug/l");
+
+        _response->addResponse(std::move(resp));
+        return ComputingResult::Success;
+    }
+    else {
+        return ComputingResult::Error;
+    }
+
     return ComputingResult::Error;
 }
 

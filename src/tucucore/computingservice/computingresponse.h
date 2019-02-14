@@ -99,6 +99,8 @@ protected:
 ///
 class SinglePointsResponse : public SingleComputingResponse
 {
+public:
+
     SinglePointsResponse(RequestResponseId _id) : SingleComputingResponse(_id) {}
 
     /// Absolute time of each concentration

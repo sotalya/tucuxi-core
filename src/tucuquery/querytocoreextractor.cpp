@@ -159,6 +159,11 @@ Tucuxi::Core::ComputingTraits *QueryToCoreExtractor::extractComputingTraits(cons
             for (auto trait : traitsList) {
                 traits->addTrait(std::unique_ptr<Tucuxi::Core::ComputingTrait>(trait));
             }
+        } else if (requestType == "predictionAtSampleTime") {
+            std::vector<Tucuxi::Core::ComputingTrait *> traitsList = extractPredictionAtSampleTimeTraits(_query, *request.get());
+            for (auto trait : traitsList) {
+                traits->addTrait(std::unique_ptr<Tucuxi::Core::ComputingTrait>(trait));
+            }
         } else if (requestType == "dosageAdaptation") {
         } else if (requestType == "firstDosage") {
         } else {
@@ -235,6 +240,62 @@ std::vector<Tucuxi::Core::ComputingTrait * > QueryToCoreExtractor::extractPredic
     return traits;
 }
 
+std::vector<Tucuxi::Core::ComputingTrait * > QueryToCoreExtractor::extractPredictionAtSampleTimeTraits(const Query &_query, const RequestData &_request) const
+{
+    std::vector<Tucuxi::Core::ComputingTrait * > traits;
+
+    std::string predictionType =_request.getPredictionType();
+    Tucuxi::Core::PredictionParameterType predictionParameterType = Tucuxi::Core::PredictionParameterType::Population;
+    if (predictionType == "population") {
+        predictionParameterType = Tucuxi::Core::PredictionParameterType::Population;
+    } else if (predictionType == "a priori") {
+        predictionParameterType = Tucuxi::Core::PredictionParameterType::Apriori;
+    } else if (predictionType == "a posteriori") {
+        predictionParameterType = Tucuxi::Core::PredictionParameterType::Aposteriori;
+    } else {
+//        apiResponse->addWarning("UnexpetedPredicitionType", m_query.getLanguage(), "Unexpected prediction type!");
+//        predictionParameterType = PredictionParameterType::Population;
+    }
+
+    Tucuxi::Core::ComputingOption computingOption(predictionParameterType, Tucuxi::Core::CompartmentsOption::MainCompartment);
+
+    std::vector<Tucuxi::Common::DateTime> times;
+
+    std::string drugId = _request.getDrugID();
+
+    DrugData *drugData = nullptr;
+
+    for (const auto &drug : _query.getpParameters().getDrugs()) {
+        if (drug->getDrugID() == drugId) {
+            drugData = drug.get();
+        }
+    }
+
+    if (drugData == nullptr) {
+        // Error
+    }
+
+#if 0 // The following code could be useful for single points calculations
+    for (const auto &sample : drugData->getSamples()) {
+        times.push_back(sample->getpSampleDate());
+    }
+
+    Tucuxi::Core::ComputingTraitSinglePoints *trait = new Tucuxi::Core::ComputingTraitSinglePoints(
+                _request.getRequestID(),
+                times,
+                computingOption);
+
+    traits.push_back(trait);
+#endif // 0
+
+    Tucuxi::Core::ComputingTraitAtMeasures *trait = new Tucuxi::Core::ComputingTraitAtMeasures(
+                _request.getRequestID(),
+                computingOption);
+
+    traits.push_back(trait);
+
+    return traits;
+}
 
 Tucuxi::Core::DrugModel *QueryToCoreExtractor::extractDrugModel(const Query &_query) const
 {

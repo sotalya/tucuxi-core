@@ -61,6 +61,8 @@ public:
 
     std::vector<Tucuxi::Core::ComputingTrait *> extractPredictionTraits(const RequestData &_request) const;
 
+    std::vector<Tucuxi::Core::ComputingTrait *> extractPredictionAtSampleTimeTraits(const Query &_query, const RequestData &_request) const;
+
 };
 
 } // namespace Query

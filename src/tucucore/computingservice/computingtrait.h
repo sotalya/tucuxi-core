@@ -170,7 +170,12 @@ public:
     ///
     double getNbPointsPerHour() const;
 
-protected:
+    /// This function should not be called. It returns ERROR
+    ComputingResult compute(ComputingComponent &_computingComponent,
+                            const ComputingRequest &_request,
+                            std::unique_ptr<ComputingResponse> &_response) const override;
+
+// protected:
 
     ///
     /// \brief ComputingTraitStandard A simple protected constructor.
