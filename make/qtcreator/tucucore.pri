@@ -1,8 +1,5 @@
 
-win32:DEFINES += GIT_BIN='C:\\Git\\bin\\git'
-# or 'C:\\Progra~1\\Git\\bin\\git' - ymmv with putting spaces in here
-win32:DEFINES += TUCUXI_GIT_REVISION='\\"$$system($${GIT_BIN} rev-parse --short HEAD)\\"'
-unix:DEFINES += TUCUXI_GIT_REVISION='\\"$$system(git rev-parse --short HEAD)\\"'
+DEFINES += TUCUXI_GIT_REVISION='\\"$$system(git --git-dir $$PWD/../../.git rev-parse --short HEAD)\\"'
 
 HEADERS += \
     $$PWD/../../src/tucucore/drugmodel/drugmodel.h \
