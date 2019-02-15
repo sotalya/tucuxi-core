@@ -600,10 +600,10 @@ Type of covariate
    :widths: 15, 30
 
    standard , "A normal covariate"
-   sex , "The covariate represents the sex of the patient. Can be automatically retrieved from administrative data"
-   ageInYears , "The age of the patient, in years. Can be automatically retrieved from administrative data"
-   ageInMonths , "The age of the patient, in months. Can be automatically retrieved from administrative data"
-   ageInDays , "The age of the patient, in days. Can be automatically retrieved from administrative data"
+   sex , "The covariate represents the sex of the patient. Can be automatically retrieved from administrative data, specifically in a patient covariate called `sex`"
+   ageInYears , "The age of the patient, in years. Can be automatically retrieved from administrative data, specifically in a patient covariate called `birthdate`"
+   ageInMonths , "The age of the patient, in months. Can be automatically retrieved from administrative data, specifically in a patient covariate called `birthdate`"
+   ageInDays , "The age of the patient, in days. Can be automatically retrieved from administrative data, specifically in a patient covariate called `birthdate`"
 
 .. _covariateDataType:
 

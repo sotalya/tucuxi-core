@@ -6,6 +6,7 @@
 #include "tucucommon/xmlnode.h"
 #include "tucucommon/xmlattribute.h"
 #include "tucucommon/xmliterator.h"
+#include "tucucommon/utils.h"
 
 
 #include <unistd.h>
@@ -368,6 +369,14 @@ unique_ptr<CovariateData> QueryImport::createCovariateData(Common::XmlNodeIterat
         dataType = Core::DataType::Date;
     } else {
         // TODO
+    }
+
+    // If the covariate is a date, go through a DateTime to reconvert it to a string
+    // to be sure it has the correct format
+    if (dataType == Core::DataType::Date) {
+        Common::DateTime valueAsDate;
+        valueAsDate = getChildDateTimeValue(_covariateDataRootIterator, VALUE_NODE_NAME);
+        value = Tucuxi::Common::Utils::varToString(valueAsDate);
     }
 
     string nature = getChildStringValue(_covariateDataRootIterator, NATURE_NODE_NAME);

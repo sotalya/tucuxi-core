@@ -1193,6 +1193,13 @@ ComputingResult ComputingComponent::compute(
         return ComputingResult::Error;
     }
 
+    if (_traits->getTimes().size() == 0) {
+        // No time given, so we return an empty response
+        std::unique_ptr<SinglePointsResponse> resp = std::make_unique<SinglePointsResponse>(_traits->getId());
+        _response->addResponse(std::move(resp));
+        return ComputingResult::Success;
+    }
+
     std::shared_ptr<PkModel> pkModel;
 
     IntakeSeries intakeSeries;

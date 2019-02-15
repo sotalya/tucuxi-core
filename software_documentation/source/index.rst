@@ -12,6 +12,7 @@ Tucuxi documentation
 
    drug2_description
    command_line
+   covariates
 
 
 

@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "tucucommon/duration.h"
+#include "tucucommon/utils.h"
 
 #include "tucucore/definitions.h"
 #include "tucucore/timedevent.h"
@@ -82,6 +83,22 @@ public:
     /// \brief Get the data's unit of measure.
     /// \return Data's unit of measure.
     Unit getUnit() const { return m_unit; }
+
+    ///
+    /// \brief Set the value as a DateTime. Useful for birthdate
+    /// \param _date The date to be stored
+    ///
+    void setValueAsDate(DateTime _date) {
+        m_value = Tucuxi::Common::Utils::varToString(_date);
+    }
+
+    ///
+    /// \brief Get the value as a date. Useful for birthdate
+    /// \return The date stored
+    ///
+    DateTime getValueAsDate() {
+        return Tucuxi::Common::Utils::ValueToDate(Tucuxi::Common::Utils::stringToValue(m_value, DataType::Date));
+    };
 
 protected:
     /// \brief Identifier of the original covariate for which the change applies.

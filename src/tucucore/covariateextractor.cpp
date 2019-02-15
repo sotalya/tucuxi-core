@@ -10,7 +10,7 @@ namespace Core {
 
 using namespace Tucuxi::Common::Utils;
 
-const std::string CovariateExtractor::sm_birthDateCName = "BirthDate";
+const std::string CovariateExtractor::sm_birthDateCName = "birthdate";
 
 /// \brief Create an event and push it in the event series.
 /// \param COV_DEF Corresponding covariate definition.
@@ -119,8 +119,17 @@ CovariateExtractor::CovariateExtractor(const CovariateDefinitions &_defaults,
             }
             m_pvValued.at((*it)->getId()).push_back(it);
         }
-    }
 
+        if ((*it)->getId() == sm_birthDateCName) {
+            if ((*it)->getDataType() == DataType::Date) {
+                // We found a birthdate
+                m_hasBirthDate = true;
+
+                m_birthDate = (*it)->getValueAsDate();
+            }
+        }
+    }
+/*
     // If a birth date is present, then set it.
     if (m_cdValued.find(sm_birthDateCName) != m_cdValued.end()) {
         if ((*m_cdValued.at(sm_birthDateCName))->getDataType() != DataType::Date) {
@@ -137,6 +146,7 @@ CovariateExtractor::CovariateExtractor(const CovariateDefinitions &_defaults,
         // Remove the birth date from the map.
         m_cdValued.erase(sm_birthDateCName);
     }
+    */
 }
 
 
