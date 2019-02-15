@@ -39,6 +39,42 @@ struct TestResidualErrorModel : public fructose::test_base<TestResidualErrorMode
         return errorModel.calculateSampleLikelihood(_expected, _observed);
     }
 
+    Value applyEpsToValue(ResidualErrorType _errorModelType,
+                                    double _sigma,
+                                    double _value,
+                                    double _eps)
+    {
+        Tucuxi::Core::SigmaResidualErrorModel errorModel;
+        errorModel.setErrorModel(_errorModelType);
+        Sigma sigma(1);
+        sigma[0] = _sigma;
+        errorModel.setSigma(sigma);
+        Tucuxi::Core::Deviations eps(1);
+        eps[0] = _eps;
+        Value value = _value;
+        errorModel.applyEpsToValue(value, eps);
+        return value;
+    }
+
+    Value applyEpsToValue2(ResidualErrorType _errorModelType,
+                           double _sigma0,
+                           double _sigma1,
+                                    double _value,
+                                    double _eps)
+    {
+        Tucuxi::Core::SigmaResidualErrorModel errorModel;
+        errorModel.setErrorModel(_errorModelType);
+        Sigma sigma(2);
+        sigma[0] = _sigma0;
+        sigma[1] = _sigma1;
+        errorModel.setSigma(sigma);
+        Tucuxi::Core::Deviations eps(1);
+        eps[0] = _eps;
+        Value value = _value;
+        errorModel.applyEpsToValue(value, eps);
+        return value;
+    }
+
     /// \brief Test basic functionalities of a PkModel.
     void testLogLikelihood(const std::string& /* _testName */)
     {
@@ -93,6 +129,27 @@ struct TestResidualErrorModel : public fructose::test_base<TestResidualErrorMode
         fructose_assert_double_gt(logLikelihood1, logLikelihood0);
         fructose_assert_double_gt(logLikelihood1, logLikelihood2);
 
+    }
+
+    void testApplyEpsToValue(const std::string& /* _testName */)
+    {
+        Value calculated;
+
+        // If epsilon is 0, then the value should not change
+        calculated = applyEpsToValue(ResidualErrorType::ADDITIVE, 2.0, 10.0, 0.0);
+        fructose_assert_eq(calculated, 10.0);
+
+        // If epsilon is 0, then the value should not change
+        calculated = applyEpsToValue(ResidualErrorType::EXPONENTIAL, 2.0, 10.0, 0.0);
+        fructose_assert_eq(calculated, 10.0);
+
+        // If epsilon is 0, then the value should not change
+        calculated = applyEpsToValue(ResidualErrorType::PROPORTIONAL, 2.0, 10.0, 0.0);
+        fructose_assert_eq(calculated, 10.0);
+
+        // If epsilon is 0, then the value should not change
+        calculated = applyEpsToValue2(ResidualErrorType::MIXED, 2.0, 1.5, 10.0, 0.0);
+        fructose_assert_eq(calculated, 10.0);
     }
 
 };

@@ -51,6 +51,7 @@ int main(int argc, char** argv)
     TestResidualErrorModel residualErrorModelTests;
 
     residualErrorModelTests.add_test("testLogLikelihood", &TestResidualErrorModel::testLogLikelihood);
+    residualErrorModelTests.add_test("testApplyEpsToValue", &TestResidualErrorModel::testApplyEpsToValue);
 
     res = residualErrorModelTests.run(argc, argv);
     tot_res |= res;

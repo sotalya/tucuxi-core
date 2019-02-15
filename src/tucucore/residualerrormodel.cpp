@@ -21,7 +21,7 @@ void SigmaResidualErrorModel::applyEpsToValue(Concentration &_concentration, con
 
     switch (m_errorModel) {
     case ResidualErrorType::EXPONENTIAL:
-        _concentration *= std::pow(m_sigma[0], 2) * std::exp(_eps[0]);
+        _concentration *= std::exp(m_sigma[0] * _eps[0]);
     case ResidualErrorType::PROPORTIONAL:
         _concentration *= 1 + m_sigma[0] * _eps[0];
         break;
@@ -29,6 +29,7 @@ void SigmaResidualErrorModel::applyEpsToValue(Concentration &_concentration, con
         _concentration += m_sigma[0] * _eps[0];
         break;
     case ResidualErrorType::MIXED:
+         // m_sigma[0] is the additive SD and m_sigma[1] the exponential SD
         _concentration += _eps[0] * std::sqrt(std::pow(_concentration * m_sigma[1], 2)  + std::pow(m_sigma[0], 2));
         break;
     default:
@@ -43,7 +44,7 @@ void SigmaResidualErrorModel::applyEpsToArray(Concentrations &_concentrations, c
     for (auto it = _concentrations.begin(); it != _concentrations.end(); ++it) {
         switch (m_errorModel) {
         case ResidualErrorType::EXPONENTIAL:
-            *it *= std::pow(m_sigma[0], 2) * std::exp(_eps[0]);
+            *it *= std::exp(m_sigma[0] * _eps[0]);
         case ResidualErrorType::PROPORTIONAL:
             *it *= 1 + m_sigma[0] * _eps[0];
             break;
@@ -109,7 +110,6 @@ Value SigmaResidualErrorModel::calculateSampleLikelihood(Value _expected, Value 
             (0.5 * log(2 * PI)) +
             log(sig) +
             0.5 * expectedObservedDiff * 1/(std::pow(sig,2)) * expectedObservedDiff;
-
 
     // If we have a really big problem, like we have a log of zero
     if (std::isnan(phi)) {
