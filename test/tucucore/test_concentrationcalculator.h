@@ -26,6 +26,14 @@
 #include "tucucore/pkmodels/threecompartmentinfusion.h"
 #include "tucucore/pkmodels/threecompartmentextra.h"
 
+using namespace Tucuxi::Core;
+
+template<typename T>
+std::ostream& operator<<(typename std::enable_if<std::is_enum<T>::value, std::ostream>::type& stream, const T& e)
+{
+    return stream << static_cast<typename std::underlying_type<T>::type>(e);
+}
+
 struct TestConcentrationCalculator : public fructose::test_base<TestConcentrationCalculator>
 {
     static const int CYCLE_SIZE = 251;
@@ -286,9 +294,11 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
                     intakeSeries,
                     _parameters,
                     sampleSeries);
-                if (res != ComputationResult::Success) {
-                    delete concentrationCalculator;
-                }
+
+                fructose_assert(res == ComputationResult::Success);
+                fructose_assert_eq(res , ComputationResult::Success);
+
+                delete concentrationCalculator;
             }
 
             int n0 = (nbPoints - 1) / 4;

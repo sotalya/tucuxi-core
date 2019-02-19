@@ -274,17 +274,17 @@ struct TestDosage : public fructose::test_base<TestDosage>
                            std::chrono::seconds(12345));
 
         // Give a valid start date but no end date, expect no exception but the end date must be undefined
-        fructose_assert_no_exception(new Tucuxi::Core::DosageTimeRange(startDate, fakeDose));
+        fructose_assert_no_exception(Tucuxi::Core::DosageTimeRange *d = new Tucuxi::Core::DosageTimeRange(startDate, fakeDose); delete d;);
         std::unique_ptr<Tucuxi::Core::DosageTimeRange> ptr1(new Tucuxi::Core::DosageTimeRange(startDate, fakeDose));
         fructose_assert(ptr1->getStartDate() == startDate);
         fructose_assert(ptr1->getEndDate().isUndefined());
 
         // Same as above, but with start and end dates. Check also that the two dates are meaningful (start <= end).
-        fructose_assert_exception(new Tucuxi::Core::DosageTimeRange(emptyDate, emptyDate, fakeDose), std::invalid_argument);
-        fructose_assert_exception(new Tucuxi::Core::DosageTimeRange(emptyDate, endDate, fakeDose), std::invalid_argument);
-        fructose_assert_exception(new Tucuxi::Core::DosageTimeRange(endDate, startDate, fakeDose), std::invalid_argument);
-        fructose_assert_no_exception(new Tucuxi::Core::DosageTimeRange(startDate, emptyDate, fakeDose));
-        fructose_assert_no_exception(new Tucuxi::Core::DosageTimeRange(startDate, endDate, fakeDose));
+        fructose_assert_exception({Tucuxi::Core::DosageTimeRange *d = new Tucuxi::Core::DosageTimeRange(emptyDate, emptyDate, fakeDose); delete d;}, std::invalid_argument);
+        fructose_assert_exception({Tucuxi::Core::DosageTimeRange *d = new Tucuxi::Core::DosageTimeRange(emptyDate, endDate, fakeDose); delete d;}, std::invalid_argument);
+        fructose_assert_exception({Tucuxi::Core::DosageTimeRange *d = new Tucuxi::Core::DosageTimeRange(endDate, startDate, fakeDose); delete d;}, std::invalid_argument);
+        fructose_assert_no_exception({Tucuxi::Core::DosageTimeRange *d = new Tucuxi::Core::DosageTimeRange(startDate, emptyDate, fakeDose); delete d;});
+        fructose_assert_no_exception({Tucuxi::Core::DosageTimeRange *d = new Tucuxi::Core::DosageTimeRange(startDate, endDate, fakeDose); delete d;});
         std::unique_ptr<Tucuxi::Core::DosageTimeRange> ptr2(new Tucuxi::Core::DosageTimeRange(startDate, endDate, fakeDose));
         fructose_assert(ptr2->getStartDate() == startDate);
         fructose_assert(ptr2->getEndDate() == endDate);

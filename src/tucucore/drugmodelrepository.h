@@ -31,6 +31,8 @@ public:
 
     DrugModelRepository();
 
+    ~DrugModelRepository();
+
     //bool initialize() override;
 
     void loadFolder(std::string _folder);

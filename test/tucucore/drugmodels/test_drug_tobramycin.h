@@ -824,6 +824,10 @@ struct TestDrugTobramycin : public fructose::test_base<TestDrugTobramycin>
         importer.importFromString(drugModel, tobramycin_tdd);
 
         fructose_assert(drugModel != nullptr);
+
+        if (drugModel != nullptr) {
+            delete drugModel;
+        }
     }
 };
 

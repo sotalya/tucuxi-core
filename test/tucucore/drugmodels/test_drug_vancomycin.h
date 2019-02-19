@@ -867,6 +867,15 @@ struct TestDrugVancomycin : public fructose::test_base<TestDrugVancomycin>
         }
 
 
+        if (drugTreatment != nullptr) {
+            delete drugTreatment;
+        }
+        if (drugModel != nullptr) {
+            delete drugModel;
+        }
+        if (component != nullptr) {
+            delete component;
+        }
     }
 };
 

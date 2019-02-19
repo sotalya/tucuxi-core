@@ -96,6 +96,9 @@ parse(int argc, char* argv[])
         CliComputer computer;
         computer.compute(drugPath, inputFileName, outputPath);
 
+        pCmpMgr->unregisterComponent("DrugModelRepository");
+        delete drugModelRepository;
+
         return result;
 
     } catch (const cxxopts::OptionException& e)
@@ -127,6 +130,8 @@ int main(int argc, char** argv)
     auto result = parse(argc, argv);
 
     logHelper.info("Tucuxi console application is exiting...");
+
+    Tucuxi::Common::LoggerHelper::beforeExit();
 
     return 0;
 }

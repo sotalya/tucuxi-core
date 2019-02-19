@@ -33,7 +33,7 @@ void selectRecordedIntakes(
 
 
 // Virtual destructor whose implementation is required for well-formed C++.
-SingleDose::~SingleDose() { }
+// SingleDose::~SingleDose() { }
 
 /// \brief Visitor function's implementation.
 #define DOSAGE_UTILS_IMPL(className) \
@@ -80,7 +80,7 @@ bool timeRangesOverlap(const DosageTimeRange &_first, const DosageTimeRange &_se
 
 
 
-void DosageHistory::mergeDosage(DosageTimeRange *newDosage)
+void DosageHistory::mergeDosage(const DosageTimeRange *newDosage)
 {
     // First remove the existing time ranges that are replaced because of
     // the new dosage

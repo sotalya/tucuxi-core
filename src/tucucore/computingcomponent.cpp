@@ -42,7 +42,7 @@ Tucuxi::Common::Interface* ComputingComponent::createComponent()
 }
 
 
-ComputingComponent::ComputingComponent()
+ComputingComponent::ComputingComponent() : m_models(nullptr)
 {
     registerInterface(dynamic_cast<IComputingService*>(this));
 }
@@ -50,6 +50,9 @@ ComputingComponent::ComputingComponent()
 
 ComputingComponent::~ComputingComponent()
 {
+    if (m_models != nullptr) {
+        delete m_models;
+    }
 }
 
 bool ComputingComponent::initialize()
@@ -442,6 +445,8 @@ ComputingResult ComputingComponent::compute(
 
             APosterioriEtasCalculator etasCalculator;
             etasCalculator.computeAposterioriEtas(intakeSeries, parameterSeries, omega, *residualErrorModel, sampleSeries, etas);
+
+            delete residualErrorModel;
         }
     }
 
@@ -557,13 +562,19 @@ ComputingResult ComputingComponent::compute(
 
 
     ResidualErrorModelExtractor errorModelExtractor;
-    IResidualErrorModel *residualErrorModel = nullptr;
+    std::unique_ptr<IResidualErrorModel> residualErrorModel = nullptr;
+    IResidualErrorModel *residual = nullptr;
     if (errorModelExtractor.extract(_request.getDrugModel().getAnalyteSet()->getAnalytes().at(0)->getResidualErrorModel(),
                                     _request.getDrugModel().getAnalyteSet()->getAnalytes().at(0)->getUnit(),
-                                    covariateSeries, &residualErrorModel)
+                                    covariateSeries, &residual)
         != ResidualErrorModelExtractor::Result::Ok) {
+        if (residual != nullptr) {
+            delete residual;
+        }
         return ComputingResult::Error;
     }
+
+    residualErrorModel = std::unique_ptr<IResidualErrorModel>(residual);
 
 //    const Tucuxi::Core::IResidualErrorModel &residualErrorModel =_request.getDrugModel().getAnalyteSet()->getAnalytes().at(0)->getResidualErrorModel();
 
@@ -703,9 +714,9 @@ DosageTimeRange *ComputingComponent::createDosage(
 
     // At least a number of intervals allowing to fill the interval asked
     nbTimes = static_cast<unsigned int>(std::ceil((_endTime - _startTime) / _candidate.m_interval));
-    LastingDose *lastingDose = new LastingDose(_candidate.m_dose, _routeOfAdministration, _candidate.m_infusionTime, _candidate.m_interval);
-    DosageRepeat *repeat = new DosageRepeat(*lastingDose, nbTimes);
-    DosageTimeRange *newTimeRange = new DosageTimeRange(_startTime, _endTime, *repeat);
+    LastingDose lastingDose(_candidate.m_dose, _routeOfAdministration, _candidate.m_infusionTime, _candidate.m_interval);
+    DosageRepeat repeat(lastingDose, nbTimes);
+    DosageTimeRange *newTimeRange = new DosageTimeRange(_startTime, _endTime, repeat);
     return newTimeRange;
 }
 
@@ -937,6 +948,8 @@ ComputingResult ComputingComponent::compute(
             APosterioriEtasCalculator etasCalculator;
             etasCalculator.computeAposterioriEtas(intakeSeries, parameterSeries, omega, *residualErrorModel, sampleSeries, etas);
         }
+
+        delete residualErrorModel;
     }
 
 
@@ -1030,6 +1043,9 @@ ComputingResult ComputingComponent::compute(
             IntakeExtractor::Result intakeExtractionResult = intakeExtractor.extract(*newHistory, calculationStartTime, newEndTime,
                                                    nbPointsPerHour, intakeSeries);
 
+            delete newHistory;
+            newHistory = nullptr;
+
             if (intakeExtractionResult != IntakeExtractor::Result::Ok) {
                 return ComputingResult::Error;
             }
@@ -1120,6 +1136,8 @@ ComputingResult ComputingComponent::compute(
 
                 dosageCandidates.push_back(dosage);
             }
+
+            delete newDosage;
 
             evaluationResults.push_back(candidateResults);
 
@@ -1275,6 +1293,8 @@ ComputingResult ComputingComponent::compute(
 
             APosterioriEtasCalculator etasCalculator;
             etasCalculator.computeAposterioriEtas(intakeSeries, parameterSeries, omega, *residualErrorModel, sampleSeries, etas);
+
+            delete residualErrorModel;
         }
     }
 

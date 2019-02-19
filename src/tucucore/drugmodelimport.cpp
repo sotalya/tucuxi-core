@@ -128,6 +128,8 @@ DrugModelImport::Result DrugModelImport::importDocument(
         _drugModel->setMetadata(std::unique_ptr<DrugModelMetadata>(metaData));
     }
 
+    delete models;
+
     return getResult();
 
 }
@@ -1597,6 +1599,7 @@ ParameterSetDefinition* DrugModelImport::extractParameterSet(Tucuxi::Common::Xml
 
     for (const auto & correlation : correlations) {
         parameterSet->addCorrelation(*correlation);
+        delete correlation;
     }
     for (const auto & parameter : parameters) {
         parameterSet->addParameter(std::unique_ptr<ParameterDefinition>(parameter));

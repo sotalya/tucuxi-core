@@ -21,6 +21,8 @@ void CliComputer::compute(std::string drugPath,
                           std::string inputFileName,
                           std::string outputPath)
 {
+    TMP_UNUSED_PARAMETER(drugPath);
+
     Tucuxi::Common::LoggerHelper logHelper;
 
 
@@ -87,5 +89,15 @@ void CliComputer::compute(std::string drugPath,
     }
     else {
         logHelper.info("The response files were successfully generated");
+    }
+
+    if (drugTreatment != nullptr) {
+        delete drugTreatment;
+    }
+    if (query != nullptr) {
+        delete query;
+    }
+    if (computingComponent != nullptr) {
+        delete computingComponent;
     }
 }

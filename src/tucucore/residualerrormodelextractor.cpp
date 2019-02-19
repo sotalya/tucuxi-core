@@ -13,6 +13,9 @@ ResidualErrorModelExtractor::ResidualErrorModelExtractor()
 
 ResidualErrorModelExtractor::Result ResidualErrorModelExtractor::extract(const ErrorModel &_errorModel, const Unit &_fromUnit, const CovariateSeries &_covariateSeries, IResidualErrorModel **_residualErrorModel)
 {
+    // At some stage the covariates could influence the error model. Maybe...
+    TMP_UNUSED_PARAMETER(_covariateSeries);
+
     if (_errorModel.m_errorModel == ResidualErrorType::SOFTCODED) {
         // Not supported yet
         return Result::ExtractionError;

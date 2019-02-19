@@ -23,8 +23,6 @@ auto as_integer(Enumeration const value)
     if (!(end.isUndefined() || start < end)) { \
         throw std::runtime_error("[IntakeExtractor] start is greater than end and end is defined"); \
     }
-//    assert (!start.isUndefined()); \
-//    assert (end.isUndefined() || start < end);
 
 
 IntakeExtractor::Result IntakeExtractor::extract(const DosageHistory& _dosageHistory, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, IntakeSeries &_series)
@@ -219,12 +217,12 @@ int IntakeExtractor::extract(const LastingDose &_dosage, const DateTime &_start,
     if ((_dosage.m_routeOfAdministration.getAbsorptionModel() == AbsorptionModel::INFUSION) &&
             (_dosage.m_infusionTime.isEmpty())) {
         IntakeEvent intake(_start, Duration(), _dosage.m_dose, _dosage.getTimeStep(), AbsorptionModel::INTRAVASCULAR,
-                           _dosage.m_infusionTime, _dosage.getTimeStep().toHours() * _nbPointsPerHour);
+                           _dosage.m_infusionTime, static_cast<int>(_dosage.getTimeStep().toHours() * _nbPointsPerHour));
         _series.push_back(intake);
     }
     else {
         IntakeEvent intake(_start, Duration(), _dosage.m_dose, _dosage.getTimeStep(), _dosage.m_routeOfAdministration.getAbsorptionModel(),
-                           _dosage.m_infusionTime, _dosage.getTimeStep().toHours() * _nbPointsPerHour);
+                           _dosage.m_infusionTime, static_cast<int>(_dosage.getTimeStep().toHours() * _nbPointsPerHour));
         _series.push_back(intake);
     }
     return 1;
@@ -238,13 +236,13 @@ int IntakeExtractor::extract(const DailyDose &_dosage, const DateTime &_start, c
             (_dosage.m_infusionTime.isEmpty())) {
 
         IntakeEvent intake(_start, Duration(), _dosage.m_dose, _dosage.getTimeStep(), AbsorptionModel::INTRAVASCULAR,
-                           _dosage.m_infusionTime, _dosage.getTimeStep().toHours() * _nbPointsPerHour);
+                           _dosage.m_infusionTime, static_cast<int>(_dosage.getTimeStep().toHours() * _nbPointsPerHour));
         _series.push_back(intake);
     }
     else {
 
         IntakeEvent intake(_start, Duration(), _dosage.m_dose, _dosage.getTimeStep(), _dosage.m_routeOfAdministration.getAbsorptionModel(),
-                           _dosage.m_infusionTime, _dosage.getTimeStep().toHours() * _nbPointsPerHour);
+                           _dosage.m_infusionTime, static_cast<int>(_dosage.getTimeStep().toHours() * _nbPointsPerHour));
         _series.push_back(intake);
     }
     return 1;
@@ -258,13 +256,13 @@ int IntakeExtractor::extract(const WeeklyDose &_dosage, const DateTime &_start, 
             (_dosage.m_infusionTime.isEmpty())) {
 
         IntakeEvent intake(_start, Duration(), _dosage.m_dose, _dosage.getTimeStep(), AbsorptionModel::INTRAVASCULAR,
-                           _dosage.m_infusionTime, _dosage.getTimeStep().toHours() * _nbPointsPerHour);
+                           _dosage.m_infusionTime, static_cast<int>(_dosage.getTimeStep().toHours() * _nbPointsPerHour));
         _series.push_back(intake);
     }
     else {
 
         IntakeEvent intake(_start, Duration(), _dosage.m_dose, _dosage.getTimeStep(), _dosage.m_routeOfAdministration.getAbsorptionModel(),
-                           _dosage.m_infusionTime, _dosage.getTimeStep().toHours() * _nbPointsPerHour);
+                           _dosage.m_infusionTime, static_cast<int>(_dosage.getTimeStep().toHours() * _nbPointsPerHour));
         _series.push_back(intake);
     }
     return 1;

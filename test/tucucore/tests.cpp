@@ -467,5 +467,8 @@ int main(int argc, char** argv)
         std::cout << "Drug Vancomycin test succeeded\n";
     }
 
+    // Delete the logger to avoid a warning when using valgrind --leak-check=full
+    Tucuxi::Common::LoggerHelper::beforeExit();
+
     return tot_res;
 }

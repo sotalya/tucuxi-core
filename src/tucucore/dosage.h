@@ -62,6 +62,9 @@ void selectRecordedIntakes(
 class Dosage
 {
 public:
+
+    virtual ~Dosage() {}
+
     /// \brief Extract drugs' intake in a given time interval (visitor pattern).
     /// The intakes will be added to the series passed as a sequence
     /// \param _extractor Intake extractor.
@@ -98,6 +101,9 @@ public:
 class DosageUnbounded : public Dosage
 {
 public:
+
+    ~DosageUnbounded() override {}
+
     /// \brief Return a pointer to a clone of the correct subclass.
     /// \return Pointer to a new object of subclass' type.
     virtual std::unique_ptr<DosageUnbounded> clone() const = 0;
@@ -109,6 +115,8 @@ class DosageBounded : public Dosage
 {
 public:
     friend IntakeExtractor;
+
+    ~DosageBounded() override {}
 
     int extract(IntakeExtractor &_extractor, const DateTime &_start, const DateTime &_end,double _nbPointsPerHour, IntakeSeries &_series) const override;
 
@@ -154,6 +162,8 @@ public:
         m_dosage = _other.m_dosage->clone();
     }
 
+    ~DosageLoop() override {}
+
     FormulationAndRoute getLastFormulationAndRoute() const override
     {
         return m_dosage->getLastFormulationAndRoute();
@@ -197,6 +207,7 @@ public:
         m_lastDoseTime = _other.m_lastDoseTime;
     }
 
+    ~DosageSteadyState() override {}
 
     /// \brief Return the instant of the first intake in the given interval.
     /// \param _intervalStart Starting point of the first element of the sequence.
@@ -246,6 +257,8 @@ public:
         m_dosage = _other.m_dosage->clone();
         m_nbTimes = _other.m_nbTimes;
     }
+
+    ~DosageRepeat() override {}
 
     FormulationAndRoute getLastFormulationAndRoute() const override
     {
@@ -302,6 +315,8 @@ public:
             m_dosages.emplace_back(dosage->clone());
         }
     }
+
+    ~DosageSequence() override {}
 
     /// \brief Add a dosage to the sequence.
     /// \param _dosage Dosage to add.
@@ -377,6 +392,7 @@ public:
         }
     }
 
+    ~ParallelDosageSequence() override {}
 
     /// \brief Add a dosage to the sequence, along with its offset with respect to the beginnning of the sequence.
     /// \param _dosage Dosage to add.
@@ -461,7 +477,8 @@ public:
     }
 
     /// \brief Empty destructor, used to make the class abstract (and thus force the instantiation of subclasses).
-    virtual ~SingleDose() = 0;
+    // virtual ~SingleDose() = 0;
+    ~SingleDose() override {};
 
     FormulationAndRoute getLastFormulationAndRoute() const override
     {
@@ -517,6 +534,16 @@ public:
 
     DOSAGE_UTILS(DosageBounded, LastingDose);
 
+
+    /// \brief Copy-construct a dosage repetition.
+    /// \param _other Dosage repetition to clone.
+    LastingDose(const LastingDose &_other) : SingleDose (_other)
+    {
+        m_interval = _other.m_interval;
+    }
+
+    ~LastingDose() override {}
+
     /// \brief Return the increment between two successive intakes.
     /// \return Interval between two lasting doses.
     Duration getTimeStep() const override
@@ -555,6 +582,8 @@ public:
     {
         m_timeOfDay = _timeOfDay;
     }
+
+    ~DailyDose() override {}
 
     DOSAGE_UTILS(DosageBounded, DailyDose);
 
@@ -610,6 +639,8 @@ public:
         }
         m_dayOfWeek = _dayOfWeek;
     }
+
+    ~WeeklyDose() override {}
 
     DOSAGE_UTILS(DosageBounded, WeeklyDose);
 
@@ -861,7 +892,7 @@ public:
     /// replace them by the new one in case of overlapping.
     /// TODO : A test for this function needs to be written
     ///
-    void mergeDosage(DosageTimeRange *newDosage);
+    void mergeDosage(const DosageTimeRange *newDosage);
 
     FormulationAndRoute getLastFormulationAndRoute() const;
 

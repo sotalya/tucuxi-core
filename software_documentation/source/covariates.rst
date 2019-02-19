@@ -94,3 +94,46 @@ Tucuxi is then able to calculate the age based on the birthdate, following the
 granularity defined in the drug model covariate. It will therefore be automatically
 updated by the software. For instance, in a model of gentamicin for neo-nates,
 the ageInDays will be updated every day automatically.
+
+Here is an example of an age covariate in a drug model file:
+
+
+.. code-block:: xml
+
+    <covariate>
+        <covariateId>age</covariateId>
+        <covariateName>
+            <name lang="en">Age</name>
+            <name lang="fr">Age</name>
+        </covariateName>
+        <description>
+            <desc lang="en">Age of the patient, in years</desc>
+            <desc lang="fr">Âge du patient, en années</desc>
+        </description>
+        <unit>y</unit>
+        <covariateType>ageInYears</covariateType>
+        <dataType>double</dataType>
+        <interpolationType>direct</interpolationType>
+        <covariateValue>
+            <standardValue>50</standardValue>
+        </covariateValue>
+        <validation>
+            <errorMessage><text lang="fr"></text></errorMessage>
+            <operation>
+                <softFormula>
+                    <inputs>
+                        <input>
+                            <id>age</id>
+                            <type>double</type>
+                        </input>
+                            </inputs>
+                    <code><![CDATA[return ((age >= 20) && (age <= 88));
+                        ]]>
+                    </code>
+                </softFormula>
+                <comments/>
+            </operation>
+            <comments/>
+        </validation>
+        <comments/>
+    </covariate>

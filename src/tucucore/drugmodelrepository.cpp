@@ -30,6 +30,13 @@ DrugModelRepository::DrugModelRepository()
     registerInterface(dynamic_cast<IDrugModelRepository*>(this));
 }
 
+DrugModelRepository::~DrugModelRepository()
+{
+    for (auto drugModel : m_drugModels) {
+        delete drugModel;
+    }
+}
+
 Tucuxi::Common::Interface* DrugModelRepository::getInterface(const std::string &_name)
 {
     return Tucuxi::Common::Component::getInterfaceImpl(_name);
