@@ -78,7 +78,8 @@ HEADERS += \
     $$PWD/../../src/tucucore/version.h \
     $$PWD/../../src/tucucore/drugmodel/errormodel.h \
     $$PWD/../../src/tucucore/iresidualerrormodel.h \
-    $$PWD/../../src/tucucore/residualerrormodelextractor.h
+    $$PWD/../../src/tucucore/residualerrormodelextractor.h \
+    $$PWD/../../src/tucucore/drugfilevalidator.h
 
 SOURCES += \
     $$PWD/../../src/tucucore/drugmodel/drugmodel.cpp \
@@ -145,7 +146,8 @@ SOURCES += \
     $$PWD/../../src/tucucore/overloadevaluator.cpp \
     $$PWD/../../src/tucucore/version.cpp \
     $$PWD/../../src/tucucore/drugmodel/errormodel.cpp \
-    $$PWD/../../src/tucucore/residualerrormodelextractor.cpp
+    $$PWD/../../src/tucucore/residualerrormodelextractor.cpp \
+    $$PWD/../../src/tucucore/drugfilevalidator.cpp
 
 DISTFILES += \
     $$PWD/../../src/tucucore/makefile

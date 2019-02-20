@@ -39,6 +39,7 @@ SOURCES := \
            cyclestatisticscalculator.cpp \
            dosage.cpp \
            drugdomainconstraintsevaluator.cpp \
+		   drugfilevalidator.cpp \
            drugmodelimport.cpp \
            drugmodelrepository.cpp \
            hardcodedoperation.cpp \
@@ -77,7 +78,8 @@ INCLUDES := . \
             ../../libs/eigen-3.3.2 \
             ../../libs/boost-1.63.0 \
             ../../libs/date-master-20170711 \
-            ../../libs/spdlog-master-20170622/include
+            ../../libs/spdlog-master-20170622/include \
+			../../libs/rapidjson-master-20190220/include
 LIBS :=
 EXTLIBS :=
 DEFINES :=

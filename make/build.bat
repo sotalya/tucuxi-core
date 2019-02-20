@@ -38,7 +38,7 @@ if "%BuildLibs%" == "1" (
   )
 )
 
-for %%i in (tucucommon tucucore tucucli tuculicense) do (
+for %%i in (tucucommon tucucore tucucli tucuvalidator tuculicense) do (
   echo *********************************************
   echo *** Compiling %%i
   cd "%TUCUXI_ROOT%\Src\%%i"
