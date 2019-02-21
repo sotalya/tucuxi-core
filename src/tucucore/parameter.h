@@ -73,6 +73,11 @@ public:
         }
     }
 
+    void setEventTime(const DateTime &_date)
+    {
+        m_time = _date;
+    }
+
 
     /// \brief Add a parameter event to the event set.
     /// \param _definition Parameter definition for the parameter event occurred.
@@ -151,7 +156,7 @@ public:
     // To allow the ParametersExtractor to manipulate m_parameterSets
     friend ParametersExtractor;
 
-private:
+// private:
     std::vector<ParameterSetEvent> m_parameterSets;
 };
 

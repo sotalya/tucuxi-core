@@ -81,8 +81,9 @@ ComputingResult ComputingComponent::compute(const ComputingRequest &_request, st
         ComputingResult result = ComputingResult::Success;
         while (it != _request.getComputingTraits().end()) {
 
-            if (it->get()->compute(*this, _request, _response) != ComputingResult::Success)
+            if (it->get()->compute(*this, _request, _response) != ComputingResult::Success) {
                 result = ComputingResult::Error;
+            }
             it++;
         }
 
@@ -278,7 +279,25 @@ ComputingResult ComputingComponent::generalExtractions(
 #ifdef POPPARAMETERSFROMDEFAULTVALUES
         parametersExtractionResult = parameterExtractor.extractPopulation(_parameterSeries);
 #else
-        parametersExtractionResult = parameterExtractor.extract(_parameterSeries);
+        //parametersExtractionResult = parameterExtractor.extract(_parameterSeries);
+
+        ParameterSetSeries intermediateParameterSeries;
+
+        parametersExtractionResult = parameterExtractor.extract(intermediateParameterSeries);
+
+        if (parametersExtractionResult != ParametersExtractor::Result::Ok) {
+            m_logger.error("Can not extract parameters");
+            return ComputingResult::Error;
+        }
+
+        // The intermediateParameterSeries contains changes of parameters, so we build a full set of parameter
+        // for each event.
+        parametersExtractionResult = parameterExtractor.buildFullSet(intermediateParameterSeries, _parameterSeries);
+        if (parametersExtractionResult != ParametersExtractor::Result::Ok) {
+            m_logger.error("Can not consolidate parameters");
+            return ComputingResult::Error;
+        }
+
 #endif // POPPARAMETERSFROMDEFAULTVALUES
 
         if (parametersExtractionResult != ParametersExtractor::Result::Ok) {
@@ -291,7 +310,6 @@ ComputingResult ComputingComponent::generalExtractions(
         ParameterSetSeries intermediateParameterSeries;
 
         parametersExtractionResult = parameterExtractor.extract(intermediateParameterSeries);
-
 
         if (parametersExtractionResult != ParametersExtractor::Result::Ok) {
             m_logger.error("Can not extract parameters");

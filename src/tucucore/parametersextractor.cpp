@@ -224,6 +224,8 @@ ParametersExtractor::Result ParametersExtractor::buildFullSet(const ParameterSet
     // Then iterate over the modifications
     for(size_t i = 1; i < _inputSeries.m_parameterSets.size(); i++) {
 
+        current.setEventTime(_inputSeries.m_parameterSets.at(i).getEventTime());
+
         // And for each event, update the parameters that change at that time
         auto it = _inputSeries.m_parameterSets.at(i).begin();
         while (it != _inputSeries.m_parameterSets.at(i).end()) {
