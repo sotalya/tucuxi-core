@@ -41,6 +41,10 @@ public:
 
 bool DrugFileValidator::validate(std::string drugFileName, std::string testFileName)
 {
+
+    const string m_sDATE_FORMAT = "%Y-%m-%dT%H:%M:%S";
+
+
     Tucuxi::Common::LoggerHelper logger;
     rapidjson::Document document;  // Default template parameter uses UTF8 and MemoryPoolAllocator.
 
@@ -76,9 +80,21 @@ bool DrugFileValidator::validate(std::string drugFileName, std::string testFileN
 
             std::string testId = test["testId"].GetString();
             std::string comment = test["comment"].GetString();
+            std::string sampleDateString;
+            Common::DateTime sampleDate;
 
-            Tucuxi::Common::DateTime startDate(std::chrono::hours(2));
-            Tucuxi::Common::DateTime endDate(std::chrono::hours(10));
+            if (test.HasMember("sampleDate")) {
+                sampleDateString = test["sampleDate"].GetString();
+                sampleDate = Common::DateTime(sampleDateString, m_sDATE_FORMAT);
+            }
+            else {
+                sampleDate = Common::DateTime(std::chrono::hours(365 * 2 * 24));
+            }
+
+            Tucuxi::Common::DateTime startDate(sampleDate);
+            startDate.addYears(-1);
+            Tucuxi::Common::DateTime endDate(sampleDate);
+            startDate.addYears(1);
 
             Tucuxi::Core::PatientVariates patientVariates;
 
@@ -107,8 +123,6 @@ bool DrugFileValidator::validate(std::string drugFileName, std::string testFileN
                 // If the covariate is a date, go through a DateTime to reconvert it to a string
                 // to be sure it has the correct format
                 if (dataType == Core::DataType::Date) {
-
-                    const string m_sDATE_FORMAT = "%Y-%m-%dT%H:%M:%S";
 
                     Common::DateTime valueAsDate(value, m_sDATE_FORMAT);
 
@@ -175,7 +189,6 @@ bool DrugFileValidator::validate(std::string drugFileName, std::string testFileN
                 return false;
             }
 
-            Tucuxi::Common::DateTime sampleDate(std::chrono::hours(7));
             // And for each event, update the parameters that change at that time
 
             const double threshold = 0.0001;

@@ -17,7 +17,6 @@ parse(int argc, char* argv[])
     // Get application folder
     std::string appFolder = Tucuxi::Common::Utils::getAppFolder(argv);
 
-    Tucuxi::Common::LoggerHelper logHelper;
 
     try
     {
@@ -32,6 +31,7 @@ parse(int argc, char* argv[])
                 .add_options()
                 ("d,drugfile", "Drug file", cxxopts::value<std::string>())
                 ("t,testfile", "Tests to be conducted", cxxopts::value<std::string>())
+                ("l,logfile", "Log file", cxxopts::value<std::string>())
                 ("help", "Print help")
                 ;
 
@@ -64,8 +64,21 @@ parse(int argc, char* argv[])
             exit(0);
         }
 
+        std::string logFileName;
+        if (result.count("logfile")) {
+            logFileName = result["logfile"].as<std::string>();
+        }
+        else {
+            logFileName = "./tucuvalidator.log";
+        }
+
+
+        Tucuxi::Common::LoggerHelper::init(logFileName);
+        Tucuxi::Common::LoggerHelper logHelper;
+
         logHelper.info("Drug file : {}", drugFileName);
         logHelper.info("Test file : {}", testsFileName);
+        logHelper.info("Log file  : {}", logFileName);
 
 
         Tucuxi::Core::DrugFileValidator validator;
@@ -76,6 +89,7 @@ parse(int argc, char* argv[])
 
     } catch (const cxxopts::OptionException& e)
     {
+        Tucuxi::Common::LoggerHelper logHelper;
         logHelper.error("error parsing options: {}", e.what());
         exit(1);
     }
@@ -94,7 +108,6 @@ int main(int argc, char** argv)
     // Get application folder
     std::string appFolder = Tucuxi::Common::Utils::getAppFolder(argv);
 
-    Tucuxi::Common::LoggerHelper::init(appFolder + "/tucuvalidator.log");
 
     auto result = parse(argc, argv);
 
