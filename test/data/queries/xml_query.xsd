@@ -193,10 +193,10 @@
 			<xs:simpleType>
 				<!-- As seen in Tucux's DataType Enum -->
 				<xs:restriction base="xs:string">
-					<xs:enumeration value="Int" />
-					<xs:enumeration value="Double" />
-					<xs:enumeration value="Bool" />
-					<xs:enumeration value="Date" />
+					<xs:enumeration value="int" />
+					<xs:enumeration value="double" />
+					<xs:enumeration value="bool" />
+					<xs:enumeration value="date" />
 				</xs:restriction>
 			</xs:simpleType>
 		</xs:element>

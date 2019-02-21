@@ -359,13 +359,13 @@ unique_ptr<CovariateData> QueryImport::createCovariateData(Common::XmlNodeIterat
 
     string dataTypeString = getChildStringValue(_covariateDataRootIterator, DATATYPE_NODE_NAME);
     Core::DataType dataType;
-    if (dataTypeString == "Int") {
+    if (dataTypeString == "int") {
         dataType = Core::DataType::Int;
-    } else if (dataTypeString == "Double") {
+    } else if (dataTypeString == "double") {
         dataType = Core::DataType::Double;
-    } else if (dataTypeString == "Bool") {
+    } else if (dataTypeString == "bool") {
         dataType = Core::DataType::Bool;
-    } else if (dataTypeString == "Date") {
+    } else if (dataTypeString == "date") {
         dataType = Core::DataType::Date;
     } else {
         // TODO

@@ -121,7 +121,7 @@
 	        		<date>2018-07-11T10:45:30</date>
 	        		<value>1990-01-01T00:00:00</value>
 	        		<unit></unit>
-              		<dataType>Date</dataType>
+              		<dataType>date</dataType>
 	        		<nature>discrete</nature>
 	        	</covariate> -->
 	        	<covariate>
@@ -129,7 +129,7 @@
 	        		<date>2018-07-11T10:45:30</date>
 	        		<value>40</value>
 	        		<unit>kg</unit>
-              		<dataType>Double</dataType>
+              		<dataType>double</dataType>
 	        		<nature>discrete</nature>
 	        	</covariate>
 	        </covariates>
