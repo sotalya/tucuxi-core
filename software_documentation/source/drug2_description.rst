@@ -883,6 +883,8 @@ Used by :ref:`errorModel`.
 	 mixed , "A mixed error model. Requires two sigmas"
    softcoded , "The error model is defined by the formula following the declaration of the errorModelType"
 
+For **additive**, **proportional** and **exponential**, a single sigma is required. For **mixed**, two sigmas are mandatory: The first corresponds to the additive error, and the second to the proportional error.
+
 For each error model except the **softcoded** one, the model is implemented in the software. For a **softcoded**, the formula supplied in the file is used instead.
 
 
@@ -1103,8 +1105,6 @@ Here is an example of time consideration:
 	:language: xml
 
 
-The half-life describes the time it takes for the plasma concentration, or the amount of drug in the body, to be reduced by 50%. Therefore, in each succeeding half-life, less drug is eliminated. After one half-life the amount of drug remaining in the body is 50%, after two half-lives 25%, etc. After 4 half-lives the amount of drug (6.25%) is considered to be negligible regarding its therapeutic effects.
-
 The second part of the time considerations consists in the time after which a measure is considered irrelevant, and shall not be used for a posteriori computations.
 
 .. csv-table:: timeConsiderations content
@@ -1124,8 +1124,16 @@ The second part of the time considerations consists in the time after which a me
 
 
 
-The half-life was used to determine the residual concentration of a drug at steady-state.
-The half-life duration given above is multiplied by the cycle multiplier in order to find out how many cycles need to be completed before reaching the steady-state. It is then possible to compute the residual concentration of the drug at steady-state. In most cases, a multiplier of 10 is sufficient.
+.. _halfLife:
+
+Half life
+^^^^^^^^^
+
+
+The half-life describes the time it takes for the plasma concentration, or the amount of drug in the body, to be reduced by 50%. Therefore, in each succeeding half-life, less drug is eliminated. After one half-life the amount of drug remaining in the body is 50%, after two half-lives 25%, etc. After 4 half-lives the amount of drug (6.25%) is considered to be negligible regarding its therapeutic effects.
+
+The half-life is used to determine the residual concentration of a drug at steady-state.
+The half-life duration given above is multiplied by the cycle multiplier in order to find out how many cycles need to be completed before reaching the steady-state. It is then possible to compute the residual concentration of the drug at steady-state. In most cases, a multiplier of 10 is sufficient, but it is suggested to have a a bigger multiplier. At the end, the automated tests allow to detect if a multiplier was suffenciently big.
 
 
 
