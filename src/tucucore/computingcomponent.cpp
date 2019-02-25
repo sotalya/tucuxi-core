@@ -149,6 +149,7 @@ ComputingResult ComputingComponent::generalExtractions(
     IntakeExtractor::Result intakeExtractionResult = intakeExtractor.extract(_request.getDrugTreatment().getDosageHistory(), fantomStart /*_traits->getStart()*/, _traits->getEnd() /* + Duration(24h)*/, nbPointsPerHour, _intakeSeries);
 
     if (intakeExtractionResult != IntakeExtractor::Result::Ok) {
+        m_logger.error("Error with the intakes extraction.");
         return ComputingResult::Error;
     }
 
@@ -162,7 +163,16 @@ ComputingResult ComputingComponent::generalExtractions(
 
     if (nIntakes > 0) {
 
+        // Ensure that time ranges are correctly handled. We set again the interval based on the start of
+        // next intake
+        for (int i = 0; i < _intakeSeries.size() - 1; i++) {
+            Duration interval = _intakeSeries.at(i+1).getEventTime() - _intakeSeries.at(i).getEventTime();
+            _intakeSeries.at(i).setNbPoints(interval.toHours() * nbPointsPerHour);
+            _intakeSeries.at(i).setInterval(interval);
+        }
+
         const DosageTimeRangeList& timeRanges = _request.getDrugTreatment().getDosageHistory().getDosageTimeRanges();
+
 
         IntakeEvent *lastIntake = &(_intakeSeries.at(nIntakes - 1));
 

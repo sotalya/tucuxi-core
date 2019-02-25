@@ -98,6 +98,7 @@ protected:
     double getChildDoubleValue(Common::XmlNodeIterator _rootIterator, std::string _childName) const;
     bool getChildBoolValue(Common::XmlNodeIterator _rootIterator, std::string _childName) const;
     Common::DateTime getChildDateTimeValue(Common::XmlNodeIterator _rootIterator, std::string _childName) const;
+    Common::Duration getChildDuration(Common::XmlNodeIterator _rootIterator, std::string _childName) const;
 
 protected:
     static const std::string m_sDATE_FORMAT;

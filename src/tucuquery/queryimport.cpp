@@ -602,7 +602,7 @@ unique_ptr<Core::DosageBounded> QueryImport::createDosageBounded(Common::XmlNode
 
         string intervalValue = dosageBoundedIterator->getChildren(INTERVAL_NODE_NAME)->getValue();
         Common::TimeOfDay inter = Common::DateTime(intervalValue, "%H:%M:%S").getTimeOfDay();
-        Common::Duration interval =inter.getRealDuration();
+        Common::Duration interval = getChildDuration(dosageBoundedIterator, INTERVAL_NODE_NAME);
 
         Common::XmlNodeIterator doseRootIterator = dosageBoundedIterator->getChildren(DOSE_NODE_NAME);
         Core::DoseValue doseValue = getChildDoubleValue(doseRootIterator, DOSE_VALUE_NODE_NAME);
@@ -922,6 +922,24 @@ Common::DateTime QueryImport::getChildDateTimeValue(Common::XmlNodeIterator _roo
     string value = _rootIterator->getChildren(_childName)->getValue();
     Common::DateTime datetime(value, m_sDATE_FORMAT);
     return datetime;
+}
+
+Common::Duration QueryImport::getChildDuration(Common::XmlNodeIterator _rootIterator, string _childName) const
+{
+    string s = _rootIterator->getChildren(_childName)->getValue();
+    std::string delimiter = ":";
+
+    size_t pos = 0;
+    std::string token;
+
+    std::vector<int> values;
+    while ((pos = s.find(delimiter)) != std::string::npos) {
+        token = s.substr(0, pos);
+        values.push_back(std::stoi(token));
+        s.erase(0, pos + delimiter.length());
+    }
+    values.push_back(std::stoi(s));
+    return Common::Duration(std::chrono::hours(values[0]), std::chrono::minutes(values[1]), std::chrono::seconds(values[2]));
 }
 
 } // namespace Query
