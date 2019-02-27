@@ -115,7 +115,6 @@ bool DrugFileValidator::validate(std::string drugFileName, std::string testFileN
                 } else if (dataTypeString == "date") {
                     dataType = Core::DataType::Date;
                 } else {
-                    // TODO
                     logger.error("Data type unknown");
                     validationResult = false;
                 }

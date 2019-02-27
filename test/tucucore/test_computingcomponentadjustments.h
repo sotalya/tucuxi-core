@@ -75,7 +75,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
         buildDrugTreatment(drugTreatment, route);
 
 
-        // TODO : Construct the adjustment traits object
+        // Construct the adjustment traits object
         RequestResponseId requestResponseId = "1";
         Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
         Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
@@ -140,7 +140,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
         buildDrugTreatment(drugTreatment, route);
 
 
-        // TODO : Construct the adjustment traits object
+        // Construct the adjustment traits object
         RequestResponseId requestResponseId = "1";
         Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
         Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
@@ -204,7 +204,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
         buildDrugTreatment(drugTreatment, route);
 
 
-        // TODO : Construct the adjustment traits object
+        // Construct the adjustment traits object
         RequestResponseId requestResponseId = "1";
         Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
         Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
@@ -264,7 +264,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
         buildDrugTreatment(drugTreatment, route);
 
 
-        // TODO : Construct the adjustment traits object
+        // Construct the adjustment traits object
         RequestResponseId requestResponseId = "1";
         Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
         Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
@@ -328,7 +328,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
         buildDrugTreatment(drugTreatment, route);
 
 
-        // TODO : Construct the adjustment traits object
+        // Construct the adjustment traits object
         RequestResponseId requestResponseId = "1";
         Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
         Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
@@ -392,7 +392,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
         buildDrugTreatment(drugTreatment, route);
 
 
-        // TODO : Construct the adjustment traits object
+        // Construct the adjustment traits object
         RequestResponseId requestResponseId = "1";
         Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
         Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
@@ -457,7 +457,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
 
 
 
-        // TODO : Construct the adjustment traits object
+        // Construct the adjustment traits object
         RequestResponseId requestResponseId = "1";
         Tucuxi::Common::DateTime start(2018_y / sep / 4, 8h + 0min);
         Tucuxi::Common::DateTime end(2018_y / sep / 10, 8h + 0min);
@@ -524,7 +524,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
         buildDrugTreatment(drugTreatment, route);
 
 
-        // TODO : Construct the adjustment traits object
+        // Construct the adjustment traits object
         RequestResponseId requestResponseId = "1";
         Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
         Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
@@ -589,7 +589,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
             buildDrugTreatment(drugTreatment, route);
 
 
-            // TODO : Construct the adjustment traits object
+            // Construct the adjustment traits object
             RequestResponseId requestResponseId = "1";
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
@@ -678,7 +678,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
         drugTreatment->getModifiableDosageHistory().addTimeRange(*jun2018);
 
 
-        // TODO : Construct the adjustment traits object
+        // Construct the adjustment traits object
         RequestResponseId requestResponseId = "1";
         Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
         Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);

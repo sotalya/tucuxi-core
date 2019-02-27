@@ -35,6 +35,7 @@ class ComputingTraitAtMeasures;
 class ComputingTraitSinglePoints;
 class ComputingTraitStandard;
 class HalfLife;
+class GeneralExtractor;
 
 
 
@@ -62,10 +63,8 @@ protected:
 
 private:
 
-
-    Duration secureStartDuration(const HalfLife &_halfLife);
-
     PkModelCollection *m_models;
+    GeneralExtractor *m_generalExtractor;
 
     Tucuxi::Common::LoggerHelper m_logger;
 
@@ -100,15 +99,6 @@ private:
             const ComputingRequest &_request,
             std::unique_ptr<ComputingResponse> &_response);
 
-    ComputingResult generalExtractions(
-            const Tucuxi::Core::ComputingTraitStandard *_traits,
-            const ComputingRequest &_request,
-            std::shared_ptr<PkModel> &_pkModel,
-            IntakeSeries &_intakeSeries,
-            CovariateSeries &_covariatesSeries,
-            ParameterSetSeries &_parameterSeries,
-            Common::DateTime &_calculationStartTime);
-
     ComputationResult computeConcentrations(
         ConcentrationPredictionPtr &_prediction,
         bool _isAll,
@@ -120,24 +110,6 @@ private:
         const IResidualErrorModel &_residualErrorModel = EMPTY_RESIDUAL_ERROR_MODEL,
         const Deviations& _eps = Deviations(0),
         bool _isFixedDensity = 0);
-
-    ComputationResult extractError(
-        const DrugErrorModel &_errorMode,
-        const ParameterDefinitions &_parameterDefs,
-        OmegaMatrix &_omega,
-        IResidualErrorModel &_residualErrorModel)
-    {
-        TMP_UNUSED_PARAMETER(_errorMode);
-        TMP_UNUSED_PARAMETER(_parameterDefs);
-        TMP_UNUSED_PARAMETER(_omega);
-        TMP_UNUSED_PARAMETER(_residualErrorModel);
-        // TODO YJE
-        return ComputationResult::Failure;
-    }
-
-    ComputationResult extractOmega(
-        const DrugModel &_drugModel,
-        OmegaMatrix &_omega);
 
     std::vector<FullDosage> sortAndFilterCandidates(std::vector<FullDosage> &_candidates, BestCandidatesOption _option);
 

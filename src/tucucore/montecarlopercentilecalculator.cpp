@@ -693,10 +693,16 @@ IPercentileCalculator::ComputingResult AposterioriMonteCarloPercentileCalculator
 
     // TODO : These epsilons could be stored in a cache to save time
     std::vector<Deviations> epsilons(reSamples);
+    int nbEpsilons = _residualErrorModel.nbEpsilons();
     // We fill the epsilons
     for (std::size_t p = 0; p < reSamples; p++) {
-        // TODO : I think we will have the same value for each epsilon of a specific sample
-        epsilons[p] = Deviations(_residualErrorModel.nbEpsilons(), normalDistribution(rnGenerator));
+        epsilons[p] = Deviations(nbEpsilons, normalDistribution(rnGenerator));
+        // If more than one epsilon, fill the remaining ones with new values
+        if (nbEpsilons > 1) {
+            for (int e = 1; e < nbEpsilons; e++) {
+                epsilons[p][e] = normalDistribution(rnGenerator);
+            }
+        }
     }
 
     std::vector<Etas> RealEtaSamples(reSamples);

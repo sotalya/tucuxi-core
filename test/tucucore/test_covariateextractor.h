@@ -748,22 +748,22 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
 
             fructose_assert(refreshMap.size() == 403);
             // 17.08.2017 @ 14h00 (start)
-            fructose_assert_eq(refreshMap[DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0)].size(), 3);
+            fructose_assert_eq(refreshMap[DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0)].size(), static_cast<size_t>(3));
             CHECK_REFRESH(AgeDays, DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0), refreshMap);
             CHECK_REFRESH(AgeMonths, DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0), refreshMap);
             CHECK_REFRESH(AgeYears, DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0), refreshMap);
             // 17.08.2017 @ 14h15
-            fructose_assert_eq(refreshMap[DATE_TIME_NO_VAR(2017, 8, 17, 14, 15, 0)].size(), 1);
+            fructose_assert_eq(refreshMap[DATE_TIME_NO_VAR(2017, 8, 17, 14, 15, 0)].size(), static_cast<size_t>(1));
             CHECK_REFRESH(AgeDays, DATE_TIME_NO_VAR(2017, 8, 17, 14, 15, 0), refreshMap);
 
             // 13.09.2017
-            fructose_assert_eq(refreshMap[DATE_TIME_NO_VAR(2017, 9, 13, 14, 15, 0)].size(), 2);
+            fructose_assert_eq(refreshMap[DATE_TIME_NO_VAR(2017, 9, 13, 14, 15, 0)].size(), static_cast<size_t>(2));
             CHECK_REFRESH(AgeDays, DATE_TIME_NO_VAR(2017, 9, 13, 14, 15, 0), refreshMap);
             CHECK_REFRESH(AgeMonths, DATE_TIME_NO_VAR(2017, 9, 13, 14, 15, 0), refreshMap);
 
             // 13.12.2017
-            fructose_assert_eq(refreshMap.count(DATE_TIME_NO_VAR(2017, 12, 13, 14, 0, 0)), 0);
-            fructose_assert_eq(refreshMap[DATE_TIME_NO_VAR(2017, 12, 13, 14, 15, 0)].size(), 3);
+            fructose_assert_eq(refreshMap.count(DATE_TIME_NO_VAR(2017, 12, 13, 14, 0, 0)), static_cast<size_t>(0));
+            fructose_assert_eq(refreshMap[DATE_TIME_NO_VAR(2017, 12, 13, 14, 15, 0)].size(), static_cast<size_t>(3));
             CHECK_REFRESH(AgeDays, DATE_TIME_NO_VAR(2017, 12, 13, 14, 15, 0), refreshMap);
             CHECK_REFRESH(AgeMonths, DATE_TIME_NO_VAR(2017, 12, 13, 14, 15, 0), refreshMap);
             CHECK_REFRESH(AgeYears, DATE_TIME_NO_VAR(2017, 12, 13, 14, 15, 0), refreshMap);

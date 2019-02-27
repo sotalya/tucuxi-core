@@ -45,7 +45,8 @@ public:
           m_infusionTime(_infusionTime),
           m_calculator(nullptr)
     {
-        m_nbPoints = _nbPoints % 2 != 0 ? _nbPoints : _nbPoints + 1;  // Must use an odd number
+        // YTA : I don't get why we should have odd numbers...
+        m_nbPoints = _nbPoints; // % 2 != 0 ? _nbPoints : _nbPoints + 1;  // Must use an odd number
     }
 
     /// \brief Destructor
