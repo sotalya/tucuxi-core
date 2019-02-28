@@ -16,6 +16,7 @@ namespace Core {
 class NAME : public HardcodedOperation                                              \
 {                                                                                   \
 public:                                                                             \
+    NAME() {fillRequiredInputs();m_filledInputs = true;} \
     virtual std::unique_ptr<Operation> clone() const                                \
     {                                                                               \
         return std::unique_ptr<Operation>(new NAME(*this));                         \

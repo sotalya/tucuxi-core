@@ -117,7 +117,7 @@ OperationEGFRCockcroftGaultGeneral::compute(const OperationInputList &_inputs, d
 
     isMale = (sex > 0.5);
 
-    _result = (140 - age) * weight / creatinine * (isMale ? 1.23 : 1.04);
+    _result = static_cast<double>(140 - age) * weight / creatinine * (isMale ? 1.23 : 1.04);
 
     return true;
 }

@@ -203,7 +203,7 @@ bool DrugFileValidator::validate(std::string drugFileName, std::string testFileN
                     if ((*itr)["id"].GetString() == pit->getParameterId()) {
                         found = true;
                         if (std::abs((*itr)["value"].GetDouble() - pit->getValue()) > threshold) {
-                            logger.error("Error with calculation of parameter {}. Expected {}, calculated {}", pit->getParameterId(), (*itr)["value"].GetDouble(), pit->getValue());
+                            logger.error("Test {}: Error with calculation of parameter {}. Expected {}, calculated {}", testId, pit->getParameterId(), (*itr)["value"].GetDouble(), pit->getValue());
                             validationResult = false;
                         }
                     }
