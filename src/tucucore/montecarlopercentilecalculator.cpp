@@ -705,11 +705,10 @@ IPercentileCalculator::ComputingResult AposterioriMonteCarloPercentileCalculator
         }
     }
 
-    std::vector<Etas> RealEtaSamples(reSamples);
+    std::vector<Etas> realEtaSamples(reSamples);
 
-    // TODO: think about whether we can use push_back or not
     for(std::size_t patient = 0; patient < reSamples; patient++) {
-        RealEtaSamples[patient] = etaSamples[discreteDistribution(rnGenerator)];
+        realEtaSamples[patient] = etaSamples[discreteDistribution(rnGenerator)];
     }
 
     return computePredictionsAndSortPercentiles(
@@ -720,7 +719,7 @@ IPercentileCalculator::ComputingResult AposterioriMonteCarloPercentileCalculator
                 _parameters,
                 _residualErrorModel,
                 _percentileRanks,
-                RealEtaSamples,
+                realEtaSamples,
                 epsilons,
                 _concentrationCalculator,
                 _aborter);

@@ -104,42 +104,43 @@ These three options are mutually exclusive, so the possible styles of operations
 
 |
 
-+-----------------------+----------------+-----+---------------------------------------------+
-| Tag name              | Format         | Occ.| Description                                 |
-+=======================+================+=====+=============================================+
-| <operation>           |                |     | Description of an operation                 |
-+-----------------------+----------------+-----+---------------------------------------------+
-|____<Softformula>      |                | 1:∞ | An Javascript operation                     |
-+-----------------------+----------------+-----+---------------------------------------------+
-|________<inputs>       |                | 1:1 | The list of required inputs                 |
-+-----------------------+----------------+-----+---------------------------------------------+
-|____________<input>    |                | 1:∞ | An input for the formula                    |
-+-----------------------+----------------+-----+---------------------------------------------+
-|________________<id>   |                | 1:1 | The Id of the required input for the formula|
-+-----------------------+----------------+-----+---------------------------------------------+
-|________________<type> |                | 1:1 | The type of data : double, int or bool      |
-+-----------------------+----------------+-----+---------------------------------------------+
-|________<code>      | :ref:`formulaCode` | 1:∞ | The operation formula                      |
-+-----------------------+----------------+-----+---------------------------------------------+
-|____<hardFormula>      | string         | 0:1 | A hardcoded operation                       |
-+-----------------------+----------------+-----+---------------------------------------------+
-|____<multiFormula>     |                | 0:1 | A multi-operation formula                   |
-+-----------------------+----------------+-----+---------------------------------------------+
-|________<...>          |                | 1:∞ | Any of softFormula and hardFormula          |
-+-----------------------+----------------+-----+---------------------------------------------+
-|____<comments>         |                | 1:1 | Comments about the operation                |
-+-----------------------+----------------+-----+---------------------------------------------+
++-----------------------+--------------------+-----+---------------------------------------------+
+| Tag name              | Format             | Occ.| Description                                 |
++=======================+====================+=====+=============================================+
+| <operation>           |                    |     | Description of an operation                 |
++-----------------------+--------------------+-----+---------------------------------------------+
+|____<Softformula>      |                    | 1:∞ | An Javascript operation                     |
++-----------------------+--------------------+-----+---------------------------------------------+
+|________<inputs>       |                    | 1:1 | The list of required inputs                 |
++-----------------------+--------------------+-----+---------------------------------------------+
+|____________<input>    |                    | 1:∞ | An input for the formula                    |
++-----------------------+--------------------+-----+---------------------------------------------+
+|________________<id>   |                    | 1:1 | The Id of the required input for the formula|
++-----------------------+--------------------+-----+---------------------------------------------+
+|________________<type> |                    | 1:1 | The type of data : double, int or bool      |
++-----------------------+--------------------+-----+---------------------------------------------+
+|________<code>         | :ref:`formulaCode` | 1:∞ | The operation formula                       |
++-----------------------+--------------------+-----+---------------------------------------------+
+|____<hardFormula>      | string             | 0:1 | A hardcoded operation                       |
++-----------------------+--------------------+-----+---------------------------------------------+
+|____<multiFormula>     |                    | 0:1 | A multi-operation formula                   |
++-----------------------+--------------------+-----+---------------------------------------------+
+|________<...>          |                    | 1:∞ | Any of softFormula and hardFormula          |
++-----------------------+--------------------+-----+---------------------------------------------+
+|____<comments>         |                    | 1:1 | Comments about the operation                |
++-----------------------+--------------------+-----+---------------------------------------------+
 
 |
 
 An operation can be used in many elements. For instance it is used in parameters, targets, covariates, in order to calculate a priori values.
 
-A formula can use the value of any global or drug-specific covariate. To do so, you must use the last part of a covariate's ID preceded by the *covariate_*keyword, as shown above with *covariate_sex*. You can also use any of the drug's parameters, using its ID preceded by the *parameter_*keyword, as in *parameter_V*. The formula should simply return a value, nothing else is mandatory.
+A formula can use the value of any global or drug-specific covariate. To do so, you must use the covariate's ID , as shown above with *bodyweight*. You can also use any of the drug's parameters, using its ID followed by the *_population* keyword, as in *V_population*. The formula should simply return a value, nothing else is mandatory.
 
 The formula must always be surrounded by the *<![CDATA[* and *]]* markers. The language used to express the formula is based on Javascript and supports a subset of it. A formula must always return a value.
 
 When an operation can contain a list of formula the computing engine shall try to apply the first formula. If there are missing covariates for such formula, then the second formula is tried, and so on, until a valid formula is found.
 
+The list of inputs is important and should contain all the inputs required by the formula (for a soft formula). The type should obviously be correct. In case the input is a covariate, the type should be the same type as the covariate, and in case of a parameter the type is *double*. The editor does not check if the input list is correct or not, so be careful.
 
 .. _formulaCode:
 
@@ -149,8 +150,61 @@ Code
 A formula is an operation returning a value, based on some inputs.
 The content of the element is then a source code in the correct format.
 
-The source code must always be surrounded by the *<![CDATA[* and *]]* markers. The language used to express the formula is based on the ECMAScript scripting language, as defined in standard ECMA.262. You can find more information about the language EMCA website (http://www.ecma-international.org/publications/standards/Ecma-262.htm) or directly in the Qt documentation (http://qt-project.org/doc/qt-5/qtscript-index.html#language-overview). A formula must always return a value.
+The source code must always be surrounded by the *<![CDATA[* and *]]* markers. The language used to express the formula is based on Javascript and supports a subset of it. A formula must always return a value.
 
+The following mathematical functions are available within scripts:
+
+.. code-block:: javascript
+
+
+  Math.E()
+  Math.log(a)
+  Math.log10(a)
+  Math.exp(a)
+  Math.pow(a,b)
+
+  Math.sqr(a)
+  Math.sqrt(a)
+
+  Math.abs(a)
+  Math.round(a)
+  Math.min(a,b)
+  Math.max(a,b)
+  Math.range(x,a,b)
+  Math.sign(a)
+
+  Math.PI()
+  Math.toDegrees(a)
+  Math.toRadians(a)
+  Math.sin(a)
+  Math.asin(a)
+  Math.cos(a)
+  Math.acos(a)
+  Math.tan(a)
+  Math.atan(a)
+  Math.sinh(a)
+  Math.asinh(a)
+  Math.cosh(a)
+  Math.acosh(a)
+  Math.tanh(a)
+  Math.atanh(a)
+
+Such function must always be written with the *Math.* as prefix. Example:
+
+.. code-block:: javascript
+
+  newValue = Math.pow(aValue, anotherValue) + Math.exp(yetAnotherValue);
+
+Structures such as *if/then/else* are supported, as in the following example:
+
+.. code-block:: javascript
+
+  if (sex > 0.5) {
+    aValue = 12;
+  }
+  else {
+    aValue = 10;
+  }
 
 .. _comments:
 
@@ -1021,11 +1075,11 @@ AvailableDoses
 
  	 "<availableDoses>             ",          ,  , "Available doses"
 		 "____<unit>                 ", , 1:1 , "Unit of the doses"
-		 "____<default>               ",  ref:`stdAprioriValue`     , 1:1 , "Default dose"
+		 "____<default>               ",  :ref:`stdAprioriValue`     , 1:1 , "Default dose"
 		 "____<rangeValues>               ",      , 0:1 , "Available doses represented as a range"
-		 "________<from>               ",  ref:`stdAprioriValue`     , 1:1 , "Starting value of the range"
-		 "________<to>               ",  ref:`stdAprioriValue`     , 1:1 , "Ending value of the range"
-		 "________<step>               ",  ref:`stdAprioriValue`     , 1:1 , "Step to be applied between from and to"
+		 "________<from>               ",  :ref:`stdAprioriValue`     , 1:1 , "Starting value of the range"
+		 "________<to>               ",  :ref:`stdAprioriValue`     , 1:1 , "Ending value of the range"
+		 "________<step>               ",  :ref:`stdAprioriValue`     , 1:1 , "Step to be applied between from and to"
 		 "____<fixedValues>            ",    , 0:1 , "A list of fixed doses"
 		 "________<value>        ",     double     , 1:1 , "A dose value"
 
@@ -1045,11 +1099,11 @@ AvailableIntervals
 
  	 "<availableIntervals>             ",          ,  , "Available intervals"
 		 "____<unit>                 ", , 1:1 , "Unit of the intervals"
-		 "____<default>               ",  ref:`stdAprioriValue`     , 1:1 , "Default interval"
+		 "____<default>               ",  :ref:`stdAprioriValue`     , 1:1 , "Default interval"
 		 "____<rangeValues>               ",      , 0:1 , "Available intervals represented as a range"
-		 "________<from>               ",  ref:`stdAprioriValue`     , 1:1 , "Starting value of the range"
-		 "________<to>               ",  ref:`stdAprioriValue`     , 1:1 , "Ending value of the range"
-		 "________<step>               ",  ref:`stdAprioriValue`     , 1:1 , "Step to be applied between from and to"
+		 "________<from>               ",  :ref:`stdAprioriValue`     , 1:1 , "Starting value of the range"
+		 "________<to>               ",  :ref:`stdAprioriValue`     , 1:1 , "Ending value of the range"
+		 "________<step>               ",  :ref:`stdAprioriValue`     , 1:1 , "Step to be applied between from and to"
 		 "____<fixedValues>            ",    , 0:1 , "A list of fixed intervals"
 		 "________<value>        ",     double     , 1:1 , "An interval value"
 
@@ -1069,11 +1123,11 @@ AvailableInfusions
 
  	 "<availableInfusions>             ",          ,  , "Available infusion times"
 		 "____<unit>                 ", , 1:1 , "Unit of the infusion times"
-		 "____<default>               ",  ref:`stdAprioriValue`     , 1:1 , "Default infusion time"
+		 "____<default>               ",  :ref:`stdAprioriValue`     , 1:1 , "Default infusion time"
 		 "____<rangeValues>               ",      , 0:1 , "Available infusion times represented as a range"
-		 "________<from>               ",  ref:`stdAprioriValue`     , 1:1 , "Starting value of the range"
-		 "________<to>               ",  ref:`stdAprioriValue`     , 1:1 , "Ending value of the range"
-		 "________<step>               ",  ref:`stdAprioriValue`     , 1:1 , "Step to be applied between from and to"
+		 "________<from>               ",  :ref:`stdAprioriValue`     , 1:1 , "Starting value of the range"
+		 "________<to>               ",  :ref:`stdAprioriValue`     , 1:1 , "Ending value of the range"
+		 "________<step>               ",  :ref:`stdAprioriValue`     , 1:1 , "Step to be applied between from and to"
 		 "____<fixedValues>            ",    , 0:1 , "A list of fixed infusion times"
 		 "________<value>        ",     double     , 1:1 , "An infusion time value"
 

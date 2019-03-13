@@ -9,15 +9,11 @@
 namespace Tucuxi {
 namespace Core {
 
-
-// TODO : This function should be tested.
-// TODO : Nothing about units here...
 int SampleExtractor::extract(const Samples &_samples, const DateTime &_start, const DateTime &_end, SampleSeries &_series)
 {
     int nbRelevantSamples = 0;
     for (const auto & sample : _samples) {
         if ((sample->getDate() > _start) && (sample->getDate() < _end)) {
-//            _series.push_back(SampleEvent(sample->getDate(), sample->getValue()));
             _series.push_back(SampleEvent(sample->getDate(), translateToUnit(sample->getValue(), sample->getUnit(), Unit("ug/l"))));
             nbRelevantSamples ++;
         }

@@ -1252,7 +1252,7 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
 
 //        printCovariateSeries(series);
 
-        fructose_assert_eq(series.size() , 7);
+        fructose_assert_eq(series.size() , static_cast<size_t>(7));
         fructose_assert(rc == CovariateExtractor::Result::Ok);
         // First measure propagated back to the start of the interval.
         fructose_assert(covariateEventIsPresent("Gist",

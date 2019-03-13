@@ -35,7 +35,8 @@ HEADERS += \
     ../../../test/tucucore/drugmodels/test_drug_vancomycin.h \
     ../../../test/tucucore/test_targetextractor.h \
     ../../../test/tucucore/test_pertinenttimescalculator.h \
-    ../../../test/tucucore/test_residualerrormodel.h
+    ../../../test/tucucore/test_residualerrormodel.h \
+    ../../../test/tucucore/test_sampleextractor.h
 
 SOURCES += \
     ../../../test/tucucore/tests.cpp

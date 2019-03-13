@@ -30,6 +30,7 @@
 #include "test_pertinenttimescalculator.h"
 #include "test_pkmodel.h"
 #include "test_residualerrormodel.h"
+#include "test_sampleextractor.h"
 #include "test_targetextractor.h"
 
 #include "drugmodels/test_drug_tobramycin.h"
@@ -421,6 +422,21 @@ int main(int argc, char** argv)
         std::cout << "Computing Component Percentiles test succeeded\n";
     }
 
+
+    // --- SampleExtractor tests --- //
+    TestSampleExtractor sampleExtractorTests;
+
+    // one compartment
+    sampleExtractorTests.add_test("testStandard", &TestSampleExtractor::testStandard);
+
+    res = sampleExtractorTests.run(argc, argv);
+    tot_res |= res;
+    if (res != 0) {
+        std::cerr << "SampleExtractor test failed\n";
+    }
+    else {
+        std::cout << "SampleExtractor test succeeded\n";
+    }
 
     // --- TargetExtractor tests --- //
     TestTargetExtractor targetExtractorTests;
