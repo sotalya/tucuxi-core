@@ -312,6 +312,40 @@ public:
             ComputingAborter *_aborter) override;
 };
 
+///
+/// \brief The AposterioriMatrixCache class
+/// This class embeds a map of matrices with a matrix
+/// for each pair of nbSamples and nbEtas. When creating the matrices,
+/// it populates them with random samples. If a matrix already exists for pair
+/// <nbSamples,nbEtas>, then it is reused.
+/// The method for getting a matrix is reentrant.
+///
+/// Tested by TestPercentileCalculator
+///
+class AposterioriMatrixCache {
+public:
+
+    ///
+    /// \brief get a matrix
+    /// \param _nbSamples Number of samples of the matrix
+    /// \param _nbEtas Number of etas of the matrix
+    /// \return A reference to the matrix
+    ///
+    /// This function only creates a matrix if it does not exist yet.
+    /// When the matrix is created it is filled with random values.
+    ///
+    /// Be careful to use it correctly:
+    /// const EigenMatrix &m = matrixCache.getAvecs(x,y);
+    /// If not, then the matrix would be copied and so the system would be less
+    /// efficient.
+    ///
+    const EigenMatrix &getAvecs(int _nbSamples, int _nbEtas);
+protected:
+
+    ///! The map of matrices
+    std::map<std::pair<int, int>, EigenMatrix> matrices;
+};
+
 
 } // namespace Core
 } // namespace Tucuxi

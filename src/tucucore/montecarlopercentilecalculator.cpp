@@ -21,6 +21,38 @@ ComputingAborter::~ComputingAborter()
 
 }
 
+const EigenMatrix &AposterioriMatrixCache::getAvecs(int _nbSamples, int _nbEtas)
+{
+    static std::mutex mutex;
+    mutex.lock();
+    if (matrices.count(std::pair<int,int>(_nbSamples, _nbEtas))) {
+        mutex.unlock();
+        return matrices[std::pair<int,int>(_nbSamples, _nbEtas)];
+    }
+
+    static std::random_device randomDevice;
+    std::mt19937 rnGenerator(randomDevice());
+
+    // The variables are normally distributed, we use standard normal, then apply lower cholesky
+    int studentLiberty = 1;
+    std::student_t_distribution<> standardNormalDist(studentLiberty);
+
+    EigenMatrix avecs = EigenMatrix::Zero(_nbSamples, _nbEtas);
+    for (int row = 0; row < avecs.rows(); row++) {
+        for (int column = 0; column < avecs.cols(); column++) {
+            avecs(row,column) = standardNormalDist(rnGenerator);
+        }
+    }
+
+    matrices[std::pair<int,int>(_nbSamples, _nbEtas)] = avecs;
+
+    mutex.unlock();
+
+    return matrices[std::pair<int,int>(_nbSamples, _nbEtas)];
+}
+
+
+
 unsigned int MonteCarloPercentileCalculatorBase::sm_nbPatients = 0;
 
 MonteCarloPercentileCalculatorBase::MonteCarloPercentileCalculatorBase()
@@ -112,7 +144,7 @@ IPercentileCalculator::ComputingResult MonteCarloPercentileCalculatorBase::compu
 //    start = std::chrono::steady_clock::now();
 
     // Parallelize this for loop with some shared and some copied-to-each-thread-with-current-state (firstprivate) variables
-    int nbThreads = std::max(std::thread::hardware_concurrency(), (unsigned int)1);
+    int nbThreads = std::max(std::thread::hardware_concurrency(), static_cast<unsigned int>(1));
 
     std::vector<std::thread> workers;
     for(int thread = 0; thread < nbThreads; thread++) {
@@ -580,13 +612,9 @@ IPercentileCalculator::ComputingResult AposterioriMonteCarloPercentileCalculator
 
     // TODO : This EigenMatrix could be static, in a cache to save time
 
-    // Loading random numbers as omp doesnt like it
-    EigenMatrix avecs = EigenMatrix::Zero(samples, _etas.size());
-    for (int row = 0; row < avecs.rows(); row++) {
-        for (int column = 0; column < avecs.cols(); column++) {
-            avecs(row,column) = standardNormalDist(rnGenerator);
-        }
-    }
+    static AposterioriMatrixCache matrixCache;
+
+    const EigenMatrix &avecs = matrixCache.getAvecs(samples, _etas.size());
 
 
     //clock_t t2 = clock();

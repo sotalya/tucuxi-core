@@ -146,8 +146,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
             concentrations.resize(residualSize);
             Tucuxi::Core::TimeOffsets times;
             {
-                // TOCHECK : Be careful, the intakeEvent embedds the nb of points, but the intervalintakecalculator also. They have to agree
-                // Bad design for this.
+                // Be careful, the intakeEvent embedds the nb of points, but the intervalintakecalculator also. They have to agree
 
                 Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, _dose, interval * nbCycles, _route, infusionTime, (_nbPoints - 1 ) * nbCycles + 1);
 

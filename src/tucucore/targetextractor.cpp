@@ -3,6 +3,7 @@
 */
 
 #include "tucucommon/general.h"
+#include "tucucommon/loggerhelper.h"
 
 #include "tucucore/targetextractor.h"
 
@@ -93,7 +94,8 @@ TargetEvent TargetExtractor::targetEventFromTarget(const Target *_target, const 
     case TargetType::UnknownTarget :
     default:
     {
-        // TODO : Log something wrong here
+        Tucuxi::Common::LoggerHelper logger;
+        logger.error("A target of an unkown type was given to the TargetExtractor");
 
         return TargetEvent(
                     _targetDefinition->getActiveMoietyId(),
@@ -205,8 +207,10 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(const TargetDefinit
 
     case TargetType::UnknownTarget :
     default:
-        // Something wrong here.
-        // TODO : Should log something here
+
+        Tucuxi::Common::LoggerHelper logger;
+        logger.error("A target of an unkown type was given to the TargetExtractor");
+
         return TargetEvent(
                     _target->getActiveMoietyId(),
                     _target->getTargetType(),

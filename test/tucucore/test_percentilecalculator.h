@@ -358,6 +358,36 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
         fructose_assert(res == Tucuxi::Core::IPercentileCalculator::ComputingResult::Success);
     }
 
+    void testAposterioriMatrixCache(const std::string& /* _testName */)
+    {
+        Tucuxi::Core::AposterioriMatrixCache cache;
+
+        const Tucuxi::Core::EigenMatrix &matrix0 = cache.getAvecs(10,4);
+        fructose_assert_eq(matrix0.rows(), 10);
+        fructose_assert_eq(matrix0.cols(), 4);
+        double value0 = matrix0(1,3);
+
+        const Tucuxi::Core::EigenMatrix &matrix1 = cache.getAvecs(12,6);
+        fructose_assert_eq(matrix1.rows(), 12);
+        fructose_assert_eq(matrix1.cols(), 6);
+        double value1 = matrix1(2,3);
+
+        const Tucuxi::Core::EigenMatrix &matrix0a = cache.getAvecs(10,4);
+        fructose_assert_eq(matrix0a.rows(), 10);
+        fructose_assert_eq(matrix0a.cols(), 4);
+
+        fructose_assert_eq(value0, matrix0a(1,3));
+
+        // As we have a const reference, both matrices share the address space
+        fructose_assert_eq(matrix0(0,0), matrix0a(0,0));
+        const Tucuxi::Core::EigenMatrix &matrix1a = cache.getAvecs(12,6);
+        fructose_assert_eq(matrix1a.rows(), 12);
+        fructose_assert_eq(matrix1a.cols(), 6);
+
+        fructose_assert_eq(value1, matrix1a(2,3));
+
+    }
+
 };
 
 #endif // TEST_PERCENTILECALCULATOR_H
