@@ -40,7 +40,12 @@ const EigenMatrix &AposterioriMatrixCache::getAvecs(int _nbSamples, int _nbEtas)
     EigenMatrix avecs = EigenMatrix::Zero(_nbSamples, _nbEtas);
     for (int row = 0; row < avecs.rows(); row++) {
         for (int column = 0; column < avecs.cols(); column++) {
-            avecs(row,column) = standardNormalDist(rnGenerator);
+            double value;
+            // Here we truncate the generated number by looking for one in [-100,100]
+            do {
+                value = standardNormalDist(rnGenerator);
+            } while (std::abs(value) > 100.0 );
+            avecs(row,column) = value;
         }
     }
 
@@ -644,7 +649,8 @@ IPercentileCalculator::ComputingResult AposterioriMonteCarloPercentileCalculator
     double part3 = tgamma(v / 2) * std::pow(v * 3.14159, p/2);
 
     std::vector<std::thread> workers;
-    for(unsigned thread = 0;thread < nbThreads; thread++) {
+//    for(unsigned thread = 0;thread < nbThreads; thread++) {
+        for(unsigned thread = 0;thread < 1; thread++) {
 
 
         workers.push_back(std::thread([thread, &abort, _aborter, nbThreads, _etas, meanEtas, avecs, etaLowerChol,
@@ -678,7 +684,7 @@ IPercentileCalculator::ComputingResult AposterioriMonteCarloPercentileCalculator
                     }
 
                     etaSamples[sample] = avec_mat;
-                    
+
                     // 4. Calculate the ratios for weighting this is h*
                     // Be careful: hstart should be a logLikelihood, however we are minimizing the
                     // negative loglikelyhood, so it is a negative h start.
