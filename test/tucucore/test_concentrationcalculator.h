@@ -210,18 +210,20 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
 #endif
             }
 
-
-            for (int cycle = 0; cycle < nbCycles; cycle ++) {
-                Tucuxi::Core::Concentrations concentration2;
-                concentration2 = predictionPtr->getValues()[cycle];
-                for (int i = 0; i < _nbPoints - 1; i++) {
-                    double sumConcentration = 0.0;
-                    for (int c = 0; c < cycle + 1; c++) {
-                        sumConcentration += concentrations[0][c * (_nbPoints - 1) + i];
-                        // std::cout << c <<  " : " << sumConcentration << " : " << concentrations[0][c * (_nbPoints - 1) + i] << std::endl;
+            // Only works for linear elimination, so do not perform that for some classes
+            if (typeid(CalculatorClass) != typeid(ConstantEliminationBolus)) {
+                for (int cycle = 0; cycle < nbCycles; cycle ++) {
+                    Tucuxi::Core::Concentrations concentration2;
+                    concentration2 = predictionPtr->getValues()[cycle];
+                    for (int i = 0; i < _nbPoints - 1; i++) {
+                        double sumConcentration = 0.0;
+                        for (int c = 0; c < cycle + 1; c++) {
+                            sumConcentration += concentrations[0][c * (_nbPoints - 1) + i];
+                            // std::cout << c <<  " : " << sumConcentration << " : " << concentrations[0][c * (_nbPoints - 1) + i] << std::endl;
+                        }
+                        // std::cout << cycle <<  " : " << i << " :: " << predictionPtr->getTimes()[cycle][i] << " . " << sumConcentration << " : " << concentration2[i] << std::endl;
+                        fructose_assert_double_eq(sumConcentration, concentration2[i]);
                     }
-                    // std::cout << cycle <<  " : " << i << " :: " << predictionPtr->getTimes()[cycle][i] << " . " << sumConcentration << " : " << concentration2[i] << std::endl;
-                    fructose_assert_double_eq(sumConcentration, concentration2[i]);
                 }
             }
         }
