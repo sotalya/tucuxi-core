@@ -38,7 +38,7 @@
 /// \param CD_VEC Covariate definitions vector in which the covariate has to be pushed.
 #define ADD_CDEF_NO_R(NAME, VALUE, C_TYPE, D_TYPE, INTER_TYPE, CD_VEC)                                          \
     do {                                                                                                        \
-    std::unique_ptr<CovariateDefinition> tmp(new CovariateDefinition(#NAME, varToString(VALUE), nullptr,      \
+    std::unique_ptr<CovariateDefinition> tmp(new CovariateDefinition(#NAME, Tucuxi::Common::Utils::varToString(VALUE), nullptr,      \
     CovariateType::C_TYPE, DataType::D_TYPE));                                                                  \
     tmp->setInterpolationType(InterpolationType::INTER_TYPE);                                                   \
     CD_VEC.push_back(std::move(tmp));                                                                           \
@@ -55,7 +55,7 @@
 /// \param CD_VEC Covariate definitions vector in which the covariate has to be pushed.
 #define ADD_CDEF_NO_R_STR(NAME, VALUE, C_TYPE, D_TYPE, INTER_TYPE, CD_VEC)                                      \
     do {                                                                                                        \
-    std::unique_ptr<CovariateDefinition> tmp(new CovariateDefinition(NAME, varToString(VALUE), nullptr,       \
+    std::unique_ptr<CovariateDefinition> tmp(new CovariateDefinition(NAME, Tucuxi::Common::Utils::varToString(VALUE), nullptr,       \
     CovariateType::C_TYPE, DataType::D_TYPE));                                                                  \
     tmp->setInterpolationType(InterpolationType::INTER_TYPE);                                                   \
     CD_VEC.push_back(std::move(tmp));                                                                           \
@@ -72,7 +72,7 @@
 /// \param CD_VEC Covariate definitions vector in which the covariate has to be pushed.
 #define ADD_CDEF_NO_R_UNIT(NAME, VALUE, C_TYPE, D_TYPE, INTER_TYPE, UNIT, CD_VEC)                               \
     do {                                                                                                        \
-    std::unique_ptr<CovariateDefinition> tmp(new CovariateDefinition(#NAME, varToString(VALUE), nullptr,      \
+    std::unique_ptr<CovariateDefinition> tmp(new CovariateDefinition(#NAME, Tucuxi::Common::Utils::varToString(VALUE), nullptr,      \
     CovariateType::C_TYPE, DataType::D_TYPE));                                                                  \
     tmp->setInterpolationType(InterpolationType::INTER_TYPE);                                                   \
     tmp->setUnit(Unit(#UNIT));                                                                                \
@@ -91,7 +91,7 @@
 /// \param CD_VEC Covariate definitions vector in which the covariate has to be pushed.
 #define ADD_CDEF_W_R(NAME, VALUE, C_TYPE, D_TYPE, INTER_TYPE, REFR_INT, CD_VEC)                                 \
     do {                                                                                                        \
-    std::unique_ptr<CovariateDefinition> tmp(new CovariateDefinition(#NAME, varToString(VALUE), nullptr,      \
+    std::unique_ptr<CovariateDefinition> tmp(new CovariateDefinition(#NAME, Tucuxi::Common::Utils::varToString(VALUE), nullptr,      \
     CovariateType::C_TYPE, DataType::D_TYPE)); \
     tmp->setInterpolationType(InterpolationType::INTER_TYPE);                                                   \
     tmp->setRefreshPeriod(REFR_INT);                                                                            \
@@ -110,7 +110,7 @@
 /// \param CD_VEC Covariate definitions vector in which the covariate has to be pushed.
 #define ADD_CDEF_W_R_UNIT(NAME, VALUE, C_TYPE, D_TYPE, INTER_TYPE, REFR_INT, UNIT, CD_VEC)                      \
     do {                                                                                                        \
-    std::unique_ptr<CovariateDefinition> tmp(new CovariateDefinition(#NAME, varToString(VALUE), nullptr,      \
+    std::unique_ptr<CovariateDefinition> tmp(new CovariateDefinition(#NAME, Tucuxi::Common::Utils::varToString(VALUE), nullptr,      \
     CovariateType::C_TYPE, DataType::D_TYPE)); \
     tmp->setInterpolationType(InterpolationType::INTER_TYPE);                                                   \
     tmp->setRefreshPeriod(REFR_INT);                                                                            \
@@ -127,7 +127,7 @@
 /// \param PV_VEC Patient variates vector in which the variate has to be pushed.
 #define ADD_PV_NO_UNIT(NAME, VALUE, D_TYPE, DATE, PV_VEC)                                   \
     do {                                                                                    \
-    std::unique_ptr<PatientCovariate> tmp(new PatientCovariate(#NAME, varToString(VALUE), \
+    std::unique_ptr<PatientCovariate> tmp(new PatientCovariate(#NAME, Tucuxi::Common::Utils::varToString(VALUE), \
     DataType::D_TYPE, Unit(), DATE));                                                       \
     PV_VEC.push_back(std::move(tmp));                                                       \
     } while (0);
@@ -142,7 +142,7 @@
 /// \param PV_VEC Patient variates vector in which the variate has to be pushed.
 #define ADD_PV_W_UNIT(NAME, VALUE, D_TYPE, UNIT, DATE, PV_VEC)                                   \
     do {                                                                                    \
-    std::unique_ptr<PatientCovariate> tmp(new PatientCovariate(#NAME, varToString(VALUE), \
+    std::unique_ptr<PatientCovariate> tmp(new PatientCovariate(#NAME, Tucuxi::Common::Utils::varToString(VALUE), \
     DataType::D_TYPE, Unit(#UNIT), DATE));                                                       \
     PV_VEC.push_back(std::move(tmp));                                                       \
     } while (0);
@@ -161,7 +161,7 @@
     new JSOperation(OPERATION, { \
     OperationInput(OP1, InputType::DOUBLE), \
     OperationInput(OP2, InputType::DOUBLE)}); \
-    std::unique_ptr<CovariateDefinition> tmp(new CovariateDefinition(#NAME, varToString(0), op)); \
+    std::unique_ptr<CovariateDefinition> tmp(new CovariateDefinition(#NAME, Tucuxi::Common::Utils::varToString(0), op)); \
     CD_VEC.push_back(std::move(tmp)); \
     } while (0);
 
@@ -178,7 +178,7 @@
     new JSExpression(EXPRESSION, { \
     OperationInput(OP1, InputType::DOUBLE), \
     OperationInput(OP2, InputType::DOUBLE)}); \
-    std::unique_ptr<CovariateDefinition> tmp(new CovariateDefinition(#NAME, varToString(0), op)); \
+    std::unique_ptr<CovariateDefinition> tmp(new CovariateDefinition(#NAME, Tucuxi::Common::Utils::varToString(0), op)); \
     CD_VEC.push_back(std::move(tmp)); \
     } while (0);
 
@@ -198,7 +198,7 @@
     OperationInput(OP1, InputType::DOUBLE), \
     OperationInput(OP2, InputType::DOUBLE), \
     OperationInput(OP3, InputType::DOUBLE)}); \
-    std::unique_ptr<CovariateDefinition> tmp(new CovariateDefinition(#NAME, varToString(0), op)); \
+    std::unique_ptr<CovariateDefinition> tmp(new CovariateDefinition(#NAME, Tucuxi::Common::Utils::varToString(0), op)); \
     CD_VEC.push_back(std::move(tmp)); \
     } while (0);
 
@@ -217,7 +217,7 @@
     OperationInput(OP1, InputType::DOUBLE), \
     OperationInput(OP2, InputType::DOUBLE), \
     OperationInput(OP3, InputType::DOUBLE)}); \
-    std::unique_ptr<CovariateDefinition> tmp(new CovariateDefinition(#NAME, varToString(0), op)); \
+    std::unique_ptr<CovariateDefinition> tmp(new CovariateDefinition(#NAME, Tucuxi::Common::Utils::varToString(0), op)); \
     CD_VEC.push_back(std::move(tmp)); \
     } while (0);
 

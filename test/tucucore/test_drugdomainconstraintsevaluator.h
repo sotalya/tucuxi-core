@@ -21,6 +21,7 @@
 #include "testutils.h"
 
 using namespace Tucuxi::Core;
+using namespace Tucuxi::Common::Utils;
 
 
 /// \brief Add a constraint to a drug model domain.

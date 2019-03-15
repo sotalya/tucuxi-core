@@ -25,6 +25,7 @@
 #include "tucucore/pkmodels/threecompartmentbolus.h"
 #include "tucucore/pkmodels/threecompartmentinfusion.h"
 #include "tucucore/pkmodels/threecompartmentextra.h"
+#include "pkmodels/constanteliminationbolus.h"
 
 using namespace Tucuxi::Core;
 
@@ -312,6 +313,27 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
         // This can be done by creating samples corresponding to the number of points asked, and
         // synchronized with the times at which the concentration points are expected
     }
+
+
+    void testConstantEliminationBolus(const std::string& /* _testName */)
+    {
+        Tucuxi::Core::ParameterDefinitions parameterDefs;
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestA", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestR", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestS", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
+        Tucuxi::Core::ParameterSetSeries parametersSeries;
+        parametersSeries.addParameterSetEvent(parameters);
+
+        testCalculator<Tucuxi::Core::ConstantEliminationBolus>(
+            parametersSeries,
+            400.0,
+            Tucuxi::Core::AbsorptionModel::INTRAVASCULAR,
+            12h,
+            0s,
+            CYCLE_SIZE);
+    }
+
 
     void test1compBolus(const std::string& /* _testName */)
     {

@@ -248,6 +248,7 @@ int main(int argc, char** argv)
 #if defined(test_concentrationcalculator) or !defined(DO_NOT_COMPILE_ALL_TESTS)
     // --- ConcentrationCalculator --- //
     TestConcentrationCalculator concentrationCalculatorTests;
+    concentrationCalculatorTests.add_test("linear bolus test", &TestConcentrationCalculator::testConstantEliminationBolus);
     concentrationCalculatorTests.add_test("1 comp bolus test", &TestConcentrationCalculator::test1compBolus);
     concentrationCalculatorTests.add_test("1 comp extra test", &TestConcentrationCalculator::test1compExtra);
     concentrationCalculatorTests.add_test("1 comp infusion test", &TestConcentrationCalculator::test1compInfusion);

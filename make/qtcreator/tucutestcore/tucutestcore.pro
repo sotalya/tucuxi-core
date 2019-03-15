@@ -37,7 +37,8 @@ HEADERS += \
     ../../../test/tucucore/test_pertinenttimescalculator.h \
     ../../../test/tucucore/test_residualerrormodel.h \
     ../../../test/tucucore/test_sampleextractor.h \
-    ../../../test/tucucore/test_cyclestatistics.h
+    ../../../test/tucucore/test_cyclestatistics.h \
+    ../../../test/tucucore/pkmodels/constanteliminationbolus.h
 
 SOURCES += \
     ../../../test/tucucore/tests.cpp
