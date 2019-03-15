@@ -20,6 +20,8 @@
 
 // TODO : Add a test for residual value CycleStatisticType::Residual
 
+using namespace Tucuxi::Core;
+
 struct TestCycleStatistics : public fructose::test_base<TestCycleStatistics>
 {
     TestCycleStatistics() { }

@@ -7,34 +7,95 @@
 
 #include "tucucommon/utils.h"
 #include "tucucommon/loggerhelper.h"
-#include "tucucore/dosage.h"
 
+
+
+/// The following strange way of including files is meant to include all of them
+/// or only a selection, thanks to DEFINES.
+/// If no specific DEFINES is added, then all tests are compiled.
+/// If DO_NOT_COMPILE_ALL_TESTS is set, then only the tests selected will be compiled.
+/// For instance, to compile only the dosage tests, then run
+/// qmake ... DEFINES+=DO_NOT_COMPILE_ALL_TESTS DEFINES+=test_dosage
+///
+/// The rationale here is to speed up compilation when working on a specific test.
+/// As all the tests are in headers, a compilation can be quite time consuming.
+/// Therefore, only selecting the test of interest allows to gain some time.
+
+#if defined(test_computingcomponentadjustments) or !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_computingcomponentadjustments.h"
+#endif
+#if defined(test_computingcomponentconcentration) or !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_computingcomponentconcentration.h"
+#endif
+#if defined(test_computingcomponentpercentiles) or !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_computingcomponentpercentiles.h"
+#endif
+#if defined(test_concentrationcalculator) or !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_concentrationcalculator.h"
+#endif
+#if defined(test_covariateextractor) or !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_covariateextractor.h"
+#endif
+#if defined(test_cyclestatistics) or !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_cyclestatistics.h"
+#endif
+#if defined(test_dosage) or !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_dosage.h"
+#endif
+#if defined(test_drugdomainconstraintsevaluator) or !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_drugdomainconstraintsevaluator.h"
+#endif
+#if defined(test_drugmodelimport) or !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_drugmodelimport.h"
+#endif
+#if defined(test_drugmodels) or !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_drugmodels.h"
+#endif
+#if defined(test_intakeextractor) or !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_intakeextractor.h"
+#endif
+#if defined(test_intakeintervalcalculator) or !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_intakeintervalcalculator.h"
+#endif
+#if defined(test_nonmemdrugs) or !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_nonmemdrugs.h"
+#endif
+#if defined(test_operablegraphmanager) or !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_operablegraphmanager.h"
+#endif
+#if defined(test_operation) or !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_operation.h"
+#endif
+#if defined(test_operationcollection) or !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_operationcollection.h"
+#endif
+#if defined(test_parameterextractor) or !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_parameterextractor.h"
+#endif
+#if defined(test_percentilecalculator) or !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_percentilecalculator.h"
+#endif
+#if defined(test_pertinenttimescalculator) or !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_pertinenttimescalculator.h"
+#endif
+#if defined(test_pkmodel) or !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_pkmodel.h"
+#endif
+#if defined(test_residualerrormodel) or !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_residualerrormodel.h"
+#endif
+#if defined(test_sampleextractor) or !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_sampleextractor.h"
+#endif
+#if defined(test_targetextractor) or !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_targetextractor.h"
-
+#endif
+#if defined(test_drug_tobramycin) or !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "drugmodels/test_drug_tobramycin.h"
+#endif
+#if defined(test_drug_vancomycin) or !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "drugmodels/test_drug_vancomycin.h"
+#endif
 
 int main(int argc, char** argv)
 {
@@ -48,7 +109,7 @@ int main(int argc, char** argv)
     int res = 0;
     int tot_res = 0;
 
-
+#if defined(test_residualerrormodel) or !defined(DO_NOT_COMPILE_ALL_TESTS)
     TestResidualErrorModel residualErrorModelTests;
 
     residualErrorModelTests.add_test("testLogLikelihood", &TestResidualErrorModel::testLogLikelihood);
@@ -62,7 +123,9 @@ int main(int argc, char** argv)
     else {
         std::cout << "ResidualErrorModel test succeeded\n";
     }
+#endif
 
+#if defined(test_pertinenttimescalculator) or !defined(DO_NOT_COMPILE_ALL_TESTS)
     TestPertinentTimesCalculator pertinentTimesCalculatorTests;
 
     pertinentTimesCalculatorTests.add_test("testStandard", &TestPertinentTimesCalculator::testStandard);
@@ -76,7 +139,9 @@ int main(int argc, char** argv)
     else {
         std::cout << "Pertinent times calculator test succeeded\n";
     }
+#endif
 
+#if defined(test_drugdomainconstraintsevaluator) or !defined(DO_NOT_COMPILE_ALL_TESTS)
     TestDrugDomainConstraintsEvaluator drugDomainConstraintsEvaluatorTests;
 
     drugDomainConstraintsEvaluatorTests.add_test("simpleTest1", &TestDrugDomainConstraintsEvaluator::test1);
@@ -91,8 +156,9 @@ int main(int argc, char** argv)
     else {
         std::cout << "Drug model domain constraints evaluator test succeeded\n";
     }
+#endif
 
-
+#if defined(test_drugmodelimport) or !defined(DO_NOT_COMPILE_ALL_TESTS)
     TestDrugModelImport drugModelImportTests;
     drugModelImportTests.add_test("DrugModelImportFake", &TestDrugModelImport::testFake);
     drugModelImportTests.add_test("DrugModelImportBusulfan1", &TestDrugModelImport::testBusulfan1);
@@ -105,8 +171,9 @@ int main(int argc, char** argv)
     else {
         std::cout << "Drug model import test succeeded\n";
     }
+#endif
 
-
+#if defined(test_computingcomponentconcentration) or !defined(DO_NOT_COMPILE_ALL_TESTS)
     TestComputingComponentConcentration computingComponentConcentrationTests;
 
     // one compartment
@@ -123,8 +190,9 @@ int main(int argc, char** argv)
     else {
         std::cout << "Computing Component Concentration test succeeded\n";
     }
+#endif
 
-
+#if defined(test_computingcomponentadjustments) or !defined(DO_NOT_COMPILE_ALL_TESTS)
     TestComputingComponentAdjusements computingComponentAdjusementsTests;
 
     // one compartment
@@ -138,9 +206,6 @@ int main(int argc, char** argv)
     computingComponentAdjusementsTests.add_test("Simple test 8", &TestComputingComponentAdjusements::testImatinibSteadyStateLastFormulationAndRouteAllDosages);
     computingComponentAdjusementsTests.add_test("Simple test 9", &TestComputingComponentAdjusements::testImatinibLastFormulationAndRouteAllDosagesAtSteadyState);
 
-
-
-
     res = computingComponentAdjusementsTests.run(argc, argv);
     tot_res |= res;
     if (res != 0) {
@@ -149,8 +214,9 @@ int main(int argc, char** argv)
     else {
         std::cout << "Computing Component Adjustments test succeeded\n";
     }
+#endif
 
-
+#if defined(test_intakeintervalcalculator) or !defined(DO_NOT_COMPILE_ALL_TESTS)
     TestIntervalCalculator calculatorsTests;
 
     // one compartment
@@ -177,7 +243,9 @@ int main(int argc, char** argv)
         std::cerr << "Calculators test failed\n";
     }
     std::cout << "Calculators test succeeded\n";
+#endif
 
+#if defined(test_concentrationcalculator) or !defined(DO_NOT_COMPILE_ALL_TESTS)
     // --- ConcentrationCalculator --- //
     TestConcentrationCalculator concentrationCalculatorTests;
     concentrationCalculatorTests.add_test("1 comp bolus test", &TestConcentrationCalculator::test1compBolus);
@@ -199,7 +267,9 @@ int main(int argc, char** argv)
         std::cerr << "ConcentrationCalculator test failed\n";
     }
     std::cout << "ConcentrationCalculator test succeeded\n";
+#endif
 
+#if defined(test_dosage) or !defined(DO_NOT_COMPILE_ALL_TESTS)
     // --- DOSAGE --- //
     TestDosage dosageTests;
     dosageTests.add_test("SingleDose test", &TestDosage::testSingleDose);
@@ -215,7 +285,9 @@ int main(int argc, char** argv)
     } else {
         std::cout << "Dosage test succeeded\n";
     }
+#endif
 
+#if defined(test_intakeextractor) or !defined(DO_NOT_COMPILE_ALL_TESTS)
     // --- INTAKE EXTRACTOR --- //
     TestIntakeExtractor intakeExtractorTests;
     intakeExtractorTests.add_test("OncePerWeek test", &TestIntakeExtractor::testOncePerWeek);
@@ -238,7 +310,9 @@ int main(int argc, char** argv)
     } else {
         std::cout << "IntakeExtractor test succeeded\n";
     }
+#endif
 
+#if defined(test_operation) or !defined(DO_NOT_COMPILE_ALL_TESTS)
     // --- OPERATION --- //
     TestOperation operationTests;
     operationTests.add_test("OperationInput test", &TestOperation::testOperationInput);
@@ -261,8 +335,9 @@ int main(int argc, char** argv)
     } else {
         std::cout << "Operation test succeeded\n";
     }
+#endif
 
-
+#if defined(test_operationcollection) or !defined(DO_NOT_COMPILE_ALL_TESTS)
     // --- OPERATIONCOLLECTION --- //
     TestOperationCollection operationCollectionTests;
     operationCollectionTests.add_test("OperationCollection test", &TestOperationCollection::testOperationCollection);
@@ -286,7 +361,9 @@ int main(int argc, char** argv)
     } else {
         std::cout << "PkModel test succeeded\n";
     }
+#endif
 
+#if defined(test_covariateextractor) or !defined(DO_NOT_COMPILE_ALL_TESTS)
     // --- CovariateExtractor --- //
     TestCovariateExtractor ceTests;
     ceTests.add_test("testCE_constructor", &TestCovariateExtractor::testCE_constructor);
@@ -310,13 +387,15 @@ int main(int argc, char** argv)
     } else {
         std::cout << "Covariate Extractor test succeeded\n";
     }
+#endif
 
+#if defined(test_parameterextractor) or !defined(DO_NOT_COMPILE_ALL_TESTS)
     // --- ParameterExtractor --- //
     TestParameterExtractor peTests;
     peTests.add_test("testPE_constructor", &TestParameterExtractor::testPE_constructor);
     peTests.add_test("testPE_extract1_0", &TestParameterExtractor::testPE_extract1_0);
     peTests.add_test("testPE_extract1_1", &TestParameterExtractor::testPE_extract1_1);
-    peTests.add_test("testPE_extractParamFromParam", &TestParameterExtractor::testPE_extractParamFromParam);
+    peTests.add_test("testPE_extractParamFromParam", &TDO_NOT_COMPILE_ALL_TESTSestParameterExtractor::testPE_extractParamFromParam);
 
     res = peTests.run(argc, argv);
     tot_res |= res;
@@ -326,7 +405,9 @@ int main(int argc, char** argv)
     } else {
         std::cout << "Parameter Extractor test succeeded\n";
     }
+#endif
 
+#if defined(test_operablegraphmanager) or !defined(DO_NOT_COMPILE_ALL_TESTS)
     // --- OperableGraphManager --- //
     TestOpGraph opGraphTests;
     opGraphTests.add_test("testOperableFunctions", &TestOpGraph::testOperableFunctions);
@@ -341,32 +422,25 @@ int main(int argc, char** argv)
     } else {
         std::cout << "Operable Graph Manager test succeeded\n";
     }
+#endif
 
+#if defined(test_percentilecalculator) or !defined(DO_NOT_COMPILE_ALL_TESTS)
     // --- percentile calculator --- //
     TestPercentileCalculator percentileCalculatorTests;
 
     percentileCalculatorTests.add_test("Apriori Monte Carlo Percentile", &TestPercentileCalculator::testApriori);
     percentileCalculatorTests.add_test("Aposteriori Normal Monte Carlo Percentile", &TestPercentileCalculator::testAposterioriNormal);
     percentileCalculatorTests.add_test("Aposteriori Matrix cache", &TestPercentileCalculator::testAposterioriMatrixCache);
-
-    res = percentileCalculatorTests.run(argc, argv);
-    tot_res |= res;
-    if (res != 0) {
-        std::cerr << "Apriori Percentile Calculators or Aposteriori normal Percentile Calculators test failed\n";
-    }
-
-    // TODO: currently V and CV is negative with input parameters. Need to modify the parameters and
-    // active following test of aposteriori.
-
     percentileCalculatorTests.add_test("Aposteriori Monte Carlo Percentile", &TestPercentileCalculator::testAposteriori);
 
     res = percentileCalculatorTests.run(argc, argv);
     tot_res |= res;
     if (res != 0) {
-        std::cerr << "Aposteriori Percentile Calculators test failed\n";
+        std::cerr << "Percentile Calculator test failed\n";
     }
-    std::cout << "Percentile Calculators test succeeded\n";
+#endif
 
+#if defined(test_nonmemdrugs) or !defined(DO_NOT_COMPILE_ALL_TESTS)
     // --- NonMemDrugs --- //
     TestNonMemDrugs nonMemDrugsTests;
 
@@ -379,7 +453,9 @@ int main(int argc, char** argv)
         std::cerr << "NonMem Drugs test failed\n";
     }
     std::cout << "NonMem Drugs test succeeded\n";
+#endif
 
+#if defined(test_drugmodels) or !defined(DO_NOT_COMPILE_ALL_TESTS)
     TestDrugModels drugModelsTests;
 
     // one compartment
@@ -391,7 +467,9 @@ int main(int argc, char** argv)
         std::cerr << "DrugModels test failed\n";
     }
     std::cout << "DrugModels test succeeded\n";
+#endif
 
+#if defined(test_cyclestatistics) or !defined(DO_NOT_COMPILE_ALL_TESTS)
     // --- cycle statistics --- //
     TestCycleStatistics cycleStatisticsTests;
 
@@ -404,7 +482,9 @@ int main(int argc, char** argv)
         tot_res |= res;
     }
     std::cout << "Cycle Statistics Calculators test succeeded\n";
+#endif
 
+#if defined(test_computingcomponentpercentiles) or !defined(DO_NOT_COMPILE_ALL_TESTS)
     TestComputingComponentPercentiles computingComponentPercentilesTests;
 
     // one compartment
@@ -421,8 +501,9 @@ int main(int argc, char** argv)
     else {
         std::cout << "Computing Component Percentiles test succeeded\n";
     }
+#endif
 
-
+#if defined(test_sampleextractor) or !defined(DO_NOT_COMPILE_ALL_TESTS)
     // --- SampleExtractor tests --- //
     TestSampleExtractor sampleExtractorTests;
 
@@ -437,7 +518,9 @@ int main(int argc, char** argv)
     else {
         std::cout << "SampleExtractor test succeeded\n";
     }
+#endif
 
+#if defined(test_targetextractor) or !defined(DO_NOT_COMPILE_ALL_TESTS)
     // --- TargetExtractor tests --- //
     TestTargetExtractor targetExtractorTests;
 
@@ -452,7 +535,9 @@ int main(int argc, char** argv)
     else {
         std::cout << "TargetExtractor test succeeded\n";
     }
+#endif
 
+#if defined(test_drug_tobramycin) or !defined(DO_NOT_COMPILE_ALL_TESTS)
     // --- Tobramycin drug tests --- //
     TestDrugTobramycin tobramycinTests;
 
@@ -467,7 +552,9 @@ int main(int argc, char** argv)
     else {
         std::cout << "Drug Tobramycin test succeeded\n";
     }
+#endif
 
+#if defined(test_drug_vancomycin) or !defined(DO_NOT_COMPILE_ALL_TESTS)
     // --- Tobramycin drug tests --- //
     TestDrugVancomycin vancomycinTests;
 
@@ -482,6 +569,7 @@ int main(int argc, char** argv)
     else {
         std::cout << "Drug Vancomycin test succeeded\n";
     }
+#endif
 
     // Delete the logger to avoid a warning when using valgrind --leak-check=full
     Tucuxi::Common::LoggerHelper::beforeExit();
