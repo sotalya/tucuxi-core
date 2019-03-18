@@ -156,13 +156,33 @@ Unit DrugModelImport::extractUnit(Tucuxi::Common::XmlNodeIterator _node)
     return result;
 }
 
+
+void DrugModelImport::setNodeError(Tucuxi::Common::XmlNodeIterator _node, std::string value)
+{
+    std::string errorMessage;
+    Tucuxi::Common::XmlNode node = _node->getParent();
+    while (node.isValid()) {
+        if (node.getName().size() != 0) {
+            errorMessage = "<" + node.getName() + ">" + errorMessage;
+        }
+        node = node.getParent();
+    }
+    errorMessage += "<" + _node->getName() + "> contains an invalid value : " + _node->getValue();
+    setResult(Result::Error, errorMessage);
+}
+
 double DrugModelImport::extractDouble(Tucuxi::Common::XmlNodeIterator _node)
 {
     double result;
     try {
-        result = std::stod(_node->getValue());
+        std::size_t pos;
+        result = std::stod(_node->getValue(),&pos);
+        if (pos != _node->getValue().size()) {
+            setNodeError(_node, _node->getValue());
+            result = 0.0;
+        }
     } catch (...) {
-        setResult(Result::Error);
+        setNodeError(_node, _node->getValue());
         result = 0.0;
     }
     return result;
@@ -182,7 +202,7 @@ bool DrugModelImport::extractBool(Tucuxi::Common::XmlNodeIterator _node)
     if (_node->getValue() == "False") {
         return false;
     }
-    setResult(Result::Error);
+    setNodeError(_node, _node->getValue());
     return false;
 }
 
@@ -234,7 +254,7 @@ CovariateType DrugModelImport::extractCovariateType(Tucuxi::Common::XmlNodeItera
     if (it != m.end())
         return it->second;
 
-    setResult(Result::Error);
+    setNodeError(_node, _node->getValue());
     return CovariateType::Standard;
 }
 
@@ -254,7 +274,7 @@ DataType DrugModelImport::extractDataType(Tucuxi::Common::XmlNodeIterator _node)
     if (it != m.end())
         return it->second;
 
-    setResult(Result::Error);
+    setNodeError(_node, _node->getValue());
     return DataType::Double;
 }
 
@@ -280,7 +300,7 @@ TargetType DrugModelImport::extractTargetType(Tucuxi::Common::XmlNodeIterator _n
     if (it != m.end())
         return it->second;
 
-    setResult(Result::Error);
+    setNodeError(_node, _node->getValue());
     return TargetType::UnknownTarget;
 }
 
@@ -299,7 +319,7 @@ InterpolationType DrugModelImport::extractInterpolationType(Tucuxi::Common::XmlN
     if (it != m.end())
         return it->second;
 
-    setResult(Result::Error);
+    setNodeError(_node, _node->getValue());
     return InterpolationType::Direct;
 }
 
@@ -320,7 +340,7 @@ ResidualErrorType DrugModelImport::extractResidualErrorType(Tucuxi::Common::XmlN
     if (it != m.end())
         return it->second;
 
-    setResult(Result::Error);
+    setNodeError(_node, _node->getValue());
     return ResidualErrorType::NONE;
 }
 
@@ -340,7 +360,7 @@ ParameterVariabilityType DrugModelImport::extractParameterVariabilityType(Tucuxi
     if (it != m.end())
         return it->second;
 
-    setResult(Result::Error);
+    setNodeError(_node, _node->getValue());
     return ParameterVariabilityType::None;
 }
 
@@ -359,7 +379,7 @@ Formulation DrugModelImport::extractFormulation(Tucuxi::Common::XmlNodeIterator 
     if (it != m.end())
         return it->second;
 
-    setResult(Result::Error);
+    setNodeError(_node, _node->getValue());
     return Formulation::Undefined;
 }
 
@@ -386,7 +406,7 @@ AdministrationRoute DrugModelImport::extractAdministrationRoute(Tucuxi::Common::
     if (it != m.end())
         return it->second;
 
-    setResult(Result::Error);
+    setNodeError(_node, _node->getValue());
     return AdministrationRoute::Undefined;
 }
 
@@ -406,7 +426,7 @@ AbsorptionModel DrugModelImport::extractAbsorptionModel(Tucuxi::Common::XmlNodeI
     if (it != m.end())
         return it->second;
 
-    setResult(Result::Error);
+    setNodeError(_node, _node->getValue());
     return AbsorptionModel::UNDEFINED;
 
 }
@@ -469,7 +489,7 @@ JSOperation* DrugModelImport::extractJSOperation(Tucuxi::Common::XmlNodeIterator
                                 inputType = InputType::BOOL;
                             }
                             else {
-                                setResult(Result::Error);
+                                setNodeError(inputIt, inputIt->getValue());
                             }
                         }
                         else {

@@ -65,7 +65,7 @@ bool DrugFileValidator::validate(std::string drugFileName, std::string testFileN
 
     DrugModelImport importer;
     if (importer.importFromFile(dModel, drugFileName) != DrugModelImport::Result::Ok) {
-        logger.error("Can not import the drug file");
+        logger.error("Can not import the drug file. {}", importer.getErrorMessage());
         return false;
     }
 

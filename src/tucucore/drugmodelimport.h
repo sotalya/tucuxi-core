@@ -172,6 +172,8 @@ protected:
     Tucuxi::Common::TranslatableString extractTranslatableString(Tucuxi::Common::XmlNodeIterator _node, std::string _insideName);
     DrugModelMetadata* extractHead(Tucuxi::Common::XmlNodeIterator _node);
 
+    void setNodeError(Tucuxi::Common::XmlNodeIterator _node, std::string value);
+
 };
 
 
