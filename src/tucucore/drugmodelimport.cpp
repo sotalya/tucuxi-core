@@ -1864,6 +1864,7 @@ FullFormulationAndRoute* DrugModelImport::extractFullFormulationAndRoute(
     AbsorptionModel absorptionModelId = AbsorptionModel::UNDEFINED;
     ParameterSetDefinition *absorptionParameters = nullptr;
     std::vector<AnalyteSetToAbsorptionAssociation *> associations;
+    std::vector<AnalyteConversion *> analyteConversions;
 
     ValidDoses *availableDoses = nullptr;
     ValidDurations *intervals = nullptr;
@@ -1931,6 +1932,34 @@ FullFormulationAndRoute* DrugModelImport::extractFullFormulationAndRoute(
 
                 }
                 else if (nName == "analyteConversions") {
+                    XmlNodeIterator analyteConversionsIt = dosageIt->getChildren();
+
+                    while (analyteConversionsIt != XmlNodeIterator::none()) {
+                        std::string analyteId = "";
+                        Value factor = 0.0;
+
+                        if (analyteConversionsIt->getName() == "analyteConversion") {
+                            XmlNodeIterator analyteConversionIt = analyteConversionsIt->getChildren();
+                            while (analyteConversionIt != XmlNodeIterator::none()) {
+                                std::string n = analyteConversionIt->getName();
+
+                                if (n == "analyteId") {
+                                    analyteId = analyteConversionIt->getValue();
+                                }
+                                else if (n == "factor") {
+                                    factor = extractDouble(analyteConversionIt);
+                                }
+                                analyteConversionIt ++;
+                            }
+
+                        }
+
+                        if (getResult() == Result::Ok) {
+                            analyteConversions.push_back(new AnalyteConversion(analyteId, factor));
+                        }
+
+                        analyteConversionsIt ++;
+                    }
 
                 }
                 else if (nName == "availableDoses") {
@@ -2011,6 +2040,8 @@ FullFormulationAndRoute* DrugModelImport::extractFullFormulationAndRoute(
         DELETE_IF_NON_NULL(intervals);
         DELETE_IF_NON_NULL(infusions);
         DELETE_IF_NON_NULL(standardTreatment);
+        DELETE_PVECTOR(analyteConversions);
+        DELETE_PVECTOR(associations);
         return nullptr;
     }
 
@@ -2020,6 +2051,9 @@ FullFormulationAndRoute* DrugModelImport::extractFullFormulationAndRoute(
     formulationAndRoute->setValidDoses(std::unique_ptr<ValidDoses>(availableDoses));
     formulationAndRoute->setValidIntervals(std::unique_ptr<ValidDurations>(intervals));
     formulationAndRoute->setValidInfusionTimes(std::unique_ptr<ValidDurations>(infusions));
+    for (const auto & analyteConversion : analyteConversions) {
+        formulationAndRoute->addAnalyteConversion(std::unique_ptr<AnalyteConversion>(analyteConversion));
+    }
     for(const auto & association : associations) {
         formulationAndRoute->addAssociation(std::unique_ptr<AnalyteSetToAbsorptionAssociation>(association));
     }

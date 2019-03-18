@@ -17,6 +17,8 @@
 #include "tucucore/covariateextractor.h"
 #include "tucucore/parametersextractor.h"
 #include "tucucore/drugmodel/drugmodel.h"
+#include "tucucore/drugmodelchecker.h"
+#include "tucucore/pkmodel.h"
 
 //using namespace rapidjson;
 using namespace std;
@@ -64,6 +66,23 @@ bool DrugFileValidator::validate(std::string drugFileName, std::string testFileN
     DrugModelImport importer;
     if (importer.importFromFile(dModel, drugFileName) != DrugModelImport::Result::Ok) {
         logger.error("Can not import the drug file");
+        return false;
+    }
+
+
+
+    DrugModelChecker checker;
+
+    PkModelCollection pkCollection;
+
+    if (!defaultPopulate(pkCollection)) {
+        logger.error("Could not populate the Pk models collection. No model will be available");
+        return false;
+    }
+
+    DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(dModel, &pkCollection);
+    if (!checkerResult.ok) {
+        logger.error(checkerResult.errorMessage);
         return false;
     }
 

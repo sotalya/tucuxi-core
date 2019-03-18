@@ -2,6 +2,8 @@
 
 #include "tucucore/drugmodel/drugmodel.h"
 #include "tucucore/drugmodelimport.h"
+#include "tucucore/drugmodelchecker.h"
+#include "tucucore/pkmodel.h"
 
 #include "tucucommon/loggerhelper.h"
 
@@ -50,8 +52,23 @@ void DrugModelRepository::loadFile(std::string _fileName)
     Tucuxi::Core::DrugModelImport drugModelImport;
 
     if (drugModelImport.importFromFile(drugModel, _fileName) == DrugModelImport::Result::Ok) {
-        logHelper.info("Successfully loaded drug model : {}", drugModel->getDrugModelId());
-        addDrugModel(drugModel);
+
+        PkModelCollection pkCollection;
+
+        if (!defaultPopulate(pkCollection)) {
+            logHelper.error("Could not populate the Pk models collection. No model will be available");
+            return;
+        }
+
+        DrugModelChecker checker;
+        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel, &pkCollection);
+        if (!checkerResult.ok) {
+            logHelper.error("The drug file {} has internal errors : {}", _fileName, checkerResult.errorMessage);
+        }
+        else {
+            logHelper.info("Successfully loaded drug model : {}", drugModel->getDrugModelId());
+            addDrugModel(drugModel);
+        }
     }
     else {
         logHelper.error("Cannot import a drug file : {}", _fileName);

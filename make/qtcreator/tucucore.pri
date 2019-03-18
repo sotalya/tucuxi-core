@@ -13,6 +13,7 @@ HEADERS += \
     $$PWD/../../src/tucucore/intakeevent.h \
     $$PWD/../../src/tucucore/intakeintervalcalculator.h \
     $$PWD/../../src/tucucore/intakeextractor.h \
+    $$PWD/../../src/tucucore/invariants.h \
     $$PWD/../../src/tucucore/parameter.h \
     $$PWD/../../src/tucucore/timedevent.h \
     $$PWD/../../src/tucucore/operation.h \
@@ -80,7 +81,8 @@ HEADERS += \
     $$PWD/../../src/tucucore/iresidualerrormodel.h \
     $$PWD/../../src/tucucore/residualerrormodelextractor.h \
     $$PWD/../../src/tucucore/drugfilevalidator.h \
-    $$PWD/../../src/tucucore/generalextractor.h
+    $$PWD/../../src/tucucore/generalextractor.h \
+    $$PWD/../../src/tucucore/drugmodelchecker.h
 
 SOURCES += \
     $$PWD/../../src/tucucore/drugmodel/drugmodel.cpp \
@@ -149,7 +151,8 @@ SOURCES += \
     $$PWD/../../src/tucucore/drugmodel/errormodel.cpp \
     $$PWD/../../src/tucucore/residualerrormodelextractor.cpp \
     $$PWD/../../src/tucucore/drugfilevalidator.cpp \
-    $$PWD/../../src/tucucore/generalextractor.cpp
+    $$PWD/../../src/tucucore/generalextractor.cpp \
+    $$PWD/../../src/tucucore/drugmodelchecker.cpp
 
 DISTFILES += \
     $$PWD/../../src/tucucore/makefile
