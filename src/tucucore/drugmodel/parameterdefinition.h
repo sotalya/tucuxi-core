@@ -15,9 +15,12 @@
 #include "tucucore/operation.h"
 #include "tucucore/timedevent.h"
 #include "tucucommon/general.h"
+#include "tucucore/invariants.h"
 
 namespace Tucuxi {
 namespace Core {
+
+class DrugModelChecker;
 
 ///
 /// \brief The potential parameter variability types supported
@@ -191,6 +194,9 @@ public:
         m_parameterId.push_back(_parameterId2);
     }
 
+    // TODO : Add invariants
+    INVARIANTS()
+
 protected:
     Value m_correlation;
     std::vector<std::string> m_analyteSetId;
@@ -218,10 +224,20 @@ public:
 
     const Correlations & getCorrelations() const { return m_correlations;}
 
+
+    INVARIANTS(
+            // No invariant for now
+//            INVARIANT(Invariants::INV_ANALYTE_0001, (m_analyteId.size() > 0))
+//            INVARIANT(Invariants::INV_ANALYTE_0002, (m_residualErrorModel != nullptr))
+//            INVARIANT(Invariants::INV_ANALYTE_0003, (m_residualErrorModel->checkInvariants()))
+            )
+
 protected:
     ParameterDefinitions m_parameters;
     Correlations m_correlations;
     std::vector<std::string> m_analyteIds;
+
+    friend DrugModelChecker;
 };
 
 

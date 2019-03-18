@@ -11,6 +11,7 @@
 #include "tucucore/drugmodel/errormodel.h"
 #include "tucucore/drugmodel/targetdefinition.h"
 #include "tucucore/drugmodel/parameterdefinition.h"
+#include "tucucore/invariants.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -54,6 +55,13 @@ public:
 //    void addTarget(std::unique_ptr<TargetDefinition>& _target) { m_targets.push_back(std::move(_target));}
 //    const TargetDefinitions & getTargetDefinitions() const { return m_targets;}
 
+
+    INVARIANTS(
+            INVARIANT(Invariants::INV_ANALYTE_0001, (m_analyteId.size() > 0))
+            INVARIANT(Invariants::INV_ANALYTE_0002, (m_residualErrorModel != nullptr))
+            INVARIANT(Invariants::INV_ANALYTE_0003, (m_residualErrorModel->checkInvariants()))
+            )
+
 protected:
 
 //    std::string m_name;
@@ -94,6 +102,16 @@ public:
 
     void setPkModelId(std::string _pkModelId) { m_pkModelId = _pkModelId;}
     std::string getPkModelId() const { return m_pkModelId;}
+
+
+    INVARIANTS(
+            INVARIANT(Invariants::INV_ANALYTESET_0001, (m_analyteSetId.size() > 0))
+            INVARIANT(Invariants::INV_ANALYTESET_0002, (m_pkModelId.size() > 0))
+            INVARIANT(Invariants::INV_ANALYTESET_0003, (m_analytes.size() > 0))
+            LAMBDA_INVARIANT(Invariants::INV_ANALYTESET_0004, {bool ok = true;for(size_t i = 0; i < m_analytes.size(); i++) {ok &= m_analytes.at(i)->checkInvariants();} return ok;})
+            INVARIANT(Invariants::INV_ANALYTESET_0005, (m_dispositionParameters != nullptr))
+            INVARIANT(Invariants::INV_ANALYTESET_0006, (m_dispositionParameters->checkInvariants()))
+            )
 
 protected:
     ///

@@ -4,6 +4,7 @@
 #include "tucucommon/translatablestring.h"
 #include "tucucore/drugdefinitions.h"
 #include "tucucore/operation.h"
+#include "tucucore/invariants.h"
 #include "targetdefinition.h"
 
 namespace Tucuxi {
@@ -24,6 +25,8 @@ public:
 
     void setName(const Tucuxi::Common::TranslatableString &_name) { m_name = _name;}
 
+    // TODO : Add invariants
+    INVARIANTS()
 
 protected:
     std::string m_id;

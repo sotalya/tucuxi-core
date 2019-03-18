@@ -14,6 +14,7 @@
 #include "tucucore/definitions.h"
 #include "tucucore/drugdefinitions.h"
 #include "tucucore/operation.h"
+#include "tucucore/invariants.h"
 
 
 namespace Tucuxi {
@@ -86,6 +87,10 @@ public:
 
     const Tucuxi::Common::TranslatableString& getName() const {return m_name;}
 
+
+    INVARIANTS(
+            INVARIANT(Invariants::INV_COVARIATEDEFINITION_0001, (m_id.size() > 0))
+            )
 protected:
     /// \brief Covariate type.
     CovariateType m_type;

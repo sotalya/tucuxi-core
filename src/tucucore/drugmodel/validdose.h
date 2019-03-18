@@ -8,6 +8,7 @@
 #include "tucucore/definitions.h"
 #include "tucucore/drugdefinitions.h"
 #include "tucucore/validvalues.h"
+#include "tucucore/invariants.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -23,7 +24,11 @@ public:
 
     const std::vector<std::string>& getAnalyteIds() const;
 
+    // TODO : We should get rid of these analyte Ids
     void setAnalyteIds(std::vector<std::string> _analyteIds);
+
+    // TODO : Add invariants
+    INVARIANTS()
 
 protected:
 

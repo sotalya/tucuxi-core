@@ -14,18 +14,16 @@
 #include "tucucore/drugmodel/activemoiety.h"
 #include "tucucore/drugmodel/timeconsiderations.h"
 #include "tucucore/drugmodel/drugmodelmetadata.h"
+#include "tucucore/invariants.h"
 
 namespace Tucuxi {
 namespace Core {
 
-enum class Invariants {
-    INV_0001 = 0,
-    INV_0002
-};
 
 typedef std::vector< std::unique_ptr<AnalyteSet>> AnalyteSets;
 
 class DrugModel;
+class DrugModelChecker;
 
 ///
 /// \brief The ParameterDefinitionIterator class
@@ -68,19 +66,27 @@ private:
     size_t m_index;
 };
 
-#define INVARIANT(invariant, expression) ok &= expression;
-#define INVARIANTS(decl) public : bool checkInvariants() const {bool ok=true;decl;return ok;}
-#define CHECKINVARIANTS checkInvariants()
-
-
 class DrugModel
 {
 
     INVARIANTS(
-            INVARIANT(Invariants::INV_0001, (m_drugId.size() != 0))
-            INVARIANT(Invariants::INV_0002, (m_drugModelId.size() != 0))
-            )
+            INVARIANT(Invariants::INV_DRUGMODEL_0001, (m_drugId.size() > 0))
+            INVARIANT(Invariants::INV_DRUGMODEL_0002, (m_drugModelId.size() > 0))
+            INVARIANT(Invariants::INV_DRUGMODEL_0003, (m_analyteSets.size() > 0))
+            LAMBDA_INVARIANT(Invariants::INV_DRUGMODEL_0004, {bool ok = true;for(size_t i = 0; i < m_analyteSets.size(); i++) {ok &= m_analyteSets.at(i)->checkInvariants();} return ok;})
+            INVARIANT(Invariants::INV_DRUGMODEL_0005, (m_domain != nullptr))
+            INVARIANT(Invariants::INV_DRUGMODEL_0006, (m_domain->checkInvariants()))
+            LAMBDA_INVARIANT(Invariants::INV_DRUGMODEL_0007, {bool ok = true;for(size_t i = 0; i < m_covariates.size(); i++) {ok &= m_covariates.at(i)->checkInvariants();} return ok;})
+            INVARIANT(Invariants::INV_DRUGMODEL_0008, (m_formulationAndRoutes != nullptr))
+            INVARIANT(Invariants::INV_DRUGMODEL_0009, (m_formulationAndRoutes->checkInvariants()))
+            LAMBDA_INVARIANT(Invariants::INV_DRUGMODEL_0010, {bool ok = true;for(size_t i = 0; i < m_interParameterSetCorrelations.size(); i++) {ok &= m_interParameterSetCorrelations.at(i).checkInvariants();} return ok;})
+            INVARIANT(Invariants::INV_DRUGMODEL_0011, (m_activeMoieties.size() > 0))
+            LAMBDA_INVARIANT(Invariants::INV_DRUGMODEL_0012, {bool ok = true;for(size_t i = 0; i < m_activeMoieties.size(); i++) {ok &= m_activeMoieties.at(i)->checkInvariants();} return ok;})
+            INVARIANT(Invariants::INV_DRUGMODEL_0013, (m_timeConsiderations != nullptr))
+            INVARIANT(Invariants::INV_DRUGMODEL_0014, (m_timeConsiderations->checkInvariants()))
+            // No invariant on m_metadata
 
+            )
 
 public:
     DrugModel();
@@ -126,6 +132,9 @@ public:
 
     void addAnalyteSet(std::unique_ptr<AnalyteSet> _analyteSet);
 
+    const AnalyteSets& getAnalyteSets() const { return m_analyteSets;}
+
+    // TODO : getPkModelId() is OK only if there is a single analyteSet. Should be refactored once
     std::string getPkModelId() const {
         if (m_analyteSets.size() > 0) {
             return m_analyteSets.at(0)->getPkModelId();
@@ -179,8 +188,7 @@ private:
     }
 
     const ParameterSetDefinition* getDispositionParameters(const std::string &_analyteId) const {
-        TMP_UNUSED_PARAMETER(_analyteId);
-        CHECKINVARIANTS;
+        // CHECKINVARIANTS;
         // TODO : Now we send an analyteId, while it should be a analyteGroupId
         const AnalyteSet* pSet = getAnalyteSet(_analyteId);
         if (pSet != nullptr) {
@@ -214,6 +222,7 @@ private:
     std::unique_ptr<DrugModelMetadata> m_metadata;
 
     friend ParameterDefinitionIterator;
+    friend DrugModelChecker;
 };
 
 } // namespace Core

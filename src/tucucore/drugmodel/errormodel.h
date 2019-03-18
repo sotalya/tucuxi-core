@@ -4,7 +4,7 @@
 #include <memory>
 
 #include "tucucore/iresidualerrormodel.h"
-// #include "tucucore/definitions.h"
+#include "tucucore/invariants.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -22,6 +22,10 @@ public:
     void addOriginalSigma(std::unique_ptr<PopulationValue> _sigma) {m_originalSigmas.push_back(std::move(_sigma));}
     void setErrorModel(ResidualErrorType _errorModel) { m_errorModel = _errorModel;}
 
+
+    INVARIANTS(
+            // No invariants
+            )
 
 protected:
 

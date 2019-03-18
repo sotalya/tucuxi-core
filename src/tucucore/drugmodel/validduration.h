@@ -10,6 +10,7 @@
 #include "tucucommon/duration.h"
 #include "tucucore/drugdefinitions.h"
 #include "tucucore/validvalues.h"
+#include "tucucore/invariants.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -25,6 +26,9 @@ public:
     Tucuxi::Common::Duration getDefaultDuration() const;
 
     virtual std::vector<Tucuxi::Common::Duration> getDurations() const;
+
+    // TODO : Add invariants
+    INVARIANTS()
 
 protected:
 
