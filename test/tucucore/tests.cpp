@@ -21,6 +21,7 @@
 /// As all the tests are in headers, a compilation can be quite time consuming.
 /// Therefore, only selecting the test of interest allows to gain some time.
 
+
 #if defined(test_computingcomponentadjustments) or !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_computingcomponentadjustments.h"
 #endif
@@ -89,6 +90,9 @@
 #endif
 #if defined(test_targetextractor) or !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_targetextractor.h"
+#endif
+#if defined(test_constanteliminationbolus) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#include "drugmodels/test_constanteliminationbolus.h"
 #endif
 #if defined(test_drug_tobramycin) or !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "drugmodels/test_drug_tobramycin.h"
@@ -396,7 +400,7 @@ int main(int argc, char** argv)
     peTests.add_test("testPE_constructor", &TestParameterExtractor::testPE_constructor);
     peTests.add_test("testPE_extract1_0", &TestParameterExtractor::testPE_extract1_0);
     peTests.add_test("testPE_extract1_1", &TestParameterExtractor::testPE_extract1_1);
-    peTests.add_test("testPE_extractParamFromParam", &TDO_NOT_COMPILE_ALL_TESTSestParameterExtractor::testPE_extractParamFromParam);
+    peTests.add_test("testPE_extractParamFromParam", &TestParameterExtractor::testPE_extractParamFromParam);
 
     res = peTests.run(argc, argv);
     tot_res |= res;
@@ -571,6 +575,24 @@ int main(int argc, char** argv)
         std::cout << "Drug Vancomycin test succeeded\n";
     }
 #endif
+
+#if defined(test_constanteliminationbolus) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+    // --- Tobramycin drug tests --- //
+    TestConstantEliminationBolus constantEliminationBolusTests;
+
+    // one compartment
+    constantEliminationBolusTests.add_test("testTobramycin", &TestConstantEliminationBolus::testConstantElimination);
+
+    res = constantEliminationBolusTests.run(argc, argv);
+    tot_res |= res;
+    if (res != 0) {
+        std::cerr << "Constant Elimination Bolus test failed\n";
+    }
+    else {
+        std::cout << "Constant Elimination Bolus test succeeded\n";
+    }
+#endif
+
 
     // Delete the logger to avoid a warning when using valgrind --leak-check=full
     Tucuxi::Common::LoggerHelper::beforeExit();
