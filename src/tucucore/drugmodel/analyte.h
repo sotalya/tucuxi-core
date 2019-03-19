@@ -32,6 +32,59 @@ protected:
     Unit m_unit;
 };
 
+///
+/// \brief The AnalyteId class
+/// This class is simply a std::string.
+/// The rationale is that it makes it mandatory to use AnalyteId wherever
+/// needed, and as such not to mix things with AnalyteGroupId.
+/// Therefore, the code is safer, and more readable.
+///
+class AnalyteId
+{
+public:
+    AnalyteId(std::string _s) : m_s(_s) {}
+    AnalyteId(const char* _s) : m_s(_s) {}
+    size_t size() const { return m_s.size();}
+
+    std::string toString() const { return m_s; }
+
+    inline bool operator==(const AnalyteId& other){ return this->m_s == other.m_s;}
+    inline bool operator<(const AnalyteId& other){ return this->m_s < other.m_s;}
+
+protected:
+    std::string m_s;
+};
+
+inline bool operator==(const AnalyteId& lhs, const AnalyteId& rhs){ return lhs.toString() == rhs.toString(); }
+
+///
+/// \brief The AnalyteGroupId class
+/// This class is simply a std::string.
+/// The rationale is that it makes it mandatory to use AnalyteGroupId wherever
+/// needed, and as such not to mix things with AnalyteId.
+/// Therefore, the code is safer, and more readable.
+///
+class AnalyteGroupId
+{
+public:
+    AnalyteGroupId(std::string _s) : m_s(_s) {}
+    AnalyteGroupId(const char* _s) : m_s(_s) {}
+
+    size_t size() const { return m_s.size();}
+
+    std::string toString() const { return m_s; }
+
+    inline bool operator==(const AnalyteGroupId& other){ return this->m_s == other.m_s;}
+    inline bool operator<(const AnalyteGroupId& other){ return this->m_s < other.m_s;}
+
+
+protected:
+    std::string m_s;
+};
+
+inline bool operator==(const AnalyteGroupId& lhs, const AnalyteGroupId& rhs){ return lhs.toString() == rhs.toString(); }
+
+
 class Analyte
 {
 public:
@@ -45,7 +98,7 @@ public:
 //    std::string getName() const { return m_name;}
 
     void setAnalyteId(std::string _analyteId) { m_analyteId = _analyteId;}
-    std::string getAnalyteId() const { return m_analyteId;}
+    AnalyteId getAnalyteId() const { return m_analyteId;}
 
     void setResidualErrorModel(std::unique_ptr<ErrorModel> _residualErrorModel) { m_residualErrorModel = std::move(_residualErrorModel);}
     const ErrorModel& getResidualErrorModel() const { return *m_residualErrorModel; }
@@ -65,7 +118,7 @@ public:
 protected:
 
 //    std::string m_name;
-    std::string m_analyteId;
+    AnalyteId m_analyteId;
 
     Unit m_unit;
 
@@ -91,11 +144,13 @@ protected:
 class AnalyteSet
 {
 public:
+    AnalyteSet() : m_analyteSetId(""){}
+
     const ParameterSetDefinition& getDispositionParameters() const { return *m_dispositionParameters; }
     void setDispositionParameters(std::unique_ptr<ParameterSetDefinition> _parameters) { m_dispositionParameters = std::move(_parameters);}
 
-    void setId(std::string _id) { m_analyteSetId = _id;}
-    std::string getId() const { return m_analyteSetId;}
+    void setId(AnalyteGroupId _id) { m_analyteSetId = _id;}
+    AnalyteGroupId getId() const { return m_analyteSetId;}
 
     void addAnalyte(std::unique_ptr<Analyte> _analyte) { m_analytes.push_back(std::move(_analyte));}
     const std::vector<std::unique_ptr< Analyte > >& getAnalytes() const { return m_analytes;}
@@ -118,7 +173,7 @@ protected:
     ///
     /// \brief m_analyteSetId
     /// If it contains only a single analyte, then should have the same Id as the analyte
-    std::string m_analyteSetId;
+    AnalyteGroupId m_analyteSetId;
 
     std::vector<std::unique_ptr< Analyte > > m_analytes;
 

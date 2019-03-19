@@ -12,11 +12,11 @@ namespace Core {
 bool ParameterDefinitionIterator::isDone() const
 {
     size_t nTotal = 0;
-    const ParameterSetDefinition* params1 = m_model.getAbsorptionParameters(m_analyteId, m_formulation, m_route);
+    const ParameterSetDefinition* params1 = m_model.getAbsorptionParameters(m_analyteGroupId, m_formulation, m_route);
     if (params1 != nullptr) {
         nTotal += params1->getNbParameters();
     }
-    const ParameterSetDefinition* params2 = m_model.getDispositionParameters(m_analyteId);
+    const ParameterSetDefinition* params2 = m_model.getDispositionParameters(m_analyteGroupId);
     if (params2 != nullptr) {
         nTotal += params2->getNbParameters();
     }
@@ -30,8 +30,8 @@ typedef struct {
 
 const ParameterDefinition* ParameterDefinitionIterator::operator*()
 {
-    const ParameterSetDefinition* params1 = m_model.getAbsorptionParameters(m_analyteId, m_formulation, m_route);
-    const ParameterSetDefinition* params2 = m_model.getDispositionParameters(m_analyteId);
+    const ParameterSetDefinition* params1 = m_model.getAbsorptionParameters(m_analyteGroupId, m_formulation, m_route);
+    const ParameterSetDefinition* params2 = m_model.getDispositionParameters(m_analyteGroupId);
 
     std::vector<ddd> vector;
 

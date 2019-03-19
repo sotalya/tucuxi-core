@@ -41,12 +41,12 @@ class DrugModelChecker;
 class ParameterDefinitionIterator : public Tucuxi::Common::Iterator<const ParameterDefinition*>
 {
 public:
-    ParameterDefinitionIterator(const DrugModel &_model, const std::string& _analyteId, const Formulation &_formulation, const AdministrationRoute _route)
-        : m_model(_model), m_analyteId(_analyteId), m_formulation(_formulation), m_route(_route)
+    ParameterDefinitionIterator(const DrugModel &_model, const AnalyteGroupId& _analyteGroupId, const Formulation &_formulation, const AdministrationRoute _route)
+        : m_model(_model), m_analyteGroupId(_analyteGroupId), m_formulation(_formulation), m_route(_route)
     {
     }
     ParameterDefinitionIterator(const ParameterDefinitionIterator& _right)
-        : m_model(_right.m_model), m_analyteId(_right.m_analyteId), m_formulation(_right.m_formulation), m_route(_right.m_route), m_index(_right.m_index)
+        : m_model(_right.m_model), m_analyteGroupId(_right.m_analyteGroupId), m_formulation(_right.m_formulation), m_route(_right.m_route), m_index(_right.m_index)
     {
     }
     const ParameterDefinition* operator*() override;
@@ -60,7 +60,7 @@ public:
 
 private:
     const DrugModel &m_model;
-    const std::string m_analyteId;
+    const AnalyteGroupId m_analyteGroupId;
     const Formulation m_formulation;
     const AdministrationRoute m_route;
     size_t m_index;
@@ -107,9 +107,9 @@ public:
 
     const FormulationAndRoutes& getFormulationAndRoutes() const;
 
-    ParameterDefinitionIterator getParameterDefinitions(const std::string& _analyteId, const Formulation &_formulation, const AdministrationRoute _route) const
+    ParameterDefinitionIterator getParameterDefinitions(const AnalyteGroupId& _analyteGroupId, const Formulation &_formulation, const AdministrationRoute _route) const
     {
-        ParameterDefinitionIterator iterator(*this, _analyteId, _formulation, _route);
+        ParameterDefinitionIterator iterator(*this, _analyteGroupId, _formulation, _route);
         return iterator;
     }
 
@@ -150,12 +150,12 @@ public:
 
     const TimeConsiderations &getTimeConsiderations() const { return *m_timeConsiderations;}
 
-    const AnalyteSet* getAnalyteSet(const std::string &_analyteId = "") const {
-        if ((_analyteId == "") && (m_analyteSets.size() == 1)) {
+    const AnalyteSet* getAnalyteSet(const AnalyteGroupId &_analyteGroupId = "") const {
+        if ((_analyteGroupId == "") && (m_analyteSets.size() == 1)) {
             return m_analyteSets.at(0).get();
         }
         for (const std::unique_ptr<AnalyteSet> &set : m_analyteSets) {
-            if (set->getId() == _analyteId) {
+            if (set->getId() == _analyteGroupId) {
                 return set.get();
             }
         }
@@ -169,18 +169,18 @@ private:
         return m_formulationAndRoutes->get(_formulation, _route);
     }
 
-    const ParameterSetDefinition* getAbsorptionParameters(const std::string &_analyteId, const Formulation &_formulation, const AdministrationRoute _route) const {
+    const ParameterSetDefinition* getAbsorptionParameters(const AnalyteGroupId &_analyteGroupId, const Formulation &_formulation, const AdministrationRoute _route) const {
         const FullFormulationAndRoute* fr = getFormulationAndRoute(_formulation, _route);
         if (fr != nullptr) {
-            return fr->getParameterDefinitions(_analyteId);
+            return fr->getParameterDefinitions(_analyteGroupId);
         }
         return nullptr;
     }
 
-    const ParameterSetDefinition* getDispositionParameters(const std::string &_analyteId) const {
+    const ParameterSetDefinition* getDispositionParameters(const AnalyteGroupId &_analyteGroupId) const {
         // CHECKINVARIANTS;
         // TODO : Now we send an analyteId, while it should be a analyteGroupId
-        const AnalyteSet* pSet = getAnalyteSet(_analyteId);
+        const AnalyteSet* pSet = getAnalyteSet(_analyteGroupId);
         if (pSet != nullptr) {
             return &pSet->getDispositionParameters();
         }

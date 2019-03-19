@@ -84,7 +84,7 @@ ComputationResult GeneralExtractor::extractOmega(
 
     // TODO : This should not necessarily be the default formulation and route
     // Should get rid of the next 3 lines
-    const std::string analyteId = _drugModel.getAnalyteSet()->getId();
+    const AnalyteGroupId analyteId = _drugModel.getAnalyteSet()->getId();
     const Formulation formulation = _drugModel.getFormulationAndRoutes().getDefault()->getFormulationAndRoute().getFormulation();
     const AdministrationRoute route = _drugModel.getFormulationAndRoutes().getDefault()->getFormulationAndRoute().getAdministrationRoute();
 
@@ -261,7 +261,7 @@ ComputingResult GeneralExtractor::generalExtractions(
     // TODO : This should not necessarily be the default formulation and route
     // Should get rid of the next 4 lines
     const std::string pkModelId = _request.getDrugModel().getAnalyteSet()->getPkModelId();
-    const std::string analyteId = _request.getDrugModel().getAnalyteSet()->getId();
+    const AnalyteGroupId analyteGroupId = _request.getDrugModel().getAnalyteSet()->getId();
     const Formulation formulation = _request.getDrugModel().getFormulationAndRoutes().getDefault()->getFormulationAndRoute().getFormulation();
     const AdministrationRoute route = _request.getDrugModel().getFormulationAndRoutes().getDefault()->getFormulationAndRoute().getAdministrationRoute();
 
@@ -306,7 +306,7 @@ ComputingResult GeneralExtractor::generalExtractions(
         }
     }
 
-    ParameterDefinitionIterator it = _request.getDrugModel().getParameterDefinitions(analyteId, formulation, route);
+    ParameterDefinitionIterator it = _request.getDrugModel().getParameterDefinitions(analyteGroupId, formulation, route);
 
     ParametersExtractor parameterExtractor(_covariatesSeries,
                                            it,

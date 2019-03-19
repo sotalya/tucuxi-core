@@ -172,12 +172,12 @@ bool DrugFileValidator::validate(std::string drugFileName, std::string testFileN
 
             // TODO : This should not necessarily be the default formulation and route
             // Should get rid of the next 3 lines
-            const std::string analyteId = drugModel->getAnalyteSet()->getId();
+            const AnalyteGroupId analyteGroupId = drugModel->getAnalyteSet()->getId();
             const Formulation formulation = drugModel->getFormulationAndRoutes().getDefault()->getFormulationAndRoute().getFormulation();
             const AdministrationRoute route = drugModel->getFormulationAndRoutes().getDefault()->getFormulationAndRoute().getAdministrationRoute();
 
 
-            ParameterDefinitionIterator it = drugModel->getParameterDefinitions(analyteId, formulation, route);
+            ParameterDefinitionIterator it = drugModel->getParameterDefinitions(analyteGroupId, formulation, route);
 
             ParametersExtractor parameterExtractor(covariatesSeries,
                                                    it,

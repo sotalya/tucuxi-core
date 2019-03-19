@@ -189,7 +189,7 @@ public:
     void addAnalyteConversion(std::unique_ptr<AnalyteConversion> _analyteConversion) { m_analyteConversions.push_back(std::move(_analyteConversion));}
     const std::vector<std::unique_ptr<AnalyteConversion> >& getAnalyteConversions() const { return m_analyteConversions;}
 
-    const ParameterSetDefinition* getParameterDefinitions(const std::string &_analyteId) const;
+    const ParameterSetDefinition* getParameterDefinitions(const AnalyteGroupId &_analyteGroupId) const;
 
     std::string getId() const { return m_id;}
 

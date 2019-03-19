@@ -63,15 +63,23 @@ bool contains(std::vector<std::string> _vector, std::string _s) {
         return false;
     }
 }
+template<class T>
+bool contains(std::vector<T> _vector, T _s) {
+    if(std::find(_vector.begin(), _vector.end(), _s) != _vector.end()) {
+        return true;
+    } else {
+        return false;
+    }
+}
 
 DrugModelChecker::CheckerResult_t DrugModelChecker::checkAnalytes(const DrugModel *_drugModel)
 {
-    std::vector<std::string> activeMoietiesAnalytes;
+    std::vector<AnalyteId> activeMoietiesAnalytes;
 
     // 1. Check that there is no overlap amongst moieties
     for (const auto &activeMoiety : _drugModel->getActiveMoieties()) {
         for (const auto &analyteId : activeMoiety->getAnalyteIds()) {
-            if (contains(activeMoietiesAnalytes, analyteId)) {
+            if (contains<AnalyteId>(activeMoietiesAnalytes, analyteId)) {
                 return {false, "The analyte " + analyteId + " is present at least twice in the active moieties"};
             }
             else {
@@ -85,11 +93,11 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkAnalytes(const DrugMode
 
 
     // 2. Check that there is no overlap amongst the analyte groups
-    std::vector<std::string> allAnalytes;
+    std::vector<AnalyteId> allAnalytes;
     for (const auto &analyteSet : _drugModel->m_analyteSets) {
         for (const auto &analyte : analyteSet->getAnalytes()) {
-            if (contains(allAnalytes, analyte->getAnalyteId())) {
-                return {false, "The analyte " + analyte->getAnalyteId() + " is present at least twice in the analyte groups"};
+            if (contains<AnalyteId>(allAnalytes, analyte->getAnalyteId())) {
+                return {false, "The analyte " + analyte->getAnalyteId().toString() + " is present at least twice in the analyte groups"};
             }
             allAnalytes.push_back(analyte->getAnalyteId());
         }
@@ -105,7 +113,7 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkAnalytes(const DrugMode
     // 4. Check that there is an exact match between the conversions and the moieties
     for (const auto &formulationAndRoute : _drugModel->m_formulationAndRoutes->m_fars) {
 
-        std::vector<std::string> analytes;
+        std::vector<AnalyteId> analytes;
         for (const auto &analyteConversion : formulationAndRoute->getAnalyteConversions()) {
             analytes.push_back(analyteConversion->getAnalyteId());
         }

@@ -73,32 +73,35 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
         fructose_assert(drugModel->checkInvariants());
 
-        DrugModelChecker checker;
-
-        std::shared_ptr<PkModel> sharedPkModel;
-        sharedPkModel = std::make_shared<PkModel>("test.constantelimination");
-
-        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::INTRAVASCULAR, ConstantEliminationBolus::getCreator());
-        fructose_assert(addResult);
 
 
-        PkModelCollection collection;
-        collection.addPkModel(sharedPkModel);
-        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel, &collection);
-
-        fructose_assert(checkerResult.ok);
-
-        if (!checkerResult.ok) {
-            std::cout << checkerResult.errorMessage << std::endl;
-        }
-
-        // Now the drug model is ready to be used
         {
+            DrugModelChecker checker;
+
+            std::shared_ptr<PkModel> sharedPkModel;
+            sharedPkModel = std::make_shared<PkModel>("test.constantelimination");
+
+            bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::INTRAVASCULAR, ConstantEliminationBolus::getCreator());
+            fructose_assert(addResult);
+
+            PkModelCollection *collection = new PkModelCollection();
+            collection->addPkModel(sharedPkModel);
+            DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel, collection);
+
+            fructose_assert(checkerResult.ok);
+
+            if (!checkerResult.ok) {
+                std::cout << checkerResult.errorMessage << std::endl;
+            }
+
+            // Now the drug model is ready to be used
+
+
             IComputingService *component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
 
             fructose_assert( component != nullptr);
 
-            static_cast<ComputingComponent *>(component)->setPkModelCollection(&collection);
+            static_cast<ComputingComponent *>(component)->setPkModelCollection(collection);
 
             DrugTreatment *drugTreatment;
             const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::INTRAVASCULAR);
@@ -134,7 +137,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
                 std::vector<CycleData> data = resp->getData();
                 fructose_assert(data.size() == 16);
                 fructose_assert(data[0].m_concentrations.size() == 1);
-                fructose_assert(data[0].m_concentrations[0][0] == 0.0);
+                fructose_assert(data[0].m_concentrations[0][0] == 200000.0);
                 DateTime startSept2018(date::year_month_day(date::year(2018), date::month(9), date::day(1)),
                                        Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
 
@@ -173,7 +176,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
                     std::vector<CycleData> data = resp->getData();
                     fructose_assert(data.size() == 15);
                     fructose_assert(data[0].m_concentrations.size() == 1);
-                    fructose_assert(data[0].m_concentrations[0][0] != 0.0);
+                    fructose_assert(data[0].m_concentrations[0][0] == 200000);
                     DateTime startSept2018(date::year_month_day(date::year(2018), date::month(9), date::day(1)),
                                            Duration(std::chrono::hours(14), std::chrono::minutes(0), std::chrono::seconds(0)));
 
