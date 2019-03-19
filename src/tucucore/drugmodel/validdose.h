@@ -22,17 +22,8 @@ public:
 
     virtual ~ValidDoses();
 
-    const std::vector<std::string>& getAnalyteIds() const;
-
-    // TODO : We should get rid of these analyte Ids
-    void setAnalyteIds(std::vector<std::string> _analyteIds);
-
-    // TODO : Add invariants
     INVARIANTS()
 
-protected:
-
-    std::vector<std::string> m_analyteIds;
 };
 
 

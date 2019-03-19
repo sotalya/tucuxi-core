@@ -18,6 +18,8 @@ public:
 
     std::string toString() const { return m_unitString;}
 
+    bool isTime() const { return ((m_unitString == "d") || (m_unitString == "h") || (m_unitString == "m") || (m_unitString == "s"));}
+
 protected:
     std::string m_unitString;
 

@@ -11,10 +11,12 @@
 
 #include "tucucore/timedevent.h"
 #include "tucucore/drugdefinitions.h"
+#include "tucucore/invariants.h"
 
 namespace Tucuxi {
 namespace Core {
 
+class TargetExtractor;
 
 class SubTargetDefinition : public PopulationValue
 {
@@ -102,7 +104,11 @@ public:
     const SubTargetDefinition & getToxicityAlarm() const { return *m_toxicityAlarm;}
     const SubTargetDefinition & getInefficacyAlarm() const { return *m_inefficacyAlarm;}
 
-//protected:
+    INVARIANTS(
+            INVARIANT(Invariants::INV_TARGETDEFINITION_0001, (m_activeMoietyId.size() > 0))
+            )
+
+protected:
     TargetType m_targetType;
     Unit m_unit;
     Unit m_micUnit;
@@ -117,6 +123,8 @@ public:
     std::unique_ptr<SubTargetDefinition> m_tBest;
     std::unique_ptr<SubTargetDefinition> m_toxicityAlarm;
     std::unique_ptr<SubTargetDefinition> m_inefficacyAlarm;
+
+    friend TargetExtractor;
 };
 
 

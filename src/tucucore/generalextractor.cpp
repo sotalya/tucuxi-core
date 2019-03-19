@@ -257,10 +257,10 @@ ComputingResult GeneralExtractor::generalExtractions(
     }
 */
 
-    const std::string pkModelId = _request.getDrugModel().getPkModelId();
 
     // TODO : This should not necessarily be the default formulation and route
-    // Should get rid of the next 3 lines
+    // Should get rid of the next 4 lines
+    const std::string pkModelId = _request.getDrugModel().getAnalyteSet()->getPkModelId();
     const std::string analyteId = _request.getDrugModel().getAnalyteSet()->getId();
     const Formulation formulation = _request.getDrugModel().getFormulationAndRoutes().getDefault()->getFormulationAndRoute().getFormulation();
     const AdministrationRoute route = _request.getDrugModel().getFormulationAndRoutes().getDefault()->getFormulationAndRoute().getAdministrationRoute();

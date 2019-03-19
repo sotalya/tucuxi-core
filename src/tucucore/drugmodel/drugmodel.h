@@ -134,14 +134,6 @@ public:
 
     const AnalyteSets& getAnalyteSets() const { return m_analyteSets;}
 
-    // TODO : getPkModelId() is OK only if there is a single analyteSet. Should be refactored once
-    std::string getPkModelId() const {
-        if (m_analyteSets.size() > 0) {
-            return m_analyteSets.at(0)->getPkModelId();
-        }
-        return "";
-    }
-
     void addActiveMoiety(std::unique_ptr<ActiveMoiety> _activeMoiety);
 
     const ActiveMoieties& getActiveMoieties() const { return m_activeMoieties;}
@@ -157,8 +149,6 @@ public:
     }
 
     const TimeConsiderations &getTimeConsiderations() const { return *m_timeConsiderations;}
-
-
 
     const AnalyteSet* getAnalyteSet(const std::string &_analyteId = "") const {
         if ((_analyteId == "") && (m_analyteSets.size() == 1)) {

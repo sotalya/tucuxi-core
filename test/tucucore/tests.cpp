@@ -581,7 +581,7 @@ int main(int argc, char** argv)
     TestConstantEliminationBolus constantEliminationBolusTests;
 
     // one compartment
-    constantEliminationBolusTests.add_test("testTobramycin", &TestConstantEliminationBolus::testConstantElimination);
+    constantEliminationBolusTests.add_test("testConstantEliminationBolus", &TestConstantEliminationBolus::testConstantElimination);
 
     res = constantEliminationBolusTests.run(argc, argv);
     tot_res |= res;

@@ -56,8 +56,10 @@ public:
     Value getDuration() const { return m_duration;}
     Unit getUnit() const { return m_unit;}
 
-    // TODO : Add invariants
-    INVARIANTS()
+    INVARIANTS(
+            INVARIANT(Invariants::INV_STANDARDTREATMENT_0001, ((!m_isFixedDuration) || (m_duration > 0.0)))
+            INVARIANT(Invariants::INV_STANDARDTREATMENT_0002, ((!m_isFixedDuration) || (m_unit.isTime())))
+            )
 
 protected:
     bool m_isFixedDuration;
@@ -75,8 +77,10 @@ public:
     void setAbsorptionModel(AbsorptionModel _absorptionModel) { m_absorptionModel = _absorptionModel;}
     void setAbsorptionParameters(std::unique_ptr<ParameterSetDefinition> _parameters) {m_absorptionParameters = std::move(_parameters);}
 
-    // TODO : Add invariants
-    INVARIANTS()
+    INVARIANTS(
+            INVARIANT(Invariants::INV_ANALYTESETTOABSORPTIONASSOCIATION_0001, (m_absorptionModel != AbsorptionModel::UNDEFINED))
+            INVARIANT(Invariants::INV_ANALYTESETTOABSORPTIONASSOCIATION_0002, (m_absorptionParameters->checkInvariants()))
+            )
 
 protected:
     std::unique_ptr<ParameterSetDefinition> m_absorptionParameters;
@@ -101,7 +105,12 @@ public:
 
     Value getFactor() const { return m_factor;}
 
-protected:
+    INVARIANTS(
+            INVARIANT(Invariants::INV_ANALYTECONVERSION_0001, (m_factor >= 0.0))
+            INVARIANT(Invariants::INV_ANALYTECONVERSION_0002, (m_analyteId.size() > 0))
+            )
+
+    protected:
 
     std::string m_analyteId;
     Value m_factor;
@@ -136,6 +145,13 @@ public:
         return (_v1.m_absorptionModel == _v2.m_absorptionModel) &&
                 (_v1.m_route == _v2.m_route);
     }
+
+    INVARIANTS(
+            INVARIANT(Invariants::INV_FORMULATIONANDROUTE_0001, (m_formulation != Formulation::Undefined))
+            INVARIANT(Invariants::INV_FORMULATIONANDROUTE_0001, (m_route != AdministrationRoute::Undefined))
+            INVARIANT(Invariants::INV_FORMULATIONANDROUTE_0001, (m_absorptionModel != AbsorptionModel::UNDEFINED))
+            INVARIANT(Invariants::INV_FORMULATIONANDROUTE_0001, (m_administrationName.size() > 0))
+            )
 
 protected:
 
@@ -196,6 +212,9 @@ public:
             LAMBDA_INVARIANT(Invariants::INV_FULLFORMULATIONANDROUTE_0008, {bool ok = true;if (m_standardTreatment != nullptr) { ok &= m_standardTreatment->checkInvariants();} return ok;})
             // To check : do we need at least one association?
             LAMBDA_INVARIANT(Invariants::INV_FULLFORMULATIONANDROUTE_0009, {bool ok = true;for(size_t i = 0; i < m_associations.size(); i++) {ok &= m_associations.at(i)->checkInvariants();} return ok;})
+            INVARIANT(Invariants::INV_FULLFORMULATIONANDROUTE_0010, (m_analyteConversions.size() > 0))
+            LAMBDA_INVARIANT(Invariants::INV_FULLFORMULATIONANDROUTE_0011, {bool ok = true;for(size_t i = 0; i < m_analyteConversions.size(); i++) {ok &= m_analyteConversions.at(i)->checkInvariants();} return ok;})
+            INVARIANT(Invariants::INV_FULLFORMULATIONANDROUTE_0012, (m_specs.checkInvariants()))
             )
 
 protected:

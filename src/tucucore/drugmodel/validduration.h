@@ -6,6 +6,7 @@
 #define VALIDDURATION_H
 
 #include <vector>
+#include <chrono>
 
 #include "tucucommon/duration.h"
 #include "tucucore/drugdefinitions.h"
@@ -14,7 +15,6 @@
 
 namespace Tucuxi {
 namespace Core {
-
 
 class ValidDurations : public ValidValues
 {
@@ -27,8 +27,11 @@ public:
 
     virtual std::vector<Tucuxi::Common::Duration> getDurations() const;
 
-    // TODO : Add invariants
-    INVARIANTS()
+    INVARIANTS(
+            INVARIANT(Invariants::INV_VALIDDURATIONS_0001, ((m_unit == Unit("d")) || (m_unit == Unit("h")) || (m_unit == Unit("m")) || (m_unit == Unit("s"))))
+            INVARIANT(Invariants::INV_VALIDDURATIONS_0002, (getDefaultDuration() >= Tucuxi::Common::Duration(std::chrono::hours(0))))
+            LAMBDA_INVARIANT(Invariants::INV_VALIDDURATIONS_0003, {bool ok = true;for(const auto &duration : getDurations()) {ok &= duration >= Tucuxi::Common::Duration(std::chrono::hours(0));} return ok;})
+            )
 
 protected:
 

@@ -25,8 +25,12 @@ public:
 
     void setName(const Tucuxi::Common::TranslatableString &_name) { m_name = _name;}
 
-    // TODO : Add invariants
-    INVARIANTS()
+    INVARIANTS(
+            INVARIANT(Invariants::INV_ACTIVEMOIETY_0001, (m_id.size() > 0))
+            INVARIANT(Invariants::INV_ACTIVEMOIETY_0002, (m_analyteIds.size() > 0))
+            INVARIANT(Invariants::INV_ACTIVEMOIETY_0003, (m_formula != nullptr))
+            LAMBDA_INVARIANT(Invariants::INV_ACTIVEMOIETY_0004, {bool ok = true;for(size_t i = 0; i < m_targets.size(); i++) {ok &= m_targets.at(i)->checkInvariants();} return ok;})
+            )
 
 protected:
     std::string m_id;

@@ -8,6 +8,14 @@ namespace Core {
 
 enum class Invariants {
     INV_0000 = 0,
+    INV_ACTIVEMOIETY_0001,
+    INV_ACTIVEMOIETY_0002,
+    INV_ACTIVEMOIETY_0003,
+    INV_ACTIVEMOIETY_0004,
+    INV_ANALYTECONVERSION_0001,
+    INV_ANALYTECONVERSION_0002,
+    INV_ANALYTESETTOABSORPTIONASSOCIATION_0001,
+    INV_ANALYTESETTOABSORPTIONASSOCIATION_0002,
     INV_ANALYTESET_0001,
     INV_ANALYTESET_0002,
     INV_ANALYTESET_0003,
@@ -20,6 +28,7 @@ enum class Invariants {
     INV_CONSTRAINT_0001,
     INV_CONSTRAINT_0002,
     INV_CONSTRAINT_0003,
+    INV_CORRELATION_0001,
     INV_COVARIATEDEFINITION_0001,
     INV_DRUGMODEL_0001,
     INV_DRUGMODEL_0002,
@@ -48,17 +57,28 @@ enum class Invariants {
     INV_FULLFORMULATIONANDROUTE_0007,
     INV_FULLFORMULATIONANDROUTE_0008,
     INV_FULLFORMULATIONANDROUTE_0009,
+    INV_FULLFORMULATIONANDROUTE_0010,
+    INV_FULLFORMULATIONANDROUTE_0011,
+    INV_FULLFORMULATIONANDROUTE_0012,
     INV_HALFLIFE_0001,
     INV_HALFLIFE_0002,
+    INV_INTERPARAMETERSETCORRELATION_0001,
+    INV_INTERPARAMETERSETCORRELATION_0002,
+    INV_PARAMETERDEFINITION_0001,
+    INV_PARAMETERSETDEFINITION_0001,
+    INV_PARAMETERSETDEFINITION_0002,
+    INV_STANDARDTREATMENT_0001,
+    INV_STANDARDTREATMENT_0002,
+    INV_TARGETDEFINITION_0001,
     INV_TIMECONSIDERATIONS_0001,
     INV_TIMECONSIDERATIONS_0002,
     INV_TIMECONSIDERATIONS_0003,
-    INV_TIMECONSIDERATIONS_0004
+    INV_TIMECONSIDERATIONS_0004,
+    INV_VALIDDURATIONS_0001,
+    INV_VALIDDURATIONS_0002,
+    INV_VALIDDURATIONS_0003
 };
 
-// TODO : Un DrugModelChecker
-
-// TODO : Afficher le fichier et ligne
 #define INVARIANT(invariant, expression) { \
     bool result = expression; if (!result) { \
     std::cout << "Invariant failure : " << \
@@ -71,7 +91,12 @@ enum class Invariants {
 #define COMPLEX_INVARIANT(invariant, expression) expression;
 #define INVARIANTS(decl) public : bool checkInvariants() const {bool ok=true;decl;return ok;}
 #define CHECKINVARIANTS checkInvariants()
-#define LAMBDA_INVARIANT(invariant, expression) {auto f=[this]() {expression}; {bool result = f();if (!result) {std::cout << "Invariant failure : " << static_cast<int>(invariant) << std::endl;} ok &= result; if (!ok) return false;}}
+#define LAMBDA_INVARIANT(invariant, expression) {auto f=[this]() {expression}; {bool result = f();if (!result) { \
+    std::cout << "Invariant failure : " << \
+    static_cast<int>(invariant) << \
+    ". File " << __FILE__ << ", line " << __LINE__ << \
+    std::endl;} \
+    ok &= result; if (!ok) return false;}}
 
 } // namespace Core
 } // namespace Tucuxi
