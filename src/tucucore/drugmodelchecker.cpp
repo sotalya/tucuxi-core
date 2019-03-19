@@ -111,7 +111,7 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkAnalytes(const DrugMode
         }
         std::sort(analytes.begin(), analytes.end());
         if (allAnalytes != analytes) {
-            return {false, "The analytes in the valid doses of a formulation and routes are not the same as the full set of analytes"};
+            return {false, "The analytes in the analyte conversions of a formulation and routes are not the same as the full set of analytes"};
         }
     }
 
@@ -144,7 +144,7 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkFormulaInputs(const Dru
 
     for(const Operation *operation : operations) {
         if (operation != nullptr) {
-            for(const auto input : operation->getInputs()) {
+            for(const auto &input : operation->getInputs()) {
                 if (!contains(validInputs, input.getName())) {
                     return {false, "The input " + input.getName() + " is not a valid formula input"};
                 }

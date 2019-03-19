@@ -84,9 +84,9 @@ protected:
         Eigen::VectorXd val = _times;
         int s = val.size();
         for(int i = 0; i < s; i++) {
-            val[i] = 1 - _times[i];
+            val[i] = 1 - _times[i] * m_S;
         }
-        setExponentials(Exponentials::P, (-m_S * val).array().exp());
+        setExponentials(Exponentials::P, val.array());
     }
 
     bool computeConcentrations(const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) override

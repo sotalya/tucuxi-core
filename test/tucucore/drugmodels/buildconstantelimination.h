@@ -42,8 +42,12 @@ public:
 
         std::unique_ptr<ParameterSetDefinition> dispositionParameters(new ParameterSetDefinition());
 
-        std::unique_ptr<ParameterDefinition> PV(new Tucuxi::Core::ParameterDefinition("V", 347, nullptr, std::make_unique<ParameterVariability>(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.629)));
-        dispositionParameters->addParameter(std::move(PV));
+        std::unique_ptr<ParameterDefinition> PS(new Tucuxi::Core::ParameterDefinition("TestS", 0.0, nullptr, std::make_unique<ParameterVariability>(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.629)));
+        dispositionParameters->addParameter(std::move(PS));
+        std::unique_ptr<ParameterDefinition> PA(new Tucuxi::Core::ParameterDefinition("TestA", 0.0, nullptr, std::make_unique<ParameterVariability>(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.629)));
+        dispositionParameters->addParameter(std::move(PA));
+        std::unique_ptr<ParameterDefinition> PR(new Tucuxi::Core::ParameterDefinition("TestR", 0.0, nullptr, std::make_unique<ParameterVariability>(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.629)));
+        dispositionParameters->addParameter(std::move(PR));
 
         analyteSet->setDispositionParameters(std::move(dispositionParameters));
 
@@ -57,21 +61,22 @@ public:
 
         {
             AnalyteSetToAbsorptionAssociation *association;
-            association = new AnalyteSetToAbsorptionAssociation(*analyteSet);
+            const AnalyteSet *a = model->getAnalyteSet();
+            association = new AnalyteSetToAbsorptionAssociation(*a);
             association->setAbsorptionModel(AbsorptionModel::EXTRAVASCULAR);
 
             std::unique_ptr<ParameterSetDefinition> absorptionParameters(new ParameterSetDefinition());
-            std::unique_ptr<ParameterDefinition> PKa(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
-            absorptionParameters->addParameter(std::move(PKa));
-            std::unique_ptr<ParameterDefinition> PF(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
-            absorptionParameters->addParameter(std::move(PF));
+//            std::unique_ptr<ParameterDefinition> PKa(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
+//            absorptionParameters->addParameter(std::move(PKa));
+//            std::unique_ptr<ParameterDefinition> PF(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
+//            absorptionParameters->addParameter(std::move(PF));
 
             association->setAbsorptionParameters(std::move(absorptionParameters));
             FormulationAndRoute formulationSpecs(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::EXTRAVASCULAR, "No details");
             std::unique_ptr<FullFormulationAndRoute> formulationAndRoute(new FullFormulationAndRoute(formulationSpecs, "extraId"));
             formulationAndRoute->addAssociation(std::unique_ptr<AnalyteSetToAbsorptionAssociation>(association));
 
-            std::unique_ptr<AnalyteConversion> analyteConversion = std::make_unique<AnalyteConversion>("analyteId", 1.0);
+            std::unique_ptr<AnalyteConversion> analyteConversion = std::make_unique<AnalyteConversion>("analyte", 1.0);
             formulationAndRoute->addAnalyteConversion(std::move(analyteConversion));
 
             ValidDoses *validDoses = new ValidDoses(Unit("mg"), std::make_unique<PopulationValue>(400));

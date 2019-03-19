@@ -56,6 +56,13 @@ public:
     ComputingResult compute(const ComputingRequest &_request, std::unique_ptr<ComputingResponse> &_response) override;
     std::string getErrorString() const override;
 
+    void setPkModelCollection(PkModelCollection *_collection) {
+        if (m_models != nullptr) {
+            delete m_models;
+        }
+        m_models = _collection;
+    }
+
 protected:
     /// \brief Access other interfaces of the same component.
     Tucuxi::Common::Interface* getInterface(const std::string &_name) override;

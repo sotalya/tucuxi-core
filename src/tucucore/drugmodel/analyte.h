@@ -110,7 +110,8 @@ public:
             INVARIANT(Invariants::INV_ANALYTESET_0003, (m_analytes.size() > 0))
             LAMBDA_INVARIANT(Invariants::INV_ANALYTESET_0004, {bool ok = true;for(size_t i = 0; i < m_analytes.size(); i++) {ok &= m_analytes.at(i)->checkInvariants();} return ok;})
             INVARIANT(Invariants::INV_ANALYTESET_0005, (m_dispositionParameters != nullptr))
-            INVARIANT(Invariants::INV_ANALYTESET_0006, (m_dispositionParameters->checkInvariants()))
+            INVARIANT(Invariants::INV_ANALYTESET_0006, (m_dispositionParameters->getNbParameters() > 0))
+            INVARIANT(Invariants::INV_ANALYTESET_0007, (m_dispositionParameters->checkInvariants()))
             )
 
 protected:
