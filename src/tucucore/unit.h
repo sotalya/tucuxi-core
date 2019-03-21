@@ -19,6 +19,7 @@ public:
     std::string toString() const { return m_unitString;}
 
     bool isTime() const { return ((m_unitString == "d") || (m_unitString == "h") || (m_unitString == "m") || (m_unitString == "s"));}
+    bool isEmpty() const { return m_unitString == "";}
 
 protected:
     std::string m_unitString;

@@ -9,11 +9,11 @@ namespace Tucuxi {
 namespace Core {
 
 
-ComputingOption::ComputingOption(
-        PredictionParameterType _parameterType,
-        CompartmentsOption _compartmentsOption) :
+ComputingOption::ComputingOption(PredictionParameterType _parameterType,
+        CompartmentsOption _compartmentsOption, bool _withStatistics) :
     m_parameterType(_parameterType),
-    m_compartmentsOption(_compartmentsOption)
+    m_compartmentsOption(_compartmentsOption),
+    m_withStatistics(_withStatistics)
 {
 
 }

@@ -22,6 +22,7 @@ void SigmaResidualErrorModel::applyEpsToValue(Concentration &_concentration, con
     switch (m_errorModel) {
     case ResidualErrorType::EXPONENTIAL:
         _concentration *= std::exp(m_sigma[0] * _eps[0]);
+        break;
     case ResidualErrorType::PROPORTIONAL:
         _concentration *= 1 + m_sigma[0] * _eps[0];
         break;
@@ -45,6 +46,7 @@ void SigmaResidualErrorModel::applyEpsToArray(Concentrations &_concentrations, c
         switch (m_errorModel) {
         case ResidualErrorType::EXPONENTIAL:
             *it *= std::exp(m_sigma[0] * _eps[0]);
+            break;
         case ResidualErrorType::PROPORTIONAL:
             *it *= 1 + m_sigma[0] * _eps[0];
             break;

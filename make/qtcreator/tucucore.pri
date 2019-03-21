@@ -82,7 +82,8 @@ HEADERS += \
     $$PWD/../../src/tucucore/residualerrormodelextractor.h \
     $$PWD/../../src/tucucore/drugfilevalidator.h \
     $$PWD/../../src/tucucore/generalextractor.h \
-    $$PWD/../../src/tucucore/drugmodelchecker.h
+    $$PWD/../../src/tucucore/drugmodelchecker.h \
+    $$PWD/../../src/tucucore/cyclestatistics.h
 
 SOURCES += \
     $$PWD/../../src/tucucore/drugmodel/drugmodel.cpp \
@@ -152,7 +153,8 @@ SOURCES += \
     $$PWD/../../src/tucucore/residualerrormodelextractor.cpp \
     $$PWD/../../src/tucucore/drugfilevalidator.cpp \
     $$PWD/../../src/tucucore/generalextractor.cpp \
-    $$PWD/../../src/tucucore/drugmodelchecker.cpp
+    $$PWD/../../src/tucucore/drugmodelchecker.cpp \
+    $$PWD/../../src/tucucore/cyclestatistics.cpp
 
 DISTFILES += \
     $$PWD/../../src/tucucore/makefile

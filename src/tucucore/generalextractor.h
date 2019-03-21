@@ -38,7 +38,7 @@ public:
     ComputingResult generalExtractions(
             const Tucuxi::Core::ComputingTraitStandard *_traits,
             const ComputingRequest &_request,
-            PkModelCollection *_modelCollection,
+            const PkModelCollection *_modelCollection,
             std::shared_ptr<PkModel> &_pkModel,
             IntakeSeries &_intakeSeries,
             CovariateSeries &_covariatesSeries,

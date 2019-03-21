@@ -30,8 +30,8 @@ struct TestCycleStatistics : public fructose::test_base<TestCycleStatistics>
     {
         // set cycleData
         DateTime now;
-        int nbCompartments = 1;
-        int nbPoints = 10;
+        size_t nbCompartments = 1;
+        size_t nbPoints = 10;
         Tucuxi::Core::CycleData cycleData;
         std::vector< std::vector<Tucuxi::Core::CycleStatistic> > stats;
 
@@ -40,7 +40,7 @@ struct TestCycleStatistics : public fructose::test_base<TestCycleStatistics>
         std::vector<Concentrations> concentrations{{0, 10.2, 20.5, 15.0, 9.7, 10, 12.7, 15.2, 13.2, 14}};
         std::vector<TimeOffsets> times{{0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5}};
 
-        for (int compartment = 0; compartment < nbCompartments; compartment++) {
+        for (size_t compartment = 0; compartment < nbCompartments; compartment++) {
             // assign concentration data
             cycleData.m_concentrations.push_back(Concentrations ());
             cycleData.m_concentrations[compartment].reserve(nbPoints);

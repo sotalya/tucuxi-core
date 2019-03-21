@@ -125,5 +125,26 @@ CycleStatistics::CycleStatistics(const CycleData &_data, Value& _cumulativeAuc)
     calculate(_data.m_concentrations, _data.m_times, _cumulativeAuc);
 }
 
+void CycleStatisticsCalculator::calculate(std::vector<CycleData> & _cycles)
+{
+    int nbComp = 1;
+
+    for (int comp = 0; comp < nbComp; comp++) {
+        double auc = 0;
+        for(int i = 0; i < _cycles.size(); i++) {
+            CycleStatistics st(_cycles[i], auc);
+
+            _cycles[i].m_statistics.setStatistics(comp, CycleStatisticType::Mean, st.getStatistic(comp, CycleStatisticType::Mean));
+            _cycles[i].m_statistics.setStatistics(comp, CycleStatisticType::Peak, st.getStatistic(comp, CycleStatisticType::Peak));
+            _cycles[i].m_statistics.setStatistics(comp, CycleStatisticType::Maximum, st.getStatistic(comp, CycleStatisticType::Maximum));
+            _cycles[i].m_statistics.setStatistics(comp, CycleStatisticType::Minimum, st.getStatistic(comp, CycleStatisticType::Minimum));
+            _cycles[i].m_statistics.setStatistics(comp, CycleStatisticType::AUC, st.getStatistic(comp, CycleStatisticType::AUC));
+            _cycles[i].m_statistics.setStatistics(comp, CycleStatisticType::CumulativeAuc, st.getStatistic(comp, CycleStatisticType::CumulativeAuc));
+            _cycles[i].m_statistics.setStatistics(comp, CycleStatisticType::Residual, st.getStatistic(comp, CycleStatisticType::Residual));
+            _cycles[i].m_statistics.setStatistics(comp, CycleStatisticType::CycleInterval, st.getStatistic(comp, CycleStatisticType::CycleInterval));
+        }
+    }
+}
+
 } // namespace Core
 } // namespace Tucuxi

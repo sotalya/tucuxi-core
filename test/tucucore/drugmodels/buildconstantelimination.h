@@ -14,7 +14,15 @@ class BuildConstantElimination
 public:
     BuildConstantElimination() {}
 
-    Tucuxi::Core::DrugModel *buildDrugModel()
+    Tucuxi::Core::DrugModel *buildDrugModel(
+            ResidualErrorType _errorModelType = ResidualErrorType::NONE,
+            std::vector<Value> _sigmas = {0.0},
+            Tucuxi::Core::ParameterVariabilityType _variabilityTypeA = Tucuxi::Core::ParameterVariabilityType::None,
+            Tucuxi::Core::ParameterVariabilityType _variabilityTypeR = Tucuxi::Core::ParameterVariabilityType::None,
+            Tucuxi::Core::ParameterVariabilityType _variabilityTypeS = Tucuxi::Core::ParameterVariabilityType::None,
+            Value _variabilityValueA = 0.0,
+            Value _variabilityValueR = 0.0,
+            Value _variabilityValueS = 0.0)
     {
         Tucuxi::Core::DrugModel *model;
         model = new Tucuxi::Core::DrugModel();
@@ -27,13 +35,30 @@ public:
         analyteSet->setId("analyteSet");
         analyteSet->setPkModelId("test.constantelimination");
 
-        std::unique_ptr<ActiveSubstance> analyte = std::make_unique<ActiveSubstance>();
+        std::unique_ptr<Analyte> analyte = std::make_unique<Analyte>("analyte", Unit("mg/l"), MolarMass(10.0, Unit("mol/l")));
         analyte->setAnalyteId("analyte");
+
+
+
+        model->addCovariate(
+                    std::unique_ptr<Tucuxi::Core::CovariateDefinition>(
+                        new Tucuxi::Core::CovariateDefinition("covS", "0.0", nullptr, CovariateType::Standard)));
+
+        model->addCovariate(
+                    std::unique_ptr<Tucuxi::Core::CovariateDefinition>(
+                        new Tucuxi::Core::CovariateDefinition("covA", "0.0", nullptr, CovariateType::Standard)));
+
+        model->addCovariate(
+                    std::unique_ptr<Tucuxi::Core::CovariateDefinition>(
+                        new Tucuxi::Core::CovariateDefinition("covR", "0.0", nullptr, CovariateType::Standard)));
 
         ErrorModel* errorModel = new ErrorModel();
 
-        errorModel->setErrorModel(ResidualErrorType::PROPORTIONAL);
-        errorModel->addOriginalSigma(std::make_unique<PopulationValue>("sigma0", 0.3138));
+        errorModel->setErrorModel(_errorModelType);
+        for (size_t i = 0; i < _sigmas.size(); i++) {
+            std::string sigmaName = "sigma" + std::to_string(i);
+            errorModel->addOriginalSigma(std::make_unique<PopulationValue>(sigmaName, _sigmas[i]));
+        }
 
         std::unique_ptr<ErrorModel> err(errorModel);
 
@@ -42,11 +67,20 @@ public:
 
         std::unique_ptr<ParameterSetDefinition> dispositionParameters(new ParameterSetDefinition());
 
-        std::unique_ptr<ParameterDefinition> PS(new Tucuxi::Core::ParameterDefinition("TestS", 0.0, nullptr, std::make_unique<ParameterVariability>(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.629)));
+        Operation *opS = new JSOperation(" \
+                                            return covS;",
+                                            { OperationInput("covS", InputType::DOUBLE)});
+        std::unique_ptr<ParameterDefinition> PS(new Tucuxi::Core::ParameterDefinition("TestS", 0.0, opS, std::make_unique<ParameterVariability>(_variabilityTypeS, _variabilityValueS)));
         dispositionParameters->addParameter(std::move(PS));
-        std::unique_ptr<ParameterDefinition> PA(new Tucuxi::Core::ParameterDefinition("TestA", 0.0, nullptr, std::make_unique<ParameterVariability>(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.629)));
+        Operation *opA = new JSOperation(" \
+                                            return covA;",
+                                            { OperationInput("covA", InputType::DOUBLE)});
+        std::unique_ptr<ParameterDefinition> PA(new Tucuxi::Core::ParameterDefinition("TestA", 0.0, opA, std::make_unique<ParameterVariability>(_variabilityTypeA, _variabilityValueA)));
         dispositionParameters->addParameter(std::move(PA));
-        std::unique_ptr<ParameterDefinition> PR(new Tucuxi::Core::ParameterDefinition("TestR", 0.0, nullptr, std::make_unique<ParameterVariability>(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.629)));
+        Operation *opR = new JSOperation(" \
+                                            return covR;",
+                                            { OperationInput("covR", InputType::DOUBLE)});
+        std::unique_ptr<ParameterDefinition> PR(new Tucuxi::Core::ParameterDefinition("TestR", 0.0, opR, std::make_unique<ParameterVariability>(_variabilityTypeR, _variabilityValueR)));
         dispositionParameters->addParameter(std::move(PR));
 
         analyteSet->setDispositionParameters(std::move(dispositionParameters));
@@ -66,10 +100,6 @@ public:
             association->setAbsorptionModel(AbsorptionModel::EXTRAVASCULAR);
 
             std::unique_ptr<ParameterSetDefinition> absorptionParameters(new ParameterSetDefinition());
-//            std::unique_ptr<ParameterDefinition> PKa(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
-//            absorptionParameters->addParameter(std::move(PKa));
-//            std::unique_ptr<ParameterDefinition> PF(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
-//            absorptionParameters->addParameter(std::move(PF));
 
             association->setAbsorptionParameters(std::move(absorptionParameters));
             FormulationAndRoute formulationSpecs(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::EXTRAVASCULAR, "No details");

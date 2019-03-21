@@ -51,10 +51,12 @@ public:
     /// \brief ComputingOption Simple constructor.
     /// \param _parameterType Type of parameters (population, aPriori, aPosteriori)
     /// \param _compartmentsOption What compartments are of interest (main or all)
+    /// \param _withStatistics If true, then statistics have to be computed
     ///
     ComputingOption(
             PredictionParameterType _parameterType,
-            CompartmentsOption _compartmentsOption);
+            CompartmentsOption _compartmentsOption,
+            bool _withStatistics = false);
 
     ///
     /// \brief getParametersType Gets the type of parameters
@@ -67,6 +69,13 @@ public:
     /// \return The type of compartments of interest
     ///
     CompartmentsOption getCompartmentsOption() const { return m_compartmentsOption;}
+
+    ///
+    /// \brief getWithStatistics indicates if statistics have to be computed
+    /// \return True if statistics have to be calculated
+    ///
+    bool getWithStatistics() const { return m_withStatistics;}
+
 protected:
 
     //! Type of parameters
@@ -74,6 +83,8 @@ protected:
 
     //! What compartments are of interest
     CompartmentsOption m_compartmentsOption;
+
+    bool m_withStatistics;
 };
 
 

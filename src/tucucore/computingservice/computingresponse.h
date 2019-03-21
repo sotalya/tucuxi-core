@@ -12,6 +12,7 @@
 #include "tucucore/definitions.h"
 #include "tucucore/dosage.h"
 #include "tucucore/targetevaluationresult.h"
+#include "tucucore/cyclestatistics.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -68,6 +69,10 @@ public:
     /// \brief Pk parameter values for this cycle
     /// Can be used or not to store the values of the Pk parameters used for this cycle
     std::vector<ParameterValue> m_parameters;
+
+    /// \brief The statistics about the cycle data
+    /// For each compartment or analyte, the statistics.
+    CycleStats m_statistics;
 };
 
 ///
@@ -122,6 +127,7 @@ public:
     SinglePredictionResponse(RequestResponseId _id) : SingleComputingResponse(_id) {}
     void addCycleData(const CycleData &_data) { m_data.push_back(_data); }
     const std::vector<CycleData>& getData() const { return m_data; }
+    std::vector<CycleData>& getModifiableData() { return m_data; }
 
 private:
     std::vector<CycleData> m_data;

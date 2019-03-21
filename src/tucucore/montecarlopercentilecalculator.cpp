@@ -492,15 +492,20 @@ IPercentileCalculator::ComputingResult AprioriMonteCarloPercentileCalculator::ca
 
     std::vector<Etas> etaSamples(nbPatients);
 
-    for(unsigned int patient = 0; patient < nbPatients; patient++) {
-        EigenVector matrixY = rands.row(patient);
+    if (omegaRank == 0) {
+        // No parameter variability at all
+    }
+    else {
+        for(unsigned int patient = 0; patient < nbPatients; patient++) {
+            EigenVector matrixY = rands.row(patient);
 
-        // Cholesky is applied here to get correlated random deviates
-        EigenVector matrixX = choleskyMatrix * matrixY;
-        etaSamples[patient].assign(&matrixX(0), &matrixX(0) + omegaRank);
+            // Cholesky is applied here to get correlated random deviates
+            EigenVector matrixX = choleskyMatrix * matrixY;
+            etaSamples[patient].assign(&matrixX(0), &matrixX(0) + omegaRank);
 
-        for(unsigned int eta = 0; eta < _initialEtas.size(); eta++) {
-            etaSamples[patient][eta] += _initialEtas[eta];
+            for(unsigned int eta = 0; eta < _initialEtas.size(); eta++) {
+                etaSamples[patient][eta] += _initialEtas[eta];
+            }
         }
     }
 

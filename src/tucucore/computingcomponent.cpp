@@ -29,6 +29,7 @@
 #include "tucucore/overloadevaluator.h"
 #include "tucucore/residualerrormodelextractor.h"
 #include "tucucore/generalextractor.h"
+#include "tucucore/cyclestatisticscalculator.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -199,6 +200,11 @@ ComputingResult ComputingComponent::compute(
 
                 resp->addCycleData(cycle);
             }
+        }
+
+        if (_traits->getComputingOption().getWithStatistics()) {
+            CycleStatisticsCalculator c;
+            c.calculate(resp->getModifiableData());
         }
 
         _response->addResponse(std::move(resp));
@@ -384,6 +390,12 @@ ComputingResult ComputingComponent::compute(
                     percData.push_back(cycleData);
                 }
             }
+
+            if (_traits->getComputingOption().getWithStatistics()) {
+                CycleStatisticsCalculator c;
+                c.calculate(percData);
+            }
+
             resp->addPercentileData(percData);
         }
         resp->setRanks(percentileRanks);

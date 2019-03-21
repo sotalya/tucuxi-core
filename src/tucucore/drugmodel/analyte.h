@@ -113,6 +113,7 @@ public:
             INVARIANT(Invariants::INV_ANALYTE_0001, (m_analyteId.size() > 0))
             INVARIANT(Invariants::INV_ANALYTE_0002, (m_residualErrorModel != nullptr))
             INVARIANT(Invariants::INV_ANALYTE_0003, (m_residualErrorModel->checkInvariants()))
+            INVARIANT(Invariants::INV_ANALYTE_0004, (!m_unit.isEmpty()))
             )
 
 protected:

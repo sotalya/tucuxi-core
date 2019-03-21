@@ -22,7 +22,10 @@ public:
     SigmaResidualErrorModel() : m_nbEpsilons(1) {}
 
     void setSigma(Sigma _sigma) { m_sigma = _sigma;}
-    void setErrorModel(ResidualErrorType _errorModel) { m_errorModel = _errorModel;}
+    void setErrorModel(ResidualErrorType _errorModel) { m_errorModel = _errorModel;
+                                                        if (_errorModel == ResidualErrorType::NONE) {
+                                                            m_nbEpsilons = 0;
+                                                        }}
     bool isEmpty() const override;
     void applyEpsToValue(Concentration &_concentration, const Deviations &_eps) const override;
     void applyEpsToArray(Concentrations &_concentrations, const Deviations &_eps) const override;
