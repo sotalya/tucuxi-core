@@ -80,7 +80,7 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkAnalytes(const DrugMode
     for (const auto &activeMoiety : _drugModel->getActiveMoieties()) {
         for (const auto &analyteId : activeMoiety->getAnalyteIds()) {
             if (contains<AnalyteId>(activeMoietiesAnalytes, analyteId)) {
-                return {false, "The analyte " + analyteId + " is present at least twice in the active moieties"};
+                return {false, "The analyte " + analyteId.toString() + " is present at least twice in the active moieties"};
             }
             else {
                 activeMoietiesAnalytes.push_back(analyteId);

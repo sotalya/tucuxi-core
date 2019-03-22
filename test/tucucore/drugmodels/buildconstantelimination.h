@@ -165,9 +165,9 @@ public:
 
         std::unique_ptr<Operation> activeMoietyOperation = std::unique_ptr<Operation>(sharedOperation.get()->clone());
 
-        std::vector<std::string> analyteList;
-        analyteList.push_back("analyte");
-        std::unique_ptr<ActiveMoiety> activeMoiety = std::make_unique<ActiveMoiety>("activeMoiety", Unit("mg/l"), analyteList, std::move(activeMoietyOperation));
+        std::vector<AnalyteId> analyteList;
+        analyteList.push_back(AnalyteId("analyte"));
+        std::unique_ptr<ActiveMoiety> activeMoiety = std::make_unique<ActiveMoiety>(ActiveMoietyId("activeMoiety"), Unit("mg/l"), analyteList, std::move(activeMoietyOperation));
 
 
         // Add targets

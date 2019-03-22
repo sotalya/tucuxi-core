@@ -1082,7 +1082,7 @@ ActiveMoiety* DrugModelImport::extractActiveMoiety(Tucuxi::Common::XmlNodeIterat
     ActiveMoiety *activeMoiety = nullptr;
     std::string activeMoietyId;
     Unit unit;
-    std::vector<std::string> analyteIdList;
+    std::vector<AnalyteId> analyteIdList;
     Operation *formula = nullptr;
     std::vector<TargetDefinition *> targets;
     TranslatableString name;
@@ -1106,7 +1106,7 @@ ActiveMoiety* DrugModelImport::extractActiveMoiety(Tucuxi::Common::XmlNodeIterat
 
             while (analyteIt != XmlNodeIterator::none()) {
                 if (analyteIt->getName() == "analyteId") {
-                    analyteIdList.push_back(analyteIt->getValue());
+                    analyteIdList.push_back(AnalyteId(analyteIt->getValue()));
                 }
                 else {
                     unexpectedTag(analyteIt->getName());
@@ -1133,7 +1133,7 @@ ActiveMoiety* DrugModelImport::extractActiveMoiety(Tucuxi::Common::XmlNodeIterat
         return nullptr;
     }
 
-    activeMoiety = new ActiveMoiety(activeMoietyId, unit, analyteIdList, std::unique_ptr<Operation>(formula));
+    activeMoiety = new ActiveMoiety(ActiveMoietyId(activeMoietyId), unit, analyteIdList, std::unique_ptr<Operation>(formula));
     for (const auto & target : targets) {
         target->setActiveMoietyId(activeMoietyId);
         activeMoiety->addTarget(std::unique_ptr<TargetDefinition>(target));
