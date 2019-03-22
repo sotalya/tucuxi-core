@@ -23,7 +23,7 @@ enum class ConstantEliminationBolusCompartments : int { First };
 ///     - S
 ///     - R
 /// The equation is the following:
-/// C(t) = max(0.0 , (D + residual * R) * ( 1 - t * S) + A)
+/// C(t) = max(0.0 , (D + residual * R) * ( 1 - t * S) * M + A)
 /// It allows to test other components with a simple equation:
 ///     - Easy to calculate AUC
 ///     - Easy to calculate residual
@@ -47,7 +47,7 @@ protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override
     {
 
-        if(!checkValue(_parameters.size() >= 3, "The number of parameters should be equal to 2.")) {
+        if(!checkValue(_parameters.size() >= 4, "The number of parameters should be equal to 4.")) {
             return false;
         }
 
@@ -55,6 +55,7 @@ protected:
         m_S = _parameters.getValue(ParameterId::TestS);
         m_A = _parameters.getValue(ParameterId::TestA);
         m_R = _parameters.getValue(ParameterId::TestR);
+        m_M = _parameters.getValue(ParameterId::TestM);
         m_NbPoints = _intakeEvent.getNbPoints();
         m_Int = static_cast<int>((_intakeEvent.getInterval()).toHours());
 
@@ -84,7 +85,7 @@ protected:
         Eigen::VectorXd val = _times;
         int s = val.size();
         for(int i = 0; i < s; i++) {
-            val[i] = 1 - _times[i] * m_S;
+            val[i] = (1 - _times[i] * m_S) * m_M;
         }
         setExponentials(Exponentials::P, val.array());
     }
@@ -142,6 +143,7 @@ protected:
 
     Value m_D;	/// Quantity of drug
     Value m_S;	/// Slope of elimination
+    Value m_M;	/// Multiplicative factor of the concentration
     Value m_A;  /// Additional value to concentration
     Value m_R;  /// Multiplier for the residual
     int m_NbPoints; /// Number measure points during interval

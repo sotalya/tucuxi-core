@@ -90,13 +90,13 @@ public:
     /// \param _type mean, peak, maximum, minimum or AUC
     /// \return The list of statistics
     ///
-    CycleStatistic getStatistic(int _compartment, CycleStatisticType _type) const { return m_stats[_compartment][static_cast<int>(_type)]; }
+    CycleStatistic getStatistic(size_t _compartment, CycleStatisticType _type) const { return m_stats[_compartment][static_cast<size_t>(_type)]; }
 
-    void setStatistics(int _compartment, CycleStatisticType _type, CycleStatistic _statistic) {
+    void setStatistics(size_t _compartment, CycleStatisticType _type, CycleStatistic _statistic) {
         while (m_stats.size() <= _compartment) {
             m_stats.push_back(std::vector<CycleStatistic>(static_cast<int>(CycleStatisticType::CYCLE_STATISTIC_TYPE_SIZE),CycleStatistic(Tucuxi::Common::DateTime(), CycleStatisticType::CYCLE_STATISTIC_TYPE_SIZE)));
         }
-        m_stats[_compartment][static_cast<int>(_type)] = _statistic;
+        m_stats[_compartment][static_cast<size_t>(_type)] = _statistic;
     }
 
 protected:

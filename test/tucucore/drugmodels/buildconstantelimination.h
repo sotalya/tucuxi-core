@@ -18,9 +18,11 @@ public:
             ResidualErrorType _errorModelType = ResidualErrorType::NONE,
             std::vector<Value> _sigmas = {0.0},
             Tucuxi::Core::ParameterVariabilityType _variabilityTypeA = Tucuxi::Core::ParameterVariabilityType::None,
+            Tucuxi::Core::ParameterVariabilityType _variabilityTypeM = Tucuxi::Core::ParameterVariabilityType::None,
             Tucuxi::Core::ParameterVariabilityType _variabilityTypeR = Tucuxi::Core::ParameterVariabilityType::None,
             Tucuxi::Core::ParameterVariabilityType _variabilityTypeS = Tucuxi::Core::ParameterVariabilityType::None,
             Value _variabilityValueA = 0.0,
+            Value _variabilityValueM = 1.0,
             Value _variabilityValueR = 0.0,
             Value _variabilityValueS = 0.0)
     {
@@ -52,6 +54,10 @@ public:
                     std::unique_ptr<Tucuxi::Core::CovariateDefinition>(
                         new Tucuxi::Core::CovariateDefinition("covR", "0.0", nullptr, CovariateType::Standard)));
 
+        model->addCovariate(
+                    std::unique_ptr<Tucuxi::Core::CovariateDefinition>(
+                        new Tucuxi::Core::CovariateDefinition("covM", "1.0", nullptr, CovariateType::Standard)));
+
         ErrorModel* errorModel = new ErrorModel();
 
         errorModel->setErrorModel(_errorModelType);
@@ -82,6 +88,11 @@ public:
                                             { OperationInput("covR", InputType::DOUBLE)});
         std::unique_ptr<ParameterDefinition> PR(new Tucuxi::Core::ParameterDefinition("TestR", 0.0, opR, std::make_unique<ParameterVariability>(_variabilityTypeR, _variabilityValueR)));
         dispositionParameters->addParameter(std::move(PR));
+        Operation *opM = new JSOperation(" \
+                                            return covM;",
+                                            { OperationInput("covM", InputType::DOUBLE)});
+        std::unique_ptr<ParameterDefinition> PM(new Tucuxi::Core::ParameterDefinition("TestM", 1.0, opM, std::make_unique<ParameterVariability>(_variabilityTypeM, _variabilityValueM)));
+        dispositionParameters->addParameter(std::move(PM));
 
         analyteSet->setDispositionParameters(std::move(dispositionParameters));
 

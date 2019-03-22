@@ -202,7 +202,7 @@ public:
 
     void addPercentileData(const std::vector<CycleData> &_data) { m_data.push_back(_data);}
 
-    const CycleData& getData(unsigned int _percentileIndex, unsigned int _cycleIndex) const {
+    const CycleData& getData(size_t _percentileIndex, unsigned int _cycleIndex) const {
         return m_data.at(_percentileIndex).at(_cycleIndex);
     }
 
