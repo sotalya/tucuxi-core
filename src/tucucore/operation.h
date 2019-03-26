@@ -14,7 +14,7 @@
 
 #include "tucucommon/jsengine.h"
 
-using Tucuxi::Common::JSEngine;
+using Tucuxi::Common::JSEngine; // NOLINT(google-global-names-in-headers)
 
 namespace Tucuxi {
 namespace Core {
@@ -124,9 +124,9 @@ private:
     bool m_isDefined;
     /// \brief Store the value in the most appropriate type.
     union {
-        double d;
-        bool b;
-        int i;
+        double d; // NOLINT(readability-identifier-naming)
+        bool b;   // NOLINT(readability-identifier-naming)
+        int i;    // NOLINT(readability-identifier-naming)
     } m_value;
 };
 

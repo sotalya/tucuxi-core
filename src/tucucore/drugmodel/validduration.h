@@ -21,7 +21,7 @@ class ValidDurations : public ValidValues
 public:
     ValidDurations(Unit _unit, std::unique_ptr<PopulationValue> _defaultValue);
 
-    virtual ~ValidDurations();
+    ~ValidDurations() override;
 
     Tucuxi::Common::Duration getDefaultDuration() const;
 

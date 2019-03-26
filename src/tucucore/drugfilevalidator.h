@@ -12,7 +12,7 @@ class DrugFileValidator
 public:
     DrugFileValidator();
 
-    bool validate(std::string drugFileName, std::string testFileName);
+    bool validate(std::string _drugFileName, std::string _testFileName);
 
 };
 

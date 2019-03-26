@@ -12,8 +12,8 @@
 #include "tucucore/timedevent.h"
 #include "tucucore/intakeintervalcalculator.h"
 
-using Tucuxi::Common::DateTime;
-using Tucuxi::Common::Duration;
+using Tucuxi::Common::DateTime; // NOLINT(google-global-names-in-headers)
+using Tucuxi::Common::Duration; // NOLINT(google-global-names-in-headers)
 
 namespace Tucuxi {
 namespace Core {

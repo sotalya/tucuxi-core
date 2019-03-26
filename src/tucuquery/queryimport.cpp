@@ -729,19 +729,19 @@ unique_ptr<Core::FormulationAndRoute> QueryImport::createFormulationAndRoute(Com
     }
 
     string absorbtionModelValue = getChildStringValue(_formulationAndRouteRootIterator, ABSORBTION_MODEL_NODE_NAME);
-    Core::AbsorptionModel absorbtionModel = Core::AbsorptionModel::UNDEFINED;
+    Core::AbsorptionModel absorbtionModel = Core::AbsorptionModel::Undefined;
 
     if (absorbtionModelValue == "Undefined") {
-        absorbtionModel = Core::AbsorptionModel::UNDEFINED;
+        absorbtionModel = Core::AbsorptionModel::Undefined;
     } else if (absorbtionModelValue == "Extravascular") {
-        absorbtionModel = Core::AbsorptionModel::EXTRAVASCULAR;
+        absorbtionModel = Core::AbsorptionModel::Extravascular;
     } else if (absorbtionModelValue == "Intravascular") {
-        absorbtionModel = Core::AbsorptionModel::INTRAVASCULAR;
+        absorbtionModel = Core::AbsorptionModel::Intravascular;
     } else if (absorbtionModelValue == "Infusion") {
-        absorbtionModel = Core::AbsorptionModel::INFUSION;
+        absorbtionModel = Core::AbsorptionModel::Infusion;
     } else {
         // Throw error or manage error
-        absorbtionModel = Core::AbsorptionModel::UNDEFINED;
+        absorbtionModel = Core::AbsorptionModel::Undefined;
     }
 
     return make_unique<Core::FormulationAndRoute>(

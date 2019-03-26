@@ -218,7 +218,7 @@ ComputingResult GeneralExtractor::generalExtractions(
             auto absorptionModel = lastIntake->getRoute();
 
             Duration infusionTime;
-            if (absorptionModel == AbsorptionModel::INFUSION) {
+            if (absorptionModel == AbsorptionModel::Infusion) {
                 // We do this because the infusion calculators do not support infusionTime = 0
                 infusionTime = Duration(std::chrono::hours(1));
             }

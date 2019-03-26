@@ -52,7 +52,7 @@ private:
 inline bool TwoCompartmentExtraMicro::compute(const Residuals& _inResiduals, Eigen::VectorXd&
 _concentrations1, Value& _concentrations2, Value& _concentrations3)
 {
-    Value A, B, C, divider;
+    Value A, B, C, divider; // NOLINT(readability-identifier-naming)
     Concentration resid1 = _inResiduals[0];
     Concentration resid2 = _inResiduals[1];
     Concentration resid3 = _inResiduals[2] + (m_F * m_D / m_V1);
@@ -97,8 +97,9 @@ _concentrations1, Value& _concentrations2, Value& _concentrations3)
 	std::pow((sumK12K21 - 2 * m_Ka + m_Ke) * m_RootK,  2) 
 	- std::pow(std::pow(m_K12,2) + powDiffK21Ke + 2 * m_K12 * sumK21Ke, 2);
 
-    if(!checkValue(divider != 0.0, "Dividing by zero."))
+    if(!checkValue(divider != 0.0, "Dividing by zero.")) {
 	    return false;
+    }
 
     // Calculate concentrations of compartment 1
     _concentrations1 = 
@@ -125,8 +126,9 @@ _concentrations1, Value& _concentrations2, Value& _concentrations3)
         -std::pow(std::pow(m_K12, 2) + powDiffK21Ke + 2 * m_K12 * sumK21Ke, 2) 
         + std::pow(sumK12K21 - 2 * m_Ka + m_Ke, 2) * std::pow(m_RootK, 2);
     
-    if(!checkValue(divider != 0.0, "Dividing by zero."))
+    if(!checkValue(divider != 0.0, "Dividing by zero.")) {
 	    return false;
+    }
 
     // Calculate concentrations of compartment 2 and 3
     _concentrations2 = 

@@ -17,7 +17,7 @@ ComputationResult ConcentrationCalculator::computeConcentrations(const Concentra
     const DateTime &_recordFrom,
     const DateTime &_recordTo,
     const IntakeSeries &_intakes,
-    const ParameterSetSeries &_parameterSets,
+    const ParameterSetSeries &_parameters,
     const Etas &_etas,
     const IResidualErrorModel &_residualErrorModel,
     const Deviations& _epsilons,
@@ -52,7 +52,7 @@ ComputationResult ConcentrationCalculator::computeConcentrations(const Concentra
 
         // Get parameters at intake start time
         // For population calculation, could be done only once at the beginning
-        ParameterSetEventPtr parameters = _parameterSets.getAtTime(intake.getEventTime(), _etas);
+        ParameterSetEventPtr parameters = _parameters.getAtTime(intake.getEventTime(), _etas);
         if (parameters == nullptr) {
             //m_logger.error("No parameters found!");
             return ComputationResult::Failure;
@@ -152,7 +152,7 @@ ComputationResult ConcentrationCalculator::computeConcentrations(const Concentra
 ComputationResult ConcentrationCalculator::computeConcentrationsAtTimes(Concentrations &_concentrations,
     bool _isAll,
     const IntakeSeries &_intakes,
-    const ParameterSetSeries &_parameterSets,
+    const ParameterSetSeries &_parameters,
     const SampleSeries &_samples,
     const Etas &_etas,
     bool _onlyAnalytes)
@@ -201,7 +201,7 @@ ComputationResult ConcentrationCalculator::computeConcentrationsAtTimes(Concentr
         DateTime nextIntakeTime = currentIntakeTime + it->getInterval();
 
         // Get parameters at intake start time
-        ParameterSetEventPtr parameters = _parameterSets.getAtTime(it->getEventTime(), _etas);
+        ParameterSetEventPtr parameters = _parameters.getAtTime(it->getEventTime(), _etas);
         if (parameters == nullptr) {
             //m_logger.error("No parameters found!");
             return ComputationResult::Failure;

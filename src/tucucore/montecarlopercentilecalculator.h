@@ -196,7 +196,7 @@ protected:
 private:
     unsigned int m_nbPatients;
 
-    static unsigned int sm_nbPatients;
+    static unsigned int sm_nbPatients; // NOLINT(readability-identifier-naming)
 };
 
 
@@ -343,7 +343,7 @@ public:
 protected:
 
     ///! The map of matrices
-    std::map<std::pair<int, int>, EigenMatrix> matrices;
+    std::map<std::pair<int, int>, EigenMatrix> m_matrices;
 };
 
 

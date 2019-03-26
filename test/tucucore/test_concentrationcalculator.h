@@ -130,7 +130,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
         //
         // With the new calculation of pertinent times for infusion, this test fails.
         // The test should behave differently in case of infusion
-        if (_route != AbsorptionModel::INFUSION) {
+        if (_route != AbsorptionModel::Infusion) {
             int nbCycles = 10;
 
             Tucuxi::Core::IntakeIntervalCalculator::Result res;
@@ -231,7 +231,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
         // Create 2 samples and compare the result of computeConcentrations() and pointsAtTime().
         //
         // This test fails for infusion. It should be redesigned according to non linear times
-        if (_route != AbsorptionModel::INFUSION){
+        if (_route != AbsorptionModel::Infusion){
             CalculatorClass calculator;
 
             int nbPoints = 201;
@@ -331,7 +331,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
         testCalculator<Tucuxi::Core::ConstantEliminationBolus>(
             parametersSeries,
             400.0,
-            Tucuxi::Core::AbsorptionModel::EXTRAVASCULAR,
+            Tucuxi::Core::AbsorptionModel::Extravascular,
             12h,
             0s,
             CYCLE_SIZE);
@@ -350,7 +350,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
         testCalculator<Tucuxi::Core::OneCompartmentBolusMicro>(
             parametersSeries,
             400.0,
-            Tucuxi::Core::AbsorptionModel::INTRAVASCULAR,
+            Tucuxi::Core::AbsorptionModel::Intravascular,
             12h,
             0s,
             CYCLE_SIZE);
@@ -371,7 +371,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
         testCalculator<Tucuxi::Core::OneCompartmentExtraMicro>(
             parametersSeries,
             400.0,
-            Tucuxi::Core::AbsorptionModel::EXTRAVASCULAR,
+            Tucuxi::Core::AbsorptionModel::Extravascular,
             12h,
             0s,
             CYCLE_SIZE);
@@ -390,7 +390,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
         testCalculator<Tucuxi::Core::OneCompartmentInfusionMicro>(
             parametersSeries,
             400.0,
-            Tucuxi::Core::AbsorptionModel::INFUSION,
+            Tucuxi::Core::AbsorptionModel::Infusion,
             12h,
             1h,
             CYCLE_SIZE);
@@ -410,7 +410,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
         testCalculator<Tucuxi::Core::TwoCompartmentBolusMicro>(
             parametersSeries,
             400.0,
-            Tucuxi::Core::AbsorptionModel::INTRAVASCULAR,
+            Tucuxi::Core::AbsorptionModel::Intravascular,
             12h,
             0s,
             CYCLE_SIZE);
@@ -433,7 +433,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
         testCalculator<Tucuxi::Core::TwoCompartmentExtraMicro>(
             parametersSeries,
             400.0,
-            Tucuxi::Core::AbsorptionModel::EXTRAVASCULAR,
+            Tucuxi::Core::AbsorptionModel::Extravascular,
             12h,
             0s,
             CYCLE_SIZE);
@@ -454,7 +454,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
         testCalculator<Tucuxi::Core::TwoCompartmentInfusionMicro>(
             parametersSeries,
             400.0,
-            Tucuxi::Core::AbsorptionModel::INFUSION,
+            Tucuxi::Core::AbsorptionModel::Infusion,
             12h,
             1h,
             CYCLE_SIZE);
@@ -477,7 +477,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
         testCalculator<Tucuxi::Core::ThreeCompartmentBolusMicro>(
             parametersSeries,
             400.0,
-            Tucuxi::Core::AbsorptionModel::INTRAVASCULAR,
+            Tucuxi::Core::AbsorptionModel::Intravascular,
             12h,
             0s,
             CYCLE_SIZE);
@@ -502,7 +502,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
         testCalculator<Tucuxi::Core::ThreeCompartmentExtraMicro>(
             parametersSeries,
             400.0,
-            Tucuxi::Core::AbsorptionModel::EXTRAVASCULAR,
+            Tucuxi::Core::AbsorptionModel::Extravascular,
             12h,
             0s,
             CYCLE_SIZE);
@@ -526,7 +526,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
         testCalculator<Tucuxi::Core::ThreeCompartmentInfusionMicro>(
             parametersSeries,
             400.0,
-            Tucuxi::Core::AbsorptionModel::INFUSION,
+            Tucuxi::Core::AbsorptionModel::Infusion,
             12h,
             1h,
             CYCLE_SIZE);

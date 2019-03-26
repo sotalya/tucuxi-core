@@ -17,8 +17,8 @@ class DrugModelChecker
 public:
 
     typedef struct {
-        bool ok;
-        std::string errorMessage;
+        bool m_ok;
+        std::string m_errorMessage;
     } CheckerResult_t;
 
     DrugModelChecker();

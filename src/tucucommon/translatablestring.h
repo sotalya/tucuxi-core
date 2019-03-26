@@ -64,7 +64,7 @@ protected:
 
     /// A static variable storing the default language used by every instance of
     /// TranslatableString
-    static std::string sm_language;
+    static std::string sm_language; // NOLINT(readability-identifier-naming)
 
 };
 

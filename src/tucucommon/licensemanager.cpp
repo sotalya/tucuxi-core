@@ -19,7 +19,7 @@ namespace Tucuxi {
 namespace Common {
 
 // Symmetric key between Tucuxi and Server
-const std::string LicenseManager::m_key = "86685E7AA62844102FC7FAD5D6DDF46C9CA7777BF4E0153FDF5F86463EAC0D75";
+const std::string LicenseManager::sm_key = "86685E7AA62844102FC7FAD5D6DDF46C9CA7777BF4E0153FDF5F86463EAC0D75";
 
 static const std::string LICENSE_KEYWORD = "license";
 static const std::string LICENSEREQUEST_KEYWORD = "request";
@@ -173,7 +173,7 @@ LicenseError LicenseManager::checklicense(const std::string &_cryptedLicense)
 
     // Decrypt content of licence file
     std::string strLicense;
-    if (!CryptoHelper::decrypt(LicenseManager::m_key, _cryptedLicense, strLicense)) {
+    if (!CryptoHelper::decrypt(LicenseManager::sm_key, _cryptedLicense, strLicense)) {
         logger.error("Cannot decrypt licence file.");
         return LicenseError::ERROR_CRYPTO;
     }
@@ -215,10 +215,10 @@ LicenseError LicenseManager::checklicense(const std::string &_cryptedLicense)
 }
 
 
-LicenseError LicenseManager::installLicense(const std::string &_request, const std::string &_filename)
+LicenseError LicenseManager::installLicense(const std::string &_license, const std::string &_filename)
 {
     // Check license before installation
-    LicenseError res = checklicense(_request);
+    LicenseError res = checklicense(_license);
     if(res != LicenseError::VALID_LICENSE) {
         return res;
     }
@@ -230,7 +230,7 @@ LicenseError LicenseManager::installLicense(const std::string &_request, const s
         logger.error("License file not found.");
         return LicenseError::MISSING_LICENSE_FILE;
     }
-    file << _request;
+    file << _license;
     file.close();
 
     return LicenseError::INSTALLATION_SUCCESSFUL;
@@ -251,7 +251,7 @@ LicenseError LicenseManager::generateRequestString(std::string& _request, const 
 
     // Encrypt content of licence file
     std::string fuck = request.toString();
-    if(!CryptoHelper::encrypt(LicenseManager::m_key, request.toString(), _request)) {
+    if(!CryptoHelper::encrypt(LicenseManager::sm_key, request.toString(), _request)) {
         LoggerHelper logger;
         logger.error("Cannot encrypt license file.");
         return LicenseError::ERROR_CRYPTO;
@@ -267,7 +267,7 @@ LicenseError LicenseManager::rewriteLicense(const std::string &_cryptedLicense, 
 
     // Decrypt content of licence file
     std::string strLicense;
-    if (!CryptoHelper::decrypt(LicenseManager::m_key, _cryptedLicense, strLicense)) {
+    if (!CryptoHelper::decrypt(LicenseManager::sm_key, _cryptedLicense, strLicense)) {
         logger.error("Cannot decrypt licence file.");
         return LicenseError::ERROR_CRYPTO;
     }
@@ -284,7 +284,7 @@ LicenseError LicenseManager::rewriteLicense(const std::string &_cryptedLicense, 
 
     // Encrypt content of licence file
     std::string newCryptedLicense;
-    if (!CryptoHelper::encrypt(LicenseManager::m_key, license.toString(), newCryptedLicense)) {
+    if (!CryptoHelper::encrypt(LicenseManager::sm_key, license.toString(), newCryptedLicense)) {
         logger.error("Cannot encrypt licence file.");
         return LicenseError::ERROR_CRYPTO;
     }
@@ -309,7 +309,7 @@ LicenseRequestError LicenseManager::decryptRequest(const std::string &_encrypted
 
     // Decrypt content of licence file
     std::string strRequest;
-    if (!Tucuxi::Common::CryptoHelper::decrypt(m_key, _encryptedRequest, strRequest)) {
+    if (!Tucuxi::Common::CryptoHelper::decrypt(sm_key, _encryptedRequest, strRequest)) {
         logger.error("Cannot decrypt request.");
         return LicenseRequestError::ERROR_CRYPTO;
     }
@@ -342,7 +342,7 @@ LicenseRequestError LicenseManager::generateLicense(const LicenseRequest &_reque
     License license(_request, endDate);
 
     // Generate a crypted license string
-    if (!Tucuxi::Common::CryptoHelper::encrypt(m_key, license.toString(), _license) && _license.size() == 0) {
+    if (!Tucuxi::Common::CryptoHelper::encrypt(sm_key, license.toString(), _license) && _license.size() == 0) {
         logger.error("Error encrypt failed.");
         return LicenseRequestError::ERROR_CRYPTO;
     }
@@ -351,28 +351,28 @@ LicenseRequestError LicenseManager::generateLicense(const LicenseRequest &_reque
 }
 
 
-bool LicenseManager::getHashedFingerprint(MachineIdType &idType, std::string& _hashedFingerprint)
+bool LicenseManager::getHashedFingerprint(MachineIdType &_idType, std::string& _hashedFingerprint)
 {
     Tucuxi::Common::LoggerHelper logger;
 
     // Retrieve fingerprint ID from machine
     std::string fingerprint;
-    if (idType == MachineIdType::UNDEFINED) {
+    if (_idType == MachineIdType::UNDEFINED) {
         // Look for the first valid id
         for (int i = int(MachineIdType::CPU); i != int(MachineIdType::UNDEFINED); i++) {
             fingerprint = SystemInfo::retrieveFingerPrint(static_cast<MachineIdType>(i));
             if (!fingerprint.empty()) {
-                idType = static_cast<MachineIdType>(i);
+                _idType = static_cast<MachineIdType>(i);
                 break;
             }
         }
     }
     else {
-        fingerprint = SystemInfo::retrieveFingerPrint(idType);
+        fingerprint = SystemInfo::retrieveFingerPrint(_idType);
     }
 
     // Check if a valid ID is found
-    if (idType == MachineIdType::UNDEFINED) {
+    if (_idType == MachineIdType::UNDEFINED) {
         logger.error("No machine id found.");
         return false;
     }

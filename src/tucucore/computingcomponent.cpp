@@ -458,7 +458,7 @@ ComputingResult ComputingComponent::buildCandidates(const FullFormulationAndRout
     }
 
     if (infusionTimes.size() == 0) {
-        if (_formulationAndRoute->getFormulationAndRoute().getAbsorptionModel() == AbsorptionModel::INFUSION) {
+        if (_formulationAndRoute->getFormulationAndRoute().getAbsorptionModel() == AbsorptionModel::Infusion) {
             m_logger.error("Infusion selected, but no potential infusion time");
             return ComputingResult::Error;
         }
@@ -1012,7 +1012,7 @@ ComputationResult ComputingComponent::computeConcentrations(
         const DateTime &_recordFrom,
         const DateTime &_recordTo,
         const IntakeSeries &_intakes,
-        const ParameterSetSeries &_parameterSets,
+        const ParameterSetSeries &_parameters,
         const Etas &_etas,
         const IResidualErrorModel &_residualErrorModel,
         const Deviations& _eps,
@@ -1026,7 +1026,7 @@ ComputationResult ComputingComponent::computeConcentrations(
                 _recordFrom,
                 _recordTo,
                 _intakes,
-                _parameterSets,
+                _parameters,
                 _etas,
                 _residualErrorModel,
                 _eps,

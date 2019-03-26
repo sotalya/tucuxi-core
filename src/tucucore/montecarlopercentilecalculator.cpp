@@ -25,9 +25,9 @@ const EigenMatrix &AposterioriMatrixCache::getAvecs(int _nbSamples, int _nbEtas)
 {
     static std::mutex mutex;
     mutex.lock();
-    if (matrices.count(std::pair<int,int>(_nbSamples, _nbEtas))) {
+    if (m_matrices.count(std::pair<int,int>(_nbSamples, _nbEtas))) {
         mutex.unlock();
-        return matrices[std::pair<int,int>(_nbSamples, _nbEtas)];
+        return m_matrices[std::pair<int,int>(_nbSamples, _nbEtas)];
     }
 
     static std::random_device randomDevice;
@@ -49,11 +49,11 @@ const EigenMatrix &AposterioriMatrixCache::getAvecs(int _nbSamples, int _nbEtas)
         }
     }
 
-    matrices[std::pair<int,int>(_nbSamples, _nbEtas)] = avecs;
+    m_matrices[std::pair<int,int>(_nbSamples, _nbEtas)] = avecs;
 
     mutex.unlock();
 
-    return matrices[std::pair<int,int>(_nbSamples, _nbEtas)];
+    return m_matrices[std::pair<int,int>(_nbSamples, _nbEtas)];
 }
 
 

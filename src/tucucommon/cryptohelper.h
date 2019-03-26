@@ -27,9 +27,9 @@ class CryptoHelper
 {
 public:
     static bool generateKey(std::string& _key);
-    static bool hash(const std::string& plaintext, std::string& result);
-    static bool encrypt(const std::string& _key, const std::string& plaintext, std::string& result);
-    static bool decrypt(const std::string& _key, const std::string& cyphertext, std::string& result);
+    static bool hash(const std::string& _plaintext, std::string& _result);
+    static bool encrypt(const std::string& _key, const std::string& _plaintext, std::string& _result);
+    static bool decrypt(const std::string& _key, const std::string& _ciphertextiv, std::string& _result);
 };
 
 } // namespace Common

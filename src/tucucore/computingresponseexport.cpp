@@ -16,14 +16,14 @@ ComputingResponseExport::ComputingResponseExport()
 }
 
 
-bool ComputingResponseExport::exportToFiles(const ComputingResponse &computingResponse, std::string filePath)
+bool ComputingResponseExport::exportToFiles(const ComputingResponse &_computingResponse, std::string _filePath)
 {
 
-    for (auto &response : computingResponse.getResponses()) {
+    for (auto &response : _computingResponse.getResponses()) {
 
         std::ofstream file;
 
-        std::string fileName = filePath + "/" + computingResponse.getId() + "_" + response->getId() + ".dat";
+        std::string fileName = _filePath + "/" + _computingResponse.getId() + "_" + response->getId() + ".dat";
         file.open(fileName);
 
         if (dynamic_cast<Tucuxi::Core::SinglePredictionResponse*>(response.get())) {

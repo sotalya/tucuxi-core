@@ -41,7 +41,7 @@ public:
 };
 
 
-bool DrugFileValidator::validate(std::string drugFileName, std::string testFileName)
+bool DrugFileValidator::validate(std::string _drugFileName, std::string _testFileName)
 {
 
     const string m_sDATE_FORMAT = "%Y-%m-%dT%H:%M:%S";
@@ -50,7 +50,7 @@ bool DrugFileValidator::validate(std::string drugFileName, std::string testFileN
     Tucuxi::Common::LoggerHelper logger;
     rapidjson::Document document;  // Default template parameter uses UTF8 and MemoryPoolAllocator.
 
-    std::ifstream t(testFileName);
+    std::ifstream t(_testFileName);
     std::stringstream buffer;
     buffer << t.rdbuf();
 
@@ -64,7 +64,7 @@ bool DrugFileValidator::validate(std::string drugFileName, std::string testFileN
     Tucuxi::Core::DrugModel *dModel;
 
     DrugModelImport importer;
-    if (importer.importFromFile(dModel, drugFileName) != DrugModelImport::Result::Ok) {
+    if (importer.importFromFile(dModel, _drugFileName) != DrugModelImport::Result::Ok) {
         logger.error("Can not import the drug file. {}", importer.getErrorMessage());
         return false;
     }
@@ -81,8 +81,8 @@ bool DrugFileValidator::validate(std::string drugFileName, std::string testFileN
     }
 
     DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(dModel, &pkCollection);
-    if (!checkerResult.ok) {
-        logger.error(checkerResult.errorMessage);
+    if (!checkerResult.m_ok) {
+        logger.error(checkerResult.m_errorMessage);
         return false;
     }
 

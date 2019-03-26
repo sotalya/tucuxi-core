@@ -36,7 +36,7 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkDrugModel(const DrugMod
 
     // The analytes are used in various places in the drug model. Check coherency.
     DrugModelChecker::CheckerResult_t analyteResult = checkAnalytes(_drugModel);
-    if (!analyteResult.ok) {
+    if (!analyteResult.m_ok) {
         return analyteResult;
     }
 /*
@@ -49,7 +49,7 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkDrugModel(const DrugMod
 
     // Checks that the inputs of every formula corresponds to a covariate of the model
     DrugModelChecker::CheckerResult_t formulaInputsResult = checkFormulaInputs(_drugModel);
-    if (!formulaInputsResult.ok) {
+    if (!formulaInputsResult.m_ok) {
         return formulaInputsResult;
     }
 

@@ -10,7 +10,7 @@
 #include "componentmanager.h"
 
 namespace rapidxml {
-    template<class Ch> class xml_node;
+    template<class Ch> class xml_node; // NOLINT(readability-identifier-naming)
 } // namespace rapidxml
 
 namespace Tucuxi {

@@ -31,7 +31,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
         return Tucuxi::Core::FormulationAndRoute(
                     Formulation::Test,
                     AdministrationRoute::IntravenousDrip,
-                    AbsorptionModel::INFUSION);
+                    AbsorptionModel::Infusion);
     }
 
     FormulationAndRoute getBolusFormulationAndRoute()
@@ -39,14 +39,14 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
         return FormulationAndRoute(
                     Formulation::Test,
                     AdministrationRoute::IntravenousBolus,
-                    AbsorptionModel::INTRAVASCULAR);
+                    AbsorptionModel::Intravascular);
     }
 
     FormulationAndRoute getExtraFormulationAndRoute() {
         return FormulationAndRoute(
                     Formulation::Test,
                     AdministrationRoute::Intramuscular,
-                    AbsorptionModel::EXTRAVASCULAR);
+                    AbsorptionModel::Extravascular);
     }
 
 
@@ -1362,7 +1362,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(std::chrono::hours(3)),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
-                                              3 * NB_POINTS_PER_HOUR + 1), ScheduledIntakeOp::SKIP);
+                                              3 * NB_POINTS_PER_HOUR + 1), ScheduledIntakeOp::Skip);
         june2017->addIntakeChange(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(3)),
                                                        Duration(std::chrono::hours(2), std::chrono::minutes(49), std::chrono::seconds(0))),
                                               Duration(),
@@ -1370,7 +1370,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(std::chrono::hours(3)),
                                               getExtraFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
-                                              3 * NB_POINTS_PER_HOUR + 1), ScheduledIntakeOp::ADD);
+                                              3 * NB_POINTS_PER_HOUR + 1), ScheduledIntakeOp::Add);
         june2017->addIntakeChange(IntakeEvent(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(3)),
                                                        Duration(std::chrono::hours(12), std::chrono::minutes(0), std::chrono::seconds(0))),
                                               Duration(),
@@ -1378,7 +1378,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(std::chrono::hours(24)),
                                               getInfusionFormulationAndRoute().getAbsorptionModel(),
                                               Duration(std::chrono::minutes(20)),
-                                              24 * NB_POINTS_PER_HOUR + 1), ScheduledIntakeOp::SKIP);
+                                              24 * NB_POINTS_PER_HOUR + 1), ScheduledIntakeOp::Skip);
 
         // Create the dosage history
         DosageHistory dh;

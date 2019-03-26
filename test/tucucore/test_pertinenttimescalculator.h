@@ -29,7 +29,7 @@ struct TestPertinentTimesCalculator : public fructose::test_base<TestPertinentTi
             Eigen::VectorXd times(nbPoints);
             Duration interval(Duration(std::chrono::hours(24)));
             Duration infusionTime(Duration(std::chrono::minutes(0)));
-            IntakeEvent intake(DateTime(), Duration(), 0.0, interval, AbsorptionModel::EXTRAVASCULAR, infusionTime, nbPoints);
+            IntakeEvent intake(DateTime(), Duration(), 0.0, interval, AbsorptionModel::Extravascular, infusionTime, nbPoints);
             calculator.calculateTimes(intake, nbPoints, times);
 
             double delta = (interval.toHours() / (nbPoints - 1));
@@ -49,7 +49,7 @@ struct TestPertinentTimesCalculator : public fructose::test_base<TestPertinentTi
             Eigen::VectorXd times(nbPoints);
             Duration interval(Duration(std::chrono::hours(24)));
             Duration infusionTime(Duration(std::chrono::minutes(60)));
-            IntakeEvent intake(DateTime(), Duration(), 0.0, interval, AbsorptionModel::INFUSION, infusionTime, nbPoints);
+            IntakeEvent intake(DateTime(), Duration(), 0.0, interval, AbsorptionModel::Infusion, infusionTime, nbPoints);
             calculator.calculateTimes(intake, nbPoints, times);
 
             double delta = (interval.toHours() / (nbPoints - 1));
@@ -64,7 +64,7 @@ struct TestPertinentTimesCalculator : public fructose::test_base<TestPertinentTi
             Eigen::VectorXd times(nbPoints);
             Duration interval(Duration(std::chrono::hours(24)));
             Duration infusionTime(Duration(std::chrono::minutes(60)));
-            IntakeEvent intake(DateTime(), Duration(), 0.0, interval, AbsorptionModel::INFUSION, infusionTime, nbPoints);
+            IntakeEvent intake(DateTime(), Duration(), 0.0, interval, AbsorptionModel::Infusion, infusionTime, nbPoints);
             calculator.calculateTimes(intake, nbPoints, times);
 
             fructose_assert_double_eq(times[0], 0.0);
@@ -78,7 +78,7 @@ struct TestPertinentTimesCalculator : public fructose::test_base<TestPertinentTi
             Eigen::VectorXd times(nbPoints);
             Duration interval(Duration(std::chrono::hours(24)));
             Duration infusionTime(Duration(std::chrono::minutes(60)));
-            IntakeEvent intake(DateTime(), Duration(), 0.0, interval, AbsorptionModel::INFUSION, infusionTime, nbPoints);
+            IntakeEvent intake(DateTime(), Duration(), 0.0, interval, AbsorptionModel::Infusion, infusionTime, nbPoints);
             calculator.calculateTimes(intake, nbPoints, times);
 
             fructose_assert_double_eq(times[0], 0.0);
@@ -93,7 +93,7 @@ struct TestPertinentTimesCalculator : public fructose::test_base<TestPertinentTi
             Eigen::VectorXd times(nbPoints);
             Duration interval(Duration(std::chrono::hours(24)));
             Duration infusionTime(Duration(std::chrono::minutes(60*10)));
-            IntakeEvent intake(DateTime(), Duration(), 0.0, interval, AbsorptionModel::INFUSION, infusionTime, nbPoints);
+            IntakeEvent intake(DateTime(), Duration(), 0.0, interval, AbsorptionModel::Infusion, infusionTime, nbPoints);
             calculator.calculateTimes(intake, nbPoints, times);
 
             fructose_assert_double_eq(times[0], 0.0);

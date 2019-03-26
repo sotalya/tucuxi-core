@@ -11,7 +11,7 @@ class ComputingResponseExport
 public:
     ComputingResponseExport();
 
-    bool exportToFiles(const ComputingResponse &computingResponse, std::string filePath);
+    bool exportToFiles(const ComputingResponse &_computingResponse, std::string _filePath);
 };
 
 } // namespace Core

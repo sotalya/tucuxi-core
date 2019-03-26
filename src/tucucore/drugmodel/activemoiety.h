@@ -27,14 +27,14 @@ public:
 
     std::string toString() const { return m_s; }
 
-    inline bool operator==(const ActiveMoietyId& other){ return this->m_s == other.m_s;}
-    inline bool operator<(const ActiveMoietyId& other){ return this->m_s < other.m_s;}
+    inline bool operator==(const ActiveMoietyId& _other){ return this->m_s == _other.m_s;}
+    inline bool operator<(const ActiveMoietyId& _other){ return this->m_s < _other.m_s;}
 
 protected:
     std::string m_s;
 };
 
-inline bool operator==(const ActiveMoietyId& lhs, const ActiveMoietyId& rhs){ return lhs.toString() == rhs.toString(); }
+inline bool operator==(const ActiveMoietyId& _lhs, const ActiveMoietyId& _rhs){ return _lhs.toString() == _rhs.toString(); }
 
 
 class ActiveMoiety

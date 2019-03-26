@@ -34,7 +34,7 @@ class Logger : public Tucuxi::Common::Component, public ILogger
 {
 public:
     /// \brief Constructor call by LoggerHelper
-    ~Logger();
+    ~Logger() override;
 
     /// \brief Set minimal level of logging message.
     /// \param _level Minimal level

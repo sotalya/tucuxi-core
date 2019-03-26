@@ -20,7 +20,7 @@ class ValidDoses : public ValidValues
 public:
     ValidDoses(Unit _unit, std::unique_ptr<PopulationValue> _defaultDose);
 
-    virtual ~ValidDoses();
+    ~ValidDoses() override;
 
     INVARIANTS()
 

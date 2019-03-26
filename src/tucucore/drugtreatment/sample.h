@@ -12,7 +12,7 @@
 #include "tucucore/definitions.h"
 #include "tucucore/drugdefinitions.h"
 
-using Tucuxi::Common::DateTime;
+using Tucuxi::Common::DateTime; // NOLINT(google-global-names-in-headers)
 
 namespace Tucuxi {
 namespace Core {

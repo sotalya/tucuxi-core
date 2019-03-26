@@ -108,12 +108,12 @@ public:
             AnalyteSetToAbsorptionAssociation *association;
             const AnalyteSet *a = model->getAnalyteSet();
             association = new AnalyteSetToAbsorptionAssociation(*a);
-            association->setAbsorptionModel(AbsorptionModel::EXTRAVASCULAR);
+            association->setAbsorptionModel(AbsorptionModel::Extravascular);
 
             std::unique_ptr<ParameterSetDefinition> absorptionParameters(new ParameterSetDefinition());
 
             association->setAbsorptionParameters(std::move(absorptionParameters));
-            FormulationAndRoute formulationSpecs(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::EXTRAVASCULAR, "No details");
+            FormulationAndRoute formulationSpecs(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular, "No details");
             std::unique_ptr<FullFormulationAndRoute> formulationAndRoute(new FullFormulationAndRoute(formulationSpecs, "extraId"));
             formulationAndRoute->addAssociation(std::unique_ptr<AnalyteSetToAbsorptionAssociation>(association));
 

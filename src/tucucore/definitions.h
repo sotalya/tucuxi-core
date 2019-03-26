@@ -66,11 +66,11 @@ typedef std::vector<PercentileRank> PercentileRanks;
 
 /// \ingroup TucuCore
 /// \brief Way a dose is administered.
-enum class AbsorptionModel { UNDEFINED, INTRAVASCULAR, EXTRAVASCULAR, INFUSION };
+enum class AbsorptionModel { Undefined, Intravascular, Extravascular, Infusion };
 
 /// \ingroup TucuCore
 /// \brief Operations on scheduled intakes.
-enum class ScheduledIntakeOp { SKIP, ADD };
+enum class ScheduledIntakeOp { Skip, Add };
 
 /// \ingroup TucuCore
 /// \brief Days of the week (in [0, 6]), starting on Sunday.

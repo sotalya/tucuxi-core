@@ -31,7 +31,7 @@ public:
 
     DrugModelRepository();
 
-    ~DrugModelRepository();
+    ~DrugModelRepository() override;
 
     //bool initialize() override;
 

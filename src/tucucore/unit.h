@@ -12,9 +12,9 @@ class Unit
 {
 public:
     Unit() {}
-    Unit(std::string _unitString) { m_unitString = _unitString; }
+    Unit(std::string _unitString) : m_unitString(_unitString){}
 
-    inline bool operator==(const Unit& rhs) const { return this->m_unitString == rhs.m_unitString; }
+    inline bool operator==(const Unit& _rhs) const { return this->m_unitString == _rhs.m_unitString; }
 
     std::string toString() const { return m_unitString;}
 

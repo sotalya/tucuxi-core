@@ -280,7 +280,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             microParameters,
             macroParameters,
             400.0,
-            Tucuxi::Core::AbsorptionModel::INTRAVASCULAR,
+            Tucuxi::Core::AbsorptionModel::Intravascular,
             1h,
             0s,
             CYCLE_SIZE);
@@ -313,7 +313,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             microParameters,
             macroParameters,
             400.0,
-            Tucuxi::Core::AbsorptionModel::EXTRAVASCULAR,
+            Tucuxi::Core::AbsorptionModel::Extravascular,
             12h,
             0s,
             CYCLE_SIZE);
@@ -343,7 +343,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             microParameters,
             macroParameters,
             400.0,
-            Tucuxi::Core::AbsorptionModel::INFUSION,
+            Tucuxi::Core::AbsorptionModel::Infusion,
             12h,
             1h,
             CYCLE_SIZE);
@@ -376,7 +376,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             microParameters,
             macroParameters,
             400.0,
-            Tucuxi::Core::AbsorptionModel::INTRAVASCULAR,
+            Tucuxi::Core::AbsorptionModel::Intravascular,
             12h,
             0s,
             CYCLE_SIZE);
@@ -413,7 +413,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             microParameters,
             macroParameters,
             400.0,
-            Tucuxi::Core::AbsorptionModel::EXTRAVASCULAR,
+            Tucuxi::Core::AbsorptionModel::Extravascular,
             12h,
             0s,
             CYCLE_SIZE);
@@ -446,7 +446,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             microParameters,
             macroParameters,
             400.0,
-            Tucuxi::Core::AbsorptionModel::INFUSION,
+            Tucuxi::Core::AbsorptionModel::Infusion,
             12h,
             1h,
             CYCLE_SIZE);
@@ -484,7 +484,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             microParameters,
             macroParameters,
             400.0,
-            Tucuxi::Core::AbsorptionModel::INTRAVASCULAR,
+            Tucuxi::Core::AbsorptionModel::Intravascular,
             12h,
             0s,
             CYCLE_SIZE);
@@ -524,7 +524,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             microParameters,
             macroParameters,
             400.0,
-            Tucuxi::Core::AbsorptionModel::EXTRAVASCULAR,
+            Tucuxi::Core::AbsorptionModel::Extravascular,
             12h,
             0s,
             CYCLE_SIZE);
@@ -563,7 +563,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             microParameters,
             macroParameters,
             400.0,
-            Tucuxi::Core::AbsorptionModel::INFUSION,
+            Tucuxi::Core::AbsorptionModel::Infusion,
             12h,
             1h,
             CYCLE_SIZE);

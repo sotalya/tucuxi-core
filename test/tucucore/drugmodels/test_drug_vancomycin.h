@@ -751,7 +751,7 @@ struct TestDrugVancomycin : public fructose::test_base<TestDrugVancomycin>
                                Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
 
 
-        //const FormulationAndRoute route("formulation", AdministrationRoute::IntravenousBolus, AbsorptionModel::INTRAVASCULAR);
+        //const FormulationAndRoute route("formulation", AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular);
         // Add a treatment intake every ten days in June
         // 200mg via a intravascular at 08h30, starting the 01.06
         LastingDose periodicDose(DoseValue(200.0),
@@ -785,7 +785,7 @@ struct TestDrugVancomycin : public fructose::test_base<TestDrugVancomycin>
 
 
         DrugTreatment *drugTreatment;
-        const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::INFUSION);
+        const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Infusion);
 
 
         buildDrugTreatment(drugTreatment, route);

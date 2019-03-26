@@ -88,18 +88,18 @@ public:
 
 
     void applyEpsToValue(Concentration &_concentration, const Deviations &_eps) const override {
-        UNUSED_PARAMETER(_concentration);
-        UNUSED_PARAMETER(_eps);
+        FINAL_UNUSED_PARAMETER(_concentration);
+        FINAL_UNUSED_PARAMETER(_eps);
     }
 
     void applyEpsToArray(Concentrations &_concentrations, const Deviations &_eps) const override {
-        UNUSED_PARAMETER(_concentrations);
-        UNUSED_PARAMETER(_eps);
+        FINAL_UNUSED_PARAMETER(_concentrations);
+        FINAL_UNUSED_PARAMETER(_eps);
     }
 
     Value calculateSampleLikelihood(Value _expected, Value _observed) const override {
-        UNUSED_PARAMETER(_expected);
-        UNUSED_PARAMETER(_observed);
+        FINAL_UNUSED_PARAMETER(_expected);
+        FINAL_UNUSED_PARAMETER(_observed);
         return 0.0;
     }
 

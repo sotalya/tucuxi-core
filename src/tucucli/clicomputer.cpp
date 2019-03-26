@@ -17,11 +17,11 @@ CliComputer::CliComputer()
 }
 
 
-void CliComputer::compute(std::string drugPath,
-                          std::string inputFileName,
-                          std::string outputPath)
+void CliComputer::compute(std::string _drugPath,
+                          std::string _inputFileName,
+                          std::string _outputPath)
 {
-    TMP_UNUSED_PARAMETER(drugPath);
+    TMP_UNUSED_PARAMETER(_drugPath);
 
     Tucuxi::Common::LoggerHelper logHelper;
 
@@ -35,11 +35,11 @@ void CliComputer::compute(std::string drugPath,
     Query *query = nullptr;
     QueryImport importer;
 
-    QueryImport::Result importResult = importer.importFromFile(query, inputFileName);
+    QueryImport::Result importResult = importer.importFromFile(query, _inputFileName);
 
 
     if (importResult != QueryImport::Result::Ok) {
-        logHelper.error("Error with the import of query file \"{}\"", inputFileName);
+        logHelper.error("Error with the import of query file \"{}\"", _inputFileName);
         return;
     }
 
@@ -84,7 +84,7 @@ void CliComputer::compute(std::string drugPath,
 
     ComputingResponseExport exporter;
 
-    if (!exporter.exportToFiles(*response.get(), outputPath)) {
+    if (!exporter.exportToFiles(*response.get(), _outputPath)) {
         logHelper.error("Could not export the response file");
     }
     else {

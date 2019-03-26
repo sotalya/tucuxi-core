@@ -80,12 +80,12 @@ bool timeRangesOverlap(const DosageTimeRange &_first, const DosageTimeRange &_se
 
 
 
-void DosageHistory::mergeDosage(const DosageTimeRange *newDosage)
+void DosageHistory::mergeDosage(const DosageTimeRange *_newDosage)
 {
     // First remove the existing time ranges that are replaced because of
     // the new dosage
 
-    DateTime newStart = newDosage->getStartDate();
+    DateTime newStart = _newDosage->getStartDate();
 
     auto iterator = std::remove_if(m_history.begin(), m_history.end(), [newStart](std::unique_ptr<DosageTimeRange> & val) {
 
@@ -100,19 +100,19 @@ void DosageHistory::mergeDosage(const DosageTimeRange *newDosage)
 
     for (const auto& existing : m_history) {
         if (existing->getEndDate().isUndefined()) {
-            existing->m_endDate = newDosage->getStartDate();
+            existing->m_endDate = _newDosage->getStartDate();
         }
-        else if (existing->getEndDate() > newDosage->getStartDate()) {
-            existing->m_endDate = newDosage->getStartDate();
+        else if (existing->getEndDate() > _newDosage->getStartDate()) {
+            existing->m_endDate = _newDosage->getStartDate();
         }
     }
-    addTimeRange(*newDosage);
+    addTimeRange(*_newDosage);
 }
 
 FormulationAndRoute DosageHistory::getLastFormulationAndRoute() const
 {
     if (m_history.size() == 0) {
-        return FormulationAndRoute(Formulation::Undefined, AdministrationRoute::Undefined, AbsorptionModel::UNDEFINED);
+        return FormulationAndRoute(Formulation::Undefined, AdministrationRoute::Undefined, AbsorptionModel::Undefined);
     }
     return m_history.at(m_history.size() - 1)->m_dosage->getLastFormulationAndRoute();
 }

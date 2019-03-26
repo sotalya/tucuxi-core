@@ -83,9 +83,10 @@ ComputingResult ComputingTraitStandard::compute(ComputingComponent &_computingCo
                                 const ComputingRequest &_request,
                         std::unique_ptr<ComputingResponse> &_response) const
 {
-    UNUSED_PARAMETER(_computingComponent);
-    UNUSED_PARAMETER(_request);
-    UNUSED_PARAMETER(_response);
+    // A ComputingTraitStandard is not a final class, so this method should not be called
+    FINAL_UNUSED_PARAMETER(_computingComponent);
+    FINAL_UNUSED_PARAMETER(_request);
+    FINAL_UNUSED_PARAMETER(_response);
     return ComputingResult::Error;
 }
 

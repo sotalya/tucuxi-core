@@ -35,8 +35,8 @@ public:
     ///
     void addValue(const Tucuxi::Common::Duration _time, const Value _value) {
         Data newData;
-        newData.offset = _time;
-        newData.value = _value;
+        newData.m_offset = _time;
+        newData.m_value = _value;
         m_data.push_back(newData);
     }
 
@@ -65,8 +65,8 @@ public:
         if (_index >= getNbValue()) {
             return false;
         }
-        _dateTime = m_cycleStartDate + m_data[_index].offset;
-        _value = m_data[_index].value;
+        _dateTime = m_cycleStartDate + m_data[_index].m_offset;
+        _value = m_data[_index].m_value;
         return true;
     }
 
@@ -75,10 +75,12 @@ private:
     CycleStatisticType m_type; // The type of statistic
 
     struct Data {
-        Tucuxi::Common::Duration offset;
-        Value value;
+        Tucuxi::Common::Duration m_offset;
+        Value m_value;
     };
+
     std::vector<Data> m_data; // The list of values (in case of maximum and minimum, we can have a list)
+
 };
 
 class CycleStats

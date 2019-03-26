@@ -18,21 +18,27 @@ clang-tidy \
                               bugprone-integer-division,
                               readability-inconsistent-declaration-parameter-name', \
 		CheckOptions: [ \
+                        { key: readability-identifier-naming.StaticVariablePrefix,value: sm_       }, \
 			{ key: readability-identifier-naming.ClassCase,           value: CamelCase }, \
 			{ key: readability-identifier-naming.MemberPrefix,        value: m_        }, \
 			{ key: readability-identifier-naming.VariableCase,        value: camelBack }, \
 			{ key: readability-identifier-naming.ParameterCase,       value: camelBack }, \
 			{ key: readability-identifier-naming.ParameterPrefix,     value: '_'       }, \
-                        { key: readability-identifier-naming.StaticVariableCase,  value: camelBack }, \
                         { key: readability-identifier-naming.EnumCase,            value: CamelCase }, \
+                        { key: readability-identifier-naming.EnumConstCase,       value: CamelCase }, \
+			
 		]}" \
-	-header-filter="../src/tucucore/|../src/tucucommon/|../src/tucucli/|../src/tuculicense/" \
-	../src/tucucore/*.cpp \
-	../src/tucucommon/*.cpp \
-	../src/tuculicense/*.cpp \
+	-header-filter="../src/tucucore/|../src/tucucommon/|../src/tucucli/|../src/tuculicense/../src/tucuquery/../src/tucuvalidator/" \
 	../src/tucucli/*.cpp \
+	../src/tucucommon/*.cpp \
+	../src/tucucore/*.cpp \
+	../src/tuculicense/*.cpp \
+	../src/tucuquery/*.cpp \
+	../src/tucuvalidator/*.cpp \
 	-- \
 	-I../src \
+	-I../libs/cxxopts \
+	-I../libs/rapidjson-master-20190220/include \
 	-I../libs/eigen-3.3.2 \
 	-I../libs/boost-1.63.0 \
 	-I../libs/date-master-20170711 \
@@ -43,6 +49,10 @@ clang-tidy \
 	-std=c++14 \
 > clang-warnings.txt
 
+# I don't know why I cannot get the static variables correctly analyzed
+# OK, I think because it applies to static variables, not class static variables
+                       # { key: readability-identifier-naming.StaticVariablePrefix,value: sm_       }, \
+
 
 grep "\.h" clang-warnings.txt | sort -u > clang-warnings-shorts.txt
 
@@ -51,5 +61,3 @@ grep "\.h" clang-warnings.txt | sort -u > clang-warnings-shorts.txt
 # The following, if used instead of -header-filter, will only display warnings for these two files
 #    -line-filter="[{\"name\" : \"../src/tucucore/deriv.h\"},{\"name\" : \"../src/tucucore/minimize.h\"}]" \
 
-
-#                        { key: readability-identifier-naming.EnumConstantCase,    value: CamelCase }, \

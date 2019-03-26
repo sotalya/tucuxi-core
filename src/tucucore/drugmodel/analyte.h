@@ -48,14 +48,14 @@ public:
 
     std::string toString() const { return m_s; }
 
-    inline bool operator==(const AnalyteId& other){ return this->m_s == other.m_s;}
-    inline bool operator<(const AnalyteId& other){ return this->m_s < other.m_s;}
+    inline bool operator==(const AnalyteId& _other){ return this->m_s == _other.m_s;}
+    inline bool operator<(const AnalyteId& _other){ return this->m_s < _other.m_s;}
 
 protected:
     std::string m_s;
 };
 
-inline bool operator==(const AnalyteId& lhs, const AnalyteId& rhs){ return lhs.toString() == rhs.toString(); }
+inline bool operator==(const AnalyteId& _lhs, const AnalyteId& _rhs){ return _lhs.toString() == _rhs.toString(); }
 
 ///
 /// \brief The AnalyteGroupId class
@@ -74,15 +74,15 @@ public:
 
     std::string toString() const { return m_s; }
 
-    inline bool operator==(const AnalyteGroupId& other){ return this->m_s == other.m_s;}
-    inline bool operator<(const AnalyteGroupId& other){ return this->m_s < other.m_s;}
+    inline bool operator==(const AnalyteGroupId& _other){ return this->m_s == _other.m_s;}
+    inline bool operator<(const AnalyteGroupId& _other){ return this->m_s < _other.m_s;}
 
 
 protected:
     std::string m_s;
 };
 
-inline bool operator==(const AnalyteGroupId& lhs, const AnalyteGroupId& rhs){ return lhs.toString() == rhs.toString(); }
+inline bool operator==(const AnalyteGroupId& _lhs, const AnalyteGroupId& _rhs){ return _lhs.toString() == _rhs.toString(); }
 
 
 class Analyte

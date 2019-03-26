@@ -219,9 +219,9 @@ int IntakeExtractor::extract(const LastingDose &_dosage, const DateTime &_start,
     interval = _dosage.getTimeStep();
 
     // If the absorption model is INFUSION but the infusion time is 0, then use INTRAVASCULAR instead
-    if ((_dosage.m_routeOfAdministration.getAbsorptionModel() == AbsorptionModel::INFUSION) &&
+    if ((_dosage.m_routeOfAdministration.getAbsorptionModel() == AbsorptionModel::Infusion) &&
             (_dosage.m_infusionTime.isEmpty())) {
-        IntakeEvent intake(_start, Duration(), _dosage.m_dose, interval, AbsorptionModel::INTRAVASCULAR,
+        IntakeEvent intake(_start, Duration(), _dosage.m_dose, interval, AbsorptionModel::Intravascular,
                            _dosage.m_infusionTime, static_cast<int>(interval.toHours() * _nbPointsPerHour) + 1);
         _series.push_back(intake);
     }
@@ -241,10 +241,10 @@ int IntakeExtractor::extract(const DailyDose &_dosage, const DateTime &_start, c
         interval = _dosage.getTimeStep();
 
     // If the absorption model is INFUSION but the infusion time is 0, then use INTRAVASCULAR instead
-    if ((_dosage.m_routeOfAdministration.getAbsorptionModel() == AbsorptionModel::INFUSION) &&
+    if ((_dosage.m_routeOfAdministration.getAbsorptionModel() == AbsorptionModel::Infusion) &&
             (_dosage.m_infusionTime.isEmpty())) {
 
-        IntakeEvent intake(_start, Duration(), _dosage.m_dose, interval, AbsorptionModel::INTRAVASCULAR,
+        IntakeEvent intake(_start, Duration(), _dosage.m_dose, interval, AbsorptionModel::Intravascular,
                            _dosage.m_infusionTime, static_cast<int>(interval.toHours() * _nbPointsPerHour) + 1);
         _series.push_back(intake);
     }
@@ -265,10 +265,10 @@ int IntakeExtractor::extract(const WeeklyDose &_dosage, const DateTime &_start, 
         interval = _dosage.getTimeStep();
 
     // If the absorption model is INFUSION but the infusion time is 0, then use INTRAVASCULAR instead
-    if ((_dosage.m_routeOfAdministration.getAbsorptionModel() == AbsorptionModel::INFUSION) &&
+    if ((_dosage.m_routeOfAdministration.getAbsorptionModel() == AbsorptionModel::Infusion) &&
             (_dosage.m_infusionTime.isEmpty())) {
 
-        IntakeEvent intake(_start, Duration(), _dosage.m_dose, interval, AbsorptionModel::INTRAVASCULAR,
+        IntakeEvent intake(_start, Duration(), _dosage.m_dose, interval, AbsorptionModel::Intravascular,
                            _dosage.m_infusionTime, static_cast<int>(interval.toHours() * _nbPointsPerHour) + 1);
         _series.push_back(intake);
     }

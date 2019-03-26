@@ -62,15 +62,15 @@ inline void ThreeCompartmentInfusionMicro::compute(int _forceSize, Eigen::Vector
     Value betaTinf = std::exp(-m_Beta * m_Tinf);
     Value gammaTinf = std::exp(-m_Gamma * m_Tinf);
 
-    Value A = (1 / m_V1) * (m_K21 - m_Alpha) * (m_K31 - m_Alpha) / (m_Alpha - m_Beta) / (m_Alpha - m_Gamma);
-    Value B = (1 / m_V1) * (m_K21 - m_Beta) * (m_K31 - m_Beta) / (m_Beta - m_Alpha) / (m_Beta - m_Gamma);
-    Value C = (1 / m_V1) * (m_K21 - m_Gamma) * (m_K31 - m_Gamma) / (m_Gamma - m_Beta) / (m_Gamma - m_Alpha);
-    Value A2 = m_K12 / (m_K21 - m_Alpha) * A;
-    Value B2 = m_K12 / (m_K21 - m_Beta) * B;
-    Value C2 = m_K12 / (m_K21 - m_Gamma) * C;
-    Value A3 = m_K13 / (m_K31 - m_Alpha) * A;
-    Value B3 = m_K13 / (m_K31 - m_Beta) * B;
-    Value C3 = m_K13 / (m_K31 - m_Gamma) * C;
+    Value A = (1 / m_V1) * (m_K21 - m_Alpha) * (m_K31 - m_Alpha) / (m_Alpha - m_Beta) / (m_Alpha - m_Gamma); // NOLINT(readability-identifier-naming)
+    Value B = (1 / m_V1) * (m_K21 - m_Beta) * (m_K31 - m_Beta) / (m_Beta - m_Alpha) / (m_Beta - m_Gamma); // NOLINT(readability-identifier-naming)
+    Value C = (1 / m_V1) * (m_K21 - m_Gamma) * (m_K31 - m_Gamma) / (m_Gamma - m_Beta) / (m_Gamma - m_Alpha); // NOLINT(readability-identifier-naming)
+    Value A2 = m_K12 / (m_K21 - m_Alpha) * A; // NOLINT(readability-identifier-naming)
+    Value B2 = m_K12 / (m_K21 - m_Beta) * B; // NOLINT(readability-identifier-naming)
+    Value C2 = m_K12 / (m_K21 - m_Gamma) * C; // NOLINT(readability-identifier-naming)
+    Value A3 = m_K13 / (m_K31 - m_Alpha) * A; // NOLINT(readability-identifier-naming)
+    Value B3 = m_K13 / (m_K31 - m_Beta) * B; // NOLINT(readability-identifier-naming)
+    Value C3 = m_K13 / (m_K31 - m_Gamma) * C; // NOLINT(readability-identifier-naming)
 
     if (_forceSize != 0)
     {

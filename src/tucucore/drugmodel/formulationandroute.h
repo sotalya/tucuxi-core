@@ -78,7 +78,7 @@ public:
     void setAbsorptionParameters(std::unique_ptr<ParameterSetDefinition> _parameters) {m_absorptionParameters = std::move(_parameters);}
 
     INVARIANTS(
-            INVARIANT(Invariants::INV_ANALYTESETTOABSORPTIONASSOCIATION_0001, (m_absorptionModel != AbsorptionModel::UNDEFINED))
+            INVARIANT(Invariants::INV_ANALYTESETTOABSORPTIONASSOCIATION_0001, (m_absorptionModel != AbsorptionModel::Undefined))
             INVARIANT(Invariants::INV_ANALYTESETTOABSORPTIONASSOCIATION_0002, (m_absorptionParameters->checkInvariants()))
             )
 
@@ -149,7 +149,7 @@ public:
     INVARIANTS(
             INVARIANT(Invariants::INV_FORMULATIONANDROUTE_0001, (m_formulation != Formulation::Undefined))
             INVARIANT(Invariants::INV_FORMULATIONANDROUTE_0001, (m_route != AdministrationRoute::Undefined))
-            INVARIANT(Invariants::INV_FORMULATIONANDROUTE_0001, (m_absorptionModel != AbsorptionModel::UNDEFINED))
+            INVARIANT(Invariants::INV_FORMULATIONANDROUTE_0001, (m_absorptionModel != AbsorptionModel::Undefined))
             INVARIANT(Invariants::INV_FORMULATIONANDROUTE_0001, (m_administrationName.size() > 0))
             )
 

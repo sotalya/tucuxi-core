@@ -129,7 +129,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
         Tucuxi::Core::Concentrations concentrations;
         //            Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, _dose, interval, _route, infusionTime, nbPoints);
 
-        Tucuxi::Core::AbsorptionModel route = Tucuxi::Core::AbsorptionModel::INTRAVASCULAR;
+        Tucuxi::Core::AbsorptionModel route = Tucuxi::Core::AbsorptionModel::Intravascular;
 
         Tucuxi::Core::IntakeSeries intakeSeries;
         {

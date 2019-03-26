@@ -416,10 +416,10 @@ AbsorptionModel DrugModelImport::extractAbsorptionModel(Tucuxi::Common::XmlNodeI
 
     static std::map<std::string, AbsorptionModel> m =
     {
-        {"undefined", AbsorptionModel::UNDEFINED},
-        {"bolus", AbsorptionModel::INTRAVASCULAR},
-        {"extra", AbsorptionModel::EXTRAVASCULAR},
-        {"infusion", AbsorptionModel::INFUSION}
+        {"undefined", AbsorptionModel::Undefined},
+        {"bolus", AbsorptionModel::Intravascular},
+        {"extra", AbsorptionModel::Extravascular},
+        {"infusion", AbsorptionModel::Infusion}
     };
 
     auto it = m.find(_node->getValue());
@@ -427,7 +427,7 @@ AbsorptionModel DrugModelImport::extractAbsorptionModel(Tucuxi::Common::XmlNodeI
         return it->second;
 
     setNodeError(_node);
-    return AbsorptionModel::UNDEFINED;
+    return AbsorptionModel::Undefined;
 
 }
 
@@ -1879,7 +1879,7 @@ FullFormulationAndRoute* DrugModelImport::extractFullFormulationAndRoute(
     Formulation formulation = Formulation::Undefined;
     std::string administrationName = "";
     AdministrationRoute administrationRoute = AdministrationRoute::Undefined;
-    AbsorptionModel absorptionModelId = AbsorptionModel::UNDEFINED;
+    AbsorptionModel absorptionModelId = AbsorptionModel::Undefined;
     ParameterSetDefinition *absorptionParameters = nullptr;
     std::vector<AnalyteSetToAbsorptionAssociation *> associations;
     std::vector<AnalyteConversion *> analyteConversions;
@@ -2002,7 +2002,7 @@ FullFormulationAndRoute* DrugModelImport::extractFullFormulationAndRoute(
 
             std::string analyteGroupId = "";
             AnalyteSet *selectedAnalyteSet = nullptr;
-            AbsorptionModel absorptionModelId = AbsorptionModel::UNDEFINED;
+            AbsorptionModel absorptionModelId = AbsorptionModel::Undefined;
             absorptionParameters = nullptr;
 
             while (absorptionIt != XmlNodeIterator::none()) {
