@@ -39,9 +39,11 @@ SOURCES := \
            cyclestatisticscalculator.cpp \
            dosage.cpp \
            drugdomainconstraintsevaluator.cpp \
-		   drugfilevalidator.cpp \
+           drugfilevalidator.cpp \
+           drugmodelchecker.cpp \
            drugmodelimport.cpp \
            drugmodelrepository.cpp \
+           generalextractor.cpp \
            hardcodedoperation.cpp \
            intakeextractor.cpp \
            intakeintervalcalculator.cpp \

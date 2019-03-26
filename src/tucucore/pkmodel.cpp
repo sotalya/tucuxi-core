@@ -53,7 +53,7 @@ std::shared_ptr<IntakeIntervalCalculator> PkModel::getCalculatorForRoute(Absorpt
 {
     auto search = m_calculatorCreators.find(_route);
     if (search != m_calculatorCreators.end()) {
-        return std::move(search->second->create());
+        return search->second->create();
     }
     else {
         return nullptr;

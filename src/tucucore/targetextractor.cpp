@@ -144,6 +144,25 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(const TargetDefinit
     case TargetType::Auc :
     case TargetType::Auc24 :
     case TargetType::CumulativeAuc :
+
+        // Here we consider times as minutes. This has to be fixed once
+        return TargetEvent(
+                    _target->getActiveMoietyId(),
+                    _target->getTargetType(),
+                    Unit("ug*h/l"),
+                    _target->getUnit(),
+                    translateToUnit(_target->getCMin().getValue(), _target->getUnit(), Unit("ug*h/l")),
+                    translateToUnit(_target->getCBest().getValue(), _target->getUnit(), Unit("ug*h/l")),
+                    translateToUnit(_target->getCMax().getValue(), _target->getUnit(), Unit("ug*h/l")),
+                    0.0,
+                    Tucuxi::Common::Duration(
+                        std::chrono::minutes(static_cast<int>(_target->getTMin().getValue()))),
+                    Tucuxi::Common::Duration(
+                        std::chrono::minutes(static_cast<int>(_target->getTBest().getValue()))),
+                    Tucuxi::Common::Duration(
+                        std::chrono::minutes(static_cast<int>(_target->getTMax().getValue()))));
+
+
     case TargetType::AucOverMic :
     case TargetType::Auc24OverMic :
 

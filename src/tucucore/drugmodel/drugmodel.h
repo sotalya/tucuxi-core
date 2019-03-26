@@ -16,6 +16,8 @@
 #include "tucucore/drugmodel/drugmodelmetadata.h"
 #include "tucucore/invariants.h"
 
+struct TestConstantEliminationBolus;
+
 namespace Tucuxi {
 namespace Core {
 
@@ -213,6 +215,7 @@ private:
 
     friend ParameterDefinitionIterator;
     friend DrugModelChecker;
+    friend TestConstantEliminationBolus;
 };
 
 } // namespace Core
