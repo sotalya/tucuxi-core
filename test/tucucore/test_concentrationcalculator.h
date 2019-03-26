@@ -323,6 +323,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestA", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestR", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestS", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestM", 1.0, Tucuxi::Core::ParameterVariabilityType::None)));
         Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
         Tucuxi::Core::ParameterSetSeries parametersSeries;
         parametersSeries.addParameterSetEvent(parameters);
@@ -330,7 +331,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
         testCalculator<Tucuxi::Core::ConstantEliminationBolus>(
             parametersSeries,
             400.0,
-            Tucuxi::Core::AbsorptionModel::INTRAVASCULAR,
+            Tucuxi::Core::AbsorptionModel::EXTRAVASCULAR,
             12h,
             0s,
             CYCLE_SIZE);

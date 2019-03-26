@@ -126,8 +126,12 @@ public:
             specificDoses->addValue(DoseValue(200));
             specificDoses->addValue(DoseValue(300));
             specificDoses->addValue(DoseValue(400));
+            specificDoses->addValue(DoseValue(500));
             specificDoses->addValue(DoseValue(600));
+            specificDoses->addValue(DoseValue(700));
             specificDoses->addValue(DoseValue(800));
+            specificDoses->addValue(DoseValue(900));
+            specificDoses->addValue(DoseValue(1000));
 
             validDoses->addValues(std::move(specificDoses));
 
@@ -136,6 +140,7 @@ public:
             formulationAndRoute->setValidDoses(std::move(doses));
 
             ValidValuesFixed *fixedIntervals = new ValidValuesFixed();
+            fixedIntervals->addValue(6);
             fixedIntervals->addValue(12);
             fixedIntervals->addValue(24);
 
@@ -169,14 +174,15 @@ public:
         analyteList.push_back(AnalyteId("analyte"));
         std::unique_ptr<ActiveMoiety> activeMoiety = std::make_unique<ActiveMoiety>(ActiveMoietyId("activeMoiety"), Unit("mg/l"), analyteList, std::move(activeMoietyOperation));
 
-
+        // I removed the targets from the build, to let tests define various targets
+/*
         // Add targets
         std::unique_ptr<SubTargetDefinition> cMin(new SubTargetDefinition("cMin", 750.0, nullptr));
         std::unique_ptr<SubTargetDefinition> cMax(new SubTargetDefinition("cMax", 1500.0, nullptr));
         std::unique_ptr<SubTargetDefinition> cBest(new SubTargetDefinition("cBest", 1000.0, nullptr));
         TargetDefinition *target = new TargetDefinition(TargetType::Residual,
-                                                        Unit("ug/l"),
-                                                        "imatinib",
+                                                        Unit("mg/l"),
+                                                        "analyte",
                                                         std::move(cMin),
                                                         std::move(cMax),
                                                         std::move(cBest),
@@ -189,7 +195,7 @@ public:
 
 
         activeMoiety->addTarget(std::unique_ptr<TargetDefinition>(target));
-
+*/
 
         model->addActiveMoiety(std::move(activeMoiety));
 
