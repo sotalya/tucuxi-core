@@ -86,9 +86,7 @@ In the patient data that will be scanned to get the covariates used for calculat
 there are two means of specifiying the age. It can be of the same type as the
 drug model covariates, or it can come from a birthdate.
 
-In case the patient data contains the birthdate, it should follow this canvas:
-
-Canvas birthdate
+In case the patient data contains the birthdate, it should have the id **birthdate**
 
 Tucuxi is then able to calculate the age based on the birthdate, following the
 granularity defined in the drug model covariate. It will therefore be automatically
