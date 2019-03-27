@@ -45,6 +45,8 @@ public:
             ParameterSetSeries &_parameterSeries,
             Common::DateTime &_calculationStartTime);
 
+protected:
+    bool findFormulationAndRoutes(std::vector<FormulationAndRoute> &_treatmentFandR, const FormulationAndRoutes &_drugModelFandR, std::map<FormulationAndRoute, const FullFormulationAndRoute *> &_result);
 
     Tucuxi::Common::LoggerHelper m_logger;
 };

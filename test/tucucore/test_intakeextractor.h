@@ -106,6 +106,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(7 * 24)),
+                                              getInfusionFormulationAndRoute(),
                                               getInfusionFormulationAndRoute().getAbsorptionModel(),
                                               Duration(std::chrono::minutes(20)),
                                               7 * 24 * NB_POINTS_PER_HOUR + 1));
@@ -114,6 +115,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(7 * 24)),
+                                              getInfusionFormulationAndRoute(),
                                               getInfusionFormulationAndRoute().getAbsorptionModel(),
                                               Duration(std::chrono::minutes(20)),
                                               7 * 24 * NB_POINTS_PER_HOUR + 1));
@@ -122,6 +124,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(7 * 24)),
+                                              getInfusionFormulationAndRoute(),
                                               getInfusionFormulationAndRoute().getAbsorptionModel(),
                                               Duration(std::chrono::minutes(20)),
                                               7 * 24 * NB_POINTS_PER_HOUR + 1));
@@ -130,6 +133,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(7 * 24)),
+                                              getInfusionFormulationAndRoute(),
                                               getInfusionFormulationAndRoute().getAbsorptionModel(),
                                               Duration(std::chrono::minutes(20)),
                                               7 * 24 * NB_POINTS_PER_HOUR + 1));
@@ -138,6 +142,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(7 * 24)),
+                                              getInfusionFormulationAndRoute(),
                                               getInfusionFormulationAndRoute().getAbsorptionModel(),
                                               Duration(std::chrono::minutes(10)),
                                               7 * 24 * NB_POINTS_PER_HOUR + 1));
@@ -146,6 +151,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(7 * 24)),
+                                              getInfusionFormulationAndRoute(),
                                               getInfusionFormulationAndRoute().getAbsorptionModel(),
                                               Duration(std::chrono::minutes(10)),
                                               7 * 24 * NB_POINTS_PER_HOUR + 1));
@@ -226,6 +232,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(10 * 24)),
+                                              getInfusionFormulationAndRoute(),
                                               getInfusionFormulationAndRoute().getAbsorptionModel(),
                                               Duration(std::chrono::minutes(20)),
                                               10 * 24 * NB_POINTS_PER_HOUR + 1));
@@ -234,6 +241,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(10 * 24)),
+                                              getInfusionFormulationAndRoute(),
                                               getInfusionFormulationAndRoute().getAbsorptionModel(),
                                               Duration(std::chrono::minutes(20)),
                                               10 * 24 * NB_POINTS_PER_HOUR + 1));
@@ -242,6 +250,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(10 * 24)),
+                                              getInfusionFormulationAndRoute(),
                                               getInfusionFormulationAndRoute().getAbsorptionModel(),
                                               Duration(std::chrono::minutes(20)),
                                               10 * 24 * NB_POINTS_PER_HOUR + 1));
@@ -250,6 +259,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(4 * 24)),
+                                              getInfusionFormulationAndRoute(),
                                               getInfusionFormulationAndRoute().getAbsorptionModel(),
                                               Duration(std::chrono::minutes(10)),
                                               4 * 24 * NB_POINTS_PER_HOUR + 1));
@@ -258,6 +268,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(4 * 24)),
+                                              getInfusionFormulationAndRoute(),
                                               getInfusionFormulationAndRoute().getAbsorptionModel(),
                                               Duration(std::chrono::minutes(10)),
                                               4 * 24 * NB_POINTS_PER_HOUR + 1));
@@ -266,6 +277,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(4 * 24)),
+                                              getInfusionFormulationAndRoute(),
                                               getInfusionFormulationAndRoute().getAbsorptionModel(),
                                               Duration(std::chrono::minutes(10)),
                                               4 * 24 * NB_POINTS_PER_HOUR + 1));
@@ -321,6 +333,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(36)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               36 * NB_POINTS_PER_HOUR + 1));
@@ -329,6 +342,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(36)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               36 * NB_POINTS_PER_HOUR + 1));
@@ -337,6 +351,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(36)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               36 * NB_POINTS_PER_HOUR + 1));
@@ -345,6 +360,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(36)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               36 * NB_POINTS_PER_HOUR + 1));
@@ -353,6 +369,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(36)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               36 * NB_POINTS_PER_HOUR + 1));
@@ -408,6 +425,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(12)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               12 * NB_POINTS_PER_HOUR + 1));
@@ -416,6 +434,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(12)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               12 * NB_POINTS_PER_HOUR + 1));
@@ -424,6 +443,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(12)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               12 * NB_POINTS_PER_HOUR + 1));
@@ -432,6 +452,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(12)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               12 * NB_POINTS_PER_HOUR + 1));
@@ -440,6 +461,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(12)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               12 * NB_POINTS_PER_HOUR + 1));
@@ -491,6 +513,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(12)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               12 * NB_POINTS_PER_HOUR + 1));
@@ -499,6 +522,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(12)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               12 * NB_POINTS_PER_HOUR + 1));
@@ -507,6 +531,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(12)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               12 * NB_POINTS_PER_HOUR + 1));
@@ -567,6 +592,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(10)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               10 * NB_POINTS_PER_HOUR + 1));
@@ -575,6 +601,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(10 * 23)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               10 * 23 * NB_POINTS_PER_HOUR + 1));
@@ -583,6 +610,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(10)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               10 * NB_POINTS_PER_HOUR + 1));
@@ -591,6 +619,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(10 * 23)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               10 * 23 * NB_POINTS_PER_HOUR + 1));
@@ -599,6 +628,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(10)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               10 * NB_POINTS_PER_HOUR + 1));
@@ -607,6 +637,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(10 * 23)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               10 * 23 * NB_POINTS_PER_HOUR + 1));
@@ -659,6 +690,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(24)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               24 * NB_POINTS_PER_HOUR + 1));
@@ -667,6 +699,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(24)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               24 * NB_POINTS_PER_HOUR + 1));
@@ -675,6 +708,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(24)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               24 * NB_POINTS_PER_HOUR + 1));
@@ -683,6 +717,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(24)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               24 * NB_POINTS_PER_HOUR + 1));
@@ -691,6 +726,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(24)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               24 * NB_POINTS_PER_HOUR + 1));
@@ -699,6 +735,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(24)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               24 * NB_POINTS_PER_HOUR + 1));
@@ -707,6 +744,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(24)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               24 * NB_POINTS_PER_HOUR + 1));
@@ -774,6 +812,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(24)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               24 * NB_POINTS_PER_HOUR + 1));
@@ -782,6 +821,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(24)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               24 * NB_POINTS_PER_HOUR + 1));
@@ -790,6 +830,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(24)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               24 * NB_POINTS_PER_HOUR + 1));
@@ -800,6 +841,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(24)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               24 * NB_POINTS_PER_HOUR + 1));
@@ -808,6 +850,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(24)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               24 * NB_POINTS_PER_HOUR + 1));
@@ -816,6 +859,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(24)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               24 * NB_POINTS_PER_HOUR + 1));
@@ -825,6 +869,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(24)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               24 * NB_POINTS_PER_HOUR + 1));
@@ -833,6 +878,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(24)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               24 * NB_POINTS_PER_HOUR + 1));
@@ -841,6 +887,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(24)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               24 * NB_POINTS_PER_HOUR + 1));
@@ -851,6 +898,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(24)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               24 * NB_POINTS_PER_HOUR + 1));
@@ -859,6 +907,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(24)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               24 * NB_POINTS_PER_HOUR + 1));
@@ -867,6 +916,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(24)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               24 * NB_POINTS_PER_HOUR + 1));
@@ -876,6 +926,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(24)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               24 * NB_POINTS_PER_HOUR + 1));
@@ -884,6 +935,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(24)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               24 * NB_POINTS_PER_HOUR + 1));
@@ -892,6 +944,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(24)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               24 * NB_POINTS_PER_HOUR + 1));
@@ -902,6 +955,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(24)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               24 * NB_POINTS_PER_HOUR + 1));
@@ -910,6 +964,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(24)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               24 * NB_POINTS_PER_HOUR + 1));
@@ -918,6 +973,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(24)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               24 * NB_POINTS_PER_HOUR + 1));
@@ -927,6 +983,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(24)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               24 * NB_POINTS_PER_HOUR + 1));
@@ -935,6 +992,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(24)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               24 * NB_POINTS_PER_HOUR + 1));
@@ -943,6 +1001,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(24)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               24 * NB_POINTS_PER_HOUR + 1));
@@ -1025,6 +1084,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               3 * NB_POINTS_PER_HOUR + 1));
@@ -1033,6 +1093,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               3 * NB_POINTS_PER_HOUR + 1));
@@ -1041,6 +1102,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               3 * NB_POINTS_PER_HOUR + 1));
@@ -1049,6 +1111,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               3 * NB_POINTS_PER_HOUR + 1));
@@ -1057,6 +1120,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               3 * NB_POINTS_PER_HOUR + 1));
@@ -1065,6 +1129,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               3 * NB_POINTS_PER_HOUR + 1));
@@ -1073,6 +1138,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               3 * NB_POINTS_PER_HOUR + 1));
@@ -1081,6 +1147,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               3 * NB_POINTS_PER_HOUR + 1));
@@ -1089,6 +1156,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               3 * NB_POINTS_PER_HOUR + 1));
@@ -1097,6 +1165,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               3 * NB_POINTS_PER_HOUR + 1));
@@ -1106,6 +1175,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               3 * NB_POINTS_PER_HOUR + 1));
@@ -1114,6 +1184,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               3 * NB_POINTS_PER_HOUR + 1));
@@ -1122,6 +1193,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               3 * NB_POINTS_PER_HOUR + 1));
@@ -1130,6 +1202,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               3 * NB_POINTS_PER_HOUR + 1));
@@ -1138,6 +1211,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               3 * NB_POINTS_PER_HOUR + 1));
@@ -1146,6 +1220,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               3 * NB_POINTS_PER_HOUR + 1));
@@ -1154,6 +1229,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               3 * NB_POINTS_PER_HOUR + 1));
@@ -1162,6 +1238,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               3 * NB_POINTS_PER_HOUR + 1));
@@ -1170,6 +1247,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               3 * NB_POINTS_PER_HOUR + 1));
@@ -1178,6 +1256,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               3 * NB_POINTS_PER_HOUR + 1));
@@ -1189,6 +1268,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(6)),
+                                              getExtraFormulationAndRoute(),
                                               getExtraFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               6 * NB_POINTS_PER_HOUR + 1));
@@ -1197,6 +1277,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(6)),
+                                              getExtraFormulationAndRoute(),
                                               getExtraFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               6 * NB_POINTS_PER_HOUR + 1));
@@ -1205,6 +1286,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(6)),
+                                              getExtraFormulationAndRoute(),
                                               getExtraFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               6 * NB_POINTS_PER_HOUR + 1));
@@ -1213,6 +1295,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(6)),
+                                              getExtraFormulationAndRoute(),
                                               getExtraFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               6 * NB_POINTS_PER_HOUR + 1));
@@ -1222,6 +1305,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(6)),
+                                              getExtraFormulationAndRoute(),
                                               getExtraFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               6 * NB_POINTS_PER_HOUR + 1));
@@ -1230,6 +1314,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(6)),
+                                              getExtraFormulationAndRoute(),
                                               getExtraFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               6 * NB_POINTS_PER_HOUR + 1));
@@ -1238,6 +1323,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(6)),
+                                              getExtraFormulationAndRoute(),
                                               getExtraFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               6 * NB_POINTS_PER_HOUR + 1));
@@ -1246,6 +1332,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(6)),
+                                              getExtraFormulationAndRoute(),
                                               getExtraFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               6 * NB_POINTS_PER_HOUR + 1));
@@ -1257,6 +1344,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(100.0),
                                               Duration(std::chrono::hours(24)),
+                                              getInfusionFormulationAndRoute(),
                                               getInfusionFormulationAndRoute().getAbsorptionModel(),
                                               Duration(std::chrono::minutes(20)),
                                               24 * NB_POINTS_PER_HOUR + 1));
@@ -1265,6 +1353,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(24)),
+                                              getInfusionFormulationAndRoute(),
                                               getInfusionFormulationAndRoute().getAbsorptionModel(),
                                               Duration(std::chrono::minutes(10)),
                                               24 * NB_POINTS_PER_HOUR + 1));
@@ -1274,6 +1363,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(100.0),
                                               Duration(std::chrono::hours(24)),
+                                              getInfusionFormulationAndRoute(),
                                               getInfusionFormulationAndRoute().getAbsorptionModel(),
                                               Duration(std::chrono::minutes(20)),
                                               24 * NB_POINTS_PER_HOUR + 1));
@@ -1282,6 +1372,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(24)),
+                                              getInfusionFormulationAndRoute(),
                                               getInfusionFormulationAndRoute().getAbsorptionModel(),
                                               Duration(std::chrono::minutes(10)),
                                               24 * NB_POINTS_PER_HOUR + 1));
@@ -1360,6 +1451,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               3 * NB_POINTS_PER_HOUR + 1), ScheduledIntakeOp::Skip);
@@ -1368,6 +1460,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(350.0),
                                               Duration(std::chrono::hours(3)),
+                                              getExtraFormulationAndRoute(),
                                               getExtraFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               3 * NB_POINTS_PER_HOUR + 1), ScheduledIntakeOp::Add);
@@ -1376,6 +1469,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(100.0),
                                               Duration(std::chrono::hours(24)),
+                                              getInfusionFormulationAndRoute(),
                                               getInfusionFormulationAndRoute().getAbsorptionModel(),
                                               Duration(std::chrono::minutes(20)),
                                               24 * NB_POINTS_PER_HOUR + 1), ScheduledIntakeOp::Skip);
@@ -1393,6 +1487,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               3 * NB_POINTS_PER_HOUR + 1));
@@ -1401,6 +1496,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               3 * NB_POINTS_PER_HOUR + 1));
@@ -1409,6 +1505,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               3 * NB_POINTS_PER_HOUR + 1));
@@ -1417,6 +1514,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               3 * NB_POINTS_PER_HOUR + 1));
@@ -1425,6 +1523,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               3 * NB_POINTS_PER_HOUR + 1));
@@ -1433,6 +1532,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               3 * NB_POINTS_PER_HOUR + 1));
@@ -1441,6 +1541,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               3 * NB_POINTS_PER_HOUR + 1));
@@ -1449,6 +1550,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               3 * NB_POINTS_PER_HOUR + 1));
@@ -1457,6 +1559,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(350.0),
                                               Duration(std::chrono::hours(3)),
+                                              getExtraFormulationAndRoute(),
                                               getExtraFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               3 * NB_POINTS_PER_HOUR + 1));
@@ -1465,6 +1568,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               3 * NB_POINTS_PER_HOUR + 1));
@@ -1474,6 +1578,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               3 * NB_POINTS_PER_HOUR + 1));
@@ -1482,6 +1587,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               3 * NB_POINTS_PER_HOUR + 1));
@@ -1490,6 +1596,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               3 * NB_POINTS_PER_HOUR + 1));
@@ -1498,6 +1605,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               3 * NB_POINTS_PER_HOUR + 1));
@@ -1506,6 +1614,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               3 * NB_POINTS_PER_HOUR + 1));
@@ -1514,6 +1623,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               3 * NB_POINTS_PER_HOUR + 1));
@@ -1522,6 +1632,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               3 * NB_POINTS_PER_HOUR + 1));
@@ -1530,6 +1641,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               3 * NB_POINTS_PER_HOUR + 1));
@@ -1538,6 +1650,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               3 * NB_POINTS_PER_HOUR + 1));
@@ -1546,6 +1659,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(3)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               3 * NB_POINTS_PER_HOUR + 1));
@@ -1557,6 +1671,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(6)),
+                                              getExtraFormulationAndRoute(),
                                               getExtraFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               6 * NB_POINTS_PER_HOUR + 1));
@@ -1565,6 +1680,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(6)),
+                                              getExtraFormulationAndRoute(),
                                               getExtraFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               6 * NB_POINTS_PER_HOUR + 1));
@@ -1573,6 +1689,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(6)),
+                                              getExtraFormulationAndRoute(),
                                               getExtraFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               6 * NB_POINTS_PER_HOUR + 1));
@@ -1581,6 +1698,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(6)),
+                                              getExtraFormulationAndRoute(),
                                               getExtraFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               6 * NB_POINTS_PER_HOUR + 1));
@@ -1590,6 +1708,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(6)),
+                                              getExtraFormulationAndRoute(),
                                               getExtraFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               6 * NB_POINTS_PER_HOUR + 1));
@@ -1598,6 +1717,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(6)),
+                                              getExtraFormulationAndRoute(),
                                               getExtraFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               6 * NB_POINTS_PER_HOUR + 1));
@@ -1606,6 +1726,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(6)),
+                                              getExtraFormulationAndRoute(),
                                               getExtraFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               6 * NB_POINTS_PER_HOUR + 1));
@@ -1614,6 +1735,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(6)),
+                                              getExtraFormulationAndRoute(),
                                               getExtraFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               6 * NB_POINTS_PER_HOUR + 1));
@@ -1625,6 +1747,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(100.0),
                                               Duration(std::chrono::hours(24)),
+                                              getInfusionFormulationAndRoute(),
                                               getInfusionFormulationAndRoute().getAbsorptionModel(),
                                               Duration(std::chrono::minutes(20)),
                                               24 * NB_POINTS_PER_HOUR + 1));
@@ -1633,6 +1756,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(24)),
+                                              getInfusionFormulationAndRoute(),
                                               getInfusionFormulationAndRoute().getAbsorptionModel(),
                                               Duration(std::chrono::minutes(10)),
                                               24 * NB_POINTS_PER_HOUR + 1));
@@ -1642,6 +1766,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(24)),
+                                              getInfusionFormulationAndRoute(),
                                               getInfusionFormulationAndRoute().getAbsorptionModel(),
                                               Duration(std::chrono::minutes(10)),
                                               24 * NB_POINTS_PER_HOUR + 1));
@@ -1658,6 +1783,12 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
         fructose_assert(iSeries.size() == expectedIntakes.size());
 
         for (size_t i = 0; i < expectedIntakes.size(); ++i) {
+            if (iSeries.at(i) == expectedIntakes.at(i)) {
+            }
+            else {
+                int i = 0;
+                i++;
+            }
             fructose_assert(iSeries.at(i) == expectedIntakes.at(i));
         }
     }
@@ -1726,6 +1857,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(100.0),
                                               Duration(std::chrono::hours(7 * 24)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               7 * 24 * NB_POINTS_PER_HOUR + 1));
@@ -1734,6 +1866,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(7 * 24)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               7 * 24 * NB_POINTS_PER_HOUR + 1));
@@ -1742,6 +1875,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(7 * 24)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               7 * 24 * NB_POINTS_PER_HOUR + 1));
@@ -1750,6 +1884,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(7 * 24)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               7 * 24 * NB_POINTS_PER_HOUR + 1));
@@ -1758,6 +1893,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(500.0),
                                               Duration(std::chrono::hours(7 * 24)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               7 * 24 * NB_POINTS_PER_HOUR + 1));
@@ -1766,6 +1902,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(600.0),
                                               Duration(std::chrono::hours(7 * 24)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               7 * 24 * NB_POINTS_PER_HOUR + 1));
@@ -1774,6 +1911,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(100.0),
                                               Duration(std::chrono::hours(7 * 24)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               7 * 24 * NB_POINTS_PER_HOUR + 1));
@@ -1782,6 +1920,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(7 * 24)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               7 * 24 * NB_POINTS_PER_HOUR + 1));
@@ -1790,6 +1929,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(300.0),
                                               Duration(std::chrono::hours(7 * 24)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               7 * 24 * NB_POINTS_PER_HOUR + 1));
@@ -1798,6 +1938,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(400.0),
                                               Duration(std::chrono::hours(7 * 24)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               7 * 24 * NB_POINTS_PER_HOUR + 1));
@@ -1806,6 +1947,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(500.0),
                                               Duration(std::chrono::hours(7 * 24)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               7 * 24 * NB_POINTS_PER_HOUR + 1));
@@ -1814,6 +1956,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(600.0),
                                               Duration(std::chrono::hours(7 * 24)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               7 * 24 * NB_POINTS_PER_HOUR + 1));
@@ -1870,6 +2013,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(36)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               36 * NB_POINTS_PER_HOUR + 1));
@@ -1878,6 +2022,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(36)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               36 * NB_POINTS_PER_HOUR + 1));
@@ -1886,6 +2031,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(36)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               36 * NB_POINTS_PER_HOUR + 1));
@@ -1894,6 +2040,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(36)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               36 * NB_POINTS_PER_HOUR + 1));
@@ -1902,6 +2049,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                               Duration(),
                                               DoseValue(200.0),
                                               Duration(std::chrono::hours(36)),
+                                              getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
                                               36 * NB_POINTS_PER_HOUR + 1));

@@ -33,6 +33,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
     template<class CalculatorClass>
     void testCalculator(const Tucuxi::Core::ParameterSetSeries &_parameters,
                         double _dose,
+                        Tucuxi::Core::FormulationAndRoute _formulationAndRoute,
                         Tucuxi::Core::AbsorptionModel _route,
                         std::chrono::hours _interval,
                         std::chrono::seconds _infusionTime,
@@ -52,7 +53,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
 
             Tucuxi::Core::Concentrations concentrations;
             Tucuxi::Core::TimeOffsets times;
-            Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, _dose, interval, _route, infusionTime, _nbPoints);
+            Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, _dose, interval, _formulationAndRoute, _route, infusionTime, _nbPoints);
 
             bool isAll = false;
 
@@ -131,6 +132,12 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
 
         Tucuxi::Core::AbsorptionModel route = Tucuxi::Core::AbsorptionModel::Intravascular;
 
+        Tucuxi::Core::FormulationAndRoute formulationAndRoute(
+                    Tucuxi::Core::Formulation::ParenteralSolution,
+                    Tucuxi::Core::AdministrationRoute::IntravenousBolus,
+                    Tucuxi::Core::AbsorptionModel::Intravascular,
+                    "");
+
         Tucuxi::Core::IntakeSeries intakeSeries;
         {
             // Build the intake series
@@ -141,6 +148,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
                                                       offsetTime,
                                                       600,
                                                       interval24,
+                                                      formulationAndRoute,
                                                       route,
                                                       infusionTime,
                                                       CYCLE_SIZE);
@@ -154,6 +162,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
                                                       offsetTime,
                                                       600,
                                                       interval24,
+                                                      formulationAndRoute,
                                                       route,
                                                       infusionTime,
                                                       CYCLE_SIZE);
@@ -166,6 +175,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
                                                       offsetTime,
                                                       600,
                                                       interval24,
+                                                      formulationAndRoute,
                                                       route,
                                                       infusionTime,
                                                       CYCLE_SIZE);
@@ -181,6 +191,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
                                                       offsetTime,
                                                       600,
                                                       shortInterval,
+                                                      formulationAndRoute,
                                                       route,
                                                       infusionTime,
                                                       CYCLE_SIZE);
@@ -195,6 +206,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
                                                       offsetTime,
                                                       400,
                                                       interval6,
+                                                      formulationAndRoute,
                                                       route,
                                                       infusionTime,
                                                       CYCLE_SIZE);
@@ -208,6 +220,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
                                                       offsetTime,
                                                       400,
                                                       interval6,
+                                                      formulationAndRoute,
                                                       route,
                                                       infusionTime,
                                                       CYCLE_SIZE);
@@ -223,6 +236,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
                                                       offsetTime,
                                                       400,
                                                       shortInterval,
+                                                      formulationAndRoute,
                                                       route,
                                                       infusionTime,
                                                       CYCLE_SIZE);
@@ -240,6 +254,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
                                                       offsetTime,
                                                       600,
                                                       shortInterval,
+                                                      formulationAndRoute,
                                                       route,
                                                       infusionTime,
                                                       CYCLE_SIZE);
@@ -254,6 +269,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
                                                       offsetTime,
                                                       400,
                                                       interval6,
+                                                      formulationAndRoute,
                                                       route,
                                                       infusionTime,
                                                       CYCLE_SIZE);
@@ -266,6 +282,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
                                                       offsetTime,
                                                       400,
                                                       interval6,
+                                                      formulationAndRoute,
                                                       route,
                                                       infusionTime,
                                                       CYCLE_SIZE);
@@ -280,6 +297,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
                                                       offsetTime,
                                                       400,
                                                       interval6,
+                                                      formulationAndRoute,
                                                       route,
                                                       infusionTime,
                                                       CYCLE_SIZE);
@@ -293,6 +311,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
                                                       offsetTime,
                                                       400,
                                                       interval6,
+                                                      formulationAndRoute,
                                                       route,
                                                       infusionTime,
                                                       CYCLE_SIZE);
@@ -305,6 +324,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
                                                       offsetTime,
                                                       400,
                                                       interval6,
+                                                      formulationAndRoute,
                                                       route,
                                                       infusionTime,
                                                       CYCLE_SIZE);
@@ -317,6 +337,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
                                                       offsetTime,
                                                       400,
                                                       interval6,
+                                                      formulationAndRoute,
                                                       route,
                                                       infusionTime,
                                                       CYCLE_SIZE);
@@ -330,6 +351,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
                                                       offsetTime,
                                                       400,
                                                       interval6,
+                                                      formulationAndRoute,
                                                       route,
                                                       infusionTime,
                                                       CYCLE_SIZE);
@@ -343,6 +365,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
                                                       offsetTime,
                                                       400,
                                                       interval6,
+                                                      formulationAndRoute,
                                                       route,
                                                       infusionTime,
                                                       CYCLE_SIZE);

@@ -10,6 +10,8 @@
 
 #include "fructose/fructose.h"
 
+#include "tucucommon/duration.h"
+
 #include "tucucore/pkmodels/onecompartmentbolus.h"
 #include "tucucore/pkmodels/onecompartmentextra.h"
 #include "tucucore/pkmodels/onecompartmentinfusion.h"
@@ -20,7 +22,11 @@
 #include "tucucore/pkmodels/threecompartmentextra.h"
 #include "tucucore/pkmodels/threecompartmentinfusion.h"
 
+#include "tucucore/drugmodel/formulationandroute.h"
+#include "tucucore/intakeevent.h"
+
 using namespace Tucuxi::Core;
+using namespace std::chrono_literals;
 
 struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculator>
 {
@@ -57,7 +63,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
         concentrations.resize(residualSize);
 
         Tucuxi::Core::TimeOffsets times;
-        Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, _dose, interval, _route, infusionTime, _nbPoints);
+        Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, _dose, interval, Tucuxi::Core::FormulationAndRoute(_route), _route, infusionTime, _nbPoints);
 
         // Checking if steady state is reached by iterative 100 times a calculation and
         // passing residuals to the next iteration
@@ -134,7 +140,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
         concentrations.resize(residualSize);
 
         Tucuxi::Core::TimeOffsets times;
-        Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, _dose, interval, _route, infusionTime, _nbPoints);
+        Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, _dose, interval, Tucuxi::Core::FormulationAndRoute(_route), _route, infusionTime, _nbPoints);
         Tucuxi::Core::Residuals inResiduals(residualSize), outMicroMultiResiduals(residualSize), outMicroSingleResiduals(residualSize), outMacroMultiResiduals(residualSize), outMacroSingleResiduals(residualSize);
 
         std::fill(inResiduals.begin(), inResiduals.end(), 0);

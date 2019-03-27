@@ -224,7 +224,7 @@ ComputingResult GeneralExtractor::generalExtractions(
             }
             int nbPoints = static_cast<int>(nbPointsPerHour * interval.toHours());
 
-            IntakeEvent intake(start, Duration(), dose, interval, absorptionModel, infusionTime, nbPoints);
+            IntakeEvent intake(start, Duration(), dose, interval, lastIntake->getFormulationAndRoute(), absorptionModel, infusionTime, nbPoints);
             _intakeSeries.push_back(intake);
         }
 
@@ -257,6 +257,23 @@ ComputingResult GeneralExtractor::generalExtractions(
     }
 */
 
+    std::vector<FormulationAndRoute> allFormulationAndRoutes;
+    for (const auto & intake : _intakeSeries) {
+        FormulationAndRoute f = intake.getFormulationAndRoute();
+        if (std::find(allFormulationAndRoutes.begin(), allFormulationAndRoutes.end(), f) == allFormulationAndRoutes.end()) {
+            allFormulationAndRoutes.push_back(f);
+        }
+    }
+
+    std::map<FormulationAndRoute, const FullFormulationAndRoute *> fullFormulationAndRoutes;
+
+    // Only look for formulation and routes if there is an existing treatment
+    if (_intakeSeries.size() > 0) {
+        if (!findFormulationAndRoutes(allFormulationAndRoutes, _request.getDrugModel().getFormulationAndRoutes(), fullFormulationAndRoutes)) {
+            m_logger.error("Could not find a suitable formulation and route in the drug model");
+            return ComputingResult::Error;
+        }
+    }
 
     // TODO : This should not necessarily be the default formulation and route
     // Should get rid of the next 4 lines
@@ -370,6 +387,23 @@ ComputingResult GeneralExtractor::generalExtractions(
 
     return ComputingResult::Success;
 
+}
+
+bool GeneralExtractor::findFormulationAndRoutes(std::vector<FormulationAndRoute> &_treatmentFandR, const FormulationAndRoutes &_drugModelFandR, std::map<FormulationAndRoute, const FullFormulationAndRoute *> &_result)
+{
+    if (_treatmentFandR.size() > 1) {
+        m_logger.error("The computing component does not support multi-formulation and routes treatments");
+        return false;
+    }
+    for (const auto & f : _drugModelFandR) {
+        if (f->getFormulationAndRoute().getAbsorptionModel() == _treatmentFandR[0].getAbsorptionModel()) {
+            _result[_treatmentFandR[0]] = f.get();
+            return true;
+        }
+    }
+
+    m_logger.error("Could not find a formulation and route compatible with the treatment");
+    return false;
 }
 
 } // namespace Core

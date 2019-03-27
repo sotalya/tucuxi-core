@@ -11,6 +11,7 @@
 #include "tucucore/definitions.h"
 #include "tucucore/timedevent.h"
 #include "tucucore/intakeintervalcalculator.h"
+#include "tucucore/drugmodel/formulationandroute.h"
 
 using Tucuxi::Common::DateTime; // NOLINT(google-global-names-in-headers)
 using Tucuxi::Common::Duration; // NOLINT(google-global-names-in-headers)
@@ -36,10 +37,12 @@ public:
     /// \param _infusionTime Duration in case of an infusion.
     /// \param _nbPoints Number of points to compute for this intake.
     IntakeEvent(DateTime _time, Duration _offsetTime, DoseValue _dose, Duration _interval,
+                FormulationAndRoute _formulationAndRoute,
                 AbsorptionModel _route, Duration _infusionTime, int _nbPoints)
         : TimedEvent(_time), 
           m_dose(_dose),
           m_offsetTime(_offsetTime),
+          m_formulationAndRoute(_formulationAndRoute),
           m_route(_route),
           m_interval(_interval),
           m_infusionTime(_infusionTime),
@@ -115,6 +118,14 @@ public:
     {
         return m_offsetTime;
     }
+
+    ///
+    /// \brief Get the formulation and route of administration of the treatment
+    /// \return The formulation and route
+    FormulationAndRoute getFormulationAndRoute() const
+    {
+        return m_formulationAndRoute;
+    }
     
     /// \brief Get the route of administration of the treatment.
     /// \return Route of administration.
@@ -184,6 +195,8 @@ private:
     Duration m_offsetTime;
     /// Number of points to compute for this intake
     CycleSize m_nbPoints;
+    /// The formulation and route of this intake
+    FormulationAndRoute m_formulationAndRoute;
     /// The route of administration
     AbsorptionModel m_route;
     /// The time before the next intake

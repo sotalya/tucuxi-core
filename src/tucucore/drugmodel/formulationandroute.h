@@ -122,6 +122,12 @@ class FormulationAndRoute
 {
 public:
 
+    // Construction for testing purpose
+    FormulationAndRoute(AbsorptionModel _absorptionModel) :
+        m_formulation(Formulation::Undefined), m_route(AdministrationRoute::Undefined), m_absorptionModel(_absorptionModel),
+        m_administrationName("")
+    {}
+
     FormulationAndRoute(
             Formulation _formulation,
             AdministrationRoute _route,
@@ -144,6 +150,21 @@ public:
     {
         return (_v1.m_absorptionModel == _v2.m_absorptionModel) &&
                 (_v1.m_route == _v2.m_route);
+    }
+
+
+    /// \brief Is the duration smaller?
+    bool operator<(const FormulationAndRoute &_f) const
+    {
+        if (m_formulation < _f.m_formulation)
+            return true;
+        if (m_route < _f.m_route)
+            return true;
+        if (m_absorptionModel < _f.m_absorptionModel)
+            return true;
+        if (m_administrationName < _f.m_administrationName)
+            return true;
+        return false;
     }
 
     INVARIANTS(
