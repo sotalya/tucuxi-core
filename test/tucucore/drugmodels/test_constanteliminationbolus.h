@@ -466,7 +466,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
                     // Multiply the Inv CDF by SD (10), and by 1000.0 because of mg/l
                     double expectedValue = invCdf[p] * 10.0 * 1000.0;
-                    fructose_assert_double_eq_rel_abs(statValue - 200000.0, expectedValue, 0.02, 10.0 * 1000.0 * 0.06);
+                    fructose_assert_double_eq_rel_abs(statValue - 200000.0, expectedValue, 0.02, 10.0 * 10.0 * 1000.0 * 0.06);
                 }
 
             }
@@ -572,7 +572,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
                     // Multiply the Inv CDF by SD (0.2)
                     double expectedValue = 200000.0 * std::exp(invCdf[p] * 0.2);
-                    fructose_assert_double_eq_rel_abs(statValue, expectedValue, 0.01, 0.0);
+                    fructose_assert_double_eq_rel_abs(statValue, expectedValue, 0.05, 0.0);
                 }
 
             }
@@ -677,7 +677,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
                     // Multiply the Inv CDF by SD (0.2)
                     double expectedValue = 200000.0 * (1 + invCdf[p] * 0.2);
-                    fructose_assert_double_eq_rel_abs(statValue, expectedValue, 0.01, 0.0);
+                    fructose_assert_double_eq_rel_abs(statValue, expectedValue, 0.05, 0.0);
                 }
 
             }
@@ -783,7 +783,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
                     // Multiply the Inv CDF by SD (0.2)
                     double expectedValue = 200000.0 + invCdf[p] * std::sqrt(std::pow(200000.0 * 0.2, 2)  + std::pow(10.0, 2));
-                    fructose_assert_double_eq_rel_abs(statValue, expectedValue, 0.02, 0.0);
+                    fructose_assert_double_eq_rel_abs(statValue, expectedValue, 0.04, 0.0);
                 }
 
             }
@@ -1134,7 +1134,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
                     // Multiply the Inv CDF by the new standard deviation
                     double expectedValue = 200000.0 * std::exp(invCdf[p] * newStd);
-                    fructose_assert_double_eq_rel_abs(statValue, expectedValue, 0.02, 0.0);
+                    fructose_assert_double_eq_rel_abs(statValue, expectedValue, 0.05, 0.0);
                 }
 
             }
