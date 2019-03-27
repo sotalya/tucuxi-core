@@ -53,7 +53,12 @@ ComputingResult GeneralExtractor::extractAposterioriEtas(Etas &_etas, const Comp
 
     SampleSeries sampleSeries;
     SampleExtractor sampleExtractor;
+    SampleExtractor::Result sampleExtractionResult =
     sampleExtractor.extract(_request.getDrugTreatment().getSamples(), _calculationStartTime, _endTime, sampleSeries);
+
+    if (sampleExtractionResult != SampleExtractor::Result::Ok) {
+        return ComputingResult::Error;
+    }
 
     if (sampleSeries.size() == 0) {
         // Surprising. Something maybe wrong with the sample extractor
@@ -142,12 +147,11 @@ ComputationResult GeneralExtractor::extractOmega(
 }
 
 
-ComputingResult GeneralExtractor::generalExtractions(
-        const ComputingTraitStandard *_traits,
+ComputingResult GeneralExtractor::generalExtractions(const ComputingTraitStandard *_traits,
         const ComputingRequest &_request,
         const PkModelCollection *_modelCollection,
-        std::shared_ptr<PkModel> &_pkModel,
-        IntakeSeries &_intakeSeries,
+        std::map<AnalyteGroupId, std::shared_ptr<PkModel> > &_pkModel,
+        GroupsIntakeSeries &_intakeSeries,
         CovariateSeries &_covariatesSeries,
         ParameterSetSeries &_parameterSeries,
         DateTime &_calculationStartTime
@@ -176,14 +180,16 @@ ComputingResult GeneralExtractor::generalExtractions(
 
     IntakeExtractor intakeExtractor;
     double nbPointsPerHour = _traits->getNbPointsPerHour();
-    IntakeExtractor::Result intakeExtractionResult = intakeExtractor.extract(_request.getDrugTreatment().getDosageHistory(), fantomStart /*_traits->getStart()*/, _traits->getEnd() /* + Duration(24h)*/, nbPointsPerHour, _intakeSeries);
+
+    IntakeSeries intakeSeries;
+    IntakeExtractor::Result intakeExtractionResult = intakeExtractor.extract(_request.getDrugTreatment().getDosageHistory(), fantomStart /*_traits->getStart()*/, _traits->getEnd() /* + Duration(24h)*/, nbPointsPerHour, intakeSeries);
 
     if (intakeExtractionResult != IntakeExtractor::Result::Ok) {
         m_logger.error("Error with the intakes extraction.");
         return ComputingResult::Error;
     }
 
-    size_t nIntakes = _intakeSeries.size();
+    size_t nIntakes = intakeSeries.size();
 
 
     if (nIntakes > 0) {
@@ -191,21 +197,21 @@ ComputingResult GeneralExtractor::generalExtractions(
         // Ensure that time ranges are correctly handled. We set again the interval based on the start of
         // next intake
         for (size_t i = 0; i < nIntakes - 1; i++) {
-            Duration interval = _intakeSeries.at(i+1).getEventTime() - _intakeSeries.at(i).getEventTime();
-            _intakeSeries.at(i).setNbPoints(static_cast<int>(interval.toHours() * nbPointsPerHour) + 1);
-            _intakeSeries.at(i).setInterval(interval);
+            Duration interval = intakeSeries.at(i+1).getEventTime() - intakeSeries.at(i).getEventTime();
+            intakeSeries.at(i).setNbPoints(static_cast<int>(interval.toHours() * nbPointsPerHour) + 1);
+            intakeSeries.at(i).setInterval(interval);
         }
 
         for (size_t i = 0; i < nIntakes; i++) {
-            if (_intakeSeries.at(i).getEventTime() + _intakeSeries.at(i).getInterval() < _traits->getStart()) {
-                _intakeSeries[i].setNbPoints(2);
+            if (intakeSeries.at(i).getEventTime() + intakeSeries.at(i).getInterval() < _traits->getStart()) {
+                intakeSeries[i].setNbPoints(2);
             }
         }
 
         const DosageTimeRangeList& timeRanges = _request.getDrugTreatment().getDosageHistory().getDosageTimeRanges();
 
 
-        IntakeEvent *lastIntake = &(_intakeSeries.at(nIntakes - 1));
+        IntakeEvent *lastIntake = &(intakeSeries.at(nIntakes - 1));
 
         // If the treatement end is before the last point we want to get, then we add an empty dose to get points
 
@@ -225,13 +231,13 @@ ComputingResult GeneralExtractor::generalExtractions(
             int nbPoints = static_cast<int>(nbPointsPerHour * interval.toHours());
 
             IntakeEvent intake(start, Duration(), dose, interval, lastIntake->getFormulationAndRoute(), absorptionModel, infusionTime, nbPoints);
-            _intakeSeries.push_back(intake);
+            intakeSeries.push_back(intake);
         }
 
     }
 
     OverloadEvaluator overloadEvaluator;
-    if (!overloadEvaluator.isAcceptable(_intakeSeries, _traits)) {
+    if (!overloadEvaluator.isAcceptable(intakeSeries, _traits)) {
         return ComputingResult::TooBig;
     }
 
@@ -258,7 +264,7 @@ ComputingResult GeneralExtractor::generalExtractions(
 */
 
     std::vector<FormulationAndRoute> allFormulationAndRoutes;
-    for (const auto & intake : _intakeSeries) {
+    for (const auto & intake : intakeSeries) {
         FormulationAndRoute f = intake.getFormulationAndRoute();
         if (std::find(allFormulationAndRoutes.begin(), allFormulationAndRoutes.end(), f) == allFormulationAndRoutes.end()) {
             allFormulationAndRoutes.push_back(f);
@@ -268,7 +274,7 @@ ComputingResult GeneralExtractor::generalExtractions(
     std::map<FormulationAndRoute, const FullFormulationAndRoute *> fullFormulationAndRoutes;
 
     // Only look for formulation and routes if there is an existing treatment
-    if (_intakeSeries.size() > 0) {
+    if (intakeSeries.size() > 0) {
         if (!findFormulationAndRoutes(allFormulationAndRoutes, _request.getDrugModel().getFormulationAndRoutes(), fullFormulationAndRoutes)) {
             m_logger.error("Could not find a suitable formulation and route in the drug model");
             return ComputingResult::Error;
@@ -282,19 +288,23 @@ ComputingResult GeneralExtractor::generalExtractions(
     const Formulation formulation = _request.getDrugModel().getFormulationAndRoutes().getDefault()->getFormulationAndRoute().getFormulation();
     const AdministrationRoute route = _request.getDrugModel().getFormulationAndRoutes().getDefault()->getFormulationAndRoute().getAdministrationRoute();
 
-    _pkModel = _modelCollection->getPkModelFromId(pkModelId);
-
-    if (_pkModel == nullptr) {
-        m_logger.error("Can not find a Pk Model for the calculation");
-        return ComputingResult::Error;
+    for (const auto &analyteSet : _request.getDrugModel().getAnalyteSets()) {
+        _pkModel[analyteSet->getId()] = _modelCollection->getPkModelFromId(analyteSet->getPkModelId());
+        if (_pkModel[analyteSet->getId()] == nullptr) {
+            m_logger.error("Can not find a Pk Model for the calculation");
+            return ComputingResult::Error;
+        }
     }
 
+    for (const auto &analyteSet : _request.getDrugModel().getAnalyteSets()) {
+        cloneIntakeSeries(intakeSeries, _intakeSeries[analyteSet->getId()]);
 
-    IntakeToCalculatorAssociator::Result intakeAssociationResult = IntakeToCalculatorAssociator::associate(_intakeSeries, *_pkModel.get());
+        IntakeToCalculatorAssociator::Result intakeAssociationResult = IntakeToCalculatorAssociator::associate(_intakeSeries[analyteSet->getId()], *_pkModel[analyteSet->getId()]);
 
-    if (intakeAssociationResult != IntakeToCalculatorAssociator::Result::Ok) {
-        m_logger.error("Can not associate intake calculators for the specified route");
-        return ComputingResult::Error;
+        if (intakeAssociationResult != IntakeToCalculatorAssociator::Result::Ok) {
+            m_logger.error("Can not associate intake calculators for the specified route");
+            return ComputingResult::Error;
+        }
     }
 
     if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Population) {

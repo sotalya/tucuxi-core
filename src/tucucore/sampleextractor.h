@@ -15,17 +15,23 @@ class SampleExtractor
 {
 public:
 
+    enum class Result {
+        Ok,
+        ExtractionError
+    };
+
+
     ///
     /// \brief extract relevant samples
     /// \param _samples The list of available samples
     /// \param _start The start time of the range of interest
     /// \param _end The end time of the range of interest
     /// \param _series The output series containing the relevant samples
-    /// \return The number of relevant samples
+    /// \return Result::Ok if everything went well
     ///
     /// This function also converts the samples to ug/l.
     ///
-    int extract(const Samples &_samples, const DateTime &_start, const DateTime &_end, SampleSeries &_series);
+    Result extract(const Samples &_samples, const DateTime &_start, const DateTime &_end, SampleSeries &_series);
 };
 
 } // namespace Core

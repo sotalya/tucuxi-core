@@ -56,6 +56,7 @@ protected:
 };
 
 inline bool operator==(const AnalyteId& _lhs, const AnalyteId& _rhs){ return _lhs.toString() == _rhs.toString(); }
+inline bool operator!=(const AnalyteId& _lhs, const AnalyteId& _rhs){ return _lhs.toString() != _rhs.toString(); }
 
 ///
 /// \brief The AnalyteGroupId class
@@ -83,6 +84,7 @@ protected:
 };
 
 inline bool operator==(const AnalyteGroupId& _lhs, const AnalyteGroupId& _rhs){ return _lhs.toString() == _rhs.toString(); }
+inline bool operator<(const AnalyteGroupId& _lhs, const AnalyteGroupId& _rhs){ return _lhs.toString() < _rhs.toString(); }
 
 
 class Analyte

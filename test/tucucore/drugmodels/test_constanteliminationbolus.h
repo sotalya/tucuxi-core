@@ -67,7 +67,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
                                Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
 
 
-        //const FormulationAndRoute route("formulation", AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular);
+        //const FormulationAndRoute route("formulation", AdministrationRoute::IntravenousBolus, AbsorptionModel::Extravascular);
         // Add a treatment intake every ten days in June
         // 200mg via a intravascular at 08h30, starting the 01.06
         LastingDose periodicDose(DoseValue(200.0),
@@ -95,7 +95,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         std::shared_ptr<PkModel> sharedPkModel;
         sharedPkModel = std::make_shared<PkModel>("test.constantelimination");
 
-        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Intravascular, ConstantEliminationBolus::getCreator());
+        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
         fructose_assert(addResult);
 
         PkModelCollection *collection = new PkModelCollection();
@@ -121,7 +121,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         {
 
             DrugTreatment *drugTreatment;
-            const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Intravascular);
+            const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
             buildDrugTreatment(drugTreatment, route);
 
@@ -241,7 +241,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         std::shared_ptr<PkModel> sharedPkModel;
         sharedPkModel = std::make_shared<PkModel>("test.constantelimination");
 
-        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Intravascular, ConstantEliminationBolus::getCreator());
+        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
         fructose_assert(addResult);
 
         PkModelCollection *collection = new PkModelCollection();
@@ -267,7 +267,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         {
 
             DrugTreatment *drugTreatment;
-            const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Intravascular);
+            const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
             buildDrugTreatment(drugTreatment, route);
 
@@ -388,7 +388,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         std::shared_ptr<PkModel> sharedPkModel;
         sharedPkModel = std::make_shared<PkModel>("test.constantelimination");
 
-        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Intravascular, ConstantEliminationBolus::getCreator());
+        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
         fructose_assert(addResult);
 
         PkModelCollection *collection = new PkModelCollection();
@@ -414,7 +414,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         {
 
             DrugTreatment *drugTreatment;
-            const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Intravascular);
+            const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
             buildDrugTreatment(drugTreatment, route);
 
@@ -495,7 +495,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         std::shared_ptr<PkModel> sharedPkModel;
         sharedPkModel = std::make_shared<PkModel>("test.constantelimination");
 
-        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Intravascular, ConstantEliminationBolus::getCreator());
+        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
         fructose_assert(addResult);
 
         PkModelCollection *collection = new PkModelCollection();
@@ -521,7 +521,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         {
 
             DrugTreatment *drugTreatment;
-            const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Intravascular);
+            const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
             buildDrugTreatment(drugTreatment, route);
 
@@ -601,7 +601,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         std::shared_ptr<PkModel> sharedPkModel;
         sharedPkModel = std::make_shared<PkModel>("test.constantelimination");
 
-        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Intravascular, ConstantEliminationBolus::getCreator());
+        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
         fructose_assert(addResult);
 
         PkModelCollection *collection = new PkModelCollection();
@@ -626,7 +626,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         {
 
             DrugTreatment *drugTreatment;
-            const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Intravascular);
+            const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
             buildDrugTreatment(drugTreatment, route);
 
@@ -706,7 +706,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         std::shared_ptr<PkModel> sharedPkModel;
         sharedPkModel = std::make_shared<PkModel>("test.constantelimination");
 
-        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Intravascular, ConstantEliminationBolus::getCreator());
+        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
         fructose_assert(addResult);
 
         PkModelCollection *collection = new PkModelCollection();
@@ -732,7 +732,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         {
 
             DrugTreatment *drugTreatment;
-            const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Intravascular);
+            const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
             buildDrugTreatment(drugTreatment, route);
 
@@ -822,7 +822,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         std::shared_ptr<PkModel> sharedPkModel;
         sharedPkModel = std::make_shared<PkModel>("test.constantelimination");
 
-        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Intravascular, ConstantEliminationBolus::getCreator());
+        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
         fructose_assert(addResult);
 
         PkModelCollection *collection = new PkModelCollection();
@@ -848,7 +848,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         {
 
             DrugTreatment *drugTreatment;
-            const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Intravascular);
+            const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
             buildDrugTreatment(drugTreatment, route);
 
@@ -937,7 +937,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         std::shared_ptr<PkModel> sharedPkModel;
         sharedPkModel = std::make_shared<PkModel>("test.constantelimination");
 
-        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Intravascular, ConstantEliminationBolus::getCreator());
+        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
         fructose_assert(addResult);
 
         PkModelCollection *collection = new PkModelCollection();
@@ -963,7 +963,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         {
 
             DrugTreatment *drugTreatment;
-            const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Intravascular);
+            const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
             buildDrugTreatment(drugTreatment, route);
 
@@ -1052,7 +1052,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         std::shared_ptr<PkModel> sharedPkModel;
         sharedPkModel = std::make_shared<PkModel>("test.constantelimination");
 
-        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Intravascular, ConstantEliminationBolus::getCreator());
+        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
         fructose_assert(addResult);
 
         PkModelCollection *collection = new PkModelCollection();
@@ -1078,7 +1078,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         {
 
             DrugTreatment *drugTreatment;
-            const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Intravascular);
+            const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
             buildDrugTreatment(drugTreatment, route);
 
@@ -1170,7 +1170,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         std::shared_ptr<PkModel> sharedPkModel;
         sharedPkModel = std::make_shared<PkModel>("test.constantelimination");
 
-        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Intravascular, ConstantEliminationBolus::getCreator());
+        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
         fructose_assert(addResult);
 
         PkModelCollection *collection = new PkModelCollection();
@@ -1196,7 +1196,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         {
 
             DrugTreatment *drugTreatment;
-            const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Intravascular);
+            const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
             buildDrugTreatment(drugTreatment, route);
 
@@ -1546,7 +1546,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
     /// \brief Check that objects are correctly constructed by the constructor.
     void testConstantElimination(const std::string& /* _testName */)
-    {/*
+    {
         test0();
         test1();
         testResidualErrorModelAdditive();
@@ -1556,7 +1556,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         testParamAdditive();
         testParamAdditiveResidualErrorModelAdditive();
         testParamExponentialResidualErrorModelExponential();
-        testAdjustments();*/
+        testAdjustments();
         testAdjustments2();
         // testParamProportionalResidualErrorModelProportional();
     }

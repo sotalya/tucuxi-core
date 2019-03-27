@@ -15,7 +15,7 @@ Sample::Sample(DateTime _date, std::string _analyteId, Value _value, Unit _unit)
 
 }
 
-std::string Sample::getAnalyteId() const
+AnalyteId Sample::getAnalyteId() const
 {
     return m_analyteId;
 }
@@ -35,5 +35,5 @@ Unit Sample::getUnit() const
     return m_unit;
 }
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi

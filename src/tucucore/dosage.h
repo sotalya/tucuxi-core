@@ -34,6 +34,8 @@ class IntakeExtractor;
 /// underlying std::vector, thus the transition will be painless.
 typedef std::vector<IntakeEvent> IntakeSeries;
 
+typedef std::map<AnalyteGroupId, IntakeSeries> GroupsIntakeSeries;
+
 void cloneIntakeSeries(const std::vector<IntakeEvent> &_input, std::vector<IntakeEvent> &_output);
 
 

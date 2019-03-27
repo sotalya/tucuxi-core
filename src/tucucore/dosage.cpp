@@ -14,7 +14,9 @@ void cloneIntakeSeries(const std::vector<IntakeEvent> &_input, std::vector<Intak
 {
     for (auto intake : _input) {
         IntakeEvent newIntakeEvent = intake;
-        newIntakeEvent.setCalculator(intake.getCalculator()->getLightClone());
+        if (intake.getCalculator() != nullptr) {
+            newIntakeEvent.setCalculator(intake.getCalculator()->getLightClone());
+        }
         _output.push_back(newIntakeEvent);
     }
 }

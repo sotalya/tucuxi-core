@@ -101,14 +101,14 @@ struct TestComputingComponentConcentration : public fructose::test_base<TestComp
             fructose_assert(dynamic_cast<SinglePredictionResponse*>(responses[i].get()) != nullptr);
             const SinglePredictionResponse *resp = dynamic_cast<SinglePredictionResponse*>(responses[i].get());
             std::vector<CycleData> data = resp->getData();
-            fructose_assert(data.size() == 16);
+            fructose_assert_eq(data.size() , size_t{16});
             fructose_assert(data[0].m_concentrations.size() == 1);
             fructose_assert(data[0].m_concentrations[0][0] == 0.0);
             DateTime startSept2018(date::year_month_day(date::year(2018), date::month(9), date::day(1)),
                                    Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
 
-            fructose_assert(data[0].m_start.toSeconds() + data[0].m_times[0][0] * 3600.0 == startSept2018.toSeconds());
-            fructose_assert(data[1].m_start.toSeconds() + data[1].m_times[0][0] * 3600.0 == startSept2018.toSeconds() + 3600.0 * 6.0);
+            fructose_assert_double_eq(data[0].m_start.toSeconds() + data[0].m_times[0][0] * 3600.0 , startSept2018.toSeconds());
+            fructose_assert_double_eq(data[1].m_start.toSeconds() + data[1].m_times[0][0] * 3600.0 , startSept2018.toSeconds() + 3600.0 * 6.0);
         }
 
 
@@ -146,8 +146,8 @@ struct TestComputingComponentConcentration : public fructose::test_base<TestComp
                 DateTime startSept2018(date::year_month_day(date::year(2018), date::month(9), date::day(1)),
                                        Duration(std::chrono::hours(14), std::chrono::minutes(0), std::chrono::seconds(0)));
 
-                fructose_assert(data[0].m_start.toSeconds() + data[0].m_times[0][0] * 3600.0 == startSept2018.toSeconds());
-                fructose_assert(data[1].m_start.toSeconds() + data[1].m_times[0][0] * 3600.0 == startSept2018.toSeconds() + 3600.0 * 6.0);
+                fructose_assert_double_eq(data[0].m_start.toSeconds() + data[0].m_times[0][0] * 3600.0 , startSept2018.toSeconds());
+                fructose_assert_double_eq(data[1].m_start.toSeconds() + data[1].m_times[0][0] * 3600.0 , startSept2018.toSeconds() + 3600.0 * 6.0);
             }
         }
 

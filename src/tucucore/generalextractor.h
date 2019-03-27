@@ -28,19 +28,24 @@ public:
 
     Duration secureStartDuration(const HalfLife &_halfLife);
 
-    ComputingResult extractAposterioriEtas(Etas &_etas, const ComputingRequest &_request, const Tucuxi::Core::IntakeSeries &_intakeSeries, const ParameterSetSeries &_parameterSeries, const Tucuxi::Core::CovariateSeries &_covariateSeries, Tucuxi::Common::DateTime _calculationStartTime, Common::DateTime _endTime);
+    ComputingResult extractAposterioriEtas(Etas &_etas,
+            const ComputingRequest &_request,
+            const IntakeSeries &_intakeSeries,
+            const ParameterSetSeries &_parameterSeries,
+            const Tucuxi::Core::CovariateSeries &_covariateSeries,
+            Tucuxi::Common::DateTime _calculationStartTime,
+            Common::DateTime _endTime);
 
     ComputationResult extractOmega(
         const DrugModel &_drugModel,
         OmegaMatrix &_omega);
 
 
-    ComputingResult generalExtractions(
-            const Tucuxi::Core::ComputingTraitStandard *_traits,
+    ComputingResult generalExtractions(const Tucuxi::Core::ComputingTraitStandard *_traits,
             const ComputingRequest &_request,
             const PkModelCollection *_modelCollection,
-            std::shared_ptr<PkModel> &_pkModel,
-            IntakeSeries &_intakeSeries,
+            std::map<AnalyteGroupId, std::shared_ptr<PkModel> > &_pkModel,
+            GroupsIntakeSeries &_intakeSeries,
             CovariateSeries &_covariatesSeries,
             ParameterSetSeries &_parameterSeries,
             Common::DateTime &_calculationStartTime);
