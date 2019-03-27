@@ -1814,7 +1814,7 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
 
         fructose_assert(extractor.m_birthDate == DATE_TIME_NO_VAR(2017, 8, 5, 18, 0, 0));
         fructose_assert(extractor.m_hasBirthDate == true);
-        fructose_assert(extractor.m_pvValued.count(CovariateExtractor::sm_birthDateCName) == 0);
+        fructose_assert(extractor.m_pvValued.count(CovariateExtractor::BIRTHDATE_CNAME) == 0);
     }
 
 
@@ -1987,7 +1987,7 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
 
         fructose_assert(extractor.m_birthDate == DATE_TIME_NO_VAR(2017, 8, 5, 18, 0, 0));
         fructose_assert(extractor.m_hasBirthDate == true);
-        fructose_assert(extractor.m_pvValued.count(CovariateExtractor::sm_birthDateCName) == 0);
+        fructose_assert(extractor.m_pvValued.count(CovariateExtractor::BIRTHDATE_CNAME) == 0);
     }
 
 

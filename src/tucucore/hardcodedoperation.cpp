@@ -146,7 +146,7 @@ eGFR_CockcroftGaultIBW::compute(const OperationInputList &_inputs, double &_resu
     int height;
     double creatinine;
     bool isMale;
-    double IBW;
+    double IBW; // NOLINT(readability-identifier-naming)
 
     if (!getInputValue(_inputs, "bodyweight", weight) || !getInputValue(_inputs, "age", age) ||
             !getInputValue(_inputs, "height", height) ||
@@ -159,7 +159,7 @@ eGFR_CockcroftGaultIBW::compute(const OperationInputList &_inputs, double &_resu
         return false;
     }
 
-    IdealBodyWeight IBWComputation;
+    IdealBodyWeight IBWComputation; // NOLINT(readability-identifier-naming)
     bool rc = IBWComputation.evaluate({ OperationInput("height", height), OperationInput("isMale", isMale) }, IBW);
     if (!rc || IBW <= 0) {
         return false;
@@ -196,7 +196,7 @@ eGFR_CockcroftGaultAdjIBW::compute(const OperationInputList &_inputs, double &_r
     int height;
     double creatinine;
     bool isMale;
-    double IBW;
+    double IBW; // NOLINT(readability-identifier-naming)
 
     if (!getInputValue(_inputs, "bodyweight", weight) || !getInputValue(_inputs, "age", age) ||
             !getInputValue(_inputs, "height", height) ||
@@ -209,7 +209,7 @@ eGFR_CockcroftGaultAdjIBW::compute(const OperationInputList &_inputs, double &_r
         return false;
     }
 
-    IdealBodyWeight IBWComputation;
+    IdealBodyWeight IBWComputation; // NOLINT(readability-identifier-naming)
     bool rc = IBWComputation.evaluate({ OperationInput("height", height), OperationInput("isMale", isMale) }, IBW);
     if (!rc || IBW <= 0) {
         return false;
@@ -261,8 +261,8 @@ GFR_MDRD::compute(const OperationInputList &_inputs, double &_result) const
 
     double eGFR = 175 * std::pow(0.0113 * creatinine, -1.154) * std::pow(age, -0.203) * (isMale ? 1 : 0.742) * (isAB ? 1.212 : 1);
 
-    double BSA;
-    BodySurfaceArea BSAComputation;
+    double BSA; // NOLINT(readability-identifier-naming)
+    BodySurfaceArea BSAComputation; // NOLINT(readability-identifier-naming)
     bool rc = BSAComputation.evaluate({ OperationInput("height", height), OperationInput("bodyweight", weight) }, BSA);
     if (!rc || BSA <= 0) {
         return false;
@@ -318,8 +318,8 @@ GFR_CKD_EPI::compute(const OperationInputList &_inputs, double &_result) const
             std::pow(std::max(0.0113 * creatinine / (isMale ? 0.9 : 0.7), 1.0), -1.209) * std::pow(0.993, age) * \
             (isMale ? 1 : 1.018) * (isAB ? 1.159 : 1);
 
-    double BSA;
-    BodySurfaceArea BSAComputation;
+    double BSA; // NOLINT(readability-identifier-naming)
+    BodySurfaceArea BSAComputation; // NOLINT(readability-identifier-naming)
     bool rc = BSAComputation.evaluate({ OperationInput("height", height), OperationInput("bodyweight", weight) }, BSA);
     if (!rc || BSA <= 0) {
         return false;
@@ -429,8 +429,8 @@ GFR_Jelliffe::compute(const OperationInputList &_inputs, double &_result) const
 
     double eGFR = (isMale ? 1 : 0.9) * (98 - (0.8 * age - 20)) / (0.0113 * creatinine);
 
-    double BSA;
-    BodySurfaceArea BSAComputation;
+    double BSA; // NOLINT(readability-identifier-naming)
+    BodySurfaceArea BSAComputation; // NOLINT(readability-identifier-naming)
     bool rc = BSAComputation.evaluate({ OperationInput("height", height), OperationInput("bodyweight", weight) }, BSA);
     if (!rc || BSA <= 0) {
         return false;

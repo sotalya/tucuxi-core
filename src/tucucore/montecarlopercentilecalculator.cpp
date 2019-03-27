@@ -25,7 +25,7 @@ const EigenMatrix &AposterioriMatrixCache::getAvecs(int _nbSamples, int _nbEtas)
 {
     static std::mutex mutex;
     mutex.lock();
-    if (m_matrices.count(std::pair<int,int>(_nbSamples, _nbEtas))) {
+    if (m_matrices.count(std::pair<int,int>(_nbSamples, _nbEtas)) > 0) {
         mutex.unlock();
         return m_matrices[std::pair<int,int>(_nbSamples, _nbEtas)];
     }
@@ -58,7 +58,7 @@ const EigenMatrix &AposterioriMatrixCache::getAvecs(int _nbSamples, int _nbEtas)
 
 
 
-unsigned int MonteCarloPercentileCalculatorBase::sm_nbPatients = 0;
+unsigned int MonteCarloPercentileCalculatorBase::sm_nbPatients = 0; // NOLINT(readability-identifier-naming)
 
 MonteCarloPercentileCalculatorBase::MonteCarloPercentileCalculatorBase()
 {
@@ -226,8 +226,8 @@ IPercentileCalculator::ComputingResult MonteCarloPercentileCalculatorBase::compu
         }));
     }
 
-    std::for_each(workers.begin(), workers.end(), [](std::thread &t) {
-        t.join();
+    std::for_each(workers.begin(), workers.end(), [](std::thread &_t) {
+        _t.join();
     });
 
 //    elapsed = std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::steady_clock::now( ) - start );
@@ -243,8 +243,8 @@ IPercentileCalculator::ComputingResult MonteCarloPercentileCalculatorBase::compu
 
     std::vector<int> positions;
     for (unsigned int percRankIdx = 0; percRankIdx < _percentileRanks.size(); percRankIdx++) {
-        positions.push_back( ((double) _percentileRanks[percRankIdx]) / 100.0
-                             * ((double) nbPatients));
+        positions.push_back( static_cast<double>(_percentileRanks[percRankIdx]) / 100.0
+                             * static_cast<double>(nbPatients));
     }
 
 
@@ -296,7 +296,8 @@ IPercentileCalculator::ComputingResult MonteCarloPercentileCalculatorBase::compu
 
 
                 // Sort concentrations in increasing order at each time (at the cycle and at the point)
-                std::sort(concentrations[cycle][point].begin(), concentrations[cycle][point].end(), [&] (const double v1, const double v2) { return v1 < v2; });
+                std::sort(concentrations[cycle][point].begin(), concentrations[cycle][point].end(),
+                          [&] (const double _v1, const double _v2) { return _v1 < _v2; });
 
                 for (unsigned int percRankIdx = 0; percRankIdx < _percentileRanks.size(); percRankIdx++) {
                     int pos = positions[percRankIdx];
@@ -316,8 +317,8 @@ IPercentileCalculator::ComputingResult MonteCarloPercentileCalculatorBase::compu
         }));
     }
 
-    std::for_each(sortWorkers.begin(), sortWorkers.end(), [](std::thread &t) {
-        t.join();
+    std::for_each(sortWorkers.begin(), sortWorkers.end(), [](std::thread &_t) {
+        _t.join();
     });
 
 #else
@@ -534,18 +535,20 @@ void MonteCarloPercentileCalculatorBase::calculateSubomega(
     const Value* etasPtr = &_etas[0]; // get _etas pointer
 
     // Evaluate inverse of hessian of loglikelihood
-    EigenVector eta_min = EigenVector::Zero(_omega.rows());
-    EigenVector eta_max = EigenVector::Zero(_omega.rows());
+    EigenVector etaMin = EigenVector::Zero(_omega.rows());
+    EigenVector etaMax = EigenVector::Zero(_omega.rows());
 
-    _logLikelihood.initBounds(_omega, eta_max, eta_min);
+    _logLikelihood.initBounds(_omega, etaMax, etaMin);
 
     // Get working eta
     map2EigenVectorType etas(etasPtr, _etas.size());
 
     EigenMatrix hessian(etas.size(), etas.size());
 
+    EigenVector e = etas;
+
     // Get the hessian
-    deriv2(_logLikelihood, (EigenVector&)etas, (EigenMatrix&)hessian);
+    deriv2(_logLikelihood, (EigenVector&)etas, (EigenMatrix&)hessian); // NOLINT(google-readability-casting)
 
     // Negative inverse
     // We don't take the negative hessian because we minimize the negative log likelyhood
@@ -680,18 +683,18 @@ IPercentileCalculator::ComputingResult AposterioriMonteCarloPercentileCalculator
                     }
 
                     EigenVector avec = meanEtasTransposed + avecs.row(sample) * etaLowerChol;
-                    Etas avec_mat;
+                    Etas avecMat;
 
                     for (unsigned int etasIdx = 0; etasIdx < _etas.size(); etasIdx++) {
-                        avec_mat.push_back(avec[etasIdx]);
+                        avecMat.push_back(avec[etasIdx]);
                     }
 
-                    etaSamples[sample] = avec_mat;
+                    etaSamples[sample] = avecMat;
 
                     // 4. Calculate the ratios for weighting this is h*
                     // Be careful: hstart should be a logLikelihood, however we are minimizing the
                     // negative loglikelyhood, so it is a negative h start.
-                    Value hstart = threadLogLikelihood.negativeLogLikelihood(avec_mat);
+                    Value hstart = threadLogLikelihood.negativeLogLikelihood(avecMat);
 
 
                     // This is g
@@ -713,8 +716,8 @@ IPercentileCalculator::ComputingResult AposterioriMonteCarloPercentileCalculator
         }));
     }
 
-    std::for_each(workers.begin(), workers.end(), [](std::thread &t) {
-        t.join();
+    std::for_each(workers.begin(), workers.end(), [](std::thread &_t) {
+        _t.join();
     });
 
     if (abort) {

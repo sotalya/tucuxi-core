@@ -200,21 +200,21 @@ std::string SystemInfo::retrieveMacAddress()
 
         if (ioctl(sock, SIOCGIFFLAGS, &ifr) == 0) {
 
-            if (!(ifr.ifr_flags & IFF_LOOPBACK)) { // don't count loopback
+            if ((ifr.ifr_flags & IFF_LOOPBACK) == 0) { // don't count loopback
 
                 if (ioctl(sock, SIOCGIFHWADDR, &ifr) == 0) {
 
-                    unsigned char mac_address[6];
-                    memcpy(mac_address, ifr.ifr_hwaddr.sa_data, 6);
+                    unsigned char macAddress[6];
+                    memcpy(macAddress, ifr.ifr_hwaddr.sa_data, 6);
 
                     std::stringstream ss;
                     ss << std::hex << std::setfill('0');
-                    ss << std::setw(2) << static_cast<unsigned>(mac_address[0]);
-                    ss << std::setw(2) << static_cast<unsigned>(mac_address[1]);
-                    ss << std::setw(2) << static_cast<unsigned>(mac_address[2]);
-                    ss << std::setw(2) << static_cast<unsigned>(mac_address[3]);
-                    ss << std::setw(2) << static_cast<unsigned>(mac_address[4]);
-                    ss << std::setw(2) << static_cast<unsigned>(mac_address[5]);
+                    ss << std::setw(2) << static_cast<unsigned>(macAddress[0]);
+                    ss << std::setw(2) << static_cast<unsigned>(macAddress[1]);
+                    ss << std::setw(2) << static_cast<unsigned>(macAddress[2]);
+                    ss << std::setw(2) << static_cast<unsigned>(macAddress[3]);
+                    ss << std::setw(2) << static_cast<unsigned>(macAddress[4]);
+                    ss << std::setw(2) << static_cast<unsigned>(macAddress[5]);
                     return ss.str();
                 }
             }
@@ -317,7 +317,7 @@ std::string SystemInfo::readDMIfile(std::string _filename)
 
     // Some content of dmi file can be fill with space character.
     for(size_t i=0; i < content.size(); i++) {
-        if(!isblank(content[i])) {
+        if(isblank(content[i]) == 0) {
             return content;
         }
     }

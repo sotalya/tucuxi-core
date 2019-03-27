@@ -44,7 +44,7 @@ public:
         const IResidualErrorModel &_residualErrorModel = EMPTY_RESIDUAL_ERROR_MODEL,
         const Deviations& _epsilons = Deviations(0),
         bool _onlyAnalytes = true,
-        bool _isFixedDensity = 0) = 0;
+        bool _isFixedDensity = false) = 0;
 
     ///
     /// \brief Calculates concentrations at specific times
@@ -100,7 +100,7 @@ public:
         const IResidualErrorModel &_residualErrorModel = EMPTY_RESIDUAL_ERROR_MODEL,
         const Deviations& _epsilons = Deviations(0),
         bool _onlyAnalytes = true,
-        bool _isFixedDensity = 0) override;
+        bool _isFixedDensity = false) override;
 
     ///
     /// \brief Calculates concentrations at specific times

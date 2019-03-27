@@ -10,10 +10,10 @@ namespace Tucuxi {
 namespace Core {
 
 template <typename Enumeration>
-auto as_integer(Enumeration const value)
+auto as_integer(Enumeration const _value)
     -> typename std::underlying_type<Enumeration>::type
 {
-    return static_cast<typename std::underlying_type<Enumeration>::type>(value);
+    return static_cast<typename std::underlying_type<Enumeration>::type>(_value);
 }
 
 #define EXTRACT_PRECONDITIONS(start, end, series) \
@@ -55,7 +55,7 @@ int IntakeExtractor::extract(const DosageTimeRange &_timeRange, const DateTime &
     int nbIntakes = 0;
 //    DateTime iStart = std::max(_start, _timeRange.m_startDate);
     DateTime iStart = _timeRange.m_startDate;
-    if (dynamic_cast<DosageSteadyState*>(_timeRange.m_dosage.get())) {
+    if (dynamic_cast<DosageSteadyState*>(_timeRange.m_dosage.get()) != nullptr) {
         iStart = _start;
     }
 

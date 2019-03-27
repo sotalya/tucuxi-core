@@ -113,7 +113,7 @@ bool XmlDocument::setRoot(const XmlNode& _root)
 {
     if (_root.isValid()) {
         if (isValid()) {
-            if (m_pDocument->first_node() != 0) {
+            if (m_pDocument->first_node() != nullptr) {
                 m_pDocument->remove_first_node();
             }
             m_pDocument->append_node(_root.m_pNode);
@@ -144,8 +144,8 @@ XmlNode XmlDocument::createNode(EXmlNodeType _type, const std::string& _name, co
             case EXmlNodeType::Pi:          type = rapidxml::node_type::node_pi; break;            
             case EXmlNodeType::Undefined:   break;
         }
-        const char* name = _name.empty() ? 0 : m_pDocument->allocate_string(_name.c_str());
-        const char* value = _value.empty() ? 0 : m_pDocument->allocate_string(_value.c_str());
+        const char* name = _name.empty() ? nullptr : m_pDocument->allocate_string(_name.c_str());
+        const char* value = _value.empty() ? nullptr : m_pDocument->allocate_string(_value.c_str());
         try {
             pNode = m_pDocument->allocate_node(type, name, value);
         }
@@ -165,8 +165,8 @@ XmlAttribute XmlDocument::createAttribute(const std::string& _name, const std::s
 
     rapidxml::xml_attribute<>* pAttribute = nullptr;
     if (m_pDocument != nullptr) {
-        const char* name = _name.empty() ? 0 : m_pDocument->allocate_string(_name.c_str());
-        const char* value = _value.empty() ? 0 : m_pDocument->allocate_string(_value.c_str());
+        const char* name = _name.empty() ? nullptr : m_pDocument->allocate_string(_name.c_str());
+        const char* value = _value.empty() ? nullptr : m_pDocument->allocate_string(_value.c_str());
         try {
             pAttribute = m_pDocument->allocate_attribute(name, value);
         }

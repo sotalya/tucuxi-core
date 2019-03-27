@@ -1,4 +1,4 @@
-clang-tidy \
+clang-tidy-6.0 \
 	-config="{Checks: '-*,readability-braces-around-statements, \
                               readability-identifier-naming, \
                               readability-avoid-const-params-in-decls, \
@@ -18,7 +18,6 @@ clang-tidy \
                               bugprone-integer-division,
                               readability-inconsistent-declaration-parameter-name', \
 		CheckOptions: [ \
-                        { key: readability-identifier-naming.StaticVariablePrefix,value: sm_       }, \
 			{ key: readability-identifier-naming.ClassCase,           value: CamelCase }, \
 			{ key: readability-identifier-naming.MemberPrefix,        value: m_        }, \
 			{ key: readability-identifier-naming.VariableCase,        value: camelBack }, \
@@ -26,6 +25,9 @@ clang-tidy \
 			{ key: readability-identifier-naming.ParameterPrefix,     value: '_'       }, \
                         { key: readability-identifier-naming.EnumCase,            value: CamelCase }, \
                         { key: readability-identifier-naming.EnumConstCase,       value: CamelCase }, \
+                        { key: readability-identifier-naming.StaticConstantCase,  value: UPPER_CASE }, \
+
+
 			
 		]}" \
 	-header-filter="../src/tucucore/|../src/tucucommon/|../src/tucucli/|../src/tuculicense/../src/tucuquery/../src/tucuvalidator/" \
@@ -54,7 +56,8 @@ clang-tidy \
                        # { key: readability-identifier-naming.StaticVariablePrefix,value: sm_       }, \
 
 
-grep "\.h" clang-warnings.txt | sort -u > clang-warnings-shorts.txt
+grep "\.h" clang-warnings.txt | sort -u > clang-warnings-shorts-h.txt
+grep "\.cpp" clang-warnings.txt | sort -u > clang-warnings-shorts-cpp.txt
 
 
 

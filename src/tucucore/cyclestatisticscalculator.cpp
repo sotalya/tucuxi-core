@@ -29,7 +29,7 @@ void CycleStatistics::calculate(const std::vector<Concentrations> &_concentratio
     for (unsigned int compartment = 0; compartment < _concentrations.size(); compartment++) {
 
         // if no concentrations, return... no data in concentrations
-        if (!(_concentrations[compartment]).size()) {
+        if (_concentrations[compartment].size() == 0) {
             Tucuxi::Common::LoggerHelper logHelper;
             logHelper.error("No data in concentrations");
             return;
@@ -45,11 +45,11 @@ void CycleStatistics::calculate(const std::vector<Concentrations> &_concentratio
 
             // max: compare whether the gradient is changed from positive to negative
             if ((prevGradient > 0) && (gradient < 0)) {
-                m_stats[compartment][static_cast<int>(CycleStatisticType::Maximum)].addValue(Duration(std::chrono::seconds((int)(_times[compartment][nbPoints])*60*60)), _concentrations[compartment][nbPoints]);
+                m_stats[compartment][static_cast<int>(CycleStatisticType::Maximum)].addValue(Duration(std::chrono::seconds(static_cast<int>(_times[compartment][nbPoints] * 3600.0))), _concentrations[compartment][nbPoints]);
             }
             // min: compare whether the gradient is changed from negative to positive
             else if ((prevGradient < 0) && (gradient > 0)) {
-                m_stats[compartment][static_cast<int>(CycleStatisticType::Minimum)].addValue(Duration(std::chrono::seconds((int)(_times[compartment][nbPoints])*60*60)), _concentrations[compartment][nbPoints]);
+                m_stats[compartment][static_cast<int>(CycleStatisticType::Minimum)].addValue(Duration(std::chrono::seconds(static_cast<int>(_times[compartment][nbPoints] * 3600.0))), _concentrations[compartment][nbPoints]);
             }
 
             // store current gradient to previous gradient for next comparison
@@ -74,7 +74,7 @@ void CycleStatistics::calculate(const std::vector<Concentrations> &_concentratio
 
         // add residual value
         m_stats[compartment][static_cast<int>(CycleStatisticType::Residual)].addValue(
-                    Duration(std::chrono::seconds((int)(_times[compartment][_times[compartment].size() - 1])*60*60)),
+                    Duration(std::chrono::seconds(static_cast<int>(_times[compartment][_times[compartment].size() - 1] * 3600.0))),
                     _concentrations[compartment][_concentrations[compartment].size() - 1]);
         // add AUC value with time 0
         m_stats[compartment][static_cast<int>(CycleStatisticType::AUC)].addValue(
@@ -87,10 +87,10 @@ void CycleStatistics::calculate(const std::vector<Concentrations> &_concentratio
         // add mean value with time 0
         m_stats[compartment][static_cast<int>(CycleStatisticType::Mean)].addValue(
                     Duration(),
-                    (auc/(_times[compartment][_concentrations[compartment].size() - 1] - _times[compartment][0])));
+                    (auc / (_times[compartment][_concentrations[compartment].size() - 1] - _times[compartment][0])));
         // add peak value with duration (change offset to duration)
         m_stats[compartment][static_cast<int>(CycleStatisticType::Peak)].addValue(
-                    Duration(std::chrono::seconds((int)(_times[compartment][peakPosition])*60*60)),
+                    Duration(std::chrono::seconds(static_cast<int>(_times[compartment][peakPosition] * 3600.0))),
                     peak);
 
         // add cycle interval, in hours
@@ -114,7 +114,7 @@ CycleStatistics::CycleStatistics(const CycleData &_data, Value& _cumulativeAuc)
         m_stats.push_back(std::vector<Tucuxi::Core::CycleStatistic> ());
 
         for (unsigned int type= 0; type< static_cast<int>(CycleStatisticType::CYCLE_STATISTIC_TYPE_SIZE); type++) {
-                m_stats[compartment].push_back(CycleStatistic(_data.m_start, (CycleStatisticType)type));
+                m_stats[compartment].push_back(CycleStatistic(_data.m_start, static_cast<CycleStatisticType>(type)));
         }
 
     }
@@ -127,11 +127,11 @@ CycleStatistics::CycleStatistics(const CycleData &_data, Value& _cumulativeAuc)
 
 void CycleStatisticsCalculator::calculate(std::vector<CycleData> & _cycles)
 {
-    int nbComp = 1;
+    unsigned int nbComp = 1;
 
-    for (int comp = 0; comp < nbComp; comp++) {
+    for (size_t comp = 0; comp < nbComp; comp++) {
         double auc = 0;
-        for(int i = 0; i < _cycles.size(); i++) {
+        for(size_t i = 0; i < _cycles.size(); i++) {
             CycleStatistics st(_cycles[i], auc);
 
             _cycles[i].m_statistics.setStatistics(comp, CycleStatisticType::Mean, st.getStatistic(comp, CycleStatisticType::Mean));

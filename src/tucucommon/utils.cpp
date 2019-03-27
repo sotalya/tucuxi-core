@@ -153,14 +153,14 @@ std::string Utils::varToString(const DateTime &_value)
     char buf[64];
     sprintf(buf, "%04d-%02d-%02d %02d:%02d:%02d",
             _value.year(), _value.month(), _value.day(),
-            _value.hour(), _value.minute(), (int)_value.second());
+            _value.hour(), _value.minute(), _value.second());
     return std::string(buf);
 }
 
 
 DateTime Utils::ValueToDate(const Value &_value)
 {
-    DateTime dt(Duration(std::chrono::seconds((int64)_value)));
+    DateTime dt(Duration(std::chrono::seconds(static_cast<int64>(_value))));
 
     return dt;
 }

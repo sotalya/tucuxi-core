@@ -434,11 +434,11 @@ DynamicOperation::evaluate(const OperationInputList &_inputs, double &_result)
     int prefLevelBest = -1;
 
     // Find the 'best' operation to perform
-    for (int i = 0; i < (int)m_operations.size(); ++i) {
+    for (int i = 0; i < static_cast<int>(m_operations.size()); ++i) {
         // Check that the given operation can run with the inputs passed as parameter
         if (m_operations.at(i).first->check(_inputs)) {
-            const int nInputs = (int)m_operations.at(i).first->getInputs().size();
-            const int prefLevel = (int)m_operations.at(i).second;
+            const int nInputs = static_cast<int>(m_operations.at(i).first->getInputs().size());
+            const int prefLevel = static_cast<int>(m_operations.at(i).second);
 
             if (nInputs > nInputsBest || (nInputs == nInputsBest && prefLevel < prefLevelBest)) {
                 // We have found an operation with either more matching inputs or the same number but with higher

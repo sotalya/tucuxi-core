@@ -87,9 +87,9 @@ void DosageHistory::mergeDosage(const DosageTimeRange *_newDosage)
 
     DateTime newStart = _newDosage->getStartDate();
 
-    auto iterator = std::remove_if(m_history.begin(), m_history.end(), [newStart](std::unique_ptr<DosageTimeRange> & val) {
+    auto iterator = std::remove_if(m_history.begin(), m_history.end(), [newStart](std::unique_ptr<DosageTimeRange> & _val) {
 
-        if(val->m_startDate >= newStart) {
+        if(_val->m_startDate >= newStart) {
             return true;
         }
         else {

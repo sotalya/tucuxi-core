@@ -177,8 +177,9 @@ void DrugModelChecker::getAllOperations(const DrugModel *_drugModel, std::vector
 
     for (const auto &analyteGroup : _drugModel->getAnalyteSets()) {
         for (const auto &parameter : analyteGroup->getDispositionParameters().m_parameters) {
-            if (parameter->isVariable())
+            if (parameter->isVariable()) {
                 _operations.push_back(&parameter->getOperation());
+            }
         }
     }
 }

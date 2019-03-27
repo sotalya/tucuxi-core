@@ -19,17 +19,17 @@
 using namespace std::chrono_literals;
 
 cxxopts::ParseResult
-parse(int argc, char* argv[])
+parse(int _argc, char* _argv[])
 {
     // Get application folder
-    std::string appFolder = Tucuxi::Common::Utils::getAppFolder(argv);
+    std::string appFolder = Tucuxi::Common::Utils::getAppFolder(_argv);
 
     Tucuxi::Common::LoggerHelper logHelper;
 
     try
     {
 
-        cxxopts::Options options(argv[0], " - Tucuxi command line");
+        cxxopts::Options options(_argv[0], " - Tucuxi command line");
         options
                 .positional_help("[optional args]")
                 .show_positional_help();
@@ -44,21 +44,21 @@ parse(int argc, char* argv[])
                 ;
 
 
-        auto result = options.parse(argc, argv);
+        auto result = options.parse(_argc, _argv);
 
-        if (result.count("help"))
+        if (result.count("help") > 0)
         {
             std::cout << options.help({"", "Group"}) << std::endl;
             exit(0);
         }
 
         std::string drugPath = appFolder + "/drugs2";
-        if (result.count("drugpath")) {
+        if (result.count("drugpath") > 0) {
             drugPath = result["drugpath"].as<std::string>();
         }
 
         std::string inputFileName;
-        if (result.count("input")) {
+        if (result.count("input") > 0) {
             inputFileName = result["input"].as<std::string>();
         }
         else {
@@ -68,7 +68,7 @@ parse(int argc, char* argv[])
         }
 
         std::string outputPath;
-        if (result.count("output")) {
+        if (result.count("output") > 0) {
             outputPath = result["output"].as<std::string>();
         }
         else {
@@ -116,10 +116,10 @@ parse(int argc, char* argv[])
 ///
 /// This application is intended mainly to run automated test scripts
 
-int main(int argc, char** argv)
+int main(int _argc, char** _argv)
 {
     // Get application folder
-    std::string appFolder = Tucuxi::Common::Utils::getAppFolder(argv);
+    std::string appFolder = Tucuxi::Common::Utils::getAppFolder(_argv);
 
     Tucuxi::Common::LoggerHelper::init(appFolder + "/tucucli.log");
     Tucuxi::Common::LoggerHelper logHelper;
@@ -127,7 +127,7 @@ int main(int argc, char** argv)
     logHelper.info("********************************************************");
     logHelper.info("Tucuxi console application is starting up...");
 
-    auto result = parse(argc, argv);
+    auto result = parse(_argc, _argv);
 
     logHelper.info("Tucuxi console application is exiting...");
 

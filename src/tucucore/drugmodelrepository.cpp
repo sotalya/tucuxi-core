@@ -96,12 +96,12 @@ void read_directory(const std::string& name, std::vector<std::string>& v)
     }
 }
 #else
-void read_directory(const std::string& name, std::vector<std::string>& v)
+void read_directory(const std::string& _name, std::vector<std::string>& _v)
 {
-    DIR* dirp = opendir(name.c_str());
+    DIR* dirp = opendir(_name.c_str());
     struct dirent * dp;
-    while ((dp = readdir(dirp)) != NULL) {
-        v.push_back(dp->d_name);
+    while ((dp = readdir(dirp)) != nullptr) {
+        _v.push_back(dp->d_name);
     }
     closedir(dirp);
 }

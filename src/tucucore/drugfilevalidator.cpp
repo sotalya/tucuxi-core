@@ -44,7 +44,7 @@ public:
 bool DrugFileValidator::validate(std::string _drugFileName, std::string _testFileName)
 {
 
-    const string m_sDATE_FORMAT = "%Y-%m-%dT%H:%M:%S";
+    static const string DATA_FORMAT = "%Y-%m-%dT%H:%M:%S";
 
 
     Tucuxi::Common::LoggerHelper logger;
@@ -104,7 +104,7 @@ bool DrugFileValidator::validate(std::string _drugFileName, std::string _testFil
 
             if (test.HasMember("sampleDate")) {
                 sampleDateString = test["sampleDate"].GetString();
-                sampleDate = Common::DateTime(sampleDateString, m_sDATE_FORMAT);
+                sampleDate = Common::DateTime(sampleDateString, DATA_FORMAT);
             }
             else {
                 sampleDate = Common::DateTime(std::chrono::hours(365 * 2 * 24));
@@ -142,7 +142,7 @@ bool DrugFileValidator::validate(std::string _drugFileName, std::string _testFil
                 // to be sure it has the correct format
                 if (dataType == Core::DataType::Date) {
 
-                    Common::DateTime valueAsDate(value, m_sDATE_FORMAT);
+                    Common::DateTime valueAsDate(value, DATA_FORMAT);
 
                     value = Tucuxi::Common::Utils::varToString(valueAsDate);
                 }

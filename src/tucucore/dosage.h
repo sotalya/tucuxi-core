@@ -223,8 +223,9 @@ public:
         int nbIntervals = static_cast<int>(intervalToFromLastDose / intervalInSeconds);
 
         DateTime start = m_lastDoseTime - Duration(std::chrono::seconds(static_cast<int>(intervalInSeconds * nbIntervals)));
-        if (start < _intervalStart)
+        if (start < _intervalStart) {
             start = start + m_dosage->getTimeStep();
+        }
 
         return start;
     }

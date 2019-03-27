@@ -18,7 +18,7 @@ public:
     enum Enum { V, V1, V2, CL, Ka, Ke, K12, K21, K13, K31, F, Q, Q1, Q2, TestA, TestM, TestR, TestS, Unknown };
 
     static Enum fromString(const std::string &_id) {
-        static const std::map<std::string, Enum> sm_paramIds = {
+        static const std::map<std::string, Enum> sm_paramIds = {  // NOLINT(readability-identifier-naming)
             { "V",   ParameterId::V },
             { "V1",  ParameterId::V1 },
             { "V2",  ParameterId::V2 },

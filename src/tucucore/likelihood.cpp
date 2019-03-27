@@ -56,12 +56,12 @@ Value Likelihood::operator()(const ValueVector& _etas)
 
 Value Likelihood::negativeLogLikelihood(const ValueVector& _etas) const
 {
-    ValueVector _cxns(m_samples->size());
+    ValueVector concentrations(m_samples->size());
     bool isAll = false;
 
     // Getting the concentration values at these _times and m_samples.
     ComputationResult result = m_concentrationCalculator->computeConcentrationsAtTimes(
-        _cxns,
+        concentrations,
         isAll,
         *m_intakes,
         *m_parameters,
@@ -76,17 +76,17 @@ Value Likelihood::negativeLogLikelihood(const ValueVector& _etas) const
     Value gll = 0;
 
     //calculate the prior which depends only on eta and omega (not the measure)
-    Value _logprior = negativeLogPrior(Eigen::Map<const EigenVector>(&_etas[0], _etas.size()), *m_omega);
+    Value logPrior = negativeLogPrior(Eigen::Map<const EigenVector>(&_etas[0], _etas.size()), *m_omega);
     SampleSeries::const_iterator sit = m_samples->begin();
-    SampleSeries::const_iterator sit_end = m_samples->end();
-    int _count = 0;
-    while( sit != sit_end ) {
+    SampleSeries::const_iterator sitEnd = m_samples->end();
+    int sampleCounter = 0;
+    while( sit != sitEnd ) {
         // SampleEvent s = *sit;
-        gll += calculateSampleNegativeLogLikelihood(_cxns[_count], *sit, *m_residualErrorModel);
-        _count++;
+        gll += calculateSampleNegativeLogLikelihood(concentrations[sampleCounter], *sit, *m_residualErrorModel);
+        sampleCounter++;
         sit++;
     }
-    gll += _logprior;
+    gll += logPrior;
 
     // If we have a really big problem, like we have a log of zero
     if (std::isnan(gll)) {

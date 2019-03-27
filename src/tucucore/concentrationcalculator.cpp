@@ -142,8 +142,9 @@ ComputationResult ConcentrationCalculator::computeConcentrations(const Concentra
         // Prepare residuals for the next cycle
         // NOTICE: "inResiduals = outResiduals" and "std::copy(outResiduals.begin(),
         // outResiduals.end(), inResiduals.begin())" are not working
-        for(unsigned int i = 0; i < residualSize; i++)
+        for(unsigned int i = 0; i < residualSize; i++) {
             inResiduals[i] = outResiduals[i];
+        }
     }
 
     return ComputationResult::Success;

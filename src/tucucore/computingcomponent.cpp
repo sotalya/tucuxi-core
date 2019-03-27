@@ -196,7 +196,7 @@ ComputingResult ComputingComponent::compute(
                 }
 
                 std::sort(cycle.m_parameters.begin(), cycle.m_parameters.end(),
-                           [&] (const ParameterValue &v1, const ParameterValue &v2) { return v1.m_parameterId < v2.m_parameterId; });
+                           [&] (const ParameterValue &_v1, const ParameterValue &_v2) { return _v1.m_parameterId < _v2.m_parameterId; });
 
                 resp->addCycleData(cycle);
             }
@@ -433,17 +433,17 @@ ComputingResult ComputingComponent::buildCandidates(const FullFormulationAndRout
     std::vector<Duration> infusionTimes;
 
     const ValidDoses * doses = _formulationAndRoute->getValidDoses();
-    if (doses) {
+    if (doses != nullptr) {
         doseValues = doses->getValues();
     }
 
     const ValidDurations * intervals = _formulationAndRoute->getValidIntervals();
-    if (intervals) {
+    if (intervals != nullptr) {
         intervalValues = intervals->getDurations();
     }
 
     const ValidDurations * infusions = _formulationAndRoute->getValidInfusionTimes();
-    if (infusions) {
+    if (infusions != nullptr) {
         infusionTimes = infusions->getDurations();
     }
 
@@ -484,9 +484,9 @@ ComputingResult ComputingComponent::buildCandidates(const FullFormulationAndRout
     return ComputingResult::Success;
 }
 
-bool compareCandidates(const FullDosage &a, const FullDosage &b)
+bool compareCandidates(const FullDosage &_a, const FullDosage &_b)
 {
-    return a.getGlobalScore() < b.getGlobalScore();
+    return _a.getGlobalScore() < _b.getGlobalScore();
 }
 
 

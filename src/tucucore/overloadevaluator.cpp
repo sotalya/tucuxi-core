@@ -19,7 +19,7 @@ bool OverloadEvaluator::isAcceptable(IntakeSeries &_intakeSeries,
         nbPoints += intake.getNbPoints();
     }
 
-    if (dynamic_cast<const ComputingTraitPercentiles *>(_trait))
+    if (dynamic_cast<const ComputingTraitPercentiles *>(_trait) != nullptr)
     {
         // If percentiles, then it is more critical
 

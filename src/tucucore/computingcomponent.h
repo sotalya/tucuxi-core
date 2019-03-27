@@ -116,7 +116,7 @@ private:
         const Etas& _etas = Etas(0),
         const IResidualErrorModel &_residualErrorModel = EMPTY_RESIDUAL_ERROR_MODEL,
         const Deviations& _eps = Deviations(0),
-        bool _isFixedDensity = 0);
+        bool _isFixedDensity = false);
 
     std::vector<FullDosage> sortAndFilterCandidates(std::vector<FullDosage> &_candidates, BestCandidatesOption _option);
 

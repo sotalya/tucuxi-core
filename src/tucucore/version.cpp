@@ -11,7 +11,7 @@ Version::Version()
 
 std::string Version::getGitRevision()
 {
-    return TUCUXI_GIT_REVISION;
+    return TUCUXI_GIT_REVISION; // NOLINT(clang-diagnostic-error)
 }
 
 

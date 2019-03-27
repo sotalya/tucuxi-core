@@ -212,21 +212,21 @@ bool DateTime::operator!=(const DateTime& _other) const
 int DateTime::year() const
 {
     date::sys_days days = date::floor<date::days>(m_date);
-    return (int)date::year_month_day(days).year();
+    return static_cast<int>(date::year_month_day(days).year());
 }
 
 
 int DateTime::month() const
 {
     date::sys_days days = date::floor<date::days>(m_date);
-    return (unsigned)date::year_month_day(days).month();
+    return static_cast<unsigned>(date::year_month_day(days).month());
 }
 
 
 int DateTime::day() const
 {
     date::sys_days days = date::floor<date::days>(m_date);
-    return (unsigned)date::year_month_day(days).day();
+    return static_cast<unsigned>(date::year_month_day(days).day());
 }
 
 

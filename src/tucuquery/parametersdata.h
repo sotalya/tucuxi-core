@@ -111,7 +111,7 @@ public:
     SampleData() = delete;
 
     SampleData(
-        std::string& msampleID,
+        std::string& _sampleID,
         Tucuxi::Common::DateTime& _pSampleDate,
         Tucuxi::Common::DateTime& _pArrivalDate,
         std::vector< std::unique_ptr<ConcentrationData> >& _concentrations,

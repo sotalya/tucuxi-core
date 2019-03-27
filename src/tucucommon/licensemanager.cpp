@@ -19,10 +19,10 @@ namespace Tucuxi {
 namespace Common {
 
 // Symmetric key between Tucuxi and Server
-const std::string LicenseManager::sm_key = "86685E7AA62844102FC7FAD5D6DDF46C9CA7777BF4E0153FDF5F86463EAC0D75";
+const std::string LicenseManager::sm_key = "86685E7AA62844102FC7FAD5D6DDF46C9CA7777BF4E0153FDF5F86463EAC0D75"; // NOLINT(readability-identifier-naming)
 
-static const std::string LICENSE_KEYWORD = "license";
-static const std::string LICENSEREQUEST_KEYWORD = "request";
+static const std::string LICENSE_KEYWORD = "license";        // NOLINT(readability-identifier-naming)
+static const std::string LICENSEREQUEST_KEYWORD = "request"; // NOLINT(readability-identifier-naming)
 
 int dateToInt(const DateTime& _date) {
     char strDate[9];

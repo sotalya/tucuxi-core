@@ -12,15 +12,15 @@
 using namespace Tucuxi::Common;
 using namespace std::chrono_literals;
 
-int main(int argc, char* argv[])
+int main(int _argc, char* _argv[])
 {
     // Check parameters
-    if (argc != 3) {
+    if (_argc != 3) {
         std::cout << "Error missing parameters" << std::endl;
         return -1;
     }
-    std::string encryptedRequest = argv[1];
-    std::string nbValidityDays = argv[2];
+    std::string encryptedRequest = _argv[1];
+    std::string nbValidityDays = _argv[2];
     
 /*    
     // Create the license request 
@@ -44,7 +44,7 @@ int main(int argc, char* argv[])
     LicenseRequest licenseRequest;
     LicenseRequestError reqResult = LicenseManager::decryptRequest(encryptedRequest, licenseRequest);
     if (reqResult != LicenseRequestError::REQUEST_SUCCESSFUL) {
-        std::cout << "Error while decrypting the request: " << (int)reqResult << std::endl;
+        std::cout << "Error while decrypting the request: " << static_cast<int>(reqResult) << std::endl;
         return -2;
     }
     
@@ -53,7 +53,7 @@ int main(int argc, char* argv[])
     std::string license;
     reqResult = LicenseManager::generateLicense(licenseRequest, license, Tucuxi::Common::Duration(24h * nbDays));
     if (reqResult != LicenseRequestError::REQUEST_SUCCESSFUL) {
-        std::cout << "Error while generating license: " << (int)reqResult << std::endl;
+        std::cout << "Error while generating license: " << static_cast<int>(reqResult) << std::endl;
         return -3;
     }
 /*
@@ -61,7 +61,7 @@ int main(int argc, char* argv[])
     std::cout << "Checking license" << std::endl;
     LicenseError licResult = LicenseManager::checklicense(license);
     if (licResult != LicenseError::VALID_LICENSE) {
-        std::cout << "Error while checking the generated license" << (int)licResult << std::endl;
+        std::cout << "Error while checking the generated license" << static_cast<int>(reqResult) << std::endl;
         return -4;
     }
 */

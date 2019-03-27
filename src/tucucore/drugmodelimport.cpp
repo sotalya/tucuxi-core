@@ -150,8 +150,9 @@ const std::vector<std::string>& DrugModelImport::ignoredTags() const {
 Unit DrugModelImport::extractUnit(Tucuxi::Common::XmlNodeIterator _node)
 {
     std::string unitString = _node->getValue();
-    if (unitString == "min")
+    if (unitString == "min") {
         unitString = "m";
+    }
     Unit result(unitString);
     return result;
 }
@@ -251,8 +252,9 @@ CovariateType DrugModelImport::extractCovariateType(Tucuxi::Common::XmlNodeItera
 
 
     auto it = m.find(_node->getValue());
-    if (it != m.end())
+    if (it != m.end()) {
         return it->second;
+    }
 
     setNodeError(_node);
     return CovariateType::Standard;
@@ -271,8 +273,9 @@ DataType DrugModelImport::extractDataType(Tucuxi::Common::XmlNodeIterator _node)
 
 
     auto it = m.find(_node->getValue());
-    if (it != m.end())
+    if (it != m.end()) {
         return it->second;
+    }
 
     setNodeError(_node);
     return DataType::Double;
@@ -297,8 +300,9 @@ TargetType DrugModelImport::extractTargetType(Tucuxi::Common::XmlNodeIterator _n
     };
 
     auto it = m.find(_node->getValue());
-    if (it != m.end())
+    if (it != m.end()) {
         return it->second;
+    }
 
     setNodeError(_node);
     return TargetType::UnknownTarget;
@@ -316,8 +320,9 @@ InterpolationType DrugModelImport::extractInterpolationType(Tucuxi::Common::XmlN
     };
 
     auto it = m.find(_node->getValue());
-    if (it != m.end())
+    if (it != m.end()) {
         return it->second;
+    }
 
     setNodeError(_node);
     return InterpolationType::Direct;
@@ -337,8 +342,9 @@ ResidualErrorType DrugModelImport::extractResidualErrorType(Tucuxi::Common::XmlN
     };
 
     auto it = m.find(_node->getValue());
-    if (it != m.end())
+    if (it != m.end()) {
         return it->second;
+    }
 
     setNodeError(_node);
     return ResidualErrorType::NONE;
@@ -357,8 +363,9 @@ ParameterVariabilityType DrugModelImport::extractParameterVariabilityType(Tucuxi
     };
 
     auto it = m.find(_node->getValue());
-    if (it != m.end())
+    if (it != m.end()) {
         return it->second;
+    }
 
     setNodeError(_node);
     return ParameterVariabilityType::None;
@@ -376,8 +383,9 @@ Formulation DrugModelImport::extractFormulation(Tucuxi::Common::XmlNodeIterator 
     };
 
     auto it = m.find(_node->getValue());
-    if (it != m.end())
+    if (it != m.end()) {
         return it->second;
+    }
 
     setNodeError(_node);
     return Formulation::Undefined;
@@ -403,8 +411,9 @@ AdministrationRoute DrugModelImport::extractAdministrationRoute(Tucuxi::Common::
     };
 
     auto it = m.find(_node->getValue());
-    if (it != m.end())
+    if (it != m.end()) {
         return it->second;
+    }
 
     setNodeError(_node);
     return AdministrationRoute::Undefined;
@@ -423,8 +432,9 @@ AbsorptionModel DrugModelImport::extractAbsorptionModel(Tucuxi::Common::XmlNodeI
     };
 
     auto it = m.find(_node->getValue());
-    if (it != m.end())
+    if (it != m.end()) {
         return it->second;
+    }
 
     setNodeError(_node);
     return AbsorptionModel::Undefined;
@@ -835,7 +845,7 @@ std::vector<Constraint *> DrugModelImport::extractConstraints(Tucuxi::Common::Xm
         if (nodeName == "constraint") {
             Constraint *constraint;
             constraint = extractConstraint(it);
-            if (constraint) {
+            if (constraint != nullptr) {
                 constraints.push_back(constraint);
             }
         }
@@ -915,7 +925,7 @@ std::vector<CovariateDefinition*> DrugModelImport::extractCovariates(Tucuxi::Com
         if (nodeName == "covariate") {
             CovariateDefinition *covariate;
             covariate = extractCovariate(it);
-            if (covariate) {
+            if (covariate != nullptr) {
                 covariates.push_back(covariate);
             }
         }
@@ -928,22 +938,22 @@ std::vector<CovariateDefinition*> DrugModelImport::extractCovariates(Tucuxi::Com
     return covariates;
 }
 
-Duration castDuration(double duration, Unit unit)
+Duration castDuration(double _duration, Unit _unit)
 {
-    if (unit.toString() == "d") {
-        return Duration(std::chrono::seconds(static_cast<long>(duration * 3600.0 * 24.0)));
+    if (_unit.toString() == "d") {
+        return Duration(std::chrono::seconds(static_cast<long>(_duration * 3600.0 * 24.0)));
     }
-    if (unit.toString() == "min") {
-        return Duration(std::chrono::seconds(static_cast<long>(duration * 60.0)));
+    if (_unit.toString() == "min") {
+        return Duration(std::chrono::seconds(static_cast<long>(_duration * 60.0)));
     }
-    if (unit.toString() == "m") {
-        return Duration(std::chrono::seconds(static_cast<long>(duration * 60.0)));
+    if (_unit.toString() == "m") {
+        return Duration(std::chrono::seconds(static_cast<long>(_duration * 60.0)));
     }
-    if (unit.toString() == "h") {
-        return Duration(std::chrono::seconds(static_cast<long>(duration * 3600.0)));
+    if (_unit.toString() == "h") {
+        return Duration(std::chrono::seconds(static_cast<long>(_duration * 3600.0)));
     }
-    if (unit.toString() == "s") {
-        return Duration(std::chrono::seconds(static_cast<long>(duration)));
+    if (_unit.toString() == "s") {
+        return Duration(std::chrono::seconds(static_cast<long>(_duration)));
     }
     return Duration();
 }
@@ -1062,7 +1072,7 @@ std::vector<ActiveMoiety*> DrugModelImport::extractActiveMoieties(Tucuxi::Common
         if (nodeName == "activeMoiety") {
             ActiveMoiety *activeMoiety;
             activeMoiety = extractActiveMoiety(it);
-            if (activeMoiety) {
+            if (activeMoiety != nullptr) {
                 activeMoieties.push_back(activeMoiety);
             }
         }
@@ -1156,7 +1166,7 @@ std::vector<TargetDefinition*> DrugModelImport::extractTargets(Tucuxi::Common::X
         if (nodeName == "target") {
             TargetDefinition *target;
             target = extractTarget(it);
-            if (target) {
+            if (target != nullptr) {
                 targets.push_back(target);
             }
         }
@@ -1354,7 +1364,7 @@ std::vector<AnalyteSet*> DrugModelImport::extractAnalyteGroups(Tucuxi::Common::X
         if (nodeName == "analyteGroup") {
             AnalyteSet *analyteGroup;
             analyteGroup = extractAnalyteGroup(it);
-            if (analyteGroup) {
+            if (analyteGroup != nullptr) {
                 analyteGroups.push_back(analyteGroup);
             }
         }
@@ -1429,7 +1439,7 @@ std::vector<Analyte*> DrugModelImport::extractAnalytes(Tucuxi::Common::XmlNodeIt
         if (nodeName == "analyte") {
             Analyte *analyte;
             analyte = extractAnalyte(it);
-            if (analyte) {
+            if (analyte != nullptr) {
                 analytes.push_back(analyte);
             }
         }
@@ -1638,7 +1648,7 @@ std::vector<ParameterDefinition*> DrugModelImport::extractParameters(Tucuxi::Com
         if (nodeName == "parameter") {
             ParameterDefinition *parameter;
             parameter = extractParameter(it);
-            if (parameter) {
+            if (parameter != nullptr) {
                 parameters.push_back(parameter);
             }
         }
@@ -1727,7 +1737,7 @@ std::vector<Correlation*> DrugModelImport::extractCorrelations(Tucuxi::Common::X
         if (nodeName == "correlation") {
             Correlation *correlation;
             correlation = extractCorrelation(it);
-            if (correlation) {
+            if (correlation != nullptr) {
                 correlations.push_back(correlation);
             }
         }
@@ -1844,7 +1854,7 @@ FormulationAndRoutes* DrugModelImport::extractFullFormulationAndRoutes(
         if (nodeName == "formulationAndRoute") {
             FullFormulationAndRoute *formulationAndRoute;
             formulationAndRoute = extractFullFormulationAndRoute(it, _analyteSets);
-            if (formulationAndRoute) {
+            if (formulationAndRoute != nullptr) {
                 formulationAndRoutesVector.push_back(formulationAndRoute);
             }
         }

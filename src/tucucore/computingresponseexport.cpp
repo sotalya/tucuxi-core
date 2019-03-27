@@ -26,7 +26,7 @@ bool ComputingResponseExport::exportToFiles(const ComputingResponse &_computingR
         std::string fileName = _filePath + "/" + _computingResponse.getId() + "_" + response->getId() + ".dat";
         file.open(fileName);
 
-        if (dynamic_cast<Tucuxi::Core::SinglePredictionResponse*>(response.get())) {
+        if (dynamic_cast<Tucuxi::Core::SinglePredictionResponse*>(response.get()) != nullptr) {
             const Tucuxi::Core::SinglePredictionResponse* prediction =
                     dynamic_cast<Tucuxi::Core::SinglePredictionResponse*>(response.get());
 
@@ -38,7 +38,7 @@ bool ComputingResponseExport::exportToFiles(const ComputingResponse &_computingR
             }
 
         }
-        else if (dynamic_cast<Tucuxi::Core::SinglePointsResponse*>(response.get())) {
+        else if (dynamic_cast<Tucuxi::Core::SinglePointsResponse*>(response.get()) != nullptr) {
             const Tucuxi::Core::SinglePointsResponse* prediction =
                     dynamic_cast<Tucuxi::Core::SinglePointsResponse*>(response.get());
 
@@ -48,7 +48,7 @@ bool ComputingResponseExport::exportToFiles(const ComputingResponse &_computingR
                 file << (prediction->m_times[i].toSeconds() - firstTime) / 3600.0 << "\t" << prediction->m_concentrations[0][i] << std::endl;
             }
         }
-        else if (dynamic_cast<Tucuxi::Core::PercentilesResponse*>(response.get())) {
+        else if (dynamic_cast<Tucuxi::Core::PercentilesResponse*>(response.get()) != nullptr) {
             const Tucuxi::Core::PercentilesResponse* prediction =
                     dynamic_cast<Tucuxi::Core::PercentilesResponse*>(response.get());
 

@@ -2,7 +2,7 @@
 
 using namespace Tucuxi::Common;
 
-std::string TranslatableString::sm_language = "en";
+std::string TranslatableString::sm_language = "en"; // NOLINT(readability-identifier-naming)
 
 TranslatableString::TranslatableString()
 {

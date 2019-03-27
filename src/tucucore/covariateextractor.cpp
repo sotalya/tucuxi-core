@@ -10,7 +10,7 @@ namespace Core {
 
 using namespace Tucuxi::Common::Utils;
 
-const std::string CovariateExtractor::sm_birthDateCName = "birthdate";
+const std::string CovariateExtractor::BIRTHDATE_CNAME = "birthdate"; // NOLINT(readability-identifier-naming)
 
 /// \brief Create an event and push it in the event series.
 /// \param COV_DEF Corresponding covariate definition.
@@ -95,7 +95,7 @@ CovariateExtractor::CovariateExtractor(const CovariateDefinitions &_defaults,
                 m_initAgeInYears = (*it)->getValue();
                 break;
             default:
-                throw std::runtime_error("[CovariateExtractor] Invalid covariate type (" + std::to_string((int)(*it)->getType()) + ")");
+                throw std::runtime_error("[CovariateExtractor] Invalid covariate type (" + std::to_string(static_cast<int>((*it)->getType())) + ")");
                 break;
             }
         }
@@ -120,7 +120,7 @@ CovariateExtractor::CovariateExtractor(const CovariateDefinitions &_defaults,
             m_pvValued.at((*it)->getId()).push_back(it);
         }
 
-        if ((*it)->getId() == sm_birthDateCName) {
+        if ((*it)->getId() == BIRTHDATE_CNAME) {
             if ((*it)->getDataType() == DataType::Date) {
                 // We found a birthdate
                 m_hasBirthDate = true;
@@ -158,11 +158,11 @@ bool CovariateExtractor::computeEvents(const std::map<DateTime, std::vector<std:
 
     // For each date in the refresh map, set all the values appropriately and then (if needed) launch the computation
     // via the Operable Graph Manager.
-    for (const auto &refresh_event : _refreshMap) {
-        const DateTime refreshTime = refresh_event.first;
+    for (const auto &refreshEvent : _refreshMap) {
+        const DateTime refreshTime = refreshEvent.first;
         std::vector<std::string> updatedCVs;
         // Look at every non-computed covariate we are supposed to refresh.
-        for (const auto &cvName : refresh_event.second) {
+        for (const auto &cvName : refreshEvent.second) {
             Value newVal = 0.0;
             if (((*m_cdValued.at(cvName))->getType() == CovariateType::Standard) || ((*m_cdValued.at(cvName))->getType() == CovariateType::Sex)) {
                 // Standard covariate -- get its value from the Patient Variates or from default values.
@@ -212,19 +212,19 @@ bool CovariateExtractor::computeEvents(const std::map<DateTime, std::vector<std:
 
                 // If we have a birth date, then everything is referred to it. Otherwise, do computations relatives to
                 // the start of the period, and then add the initial default values.
-                DateTime tmp_birthDate = m_hasBirthDate ? m_birthDate : m_start;
+                DateTime tmpBirthDate = m_hasBirthDate ? m_birthDate : m_start;
 
                 switch ((*m_cdValued.at(cvName))->getType()) {
                 case CovariateType::AgeInDays:
-                    newVal = static_cast<double>(dateDiffInDays(refreshTime, tmp_birthDate));
+                    newVal = static_cast<double>(dateDiffInDays(refreshTime, tmpBirthDate));
                     newVal += m_hasBirthDate ? 0 : m_initAgeInDays;
                     break;
                 case CovariateType::AgeInMonths:
-                    newVal = static_cast<double>(dateDiffInMonths(refreshTime, tmp_birthDate));
+                    newVal = static_cast<double>(dateDiffInMonths(refreshTime, tmpBirthDate));
                     newVal += m_hasBirthDate ? 0 : m_initAgeInMonths;
                     break;
                 case CovariateType::AgeInYears:
-                    newVal = static_cast<double>(dateDiffInYears(refreshTime, tmp_birthDate));
+                    newVal = static_cast<double>(dateDiffInYears(refreshTime, tmpBirthDate));
                     newVal += m_hasBirthDate ? 0 : m_initAgeInYears;
                     break;
                 default:

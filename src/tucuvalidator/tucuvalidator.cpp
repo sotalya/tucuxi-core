@@ -12,16 +12,16 @@
 #include "cxxopts/include/cxxopts.hpp"
 
 cxxopts::ParseResult
-parse(int argc, char* argv[])
+parse(int _argc, char* _argv[])
 {
     // Get application folder
-    std::string appFolder = Tucuxi::Common::Utils::getAppFolder(argv);
+    std::string appFolder = Tucuxi::Common::Utils::getAppFolder(_argv);
 
 
     try
     {
 
-        cxxopts::Options options(argv[0], " - Tucuxi drug file validator");
+        cxxopts::Options options(_argv[0], " - Tucuxi drug file validator");
         options
                 .positional_help("[optional args]")
                 .show_positional_help();
@@ -36,16 +36,16 @@ parse(int argc, char* argv[])
                 ;
 
 
-        auto result = options.parse(argc, argv);
+        auto result = options.parse(_argc, _argv);
 
-        if (result.count("help"))
+        if (result.count("help") > 0)
         {
             std::cout << options.help({"", "Group"}) << std::endl;
             exit(0);
         }
 
         std::string drugFileName;
-        if (result.count("drugfile")) {
+        if (result.count("drugfile") > 0) {
             drugFileName = result["drugfile"].as<std::string>();
         }
         else {
@@ -55,7 +55,7 @@ parse(int argc, char* argv[])
         }
 
         std::string testsFileName;
-        if (result.count("testfile")) {
+        if (result.count("testfile") > 0) {
             testsFileName = result["testfile"].as<std::string>();
         }
         else {
@@ -65,7 +65,7 @@ parse(int argc, char* argv[])
         }
 
         std::string logFileName;
-        if (result.count("logfile")) {
+        if (result.count("logfile") > 0) {
             logFileName = result["logfile"].as<std::string>();
         }
         else {
@@ -103,13 +103,13 @@ parse(int argc, char* argv[])
 ///
 /// This application is intended mainly to run automated test scripts
 
-int main(int argc, char** argv)
+int main(int _argc, char** _argv)
 {
     // Get application folder
-    std::string appFolder = Tucuxi::Common::Utils::getAppFolder(argv);
+    std::string appFolder = Tucuxi::Common::Utils::getAppFolder(_argv);
 
 
-    auto result = parse(argc, argv);
+    auto result = parse(_argc, _argv);
 
     Tucuxi::Common::LoggerHelper::beforeExit();
 
