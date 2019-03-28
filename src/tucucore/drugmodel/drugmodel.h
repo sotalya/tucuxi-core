@@ -47,6 +47,12 @@ public:
         : m_model(_model), m_analyteGroupId(_analyteGroupId), m_formulation(_formulation), m_route(_route)
     {
     }
+
+    ParameterDefinitionIterator(const DrugModel &_model, const AnalyteGroupId& _analyteGroupId, const std::vector<const FullFormulationAndRoute*> &_formulation)
+        : m_model(_model), m_analyteGroupId(_analyteGroupId), m_formulation(Formulation::Undefined), m_route(AdministrationRoute::Undefined), m_fullFormulationAndRoutes(_formulation)
+    {
+    }
+
     ParameterDefinitionIterator(const ParameterDefinitionIterator& _right)
         : m_model(_right.m_model), m_analyteGroupId(_right.m_analyteGroupId), m_formulation(_right.m_formulation), m_route(_right.m_route), m_index(_right.m_index)
     {
@@ -65,6 +71,7 @@ private:
     const AnalyteGroupId m_analyteGroupId;
     const Formulation m_formulation;
     const AdministrationRoute m_route;
+    const std::vector<const FullFormulationAndRoute*> m_fullFormulationAndRoutes;
     size_t m_index;
 };
 
@@ -114,6 +121,14 @@ public:
         ParameterDefinitionIterator iterator(*this, _analyteGroupId, _formulation, _route);
         return iterator;
     }
+
+    ParameterDefinitionIterator getParameterDefinitions(const AnalyteGroupId& _analyteGroupId, const std::vector<const FullFormulationAndRoute*> &_formulation) const
+    {
+        ParameterDefinitionIterator iterator(*this, _analyteGroupId, _formulation);
+        return iterator;
+    }
+
+
 
     ///
     /// \brief getParameters
@@ -171,6 +186,10 @@ private:
         return m_formulationAndRoutes->get(_formulation, _route);
     }
 
+    const FullFormulationAndRoute* getFormulationAndRoute(const FormulationAndRoute &_formulation) const {
+        return m_formulationAndRoutes->get(_formulation);
+    }
+
     const ParameterSetDefinition* getAbsorptionParameters(const AnalyteGroupId &_analyteGroupId, const Formulation &_formulation, const AdministrationRoute _route) const {
         const FullFormulationAndRoute* fr = getFormulationAndRoute(_formulation, _route);
         if (fr != nullptr) {
@@ -179,9 +198,15 @@ private:
         return nullptr;
     }
 
+    const ParameterSetDefinition* getAbsorptionParameters(const AnalyteGroupId &_analyteGroupId, const FormulationAndRoute &_formulation) const {
+        const FullFormulationAndRoute* fr = getFormulationAndRoute(_formulation);
+        if (fr != nullptr) {
+            return fr->getParameterDefinitions(_analyteGroupId);
+        }
+        return nullptr;
+    }
+
     const ParameterSetDefinition* getDispositionParameters(const AnalyteGroupId &_analyteGroupId) const {
-        // CHECKINVARIANTS;
-        // TODO : Now we send an analyteId, while it should be a analyteGroupId
         const AnalyteSet* pSet = getAnalyteSet(_analyteGroupId);
         if (pSet != nullptr) {
             return &pSet->getDispositionParameters();

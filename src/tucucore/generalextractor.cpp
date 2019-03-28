@@ -43,10 +43,20 @@ Duration GeneralExtractor::secureStartDuration(const HalfLife &_halfLife)
     return duration;
 }
 
-ComputingResult GeneralExtractor::extractAposterioriEtas(Etas &_etas, const ComputingRequest &_request, const IntakeSeries &_intakeSeries, const ParameterSetSeries &_parameterSeries, const CovariateSeries &_covariateSeries, DateTime _calculationStartTime, DateTime _endTime)
+ComputingResult GeneralExtractor::extractAposterioriEtas(
+        Etas &_etas,
+        const ComputingRequest &_request,
+        AnalyteGroupId _analyteGroupId,
+        const IntakeSeries &_intakeSeries,
+        const ParameterSetSeries &_parameterSeries,
+        const CovariateSeries &_covariateSeries,
+        DateTime _calculationStartTime, DateTime _endTime)
 {
     Tucuxi::Core::OmegaMatrix omega;
-    ComputationResult omegaComputationResult = extractOmega(_request.getDrugModel(), omega);
+
+    std::vector<const FullFormulationAndRoute *> formulationAndRoutes = extractFormulationAndRoutes(_request.getDrugModel(), _intakeSeries);
+
+    ComputationResult omegaComputationResult = extractOmega(_request.getDrugModel(), _analyteGroupId, formulationAndRoutes, omega);
     if (omegaComputationResult != ComputationResult::Success) {
         return ComputingResult::Error;
     }
@@ -83,18 +93,12 @@ ComputingResult GeneralExtractor::extractAposterioriEtas(Etas &_etas, const Comp
 }
 
 ComputationResult GeneralExtractor::extractOmega(
-    const DrugModel &_drugModel,
-    OmegaMatrix &_omega)
+        const DrugModel &_drugModel,
+        AnalyteGroupId _analyteGroupId,
+        std::vector<const FullFormulationAndRoute*> &_formulationAndRoutes,
+        OmegaMatrix &_omega)
 {
-
-    // TODO : This should not necessarily be the default formulation and route
-    // Should get rid of the next 3 lines
-    const AnalyteGroupId analyteId = _drugModel.getAnalyteSet()->getId();
-    const Formulation formulation = _drugModel.getFormulationAndRoutes().getDefault()->getFormulationAndRoute().getFormulation();
-    const AdministrationRoute route = _drugModel.getFormulationAndRoutes().getDefault()->getFormulationAndRoute().getAdministrationRoute();
-
-    ParameterDefinitionIterator it = _drugModel.getParameterDefinitions(analyteId, formulation, route);
-
+    ParameterDefinitionIterator it = _drugModel.getParameterDefinitions(_analyteGroupId, _formulationAndRoutes);
 
     int nbVariableParameters = 0;
 
@@ -128,7 +132,7 @@ ComputationResult GeneralExtractor::extractOmega(
         it.next();
     }
 
-    const AnalyteSet *analyteSet = _drugModel.getAnalyteSet(analyteId);
+    const AnalyteSet *analyteSet = _drugModel.getAnalyteSet(_analyteGroupId);
     Correlations correlations = analyteSet->getDispositionParameters().getCorrelations();
     for(size_t i = 0; i < correlations.size(); i++) {
         std::string p1 = correlations[i].getParamId1();
@@ -146,6 +150,21 @@ ComputationResult GeneralExtractor::extractOmega(
     return ComputationResult::Success;
 }
 
+std::vector<const FullFormulationAndRoute*> GeneralExtractor::extractFormulationAndRoutes(const DrugModel &_drugModel, const IntakeSeries _intakeSeries)
+{
+    std::vector<const FullFormulationAndRoute*> result;
+    std::vector<FormulationAndRoute> allFormulationAndRoutes;
+    for (const auto & intake : _intakeSeries) {
+        FormulationAndRoute f = intake.getFormulationAndRoute();
+        if (std::find(allFormulationAndRoutes.begin(), allFormulationAndRoutes.end(), f) == allFormulationAndRoutes.end()) {
+            allFormulationAndRoutes.push_back(f);
+        }
+    }
+    for (const auto & f : allFormulationAndRoutes) {
+        result.push_back(_drugModel.getFormulationAndRoutes().get(f));
+    }
+    return result;
+}
 
 ComputingResult GeneralExtractor::generalExtractions(const ComputingTraitStandard *_traits,
         const ComputingRequest &_request,
@@ -153,7 +172,7 @@ ComputingResult GeneralExtractor::generalExtractions(const ComputingTraitStandar
         std::map<AnalyteGroupId, std::shared_ptr<PkModel> > &_pkModel,
         GroupsIntakeSeries &_intakeSeries,
         CovariateSeries &_covariatesSeries,
-        ParameterSetSeries &_parameterSeries,
+        GroupsParameterSetSeries &_parameterSeries,
         DateTime &_calculationStartTime
         )
 {
@@ -281,12 +300,10 @@ ComputingResult GeneralExtractor::generalExtractions(const ComputingTraitStandar
         }
     }
 
-    // TODO : This should not necessarily be the default formulation and route
-    // Should get rid of the next 4 lines
-    const std::string pkModelId = _request.getDrugModel().getAnalyteSet()->getPkModelId();
-    const AnalyteGroupId analyteGroupId = _request.getDrugModel().getAnalyteSet()->getId();
-    const Formulation formulation = _request.getDrugModel().getFormulationAndRoutes().getDefault()->getFormulationAndRoute().getFormulation();
-    const AdministrationRoute route = _request.getDrugModel().getFormulationAndRoutes().getDefault()->getFormulationAndRoute().getAdministrationRoute();
+    if (fullFormulationAndRoutes.size() > 1) {
+        m_logger.error("The computing engine does not support multiple formulations and routes");
+        return ComputingResult::Error;
+    }
 
     for (const auto &analyteSet : _request.getDrugModel().getAnalyteSets()) {
         _pkModel[analyteSet->getId()] = _modelCollection->getPkModelFromId(analyteSet->getPkModelId());
@@ -333,65 +350,83 @@ ComputingResult GeneralExtractor::generalExtractions(const ComputingTraitStandar
         }
     }
 
-    ParameterDefinitionIterator it = _request.getDrugModel().getParameterDefinitions(analyteGroupId, formulation, route);
 
-    ParametersExtractor parameterExtractor(_covariatesSeries,
-                                           it,
-                                           fantomStart,
-                                           _traits->getEnd());
-
-    ParametersExtractor::Result parametersExtractionResult;
+    for (const auto &analyteSet : _request.getDrugModel().getAnalyteSets()) {
+        const AnalyteGroupId analyteGroupId =analyteSet->getId();
 
 
-    if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Population) {
+        // TODO : This should not necessarily be a single formulation and route
+        Formulation formulation = Formulation::Undefined;
+        AdministrationRoute route = AdministrationRoute::Undefined;
+        if (allFormulationAndRoutes.size() > 0) {
+            formulation = allFormulationAndRoutes[0].getFormulation();
+            route = allFormulationAndRoutes[0].getAdministrationRoute();
+        }
+        else {
+            formulation = _request.getDrugModel().getFormulationAndRoutes().getDefault()->getFormulationAndRoute().getFormulation();
+            route = _request.getDrugModel().getFormulationAndRoutes().getDefault()->getFormulationAndRoute().getAdministrationRoute();
+        }
+
+        ParameterDefinitionIterator it = _request.getDrugModel().getParameterDefinitions(analyteGroupId, formulation, route);
+
+        ParametersExtractor parameterExtractor(_covariatesSeries,
+                                               it,
+                                               fantomStart,
+                                               _traits->getEnd());
+
+        ParametersExtractor::Result parametersExtractionResult;
+
+
+        if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Population) {
 #ifdef POPPARAMETERSFROMDEFAULTVALUES
-        parametersExtractionResult = parameterExtractor.extractPopulation(_parameterSeries);
+            parametersExtractionResult = parameterExtractor.extractPopulation(_parameterSeries);
 #else
-        //parametersExtractionResult = parameterExtractor.extract(_parameterSeries);
+            //parametersExtractionResult = parameterExtractor.extract(_parameterSeries);
 
-        ParameterSetSeries intermediateParameterSeries;
+            ParameterSetSeries intermediateParameterSeries;
 
-        parametersExtractionResult = parameterExtractor.extract(intermediateParameterSeries);
+            parametersExtractionResult = parameterExtractor.extract(intermediateParameterSeries);
 
-        if (parametersExtractionResult != ParametersExtractor::Result::Ok) {
-            m_logger.error("Can not extract parameters");
-            return ComputingResult::Error;
-        }
+            if (parametersExtractionResult != ParametersExtractor::Result::Ok) {
+                m_logger.error("Can not extract parameters");
+                return ComputingResult::Error;
+            }
 
-        // The intermediateParameterSeries contains changes of parameters, so we build a full set of parameter
-        // for each event.
-        parametersExtractionResult = parameterExtractor.buildFullSet(intermediateParameterSeries, _parameterSeries);
-        if (parametersExtractionResult != ParametersExtractor::Result::Ok) {
-            m_logger.error("Can not consolidate parameters");
-            return ComputingResult::Error;
-        }
+            // The intermediateParameterSeries contains changes of parameters, so we build a full set of parameter
+            // for each event.
+            parametersExtractionResult = parameterExtractor.buildFullSet(intermediateParameterSeries, _parameterSeries[analyteGroupId]);
+            if (parametersExtractionResult != ParametersExtractor::Result::Ok) {
+                m_logger.error("Can not consolidate parameters");
+                return ComputingResult::Error;
+            }
 
 #endif // POPPARAMETERSFROMDEFAULTVALUES
 
-        if (parametersExtractionResult != ParametersExtractor::Result::Ok) {
-            m_logger.error("Can not extract parameters");
-            return ComputingResult::Error;
+            if (parametersExtractionResult != ParametersExtractor::Result::Ok) {
+                m_logger.error("Can not extract parameters");
+                return ComputingResult::Error;
+            }
+
         }
+        else {
+            ParameterSetSeries intermediateParameterSeries;
 
-    }
-    else {
-        ParameterSetSeries intermediateParameterSeries;
+            parametersExtractionResult = parameterExtractor.extract(intermediateParameterSeries);
 
-        parametersExtractionResult = parameterExtractor.extract(intermediateParameterSeries);
+            if (parametersExtractionResult != ParametersExtractor::Result::Ok) {
+                m_logger.error("Can not extract parameters");
+                return ComputingResult::Error;
+            }
 
-        if (parametersExtractionResult != ParametersExtractor::Result::Ok) {
-            m_logger.error("Can not extract parameters");
-            return ComputingResult::Error;
+            // The intermediateParameterSeries contains changes of parameters, so we build a full set of parameter
+            // for each event.
+            parametersExtractionResult = parameterExtractor.buildFullSet(intermediateParameterSeries, _parameterSeries[analyteGroupId]);
+            if (parametersExtractionResult != ParametersExtractor::Result::Ok) {
+                m_logger.error("Can not consolidate parameters");
+                return ComputingResult::Error;
+            }
+
         }
-
-        // The intermediateParameterSeries contains changes of parameters, so we build a full set of parameter
-        // for each event.
-        parametersExtractionResult = parameterExtractor.buildFullSet(intermediateParameterSeries, _parameterSeries);
-        if (parametersExtractionResult != ParametersExtractor::Result::Ok) {
-            m_logger.error("Can not consolidate parameters");
-            return ComputingResult::Error;
-        }
-
     }
 
 

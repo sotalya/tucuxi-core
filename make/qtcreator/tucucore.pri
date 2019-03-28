@@ -154,7 +154,8 @@ SOURCES += \
     $$PWD/../../src/tucucore/drugfilevalidator.cpp \
     $$PWD/../../src/tucucore/generalextractor.cpp \
     $$PWD/../../src/tucucore/drugmodelchecker.cpp \
-    $$PWD/../../src/tucucore/cyclestatistics.cpp
+    $$PWD/../../src/tucucore/cyclestatistics.cpp \
+    $$PWD/../../src/tucucore/intakeevent.cpp
 
 DISTFILES += \
     $$PWD/../../src/tucucore/makefile

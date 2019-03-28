@@ -115,9 +115,9 @@ ComputingResult ComputingComponent::compute(
 
     std::map<AnalyteGroupId, std::shared_ptr<PkModel> > pkModel;
 
-    std::map<AnalyteGroupId, IntakeSeries> intakeSeries;
+    GroupsIntakeSeries intakeSeries;
     CovariateSeries covariateSeries;
-    ParameterSetSeries parameterSeries;
+    GroupsParameterSetSeries parameterSeries;
     DateTime calculationStartTime;
 
     ComputingResult extractionResult = m_generalExtractor->generalExtractions(_traits,
@@ -145,7 +145,7 @@ ComputingResult ComputingComponent::compute(
         Etas etas;
 
         if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Aposteriori) {
-            if (m_generalExtractor->extractAposterioriEtas(etas, _request, intakeSeries[analyteGroupId], parameterSeries, covariateSeries, calculationStartTime, _traits->getEnd())
+            if (m_generalExtractor->extractAposterioriEtas(etas, _request, analyteGroupId, intakeSeries[analyteGroupId], parameterSeries[analyteGroupId], covariateSeries, calculationStartTime, _traits->getEnd())
                     != ComputingResult::Success) {
                 return ComputingResult::Error;
             }
@@ -158,7 +158,7 @@ ComputingResult ComputingComponent::compute(
     //                   calculationStartTime,
                     _traits->getEnd(),
                     intakeSeries[analyteGroupId],
-                    parameterSeries,
+                    parameterSeries[analyteGroupId],
                     etas);
 
 
@@ -192,7 +192,7 @@ ComputingResult ComputingComponent::compute(
                     cycle.addData(times, pPrediction->getValues().at(i), 0);
 
 
-                    ParameterSetEventPtr params = parameterSeries.getAtTime(start, etas);
+                    ParameterSetEventPtr params = parameterSeries[analyteGroupId].getAtTime(start, etas);
 
                     for (auto p = params.get()->begin() ; p < params.get()->end() ; p++) {
                         cycle.m_parameters.push_back({(*p).getParameterId(), (*p).getValue()});
@@ -240,7 +240,7 @@ ComputingResult ComputingComponent::compute(
 
     GroupsIntakeSeries intakeSeries;
     CovariateSeries covariateSeries;
-    ParameterSetSeries parameterSeries;
+    GroupsParameterSetSeries parameterSeries;
     DateTime calculationStartTime;
 
     ComputingResult extractionResult = m_generalExtractor->generalExtractions(_traits,
@@ -288,7 +288,9 @@ ComputingResult ComputingComponent::compute(
 
     std::unique_ptr<IResidualErrorModel> residualErrorModel = std::unique_ptr<IResidualErrorModel>(residual);
 
-    ComputationResult omegaComputationResult = m_generalExtractor->extractOmega(_request.getDrugModel(), omega);
+    std::vector<const FullFormulationAndRoute *> fullFormulationAndRoutes = m_generalExtractor->extractFormulationAndRoutes(_request.getDrugModel(), intakeSeries[analyteGroupId]);
+
+    ComputationResult omegaComputationResult = m_generalExtractor->extractOmega(_request.getDrugModel(), analyteGroupId, fullFormulationAndRoutes, omega);
     if (omegaComputationResult != ComputationResult::Success) {
         return ComputingResult::Error;
     }
@@ -303,7 +305,7 @@ ComputingResult ComputingComponent::compute(
 
     if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Aposteriori)   {
 
-        if (m_generalExtractor->extractAposterioriEtas(etas, _request, intakeSeries[analyteGroupId], parameterSeries, covariateSeries, calculationStartTime, _traits->getEnd())
+        if (m_generalExtractor->extractAposterioriEtas(etas, _request, analyteGroupId, intakeSeries[analyteGroupId], parameterSeries[analyteGroupId], covariateSeries, calculationStartTime, _traits->getEnd())
                 != ComputingResult::Success) {
             return ComputingResult::Error;
         }
@@ -324,7 +326,7 @@ ComputingResult ComputingComponent::compute(
                     _traits->getStart(),
                     _traits->getEnd(),
                     intakeSeries[analyteGroupId],
-                    parameterSeries,
+                    parameterSeries[analyteGroupId],
                     omega,
                     *residualErrorModel,
                     etas,
@@ -341,7 +343,7 @@ ComputingResult ComputingComponent::compute(
                     _traits->getStart(),
                     _traits->getEnd(),
                     intakeSeries[analyteGroupId],
-                    parameterSeries,
+                    parameterSeries[analyteGroupId],
                     omega,
                     *residualErrorModel,
                     etas,
@@ -360,7 +362,7 @@ ComputingResult ComputingComponent::compute(
                 _traits->getStart(),
                 _traits->getEnd(),
                 intakeSeries[analyteGroupId],
-                parameterSeries);
+                parameterSeries[analyteGroupId]);
 
     if (predictionComputationResult != ComputationResult::Success) {
         return ComputingResult::Error;
@@ -617,7 +619,7 @@ ComputingResult ComputingComponent::compute(
 
     GroupsIntakeSeries intakeSeries;
     CovariateSeries covariateSeries;
-    ParameterSetSeries parameterSeries;
+    GroupsParameterSetSeries parameterSeries;
     DateTime calculationStartTime;
 
     // Be carefull here, as the endTime could be different...
@@ -644,7 +646,7 @@ ComputingResult ComputingComponent::compute(
 
     for(auto analyteGroupId : allGroupIds) {
         if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Aposteriori) {
-            if (m_generalExtractor->extractAposterioriEtas(etas[analyteGroupId], _request, intakeSeries[analyteGroupId], parameterSeries, covariateSeries, calculationStartTime, _traits->getEnd())
+            if (m_generalExtractor->extractAposterioriEtas(etas[analyteGroupId], _request, analyteGroupId, intakeSeries[analyteGroupId], parameterSeries[analyteGroupId], covariateSeries, calculationStartTime, _traits->getEnd())
                     != ComputingResult::Success) {
                 return ComputingResult::Error;
             }
@@ -770,7 +772,7 @@ ComputingResult ComputingComponent::compute(
                             calculationStartTime,
                             newEndTime,
                             intakeSeriesPerGroup[analyteGroupId],
-                            parameterSeries,
+                            parameterSeries[analyteGroupId],
                             etas[analyteGroupId]);
 
                 if (predictionComputationResult != ComputationResult::Success) {
@@ -925,7 +927,7 @@ ComputingResult ComputingComponent::compute(
 
     GroupsIntakeSeries intakeSeries;
     CovariateSeries covariateSeries;
-    ParameterSetSeries parameterSeries;
+    GroupsParameterSetSeries parameterSeries;
     DateTime calculationStartTime;
 
     DateTime firstDate;
@@ -970,7 +972,7 @@ ComputingResult ComputingComponent::compute(
         Etas etas;
 
         if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Aposteriori) {
-            if (m_generalExtractor->extractAposterioriEtas(etas, _request, intakeSeries[analyteGroupId], parameterSeries, covariateSeries, calculationStartTime, lastDate)
+            if (m_generalExtractor->extractAposterioriEtas(etas, _request, analyteGroupId, intakeSeries[analyteGroupId], parameterSeries[analyteGroupId], covariateSeries, calculationStartTime, lastDate)
                     != ComputingResult::Success) {
                 return ComputingResult::Error;
             }
@@ -989,7 +991,7 @@ ComputingResult ComputingComponent::compute(
                     concentrations,
                     false,
                     intakeSeries[analyteGroupId],
-                    parameterSeries,
+                    parameterSeries[analyteGroupId],
                     timesSeries,
                     etas,
                     true);

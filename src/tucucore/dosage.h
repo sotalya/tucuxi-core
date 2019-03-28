@@ -28,21 +28,6 @@ namespace Core {
 
 class IntakeExtractor;
 
-/// \brief An intake series is list of intake events.
-/// This vector could be replaced in the future with a class that offers more capabilities (for instance, it could
-/// incorporate the time interval spanned by the series). However, it will have to expose the same capabilities as the
-/// underlying std::vector, thus the transition will be painless.
-typedef std::vector<IntakeEvent> IntakeSeries;
-
-typedef std::map<AnalyteGroupId, IntakeSeries> GroupsIntakeSeries;
-
-void cloneIntakeSeries(const std::vector<IntakeEvent> &_input, std::vector<IntakeEvent> &_output);
-
-
-void selectRecordedIntakes(
-        IntakeSeries &_selectionSeries, const IntakeSeries &_intakeSeries,
-        DateTime _recordFrom, DateTime _recordTo);
-
 
 /// \brief Implement the extract and clone operations for Dosage subclasses.
 #define DOSAGE_UTILS(BaseClassName, ClassName) \

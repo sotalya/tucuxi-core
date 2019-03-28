@@ -16,6 +16,7 @@
 #include "tucucore/drugdefinitions.h"
 #include "tucucore/drugmodel/parameterdefinition.h"
 #include "tucucore/parameterids.h"
+#include "tucucore/drugmodel/analyte.h"
 
 struct TestParameterExtractor;
 
@@ -159,6 +160,9 @@ public:
 // private:
     std::vector<ParameterSetEvent> m_parameterSets;
 };
+
+
+typedef std::map<AnalyteGroupId, ParameterSetSeries> GroupsParameterSetSeries;
 
 
 } // namespace Core

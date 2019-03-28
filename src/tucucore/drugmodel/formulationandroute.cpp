@@ -12,16 +12,9 @@ const ParameterSetDefinition* FullFormulationAndRoute::getParameterDefinitions(c
         if (association->m_analyteSet.getId() == _analyteGroupId) {
             return association->m_absorptionParameters.get();
         }
-        /*
-         * for (const std::unique_ptr<Analyte>& analyte : association->m_analyteSet.getAnalytes()) {
-            if (analyte->getAnalyteId() == _analyteGroupId) {
-                return association->m_absorptionParameters.get();
-            }
-        }*/
     }
     return nullptr;
 }
-
 
 FormulationAndRoutes::FormulationAndRoutes() :
     m_defaultIndex(0)

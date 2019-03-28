@@ -12,9 +12,22 @@ namespace Core {
 bool ParameterDefinitionIterator::isDone() const
 {
     size_t nTotal = 0;
-    const ParameterSetDefinition* params1 = m_model.getAbsorptionParameters(m_analyteGroupId, m_formulation, m_route);
-    if (params1 != nullptr) {
-        nTotal += params1->getNbParameters();
+
+    std::vector<const ParameterSetDefinition * > params1a;
+    if (m_fullFormulationAndRoutes.size() > 0) {
+        for (const auto & f : m_fullFormulationAndRoutes) {
+            const ParameterSetDefinition* params1 = m_model.getAbsorptionParameters(m_analyteGroupId, f->getFormulationAndRoute());
+            if (params1 != nullptr) {
+                params1a.push_back(params1);
+                nTotal += params1->getNbParameters();
+            }
+        }
+    }
+    else {
+        const ParameterSetDefinition* params1 = m_model.getAbsorptionParameters(m_analyteGroupId, m_formulation, m_route);
+        if (params1 != nullptr) {
+            nTotal += params1->getNbParameters();
+        }
     }
     const ParameterSetDefinition* params2 = m_model.getDispositionParameters(m_analyteGroupId);
     if (params2 != nullptr) {
@@ -30,15 +43,40 @@ typedef struct {
 
 const ParameterDefinition* ParameterDefinitionIterator::operator*()
 {
-    const ParameterSetDefinition* params1 = m_model.getAbsorptionParameters(m_analyteGroupId, m_formulation, m_route);
+    std::vector<const ParameterSetDefinition * > params1a;
+
+    if (m_fullFormulationAndRoutes.size() > 0) {
+        for (const auto & f : m_fullFormulationAndRoutes) {
+            const ParameterSetDefinition* params1 = m_model.getAbsorptionParameters(m_analyteGroupId, f->getFormulationAndRoute());
+            if (params1 != nullptr) {
+                params1a.push_back(params1);
+            }
+        }
+    }
+    else {
+        const ParameterSetDefinition* params1 = m_model.getAbsorptionParameters(m_analyteGroupId, m_formulation, m_route);
+        if (params1 != nullptr) {
+            params1a.push_back(params1);
+        }
+    }
+
+
+    //const ParameterSetDefinition* params1 = m_model.getAbsorptionParameters(m_analyteGroupId, m_formulation, m_route);
     const ParameterSetDefinition* params2 = m_model.getDispositionParameters(m_analyteGroupId);
 
     std::vector<ddd> vector;
 
     // Check that there are absorption parameters (not the case for every model)
-    if (params1 != nullptr) {
+    /*if (params1 != nullptr) {
         for (size_t i = 0;i < params1->getNbParameters(); i++) {
             vector.push_back({params1->getParameter(i)->getId(), params1->getParameter(i)->isVariable()});
+        }
+    }*/
+
+    // Check that there are absorption parameters (not the case for every model)
+    for(const auto & params : params1a) {
+        for (size_t i = 0;i < params->getNbParameters(); i++) {
+            vector.push_back({params->getParameter(i)->getId(), params->getParameter(i)->isVariable()});
         }
     }
 
@@ -56,13 +94,20 @@ const ParameterDefinition* ParameterDefinitionIterator::operator*()
 
     std::string curId = vector[m_index].id;
 
+    for(const auto & params : params1a) {
+        for (size_t i = 0;i < params->getNbParameters(); i++) {
+            if (params->getParameter(i)->getId() == curId)
+                return params->getParameter(i);
+        }
+    }
+/*
     if (params1 != nullptr) {
         for (size_t i = 0;i < params1->getNbParameters(); i++) {
             if (params1->getParameter(i)->getId() == curId)
                 return params1->getParameter(i);
         }
     }
-    for (size_t i = 0;i < params2->getNbParameters(); i++) {
+*/    for (size_t i = 0;i < params2->getNbParameters(); i++) {
         if (params2->getParameter(i)->getId() == curId)
             return params2->getParameter(i);
     }
