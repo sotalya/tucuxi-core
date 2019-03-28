@@ -15,6 +15,8 @@ public:
     BuildMultiAnalytesMultiActiveMoieties() {}
 
     Tucuxi::Core::DrugModel *buildDrugModel(
+            double _conversionFactor0 = 1.0,
+            double _conversionFactor1 = 1.0,
             ResidualErrorType _errorModelType = ResidualErrorType::NONE,
             std::vector<Value> _sigmas = {0.0},
             Tucuxi::Core::ParameterVariabilityType _variabilityTypeA = Tucuxi::Core::ParameterVariabilityType::None,
@@ -189,9 +191,9 @@ public:
                 formulationAndRoute->addAssociation(std::unique_ptr<AnalyteSetToAbsorptionAssociation>(association1));
             }
 
-            std::unique_ptr<AnalyteConversion> analyteConversion0 = std::make_unique<AnalyteConversion>("analyte0", 1.0);
+            std::unique_ptr<AnalyteConversion> analyteConversion0 = std::make_unique<AnalyteConversion>("analyte0", _conversionFactor0);
             formulationAndRoute->addAnalyteConversion(std::move(analyteConversion0));
-            std::unique_ptr<AnalyteConversion> analyteConversion1 = std::make_unique<AnalyteConversion>("analyte1", 1.0);
+            std::unique_ptr<AnalyteConversion> analyteConversion1 = std::make_unique<AnalyteConversion>("analyte1", _conversionFactor1);
             formulationAndRoute->addAnalyteConversion(std::move(analyteConversion1));
 
             ValidDoses *validDoses = new ValidDoses(Unit("mg"), std::make_unique<PopulationValue>(400));

@@ -580,10 +580,9 @@ int main(int argc, char** argv)
 #endif
 
 #if defined(test_constanteliminationbolus) or !defined(DO_NOT_COMPILE_ALL_TESTS)
-    // --- Tobramycin drug tests --- //
+    // --- Constant elimination tests --- //
     TestConstantEliminationBolus constantEliminationBolusTests;
 
-    // one compartment
     constantEliminationBolusTests.add_test("testConstantEliminationBolus", &TestConstantEliminationBolus::testConstantElimination);
 
     res = constantEliminationBolusTests.run(argc, argv);
@@ -598,11 +597,11 @@ int main(int argc, char** argv)
 
 
 #if defined(test_multianalytesmultiactivemoieties) or !defined(DO_NOT_COMPILE_ALL_TESTS)
-    // --- Tobramycin drug tests --- //
+    // --- Multi analytes multi active moieties tests --- //
     TestMultiAnalytesMultiActiveMoieties multiAnalytesMultiActiveMoietiesTests;
 
-    // one compartment
     multiAnalytesMultiActiveMoietiesTests.add_test("testMultiAnalytesMultiActiveMoieties", &TestMultiAnalytesMultiActiveMoieties::testMultiAnalytesMultiActiveMoieties);
+    multiAnalytesMultiActiveMoietiesTests.add_test("testMultiAnalytesMultiActiveMoietiesConversion", &TestMultiAnalytesMultiActiveMoieties::testMultiAnalytesMultiActiveMoietiesConversion);
 
     res = multiAnalytesMultiActiveMoietiesTests.run(argc, argv);
     tot_res |= res;

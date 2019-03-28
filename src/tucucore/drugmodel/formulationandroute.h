@@ -101,7 +101,7 @@ public:
         m_analyteId(_analyteId), m_factor(_factor)
     {}
 
-    std::string getAnalyteId() const { return m_analyteId;}
+    AnalyteId getAnalyteId() const { return m_analyteId;}
 
     Value getFactor() const { return m_factor;}
 
@@ -112,7 +112,7 @@ public:
 
     protected:
 
-    std::string m_analyteId;
+    AnalyteId m_analyteId;
     Value m_factor;
 };
 
@@ -209,6 +209,14 @@ public:
 
     void addAnalyteConversion(std::unique_ptr<AnalyteConversion> _analyteConversion) { m_analyteConversions.push_back(std::move(_analyteConversion));}
     const std::vector<std::unique_ptr<AnalyteConversion> >& getAnalyteConversions() const { return m_analyteConversions;}
+    const AnalyteConversion *getAnalyteConversion(AnalyteId _analyteId) const {
+        for (const auto &analyteConversion : m_analyteConversions) {
+            if (analyteConversion->getAnalyteId() == _analyteId) {
+                return analyteConversion.get();
+            }
+        }
+        return nullptr;
+    }
 
     const ParameterSetDefinition* getParameterDefinitions(const AnalyteGroupId &_analyteGroupId) const;
 

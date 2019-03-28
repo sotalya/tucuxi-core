@@ -104,7 +104,14 @@ public:
     {
         return m_nbPoints;
     }
-    
+
+    /// \brief Set the dose.
+    /// \param Dose value.
+    void setDose(DoseValue _dose)
+    {
+        m_dose = _dose;
+    }
+
     /// \brief Get the dose.
     /// \return Dose value.
     DoseValue getDose() const

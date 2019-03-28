@@ -316,6 +316,8 @@ ComputingResult GeneralExtractor::generalExtractions(const ComputingTraitStandar
     for (const auto &analyteSet : _request.getDrugModel().getAnalyteSets()) {
         cloneIntakeSeries(intakeSeries, _intakeSeries[analyteSet->getId()]);
 
+        convertAnalytes(_intakeSeries[analyteSet->getId()], _request.getDrugModel(), analyteSet.get());
+
         IntakeToCalculatorAssociator::Result intakeAssociationResult = IntakeToCalculatorAssociator::associate(_intakeSeries[analyteSet->getId()], *_pkModel[analyteSet->getId()]);
 
         if (intakeAssociationResult != IntakeToCalculatorAssociator::Result::Ok) {
@@ -449,6 +451,21 @@ bool GeneralExtractor::findFormulationAndRoutes(std::vector<FormulationAndRoute>
 
     m_logger.error("Could not find a formulation and route compatible with the treatment");
     return false;
+}
+
+ComputationResult GeneralExtractor::convertAnalytes(IntakeSeries &_intakeSeries, const Tucuxi::Core::DrugModel &_drugModel, AnalyteSet *_analyteGroup)
+{
+    for (size_t i = 0; i < _intakeSeries.size(); i++) {
+        const FullFormulationAndRoute *formulation = _drugModel.getFormulationAndRoutes().get(_intakeSeries[i].getFormulationAndRoute());
+        if (formulation == nullptr) {
+            return ComputationResult::Failure;
+        }
+        // TODO : Here we only support one analyte. To be modified once
+        double factor = formulation->getAnalyteConversion(_analyteGroup->getAnalytes()[0]->getAnalyteId())->getFactor();
+        DoseValue newDose = _intakeSeries[i].getDose() * factor;
+        _intakeSeries[i].setDose(newDose);
+    }
+    return ComputationResult::Success;
 }
 
 } // namespace Core
