@@ -40,7 +40,9 @@ HEADERS += \
     ../../../test/tucucore/test_cyclestatistics.h \
     ../../../test/tucucore/pkmodels/constanteliminationbolus.h \
     ../../../test/tucucore/drugmodels/buildconstantelimination.h \
-    ../../../test/tucucore/drugmodels/test_constanteliminationbolus.h
+    ../../../test/tucucore/drugmodels/test_constanteliminationbolus.h \
+    ../../../test/tucucore/drugmodels/buildmultianalytesmultiactivemoieties.h \
+    ../../../test/tucucore/drugmodels/test_multianalytesmultiactivemoieties.h
 
 SOURCES += \
     ../../../test/tucucore/tests.cpp

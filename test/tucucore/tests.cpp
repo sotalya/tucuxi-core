@@ -22,6 +22,9 @@
 /// Therefore, only selecting the test of interest allows to gain some time.
 
 
+#if defined(test_multianalytesmultiactivemoieties) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#include "drugmodels/test_multianalytesmultiactivemoieties.h"
+#endif
 #if defined(test_computingcomponentadjustments) or !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_computingcomponentadjustments.h"
 #endif
@@ -590,6 +593,24 @@ int main(int argc, char** argv)
     }
     else {
         std::cout << "Constant Elimination Bolus test succeeded\n";
+    }
+#endif
+
+
+#if defined(test_multianalytesmultiactivemoieties) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+    // --- Tobramycin drug tests --- //
+    TestMultiAnalytesMultiActiveMoieties multiAnalytesMultiActiveMoietiesTests;
+
+    // one compartment
+    multiAnalytesMultiActiveMoietiesTests.add_test("testMultiAnalytesMultiActiveMoieties", &TestMultiAnalytesMultiActiveMoieties::testMultiAnalytesMultiActiveMoieties);
+
+    res = multiAnalytesMultiActiveMoietiesTests.run(argc, argv);
+    tot_res |= res;
+    if (res != 0) {
+        std::cerr << "Multi analytes multi active moieties test failed\n";
+    }
+    else {
+        std::cout << "Multi analytes multi active moieties test succeeded\n";
     }
 #endif
 

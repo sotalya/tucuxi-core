@@ -1124,24 +1124,31 @@ ComputingResult ComputingComponent::computeActiveMoiety(
 
     size_t fullSize = _analytesPredictions[0]->getValues().size();
 
+    size_t nbAnalytes = _analytesPredictions.size();
+
     Concentrations concentration;
     for (size_t i = 0; i < fullSize; i++) {
         TimeOffsets times = _analytesPredictions[0]->getTimes()[i];
-        Concentrations analyteC = _analytesPredictions[0]->getValues()[i];
+        std::vector<Concentrations> analyteC(nbAnalytes);
+        for(size_t an = 0; an < nbAnalytes; an ++) {
+            analyteC[an] = _analytesPredictions[an]->getValues()[i];
+        }
 
-        size_t nbConcentrations = analyteC.size();
+        size_t nbConcentrations = analyteC[0].size();
         Concentrations concentration(nbConcentrations);
 
         if (op == nullptr) {
             for(size_t c = 0; c < nbConcentrations; c++) {
-                concentration[c] = analyteC[c];
+                concentration[c] = analyteC[0][c];
             }
         }
         else {
 
             for(size_t c = 0; c < nbConcentrations; c++) {
                 OperationInputList inputList;
-                inputList.push_back(OperationInput("input0", analyteC[c]));
+                for (size_t an = 0; an < nbAnalytes; an++) {
+                    inputList.push_back(OperationInput("input" + std::to_string(an), analyteC[an][c]));
+                }
                 double result;
                 if (!op->evaluate(inputList, result)) {
                     // Something went wrong
