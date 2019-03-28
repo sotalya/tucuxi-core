@@ -50,6 +50,8 @@ public:
     Tucuxi::Common:: TranslatableString getActiveMoietyName() const { return m_name;}
     const std::vector<AnalyteId> & getAnalyteIds() const {return m_analyteIds;}
 
+    Operation *getFormula() const { return m_formula.get();}
+
     void setName(const Tucuxi::Common::TranslatableString &_name) { m_name = _name;}
 
     INVARIANTS(

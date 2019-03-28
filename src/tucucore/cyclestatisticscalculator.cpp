@@ -23,7 +23,7 @@ CycleStatistic::CycleStatistic(const DateTime &_cycleStartDate, const CycleStati
 
 
 void CycleStatistics::calculate(const std::vector<Concentrations> &_concentrations, const
-                                std::vector<TimeOffsets> &_times, Value &_cumulativeAuc)
+                                std::vector<TimeOffsets> &_times, std::vector<Value> &_cumulativeAuc)
 {
     // Outer vetor size is equal to number of compartments
     for (unsigned int compartment = 0; compartment < _concentrations.size(); compartment++) {
@@ -70,7 +70,7 @@ void CycleStatistics::calculate(const std::vector<Concentrations> &_concentratio
             }
         }
 
-        _cumulativeAuc += auc;
+        _cumulativeAuc[compartment] += auc;
 
         // add residual value
         m_stats[compartment][static_cast<int>(CycleStatisticType::Residual)].addValue(
@@ -83,7 +83,7 @@ void CycleStatistics::calculate(const std::vector<Concentrations> &_concentratio
         // add cumulative AUC value with time 0
         m_stats[compartment][static_cast<int>(CycleStatisticType::CumulativeAuc)].addValue(
                     Duration(),
-                    _cumulativeAuc);
+                    _cumulativeAuc[compartment]);
         // add mean value with time 0
         m_stats[compartment][static_cast<int>(CycleStatisticType::Mean)].addValue(
                     Duration(),
@@ -101,7 +101,7 @@ void CycleStatistics::calculate(const std::vector<Concentrations> &_concentratio
 }
 
 
-CycleStatistics::CycleStatistics(const CycleData &_data, Value& _cumulativeAuc)
+CycleStatistics::CycleStatistics(const CycleData &_data, std::vector<Value>& _cumulativeAuc)
 {
     //
     // Build a new statistics with the given type
@@ -127,13 +127,13 @@ CycleStatistics::CycleStatistics(const CycleData &_data, Value& _cumulativeAuc)
 
 void CycleStatisticsCalculator::calculate(std::vector<CycleData> & _cycles)
 {
-    unsigned int nbComp = 1;
+    unsigned int nbComp = _cycles[0].m_concentrations.size();
 
-    for (size_t comp = 0; comp < nbComp; comp++) {
-        double auc = 0;
-        for(size_t i = 0; i < _cycles.size(); i++) {
-            CycleStatistics st(_cycles[i], auc);
+    std::vector<double> auc(nbComp);
+    for(size_t i = 0; i < _cycles.size(); i++) {
+        CycleStatistics st(_cycles[i], auc);
 
+        for (size_t comp = 0; comp < nbComp; comp++) {
             _cycles[i].m_statistics.setStatistics(comp, CycleStatisticType::Mean, st.getStatistic(comp, CycleStatisticType::Mean));
             _cycles[i].m_statistics.setStatistics(comp, CycleStatisticType::Peak, st.getStatistic(comp, CycleStatisticType::Peak));
             _cycles[i].m_statistics.setStatistics(comp, CycleStatisticType::Maximum, st.getStatistic(comp, CycleStatisticType::Maximum));

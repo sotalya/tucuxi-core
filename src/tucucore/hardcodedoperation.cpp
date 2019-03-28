@@ -526,6 +526,33 @@ direct::fillRequiredInputs()
     m_requiredInputs.push_back(input0);
 }
 
+bool
+sum2::compute(const OperationInputList &_inputs, double &_result) const
+{
+    double input0;
+    double input1;
+
+    if (!getInputValue(_inputs, "input0", input0)) {
+        return false;
+    }
+    if (!getInputValue(_inputs, "input1", input1)) {
+        return false;
+    }
+
+    _result = input0 + input1;
+
+    return true;
+}
+
+
+void
+sum2::fillRequiredInputs()
+{
+    OperationInput input0("input0", InputType::DOUBLE);
+    OperationInput input1("input1", InputType::DOUBLE);
+
+    m_requiredInputs.push_back(input1);
+}
 
 
 
@@ -569,5 +596,6 @@ bool OperationCollection::populate()
     ADD_OPERATION_TO_COLLECTION(GFR_Jelliffe);
     ADD_OPERATION_TO_COLLECTION(eGFR_SalazarCorcoran);
     ADD_OPERATION_TO_COLLECTION(direct);
+    ADD_OPERATION_TO_COLLECTION(sum2);
     return true;
 }

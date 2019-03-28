@@ -26,7 +26,7 @@ public:
     /// When returning, _cumulativeAuc corresponds to its previous value, with the addition
     /// of the current cycle Auc.
     ///
-    CycleStatistics(const CycleData &_data, Value &_cumulativeAuc);
+    CycleStatistics(const CycleData &_data, std::vector<Value> &_cumulativeAuc);
 
     ///
     /// \brief Get the statistic for the specified compartment and type
@@ -59,7 +59,7 @@ private:
     std::vector< std::vector<CycleStatistic> > m_stats;
     void calculate(const std::vector<Concentrations> &_concentrations,
                    const std::vector<TimeOffsets> &_times,
-                   Value &_cumulativeAuc);
+                   std::vector<Value> &_cumulativeAuc);
 };
 
 

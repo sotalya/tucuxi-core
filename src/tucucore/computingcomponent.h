@@ -36,6 +36,7 @@ class ComputingTraitSinglePoints;
 class ComputingTraitStandard;
 class HalfLife;
 class GeneralExtractor;
+class ActiveMoiety;
 
 
 
@@ -134,6 +135,13 @@ private:
             DateTime _startTime,
             DateTime _endTime,
             FormulationAndRoute _routeOfAdministration);
+
+
+    ComputingResult computeActiveMoiety(
+            const DrugModel &_drugModel,
+            const ActiveMoiety *_activeMoiety,
+            const std::vector<ConcentrationPredictionPtr> &_analytesPredictions,
+            ConcentrationPredictionPtr &_activeMoietyPredictions);
 
     friend class ComputingTraitSinglePoints;
     friend class ComputingTraitAtMeasures;

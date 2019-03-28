@@ -61,7 +61,7 @@ struct TestCycleStatistics : public fructose::test_base<TestCycleStatistics>
         // calculate cycle statistics
         DateTime dateTime;
         Value value;
-        Value cumulativeAuc = 0.0;
+        std::vector<Value> cumulativeAuc(1, 0.0);
         Tucuxi::Core::CycleStatistics cycleStatistics(cycleData, cumulativeAuc);
 
         // AUC

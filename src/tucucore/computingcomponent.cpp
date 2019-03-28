@@ -135,12 +135,16 @@ ComputingResult ComputingComponent::compute(
 
     // Now ready to do the real computing with all the extracted values
 
-    ConcentrationPredictionPtr pPrediction = std::make_unique<ConcentrationPrediction>();
+    std::vector<ConcentrationPredictionPtr> analytesPredictions;
 
     ComputationResult computationResult;
 
+    std::map<AnalyteGroupId, Etas> allEtas;
+
     for(const auto &analyteGroup : _request.getDrugModel().getAnalyteSets()) {
         AnalyteGroupId analyteGroupId = analyteGroup->getId();
+
+        ConcentrationPredictionPtr pPrediction = std::make_unique<ConcentrationPrediction>();
 
         Etas etas;
 
@@ -150,6 +154,8 @@ ComputingResult ComputingComponent::compute(
                 return ComputingResult::Error;
             }
         }
+
+        allEtas[analyteGroupId] = etas;
 
         computationResult = computeConcentrations(
                     pPrediction,
@@ -164,63 +170,101 @@ ComputingResult ComputingComponent::compute(
 
         if (computationResult == ComputationResult::Success)
         {
-            std::unique_ptr<SinglePredictionResponse> resp = std::make_unique<SinglePredictionResponse>(_traits->getId());
-
-            IntakeSeries recordedIntakes;
-            selectRecordedIntakes(recordedIntakes, intakeSeries[analyteGroupId], _traits->getStart(), _traits->getEnd());
-
-            if ((recordedIntakes.size() != pPrediction->getTimes().size()) ||
-                    (recordedIntakes.size() != pPrediction->getValues().size())) {
-                return ComputingResult::Error;
-            }
-
-            // std::cout << "Start Time : " << _traits->getStart() << std::endl;
-            for (size_t i = 0; i < recordedIntakes.size(); i++) {
-
-                TimeOffsets times = pPrediction->getTimes().at(i);
-                DateTime start = recordedIntakes.at(i).getEventTime();
-                // std::cout << "Time index " << i << " : " << start << std::endl;
-                // times values are in hours
-                std::chrono::milliseconds ms = std::chrono::milliseconds(static_cast<int>(times.at(times.size() - 1))) * 3600 * 1000;
-                Duration ds(ms);
-                DateTime end = start + ds;
-                // std::cout << "End Time index " << i << " : " << end << std::endl;
-
-                if (end > _traits->getStart()) {
-                    // std::cout << "Selected Time index " << i << " : " << start << std::endl;
-                    CycleData cycle(start, end, Unit("ug/l"));
-                    cycle.addData(times, pPrediction->getValues().at(i), 0);
-
-
-                    ParameterSetEventPtr params = parameterSeries[analyteGroupId].getAtTime(start, etas);
-
-                    for (auto p = params.get()->begin() ; p < params.get()->end() ; p++) {
-                        cycle.m_parameters.push_back({(*p).getParameterId(), (*p).getValue()});
-                    }
-
-                    std::sort(cycle.m_parameters.begin(), cycle.m_parameters.end(),
-                               [&] (const ParameterValue &_v1, const ParameterValue &_v2) { return _v1.m_parameterId < _v2.m_parameterId; });
-
-                    resp->addCycleData(cycle);
-                }
-            }
-
-            if (_traits->getComputingOption().getWithStatistics()) {
-                CycleStatisticsCalculator c;
-                c.calculate(resp->getModifiableData());
-            }
-
-            _response->addResponse(std::move(resp));
-            return ComputingResult::Success;
+            analytesPredictions.push_back(std::move(pPrediction));
         }
         else {
             return ComputingResult::Error;
         }
+    }
+    std::vector<ConcentrationPredictionPtr> activeMoietiesPredictions;
 
+    if (!_request.getDrugModel().isSingleAnalyte()) {
+
+    for (const auto & activeMoiety : _request.getDrugModel().getActiveMoieties()) {
+        ConcentrationPredictionPtr activeMoietyPrediction = std::make_unique<ConcentrationPrediction>();
+        ComputingResult activeMoietyComputationResult = computeActiveMoiety(_request.getDrugModel(), activeMoiety.get(), analytesPredictions, activeMoietyPrediction);
+        if (activeMoietyComputationResult != ComputingResult::Success) {
+            return ComputingResult::Error;
+        }
+        activeMoietiesPredictions.push_back(std::move(activeMoietyPrediction));
+    }
     }
 
-    return ComputingResult::Error;
+    std::unique_ptr<SinglePredictionResponse> resp = std::make_unique<SinglePredictionResponse>(_traits->getId());
 
+    IntakeSeries recordedIntakes;
+    selectRecordedIntakes(recordedIntakes, intakeSeries[_request.getDrugModel().getAnalyteSets()[0]->getId()], _traits->getStart(), _traits->getEnd());
+
+    if ((recordedIntakes.size() != analytesPredictions[0]->getTimes().size()) ||
+            (recordedIntakes.size() != analytesPredictions[0]->getValues().size())) {
+        return ComputingResult::Error;
+    }
+
+
+    ConcentrationPredictionPtr pPrediction = std::make_unique<ConcentrationPrediction>();
+
+    // std::cout << "Start Time : " << _traits->getStart() << std::endl;
+    for (size_t i = 0; i < recordedIntakes.size(); i++) {
+
+        TimeOffsets times = analytesPredictions[0]->getTimes().at(i);
+        DateTime start = recordedIntakes.at(i).getEventTime();
+        // std::cout << "Time index " << i << " : " << start << std::endl;
+        // times values are in hours
+        std::chrono::milliseconds ms = std::chrono::milliseconds(static_cast<int>(times.at(times.size() - 1))) * 3600 * 1000;
+        Duration ds(ms);
+        DateTime end = start + ds;
+        // std::cout << "End Time index " << i << " : " << end << std::endl;
+
+        if (end > _traits->getStart()) {
+            // std::cout << "Selected Time index " << i << " : " << start << std::endl;
+            CycleData cycle(start, end, Unit("ug/l"));
+
+            int index = 0;
+            for(const auto &analyteGroup : _request.getDrugModel().getAnalyteSets()) {
+                AnalyteGroupId analyteGroupId = analyteGroup->getId();
+
+                cycle.addData(times, analytesPredictions[index]->getValues().at(i), 0);
+                index ++;
+            }
+
+            if (!_request.getDrugModel().isSingleAnalyte()) {
+                for (const auto &activeMoiety : activeMoietiesPredictions) {
+                    cycle.addData(times, activeMoiety->getValues().at(i), 0);
+                }
+            }
+
+            AnalyteGroupId analyteGroupId = _request.getDrugModel().getAnalyteSets()[0]->getId();
+            ParameterSetEventPtr params = parameterSeries[analyteGroupId].getAtTime(start, allEtas[analyteGroupId]);
+
+            for (auto p = params.get()->begin() ; p < params.get()->end() ; p++) {
+                cycle.m_parameters.push_back({(*p).getParameterId(), (*p).getValue()});
+            }
+
+            std::sort(cycle.m_parameters.begin(), cycle.m_parameters.end(),
+                      [&] (const ParameterValue &_v1, const ParameterValue &_v2) { return _v1.m_parameterId < _v2.m_parameterId; });
+
+            resp->addCycleData(cycle);
+        }
+    }
+
+    for(const auto &analyteGroup : _request.getDrugModel().getAnalyteSets()) {
+        AnalyteGroupId analyteGroupId = analyteGroup->getId();
+        resp->addAnalyteId(analyteGroupId.toString());
+    }
+
+    if (!_request.getDrugModel().isSingleAnalyte()) {
+        for (const auto & activeMoiety : _request.getDrugModel().getActiveMoieties()) {
+            resp->addAnalyteId(activeMoiety->getActiveMoietyId().toString());
+        }
+    }
+
+    if (_traits->getComputingOption().getWithStatistics()) {
+        CycleStatisticsCalculator c;
+        c.calculate(resp->getModifiableData());
+    }
+
+    _response->addResponse(std::move(resp));
+    return ComputingResult::Success;
 }
 
 ComputingResult ComputingComponent::compute(
@@ -1067,6 +1111,50 @@ ComputationResult ComputingComponent::computeConcentrations(
                 _isFixedDensity);
 }
 
+
+ComputingResult ComputingComponent::computeActiveMoiety(
+        const DrugModel &_drugModel,
+        const ActiveMoiety *_activeMoiety,
+        const std::vector<ConcentrationPredictionPtr> &_analytesPredictions,
+        ConcentrationPredictionPtr &_activeMoietyPredictions)
+{
+    TMP_UNUSED_PARAMETER(_drugModel);
+
+    Operation *op = _activeMoiety->getFormula();
+
+    size_t fullSize = _analytesPredictions[0]->getValues().size();
+
+    Concentrations concentration;
+    for (size_t i = 0; i < fullSize; i++) {
+        TimeOffsets times = _analytesPredictions[0]->getTimes()[i];
+        Concentrations analyteC = _analytesPredictions[0]->getValues()[i];
+
+        size_t nbConcentrations = analyteC.size();
+        Concentrations concentration(nbConcentrations);
+
+        if (op == nullptr) {
+            for(size_t c = 0; c < nbConcentrations; c++) {
+                concentration[c] = analyteC[c];
+            }
+        }
+        else {
+
+            for(size_t c = 0; c < nbConcentrations; c++) {
+                OperationInputList inputList;
+                inputList.push_back(OperationInput("input0", analyteC[c]));
+                double result;
+                if (!op->evaluate(inputList, result)) {
+                    // Something went wrong
+                    return ComputingResult::Error;
+                }
+                concentration[c] = result;
+            }
+        }
+        _activeMoietyPredictions->appendConcentrations(times, concentration);
+    }
+
+    return ComputingResult::Success;
+}
 
 } // namespace Core
 } // namespace Tucuxi

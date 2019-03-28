@@ -9,47 +9,17 @@
 namespace Tucuxi {
 namespace Core {
 
-bool ParameterDefinitionIterator::isDone() const
+void ParameterDefinitionIterator::build()
 {
-    size_t nTotal = 0;
+    m_total = 0;
 
-    std::vector<const ParameterSetDefinition * > params1a;
+    // Depending on the constructor invoked, we build the list of absorption parameters
     if (m_fullFormulationAndRoutes.size() > 0) {
         for (const auto & f : m_fullFormulationAndRoutes) {
             const ParameterSetDefinition* params1 = m_model.getAbsorptionParameters(m_analyteGroupId, f->getFormulationAndRoute());
             if (params1 != nullptr) {
                 params1a.push_back(params1);
-                nTotal += params1->getNbParameters();
-            }
-        }
-    }
-    else {
-        const ParameterSetDefinition* params1 = m_model.getAbsorptionParameters(m_analyteGroupId, m_formulation, m_route);
-        if (params1 != nullptr) {
-            nTotal += params1->getNbParameters();
-        }
-    }
-    const ParameterSetDefinition* params2 = m_model.getDispositionParameters(m_analyteGroupId);
-    if (params2 != nullptr) {
-        nTotal += params2->getNbParameters();
-    }
-    return (m_index >= nTotal);
-}
-
-typedef struct {
-    std::string id;
-    bool isVariable;
-} ddd;
-
-const ParameterDefinition* ParameterDefinitionIterator::operator*()
-{
-    std::vector<const ParameterSetDefinition * > params1a;
-
-    if (m_fullFormulationAndRoutes.size() > 0) {
-        for (const auto & f : m_fullFormulationAndRoutes) {
-            const ParameterSetDefinition* params1 = m_model.getAbsorptionParameters(m_analyteGroupId, f->getFormulationAndRoute());
-            if (params1 != nullptr) {
-                params1a.push_back(params1);
+                m_total += params1->getNbParameters();
             }
         }
     }
@@ -57,33 +27,29 @@ const ParameterDefinition* ParameterDefinitionIterator::operator*()
         const ParameterSetDefinition* params1 = m_model.getAbsorptionParameters(m_analyteGroupId, m_formulation, m_route);
         if (params1 != nullptr) {
             params1a.push_back(params1);
+            m_total += params1->getNbParameters();
         }
     }
 
-
-    //const ParameterSetDefinition* params1 = m_model.getAbsorptionParameters(m_analyteGroupId, m_formulation, m_route);
     const ParameterSetDefinition* params2 = m_model.getDispositionParameters(m_analyteGroupId);
+    if (params2 != nullptr) {
+        m_total += params2->getNbParameters();
+    }
 
-    std::vector<ddd> vector;
 
-    // Check that there are absorption parameters (not the case for every model)
-    /*if (params1 != nullptr) {
-        for (size_t i = 0;i < params1->getNbParameters(); i++) {
-            vector.push_back({params1->getParameter(i)->getId(), params1->getParameter(i)->isVariable()});
-        }
-    }*/
-
-    // Check that there are absorption parameters (not the case for every model)
+    // Add the absorption parameters
     for(const auto & params : params1a) {
         for (size_t i = 0;i < params->getNbParameters(); i++) {
             vector.push_back({params->getParameter(i)->getId(), params->getParameter(i)->isVariable()});
         }
     }
 
+    // Add the elimination parameters
     for (size_t i = 0;i < params2->getNbParameters(); i++) {
         vector.push_back({params2->getParameter(i)->getId(), params2->getParameter(i)->isVariable()});
     }
 
+    // We sort alphabetically the parameter Ids
     std::sort(vector.begin(), vector.end(), [&] (const ddd v1, const ddd v2) {
         if (v1.isVariable && !v2.isVariable)
             return true;
@@ -91,6 +57,19 @@ const ParameterDefinition* ParameterDefinitionIterator::operator*()
             return false;
         return v1.id < v2.id;
     });
+
+}
+
+bool ParameterDefinitionIterator::isDone() const
+{
+    return (m_index >= m_total);
+}
+
+
+const ParameterDefinition* ParameterDefinitionIterator::operator*()
+{
+
+    const ParameterSetDefinition* params2 = m_model.getDispositionParameters(m_analyteGroupId);
 
     std::string curId = vector[m_index].id;
 
@@ -100,32 +79,14 @@ const ParameterDefinition* ParameterDefinitionIterator::operator*()
                 return params->getParameter(i);
         }
     }
-/*
-    if (params1 != nullptr) {
-        for (size_t i = 0;i < params1->getNbParameters(); i++) {
-            if (params1->getParameter(i)->getId() == curId)
-                return params1->getParameter(i);
-        }
-    }
-*/    for (size_t i = 0;i < params2->getNbParameters(); i++) {
+
+    for (size_t i = 0;i < params2->getNbParameters(); i++) {
         if (params2->getParameter(i)->getId() == curId)
             return params2->getParameter(i);
     }
 
     assert (false);
 
-
-/*
-    if (params1 != nullptr) {
-        if (index < params1->getNbParameters()) {
-            return params1->getParameter(index);
-        }
-        index -= params1->getNbParameters();
-    }    
-    if (params2 != nullptr && index < params2->getNbParameters()) {
-        return params2->getParameter(index);
-    }
-            */
     return nullptr;
 }
 

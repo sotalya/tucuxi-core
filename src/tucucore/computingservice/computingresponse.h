@@ -129,8 +129,10 @@ public:
     const std::vector<CycleData>& getData() const { return m_data; }
     std::vector<CycleData>& getModifiableData() { return m_data; }
 
+    void addAnalyteId(std::string _id) { m_ids.push_back(_id);}
 private:
     std::vector<CycleData> m_data;
+    std::vector<std::string> m_ids;
 };
 
 ///
