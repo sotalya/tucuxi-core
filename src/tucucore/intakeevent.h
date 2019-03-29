@@ -170,7 +170,7 @@ public:
         return m_calculator;
     }
 
-    IntakeIntervalCalculator::Result calculateIntakePoints(
+    ComputingResult calculateIntakePoints(
         std::vector<Concentrations>& _concentrations,
         TimeOffsets & _times,
         const IntakeEvent& _intakeEvent,
@@ -183,7 +183,7 @@ public:
         return m_calculator->calculateIntakePoints(_concentrations, _times, _intakeEvent, _parameters, _inResiduals, _isAll, _outResiduals, _isDensityConstant);
     }
 
-    IntakeIntervalCalculator::Result calculateIntakeSinglePoint(
+    ComputingResult calculateIntakeSinglePoint(
 	std::vector<Concentrations>& _concentrations,
 	const IntakeEvent& _intakeEvent,
 	const ParameterSetEvent& _parameters,

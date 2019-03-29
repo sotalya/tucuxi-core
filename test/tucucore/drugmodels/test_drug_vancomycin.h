@@ -811,7 +811,7 @@ struct TestDrugVancomycin : public fructose::test_base<TestDrugVancomycin>
             ComputingResult result;
             result = component->compute(request, response);
 
-            fructose_assert( result == ComputingResult::Success);
+            fructose_assert( result == ComputingResult::Ok);
 
             const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
             for(std::size_t i = 0; i < responses.size(); i++) {
@@ -848,7 +848,7 @@ struct TestDrugVancomycin : public fructose::test_base<TestDrugVancomycin>
             ComputingResult result;
             result = component->compute(request, response);
 
-            fructose_assert( result == ComputingResult::Success);
+            fructose_assert( result == ComputingResult::Ok);
 
 
             const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();

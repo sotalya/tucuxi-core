@@ -25,7 +25,7 @@ auto as_integer(Enumeration const _value)
     }
 
 
-IntakeExtractor::Result IntakeExtractor::extract(const DosageHistory& _dosageHistory, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, IntakeSeries &_series)
+ComputingResult IntakeExtractor::extract(const DosageHistory& _dosageHistory, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, IntakeSeries &_series)
 {
     try {
         EXTRACT_PRECONDITIONS(_start, _end, _series);
@@ -41,10 +41,10 @@ IntakeExtractor::Result IntakeExtractor::extract(const DosageHistory& _dosageHis
 
     }
     catch (...) {
-        return Result::ExtractionError;
+        return ComputingResult::IntakeExtractionError;
     }
 
-    return Result::Ok;
+    return ComputingResult::Ok;
 }
 
 

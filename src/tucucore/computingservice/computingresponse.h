@@ -26,6 +26,12 @@ typedef struct {
 ///
 /// \brief The CycleData class, meant to embed data about a cycle
 /// It contains concentrations and times for a single cycle (or interval)
+/// Actually it does contains concentrations of one or more compartments,
+/// allowing to store analytes and active moieties. The identification of
+/// the analytes and active moieties is not internally stored by the CycleData,
+/// it is the responsibility of the user to know what concentration stands each
+/// analyte or active moiety.
+///
 class CycleData
 {
 public:
@@ -35,11 +41,10 @@ public:
     {
     }
 
-    void addData(TimeOffsets &_offsets, std::vector<Concentration> _concentrations, Value _auc)
+    void addData(TimeOffsets &_offsets, std::vector<Concentration> _concentrations)
     {
         m_times.push_back(_offsets);
         m_concentrations.push_back(_concentrations);
-        m_aucs.push_back(_auc);
     }
 
     /// \brief Absolute start time of the cycle
@@ -57,10 +62,6 @@ public:
     /// Each inner vector contains the concentrations of an analyte or a compartment
     /// The size of each inner vector has to be the same as m_times.
     std::vector< std::vector<Concentration> > m_concentrations;
-
-    /// \brief Area under curve for each prediction
-    /// Area under curve for each prediction, in m_unit x hours
-    std::vector<Value> m_aucs;
 
     /// \brief Unit of concentrations
     /// The area under curve corresponds to this unit times hours

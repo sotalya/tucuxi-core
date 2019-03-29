@@ -2,7 +2,8 @@
 #define TUCUXI_CORE_TARGETEVALUATOR_H
 
 // We need this include because IntakeSeries is a typedef, and as such can not be forward declared
-#include "tucucore/dosage.h"
+#include "tucucore/intakeevent.h"
+#include "tucucore/computingservice/computingresult.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -21,15 +22,6 @@ class TargetEvaluator
 {
 public:
 
-    ///
-    /// \brief The Result enum that indicates if everything went well during the evaluation
-    ///
-    enum class Result {
-        Ok,               //!< The candidate is within the target range and the evaluation went well
-        InvalidCandidate, //!< The candidate is outside the target range
-        EvaluationError   //!< There was an internal error during evaluation
-    };
-
     TargetEvaluator();
 
     ///
@@ -40,7 +32,7 @@ public:
     /// \param _result The result of the evaluation
     /// \return Result::Ok if everything went well, Result::InvalidCandidate if the candidate is outside the boundaries, Result::EvaluationError if there is an internal with the evaluation
     ///
-    Result evaluate(
+    ComputingResult evaluate(
             const ConcentrationPrediction& _prediction,
             const Tucuxi::Core::IntakeSeries &_intakeSeries,
             const Target& _target,

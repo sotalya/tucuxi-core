@@ -94,7 +94,7 @@ struct TestComputingComponentConcentration : public fructose::test_base<TestComp
         ComputingResult result;
         result = component->compute(request, response);
 
-        fructose_assert( result == ComputingResult::Success);
+        fructose_assert( result == ComputingResult::Ok);
 
         const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
         for(std::size_t i = 0; i < responses.size(); i++) {
@@ -133,7 +133,7 @@ struct TestComputingComponentConcentration : public fructose::test_base<TestComp
             ComputingResult result;
             result = component->compute(request, partialResponse);
 
-            fructose_assert( result == ComputingResult::Success);
+            fructose_assert( result == ComputingResult::Ok);
 
             const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = partialResponse.get()->getResponses();
             for(std::size_t i = 0; i < responses.size(); i++) {
@@ -216,7 +216,7 @@ struct TestComputingComponentConcentration : public fructose::test_base<TestComp
         ComputingResult result;
         result = component->compute(request, response);
 
-        fructose_assert( result == ComputingResult::Success);
+        fructose_assert( result == ComputingResult::Ok);
 
         // We expect a single response
         fructose_assert( response->getResponses().size() == 1);

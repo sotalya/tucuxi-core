@@ -7,6 +7,7 @@
 #include "tucucore/definitions.h"
 #include "tucucore/dosage.h"
 #include "tucucore/intakeevent.h"
+#include "tucucore/computingservice/computingresult.h"
 
 #include "tucucommon/datetime.h"
 
@@ -30,12 +31,6 @@ class IntakeExtractor
 
 public:
 
-
-    enum class Result {
-        Ok,
-        ExtractionError
-    };
-
     /// \ingroup TucuCore
     /// \brief Iterate over the usage history in a given period, extracting a list of intakes.
     ///
@@ -44,7 +39,7 @@ public:
     /// \param _end End time/date for the considered interval, could be unset.
     /// \param _nbPointsPerHour Expected density of points in number of points per hour.
     /// \param _series Returned series of intake in the considered interval.
-    /// \return Result::Ok if everything went well, Result::ExtractionError else.
+    /// \return ComputingResult::Ok if everything went well, Result::ExtractionError else.
     ///
     /// \pre _start IS NOT unset
     /// \pre _end IS unset OR _end > _start
@@ -52,7 +47,7 @@ public:
     /// (it would have been easier to simply empty the input _series, but this guarantees an uniform behavior across the
     /// whole set of calls)
     /// \post FORALL intake IN extracted_intakes, intake.time IN [_start, _end)
-    Result extract(const DosageHistory &_dosageHistory, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, IntakeSeries &_series);
+    ComputingResult extract(const DosageHistory &_dosageHistory, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, IntakeSeries &_series);
 
 private:
 

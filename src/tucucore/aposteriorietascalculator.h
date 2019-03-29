@@ -10,6 +10,7 @@
 #include "definitions.h"
 #include "residualerrormodel.h"
 #include "sampleevent.h"
+#include "computingservice/computingresult.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -20,7 +21,7 @@ class APosterioriEtasCalculator
 public:    
     APosterioriEtasCalculator();
 
-    ComputationResult computeAposterioriEtas(
+    ComputingResult computeAposterioriEtas(
             const IntakeSeries &_intakes,
             const ParameterSetSeries &_parameters,
             const OmegaMatrix &_omega,

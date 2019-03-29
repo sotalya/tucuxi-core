@@ -141,7 +141,7 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
             ComputingResult result;
             result = component->compute(request, response);
 
-            fructose_assert( result == ComputingResult::Success);
+            fructose_assert( result == ComputingResult::Ok);
 
             const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
 
@@ -275,7 +275,7 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
             ComputingResult result;
             result = component->compute(request, response);
 
-            fructose_assert( result == ComputingResult::Success);
+            fructose_assert( result == ComputingResult::Ok);
 
             const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
 

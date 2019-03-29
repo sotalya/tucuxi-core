@@ -77,7 +77,7 @@ void CliComputer::compute(std::string _drugPath,
 
     ComputingResult result = computingComponent->compute(request, response);
 
-    if (result != ComputingResult::Success) {
+    if (result != ComputingResult::Ok) {
         logHelper.error("Computing failed");
         return;
     }

@@ -11,6 +11,7 @@
 #include "tucucore/sampleevent.h"
 #include "tucucore/dosage.h"
 #include "tucucore/computingservice/computingaborter.h"
+#include "tucucore/computingservice/computingresult.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -22,13 +23,6 @@ class PercentilesPrediction;
 
 class IPercentileCalculator
 {
-public:
-    enum class ComputingResult
-    {
-        Success,
-        Failure,
-        Aborted
-    };
 };
 
 

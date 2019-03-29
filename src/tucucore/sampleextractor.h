@@ -7,6 +7,7 @@
 
 #include "tucucore/drugtreatment/sample.h"
 #include "tucucore/sampleevent.h"
+#include "tucucore/computingservice/computingresult.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -14,12 +15,6 @@ namespace Core {
 class SampleExtractor
 {
 public:
-
-    enum class Result {
-        Ok,
-        ExtractionError
-    };
-
 
     ///
     /// \brief extract relevant samples
@@ -31,7 +26,7 @@ public:
     ///
     /// This function also converts the samples to ug/l.
     ///
-    Result extract(const Samples &_samples, const DateTime &_start, const DateTime &_end, SampleSeries &_series);
+    ComputingResult extract(const Samples &_samples, const DateTime &_start, const DateTime &_end, SampleSeries &_series);
 };
 
 } // namespace Core

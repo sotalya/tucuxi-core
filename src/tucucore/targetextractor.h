@@ -9,6 +9,7 @@
 #include "tucucore/targetevent.h"
 #include "tucucore/covariateevent.h"
 #include "tucucore/computingservice/computingtrait.h"
+#include "tucucore/computingservice/computingresult.h"
 
 struct TestTargetExtractor;
 
@@ -18,11 +19,6 @@ namespace Core {
 class TargetExtractor
 {
 public:
-
-    enum class Result {
-        Ok,
-        ExtractionError
-    };
 
     ///
     /// \brief extract
@@ -39,7 +35,7 @@ public:
     /// - A priori values
     /// - Priority to targets over targetDefinitions
     /// - Only individual targets
-    Result extract(
+    ComputingResult extract(
             const CovariateSeries &_covariates,
             const TargetDefinitions& _targetDefinitions,
             const Targets &_targets,

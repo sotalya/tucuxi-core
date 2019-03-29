@@ -30,6 +30,7 @@
 #include "tucucore/residualerrormodelextractor.h"
 #include "tucucore/generalextractor.h"
 #include "tucucore/cyclestatisticscalculator.h"
+#include "tucucore/computingservice/computingresult.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -78,17 +79,17 @@ ComputingResult ComputingComponent::compute(const ComputingRequest &_request, st
         // First ensure there is at least a Pk Model available
         if (m_models->getPkModelList().size() == 0) {
             m_logger.error("No Pk Model loaded. Impossible to perform computation");
-            return ComputingResult::Error;
+            return ComputingResult::NoPkModels;
         }
 
         // A simple iteration on the ComputingTraits. Each one is responsible to fill the _response object with
         // a new computing response
         ComputingTraits::Iterator it = _request.getComputingTraits().begin();
-        ComputingResult result = ComputingResult::Success;
+        ComputingResult result = ComputingResult::Ok;
         while (it != _request.getComputingTraits().end()) {
-
-            if (it->get()->compute(*this, _request, _response) != ComputingResult::Success) {
-                result = ComputingResult::Error;
+            ComputingResult internalResult = it->get()->compute(*this, _request, _response);
+            if (internalResult != ComputingResult::Ok) {
+                result = internalResult;
             }
             it++;
         }
@@ -96,7 +97,7 @@ ComputingResult ComputingComponent::compute(const ComputingRequest &_request, st
         return result;
 
     } catch (...) {
-        return ComputingResult::Error;
+        return ComputingResult::ComputingComponentExceptionError;
     }
 }
 
@@ -110,7 +111,7 @@ ComputingResult ComputingComponent::compute(
 
     if (_traits == nullptr) {
         m_logger.error("The computing traits sent for computation are nullptr");
-        return ComputingResult::Error;
+        return ComputingResult::NoComputingTraits;
     }
 
     std::map<AnalyteGroupId, std::shared_ptr<PkModel> > pkModel;
@@ -129,7 +130,7 @@ ComputingResult ComputingComponent::compute(
                                                                            parameterSeries,
                                                                            calculationStartTime);
 
-    if (extractionResult != ComputingResult::Success) {
+    if (extractionResult != ComputingResult::Ok) {
         return extractionResult;
     }
 
@@ -137,7 +138,7 @@ ComputingResult ComputingComponent::compute(
 
     std::vector<ConcentrationPredictionPtr> analytesPredictions;
 
-    ComputationResult computationResult;
+    ComputingResult computingResult;
 
     std::map<AnalyteGroupId, Etas> allEtas;
 
@@ -149,31 +150,30 @@ ComputingResult ComputingComponent::compute(
         Etas etas;
 
         if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Aposteriori) {
-            if (m_generalExtractor->extractAposterioriEtas(etas, _request, analyteGroupId, intakeSeries[analyteGroupId], parameterSeries[analyteGroupId], covariateSeries, calculationStartTime, _traits->getEnd())
-                    != ComputingResult::Success) {
-                return ComputingResult::Error;
+            ComputingResult extractionResult = m_generalExtractor->extractAposterioriEtas(etas, _request, analyteGroupId, intakeSeries[analyteGroupId], parameterSeries[analyteGroupId], covariateSeries, calculationStartTime, _traits->getEnd());
+            if (extractionResult != ComputingResult::Ok) {
+                return extractionResult;
             }
         }
 
         allEtas[analyteGroupId] = etas;
 
-        computationResult = computeConcentrations(
+        computingResult = computeConcentrations(
                     pPrediction,
                     false,
                      _traits->getStart(),
-    //                   calculationStartTime,
                     _traits->getEnd(),
                     intakeSeries[analyteGroupId],
                     parameterSeries[analyteGroupId],
                     etas);
 
 
-        if (computationResult == ComputationResult::Success)
+        if (computingResult == ComputingResult::Ok)
         {
             analytesPredictions.push_back(std::move(pPrediction));
         }
         else {
-            return ComputingResult::Error;
+            return computingResult;
         }
     }
     std::vector<ConcentrationPredictionPtr> activeMoietiesPredictions;
@@ -182,9 +182,9 @@ ComputingResult ComputingComponent::compute(
 
     for (const auto & activeMoiety : _request.getDrugModel().getActiveMoieties()) {
         ConcentrationPredictionPtr activeMoietyPrediction = std::make_unique<ConcentrationPrediction>();
-        ComputingResult activeMoietyComputationResult = computeActiveMoiety(_request.getDrugModel(), activeMoiety.get(), analytesPredictions, activeMoietyPrediction);
-        if (activeMoietyComputationResult != ComputingResult::Success) {
-            return ComputingResult::Error;
+        ComputingResult activeMoietyComputingResult = computeActiveMoiety(_request.getDrugModel(), activeMoiety.get(), analytesPredictions, activeMoietyPrediction);
+        if (activeMoietyComputingResult != ComputingResult::Ok) {
+            return activeMoietyComputingResult;
         }
         activeMoietiesPredictions.push_back(std::move(activeMoietyPrediction));
     }
@@ -197,7 +197,7 @@ ComputingResult ComputingComponent::compute(
 
     if ((recordedIntakes.size() != analytesPredictions[0]->getTimes().size()) ||
             (recordedIntakes.size() != analytesPredictions[0]->getValues().size())) {
-        return ComputingResult::Error;
+        return ComputingResult::RecordedIntakesSizeError;
     }
 
 
@@ -223,13 +223,13 @@ ComputingResult ComputingComponent::compute(
             for(const auto &analyteGroup : _request.getDrugModel().getAnalyteSets()) {
                 AnalyteGroupId analyteGroupId = analyteGroup->getId();
 
-                cycle.addData(times, analytesPredictions[index]->getValues().at(i), 0);
+                cycle.addData(times, analytesPredictions[index]->getValues().at(i));
                 index ++;
             }
 
             if (!_request.getDrugModel().isSingleAnalyte()) {
                 for (const auto &activeMoiety : activeMoietiesPredictions) {
-                    cycle.addData(times, activeMoiety->getValues().at(i), 0);
+                    cycle.addData(times, activeMoiety->getValues().at(i));
                 }
             }
 
@@ -264,7 +264,7 @@ ComputingResult ComputingComponent::compute(
     }
 
     _response->addResponse(std::move(resp));
-    return ComputingResult::Success;
+    return ComputingResult::Ok;
 }
 
 ComputingResult ComputingComponent::compute(
@@ -273,11 +273,11 @@ ComputingResult ComputingComponent::compute(
         std::unique_ptr<ComputingResponse> &_response)
 {
 #ifdef NO_PERCENTILES
-    return ComputingResult::Error;
+    return ComputingResult::NoPercentilesCalculation;
 #endif
     if (_traits == nullptr) {
         m_logger.error("The computing traits sent for computation are nullptr");
-        return ComputingResult::Error;
+        return ComputingResult::NoComputingTraits;
     }
 
     std::map<AnalyteGroupId, std::shared_ptr<PkModel> > pkModel;
@@ -296,7 +296,7 @@ ComputingResult ComputingComponent::compute(
                                                                               parameterSeries,
                                                                               calculationStartTime);
 
-    if (extractionResult != ComputingResult::Success) {
+    if (extractionResult != ComputingResult::Ok) {
         return extractionResult;
     }
 
@@ -319,14 +319,14 @@ ComputingResult ComputingComponent::compute(
 
     ResidualErrorModelExtractor errorModelExtractor;
     IResidualErrorModel *residual = nullptr;
-    if (errorModelExtractor.extract(_request.getDrugModel().getAnalyteSet()->getAnalytes().at(0)->getResidualErrorModel(),
-                                    _request.getDrugModel().getAnalyteSet()->getAnalytes().at(0)->getUnit(),
-                                    covariateSeries, &residual)
-        != ResidualErrorModelExtractor::Result::Ok) {
+    ComputingResult errorModelExtractionResult = errorModelExtractor.extract(_request.getDrugModel().getAnalyteSet()->getAnalytes().at(0)->getResidualErrorModel(),
+                                                                             _request.getDrugModel().getAnalyteSet()->getAnalytes().at(0)->getUnit(),
+                                                                             covariateSeries, &residual);
+    if (errorModelExtractionResult != ComputingResult::Ok) {
         if (residual != nullptr) {
             delete residual;
         }
-        return ComputingResult::Error;
+        return errorModelExtractionResult;
     }
 
 
@@ -334,38 +334,37 @@ ComputingResult ComputingComponent::compute(
 
     std::vector<const FullFormulationAndRoute *> fullFormulationAndRoutes = m_generalExtractor->extractFormulationAndRoutes(_request.getDrugModel(), intakeSeries[analyteGroupId]);
 
-    ComputationResult omegaComputationResult = m_generalExtractor->extractOmega(_request.getDrugModel(), analyteGroupId, fullFormulationAndRoutes, omega);
-    if (omegaComputationResult != ComputationResult::Success) {
-        return ComputingResult::Error;
+    ComputingResult omegaComputingResult = m_generalExtractor->extractOmega(_request.getDrugModel(), analyteGroupId, fullFormulationAndRoutes, omega);
+    if (omegaComputingResult != ComputingResult::Ok) {
+        return omegaComputingResult;
     }
 
 
     // Set initial etas to 0 for all variable parameters
     Tucuxi::Core::Etas etas(omega.cols(), 0.0);
 
-    Tucuxi::Core::IPercentileCalculator::ComputingResult computationResult;
+    Tucuxi::Core::ComputingResult computingResult;
 
     Tucuxi::Core::ConcentrationCalculator concentrationCalculator;
 
     if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Aposteriori)   {
-
-        if (m_generalExtractor->extractAposterioriEtas(etas, _request, analyteGroupId, intakeSeries[analyteGroupId], parameterSeries[analyteGroupId], covariateSeries, calculationStartTime, _traits->getEnd())
-                != ComputingResult::Success) {
-            return ComputingResult::Error;
+        ComputingResult aposterioriEtasExtractionResult = m_generalExtractor->extractAposterioriEtas(etas, _request, analyteGroupId, intakeSeries[analyteGroupId], parameterSeries[analyteGroupId], covariateSeries, calculationStartTime, _traits->getEnd());
+        if (aposterioriEtasExtractionResult != ComputingResult::Ok) {
+            return aposterioriEtasExtractionResult;
         }
 
         // This extraction is already done in extractAposterioriEtas... Could be optimized
         SampleSeries sampleSeries;
         SampleExtractor sampleExtractor;
-        SampleExtractor::Result sampleExtractionResult =
+        ComputingResult sampleExtractionResult =
         sampleExtractor.extract(_request.getDrugTreatment().getSamples(), calculationStartTime, _traits->getEnd(), sampleSeries);
 
-        if (sampleExtractionResult != SampleExtractor::Result::Ok) {
-            return ComputingResult::Error;
+        if (sampleExtractionResult != ComputingResult::Ok) {
+            return sampleExtractionResult;
         }
 
         std::unique_ptr<Tucuxi::Core::IAposterioriPercentileCalculator> calculator(new Tucuxi::Core::AposterioriMonteCarloPercentileCalculator());
-        computationResult = calculator->calculate(
+        computingResult = calculator->calculate(
                     percentiles,
                     _traits->getStart(),
                     _traits->getEnd(),
@@ -382,7 +381,7 @@ ComputingResult ComputingComponent::compute(
     }
     else {
         std::unique_ptr<Tucuxi::Core::IAprioriPercentileCalculator> calculator(new Tucuxi::Core::AprioriMonteCarloPercentileCalculator());
-        computationResult = calculator->calculate(
+        computingResult = calculator->calculate(
                     percentiles,
                     _traits->getStart(),
                     _traits->getEnd(),
@@ -400,7 +399,7 @@ ComputingResult ComputingComponent::compute(
     // YTA: I do not think this is relevant. It could be deleted I guess
     ConcentrationPredictionPtr pPrediction = std::make_unique<ConcentrationPrediction>();
 
-    ComputationResult predictionComputationResult = computeConcentrations(
+    ComputingResult predictionResult = computeConcentrations(
                 pPrediction,
                 false,
                 _traits->getStart(),
@@ -408,14 +407,14 @@ ComputingResult ComputingComponent::compute(
                 intakeSeries[analyteGroupId],
                 parameterSeries[analyteGroupId]);
 
-    if (predictionComputationResult != ComputationResult::Success) {
-        return ComputingResult::Error;
+    if (predictionResult != ComputingResult::Ok) {
+        return predictionResult;
     }
 
     IntakeSeries selectedIntakes;
     selectRecordedIntakes(selectedIntakes, intakeSeries[analyteGroupId], _traits->getStart(), _traits->getEnd());
 
-    if (computationResult == IPercentileCalculator::ComputingResult::Success &&
+    if (computingResult == ComputingResult::Ok &&
             selectedIntakes.size() == pPrediction->getTimes().size() &&
             selectedIntakes.size() == pPrediction->getValues().size())
     {
@@ -429,10 +428,10 @@ ComputingResult ComputingComponent::compute(
             std::vector<CycleData> percData;
 
             if (selectedIntakes.size() != allValues[p].size()) {
-                return ComputingResult::Error;
+                return ComputingResult::SelectedIntakesSizeError;
             }
             if (selectedIntakes.size() != pPrediction->getTimes().size()) {
-                return ComputingResult::Error;
+                return ComputingResult::SelectedIntakesSizeError;
             }
 
             for (unsigned int cycle = 0; cycle < allValues[p].size(); cycle ++) {
@@ -446,7 +445,7 @@ ComputingResult ComputingComponent::compute(
 
                 if (end > _traits->getStart()) {
                     CycleData cycleData(start, end, Unit("ug/l"));
-                    cycleData.addData(times, allValues[p].at(cycle), 0);
+                    cycleData.addData(times, allValues[p].at(cycle));
                     percData.push_back(cycleData);
                 }
             }
@@ -461,10 +460,15 @@ ComputingResult ComputingComponent::compute(
         resp->setRanks(percentileRanks);
 
         _response->addResponse(std::move(resp));
-        return ComputingResult::Success;
+        return ComputingResult::Ok;
     }
     else {
-        return ComputingResult::Error;
+        if (computingResult != ComputingResult::Ok) {
+            return computingResult;
+        }
+        else {
+            return ComputingResult::SelectedIntakesSizeError;
+        }
     }
 }
 
@@ -509,18 +513,18 @@ ComputingResult ComputingComponent::buildCandidates(const FullFormulationAndRout
 
     if (doseValues.size() == 0) {
         m_logger.error("No available potential dose");
-        return ComputingResult::Error;
+        return ComputingResult::NoAvailableDose;
     }
 
     if (intervalValues.size() == 0) {
         m_logger.error("No available interval");
-        return ComputingResult::Error;
+        return ComputingResult::NoAvailableInterval;
     }
 
     if (infusionTimes.size() == 0) {
         if (_formulationAndRoute->getFormulationAndRoute().getAbsorptionModel() == AbsorptionModel::Infusion) {
             m_logger.error("Infusion selected, but no potential infusion time");
-            return ComputingResult::Error;
+            return ComputingResult::NoAvailableInfusionTime;
         }
         infusionTimes.push_back(Duration(0h));
     }
@@ -541,7 +545,7 @@ ComputingResult ComputingComponent::buildCandidates(const FullFormulationAndRout
             }
         }
     }
-    return ComputingResult::Success;
+    return ComputingResult::Ok;
 }
 
 bool compareCandidates(const FullDosage &_a, const FullDosage &_b)
@@ -656,7 +660,7 @@ ComputingResult ComputingComponent::compute(
 
     if (_traits == nullptr) {
         m_logger.error("The computing traits sent for computation are nullptr");
-        return ComputingResult::Error;
+        return ComputingResult::NoComputingTraits;
     }
 
     std::map<AnalyteGroupId, std::shared_ptr<PkModel> > pkModel;
@@ -676,7 +680,7 @@ ComputingResult ComputingComponent::compute(
                                                                               parameterSeries,
                                                                               calculationStartTime);
 
-    if (extractionResult != ComputingResult::Success) {
+    if (extractionResult != ComputingResult::Ok) {
         return extractionResult;
     }
 
@@ -690,9 +694,9 @@ ComputingResult ComputingComponent::compute(
 
     for(auto analyteGroupId : allGroupIds) {
         if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Aposteriori) {
-            if (m_generalExtractor->extractAposterioriEtas(etas[analyteGroupId], _request, analyteGroupId, intakeSeries[analyteGroupId], parameterSeries[analyteGroupId], covariateSeries, calculationStartTime, _traits->getEnd())
-                    != ComputingResult::Success) {
-                return ComputingResult::Error;
+            ComputingResult aposterioriEtasExtractionResult = m_generalExtractor->extractAposterioriEtas(etas[analyteGroupId], _request, analyteGroupId, intakeSeries[analyteGroupId], parameterSeries[analyteGroupId], covariateSeries, calculationStartTime, _traits->getEnd());
+            if (aposterioriEtasExtractionResult != ComputingResult::Ok) {
+                return aposterioriEtasExtractionResult;
             }
         }
     }
@@ -710,7 +714,7 @@ ComputingResult ComputingComponent::compute(
 
     if (selectedFormulationAndRoutes.size() == 0) {
         m_logger.error("Can not find a formulation and route for adjustment");
-        return ComputingResult::Error;
+        return ComputingResult::NoFormulationAndRouteForAdjustment;
     }
 
 
@@ -721,14 +725,14 @@ ComputingResult ComputingComponent::compute(
 
         if (selectedFormulationAndRoute == nullptr) {
             m_logger.error("Can not find a formulation and route for adjustment");
-            return ComputingResult::Error;
+            return ComputingResult::NoFormulationAndRouteForAdjustment;
         }
 
         std::vector<AdjustmentCandidate> candidates;
 
         ComputingResult buildingResult = buildCandidates(selectedFormulationAndRoute, candidates);
 
-        if (buildingResult != ComputingResult::Success) {
+        if (buildingResult != ComputingResult::Ok) {
             m_logger.error("Can not build adjustment candidates");
             return buildingResult;
         }
@@ -737,13 +741,13 @@ ComputingResult ComputingComponent::compute(
         TargetSeries targetSeries;
         TargetExtractionOption targetExtractionOption = _traits->getTargetExtractionOption();
 
-        TargetExtractor::Result targetExtractionResult =
+        ComputingResult targetExtractionResult =
         targetExtractor.extract(covariateSeries, _request.getDrugModel().getActiveMoieties().at(0).get()->getTargetDefinitions(),
                                 _request.getDrugTreatment().getTargets(), _traits->getStart(), _traits->getEnd(),
                                 targetExtractionOption, targetSeries);
 
-        if (targetExtractionResult != TargetExtractor::Result::Ok) {
-            return ComputingResult::Error;
+        if (targetExtractionResult != ComputingResult::Ok) {
+            return targetExtractionResult;
         }
 
         // A vector of vector because each adjustment candidate can have various targets
@@ -787,29 +791,29 @@ ComputingResult ComputingComponent::compute(
 
                 IntakeExtractor intakeExtractor;
                 double nbPointsPerHour = _traits->getNbPointsPerHour();
-                IntakeExtractor::Result intakeExtractionResult = intakeExtractor.extract(*newHistory, calculationStartTime, newEndTime,
+                ComputingResult intakeExtractionResult = intakeExtractor.extract(*newHistory, calculationStartTime, newEndTime,
                                                                                          nbPointsPerHour, intakeSeriesPerGroup[analyteGroupId]);
 
                 delete newHistory;
                 newHistory = nullptr;
 
-                if (intakeExtractionResult != IntakeExtractor::Result::Ok) {
-                    return ComputingResult::Error;
+                if (intakeExtractionResult != ComputingResult::Ok) {
+                    return intakeExtractionResult;
                 }
 
-                IntakeToCalculatorAssociator::Result intakeAssociationResult =
+                ComputingResult intakeAssociationResult =
                         IntakeToCalculatorAssociator::associate(intakeSeriesPerGroup[analyteGroupId], *pkModel[analyteGroupId]);
 
-                if (intakeAssociationResult != IntakeToCalculatorAssociator::Result::Ok) {
+                if (intakeAssociationResult != ComputingResult::Ok) {
                     m_logger.error("Can not associate intake calculators for the specified route");
-                    return ComputingResult::Error;
+                    return intakeAssociationResult;
                 }
 
 
 
-                ComputationResult predictionComputationResult;
+                ComputingResult predictionComputingResult;
 
-                predictionComputationResult = computeConcentrations(
+                predictionComputingResult = computeConcentrations(
                             pPrediction,
                             false,
                             //                            _traits->getStart(),
@@ -819,9 +823,9 @@ ComputingResult ComputingComponent::compute(
                             parameterSeries[analyteGroupId],
                             etas[analyteGroupId]);
 
-                if (predictionComputationResult != ComputationResult::Success) {
+                if (predictionComputingResult != ComputingResult::Ok) {
                     m_logger.error("Error with the computation of a single adjustment candidate");
-                    return ComputingResult::Error;
+                    return predictionComputingResult;
                 }
             }
 
@@ -836,17 +840,17 @@ ComputingResult ComputingComponent::compute(
                 TargetEvaluationResult localResult;
 
                 // Now the score calculation
-                TargetEvaluator::Result evaluationResult = targetEvaluator.evaluate(*pPrediction.get(), intakeSeriesPerGroup[allGroupIds[0]], target, localResult);
+                ComputingResult evaluationResult = targetEvaluator.evaluate(*pPrediction.get(), intakeSeriesPerGroup[allGroupIds[0]], target, localResult);
 
                 // Here we do not compare to Result::Ok, because the result can also be
                 // Result::InvalidCandidate
-                if (evaluationResult == TargetEvaluator::Result::EvaluationError) {
+                if (evaluationResult == ComputingResult::TargetEvaluationError) {
                     m_logger.error("Error in the evaluation of targets");
-                    return ComputingResult::Error;
+                    return evaluationResult;
                 }
 
                 // If the candidate is valid:
-                if (evaluationResult == TargetEvaluator::Result::Ok) {
+                if (evaluationResult == ComputingResult::Ok) {
                     candidateResults.push_back(localResult);
                 }
                 else {
@@ -877,7 +881,7 @@ ComputingResult ComputingComponent::compute(
                         DateTime end = start + std::chrono::milliseconds(static_cast<int>(times.at(times.size() - 1)) * 1000);
                         if (start >= _traits->getAdjustmentTime()) {
                             CycleData cycle(start, end, Unit("ug/l"));
-                            cycle.addData(times, pPrediction->getValues().at(i), 0);
+                            cycle.addData(times, pPrediction->getValues().at(i));
                             dosage.m_data.push_back(cycle);
                         }
                     }
@@ -925,7 +929,7 @@ ComputingResult ComputingComponent::compute(
     // Finally add the response to the set of responses
     _response->addResponse(std::move(resp));
 
-    return ComputingResult::Success;
+    return ComputingResult::Ok;
 }
 
 
@@ -957,14 +961,14 @@ ComputingResult ComputingComponent::compute(
 
     if (_traits == nullptr) {
         m_logger.error("The computing traits sent for computation are nullptr");
-        return ComputingResult::Error;
+        return ComputingResult::NoComputingTraits;
     }
 
     if (_traits->getTimes().size() == 0) {
         // No time given, so we return an empty response
         std::unique_ptr<SinglePointsResponse> resp = std::make_unique<SinglePointsResponse>(_traits->getId());
         _response->addResponse(std::move(resp));
-        return ComputingResult::Success;
+        return ComputingResult::Ok;
     }
 
     std::map<AnalyteGroupId, std::shared_ptr<PkModel> > pkModel;
@@ -1000,7 +1004,7 @@ ComputingResult ComputingComponent::compute(
                                                                               parameterSeries,
                                                                               calculationStartTime);
 
-    if (extractionResult != ComputingResult::Success) {
+    if (extractionResult != ComputingResult::Ok) {
         return extractionResult;
     }
 
@@ -1011,14 +1015,14 @@ ComputingResult ComputingComponent::compute(
 
         ConcentrationPredictionPtr pPrediction = std::make_unique<ConcentrationPrediction>();
 
-        ComputationResult computationResult;
+        ComputingResult computingResult;
 
         Etas etas;
 
         if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Aposteriori) {
-            if (m_generalExtractor->extractAposterioriEtas(etas, _request, analyteGroupId, intakeSeries[analyteGroupId], parameterSeries[analyteGroupId], covariateSeries, calculationStartTime, lastDate)
-                    != ComputingResult::Success) {
-                return ComputingResult::Error;
+            ComputingResult aposterioriEtasExtractionResult = m_generalExtractor->extractAposterioriEtas(etas, _request, analyteGroupId, intakeSeries[analyteGroupId], parameterSeries[analyteGroupId], covariateSeries, calculationStartTime, lastDate);
+            if (aposterioriEtasExtractionResult != ComputingResult::Ok) {
+                return aposterioriEtasExtractionResult;
             }
         }
 
@@ -1031,7 +1035,7 @@ ComputingResult ComputingComponent::compute(
         }
 
         ConcentrationCalculator calculator;
-        computationResult = calculator.computeConcentrationsAtTimes(
+        computingResult = calculator.computeConcentrationsAtTimes(
                     concentrations,
                     false,
                     intakeSeries[analyteGroupId],
@@ -1041,14 +1045,14 @@ ComputingResult ComputingComponent::compute(
                     true);
 
 
-        if (computationResult == ComputationResult::Success)
+        if (computingResult == ComputingResult::Ok)
         {
             std::unique_ptr<SinglePointsResponse> resp = std::make_unique<SinglePointsResponse>(_traits->getId());
 
             if (concentrations.size() != timesSeries.size()) {
                 // Something went wrong
                 m_logger.error("The number of concentrations calculated is not the same as the number of points asked");
-                return ComputingResult::Error;
+                return ComputingResult::ConcentrationSizeError;
             }
 
             size_t nbTimes = concentrations.size();
@@ -1061,14 +1065,14 @@ ComputingResult ComputingComponent::compute(
             resp->m_unit = Unit("ug/l");
 
             _response->addResponse(std::move(resp));
-            return ComputingResult::Success;
+            return ComputingResult::Ok;
         }
         else {
-            return ComputingResult::Error;
+            return computingResult;
         }
 
     }
-    return ComputingResult::Error;
+    return ComputingResult::NoAnalytesGroup;
  }
 
 
@@ -1084,7 +1088,7 @@ Tucuxi::Common::Interface* ComputingComponent::getInterface(const std::string &_
 
 
 
-ComputationResult ComputingComponent::computeConcentrations(
+ComputingResult ComputingComponent::computeConcentrations(
         ConcentrationPredictionPtr &_prediction,
         bool _isAll,
         const DateTime &_recordFrom,
@@ -1152,7 +1156,7 @@ ComputingResult ComputingComponent::computeActiveMoiety(
                 double result;
                 if (!op->evaluate(inputList, result)) {
                     // Something went wrong
-                    return ComputingResult::Error;
+                    return ComputingResult::ActiveMoietyCalculationError;
                 }
                 concentration[c] = result;
             }
@@ -1160,7 +1164,7 @@ ComputingResult ComputingComponent::computeActiveMoiety(
         _activeMoietyPredictions->appendConcentrations(times, concentration);
     }
 
-    return ComputingResult::Success;
+    return ComputingResult::Ok;
 }
 
 } // namespace Core

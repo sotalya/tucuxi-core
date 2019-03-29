@@ -47,7 +47,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
                                        int _nbPoints)
     {
 
-        Tucuxi::Core::IntakeIntervalCalculator::Result res;
+        Tucuxi::Core::ComputingResult res;
         CalculatorMicroClass microCalculator;
         CalculatorMacroClass macroCalculator;
 
@@ -83,7 +83,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
                 interval.toHours(),
                 isAll,
                 outMicroResiduals);
-            fructose_assert(res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok);
+            fructose_assert(res == Tucuxi::Core::ComputingResult::Ok);
 
             // Check Macro class
             inMacroResiduals = outMacroResiduals;
@@ -95,7 +95,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
                 interval.toHours(),
                 isAll,
                 outMacroResiduals);
-            fructose_assert(res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok);
+            fructose_assert(res == Tucuxi::Core::ComputingResult::Ok);
 
 #if 0
             std::cout << "[" << cycle << "]";
@@ -106,7 +106,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
 #endif
         }
 
-        if (res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok) {
+        if (res == Tucuxi::Core::ComputingResult::Ok) {
             for (unsigned int i = 0; i < residualSize; i++) {
                 fructose_assert_double_eq_rel_abs(inMicroResiduals[i], outMicroResiduals[i], 0.01, 0.01)
                 fructose_assert_double_eq_rel_abs(inMacroResiduals[i], outMacroResiduals[i], 0.01, 0.01)
@@ -124,7 +124,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
                               std::chrono::seconds _infusionTime,
                               int _nbPoints)
     {
-        Tucuxi::Core::IntakeIntervalCalculator::Result res;
+        Tucuxi::Core::ComputingResult res;
         CalculatorMicroClass microCalculator;
         CalculatorMacroClass macroCalculator;
 
@@ -167,7 +167,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             }
         }
 
-        fructose_assert(res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok);
+        fructose_assert(res == Tucuxi::Core::ComputingResult::Ok);
 
         res = microCalculator.calculateIntakeSinglePoint(
             concentrations,
@@ -188,7 +188,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             }
         }
 
-        fructose_assert(res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok);
+        fructose_assert(res == Tucuxi::Core::ComputingResult::Ok);
 
         // Calculation of Macro Class
         res = macroCalculator.calculateIntakePoints(
@@ -212,7 +212,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             }
         }
 
-        fructose_assert(res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok);
+        fructose_assert(res == Tucuxi::Core::ComputingResult::Ok);
 
         res = macroCalculator.calculateIntakeSinglePoint(
             concentrations,
@@ -233,9 +233,9 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             }
         }
 
-        fructose_assert(res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok);
+        fructose_assert(res == Tucuxi::Core::ComputingResult::Ok);
 
-        if (res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok) {
+        if (res == Tucuxi::Core::ComputingResult::Ok) {
             for (unsigned int i = 0; i < residualSize; i++) {
                 fructose_assert_double_eq(outMicroMultiResiduals[i], outMicroSingleResiduals[i])
                 fructose_assert_double_eq(outMacroMultiResiduals[i], outMacroSingleResiduals[i])

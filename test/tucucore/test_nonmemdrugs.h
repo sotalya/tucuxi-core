@@ -43,7 +43,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
         // with ConcentrationCalculator vs directly with the IntakeIntervalCalculator
         {
 
-            Tucuxi::Core::IntakeIntervalCalculator::Result res;
+            Tucuxi::Core::ComputingResult res;
             CalculatorClass calculator;
 
             DateTime now;
@@ -77,7 +77,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
                     outResiduals,
                     true);
 
-                fructose_assert(res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok);
+                fructose_assert(res == Tucuxi::Core::ComputingResult::Ok);
             }
 
             Tucuxi::Core::ConcentrationPredictionPtr predictionPtr;

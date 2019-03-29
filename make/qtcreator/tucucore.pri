@@ -67,6 +67,7 @@ HEADERS += \
     $$PWD/../../src/tucucore/covariateevent.h \
     $$PWD/../../src/tucucore/computingservice/computingrequest.h \
     $$PWD/../../src/tucucore/computingservice/computingresponse.h \
+    $$PWD/../../src/tucucore/computingservice/computingresult.h \
     $$PWD/../../src/tucucore/computingservice/computingtrait.h \
     $$PWD/../../src/tucucore/computingservice/icomputingservice.h \
     $$PWD/../../src/tucucore/validvalues.h \

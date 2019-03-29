@@ -249,7 +249,7 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(const TargetDefinit
     }
 }
 
-TargetExtractor::Result TargetExtractor::extract(
+ComputingResult TargetExtractor::extract(
         const CovariateSeries &_covariates,
         const TargetDefinitions& _targetDefinitions,
         const Targets &_targets,
@@ -262,9 +262,9 @@ TargetExtractor::Result TargetExtractor::extract(
     case TargetExtractionOption::AprioriValues :
     {
         // Not yet implemented
-        return Result::ExtractionError;
+        return ComputingResult::TargetExtractionError;
 
-    }break;
+    } break;
 
 
     case TargetExtractionOption::IndividualTargets :
@@ -284,7 +284,7 @@ TargetExtractor::Result TargetExtractor::extract(
             }
             if (!foundDefinition) {
                 // TODO : Log, something went wrong
-                return Result::ExtractionError;
+                return ComputingResult::TargetExtractionError;
             }
         }
     } break;
@@ -308,7 +308,7 @@ TargetExtractor::Result TargetExtractor::extract(
 
                 _series.push_back(targetEventFromTargetDefinition(targetDefinition.get()));
             }
-
+        }
     } break;
 
     case TargetExtractionOption::PopulationValues :
@@ -319,13 +319,12 @@ TargetExtractor::Result TargetExtractor::extract(
         }
 
     } break;
-}
-}
-TMP_UNUSED_PARAMETER(_covariates);
-TMP_UNUSED_PARAMETER(_start);
-TMP_UNUSED_PARAMETER(_end);
+    }
+    TMP_UNUSED_PARAMETER(_covariates);
+    TMP_UNUSED_PARAMETER(_start);
+    TMP_UNUSED_PARAMETER(_end);
 
-return Result::Ok;
+    return ComputingResult::Ok;
 }
 
 } // namespace Core

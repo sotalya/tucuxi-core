@@ -18,6 +18,7 @@
 
 #include "tucucore/definitions.h"
 #include "tucucore/covariateevent.h"
+#include "tucucore/computingservice/computingresult.h"
 
 struct TestCovariateExtractor;
 
@@ -30,10 +31,6 @@ using Tucuxi::Common::Duration;
 class ICovariateExtractor
 {
 public:
-    enum class Result {
-        Ok,
-        ExtractionError
-    };
 
     /// \brief Create a Covariate Extractor for the specified interval and covariate set.
     /// \param _defaults Default covariate events.
@@ -54,7 +51,7 @@ public:
     /// \brief Extract covariate events.
     /// \param _series Set of extracted covariate events.
     /// \return 0 on success, an error code in case an issue arised.
-    virtual Result extract(CovariateSeries &_series) = 0;
+    virtual ComputingResult extract(CovariateSeries &_series) = 0;
 
 
 protected:
@@ -95,8 +92,8 @@ public:
 
     /// \brief Extract covariate events.
     /// \param _series Set of extracted covariate events.
-    /// \return Result::Ok on success, Result::ExtractionError in case an issue arised.
-    Result extract(CovariateSeries &_series) override;
+    /// \return ComputingResult::Ok on success, Result::ExtractionError in case an issue arised.
+    ComputingResult extract(CovariateSeries &_series) override;
 
     // Make the test class friend, as this will allow us to test the helper methods (which are private).
     friend TestCovariateExtractor;

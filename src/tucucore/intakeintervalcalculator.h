@@ -16,6 +16,7 @@
 //#include "tucucore/intakeevent.h"
 #include "tucucore/parameter.h"
 #include "tucucore/cachedexponentials.h"
+#include "tucucore/computingservice/computingresult.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -69,15 +70,6 @@ class IntakeIntervalCalculator
 {
 
 public:
-
-    enum class Result {
-        Ok,
-        BadParameters,
-        BadConcentration,
-        DensityError
-    };
-
-public:
     /// \brief Constructor
     IntakeIntervalCalculator() : m_loggingErrors(true) {}
 
@@ -100,7 +92,7 @@ public:
     /// \param _outResiduals Final residual concentrations
     /// \param _isDensityConstant Flag to indicate if initial number of points should be used with a constant density
     /// \return An indication if the computation was successful
-    virtual Result calculateIntakePoints(
+    virtual ComputingResult calculateIntakePoints(
         std::vector<Concentrations>& _concentrations,
         TimeOffsets & _times,
         const IntakeEvent& _intakeEvent,
@@ -118,7 +110,7 @@ public:
     /// \param _atTime The time of the point of interest
     /// \param _outResiduals Final residual concentrations
     /// \return Returns an indication if the computation was successful
-    virtual Result calculateIntakeSinglePoint(
+    virtual ComputingResult calculateIntakeSinglePoint(
         std::vector<Concentrations>& _concentrations,
         const IntakeEvent& _intakeEvent,
         const ParameterSetEvent& _parameters,
@@ -244,7 +236,7 @@ public:
     /// \param _outResiduals Final residual concentrations
     /// \param _isDensityConstant Flag to indicate if initial number of points should be used with a constant density
     /// \return An indication if the computation was successful
-    Result calculateIntakePoints(
+    ComputingResult calculateIntakePoints(
         std::vector<Concentrations>& _concentrations,
         TimeOffsets & _times,
         const IntakeEvent& _intakeEvent,
@@ -262,7 +254,7 @@ public:
     /// \param _atTime The time of the point of interest
     /// \param _outResiduals Final residual concentrations
     /// \return Returns an indication if the computation was successful
-    Result calculateIntakeSinglePoint(
+    ComputingResult calculateIntakeSinglePoint(
         std::vector<Concentrations>& _concentrations,
         const IntakeEvent& _intakeEvent,
         const ParameterSetEvent& _parameters,

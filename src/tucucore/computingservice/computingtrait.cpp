@@ -87,7 +87,7 @@ ComputingResult ComputingTraitStandard::compute(ComputingComponent &_computingCo
     FINAL_UNUSED_PARAMETER(_computingComponent);
     FINAL_UNUSED_PARAMETER(_request);
     FINAL_UNUSED_PARAMETER(_response);
-    return ComputingResult::Error;
+    return ComputingResult::ComputingTraitStandardShouldNotBeCalled;
 }
 
 

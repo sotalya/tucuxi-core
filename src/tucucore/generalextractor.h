@@ -38,7 +38,7 @@ public:
             Tucuxi::Common::DateTime _calculationStartTime,
             Common::DateTime _endTime);
 
-    ComputationResult extractOmega(const DrugModel &_drugModel,
+    ComputingResult extractOmega(const DrugModel &_drugModel,
             AnalyteGroupId _analyteGroupId,
             std::vector<const FullFormulationAndRoute *> &_formulationAndRoutes,
             OmegaMatrix &_omega);
@@ -59,7 +59,7 @@ public:
 
 protected:
 
-    ComputationResult convertAnalytes(IntakeSeries &_intakeSeries, const DrugModel &_drugModel, AnalyteSet *_analyteGroup);
+    ComputingResult convertAnalytes(IntakeSeries &_intakeSeries, const DrugModel &_drugModel, AnalyteSet *_analyteGroup);
 
     bool findFormulationAndRoutes(std::vector<FormulationAndRoute> &_treatmentFandR, const FormulationAndRoutes &_drugModelFandR, std::map<FormulationAndRoute, const FullFormulationAndRoute *> &_result);
 

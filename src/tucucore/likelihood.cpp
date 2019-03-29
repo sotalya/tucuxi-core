@@ -60,7 +60,7 @@ Value Likelihood::negativeLogLikelihood(const ValueVector& _etas) const
     bool isAll = false;
 
     // Getting the concentration values at these _times and m_samples.
-    ComputationResult result = m_concentrationCalculator->computeConcentrationsAtTimes(
+    ComputingResult result = m_concentrationCalculator->computeConcentrationsAtTimes(
         concentrations,
         isAll,
         *m_intakes,
@@ -70,7 +70,7 @@ Value Likelihood::negativeLogLikelihood(const ValueVector& _etas) const
 
     // If the calculation fails, its highly unlikely so we return the largest number we can
 
-    if (result != ComputationResult::Success) {
+    if (result != ComputingResult::Ok) {
         return std::numeric_limits<double>::max();
     }
     Value gll = 0;

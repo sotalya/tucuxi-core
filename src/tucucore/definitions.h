@@ -106,9 +106,6 @@ typedef std::map<int, Eigen::VectorXd> PrecomputedExponentials;
 /// \brief Input operand types.
 enum class InputType { BOOL, INTEGER, DOUBLE };
 
-
-enum class ComputationResult { Success, Failure, Aborted };
-
 typedef Value Deviation;		    // Used for deviations (e.g. std dev)
 typedef std::vector<Deviation> Deviations;  // Used for epsilons array (e.g. std dev)
 typedef std::vector<Deviation> Etas;	    // Used for values in eta and error vectors

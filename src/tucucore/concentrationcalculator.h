@@ -11,6 +11,7 @@
 #include "tucucore/residualerrormodel.h"
 #include "tucucore/sampleevent.h"
 #include "tucucore/concentrationprediction.h"
+#include "tucucore/computingservice/computingresult.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -33,7 +34,7 @@ public:
     /// \param _onlyAnalytes If true, only fill the concentration of the analyte, no other compartment
     /// \return The status of computation
     ///
-    virtual ComputationResult computeConcentrations(
+    virtual ComputingResult computeConcentrations(
         const ConcentrationPredictionPtr &_prediction,
         bool _isAll,
         const DateTime &_recordFrom,
@@ -60,7 +61,7 @@ public:
     /// \param _onlyAnalytes If true, only fill the concentration of the analyte, no other compartment
     /// \return The status of computation
     ///
-    virtual ComputationResult computeConcentrationsAtTimes(
+    virtual ComputingResult computeConcentrationsAtTimes(
         Concentrations& _concentrations,
         bool _isAll,
         const IntakeSeries& _intakes,
@@ -90,7 +91,7 @@ public:
     /// \param _isFixedDensity Indicates if the density of points could be changed within the method
     /// \return The status of computation
     ///
-    ComputationResult computeConcentrations(const ConcentrationPredictionPtr &_prediction,
+    ComputingResult computeConcentrations(const ConcentrationPredictionPtr &_prediction,
         bool _isAll,
         const DateTime &_recordFrom,
         const DateTime &_recordTo,
@@ -114,7 +115,7 @@ public:
     /// \param _etas vector of etas
     /// \return The status of computation
     ///
-    ComputationResult computeConcentrationsAtTimes(
+    ComputingResult computeConcentrationsAtTimes(
         Concentrations& _concentrations,
         bool _isAll,
         const IntakeSeries& _intakes,

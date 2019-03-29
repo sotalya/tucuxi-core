@@ -10,7 +10,7 @@
 namespace Tucuxi {
 namespace Core {
 
-SampleExtractor::Result SampleExtractor::extract(const Samples &_samples, const DateTime &_start, const DateTime &_end, SampleSeries &_series)
+ComputingResult SampleExtractor::extract(const Samples &_samples, const DateTime &_start, const DateTime &_end, SampleSeries &_series)
 {
     int nbRelevantSamples = 0;
     AnalyteId singleAnalyte = AnalyteId("");
@@ -25,11 +25,11 @@ SampleExtractor::Result SampleExtractor::extract(const Samples &_samples, const 
                 // We currently do not support multi-analytes for measures
                 Tucuxi::Common::LoggerHelper logger;
                 logger.error("Multi-analytes measures are not yet supported");
-                return Result::ExtractionError;
+                return ComputingResult::SampleExtractionError;
             }
         }
     }
-    return Result::Ok;
+    return ComputingResult::Ok;
 }
 
 

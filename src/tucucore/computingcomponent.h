@@ -19,6 +19,7 @@
 #include "tucucore/covariateevent.h"
 #include "tucucore/computingservice/computingresponse.h"
 #include "tucucore/computingservice/computingtrait.h"
+#include "tucucore/computingservice/computingresult.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -107,7 +108,7 @@ private:
             const ComputingRequest &_request,
             std::unique_ptr<ComputingResponse> &_response);
 
-    ComputationResult computeConcentrations(
+    ComputingResult computeConcentrations(
         ConcentrationPredictionPtr &_prediction,
         bool _isAll,
         const DateTime &_recordFrom,

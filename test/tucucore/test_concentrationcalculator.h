@@ -52,7 +52,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
         // Compare the result on one interval
         // with ConcentrationCalculator vs directly with the IntakeIntervalCalculator
         {
-            Tucuxi::Core::IntakeIntervalCalculator::Result res;
+            Tucuxi::Core::ComputingResult res;
             std::shared_ptr<IntakeIntervalCalculator> calculator = std::make_shared<CalculatorClass>();
 
             DateTime now;
@@ -88,7 +88,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
                     outResiduals,
                     true);
 
-                fructose_assert(res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok);
+                fructose_assert(res == Tucuxi::Core::ComputingResult::Ok);
             }
 
             Tucuxi::Core::ConcentrationPredictionPtr predictionPtr;
@@ -133,7 +133,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
         if (_route != AbsorptionModel::Infusion) {
             int nbCycles = 10;
 
-            Tucuxi::Core::IntakeIntervalCalculator::Result res;
+            Tucuxi::Core::ComputingResult res;
             CalculatorClass calculator;
 
             DateTime now;
@@ -173,7 +173,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
         }
 #endif
 
-                fructose_assert(res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok);
+                fructose_assert(res == Tucuxi::Core::ComputingResult::Ok);
             }
 
             Tucuxi::Core::ConcentrationPredictionPtr predictionPtr;
@@ -290,15 +290,15 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
                 sampleSeries.push_back(s1);
 
                 Tucuxi::Core::IConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::ConcentrationCalculator();
-                ComputationResult res = concentrationCalculator->computeConcentrationsAtTimes(
+                ComputingResult res = concentrationCalculator->computeConcentrationsAtTimes(
                     concentrations,
                     isAll,
                     intakeSeries,
                     _parameters,
                     sampleSeries);
 
-                fructose_assert(res == ComputationResult::Success);
-                fructose_assert_eq(res , ComputationResult::Success);
+                fructose_assert(res == ComputingResult::Ok);
+                fructose_assert_eq(res , ComputingResult::Ok);
 
                 delete concentrationCalculator;
             }

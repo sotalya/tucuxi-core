@@ -43,7 +43,7 @@ void TargetEvaluator::evaluateValue(
     }
 }
 
-TargetEvaluator::Result TargetEvaluator::evaluate(
+ComputingResult TargetEvaluator::evaluate(
         const ConcentrationPrediction& _prediction,
         const IntakeSeries& _intakeSeries,
         const Target &_target,
@@ -61,9 +61,9 @@ TargetEvaluator::Result TargetEvaluator::evaluate(
     DateTime start = _intakeSeries.at(lastCycleIndex).getEventTime();
     DateTime end = start + std::chrono::milliseconds(static_cast<int>(times.at(times.size() - 1)) * 1000);
     CycleData cycle(start, end, Unit("ug/l"));
-    cycle.addData(times, _prediction.getValues().at(lastCycleIndex), 0);
+    cycle.addData(times, _prediction.getValues().at(lastCycleIndex));
 
-    // TODO : Here we only take one comparment... To be checked
+    // TODO : Here we only take one compartment... To be checked
 
     // Only valid for a single cycle, so 0.0 as cumulative AUC here.
     // It cannot be used as is for cumulative AUC of multiple cycles.
@@ -144,7 +144,7 @@ TargetEvaluator::Result TargetEvaluator::evaluate(
             DateTime start = _intakeSeries.at(i).getEventTime();
             DateTime end = start + std::chrono::milliseconds(static_cast<int>(times.at(times.size() - 1)) * 1000);
             CycleData cycle(start, end, Unit("ug/l"));
-            cycle.addData(times, _prediction.getValues().at(i), 0);
+            cycle.addData(times, _prediction.getValues().at(i));
 
             // The constructor accumulates in cumulativeAuc.
             CycleStatistics statisticsCalculator(cycle, cumulativeAuc);
@@ -205,27 +205,27 @@ TargetEvaluator::Result TargetEvaluator::evaluate(
 
     case TargetType::AucOverMic :
     {
-        return Result::EvaluationError;
+        return ComputingResult::TargetEvaluationError;
     } break;
 
     case TargetType::Auc24OverMic :
     {
-        return Result::EvaluationError;
+        return ComputingResult::TargetEvaluationError;
     } break;
 
     case TargetType::TimeOverMic :
     {
-        return Result::EvaluationError;
+        return ComputingResult::TargetEvaluationError;
     } break;
 
     case TargetType::PeakDividedByMic :
     {
-        return Result::EvaluationError;
+        return ComputingResult::TargetEvaluationError;
     } break;
 
     case TargetType::UnknownTarget :
     {
-        return Result::EvaluationError;
+        return ComputingResult::TargetEvaluationError;
 
     } break;
 
@@ -233,12 +233,12 @@ TargetEvaluator::Result TargetEvaluator::evaluate(
     }
 
     if (!bOk) {
-        return Result::InvalidCandidate;
+        return ComputingResult::InvalidCandidate;
     }
 
     // We build the result, as there was no error
     _result = TargetEvaluationResult(_target.m_targetType, score, translateToUnit(value, _target.m_unit, _target.m_finalUnit), _target.m_finalUnit);
-    return Result::Ok;
+    return ComputingResult::Ok;
 }
 
 } // namespace Core

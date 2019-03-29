@@ -4,6 +4,7 @@
 #include "tucucore/covariateevent.h"
 #include "tucucore/sampleevent.h"
 #include "tucucore/unit.h"
+#include "tucucore/computingservice/computingresult.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -15,14 +16,9 @@ class ResidualErrorModelExtractor
 {
 public:
 
-    enum class Result {
-        Ok,
-        ExtractionError
-    };
-
     ResidualErrorModelExtractor();
 
-    Result extract(const ErrorModel &_errorModel, const Unit &_fromUnit, const CovariateSeries &_covariateSeries, IResidualErrorModel **_residualErrorModel);
+    ComputingResult extract(const ErrorModel &_errorModel, const Unit &_fromUnit, const CovariateSeries &_covariateSeries, IResidualErrorModel **_residualErrorModel);
 
 };
 

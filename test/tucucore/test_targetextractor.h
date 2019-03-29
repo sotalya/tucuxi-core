@@ -43,7 +43,7 @@ struct TestTargetExtractor : public fructose::test_base<TestTargetExtractor>
         TargetExtractionOption extractionOption;
         TargetSeries series;
 
-        TargetExtractor::Result result;
+        ComputingResult result;
 
         {
             extractionOption = TargetExtractionOption::AprioriValues;
@@ -51,7 +51,7 @@ struct TestTargetExtractor : public fructose::test_base<TestTargetExtractor>
             result = extractor.extract(covariates, targetDefinitions, targets, start, end, extractionOption, series);
 
             // Not yet implemented, so extraction error
-            fructose_assert( result == TargetExtractor::Result::ExtractionError);
+            fructose_assert( result == ComputingResult::TargetExtractionError);
         }
     }
 
@@ -69,7 +69,7 @@ struct TestTargetExtractor : public fructose::test_base<TestTargetExtractor>
         TargetExtractionOption extractionOption;
         TargetSeries series;
 
-        TargetExtractor::Result result;
+        ComputingResult result;
 
         {
             // Test with only population values
@@ -96,7 +96,7 @@ struct TestTargetExtractor : public fructose::test_base<TestTargetExtractor>
 
             extractionOption = TargetExtractionOption::PopulationValues;
             result = extractor.extract(covariates, targetDefinitions, targets, start, end, extractionOption, series);
-            fructose_assert( result == TargetExtractor::Result::Ok);
+            fructose_assert( result == ComputingResult::Ok);
 
             fructose_assert(series.size() == 1);
             {
@@ -131,7 +131,7 @@ struct TestTargetExtractor : public fructose::test_base<TestTargetExtractor>
         TargetExtractionOption extractionOption;
         TargetSeries series;
 
-        TargetExtractor::Result result;
+        ComputingResult result;
 
 
         {
@@ -164,7 +164,7 @@ struct TestTargetExtractor : public fructose::test_base<TestTargetExtractor>
 
             extractionOption = TargetExtractionOption::IndividualTargets;
             result = extractor.extract(covariates, targetDefinitions, targets, start, end, extractionOption, series);
-            fructose_assert( result == TargetExtractor::Result::Ok);
+            fructose_assert( result == ComputingResult::Ok);
 
             fructose_assert(series.size() == 1);
             {

@@ -111,7 +111,7 @@ void sortPercentiles(std::vector<ConcentrationPrediction*> &_predictions, int _c
 
 #endif // MULTITHREADEDSORT
 
-IPercentileCalculator::ComputingResult MonteCarloPercentileCalculatorBase::computePredictionsAndSortPercentiles(
+ComputingResult MonteCarloPercentileCalculatorBase::computePredictionsAndSortPercentiles(
         PercentilesPrediction &_percentiles,
         const DateTime &_recordFrom,
         const DateTime &_recordTo,
@@ -183,7 +183,7 @@ IPercentileCalculator::ComputingResult MonteCarloPercentileCalculatorBase::compu
                     predictionPtr = std::make_unique<Tucuxi::Core::ConcentrationPrediction>();
 
                     // Call to apriori becomes population as its determined earlier in the parametersExtractor
-                    ComputationResult computationResult = _concentrationCalculator.computeConcentrations(
+                    ComputingResult computingResult = _concentrationCalculator.computeConcentrations(
                                 predictionPtr,
                                 false, // fix to "false"
                                 _recordFrom,
@@ -197,7 +197,7 @@ IPercentileCalculator::ComputingResult MonteCarloPercentileCalculatorBase::compu
 
 
                     // Save the series of result of concentrations[cycle][nbPoints][patient] for each cycle
-                    if (computationResult == ComputationResult::Success) {
+                    if (computingResult == ComputingResult::Ok) {
 
                         // Save concentrations to array of [patient] for using sort() function
                         for (unsigned int cycle = 0; cycle < recordedIntakes.size(); cycle++) {
@@ -413,7 +413,7 @@ IPercentileCalculator::ComputingResult MonteCarloPercentileCalculatorBase::compu
 
 //    elapsed = std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::steady_clock::now( ) - start );
 //    std::cout << "milliseconds for predictions sort : " << elapsed.count( ) << '\n';
-    return ComputingResult::Success;
+    return ComputingResult::Ok;
 } 
 
 
@@ -422,7 +422,7 @@ AprioriMonteCarloPercentileCalculator::AprioriMonteCarloPercentileCalculator()
 
 }
 
-IPercentileCalculator::ComputingResult AprioriMonteCarloPercentileCalculator::calculate(
+ComputingResult AprioriMonteCarloPercentileCalculator::calculate(
         PercentilesPrediction &_percentiles,
         const DateTime &_recordFrom,
         const DateTime &_recordTo,
@@ -560,7 +560,7 @@ AposterioriMonteCarloPercentileCalculator::AposterioriMonteCarloPercentileCalcul
 {
 }
 
-IPercentileCalculator::ComputingResult AposterioriMonteCarloPercentileCalculator::calculate(
+ComputingResult AposterioriMonteCarloPercentileCalculator::calculate(
         PercentilesPrediction &_percentiles,
         const DateTime &_recordFrom,
         const DateTime &_recordTo,
@@ -576,7 +576,7 @@ IPercentileCalculator::ComputingResult AposterioriMonteCarloPercentileCalculator
 {
     // If there is no sample, then there is no reason to calculate a posteriori percentiles
     if (_samples.size() == 0) {
-        return ComputingResult::Failure;
+        return ComputingResult::AposterioriPercentilesNoSamplesError;
     }
 
     // Return value from non-negative hessian matrix and loglikelihood
@@ -769,7 +769,7 @@ AposterioriNormalApproximationMonteCarloPercentileCalculator::AposterioriNormalA
 {
 }
 
-IPercentileCalculator::ComputingResult AposterioriNormalApproximationMonteCarloPercentileCalculator::calculate(
+ComputingResult AposterioriNormalApproximationMonteCarloPercentileCalculator::calculate(
         PercentilesPrediction &_percentiles,
         const DateTime &_recordFrom,
         const DateTime &_recordTo,
