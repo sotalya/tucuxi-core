@@ -340,6 +340,141 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
 
     }
 
+
+    void testAdjustments(const std::string& /* _testName */) {
+        BuildMultiAnalytesMultiActiveMoieties builder;
+        DrugModel *drugModel = builder.buildDrugModel(0.3, 0.7);
+
+        fructose_assert(drugModel != nullptr);
+
+
+        // Add targets
+        TargetDefinition *target = new TargetDefinition(TargetType::Residual,
+                                                        Unit("mg/l"),
+                                                        "analyte",
+                                                        std::make_unique<SubTargetDefinition>("cMin", 750.0, nullptr),
+                                                        std::make_unique<SubTargetDefinition>("cMax", 1500.0, nullptr),
+                                                        std::make_unique<SubTargetDefinition>("cBest", 1000.0, nullptr),
+                                                        std::make_unique<SubTargetDefinition>("mic", 0.0, nullptr),
+                                                        std::make_unique<SubTargetDefinition>("tMin", 1000.0, nullptr),
+                                                        std::make_unique<SubTargetDefinition>("tMax", 1000.0, nullptr),
+                                                        std::make_unique<SubTargetDefinition>("tBest", 1000.0, nullptr),
+                                                        std::make_unique<SubTargetDefinition>("toxicity", 10000.0, nullptr),
+                                                        std::make_unique<SubTargetDefinition>("inefficacy", 000.0, nullptr));
+
+        drugModel->m_activeMoieties[0]->addTarget(std::unique_ptr<TargetDefinition>(target));
+
+        fructose_assert(drugModel->checkInvariants());
+
+        DrugModelChecker checker;
+
+        std::shared_ptr<PkModel> sharedPkModel;
+        sharedPkModel = std::make_shared<PkModel>("test.constantelimination");
+
+        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
+        fructose_assert(addResult);
+
+        PkModelCollection *collection = new PkModelCollection();
+        collection->addPkModel(sharedPkModel);
+        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel, collection);
+
+        fructose_assert(checkerResult.m_ok);
+
+        if (!checkerResult.m_ok) {
+            std::cout << checkerResult.m_errorMessage << std::endl;
+        }
+
+        // Now the drug model is ready to be used
+
+
+        IComputingService *component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+
+        fructose_assert( component != nullptr);
+
+        static_cast<ComputingComponent *>(component)->setPkModelCollection(collection);
+
+
+        {
+
+            DrugTreatment *drugTreatment;
+            const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+
+            buildDrugTreatment(drugTreatment, route);
+
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covS", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covA", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covR", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+
+
+            std::unique_ptr<ComputingTraits> computingTraits = std::make_unique<ComputingTraits>();
+
+            RequestResponseId requestResponseId = "1";
+            Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
+            Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
+            double nbPointsPerHour = 10.0;
+            ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment, true);
+
+            Tucuxi::Common::DateTime adjustmentTime(2018_y / sep / 3, 8h + 0min);
+            BestCandidatesOption adjustmentOption = BestCandidatesOption::AllDosages;
+            ChargingOption chargingOption = ChargingOption::NoChargingDose;
+            RestPeriodOption restPeriodOption = RestPeriodOption::NoRestPeriod;
+            SteadyStateTargetOption steadyStateTargetOption = SteadyStateTargetOption::AtSteadyState;
+            TargetExtractionOption targetExtractionOption = TargetExtractionOption::PopulationValues;
+            FormulationAndRouteSelectionOption formulationAndRouteOption = FormulationAndRouteSelectionOption::LastFormulationAndRoute;
+
+            std::unique_ptr<ComputingTraitAdjustment> traits =
+                    std::make_unique<ComputingTraitAdjustment>(
+                        requestResponseId, start, end, nbPointsPerHour, computingOption, adjustmentTime, adjustmentOption,
+                        chargingOption, restPeriodOption, steadyStateTargetOption, targetExtractionOption, formulationAndRouteOption);
+
+            computingTraits->addTrait(std::move(traits));
+
+
+            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(computingTraits));
+
+            std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
+
+            ComputingResult result;
+            result = component->compute(request, response);
+
+            fructose_assert( result == ComputingResult::Ok);
+
+            const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
+
+            fructose_assert_eq(responses.size(), size_t{1});
+
+            {
+                fructose_assert(dynamic_cast<AdjustmentResponse*>(responses[0].get()) != nullptr);
+                const AdjustmentResponse *resp = dynamic_cast<AdjustmentResponse*>(responses[0].get());
+
+                fructose_assert_eq(resp->getAdjustments().size(), size_t{9});
+
+                for (auto &adjustment : resp->getAdjustments()) {
+
+                    fructose_assert_eq(adjustment.m_history.getDosageTimeRanges().size(), size_t{1});
+
+                    for (const auto &timeRange : adjustment.m_history.getDosageTimeRanges()) {
+                        const DosageRepeat *dosageRepeat = dynamic_cast<const DosageRepeat*>(timeRange->getDosage());
+                        fructose_assert(dosageRepeat != nullptr);
+                        const SingleDose *dosage = dynamic_cast<const SingleDose*>(dosageRepeat->getDosage());
+                        fructose_assert(dosage != nullptr);
+                        fructose_assert_double_ge(dosage->getDose(), 750.0);
+                        fructose_assert_double_le(dosage->getDose(), 1500.0);
+                    }
+                }
+
+
+            }
+
+            delete drugTreatment;
+        }
+
+        // Delete all dynamically allocated objects
+        delete component;
+        delete drugModel;
+
+    }
+
 };
 
 

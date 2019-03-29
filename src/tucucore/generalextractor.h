@@ -57,9 +57,9 @@ public:
     std::vector<const FullFormulationAndRoute*> extractFormulationAndRoutes(const DrugModel &_drugModel,
             const IntakeSeries _intakeSeries);
 
-protected:
+    ComputingResult convertAnalytes(IntakeSeries &_intakeSeries, const DrugModel &_drugModel, const AnalyteSet *_analyteGroup);
 
-    ComputingResult convertAnalytes(IntakeSeries &_intakeSeries, const DrugModel &_drugModel, AnalyteSet *_analyteGroup);
+protected:
 
     bool findFormulationAndRoutes(std::vector<FormulationAndRoute> &_treatmentFandR, const FormulationAndRoutes &_drugModelFandR, std::map<FormulationAndRoute, const FullFormulationAndRoute *> &_result);
 

@@ -453,7 +453,7 @@ bool GeneralExtractor::findFormulationAndRoutes(std::vector<FormulationAndRoute>
     return false;
 }
 
-ComputingResult GeneralExtractor::convertAnalytes(IntakeSeries &_intakeSeries, const Tucuxi::Core::DrugModel &_drugModel, AnalyteSet *_analyteGroup)
+ComputingResult GeneralExtractor::convertAnalytes(IntakeSeries &_intakeSeries, const Tucuxi::Core::DrugModel &_drugModel, const AnalyteSet *_analyteGroup)
 {
     for (size_t i = 0; i < _intakeSeries.size(); i++) {
         const FullFormulationAndRoute *formulation = _drugModel.getFormulationAndRoutes().get(_intakeSeries[i].getFormulationAndRoute());

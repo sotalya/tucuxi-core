@@ -122,13 +122,13 @@ ComputingResult ComputingComponent::compute(
     DateTime calculationStartTime;
 
     ComputingResult extractionResult = m_generalExtractor->generalExtractions(_traits,
-                                                                           _request,
-                                                                           m_models,
-                                                                           pkModel,
-                                                                           intakeSeries,
-                                                                           covariateSeries,
-                                                                           parameterSeries,
-                                                                           calculationStartTime);
+                                                                              _request,
+                                                                              m_models,
+                                                                              pkModel,
+                                                                              intakeSeries,
+                                                                              covariateSeries,
+                                                                              parameterSeries,
+                                                                              calculationStartTime);
 
     if (extractionResult != ComputingResult::Ok) {
         return extractionResult;
@@ -161,7 +161,7 @@ ComputingResult ComputingComponent::compute(
         computingResult = computeConcentrations(
                     pPrediction,
                     false,
-                     _traits->getStart(),
+                    _traits->getStart(),
                     _traits->getEnd(),
                     intakeSeries[analyteGroupId],
                     parameterSeries[analyteGroupId],
@@ -180,14 +180,14 @@ ComputingResult ComputingComponent::compute(
 
     if (!_request.getDrugModel().isSingleAnalyte()) {
 
-    for (const auto & activeMoiety : _request.getDrugModel().getActiveMoieties()) {
-        ConcentrationPredictionPtr activeMoietyPrediction = std::make_unique<ConcentrationPrediction>();
-        ComputingResult activeMoietyComputingResult = computeActiveMoiety(_request.getDrugModel(), activeMoiety.get(), analytesPredictions, activeMoietyPrediction);
-        if (activeMoietyComputingResult != ComputingResult::Ok) {
-            return activeMoietyComputingResult;
+        for (const auto & activeMoiety : _request.getDrugModel().getActiveMoieties()) {
+            ConcentrationPredictionPtr activeMoietyPrediction = std::make_unique<ConcentrationPrediction>();
+            ComputingResult activeMoietyComputingResult = computeActiveMoiety(_request.getDrugModel(), activeMoiety.get(), analytesPredictions, activeMoietyPrediction);
+            if (activeMoietyComputingResult != ComputingResult::Ok) {
+                return activeMoietyComputingResult;
+            }
+            activeMoietiesPredictions.push_back(std::move(activeMoietyPrediction));
         }
-        activeMoietiesPredictions.push_back(std::move(activeMoietyPrediction));
-    }
     }
 
     std::unique_ptr<SinglePredictionResponse> resp = std::make_unique<SinglePredictionResponse>(_traits->getId());
@@ -357,7 +357,7 @@ ComputingResult ComputingComponent::compute(
         SampleSeries sampleSeries;
         SampleExtractor sampleExtractor;
         ComputingResult sampleExtractionResult =
-        sampleExtractor.extract(_request.getDrugTreatment().getSamples(), calculationStartTime, _traits->getEnd(), sampleSeries);
+                sampleExtractor.extract(_request.getDrugTreatment().getSamples(), calculationStartTime, _traits->getEnd(), sampleSeries);
 
         if (sampleExtractionResult != ComputingResult::Ok) {
             return sampleExtractionResult;
@@ -565,7 +565,7 @@ std::vector<FullDosage> ComputingComponent::sortAndFilterCandidates(std::vector<
     // For debugging purpose only
     for (const auto & candidates : dosageCandidates)
     {
-            std::cout << "Evaluation. Score : " << candidates.getGlobalScore()  << std::endl;
+        std::cout << "Evaluation. Score : " << candidates.getGlobalScore()  << std::endl;
     }
 #endif // 0
 
@@ -583,7 +583,7 @@ std::vector<FullDosage> ComputingComponent::sortAndFilterCandidates(std::vector<
     case BestCandidatesOption::BestDosagePerInterval : {
         for(size_t i = 0; i < _candidates.size(); i++) {
             const DosageRepeat *repeat = dynamic_cast<const DosageRepeat *>(_candidates.at(i).m_history.getDosageTimeRanges().at(_candidates.at(i).m_history.getDosageTimeRanges().size() - 1)
-                    ->getDosage());
+                                                                            ->getDosage());
             if (repeat != nullptr) {
                 const LastingDose *dose = dynamic_cast<const LastingDose *>(repeat->getDosage());
                 if (dose != nullptr) {
@@ -591,7 +591,7 @@ std::vector<FullDosage> ComputingComponent::sortAndFilterCandidates(std::vector<
                     for(size_t j = i + 1; j < _candidates.size(); j++) {
 
                         const DosageRepeat *repeat2 = dynamic_cast<const DosageRepeat *>(_candidates.at(j).m_history.getDosageTimeRanges().at(_candidates.at(j).m_history.getDosageTimeRanges().size() - 1)
-                                ->getDosage());
+                                                                                         ->getDosage());
                         if (repeat2 != nullptr) {
                             const LastingDose *dose2 = dynamic_cast<const LastingDose *>(repeat2->getDosage());
                             if (dose2 != nullptr) {
@@ -742,9 +742,9 @@ ComputingResult ComputingComponent::compute(
         TargetExtractionOption targetExtractionOption = _traits->getTargetExtractionOption();
 
         ComputingResult targetExtractionResult =
-        targetExtractor.extract(covariateSeries, _request.getDrugModel().getActiveMoieties().at(0).get()->getTargetDefinitions(),
-                                _request.getDrugTreatment().getTargets(), _traits->getStart(), _traits->getEnd(),
-                                targetExtractionOption, targetSeries);
+                targetExtractor.extract(covariateSeries, _request.getDrugModel().getActiveMoieties().at(0).get()->getTargetDefinitions(),
+                                        _request.getDrugTreatment().getTargets(), _traits->getStart(), _traits->getEnd(),
+                                        targetExtractionOption, targetSeries);
 
         if (targetExtractionResult != ComputingResult::Ok) {
             return targetExtractionResult;
@@ -784,18 +784,18 @@ ComputingResult ComputingComponent::compute(
 
             GroupsIntakeSeries intakeSeriesPerGroup;
 
-            // TODO : There should be one object per analyte
-            ConcentrationPredictionPtr pPrediction = std::make_unique<ConcentrationPrediction>();
+            std::vector<ConcentrationPredictionPtr> analytesPredictions;
 
             for (auto analyteGroupId : allGroupIds) {
+                ConcentrationPredictionPtr pPrediction = std::make_unique<ConcentrationPrediction>();
 
                 IntakeExtractor intakeExtractor;
                 double nbPointsPerHour = _traits->getNbPointsPerHour();
                 ComputingResult intakeExtractionResult = intakeExtractor.extract(*newHistory, calculationStartTime, newEndTime,
-                                                                                         nbPointsPerHour, intakeSeriesPerGroup[analyteGroupId]);
+                                                                                 nbPointsPerHour, intakeSeriesPerGroup[analyteGroupId]);
 
-                delete newHistory;
-                newHistory = nullptr;
+                m_generalExtractor->convertAnalytes(intakeSeriesPerGroup[analyteGroupId], _request.getDrugModel(), _request.getDrugModel().getAnalyteSet(analyteGroupId));
+
 
                 if (intakeExtractionResult != ComputingResult::Ok) {
                     return intakeExtractionResult;
@@ -827,7 +827,33 @@ ComputingResult ComputingComponent::compute(
                     m_logger.error("Error with the computation of a single adjustment candidate");
                     return predictionComputingResult;
                 }
+                else {
+                    analytesPredictions.push_back(std::move(pPrediction));
+                }
             }
+
+            std::vector<ConcentrationPredictionPtr> activeMoietiesPredictions;
+
+            if (!_request.getDrugModel().isSingleAnalyte()) {
+
+                for (const auto & activeMoiety : _request.getDrugModel().getActiveMoieties()) {
+                    ConcentrationPredictionPtr activeMoietyPrediction = std::make_unique<ConcentrationPrediction>();
+                    ComputingResult activeMoietyComputingResult = computeActiveMoiety(_request.getDrugModel(), activeMoiety.get(), analytesPredictions, activeMoietyPrediction);
+                    if (activeMoietyComputingResult != ComputingResult::Ok) {
+                        return activeMoietyComputingResult;
+                    }
+                    activeMoietiesPredictions.push_back(std::move(activeMoietyPrediction));
+                }
+            }
+            else {
+                activeMoietiesPredictions.push_back(std::move(analytesPredictions[0]));
+            }
+
+
+
+
+            delete newHistory;
+            newHistory = nullptr;
 
             std::vector< TargetEvaluationResult> candidateResults;
             bool isValidCandidate = true;
@@ -840,7 +866,7 @@ ComputingResult ComputingComponent::compute(
                 TargetEvaluationResult localResult;
 
                 // Now the score calculation
-                ComputingResult evaluationResult = targetEvaluator.evaluate(*pPrediction.get(), intakeSeriesPerGroup[allGroupIds[0]], target, localResult);
+                ComputingResult evaluationResult = targetEvaluator.evaluate(*activeMoietiesPredictions[0].get(), intakeSeriesPerGroup[allGroupIds[0]], target, localResult);
 
                 // Here we do not compare to Result::Ok, because the result can also be
                 // Result::InvalidCandidate
@@ -870,18 +896,17 @@ ComputingResult ComputingComponent::compute(
 
                 FullDosage dosage;
                 dosage.m_targetsEvaluation = candidateResults;
-//                dosage.m_history = *newHistory->clone();
                 dosage.m_history.addTimeRange(*newDosage);
 
 
                 for (auto analyteGroupId : allGroupIds) {
                     for (size_t i = 0; i < intakeSeriesPerGroup[analyteGroupId].size(); i++) {
-                        TimeOffsets times = pPrediction->getTimes().at(i);
+                        TimeOffsets times = activeMoietiesPredictions[0]->getTimes().at(i);
                         DateTime start = intakeSeriesPerGroup[analyteGroupId].at(i).getEventTime();
                         DateTime end = start + std::chrono::milliseconds(static_cast<int>(times.at(times.size() - 1)) * 1000);
                         if (start >= _traits->getAdjustmentTime()) {
                             CycleData cycle(start, end, Unit("ug/l"));
-                            cycle.addData(times, pPrediction->getValues().at(i));
+                            cycle.addData(times, activeMoietiesPredictions[0]->getValues().at(i));
                             dosage.m_data.push_back(cycle);
                         }
                     }
@@ -911,7 +936,7 @@ ComputingResult ComputingComponent::compute(
     // For debugging purpose only
     for (const auto & candidates : dosageCandidates)
     {
-            std::cout << "Evaluation. Score : " << candidates.getGlobalScore()  << std::endl;
+        std::cout << "Evaluation. Score : " << candidates.getGlobalScore()  << std::endl;
     }
 #endif // 0
 
@@ -1073,7 +1098,7 @@ ComputingResult ComputingComponent::compute(
 
     }
     return ComputingResult::NoAnalytesGroup;
- }
+}
 
 
 std::string ComputingComponent::getErrorString() const

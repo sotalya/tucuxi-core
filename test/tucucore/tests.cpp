@@ -602,6 +602,7 @@ int main(int argc, char** argv)
 
     multiAnalytesMultiActiveMoietiesTests.add_test("testMultiAnalytesMultiActiveMoieties", &TestMultiAnalytesMultiActiveMoieties::testMultiAnalytesMultiActiveMoieties);
     multiAnalytesMultiActiveMoietiesTests.add_test("testMultiAnalytesMultiActiveMoietiesConversion", &TestMultiAnalytesMultiActiveMoieties::testMultiAnalytesMultiActiveMoietiesConversion);
+    multiAnalytesMultiActiveMoietiesTests.add_test("testAdjustments", &TestMultiAnalytesMultiActiveMoieties::testAdjustments);
 
     res = multiAnalytesMultiActiveMoietiesTests.run(argc, argv);
     tot_res |= res;
