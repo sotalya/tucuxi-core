@@ -8,6 +8,7 @@
 #include "tucucore/parametersextractor.h"
 #include "tucucore/drugmodel/drugmodel.h"
 #include "tucucommon/duration.h"
+#include "tucucommon/loggerhelper.h"
 
 using namespace std::chrono_literals;
 
@@ -186,6 +187,10 @@ ComputingResult ParametersExtractor::extract(ParameterSetSeries &_series)
         if (!m_ogm.evaluate()) {
             // Something went wrong
             // TODO : Log something somewhere
+            Tucuxi::Common::LoggerHelper logger;
+            logger.error("Error with the a priori computation of parameters");
+
+
 
             return ComputingResult::ParameterExtractionError;
         }

@@ -53,6 +53,12 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkDrugModel(const DrugMod
         return formulaInputsResult;
     }
 
+    // Checks that every formula seems correct by randomizing inputs
+    DrugModelChecker::CheckerResult_t operationsResult = checkOperations(_drugModel);
+    if (!operationsResult.m_ok) {
+        return operationsResult;
+    }
+
     return {true, ""};
 }
 
@@ -183,6 +189,48 @@ void DrugModelChecker::getAllOperations(const DrugModel *_drugModel, std::vector
         }
     }
 }
+
+
+DrugModelChecker::CheckerResult_t DrugModelChecker::checkOperations(const DrugModel *_drugModel)
+{
+
+    std::vector<Operation *> operations;
+
+    getAllOperations(_drugModel, operations);
+
+    for(Operation *operation : operations) {
+        if (operation != nullptr) {
+            OperationInputList inputList;
+            for(const auto &input : operation->getInputs()) {
+                switch (input.getType()) {
+                case InputType::BOOL :
+                {
+                    inputList.push_back(OperationInput(input.getName(), true));
+                } break;
+                case InputType::DOUBLE :
+                {
+                    inputList.push_back(OperationInput(input.getName(), 1.0));
+                } break;
+                case InputType::INTEGER :
+                {
+                    inputList.push_back(OperationInput(input.getName(), 1));
+                } break;
+                }
+            }
+
+            double result;
+
+            if (!operation->evaluate(inputList, result)) {
+                if (dynamic_cast<JSOperation*>(operation)) {
+                    return {false, "The operation could not be evaluated with input values being 1 (for double and int) and true for booleans. Maybe you forgot to set up some of the required inputs in the input list: \n\n" + dynamic_cast<JSOperation*>(operation)->getExpression()};
+                }
+                return {false, "An operation could not be evaluated."};
+            }
+        }
+    }
+    return {true, ""};
+}
+
 
 } // namespace Core
 } // namespace Tucuxi

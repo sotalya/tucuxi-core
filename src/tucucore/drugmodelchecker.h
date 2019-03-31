@@ -50,6 +50,8 @@ protected:
 
     CheckerResult_t checkParameters(const DrugModel *_drugModel, const PkModel *_pkModel);
 
+    CheckerResult_t checkOperations(const DrugModel *_drugModel);
+
     void getAllOperations(const DrugModel *_drugModel, std::vector<Operation *> &_operations);
 };
 

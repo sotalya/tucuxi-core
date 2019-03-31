@@ -1,3 +1,6 @@
+
+#include "tucucommon/loggerhelper.h"
+
 #include "tucucore/operation.h"
 
 namespace Tucuxi {
@@ -335,6 +338,8 @@ JSOperation::evaluate(const OperationInputList &_inputs, double &_result)
     ///          are zeroes and happily perform the computation. This could go horribly bad if no precautions are taken,
     ///          therefore we validate hereby the inputs to ensure that everything is in order.
     if (!check(_inputs)) {
+        Tucuxi::Common::LoggerHelper logger;
+        logger.error("Missing inputs for a JSOperation : {}", m_expression);
         return false;
     }
 
@@ -358,18 +363,24 @@ JSOperation::evaluate(const OperationInputList &_inputs, double &_result)
         }
 
         if (!jsEngine.evaluate(m_expression)) {
+            Tucuxi::Common::LoggerHelper logger;
+            logger.error("Could not evaluate the JSOperation : {}", m_expression);
             return false;
         }
 
         std::string resAsString;
 
         if(!jsEngine.getVariable("result", resAsString)) {
+            Tucuxi::Common::LoggerHelper logger;
+            logger.error("Could not get the result of the JSOperation : {}", m_expression);
             return false;
         }
 
         _result = std::stod(resAsString);
 
     } catch (...) {
+        Tucuxi::Common::LoggerHelper logger;
+        logger.error("Error with the execution of the JSOperation : {}", m_expression);
         return false;
     }
     return true;

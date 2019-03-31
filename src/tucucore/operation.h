@@ -320,6 +320,10 @@ public:
     ///       else { [RETURN] == false };
     bool evaluate(const OperationInputList &_inputs, double &_result) override;
 
+    /// \brief Get the expression as a string
+    /// \return The expression
+    /// This function is meant to be used by the DrugModelChecker, not for any other evaluation
+    std::string getExpression() { return m_expression;}
 
 protected:
     /// \brief JavaScript expression representing the operation to perform.
