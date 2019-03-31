@@ -32,6 +32,14 @@ public:
         model->setDrugId("drugTest");
         model->setDrugModelId("constantEliminationBolus1");
 
+        std::unique_ptr<DrugModelMetadata> metaData = std::make_unique<DrugModelMetadata>();
+        metaData->addAtc("fake Atc");
+        Tucuxi::Common::TranslatableString drugName;
+        drugName.setString("constant elimination test");
+        metaData->setDrugName(drugName);
+        metaData->setAuthorName("The authors");
+        model->setMetadata(std::move(metaData));
+
         std::unique_ptr<AnalyteSet> analyteSet(new AnalyteSet());
 
         analyteSet->setId("analyteSet");
@@ -44,19 +52,23 @@ public:
 
         model->addCovariate(
                     std::unique_ptr<Tucuxi::Core::CovariateDefinition>(
-                        new Tucuxi::Core::CovariateDefinition("covS", "0.0", nullptr, CovariateType::Standard)));
+                        new Tucuxi::Core::CovariateDefinition("covS", "0.0", nullptr, CovariateType::Standard, DataType::Double,
+                                                              Tucuxi::Common::TranslatableString("covS"))));
 
         model->addCovariate(
                     std::unique_ptr<Tucuxi::Core::CovariateDefinition>(
-                        new Tucuxi::Core::CovariateDefinition("covA", "0.0", nullptr, CovariateType::Standard)));
+                        new Tucuxi::Core::CovariateDefinition("covA", "0.0", nullptr, CovariateType::Standard, DataType::Double,
+                                                              Tucuxi::Common::TranslatableString("covA"))));
 
         model->addCovariate(
                     std::unique_ptr<Tucuxi::Core::CovariateDefinition>(
-                        new Tucuxi::Core::CovariateDefinition("covR", "0.0", nullptr, CovariateType::Standard)));
+                        new Tucuxi::Core::CovariateDefinition("covR", "0.0", nullptr, CovariateType::Standard, DataType::Double,
+                                                              Tucuxi::Common::TranslatableString("covR"))));
 
         model->addCovariate(
                     std::unique_ptr<Tucuxi::Core::CovariateDefinition>(
-                        new Tucuxi::Core::CovariateDefinition("covM", "1.0", nullptr, CovariateType::Standard)));
+                        new Tucuxi::Core::CovariateDefinition("covM", "1.0", nullptr, CovariateType::Standard, DataType::Double,
+                                                              Tucuxi::Common::TranslatableString("covM"))));
 
         ErrorModel* errorModel = new ErrorModel();
 
@@ -172,7 +184,12 @@ public:
 
         std::vector<AnalyteId> analyteList;
         analyteList.push_back(AnalyteId("analyte"));
-        std::unique_ptr<ActiveMoiety> activeMoiety = std::make_unique<ActiveMoiety>(ActiveMoietyId("activeMoiety"), Unit("mg/l"), analyteList, std::move(activeMoietyOperation));
+        std::unique_ptr<ActiveMoiety> activeMoiety = std::make_unique<ActiveMoiety>(ActiveMoietyId("activeMoietyConstant"), Unit("mg/l"), analyteList, std::move(activeMoietyOperation));
+
+
+        Tucuxi::Common::TranslatableString activeMoietyName;
+        activeMoietyName.setString("Active moiety name");
+        activeMoiety->setName(activeMoietyName);
 
         // I removed the targets from the build, to let tests define various targets
 /*

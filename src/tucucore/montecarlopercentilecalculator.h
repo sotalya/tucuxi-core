@@ -55,7 +55,7 @@ public:
             IConcentrationCalculator &_concentrationCalculator,
             ComputingAborter *_aborter) = 0;
 
-    virtual ~IAprioriPercentileCalculator() {};
+    virtual ~IAprioriPercentileCalculator() {}
 };
 
 class IAposterioriPercentileCalculator : public IPercentileCalculator
@@ -90,7 +90,7 @@ public:
             IConcentrationCalculator &_concentrationCalculator,
             ComputingAborter *_aborter) = 0;
 
-    virtual ~IAposterioriPercentileCalculator() {};
+    virtual ~IAposterioriPercentileCalculator() {}
 };
 
 class IAposterioriNormalApproximationMonteCarloPercentileCalculator : public IPercentileCalculator
@@ -125,7 +125,7 @@ public:
             IConcentrationCalculator &_concentrationCalculator,
             ComputingAborter *_aborter) = 0;
 
-    virtual ~IAposterioriNormalApproximationMonteCarloPercentileCalculator() {};
+    virtual ~IAposterioriNormalApproximationMonteCarloPercentileCalculator() {}
 };
 
 

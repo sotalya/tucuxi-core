@@ -31,8 +31,16 @@ public:
         Tucuxi::Core::DrugModel *model;
         model = new Tucuxi::Core::DrugModel();
 
-        model->setDrugId("drugTest");
-        model->setDrugModelId("constantEliminationBolus1");
+        model->setDrugId("drugTestMultiAnalytes");
+        model->setDrugModelId("MultiAnalytes");
+
+        std::unique_ptr<DrugModelMetadata> metaData = std::make_unique<DrugModelMetadata>();
+        metaData->addAtc("fake Atc");
+        Tucuxi::Common::TranslatableString drugName;
+        drugName.setString("Multi analytes test");
+        metaData->setDrugName(drugName);
+        metaData->setAuthorName("The authors");
+        model->setMetadata(std::move(metaData));
 
 
 
@@ -249,7 +257,11 @@ public:
         std::vector<AnalyteId> analyteList;
         analyteList.push_back(AnalyteId("analyte0"));
         analyteList.push_back(AnalyteId("analyte1"));
-        std::unique_ptr<ActiveMoiety> activeMoiety = std::make_unique<ActiveMoiety>(ActiveMoietyId("activeMoiety"), Unit("mg/l"), analyteList, std::move(activeMoietyOperation));
+        std::unique_ptr<ActiveMoiety> activeMoiety = std::make_unique<ActiveMoiety>(ActiveMoietyId("activeMoietyMulti"), Unit("mg/l"), analyteList, std::move(activeMoietyOperation));
+
+        Tucuxi::Common::TranslatableString activeMoietyName;
+        activeMoietyName.setString("Active moiety name 2");
+        activeMoiety->setName(activeMoietyName);
 
         // I removed the targets from the build, to let tests define various targets
 /*

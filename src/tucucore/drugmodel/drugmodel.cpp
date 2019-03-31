@@ -16,41 +16,41 @@ void ParameterDefinitionIterator::build()
     // Depending on the constructor invoked, we build the list of absorption parameters
     if (m_fullFormulationAndRoutes.size() > 0) {
         for (const auto & f : m_fullFormulationAndRoutes) {
-            const ParameterSetDefinition* params1 = m_model.getAbsorptionParameters(m_analyteGroupId, f->getFormulationAndRoute());
-            if (params1 != nullptr) {
-                params1a.push_back(params1);
-                m_total += params1->getNbParameters();
+            const ParameterSetDefinition* parameter = m_model.getAbsorptionParameters(m_analyteGroupId, f->getFormulationAndRoute());
+            if (parameter != nullptr) {
+                m_absorptionParameters.push_back(parameter);
+                m_total += parameter->getNbParameters();
             }
         }
     }
     else {
-        const ParameterSetDefinition* params1 = m_model.getAbsorptionParameters(m_analyteGroupId, m_formulation, m_route);
-        if (params1 != nullptr) {
-            params1a.push_back(params1);
-            m_total += params1->getNbParameters();
+        const ParameterSetDefinition* parameter = m_model.getAbsorptionParameters(m_analyteGroupId, m_formulation, m_route);
+        if (parameter != nullptr) {
+            m_absorptionParameters.push_back(parameter);
+            m_total += parameter->getNbParameters();
         }
     }
 
-    const ParameterSetDefinition* params2 = m_model.getDispositionParameters(m_analyteGroupId);
-    if (params2 != nullptr) {
-        m_total += params2->getNbParameters();
+    const ParameterSetDefinition* dispositionParameters = m_model.getDispositionParameters(m_analyteGroupId);
+    if (dispositionParameters != nullptr) {
+        m_total += dispositionParameters->getNbParameters();
     }
 
 
     // Add the absorption parameters
-    for(const auto & params : params1a) {
+    for(const auto & params : m_absorptionParameters) {
         for (size_t i = 0;i < params->getNbParameters(); i++) {
-            vector.push_back({params->getParameter(i)->getId(), params->getParameter(i)->isVariable()});
+            m_parametersVector.push_back({params->getParameter(i)->getId(), params->getParameter(i)->isVariable()});
         }
     }
 
     // Add the elimination parameters
-    for (size_t i = 0;i < params2->getNbParameters(); i++) {
-        vector.push_back({params2->getParameter(i)->getId(), params2->getParameter(i)->isVariable()});
+    for (size_t i = 0;i < dispositionParameters->getNbParameters(); i++) {
+        m_parametersVector.push_back({dispositionParameters->getParameter(i)->getId(), dispositionParameters->getParameter(i)->isVariable()});
     }
 
     // We sort alphabetically the parameter Ids
-    std::sort(vector.begin(), vector.end(), [&] (const ddd v1, const ddd v2) {
+    std::sort(m_parametersVector.begin(), m_parametersVector.end(), [&] (const ParameterInfo v1, const ParameterInfo v2) {
         if (v1.isVariable && !v2.isVariable)
             return true;
         if (!v1.isVariable && v2.isVariable)
@@ -68,23 +68,26 @@ bool ParameterDefinitionIterator::isDone() const
 
 const ParameterDefinition* ParameterDefinitionIterator::operator*()
 {
+    // We get the parameter Id of the current parameter we are looking for
+    std::string curId = m_parametersVector[m_index].id;
 
-    const ParameterSetDefinition* params2 = m_model.getDispositionParameters(m_analyteGroupId);
-
-    std::string curId = vector[m_index].id;
-
-    for(const auto & params : params1a) {
-        for (size_t i = 0;i < params->getNbParameters(); i++) {
-            if (params->getParameter(i)->getId() == curId)
-                return params->getParameter(i);
+    // Iterate over the absorption parameters to find the parameter Id
+    for(const auto & parameterSet : m_absorptionParameters) {
+        for (size_t i = 0;i < parameterSet->getNbParameters(); i++) {
+            if (parameterSet->getParameter(i)->getId() == curId)
+                return parameterSet->getParameter(i);
         }
     }
 
-    for (size_t i = 0;i < params2->getNbParameters(); i++) {
-        if (params2->getParameter(i)->getId() == curId)
-            return params2->getParameter(i);
+    // Iterate over the disposition parameters to find the parameter Id
+    const ParameterSetDefinition* dispositionParameters = m_model.getDispositionParameters(m_analyteGroupId);
+
+    for (size_t i = 0;i < dispositionParameters->getNbParameters(); i++) {
+        if (dispositionParameters->getParameter(i)->getId() == curId)
+            return dispositionParameters->getParameter(i);
     }
 
+    // This really should never happen
     assert (false);
 
     return nullptr;

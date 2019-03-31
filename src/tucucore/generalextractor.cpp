@@ -50,7 +50,8 @@ ComputingResult GeneralExtractor::extractAposterioriEtas(
         const IntakeSeries &_intakeSeries,
         const ParameterSetSeries &_parameterSeries,
         const CovariateSeries &_covariateSeries,
-        DateTime _calculationStartTime, DateTime _endTime)
+        DateTime _calculationStartTime,
+        DateTime _endTime)
 {
     Tucuxi::Core::OmegaMatrix omega;
 

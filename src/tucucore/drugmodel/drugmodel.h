@@ -19,6 +19,10 @@
 struct TestConstantEliminationBolus;
 struct TestMultiAnalytesMultiActiveMoieties;
 
+#ifdef DRUGMODELTESTS
+class Drugs2Manager;
+#endif // DRUGMODELTESTS
+
 namespace Tucuxi {
 namespace Core {
 
@@ -84,15 +88,15 @@ private:
     size_t m_index;
     size_t m_total;
 
-    std::vector<const ParameterSetDefinition * > params1a;
+    std::vector<const ParameterSetDefinition * > m_absorptionParameters;
 
 
     typedef struct {
         std::string id;
         bool isVariable;
-    } ddd;
+    } ParameterInfo;
 
-    std::vector<ddd> vector;
+    std::vector<ParameterInfo> m_parametersVector;
 };
 
 class DrugModel
@@ -191,6 +195,13 @@ public:
         if ((_analyteGroupId == "") && (m_analyteSets.size() == 1)) {
             return m_analyteSets.at(0).get();
         }
+
+        // TODO : Maybe get rid of this:
+        if (_analyteGroupId == "") {
+            return m_analyteSets.at(0).get();
+        }
+
+
         for (const std::unique_ptr<AnalyteSet> &set : m_analyteSets) {
             if (set->getId() == _analyteGroupId) {
                 return set.get();
@@ -267,6 +278,9 @@ private:
     friend DrugModelChecker;
     friend TestConstantEliminationBolus;
     friend TestMultiAnalytesMultiActiveMoieties;
+#ifdef DRUGMODELTESTS
+    friend Drugs2Manager;
+#endif // DRUGMODELTESTS
 };
 
 } // namespace Core

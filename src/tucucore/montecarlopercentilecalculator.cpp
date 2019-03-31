@@ -243,8 +243,8 @@ ComputingResult MonteCarloPercentileCalculatorBase::computePredictionsAndSortPer
 
     std::vector<int> positions;
     for (unsigned int percRankIdx = 0; percRankIdx < _percentileRanks.size(); percRankIdx++) {
-        positions.push_back( static_cast<double>(_percentileRanks[percRankIdx]) / 100.0
-                             * static_cast<double>(nbPatients));
+        positions.push_back( static_cast<int>(static_cast<double>(_percentileRanks[percRankIdx]) / 100.0
+                                              * static_cast<double>(nbPatients)));
     }
 
 
@@ -256,14 +256,12 @@ ComputingResult MonteCarloPercentileCalculatorBase::computePredictionsAndSortPer
     std::mutex mutex;
     unsigned int currentCycle = 0;
     unsigned int currentPoint = 0;
-    unsigned int nbCycles = recordedIntakes.size();
+    size_t nbCycles = recordedIntakes.size();
     for(int thread = 0; thread < nbThreads; thread++) {
 
-        sortWorkers.push_back(std::thread([thread, nbPatients, &abort, _aborter,
-                                      _etas, _epsilons, _parameters, &times,
-                                      &concentrations, nbThreads,
-                                      &_concentrationCalculator, _recordFrom,
-                                      _recordTo, recordedIntakes, positions, _percentileRanks, &currentPoint,
+        sortWorkers.push_back(std::thread([
+                                      _etas, _epsilons, _parameters,
+                                      &concentrations, recordedIntakes, positions, _percentileRanks, &currentPoint,
                                           &_percentiles, &mutex, &currentCycle, nbCycles]()
         {
             bool cont = true;
