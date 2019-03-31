@@ -126,22 +126,68 @@ ComputingResult MonteCarloPercentileCalculatorBase::computePredictionsAndSortPer
 {
 //    auto start = std::chrono::steady_clock::now();
 
-    bool abort = false;
     unsigned int nbPatients = Tucuxi::Core::MonteCarloPercentileCalculatorBase::getNumberPatients();
     std::vector<TimeOffsets> times;
 
     IntakeSeries recordedIntakes;
-    selectRecordedIntakes(recordedIntakes, _intakes, _recordFrom, _recordTo);
 
     std::vector< std::vector< std::vector<Concentration> > > concentrations;
 
+    ComputingResult predictionResult = computePredictions(_percentiles,
+                                                          _recordFrom,
+                                                          _recordTo,
+                                                          _intakes,
+                                                          _parameters,
+                                                          _residualErrorModel,
+                                                          _percentileRanks,
+                                                          _etas,
+                                                          _epsilons,
+                                                          _concentrationCalculator,
+                                                          nbPatients,
+                                                          times,
+                                                          recordedIntakes,
+                                                          concentrations,
+                                                          _aborter);
+
+    if (predictionResult != ComputingResult::Ok) {
+        return predictionResult;
+    }
+
+    return sortAndExtractPercentiles(_percentiles, _percentileRanks,
+                                     nbPatients, times, recordedIntakes, concentrations);
+}
+
+
+ComputingResult MonteCarloPercentileCalculatorBase::computePredictions(
+        PercentilesPrediction &_percentiles,
+        const DateTime &_recordFrom,
+        const DateTime &_recordTo,
+        const IntakeSeries &_intakes,
+        const ParameterSetSeries &_parameters,
+        const IResidualErrorModel &_residualErrorModel,
+        const PercentileRanks &_percentileRanks,
+        const std::vector<Etas> &_etas,
+        const std::vector<Deviations> &_epsilons,
+        IConcentrationCalculator &_concentrationCalculator,
+        unsigned int _nbPatients,
+        std::vector<TimeOffsets> &_times,
+        IntakeSeries &_recordedIntakes,
+        std::vector< std::vector< std::vector<Concentration> > > &_concentrations,
+        ComputingAborter *_aborter)
+{
+//    auto start = std::chrono::steady_clock::now();
+
+    bool abort = false;
+
+    selectRecordedIntakes(_recordedIntakes, _intakes, _recordFrom, _recordTo);
+
     // Set the size of vector "concentrations"
-    for (unsigned int cycle = 0; cycle < recordedIntakes.size(); cycle++) {
+    for (unsigned int cycle = 0; cycle < _recordedIntakes.size(); cycle++) {
         std::vector< std::vector<Concentration> > vec;
-        for (int point = 0; point < recordedIntakes.at(cycle).getNbPoints(); point++) {
-            vec.push_back(std::vector<Concentration>(nbPatients));
+        for (int point = 0; point < _recordedIntakes.at(cycle).getNbPoints(); point++) {
+            vec.push_back(std::vector<Concentration>(_nbPatients));
         }
-        concentrations.push_back(vec);
+        _concentrations.push_back(vec);
     }
 
 //    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::steady_clock::now( ) - start );
@@ -157,16 +203,16 @@ ComputingResult MonteCarloPercentileCalculatorBase::computePredictionsAndSortPer
         IntakeSeries newIntakes;
         cloneIntakeSeries(_intakes, newIntakes);
 
-        workers.push_back(std::thread([thread, nbPatients, &abort, _aborter,
-                                      _etas, _epsilons, _parameters,
-                                      newIntakes, &_residualErrorModel, &times,
-                                      &concentrations, nbThreads,
+        workers.push_back(std::thread([thread, _nbPatients, &abort, _aborter,
+                                      &_etas, &_epsilons, &_parameters,
+                                      newIntakes, &_residualErrorModel, &_times,
+                                      &_concentrations, nbThreads,
                                       &_concentrationCalculator, _recordFrom,
-                                      _recordTo, recordedIntakes]()
+                                      _recordTo, _recordedIntakes]()
         {
 
-            int start = thread * (nbPatients / nbThreads);
-            int end = (thread + 1) * (nbPatients / nbThreads);
+            int start = thread * (_nbPatients / nbThreads);
+            int end = (thread + 1) * (_nbPatients / nbThreads);
 
             for (int patient = start; patient < end; patient++) {
                 if (!abort) {
@@ -200,17 +246,17 @@ ComputingResult MonteCarloPercentileCalculatorBase::computePredictionsAndSortPer
                     if (computingResult == ComputingResult::Ok) {
 
                         // Save concentrations to array of [patient] for using sort() function
-                        for (unsigned int cycle = 0; cycle < recordedIntakes.size(); cycle++) {
+                        for (unsigned int cycle = 0; cycle < _recordedIntakes.size(); cycle++) {
 
-                            int cyclePoints = recordedIntakes.at(cycle).getNbPoints();
+                            int cyclePoints = _recordedIntakes.at(cycle).getNbPoints();
 
                             // Save times only one time (when patient is equal to 0)
                             if (patient == 0) {
-                                times.push_back((predictionPtr->getTimes())[cycle]);
+                                _times.push_back((predictionPtr->getTimes())[cycle]);
                             }
 
                             for (int point = 0; point < cyclePoints; point++) {
-                                concentrations[cycle][point][patient] = (predictionPtr->getValues())[cycle][point];
+                                _concentrations[cycle][point][patient] = (predictionPtr->getValues())[cycle][point];
                             }
                         }
                     }
@@ -238,13 +284,26 @@ ComputingResult MonteCarloPercentileCalculatorBase::computePredictionsAndSortPer
         return ComputingResult::Aborted;
     }
 
+    return ComputingResult::Ok;
+}
+
+
+ComputingResult MonteCarloPercentileCalculatorBase::sortAndExtractPercentiles(
+        PercentilesPrediction &_percentiles,
+        const PercentileRanks &_percentileRanks,
+        unsigned int _nbPatients,
+        std::vector<TimeOffsets> _times,
+        IntakeSeries &_recordedIntakes,
+        std::vector< std::vector< std::vector<Concentration> > > &_concentrations
+        )
+{
     // Init our percentile prediction object
-    _percentiles.init(_percentileRanks, times, recordedIntakes);
+    _percentiles.init(_percentileRanks, _times, _recordedIntakes);
 
     std::vector<int> positions;
     for (unsigned int percRankIdx = 0; percRankIdx < _percentileRanks.size(); percRankIdx++) {
         positions.push_back( static_cast<int>(static_cast<double>(_percentileRanks[percRankIdx]) / 100.0
-                                              * static_cast<double>(nbPatients)));
+                                              * static_cast<double>(_nbPatients)));
     }
 
 
@@ -256,12 +315,14 @@ ComputingResult MonteCarloPercentileCalculatorBase::computePredictionsAndSortPer
     std::mutex mutex;
     unsigned int currentCycle = 0;
     unsigned int currentPoint = 0;
-    size_t nbCycles = recordedIntakes.size();
+    size_t nbCycles = _recordedIntakes.size();
+
+    int nbThreads = std::max(std::thread::hardware_concurrency(), static_cast<unsigned int>(1));
+
     for(int thread = 0; thread < nbThreads; thread++) {
 
         sortWorkers.push_back(std::thread([
-                                      _etas, _epsilons, _parameters,
-                                      &concentrations, recordedIntakes, positions, _percentileRanks, &currentPoint,
+                                      &_concentrations, _recordedIntakes, positions, _percentileRanks, &currentPoint,
                                           &_percentiles, &mutex, &currentCycle, nbCycles]()
         {
             bool cont = true;
@@ -278,7 +339,7 @@ ComputingResult MonteCarloPercentileCalculatorBase::computePredictionsAndSortPer
                 else {
                     point = currentPoint;
                     cycle = currentCycle;
-                    if ((static_cast<int>(point)) == recordedIntakes.at(cycle).getNbPoints() - 1) {
+                    if ((static_cast<int>(point)) == _recordedIntakes.at(cycle).getNbPoints() - 1) {
                         currentPoint = 0;
                         currentCycle ++;
                         if (currentCycle >= nbCycles) {
@@ -294,12 +355,12 @@ ComputingResult MonteCarloPercentileCalculatorBase::computePredictionsAndSortPer
 
 
                 // Sort concentrations in increasing order at each time (at the cycle and at the point)
-                std::sort(concentrations[cycle][point].begin(), concentrations[cycle][point].end(),
+                std::sort(_concentrations[cycle][point].begin(), _concentrations[cycle][point].end(),
                           [&] (const double _v1, const double _v2) { return _v1 < _v2; });
 
                 for (unsigned int percRankIdx = 0; percRankIdx < _percentileRanks.size(); percRankIdx++) {
                     int pos = positions[percRankIdx];
-                    double conc = concentrations[cycle][point][pos];
+                    double conc = _concentrations[cycle][point][pos];
                     if (conc < 0.0) {
                         conc = 0.0;
                     }
@@ -412,7 +473,7 @@ ComputingResult MonteCarloPercentileCalculatorBase::computePredictionsAndSortPer
 //    elapsed = std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::steady_clock::now( ) - start );
 //    std::cout << "milliseconds for predictions sort : " << elapsed.count( ) << '\n';
     return ComputingResult::Ok;
-} 
+}
 
 
 AprioriMonteCarloPercentileCalculator::AprioriMonteCarloPercentileCalculator()
@@ -806,6 +867,42 @@ ComputingResult AposterioriNormalApproximationMonteCarloPercentileCalculator::ca
                 _percentileRanks,
                 _concentrationCalculator,
                 _aborter);
+}
+
+ComputingResult AprioriPercentileCalculatorMulti::calculate(
+        PercentilesPrediction &_percentiles,
+        const DateTime &_recordFrom,
+        const DateTime &_recordTo,
+        const GroupsIntakeSeries &_intakes,
+        const GroupsParameterSetSeries &_parameters,
+        const std::map<AnalyteGroupId, OmegaMatrix>& _omega,
+        const std::map<AnalyteGroupId, IResidualErrorModel* > &_residualErrorModel,
+        const std::map<AnalyteGroupId, Etas>& _etas,
+        const PercentileRanks &_percentileRanks,
+        IConcentrationCalculator &_concentrationCalculator,
+        ComputingAborter *_aborter)
+{
+
+    return ComputingResult::Ok;
+}
+
+ComputingResult AposterioriMonteCarloPercentileCalculatorMulti::calculate(
+        PercentilesPrediction &_percentiles,
+        const DateTime &_recordFrom,
+        const DateTime &_recordTo,
+        const GroupsIntakeSeries &_intakes,
+        const GroupsParameterSetSeries &_parameters,
+        const std::map<AnalyteGroupId, OmegaMatrix>& _omega,
+        const std::map<AnalyteGroupId, IResidualErrorModel* > &_residualErrorModel,
+        const std::map<AnalyteGroupId, Etas>& _etas,
+        const std::map<AnalyteGroupId, SampleSeries> &_samples,
+        const PercentileRanks &_percentileRanks,
+        IConcentrationCalculator &_concentrationCalculator,
+        ComputingAborter *_aborter)
+{
+
+
+    return ComputingResult::Ok;
 }
 
 } // namespace Core

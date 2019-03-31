@@ -219,7 +219,7 @@ ComputingResult ComputingComponent::compute(
             // std::cout << "Selected Time index " << i << " : " << start << std::endl;
             CycleData cycle(start, end, Unit("ug/l"));
 
-            int index = 0;
+            size_t index = 0;
             for(const auto &analyteGroup : _request.getDrugModel().getAnalyteSets()) {
                 AnalyteGroupId analyteGroupId = analyteGroup->getId();
 
@@ -268,6 +268,236 @@ ComputingResult ComputingComponent::compute(
 }
 
 ComputingResult ComputingComponent::compute(
+        const ComputingTraitPercentiles *_traits,
+        const ComputingRequest &_request,
+        std::unique_ptr<ComputingResponse> &_response)
+{
+#ifdef NO_PERCENTILES
+    return ComputingResult::NoPercentilesCalculation;
+#endif
+    return computePercentilesSimple(_traits, _request, _response);
+}
+
+ComputingResult ComputingComponent::computePercentilesMulti(
+        const ComputingTraitPercentiles *_traits,
+        const ComputingRequest &_request,
+        std::unique_ptr<ComputingResponse> &_response)
+{
+#ifdef NO_PERCENTILES
+    return ComputingResult::NoPercentilesCalculation;
+#endif
+    if (_traits == nullptr) {
+        m_logger.error("The computing traits sent for computation are nullptr");
+        return ComputingResult::NoComputingTraits;
+    }
+
+    std::map<AnalyteGroupId, std::shared_ptr<PkModel> > pkModel;
+
+    GroupsIntakeSeries intakeSeries;
+    CovariateSeries covariateSeries;
+    GroupsParameterSetSeries parameterSeries;
+    DateTime calculationStartTime;
+
+    ComputingResult extractionResult = m_generalExtractor->generalExtractions(_traits,
+                                                                              _request,
+                                                                              m_models,
+                                                                              pkModel,
+                                                                              intakeSeries,
+                                                                              covariateSeries,
+                                                                              parameterSeries,
+                                                                              calculationStartTime);
+
+    if (extractionResult != ComputingResult::Ok) {
+        return extractionResult;
+    }
+
+    // Now ready to do the real computing with all the extracted values
+
+
+
+    // TODO : Change this analyte group
+    AnalyteGroupId analyteGroupId = _request.getDrugModel().getAnalyteSets().at(0)->getId();
+
+
+    Tucuxi::Core::PercentilesPrediction percentiles;
+
+    Tucuxi::Core::PercentileRanks percentileRanks;
+    std::map<AnalyteGroupId, Tucuxi::Core::OmegaMatrix> omega;
+    Tucuxi::Core::ComputingAborter *aborter = _traits->getAborter();
+
+    percentileRanks = _traits->getRanks();
+
+
+    ResidualErrorModelExtractor errorModelExtractor;
+    std::map<AnalyteGroupId, IResidualErrorModel*> residualErrorModel;
+
+    for(const auto &analyteGroup : _request.getDrugModel().getAnalyteSets()) {
+        AnalyteGroupId analyteGroupId = analyteGroup->getId();
+        ComputingResult errorModelExtractionResult = errorModelExtractor.extract(analyteGroup->getAnalytes().at(0)->getResidualErrorModel(),
+                                                                                 analyteGroup->getAnalytes().at(0)->getUnit(),
+                                                                                 covariateSeries, &residualErrorModel[analyteGroupId]);
+        if (errorModelExtractionResult != ComputingResult::Ok) {
+            // Delete the residual map
+
+            return errorModelExtractionResult;
+        }
+    }
+
+    std::vector<const FullFormulationAndRoute *> fullFormulationAndRoutes = m_generalExtractor->extractFormulationAndRoutes(_request.getDrugModel(), intakeSeries[analyteGroupId]);
+
+    for(const auto &analyteGroup : _request.getDrugModel().getAnalyteSets()) {
+        AnalyteGroupId analyteGroupId = analyteGroup->getId();
+
+        ComputingResult omegaComputingResult = m_generalExtractor->extractOmega(_request.getDrugModel(), analyteGroupId, fullFormulationAndRoutes, omega[analyteGroupId]);
+        if (omegaComputingResult != ComputingResult::Ok) {
+            return omegaComputingResult;
+        }
+    }
+
+
+    std::map<AnalyteGroupId, Etas> etas;
+
+    for(const auto &analyteGroup : _request.getDrugModel().getAnalyteSets()) {
+        AnalyteGroupId analyteGroupId = analyteGroup->getId();
+
+        ComputingResult aposterioriEtasExtractionResult = m_generalExtractor->extractAposterioriEtas(etas[analyteGroupId], _request, analyteGroupId, intakeSeries[analyteGroupId], parameterSeries[analyteGroupId], covariateSeries, calculationStartTime, _traits->getEnd());
+        if (aposterioriEtasExtractionResult != ComputingResult::Ok) {
+            return aposterioriEtasExtractionResult;
+        }
+    }
+
+    Tucuxi::Core::ComputingResult computingResult;
+
+    Tucuxi::Core::ConcentrationCalculator concentrationCalculator;
+
+    if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Aposteriori)   {
+
+        // This extraction is already done in extractAposterioriEtas... Could be optimized
+        std::map<AnalyteGroupId, SampleSeries> sampleSeries;
+
+        for(const auto &analyteGroup : _request.getDrugModel().getAnalyteSets()) {
+            AnalyteGroupId analyteGroupId = analyteGroup->getId();
+
+
+            SampleExtractor sampleExtractor;
+            ComputingResult sampleExtractionResult =
+                    sampleExtractor.extract(_request.getDrugTreatment().getSamples(), _request.getDrugModel().getAnalyteSet(analyteGroupId), calculationStartTime, _traits->getEnd(), sampleSeries[analyteGroupId]);
+
+            if (sampleExtractionResult != ComputingResult::Ok) {
+                return sampleExtractionResult;
+            }
+        }
+
+        std::unique_ptr<Tucuxi::Core::IAposterioriPercentileCalculatorMulti> calculator(new Tucuxi::Core::AposterioriMonteCarloPercentileCalculatorMulti());
+        computingResult = calculator->calculate(
+                    percentiles,
+                    _traits->getStart(),
+                    _traits->getEnd(),
+                    intakeSeries,
+                    parameterSeries,
+                    omega,
+                    residualErrorModel,
+                    etas,
+                    sampleSeries,
+                    percentileRanks,
+                    concentrationCalculator,
+                    aborter);
+
+    }
+    else {
+        std::unique_ptr<Tucuxi::Core::IAprioriPercentileCalculatorMulti> calculator(new Tucuxi::Core::AprioriPercentileCalculatorMulti());
+        computingResult = calculator->calculate(
+                    percentiles,
+                    _traits->getStart(),
+                    _traits->getEnd(),
+                    intakeSeries,
+                    parameterSeries,
+                    omega,
+                    residualErrorModel,
+                    etas,
+                    percentileRanks,
+                    concentrationCalculator,
+                    aborter);
+    }
+
+    // We use a single prediction to get back time offsets. Could be optimized
+    // YTA: I do not think this is relevant. It could be deleted I guess
+    ConcentrationPredictionPtr pPrediction = std::make_unique<ConcentrationPrediction>();
+
+    ComputingResult predictionResult = computeConcentrations(
+                pPrediction,
+                false,
+                _traits->getStart(),
+                _traits->getEnd(),
+                intakeSeries[analyteGroupId],
+                parameterSeries[analyteGroupId]);
+
+    if (predictionResult != ComputingResult::Ok) {
+        return predictionResult;
+    }
+
+    IntakeSeries selectedIntakes;
+    selectRecordedIntakes(selectedIntakes, intakeSeries[analyteGroupId], _traits->getStart(), _traits->getEnd());
+
+    if (computingResult == ComputingResult::Ok &&
+            selectedIntakes.size() == pPrediction->getTimes().size() &&
+            selectedIntakes.size() == pPrediction->getValues().size())
+    {
+        std::unique_ptr<PercentilesResponse> resp = std::make_unique<PercentilesResponse>(_traits->getId());
+
+        const std::vector<std::vector<std::vector<Value> > > allValues = percentiles.getValues();
+
+
+
+        for (unsigned int p = 0; p < percentiles.getRanks().size(); p++) {
+            std::vector<CycleData> percData;
+
+            if (selectedIntakes.size() != allValues[p].size()) {
+                return ComputingResult::SelectedIntakesSizeError;
+            }
+            if (selectedIntakes.size() != pPrediction->getTimes().size()) {
+                return ComputingResult::SelectedIntakesSizeError;
+            }
+
+            for (unsigned int cycle = 0; cycle < allValues[p].size(); cycle ++) {
+
+                TimeOffsets times = pPrediction->getTimes().at(cycle);
+                DateTime start = selectedIntakes.at(cycle).getEventTime();
+
+                std::chrono::milliseconds ms = std::chrono::milliseconds(static_cast<int>(times.at(times.size() - 1))) * 3600 * 1000;
+                Duration ds(ms);
+                DateTime end = start + ds;
+
+                if (end > _traits->getStart()) {
+                    CycleData cycleData(start, end, Unit("ug/l"));
+                    cycleData.addData(times, allValues[p].at(cycle));
+                    percData.push_back(cycleData);
+                }
+            }
+
+            if (_traits->getComputingOption().getWithStatistics()) {
+                CycleStatisticsCalculator c;
+                c.calculate(percData);
+            }
+
+            resp->addPercentileData(percData);
+        }
+        resp->setRanks(percentileRanks);
+
+        _response->addResponse(std::move(resp));
+        return ComputingResult::Ok;
+    }
+    else {
+        if (computingResult != ComputingResult::Ok) {
+            return computingResult;
+        }
+        else {
+            return ComputingResult::SelectedIntakesSizeError;
+        }
+    }
+}
+
+ComputingResult ComputingComponent::computePercentilesSimple(
         const ComputingTraitPercentiles *_traits,
         const ComputingRequest &_request,
         std::unique_ptr<ComputingResponse> &_response)
@@ -341,7 +571,7 @@ ComputingResult ComputingComponent::compute(
 
 
     // Set initial etas to 0 for all variable parameters
-    Tucuxi::Core::Etas etas(omega.cols(), 0.0);
+    Tucuxi::Core::Etas etas(static_cast<size_t>(omega.cols()), 0.0);
 
     Tucuxi::Core::ComputingResult computingResult;
 
@@ -357,7 +587,7 @@ ComputingResult ComputingComponent::compute(
         SampleSeries sampleSeries;
         SampleExtractor sampleExtractor;
         ComputingResult sampleExtractionResult =
-                sampleExtractor.extract(_request.getDrugTreatment().getSamples(), calculationStartTime, _traits->getEnd(), sampleSeries);
+                sampleExtractor.extract(_request.getDrugTreatment().getSamples(), _request.getDrugModel().getAnalyteSet(analyteGroupId), calculationStartTime, _traits->getEnd(), sampleSeries);
 
         if (sampleExtractionResult != ComputingResult::Ok) {
             return sampleExtractionResult;
@@ -471,7 +701,6 @@ ComputingResult ComputingComponent::compute(
         }
     }
 }
-
 
 
 DosageTimeRange *ComputingComponent::createDosage(
@@ -596,7 +825,7 @@ std::vector<FullDosage> ComputingComponent::sortAndFilterCandidates(std::vector<
                             const LastingDose *dose2 = dynamic_cast<const LastingDose *>(repeat2->getDosage());
                             if (dose2 != nullptr) {
                                 if (dose2->getTimeStep() == interval) {
-                                    _candidates.erase(_candidates.begin() + j);
+                                    _candidates.erase(_candidates.begin() + static_cast<long>(j));
                                     j = j - 1;
                                 }
                             }

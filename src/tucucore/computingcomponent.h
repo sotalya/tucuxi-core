@@ -108,6 +108,16 @@ private:
             const ComputingRequest &_request,
             std::unique_ptr<ComputingResponse> &_response);
 
+    ComputingResult computePercentilesSimple(
+            const ComputingTraitPercentiles *_traits,
+            const ComputingRequest &_request,
+            std::unique_ptr<ComputingResponse> &_response);
+
+    ComputingResult computePercentilesMulti(
+            const ComputingTraitPercentiles *_traits,
+            const ComputingRequest &_request,
+            std::unique_ptr<ComputingResponse> &_response);
+
     ComputingResult computeConcentrations(
         ConcentrationPredictionPtr &_prediction,
         bool _isAll,

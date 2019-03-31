@@ -65,7 +65,7 @@ ComputingResult GeneralExtractor::extractAposterioriEtas(
     SampleSeries sampleSeries;
     SampleExtractor sampleExtractor;
     ComputingResult sampleExtractionResult =
-    sampleExtractor.extract(_request.getDrugTreatment().getSamples(), _calculationStartTime, _endTime, sampleSeries);
+    sampleExtractor.extract(_request.getDrugTreatment().getSamples(), _request.getDrugModel().getAnalyteSet(_analyteGroupId), _calculationStartTime, _endTime, sampleSeries);
 
     if (sampleExtractionResult != ComputingResult::Ok) {
         return sampleExtractionResult;
@@ -78,8 +78,8 @@ ComputingResult GeneralExtractor::extractAposterioriEtas(
     else {
         ResidualErrorModelExtractor errorModelExtractor;
         IResidualErrorModel *residualErrorModel = nullptr;
-        ComputingResult errorModelExtractionResult = errorModelExtractor.extract(_request.getDrugModel().getAnalyteSet()->getAnalytes().at(0)->getResidualErrorModel(),
-                                                                                _request.getDrugModel().getAnalyteSet()->getAnalytes().at(0)->getUnit(),
+        ComputingResult errorModelExtractionResult = errorModelExtractor.extract(_request.getDrugModel().getAnalyteSet(_analyteGroupId)->getAnalytes().at(0)->getResidualErrorModel(),
+                                                                                _request.getDrugModel().getAnalyteSet(_analyteGroupId)->getAnalytes().at(0)->getUnit(),
                                                                                 _covariateSeries, &residualErrorModel);
         if (errorModelExtractionResult != ComputingResult::Ok) {
             return errorModelExtractionResult;

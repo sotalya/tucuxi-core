@@ -3,6 +3,8 @@
 
 #include "tucucore/operation.h"
 
+#include "TinyJS.h"
+
 namespace Tucuxi {
 namespace Core {
 
@@ -158,6 +160,12 @@ OperationInput::setValue(const double &_value)
     return false;
 }
 
+std::string Operation::sm_errorMessage;
+
+std::string Operation::getLastErrorMessage() const
+{
+    return sm_errorMessage;
+}
 
 Operation::Operation(const OperationInputList &_requiredInputs)
     : m_requiredInputs{_requiredInputs}
@@ -295,7 +303,7 @@ JSOperation::JSOperation(const std::string &_expression, const OperationInputLis
 {
     // Put the code in a function, and call the function to store the result
     // of the evaluation in the 'result' variable
-    m_expression = "function calc() {" + _expression + "} result = calc();";
+    m_expression = "function calc() {\n" + _expression + "\n}\n result = calc();";
 }
 
 JSOperation::JSOperation(const OperationInputList &_requiredInputs)
@@ -338,8 +346,8 @@ JSOperation::evaluate(const OperationInputList &_inputs, double &_result)
     ///          are zeroes and happily perform the computation. This could go horribly bad if no precautions are taken,
     ///          therefore we validate hereby the inputs to ensure that everything is in order.
     if (!check(_inputs)) {
-        Tucuxi::Common::LoggerHelper logger;
-        logger.error("Missing inputs for a JSOperation : {}", m_expression);
+        //Tucuxi::Common::LoggerHelper logger;
+        //logger.error("Missing inputs for a JSOperation : {}", m_expression);
         return false;
     }
 
@@ -363,24 +371,30 @@ JSOperation::evaluate(const OperationInputList &_inputs, double &_result)
         }
 
         if (!jsEngine.evaluate(m_expression)) {
-            Tucuxi::Common::LoggerHelper logger;
-            logger.error("Could not evaluate the JSOperation : {}", m_expression);
+           // Tucuxi::Common::LoggerHelper logger;
+           // logger.error("Could not evaluate the JSOperation : {}", m_expression);
             return false;
         }
 
         std::string resAsString;
 
         if(!jsEngine.getVariable("result", resAsString)) {
-            Tucuxi::Common::LoggerHelper logger;
-            logger.error("Could not get the result of the JSOperation : {}", m_expression);
+            //Tucuxi::Common::LoggerHelper logger;
+            //logger.error("Could not get the result of the JSOperation : {}", m_expression);
             return false;
         }
 
         _result = std::stod(resAsString);
 
-    } catch (...) {
-        Tucuxi::Common::LoggerHelper logger;
-        logger.error("Error with the execution of the JSOperation : {}", m_expression);
+    } catch (const CScriptException *e) {
+        sm_errorMessage = e->text;
+//        Tucuxi::Common::LoggerHelper logger;
+//        logger.error("Error with the execution of the JSOperation : {}\n\n{}", m_expression, e->text);
+        return false;
+    }
+    catch (...) {
+        //        Tucuxi::Common::LoggerHelper logger;
+        //        logger.error("Error with the execution of the JSOperation : {}", m_expression);
         return false;
     }
     return true;

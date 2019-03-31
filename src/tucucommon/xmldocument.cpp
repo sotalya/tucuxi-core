@@ -48,6 +48,7 @@ bool XmlDocument::open(const std::string& _fileName)
         std::string line;
         while (std::getline(inFile, line)) {
             xml += line;
+            xml += '\n';
         }
         return fromString(xml);
     }

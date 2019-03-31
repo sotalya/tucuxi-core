@@ -236,10 +236,16 @@ public:
     /// \return Vector containing a list of the operands required for the operation.
     virtual OperationInputList getInputs() const;
 
+    /// \brief Returns the last error message
+    /// \return The last error message
+    /// This function can be used when an evaluate() function returns false.
+    std::string getLastErrorMessage() const;
 
 protected:
     /// \brief List of required inputs.
     OperationInputList m_requiredInputs;
+
+    static std::string sm_errorMessage;
 };
 
 
