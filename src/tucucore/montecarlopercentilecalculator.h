@@ -19,6 +19,7 @@ namespace Core {
 class IConcentrationCalculator;
 class IResidualErrorModel;
 class PercentilesPrediction;
+class ActiveMoiety;
 
 
 class IPercentileCalculator
@@ -158,7 +159,7 @@ protected:
             Likelihood &_logLikelihood,
             EigenMatrix &_subomega);
 
-protected:
+public:
 
     ///
     /// \brief computePredictionsAndSortPercentiles
@@ -187,13 +188,11 @@ protected:
             IConcentrationCalculator &_concentrationCalculator,
             ComputingAborter *_aborter);
 
-    ComputingResult computePredictions(PercentilesPrediction &_percentiles,
-            const DateTime &_recordFrom,
+    ComputingResult computePredictions(const DateTime &_recordFrom,
             const DateTime &_recordTo,
             const IntakeSeries &_intakes,
             const ParameterSetSeries &_parameters,
             const IResidualErrorModel &_residualErrorModel,
-            const PercentileRanks &_percentileRanks,
             const std::vector<Etas> &_etas,
             const std::vector<Deviations> &_epsilons,
             IConcentrationCalculator &_concentrationCalculator,
@@ -253,6 +252,36 @@ public:
             const PercentileRanks &_percentileRanks,
             IConcentrationCalculator &_concentrationCalculator,
             ComputingAborter *_aborter) override;
+
+
+    ///
+    /// \brief calculateEtasAndEpsilons
+    /// \param _etas Etas calculated within the function
+    /// \param _epsilons Epsilons calculated within the function
+    /// \param _recordFrom Date from which we start recording the concentration
+    /// \param _recordTo Date until which we record the concentration
+    /// \param _intakes Intake series
+    /// \param _parameters Initial parameters series
+    /// \param _omega covariance matrix for inter-individual variability
+    /// \param _residualErrorModel Residual error model
+    /// \param _initialEtas Set of initial Etas, used in case of a posteriori
+    /// \param _percentileRanks List of percentiles ranks
+    /// \param _aborter An aborter object allowing to abort the calculation
+    /// \return The status of calculation
+    ///
+    ComputingResult calculateEtasAndEpsilons(
+            std::vector<Etas> &_etas,
+            std::vector<Deviations> &_epsilons,
+            const DateTime &_recordFrom,
+            const DateTime &_recordTo,
+            const IntakeSeries &_intakes,
+            const ParameterSetSeries &_parameters,
+            const OmegaMatrix& _omega,
+            const IResidualErrorModel &_residualErrorModel,
+            const Etas& _initialEtas,
+            const PercentileRanks &_percentileRanks,
+            IConcentrationCalculator &_concentrationCalculator,
+            ComputingAborter *_aborter);
 };
 
 
@@ -288,6 +317,36 @@ public:
             const PercentileRanks &_percentileRanks,
             IConcentrationCalculator &_concentrationCalculator,
             ComputingAborter *_aborter) override;
+
+
+    ///
+    /// \brief calculate
+    /// \param _percentiles percentiles calculated within the method
+    /// \param _recordFrom Date from which we start recording the concentration
+    /// \param _recordTo Date until which we record the concentration
+    /// \param _intakes Intake series
+    /// \param _parameters Initial parameters series
+    /// \param _omega covariance matrix for inter-individual variability
+    /// \param _residualErrorModel Residual error model
+    /// \param _etas Etas pre-calculated by the aposteriori calculator
+    /// \param _samples List of samples
+    /// \param _percentileRanks List of percentiles ranks
+    /// \param _aborter An aborter object allowing to abort the calculation
+    /// \return The status of calculation
+    ComputingResult calculateEtasAndEpsilons(
+            std::vector<Etas> &_fullEtas,
+            std::vector<Deviations> &_epsilons,
+            const DateTime &_recordFrom,
+            const DateTime &_recordTo,
+            const IntakeSeries &_intakes,
+            const ParameterSetSeries &_parameters,
+            const OmegaMatrix& _omega,
+            const IResidualErrorModel &_residualErrorModel,
+            const Etas& _etas,
+            const SampleSeries &_samples,
+            const PercentileRanks &_percentileRanks,
+            IConcentrationCalculator &_concentrationCalculator,
+            ComputingAborter *_aborter);
 };
 
 
@@ -393,6 +452,7 @@ public:
             const std::map<AnalyteGroupId, Etas>& _etas,
             const PercentileRanks &_percentileRanks,
             IConcentrationCalculator &_concentrationCalculator,
+            const ActiveMoiety *_activeMoiety,
             ComputingAborter *_aborter) = 0;
 
     virtual ~IAprioriPercentileCalculatorMulti() {}
@@ -428,6 +488,7 @@ public:
             const std::map<AnalyteGroupId, SampleSeries> &_samples,
             const PercentileRanks &_percentileRanks,
             IConcentrationCalculator &_concentrationCalculator,
+            const ActiveMoiety *_activeMoiety,
             ComputingAborter *_aborter) = 0;
 
     virtual ~IAposterioriPercentileCalculatorMulti() {}
@@ -460,6 +521,7 @@ public:
             const std::map<AnalyteGroupId, Etas>& _etas,
             const PercentileRanks &_percentileRanks,
             IConcentrationCalculator &_concentrationCalculator,
+            const ActiveMoiety *_activeMoiety,
             ComputingAborter *_aborter) override;
 
     ~AprioriPercentileCalculatorMulti() override {}
@@ -496,6 +558,7 @@ public:
             const std::map<AnalyteGroupId, SampleSeries> &_samples,
             const PercentileRanks &_percentileRanks,
             IConcentrationCalculator &_concentrationCalculator,
+            const ActiveMoiety *_activeMoiety,
             ComputingAborter *_aborter) override;
 
     ~AposterioriMonteCarloPercentileCalculatorMulti() override {};

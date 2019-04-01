@@ -275,7 +275,12 @@ ComputingResult ComputingComponent::compute(
 #ifdef NO_PERCENTILES
     return ComputingResult::NoPercentilesCalculation;
 #endif
-    return computePercentilesSimple(_traits, _request, _response);
+    if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Aposteriori) {
+        return computePercentilesSimple(_traits, _request, _response);
+    }
+    else {
+        return computePercentilesMulti(_traits, _request, _response);
+    }
 }
 
 ComputingResult ComputingComponent::computePercentilesMulti(
@@ -401,6 +406,7 @@ ComputingResult ComputingComponent::computePercentilesMulti(
                     sampleSeries,
                     percentileRanks,
                     concentrationCalculator,
+                    _request.getDrugModel().getActiveMoieties()[0].get(),
                     aborter);
 
     }
@@ -417,6 +423,7 @@ ComputingResult ComputingComponent::computePercentilesMulti(
                     etas,
                     percentileRanks,
                     concentrationCalculator,
+                    _request.getDrugModel().getActiveMoieties()[0].get(),
                     aborter);
     }
 
