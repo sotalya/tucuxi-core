@@ -360,6 +360,7 @@ JSOperation::evaluate(const OperationInputList &_inputs, double &_result)
 
         JSEngine jsEngine;
         // Push the inputs
+
         for (auto inVar: _inputs) {
             switch (inVar.getType()) {
             ADD_VAR_CASE(InputType::BOOL, bool);
@@ -385,6 +386,81 @@ JSOperation::evaluate(const OperationInputList &_inputs, double &_result)
         }
 
         _result = std::stod(resAsString);
+
+    } catch (const CScriptException *e) {
+        sm_errorMessage = e->text;
+//        Tucuxi::Common::LoggerHelper logger;
+//        logger.error("Error with the execution of the JSOperation : {}\n\n{}", m_expression, e->text);
+        return false;
+    }
+    catch (...) {
+        //        Tucuxi::Common::LoggerHelper logger;
+        //        logger.error("Error with the execution of the JSOperation : {}", m_expression);
+        return false;
+    }
+    return true;
+}
+
+bool
+JSOperation::checkOperation(const OperationInputList &_inputs, double &_result)
+{
+    /// \warning The JS engine does not return an error if variables are missing -- it will silently assume that they
+    ///          are zeroes and happily perform the computation. This could go horribly bad if no precautions are taken,
+    ///          therefore we validate hereby the inputs to ensure that everything is in order.
+    if (!check(_inputs)) {
+        //Tucuxi::Common::LoggerHelper logger;
+        //logger.error("Missing inputs for a JSOperation : {}", m_expression);
+        return false;
+    }
+
+
+    // The next lines could generate an exception.
+    // If the jsEngine.evaluate() goes wrong, we intercept the exception and
+    // simply return false.
+    // Also the cast of result can go wrong.
+    try {
+
+        JSEngine jsEngine;
+        // Push the inputs
+
+        for (auto inVar: _inputs) {
+            switch (inVar.getType()) {
+            ADD_VAR_CASE(InputType::BOOL, bool);
+            ADD_VAR_CASE(InputType::INTEGER, int);
+            ADD_VAR_CASE(InputType::DOUBLE, double);
+            default:
+                return false;
+            }
+        }
+
+        // We get back to the initial expression
+        //        m_expression = "function calc() {\n" + _expression + "\n}\n result = calc();";
+        std::string exp = m_expression.substr(18);
+        exp = exp.substr(0, exp.size() - 20);
+        size_t pos = exp.rfind("return ");
+        if (pos != exp.npos) {
+            exp = exp.substr(0, pos);
+        }
+        else {
+            sm_errorMessage = "Missing a return statement at the end of the script.";
+            return false;
+        }
+
+        if (!jsEngine.evaluate(exp)) {
+           // Tucuxi::Common::LoggerHelper logger;
+           // logger.error("Could not evaluate the JSOperation : {}", m_expression);
+            return false;
+        }
+
+        std::string resAsString;
+/*
+        if(!jsEngine.getVariable("result", resAsString)) {
+            //Tucuxi::Common::LoggerHelper logger;
+            //logger.error("Could not get the result of the JSOperation : {}", m_expression);
+            return false;
+        }
+        _result = std::stod(resAsString);
+*/
 
     } catch (const CScriptException *e) {
         sm_errorMessage = e->text;

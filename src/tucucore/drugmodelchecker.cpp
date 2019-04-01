@@ -220,12 +220,25 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkOperations(const DrugMo
 
             double result;
 
-            if (!operation->evaluate(inputList, result)) {
-                if (dynamic_cast<JSOperation*>(operation)) {
-                    return {false, "The operation could not be evaluated with input values being 1 (for double and int) and true for booleans. Maybe you forgot to set up some of the required inputs in the input list: \n\n" + dynamic_cast<JSOperation*>(operation)->getExpression() +
-                    "\n\n Here is the error message: \n" + operation->getLastErrorMessage()};
+            JSOperation *jsOperation = dynamic_cast<JSOperation*>(operation);
+            if (jsOperation != nullptr) {
+                if (!jsOperation->checkOperation(inputList, result)) {
+
+                    std::string exp = jsOperation->getExpression();
+                    std::stringstream sstream(exp);
+                    std::string line;
+                    std::string numberedExp;
+
+                    int lineIndex = 0;
+                    while(std::getline(sstream,line,'\n')){
+                        numberedExp += std::to_string(lineIndex) + " .\t" + line + "\n";
+                        lineIndex ++;
+                    }
+
+
+                    return {false, "The operation could not be evaluated with input values being 1 (for double and int) and true for booleans. Maybe you forgot to set up some of the required inputs in the input list: \n\n" + numberedExp +
+                                "\n\nSpecific error message: \n" + operation->getLastErrorMessage()};
                 }
-                return {false, "An operation could not be evaluated."};
             }
         }
     }

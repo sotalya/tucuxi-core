@@ -326,6 +326,21 @@ public:
     ///       else { [RETURN] == false };
     bool evaluate(const OperationInputList &_inputs, double &_result) override;
 
+    /// \brief Checks the operation on the given inputs using the JSEngine.
+    /// \warning No control on types is performed -- you can for instance divide a boolean by a double without the
+    ///          system raising a warning.
+    /// \param _inputList List of inputs that have to be used by the operation.
+    /// \param _result Result of the operation.
+    /// \return true if the operation could be performed, false otherwise.
+    /// \post if (check(_inputs) && m_jsEngine.evaluate(m_expression) == true) { _result == [OPERATION_RESULT] && [RETURN] == true }
+    ///       else { [RETURN] == false };
+    /// The check slightly modify the operation, removing :
+    /// "function calc() {\n" at the beggining,
+    /// "\n}\n result = calc();" at the end,
+    /// and also removing the last "return" statement
+    ///
+    bool checkOperation(const OperationInputList &_inputs, double &_result);
+
     /// \brief Get the expression as a string
     /// \return The expression
     /// This function is meant to be used by the DrugModelChecker, not for any other evaluation

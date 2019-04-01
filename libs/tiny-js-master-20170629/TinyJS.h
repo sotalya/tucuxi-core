@@ -292,7 +292,11 @@ protected:
     std::string data; ///< The contents of this variable if it is a string
     long intData; ///< The contents of this variable if it is an int
     double doubleData; ///< The contents of this variable if it is a double
+// YTA :
+public:
     int flags; ///< the flags determine the type of the variable - int/double/string/etc
+protected:
+    // End of YTA
     JSCallback jsCallback; ///< Callback for native functions
     void *jsCallbackUserData; ///< user data passed as second argument to native functions
 
