@@ -275,12 +275,8 @@ ComputingResult ComputingComponent::compute(
 #ifdef NO_PERCENTILES
     return ComputingResult::NoPercentilesCalculation;
 #endif
-    if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Aposteriori) {
-        return computePercentilesSimple(_traits, _request, _response);
-    }
-    else {
-        return computePercentilesMulti(_traits, _request, _response);
-    }
+    //return computePercentilesSimple(_traits, _request, _response);
+    return computePercentilesMulti(_traits, _request, _response);
 }
 
 ComputingResult ComputingComponent::computePercentilesMulti(
@@ -362,20 +358,22 @@ ComputingResult ComputingComponent::computePercentilesMulti(
 
     std::map<AnalyteGroupId, Etas> etas;
 
-    for(const auto &analyteGroup : _request.getDrugModel().getAnalyteSets()) {
-        AnalyteGroupId analyteGroupId = analyteGroup->getId();
-
-        ComputingResult aposterioriEtasExtractionResult = m_generalExtractor->extractAposterioriEtas(etas[analyteGroupId], _request, analyteGroupId, intakeSeries[analyteGroupId], parameterSeries[analyteGroupId], covariateSeries, calculationStartTime, _traits->getEnd());
-        if (aposterioriEtasExtractionResult != ComputingResult::Ok) {
-            return aposterioriEtasExtractionResult;
-        }
-    }
 
     Tucuxi::Core::ComputingResult computingResult;
 
     Tucuxi::Core::ConcentrationCalculator concentrationCalculator;
 
     if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Aposteriori)   {
+
+        for(const auto &analyteGroup : _request.getDrugModel().getAnalyteSets()) {
+            AnalyteGroupId analyteGroupId = analyteGroup->getId();
+
+            ComputingResult aposterioriEtasExtractionResult = m_generalExtractor->extractAposterioriEtas(etas[analyteGroupId], _request, analyteGroupId, intakeSeries[analyteGroupId], parameterSeries[analyteGroupId], covariateSeries, calculationStartTime, _traits->getEnd());
+            if (aposterioriEtasExtractionResult != ComputingResult::Ok) {
+                return aposterioriEtasExtractionResult;
+            }
+        }
+
 
         // This extraction is already done in extractAposterioriEtas... Could be optimized
         std::map<AnalyteGroupId, SampleSeries> sampleSeries;
@@ -411,6 +409,11 @@ ComputingResult ComputingComponent::computePercentilesMulti(
 
     }
     else {
+        for(const auto &analyteGroup : _request.getDrugModel().getAnalyteSets()) {
+            AnalyteGroupId analyteGroupId = analyteGroup->getId();
+            etas[analyteGroupId] = Etas(0);
+        }
+
         std::unique_ptr<Tucuxi::Core::IAprioriPercentileCalculatorMulti> calculator(new Tucuxi::Core::AprioriPercentileCalculatorMulti());
         computingResult = calculator->calculate(
                     percentiles,

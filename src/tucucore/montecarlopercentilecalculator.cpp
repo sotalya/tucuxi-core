@@ -976,44 +976,58 @@ ComputingResult AprioriPercentileCalculatorMulti::calculate(
         analyteGroupIds.push_back(it->first);
     }
 
-    std::map<AnalyteGroupId, std::vector< std::vector< std::vector<Concentration> > > > concentrations;
+    std::vector< std::vector< std::vector< std::vector<Concentration> > > > concentrations;
 
-    for (const auto & analyteGroup : analyteGroupIds) {
+    size_t analyteGroupIndex = 0;
+    for (const auto & analyteGroupId : analyteGroupIds) {
+        // As computePredictions() will fill recordedIntakes we have to be careful
+        // not to fill them more than once. Therefore we clear it first
+        recordedIntakes.clear();
         std::vector<Etas> etaSamples;
         std::vector<Deviations> epsilons;
-        simpleCalculator.calculateEtasAndEpsilons(etaSamples,
+        ComputingResult result = simpleCalculator.calculateEtasAndEpsilons(etaSamples,
                                                   epsilons,
                                                   _recordFrom,
                                                   _recordTo,
-                                                  _intakes.at(analyteGroup),
-                                                  _parameters.at(analyteGroup),
-                                                  _omega.at(analyteGroup),
-                                                  *_residualErrorModel.at(analyteGroup),
-                                                  _etas.at(analyteGroup),
+                                                  _intakes.at(analyteGroupId),
+                                                  _parameters.at(analyteGroupId),
+                                                  _omega.at(analyteGroupId),
+                                                  *_residualErrorModel.at(analyteGroupId),
+                                                  _etas.at(analyteGroupId),
                                                   _percentileRanks,
                                                   _concentrationCalculator,
                                                   _aborter);
 
-        simpleCalculator.computePredictions(_recordFrom,
+        if (result != ComputingResult::Ok) {
+            return result;
+        }
+        concentrations.push_back(std::vector< std::vector< std::vector<Concentration> > >(0));
+
+        result = simpleCalculator.computePredictions(_recordFrom,
                                             _recordTo,
-                                            _intakes.at(analyteGroup),
-                                            _parameters.at(analyteGroup),
-                                            *_residualErrorModel.at(analyteGroup),
+                                            _intakes.at(analyteGroupId),
+                                            _parameters.at(analyteGroupId),
+                                            *_residualErrorModel.at(analyteGroupId),
                                             etaSamples,
                                             epsilons,
                                             _concentrationCalculator,
                                             nbPatients,
                                             times,
                                             recordedIntakes,
-                                            concentrations[analyteGroup],
+                                            concentrations[analyteGroupIndex],
                                             _aborter);
+        if (result != ComputingResult::Ok) {
+            return result;
+        }
+
+        analyteGroupIndex ++;
     }
 
-    if ((_activeMoiety != nullptr) && (_activeMoiety->getFormula() != nullptr)) {
+    if ((_activeMoiety != nullptr) &&
+            (_activeMoiety->getFormula() != nullptr) &&
+            (_activeMoiety->getAnalyteIds().size() > 1)) {
 
         Operation *op = _activeMoiety->getFormula();
-
-        size_t nbAnalytes = analyteGroupIds.size();
 
         std::vector< std::vector< std::vector<Concentration> > > aConcentration;
 
@@ -1027,15 +1041,23 @@ ComputingResult AprioriPercentileCalculatorMulti::calculate(
             aConcentration.push_back(vec);
         }
 
-        for (size_t i = 0; i < concentrations[analyteGroupIds[0]].size(); i++) {
-            for (size_t j = 0; j < concentrations[analyteGroupIds[0]][i].size(); j++) {
-                for (size_t k = 0; k < concentrations[analyteGroupIds[0]][i][j].size(); k++) {
+        OperationInputList inputList;
+        for (size_t i = 0; i < analyteGroupIds.size(); i++) {
+            inputList.push_back(OperationInput("input" + std::to_string(i), 0.0));
+        }
 
+        size_t nbAnalyteGroups = analyteGroupIds.size();
 
-                    OperationInputList inputList;
-                    int index = 0;
-                    for (const auto & analyteGroup : analyteGroupIds) {
-                        inputList.push_back(OperationInput("input" + std::to_string(index), concentrations[analyteGroup][i][j][k]));
+        // TODO : This loop could be multi-threaded
+        size_t size1 = concentrations[0].size();
+        for (size_t i = 0; i < size1; i++) {
+            size_t size2 = concentrations[0][i].size();
+            for (size_t j = 0; j < size2; j++) {
+                size_t size3 = concentrations[0][i][j].size();
+                for (size_t k = 0; k < size3; k++) {
+
+                    for (size_t index = 0; index < nbAnalyteGroups; index ++) {
+                        inputList[index].setValue(concentrations[index][i][j][k]);
                     }
                     double result;
                     if (!op->evaluate(inputList, result)) {
@@ -1043,7 +1065,6 @@ ComputingResult AprioriPercentileCalculatorMulti::calculate(
                         return ComputingResult::ActiveMoietyCalculationError;
                     }
                     aConcentration[i][j][k] = result;
-
                 }
             }
         }
@@ -1061,7 +1082,7 @@ ComputingResult AprioriPercentileCalculatorMulti::calculate(
                                                           nbPatients,
                                                           times,
                                                           recordedIntakes,
-                                                          concentrations[analyteGroupIds[0]]);
+                                                          concentrations[0]);
     }
 
 
@@ -1084,7 +1105,128 @@ ComputingResult AposterioriMonteCarloPercentileCalculatorMulti::calculate(
         const ActiveMoiety *_activeMoiety,
         ComputingAborter *_aborter)
 {
+    AposterioriMonteCarloPercentileCalculator simpleCalculator;
 
+    unsigned int nbPatients = Tucuxi::Core::MonteCarloPercentileCalculatorBase::getNumberPatients();
+    std::vector<TimeOffsets> times;
+
+    IntakeSeries recordedIntakes;
+
+    std::vector<AnalyteGroupId> analyteGroupIds;
+
+    for (auto it = _parameters.begin(); it != _parameters.end(); ++it) {
+        analyteGroupIds.push_back(it->first);
+    }
+
+    std::vector< std::vector< std::vector< std::vector<Concentration> > > > concentrations;
+
+    size_t analyteGroupIndex = 0;
+    for (const auto & analyteGroupId : analyteGroupIds) {
+        // As computePredictions() will fill recordedIntakes we have to be careful
+        // not to fill them more than once. Therefore we clear it first
+        recordedIntakes.clear();
+        std::vector<Etas> etaSamples;
+        std::vector<Deviations> epsilons;
+        ComputingResult result = simpleCalculator.calculateEtasAndEpsilons(etaSamples,
+                                                                           epsilons,
+                                                                           _recordFrom,
+                                                                           _recordTo,
+                                                                           _intakes.at(analyteGroupId),
+                                                                           _parameters.at(analyteGroupId),
+                                                                           _omega.at(analyteGroupId),
+                                                                           *_residualErrorModel.at(analyteGroupId),
+                                                                           _etas.at(analyteGroupId),
+                                                                           _samples.at(analyteGroupId),
+                                                                           _percentileRanks,
+                                                                           _concentrationCalculator,
+                                                                           _aborter);
+
+        if (result != ComputingResult::Ok) {
+            return result;
+        }
+        concentrations.push_back(std::vector< std::vector< std::vector<Concentration> > >(0));
+
+        result = simpleCalculator.computePredictions(_recordFrom,
+                                            _recordTo,
+                                            _intakes.at(analyteGroupId),
+                                            _parameters.at(analyteGroupId),
+                                            *_residualErrorModel.at(analyteGroupId),
+                                            etaSamples,
+                                            epsilons,
+                                            _concentrationCalculator,
+                                            nbPatients,
+                                            times,
+                                            recordedIntakes,
+                                            concentrations[analyteGroupIndex],
+                                            _aborter);
+        if (result != ComputingResult::Ok) {
+            return result;
+        }
+
+        analyteGroupIndex ++;
+    }
+
+    if ((_activeMoiety != nullptr) &&
+            (_activeMoiety->getFormula() != nullptr) &&
+            (_activeMoiety->getAnalyteIds().size() > 1)) {
+
+        Operation *op = _activeMoiety->getFormula();
+
+        std::vector< std::vector< std::vector<Concentration> > > aConcentration;
+
+
+        // Set the size of vector "concentrations"
+        for (unsigned int cycle = 0; cycle < recordedIntakes.size(); cycle++) {
+            std::vector< std::vector<Concentration> > vec;
+            for (int point = 0; point < recordedIntakes.at(cycle).getNbPoints(); point++) {
+                vec.push_back(std::vector<Concentration>(nbPatients));
+            }
+            aConcentration.push_back(vec);
+        }
+
+        OperationInputList inputList;
+        for (size_t i = 0; i < analyteGroupIds.size(); i++) {
+            inputList.push_back(OperationInput("input" + std::to_string(i), 0.0));
+        }
+
+        size_t nbAnalyteGroups = analyteGroupIds.size();
+
+        // TODO : This loop could be multi-threaded
+        size_t size1 = concentrations[0].size();
+        for (size_t i = 0; i < size1; i++) {
+            size_t size2 = concentrations[0][i].size();
+            for (size_t j = 0; j < size2; j++) {
+                size_t size3 = concentrations[0][i][j].size();
+                for (size_t k = 0; k < size3; k++) {
+
+                    for (size_t index = 0; index < nbAnalyteGroups; index ++) {
+                        inputList[index].setValue(concentrations[index][i][j][k]);
+                    }
+                    double result;
+                    if (!op->evaluate(inputList, result)) {
+                        // Something went wrong
+                        return ComputingResult::ActiveMoietyCalculationError;
+                    }
+                    aConcentration[i][j][k] = result;
+                }
+            }
+        }
+
+        return simpleCalculator.sortAndExtractPercentiles(_percentiles,
+                                                          _percentileRanks,
+                                                          nbPatients,
+                                                          times,
+                                                          recordedIntakes,
+                                                          aConcentration);
+    }
+    else {
+        return simpleCalculator.sortAndExtractPercentiles(_percentiles,
+                                                          _percentileRanks,
+                                                          nbPatients,
+                                                          times,
+                                                          recordedIntakes,
+                                                          concentrations[0]);
+    }
 
     return ComputingResult::Ok;
 }
