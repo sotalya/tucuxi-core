@@ -39,6 +39,9 @@ public:
         if (pCmpMgr != nullptr) {
             m_pLogger = pCmpMgr->getComponent<ILogger>("Logger");
         }
+        else {
+            m_pLogger = nullptr;
+        }
     }
 
     /// \brief Initialize the Logger component 

@@ -171,7 +171,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
                 for(size_t p = 0; p < resp->getNbRanks(); p++) {
                     DateTime statTime;
-                    Value statValue;
+                    Value statValue = 0.0;
                     resp->getData(p,0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
                     fructose_assert_double_eq(statValue, 200000.0);
                 }
@@ -191,7 +191,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
                 fructose_assert_eq(data[1].m_start.toSeconds() + data[1].m_times[0][0] * 3600.0 , startSept2018.toSeconds() + 3600.0 * 6.0);
 
                 DateTime statTime;
-                Value statValue;
+                Value statValue = 0.0;
                 data[0].m_statistics.getStatistic(0, CycleStatisticType::AUC).getValue(statTime, statValue);
                 fructose_assert_double_eq(statValue, 200000.0 * 6.0);
 
@@ -317,7 +317,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
                 for(size_t p = 0; p < resp->getNbRanks(); p++) {
                     DateTime statTime;
-                    Value statValue;
+                    Value statValue = 0.0;
                     resp->getData(p,0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
                     fructose_assert_double_eq(statValue, 200001.0);
                 }
@@ -337,7 +337,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
                 fructose_assert_eq(data[1].m_start.toSeconds() + data[1].m_times[0][0] * 3600.0 , startSept2018.toSeconds() + 3600.0 * 6.0);
 
                 DateTime statTime;
-                Value statValue;
+                Value statValue = 0.0;
                 data[0].m_statistics.getStatistic(0, CycleStatisticType::AUC).getValue(statTime, statValue);
                 fructose_assert_double_eq(statValue, 200001.0 * 6.0);
 
@@ -460,7 +460,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
                 for(size_t p = 0; p < resp->getNbRanks(); p++) {
                     DateTime statTime;
-                    Value statValue;
+                    Value statValue = 0.0;
                     resp->getData(p,0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
                     //fructose_assert_eq(statValue, 200001.0);
 
@@ -566,7 +566,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
                 for(size_t p = 0; p < resp->getNbRanks(); p++) {
                     DateTime statTime;
-                    Value statValue;
+                    Value statValue = 0.0;
                     resp->getData(p,0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
                     //fructose_assert_eq(statValue, 200001.0);
 
@@ -671,7 +671,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
                 for(size_t p = 0; p < resp->getNbRanks(); p++) {
                     DateTime statTime;
-                    Value statValue;
+                    Value statValue = 0.0;
                     resp->getData(p,0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
                     //fructose_assert_eq(statValue, 200001.0);
 
@@ -777,7 +777,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
                 for(size_t p = 0; p < resp->getNbRanks(); p++) {
                     DateTime statTime;
-                    Value statValue;
+                    Value statValue = 0.0;
                     resp->getData(p,0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
                     //fructose_assert_eq(statValue, 200001.0);
 
@@ -893,7 +893,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
                 for(size_t p = 0; p < resp->getNbRanks(); p++) {
                     DateTime statTime;
-                    Value statValue;
+                    Value statValue = 0.0;
                     resp->getData(p,0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
                     //fructose_assert_eq(statValue, 200001.0);
 
@@ -1008,7 +1008,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
                 for(size_t p = 0; p < resp->getNbRanks(); p++) {
                     DateTime statTime;
-                    Value statValue;
+                    Value statValue = 0.0;
                     resp->getData(p,0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
                     //fructose_assert_eq(statValue, 200001.0);
 
@@ -1123,7 +1123,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
                 for(size_t p = 0; p < resp->getNbRanks(); p++) {
                     DateTime statTime;
-                    Value statValue;
+                    Value statValue = 0.0;
                     resp->getData(p,0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
                     //fructose_assert_eq(statValue, 200001.0);
 
@@ -1241,7 +1241,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
                 for(size_t p = 0; p < resp->getNbRanks(); p++) {
                     DateTime statTime;
-                    Value statValue;
+                    Value statValue = 0.0;
                     resp->getData(p,0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
                     //fructose_assert_eq(statValue, 200001.0);
 

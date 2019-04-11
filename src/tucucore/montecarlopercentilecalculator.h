@@ -322,29 +322,22 @@ public:
     ///
     /// \brief calculate
     /// \param _percentiles percentiles calculated within the method
-    /// \param _recordFrom Date from which we start recording the concentration
-    /// \param _recordTo Date until which we record the concentration
     /// \param _intakes Intake series
     /// \param _parameters Initial parameters series
     /// \param _omega covariance matrix for inter-individual variability
     /// \param _residualErrorModel Residual error model
     /// \param _etas Etas pre-calculated by the aposteriori calculator
     /// \param _samples List of samples
-    /// \param _percentileRanks List of percentiles ranks
     /// \param _aborter An aborter object allowing to abort the calculation
     /// \return The status of calculation
-    ComputingResult calculateEtasAndEpsilons(
-            std::vector<Etas> &_fullEtas,
+    ComputingResult calculateEtasAndEpsilons(std::vector<Etas> &_fullEtas,
             std::vector<Deviations> &_epsilons,
-            const DateTime &_recordFrom,
-            const DateTime &_recordTo,
             const IntakeSeries &_intakes,
             const ParameterSetSeries &_parameters,
             const OmegaMatrix& _omega,
             const IResidualErrorModel &_residualErrorModel,
             const Etas& _etas,
             const SampleSeries &_samples,
-            const PercentileRanks &_percentileRanks,
             IConcentrationCalculator &_concentrationCalculator,
             ComputingAborter *_aborter);
 };

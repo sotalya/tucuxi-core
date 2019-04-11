@@ -1,5 +1,6 @@
 
 #include "tucucommon/loggerhelper.h"
+#include "tucucommon/general.h"
 
 #include "tucucore/operation.h"
 
@@ -404,6 +405,8 @@ JSOperation::evaluate(const OperationInputList &_inputs, double &_result)
 bool
 JSOperation::checkOperation(const OperationInputList &_inputs, double &_result)
 {
+    TMP_UNUSED_PARAMETER(_result);
+
     /// \warning The JS engine does not return an error if variables are missing -- it will silently assume that they
     ///          are zeroes and happily perform the computation. This could go horribly bad if no precautions are taken,
     ///          therefore we validate hereby the inputs to ensure that everything is in order.

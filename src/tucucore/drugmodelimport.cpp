@@ -1927,7 +1927,7 @@ FullFormulationAndRoute* DrugModelImport::extractFullFormulationAndRoute(
                     XmlNodeIterator stdIt = dosageIt->getChildren();
                     bool isFixedDuration = false;
                     Unit unit;
-                    double value;
+                    double value = 0.0;
                     while (stdIt != XmlNodeIterator::none()) {
                         std::string stdName = stdIt->getName();
                         if (stdName == "isFixedDuration"){

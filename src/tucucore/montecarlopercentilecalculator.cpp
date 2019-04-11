@@ -678,15 +678,12 @@ ComputingResult AposterioriMonteCarloPercentileCalculator::calculate(
     ComputingResult preparationResult = calculateEtasAndEpsilons(
                 etaSamples,
                 epsilons,
-                _recordFrom,
-                _recordTo,
                 _intakes,
                 _parameters,
                 _omega,
                 _residualErrorModel,
                 _etas,
                 _samples,
-                _percentileRanks,
                 _concentrationCalculator,
                 _aborter);
 
@@ -712,15 +709,12 @@ ComputingResult AposterioriMonteCarloPercentileCalculator::calculate(
 ComputingResult AposterioriMonteCarloPercentileCalculator::calculateEtasAndEpsilons(
         std::vector<Etas> &_fullEtas,
         std::vector<Deviations> &_epsilons,
-        const DateTime &_recordFrom,
-        const DateTime &_recordTo,
         const IntakeSeries &_intakes,
         const ParameterSetSeries &_parameters,
         const OmegaMatrix& _omega,
         const IResidualErrorModel &_residualErrorModel,
         const Etas& _etas,
         const SampleSeries &_samples,
-        const PercentileRanks &_percentileRanks,
         IConcentrationCalculator &_concentrationCalculator,
         ComputingAborter *_aborter)
 {
@@ -1129,15 +1123,12 @@ ComputingResult AposterioriMonteCarloPercentileCalculatorMulti::calculate(
         std::vector<Deviations> epsilons;
         ComputingResult result = simpleCalculator.calculateEtasAndEpsilons(etaSamples,
                                                                            epsilons,
-                                                                           _recordFrom,
-                                                                           _recordTo,
                                                                            _intakes.at(analyteGroupId),
                                                                            _parameters.at(analyteGroupId),
                                                                            _omega.at(analyteGroupId),
                                                                            *_residualErrorModel.at(analyteGroupId),
                                                                            _etas.at(analyteGroupId),
                                                                            _samples.at(analyteGroupId),
-                                                                           _percentileRanks,
                                                                            _concentrationCalculator,
                                                                            _aborter);
 
