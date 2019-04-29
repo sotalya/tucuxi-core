@@ -140,17 +140,17 @@ protected:
 
     bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
     {
-        TMP_UNUSED_PARAMETER(_atTime);
         std::vector<Concentrations> concentrations;
         for (size_t i = 0; i < ResidualSize; i++) {
             concentrations.push_back(Concentrations(m_nbPoints));
         }
 
         size_t atTime = static_cast<int>(SingleConcentrations::AtTime);
-        size_t atEndInterval = static_cast<int>(m_nbPoints-1);
+        size_t atEndInterval = static_cast<int>(SingleConcentrations::AtEndInterval);
 
-        Eigen::VectorXd times(1);
+        Eigen::VectorXd times(2);
         times[0] = _atTime;
+        times[1] = m_Int;
         // compute concentration1 and 2
         compute(times, _inResiduals, concentrations);
 
@@ -189,7 +189,10 @@ protected:
 
     void compute(const Eigen::VectorXd &_times, const Residuals& _inResiduals, std::vector<Concentrations>& _concentrations)
     {
-        const double h = m_Int/m_nbPoints;
+        // We advance minute per minute
+        const double h = 1.0 / 60.0;
+
+        int nbPoints = _times.size();
 
 
         std::vector<double> concentrations(ResidualSize);
@@ -197,8 +200,6 @@ protected:
         initConcentrations(_inResiduals, concentrations);
 
 
-        /* Looping the rest of the points to calculate the conventrations
-             * of each compartment */
         std::vector<double> dcdt(ResidualSize);
         std::vector<double> k1(ResidualSize);
         std::vector<double> k2(ResidualSize);
@@ -206,13 +207,31 @@ protected:
         std::vector<double> k4(ResidualSize);
         std::vector<double> c(ResidualSize);
         double t = 0.0;
+        bool cont = true;
 
-        for (auto i = 0; (i + 1) < m_nbPoints; i = i + 1) {
+        double nextTime = _times[0];
+        size_t nextPoint = 0;
+
+        while ((nextTime <= t) && (cont)) {
+            for(size_t i = 0; i < ResidualSize; i++) {
+                _concentrations[i][nextPoint] = concentrations[i];
+            }
+            nextPoint ++;
+            if (nextPoint >= nbPoints) {
+                cont = false;
+            }
+            else {
+                nextTime = _times[nextPoint];
+            }
+        }
+
+        // Looping the rest of the points to calculate the concentrations of each compartment
+        while (cont) {
 
             // Let's use static inheritance
             static_cast<ImplementationClass*>(this)->derive(t, concentrations, dcdt);
 
-            /* Set k1's*/
+            // Set k1's
             for(size_t i = 0; i < ResidualSize; i++) {
                 k1[i] = h * dcdt[i];
                 c[i] = concentrations[i] + k1[i] / 2.0;
@@ -220,7 +239,7 @@ protected:
 
             static_cast<ImplementationClass*>(this)->derive(t + h / 2.0, c, dcdt);
 
-            /* Set k2's*/
+            // Set k2's
             for(size_t i = 0; i < ResidualSize; i++) {
                 k2[i] = h * dcdt[i];
                 c[i] = concentrations[i] + k2[i] / 2.0;
@@ -228,7 +247,7 @@ protected:
 
             static_cast<ImplementationClass*>(this)->derive(t + h / 2.0, c, dcdt);
 
-            /* Set k3's*/
+            // Set k3's
             for(size_t i = 0; i < ResidualSize; i++) {
                 k3[i] = h * dcdt[i];
                 c[i] = concentrations[i] + k3[i];
@@ -236,14 +255,23 @@ protected:
 
             static_cast<ImplementationClass*>(this)->derive(t + h, c, dcdt);
 
-            /* Set k4's*/
+            // Set k4's
             for(size_t i = 0; i < ResidualSize; i++) {
                 k4[i] = h * dcdt[i];
-                c[i] = concentrations[i] + k1[i] / 6.0 + k2[i] / 3.0 + k3[i] / 3.0 + k4[i] / 6.0;
+                concentrations[i] = concentrations[i] + k1[i] / 6.0 + k2[i] / 3.0 + k3[i] / 3.0 + k4[i] / 6.0;
             }
 
-            for(size_t i = 0; i < ResidualSize; i++) {
-                _concentrations[i][i+1] = c[i];
+            while ((nextTime <= t) && (cont)) {
+                for(size_t i = 0; i < ResidualSize; i++) {
+                    _concentrations[i][nextPoint] = concentrations[i];
+                }
+                nextPoint ++;
+                if (nextPoint >= nbPoints) {
+                    cont = false;
+                }
+                else {
+                    nextTime = _times[nextPoint];
+                }
             }
 
             t += h;
