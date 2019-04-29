@@ -497,16 +497,9 @@ ComputingResult AprioriMonteCarloPercentileCalculator::calculate(
     ComputingResult preparationResult = calculateEtasAndEpsilons(
                 etaSamples,
                 epsilons,
-                _recordFrom,
-                _recordTo,
-                _intakes,
-                _parameters,
                 _omega,
                 _residualErrorModel,
-                _initialEtas,
-                _percentileRanks,
-                _concentrationCalculator,
-                _aborter);
+                _initialEtas);
 
     if (preparationResult != ComputingResult::Ok) {
         return preparationResult;
@@ -530,16 +523,9 @@ ComputingResult AprioriMonteCarloPercentileCalculator::calculate(
 ComputingResult AprioriMonteCarloPercentileCalculator::calculateEtasAndEpsilons(
         std::vector<Etas> &_etas,
         std::vector<Deviations> &_epsilons,
-        const DateTime &_recordFrom,
-        const DateTime &_recordTo,
-        const IntakeSeries &_intakes,
-        const ParameterSetSeries &_parameters,
         const OmegaMatrix& _omega,
         const IResidualErrorModel &_residualErrorModel,
-        const Etas& _initialEtas,
-        const PercentileRanks &_percentileRanks,
-        IConcentrationCalculator &_concentrationCalculator,
-        ComputingAborter *_aborter)
+        const Etas& _initialEtas)
 {
     EigenMatrix choleskyMatrix; // Cholesky matrix after decomposition
     EigenMatrix errorMatrix; // Error matrix of both omega and sigma combined (inter and intra errors)
@@ -981,16 +967,9 @@ ComputingResult AprioriPercentileCalculatorMulti::calculate(
         std::vector<Deviations> epsilons;
         ComputingResult result = simpleCalculator.calculateEtasAndEpsilons(etaSamples,
                                                   epsilons,
-                                                  _recordFrom,
-                                                  _recordTo,
-                                                  _intakes.at(analyteGroupId),
-                                                  _parameters.at(analyteGroupId),
                                                   _omega.at(analyteGroupId),
                                                   *_residualErrorModel.at(analyteGroupId),
-                                                  _etas.at(analyteGroupId),
-                                                  _percentileRanks,
-                                                  _concentrationCalculator,
-                                                  _aborter);
+                                                  _etas.at(analyteGroupId));
 
         if (result != ComputingResult::Ok) {
             return result;

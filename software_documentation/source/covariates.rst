@@ -76,10 +76,10 @@ Age
 The age of the patient corresponds to a special covariate, because of two factors:
 
 1. As for the sex, it can be retrieved from administrative data, that is the birthdate.
-2. In the drug models it can be used in years, months or days.
+2. In the drug models it can be used in years, months, weeks or days.
 
 In a drug model, when an age is required, it shall be using the special type
-to specify if it is ageInYears, ageInMonths or ageInDays. A default value has
+to specify if it is ageInYears, ageInMonths, ageInWeeks or ageInDays. A default value has
 to be indicated as well.
 
 In the patient data that will be scanned to get the covariates used for calculation,

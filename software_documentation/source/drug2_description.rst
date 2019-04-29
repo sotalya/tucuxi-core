@@ -657,6 +657,7 @@ Type of covariate
    sex , "The covariate represents the sex of the patient. Can be automatically retrieved from administrative data, specifically in a patient covariate called `sex`"
    ageInYears , "The age of the patient, in years. Can be automatically retrieved from administrative data, specifically in a patient covariate called `birthdate`"
    ageInMonths , "The age of the patient, in months. Can be automatically retrieved from administrative data, specifically in a patient covariate called `birthdate`"
+   ageInWeeks , "The age of the patient, in weeks. Can be automatically retrieved from administrative data, specifically in a patient covariate called `birthdate`"
    ageInDays , "The age of the patient, in days. Can be automatically retrieved from administrative data, specifically in a patient covariate called `birthdate`"
 
 .. _covariateDataType:

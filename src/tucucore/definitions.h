@@ -151,6 +151,9 @@ enum class CovariateType {
     /// Age in days. Automatic calculation based on birth date, use default if not available, unit = days.
     AgeInDays,
 
+    /// Age in weeks. Automatic calculation based on birth date, use default if not available, unit = weeks.
+    AgeInWeeks,
+
     /// Age in months. Automatic calculation based on birth date, use default if not available, unit = months.
     AgeInMonths,
 

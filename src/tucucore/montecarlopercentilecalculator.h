@@ -258,30 +258,16 @@ public:
     /// \brief calculateEtasAndEpsilons
     /// \param _etas Etas calculated within the function
     /// \param _epsilons Epsilons calculated within the function
-    /// \param _recordFrom Date from which we start recording the concentration
-    /// \param _recordTo Date until which we record the concentration
-    /// \param _intakes Intake series
-    /// \param _parameters Initial parameters series
     /// \param _omega covariance matrix for inter-individual variability
     /// \param _residualErrorModel Residual error model
     /// \param _initialEtas Set of initial Etas, used in case of a posteriori
-    /// \param _percentileRanks List of percentiles ranks
-    /// \param _aborter An aborter object allowing to abort the calculation
     /// \return The status of calculation
     ///
-    ComputingResult calculateEtasAndEpsilons(
-            std::vector<Etas> &_etas,
+    ComputingResult calculateEtasAndEpsilons(std::vector<Etas> &_etas,
             std::vector<Deviations> &_epsilons,
-            const DateTime &_recordFrom,
-            const DateTime &_recordTo,
-            const IntakeSeries &_intakes,
-            const ParameterSetSeries &_parameters,
             const OmegaMatrix& _omega,
             const IResidualErrorModel &_residualErrorModel,
-            const Etas& _initialEtas,
-            const PercentileRanks &_percentileRanks,
-            IConcentrationCalculator &_concentrationCalculator,
-            ComputingAborter *_aborter);
+            const Etas& _initialEtas);
 };
 
 
@@ -554,7 +540,7 @@ public:
             const ActiveMoiety *_activeMoiety,
             ComputingAborter *_aborter) override;
 
-    ~AposterioriMonteCarloPercentileCalculatorMulti() override {};
+    ~AposterioriMonteCarloPercentileCalculatorMulti() override {}
 };
 
 } // namespace Core

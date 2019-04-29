@@ -29,7 +29,7 @@ CovariateExtractor::CovariateExtractor(const CovariateDefinitions &_defaults,
                                        const DateTime &_start,
                                        const DateTime &_end)
     : ICovariateExtractor(_defaults, _patientCovariates, _start, _end),
-      m_hasBirthDate{false}, m_initAgeInDays{-1.0}, m_initAgeInMonths{-1.0}, m_initAgeInYears{-1.0}
+      m_hasBirthDate{false}, m_initAgeInDays{-1.0}, m_initAgeInWeeks{-1.0}, m_initAgeInMonths{-1.0}, m_initAgeInYears{-1.0}
 {
     // *** Verify preconditions ***
     // Invalid ptrs in covariate definitions.
@@ -71,6 +71,17 @@ CovariateExtractor::CovariateExtractor(const CovariateDefinitions &_defaults,
                                              + ") for an age expressed in days.");
                 }
                 m_initAgeInDays = (*it)->getValue();
+                break;
+            case CovariateType::AgeInWeeks:
+                if (m_initAgeInWeeks >= 0) {
+                    throw std::runtime_error("[CovariateExtractor] Too many AgeInWeeks-type covariates");
+                }
+                if ((*it)->getValue() < 0) {
+                    throw std::runtime_error("[CovariateExtractor] Invalid default value ("
+                                             + std::to_string((*it)->getValue())
+                                             + ") for an age expressed in weeks.");
+                }
+                m_initAgeInWeeks = (*it)->getValue();
                 break;
             case CovariateType::AgeInMonths:
                 if (m_initAgeInMonths >= 0) {
@@ -218,6 +229,10 @@ bool CovariateExtractor::computeEvents(const std::map<DateTime, std::vector<std:
                 case CovariateType::AgeInDays:
                     newVal = static_cast<double>(dateDiffInDays(refreshTime, tmpBirthDate));
                     newVal += m_hasBirthDate ? 0 : m_initAgeInDays;
+                    break;
+                case CovariateType::AgeInWeeks:
+                    newVal = static_cast<double>(dateDiffInWeeks(refreshTime, tmpBirthDate));
+                    newVal += m_hasBirthDate ? 0 : m_initAgeInWeeks;
                     break;
                 case CovariateType::AgeInMonths:
                     newVal = static_cast<double>(dateDiffInMonths(refreshTime, tmpBirthDate));
@@ -379,6 +394,9 @@ void CovariateExtractor::collectRefreshIntervals(std::map<DateTime, std::vector<
                     switch ((*(cdv.second))->getType()) {
                     case CovariateType::AgeInDays:
                         t.addDays(1);
+                        break;
+                    case CovariateType::AgeInWeeks:
+                        t.addDays(7);
                         break;
                     case CovariateType::AgeInMonths:
                         t.addMonths(1);

@@ -150,6 +150,9 @@ private:
     /// \brief Default value for an AgeInDays variable (if present).
     double m_initAgeInDays;
 
+    /// \brief Default value for an AgeInWeeks variable (if present).
+    double m_initAgeInWeeks;
+
     /// \brief Default value for an AgeInMonths variable (if present).
     double m_initAgeInMonths;
 

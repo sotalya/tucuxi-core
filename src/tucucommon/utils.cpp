@@ -33,6 +33,21 @@ int Utils::dateDiffInDays(const DateTime &_t1, const DateTime &_t2)
     return ValueToDate(varToValue(t1)- varToValue(t2)).toDays();
 }
 
+int Utils::dateDiffInWeeks(const DateTime &_t1, const DateTime &_t2)
+{
+    DateTime t1;
+    DateTime t2;
+
+    if (_t1 > _t2) {
+        t1 = _t1;
+        t2 = _t2;
+    } else {
+        t1 = _t2;
+        t2 = _t1;
+    }
+    return ValueToDate(varToValue(t1)- varToValue(t2)).toDays() / 7.0;
+}
+
 
 int Utils::dateDiffInMonths(const DateTime &_t1, const DateTime &_t2)
 {
