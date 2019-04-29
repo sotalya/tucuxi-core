@@ -5,7 +5,7 @@
 #ifndef TUCUXI_CORE_ONECOMPARTMENTBOLUS_H
 #define TUCUXI_CORE_ONECOMPARTMENTBOLUS_H
 
-#include "tucucore/intakeintervalcalculator.h"
+#include "tucucore/intakeintervalcalculatoranalytical.h"
 
 namespace Tucuxi {
 namespace Core {

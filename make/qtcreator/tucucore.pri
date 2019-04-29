@@ -86,7 +86,9 @@ HEADERS += \
     $$PWD/../../src/tucucore/drugfilevalidator.h \
     $$PWD/../../src/tucucore/generalextractor.h \
     $$PWD/../../src/tucucore/drugmodelchecker.h \
-    $$PWD/../../src/tucucore/cyclestatistics.h
+    $$PWD/../../src/tucucore/cyclestatistics.h \
+    $$PWD/../../src/tucucore/intakeintervalcalculatorrk4.h \
+    $$PWD/../../src/tucucore/intakeintervalcalculatoranalytical.h
 
 SOURCES += \
     $$PWD/../../src/tucucore/drugmodel/drugmodel.cpp \
@@ -160,7 +162,9 @@ SOURCES += \
     $$PWD/../../src/tucucore/generalextractor.cpp \
     $$PWD/../../src/tucucore/drugmodelchecker.cpp \
     $$PWD/../../src/tucucore/cyclestatistics.cpp \
-    $$PWD/../../src/tucucore/intakeevent.cpp
+    $$PWD/../../src/tucucore/intakeevent.cpp \
+    $$PWD/../../src/tucucore/intakeintervalcalculatorrk4.cpp \
+    $$PWD/../../src/tucucore/intakeintervalcalculatoranalytical.cpp
 
 DISTFILES += \
     $$PWD/../../src/tucucore/makefile

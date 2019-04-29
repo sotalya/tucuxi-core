@@ -538,7 +538,7 @@ DynamicOperation::evaluate(const OperationInputList &_inputs, double &_result)
     int prefLevelBest = -1;
 
     // Find the 'best' operation to perform
-    for (int i = 0; i < static_cast<int>(m_operations.size()); ++i) {
+    for (size_t i = 0; i < m_operations.size(); ++i) {
         // Check that the given operation can run with the inputs passed as parameter
         if (m_operations.at(i).first->check(_inputs)) {
             const int nInputs = static_cast<int>(m_operations.at(i).first->getInputs().size());
@@ -547,7 +547,7 @@ DynamicOperation::evaluate(const OperationInputList &_inputs, double &_result)
             if (nInputs > nInputsBest || (nInputs == nInputsBest && prefLevel < prefLevelBest)) {
                 // We have found an operation with either more matching inputs or the same number but with higher
                 // preferability
-                idxBest = i;
+                idxBest = static_cast<int>(i);
                 nInputsBest = nInputs;
                 prefLevelBest = prefLevel;
             }

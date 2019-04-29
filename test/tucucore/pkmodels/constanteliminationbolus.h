@@ -5,7 +5,7 @@
 #ifndef LINEARBOLUS_H
 #define LINEARBOLUS_H
 
-#include "tucucore/intakeintervalcalculator.h"
+#include "tucucore/intakeintervalcalculatoranalytical.h"
 
 #include "tucucore/intakeevent.h"
 
@@ -128,7 +128,7 @@ protected:
         TMP_UNUSED_PARAMETER(_isAll);
 
         // interval=0 means that it is the last cycle, so final residual = 0
-        if (m_Int == 0) {
+        if (m_Int == 0.0) {
             concentrations[atEndInterval] = 0;
         }
 

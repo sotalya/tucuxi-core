@@ -46,7 +46,10 @@ SOURCES := \
            generalextractor.cpp \
            hardcodedoperation.cpp \
            intakeextractor.cpp \
+           intakeevent.cpp \
            intakeintervalcalculator.cpp \
+           intakeintervalcalculatoranalytical.cpp \
+           intakeintervalcalculatorrk4.cpp \
            intaketocalculatorassociator.cpp \
            likelihood.cpp \
            montecarlopercentilecalculator.cpp \
@@ -69,6 +72,8 @@ SOURCES := \
            pkmodels/onecompartmentbolus.cpp \
            pkmodels/onecompartmentextra.cpp \
            pkmodels/onecompartmentinfusion.cpp \
+           pkmodels/rkonecompartmentextra.cpp \
+           pkmodels/rkonecompartmentgammaextra.cpp \
            pkmodels/threecompartmentbolus.cpp \
            pkmodels/threecompartmentextra.cpp \
            pkmodels/threecompartmentinfusion.cpp \
@@ -81,7 +86,8 @@ INCLUDES := . \
             ../../libs/boost-1.63.0 \
             ../../libs/date-master-20170711 \
             ../../libs/spdlog-master-20170622/include \
-			../../libs/rapidjson-master-20190220/include
+            ../../libs/rapidjson-master-20190220/include \
+            ../../libs/tiny-js-master-20170629 \
 LIBS :=
 EXTLIBS :=
 DEFINES :=

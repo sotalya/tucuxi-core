@@ -5,7 +5,7 @@
 #ifndef TUCUXI_CORE_ONECOMPARTMENTEXTRA_H
 #define TUCUXI_CORE_ONECOMPARTMENTEXTRA_H
 
-#include "tucucore/intakeintervalcalculator.h"
+#include "tucucore/intakeintervalcalculatoranalytical.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -37,8 +37,8 @@ protected:
     Value m_Ka; /// Absorption rate constant
     Value m_V;  /// Volume of the compartment
     Value m_Ke; /// Elimination constant rate = Cl/V where Cl is the clearance and V is the volume of the compartment
-    int m_NbPoints; /// Number measure points during interval
     Value m_Int; /// Interval time (Hours)
+    int m_NbPoints; /// Number measure points during interval
 
 private:
     typedef OneCompartmentExtraCompartments Compartments;
