@@ -11,8 +11,9 @@
 
 #include "tucucore/definitions.h"
 #include "tucucore/drugdefinitions.h"
+#include "tucucore/drugmodel/analyte.h"
 
-using Tucuxi::Common::DateTime;
+using Tucuxi::Common::DateTime; // NOLINT(google-global-names-in-headers)
 
 namespace Tucuxi {
 namespace Core {
@@ -41,7 +42,7 @@ public:
     /// \brief Returns the analyte ID
     /// \return The analyte ID
     ///
-    std::string getAnalyteId() const;
+    AnalyteId getAnalyteId() const;
 
     ///
     /// \brief Returns the date of measure
@@ -64,7 +65,7 @@ public:
 protected:
 
     /// Analyte ID of the measured sample
-    std::string m_analyteId;
+    AnalyteId m_analyteId;
 
     /// Date of measure (date + time)
     DateTime m_date;

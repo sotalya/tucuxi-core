@@ -16,6 +16,7 @@ namespace Core {
 class NAME : public HardcodedOperation                                              \
 {                                                                                   \
 public:                                                                             \
+    NAME() {fillRequiredInputs();m_filledInputs = true;} \
     virtual std::unique_ptr<Operation> clone() const                                \
     {                                                                               \
         return std::unique_ptr<Operation>(new NAME(*this));                         \
@@ -74,6 +75,10 @@ HARDCODED_OPERATION(eGFR_SalazarCorcoran);
 /// \ingroup TucuCore
 /// \brief Compute an active moiety from a single analyte, so no calculation required.
 HARDCODED_OPERATION(direct);
+
+/// \ingroup TucuCore
+/// \brief Compute an active moiety from two analytes by summing them.
+HARDCODED_OPERATION(sum2);
 
 
 /// \brief Collection of operations -- groups hard coded operations so that they can be easily retrieved.

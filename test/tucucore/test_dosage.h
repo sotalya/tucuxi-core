@@ -28,7 +28,7 @@ struct TestDosage : public fructose::test_base<TestDosage>
     {
         const DoseValue validDose = 100.0;
         const DoseValue invalidDose = -100.0;
-        const FormulationAndRoute routePerfusion(Formulation::Test, AdministrationRoute::IntravenousDrip, AbsorptionModel::INFUSION);
+        const FormulationAndRoute routePerfusion(Formulation::Test, AdministrationRoute::IntravenousDrip, AbsorptionModel::Infusion);
         const Duration emptyInfusionTime;
         const Duration invalidInfusionTime(-std::chrono::minutes(20));
         const Duration validInfusionTime(std::chrono::minutes(20));
@@ -61,7 +61,7 @@ struct TestDosage : public fructose::test_base<TestDosage>
     void testLastingDose(const std::string& /* _testName */)
     {
         const DoseValue validDose = 100.0;
-        const FormulationAndRoute routePerfusion(Formulation::Test, AdministrationRoute::IntravenousDrip, AbsorptionModel::INFUSION);
+        const FormulationAndRoute routePerfusion(Formulation::Test, AdministrationRoute::IntravenousDrip, AbsorptionModel::Infusion);
         const Duration validInfusionTime(std::chrono::minutes(20));
         const Duration emptyInterval;
         const Duration invalidInterval(-std::chrono::hours(10));
@@ -99,7 +99,7 @@ struct TestDosage : public fructose::test_base<TestDosage>
     void testDailyDose(const std::string& /* _testName */)
     {
         const DoseValue validDose = 100.0;
-        const FormulationAndRoute routePerfusion(Formulation::Test, AdministrationRoute::IntravenousDrip, AbsorptionModel::INFUSION);
+        const FormulationAndRoute routePerfusion(Formulation::Test, AdministrationRoute::IntravenousDrip, AbsorptionModel::Infusion);
         const Duration validInfusionTime(std::chrono::minutes(20));
         // Cannot have an invalid or invalid time of day (at worst, it simply takes the current time)
         const TimeOfDay validTimeOfDay(Duration(std::chrono::seconds(12345)));
@@ -148,7 +148,7 @@ struct TestDosage : public fructose::test_base<TestDosage>
     void testWeeklyDose(const std::string& /* _testName */)
     {
         const DoseValue validDose = 100.0;
-        const FormulationAndRoute routePerfusion(Formulation::Test, AdministrationRoute::IntravenousDrip, AbsorptionModel::INFUSION);
+        const FormulationAndRoute routePerfusion(Formulation::Test, AdministrationRoute::IntravenousDrip, AbsorptionModel::Infusion);
         const Duration validInfusionTime(std::chrono::minutes(20));
         // Cannot have an invalid or invalid time of day (at worst, it simply takes the current time)
         const TimeOfDay validTimeOfDay(Duration(std::chrono::seconds(12345)));
@@ -261,7 +261,7 @@ struct TestDosage : public fructose::test_base<TestDosage>
         // Give an undefined start date, expect an exception
         DateTime emptyDate;
         emptyDate.reset();
-        const FormulationAndRoute routePerfusion(Formulation::Test, AdministrationRoute::IntravenousDrip, AbsorptionModel::INFUSION);
+        const FormulationAndRoute routePerfusion(Formulation::Test, AdministrationRoute::IntravenousDrip, AbsorptionModel::Infusion);
         LastingDose fakeDose(DoseValue(200.0),
                              routePerfusion,
                              Duration(std::chrono::minutes(20)),
@@ -274,17 +274,17 @@ struct TestDosage : public fructose::test_base<TestDosage>
                            std::chrono::seconds(12345));
 
         // Give a valid start date but no end date, expect no exception but the end date must be undefined
-        fructose_assert_no_exception(new Tucuxi::Core::DosageTimeRange(startDate, fakeDose));
+        fructose_assert_no_exception(Tucuxi::Core::DosageTimeRange *d = new Tucuxi::Core::DosageTimeRange(startDate, fakeDose); delete d;);
         std::unique_ptr<Tucuxi::Core::DosageTimeRange> ptr1(new Tucuxi::Core::DosageTimeRange(startDate, fakeDose));
         fructose_assert(ptr1->getStartDate() == startDate);
         fructose_assert(ptr1->getEndDate().isUndefined());
 
         // Same as above, but with start and end dates. Check also that the two dates are meaningful (start <= end).
-        fructose_assert_exception(new Tucuxi::Core::DosageTimeRange(emptyDate, emptyDate, fakeDose), std::invalid_argument);
-        fructose_assert_exception(new Tucuxi::Core::DosageTimeRange(emptyDate, endDate, fakeDose), std::invalid_argument);
-        fructose_assert_exception(new Tucuxi::Core::DosageTimeRange(endDate, startDate, fakeDose), std::invalid_argument);
-        fructose_assert_no_exception(new Tucuxi::Core::DosageTimeRange(startDate, emptyDate, fakeDose));
-        fructose_assert_no_exception(new Tucuxi::Core::DosageTimeRange(startDate, endDate, fakeDose));
+        fructose_assert_exception({Tucuxi::Core::DosageTimeRange *d = new Tucuxi::Core::DosageTimeRange(emptyDate, emptyDate, fakeDose); delete d;}, std::invalid_argument);
+        fructose_assert_exception({Tucuxi::Core::DosageTimeRange *d = new Tucuxi::Core::DosageTimeRange(emptyDate, endDate, fakeDose); delete d;}, std::invalid_argument);
+        fructose_assert_exception({Tucuxi::Core::DosageTimeRange *d = new Tucuxi::Core::DosageTimeRange(endDate, startDate, fakeDose); delete d;}, std::invalid_argument);
+        fructose_assert_no_exception({Tucuxi::Core::DosageTimeRange *d = new Tucuxi::Core::DosageTimeRange(startDate, emptyDate, fakeDose); delete d;});
+        fructose_assert_no_exception({Tucuxi::Core::DosageTimeRange *d = new Tucuxi::Core::DosageTimeRange(startDate, endDate, fakeDose); delete d;});
         std::unique_ptr<Tucuxi::Core::DosageTimeRange> ptr2(new Tucuxi::Core::DosageTimeRange(startDate, endDate, fakeDose));
         fructose_assert(ptr2->getStartDate() == startDate);
         fructose_assert(ptr2->getEndDate() == endDate);

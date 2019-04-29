@@ -11,7 +11,7 @@
 #include "tucucommon/basetypes.h"
 
 namespace date {
-    class year_month_day;
+    class year_month_day; // NOLINT(readability-identifier-naming)
 } // namespace date
 
 namespace Tucuxi {

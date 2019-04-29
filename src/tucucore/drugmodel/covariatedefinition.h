@@ -14,6 +14,7 @@
 #include "tucucore/definitions.h"
 #include "tucucore/drugdefinitions.h"
 #include "tucucore/operation.h"
+#include "tucucore/invariants.h"
 
 
 namespace Tucuxi {
@@ -31,9 +32,11 @@ public:
     /// \param _type Type of the covariate.
     /// \param _dataType Type of data contained in the variable
     CovariateDefinition(const std::string &_id, const std::string &_value, Operation *_operation,
-                        const CovariateType _type = CovariateType::Standard, const DataType _dataType = DataType::Double) :
+                        const CovariateType _type = CovariateType::Standard, const DataType _dataType = DataType::Double,
+                        const Tucuxi::Common::TranslatableString &_name = Tucuxi::Common::TranslatableString()) :
         PopulationValue(_id, Tucuxi::Common::Utils::stringToValue(_value, _dataType), _operation),
-        m_type{_type}, m_dataType{_dataType}, m_interpolationType{InterpolationType::Direct}
+        m_type{_type}, m_dataType{_dataType}, m_interpolationType{InterpolationType::Direct},
+        m_name(_name)
     {
         if (_type != CovariateType::Standard) {
             // For the age, reset all the values set by the user to appropriate ones.
@@ -86,6 +89,10 @@ public:
 
     const Tucuxi::Common::TranslatableString& getName() const {return m_name;}
 
+
+    INVARIANTS(
+            INVARIANT(Invariants::INV_COVARIATEDEFINITION_0001, (m_id.size() > 0))
+            )
 protected:
     /// \brief Covariate type.
     CovariateType m_type;

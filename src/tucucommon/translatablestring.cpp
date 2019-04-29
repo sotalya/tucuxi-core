@@ -2,11 +2,21 @@
 
 using namespace Tucuxi::Common;
 
-std::string TranslatableString::sm_language = "en";
+std::string TranslatableString::sm_language = "en"; // NOLINT(readability-identifier-naming)
 
 TranslatableString::TranslatableString()
 {
 
+}
+
+TranslatableString::TranslatableString(std::string _string)
+{
+    m_map[sm_language] = _string;
+}
+
+TranslatableString::TranslatableString(std::string _string, std::string _language)
+{
+    m_map[_language] = _string;
 }
 
 void TranslatableString::setString(std::string _string)

@@ -6,7 +6,9 @@ INCLUDEPATH += $$PWD/../../src \
     $$PWD/../../libs/fructose-1.3/fructose/include \
     $$PWD/../../libs/date-master-20170711 \
     $$PWD/../../libs/tiny-js-master-20170629 \
-    $$PWD/../../libs/rapidxml-1.13
+    $$PWD/../../libs/rapidxml-1.13 \
+    $$PWD/../../libs/cxxopts \
+    $$PWD/../../libs/rapidjson-master-20190220/include
 
 
 win32 {

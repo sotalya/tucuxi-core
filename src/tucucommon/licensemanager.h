@@ -143,9 +143,9 @@ public:
 
 
     /// \brief Check if license is valid.
-    /// \param _request : encrypt string.
+    /// \param _cryptedLicense : encrypt string.
     /// \return VALID_LICENSE or INVALID_LICENSE, In case of error : ERROR_CRYPTO.
-    static LicenseError checklicense(const std::string &_request);
+    static LicenseError checklicense(const std::string &_cryptedLicense);
 
 // -------------------------------------------------------
 // Methods used by the server
@@ -164,16 +164,16 @@ public:
 
 private:
     /// \brief Update the field of Last used date file.
-    /// \param _license  : encrypt string provided by the server.
+    /// \param _cryptedLicense  : encrypted string provided by the server.
     /// \param _filename : full path of license file.
     /// \return INSTALLATION_SUCCESSFUL, In case of error : INVALID_LICENSE, MISSING_LICENSE_FILE, ERROR_CRYPTO.
-    static LicenseError rewriteLicense(const std::string &_license, const std::string &_filename);
+    static LicenseError rewriteLicense(const std::string &_cryptedLicense, const std::string &_filename);
 
 
-    static bool getHashedFingerprint(MachineIdType &idType, std::string& _hashedFingerprint);
+    static bool getHashedFingerprint(MachineIdType &_idType, std::string& _hashedFingerprint);
 
 private:
-    static const std::string m_key;
+    static const std::string sm_key; // NOLINT(readability-identifier-naming)
 };
 
 } // namespace Common

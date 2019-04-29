@@ -9,21 +9,14 @@
 
 #include "tucucommon/interface.h"
 
+#include "tucucore/computingservice/computingresult.h"
+
 namespace Tucuxi {
 namespace Core {
 
 class ComputingRequest;
 class ComputingResponse;
 
-///
-/// \brief The ComputingResult enum
-/// Describes the return value of a computation
-enum class ComputingResult {
-    /// Everything went well
-    Success = 0,
-    /// There was an error
-    Error
-};
 
 ///
 /// \brief The IComputingService class

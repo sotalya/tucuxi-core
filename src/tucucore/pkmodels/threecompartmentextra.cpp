@@ -15,7 +15,7 @@ namespace Core {
 #define DEBUG
 #endif
 
-ThreeCompartmentExtraMicro::ThreeCompartmentExtraMicro()
+ThreeCompartmentExtraMicro::ThreeCompartmentExtraMicro() : IntakeIntervalCalculatorBase<3, ThreeCompartmentExtraExponentials> (new PertinentTimesCalculatorStandard())
 {
 }
 

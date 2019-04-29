@@ -11,6 +11,7 @@
 #include "tucucommon/general.h"
 
 #include "tucucore/definitions.h"
+#include "tucucore/dosage.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -21,7 +22,7 @@ public:
     bool streamToFile(const std::string _fileName) 
     {
         std::ofstream ostrm(_fileName, std::ios::binary);
-        if (ostrm.rdstate() & std::ios_base::failbit) {
+        if ((ostrm.rdstate() & std::ios_base::failbit) != 0) {
             return false;
         }
 
@@ -44,7 +45,6 @@ public:
 
     void init(const PercentileRanks& _ranks, const std::vector<TimeOffsets> &_times, const IntakeSeries &_intakes)
     {
-        TMP_UNUSED_PARAMETER(_times);
         m_ranks = _ranks;
         m_times = _times;
         m_values.clear();

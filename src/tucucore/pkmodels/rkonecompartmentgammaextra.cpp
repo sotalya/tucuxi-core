@@ -11,7 +11,7 @@
 namespace Tucuxi {
 namespace Core {
 
-RK4OneCompartmentGammaExtraMicro::RK4OneCompartmentGammaExtraMicro()
+RK4OneCompartmentGammaExtraMicro::RK4OneCompartmentGammaExtraMicro() : IntakeIntervalCalculatorBase<2, RK4OneCompartmentGammaExtraExponentials> (new PertinentTimesCalculatorStandard())
 {
 }
 

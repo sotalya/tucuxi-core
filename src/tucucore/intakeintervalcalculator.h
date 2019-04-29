@@ -16,6 +16,7 @@
 //#include "tucucore/intakeevent.h"
 #include "tucucore/parameter.h"
 #include "tucucore/cachedexponentials.h"
+#include "tucucore/computingservice/computingresult.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -69,17 +70,8 @@ class IntakeIntervalCalculator
 {
 
 public:
-
-    enum class Result {
-        Ok,
-        BadParameters,
-        BadConcentration,
-        DensityError
-    };
-
-public:
     /// \brief Constructor
-    IntakeIntervalCalculator() {}
+    IntakeIntervalCalculator() : m_loggingErrors(true) {}
 
     virtual ~IntakeIntervalCalculator();
 
@@ -100,7 +92,7 @@ public:
     /// \param _outResiduals Final residual concentrations
     /// \param _isDensityConstant Flag to indicate if initial number of points should be used with a constant density
     /// \return An indication if the computation was successful
-    virtual Result calculateIntakePoints(
+    virtual ComputingResult calculateIntakePoints(
         std::vector<Concentrations>& _concentrations,
         TimeOffsets & _times,
         const IntakeEvent& _intakeEvent,
@@ -118,7 +110,7 @@ public:
     /// \param _atTime The time of the point of interest
     /// \param _outResiduals Final residual concentrations
     /// \return Returns an indication if the computation was successful
-    virtual Result calculateIntakeSinglePoint(
+    virtual ComputingResult calculateIntakeSinglePoint(
         std::vector<Concentrations>& _concentrations,
         const IntakeEvent& _intakeEvent,
         const ParameterSetEvent& _parameters,
@@ -146,19 +138,92 @@ protected:
 protected:
     typedef IntakeCalculatorSingleConcentrations SingleConcentrations;
 
+    /// Indicates if we shall log errors or not. Unsed to disable it for single points
+    /// calculation. Mainly because it is used by LogLikelihood and that parameters
+    /// can be wrong because of big etas
+    bool m_loggingErrors;
+
 
 };
 
+///
+/// \brief The IPertinentTimesCalculator class
+///
+class IPertinentTimesCalculator
+{
+public:
+
+    ///
+    /// \brief Calculates the best times concentration prediction for a specific intake
+    /// \param _intakeEvent The intake event embedding the information
+    /// \param _nbPoints The number of points
+    /// \param _times The array of times that shall already be allocated
+    ///
+    /// This function calculates the best times for _nbPoints and a specific intake.
+    /// It is meant to be subclassed for specific needs.
+    ///
+    virtual void calculateTimes(const IntakeEvent& _intakeEvent,
+                        int _nbPoints,
+                        Eigen::VectorXd& _times) = 0;
+
+    /// Virtual destructor
+    virtual ~IPertinentTimesCalculator() = default;
+};
+
+///
+/// \brief The PertinentTimesCalculatorStandard class
+/// This class is used by extra and bolus intake calculators. It splits the interval in
+/// linear time.
+///
+class PertinentTimesCalculatorStandard : public IPertinentTimesCalculator
+{
+public:
+
+    ///
+    /// \brief Calculates the best times concentration prediction for a standard intakes
+    /// \param _intakeEvent The intake event embedding the information
+    /// \param _nbPoints The number of points
+    /// \param _times The array of times that shall already be allocated
+    ///
+    /// This function simply divides the interval in (_nbPoints-1) subintervals.
+    ///
+    void calculateTimes(const IntakeEvent& _intakeEvent,
+                        int _nbPoints,
+                        Eigen::VectorXd& _times) override;
+};
+
+///
+/// \brief The PertinentTimesCalculatorInfusion class
+/// This class is used by infusion intake calculators to split the interval in during infusion vs
+/// post infusion times.
+///
+class PertinentTimesCalculatorInfusion : public IPertinentTimesCalculator
+{
+public:
+
+    ///
+    /// \brief Calculates the best times concentration prediction for infusion intakes
+    /// \param _intakeEvent The intake event embedding the information
+    /// \param _nbPoints The number of points
+    /// \param _times The array of times that shall already be allocated
+    ///
+    /// This function divides the interval in two : during infusion, and post infusion.
+    /// It tries to do the best to keep the time deltas as linear as possible.
+    ///
+    void calculateTimes(const IntakeEvent& _intakeEvent,
+                        int _nbPoints,
+                        Eigen::VectorXd& _times) override;
+};
 
 class IntakeIntervalCalculatorAnalytical : public IntakeIntervalCalculator
 {
 
 public:
     /// \brief Constructor
-    IntakeIntervalCalculatorAnalytical() : m_firstCalculation(true) {}
+    IntakeIntervalCalculatorAnalytical(IPertinentTimesCalculator *_pertinentTimesCalculator) :
+        m_firstCalculation(true), m_pertinentTimesCalculator(_pertinentTimesCalculator) {}
 
-    virtual ~IntakeIntervalCalculatorAnalytical();
-
+    ~IntakeIntervalCalculatorAnalytical() override;
 
     /// \brief Calculate all points for the given time serie
     /// Variable denisty is used by default, which means IntakeEvent is not constant as the final density
@@ -171,7 +236,7 @@ public:
     /// \param _outResiduals Final residual concentrations
     /// \param _isDensityConstant Flag to indicate if initial number of points should be used with a constant density
     /// \return An indication if the computation was successful
-    Result calculateIntakePoints(
+    ComputingResult calculateIntakePoints(
         std::vector<Concentrations>& _concentrations,
         TimeOffsets & _times,
         const IntakeEvent& _intakeEvent,
@@ -189,7 +254,7 @@ public:
     /// \param _atTime The time of the point of interest
     /// \param _outResiduals Final residual concentrations
     /// \return Returns an indication if the computation was successful
-    Result calculateIntakeSinglePoint(
+    ComputingResult calculateIntakeSinglePoint(
         std::vector<Concentrations>& _concentrations,
         const IntakeEvent& _intakeEvent,
         const ParameterSetEvent& _parameters,
@@ -228,6 +293,13 @@ protected:
     std::thread::id m_lastThreadId;
     bool m_firstCalculation;
 
+    ///
+    /// \brief The calculator for pertinent times
+    /// This object is set by the constructor of the subclass depending on its need.
+    /// It corresponds to a strategy (or injection) pattern.
+    ///
+    IPertinentTimesCalculator *m_pertinentTimesCalculator;
+
 private:
     CachedExponentials m_cache;                           /// The cache of precomputed exponentials
 };
@@ -236,6 +308,9 @@ template<unsigned int ResidualSize, typename EParameters>
 class IntakeIntervalCalculatorBase : public IntakeIntervalCalculatorAnalytical
 {
 public:
+    IntakeIntervalCalculatorBase(IPertinentTimesCalculator *_pertinentTimesCalculator) :
+        IntakeIntervalCalculatorAnalytical(_pertinentTimesCalculator) {}
+
     unsigned int getResidualSize() const override {
         return ResidualSize;
     }
@@ -265,7 +340,7 @@ public:
     /// \brief Constructor
     IntakeIntervalCalculatorRK4() : m_firstCalculation(true) {}
 
-    virtual ~IntakeIntervalCalculatorRK4();
+    ~IntakeIntervalCalculatorRK4() override;
 
 
     /// \brief Calculate all points for the given time serie
@@ -279,7 +354,7 @@ public:
     /// \param _outResiduals Final residual concentrations
     /// \param _isDensityConstant Flag to indicate if initial number of points should be used with a constant density
     /// \return An indication if the computation was successful
-    Result calculateIntakePoints(
+    ComputingResult calculateIntakePoints(
         std::vector<Concentrations>& _concentrations,
         TimeOffsets & _times,
         const IntakeEvent& _intakeEvent,
@@ -297,7 +372,7 @@ public:
     /// \param _atTime The time of the point of interest
     /// \param _outResiduals Final residual concentrations
     /// \return Returns an indication if the computation was successful
-    Result calculateIntakeSinglePoint(
+    ComputingResult calculateIntakeSinglePoint(
         std::vector<Concentrations>& _concentrations,
         const IntakeEvent& _intakeEvent,
         const ParameterSetEvent& _parameters,

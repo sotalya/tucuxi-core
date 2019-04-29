@@ -44,7 +44,7 @@ struct TestComputingComponentConcentration : public fructose::test_base<TestComp
                                Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
 
 
-        //const FormulationAndRoute route("formulation", AdministrationRoute::IntravenousBolus, AbsorptionModel::INTRAVASCULAR);
+        //const FormulationAndRoute route("formulation", AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular);
         // Add a treatment intake every ten days in June
         // 200mg via a intravascular at 08h30, starting the 01.06
         LastingDose periodicDose(DoseValue(200.0),
@@ -70,12 +70,12 @@ struct TestComputingComponentConcentration : public fructose::test_base<TestComp
         fructose_assert(drugModel != nullptr);
 
         DrugTreatment *drugTreatment;
-        const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::EXTRAVASCULAR);
+        const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
         buildDrugTreatment(drugTreatment, route);
 
 
-        RequestResponseId requestResponseId = 1;
+        RequestResponseId requestResponseId = "1";
         Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
         Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
         double nbPointsPerHour = 10.0;
@@ -94,27 +94,27 @@ struct TestComputingComponentConcentration : public fructose::test_base<TestComp
         ComputingResult result;
         result = component->compute(request, response);
 
-        fructose_assert( result == ComputingResult::Success);
+        fructose_assert( result == ComputingResult::Ok);
 
         const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
         for(std::size_t i = 0; i < responses.size(); i++) {
             fructose_assert(dynamic_cast<SinglePredictionResponse*>(responses[i].get()) != nullptr);
             const SinglePredictionResponse *resp = dynamic_cast<SinglePredictionResponse*>(responses[i].get());
             std::vector<CycleData> data = resp->getData();
-            fructose_assert(data.size() == 16);
+            fructose_assert_eq(data.size() , size_t{16});
             fructose_assert(data[0].m_concentrations.size() == 1);
             fructose_assert(data[0].m_concentrations[0][0] == 0.0);
             DateTime startSept2018(date::year_month_day(date::year(2018), date::month(9), date::day(1)),
                                    Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
 
-            fructose_assert(data[0].m_start.toSeconds() + data[0].m_times[0][0] * 3600.0 == startSept2018.toSeconds());
-            fructose_assert(data[1].m_start.toSeconds() + data[1].m_times[0][0] * 3600.0 == startSept2018.toSeconds() + 3600.0 * 6.0);
+            fructose_assert_double_eq(data[0].m_start.toSeconds() + data[0].m_times[0][0] * 3600.0 , startSept2018.toSeconds());
+            fructose_assert_double_eq(data[1].m_start.toSeconds() + data[1].m_times[0][0] * 3600.0 , startSept2018.toSeconds() + 3600.0 * 6.0);
         }
 
 
         {
             // Ask for 15 intakes, without the first one.
-            RequestResponseId requestResponseId = 1;
+            RequestResponseId requestResponseId = "1";
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 14h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
             double nbPointsPerHour = 10.0;
@@ -133,7 +133,7 @@ struct TestComputingComponentConcentration : public fructose::test_base<TestComp
             ComputingResult result;
             result = component->compute(request, partialResponse);
 
-            fructose_assert( result == ComputingResult::Success);
+            fructose_assert( result == ComputingResult::Ok);
 
             const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = partialResponse.get()->getResponses();
             for(std::size_t i = 0; i < responses.size(); i++) {
@@ -146,8 +146,8 @@ struct TestComputingComponentConcentration : public fructose::test_base<TestComp
                 DateTime startSept2018(date::year_month_day(date::year(2018), date::month(9), date::day(1)),
                                        Duration(std::chrono::hours(14), std::chrono::minutes(0), std::chrono::seconds(0)));
 
-                fructose_assert(data[0].m_start.toSeconds() + data[0].m_times[0][0] * 3600.0 == startSept2018.toSeconds());
-                fructose_assert(data[1].m_start.toSeconds() + data[1].m_times[0][0] * 3600.0 == startSept2018.toSeconds() + 3600.0 * 6.0);
+                fructose_assert_double_eq(data[0].m_start.toSeconds() + data[0].m_times[0][0] * 3600.0 , startSept2018.toSeconds());
+                fructose_assert_double_eq(data[1].m_start.toSeconds() + data[1].m_times[0][0] * 3600.0 , startSept2018.toSeconds() + 3600.0 * 6.0);
             }
         }
 
@@ -170,7 +170,7 @@ struct TestComputingComponentConcentration : public fructose::test_base<TestComp
         fructose_assert(drugModel != nullptr);
 
         DrugTreatment *drugTreatment;
-        const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::EXTRAVASCULAR);
+        const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
         drugTreatment = new DrugTreatment();
 
@@ -183,7 +183,7 @@ struct TestComputingComponentConcentration : public fructose::test_base<TestComp
                               Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
 
 
-        //const FormulationAndRoute route("formulation", AdministrationRoute::IntravenousBolus, AbsorptionModel::INTRAVASCULAR);
+        //const FormulationAndRoute route("formulation", AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular);
         // Add a treatment intake every ten days in June
         // 200mg via a intravascular at 08h30, starting the 01.06
         LastingDose periodicDose(DoseValue(200.0),
@@ -197,7 +197,7 @@ struct TestComputingComponentConcentration : public fructose::test_base<TestComp
         drugTreatment->getModifiableDosageHistory().addTimeRange(*jun2018);
 
 
-        RequestResponseId requestResponseId = 1;
+        RequestResponseId requestResponseId = "1";
         Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
         Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
         double nbPointsPerHour = 10.0;
@@ -216,7 +216,7 @@ struct TestComputingComponentConcentration : public fructose::test_base<TestComp
         ComputingResult result;
         result = component->compute(request, response);
 
-        fructose_assert( result == ComputingResult::Success);
+        fructose_assert( result == ComputingResult::Ok);
 
         // We expect a single response
         fructose_assert( response->getResponses().size() == 1);

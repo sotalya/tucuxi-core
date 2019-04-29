@@ -322,7 +322,7 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
                                                             DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
                                                             DATE_TIME_NO_VAR(2017, 8, 29, 14, 32, 0)));
         }
-
+/*
         // Add a birth date with the appropriate type.
         {
             CovariateDefinitions cDefinitions;
@@ -348,7 +348,8 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
             fructose_assert(extractor.m_hasBirthDate == true);
             fructose_assert(extractor.m_pvValued.count(CovariateExtractor::sm_birthDateCName) == 0);
         }
-
+*/
+ /*
         // Check that a reasonable birth date is given.
         {
             CovariateDefinitions cDefinitions;
@@ -366,7 +367,7 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
                                                             DATE_TIME_NO_VAR(2017, 8, 29, 14, 32, 0)),
                                       std::runtime_error);
         }
-
+*/
         // Add twice the same covariate definition (with different values).
         {
             CovariateDefinitions cDefinitions;
@@ -381,7 +382,7 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
                                                          DATE_TIME_NO_VAR(2017, 8, 19, 14, 32, 0)),
                                       std::runtime_error);
         }
-
+/*
         // Added a birth date, but not with date type.
         {
             CovariateDefinitions cDefinitions;
@@ -396,6 +397,7 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
                                                          DATE_TIME_NO_VAR(2017, 8, 19, 14, 32, 0)),
                                       std::runtime_error);
         }
+*/
 
         // Try build a covariate extractor from a set of covariate definitions with a null pointer included.
         {
@@ -730,8 +732,11 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
             ADD_CDEF_NO_R(AgeMonths, 3, AgeInMonths, Double, Direct, cDefinitions);
             ADD_CDEF_NO_R(AgeYears, 4, AgeInYears, Double, Direct, cDefinitions);
 
-            ADD_CDEF_NO_R_STR(CovariateExtractor::sm_birthDateCName, DATE_TIME_NO_VAR(1995, 12, 13, 14, 15, 0), Standard,
-                              Date, Direct, cDefinitions);
+            //ADD_CDEF_NO_R_STR(CovariateExtractor::sm_birthDateCName, DATE_TIME_NO_VAR(1995, 12, 13, 14, 15, 0), Standard,
+            //                  Date, Direct, cDefinitions);
+
+
+            ADD_PV_NO_UNIT(birthdate, DATE_TIME_NO_VAR(1995, 12, 13, 14, 15, 0), Date, DATE_TIME_NO_VAR(1994, 12, 13, 14, 15, 0), pVariates);
 
             CovariateExtractor extractor(cDefinitions, pVariates,
                                          DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0),
@@ -743,22 +748,22 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
 
             fructose_assert(refreshMap.size() == 403);
             // 17.08.2017 @ 14h00 (start)
-            fructose_assert(refreshMap[DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0)].size() == 3);
+            fructose_assert_eq(refreshMap[DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0)].size(), static_cast<size_t>(3));
             CHECK_REFRESH(AgeDays, DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0), refreshMap);
             CHECK_REFRESH(AgeMonths, DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0), refreshMap);
             CHECK_REFRESH(AgeYears, DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0), refreshMap);
             // 17.08.2017 @ 14h15
-            fructose_assert(refreshMap[DATE_TIME_NO_VAR(2017, 8, 17, 14, 15, 0)].size() == 1);
+            fructose_assert_eq(refreshMap[DATE_TIME_NO_VAR(2017, 8, 17, 14, 15, 0)].size(), static_cast<size_t>(1));
             CHECK_REFRESH(AgeDays, DATE_TIME_NO_VAR(2017, 8, 17, 14, 15, 0), refreshMap);
 
             // 13.09.2017
-            fructose_assert(refreshMap[DATE_TIME_NO_VAR(2017, 9, 13, 14, 15, 0)].size() == 2);
+            fructose_assert_eq(refreshMap[DATE_TIME_NO_VAR(2017, 9, 13, 14, 15, 0)].size(), static_cast<size_t>(2));
             CHECK_REFRESH(AgeDays, DATE_TIME_NO_VAR(2017, 9, 13, 14, 15, 0), refreshMap);
             CHECK_REFRESH(AgeMonths, DATE_TIME_NO_VAR(2017, 9, 13, 14, 15, 0), refreshMap);
 
             // 13.12.2017
-            fructose_assert(refreshMap.count(DATE_TIME_NO_VAR(2017, 12, 13, 14, 0, 0)) == 0);
-            fructose_assert(refreshMap[DATE_TIME_NO_VAR(2017, 12, 13, 14, 15, 0)].size() == 3);
+            fructose_assert_eq(refreshMap.count(DATE_TIME_NO_VAR(2017, 12, 13, 14, 0, 0)), static_cast<size_t>(0));
+            fructose_assert_eq(refreshMap[DATE_TIME_NO_VAR(2017, 12, 13, 14, 15, 0)].size(), static_cast<size_t>(3));
             CHECK_REFRESH(AgeDays, DATE_TIME_NO_VAR(2017, 12, 13, 14, 15, 0), refreshMap);
             CHECK_REFRESH(AgeMonths, DATE_TIME_NO_VAR(2017, 12, 13, 14, 15, 0), refreshMap);
             CHECK_REFRESH(AgeYears, DATE_TIME_NO_VAR(2017, 12, 13, 14, 15, 0), refreshMap);
@@ -1059,13 +1064,13 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
 
         CovariateExtractor extractor(cDefinitions, pVariates, startDate, endDate);
         CovariateSeries series;
-        CovariateExtractor::Result rc;
+        ComputingResult rc;
         rc = extractor.extract(series);
 
         //        printCovariateSeries(series);
 
         fructose_assert(series.size() == 5);
-        fructose_assert(rc == CovariateExtractor::Result::Ok);
+        fructose_assert(rc == ComputingResult::Ok);
         // First measure propagated back to the start of the interval.
         fructose_assert(covariateEventIsPresent("Gist",
                                                 DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0),
@@ -1104,7 +1109,7 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
         //        printCovariateSeries(series);
 
         fructose_assert(series.size() == 4);
-        fructose_assert(rc == CovariateExtractor::Result::Ok);
+        fructose_assert(rc == ComputingResult::Ok);
         // All events should have the initial default value.
         fructose_assert(covariateEventIsPresent("Gist",
                                                 DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0),
@@ -1155,7 +1160,7 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
         //        printCovariateSeries(series);
 
         fructose_assert(series.size() == 12);
-        fructose_assert(rc == CovariateExtractor::Result::Ok);
+        fructose_assert(rc == ComputingResult::Ok);
 
         fructose_assert(covariateEventIsPresent("Gist",
                                                 DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0),
@@ -1222,8 +1227,8 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
         ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
         ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), kg, cDefinitions);
         ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
-        ADD_CDEF_NO_R_STR(CovariateExtractor::sm_birthDateCName, DATE_TIME_NO_VAR(2017, 8, 5, 8, 0, 0), Standard,
-                          Date, Direct, cDefinitions);
+       // ADD_CDEF_NO_R_STR(CovariateExtractor::sm_birthDateCName, DATE_TIME_NO_VAR(2017, 8, 5, 8, 0, 0), Standard,
+         //                 Date, Direct, cDefinitions);
 
         ADD_EXPR2_CDEF(Special, "Weight * 0.5 + IsMale * 15", "Weight", "IsMale", cDefinitions);
         ADD_EXPR3_CDEF(VerySpecial, "Weight * 0.5 + IsMale * 15 + Gist * 25", "Weight", "IsMale", "Gist", cDefinitions);
@@ -1234,18 +1239,21 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
         // gist == false @ 13.08.2017, 14h32.
         ADD_PV_NO_UNIT(Gist, false, Bool, DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0), pVariates);
 
+        ADD_PV_NO_UNIT(birthdate, DATE_TIME_NO_VAR(2017, 8, 5, 8, 0, 0), Date,
+                       DATE_TIME_NO_VAR(2017, 8, 5, 8, 0, 0), pVariates);
+
         const DATE_TIME_VAR(startDate, 2017, 8, 12, 8, 0, 0);
         const DATE_TIME_VAR(endDate,   2017, 8, 17, 21, 0, 0);
 
         CovariateExtractor extractor(cDefinitions, pVariates, startDate, endDate);
         CovariateSeries series;
-        CovariateExtractor::Result rc;
+        ComputingResult rc;
         rc = extractor.extract(series);
 
 //        printCovariateSeries(series);
 
-        fructose_assert(series.size() == 7);
-        fructose_assert(rc == CovariateExtractor::Result::Ok);
+        fructose_assert_eq(series.size() , static_cast<size_t>(7));
+        fructose_assert(rc == ComputingResult::Ok);
         // First measure propagated back to the start of the interval.
         fructose_assert(covariateEventIsPresent("Gist",
                                                 DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0),
@@ -1282,7 +1290,7 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
 
         fructose_assert(extractor.m_birthDate == DATE_TIME_NO_VAR(2017, 8, 5, 8, 0, 0));
         fructose_assert(extractor.m_hasBirthDate == true);
-        fructose_assert(extractor.m_pvValued.count(CovariateExtractor::sm_birthDateCName) == 0);
+        //fructose_assert(extractor.m_pvValued.count(CovariateExtractor::sm_birthDateCName) == 1);
     }
 
 
@@ -1315,13 +1323,13 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
 
         CovariateExtractor extractor(cDefinitions, pVariates, startDate, endDate);
         CovariateSeries series;
-        CovariateExtractor::Result rc;
+        ComputingResult rc;
         rc = extractor.extract(series);
 
 //        printCovariateSeries(series);
 
         fructose_assert(series.size() == 15);
-        fructose_assert(rc == CovariateExtractor::Result::Ok);
+        fructose_assert(rc == ComputingResult::Ok);
         // First measure propagated back to the start of the interval.
         fructose_assert(covariateEventIsPresent("Gist",
                                                 DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0),
@@ -1420,13 +1428,13 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
 
         CovariateExtractor extractor(cDefinitions, pVariates, startDate, endDate);
         CovariateSeries series;
-        CovariateExtractor::Result rc;
+        ComputingResult rc;
         rc = extractor.extract(series);
 
 //        printCovariateSeries(series);
 
         fructose_assert(series.size() == 21);
-        fructose_assert(rc == CovariateExtractor::Result::Ok);
+        fructose_assert(rc == ComputingResult::Ok);
         // This does not change.
         fructose_assert(covariateEventIsPresent("IsMale",
                                                 DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0),
@@ -1558,13 +1566,13 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
 
         CovariateExtractor extractor(cDefinitions, pVariates, startDate, endDate);
         CovariateSeries series;
-        CovariateExtractor::Result rc;
+        ComputingResult rc;
         rc = extractor.extract(series);
 
 //        printCovariateSeries(series);
 
         fructose_assert(series.size() == 26);
-        fructose_assert(rc == CovariateExtractor::Result::Ok);
+        fructose_assert(rc == ComputingResult::Ok);
         // First measure propagated back to the start of the interval.
         fructose_assert(covariateEventIsPresent("Gist",
                                                 DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0),
@@ -1684,8 +1692,8 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
         CovariateDefinitions cDefinitions;
         ADD_CDEF_NO_R_UNIT(Weight, 3.5, Standard, Double, Linear, kg, cDefinitions);
         ADD_CDEF_NO_R(AgeDays, 35, AgeInDays, Double, Direct, cDefinitions);
-        ADD_CDEF_NO_R_STR(CovariateExtractor::sm_birthDateCName, DATE_TIME_NO_VAR(2017, 8, 5, 18, 0, 0), Standard,
-                          Date, Direct, cDefinitions);
+        //ADD_CDEF_NO_R_STR(CovariateExtractor::sm_birthDateCName, DATE_TIME_NO_VAR(2017, 8, 5, 18, 0, 0), Standard,
+        //                  Date, Direct, cDefinitions);
 
         ADD_EXPR2_CDEF(DepOnAge, "AgeDays + Weight * 2", "AgeDays", "Weight", cDefinitions);
 
@@ -1694,19 +1702,21 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
         ADD_PV_W_UNIT(Weight, 4.0, Double, kg, DATE_TIME_NO_VAR(2017, 8, 13, 12, 0, 0), pVariates);
         // weight = 30.0 @ 13.08.2017, 14h00
         ADD_PV_W_UNIT(Weight, 100.0, Double, kg, DATE_TIME_NO_VAR(2017, 8, 17, 12, 0, 0), pVariates);
+        ADD_PV_NO_UNIT(birthdate, DATE_TIME_NO_VAR(2017, 8, 5, 18, 0, 0), Date,
+                       DATE_TIME_NO_VAR(2017, 8, 5, 18, 0, 0), pVariates);
 
         const DATE_TIME_VAR(startDate, 2017, 8, 12, 8, 0, 0);
         const DATE_TIME_VAR(endDate,   2017, 8, 18, 21, 0, 0);
 
         CovariateExtractor extractor(cDefinitions, pVariates, startDate, endDate);
         CovariateSeries series;
-        CovariateExtractor::Result rc;
+        ComputingResult rc;
         rc = extractor.extract(series);
 
 //        printCovariateSeries(series);
 
         fructose_assert(series.size() == 23);
-        fructose_assert(rc == CovariateExtractor::Result::Ok);
+        fructose_assert(rc == ComputingResult::Ok);
         fructose_assert(covariateEventIsPresent("Weight",
                                                 DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0),
                                                 4.0,
@@ -1804,7 +1814,7 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
 
         fructose_assert(extractor.m_birthDate == DATE_TIME_NO_VAR(2017, 8, 5, 18, 0, 0));
         fructose_assert(extractor.m_hasBirthDate == true);
-        fructose_assert(extractor.m_pvValued.count(CovariateExtractor::sm_birthDateCName) == 0);
+        fructose_assert(extractor.m_pvValued.count(CovariateExtractor::BIRTHDATE_CNAME) == 0);
     }
 
 
@@ -1815,8 +1825,9 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
         CovariateDefinitions cDefinitions;
         ADD_CDEF_NO_R_UNIT(Weight, 3.5, Standard, Double, Linear, kg, cDefinitions);
         ADD_CDEF_NO_R(AgeDays, 35, AgeInDays, Double, Direct, cDefinitions);
-        ADD_CDEF_NO_R_STR(CovariateExtractor::sm_birthDateCName, DATE_TIME_NO_VAR(2017, 8, 5, 18, 0, 0), Standard,
-                          Date, Direct, cDefinitions);
+        //ADD_CDEF_NO_R_STR(CovariateExtractor::sm_birthDateCName, DATE_TIME_NO_VAR(2017, 8, 5, 18, 0, 0), Standard,
+        //                  Date, Direct, cDefinitions);
+
 
         ADD_EXPR2_CDEF(DepOnAge, "AgeDays + Weight * 2", "AgeDays", "Weight", cDefinitions);
         ADD_EXPR2_CDEF(DepDep, "DepOnAge + 42 + AgeDays", "AgeDays", "DepOnAge", cDefinitions);
@@ -1827,18 +1838,21 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
         // weight = 30.0 @ 13.08.2017, 14h00
         ADD_PV_W_UNIT(Weight, 100.0, Double, kg, DATE_TIME_NO_VAR(2017, 8, 17, 12, 0, 0), pVariates);
 
+        ADD_PV_NO_UNIT(birthdate, DATE_TIME_NO_VAR(2017, 8, 5, 18, 0, 0), Date,
+                       DATE_TIME_NO_VAR(2017, 8, 5, 18, 0, 0), pVariates);
+
         const DATE_TIME_VAR(startDate, 2017, 8, 12, 8, 0, 0);
         const DATE_TIME_VAR(endDate,   2017, 8, 18, 21, 0, 0);
 
         CovariateExtractor extractor(cDefinitions, pVariates, startDate, endDate);
         CovariateSeries series;
-        CovariateExtractor::Result rc;
+        ComputingResult rc;
         rc = extractor.extract(series);
 
 //        printCovariateSeries(series);
 
         fructose_assert(series.size() == 32);
-        fructose_assert(rc == CovariateExtractor::Result::Ok);
+        fructose_assert(rc == ComputingResult::Ok);
         fructose_assert(covariateEventIsPresent("Weight",
                                                 DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0),
                                                 4.0,
@@ -1973,7 +1987,7 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
 
         fructose_assert(extractor.m_birthDate == DATE_TIME_NO_VAR(2017, 8, 5, 18, 0, 0));
         fructose_assert(extractor.m_hasBirthDate == true);
-        fructose_assert(extractor.m_pvValued.count(CovariateExtractor::sm_birthDateCName) == 0);
+        fructose_assert(extractor.m_pvValued.count(CovariateExtractor::BIRTHDATE_CNAME) == 0);
     }
 
 
@@ -1998,13 +2012,13 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
 
         CovariateExtractor extractor(cDefinitions, pVariates, startDate, endDate);
         CovariateSeries series;
-        CovariateExtractor::Result rc;
+        ComputingResult rc;
         rc = extractor.extract(series);
 
 //        printCovariateSeries(series);
 
         fructose_assert(series.size() == 21);
-        fructose_assert(rc == CovariateExtractor::Result::Ok);
+        fructose_assert(rc == ComputingResult::Ok);
         fructose_assert(covariateEventIsPresent("Weight",
                                                 DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0),
                                                 4.0,

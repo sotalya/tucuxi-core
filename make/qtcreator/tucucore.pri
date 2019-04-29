@@ -1,4 +1,6 @@
 
+DEFINES += TUCUXI_GIT_REVISION='\\"$$system(git --git-dir $$PWD/../../.git rev-parse --short HEAD)\\"'
+
 HEADERS += \
     $$PWD/../../src/tucucore/drugmodel/drugmodel.h \
     $$PWD/../../src/tucucore/cachedexponentials.h \
@@ -11,12 +13,14 @@ HEADERS += \
     $$PWD/../../src/tucucore/intakeevent.h \
     $$PWD/../../src/tucucore/intakeintervalcalculator.h \
     $$PWD/../../src/tucucore/intakeextractor.h \
+    $$PWD/../../src/tucucore/invariants.h \
     $$PWD/../../src/tucucore/parameter.h \
     $$PWD/../../src/tucucore/timedevent.h \
     $$PWD/../../src/tucucore/operation.h \
     $$PWD/../../src/tucucore/pkmodels/onecompartmentbolus.h \
     $$PWD/../../src/tucucore/pkmodels/onecompartmentextra.h \
     $$PWD/../../src/tucucore/pkmodels/rkonecompartmentextra.h \
+    $$PWD/../../src/tucucore/pkmodels/rkonecompartmentgammaextra.h \
     $$PWD/../../src/tucucore/pkmodels/onecompartmentinfusion.h \
     $$PWD/../../src/tucucore/pkmodels/threecompartmentbolus.h \
     $$PWD/../../src/tucucore/pkmodels/threecompartmentextra.h \
@@ -65,12 +69,24 @@ HEADERS += \
     $$PWD/../../src/tucucore/covariateevent.h \
     $$PWD/../../src/tucucore/computingservice/computingrequest.h \
     $$PWD/../../src/tucucore/computingservice/computingresponse.h \
+    $$PWD/../../src/tucucore/computingservice/computingresult.h \
     $$PWD/../../src/tucucore/computingservice/computingtrait.h \
     $$PWD/../../src/tucucore/computingservice/icomputingservice.h \
     $$PWD/../../src/tucucore/validvalues.h \
     $$PWD/../../src/tucucore/computingservice/computingaborter.h \
     $$PWD/../../src/tucucore/unit.h \
-    $$PWD/../../src/tucucore/drugmodel/drugmodelmetadata.h
+    $$PWD/../../src/tucucore/drugmodel/drugmodelmetadata.h \
+    $$PWD/../../src/tucucore/computingresponseexport.h \
+    $$PWD/../../src/tucucore/drugmodelrepository.h \
+    $$PWD/../../src/tucucore/overloadevaluator.h \
+    $$PWD/../../src/tucucore/version.h \
+    $$PWD/../../src/tucucore/drugmodel/errormodel.h \
+    $$PWD/../../src/tucucore/iresidualerrormodel.h \
+    $$PWD/../../src/tucucore/residualerrormodelextractor.h \
+    $$PWD/../../src/tucucore/drugfilevalidator.h \
+    $$PWD/../../src/tucucore/generalextractor.h \
+    $$PWD/../../src/tucucore/drugmodelchecker.h \
+    $$PWD/../../src/tucucore/cyclestatistics.h
 
 SOURCES += \
     $$PWD/../../src/tucucore/drugmodel/drugmodel.cpp \
@@ -85,6 +101,7 @@ SOURCES += \
     $$PWD/../../src/tucucore/pkmodels/onecompartmentbolus.cpp \
     $$PWD/../../src/tucucore/pkmodels/onecompartmentextra.cpp \
     $$PWD/../../src/tucucore/pkmodels/rkonecompartmentextra.cpp \
+    $$PWD/../../src/tucucore/pkmodels/rkonecompartmentgammaextra.cpp \
     $$PWD/../../src/tucucore/pkmodels/onecompartmentinfusion.cpp \
     $$PWD/../../src/tucucore/pkmodels/threecompartmentbolus.cpp \
     $$PWD/../../src/tucucore/pkmodels/threecompartmentextra.cpp \
@@ -132,7 +149,18 @@ SOURCES += \
     $$PWD/../../src/tucucore/validvalues.cpp \
     $$PWD/../../src/tucucore/computingservice/computingaborter.cpp \
     $$PWD/../../src/tucucore/unit.cpp \
-    $$PWD/../../src/tucucore/drugmodel/drugmodelmetadata.cpp
+    $$PWD/../../src/tucucore/drugmodel/drugmodelmetadata.cpp \
+    $$PWD/../../src/tucucore/computingresponseexport.cpp \
+    $$PWD/../../src/tucucore/drugmodelrepository.cpp \
+    $$PWD/../../src/tucucore/overloadevaluator.cpp \
+    $$PWD/../../src/tucucore/version.cpp \
+    $$PWD/../../src/tucucore/drugmodel/errormodel.cpp \
+    $$PWD/../../src/tucucore/residualerrormodelextractor.cpp \
+    $$PWD/../../src/tucucore/drugfilevalidator.cpp \
+    $$PWD/../../src/tucucore/generalextractor.cpp \
+    $$PWD/../../src/tucucore/drugmodelchecker.cpp \
+    $$PWD/../../src/tucucore/cyclestatistics.cpp \
+    $$PWD/../../src/tucucore/intakeevent.cpp
 
 DISTFILES += \
     $$PWD/../../src/tucucore/makefile

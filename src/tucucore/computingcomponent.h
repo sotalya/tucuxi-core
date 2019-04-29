@@ -19,6 +19,7 @@
 #include "tucucore/covariateevent.h"
 #include "tucucore/computingservice/computingresponse.h"
 #include "tucucore/computingservice/computingtrait.h"
+#include "tucucore/computingservice/computingresult.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -35,6 +36,8 @@ class ComputingTraitAtMeasures;
 class ComputingTraitSinglePoints;
 class ComputingTraitStandard;
 class HalfLife;
+class GeneralExtractor;
+class ActiveMoiety;
 
 
 
@@ -50,10 +53,17 @@ public:
     static Tucuxi::Common::Interface* createComponent();
 
     /// \brief Destructor
-    virtual ~ComputingComponent() override;
+    ~ComputingComponent() override;
 
     ComputingResult compute(const ComputingRequest &_request, std::unique_ptr<ComputingResponse> &_response) override;
     std::string getErrorString() const override;
+
+    void setPkModelCollection(PkModelCollection *_collection) {
+        if (m_models != nullptr) {
+            delete m_models;
+        }
+        m_models = _collection;
+    }
 
 protected:
     /// \brief Access other interfaces of the same component.
@@ -62,10 +72,8 @@ protected:
 
 private:
 
-
-    Duration secureStartDuration(const HalfLife &_halfLife);
-
     PkModelCollection *m_models;
+    GeneralExtractor *m_generalExtractor;
 
     Tucuxi::Common::LoggerHelper m_logger;
 
@@ -100,16 +108,17 @@ private:
             const ComputingRequest &_request,
             std::unique_ptr<ComputingResponse> &_response);
 
-    ComputingResult generalExtractions(
-            const Tucuxi::Core::ComputingTraitStandard *_traits,
+    ComputingResult computePercentilesSimple(
+            const ComputingTraitPercentiles *_traits,
             const ComputingRequest &_request,
-            std::shared_ptr<PkModel> &_pkModel,
-            IntakeSeries &_intakeSeries,
-            CovariateSeries &_covariatesSeries,
-            ParameterSetSeries &_parameterSeries,
-            Common::DateTime &_calculationStartTime);
+            std::unique_ptr<ComputingResponse> &_response);
 
-    ComputationResult computeConcentrations(
+    ComputingResult computePercentilesMulti(
+            const ComputingTraitPercentiles *_traits,
+            const ComputingRequest &_request,
+            std::unique_ptr<ComputingResponse> &_response);
+
+    ComputingResult computeConcentrations(
         ConcentrationPredictionPtr &_prediction,
         bool _isAll,
         const DateTime &_recordFrom,
@@ -119,25 +128,7 @@ private:
         const Etas& _etas = Etas(0),
         const IResidualErrorModel &_residualErrorModel = EMPTY_RESIDUAL_ERROR_MODEL,
         const Deviations& _eps = Deviations(0),
-        bool _isFixedDensity = 0);
-
-    ComputationResult extractError(
-        const DrugErrorModel &_errorMode,
-        const ParameterDefinitions &_parameterDefs,
-        OmegaMatrix &_omega,
-        IResidualErrorModel &_residualErrorModel)
-    {
-        TMP_UNUSED_PARAMETER(_errorMode);
-        TMP_UNUSED_PARAMETER(_parameterDefs);
-        TMP_UNUSED_PARAMETER(_omega);
-        TMP_UNUSED_PARAMETER(_residualErrorModel);
-        // TODO YJE
-        return ComputationResult::Failure;
-    }
-
-    ComputationResult extractOmega(
-        const DrugModel &_drugModel,
-        OmegaMatrix &_omega);
+        bool _isFixedDensity = false);
 
     std::vector<FullDosage> sortAndFilterCandidates(std::vector<FullDosage> &_candidates, BestCandidatesOption _option);
 
@@ -155,6 +146,13 @@ private:
             DateTime _startTime,
             DateTime _endTime,
             FormulationAndRoute _routeOfAdministration);
+
+
+    ComputingResult computeActiveMoiety(
+            const DrugModel &_drugModel,
+            const ActiveMoiety *_activeMoiety,
+            const std::vector<ConcentrationPredictionPtr> &_analytesPredictions,
+            ConcentrationPredictionPtr &_activeMoietyPredictions);
 
     friend class ComputingTraitSinglePoints;
     friend class ComputingTraitAtMeasures;

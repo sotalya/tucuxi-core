@@ -162,16 +162,16 @@ void Parameter::applyEta(Deviation _eta)
         if (m_value <= 0.0) {
             m_value = 0.00000001;
             Tucuxi::Common::LoggerHelper logger;
-            logger.warn("Parameter {} is negative", m_definition.getId());
+            //logger.warn("Applying Eta to Parameter {} makes it negative", m_definition.getId());
         }
         else if (std::isinf(m_value)) {
             m_value = std::numeric_limits<double>::max();
             Tucuxi::Common::LoggerHelper logger;
-            logger.warn("Parameter {} is infinite", m_definition.getId());
+            logger.warn("Applying Eta to Parameter {} makes it infinite", m_definition.getId());
         }
         else if (std::isnan(m_value)) {
             Tucuxi::Common::LoggerHelper logger;
-            logger.warn("Parameter {} is not a number", m_definition.getId());
+            logger.warn("Applying Eta to Parameter {} makes it not a number", m_definition.getId());
         }
     }
 }

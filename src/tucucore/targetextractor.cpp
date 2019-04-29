@@ -3,6 +3,7 @@
 */
 
 #include "tucucommon/general.h"
+#include "tucucommon/loggerhelper.h"
 
 #include "tucucore/targetextractor.h"
 
@@ -93,7 +94,8 @@ TargetEvent TargetExtractor::targetEventFromTarget(const Target *_target, const 
     case TargetType::UnknownTarget :
     default:
     {
-        // TODO : Log something wrong here
+        Tucuxi::Common::LoggerHelper logger;
+        logger.error("A target of an unkown type was given to the TargetExtractor");
 
         return TargetEvent(
                     _targetDefinition->getActiveMoietyId(),
@@ -142,6 +144,25 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(const TargetDefinit
     case TargetType::Auc :
     case TargetType::Auc24 :
     case TargetType::CumulativeAuc :
+
+        // Here we consider times as minutes. This has to be fixed once
+        return TargetEvent(
+                    _target->getActiveMoietyId(),
+                    _target->getTargetType(),
+                    Unit("ug*h/l"),
+                    _target->getUnit(),
+                    translateToUnit(_target->getCMin().getValue(), _target->getUnit(), Unit("ug*h/l")),
+                    translateToUnit(_target->getCBest().getValue(), _target->getUnit(), Unit("ug*h/l")),
+                    translateToUnit(_target->getCMax().getValue(), _target->getUnit(), Unit("ug*h/l")),
+                    0.0,
+                    Tucuxi::Common::Duration(
+                        std::chrono::minutes(static_cast<int>(_target->getTMin().getValue()))),
+                    Tucuxi::Common::Duration(
+                        std::chrono::minutes(static_cast<int>(_target->getTBest().getValue()))),
+                    Tucuxi::Common::Duration(
+                        std::chrono::minutes(static_cast<int>(_target->getTMax().getValue()))));
+
+
     case TargetType::AucOverMic :
     case TargetType::Auc24OverMic :
 
@@ -205,8 +226,10 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(const TargetDefinit
 
     case TargetType::UnknownTarget :
     default:
-        // Something wrong here.
-        // TODO : Should log something here
+
+        Tucuxi::Common::LoggerHelper logger;
+        logger.error("A target of an unkown type was given to the TargetExtractor");
+
         return TargetEvent(
                     _target->getActiveMoietyId(),
                     _target->getTargetType(),
@@ -226,7 +249,7 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(const TargetDefinit
     }
 }
 
-TargetExtractor::Result TargetExtractor::extract(
+ComputingResult TargetExtractor::extract(
         const CovariateSeries &_covariates,
         const TargetDefinitions& _targetDefinitions,
         const Targets &_targets,
@@ -239,9 +262,9 @@ TargetExtractor::Result TargetExtractor::extract(
     case TargetExtractionOption::AprioriValues :
     {
         // Not yet implemented
-        return Result::ExtractionError;
+        return ComputingResult::TargetExtractionError;
 
-    }break;
+    } break;
 
 
     case TargetExtractionOption::IndividualTargets :
@@ -261,7 +284,7 @@ TargetExtractor::Result TargetExtractor::extract(
             }
             if (!foundDefinition) {
                 // TODO : Log, something went wrong
-                return Result::ExtractionError;
+                return ComputingResult::TargetExtractionError;
             }
         }
     } break;
@@ -285,7 +308,7 @@ TargetExtractor::Result TargetExtractor::extract(
 
                 _series.push_back(targetEventFromTargetDefinition(targetDefinition.get()));
             }
-
+        }
     } break;
 
     case TargetExtractionOption::PopulationValues :
@@ -296,13 +319,12 @@ TargetExtractor::Result TargetExtractor::extract(
         }
 
     } break;
-}
-}
-TMP_UNUSED_PARAMETER(_covariates);
-TMP_UNUSED_PARAMETER(_start);
-TMP_UNUSED_PARAMETER(_end);
+    }
+    TMP_UNUSED_PARAMETER(_covariates);
+    TMP_UNUSED_PARAMETER(_start);
+    TMP_UNUSED_PARAMETER(_end);
 
-return Result::Ok;
+    return ComputingResult::Ok;
 }
 
 } // namespace Core

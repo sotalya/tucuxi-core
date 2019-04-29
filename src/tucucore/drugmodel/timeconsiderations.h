@@ -2,7 +2,9 @@
 #define TIMECONSIDERATIONS_H
 
 #include <memory>
+
 #include "tucucore/drugdefinitions.h"
+#include "tucucore/invariants.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -17,6 +19,11 @@ public:
 
     double getMultiplier() const { return m_multiplier;}
     Unit getUnit() const { return m_unit;}
+
+    INVARIANTS(
+            INVARIANT(Invariants::INV_HALFLIFE_0001, (m_multiplier > 0.0))
+            INVARIANT(Invariants::INV_HALFLIFE_0002, (this->m_value > 0.0))
+            )
 
 private:
     double m_multiplier;
@@ -38,6 +45,10 @@ public:
         PopulationValue(_id, _value, _operation), m_unit(_unit)
     {}
 
+
+    INVARIANTS(
+            )
+
 private:
     Unit m_unit;
 
@@ -55,6 +66,13 @@ public:
     void setOutdatedMeasure(std::unique_ptr<OutdatedMeasure> _outdatedMeasure) { m_outdatedMeasure = std::move(_outdatedMeasure);}
 
     const OutdatedMeasure & getOutdatedMeasure() const { return *m_outdatedMeasure;}
+
+    INVARIANTS(
+            INVARIANT(Invariants::INV_TIMECONSIDERATIONS_0001, (m_halfLife != nullptr))
+            INVARIANT(Invariants::INV_TIMECONSIDERATIONS_0002, (m_halfLife->checkInvariants()))
+            INVARIANT(Invariants::INV_TIMECONSIDERATIONS_0003, (m_outdatedMeasure != nullptr))
+            INVARIANT(Invariants::INV_TIMECONSIDERATIONS_0004, (m_outdatedMeasure->checkInvariants()))
+            )
 
 private:
 

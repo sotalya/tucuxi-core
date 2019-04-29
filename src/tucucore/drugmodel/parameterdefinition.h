@@ -15,9 +15,12 @@
 #include "tucucore/operation.h"
 #include "tucucore/timedevent.h"
 #include "tucucommon/general.h"
+#include "tucucore/invariants.h"
 
 namespace Tucuxi {
 namespace Core {
+
+class DrugModelChecker;
 
 ///
 /// \brief The potential parameter variability types supported
@@ -110,6 +113,10 @@ public:
     void setUnit(Unit _unit) { m_unit = _unit;}
     Unit getUnit() const { return m_unit;}
 
+    INVARIANTS(
+            INVARIANT(Invariants::INV_PARAMETERDEFINITION_0001, (m_variability != nullptr))
+            )
+
 private:
     std::unique_ptr<ParameterVariability> m_variability;
     Unit m_unit;
@@ -167,6 +174,10 @@ public:
     std::string getParamId1() const { return m_parameterId[0];}
     std::string getParamId2() const { return m_parameterId[1];}
 
+    INVARIANTS(
+            INVARIANT(Invariants::INV_CORRELATION_0001, (m_parameterId.size() == 2))
+            )
+
 protected:
     Value m_correlation;
     std::vector<std::string> m_parameterId;
@@ -191,6 +202,11 @@ public:
         m_parameterId.push_back(_parameterId2);
     }
 
+    INVARIANTS(
+            INVARIANT(Invariants::INV_INTERPARAMETERSETCORRELATION_0001, (m_analyteSetId.size() == 2))
+            INVARIANT(Invariants::INV_INTERPARAMETERSETCORRELATION_0002, (m_parameterId.size() == 2))
+            )
+
 protected:
     Value m_correlation;
     std::vector<std::string> m_analyteSetId;
@@ -204,8 +220,6 @@ class ParameterSetDefinition
 public:
     void addParameter(std::unique_ptr<ParameterDefinition> _parameter) { m_parameters.push_back(std::move(_parameter));}
 
-    void addAnalyteId(std::string _analyteId) { m_analyteIds.push_back(_analyteId);}
-
     void addCorrelation(Correlation _correlation) { m_correlations.push_back(_correlation);}
 
     size_t getNbParameters() const { return m_parameters.size(); }
@@ -218,10 +232,17 @@ public:
 
     const Correlations & getCorrelations() const { return m_correlations;}
 
+
+    INVARIANTS(
+            LAMBDA_INVARIANT(Invariants::INV_PARAMETERSETDEFINITION_0001, {bool ok = true;for(size_t i = 0; i < m_parameters.size(); i++) {ok &= m_parameters.at(i)->checkInvariants();} return ok;})
+            LAMBDA_INVARIANT(Invariants::INV_PARAMETERSETDEFINITION_0001, {bool ok = true;for(size_t i = 0; i < m_correlations.size(); i++) {ok &= m_correlations.at(i).checkInvariants();} return ok;})
+            )
+
 protected:
     ParameterDefinitions m_parameters;
     Correlations m_correlations;
-    std::vector<std::string> m_analyteIds;
+
+    friend DrugModelChecker;
 };
 
 

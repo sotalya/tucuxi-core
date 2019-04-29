@@ -11,9 +11,10 @@
 #include "tucucore/definitions.h"
 #include "tucucore/timedevent.h"
 #include "tucucore/intakeintervalcalculator.h"
+#include "tucucore/drugmodel/formulationandroute.h"
 
-using Tucuxi::Common::DateTime;
-using Tucuxi::Common::Duration;
+using Tucuxi::Common::DateTime; // NOLINT(google-global-names-in-headers)
+using Tucuxi::Common::Duration; // NOLINT(google-global-names-in-headers)
 
 namespace Tucuxi {
 namespace Core {
@@ -36,16 +37,19 @@ public:
     /// \param _infusionTime Duration in case of an infusion.
     /// \param _nbPoints Number of points to compute for this intake.
     IntakeEvent(DateTime _time, Duration _offsetTime, DoseValue _dose, Duration _interval,
+                FormulationAndRoute _formulationAndRoute,
                 AbsorptionModel _route, Duration _infusionTime, int _nbPoints)
         : TimedEvent(_time), 
           m_dose(_dose),
           m_offsetTime(_offsetTime),
+          m_formulationAndRoute(_formulationAndRoute),
           m_route(_route),
           m_interval(_interval),
           m_infusionTime(_infusionTime),
           m_calculator(nullptr)
     {
-        m_nbPoints = _nbPoints % 2 != 0 ? _nbPoints : _nbPoints + 1;  // Must use an odd number
+        // YTA : I don't get why we should have odd numbers...
+        m_nbPoints = _nbPoints; // % 2 != 0 ? _nbPoints : _nbPoints + 1;  // Must use an odd number
     }
 
     /// \brief Destructor
@@ -100,7 +104,14 @@ public:
     {
         return m_nbPoints;
     }
-    
+
+    /// \brief Set the dose.
+    /// \param Dose value.
+    void setDose(DoseValue _dose)
+    {
+        m_dose = _dose;
+    }
+
     /// \brief Get the dose.
     /// \return Dose value.
     DoseValue getDose() const
@@ -113,6 +124,14 @@ public:
     Duration getOffsetTime() const
     {
         return m_offsetTime;
+    }
+
+    ///
+    /// \brief Get the formulation and route of administration of the treatment
+    /// \return The formulation and route
+    FormulationAndRoute getFormulationAndRoute() const
+    {
+        return m_formulationAndRoute;
     }
     
     /// \brief Get the route of administration of the treatment.
@@ -151,7 +170,7 @@ public:
         return m_calculator;
     }
 
-    IntakeIntervalCalculator::Result calculateIntakePoints(
+    ComputingResult calculateIntakePoints(
         std::vector<Concentrations>& _concentrations,
         TimeOffsets & _times,
         const IntakeEvent& _intakeEvent,
@@ -164,7 +183,7 @@ public:
         return m_calculator->calculateIntakePoints(_concentrations, _times, _intakeEvent, _parameters, _inResiduals, _isAll, _outResiduals, _isDensityConstant);
     }
 
-    IntakeIntervalCalculator::Result calculateIntakeSinglePoint(
+    ComputingResult calculateIntakeSinglePoint(
 	std::vector<Concentrations>& _concentrations,
 	const IntakeEvent& _intakeEvent,
 	const ParameterSetEvent& _parameters,
@@ -183,6 +202,8 @@ private:
     Duration m_offsetTime;
     /// Number of points to compute for this intake
     CycleSize m_nbPoints;
+    /// The formulation and route of this intake
+    FormulationAndRoute m_formulationAndRoute;
     /// The route of administration
     AbsorptionModel m_route;
     /// The time before the next intake
@@ -192,6 +213,24 @@ private:
 
     std::shared_ptr<IntakeIntervalCalculator> m_calculator;
 };
+
+
+/// \brief An intake series is list of intake events.
+/// This vector could be replaced in the future with a class that offers more capabilities (for instance, it could
+/// incorporate the time interval spanned by the series). However, it will have to expose the same capabilities as the
+/// underlying std::vector, thus the transition will be painless.
+typedef std::vector<IntakeEvent> IntakeSeries;
+
+typedef std::map<AnalyteGroupId, IntakeSeries> GroupsIntakeSeries;
+
+
+
+void cloneIntakeSeries(const std::vector<IntakeEvent> &_input, std::vector<IntakeEvent> &_output);
+
+
+void selectRecordedIntakes(
+        IntakeSeries &_selectionSeries, const IntakeSeries &_intakeSeries,
+        DateTime _recordFrom, DateTime _recordTo);
 
 } // namespace Core
 } // namespace Tucuxi

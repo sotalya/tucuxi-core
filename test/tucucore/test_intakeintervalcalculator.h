@@ -10,6 +10,8 @@
 
 #include "fructose/fructose.h"
 
+#include "tucucommon/duration.h"
+
 #include "tucucore/pkmodels/onecompartmentbolus.h"
 #include "tucucore/pkmodels/onecompartmentextra.h"
 #include "tucucore/pkmodels/onecompartmentinfusion.h"
@@ -23,7 +25,11 @@
 #include "tucucore/pkmodels/rkonecompartmentextra.h"
 #include "tucucore/pkmodels/rkonecompartmentgammaextra.h"
 
+#include "tucucore/drugmodel/formulationandroute.h"
+#include "tucucore/intakeevent.h"
+
 using namespace Tucuxi::Core;
+using namespace std::chrono_literals;
 
 struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculator>
 {
@@ -44,7 +50,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
                                        int _nbPoints)
     {
 
-        Tucuxi::Core::IntakeIntervalCalculator::Result res;
+        Tucuxi::Core::ComputingResult res;
         CalculatorMicroClass microCalculator;
         CalculatorMacroClass macroCalculator;
 
@@ -60,7 +66,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
         concentrations.resize(residualSize);
 
         Tucuxi::Core::TimeOffsets times;
-        Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, _dose, interval, _route, infusionTime, _nbPoints);
+        Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, _dose, interval, Tucuxi::Core::FormulationAndRoute(_route), _route, infusionTime, _nbPoints);
 
         // Checking if steady state is reached by iterative 100 times a calculation and
         // passing residuals to the next iteration
@@ -80,7 +86,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
                 interval.toHours(),
                 isAll,
                 outMicroResiduals);
-            fructose_assert(res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok);
+            fructose_assert(res == Tucuxi::Core::ComputingResult::Ok);
 
             // Check Macro class
             inMacroResiduals = outMacroResiduals;
@@ -92,7 +98,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
                 interval.toHours(),
                 isAll,
                 outMacroResiduals);
-            fructose_assert(res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok);
+            fructose_assert(res == Tucuxi::Core::ComputingResult::Ok);
 
 #if 0
             std::cout << "[" << cycle << "]";
@@ -103,7 +109,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
 #endif
         }
 
-        if (res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok) {
+        if (res == Tucuxi::Core::ComputingResult::Ok) {
             for (unsigned int i = 0; i < residualSize; i++) {
                 fructose_assert_double_eq_rel_abs(inMicroResiduals[i], outMicroResiduals[i], 0.01, 0.01)
                 fructose_assert_double_eq_rel_abs(inMacroResiduals[i], outMacroResiduals[i], 0.01, 0.01)
@@ -121,7 +127,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
                               std::chrono::seconds _infusionTime,
                               int _nbPoints)
     {
-        Tucuxi::Core::IntakeIntervalCalculator::Result res;
+        Tucuxi::Core::ComputingResult res;
         CalculatorMicroClass microCalculator;
         CalculatorMacroClass macroCalculator;
 
@@ -137,7 +143,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
         concentrations.resize(residualSize);
 
         Tucuxi::Core::TimeOffsets times;
-        Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, _dose, interval, _route, infusionTime, _nbPoints);
+        Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, _dose, interval, Tucuxi::Core::FormulationAndRoute(_route), _route, infusionTime, _nbPoints);
         Tucuxi::Core::Residuals inResiduals(residualSize), outMicroMultiResiduals(residualSize), outMicroSingleResiduals(residualSize), outMacroMultiResiduals(residualSize), outMacroSingleResiduals(residualSize);
 
         std::fill(inResiduals.begin(), inResiduals.end(), 0);
@@ -164,7 +170,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             }
         }
 
-        fructose_assert(res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok);
+        fructose_assert(res == Tucuxi::Core::ComputingResult::Ok);
 
         res = microCalculator.calculateIntakeSinglePoint(
             concentrations,
@@ -185,7 +191,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             }
         }
 
-        fructose_assert(res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok);
+        fructose_assert(res == Tucuxi::Core::ComputingResult::Ok);
 
         // Calculation of Macro Class
         res = macroCalculator.calculateIntakePoints(
@@ -209,7 +215,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             }
         }
 
-        fructose_assert(res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok);
+        fructose_assert(res == Tucuxi::Core::ComputingResult::Ok);
 
         res = macroCalculator.calculateIntakeSinglePoint(
             concentrations,
@@ -230,9 +236,9 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             }
         }
 
-        fructose_assert(res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok);
+        fructose_assert(res == Tucuxi::Core::ComputingResult::Ok);
 
-        if (res == Tucuxi::Core::IntakeIntervalCalculator::Result::Ok) {
+        if (res == Tucuxi::Core::ComputingResult::Ok) {
             for (unsigned int i = 0; i < residualSize; i++) {
                 fructose_assert_double_eq(outMicroMultiResiduals[i], outMicroSingleResiduals[i])
                 fructose_assert_double_eq(outMacroMultiResiduals[i], outMacroSingleResiduals[i])
@@ -283,7 +289,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             microParameters,
             macroParameters,
             400.0,
-            Tucuxi::Core::AbsorptionModel::INTRAVASCULAR,
+            Tucuxi::Core::AbsorptionModel::Intravascular,
             1h,
             0s,
             CYCLE_SIZE);
@@ -316,7 +322,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             microParameters,
             macroParameters,
             400.0,
-            Tucuxi::Core::AbsorptionModel::EXTRAVASCULAR,
+            Tucuxi::Core::AbsorptionModel::Extravascular,
             12h,
             0s,
             CYCLE_SIZE);
@@ -350,7 +356,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             microParameters,
             macroParameters,
             400.0,
-            Tucuxi::Core::AbsorptionModel::EXTRAVASCULAR,
+            Tucuxi::Core::AbsorptionModel::Extravascular,
             12h,
             0s,
             CYCLE_SIZE);
@@ -385,7 +391,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             microParameters,
             macroParameters,
             400.0,
-            Tucuxi::Core::AbsorptionModel::EXTRAVASCULAR,
+            Tucuxi::Core::AbsorptionModel::Extravascular,
             12h,
             0s,
             CYCLE_SIZE);
@@ -414,7 +420,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             microParameters,
             macroParameters,
             400.0,
-            Tucuxi::Core::AbsorptionModel::INFUSION,
+            Tucuxi::Core::AbsorptionModel::Infusion,
             12h,
             1h,
             CYCLE_SIZE);
@@ -447,7 +453,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             microParameters,
             macroParameters,
             400.0,
-            Tucuxi::Core::AbsorptionModel::INTRAVASCULAR,
+            Tucuxi::Core::AbsorptionModel::Intravascular,
             12h,
             0s,
             CYCLE_SIZE);
@@ -484,7 +490,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             microParameters,
             macroParameters,
             400.0,
-            Tucuxi::Core::AbsorptionModel::EXTRAVASCULAR,
+            Tucuxi::Core::AbsorptionModel::Extravascular,
             12h,
             0s,
             CYCLE_SIZE);
@@ -517,7 +523,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             microParameters,
             macroParameters,
             400.0,
-            Tucuxi::Core::AbsorptionModel::INFUSION,
+            Tucuxi::Core::AbsorptionModel::Infusion,
             12h,
             1h,
             CYCLE_SIZE);
@@ -555,7 +561,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             microParameters,
             macroParameters,
             400.0,
-            Tucuxi::Core::AbsorptionModel::INTRAVASCULAR,
+            Tucuxi::Core::AbsorptionModel::Intravascular,
             12h,
             0s,
             CYCLE_SIZE);
@@ -595,7 +601,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             microParameters,
             macroParameters,
             400.0,
-            Tucuxi::Core::AbsorptionModel::EXTRAVASCULAR,
+            Tucuxi::Core::AbsorptionModel::Extravascular,
             12h,
             0s,
             CYCLE_SIZE);
@@ -634,7 +640,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             microParameters,
             macroParameters,
             400.0,
-            Tucuxi::Core::AbsorptionModel::INFUSION,
+            Tucuxi::Core::AbsorptionModel::Infusion,
             12h,
             1h,
             CYCLE_SIZE);

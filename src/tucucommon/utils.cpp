@@ -33,6 +33,21 @@ int Utils::dateDiffInDays(const DateTime &_t1, const DateTime &_t2)
     return ValueToDate(varToValue(t1)- varToValue(t2)).toDays();
 }
 
+int Utils::dateDiffInWeeks(const DateTime &_t1, const DateTime &_t2)
+{
+    DateTime t1;
+    DateTime t2;
+
+    if (_t1 > _t2) {
+        t1 = _t1;
+        t2 = _t2;
+    } else {
+        t1 = _t2;
+        t2 = _t1;
+    }
+    return ValueToDate(varToValue(t1)- varToValue(t2)).toDays() / 7.0;
+}
+
 
 int Utils::dateDiffInMonths(const DateTime &_t1, const DateTime &_t2)
 {
@@ -153,14 +168,14 @@ std::string Utils::varToString(const DateTime &_value)
     char buf[64];
     sprintf(buf, "%04d-%02d-%02d %02d:%02d:%02d",
             _value.year(), _value.month(), _value.day(),
-            _value.hour(), _value.minute(), (int)_value.second());
+            _value.hour(), _value.minute(), _value.second());
     return std::string(buf);
 }
 
 
 DateTime Utils::ValueToDate(const Value &_value)
 {
-    DateTime dt(Duration(std::chrono::seconds((int64)_value)));
+    DateTime dt(Duration(std::chrono::seconds(static_cast<int64>(_value))));
 
     return dt;
 }

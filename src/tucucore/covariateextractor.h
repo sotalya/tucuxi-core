@@ -18,6 +18,7 @@
 
 #include "tucucore/definitions.h"
 #include "tucucore/covariateevent.h"
+#include "tucucore/computingservice/computingresult.h"
 
 struct TestCovariateExtractor;
 
@@ -30,10 +31,6 @@ using Tucuxi::Common::Duration;
 class ICovariateExtractor
 {
 public:
-    enum class Result {
-        Ok,
-        ExtractionError
-    };
 
     /// \brief Create a Covariate Extractor for the specified interval and covariate set.
     /// \param _defaults Default covariate events.
@@ -54,7 +51,7 @@ public:
     /// \brief Extract covariate events.
     /// \param _series Set of extracted covariate events.
     /// \return 0 on success, an error code in case an issue arised.
-    virtual Result extract(CovariateSeries &_series) = 0;
+    virtual ComputingResult extract(CovariateSeries &_series) = 0;
 
 
 protected:
@@ -95,14 +92,14 @@ public:
 
     /// \brief Extract covariate events.
     /// \param _series Set of extracted covariate events.
-    /// \return Result::Ok on success, Result::ExtractionError in case an issue arised.
-    Result extract(CovariateSeries &_series) override;
+    /// \return ComputingResult::Ok on success, Result::ExtractionError in case an issue arised.
+    ComputingResult extract(CovariateSeries &_series) override;
 
     // Make the test class friend, as this will allow us to test the helper methods (which are private).
     friend TestCovariateExtractor;
 
     /// \brief Standard name for a covariate that carries the birth date.
-    static const std::string sm_birthDateCName;
+    static const std::string BIRTHDATE_CNAME; // NOLINT(readability-identifier-naming)
 
 private:
     /// \brief Collect the time instants when the computed covariates have to be re-evaluated.
@@ -152,6 +149,9 @@ private:
 
     /// \brief Default value for an AgeInDays variable (if present).
     double m_initAgeInDays;
+
+    /// \brief Default value for an AgeInWeeks variable (if present).
+    double m_initAgeInWeeks;
 
     /// \brief Default value for an AgeInMonths variable (if present).
     double m_initAgeInMonths;

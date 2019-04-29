@@ -31,6 +31,10 @@ struct TestDrugModels : public fructose::test_base<TestDrugModels>
         imatinib = buildImatinib();
 
         fructose_assert(imatinib != nullptr);
+
+        if (imatinib) {
+            delete imatinib;
+        }
     }
 
 };

@@ -14,6 +14,10 @@
 #include "tucucore/pkmodels/threecompartmentextra.h"
 #include "tucucore/pkmodels/threecompartmentinfusion.h"
 
+#ifdef DRUGMODELTESTS
+#include "tucucore/../../test/tucucore/pkmodels/constanteliminationbolus.h"
+#endif // DRUGMODELTESTS
+
 namespace Tucuxi {
 namespace Core {
 
@@ -53,7 +57,7 @@ std::shared_ptr<IntakeIntervalCalculator> PkModel::getCalculatorForRoute(Absorpt
 {
     auto search = m_calculatorCreators.find(_route);
     if (search != m_calculatorCreators.end()) {
-        return std::move(search->second->create());
+        return search->second->create();
     }
     else {
         return nullptr;
@@ -100,7 +104,6 @@ std::vector<std::shared_ptr<PkModel>> PkModelCollection::getPkModelList() const
     return m_collection;
 }
 
-
 bool defaultPopulate(PkModelCollection &_collection)
 {
     bool rc = true;
@@ -111,6 +114,17 @@ bool defaultPopulate(PkModelCollection &_collection)
     ADD_PKMODEL_TO_COLLECTION(_collection, 2, Two, Micro, micro, rc);
     ADD_PKMODEL_TO_COLLECTION(_collection, 3, Three, Macro, macro, rc);
     ADD_PKMODEL_TO_COLLECTION(_collection, 3, Three, Micro, micro, rc);
+
+#ifdef DRUGMODELTESTS
+    std::shared_ptr<PkModel> sharedPkModel;
+    sharedPkModel = std::make_shared<PkModel>("test.constantelimination");
+
+    rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
+
+    _collection.addPkModel(sharedPkModel);
+
+#endif // DRUGMODELTESTS
+
     return rc;
 }
 

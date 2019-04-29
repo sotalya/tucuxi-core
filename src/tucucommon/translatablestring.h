@@ -26,6 +26,19 @@ public:
     TranslatableString();
 
     ///
+    /// \brief TranslatableString constructor setting a single string for default language
+    /// \param _string The new string value
+    ///
+    TranslatableString(std::string _string);
+
+    ///
+    /// \brief TranslatableString constructor setting a single string
+    /// \param _string The new string value
+    /// \param _language The Id of the language
+    ///
+    TranslatableString(std::string _string, std::string _language);
+
+    ///
     /// \brief setDefaultLanguage defines the application default language
     /// \param _language The Id of the language to set
     /// The language defined here will affect every TranslatableString object.
@@ -65,7 +78,7 @@ protected:
 
     /// A static variable storing the default language used by every instance of
     /// TranslatableString
-    static std::string sm_language;
+    static std::string sm_language; // NOLINT(readability-identifier-naming)
 
 };
 

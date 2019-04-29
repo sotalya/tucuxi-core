@@ -8,70 +8,24 @@
 #include "tucucore/definitions.h"
 #include "tucucommon/general.h"
 #include "tucucore/drugdefinitions.h"
+#include "tucucore/iresidualerrormodel.h"
 
 namespace Tucuxi {
 namespace Core {
 
-///
-/// \brief The IResidualErrorModel class interface
-/// This interface is meant to be subclassed by any residual error model.
-/// It exposes methods to apply epsilons to a set of concentrations and also to
-/// calculate the likelihood of an observed value compared to an expected.
-class IResidualErrorModel
-{
-public:
-
-    /// \brief virtual destructor
-    virtual ~IResidualErrorModel() {}
-
-    /// \brief Indicates if there is really an error model in it
-    /// \return true if no error model is implemented within the class, false else
-    virtual bool isEmpty() const = 0;
-
-    /// \brief Applies the epsilons to a single concentrations
-    /// \param _concentration The concentration to be modified.
-    /// \param _eps The vector of epsilons
-    /// This method supports a vector of epsilons and is responsible to modify the concentration.
-    virtual void applyEpsToValue(Concentration &_concentration, const Deviations &_eps) const = 0;
-
-    /// \brief Applies the epsilons to a set of concentrations
-    /// \param _concentrations The set of concentrations.
-    /// \param _eps The vector of epsilons
-    /// This method supports a vector of epsilons and is responsible to modify the concentrations.
-    virtual void applyEpsToArray(Concentrations &_concentrations, const Deviations &_eps) const = 0;
-
-    /// \brief Calculates the likelihood of an observed value compared to an expected
-    /// \param _expected Expected value
-    /// \param _observed Observed value
-    /// \return The calculated likelihood
-    virtual Value calculateSampleLikelihood(Value _expected, Value _observed) const = 0;
-
-    /// \brief Returns the number of epsilons requested by a specific implementation
-    /// \return The number of epsilons requested by applyEpsToArray
-    virtual int nbEpsilons() const = 0;
-
-};
 
 class SigmaResidualErrorModel : public IResidualErrorModel
 {
 public:
 
-    // The currently implemented error models
-    enum class ResidualErrorType {
-        PROPORTIONAL,
-        EXPONENTIAL,
-        ADDITIVE,
-        MIXED,
-        SOFTCODED,
-        NONE
-    };
 
     SigmaResidualErrorModel() : m_nbEpsilons(1) {}
 
-    void setFormula(std::unique_ptr<Operation> _formula) {m_formula = std::move(_formula);}
-    void addOriginalSigma(std::unique_ptr<PopulationValue> _sigma) {m_originalSigmas.push_back(std::move(_sigma));}
     void setSigma(Sigma _sigma) { m_sigma = _sigma;}
-    void setErrorModel(ResidualErrorType _errorModel) { m_errorModel = _errorModel;}
+    void setErrorModel(ResidualErrorType _errorModel) { m_errorModel = _errorModel;
+                                                        if (_errorModel == ResidualErrorType::NONE) {
+                                                            m_nbEpsilons = 0;
+                                                        }}
     bool isEmpty() const override;
     void applyEpsToValue(Concentration &_concentration, const Deviations &_eps) const override;
     void applyEpsToArray(Concentrations &_concentrations, const Deviations &_eps) const override;
@@ -80,15 +34,7 @@ public:
 
     int nbEpsilons() const override { return m_nbEpsilons; }
 
-    void generatePopulationSigma() {m_sigma = Sigma(m_originalSigmas.size());for(std::size_t i = 0;i < m_originalSigmas.size(); i++) {
-            m_sigma[i] = m_originalSigmas.at(i)->getValue();
-        }}
-
 protected:
-
-    std::unique_ptr<Operation> m_formula;
-
-    std::vector<std::unique_ptr<PopulationValue> > m_originalSigmas;
 
     /// The Sigma vector
     Sigma m_sigma;
@@ -99,8 +45,41 @@ protected:
     /// Number of epsilons requested by applyEpsToArray()
     int m_nbEpsilons;
 
+};
+
+
+class SoftCodedResidualErrorModel : public IResidualErrorModel
+{
+public:
+
+
+    SoftCodedResidualErrorModel() : m_nbEpsilons(1) {}
+
+    void setApplyFormula(std::unique_ptr<Operation> _applyFormula) {m_applyFormula = std::move(_applyFormula);}
+    void setLikelyhoodFormula(std::unique_ptr<Operation> _likelyhoodFormula) {m_likelyhoodFormula = std::move(_likelyhoodFormula);}
+    void setSigma(Sigma _sigma) { m_sigma = _sigma;}
+    bool isEmpty() const override;
+    void applyEpsToValue(Concentration &_concentration, const Deviations &_eps) const override;
+    void applyEpsToArray(Concentrations &_concentrations, const Deviations &_eps) const override;
+
+    Value calculateSampleLikelihood(Value _expected, Value _observed) const override;
+
+    int nbEpsilons() const override { return m_nbEpsilons; }
+
+protected:
+
+    std::unique_ptr<Operation> m_applyFormula;
+    std::unique_ptr<Operation> m_likelyhoodFormula;
+
+    /// The Sigma vector
+    Sigma m_sigma;
+
+    /// Number of epsilons requested by applyEpsToArray()
+    int m_nbEpsilons;
 
 };
+
+
 
 class EmptyResidualErrorModel : public IResidualErrorModel
 {
@@ -109,18 +88,18 @@ public:
 
 
     void applyEpsToValue(Concentration &_concentration, const Deviations &_eps) const override {
-        UNUSED_PARAMETER(_concentration);
-        UNUSED_PARAMETER(_eps);
+        FINAL_UNUSED_PARAMETER(_concentration);
+        FINAL_UNUSED_PARAMETER(_eps);
     }
 
     void applyEpsToArray(Concentrations &_concentrations, const Deviations &_eps) const override {
-        UNUSED_PARAMETER(_concentrations);
-        UNUSED_PARAMETER(_eps);
+        FINAL_UNUSED_PARAMETER(_concentrations);
+        FINAL_UNUSED_PARAMETER(_eps);
     }
 
     Value calculateSampleLikelihood(Value _expected, Value _observed) const override {
-        UNUSED_PARAMETER(_expected);
-        UNUSED_PARAMETER(_observed);
+        FINAL_UNUSED_PARAMETER(_expected);
+        FINAL_UNUSED_PARAMETER(_observed);
         return 0.0;
     }
 

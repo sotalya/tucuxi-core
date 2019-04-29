@@ -16,6 +16,8 @@ namespace Common {
 class ILogger : public Tucuxi::Common::Interface
 {
 public:
+    virtual ~ILogger() {}
+
     /// \brief Log a "debug" message.
     /// \param _msg The message to log
     /// \return None

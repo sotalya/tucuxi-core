@@ -33,7 +33,16 @@ HEADERS += \
     ../../../test/tucucore/test_operationcollection.h \
     ../../../test/tucucore/drugmodels/test_drug_tobramycin.h \
     ../../../test/tucucore/drugmodels/test_drug_vancomycin.h \
-    ../../../test/tucucore/test_targetextractor.h
+    ../../../test/tucucore/test_targetextractor.h \
+    ../../../test/tucucore/test_pertinenttimescalculator.h \
+    ../../../test/tucucore/test_residualerrormodel.h \
+    ../../../test/tucucore/test_sampleextractor.h \
+    ../../../test/tucucore/test_cyclestatistics.h \
+    ../../../test/tucucore/pkmodels/constanteliminationbolus.h \
+    ../../../test/tucucore/drugmodels/buildconstantelimination.h \
+    ../../../test/tucucore/drugmodels/test_constanteliminationbolus.h \
+    ../../../test/tucucore/drugmodels/buildmultianalytesmultiactivemoieties.h \
+    ../../../test/tucucore/drugmodels/test_multianalytesmultiactivemoieties.h
 
 SOURCES += \
     ../../../test/tucucore/tests.cpp

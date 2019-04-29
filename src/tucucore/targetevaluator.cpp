@@ -15,7 +15,35 @@ TargetEvaluator::TargetEvaluator()
 
 }
 
-TargetEvaluator::Result TargetEvaluator::evaluate(
+
+bool TargetEvaluator::isWithinBoundaries(
+        Value _value,
+        Value _min,
+        Value _max)
+{
+    // We tolerate a small deviation from the min and max, to account for
+    // floating point calculations.
+    Value delta = 1e-7;
+    return (_value > _min - delta) && (_value <= _max + delta);
+}
+
+void TargetEvaluator::evaluateValue(
+        Value _value,
+        const Target &_target,
+        bool &_ok,
+        double &_score,
+        double &_outputValue)
+{
+    _ok &= isWithinBoundaries(_value, _target.m_valueMin, _target.m_valueMax);
+
+    if (_ok) {
+        _score = 1.0 - pow(log(_value) - log(_target.m_valueBest), 2)
+                / pow(0.5 *(log(_target.m_valueMax) - log(_target.m_valueMin)), 2);
+        _outputValue = _value;
+    }
+}
+
+ComputingResult TargetEvaluator::evaluate(
         const ConcentrationPrediction& _prediction,
         const IntakeSeries& _intakeSeries,
         const Target &_target,
@@ -33,12 +61,13 @@ TargetEvaluator::Result TargetEvaluator::evaluate(
     DateTime start = _intakeSeries.at(lastCycleIndex).getEventTime();
     DateTime end = start + std::chrono::milliseconds(static_cast<int>(times.at(times.size() - 1)) * 1000);
     CycleData cycle(start, end, Unit("ug/l"));
-    cycle.addData(times, _prediction.getValues().at(lastCycleIndex), 0);
+    cycle.addData(times, _prediction.getValues().at(lastCycleIndex));
 
+    // TODO : Here we only take one compartment... To be checked
 
     // Only valid for a single cycle, so 0.0 as cumulative AUC here.
     // It cannot be used as is for cumulative AUC of multiple cycles.
-    Value fakeCumulativeAuc = 0.0;
+    std::vector<Value> fakeCumulativeAuc(1, 0.0);
     CycleStatistics statisticsCalculator(cycle, fakeCumulativeAuc);
     DateTime dateTime;
     std::vector< std::vector<Tucuxi::Core::CycleStatistic> > stats;
@@ -54,16 +83,9 @@ TargetEvaluator::Result TargetEvaluator::evaluate(
 
         double peakTime = (dateTime - cycleStatistic.getCycleStartDate()).toMinutes();
 
-        bOk = peakTime >= _target.m_tMin.toMinutes() && peakTime <= _target.m_tMax.toMinutes();
+        bOk = isWithinBoundaries(peakTime, _target.m_tMin.toMinutes(), _target.m_tMax.toMinutes());
         if (bOk) {
-            bOk = (peakConcentration < _target.m_valueMax) &&
-                    (peakConcentration > _target.m_valueMin);
-            // Check if concentration is within the target range
-            if (bOk) {
-                score = 1.0 - pow(log(peakConcentration) - log(_target.m_valueBest), 2)
-                        / pow(0.5 *(log(_target.m_valueMax) - log(_target.m_valueMin)), 2);
-                value = peakConcentration;
-            }
+            evaluateValue(peakConcentration, _target, bOk, score, value);
         }
     } break;
 
@@ -76,16 +98,8 @@ TargetEvaluator::Result TargetEvaluator::evaluate(
         CycleStatistic cycleStatistic = statisticsCalculator.getStatistic(0, CycleStatisticType::Residual);
         bOk = cycleStatistic.getValue(dateTime, lastResidual);
 
-        // The following was to test vancomycin (Unit issue)
-        // lastResidual /= 1000.0;
-
         if (bOk) {
-            // Check if concentration is within the target range
-            bOk = (lastResidual < _target.m_valueMax) && (lastResidual > _target.m_valueMin);
-            if (bOk) {
-                score = 1.0 - pow(log(lastResidual) - log(_target.m_valueBest), 2) / pow(0.5 *(log(_target.m_valueMax) - log(_target.m_valueMin)), 2);
-                value = lastResidual;
-            }
+            evaluateValue(lastResidual, _target, bOk, score, value);
         }
     } break;
 
@@ -96,12 +110,7 @@ TargetEvaluator::Result TargetEvaluator::evaluate(
         bOk = cycleStatistic.getValue(dateTime, auc);
 
         if (bOk) {
-            // Check if concentration is within the target range
-            bOk = (auc < _target.m_valueMax) && (auc > _target.m_valueMin);
-            if (bOk) {
-                score = 1.0 - pow(log(auc) - log(_target.m_valueBest), 2) / pow(0.5 *(log(_target.m_valueMax) - log(_target.m_valueMin)), 2);
-                value = auc;
-            }
+            evaluateValue(auc, _target, bOk, score, value);
         }
     } break;
 
@@ -120,20 +129,14 @@ TargetEvaluator::Result TargetEvaluator::evaluate(
             // Calculate the AUC on 24h
             double auc24 = auc * 24.0 / intervalInHours;
 
-            // Check if concentration is within the target range
-            bOk = (auc24 < _target.m_valueMax) && (auc24 > _target.m_valueMin);
-            if (bOk) {
-                score = 1.0 - pow(log(auc24) - log(_target.m_valueBest), 2) / pow(0.5 *(log(_target.m_valueMax) - log(_target.m_valueMin)), 2);
-                value = auc24;
-            }
+            evaluateValue(auc24, _target, bOk, score, value);
         }
     } break;
 
     case TargetType::CumulativeAuc :
     {
-        double cumulativeAuc = 0.0;
-
-
+        // TODO : We only take one compartment: to be checked
+        std::vector<double> cumulativeAuc(1, 0.0);
 
         //Tucuxi::Core::CycleStatistics stats(cycleData, cumulativeAuc);
         for(std::size_t i = 0; i < _prediction.getTimes().size(); i++) {
@@ -141,18 +144,14 @@ TargetEvaluator::Result TargetEvaluator::evaluate(
             DateTime start = _intakeSeries.at(i).getEventTime();
             DateTime end = start + std::chrono::milliseconds(static_cast<int>(times.at(times.size() - 1)) * 1000);
             CycleData cycle(start, end, Unit("ug/l"));
-            cycle.addData(times, _prediction.getValues().at(i), 0);
+            cycle.addData(times, _prediction.getValues().at(i));
 
             // The constructor accumulates in cumulativeAuc.
             CycleStatistics statisticsCalculator(cycle, cumulativeAuc);
         }
 
-        // Check if cumulative AUC is within the target range
-        bOk = (cumulativeAuc < _target.m_valueMax) && (cumulativeAuc > _target.m_valueMin);
-        if (bOk) {
-            score = 1.0 - pow(log(cumulativeAuc) - log(_target.m_valueBest), 2) / pow(0.5 *(log(_target.m_valueMax) - log(_target.m_valueMin)), 2);
-            value = cumulativeAuc;
-        }
+        evaluateValue(cumulativeAuc[0], _target, bOk, score, value);
+
     } break;
 
     case TargetType::Mean :
@@ -162,12 +161,7 @@ TargetEvaluator::Result TargetEvaluator::evaluate(
         bOk = cycleStatistic.getValue(dateTime, mean);
 
         if (bOk) {
-            // Check if concentration is within the target range
-            bOk = (mean < _target.m_valueMax) && (mean > _target.m_valueMin);
-            if (bOk) {
-                score = 1.0 - pow(log(mean) - log(_target.m_valueBest), 2) / pow(0.5 *(log(_target.m_valueMax) - log(_target.m_valueMin)), 2);
-                value = mean;
-            }
+            evaluateValue(mean, _target, bOk, score, value);
         }
     } break;
 
@@ -186,12 +180,7 @@ TargetEvaluator::Result TargetEvaluator::evaluate(
             // Calculate the AUC
             double aucDividedByMic = auc / _target.m_mic;
 
-            // Check if concentration is within the target range
-            bOk = (aucDividedByMic < _target.m_valueMax) && (aucDividedByMic > _target.m_valueMin);
-            if (bOk) {
-                score = 1.0 - pow(log(aucDividedByMic) - log(_target.m_valueBest), 2) / pow(0.5 *(log(_target.m_valueMax) - log(_target.m_valueMin)), 2);
-                value = aucDividedByMic;
-            }
+            evaluateValue(aucDividedByMic, _target, bOk, score, value);
         }
     } break;
 
@@ -205,44 +194,38 @@ TargetEvaluator::Result TargetEvaluator::evaluate(
         CycleStatistic cycleStatisticForCycleInterval = statisticsCalculator.getStatistic(0, CycleStatisticType::CycleInterval);
         bOk &= cycleStatisticForCycleInterval.getValue(dateTime, intervalInHours);
 
-
         if (bOk) {
             // Calculate the AUC on 24h
             double auc24 = auc * 24.0 / intervalInHours;
             double aucDividedByMic = auc24 / _target.m_mic;
 
-            // Check if concentration is within the target range
-            bOk = (aucDividedByMic < _target.m_valueMax) && (aucDividedByMic > _target.m_valueMin);
-            if (bOk) {
-                score = 1.0 - pow(log(aucDividedByMic) - log(_target.m_valueBest), 2) / pow(0.5 *(log(_target.m_valueMax) - log(_target.m_valueMin)), 2);
-                value = aucDividedByMic;
-            }
+            evaluateValue(aucDividedByMic, _target, bOk, score, value);
         }
     } break;
 
     case TargetType::AucOverMic :
     {
-        return Result::EvaluationError;
+        return ComputingResult::TargetEvaluationError;
     } break;
 
     case TargetType::Auc24OverMic :
     {
-        return Result::EvaluationError;
+        return ComputingResult::TargetEvaluationError;
     } break;
 
     case TargetType::TimeOverMic :
     {
-        return Result::EvaluationError;
+        return ComputingResult::TargetEvaluationError;
     } break;
 
     case TargetType::PeakDividedByMic :
     {
-        return Result::EvaluationError;
+        return ComputingResult::TargetEvaluationError;
     } break;
 
     case TargetType::UnknownTarget :
     {
-        return Result::EvaluationError;
+        return ComputingResult::TargetEvaluationError;
 
     } break;
 
@@ -250,12 +233,12 @@ TargetEvaluator::Result TargetEvaluator::evaluate(
     }
 
     if (!bOk) {
-        return Result::InvalidCandidate;
+        return ComputingResult::InvalidCandidate;
     }
 
     // We build the result, as there was no error
     _result = TargetEvaluationResult(_target.m_targetType, score, translateToUnit(value, _target.m_unit, _target.m_finalUnit), _target.m_finalUnit);
-    return Result::Ok;
+    return ComputingResult::Ok;
 }
 
 } // namespace Core

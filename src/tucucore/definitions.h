@@ -66,11 +66,11 @@ typedef std::vector<PercentileRank> PercentileRanks;
 
 /// \ingroup TucuCore
 /// \brief Way a dose is administered.
-enum class AbsorptionModel { UNDEFINED, INTRAVASCULAR, EXTRAVASCULAR, INFUSION };
+enum class AbsorptionModel { Undefined, Intravascular, Extravascular, Infusion };
 
 /// \ingroup TucuCore
 /// \brief Operations on scheduled intakes.
-enum class ScheduledIntakeOp { SKIP, ADD };
+enum class ScheduledIntakeOp { Skip, Add };
 
 /// \ingroup TucuCore
 /// \brief Days of the week (in [0, 6]), starting on Sunday.
@@ -95,7 +95,7 @@ typedef int CycleSize;
 
 /// \ingroup TucuCore
 /// \brief A type representing the Identifier of ComputingRequests and ComputingResponses
-typedef int RequestResponseId;
+typedef std::string RequestResponseId;
 
 /// \ingroup TucuCore
 /// \brief A structure to store precomputed exponentials.
@@ -105,9 +105,6 @@ typedef std::map<int, Eigen::VectorXd> PrecomputedExponentials;
 /// \ingroup TucuCore
 /// \brief Input operand types.
 enum class InputType { BOOL, INTEGER, DOUBLE };
-
-
-enum class ComputationResult { Success, Failure, Aborted };
 
 typedef Value Deviation;		    // Used for deviations (e.g. std dev)
 typedef std::vector<Deviation> Deviations;  // Used for epsilons array (e.g. std dev)
@@ -153,6 +150,9 @@ enum class CovariateType {
 
     /// Age in days. Automatic calculation based on birth date, use default if not available, unit = days.
     AgeInDays,
+
+    /// Age in weeks. Automatic calculation based on birth date, use default if not available, unit = weeks.
+    AgeInWeeks,
 
     /// Age in months. Automatic calculation based on birth date, use default if not available, unit = months.
     AgeInMonths,

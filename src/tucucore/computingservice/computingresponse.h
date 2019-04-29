@@ -12,6 +12,7 @@
 #include "tucucore/definitions.h"
 #include "tucucore/dosage.h"
 #include "tucucore/targetevaluationresult.h"
+#include "tucucore/cyclestatistics.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -25,6 +26,12 @@ typedef struct {
 ///
 /// \brief The CycleData class, meant to embed data about a cycle
 /// It contains concentrations and times for a single cycle (or interval)
+/// Actually it does contains concentrations of one or more compartments,
+/// allowing to store analytes and active moieties. The identification of
+/// the analytes and active moieties is not internally stored by the CycleData,
+/// it is the responsibility of the user to know what concentration stands each
+/// analyte or active moiety.
+///
 class CycleData
 {
 public:
@@ -34,11 +41,10 @@ public:
     {
     }
 
-    void addData(TimeOffsets &_offsets, std::vector<Concentration> _concentrations, Value _auc)
+    void addData(TimeOffsets &_offsets, std::vector<Concentration> _concentrations)
     {
         m_times.push_back(_offsets);
         m_concentrations.push_back(_concentrations);
-        m_aucs.push_back(_auc);
     }
 
     /// \brief Absolute start time of the cycle
@@ -57,10 +63,6 @@ public:
     /// The size of each inner vector has to be the same as m_times.
     std::vector< std::vector<Concentration> > m_concentrations;
 
-    /// \brief Area under curve for each prediction
-    /// Area under curve for each prediction, in m_unit x hours
-    std::vector<Value> m_aucs;
-
     /// \brief Unit of concentrations
     /// The area under curve corresponds to this unit times hours
     Unit m_unit;
@@ -68,6 +70,10 @@ public:
     /// \brief Pk parameter values for this cycle
     /// Can be used or not to store the values of the Pk parameters used for this cycle
     std::vector<ParameterValue> m_parameters;
+
+    /// \brief The statistics about the cycle data
+    /// For each compartment or analyte, the statistics.
+    CycleStats m_statistics;
 };
 
 ///
@@ -77,7 +83,6 @@ public:
 class SingleComputingResponse
 {
 public:
-    SingleComputingResponse() = default;
     virtual ~SingleComputingResponse() = 0;
     RequestResponseId getId() const;
 
@@ -100,6 +105,9 @@ protected:
 ///
 class SinglePointsResponse : public SingleComputingResponse
 {
+public:
+
+    SinglePointsResponse(RequestResponseId _id) : SingleComputingResponse(_id) {}
 
     /// Absolute time of each concentration
     std::vector<Tucuxi::Common::DateTime> m_times;
@@ -117,12 +125,17 @@ class SinglePointsResponse : public SingleComputingResponse
 class SinglePredictionResponse : public SingleComputingResponse
 {
 public:
-    SinglePredictionResponse() = default;
+    SinglePredictionResponse(RequestResponseId _id) : SingleComputingResponse(_id) {}
     void addCycleData(const CycleData &_data) { m_data.push_back(_data); }
     const std::vector<CycleData>& getData() const { return m_data; }
+    std::vector<CycleData>& getModifiableData() { return m_data; }
 
+    void addAnalyteId(std::string _id) { m_ids.push_back(_id);}
+
+    const std::vector<std::string>& getIds() const { return m_ids;}
 private:
     std::vector<CycleData> m_data;
+    std::vector<std::string> m_ids;
 };
 
 ///
@@ -159,6 +172,7 @@ public:
 class AdjustmentResponse : public SinglePredictionResponse
 {
 public:
+    AdjustmentResponse(RequestResponseId _id) : SinglePredictionResponse(_id) {}
 
     void addAdjustment(FullDosage _adjustment) { m_adjustments.push_back(_adjustment);}
 
@@ -183,6 +197,7 @@ protected:
 class PercentilesResponse : public SingleComputingResponse
 {
 public:
+    PercentilesResponse(RequestResponseId _id) : SingleComputingResponse(_id) {}
 
     void setRanks(const PercentileRanks &_ranks) { m_ranks = _ranks;}
 
@@ -192,7 +207,7 @@ public:
 
     void addPercentileData(const std::vector<CycleData> &_data) { m_data.push_back(_data);}
 
-    const CycleData& getData(unsigned int _percentileIndex, unsigned int _cycleIndex) const {
+    const CycleData& getData(size_t _percentileIndex, unsigned int _cycleIndex) const {
         return m_data.at(_percentileIndex).at(_cycleIndex);
     }
 

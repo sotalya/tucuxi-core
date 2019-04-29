@@ -82,16 +82,16 @@ inline void TwoCompartmentInfusionMicro::compute(const Residuals& _inResiduals, 
             + std::exp(-m_Alpha * m_Tinf - m_Beta * m_Tinf) * (-m_SumK + m_RootK))
         ) / m_Divider;
 
-    Value A = ((m_K12 - m_K21 + m_Ke + m_RootK) * resid1) - (2 * m_K21 * resid2);
-    Value B = ((-m_K12 + m_K21 - m_Ke + m_RootK) * resid1) + (2 * m_K21 * resid2);
-    Value A2 = (-2 * m_K12 * resid1) + ((-m_K12 + m_K21 - m_Ke + m_RootK) * resid2);
-    Value BB2 = (2 * m_K12 * resid1) + ((m_K12 - m_K21 + m_Ke + m_RootK) * resid2);
-    Value AInf = -m_K12 - m_K21 + m_Ke - m_RootK;
-    Value BInf = m_K12 + m_K21 - m_Ke - m_RootK;
-    Value BPostInf = (-m_K12 + m_K21 - m_Ke + m_RootK)*residInf1 + 2*m_K21*residInf2;
-    Value APostInf = (m_K12 - m_K21 + m_Ke + m_RootK)*residInf1 - 2*m_K21*residInf2;
-    Value B2PostInf = 2 * m_K12 * residInf1 + (m_K12 - m_K21 + m_Ke + m_RootK)*residInf2;
-    Value A2PostInf  = -2 * m_K12 * residInf1 + (-m_K12 + m_K21 - m_Ke + m_RootK)*residInf2;
+    Value A = ((m_K12 - m_K21 + m_Ke + m_RootK) * resid1) - (2 * m_K21 * resid2); // NOLINT(readability-identifier-naming)
+    Value B = ((-m_K12 + m_K21 - m_Ke + m_RootK) * resid1) + (2 * m_K21 * resid2); // NOLINT(readability-identifier-naming)
+    Value A2 = (-2 * m_K12 * resid1) + ((-m_K12 + m_K21 - m_Ke + m_RootK) * resid2); // NOLINT(readability-identifier-naming)
+    Value BB2 = (2 * m_K12 * resid1) + ((m_K12 - m_K21 + m_Ke + m_RootK) * resid2); // NOLINT(readability-identifier-naming)
+    Value AInf = -m_K12 - m_K21 + m_Ke - m_RootK; // NOLINT(readability-identifier-naming)
+    Value BInf = m_K12 + m_K21 - m_Ke - m_RootK; // NOLINT(readability-identifier-naming)
+    Value BPostInf = (-m_K12 + m_K21 - m_Ke + m_RootK)*residInf1 + 2*m_K21*residInf2; // NOLINT(readability-identifier-naming)
+    Value APostInf = (m_K12 - m_K21 + m_Ke + m_RootK)*residInf1 - 2*m_K21*residInf2; // NOLINT(readability-identifier-naming)
+    Value B2PostInf = 2 * m_K12 * residInf1 + (m_K12 - m_K21 + m_Ke + m_RootK)*residInf2; // NOLINT(readability-identifier-naming)
+    Value A2PostInf  = -2 * m_K12 * residInf1 + (-m_K12 + m_K21 - m_Ke + m_RootK)*residInf2; // NOLINT(readability-identifier-naming)
 
     // Calculate concentrations for comp1 and comp2
     // This only involves the initial residuals

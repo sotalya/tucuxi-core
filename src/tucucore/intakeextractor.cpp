@@ -10,10 +10,10 @@ namespace Tucuxi {
 namespace Core {
 
 template <typename Enumeration>
-auto as_integer(Enumeration const value)
+auto as_integer(Enumeration const _value)
     -> typename std::underlying_type<Enumeration>::type
 {
-    return static_cast<typename std::underlying_type<Enumeration>::type>(value);
+    return static_cast<typename std::underlying_type<Enumeration>::type>(_value);
 }
 
 #define EXTRACT_PRECONDITIONS(start, end, series) \
@@ -23,11 +23,9 @@ auto as_integer(Enumeration const value)
     if (!(end.isUndefined() || start < end)) { \
         throw std::runtime_error("[IntakeExtractor] start is greater than end and end is defined"); \
     }
-//    assert (!start.isUndefined()); \
-//    assert (end.isUndefined() || start < end);
 
 
-IntakeExtractor::Result IntakeExtractor::extract(const DosageHistory& _dosageHistory, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, IntakeSeries &_series)
+ComputingResult IntakeExtractor::extract(const DosageHistory& _dosageHistory, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, IntakeSeries &_series)
 {
     try {
         EXTRACT_PRECONDITIONS(_start, _end, _series);
@@ -40,12 +38,13 @@ IntakeExtractor::Result IntakeExtractor::extract(const DosageHistory& _dosageHis
         }
 
         std::sort(_series.begin(), _series.end());
+
     }
     catch (...) {
-        return Result::ExtractionError;
+        return ComputingResult::IntakeExtractionError;
     }
 
-    return Result::Ok;
+    return ComputingResult::Ok;
 }
 
 
@@ -56,7 +55,7 @@ int IntakeExtractor::extract(const DosageTimeRange &_timeRange, const DateTime &
     int nbIntakes = 0;
 //    DateTime iStart = std::max(_start, _timeRange.m_startDate);
     DateTime iStart = _timeRange.m_startDate;
-    if (dynamic_cast<DosageSteadyState*>(_timeRange.m_dosage.get())) {
+    if (dynamic_cast<DosageSteadyState*>(_timeRange.m_dosage.get()) != nullptr) {
         iStart = _start;
     }
 
@@ -215,16 +214,21 @@ int IntakeExtractor::extract(const ParallelDosageSequence &_parallelDosageSequen
 
 int IntakeExtractor::extract(const LastingDose &_dosage, const DateTime &_start, const DateTime & /*_end*/, double _nbPointsPerHour, IntakeSeries &_series)
 {
+    Duration interval;
+//    interval = std::min(_dosage.getTimeStep(), _end - _start);
+    interval = _dosage.getTimeStep();
+
     // If the absorption model is INFUSION but the infusion time is 0, then use INTRAVASCULAR instead
-    if ((_dosage.m_routeOfAdministration.getAbsorptionModel() == AbsorptionModel::INFUSION) &&
+    if ((_dosage.m_routeOfAdministration.getAbsorptionModel() == AbsorptionModel::Infusion) &&
             (_dosage.m_infusionTime.isEmpty())) {
-        IntakeEvent intake(_start, Duration(), _dosage.m_dose, _dosage.getTimeStep(), AbsorptionModel::INTRAVASCULAR,
-                           _dosage.m_infusionTime, _dosage.getTimeStep().toHours() * _nbPointsPerHour);
+        // TODO : Be careful here, the formulation and route is not in line the AbsorptionModel::Intravascular
+        IntakeEvent intake(_start, Duration(), _dosage.m_dose, interval, _dosage.getLastFormulationAndRoute(), AbsorptionModel::Intravascular,
+                           _dosage.m_infusionTime, static_cast<int>(interval.toHours() * _nbPointsPerHour) + 1);
         _series.push_back(intake);
     }
     else {
-        IntakeEvent intake(_start, Duration(), _dosage.m_dose, _dosage.getTimeStep(), _dosage.m_routeOfAdministration.getAbsorptionModel(),
-                           _dosage.m_infusionTime, _dosage.getTimeStep().toHours() * _nbPointsPerHour);
+        IntakeEvent intake(_start, Duration(), _dosage.m_dose, interval, _dosage.getLastFormulationAndRoute(), _dosage.m_routeOfAdministration.getAbsorptionModel(),
+                           _dosage.m_infusionTime, static_cast<int>(interval.toHours() * _nbPointsPerHour) + 1);
         _series.push_back(intake);
     }
     return 1;
@@ -233,18 +237,23 @@ int IntakeExtractor::extract(const LastingDose &_dosage, const DateTime &_start,
 
 int IntakeExtractor::extract(const DailyDose &_dosage, const DateTime &_start, const DateTime & /*_end*/, double _nbPointsPerHour, IntakeSeries &_series)
 {
+    Duration interval;
+    //    interval = std::min(_dosage.getTimeStep(), _end - _start);
+        interval = _dosage.getTimeStep();
+
     // If the absorption model is INFUSION but the infusion time is 0, then use INTRAVASCULAR instead
-    if ((_dosage.m_routeOfAdministration.getAbsorptionModel() == AbsorptionModel::INFUSION) &&
+    if ((_dosage.m_routeOfAdministration.getAbsorptionModel() == AbsorptionModel::Infusion) &&
             (_dosage.m_infusionTime.isEmpty())) {
 
-        IntakeEvent intake(_start, Duration(), _dosage.m_dose, _dosage.getTimeStep(), AbsorptionModel::INTRAVASCULAR,
-                           _dosage.m_infusionTime, _dosage.getTimeStep().toHours() * _nbPointsPerHour);
+        // TODO : Be careful here, the formulation and route is not in line the AbsorptionModel::Intravascular
+        IntakeEvent intake(_start, Duration(), _dosage.m_dose, interval, _dosage.getLastFormulationAndRoute(),  AbsorptionModel::Intravascular,
+                           _dosage.m_infusionTime, static_cast<int>(interval.toHours() * _nbPointsPerHour) + 1);
         _series.push_back(intake);
     }
     else {
 
-        IntakeEvent intake(_start, Duration(), _dosage.m_dose, _dosage.getTimeStep(), _dosage.m_routeOfAdministration.getAbsorptionModel(),
-                           _dosage.m_infusionTime, _dosage.getTimeStep().toHours() * _nbPointsPerHour);
+        IntakeEvent intake(_start, Duration(), _dosage.m_dose, interval, _dosage.getLastFormulationAndRoute(),  _dosage.m_routeOfAdministration.getAbsorptionModel(),
+                           _dosage.m_infusionTime, static_cast<int>(interval.toHours() * _nbPointsPerHour) + 1);
         _series.push_back(intake);
     }
     return 1;
@@ -253,18 +262,23 @@ int IntakeExtractor::extract(const DailyDose &_dosage, const DateTime &_start, c
 
 int IntakeExtractor::extract(const WeeklyDose &_dosage, const DateTime &_start, const DateTime & /*_end*/, double _nbPointsPerHour, IntakeSeries &_series)
 {
+    Duration interval;
+    //    interval = std::min(_dosage.getTimeStep(), _end - _start);
+        interval = _dosage.getTimeStep();
+
     // If the absorption model is INFUSION but the infusion time is 0, then use INTRAVASCULAR instead
-    if ((_dosage.m_routeOfAdministration.getAbsorptionModel() == AbsorptionModel::INFUSION) &&
+    if ((_dosage.m_routeOfAdministration.getAbsorptionModel() == AbsorptionModel::Infusion) &&
             (_dosage.m_infusionTime.isEmpty())) {
 
-        IntakeEvent intake(_start, Duration(), _dosage.m_dose, _dosage.getTimeStep(), AbsorptionModel::INTRAVASCULAR,
-                           _dosage.m_infusionTime, _dosage.getTimeStep().toHours() * _nbPointsPerHour);
+        // TODO : Be careful here, the formulation and route is not in line the AbsorptionModel::Intravascular
+        IntakeEvent intake(_start, Duration(), _dosage.m_dose, interval, _dosage.getLastFormulationAndRoute(),  AbsorptionModel::Intravascular,
+                           _dosage.m_infusionTime, static_cast<int>(interval.toHours() * _nbPointsPerHour) + 1);
         _series.push_back(intake);
     }
     else {
 
-        IntakeEvent intake(_start, Duration(), _dosage.m_dose, _dosage.getTimeStep(), _dosage.m_routeOfAdministration.getAbsorptionModel(),
-                           _dosage.m_infusionTime, _dosage.getTimeStep().toHours() * _nbPointsPerHour);
+        IntakeEvent intake(_start, Duration(), _dosage.m_dose, interval, _dosage.getLastFormulationAndRoute(),  _dosage.m_routeOfAdministration.getAbsorptionModel(),
+                           _dosage.m_infusionTime, static_cast<int>(interval.toHours() * _nbPointsPerHour) + 1);
         _series.push_back(intake);
     }
     return 1;

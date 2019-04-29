@@ -91,5 +91,8 @@ int main(int argc, char** argv)
         printf("Iterator test failed\n");
         exit(1);
     }
+
+    Tucuxi::Common::LoggerHelper::beforeExit();
+
     return 0;
 }

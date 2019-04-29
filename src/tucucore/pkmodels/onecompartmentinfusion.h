@@ -32,6 +32,7 @@ protected:
     bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) override;
     void compute(const Residuals& _inResiduals, int _forceSize, Eigen::VectorXd& _concentrations);
 
+
     Value m_D;	/// Quantity of drug
     Value m_Cl;	/// Clearance
     Value m_V;  /// Volume of the compartment

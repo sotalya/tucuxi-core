@@ -9,11 +9,11 @@ namespace Tucuxi {
 namespace Core {
 
 
-ComputingOption::ComputingOption(
-        PredictionParameterType _parameterType,
-        CompartmentsOption _compartmentsOption) :
+ComputingOption::ComputingOption(PredictionParameterType _parameterType,
+        CompartmentsOption _compartmentsOption, bool _withStatistics) :
     m_parameterType(_parameterType),
-    m_compartmentsOption(_compartmentsOption)
+    m_compartmentsOption(_compartmentsOption),
+    m_withStatistics(_withStatistics)
 {
 
 }
@@ -77,6 +77,17 @@ const Tucuxi::Common::DateTime& ComputingTraitStandard::getEnd() const
 double ComputingTraitStandard::getNbPointsPerHour() const
 {
     return m_nbPointsPerHour;
+}
+
+ComputingResult ComputingTraitStandard::compute(ComputingComponent &_computingComponent,
+                                const ComputingRequest &_request,
+                        std::unique_ptr<ComputingResponse> &_response) const
+{
+    // A ComputingTraitStandard is not a final class, so this method should not be called
+    FINAL_UNUSED_PARAMETER(_computingComponent);
+    FINAL_UNUSED_PARAMETER(_request);
+    FINAL_UNUSED_PARAMETER(_response);
+    return ComputingResult::ComputingTraitStandardShouldNotBeCalled;
 }
 
 
@@ -173,6 +184,14 @@ ComputingTraitAtMeasures::ComputingTraitAtMeasures(RequestResponseId _id, Comput
 ComputingOption ComputingTraitAtMeasures::getComputingOption() const
 {
     return m_computingOption;
+}
+
+
+ComputingTraitSinglePoints::ComputingTraitSinglePoints(RequestResponseId _id,
+                            std::vector<Tucuxi::Common::DateTime> _times,
+                            ComputingOption _computingOption) :
+    ComputingTrait (_id), m_times(_times), m_computingOption(_computingOption)
+{
 }
 
 ComputingOption ComputingTraitSinglePoints::getComputingOption() const

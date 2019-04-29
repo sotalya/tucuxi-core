@@ -16,6 +16,7 @@ SOURCES := \
            drugmodel/drugmodel.cpp \
            drugmodel/drugmodeldomain.cpp \
            drugmodel/drugmodelmetadata.cpp \
+           drugmodel/errormodel.cpp \
            drugmodel/formulationandroute.cpp \
            drugmodel/parameterdefinition.cpp \
            drugmodel/targetdefinition.cpp \
@@ -32,12 +33,17 @@ SOURCES := \
            cachedexponentials.cpp \
            concentrationcalculator.cpp \
            computingcomponent.cpp \
+           computingresponseexport.cpp \
            covariateevent.cpp \
            covariateextractor.cpp \
            cyclestatisticscalculator.cpp \
            dosage.cpp \
            drugdomainconstraintsevaluator.cpp \
+           drugfilevalidator.cpp \
+           drugmodelchecker.cpp \
            drugmodelimport.cpp \
+           drugmodelrepository.cpp \
+           generalextractor.cpp \
            hardcodedoperation.cpp \
            intakeextractor.cpp \
            intakeintervalcalculator.cpp \
@@ -46,10 +52,12 @@ SOURCES := \
            montecarlopercentilecalculator.cpp \
            operablegraphmanager.cpp \
            operation.cpp \
+           overloadevaluator.cpp \
            parameter.cpp \
            parametersextractor.cpp \
            pkmodel.cpp \
            residualerrormodel.cpp \
+           residualerrormodelextractor.cpp \
            sampleevent.cpp \
            sampleextractor.cpp \
            targetevent.cpp \
@@ -72,7 +80,8 @@ INCLUDES := . \
             ../../libs/eigen-3.3.2 \
             ../../libs/boost-1.63.0 \
             ../../libs/date-master-20170711 \
-            ../../libs/spdlog-master-20170622/include
+            ../../libs/spdlog-master-20170622/include \
+			../../libs/rapidjson-master-20190220/include
 LIBS :=
 EXTLIBS :=
 DEFINES :=

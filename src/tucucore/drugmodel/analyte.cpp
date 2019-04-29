@@ -4,7 +4,7 @@
 namespace Tucuxi {
 namespace Core {
 
-Analyte::Analyte()
+Analyte::Analyte() : m_analyteId("")
 {
 
 }

@@ -6,9 +6,10 @@
 #ifndef DRUGMODELDOMAIN_H
 #define DRUGMODELDOMAIN_H
 
+#include "tucucommon/translatablestring.h"
 
 #include "tucucore/operation.h"
-#include "tucucommon/translatablestring.h"
+#include "tucucore/invariants.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -38,6 +39,12 @@ public:
 
     void setDescription(Tucuxi::Common::TranslatableString _description) {m_description = _description;}
 
+    INVARIANTS(
+            INVARIANT(Invariants::INV_CONSTRAINT_0001, (m_checkOperation != nullptr))
+            INVARIANT(Invariants::INV_CONSTRAINT_0001, (m_requiredCovariateIds.size() > 0))
+            LAMBDA_INVARIANT(Invariants::INV_CONSTRAINT_0003, {bool ok = true; for(size_t i = 0; i < m_requiredCovariateIds.size(); i++) {ok &= m_requiredCovariateIds.at(i).size() > 0;} return ok;})
+            )
+
 protected:
 
     ConstraintType m_type;
@@ -59,6 +66,11 @@ public:
     void setDescription(Tucuxi::Common::TranslatableString _description) { m_description = _description;}
 
     const Tucuxi::Common::TranslatableString& getDescription() const { return m_description;}
+
+
+    INVARIANTS(
+            LAMBDA_INVARIANT(Invariants::INV_DRUGMODELDOMAIN_0001, {bool ok = true;for(size_t i = 0; i < m_constraints.size(); i++) {ok &= m_constraints.at(i)->checkInvariants();} return ok;})
+            )
 
 protected:
     std::vector<std::unique_ptr<Constraint> > m_constraints;

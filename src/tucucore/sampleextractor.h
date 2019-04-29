@@ -7,6 +7,7 @@
 
 #include "tucucore/drugtreatment/sample.h"
 #include "tucucore/sampleevent.h"
+#include "tucucore/computingservice/computingresult.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -14,7 +15,41 @@ namespace Core {
 class SampleExtractor
 {
 public:
-    static int extract(const Samples &_samples, const DateTime &_start, const DateTime &_end, SampleSeries &_series);
+
+    ///
+    /// \brief extract relevant samples
+    /// \param _samples The list of available samples
+    /// \param _analyteGroup The analyte group in which the sample analyte has to be
+    /// \param _start The start time of the range of interest
+    /// \param _end The end time of the range of interest
+    /// \param _series The output series containing the relevant samples
+    /// \return Result::Ok if everything went well
+    ///
+    /// This function also converts the samples to ug/l.
+    ///
+    ComputingResult extract(
+            const Samples &_samples,
+            const AnalyteSet *_analyteGroup,
+            const DateTime &_start,
+            const DateTime &_end,
+            SampleSeries &_series);
+
+
+    ///
+    /// \brief extract all relevant samples
+    /// \param _samples The list of available samples
+    /// \param _start The start time of the range of interest
+    /// \param _end The end time of the range of interest
+    /// \param _series The output series containing the relevant samples
+    /// \return Result::Ok if everything went well
+    ///
+    /// This function also converts the samples to ug/l.
+    ///
+    ComputingResult extract(
+            const Samples &_samples,
+            const DateTime &_start,
+            const DateTime &_end,
+            SampleSeries &_series);
 };
 
 } // namespace Core

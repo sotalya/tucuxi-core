@@ -14,7 +14,7 @@
 
 #include "tucucommon/jsengine.h"
 
-using Tucuxi::Common::JSEngine;
+using Tucuxi::Common::JSEngine; // NOLINT(google-global-names-in-headers)
 
 namespace Tucuxi {
 namespace Core {
@@ -124,9 +124,9 @@ private:
     bool m_isDefined;
     /// \brief Store the value in the most appropriate type.
     union {
-        double d;
-        bool b;
-        int i;
+        double d; // NOLINT(readability-identifier-naming)
+        bool b;   // NOLINT(readability-identifier-naming)
+        int i;    // NOLINT(readability-identifier-naming)
     } m_value;
 };
 
@@ -236,10 +236,16 @@ public:
     /// \return Vector containing a list of the operands required for the operation.
     virtual OperationInputList getInputs() const;
 
+    /// \brief Returns the last error message
+    /// \return The last error message
+    /// This function can be used when an evaluate() function returns false.
+    std::string getLastErrorMessage() const;
 
 protected:
     /// \brief List of required inputs.
     OperationInputList m_requiredInputs;
+
+    static std::string sm_errorMessage;
 };
 
 
@@ -320,6 +326,25 @@ public:
     ///       else { [RETURN] == false };
     bool evaluate(const OperationInputList &_inputs, double &_result) override;
 
+    /// \brief Checks the operation on the given inputs using the JSEngine.
+    /// \warning No control on types is performed -- you can for instance divide a boolean by a double without the
+    ///          system raising a warning.
+    /// \param _inputList List of inputs that have to be used by the operation.
+    /// \param _result Result of the operation.
+    /// \return true if the operation could be performed, false otherwise.
+    /// \post if (check(_inputs) && m_jsEngine.evaluate(m_expression) == true) { _result == [OPERATION_RESULT] && [RETURN] == true }
+    ///       else { [RETURN] == false };
+    /// The check slightly modify the operation, removing :
+    /// "function calc() {\n" at the beggining,
+    /// "\n}\n result = calc();" at the end,
+    /// and also removing the last "return" statement
+    ///
+    bool checkOperation(const OperationInputList &_inputs, double &_result);
+
+    /// \brief Get the expression as a string
+    /// \return The expression
+    /// This function is meant to be used by the DrugModelChecker, not for any other evaluation
+    std::string getExpression() { return m_expression;}
 
 protected:
     /// \brief JavaScript expression representing the operation to perform.

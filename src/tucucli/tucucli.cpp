@@ -11,8 +11,102 @@
 #include "tucucore/intakeevent.h"
 #include "tucucore/parameter.h"
 #include "tucucore/pkmodels/onecompartmentextra.h"
+#include "tucucore/drugmodelrepository.h"
+
+#include "cxxopts/include/cxxopts.hpp"
+#include "clicomputer.h"
 
 using namespace std::chrono_literals;
+
+cxxopts::ParseResult
+parse(int _argc, char* _argv[])
+{
+    // Get application folder
+    std::string appFolder = Tucuxi::Common::Utils::getAppFolder(_argv);
+
+    Tucuxi::Common::LoggerHelper logHelper;
+
+    try
+    {
+
+        cxxopts::Options options(_argv[0], " - Tucuxi command line");
+        options
+                .positional_help("[optional args]")
+                .show_positional_help();
+
+        options
+                .allow_unrecognised_options()
+                .add_options()
+                ("d,drugpath", "Drug files path", cxxopts::value<std::string>())
+                ("i,input", "Input request file", cxxopts::value<std::string>())
+                ("o,output", "Output response file", cxxopts::value<std::string>())
+                ("help", "Print help")
+                ;
+
+
+        auto result = options.parse(_argc, _argv);
+
+        if (result.count("help") > 0)
+        {
+            std::cout << options.help({"", "Group"}) << std::endl;
+            exit(0);
+        }
+
+        std::string drugPath = appFolder + "/drugs2";
+        if (result.count("drugpath") > 0) {
+            drugPath = result["drugpath"].as<std::string>();
+        }
+
+        std::string inputFileName;
+        if (result.count("input") > 0) {
+            inputFileName = result["input"].as<std::string>();
+        }
+        else {
+            std::cout << "The input file is mandatory" << std::endl << std::endl;
+            std::cout << options.help({"", "Group"}) << std::endl;
+            exit(0);
+        }
+
+        std::string outputPath;
+        if (result.count("output") > 0) {
+            outputPath = result["output"].as<std::string>();
+        }
+        else {
+            std::cout << "The output file is mandatory" << std::endl << std::endl;
+            std::cout << options.help({"", "Group"}) << std::endl;
+            exit(0);
+        }
+
+        logHelper.info("Drugs directory : {}", drugPath);
+        logHelper.info("Input file : {}", inputFileName);
+        logHelper.info("Output directory : {}", outputPath);
+
+
+
+        Tucuxi::Common::ComponentManager* pCmpMgr = Tucuxi::Common::ComponentManager::getInstance();
+
+
+        Tucuxi::Core::DrugModelRepository *drugModelRepository = dynamic_cast<Tucuxi::Core::DrugModelRepository*>(
+                    Tucuxi::Core::DrugModelRepository::createComponent());
+
+        pCmpMgr->registerComponent("DrugModelRepository", drugModelRepository);
+
+        drugModelRepository->loadFolder(drugPath);
+
+        CliComputer computer;
+        computer.compute(drugPath, inputFileName, outputPath);
+
+        pCmpMgr->unregisterComponent("DrugModelRepository");
+        delete drugModelRepository;
+
+        return result;
+
+    } catch (const cxxopts::OptionException& e)
+    {
+        logHelper.error("error parsing options: {}", e.what());
+        exit(1);
+    }
+}
 
 /// \defgroup TucuCli Tucuxi Console application
 /// \brief The Tucuxi console application
@@ -22,78 +116,22 @@ using namespace std::chrono_literals;
 ///
 /// This application is intended mainly to run automated test scripts
 
-int main(int argc, char** argv)
+int main(int _argc, char** _argv)
 {
     // Get application folder
-    std::string appFolder = Tucuxi::Common::Utils::getAppFolder(argv);
+    std::string appFolder = Tucuxi::Common::Utils::getAppFolder(_argv);
 
     Tucuxi::Common::LoggerHelper::init(appFolder + "/tucucli.log");
     Tucuxi::Common::LoggerHelper logHelper;
-/*
-    if (Tucuxi::Common::LicenseManager::checkLicenseFile("c:\\Projects\\Tucuxi\\bin\\license2.txt") != Tucuxi::Common::LicenseError::VALID_LICENSE)
-    {
-        return -1;
-    }
-*/
 
     logHelper.info("********************************************************");
     logHelper.info("Tucuxi console application is starting up...");
 
-    Tucuxi::Core::IntakeIntervalCalculator::Result res;
-    Tucuxi::Core::OneCompartmentExtraMacro calculator;
-
-    DateTime now;
-    int nbPoints = 251;
-    bool isAll = false;
-
-    std::vector<Tucuxi::Core::Concentrations> concentrations;
-    Tucuxi::Core::TimeOffsets times;
-    Tucuxi::Core::IntakeEvent intakeEvent(now, 0s, 400, 24h, Tucuxi::Core::AbsorptionModel::INTRAVASCULAR, 0s, nbPoints);
-    Tucuxi::Core::ParameterDefinitions parameterDefs;
-    Tucuxi::Core::Residuals inResiduals;
-    Tucuxi::Core::Residuals outResiduals1, outResiduals2;
-
-    inResiduals.push_back(0);
-    inResiduals.push_back(0);
-
-    parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Cl", 15.6, Tucuxi::Core::ParameterVariabilityType::Additive));
-    parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 1, Tucuxi::Core::ParameterVariabilityType::Additive));
-    parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::Additive));
-    parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("V", 347, Tucuxi::Core::ParameterVariabilityType::Additive));
-    Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
-
-    res = calculator.calculateIntakePoints(
-        concentrations,
-        times,
-        intakeEvent,
-        parameters,
-        inResiduals,
-        isAll,
-        outResiduals1,
-        true);
-    printf("Out residual = %f\n", outResiduals1[0]);
-    printf("Out residual = %f\n", outResiduals1[1]);
-
-    res = calculator.calculateIntakeSinglePoint(
-        concentrations,
-        intakeEvent,
-        parameters,
-        inResiduals,
-        nbPoints,
-        isAll,
-        outResiduals2);
-
-    TMP_UNUSED_PARAMETER(res);
-
-    printf("Out residual = %f\n", outResiduals2[0]);
-    printf("Out residual = %f\n", outResiduals2[1]);
-
-    for (int i = 0; i < 2; i++) {
-        if (std::abs(outResiduals1[i]/outResiduals2[i]-1) > 0.000001) {
-            logHelper.info("Error: Mismatch in computed residuals: {} != {}", outResiduals1[i], outResiduals2[i]);
-        }
-    }
+    auto result = parse(_argc, _argv);
 
     logHelper.info("Tucuxi console application is exiting...");
+
+    Tucuxi::Common::LoggerHelper::beforeExit();
+
     return 0;
 }

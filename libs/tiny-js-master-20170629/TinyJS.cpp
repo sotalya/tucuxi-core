@@ -850,8 +850,17 @@ CScriptVarLink* CScriptVarLink::replaceWith(CScriptVar *newVar)
 
 CScriptVarLink* CScriptVarLink::replaceWith(CScriptVarLink *newVar)
 {
-    if(newVar)
+    if(newVar) {
+
+        // YTA : Actually I want the script to fail if the variable does not exist. So I changed this
+        if (newVar->var->flags == SCRIPTVAR_UNDEFINED) {
+            ostringstream errorString;
+            errorString << "Using an unexisting variable " << newVar->name;
+            throw new CScriptException(errorString.str());
+        }
+
         replaceWith(newVar->var);
+    }
     else
         replaceWith(new CScriptVar());
     return this;
@@ -1136,6 +1145,14 @@ int CScriptVar::getChildren()
 
 int CScriptVar::getInt()
 {
+
+    // YTA : Actually I want the script to fail if the variable does not exist. So I changed this
+    if (isUndefined()) {
+        ostringstream errorString;
+        errorString << "Using an unexisting variable ";
+        throw new CScriptException(errorString.str());
+    }
+
     /* strtol understands about hex and octal */
     if(isInt()) return intData;
     if(isNull()) return 0;
@@ -1146,6 +1163,13 @@ int CScriptVar::getInt()
 
 double CScriptVar::getDouble()
 {
+    // YTA : Actually I want the script to fail if the variable does not exist. So I changed this
+    if (isUndefined()) {
+        ostringstream errorString;
+        errorString << "Using an unexisting variable ";
+        throw new CScriptException(errorString.str());
+    }
+
     if(isDouble()) return doubleData;
     if(isInt()) return intData;
     if(isNull()) return 0;

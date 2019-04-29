@@ -751,7 +751,7 @@ struct TestDrugVancomycin : public fructose::test_base<TestDrugVancomycin>
                                Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
 
 
-        //const FormulationAndRoute route("formulation", AdministrationRoute::IntravenousBolus, AbsorptionModel::INTRAVASCULAR);
+        //const FormulationAndRoute route("formulation", AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular);
         // Add a treatment intake every ten days in June
         // 200mg via a intravascular at 08h30, starting the 01.06
         LastingDose periodicDose(DoseValue(200.0),
@@ -785,14 +785,14 @@ struct TestDrugVancomycin : public fructose::test_base<TestDrugVancomycin>
 
 
         DrugTreatment *drugTreatment;
-        const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::INFUSION);
+        const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Infusion);
 
 
         buildDrugTreatment(drugTreatment, route);
 
         {
 
-            RequestResponseId requestResponseId = 1;
+            RequestResponseId requestResponseId = "1";
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
             double nbPointsPerHour = 10.0;
@@ -811,7 +811,7 @@ struct TestDrugVancomycin : public fructose::test_base<TestDrugVancomycin>
             ComputingResult result;
             result = component->compute(request, response);
 
-            fructose_assert( result == ComputingResult::Success);
+            fructose_assert( result == ComputingResult::Ok);
 
             const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
             for(std::size_t i = 0; i < responses.size(); i++) {
@@ -829,7 +829,7 @@ struct TestDrugVancomycin : public fructose::test_base<TestDrugVancomycin>
 
         {
 
-            RequestResponseId requestResponseId = 1;
+            RequestResponseId requestResponseId = "1";
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
             double nbPointsPerHour = 10.0;
@@ -848,7 +848,7 @@ struct TestDrugVancomycin : public fructose::test_base<TestDrugVancomycin>
             ComputingResult result;
             result = component->compute(request, response);
 
-            fructose_assert( result == ComputingResult::Success);
+            fructose_assert( result == ComputingResult::Ok);
 
 
             const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
@@ -867,6 +867,15 @@ struct TestDrugVancomycin : public fructose::test_base<TestDrugVancomycin>
         }
 
 
+        if (drugTreatment != nullptr) {
+            delete drugTreatment;
+        }
+        if (drugModel != nullptr) {
+            delete drugModel;
+        }
+        if (component != nullptr) {
+            delete component;
+        }
     }
 };
 

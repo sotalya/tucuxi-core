@@ -39,6 +39,9 @@ public:
         if (pCmpMgr != nullptr) {
             m_pLogger = pCmpMgr->getComponent<ILogger>("Logger");
         }
+        else {
+            m_pLogger = nullptr;
+        }
     }
 
     /// \brief Initialize the Logger component 
@@ -62,6 +65,28 @@ public:
             return true;
         }        
         return false;
+    }
+
+    ///
+    /// \brief Deletes the Logger component created by init()
+    ///
+    /// This method shall be called just before exiting the application to release
+    /// the Logger allocated by init().
+    /// It is not mandatory to use it, as memory will be released by the OS, but
+    /// it allows to clean everything and avoid a memory leak warning when using
+    /// valgrind --leak-ckeck=full
+    ///
+    static void beforeExit()
+    {
+        ComponentManager* pCmpMgr = ComponentManager::getInstance();
+        if (pCmpMgr != nullptr) {
+            ILogger* iLogger = pCmpMgr->getComponent<ILogger>("Logger");
+            if (iLogger != nullptr) {
+                // If a logger is found, unregister and delete it
+                pCmpMgr->unregisterComponent("Logger");
+                delete iLogger;
+            }
+        }
     }
 
 public:

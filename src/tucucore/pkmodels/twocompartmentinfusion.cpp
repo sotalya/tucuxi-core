@@ -15,7 +15,7 @@ namespace Core {
 #define DEBUG
 #endif
 
-TwoCompartmentInfusionMicro::TwoCompartmentInfusionMicro()
+TwoCompartmentInfusionMicro::TwoCompartmentInfusionMicro() : IntakeIntervalCalculatorBase<2, TwoCompartmentInfusionExponentials> (new PertinentTimesCalculatorInfusion())
 {
 }
 
@@ -82,6 +82,8 @@ bool TwoCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent, c
     return bOK;
 }
 
+
+
 void TwoCompartmentInfusionMicro::computeExponentials(Eigen::VectorXd& _times)
 {
     setExponentials(Exponentials::Alpha, (-m_Alpha * _times).array().exp());
@@ -103,8 +105,13 @@ bool TwoCompartmentInfusionMicro::computeConcentrations(const Residuals& _inResi
     Eigen::VectorXd concentrations1, concentrations2;
     int firstCompartment = static_cast<int>(Compartments::First);
     int secondCompartment = static_cast<int>(Compartments::Second);
-
-    int forcesize = static_cast<int>(std::min(ceil(m_Tinf/m_Int * m_NbPoints), ceil(m_NbPoints)));
+    int forcesize;
+    if (m_NbPoints == 2) {
+        forcesize = static_cast<int>(std::min(ceil(m_Tinf/m_Int * m_NbPoints), ceil(m_NbPoints)));
+    }
+    else {
+        forcesize = std::min(m_NbPoints, std::max(2, static_cast<int>((m_Tinf / m_Int) * static_cast<double>(m_NbPoints))));
+    }
 
     // Compute concentrations
     compute(_inResiduals, forcesize, concentrations1, concentrations2);

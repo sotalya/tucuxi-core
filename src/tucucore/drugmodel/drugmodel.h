@@ -14,18 +14,23 @@
 #include "tucucore/drugmodel/activemoiety.h"
 #include "tucucore/drugmodel/timeconsiderations.h"
 #include "tucucore/drugmodel/drugmodelmetadata.h"
+#include "tucucore/invariants.h"
+
+struct TestConstantEliminationBolus;
+struct TestMultiAnalytesMultiActiveMoieties;
+
+#ifdef DRUGMODELTESTS
+class Drugs2Manager;
+#endif // DRUGMODELTESTS
 
 namespace Tucuxi {
 namespace Core {
 
-enum class Invariants {
-    INV_0001 = 0,
-    INV_0002
-};
 
 typedef std::vector< std::unique_ptr<AnalyteSet>> AnalyteSets;
 
 class DrugModel;
+class DrugModelChecker;
 
 ///
 /// \brief The ParameterDefinitionIterator class
@@ -43,14 +48,25 @@ class DrugModel;
 class ParameterDefinitionIterator : public Tucuxi::Common::Iterator<const ParameterDefinition*>
 {
 public:
-    ParameterDefinitionIterator(const DrugModel &_model, const std::string& _analyteId, const Formulation &_formulation, const AdministrationRoute _route)
-        : m_model(_model), m_analyteId(_analyteId), m_formulation(_formulation), m_route(_route)
+    ParameterDefinitionIterator(const DrugModel &_model, const AnalyteGroupId& _analyteGroupId, const Formulation &_formulation, const AdministrationRoute _route)
+        : m_model(_model), m_analyteGroupId(_analyteGroupId), m_formulation(_formulation), m_route(_route)
     {
+        build();
     }
+
+    ParameterDefinitionIterator(const DrugModel &_model, const AnalyteGroupId& _analyteGroupId, const std::vector<const FullFormulationAndRoute*> &_formulation)
+        : m_model(_model), m_analyteGroupId(_analyteGroupId), m_formulation(Formulation::Undefined), m_route(AdministrationRoute::Undefined), m_fullFormulationAndRoutes(_formulation)
+    {
+        build();
+    }
+
     ParameterDefinitionIterator(const ParameterDefinitionIterator& _right)
-        : m_model(_right.m_model), m_analyteId(_right.m_analyteId), m_formulation(_right.m_formulation), m_route(_right.m_route), m_index(_right.m_index)
+        : m_model(_right.m_model), m_analyteGroupId(_right.m_analyteGroupId), m_formulation(_right.m_formulation), m_route(_right.m_route), m_index(_right.m_index)
     {
+        build();
     }
+
+
     const ParameterDefinition* operator*() override;
     Tucuxi::Common::Iterator<const ParameterDefinition*>& next() override
     {
@@ -61,26 +77,49 @@ public:
     void reset() override { m_index = 0; }
 
 private:
+
+    void build();
+
     const DrugModel &m_model;
-    const std::string m_analyteId;
+    const AnalyteGroupId m_analyteGroupId;
     const Formulation m_formulation;
     const AdministrationRoute m_route;
+    const std::vector<const FullFormulationAndRoute*> m_fullFormulationAndRoutes;
     size_t m_index;
+    size_t m_total;
+
+    std::vector<const ParameterSetDefinition * > m_absorptionParameters;
+
+
+    typedef struct {
+        std::string id;
+        bool isVariable;
+    } ParameterInfo;
+
+    std::vector<ParameterInfo> m_parametersVector;
 };
-
-#define INVARIANT(invariant, expression) ok &= expression;
-#define INVARIANTS(decl) public : bool checkInvariants() const {bool ok=true;decl;return ok;}
-#define CHECKINVARIANTS checkInvariants()
-
 
 class DrugModel
 {
 
     INVARIANTS(
-            INVARIANT(Invariants::INV_0001, (m_drugId.size() != 0))
-            INVARIANT(Invariants::INV_0002, (m_drugModelId.size() != 0))
-            )
+            INVARIANT(Invariants::INV_DRUGMODEL_0001, (m_drugId.size() > 0))
+            INVARIANT(Invariants::INV_DRUGMODEL_0002, (m_drugModelId.size() > 0))
+            INVARIANT(Invariants::INV_DRUGMODEL_0003, (m_analyteSets.size() > 0))
+            LAMBDA_INVARIANT(Invariants::INV_DRUGMODEL_0004, {bool ok = true;for(size_t i = 0; i < m_analyteSets.size(); i++) {ok &= m_analyteSets.at(i)->checkInvariants();} return ok;})
+            INVARIANT(Invariants::INV_DRUGMODEL_0005, (m_domain != nullptr))
+            INVARIANT(Invariants::INV_DRUGMODEL_0006, (m_domain->checkInvariants()))
+            LAMBDA_INVARIANT(Invariants::INV_DRUGMODEL_0007, {bool ok = true;for(size_t i = 0; i < m_covariates.size(); i++) {ok &= m_covariates.at(i)->checkInvariants();} return ok;})
+            INVARIANT(Invariants::INV_DRUGMODEL_0008, (m_formulationAndRoutes != nullptr))
+            INVARIANT(Invariants::INV_DRUGMODEL_0009, (m_formulationAndRoutes->checkInvariants()))
+            LAMBDA_INVARIANT(Invariants::INV_DRUGMODEL_0010, {bool ok = true;for(size_t i = 0; i < m_interParameterSetCorrelations.size(); i++) {ok &= m_interParameterSetCorrelations.at(i).checkInvariants();} return ok;})
+            INVARIANT(Invariants::INV_DRUGMODEL_0011, (m_activeMoieties.size() > 0))
+            LAMBDA_INVARIANT(Invariants::INV_DRUGMODEL_0012, {bool ok = true;for(size_t i = 0; i < m_activeMoieties.size(); i++) {ok &= m_activeMoieties.at(i)->checkInvariants();} return ok;})
+            INVARIANT(Invariants::INV_DRUGMODEL_0013, (m_timeConsiderations != nullptr))
+            INVARIANT(Invariants::INV_DRUGMODEL_0014, (m_timeConsiderations->checkInvariants()))
+            // No invariant on m_metadata
 
+            )
 
 public:
     DrugModel();
@@ -101,11 +140,19 @@ public:
 
     const FormulationAndRoutes& getFormulationAndRoutes() const;
 
-    ParameterDefinitionIterator getParameterDefinitions(const std::string& _analyteId, const Formulation &_formulation, const AdministrationRoute _route) const
+    ParameterDefinitionIterator getParameterDefinitions(const AnalyteGroupId& _analyteGroupId, const Formulation &_formulation, const AdministrationRoute _route) const
     {
-        ParameterDefinitionIterator iterator(*this, _analyteId, _formulation, _route);
+        ParameterDefinitionIterator iterator(*this, _analyteGroupId, _formulation, _route);
         return iterator;
     }
+
+    ParameterDefinitionIterator getParameterDefinitions(const AnalyteGroupId& _analyteGroupId, const std::vector<const FullFormulationAndRoute*> &_formulation) const
+    {
+        ParameterDefinitionIterator iterator(*this, _analyteGroupId, _formulation);
+        return iterator;
+    }
+
+
 
     ///
     /// \brief getParameters
@@ -126,12 +173,7 @@ public:
 
     void addAnalyteSet(std::unique_ptr<AnalyteSet> _analyteSet);
 
-    std::string getPkModelId() const {
-        if (m_analyteSets.size() > 0) {
-            return m_analyteSets.at(0)->getPkModelId();
-        }
-        return "";
-    }
+    const AnalyteSets& getAnalyteSets() const { return m_analyteSets;}
 
     void addActiveMoiety(std::unique_ptr<ActiveMoiety> _activeMoiety);
 
@@ -149,18 +191,28 @@ public:
 
     const TimeConsiderations &getTimeConsiderations() const { return *m_timeConsiderations;}
 
-
-
-    const AnalyteSet* getAnalyteSet(const std::string &_analyteId = "") const {
-        if ((_analyteId == "") && (m_analyteSets.size() == 1)) {
+    const AnalyteSet* getAnalyteSet(const AnalyteGroupId &_analyteGroupId = "") const {
+        if ((_analyteGroupId == "") && (m_analyteSets.size() == 1)) {
             return m_analyteSets.at(0).get();
         }
+
+        // TODO : Maybe get rid of this:
+        if (_analyteGroupId == "") {
+            return m_analyteSets.at(0).get();
+        }
+
+
         for (const std::unique_ptr<AnalyteSet> &set : m_analyteSets) {
-            if (set->getId() == _analyteId) {
+            if (set->getId() == _analyteGroupId) {
                 return set.get();
             }
         }
         return nullptr;
+    }
+
+    bool isSingleAnalyte() const
+    {
+        return (m_activeMoieties.size() == 1) && (m_analyteSets.size() == 1) && (m_analyteSets[0]->getAnalytes().size() == 1);
     }
 
 
@@ -170,19 +222,28 @@ private:
         return m_formulationAndRoutes->get(_formulation, _route);
     }
 
-    const ParameterSetDefinition* getAbsorptionParameters(const std::string &_analyteId, const Formulation &_formulation, const AdministrationRoute _route) const {
+    const FullFormulationAndRoute* getFormulationAndRoute(const FormulationAndRoute &_formulation) const {
+        return m_formulationAndRoutes->get(_formulation);
+    }
+
+    const ParameterSetDefinition* getAbsorptionParameters(const AnalyteGroupId &_analyteGroupId, const Formulation &_formulation, const AdministrationRoute _route) const {
         const FullFormulationAndRoute* fr = getFormulationAndRoute(_formulation, _route);
         if (fr != nullptr) {
-            return fr->getParameterDefinitions(_analyteId);
+            return fr->getParameterDefinitions(_analyteGroupId);
         }
         return nullptr;
     }
 
-    const ParameterSetDefinition* getDispositionParameters(const std::string &_analyteId) const {
-        TMP_UNUSED_PARAMETER(_analyteId);
-        CHECKINVARIANTS;
-        // TODO : Now we send an analyteId, while it should be a analyteGroupId
-        const AnalyteSet* pSet = getAnalyteSet(_analyteId);
+    const ParameterSetDefinition* getAbsorptionParameters(const AnalyteGroupId &_analyteGroupId, const FormulationAndRoute &_formulation) const {
+        const FullFormulationAndRoute* fr = getFormulationAndRoute(_formulation);
+        if (fr != nullptr) {
+            return fr->getParameterDefinitions(_analyteGroupId);
+        }
+        return nullptr;
+    }
+
+    const ParameterSetDefinition* getDispositionParameters(const AnalyteGroupId &_analyteGroupId) const {
+        const AnalyteSet* pSet = getAnalyteSet(_analyteGroupId);
         if (pSet != nullptr) {
             return &pSet->getDispositionParameters();
         }
@@ -214,6 +275,12 @@ private:
     std::unique_ptr<DrugModelMetadata> m_metadata;
 
     friend ParameterDefinitionIterator;
+    friend DrugModelChecker;
+    friend TestConstantEliminationBolus;
+    friend TestMultiAnalytesMultiActiveMoieties;
+#ifdef DRUGMODELTESTS
+    friend Drugs2Manager;
+#endif // DRUGMODELTESTS
 };
 
 } // namespace Core

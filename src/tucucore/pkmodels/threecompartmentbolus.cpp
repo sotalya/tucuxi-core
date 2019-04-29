@@ -15,7 +15,7 @@ namespace Core {
 #define DEBUG
 #endif
 
-ThreeCompartmentBolusMicro::ThreeCompartmentBolusMicro()
+ThreeCompartmentBolusMicro::ThreeCompartmentBolusMicro() : IntakeIntervalCalculatorBase<3, ThreeCompartmentBolusExponentials> (new PertinentTimesCalculatorStandard())
 {
 }
 

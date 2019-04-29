@@ -27,7 +27,7 @@ html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 # -- Project information -----------------------------------------------------
 
 project = u'Tucuxi'
-copyright = u'2018, HEIG-VD, CHUV'
+copyright = u'2019, HEIG-VD, CHUV'
 author = u'Yann Thoma & Co.'
 
 # The short X.Y version

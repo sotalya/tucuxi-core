@@ -8,7 +8,7 @@
 #include <string>
 
 namespace rapidxml {
-    template<class Ch> class xml_document;
+    template<class Ch> class xml_document; // NOLINT(readability-identifier-naming)
 } // namespace rapidxml
 
 namespace Tucuxi {

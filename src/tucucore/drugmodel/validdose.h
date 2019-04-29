@@ -8,6 +8,7 @@
 #include "tucucore/definitions.h"
 #include "tucucore/drugdefinitions.h"
 #include "tucucore/validvalues.h"
+#include "tucucore/invariants.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -19,15 +20,10 @@ class ValidDoses : public ValidValues
 public:
     ValidDoses(Unit _unit, std::unique_ptr<PopulationValue> _defaultDose);
 
-    virtual ~ValidDoses();
+    ~ValidDoses() override;
 
-    const std::vector<std::string>& getAnalyteIds() const;
+    INVARIANTS()
 
-    void setAnalyteIds(std::vector<std::string> _analyteIds);
-
-protected:
-
-    std::vector<std::string> m_analyteIds;
 };
 
 

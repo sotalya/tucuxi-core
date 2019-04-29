@@ -13,11 +13,12 @@
 #include "tucucore/drugmodel/activesubstance.h"
 #include "tucucore/drugmodel/validdose.h"
 #include "tucucore/drugmodel/validduration.h"
-
+#include "tucucore/invariants.h"
 
 namespace Tucuxi {
 namespace Core {
 
+class DrugModelChecker;
 
 enum class Formulation
 {
@@ -55,6 +56,11 @@ public:
     Value getDuration() const { return m_duration;}
     Unit getUnit() const { return m_unit;}
 
+    INVARIANTS(
+            INVARIANT(Invariants::INV_STANDARDTREATMENT_0001, ((!m_isFixedDuration) || (m_duration > 0.0)))
+            INVARIANT(Invariants::INV_STANDARDTREATMENT_0002, ((!m_isFixedDuration) || (m_unit.isTime())))
+            )
+
 protected:
     bool m_isFixedDuration;
     Value m_duration;
@@ -71,6 +77,11 @@ public:
     void setAbsorptionModel(AbsorptionModel _absorptionModel) { m_absorptionModel = _absorptionModel;}
     void setAbsorptionParameters(std::unique_ptr<ParameterSetDefinition> _parameters) {m_absorptionParameters = std::move(_parameters);}
 
+    INVARIANTS(
+            INVARIANT(Invariants::INV_ANALYTESETTOABSORPTIONASSOCIATION_0001, (m_absorptionModel != AbsorptionModel::Undefined))
+            INVARIANT(Invariants::INV_ANALYTESETTOABSORPTIONASSOCIATION_0002, (m_absorptionParameters->checkInvariants()))
+            )
+
 protected:
     std::unique_ptr<ParameterSetDefinition> m_absorptionParameters;
     const AnalyteSet &m_analyteSet;
@@ -83,11 +94,39 @@ protected:
     friend class FullFormulationAndRoute;
 };
 
+class AnalyteConversion
+{
+public:
+    AnalyteConversion(std::string _analyteId, Value _factor) :
+        m_analyteId(_analyteId), m_factor(_factor)
+    {}
+
+    AnalyteId getAnalyteId() const { return m_analyteId;}
+
+    Value getFactor() const { return m_factor;}
+
+    INVARIANTS(
+            INVARIANT(Invariants::INV_ANALYTECONVERSION_0001, (m_factor >= 0.0))
+            INVARIANT(Invariants::INV_ANALYTECONVERSION_0002, (m_analyteId.size() > 0))
+            )
+
+    protected:
+
+    AnalyteId m_analyteId;
+    Value m_factor;
+};
+
 class ForumulationAndRoutes;
 
 class FormulationAndRoute
 {
 public:
+
+    // Construction for testing purpose
+    FormulationAndRoute(AbsorptionModel _absorptionModel) :
+        m_formulation(Formulation::Undefined), m_route(AdministrationRoute::Undefined), m_absorptionModel(_absorptionModel),
+        m_administrationName("")
+    {}
 
     FormulationAndRoute(
             Formulation _formulation,
@@ -112,6 +151,28 @@ public:
         return (_v1.m_absorptionModel == _v2.m_absorptionModel) &&
                 (_v1.m_route == _v2.m_route);
     }
+
+
+    /// \brief Is the duration smaller?
+    bool operator<(const FormulationAndRoute &_f) const
+    {
+        if (m_formulation < _f.m_formulation)
+            return true;
+        if (m_route < _f.m_route)
+            return true;
+        if (m_absorptionModel < _f.m_absorptionModel)
+            return true;
+        if (m_administrationName < _f.m_administrationName)
+            return true;
+        return false;
+    }
+
+    INVARIANTS(
+            INVARIANT(Invariants::INV_FORMULATIONANDROUTE_0001, (m_formulation != Formulation::Undefined))
+            INVARIANT(Invariants::INV_FORMULATIONANDROUTE_0001, (m_route != AdministrationRoute::Undefined))
+            INVARIANT(Invariants::INV_FORMULATIONANDROUTE_0001, (m_absorptionModel != AbsorptionModel::Undefined))
+            INVARIANT(Invariants::INV_FORMULATIONANDROUTE_0001, (m_administrationName.size() > 0))
+            )
 
 protected:
 
@@ -146,7 +207,18 @@ public:
 
     void setStandardTreatment(std::unique_ptr<StandardTreatment> _standardTreatment) {m_standardTreatment = std::move(_standardTreatment);}
 
-    const ParameterSetDefinition* getParameterDefinitions(const std::string &_analyteId) const;
+    void addAnalyteConversion(std::unique_ptr<AnalyteConversion> _analyteConversion) { m_analyteConversions.push_back(std::move(_analyteConversion));}
+    const std::vector<std::unique_ptr<AnalyteConversion> >& getAnalyteConversions() const { return m_analyteConversions;}
+    const AnalyteConversion *getAnalyteConversion(AnalyteId _analyteId) const {
+        for (const auto &analyteConversion : m_analyteConversions) {
+            if (analyteConversion->getAnalyteId() == _analyteId) {
+                return analyteConversion.get();
+            }
+        }
+        return nullptr;
+    }
+
+    const ParameterSetDefinition* getParameterDefinitions(const AnalyteGroupId &_analyteGroupId) const;
 
     std::string getId() const { return m_id;}
 
@@ -158,12 +230,30 @@ public:
 
     const StandardTreatment* getStandardTreatment() const { return m_standardTreatment.get();}
 
+    INVARIANTS(
+            INVARIANT(Invariants::INV_FULLFORMULATIONANDROUTE_0001, (m_id.size() > 0))
+            INVARIANT(Invariants::INV_FULLFORMULATIONANDROUTE_0002, (m_validDoses != nullptr))
+            INVARIANT(Invariants::INV_FULLFORMULATIONANDROUTE_0003, (m_validDoses->checkInvariants()))
+            INVARIANT(Invariants::INV_FULLFORMULATIONANDROUTE_0004, (m_validIntervals != nullptr))
+            INVARIANT(Invariants::INV_FULLFORMULATIONANDROUTE_0005, (m_validIntervals->checkInvariants()))
+            // INVARIANT(Invariants::INV_FULLFORMULATIONANDROUTE_0006, (m_validInfusionTimes != nullptr))
+            LAMBDA_INVARIANT(Invariants::INV_FULLFORMULATIONANDROUTE_0007, {bool ok = true;if (m_validInfusionTimes != nullptr) { ok &= m_validInfusionTimes->checkInvariants();} return ok;})
+            LAMBDA_INVARIANT(Invariants::INV_FULLFORMULATIONANDROUTE_0008, {bool ok = true;if (m_standardTreatment != nullptr) { ok &= m_standardTreatment->checkInvariants();} return ok;})
+            // To check : do we need at least one association?
+            LAMBDA_INVARIANT(Invariants::INV_FULLFORMULATIONANDROUTE_0009, {bool ok = true;for(size_t i = 0; i < m_associations.size(); i++) {ok &= m_associations.at(i)->checkInvariants();} return ok;})
+            INVARIANT(Invariants::INV_FULLFORMULATIONANDROUTE_0010, (m_analyteConversions.size() > 0))
+            LAMBDA_INVARIANT(Invariants::INV_FULLFORMULATIONANDROUTE_0011, {bool ok = true;for(size_t i = 0; i < m_analyteConversions.size(); i++) {ok &= m_analyteConversions.at(i)->checkInvariants();} return ok;})
+            INVARIANT(Invariants::INV_FULLFORMULATIONANDROUTE_0012, (m_specs.checkInvariants()))
+            )
+
 protected:
 
     /// A unique Id, useful when a DrugModel embeds more than one Formulation
     std::string m_id;
 
     FormulationAndRoute m_specs;
+
+    std::vector<std::unique_ptr<AnalyteConversion> > m_analyteConversions;
 
     std::unique_ptr<ValidDoses> m_validDoses;
     std::unique_ptr<ValidDurations> m_validIntervals;
@@ -243,6 +333,13 @@ public:
     Iterator end() const { return m_fars.end(); }
 
 
+
+    INVARIANTS(
+            INVARIANT(Invariants::INV_FORMULATIONANDROUTE_0001, (m_fars.size() > 0))
+            LAMBDA_INVARIANT(Invariants::INV_FORMULATIONANDROUTE_0002, {bool ok = true;for(size_t i = 0; i < m_fars.size(); i++) {ok &= m_fars.at(i)->checkInvariants();} return ok;})
+            INVARIANT(Invariants::INV_FORMULATIONANDROUTE_0003, (m_defaultIndex < m_fars.size()))
+            )
+
 private:
 
     //! Vector of formulation and routes
@@ -250,6 +347,8 @@ private:
 
     //! Index of the default formulation and route. 0 by default
     std::size_t m_defaultIndex;
+
+    friend DrugModelChecker;
 };
 
 } // namespace Core

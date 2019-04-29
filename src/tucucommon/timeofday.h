@@ -40,6 +40,10 @@ public:
     /// \return The duration in milliseconds.
     int64 getDuration() const;
 
+    /// \brief Returns the duration since 0h00 as a Duration object
+    /// \return The duration object
+    Duration getRealDuration() const;
+
     /// \brief Computes the duration between two times
     /// \param _time A time to compare to.
     /// \return The millisecond.

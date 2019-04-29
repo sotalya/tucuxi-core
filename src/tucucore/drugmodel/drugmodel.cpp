@@ -9,44 +9,48 @@
 namespace Tucuxi {
 namespace Core {
 
-bool ParameterDefinitionIterator::isDone() const
+void ParameterDefinitionIterator::build()
 {
-    size_t nTotal = 0;
-    const ParameterSetDefinition* params1 = m_model.getAbsorptionParameters(m_analyteId, m_formulation, m_route);
-    if (params1 != nullptr) {
-        nTotal += params1->getNbParameters();
+    m_total = 0;
+
+    // Depending on the constructor invoked, we build the list of absorption parameters
+    if (m_fullFormulationAndRoutes.size() > 0) {
+        for (const auto & f : m_fullFormulationAndRoutes) {
+            const ParameterSetDefinition* parameter = m_model.getAbsorptionParameters(m_analyteGroupId, f->getFormulationAndRoute());
+            if (parameter != nullptr) {
+                m_absorptionParameters.push_back(parameter);
+                m_total += parameter->getNbParameters();
+            }
+        }
     }
-    const ParameterSetDefinition* params2 = m_model.getDispositionParameters(m_analyteId);
-    if (params2 != nullptr) {
-        nTotal += params2->getNbParameters();
-    }
-    return (m_index >= nTotal);
-}
-
-typedef struct {
-    std::string id;
-    bool isVariable;
-} ddd;
-
-const ParameterDefinition* ParameterDefinitionIterator::operator*()
-{
-    const ParameterSetDefinition* params1 = m_model.getAbsorptionParameters(m_analyteId, m_formulation, m_route);
-    const ParameterSetDefinition* params2 = m_model.getDispositionParameters(m_analyteId);
-
-    std::vector<ddd> vector;
-
-    // Check that there are absorption parameters (not the case for every model)
-    if (params1 != nullptr) {
-        for (size_t i = 0;i < params1->getNbParameters(); i++) {
-            vector.push_back({params1->getParameter(i)->getId(), params1->getParameter(i)->isVariable()});
+    else {
+        const ParameterSetDefinition* parameter = m_model.getAbsorptionParameters(m_analyteGroupId, m_formulation, m_route);
+        if (parameter != nullptr) {
+            m_absorptionParameters.push_back(parameter);
+            m_total += parameter->getNbParameters();
         }
     }
 
-    for (size_t i = 0;i < params2->getNbParameters(); i++) {
-        vector.push_back({params2->getParameter(i)->getId(), params2->getParameter(i)->isVariable()});
+    const ParameterSetDefinition* dispositionParameters = m_model.getDispositionParameters(m_analyteGroupId);
+    if (dispositionParameters != nullptr) {
+        m_total += dispositionParameters->getNbParameters();
     }
 
-    std::sort(vector.begin(), vector.end(), [&] (const ddd v1, const ddd v2) {
+
+    // Add the absorption parameters
+    for(const auto & params : m_absorptionParameters) {
+        for (size_t i = 0;i < params->getNbParameters(); i++) {
+            m_parametersVector.push_back({params->getParameter(i)->getId(), params->getParameter(i)->isVariable()});
+        }
+    }
+
+    // Add the elimination parameters
+    for (size_t i = 0;i < dispositionParameters->getNbParameters(); i++) {
+        m_parametersVector.push_back({dispositionParameters->getParameter(i)->getId(), dispositionParameters->getParameter(i)->isVariable()});
+    }
+
+    // We sort alphabetically the parameter Ids
+    std::sort(m_parametersVector.begin(), m_parametersVector.end(), [&] (const ParameterInfo v1, const ParameterInfo v2) {
         if (v1.isVariable && !v2.isVariable)
             return true;
         if (!v1.isVariable && v2.isVariable)
@@ -54,33 +58,38 @@ const ParameterDefinition* ParameterDefinitionIterator::operator*()
         return v1.id < v2.id;
     });
 
-    std::string curId = vector[m_index].id;
+}
 
-    if (params1 != nullptr) {
-        for (size_t i = 0;i < params1->getNbParameters(); i++) {
-            if (params1->getParameter(i)->getId() == curId)
-                return params1->getParameter(i);
+bool ParameterDefinitionIterator::isDone() const
+{
+    return (m_index >= m_total);
+}
+
+
+const ParameterDefinition* ParameterDefinitionIterator::operator*()
+{
+    // We get the parameter Id of the current parameter we are looking for
+    std::string curId = m_parametersVector[m_index].id;
+
+    // Iterate over the absorption parameters to find the parameter Id
+    for(const auto & parameterSet : m_absorptionParameters) {
+        for (size_t i = 0;i < parameterSet->getNbParameters(); i++) {
+            if (parameterSet->getParameter(i)->getId() == curId)
+                return parameterSet->getParameter(i);
         }
     }
-    for (size_t i = 0;i < params2->getNbParameters(); i++) {
-        if (params2->getParameter(i)->getId() == curId)
-            return params2->getParameter(i);
+
+    // Iterate over the disposition parameters to find the parameter Id
+    const ParameterSetDefinition* dispositionParameters = m_model.getDispositionParameters(m_analyteGroupId);
+
+    for (size_t i = 0;i < dispositionParameters->getNbParameters(); i++) {
+        if (dispositionParameters->getParameter(i)->getId() == curId)
+            return dispositionParameters->getParameter(i);
     }
 
+    // This really should never happen
     assert (false);
 
-
-/*
-    if (params1 != nullptr) {
-        if (index < params1->getNbParameters()) {
-            return params1->getParameter(index);
-        }
-        index -= params1->getNbParameters();
-    }    
-    if (params2 != nullptr && index < params2->getNbParameters()) {
-        return params2->getParameter(index);
-    }
-            */
     return nullptr;
 }
 

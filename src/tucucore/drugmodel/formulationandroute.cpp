@@ -6,18 +6,15 @@
 namespace Tucuxi {
 namespace Core {
 
-const ParameterSetDefinition* FullFormulationAndRoute::getParameterDefinitions(const std::string &_analyteId) const
+const ParameterSetDefinition* FullFormulationAndRoute::getParameterDefinitions(const AnalyteGroupId &_analyteGroupId) const
 {
     for (const std::unique_ptr<AnalyteSetToAbsorptionAssociation>& association : m_associations) {
-        for (const std::unique_ptr<Analyte>& analyte : association->m_analyteSet.getAnalytes()) {
-            if (analyte->getAnalyteId() == _analyteId) {
-                return association->m_absorptionParameters.get();
-            }
+        if (association->m_analyteSet.getId() == _analyteGroupId) {
+            return association->m_absorptionParameters.get();
         }
     }
     return nullptr;
 }
-
 
 FormulationAndRoutes::FormulationAndRoutes() :
     m_defaultIndex(0)

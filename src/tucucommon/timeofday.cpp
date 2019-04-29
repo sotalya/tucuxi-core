@@ -36,6 +36,11 @@ int64 TimeOfDay::getDuration() const
     return std::chrono::duration_cast<std::chrono::milliseconds>(m_time).count();
 }
 
+Duration TimeOfDay::getRealDuration() const
+{
+    return Duration(std::chrono::duration_cast<std::chrono::milliseconds>(m_time));
+}
+
 
 const Duration TimeOfDay::operator-(const TimeOfDay& _time) const
 {

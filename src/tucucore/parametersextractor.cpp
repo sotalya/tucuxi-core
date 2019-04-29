@@ -8,6 +8,7 @@
 #include "tucucore/parametersextractor.h"
 #include "tucucore/drugmodel/drugmodel.h"
 #include "tucucommon/duration.h"
+#include "tucucommon/loggerhelper.h"
 
 using namespace std::chrono_literals;
 
@@ -135,7 +136,7 @@ ParametersExtractor::ParametersExtractor(const CovariateSeries &_covariates,
 }
 
 
-ParametersExtractor::Result ParametersExtractor::extract(ParameterSetSeries &_series)
+ComputingResult ParametersExtractor::extract(ParameterSetSeries &_series)
 {
     // Map containing the computed parameters along with their latest value.
     std::map<std::string, std::pair<const ParameterDefinition*, Value>> cParamMap;
@@ -186,8 +187,12 @@ ParametersExtractor::Result ParametersExtractor::extract(ParameterSetSeries &_se
         if (!m_ogm.evaluate()) {
             // Something went wrong
             // TODO : Log something somewhere
+            Tucuxi::Common::LoggerHelper logger;
+            logger.error("Error with the a priori computation of parameters");
 
-            return Result::ExtractionError;
+
+
+            return ComputingResult::ParameterExtractionError;
         }
 
         // Retrieve updated values.
@@ -196,7 +201,7 @@ ParametersExtractor::Result ParametersExtractor::extract(ParameterSetSeries &_se
         for (auto &cp : cParamMap) {
             rc = m_ogm.getValue(cp.first, newVal);
             if (!rc) {
-                return Result::ExtractionError;
+                return ComputingResult::ParameterExtractionError;
             }
 
             if (newVal != cp.second.second || tcv.first == m_timedCValues.begin()->first) {
@@ -211,11 +216,11 @@ ParametersExtractor::Result ParametersExtractor::extract(ParameterSetSeries &_se
         _series.addParameterSetEvent(pSetEvent);
     }
 
-    return Result::Ok;
+    return ComputingResult::Ok;
 }
 
 
-ParametersExtractor::Result ParametersExtractor::buildFullSet(const ParameterSetSeries &_inputSeries, ParameterSetSeries &_outputSeries) const
+ComputingResult ParametersExtractor::buildFullSet(const ParameterSetSeries &_inputSeries, ParameterSetSeries &_outputSeries) const
 {
     // Start with the first set of parameters (it should contain the full set)
     ParameterSetEvent current(_inputSeries.m_parameterSets.at(0));
@@ -223,6 +228,8 @@ ParametersExtractor::Result ParametersExtractor::buildFullSet(const ParameterSet
 
     // Then iterate over the modifications
     for(size_t i = 1; i < _inputSeries.m_parameterSets.size(); i++) {
+
+        current.setEventTime(_inputSeries.m_parameterSets.at(i).getEventTime());
 
         // And for each event, update the parameters that change at that time
         auto it = _inputSeries.m_parameterSets.at(i).begin();
@@ -234,11 +241,11 @@ ParametersExtractor::Result ParametersExtractor::buildFullSet(const ParameterSet
         // Add the new event to the output series
         _outputSeries.addParameterSetEvent(current);
     }
-    return Result::Ok;
+    return ComputingResult::Ok;
 }
 
 
-ParametersExtractor::Result ParametersExtractor::extractPopulation(ParameterSetSeries &_series)
+ComputingResult ParametersExtractor::extractPopulation(ParameterSetSeries &_series)
 {
     // Parameters valid since the epoch
     ParameterSetEvent pSetEvent(DateTime(Tucuxi::Common::Duration(0h)));
@@ -252,7 +259,7 @@ ParametersExtractor::Result ParametersExtractor::extractPopulation(ParameterSetS
 
     // Add the parameter set event to the series of events.
     _series.addParameterSetEvent(pSetEvent);
-    return Result::Ok;
+    return ComputingResult::Ok;
 }
 
 } // namespace Core

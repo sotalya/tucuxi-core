@@ -2,6 +2,8 @@ TEMPLATE = app
 CONFIG += console
 CONFIG -= app_bundle
 
+TARGET      = tucuvalidator
+
 LIBS += -lpthread
 
 
@@ -12,4 +14,4 @@ include(../tucucore.pri)
 HEADERS +=
 
 SOURCES += \
-    ../../../src/tucucli/tucucli.cpp
+    ../../../src/tucuvalidator/tucuvalidator.cpp

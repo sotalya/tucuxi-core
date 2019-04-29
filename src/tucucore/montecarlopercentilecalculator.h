@@ -11,6 +11,7 @@
 #include "tucucore/sampleevent.h"
 #include "tucucore/dosage.h"
 #include "tucucore/computingservice/computingaborter.h"
+#include "tucucore/computingservice/computingresult.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -18,17 +19,11 @@ namespace Core {
 class IConcentrationCalculator;
 class IResidualErrorModel;
 class PercentilesPrediction;
+class ActiveMoiety;
 
 
 class IPercentileCalculator
 {
-public:
-    enum class ComputingResult
-    {
-        Success,
-        Failure,
-        Aborted
-    };
 };
 
 
@@ -61,7 +56,7 @@ public:
             IConcentrationCalculator &_concentrationCalculator,
             ComputingAborter *_aborter) = 0;
 
-    virtual ~IAprioriPercentileCalculator() {};
+    virtual ~IAprioriPercentileCalculator() {}
 };
 
 class IAposterioriPercentileCalculator : public IPercentileCalculator
@@ -96,7 +91,7 @@ public:
             IConcentrationCalculator &_concentrationCalculator,
             ComputingAborter *_aborter) = 0;
 
-    virtual ~IAposterioriPercentileCalculator() {};
+    virtual ~IAposterioriPercentileCalculator() {}
 };
 
 class IAposterioriNormalApproximationMonteCarloPercentileCalculator : public IPercentileCalculator
@@ -131,7 +126,7 @@ public:
             IConcentrationCalculator &_concentrationCalculator,
             ComputingAborter *_aborter) = 0;
 
-    virtual ~IAposterioriNormalApproximationMonteCarloPercentileCalculator() {};
+    virtual ~IAposterioriNormalApproximationMonteCarloPercentileCalculator() {}
 };
 
 
@@ -164,7 +159,7 @@ protected:
             Likelihood &_logLikelihood,
             EigenMatrix &_subomega);
 
-protected:
+public:
 
     ///
     /// \brief computePredictionsAndSortPercentiles
@@ -193,10 +188,31 @@ protected:
             IConcentrationCalculator &_concentrationCalculator,
             ComputingAborter *_aborter);
 
+    ComputingResult computePredictions(const DateTime &_recordFrom,
+            const DateTime &_recordTo,
+            const IntakeSeries &_intakes,
+            const ParameterSetSeries &_parameters,
+            const IResidualErrorModel &_residualErrorModel,
+            const std::vector<Etas> &_etas,
+            const std::vector<Deviations> &_epsilons,
+            IConcentrationCalculator &_concentrationCalculator,
+            unsigned int _nbPatients,
+            std::vector<TimeOffsets> &_times,
+            IntakeSeries &_recordedIntakes,
+            std::vector< std::vector< std::vector<Concentration> > > &_concentrations,
+            ComputingAborter *_aborter);
+
+    ComputingResult sortAndExtractPercentiles(PercentilesPrediction &_percentiles,
+            const PercentileRanks &_percentileRanks,
+            unsigned int _nbPatients,
+            std::vector<TimeOffsets> _times,
+            IntakeSeries &_recordedIntakes,
+            std::vector< std::vector< std::vector<Concentration> > > &_concentrations);
+
 private:
     unsigned int m_nbPatients;
 
-    static unsigned int sm_nbPatients;
+    static unsigned int sm_nbPatients; // NOLINT(readability-identifier-naming)
 };
 
 
@@ -236,6 +252,22 @@ public:
             const PercentileRanks &_percentileRanks,
             IConcentrationCalculator &_concentrationCalculator,
             ComputingAborter *_aborter) override;
+
+
+    ///
+    /// \brief calculateEtasAndEpsilons
+    /// \param _etas Etas calculated within the function
+    /// \param _epsilons Epsilons calculated within the function
+    /// \param _omega covariance matrix for inter-individual variability
+    /// \param _residualErrorModel Residual error model
+    /// \param _initialEtas Set of initial Etas, used in case of a posteriori
+    /// \return The status of calculation
+    ///
+    ComputingResult calculateEtasAndEpsilons(std::vector<Etas> &_etas,
+            std::vector<Deviations> &_epsilons,
+            const OmegaMatrix& _omega,
+            const IResidualErrorModel &_residualErrorModel,
+            const Etas& _initialEtas);
 };
 
 
@@ -271,6 +303,29 @@ public:
             const PercentileRanks &_percentileRanks,
             IConcentrationCalculator &_concentrationCalculator,
             ComputingAborter *_aborter) override;
+
+
+    ///
+    /// \brief calculate
+    /// \param _percentiles percentiles calculated within the method
+    /// \param _intakes Intake series
+    /// \param _parameters Initial parameters series
+    /// \param _omega covariance matrix for inter-individual variability
+    /// \param _residualErrorModel Residual error model
+    /// \param _etas Etas pre-calculated by the aposteriori calculator
+    /// \param _samples List of samples
+    /// \param _aborter An aborter object allowing to abort the calculation
+    /// \return The status of calculation
+    ComputingResult calculateEtasAndEpsilons(std::vector<Etas> &_fullEtas,
+            std::vector<Deviations> &_epsilons,
+            const IntakeSeries &_intakes,
+            const ParameterSetSeries &_parameters,
+            const OmegaMatrix& _omega,
+            const IResidualErrorModel &_residualErrorModel,
+            const Etas& _etas,
+            const SampleSeries &_samples,
+            IConcentrationCalculator &_concentrationCalculator,
+            ComputingAborter *_aborter);
 };
 
 
@@ -312,6 +367,181 @@ public:
             ComputingAborter *_aborter) override;
 };
 
+///
+/// \brief The AposterioriMatrixCache class
+/// This class embeds a map of matrices with a matrix
+/// for each pair of nbSamples and nbEtas. When creating the matrices,
+/// it populates them with random samples. If a matrix already exists for pair
+/// <nbSamples,nbEtas>, then it is reused.
+/// The method for getting a matrix is reentrant.
+///
+/// Tested by TestPercentileCalculator
+///
+class AposterioriMatrixCache {
+public:
+
+    ///
+    /// \brief get a matrix
+    /// \param _nbSamples Number of samples of the matrix
+    /// \param _nbEtas Number of etas of the matrix
+    /// \return A reference to the matrix
+    ///
+    /// This function only creates a matrix if it does not exist yet.
+    /// When the matrix is created it is filled with random values.
+    ///
+    /// Be careful to use it correctly:
+    /// const EigenMatrix &m = matrixCache.getAvecs(x,y);
+    /// If not, then the matrix would be copied and so the system would be less
+    /// efficient.
+    ///
+    const EigenMatrix &getAvecs(int _nbSamples, int _nbEtas);
+protected:
+
+    ///! The map of matrices
+    std::map<std::pair<int, int>, EigenMatrix> m_matrices;
+};
+
+
+
+
+class IAprioriPercentileCalculatorMulti : public IPercentileCalculator
+{
+public:
+    ///
+    /// \brief calculate
+    /// \param _percentiles percentiles calculated within the method
+    /// \param _recordFrom Date from which we start recording the concentration
+    /// \param _recordTo Date until which we record the concentration
+    /// \param _intakes Intake series
+    /// \param _parameters Initial parameters series
+    /// \param _omega covariance matrix for inter-individual variability
+    /// \param _residualErrorModel Residual error model
+    /// \param _etas Etas pre-calculated by the aposteriori calculator
+    /// \param _percentileRanks List of percentiles ranks
+    /// \param _aborter An aborter object allowing to abort the calculation
+    /// \return The status of calculation
+    virtual ComputingResult calculate(
+            PercentilesPrediction &_percentiles,
+            const DateTime &_recordFrom,
+            const DateTime &_recordTo,
+            const GroupsIntakeSeries &_intakes,
+            const GroupsParameterSetSeries &_parameters,
+            const std::map<AnalyteGroupId, OmegaMatrix>& _omega,
+            const std::map<AnalyteGroupId, IResidualErrorModel* > &_residualErrorModel,
+            const std::map<AnalyteGroupId, Etas>& _etas,
+            const PercentileRanks &_percentileRanks,
+            IConcentrationCalculator &_concentrationCalculator,
+            const ActiveMoiety *_activeMoiety,
+            ComputingAborter *_aborter) = 0;
+
+    virtual ~IAprioriPercentileCalculatorMulti() {}
+};
+
+class IAposterioriPercentileCalculatorMulti : public IPercentileCalculator
+{
+public:
+
+    ///
+    /// \brief calculate
+    /// \param _percentiles percentiles calculated within the method
+    /// \param _recordFrom Date from which we start recording the concentration
+    /// \param _recordTo Date until which we record the concentration
+    /// \param _intakes Intake series
+    /// \param _parameters Initial parameters series
+    /// \param _omega covariance matrix for inter-individual variability
+    /// \param _residualErrorModel Residual error model
+    /// \param _etas Etas pre-calculated by the aposteriori calculator
+    /// \param _samples List of samples
+    /// \param _percentileRanks List of percentiles ranks
+    /// \param _aborter An aborter object allowing to abort the calculation
+    /// \return The status of calculation
+    virtual ComputingResult calculate(
+            PercentilesPrediction &_percentiles,
+            const DateTime &_recordFrom,
+            const DateTime &_recordTo,
+            const GroupsIntakeSeries &_intakes,
+            const GroupsParameterSetSeries &_parameters,
+            const std::map<AnalyteGroupId, OmegaMatrix>& _omega,
+            const std::map<AnalyteGroupId, IResidualErrorModel* > &_residualErrorModel,
+            const std::map<AnalyteGroupId, Etas>& _etas,
+            const std::map<AnalyteGroupId, SampleSeries> &_samples,
+            const PercentileRanks &_percentileRanks,
+            IConcentrationCalculator &_concentrationCalculator,
+            const ActiveMoiety *_activeMoiety,
+            ComputingAborter *_aborter) = 0;
+
+    virtual ~IAposterioriPercentileCalculatorMulti() {}
+};
+
+class AprioriPercentileCalculatorMulti : public IAprioriPercentileCalculatorMulti, public MonteCarloPercentileCalculatorBase
+{
+public:
+    ///
+    /// \brief calculate
+    /// \param _percentiles percentiles calculated within the method
+    /// \param _recordFrom Date from which we start recording the concentration
+    /// \param _recordTo Date until which we record the concentration
+    /// \param _intakes Intake series
+    /// \param _parameters Initial parameters series
+    /// \param _omega covariance matrix for inter-individual variability
+    /// \param _residualErrorModel Residual error model
+    /// \param _etas Etas pre-calculated by the aposteriori calculator
+    /// \param _percentileRanks List of percentiles ranks
+    /// \param _aborter An aborter object allowing to abort the calculation
+    /// \return The status of calculation
+    ComputingResult calculate(
+            PercentilesPrediction &_percentiles,
+            const DateTime &_recordFrom,
+            const DateTime &_recordTo,
+            const GroupsIntakeSeries &_intakes,
+            const GroupsParameterSetSeries &_parameters,
+            const std::map<AnalyteGroupId, OmegaMatrix>& _omega,
+            const std::map<AnalyteGroupId, IResidualErrorModel* > &_residualErrorModel,
+            const std::map<AnalyteGroupId, Etas>& _etas,
+            const PercentileRanks &_percentileRanks,
+            IConcentrationCalculator &_concentrationCalculator,
+            const ActiveMoiety *_activeMoiety,
+            ComputingAborter *_aborter) override;
+
+    ~AprioriPercentileCalculatorMulti() override {}
+};
+
+
+class AposterioriMonteCarloPercentileCalculatorMulti : public IAposterioriPercentileCalculatorMulti, public MonteCarloPercentileCalculatorBase
+{
+public:
+
+    ///
+    /// \brief calculate
+    /// \param _percentiles percentiles calculated within the method
+    /// \param _recordFrom Date from which we start recording the concentration
+    /// \param _recordTo Date until which we record the concentration
+    /// \param _intakes Intake series
+    /// \param _parameters Initial parameters series
+    /// \param _omega covariance matrix for inter-individual variability
+    /// \param _residualErrorModel Residual error model
+    /// \param _etas Etas pre-calculated by the aposteriori calculator
+    /// \param _samples List of samples
+    /// \param _percentileRanks List of percentiles ranks
+    /// \param _aborter An aborter object allowing to abort the calculation
+    /// \return The status of calculation
+    virtual ComputingResult calculate(
+            PercentilesPrediction &_percentiles,
+            const DateTime &_recordFrom,
+            const DateTime &_recordTo,
+            const GroupsIntakeSeries &_intakes,
+            const GroupsParameterSetSeries &_parameters,
+            const std::map<AnalyteGroupId, OmegaMatrix>& _omega,
+            const std::map<AnalyteGroupId, IResidualErrorModel* > &_residualErrorModel,
+            const std::map<AnalyteGroupId, Etas>& _etas,
+            const std::map<AnalyteGroupId, SampleSeries> &_samples,
+            const PercentileRanks &_percentileRanks,
+            IConcentrationCalculator &_concentrationCalculator,
+            const ActiveMoiety *_activeMoiety,
+            ComputingAborter *_aborter) override;
+
+    ~AposterioriMonteCarloPercentileCalculatorMulti() override {}
+};
 
 } // namespace Core
 } // namespace Tucuxi

@@ -16,6 +16,7 @@
 #include "tucucore/drugdefinitions.h"
 #include "tucucore/drugmodel/parameterdefinition.h"
 #include "tucucore/parameterids.h"
+#include "tucucore/drugmodel/analyte.h"
 
 struct TestParameterExtractor;
 
@@ -71,6 +72,11 @@ public:
         for (int i = 0; i < ParameterId::size; i++) {
             m_IdToIndex[i] = -1;
         }
+    }
+
+    void setEventTime(const DateTime &_date)
+    {
+        m_time = _date;
     }
 
 
@@ -151,9 +157,12 @@ public:
     // To allow the ParametersExtractor to manipulate m_parameterSets
     friend ParametersExtractor;
 
-private:
+// private:
     std::vector<ParameterSetEvent> m_parameterSets;
 };
+
+
+typedef std::map<AnalyteGroupId, ParameterSetSeries> GroupsParameterSetSeries;
 
 
 } // namespace Core
