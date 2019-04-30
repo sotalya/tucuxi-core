@@ -240,10 +240,84 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
 
         if (res == Tucuxi::Core::ComputingResult::Ok) {
             for (unsigned int i = 0; i < residualSize; i++) {
-                fructose_assert_double_eq(outMicroMultiResiduals[i], outMicroSingleResiduals[i])
-                fructose_assert_double_eq(outMacroMultiResiduals[i], outMacroSingleResiduals[i])
+                fructose_assert_double_eq_rel_abs(outMicroMultiResiduals[i], outMicroSingleResiduals[i], 0.0001, 0.0)
+                fructose_assert_double_eq_rel_abs(outMacroMultiResiduals[i], outMacroSingleResiduals[i], 0.0001, 0.0)
                 fructose_assert_double_eq_rel_abs(outMicroMultiResiduals[i], outMacroMultiResiduals[i], 0.001, 0.001)
                 fructose_assert_double_eq_rel_abs(outMicroSingleResiduals[i], outMacroSingleResiduals[i], 0.001, 0.001)
+            }
+        }
+    }
+
+
+    template <class CalculatorClass0,class CalculatorClass1>
+    void testCompare(const Tucuxi::Core::ParameterSetEvent &_Parameters,
+                              double _dose,
+                              Tucuxi::Core::AbsorptionModel _route,
+                              std::chrono::hours _interval,
+                              std::chrono::seconds _infusionTime,
+                              int _nbPoints)
+    {
+        Tucuxi::Core::ComputingResult res;
+        CalculatorClass0 calculator0;
+        CalculatorClass1 calculator1;
+
+        DateTime now;
+        Tucuxi::Common::Duration offsetTime = 0s;
+        Tucuxi::Common::Duration interval = _interval;
+        Tucuxi::Common::Duration infusionTime = _infusionTime;
+
+        unsigned int residualSize = (calculator0.getResidualSize() == calculator0.getResidualSize()) ? calculator0.getResidualSize() : maxResidualSize;
+        bool isAll = false;
+
+        std::vector<Tucuxi::Core::Concentrations> concentrations0;
+        concentrations0.resize(residualSize);
+
+        Tucuxi::Core::TimeOffsets times;
+        Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, _dose, interval, Tucuxi::Core::FormulationAndRoute(_route), _route, infusionTime, _nbPoints);
+        Tucuxi::Core::Residuals inResiduals(residualSize);
+        Tucuxi::Core::Residuals outResiduals0(residualSize);
+        Tucuxi::Core::Residuals outResiduals1(residualSize);
+
+        std::fill(inResiduals.begin(), inResiduals.end(), 0);
+
+        // Calculation of first Class
+        res = calculator0.calculateIntakePoints(
+            concentrations0,
+            times,
+            intakeEvent,
+            _Parameters,
+            inResiduals,
+            isAll,
+            outResiduals0,
+            true);
+
+        fructose_assert(res == Tucuxi::Core::ComputingResult::Ok);
+
+
+        std::vector<Tucuxi::Core::Concentrations> concentrations1;
+        concentrations1.resize(residualSize);
+
+        // Calculation of second Class
+        res = calculator1.calculateIntakePoints(
+            concentrations1,
+            times,
+            intakeEvent,
+            _Parameters,
+            inResiduals,
+            isAll,
+            outResiduals1,
+            true);
+
+        fructose_assert(res == Tucuxi::Core::ComputingResult::Ok);
+
+        if (res == Tucuxi::Core::ComputingResult::Ok) {
+            for (unsigned int i = 0; i < _nbPoints; i++) {
+//                std::cout << i << " : " << concentrations0[0][i] << " , " << concentrations1[0][i] << std::endl;
+                fructose_assert_double_eq_rel_abs(concentrations0[0][i], concentrations1[0][i], 0.0001, 0.0);
+            }
+
+            for (unsigned int i = 0; i < residualSize; i++) {
+                fructose_assert_double_eq_rel_abs(outResiduals0[i], outResiduals1[i], 0.0001, 0.0);
             }
         }
     }
@@ -327,6 +401,30 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             0s,
             CYCLE_SIZE);
     }
+
+    /// \brief Test the concentration calculation of extravascular. Compares analytical and Rk4 intake calculators
+    /// \param _testName Test name.
+    /// Two calculators are instanciated, and concentrations are computed with both.
+    /// The concentrations are then compared and shall be identical.
+    void test1compExtraAnalyticalVsRk4(const std::string& /* _testName */)
+    {
+        // parameter for micro class
+        Tucuxi::Core::ParameterDefinitions microParameterDefs;
+        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterVariabilityType::None)));
+        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ke", 0.0435331, Tucuxi::Core::ParameterVariabilityType::None)));
+        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
+        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
+        Tucuxi::Core::ParameterSetEvent microParameters(DateTime(), microParameterDefs);
+
+        testCompare<Tucuxi::Core::OneCompartmentExtraMicro, Tucuxi::Core::RK4OneCompartmentExtraMicro>(
+            microParameters,
+            400.0,
+            Tucuxi::Core::AbsorptionModel::Extravascular,
+            12h,
+            0s,
+            CYCLE_SIZE);
+    }
+
 
 
     /// \brief Test the residual calculation of extravascular. Compares single point vs multiple points

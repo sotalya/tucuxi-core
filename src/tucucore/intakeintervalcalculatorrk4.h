@@ -190,7 +190,9 @@ protected:
     void compute(const Eigen::VectorXd &_times, const Residuals& _inResiduals, std::vector<Concentrations>& _concentrations)
     {
         // We advance minute per minute
-        const double h = 1.0 / 60.0;
+        const double stdH = 1.0 / 60.0;
+
+        double h = stdH;
 
         int nbPoints = _times.size();
 
@@ -227,6 +229,14 @@ protected:
 
         // Looping the rest of the points to calculate the concentrations of each compartment
         while (cont) {
+
+            // Adjust h if the next time is close, to reach the exact time point
+            if (nextTime - t < stdH) {
+                h = nextTime - t;
+            }
+            else {
+                h = stdH;
+            }
 
             // Let's use static inheritance
             static_cast<ImplementationClass*>(this)->derive(t, concentrations, dcdt);
