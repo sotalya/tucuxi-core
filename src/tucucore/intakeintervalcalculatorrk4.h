@@ -19,7 +19,7 @@ public:
 
     ~IntakeIntervalCalculatorRK4() override;
 
-
+    ///
     /// \brief Calculate all points for the given time serie
     /// Variable denisty is used by default, which means IntakeEvent is not constant as the final density
     /// is stored there. Cornish Fisher cumulants calculated within
@@ -31,6 +31,7 @@ public:
     /// \param _outResiduals Final residual concentrations
     /// \param _isDensityConstant Flag to indicate if initial number of points should be used with a constant density
     /// \return An indication if the computation was successful
+    ///
     ComputingResult calculateIntakePoints(
         std::vector<Concentrations>& _concentrations,
         TimeOffsets & _times,
@@ -41,6 +42,7 @@ public:
         Residuals& _outResiduals,
         bool _isDensityConstant) override;
 
+    ///
     /// \brief Compute one single point at the specified time as well as final residuals
     /// \param _concentrations vector of concentrations.
     /// \param _intakeEvent intake for the cycle (all cyles start with an intake)
@@ -49,6 +51,7 @@ public:
     /// \param _atTime The time of the point of interest
     /// \param _outResiduals Final residual concentrations
     /// \return Returns an indication if the computation was successful
+    ///
     ComputingResult calculateIntakeSinglePoint(
         std::vector<Concentrations>& _concentrations,
         const IntakeEvent& _intakeEvent,
@@ -60,22 +63,33 @@ public:
 
 protected:
 
+    ///
     /// \brief Compute concentrations using a specific algorithm
     /// \param _times times for which we need the concentrations
     /// \param _inResiduals Initial residual concentrations
     /// \param _inAll Need concentrations for all compartements or not
     /// \param _concentrations vector of concentrations.
     /// \param _outResiduals Final residual concentrations
+    ///
     virtual bool computeConcentrations(Eigen::VectorXd &_times, const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) = 0;
 
+    ///
     /// \brief Compute concentrations using a specific algorithm
     /// \param _atTime measure time
     /// \param _inResiduals Initial residual concentrations
     /// \param _inAll Need concentrations for all compartements or not
     /// \param _concentrations vector of concentrations.
     /// \param _outResiduals Final residual concentrations
+    ///
     virtual bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) = 0;
 
+    ///
+    /// \brief Set the initial concentrations for each compartment
+    /// \param _inResiduals Initial residual concentrations
+    /// \param _concentrations vector of initial concentrations set by the function
+    ///
+    /// In a typical use cas, this function uses the dose and the residuals to set the new concentration.
+    ///
     virtual void initConcentrations(const Residuals& _inResiduals, std::vector<double> &_concentrations) = 0;
 
 protected:
@@ -107,31 +121,36 @@ public:
 
 protected:
 
+    int m_nbPoints; /// Number measure points during interval
+    Value m_Int; /// Interval time (Hours)
+
     bool computeConcentrations(Eigen::VectorXd &_times, const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
     {
         std::vector<Concentrations> concentrations;
-        for (int i = 0; i < ResidualSize; i++) {
+        for (unsigned int i = 0; i < ResidualSize; i++) {
             concentrations.push_back(Concentrations(m_nbPoints));
         }
 
-        // compute concentration1 and 2
+        // compute concentrations
         compute(_times, _inResiduals, concentrations);
 
-        for (int i = 0; i < ResidualSize; i++) {
+        // Get the output residuals
+        for (unsigned int i = 0; i < ResidualSize; i++) {
             _outResiduals[i] = concentrations[i][m_nbPoints - 1];
         }
 
         // Return concentrations of first compartment
         _concentrations[0].assign(concentrations[0].data(), concentrations[0].data() + concentrations[0].size());
-        // Return concentrations of other compartments
+        // Return concentrations of other compartments if required
         if (_isAll == true) {
             for (size_t i = 1; i < ResidualSize; i++) {
                 _concentrations[i].assign(concentrations[i].data(), concentrations[i].data() + concentrations[i].size());
             }
         }
 
+        // Check that the output residuals are positive
         bool bOk = true;
-        for (int i = 0; i < ResidualSize; i++) {
+        for (unsigned int i = 0; i < ResidualSize; i++) {
             bOk &= checkValue(_outResiduals[i] >= 0, "A concentration is negative.");
         }
 
@@ -151,11 +170,12 @@ protected:
         Eigen::VectorXd times(2);
         times[0] = _atTime;
         times[1] = m_Int;
-        // compute concentration1 and 2
+        // compute concentrations
         compute(times, _inResiduals, concentrations);
 
-        // return concentraions (computation with atTime (current time))
+        // return concentrations (computation with atTime (current time))
         _concentrations[0].push_back(concentrations[0][atTime]);
+        // return all compartments if required
         if (_isAll == true) {
             for (size_t i = 1; i < ResidualSize; i++) {
                 _concentrations[i].push_back(concentrations[i][atTime]);
@@ -174,6 +194,7 @@ protected:
             _outResiduals[i] = concentrations[i][atEndInterval];
         }
 
+        // Checks that the output residuals are positive
         bool bOk = true;
         for (size_t i = 0; i < ResidualSize; i++) {
             bOk &= checkValue(_outResiduals[i] >= 0, "A final residual is negative.");
@@ -182,53 +203,59 @@ protected:
         return bOk;
     }
 
-
-
-    int m_nbPoints; /// Number measure points during interval
-    Value m_Int; /// Interval time (Hours)
-
     void compute(const Eigen::VectorXd &_times, const Residuals& _inResiduals, std::vector<Concentrations>& _concentrations)
     {
-        // We advance minute per minute
+        // By default, we advance minute per minute
         const double stdH = 1.0 / 60.0;
 
+        // h is the delta used and possibly modified at specific iterations
         double h = stdH;
 
-        int nbPoints = _times.size();
+        // The number of points to get corresponds to the size of the times of interest
+        Eigen::Index nbPoints = _times.size();
 
-
+        // The vectors of concentrations
         std::vector<double> concentrations(ResidualSize);
 
+        // We initialize the first concentration
         initConcentrations(_inResiduals, concentrations);
 
-
+        // The values used by RK4 during one iteration
         std::vector<double> dcdt(ResidualSize);
         std::vector<double> k1(ResidualSize);
         std::vector<double> k2(ResidualSize);
         std::vector<double> k3(ResidualSize);
         std::vector<double> k4(ResidualSize);
         std::vector<double> c(ResidualSize);
+
+        // Time t used for calculating the derivative
         double t = 0.0;
+
+        // cont indicates if the loop is finished or not
         bool cont = true;
 
+        // Next time of interest
         double nextTime = _times[0];
-        size_t nextPoint = 0;
 
-        while ((nextTime <= t) && (cont)) {
-            for(size_t i = 0; i < ResidualSize; i++) {
-                _concentrations[i][nextPoint] = concentrations[i];
-            }
-            nextPoint ++;
-            if (nextPoint >= nbPoints) {
-                cont = false;
-            }
-            else {
-                nextTime = _times[nextPoint];
-            }
-        }
+        // Index of the next time of interest
+        Eigen::Index nextPoint = 0;
 
-        // Looping the rest of the points to calculate the concentrations of each compartment
+        // Looping on the points to calculate the concentrations of each compartment
         while (cont) {
+
+            // Check if we are ready to get a concentration
+            while ((nextTime <= t) && (cont)) {
+                for(size_t i = 0; i < ResidualSize; i++) {
+                    _concentrations[i][static_cast<size_t>(nextPoint)] = concentrations[i];
+                }
+                nextPoint ++;
+                if (nextPoint >= nbPoints) {
+                    cont = false;
+                }
+                else {
+                    nextTime = _times[nextPoint];
+                }
+            }
 
             // Adjust h if the next time is close, to reach the exact time point
             if (nextTime - t < stdH) {
@@ -268,20 +295,8 @@ protected:
             // Set k4's
             for(size_t i = 0; i < ResidualSize; i++) {
                 k4[i] = h * dcdt[i];
+                // and directly compute the concentration of each compartment
                 concentrations[i] = concentrations[i] + k1[i] / 6.0 + k2[i] / 3.0 + k3[i] / 3.0 + k4[i] / 6.0;
-            }
-
-            while ((nextTime <= t) && (cont)) {
-                for(size_t i = 0; i < ResidualSize; i++) {
-                    _concentrations[i][nextPoint] = concentrations[i];
-                }
-                nextPoint ++;
-                if (nextPoint >= nbPoints) {
-                    cont = false;
-                }
-                else {
-                    nextTime = _times[nextPoint];
-                }
             }
 
             t += h;

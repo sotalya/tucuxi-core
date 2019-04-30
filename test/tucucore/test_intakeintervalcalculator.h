@@ -36,7 +36,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
     static const int CYCLE_SIZE = 251;
 
     const double DELTA = 0.000001;
-    const int maxResidualSize = 3;
+    const unsigned int maxResidualSize = 3;
 
     TestIntervalCalculator() { }
 
@@ -311,7 +311,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
         fructose_assert(res == Tucuxi::Core::ComputingResult::Ok);
 
         if (res == Tucuxi::Core::ComputingResult::Ok) {
-            for (unsigned int i = 0; i < _nbPoints; i++) {
+            for (unsigned int i = 0; i < static_cast<unsigned int>(_nbPoints); i++) {
 //                std::cout << i << " : " << concentrations0[0][i] << " , " << concentrations1[0][i] << std::endl;
                 fructose_assert_double_eq_rel_abs(concentrations0[0][i], concentrations1[0][i], 0.0001, 0.0);
             }

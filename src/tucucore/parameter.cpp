@@ -141,12 +141,18 @@ void Parameter::applyEta(Deviation _eta)
 {
     if (m_definition.isVariable()) {
         switch (m_definition.getVariability().getType()) {
-            case ParameterVariabilityType::Additive:
-                m_value = m_value + _eta;
-                break;
-            case ParameterVariabilityType::Exponential:
-                m_value = m_value * exp(_eta);
-                break;
+        case ParameterVariabilityType::Additive:
+            m_value = m_value + _eta;
+            break;
+        case ParameterVariabilityType::Normal:
+            m_value = m_value + _eta;
+            break;
+        case ParameterVariabilityType::Exponential:
+            m_value = m_value * exp(_eta);
+            break;
+        case ParameterVariabilityType::LogNormal:
+            m_value = m_value * exp(_eta);
+            break;
             case ParameterVariabilityType::Proportional:
                 m_value = m_value * exp(_eta);
                 // TODO : Check that.
