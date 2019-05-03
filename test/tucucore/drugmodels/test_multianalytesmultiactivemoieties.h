@@ -150,6 +150,12 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
             {
                 fructose_assert(dynamic_cast<SinglePredictionResponse*>(responses[0].get()) != nullptr);
                 const SinglePredictionResponse *resp = dynamic_cast<SinglePredictionResponse*>(responses[0].get());
+
+                fructose_assert_eq(resp->getIds().size(), size_t{3});
+                fructose_assert_eq(resp->getIds()[0], "analyte0");
+                fructose_assert_eq(resp->getIds()[1], "analyte1");
+                fructose_assert_eq(resp->getIds()[2], "activeMoietyMulti");
+
                 std::vector<CycleData> data = resp->getData();
                 fructose_assert(data.size() == 16);
                 fructose_assert(data[0].m_concentrations.size() == 3);
@@ -159,10 +165,7 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
                 fructose_assert_eq(data[0].m_concentrations[0].size() , size_t{61});
                 fructose_assert_eq(data[0].m_concentrations[1].size() , size_t{61});
                 fructose_assert_eq(data[0].m_concentrations[2].size() , size_t{61});
-                fructose_assert_eq(resp->getIds().size(), size_t{3});
-                fructose_assert_eq(resp->getIds()[0], "analyteSet0");
-                fructose_assert_eq(resp->getIds()[1], "analyteSet1");
-                fructose_assert_eq(resp->getIds()[2], "activeMoietyMulti");
+
                 DateTime startSept2018(date::year_month_day(date::year(2018), date::month(9), date::day(1)),
                                        Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
 
@@ -284,6 +287,12 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
             {
                 fructose_assert(dynamic_cast<SinglePredictionResponse*>(responses[0].get()) != nullptr);
                 const SinglePredictionResponse *resp = dynamic_cast<SinglePredictionResponse*>(responses[0].get());
+
+                fructose_assert_eq(resp->getIds().size(), size_t{3});
+                fructose_assert_eq(resp->getIds()[0], "analyte0");
+                fructose_assert_eq(resp->getIds()[1], "analyte1");
+                fructose_assert_eq(resp->getIds()[2], "activeMoietyMulti");
+
                 std::vector<CycleData> data = resp->getData();
                 fructose_assert(data.size() == 16);
                 fructose_assert(data[0].m_concentrations.size() == 3);
@@ -293,10 +302,7 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
                 fructose_assert_eq(data[0].m_concentrations[0].size() , size_t{61});
                 fructose_assert_eq(data[0].m_concentrations[1].size() , size_t{61});
                 fructose_assert_eq(data[0].m_concentrations[2].size() , size_t{61});
-                fructose_assert_eq(resp->getIds().size(), size_t{3});
-                fructose_assert_eq(resp->getIds()[0], "analyteSet0");
-                fructose_assert_eq(resp->getIds()[1], "analyteSet1");
-                fructose_assert_eq(resp->getIds()[2], "activeMoietyMulti");
+
                 DateTime startSept2018(date::year_month_day(date::year(2018), date::month(9), date::day(1)),
                                        Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
 

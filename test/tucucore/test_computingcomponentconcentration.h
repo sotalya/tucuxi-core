@@ -100,6 +100,8 @@ struct TestComputingComponentConcentration : public fructose::test_base<TestComp
         for(std::size_t i = 0; i < responses.size(); i++) {
             fructose_assert(dynamic_cast<SinglePredictionResponse*>(responses[i].get()) != nullptr);
             const SinglePredictionResponse *resp = dynamic_cast<SinglePredictionResponse*>(responses[i].get());
+            fructose_assert_eq(resp->getIds().size(), size_t{1});
+            fructose_assert_eq(resp->getIds()[0], "imatinib");
             std::vector<CycleData> data = resp->getData();
             fructose_assert_eq(data.size() , size_t{16});
             fructose_assert(data[0].m_concentrations.size() == 1);
@@ -139,6 +141,8 @@ struct TestComputingComponentConcentration : public fructose::test_base<TestComp
             for(std::size_t i = 0; i < responses.size(); i++) {
                 fructose_assert(dynamic_cast<SinglePredictionResponse*>(responses[i].get()) != nullptr);
                 const SinglePredictionResponse *resp = dynamic_cast<SinglePredictionResponse*>(responses[i].get());
+                fructose_assert_eq(resp->getIds().size(), size_t{1});
+                fructose_assert_eq(resp->getIds()[0], "imatinib");
                 std::vector<CycleData> data = resp->getData();
                 fructose_assert(data.size() == 15);
                 fructose_assert(data[0].m_concentrations.size() == 1);
@@ -229,6 +233,9 @@ struct TestComputingComponentConcentration : public fructose::test_base<TestComp
 
             // The response is what we excepted
             fructose_assert(resp != nullptr);
+
+            fructose_assert_eq(resp->getIds().size(), size_t{1});
+            fructose_assert_eq(resp->getIds()[0], "imatinib");
 
             std::vector<CycleData> data = resp->getData();
 

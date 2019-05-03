@@ -180,6 +180,10 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
             {
                 fructose_assert(dynamic_cast<SinglePredictionResponse*>(responses[0].get()) != nullptr);
                 const SinglePredictionResponse *resp = dynamic_cast<SinglePredictionResponse*>(responses[0].get());
+
+                fructose_assert_eq(resp->getIds().size(), size_t{1});
+                fructose_assert_eq(resp->getIds()[0], "analyte");
+
                 std::vector<CycleData> data = resp->getData();
                 fructose_assert(data.size() == 16);
                 fructose_assert(data[0].m_concentrations.size() == 1);
@@ -326,6 +330,10 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
             {
                 fructose_assert(dynamic_cast<SinglePredictionResponse*>(responses[0].get()) != nullptr);
                 const SinglePredictionResponse *resp = dynamic_cast<SinglePredictionResponse*>(responses[0].get());
+
+                fructose_assert_eq(resp->getIds().size(), size_t{1});
+                fructose_assert_eq(resp->getIds()[0], "analyte");
+
                 std::vector<CycleData> data = resp->getData();
                 fructose_assert(data.size() == 16);
                 fructose_assert(data[0].m_concentrations.size() == 1);
@@ -1125,12 +1133,9 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
                     DateTime statTime;
                     Value statValue = 0.0;
                     resp->getData(p,0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
-                    //fructose_assert_eq(statValue, 200001.0);
-
 
                     // Calculate the resulting standard deviation
                     double newStd = std::sqrt(std::pow(0.2, 2) + std::pow(0.3, 2));
-
 
                     // Multiply the Inv CDF by the new standard deviation
                     double expectedValue = 200000.0 * std::exp(invCdf[p] * newStd);

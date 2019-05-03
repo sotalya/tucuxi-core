@@ -2032,6 +2032,9 @@ FullFormulationAndRoute* DrugModelImport::extractFullFormulationAndRoute(
                                     selectedAnalyteSet = analyteSet;
                                 }
                             }
+                            if (selectedAnalyteSet == nullptr) {
+                                setNodeError(pIt);
+                            }
                         }
                         else if (pName == "absorptionModelId") {
                             absorptionModelId = extractAbsorptionModel(pIt);
@@ -2049,10 +2052,12 @@ FullFormulationAndRoute* DrugModelImport::extractFullFormulationAndRoute(
             }
 
             if ((getResult() == Result::Ok) && (absorptionParameters != nullptr)) {
-                AnalyteSetToAbsorptionAssociation *association = new AnalyteSetToAbsorptionAssociation(*selectedAnalyteSet);
-                association->setAbsorptionParameters(std::unique_ptr<ParameterSetDefinition>(absorptionParameters));
-                association->setAbsorptionModel(absorptionModelId);
-                associations.push_back(association);
+                if (selectedAnalyteSet != nullptr) {
+                    AnalyteSetToAbsorptionAssociation *association = new AnalyteSetToAbsorptionAssociation(*selectedAnalyteSet);
+                    association->setAbsorptionParameters(std::unique_ptr<ParameterSetDefinition>(absorptionParameters));
+                    association->setAbsorptionModel(absorptionModelId);
+                    associations.push_back(association);
+                }
             }
 
         }

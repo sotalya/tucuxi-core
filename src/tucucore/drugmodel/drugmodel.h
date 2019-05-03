@@ -196,17 +196,14 @@ public:
             return m_analyteSets.at(0).get();
         }
 
-        // TODO : Maybe get rid of this:
-        if (_analyteGroupId == "") {
-            return m_analyteSets.at(0).get();
-        }
-
-
         for (const std::unique_ptr<AnalyteSet> &set : m_analyteSets) {
             if (set->getId() == _analyteGroupId) {
                 return set.get();
             }
         }
+
+        // If _analyteGroupId == "" and there are multiple analytes, then we return nullptr
+        // This should not happen if the function is used correctly
         return nullptr;
     }
 

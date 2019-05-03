@@ -121,7 +121,7 @@ bool defaultPopulate(PkModelCollection &_collection);
 /// \param _COMP_NO_NUM Number of components (expressed in numerical form).
 /// \param _COMP_NO_LIT Number of components (expressed in literal form).
 /// \param _TYPE Type (either Micro or Macro).
-/// \param _TYPE_NAME Type in litereal form (either micro or macro).
+/// \param _TYPE_NAME Type in literal form (either micro or macro).
 /// \param _RC Boolean return type (ORed result of all the add operations).
 #define ADD_PKMODEL_TO_COLLECTION(_COLLECTION, _COMP_NO_NUM, _COMP_NO_LIT, _TYPE, _TYPE_NAME, _RC) \
 do { \

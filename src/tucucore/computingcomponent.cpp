@@ -248,8 +248,8 @@ ComputingResult ComputingComponent::compute(
     }
 
     for(const auto &analyteGroup : _request.getDrugModel().getAnalyteSets()) {
-        AnalyteGroupId analyteGroupId = analyteGroup->getId();
-        resp->addAnalyteId(analyteGroupId.toString());
+        AnalyteId analyteId = analyteGroup->getAnalytes()[0]->getAnalyteId();
+        resp->addAnalyteId(analyteId.toString());
     }
 
     if (!_request.getDrugModel().isSingleAnalyte()) {
@@ -315,11 +315,6 @@ ComputingResult ComputingComponent::computePercentilesMulti(
     // Now ready to do the real computing with all the extracted values
 
 
-
-    // TODO : Change this analyte group
-    AnalyteGroupId analyteGroupId = _request.getDrugModel().getAnalyteSets().at(0)->getId();
-
-
     Tucuxi::Core::PercentilesPrediction percentiles;
 
     Tucuxi::Core::PercentileRanks percentileRanks;
@@ -344,10 +339,10 @@ ComputingResult ComputingComponent::computePercentilesMulti(
         }
     }
 
-    std::vector<const FullFormulationAndRoute *> fullFormulationAndRoutes = m_generalExtractor->extractFormulationAndRoutes(_request.getDrugModel(), intakeSeries[analyteGroupId]);
 
     for(const auto &analyteGroup : _request.getDrugModel().getAnalyteSets()) {
         AnalyteGroupId analyteGroupId = analyteGroup->getId();
+        std::vector<const FullFormulationAndRoute *> fullFormulationAndRoutes = m_generalExtractor->extractFormulationAndRoutes(_request.getDrugModel(), intakeSeries[analyteGroupId]);
 
         ComputingResult omegaComputingResult = m_generalExtractor->extractOmega(_request.getDrugModel(), analyteGroupId, fullFormulationAndRoutes, omega[analyteGroupId]);
         if (omegaComputingResult != ComputingResult::Ok) {
@@ -433,6 +428,8 @@ ComputingResult ComputingComponent::computePercentilesMulti(
     // We use a single prediction to get back time offsets. Could be optimized
     // YTA: I do not think this is relevant. It could be deleted I guess
     ConcentrationPredictionPtr pPrediction = std::make_unique<ConcentrationPrediction>();
+
+    AnalyteGroupId analyteGroupId = _request.getDrugModel().getAnalyteSets().at(0)->getId();
 
     ComputingResult predictionResult = computeConcentrations(
                 pPrediction,
@@ -1412,10 +1409,14 @@ ComputingResult ComputingComponent::computeActiveMoiety(
         }
         else {
 
+            OperationInputList inputList;
+            for (size_t an = 0; an < nbAnalytes; an++) {
+                inputList.push_back(OperationInput("input" + std::to_string(an), 0.0));
+            }
+
             for(size_t c = 0; c < nbConcentrations; c++) {
-                OperationInputList inputList;
                 for (size_t an = 0; an < nbAnalytes; an++) {
-                    inputList.push_back(OperationInput("input" + std::to_string(an), analyteC[an][c]));
+                    inputList[an].setValue(analyteC[an][c]);
                 }
                 double result;
                 if (!op->evaluate(inputList, result)) {

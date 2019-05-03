@@ -13,6 +13,7 @@
 #include "tucucore/pkmodels/threecompartmentbolus.h"
 #include "tucucore/pkmodels/threecompartmentextra.h"
 #include "tucucore/pkmodels/threecompartmentinfusion.h"
+#include "tucucore/pkmodels/rk4twocompartmenterlang4.h"
 
 #ifdef DRUGMODELTESTS
 #include "tucucore/../../test/tucucore/pkmodels/constanteliminationbolus.h"
@@ -114,6 +115,34 @@ bool defaultPopulate(PkModelCollection &_collection)
     ADD_PKMODEL_TO_COLLECTION(_collection, 2, Two, Micro, micro, rc);
     ADD_PKMODEL_TO_COLLECTION(_collection, 3, Three, Macro, macro, rc);
     ADD_PKMODEL_TO_COLLECTION(_collection, 3, Three, Micro, micro, rc);
+
+    {
+        std::shared_ptr<PkModel> pkmodel = std::make_shared<PkModel>("linear.2comp.erlang4.micro");
+        rc |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, Tucuxi::Core::RK4TwoCompartmentErlang4Micro::getCreator());
+        Tucuxi::Common::TranslatableString distribution;
+        Tucuxi::Common::TranslatableString elimination;
+        std::string comps;
+        comps = "compartments";
+        distribution.setString(std::to_string(2) + " " + comps + "erlang absorption", "en");
+        elimination.setString("linear", "en");
+        pkmodel->setDistribution(distribution);
+        pkmodel->setElimination(elimination);
+        _collection.addPkModel(pkmodel);
+    }
+
+    {
+        std::shared_ptr<PkModel> pkmodel = std::make_shared<PkModel>("linear.2comp.erlang4.macro");
+        rc |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, Tucuxi::Core::RK4TwoCompartmentErlang4Macro::getCreator());
+        Tucuxi::Common::TranslatableString distribution;
+        Tucuxi::Common::TranslatableString elimination;
+        std::string comps;
+        comps = "compartments";
+        distribution.setString(std::to_string(2) + " " + comps + "erlang absorption", "en");
+        elimination.setString("linear", "en");
+        pkmodel->setDistribution(distribution);
+        pkmodel->setElimination(elimination);
+        _collection.addPkModel(pkmodel);
+    }
 
 #ifdef DRUGMODELTESTS
     std::shared_ptr<PkModel> sharedPkModel;

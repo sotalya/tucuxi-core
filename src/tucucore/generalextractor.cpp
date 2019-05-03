@@ -261,28 +261,6 @@ ComputingResult GeneralExtractor::generalExtractions(const ComputingTraitStandar
         return ComputingResult::TooBig;
     }
 
-/*
-    // TODO : Specific to busulfan here. Should be handled differently
-    if (_request.getDrugModel().getAnalyteSet()->getAnalytes().at(0)->getAnalyteId() == "busulfan") {
-        if (nIntakes > 0) {
-            IntakeEvent *lastIntake = &(_intakeSeries.at(nIntakes - 1));
-            DateTime start = lastIntake->getEventTime() + lastIntake->getInterval();
-            Value dose = 0.0;
-            Duration interval = Duration(std::chrono::hours(72));
-            auto absorptionModel = lastIntake->getRoute();
-            Duration infusionTime = Duration(std::chrono::hours(1));
-            int nbPoints = nbPointsPerHour * 72;
-
-            IntakeEvent intake(start, Duration(), dose, interval, absorptionModel, infusionTime, nbPoints);
-            _intakeSeries.push_back(intake);
-
-
-            //_intakeSeries.at(nIntakes - 1).setInterval(72h);
-            //_intakeSeries.at(nIntakes - 1).setNbPoints(250*10);
-        }
-    }
-*/
-
     std::vector<FormulationAndRoute> allFormulationAndRoutes;
     for (const auto & intake : intakeSeries) {
         FormulationAndRoute f = intake.getFormulationAndRoute();

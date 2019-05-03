@@ -231,16 +231,38 @@ private:
 class ComputingResponse
 {
 public:
+
+    ///
+    /// \brief ComputingResponse constructor
+    /// \param _id The Id of the request
+    ///
     ComputingResponse(RequestResponseId _id);
 
+    ///
+    /// \brief get the Id of the request
+    /// \return the Id of the request
+    ///
     RequestResponseId getId() const;
+
+    ///
+    /// \brief Adds a response to this list of responses
+    /// \param _response The response to be added, as a unique_ptr
+    ///
     void addResponse(std::unique_ptr<SingleComputingResponse> _response);
 
+    ///
+    /// \brief Gets the vector of responses
+    /// \return A const reference to the vector of responses
+    ///
     const std::vector<std::unique_ptr<SingleComputingResponse> > & getResponses() const { return m_responses;}
 
 
 protected:
+
+    /// Id of the request
     RequestResponseId m_id;
+
+    /// Vector of responses
     std::vector<std::unique_ptr<SingleComputingResponse> > m_responses;
 
 };

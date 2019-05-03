@@ -264,6 +264,7 @@ protected:
     std::unique_ptr<StandardTreatment> m_standardTreatment;
 
     friend class FormulationAndRoutes;
+    friend class DrugModelChecker;
 };
 
 ///

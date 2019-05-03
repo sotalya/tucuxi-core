@@ -817,7 +817,9 @@ struct TestDrugVancomycin : public fructose::test_base<TestDrugVancomycin>
             for(std::size_t i = 0; i < responses.size(); i++) {
                 fructose_assert(dynamic_cast<SinglePredictionResponse*>(responses[i].get()) != nullptr);
                 const SinglePredictionResponse *resp = dynamic_cast<SinglePredictionResponse*>(responses[i].get());
-                TMP_UNUSED_PARAMETER(resp);
+
+                fructose_assert_eq(resp->getIds().size(), size_t{1});
+                fructose_assert_eq(resp->getIds()[0], "vancomycin");
 
                 //std::cout << "Population parameters : " << std::endl;
                 //for (auto parameter : resp->getData().at(0).m_parameters) {
@@ -855,7 +857,9 @@ struct TestDrugVancomycin : public fructose::test_base<TestDrugVancomycin>
             for(std::size_t i = 0; i < responses.size(); i++) {
                 fructose_assert(dynamic_cast<SinglePredictionResponse*>(responses[i].get()) != nullptr);
                 const SinglePredictionResponse *resp = dynamic_cast<SinglePredictionResponse*>(responses[i].get());
-                TMP_UNUSED_PARAMETER(resp);
+
+                fructose_assert_eq(resp->getIds().size(), size_t{1});
+                fructose_assert_eq(resp->getIds()[0], "vancomycin");
 
                 //std::cout << "A priori parameters : " << std::endl;
                 //for (auto parameter : resp->getData().at(0).m_parameters) {
