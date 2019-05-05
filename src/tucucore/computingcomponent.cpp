@@ -325,16 +325,20 @@ ComputingResult ComputingComponent::computePercentilesMulti(
 
 
     ResidualErrorModelExtractor errorModelExtractor;
-    std::map<AnalyteGroupId, IResidualErrorModel*> residualErrorModel;
+    std::map<AnalyteGroupId, std::unique_ptr<IResidualErrorModel> > residualErrorModel;
 
     for(const auto &analyteGroup : _request.getDrugModel().getAnalyteSets()) {
         AnalyteGroupId analyteGroupId = analyteGroup->getId();
+
+        IResidualErrorModel *errorModel = nullptr;
+
+        // TODO : Here the created residual error model is never deleted... To be modified
         ComputingResult errorModelExtractionResult = errorModelExtractor.extract(analyteGroup->getAnalytes().at(0)->getResidualErrorModel(),
                                                                                  analyteGroup->getAnalytes().at(0)->getUnit(),
-                                                                                 covariateSeries, &residualErrorModel[analyteGroupId]);
-        if (errorModelExtractionResult != ComputingResult::Ok) {
-            // Delete the residual map
+                                                                                 covariateSeries, &errorModel);
+        residualErrorModel[analyteGroupId] = std::unique_ptr<IResidualErrorModel>(errorModel);
 
+        if (errorModelExtractionResult != ComputingResult::Ok) {
             return errorModelExtractionResult;
         }
     }

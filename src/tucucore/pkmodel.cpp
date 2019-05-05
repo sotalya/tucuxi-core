@@ -118,12 +118,12 @@ bool defaultPopulate(PkModelCollection &_collection)
 
     {
         std::shared_ptr<PkModel> pkmodel = std::make_shared<PkModel>("linear.2comp.erlang4.micro");
-        rc |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, Tucuxi::Core::RK4TwoCompartmentErlang4Micro::getCreator());
+        rc |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, Tucuxi::Core::RK4TwoCompartmentErlangMicro<4>::getCreator());
         Tucuxi::Common::TranslatableString distribution;
         Tucuxi::Common::TranslatableString elimination;
         std::string comps;
         comps = "compartments";
-        distribution.setString(std::to_string(2) + " " + comps + "erlang absorption", "en");
+        distribution.setString(std::to_string(2) + " " + comps + "erlang absorption with 4 transit compartments", "en");
         elimination.setString("linear", "en");
         pkmodel->setDistribution(distribution);
         pkmodel->setElimination(elimination);
@@ -132,12 +132,40 @@ bool defaultPopulate(PkModelCollection &_collection)
 
     {
         std::shared_ptr<PkModel> pkmodel = std::make_shared<PkModel>("linear.2comp.erlang4.macro");
-        rc |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, Tucuxi::Core::RK4TwoCompartmentErlang4Macro::getCreator());
+        rc |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, Tucuxi::Core::RK4TwoCompartmentErlang4Macro<4>::getCreator());
         Tucuxi::Common::TranslatableString distribution;
         Tucuxi::Common::TranslatableString elimination;
         std::string comps;
         comps = "compartments";
-        distribution.setString(std::to_string(2) + " " + comps + "erlang absorption", "en");
+        distribution.setString(std::to_string(2) + " " + comps + "erlang absorption with 4 transit compartments", "en");
+        elimination.setString("linear", "en");
+        pkmodel->setDistribution(distribution);
+        pkmodel->setElimination(elimination);
+        _collection.addPkModel(pkmodel);
+    }
+
+    {
+        std::shared_ptr<PkModel> pkmodel = std::make_shared<PkModel>("linear.2comp.erlang3.micro");
+        rc |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, Tucuxi::Core::RK4TwoCompartmentErlangMicro<3>::getCreator());
+        Tucuxi::Common::TranslatableString distribution;
+        Tucuxi::Common::TranslatableString elimination;
+        std::string comps;
+        comps = "compartments";
+        distribution.setString(std::to_string(2) + " " + comps + "erlang absorption with 3 transit compartments", "en");
+        elimination.setString("linear", "en");
+        pkmodel->setDistribution(distribution);
+        pkmodel->setElimination(elimination);
+        _collection.addPkModel(pkmodel);
+    }
+
+    {
+        std::shared_ptr<PkModel> pkmodel = std::make_shared<PkModel>("linear.2comp.erlang3.macro");
+        rc |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, Tucuxi::Core::RK4TwoCompartmentErlang4Macro<3>::getCreator());
+        Tucuxi::Common::TranslatableString distribution;
+        Tucuxi::Common::TranslatableString elimination;
+        std::string comps;
+        comps = "compartments";
+        distribution.setString(std::to_string(2) + " " + comps + "erlang absorption with 3 transit compartments", "en");
         elimination.setString("linear", "en");
         pkmodel->setDistribution(distribution);
         pkmodel->setElimination(elimination);

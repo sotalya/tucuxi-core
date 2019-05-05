@@ -24,6 +24,7 @@
 
 #include "tucucore/pkmodels/rkonecompartmentextra.h"
 #include "tucucore/pkmodels/rkonecompartmentgammaextra.h"
+#include "tucucore/pkmodels/rk4twocompartmenterlang4.h"
 
 #include "tucucore/drugmodel/formulationandroute.h"
 #include "tucucore/intakeevent.h"
@@ -425,6 +426,57 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             CYCLE_SIZE);
     }
 
+    /// \brief Test the concentration calculation of erlang transit compartments.
+    /// \param _testName Test name.
+    void test2compErlang(const std::string& /* _testName */)
+    {
+        // parameter for micro class
+        Tucuxi::Core::ParameterDefinitions microParameterDefs;
+        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V1", 347, Tucuxi::Core::ParameterVariabilityType::None)));
+        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V2", 347, Tucuxi::Core::ParameterVariabilityType::None)));
+        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Q", 347, Tucuxi::Core::ParameterVariabilityType::None)));
+        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("CL", 0.0435331, Tucuxi::Core::ParameterVariabilityType::None)));
+        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ktr", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
+        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
+        Tucuxi::Core::ParameterSetEvent microParameters(DateTime(), microParameterDefs);
+
+        Tucuxi::Core::ComputingResult res;
+        RK4TwoCompartmentErlangMicro<4> calculator0;
+
+        DateTime now;
+        Tucuxi::Common::Duration offsetTime = 0s;
+        Tucuxi::Common::Duration interval = 12h;
+        Tucuxi::Common::Duration infusionTime = 0h;
+
+        unsigned int residualSize = (calculator0.getResidualSize() == calculator0.getResidualSize()) ? calculator0.getResidualSize() : maxResidualSize;
+        bool isAll = false;
+
+        std::vector<Tucuxi::Core::Concentrations> concentrations0;
+        concentrations0.resize(residualSize);
+
+        Tucuxi::Core::TimeOffsets times;
+        Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, 400, interval, Tucuxi::Core::FormulationAndRoute(
+                                                  Tucuxi::Core::AbsorptionModel::Extravascular),
+                                              Tucuxi::Core::AbsorptionModel::Extravascular, infusionTime, CYCLE_SIZE);
+        Tucuxi::Core::Residuals inResiduals(residualSize);
+        Tucuxi::Core::Residuals outResiduals0(residualSize);
+        Tucuxi::Core::Residuals outResiduals1(residualSize);
+
+        std::fill(inResiduals.begin(), inResiduals.end(), 0);
+
+        // Calculation of first Class
+        res = calculator0.calculateIntakePoints(
+            concentrations0,
+            times,
+            intakeEvent,
+            microParameters,
+            inResiduals,
+            isAll,
+            outResiduals0,
+            true);
+
+        fructose_assert(res == Tucuxi::Core::ComputingResult::Ok);
+    }
 
 
     /// \brief Test the residual calculation of extravascular. Compares single point vs multiple points

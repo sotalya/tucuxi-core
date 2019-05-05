@@ -235,7 +235,7 @@ int main(int argc, char** argv)
     calculatorsTests.add_test("rk 1 comp gamma extra single vs multiple test", &TestIntervalCalculator::testRK41compGammaExtraSingleVsMultiple);
 
     calculatorsTests.add_test("1 comp extra analytical vs Rk4", &TestIntervalCalculator::test1compExtraAnalyticalVsRk4);
-
+    calculatorsTests.add_test("2 comp erlang transit", &TestIntervalCalculator::test2compErlang);
 
 
     // two compartment

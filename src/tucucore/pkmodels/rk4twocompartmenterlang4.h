@@ -3,6 +3,8 @@
 
 #include "tucucore/intakeintervalcalculatorrk4.h"
 
+#include "tucucore/intakeevent.h"
+
 
 namespace Tucuxi {
 namespace Core {
@@ -26,26 +28,26 @@ namespace Core {
 ///typedef std::vector<double> Residuals;
 ///
 ///template<int from, int to>
-///struct copy {
-///    static inline void apply(const Residuals& _inResiduals,  std::vector<double> &_concentrations) {
+///struct TransitComps {
+///    static inline void init(const Residuals& _inResiduals,  std::vector<double> &_concentrations) {
 ///        _concentrations[from] = _inResiduals[from];
-///        copy<from+1,to>:: apply(_inResiduals, _concentrations);
+///        TransitComps<from+1,to>:: apply(_inResiduals, _concentrations);
 ///    }
 ///
-///    static inline void update(double _ktr, const std::vector<double> &_c, std::vector<double>& _dcdt) {
+///    static inline void derive(double _ktr, const std::vector<double> &_c, std::vector<double>& _dcdt) {
 ///        _dcdt[from] =  _ktr * _c[from - 1] - _ktr * _c[from];
-///        copy<from+1,to>:: update(_ktr, _c, _dcdt);
+///        TransitComps<from+1,to>:: update(_ktr, _c, _dcdt);
 ///    }
 ///};
 ///
 ///// Terminal case
 ///template<int from>
-///struct copy<from, from> {
-///    static inline void apply(const Residuals& _inResiduals,  std::vector<double> &_concentrations) {
+///struct TransitComps<from, from> {
+///    static inline void init(const Residuals& _inResiduals,  std::vector<double> &_concentrations) {
 ///        _concentrations[from] = _inResiduals[from];
 ///    }
 ///
-///    static inline void update(double _ktr, const std::vector<double> &_c, std::vector<double>& _dcdt) {
+///    static inline void derive(double _ktr, const std::vector<double> &_c, std::vector<double>& _dcdt) {
 ///        _dcdt[from] =  _ktr * _c[from - 1] - _ktr * _c[from];
 ///    }
 ///};
@@ -58,7 +60,7 @@ namespace Core {
 ///    r[1] = 2.0;
 ///    r[2] = 3.0;
 ///#ifdef TEMPLATE
-///    copy<0,2>::apply(r, c);
+///    TransitComps<0,2>::init(r, c);
 ///#else
 ///    c[0] = r[0];
 ///    c[1] = r[1];
@@ -71,33 +73,32 @@ namespace Core {
 ///
 ///
 template<int from, int to>
-struct copy {
-    static inline void apply(const Residuals& _inResiduals,  std::vector<double> &_concentrations) {
+struct TransitComps {
+    static inline void init(const Residuals& _inResiduals,  std::vector<double> &_concentrations) {
         _concentrations[from] = _inResiduals[from];
-        copy<from+1,to>:: apply(_inResiduals, _concentrations);
+        TransitComps<from+1,to>:: init(_inResiduals, _concentrations);
     }
 
-    static inline void update(Value _ktr, const std::vector<double> &_c, std::vector<double>& _dcdt) {
+    static inline void derive(Value _ktr, const std::vector<double> &_c, std::vector<double>& _dcdt) {
         _dcdt[from] =  _ktr * _c[from - 1] - _ktr * _c[from];
-        copy<from+1,to>:: update(_ktr, _c, _dcdt);
+        TransitComps<from+1,to>:: derive(_ktr, _c, _dcdt);
     }
 };
 
 // Terminal case
 template<int from>
-struct copy<from, from> {
-    static inline void apply(const Residuals& _inResiduals,  std::vector<double> &_concentrations) {
+struct TransitComps<from, from> {
+    static inline void init(const Residuals& _inResiduals,  std::vector<double> &_concentrations) {
         _concentrations[from] = _inResiduals[from];
     }
 
-    static inline void update(Value _ktr, const std::vector<double> &_c, std::vector<double>& _dcdt) {
+    static inline void derive(Value _ktr, const std::vector<double> &_c, std::vector<double>& _dcdt) {
         _dcdt[from] =  _ktr * _c[from - 1] - _ktr * _c[from];
     }
 };
 
-
 /// \ingroup TucuCore
-/// \brief Intake interval calculator for the 2-compartment with Erlang absorption (4) algorithm
+/// \brief Intake interval calculator for the 2-compartment with Erlang absorption (N) algorithm
 /// \sa IntakeIntervalCalculator
 ///
 /// Compartments:
@@ -108,25 +109,75 @@ struct copy<from, from> {
 /// 4 : transit 2
 /// 5 : transit 3
 /// 6 : transit 4
+/// ...
 ///
-class RK4TwoCompartmentErlang4Micro : public IntakeIntervalCalculatorRK4Base<7, RK4TwoCompartmentErlang4Micro>
+/// The template parameter NbTransitCompartment allows to define the number of transit compartments.
+///
+template<int NbTransitCompartment>
+class RK4TwoCompartmentErlangMicro : public IntakeIntervalCalculatorRK4Base<NbTransitCompartment + 3, RK4TwoCompartmentErlangMicro<NbTransitCompartment> >
 {
-    INTAKEINTERVALCALCULATOR_UTILS(RK4TwoCompartmentErlang4Micro)
+    INTAKEINTERVALCALCULATOR_UTILS(RK4TwoCompartmentErlangMicro<NbTransitCompartment>)
 public:
     /// \brief Constructor
-    RK4TwoCompartmentErlang4Micro();
+    RK4TwoCompartmentErlangMicro() : IntakeIntervalCalculatorRK4Base<NbTransitCompartment + 3, RK4TwoCompartmentErlangMicro<NbTransitCompartment> > (new PertinentTimesCalculatorStandard())
+    {}
 
     enum class CompartmentsEnum : int { Central = 0, Peripheral, Dose, A2, A3, A4, A5 };
 
 protected:
-    bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
+
+    bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override
+    {
+        if (!this->checkValue(_parameters.size() >= 6, "The number of parameters should be equal to 6.")) {
+            return false;
+        }
+
+        m_D = _intakeEvent.getDose() * 1000;
+        m_V1 = _parameters.getValue(ParameterId::V1);
+        m_Ktr = _parameters.getValue(ParameterId::Ktr);
+        m_Ke = _parameters.getValue(ParameterId::Ke);
+        m_K12 = _parameters.getValue(ParameterId::K12);
+        m_K21 = _parameters.getValue(ParameterId::K21);
+        m_F = _parameters.getValue(ParameterId::F);
+
+        this->m_nbPoints = _intakeEvent.getNbPoints();
+        this->m_Int = (_intakeEvent.getInterval()).toHours();
+
+        // check the inputs
+        bool bOK = this->checkValue(m_D >= 0, "The dose is negative.");
+        bOK &= this->checkValue(!std::isnan(m_D), "The dose is NaN.");
+        bOK &= this->checkValue(!std::isinf(m_D), "The dose is Inf.");
+        bOK &= this->checkValue(m_V1 > 0, "The volume is not greater than zero.");
+        bOK &= this->checkValue(!std::isnan(m_V1), "The m_V is NaN.");
+        bOK &= this->checkValue(!std::isinf(m_V1), "The _V is Inf.");
+        bOK &= this->checkValue(m_F > 0, "The volume is not greater than zero.");
+        bOK &= this->checkValue(!std::isnan(m_F), "The F is NaN.");
+        bOK &= this->checkValue(!std::isinf(m_F), "The F is Inf.");
+        bOK &= this->checkValue(m_Ke > 0, "The clearance is not greater than zero.");
+        bOK &= this->checkValue(!std::isnan(m_Ke), "The CL is NaN.");
+        bOK &= this->checkValue(!std::isinf(m_Ke), "The CL is Inf.");
+        bOK &= this->checkValue(m_Ktr > 0, "The m_Ktr is not greater than zero.");
+        bOK &= this->checkValue(!std::isnan(m_Ktr), "The m_Ktr is NaN.");
+        bOK &= this->checkValue(!std::isinf(m_Ktr), "The m_Ktr is Inf.");
+        bOK &= this->checkValue(m_K12 > 0, "The m_K12 is not greater than zero.");
+        bOK &= this->checkValue(!std::isnan(m_K12), "The m_K12 is NaN.");
+        bOK &= this->checkValue(!std::isinf(m_K12), "The m_K12 is Inf.");
+        bOK &= this->checkValue(m_K21 > 0, "The m_K21 is not greater than zero.");
+        bOK &= this->checkValue(!std::isnan(m_K21), "The m_K21 is NaN.");
+        bOK &= this->checkValue(!std::isinf(m_K21), "The m_K21 is Inf.");
+        bOK &= this->checkValue(this->m_nbPoints >= 0, "The number of points is zero or negative.");
+        bOK &= this->checkValue(this->m_Int > 0, "The interval time is negative.");
+
+        return bOK;
+    }
+
 
     void initConcentrations (const Residuals& _inResiduals, std::vector<double> &_concentrations) override
     {
         _concentrations[0] = _inResiduals[0];
         _concentrations[1] = _inResiduals[1];
         _concentrations[2] = _inResiduals[2] + m_D / m_V1;
-        copy<3,6>::apply(_inResiduals, _concentrations);
+        TransitComps<3,3 + NbTransitCompartment - 1>::init(_inResiduals, _concentrations);
 //        _concentrations[3] = _inResiduals[3];
 //        _concentrations[4] = _inResiduals[4];
 //        _concentrations[5] = _inResiduals[5];
@@ -140,7 +191,7 @@ public:
         _dcdt[0] = m_Ktr * _c[6] - m_Ke * _c[0] + m_K21 * _c[1] - m_K12 * _c[0];
         _dcdt[1] = m_K12 * _c[0] - m_K21 * _c[1];
         _dcdt[2] = - m_Ktr * _c[2];
-        copy<3,6>::update(m_Ktr, _c, _dcdt);
+        TransitComps<3,3 + NbTransitCompartment - 1>::derive(m_Ktr, _c, _dcdt);
 //        _dcdt[3] = m_Ktr * _c[2] - m_Ktr * _c[3];
 //        _dcdt[4] = m_Ktr * _c[3] - m_Ktr * _c[4];
 //        _dcdt[5] = m_Ktr * _c[4] - m_Ktr * _c[5];
@@ -164,14 +215,66 @@ private:
 
 
 
-class RK4TwoCompartmentErlang4Macro : public RK4TwoCompartmentErlang4Micro
+
+template<int NbTransitCompartment>
+class RK4TwoCompartmentErlang4Macro : public RK4TwoCompartmentErlangMicro<NbTransitCompartment>
 {
     INTAKEINTERVALCALCULATOR_UTILS(RK4TwoCompartmentErlang4Macro)
 public:
-    RK4TwoCompartmentErlang4Macro();
+    RK4TwoCompartmentErlang4Macro() : RK4TwoCompartmentErlangMicro<NbTransitCompartment>() {}
 
 protected:
-    bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
+
+    bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override
+    {
+        if (!this->checkValue(_parameters.size() >= 6, "The number of parameters should be equal to 6.")) {
+            return false;
+        }
+
+
+        this->m_D = _intakeEvent.getDose() * 1000;
+        this->m_V1 = _parameters.getValue(ParameterId::V1);
+        Value v2 = _parameters.getValue(ParameterId::V2);
+        this->m_Ktr = _parameters.getValue(ParameterId::Ktr);
+        Value cl = _parameters.getValue(ParameterId::CL);
+        Value q = _parameters.getValue(ParameterId::Q);
+        this->m_F = _parameters.getValue(ParameterId::F);
+
+        this->m_K12 = q / this->m_V1;
+        this->m_K21 = q / v2;
+        this->m_Ke = cl / this->m_V1;
+
+        this->m_nbPoints = _intakeEvent.getNbPoints();
+        this->m_Int = (_intakeEvent.getInterval()).toHours();
+
+        // check the inputs
+        bool bOK = this->checkValue(this->m_D >= 0, "The dose is negative.");
+        bOK &= this->checkValue(!std::isnan(this->m_D), "The dose is NaN.");
+        bOK &= this->checkValue(!std::isinf(this->m_D), "The dose is Inf.");
+        bOK &= this->checkValue(this->m_V1 > 0, "The volume is not greater than zero.");
+        bOK &= this->checkValue(!std::isnan(this->m_V1), "The m_V is NaN.");
+        bOK &= this->checkValue(!std::isinf(this->m_V1), "The _V is Inf.");
+        bOK &= this->checkValue(this->m_F > 0, "The volume is not greater than zero.");
+        bOK &= this->checkValue(!std::isnan(this->m_F), "The F is NaN.");
+        bOK &= this->checkValue(!std::isinf(this->m_F), "The F is Inf.");
+        bOK &= this->checkValue(this->m_Ke > 0, "The clearance is not greater than zero.");
+        bOK &= this->checkValue(!std::isnan(this->m_Ke), "The CL is NaN.");
+        bOK &= this->checkValue(!std::isinf(this->m_Ke), "The CL is Inf.");
+        bOK &= this->checkValue(this->m_Ktr > 0, "The m_Ktr is not greater than zero.");
+        bOK &= this->checkValue(!std::isnan(this->m_Ktr), "The m_Ktr is NaN.");
+        bOK &= this->checkValue(!std::isinf(this->m_Ktr), "The m_Ktr is Inf.");
+        bOK &= this->checkValue(this->m_K12 > 0, "The m_K12 is not greater than zero.");
+        bOK &= this->checkValue(!std::isnan(this->m_K12), "The m_K12 is NaN.");
+        bOK &= this->checkValue(!std::isinf(this->m_K12), "The m_K12 is Inf.");
+        bOK &= this->checkValue(this->m_K21 > 0, "The m_K21 is not greater than zero.");
+        bOK &= this->checkValue(!std::isnan(this->m_K21), "The m_K21 is NaN.");
+        bOK &= this->checkValue(!std::isinf(this->m_K21), "The m_K21 is Inf.");
+        bOK &= this->checkValue(this->m_nbPoints >= 0, "The number of points is zero or negative.");
+        bOK &= this->checkValue(this->m_Int > 0, "The interval time is negative.");
+
+        return bOK;
+    }
+
 
 };
 
