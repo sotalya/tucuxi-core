@@ -89,7 +89,7 @@ HEADERS += \
     $$PWD/../../src/tucucore/cyclestatistics.h \
     $$PWD/../../src/tucucore/intakeintervalcalculatorrk4.h \
     $$PWD/../../src/tucucore/intakeintervalcalculatoranalytical.h \
-    $$PWD/../../src/tucucore/pkmodels/rk4twocompartmenterlang4.h
+    $$PWD/../../src/tucucore/pkmodels/rktwocompartmenterlang.h
 
 SOURCES += \
     $$PWD/../../src/tucucore/drugmodel/drugmodel.cpp \
@@ -166,7 +166,7 @@ SOURCES += \
     $$PWD/../../src/tucucore/intakeevent.cpp \
     $$PWD/../../src/tucucore/intakeintervalcalculatorrk4.cpp \
     $$PWD/../../src/tucucore/intakeintervalcalculatoranalytical.cpp \
-    $$PWD/../../src/tucucore/pkmodels/rk4twocompartmenterlang4.cpp
+    $$PWD/../../src/tucucore/pkmodels/rktwocompartmenterlang.cpp
 
 DISTFILES += \
     $$PWD/../../src/tucucore/makefile

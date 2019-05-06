@@ -217,11 +217,11 @@ private:
 
 
 template<int NbTransitCompartment>
-class RK4TwoCompartmentErlang4Macro : public RK4TwoCompartmentErlangMicro<NbTransitCompartment>
+class RK4TwoCompartmentErlangMacro : public RK4TwoCompartmentErlangMicro<NbTransitCompartment>
 {
-    INTAKEINTERVALCALCULATOR_UTILS(RK4TwoCompartmentErlang4Macro)
+    INTAKEINTERVALCALCULATOR_UTILS(RK4TwoCompartmentErlangMacro)
 public:
-    RK4TwoCompartmentErlang4Macro() : RK4TwoCompartmentErlangMicro<NbTransitCompartment>() {}
+    RK4TwoCompartmentErlangMacro() : RK4TwoCompartmentErlangMicro<NbTransitCompartment>() {}
 
 protected:
 

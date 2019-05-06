@@ -74,6 +74,7 @@ SOURCES := \
            pkmodels/onecompartmentinfusion.cpp \
            pkmodels/rkonecompartmentextra.cpp \
            pkmodels/rkonecompartmentgammaextra.cpp \
+           pkmodels/rktwocompartmenterlang.cpp \
            pkmodels/threecompartmentbolus.cpp \
            pkmodels/threecompartmentextra.cpp \
            pkmodels/threecompartmentinfusion.cpp \

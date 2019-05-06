@@ -2,7 +2,7 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
-#include "rk4twocompartmenterlang4.h"
+#include "rktwocompartmenterlang.h"
 
 namespace Tucuxi {
 namespace Core {

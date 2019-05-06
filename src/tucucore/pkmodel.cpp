@@ -13,7 +13,7 @@
 #include "tucucore/pkmodels/threecompartmentbolus.h"
 #include "tucucore/pkmodels/threecompartmentextra.h"
 #include "tucucore/pkmodels/threecompartmentinfusion.h"
-#include "tucucore/pkmodels/rk4twocompartmenterlang4.h"
+#include "tucucore/pkmodels/rktwocompartmenterlang.h"
 
 #ifdef DRUGMODELTESTS
 #include "tucucore/../../test/tucucore/pkmodels/constanteliminationbolus.h"
@@ -105,6 +105,45 @@ std::vector<std::shared_ptr<PkModel>> PkModelCollection::getPkModelList() const
     return m_collection;
 }
 
+
+/// \brief Add an Erlang absorption PkModel to a collection.
+/// \param _COLLECTION Collection to which the PkModel has to be added.
+/// \param _COMP_NO_NUM Number of transit compartments (expressed in numerical form).
+/// \param _RC Boolean return type (ORed result of all the add operations).
+#define ADD_2COMP_ERLANG_PK_MODEL_TO_COLLECTION(_COLLECTION, _COMP_NO_NUM, _RC) \
+do { \
+    { \
+        std::shared_ptr<PkModel> pkmodel = std::make_shared<PkModel>("linear.2comp.erlang" #_COMP_NO_NUM ".micro"); \
+        rc |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, Tucuxi::Core::RK4TwoCompartmentErlangMicro<_COMP_NO_NUM>::getCreator()); \
+        Tucuxi::Common::TranslatableString distribution; \
+        Tucuxi::Common::TranslatableString elimination; \
+        std::string comps; \
+        comps = "compartments"; \
+        distribution.setString(std::to_string(2) + " " + comps + "erlang absorption with " #_COMP_NO_NUM " transit compartments", "en"); \
+        elimination.setString("linear", "en"); \
+        pkmodel->setDistribution(distribution); \
+        pkmodel->setElimination(elimination); \
+        _collection.addPkModel(pkmodel); \
+    } \
+    { \
+        std::shared_ptr<PkModel> pkmodel = std::make_shared<PkModel>("linear.2comp.erlang" #_COMP_NO_NUM ".macro"); \
+        rc |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, Tucuxi::Core::RK4TwoCompartmentErlangMacro<_COMP_NO_NUM>::getCreator()); \
+        Tucuxi::Common::TranslatableString distribution; \
+        Tucuxi::Common::TranslatableString elimination; \
+        std::string comps; \
+        comps = "compartments"; \
+        distribution.setString(std::to_string(2) + " " + comps + "erlang absorption with " #_COMP_NO_NUM " transit compartments", "en"); \
+        elimination.setString("linear", "en"); \
+        pkmodel->setDistribution(distribution); \
+        pkmodel->setElimination(elimination); \
+        _collection.addPkModel(pkmodel); \
+    } \
+} while (0);
+
+
+
+
+
 bool defaultPopulate(PkModelCollection &_collection)
 {
     bool rc = true;
@@ -116,61 +155,12 @@ bool defaultPopulate(PkModelCollection &_collection)
     ADD_PKMODEL_TO_COLLECTION(_collection, 3, Three, Macro, macro, rc);
     ADD_PKMODEL_TO_COLLECTION(_collection, 3, Three, Micro, micro, rc);
 
-    {
-        std::shared_ptr<PkModel> pkmodel = std::make_shared<PkModel>("linear.2comp.erlang4.micro");
-        rc |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, Tucuxi::Core::RK4TwoCompartmentErlangMicro<4>::getCreator());
-        Tucuxi::Common::TranslatableString distribution;
-        Tucuxi::Common::TranslatableString elimination;
-        std::string comps;
-        comps = "compartments";
-        distribution.setString(std::to_string(2) + " " + comps + "erlang absorption with 4 transit compartments", "en");
-        elimination.setString("linear", "en");
-        pkmodel->setDistribution(distribution);
-        pkmodel->setElimination(elimination);
-        _collection.addPkModel(pkmodel);
-    }
-
-    {
-        std::shared_ptr<PkModel> pkmodel = std::make_shared<PkModel>("linear.2comp.erlang4.macro");
-        rc |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, Tucuxi::Core::RK4TwoCompartmentErlang4Macro<4>::getCreator());
-        Tucuxi::Common::TranslatableString distribution;
-        Tucuxi::Common::TranslatableString elimination;
-        std::string comps;
-        comps = "compartments";
-        distribution.setString(std::to_string(2) + " " + comps + "erlang absorption with 4 transit compartments", "en");
-        elimination.setString("linear", "en");
-        pkmodel->setDistribution(distribution);
-        pkmodel->setElimination(elimination);
-        _collection.addPkModel(pkmodel);
-    }
-
-    {
-        std::shared_ptr<PkModel> pkmodel = std::make_shared<PkModel>("linear.2comp.erlang3.micro");
-        rc |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, Tucuxi::Core::RK4TwoCompartmentErlangMicro<3>::getCreator());
-        Tucuxi::Common::TranslatableString distribution;
-        Tucuxi::Common::TranslatableString elimination;
-        std::string comps;
-        comps = "compartments";
-        distribution.setString(std::to_string(2) + " " + comps + "erlang absorption with 3 transit compartments", "en");
-        elimination.setString("linear", "en");
-        pkmodel->setDistribution(distribution);
-        pkmodel->setElimination(elimination);
-        _collection.addPkModel(pkmodel);
-    }
-
-    {
-        std::shared_ptr<PkModel> pkmodel = std::make_shared<PkModel>("linear.2comp.erlang3.macro");
-        rc |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, Tucuxi::Core::RK4TwoCompartmentErlang4Macro<3>::getCreator());
-        Tucuxi::Common::TranslatableString distribution;
-        Tucuxi::Common::TranslatableString elimination;
-        std::string comps;
-        comps = "compartments";
-        distribution.setString(std::to_string(2) + " " + comps + "erlang absorption with 3 transit compartments", "en");
-        elimination.setString("linear", "en");
-        pkmodel->setDistribution(distribution);
-        pkmodel->setElimination(elimination);
-        _collection.addPkModel(pkmodel);
-    }
+    ADD_2COMP_ERLANG_PK_MODEL_TO_COLLECTION(_collection, 1, rc);
+    ADD_2COMP_ERLANG_PK_MODEL_TO_COLLECTION(_collection, 2, rc);
+    ADD_2COMP_ERLANG_PK_MODEL_TO_COLLECTION(_collection, 3, rc);
+    ADD_2COMP_ERLANG_PK_MODEL_TO_COLLECTION(_collection, 4, rc);
+    ADD_2COMP_ERLANG_PK_MODEL_TO_COLLECTION(_collection, 5, rc);
+    ADD_2COMP_ERLANG_PK_MODEL_TO_COLLECTION(_collection, 6, rc);
 
 #ifdef DRUGMODELTESTS
     std::shared_ptr<PkModel> sharedPkModel;

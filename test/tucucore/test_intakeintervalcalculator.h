@@ -24,7 +24,7 @@
 
 #include "tucucore/pkmodels/rkonecompartmentextra.h"
 #include "tucucore/pkmodels/rkonecompartmentgammaextra.h"
-#include "tucucore/pkmodels/rk4twocompartmenterlang4.h"
+#include "tucucore/pkmodels/rktwocompartmenterlang.h"
 
 #include "tucucore/drugmodel/formulationandroute.h"
 #include "tucucore/intakeevent.h"
