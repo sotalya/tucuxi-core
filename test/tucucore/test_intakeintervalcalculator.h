@@ -441,14 +441,14 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
         Tucuxi::Core::ParameterSetEvent microParameters(DateTime(), microParameterDefs);
 
         Tucuxi::Core::ComputingResult res;
-        RK4TwoCompartmentErlangMicro<4> calculator0;
+        RK4TwoCompartmentErlangMacro<4> calculator0;
 
         DateTime now;
         Tucuxi::Common::Duration offsetTime = 0s;
         Tucuxi::Common::Duration interval = 12h;
         Tucuxi::Common::Duration infusionTime = 0h;
 
-        unsigned int residualSize = (calculator0.getResidualSize() == calculator0.getResidualSize()) ? calculator0.getResidualSize() : maxResidualSize;
+        unsigned int residualSize = calculator0.getResidualSize();
         bool isAll = false;
 
         std::vector<Tucuxi::Core::Concentrations> concentrations0;
