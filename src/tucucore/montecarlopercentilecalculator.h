@@ -473,7 +473,35 @@ public:
     virtual ~IAposterioriPercentileCalculatorMulti() {}
 };
 
-class AprioriPercentileCalculatorMulti : public IAprioriPercentileCalculatorMulti, public MonteCarloPercentileCalculatorBase
+class PercentileCalculatorMultiBase
+{
+protected:
+
+    ///
+    /// \brief calculateActiveMoietyAndSort
+    /// \param _percentiles percentiles calculated within the method
+    /// \param _percentileRanks List of percentiles ranks
+    /// \param _activeMoiety Active moiety that has to be calculated
+    /// \param _analyteGroupIds Analyte group Ids for the active moiety
+    /// \param _recordedIntakes List of intakes that have to be saved
+    /// \param _nbPatients Number of patients during Monte Carlo
+    /// \param _concentrations Concentrations calculated during Monte Carlo
+    /// \param _simpleCalculator A single-analytegroup calculator
+    /// \param _times The times calculated
+    /// \return ComputingResult::Ok if everything went well
+    ///
+    ComputingResult calculateActiveMoietyAndSort(PercentilesPrediction &_percentiles,
+            const PercentileRanks &_percentileRanks,
+            const ActiveMoiety *_activeMoiety,
+            std::vector<AnalyteGroupId> _analyteGroupIds,
+            IntakeSeries _recordedIntakes,
+            unsigned int _nbPatients,
+            std::vector<std::vector<std::vector<std::vector<Concentration> > > > &_concentrations,
+            MonteCarloPercentileCalculatorBase &_simpleCalculator, std::vector<TimeOffsets> _times);
+
+};
+
+class AprioriPercentileCalculatorMulti : public IAprioriPercentileCalculatorMulti, public MonteCarloPercentileCalculatorBase, public PercentileCalculatorMultiBase
 {
 public:
     ///
@@ -487,6 +515,7 @@ public:
     /// \param _residualErrorModel Residual error model
     /// \param _etas Etas pre-calculated by the aposteriori calculator
     /// \param _percentileRanks List of percentiles ranks
+    /// \param _activeMoiety Active moiety that has to be calculated
     /// \param _aborter An aborter object allowing to abort the calculation
     /// \return The status of calculation
     ComputingResult calculate(
@@ -507,7 +536,7 @@ public:
 };
 
 
-class AposterioriMonteCarloPercentileCalculatorMulti : public IAposterioriPercentileCalculatorMulti, public MonteCarloPercentileCalculatorBase
+class AposterioriMonteCarloPercentileCalculatorMulti : public IAposterioriPercentileCalculatorMulti, public MonteCarloPercentileCalculatorBase, public PercentileCalculatorMultiBase
 {
 public:
 

@@ -996,71 +996,16 @@ ComputingResult AprioriPercentileCalculatorMulti::calculate(
         analyteGroupIndex ++;
     }
 
-    if ((_activeMoiety != nullptr) &&
-            (_activeMoiety->getFormula() != nullptr) &&
-            (_activeMoiety->getAnalyteIds().size() > 1)) {
-
-        Operation *op = _activeMoiety->getFormula();
-
-        std::vector< std::vector< std::vector<Concentration> > > aConcentration;
-
-
-        // Set the size of vector "concentrations"
-        for (unsigned int cycle = 0; cycle < recordedIntakes.size(); cycle++) {
-            std::vector< std::vector<Concentration> > vec;
-            for (int point = 0; point < recordedIntakes.at(cycle).getNbPoints(); point++) {
-                vec.push_back(std::vector<Concentration>(nbPatients));
-            }
-            aConcentration.push_back(vec);
-        }
-
-        OperationInputList inputList;
-        for (size_t i = 0; i < analyteGroupIds.size(); i++) {
-            inputList.push_back(OperationInput("input" + std::to_string(i), 0.0));
-        }
-
-        size_t nbAnalyteGroups = analyteGroupIds.size();
-
-        // TODO : This loop could be multi-threaded
-        size_t size1 = concentrations[0].size();
-        for (size_t i = 0; i < size1; i++) {
-            size_t size2 = concentrations[0][i].size();
-            for (size_t j = 0; j < size2; j++) {
-                size_t size3 = concentrations[0][i][j].size();
-                for (size_t k = 0; k < size3; k++) {
-
-                    for (size_t index = 0; index < nbAnalyteGroups; index ++) {
-                        inputList[index].setValue(concentrations[index][i][j][k]);
-                    }
-                    double result;
-                    if (!op->evaluate(inputList, result)) {
-                        // Something went wrong
-                        return ComputingResult::ActiveMoietyCalculationError;
-                    }
-                    aConcentration[i][j][k] = result;
-                }
-            }
-        }
-
-        return simpleCalculator.sortAndExtractPercentiles(_percentiles,
-                                                          _percentileRanks,
-                                                          nbPatients,
-                                                          times,
-                                                          recordedIntakes,
-                                                          aConcentration);
-    }
-    else {
-        return simpleCalculator.sortAndExtractPercentiles(_percentiles,
-                                                          _percentileRanks,
-                                                          nbPatients,
-                                                          times,
-                                                          recordedIntakes,
-                                                          concentrations[0]);
-    }
-
-
-
-    return ComputingResult::Ok;
+    return calculateActiveMoietyAndSort(
+                _percentiles,
+                _percentileRanks,
+                _activeMoiety,
+                analyteGroupIds,
+                recordedIntakes,
+                nbPatients,
+                concentrations,
+                simpleCalculator,
+                times);
 }
 
 ComputingResult AposterioriMonteCarloPercentileCalculatorMulti::calculate(
@@ -1136,6 +1081,30 @@ ComputingResult AposterioriMonteCarloPercentileCalculatorMulti::calculate(
         analyteGroupIndex ++;
     }
 
+    return calculateActiveMoietyAndSort(
+                _percentiles,
+                _percentileRanks,
+                _activeMoiety,
+                analyteGroupIds,
+                recordedIntakes,
+                nbPatients,
+                concentrations,
+                simpleCalculator,
+                times);
+}
+
+ComputingResult PercentileCalculatorMultiBase::calculateActiveMoietyAndSort(
+        PercentilesPrediction &_percentiles,
+        const PercentileRanks &_percentileRanks,
+        const ActiveMoiety *_activeMoiety,
+        std::vector<AnalyteGroupId> _analyteGroupIds,
+        IntakeSeries _recordedIntakes,
+        unsigned int _nbPatients,
+        std::vector< std::vector< std::vector< std::vector<Concentration> > > > &_concentrations,
+        MonteCarloPercentileCalculatorBase &_simpleCalculator,
+        std::vector<TimeOffsets> _times)
+{
+
     if ((_activeMoiety != nullptr) &&
             (_activeMoiety->getFormula() != nullptr) &&
             (_activeMoiety->getAnalyteIds().size() > 1)) {
@@ -1146,31 +1115,31 @@ ComputingResult AposterioriMonteCarloPercentileCalculatorMulti::calculate(
 
 
         // Set the size of vector "concentrations"
-        for (unsigned int cycle = 0; cycle < recordedIntakes.size(); cycle++) {
+        for (unsigned int cycle = 0; cycle < _recordedIntakes.size(); cycle++) {
             std::vector< std::vector<Concentration> > vec;
-            for (int point = 0; point < recordedIntakes.at(cycle).getNbPoints(); point++) {
-                vec.push_back(std::vector<Concentration>(nbPatients));
+            for (int point = 0; point < _recordedIntakes.at(cycle).getNbPoints(); point++) {
+                vec.push_back(std::vector<Concentration>(_nbPatients));
             }
             aConcentration.push_back(vec);
         }
 
         OperationInputList inputList;
-        for (size_t i = 0; i < analyteGroupIds.size(); i++) {
+        for (size_t i = 0; i < _analyteGroupIds.size(); i++) {
             inputList.push_back(OperationInput("input" + std::to_string(i), 0.0));
         }
 
-        size_t nbAnalyteGroups = analyteGroupIds.size();
+        size_t nbAnalyteGroups = _analyteGroupIds.size();
 
         // TODO : This loop could be multi-threaded
-        size_t size1 = concentrations[0].size();
+        size_t size1 = _concentrations[0].size();
         for (size_t i = 0; i < size1; i++) {
-            size_t size2 = concentrations[0][i].size();
+            size_t size2 = _concentrations[0][i].size();
             for (size_t j = 0; j < size2; j++) {
-                size_t size3 = concentrations[0][i][j].size();
+                size_t size3 = _concentrations[0][i][j].size();
                 for (size_t k = 0; k < size3; k++) {
 
                     for (size_t index = 0; index < nbAnalyteGroups; index ++) {
-                        inputList[index].setValue(concentrations[index][i][j][k]);
+                        inputList[index].setValue(_concentrations[index][i][j][k]);
                     }
                     double result;
                     if (!op->evaluate(inputList, result)) {
@@ -1182,24 +1151,24 @@ ComputingResult AposterioriMonteCarloPercentileCalculatorMulti::calculate(
             }
         }
 
-        return simpleCalculator.sortAndExtractPercentiles(_percentiles,
+        return _simpleCalculator.sortAndExtractPercentiles(_percentiles,
                                                           _percentileRanks,
-                                                          nbPatients,
-                                                          times,
-                                                          recordedIntakes,
+                                                          _nbPatients,
+                                                          _times,
+                                                          _recordedIntakes,
                                                           aConcentration);
     }
     else {
-        return simpleCalculator.sortAndExtractPercentiles(_percentiles,
+        return _simpleCalculator.sortAndExtractPercentiles(_percentiles,
                                                           _percentileRanks,
-                                                          nbPatients,
-                                                          times,
-                                                          recordedIntakes,
-                                                          concentrations[0]);
+                                                          _nbPatients,
+                                                          _times,
+                                                          _recordedIntakes,
+                                                          _concentrations[0]);
     }
 
-    return ComputingResult::Ok;
 }
+
 
 } // namespace Core
 } // namespace Tucuxi

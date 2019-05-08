@@ -254,10 +254,6 @@ bool TwoCompartmentInfusionMicro::computeConcentration(const Value& _atTime, con
     }
     
     // Return final residual of comp1 and comp2
-    // TODO: check equation... 
-    // In case of ezechiel, when forcesize = 1,
-    // concentrations1[1] = concentrations1[0] + (APostInf * alphaLogV(1) + BPostInf * betaLogV(1)) / (2 * m_RootK)
-    // concentrations2[1] = (A2 * alphaLogV(1) + BB2 * betaLogV(1)) / (2 * m_RootK)
     _outResiduals[firstCompartment] = concentrations1[atEndInterval];
     _outResiduals[secondCompartment] = concentrations2[atEndInterval];
 #endif
