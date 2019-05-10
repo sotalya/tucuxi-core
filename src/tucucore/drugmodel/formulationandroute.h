@@ -191,6 +191,10 @@ protected:
     std::string m_administrationName;
 };
 
+std::vector<FormulationAndRoute> mergeFormulationAndRouteList(const std::vector<FormulationAndRoute> &_v1,
+                                                              const std::vector<FormulationAndRoute> &_v2);
+
+
 
 class FullFormulationAndRoute
 {

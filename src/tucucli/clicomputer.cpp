@@ -56,7 +56,7 @@ void CliComputer::compute(std::string _drugPath,
 
 
 
-    drugModel = extractor.extractDrugModel(*query);
+    drugModel = extractor.extractDrugModel(*query, drugTreatment);
 
     if (drugModel == nullptr) {
         logHelper.error("Could not find a suitable drug model");

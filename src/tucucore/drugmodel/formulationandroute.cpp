@@ -68,5 +68,21 @@ const std::vector<std::unique_ptr<FullFormulationAndRoute> >& FormulationAndRout
     return m_fars;
 }
 
+
+std::vector<FormulationAndRoute> mergeFormulationAndRouteList(const std::vector<FormulationAndRoute> &_v1,
+                                                              const std::vector<FormulationAndRoute> &_v2)
+{
+    std::vector<FormulationAndRoute> result;
+    result = _v1;
+
+    for (const auto & dd : _v2) {
+        if (std::find(result.begin(), result.end(), dd) == result.end()) {
+            result.push_back(dd);
+        }
+    }
+
+    return result;
+}
+
 }
 }

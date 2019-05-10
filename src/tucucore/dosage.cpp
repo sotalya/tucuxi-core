@@ -93,5 +93,15 @@ FormulationAndRoute DosageHistory::getLastFormulationAndRoute() const
     return m_history.at(m_history.size() - 1)->m_dosage->getLastFormulationAndRoute();
 }
 
+
+std::vector<FormulationAndRoute> DosageHistory::getFormulationAndRouteList() const
+{
+    std::vector<FormulationAndRoute> result;
+    for (const auto &timeRange : m_history) {
+        result = mergeFormulationAndRouteList(result, timeRange->getDosage()->getFormulationAndRouteList());
+    }
+    return result;
+}
+
 } // namespace Core
 } // namespace Tucuxi

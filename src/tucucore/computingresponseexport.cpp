@@ -1,11 +1,9 @@
 #include "computingresponseexport.h"
 
 #include <iostream>
+#include <sstream>
 #include <fstream>
-#include<iostream>
-#include<sstream>
-#include<fstream>
-#include<iomanip>
+#include <iomanip>
 
 namespace Tucuxi {
 namespace Core {
@@ -57,7 +55,7 @@ bool ComputingResponseExport::exportToFiles(const ComputingResponse &_computingR
                 for (size_t i = 0; i < prediction->getPercentileData(0)[cycleIndex].m_concentrations[0].size(); i++) {
                     file <<  (prediction->getPercentileData(0)[cycleIndex].m_start.toSeconds() - firstTime) / 3600.0
                              + prediction->getPercentileData(0)[cycleIndex].m_times[0][i] << "\t";
-                    for (size_t percIndex = 0; percIndex < prediction->getNbRanks(); percIndex ++) {
+                    for (unsigned int percIndex = 0; percIndex < prediction->getNbRanks(); percIndex ++) {
                         file  << prediction->getPercentileData(percIndex)[cycleIndex].m_concentrations[0][i] << "\t";
                     }
                     file << std::endl;

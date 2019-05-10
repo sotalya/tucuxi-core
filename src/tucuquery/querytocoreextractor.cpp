@@ -4,6 +4,8 @@
 #include "tucucore/computingservice/computingtrait.h"
 #include "tucucore/drugmodelimport.h"
 #include "tucucore/drugmodelrepository.h"
+#include "tucucore/treatmentdrugmodelcompatibilitychecker.h"
+
 #include "tucucommon/componentmanager.h"
 #include "tucucommon/loggerhelper.h"
 
@@ -155,7 +157,7 @@ Tucuxi::Core::ComputingTraits *QueryToCoreExtractor::extractComputingTraits(cons
         std::string requestType = request->getRequestType();
 
         if (requestType == "prediction") {
-            std::vector<Tucuxi::Core::ComputingTrait *> traitsList = extractPredictionTraits(*request.get());
+            std::vector<Tucuxi::Core::ComputingTrait *> traitsList = extractPredictionTraits(_query, *request.get());
             for (auto trait : traitsList) {
                 traits->addTrait(std::unique_ptr<Tucuxi::Core::ComputingTrait>(trait));
             }
@@ -165,7 +167,15 @@ Tucuxi::Core::ComputingTraits *QueryToCoreExtractor::extractComputingTraits(cons
                 traits->addTrait(std::unique_ptr<Tucuxi::Core::ComputingTrait>(trait));
             }
         } else if (requestType == "dosageAdaptation") {
+            std::vector<Tucuxi::Core::ComputingTrait *> traitsList = extractAdaptationTraits(_query, *request.get());
+            for (auto trait : traitsList) {
+                traits->addTrait(std::unique_ptr<Tucuxi::Core::ComputingTrait>(trait));
+            }
         } else if (requestType == "firstDosage") {
+            std::vector<Tucuxi::Core::ComputingTrait *> traitsList = extractFirstDosageTraits(_query, *request.get());
+            for (auto trait : traitsList) {
+                traits->addTrait(std::unique_ptr<Tucuxi::Core::ComputingTrait>(trait));
+            }
         } else {
         }
 
@@ -177,10 +187,8 @@ Tucuxi::Core::ComputingTraits *QueryToCoreExtractor::extractComputingTraits(cons
     return traits;
 }
 
-std::vector<Tucuxi::Core::ComputingTrait * > QueryToCoreExtractor::extractPredictionTraits(const RequestData &_request) const
+Tucuxi::Core::PredictionParameterType QueryToCoreExtractor::extractPredictionParameterType(const Query &_query, const RequestData &_request) const
 {
-    std::vector<Tucuxi::Core::ComputingTrait * > traits;
-
     std::string predictionType =_request.getPredictionType();
     Tucuxi::Core::PredictionParameterType predictionParameterType = Tucuxi::Core::PredictionParameterType::Population;
     if (predictionType == "population") {
@@ -190,23 +198,90 @@ std::vector<Tucuxi::Core::ComputingTrait * > QueryToCoreExtractor::extractPredic
     } else if (predictionType == "a posteriori") {
         predictionParameterType = Tucuxi::Core::PredictionParameterType::Aposteriori;
     }
-    /*else if (predictionType == "best") {
-        bool covariatesExist = drugTreatment.getCovariates().empty() ? false : true;
-        bool samplesExist = drugTreatment.getSamples().empty() ? false : true;
+    else if (predictionType == "best") {
+
+        bool covariatesExist = _query.getpParameters().getpPatient().getCovariates().empty() ? false : true;
+        bool samplesExist = _query.getpParameters().getDrugs().at(0)->getSamples().empty() ? false : true;
 
         if (covariatesExist && samplesExist) {
-            predictionParameterType = PredictionParameterType::Aposteriori;
+            predictionParameterType = Tucuxi::Core::PredictionParameterType::Aposteriori;
         } else if (covariatesExist && !samplesExist) {
-            predictionParameterType = PredictionParameterType::Apriori;
+            predictionParameterType = Tucuxi::Core::PredictionParameterType::Apriori;
         } else {
-            predictionParameterType = PredictionParameterType::Population;
+            predictionParameterType = Tucuxi::Core::PredictionParameterType::Population;
         }
 
     } else {
-        apiResponse->addWarning("UnexpetedPredicitionType", m_query.getLanguage(), "Unexpected prediction type!");
-        predictionParameterType = PredictionParameterType::Population;
+//        apiResponse->addWarning("UnexpetedPredicitionType", m_query.getLanguage(), "Unexpected prediction type!");
+//        predictionParameterType = PredictionParameterType::Population;
     }
-    */
+    return predictionParameterType;
+}
+
+
+std::vector<Tucuxi::Core::ComputingTrait *> QueryToCoreExtractor::extractFirstDosageTraits(const Query &_query, const RequestData &_request) const
+{
+    std::vector<Tucuxi::Core::ComputingTrait * > traits;
+
+    TMP_UNUSED_PARAMETER(_query);
+    TMP_UNUSED_PARAMETER(_request);
+
+    return traits;
+}
+
+
+std::vector<Tucuxi::Core::ComputingTrait *> QueryToCoreExtractor::extractAdaptationTraits(const Query &_query, const RequestData &_request) const
+{
+    std::vector<Tucuxi::Core::ComputingTrait * > traits;
+
+    std::string predictionType =_request.getPredictionType();
+    Tucuxi::Core::PredictionParameterType predictionParameterType = extractPredictionParameterType(_query, _request);
+
+
+    Tucuxi::Core::ComputingOption computingOption(predictionParameterType, Tucuxi::Core::CompartmentsOption::MainCompartment);
+
+    int nbPointsPerHour = 10;
+    if (_request.getNbPointsPerHour() > 0) {
+        nbPointsPerHour = _request.getNbPointsPerHour();
+    }
+
+
+    Tucuxi::Core::BestCandidatesOption adjustmentOption(Tucuxi::Core::BestCandidatesOption::BestDosagePerInterval);
+    Tucuxi::Core::ChargingOption chargingOption(Tucuxi::Core::ChargingOption::NoChargingDose);
+    Tucuxi::Core::RestPeriodOption restPeriodOption(Tucuxi::Core::RestPeriodOption::NoRestPeriod);
+    Tucuxi::Core::SteadyStateTargetOption steadyStateTargetOption(Tucuxi::Core::SteadyStateTargetOption::AtSteadyState);
+    Tucuxi::Core::TargetExtractionOption targetExtractionOption(Tucuxi::Core::TargetExtractionOption::IndividualTargets);
+    Tucuxi::Core::FormulationAndRouteSelectionOption formulationAndRouteSelectionOption(Tucuxi::Core::FormulationAndRouteSelectionOption::LastFormulationAndRoute);
+
+    Tucuxi::Common::DateTime adjustmentTime;
+
+    Tucuxi::Core::ComputingTraitAdjustment * trait = new Tucuxi::Core::ComputingTraitAdjustment(
+                _request.getRequestID(),
+                _request.getpDateInterval().getStart(),
+                _request.getpDateInterval().getEnd(),
+                nbPointsPerHour,
+                computingOption,
+                adjustmentTime,
+                adjustmentOption,
+                chargingOption,
+                restPeriodOption,
+                steadyStateTargetOption,
+                targetExtractionOption,
+                formulationAndRouteSelectionOption);
+
+    traits.push_back(trait);
+
+    return traits;
+}
+
+
+std::vector<Tucuxi::Core::ComputingTrait * > QueryToCoreExtractor::extractPredictionTraits(const Query &_query, const RequestData &_request) const
+{
+    std::vector<Tucuxi::Core::ComputingTrait * > traits;
+
+
+    Tucuxi::Core::PredictionParameterType predictionParameterType = extractPredictionParameterType(_query, _request);
+
     Tucuxi::Core::ComputingOption computingOption(predictionParameterType, Tucuxi::Core::CompartmentsOption::MainCompartment);
 
     int nbPointsPerHour = 10;
@@ -244,18 +319,8 @@ std::vector<Tucuxi::Core::ComputingTrait * > QueryToCoreExtractor::extractPredic
 {
     std::vector<Tucuxi::Core::ComputingTrait * > traits;
 
-    std::string predictionType =_request.getPredictionType();
-    Tucuxi::Core::PredictionParameterType predictionParameterType = Tucuxi::Core::PredictionParameterType::Population;
-    if (predictionType == "population") {
-        predictionParameterType = Tucuxi::Core::PredictionParameterType::Population;
-    } else if (predictionType == "a priori") {
-        predictionParameterType = Tucuxi::Core::PredictionParameterType::Apriori;
-    } else if (predictionType == "a posteriori") {
-        predictionParameterType = Tucuxi::Core::PredictionParameterType::Aposteriori;
-    } else {
-//        apiResponse->addWarning("UnexpetedPredicitionType", m_query.getLanguage(), "Unexpected prediction type!");
-//        predictionParameterType = PredictionParameterType::Population;
-    }
+
+    Tucuxi::Core::PredictionParameterType predictionParameterType = extractPredictionParameterType(_query, _request);
 
     Tucuxi::Core::ComputingOption computingOption(predictionParameterType, Tucuxi::Core::CompartmentsOption::MainCompartment);
 
@@ -297,7 +362,7 @@ std::vector<Tucuxi::Core::ComputingTrait * > QueryToCoreExtractor::extractPredic
     return traits;
 }
 
-Tucuxi::Core::DrugModel *QueryToCoreExtractor::extractDrugModel(const Query &_query) const
+Tucuxi::Core::DrugModel *QueryToCoreExtractor::extractDrugModel(const Query &_query, const Tucuxi::Core::DrugTreatment *_drugTreatment) const
 {
     Tucuxi::Core::DrugModel *drugModel = nullptr;
 
@@ -315,11 +380,21 @@ Tucuxi::Core::DrugModel *QueryToCoreExtractor::extractDrugModel(const Query &_qu
 
     if (_query.getpParameters().getDrugs()[0]->getDrugModelID() != "") {
         drugModel = drugModelRepository->getDrugModelById(_query.getpParameters().getDrugs()[0]->getDrugModelID());
+
+        Tucuxi::Core::TreatmentDrugModelCompatibilityChecker checker;
+        if (!checker.checkCompatibility(_drugTreatment, drugModel)) {
+            return nullptr;
+        }
+
     }
     else {
         std::vector<Tucuxi::Core::DrugModel *> drugModels = drugModelRepository->getDrugModelsByDrugId(_query.getpParameters().getDrugs()[0]->getDrugID());
-        if (drugModels.size() != 0) {
-            drugModel = drugModels[0];
+
+        for (const auto dM : drugModels) {
+            Tucuxi::Core::TreatmentDrugModelCompatibilityChecker checker;
+            if (checker.checkCompatibility(_drugTreatment, dM)) {
+                return dM;
+            }
         }
     }
 

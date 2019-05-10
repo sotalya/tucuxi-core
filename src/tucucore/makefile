@@ -67,6 +67,7 @@ SOURCES := \
            targetextractor.cpp \
            targetevaluator.cpp \
            targetevaluationresult.cpp \
+           treatmentdrugmodelcompatibilitychecker.cpp \
            unit.cpp \
            validvalues.cpp \
            pkmodels/onecompartmentbolus.cpp \

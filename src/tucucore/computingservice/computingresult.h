@@ -82,7 +82,9 @@ enum class ComputingResult {
     /// Error during calculation of active moiety concentration value
     ActiveMoietyCalculationError,
     /// There are no analytes groups
-    NoAnalytesGroup
+    NoAnalytesGroup,
+    /// The drug model is incompatible with the drug treatment
+    IncompatibleTreatmentModel
 };
 
 

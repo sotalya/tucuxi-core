@@ -31,6 +31,7 @@
 #include "tucucore/generalextractor.h"
 #include "tucucore/cyclestatisticscalculator.h"
 #include "tucucore/computingservice/computingresult.h"
+#include "tucucore/treatmentdrugmodelcompatibilitychecker.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -80,6 +81,11 @@ ComputingResult ComputingComponent::compute(const ComputingRequest &_request, st
         if (m_models->getPkModelList().size() == 0) {
             m_logger.error("No Pk Model loaded. Impossible to perform computation");
             return ComputingResult::NoPkModels;
+        }
+
+        TreatmentDrugModelCompatibilityChecker checker;
+        if (!checker.checkCompatibility(&_request.getDrugTreatment(), &_request.getDrugModel())) {
+            return ComputingResult::IncompatibleTreatmentModel;
         }
 
         // A simple iteration on the ComputingTraits. Each one is responsible to fill the _response object with
@@ -275,8 +281,8 @@ ComputingResult ComputingComponent::compute(
 #ifdef NO_PERCENTILES
     return ComputingResult::NoPercentilesCalculation;
 #endif
-    //return computePercentilesSimple(_traits, _request, _response);
-    return computePercentilesMulti(_traits, _request, _response);
+    return computePercentilesSimple(_traits, _request, _response);
+    //return computePercentilesMulti(_traits, _request, _response);
 }
 
 ComputingResult ComputingComponent::computePercentilesMulti(

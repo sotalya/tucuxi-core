@@ -785,7 +785,7 @@ struct TestDrugVancomycin : public fructose::test_base<TestDrugVancomycin>
 
 
         DrugTreatment *drugTreatment;
-        const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Infusion);
+        const FormulationAndRoute route(Formulation::ParenteralSolution, AdministrationRoute::IntravenousDrip, AbsorptionModel::Infusion);
 
 
         buildDrugTreatment(drugTreatment, route);

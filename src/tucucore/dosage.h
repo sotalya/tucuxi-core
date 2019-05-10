@@ -80,6 +80,12 @@ public:
     /// TODO : A test should be written for that
     ///
     virtual FormulationAndRoute getLastFormulationAndRoute() const = 0;
+
+    /// \brief Returns the list of formulation and route of the dosage
+    /// \return  The list of formulation and route of the dosage
+    /// TODO : A test should be written for that
+    ///
+    virtual std::vector<FormulationAndRoute> getFormulationAndRouteList() const = 0;
 };
 
 
@@ -154,6 +160,11 @@ public:
     FormulationAndRoute getLastFormulationAndRoute() const override
     {
         return m_dosage->getLastFormulationAndRoute();
+    }
+
+    std::vector<FormulationAndRoute> getFormulationAndRouteList() const override
+    {
+        return m_dosage->getFormulationAndRouteList();
     }
 
     const DosageBounded * getDosage() const {
@@ -253,6 +264,11 @@ public:
         return m_dosage->getLastFormulationAndRoute();
     }
 
+    std::vector<FormulationAndRoute> getFormulationAndRouteList() const override
+    {
+        return m_dosage->getFormulationAndRouteList();
+    }
+
     DOSAGE_UTILS(DosageBounded, DosageRepeat);
 
     /// \brief Get the time step between two bounded dosages.
@@ -319,6 +335,17 @@ public:
             return FormulationAndRoute(Formulation::Undefined, AdministrationRoute::Undefined, AbsorptionModel::Undefined);
         }
         return m_dosages.at(m_dosages.size() - 1)->getLastFormulationAndRoute();
+    }
+
+    std::vector<FormulationAndRoute> getFormulationAndRouteList() const override
+    {
+        std::vector<FormulationAndRoute> result;
+
+        for (const auto & dosage : m_dosages) {
+            std::vector<FormulationAndRoute> d = dosage->getFormulationAndRouteList();
+            result = mergeFormulationAndRouteList(result, d);
+        }
+        return result;
     }
 
     DOSAGE_UTILS(DosageBounded, DosageSequence);
@@ -399,6 +426,18 @@ public:
         return m_dosages.at(m_dosages.size() - 1)->getLastFormulationAndRoute();
     }
 
+    std::vector<FormulationAndRoute> getFormulationAndRouteList() const override
+    {
+        std::vector<FormulationAndRoute> result;
+
+        for (const auto & dosage : m_dosages) {
+            std::vector<FormulationAndRoute> d = dosage->getFormulationAndRouteList();
+            result = mergeFormulationAndRouteList(result, d);
+        }
+        return result;
+    }
+
+
     DOSAGE_UTILS(DosageBounded, ParallelDosageSequence);
 
 
@@ -472,6 +511,14 @@ public:
     {
         return m_routeOfAdministration;
     }
+
+    std::vector<FormulationAndRoute> getFormulationAndRouteList() const override
+    {
+        std::vector<FormulationAndRoute> result;
+        result.push_back(m_routeOfAdministration);
+        return result;
+    }
+
 
 
     Duration getInfusionTime() const
@@ -883,6 +930,8 @@ public:
     void mergeDosage(const DosageTimeRange *_newDosage);
 
     FormulationAndRoute getLastFormulationAndRoute() const;
+
+    std::vector<FormulationAndRoute> getFormulationAndRouteList() const;
 
     const DosageTimeRangeList& getDosageTimeRanges() const {
         return m_history;

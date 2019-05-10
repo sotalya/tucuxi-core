@@ -5,6 +5,7 @@
 #include "tucucore/covariateevent.h"
 #include "tucucore/drugtreatment/sample.h"
 #include "tucucore/targetevent.h"
+#include "tucucore/computingservice/computingtrait.h"
 
 #include "tucuquery/query.h"
 
@@ -57,12 +58,17 @@ public:
 
     Tucuxi::Core::ComputingTraits *extractComputingTraits(const Query &_query) const;
 
-    Tucuxi::Core::DrugModel *extractDrugModel(const Query &_query) const;
+    Tucuxi::Core::DrugModel *extractDrugModel(const Query &_query, const Tucuxi::Core::DrugTreatment *_drugTreatment) const;
 
-    std::vector<Tucuxi::Core::ComputingTrait *> extractPredictionTraits(const RequestData &_request) const;
+    Tucuxi::Core::PredictionParameterType extractPredictionParameterType(const Query &_query, const RequestData &_request) const;
+
+    std::vector<Tucuxi::Core::ComputingTrait *> extractPredictionTraits(const Query &_query, const RequestData &_request) const;
 
     std::vector<Tucuxi::Core::ComputingTrait *> extractPredictionAtSampleTimeTraits(const Query &_query, const RequestData &_request) const;
 
+    std::vector<Tucuxi::Core::ComputingTrait *> extractFirstDosageTraits(const Query &_query, const RequestData &_request) const;
+
+    std::vector<Tucuxi::Core::ComputingTrait *> extractAdaptationTraits(const Query &_query, const RequestData &_request) const;
 };
 
 } // namespace Query
