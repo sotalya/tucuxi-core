@@ -628,7 +628,7 @@ void MonteCarloPercentileCalculatorBase::calculateSubomega(
 
     EigenMatrix hessian(etas.size(), etas.size());
 
-    EigenVector e = etas;
+    // EigenVector e = etas;
 
     // Get the hessian
     deriv2(_logLikelihood, (EigenVector&)etas, (EigenMatrix&)hessian); // NOLINT(google-readability-casting)

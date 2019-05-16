@@ -74,7 +74,7 @@ protected:
     std::unique_ptr<ClinicalData> createClinicalData(Common::XmlNodeIterator& _clinicalDataRootIterator) const;
 
     // Methods to separate the creation of a ParametersData
-    std::unique_ptr<ParametersData> createParametersData(Tucuxi::Common::XmlDocument & _document) const;
+    std::unique_ptr<DrugTreatmentData> createDrugTreatmentData(Tucuxi::Common::XmlDocument & _document) const;
     std::unique_ptr<PatientData> createPatientData(Common::XmlNodeIterator& _patientDataRootIterator) const;
     std::unique_ptr<CovariateData> createCovariateData(Common::XmlNodeIterator& _covariateDataRootIterator) const;
     std::unique_ptr<DrugData> createDrugData(Common::XmlNodeIterator& _drugDataRootIterator) const;

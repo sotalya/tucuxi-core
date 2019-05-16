@@ -89,7 +89,7 @@ public:
         std::string& _requestType,
         int _nbPointsPerHour,
         std::unique_ptr<DateInterval> _pDateInterval,
-        std::string& _predictionType,
+        std::string& _parametersType,
         std::unique_ptr<GraphData> _pGraph,
         std::vector<double>& _percentiles,
         std::unique_ptr<Backextrapolation> _pBackextrapolation
@@ -103,7 +103,7 @@ public:
     const std::string getRequestType() const;
     int getNbPointsPerHour() const;
     const DateInterval& getpDateInterval() const;
-    const std::string getPredictionType() const;
+    const std::string getParametersType() const;
     const GraphData& getpGraph() const;
     const std::vector<double> getPercentiles() const;
     const Backextrapolation& getpBackextrapolation() const;
@@ -114,7 +114,7 @@ protected:
     const std::string m_requestType;
     int m_nbPointsPerHour;
     std::unique_ptr<DateInterval> m_pDateInterval;
-    const std::string m_predictionType;
+    const std::string m_parametersType;
     std::unique_ptr<GraphData> m_pGraph;
     const std::vector<double> m_percentiles;
     std::unique_ptr<Backextrapolation> m_pBackextrapolation;

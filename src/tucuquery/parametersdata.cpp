@@ -9,19 +9,19 @@ namespace Query {
 // CovariateData class
 
 CovariateData::CovariateData(
-        string& _name,
+        string& _covariateId,
         Common::DateTime& _pDate,
         string& _value,
         string& _unit,
         Core::DataType _datatype,
         string& _nature
-) : m_name(_name), m_pDate(_pDate), m_value(_value),
+) : m_covariateId(_covariateId), m_pDate(_pDate), m_value(_value),
     m_unit(_unit), m_datatype(_datatype), m_nature(_nature)
 {}
 
-const string CovariateData::getName() const
+const string CovariateData::getCovariateId() const
 {
-    return m_name;
+    return m_covariateId;
 }
 
 const Common::DateTime CovariateData::getpDate() const
@@ -262,16 +262,16 @@ const vector<unique_ptr<TargetData> >& DrugData::getTargets() const
 
 // ParametersData class
 
-ParametersData::ParametersData(unique_ptr<PatientData> _pPatient, vector<unique_ptr<DrugData> > _drugs)
+DrugTreatmentData::DrugTreatmentData(unique_ptr<PatientData> _pPatient, vector<unique_ptr<DrugData> > _drugs)
     : m_pPatient(move(_pPatient)), m_drugs(move(_drugs))
 {}
 
-const PatientData& ParametersData::getpPatient() const
+const PatientData& DrugTreatmentData::getpPatient() const
 {
     return *m_pPatient;
 }
 
-const vector<unique_ptr<DrugData> >& ParametersData::getDrugs() const
+const vector<unique_ptr<DrugData> >& DrugTreatmentData::getDrugs() const
 {
     return m_drugs;
 }

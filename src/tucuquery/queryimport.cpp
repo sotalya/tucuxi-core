@@ -86,16 +86,16 @@ QueryImport::Result QueryImport::importDocument(
 
     // TODO try to see if I can catch a parsing exception.
 
-    static const string DRUG_ID_NODE_NAME = "queryID";
-    static const string CLIENT_ID_NODE_NAME = "clientID";
+    static const string DRUG_ID_NODE_NAME = "queryId";
+    static const string CLIENT_ID_NODE_NAME = "clientId";
     static const string DATE_NODE_NAME = "date";
     static const string LANGUAGE_NODE_NAME = "language";
     static const string REQUESTS_NODE_NAME = "requests";
 
     Common::XmlNode root = _document.getRoot();
 
-    string drugID = root.getChildren(DRUG_ID_NODE_NAME)->getValue();
-    string clientID = root.getChildren(CLIENT_ID_NODE_NAME)->getValue();
+    string drugId = root.getChildren(DRUG_ID_NODE_NAME)->getValue();
+    string clientId = root.getChildren(CLIENT_ID_NODE_NAME)->getValue();
 
     string dateValue = root.getChildren(DATE_NODE_NAME)->getValue();
     Common::DateTime date(dateValue, DATE_FORMAT);
@@ -103,7 +103,7 @@ QueryImport::Result QueryImport::importDocument(
     string language = root.getChildren(LANGUAGE_NODE_NAME)->getValue();
 
     unique_ptr<AdministrativeData> pAdministrativeData = createAdministrativeData(_document);
-    unique_ptr<ParametersData> pParametersData = createParametersData(_document);
+    unique_ptr<DrugTreatmentData> pParametersData = createDrugTreatmentData(_document);
 
     Common::XmlNodeIterator requestsRootIterator = root.getChildren(REQUESTS_NODE_NAME);
     Common::XmlNodeIterator requestsIterator = requestsRootIterator->getChildren();
@@ -114,8 +114,8 @@ QueryImport::Result QueryImport::importDocument(
     }
 
     _query = new Query(
-                drugID,
-                clientID,
+                drugId,
+                clientId,
                 date,
                 language,
                 move(pAdministrativeData),
@@ -295,14 +295,14 @@ unique_ptr<ClinicalData> QueryImport::createClinicalData(Common::XmlNodeIterator
     return make_unique<ClinicalData>(data);
 }
 
-unique_ptr<ParametersData> QueryImport::createParametersData(Tucuxi::Common::XmlDocument & _document) const
+unique_ptr<DrugTreatmentData> QueryImport::createDrugTreatmentData(Tucuxi::Common::XmlDocument & _document) const
 {
-    static const string PARAMETERS_NODE_NAME = "parameters";
+    static const string DRUGTREATMENT_NODE_NAME = "drugTreatment";
     static const string PATIENT_NODE_NAME = "patient";
     static const string DRUGS_NODE_NAME = "drugs";
 
     Common::XmlNode root = _document.getRoot();
-    Common::XmlNodeIterator parametersRootIterator = root.getChildren(PARAMETERS_NODE_NAME);
+    Common::XmlNodeIterator parametersRootIterator = root.getChildren(DRUGTREATMENT_NODE_NAME);
 
     if (!parametersRootIterator->isValid()) {
         // TODO
@@ -320,7 +320,7 @@ unique_ptr<ParametersData> QueryImport::createParametersData(Tucuxi::Common::Xml
         drugsIterator++;
     }
 
-    return make_unique<ParametersData>(
+    return make_unique<DrugTreatmentData>(
                                       move(pPatient),
                                       move(drugs)
                                     );
@@ -345,14 +345,14 @@ unique_ptr<PatientData> QueryImport::createPatientData(Common::XmlNodeIterator& 
 
 unique_ptr<CovariateData> QueryImport::createCovariateData(Common::XmlNodeIterator& _covariateDataRootIterator) const
 {
-    static const string NAME_NODE_NAME = "name";
+    static const string COVARIATEID_NODE_NAME = "covariateId";
     static const string DATE_NODE_NAME = "date";
     static const string VALUE_NODE_NAME = "value";
     static const string UNIT_NODE_NAME = "unit";
     static const string DATATYPE_NODE_NAME = "dataType";
     static const string NATURE_NODE_NAME = "nature";
 
-    string name = getChildStringValue(_covariateDataRootIterator, NAME_NODE_NAME);
+    string covariateId = getChildStringValue(_covariateDataRootIterator, COVARIATEID_NODE_NAME);
     Common::DateTime date = getChildDateTimeValue(_covariateDataRootIterator, DATE_NODE_NAME);
     string value = getChildStringValue(_covariateDataRootIterator, VALUE_NODE_NAME);
     string unit = getChildStringValue(_covariateDataRootIterator, UNIT_NODE_NAME);
@@ -368,7 +368,8 @@ unique_ptr<CovariateData> QueryImport::createCovariateData(Common::XmlNodeIterat
     } else if (dataTypeString == "date") {
         dataType = Core::DataType::Date;
     } else {
-        // TODO
+        // TODO : there is an error to notify
+        dataType = Core::DataType::Double;
     }
 
     // If the covariate is a date, go through a DateTime to reconvert it to a string
@@ -382,7 +383,7 @@ unique_ptr<CovariateData> QueryImport::createCovariateData(Common::XmlNodeIterat
     string nature = getChildStringValue(_covariateDataRootIterator, NATURE_NODE_NAME);
 
     return make_unique<CovariateData>(
-                                    name,
+                                    covariateId,
                                      date,
                                      value,
                                      unit,
@@ -393,8 +394,8 @@ unique_ptr<CovariateData> QueryImport::createCovariateData(Common::XmlNodeIterat
 
 unique_ptr<DrugData> QueryImport::createDrugData(Common::XmlNodeIterator& _drugDataRootIterator) const
 {
-    static const string DRUG_ID_NODE_NAME = "drugID";
-    static const string DRUG_MODEL_ID_NODE_NAME = "drugModelID";
+    static const string DRUG_ID_NODE_NAME = "drugId";
+    static const string DRUG_MODEL_ID_NODE_NAME = "drugModelId";
     static const string ACTIVE_PRINCIPLE_NODE_NAME = "activePrinciple";
     static const string BRAND_NAME_NODE_NAME = "brandName";
     static const string ATC_NODE_NAME = "atc";
@@ -402,8 +403,8 @@ unique_ptr<DrugData> QueryImport::createDrugData(Common::XmlNodeIterator& _drugD
     static const string SAMPLES_NODE_NAME = "samples";
     static const string TARGETS_NODE_NAME = "targets";
 
-    string drugID = getChildStringValue(_drugDataRootIterator, DRUG_ID_NODE_NAME);
-    string drugModelID = getChildStringValue(_drugDataRootIterator, DRUG_MODEL_ID_NODE_NAME);
+    string drugId = getChildStringValue(_drugDataRootIterator, DRUG_ID_NODE_NAME);
+    string drugModelId = getChildStringValue(_drugDataRootIterator, DRUG_MODEL_ID_NODE_NAME);
     string activePrinciple = getChildStringValue(_drugDataRootIterator, ACTIVE_PRINCIPLE_NODE_NAME);
     string brandName = getChildStringValue(_drugDataRootIterator, BRAND_NAME_NODE_NAME);
     string atc = getChildStringValue(_drugDataRootIterator, ATC_NODE_NAME);
@@ -428,8 +429,8 @@ unique_ptr<DrugData> QueryImport::createDrugData(Common::XmlNodeIterator& _drugD
     }
 
     return make_unique<DrugData>(
-                            drugID,
-                            drugModelID,
+                            drugId,
+                            drugModelId,
                             activePrinciple,
                             brandName,
                             atc,
@@ -441,7 +442,7 @@ unique_ptr<DrugData> QueryImport::createDrugData(Common::XmlNodeIterator& _drugD
 
 unique_ptr<TargetData> QueryImport::createTargetData(Common::XmlNodeIterator& _targetDataRootIterator) const
 {
-    static const string ANALYTE_ID_NODE_NAME           = "activeMoietyID";
+    static const string ANALYTE_ID_NODE_NAME           = "activeMoietyId";
     static const string TARGET_TYPE_NODE_NAME          = "targetType";
     static const string UNIT_NODE_NAME                 = "unit";
     static const string INEFFICACY_ALARM_ID_NODE_NAME  = "inefficacyAlarm";
@@ -450,7 +451,7 @@ unique_ptr<TargetData> QueryImport::createTargetData(Common::XmlNodeIterator& _t
     static const string MAX_ID_NODE_NAME               = "max";
     static const string TOXICITY_ALARM_NODE_NAME       = "toxicityAlarm";
 
-    string activeMoietyID = getChildStringValue(_targetDataRootIterator, ANALYTE_ID_NODE_NAME);
+    string activeMoietyId = getChildStringValue(_targetDataRootIterator, ANALYTE_ID_NODE_NAME);
     string targetType = getChildStringValue(_targetDataRootIterator, TARGET_TYPE_NODE_NAME);
     string unit = getChildStringValue(_targetDataRootIterator, UNIT_NODE_NAME);
     double inefficacyAlarm = getChildDoubleValue(_targetDataRootIterator, INEFFICACY_ALARM_ID_NODE_NAME);
@@ -460,7 +461,7 @@ unique_ptr<TargetData> QueryImport::createTargetData(Common::XmlNodeIterator& _t
     double toxicityAlarm = getChildDoubleValue(_targetDataRootIterator, TOXICITY_ALARM_NODE_NAME);
 
     return make_unique<TargetData>(
-                               activeMoietyID,
+                               activeMoietyId,
                                targetType,
                                unit,
                                inefficacyAlarm,
@@ -473,13 +474,13 @@ unique_ptr<TargetData> QueryImport::createTargetData(Common::XmlNodeIterator& _t
 
 unique_ptr<SampleData> QueryImport::createSampleData(Common::XmlNodeIterator& _sampleDataRootIterator) const
 {
-    static const string SAMPLE_ID_NODE_NAME = "sampleID";
+    static const string SAMPLE_ID_NODE_NAME = "sampleId";
     static const string SAMPLE_DATE_NODE_NAME = "sampleDate";
     static const string ARRIVAL_DATE_NODE_NAME = "arrivalDate";
     static const string CONCENTRATIONS_NODE_NAME = "concentrations";
     static const string LIKELYHOOD_USE_NODE_NAME = "likelyhoodUse";
 
-    string sampleID = getChildStringValue(_sampleDataRootIterator, SAMPLE_ID_NODE_NAME);
+    string sampleId = getChildStringValue(_sampleDataRootIterator, SAMPLE_ID_NODE_NAME);
     Common::DateTime sampleDate = getChildDateTimeValue(_sampleDataRootIterator, SAMPLE_DATE_NODE_NAME);
     Common::DateTime arrivalDate = getChildDateTimeValue(_sampleDataRootIterator, ARRIVAL_DATE_NODE_NAME);
 
@@ -495,7 +496,7 @@ unique_ptr<SampleData> QueryImport::createSampleData(Common::XmlNodeIterator& _s
     bool likelyhoodUse = getChildBoolValue(_sampleDataRootIterator, LIKELYHOOD_USE_NODE_NAME);
 
     return make_unique<SampleData>(
-                               sampleID,
+                               sampleId,
                                sampleDate,
                                arrivalDate,
                                concentrations,
@@ -505,15 +506,15 @@ unique_ptr<SampleData> QueryImport::createSampleData(Common::XmlNodeIterator& _s
 
 unique_ptr<ConcentrationData> QueryImport::createConcentrationData(Common::XmlNodeIterator& _concentrationDataRootIterator) const
 {
-    static const string ANALYTE_ID_NODE_NAME = "analyteID";
+    static const string ANALYTE_ID_NODE_NAME = "analyteId";
     static const string VALUE_NODE_NAME = "value";
     static const string UNIT_NODE_NAME = "unit";
 
-    string analyteID = getChildStringValue(_concentrationDataRootIterator, ANALYTE_ID_NODE_NAME);
+    string analyteId = getChildStringValue(_concentrationDataRootIterator, ANALYTE_ID_NODE_NAME);
     double value = getChildDoubleValue(_concentrationDataRootIterator, VALUE_NODE_NAME);
     string unit = getChildStringValue(_concentrationDataRootIterator, UNIT_NODE_NAME);
 
-    return make_unique<ConcentrationData>(analyteID, value, unit);
+    return make_unique<ConcentrationData>(analyteId, value, unit);
 }
 
 unique_ptr<Treatment> QueryImport::createTreatment(Common::XmlNodeIterator& _treatmentRootIterator) const
@@ -754,20 +755,20 @@ unique_ptr<Core::FormulationAndRoute> QueryImport::createFormulationAndRoute(Com
 
 unique_ptr<RequestData> QueryImport::createRequest(Tucuxi::Common::XmlNodeIterator& _requestRootIterator) const
 {
-    static const string REQUEST_ID_NODE_NAME           = "requestID";
-    static const string DRUG_ID_NODE_NAME              = "drugID";
+    static const string REQUEST_ID_NODE_NAME           = "requestId";
+    static const string DRUG_ID_NODE_NAME              = "drugId";
     static const string REQUEST_TYPE_NODE_NAME         = "requestType";
     static const string NBPOINTSPERHOUR_NODE_NAME         = "nbPointsPerHour";
     static const string DATE_INTERVAL_NODE_NAME        = "dateInterval";
     static const string DATE_INTERVAL_START_NODE_NAME  = "start";
     static const string DATE_INTERVAL_END_NODE_NAME    = "end";
-    static const string PREDICTION_TYPE_NODE_NAME      = "predictionType";
+    static const string PREDICTION_TYPE_NODE_NAME      = "parametersType";
     static const string GRAPH_NODE_NAME                = "graph";
     static const string PERCENTILES_NODE_NAME          = "percentiles";
     static const string BACKEXTRAPOLATION_NODE_NAME    = "backextrapolation";
 
-    string requestID = getChildStringValue(_requestRootIterator, REQUEST_ID_NODE_NAME);
-    string drugID = getChildStringValue(_requestRootIterator, DRUG_ID_NODE_NAME);
+    string requestId = getChildStringValue(_requestRootIterator, REQUEST_ID_NODE_NAME);
+    string drugId = getChildStringValue(_requestRootIterator, DRUG_ID_NODE_NAME);
     string requestType = getChildStringValue(_requestRootIterator, REQUEST_TYPE_NODE_NAME);
 
     Common::XmlNodeIterator dateIntervalRootIterator = _requestRootIterator->getChildren(DATE_INTERVAL_NODE_NAME);
@@ -777,7 +778,7 @@ unique_ptr<RequestData> QueryImport::createRequest(Tucuxi::Common::XmlNodeIterat
 
     int nbPointsPerHour = getChildIntValue(_requestRootIterator, NBPOINTSPERHOUR_NODE_NAME);
 
-    string predictionType = getChildStringValue(_requestRootIterator, PREDICTION_TYPE_NODE_NAME);
+    string parametersType = getChildStringValue(_requestRootIterator, PREDICTION_TYPE_NODE_NAME);
 
     Common::XmlNodeIterator graphRootIterator = _requestRootIterator->getChildren(GRAPH_NODE_NAME);
     unique_ptr<GraphData> pGraphData = createGraphData(graphRootIterator);
@@ -803,12 +804,12 @@ unique_ptr<RequestData> QueryImport::createRequest(Tucuxi::Common::XmlNodeIterat
     unique_ptr<Backextrapolation> pBackextrapolation = createBackextrapolation(backextrapolationRootIterator);
 
     return make_unique<RequestData>(
-                                 requestID,
-                                 drugID,
+                                 requestId,
+                                 drugId,
                                  requestType,
                                  nbPointsPerHour,
                                  move(dateInterval),
-                                 predictionType,
+                                 parametersType,
                                  move(pGraphData),
                                  percentiles,
                                  move(pBackextrapolation)

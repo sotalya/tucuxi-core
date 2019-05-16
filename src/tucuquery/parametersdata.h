@@ -18,7 +18,7 @@ public:
     CovariateData() = delete;
 
     CovariateData(
-        std::string& _name,
+        std::string& _covariateId,
         Tucuxi::Common::DateTime& _pDate,
         std::string& _value,
         std::string& _unit,
@@ -29,7 +29,7 @@ public:
     CovariateData(CovariateData& _other) = delete;
 
     // Getters
-    const std::string getName() const;
+    const std::string getCovariateId() const;
     const Tucuxi::Common::DateTime getpDate() const;
     const std::string getValue() const;
     const std::string getUnit() const;
@@ -37,7 +37,7 @@ public:
     const std::string getNature() const;
 
 protected:
-    const std::string m_name;
+    const std::string m_covariateId;
     const Tucuxi::Common::DateTime m_pDate;
     const std::string m_value;
     const std::string m_unit;
@@ -215,18 +215,18 @@ protected:
     std::vector< std::unique_ptr<TargetData> > m_targets;
 };
 
-class ParametersData
+class DrugTreatmentData
 {
 public:
     // Constructors
-    ParametersData() = delete;
+    DrugTreatmentData() = delete;
 
-    ParametersData(
+    DrugTreatmentData(
         std::unique_ptr<PatientData> _pPatient,
         std::vector< std::unique_ptr<DrugData> > _drugs
     );
 
-    ParametersData(ParametersData& _other) = delete;
+    DrugTreatmentData(DrugTreatmentData& _other) = delete;
 
     // Getters
     const PatientData& getpPatient() const;

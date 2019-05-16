@@ -16,9 +16,10 @@ public:
     /// \param _drugPath The path to the drug files
     /// \param _inputFileName The path to the file containing all required input data
     /// \param _outputPath The path to the folder that will contain the output files
+    /// \return an error number. 0 if everything went well
     /// This method is the single entry point exploited by the Command Line Interface
     ///
-    void compute(std::string _drugPath,
+    int compute(std::string _drugPath,
                  std::string _inputFileName,
                  std::string _outputPath);
 };

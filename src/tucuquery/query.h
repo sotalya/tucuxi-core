@@ -43,7 +43,7 @@ public:
             const Tucuxi::Common::DateTime& _pQueryDate,
             const std::string& _language,
             std::unique_ptr<AdministrativeData> _pAdmin,
-            std::unique_ptr<ParametersData> _pParameters,
+            std::unique_ptr<DrugTreatmentData> _pParameters,
             std::vector< std::unique_ptr< RequestData > >& _requests
     );
 
@@ -60,7 +60,7 @@ public:
     const Tucuxi::Common::DateTime getpQueryDate() const;
     const std::string getLanguage() const;
     const AdministrativeData& getpAdmin() const;
-    const ParametersData& getpParameters() const;
+    const DrugTreatmentData& getpParameters() const;
     const std::vector< std::unique_ptr< RequestData > >& getRequests() const;
 
 protected:
@@ -80,7 +80,7 @@ protected:
     std::unique_ptr<AdministrativeData> m_pAdmin;
 
     /// The data of the patient used for the computations.
-    std::unique_ptr<ParametersData> m_pParameters;
+    std::unique_ptr<DrugTreatmentData> m_pParameters;
 
     /// The requests the client wants the server to process.
     std::vector< std::unique_ptr< RequestData > > m_requests;

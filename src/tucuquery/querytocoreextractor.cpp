@@ -30,7 +30,7 @@ Tucuxi::Core::PatientVariates QueryToCoreExtractor::extractPatientVariates(const
     for (const std::unique_ptr<CovariateData>& covariate : covariateData) {
         patientVariates.push_back(
                     std::make_unique<Tucuxi::Core::PatientCovariate>(
-                        covariate->getName(),
+                        covariate->getCovariateId(),
                         covariate->getValue(),
                         covariate->getDatatype(),
                         Core::Unit(covariate->getUnit()),
@@ -189,16 +189,16 @@ Tucuxi::Core::ComputingTraits *QueryToCoreExtractor::extractComputingTraits(cons
 
 Tucuxi::Core::PredictionParameterType QueryToCoreExtractor::extractPredictionParameterType(const Query &_query, const RequestData &_request) const
 {
-    std::string predictionType =_request.getPredictionType();
+    std::string parametersType =_request.getParametersType();
     Tucuxi::Core::PredictionParameterType predictionParameterType = Tucuxi::Core::PredictionParameterType::Population;
-    if (predictionType == "population") {
+    if (parametersType == "population") {
         predictionParameterType = Tucuxi::Core::PredictionParameterType::Population;
-    } else if (predictionType == "a priori") {
+    } else if (parametersType == "apriori") {
         predictionParameterType = Tucuxi::Core::PredictionParameterType::Apriori;
-    } else if (predictionType == "a posteriori") {
+    } else if (parametersType == "aposteriori") {
         predictionParameterType = Tucuxi::Core::PredictionParameterType::Aposteriori;
     }
-    else if (predictionType == "best") {
+    else if (parametersType == "best") {
 
         bool covariatesExist = _query.getpParameters().getpPatient().getCovariates().empty() ? false : true;
         bool samplesExist = _query.getpParameters().getDrugs().at(0)->getSamples().empty() ? false : true;
@@ -234,7 +234,6 @@ std::vector<Tucuxi::Core::ComputingTrait *> QueryToCoreExtractor::extractAdaptat
 {
     std::vector<Tucuxi::Core::ComputingTrait * > traits;
 
-    std::string predictionType =_request.getPredictionType();
     Tucuxi::Core::PredictionParameterType predictionParameterType = extractPredictionParameterType(_query, _request);
 
 

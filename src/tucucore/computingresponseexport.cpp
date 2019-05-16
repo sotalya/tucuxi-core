@@ -56,7 +56,10 @@ bool ComputingResponseExport::exportToFiles(const ComputingResponse &_computingR
                     file <<  (prediction->getPercentileData(0)[cycleIndex].m_start.toSeconds() - firstTime) / 3600.0
                              + prediction->getPercentileData(0)[cycleIndex].m_times[0][i] << "\t";
                     for (unsigned int percIndex = 0; percIndex < prediction->getNbRanks(); percIndex ++) {
-                        file  << prediction->getPercentileData(percIndex)[cycleIndex].m_concentrations[0][i] << "\t";
+                        file  << prediction->getPercentileData(percIndex)[cycleIndex].m_concentrations[0][i];
+                        if (percIndex != prediction->getNbRanks() - 1) {
+                            file << "\t";
+                        }
                     }
                     file << std::endl;
                 }

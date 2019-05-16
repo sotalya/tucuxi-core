@@ -94,7 +94,11 @@ parse(int _argc, char* _argv[])
         drugModelRepository->loadFolder(drugPath);
 
         CliComputer computer;
-        computer.compute(drugPath, inputFileName, outputPath);
+        int exitCode = computer.compute(drugPath, inputFileName, outputPath);
+
+        if (exitCode != 0) {
+            exit(exitCode);
+        }
 
         pCmpMgr->unregisterComponent("DrugModelRepository");
         delete drugModelRepository;

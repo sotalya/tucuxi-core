@@ -17,7 +17,7 @@ CliComputer::CliComputer()
 }
 
 
-void CliComputer::compute(std::string _drugPath,
+int CliComputer::compute(std::string _drugPath,
                           std::string _inputFileName,
                           std::string _outputPath)
 {
@@ -40,7 +40,7 @@ void CliComputer::compute(std::string _drugPath,
 
     if (importResult != QueryImport::Result::Ok) {
         logHelper.error("Error with the import of query file \"{}\"", _inputFileName);
-        return;
+        return 1;
     }
 
     requestResponseID = query->getQueryID();
@@ -51,7 +51,7 @@ void CliComputer::compute(std::string _drugPath,
 
     if (drugTreatment == nullptr) {
         logHelper.error("Error with the drug treatment import");
-        return;
+        return 1;
     }
 
 
@@ -60,7 +60,7 @@ void CliComputer::compute(std::string _drugPath,
 
     if (drugModel == nullptr) {
         logHelper.error("Could not find a suitable drug model");
-        return;
+        return 1;
     }
 
     logHelper.info("Performing computation with drug model : {}", drugModel->getDrugModelId());
@@ -79,13 +79,14 @@ void CliComputer::compute(std::string _drugPath,
 
     if (result != ComputingResult::Ok) {
         logHelper.error("Computing failed");
-        return;
+        return 1;
     }
 
     ComputingResponseExport exporter;
 
     if (!exporter.exportToFiles(*response.get(), _outputPath)) {
         logHelper.error("Could not export the response file");
+        return 1;
     }
     else {
         logHelper.info("The response files were successfully generated");
@@ -100,4 +101,6 @@ void CliComputer::compute(std::string _drugPath,
     if (computingComponent != nullptr) {
         delete computingComponent;
     }
+
+    return 0;
 }

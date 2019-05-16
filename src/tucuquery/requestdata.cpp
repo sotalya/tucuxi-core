@@ -61,13 +61,13 @@ RequestData::RequestData(string& _requestID,
         string& _requestType,
         int _nbPointsPerHour,
         unique_ptr<DateInterval> _pDateInterval,
-        string& _predictionType,
+        string& _parametersType,
         unique_ptr<GraphData> _pGraph,
         std::vector<double> &_percentiles,
         unique_ptr<Backextrapolation> _pBackextrapolation
 ) : m_requestID(_requestID), m_drugID(_drugID), m_requestType(_requestType),
     m_nbPointsPerHour(_nbPointsPerHour),
-    m_pDateInterval(move(_pDateInterval)), m_predictionType(_predictionType),
+    m_pDateInterval(move(_pDateInterval)), m_parametersType(_parametersType),
     m_pGraph(move(_pGraph)), m_percentiles(_percentiles),
     m_pBackextrapolation(move(_pBackextrapolation))
 {}
@@ -97,9 +97,9 @@ const DateInterval& RequestData::getpDateInterval() const
     return *m_pDateInterval;
 }
 
-const string RequestData::getPredictionType() const
+const string RequestData::getParametersType() const
 {
-    return m_predictionType;
+    return m_parametersType;
 }
 
 const GraphData& RequestData::getpGraph() const
