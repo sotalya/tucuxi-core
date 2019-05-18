@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 2.6)
 project (tucuxi)
 
-set(TUCUXI_ROOT ${CMAKE_BINARY_DIR}/../)
+set(TUCUXI_ROOT ${CMAKE_BINARY_DIR}/../../)
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -17,7 +17,9 @@ set(SPDLOG_ROOT ${TUCUXI_ROOT}/libs/spdlog-master-20170622)
 set(EIGEN_ROOT ${TUCUXI_ROOT}/libs/eigen-3.3.2)
 set(DATEMASTER_ROOT ${TUCUXI_ROOT}/libs/date-master-20170711)
 set(RAPIDXML_ROOT ${TUCUXI_ROOT}/libs/rapidxml-1.13)
+set(RAPIDJSON_ROOT ${TUCUXI_ROOT}/libs/rapidjson-master-20190220)
 set(BOTAN_ROOT ${TUCUXI_ROOT}/libs/botan-2.1.0)
+set(CXXOPTS_ROOT ${TUCUXI_ROOT}/libs/cxxopts)
 add_subdirectory(${BOTAN_ROOT} ${BOTAN_ROOT}/build)
 
 set(TUCUXI_SRC ${TUCUXI_ROOT}/src)
@@ -32,7 +34,9 @@ include_directories(
     ${SPDLOG_ROOT}/include
     ${DATEMASTER_ROOT}
     ${RAPIDXML_ROOT}
-    ${BOTAN_ROOT}/build/include)
+    ${RAPIDJSON_ROOT}/include
+    ${BOTAN_ROOT}/build/include
+    ${CXXOPTS_ROOT})
 
 set(TINYJS_SOURCES ${TINYJS_ROOT}/TinyJS.cpp
            ${TINYJS_ROOT}/TinyJS_Functions.cpp
@@ -61,9 +65,22 @@ set(TUCUXICOMMON_SOURCES
     ${COMMON_DIR}/translatablestring.cpp)
 
 add_library(tucuxicommon STATIC ${TUCUXICOMMON_SOURCES})
+
 set(CORE_DIR ${TUCUXI_SRC}/tucucore)
 set(TUCUXICORE_SOURCES
     ${CORE_DIR}/drugmodel/drugmodel.cpp
+    ${CORE_DIR}/cyclestatistics.cpp
+    ${CORE_DIR}/overloadevaluator.cpp
+    ${CORE_DIR}/intakeintervalcalculatorrk4.cpp
+    ${CORE_DIR}/intakeintervalcalculatoranalytical.cpp
+    ${CORE_DIR}/intakeevent.cpp
+    ${CORE_DIR}/generalextractor.cpp
+    ${CORE_DIR}/drugmodelrepository.cpp
+    ${CORE_DIR}/drugmodelchecker.cpp
+    ${CORE_DIR}/drugfilevalidator.cpp
+    ${CORE_DIR}/residualerrormodelextractor.cpp
+    ${CORE_DIR}/drugmodel/errormodel.cpp
+    ${CORE_DIR}/computingresponseexport.cpp
     ${CORE_DIR}/cachedexponentials.cpp
     ${CORE_DIR}/concentrationcalculator.cpp
     ${CORE_DIR}/cyclestatisticscalculator.cpp
@@ -75,6 +92,7 @@ set(TUCUXICORE_SOURCES
     ${CORE_DIR}/pkmodels/onecompartmentbolus.cpp
     ${CORE_DIR}/pkmodels/onecompartmentextra.cpp
     ${CORE_DIR}/pkmodels/rkonecompartmentextra.cpp
+    ${CORE_DIR}/pkmodels/rktwocompartmenterlang.cpp
     ${CORE_DIR}/pkmodels/rkonecompartmentgammaextra.cpp
     ${CORE_DIR}/pkmodels/onecompartmentinfusion.cpp
     ${CORE_DIR}/pkmodels/threecompartmentbolus.cpp
@@ -123,14 +141,28 @@ set(TUCUXICORE_SOURCES
     ${CORE_DIR}/validvalues.cpp
     ${CORE_DIR}/computingservice/computingaborter.cpp
     ${CORE_DIR}/unit.cpp
-    ${CORE_DIR}/drugmodel/drugmodelmetadata.cpp)
+    ${CORE_DIR}/drugmodel/drugmodelmetadata.cpp
+    ${CORE_DIR}/treatmentdrugmodelcompatibilitychecker.cpp)
 
 add_library(tucuxicore STATIC ${TUCUXICORE_SOURCES})
+
+set(QUERY_DIR ${TUCUXI_SRC}/tucuquery)
+set(TUCUXIQUERY_SOURCES
+    ${QUERY_DIR}/administrativedata.cpp
+    ${QUERY_DIR}/parametersdata.cpp
+    ${QUERY_DIR}/query.cpp
+    ${QUERY_DIR}/queryimport.cpp
+    ${QUERY_DIR}/querytocoreextractor.cpp
+    ${QUERY_DIR}/requestdata.cpp)
+
+add_library(tucuxiquery STATIC ${TUCUXIQUERY_SOURCES})
 
 set(TUCUXI_TEST ${TUCUXI_ROOT}/test)
 add_executable(tucucore ${TUCUXI_TEST}/tucucore/tests.cpp)
 add_executable(tucucommon ${TUCUXI_TEST}/tucucommon/tests.cpp)
+add_executable(tucucli ${TUCUXI_SRC}/tucucli/tucucli.cpp ${TUCUXI_SRC}/tucucli/clicomputer.cpp)
 #add_executable(tuculicense ${TUCUXI_TEST}/tuculicense/tests.cpp)
 target_link_libraries(tucucore pthread tucuxicore tucuxicommon tinyjs)
 target_link_libraries(tucucommon pthread tucuxicore tucuxicommon tinyjs botan)
+target_link_libraries(tucucli pthread tucuxiquery tucuxicommon tucuxicore tinyjs botan)
 #target_link_libraries(tuculicense pthread tucuxicore tucuxicommon tinyjs)

@@ -48,8 +48,8 @@ public:
 
     std::string toString() const { return m_s; }
 
-    inline bool operator==(const AnalyteId& _other){ return this->m_s == _other.m_s;}
-    inline bool operator<(const AnalyteId& _other){ return this->m_s < _other.m_s;}
+    inline bool operator==(const AnalyteId& _other) { return this->m_s == _other.m_s;}
+    inline bool operator<(const AnalyteId& _other) const { return this->m_s < _other.m_s;}
 
 protected:
     std::string m_s;
