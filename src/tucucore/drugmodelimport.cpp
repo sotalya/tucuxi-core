@@ -359,6 +359,7 @@ ParameterVariabilityType DrugModelImport::extractParameterVariabilityType(Tucuxi
         {"normal", ParameterVariabilityType::Normal},
         {"lognormal", ParameterVariabilityType::LogNormal},
         {"proportional", ParameterVariabilityType::Proportional},
+        {"exponential", ParameterVariabilityType::Exponential},
         {"additive", ParameterVariabilityType::Additive},
         {"none", ParameterVariabilityType::None}
     };

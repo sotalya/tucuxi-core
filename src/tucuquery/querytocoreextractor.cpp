@@ -67,6 +67,7 @@ Tucuxi::Core::Targets QueryToCoreExtractor::extractTargets(const Query &_query, 
     return targets;
 }
 
+
 Tucuxi::Core::Samples QueryToCoreExtractor::extractSamples(const Query &_query, size_t _drugPosition) const
 {
     Tucuxi::Core::Samples samples;

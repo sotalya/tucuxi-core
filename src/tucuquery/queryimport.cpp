@@ -392,6 +392,15 @@ unique_ptr<CovariateData> QueryImport::createCovariateData(Common::XmlNodeIterat
                                 );
 }
 
+
+struct cmp_by_date
+{
+    inline bool operator()(const std::unique_ptr<SampleData>& a, const std::unique_ptr<SampleData>& b)
+    {
+        return a->getpSampleDate() < b->getpSampleDate();
+    }
+};
+
 unique_ptr<DrugData> QueryImport::createDrugData(Common::XmlNodeIterator& _drugDataRootIterator) const
 {
     static const string DRUG_ID_NODE_NAME = "drugId";
@@ -419,6 +428,10 @@ unique_ptr<DrugData> QueryImport::createDrugData(Common::XmlNodeIterator& _drugD
         samples.push_back(createSampleData(samplesIterator));
         samplesIterator++;
     }
+
+
+    sort(samples.begin(), samples.end(), cmp_by_date());
+
 
     vector< unique_ptr<TargetData> > targets;
     Common::XmlNodeIterator targetsRootIterator = _drugDataRootIterator->getChildren(TARGETS_NODE_NAME);
