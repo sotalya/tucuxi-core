@@ -111,7 +111,7 @@ Value SigmaResidualErrorModel::calculateSampleLikelihood(Value _expected, Value 
     Value phi =
             (0.5 * log(2 * PI)) +
             log(sig) +
-            0.5 * expectedObservedDiff * 1/(std::pow(sig,2)) * expectedObservedDiff;
+            0.5 * expectedObservedDiff * 1.0/(std::pow(sig,2)) * expectedObservedDiff;
 
     // If we have a really big problem, like we have a log of zero
     if (std::isnan(phi)) {
