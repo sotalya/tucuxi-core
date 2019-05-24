@@ -538,7 +538,7 @@ ComputingResult AprioriMonteCarloPercentileCalculator::calculateEtasAndEpsilons(
 
     // Take the lower cholesky to generate correlated normal random deviates
     Eigen::LLT<EigenMatrix> llt(errorMatrix);
-    choleskyMatrix = llt.matrixL().transpose();
+    choleskyMatrix = llt.matrixL(); // .transpose();
 
     // Static random number generator
     // This method does not work anymore (Linux Ubuntu 16.04, gcc 5.4.0, changing it to a time seed
