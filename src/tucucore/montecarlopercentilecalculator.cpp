@@ -326,7 +326,7 @@ ComputingResult MonteCarloPercentileCalculatorBase::sortAndExtractPercentiles(
     // This list is the one used for percentiles extractions
     std::vector< std::vector< std::vector<Concentration> > > realConcentrations(_concentrations.size());
     for (size_t cycle = 0; cycle < _concentrations.size(); cycle++) {
-        realConcentrations[cycle] = std::vector< std::vector<Concentration> >(_concentrations[0].size());
+        realConcentrations[cycle] = std::vector< std::vector<Concentration> >(_concentrations[cycle].size());
         for (size_t point = 0; point < _concentrations[cycle].size(); point ++) {
             realConcentrations[cycle][point] = std::vector<Concentration>(realPatientNumber);
             unsigned int realPatient = 0;
