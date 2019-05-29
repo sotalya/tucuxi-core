@@ -284,6 +284,11 @@ ComputingResult MonteCarloPercentileCalculatorBase::computePredictions(
     return ComputingResult::Ok;
 }
 
+typedef struct
+{
+    double c;
+    bool isValid;
+} valid_concentration_t;
 
 ComputingResult MonteCarloPercentileCalculatorBase::sortAndExtractPercentiles(
         PercentilesPrediction &_percentiles,
@@ -298,11 +303,52 @@ ComputingResult MonteCarloPercentileCalculatorBase::sortAndExtractPercentiles(
     _percentiles.init(_percentileRanks, _times, _recordedIntakes);
 
     std::vector<int> positions;
-    for (unsigned int percRankIdx = 0; percRankIdx < _percentileRanks.size(); percRankIdx++) {
-        positions.push_back( static_cast<int>(static_cast<double>(_percentileRanks[percRankIdx]) / 100.0
-                                              * static_cast<double>(_nbPatients)));
+    unsigned int realPatientNumber = 0;
+    std::vector<bool> isPatientValid(_nbPatients);
+
+    // Here we build a vector indicating if a patient prediction is valid or not.
+    // The invalid will be ignored for selecting the percentiles
+    for (unsigned int patient = 0; patient < _nbPatients; patient ++) {
+        isPatientValid[patient] = true;
+        for (size_t cycle = 0; cycle < _concentrations.size(); cycle++) {
+            for (size_t pos = 0; pos < _concentrations[cycle].size(); pos ++) {
+                if (std::isnan(_concentrations[cycle][pos][patient])) {
+                    isPatientValid[patient] = false;
+                }
+            }
+        }
+        if (isPatientValid[patient]) {
+            realPatientNumber ++;
+        }
     }
 
+    // Then, from this vector we create the list of all valid concentrations.
+    // This list is the one used for percentiles extractions
+    std::vector< std::vector< std::vector<Concentration> > > realConcentrations(_concentrations.size());
+    for (size_t cycle = 0; cycle < _concentrations.size(); cycle++) {
+        realConcentrations[cycle] = std::vector< std::vector<Concentration> >(_concentrations[0].size());
+        for (size_t point = 0; point < _concentrations[cycle].size(); point ++) {
+            realConcentrations[cycle][point] = std::vector<Concentration>(realPatientNumber);
+            unsigned int realPatient = 0;
+            for (unsigned int patient = 0; patient < _nbPatients; patient ++) {
+                if (isPatientValid[patient]) {
+                    realConcentrations[cycle][point][realPatient] = _concentrations[cycle][point][patient];
+                    realPatient ++;
+                }
+            }
+            if (realPatient != realPatientNumber) {
+                std::cout << "Error with real patients" << std::endl;
+            }
+        }
+    }
+
+    // We create the vector of positions corresponding to the percentiles ranks.
+    // Be careful, here we multiply by realPatientNumber
+    for (unsigned int percRankIdx = 0; percRankIdx < _percentileRanks.size(); percRankIdx++) {
+        positions.push_back( static_cast<int>(static_cast<double>(_percentileRanks[percRankIdx]) / 100.0
+                                              * static_cast<double>(realPatientNumber)));
+
+    }
 
 #ifdef MULTITHREADEDSORT
 
@@ -319,8 +365,9 @@ ComputingResult MonteCarloPercentileCalculatorBase::sortAndExtractPercentiles(
     for(int thread = 0; thread < nbThreads; thread++) {
 
         sortWorkers.push_back(std::thread([
-                                      &_concentrations, _recordedIntakes, positions, _percentileRanks, &currentPoint,
-                                          &_percentiles, &mutex, &currentCycle, nbCycles]()
+                                          &realConcentrations, _recordedIntakes, &positions, _percentileRanks,
+                                          &currentPoint, &_percentiles, &mutex, &currentCycle, nbCycles,
+                                          &isPatientValid,_nbPatients]()
         {
             bool cont = true;
             unsigned int cycle;
@@ -348,18 +395,24 @@ ComputingResult MonteCarloPercentileCalculatorBase::sortAndExtractPercentiles(
                     }
                 }
                 mutex.unlock();
+
                 // Sort and set percentile
 
-
                 // Sort concentrations in increasing order at each time (at the cycle and at the point)
-                std::sort(_concentrations[cycle][point].begin(), _concentrations[cycle][point].end(),
+                std::sort(realConcentrations[cycle][point].begin(), realConcentrations[cycle][point].end(),
                           [&] (const double _v1, const double _v2) { return _v1 < _v2; });
 
                 for (unsigned int percRankIdx = 0; percRankIdx < _percentileRanks.size(); percRankIdx++) {
                     int pos = positions[percRankIdx];
-                    double conc = _concentrations[cycle][point][pos];
+
+                    double conc = realConcentrations [cycle][point][pos];
+
+
                     if (conc < 0.0) {
                         conc = 0.0;
+                    }
+                    if (std::isnan(conc)) {
+                        std::cout << "Ouch, error with percentiles" << std::endl;
                     }
                     _percentiles.appendPercentile(percRankIdx, cycle, point, conc);
 
