@@ -14,8 +14,8 @@ namespace Core {
 class ParameterId 
 {
 public:
-    static const int size = 22;
-    enum Enum { V, V1, V2, CL, Ka, Ke, K12, K21, K13, K31, F, Q, Q1, Q2, Ktr, TestA, TestM, TestR, TestS, a, b, Unknown };
+    static const int size = 23;
+    enum Enum { V, V1, V2, CL, Ka, Ke, K12, K21, K13, K31, F, Q, Q1, Q2, Ktr, Tlag, TestA, TestM, TestR, TestS, a, b, Unknown };
 
     static Enum fromString(const std::string &_id) {
         static const std::map<std::string, Enum> sm_paramIds = {  // NOLINT(readability-identifier-naming)
@@ -34,6 +34,7 @@ public:
             { "Q1",  ParameterId::Q1 },
             { "Q2",  ParameterId::Q2 },
             { "Ktr",  ParameterId::Ktr },
+            { "Tlag", ParameterId::Tlag },
             { "TestA",  ParameterId::TestA },
             { "TestM",  ParameterId::TestM },
             { "TestR",  ParameterId::TestR },

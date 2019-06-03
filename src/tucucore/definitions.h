@@ -66,7 +66,7 @@ typedef std::vector<PercentileRank> PercentileRanks;
 
 /// \ingroup TucuCore
 /// \brief Way a dose is administered.
-enum class AbsorptionModel { Undefined, Intravascular, Extravascular, Infusion };
+enum class AbsorptionModel { Undefined, Intravascular, Extravascular, Infusion, ExtravascularLag };
 
 /// \ingroup TucuCore
 /// \brief Operations on scheduled intakes.

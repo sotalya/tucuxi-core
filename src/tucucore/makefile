@@ -72,6 +72,7 @@ SOURCES := \
            validvalues.cpp \
            pkmodels/onecompartmentbolus.cpp \
            pkmodels/onecompartmentextra.cpp \
+           pkmodels/onecompartmentextralag.cpp \
            pkmodels/onecompartmentinfusion.cpp \
            pkmodels/rkonecompartmentextra.cpp \
            pkmodels/rkonecompartmentgammaextra.cpp \

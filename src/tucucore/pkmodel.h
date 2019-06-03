@@ -144,6 +144,35 @@ do { \
 } while (0);
 
 
+/// \brief Add a PkModel with Lag time to a collection.
+/// \param _COLLECTION Collection to which the PkModel has to be added.
+/// \param _COMP_NO_NUM Number of components (expressed in numerical form).
+/// \param _COMP_NO_LIT Number of components (expressed in literal form).
+/// \param _TYPE Type (either Micro or Macro).
+/// \param _TYPE_NAME Type in literal form (either micro or macro).
+/// \param _RC Boolean return type (ORed result of all the add operations).
+#define ADD_PKMODEL_TO_COLLECTION_LAG(_COLLECTION, _COMP_NO_NUM, _COMP_NO_LIT, _TYPE, _TYPE_NAME, _RC) \
+do { \
+    std::shared_ptr<PkModel> pkmodel = std::make_shared<PkModel>("linear." #_COMP_NO_NUM "comp." #_TYPE_NAME); \
+    _RC |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, Tucuxi::Core::_COMP_NO_LIT ## CompartmentExtra ## _TYPE::getCreator()); \
+    _RC |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::ExtravascularLag, Tucuxi::Core::_COMP_NO_LIT ## CompartmentExtraLag ## _TYPE::getCreator()); \
+    _RC |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Intravascular, Tucuxi::Core::_COMP_NO_LIT ## CompartmentBolus ## _TYPE::getCreator()); \
+    _RC |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Infusion, Tucuxi::Core::_COMP_NO_LIT ## CompartmentInfusion## _TYPE::getCreator());\
+    Tucuxi::Common::TranslatableString distribution; \
+    Tucuxi::Common::TranslatableString elimination; \
+    std::string comps; \
+    if (_COMP_NO_NUM == 1) \
+        comps = "compartment"; \
+    else \
+        comps = "compartments"; \
+    distribution.setString(std::to_string(_COMP_NO_NUM) + " " + comps, "en"); \
+    elimination.setString("linear", "en"); \
+    pkmodel->setDistribution(distribution); \
+    pkmodel->setElimination(elimination); \
+    _COLLECTION.addPkModel(pkmodel); \
+} while (0);
+
+
 } // namespace Core
 } // namespace Tucuxi
 

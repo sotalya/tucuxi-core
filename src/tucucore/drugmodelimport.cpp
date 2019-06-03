@@ -430,6 +430,7 @@ AbsorptionModel DrugModelImport::extractAbsorptionModel(Tucuxi::Common::XmlNodeI
         {"undefined", AbsorptionModel::Undefined},
         {"bolus", AbsorptionModel::Intravascular},
         {"extra", AbsorptionModel::Extravascular},
+        {"extra.lag", AbsorptionModel::ExtravascularLag},
         {"infusion", AbsorptionModel::Infusion}
     };
 
