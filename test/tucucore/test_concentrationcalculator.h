@@ -29,6 +29,9 @@
 
 using namespace Tucuxi::Core;
 
+namespace Tucuxi {
+namespace Core {
+
 template<typename T>
 std::ostream& operator<<(typename std::enable_if<std::is_enum<T>::value, std::ostream>::type& stream, const T& e)
 {
@@ -533,4 +536,6 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
     }
 };
 
+}
+}
 #endif // TEST_CONCENTRATIONCALCULATOR_H

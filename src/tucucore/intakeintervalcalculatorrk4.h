@@ -124,7 +124,7 @@ protected:
     int m_nbPoints; /// Number measure points during interval
     Value m_Int; /// Interval time (Hours)
 
-    bool computeConcentrations(Eigen::VectorXd &_times, const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
+    bool computeConcentrations(Eigen::VectorXd &_times, const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) override
     {
         std::vector<Concentrations> concentrations;
         for (unsigned int i = 0; i < ResidualSize; i++) {
@@ -157,7 +157,7 @@ protected:
         return bOk;
     }
 
-    bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
+    bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) override
     {
         std::vector<Concentrations> concentrations;
         for (size_t i = 0; i < ResidualSize; i++) {
