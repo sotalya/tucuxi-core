@@ -9,12 +9,14 @@
 #include <memory>
 #include <vector>
 
+#include "tucucommon/utils.h"
+#include "tucucommon/general.h"
+
 #include "tucucore/definitions.h"
 #include "tucucore/drugdefinitions.h"
 #include "tucucore/operablegraphmanager.h"
 #include "tucucore/operation.h"
 #include "tucucore/timedevent.h"
-#include "tucucommon/general.h"
 #include "tucucore/invariants.h"
 
 namespace Tucuxi {
@@ -114,7 +116,8 @@ public:
     Unit getUnit() const { return m_unit;}
 
     INVARIANTS(
-            INVARIANT(Invariants::INV_PARAMETERDEFINITION_0001, (m_variability != nullptr), "A parameter has no variability defined")
+            INVARIANT(Invariants::INV_PARAMETERDEFINITION_0001, (m_id.size() == 0), "A parameter has no Id")
+            INVARIANT(Invariants::INV_PARAMETERDEFINITION_0002, (m_variability != nullptr), Tucuxi::Common::Utils::strFormat("A parameter %s has no variability defined", m_id))
             )
 
 private:

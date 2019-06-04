@@ -2,6 +2,8 @@
 #define ACTIVEMOIETY_H
 
 #include "tucucommon/translatablestring.h"
+#include "tucucommon/utils.h"
+
 #include "tucucore/drugdefinitions.h"
 #include "tucucore/operation.h"
 #include "tucucore/invariants.h"
@@ -56,9 +58,9 @@ public:
 
     INVARIANTS(
             INVARIANT(Invariants::INV_ACTIVEMOIETY_0001, (m_id.size() > 0), "An active moiety has no Id")
-            INVARIANT(Invariants::INV_ACTIVEMOIETY_0002, (m_analyteIds.size() > 0), "An active moiety has no analyte Ids")
-            INVARIANT(Invariants::INV_ACTIVEMOIETY_0003, (m_formula != nullptr), "An active moiety has no formula to calculate it")
-            LAMBDA_INVARIANT(Invariants::INV_ACTIVEMOIETY_0004, {bool ok = true;for(size_t i = 0; i < m_targets.size(); i++) {ok &= m_targets.at(i)->checkInvariants();} return ok;}, "There is an error in a target")
+            INVARIANT(Invariants::INV_ACTIVEMOIETY_0002, (m_analyteIds.size() > 0), Tucuxi::Common::Utils::strFormat("The active moiety %s has no analyte Ids", m_id))
+            INVARIANT(Invariants::INV_ACTIVEMOIETY_0003, (m_formula != nullptr), Tucuxi::Common::Utils::strFormat("The active moiety %s has no formula to calculate it", m_id))
+            LAMBDA_INVARIANT(Invariants::INV_ACTIVEMOIETY_0004, {bool ok = true;for(size_t i = 0; i < m_targets.size(); i++) {ok &= m_targets.at(i)->checkInvariants();} return ok;}, Tucuxi::Common::Utils::strFormat("There is an error in a target of the active moiety %s", m_id))
             )
 
 protected:
