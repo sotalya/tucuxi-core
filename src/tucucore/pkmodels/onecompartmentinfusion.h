@@ -23,6 +23,10 @@ public:
     /// \brief Constructor
     OneCompartmentInfusionMicro();
 
+    /// \brief Returns the list of required PK parameters Ids
+    /// \return The list of required PK parameters Ids
+    static std::vector<std::string> getParametersId();
+
     typedef OneCompartmentInfusionExponentials Exponentials;
 
 protected:
@@ -71,6 +75,10 @@ class OneCompartmentInfusionMacro : public OneCompartmentInfusionMicro
     INTAKEINTERVALCALCULATOR_UTILS(OneCompartmentInfusionMacro)
 public:
     OneCompartmentInfusionMacro();
+
+    /// \brief Returns the list of required PK parameters Ids
+    /// \return The list of required PK parameters Ids
+    static std::vector<std::string> getParametersId();
 
 protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;

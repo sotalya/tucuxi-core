@@ -25,6 +25,11 @@ public:
 
     typedef OneCompartmentBolusExponentials Exponentials;
 
+
+    /// \brief Returns the list of required PK parameters Ids
+    /// \return The list of required PK parameters Ids
+    static std::vector<std::string> getParametersId();
+
 protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
     void computeExponentials(Eigen::VectorXd& _times) override;
@@ -52,6 +57,10 @@ class OneCompartmentBolusMacro : public OneCompartmentBolusMicro
     INTAKEINTERVALCALCULATOR_UTILS(OneCompartmentBolusMacro)
 public:
     OneCompartmentBolusMacro();
+
+    /// \brief Returns the list of required PK parameters Ids
+    /// \return The list of required PK parameters Ids
+    static std::vector<std::string> getParametersId();
 
 protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;

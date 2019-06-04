@@ -19,6 +19,11 @@ OneCompartmentBolusMicro::OneCompartmentBolusMicro() : IntakeIntervalCalculatorB
 {
 }
 
+std::vector<std::string> OneCompartmentBolusMicro::getParametersId()
+{
+    return {"Ke", "V"};
+}
+
 bool OneCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
     if(!checkValue(_parameters.size() >= 2, "The number of parameters should be equal to 2.")) {
@@ -116,6 +121,12 @@ _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residua
 
 OneCompartmentBolusMacro::OneCompartmentBolusMacro() : OneCompartmentBolusMicro()
 {
+}
+
+
+std::vector<std::string> OneCompartmentBolusMacro::getParametersId()
+{
+    return {"CL", "V"};
 }
 
 bool OneCompartmentBolusMacro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)

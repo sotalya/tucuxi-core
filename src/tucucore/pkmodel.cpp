@@ -44,6 +44,14 @@ bool PkModel::addIntakeIntervalCalculatorFactory(AbsorptionModel _route,
 }
 
 
+bool PkModel::addParameterList(AbsorptionModel _route,
+                      std::vector<std::string> _parameterList)
+{
+    std::pair<std::map<AbsorptionModel, std::vector<std::string>>::iterator, bool> rc;
+    rc = m_parameters.insert(std::make_pair(_route, _parameterList));
+    return rc.second;
+}
+
 std::vector<AbsorptionModel> PkModel::getAvailableRoutes() const
 {
     std::vector<AbsorptionModel> routes;
@@ -63,6 +71,19 @@ std::shared_ptr<IntakeIntervalCalculator> PkModel::getCalculatorForRoute(Absorpt
     }
     else {
         return nullptr;
+    }
+}
+
+
+std::vector<std::string> PkModel::getParametersForRoute(AbsorptionModel _route) const
+{
+
+    auto search = m_parameters.find(_route);
+    if (search != m_parameters.end()) {
+        return search->second;
+    }
+    else {
+        return std::vector<std::string>();
     }
 }
 
@@ -116,6 +137,7 @@ do { \
     { \
         std::shared_ptr<PkModel> pkmodel = std::make_shared<PkModel>("linear.2comp.erlang" #_COMP_NO_NUM ".micro"); \
         rc |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, Tucuxi::Core::RK4TwoCompartmentErlangMicro<_COMP_NO_NUM>::getCreator()); \
+        rc |= pkmodel->addParameterList(AbsorptionModel::Extravascular, Tucuxi::Core::RK4TwoCompartmentErlangMicro<_COMP_NO_NUM>::getParametersId()); \
         Tucuxi::Common::TranslatableString distribution; \
         Tucuxi::Common::TranslatableString elimination; \
         std::string comps; \
@@ -129,6 +151,7 @@ do { \
     { \
         std::shared_ptr<PkModel> pkmodel = std::make_shared<PkModel>("linear.2comp.erlang" #_COMP_NO_NUM ".macro"); \
         rc |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, Tucuxi::Core::RK4TwoCompartmentErlangMacro<_COMP_NO_NUM>::getCreator()); \
+        rc |= pkmodel->addParameterList(AbsorptionModel::Extravascular, Tucuxi::Core::RK4TwoCompartmentErlangMacro<_COMP_NO_NUM>::getParametersId()); \
         Tucuxi::Common::TranslatableString distribution; \
         Tucuxi::Common::TranslatableString elimination; \
         std::string comps; \

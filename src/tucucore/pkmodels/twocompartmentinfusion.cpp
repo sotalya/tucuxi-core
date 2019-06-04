@@ -19,6 +19,12 @@ TwoCompartmentInfusionMicro::TwoCompartmentInfusionMicro() : IntakeIntervalCalcu
 {
 }
 
+std::vector<std::string> TwoCompartmentInfusionMicro::getParametersId()
+{
+    return {"Ke", "V1", "K12", "K21"};
+}
+
+
 bool TwoCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
     if (!checkValue(_parameters.size() >= 4, "The number of parameters should be equal to 4.")) {
@@ -267,6 +273,11 @@ bool TwoCompartmentInfusionMicro::computeConcentration(const Value& _atTime, con
 
 TwoCompartmentInfusionMacro::TwoCompartmentInfusionMacro()
 {
+}
+
+std::vector<std::string> TwoCompartmentInfusionMacro::getParametersId()
+{
+    return {"CL", "V1", "Q", "V2"};
 }
 
 bool TwoCompartmentInfusionMacro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)

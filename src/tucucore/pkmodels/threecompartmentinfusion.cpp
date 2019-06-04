@@ -19,6 +19,10 @@ ThreeCompartmentInfusionMicro::ThreeCompartmentInfusionMicro() : IntakeIntervalC
 {
 }
 
+std::vector<std::string> ThreeCompartmentInfusionMicro::getParametersId()
+{
+    return {"Ke", "V1", "K12", "K21", "K13", "K31"};
+}
 
 bool ThreeCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
@@ -193,6 +197,12 @@ bool ThreeCompartmentInfusionMicro::computeConcentration(const Value& _atTime, c
 ThreeCompartmentInfusionMacro::ThreeCompartmentInfusionMacro()
 {
 }
+
+std::vector<std::string> ThreeCompartmentInfusionMacro::getParametersId()
+{
+    return {"CL", "V1", "Q", "V2", "Q1", "Q2"};
+}
+
 
 bool ThreeCompartmentInfusionMacro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {

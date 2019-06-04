@@ -24,6 +24,10 @@ public:
     /// \brief Constructor
     RK4OneCompartmentGammaExtraMicro();
 
+    /// \brief Returns the list of required PK parameters Ids
+    /// \return The list of required PK parameters Ids
+    static std::vector<std::string> getParametersId();
+
 
     void initConcentrations (const Residuals& _inResiduals, std::vector<double> &_concentrations) override
     {
@@ -65,6 +69,10 @@ class RK4OneCompartmentGammaExtraMacro : public RK4OneCompartmentGammaExtraMicro
     INTAKEINTERVALCALCULATOR_UTILS(RK4OneCompartmentGammaExtraMacro)
 public:
     RK4OneCompartmentGammaExtraMacro();
+
+    /// \brief Returns the list of required PK parameters Ids
+    /// \return The list of required PK parameters Ids
+    static std::vector<std::string> getParametersId();
 
 protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;

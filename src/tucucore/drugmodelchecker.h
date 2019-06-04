@@ -48,7 +48,7 @@ protected:
 
     CheckerResult_t checkFormulaInputs(const DrugModel *_drugModel);
 
-    CheckerResult_t checkParameters(const DrugModel *_drugModel, const PkModel *_pkModel);
+    CheckerResult_t checkParameters(const DrugModel *_drugModel, const PkModelCollection *_pkCollection);
 
     CheckerResult_t checkOperations(const DrugModel *_drugModel);
 

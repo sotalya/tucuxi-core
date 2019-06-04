@@ -22,6 +22,10 @@ public:
     /// \brief Constructor
     RK4OneCompartmentExtraMicro();
 
+    /// \brief Returns the list of required PK parameters Ids
+    /// \return The list of required PK parameters Ids
+    static std::vector<std::string> getParametersId();
+
 protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
 
@@ -60,6 +64,10 @@ class RK4OneCompartmentExtraMacro : public RK4OneCompartmentExtraMicro
     INTAKEINTERVALCALCULATOR_UTILS(RK4OneCompartmentExtraMacro)
 public:
     RK4OneCompartmentExtraMacro();
+
+    /// \brief Returns the list of required PK parameters Ids
+    /// \return The list of required PK parameters Ids
+    static std::vector<std::string> getParametersId();
 
 protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;

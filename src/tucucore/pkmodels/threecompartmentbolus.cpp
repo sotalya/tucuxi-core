@@ -19,6 +19,11 @@ ThreeCompartmentBolusMicro::ThreeCompartmentBolusMicro() : IntakeIntervalCalcula
 {
 }
 
+std::vector<std::string> ThreeCompartmentBolusMicro::getParametersId()
+{
+    return {"Ke", "V1", "K12", "K21", "K13", "K31"};
+}
+
 bool ThreeCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
     if (!checkValue(_parameters.size() >= 6, "The number of parameters should be equal to 6.")) {
@@ -180,6 +185,11 @@ bool ThreeCompartmentBolusMicro::computeConcentration(const Value& _atTime, cons
 
 ThreeCompartmentBolusMacro::ThreeCompartmentBolusMacro() : ThreeCompartmentBolusMicro()
 {
+}
+
+std::vector<std::string> ThreeCompartmentBolusMacro::getParametersId()
+{
+    return {"CL", "V1", "Q", "V2", "Q1", "Q2"};
 }
 
 bool ThreeCompartmentBolusMacro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)

@@ -23,6 +23,10 @@ public:
     /// \brief Constructor
     OneCompartmentExtraLagMicro();
 
+    /// \brief Returns the list of required PK parameters Ids
+    /// \return The list of required PK parameters Ids
+    static std::vector<std::string> getParametersId();
+
     typedef OneCompartmentExtraLagExponentials Exponentials;
 
 protected:
@@ -54,6 +58,10 @@ class OneCompartmentExtraLagMacro : public OneCompartmentExtraLagMicro
     INTAKEINTERVALCALCULATOR_UTILS(OneCompartmentExtraLagMacro)
 public:
     OneCompartmentExtraLagMacro();
+
+    /// \brief Returns the list of required PK parameters Ids
+    /// \return The list of required PK parameters Ids
+    static std::vector<std::string> getParametersId();
 
 protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;

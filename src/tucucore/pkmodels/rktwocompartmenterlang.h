@@ -122,6 +122,13 @@ public:
     RK4TwoCompartmentErlangMicro() : IntakeIntervalCalculatorRK4Base<NbTransitCompartment + 3, RK4TwoCompartmentErlangMicro<NbTransitCompartment> > (new PertinentTimesCalculatorStandard())
     {}
 
+    /// \brief Returns the list of required PK parameters Ids
+    /// \return The list of required PK parameters Ids
+    static std::vector<std::string> getParametersId()
+    {
+        return {"V1", "Ktr", "Ke", "K12", "K21", "F"};
+    }
+
     enum class CompartmentsEnum : int { Central = 0, Peripheral, Dose, A2, A3, A4, A5 };
 
 protected:
@@ -222,6 +229,13 @@ class RK4TwoCompartmentErlangMacro : public RK4TwoCompartmentErlangMicro<NbTrans
     INTAKEINTERVALCALCULATOR_UTILS(RK4TwoCompartmentErlangMacro)
 public:
     RK4TwoCompartmentErlangMacro() : RK4TwoCompartmentErlangMicro<NbTransitCompartment>() {}
+
+    /// \brief Returns the list of required PK parameters Ids
+    /// \return The list of required PK parameters Ids
+    static std::vector<std::string> getParametersId()
+    {
+        return {"V1", "V2", "Ktr", "CL", "Q", "F"};
+    }
 
 protected:
 

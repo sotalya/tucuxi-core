@@ -21,6 +21,12 @@ OneCompartmentInfusionMicro::OneCompartmentInfusionMicro() : IntakeIntervalCalcu
 {
 }
 
+std::vector<std::string> OneCompartmentInfusionMicro::getParametersId()
+{
+    return {"Ke", "V"};
+}
+
+
 bool OneCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
     if (!checkValue(_parameters.size() >= 2, "The number of parameters should be equal to 2.")) {
@@ -117,7 +123,7 @@ bool OneCompartmentInfusionMicro::computeConcentration(const Value& _atTime, con
     TMP_UNUSED_PARAMETER(_isAll);
 
     // interval=0 means that it is the last cycle, so final residual = 0
-    if (m_Int == 0) {
+    if (m_Int == 0.0) {
         concentrations[atEndInterval] = 0;
     }
 
@@ -129,6 +135,11 @@ bool OneCompartmentInfusionMicro::computeConcentration(const Value& _atTime, con
 
 OneCompartmentInfusionMacro::OneCompartmentInfusionMacro() : OneCompartmentInfusionMicro()
 {
+}
+
+std::vector<std::string> OneCompartmentInfusionMacro::getParametersId()
+{
+    return {"CL", "V"};
 }
 
 bool OneCompartmentInfusionMacro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)

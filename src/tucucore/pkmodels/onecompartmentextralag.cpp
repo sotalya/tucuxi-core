@@ -15,6 +15,12 @@ OneCompartmentExtraLagMicro::OneCompartmentExtraLagMicro() : IntakeIntervalCalcu
 {
 }
 
+
+std::vector<std::string> OneCompartmentExtraLagMicro::getParametersId()
+{
+    return {"Ke", "V", "Ka", "F", "Tlag"};
+}
+
 bool OneCompartmentExtraLagMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
     if (!checkValue(_parameters.size() >= 4, "The number of parameters should be equal to 4.")) {
@@ -198,6 +204,11 @@ bool OneCompartmentExtraLagMicro::computeConcentration(const Value& _atTime, con
 
 OneCompartmentExtraLagMacro::OneCompartmentExtraLagMacro() : OneCompartmentExtraLagMicro()
 {
+}
+
+std::vector<std::string> OneCompartmentExtraLagMacro::getParametersId()
+{
+    return {"CL", "V", "Ka", "F", "Tlag"};
 }
 
 bool OneCompartmentExtraLagMacro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)

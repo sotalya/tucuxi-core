@@ -39,13 +39,13 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkDrugModel(const DrugMod
     if (!analyteResult.m_ok) {
         return analyteResult;
     }
-/*
+
     // Checks that the parameters correspond to the PK model parameters
-    DrugModelChecker::CheckerResult_t parametersResult = checkParameters(_drugModel, pkModel.get());
-    if (!parametersResult.ok) {
+    DrugModelChecker::CheckerResult_t parametersResult = checkParameters(_drugModel, _pkCollection);
+    if (!parametersResult.m_ok) {
         return parametersResult;
     }
-*/
+
 
     // Checks that the inputs of every formula corresponds to a covariate of the model
     DrugModelChecker::CheckerResult_t formulaInputsResult = checkFormulaInputs(_drugModel);
@@ -169,10 +169,77 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkFormulaInputs(const Dru
 }
 
 
-DrugModelChecker::CheckerResult_t DrugModelChecker::checkParameters(const DrugModel *_drugModel, const PkModel *_pkModel)
+DrugModelChecker::CheckerResult_t DrugModelChecker::checkParameters(const DrugModel *_drugModel, const PkModelCollection *_pkCollection)
 {
-    TMP_UNUSED_PARAMETER(_drugModel);
-    TMP_UNUSED_PARAMETER(_pkModel);
+
+    // We need a PK model for each analyte group
+    for (const auto &analyteGroup : _drugModel->getAnalyteSets()) {
+        std::shared_ptr<PkModel> pkModel = _pkCollection->getPkModelFromId(analyteGroup->getPkModelId());
+        if (pkModel == nullptr) {
+            return {false, "There is no PK model corresponding to the one defined in the drug model (" + analyteGroup->getPkModelId() + ")"};
+        }
+
+
+        const ParameterSetDefinition *dispositionParameters = _drugModel->getDispositionParameters(analyteGroup->getId());
+
+
+        for (const auto &formulation : _drugModel->getFormulationAndRoutes()) {
+
+            std::vector<std::string> requiredParameters = pkModel->getParametersForRoute(formulation->getFormulationAndRoute().getAbsorptionModel());
+            if (requiredParameters.size() == 0) {
+                return {false, Tucuxi::Common::Utils::strFormat("It seems that there is no PK model for formulation and route %s", formulation->getId().c_str())};
+            }
+
+            std::sort(requiredParameters.begin(), requiredParameters.end());
+
+            const ParameterSetDefinition *absorptionParameters = formulation->getParameterDefinitions(analyteGroup->getId());
+
+            std::vector<std::string> formulationParameters;
+            for (const auto &p : dispositionParameters->m_parameters) {
+                formulationParameters.push_back(p->getId());
+            }
+            if (absorptionParameters != nullptr) {
+                for (const auto &p : absorptionParameters->m_parameters) {
+                    formulationParameters.push_back(p->getId());
+                }
+            }
+
+            std::sort(formulationParameters.begin(), formulationParameters.end());
+
+            if (requiredParameters.size() != formulationParameters.size()) {
+
+                std::string reqString;
+                for(size_t j = 0; j < requiredParameters.size(); j++) {
+                    reqString += requiredParameters[j] + "|";
+                }
+
+                std::string forString;
+                for(size_t j = 0; j < formulationParameters.size(); j++) {
+                    forString += formulationParameters[j] + "|";
+                }
+
+                return {false, Tucuxi::Common::Utils::strFormat("The formulation and route %s does not have the same number of parameters. Required : %s. Given : %s", formulation->getId().c_str(), reqString.c_str(), forString.c_str())};
+            }
+
+            for(size_t i = 0; i < requiredParameters.size(); i++) {
+                if (requiredParameters[i] != formulationParameters[i]) {
+
+                    std::string reqString;
+                    for(size_t j = 0; j < requiredParameters.size(); j++) {
+                        reqString += requiredParameters[j] + "|";
+                    }
+
+                    std::string forString;
+                    for(size_t j = 0; j < formulationParameters.size(); j++) {
+                        forString += formulationParameters[j] + "|";
+                    }
+                    return {false, Tucuxi::Common::Utils::strFormat("The formulation and route %s does not have the right PK parameters. Required : %s. Given : %s", formulation->getId().c_str(), reqString.c_str(), forString.c_str())};
+                }
+            }
+
+        }
+
+    }
 
     return {true, ""};
 }

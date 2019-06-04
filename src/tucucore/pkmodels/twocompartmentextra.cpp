@@ -14,6 +14,11 @@ TwoCompartmentExtraMicro::TwoCompartmentExtraMicro() : IntakeIntervalCalculatorB
 {
 }
 
+std::vector<std::string> TwoCompartmentExtraMicro::getParametersId()
+{
+    return {"Ke", "V1", "K12", "K21", "Ka", "F"};
+}
+
 bool TwoCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
     if (!checkValue(_parameters.size() >= 4, "The number of parameters should be equal to 4.")) {
@@ -139,6 +144,11 @@ bool TwoCompartmentExtraMicro::computeConcentration(const Value& _atTime, const 
 
 TwoCompartmentExtraMacro::TwoCompartmentExtraMacro() : TwoCompartmentExtraMicro()
 {
+}
+
+std::vector<std::string> TwoCompartmentExtraMacro::getParametersId()
+{
+    return {"CL", "V1", "Q", "V2", "Ka", "F"};
 }
 
 bool TwoCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)

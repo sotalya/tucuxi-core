@@ -23,6 +23,10 @@ public:
     /// \brief Constructor
     ThreeCompartmentBolusMicro();
 
+    /// \brief Returns the list of required PK parameters Ids
+    /// \return The list of required PK parameters Ids
+    static std::vector<std::string> getParametersId();
+
     typedef ThreeCompartmentBolusExponentials Exponentials;
 
 protected:
@@ -91,6 +95,10 @@ class ThreeCompartmentBolusMacro : public ThreeCompartmentBolusMicro
     INTAKEINTERVALCALCULATOR_UTILS(ThreeCompartmentBolusMacro)
 public:
     ThreeCompartmentBolusMacro();
+
+    /// \brief Returns the list of required PK parameters Ids
+    /// \return The list of required PK parameters Ids
+    static std::vector<std::string> getParametersId();
 
 protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;

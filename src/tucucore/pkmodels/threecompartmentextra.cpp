@@ -19,6 +19,11 @@ ThreeCompartmentExtraMicro::ThreeCompartmentExtraMicro() : IntakeIntervalCalcula
 {
 }
 
+std::vector<std::string> ThreeCompartmentExtraMicro::getParametersId()
+{
+    return {"Ke", "V1", "K12", "K21", "K13", "K31", "Ka", "F"};
+}
+
 bool ThreeCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
     if (!checkValue(_parameters.size() >= 6, "The number of parameters should be equal to 6.")) {
@@ -181,6 +186,11 @@ bool ThreeCompartmentExtraMicro::computeConcentration(const Value& _atTime, cons
 
 ThreeCompartmentExtraMacro::ThreeCompartmentExtraMacro()
 {
+}
+
+std::vector<std::string> ThreeCompartmentExtraMacro::getParametersId()
+{
+    return {"CL", "V1", "Q", "V2", "Q1", "Q2", "Ka", "F"};
 }
 
 bool ThreeCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)

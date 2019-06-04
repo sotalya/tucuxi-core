@@ -47,6 +47,9 @@ public:
     bool addIntakeIntervalCalculatorFactory(AbsorptionModel _route,
                                             std::shared_ptr<IntakeIntervalCalculatorCreator> _creator);
 
+    bool addParameterList(AbsorptionModel _route,
+                          std::vector<std::string> _parameterList);
+
     /// \brief Get the available routes of administration.
     /// \return A vector of supported routes of administrations.
     std::vector<AbsorptionModel> getAvailableRoutes() const;
@@ -56,6 +59,8 @@ public:
     /// \return An instance of an IntakeIntervalCalculator responsible for the specific route if available, nullptr
     ///         otherwise.
     std::shared_ptr<IntakeIntervalCalculator> getCalculatorForRoute(AbsorptionModel _route) const;
+
+    std::vector<std::string> getParametersForRoute(AbsorptionModel _route) const;
 
     //std::string getDistribution() const { return m_distribution.getString();}
     //std::string getElimination() const { return m_elimination.getString();}
@@ -72,6 +77,9 @@ protected:
 
     /// \brief A map of available calculators creators linked to the route of administration.
     std::map<AbsorptionModel, std::shared_ptr<IntakeIntervalCalculatorCreator>> m_calculatorCreators;
+
+    /// \brief A map of required PK parameters linked to the route of administration.
+    std::map<AbsorptionModel, std::vector<std::string> > m_parameters;
 
     Tucuxi::Common::TranslatableString m_distribution;
     Tucuxi::Common::TranslatableString m_elimination;
@@ -129,6 +137,9 @@ do { \
     _RC |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, Tucuxi::Core::_COMP_NO_LIT ## CompartmentExtra ## _TYPE::getCreator()); \
     _RC |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Intravascular, Tucuxi::Core::_COMP_NO_LIT ## CompartmentBolus ## _TYPE::getCreator()); \
     _RC |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Infusion, Tucuxi::Core::_COMP_NO_LIT ## CompartmentInfusion## _TYPE::getCreator());\
+    _RC |= pkmodel->addParameterList(AbsorptionModel::Extravascular, Tucuxi::Core::_COMP_NO_LIT ## CompartmentExtra ## _TYPE::getParametersId()); \
+    _RC |= pkmodel->addParameterList(AbsorptionModel::Intravascular, Tucuxi::Core::_COMP_NO_LIT ## CompartmentBolus ## _TYPE::getParametersId()); \
+    _RC |= pkmodel->addParameterList(AbsorptionModel::Infusion, Tucuxi::Core::_COMP_NO_LIT ## CompartmentInfusion## _TYPE::getParametersId());\
     Tucuxi::Common::TranslatableString distribution; \
     Tucuxi::Common::TranslatableString elimination; \
     std::string comps; \
@@ -158,6 +169,10 @@ do { \
     _RC |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::ExtravascularLag, Tucuxi::Core::_COMP_NO_LIT ## CompartmentExtraLag ## _TYPE::getCreator()); \
     _RC |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Intravascular, Tucuxi::Core::_COMP_NO_LIT ## CompartmentBolus ## _TYPE::getCreator()); \
     _RC |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Infusion, Tucuxi::Core::_COMP_NO_LIT ## CompartmentInfusion## _TYPE::getCreator());\
+    _RC |= pkmodel->addParameterList(AbsorptionModel::Extravascular, Tucuxi::Core::_COMP_NO_LIT ## CompartmentExtra ## _TYPE::getParametersId()); \
+    _RC |= pkmodel->addParameterList(AbsorptionModel::ExtravascularLag, Tucuxi::Core::_COMP_NO_LIT ## CompartmentExtraLag ## _TYPE::getParametersId()); \
+    _RC |= pkmodel->addParameterList(AbsorptionModel::Intravascular, Tucuxi::Core::_COMP_NO_LIT ## CompartmentBolus ## _TYPE::getParametersId()); \
+    _RC |= pkmodel->addParameterList(AbsorptionModel::Infusion, Tucuxi::Core::_COMP_NO_LIT ## CompartmentInfusion## _TYPE::getParametersId());\
     Tucuxi::Common::TranslatableString distribution; \
     Tucuxi::Common::TranslatableString elimination; \
     std::string comps; \

@@ -23,6 +23,10 @@ public:
     /// \brief Constructor
     ThreeCompartmentExtraMicro();
 
+    /// \brief Returns the list of required PK parameters Ids
+    /// \return The list of required PK parameters Ids
+    static std::vector<std::string> getParametersId();
+
     typedef ThreeCompartmentExtraExponentials Exponentials;
 
 protected:
@@ -96,6 +100,10 @@ class ThreeCompartmentExtraMacro : public ThreeCompartmentExtraMicro
     INTAKEINTERVALCALCULATOR_UTILS(ThreeCompartmentExtraMacro)
 public:
     ThreeCompartmentExtraMacro();
+
+    /// \brief Returns the list of required PK parameters Ids
+    /// \return The list of required PK parameters Ids
+    static std::vector<std::string> getParametersId();
 
 protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
