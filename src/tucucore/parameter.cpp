@@ -153,17 +153,15 @@ void Parameter::applyEta(Deviation _eta)
         case ParameterVariabilityType::LogNormal:
             m_value = m_value * exp(_eta);
             break;
-            case ParameterVariabilityType::Proportional:
-                //m_value = m_value * exp(_eta);
-                // TODO : Check that.
-                // Actually if _eta is less than -1, then there is an issue
-                m_value = m_value * (1 + _eta);
-                break;
-            default: {
-                Tucuxi::Common::LoggerHelper logger;
-                logger.warn("Parameter {} has an unknown error model", m_definition.getId());
-                break;
-            }
+        case ParameterVariabilityType::Proportional:
+            // Actually if _eta is less than -1, then there is an issue
+            m_value = m_value * (1 + _eta);
+            break;
+        default: {
+            Tucuxi::Common::LoggerHelper logger;
+            logger.warn("Parameter {} has an unknown error model", m_definition.getId());
+            break;
+        }
         }
         if (m_value <= 0.0) {
             m_value = 0.00000001;
