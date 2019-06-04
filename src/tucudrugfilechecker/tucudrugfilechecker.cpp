@@ -69,7 +69,6 @@ parse(int _argc, char* _argv[])
         Tucuxi::Core::DrugModelImport importer;
         if (importer.importFromString(dModel, drugFileContent) != Tucuxi::Core::DrugModelImport::Result::Ok) {
             std::cout << "Can not import the drug file.\n\n" << importer.getErrorMessage() << std::endl;
-            std::cout << drugFileContent << std::endl;
             exit(3);
         }
 

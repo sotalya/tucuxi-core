@@ -168,7 +168,12 @@ void DrugModelImport::setNodeError(Tucuxi::Common::XmlNodeIterator _node)
         }
         node = node.getParent();
     }
-    errorMessage += "<" + _node->getName() + "> contains an invalid value : " + _node->getValue();
+    if (_node->getValue() == "") {
+        errorMessage += "<" + _node->getName() + "> contains an empty value.";
+    }
+    else {
+        errorMessage += "<" + _node->getName() + "> contains an invalid value : " + _node->getValue();
+    }
     setResult(Result::Error, errorMessage);
 }
 

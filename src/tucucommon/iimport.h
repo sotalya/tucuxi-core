@@ -33,7 +33,7 @@ protected:
         else {
             m_result = _result;
         }
-        m_errorMessage = _errorMessage;
+        m_errorMessage += _errorMessage + "\n";
     }
 
     void unexpectedTag(std::string _tagName) {
