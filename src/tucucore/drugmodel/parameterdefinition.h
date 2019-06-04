@@ -116,7 +116,7 @@ public:
     Unit getUnit() const { return m_unit;}
 
     INVARIANTS(
-            INVARIANT(Invariants::INV_PARAMETERDEFINITION_0001, (m_id.size() == 0), "A parameter has no Id")
+            INVARIANT(Invariants::INV_PARAMETERDEFINITION_0001, (m_id.size() > 0), "A parameter has no Id")
             INVARIANT(Invariants::INV_PARAMETERDEFINITION_0002, (m_variability != nullptr), Tucuxi::Common::Utils::strFormat("A parameter %s has no variability defined", m_id))
             )
 

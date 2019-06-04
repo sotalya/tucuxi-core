@@ -1098,7 +1098,7 @@ ActiveMoiety* DrugModelImport::extractActiveMoiety(Tucuxi::Common::XmlNodeIterat
 {
 
     ActiveMoiety *activeMoiety = nullptr;
-    std::string activeMoietyId;
+    std::string activeMoietyId = "";
     Unit unit;
     std::vector<AnalyteId> analyteIdList;
     Operation *formula = nullptr;
