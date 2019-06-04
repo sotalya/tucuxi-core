@@ -112,10 +112,10 @@ public:
 
 
     INVARIANTS(
-            INVARIANT(Invariants::INV_ANALYTE_0001, (m_analyteId.size() > 0))
-            INVARIANT(Invariants::INV_ANALYTE_0002, (m_residualErrorModel != nullptr))
-            INVARIANT(Invariants::INV_ANALYTE_0003, (m_residualErrorModel->checkInvariants()))
-            INVARIANT(Invariants::INV_ANALYTE_0004, (!m_unit.isEmpty()))
+            INVARIANT(Invariants::INV_ANALYTE_0001, (m_analyteId.size() > 0), "An analyte does not have an Id")
+            INVARIANT(Invariants::INV_ANALYTE_0002, (m_residualErrorModel != nullptr), "An analyte does not have a residual error model")
+            INVARIANT(Invariants::INV_ANALYTE_0003, (m_residualErrorModel->checkInvariants()), "An analyte has an error in the error model")
+            INVARIANT(Invariants::INV_ANALYTE_0004, (!m_unit.isEmpty()), "An analyte has no unit")
             )
 
 protected:
@@ -163,13 +163,13 @@ public:
 
 
     INVARIANTS(
-            INVARIANT(Invariants::INV_ANALYTESET_0001, (m_analyteSetId.size() > 0))
-            INVARIANT(Invariants::INV_ANALYTESET_0002, (m_pkModelId.size() > 0))
-            INVARIANT(Invariants::INV_ANALYTESET_0003, (m_analytes.size() > 0))
-            LAMBDA_INVARIANT(Invariants::INV_ANALYTESET_0004, {bool ok = true;for(size_t i = 0; i < m_analytes.size(); i++) {ok &= m_analytes.at(i)->checkInvariants();} return ok;})
-            INVARIANT(Invariants::INV_ANALYTESET_0005, (m_dispositionParameters != nullptr))
-            INVARIANT(Invariants::INV_ANALYTESET_0006, (m_dispositionParameters->getNbParameters() > 0))
-            INVARIANT(Invariants::INV_ANALYTESET_0007, (m_dispositionParameters->checkInvariants()))
+            INVARIANT(Invariants::INV_ANALYTESET_0001, (m_analyteSetId.size() > 0), "An analyte group has no Id")
+            INVARIANT(Invariants::INV_ANALYTESET_0002, (m_pkModelId.size() > 0), "An analyte group has no PK model Id")
+            INVARIANT(Invariants::INV_ANALYTESET_0003, (m_analytes.size() > 0), "An analyte group has no analytes")
+            LAMBDA_INVARIANT(Invariants::INV_ANALYTESET_0004, {bool ok = true;for(size_t i = 0; i < m_analytes.size(); i++) {ok &= m_analytes.at(i)->checkInvariants();} return ok;}, "There is an error in an analyte of an analyte group")
+            INVARIANT(Invariants::INV_ANALYTESET_0005, (m_dispositionParameters != nullptr), "An analyte group has no disposition parameters")
+            INVARIANT(Invariants::INV_ANALYTESET_0006, (m_dispositionParameters->getNbParameters() > 0), "An analyte group has no disposition parameters")
+            INVARIANT(Invariants::INV_ANALYTESET_0007, (m_dispositionParameters->checkInvariants()), "An analyte group has an error in its disposition parameters")
             )
 
 protected:

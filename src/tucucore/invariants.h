@@ -81,6 +81,16 @@ enum class Invariants {
     INV_VALIDDURATIONS_0003
 };
 
+#define INVARIANT(invariant, expression, message) { \
+    bool result = expression; if (!result) { \
+    std::cout << "Drug model invariant failure : " << \
+    static_cast<int>(invariant) << \
+    ". " << message \
+    << std::endl;} \
+    ok &= result; \
+    if (!ok) {return false;} }
+
+/*
 #define INVARIANT(invariant, expression) { \
     bool result = expression; if (!result) { \
     std::cout << "Invariant failure : " << \
@@ -89,17 +99,26 @@ enum class Invariants {
     std::endl;} \
     ok &= result; \
     if (!ok) {return false;} }
+*/
 
 #define COMPLEX_INVARIANT(invariant, expression) expression;
 #define INVARIANTS(decl) public : bool checkInvariants() const {bool ok=true;decl;return ok;}
 #define CHECKINVARIANTS checkInvariants()
+#define LAMBDA_INVARIANT(invariant, expression, message) {auto f=[this]() {expression}; {bool result = f();if (!result) { \
+    std::cout << "Drug model invariant failure : " << \
+    static_cast<int>(invariant) << \
+    ". " << message << \
+    std::endl;} \
+    ok &= result; if (!ok) return false;}}
+
+/*
 #define LAMBDA_INVARIANT(invariant, expression) {auto f=[this]() {expression}; {bool result = f();if (!result) { \
     std::cout << "Invariant failure : " << \
     static_cast<int>(invariant) << \
     ". File " << __FILE__ << ", line " << __LINE__ << \
     std::endl;} \
     ok &= result; if (!ok) return false;}}
-
+*/
 } // namespace Core
 } // namespace Tucuxi
 

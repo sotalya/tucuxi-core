@@ -55,10 +55,10 @@ public:
     void setName(const Tucuxi::Common::TranslatableString &_name) { m_name = _name;}
 
     INVARIANTS(
-            INVARIANT(Invariants::INV_ACTIVEMOIETY_0001, (m_id.size() > 0))
-            INVARIANT(Invariants::INV_ACTIVEMOIETY_0002, (m_analyteIds.size() > 0))
-            INVARIANT(Invariants::INV_ACTIVEMOIETY_0003, (m_formula != nullptr))
-            LAMBDA_INVARIANT(Invariants::INV_ACTIVEMOIETY_0004, {bool ok = true;for(size_t i = 0; i < m_targets.size(); i++) {ok &= m_targets.at(i)->checkInvariants();} return ok;})
+            INVARIANT(Invariants::INV_ACTIVEMOIETY_0001, (m_id.size() > 0), "An active moiety has no Id")
+            INVARIANT(Invariants::INV_ACTIVEMOIETY_0002, (m_analyteIds.size() > 0), "An active moiety has no analyte Ids")
+            INVARIANT(Invariants::INV_ACTIVEMOIETY_0003, (m_formula != nullptr), "An active moiety has no formula to calculate it")
+            LAMBDA_INVARIANT(Invariants::INV_ACTIVEMOIETY_0004, {bool ok = true;for(size_t i = 0; i < m_targets.size(); i++) {ok &= m_targets.at(i)->checkInvariants();} return ok;}, "There is an error in a target")
             )
 
 protected:

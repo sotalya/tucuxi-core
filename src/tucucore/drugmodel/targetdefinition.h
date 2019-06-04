@@ -105,7 +105,7 @@ public:
     const SubTargetDefinition & getInefficacyAlarm() const { return *m_inefficacyAlarm;}
 
     INVARIANTS(
-            INVARIANT(Invariants::INV_TARGETDEFINITION_0001, (m_activeMoietyId.size() > 0))
+            INVARIANT(Invariants::INV_TARGETDEFINITION_0001, (m_activeMoietyId.size() > 0), "a target has no active moiety Id")
             )
 
 protected:

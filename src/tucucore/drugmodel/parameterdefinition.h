@@ -114,7 +114,7 @@ public:
     Unit getUnit() const { return m_unit;}
 
     INVARIANTS(
-            INVARIANT(Invariants::INV_PARAMETERDEFINITION_0001, (m_variability != nullptr))
+            INVARIANT(Invariants::INV_PARAMETERDEFINITION_0001, (m_variability != nullptr), "A parameter has no variability defined")
             )
 
 private:
@@ -175,7 +175,7 @@ public:
     std::string getParamId2() const { return m_parameterId[1];}
 
     INVARIANTS(
-            INVARIANT(Invariants::INV_CORRELATION_0001, (m_parameterId.size() == 2))
+            INVARIANT(Invariants::INV_CORRELATION_0001, (m_parameterId.size() == 2), "A correlation does not have 2 parameters")
             )
 
 protected:
@@ -203,8 +203,8 @@ public:
     }
 
     INVARIANTS(
-            INVARIANT(Invariants::INV_INTERPARAMETERSETCORRELATION_0001, (m_analyteSetId.size() == 2))
-            INVARIANT(Invariants::INV_INTERPARAMETERSETCORRELATION_0002, (m_parameterId.size() == 2))
+            INVARIANT(Invariants::INV_INTERPARAMETERSETCORRELATION_0001, (m_analyteSetId.size() == 2), "An inter-parameter set correlation does not have 2 analyte sets defined")
+            INVARIANT(Invariants::INV_INTERPARAMETERSETCORRELATION_0002, (m_parameterId.size() == 2), "An inter-parameter set correlation does not have 2 parameters defined")
             )
 
 protected:
@@ -234,8 +234,8 @@ public:
 
 
     INVARIANTS(
-            LAMBDA_INVARIANT(Invariants::INV_PARAMETERSETDEFINITION_0001, {bool ok = true;for(size_t i = 0; i < m_parameters.size(); i++) {ok &= m_parameters.at(i)->checkInvariants();} return ok;})
-            LAMBDA_INVARIANT(Invariants::INV_PARAMETERSETDEFINITION_0001, {bool ok = true;for(size_t i = 0; i < m_correlations.size(); i++) {ok &= m_correlations.at(i).checkInvariants();} return ok;})
+            LAMBDA_INVARIANT(Invariants::INV_PARAMETERSETDEFINITION_0001, {bool ok = true;for(size_t i = 0; i < m_parameters.size(); i++) {ok &= m_parameters.at(i)->checkInvariants();} return ok;}, "There is an error in a parameter of an inter-parameter set correlation")
+            LAMBDA_INVARIANT(Invariants::INV_PARAMETERSETDEFINITION_0002, {bool ok = true;for(size_t i = 0; i < m_correlations.size(); i++) {ok &= m_correlations.at(i).checkInvariants();} return ok;}, "There is an error in a correlation of an inter-parameter set correlation")
             )
 
 protected:

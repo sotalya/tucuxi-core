@@ -21,8 +21,8 @@ public:
     Unit getUnit() const { return m_unit;}
 
     INVARIANTS(
-            INVARIANT(Invariants::INV_HALFLIFE_0001, (m_multiplier > 0.0))
-            INVARIANT(Invariants::INV_HALFLIFE_0002, (this->m_value > 0.0))
+            INVARIANT(Invariants::INV_HALFLIFE_0001, (m_multiplier > 0.0), "A half life has a negative multiplier")
+            INVARIANT(Invariants::INV_HALFLIFE_0002, (this->m_value > 0.0), "A half life has a negative value")
             )
 
 private:
@@ -68,10 +68,10 @@ public:
     const OutdatedMeasure & getOutdatedMeasure() const { return *m_outdatedMeasure;}
 
     INVARIANTS(
-            INVARIANT(Invariants::INV_TIMECONSIDERATIONS_0001, (m_halfLife != nullptr))
-            INVARIANT(Invariants::INV_TIMECONSIDERATIONS_0002, (m_halfLife->checkInvariants()))
-            INVARIANT(Invariants::INV_TIMECONSIDERATIONS_0003, (m_outdatedMeasure != nullptr))
-            INVARIANT(Invariants::INV_TIMECONSIDERATIONS_0004, (m_outdatedMeasure->checkInvariants()))
+            INVARIANT(Invariants::INV_TIMECONSIDERATIONS_0001, (m_halfLife != nullptr), "A time consideration has no half life")
+            INVARIANT(Invariants::INV_TIMECONSIDERATIONS_0002, (m_halfLife->checkInvariants()), "A half life has some errors")
+            INVARIANT(Invariants::INV_TIMECONSIDERATIONS_0003, (m_outdatedMeasure != nullptr), "A time consideration has no outdated measure field")
+            INVARIANT(Invariants::INV_TIMECONSIDERATIONS_0004, (m_outdatedMeasure->checkInvariants()), "An outdated measure field has some errors")
             )
 
 private:
