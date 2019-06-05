@@ -39,7 +39,12 @@ int CliComputer::compute(std::string _drugPath,
 
 
     if (importResult != QueryImport::Result::Ok) {
-        logHelper.error("Error with the import of query file \"{}\"", _inputFileName);
+        if (importResult == QueryImport::Result::CantOpenFile) {
+            logHelper.error("Error with the import of query file. Unable to open \"{}\"", _inputFileName);
+        }
+        else {
+            logHelper.error("Error with the import of query file \"{}\"", _inputFileName);
+        }
         return 1;
     }
 
