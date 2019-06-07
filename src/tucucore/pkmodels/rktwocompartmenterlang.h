@@ -195,7 +195,7 @@ public:
     inline void derive(double _t, const std::vector<double> &_c, std::vector<double>& _dcdt)
     {
         FINAL_UNUSED_PARAMETER(_t);
-        _dcdt[0] = m_Ktr * _c[6] - m_Ke * _c[0] + m_K21 * _c[1] - m_K12 * _c[0];
+        _dcdt[0] = m_Ktr * _c[3 + NbTransitCompartment - 1] - m_Ke * _c[0] + m_K21 * _c[1] - m_K12 * _c[0];
         _dcdt[1] = m_K12 * _c[0] - m_K21 * _c[1];
         _dcdt[2] = - m_Ktr * _c[2];
         TransitComps<3,3 + NbTransitCompartment - 1>::derive(m_Ktr, _c, _dcdt);
