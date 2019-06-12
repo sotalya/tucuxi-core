@@ -65,7 +65,8 @@ bool OneCompartmentExtraLagMicro::checkInputs(const IntakeEvent& _intakeEvent, c
         m_nbPoints0 = static_cast<int>(std::min(ceil(m_Tlag/m_Int * m_NbPoints), ceil(m_NbPoints)));
     }
     else {
-        m_nbPoints0 = std::min(m_NbPoints, std::max(2, static_cast<int>((m_Tlag / m_Int) * static_cast<double>(m_NbPoints))));
+    //    m_nbPoints0 = std::min(m_NbPoints, std::max(2, static_cast<int>((m_Tlag / m_Int) * static_cast<double>(m_NbPoints))));
+        m_nbPoints0 = std::min(m_NbPoints, std::max(2, static_cast<int>(std::min(ceil(m_Tlag/m_Int * m_NbPoints), ceil(m_NbPoints)))));
     }
     m_nbPoints1 = m_NbPoints - m_nbPoints0;
 
@@ -256,7 +257,8 @@ bool OneCompartmentExtraLagMacro::checkInputs(const IntakeEvent& _intakeEvent, c
         m_nbPoints0 = static_cast<int>(std::min(ceil(m_Tlag/m_Int * m_NbPoints), ceil(m_NbPoints)));
     }
     else {
-        m_nbPoints0 = std::min(m_NbPoints, std::max(2, static_cast<int>((m_Tlag / m_Int) * static_cast<double>(m_NbPoints))));
+    //    m_nbPoints0 = std::min(m_NbPoints, std::max(2, static_cast<int>((m_Tlag / m_Int) * static_cast<double>(m_NbPoints))));
+        m_nbPoints0 = std::min(m_NbPoints, std::max(2, static_cast<int>(std::min(ceil(m_Tlag/m_Int * m_NbPoints), ceil(m_NbPoints)))));
     }
     m_nbPoints1 = m_NbPoints - m_nbPoints0;
 

@@ -142,7 +142,7 @@ do { \
         Tucuxi::Common::TranslatableString elimination; \
         std::string comps; \
         comps = "compartments"; \
-        distribution.setString(std::to_string(2) + " " + comps + "erlang absorption with " #_COMP_NO_NUM " transit compartments", "en"); \
+        distribution.setString(std::to_string(2) + " " + comps + ", erlang absorption with " #_COMP_NO_NUM " transit compartments", "en"); \
         elimination.setString("linear", "en"); \
         pkmodel->setDistribution(distribution); \
         pkmodel->setElimination(elimination); \
@@ -156,7 +156,7 @@ do { \
         Tucuxi::Common::TranslatableString elimination; \
         std::string comps; \
         comps = "compartments"; \
-        distribution.setString(std::to_string(2) + " " + comps + "erlang absorption with " #_COMP_NO_NUM " transit compartments", "en"); \
+        distribution.setString(std::to_string(2) + " " + comps + ", erlang absorption with " #_COMP_NO_NUM " transit compartments", "en"); \
         elimination.setString("linear", "en"); \
         pkmodel->setDistribution(distribution); \
         pkmodel->setElimination(elimination); \

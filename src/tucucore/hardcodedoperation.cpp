@@ -551,6 +551,7 @@ sum2::fillRequiredInputs()
     OperationInput input0("input0", InputType::DOUBLE);
     OperationInput input1("input1", InputType::DOUBLE);
 
+    m_requiredInputs.push_back(input0);
     m_requiredInputs.push_back(input1);
 }
 

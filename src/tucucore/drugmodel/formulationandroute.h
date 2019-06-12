@@ -224,6 +224,9 @@ public:
 
     const ParameterSetDefinition* getParameterDefinitions(const AnalyteGroupId &_analyteGroupId) const;
 
+    AbsorptionModel getAbsorptionModel(const AnalyteGroupId &_analyteGroupId) const;
+
+
     std::string getId() const { return m_id;}
 
     const ValidDoses* getValidDoses() const { return m_validDoses.get();}

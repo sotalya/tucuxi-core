@@ -16,6 +16,17 @@ const ParameterSetDefinition* FullFormulationAndRoute::getParameterDefinitions(c
     return nullptr;
 }
 
+
+AbsorptionModel FullFormulationAndRoute::getAbsorptionModel(const AnalyteGroupId &_analyteGroupId) const
+{
+    for (const std::unique_ptr<AnalyteSetToAbsorptionAssociation>& association : m_associations) {
+        if (association->m_analyteSet.getId() == _analyteGroupId) {
+            return association->m_absorptionModel;
+        }
+    }
+    return AbsorptionModel::Undefined;
+}
+
 FormulationAndRoutes::FormulationAndRoutes() :
     m_defaultIndex(0)
 {

@@ -120,10 +120,15 @@ DrugModelImport::Result DrugModelImport::importDocument(
     if (!defaultPopulate(*models)) {
         setResult(Result::Error);
     }
-    std::shared_ptr<PkModel> model = models->getPkModelFromId(_drugModel->getAnalyteSet()->getPkModelId());
-    metaData->setDistribution(model->getDistribution());
-    metaData->setElimination(model->getElimination());
 
+    if (_drugModel->getAnalyteSets().size() == 1) {
+        std::shared_ptr<PkModel> model = models->getPkModelFromId(_drugModel->getAnalyteSet()->getPkModelId());
+        metaData->setDistribution(model->getDistribution());
+        metaData->setElimination(model->getElimination());
+    }
+    else {
+        // TODO : Define that for multi-analytes
+    }
     if ((_drugModel != nullptr) && (metaData != nullptr)) {
         _drugModel->setMetadata(std::unique_ptr<DrugModelMetadata>(metaData));
     }
@@ -2056,16 +2061,18 @@ FullFormulationAndRoute* DrugModelImport::extractFullFormulationAndRoute(
                     unexpectedTag(nName);
                 }
                 absorptionIt ++;
+
+                if ((getResult() == Result::Ok) && (absorptionParameters != nullptr)) {
+                    if (selectedAnalyteSet != nullptr) {
+                        AnalyteSetToAbsorptionAssociation *association = new AnalyteSetToAbsorptionAssociation(*selectedAnalyteSet);
+                        association->setAbsorptionParameters(std::unique_ptr<ParameterSetDefinition>(absorptionParameters));
+                        association->setAbsorptionModel(absorptionModelId);
+                        associations.push_back(association);
+                    }
+                }
+
             }
 
-            if ((getResult() == Result::Ok) && (absorptionParameters != nullptr)) {
-                if (selectedAnalyteSet != nullptr) {
-                    AnalyteSetToAbsorptionAssociation *association = new AnalyteSetToAbsorptionAssociation(*selectedAnalyteSet);
-                    association->setAbsorptionParameters(std::unique_ptr<ParameterSetDefinition>(absorptionParameters));
-                    association->setAbsorptionModel(absorptionModelId);
-                    associations.push_back(association);
-                }
-            }
 
         }
         else {

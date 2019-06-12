@@ -185,9 +185,12 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkParameters(const DrugMo
 
         for (const auto &formulation : _drugModel->getFormulationAndRoutes()) {
 
-            std::vector<std::string> requiredParameters = pkModel->getParametersForRoute(formulation->getFormulationAndRoute().getAbsorptionModel());
+            std::vector<std::string> requiredParameters = pkModel->getParametersForRoute(formulation->getAbsorptionModel(analyteGroup->getId()));
             if (requiredParameters.size() == 0) {
-                return {false, Tucuxi::Common::Utils::strFormat("It seems that there is no PK model for formulation and route %s", formulation->getId().c_str())};
+                requiredParameters = pkModel->getParametersForRoute(formulation->getFormulationAndRoute().getAbsorptionModel());
+                if (requiredParameters.size() == 0) {
+                    return {false, Tucuxi::Common::Utils::strFormat("It seems that there is no PK model for formulation and route %s", formulation->getId().c_str())};
+                }
             }
 
             std::sort(requiredParameters.begin(), requiredParameters.end());

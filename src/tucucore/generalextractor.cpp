@@ -284,7 +284,12 @@ ComputingResult GeneralExtractor::generalExtractions(const ComputingTraitStandar
         return ComputingResult::MultipleFormulationAndRoutesNotSupported;
     }
 
+    std::map<AnalyteGroupId, AbsorptionModel > absorptionModels;
+
     for (const auto &analyteSet : _request.getDrugModel().getAnalyteSets()) {
+        const FullFormulationAndRoute *singleFormulationAndRoute = fullFormulationAndRoutes[allFormulationAndRoutes[0]];
+        absorptionModels[analyteSet->getId()] = singleFormulationAndRoute->getAbsorptionModel(analyteSet->getId());
+
         _pkModel[analyteSet->getId()] = _modelCollection->getPkModelFromId(analyteSet->getPkModelId());
         if (_pkModel[analyteSet->getId()] == nullptr) {
             m_logger.error("Can not find a Pk Model for the calculation");

@@ -225,18 +225,18 @@ ComputingResult ComputingComponent::compute(
             // std::cout << "Selected Time index " << i << " : " << start << std::endl;
             CycleData cycle(start, end, Unit("ug/l"));
 
+            if (!_request.getDrugModel().isSingleAnalyte()) {
+                for (const auto &activeMoiety : activeMoietiesPredictions) {
+                    cycle.addData(times, activeMoiety->getValues().at(i));
+                }
+            }
+
             size_t index = 0;
             for(const auto &analyteGroup : _request.getDrugModel().getAnalyteSets()) {
                 AnalyteGroupId analyteGroupId = analyteGroup->getId();
 
                 cycle.addData(times, analytesPredictions[index]->getValues().at(i));
                 index ++;
-            }
-
-            if (!_request.getDrugModel().isSingleAnalyte()) {
-                for (const auto &activeMoiety : activeMoietiesPredictions) {
-                    cycle.addData(times, activeMoiety->getValues().at(i));
-                }
             }
 
             AnalyteGroupId analyteGroupId = _request.getDrugModel().getAnalyteSets()[0]->getId();
@@ -281,8 +281,12 @@ ComputingResult ComputingComponent::compute(
 #ifdef NO_PERCENTILES
     return ComputingResult::NoPercentilesCalculation;
 #endif
-    return computePercentilesSimple(_traits, _request, _response);
-    //return computePercentilesMulti(_traits, _request, _response);
+    if (_request.getDrugModel().getAnalyteSets().size() > 1) {
+        return computePercentilesMulti(_traits, _request, _response);
+    }
+    else {
+        return computePercentilesSimple(_traits, _request, _response);
+    }
 }
 
 ComputingResult ComputingComponent::computePercentilesMulti(
