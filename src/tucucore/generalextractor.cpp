@@ -287,8 +287,10 @@ ComputingResult GeneralExtractor::generalExtractions(const ComputingTraitStandar
     std::map<AnalyteGroupId, AbsorptionModel > absorptionModels;
 
     for (const auto &analyteSet : _request.getDrugModel().getAnalyteSets()) {
-        const FullFormulationAndRoute *singleFormulationAndRoute = fullFormulationAndRoutes[allFormulationAndRoutes[0]];
-        absorptionModels[analyteSet->getId()] = singleFormulationAndRoute->getAbsorptionModel(analyteSet->getId());
+        if (allFormulationAndRoutes.size() != 0) {
+            const FullFormulationAndRoute *singleFormulationAndRoute = fullFormulationAndRoutes[allFormulationAndRoutes[0]];
+            absorptionModels[analyteSet->getId()] = singleFormulationAndRoute->getAbsorptionModel(analyteSet->getId());
+        }
 
         _pkModel[analyteSet->getId()] = _modelCollection->getPkModelFromId(analyteSet->getPkModelId());
         if (_pkModel[analyteSet->getId()] == nullptr) {

@@ -42,6 +42,25 @@ Target::Target(const std::string& _activeMoietyId,
 }
 
 Target::Target(const std::string& _activeMoietyId,
+               const TargetType _type,
+               const Unit _unit,
+               const Value _min,
+               const Value _best,
+               const Value _max,
+               const Value _inefficacyAlarm,
+               const Value _toxicityAlarm)
+    : m_activeMoietyId(_activeMoietyId),
+      m_targetType(_type),
+      m_valueMin(_min),
+      m_valueMax(_max),
+      m_valueBest(_best),
+      m_inefficacyAlarm(_inefficacyAlarm),
+      m_toxicityAlarm(_toxicityAlarm),
+      m_unit(_unit)
+{
+}
+
+Target::Target(const std::string& _activeMoietyId,
        TargetType _type,
        Value _min,
        Value _best,

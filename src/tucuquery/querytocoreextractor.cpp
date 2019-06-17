@@ -55,6 +55,7 @@ Tucuxi::Core::Targets QueryToCoreExtractor::extractTargets(const Query &_query, 
                     std::make_unique<Tucuxi::Core::Target>(
                         td->getActiveMoietyID(),
                         td->getTargetType(),
+                        td->getUnit(),
                         td->getMin(),
                         td->getBest(),
                         td->getMax(),
@@ -254,6 +255,8 @@ std::vector<Tucuxi::Core::ComputingTrait *> QueryToCoreExtractor::extractAdaptat
     Tucuxi::Core::FormulationAndRouteSelectionOption formulationAndRouteSelectionOption(Tucuxi::Core::FormulationAndRouteSelectionOption::LastFormulationAndRoute);
 
     Tucuxi::Common::DateTime adjustmentTime;
+
+    adjustmentTime = _request.getpDateInterval().getStart();
 
     Tucuxi::Core::ComputingTraitAdjustment * trait = new Tucuxi::Core::ComputingTraitAdjustment(
                 _request.getRequestID(),

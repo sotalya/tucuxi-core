@@ -24,7 +24,18 @@ bool ComputingResponseExport::exportToFiles(const ComputingResponse &_computingR
         std::string fileName = _filePath + "/" + _computingResponse.getId() + "_" + response->getId() + ".dat";
         file.open(fileName);
 
-        if (dynamic_cast<Tucuxi::Core::SinglePredictionResponse*>(response.get()) != nullptr) {
+        // We start by checking for adjustements, as AdjustmentResponse is a subclass of SinglePredictionResponse
+        if (dynamic_cast<Tucuxi::Core::AdjustmentResponse*>(response.get()) != nullptr) {
+            const Tucuxi::Core::AdjustmentResponse* prediction =
+                    dynamic_cast<Tucuxi::Core::AdjustmentResponse*>(response.get());
+
+            for (const auto &dosage : prediction->getAdjustments()) {
+                file << dosage.getGlobalScore() << "\t";
+            }
+
+            file << std::endl;
+        }
+        else if (dynamic_cast<Tucuxi::Core::SinglePredictionResponse*>(response.get()) != nullptr) {
             const Tucuxi::Core::SinglePredictionResponse* prediction =
                     dynamic_cast<Tucuxi::Core::SinglePredictionResponse*>(response.get());
 

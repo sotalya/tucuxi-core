@@ -45,6 +45,15 @@ public:
 
     Target(const std::string& _activeMoietyId,
            TargetType _type,
+           Unit _unit,
+           Value _min,
+           Value _best,
+           Value _max,
+           Value _inefficacyAlarm,
+           Value _toxicityAlarm);
+
+    Target(const std::string& _activeMoietyId,
+           TargetType _type,
            Value _min,
            Value _best,
            Value _max,
