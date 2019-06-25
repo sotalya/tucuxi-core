@@ -30,10 +30,38 @@ bool ComputingResponseExport::exportToFiles(const ComputingResponse &_computingR
                     dynamic_cast<Tucuxi::Core::AdjustmentResponse*>(response.get());
 
             for (const auto &dosage : prediction->getAdjustments()) {
-                file << dosage.getGlobalScore() << "\t";
+                //for (const auto &timeRange : dosage.m_history.getDosageTimeRanges()) {
+                //    timeRange->getDosage()->
+                //}
+                file << dosage.getGlobalScore() << std::endl;
+
+                double firstTime = dosage.m_data[0].m_start.toSeconds();
+                size_t dataIndex = 0;
+                for (auto &cycleData : dosage.m_data) {
+                    for (size_t i = 0; i < cycleData.m_concentrations[0].size(); i++) {
+                        file << (cycleData.m_start.toSeconds() - firstTime) / 3600.0 + cycleData.m_times[0][i];
+                        if ((i != cycleData.m_concentrations[0].size() - 1) || (dataIndex != dosage.m_data.size() - 1)) {
+                            file << "\t";
+                        }
+                    }
+                    dataIndex ++;
+                }
+                file << std::endl;
+
+                dataIndex = 0;
+                for (auto &cycleData : dosage.m_data) {
+                    for (size_t i = 0; i < cycleData.m_concentrations[0].size(); i++) {
+                        file << cycleData.m_concentrations[0][i];
+                        if ((i != cycleData.m_concentrations[0].size() - 1) || (dataIndex != dosage.m_data.size() - 1)) {
+                            file << "\t";
+                        }
+                    }
+                    dataIndex ++;
+                }
+                file << std::endl;
+
             }
 
-            file << std::endl;
         }
         else if (dynamic_cast<Tucuxi::Core::SinglePredictionResponse*>(response.get()) != nullptr) {
             const Tucuxi::Core::SinglePredictionResponse* prediction =

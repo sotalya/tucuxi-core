@@ -212,11 +212,11 @@ int IntakeExtractor::extract(const ParallelDosageSequence &_parallelDosageSequen
 }
 
 
-int IntakeExtractor::extract(const LastingDose &_dosage, const DateTime &_start, const DateTime & /*_end*/, double _nbPointsPerHour, IntakeSeries &_series)
+int IntakeExtractor::extract(const LastingDose &_dosage, const DateTime &_start, const DateTime & _end, double _nbPointsPerHour, IntakeSeries &_series)
 {
     Duration interval;
-//    interval = std::min(_dosage.getTimeStep(), _end - _start);
-    interval = _dosage.getTimeStep();
+    interval = std::min(_dosage.getTimeStep(), _end - _start);
+//    interval = _dosage.getTimeStep();
 
     // If the absorption model is INFUSION but the infusion time is 0, then use INTRAVASCULAR instead
     if ((_dosage.m_routeOfAdministration.getAbsorptionModel() == AbsorptionModel::Infusion) &&
@@ -235,7 +235,7 @@ int IntakeExtractor::extract(const LastingDose &_dosage, const DateTime &_start,
 }
 
 
-int IntakeExtractor::extract(const DailyDose &_dosage, const DateTime &_start, const DateTime & /*_end*/, double _nbPointsPerHour, IntakeSeries &_series)
+int IntakeExtractor::extract(const DailyDose &_dosage, const DateTime &_start, const DateTime & _end, double _nbPointsPerHour, IntakeSeries &_series)
 {
     Duration interval;
     //    interval = std::min(_dosage.getTimeStep(), _end - _start);
@@ -260,7 +260,7 @@ int IntakeExtractor::extract(const DailyDose &_dosage, const DateTime &_start, c
 }
 
 
-int IntakeExtractor::extract(const WeeklyDose &_dosage, const DateTime &_start, const DateTime & /*_end*/, double _nbPointsPerHour, IntakeSeries &_series)
+int IntakeExtractor::extract(const WeeklyDose &_dosage, const DateTime &_start, const DateTime & _end, double _nbPointsPerHour, IntakeSeries &_series)
 {
     Duration interval;
     //    interval = std::min(_dosage.getTimeStep(), _end - _start);

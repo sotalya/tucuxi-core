@@ -368,11 +368,11 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                                        Duration(std::chrono::hours(8), std::chrono::minutes(30), std::chrono::seconds(0))),
                                               Duration(),
                                               DoseValue(200.0),
-                                              Duration(std::chrono::hours(36)),
+                                              Duration(std::chrono::hours(24)),
                                               getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
-                                              36 * NB_POINTS_PER_HOUR + 1));
+                                              24 * NB_POINTS_PER_HOUR + 1));
 
         // The 16.07.2017 must be EXCLUDED (the intervals are closed on the left, but opened on the right side!)
 
@@ -2048,11 +2048,11 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                                        Duration(std::chrono::hours(8), std::chrono::minutes(30), std::chrono::seconds(0))),
                                               Duration(),
                                               DoseValue(200.0),
-                                              Duration(std::chrono::hours(36)),
+                                              Duration(std::chrono::hours(24)),
                                               getBolusFormulationAndRoute(),
                                               getBolusFormulationAndRoute().getAbsorptionModel(),
                                               Duration(),
-                                              36 * NB_POINTS_PER_HOUR + 1));
+                                              24 * NB_POINTS_PER_HOUR + 1));
 
         // The 16.07.2017 must be EXCLUDED (the intervals are closed on the left, but opened on the right side!)
         {

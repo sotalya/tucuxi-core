@@ -168,7 +168,7 @@ Tucuxi::Core::ComputingTraits *QueryToCoreExtractor::extractComputingTraits(cons
             for (auto trait : traitsList) {
                 traits->addTrait(std::unique_ptr<Tucuxi::Core::ComputingTrait>(trait));
             }
-        } else if (requestType == "dosageAdaptation") {
+        } else if (requestType == "adjustment") {
             std::vector<Tucuxi::Core::ComputingTrait *> traitsList = extractAdaptationTraits(_query, *request.get());
             for (auto trait : traitsList) {
                 traits->addTrait(std::unique_ptr<Tucuxi::Core::ComputingTrait>(trait));
