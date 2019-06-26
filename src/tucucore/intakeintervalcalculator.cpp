@@ -26,7 +26,7 @@ void PertinentTimesCalculatorInfusion::calculateTimes(const IntakeEvent& _intake
               int _nbPoints,
               Eigen::VectorXd& _times)
 {
-    double infusionTime = _intakeEvent.getInfusionTime().toHours();
+    double infusionTime = std::min(_intakeEvent.getInfusionTime().toHours(), _intakeEvent.getInterval().toHours());
     double interval = _intakeEvent.getInterval().toHours();
 
     if (_nbPoints == 2) {
@@ -42,7 +42,7 @@ void PertinentTimesCalculatorInfusion::calculateTimes(const IntakeEvent& _intake
 
     double postTime = interval - infusionTime;
 
-    int nbInfus = std::max(2, static_cast<int>((infusionTime / interval) * static_cast<double>(_nbPoints)));
+    int nbInfus = std::min(_nbPoints, std::max(2, static_cast<int>((infusionTime / interval) * static_cast<double>(_nbPoints))));
     int nbPost = _nbPoints - nbInfus;
 
     for(int i = 0; i < nbInfus; i++) {
