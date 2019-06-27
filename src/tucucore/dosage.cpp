@@ -13,9 +13,9 @@ namespace Core {
 
 /// \brief Visitor function's implementation.
 #define DOSAGE_UTILS_IMPL(className) \
-int className::extract(IntakeExtractor &_extractor, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, IntakeSeries &_series) const \
+int className::extract(IntakeExtractor &_extractor, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, IntakeSeries &_series, ExtractionOption _option) const \
 { \
-    return _extractor.extract(*this, _start, _end, _nbPointsPerHour, _series); \
+    return _extractor.extract(*this, _start, _end, _nbPointsPerHour, _series, _option); \
 }
 
 DOSAGE_UTILS_IMPL(DosageBounded)
@@ -86,16 +86,17 @@ void DosageHistory::mergeDosage(const DosageTimeRange *_newDosage)
     // We fill the gap by extending the last dosage of the initial history
     // No, that's not OK because it would add new doses instead of empty doses
 
-    if (m_history.at(m_history.size() - 1)->m_endDate < _newDosage->getStartDate()) {
+    if (m_history.size() > 0) {
+        if (m_history.at(m_history.size() - 1)->m_endDate < _newDosage->getStartDate()) {
 
-        // At least a number of intervals allowing to fill the interval asked
-        Duration duration = _newDosage->getStartDate() - m_history.at(m_history.size() - 1)->m_endDate;
-        int nbTimes = 1;
-        LastingDose lastingDose(0.0, m_history.at(m_history.size() - 1)->getDosage()->getLastFormulationAndRoute(), Duration(), duration);
-        DosageRepeat repeat(lastingDose, nbTimes);
-        DosageTimeRange gapFiller = DosageTimeRange(m_history.at(m_history.size() - 1)->m_endDate, m_history.at(m_history.size() - 1)->m_endDate + duration, repeat);
-        addTimeRange(gapFiller);
-
+            // At least a number of intervals allowing to fill the interval asked
+            Duration duration = _newDosage->getStartDate() - m_history.at(m_history.size() - 1)->m_endDate;
+            int nbTimes = 1;
+            LastingDose lastingDose(0.0, m_history.at(m_history.size() - 1)->getDosage()->getLastFormulationAndRoute(), Duration(), duration);
+            DosageRepeat repeat(lastingDose, nbTimes);
+            DosageTimeRange gapFiller = DosageTimeRange(m_history.at(m_history.size() - 1)->m_endDate, m_history.at(m_history.size() - 1)->m_endDate + duration, repeat);
+            addTimeRange(gapFiller);
+        }
     }
     addTimeRange(*_newDosage);
 }

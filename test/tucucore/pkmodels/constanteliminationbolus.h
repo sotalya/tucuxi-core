@@ -43,6 +43,12 @@ public:
 
     typedef ConstantEliminationBolusExponentials Exponentials;
 
+
+    static std::vector<std::string> getParametersId()
+    {
+        return {"TestA", "TestS", "TestR", "TestM"};
+    }
+
 protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override
     {

@@ -253,15 +253,15 @@ ComputingResult ComputingComponent::compute(
         }
     }
 
-    for(const auto &analyteGroup : _request.getDrugModel().getAnalyteSets()) {
-        AnalyteId analyteId = analyteGroup->getAnalytes()[0]->getAnalyteId();
-        resp->addAnalyteId(analyteId.toString());
-    }
-
     if (!_request.getDrugModel().isSingleAnalyte()) {
         for (const auto & activeMoiety : _request.getDrugModel().getActiveMoieties()) {
             resp->addAnalyteId(activeMoiety->getActiveMoietyId().toString());
         }
+    }
+
+    for(const auto &analyteGroup : _request.getDrugModel().getAnalyteSets()) {
+        AnalyteId analyteId = analyteGroup->getAnalytes()[0]->getAnalyteId();
+        resp->addAnalyteId(analyteId.toString());
     }
 
     if (_traits->getComputingOption().getWithStatistics()) {
@@ -1042,7 +1042,8 @@ ComputingResult ComputingComponent::compute(
                 IntakeExtractor intakeExtractor;
                 double nbPointsPerHour = _traits->getNbPointsPerHour();
                 ComputingResult intakeExtractionResult = intakeExtractor.extract(*newHistory, calculationStartTime, newEndTime,
-                                                                                 nbPointsPerHour, intakeSeriesPerGroup[analyteGroupId]);
+                                                                                 nbPointsPerHour, intakeSeriesPerGroup[analyteGroupId],
+                                                                                 ExtractionOption::EndofDate);
 
                 m_generalExtractor->convertAnalytes(intakeSeriesPerGroup[analyteGroupId], _request.getDrugModel(), _request.getDrugModel().getAnalyteSet(analyteGroupId));
 
@@ -1283,6 +1284,10 @@ ComputingResult ComputingComponent::compute(
         return extractionResult;
     }
 
+    if (_request.getDrugModel().getAnalyteSets().size() == 0) {
+        return ComputingResult::NoAnalytesGroup;
+    }
+
     for (const auto & analyteGroup : _request.getDrugModel().getAnalyteSets()) {
         AnalyteGroupId analyteGroupId = analyteGroup->getId();
 
@@ -1340,14 +1345,13 @@ ComputingResult ComputingComponent::compute(
             resp->m_unit = Unit("ug/l");
 
             _response->addResponse(std::move(resp));
-            return ComputingResult::Ok;
         }
         else {
             return computingResult;
         }
 
     }
-    return ComputingResult::NoAnalytesGroup;
+    return ComputingResult::Ok;
 }
 
 

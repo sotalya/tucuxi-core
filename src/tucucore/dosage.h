@@ -28,11 +28,23 @@ namespace Core {
 
 class IntakeExtractor;
 
+enum class ExtractionOption {
+    /// Use the interval for the very last intake, use min(end date, interval) for all others
+    EndOfCycle = 0,
+
+    /// Use the min(end date, interval) for all intakes
+    EndofDate,
+
+    /// This ForceCycle forces the use of the interval for extraction
+    ForceCycle
+};
+
+
 
 /// \brief Implement the extract and clone operations for Dosage subclasses.
 #define DOSAGE_UTILS(BaseClassName, ClassName) \
     friend IntakeExtractor; \
-    int extract(IntakeExtractor &_extractor, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, IntakeSeries &_series) const override; \
+    int extract(IntakeExtractor &_extractor, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, IntakeSeries &_series, ExtractionOption _option) const override; \
     std::unique_ptr<BaseClassName> clone() const override \
     { \
         return std::unique_ptr<BaseClassName>(new ClassName(*this)); \
@@ -68,7 +80,7 @@ public:
     /// whole set of calls)
     /// \post FORALL intake IN extracted_intakes, intake.time IN [_start, _end)
     /// \see IntakeExtractor::extract()
-    virtual int extract(IntakeExtractor &_extractor, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, IntakeSeries &_series) const = 0;
+    virtual int extract(IntakeExtractor &_extractor, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, IntakeSeries &_series, ExtractionOption _option) const = 0;
 
     /// \brief Return a pointer to a clone of the correct subclass.
     /// \return Pointer to a new object of subclass' type.
@@ -111,7 +123,7 @@ public:
 
     ~DosageBounded() override {}
 
-    int extract(IntakeExtractor &_extractor, const DateTime &_start, const DateTime &_end,double _nbPointsPerHour, IntakeSeries &_series) const override;
+    int extract(IntakeExtractor &_extractor, const DateTime &_start, const DateTime &_end,double _nbPointsPerHour, IntakeSeries &_series, ExtractionOption _option) const override;
 
     /// \brief Return the instant of the first intake in the given interval.
     /// \param _intervalStart Starting point of the interval.
@@ -171,7 +183,7 @@ public:
         return m_dosage.get();
     }
 
-    DOSAGE_UTILS(DosageUnbounded, DosageLoop);
+    DOSAGE_UTILS(DosageUnbounded, DosageLoop)
 
 protected:
     /// \brief Dosage that is repeated in the unbounded interval.

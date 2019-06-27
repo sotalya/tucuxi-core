@@ -88,6 +88,7 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
 
         bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
         fructose_assert(addResult);
+        sharedPkModel->addParameterList(AbsorptionModel::Extravascular, ConstantEliminationBolus::getParametersId());
 
         PkModelCollection *collection = new PkModelCollection();
         collection->addPkModel(sharedPkModel);
@@ -152,16 +153,16 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
                 const SinglePredictionResponse *resp = dynamic_cast<SinglePredictionResponse*>(responses[0].get());
 
                 fructose_assert_eq(resp->getIds().size(), size_t{3});
-                fructose_assert_eq(resp->getIds()[0], "analyte0");
-                fructose_assert_eq(resp->getIds()[1], "analyte1");
-                fructose_assert_eq(resp->getIds()[2], "activeMoietyMulti");
+                fructose_assert_eq(resp->getIds()[0], "activeMoietyMulti");
+                fructose_assert_eq(resp->getIds()[1], "analyte0");
+                fructose_assert_eq(resp->getIds()[2], "analyte1");
 
                 std::vector<CycleData> data = resp->getData();
                 fructose_assert(data.size() == 16);
                 fructose_assert(data[0].m_concentrations.size() == 3);
-                fructose_assert_eq(data[0].m_concentrations[0][0] , 200000.0);
+                fructose_assert_eq(data[0].m_concentrations[0][0] , 400000.0);
                 fructose_assert_eq(data[0].m_concentrations[1][0] , 200000.0);
-                fructose_assert_eq(data[0].m_concentrations[2][0] , 400000.0);
+                fructose_assert_eq(data[0].m_concentrations[2][0] , 200000.0);
                 fructose_assert_eq(data[0].m_concentrations[0].size() , size_t{61});
                 fructose_assert_eq(data[0].m_concentrations[1].size() , size_t{61});
                 fructose_assert_eq(data[0].m_concentrations[2].size() , size_t{61});
@@ -174,28 +175,28 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
 
                 DateTime statTime;
                 Value statValue;
-                data[0].m_statistics.getStatistic(0, CycleStatisticType::AUC).getValue(statTime, statValue);
+                data[2].m_statistics.getStatistic(2, CycleStatisticType::AUC).getValue(statTime, statValue);
                 fructose_assert_double_eq(statValue, 200000.0 * 6.0);
 
-                data[0].m_statistics.getStatistic(0, CycleStatisticType::CumulativeAuc).getValue(statTime, statValue);
-                fructose_assert_double_eq(statValue, 200000.0 * 6.0);
+                data[2].m_statistics.getStatistic(2, CycleStatisticType::CumulativeAuc).getValue(statTime, statValue);
+                fructose_assert_double_eq(statValue, 200000.0 * 6.0 * 3.0);
 
-                data[0].m_statistics.getStatistic(0, CycleStatisticType::Peak).getValue(statTime, statValue);
+                data[2].m_statistics.getStatistic(2, CycleStatisticType::Peak).getValue(statTime, statValue);
                 fructose_assert_double_eq(statValue, 200000.0);
 
-                data[0].m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
+                data[2].m_statistics.getStatistic(2, CycleStatisticType::Mean).getValue(statTime, statValue);
                 fructose_assert_double_eq(statValue, 200000.0);
 
-                data[1].m_statistics.getStatistic(0, CycleStatisticType::AUC).getValue(statTime, statValue);
+                data[1].m_statistics.getStatistic(2, CycleStatisticType::AUC).getValue(statTime, statValue);
                 fructose_assert_double_eq(statValue, 200000.0 * 6.0);
 
-                data[1].m_statistics.getStatistic(0, CycleStatisticType::CumulativeAuc).getValue(statTime, statValue);
+                data[1].m_statistics.getStatistic(2, CycleStatisticType::CumulativeAuc).getValue(statTime, statValue);
                 fructose_assert_double_eq(statValue, 200000.0 * 12.0);
 
-                data[1].m_statistics.getStatistic(0, CycleStatisticType::Peak).getValue(statTime, statValue);
+                data[1].m_statistics.getStatistic(2, CycleStatisticType::Peak).getValue(statTime, statValue);
                 fructose_assert_double_eq(statValue, 200000.0);
 
-                data[1].m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
+                data[1].m_statistics.getStatistic(2, CycleStatisticType::Mean).getValue(statTime, statValue);
                 fructose_assert_double_eq(statValue, 200000.0);
 
             }
@@ -225,6 +226,7 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
 
         bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
         fructose_assert(addResult);
+        sharedPkModel->addParameterList(AbsorptionModel::Extravascular, ConstantEliminationBolus::getParametersId());
 
         PkModelCollection *collection = new PkModelCollection();
         collection->addPkModel(sharedPkModel);
@@ -289,16 +291,16 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
                 const SinglePredictionResponse *resp = dynamic_cast<SinglePredictionResponse*>(responses[0].get());
 
                 fructose_assert_eq(resp->getIds().size(), size_t{3});
-                fructose_assert_eq(resp->getIds()[0], "analyte0");
-                fructose_assert_eq(resp->getIds()[1], "analyte1");
-                fructose_assert_eq(resp->getIds()[2], "activeMoietyMulti");
+                fructose_assert_eq(resp->getIds()[0], "activeMoietyMulti");
+                fructose_assert_eq(resp->getIds()[1], "analyte0");
+                fructose_assert_eq(resp->getIds()[2], "analyte1");
 
                 std::vector<CycleData> data = resp->getData();
                 fructose_assert(data.size() == 16);
                 fructose_assert(data[0].m_concentrations.size() == 3);
-                fructose_assert_eq(data[0].m_concentrations[0][0] , 200000.0 * 0.3);
-                fructose_assert_eq(data[0].m_concentrations[1][0] , 200000.0 * 0.5);
-                fructose_assert_eq(data[0].m_concentrations[2][0] , 200000.0 * 0.8);
+                fructose_assert_eq(data[0].m_concentrations[0][0] , 200000.0 * 0.8);
+                fructose_assert_eq(data[0].m_concentrations[1][0] , 200000.0 * 0.3);
+                fructose_assert_eq(data[0].m_concentrations[2][0] , 200000.0 * 0.5);
                 fructose_assert_eq(data[0].m_concentrations[0].size() , size_t{61});
                 fructose_assert_eq(data[0].m_concentrations[1].size() , size_t{61});
                 fructose_assert_eq(data[0].m_concentrations[2].size() , size_t{61});
@@ -312,28 +314,54 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
                 DateTime statTime;
                 Value statValue;
                 data[0].m_statistics.getStatistic(0, CycleStatisticType::AUC).getValue(statTime, statValue);
-                fructose_assert_double_eq(statValue, 200000.0 * 6.0 * 0.3);
+                fructose_assert_double_eq(statValue, 200000.0 * 6.0 * 0.8);
 
                 data[0].m_statistics.getStatistic(0, CycleStatisticType::CumulativeAuc).getValue(statTime, statValue);
-                fructose_assert_double_eq(statValue, 200000.0 * 6.0 * 0.3);
+                fructose_assert_double_eq(statValue, 200000.0 * 6.0 * 0.8);
 
                 data[0].m_statistics.getStatistic(0, CycleStatisticType::Peak).getValue(statTime, statValue);
-                fructose_assert_double_eq(statValue, 200000.0 * 0.3);
+                fructose_assert_double_eq(statValue, 200000.0 * 0.8);
 
                 data[0].m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
-                fructose_assert_double_eq(statValue, 200000.0 * 0.3);
+                fructose_assert_double_eq(statValue, 200000.0 * 0.8);
+
 
                 data[1].m_statistics.getStatistic(0, CycleStatisticType::AUC).getValue(statTime, statValue);
-                fructose_assert_double_eq(statValue, 200000.0 * 6.0 * 0.3);
+                fructose_assert_double_eq(statValue, 200000.0 * 6.0 * 0.8);
 
                 data[1].m_statistics.getStatistic(0, CycleStatisticType::CumulativeAuc).getValue(statTime, statValue);
-                fructose_assert_double_eq(statValue, 200000.0 * 12.0 * 0.3);
+                fructose_assert_double_eq(statValue, 200000.0 * 6.0 * 0.8 * 2.0);
 
                 data[1].m_statistics.getStatistic(0, CycleStatisticType::Peak).getValue(statTime, statValue);
-                fructose_assert_double_eq(statValue, 200000.0 * 0.3);
+                fructose_assert_double_eq(statValue, 200000.0 * 0.8);
 
                 data[1].m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
+                fructose_assert_double_eq(statValue, 200000.0 * 0.8);
+
+
+                data[1].m_statistics.getStatistic(1, CycleStatisticType::AUC).getValue(statTime, statValue);
+                fructose_assert_double_eq(statValue, 200000.0 * 6.0 * 0.3);
+
+                data[1].m_statistics.getStatistic(1, CycleStatisticType::CumulativeAuc).getValue(statTime, statValue);
+                fructose_assert_double_eq(statValue, 200000.0 * 12.0 * 0.3);
+
+                data[1].m_statistics.getStatistic(1, CycleStatisticType::Peak).getValue(statTime, statValue);
                 fructose_assert_double_eq(statValue, 200000.0 * 0.3);
+
+                data[1].m_statistics.getStatistic(1, CycleStatisticType::Mean).getValue(statTime, statValue);
+                fructose_assert_double_eq(statValue, 200000.0 * 0.3);
+
+                data[0].m_statistics.getStatistic(2, CycleStatisticType::AUC).getValue(statTime, statValue);
+                fructose_assert_double_eq(statValue, 200000.0 * 6.0 * 0.5);
+
+                data[0].m_statistics.getStatistic(2, CycleStatisticType::CumulativeAuc).getValue(statTime, statValue);
+                fructose_assert_double_eq(statValue, 200000.0 * 6.0 * 0.5);
+
+                data[0].m_statistics.getStatistic(2, CycleStatisticType::Peak).getValue(statTime, statValue);
+                fructose_assert_double_eq(statValue, 200000.0 * 0.5);
+
+                data[0].m_statistics.getStatistic(2, CycleStatisticType::Mean).getValue(statTime, statValue);
+                fructose_assert_double_eq(statValue, 200000.0 * 0.5);
 
             }
 
@@ -379,6 +407,7 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
 
         bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
         fructose_assert(addResult);
+        sharedPkModel->addParameterList(AbsorptionModel::Extravascular, ConstantEliminationBolus::getParametersId());
 
         PkModelCollection *collection = new PkModelCollection();
         collection->addPkModel(sharedPkModel);

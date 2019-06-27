@@ -98,6 +98,8 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
         fructose_assert(addResult);
 
+        sharedPkModel->addParameterList(AbsorptionModel::Extravascular, ConstantEliminationBolus::getParametersId());
+
         PkModelCollection *collection = new PkModelCollection();
         collection->addPkModel(sharedPkModel);
         DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel, collection);
@@ -247,6 +249,9 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
         bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
         fructose_assert(addResult);
+
+        sharedPkModel->addParameterList(AbsorptionModel::Extravascular, ConstantEliminationBolus::getParametersId());
+
 
         PkModelCollection *collection = new PkModelCollection();
         collection->addPkModel(sharedPkModel);
@@ -399,6 +404,8 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
         fructose_assert(addResult);
 
+        sharedPkModel->addParameterList(AbsorptionModel::Extravascular, ConstantEliminationBolus::getParametersId());
+
         PkModelCollection *collection = new PkModelCollection();
         collection->addPkModel(sharedPkModel);
         DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel, collection);
@@ -505,6 +512,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
         bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
         fructose_assert(addResult);
+        sharedPkModel->addParameterList(AbsorptionModel::Extravascular, ConstantEliminationBolus::getParametersId());
 
         PkModelCollection *collection = new PkModelCollection();
         collection->addPkModel(sharedPkModel);
@@ -611,6 +619,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
         bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
         fructose_assert(addResult);
+        sharedPkModel->addParameterList(AbsorptionModel::Extravascular, ConstantEliminationBolus::getParametersId());
 
         PkModelCollection *collection = new PkModelCollection();
         collection->addPkModel(sharedPkModel);
@@ -716,6 +725,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
         bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
         fructose_assert(addResult);
+        sharedPkModel->addParameterList(AbsorptionModel::Extravascular, ConstantEliminationBolus::getParametersId());
 
         PkModelCollection *collection = new PkModelCollection();
         collection->addPkModel(sharedPkModel);
@@ -832,6 +842,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
         bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
         fructose_assert(addResult);
+        sharedPkModel->addParameterList(AbsorptionModel::Extravascular, ConstantEliminationBolus::getParametersId());
 
         PkModelCollection *collection = new PkModelCollection();
         collection->addPkModel(sharedPkModel);
@@ -947,6 +958,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
         bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
         fructose_assert(addResult);
+        sharedPkModel->addParameterList(AbsorptionModel::Extravascular, ConstantEliminationBolus::getParametersId());
 
         PkModelCollection *collection = new PkModelCollection();
         collection->addPkModel(sharedPkModel);
@@ -1062,6 +1074,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
         bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
         fructose_assert(addResult);
+        sharedPkModel->addParameterList(AbsorptionModel::Extravascular, ConstantEliminationBolus::getParametersId());
 
         PkModelCollection *collection = new PkModelCollection();
         collection->addPkModel(sharedPkModel);
@@ -1177,6 +1190,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
         bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
         fructose_assert(addResult);
+        sharedPkModel->addParameterList(AbsorptionModel::Extravascular, ConstantEliminationBolus::getParametersId());
 
         PkModelCollection *collection = new PkModelCollection();
         collection->addPkModel(sharedPkModel);
@@ -1309,6 +1323,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
         bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
         fructose_assert(addResult);
+        sharedPkModel->addParameterList(AbsorptionModel::Extravascular, ConstantEliminationBolus::getParametersId());
 
         PkModelCollection *collection = new PkModelCollection();
         collection->addPkModel(sharedPkModel);
@@ -1444,6 +1459,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
         bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
         fructose_assert(addResult);
+        sharedPkModel->addParameterList(AbsorptionModel::Extravascular, ConstantEliminationBolus::getParametersId());
 
         PkModelCollection *collection = new PkModelCollection();
         collection->addPkModel(sharedPkModel);
