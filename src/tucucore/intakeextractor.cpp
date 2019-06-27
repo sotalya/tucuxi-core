@@ -33,7 +33,7 @@ ComputingResult IntakeExtractor::extract(const DosageHistory& _dosageHistory, co
 
         // Iterate on elements in dosage history that are in the appropriate time interval and add each of them to the
         // intake series
-        int index = 0;
+        size_t index = 0;
         for (auto&& timeRange : _dosageHistory.m_history)
         {
             index ++;

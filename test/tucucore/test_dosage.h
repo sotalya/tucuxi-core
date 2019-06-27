@@ -152,10 +152,10 @@ struct TestDosage : public fructose::test_base<TestDosage>
         const Duration validInfusionTime(std::chrono::minutes(20));
         // Cannot have an invalid or invalid time of day (at worst, it simply takes the current time)
         const TimeOfDay validTimeOfDay(Duration(std::chrono::seconds(12345)));
-        const DayOfWeek invalidDayOfWeek((unsigned)11);
+        const DayOfWeek invalidDayOfWeek(unsigned{11});
         // Days of week range from 0 to 6 (Sunday to Saturday)
-        const DayOfWeek validDayOfWeek1((unsigned)SUNDAY);
-        const DayOfWeek validDayOfWeek2((unsigned)MONDAY);
+        const DayOfWeek validDayOfWeek1(unsigned{SUNDAY});
+        const DayOfWeek validDayOfWeek2(unsigned{MONDAY});
 
         fructose_assert_exception(Tucuxi::Core::WeeklyDose(validDose,
                                                            routePerfusion,

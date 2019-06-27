@@ -942,7 +942,7 @@ struct TestOperation : public fructose::test_base<TestOperation>
         fructose_assert (rc == true);
 
         // TODO : These tests have been removed, for the reason explained above
-        rc = jsCG_Schwartz.evaluate({ creatinine, bodyweight, age, isMale, bornAtTerm, height }, eGFR);
+    //    rc = jsCG_Schwartz.evaluate({ creatinine, bodyweight, age, isMale, bornAtTerm, height }, eGFR);
     //    fructose_assert (rc == true);
     //    fructose_assert_double_eq (0.893271, eGFR);
         rc = hc_Schwartz.evaluate({ creatinine, bodyweight, age, isMale, bornAtTerm, height }, hc_eGFR);

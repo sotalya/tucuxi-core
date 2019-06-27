@@ -390,6 +390,7 @@ JSOperation::evaluate(const OperationInputList &_inputs, double &_result)
 
     } catch (const CScriptException *e) {
         sm_errorMessage = e->text;
+        delete e;
 //        Tucuxi::Common::LoggerHelper logger;
 //        logger.error("Error with the execution of the JSOperation : {}\n\n{}", m_expression, e->text);
         return false;
@@ -467,6 +468,7 @@ JSOperation::checkOperation(const OperationInputList &_inputs, double &_result)
 
     } catch (const CScriptException *e) {
         sm_errorMessage = e->text;
+        delete e;
 //        Tucuxi::Common::LoggerHelper logger;
 //        logger.error("Error with the execution of the JSOperation : {}\n\n{}", m_expression, e->text);
         return false;
