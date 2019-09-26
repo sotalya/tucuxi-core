@@ -86,7 +86,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
         std::unique_ptr<ComputingTraitAdjustment> adjustmentsTraits =
                 std::make_unique<ComputingTraitAdjustment>(
                     requestResponseId, start, end, nbPointsPerHour, computingOption, adjustmentTime,
-                    adjustmentOption, ChargingOption::NoChargingDose, RestPeriodOption::NoRestPeriod,
+                    adjustmentOption, LoadingOption::NoLoadingDose, RestPeriodOption::NoRestPeriod,
                     SteadyStateTargetOption::WithinTreatmentTimeRange,
                     TargetExtractionOption::PopulationValues,
                     FormulationAndRouteSelectionOption::LastFormulationAndRoute);
@@ -151,7 +151,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
         std::unique_ptr<ComputingTraitAdjustment> adjustmentsTraits =
                 std::make_unique<ComputingTraitAdjustment>(
                     requestResponseId, start, end, nbPointsPerHour, computingOption, adjustmentTime,
-                    adjustmentOption, ChargingOption::NoChargingDose, RestPeriodOption::NoRestPeriod,
+                    adjustmentOption, LoadingOption::NoLoadingDose, RestPeriodOption::NoRestPeriod,
                     SteadyStateTargetOption::WithinTreatmentTimeRange,
                     TargetExtractionOption::PopulationValues,
                     FormulationAndRouteSelectionOption::DefaultFormulationAndRoute);
@@ -215,7 +215,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
         std::unique_ptr<ComputingTraitAdjustment> adjustmentsTraits =
                 std::make_unique<ComputingTraitAdjustment>(
                     requestResponseId, start, end, nbPointsPerHour, computingOption, adjustmentTime,
-                    adjustmentOption, ChargingOption::NoChargingDose, RestPeriodOption::NoRestPeriod,
+                    adjustmentOption, LoadingOption::NoLoadingDose, RestPeriodOption::NoRestPeriod,
                     SteadyStateTargetOption::WithinTreatmentTimeRange,
                     TargetExtractionOption::PopulationValues,
                     FormulationAndRouteSelectionOption::AllFormulationAndRoutes);
@@ -275,7 +275,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
         std::unique_ptr<ComputingTraitAdjustment> adjustmentsTraits =
                 std::make_unique<ComputingTraitAdjustment>(
                     requestResponseId, start, end, nbPointsPerHour, computingOption, adjustmentTime,
-                    adjustmentOption, ChargingOption::NoChargingDose, RestPeriodOption::NoRestPeriod,
+                    adjustmentOption, LoadingOption::NoLoadingDose, RestPeriodOption::NoRestPeriod,
                     SteadyStateTargetOption::WithinTreatmentTimeRange,
                     TargetExtractionOption::PopulationValues,
                     FormulationAndRouteSelectionOption::LastFormulationAndRoute);
@@ -339,7 +339,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
         std::unique_ptr<ComputingTraitAdjustment> adjustmentsTraits =
                 std::make_unique<ComputingTraitAdjustment>(
                     requestResponseId, start, end, nbPointsPerHour, computingOption, adjustmentTime,
-                    adjustmentOption, ChargingOption::NoChargingDose, RestPeriodOption::NoRestPeriod,
+                    adjustmentOption, LoadingOption::NoLoadingDose, RestPeriodOption::NoRestPeriod,
                     SteadyStateTargetOption::WithinTreatmentTimeRange,
                     TargetExtractionOption::PopulationValues,
                     FormulationAndRouteSelectionOption::DefaultFormulationAndRoute);
@@ -403,7 +403,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
         std::unique_ptr<ComputingTraitAdjustment> adjustmentsTraits =
                 std::make_unique<ComputingTraitAdjustment>(
                     requestResponseId, start, end, nbPointsPerHour, computingOption, adjustmentTime,
-                    adjustmentOption, ChargingOption::NoChargingDose, RestPeriodOption::NoRestPeriod,
+                    adjustmentOption, LoadingOption::NoLoadingDose, RestPeriodOption::NoRestPeriod,
                     SteadyStateTargetOption::WithinTreatmentTimeRange,
                     TargetExtractionOption::PopulationValues,
                     FormulationAndRouteSelectionOption::AllFormulationAndRoutes);
@@ -468,7 +468,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
         std::unique_ptr<ComputingTraitAdjustment> adjustmentsTraits =
                 std::make_unique<ComputingTraitAdjustment>(
                     requestResponseId, start, end, nbPointsPerHour, computingOption, adjustmentTime,
-                    adjustmentOption, ChargingOption::NoChargingDose, RestPeriodOption::NoRestPeriod,
+                    adjustmentOption, LoadingOption::NoLoadingDose, RestPeriodOption::NoRestPeriod,
                     SteadyStateTargetOption::WithinTreatmentTimeRange,
                     TargetExtractionOption::PopulationValues,
                     FormulationAndRouteSelectionOption::DefaultFormulationAndRoute);
@@ -535,7 +535,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
         std::unique_ptr<ComputingTraitAdjustment> adjustmentsTraits =
                 std::make_unique<ComputingTraitAdjustment>(
                     requestResponseId, start, end, nbPointsPerHour, computingOption, adjustmentTime,
-                    adjustmentOption, ChargingOption::NoChargingDose, RestPeriodOption::NoRestPeriod,
+                    adjustmentOption, LoadingOption::NoLoadingDose, RestPeriodOption::NoRestPeriod,
                     SteadyStateTargetOption::AtSteadyState,
                     TargetExtractionOption::PopulationValues,
                     FormulationAndRouteSelectionOption::LastFormulationAndRoute);
@@ -600,7 +600,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
             std::unique_ptr<ComputingTraitAdjustment> adjustmentsTraits =
                     std::make_unique<ComputingTraitAdjustment>(
                         requestResponseId, start, end, nbPointsPerHour, computingOption, adjustmentTime,
-                        adjustmentOption, ChargingOption::NoChargingDose, RestPeriodOption::NoRestPeriod,
+                        adjustmentOption, LoadingOption::NoLoadingDose, RestPeriodOption::NoRestPeriod,
                         SteadyStateTargetOption::AtSteadyState,
                         TargetExtractionOption::PopulationValues,
                         FormulationAndRouteSelectionOption::LastFormulationAndRoute);
@@ -689,7 +689,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
         std::unique_ptr<ComputingTraitAdjustment> adjustmentsTraits =
                 std::make_unique<ComputingTraitAdjustment>(
                     requestResponseId, start, end, nbPointsPerHour, computingOption, adjustmentTime,
-                    adjustmentOption, ChargingOption::NoChargingDose, RestPeriodOption::NoRestPeriod,
+                    adjustmentOption, LoadingOption::NoLoadingDose, RestPeriodOption::NoRestPeriod,
                     SteadyStateTargetOption::WithinTreatmentTimeRange,
                     TargetExtractionOption::PopulationValues,
                     FormulationAndRouteSelectionOption::LastFormulationAndRoute);

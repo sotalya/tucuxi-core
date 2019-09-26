@@ -28,12 +28,12 @@ using namespace date;
 
 using namespace Tucuxi::Core;
 
-class GeneralTest
-{
+//class GeneralTest
+//{
+//
+//};
 
-};
-
-struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic>, public GeneralTest
+struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, public GeneralTest
 {
     TestPkAsymptotic() { }
 
@@ -211,1065 +211,6 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic>, public G
 
     }
 
-#ifdef ALLTESTS
-    void test1() {
-        BuildPkAsymptotic builder;
-        DrugModel *drugModel = builder.buildDrugModel();
-
-        fructose_assert(drugModel != nullptr);
-
-        fructose_assert(drugModel->checkInvariants());
-
-        DrugModelChecker checker;
-
-        std::shared_ptr<PkModel> sharedPkModel;
-        sharedPkModel = std::make_shared<PkModel>("test.constantelimination");
-
-        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
-        fructose_assert(addResult);
-
-        sharedPkModel->addParameterList(AbsorptionModel::Extravascular, ConstantEliminationBolus::getParametersId());
-
-
-        PkModelCollection *collection = new PkModelCollection();
-        collection->addPkModel(sharedPkModel);
-        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel, collection);
-
-        fructose_assert(checkerResult.m_ok);
-
-        if (!checkerResult.m_ok) {
-            std::cout << checkerResult.m_errorMessage << std::endl;
-        }
-
-        // Now the drug model is ready to be used
-
-
-        IComputingService *component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
-
-        fructose_assert( component != nullptr);
-
-        static_cast<ComputingComponent *>(component)->setPkModelCollection(collection);
-
-
-        {
-
-            DrugTreatment *drugTreatment;
-            const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
-
-            buildDrugTreatment(drugTreatment, route);
-
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covS", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covA", "1.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covR", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-
-
-            std::unique_ptr<ComputingTraits> computingTraits = std::make_unique<ComputingTraits>();
-
-            RequestResponseId requestResponseId = "1";
-            Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
-            Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
-            double nbPointsPerHour = 10.0;
-            ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment, true);
-            std::unique_ptr<ComputingTraitConcentration> traits =
-                    std::make_unique<ComputingTraitConcentration>(
-                        requestResponseId, start, end, nbPointsPerHour, computingOption);
-            computingTraits->addTrait(std::move(traits));
-
-
-            std::unique_ptr<ComputingTraitPercentiles> traitsPercentiles =
-                    std::make_unique<ComputingTraitPercentiles>(
-                        requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
-
-            computingTraits->addTrait(std::move(traitsPercentiles));
-
-
-            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(computingTraits));
-
-            std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
-
-            ComputingResult result;
-            result = component->compute(request, response);
-
-            fructose_assert( result == ComputingResult::Ok);
-
-            const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
-
-            fructose_assert_eq(responses.size(), size_t{2});
-
-            {
-                fructose_assert(dynamic_cast<PercentilesResponse*>(responses[1].get()) != nullptr);
-                const PercentilesResponse *resp = dynamic_cast<PercentilesResponse*>(responses[1].get());
-
-                fructose_assert_eq(resp->getNbRanks(), percentileRanks.size());
-
-                for(size_t p = 0; p < resp->getNbRanks(); p++) {
-                    DateTime statTime;
-                    Value statValue = 0.0;
-                    resp->getData(p,0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
-                    fructose_assert_double_eq(statValue, 200001.0);
-                }
-
-            }
-            {
-                fructose_assert(dynamic_cast<SinglePredictionResponse*>(responses[0].get()) != nullptr);
-                const SinglePredictionResponse *resp = dynamic_cast<SinglePredictionResponse*>(responses[0].get());
-
-                fructose_assert_eq(resp->getIds().size(), size_t{1});
-                fructose_assert_eq(resp->getIds()[0], "analyte");
-
-                std::vector<CycleData> data = resp->getData();
-                fructose_assert(data.size() == 16);
-                fructose_assert(data[0].m_concentrations.size() == 1);
-                fructose_assert_eq(data[0].m_concentrations[0][0] , 200001.0);
-                DateTime startSept2018(date::year_month_day(date::year(2018), date::month(9), date::day(1)),
-                                       Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
-
-                fructose_assert_eq(data[0].m_start.toSeconds() + data[0].m_times[0][0] * 3600.0 , startSept2018.toSeconds());
-                fructose_assert_eq(data[1].m_start.toSeconds() + data[1].m_times[0][0] * 3600.0 , startSept2018.toSeconds() + 3600.0 * 6.0);
-
-                DateTime statTime;
-                Value statValue = 0.0;
-                data[0].m_statistics.getStatistic(0, CycleStatisticType::AUC).getValue(statTime, statValue);
-                fructose_assert_double_eq(statValue, 200001.0 * 6.0);
-
-                data[0].m_statistics.getStatistic(0, CycleStatisticType::CumulativeAuc).getValue(statTime, statValue);
-                fructose_assert_double_eq(statValue, 200001.0 * 6.0);
-
-                data[0].m_statistics.getStatistic(0, CycleStatisticType::Peak).getValue(statTime, statValue);
-                fructose_assert_double_eq(statValue, 200001.0);
-
-                data[0].m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
-                fructose_assert_double_eq(statValue, 200001.0);
-
-                data[1].m_statistics.getStatistic(0, CycleStatisticType::AUC).getValue(statTime, statValue);
-                fructose_assert_double_eq(statValue, 200001.0 * 6.0);
-
-                data[1].m_statistics.getStatistic(0, CycleStatisticType::CumulativeAuc).getValue(statTime, statValue);
-                fructose_assert_double_eq(statValue, 200001.0 * 12.0);
-
-                data[1].m_statistics.getStatistic(0, CycleStatisticType::Peak).getValue(statTime, statValue);
-                fructose_assert_double_eq(statValue, 200001.0);
-
-                data[1].m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
-                fructose_assert_double_eq(statValue, 200001.0);
-
-            }
-
-            delete drugTreatment;
-        }
-
-        // Delete all dynamically allocated objects
-        delete component;
-        delete drugModel;
-
-    }
-
-    void testResidualErrorModelAdditive() {
-        BuildPkAsymptotic builder;
-        DrugModel *drugModel = builder.buildDrugModel(
-                    ResidualErrorType::ADDITIVE,
-                    std::vector<Value>({10.0}));
-
-        fructose_assert(drugModel != nullptr);
-
-        fructose_assert(drugModel->checkInvariants());
-
-        DrugModelChecker checker;
-
-        std::shared_ptr<PkModel> sharedPkModel;
-        sharedPkModel = std::make_shared<PkModel>("test.constantelimination");
-
-        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
-        fructose_assert(addResult);
-
-        sharedPkModel->addParameterList(AbsorptionModel::Extravascular, ConstantEliminationBolus::getParametersId());
-
-        PkModelCollection *collection = new PkModelCollection();
-        collection->addPkModel(sharedPkModel);
-        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel, collection);
-
-        fructose_assert(checkerResult.m_ok);
-
-        if (!checkerResult.m_ok) {
-            std::cout << checkerResult.m_errorMessage << std::endl;
-        }
-
-        // Now the drug model is ready to be used
-
-
-        IComputingService *component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
-
-        fructose_assert( component != nullptr);
-
-        static_cast<ComputingComponent *>(component)->setPkModelCollection(collection);
-
-
-        {
-
-            DrugTreatment *drugTreatment;
-            const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
-
-            buildDrugTreatment(drugTreatment, route);
-
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covS", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covA", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covR", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-
-
-            std::unique_ptr<ComputingTraits> computingTraits = std::make_unique<ComputingTraits>();
-
-            RequestResponseId requestResponseId = "1";
-            Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
-            Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
-            double nbPointsPerHour = 10.0;
-            ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment, true);
-
-
-            std::unique_ptr<ComputingTraitPercentiles> traitsPercentiles =
-                    std::make_unique<ComputingTraitPercentiles>(
-                        requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
-
-            computingTraits->addTrait(std::move(traitsPercentiles));
-
-
-            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(computingTraits));
-
-            std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
-
-            ComputingResult result;
-            result = component->compute(request, response);
-
-            fructose_assert( result == ComputingResult::Ok);
-
-            const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
-
-            fructose_assert_eq(responses.size(), size_t{1});
-
-            {
-                fructose_assert(dynamic_cast<PercentilesResponse*>(responses[0].get()) != nullptr);
-                const PercentilesResponse *resp = dynamic_cast<PercentilesResponse*>(responses[0].get());
-
-                fructose_assert_eq(resp->getNbRanks(), percentileRanks.size());
-
-                for(size_t p = 0; p < resp->getNbRanks(); p++) {
-                    DateTime statTime;
-                    Value statValue = 0.0;
-                    resp->getData(p,0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
-                    //fructose_assert_eq(statValue, 200001.0);
-
-                    // Multiply the Inv CDF by SD (10), and by 1000.0 because of mg/l
-                    double expectedValue = invCdf[p] * 10.0 * 1000.0;
-                    fructose_assert_double_eq_rel_abs(statValue - 200000.0, expectedValue, 0.02, 10.0 * 10.0 * 1000.0 * 0.06);
-                }
-
-            }
-
-            delete drugTreatment;
-        }
-
-        // Delete all dynamically allocated objects
-        delete component;
-        delete drugModel;
-
-    }
-
-    void testResidualErrorModelExponential() {
-        BuildPkAsymptotic builder;
-        DrugModel *drugModel = builder.buildDrugModel(
-                    ResidualErrorType::EXPONENTIAL,
-                    std::vector<Value>({0.2}));
-
-        fructose_assert(drugModel != nullptr);
-
-        fructose_assert(drugModel->checkInvariants());
-
-        DrugModelChecker checker;
-
-        std::shared_ptr<PkModel> sharedPkModel;
-        sharedPkModel = std::make_shared<PkModel>("test.constantelimination");
-
-        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
-        fructose_assert(addResult);
-        sharedPkModel->addParameterList(AbsorptionModel::Extravascular, ConstantEliminationBolus::getParametersId());
-
-        PkModelCollection *collection = new PkModelCollection();
-        collection->addPkModel(sharedPkModel);
-        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel, collection);
-
-        fructose_assert(checkerResult.m_ok);
-
-        if (!checkerResult.m_ok) {
-            std::cout << checkerResult.m_errorMessage << std::endl;
-        }
-
-        // Now the drug model is ready to be used
-
-
-        IComputingService *component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
-
-        fructose_assert( component != nullptr);
-
-        static_cast<ComputingComponent *>(component)->setPkModelCollection(collection);
-
-
-        {
-
-            DrugTreatment *drugTreatment;
-            const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
-
-            buildDrugTreatment(drugTreatment, route);
-
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covS", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covA", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covR", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-
-
-            std::unique_ptr<ComputingTraits> computingTraits = std::make_unique<ComputingTraits>();
-
-            RequestResponseId requestResponseId = "1";
-            Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
-            Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
-            double nbPointsPerHour = 10.0;
-            ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment, true);
-
-            std::unique_ptr<ComputingTraitPercentiles> traitsPercentiles =
-                    std::make_unique<ComputingTraitPercentiles>(
-                        requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
-
-            computingTraits->addTrait(std::move(traitsPercentiles));
-
-
-            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(computingTraits));
-
-            std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
-
-            ComputingResult result;
-            result = component->compute(request, response);
-
-            fructose_assert( result == ComputingResult::Ok);
-
-            const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
-
-            fructose_assert_eq(responses.size(), size_t{1});
-
-            {
-                fructose_assert(dynamic_cast<PercentilesResponse*>(responses[0].get()) != nullptr);
-                const PercentilesResponse *resp = dynamic_cast<PercentilesResponse*>(responses[0].get());
-
-                fructose_assert_eq(resp->getNbRanks(), percentileRanks.size());
-
-                for(size_t p = 0; p < resp->getNbRanks(); p++) {
-                    DateTime statTime;
-                    Value statValue = 0.0;
-                    resp->getData(p,0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
-                    //fructose_assert_eq(statValue, 200001.0);
-
-                    // Multiply the Inv CDF by SD (0.2)
-                    double expectedValue = 200000.0 * std::exp(invCdf[p] * 0.2);
-                    fructose_assert_double_eq_rel_abs(statValue, expectedValue, 0.05, 0.0);
-                }
-
-            }
-            delete drugTreatment;
-        }
-
-        // Delete all dynamically allocated objects
-        delete component;
-        delete drugModel;
-
-    }
-
-
-    void testResidualErrorModelProportional() {
-        BuildPkAsymptotic builder;
-        DrugModel *drugModel = builder.buildDrugModel(
-                    ResidualErrorType::PROPORTIONAL,
-                    std::vector<Value>({0.2}));
-
-        fructose_assert(drugModel != nullptr);
-
-        fructose_assert(drugModel->checkInvariants());
-
-        DrugModelChecker checker;
-
-        std::shared_ptr<PkModel> sharedPkModel;
-        sharedPkModel = std::make_shared<PkModel>("test.constantelimination");
-
-        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
-        fructose_assert(addResult);
-        sharedPkModel->addParameterList(AbsorptionModel::Extravascular, ConstantEliminationBolus::getParametersId());
-
-        PkModelCollection *collection = new PkModelCollection();
-        collection->addPkModel(sharedPkModel);
-        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel, collection);
-
-        fructose_assert(checkerResult.m_ok);
-
-        if (!checkerResult.m_ok) {
-            std::cout << checkerResult.m_errorMessage << std::endl;
-        }
-
-        // Now the drug model is ready to be used
-
-
-        IComputingService *component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
-
-        fructose_assert( component != nullptr);
-
-        static_cast<ComputingComponent *>(component)->setPkModelCollection(collection);
-
-        {
-
-            DrugTreatment *drugTreatment;
-            const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
-
-            buildDrugTreatment(drugTreatment, route);
-
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covS", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covA", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covR", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-
-
-            std::unique_ptr<ComputingTraits> computingTraits = std::make_unique<ComputingTraits>();
-
-            RequestResponseId requestResponseId = "1";
-            Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
-            Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
-            double nbPointsPerHour = 10.0;
-            ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment, true);
-
-            std::unique_ptr<ComputingTraitPercentiles> traitsPercentiles =
-                    std::make_unique<ComputingTraitPercentiles>(
-                        requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
-
-            computingTraits->addTrait(std::move(traitsPercentiles));
-
-
-            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(computingTraits));
-
-            std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
-
-            ComputingResult result;
-            result = component->compute(request, response);
-
-            fructose_assert( result == ComputingResult::Ok);
-
-            const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
-
-            fructose_assert_eq(responses.size(), size_t{1});
-
-            {
-                fructose_assert(dynamic_cast<PercentilesResponse*>(responses[0].get()) != nullptr);
-                const PercentilesResponse *resp = dynamic_cast<PercentilesResponse*>(responses[0].get());
-
-                fructose_assert_eq(resp->getNbRanks(), percentileRanks.size());
-
-                for(size_t p = 0; p < resp->getNbRanks(); p++) {
-                    DateTime statTime;
-                    Value statValue = 0.0;
-                    resp->getData(p,0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
-                    //fructose_assert_eq(statValue, 200001.0);
-
-                    // Multiply the Inv CDF by SD (0.2)
-                    double expectedValue = 200000.0 * (1 + invCdf[p] * 0.2);
-                    fructose_assert_double_eq_rel_abs(statValue, expectedValue, 0.05, 0.0);
-                }
-
-            }
-
-            delete drugTreatment;
-        }
-
-        // Delete all dynamically allocated objects
-        delete component;
-        delete drugModel;
-
-    }
-
-    void testResidualErrorModelMixed() {
-        BuildPkAsymptotic builder;
-        DrugModel *drugModel = builder.buildDrugModel(
-                    ResidualErrorType::MIXED,
-                    std::vector<Value>({10.0, 0.2}));
-
-        fructose_assert(drugModel != nullptr);
-
-        fructose_assert(drugModel->checkInvariants());
-
-        DrugModelChecker checker;
-
-        std::shared_ptr<PkModel> sharedPkModel;
-        sharedPkModel = std::make_shared<PkModel>("test.constantelimination");
-
-        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
-        fructose_assert(addResult);
-        sharedPkModel->addParameterList(AbsorptionModel::Extravascular, ConstantEliminationBolus::getParametersId());
-
-        PkModelCollection *collection = new PkModelCollection();
-        collection->addPkModel(sharedPkModel);
-        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel, collection);
-
-        fructose_assert(checkerResult.m_ok);
-
-        if (!checkerResult.m_ok) {
-            std::cout << checkerResult.m_errorMessage << std::endl;
-        }
-
-        // Now the drug model is ready to be used
-
-
-        IComputingService *component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
-
-        fructose_assert( component != nullptr);
-
-        static_cast<ComputingComponent *>(component)->setPkModelCollection(collection);
-
-
-        {
-
-            DrugTreatment *drugTreatment;
-            const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
-
-            buildDrugTreatment(drugTreatment, route);
-
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covS", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covA", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covR", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-
-
-            std::unique_ptr<ComputingTraits> computingTraits = std::make_unique<ComputingTraits>();
-
-            RequestResponseId requestResponseId = "1";
-            Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
-            Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
-            double nbPointsPerHour = 10.0;
-            ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment, true);
-
-            std::unique_ptr<ComputingTraitPercentiles> traitsPercentiles =
-                    std::make_unique<ComputingTraitPercentiles>(
-                        requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
-
-            computingTraits->addTrait(std::move(traitsPercentiles));
-
-
-            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(computingTraits));
-
-            std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
-
-            ComputingResult result;
-            result = component->compute(request, response);
-
-            fructose_assert( result == ComputingResult::Ok);
-
-            const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
-
-            fructose_assert_eq(responses.size(), size_t{1});
-
-            {
-                fructose_assert(dynamic_cast<PercentilesResponse*>(responses[0].get()) != nullptr);
-                const PercentilesResponse *resp = dynamic_cast<PercentilesResponse*>(responses[0].get());
-
-                fructose_assert_eq(resp->getNbRanks(), percentileRanks.size());
-
-                for(size_t p = 0; p < resp->getNbRanks(); p++) {
-                    DateTime statTime;
-                    Value statValue = 0.0;
-                    resp->getData(p,0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
-                    //fructose_assert_eq(statValue, 200001.0);
-
-                    // Multiply the Inv CDF by SD (0.2)
-                    double expectedValue = 200000.0 + invCdf[p] * std::sqrt(std::pow(200000.0 * 0.2, 2)  + std::pow(10.0, 2));
-                    fructose_assert_double_eq_rel_abs(statValue, expectedValue, 0.04, 0.0);
-                }
-
-            }
-
-            delete drugTreatment;
-        }
-
-        // Delete all dynamically allocated objects
-        delete component;
-        delete drugModel;
-
-    }
-
-
-
-    void testParamAdditive() {
-        BuildPkAsymptotic builder;
-        DrugModel *drugModel = builder.buildDrugModel(
-                    ResidualErrorType::NONE,
-                    std::vector<Value>({0.0}),
-                    ParameterVariabilityType::Additive,
-                    ParameterVariabilityType::None,
-                    ParameterVariabilityType::None,
-                    ParameterVariabilityType::None,
-                    1000.0,
-                    0.0,
-                    0.0,
-                    0.0);
-
-        fructose_assert(drugModel != nullptr);
-
-        fructose_assert(drugModel->checkInvariants());
-
-        DrugModelChecker checker;
-
-        std::shared_ptr<PkModel> sharedPkModel;
-        sharedPkModel = std::make_shared<PkModel>("test.constantelimination");
-
-        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
-        fructose_assert(addResult);
-        sharedPkModel->addParameterList(AbsorptionModel::Extravascular, ConstantEliminationBolus::getParametersId());
-
-        PkModelCollection *collection = new PkModelCollection();
-        collection->addPkModel(sharedPkModel);
-        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel, collection);
-
-        fructose_assert(checkerResult.m_ok);
-
-        if (!checkerResult.m_ok) {
-            std::cout << checkerResult.m_errorMessage << std::endl;
-        }
-
-        // Now the drug model is ready to be used
-
-
-        IComputingService *component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
-
-        fructose_assert( component != nullptr);
-
-        static_cast<ComputingComponent *>(component)->setPkModelCollection(collection);
-
-
-        {
-
-            DrugTreatment *drugTreatment;
-            const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
-
-            buildDrugTreatment(drugTreatment, route);
-
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covS", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covA", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covR", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-
-
-            std::unique_ptr<ComputingTraits> computingTraits = std::make_unique<ComputingTraits>();
-
-            RequestResponseId requestResponseId = "1";
-            Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
-            Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
-            double nbPointsPerHour = 10.0;
-            ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment, true);
-
-            std::unique_ptr<ComputingTraitPercentiles> traitsPercentiles =
-                    std::make_unique<ComputingTraitPercentiles>(
-                        requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
-
-            computingTraits->addTrait(std::move(traitsPercentiles));
-
-
-            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(computingTraits));
-
-            std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
-
-            ComputingResult result;
-            result = component->compute(request, response);
-
-            fructose_assert( result == ComputingResult::Ok);
-
-            const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
-
-            fructose_assert_eq(responses.size(), size_t{1});
-
-            {
-                fructose_assert(dynamic_cast<PercentilesResponse*>(responses[0].get()) != nullptr);
-                const PercentilesResponse *resp = dynamic_cast<PercentilesResponse*>(responses[0].get());
-
-                fructose_assert_eq(resp->getNbRanks(), percentileRanks.size());
-
-                for(size_t p = 0; p < resp->getNbRanks(); p++) {
-                    DateTime statTime;
-                    Value statValue = 0.0;
-                    resp->getData(p,0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
-                    //fructose_assert_eq(statValue, 200001.0);
-
-                    // Multiply the Inv CDF by SD (10), and by 1000.0 because of mg/l
-                    double expectedValue = 200000.0 + invCdf[p] * 1000.0;
-                    fructose_assert_double_eq_rel_abs(statValue, expectedValue, .02, 0.02);
-                }
-
-            }
-
-            delete drugTreatment;
-        }
-
-        // Delete all dynamically allocated objects
-        delete component;
-        delete drugModel;
-
-    }
-
-
-    void testParamAdditiveResidualErrorModelAdditive() {
-        BuildPkAsymptotic builder;
-        DrugModel *drugModel = builder.buildDrugModel(
-                    ResidualErrorType::ADDITIVE,
-                    std::vector<Value>({10.0}),
-                    ParameterVariabilityType::Additive,
-                    ParameterVariabilityType::None,
-                    ParameterVariabilityType::None,
-                    ParameterVariabilityType::None,
-                    1000.0,
-                    0.0,
-                    0.0,
-                    0.0);
-
-        fructose_assert(drugModel != nullptr);
-
-        fructose_assert(drugModel->checkInvariants());
-
-        DrugModelChecker checker;
-
-        std::shared_ptr<PkModel> sharedPkModel;
-        sharedPkModel = std::make_shared<PkModel>("test.constantelimination");
-
-        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
-        fructose_assert(addResult);
-        sharedPkModel->addParameterList(AbsorptionModel::Extravascular, ConstantEliminationBolus::getParametersId());
-
-        PkModelCollection *collection = new PkModelCollection();
-        collection->addPkModel(sharedPkModel);
-        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel, collection);
-
-        fructose_assert(checkerResult.m_ok);
-
-        if (!checkerResult.m_ok) {
-            std::cout << checkerResult.m_errorMessage << std::endl;
-        }
-
-        // Now the drug model is ready to be used
-
-
-        IComputingService *component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
-
-        fructose_assert( component != nullptr);
-
-        static_cast<ComputingComponent *>(component)->setPkModelCollection(collection);
-
-
-        {
-
-            DrugTreatment *drugTreatment;
-            const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
-
-            buildDrugTreatment(drugTreatment, route);
-
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covS", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covA", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covR", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-
-
-            std::unique_ptr<ComputingTraits> computingTraits = std::make_unique<ComputingTraits>();
-
-            RequestResponseId requestResponseId = "1";
-            Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
-            Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
-            double nbPointsPerHour = 10.0;
-            ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment, true);
-
-            std::unique_ptr<ComputingTraitPercentiles> traitsPercentiles =
-                    std::make_unique<ComputingTraitPercentiles>(
-                        requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
-
-            computingTraits->addTrait(std::move(traitsPercentiles));
-
-
-            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(computingTraits));
-
-            std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
-
-            ComputingResult result;
-            result = component->compute(request, response);
-
-            fructose_assert( result == ComputingResult::Ok);
-
-            const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
-
-            fructose_assert_eq(responses.size(), size_t{1});
-
-            {
-                fructose_assert(dynamic_cast<PercentilesResponse*>(responses[0].get()) != nullptr);
-                const PercentilesResponse *resp = dynamic_cast<PercentilesResponse*>(responses[0].get());
-
-                fructose_assert_eq(resp->getNbRanks(), percentileRanks.size());
-
-                for(size_t p = 0; p < resp->getNbRanks(); p++) {
-                    DateTime statTime;
-                    Value statValue = 0.0;
-                    resp->getData(p,0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
-                    //fructose_assert_eq(statValue, 200001.0);
-
-                    // Multiply the Inv CDF by SD (10), and by 1000.0 because of mg/l
-                    double expectedValue = 200000.0 + invCdf[p]*  std::sqrt(std::pow(1000.0, 2) + std::pow(10.0 * 1000.0, 2));
-
-                    fructose_assert_double_eq_rel_abs(statValue, expectedValue, .01, 0.01);
-                }
-
-            }
-
-            delete drugTreatment;
-        }
-
-        // Delete all dynamically allocated objects
-        delete component;
-        delete drugModel;
-
-    }
-
-    void testParamExponentialResidualErrorModelExponential() {
-        BuildPkAsymptotic builder;
-        DrugModel *drugModel = builder.buildDrugModel(
-                    ResidualErrorType::EXPONENTIAL,
-                    std::vector<Value>({0.3}),
-                    ParameterVariabilityType::None,
-                    ParameterVariabilityType::Exponential,
-                    ParameterVariabilityType::None,
-                    ParameterVariabilityType::None,
-                    0.0,
-                    0.2,
-                    0.0,
-                    0.0);
-
-        fructose_assert(drugModel != nullptr);
-
-        fructose_assert(drugModel->checkInvariants());
-
-        DrugModelChecker checker;
-
-        std::shared_ptr<PkModel> sharedPkModel;
-        sharedPkModel = std::make_shared<PkModel>("test.constantelimination");
-
-        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
-        fructose_assert(addResult);
-        sharedPkModel->addParameterList(AbsorptionModel::Extravascular, ConstantEliminationBolus::getParametersId());
-
-        PkModelCollection *collection = new PkModelCollection();
-        collection->addPkModel(sharedPkModel);
-        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel, collection);
-
-        fructose_assert(checkerResult.m_ok);
-
-        if (!checkerResult.m_ok) {
-            std::cout << checkerResult.m_errorMessage << std::endl;
-        }
-
-        // Now the drug model is ready to be used
-
-
-        IComputingService *component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
-
-        fructose_assert( component != nullptr);
-
-        static_cast<ComputingComponent *>(component)->setPkModelCollection(collection);
-
-
-        {
-
-            DrugTreatment *drugTreatment;
-            const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
-
-            buildDrugTreatment(drugTreatment, route);
-
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covS", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covA", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covR", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-
-
-            std::unique_ptr<ComputingTraits> computingTraits = std::make_unique<ComputingTraits>();
-
-            RequestResponseId requestResponseId = "1";
-            Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
-            Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
-            double nbPointsPerHour = 10.0;
-            ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment, true);
-
-            std::unique_ptr<ComputingTraitPercentiles> traitsPercentiles =
-                    std::make_unique<ComputingTraitPercentiles>(
-                        requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
-
-            computingTraits->addTrait(std::move(traitsPercentiles));
-
-
-            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(computingTraits));
-
-            std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
-
-            ComputingResult result;
-            result = component->compute(request, response);
-
-            fructose_assert( result == ComputingResult::Ok);
-
-            const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
-
-            fructose_assert_eq(responses.size(), size_t{1});
-
-            {
-                fructose_assert(dynamic_cast<PercentilesResponse*>(responses[0].get()) != nullptr);
-                const PercentilesResponse *resp = dynamic_cast<PercentilesResponse*>(responses[0].get());
-
-                fructose_assert_eq(resp->getNbRanks(), percentileRanks.size());
-
-                for(size_t p = 0; p < resp->getNbRanks(); p++) {
-                    DateTime statTime;
-                    Value statValue = 0.0;
-                    resp->getData(p,0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
-
-                    // Calculate the resulting standard deviation
-                    double newStd = std::sqrt(std::pow(0.2, 2) + std::pow(0.3, 2));
-
-                    // Multiply the Inv CDF by the new standard deviation
-                    double expectedValue = 200000.0 * std::exp(invCdf[p] * newStd);
-                    fructose_assert_double_eq_rel_abs(statValue, expectedValue, 0.05, 0.0);
-                }
-
-            }
-            delete drugTreatment;
-        }
-
-        // Delete all dynamically allocated objects
-        delete component;
-        delete drugModel;
-
-    }
-
-    void testParamProportionalResidualErrorModelProportional() {
-        BuildPkAsymptotic builder;
-        DrugModel *drugModel = builder.buildDrugModel(
-                    ResidualErrorType::PROPORTIONAL,
-                    std::vector<Value>({0.3}),
-                    ParameterVariabilityType::None,
-                    ParameterVariabilityType::Proportional,
-                    ParameterVariabilityType::None,
-                    ParameterVariabilityType::None,
-                    0.0,
-                    0.2,
-                    0.0,
-                    0.0);
-
-        fructose_assert(drugModel != nullptr);
-
-        fructose_assert(drugModel->checkInvariants());
-
-        DrugModelChecker checker;
-
-        std::shared_ptr<PkModel> sharedPkModel;
-        sharedPkModel = std::make_shared<PkModel>("test.constantelimination");
-
-        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
-        fructose_assert(addResult);
-        sharedPkModel->addParameterList(AbsorptionModel::Extravascular, ConstantEliminationBolus::getParametersId());
-
-        PkModelCollection *collection = new PkModelCollection();
-        collection->addPkModel(sharedPkModel);
-        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel, collection);
-
-        fructose_assert(checkerResult.m_ok);
-
-        if (!checkerResult.m_ok) {
-            std::cout << checkerResult.m_errorMessage << std::endl;
-        }
-
-        // Now the drug model is ready to be used
-
-
-        IComputingService *component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
-
-        fructose_assert( component != nullptr);
-
-        static_cast<ComputingComponent *>(component)->setPkModelCollection(collection);
-
-
-        {
-
-            DrugTreatment *drugTreatment;
-            const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
-
-            buildDrugTreatment(drugTreatment, route);
-
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covS", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covA", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covR", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-
-
-            std::unique_ptr<ComputingTraits> computingTraits = std::make_unique<ComputingTraits>();
-
-            RequestResponseId requestResponseId = "1";
-            Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
-            Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
-            double nbPointsPerHour = 10.0;
-            ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment, true);
-
-            std::unique_ptr<ComputingTraitPercentiles> traitsPercentiles =
-                    std::make_unique<ComputingTraitPercentiles>(
-                        requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
-
-            computingTraits->addTrait(std::move(traitsPercentiles));
-
-
-            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(computingTraits));
-
-            std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
-
-            ComputingResult result;
-            result = component->compute(request, response);
-
-            fructose_assert( result == ComputingResult::Ok);
-
-            const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
-
-            fructose_assert_eq(responses.size(), size_t{1});
-
-            {
-                fructose_assert(dynamic_cast<PercentilesResponse*>(responses[0].get()) != nullptr);
-                const PercentilesResponse *resp = dynamic_cast<PercentilesResponse*>(responses[0].get());
-
-                fructose_assert_eq(resp->getNbRanks(), percentileRanks.size());
-
-                for(size_t p = 0; p < resp->getNbRanks(); p++) {
-                    DateTime statTime;
-                    Value statValue = 0.0;
-                    resp->getData(p,0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
-                    //fructose_assert_eq(statValue, 200001.0);
-
-
-                    // Calculate the resulting standard deviation
-                    //double newStd = std::sqrt(1.0 / ( 1.0 /std::pow(0.2, 2) + 1.0 / std::pow(0.3, 2)));
-                    // double newStd = std::sqrt(std::pow(0.2, 2) * std::pow(0.3, 2) / ( std::pow(0.2, 2) + std::pow(0.3, 2)));
-                    //double newStd = std::sqrt(std::pow(0.2, 2) * std::pow(0.3, 2) / ( std::pow(0.2, 2) + std::pow(0.3, 2)));
-                    //std::cout << newStd << std::endl;
-
-
-                    // Multiply the Inv CDF by the new standard deviation
-                    // double expectedValue = 200000.0 * ( 1.0 + invCdf[p] * newStd);
-
-                    // YTA : I do not know how to calculate the product of two Normal variables
-
-                    //fructose_assert_double_eq_rel_abs(statValue, expectedValue, 0.02, 0.0);
-                }
-
-            }
-            delete drugTreatment;
-        }
-
-        // Delete all dynamically allocated objects
-        delete component;
-        delete drugModel;
-
-    }
-#endif
-
-
     void testAdjustments() {
         BuildPkAsymptotic builder;
         DrugModel *drugModel = builder.buildDrugModel();
@@ -1345,7 +286,7 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic>, public G
 
             Tucuxi::Common::DateTime adjustmentTime(2018_y / sep / 3, 8h + 0min);
             BestCandidatesOption adjustmentOption = BestCandidatesOption::AllDosages;
-            ChargingOption chargingOption = ChargingOption::NoChargingDose;
+            LoadingOption loadingOption = LoadingOption::NoLoadingDose;
             RestPeriodOption restPeriodOption = RestPeriodOption::NoRestPeriod;
             SteadyStateTargetOption steadyStateTargetOption = SteadyStateTargetOption::AtSteadyState;
             TargetExtractionOption targetExtractionOption = TargetExtractionOption::PopulationValues;
@@ -1354,7 +295,7 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic>, public G
             std::unique_ptr<ComputingTraitAdjustment> traits =
                     std::make_unique<ComputingTraitAdjustment>(
                         requestResponseId, start, end, nbPointsPerHour, computingOption, adjustmentTime, adjustmentOption,
-                        chargingOption, restPeriodOption, steadyStateTargetOption, targetExtractionOption, formulationAndRouteOption);
+                        loadingOption, restPeriodOption, steadyStateTargetOption, targetExtractionOption, formulationAndRouteOption);
 
             computingTraits->addTrait(std::move(traits));
 
@@ -1405,8 +346,12 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic>, public G
 
     }
 
-#ifdef ALLTESTS
-    void testAdjustments2() {
+
+    void testAdjustmentsSlowRate() {
+
+        // This test shall pass in the future. The code of adjustments needs to be modified first
+        return;
+
         BuildPkAsymptotic builder;
         DrugModel *drugModel = builder.buildDrugModel();
 
@@ -1414,12 +359,12 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic>, public G
 
 
         // Add targets
-        TargetDefinition *target = new TargetDefinition(TargetType::CumulativeAuc,
-                                                        Unit("mg*h/l"),
+        TargetDefinition *target = new TargetDefinition(TargetType::Residual,
+                                                        Unit("mg/l"),
                                                         "analyte",
-                                                        std::make_unique<SubTargetDefinition>("cMin", 4.0 * 24.0 * 250.0, nullptr),
-                                                        std::make_unique<SubTargetDefinition>("cMax", 4.0 * 24.0 * 500.0, nullptr),
-                                                        std::make_unique<SubTargetDefinition>("cBest", 4.0 * 24.0 * 300.0, nullptr),
+                                                        std::make_unique<SubTargetDefinition>("cMin", 750.0, nullptr),
+                                                        std::make_unique<SubTargetDefinition>("cMax", 1500.0, nullptr),
+                                                        std::make_unique<SubTargetDefinition>("cBest", 1000.0, nullptr),
                                                         std::make_unique<SubTargetDefinition>("mic", 0.0, nullptr),
                                                         std::make_unique<SubTargetDefinition>("tMin", 1000.0, nullptr),
                                                         std::make_unique<SubTargetDefinition>("tMax", 1000.0, nullptr),
@@ -1434,11 +379,11 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic>, public G
         DrugModelChecker checker;
 
         std::shared_ptr<PkModel> sharedPkModel;
-        sharedPkModel = std::make_shared<PkModel>("test.constantelimination");
+        sharedPkModel = std::make_shared<PkModel>("test.pkasymptotic");
 
-        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
+        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, PkAsymptotic::getCreator());
         fructose_assert(addResult);
-        sharedPkModel->addParameterList(AbsorptionModel::Extravascular, ConstantEliminationBolus::getParametersId());
+        sharedPkModel->addParameterList(AbsorptionModel::Extravascular, PkAsymptotic::getParametersId());
 
         PkModelCollection *collection = new PkModelCollection();
         collection->addPkModel(sharedPkModel);
@@ -1467,9 +412,8 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic>, public G
 
             buildDrugTreatment(drugTreatment, route);
 
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covS", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covA", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covR", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covR", "0.05", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covT", "1.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
 
 
             std::unique_ptr<ComputingTraits> computingTraits = std::make_unique<ComputingTraits>();
@@ -1482,16 +426,16 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic>, public G
 
             Tucuxi::Common::DateTime adjustmentTime(2018_y / sep / 3, 8h + 0min);
             BestCandidatesOption adjustmentOption = BestCandidatesOption::AllDosages;
-            ChargingOption chargingOption = ChargingOption::NoChargingDose;
+            LoadingOption loadingOption = LoadingOption::NoLoadingDose;
             RestPeriodOption restPeriodOption = RestPeriodOption::NoRestPeriod;
-            SteadyStateTargetOption steadyStateTargetOption = SteadyStateTargetOption::WithinTreatmentTimeRange;
+            SteadyStateTargetOption steadyStateTargetOption = SteadyStateTargetOption::AtSteadyState;
             TargetExtractionOption targetExtractionOption = TargetExtractionOption::PopulationValues;
             FormulationAndRouteSelectionOption formulationAndRouteOption = FormulationAndRouteSelectionOption::LastFormulationAndRoute;
 
             std::unique_ptr<ComputingTraitAdjustment> traits =
                     std::make_unique<ComputingTraitAdjustment>(
                         requestResponseId, start, end, nbPointsPerHour, computingOption, adjustmentTime, adjustmentOption,
-                        chargingOption, restPeriodOption, steadyStateTargetOption, targetExtractionOption, formulationAndRouteOption);
+                        loadingOption, restPeriodOption, steadyStateTargetOption, targetExtractionOption, formulationAndRouteOption);
 
             computingTraits->addTrait(std::move(traits));
 
@@ -1513,9 +457,8 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic>, public G
                 fructose_assert(dynamic_cast<AdjustmentResponse*>(responses[0].get()) != nullptr);
                 const AdjustmentResponse *resp = dynamic_cast<AdjustmentResponse*>(responses[0].get());
 
-                // 18 possibilities:
-                // 3 intervals for doses 300, 400, 500, 600, 700, 800
-                fructose_assert_eq(resp->getAdjustments().size(), size_t{18});
+                // 8 doses reach the target, for the 3 possible intervals
+                fructose_assert_eq(resp->getAdjustments().size(), size_t{24});
 
                 for (auto &adjustment : resp->getAdjustments()) {
 
@@ -1526,8 +469,8 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic>, public G
                         fructose_assert(dosageRepeat != nullptr);
                         const SingleDose *dosage = dynamic_cast<const SingleDose*>(dosageRepeat->getDosage());
                         fructose_assert(dosage != nullptr);
-                        fructose_assert_double_ge((200.0 + dosage->getDose()) / 2.0, 250.0);
-                        fructose_assert_double_le((200.0 + dosage->getDose()) / 2.0, 500.0);
+                        fructose_assert_double_ge(dosage->getDose(), 750.0);
+                        fructose_assert_double_le(dosage->getDose(), 1500.0);
                     }
                 }
 
@@ -1542,24 +485,14 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic>, public G
         delete drugModel;
 
     }
-#endif // ALLTESTS
 
     /// \brief Check that objects are correctly constructed by the constructor.
     void testPkAsymptotic(const std::string& /* _testName */)
     {
         test0();
         testAdjustments();
-
-/*        test1();
-        testResidualErrorModelAdditive();
-        testResidualErrorModelExponential();
-        testResidualErrorModelProportional();
-        testResidualErrorModelMixed();
-        testParamAdditive();
-        testParamAdditiveResidualErrorModelAdditive();
-        testParamExponentialResidualErrorModelExponential();
-        testAdjustments2();
-*/    }
+        testAdjustmentsSlowRate();
+    }
 
 };
 

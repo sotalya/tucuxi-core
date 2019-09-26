@@ -329,16 +329,16 @@ enum class BestCandidatesOption
 };
 
 ///
-/// \brief The ChargingOption enum.
-/// This option allows to authorize or not a charging dose to rapidly attain steady state.
+/// \brief The LoadingOption enum.
+/// This option allows to authorize or not a loading dose to rapidly attain steady state.
 ///
-enum class ChargingOption
+enum class LoadingOption
 {
-    /// No charging dose is allowed
-    NoChargingDose = 0,
+    /// No loading dose is allowed
+    NoLoadingDose = 0,
 
-    /// A charging dose shall be proposed if relevant
-    ChargingDoseAllowed
+    /// A loading dose shall be proposed if relevant
+    LoadingDoseAllowed
 };
 
 ///
@@ -425,7 +425,7 @@ public:
     /// \param _computingOption
     /// \param _adjustmentTime
     /// \param _adjustmentOption
-    /// \param _chargingOption
+    /// \param _loadingOption
     /// \param _restPeriodOption
     /// \param _steadyStateTargetOption
     /// \param _targetExtractionOption
@@ -439,7 +439,7 @@ public:
                              ComputingOption _computingOption,
                              Tucuxi::Common::DateTime _adjustmentTime,
                              BestCandidatesOption _adjustmentOption,
-                             ChargingOption _chargingOption,
+                             LoadingOption _loadingOption,
                              RestPeriodOption _restPeriodOption,
                              SteadyStateTargetOption _steadyStateTargetOption,
                              TargetExtractionOption _targetExtractionOption,
@@ -453,7 +453,7 @@ public:
     BestCandidatesOption getBestCandidatesOption() const;
     FormulationAndRouteSelectionOption getFormulationAndRouteSelectionOption() const;
     SteadyStateTargetOption getSteadyStateTargetOption() const;
-    ChargingOption getChargingOption() const;
+    LoadingOption getLoadingOption() const;
     RestPeriodOption getRestPeriodOption() const;
     TargetExtractionOption getTargetExtractionOption() const;
 
@@ -465,7 +465,7 @@ protected:
     //! Adjustment options : only the best, or all possible ones
     BestCandidatesOption m_adjustmentOption;
 
-    ChargingOption m_chargingOption;
+    LoadingOption m_loadingOption;
 
     RestPeriodOption m_restPeriodOption;
 

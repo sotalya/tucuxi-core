@@ -451,7 +451,7 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
 
             Tucuxi::Common::DateTime adjustmentTime(2018_y / sep / 3, 8h + 0min);
             BestCandidatesOption adjustmentOption = BestCandidatesOption::AllDosages;
-            ChargingOption chargingOption = ChargingOption::NoChargingDose;
+            LoadingOption loadingOption = LoadingOption::NoLoadingDose;
             RestPeriodOption restPeriodOption = RestPeriodOption::NoRestPeriod;
             SteadyStateTargetOption steadyStateTargetOption = SteadyStateTargetOption::AtSteadyState;
             TargetExtractionOption targetExtractionOption = TargetExtractionOption::PopulationValues;
@@ -460,7 +460,7 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
             std::unique_ptr<ComputingTraitAdjustment> traits =
                     std::make_unique<ComputingTraitAdjustment>(
                         requestResponseId, start, end, nbPointsPerHour, computingOption, adjustmentTime, adjustmentOption,
-                        chargingOption, restPeriodOption, steadyStateTargetOption, targetExtractionOption, formulationAndRouteOption);
+                        loadingOption, restPeriodOption, steadyStateTargetOption, targetExtractionOption, formulationAndRouteOption);
 
             computingTraits->addTrait(std::move(traits));
 

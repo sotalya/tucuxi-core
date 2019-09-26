@@ -99,7 +99,7 @@ ComputingTraitAdjustment::ComputingTraitAdjustment(
         ComputingOption _computingOption,
         Tucuxi::Common::DateTime _adjustmentTime,
         BestCandidatesOption _adjustmentOption,
-        ChargingOption _chargingOption,
+        LoadingOption _loadingOption,
         RestPeriodOption _restPeriodOption,
         SteadyStateTargetOption _steadyStateTargetOption,
         TargetExtractionOption _targetExtractionOption,
@@ -107,7 +107,7 @@ ComputingTraitAdjustment::ComputingTraitAdjustment(
     ComputingTraitStandard(_id, _start, _end, _nbPointsPerHour, _computingOption),
     m_adjustmentTime(_adjustmentTime),
     m_adjustmentOption(_adjustmentOption),
-    m_chargingOption(_chargingOption),
+    m_loadingOption(_loadingOption),
     m_restPeriodOption(_restPeriodOption),
     m_steadyStateTargetOption(_steadyStateTargetOption),
     m_targetExtractionOption(_targetExtractionOption),
@@ -138,9 +138,9 @@ SteadyStateTargetOption ComputingTraitAdjustment::getSteadyStateTargetOption() c
     return m_steadyStateTargetOption;
 }
 
-ChargingOption ComputingTraitAdjustment::getChargingOption() const
+LoadingOption ComputingTraitAdjustment::getLoadingOption() const
 {
-    return m_chargingOption;
+    return m_loadingOption;
 }
 
 RestPeriodOption ComputingTraitAdjustment::getRestPeriodOption() const
