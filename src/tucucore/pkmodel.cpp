@@ -18,6 +18,7 @@
 
 #ifdef DRUGMODELTESTS
 #include "tucucore/../../test/tucucore/pkmodels/constanteliminationbolus.h"
+#include "tucucore/../../test/tucucore/pkmodels/pkasymptotic.h"
 #endif // DRUGMODELTESTS
 
 namespace Tucuxi {
@@ -187,13 +188,22 @@ bool defaultPopulate(PkModelCollection &_collection)
     ADD_2COMP_ERLANG_PK_MODEL_TO_COLLECTION(_collection, 6, rc);
 
 #ifdef DRUGMODELTESTS
-    std::shared_ptr<PkModel> sharedPkModel;
-    sharedPkModel = std::make_shared<PkModel>("test.constantelimination");
+    {
+        std::shared_ptr<PkModel> sharedPkModel;
+        sharedPkModel = std::make_shared<PkModel>("test.constantelimination");
 
-    rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
+        rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
 
-    _collection.addPkModel(sharedPkModel);
+        _collection.addPkModel(sharedPkModel);
+    }
+    {
+        std::shared_ptr<PkModel> sharedPkModel;
+        sharedPkModel = std::make_shared<PkModel>("test.pkasymptotic");
 
+        rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, PkAsymptotic::getCreator());
+
+        _collection.addPkModel(sharedPkModel);
+    }
 #endif // DRUGMODELTESTS
 
     return rc;

@@ -97,6 +97,9 @@
 #if defined(test_constanteliminationbolus) or !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "drugmodels/test_constanteliminationbolus.h"
 #endif
+#if defined(test_pkasymptotic) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#include "drugmodels/test_pkasymptotic.h"
+#endif
 #if defined(test_drug_tobramycin) or !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "drugmodels/test_drug_tobramycin.h"
 #endif
@@ -599,6 +602,23 @@ int main(int argc, char** argv)
     }
     else {
         std::cout << "Constant Elimination Bolus test succeeded\n";
+    }
+#endif
+
+
+#if defined(test_pkasymptotic) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+    // --- Constant elimination tests --- //
+    TestPkAsymptotic pkAsymptoticTests;
+
+    pkAsymptoticTests.add_test("testPkAsymptotic", &TestPkAsymptotic::testPkAsymptotic);
+
+    res = pkAsymptoticTests.run(argc, argv);
+    tot_res |= res;
+    if (res != 0) {
+        std::cerr << "Pk asymptotic test failed\n";
+    }
+    else {
+        std::cout << "Pk asymptotic test succeeded\n";
     }
 #endif
 

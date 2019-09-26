@@ -10,6 +10,9 @@ include(../tucucommon.pri)
 include(../tucucore.pri)
 
 HEADERS += \
+    ../../../test/tucucore/drugmodels/buildpkasymptotic.h \
+    ../../../test/tucucore/drugmodels/test_pkasymptotic.h \
+    ../../../test/tucucore/pkmodels/pkasymptotic.h \
     ../../../test/tucucore/test_computingcomponentadjustments.h \
     ../../../test/tucucore/test_concentrationcalculator.h \ \
     ../../../test/tucucore/test_dosage.h \
@@ -46,3 +49,6 @@ HEADERS += \
 
 SOURCES += \
     ../../../test/tucucore/tests.cpp
+
+# Because of Eigen:
+QMAKE_CXXFLAGS += -Wno-int-in-bool-context

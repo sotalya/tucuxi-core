@@ -15,7 +15,7 @@ class ParameterId
 {
 public:
     static const int size = 23;
-    enum Enum { V, V1, V2, CL, Ka, Ke, K12, K21, K13, K31, F, Q, Q1, Q2, Ktr, Tlag, TestA, TestM, TestR, TestS, a, b, Unknown };
+    enum Enum { V, V1, V2, CL, Ka, Ke, K12, K21, K13, K31, F, Q, Q1, Q2, Ktr, Tlag, TestA, TestM, TestR, TestS, TestT, a, b, Unknown };
 
     static Enum fromString(const std::string &_id) {
         static const std::map<std::string, Enum> sm_paramIds = {  // NOLINT(readability-identifier-naming)
@@ -39,6 +39,7 @@ public:
             { "TestM",  ParameterId::TestM },
             { "TestR",  ParameterId::TestR },
             { "TestS",  ParameterId::TestS },
+            { "TestT",  ParameterId::TestT },
             { "a",  ParameterId::a },
             { "b",  ParameterId::b }
         };

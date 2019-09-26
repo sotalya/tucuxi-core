@@ -17,6 +17,7 @@
 #include "tucucore/invariants.h"
 
 struct TestConstantEliminationBolus;
+struct TestPkAsymptotic;
 struct TestMultiAnalytesMultiActiveMoieties;
 
 #ifdef DRUGMODELTESTS
@@ -275,6 +276,7 @@ private:
     friend DrugModelChecker;
     friend TestConstantEliminationBolus;
     friend TestMultiAnalytesMultiActiveMoieties;
+    friend TestPkAsymptotic;
 #ifdef DRUGMODELTESTS
     friend Drugs2Manager;
 #endif // DRUGMODELTESTS
