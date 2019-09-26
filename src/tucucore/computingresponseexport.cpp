@@ -30,10 +30,23 @@ bool ComputingResponseExport::exportToFiles(const ComputingResponse &_computingR
                     dynamic_cast<Tucuxi::Core::AdjustmentResponse*>(response.get());
 
             for (const auto &dosage : prediction->getAdjustments()) {
-                //for (const auto &timeRange : dosage.m_history.getDosageTimeRanges()) {
-                //    timeRange->getDosage()->
-                //}
-                file << dosage.getGlobalScore() << std::endl;
+                for (const auto &timeRange : dosage.m_history.getDosageTimeRanges()) {
+
+                    const DosageRepeat *repeat = dynamic_cast<const DosageRepeat *>(timeRange->getDosage());
+                    const LastingDose *lastingDose = dynamic_cast<const LastingDose *>(repeat->getDosage());
+                    file << lastingDose->getDose() << "\t" << lastingDose->getTimeStep().toHours() << "\t" << lastingDose->getInfusionTime().toHours() << "\t";
+                }
+                file << dosage.getGlobalScore() << "\t";
+
+                for (const auto &targetEvaluation : dosage.m_targetsEvaluation) {
+                    file << targetEvaluation.getValue() << "\t";
+                }
+
+
+                for (const auto& p : dosage.m_data[0].m_parameters) {
+                    file << p.m_value << "\t";
+                }
+                file << std::endl;
 
                 double firstTime = dosage.m_data[0].m_start.toSeconds();
                 size_t dataIndex = 0;

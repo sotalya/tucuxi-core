@@ -251,7 +251,7 @@ std::vector<Tucuxi::Core::ComputingTrait *> QueryToCoreExtractor::extractAdaptat
     Tucuxi::Core::ChargingOption chargingOption(Tucuxi::Core::ChargingOption::NoChargingDose);
     Tucuxi::Core::RestPeriodOption restPeriodOption(Tucuxi::Core::RestPeriodOption::NoRestPeriod);
     Tucuxi::Core::SteadyStateTargetOption steadyStateTargetOption(Tucuxi::Core::SteadyStateTargetOption::AtSteadyState);
-    Tucuxi::Core::TargetExtractionOption targetExtractionOption(Tucuxi::Core::TargetExtractionOption::IndividualTargets);
+    Tucuxi::Core::TargetExtractionOption targetExtractionOption(Tucuxi::Core::TargetExtractionOption::DefinitionIfNoIndividualTarget);
     Tucuxi::Core::FormulationAndRouteSelectionOption formulationAndRouteSelectionOption(Tucuxi::Core::FormulationAndRouteSelectionOption::LastFormulationAndRoute);
 
     Tucuxi::Common::DateTime adjustmentTime;

@@ -1158,6 +1158,18 @@ ComputingResult ComputingComponent::compute(
                         if (start >= _traits->getAdjustmentTime()) {
                             CycleData cycle(start, end, Unit("ug/l"));
                             cycle.addData(times, activeMoietiesPredictions[0]->getValues().at(i));
+
+                            AnalyteGroupId analyteGroupId = _request.getDrugModel().getAnalyteSets()[0]->getId();
+                            ParameterSetEventPtr params = parameterSeries[analyteGroupId].getAtTime(start, etas[analyteGroupId]);
+
+                            for (auto p = params.get()->begin() ; p < params.get()->end() ; p++) {
+                                cycle.m_parameters.push_back({(*p).getParameterId(), (*p).getValue()});
+                            }
+
+                            std::sort(cycle.m_parameters.begin(), cycle.m_parameters.end(),
+                                      [&] (const ParameterValue &_v1, const ParameterValue &_v2) { return _v1.m_parameterId < _v2.m_parameterId; });
+
+
                             dosage.m_data.push_back(cycle);
                         }
                     }

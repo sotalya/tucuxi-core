@@ -936,6 +936,7 @@ bool QueryImport::getChildBoolValue(Common::XmlNodeIterator _rootIterator, strin
 Common::DateTime QueryImport::getChildDateTimeValue(Common::XmlNodeIterator _rootIterator, string _childName) const
 {
     string value = _rootIterator->getChildren(_childName)->getValue();
+    // TODO If value is empty, then something went wrong
     Common::DateTime datetime(value, DATE_FORMAT);
     return datetime;
 }
