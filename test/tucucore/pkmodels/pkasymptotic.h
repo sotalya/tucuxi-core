@@ -84,11 +84,11 @@ public:
         }
 
         for(int i = 0; i < nbPointsMiddle; i++) {
-            _times[i + nbPointsBeforePeak] = tPeak + static_cast<double>(i + 1) / static_cast<double>(nbPointsMiddle) * middleTime;
+            _times[i + nbPointsBeforePeak] = tPeak + static_cast<double>(i + 1) / static_cast<double>(nbPointsMiddle + 1) * middleTime;
         }
 
         for(int i = 0; i < nbPointsBeforePeak; i++) {
-            _times[i + nbPointsBeforePeak + nbPointsMiddle] = static_cast<double>(i) / static_cast<double>(nbPointsBeforePeak - 1) * tPeak;
+            _times[i + nbPointsBeforePeak + nbPointsMiddle] = interval - tPeak + static_cast<double>(i) / static_cast<double>(nbPointsBeforePeak - 1) * tPeak;
         }
 
     }
@@ -128,7 +128,7 @@ class PkAsymptotic : public IntakeIntervalCalculatorBase<1, PkAsymptoticExponent
     INTAKEINTERVALCALCULATOR_UTILS(PkAsymptotic)
 public:
     /// \brief Constructor
-    PkAsymptotic() : IntakeIntervalCalculatorBase<1, PkAsymptoticExponentials> (new PertinentTimesCalculatorStandard())
+    PkAsymptotic() : IntakeIntervalCalculatorBase<1, PkAsymptoticExponentials> (new PertinentTimesCalculatorAsymptotic())
     {
 
     }
@@ -178,7 +178,7 @@ protected:
         bOK &= checkValue(!std::isinf(m_R), "The convergence rate is Inf.");
 
         // We have to set the time to peak to allow a correct calculation of times
-        static_cast<PertinentTimesCalculatorAsymptotic*>(this->m_pertinentTimesCalculator)->setTPeak(m_TPeak);
+        static_cast<PertinentTimesCalculatorAsymptotic*>(this->m_pertinentTimesCalculator.get())->setTPeak(m_TPeak);
         return bOK;
     }
 

@@ -116,7 +116,7 @@ DrugModelImport::Result DrugModelImport::importDocument(
     metaData = extractHead(metadataIterator);
 
 
-    PkModelCollection *models = new PkModelCollection();
+    std::unique_ptr<PkModelCollection> models = std::make_unique<PkModelCollection>();
     if (!defaultPopulate(*models)) {
         setResult(Result::Error);
     }
@@ -133,10 +133,7 @@ DrugModelImport::Result DrugModelImport::importDocument(
         _drugModel->setMetadata(std::unique_ptr<DrugModelMetadata>(metaData));
     }
 
-    delete models;
-
     return getResult();
-
 }
 
 
@@ -1640,7 +1637,7 @@ ParameterSetDefinition* DrugModelImport::extractParameterSet(Tucuxi::Common::Xml
 
     for (const auto & correlation : correlations) {
         parameterSet->addCorrelation(*correlation);
-        delete correlation;
+        DELETE_IF_NON_NULL(correlation);
     }
     for (const auto & parameter : parameters) {
         parameterSet->addParameter(std::unique_ptr<ParameterDefinition>(parameter));

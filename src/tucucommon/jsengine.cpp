@@ -13,17 +13,13 @@ namespace Tucuxi {
 namespace Common {
 
 
-JSEngine::JSEngine() 
-    : m_pEngine(nullptr)
+JSEngine::JSEngine()
 {    
     reset();
 }
 
 JSEngine::~JSEngine()
 {
-    if (m_pEngine != nullptr) {
-        delete m_pEngine;
-    }
 }
 
 
@@ -104,12 +100,9 @@ bool JSEngine::evaluate(const std::string& _code)
 
 void JSEngine::reset()
 {
-    if (m_pEngine != nullptr) {
-        delete m_pEngine;
-    }
-    m_pEngine = new CTinyJS();
-    registerFunctions(m_pEngine);
-    registerMathFunctions(m_pEngine);
+    m_pEngine = std::make_unique<CTinyJS>();
+    registerFunctions(m_pEngine.get());
+    registerMathFunctions(m_pEngine.get());
 }
 
 } // namespace Common

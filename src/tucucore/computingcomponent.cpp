@@ -46,7 +46,7 @@ Tucuxi::Common::Interface* ComputingComponent::createComponent()
 }
 
 
-ComputingComponent::ComputingComponent() : m_models(nullptr), m_generalExtractor(nullptr)
+ComputingComponent::ComputingComponent()
 {
     registerInterface(dynamic_cast<IComputingService*>(this));
 }
@@ -54,22 +54,16 @@ ComputingComponent::ComputingComponent() : m_models(nullptr), m_generalExtractor
 
 ComputingComponent::~ComputingComponent()
 {
-    if (m_models != nullptr) {
-        delete m_models;
-    }
-    if (m_generalExtractor != nullptr) {
-        delete m_generalExtractor;
-    }
 }
 
 bool ComputingComponent::initialize()
 {
-    m_models = new PkModelCollection();
+    m_models = std::make_shared<PkModelCollection>();
     if (!defaultPopulate(*m_models)) {
         m_logger.error("Could not populate the Pk models collection. No model will be available");
         return false;
     }
-    m_generalExtractor = new GeneralExtractor();
+    m_generalExtractor = std::make_unique<GeneralExtractor>();
     return true;
 }
 
@@ -129,7 +123,7 @@ ComputingResult ComputingComponent::compute(
 
     ComputingResult extractionResult = m_generalExtractor->generalExtractions(_traits,
                                                                               _request,
-                                                                              m_models,
+                                                                              m_models.get(),
                                                                               pkModel,
                                                                               intakeSeries,
                                                                               covariateSeries,
@@ -311,7 +305,7 @@ ComputingResult ComputingComponent::computePercentilesMulti(
 
     ComputingResult extractionResult = m_generalExtractor->generalExtractions(_traits,
                                                                               _request,
-                                                                              m_models,
+                                                                              m_models.get(),
                                                                               pkModel,
                                                                               intakeSeries,
                                                                               covariateSeries,
@@ -340,13 +334,12 @@ ComputingResult ComputingComponent::computePercentilesMulti(
     for(const auto &analyteGroup : _request.getDrugModel().getAnalyteSets()) {
         AnalyteGroupId analyteGroupId = analyteGroup->getId();
 
-        IResidualErrorModel *errorModel = nullptr;
+        std::unique_ptr<IResidualErrorModel> errorModel;
 
-        // TODO : Here the created residual error model is never deleted... To be modified
         ComputingResult errorModelExtractionResult = errorModelExtractor.extract(analyteGroup->getAnalytes().at(0)->getResidualErrorModel(),
                                                                                  analyteGroup->getAnalytes().at(0)->getUnit(),
-                                                                                 covariateSeries, &errorModel);
-        residualErrorModel[analyteGroupId] = std::unique_ptr<IResidualErrorModel>(errorModel);
+                                                                                 covariateSeries, errorModel);
+        residualErrorModel[analyteGroupId] = std::move(errorModel);
 
         if (errorModelExtractionResult != ComputingResult::Ok) {
             return errorModelExtractionResult;
@@ -540,7 +533,7 @@ ComputingResult ComputingComponent::computePercentilesSimple(
 
     ComputingResult extractionResult = m_generalExtractor->generalExtractions(_traits,
                                                                               _request,
-                                                                              m_models,
+                                                                              m_models.get(),
                                                                               pkModel,
                                                                               intakeSeries,
                                                                               covariateSeries,
@@ -569,19 +562,13 @@ ComputingResult ComputingComponent::computePercentilesSimple(
 
 
     ResidualErrorModelExtractor errorModelExtractor;
-    IResidualErrorModel *residual = nullptr;
+    std::unique_ptr<IResidualErrorModel> residualErrorModel;
     ComputingResult errorModelExtractionResult = errorModelExtractor.extract(_request.getDrugModel().getAnalyteSet()->getAnalytes().at(0)->getResidualErrorModel(),
                                                                              _request.getDrugModel().getAnalyteSet()->getAnalytes().at(0)->getUnit(),
-                                                                             covariateSeries, &residual);
+                                                                             covariateSeries, residualErrorModel);
     if (errorModelExtractionResult != ComputingResult::Ok) {
-        if (residual != nullptr) {
-            delete residual;
-        }
         return errorModelExtractionResult;
     }
-
-
-    std::unique_ptr<IResidualErrorModel> residualErrorModel = std::unique_ptr<IResidualErrorModel>(residual);
 
     std::vector<const FullFormulationAndRoute *> fullFormulationAndRoutes = m_generalExtractor->extractFormulationAndRoutes(_request.getDrugModel(), intakeSeries[analyteGroupId]);
 
@@ -822,14 +809,14 @@ std::vector<FullDosage> ComputingComponent::sortAndFilterCandidates(std::vector<
     switch (_option) {
     case BestCandidatesOption::AllDosages : {
         return _candidates;
-    } break;
+    } // break;
     case BestCandidatesOption::BestDosage : {
         std::vector<FullDosage> bestDosage;
         if (_candidates.size() != 0) {
             bestDosage.push_back(_candidates.at(0));
         }
         return bestDosage;
-    } break;
+    } // break;
     case BestCandidatesOption::BestDosagePerInterval : {
         for(size_t i = 0; i < _candidates.size(); i++) {
             const DosageRepeat *repeat = dynamic_cast<const DosageRepeat *>(_candidates.at(i).m_history.getDosageTimeRanges().at(_candidates.at(i).m_history.getDosageTimeRanges().size() - 1)
@@ -857,7 +844,7 @@ std::vector<FullDosage> ComputingComponent::sortAndFilterCandidates(std::vector<
             }
         }
         return _candidates;
-    } break;
+    } // break;
     }
 
     // This should not happen
@@ -923,7 +910,7 @@ ComputingResult ComputingComponent::compute(
     // Be carefull here, as the endTime could be different...
     ComputingResult extractionResult = m_generalExtractor->generalExtractions(_traits,
                                                                               _request,
-                                                                              m_models,
+                                                                              m_models.get(),
                                                                               pkModel,
                                                                               intakeSeries,
                                                                               covariateSeries,
@@ -1006,7 +993,7 @@ ComputingResult ComputingComponent::compute(
 
         TargetEvaluator targetEvaluator;
         for (auto candidate : candidates) {
-            DosageHistory *newHistory = _request.getDrugTreatment().getDosageHistory().clone();
+            std::unique_ptr<DosageHistory> newHistory = std::unique_ptr<DosageHistory>(_request.getDrugTreatment().getDosageHistory().clone());
             DateTime newEndTime;
 
             // If in steady state mode, then calculate the real end time
@@ -1028,9 +1015,10 @@ ComputingResult ComputingComponent::compute(
                 newEndTime = _traits->getEnd();
             }
 
-            DosageTimeRange *newDosage = createDosage(candidate, _traits->getAdjustmentTime(), newEndTime,
-                                                      selectedFormulationAndRoute->getFormulationAndRoute());
-            newHistory->mergeDosage(newDosage);
+            std::unique_ptr<DosageTimeRange> newDosage = std::unique_ptr<DosageTimeRange>(
+                        createDosage(candidate, _traits->getAdjustmentTime(), newEndTime,
+                                                      selectedFormulationAndRoute->getFormulationAndRoute()));
+            newHistory->mergeDosage(newDosage.get());
 
             GroupsIntakeSeries intakeSeriesPerGroup;
 
@@ -1099,12 +1087,6 @@ ComputingResult ComputingComponent::compute(
             else {
                 activeMoietiesPredictions.push_back(std::move(analytesPredictions[0]));
             }
-
-
-
-
-            delete newHistory;
-            newHistory = nullptr;
 
             std::vector< TargetEvaluationResult> candidateResults;
             bool isValidCandidate = true;
@@ -1177,8 +1159,6 @@ ComputingResult ComputingComponent::compute(
 
                 dosageCandidates.push_back(dosage);
             }
-
-            delete newDosage;
 
             evaluationResults.push_back(candidateResults);
 
@@ -1285,7 +1265,7 @@ ComputingResult ComputingComponent::compute(
 
     ComputingResult extractionResult = m_generalExtractor->generalExtractions(&standardTraits,
                                                                               _request,
-                                                                              m_models,
+                                                                              m_models.get(),
                                                                               pkModel,
                                                                               intakeSeries,
                                                                               covariateSeries,

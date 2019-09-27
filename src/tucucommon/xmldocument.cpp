@@ -28,9 +28,6 @@ XmlDocument::XmlDocument()
 
 XmlDocument::~XmlDocument()
 {
-    if (m_pDocument != nullptr) {
-        delete m_pDocument;
-    }
 }
 
 
@@ -181,14 +178,14 @@ XmlAttribute XmlDocument::createAttribute(const std::string& _name, const std::s
 bool XmlDocument::createDocument()
 {
     reset();
-    m_pDocument = new rapidxml::xml_document<>();   
+    m_pDocument = std::make_unique<rapidxml::xml_document<> >();
     return (m_pDocument != nullptr);
 }
 
 void XmlDocument::reset()
 {
     if (m_pDocument != nullptr) {
-        delete m_pDocument;
+        m_pDocument.reset(nullptr);
         m_rawXml = "";
     }
 }

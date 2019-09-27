@@ -151,6 +151,158 @@ ComputingResult ConcentrationCalculator::computeConcentrations(const Concentrati
     return ComputingResult::Ok;
 }
 
+ComputingResult ConcentrationCalculator::computeConcentrationsAtSteadyState(
+        const ConcentrationPredictionPtr &_prediction,
+        bool _isAll,
+        const DateTime &_recordFrom,
+        const DateTime &_recordTo,
+        const IntakeSeries &_intakes,
+        const ParameterSetSeries &_parameters,
+        const Etas &_etas,
+        const IResidualErrorModel &_residualErrorModel,
+        const Deviations& _epsilons,
+        bool _onlyAnalytes,
+        bool _isFixedDensity)
+{
+    if (_recordFrom == DateTime()) {
+        Tucuxi::Common::LoggerHelper logHelper;
+        logHelper.error("Invalid record from");
+    }
+    if (_recordTo == DateTime()) {
+        Tucuxi::Common::LoggerHelper logHelper;
+        logHelper.error("Invalid record to");
+    }
+
+    TMP_UNUSED_PARAMETER(_onlyAnalytes);
+
+    // First calculate the size of residuals
+    unsigned int residualSize = 0;
+    for (IntakeSeries::const_iterator it = _intakes.begin(); it != _intakes.end(); it++) {
+        std::shared_ptr<IntakeIntervalCalculator> pCalculator = (*it).getCalculator();
+        unsigned int s = pCalculator->getResidualSize();
+        residualSize = std::max(residualSize, s);
+    }
+
+    Residuals inResiduals(residualSize);
+    Residuals outResiduals(residualSize);
+
+    bool reachedSteadyState = false;
+    bool finished = false;
+
+    while (!finished) {
+        // Go through all intakes
+        for (IntakeSeries::const_iterator it = _intakes.begin(); it != _intakes.end(); it++) {
+            const IntakeEvent &intake = *it;
+
+            // Get parameters at intake start time
+            // For population calculation, could be done only once at the beginning
+            ParameterSetEventPtr parameters = _parameters.getAtTime(intake.getEventTime(), _etas);
+            if (parameters == nullptr) {
+                Tucuxi::Common::LoggerHelper logHelper;
+                logHelper.error("No parameters found!");
+                return ComputingResult::ConcentrationCalculatorNoParameters;
+            }
+
+            if (reachedSteadyState) {
+
+                // Compute concentrations for the current cycle
+                TimeOffsets times;
+                std::vector<Concentrations> concentrations;
+                concentrations.resize(residualSize);
+
+                _prediction->allocate(residualSize, intake.getNbPoints(), times, concentrations);
+
+                ComputingResult result = it->calculateIntakePoints(concentrations, times, intake, *parameters, inResiduals, _isAll, outResiduals, _isFixedDensity);
+
+                switch (result)
+                {
+                case ComputingResult::Ok:
+                    break;
+                case ComputingResult::DensityError:
+                    // Restart computation with more points...
+
+                    // If nbpoints has changed (initial density was not the final density), change the density in the intakeevent
+                    // so it can be used if this intake is recalculated.
+                    //if (it->getNbPoints() != ink.getNbPoints()) {
+                    //    intake_series_t::index<tags::times>::type& intakes_times_index = intakes.get<tags::times>();
+                    //    intakes_times_index.modify(it, IntakeEvent::change_density(ink.nbPoints));
+                    //}
+                    break;
+                default:
+                    //m_logger.error("Failed in calculation with given parameter values.");
+                    return result;
+                }
+
+
+                // Apply the intra-individual error
+                if ((!_residualErrorModel.isEmpty()) && (_epsilons.size() != 0)) {
+                    _residualErrorModel.applyEpsToArray(concentrations[0], _epsilons);
+                }
+
+                // Append computed values to our prediction
+                _prediction->appendConcentrations(times, concentrations[0]);
+            }
+            else {
+                // Do not record data, only get residual
+
+                // Compute concentrations for the current cycle
+                TimeOffsets times;
+                std::vector<Concentrations> concentrations;
+                concentrations.resize(residualSize);
+
+                _prediction->allocate(residualSize, intake.getNbPoints(), times, concentrations);
+
+                ComputingResult result = it->calculateIntakePoints(concentrations, times, intake, *parameters, inResiduals, _isAll, outResiduals, _isFixedDensity);
+
+                switch (result)
+                {
+                case ComputingResult::Ok:
+                    break;
+                case ComputingResult::DensityError:
+                    // Restart computation with more points...
+
+                    // If nbpoints has changed (initial density was not the final density), change the density in the intakeevent
+                    // so it can be used if this intake is recalculated.
+                    //if (it->getNbPoints() != ink.getNbPoints()) {
+                    //    intake_series_t::index<tags::times>::type& intakes_times_index = intakes.get<tags::times>();
+                    //    intakes_times_index.modify(it, IntakeEvent::change_density(ink.nbPoints));
+                    //}
+                    break;
+                default:
+                    //m_logger.error("Failed in calculation with given parameter values.");
+                    return result;
+                }
+
+
+
+            }
+
+            if (reachedSteadyState) {
+                finished = true;
+            }
+
+            reachedSteadyState = true;
+            for(unsigned int i = 0; i < residualSize; i++) {
+                if (std::fabs(inResiduals[i] - outResiduals[i]) > 1) {
+                    reachedSteadyState = false;
+                }
+            }
+
+            // Prepare residuals for the next cycle
+            // NOTICE: "inResiduals = outResiduals" and "std::copy(outResiduals.begin(),
+            // outResiduals.end(), inResiduals.begin())" are not working
+            for(unsigned int i = 0; i < residualSize; i++) {
+                inResiduals[i] = outResiduals[i];
+            }
+
+        }
+    }
+
+
+    return ComputingResult::Ok;
+}
+
+
 ComputingResult ConcentrationCalculator::computeConcentrationsAtTimes(Concentrations &_concentrations,
     bool _isAll,
     const IntakeSeries &_intakes,

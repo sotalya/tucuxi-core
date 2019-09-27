@@ -84,9 +84,9 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
 
         sharedPkModel->addParameterList(AbsorptionModel::Extravascular, PkAsymptotic::getParametersId());
 
-        PkModelCollection *collection = new PkModelCollection();
+        std::shared_ptr<PkModelCollection> collection = std::make_shared<PkModelCollection>();
         collection->addPkModel(sharedPkModel);
-        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel, collection);
+        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel, collection.get());
 
         fructose_assert(checkerResult.m_ok);
 
@@ -245,9 +245,9 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
         fructose_assert(addResult);
         sharedPkModel->addParameterList(AbsorptionModel::Extravascular, PkAsymptotic::getParametersId());
 
-        PkModelCollection *collection = new PkModelCollection();
+        std::shared_ptr<PkModelCollection> collection = std::make_shared<PkModelCollection>();
         collection->addPkModel(sharedPkModel);
-        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel, collection);
+        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel, collection.get());
 
         fructose_assert(checkerResult.m_ok);
 
@@ -385,9 +385,9 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
         fructose_assert(addResult);
         sharedPkModel->addParameterList(AbsorptionModel::Extravascular, PkAsymptotic::getParametersId());
 
-        PkModelCollection *collection = new PkModelCollection();
+        std::shared_ptr<PkModelCollection> collection = std::make_shared<PkModelCollection>();
         collection->addPkModel(sharedPkModel);
-        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel, collection);
+        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel, collection.get());
 
         fructose_assert(checkerResult.m_ok);
 

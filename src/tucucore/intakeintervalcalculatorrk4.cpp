@@ -7,9 +7,6 @@ namespace Core {
 
 IntakeIntervalCalculatorRK4::~IntakeIntervalCalculatorRK4()
 {
-    if (m_pertinentTimesCalculator != nullptr) {
-        delete m_pertinentTimesCalculator;
-    }
 }
 
 

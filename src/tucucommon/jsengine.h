@@ -47,7 +47,7 @@ public:
     void reset();
 
 private:
-    CTinyJS* m_pEngine; /// The "wrapped" Tiny JS script engine
+    std::unique_ptr<CTinyJS> m_pEngine; /// The "wrapped" Tiny JS script engine
 };
 
 } // namespace Common

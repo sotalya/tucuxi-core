@@ -77,10 +77,10 @@ ComputingResult GeneralExtractor::extractAposterioriEtas(
     }
     else {
         ResidualErrorModelExtractor errorModelExtractor;
-        IResidualErrorModel *residualErrorModel = nullptr;
+        std::unique_ptr<IResidualErrorModel> residualErrorModel;
         ComputingResult errorModelExtractionResult = errorModelExtractor.extract(_request.getDrugModel().getAnalyteSet(_analyteGroupId)->getAnalytes().at(0)->getResidualErrorModel(),
                                                                                 _request.getDrugModel().getAnalyteSet(_analyteGroupId)->getAnalytes().at(0)->getUnit(),
-                                                                                _covariateSeries, &residualErrorModel);
+                                                                                _covariateSeries, residualErrorModel);
         if (errorModelExtractionResult != ComputingResult::Ok) {
             return errorModelExtractionResult;
         }
@@ -88,7 +88,6 @@ ComputingResult GeneralExtractor::extractAposterioriEtas(
         APosterioriEtasCalculator etasCalculator;
         etasCalculator.computeAposterioriEtas(_intakeSeries, _parameterSeries, omega, *residualErrorModel, sampleSeries, _etas);
 
-        delete residualErrorModel;
     }
     return ComputingResult::Ok;
 }

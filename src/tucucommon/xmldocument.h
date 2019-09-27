@@ -6,6 +6,7 @@
 #define TUCUXI_TUCUCOMMON_XMLDOCUMENT_H
 
 #include <string>
+#include <memory>
 
 namespace rapidxml {
     template<class Ch> class xml_document; // NOLINT(readability-identifier-naming)
@@ -86,7 +87,7 @@ private:
 
 private:
     std::string m_rawXml;                       /// The raw XML data as recieved by fromString() or open().
-    rapidxml::xml_document<char>* m_pDocument;  /// A pointer to the actual "rapidxml" document object
+    std::unique_ptr<rapidxml::xml_document<char> > m_pDocument;  /// A pointer to the actual "rapidxml" document object
 };
 
 } // namespace Common

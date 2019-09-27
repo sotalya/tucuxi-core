@@ -50,7 +50,7 @@ public: \
     \
     static std::shared_ptr<IntakeIntervalCalculatorCreator> getCreator() \
     { \
-        static std::shared_ptr<IntakeCreator> instance(new IntakeCreator()); \
+        static std::shared_ptr<IntakeCreator> instance = std::make_shared<IntakeCreator>(); \
         return instance; \
     } \
     \

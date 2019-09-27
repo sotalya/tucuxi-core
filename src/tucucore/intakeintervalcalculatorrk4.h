@@ -104,7 +104,7 @@ protected:
     /// This object is set by the constructor of the subclass depending on its need.
     /// It corresponds to a strategy (or injection) pattern.
     ///
-    IPertinentTimesCalculator *m_pertinentTimesCalculator;
+    std::unique_ptr<IPertinentTimesCalculator> m_pertinentTimesCalculator;
 
 };
 

@@ -58,10 +58,7 @@ public:
     ComputingResult compute(const ComputingRequest &_request, std::unique_ptr<ComputingResponse> &_response) override;
     std::string getErrorString() const override;
 
-    void setPkModelCollection(PkModelCollection *_collection) {
-        if (m_models != nullptr) {
-            delete m_models;
-        }
+    void setPkModelCollection(std::shared_ptr<PkModelCollection> _collection) {
         m_models = _collection;
     }
 
@@ -72,8 +69,8 @@ protected:
 
 private:
 
-    PkModelCollection *m_models;
-    GeneralExtractor *m_generalExtractor;
+    std::shared_ptr<PkModelCollection> m_models;
+    std::unique_ptr<GeneralExtractor> m_generalExtractor;
 
     Tucuxi::Common::LoggerHelper m_logger;
 

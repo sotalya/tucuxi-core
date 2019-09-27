@@ -18,7 +18,11 @@ public:
 
     ResidualErrorModelExtractor();
 
-    ComputingResult extract(const ErrorModel &_errorModel, const Unit &_fromUnit, const CovariateSeries &_covariateSeries, IResidualErrorModel **_residualErrorModel);
+    ComputingResult extract(
+            const ErrorModel &_errorModel,
+            const Unit &_fromUnit,
+            const CovariateSeries &_covariateSeries,
+            std::unique_ptr<IResidualErrorModel> &_residualErrorModel);
 
 };
 

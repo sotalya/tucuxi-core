@@ -90,9 +90,9 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
         fructose_assert(addResult);
         sharedPkModel->addParameterList(AbsorptionModel::Extravascular, ConstantEliminationBolus::getParametersId());
 
-        PkModelCollection *collection = new PkModelCollection();
+        std::shared_ptr<PkModelCollection> collection = std::make_shared<PkModelCollection>();
         collection->addPkModel(sharedPkModel);
-        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel, collection);
+        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel, collection.get());
 
         fructose_assert(checkerResult.m_ok);
 
@@ -228,9 +228,9 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
         fructose_assert(addResult);
         sharedPkModel->addParameterList(AbsorptionModel::Extravascular, ConstantEliminationBolus::getParametersId());
 
-        PkModelCollection *collection = new PkModelCollection();
+        std::shared_ptr<PkModelCollection> collection = std::make_shared<PkModelCollection>();
         collection->addPkModel(sharedPkModel);
-        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel, collection);
+        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel, collection.get());
 
         fructose_assert(checkerResult.m_ok);
 
@@ -409,9 +409,9 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
         fructose_assert(addResult);
         sharedPkModel->addParameterList(AbsorptionModel::Extravascular, ConstantEliminationBolus::getParametersId());
 
-        PkModelCollection *collection = new PkModelCollection();
+        std::shared_ptr<PkModelCollection> collection = std::make_shared<PkModelCollection>();
         collection->addPkModel(sharedPkModel);
-        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel, collection);
+        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel, collection.get());
 
         fructose_assert(checkerResult.m_ok);
 

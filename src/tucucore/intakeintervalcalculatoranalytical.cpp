@@ -7,7 +7,6 @@ namespace Core {
 
 IntakeIntervalCalculatorAnalytical::~IntakeIntervalCalculatorAnalytical()
 {
-    delete m_pertinentTimesCalculator;
 }
 
 ComputingResult IntakeIntervalCalculatorAnalytical::calculateIntakePoints(

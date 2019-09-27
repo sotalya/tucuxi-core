@@ -11,7 +11,11 @@ ResidualErrorModelExtractor::ResidualErrorModelExtractor()
 }
 
 
-ComputingResult ResidualErrorModelExtractor::extract(const ErrorModel &_errorModel, const Unit &_fromUnit, const CovariateSeries &_covariateSeries, IResidualErrorModel **_residualErrorModel)
+ComputingResult ResidualErrorModelExtractor::extract(
+        const ErrorModel &_errorModel,
+        const Unit &_fromUnit,
+        const CovariateSeries &_covariateSeries,
+        std::unique_ptr<IResidualErrorModel> &_residualErrorModel)
 {
     // At some stage the covariates could influence the error model. Maybe...
     TMP_UNUSED_PARAMETER(_covariateSeries);
@@ -40,7 +44,7 @@ ComputingResult ResidualErrorModelExtractor::extract(const ErrorModel &_errorMod
 
     newErrorModel->setSigma(sigma);
 
-    *_residualErrorModel = newErrorModel;
+    _residualErrorModel = std::unique_ptr<IResidualErrorModel>(newErrorModel);
 
     return ComputingResult::Ok;
 }
