@@ -38,7 +38,7 @@ class ComputingTraitStandard;
 class HalfLife;
 class GeneralExtractor;
 class ActiveMoiety;
-
+class ComputingAdjustments;
 
 
 ///
@@ -127,23 +127,6 @@ private:
         const Deviations& _eps = Deviations(0),
         bool _isFixedDensity = false);
 
-    std::vector<FullDosage> sortAndFilterCandidates(std::vector<FullDosage> &_candidates, BestCandidatesOption _option);
-
-    typedef struct {
-        Value m_dose;
-        Duration m_interval;
-        Duration m_infusionTime;
-    } AdjustmentCandidate;
-
-
-    ComputingResult buildCandidates(const FullFormulationAndRoute* _formulationAndRoute, std::vector<AdjustmentCandidate> &_candidates);
-
-    DosageTimeRange *createDosage(
-            ComputingComponent::AdjustmentCandidate &_candidate,
-            DateTime _startTime,
-            DateTime _endTime,
-            FormulationAndRoute _routeOfAdministration);
-
 
     ComputingResult computeActiveMoiety(
             const DrugModel &_drugModel,
@@ -156,7 +139,7 @@ private:
     friend class ComputingTraitAdjustment;
     friend class ComputingTraitConcentration;
     friend class ComputingTraitPercentiles;
-
+    friend class ComputingAdjustments;
 
 };
 

@@ -32,6 +32,7 @@ SOURCES := \
            aposteriorietascalculator.cpp \
            cachedexponentials.cpp \
            concentrationcalculator.cpp \
+           computingadjustments.cpp \
            computingcomponent.cpp \
            computingresponseexport.cpp \
            covariateevent.cpp \
