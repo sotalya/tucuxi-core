@@ -130,6 +130,16 @@ public:
             specificDoses->addValue(DoseValue(1800));
             specificDoses->addValue(DoseValue(1900));
             specificDoses->addValue(DoseValue(2000));
+            specificDoses->addValue(DoseValue(2100));
+            specificDoses->addValue(DoseValue(2200));
+            specificDoses->addValue(DoseValue(2300));
+            specificDoses->addValue(DoseValue(2400));
+            specificDoses->addValue(DoseValue(2500));
+            specificDoses->addValue(DoseValue(2600));
+            specificDoses->addValue(DoseValue(2700));
+            specificDoses->addValue(DoseValue(2800));
+            specificDoses->addValue(DoseValue(2900));
+            specificDoses->addValue(DoseValue(3000));
 
             validDoses->addValues(std::move(specificDoses));
 

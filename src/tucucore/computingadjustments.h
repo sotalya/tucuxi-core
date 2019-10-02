@@ -36,42 +36,67 @@ public:
     } AdjustmentCandidate;
 
 
-    ComputingResult buildCandidates(const FullFormulationAndRoute* _formulationAndRoute, std::vector<AdjustmentCandidate> &_candidates);
+    ComputingResult buildCandidates(const FullFormulationAndRoute* _formulationAndRoute,
+                                    std::vector<AdjustmentCandidate> &_candidates);
+
+    ComputingResult buildCandidatesForInterval(const FullFormulationAndRoute* _formulationAndRoute,
+                                               Common::Duration _interval,
+                                               std::vector<ComputingAdjustments::AdjustmentCandidate> &_candidates);
 
     DosageTimeRange *createDosage(
-            AdjustmentCandidate &_candidate,
+            const AdjustmentCandidate &_candidate,
             DateTime _startTime,
             DateTime _endTime,
             FormulationAndRoute _routeOfAdministration);
 
 
-    DosageTimeRange *createSteadyStateDosage(
-            AdjustmentCandidate &_candidate,
+    DosageTimeRange *createLoadingDosage(const AdjustmentCandidate &_candidate,
             DateTime _startTime,
             FormulationAndRoute _routeOfAdministration);
 
-    ComputingResult addLoadOrRest(std::vector<FullDosage> &_dosages);
-    ComputingResult addLoadOrRest(FullDosage &_dosage);
+
+    DosageTimeRange *createSteadyStateDosage(
+            const AdjustmentCandidate &_candidate,
+            DateTime _startTime,
+            FormulationAndRoute _routeOfAdministration);
+
+    ComputingResult addLoadOrRest(std::vector<FullDosage> &_dosages,
+                                  const ComputingTraitAdjustment *_traits,
+                                  const ComputingRequest &_request,
+                                  const std::vector<AnalyteGroupId> &_allGroupIds,
+                                  const DateTime _calculationStartTime,
+                                  std::map<AnalyteGroupId, std::shared_ptr<PkModel> > &_pkModel,
+                                  GroupsParameterSetSeries &_parameterSeries,
+                                  std::map<AnalyteGroupId, Etas> &_etas);
+
+    ComputingResult addLoadOrRest(FullDosage &_dosage,
+                                  const ComputingTraitAdjustment *_traits,
+                                  const ComputingRequest &_request,
+                                  const std::vector<AnalyteGroupId> &_allGroupIds,
+                                  const DateTime _calculationStartTime,
+                                  std::map<AnalyteGroupId, std::shared_ptr<PkModel> > &_pkModel,
+                                  GroupsParameterSetSeries &_parameterSeries,
+                                  std::map<AnalyteGroupId, Etas> &_etas);
 
     ComputingResult generatePredictions(std::vector<FullDosage> &_dosages,
                                         const ComputingTraitAdjustment *_traits,
                                         const ComputingRequest &_request,
-                                        const std::vector<AnalyteGroupId> &allGroupIds,
-                                        const DateTime calculationStartTime,
-                                        std::map<AnalyteGroupId, std::shared_ptr<PkModel> > &pkModel,
-                                        GroupsParameterSetSeries &parameterSeries,
-                                        std::map<AnalyteGroupId, Etas> &etas
+                                        const std::vector<AnalyteGroupId> &_allGroupIds,
+                                        const DateTime _calculationStartTime,
+                                        std::map<AnalyteGroupId, std::shared_ptr<PkModel> > &_pkModel,
+                                        GroupsParameterSetSeries &_parameterSeries,
+                                        std::map<AnalyteGroupId, Etas> &_etas
                                         );
 
 
     ComputingResult generatePrediction(FullDosage &_dosage,
                                        const ComputingTraitAdjustment *_traits,
                                        const ComputingRequest &_request,
-                                       const std::vector<AnalyteGroupId> &allGroupIds,
-                                       const DateTime calculationStartTime,
-                                       std::map<AnalyteGroupId, std::shared_ptr<PkModel> > &pkModel,
-                                       GroupsParameterSetSeries &parameterSeries,
-                                       std::map<AnalyteGroupId, Etas> &etas
+                                       const std::vector<AnalyteGroupId> &_allGroupIds,
+                                       const DateTime _calculationStartTime,
+                                       std::map<AnalyteGroupId, std::shared_ptr<PkModel> > &_pkModel,
+                                       GroupsParameterSetSeries &_parameterSeries,
+                                       std::map<AnalyteGroupId, Etas> &_etas
                                        );
 
 protected:
