@@ -6,12 +6,14 @@
 #include "tucucore/computingservice/computingresponse.h"
 #include "tucucore/computingservice/computingtrait.h"
 #include "tucucore/computingservice/computingresult.h"
+#include "tucucore/parameter.h"
 
 namespace Tucuxi {
 namespace Core {
 
 class FullFormulationAndRoute;
 class ComputingComponent;
+class PkModel;
 
 class ComputingAdjustments
 {
@@ -41,6 +43,36 @@ public:
             DateTime _startTime,
             DateTime _endTime,
             FormulationAndRoute _routeOfAdministration);
+
+
+    DosageTimeRange *createSteadyStateDosage(
+            AdjustmentCandidate &_candidate,
+            DateTime _startTime,
+            FormulationAndRoute _routeOfAdministration);
+
+    ComputingResult addLoadOrRest(std::vector<FullDosage> &_dosages);
+    ComputingResult addLoadOrRest(FullDosage &_dosage);
+
+    ComputingResult generatePredictions(std::vector<FullDosage> &_dosages,
+                                        const ComputingTraitAdjustment *_traits,
+                                        const ComputingRequest &_request,
+                                        const std::vector<AnalyteGroupId> &allGroupIds,
+                                        const DateTime calculationStartTime,
+                                        std::map<AnalyteGroupId, std::shared_ptr<PkModel> > &pkModel,
+                                        GroupsParameterSetSeries &parameterSeries,
+                                        std::map<AnalyteGroupId, Etas> &etas
+                                        );
+
+
+    ComputingResult generatePrediction(FullDosage &_dosage,
+                                       const ComputingTraitAdjustment *_traits,
+                                       const ComputingRequest &_request,
+                                       const std::vector<AnalyteGroupId> &allGroupIds,
+                                       const DateTime calculationStartTime,
+                                       std::map<AnalyteGroupId, std::shared_ptr<PkModel> > &pkModel,
+                                       GroupsParameterSetSeries &parameterSeries,
+                                       std::map<AnalyteGroupId, Etas> &etas
+                                       );
 
 protected:
 

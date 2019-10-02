@@ -248,7 +248,7 @@ std::vector<Tucuxi::Core::ComputingTrait *> QueryToCoreExtractor::extractAdaptat
 
 
     Tucuxi::Core::BestCandidatesOption adjustmentOption(Tucuxi::Core::BestCandidatesOption::BestDosagePerInterval);
-    Tucuxi::Core::ChargingOption chargingOption(Tucuxi::Core::ChargingOption::NoChargingDose);
+    Tucuxi::Core::LoadingOption loadingOption(Tucuxi::Core::LoadingOption::NoLoadingDose);
     Tucuxi::Core::RestPeriodOption restPeriodOption(Tucuxi::Core::RestPeriodOption::NoRestPeriod);
     Tucuxi::Core::SteadyStateTargetOption steadyStateTargetOption(Tucuxi::Core::SteadyStateTargetOption::AtSteadyState);
     Tucuxi::Core::TargetExtractionOption targetExtractionOption(Tucuxi::Core::TargetExtractionOption::DefinitionIfNoIndividualTarget);
@@ -266,7 +266,7 @@ std::vector<Tucuxi::Core::ComputingTrait *> QueryToCoreExtractor::extractAdaptat
                 computingOption,
                 adjustmentTime,
                 adjustmentOption,
-                chargingOption,
+                loadingOption,
                 restPeriodOption,
                 steadyStateTargetOption,
                 targetExtractionOption,

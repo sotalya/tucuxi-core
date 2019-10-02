@@ -349,9 +349,6 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
 
     void testAdjustmentsSlowRate() {
 
-        // This test shall pass in the future. The code of adjustments needs to be modified first
-        return;
-
         BuildPkAsymptotic builder;
         DrugModel *drugModel = builder.buildDrugModel();
 

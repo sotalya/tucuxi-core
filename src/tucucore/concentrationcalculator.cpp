@@ -283,7 +283,7 @@ ComputingResult ConcentrationCalculator::computeConcentrationsAtSteadyState(
 
             reachedSteadyState = true;
             for(unsigned int i = 0; i < residualSize; i++) {
-                if (std::fabs(inResiduals[i] - outResiduals[i]) > 1) {
+                if (std::fabs(inResiduals[i] - outResiduals[i]) > 0.0001) {
                     reachedSteadyState = false;
                 }
             }

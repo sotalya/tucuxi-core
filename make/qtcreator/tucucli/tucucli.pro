@@ -18,3 +18,7 @@ HEADERS += \
 SOURCES += \
     ../../../src/tucucli/tucucli.cpp \
     ../../../src/tucucli/clicomputer.cpp
+
+
+# Because of Eigen:
+QMAKE_CXXFLAGS += -Wno-int-in-bool-context
