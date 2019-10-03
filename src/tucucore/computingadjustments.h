@@ -42,8 +42,11 @@ protected:
     ///
     std::vector<FullDosage> sortAndFilterCandidates(std::vector<FullDosage> &_candidates, BestCandidatesOption _option);
 
+
     /// Structure representing dosing candidates in terms of dose, interval and infusion time
     typedef struct {
+        /// Formulation and route of the candidate
+        FormulationAndRoute m_formulationAndRoute;
         /// The dose value
         Value m_dose;
         /// The dosing interval
@@ -63,19 +66,16 @@ protected:
     DosageTimeRange *createDosage(
             const SimpleDosageCandidate &_candidate,
             DateTime _startTime,
-            DateTime _endTime,
-            FormulationAndRoute _formulationAndRoute);
+            DateTime _endTime);
 
 
     DosageTimeRange *createLoadingDosage(const SimpleDosageCandidate &_candidate,
-            DateTime _startTime,
-            FormulationAndRoute _formulationAndRoute);
+            DateTime _startTime);
 
 
     DosageTimeRange *createSteadyStateDosage(
             const SimpleDosageCandidate &_candidate,
-            DateTime _startTime,
-            FormulationAndRoute _formulationAndRoute);
+            DateTime _startTime);
 
     ComputingResult addLoadOrRest(std::vector<FullDosage> &_dosages,
                                   const ComputingTraitAdjustment *_traits,
