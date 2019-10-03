@@ -32,7 +32,7 @@ public:
     /// \brief computes
     /// \param _request The request containing all information required for the computation
     /// \param _response The result of the computation
-    /// \return Success if everything went well with the computation, Error else
+    /// \return ComputingResult::Ok if everything went well with the computation, another code else
     /// The response is a reference to a unique pointer that has to be allocated within compute()
     ///
     virtual ComputingResult compute(const ComputingRequest &_request, std::unique_ptr<ComputingResponse> &_response) = 0;
@@ -40,7 +40,7 @@ public:
     ///
     /// \brief returns a description of the last error in case of failed computation
     /// \return A description of the last error
-    /// This function should only be called if compute() returned something different from Success
+    /// This function should only be called if compute() returned something different from ComputingResult::Ok
     ///
     virtual std::string getErrorString() const = 0;
 

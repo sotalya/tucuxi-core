@@ -35,6 +35,7 @@ SOURCES := \
            computingadjustments.cpp \
            computingcomponent.cpp \
            computingresponseexport.cpp \
+           computingutils.cpp \
            covariateevent.cpp \
            covariateextractor.cpp \
            cyclestatisticscalculator.cpp \

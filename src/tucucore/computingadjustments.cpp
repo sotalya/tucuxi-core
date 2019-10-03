@@ -13,64 +13,62 @@
 #include "tucucore/intakeextractor.h"
 #include "tucucore/intaketocalculatorassociator.h"
 #include "tucucore/concentrationcalculator.h"
+#include "tucucore/computingutils.h"
 
 namespace Tucuxi {
 namespace Core {
 
-ComputingAdjustments::ComputingAdjustments(ComputingComponent *_computingComponent) :
-    m_computingComponent(_computingComponent)
+ComputingAdjustments::ComputingAdjustments(ComputingUtils *_computingUtils) :
+    m_utils(_computingUtils)
 {
 
 }
 
 
-DosageTimeRange *ComputingAdjustments::createDosage(
-        const ComputingAdjustments::AdjustmentCandidate &_candidate,
+DosageTimeRange *ComputingAdjustments::createDosage(const ComputingAdjustments::SimpleDosageCandidate &_candidate,
         DateTime _startTime,
         DateTime _endTime,
-        FormulationAndRoute _routeOfAdministration)
+        FormulationAndRoute _formulationAndRoute)
 {
     unsigned int nbTimes;
 
     // At least a number of intervals allowing to fill the interval asked
     nbTimes = static_cast<unsigned int>(std::ceil((_endTime - _startTime) / _candidate.m_interval));
-    LastingDose lastingDose(_candidate.m_dose, _routeOfAdministration, _candidate.m_infusionTime, _candidate.m_interval);
+    LastingDose lastingDose(_candidate.m_dose, _formulationAndRoute, _candidate.m_infusionTime, _candidate.m_interval);
     DosageRepeat repeat(lastingDose, nbTimes);
     DosageTimeRange *newTimeRange = new DosageTimeRange(_startTime, _endTime, repeat);
     return newTimeRange;
 }
 
-DosageTimeRange *ComputingAdjustments::createLoadingDosage(
-        const AdjustmentCandidate &_candidate,
+DosageTimeRange *ComputingAdjustments::createLoadingDosage(const SimpleDosageCandidate &_candidate,
         DateTime _startTime,
-        FormulationAndRoute _routeOfAdministration)
+        FormulationAndRoute _formulationAndRoute)
 {
     unsigned int nbTimes = 1;
 
-    LastingDose lastingDose(_candidate.m_dose, _routeOfAdministration, _candidate.m_infusionTime, _candidate.m_interval);
+    LastingDose lastingDose(_candidate.m_dose, _formulationAndRoute, _candidate.m_infusionTime, _candidate.m_interval);
     DosageRepeat repeat(lastingDose, nbTimes);
     DateTime endTime = _startTime + _candidate.m_interval;
     DosageTimeRange *newTimeRange = new DosageTimeRange(_startTime, endTime, repeat);
     return newTimeRange;
 }
 
-DosageTimeRange *ComputingAdjustments::createSteadyStateDosage(
-        const AdjustmentCandidate &_candidate,
+DosageTimeRange *ComputingAdjustments::createSteadyStateDosage(const SimpleDosageCandidate &_candidate,
         DateTime _startTime,
-        FormulationAndRoute _routeOfAdministration)
+        FormulationAndRoute _formulationAndRoute)
 {
     unsigned int nbTimes;
 
     // A single interval
     nbTimes = 1;
-    LastingDose lastingDose(_candidate.m_dose, _routeOfAdministration, _candidate.m_infusionTime, _candidate.m_interval);
+    LastingDose lastingDose(_candidate.m_dose, _formulationAndRoute, _candidate.m_infusionTime, _candidate.m_interval);
     DosageRepeat repeat(lastingDose, nbTimes);
     DateTime endTime = _startTime + _candidate.m_interval;
     DosageTimeRange *newTimeRange = new DosageTimeRange(_startTime, endTime, repeat);
     return newTimeRange;
 }
 
-ComputingResult ComputingAdjustments::buildCandidates(const FullFormulationAndRoute* _formulationAndRoute, std::vector<ComputingAdjustments::AdjustmentCandidate> &_candidates)
+ComputingResult ComputingAdjustments::buildCandidates(const FullFormulationAndRoute* _formulationAndRoute, std::vector<ComputingAdjustments::SimpleDosageCandidate> &_candidates)
 {
     std::vector<Value> doseValues;
     std::vector<Duration> intervalValues;
@@ -130,7 +128,7 @@ ComputingResult ComputingAdjustments::buildCandidates(const FullFormulationAndRo
 
 ComputingResult ComputingAdjustments::buildCandidatesForInterval(const FullFormulationAndRoute* _formulationAndRoute,
                                                                  Duration _interval,
-                                                                 std::vector<ComputingAdjustments::AdjustmentCandidate> &_candidates)
+                                                                 std::vector<ComputingAdjustments::SimpleDosageCandidate> &_candidates)
 {
     std::vector<Value> doseValues;
     std::vector<Duration> infusionTimes;
@@ -269,7 +267,6 @@ std::vector<const FullFormulationAndRoute*> selectFormulationAndRoutes(
         // Get the default
         result.push_back(_availableFormulationAndRoutes.getDefault());
     } break;
-
     case FormulationAndRouteSelectionOption::AllFormulationAndRoutes : {
         // Get the entire available list
         for (auto const & f : _availableFormulationAndRoutes) {
@@ -299,9 +296,9 @@ ComputingResult ComputingAdjustments::compute(
     DateTime calculationStartTime;
 
     // Be carefull here, as the endTime could be different...
-    ComputingResult extractionResult = m_computingComponent->m_generalExtractor->generalExtractions(_traits,
+    ComputingResult extractionResult = m_utils->m_generalExtractor->generalExtractions(_traits,
                                                                               _request,
-                                                                              m_computingComponent->m_models.get(),
+                                                                              m_utils->m_models.get(),
                                                                               pkModel,
                                                                               intakeSeries,
                                                                               covariateSeries,
@@ -324,7 +321,7 @@ ComputingResult ComputingAdjustments::compute(
 
     for(auto analyteGroupId : allGroupIds) {
         if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Aposteriori) {
-            ComputingResult aposterioriEtasExtractionResult = m_computingComponent->m_generalExtractor->extractAposterioriEtas(etas[analyteGroupId], _request, analyteGroupId, intakeSeries[analyteGroupId], parameterSeries[analyteGroupId], covariateSeries, calculationStartTime, _traits->getEnd());
+            ComputingResult aposterioriEtasExtractionResult = m_utils->m_generalExtractor->extractAposterioriEtas(etas[analyteGroupId], _request, analyteGroupId, intakeSeries[analyteGroupId], parameterSeries[analyteGroupId], covariateSeries, calculationStartTime, _traits->getEnd());
             if (aposterioriEtasExtractionResult != ComputingResult::Ok) {
                 return aposterioriEtasExtractionResult;
             }
@@ -358,7 +355,7 @@ ComputingResult ComputingAdjustments::compute(
             return ComputingResult::NoFormulationAndRouteForAdjustment;
         }
 
-        std::vector<AdjustmentCandidate> candidates;
+        std::vector<SimpleDosageCandidate> candidates;
 
         ComputingResult buildingResult = buildCandidates(selectedFormulationAndRoute, candidates);
 
@@ -436,7 +433,7 @@ ComputingResult ComputingAdjustments::compute(
                                                                                  nbPointsPerHour, intakeSeriesPerGroup[analyteGroupId],
                                                                                  ExtractionOption::EndofDate);
 
-                m_computingComponent->m_generalExtractor->convertAnalytes(intakeSeriesPerGroup[analyteGroupId], _request.getDrugModel(), _request.getDrugModel().getAnalyteSet(analyteGroupId));
+                m_utils->m_generalExtractor->convertAnalytes(intakeSeriesPerGroup[analyteGroupId], _request.getDrugModel(), _request.getDrugModel().getAnalyteSet(analyteGroupId));
 
 
                 if (intakeExtractionResult != ComputingResult::Ok) {
@@ -467,7 +464,8 @@ ComputingResult ComputingAdjustments::compute(
                                 etas[analyteGroupId]);
                 }
                 else {
-                    predictionComputingResult = m_computingComponent->computeConcentrations(
+                    ConcentrationCalculator concentrationCalculator;
+                    predictionComputingResult = concentrationCalculator.computeConcentrations(
                                 pPrediction,
                                 false,
                                 calculationStartTime,
@@ -492,7 +490,7 @@ ComputingResult ComputingAdjustments::compute(
 
                 for (const auto & activeMoiety : _request.getDrugModel().getActiveMoieties()) {
                     ConcentrationPredictionPtr activeMoietyPrediction = std::make_unique<ConcentrationPrediction>();
-                    ComputingResult activeMoietyComputingResult = m_computingComponent->computeActiveMoiety(_request.getDrugModel(), activeMoiety.get(), analytesPredictions, activeMoietyPrediction);
+                    ComputingResult activeMoietyComputingResult = m_utils->computeActiveMoiety(activeMoiety.get(), analytesPredictions, activeMoietyPrediction);
                     if (activeMoietyComputingResult != ComputingResult::Ok) {
                         return activeMoietyComputingResult;
                     }
@@ -690,7 +688,7 @@ ComputingResult ComputingAdjustments::addLoadOrRest(FullDosage &_dosage,
 
     // TODO : This is wrong to take the default here
     const FullFormulationAndRoute *fullFormulationAndRoute = _request.getDrugModel().getFormulationAndRoutes().getDefault();
-    std::vector<ComputingAdjustments::AdjustmentCandidate> candidates;
+    std::vector<ComputingAdjustments::SimpleDosageCandidate> candidates;
     ComputingResult buildResult = buildCandidatesForInterval(fullFormulationAndRoute, interval, candidates);
     if (buildResult != ComputingResult::Ok) {
         return buildResult;
@@ -796,7 +794,7 @@ ComputingResult ComputingAdjustments::generatePrediction(FullDosage &dosage,
                                                                          nbPointsPerHour, intakeSeriesPerGroup[analyteGroupId],
                                                                          ExtractionOption::EndofDate);
 
-        m_computingComponent->m_generalExtractor->convertAnalytes(intakeSeriesPerGroup[analyteGroupId], _request.getDrugModel(), _request.getDrugModel().getAnalyteSet(analyteGroupId));
+        m_utils->m_generalExtractor->convertAnalytes(intakeSeriesPerGroup[analyteGroupId], _request.getDrugModel(), _request.getDrugModel().getAnalyteSet(analyteGroupId));
 
 
         if (intakeExtractionResult != ComputingResult::Ok) {
@@ -814,8 +812,8 @@ ComputingResult ComputingAdjustments::generatePrediction(FullDosage &dosage,
 
 
         ComputingResult predictionComputingResult;
-
-        predictionComputingResult = m_computingComponent->computeConcentrations(
+        ConcentrationCalculator concentrationCalculator;
+        predictionComputingResult = concentrationCalculator.computeConcentrations(
                     pPrediction,
                     false,
                     _calculationStartTime,
@@ -839,7 +837,7 @@ ComputingResult ComputingAdjustments::generatePrediction(FullDosage &dosage,
 
         for (const auto & activeMoiety : _request.getDrugModel().getActiveMoieties()) {
             ConcentrationPredictionPtr activeMoietyPrediction = std::make_unique<ConcentrationPrediction>();
-            ComputingResult activeMoietyComputingResult = m_computingComponent->computeActiveMoiety(_request.getDrugModel(), activeMoiety.get(), analytesPredictions, activeMoietyPrediction);
+            ComputingResult activeMoietyComputingResult = m_utils->computeActiveMoiety(activeMoiety.get(), analytesPredictions, activeMoietyPrediction);
             if (activeMoietyComputingResult != ComputingResult::Ok) {
                 return activeMoietyComputingResult;
             }

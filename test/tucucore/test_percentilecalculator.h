@@ -140,9 +140,9 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
                     concentrationCalculator,
                     aborter);
 
-        percentiles.streamToFile("apriori_percentiles_imatinib.dat");
+        // percentiles.streamToFile("apriori_percentiles_imatinib.dat");
 
-        std::cout << "Apriori Percentile result is saved" << std::endl;
+        // std::cout << "Apriori Percentile result is saved" << std::endl;
 
         fructose_assert(res == Tucuxi::Core::ComputingResult::Ok);
     }
@@ -246,9 +246,9 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
                     concentrationCalculator,
                     aborter);
 
-        percentiles.streamToFile("aposteriori_normal_percentiles_imatinib.dat");
+        // percentiles.streamToFile("aposteriori_normal_percentiles_imatinib.dat");
 
-        std::cout << "Aposteriori Normal Percentile result is saved" << std::endl;
+        // std::cout << "Aposteriori Normal Percentile result is saved" << std::endl;
 
         fructose_assert(res == Tucuxi::Core::ComputingResult::Ok);
     }
@@ -351,9 +351,9 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
                     concentrationCalculator,
                     aborter);
 
-        percentiles.streamToFile("aposteriori_percentiles_imatinib.dat");
+        // percentiles.streamToFile("aposteriori_percentiles_imatinib.dat");
 
-        std::cout << "Aposteriori Percentile result is saved" << std::endl;
+        // std::cout << "Aposteriori Percentile result is saved" << std::endl;
 
         fructose_assert(res == Tucuxi::Core::ComputingResult::Ok);
     }

@@ -2,8 +2,8 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
-#ifndef COMPUTINGTRAIT_H
-#define COMPUTINGTRAIT_H
+#ifndef TUCUXI_CORE_COMPUTINGTRAIT_H
+#define TUCUXI_CORE_COMPUTINGTRAIT_H
 
 #include "tucucommon/datetime.h"
 
@@ -679,4 +679,4 @@ protected:
 } // namespace Tucuxi
 
 
-#endif // COMPUTINGTRAIT_H
+#endif // TUCUXI_CORE_COMPUTINGTRAIT_H

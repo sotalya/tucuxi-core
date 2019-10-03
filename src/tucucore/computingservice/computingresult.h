@@ -84,7 +84,9 @@ enum class ComputingResult {
     /// There are no analytes groups
     NoAnalytesGroup,
     /// The drug model is incompatible with the drug treatment
-    IncompatibleTreatmentModel
+    IncompatibleTreatmentModel,
+    /// The computing component has not been initialized
+    ComputingComponentNotInitialized
 };
 
 

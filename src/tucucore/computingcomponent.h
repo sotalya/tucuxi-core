@@ -39,6 +39,7 @@ class HalfLife;
 class GeneralExtractor;
 class ActiveMoiety;
 class ComputingAdjustments;
+class ComputingUtils;
 
 
 ///
@@ -55,12 +56,29 @@ public:
     /// \brief Destructor
     ~ComputingComponent() override;
 
+    ///
+    /// \brief compute is the entry point for any computation
+    /// \param _request The request to be computed, composed of any number of single computations
+    /// \param _response The response, composed of the corresponding responses to each computation
+    /// \return  ComputingResult::Ok if everything went well, another value else.
+    /// The response is a reference to a unique pointer that has to be allocated within compute()
+    ///
     ComputingResult compute(const ComputingRequest &_request, std::unique_ptr<ComputingResponse> &_response) override;
+
+    ///
+    /// \brief returns a description of the last error in case of failed computation
+    /// \return A description of the last error
+    /// This function should only be called if compute() returned something different from ComputingResult::Ok
+    /// This function is not yet implemented
     std::string getErrorString() const override;
 
-    void setPkModelCollection(std::shared_ptr<PkModelCollection> _collection) {
-        m_models = _collection;
-    }
+    ///
+    /// \brief setPkModelCollection sets the Pk models collection to be used in further computations
+    /// \param _collection A shared pointer to the Pk models collection
+    /// By default, at creation, the ComputingComponent calls defaultPopulate() to create the Pk
+    /// models collection. This function allows to override it with a custom collection.
+    ///
+    void setPkModelCollection(std::shared_ptr<PkModelCollection> _collection);
 
 protected:
     /// \brief Access other interfaces of the same component.
@@ -69,8 +87,7 @@ protected:
 
 private:
 
-    std::shared_ptr<PkModelCollection> m_models;
-    std::unique_ptr<GeneralExtractor> m_generalExtractor;
+    std::unique_ptr<ComputingUtils> m_utils;
 
     Tucuxi::Common::LoggerHelper m_logger;
 
@@ -115,24 +132,6 @@ private:
             const ComputingRequest &_request,
             std::unique_ptr<ComputingResponse> &_response);
 
-    ComputingResult computeConcentrations(
-        ConcentrationPredictionPtr &_prediction,
-        bool _isAll,
-        const DateTime &_recordFrom,
-        const DateTime &_recordTo,
-        const IntakeSeries &_intakes,
-        const ParameterSetSeries& _parameters,
-        const Etas& _etas = Etas(0),
-        const IResidualErrorModel &_residualErrorModel = EMPTY_RESIDUAL_ERROR_MODEL,
-        const Deviations& _eps = Deviations(0),
-        bool _isFixedDensity = false);
-
-
-    ComputingResult computeActiveMoiety(
-            const DrugModel &_drugModel,
-            const ActiveMoiety *_activeMoiety,
-            const std::vector<ConcentrationPredictionPtr> &_analytesPredictions,
-            ConcentrationPredictionPtr &_activeMoietyPredictions);
 
     friend class ComputingTraitSinglePoints;
     friend class ComputingTraitAtMeasures;

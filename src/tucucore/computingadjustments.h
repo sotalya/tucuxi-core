@@ -12,13 +12,13 @@ namespace Tucuxi {
 namespace Core {
 
 class FullFormulationAndRoute;
-class ComputingComponent;
+class ComputingUtils;
 class PkModel;
 
 class ComputingAdjustments
 {
 public:
-    ComputingAdjustments(ComputingComponent *_computingComponent);
+    ComputingAdjustments(ComputingUtils *_computingUtils);
 
 
     ComputingResult compute(
@@ -26,39 +26,56 @@ public:
             const ComputingRequest &_request,
             std::unique_ptr<ComputingResponse> &_response);
 
+protected:
 
+    ///
+    /// \brief sortAndFilterCandidates
+    /// \param _candidates All valid candidates for which a score has been calculated
+    /// \param _option Options for selecting and filter the candidates.
+    /// \return A vector of selected and filtered candidates
+    /// The candidates will be sorted thanks to their respective score. The best score is the first
+    /// in the returned vector.
+    /// The filtering is made depending on _option. It can:
+    /// - Return all valid candidates
+    /// - Return only the best candidate
+    /// - Return the best valid candidate for each interval
+    ///
     std::vector<FullDosage> sortAndFilterCandidates(std::vector<FullDosage> &_candidates, BestCandidatesOption _option);
 
+    /// Structure representing dosing candidates in terms of dose, interval and infusion time
     typedef struct {
+        /// The dose value
         Value m_dose;
+        /// The dosing interval
         Duration m_interval;
+        /// The infusion time. 0 means no infusion for a model without infusion.
         Duration m_infusionTime;
-    } AdjustmentCandidate;
+    } SimpleDosageCandidate;
 
 
     ComputingResult buildCandidates(const FullFormulationAndRoute* _formulationAndRoute,
-                                    std::vector<AdjustmentCandidate> &_candidates);
+                                    std::vector<SimpleDosageCandidate> &_candidates);
 
     ComputingResult buildCandidatesForInterval(const FullFormulationAndRoute* _formulationAndRoute,
                                                Common::Duration _interval,
-                                               std::vector<ComputingAdjustments::AdjustmentCandidate> &_candidates);
+                                               std::vector<ComputingAdjustments::SimpleDosageCandidate> &_candidates);
 
     DosageTimeRange *createDosage(
-            const AdjustmentCandidate &_candidate,
+            const SimpleDosageCandidate &_candidate,
             DateTime _startTime,
             DateTime _endTime,
-            FormulationAndRoute _routeOfAdministration);
+            FormulationAndRoute _formulationAndRoute);
 
 
-    DosageTimeRange *createLoadingDosage(const AdjustmentCandidate &_candidate,
+    DosageTimeRange *createLoadingDosage(const SimpleDosageCandidate &_candidate,
             DateTime _startTime,
-            FormulationAndRoute _routeOfAdministration);
+            FormulationAndRoute _formulationAndRoute);
 
 
     DosageTimeRange *createSteadyStateDosage(
-            const AdjustmentCandidate &_candidate,
+            const SimpleDosageCandidate &_candidate,
             DateTime _startTime,
-            FormulationAndRoute _routeOfAdministration);
+            FormulationAndRoute _formulationAndRoute);
 
     ComputingResult addLoadOrRest(std::vector<FullDosage> &_dosages,
                                   const ComputingTraitAdjustment *_traits,
@@ -102,7 +119,7 @@ public:
 protected:
 
     Tucuxi::Common::LoggerHelper m_logger;
-    ComputingComponent *m_computingComponent;
+    ComputingUtils *m_utils;
 
 };
 
