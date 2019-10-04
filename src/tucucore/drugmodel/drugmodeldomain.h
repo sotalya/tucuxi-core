@@ -42,7 +42,7 @@ public:
     INVARIANTS(
             INVARIANT(Invariants::INV_CONSTRAINT_0001, (m_checkOperation != nullptr), "A constraint has no operation")
             INVARIANT(Invariants::INV_CONSTRAINT_0001, (m_requiredCovariateIds.size() > 0), "A constraint has no required covariate Ids")
-            LAMBDA_INVARIANT(Invariants::INV_CONSTRAINT_0003, {bool ok = true; for(size_t i = 0; i < m_requiredCovariateIds.size(); i++) {ok &= m_requiredCovariateIds.at(i).size() > 0;} return ok;}, "There is an empty covariate Id in the required covariates list of a constraint")
+            LAMBDA_INVARIANT(Invariants::INV_CONSTRAINT_0003, {bool ok = true; for(size_t i = 0; i < m_requiredCovariateIds.size(); i++) {ok &= m_requiredCovariateIds[i].size() > 0;} return ok;}, "There is an empty covariate Id in the required covariates list of a constraint")
             )
 
 protected:
@@ -69,7 +69,7 @@ public:
 
 
     INVARIANTS(
-            LAMBDA_INVARIANT(Invariants::INV_DRUGMODELDOMAIN_0001, {bool ok = true;for(size_t i = 0; i < m_constraints.size(); i++) {ok &= m_constraints.at(i)->checkInvariants();} return ok;}, "A constraint of a drug domain has an error")
+            LAMBDA_INVARIANT(Invariants::INV_DRUGMODELDOMAIN_0001, {bool ok = true;for(size_t i = 0; i < m_constraints.size(); i++) {ok &= m_constraints[i]->checkInvariants();} return ok;}, "A constraint of a drug domain has an error")
             )
 
 protected:

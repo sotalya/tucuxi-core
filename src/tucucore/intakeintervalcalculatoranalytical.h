@@ -119,7 +119,6 @@ protected:
 
     Eigen::VectorXd& exponentials(EParameters _param) {
         return m_precomputedExponentials[static_cast<int>(_param)];
-//        return m_precomputedExponentials.at(static_cast<int>(_param));
     }
 
 };

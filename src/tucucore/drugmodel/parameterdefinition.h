@@ -67,7 +67,7 @@ public:
     }
 
     ParameterVariabilityType getType() const { return m_type; }
-    Value getValue() const { return m_values.at(0); }
+    Value getValue() const { return m_values[0]; }
     std::vector<Value> getValues() const { return m_values;}
 
 private:
@@ -228,7 +228,7 @@ public:
     size_t getNbParameters() const { return m_parameters.size(); }
     const ParameterDefinition* getParameter(size_t _index) const {
         if (_index < m_parameters.size()) {
-            return m_parameters.at(_index).get();
+            return m_parameters[_index].get();
         }
         return nullptr;
     }
@@ -237,8 +237,8 @@ public:
 
 
     INVARIANTS(
-            LAMBDA_INVARIANT(Invariants::INV_PARAMETERSETDEFINITION_0001, {bool ok = true;for(size_t i = 0; i < m_parameters.size(); i++) {ok &= m_parameters.at(i)->checkInvariants();} return ok;}, "There is an error in a parameter of an inter-parameter set correlation")
-            LAMBDA_INVARIANT(Invariants::INV_PARAMETERSETDEFINITION_0002, {bool ok = true;for(size_t i = 0; i < m_correlations.size(); i++) {ok &= m_correlations.at(i).checkInvariants();} return ok;}, "There is an error in a correlation of an inter-parameter set correlation")
+            LAMBDA_INVARIANT(Invariants::INV_PARAMETERSETDEFINITION_0001, {bool ok = true;for(size_t i = 0; i < m_parameters.size(); i++) {ok &= m_parameters[i]->checkInvariants();} return ok;}, "There is an error in a parameter of an inter-parameter set correlation")
+            LAMBDA_INVARIANT(Invariants::INV_PARAMETERSETDEFINITION_0002, {bool ok = true;for(size_t i = 0; i < m_correlations.size(); i++) {ok &= m_correlations[i].checkInvariants();} return ok;}, "There is an error in a correlation of an inter-parameter set correlation")
             )
 
 protected:

@@ -177,7 +177,7 @@ public:
             std::unique_ptr<FullFormulationAndRoute> formulationAndRoute(new FullFormulationAndRoute(formulationSpecs, "extraId"));
             {
                 AnalyteSetToAbsorptionAssociation *association0;
-                const AnalyteSet *a = model->getAnalyteSets().at(0).get();
+                const AnalyteSet *a = model->getAnalyteSets()[0].get();
                 association0 = new AnalyteSetToAbsorptionAssociation(*a);
                 association0->setAbsorptionModel(AbsorptionModel::Extravascular);
 
@@ -189,7 +189,7 @@ public:
 
             {
                 AnalyteSetToAbsorptionAssociation *association1;
-                const AnalyteSet *a = model->getAnalyteSets().at(0).get();
+                const AnalyteSet *a = model->getAnalyteSets()[0].get();
                 association1 = new AnalyteSetToAbsorptionAssociation(*a);
                 association1->setAbsorptionModel(AbsorptionModel::Extravascular);
 

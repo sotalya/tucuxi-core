@@ -183,8 +183,8 @@ bool CovariateExtractor::computeEvents(const std::map<DateTime, std::vector<std:
                     newVal = (*m_cdValued.at(cvName))->getValue();
                 } else if (pvCurrentC->second.size() == 1) {
                     // If single patient variate value, then take the first value.
-                    newVal = stringToValue((*(pvCurrentC->second.at(0)))->getValue(),
-                                           (*(pvCurrentC->second.at(0)))->getDataType());
+                    newVal = stringToValue((*(pvCurrentC->second[0]))->getValue(),
+                                           (*(pvCurrentC->second[0]))->getDataType());
                 } else {
                     // We have more Patient Variates, therefore we have to compute the good value.
                     std::vector<pvIterator_t>::const_iterator pvIt = pvCurrentC->second.begin();
@@ -534,7 +534,7 @@ void CovariateExtractor::sortPatientVariates()
         // performed and we can change the time of the first measurement with the initial interval time.
         if ((*(m_cdValued.at(pvV.first)))->getInterpolationType() == InterpolationType::Direct ||
                 pvV.second.size() == 1) {
-            (*(pvV.second.at(0)))->setEventTime(m_start);
+            (*(pvV.second[0]))->setEventTime(m_start);
         }
     }
 }

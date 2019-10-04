@@ -53,7 +53,7 @@ public:
         while (itRank != m_ranks.end()) {
             std::vector< std::vector<Concentration> > vec;
             for (size_t cycle = 0; cycle < _intakes.size(); cycle++) {
-                vec.push_back(std::vector<Concentration>(_intakes.at(cycle).getNbPoints()));
+                vec.push_back(std::vector<Concentration>(_intakes[cycle].getNbPoints()));
             }
             m_values.push_back(vec);
             itRank++;

@@ -78,8 +78,8 @@ ComputingResult GeneralExtractor::extractAposterioriEtas(
     else {
         ResidualErrorModelExtractor errorModelExtractor;
         std::unique_ptr<IResidualErrorModel> residualErrorModel;
-        ComputingResult errorModelExtractionResult = errorModelExtractor.extract(_request.getDrugModel().getAnalyteSet(_analyteGroupId)->getAnalytes().at(0)->getResidualErrorModel(),
-                                                                                _request.getDrugModel().getAnalyteSet(_analyteGroupId)->getAnalytes().at(0)->getUnit(),
+        ComputingResult errorModelExtractionResult = errorModelExtractor.extract(_request.getDrugModel().getAnalyteSet(_analyteGroupId)->getAnalytes()[0]->getResidualErrorModel(),
+                                                                                _request.getDrugModel().getAnalyteSet(_analyteGroupId)->getAnalytes()[0]->getUnit(),
                                                                                 _covariateSeries, residualErrorModel);
         if (errorModelExtractionResult != ComputingResult::Ok) {
             return errorModelExtractionResult;
@@ -216,13 +216,13 @@ ComputingResult GeneralExtractor::generalExtractions(const ComputingTraitStandar
         // Ensure that time ranges are correctly handled. We set again the interval based on the start of
         // next intake
         for (size_t i = 0; i < nIntakes - 1; i++) {
-            Duration interval = intakeSeries.at(i+1).getEventTime() - intakeSeries.at(i).getEventTime();
-            intakeSeries.at(i).setNbPoints(static_cast<int>(interval.toHours() * nbPointsPerHour) + 1);
-            intakeSeries.at(i).setInterval(interval);
+            Duration interval = intakeSeries[i + 1].getEventTime() - intakeSeries[i].getEventTime();
+            intakeSeries[i].setNbPoints(static_cast<int>(interval.toHours() * nbPointsPerHour) + 1);
+            intakeSeries[i].setInterval(interval);
         }
 
         for (size_t i = 0; i < nIntakes; i++) {
-            if (intakeSeries.at(i).getEventTime() + intakeSeries.at(i).getInterval() < _traits->getStart()) {
+            if (intakeSeries[i].getEventTime() + intakeSeries[i].getInterval() < _traits->getStart()) {
                 intakeSeries[i].setNbPoints(2);
             }
         }
@@ -230,16 +230,16 @@ ComputingResult GeneralExtractor::generalExtractions(const ComputingTraitStandar
         const DosageTimeRangeList& timeRanges = _request.getDrugTreatment().getDosageHistory().getDosageTimeRanges();
 
 
-        IntakeEvent *lastIntake = &(intakeSeries.at(nIntakes - 1));
+        IntakeEvent *lastIntake = &(intakeSeries.back());
 
         // If the treatement end is before the last point we want to get, then we add an empty dose to get points
 
-//        if (_traits->getEnd() > timeRanges.at(timeRanges.size() - 1)->getEndDate()) {
+//        if (_traits->getEnd() > timeRanges.back()->getEndDate()) {
             if (_traits->getEnd() > lastIntake->getEventTime() + lastIntake->getInterval()) {
 
             DateTime start = lastIntake->getEventTime() + lastIntake->getInterval();
             Value dose = 0.0;
-            Duration interval = _traits->getEnd() - timeRanges.at(timeRanges.size() - 1)->getEndDate();
+            Duration interval = _traits->getEnd() - timeRanges.back()->getEndDate();
             auto absorptionModel = lastIntake->getRoute();
 
             Duration infusionTime;

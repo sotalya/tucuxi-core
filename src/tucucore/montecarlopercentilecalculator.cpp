@@ -181,7 +181,7 @@ ComputingResult MonteCarloPercentileCalculatorBase::computePredictions(
     // Set the size of vector "concentrations"
     for (unsigned int cycle = 0; cycle < _recordedIntakes.size(); cycle++) {
         std::vector< std::vector<Concentration> > vec;
-        for (int point = 0; point < _recordedIntakes.at(cycle).getNbPoints(); point++) {
+        for (int point = 0; point < _recordedIntakes[cycle].getNbPoints(); point++) {
             vec.push_back(std::vector<Concentration>(_nbPatients));
         }
         _concentrations.push_back(vec);
@@ -245,7 +245,7 @@ ComputingResult MonteCarloPercentileCalculatorBase::computePredictions(
                         // Save concentrations to array of [patient] for using sort() function
                         for (unsigned int cycle = 0; cycle < _recordedIntakes.size(); cycle++) {
 
-                            int cyclePoints = _recordedIntakes.at(cycle).getNbPoints();
+                            int cyclePoints = _recordedIntakes[cycle].getNbPoints();
 
                             // Save times only one time (when patient is equal to 0)
                             if (patient == 0) {
@@ -383,7 +383,7 @@ ComputingResult MonteCarloPercentileCalculatorBase::sortAndExtractPercentiles(
                 else {
                     point = currentPoint;
                     cycle = currentCycle;
-                    if ((static_cast<int>(point)) == _recordedIntakes.at(cycle).getNbPoints() - 1) {
+                    if ((static_cast<int>(point)) == _recordedIntakes[cycle].getNbPoints() - 1) {
                         currentPoint = 0;
                         currentCycle ++;
                         if (currentCycle >= nbCycles) {
@@ -456,7 +456,7 @@ ComputingResult MonteCarloPercentileCalculatorBase::sortAndExtractPercentiles(
                     break;
                 }
                 // Sort and set percentile
-                    for (unsigned int point = 0; point < static_cast<unsigned int>(recordedIntakes.at(cycle).getNbPoints()); point++) {
+                    for (unsigned int point = 0; point < static_cast<unsigned int>(recordedIntakes[cycle].getNbPoints()); point++) {
 
                         // Sort concentrations in increasing order at each time (at the cycle and at the point)
                         std::sort(concentrations[cycle][point].begin(), concentrations[cycle][point].end(), [&] (const double v1, const double v2) { return v1 < v2; });
@@ -488,7 +488,7 @@ ComputingResult MonteCarloPercentileCalculatorBase::sortAndExtractPercentiles(
 
     // Sort and set percentile
     for (unsigned int cycle = 0; cycle < recordedIntakes.size(); cycle++) {
-        for (unsigned int point = 0; point < static_cast<unsigned int>(recordedIntakes.at(cycle).getNbPoints()); point++) {
+        for (unsigned int point = 0; point < static_cast<unsigned int>(recordedIntakes[cycle].getNbPoints()); point++) {
 
 
             // Sort concentrations in increasing order at each time (at the cycle and at the point)
@@ -505,7 +505,7 @@ ComputingResult MonteCarloPercentileCalculatorBase::sortAndExtractPercentiles(
 
     // Sort and set percentile
     for (unsigned int cycle = 0; cycle < recordedIntakes.size(); cycle++) {
-        for (unsigned int point = 0; point < static_cast<unsigned int>(recordedIntakes.at(cycle).getNbPoints()); point++) {
+        for (unsigned int point = 0; point < static_cast<unsigned int>(recordedIntakes[cycle].getNbPoints()); point++) {
 
             // Sort concentrations in increasing order at each time (at the cycle and at the point)
             std::sort(concentrations[cycle][point].begin(), concentrations[cycle][point].end(), [&] (const double v1, const double v2) { return v1 < v2; });
@@ -1170,7 +1170,7 @@ ComputingResult PercentileCalculatorMultiBase::calculateActiveMoietyAndSort(
         // Set the size of vector "concentrations"
         for (unsigned int cycle = 0; cycle < _recordedIntakes.size(); cycle++) {
             std::vector< std::vector<Concentration> > vec;
-            for (int point = 0; point < _recordedIntakes.at(cycle).getNbPoints(); point++) {
+            for (int point = 0; point < _recordedIntakes[cycle].getNbPoints(); point++) {
                 vec.push_back(std::vector<Concentration>(_nbPatients));
             }
             aConcentration.push_back(vec);

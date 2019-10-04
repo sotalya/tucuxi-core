@@ -60,9 +60,9 @@ public:
             std::string id = m_id.toString();
             INVARIANT(Invariants::INV_ACTIVEMOIETY_0001, (m_id.size() > 0), "An active moiety has no Id")
             INVARIANT(Invariants::INV_ACTIVEMOIETY_0002, (m_analyteIds.size() > 0), Tucuxi::Common::Utils::strFormat("The active moiety %s has no analyte Ids", m_id.toString().c_str()))
-            LAMBDA_INVARIANT(Invariants::INV_ACTIVEMOIETY_0003, {bool ok = true;for(size_t i = 0; i < m_analyteIds.size(); i++) {ok &= m_analyteIds.at(i).size() > 0;} return ok;}, Tucuxi::Common::Utils::strFormat("There is an empty analyte Id in the active moiety %s", id.c_str()))
+            LAMBDA_INVARIANT(Invariants::INV_ACTIVEMOIETY_0003, {bool ok = true;for(size_t i = 0; i < m_analyteIds.size(); i++) {ok &= m_analyteIds[i].size() > 0;} return ok;}, Tucuxi::Common::Utils::strFormat("There is an empty analyte Id in the active moiety %s", id.c_str()))
             INVARIANT(Invariants::INV_ACTIVEMOIETY_0004, (m_formula != nullptr), Tucuxi::Common::Utils::strFormat("The active moiety %s has no formula to calculate it", m_id.toString().c_str()))
-            LAMBDA_INVARIANT(Invariants::INV_ACTIVEMOIETY_0005, {bool ok = true;for(size_t i = 0; i < m_targets.size(); i++) {ok &= m_targets.at(i)->checkInvariants();} return ok;}, Tucuxi::Common::Utils::strFormat("There is an error in a target of the active moiety %s", m_id.toString().c_str()))
+            LAMBDA_INVARIANT(Invariants::INV_ACTIVEMOIETY_0005, {bool ok = true;for(size_t i = 0; i < m_targets.size(); i++) {ok &= m_targets[i]->checkInvariants();} return ok;}, Tucuxi::Common::Utils::strFormat("There is an error in a target of the active moiety %s", m_id.toString().c_str()))
             )
 
 protected:

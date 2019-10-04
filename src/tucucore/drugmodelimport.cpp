@@ -31,7 +31,7 @@ namespace Core {
 /// It deletes every pointed value and emptied the vector.
 #define DELETE_PVECTOR(v) { \
     while (v.size() != 0) { \
-    delete v.at(v.size() - 1); \
+    delete v.back(); \
     v.pop_back(); \
 } \
 }

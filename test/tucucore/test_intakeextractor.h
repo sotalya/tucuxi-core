@@ -169,7 +169,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
         fructose_assert(iSeries.size() == expectedIntakes.size());
 
         for (size_t i = 0; i < iSeries.size(); ++i) {
-            fructose_assert(iSeries.at(i) == expectedIntakes.at(i));
+            fructose_assert(iSeries[i] == expectedIntakes[i]);
         }
 
         {
@@ -295,7 +295,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
         fructose_assert(iSeries.size() == expectedIntakes.size());
 
         for (size_t i = 0; i < iSeries.size(); ++i) {
-            fructose_assert(iSeries.at(i) == expectedIntakes.at(i));
+            fructose_assert(iSeries[i] == expectedIntakes[i]);
         }
     }
 
@@ -388,7 +388,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
         fructose_assert(iSeries.size() == expectedIntakes.size());
 
         for (size_t i = 0; i < iSeries.size(); ++i) {
-            fructose_assert(iSeries.at(i) == expectedIntakes.at(i));
+            fructose_assert(iSeries[i] == expectedIntakes[i]);
         }
     }
 
@@ -476,7 +476,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
         fructose_assert(iSeries.size() == expectedIntakes.size());
 
         for (size_t i = 0; i < iSeries.size(); ++i) {
-            fructose_assert(iSeries.at(i) == expectedIntakes.at(i));
+            fructose_assert(iSeries[i] == expectedIntakes[i]);
         }
     }
 
@@ -549,7 +549,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
         fructose_assert(iSeries.size() == expectedIntakes.size());
 
         for (size_t i = 0; i < iSeries.size(); ++i) {
-            fructose_assert(iSeries.at(i) == expectedIntakes.at(i));
+            fructose_assert(iSeries[i] == expectedIntakes[i]);
         }
     }
 
@@ -652,7 +652,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
         fructose_assert(iSeries.size() == expectedIntakes.size());
 
         for (size_t i = 0; i < iSeries.size(); ++i) {
-            fructose_assert(iSeries.at(i) == expectedIntakes.at(i));
+            fructose_assert(iSeries[i] == expectedIntakes[i]);
         }
     }
 
@@ -761,7 +761,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
         fructose_assert(iSeries.size() == expectedIntakes.size());
 
         for (size_t i = 0; i < iSeries.size(); ++i) {
-            fructose_assert(iSeries.at(i) == expectedIntakes.at(i));
+            fructose_assert(iSeries[i] == expectedIntakes[i]);
         }
     }
 
@@ -1018,7 +1018,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
         fructose_assert(iSeries.size() == expectedIntakes.size());
 
         for (size_t i = 0; i < expectedIntakes.size(); ++i) {
-            fructose_assert(iSeries.at(i) == expectedIntakes.at(i));
+            fructose_assert(iSeries[i] == expectedIntakes[i]);
         }
     }
 
@@ -1389,7 +1389,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
         fructose_assert(iSeries.size() == expectedIntakes.size());
 
         for (size_t i = 0; i < expectedIntakes.size(); ++i) {
-            fructose_assert(iSeries.at(i) == expectedIntakes.at(i));
+            fructose_assert(iSeries[i] == expectedIntakes[i]);
         }
     }
 
@@ -1783,13 +1783,13 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
         fructose_assert(iSeries.size() == expectedIntakes.size());
 
         for (size_t i = 0; i < expectedIntakes.size(); ++i) {
-            if (iSeries.at(i) == expectedIntakes.at(i)) {
+            if (iSeries[i] == expectedIntakes[i]) {
             }
             else {
                 int i = 0;
                 i++;
             }
-            fructose_assert(iSeries.at(i) == expectedIntakes.at(i));
+            fructose_assert(iSeries[i] == expectedIntakes[i]);
         }
     }
 
@@ -1974,7 +1974,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
         fructose_assert(iSeries.size() == expectedIntakes.size());
 
         for (size_t i = 0; i < iSeries.size(); ++i) {
-            fructose_assert(iSeries.at(i) == expectedIntakes.at(i));
+            fructose_assert(iSeries[i] == expectedIntakes[i]);
         }
     }
 
@@ -2068,7 +2068,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
             fructose_assert(iSeries.size() == expectedIntakes.size());
 
             for (size_t i = 0; i < iSeries.size(); ++i) {
-                fructose_assert(iSeries.at(i) == expectedIntakes.at(i));
+                fructose_assert(iSeries[i] == expectedIntakes[i]);
             }
         }
         {
@@ -2085,7 +2085,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
             fructose_assert(iSeries.size() == expectedIntakes.size());
 
             for (size_t i = 0; i < iSeries.size(); ++i) {
-                fructose_assert(iSeries.at(i) == expectedIntakes.at(i));
+                fructose_assert(iSeries[i] == expectedIntakes[i]);
             }
         }
     }

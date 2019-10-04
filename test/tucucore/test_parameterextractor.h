@@ -162,14 +162,14 @@ struct TestParameterExtractor : public fructose::test_base<TestParameterExtracto
 
             CovariateSeries cSeries;
             // These events are before _start -> should be pushed forward at the parameter's interval beginning.
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(0)), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), varToValue(false)));
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(1)), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 15));
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 111));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), varToValue(false)));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 15));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 111));
             // Events in interval time span.
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(0)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(true)));
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 123));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(true)));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 123));
             // This one is past _end -> should be discarded.
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
             
             fructose_assert_exception(ParametersExtractor(cSeries, itDefinitions,
                                                           DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0),
@@ -187,16 +187,16 @@ struct TestParameterExtractor : public fructose::test_base<TestParameterExtracto
 
             CovariateSeries cSeries;
             // These events are before _start -> should be pushed forward at the parameter's interval beginning.
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(0)), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), varToValue(false)));
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(1)), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 15));
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 111));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), varToValue(false)));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 15));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 111));
             // Events in interval time span.
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(0)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(true)));
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 123));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(true)));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 123));
             // This one is past _end -> should be discarded.
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
             // Event appearing out of nowhere.
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(3)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0),
+            cSeries.push_back(CovariateEvent(*(cDefinitions[3]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0),
                                              varToValue(false)));
             fructose_assert_exception(ParametersExtractor(cSeries, itDefinitions,
                                                           DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
@@ -213,16 +213,16 @@ struct TestParameterExtractor : public fructose::test_base<TestParameterExtracto
 
             CovariateSeries cSeries;
             // These events are before _start -> should be pushed forward at the parameter's interval beginning.
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(0)), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), varToValue(false)));
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(1)), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 15));
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 111));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), varToValue(false)));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 15));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 111));
             // Events in interval time span.
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(0)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(true)));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(true)));
             // Duplicated event.
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 123));
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 123));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 123));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 123));
             // This one is past _end -> should be discarded.
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
 
             fructose_assert_exception(ParametersExtractor(cSeries, itDefinitions,
                                                           DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
@@ -239,16 +239,16 @@ struct TestParameterExtractor : public fructose::test_base<TestParameterExtracto
 
             CovariateSeries cSeries;
             // These events are before _start -> should be pushed forward at the parameter's interval beginning.
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(0)), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), varToValue(false)));
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(1)), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 15));
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 111));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), varToValue(false)));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 15));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 111));
             // Events in interval time span.
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(0)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(true)));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(true)));
             // Duplicated event.
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 123));
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 132));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 123));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 132));
             // This one is past _end -> should be discarded.
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
 
             fructose_assert_exception(ParametersExtractor(cSeries, itDefinitions,
                                                           DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
@@ -265,15 +265,15 @@ struct TestParameterExtractor : public fructose::test_base<TestParameterExtracto
 
             CovariateSeries cSeries;
             // These events are before _start -> should be pushed forward at the parameter's interval beginning.
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(0)), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), varToValue(false)));
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(1)), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 15));
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 111));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), varToValue(false)));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 15));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 111));
             // Events in interval time span.
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0), 123));
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(0)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(true)));
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 132));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0), 123));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(true)));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 132));
             // This one is past _end -> should be discarded.
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
 
             fructose_assert_no_exception(ParametersExtractor(cSeries, itDefinitions,
                                                              DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
@@ -289,14 +289,14 @@ struct TestParameterExtractor : public fructose::test_base<TestParameterExtracto
 
             CovariateSeries cSeries;
             // These events are before _start -> should be pushed forward at the parameter's interval beginning.
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(0)), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), varToValue(false)));
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(1)), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 15));
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 111));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), varToValue(false)));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 15));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 111));
             // Events in interval time span.
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(0)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(true)));
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 123));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(true)));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 123));
             // This one is past _end -> should be discarded.
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
 
             ParameterDefinitions pDef;
             MyParameterDefinitionIterator itDefinitions(pDef.begin(), pDef.end());
@@ -323,14 +323,14 @@ struct TestParameterExtractor : public fructose::test_base<TestParameterExtracto
 
             CovariateSeries cSeries;
             // These events are before _start -> should be pushed forward at the parameter's interval beginning.
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(0)), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), varToValue(false)));
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(1)), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 15));
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 111));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), varToValue(false)));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 15));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 111));
             // Events in interval time span.
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(0)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(true)));
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 123));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(true)));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 123));
             // This one is past _end -> should be discarded.
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
 
             ParameterDefinitions pDef;
             MyParameterDefinitionIterator itDefinitions(pDef.begin(), pDef.end());
@@ -383,14 +383,14 @@ struct TestParameterExtractor : public fructose::test_base<TestParameterExtracto
 
             CovariateSeries cSeries;
             // These events are before _start -> should be pushed forward at the parameter's interval beginning.
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(0)), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), varToValue(false)));
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(1)), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 15));
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 111));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), varToValue(false)));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 15));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 111));
             // Events in interval time span.
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(0)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(true)));
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 123));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(true)));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 123));
             // This one is past _end -> should be discarded.
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
 
             fructose_assert_no_exception(ParametersExtractor(CovariateSeries(), itDefinitions,
                                                              DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
@@ -414,14 +414,14 @@ struct TestParameterExtractor : public fructose::test_base<TestParameterExtracto
 
             CovariateSeries cSeries;
             // These events are before _start -> should be pushed forward at the parameter's interval beginning.
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(0)), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), varToValue(false)));
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(1)), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 15));
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 111));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), varToValue(false)));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 15));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 111));
             // Events in interval time span.
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(0)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(true)));
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 123));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(true)));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 123));
             // This one is past _end -> should be discarded.
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
 
             ParametersExtractor extractor = ParametersExtractor(cSeries, itDefinitions,
                                                                 DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
@@ -467,14 +467,14 @@ struct TestParameterExtractor : public fructose::test_base<TestParameterExtracto
 
             CovariateSeries cSeries;
             // These events are before _start -> should be pushed forward at the parameter's interval beginning.
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(0)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(false)));
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(1)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 15));
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 111));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(false)));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 15));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 111));
             // Events in interval time span.
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(0)), DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), varToValue(true)));
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), 123));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), varToValue(true)));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), 123));
             // This one is past _end -> should be discarded.
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
 
             ParametersExtractor extractor = ParametersExtractor(cSeries, itDefinitions,
                                                                 DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
@@ -522,16 +522,16 @@ struct TestParameterExtractor : public fructose::test_base<TestParameterExtracto
 
             CovariateSeries cSeries;
             // Event before m_start that should make everything fail.
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(3)), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 143));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[3]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 143));
             // These events are before _start -> should be pushed forward at the parameter's interval beginning.
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(0)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(false)));
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(1)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 15));
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 111));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(false)));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 15));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 111));
             // Events in interval time span.
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(0)), DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), varToValue(true)));
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), 123));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), varToValue(true)));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), 123));
             // This one is past _end -> should be discarded.
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
 
             fructose_assert_exception(ParametersExtractor(cSeries, itDefinitions,
                                                           DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
@@ -550,16 +550,16 @@ struct TestParameterExtractor : public fructose::test_base<TestParameterExtracto
 
             CovariateSeries cSeries;
             // Event slightly in late that should make everything fail.
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(3)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 1, 0), 143));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[3]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 1, 0), 143));
             // These events are before _start -> should be pushed forward at the parameter's interval beginning.
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(0)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(false)));
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(1)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 15));
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 111));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(false)));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 15));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 111));
             // Events in interval time span.
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(0)), DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), varToValue(true)));
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), 123));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), varToValue(true)));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), 123));
             // This one is past _end -> should be discarded.
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
 
             fructose_assert_exception(ParametersExtractor(cSeries, itDefinitions,
                                                           DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
@@ -577,19 +577,19 @@ struct TestParameterExtractor : public fructose::test_base<TestParameterExtracto
 
             CovariateSeries cSeries;
             // These events are before _start -> should be pushed forward at the parameter's interval beginning.
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(0)), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), varToValue(false)));
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(1)), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 15));
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 111));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), varToValue(false)));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 15));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 111));
             // Events in interval time span.
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(0)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(true)));
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 123));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(true)));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 123));
             // This one is past _end -> should be discarded.
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
             // Additional events before _start.
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(1)), DATE_TIME_NO_VAR(2017, 8, 12, 8, 30, 0), 19));
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(1)), DATE_TIME_NO_VAR(2017, 8, 12, 8, 45, 0), 21));
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(1)), DATE_TIME_NO_VAR(2017, 8, 13, 8, 45, 0), 33));
-            cSeries.push_back(CovariateEvent(*(cDefinitions.at(1)), DATE_TIME_NO_VAR(2017, 8, 14, 8, 45, 0), 44));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 30, 0), 19));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 45, 0), 21));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 13, 8, 45, 0), 33));
+            cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 14, 8, 45, 0), 44));
 
             ParametersExtractor extractor = ParametersExtractor(cSeries, itDefinitions,
                                                                 DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
@@ -645,11 +645,11 @@ struct TestParameterExtractor : public fructose::test_base<TestParameterExtracto
 
         // Set of covariate events.
         CovariateSeries cSeries;
-        cSeries.push_back(CovariateEvent(*(cDefinitions.at(0)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(false)));
-        cSeries.push_back(CovariateEvent(*(cDefinitions.at(1)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 15));
-        cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 111));
-        cSeries.push_back(CovariateEvent(*(cDefinitions.at(0)), DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), varToValue(true)));
-        cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), 123));
+        cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(false)));
+        cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 15));
+        cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 111));
+        cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), varToValue(true)));
+        cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), 123));
 
         ParameterDefinitions pDefinitions;
 
@@ -716,11 +716,11 @@ struct TestParameterExtractor : public fructose::test_base<TestParameterExtracto
 
         // Set of covariate events.
         CovariateSeries cSeries;
-        cSeries.push_back(CovariateEvent(*(cDefinitions.at(0)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(false)));
-        cSeries.push_back(CovariateEvent(*(cDefinitions.at(1)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 15));
-        cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 111));
-        cSeries.push_back(CovariateEvent(*(cDefinitions.at(0)), DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), varToValue(true)));
-        cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 16, 9, 0, 0), 123));
+        cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(false)));
+        cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 15));
+        cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 111));
+        cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), varToValue(true)));
+        cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 16, 9, 0, 0), 123));
 
         ParameterDefinitions pDefinitions;
 
@@ -791,11 +791,11 @@ struct TestParameterExtractor : public fructose::test_base<TestParameterExtracto
 
         // Set of covariate events.
         CovariateSeries cSeries;
-        cSeries.push_back(CovariateEvent(*(cDefinitions.at(0)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(false)));
-        cSeries.push_back(CovariateEvent(*(cDefinitions.at(1)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 15));
-        cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 111));
-        cSeries.push_back(CovariateEvent(*(cDefinitions.at(0)), DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), varToValue(true)));
-        cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 16, 9, 0, 0), 123));
+        cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(false)));
+        cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 15));
+        cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 111));
+        cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), varToValue(true)));
+        cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 16, 9, 0, 0), 123));
 
         ParameterDefinitions pDefinitions;
 

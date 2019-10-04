@@ -199,22 +199,20 @@ std::vector<FullDosage> ComputingAdjustments::sortAndFilterCandidates(std::vecto
     case BestCandidatesOption::BestDosage : {
         std::vector<FullDosage> bestDosage;
         if (_candidates.size() != 0) {
-            bestDosage.push_back(_candidates.at(0));
+            bestDosage.push_back(_candidates[0]);
         }
         return bestDosage;
     } // break;
     case BestCandidatesOption::BestDosagePerInterval : {
         for(size_t i = 0; i < _candidates.size(); i++) {
-            const DosageRepeat *repeat = dynamic_cast<const DosageRepeat *>(_candidates.at(i).m_history.getDosageTimeRanges().at(_candidates.at(i).m_history.getDosageTimeRanges().size() - 1)
-                                                                            ->getDosage());
+            const DosageRepeat *repeat = dynamic_cast<const DosageRepeat *>(_candidates[i].m_history.getDosageTimeRanges().back()->getDosage());
             if (repeat != nullptr) {
                 const LastingDose *dose = dynamic_cast<const LastingDose *>(repeat->getDosage());
                 if (dose != nullptr) {
                     Duration interval = dose->getTimeStep();
                     for(size_t j = i + 1; j < _candidates.size(); j++) {
 
-                        const DosageRepeat *repeat2 = dynamic_cast<const DosageRepeat *>(_candidates.at(j).m_history.getDosageTimeRanges().at(_candidates.at(j).m_history.getDosageTimeRanges().size() - 1)
-                                                                                         ->getDosage());
+                        const DosageRepeat *repeat2 = dynamic_cast<const DosageRepeat *>(_candidates[j].m_history.getDosageTimeRanges().back()->getDosage());
                         if (repeat2 != nullptr) {
                             const LastingDose *dose2 = dynamic_cast<const LastingDose *>(repeat2->getDosage());
                             if (dose2 != nullptr) {
@@ -560,12 +558,12 @@ ComputingResult ComputingAdjustments::compute(
 
             for (auto analyteGroupId : allGroupIds) {
                 for (size_t i = 0; i < intakeSeriesPerGroup[analyteGroupId].size(); i++) {
-                    TimeOffsets times = activeMoietiesPredictions[0]->getTimes().at(i);
-                    DateTime start = intakeSeriesPerGroup[analyteGroupId].at(i).getEventTime();
-                    DateTime end = start + std::chrono::milliseconds(static_cast<int>(times.at(times.size() - 1)) * 1000);
+                    TimeOffsets times = activeMoietiesPredictions[0]->getTimes()[i];
+                    DateTime start = intakeSeriesPerGroup[analyteGroupId][i].getEventTime();
+                    DateTime end = start + std::chrono::milliseconds(static_cast<int>(times.back()) * 1000);
                     if (start >= _traits->getAdjustmentTime()) {
                         CycleData cycle(start, end, Unit("ug/l"));
-                        cycle.addData(times, activeMoietiesPredictions[0]->getValues().at(i));
+                        cycle.addData(times, activeMoietiesPredictions[0]->getValues()[i]);
 
                         AnalyteGroupId analyteGroupId = _request.getDrugModel().getAnalyteSets()[0]->getId();
                         ParameterSetEventPtr params = parameterSeries[analyteGroupId].getAtTime(start, etas[analyteGroupId]);
@@ -678,13 +676,13 @@ ComputingResult ComputingAdjustments::addLoadOrRest(FullDosage &_dosage,
         return ComputingResult::Ok;
     }
 
-    const DosageRepeat *repeat = static_cast<const DosageRepeat *>(_dosage.m_history.getDosageTimeRanges().at(0)->getDosage());
+    const DosageRepeat *repeat = static_cast<const DosageRepeat *>(_dosage.m_history.getDosageTimeRanges()[0]->getDosage());
     const LastingDose *dosage = static_cast<const LastingDose *>(repeat->getDosage());
     Duration interval = dosage->getTimeStep();
 
 
-    std::vector<double> &lastConcentrations = _dosage.m_data.at(_dosage.m_data.size() - 1).m_concentrations.at(0);
-    double steadyStateResidual = lastConcentrations.at(lastConcentrations.size() - 1);
+    std::vector<double> &lastConcentrations = _dosage.m_data.back().m_concentrations[0];
+    double steadyStateResidual = lastConcentrations.back();
 
     FormulationAndRoute formulationAndRoute = dosage->getLastFormulationAndRoute();
 
@@ -855,12 +853,12 @@ ComputingResult ComputingAdjustments::generatePrediction(FullDosage &dosage,
 
     for (auto analyteGroupId : _allGroupIds) {
         for (size_t i = 0; i < intakeSeriesPerGroup[analyteGroupId].size(); i++) {
-            TimeOffsets times = activeMoietiesPredictions[0]->getTimes().at(i);
-            DateTime start = intakeSeriesPerGroup[analyteGroupId].at(i).getEventTime();
-            DateTime end = start + std::chrono::milliseconds(static_cast<int>(times.at(times.size() - 1)) * 1000);
+            TimeOffsets times = activeMoietiesPredictions[0]->getTimes()[i];
+            DateTime start = intakeSeriesPerGroup[analyteGroupId][i].getEventTime();
+            DateTime end = start + std::chrono::milliseconds(static_cast<int>(times.back()) * 1000);
             if (start >= _traits->getAdjustmentTime()) {
                 CycleData cycle(start, end, Unit("ug/l"));
-                cycle.addData(times, activeMoietiesPredictions[0]->getValues().at(i));
+                cycle.addData(times, activeMoietiesPredictions[0]->getValues()[i]);
 
                 AnalyteGroupId analyteGroupId = _request.getDrugModel().getAnalyteSets()[0]->getId();
                 ParameterSetEventPtr params = _parameterSeries[analyteGroupId].getAtTime(start, _etas[analyteGroupId]);
@@ -974,7 +972,7 @@ ComputingResult ComputingAdjustments::compute(
         TargetExtractionOption targetExtractionOption = _traits->getTargetExtractionOption();
 
         ComputingResult targetExtractionResult =
-                targetExtractor.extract(covariateSeries, _request.getDrugModel().getActiveMoieties().at(0).get()->getTargetDefinitions(),
+                targetExtractor.extract(covariateSeries, _request.getDrugModel().getActiveMoieties()[0].get()->getTargetDefinitions(),
                                         _request.getDrugTreatment().getTargets(), _traits->getStart(), _traits->getEnd(),
                                         targetExtractionOption, targetSeries);
 
@@ -1129,12 +1127,12 @@ ComputingResult ComputingAdjustments::compute(
 
                 for (auto analyteGroupId : allGroupIds) {
                     for (size_t i = 0; i < intakeSeriesPerGroup[analyteGroupId].size(); i++) {
-                        TimeOffsets times = activeMoietiesPredictions[0]->getTimes().at(i);
-                        DateTime start = intakeSeriesPerGroup[analyteGroupId].at(i).getEventTime();
-                        DateTime end = start + std::chrono::milliseconds(static_cast<int>(times.at(times.size() - 1)) * 1000);
+                        TimeOffsets times = activeMoietiesPredictions[0]->getTimes()[i];
+                        DateTime start = intakeSeriesPerGroup[analyteGroupId][i].getEventTime();
+                        DateTime end = start + std::chrono::milliseconds(static_cast<int>(times.back()) * 1000);
                         if (start >= _traits->getAdjustmentTime()) {
                             CycleData cycle(start, end, Unit("ug/l"));
-                            cycle.addData(times, activeMoietiesPredictions[0]->getValues().at(i));
+                            cycle.addData(times, activeMoietiesPredictions[0]->getValues()[i]);
 
                             AnalyteGroupId analyteGroupId = _request.getDrugModel().getAnalyteSets()[0]->getId();
                             ParameterSetEventPtr params = parameterSeries[analyteGroupId].getAtTime(start, etas[analyteGroupId]);

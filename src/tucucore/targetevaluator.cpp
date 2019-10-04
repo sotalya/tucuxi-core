@@ -57,11 +57,11 @@ ComputingResult TargetEvaluator::evaluate(
     double value = 0.0;
 
     std::size_t lastCycleIndex = _prediction.getTimes().size() - 1;
-    TimeOffsets times = _prediction.getTimes().at(lastCycleIndex);
-    DateTime start = _intakeSeries.at(lastCycleIndex).getEventTime();
-    DateTime end = start + std::chrono::milliseconds(static_cast<int>(times.at(times.size() - 1)) * 1000);
+    TimeOffsets times = _prediction.getTimes()[lastCycleIndex];
+    DateTime start = _intakeSeries[lastCycleIndex].getEventTime();
+    DateTime end = start + std::chrono::milliseconds(static_cast<int>(times.back()) * 1000);
     CycleData cycle(start, end, Unit("ug/l"));
-    cycle.addData(times, _prediction.getValues().at(lastCycleIndex));
+    cycle.addData(times, _prediction.getValues()[lastCycleIndex]);
 
     // TODO : Here we only take one compartment... To be checked
 
@@ -92,7 +92,7 @@ ComputingResult TargetEvaluator::evaluate(
     case TargetType::Residual :
     {
         // Take compartment 0, could be different in the future
-        //double lastResidual = cycle.m_concentrations[0][cycle.m_concentrations[0].size() - 1];
+        //double lastResidual = cycle.m_concentrations[0].back();
         // We have two options, I choose the cycle statistic calculator here
         double lastResidual = -1.0;
         CycleStatistic cycleStatistic = statisticsCalculator.getStatistic(0, CycleStatisticType::Residual);
@@ -140,11 +140,11 @@ ComputingResult TargetEvaluator::evaluate(
 
         //Tucuxi::Core::CycleStatistics stats(cycleData, cumulativeAuc);
         for(std::size_t i = 0; i < _prediction.getTimes().size(); i++) {
-            TimeOffsets times = _prediction.getTimes().at(i);
-            DateTime start = _intakeSeries.at(i).getEventTime();
-            DateTime end = start + std::chrono::milliseconds(static_cast<int>(times.at(times.size() - 1)) * 1000);
+            TimeOffsets times = _prediction.getTimes()[i];
+            DateTime start = _intakeSeries[i].getEventTime();
+            DateTime end = start + std::chrono::milliseconds(static_cast<int>(times.back()) * 1000);
             CycleData cycle(start, end, Unit("ug/l"));
-            cycle.addData(times, _prediction.getValues().at(i));
+            cycle.addData(times, _prediction.getValues()[i]);
 
             // The constructor accumulates in cumulativeAuc.
             CycleStatistics statisticsCalculator(cycle, cumulativeAuc);

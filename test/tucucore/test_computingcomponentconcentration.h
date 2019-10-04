@@ -247,10 +247,10 @@ struct TestComputingComponentConcentration : public fructose::test_base<TestComp
 
             // Here we check that the relative difference of starting concentration for each cycle is small compared
             // to its residual (less than 0.0001)
-            fructose_assert_double_eq_rel_abs(data[0].m_concentrations[0][0] , data[0].m_concentrations[0][data[0].m_concentrations[0].size() - 1], 0.0001, 0.0001);
-            fructose_assert_double_eq_rel_abs(data[1].m_concentrations[0][0] , data[1].m_concentrations[0][data[0].m_concentrations[0].size() - 1], 0.0001, 0.0001);
-            fructose_assert_double_eq_rel_abs(data[2].m_concentrations[0][0] , data[2].m_concentrations[0][data[0].m_concentrations[0].size() - 1], 0.0001, 0.0001);
-            fructose_assert_double_eq_rel_abs(data[3].m_concentrations[0][0] , data[3].m_concentrations[0][data[0].m_concentrations[0].size() - 1], 0.0001, 0.0001);
+            fructose_assert_double_eq_rel_abs(data[0].m_concentrations[0][0] , data[0].m_concentrations[0].back(), 0.0001, 0.0001);
+            fructose_assert_double_eq_rel_abs(data[1].m_concentrations[0][0] , data[1].m_concentrations[0].back(), 0.0001, 0.0001);
+            fructose_assert_double_eq_rel_abs(data[2].m_concentrations[0][0] , data[2].m_concentrations[0].back(), 0.0001, 0.0001);
+            fructose_assert_double_eq_rel_abs(data[3].m_concentrations[0][0] , data[3].m_concentrations[0].back(), 0.0001, 0.0001);
 
             // Here we check that the relative difference of starting concentration for different cycles is small (less than 0.0001)
             // Actually if the residual are correctly implemented these assertions are equivalent to the four previous ones

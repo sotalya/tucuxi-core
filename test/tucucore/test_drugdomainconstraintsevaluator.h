@@ -63,11 +63,11 @@ struct TestDrugDomainConstraintsEvaluator : public fructose::test_base<TestDrugD
 
         // Set of covariate events.
         CovariateSeries cSeries;
-        cSeries.push_back(CovariateEvent(*(cDefinitions.at(0)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(false)));
-        cSeries.push_back(CovariateEvent(*(cDefinitions.at(1)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 15));
-        cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 111));
-        cSeries.push_back(CovariateEvent(*(cDefinitions.at(0)), DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), varToValue(true)));
-        cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 16, 9, 0, 0), 123));
+        cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(false)));
+        cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 15));
+        cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 111));
+        cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), varToValue(true)));
+        cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 16, 9, 0, 0), 123));
 
 
         DrugModelDomain domain;
@@ -103,11 +103,11 @@ struct TestDrugDomainConstraintsEvaluator : public fructose::test_base<TestDrugD
 
         // Set of covariate events.
         CovariateSeries cSeries;
-        cSeries.push_back(CovariateEvent(*(cDefinitions.at(0)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(true)));
-        cSeries.push_back(CovariateEvent(*(cDefinitions.at(1)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 15));
-        cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 111));
-        cSeries.push_back(CovariateEvent(*(cDefinitions.at(0)), DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), varToValue(true)));
-        cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 16, 9, 0, 0), 123));
+        cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(true)));
+        cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 15));
+        cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 111));
+        cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), varToValue(true)));
+        cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 16, 9, 0, 0), 123));
 
 
         DrugModelDomain domain;
@@ -144,11 +144,11 @@ struct TestDrugDomainConstraintsEvaluator : public fructose::test_base<TestDrugD
 
         // Set of covariate events.
         CovariateSeries cSeries;
-        cSeries.push_back(CovariateEvent(*(cDefinitions.at(0)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(false)));
-        cSeries.push_back(CovariateEvent(*(cDefinitions.at(1)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 15));
-        cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 111));
-        cSeries.push_back(CovariateEvent(*(cDefinitions.at(0)), DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), varToValue(true)));
-        cSeries.push_back(CovariateEvent(*(cDefinitions.at(2)), DATE_TIME_NO_VAR(2017, 8, 16, 9, 0, 0), 123));
+        cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(false)));
+        cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 15));
+        cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 111));
+        cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), varToValue(true)));
+        cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 16, 9, 0, 0), 123));
 
 
         DrugModelDomain domain;

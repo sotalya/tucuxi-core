@@ -346,7 +346,7 @@ public:
         if (m_dosages.size() == 0) {
             return FormulationAndRoute(Formulation::Undefined, AdministrationRoute::Undefined, AbsorptionModel::Undefined);
         }
-        return m_dosages.at(m_dosages.size() - 1)->getLastFormulationAndRoute();
+        return m_dosages.back()->getLastFormulationAndRoute();
     }
 
     std::vector<FormulationAndRoute> getFormulationAndRouteList() const override
@@ -378,7 +378,7 @@ public:
     /// \return Time of the first intake.
     DateTime getFirstIntakeInterval(const DateTime &_intervalStart) const override
     {
-        return (m_dosages.at(0))->getFirstIntakeInterval(_intervalStart);
+        return (m_dosages[0])->getFirstIntakeInterval(_intervalStart);
     }
 
 private:
@@ -435,7 +435,7 @@ public:
         if (m_dosages.size() == 0) {
             return FormulationAndRoute(Formulation::Undefined, AdministrationRoute::Undefined, AbsorptionModel::Undefined);
         }
-        return m_dosages.at(m_dosages.size() - 1)->getLastFormulationAndRoute();
+        return m_dosages.back()->getLastFormulationAndRoute();
     }
 
     std::vector<FormulationAndRoute> getFormulationAndRouteList() const override
@@ -460,8 +460,8 @@ public:
         Duration totalDuration;
         // We have to consider the time it takes for the dosage with the biggest time step
         for (size_t i = 0; i < m_dosages.size(); ++i) {
-            if (m_offsets.at(i) + m_dosages.at(i)->getTimeStep() > totalDuration) {
-                totalDuration = m_offsets.at(i) + m_dosages.at(i)->getTimeStep();
+            if (m_offsets[i] + m_dosages[i]->getTimeStep() > totalDuration) {
+                totalDuration = m_offsets[i] + m_dosages[i]->getTimeStep();
             }
         }
         return totalDuration;

@@ -87,14 +87,14 @@ void DosageHistory::mergeDosage(const DosageTimeRange *_newDosage)
     // No, that's not OK because it would add new doses instead of empty doses
 
     if (m_history.size() > 0) {
-        if (m_history.at(m_history.size() - 1)->m_endDate < _newDosage->getStartDate()) {
+        if (m_history.back()->m_endDate < _newDosage->getStartDate()) {
 
             // At least a number of intervals allowing to fill the interval asked
-            Duration duration = _newDosage->getStartDate() - m_history.at(m_history.size() - 1)->m_endDate;
+            Duration duration = _newDosage->getStartDate() - m_history.back()->m_endDate;
             int nbTimes = 1;
-            LastingDose lastingDose(0.0, m_history.at(m_history.size() - 1)->getDosage()->getLastFormulationAndRoute(), Duration(), duration);
+            LastingDose lastingDose(0.0, m_history.back()->getDosage()->getLastFormulationAndRoute(), Duration(), duration);
             DosageRepeat repeat(lastingDose, nbTimes);
-            DosageTimeRange gapFiller = DosageTimeRange(m_history.at(m_history.size() - 1)->m_endDate, m_history.at(m_history.size() - 1)->m_endDate + duration, repeat);
+            DosageTimeRange gapFiller = DosageTimeRange(m_history.back()->m_endDate, m_history.back()->m_endDate + duration, repeat);
             addTimeRange(gapFiller);
         }
     }
@@ -106,7 +106,7 @@ FormulationAndRoute DosageHistory::getLastFormulationAndRoute() const
     if (m_history.size() == 0) {
         return FormulationAndRoute(Formulation::Undefined, AdministrationRoute::Undefined, AbsorptionModel::Undefined);
     }
-    return m_history.at(m_history.size() - 1)->m_dosage->getLastFormulationAndRoute();
+    return m_history.back()->m_dosage->getLastFormulationAndRoute();
 }
 
 

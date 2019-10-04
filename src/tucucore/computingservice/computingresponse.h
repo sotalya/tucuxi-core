@@ -203,16 +203,16 @@ public:
 
     size_t getNbRanks() const { return m_ranks.size(); }
 
-    PercentileRank getRank(unsigned int _index) const { return m_ranks.at(_index); }
+    PercentileRank getRank(unsigned int _index) const { return m_ranks[_index]; }
 
     void addPercentileData(const std::vector<CycleData> &_data) { m_data.push_back(_data);}
 
     const CycleData& getData(size_t _percentileIndex, unsigned int _cycleIndex) const {
-        return m_data.at(_percentileIndex).at(_cycleIndex);
+        return m_data[_percentileIndex][_cycleIndex];
     }
 
     const std::vector<CycleData>& getPercentileData(unsigned int _percentileIndex) const {
-        return m_data.at(_percentileIndex);
+        return m_data[_percentileIndex];
     }
 
 private:

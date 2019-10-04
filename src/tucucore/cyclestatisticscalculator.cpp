@@ -74,8 +74,8 @@ void CycleStatistics::calculate(const std::vector<Concentrations> &_concentratio
 
         // add residual value
         m_stats[compartment][static_cast<int>(CycleStatisticType::Residual)].addValue(
-                    Duration(std::chrono::seconds(static_cast<int>(_times[compartment][_times[compartment].size() - 1] * 3600.0))),
-                    _concentrations[compartment][_concentrations[compartment].size() - 1]);
+                    Duration(std::chrono::seconds(static_cast<int>(_times[compartment].back() * 3600.0))),
+                    _concentrations[compartment].back());
         // add AUC value with time 0
         m_stats[compartment][static_cast<int>(CycleStatisticType::AUC)].addValue(
                     Duration(),
@@ -87,7 +87,7 @@ void CycleStatistics::calculate(const std::vector<Concentrations> &_concentratio
         // add mean value with time 0
         m_stats[compartment][static_cast<int>(CycleStatisticType::Mean)].addValue(
                     Duration(),
-                    (auc / (_times[compartment][_concentrations[compartment].size() - 1] - _times[compartment][0])));
+                    (auc / (_times[compartment].back() - _times[compartment][0])));
         // add peak value with duration (change offset to duration)
         m_stats[compartment][static_cast<int>(CycleStatisticType::Peak)].addValue(
                     Duration(std::chrono::seconds(static_cast<int>(_times[compartment][peakPosition] * 3600.0))),
@@ -96,7 +96,7 @@ void CycleStatistics::calculate(const std::vector<Concentrations> &_concentratio
         // add cycle interval, in hours
         m_stats[compartment][static_cast<int>(CycleStatisticType::CycleInterval)].addValue(
                     Duration(),
-                    (_times[compartment][_times[compartment].size() - 1] - _times[compartment][0]));
+                    (_times[compartment].back() - _times[compartment][0]));
     }
 }
 

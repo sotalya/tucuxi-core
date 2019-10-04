@@ -880,7 +880,7 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
 
             fructose_assert(pvVals.size() == res_pvVec.size());
             for (size_t i = 0; i < std::min(pvVals.size(), res_pvVec.size()); ++i) {
-                fructose_assert(**(pvVals.at(i)) == *(res_pvVec.at(i)));
+                fructose_assert(**(pvVals[i]) == *(res_pvVec[i]));
             }
         }
 
@@ -933,7 +933,7 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
 
             fructose_assert(pvVals.size() == res_pvVec.size());
             for (size_t i = 0; i < std::min(pvVals.size(), res_pvVec.size()); ++i) {
-                fructose_assert(**(pvVals.at(i)) == *(res_pvVec.at(i)));
+                fructose_assert(**(pvVals[i]) == *(res_pvVec[i]));
             }
         }
 
@@ -971,7 +971,7 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
 
             fructose_assert(pvVals.size() == res_pvVec.size());
             for (size_t i = 0; i < std::min(pvVals.size(), res_pvVec.size()); ++i) {
-                fructose_assert(**(pvVals.at(i)) == *(res_pvVec.at(i)));
+                fructose_assert(**(pvVals[i]) == *(res_pvVec[i]));
             }
         }
 
@@ -999,7 +999,7 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
 
             fructose_assert(pvVals.size() == res_pvVec.size());
             for (size_t i = 0; i < std::min(pvVals.size(), res_pvVec.size()); ++i) {
-                fructose_assert(**(pvVals.at(i)) == *(res_pvVec.at(i)));
+                fructose_assert(**(pvVals[i]) == *(res_pvVec[i]));
             }
         }
 
@@ -1032,7 +1032,7 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
 
             fructose_assert(pvVals.size() == res_pvVec.size());
             for (size_t i = 0; i < std::min(pvVals.size(), res_pvVec.size()); ++i) {
-                fructose_assert(**(pvVals.at(i)) == *(res_pvVec.at(i)));
+                fructose_assert(**(pvVals[i]) == *(res_pvVec[i]));
             }
         }
     }

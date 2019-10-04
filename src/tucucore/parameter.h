@@ -115,7 +115,7 @@ public:
     {
         int index = m_IdToIndex[_id];
         if (index >= 0) {
-            return m_parameters.at(index).getValue();
+            return m_parameters[index].getValue();
         }
         return 0;
     }
@@ -126,10 +126,10 @@ public:
             return false;
         }
         for(size_t i = 0; i < m_parameters.size(); i++) {
-            if (m_parameters.at(i).getValue() != _other->m_parameters.at(i).getValue()) {
+            if (m_parameters[i].getValue() != _other->m_parameters[i].getValue()) {
                 return false;
             }
-            if (m_parameters.at(i).getParameterId() != _other->m_parameters.at(i).getParameterId()) {
+            if (m_parameters[i].getParameterId() != _other->m_parameters[i].getParameterId()) {
                 return false;
             }
         }

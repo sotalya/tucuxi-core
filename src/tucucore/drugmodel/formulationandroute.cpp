@@ -47,7 +47,7 @@ const FullFormulationAndRoute* FormulationAndRoutes::getDefault() const
     if (m_fars.size() == 0) {
         return nullptr;
     }
-    return m_fars.at(m_defaultIndex).get();
+    return m_fars[m_defaultIndex].get();
 }
 
 const FullFormulationAndRoute* FormulationAndRoutes::get(const Formulation& _formulation, AdministrationRoute _route) const

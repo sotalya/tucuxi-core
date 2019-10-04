@@ -247,9 +247,9 @@ public:
             LAMBDA_INVARIANT(Invariants::INV_FULLFORMULATIONANDROUTE_0007, {bool ok = true;if (m_validInfusionTimes != nullptr) { ok &= m_validInfusionTimes->checkInvariants();} return ok;}, "There is an error in the valid infusion times")
             LAMBDA_INVARIANT(Invariants::INV_FULLFORMULATIONANDROUTE_0008, {bool ok = true;if (m_standardTreatment != nullptr) { ok &= m_standardTreatment->checkInvariants();} return ok;}, "There is an error in the standard treatment")
             // To check : do we need at least one association?
-            LAMBDA_INVARIANT(Invariants::INV_FULLFORMULATIONANDROUTE_0009, {bool ok = true;for(size_t i = 0; i < m_associations.size(); i++) {ok &= m_associations.at(i)->checkInvariants();} return ok;}, "There is an error in an absorption model-parameters association")
+            LAMBDA_INVARIANT(Invariants::INV_FULLFORMULATIONANDROUTE_0009, {bool ok = true;for(size_t i = 0; i < m_associations.size(); i++) {ok &= m_associations[i]->checkInvariants();} return ok;}, "There is an error in an absorption model-parameters association")
             INVARIANT(Invariants::INV_FULLFORMULATIONANDROUTE_0010, (m_analyteConversions.size() > 0), "A formulation and route has no analyte conversion")
-            LAMBDA_INVARIANT(Invariants::INV_FULLFORMULATIONANDROUTE_0011, {bool ok = true;for(size_t i = 0; i < m_analyteConversions.size(); i++) {ok &= m_analyteConversions.at(i)->checkInvariants();} return ok;}, "There is an error in an analyte conversion")
+            LAMBDA_INVARIANT(Invariants::INV_FULLFORMULATIONANDROUTE_0011, {bool ok = true;for(size_t i = 0; i < m_analyteConversions.size(); i++) {ok &= m_analyteConversions[i]->checkInvariants();} return ok;}, "There is an error in an analyte conversion")
             INVARIANT(Invariants::INV_FULLFORMULATIONANDROUTE_0012, (m_specs.checkInvariants()), "A formulation and route has an error in its specific formulation and route")
             )
 
@@ -344,7 +344,7 @@ public:
 
     INVARIANTS(
             INVARIANT(Invariants::INV_FORMULATIONANDROUTE_0001, (m_fars.size() > 0), "There is no formulation and route")
-            LAMBDA_INVARIANT(Invariants::INV_FORMULATIONANDROUTE_0002, {bool ok = true;for(size_t i = 0; i < m_fars.size(); i++) {ok &= m_fars.at(i)->checkInvariants();} return ok;}, "There is an error in a formulation and route")
+            LAMBDA_INVARIANT(Invariants::INV_FORMULATIONANDROUTE_0002, {bool ok = true;for(size_t i = 0; i < m_fars.size(); i++) {ok &= m_fars[i]->checkInvariants();} return ok;}, "There is an error in a formulation and route")
             INVARIANT(Invariants::INV_FORMULATIONANDROUTE_0003, (m_defaultIndex < m_fars.size()), "The default formulation and route does not refer to an existing one")
             )
 

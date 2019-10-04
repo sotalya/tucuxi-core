@@ -195,7 +195,7 @@ int IntakeExtractor::extract(const DosageSequence &_dosageSequence, const DateTi
     EXTRACT_PRECONDITIONS(_start, _end, _series);
 
     int nbIntakes = 0;
-    DateTime currentTime = _dosageSequence.m_dosages.at(0)->getFirstIntakeInterval(_start);
+    DateTime currentTime = _dosageSequence.m_dosages[0]->getFirstIntakeInterval(_start);
     for (auto&& dosage : _dosageSequence.m_dosages)
     {
         nbIntakes += dosage->extract(*this, currentTime, _end, _nbPointsPerHour, _series, _option);
@@ -219,9 +219,9 @@ int IntakeExtractor::extract(const ParallelDosageSequence &_parallelDosageSequen
     int nbIntakes = 0;
 
     for (size_t i = 0; i < _parallelDosageSequence.m_dosages.size(); ++i) {
-        DateTime newIntervalStart = _parallelDosageSequence.m_dosages.at(i)->getFirstIntakeInterval(_start + _parallelDosageSequence.m_offsets.at(i));
+        DateTime newIntervalStart = _parallelDosageSequence.m_dosages[i]->getFirstIntakeInterval(_start + _parallelDosageSequence.m_offsets[i]);
         if (newIntervalStart < _end) {
-            nbIntakes += _parallelDosageSequence.m_dosages.at(i)->extract(*this, newIntervalStart, _end, _nbPointsPerHour, _series, _option);
+            nbIntakes += _parallelDosageSequence.m_dosages[i]->extract(*this, newIntervalStart, _end, _nbPointsPerHour, _series, _option);
         }
     }
 

@@ -112,7 +112,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
             fructose_assert(resp->getAdjustments().size() == 7);
 
             for (auto const & adj : resp->getAdjustments()) {
-                fructose_assert(adj.m_history.getDosageTimeRanges().at(0)->getStartDate() == adjustmentTime);
+                fructose_assert(adj.m_history.getDosageTimeRanges()[0]->getStartDate() == adjustmentTime);
                 fructose_assert(adj.m_history.getLastFormulationAndRoute() == route );
             }
         }
@@ -715,7 +715,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
             fructose_assert(resp->getAdjustments().size() == 4);
 
             for (auto const & adj : resp->getAdjustments()) {
-                fructose_assert(adj.m_history.getDosageTimeRanges().at(0)->getStartDate() == adjustmentTime);
+                fructose_assert(adj.m_history.getDosageTimeRanges()[0]->getStartDate() == adjustmentTime);
                 fructose_assert(adj.m_history.getLastFormulationAndRoute() == route );
             }
         }

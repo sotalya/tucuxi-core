@@ -127,7 +127,7 @@ void ParameterSetEvent::applyEtas(const Etas& _etas)
     Parameters::iterator it;
     for (it = m_parameters.begin(); it != m_parameters.end(); it++) {
         if (it->isVariable()) {
-            it->applyEta(_etas.at(k));
+            it->applyEta(_etas[k]);
             k++;
         }
     }

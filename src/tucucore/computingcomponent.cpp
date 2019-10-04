@@ -234,11 +234,11 @@ ComputingResult ComputingComponent::compute(
     // std::cout << "Start Time : " << _traits->getStart() << std::endl;
     for (size_t i = 0; i < recordedIntakes.size(); i++) {
 
-        TimeOffsets times = analytesPredictions[0]->getTimes().at(i);
-        DateTime start = recordedIntakes.at(i).getEventTime();
+        TimeOffsets times = analytesPredictions[0]->getTimes()[i];
+        DateTime start = recordedIntakes[i].getEventTime();
         // std::cout << "Time index " << i << " : " << start << std::endl;
         // times values are in hours
-        std::chrono::milliseconds ms = std::chrono::milliseconds(static_cast<int>(times.at(times.size() - 1))) * 3600 * 1000;
+        std::chrono::milliseconds ms = std::chrono::milliseconds(static_cast<int>(times.back())) * 3600 * 1000;
         Duration ds(ms);
         DateTime end = start + ds;
         // std::cout << "End Time index " << i << " : " << end << std::endl;
@@ -249,7 +249,7 @@ ComputingResult ComputingComponent::compute(
 
             if (!_request.getDrugModel().isSingleAnalyte()) {
                 for (const auto &activeMoiety : activeMoietiesPredictions) {
-                    cycle.addData(times, activeMoiety->getValues().at(i));
+                    cycle.addData(times, activeMoiety->getValues()[i]);
                 }
             }
 
@@ -257,7 +257,7 @@ ComputingResult ComputingComponent::compute(
             for(const auto &analyteGroup : _request.getDrugModel().getAnalyteSets()) {
                 AnalyteGroupId analyteGroupId = analyteGroup->getId();
 
-                cycle.addData(times, analytesPredictions[index]->getValues().at(i));
+                cycle.addData(times, analytesPredictions[index]->getValues()[i]);
                 index ++;
             }
 
@@ -364,8 +364,8 @@ ComputingResult ComputingComponent::computePercentilesMulti(
 
         std::unique_ptr<IResidualErrorModel> errorModel;
 
-        ComputingResult errorModelExtractionResult = errorModelExtractor.extract(analyteGroup->getAnalytes().at(0)->getResidualErrorModel(),
-                                                                                 analyteGroup->getAnalytes().at(0)->getUnit(),
+        ComputingResult errorModelExtractionResult = errorModelExtractor.extract(analyteGroup->getAnalytes()[0]->getResidualErrorModel(),
+                                                                                 analyteGroup->getAnalytes()[0]->getUnit(),
                                                                                  covariateSeries, errorModel);
         residualErrorModel[analyteGroupId] = std::move(errorModel);
 
@@ -464,7 +464,7 @@ ComputingResult ComputingComponent::computePercentilesMulti(
     // YTA: I do not think this is relevant. It could be deleted I guess
     ConcentrationPredictionPtr pPrediction = std::make_unique<ConcentrationPrediction>();
 
-    AnalyteGroupId analyteGroupId = _request.getDrugModel().getAnalyteSets().at(0)->getId();
+    AnalyteGroupId analyteGroupId = _request.getDrugModel().getAnalyteSets()[0]->getId();
 
     ComputingResult predictionResult = concentrationCalculator.computeConcentrations(
                 pPrediction,
@@ -503,16 +503,16 @@ ComputingResult ComputingComponent::computePercentilesMulti(
 
             for (unsigned int cycle = 0; cycle < allValues[p].size(); cycle ++) {
 
-                TimeOffsets times = pPrediction->getTimes().at(cycle);
-                DateTime start = selectedIntakes.at(cycle).getEventTime();
+                TimeOffsets times = pPrediction->getTimes()[cycle];
+                DateTime start = selectedIntakes[cycle].getEventTime();
 
-                std::chrono::milliseconds ms = std::chrono::milliseconds(static_cast<int>(times.at(times.size() - 1))) * 3600 * 1000;
+                std::chrono::milliseconds ms = std::chrono::milliseconds(static_cast<int>(times.back())) * 3600 * 1000;
                 Duration ds(ms);
                 DateTime end = start + ds;
 
                 if (end > _traits->getStart()) {
                     CycleData cycleData(start, end, Unit("ug/l"));
-                    cycleData.addData(times, allValues[p].at(cycle));
+                    cycleData.addData(times, allValues[p][cycle]);
                     percData.push_back(cycleData);
                 }
             }
@@ -577,7 +577,7 @@ ComputingResult ComputingComponent::computePercentilesSimple(
 
 
     // TODO : Change this analyte group
-    AnalyteGroupId analyteGroupId = _request.getDrugModel().getAnalyteSets().at(0)->getId();
+    AnalyteGroupId analyteGroupId = _request.getDrugModel().getAnalyteSets()[0]->getId();
 
 
     Tucuxi::Core::PercentilesPrediction percentiles;
@@ -591,8 +591,8 @@ ComputingResult ComputingComponent::computePercentilesSimple(
 
     ResidualErrorModelExtractor errorModelExtractor;
     std::unique_ptr<IResidualErrorModel> residualErrorModel;
-    ComputingResult errorModelExtractionResult = errorModelExtractor.extract(_request.getDrugModel().getAnalyteSet()->getAnalytes().at(0)->getResidualErrorModel(),
-                                                                             _request.getDrugModel().getAnalyteSet()->getAnalytes().at(0)->getUnit(),
+    ComputingResult errorModelExtractionResult = errorModelExtractor.extract(_request.getDrugModel().getAnalyteSet()->getAnalytes()[0]->getResidualErrorModel(),
+                                                                             _request.getDrugModel().getAnalyteSet()->getAnalytes()[0]->getUnit(),
                                                                              covariateSeries, residualErrorModel);
     if (errorModelExtractionResult != ComputingResult::Ok) {
         return errorModelExtractionResult;
@@ -702,16 +702,16 @@ ComputingResult ComputingComponent::computePercentilesSimple(
 
             for (unsigned int cycle = 0; cycle < allValues[p].size(); cycle ++) {
 
-                TimeOffsets times = pPrediction->getTimes().at(cycle);
-                DateTime start = selectedIntakes.at(cycle).getEventTime();
+                TimeOffsets times = pPrediction->getTimes()[cycle];
+                DateTime start = selectedIntakes[cycle].getEventTime();
 
-                std::chrono::milliseconds ms = std::chrono::milliseconds(static_cast<int>(times.at(times.size() - 1))) * 3600 * 1000;
+                std::chrono::milliseconds ms = std::chrono::milliseconds(static_cast<int>(times.back())) * 3600 * 1000;
                 Duration ds(ms);
                 DateTime end = start + ds;
 
                 if (end > _traits->getStart()) {
                     CycleData cycleData(start, end, Unit("ug/l"));
-                    cycleData.addData(times, allValues[p].at(cycle));
+                    cycleData.addData(times, allValues[p][cycle]);
                     percData.push_back(cycleData);
                 }
             }

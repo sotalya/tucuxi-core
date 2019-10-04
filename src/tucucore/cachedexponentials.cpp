@@ -19,7 +19,7 @@ bool CachedExponentials::get(const Tucuxi::Common::Duration& _cycleDuration, con
 {
     std::size_t h = hash(_cycleDuration, _parameters, _nbPoints);
     if (m_cache.end() != m_cache.find(h)) {
-        _exponentials = m_cache.at(h);
+        _exponentials = m_cache[h];
         return true;
     }
     return false;

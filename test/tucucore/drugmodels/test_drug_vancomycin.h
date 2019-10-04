@@ -822,7 +822,7 @@ struct TestDrugVancomycin : public fructose::test_base<TestDrugVancomycin>
                 fructose_assert_eq(resp->getIds()[0], "vancomycin");
 
                 //std::cout << "Population parameters : " << std::endl;
-                //for (auto parameter : resp->getData().at(0).m_parameters) {
+                //for (auto parameter : resp->getData()[0].m_parameters) {
                 //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
                 //}
             }
@@ -862,7 +862,7 @@ struct TestDrugVancomycin : public fructose::test_base<TestDrugVancomycin>
                 fructose_assert_eq(resp->getIds()[0], "vancomycin");
 
                 //std::cout << "A priori parameters : " << std::endl;
-                //for (auto parameter : resp->getData().at(0).m_parameters) {
+                //for (auto parameter : resp->getData()[0].m_parameters) {
                 //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
                 //}
             }
