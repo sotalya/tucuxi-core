@@ -600,7 +600,7 @@ ComputingResult AprioriMonteCarloPercentileCalculator::calculateEtasAndEpsilons(
     unsigned seed1 = std::chrono::system_clock::now().time_since_epoch().count();
     std::mt19937 rnGenerator(seed1);
 
-    // The variables are normally distributed, we use boost standard normal, then apply lower cholesky
+    // The variables are normally distributed, we use a standard normal, then apply lower cholesky
     std::normal_distribution<> normalDistribution(0, 1.0);
 
     Etas eta(omegaRank);
@@ -830,9 +830,9 @@ ComputingResult AposterioriMonteCarloPercentileCalculator::calculateEtasAndEpsil
 
     auto meanEtasTransposed = meanEtas.transpose();
 
-    // This is g
+    // These are some variables used for calculating g
     // Using the multi-t-dist pdf directly from this source: http://www.statlect.com/mcdstu1.htm
-    // because the multi-t-dist doesnt exist in boost using the multi-t dist from wikipedia
+    // because the multi-t-dist doesn't exist in boost using the multi-t dist from wikipedia
     double v = studentLiberty;
     double p = static_cast<double>(_etas.size());
     double top = tgamma((v + p)/2);
@@ -843,7 +843,7 @@ ComputingResult AposterioriMonteCarloPercentileCalculator::calculateEtasAndEpsil
     for(unsigned thread = 0;thread < nbThreads; thread++) {
 
         workers.push_back(std::thread([thread, &abort, _aborter, nbThreads, _etas, meanEtas, avecs, etaLowerChol,
-                                      samples, &etaSamples, studentLiberty, subomega, &ratio, &meanEtasTransposed,
+                                      &etaSamples, subomega, &ratio, &meanEtasTransposed,
                                       v,p,top,part2,part3, &_intakes, &_omega, &_samples, &_residualErrorModel,
                                       &_parameters, &_concentrationCalculator]()
         {
@@ -883,11 +883,6 @@ ComputingResult AposterioriMonteCarloPercentileCalculator::calculateEtasAndEpsil
                     // This is g
                     // Using the multi-t-dist pdf directly from this source: http://www.statlect.com/mcdstu1.htm
                     // because the multi-t-dist doesnt exist in boost using the multi-t dist from wikipedia
-                    //double v = studentLiberty;
-                    //double p = static_cast<double>(_etas.size());
-                    //double top = tgamma((v + p)/2);
-                    //double part2 = std::sqrt(subomega.determinant());
-                    //double part3 = tgamma(v / 2) * std::pow(v * 3.14159, p/2);
                     double part35 = 1 + 1/v * (avec - meanEtas).transpose() * subomega.inverse() * (avec - meanEtas);
                     double part4 = std::pow(part35,(v + p)/2);
                     double g = top / (part2 * part3 * part4);

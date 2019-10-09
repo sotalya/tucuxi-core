@@ -1,7 +1,5 @@
 #include "queryimport.h"
 
-#include <boost/algorithm/string.hpp>
-
 #include "tucucommon/xmldocument.h"
 #include "tucucommon/xmlnode.h"
 #include "tucucommon/xmlattribute.h"
@@ -919,7 +917,9 @@ double QueryImport::getChildDoubleValue(Common::XmlNodeIterator _rootIterator, s
 bool QueryImport::getChildBoolValue(Common::XmlNodeIterator _rootIterator, string _childName) const
 {
     string value = _rootIterator->getChildren(_childName)->getValue();
-    boost::to_lower(value);
+
+    transform(value.begin(), value.end(), value.begin(), ::tolower);
+
     bool finalValue = false;
 
     if (value == "true") {

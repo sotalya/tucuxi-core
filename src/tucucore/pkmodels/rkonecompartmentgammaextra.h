@@ -5,8 +5,6 @@
 #ifndef TUCUXI_CORE_RK4ONECOMPARTMENTGAMMAEXTRA_H
 #define TUCUXI_CORE_RK4ONECOMPARTMENTGAMMAEXTRA_H
 
-#include <boost/math/special_functions/gamma.hpp>
-
 #include "tucucore/intakeintervalcalculatorrk4.h"
 
 namespace Tucuxi {
@@ -40,7 +38,7 @@ public:
 
     inline double probDensityAbsorptionTimes(const double& t)
     {
-        return pow(m_b, m_a) / boost::math::tgamma(m_a) * pow(t, m_a - 1) * exp(-m_b * t);
+        return pow(m_b, m_a) / std::tgamma(m_a) * pow(t, m_a - 1) * exp(-m_b * t);
     }
 
     inline void derive(double _t, const std::vector<double>& _c, std::vector<double>& _dcdt)
