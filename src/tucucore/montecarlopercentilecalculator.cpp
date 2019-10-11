@@ -795,14 +795,14 @@ ComputingResult AposterioriMonteCarloPercentileCalculator::calculateEtasAndEpsil
     std::student_t_distribution<> standardNormalDist(studentLiberty);
 
     // Now we start making a sample. How many samples to take?
-    const int samples = 100000;
-    const int reSamples = 10000;
+    const int nbInitialSamples = 100000;
+    const int nbReSamples = 10000;
 
-    std::vector<Etas> etaSamples(samples);
+    std::vector<Etas> etaSamples(nbInitialSamples);
 
     // This is ratio for the ratios in step 4
-    EigenVector ratio(samples);
-    EigenVector weight(samples);
+    EigenVector ratio(nbInitialSamples);
+    EigenVector weight(nbInitialSamples);
 
     //clock_t t1 = clock();
 
@@ -810,7 +810,7 @@ ComputingResult AposterioriMonteCarloPercentileCalculator::calculateEtasAndEpsil
 
     static AposterioriMatrixCache matrixCache;
 
-    const EigenMatrix &avecs = matrixCache.getAvecs(samples, _etas.size());
+    const EigenMatrix &avecs = matrixCache.getAvecs(nbInitialSamples, _etas.size());
 
 
     //clock_t t2 = clock();
@@ -843,7 +843,7 @@ ComputingResult AposterioriMonteCarloPercentileCalculator::calculateEtasAndEpsil
     for(unsigned thread = 0;thread < nbThreads; thread++) {
 
         workers.push_back(std::thread([thread, &abort, _aborter, nbThreads, _etas, meanEtas, avecs, etaLowerChol,
-                                      &etaSamples, subomega, &ratio, &meanEtasTransposed,
+                                      &etaSamples, subomega, &ratio, &meanEtasTransposed, nbInitialSamples,
                                       v,p,top,part2,part3, &_intakes, &_omega, &_samples, &_residualErrorModel,
                                       &_parameters, &_concentrationCalculator]()
         {
@@ -856,8 +856,8 @@ ComputingResult AposterioriMonteCarloPercentileCalculator::calculateEtasAndEpsil
             Likelihood threadLogLikelihood(_omega, _residualErrorModel, _samples, newIntakes, _parameters, _concentrationCalculator);
 
 
-            unsigned start = thread * (samples / nbThreads);
-            unsigned end = (thread + 1 ) * (samples / nbThreads);
+            unsigned start = thread * (nbInitialSamples / nbThreads);
+            unsigned end = (thread + 1 ) * (nbInitialSamples / nbThreads);
             for (unsigned sample = start; sample < end; sample++) {
                 if (!abort) {
                     if ((_aborter != nullptr) && (_aborter->shouldAbort())) {
@@ -910,10 +910,10 @@ ComputingResult AposterioriMonteCarloPercentileCalculator::calculateEtasAndEpsil
     std::discrete_distribution<std::size_t> discreteDistribution(&weight(0), &weight(0) + weight.size());
 
     // TODO : These epsilons could be stored in a cache to save time
-    _epsilons = std::vector<Deviations>(reSamples);
+    _epsilons = std::vector<Deviations>(nbReSamples);
     int nbEpsilons = _residualErrorModel.nbEpsilons();
     // We fill the epsilons
-    for (std::size_t p = 0; p < reSamples; p++) {
+    for (std::size_t p = 0; p < nbReSamples; p++) {
         _epsilons[p] = Deviations(nbEpsilons, normalDistribution(rnGenerator));
         // If more than one epsilon, fill the remaining ones with new values
         if (nbEpsilons > 1) {
@@ -923,9 +923,9 @@ ComputingResult AposterioriMonteCarloPercentileCalculator::calculateEtasAndEpsil
         }
     }
 
-    _fullEtas = std::vector<Etas>(reSamples);
+    _fullEtas = std::vector<Etas>(nbReSamples);
 
-    for(std::size_t patient = 0; patient < reSamples; patient++) {
+    for(std::size_t patient = 0; patient < nbReSamples; patient++) {
         _fullEtas[patient] = etaSamples[discreteDistribution(rnGenerator)];
     }
 
