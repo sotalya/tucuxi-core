@@ -34,7 +34,7 @@ public:
     /// \param _type mean, peak, maximum, minimum or AUC
     /// \return The list of statistics
     ///
-    CycleStatistic getStatistic(int _compartment, CycleStatisticType _type) { return m_stats[_compartment][static_cast<int>(_type)]; }
+    CycleStatistic getStatistic(size_t _compartment, CycleStatisticType _type) { return m_stats[_compartment][static_cast<size_t>(_type)]; }
 
     ///
     /// \brief Get the statistics of all compartments for the specified type
@@ -48,7 +48,7 @@ public:
         }
 
         for (unsigned int compartment = 0; compartment < m_stats.size(); compartment++) {
-            _stats[compartment][static_cast<int>(_type)] = m_stats[compartment][static_cast<int>(_type)];
+            _stats[compartment][static_cast<size_t>(_type)] = m_stats[compartment][static_cast<size_t>(_type)];
         }
 
         return true;

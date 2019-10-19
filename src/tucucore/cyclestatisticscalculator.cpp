@@ -36,7 +36,7 @@ void CycleStatistics::calculate(const std::vector<Concentrations> &_concentratio
         }
 
         Value prevGradient = 0.0, gradient = 0.0, auc = 0.0, peak = 0.0;
-        int peakPosition = 0;
+        size_t peakPosition = 0;
 
         for (unsigned int nbPoints = 0; nbPoints < (_concentrations[compartment].size() - 1); nbPoints++) {
 
@@ -127,7 +127,7 @@ CycleStatistics::CycleStatistics(const CycleData &_data, std::vector<Value>& _cu
 
 void CycleStatisticsCalculator::calculate(std::vector<CycleData> & _cycles)
 {
-    unsigned int nbComp = _cycles[0].m_concentrations.size();
+    size_t nbComp = _cycles[0].m_concentrations.size();
 
     std::vector<double> auc(nbComp);
     for(size_t i = 0; i < _cycles.size(); i++) {
