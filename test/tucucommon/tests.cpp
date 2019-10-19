@@ -21,9 +21,21 @@ int main(int argc, char** argv)
     // Get application folder
     std::string appFolder = Tucuxi::Common::Utils::getAppFolder(argv);
 
+    int res;
+
+    TestDateTime dateTimeTests;
+    dateTimeTests.add_test("DateTime-datetime", &TestDateTime::datetime);
+    dateTimeTests.add_test("DateTime-timeofday", &TestDateTime::timeofday);
+    dateTimeTests.add_test("DateTime-duration", &TestDateTime::duration);
+    res = dateTimeTests.run(argc, argv);
+    if (res != 0) {
+        printf("Date and time test failed\n");
+        exit(1);
+    }
+
     TestComponentManager componentManagerTests;
     componentManagerTests.add_test("CreateComponent", &TestComponentManager::createComponent);
-    int res = componentManagerTests.run(argc, argv);
+    res = componentManagerTests.run(argc, argv);
     if (res != 0) {
         printf("ComponentManager test failed\n");
         exit(1);
@@ -61,16 +73,6 @@ int main(int argc, char** argv)
     res = scriptEngineTests.run(argc, argv);
     if (res != 0) {
         printf("Script engine test failed\n");
-        exit(1);
-    }
-
-    TestDateTime dateTimeTests;
-    dateTimeTests.add_test("DateTime-datetime", &TestDateTime::datetime);
-    dateTimeTests.add_test("DateTime-timeofday", &TestDateTime::timeofday);
-    dateTimeTests.add_test("DateTime-duration", &TestDateTime::duration);
-    res = dateTimeTests.run(argc, argv);
-    if (res != 0) {
-        printf("Date and time test failed\n");
         exit(1);
     }
 

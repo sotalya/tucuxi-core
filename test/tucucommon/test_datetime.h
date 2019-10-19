@@ -30,6 +30,8 @@ struct TestDateTime : public fructose::test_base<TestDateTime>
         Tucuxi::Common::DateTime d8(2017_y / jul / 27, 22h + 23min + 24s);
         Tucuxi::Common::DateTime d9(2018_y / aug / 28, Tucuxi::Common::TimeOfDay(22h + 23min + 24s));
         Tucuxi::Common::DateTime d10("2017-12-17 17:34:20Z", "%Y-%m-%d %H:%M:%SX");
+        Tucuxi::Common::DateTime d11(1951_y / may / 25, 24s);
+        Tucuxi::Common::DateTime d12("1951-12-17 17:34:20Z", "%Y-%m-%d %H:%M:%SX");
         checkDateTime(d1, 2017, 1, 1, 0, 0, 0);
         checkDateTime(d2, 2018, 1, 1, 0, 0, 0);
         checkDateTime(d3, 2012, 2, 22, 22, 0, 0);
@@ -40,6 +42,8 @@ struct TestDateTime : public fructose::test_base<TestDateTime>
         checkDateTime(d8, 2017, 7, 27, 22, 23, 24);
         checkDateTime(d9, 2018, 8, 28, 22, 23, 24);
         checkDateTime(d10, 2017, 12, 17, 17, 34, 20);
+        checkDateTime(d11, 1951, 5, 25, 0, 0, 24);
+        checkDateTime(d12, 1951, 12, 17, 17, 34, 20);
 
         // Test differences
         Tucuxi::Common::Duration diff = d2 - d1;
@@ -183,19 +187,19 @@ struct TestDateTime : public fructose::test_base<TestDateTime>
 private:
     void checkDateTime(const Tucuxi::Common::DateTime& _date, int _year, int _month, int _day, int _hour, int _minute, int _second)
     {
-        fructose_assert(_date.year() == _year);
-        fructose_assert(_date.month() == _month);
-        fructose_assert(_date.day() == _day);
-        fructose_assert(_date.hour() == _hour);
-        fructose_assert(_date.minute() == _minute);
-        fructose_assert(_date.second() == _second);
+        fructose_assert_eq(_date.year() , _year);
+        fructose_assert_eq(_date.month() , _month);
+        fructose_assert_eq(_date.day() , _day);
+        fructose_assert_eq(_date.hour() , _hour);
+        fructose_assert_eq(_date.minute() , _minute);
+        fructose_assert_eq(_date.second() , _second);
     }
 
     void checkTimeOfDay(const Tucuxi::Common::TimeOfDay& _time, int _hour, int _minute, int _second)
     {
-        fructose_assert(_time.hour() == _hour);
-        fructose_assert(_time.minute() == _minute);
-        fructose_assert(_time.second() == _second);
+        fructose_assert_eq(_time.hour() , _hour);
+        fructose_assert_eq(_time.minute() , _minute);
+        fructose_assert_eq(_time.second() , _second);
     }
     void checkDuration(const Tucuxi::Common::Duration& _duration, double _nbSeconds)
     {
