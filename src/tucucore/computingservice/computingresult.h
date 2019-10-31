@@ -86,7 +86,9 @@ enum class ComputingResult {
     /// The drug model is incompatible with the drug treatment
     IncompatibleTreatmentModel,
     /// The computing component has not been initialized
-    ComputingComponentNotInitialized
+    ComputingComponentNotInitialized,
+    /// The drug domain is uncompatible with the patient covariates
+    UncompatibleDrugDomain
 };
 
 

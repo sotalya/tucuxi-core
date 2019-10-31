@@ -98,7 +98,7 @@ public:
     ///
     DateTime getValueAsDate() {
         return Tucuxi::Common::Utils::ValueToDate(Tucuxi::Common::Utils::stringToValue(m_value, DataType::Date));
-    };
+    }
 
 protected:
     /// \brief Identifier of the original covariate for which the change applies.

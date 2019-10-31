@@ -20,6 +20,11 @@ bool contains(std::vector<T> _vector, T _s) {
 }
 
 
+bool sortSamples(const SampleEvent &_a, const SampleEvent &_b)
+{
+    return _a.getEventTime() < _b.getEventTime();
+}
+
 ComputingResult SampleExtractor::extract(
         const Samples &_samples,
         const AnalyteSet *_analyteGroup,
@@ -50,6 +55,14 @@ ComputingResult SampleExtractor::extract(
             }
         }
     }
+
+    // Sort the samples in chronological order
+    //std::sort(_series.begin(), _series.end(), sortSamples);
+    std::sort(_series.begin(), _series.end(), [](const SampleEvent &_a, const SampleEvent &_b)
+    {
+        return _a.getEventTime() < _b.getEventTime();
+    });
+
     return ComputingResult::Ok;
 }
 
@@ -76,6 +89,14 @@ ComputingResult SampleExtractor::extract(
             }
         }
     }
+
+    // Sort the samples in chronological order
+    //std::sort(_series.begin(), _series.end(), sortSamples);
+    std::sort(_series.begin(), _series.end(), [](const SampleEvent &_a, const SampleEvent &_b)
+    {
+        return _a.getEventTime() < _b.getEventTime();
+    });
+
     return ComputingResult::Ok;
 }
 

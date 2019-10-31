@@ -92,7 +92,8 @@ public:
         std::string& _parametersType,
         std::unique_ptr<GraphData> _pGraph,
         std::vector<double>& _percentiles,
-        std::unique_ptr<Backextrapolation> _pBackextrapolation
+        std::unique_ptr<Backextrapolation> _pBackextrapolation,
+        std::vector<Tucuxi::Common::DateTime> _pointsInTime
     );
 
     RequestData(RequestData& _other) = delete;
@@ -107,6 +108,7 @@ public:
     const GraphData& getpGraph() const;
     const std::vector<double> getPercentiles() const;
     const Backextrapolation& getpBackextrapolation() const;
+    const std::vector<Tucuxi::Common::DateTime>& getPointsInTime() const;
 
 protected:
     const std::string m_requestID;
@@ -118,6 +120,7 @@ protected:
     std::unique_ptr<GraphData> m_pGraph;
     const std::vector<double> m_percentiles;
     std::unique_ptr<Backextrapolation> m_pBackextrapolation;
+    const std::vector<Tucuxi::Common::DateTime> m_pointsInTime;
 };
 
 } // namespace Query

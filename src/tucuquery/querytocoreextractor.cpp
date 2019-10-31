@@ -168,6 +168,11 @@ Tucuxi::Core::ComputingTraits *QueryToCoreExtractor::extractComputingTraits(cons
             for (auto trait : traitsList) {
                 traits->addTrait(std::unique_ptr<Tucuxi::Core::ComputingTrait>(trait));
             }
+        } else if (requestType == "predictionAtTimes") {
+            std::vector<Tucuxi::Core::ComputingTrait *> traitsList = extractPredictionAtTimesTraits(_query, *request.get());
+            for (auto trait : traitsList) {
+                traits->addTrait(std::unique_ptr<Tucuxi::Core::ComputingTrait>(trait));
+            }
         } else if (requestType == "adjustment") {
             std::vector<Tucuxi::Core::ComputingTrait *> traitsList = extractAdaptationTraits(_query, *request.get());
             for (auto trait : traitsList) {
@@ -364,6 +369,47 @@ std::vector<Tucuxi::Core::ComputingTrait * > QueryToCoreExtractor::extractPredic
 
     return traits;
 }
+
+
+std::vector<Tucuxi::Core::ComputingTrait * > QueryToCoreExtractor::extractPredictionAtTimesTraits(const Query &_query, const RequestData &_request) const
+{
+    std::vector<Tucuxi::Core::ComputingTrait * > traits;
+
+
+    Tucuxi::Core::PredictionParameterType predictionParameterType = extractPredictionParameterType(_query, _request);
+
+    Tucuxi::Core::ComputingOption computingOption(predictionParameterType, Tucuxi::Core::CompartmentsOption::MainCompartment);
+
+    std::vector<Tucuxi::Common::DateTime> times;
+
+    std::string drugId = _request.getDrugID();
+
+    DrugData *drugData = nullptr;
+
+    for (const auto &drug : _query.getpParameters().getDrugs()) {
+        if (drug->getDrugID() == drugId) {
+            drugData = drug.get();
+        }
+    }
+
+    if (drugData == nullptr) {
+        // Error
+    }
+
+    for (const auto &t : _request.getPointsInTime()) {
+        times.push_back(t);
+    }
+
+    Tucuxi::Core::ComputingTraitSinglePoints *trait = new Tucuxi::Core::ComputingTraitSinglePoints(
+                _request.getRequestID(),
+                times,
+                computingOption);
+
+    traits.push_back(trait);
+
+    return traits;
+}
+
 
 Tucuxi::Core::DrugModel *QueryToCoreExtractor::extractDrugModel(const Query &_query, const Tucuxi::Core::DrugTreatment *_drugTreatment) const
 {

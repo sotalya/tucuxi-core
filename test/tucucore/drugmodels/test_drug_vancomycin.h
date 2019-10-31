@@ -119,7 +119,7 @@ static std::string vancomycin_tdd = R"(<?xml version="1.0" encoding="UTF-8" stan
                                                                 <inputs>
                                                                     <input>
                                                                         <id>age</id>
-                                                                        <type>int</type>
+                                                                        <type>double</type>
                                                                     </input>
                                                                 </inputs>
                                                                 <code><![CDATA[return (age > 17);
@@ -143,7 +143,7 @@ static std::string vancomycin_tdd = R"(<?xml version="1.0" encoding="UTF-8" stan
                                                                     <inputs>
                                                                         <input>
                                                                             <id>age</id>
-                                                                            <type>int</type>
+                                                                            <type>double</type>
                                                                         </input>
                                                                     </inputs>
                                                                     <code><![CDATA[return (age < 78);

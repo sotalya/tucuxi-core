@@ -860,6 +860,12 @@ ComputingResult ComputingComponent::compute(
             timesSeries.push_back(SampleEvent(times));
         }
 
+        // Sort the times in chronological order
+        std::sort(timesSeries.begin(), timesSeries.end(), [](const SampleEvent &_a, const SampleEvent &_b)
+        {
+            return _a.getEventTime() < _b.getEventTime();
+        });
+
         ConcentrationCalculator calculator;
         computingResult = calculator.computeConcentrationsAtTimes(
                     concentrations,

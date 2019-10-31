@@ -771,13 +771,14 @@ unique_ptr<RequestData> QueryImport::createRequest(Tucuxi::Common::XmlNodeIterat
     static const string REQUEST_ID_NODE_NAME           = "requestId";
     static const string DRUG_ID_NODE_NAME              = "drugId";
     static const string REQUEST_TYPE_NODE_NAME         = "requestType";
-    static const string NBPOINTSPERHOUR_NODE_NAME         = "nbPointsPerHour";
+    static const string NBPOINTSPERHOUR_NODE_NAME      = "nbPointsPerHour";
     static const string DATE_INTERVAL_NODE_NAME        = "dateInterval";
     static const string DATE_INTERVAL_START_NODE_NAME  = "start";
     static const string DATE_INTERVAL_END_NODE_NAME    = "end";
     static const string PREDICTION_TYPE_NODE_NAME      = "parametersType";
     static const string GRAPH_NODE_NAME                = "graph";
     static const string PERCENTILES_NODE_NAME          = "percentiles";
+    static const string POINTSINTIME_NODE_NAME         = "pointsInTime";
     static const string BACKEXTRAPOLATION_NODE_NAME    = "backextrapolation";
 
     string requestId = getChildStringValue(_requestRootIterator, REQUEST_ID_NODE_NAME);
@@ -813,6 +814,16 @@ unique_ptr<RequestData> QueryImport::createRequest(Tucuxi::Common::XmlNodeIterat
         percentilesIterator++;
     }
 
+    Common::XmlNodeIterator pointsInTimeRootIterator = _requestRootIterator->getChildren(POINTSINTIME_NODE_NAME);
+    Common::XmlNodeIterator pointsInTimeIterator = pointsInTimeRootIterator->getChildren();
+    vector<DateTime> pointsInTime;
+    while(pointsInTimeIterator != pointsInTimeIterator.none()) {
+        string value = pointsInTimeIterator->getValue();
+        Common::DateTime datetime(value, DATE_FORMAT);
+        pointsInTime.push_back(datetime);
+        pointsInTimeIterator++;
+    }
+
     Common::XmlNodeIterator backextrapolationRootIterator = _requestRootIterator->getChildren(BACKEXTRAPOLATION_NODE_NAME);
     unique_ptr<Backextrapolation> pBackextrapolation = createBackextrapolation(backextrapolationRootIterator);
 
@@ -825,7 +836,8 @@ unique_ptr<RequestData> QueryImport::createRequest(Tucuxi::Common::XmlNodeIterat
                                  parametersType,
                                  move(pGraphData),
                                  percentiles,
-                                 move(pBackextrapolation)
+                                 move(pBackextrapolation),
+                                 pointsInTime
                              );
 }
 

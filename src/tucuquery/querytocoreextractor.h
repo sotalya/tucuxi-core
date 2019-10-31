@@ -66,6 +66,8 @@ public:
 
     std::vector<Tucuxi::Core::ComputingTrait *> extractPredictionAtSampleTimeTraits(const Query &_query, const RequestData &_request) const;
 
+    std::vector<Tucuxi::Core::ComputingTrait *> extractPredictionAtTimesTraits(const Query &_query, const RequestData &_request) const;
+
     std::vector<Tucuxi::Core::ComputingTrait *> extractFirstDosageTraits(const Query &_query, const RequestData &_request) const;
 
     std::vector<Tucuxi::Core::ComputingTrait *> extractAdaptationTraits(const Query &_query, const RequestData &_request) const;

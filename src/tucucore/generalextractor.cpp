@@ -14,6 +14,7 @@
 #include "tucucore/intaketocalculatorassociator.h"
 #include "tucucore/overloadevaluator.h"
 #include "tucucore/drugmodel/timeconsiderations.h"
+#include "tucucore/drugdomainconstraintsevaluator.h"
 
 using namespace Tucuxi::Common;
 
@@ -337,6 +338,19 @@ ComputingResult GeneralExtractor::generalExtractions(const ComputingTraitStandar
         }
     }
 
+    /*
+    // Evaluate the drug domain constraints with respect to the covariates
+    DrugDomainConstraintsEvaluator domainConstraintsEvaluator;
+    DrugDomainConstraintsEvaluator::Result domainConstraintsResult =
+            domainConstraintsEvaluator.evaluate(_request.getDrugModel().getDomain(),
+                                                _covariatesSeries,
+                                                fantomStart,
+                                                _traits->getEnd());
+
+    if (domainConstraintsResult != DrugDomainConstraintsEvaluator::Result::Compatible) {
+        return ComputingResult::UncompatibleDrugDomain;
+    }
+    */
 
     for (const auto &analyteSet : _request.getDrugModel().getAnalyteSets()) {
         const AnalyteGroupId analyteGroupId =analyteSet->getId();

@@ -34,7 +34,9 @@ DateTime::DateTime(const std::string &_date, const std::string& _format)
     std::stringstream ss(_date);
     ss >> std::get_time(&tm, _format.c_str());
 
-    date::year_month_day day = date::year_month_day(date::year(1900 + tm.tm_year), date::month(tm.tm_mon + 1), date::day(tm.tm_mday));
+    date::year_month_day day = date::year_month_day(date::year(1900 + tm.tm_year),
+                                                    date::month(static_cast<unsigned int>(tm.tm_mon + 1)),
+                                                    date::day(static_cast<unsigned int>(tm.tm_mday)));
     m_date = date::sys_days(day);
     m_date += std::chrono::milliseconds(tm.tm_hour * 3600 * 1000 + tm.tm_min * 60000 + tm.tm_sec * 1000);
 }
@@ -113,7 +115,9 @@ void DateTime::addMonths(int _nMonths)
     int nMonths = year() *12 + month() + _nMonths;
     int nYears = nMonths / 12;
     nMonths = nMonths % 12;
-    m_date = date::sys_days(date::year_month_day(date::year(nYears), date::month(nMonths), curDate.day()));
+    m_date = date::sys_days(date::year_month_day(date::year(nYears),
+                                                 date::month(static_cast<unsigned int>(nMonths)),
+                                                 curDate.day()));
     m_date += std::chrono::milliseconds(t.getDuration());
 }
 
@@ -221,21 +225,21 @@ int DateTime::year() const
 int DateTime::month() const
 {
     date::sys_days days = date::floor<date::days>(m_date);
-    return static_cast<unsigned>(date::year_month_day(days).month());
+    return static_cast<int>(static_cast<unsigned>(date::year_month_day(days).month()));
 }
 
 
 int DateTime::day() const
 {
     date::sys_days days = date::floor<date::days>(m_date);
-    return static_cast<unsigned>(date::year_month_day(days).day());
+    return static_cast<int>(static_cast<unsigned>(date::year_month_day(days).day()));
 }
 
 
 int DateTime::hour() const
 {
     date::sys_days days = date::floor<date::days>(m_date);
-    return std::chrono::duration_cast<std::chrono::hours>(m_date - days).count();
+    return static_cast<int>(std::chrono::duration_cast<std::chrono::hours>(m_date - days).count());
 }
 
 
