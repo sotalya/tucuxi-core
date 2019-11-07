@@ -641,7 +641,7 @@ ComputingResult ComputingAdjustments::addLoadOrRest(std::vector<FullDosage> &_do
                                                      const ComputingTraitAdjustment *_traits,
                                                      const ComputingRequest &_request,
                                                      const std::vector<AnalyteGroupId> &_allGroupIds,
-                                                     const DateTime _calculationStartTime,
+                                                     const Common::DateTime &_calculationStartTime,
                                                      std::map<AnalyteGroupId, std::shared_ptr<PkModel> > &_pkModel,
                                                      GroupsParameterSetSeries &_parameterSeries,
                                                      std::map<AnalyteGroupId, Etas> &_etas)
@@ -658,8 +658,8 @@ ComputingResult ComputingAdjustments::addLoadOrRest(std::vector<FullDosage> &_do
 
 
 typedef struct {
-    FullDosage loadingDosage;
-    double score;
+    FullDosage loadingDosage; // NOLINT(readability-identifier-naming)
+    double score;             // NOLINT(readability-identifier-naming)
 } LoadingCandidate;
 
 
@@ -667,7 +667,7 @@ ComputingResult ComputingAdjustments::addLoadOrRest(FullDosage &_dosage,
                                                     const ComputingTraitAdjustment *_traits,
                                                     const ComputingRequest &_request,
                                                     const std::vector<AnalyteGroupId> &_allGroupIds,
-                                                    const Common::DateTime _calculationStartTime,
+                                                    const Common::DateTime &_calculationStartTime,
                                                     std::map<AnalyteGroupId, std::shared_ptr<PkModel> > &_pkModel,
                                                     GroupsParameterSetSeries &_parameterSeries,
                                                     std::map<AnalyteGroupId, Etas> &_etas)
@@ -744,7 +744,7 @@ ComputingResult ComputingAdjustments::generatePredictions(std::vector<FullDosage
                                                           const ComputingTraitAdjustment *_traits,
                                                           const ComputingRequest &_request,
                                                           const std::vector<AnalyteGroupId> &_allGroupIds,
-                                                          const DateTime _calculationStartTime,
+                                                          const DateTime &_calculationStartTime,
                                                           std::map<AnalyteGroupId, std::shared_ptr<PkModel> > &_pkModel,
                                                           GroupsParameterSetSeries &_parameterSeries,
                                                           std::map<AnalyteGroupId, Etas> &_etas
@@ -760,11 +760,11 @@ ComputingResult ComputingAdjustments::generatePredictions(std::vector<FullDosage
 }
 
 
-ComputingResult ComputingAdjustments::generatePrediction(FullDosage &dosage,
+ComputingResult ComputingAdjustments::generatePrediction(FullDosage &_dosage,
                                                          const ComputingTraitAdjustment *_traits,
                                                          const ComputingRequest &_request,
                                                          const std::vector<AnalyteGroupId> &_allGroupIds,
-                                                         const DateTime _calculationStartTime,
+                                                         const Common::DateTime &_calculationStartTime,
                                                          std::map<AnalyteGroupId, std::shared_ptr<PkModel> > &_pkModel,
                                                          GroupsParameterSetSeries &_parameterSeries,
                                                          std::map<AnalyteGroupId, Etas> &_etas
@@ -777,7 +777,7 @@ ComputingResult ComputingAdjustments::generatePrediction(FullDosage &dosage,
     std::unique_ptr<DosageHistory> newHistory;
 
     newHistory = std::unique_ptr<DosageHistory>(_request.getDrugTreatment().getDosageHistory().clone());
-    for (const auto & timeRange : dosage.m_history.getDosageTimeRanges()) {
+    for (const auto & timeRange : _dosage.m_history.getDosageTimeRanges()) {
         newHistory->mergeDosage(timeRange.get());
     }
 
@@ -849,7 +849,7 @@ ComputingResult ComputingAdjustments::generatePrediction(FullDosage &dosage,
     }
 
     // We clear the prediction data
-    dosage.m_data.clear();
+    _dosage.m_data.clear();
 
     for (auto analyteGroupId : _allGroupIds) {
         for (size_t i = 0; i < intakeSeriesPerGroup[analyteGroupId].size(); i++) {
@@ -871,7 +871,7 @@ ComputingResult ComputingAdjustments::generatePrediction(FullDosage &dosage,
                           [&] (const ParameterValue &_v1, const ParameterValue &_v2) { return _v1.m_parameterId < _v2.m_parameterId; });
 
 
-                dosage.m_data.push_back(cycle);
+                _dosage.m_data.push_back(cycle);
             }
         }
     }

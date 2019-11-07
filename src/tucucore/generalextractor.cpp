@@ -151,7 +151,7 @@ ComputingResult GeneralExtractor::extractOmega(
     return ComputingResult::Ok;
 }
 
-std::vector<const FullFormulationAndRoute*> GeneralExtractor::extractFormulationAndRoutes(const DrugModel &_drugModel, const IntakeSeries _intakeSeries)
+std::vector<const FullFormulationAndRoute*> GeneralExtractor::extractFormulationAndRoutes(const DrugModel &_drugModel, const IntakeSeries &_intakeSeries)
 {
     std::vector<const FullFormulationAndRoute*> result;
     std::vector<FormulationAndRoute> allFormulationAndRoutes;

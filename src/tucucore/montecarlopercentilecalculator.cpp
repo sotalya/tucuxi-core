@@ -286,8 +286,8 @@ ComputingResult MonteCarloPercentileCalculatorBase::computePredictions(
 
 typedef struct
 {
-    double c;
-    bool isValid;
+    double c;     // NOLINT(readability-identifier-naming)
+    bool isValid; // NOLINT(readability-identifier-naming)
 } valid_concentration_t;
 
 ComputingResult MonteCarloPercentileCalculatorBase::sortAndExtractPercentiles(

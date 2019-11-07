@@ -57,7 +57,7 @@ public:
 
     std::vector<const FullFormulationAndRoute*> extractFormulationAndRoutes(
             const DrugModel &_drugModel,
-            const IntakeSeries _intakeSeries);
+            const IntakeSeries &_intakeSeries);
 
     ComputingResult convertAnalytes(
             IntakeSeries &_intakeSeries,

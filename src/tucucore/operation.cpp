@@ -161,7 +161,7 @@ OperationInput::setValue(const double &_value)
     return false;
 }
 
-std::string Operation::sm_errorMessage;
+std::string Operation::sm_errorMessage; // NOLINT(readability-identifier-naming)
 
 std::string Operation::getLastErrorMessage() const
 {

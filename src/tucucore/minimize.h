@@ -13,10 +13,10 @@ namespace Core {
 /// Should use that implementation its better as it can fall back to simper methods
 /// For documentation just check out the link here: http://www.boost.org/doc/libs/1_60_0/libs/math/doc/html/math_toolkit/roots/brent_minima.html
 struct Bracketmethod {
-    double ax,bx,cx,fa,fb,fc;
+    double ax,bx,cx,fa,fb,fc; // NOLINT(readability-identifier-naming)
     template <class T>
-    void bracket(const double a, const double b, T &func) {
-        const double GOLD=1.618034,GLIMIT=100.0,TINY=1.0e-20;
+    void bracket(const double a, const double b, T &func) { // NOLINT(readability-identifier-naming)
+        const double GOLD=1.618034,GLIMIT=100.0,TINY=1.0e-20; // NOLINT(readability-identifier-naming)
         ax=a; bx=b;
         double fu;
         fa=func(ax);
@@ -65,25 +65,25 @@ struct Bracketmethod {
         }
     }
 
-    inline void shft2(double &a, double &b, const double c) {
+    inline void shft2(double &a, double &b, const double c) { // NOLINT(readability-identifier-naming)
         a=b; b=c;
     }
-    inline void shft3(double &a, double &b, double &c, const double d) {
+    inline void shft3(double &a, double &b, double &c, const double d) { // NOLINT(readability-identifier-naming)
         a=b; b=c; c=d;
     }
-    inline void mov3(double &a, double &b, double &c, const double d, const double e, const double f) {
+    inline void mov3(double &a, double &b, double &c, const double d, const double e, const double f) { // NOLINT(readability-identifier-naming)
         a=d; b=e; c=f;
     }
 };
 
 struct Dbrent : Bracketmethod {
-    double xmin,fmin;
-    const double tol;
-    Dbrent(const double toll=3.0e-8) : tol(toll) {}
+    double xmin,fmin; // NOLINT(readability-identifier-naming)
+    const double tol; // NOLINT(readability-identifier-naming)
+    Dbrent(const double toll=3.0e-8) : tol(toll) {} // NOLINT(readability-identifier-naming)
     template <class T>
-    double minimize(T &funcd) {
-        const int ITMAX=100;
-        const double ZEPS=std::numeric_limits<double>::epsilon()*1.0e-3;
+    double minimize(T &funcd) { // NOLINT(readability-identifier-naming)
+        const int ITMAX=100; // NOLINT(readability-identifier-naming)
+        const double ZEPS=std::numeric_limits<double>::epsilon()*1.0e-3; // NOLINT(readability-identifier-naming)
         bool ok1,ok2;
         double a,b,d=0.0,d1,d2,du,dv,dw,dx,e=0.0;
         double fu,fv,fw,fx,olde,tol1,tol2,u,u1,u2,v,w,x,xm;
@@ -179,21 +179,21 @@ struct Dbrent : Bracketmethod {
 
 template <typename T>
 struct Df1dim {
-    const ValueVector &p;
-    const ValueVector &xi;
-    size_t n;
-    T &funcd;
-    ValueVector xt;
-    ValueVector dft;
-    Df1dim(ValueVector &pp, ValueVector &xii, T &funcdd) : p(pp),
-        xi(xii), n(pp.size()), funcd(funcdd), xt(n), dft(n) {}
-    double operator()(const Value x){
+    const ValueVector &p; // NOLINT(readability-identifier-naming)
+    const ValueVector &xi; // NOLINT(readability-identifier-naming)
+    size_t n; // NOLINT(readability-identifier-naming)
+    T &funcd; // NOLINT(readability-identifier-naming)
+    ValueVector xt; // NOLINT(readability-identifier-naming)
+    ValueVector dft; // NOLINT(readability-identifier-naming)
+    Df1dim(ValueVector &pp, ValueVector &xii, T &funcdd) : p(pp), // NOLINT(readability-identifier-naming)
+        xi(xii), n(pp.size()), funcd(funcdd), xt(n), dft(n) {} // NOLINT(readability-identifier-naming)
+    double operator()(const Value x){ // NOLINT(readability-identifier-naming)
         for (size_t j=0;j<n;j++) {
             xt[j]=p[j]+x*xi[j];
         }
         return funcd(xt);
     }
-    double df(const Value x){
+    double df(const Value x){ // NOLINT(readability-identifier-naming)
         TMP_UNUSED_PARAMETER(x);
         double df1=0.0;
         funcd.df(xt,dft);
@@ -206,11 +206,11 @@ struct Df1dim {
 
 template <typename T>
 struct Dlinemethod {
-    ValueVector p;
-    ValueVector xi;
-    T &func;
-    size_t n;
-    Dlinemethod(T &funcc) : func(funcc) {}
+    ValueVector p; // NOLINT(readability-identifier-naming)
+    ValueVector xi; // NOLINT(readability-identifier-naming)
+    T &func; // NOLINT(readability-identifier-naming)
+    size_t n; // NOLINT(readability-identifier-naming)
+    Dlinemethod(T &funcc) : func(funcc) {} // NOLINT(readability-identifier-naming)
     double linmin() {
         double ax,xx,xmin;
         n=p.size();
@@ -231,19 +231,19 @@ struct Dlinemethod {
 template <typename T>
 struct Frprmn : Dlinemethod<T> {
     //int iter;
-    double fret;
+    double fret; // NOLINT(readability-identifier-naming)
     using Dlinemethod<T>::func;
     using Dlinemethod<T>::linmin;
     using Dlinemethod<T>::p;
     using Dlinemethod<T>::xi;
-    const double ftol;
-    Frprmn(T &funcd, const double ftoll=3.0e-8) : Dlinemethod<T>(funcd),
+    const double ftol; // NOLINT(readability-identifier-naming)
+    Frprmn(T &funcd, const double ftoll=3.0e-8) : Dlinemethod<T>(funcd), // NOLINT(readability-identifier-naming)
         ftol(ftoll) {}
 
-    ValueVector minimize(const ValueVector &pp) {
-        const int ITMAX=200;
-        const double EPS=1.0e-18;
-        const double GTOL=1.0e-8;
+    ValueVector minimize(const ValueVector &pp) { // NOLINT(readability-identifier-naming)
+        const int ITMAX=200; // NOLINT(readability-identifier-naming)
+        const double EPS=1.0e-18; // NOLINT(readability-identifier-naming)
+        const double GTOL=1.0e-8; // NOLINT(readability-identifier-naming)
         double gg,dgg;
         size_t n=pp.size();
         p=pp;

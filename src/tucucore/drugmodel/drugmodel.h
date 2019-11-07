@@ -93,8 +93,8 @@ private:
 
 
     typedef struct {
-        std::string id;
-        bool isVariable;
+        std::string id;  // NOLINT(readability-identifier-naming)
+        bool isVariable; // NOLINT(readability-identifier-naming)
     } ParameterInfo;
 
     std::vector<ParameterInfo> m_parametersVector;

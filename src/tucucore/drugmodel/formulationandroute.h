@@ -156,14 +156,18 @@ public:
     /// \brief Is the duration smaller?
     bool operator<(const FormulationAndRoute &_f) const
     {
-        if (m_formulation < _f.m_formulation)
+        if (m_formulation < _f.m_formulation) {
             return true;
-        if (m_route < _f.m_route)
+        }
+        if (m_route < _f.m_route) {
             return true;
-        if (m_absorptionModel < _f.m_absorptionModel)
+        }
+        if (m_absorptionModel < _f.m_absorptionModel) {
             return true;
-        if (m_administrationName < _f.m_administrationName)
+        }
+        if (m_administrationName < _f.m_administrationName) {
             return true;
+        }
         return false;
     }
 

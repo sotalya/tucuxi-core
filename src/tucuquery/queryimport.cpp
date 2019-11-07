@@ -391,11 +391,11 @@ unique_ptr<CovariateData> QueryImport::createCovariateData(Common::XmlNodeIterat
 }
 
 
-struct cmp_by_date
+struct CmpByDate
 {
-    inline bool operator()(const std::unique_ptr<SampleData>& a, const std::unique_ptr<SampleData>& b)
+    inline bool operator()(const std::unique_ptr<SampleData>& _a, const std::unique_ptr<SampleData>& _b)
     {
-        return a->getpSampleDate() < b->getpSampleDate();
+        return _a->getpSampleDate() < _b->getpSampleDate();
     }
 };
 
@@ -428,7 +428,7 @@ unique_ptr<DrugData> QueryImport::createDrugData(Common::XmlNodeIterator& _drugD
     }
 
 
-    sort(samples.begin(), samples.end(), cmp_by_date());
+    sort(samples.begin(), samples.end(), CmpByDate());
 
 
     vector< unique_ptr<TargetData> > targets;

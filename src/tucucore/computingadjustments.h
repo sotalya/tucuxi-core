@@ -81,7 +81,7 @@ protected:
                                   const ComputingTraitAdjustment *_traits,
                                   const ComputingRequest &_request,
                                   const std::vector<AnalyteGroupId> &_allGroupIds,
-                                  const DateTime _calculationStartTime,
+                                  const DateTime &_calculationStartTime,
                                   std::map<AnalyteGroupId, std::shared_ptr<PkModel> > &_pkModel,
                                   GroupsParameterSetSeries &_parameterSeries,
                                   std::map<AnalyteGroupId, Etas> &_etas);
@@ -90,7 +90,7 @@ protected:
                                   const ComputingTraitAdjustment *_traits,
                                   const ComputingRequest &_request,
                                   const std::vector<AnalyteGroupId> &_allGroupIds,
-                                  const DateTime _calculationStartTime,
+                                  const DateTime &_calculationStartTime,
                                   std::map<AnalyteGroupId, std::shared_ptr<PkModel> > &_pkModel,
                                   GroupsParameterSetSeries &_parameterSeries,
                                   std::map<AnalyteGroupId, Etas> &_etas);
@@ -99,7 +99,7 @@ protected:
                                         const ComputingTraitAdjustment *_traits,
                                         const ComputingRequest &_request,
                                         const std::vector<AnalyteGroupId> &_allGroupIds,
-                                        const DateTime _calculationStartTime,
+                                        const Common::DateTime &_calculationStartTime,
                                         std::map<AnalyteGroupId, std::shared_ptr<PkModel> > &_pkModel,
                                         GroupsParameterSetSeries &_parameterSeries,
                                         std::map<AnalyteGroupId, Etas> &_etas
@@ -110,7 +110,7 @@ protected:
                                        const ComputingTraitAdjustment *_traits,
                                        const ComputingRequest &_request,
                                        const std::vector<AnalyteGroupId> &_allGroupIds,
-                                       const DateTime _calculationStartTime,
+                                       const DateTime &_calculationStartTime,
                                        std::map<AnalyteGroupId, std::shared_ptr<PkModel> > &_pkModel,
                                        GroupsParameterSetSeries &_parameterSeries,
                                        std::map<AnalyteGroupId, Etas> &_etas

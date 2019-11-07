@@ -554,7 +554,7 @@ public:
     /// \param _percentileRanks List of percentiles ranks
     /// \param _aborter An aborter object allowing to abort the calculation
     /// \return The status of calculation
-    virtual ComputingResult calculate(
+    ComputingResult calculate(
             PercentilesPrediction &_percentiles,
             const DateTime &_recordFrom,
             const DateTime &_recordTo,
