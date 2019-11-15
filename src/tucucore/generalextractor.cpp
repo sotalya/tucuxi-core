@@ -256,9 +256,14 @@ ComputingResult GeneralExtractor::generalExtractions(const ComputingTraitStandar
 
     }
 
-    OverloadEvaluator overloadEvaluator;
-    if (!overloadEvaluator.isAcceptable(intakeSeries, _traits)) {
-        return ComputingResult::TooBig;
+    {
+        IntakeSeries recordedIntakes;
+        selectRecordedIntakes(recordedIntakes, intakeSeries, _traits->getStart(), _traits->getEnd());
+
+        OverloadEvaluator *overloadEvaluator = SingleOverloadEvaluator::getInstance();
+        if (!overloadEvaluator->isAcceptable(recordedIntakes, _traits)) {
+            return ComputingResult::TooBig;
+        }
     }
 
     std::vector<FormulationAndRoute> allFormulationAndRoutes;
