@@ -127,6 +127,9 @@ CycleStatistics::CycleStatistics(const CycleData &_data, std::vector<Value>& _cu
 
 void CycleStatisticsCalculator::calculate(std::vector<CycleData> & _cycles)
 {
+    if (_cycles.empty()) {
+        return;
+    }
     size_t nbComp = _cycles[0].m_concentrations.size();
 
     std::vector<double> auc(nbComp);
