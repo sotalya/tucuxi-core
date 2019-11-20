@@ -2,6 +2,7 @@
 DEFINES += TUCUXI_GIT_REVISION='\\"$$system(git --git-dir $$PWD/../../.git rev-parse --short HEAD)\\"'
 
 HEADERS += \
+    $$PWD/../../src/tucucore/computingresponsexmlexport.h \
     $$PWD/../../src/tucucore/computingutils.h \
     $$PWD/../../src/tucucore/drugmodel/drugmodel.h \
     $$PWD/../../src/tucucore/cachedexponentials.h \
@@ -96,6 +97,7 @@ HEADERS += \
     $$PWD/../../src/tucucore/computingadjustments.h
 
 SOURCES += \
+    $$PWD/../../src/tucucore/computingresponsexmlexport.cpp \
     $$PWD/../../src/tucucore/computingutils.cpp \
     $$PWD/../../src/tucucore/drugmodel/drugmodel.cpp \
     $$PWD/../../src/tucucore/cachedexponentials.cpp \

@@ -88,7 +88,7 @@ std::string ComputingComponent::getErrorString() const
 
 ComputingResult ComputingComponent::compute(const ComputingRequest &_request, std::unique_ptr<ComputingResponse> &_response)
 {
-    try {
+//    try {
         if (m_utils == nullptr) {
             m_logger.error("The Computing Component has not been initialized");
             return ComputingResult::ComputingComponentNotInitialized;
@@ -122,9 +122,9 @@ ComputingResult ComputingComponent::compute(const ComputingRequest &_request, st
 
         return result;
 
-    } catch (...) {
-        return ComputingResult::ComputingComponentExceptionError;
-    }
+//    } catch (...) {
+//        return ComputingResult::ComputingComponentExceptionError;
+//    }
 }
 
 

@@ -93,10 +93,25 @@ void CycleStatistics::calculate(const std::vector<Concentrations> &_concentratio
                     Duration(std::chrono::seconds(static_cast<int>(_times[compartment][peakPosition] * 3600.0))),
                     peak);
 
+        double interval = _times[compartment].back() - _times[compartment][0];
+
         // add cycle interval, in hours
         m_stats[compartment][static_cast<int>(CycleStatisticType::CycleInterval)].addValue(
                     Duration(),
-                    (_times[compartment].back() - _times[compartment][0]));
+                    interval);
+
+
+        // add AUC on 24h with time 0
+        if (interval == 0.0) {
+            m_stats[compartment][static_cast<int>(CycleStatisticType::AUC24)].addValue(
+                        Duration(),
+                        -1.0);
+        }
+        else {
+            m_stats[compartment][static_cast<int>(CycleStatisticType::AUC24)].addValue(
+                        Duration(),
+                        auc * 24.0 / interval);
+        }
     }
 }
 
@@ -142,6 +157,7 @@ void CycleStatisticsCalculator::calculate(std::vector<CycleData> & _cycles)
             _cycles[i].m_statistics.setStatistics(comp, CycleStatisticType::Maximum, st.getStatistic(comp, CycleStatisticType::Maximum));
             _cycles[i].m_statistics.setStatistics(comp, CycleStatisticType::Minimum, st.getStatistic(comp, CycleStatisticType::Minimum));
             _cycles[i].m_statistics.setStatistics(comp, CycleStatisticType::AUC, st.getStatistic(comp, CycleStatisticType::AUC));
+            _cycles[i].m_statistics.setStatistics(comp, CycleStatisticType::AUC24, st.getStatistic(comp, CycleStatisticType::AUC24));
             _cycles[i].m_statistics.setStatistics(comp, CycleStatisticType::CumulativeAuc, st.getStatistic(comp, CycleStatisticType::CumulativeAuc));
             _cycles[i].m_statistics.setStatistics(comp, CycleStatisticType::Residual, st.getStatistic(comp, CycleStatisticType::Residual));
             _cycles[i].m_statistics.setStatistics(comp, CycleStatisticType::CycleInterval, st.getStatistic(comp, CycleStatisticType::CycleInterval));

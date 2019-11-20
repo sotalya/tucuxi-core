@@ -4,6 +4,8 @@
 #include "tucucore/computingcomponent.h"
 #include "tucucore/computingservice/computingrequest.h"
 #include "tucucore/computingresponseexport.h"
+#include "tucucore/computingresponsexmlexport.h"
+#include "tucucore/overloadevaluator.h"
 #include "tucuquery/query.h"
 #include "tucuquery/queryimport.h"
 #include "tucuquery/querytocoreextractor.h"
@@ -22,6 +24,10 @@ int CliComputer::compute(std::string _drugPath,
                           std::string _outputPath)
 {
     TMP_UNUSED_PARAMETER(_drugPath);
+
+    // Change the settings for the tests
+    Tucuxi::Core::SingleOverloadEvaluator::getInstance()->setValues(100000, 2000, 10000);
+
 
     Tucuxi::Common::LoggerHelper logHelper;
 
@@ -96,6 +102,17 @@ int CliComputer::compute(std::string _drugPath,
     else {
         logHelper.info("The response files were successfully generated");
     }
+
+    ComputingResponseXmlExport xmlExporter;
+
+    if (!xmlExporter.exportToFile(*response.get(), _outputPath + "/" + query->getQueryID() + ".xml")) {
+        logHelper.error("Could not export the response XML file");
+        return 1;
+    }
+    else {
+        logHelper.info("The response XML file was successfully generated");
+    }
+
 
     if (drugTreatment != nullptr) {
         delete drugTreatment;
