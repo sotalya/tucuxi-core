@@ -691,7 +691,7 @@ unique_ptr<Core::FormulationAndRoute> QueryImport::createFormulationAndRoute(Com
     static const string FORMULATION_NODE_NAME          = "formulation";
     static const string ADMINISTRATION_NAME_NODE_NAME  = "administrationName";
     static const string ADMINISTRATION_ROUTE_NODE_NAME = "administrationRoute";
-    static const string ABSORBTION_MODEL_NODE_NAME     = "absorbtionModel";
+    static const string ABSORPTION_MODEL_NODE_NAME     = "absorptionModel";
 
     string formulationValue = getChildStringValue(_formulationAndRouteRootIterator, FORMULATION_NODE_NAME);
     Core::Formulation formulation = Core::Formulation::Undefined;
@@ -740,28 +740,28 @@ unique_ptr<Core::FormulationAndRoute> QueryImport::createFormulationAndRoute(Com
         formulation = Core::Formulation::Undefined;
     }
 
-    string absorbtionModelValue = getChildStringValue(_formulationAndRouteRootIterator, ABSORBTION_MODEL_NODE_NAME);
-    Core::AbsorptionModel absorbtionModel = Core::AbsorptionModel::Undefined;
+    string absorptionModelValue = getChildStringValue(_formulationAndRouteRootIterator, ABSORPTION_MODEL_NODE_NAME);
+    Core::AbsorptionModel absorptionModel = Core::AbsorptionModel::Undefined;
 
-    if (absorbtionModelValue == "Undefined") {
-        absorbtionModel = Core::AbsorptionModel::Undefined;
-    } else if (absorbtionModelValue == "Extravascular") {
-        absorbtionModel = Core::AbsorptionModel::Extravascular;
-    } else if (absorbtionModelValue == "ExtravascularLag") {
-        absorbtionModel = Core::AbsorptionModel::ExtravascularLag;
-    } else if (absorbtionModelValue == "Intravascular") {
-        absorbtionModel = Core::AbsorptionModel::Intravascular;
-    } else if (absorbtionModelValue == "Infusion") {
-        absorbtionModel = Core::AbsorptionModel::Infusion;
+    if (absorptionModelValue == "Undefined") {
+        absorptionModel = Core::AbsorptionModel::Undefined;
+    } else if (absorptionModelValue == "Extravascular") {
+        absorptionModel = Core::AbsorptionModel::Extravascular;
+    } else if (absorptionModelValue == "ExtravascularLag") {
+        absorptionModel = Core::AbsorptionModel::ExtravascularLag;
+    } else if (absorptionModelValue == "Intravascular") {
+        absorptionModel = Core::AbsorptionModel::Intravascular;
+    } else if (absorptionModelValue == "Infusion") {
+        absorptionModel = Core::AbsorptionModel::Infusion;
     } else {
         // Throw error or manage error
-        absorbtionModel = Core::AbsorptionModel::Undefined;
+        absorptionModel = Core::AbsorptionModel::Undefined;
     }
 
     return make_unique<Core::FormulationAndRoute>(
                                                formulation,
                                                administrationRoute,
-                                               absorbtionModel,
+                                               absorptionModel,
                                                administrationName
                                             );
 }

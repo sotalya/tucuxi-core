@@ -138,6 +138,9 @@ ParametersExtractor::ParametersExtractor(const CovariateSeries &_covariates,
 
 ComputingResult ParametersExtractor::extract(ParameterSetSeries &_series)
 {
+    std::vector<std::string> covariateIds;
+    bool first_iteration = true;
+
     // Map containing the computed parameters along with their latest value.
     std::map<std::string, std::pair<const ParameterDefinition*, Value>> cParamMap;
 
@@ -169,16 +172,27 @@ ComputingResult ParametersExtractor::extract(ParameterSetSeries &_series)
             }
             // Add all covariates at the first time instant as inputs of the OGM.
             for (const auto &cv : tcv.second) {
+
+                if (first_iteration) {
+                    covariateIds.push_back(cv.first);
+                }
+
                 // Create ex-novo a fake covariate.
                 std::shared_ptr<CovariateEvent> event =
                         std::make_shared<CovariateEvent>(CovariateEvent(CovariateDefinition(cv.first, Tucuxi::Common::Utils::varToString(cv.second), nullptr),
                                                                         tcv.first, cv.second));
+
+                // std::cout << "Covariate " << cv.first << " : " << cv.second << std::endl;
                 m_ogm.registerInput(event, cv.first);
                 cEvMap.insert(std::make_pair(cv.first, event));
             }
+
+            first_iteration = false;
+
         } else {
             // Just set the covariate values that are scheduled at this time instant.
             for (const auto &cv : tcv.second) {
+                // std::cout << "Covariate " << cv.first << " : " << cv.second << std::endl;
                 cEvMap.at(cv.first)->setValue(cv.second);
             }
         }
@@ -212,6 +226,17 @@ ComputingResult ParametersExtractor::extract(ParameterSetSeries &_series)
             }
         }
 
+        std::vector<SimpleCovariate> covariateValues;
+
+        // Get the covariate values used here:
+        for (const auto &cov : covariateIds) {
+            double value;
+            m_ogm.getValue(cov, value);
+            covariateValues.push_back({cov, value});
+        }
+        pSetEvent.m_covariates = covariateValues;
+
+
         // Add the parameter set event to the series of events.
         _series.addParameterSetEvent(pSetEvent);
     }
@@ -237,6 +262,8 @@ ComputingResult ParametersExtractor::buildFullSet(const ParameterSetSeries &_inp
             current.addParameterEvent((*it).getDefinition(), (*it).getValue());
             it ++;
         }
+
+        current.m_covariates = _inputSeries.m_parameterSets[i].m_covariates;
 
         // Add the new event to the output series
         _outputSeries.addParameterSetEvent(current);

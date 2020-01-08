@@ -262,6 +262,7 @@ ComputingResult GeneralExtractor::generalExtractions(const ComputingTraitStandar
 
         OverloadEvaluator *overloadEvaluator = SingleOverloadEvaluator::getInstance();
         if (!overloadEvaluator->isAcceptable(recordedIntakes, _traits)) {
+            m_logger.error("Computation is too big. Aborting to avoid a computer crash. {}", overloadEvaluator->getErrorMessage());
             return ComputingResult::TooBig;
         }
     }

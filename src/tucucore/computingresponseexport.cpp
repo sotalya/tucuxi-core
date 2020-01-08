@@ -5,6 +5,8 @@
 #include <fstream>
 #include <iomanip>
 
+#include "tucucommon/loggerhelper.h"
+
 namespace Tucuxi {
 namespace Core {
 
@@ -23,6 +25,11 @@ bool ComputingResponseExport::exportToFiles(const ComputingResponse &_computingR
 
         std::string fileName = _filePath + "/" + _computingResponse.getId() + "_" + response->getId() + ".dat";
         file.open(fileName);
+        if (file.rdstate() & std::ostream::failbit) {
+            Tucuxi::Common::LoggerHelper logHelper;
+            logHelper.error("The file {} could not be opened.", fileName);
+            return false;
+        }
 
         // We start by checking for adjustements, as AdjustmentResponse is a subclass of SinglePredictionResponse
         if (dynamic_cast<Tucuxi::Core::AdjustmentResponse*>(response.get()) != nullptr) {

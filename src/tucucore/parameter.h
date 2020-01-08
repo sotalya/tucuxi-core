@@ -23,6 +23,13 @@ struct TestParameterExtractor;
 namespace Tucuxi {
 namespace Core {
 
+class SimpleCovariate
+{
+public:
+    std::string m_id;
+    double m_value;
+};
+
 class ParametersExtractor;
 
 class Parameter : public IndividualValue<ParameterDefinition>
@@ -138,6 +145,8 @@ public:
 
     // Make the test class friend, as this will allow us to manually check the available events.
     friend TestParameterExtractor;
+
+    std::vector<SimpleCovariate> m_covariates;
 
 private:
     Parameters m_parameters;

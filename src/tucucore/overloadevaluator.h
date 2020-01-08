@@ -48,6 +48,14 @@ public:
     ///
     void setValues(int _nbPredictionPoints, int _nbPercentilesPoints, int _nbDosagePossibilities);
 
+    ///
+    /// \brief get the error message if an overload is detected
+    /// \return The error message
+    ///
+    /// This function should be called if isAcceptable() returns false to know why.
+    ///
+    std::string getErrorMessage() const;
+
 
 private:
 
@@ -59,6 +67,9 @@ private:
 
     /// Maximum number of dosage possibilities for an adjustment
     int m_nbDosagePossibilities;
+
+    /// Error message that is set when there is an overload detected
+    std::string m_errorMessage;
 };
 
 class SingleOverloadEvaluator

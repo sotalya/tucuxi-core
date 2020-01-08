@@ -23,6 +23,12 @@ typedef struct {
     Value m_value;
 } ParameterValue;
 
+typedef struct {
+    std::string m_covariateId;
+    Value m_value;
+} CovariateValue;
+
+
 ///
 /// \brief The CycleData class, meant to embed data about a cycle
 /// It contains concentrations and times for a single cycle (or interval)
@@ -70,6 +76,10 @@ public:
     /// \brief Pk parameter values for this cycle
     /// Can be used or not to store the values of the Pk parameters used for this cycle
     std::vector<ParameterValue> m_parameters;
+
+    /// \brief covariates values for this cycle
+    /// Can be used or not to store the values of the covariates used for this cycle
+    std::vector<CovariateValue> m_covariates;
 
     /// \brief The statistics about the cycle data
     /// For each compartment or analyte, the statistics.

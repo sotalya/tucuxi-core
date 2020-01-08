@@ -9,6 +9,8 @@
 #include "tucucommon/xmlnode.h"
 #include "tucucommon/xmlattribute.h"
 #include "tucucommon/xmldocument.h"
+#include "tucucommon/loggerhelper.h"
+#include "tucucommon/general.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -27,6 +29,11 @@ bool ComputingResponseXmlExport::exportToFile(const ComputingResponse &_computin
 
     std::ofstream file;
     file.open(_fileName);
+    if (file.rdstate() & std::ostream::failbit) {
+        Tucuxi::Common::LoggerHelper logHelper;
+        logHelper.error("The file {} could not be opened.", _fileName);
+        return false;
+    }
     file << xmlString;
     file.close();
 
@@ -157,7 +164,8 @@ bool ComputingResponseXmlExport::exportToString(const ComputingResponse &_comput
 bool ComputingResponseXmlExport::exportAdjustment(const Tucuxi::Core::AdjustmentResponse *_prediction,
                       Tucuxi::Common::XmlNode &_rootNode)
 {
-
+    TMP_UNUSED_PARAMETER(_prediction);
+    TMP_UNUSED_PARAMETER(_rootNode);
     return false;
 }
 
@@ -230,7 +238,7 @@ bool ComputingResponseXmlExport::exportPercentiles(const Tucuxi::Core::Percentil
                       Tucuxi::Common::XmlNode &_rootNode)
 {
     size_t nbRanks = _prediction->getNbRanks();
-    for (size_t index = 0; index < nbRanks; index++) {
+    for (unsigned int index = 0; index < nbRanks; index++) {
         Tucuxi::Common::XmlNode percentile = m_doc.createNode(
                     Tucuxi::Common::EXmlNodeType::Element, "percentile");
         _rootNode.addChild(percentile);
@@ -265,6 +273,18 @@ bool ComputingResponseXmlExport::exportCycleData(const Tucuxi::Core::CycleData &
         addNode(parameterNode, "value", std::to_string(parameter.m_value));
     }
 
+
+    Tucuxi::Common::XmlNode covariates = m_doc.createNode(
+                Tucuxi::Common::EXmlNodeType::Element, "covariates");
+    cycleData.addChild(covariates);
+    for(const auto &covariate : _cycleData.m_covariates) {
+        Tucuxi::Common::XmlNode covariateNode = m_doc.createNode(
+                    Tucuxi::Common::EXmlNodeType::Element, "covariate");
+        covariates.addChild(covariateNode);
+        addNode(covariateNode, "id", covariate.m_covariateId);
+        addNode(covariateNode, "value", std::to_string(covariate.m_value));
+    }
+
     // Concatenate the times
     std::string timesString;
     for(size_t i = 0; i < _cycleData.m_times[0].size(); i++) {
@@ -292,14 +312,14 @@ bool ComputingResponseXmlExport::exportCycleData(const Tucuxi::Core::CycleData &
 
     // Extract statistics
 
-    double mean;
-    double auc;
-    double auc24;
-    double cumulativeAuc;
-    double residual;
-    double peak;
-    double minimum;
-    double maximum;
+    double mean = -1.0;
+    double auc = -1.0;
+    double auc24 = -1.0;
+    double cumulativeAuc = -1.0;
+    double residual = -1.0;
+    double peak = -1.0;
+//    double minimum = -1.0;
+//    double maximum = -1.0;
     Tucuxi::Common::DateTime date;
     bool ok = true;
 
@@ -310,8 +330,8 @@ bool ComputingResponseXmlExport::exportCycleData(const Tucuxi::Core::CycleData &
     ok &= _cycleData.m_statistics.getStatistic(0, Tucuxi::Core::CycleStatisticType::CumulativeAuc).getValue(date, cumulativeAuc);
     ok &= _cycleData.m_statistics.getStatistic(0, Tucuxi::Core::CycleStatisticType::Residual).getValue(date, residual);
     ok &= _cycleData.m_statistics.getStatistic(0, Tucuxi::Core::CycleStatisticType::Peak).getValue(date, peak);
-    ok &= _cycleData.m_statistics.getStatistic(0, Tucuxi::Core::CycleStatisticType::Minimum).getValue(date, minimum);
-    ok &= _cycleData.m_statistics.getStatistic(0, Tucuxi::Core::CycleStatisticType::Maximum).getValue(date, maximum);
+    //ok &= _cycleData.m_statistics.getStatistic(0, Tucuxi::Core::CycleStatisticType::Minimum).getValue(date, minimum);
+    //ok &= _cycleData.m_statistics.getStatistic(0, Tucuxi::Core::CycleStatisticType::Maximum).getValue(date, maximum);
 
     addNode(statistics, "mean", mean);
     addNode(statistics, "auc", auc);
@@ -319,8 +339,8 @@ bool ComputingResponseXmlExport::exportCycleData(const Tucuxi::Core::CycleData &
     addNode(statistics, "cumulativeAuc", cumulativeAuc);
     addNode(statistics, "residual", residual);
     addNode(statistics, "peak", peak);
-    addNode(statistics, "minimum", minimum);
-    addNode(statistics, "maximum", maximum);
+    //addNode(statistics, "minimum", minimum);
+    //addNode(statistics, "maximum", maximum);
     if (!ok) {
         std::cout << "Something went wrong here" << std::endl;
     }

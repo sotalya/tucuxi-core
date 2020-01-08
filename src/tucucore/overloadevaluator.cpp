@@ -1,5 +1,7 @@
 #include "overloadevaluator.h"
 
+#include <sstream>
+
 #include "tucucore/computingservice/computingtrait.h"
 
 namespace Tucuxi {
@@ -18,6 +20,10 @@ OverloadEvaluator::OverloadEvaluator(int _nbPredictionPoints, int _nbPercentiles
 
 }
 
+std::string OverloadEvaluator::getErrorMessage() const
+{
+    return m_errorMessage;
+}
 
 void OverloadEvaluator::setValues(int _nbPredictionPoints, int _nbPercentilesPoints, int _nbDosagePossibilities)
 {
@@ -38,12 +44,18 @@ bool OverloadEvaluator::isAcceptable(IntakeSeries &_intakeSeries,
     if (dynamic_cast<const ComputingTraitConcentration *>(_trait) != nullptr)
     {
         if (nbPoints > m_nbPredictionPoints) {
+            std::stringstream ss;
+            ss << "Asking for " << nbPoints << " points, but the maximum allowed is " << m_nbPredictionPoints;
+            m_errorMessage = ss.str();
             return false;
         }
     }
     else if (dynamic_cast<const ComputingTraitPercentiles *>(_trait) != nullptr)
     {
         if (nbPoints > m_nbPercentilePoints) {
+            std::stringstream ss;
+            ss << "Asking for " << nbPoints << " points for percentiles, but the maximum allowed is " << m_nbPercentilePoints;
+            m_errorMessage = ss.str();
             return false;
         }
     }

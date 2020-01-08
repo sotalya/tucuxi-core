@@ -21,4 +21,4 @@ SOURCES += \
 
 
 # Because of Eigen:
-QMAKE_CXXFLAGS += -Wno-int-in-bool-context
+QMAKE_CXXFLAGS += -Wno-int-in-bool-context -Wno-extra-semi-stmt
