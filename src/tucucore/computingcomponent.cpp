@@ -263,7 +263,7 @@ ComputingResult ComputingComponent::compute(
         DateTime start = recordedIntakes[i].getEventTime();
         // std::cout << "Time index " << i << " : " << start << std::endl;
         // times values are in hours
-        std::chrono::milliseconds ms = std::chrono::milliseconds(static_cast<int>(times.back())) * 3600 * 1000;
+        std::chrono::milliseconds ms = std::chrono::milliseconds(static_cast<int>(times.back() * 3600 * 1000));
         Duration ds(ms);
         DateTime end = start + ds;
         // std::cout << "End Time index " << i << " : " << end << std::endl;
