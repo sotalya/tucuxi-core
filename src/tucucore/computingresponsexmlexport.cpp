@@ -164,9 +164,25 @@ bool ComputingResponseXmlExport::exportToString(const ComputingResponse &_comput
 bool ComputingResponseXmlExport::exportAdjustment(const Tucuxi::Core::AdjustmentResponse *_prediction,
                       Tucuxi::Common::XmlNode &_rootNode)
 {
-    TMP_UNUSED_PARAMETER(_prediction);
-    TMP_UNUSED_PARAMETER(_rootNode);
-    return false;
+    Tucuxi::Common::XmlNode analyteIds = m_doc.createNode(
+                Tucuxi::Common::EXmlNodeType::Element, "analyteIds");
+    _rootNode.addChild(analyteIds);
+    for (const auto &analyteId: _prediction->getIds()) {
+        addNode(analyteIds, "analyteId", analyteId);
+    }
+
+    Tucuxi::Common::XmlNode adjustments = m_doc.createNode(
+                Tucuxi::Common::EXmlNodeType::Element, "adjustments");
+    _rootNode.addChild(adjustments);
+
+    for(const auto &adj : _prediction->getAdjustments()) {
+        Tucuxi::Common::XmlNode adjustment = m_doc.createNode(
+                    Tucuxi::Common::EXmlNodeType::Element, "adjustment");
+        adjustments.addChild(adjustment);
+        addNode(adjustment, "score", adj.getGlobalScore());
+    }
+
+    return true;
 }
 
 bool ComputingResponseXmlExport::exportSinglePrediction(const Tucuxi::Core::SinglePredictionResponse *_prediction,

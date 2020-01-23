@@ -19,6 +19,7 @@ Value translateToUnit(Value _value, Unit _initialUnit, Unit _finalUnit)
         {"mg/l-ug/l", 1000.0},
         {"ug/l-mg/l", 0.0001},
         {"mg*h/l-ug*h/l", 1000.0},
+        {"h*mg/l-ug*h/l", 1000.0},
         {"ug*h/l-mg*h/l", 0.001}
     };
 

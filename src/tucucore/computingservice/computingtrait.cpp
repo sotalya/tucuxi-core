@@ -106,7 +106,7 @@ ComputingTraitAdjustment::ComputingTraitAdjustment(
         FormulationAndRouteSelectionOption _formulationAndRouteSelectionOption) :
     ComputingTraitStandard(_id, _start, _end, _nbPointsPerHour, _computingOption),
     m_adjustmentTime(_adjustmentTime),
-    m_adjustmentOption(_adjustmentOption),
+    m_bestCandidatesOption(_adjustmentOption),
     m_loadingOption(_loadingOption),
     m_restPeriodOption(_restPeriodOption),
     m_steadyStateTargetOption(_steadyStateTargetOption),
@@ -124,7 +124,7 @@ Tucuxi::Common::DateTime ComputingTraitAdjustment::getAdjustmentTime() const
 
 BestCandidatesOption ComputingTraitAdjustment::getBestCandidatesOption() const
 {
-    return m_adjustmentOption;
+    return m_bestCandidatesOption;
 }
 
 FormulationAndRouteSelectionOption ComputingTraitAdjustment::getFormulationAndRouteSelectionOption() const

@@ -417,20 +417,20 @@ class ComputingTraitAdjustment : public ComputingTraitStandard
 public:
     ///
     /// \brief ComputingTraitAdjustment
-    /// \param _id
-    /// \param _start
-    /// \param _end
+    /// \param _id Id of the request
+    /// \param _start Start time of the range to be calculated
+    /// \param _end End time of the range to be calculated
     /// \param _nbPointsPerHour Requested number of points per hour
-    /// \param _nbPoints
-    /// \param _computingOption
-    /// \param _adjustmentTime
-    /// \param _adjustmentOption
-    /// \param _loadingOption
-    /// \param _restPeriodOption
-    /// \param _steadyStateTargetOption
-    /// \param _targetExtractionOption
-    /// \param _formulationAndRouteSelectionOption
-    /// If nbPoints = 0, then no curve will be returned by the computation, only the dosages
+    /// \param _computingOption Some computing options
+    /// \param _adjustmentTime Time at which the adjustment has to be calculated
+    /// \param _candidatesOption Selection of best candidates options
+    /// \param _loadingOption Selects if a loading dose can be proposed or not
+    /// \param _restPeriodOption Selects if a rest period can be proposed or not
+    /// \param _steadyStateTargetOption Indicates if the targets have to be evaluated at steady state
+    /// \param _targetExtractionOption Target extraction options
+    /// \param _formulationAndRouteSelectionOption Selection of the formulation and route options
+    ///
+    /// If _nbPointsPerHour = 0, then no curve will be returned by the computation, only the dosages
     ///
     ComputingTraitAdjustment(RequestResponseId _id,
                              Tucuxi::Common::DateTime _start,
@@ -438,7 +438,7 @@ public:
                              double _nbPointsPerHour,
                              ComputingOption _computingOption,
                              Tucuxi::Common::DateTime _adjustmentTime,
-                             BestCandidatesOption _adjustmentOption,
+                             BestCandidatesOption _candidatesOption,
                              LoadingOption _loadingOption,
                              RestPeriodOption _restPeriodOption,
                              SteadyStateTargetOption _steadyStateTargetOption,
@@ -450,11 +450,41 @@ public:
     /// \return Time of the adjustment
     ///
     Tucuxi::Common::DateTime getAdjustmentTime() const;
+
+    ///
+    /// \brief Gets the best candidate option
+    /// \return The best candidate option
+    ///
     BestCandidatesOption getBestCandidatesOption() const;
+
+    ///
+    /// \brief Gets the formulation and route selection option
+    /// \return The formulation and route selection option
+    ///
     FormulationAndRouteSelectionOption getFormulationAndRouteSelectionOption() const;
+
+    ///
+    /// \brief Gets the option about evaluating the targets at steady state
+    /// \return The option about evaluating the targets at steady state
+    ///
     SteadyStateTargetOption getSteadyStateTargetOption() const;
+
+    ///
+    /// \brief Gets the option about a potential loading dose
+    /// \return The option about a potential loading dose
+    ///
     LoadingOption getLoadingOption() const;
+
+    ///
+    /// \brief Gets the option about a potential rest period
+    /// \return The option about a potential rest period
+    ///
     RestPeriodOption getRestPeriodOption() const;
+
+    ///
+    /// \brief Gets the target extraction option
+    /// \return The target extraction option
+    ///
     TargetExtractionOption getTargetExtractionOption() const;
 
 protected:
@@ -463,16 +493,21 @@ protected:
     Tucuxi::Common::DateTime m_adjustmentTime;
 
     //! Adjustment options : only the best, or all possible ones
-    BestCandidatesOption m_adjustmentOption;
+    BestCandidatesOption m_bestCandidatesOption;
 
+    //! Shall we propose a loading dose if applicable?
     LoadingOption m_loadingOption;
 
+    //! Shall we propose a rest period if applicable?
     RestPeriodOption m_restPeriodOption;
 
+    //! Shall the targets be evaluated at steady state or not
     SteadyStateTargetOption m_steadyStateTargetOption;
 
+    //! Target extraction options
     TargetExtractionOption m_targetExtractionOption;
 
+    //! What formulation and route have to be used for generating candidates
     FormulationAndRouteSelectionOption m_formulationAndRouteSelectionOption;
 
 private:

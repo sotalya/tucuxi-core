@@ -171,13 +171,13 @@ ComputingResult ComputingAdjustments::buildCandidatesForInterval(const FullFormu
 }
 
 
-bool compareCandidates(const FullDosage &_a, const FullDosage &_b)
+bool compareCandidates(const DosageAdjustment &_a, const DosageAdjustment &_b)
 {
     return _a.getGlobalScore() < _b.getGlobalScore();
 }
 
 
-std::vector<FullDosage> ComputingAdjustments::sortAndFilterCandidates(std::vector<FullDosage> &_candidates, BestCandidatesOption _option)
+std::vector<DosageAdjustment> ComputingAdjustments::sortAndFilterCandidates(std::vector<DosageAdjustment> &_candidates, BestCandidatesOption _option)
 {
     // Sort in reverse order. The highest score will be the first element
     // There is an issue with DosageHistory as the copy don't work correctly
@@ -197,7 +197,7 @@ std::vector<FullDosage> ComputingAdjustments::sortAndFilterCandidates(std::vecto
         return _candidates;
     } // break;
     case BestCandidatesOption::BestDosage : {
-        std::vector<FullDosage> bestDosage;
+        std::vector<DosageAdjustment> bestDosage;
         if (_candidates.size() != 0) {
             bestDosage.push_back(_candidates[0]);
         }
@@ -374,7 +374,7 @@ ComputingResult ComputingAdjustments::compute(
         }
     }
 
-    std::vector<FullDosage> dosageCandidates;
+    std::vector<DosageAdjustment> dosageCandidates;
 
     // A vector of vector because each adjustment candidate can have various targets
     std::vector< std::vector< TargetEvaluationResult> > evaluationResults;
@@ -543,7 +543,7 @@ ComputingResult ComputingAdjustments::compute(
 #endif // 0
             index ++;
 
-            FullDosage dosage;
+            DosageAdjustment dosage;
             dosage.m_targetsEvaluation = candidateResults;
 
 
@@ -608,7 +608,7 @@ ComputingResult ComputingAdjustments::compute(
 
 
 
-    std::vector<FullDosage> finalCandidates;
+    std::vector<DosageAdjustment> finalCandidates;
     finalCandidates = sortAndFilterCandidates(dosageCandidates, _traits->getBestCandidatesOption());
 
     ComputingResult addResult = addLoadOrRest(finalCandidates, _traits, _request, allGroupIds, initialCalculationTime,
@@ -637,7 +637,7 @@ ComputingResult ComputingAdjustments::compute(
 }
 
 
-ComputingResult ComputingAdjustments::addLoadOrRest(std::vector<FullDosage> &_dosages,
+ComputingResult ComputingAdjustments::addLoadOrRest(std::vector<DosageAdjustment> &_dosages,
                                                      const ComputingTraitAdjustment *_traits,
                                                      const ComputingRequest &_request,
                                                      const std::vector<AnalyteGroupId> &_allGroupIds,
@@ -658,12 +658,12 @@ ComputingResult ComputingAdjustments::addLoadOrRest(std::vector<FullDosage> &_do
 
 
 typedef struct {
-    FullDosage loadingDosage; // NOLINT(readability-identifier-naming)
+    DosageAdjustment loadingDosage; // NOLINT(readability-identifier-naming)
     double score;             // NOLINT(readability-identifier-naming)
 } LoadingCandidate;
 
 
-ComputingResult ComputingAdjustments::addLoadOrRest(FullDosage &_dosage,
+ComputingResult ComputingAdjustments::addLoadOrRest(DosageAdjustment &_dosage,
                                                     const ComputingTraitAdjustment *_traits,
                                                     const ComputingRequest &_request,
                                                     const std::vector<AnalyteGroupId> &_allGroupIds,
@@ -698,7 +698,7 @@ ComputingResult ComputingAdjustments::addLoadOrRest(FullDosage &_dosage,
     std::vector<LoadingCandidate> loadingCandidates;
 
     for (const auto &candidate : candidates) {
-        FullDosage loadingDosage;
+        DosageAdjustment loadingDosage;
         // Create the loading dose
         std::unique_ptr<DosageTimeRange> newDosage = std::unique_ptr<DosageTimeRange>(
                     createLoadingDosage(candidate, _traits->getAdjustmentTime()));
@@ -740,7 +740,7 @@ ComputingResult ComputingAdjustments::addLoadOrRest(FullDosage &_dosage,
     return ComputingResult::Ok;
 }
 
-ComputingResult ComputingAdjustments::generatePredictions(std::vector<FullDosage> &_dosages,
+ComputingResult ComputingAdjustments::generatePredictions(std::vector<DosageAdjustment> &_dosages,
                                                           const ComputingTraitAdjustment *_traits,
                                                           const ComputingRequest &_request,
                                                           const std::vector<AnalyteGroupId> &_allGroupIds,
@@ -760,7 +760,7 @@ ComputingResult ComputingAdjustments::generatePredictions(std::vector<FullDosage
 }
 
 
-ComputingResult ComputingAdjustments::generatePrediction(FullDosage &_dosage,
+ComputingResult ComputingAdjustments::generatePrediction(DosageAdjustment &_dosage,
                                                          const ComputingTraitAdjustment *_traits,
                                                          const ComputingRequest &_request,
                                                          const std::vector<AnalyteGroupId> &_allGroupIds,

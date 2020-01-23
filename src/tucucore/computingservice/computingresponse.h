@@ -154,7 +154,7 @@ private:
 /// The dosage history, the score (suitability of the dosage), and concentrations
 /// if the concentrations have been calculated
 ///
-class FullDosage
+class DosageAdjustment
 {
 public:
 
@@ -184,16 +184,16 @@ class AdjustmentResponse : public SinglePredictionResponse
 public:
     AdjustmentResponse(RequestResponseId _id) : SinglePredictionResponse(_id) {}
 
-    void addAdjustment(FullDosage _adjustment) { m_adjustments.push_back(_adjustment);}
+    void addAdjustment(DosageAdjustment _adjustment) { m_adjustments.push_back(_adjustment);}
 
-    void setAdjustments(std::vector<FullDosage> &_adjustments) { m_adjustments = _adjustments;}
+    void setAdjustments(std::vector<DosageAdjustment> &_adjustments) { m_adjustments = _adjustments;}
 
-    const std::vector<FullDosage> getAdjustments() const { return m_adjustments;}
+    const std::vector<DosageAdjustment> getAdjustments() const { return m_adjustments;}
 
 protected:
 
     /// A vector of possible dosage adjustments
-    std::vector<FullDosage> m_adjustments;
+    std::vector<DosageAdjustment> m_adjustments;
 };
 
 ///

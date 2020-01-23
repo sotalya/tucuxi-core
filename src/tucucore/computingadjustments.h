@@ -40,7 +40,7 @@ protected:
     /// - Return only the best candidate
     /// - Return the best valid candidate for each interval
     ///
-    std::vector<FullDosage> sortAndFilterCandidates(std::vector<FullDosage> &_candidates, BestCandidatesOption _option);
+    std::vector<DosageAdjustment> sortAndFilterCandidates(std::vector<DosageAdjustment> &_candidates, BestCandidatesOption _option);
 
 
     /// Structure representing dosing candidates in terms of dose, interval and infusion time
@@ -77,7 +77,7 @@ protected:
             const SimpleDosageCandidate &_candidate,
             DateTime _startTime);
 
-    ComputingResult addLoadOrRest(std::vector<FullDosage> &_dosages,
+    ComputingResult addLoadOrRest(std::vector<DosageAdjustment> &_dosages,
                                   const ComputingTraitAdjustment *_traits,
                                   const ComputingRequest &_request,
                                   const std::vector<AnalyteGroupId> &_allGroupIds,
@@ -86,7 +86,7 @@ protected:
                                   GroupsParameterSetSeries &_parameterSeries,
                                   std::map<AnalyteGroupId, Etas> &_etas);
 
-    ComputingResult addLoadOrRest(FullDosage &_dosage,
+    ComputingResult addLoadOrRest(DosageAdjustment &_dosage,
                                   const ComputingTraitAdjustment *_traits,
                                   const ComputingRequest &_request,
                                   const std::vector<AnalyteGroupId> &_allGroupIds,
@@ -95,7 +95,7 @@ protected:
                                   GroupsParameterSetSeries &_parameterSeries,
                                   std::map<AnalyteGroupId, Etas> &_etas);
 
-    ComputingResult generatePredictions(std::vector<FullDosage> &_dosages,
+    ComputingResult generatePredictions(std::vector<DosageAdjustment> &_dosages,
                                         const ComputingTraitAdjustment *_traits,
                                         const ComputingRequest &_request,
                                         const std::vector<AnalyteGroupId> &_allGroupIds,
@@ -106,7 +106,7 @@ protected:
                                         );
 
 
-    ComputingResult generatePrediction(FullDosage &_dosage,
+    ComputingResult generatePrediction(DosageAdjustment &_dosage,
                                        const ComputingTraitAdjustment *_traits,
                                        const ComputingRequest &_request,
                                        const std::vector<AnalyteGroupId> &_allGroupIds,
