@@ -381,9 +381,17 @@ enum class TargetExtractionOption
     /// Only use the individual targets
     IndividualTargets,
 
+    /// Only use the individual targets if a target definition exists
+    IndividualTargetsIfDefinitionExists,
+
     /// Use the individual target, and if for an active moiety and a target type no
     /// individual target exists, then use the definition
-    DefinitionIfNoIndividualTarget
+    DefinitionIfNoIndividualTarget,
+
+    /// Use the individual target if a target definition exist, and if for an
+    /// active moiety and a target type no individual target exists,
+    /// then use the definition
+    IndividualTargetsIfDefinitionExistsAndDefinitionIfNoIndividualTarget
 };
 
 ///

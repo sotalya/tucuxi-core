@@ -46,6 +46,7 @@ enum class TargetType {
     PeakDividedByMic
 };
 
+std::string toString(const TargetType type);
 
 ///
 /// \brief The TargetDefinition class
@@ -70,10 +71,12 @@ public:
                      std::unique_ptr<SubTargetDefinition> _tBest,
                      std::unique_ptr<SubTargetDefinition> _toxicityAlarm,
                      std::unique_ptr<SubTargetDefinition> _inefficacyAlarm,
-                     Unit _micUnit = Unit()) :
+                     Unit _micUnit = Unit(),
+                     Unit _timeUnit = Unit("h")) :
         m_targetType(_type),
         m_unit(_unit),
         m_micUnit(_micUnit),
+        m_timeUnit(_timeUnit),
         m_activeMoietyId(_activeMoietyId),
         m_valueMin(std::move(_valueMin)),
         m_valueMax(std::move(_valueMax)),
@@ -93,6 +96,7 @@ public:
     std::string getActiveMoietyId() const { return m_activeMoietyId;}
     Unit getUnit() const { return m_unit;}
     Unit getMicUnit() const { return m_micUnit;}
+    Unit getTimeUnit() const { return m_timeUnit;}
 
     const SubTargetDefinition & getCMin() const { return *m_valueMin;}
     const SubTargetDefinition & getCMax() const { return *m_valueMax;}
@@ -112,6 +116,7 @@ protected:
     TargetType m_targetType;
     Unit m_unit;
     Unit m_micUnit;
+    Unit m_timeUnit;
     std::string m_activeMoietyId;
 
     std::unique_ptr<SubTargetDefinition> m_valueMin;

@@ -8,6 +8,7 @@
 #include "tucucore/drugtreatment/target.h"
 #include "tucucore/targetevent.h"
 #include "tucucore/covariateevent.h"
+#include "tucucore/drugmodel/activemoiety.h"
 #include "tucucore/computingservice/computingtrait.h"
 #include "tucucore/computingservice/computingresult.h"
 
@@ -36,6 +37,7 @@ public:
     /// - Priority to targets over targetDefinitions
     /// - Only individual targets
     ComputingResult extract(
+            ActiveMoietyId _activeMoietyId,
             const CovariateSeries &_covariates,
             const TargetDefinitions& _targetDefinitions,
             const Targets &_targets,
@@ -45,6 +47,8 @@ public:
             TargetSeries &_series);
 
 protected:
+
+    TargetEvent targetEventFromTarget(const Target *_target);
 
     TargetEvent targetEventFromTarget(const Target *_target, const TargetDefinition *_targetDefinition);
 

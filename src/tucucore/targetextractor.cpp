@@ -10,9 +10,9 @@
 namespace Tucuxi {
 namespace Core {
 
-TargetEvent TargetExtractor::targetEventFromTarget(const Target *_target, const TargetDefinition *_targetDefinition) {
+TargetEvent TargetExtractor::targetEventFromTarget(const Target *_target) {
 
-    switch (_targetDefinition->m_targetType) {
+    switch (_target->m_targetType) {
 
     case TargetType::Peak :
     case TargetType::Residual :
@@ -20,13 +20,13 @@ TargetEvent TargetExtractor::targetEventFromTarget(const Target *_target, const 
     {
         // Here we consider times as minutes. This has to be fixed once
         return TargetEvent(
-                    _targetDefinition->getActiveMoietyId(),
-                    _targetDefinition->getTargetType(),
+                    _target->getActiveMoietyId(),
+                    _target->m_targetType,
                     Unit("ug/l"),
-                    _targetDefinition->getUnit(),
-                    translateToUnit(_target->m_valueMin, _targetDefinition->getUnit(), Unit("ug/l")),
-                    translateToUnit(_target->m_valueBest, _targetDefinition->getUnit(), Unit("ug/l")),
-                    translateToUnit(_target->m_valueMax, _targetDefinition->getUnit(), Unit("ug/l")),
+                    _target->m_unit,
+                    translateToUnit(_target->m_valueMin, _target->m_unit, Unit("ug/l")),
+                    translateToUnit(_target->m_valueBest, _target->m_unit, Unit("ug/l")),
+                    translateToUnit(_target->m_valueMax, _target->m_unit, Unit("ug/l")),
                     0.0, // we do not need the MIC
                     _target->m_tMin,
                     _target->m_tBest,
@@ -41,14 +41,14 @@ TargetEvent TargetExtractor::targetEventFromTarget(const Target *_target, const 
 
         // Here we consider times as minutes. This has to be fixed once
         return TargetEvent(
-                    _targetDefinition->getActiveMoietyId(),
-                    _targetDefinition->getTargetType(),
+                    _target->getActiveMoietyId(),
+                    _target->m_targetType,
                     Unit("ug*h/l"),
-                    _targetDefinition->getUnit(),
-                    translateToUnit(_target->m_valueMin, _targetDefinition->getUnit(), Unit("ug*h/l")),
-                    translateToUnit(_target->m_valueBest, _targetDefinition->getUnit(), Unit("ug*h/l")),
-                    translateToUnit(_target->m_valueMax, _targetDefinition->getUnit(), Unit("ug*h/l")),
-                    translateToUnit(_target->m_mic, _targetDefinition->getMicUnit(), Unit("ug/l")),
+                    _target->m_unit,
+                    translateToUnit(_target->m_valueMin,_target->m_unit, Unit("ug*h/l")),
+                    translateToUnit(_target->m_valueBest, _target->m_unit, Unit("ug*h/l")),
+                    translateToUnit(_target->m_valueMax, _target->m_unit, Unit("ug*h/l")),
+                    translateToUnit(_target->m_mic, _target->m_unit, Unit("ug/l")),
                     _target->m_tMin,
                     _target->m_tBest,
                     _target->m_tMax);
@@ -60,14 +60,14 @@ TargetEvent TargetExtractor::targetEventFromTarget(const Target *_target, const 
 
         // Here we consider times as minutes. This has to be fixed once
         return TargetEvent(
-                    _targetDefinition->getActiveMoietyId(),
-                    _targetDefinition->getTargetType(),
+                    _target->getActiveMoietyId(),
+                    _target->m_targetType,
                     Unit("h"),
-                    _targetDefinition->getUnit(),
-                    translateToUnit(_target->m_valueMin, _targetDefinition->getUnit(), Unit("h")),
-                    translateToUnit(_target->m_valueBest, _targetDefinition->getUnit(), Unit("h")),
-                    translateToUnit(_target->m_valueMax, _targetDefinition->getUnit(), Unit("h")),
-                    translateToUnit(_target->m_mic, _targetDefinition->getMicUnit(), Unit("ug/l")),
+                    _target->m_unit,
+                    translateToUnit(_target->m_valueMin, _target->m_unit, Unit("h")),
+                    translateToUnit(_target->m_valueBest, _target->m_unit, Unit("h")),
+                    translateToUnit(_target->m_valueMax, _target->m_unit, Unit("h")),
+                    translateToUnit(_target->m_mic, _target->m_unit, Unit("ug/l")),
                     _target->m_tMin,
                     _target->m_tBest,
                     _target->m_tMax);
@@ -78,14 +78,14 @@ TargetEvent TargetExtractor::targetEventFromTarget(const Target *_target, const 
 
         // Here we consider times as minutes. This has to be fixed once
         return TargetEvent(
-                    _targetDefinition->getActiveMoietyId(),
-                    _targetDefinition->getTargetType(),
+                    _target->getActiveMoietyId(),
+                    _target->m_targetType,
                     Unit(""),
-                    _targetDefinition->getUnit(),
-                    translateToUnit(_target->m_valueMin, _targetDefinition->getUnit(), Unit("")),
-                    translateToUnit(_target->m_valueBest, _targetDefinition->getUnit(), Unit("")),
-                    translateToUnit(_target->m_valueMax, _targetDefinition->getUnit(), Unit("")),
-                    translateToUnit(_target->m_mic, _targetDefinition->getMicUnit(), Unit("ug/l")),
+                    _target->m_unit,
+                    translateToUnit(_target->m_valueMin, _target->m_unit, Unit("")),
+                    translateToUnit(_target->m_valueBest, _target->m_unit, Unit("")),
+                    translateToUnit(_target->m_valueMax, _target->m_unit, Unit("")),
+                    translateToUnit(_target->m_mic, _target->m_unit, Unit("ug/l")),
                     _target->m_tMin,
                     _target->m_tBest,
                     _target->m_tMax);
@@ -98,8 +98,113 @@ TargetEvent TargetExtractor::targetEventFromTarget(const Target *_target, const 
         logger.error("A target of an unkown type was given to the TargetExtractor");
 
         return TargetEvent(
-                    _targetDefinition->getActiveMoietyId(),
-                    _targetDefinition->getTargetType(),
+                    _target->getActiveMoietyId(),
+                    _target->m_targetType,
+                    Unit(""),
+                    _target->m_unit,
+                    _target->m_valueMin,
+                    _target->m_valueBest,
+                    _target->m_valueMax,
+                    _target->m_mic,
+                    _target->m_tMin,
+                    _target->m_tBest,
+                    _target->m_tMax);
+    } break;
+    }
+}
+
+
+
+TargetEvent TargetExtractor::targetEventFromTarget(const Target *_target, const TargetDefinition *_targetDefinition) {
+
+    switch (_targetDefinition->m_targetType) {
+
+    case TargetType::Peak :
+    case TargetType::Residual :
+    case TargetType::Mean :
+    {
+        // Here we consider times as minutes. This has to be fixed once
+        return TargetEvent(
+                    _target->getActiveMoietyId(),
+                    _target->m_targetType,
+                    Unit("ug/l"),
+                    _targetDefinition->getUnit(),
+                    translateToUnit(_target->m_valueMin, _target->m_unit, Unit("ug/l")),
+                    translateToUnit(_target->m_valueBest, _target->m_unit, Unit("ug/l")),
+                    translateToUnit(_target->m_valueMax, _target->m_unit, Unit("ug/l")),
+                    0.0, // we do not need the MIC
+                    _target->m_tMin,
+                    _target->m_tBest,
+                    _target->m_tMax);
+    } break;
+    case TargetType::Auc :
+    case TargetType::Auc24 :
+    case TargetType::CumulativeAuc :
+    case TargetType::AucOverMic :
+    case TargetType::Auc24OverMic :
+    {
+
+        // Here we consider times as minutes. This has to be fixed once
+        return TargetEvent(
+                    _target->getActiveMoietyId(),
+                    _target->m_targetType,
+                    Unit("ug*h/l"),
+                    _targetDefinition->getUnit(),
+                    translateToUnit(_target->m_valueMin,_target->m_unit, Unit("ug*h/l")),
+                    translateToUnit(_target->m_valueBest, _target->m_unit, Unit("ug*h/l")),
+                    translateToUnit(_target->m_valueMax, _target->m_unit, Unit("ug*h/l")),
+                    translateToUnit(_target->m_mic, _target->m_unit, Unit("ug/l")),
+                    _target->m_tMin,
+                    _target->m_tBest,
+                    _target->m_tMax);
+    } break;
+    case TargetType::AucDividedByMic :
+    case TargetType::Auc24DividedByMic :
+    case TargetType::TimeOverMic :
+    {
+
+        // Here we consider times as minutes. This has to be fixed once
+        return TargetEvent(
+                    _target->getActiveMoietyId(),
+                    _target->m_targetType,
+                    Unit("h"),
+                    _targetDefinition->getUnit(),
+                    translateToUnit(_target->m_valueMin, _target->m_unit, Unit("h")),
+                    translateToUnit(_target->m_valueBest, _target->m_unit, Unit("h")),
+                    translateToUnit(_target->m_valueMax, _target->m_unit, Unit("h")),
+                    translateToUnit(_target->m_mic, _target->m_unit, Unit("ug/l")),
+                    _target->m_tMin,
+                    _target->m_tBest,
+                    _target->m_tMax);
+    } break;
+
+    case TargetType::PeakDividedByMic :
+    {
+
+        // Here we consider times as minutes. This has to be fixed once
+        return TargetEvent(
+                    _target->getActiveMoietyId(),
+                    _target->m_targetType,
+                    Unit(""),
+                    _targetDefinition->getUnit(),
+                    translateToUnit(_target->m_valueMin, _target->m_unit, Unit("")),
+                    translateToUnit(_target->m_valueBest, _target->m_unit, Unit("")),
+                    translateToUnit(_target->m_valueMax, _target->m_unit, Unit("")),
+                    translateToUnit(_target->m_mic, _target->m_unit, Unit("ug/l")),
+                    _target->m_tMin,
+                    _target->m_tBest,
+                    _target->m_tMax);
+    } break;
+
+    case TargetType::UnknownTarget :
+    default:
+    {
+        Tucuxi::Common::LoggerHelper logger;
+        logger.error("A target of an unkown type was given to the TargetExtractor");
+
+        return TargetEvent(
+                    _target->getActiveMoietyId(),
+                    _target->m_targetType,
                     Unit(""),
                     _targetDefinition->getUnit(),
                     _target->m_valueMin,
@@ -250,6 +355,7 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(const TargetDefinit
 }
 
 ComputingResult TargetExtractor::extract(
+        ActiveMoietyId _activeMoietyId,
         const CovariateSeries &_covariates,
         const TargetDefinitions& _targetDefinitions,
         const Targets &_targets,
@@ -268,6 +374,15 @@ ComputingResult TargetExtractor::extract(
 
 
     case TargetExtractionOption::IndividualTargets :
+    {
+        for (const auto& target : _targets) {
+            if (target->m_activeMoietyId == _activeMoietyId.toString()) {
+                _series.push_back(targetEventFromTarget(target.get()));
+            }
+        }
+    } break;
+
+    case TargetExtractionOption::IndividualTargetsIfDefinitionExists :
     {
         for (const auto& target : _targets) {
 
@@ -289,18 +404,62 @@ ComputingResult TargetExtractor::extract(
         }
     } break;
 
-
     case TargetExtractionOption::DefinitionIfNoIndividualTarget :
     {
+        for (const auto& target : _targets) {
+            if ((_activeMoietyId.toString() == target.get()->m_activeMoietyId)){
+                bool foundTarget = false;
+
+                for (const auto& targetDefinition : _targetDefinitions) {
+                    if ((targetDefinition.get()->getActiveMoietyId() == target.get()->m_activeMoietyId) &&
+                            (targetDefinition.get()->getTargetType() == target.get()->m_targetType)){
+                        foundTarget = true;
+                        // We create the TargetEvent with the target
+                        _series.push_back(targetEventFromTarget(target.get(), targetDefinition.get()));
+                    }
+                }
+
+                if (!foundTarget) {
+                    // We create the TargetEvent with the target, without the target definition
+                    _series.push_back(targetEventFromTarget(target.get()));
+                }
+            }
+        }
         for (const auto& targetDefinition : _targetDefinitions) {
             bool foundTarget = false;
             for (const auto& target : _targets) {
                 if ((targetDefinition.get()->getActiveMoietyId() == target.get()->m_activeMoietyId) &&
                         (targetDefinition.get()->getTargetType() == target.get()->m_targetType)){
                     foundTarget = true;
-                    // We create the TargetEvent with the target
-                    _series.push_back(targetEventFromTarget(target.get(), targetDefinition.get()));
+                }
+            }
+            if (!foundTarget) {
+                // Then we create the TargetEvent with the definition
 
+                _series.push_back(targetEventFromTargetDefinition(targetDefinition.get()));
+            }
+        }
+    } break;
+
+    case TargetExtractionOption::IndividualTargetsIfDefinitionExistsAndDefinitionIfNoIndividualTarget :
+    {
+        for (const auto& target : _targets) {
+            if ((_activeMoietyId.toString() == target.get()->m_activeMoietyId)){
+                for (const auto& targetDefinition : _targetDefinitions) {
+                    if ((targetDefinition.get()->getActiveMoietyId() == target.get()->m_activeMoietyId) &&
+                            (targetDefinition.get()->getTargetType() == target.get()->m_targetType)){
+                        // We create the TargetEvent with the target
+                        _series.push_back(targetEventFromTarget(target.get(), targetDefinition.get()));
+                    }
+                }
+            }
+        }
+        for (const auto& targetDefinition : _targetDefinitions) {
+            bool foundTarget = false;
+            for (const auto& target : _targets) {
+                if ((targetDefinition.get()->getActiveMoietyId() == target.get()->m_activeMoietyId) &&
+                        (targetDefinition.get()->getTargetType() == target.get()->m_targetType)){
+                    foundTarget = true;
                 }
             }
             if (!foundTarget) {

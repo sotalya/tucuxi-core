@@ -69,8 +69,6 @@ bool ComputingResponseXmlExport::exportToString(const ComputingResponse &_comput
 
         responses.addChild(responseNode);
 
-        Tucuxi::Common::XmlNode dataNode = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "data");
-
         Tucuxi::Common::XmlNode requestId = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "requestId",
                                                          response->getId());
         responseNode.addChild(requestId);
@@ -80,6 +78,8 @@ bool ComputingResponseXmlExport::exportToString(const ComputingResponse &_comput
 
         // We start by checking for adjustements, as AdjustmentResponse is a subclass of SinglePredictionResponse
         if (dynamic_cast<Tucuxi::Core::AdjustmentResponse*>(response.get()) != nullptr) {
+
+            Tucuxi::Common::XmlNode dataNode = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "dataAdjustment");
 
             Tucuxi::Common::XmlNode requestType = m_doc.createNode(
                         Tucuxi::Common::EXmlNodeType::Element, "requestType", "adjustment");
@@ -93,9 +93,12 @@ bool ComputingResponseXmlExport::exportToString(const ComputingResponse &_comput
                             Tucuxi::Common::EXmlNodeType::Element, "error", "Cannot export the adjustments");
                 issuesNode.addChild(issue);
             }
+            responseNode.addChild(dataNode);
 
         }
         else if (dynamic_cast<Tucuxi::Core::SinglePredictionResponse*>(response.get()) != nullptr) {
+
+            Tucuxi::Common::XmlNode dataNode = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "dataPrediction");
 
             Tucuxi::Common::XmlNode requestType = m_doc.createNode(
                         Tucuxi::Common::EXmlNodeType::Element, "requestType", "prediction");
@@ -109,9 +112,12 @@ bool ComputingResponseXmlExport::exportToString(const ComputingResponse &_comput
                             Tucuxi::Common::EXmlNodeType::Element, "error", "Cannot export the prediction");
                 issuesNode.addChild(issue);
             }
+            responseNode.addChild(dataNode);
 
         }
         else if (dynamic_cast<Tucuxi::Core::SinglePointsResponse*>(response.get()) != nullptr) {
+
+            Tucuxi::Common::XmlNode dataNode = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "dataPoints");
 
             Tucuxi::Common::XmlNode requestType = m_doc.createNode(
                         Tucuxi::Common::EXmlNodeType::Element, "requestType", "singlePoints");
@@ -125,9 +131,12 @@ bool ComputingResponseXmlExport::exportToString(const ComputingResponse &_comput
                             Tucuxi::Common::EXmlNodeType::Element, "error", "Cannot export the points");
                 issuesNode.addChild(issue);
             }
+            responseNode.addChild(dataNode);
 
         }
         else if (dynamic_cast<Tucuxi::Core::PercentilesResponse*>(response.get()) != nullptr) {
+
+            Tucuxi::Common::XmlNode dataNode = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "dataPercentiles");
 
             Tucuxi::Common::XmlNode requestType = m_doc.createNode(
                         Tucuxi::Common::EXmlNodeType::Element, "requestType", "percentiles");
@@ -141,14 +150,12 @@ bool ComputingResponseXmlExport::exportToString(const ComputingResponse &_comput
                             Tucuxi::Common::EXmlNodeType::Element, "error", "Cannot export the percentiles");
                 issuesNode.addChild(issue);
             }
+            responseNode.addChild(dataNode);
 
         }
         else {
             // TODO : Not supported export
         }
-
-        responseNode.addChild(dataNode);
-
 
     }
 
@@ -180,6 +187,24 @@ bool ComputingResponseXmlExport::exportAdjustment(const Tucuxi::Core::Adjustment
                     Tucuxi::Common::EXmlNodeType::Element, "adjustment");
         adjustments.addChild(adjustment);
         addNode(adjustment, "score", adj.getGlobalScore());
+        Tucuxi::Common::XmlNode targetEvaluations = m_doc.createNode(
+                    Tucuxi::Common::EXmlNodeType::Element, "targetEvaluations");
+        for (const auto &target : adj.m_targetsEvaluation) {
+            Tucuxi::Common::XmlNode targetEvaluation = m_doc.createNode(
+                        Tucuxi::Common::EXmlNodeType::Element, "targetEvaluation");
+            targetEvaluations.addChild(targetEvaluation);
+            addNode(targetEvaluation, "targetType", toString(target.getTargetType()));
+            addNode(targetEvaluation, "unit", target.getUnit().toString());
+            addNode(targetEvaluation, "value", target.getValue());
+            addNode(targetEvaluation, "score", target.getScore());
+        }
+        if (!exportDosageHistory(adj.m_history, adjustment)) {
+            return false;
+        }
+        if (!exportCycleDatas(adj.m_data, adjustment)) {
+            return false;
+        }
+
     }
 
     return true;
@@ -261,6 +286,7 @@ bool ComputingResponseXmlExport::exportPercentiles(const Tucuxi::Core::Percentil
         addNode(percentile, "rank", std::to_string(_prediction->getRank(index)));
         if (!exportCycleDatas(_prediction->getPercentileData(index), percentile)) {
             // TODO : Manage that
+            return false;
         }
     }
     return false;
@@ -379,6 +405,15 @@ bool ComputingResponseXmlExport::exportCycleDatas(const std::vector<Tucuxi::Core
             return false;
         }
     }
+    return true;
+}
+
+bool ComputingResponseXmlExport::exportDosageHistory(const DosageHistory &_history,
+        Tucuxi::Common::XmlNode &_rootNode)
+{
+
+    TMP_UNUSED_PARAMETER(_history);
+    TMP_UNUSED_PARAMETER(_rootNode);
     return true;
 }
 

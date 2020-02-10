@@ -37,6 +37,9 @@ public:
     bool exportCycleDatas(const std::vector<Tucuxi::Core::CycleData> &_cycleDatas,
                           Tucuxi::Common::XmlNode &_rootNode);
 
+    bool exportDosageHistory(const DosageHistory &_history,
+            Tucuxi::Common::XmlNode &_rootNode);
+
     void addNode(Tucuxi::Common::XmlNode &_rootNode,
                  std::string _nodeName,
                  std::string _nodeValue);

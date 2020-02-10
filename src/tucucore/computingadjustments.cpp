@@ -365,7 +365,7 @@ ComputingResult ComputingAdjustments::compute(
 
     for (const auto &activeMoiety : _request.getDrugModel().getActiveMoieties()) {
         ComputingResult targetExtractionResult =
-                targetExtractor.extract(covariateSeries, activeMoiety.get()->getTargetDefinitions(),
+                targetExtractor.extract(activeMoiety->getActiveMoietyId(), covariateSeries, activeMoiety.get()->getTargetDefinitions(),
                                         _request.getDrugTreatment().getTargets(), _traits->getStart(), _traits->getEnd(),
                                         targetExtractionOption, targetSeries[activeMoiety->getActiveMoietyId()]);
 

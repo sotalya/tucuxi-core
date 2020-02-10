@@ -872,7 +872,7 @@ Constraint* DrugModelImport::extractConstraint(Tucuxi::Common::XmlNodeIterator _
 {
     Constraint* constraint;
     constraint = new Constraint();
-    Operation *operation;
+    Operation *operation = nullptr;
 
     XmlNodeIterator it = _node->getChildren();
 
@@ -1344,9 +1344,9 @@ TargetDefinition* DrugModelImport::extractTarget(Tucuxi::Common::XmlNodeIterator
                                   std::make_unique<SubTargetDefinition>("tBest", translateToUnit(tBest->getValue(), tUnit, Unit("m")), tBest->getOperation()),
                                   std::make_unique<SubTargetDefinition>("toxicity", toxicityAlarm->getValue(), toxicityAlarm->getOperation()),
                                   std::make_unique<SubTargetDefinition>("inefficacy", inefficacyAlarm->getValue(), inefficacyAlarm->getOperation()),
-                                  micUnit
+                                  micUnit,
+                                  tUnit
                                   );
-
 
     DELETE_IF_NON_NULL(minValue);
     DELETE_IF_NON_NULL(maxValue);
