@@ -51,4 +51,4 @@ SOURCES += \
     ../../../test/tucucore/tests.cpp
 
 # Because of Eigen:
-QMAKE_CXXFLAGS += -Wno-int-in-bool-context -Wno-extra-semi-stmt
+QMAKE_CXXFLAGS += -Wall -Wextra -Wno-int-in-bool-context -Wno-extra-semi-stmt
