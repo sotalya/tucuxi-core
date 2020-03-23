@@ -12,7 +12,7 @@ INCLUDEPATH += $$PWD/../../src \
 
 
 win32 {
-    config_tucucore_full {
+    !config_tucucore_lib {
         INCLUDEPATH += C:\Botan\Botan2-64\include\botan-2
     }
     else {
