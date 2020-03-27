@@ -78,7 +78,7 @@ void TwoCompartmentExtraMicro::computeExponentials(Eigen::VectorXd& _times)
 bool TwoCompartmentExtraMicro::computeConcentrations(const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1;
-    Value concentrations2, concentrations3;
+    Eigen::VectorXd concentrations2, concentrations3;
     int firstCompartment = static_cast<int>(Compartments::First);
     int secondCompartment = static_cast<int>(Compartments::Second);
     int thirdCompartment = static_cast<int>(Compartments::Third);
@@ -88,8 +88,8 @@ bool TwoCompartmentExtraMicro::computeConcentrations(const Residuals& _inResidua
 
     // Return residuals of comp1, comp2 and comp3
     _outResiduals[firstCompartment] = concentrations1[m_NbPoints - 1];
-    _outResiduals[secondCompartment] = concentrations2;
-    _outResiduals[thirdCompartment] = concentrations3;
+    _outResiduals[secondCompartment] = concentrations2[m_NbPoints - 1];
+    _outResiduals[thirdCompartment] = concentrations3[m_NbPoints - 1];
 
     // Return concentrations of comp1, comp2 and comp3
     _concentrations[firstCompartment].assign(concentrations1.data(), concentrations1.data() + concentrations1.size());
@@ -106,7 +106,7 @@ bool TwoCompartmentExtraMicro::computeConcentrations(const Residuals& _inResidua
 bool TwoCompartmentExtraMicro::computeConcentration(const Value& _atTime, const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1;
-    Value concentrations2, concentrations3;
+    Eigen::VectorXd concentrations2, concentrations3;
     int firstCompartment = static_cast<int>(Compartments::First);
     int secondCompartment = static_cast<int>(Compartments::Second);
     int thirdCompartment = static_cast<int>(Compartments::Third);
@@ -126,14 +126,14 @@ bool TwoCompartmentExtraMicro::computeConcentration(const Value& _atTime, const 
     // interval=0 means that it is the last cycle, so final residual = 0
     if (m_Int == 0) {
         concentrations1[atEndInterval] = 0;
-        concentrations2 = 0;
-        concentrations3 = 0;
+        concentrations2[atEndInterval] = 0;
+        concentrations3[atEndInterval] = 0;
     }
 
     // Return final residual of comp1, comp2 and comp3 (computation with m_Int (interval))
     _outResiduals[firstCompartment] = concentrations1[atEndInterval];
-    _outResiduals[secondCompartment] = concentrations2;
-    _outResiduals[thirdCompartment] = concentrations3;
+    _outResiduals[secondCompartment] = concentrations2[atEndInterval];
+    _outResiduals[thirdCompartment] = concentrations3[atEndInterval];
 
     bOK &= checkValue(_outResiduals[firstCompartment] >= 0, "The concentration is negative.");
     bOK &= checkValue(_outResiduals[secondCompartment] >= 0, "The concentration is negative.");

@@ -289,7 +289,7 @@ bool ComputingResponseXmlExport::exportPercentiles(const Tucuxi::Core::Percentil
             return false;
         }
     }
-    return false;
+    return true;
 }
 
 

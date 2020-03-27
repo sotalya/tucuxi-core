@@ -34,7 +34,7 @@ protected:
     void computeExponentials(Eigen::VectorXd& _times) override;
     bool computeConcentrations(const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) override;
     bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) override;
-    bool compute(const Residuals& _inResiduals, Eigen::VectorXd& _concentrations1, Value& _concentrations2, Value& _concentrations3);
+    bool compute(const Residuals& _inResiduals, Eigen::VectorXd& _concentrations1, Eigen::VectorXd& _concentrations2, Eigen::VectorXd& _concentrations3);
 
     Value m_D;	/// Quantity of drug
     Value m_F;  /// Biodisponibility
@@ -54,7 +54,7 @@ private:
 };
 
 inline bool TwoCompartmentExtraMicro::compute(const Residuals& _inResiduals, Eigen::VectorXd&
-_concentrations1, Value& _concentrations2, Value& _concentrations3)
+_concentrations1, Eigen::VectorXd &_concentrations2, Eigen::VectorXd &_concentrations3)
 {
     Value A, B, C, divider; // NOLINT(readability-identifier-naming)
     Concentration resid1 = _inResiduals[0];
@@ -136,11 +136,11 @@ _concentrations1, Value& _concentrations2, Value& _concentrations3)
 
     // Calculate concentrations of compartment 2 and 3
     _concentrations2 = 
-        2 * (B * exponentials(Exponentials::Beta)(exponentials(Exponentials::Beta).size() - 1)
-        + A * exponentials(Exponentials::Alpha)(exponentials(Exponentials::Alpha).size() - 1)
-        + C * exponentials(Exponentials::Ka)(exponentials(Exponentials::Ka).size() - 1)) / divider;
+        2 * (B * exponentials(Exponentials::Beta)
+        + A * exponentials(Exponentials::Alpha)
+        + C * exponentials(Exponentials::Ka)) / divider;
     _concentrations3 = 
-    exponentials(Exponentials::Ka)(exponentials(Exponentials::Ka).size() - 1) * resid3;
+    exponentials(Exponentials::Ka) * resid3;
 
     return true;
 }
