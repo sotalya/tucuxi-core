@@ -105,6 +105,7 @@ enum class Invariants {
 
 #define COMPLEX_INVARIANT(invariant, expression) expression;
 #define INVARIANTS(decl) public : bool checkInvariants() const {bool ok=true;decl;return ok;}
+#define EMPTYINVARIANTS public : bool checkInvariants() const {return true;}
 #define CHECKINVARIANTS checkInvariants()
 #define LAMBDA_INVARIANT(invariant, expression, message) {auto f=[this]() {expression}; {bool result = f();if (!result) { \
     std::cout << "Drug model invariant failure : " << \

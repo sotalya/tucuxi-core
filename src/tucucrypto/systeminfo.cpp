@@ -33,7 +33,7 @@
 #endif
 
 #include "tucucommon/utils.h"
-#include "tucucommon/systeminfo.h"
+#include "tucucrypto/systeminfo.h"
 
 namespace Tucuxi {
 namespace Common {

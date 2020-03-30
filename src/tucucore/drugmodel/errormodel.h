@@ -23,9 +23,8 @@ public:
     void setErrorModel(ResidualErrorType _errorModel) { m_errorModel = _errorModel;}
 
 
-    INVARIANTS(
-            // No invariants
-            )
+    // No invariants
+    EMPTYINVARIANTS
 
 protected:
 

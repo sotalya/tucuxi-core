@@ -22,7 +22,8 @@ public:
 
     ~ValidDoses() override;
 
-    INVARIANTS()
+    // No invariants
+    EMPTYINVARIANTS
 
 };
 

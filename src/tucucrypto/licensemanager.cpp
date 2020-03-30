@@ -5,13 +5,13 @@
 #include <iostream>
 #include <fstream>
 
-
 #include "tucucommon/utils.h"
 #include "tucucommon/loggerhelper.h"
-#include "tucucommon/licensemanager.h"
 #include "tucucommon/datetime.h"
 #include "tucucommon/duration.h"
-#include "tucucommon/cryptohelper.h"
+
+#include "tucucrypto/licensemanager.h"
+#include "tucucrypto/cryptohelper.h"
 
 using namespace std::chrono_literals;
 

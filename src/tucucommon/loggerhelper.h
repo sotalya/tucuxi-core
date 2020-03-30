@@ -206,7 +206,7 @@ public:
             writer.write(_fmt, _args...);
             error(writer.c_str());
         }
-        catch (const std::exception &ex) {
+        catch (const std::exception &/*ex*/) {
         }
     }
 

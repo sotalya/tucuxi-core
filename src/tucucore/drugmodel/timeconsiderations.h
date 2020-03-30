@@ -46,8 +46,8 @@ public:
     {}
 
 
-    INVARIANTS(
-            )
+    // No invariants
+    EMPTYINVARIANTS
 
 private:
     Unit m_unit;

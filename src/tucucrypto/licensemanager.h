@@ -13,7 +13,8 @@
 
 #include "tucucommon/datetime.h"
 #include "tucucommon/duration.h"
-#include "tucucommon/systeminfo.h"
+
+#include "tucucrypto/systeminfo.h"
 
 namespace Tucuxi {
 namespace Common {

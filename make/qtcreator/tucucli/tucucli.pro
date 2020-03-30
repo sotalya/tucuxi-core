@@ -4,8 +4,13 @@ CONFIG -= app_bundle
 
 TARGET      = tucucli
 
-LIBS += -lpthread
+unix {
+    LIBS += -lpthread
+}
 
+win32 {
+    include(../tinyjs.pri)
+}
 
 include(../general.pri)
 include(../tucucommon.pri)
@@ -19,6 +24,10 @@ SOURCES += \
     ../../../src/tucucli/tucucli.cpp \
     ../../../src/tucucli/clicomputer.cpp
 
+!win32 {
+    # Because of Eigen:
+    QMAKE_CXXFLAGS += -Wno-int-in-bool-context
 
-# Because of Eigen:
-QMAKE_CXXFLAGS += -Wno-int-in-bool-context -Wno-extra-semi-stmt
+    # Because of macros and clang:
+    QMAKE_CXXFLAGS += -Wno-extra-semi-stmt
+}

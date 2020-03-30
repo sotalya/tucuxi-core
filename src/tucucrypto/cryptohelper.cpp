@@ -2,7 +2,7 @@
  * Copyright (C) 2017 Tucuxi SA
  */
 
-#include "tucucommon/cryptohelper.h"
+#include "tucucrypto/cryptohelper.h"
 
 #include <iostream>
 
