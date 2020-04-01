@@ -146,7 +146,7 @@
 //#define FREELIB(a) FreeLibrary(a)
 //#define RTLD_NOW 0
 //#else
-//#include <dlfcn.h>
+////#include <dlfcn.h>
 
 //#define GETLIB(a,b) dlopen(a, b)
 //#define GETSYMBOL(a,b) dlsym(a, b)
