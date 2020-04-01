@@ -14,6 +14,7 @@
 #include "tucucore/intaketocalculatorassociator.h"
 #include "tucucore/concentrationcalculator.h"
 #include "tucucore/computingutils.h"
+#include "tucucore/cyclestatisticscalculator.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -873,6 +874,11 @@ ComputingResult ComputingAdjustments::generatePrediction(DosageAdjustment &_dosa
 
                 _dosage.m_data.push_back(cycle);
             }
+        }
+
+        if (_traits->getComputingOption().getWithStatistics()) {
+            CycleStatisticsCalculator c;
+            c.calculate(_dosage.m_data);
         }
     }
 
