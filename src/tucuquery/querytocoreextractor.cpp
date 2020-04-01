@@ -244,7 +244,7 @@ std::vector<Tucuxi::Core::ComputingTrait *> QueryToCoreExtractor::extractAdaptat
     Tucuxi::Core::PredictionParameterType predictionParameterType = extractPredictionParameterType(_query, _request);
 
 
-    Tucuxi::Core::ComputingOption computingOption(predictionParameterType, Tucuxi::Core::CompartmentsOption::MainCompartment);
+    Tucuxi::Core::ComputingOption computingOption(predictionParameterType, Tucuxi::Core::CompartmentsOption::MainCompartment, true);
 
     int nbPointsPerHour = 10;
     if (_request.getNbPointsPerHour() > 0) {
