@@ -9,6 +9,7 @@ unix {
 LIBS += $$PWD/../../bin/tinyjs.a \
         $$PWD/../../bin/botan.a
 
+
 QMAKE_LFLAGS += -Wl,--no-as-needed -ldl
 }
 
