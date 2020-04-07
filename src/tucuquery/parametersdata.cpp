@@ -97,10 +97,9 @@ string ConcentrationData::getUnit() const
 SampleData::SampleData(
         string& _sampleID,
         Common::DateTime& _pSampleDate,
-        Common::DateTime& _pArrivalDate,
         vector<unique_ptr<ConcentrationData> >& _concentrations,
         bool _likelyhoodUse
-) : m_sampleID(_sampleID), m_pSampleDate(_pSampleDate), m_pArrivalDate(_pArrivalDate),
+) : m_sampleID(_sampleID), m_pSampleDate(_pSampleDate),
     m_concentrations(move(_concentrations)), m_likelyhoodUse(_likelyhoodUse)
 {}
 
@@ -112,11 +111,6 @@ string SampleData::getSampleID() const
 const Common::DateTime SampleData::getpSampleDate() const
 {
     return m_pSampleDate;
-}
-
-const Common::DateTime SampleData::getpArrivalDate() const
-{
-    return m_pArrivalDate;
 }
 
 const vector<unique_ptr<ConcentrationData> >& SampleData::getConcentrations() const
@@ -208,14 +202,13 @@ double TargetData::getToxicityAlarm() const
 // DrugData class
 
 DrugData::DrugData(string& _drugID,
-                   string& _drugModelID,
                    string& _activePrinciple,
                    string& _brandName,
                    string& _atc,
                    unique_ptr<Treatment> _pTreatment,
                    vector<unique_ptr<SampleData> >& _samples,
                    vector<unique_ptr<TargetData> >& _targets
-) : m_drugID(_drugID), m_drugModelID(_drugModelID), m_activePrinciple(_activePrinciple), m_brandName(_brandName),
+) : m_drugID(_drugID), m_activePrinciple(_activePrinciple), m_brandName(_brandName),
     m_atc(_atc), m_pTreatment(move(_pTreatment)), m_samples(move(_samples)),
     m_targets(move(_targets))
 {}
@@ -223,11 +216,6 @@ DrugData::DrugData(string& _drugID,
 const string DrugData::getDrugID() const
 {
     return m_drugID;
-}
-
-const string DrugData::getDrugModelID() const
-{
-    return m_drugModelID;
 }
 
 const string DrugData::getActivePrinciple() const

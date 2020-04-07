@@ -113,7 +113,6 @@ public:
     SampleData(
         std::string& _sampleID,
         Tucuxi::Common::DateTime& _pSampleDate,
-        Tucuxi::Common::DateTime& _pArrivalDate,
         std::vector< std::unique_ptr<ConcentrationData> >& _concentrations,
         bool _likelyhoodUse = false
     );
@@ -123,14 +122,12 @@ public:
     // Getters
     std::string getSampleID() const;
     const Tucuxi::Common::DateTime getpSampleDate() const;
-    const Tucuxi::Common::DateTime getpArrivalDate() const;
     const std::vector<std::unique_ptr<ConcentrationData> >& getConcentrations() const;
     bool getLikelyhoodUse() const;
 
 protected:
     const std::string m_sampleID;
     const Tucuxi::Common::DateTime m_pSampleDate;
-    const Tucuxi::Common::DateTime m_pArrivalDate;
     std::vector< std::unique_ptr<ConcentrationData> > m_concentrations;
     const bool m_likelyhoodUse;
 };
@@ -181,9 +178,7 @@ public:
     // Constructors
     DrugData() = delete;
 
-    DrugData(
-        std::string& _drugID,
-        std::string& _drugModelID,
+    DrugData(std::string& _drugID,
         std::string& _activePrinciple,
         std::string& _brandName,
         std::string& _atc,
@@ -196,7 +191,6 @@ public:
 
     // Getters
     const std::string getDrugID() const;
-    const std::string getDrugModelID() const;
     const std::string getActivePrinciple() const;
     const std::string getBrandName() const;
     const std::string getAtc() const;
@@ -206,7 +200,6 @@ public:
 
 protected:
     const std::string m_drugID;
-    const std::string m_drugModelID;
     const std::string m_activePrinciple;
     const std::string m_brandName;
     const std::string m_atc;
