@@ -441,7 +441,6 @@ unique_ptr<DrugData> QueryImport::createDrugData(Common::XmlNodeIterator& _drugD
 
     return make_unique<DrugData>(
                             drugId,
-                            drugModelId,
                             activePrinciple,
                             brandName,
                             atc,
@@ -487,13 +486,11 @@ unique_ptr<SampleData> QueryImport::createSampleData(Common::XmlNodeIterator& _s
 {
     static const string SAMPLE_ID_NODE_NAME = "sampleId";
     static const string SAMPLE_DATE_NODE_NAME = "sampleDate";
-    static const string ARRIVAL_DATE_NODE_NAME = "arrivalDate";
     static const string CONCENTRATIONS_NODE_NAME = "concentrations";
     static const string LIKELYHOOD_USE_NODE_NAME = "likelyhoodUse";
 
     string sampleId = getChildStringValue(_sampleDataRootIterator, SAMPLE_ID_NODE_NAME);
     Common::DateTime sampleDate = getChildDateTimeValue(_sampleDataRootIterator, SAMPLE_DATE_NODE_NAME);
-    Common::DateTime arrivalDate = getChildDateTimeValue(_sampleDataRootIterator, ARRIVAL_DATE_NODE_NAME);
 
     vector< unique_ptr<ConcentrationData> > concentrations;
 
@@ -509,7 +506,6 @@ unique_ptr<SampleData> QueryImport::createSampleData(Common::XmlNodeIterator& _s
     return make_unique<SampleData>(
                                sampleId,
                                sampleDate,
-                               arrivalDate,
                                concentrations,
                                likelyhoodUse
                         );
@@ -698,11 +694,11 @@ unique_ptr<Core::FormulationAndRoute> QueryImport::createFormulationAndRoute(Com
 
     if (formulationValue == "Undefined") {
         formulation = Core::Formulation::Undefined;
-    } else if (formulationValue == "OralSolution") {
+    } else if (formulationValue == "oralSolution") {
         formulation = Core::Formulation::OralSolution;
-    } else if (formulationValue == "ParenteralSolution") {
+    } else if (formulationValue == "parenteralSolution") {
         formulation = Core::Formulation::ParenteralSolution;
-    } else if (formulationValue == "Test") {
+    } else if (formulationValue == "test") {
         formulation = Core::Formulation::Test;
     } else {
         // Throw error or manage error
@@ -713,27 +709,27 @@ unique_ptr<Core::FormulationAndRoute> QueryImport::createFormulationAndRoute(Com
     string administrationRouteValue = getChildStringValue(_formulationAndRouteRootIterator, ADMINISTRATION_ROUTE_NODE_NAME);
     Core::AdministrationRoute administrationRoute = Core::AdministrationRoute::Undefined;
 
-    if (administrationRouteValue == "Undefined") {
+    if (administrationRouteValue == "undefined") {
         administrationRoute = Core::AdministrationRoute::Undefined;
-    } else if (administrationRouteValue == "Intramuscular") {
+    } else if (administrationRouteValue == "intramuscular") {
         administrationRoute = Core::AdministrationRoute::Intramuscular;
-    } else if (administrationRouteValue == "IntravenousBolus") {
+    } else if (administrationRouteValue == "intravenousBolus") {
         administrationRoute = Core::AdministrationRoute::IntravenousBolus;
-    } else if (administrationRouteValue == "IntravenousDrip") {
+    } else if (administrationRouteValue == "intravenousDrip") {
         administrationRoute = Core::AdministrationRoute::IntravenousDrip;
-    } else if (administrationRouteValue == "Nasal") {
+    } else if (administrationRouteValue == "nasal") {
         administrationRoute = Core::AdministrationRoute::Nasal;
-    } else if (administrationRouteValue == "Oral") {
+    } else if (administrationRouteValue == "oral") {
         administrationRoute = Core::AdministrationRoute::Oral;
-    } else if (administrationRouteValue == "Rectal") {
+    } else if (administrationRouteValue == "rectal") {
         administrationRoute = Core::AdministrationRoute::Rectal;
-    } else if (administrationRouteValue == "Subcutaneous") {
+    } else if (administrationRouteValue == "subcutaneous") {
         administrationRoute = Core::AdministrationRoute::Subcutaneous;
-    } else if (administrationRouteValue == "Sublingual") {
+    } else if (administrationRouteValue == "sublingual") {
         administrationRoute = Core::AdministrationRoute::Sublingual;
-    } else if (administrationRouteValue == "Transdermal") {
+    } else if (administrationRouteValue == "transdermal") {
         administrationRoute = Core::AdministrationRoute::Transdermal;
-    } else if (administrationRouteValue == "Vaginal") {
+    } else if (administrationRouteValue == "vaginal") {
         administrationRoute = Core::AdministrationRoute::Vaginal;
     } else {
         // Throw error or manage error
@@ -745,13 +741,13 @@ unique_ptr<Core::FormulationAndRoute> QueryImport::createFormulationAndRoute(Com
 
     if (absorptionModelValue == "Undefined") {
         absorptionModel = Core::AbsorptionModel::Undefined;
-    } else if (absorptionModelValue == "Extravascular") {
+    } else if (absorptionModelValue == "extravascular") {
         absorptionModel = Core::AbsorptionModel::Extravascular;
-    } else if (absorptionModelValue == "ExtravascularLag") {
+    } else if (absorptionModelValue == "extravascularLag") {
         absorptionModel = Core::AbsorptionModel::ExtravascularLag;
-    } else if (absorptionModelValue == "Intravascular") {
+    } else if (absorptionModelValue == "intravascular") {
         absorptionModel = Core::AbsorptionModel::Intravascular;
-    } else if (absorptionModelValue == "Infusion") {
+    } else if (absorptionModelValue == "infusion") {
         absorptionModel = Core::AbsorptionModel::Infusion;
     } else {
         // Throw error or manage error
@@ -770,6 +766,7 @@ unique_ptr<RequestData> QueryImport::createRequest(Tucuxi::Common::XmlNodeIterat
 {
     static const string REQUEST_ID_NODE_NAME           = "requestId";
     static const string DRUG_ID_NODE_NAME              = "drugId";
+    static const string DRUGMODEL_ID_NODE_NAME         = "drugModelId";
     static const string REQUEST_TYPE_NODE_NAME         = "requestType";
     static const string NBPOINTSPERHOUR_NODE_NAME      = "nbPointsPerHour";
     static const string DATE_INTERVAL_NODE_NAME        = "dateInterval";
@@ -783,6 +780,7 @@ unique_ptr<RequestData> QueryImport::createRequest(Tucuxi::Common::XmlNodeIterat
 
     string requestId = getChildStringValue(_requestRootIterator, REQUEST_ID_NODE_NAME);
     string drugId = getChildStringValue(_requestRootIterator, DRUG_ID_NODE_NAME);
+    string drugModelId = getChildStringValue(_requestRootIterator, DRUGMODEL_ID_NODE_NAME);
     string requestType = getChildStringValue(_requestRootIterator, REQUEST_TYPE_NODE_NAME);
 
     Common::XmlNodeIterator dateIntervalRootIterator = _requestRootIterator->getChildren(DATE_INTERVAL_NODE_NAME);
@@ -830,6 +828,7 @@ unique_ptr<RequestData> QueryImport::createRequest(Tucuxi::Common::XmlNodeIterat
     return make_unique<RequestData>(
                                  requestId,
                                  drugId,
+                                 drugModelId,
                                  requestType,
                                  nbPointsPerHour,
                                  move(dateInterval),

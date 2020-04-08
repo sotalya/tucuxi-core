@@ -86,6 +86,7 @@ public:
     RequestData(
         std::string& _requestID,
         std::string& _drugID,
+        std::string& _drugModelID,
         std::string& _requestType,
         int _nbPointsPerHour,
         std::unique_ptr<DateInterval> _pDateInterval,
@@ -101,6 +102,7 @@ public:
     // Getters
     const std::string getRequestID() const;
     const std::string getDrugID() const;
+    const std::string getDrugModelID() const;
     const std::string getRequestType() const;
     int getNbPointsPerHour() const;
     const DateInterval& getpDateInterval() const;
@@ -113,6 +115,7 @@ public:
 protected:
     const std::string m_requestID;
     const std::string m_drugID;
+    const std::string m_drugModelID;
     const std::string m_requestType;
     int m_nbPointsPerHour;
     std::unique_ptr<DateInterval> m_pDateInterval;

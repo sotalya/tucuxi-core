@@ -58,6 +58,7 @@ const Core::Dosage& Backextrapolation::getpDosage() const
 
 RequestData::RequestData(string& _requestID,
         string& _drugID,
+        string& _drugModelID,
         string& _requestType,
         int _nbPointsPerHour,
         unique_ptr<DateInterval> _pDateInterval,
@@ -66,7 +67,8 @@ RequestData::RequestData(string& _requestID,
         std::vector<double> &_percentiles,
         unique_ptr<Backextrapolation> _pBackextrapolation,
         std::vector<Tucuxi::Common::DateTime> _pointsInTime) :
-    m_requestID(_requestID), m_drugID(_drugID), m_requestType(_requestType),
+    m_requestID(_requestID), m_drugID(_drugID), m_drugModelID(_drugModelID),
+    m_requestType(_requestType),
     m_nbPointsPerHour(_nbPointsPerHour),
     m_pDateInterval(move(_pDateInterval)), m_parametersType(_parametersType),
     m_pGraph(move(_pGraph)), m_percentiles(_percentiles),
@@ -82,6 +84,11 @@ const string RequestData::getRequestID() const
 const string RequestData::getDrugID() const
 {
     return m_drugID;
+}
+
+const string RequestData::getDrugModelID() const
+{
+    return m_drugModelID;
 }
 
 const string RequestData::getRequestType() const

@@ -428,16 +428,21 @@ Tucuxi::Core::DrugModel *QueryToCoreExtractor::extractDrugModel(const Query &_qu
         return nullptr;
     }
 
-    if (_query.getpParameters().getDrugs()[0]->getDrugModelID() != "") {
-        drugModel = drugModelRepository->getDrugModelById(_query.getpParameters().getDrugs()[0]->getDrugModelID());
+    std::vector<Tucuxi::Core::DrugModel * > drugModels;
+    bool isDefined = false;
+    for (const auto& request : _query.getRequests()) {
+        auto dModel = drugModelRepository->getDrugModelById(request->getDrugModelID());
 
         Tucuxi::Core::TreatmentDrugModelCompatibilityChecker checker;
-        if (!checker.checkCompatibility(_drugTreatment, drugModel)) {
+        if (!checker.checkCompatibility(_drugTreatment, dModel)) {
             return nullptr;
         }
 
+        drugModels.push_back(dModel);
+        isDefined = true;
     }
-    else {
+
+    if (!isDefined) {
         std::vector<Tucuxi::Core::DrugModel *> drugModels = drugModelRepository->getDrugModelsByDrugId(_query.getpParameters().getDrugs()[0]->getDrugID());
 
         for (const auto dM : drugModels) {
@@ -447,6 +452,9 @@ Tucuxi::Core::DrugModel *QueryToCoreExtractor::extractDrugModel(const Query &_qu
             }
         }
     }
+
+    // TODO : Be careful, this has to be fixed
+    return drugModels[0];
 
     return drugModel;
 }
