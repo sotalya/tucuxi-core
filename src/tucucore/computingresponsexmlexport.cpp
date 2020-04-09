@@ -47,6 +47,10 @@ bool ComputingResponseXmlExport::exportToString(const ComputingResponse &_comput
     std::lock_guard<std::mutex> lock(mutex);
 
     Tucuxi::Common::XmlNode root = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "tucuxiComputation");
+    auto attribute1 = m_doc.createAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
+    auto attribute2 = m_doc.createAttribute("xsi:noNamespaceSchemaLocation", "computing_response.xsd");
+    root.addAttribute(attribute1);
+    root.addAttribute(attribute2);
     m_doc.setRoot(root);
     Tucuxi::Common::XmlNode queryId = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "queryId", _computingResponse.getId());
     root.addChild(queryId);
