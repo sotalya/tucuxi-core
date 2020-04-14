@@ -34,8 +34,35 @@ enum class PredictionParameterType {
 /// This enum allows to select if only the main compartment concentration has to be
 /// calculated or if the concentrations of all compartments are required.
 enum class CompartmentsOption {
-    MainCompartment = 0, //!< Only interested in the main compartment
-    AllCompartments      //!< Interested in all compartments
+    AllActiveMoieties = 0, //!< Only interested in the active moieties
+    AllAnalytes,           //!< Interested in all analytes
+    AllCompartments,       //!< Interested in all compartments
+    Specific,              //!< Another mean is used to define what info should be retrieved
+    MainCompartment = AllActiveMoieties,   //!< Backward compatibility
+};
+
+///
+/// \brief The RetrieveStatisticsOption enum
+/// This enum allows to define if statistics shall be computed and retrieved
+enum class RetrieveStatisticsOption {
+    RetrieveStatistics = 0, //!< Please, retrieve the statistics
+    DoNotRetrieveStatistics //!< Do not calculate and retrieve statistics
+};
+
+///
+/// \brief The RetrieveParametersOption enum
+/// This enum allows to define if PK parameters shall be retrieved or not
+enum class RetrieveParametersOption {
+    RetrieveParameters = 0, //!< Please, retrieve the parameters
+    DoNotRetrieveParameters //!< Do not retrieve parameters
+};
+
+///
+/// \brief The RetrieveCovariatesOption enum
+/// This enum allows to define if covariates shall be retrieved or not
+enum class RetrieveCovariatesOption {
+    RetrieveCovariates = 0, //!< Please, retrieve the covariates
+    DoNotRetrieveCovariates //!< Do not retrieve the covariates
 };
 
 ///
@@ -51,12 +78,15 @@ public:
     /// \brief ComputingOption Simple constructor.
     /// \param _parameterType Type of parameters (population, aPriori, aPosteriori)
     /// \param _compartmentsOption What compartments are of interest (main or all)
-    /// \param _withStatistics If true, then statistics have to be computed
+    /// \param _retrieveStatistics Indicates if statistics have to be computed
+    /// \param _retrieveParameters Indicates if parameter values have to be retrieved
+    /// \param _retrieveCovariates Indicates if covariate values have to be retrieved
     ///
-    ComputingOption(
-            PredictionParameterType _parameterType,
+    ComputingOption(PredictionParameterType _parameterType,
             CompartmentsOption _compartmentsOption,
-            bool _withStatistics = false);
+            RetrieveStatisticsOption _retrieveStatistics = RetrieveStatisticsOption::DoNotRetrieveStatistics,
+            RetrieveParametersOption _retrieveParameters = RetrieveParametersOption::DoNotRetrieveParameters,
+            RetrieveCovariatesOption _retrieveCovariates = RetrieveCovariatesOption::DoNotRetrieveCovariates);
 
     ///
     /// \brief getParametersType Gets the type of parameters
@@ -71,10 +101,22 @@ public:
     CompartmentsOption getCompartmentsOption() const { return m_compartmentsOption;}
 
     ///
-    /// \brief getWithStatistics indicates if statistics have to be computed
-    /// \return True if statistics have to be calculated
+    /// \brief retrieveStatistics indicates if statistics have to be computed
+    /// \return GetStatisticsOption::GetStatistics if statistics have to be calculated
     ///
-    bool getWithStatistics() const { return m_withStatistics;}
+    RetrieveStatisticsOption retrieveStatistics() const { return m_retrieveStatistics;}
+
+    ///
+    /// \brief retrieveParameters indicates if parameters have to be retrieved
+    /// \return GetParametersOption::GetStatistics if parameters have to be retrieved
+    ///
+    RetrieveParametersOption retrieveParameters() const { return m_retrieveParameters;}
+
+    ///
+    /// \brief retrieveCovariates indicates if covariates have to be retrieved
+    /// \return GetCovariatesOption::GetStatistics if covariates have to be retrieved
+    ///
+    RetrieveCovariatesOption retrieveCovariates() const { return m_retrieveCovariates;}
 
 protected:
 
@@ -84,7 +126,14 @@ protected:
     //! What compartments are of interest
     CompartmentsOption m_compartmentsOption;
 
-    bool m_withStatistics;
+    //! Shall we retrieve the statistics
+    RetrieveStatisticsOption m_retrieveStatistics;
+
+    //! Shall we retrieve the PK parameters
+    RetrieveParametersOption m_retrieveParameters;
+
+    //! Shall we retrieve the covariates
+    RetrieveCovariatesOption m_retrieveCovariates;
 };
 
 

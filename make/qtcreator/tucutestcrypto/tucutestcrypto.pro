@@ -25,15 +25,11 @@ win32{
 
 include(../general.pri)
 include(../tucucommon.pri)
-include(../tinyjs.pri)
+include(../tucucrypto.pri)
 
 HEADERS += \
-    ../../../test/tucucommon/test_componentmanager.h \
-    ../../../test/tucucommon/test_logger.h \
-    ../../../test/tucucommon/test_datetime.h \
-    ../../../test/tucucommon/test_licensemanager.h \
-    ../../../test/tucucommon/test_cryptohelper.h \
-    ../../../test/tucucommon/test_scriptengine.h
+    ../../../test/tucucrypto/test_licensemanager.h \
+    ../../../test/tucucrypto/test_cryptohelper.h \
 
 SOURCES += \
-    ../../../test/tucucommon/tests.cpp
+    ../../../test/tucucrypto/tests.cpp

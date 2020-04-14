@@ -7,7 +7,7 @@
 
 #include "fructose/fructose.h"
 
-#include "tucucommon/cryptohelper.h"
+#include "tucucrypto/cryptohelper.h"
 
 struct TestCryptoHelper : public fructose::test_base<TestCryptoHelper>
 {

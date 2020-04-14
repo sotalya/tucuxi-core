@@ -8,9 +8,7 @@
 #include "tucucommon/utils.h"
 
 #include "test_componentmanager.h"
-#include "test_licensemanager.h"
 #include "test_logger.h"
-#include "test_cryptohelper.h"
 #include "test_scriptengine.h"
 #include "test_datetime.h"
 #include "test_xml.h"
@@ -47,24 +45,6 @@ int main(int argc, char** argv)
     res = loggerTests.run(argc, argv);
     if (res != 0) {
         printf("Logger test failed\n");
-        exit(1);
-    }
-
-    TestLicenseManager licenseManagerTests(appFolder);
-    licenseManagerTests.add_test("LicenseManager-basic", &TestLicenseManager::basic);
-    licenseManagerTests.add_test("LicenseManager-installNewLicense", &TestLicenseManager::installNewLicense);
-    licenseManagerTests.add_test("LicenseManager-checkInvalidLicense", &TestLicenseManager::checkInvalidLicense);
-    res = licenseManagerTests.run(argc, argv);
-    if (res != 0) {
-        printf("License Manager test failed\n");
-        exit(1);
-    }
-
-    TestCryptoHelper cryptoHelperTests(appFolder);
-    cryptoHelperTests.add_test("CryptoHelper-basic", &TestCryptoHelper::basic);
-    res = cryptoHelperTests.run(argc, argv);
-    if (res != 0) {
-        printf("Crypto Helper test failed\n");
         exit(1);
     }
 

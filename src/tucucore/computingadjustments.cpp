@@ -876,7 +876,7 @@ ComputingResult ComputingAdjustments::generatePrediction(DosageAdjustment &_dosa
             }
         }
 
-        if (_traits->getComputingOption().getWithStatistics()) {
+        if (_traits->getComputingOption().retrieveStatistics() == RetrieveStatisticsOption::RetrieveStatistics) {
             CycleStatisticsCalculator c;
             c.calculate(_dosage.m_data);
         }
