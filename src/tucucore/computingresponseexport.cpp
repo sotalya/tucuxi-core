@@ -87,10 +87,12 @@ bool ComputingResponseExport::exportToFiles(const ComputingResponse &_computingR
             const Tucuxi::Core::SinglePredictionResponse* prediction =
                     dynamic_cast<Tucuxi::Core::SinglePredictionResponse*>(response.get());
 
-            double firstTime = prediction->getData()[0].m_start.toSeconds();
-            for (auto &cycleData : prediction->getData()) {
-                for (size_t i = 0; i < cycleData.m_concentrations[0].size(); i++) {
-                    file << (cycleData.m_start.toSeconds() - firstTime) / 3600.0 + cycleData.m_times[0][i] << "\t" << cycleData.m_concentrations[0][i] << std::endl;
+            if (!prediction->getData().empty()) {
+                double firstTime = prediction->getData()[0].m_start.toSeconds();
+                for (auto &cycleData : prediction->getData()) {
+                    for (size_t i = 0; i < cycleData.m_concentrations[0].size(); i++) {
+                        file << (cycleData.m_start.toSeconds() - firstTime) / 3600.0 + cycleData.m_times[0][i] << "\t" << cycleData.m_concentrations[0][i] << std::endl;
+                    }
                 }
             }
 

@@ -6,7 +6,6 @@
 
 #include "tucucommon/utils.h"
 #include "tucucommon/loggerhelper.h"
-#include "tucucommon/licensemanager.h"
 #include "tucucommon/general.h"
 
 #include "tucucore/drugmodelchecker.h"
