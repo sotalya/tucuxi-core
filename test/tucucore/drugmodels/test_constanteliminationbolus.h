@@ -138,7 +138,10 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
             double nbPointsPerHour = 10.0;
-            ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment, true);
+            ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment,
+                                            RetrieveStatisticsOption::RetrieveStatistics,
+                                            RetrieveParametersOption::RetrieveParameters,
+                                            RetrieveCovariatesOption::RetrieveCovariates);
             std::unique_ptr<ComputingTraitConcentration> traits =
                     std::make_unique<ComputingTraitConcentration>(
                         requestResponseId, start, end, nbPointsPerHour, computingOption);
@@ -291,7 +294,10 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
             double nbPointsPerHour = 10.0;
-            ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment, true);
+            ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment,
+                                            RetrieveStatisticsOption::RetrieveStatistics,
+                                            RetrieveParametersOption::RetrieveParameters,
+                                            RetrieveCovariatesOption::RetrieveCovariates);
             std::unique_ptr<ComputingTraitConcentration> traits =
                     std::make_unique<ComputingTraitConcentration>(
                         requestResponseId, start, end, nbPointsPerHour, computingOption);
@@ -444,7 +450,10 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
             double nbPointsPerHour = 10.0;
-            ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment, true);
+            ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment,
+                                            RetrieveStatisticsOption::RetrieveStatistics,
+                                            RetrieveParametersOption::RetrieveParameters,
+                                            RetrieveCovariatesOption::RetrieveCovariates);
 
 
             std::unique_ptr<ComputingTraitPercentiles> traitsPercentiles =
@@ -552,7 +561,10 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
             double nbPointsPerHour = 10.0;
-            ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment, true);
+            ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment,
+                                            RetrieveStatisticsOption::RetrieveStatistics,
+                                            RetrieveParametersOption::RetrieveParameters,
+                                            RetrieveCovariatesOption::RetrieveCovariates);
 
             std::unique_ptr<ComputingTraitPercentiles> traitsPercentiles =
                     std::make_unique<ComputingTraitPercentiles>(
@@ -658,7 +670,10 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
             double nbPointsPerHour = 10.0;
-            ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment, true);
+            ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment,
+                                            RetrieveStatisticsOption::RetrieveStatistics,
+                                            RetrieveParametersOption::RetrieveParameters,
+                                            RetrieveCovariatesOption::RetrieveCovariates);
 
             std::unique_ptr<ComputingTraitPercentiles> traitsPercentiles =
                     std::make_unique<ComputingTraitPercentiles>(
@@ -765,7 +780,10 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
             double nbPointsPerHour = 10.0;
-            ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment, true);
+            ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment,
+                                            RetrieveStatisticsOption::RetrieveStatistics,
+                                            RetrieveParametersOption::RetrieveParameters,
+                                            RetrieveCovariatesOption::RetrieveCovariates);
 
             std::unique_ptr<ComputingTraitPercentiles> traitsPercentiles =
                     std::make_unique<ComputingTraitPercentiles>(
@@ -882,7 +900,10 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
             double nbPointsPerHour = 10.0;
-            ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment, true);
+            ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment,
+                                            RetrieveStatisticsOption::RetrieveStatistics,
+                                            RetrieveParametersOption::RetrieveParameters,
+                                            RetrieveCovariatesOption::RetrieveCovariates);
 
             std::unique_ptr<ComputingTraitPercentiles> traitsPercentiles =
                     std::make_unique<ComputingTraitPercentiles>(
@@ -998,7 +1019,10 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
             double nbPointsPerHour = 10.0;
-            ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment, true);
+            ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment,
+                                            RetrieveStatisticsOption::RetrieveStatistics,
+                                            RetrieveParametersOption::RetrieveParameters,
+                                            RetrieveCovariatesOption::RetrieveCovariates);
 
             std::unique_ptr<ComputingTraitPercentiles> traitsPercentiles =
                     std::make_unique<ComputingTraitPercentiles>(
@@ -1114,7 +1138,10 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
             double nbPointsPerHour = 10.0;
-            ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment, true);
+            ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment,
+                                            RetrieveStatisticsOption::RetrieveStatistics,
+                                            RetrieveParametersOption::RetrieveParameters,
+                                            RetrieveCovariatesOption::RetrieveCovariates);
 
             std::unique_ptr<ComputingTraitPercentiles> traitsPercentiles =
                     std::make_unique<ComputingTraitPercentiles>(
@@ -1230,7 +1257,10 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
             double nbPointsPerHour = 10.0;
-            ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment, true);
+            ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment,
+                                            RetrieveStatisticsOption::RetrieveStatistics,
+                                            RetrieveParametersOption::RetrieveParameters,
+                                            RetrieveCovariatesOption::RetrieveCovariates);
 
             std::unique_ptr<ComputingTraitPercentiles> traitsPercentiles =
                     std::make_unique<ComputingTraitPercentiles>(
@@ -1301,7 +1331,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         // Add targets
         TargetDefinition *target = new TargetDefinition(TargetType::Residual,
                                                         Unit("mg/l"),
-                                                        "analyte",
+                                                        ActiveMoietyId("analyte"),
                                                         std::make_unique<SubTargetDefinition>("cMin", 750.0, nullptr),
                                                         std::make_unique<SubTargetDefinition>("cMax", 1500.0, nullptr),
                                                         std::make_unique<SubTargetDefinition>("cBest", 1000.0, nullptr),
@@ -1363,7 +1393,10 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
             double nbPointsPerHour = 10.0;
-            ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment, true);
+            ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment,
+                                            RetrieveStatisticsOption::RetrieveStatistics,
+                                            RetrieveParametersOption::RetrieveParameters,
+                                            RetrieveCovariatesOption::RetrieveCovariates);
 
             Tucuxi::Common::DateTime adjustmentTime(2018_y / sep / 3, 8h + 0min);
             BestCandidatesOption adjustmentOption = BestCandidatesOption::AllDosages;
@@ -1437,7 +1470,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         // Add targets
         TargetDefinition *target = new TargetDefinition(TargetType::CumulativeAuc,
                                                         Unit("mg*h/l"),
-                                                        "analyte",
+                                                        ActiveMoietyId("analyte"),
                                                         std::make_unique<SubTargetDefinition>("cMin", 4.0 * 24.0 * 250.0, nullptr),
                                                         std::make_unique<SubTargetDefinition>("cMax", 4.0 * 24.0 * 500.0, nullptr),
                                                         std::make_unique<SubTargetDefinition>("cBest", 4.0 * 24.0 * 300.0, nullptr),
@@ -1499,7 +1532,10 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
             double nbPointsPerHour = 10.0;
-            ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment, true);
+            ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment,
+                                            RetrieveStatisticsOption::RetrieveStatistics,
+                                            RetrieveParametersOption::RetrieveParameters,
+                                            RetrieveCovariatesOption::RetrieveCovariates);
 
             Tucuxi::Common::DateTime adjustmentTime(2018_y / sep / 3, 8h + 0min);
             BestCandidatesOption adjustmentOption = BestCandidatesOption::AllDosages;

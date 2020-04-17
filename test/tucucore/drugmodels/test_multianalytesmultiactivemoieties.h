@@ -128,7 +128,10 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
             double nbPointsPerHour = 10.0;
-            ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment, true);
+            ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment,
+                                            RetrieveStatisticsOption::RetrieveStatistics,
+                                            RetrieveParametersOption::RetrieveParameters,
+                                            RetrieveCovariatesOption::RetrieveCovariates);
             std::unique_ptr<ComputingTraitConcentration> traits =
                     std::make_unique<ComputingTraitConcentration>(
                         requestResponseId, start, end, nbPointsPerHour, computingOption);
@@ -266,7 +269,10 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
             double nbPointsPerHour = 10.0;
-            ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment, true);
+            ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment,
+                                            RetrieveStatisticsOption::RetrieveStatistics,
+                                            RetrieveParametersOption::RetrieveParameters,
+                                            RetrieveCovariatesOption::RetrieveCovariates);
             std::unique_ptr<ComputingTraitConcentration> traits =
                     std::make_unique<ComputingTraitConcentration>(
                         requestResponseId, start, end, nbPointsPerHour, computingOption);
@@ -385,7 +391,7 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
         // Add targets
         TargetDefinition *target = new TargetDefinition(TargetType::Residual,
                                                         Unit("mg/l"),
-                                                        "analyte",
+                                                        ActiveMoietyId("analyte"),
                                                         std::make_unique<SubTargetDefinition>("cMin", 750.0, nullptr),
                                                         std::make_unique<SubTargetDefinition>("cMax", 1500.0, nullptr),
                                                         std::make_unique<SubTargetDefinition>("cBest", 1000.0, nullptr),
@@ -447,7 +453,10 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
             double nbPointsPerHour = 10.0;
-            ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment, true);
+            ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment,
+                                            RetrieveStatisticsOption::RetrieveStatistics,
+                                            RetrieveParametersOption::RetrieveParameters,
+                                            RetrieveCovariatesOption::RetrieveCovariates);
 
             Tucuxi::Common::DateTime adjustmentTime(2018_y / sep / 3, 8h + 0min);
             BestCandidatesOption adjustmentOption = BestCandidatesOption::AllDosages;

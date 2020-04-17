@@ -5,9 +5,9 @@
 
 #include <string>
 
-#include "tucucommon/cryptohelper.h"
-#include "tucucommon/systeminfo.h"
-#include "tucucommon/licensemanager.h"
+#include "tucucrypto/cryptohelper.h"
+#include "tucucrypto/systeminfo.h"
+#include "tucucrypto/licensemanager.h"
 
 using namespace Tucuxi::Common;
 using namespace std::chrono_literals;

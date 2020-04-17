@@ -67,7 +67,7 @@ public:
         std::unique_ptr<SubTargetDefinition> cBest(new SubTargetDefinition("cBest", 1000.0, nullptr));
         TargetDefinition *target = new TargetDefinition(TargetType::Residual,
                                                         Unit("ug/l"),
-                                                        "imatinib",
+                                                        ActiveMoietyId("imatinib"),
                                                         std::move(cMin),
                                                         std::move(cMax),
                                                         std::move(cBest),

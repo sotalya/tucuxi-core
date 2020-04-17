@@ -9,6 +9,7 @@
 
 #include "tucucore/timedevent.h"
 #include "tucucore/drugdefinitions.h"
+#include "tucucore/drugmodel/activemoiety.h"
 #include "tucucore/drugmodel/targetdefinition.h"
 #include "tucucommon/duration.h"
 
@@ -29,13 +30,13 @@ class Target
 public:
     Target() = delete;
 
-    Target(const std::string& _activeMoietyId,
+    Target(ActiveMoietyId _activeMoietyId,
            TargetType _type, 
            Value _min, 
            Value _best, 
            Value _max);
 
-    Target(const std::string& _activeMoietyId,
+    Target(ActiveMoietyId _activeMoietyId,
            TargetType _type,
            Value _min,
            Value _best,
@@ -43,7 +44,7 @@ public:
            Value _inefficacyAlarm,
            Value _toxicityAlarm);
 
-    Target(const std::string& _activeMoietyId,
+    Target(ActiveMoietyId _activeMoietyId,
            TargetType _type,
            Unit _unit,
            Value _min,
@@ -52,14 +53,14 @@ public:
            Value _inefficacyAlarm,
            Value _toxicityAlarm);
 
-    Target(const std::string& _activeMoietyId,
+    Target(ActiveMoietyId _activeMoietyId,
            TargetType _type,
            Value _min,
            Value _best,
            Value _max,
            Value _mic);
 
-    Target(const std::string& _activeMoietyId,
+    Target(ActiveMoietyId _activeMoietyId,
            TargetType _type,
            Unit _unit,
            Unit _finalUnit,
@@ -71,11 +72,11 @@ public:
            const Tucuxi::Common::Duration &_tbest,
            const Tucuxi::Common::Duration &_tmax);
 
-    std::string getActiveMoietyId() const { return m_activeMoietyId;}
+    ActiveMoietyId getActiveMoietyId() const { return m_activeMoietyId;}
 
 private:
     /// Id of the active moiety on which applying the target
-    std::string m_activeMoietyId;
+    ActiveMoietyId m_activeMoietyId;
 
     /// Type of target
     TargetType m_targetType;

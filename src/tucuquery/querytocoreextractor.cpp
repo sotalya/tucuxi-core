@@ -5,6 +5,7 @@
 #include "tucucore/drugmodelimport.h"
 #include "tucucore/drugmodelrepository.h"
 #include "tucucore/treatmentdrugmodelcompatibilitychecker.h"
+#include "tucucore/drugdefinitions.h"
 
 #include "tucucommon/componentmanager.h"
 #include "tucucommon/loggerhelper.h"
@@ -53,7 +54,7 @@ Tucuxi::Core::Targets QueryToCoreExtractor::extractTargets(const Query &_query, 
     for (const std::unique_ptr<TargetData>& td : targetsData) {
         targets.push_back(
                     std::make_unique<Tucuxi::Core::Target>(
-                        td->getActiveMoietyID(),
+                        Tucuxi::Core::ActiveMoietyId(td->getActiveMoietyID()),
                         td->getTargetType(),
                         td->getUnit(),
                         td->getMin(),
@@ -244,7 +245,9 @@ std::vector<Tucuxi::Core::ComputingTrait *> QueryToCoreExtractor::extractAdaptat
     Tucuxi::Core::PredictionParameterType predictionParameterType = extractPredictionParameterType(_query, _request);
 
 
-    Tucuxi::Core::ComputingOption computingOption(predictionParameterType, Tucuxi::Core::CompartmentsOption::MainCompartment, true);
+    Tucuxi::Core::ComputingOption computingOption(predictionParameterType,
+                                                  Tucuxi::Core::CompartmentsOption::MainCompartment,
+                                                  Tucuxi::Core::RetrieveStatisticsOption::RetrieveStatistics);
 
     int nbPointsPerHour = 10;
     if (_request.getNbPointsPerHour() > 0) {
@@ -291,7 +294,9 @@ std::vector<Tucuxi::Core::ComputingTrait * > QueryToCoreExtractor::extractPredic
     Tucuxi::Core::PredictionParameterType predictionParameterType = extractPredictionParameterType(_query, _request);
 
     // Do it with statistics... Could come from a spec somewhere
-    Tucuxi::Core::ComputingOption computingOption(predictionParameterType, Tucuxi::Core::CompartmentsOption::MainCompartment, true);
+    Tucuxi::Core::ComputingOption computingOption(predictionParameterType,
+                                                  Tucuxi::Core::CompartmentsOption::MainCompartment,
+                                                  Tucuxi::Core::RetrieveStatisticsOption::RetrieveStatistics);
 
     int nbPointsPerHour = 10;
     if (_request.getNbPointsPerHour() > 0) {

@@ -13,32 +13,6 @@
 namespace Tucuxi {
 namespace Core {
 
-///
-/// \brief The AnalyteId class
-/// This class is simply a std::string.
-/// The rationale is that it makes it mandatory to use ActiveMoietyId wherever
-/// needed, and as such not to mix things with AnalyteGroupId or AnalyteId.
-/// Therefore, the code is safer, and more readable.
-///
-class ActiveMoietyId
-{
-public:
-    ActiveMoietyId(std::string _s) : m_s(_s) {}
-    ActiveMoietyId(const char* _s) : m_s(_s) {}
-    size_t size() const { return m_s.size();}
-
-    std::string toString() const { return m_s; }
-
-    inline bool operator==(const ActiveMoietyId& _other) const { return this->m_s == _other.m_s;}
-    inline bool operator<(const ActiveMoietyId& _other) const { return this->m_s < _other.m_s;}
-
-protected:
-    std::string m_s;
-};
-
-inline bool operator==(const ActiveMoietyId& _lhs, const ActiveMoietyId& _rhs){ return _lhs.toString() == _rhs.toString(); }
-
-
 class ActiveMoiety
 {
 public:

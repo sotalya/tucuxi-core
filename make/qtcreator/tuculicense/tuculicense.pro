@@ -9,6 +9,7 @@ LIBS += -lpthread
 
 include(../general.pri)
 include(../tucucommon.pri)
+include(../tucucrypto.pri)
 
 SOURCES += \
     ../../../src/tuculicense/main.cpp

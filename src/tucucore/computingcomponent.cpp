@@ -289,16 +289,20 @@ ComputingResult ComputingComponent::compute(
             AnalyteGroupId analyteGroupId = _request.getDrugModel().getAnalyteSets()[0]->getId();
             ParameterSetEventPtr params = parameterSeries[analyteGroupId].getAtTime(start, allEtas[analyteGroupId]);
 
-            for (auto p = params.get()->begin() ; p < params.get()->end() ; p++) {
-                cycle.m_parameters.push_back({(*p).getParameterId(), (*p).getValue()});
+            if (_traits->getComputingOption().retrieveParameters() == RetrieveParametersOption::RetrieveParameters) {
+                for (auto p = params.get()->begin() ; p < params.get()->end() ; p++) {
+                    cycle.m_parameters.push_back({(*p).getParameterId(), (*p).getValue()});
+                }
+                std::sort(cycle.m_parameters.begin(), cycle.m_parameters.end(),
+                          [&] (const ParameterValue &_v1, const ParameterValue &_v2)
+                { return _v1.m_parameterId < _v2.m_parameterId; });
             }
 
-            for (const auto &cov : params->m_covariates) {
-                cycle.m_covariates.push_back({cov.m_id, cov.m_value});
+            if (_traits->getComputingOption().retrieveCovariates() == RetrieveCovariatesOption::RetrieveCovariates) {
+                for (const auto &cov : params->m_covariates) {
+                    cycle.m_covariates.push_back({cov.m_id, cov.m_value});
+                }
             }
-
-            std::sort(cycle.m_parameters.begin(), cycle.m_parameters.end(),
-                      [&] (const ParameterValue &_v1, const ParameterValue &_v2) { return _v1.m_parameterId < _v2.m_parameterId; });
 
             resp->addCycleData(cycle);
         }
@@ -315,7 +319,7 @@ ComputingResult ComputingComponent::compute(
         resp->addAnalyteId(analyteId.toString());
     }
 
-    if (_traits->getComputingOption().getWithStatistics()) {
+    if (_traits->getComputingOption().retrieveStatistics() == RetrieveStatisticsOption::RetrieveStatistics) {
         CycleStatisticsCalculator c;
         c.calculate(resp->getModifiableData());
     }
@@ -546,7 +550,7 @@ ComputingResult ComputingComponent::computePercentilesMulti(
                 }
             }
 
-            if (_traits->getComputingOption().getWithStatistics()) {
+            if (_traits->getComputingOption().retrieveStatistics() == RetrieveStatisticsOption::RetrieveStatistics) {
                 CycleStatisticsCalculator c;
                 c.calculate(percData);
             }
@@ -745,7 +749,7 @@ ComputingResult ComputingComponent::computePercentilesSimple(
                 }
             }
 
-            if (_traits->getComputingOption().getWithStatistics()) {
+            if (_traits->getComputingOption().retrieveStatistics() == RetrieveStatisticsOption::RetrieveStatistics) {
                 CycleStatisticsCalculator c;
                 c.calculate(percData);
             }

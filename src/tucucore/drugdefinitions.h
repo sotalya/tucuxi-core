@@ -8,6 +8,34 @@
 namespace Tucuxi {
 namespace Core {
 
+
+///
+/// \brief The AnalyteId class
+/// This class is simply a std::string.
+/// The rationale is that it makes it mandatory to use ActiveMoietyId wherever
+/// needed, and as such not to mix things with AnalyteGroupId or AnalyteId.
+/// Therefore, the code is safer, and more readable.
+///
+class ActiveMoietyId
+{
+public:
+    explicit ActiveMoietyId(std::string _s) : m_s(_s) {}
+    explicit ActiveMoietyId(const char* _s) : m_s(_s) {}
+    size_t size() const { return m_s.size();}
+
+    std::string toString() const { return m_s; }
+
+    inline bool operator==(const ActiveMoietyId& _other) const { return this->m_s == _other.m_s;}
+    inline bool operator<(const ActiveMoietyId& _other) const { return this->m_s < _other.m_s;}
+
+protected:
+    std::string m_s;
+};
+
+// inline bool operator==(const ActiveMoietyId& _lhs, const ActiveMoietyId& _rhs){ return _lhs.toString() == _rhs.toString(); }
+
+
+
 /// \brief Default value for a drug (given either as a numerical value, or as an operation to obtain it).
 /// A PopulationValue represents the value of a parameter needed for computing a drug's dosage, and is the default value
 /// adopted when the corresponding patient information is missing.

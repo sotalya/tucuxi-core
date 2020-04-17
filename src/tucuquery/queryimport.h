@@ -12,6 +12,8 @@
 #include "tucucommon/iimport.h"
 #include "query.h"
 
+#include "tucucore/computingservice/computingtrait.h"
+
 namespace Tucuxi {
 namespace Query {
 
@@ -99,8 +101,18 @@ protected:
     bool getChildBoolValue(Common::XmlNodeIterator _rootIterator, std::string _childName) const;
     Common::DateTime getChildDateTimeValue(Common::XmlNodeIterator _rootIterator, std::string _childName) const;
     Common::Duration getChildDuration(Common::XmlNodeIterator _rootIterator, std::string _childName) const;
-
+    std::unique_ptr<Tucuxi::Core::ComputingTraitAdjustment> getChildComputingTraitAdjustment(Common::XmlNodeIterator _rootIterator) const;
+    Tucuxi::Core::ComputingOption getChildComputingOption(Common::XmlNodeIterator _rootIterator, std::string _childName) const;
+    Tucuxi::Core::PredictionParameterType getChildParametersTypeEnum(Common::XmlNodeIterator _rootIterator, std::string _childName) const;
+    Tucuxi::Core::CompartmentsOption getChildCompartmentsOptionEnum(Common::XmlNodeIterator _rootIterator, std::string _childName) const;
+    Tucuxi::Core::BestCandidatesOption getChildBestCandidatesOptionEnum(Common::XmlNodeIterator _rootIterator, std::string _childName) const;
+    Tucuxi::Core::LoadingOption getChildLoadingOptionEnum(Common::XmlNodeIterator _rootIterator, std::string _childName) const;
+    Tucuxi::Core::RestPeriodOption getChildRestPeriodTargetOptionEnum(Common::XmlNodeIterator _rootIterator, std::string _childName) const;
+    Tucuxi::Core::SteadyStateTargetOption getChildSteadyStateTargetOptionEnum(Common::XmlNodeIterator _rootIterator, std::string _childName) const;
+    Tucuxi::Core::TargetExtractionOption getChildTargetExtractionOptionEnum(Common::XmlNodeIterator _rootIterator, std::string _childName) const;
+    Tucuxi::Core::FormulationAndRouteSelectionOption getChildFormulationAndRouteSelectionOptionEnum(Common::XmlNodeIterator _rootIterator, std::string _childName) const;
 };
+
 
 } // namespace Query
 } // namespace Tucuxi

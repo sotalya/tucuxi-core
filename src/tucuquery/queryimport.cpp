@@ -5,6 +5,7 @@
 #include "tucucommon/xmlattribute.h"
 #include "tucucommon/xmliterator.h"
 #include "tucucommon/utils.h"
+#include "tucucore/computingservice/computingtrait.h"
 
 
 // #include <unistd.h>
@@ -151,10 +152,10 @@ unique_ptr<AdministrativeData> QueryImport::createAdministrativeData(Tucuxi::Com
     unique_ptr<ClinicalData> pClinicalData = createClinicalData(clinicalDataRootIterator);
 
     return make_unique<AdministrativeData>(
-                                      move(pMandator),
-                                      move(pPatient),
-                                      move(pClinicalData)
-                                    );
+                move(pMandator),
+                move(pPatient),
+                move(pClinicalData)
+                );
 }
 
 unique_ptr<Person> QueryImport::createPerson(Common::XmlNodeIterator& _personRootIterator) const
@@ -168,9 +169,9 @@ unique_ptr<Person> QueryImport::createPerson(Common::XmlNodeIterator& _personRoo
     unique_ptr<InstituteContact> pInstituteContact = createInstituteContact(iterator);
 
     return make_unique<Person>(
-                           move(pPersonalContact),
-                           move(pInstituteContact)
-                       );
+                move(pPersonalContact),
+                move(pInstituteContact)
+                );
 }
 
 unique_ptr<PersonalContact> QueryImport::createPersonalContact(Common::XmlNodeIterator& _personalContactRootIterator) const
@@ -195,14 +196,14 @@ unique_ptr<PersonalContact> QueryImport::createPersonalContact(Common::XmlNodeIt
     unique_ptr<Email> pEmail = createEmail(iterator);
 
     return make_unique<PersonalContact>(
-                                      id,
-                                      title,
-                                      firstname,
-                                      lastname,
-                                      move(pAddress),
-                                      move(pPhone),
-                                      move(pEmail)
-                                    );
+                id,
+                title,
+                firstname,
+                lastname,
+                move(pAddress),
+                move(pPhone),
+                move(pEmail)
+                );
 }
 
 unique_ptr<InstituteContact> QueryImport::createInstituteContact(Common::XmlNodeIterator& _instituteContactRootIterator) const
@@ -223,12 +224,12 @@ unique_ptr<InstituteContact> QueryImport::createInstituteContact(Common::XmlNode
     unique_ptr<Email> pEmail = createEmail(iterator);
 
     return make_unique<InstituteContact>(
-                                      id,
-                                      name,
-                                      move(pAddress),
-                                      move(pPhone),
-                                      move(pEmail)
-                                      );
+                id,
+                name,
+                move(pAddress),
+                move(pPhone),
+                move(pEmail)
+                );
 }
 
 unique_ptr<Address> QueryImport::createAddress(Common::XmlNodeIterator& _addressRootIterator) const
@@ -246,12 +247,12 @@ unique_ptr<Address> QueryImport::createAddress(Common::XmlNodeIterator& _address
     string country = getChildStringValue(_addressRootIterator, COUNTRY_NODE_NAME);
 
     return make_unique<Address>(
-                            street,
-                            postalCode,
-                            city,
-                            state,
-                            country
-                         );
+                street,
+                postalCode,
+                city,
+                state,
+                country
+                );
 }
 
 unique_ptr<Phone> QueryImport::createPhone(Common::XmlNodeIterator& _phoneRootIterator) const
@@ -319,9 +320,9 @@ unique_ptr<DrugTreatmentData> QueryImport::createDrugTreatmentData(Tucuxi::Commo
     }
 
     return make_unique<DrugTreatmentData>(
-                                      move(pPatient),
-                                      move(drugs)
-                                    );
+                move(pPatient),
+                move(drugs)
+                );
 }
 
 unique_ptr<PatientData> QueryImport::createPatientData(Common::XmlNodeIterator& _patientDataRootIterator) const
@@ -381,13 +382,13 @@ unique_ptr<CovariateData> QueryImport::createCovariateData(Common::XmlNodeIterat
     string nature = getChildStringValue(_covariateDataRootIterator, NATURE_NODE_NAME);
 
     return make_unique<CovariateData>(
-                                    covariateId,
-                                     date,
-                                     value,
-                                     unit,
-                                     dataType,
-                                     nature
-                                );
+                covariateId,
+                date,
+                value,
+                unit,
+                dataType,
+                nature
+                );
 }
 
 
@@ -440,14 +441,14 @@ unique_ptr<DrugData> QueryImport::createDrugData(Common::XmlNodeIterator& _drugD
     }
 
     return make_unique<DrugData>(
-                            drugId,
-                            activePrinciple,
-                            brandName,
-                            atc,
-                            move(pTreatment),
-                            samples,
-                            targets
-                        );
+                drugId,
+                activePrinciple,
+                brandName,
+                atc,
+                move(pTreatment),
+                samples,
+                targets
+                );
 }
 
 unique_ptr<TargetData> QueryImport::createTargetData(Common::XmlNodeIterator& _targetDataRootIterator) const
@@ -471,15 +472,15 @@ unique_ptr<TargetData> QueryImport::createTargetData(Common::XmlNodeIterator& _t
     double toxicityAlarm = getChildDoubleValue(_targetDataRootIterator, TOXICITY_ALARM_NODE_NAME);
 
     return make_unique<TargetData>(
-                               activeMoietyId,
-                               targetType,
-                               unit,
-                               inefficacyAlarm,
-                               min,
-                               best,
-                               max,
-                               toxicityAlarm
-                        );
+                activeMoietyId,
+                targetType,
+                unit,
+                inefficacyAlarm,
+                min,
+                best,
+                max,
+                toxicityAlarm
+                );
 }
 
 unique_ptr<SampleData> QueryImport::createSampleData(Common::XmlNodeIterator& _sampleDataRootIterator) const
@@ -504,11 +505,11 @@ unique_ptr<SampleData> QueryImport::createSampleData(Common::XmlNodeIterator& _s
     bool likelyhoodUse = getChildBoolValue(_sampleDataRootIterator, LIKELYHOOD_USE_NODE_NAME);
 
     return make_unique<SampleData>(
-                               sampleId,
-                               sampleDate,
-                               concentrations,
-                               likelyhoodUse
-                        );
+                sampleId,
+                sampleDate,
+                concentrations,
+                likelyhoodUse
+                );
 }
 
 unique_ptr<ConcentrationData> QueryImport::createConcentrationData(Common::XmlNodeIterator& _concentrationDataRootIterator) const
@@ -553,10 +554,10 @@ unique_ptr<Core::DosageTimeRange> QueryImport::createDosageTimeRange(Common::Xml
     Common::XmlNodeIterator dosageRootIterator = _dosageTimeRangeRootIterator->getChildren(DOSAGE_NODE_NAME);
     unique_ptr<Core::Dosage> pDosage = createDosage(dosageRootIterator);
     return make_unique<Core::DosageTimeRange>(
-                                            start,
-                                            end,
-                                            *pDosage
-                                        );
+                start,
+                end,
+                *pDosage
+                );
 }
 
 unique_ptr<Core::Dosage> QueryImport::createDosage(Common::XmlNodeIterator& _dosageRootIterator) const
@@ -599,8 +600,8 @@ unique_ptr<Core::DosageBounded> QueryImport::createDosageBounded(Common::XmlNode
         Core::DosageBoundedList dosageBoundedList;
         Common::XmlNodeIterator dosageSequenceIterator = dosageBoundedIterator->getChildren();
         while(dosageSequenceIterator != dosageSequenceIterator.none()) {
-         dosageBoundedList.push_back(createDosageBounded(dosageSequenceIterator));
-         dosageSequenceIterator++;
+            dosageBoundedList.push_back(createDosageBounded(dosageSequenceIterator));
+            dosageSequenceIterator++;
         }
 
         pDosageBounded = make_unique<Core::DosageSequence>(*(dosageBoundedList.at(0)));
@@ -621,11 +622,11 @@ unique_ptr<Core::DosageBounded> QueryImport::createDosageBounded(Common::XmlNode
         unique_ptr<Core::FormulationAndRoute> formulationAndRoute = createFormulationAndRoute(formulationAndRouteRootIterator);
 
         pDosageBounded = make_unique<Core::LastingDose>(
-                                                           doseValue,
-                                                           *formulationAndRoute,
-                                                           infusionTime,
-                                                           interval
-                                                    );
+                    doseValue,
+                    *formulationAndRoute,
+                    infusionTime,
+                    interval
+                    );
     } else if (dosageBoundedIterator->getName() == DAILY_DOSAGE_NODE_NAME) {
         static const string TIME_NODE_NAME = "time";
 
@@ -642,11 +643,11 @@ unique_ptr<Core::DosageBounded> QueryImport::createDosageBounded(Common::XmlNode
         Common::Duration infusionTime = Duration(std::chrono::minutes(static_cast<int>(infuTimeInMinutes)));
 
         pDosageBounded = make_unique<Core::DailyDose>(
-                                                       doseValue,
-                                                       *formulationAndRoute,
-                                                       infusionTime,
-                                                       time
-                                                       );
+                    doseValue,
+                    *formulationAndRoute,
+                    infusionTime,
+                    time
+                    );
     } else if (dosageBoundedIterator->getName() == WEEKLY_DOSAGE_NODE_NAME) {
         static const string DAY_NODE_NAME = "day";
         static const string TIME_NODE_NAME = "time";
@@ -671,12 +672,12 @@ unique_ptr<Core::DosageBounded> QueryImport::createDosageBounded(Common::XmlNode
         Common::Duration infusionTime = Duration(std::chrono::minutes(static_cast<int>(infuTimeInMinutes)));
 
         pDosageBounded = make_unique<Core::WeeklyDose>(
-                                                     doseValue,
-                                                     *formulationAndRoute,
-                                                     infusionTime,
-                                                     time,
-                                                     Core::DayOfWeek(static_cast<unsigned>(day))
-                                                    );
+                    doseValue,
+                    *formulationAndRoute,
+                    infusionTime,
+                    time,
+                    Core::DayOfWeek(static_cast<unsigned>(day))
+                    );
     }
 
     return pDosageBounded;
@@ -755,18 +756,19 @@ unique_ptr<Core::FormulationAndRoute> QueryImport::createFormulationAndRoute(Com
     }
 
     return make_unique<Core::FormulationAndRoute>(
-                                               formulation,
-                                               administrationRoute,
-                                               absorptionModel,
-                                               administrationName
-                                            );
+                formulation,
+                administrationRoute,
+                absorptionModel,
+                administrationName
+                );
 }
 
 unique_ptr<RequestData> QueryImport::createRequest(Tucuxi::Common::XmlNodeIterator& _requestRootIterator) const
 {
-    static const string REQUEST_ID_NODE_NAME           = "requestId";
-    static const string DRUG_ID_NODE_NAME              = "drugId";
-    static const string DRUGMODEL_ID_NODE_NAME         = "drugModelId";
+    static const string REQUEST_ID_NODE_NAME                = "requestId";
+    static const string DRUG_ID_NODE_NAME                   = "drugId";
+    static const string DRUGMODEL_ID_NODE_NAME              = "drugModelId";
+    static const string COMPUTING_TRAIT_ADJUSTMENT_NAME     = "adjustmentTraits";
     static const string REQUEST_TYPE_NODE_NAME         = "requestType";
     static const string NBPOINTSPERHOUR_NODE_NAME      = "nbPointsPerHour";
     static const string DATE_INTERVAL_NODE_NAME        = "dateInterval";
@@ -781,6 +783,18 @@ unique_ptr<RequestData> QueryImport::createRequest(Tucuxi::Common::XmlNodeIterat
     string requestId = getChildStringValue(_requestRootIterator, REQUEST_ID_NODE_NAME);
     string drugId = getChildStringValue(_requestRootIterator, DRUG_ID_NODE_NAME);
     string drugModelId = getChildStringValue(_requestRootIterator, DRUGMODEL_ID_NODE_NAME);
+
+    Common::XmlNodeIterator computingTraitAdjustmentRootIterator = _requestRootIterator->getChildren(COMPUTING_TRAIT_ADJUSTMENT_NAME);
+
+    if(computingTraitAdjustmentRootIterator != Common::XmlNodeIterator::none())
+    {
+        unique_ptr<Tucuxi::Core::ComputingTraitAdjustment> computingTraitAdjustment = getChildComputingTraitAdjustment(_requestRootIterator);
+
+    }
+
+
+
+
     string requestType = getChildStringValue(_requestRootIterator, REQUEST_TYPE_NODE_NAME);
 
     Common::XmlNodeIterator dateIntervalRootIterator = _requestRootIterator->getChildren(DATE_INTERVAL_NODE_NAME);
@@ -826,18 +840,18 @@ unique_ptr<RequestData> QueryImport::createRequest(Tucuxi::Common::XmlNodeIterat
     unique_ptr<Backextrapolation> pBackextrapolation = createBackextrapolation(backextrapolationRootIterator);
 
     return make_unique<RequestData>(
-                                 requestId,
-                                 drugId,
-                                 drugModelId,
-                                 requestType,
-                                 nbPointsPerHour,
-                                 move(dateInterval),
-                                 parametersType,
-                                 move(pGraphData),
-                                 percentiles,
-                                 move(pBackextrapolation),
-                                 pointsInTime
-                             );
+                requestId,
+                drugId,
+                drugModelId,
+                requestType,
+                nbPointsPerHour,
+                move(dateInterval),
+                parametersType,
+                move(pGraphData),
+                percentiles,
+                move(pBackextrapolation),
+                pointsInTime
+                );
 }
 
 unique_ptr<GraphData> QueryImport::createGraphData(Common::XmlNodeIterator& _graphDataRootIterator) const
@@ -892,22 +906,22 @@ unique_ptr<Backextrapolation> QueryImport::createBackextrapolation(Common::XmlNo
 
 const string QueryImport::getChildStringValue(Common::XmlNodeIterator _rootIterator, string _childName) const
 {
-     return _rootIterator->getChildren(_childName)->getValue();
+    return _rootIterator->getChildren(_childName)->getValue();
 }
 
 int QueryImport::getChildIntValue(Common::XmlNodeIterator _rootIterator, string _childName) const
 {
-     string value = _rootIterator->getChildren(_childName)->getValue();
-     int finalValue = 0;
-     try {
-         finalValue = stoi(value);
-     } catch (invalid_argument e) {
-         finalValue = 0;
-     } catch (out_of_range e) {
-         finalValue = 0;
-     }
+    string value = _rootIterator->getChildren(_childName)->getValue();
+    int finalValue = 0;
+    try {
+        finalValue = stoi(value);
+    } catch (invalid_argument e) {
+        finalValue = 0;
+    } catch (out_of_range e) {
+        finalValue = 0;
+    }
 
-     return finalValue;
+    return finalValue;
 }
 
 double QueryImport::getChildDoubleValue(Common::XmlNodeIterator _rootIterator, string _childName) const
@@ -942,6 +956,282 @@ bool QueryImport::getChildBoolValue(Common::XmlNodeIterator _rootIterator, strin
     }
 
     return finalValue;
+}
+
+
+
+unique_ptr<Tucuxi::Core::ComputingTraitAdjustment> QueryImport::getChildComputingTraitAdjustment(Common::XmlNodeIterator _rootIterator) const
+{
+    static const string NB_POINTS_PER_HOUR              = "nbPointsPerHour";
+    static const string DATE_INTERVAL_NODE_NAME         = "dateInterval";
+    static const string DATE_INTERVAL_START_NODE_NAME   = "start";
+    static const string DATE_INTERVAL_END_NODE_NAME     = "end";
+    static const string COMPUTING_OPTION                = "computingOption";
+    static const string DATE_ADJUSTMENT_TIME            = "adjustmentDate";
+    static const string OPTIONS                         = "options";
+
+
+
+    double nbPointsPerHour = getChildDoubleValue(_rootIterator, NB_POINTS_PER_HOUR);
+
+    Common::XmlNodeIterator dateIntervalRootIterator = _rootIterator->getChildren(DATE_INTERVAL_NODE_NAME);
+    Common::DateTime start = getChildDateTimeValue(dateIntervalRootIterator, DATE_INTERVAL_START_NODE_NAME);
+    Common::DateTime end = getChildDateTimeValue(dateIntervalRootIterator, DATE_INTERVAL_END_NODE_NAME);
+    Tucuxi::Core::ComputingOption computingOption = getChildComputingOption(_rootIterator, COMPUTING_OPTION);
+    Common::DateTime adjustmentDate = getChildDateTimeValue(_rootIterator, DATE_ADJUSTMENT_TIME);
+    Tucuxi::Core::BestCandidatesOption = getChildBestCandidatesOptionEnum(_rootIterator, OPTIONS);
+    return make_unique<Tucuxi::Core::ComputingTraitAdjustment>();
+
+}
+
+Tucuxi::Core::BestCandidatesOption QueryImport::getChildBestCandidatesOptionEnum(Common::XmlNodeIterator _rootIterator, std::string _childName) const
+{
+    string bestCandidatesOption = getChildStringValue(_rootIterator, _childName);
+
+    Tucuxi::Core::BestCandidatesOption bestCandidatesOptionEnum;
+
+    if(bestCandidatesOption == "bestDosage")
+    {
+        bestCandidatesOptionEnum = Tucuxi::Core::BestCandidatesOption::BestDosage;
+    }
+    else if(bestCandidatesOption == "allDosages")
+    {
+        bestCandidatesOptionEnum = Tucuxi::Core::BestCandidatesOption::AllDosages;
+    }
+    else if(bestCandidatesOption == "bestDosagePerInterval")
+    {
+        bestCandidatesOptionEnum = Tucuxi::Core::BestCandidatesOption::BestDosagePerInterval;
+    }
+    else
+    {
+        //ERROR
+    }
+
+    return bestCandidatesOptionEnum;
+}
+
+Tucuxi::Core::LoadingOption QueryImport::getChildLoadingOptionEnum(Common::XmlNodeIterator _rootIterator, std::string _childName) const
+{
+    string loadingOption = getChildStringValue(_rootIterator, _childName);
+
+    Tucuxi::Core::LoadingOption loadingOptionEnum;
+
+    if(loadingOption == "noLoadingDose")
+    {
+        loadingOptionEnum = Tucuxi::Core::LoadingOption::NoLoadingDose;
+    }
+    else if(loadingOption == "loadingDoseAllowed")
+    {
+        loadingOptionEnum = Tucuxi::Core::LoadingOption::LoadingDoseAllowed;
+    }
+    else
+    {
+        //ERROR
+    }
+
+    return loadingOptionEnum;
+}
+
+Tucuxi::Core::RestPeriodOption QueryImport::getChildRestPeriodTargetOptionEnum(Common::XmlNodeIterator _rootIterator, std::string _childName) const
+{
+    string restPeriodOption = getChildStringValue(_rootIterator, _childName);
+
+    Tucuxi::Core::RestPeriodOption restPeriodOptionEnum;
+
+    if(restPeriodOption == "noRestPeriod")
+    {
+        restPeriodOptionEnum = Tucuxi::Core::RestPeriodOption::NoRestPeriod;
+    }
+    else if(restPeriodOption == "restPeriodAllowed")
+    {
+        restPeriodOptionEnum = Tucuxi::Core::RestPeriodOption::RestPeriodAllowed;
+    }
+    else
+    {
+        //ERROR
+    }
+
+    return restPeriodOptionEnum;
+}
+
+Tucuxi::Core::SteadyStateTargetOption QueryImport::getChildSteadyStateTargetOptionEnum(Common::XmlNodeIterator _rootIterator, std::string _childName) const
+{
+    string steadyStateTargetOption = getChildStringValue(_rootIterator, _childName);
+
+    Tucuxi::Core::SteadyStateTargetOption steadyStateTargetOptionEnum;
+
+    if(steadyStateTargetOption == "atSteadyState")
+    {
+        steadyStateTargetOptionEnum = Tucuxi::Core::SteadyStateTargetOption::AtSteadyState;
+    }
+    else if(steadyStateTargetOption == "withinTreatmentTimeRange")
+    {
+        steadyStateTargetOptionEnum = Tucuxi::Core::SteadyStateTargetOption::WithinTreatmentTimeRange;
+    }
+    else
+    {
+        //ERROR
+    }
+
+    return steadyStateTargetOptionEnum;
+}
+
+Tucuxi::Core::TargetExtractionOption QueryImport::getChildTargetExtractionOptionEnum(Common::XmlNodeIterator _rootIterator, std::string _childName) const
+{
+    string targetExtractionOption = getChildStringValue(_rootIterator, _childName);
+
+    Tucuxi::Core::TargetExtractionOption targetExtractionOptionEnum;
+
+    if(targetExtractionOption == "populationValues")
+    {
+        targetExtractionOptionEnum = Tucuxi::Core::TargetExtractionOption::PopulationValues;
+    }
+    else if(targetExtractionOption == "aprioriValues")
+    {
+        targetExtractionOptionEnum = Tucuxi::Core::TargetExtractionOption::AprioriValues;
+    }
+    else if(targetExtractionOption == "individualTargets")
+    {
+        targetExtractionOptionEnum = Tucuxi::Core::TargetExtractionOption::IndividualTargets;
+    }
+    else if(targetExtractionOption == "individualTargetsIfDefinitionExists")
+    {
+        targetExtractionOptionEnum = Tucuxi::Core::TargetExtractionOption::IndividualTargetsIfDefinitionExists;
+    }
+    else if(targetExtractionOption == "definitionIfNoIndividualTarget")
+    {
+        targetExtractionOptionEnum = Tucuxi::Core::TargetExtractionOption::DefinitionIfNoIndividualTarget;
+    }
+    else if(targetExtractionOption == "individualTargetsIfDefinitionExistsAndDefinitionIfNoIndividualTarget")
+    {
+        targetExtractionOptionEnum = Tucuxi::Core::TargetExtractionOption::IndividualTargetsIfDefinitionExistsAndDefinitionIfNoIndividualTarget;
+    }
+    else
+    {
+        //ERROR
+    }
+
+    return targetExtractionOptionEnum;
+}
+
+Tucuxi::Core::FormulationAndRouteSelectionOption QueryImport::getChildFormulationAndRouteSelectionOptionEnum(Common::XmlNodeIterator _rootIterator, std::string _childName) const
+{
+    string formulationAndRouteSelectionOption = getChildStringValue(_rootIterator, _childName);
+
+    Tucuxi::Core::FormulationAndRouteSelectionOption formulationAndRouteSelectionOptionEnum;
+
+    if(formulationAndRouteSelectionOption == "lastFormulationAndRoute")
+    {
+        formulationAndRouteSelectionOptionEnum = Tucuxi::Core::FormulationAndRouteSelectionOption::LastFormulationAndRoute;
+    }
+    else if(formulationAndRouteSelectionOption == "defaultFormulationAndRoute")
+    {
+        formulationAndRouteSelectionOptionEnum = Tucuxi::Core::FormulationAndRouteSelectionOption::DefaultFormulationAndRoute;
+    }
+    else if(formulationAndRouteSelectionOption == "allFormulationAndRoutes")
+    {
+        formulationAndRouteSelectionOptionEnum = Tucuxi::Core::FormulationAndRouteSelectionOption::AllFormulationAndRoutes;
+    }
+    else
+    {
+        //ERROR
+    }
+
+    return formulationAndRouteSelectionOptionEnum;
+}
+
+
+Tucuxi::Core::ComputingOption QueryImport::getChildComputingOption(Common::XmlNodeIterator _rootIterator, string _childName) const
+{
+    static const string PARAMETERS_TYPE             = "parametersType";
+    static const string COMPARTMENT_OPTION          = "compartmentOption";
+    static const string RETRIEVE_STATISTICS         = "retrieveStatistics";
+    static const string RETRIEVE_PARAMETERS         = "retrieveParameters";
+    static const string RETRIEVE_COVARIATES         = "retrieveCovariates";
+
+    Common::XmlNodeIterator computingOptionRootIterator = _rootIterator->getChildren(_childName);
+    Tucuxi::Core::PredictionParameterType predictionParameterType = getChildParametersTypeEnum(computingOptionRootIterator, PARAMETERS_TYPE);
+    Tucuxi::Core::CompartmentsOption compartmentOption = getChildCompartmentsOptionEnum(computingOptionRootIterator, COMPARTMENT_OPTION);
+    Tucuxi::Core::RetrieveStatisticsOption retrieveStatisticsOption;
+    Tucuxi::Core::RetrieveParametersOption retrieveParametersOption;
+    Tucuxi::Core::RetrieveCovariatesOption retrieveCovariatesOption;
+
+    if(getChildBoolValue(computingOptionRootIterator, RETRIEVE_STATISTICS))
+    {
+        retrieveStatisticsOption = Tucuxi::Core::RetrieveStatisticsOption::RetrieveStatistics;
+    }else {
+        retrieveStatisticsOption = Tucuxi::Core::RetrieveStatisticsOption::DoNotRetrieveStatistics;
+    }
+
+    if(getChildBoolValue(computingOptionRootIterator, RETRIEVE_PARAMETERS))
+    {
+        retrieveParametersOption = Tucuxi::Core::RetrieveParametersOption::RetrieveParameters;
+    }else {
+        retrieveParametersOption = Tucuxi::Core::RetrieveParametersOption::DoNotRetrieveParameters;
+    }
+
+    if(getChildBoolValue(computingOptionRootIterator, RETRIEVE_COVARIATES))
+    {
+        retrieveCovariatesOption = Tucuxi::Core::RetrieveCovariatesOption::RetrieveCovariates;
+    }else {
+        retrieveCovariatesOption = Tucuxi::Core::RetrieveCovariatesOption::DoNotRetrieveCovariates;
+    }
+
+
+    return Tucuxi::Core::ComputingOption(predictionParameterType, compartmentOption, retrieveStatisticsOption, retrieveParametersOption, retrieveCovariatesOption);
+}
+
+
+
+Tucuxi::Core::CompartmentsOption QueryImport::getChildCompartmentsOptionEnum(Common::XmlNodeIterator _rootIterator, std::string _childName) const
+{
+    string compartmentOption = getChildStringValue(_rootIterator, _childName);
+
+    Tucuxi::Core::CompartmentsOption compartmentOptionEnum;
+
+    if(compartmentOption == "allActiveMoieties")
+    {
+        compartmentOptionEnum = Tucuxi::Core::CompartmentsOption::AllActiveMoieties;
+    }
+    else if(compartmentOption == "allAnalytes")
+    {
+        compartmentOptionEnum = Tucuxi::Core::CompartmentsOption::AllAnalytes;
+    }
+    else if(compartmentOption == "allCompartments")
+    {
+        compartmentOptionEnum = Tucuxi::Core::CompartmentsOption::AllCompartments;
+    }
+    else if(compartmentOption == "specific")
+    {
+        compartmentOptionEnum = Tucuxi::Core::CompartmentsOption::Specific;
+    }
+
+    return compartmentOptionEnum;
+}
+
+Tucuxi::Core::PredictionParameterType QueryImport::getChildParametersTypeEnum(Common::XmlNodeIterator _rootIterator, std::string _childName) const
+{
+    string parametersType = getChildStringValue(_rootIterator, _childName);
+    Tucuxi::Core::PredictionParameterType predictionParameterTypeEnum;
+
+    if(parametersType == "population")
+    {
+        predictionParameterTypeEnum = Tucuxi::Core::PredictionParameterType::Population;
+    }
+    else if(parametersType == "apriori")
+    {
+        predictionParameterTypeEnum = Tucuxi::Core::PredictionParameterType::Apriori;
+    }
+    else if(parametersType == "aposteriori")
+    {
+        predictionParameterTypeEnum = Tucuxi::Core::PredictionParameterType::Aposteriori;
+    }
+    else if(parametersType == "best")
+    {
+        //NOT A MEMBER OF PREDICTIONPARAMETERTYPE
+    }
+
+    return predictionParameterTypeEnum;
 }
 
 Common::DateTime QueryImport::getChildDateTimeValue(Common::XmlNodeIterator _rootIterator, string _childName) const

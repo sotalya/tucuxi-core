@@ -63,6 +63,7 @@ public:
     /// \return  ComputingResult::Ok if everything went well, another value else.
     /// The response is a reference to a unique pointer that has to be allocated within compute()
     ///
+    [[nodiscard]]
     ComputingResult compute(const ComputingRequest &_request, std::unique_ptr<ComputingResponse> &_response) override;
 
     ///

@@ -8,9 +8,9 @@
 
 #include "fructose/fructose.h"
 
-#include "tucucommon/systeminfo.h"
-#include "tucucommon/cryptohelper.h"
-#include "tucucommon/licensemanager.h"
+#include "tucucrypto/systeminfo.h"
+#include "tucucrypto/cryptohelper.h"
+#include "tucucrypto/licensemanager.h"
 #include "tucucommon/datetime.h"
 
 using namespace Tucuxi::Common;

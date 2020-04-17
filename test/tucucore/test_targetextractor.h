@@ -48,7 +48,7 @@ struct TestTargetExtractor : public fructose::test_base<TestTargetExtractor>
         {
             extractionOption = TargetExtractionOption::AprioriValues;
 
-            result = extractor.extract("NoId", covariates, targetDefinitions, targets, start, end, extractionOption, series);
+            result = extractor.extract(ActiveMoietyId("NoId"), covariates, targetDefinitions, targets, start, end, extractionOption, series);
 
             // Not yet implemented, so extraction error
             fructose_assert( result == ComputingResult::TargetExtractionError);
@@ -80,7 +80,7 @@ struct TestTargetExtractor : public fructose::test_base<TestTargetExtractor>
             std::unique_ptr<SubTargetDefinition> cBest(new SubTargetDefinition("cBest", 1000.0, nullptr));
             TargetDefinition *target = new TargetDefinition(TargetType::Residual,
                                                             Unit("ug/l"),
-                                                            "imatinib",
+                                                            ActiveMoietyId("imatinib"),
                                                             std::move(cMin),
                                                             std::move(cMax),
                                                             std::move(cBest),
@@ -143,7 +143,7 @@ struct TestTargetExtractor : public fructose::test_base<TestTargetExtractor>
             std::unique_ptr<SubTargetDefinition> cBest(new SubTargetDefinition("cBest", 1000.0, nullptr));
             TargetDefinition *target = new TargetDefinition(TargetType::Residual,
                                                             Unit("mg/l"),
-                                                            "imatinib",
+                                                            ActiveMoietyId("imatinib"),
                                                             std::move(cMin),
                                                             std::move(cMax),
                                                             std::move(cBest),
@@ -158,12 +158,12 @@ struct TestTargetExtractor : public fructose::test_base<TestTargetExtractor>
             targetDefinitions.push_back(std::unique_ptr<TargetDefinition>(target));
 
 
-            Target *patientTarget = new Target("imatinib", TargetType::Residual, Unit("mg/l"), 50.0, 100.0, 150.0, 2.0, 200.0);
+            Target *patientTarget = new Target(ActiveMoietyId("imatinib"), TargetType::Residual, Unit("mg/l"), 50.0, 100.0, 150.0, 2.0, 200.0);
 
             targets.push_back(std::unique_ptr<Target>(patientTarget));
 
             extractionOption = TargetExtractionOption::IndividualTargets;
-            result = extractor.extract("imatinib", covariates, targetDefinitions, targets, start, end, extractionOption, series);
+            result = extractor.extract(ActiveMoietyId("imatinib"), covariates, targetDefinitions, targets, start, end, extractionOption, series);
             fructose_assert( result == ComputingResult::Ok);
 
             fructose_assert(series.size() == 1);
@@ -207,12 +207,12 @@ struct TestTargetExtractor : public fructose::test_base<TestTargetExtractor>
 
             // Add targets
 
-            Target *patientTarget = new Target("imatinib", TargetType::Residual, Unit("mg/l"), 50.0, 100.0, 150.0, 2.0, 200.0);
+            Target *patientTarget = new Target(ActiveMoietyId("imatinib"), TargetType::Residual, Unit("mg/l"), 50.0, 100.0, 150.0, 2.0, 200.0);
 
             targets.push_back(std::unique_ptr<Target>(patientTarget));
 
             extractionOption = TargetExtractionOption::DefinitionIfNoIndividualTarget;
-            result = extractor.extract("imatinib", covariates, targetDefinitions, targets, start, end, extractionOption, series);
+            result = extractor.extract(ActiveMoietyId("imatinib"), covariates, targetDefinitions, targets, start, end, extractionOption, series);
             fructose_assert( result == ComputingResult::Ok);
 
             fructose_assert(series.size() == 1);
