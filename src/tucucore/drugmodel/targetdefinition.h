@@ -56,12 +56,12 @@ class TargetDefinition
 {
 public:
 
-    TargetDefinition()
+    TargetDefinition() : m_activeMoietyId("NoActiveMoietyId")
     {}
 
     TargetDefinition(TargetType _type,
                      Unit _unit,
-                     std::string _activeMoietyId,
+                     ActiveMoietyId _activeMoietyId,
                      std::unique_ptr<SubTargetDefinition> _valueMin,
                      std::unique_ptr<SubTargetDefinition> _valueMax,
                      std::unique_ptr<SubTargetDefinition> _valueBest,
@@ -91,9 +91,9 @@ public:
 
     }
 
-    void setActiveMoietyId(std::string _activeMoietyId) { m_activeMoietyId = _activeMoietyId;}
+    void setActiveMoietyId(ActiveMoietyId _activeMoietyId) { m_activeMoietyId = _activeMoietyId;}
     TargetType getTargetType() const { return m_targetType;}
-    std::string getActiveMoietyId() const { return m_activeMoietyId;}
+    ActiveMoietyId getActiveMoietyId() const { return m_activeMoietyId;}
     Unit getUnit() const { return m_unit;}
     Unit getMicUnit() const { return m_micUnit;}
     Unit getTimeUnit() const { return m_timeUnit;}
@@ -117,7 +117,7 @@ protected:
     Unit m_unit;
     Unit m_micUnit;
     Unit m_timeUnit;
-    std::string m_activeMoietyId;
+    ActiveMoietyId m_activeMoietyId;
 
     std::unique_ptr<SubTargetDefinition> m_valueMin;
     std::unique_ptr<SubTargetDefinition> m_valueMax;

@@ -44,8 +44,8 @@ protected:
 class AnalyteId
 {
 public:
-    AnalyteId(std::string _s) : m_s(_s) {}
-    AnalyteId(const char* _s) : m_s(_s) {}
+    explicit AnalyteId(std::string _s) : m_s(_s) {}
+    explicit AnalyteId(const char* _s) : m_s(_s) {}
     size_t size() const { return m_s.size();}
 
     std::string toString() const { return m_s; }
@@ -101,7 +101,7 @@ public:
 //    void setName(std::string _name) { m_name = _name;}
 //    std::string getName() const { return m_name;}
 
-    void setAnalyteId(std::string _analyteId) { m_analyteId = _analyteId;}
+    void setAnalyteId(std::string _analyteId) { m_analyteId = AnalyteId(_analyteId);}
     AnalyteId getAnalyteId() const { return m_analyteId;}
 
     void setResidualErrorModel(std::unique_ptr<ErrorModel> _residualErrorModel) { m_residualErrorModel = std::move(_residualErrorModel);}

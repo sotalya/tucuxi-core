@@ -5,6 +5,7 @@
 #include "tucucore/drugmodelimport.h"
 #include "tucucore/drugmodelrepository.h"
 #include "tucucore/treatmentdrugmodelcompatibilitychecker.h"
+#include "tucucore/drugdefinitions.h"
 
 #include "tucucommon/componentmanager.h"
 #include "tucucommon/loggerhelper.h"
@@ -53,7 +54,7 @@ Tucuxi::Core::Targets QueryToCoreExtractor::extractTargets(const Query &_query, 
     for (const std::unique_ptr<TargetData>& td : targetsData) {
         targets.push_back(
                     std::make_unique<Tucuxi::Core::Target>(
-                        td->getActiveMoietyID(),
+                        Tucuxi::Core::ActiveMoietyId(td->getActiveMoietyID()),
                         td->getTargetType(),
                         td->getUnit(),
                         td->getMin(),

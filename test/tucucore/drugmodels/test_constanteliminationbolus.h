@@ -1331,7 +1331,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         // Add targets
         TargetDefinition *target = new TargetDefinition(TargetType::Residual,
                                                         Unit("mg/l"),
-                                                        "analyte",
+                                                        ActiveMoietyId("analyte"),
                                                         std::make_unique<SubTargetDefinition>("cMin", 750.0, nullptr),
                                                         std::make_unique<SubTargetDefinition>("cMax", 1500.0, nullptr),
                                                         std::make_unique<SubTargetDefinition>("cBest", 1000.0, nullptr),
@@ -1470,7 +1470,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         // Add targets
         TargetDefinition *target = new TargetDefinition(TargetType::CumulativeAuc,
                                                         Unit("mg*h/l"),
-                                                        "analyte",
+                                                        ActiveMoietyId("analyte"),
                                                         std::make_unique<SubTargetDefinition>("cMin", 4.0 * 24.0 * 250.0, nullptr),
                                                         std::make_unique<SubTargetDefinition>("cMax", 4.0 * 24.0 * 500.0, nullptr),
                                                         std::make_unique<SubTargetDefinition>("cBest", 4.0 * 24.0 * 300.0, nullptr),

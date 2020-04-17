@@ -391,7 +391,7 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
         // Add targets
         TargetDefinition *target = new TargetDefinition(TargetType::Residual,
                                                         Unit("mg/l"),
-                                                        "analyte",
+                                                        ActiveMoietyId("analyte"),
                                                         std::make_unique<SubTargetDefinition>("cMin", 750.0, nullptr),
                                                         std::make_unique<SubTargetDefinition>("cMax", 1500.0, nullptr),
                                                         std::make_unique<SubTargetDefinition>("cBest", 1000.0, nullptr),

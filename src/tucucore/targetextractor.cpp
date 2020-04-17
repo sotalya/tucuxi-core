@@ -376,7 +376,7 @@ ComputingResult TargetExtractor::extract(
     case TargetExtractionOption::IndividualTargets :
     {
         for (const auto& target : _targets) {
-            if (target->m_activeMoietyId == _activeMoietyId.toString()) {
+            if (target->m_activeMoietyId == _activeMoietyId) {
                 _series.push_back(targetEventFromTarget(target.get()));
             }
         }
@@ -407,7 +407,7 @@ ComputingResult TargetExtractor::extract(
     case TargetExtractionOption::DefinitionIfNoIndividualTarget :
     {
         for (const auto& target : _targets) {
-            if ((_activeMoietyId.toString() == target.get()->m_activeMoietyId)){
+            if ((_activeMoietyId == target.get()->m_activeMoietyId)){
                 bool foundTarget = false;
 
                 for (const auto& targetDefinition : _targetDefinitions) {
@@ -444,7 +444,7 @@ ComputingResult TargetExtractor::extract(
     case TargetExtractionOption::IndividualTargetsIfDefinitionExistsAndDefinitionIfNoIndividualTarget :
     {
         for (const auto& target : _targets) {
-            if ((_activeMoietyId.toString() == target.get()->m_activeMoietyId)){
+            if ((_activeMoietyId == target.get()->m_activeMoietyId)){
                 for (const auto& targetDefinition : _targetDefinitions) {
                     if ((targetDefinition.get()->getActiveMoietyId() == target.get()->m_activeMoietyId) &&
                             (targetDefinition.get()->getTargetType() == target.get()->m_targetType)){

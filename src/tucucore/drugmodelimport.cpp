@@ -1155,7 +1155,7 @@ ActiveMoiety* DrugModelImport::extractActiveMoiety(Tucuxi::Common::XmlNodeIterat
 
     activeMoiety = new ActiveMoiety(ActiveMoietyId(activeMoietyId), unit, analyteIdList, std::unique_ptr<Operation>(formula));
     for (const auto & target : targets) {
-        target->setActiveMoietyId(activeMoietyId);
+        target->setActiveMoietyId(ActiveMoietyId(activeMoietyId));
         activeMoiety->addTarget(std::unique_ptr<TargetDefinition>(target));
     }
     activeMoiety->setName(name);
@@ -1334,7 +1334,7 @@ TargetDefinition* DrugModelImport::extractTarget(Tucuxi::Common::XmlNodeIterator
         inefficacyAlarm = new LightPopulationValue();
     }
 
-    target = new TargetDefinition(type, unit, "",
+    target = new TargetDefinition(type, unit, ActiveMoietyId(""),
                                   std::make_unique<SubTargetDefinition>("cMin", minValue->getValue(), minValue->getOperation()),
                                   std::make_unique<SubTargetDefinition>("cMax", maxValue->getValue(), maxValue->getOperation()),
                                   std::make_unique<SubTargetDefinition>("cBest", bestValue->getValue(), bestValue->getOperation()),

@@ -9,7 +9,7 @@
 namespace Tucuxi {
 namespace Core {
 
-Target::Target(const std::string& _activeMoietyId,
+Target::Target(ActiveMoietyId _activeMoietyId,
                const TargetType _type, 
                const Value _min, 
                const Value _best, 
@@ -24,7 +24,7 @@ Target::Target(const std::string& _activeMoietyId,
 {
 }
 
-Target::Target(const std::string& _activeMoietyId,
+Target::Target(ActiveMoietyId _activeMoietyId,
                const TargetType _type,
                const Value _min,
                const Value _best,
@@ -41,7 +41,7 @@ Target::Target(const std::string& _activeMoietyId,
 {
 }
 
-Target::Target(const std::string& _activeMoietyId,
+Target::Target(ActiveMoietyId _activeMoietyId,
                const TargetType _type,
                const Unit _unit,
                const Value _min,
@@ -60,7 +60,7 @@ Target::Target(const std::string& _activeMoietyId,
 {
 }
 
-Target::Target(const std::string& _activeMoietyId,
+Target::Target(ActiveMoietyId _activeMoietyId,
        TargetType _type,
        Value _min,
        Value _best,
@@ -76,7 +76,7 @@ Target::Target(const std::string& _activeMoietyId,
 
 }
 
-Target::Target(const std::string& _activeMoietyId,
+Target::Target(ActiveMoietyId _activeMoietyId,
                TargetType _type,
                Unit _unit,
                Unit _finalUnit,
