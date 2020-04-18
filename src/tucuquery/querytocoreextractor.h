@@ -7,7 +7,7 @@
 #include "tucucore/targetevent.h"
 #include "tucucore/computingservice/computingtrait.h"
 
-#include "tucuquery/query.h"
+#include "tucuquery/querydata.h"
 
 namespace Tucuxi {
 
@@ -36,7 +36,7 @@ public:
     /// \param _query
     /// \return
     ///
-    Tucuxi::Core::PatientVariates extractPatientVariates(const Query &_query) const;
+    Tucuxi::Core::PatientVariates extractPatientVariates(const QueryData &_query) const;
 
     ///
     /// \brief extractTargets
@@ -44,7 +44,7 @@ public:
     /// \param _drugPosition
     /// \return
     ///
-    Tucuxi::Core::Targets extractTargets(const Query &_query, size_t _drugPosition) const;
+    Tucuxi::Core::Targets extractTargets(const QueryData &_query, size_t _drugPosition) const;
 
     ///
     /// \brief extractSamples
@@ -52,25 +52,25 @@ public:
     /// \param _drugPosition
     /// \return
     ///
-    Tucuxi::Core::Samples extractSamples(const Query &_query, size_t _drugPosition) const;
+    Tucuxi::Core::Samples extractSamples(const QueryData &_query, size_t _drugPosition) const;
 
-    Tucuxi::Core::DrugTreatment *extractDrugTreatment(const Query &_query) const;
+    Tucuxi::Core::DrugTreatment *extractDrugTreatment(const QueryData &_query) const;
 
-    Tucuxi::Core::ComputingTraits *extractComputingTraits(const Query &_query) const;
+    Tucuxi::Core::ComputingTraits *extractComputingTraits(const QueryData &_query) const;
 
-    Tucuxi::Core::DrugModel *extractDrugModel(const Query &_query, const Tucuxi::Core::DrugTreatment *_drugTreatment) const;
+    Tucuxi::Core::DrugModel *extractDrugModel(const QueryData &_query, const Tucuxi::Core::DrugTreatment *_drugTreatment) const;
 
-    Tucuxi::Core::PredictionParameterType extractPredictionParameterType(const Query &_query, const RequestData &_request) const;
+    Tucuxi::Core::PredictionParameterType extractPredictionParameterType(const QueryData &_query, const RequestData &_request) const;
 
-    std::vector<Tucuxi::Core::ComputingTrait *> extractPredictionTraits(const Query &_query, const RequestData &_request) const;
+    std::vector<Tucuxi::Core::ComputingTrait *> extractPredictionTraits(const QueryData &_query, const RequestData &_request) const;
 
-    std::vector<Tucuxi::Core::ComputingTrait *> extractPredictionAtSampleTimeTraits(const Query &_query, const RequestData &_request) const;
+    std::vector<Tucuxi::Core::ComputingTrait *> extractPredictionAtSampleTimeTraits(const QueryData &_query, const RequestData &_request) const;
 
-    std::vector<Tucuxi::Core::ComputingTrait *> extractPredictionAtTimesTraits(const Query &_query, const RequestData &_request) const;
+    std::vector<Tucuxi::Core::ComputingTrait *> extractPredictionAtTimesTraits(const QueryData &_query, const RequestData &_request) const;
 
-    std::vector<Tucuxi::Core::ComputingTrait *> extractFirstDosageTraits(const Query &_query, const RequestData &_request) const;
+    std::vector<Tucuxi::Core::ComputingTrait *> extractFirstDosageTraits(const QueryData &_query, const RequestData &_request) const;
 
-    std::vector<Tucuxi::Core::ComputingTrait *> extractAdaptationTraits(const Query &_query, const RequestData &_request) const;
+    std::vector<Tucuxi::Core::ComputingTrait *> extractAdaptationTraits(const QueryData &_query, const RequestData &_request) const;
 };
 
 } // namespace Query

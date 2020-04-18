@@ -6,7 +6,7 @@
 #include "tucucore/computingresponseexport.h"
 #include "tucucore/computingresponsexmlexport.h"
 #include "tucucore/overloadevaluator.h"
-#include "tucuquery/query.h"
+#include "tucuquery/querydata.h"
 #include "tucuquery/queryimport.h"
 #include "tucuquery/querytocoreextractor.h"
 
@@ -38,7 +38,7 @@ int CliComputer::compute(std::string _drugPath,
     DrugTreatment *drugTreatment = nullptr;
 
 
-    Query *query = nullptr;
+    QueryData *query = nullptr;
     QueryImport importer;
 
     QueryImport::Result importResult = importer.importFromFile(query, _inputFileName);

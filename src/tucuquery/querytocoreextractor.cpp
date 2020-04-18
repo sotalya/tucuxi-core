@@ -21,7 +21,7 @@ QueryToCoreExtractor::QueryToCoreExtractor()
 }
 
 
-Tucuxi::Core::PatientVariates QueryToCoreExtractor::extractPatientVariates(const Query &_query) const
+Tucuxi::Core::PatientVariates QueryToCoreExtractor::extractPatientVariates(const QueryData &_query) const
 {
     const std::vector< std::unique_ptr<CovariateData> >& covariateData = _query.getpParameters()
             .getpPatient()
@@ -43,7 +43,7 @@ Tucuxi::Core::PatientVariates QueryToCoreExtractor::extractPatientVariates(const
     return patientVariates;
 }
 
-Tucuxi::Core::Targets QueryToCoreExtractor::extractTargets(const Query &_query, size_t _drugPosition) const
+Tucuxi::Core::Targets QueryToCoreExtractor::extractTargets(const QueryData &_query, size_t _drugPosition) const
 {
     Tucuxi::Core::Targets targets;
 
@@ -70,7 +70,7 @@ Tucuxi::Core::Targets QueryToCoreExtractor::extractTargets(const Query &_query, 
 }
 
 
-Tucuxi::Core::Samples QueryToCoreExtractor::extractSamples(const Query &_query, size_t _drugPosition) const
+Tucuxi::Core::Samples QueryToCoreExtractor::extractSamples(const QueryData &_query, size_t _drugPosition) const
 {
     Tucuxi::Core::Samples samples;
 
@@ -95,7 +95,7 @@ Tucuxi::Core::Samples QueryToCoreExtractor::extractSamples(const Query &_query, 
 }
 
 
-Tucuxi::Core::DrugTreatment *QueryToCoreExtractor::extractDrugTreatment(const Query &_query) const
+Tucuxi::Core::DrugTreatment *QueryToCoreExtractor::extractDrugTreatment(const QueryData &_query) const
 {
     Tucuxi::Core::DrugTreatment *drugTreatment = nullptr;
 
@@ -150,7 +150,7 @@ Tucuxi::Core::DrugTreatment *QueryToCoreExtractor::extractDrugTreatment(const Qu
 }
 
 
-Tucuxi::Core::ComputingTraits *QueryToCoreExtractor::extractComputingTraits(const Query &_query) const
+Tucuxi::Core::ComputingTraits *QueryToCoreExtractor::extractComputingTraits(const QueryData &_query) const
 {
     Tucuxi::Core::ComputingTraits *traits = nullptr;
 
@@ -195,7 +195,7 @@ Tucuxi::Core::ComputingTraits *QueryToCoreExtractor::extractComputingTraits(cons
     return traits;
 }
 
-Tucuxi::Core::PredictionParameterType QueryToCoreExtractor::extractPredictionParameterType(const Query &_query, const RequestData &_request) const
+Tucuxi::Core::PredictionParameterType QueryToCoreExtractor::extractPredictionParameterType(const QueryData &_query, const RequestData &_request) const
 {
     std::string parametersType =_request.getParametersType();
     Tucuxi::Core::PredictionParameterType predictionParameterType = Tucuxi::Core::PredictionParameterType::Population;
@@ -227,7 +227,7 @@ Tucuxi::Core::PredictionParameterType QueryToCoreExtractor::extractPredictionPar
 }
 
 
-std::vector<Tucuxi::Core::ComputingTrait *> QueryToCoreExtractor::extractFirstDosageTraits(const Query &_query, const RequestData &_request) const
+std::vector<Tucuxi::Core::ComputingTrait *> QueryToCoreExtractor::extractFirstDosageTraits(const QueryData &_query, const RequestData &_request) const
 {
     std::vector<Tucuxi::Core::ComputingTrait * > traits;
 
@@ -238,7 +238,7 @@ std::vector<Tucuxi::Core::ComputingTrait *> QueryToCoreExtractor::extractFirstDo
 }
 
 
-std::vector<Tucuxi::Core::ComputingTrait *> QueryToCoreExtractor::extractAdaptationTraits(const Query &_query, const RequestData &_request) const
+std::vector<Tucuxi::Core::ComputingTrait *> QueryToCoreExtractor::extractAdaptationTraits(const QueryData &_query, const RequestData &_request) const
 {
     std::vector<Tucuxi::Core::ComputingTrait * > traits;
 
@@ -286,7 +286,7 @@ std::vector<Tucuxi::Core::ComputingTrait *> QueryToCoreExtractor::extractAdaptat
 }
 
 
-std::vector<Tucuxi::Core::ComputingTrait * > QueryToCoreExtractor::extractPredictionTraits(const Query &_query, const RequestData &_request) const
+std::vector<Tucuxi::Core::ComputingTrait * > QueryToCoreExtractor::extractPredictionTraits(const QueryData &_query, const RequestData &_request) const
 {
     std::vector<Tucuxi::Core::ComputingTrait * > traits;
 
@@ -329,7 +329,7 @@ std::vector<Tucuxi::Core::ComputingTrait * > QueryToCoreExtractor::extractPredic
     return traits;
 }
 
-std::vector<Tucuxi::Core::ComputingTrait * > QueryToCoreExtractor::extractPredictionAtSampleTimeTraits(const Query &_query, const RequestData &_request) const
+std::vector<Tucuxi::Core::ComputingTrait * > QueryToCoreExtractor::extractPredictionAtSampleTimeTraits(const QueryData &_query, const RequestData &_request) const
 {
     std::vector<Tucuxi::Core::ComputingTrait * > traits;
 
@@ -377,7 +377,7 @@ std::vector<Tucuxi::Core::ComputingTrait * > QueryToCoreExtractor::extractPredic
 }
 
 
-std::vector<Tucuxi::Core::ComputingTrait * > QueryToCoreExtractor::extractPredictionAtTimesTraits(const Query &_query, const RequestData &_request) const
+std::vector<Tucuxi::Core::ComputingTrait * > QueryToCoreExtractor::extractPredictionAtTimesTraits(const QueryData &_query, const RequestData &_request) const
 {
     std::vector<Tucuxi::Core::ComputingTrait * > traits;
 
@@ -417,7 +417,7 @@ std::vector<Tucuxi::Core::ComputingTrait * > QueryToCoreExtractor::extractPredic
 }
 
 
-Tucuxi::Core::DrugModel *QueryToCoreExtractor::extractDrugModel(const Query &_query, const Tucuxi::Core::DrugTreatment *_drugTreatment) const
+Tucuxi::Core::DrugModel *QueryToCoreExtractor::extractDrugModel(const QueryData &_query, const Tucuxi::Core::DrugTreatment *_drugTreatment) const
 {
     Tucuxi::Core::DrugModel *drugModel = nullptr;
 

@@ -17,7 +17,7 @@ namespace Query {
 /// \brief The Query class
 /// This class contains all of the informations received from the client.
 ///
-class Query
+class QueryData
 {
 public:
     // Constructors
@@ -25,7 +25,7 @@ public:
     ///
     /// \brief Default constructor is not supported.
     ///
-    Query() = delete;
+    QueryData() = delete;
 
     ///
     /// \brief Constructor of a query.
@@ -37,7 +37,7 @@ public:
     /// \param _pParameters A pointer to the medical data used for computation.
     /// \param _requests The requests that the server must process.
     ///
-    Query(
+    QueryData(
             const std::string& _queryID,
             const std::string& _clientID,
             const Tucuxi::Common::DateTime& _pQueryDate,
@@ -52,7 +52,7 @@ public:
     ///  The copy constructor is not supported because of the use of
     ///  unique_ptr wich can't be copied.
     ///
-    Query(Query& _other) = delete;
+    QueryData(QueryData& _other) = delete;
 
     // Getters
     const std::string getQueryID() const;

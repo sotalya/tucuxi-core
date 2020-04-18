@@ -39,7 +39,7 @@ const std::vector<std::string> &QueryImport::ignoredTags() const
     return ignored;
 }
 
-QueryImport::Result QueryImport::importFromFile(Tucuxi::Query::Query *&_query, std::string _fileName)
+QueryImport::Result QueryImport::importFromFile(Tucuxi::Query::QueryData *&_query, std::string _fileName)
 {
     // Ensure the function is reentrant
     std::lock_guard<std::mutex> lock(m_mutex);
@@ -56,7 +56,7 @@ QueryImport::Result QueryImport::importFromFile(Tucuxi::Query::Query *&_query, s
 }
 
 
-QueryImport::Result QueryImport::importFromString(Tucuxi::Query::Query *&_query, std::string _xml)
+QueryImport::Result QueryImport::importFromString(Tucuxi::Query::QueryData *&_query, std::string _xml)
 {
     // Ensure the function is reentrant
     std::lock_guard<std::mutex> lock(m_mutex);
@@ -79,7 +79,7 @@ QueryImport::Result QueryImport::importFromString(Tucuxi::Query::Query *&_query,
 ///////////////////////////////////////////////////////////////////////////////
 
 QueryImport::Result QueryImport::importDocument(
-        Tucuxi::Query::Query *&_query,
+        Tucuxi::Query::QueryData *&_query,
         Tucuxi::Common::XmlDocument & _document)
 {
 
@@ -112,7 +112,7 @@ QueryImport::Result QueryImport::importDocument(
         requestsIterator++;
     }
 
-    _query = new Query(
+    _query = new QueryData(
                 drugId,
                 clientId,
                 date,

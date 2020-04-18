@@ -10,7 +10,7 @@
 #include "tucucommon/xmlattribute.h"
 #include "tucucommon/xmliterator.h"
 #include "tucucommon/iimport.h"
-#include "query.h"
+#include "querydata.h"
 
 #include "tucucore/computingservice/computingtrait.h"
 
@@ -37,7 +37,7 @@ public:
     /// \return Result::Ok if the import went well, another Result else.
     /// This function is reentrant.
     ///
-    Result importFromFile(Tucuxi::Query::Query *&_query, std::string _fileName);
+    Result importFromFile(Tucuxi::Query::QueryData *&_query, std::string _fileName);
 
     ///
     /// \brief importFromString
@@ -46,7 +46,7 @@ public:
     /// \return Result::Ok if the import went well, another Result else.
     /// This function is reentrant.
     ///
-    Result importFromString(Tucuxi::Query::Query *&_query, std::string _xml);
+    Result importFromString(Tucuxi::Query::QueryData *&_query, std::string _xml);
 
 protected:
 
@@ -62,7 +62,7 @@ protected:
     /// \return Result::Ok if the import went well, another Result else.
     /// This function is reentrant.
     ///
-    Result importDocument(Tucuxi::Query::Query *&_query, Tucuxi::Common::XmlDocument & _document);
+    Result importDocument(Tucuxi::Query::QueryData *&_query, Tucuxi::Common::XmlDocument & _document);
 
 protected:
     // Methods to separate the creation of an AdministrativeData

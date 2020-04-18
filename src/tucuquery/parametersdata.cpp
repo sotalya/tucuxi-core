@@ -1,4 +1,4 @@
-#include "query.h"
+#include "querydata.h"
 
 using namespace std;
 using namespace Tucuxi;

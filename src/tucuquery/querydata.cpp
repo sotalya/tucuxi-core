@@ -1,4 +1,4 @@
-#include "query.h"
+#include "querydata.h"
 
 using namespace std;
 using namespace Tucuxi;
@@ -6,7 +6,7 @@ using namespace Tucuxi;
 namespace Tucuxi {
 namespace Query {
 
-Query::Query(
+QueryData::QueryData(
         const string& _queryID,
         const string& _clientID,
         const Common::DateTime& _pQueryDate,
@@ -19,37 +19,37 @@ Query::Query(
     m_requests(move(_requests))
 {}
 
-const string Query::getQueryID() const
+const string QueryData::getQueryID() const
 {
     return m_queryID;
 }
 
-const string Query::getClientID() const
+const string QueryData::getClientID() const
 {
     return m_clientID;
 }
 
-const Common::DateTime Query::getpQueryDate() const
+const Common::DateTime QueryData::getpQueryDate() const
 {
     return m_pQueryDate;
 }
 
-const string Query::getLanguage() const
+const string QueryData::getLanguage() const
 {
     return m_language;
 }
 
-const AdministrativeData& Query::getpAdmin() const
+const AdministrativeData& QueryData::getpAdmin() const
 {
     return *m_pAdmin;
 }
 
-const DrugTreatmentData& Query::getpParameters() const
+const DrugTreatmentData& QueryData::getpParameters() const
 {
     return *m_pParameters;
 }
 
-const vector< unique_ptr< RequestData > >& Query::getRequests() const
+const vector< unique_ptr< RequestData > >& QueryData::getRequests() const
 {
     return m_requests;
 }
