@@ -77,9 +77,11 @@ int CliComputer::compute(std::string _drugPath,
     logHelper.info("Performing computation with drug model : {}", drugModel->getDrugModelId());
 
 
+    // TODO : Change that
+    /*
     ComputingTraits* computingTraits = extractor.extractComputingTraits(*query);
 
-    ComputingRequest request(requestResponseID, *drugModel, *drugTreatment, std::unique_ptr<ComputingTraits>(computingTraits));
+//    ComputingRequest request(requestResponseID, *drugModel, *drugTreatment, std::unique_ptr<ComputingTraits>(computingTraits));
 
     std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseID);
 
@@ -123,6 +125,6 @@ int CliComputer::compute(std::string _drugPath,
     if (computingComponent != nullptr) {
         delete computingComponent;
     }
-
+*/
     return 0;
 }

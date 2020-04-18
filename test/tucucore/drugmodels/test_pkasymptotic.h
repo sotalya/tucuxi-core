@@ -114,9 +114,6 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covR", "0.5", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covT", "1.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
 
-
-            std::unique_ptr<ComputingTraits> computingTraits = std::make_unique<ComputingTraits>();
-
             RequestResponseId requestResponseId = "1";
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
@@ -128,9 +125,8 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
             std::unique_ptr<ComputingTraitConcentration> traits =
                     std::make_unique<ComputingTraitConcentration>(
                         requestResponseId, start, end, nbPointsPerHour, computingOption);
-            computingTraits->addTrait(std::move(traits));
 
-            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(computingTraits));
+            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
 
             std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
@@ -278,9 +274,6 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covR", "0.5", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covT", "1.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
 
-
-            std::unique_ptr<ComputingTraits> computingTraits = std::make_unique<ComputingTraits>();
-
             RequestResponseId requestResponseId = "1";
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
@@ -303,10 +296,7 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
                         requestResponseId, start, end, nbPointsPerHour, computingOption, adjustmentTime, adjustmentOption,
                         loadingOption, restPeriodOption, steadyStateTargetOption, targetExtractionOption, formulationAndRouteOption);
 
-            computingTraits->addTrait(std::move(traits));
-
-
-            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(computingTraits));
+            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
 
             std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
@@ -418,9 +408,6 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covR", "0.05", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covT", "1.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
 
-
-            std::unique_ptr<ComputingTraits> computingTraits = std::make_unique<ComputingTraits>();
-
             RequestResponseId requestResponseId = "1";
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
@@ -443,10 +430,7 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
                         requestResponseId, start, end, nbPointsPerHour, computingOption, adjustmentTime, adjustmentOption,
                         loadingOption, restPeriodOption, steadyStateTargetOption, targetExtractionOption, formulationAndRouteOption);
 
-            computingTraits->addTrait(std::move(traits));
-
-
-            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(computingTraits));
+            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
 
             std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
@@ -558,9 +542,6 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covR", "0.5", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covT", "1.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
 
-
-            std::unique_ptr<ComputingTraits> computingTraits = std::make_unique<ComputingTraits>();
-
             RequestResponseId requestResponseId = "1";
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
@@ -583,10 +564,7 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
                         requestResponseId, start, end, nbPointsPerHour, computingOption, adjustmentTime, adjustmentOption,
                         loadingOption, restPeriodOption, steadyStateTargetOption, targetExtractionOption, formulationAndRouteOption);
 
-            computingTraits->addTrait(std::move(traits));
-
-
-            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(computingTraits));
+            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
 
             std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
@@ -711,9 +689,6 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covR", "0.5", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covT", "1.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
 
-
-            std::unique_ptr<ComputingTraits> computingTraits = std::make_unique<ComputingTraits>();
-
             RequestResponseId requestResponseId = "1";
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
@@ -736,10 +711,7 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
                         requestResponseId, start, end, nbPointsPerHour, computingOption, adjustmentTime, adjustmentOption,
                         loadingOption, restPeriodOption, steadyStateTargetOption, targetExtractionOption, formulationAndRouteOption);
 
-            computingTraits->addTrait(std::move(traits));
-
-
-            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(computingTraits));
+            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
 
             std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
@@ -851,9 +823,6 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covR", "0.5", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covT", "1.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
 
-
-            std::unique_ptr<ComputingTraits> computingTraits = std::make_unique<ComputingTraits>();
-
             RequestResponseId requestResponseId = "1";
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
@@ -876,10 +845,7 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
                         requestResponseId, start, end, nbPointsPerHour, computingOption, adjustmentTime, adjustmentOption,
                         loadingOption, restPeriodOption, steadyStateTargetOption, targetExtractionOption, formulationAndRouteOption);
 
-            computingTraits->addTrait(std::move(traits));
-
-
-            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(computingTraits));
+            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
 
             std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 

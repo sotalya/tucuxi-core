@@ -91,10 +91,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
                     TargetExtractionOption::PopulationValues,
                     FormulationAndRouteSelectionOption::LastFormulationAndRoute);
 
-        std::unique_ptr<ComputingTraits> computingTraits = std::make_unique<ComputingTraits>();
-        computingTraits->addTrait(std::move(adjustmentsTraits));
-
-        ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(computingTraits));
+        ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(adjustmentsTraits));
 
         std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
@@ -156,10 +153,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
                     TargetExtractionOption::PopulationValues,
                     FormulationAndRouteSelectionOption::DefaultFormulationAndRoute);
 
-        std::unique_ptr<ComputingTraits> computingTraits = std::make_unique<ComputingTraits>();
-        computingTraits->addTrait(std::move(adjustmentsTraits));
-
-        ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(computingTraits));
+        ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(adjustmentsTraits));
 
         std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
@@ -220,10 +214,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
                     TargetExtractionOption::PopulationValues,
                     FormulationAndRouteSelectionOption::AllFormulationAndRoutes);
 
-        std::unique_ptr<ComputingTraits> computingTraits = std::make_unique<ComputingTraits>();
-        computingTraits->addTrait(std::move(adjustmentsTraits));
-
-        ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(computingTraits));
+        ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(adjustmentsTraits));
 
         std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
@@ -280,10 +271,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
                     TargetExtractionOption::PopulationValues,
                     FormulationAndRouteSelectionOption::LastFormulationAndRoute);
 
-        std::unique_ptr<ComputingTraits> computingTraits = std::make_unique<ComputingTraits>();
-        computingTraits->addTrait(std::move(adjustmentsTraits));
-
-        ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(computingTraits));
+        ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(adjustmentsTraits));
 
         std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
@@ -344,10 +332,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
                     TargetExtractionOption::PopulationValues,
                     FormulationAndRouteSelectionOption::DefaultFormulationAndRoute);
 
-        std::unique_ptr<ComputingTraits> computingTraits = std::make_unique<ComputingTraits>();
-        computingTraits->addTrait(std::move(adjustmentsTraits));
-
-        ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(computingTraits));
+        ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(adjustmentsTraits));
 
         std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
@@ -408,10 +393,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
                     TargetExtractionOption::PopulationValues,
                     FormulationAndRouteSelectionOption::AllFormulationAndRoutes);
 
-        std::unique_ptr<ComputingTraits> computingTraits = std::make_unique<ComputingTraits>();
-        computingTraits->addTrait(std::move(adjustmentsTraits));
-
-        ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(computingTraits));
+        ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(adjustmentsTraits));
 
         std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
@@ -473,10 +455,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
                     TargetExtractionOption::PopulationValues,
                     FormulationAndRouteSelectionOption::DefaultFormulationAndRoute);
 
-        std::unique_ptr<ComputingTraits> computingTraits = std::make_unique<ComputingTraits>();
-        computingTraits->addTrait(std::move(adjustmentsTraits));
-
-        ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(computingTraits));
+        ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(adjustmentsTraits));
 
         std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
@@ -540,10 +519,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
                     TargetExtractionOption::PopulationValues,
                     FormulationAndRouteSelectionOption::LastFormulationAndRoute);
 
-        std::unique_ptr<ComputingTraits> computingTraits = std::make_unique<ComputingTraits>();
-        computingTraits->addTrait(std::move(adjustmentsTraits));
-
-        ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(computingTraits));
+        ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(adjustmentsTraits));
 
         std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
@@ -605,10 +581,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
                         TargetExtractionOption::PopulationValues,
                         FormulationAndRouteSelectionOption::LastFormulationAndRoute);
 
-            std::unique_ptr<ComputingTraits> computingTraits = std::make_unique<ComputingTraits>();
-            computingTraits->addTrait(std::move(adjustmentsTraits));
-
-            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(computingTraits));
+            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(adjustmentsTraits));
 
             std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
@@ -694,10 +667,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
                     TargetExtractionOption::PopulationValues,
                     FormulationAndRouteSelectionOption::LastFormulationAndRoute);
 
-        std::unique_ptr<ComputingTraits> computingTraits = std::make_unique<ComputingTraits>();
-        computingTraits->addTrait(std::move(adjustmentsTraits));
-
-        ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(computingTraits));
+        ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(adjustmentsTraits));
 
         std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 

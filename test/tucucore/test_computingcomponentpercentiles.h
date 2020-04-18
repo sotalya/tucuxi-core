@@ -118,10 +118,7 @@ struct TestComputingComponentPercentiles : public fructose::test_base<TestComput
                 std::make_unique<ComputingTraitPercentiles>(
                     requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
 
-        std::unique_ptr<ComputingTraits> computingTraits = std::make_unique<ComputingTraits>();
-        computingTraits->addTrait(std::move(traits));
-
-        ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(computingTraits));
+        ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
 
         std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
@@ -222,10 +219,7 @@ struct TestComputingComponentPercentiles : public fructose::test_base<TestComput
                 std::make_unique<ComputingTraitPercentiles>(
                     requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
 
-        std::unique_ptr<ComputingTraits> computingTraits = std::make_unique<ComputingTraits>();
-        computingTraits->addTrait(std::move(traits));
-
-        ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(computingTraits));
+        ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
 
         std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 

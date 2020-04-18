@@ -84,10 +84,7 @@ struct TestComputingComponentConcentration : public fructose::test_base<TestComp
                 std::make_unique<ComputingTraitConcentration>(
                     requestResponseId, start, end, nbPointsPerHour, computingOption);
 
-        std::unique_ptr<ComputingTraits> computingTraits = std::make_unique<ComputingTraits>();
-        computingTraits->addTrait(std::move(traits));
-
-        ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(computingTraits));
+        ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
 
         std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
@@ -125,10 +122,7 @@ struct TestComputingComponentConcentration : public fructose::test_base<TestComp
                     std::make_unique<ComputingTraitConcentration>(
                         requestResponseId, start, end, nbPointsPerHour, computingOption);
 
-            std::unique_ptr<ComputingTraits> computingTraits = std::make_unique<ComputingTraits>();
-            computingTraits->addTrait(std::move(traits));
-
-            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(computingTraits));
+            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
 
             std::unique_ptr<ComputingResponse> partialResponse = std::make_unique<ComputingResponse>(requestResponseId);
 
@@ -210,10 +204,7 @@ struct TestComputingComponentConcentration : public fructose::test_base<TestComp
                 std::make_unique<ComputingTraitConcentration>(
                     requestResponseId, start, end, nbPointsPerHour, computingOption);
 
-        std::unique_ptr<ComputingTraits> computingTraits = std::make_unique<ComputingTraits>();
-        computingTraits->addTrait(std::move(traits));
-
-        ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(computingTraits));
+        ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
 
         std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 

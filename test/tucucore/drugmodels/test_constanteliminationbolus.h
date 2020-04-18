@@ -145,32 +145,28 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
             std::unique_ptr<ComputingTraitConcentration> traits =
                     std::make_unique<ComputingTraitConcentration>(
                         requestResponseId, start, end, nbPointsPerHour, computingOption);
-            computingTraits->addTrait(std::move(traits));
 
 
             std::unique_ptr<ComputingTraitPercentiles> traitsPercentiles =
                     std::make_unique<ComputingTraitPercentiles>(
                         requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
 
-            computingTraits->addTrait(std::move(traitsPercentiles));
-
-
-            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(computingTraits));
-
-            std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
-
-            ComputingResult result;
-            result = component->compute(request, response);
-
-            fructose_assert( result == ComputingResult::Ok);
-
-            const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
-
-            fructose_assert_eq(responses.size(), size_t{2});
-
             {
-                fructose_assert(dynamic_cast<PercentilesResponse*>(responses[1].get()) != nullptr);
-                const PercentilesResponse *resp = dynamic_cast<PercentilesResponse*>(responses[1].get());
+                ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traitsPercentiles));
+
+                std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
+
+                ComputingResult result;
+                result = component->compute(request, response);
+
+                fructose_assert( result == ComputingResult::Ok);
+
+                const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
+
+                fructose_assert_eq(responses.size(), size_t{1});
+
+                fructose_assert(dynamic_cast<PercentilesResponse*>(responses[0].get()) != nullptr);
+                const PercentilesResponse *resp = dynamic_cast<PercentilesResponse*>(responses[0].get());
 
                 fructose_assert_eq(resp->getNbRanks(), percentileRanks.size());
 
@@ -183,6 +179,19 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
             }
             {
+                ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
+
+                std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
+
+                ComputingResult result;
+                result = component->compute(request, response);
+
+                fructose_assert( result == ComputingResult::Ok);
+
+                const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
+
+                fructose_assert_eq(responses.size(), size_t{1});
+
                 fructose_assert(dynamic_cast<SinglePredictionResponse*>(responses[0].get()) != nullptr);
                 const SinglePredictionResponse *resp = dynamic_cast<SinglePredictionResponse*>(responses[0].get());
 
@@ -287,9 +296,6 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covA", "1.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covR", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
 
-
-            std::unique_ptr<ComputingTraits> computingTraits = std::make_unique<ComputingTraits>();
-
             RequestResponseId requestResponseId = "1";
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
@@ -301,32 +307,30 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
             std::unique_ptr<ComputingTraitConcentration> traits =
                     std::make_unique<ComputingTraitConcentration>(
                         requestResponseId, start, end, nbPointsPerHour, computingOption);
-            computingTraits->addTrait(std::move(traits));
 
 
             std::unique_ptr<ComputingTraitPercentiles> traitsPercentiles =
                     std::make_unique<ComputingTraitPercentiles>(
                         requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
 
-            computingTraits->addTrait(std::move(traitsPercentiles));
-
-
-            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(computingTraits));
-
-            std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
-
-            ComputingResult result;
-            result = component->compute(request, response);
-
-            fructose_assert( result == ComputingResult::Ok);
-
-            const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
-
-            fructose_assert_eq(responses.size(), size_t{2});
 
             {
-                fructose_assert(dynamic_cast<PercentilesResponse*>(responses[1].get()) != nullptr);
-                const PercentilesResponse *resp = dynamic_cast<PercentilesResponse*>(responses[1].get());
+
+                ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traitsPercentiles));
+
+                std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
+
+                ComputingResult result;
+                result = component->compute(request, response);
+
+                fructose_assert( result == ComputingResult::Ok);
+
+                const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
+
+                fructose_assert_eq(responses.size(), size_t{1});
+
+                fructose_assert(dynamic_cast<PercentilesResponse*>(responses[0].get()) != nullptr);
+                const PercentilesResponse *resp = dynamic_cast<PercentilesResponse*>(responses[0].get());
 
                 fructose_assert_eq(resp->getNbRanks(), percentileRanks.size());
 
@@ -339,6 +343,19 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
             }
             {
+                ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
+
+                std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
+
+                ComputingResult result;
+                result = component->compute(request, response);
+
+                fructose_assert( result == ComputingResult::Ok);
+
+                const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
+
+                fructose_assert_eq(responses.size(), size_t{1});
+
                 fructose_assert(dynamic_cast<SinglePredictionResponse*>(responses[0].get()) != nullptr);
                 const SinglePredictionResponse *resp = dynamic_cast<SinglePredictionResponse*>(responses[0].get());
 
@@ -443,9 +460,6 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covA", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covR", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
 
-
-            std::unique_ptr<ComputingTraits> computingTraits = std::make_unique<ComputingTraits>();
-
             RequestResponseId requestResponseId = "1";
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
@@ -460,10 +474,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
                     std::make_unique<ComputingTraitPercentiles>(
                         requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
 
-            computingTraits->addTrait(std::move(traitsPercentiles));
-
-
-            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(computingTraits));
+            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traitsPercentiles));
 
             std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
@@ -554,9 +565,6 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covA", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covR", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
 
-
-            std::unique_ptr<ComputingTraits> computingTraits = std::make_unique<ComputingTraits>();
-
             RequestResponseId requestResponseId = "1";
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
@@ -570,10 +578,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
                     std::make_unique<ComputingTraitPercentiles>(
                         requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
 
-            computingTraits->addTrait(std::move(traitsPercentiles));
-
-
-            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(computingTraits));
+            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traitsPercentiles));
 
             std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
@@ -663,9 +668,6 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covA", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covR", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
 
-
-            std::unique_ptr<ComputingTraits> computingTraits = std::make_unique<ComputingTraits>();
-
             RequestResponseId requestResponseId = "1";
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
@@ -679,10 +681,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
                     std::make_unique<ComputingTraitPercentiles>(
                         requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
 
-            computingTraits->addTrait(std::move(traitsPercentiles));
-
-
-            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(computingTraits));
+            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traitsPercentiles));
 
             std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
@@ -773,9 +772,6 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covA", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covR", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
 
-
-            std::unique_ptr<ComputingTraits> computingTraits = std::make_unique<ComputingTraits>();
-
             RequestResponseId requestResponseId = "1";
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
@@ -789,10 +785,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
                     std::make_unique<ComputingTraitPercentiles>(
                         requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
 
-            computingTraits->addTrait(std::move(traitsPercentiles));
-
-
-            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(computingTraits));
+            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traitsPercentiles));
 
             std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
@@ -893,9 +886,6 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covA", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covR", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
 
-
-            std::unique_ptr<ComputingTraits> computingTraits = std::make_unique<ComputingTraits>();
-
             RequestResponseId requestResponseId = "1";
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
@@ -909,10 +899,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
                     std::make_unique<ComputingTraitPercentiles>(
                         requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
 
-            computingTraits->addTrait(std::move(traitsPercentiles));
-
-
-            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(computingTraits));
+            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traitsPercentiles));
 
             std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
@@ -1012,9 +999,6 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covA", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covR", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
 
-
-            std::unique_ptr<ComputingTraits> computingTraits = std::make_unique<ComputingTraits>();
-
             RequestResponseId requestResponseId = "1";
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
@@ -1028,10 +1012,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
                     std::make_unique<ComputingTraitPercentiles>(
                         requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
 
-            computingTraits->addTrait(std::move(traitsPercentiles));
-
-
-            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(computingTraits));
+            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traitsPercentiles));
 
             std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
@@ -1131,9 +1112,6 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covA", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covR", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
 
-
-            std::unique_ptr<ComputingTraits> computingTraits = std::make_unique<ComputingTraits>();
-
             RequestResponseId requestResponseId = "1";
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
@@ -1147,10 +1125,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
                     std::make_unique<ComputingTraitPercentiles>(
                         requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
 
-            computingTraits->addTrait(std::move(traitsPercentiles));
-
-
-            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(computingTraits));
+            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traitsPercentiles));
 
             std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
@@ -1250,9 +1225,6 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covA", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covR", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
 
-
-            std::unique_ptr<ComputingTraits> computingTraits = std::make_unique<ComputingTraits>();
-
             RequestResponseId requestResponseId = "1";
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
@@ -1266,10 +1238,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
                     std::make_unique<ComputingTraitPercentiles>(
                         requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
 
-            computingTraits->addTrait(std::move(traitsPercentiles));
-
-
-            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(computingTraits));
+            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traitsPercentiles));
 
             std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
@@ -1386,9 +1355,6 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covA", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covR", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
 
-
-            std::unique_ptr<ComputingTraits> computingTraits = std::make_unique<ComputingTraits>();
-
             RequestResponseId requestResponseId = "1";
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
@@ -1411,10 +1377,8 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
                         requestResponseId, start, end, nbPointsPerHour, computingOption, adjustmentTime, adjustmentOption,
                         loadingOption, restPeriodOption, steadyStateTargetOption, targetExtractionOption, formulationAndRouteOption);
 
-            computingTraits->addTrait(std::move(traits));
 
-
-            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(computingTraits));
+            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
 
             std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
@@ -1525,9 +1489,6 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covA", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covR", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
 
-
-            std::unique_ptr<ComputingTraits> computingTraits = std::make_unique<ComputingTraits>();
-
             RequestResponseId requestResponseId = "1";
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
@@ -1550,10 +1511,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
                         requestResponseId, start, end, nbPointsPerHour, computingOption, adjustmentTime, adjustmentOption,
                         loadingOption, restPeriodOption, steadyStateTargetOption, targetExtractionOption, formulationAndRouteOption);
 
-            computingTraits->addTrait(std::move(traits));
-
-
-            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(computingTraits));
+            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
 
             std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
