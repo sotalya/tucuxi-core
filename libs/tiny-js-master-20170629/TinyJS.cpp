@@ -135,25 +135,28 @@
 #include <stdio.h>
 #include <fstream>
 
+#ifndef COMPILE_JMY
 // support both windows and linux
-//#ifdef _MSC_VER
-//#include <windows.h>
+#ifdef _MSC_VER
+#include <windows.h>
 
-//#define GETLIB(a,b) LoadLibrary(a)
-//#define GETSYMBOL(a,b) GetProcAddress(a, b)
-//#define LIBNAME ".\\jit.dll"
-//#define GETBUILDERROR "Load failed with 0x%x\n", GetLastError()
-//#define FREELIB(a) FreeLibrary(a)
-//#define RTLD_NOW 0
-//#else
-////#include <dlfcn.h>
+#define GETLIB(a,b) LoadLibrary(a)
+#define GETSYMBOL(a,b) GetProcAddress(a, b)
+#define LIBNAME ".\\jit.dll"
+#define GETBUILDERROR "Load failed with 0x%x\n", GetLastError()
+#define FREELIB(a) FreeLibrary(a)
+#define RTLD_NOW 0
+#else
+#include <dlfcn.h>
 
-//#define GETLIB(a,b) dlopen(a, b)
-//#define GETSYMBOL(a,b) dlsym(a, b)
-//#define LIBNAME "./jit.so"
-//#define GETBUILDERROR "%s\n", dlerror()
-//#define FREELIB(a) dlclose(a)
-//#endif
+#define GETLIB(a,b) dlopen(a, b)
+#define GETSYMBOL(a,b) dlsym(a, b)
+#define LIBNAME "./jit.so"
+#define GETBUILDERROR "%s\n", dlerror()
+#define FREELIB(a) dlclose(a)
+#endif
+
+#endif // COMPILE_JMY
 
 using namespace std;
 
@@ -944,8 +947,10 @@ CScriptVar::~CScriptVar(void)
     mark_deallocated(this);
 #endif
     removeAllChildren();
-//    if(nativeHandle)
-//        FREELIB(nativeHandle);
+#ifndef COMPILE_JMY
+    if(nativeHandle)
+        FREELIB(nativeHandle);
+#endif // COMPILE_JMY
 }
 
 CScriptVar *CScriptVar::getReturnVar()
