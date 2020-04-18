@@ -979,8 +979,9 @@ unique_ptr<Tucuxi::Core::ComputingTraitAdjustment> QueryImport::getChildComputin
     Common::DateTime end = getChildDateTimeValue(dateIntervalRootIterator, DATE_INTERVAL_END_NODE_NAME);
     Tucuxi::Core::ComputingOption computingOption = getChildComputingOption(_rootIterator, COMPUTING_OPTION);
     Common::DateTime adjustmentDate = getChildDateTimeValue(_rootIterator, DATE_ADJUSTMENT_TIME);
-    Tucuxi::Core::BestCandidatesOption = getChildBestCandidatesOptionEnum(_rootIterator, OPTIONS);
-    return make_unique<Tucuxi::Core::ComputingTraitAdjustment>();
+    Tucuxi::Core::BestCandidatesOption bestCandidateOption = getChildBestCandidatesOptionEnum(_rootIterator, OPTIONS);
+    // TODO : create the object
+    //return make_unique<Tucuxi::Core::ComputingTraitAdjustment>();
 
 }
 
