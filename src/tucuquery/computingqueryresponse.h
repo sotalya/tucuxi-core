@@ -1,9 +1,29 @@
 #ifndef COMPUTINGQUERYRESPONSE_H
 #define COMPUTINGQUERYRESPONSE_H
 
+#include "tucucore/computingservice/computingresult.h"
+#include "tucucore/computingservice/computingresponse.h"
 
 namespace Tucuxi {
 namespace Query {
+
+///
+/// \brief The QueryResponseMetaData class
+/// This class will embed information such as computation time
+///
+class QueryResponseMetaData
+{
+
+};
+
+class SingleResponseData {
+
+public:
+
+    Tucuxi::Core::ComputingResult m_status;
+    QueryResponseMetaData m_metaData;
+    std::unique_ptr<Tucuxi::Core::SingleComputingResponse> m_computingResponse;
+};
 
 ///
 /// \brief The ComputingQueryResponse class
@@ -15,6 +35,10 @@ class ComputingQueryResponse
 {
 public:
     ComputingQueryResponse();
+
+    Tucuxi::Core::ComputingResult m_queryStatus;
+
+    std::vector<SingleResponseData> m_requestResponses;
 };
 
 
