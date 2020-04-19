@@ -29,6 +29,15 @@ int CliComputer::compute(std::string _drugPath,
     Tucuxi::Core::SingleOverloadEvaluator::getInstance()->setValues(100000, 5000, 10000);
 
 
+    // This method can be totally rewritten to take advantage of QueryComputer.
+    // QueryComputer will be also used by the REST server, so all the common code should
+    // be in QueryComputer.
+    // One difference is that the input is a file for CliComputer, and a POST request for
+    // the RestServer. So, the raw string extraction shall be the responsibility of CliComputer
+    // and the RestServer. The raw string can then be used by QueryComputer.
+    // The output is also managed differently, so the QueryResponse from QueryComputer shall
+    // be used by CliComputer and the REST server to generate the useful output.
+
     Tucuxi::Common::LoggerHelper logHelper;
 
 
