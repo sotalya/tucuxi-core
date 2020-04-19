@@ -34,8 +34,6 @@ SOURCES := \
            concentrationcalculator.cpp \
            computingadjustments.cpp \
            computingcomponent.cpp \
-           computingresponseexport.cpp \
-           computingresponsexmlexport.cpp \
            computingutils.cpp \
            covariateevent.cpp \
            covariateextractor.cpp \

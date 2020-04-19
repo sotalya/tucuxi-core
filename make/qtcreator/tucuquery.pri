@@ -3,6 +3,8 @@ HEADERS += \
     $$PWD/../../src/tucuquery/administrativedata.h \
     $$PWD/../../src/tucuquery/computingquery.h \
     $$PWD/../../src/tucuquery/computingqueryresponse.h \
+    $$PWD/../../src/tucuquery/computingresponseexport.h \
+    $$PWD/../../src/tucuquery/computingresponsexmlexport.h \
     $$PWD/../../src/tucuquery/querycomputer.h \
     $$PWD/../../src/tucuquery/querydata.h \
     $$PWD/../../src/tucuquery/queryimport.h \
@@ -15,6 +17,8 @@ SOURCES += \
     $$PWD/../../src/tucuquery/administrativedata.cpp \
     $$PWD/../../src/tucuquery/computingquery.cpp \
     $$PWD/../../src/tucuquery/computingqueryresponse.cpp \
+    $$PWD/../../src/tucuquery/computingresponseexport.cpp \
+    $$PWD/../../src/tucuquery/computingresponsexmlexport.cpp \
     $$PWD/../../src/tucuquery/querycomputer.cpp \
     $$PWD/../../src/tucuquery/querydata.cpp \
     $$PWD/../../src/tucuquery/queryimport.cpp \

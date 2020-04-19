@@ -11,6 +11,8 @@ TYPE := LIB
 # Let's keep it in alphabetical order
 SOURCES := \
            administrativedata.cpp \
+           computingresponseexport.cpp \
+           computingresponsexmlexport.cpp \
 		   parametersdata.cpp \
 		   query.cpp \
 		   queryimport.cpp \

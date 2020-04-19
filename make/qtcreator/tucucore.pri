@@ -2,7 +2,6 @@
 DEFINES += TUCUXI_GIT_REVISION='\\"$$system(git --git-dir $$PWD/../../.git rev-parse --short HEAD)\\"'
 
 HEADERS += \
-    $$PWD/../../src/tucucore/computingresponsexmlexport.h \
     $$PWD/../../src/tucucore/computingutils.h \
     $$PWD/../../src/tucucore/drugmodel/drugmodel.h \
     $$PWD/../../src/tucucore/cachedexponentials.h \
@@ -78,7 +77,6 @@ HEADERS += \
     $$PWD/../../src/tucucore/computingservice/computingaborter.h \
     $$PWD/../../src/tucucore/unit.h \
     $$PWD/../../src/tucucore/drugmodel/drugmodelmetadata.h \
-    $$PWD/../../src/tucucore/computingresponseexport.h \
     $$PWD/../../src/tucucore/drugmodelrepository.h \
     $$PWD/../../src/tucucore/overloadevaluator.h \
     $$PWD/../../src/tucucore/version.h \
@@ -97,7 +95,6 @@ HEADERS += \
     $$PWD/../../src/tucucore/computingadjustments.h
 
 SOURCES += \
-    $$PWD/../../src/tucucore/computingresponsexmlexport.cpp \
     $$PWD/../../src/tucucore/computingutils.cpp \
     $$PWD/../../src/tucucore/drugmodel/drugmodel.cpp \
     $$PWD/../../src/tucucore/cachedexponentials.cpp \
@@ -160,7 +157,6 @@ SOURCES += \
     $$PWD/../../src/tucucore/computingservice/computingaborter.cpp \
     $$PWD/../../src/tucucore/unit.cpp \
     $$PWD/../../src/tucucore/drugmodel/drugmodelmetadata.cpp \
-    $$PWD/../../src/tucucore/computingresponseexport.cpp \
     $$PWD/../../src/tucucore/drugmodelrepository.cpp \
     $$PWD/../../src/tucucore/overloadevaluator.cpp \
     $$PWD/../../src/tucucore/version.cpp \
