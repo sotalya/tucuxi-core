@@ -2,6 +2,7 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
+#include <chrono>  // for high_resolution_clock
 
 #include "computingcomponent.h"
 #include "tucucore/drugmodel/drugmodel.h"
@@ -113,6 +114,8 @@ std::string ComputingComponent::getErrorString() const
 
 ComputingResult ComputingComponent::compute(const ComputingRequest &_request, std::unique_ptr<ComputingResponse> &_response)
 {
+    // Record start time
+    auto start = std::chrono::high_resolution_clock::now();
 //    try {
         if (m_utils == nullptr) {
             m_logger.error("The Computing Component has not been initialized");
@@ -144,6 +147,11 @@ ComputingResult ComputingComponent::compute(const ComputingRequest &_request, st
             }
             it++;
         }
+
+        // Record end time
+        auto finish = std::chrono::high_resolution_clock::now();
+        // Store the computing time in the response
+        _response->setComputingTime(finish - start);
 
         return result;
 

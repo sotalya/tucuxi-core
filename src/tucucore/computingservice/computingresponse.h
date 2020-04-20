@@ -266,6 +266,17 @@ public:
     ///
     const std::vector<std::unique_ptr<SingleComputingResponse> > & getResponses() const { return m_responses;}
 
+    ///
+    /// \brief Set the computing time of this request
+    /// \param _computingTime the computing time of the request
+    ///
+    void setComputingTime(std::chrono::duration<double> _computingTime);
+
+    ///
+    /// \brief get the computing time of this request
+    /// \return the computing time of the request
+    ///
+    std::chrono::duration<double> getComputingTime() const;
 
 protected:
 
@@ -274,6 +285,8 @@ protected:
 
     /// Vector of responses
     std::vector<std::unique_ptr<SingleComputingResponse> > m_responses;
+
+    std::chrono::duration<double> m_computingTime{0};
 
 };
 
