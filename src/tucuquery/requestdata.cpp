@@ -59,21 +59,11 @@ const Core::Dosage& Backextrapolation::getpDosage() const
 RequestData::RequestData(string& _requestID,
         string& _drugID,
         string& _drugModelID,
-        string& _requestType,
-        int _nbPointsPerHour,
-        unique_ptr<DateInterval> _pDateInterval,
-        string& _parametersType,
-        unique_ptr<GraphData> _pGraph,
-        std::vector<double> &_percentiles,
-        unique_ptr<Backextrapolation> _pBackextrapolation,
-        std::vector<Tucuxi::Common::DateTime> _pointsInTime) :
-    m_requestID(_requestID), m_drugID(_drugID), m_drugModelID(_drugModelID),
-    m_requestType(_requestType),
-    m_nbPointsPerHour(_nbPointsPerHour),
-    m_pDateInterval(move(_pDateInterval)), m_parametersType(_parametersType),
-    m_pGraph(move(_pGraph)), m_percentiles(_percentiles),
-    m_pBackextrapolation(move(_pBackextrapolation)),
-    m_pointsInTime(_pointsInTime)
+        unique_ptr<Core::ComputingTrait> _pComputingTrait) :
+    m_requestID(_requestID),
+    m_drugID(_drugID),
+    m_drugModelID(_drugModelID),
+    m_pComputingTrait(move(_pComputingTrait))
 {}
 
 const string RequestData::getRequestID() const
@@ -89,46 +79,6 @@ const string RequestData::getDrugID() const
 const string RequestData::getDrugModelID() const
 {
     return m_drugModelID;
-}
-
-const string RequestData::getRequestType() const
-{
-    return m_requestType;
-}
-
-int RequestData::getNbPointsPerHour() const
-{
-    return m_nbPointsPerHour;
-}
-
-const DateInterval& RequestData::getpDateInterval() const
-{
-    return *m_pDateInterval;
-}
-
-const string RequestData::getParametersType() const
-{
-    return m_parametersType;
-}
-
-const GraphData& RequestData::getpGraph() const
-{
-    return *m_pGraph;
-}
-
-const vector<double> RequestData::getPercentiles() const
-{
-    return m_percentiles;
-}
-
-const Backextrapolation& RequestData::getpBackextrapolation() const
-{
-    return *m_pBackextrapolation;
-}
-
-const std::vector<Tucuxi::Common::DateTime>& RequestData::getPointsInTime() const
-{
-    return m_pointsInTime;
 }
 
 } // namespace Query

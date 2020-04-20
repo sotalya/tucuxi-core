@@ -6,6 +6,7 @@
 #include "tucucommon/xmliterator.h"
 #include "tucucommon/utils.h"
 #include "tucucore/computingservice/computingtrait.h"
+#include "tucucore/drugmodelimport.h"
 
 
 // #include <unistd.h>
@@ -763,94 +764,116 @@ unique_ptr<Core::FormulationAndRoute> QueryImport::createFormulationAndRoute(Com
                 );
 }
 
-unique_ptr<RequestData> QueryImport::createRequest(Tucuxi::Common::XmlNodeIterator& _requestRootIterator) const
+unique_ptr<RequestData> QueryImport::createRequest(Tucuxi::Common::XmlNodeIterator& _requestRootIterator)
 {
-    static const string REQUEST_ID_NODE_NAME                = "requestId";
-    static const string DRUG_ID_NODE_NAME                   = "drugId";
-    static const string DRUGMODEL_ID_NODE_NAME              = "drugModelId";
-    static const string COMPUTING_TRAIT_ADJUSTMENT_NAME     = "adjustmentTraits";
-    static const string REQUEST_TYPE_NODE_NAME         = "requestType";
-    static const string NBPOINTSPERHOUR_NODE_NAME      = "nbPointsPerHour";
-    static const string DATE_INTERVAL_NODE_NAME        = "dateInterval";
-    static const string DATE_INTERVAL_START_NODE_NAME  = "start";
-    static const string DATE_INTERVAL_END_NODE_NAME    = "end";
-    static const string PREDICTION_TYPE_NODE_NAME      = "parametersType";
-    static const string GRAPH_NODE_NAME                = "graph";
-    static const string PERCENTILES_NODE_NAME          = "percentiles";
-    static const string POINTSINTIME_NODE_NAME         = "pointsInTime";
-    static const string BACKEXTRAPOLATION_NODE_NAME    = "backextrapolation";
+    static const string REQUEST_ID_NODE_NAME                        = "requestId";
+    static const string DRUG_ID_NODE_NAME                           = "drugId";
+    static const string DRUGMODEL_ID_NODE_NAME                      = "drugModelId";
+    static const string COMPUTING_TRAIT_ADJUSTMENT_NAME             = "adjustmentTraits";
+    static const string COMPUTING_TRAIT_CONCENTRATION_NAME          = "predictionTraits";
+    static const string COMPUTING_TRAIT_PERCENTILES_NAME            = "percentilesTraits";
+    static const string COMPUTING_TRAIT_SINGLE_POINT_NAME           = "predictionAtTimesTraits";
+    static const string COMPUTING_TRAIT_AT_MESURE_NAME              = "predictionAtSampleTimesTraits";
+    static const string REQUEST_TYPE_NODE_NAME                      = "requestType";
+    static const string NBPOINTSPERHOUR_NODE_NAME                   = "nbPointsPerHour";
+    static const string DATE_INTERVAL_NODE_NAME                     = "dateInterval";
+    static const string DATE_INTERVAL_START_NODE_NAME               = "start";
+    static const string DATE_INTERVAL_END_NODE_NAME                 = "end";
+    static const string PREDICTION_TYPE_NODE_NAME                   = "parametersType";
+    static const string GRAPH_NODE_NAME                             = "graph";
+    static const string PERCENTILES_NODE_NAME                       = "percentiles";
+    static const string POINTSINTIME_NODE_NAME                      = "pointsInTime";
+    static const string BACKEXTRAPOLATION_NODE_NAME                 = "backextrapolation";
 
     string requestId = getChildStringValue(_requestRootIterator, REQUEST_ID_NODE_NAME);
     string drugId = getChildStringValue(_requestRootIterator, DRUG_ID_NODE_NAME);
     string drugModelId = getChildStringValue(_requestRootIterator, DRUGMODEL_ID_NODE_NAME);
 
+    unique_ptr<Tucuxi::Core::ComputingTrait> computingTrait;
     Common::XmlNodeIterator computingTraitAdjustmentRootIterator = _requestRootIterator->getChildren(COMPUTING_TRAIT_ADJUSTMENT_NAME);
 
     if(computingTraitAdjustmentRootIterator != Common::XmlNodeIterator::none())
     {
-        unique_ptr<Tucuxi::Core::ComputingTraitAdjustment> computingTraitAdjustment = getChildComputingTraitAdjustment(_requestRootIterator);
-
+        computingTrait = getChildComputingTraitAdjustment(_requestRootIterator, requestId);
     }
 
+    Common::XmlNodeIterator computingTraitConcentrationRootIterator = _requestRootIterator->getChildren(COMPUTING_TRAIT_CONCENTRATION_NAME);
 
-
-
-    string requestType = getChildStringValue(_requestRootIterator, REQUEST_TYPE_NODE_NAME);
-
-    Common::XmlNodeIterator dateIntervalRootIterator = _requestRootIterator->getChildren(DATE_INTERVAL_NODE_NAME);
-    Common::DateTime start = getChildDateTimeValue(dateIntervalRootIterator, DATE_INTERVAL_START_NODE_NAME);
-    Common::DateTime end = getChildDateTimeValue(dateIntervalRootIterator, DATE_INTERVAL_END_NODE_NAME);
-    unique_ptr<DateInterval> dateInterval = make_unique<DateInterval>(start, end);
-
-    int nbPointsPerHour = getChildIntValue(_requestRootIterator, NBPOINTSPERHOUR_NODE_NAME);
-
-    string parametersType = getChildStringValue(_requestRootIterator, PREDICTION_TYPE_NODE_NAME);
-
-    Common::XmlNodeIterator graphRootIterator = _requestRootIterator->getChildren(GRAPH_NODE_NAME);
-    unique_ptr<GraphData> pGraphData = createGraphData(graphRootIterator);
-
-    Common::XmlNodeIterator percentilesRootIterator = _requestRootIterator->getChildren(PERCENTILES_NODE_NAME);
-    Common::XmlNodeIterator percentilesIterator = percentilesRootIterator->getChildren();
-    vector<double> percentiles;
-    while(percentilesIterator != percentilesIterator.none()) {
-        string percentileValue = percentilesIterator->getValue();
-        double percentile = 0;
-        try {
-            percentile = static_cast<double>(std::stod(percentileValue));
-        } catch (invalid_argument e) {
-            percentile = 0;
-        } catch (out_of_range e) {
-            percentile = 0;
-        }
-        percentiles.push_back(percentile);
-        percentilesIterator++;
+    if(computingTraitConcentrationRootIterator != Common::XmlNodeIterator::none())
+    {
+        computingTrait = getChildComputingTraitConcentration(_requestRootIterator, requestId);
     }
 
-    Common::XmlNodeIterator pointsInTimeRootIterator = _requestRootIterator->getChildren(POINTSINTIME_NODE_NAME);
-    Common::XmlNodeIterator pointsInTimeIterator = pointsInTimeRootIterator->getChildren();
-    vector<DateTime> pointsInTime;
-    while(pointsInTimeIterator != pointsInTimeIterator.none()) {
-        string value = pointsInTimeIterator->getValue();
-        Common::DateTime datetime(value, DATE_FORMAT);
-        pointsInTime.push_back(datetime);
-        pointsInTimeIterator++;
+    Common::XmlNodeIterator computingTraitPercentilesRootIterator = _requestRootIterator->getChildren(COMPUTING_TRAIT_PERCENTILES_NAME);
+
+    if(computingTraitPercentilesRootIterator != Common::XmlNodeIterator::none())
+    {
+        computingTrait = getChildComputingTraitPercentiles(_requestRootIterator, requestId);
     }
 
-    Common::XmlNodeIterator backextrapolationRootIterator = _requestRootIterator->getChildren(BACKEXTRAPOLATION_NODE_NAME);
-    unique_ptr<Backextrapolation> pBackextrapolation = createBackextrapolation(backextrapolationRootIterator);
+    Common::XmlNodeIterator computingTraitSinglePointRootIterator = _requestRootIterator->getChildren(COMPUTING_TRAIT_SINGLE_POINT_NAME);
+
+    if(computingTraitSinglePointRootIterator != Common::XmlNodeIterator::none())
+    {
+        computingTrait = getChildComputingTraitSinglePoints(_requestRootIterator, requestId);
+    }
+
+    Common::XmlNodeIterator computingTraitAtMeasuresRootIterator = _requestRootIterator->getChildren(COMPUTING_TRAIT_AT_MESURE_NAME);
+
+    if(computingTraitAtMeasuresRootIterator != Common::XmlNodeIterator::none())
+    {
+        computingTrait = getChildComputingTraitAtMeasures(_requestRootIterator, requestId);
+    }
+
+//    string requestType = getChildStringValue(_requestRootIterator, REQUEST_TYPE_NODE_NAME);
+
+//    Common::XmlNodeIterator dateIntervalRootIterator = _requestRootIterator->getChildren(DATE_INTERVAL_NODE_NAME);
+//    Common::DateTime start = getChildDateTimeValue(dateIntervalRootIterator, DATE_INTERVAL_START_NODE_NAME);
+//    Common::DateTime end = getChildDateTimeValue(dateIntervalRootIterator, DATE_INTERVAL_END_NODE_NAME);
+//    unique_ptr<DateInterval> dateInterval = make_unique<DateInterval>(start, end);
+
+//    int nbPointsPerHour = getChildIntValue(_requestRootIterator, NBPOINTSPERHOUR_NODE_NAME);
+
+//    string parametersType = getChildStringValue(_requestRootIterator, PREDICTION_TYPE_NODE_NAME);
+
+//    Common::XmlNodeIterator graphRootIterator = _requestRootIterator->getChildren(GRAPH_NODE_NAME);
+//    unique_ptr<GraphData> pGraphData = createGraphData(graphRootIterator);
+
+//    Common::XmlNodeIterator percentilesRootIterator = _requestRootIterator->getChildren(PERCENTILES_NODE_NAME);
+//    Common::XmlNodeIterator percentilesIterator = percentilesRootIterator->getChildren();
+//    vector<double> percentiles;
+//    while(percentilesIterator != percentilesIterator.none()) {
+//        string percentileValue = percentilesIterator->getValue();
+//        double percentile = 0;
+//        try {
+//            percentile = static_cast<double>(std::stod(percentileValue));
+//        } catch (invalid_argument e) {
+//            percentile = 0;
+//        } catch (out_of_range e) {
+//            percentile = 0;
+//        }
+//        percentiles.push_back(percentile);
+//        percentilesIterator++;
+//    }
+
+//    Common::XmlNodeIterator pointsInTimeRootIterator = _requestRootIterator->getChildren(POINTSINTIME_NODE_NAME);
+//    Common::XmlNodeIterator pointsInTimeIterator = pointsInTimeRootIterator->getChildren();
+//    vector<DateTime> pointsInTime;
+//    while(pointsInTimeIterator != pointsInTimeIterator.none()) {
+//        string value = pointsInTimeIterator->getValue();
+//        Common::DateTime datetime(value, DATE_FORMAT);
+//        pointsInTime.push_back(datetime);
+//        pointsInTimeIterator++;
+//    }
+
+//    Common::XmlNodeIterator backextrapolationRootIterator = _requestRootIterator->getChildren(BACKEXTRAPOLATION_NODE_NAME);
+//    unique_ptr<Backextrapolation> pBackextrapolation = createBackextrapolation(backextrapolationRootIterator);
 
     return make_unique<RequestData>(
                 requestId,
                 drugId,
                 drugModelId,
-                requestType,
-                nbPointsPerHour,
-                move(dateInterval),
-                parametersType,
-                move(pGraphData),
-                percentiles,
-                move(pBackextrapolation),
-                pointsInTime
+                move(computingTrait)
                 );
 }
 
@@ -958,9 +981,138 @@ bool QueryImport::getChildBoolValue(Common::XmlNodeIterator _rootIterator, strin
     return finalValue;
 }
 
+Tucuxi::Core::PercentileRanks QueryImport::getChildPercentileRanks(Common::XmlNodeIterator _rootIterator, string _childName) const
+{
+    Common::XmlNodeIterator it = _rootIterator->getChildren(_childName);
+    Tucuxi::Core::PercentileRanks ranks;
+    Tucuxi::Core::PercentileRank rank;
+    double finalValue;
+    string value;
+    while(it != Common::XmlNodeIterator::none())
+    {
+        value = it->getValue();
+        finalValue = 0.0;
+        try {
+            finalValue = stod(value);
+        } catch (invalid_argument e) {
+            finalValue = 0.0;
+        } catch (out_of_range e) {
+            finalValue = 0.0;
+        }
+        rank = getChildDoubleValue(_rootIterator, _childName);
+        ranks.push_back(rank);
+        it ++;
+    }
+
+    return ranks;
+}
+
+vector<Common::DateTime> QueryImport::getChildDateTimeList(Common::XmlNodeIterator _rootIterator, string _childName) const
+{
+    Common::XmlNodeIterator it = _rootIterator->getChildren(_childName);
+    vector<DateTime> times;
+    string value;
+    while(it != Common::XmlNodeIterator::none())
+    {
+        value = it->getValue();
+        Common::DateTime datetime(value, DATE_FORMAT);
+        times.push_back(datetime);
+
+        it ++;
+    }
+
+    return times;
+}
+
+unique_ptr<Tucuxi::Core::ComputingTraitAtMeasures> QueryImport::getChildComputingTraitAtMeasures(Common::XmlNodeIterator _rootIterator, string _requestResponseId)
+{
+    static const string COMPUTING_OPTION                = "computingOption";
 
 
-unique_ptr<Tucuxi::Core::ComputingTraitAdjustment> QueryImport::getChildComputingTraitAdjustment(Common::XmlNodeIterator _rootIterator) const
+    Tucuxi::Core::RequestResponseId requestResponseId = _requestResponseId;
+    Tucuxi::Core::ComputingOption computingOption = getChildComputingOption(_rootIterator, COMPUTING_OPTION);
+
+    return make_unique<Tucuxi::Core::ComputingTraitAtMeasures> (requestResponseId,
+                                                                computingOption);
+}
+
+
+unique_ptr<Tucuxi::Core::ComputingTraitSinglePoints> QueryImport::getChildComputingTraitSinglePoints(Common::XmlNodeIterator _rootIterator, string _requestResponseId)
+{
+    static const string COMPUTING_OPTION                = "computingOption";
+    static const string DATES_NODE_NAME                 = "dates";
+    static const string DATES_DATE_NODE_NAME            = "date";
+
+    Tucuxi::Core::RequestResponseId requestResponseId = _requestResponseId;
+
+    Common::XmlNodeIterator timesRootIterator = _rootIterator->getChildren(DATES_NODE_NAME);
+    vector<Common::DateTime> times = getChildDateTimeList(timesRootIterator, DATES_DATE_NODE_NAME);
+
+    Tucuxi::Core::ComputingOption computingOption = getChildComputingOption(_rootIterator, COMPUTING_OPTION);
+
+    return make_unique<Tucuxi::Core::ComputingTraitSinglePoints> (requestResponseId,
+                                                                  times,
+                                                                  computingOption);
+}
+
+unique_ptr<Tucuxi::Core::ComputingTraitPercentiles> QueryImport::getChildComputingTraitPercentiles(Common::XmlNodeIterator _rootIterator, string _requestResponseId)
+{
+    static const string NB_POINTS_PER_HOUR              = "nbPointsPerHour";
+    static const string DATE_INTERVAL_NODE_NAME         = "dateInterval";
+    static const string DATE_INTERVAL_START_NODE_NAME   = "start";
+    static const string DATE_INTERVAL_END_NODE_NAME     = "end";
+    static const string RANKS_NODE_NAME                 = "ranks";
+    static const string RANKS_RANK_NODE_NAME            = "rank";
+    static const string COMPUTING_OPTION                = "computingOption";
+
+    Tucuxi::Core::RequestResponseId requestResponseId = _requestResponseId;
+
+    Common::XmlNodeIterator dateIntervalRootIterator = _rootIterator->getChildren(DATE_INTERVAL_NODE_NAME);
+    Common::DateTime start = getChildDateTimeValue(dateIntervalRootIterator, DATE_INTERVAL_START_NODE_NAME);
+    Common::DateTime end = getChildDateTimeValue(dateIntervalRootIterator, DATE_INTERVAL_END_NODE_NAME);
+
+    Common::XmlNodeIterator ranksRootIterator = _rootIterator->getChildren(RANKS_NODE_NAME);
+    Tucuxi::Core::PercentileRanks ranks = getChildPercentileRanks(ranksRootIterator, RANKS_RANK_NODE_NAME);
+
+    double nbPointsPerHour = getChildDoubleValue(_rootIterator, NB_POINTS_PER_HOUR);
+
+    Tucuxi::Core::ComputingOption computingOption = getChildComputingOption(_rootIterator, COMPUTING_OPTION);
+
+    return make_unique<Tucuxi::Core::ComputingTraitPercentiles> (requestResponseId,
+                                                                 start,
+                                                                 end,
+                                                                 ranks,
+                                                                 nbPointsPerHour,
+                                                                 computingOption);
+}
+
+unique_ptr<Tucuxi::Core::ComputingTraitConcentration> QueryImport::getChildComputingTraitConcentration(Common::XmlNodeIterator _rootIterator, string _requestResponseId)
+{
+    static const string NB_POINTS_PER_HOUR              = "nbPointsPerHour";
+    static const string DATE_INTERVAL_NODE_NAME         = "dateInterval";
+    static const string DATE_INTERVAL_START_NODE_NAME   = "start";
+    static const string DATE_INTERVAL_END_NODE_NAME     = "end";
+    static const string COMPUTING_OPTION                = "computingOption";
+
+    Tucuxi::Core::RequestResponseId requestResponseId = _requestResponseId;
+
+    Common::XmlNodeIterator dateIntervalRootIterator = _rootIterator->getChildren(DATE_INTERVAL_NODE_NAME);
+    Common::DateTime start = getChildDateTimeValue(dateIntervalRootIterator, DATE_INTERVAL_START_NODE_NAME);
+    Common::DateTime end = getChildDateTimeValue(dateIntervalRootIterator, DATE_INTERVAL_END_NODE_NAME);
+
+    double nbPointsPerHour = getChildDoubleValue(_rootIterator, NB_POINTS_PER_HOUR);
+
+    Tucuxi::Core::ComputingOption computingOption = getChildComputingOption(_rootIterator, COMPUTING_OPTION);
+
+
+    return make_unique<Tucuxi::Core::ComputingTraitConcentration> (requestResponseId,
+                                                                   start,
+                                                                   end,
+                                                                   nbPointsPerHour,
+                                                                   computingOption);
+}
+
+unique_ptr<Tucuxi::Core::ComputingTraitAdjustment> QueryImport::getChildComputingTraitAdjustment(Common::XmlNodeIterator _rootIterator, string _requestResponseId)
 {
     static const string NB_POINTS_PER_HOUR              = "nbPointsPerHour";
     static const string DATE_INTERVAL_NODE_NAME         = "dateInterval";
@@ -971,178 +1123,197 @@ unique_ptr<Tucuxi::Core::ComputingTraitAdjustment> QueryImport::getChildComputin
     static const string OPTIONS                         = "options";
 
 
-
-    double nbPointsPerHour = getChildDoubleValue(_rootIterator, NB_POINTS_PER_HOUR);
+    Tucuxi::Core::RequestResponseId requestResponseId = _requestResponseId;
 
     Common::XmlNodeIterator dateIntervalRootIterator = _rootIterator->getChildren(DATE_INTERVAL_NODE_NAME);
     Common::DateTime start = getChildDateTimeValue(dateIntervalRootIterator, DATE_INTERVAL_START_NODE_NAME);
     Common::DateTime end = getChildDateTimeValue(dateIntervalRootIterator, DATE_INTERVAL_END_NODE_NAME);
+
+    double nbPointsPerHour = getChildDoubleValue(_rootIterator, NB_POINTS_PER_HOUR);
+
     Tucuxi::Core::ComputingOption computingOption = getChildComputingOption(_rootIterator, COMPUTING_OPTION);
-    Common::DateTime adjustmentDate = getChildDateTimeValue(_rootIterator, DATE_ADJUSTMENT_TIME);
+
+    Common::DateTime adjustmentTime = getChildDateTimeValue(_rootIterator, DATE_ADJUSTMENT_TIME);
+
     Tucuxi::Core::BestCandidatesOption bestCandidateOption = getChildBestCandidatesOptionEnum(_rootIterator, OPTIONS);
-    // TODO : create the object
-    //return make_unique<Tucuxi::Core::ComputingTraitAdjustment>();
+
+    Tucuxi::Core::LoadingOption loadingOption = getChildLoadingOptionEnum(_rootIterator, OPTIONS);
+
+    Tucuxi::Core::RestPeriodOption restPeriodOption = getChildRestPeriodTargetOptionEnum(_rootIterator, OPTIONS);
+
+    Tucuxi::Core::SteadyStateTargetOption steadyStateTargetOption = getChildSteadyStateTargetOptionEnum(_rootIterator, OPTIONS);
+
+    Tucuxi::Core::TargetExtractionOption targetExtractionOption = getChildTargetExtractionOptionEnum(_rootIterator, OPTIONS);
+
+    Tucuxi::Core::FormulationAndRouteSelectionOption formulationAndRouteSelectionOption = getChildFormulationAndRouteSelectionOptionEnum(_rootIterator, OPTIONS);
+
+
+    return make_unique<Tucuxi::Core::ComputingTraitAdjustment>(requestResponseId,
+                                                               start,
+                                                               end,
+                                                               nbPointsPerHour,
+                                                               computingOption,
+                                                               adjustmentTime,
+                                                               bestCandidateOption,
+                                                               loadingOption,
+                                                               restPeriodOption,
+                                                               steadyStateTargetOption,
+                                                               targetExtractionOption,
+                                                               formulationAndRouteSelectionOption);
 
 }
 
-Tucuxi::Core::BestCandidatesOption QueryImport::getChildBestCandidatesOptionEnum(Common::XmlNodeIterator _rootIterator, std::string _childName) const
+void QueryImport::setNodeError(Tucuxi::Common::XmlNodeIterator _node)
 {
-    string bestCandidatesOption = getChildStringValue(_rootIterator, _childName);
-
-    Tucuxi::Core::BestCandidatesOption bestCandidatesOptionEnum;
-
-    if(bestCandidatesOption == "bestDosage")
-    {
-        bestCandidatesOptionEnum = Tucuxi::Core::BestCandidatesOption::BestDosage;
+    std::string errorMessage;
+    Tucuxi::Common::XmlNode node = _node->getParent();
+    while (node.isValid()) {
+        if (node.getName().size() != 0) {
+            errorMessage = "<" + node.getName() + ">" + errorMessage;
+        }
+        node = node.getParent();
     }
-    else if(bestCandidatesOption == "allDosages")
-    {
-        bestCandidatesOptionEnum = Tucuxi::Core::BestCandidatesOption::AllDosages;
+    if (_node->getValue() == "") {
+        errorMessage += "<" + _node->getName() + "> contains an empty value.";
     }
-    else if(bestCandidatesOption == "bestDosagePerInterval")
-    {
-        bestCandidatesOptionEnum = Tucuxi::Core::BestCandidatesOption::BestDosagePerInterval;
+    else {
+        errorMessage += "<" + _node->getName() + "> contains an invalid value : " + _node->getValue();
     }
-    else
-    {
-        //ERROR
-    }
-
-    return bestCandidatesOptionEnum;
+    setResult(Result::Error, errorMessage);
 }
 
-Tucuxi::Core::LoadingOption QueryImport::getChildLoadingOptionEnum(Common::XmlNodeIterator _rootIterator, std::string _childName) const
+Tucuxi::Core::BestCandidatesOption QueryImport::getChildBestCandidatesOptionEnum(Common::XmlNodeIterator _rootIterator, std::string _childName)
 {
-    string loadingOption = getChildStringValue(_rootIterator, _childName);
+    Common::XmlNodeIterator BestCandidatesOptionRootIterator = _rootIterator->getChildren(_childName);
 
-    Tucuxi::Core::LoadingOption loadingOptionEnum;
+    static std::map<std::string,Tucuxi::Core::BestCandidatesOption> m =
+    {
+        {"bestDosage", Tucuxi::Core::BestCandidatesOption::BestDosage},
+        {"allDosages", Tucuxi::Core::BestCandidatesOption::AllDosages},
+        {"bestDosagePerInterval", Tucuxi::Core::BestCandidatesOption::BestDosagePerInterval}
+    };
 
-    if(loadingOption == "noLoadingDose")
-    {
-        loadingOptionEnum = Tucuxi::Core::LoadingOption::NoLoadingDose;
-    }
-    else if(loadingOption == "loadingDoseAllowed")
-    {
-        loadingOptionEnum = Tucuxi::Core::LoadingOption::LoadingDoseAllowed;
-    }
-    else
-    {
-        //ERROR
+    string value = BestCandidatesOptionRootIterator->getValue();
+    auto it = m.find(value);
+    if (it != m.end()) {
+        return it->second;
     }
 
-    return loadingOptionEnum;
+    setNodeError(BestCandidatesOptionRootIterator);
+
+    return Tucuxi::Core::BestCandidatesOption::BestDosage;
 }
 
-Tucuxi::Core::RestPeriodOption QueryImport::getChildRestPeriodTargetOptionEnum(Common::XmlNodeIterator _rootIterator, std::string _childName) const
+Tucuxi::Core::LoadingOption QueryImport::getChildLoadingOptionEnum(Common::XmlNodeIterator _rootIterator, std::string _childName)
 {
-    string restPeriodOption = getChildStringValue(_rootIterator, _childName);
+    Common::XmlNodeIterator loadingOptionRootIterator = _rootIterator->getChildren(_childName);
 
-    Tucuxi::Core::RestPeriodOption restPeriodOptionEnum;
+    static std::map<std::string,Tucuxi::Core::LoadingOption> m =
+    {
+        {"noLoadingDose", Tucuxi::Core::LoadingOption::NoLoadingDose},
+        {"loadingDoseAllowed", Tucuxi::Core::LoadingOption::LoadingDoseAllowed}
+    };
 
-    if(restPeriodOption == "noRestPeriod")
-    {
-        restPeriodOptionEnum = Tucuxi::Core::RestPeriodOption::NoRestPeriod;
-    }
-    else if(restPeriodOption == "restPeriodAllowed")
-    {
-        restPeriodOptionEnum = Tucuxi::Core::RestPeriodOption::RestPeriodAllowed;
-    }
-    else
-    {
-        //ERROR
+    string value = loadingOptionRootIterator->getValue();
+    auto it = m.find(value);
+    if (it != m.end()) {
+        return it->second;
     }
 
-    return restPeriodOptionEnum;
+    setNodeError(loadingOptionRootIterator);
+    return Tucuxi::Core::LoadingOption::NoLoadingDose;
 }
 
-Tucuxi::Core::SteadyStateTargetOption QueryImport::getChildSteadyStateTargetOptionEnum(Common::XmlNodeIterator _rootIterator, std::string _childName) const
+Tucuxi::Core::RestPeriodOption QueryImport::getChildRestPeriodTargetOptionEnum(Common::XmlNodeIterator _rootIterator, std::string _childName)
 {
-    string steadyStateTargetOption = getChildStringValue(_rootIterator, _childName);
+    Common::XmlNodeIterator restPeriodOptionRootIterator = _rootIterator->getChildren(_childName);
 
-    Tucuxi::Core::SteadyStateTargetOption steadyStateTargetOptionEnum;
+    static std::map<std::string,Tucuxi::Core::RestPeriodOption> m =
+    {
+        {"noRestPeriod", Tucuxi::Core::RestPeriodOption::NoRestPeriod},
+        {"restPeriodAllowed", Tucuxi::Core::RestPeriodOption::RestPeriodAllowed}
+    };
 
-    if(steadyStateTargetOption == "atSteadyState")
-    {
-        steadyStateTargetOptionEnum = Tucuxi::Core::SteadyStateTargetOption::AtSteadyState;
-    }
-    else if(steadyStateTargetOption == "withinTreatmentTimeRange")
-    {
-        steadyStateTargetOptionEnum = Tucuxi::Core::SteadyStateTargetOption::WithinTreatmentTimeRange;
-    }
-    else
-    {
-        //ERROR
+    string value = restPeriodOptionRootIterator->getValue();
+    auto it = m.find(value);
+    if (it != m.end()) {
+        return it->second;
     }
 
-    return steadyStateTargetOptionEnum;
+    setNodeError(restPeriodOptionRootIterator);
+    return Tucuxi::Core::RestPeriodOption::NoRestPeriod;
 }
 
-Tucuxi::Core::TargetExtractionOption QueryImport::getChildTargetExtractionOptionEnum(Common::XmlNodeIterator _rootIterator, std::string _childName) const
+Tucuxi::Core::SteadyStateTargetOption QueryImport::getChildSteadyStateTargetOptionEnum(Common::XmlNodeIterator _rootIterator, std::string _childName)
 {
-    string targetExtractionOption = getChildStringValue(_rootIterator, _childName);
+    Common::XmlNodeIterator steadyStateTargetOptionRootIterator = _rootIterator->getChildren(_childName);
 
-    Tucuxi::Core::TargetExtractionOption targetExtractionOptionEnum;
+    static std::map<std::string,Tucuxi::Core::SteadyStateTargetOption> m =
+    {
+        {"atSteadyState", Tucuxi::Core::SteadyStateTargetOption::AtSteadyState},
+        {"withinTreatmentTimeRange", Tucuxi::Core::SteadyStateTargetOption::WithinTreatmentTimeRange}
+    };
 
-    if(targetExtractionOption == "populationValues")
-    {
-        targetExtractionOptionEnum = Tucuxi::Core::TargetExtractionOption::PopulationValues;
-    }
-    else if(targetExtractionOption == "aprioriValues")
-    {
-        targetExtractionOptionEnum = Tucuxi::Core::TargetExtractionOption::AprioriValues;
-    }
-    else if(targetExtractionOption == "individualTargets")
-    {
-        targetExtractionOptionEnum = Tucuxi::Core::TargetExtractionOption::IndividualTargets;
-    }
-    else if(targetExtractionOption == "individualTargetsIfDefinitionExists")
-    {
-        targetExtractionOptionEnum = Tucuxi::Core::TargetExtractionOption::IndividualTargetsIfDefinitionExists;
-    }
-    else if(targetExtractionOption == "definitionIfNoIndividualTarget")
-    {
-        targetExtractionOptionEnum = Tucuxi::Core::TargetExtractionOption::DefinitionIfNoIndividualTarget;
-    }
-    else if(targetExtractionOption == "individualTargetsIfDefinitionExistsAndDefinitionIfNoIndividualTarget")
-    {
-        targetExtractionOptionEnum = Tucuxi::Core::TargetExtractionOption::IndividualTargetsIfDefinitionExistsAndDefinitionIfNoIndividualTarget;
-    }
-    else
-    {
-        //ERROR
+    string value = steadyStateTargetOptionRootIterator->getValue();
+    auto it = m.find(value);
+    if (it != m.end()) {
+        return it->second;
     }
 
-    return targetExtractionOptionEnum;
+    setNodeError(steadyStateTargetOptionRootIterator);
+    return Tucuxi::Core::SteadyStateTargetOption::AtSteadyState;
 }
 
-Tucuxi::Core::FormulationAndRouteSelectionOption QueryImport::getChildFormulationAndRouteSelectionOptionEnum(Common::XmlNodeIterator _rootIterator, std::string _childName) const
+Tucuxi::Core::TargetExtractionOption QueryImport::getChildTargetExtractionOptionEnum(Common::XmlNodeIterator _rootIterator, std::string _childName)
 {
-    string formulationAndRouteSelectionOption = getChildStringValue(_rootIterator, _childName);
+    Common::XmlNodeIterator targetExtractionOptionRootIterator = _rootIterator->getChildren(_childName);
 
-    Tucuxi::Core::FormulationAndRouteSelectionOption formulationAndRouteSelectionOptionEnum;
+    static std::map<std::string,Tucuxi::Core::TargetExtractionOption> m =
+    {
+        {"populationValues", Tucuxi::Core::TargetExtractionOption::PopulationValues},
+        {"aprioriValues", Tucuxi::Core::TargetExtractionOption::AprioriValues},
+        {"individualTargets", Tucuxi::Core::TargetExtractionOption::IndividualTargets},
+        {"individualTargetsIfDefinitionExists", Tucuxi::Core::TargetExtractionOption::IndividualTargetsIfDefinitionExists},
+        {"definitionIfNoIndividualTarget", Tucuxi::Core::TargetExtractionOption::DefinitionIfNoIndividualTarget},
+        {"individualTargetsIfDefinitionExistsAndDefinitionIfNoIndividualTarget", Tucuxi::Core::TargetExtractionOption::IndividualTargetsIfDefinitionExistsAndDefinitionIfNoIndividualTarget}
 
-    if(formulationAndRouteSelectionOption == "lastFormulationAndRoute")
-    {
-        formulationAndRouteSelectionOptionEnum = Tucuxi::Core::FormulationAndRouteSelectionOption::LastFormulationAndRoute;
-    }
-    else if(formulationAndRouteSelectionOption == "defaultFormulationAndRoute")
-    {
-        formulationAndRouteSelectionOptionEnum = Tucuxi::Core::FormulationAndRouteSelectionOption::DefaultFormulationAndRoute;
-    }
-    else if(formulationAndRouteSelectionOption == "allFormulationAndRoutes")
-    {
-        formulationAndRouteSelectionOptionEnum = Tucuxi::Core::FormulationAndRouteSelectionOption::AllFormulationAndRoutes;
-    }
-    else
-    {
-        //ERROR
+    };
+
+    string value = targetExtractionOptionRootIterator->getValue();
+    auto it = m.find(value);
+    if (it != m.end()) {
+        return it->second;
     }
 
-    return formulationAndRouteSelectionOptionEnum;
+    setNodeError(targetExtractionOptionRootIterator);
+    return Tucuxi::Core::TargetExtractionOption::PopulationValues;
+}
+
+Tucuxi::Core::FormulationAndRouteSelectionOption QueryImport::getChildFormulationAndRouteSelectionOptionEnum(Common::XmlNodeIterator _rootIterator, std::string _childName)
+{
+
+    Common::XmlNodeIterator formulationAndRouteSelectionOptioneRootIterator = _rootIterator->getChildren(_childName);
+
+    static std::map<std::string,Tucuxi::Core::FormulationAndRouteSelectionOption> m =
+    {
+        {"allFormulationAndRoutes", Tucuxi::Core::FormulationAndRouteSelectionOption::AllFormulationAndRoutes},
+        {"lastFormulationAndRoute", Tucuxi::Core::FormulationAndRouteSelectionOption::LastFormulationAndRoute},
+        {"defaultFormulationAndRoute", Tucuxi::Core::FormulationAndRouteSelectionOption::DefaultFormulationAndRoute}
+    };
+
+    string value = formulationAndRouteSelectionOptioneRootIterator->getValue();
+    auto it = m.find(value);
+    if (it != m.end()) {
+        return it->second;
+    }
+
+    setNodeError(formulationAndRouteSelectionOptioneRootIterator);
+
+    return Tucuxi::Core::FormulationAndRouteSelectionOption::LastFormulationAndRoute;
 }
 
 
-Tucuxi::Core::ComputingOption QueryImport::getChildComputingOption(Common::XmlNodeIterator _rootIterator, string _childName) const
+Tucuxi::Core::ComputingOption QueryImport::getChildComputingOption(Common::XmlNodeIterator _rootIterator, string _childName)
 {
     static const string PARAMETERS_TYPE             = "parametersType";
     static const string COMPARTMENT_OPTION          = "compartmentOption";
@@ -1184,56 +1355,53 @@ Tucuxi::Core::ComputingOption QueryImport::getChildComputingOption(Common::XmlNo
 
 
 
-Tucuxi::Core::CompartmentsOption QueryImport::getChildCompartmentsOptionEnum(Common::XmlNodeIterator _rootIterator, std::string _childName) const
+Tucuxi::Core::CompartmentsOption QueryImport::getChildCompartmentsOptionEnum(Common::XmlNodeIterator _rootIterator, std::string _childName)
 {
-    string compartmentOption = getChildStringValue(_rootIterator, _childName);
+    Common::XmlNodeIterator compartmentOptionRootIterator = _rootIterator->getChildren(_childName);
 
-    Tucuxi::Core::CompartmentsOption compartmentOptionEnum;
+    static std::map<std::string,Tucuxi::Core::CompartmentsOption> m =
+    {
+        {"allActiveMoieties", Tucuxi::Core::CompartmentsOption::AllActiveMoieties},
+        {"allAnalytes", Tucuxi::Core::CompartmentsOption::AllAnalytes},
+        {"allCompartments", Tucuxi::Core::CompartmentsOption::AllCompartments},
+        {"specific", Tucuxi::Core::CompartmentsOption::Specific}
+    };
 
-    if(compartmentOption == "allActiveMoieties")
-    {
-        compartmentOptionEnum = Tucuxi::Core::CompartmentsOption::AllActiveMoieties;
-    }
-    else if(compartmentOption == "allAnalytes")
-    {
-        compartmentOptionEnum = Tucuxi::Core::CompartmentsOption::AllAnalytes;
-    }
-    else if(compartmentOption == "allCompartments")
-    {
-        compartmentOptionEnum = Tucuxi::Core::CompartmentsOption::AllCompartments;
-    }
-    else if(compartmentOption == "specific")
-    {
-        compartmentOptionEnum = Tucuxi::Core::CompartmentsOption::Specific;
+    string value = compartmentOptionRootIterator->getValue();
+    auto it = m.find(value);
+    if (it != m.end()) {
+        return it->second;
     }
 
-    return compartmentOptionEnum;
+    setNodeError(compartmentOptionRootIterator);
+
+    return Tucuxi::Core::CompartmentsOption::AllActiveMoieties;
 }
 
-Tucuxi::Core::PredictionParameterType QueryImport::getChildParametersTypeEnum(Common::XmlNodeIterator _rootIterator, std::string _childName) const
+Tucuxi::Core::PredictionParameterType QueryImport::getChildParametersTypeEnum(Common::XmlNodeIterator _rootIterator, std::string _childName)
 {
-    string parametersType = getChildStringValue(_rootIterator, _childName);
-    Tucuxi::Core::PredictionParameterType predictionParameterTypeEnum;
+    Common::XmlNodeIterator parametersTypeRootIterator = _rootIterator->getChildren(_childName);
 
-    if(parametersType == "population")
+    static std::map<std::string,Tucuxi::Core::PredictionParameterType> m =
     {
-        predictionParameterTypeEnum = Tucuxi::Core::PredictionParameterType::Population;
-    }
-    else if(parametersType == "apriori")
-    {
-        predictionParameterTypeEnum = Tucuxi::Core::PredictionParameterType::Apriori;
-    }
-    else if(parametersType == "aposteriori")
-    {
-        predictionParameterTypeEnum = Tucuxi::Core::PredictionParameterType::Aposteriori;
-    }
-    else if(parametersType == "best")
-    {
-        //NOT A MEMBER OF PREDICTIONPARAMETERTYPE
+        {"population", Tucuxi::Core::PredictionParameterType::Population},
+        {"apriori", Tucuxi::Core::PredictionParameterType::Apriori},
+        {"aposteriori", Tucuxi::Core::PredictionParameterType::Aposteriori}
+//        {"best", Tucuxi::Core::CompartmentsOption::Specific}
+    };
+
+    string value = parametersTypeRootIterator->getValue();
+    auto it = m.find(value);
+    if (it != m.end()) {
+        return it->second;
     }
 
-    return predictionParameterTypeEnum;
+    setNodeError(parametersTypeRootIterator);
+
+    return Tucuxi::Core::PredictionParameterType::Population;
 }
+
+
 
 Common::DateTime QueryImport::getChildDateTimeValue(Common::XmlNodeIterator _rootIterator, string _childName) const
 {

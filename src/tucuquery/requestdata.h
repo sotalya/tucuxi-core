@@ -7,6 +7,7 @@
 #include "tucucommon/datetime.h"
 #include "tucucore/dosage.h"
 #include "parametersdata.h"
+#include "tucucore/computingservice/computingtrait.h"
 
 namespace Tucuxi {
 namespace Query {
@@ -87,14 +88,7 @@ public:
         std::string& _requestID,
         std::string& _drugID,
         std::string& _drugModelID,
-        std::string& _requestType,
-        int _nbPointsPerHour,
-        std::unique_ptr<DateInterval> _pDateInterval,
-        std::string& _parametersType,
-        std::unique_ptr<GraphData> _pGraph,
-        std::vector<double>& _percentiles,
-        std::unique_ptr<Backextrapolation> _pBackextrapolation,
-        std::vector<Tucuxi::Common::DateTime> _pointsInTime
+        std::unique_ptr<Core::ComputingTrait> _pComputingTrait
     );
 
     RequestData(RequestData& _other) = delete;
@@ -116,14 +110,7 @@ protected:
     const std::string m_requestID;
     const std::string m_drugID;
     const std::string m_drugModelID;
-    const std::string m_requestType;
-    int m_nbPointsPerHour;
-    std::unique_ptr<DateInterval> m_pDateInterval;
-    const std::string m_parametersType;
-    std::unique_ptr<GraphData> m_pGraph;
-    const std::vector<double> m_percentiles;
-    std::unique_ptr<Backextrapolation> m_pBackextrapolation;
-    const std::vector<Tucuxi::Common::DateTime> m_pointsInTime;
+    std::unique_ptr<Core::ComputingTrait> m_pComputingTrait;
 };
 
 } // namespace Query
