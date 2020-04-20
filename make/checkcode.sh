@@ -1,4 +1,4 @@
-clang-tidy-6.0 \
+clang-tidy-9 \
 	-config="{Checks: '-*,readability-braces-around-statements, \
                               readability-identifier-naming, \
                               readability-avoid-const-params-in-decls, \
@@ -30,10 +30,12 @@ clang-tidy-6.0 \
 
 			
 		]}" \
-	-header-filter="../src/tucucore/|../src/tucucommon/|../src/tucucli/|../src/tuculicense/../src/tucuquery/../src/tucuvalidator/" \
+	-header-filter="../src/tucucore/|../src/tucucrypto/|../src/tucudrugfilechecker/|../src/tucucommon/|../src/tucucli/|../src/tuculicense/../src/tucuquery/../src/tucuvalidator/" \
 	../src/tucucli/*.cpp \
 	../src/tucucommon/*.cpp \
+	../src/tucucrypto/*.cpp \
 	../src/tucucore/*.cpp \
+	../src/tucudrugfilechecker/*.cpp \
 	../src/tuculicense/*.cpp \
 	../src/tucuquery/*.cpp \
 	../src/tucuvalidator/*.cpp \
