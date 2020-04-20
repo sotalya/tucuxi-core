@@ -56,21 +56,9 @@ public:
 
     Tucuxi::Core::DrugTreatment *extractDrugTreatment(const QueryData &_query) const;
 
-    Tucuxi::Core::ComputingTraits *extractComputingTraits(const QueryData &_query) const;
-
     Tucuxi::Core::DrugModel *extractDrugModel(const QueryData &_query, const Tucuxi::Core::DrugTreatment *_drugTreatment) const;
 
-    Tucuxi::Core::PredictionParameterType extractPredictionParameterType(const QueryData &_query, const RequestData &_request) const;
 
-    std::vector<Tucuxi::Core::ComputingTrait *> extractPredictionTraits(const QueryData &_query, const RequestData &_request) const;
-
-    std::vector<Tucuxi::Core::ComputingTrait *> extractPredictionAtSampleTimeTraits(const QueryData &_query, const RequestData &_request) const;
-
-    std::vector<Tucuxi::Core::ComputingTrait *> extractPredictionAtTimesTraits(const QueryData &_query, const RequestData &_request) const;
-
-    std::vector<Tucuxi::Core::ComputingTrait *> extractFirstDosageTraits(const QueryData &_query, const RequestData &_request) const;
-
-    std::vector<Tucuxi::Core::ComputingTrait *> extractAdaptationTraits(const QueryData &_query, const RequestData &_request) const;
 };
 
 } // namespace Query

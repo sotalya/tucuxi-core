@@ -97,14 +97,6 @@ public:
     const std::string getRequestID() const;
     const std::string getDrugID() const;
     const std::string getDrugModelID() const;
-    const std::string getRequestType() const;
-    int getNbPointsPerHour() const;
-    const DateInterval& getpDateInterval() const;
-    const std::string getParametersType() const;
-    const GraphData& getpGraph() const;
-    const std::vector<double> getPercentiles() const;
-    const Backextrapolation& getpBackextrapolation() const;
-    const std::vector<Tucuxi::Common::DateTime>& getPointsInTime() const;
 
 protected:
     const std::string m_requestID;
