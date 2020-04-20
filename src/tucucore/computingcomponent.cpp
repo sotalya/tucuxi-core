@@ -251,7 +251,7 @@ ComputingResult ComputingComponent::compute(
         }
     }
 
-    std::unique_ptr<SinglePredictionResponse> resp = std::make_unique<SinglePredictionResponse>(_traits->getId());
+    std::unique_ptr<SinglePredictionResponse> resp = std::make_unique<SinglePredictionResponse>(_request.getId());
 
     IntakeSeries recordedIntakes;
     selectRecordedIntakes(recordedIntakes, intakeSeries[_request.getDrugModel().getAnalyteSets()[0]->getId()], _traits->getStart(), _traits->getEnd());
@@ -526,7 +526,7 @@ ComputingResult ComputingComponent::computePercentilesMulti(
             selectedIntakes.size() == pPrediction->getTimes().size() &&
             selectedIntakes.size() == pPrediction->getValues().size())
     {
-        std::unique_ptr<PercentilesResponse> resp = std::make_unique<PercentilesResponse>(_traits->getId());
+        std::unique_ptr<PercentilesResponse> resp = std::make_unique<PercentilesResponse>(_request.getId());
 
         const std::vector<std::vector<std::vector<Value> > > allValues = percentiles.getValues();
 
@@ -725,7 +725,7 @@ ComputingResult ComputingComponent::computePercentilesSimple(
             selectedIntakes.size() == pPrediction->getTimes().size() &&
             selectedIntakes.size() == pPrediction->getValues().size())
     {
-        std::unique_ptr<PercentilesResponse> resp = std::make_unique<PercentilesResponse>(_traits->getId());
+        std::unique_ptr<PercentilesResponse> resp = std::make_unique<PercentilesResponse>(_request.getId());
 
         const std::vector<std::vector<std::vector<Value> > > allValues = percentiles.getValues();
 
@@ -810,7 +810,7 @@ ComputingResult ComputingComponent::compute(
     }
 
     // Create the corresponding object for single points calculation
-    ComputingTraitSinglePoints traits(_traits->getId(), sampleTimes, _traits->getComputingOption());
+    ComputingTraitSinglePoints traits(_request.getId(), sampleTimes, _traits->getComputingOption());
 
     // And start the calculation
     return compute(&traits, _request, _response);
@@ -829,7 +829,7 @@ ComputingResult ComputingComponent::compute(
 
     if (_traits->getTimes().size() == 0) {
         // No time given, so we return an empty response
-        std::unique_ptr<SinglePointsResponse> resp = std::make_unique<SinglePointsResponse>(_traits->getId());
+        std::unique_ptr<SinglePointsResponse> resp = std::make_unique<SinglePointsResponse>(_request.getId());
         _response->addResponse(std::move(resp));
         return ComputingResult::Ok;
     }
@@ -856,7 +856,7 @@ ComputingResult ComputingComponent::compute(
     lastDate = lastDate + Duration(std::chrono::hours(1));
 
     // TODO : Check if 3 is necessary or not
-    ComputingTraitStandard standardTraits(_traits->getId(), firstDate, lastDate, 3, _traits->getComputingOption());
+    ComputingTraitStandard standardTraits(_request.getId(), firstDate, lastDate, 3, _traits->getComputingOption());
 
     ComputingResult extractionResult = m_utils->m_generalExtractor->generalExtractions(&standardTraits,
                                                                               _request,
@@ -920,7 +920,7 @@ ComputingResult ComputingComponent::compute(
 
         if (computingResult == ComputingResult::Ok)
         {
-            std::unique_ptr<SinglePointsResponse> resp = std::make_unique<SinglePointsResponse>(_traits->getId());
+            std::unique_ptr<SinglePointsResponse> resp = std::make_unique<SinglePointsResponse>(_request.getId());
 
             if (concentrations.size() != timesSeries.size()) {
                 // Something went wrong
