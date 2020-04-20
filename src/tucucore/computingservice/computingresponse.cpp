@@ -25,14 +25,14 @@ void ComputingResponse::addResponse(std::unique_ptr<SingleComputingResponse> _re
     m_responses.push_back(std::move(_response));
 }
 
-void ComputingResponse::setComputingTime(std::chrono::duration<double> _computingTime)
+void ComputingResponse::setComputingTimeInSeconds(std::chrono::duration<double> _computingTime)
 {
-    m_computingTime = _computingTime;
+    m_computingTimeInSeconds = _computingTime;
 }
 
-std::chrono::duration<double> ComputingResponse::getComputingTime() const
+std::chrono::duration<double> ComputingResponse::getComputingTimeInSeconds() const
 {
-    return m_computingTime;
+    return m_computingTimeInSeconds;
 }
 
 SingleComputingResponse::SingleComputingResponse(RequestResponseId _id) :

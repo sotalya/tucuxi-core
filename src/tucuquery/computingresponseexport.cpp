@@ -25,7 +25,7 @@ bool ComputingResponseExport::exportToFiles(const ComputingResponse &_computingR
 
         std::string fileName = _filePath + "/" + _computingResponse.getId() + "_" + response->getId() + ".dat";
         file.open(fileName);
-        if (file.rdstate() & std::ostream::failbit) {
+        if ((file.rdstate() & std::ostream::failbit) != 0) {
             Tucuxi::Common::LoggerHelper logHelper;
             logHelper.error("The file {} could not be opened.", fileName);
             return false;

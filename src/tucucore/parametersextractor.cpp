@@ -139,7 +139,7 @@ ParametersExtractor::ParametersExtractor(const CovariateSeries &_covariates,
 ComputingResult ParametersExtractor::extract(ParameterSetSeries &_series)
 {
     std::vector<std::string> covariateIds;
-    bool first_iteration = true;
+    bool firstIteration = true;
 
     // Map containing the computed parameters along with their latest value.
     std::map<std::string, std::pair<const ParameterDefinition*, Value>> cParamMap;
@@ -173,7 +173,7 @@ ComputingResult ParametersExtractor::extract(ParameterSetSeries &_series)
             // Add all covariates at the first time instant as inputs of the OGM.
             for (const auto &cv : tcv.second) {
 
-                if (first_iteration) {
+                if (firstIteration) {
                     covariateIds.push_back(cv.first);
                 }
 
@@ -187,7 +187,7 @@ ComputingResult ParametersExtractor::extract(ParameterSetSeries &_series)
                 cEvMap.insert(std::make_pair(cv.first, event));
             }
 
-            first_iteration = false;
+            firstIteration = false;
 
         } else {
             // Just set the covariate values that are scheduled at this time instant.

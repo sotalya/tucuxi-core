@@ -30,7 +30,7 @@ int Utils::dateDiffInDays(const DateTime &_t1, const DateTime &_t2)
         t1 = _t2;
         t2 = _t1;
     }
-    return ValueToDate(varToValue(t1)- varToValue(t2)).toDays();
+    return static_cast<int>(ValueToDate(varToValue(t1)- varToValue(t2)).toDays());
 }
 
 int Utils::dateDiffInWeeks(const DateTime &_t1, const DateTime &_t2)
@@ -45,7 +45,7 @@ int Utils::dateDiffInWeeks(const DateTime &_t1, const DateTime &_t2)
         t1 = _t2;
         t2 = _t1;
     }
-    return ValueToDate(varToValue(t1)- varToValue(t2)).toDays() / 7.0;
+    return static_cast<int>(ValueToDate(varToValue(t1)- varToValue(t2)).toDays() / 7.0);
 }
 
 
