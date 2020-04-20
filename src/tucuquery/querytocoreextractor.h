@@ -20,6 +20,8 @@ namespace Core {
 
 namespace Query {
 
+class ComputingQuery;
+
 ///
 /// \brief The QueryToCoreExtractor class
 /// This class is responsible for extracting data from a query and translate
@@ -30,6 +32,15 @@ class QueryToCoreExtractor
 {
 public:
     QueryToCoreExtractor();
+
+    ///
+    /// \brief Extract a ComputingQuery from the XML pre-processed data
+    /// \param _query The QueryData object built from XML
+    /// \return A pointer to a ComputingQuery, nullptr if something went wrong
+    ///
+    /// This method should be the only public one.
+    ///
+    Tucuxi::Query::ComputingQuery* extractComputingQuery(const QueryData &_query) const;
 
     ///
     /// \brief extractPatientVariates

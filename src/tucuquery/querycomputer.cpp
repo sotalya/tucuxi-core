@@ -22,7 +22,7 @@ void QueryComputer::compute(std::string _queryString, ComputingQueryResponse& _r
     // 1. Build the QueryData from _queryString
 
     // 2. Build a ComputingQuery from QueryData
-    //    This implies getting a drugmodel for each request from the drugmodelrepository
+    //    This can be done thanks to the QueryToCoreExtractor
 
     // Then call compute(query, _response);
 
