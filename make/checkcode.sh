@@ -1,4 +1,4 @@
-clang-tidy-6.0 \
+clang-tidy-9 \
 	-config="{Checks: '-*,readability-braces-around-statements, \
                               readability-identifier-naming, \
                               readability-avoid-const-params-in-decls, \
@@ -13,7 +13,6 @@ clang-tidy-6.0 \
                               modernize-raw-string-literal,
                               readability-implicit-bool-conversion,
                               cppcoreguidelines-narrowing-conversions,
-                              readability-magic-numbers,
                               bugprone-multiple-statement-macro,
                               bugprone-integer-division,
                               readability-inconsistent-declaration-parameter-name', \
@@ -30,10 +29,12 @@ clang-tidy-6.0 \
 
 			
 		]}" \
-	-header-filter="../src/tucucore/|../src/tucucommon/|../src/tucucli/|../src/tuculicense/../src/tucuquery/../src/tucuvalidator/" \
+	-header-filter="../src/tucucore/|../src/tucucrypto/|../src/tucudrugfilechecker/|../src/tucucommon/|../src/tucucli/|../src/tuculicense/../src/tucuquery/../src/tucuvalidator/" \
 	../src/tucucli/*.cpp \
 	../src/tucucommon/*.cpp \
+	../src/tucucrypto/*.cpp \
 	../src/tucucore/*.cpp \
+	../src/tucudrugfilechecker/*.cpp \
 	../src/tuculicense/*.cpp \
 	../src/tucuquery/*.cpp \
 	../src/tucuvalidator/*.cpp \
@@ -50,6 +51,10 @@ clang-tidy-6.0 \
     -I../libs/rapidxml-1.13 \
 	-std=c++14 \
 > clang-warnings.txt
+
+
+# Other checks:
+#                              readability-magic-numbers,
 
 # I don't know why I cannot get the static variables correctly analyzed
 # OK, I think because it applies to static variables, not class static variables

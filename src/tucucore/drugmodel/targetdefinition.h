@@ -46,7 +46,7 @@ enum class TargetType {
     PeakDividedByMic
 };
 
-std::string toString(const TargetType type);
+std::string toString(TargetType _type);
 
 ///
 /// \brief The TargetDefinition class

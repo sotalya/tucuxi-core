@@ -4,7 +4,7 @@
 namespace Tucuxi {
 namespace Core {
 
-std::string toString(const TargetType type)
+std::string toString(TargetType _type)
 {
     static std::map<TargetType, std::string> map = {{TargetType::UnknownTarget, "unknown"},
                                                     {TargetType::Residual, "residual"},
@@ -20,7 +20,7 @@ std::string toString(const TargetType type)
                                                     {TargetType::Auc24DividedByMic, "auc24DividedByMic"},
                                                     {TargetType::PeakDividedByMic, "peakDividedByMic"},
                                                    };
-    return map.at(type);
+    return map.at(_type);
 }
 
 

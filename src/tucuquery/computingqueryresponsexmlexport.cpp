@@ -31,7 +31,7 @@ bool ComputingQueryResponseXmlExport::exportToFile(const ComputingResponse &_com
 
     std::ofstream file;
     file.open(_fileName);
-    if (file.rdstate() & std::ostream::failbit) {
+    if ((file.rdstate() & std::ostream::failbit) != 0) {
         Tucuxi::Common::LoggerHelper logHelper;
         logHelper.error("The file {} could not be opened.", _fileName);
         return false;
@@ -545,6 +545,6 @@ bool ComputingQueryResponseXmlExport::exportDosageHistory(const DosageHistory &_
     return true;
 }
 
-} // namespace Core
+} // namespace Query
 } // namespace Tucuxi
 
