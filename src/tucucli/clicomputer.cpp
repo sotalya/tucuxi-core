@@ -4,7 +4,7 @@
 #include "tucucore/computingcomponent.h"
 #include "tucucore/computingservice/computingrequest.h"
 #include "tucuquery/computingresponseexport.h"
-#include "tucuquery/computingresponsexmlexport.h"
+#include "tucuquery/computingqueryresponsexmlexport.h"
 #include "tucucore/overloadevaluator.h"
 #include "tucuquery/querydata.h"
 #include "tucuquery/queryimport.h"

@@ -7,17 +7,23 @@
 #include "tucucommon/xmlattribute.h"
 #include "tucucommon/xmldocument.h"
 
-namespace Tucuxi {
-namespace Core {
+#include "tucuquery/computingqueryresponse.h"
 
-class ComputingResponseXmlExport
+namespace Tucuxi {
+namespace Query {
+
+class ComputingQueryResponseXmlExport
 {
 public:
-    ComputingResponseXmlExport();
+    ComputingQueryResponseXmlExport();
 
-    bool exportToFile(const ComputingResponse &_computingResponse, std::string _fileName);
+    bool exportToString(const ComputingQueryResponse &_computingQueryResponse, std::string &_xmlString);
 
-    bool exportToString(const ComputingResponse &_computingResponse, std::string &_xmlString);
+protected:
+
+    bool exportToFile(const Tucuxi::Core::ComputingResponse &_computingResponse, std::string _fileName);
+
+    bool exportToString(const Tucuxi::Core::ComputingResponse &_computingResponse, std::string &_xmlString);
 
     bool exportAdjustment(const Tucuxi::Core::AdjustmentResponse *_prediction,
                           Tucuxi::Common::XmlNode &_rootNode);
@@ -37,7 +43,7 @@ public:
     bool exportCycleDatas(const std::vector<Tucuxi::Core::CycleData> &_cycleDatas,
                           Tucuxi::Common::XmlNode &_rootNode);
 
-    bool exportDosageHistory(const DosageHistory &_history,
+    bool exportDosageHistory(const Tucuxi::Core::DosageHistory &_history,
             Tucuxi::Common::XmlNode &_rootNode);
 
     void addNode(Tucuxi::Common::XmlNode &_rootNode,
@@ -58,7 +64,7 @@ public:
     Tucuxi::Common::XmlDocument m_doc;
 };
 
-} // namespace Core
+} // namespace Query
 } // namespace Tucuxi
 
 #endif // COMPUTINGRESPONSEXMLEXPORT_H

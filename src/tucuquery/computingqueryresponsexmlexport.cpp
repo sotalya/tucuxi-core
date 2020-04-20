@@ -1,4 +1,4 @@
-#include "computingresponsexmlexport.h"
+#include "computingqueryresponsexmlexport.h"
 
 #include <iostream>
 #include <sstream>
@@ -13,14 +13,16 @@
 #include "tucucommon/general.h"
 
 namespace Tucuxi {
-namespace Core {
+namespace Query {
 
-ComputingResponseXmlExport::ComputingResponseXmlExport()
+using namespace Core;
+
+ComputingQueryResponseXmlExport::ComputingQueryResponseXmlExport()
 {
 
 }
 
-bool ComputingResponseXmlExport::exportToFile(const ComputingResponse &_computingResponse, std::string _fileName)
+bool ComputingQueryResponseXmlExport::exportToFile(const ComputingResponse &_computingResponse, std::string _fileName)
 {
     std::string xmlString;
     if (!exportToString(_computingResponse, xmlString)) {
@@ -40,7 +42,7 @@ bool ComputingResponseXmlExport::exportToFile(const ComputingResponse &_computin
     return true;
 }
 
-bool ComputingResponseXmlExport::exportToString(const ComputingResponse &_computingResponse, std::string &_xmlString)
+bool ComputingQueryResponseXmlExport::exportToString(const ComputingResponse &_computingResponse, std::string &_xmlString)
 {
     // Ensure the function is reentrant
     static std::mutex mutex;
@@ -171,8 +173,130 @@ bool ComputingResponseXmlExport::exportToString(const ComputingResponse &_comput
 }
 
 
+bool ComputingQueryResponseXmlExport::exportToString(const ComputingQueryResponse &_computingQueryResponse, std::string &_xmlString)
+{
 
-bool ComputingResponseXmlExport::exportAdjustment(const Tucuxi::Core::AdjustmentResponse *_prediction,
+    // Ensure the function is reentrant
+    static std::mutex mutex;
+    std::lock_guard<std::mutex> lock(mutex);
+
+    Tucuxi::Common::XmlNode root = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "tucuxiComputation");
+    auto attribute1 = m_doc.createAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
+    auto attribute2 = m_doc.createAttribute("xsi:noNamespaceSchemaLocation", "computing_response.xsd");
+    root.addAttribute(attribute1);
+    root.addAttribute(attribute2);
+    m_doc.setRoot(root);
+    Tucuxi::Common::XmlNode queryId = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "queryId",
+                                                       _computingQueryResponse.getQueryId());
+    root.addChild(queryId);
+    Tucuxi::Common::XmlNode responses = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "responses");
+    root.addChild(responses);
+
+    for (const auto &response : _computingQueryResponse.getRequestResponses()) {
+
+        Tucuxi::Common::XmlNode responseNode = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "response");
+
+        responses.addChild(responseNode);
+
+        Tucuxi::Common::XmlNode requestId = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "requestId",
+                                                         response.m_computingResponse->getId());
+        responseNode.addChild(requestId);
+
+        Tucuxi::Common::XmlNode issuesNode = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "issues");
+        responseNode.addChild(issuesNode);
+
+        // We start by checking for adjustements, as AdjustmentResponse is a subclass of SinglePredictionResponse
+        if (dynamic_cast<Tucuxi::Core::AdjustmentResponse*>(response.m_computingResponse.get()) != nullptr) {
+
+            Tucuxi::Common::XmlNode dataNode = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "dataAdjustment");
+
+            Tucuxi::Common::XmlNode requestType = m_doc.createNode(
+                        Tucuxi::Common::EXmlNodeType::Element, "requestType", "adjustment");
+            responseNode.addChild(requestType);
+
+            const Tucuxi::Core::AdjustmentResponse* prediction =
+                    dynamic_cast<Tucuxi::Core::AdjustmentResponse*>(response.m_computingResponse.get());
+
+            if (!exportAdjustment(prediction, dataNode)) {
+                Tucuxi::Common::XmlNode issue = m_doc.createNode(
+                            Tucuxi::Common::EXmlNodeType::Element, "error", "Cannot export the adjustments");
+                issuesNode.addChild(issue);
+            }
+            responseNode.addChild(dataNode);
+
+        }
+        else if (dynamic_cast<Tucuxi::Core::SinglePredictionResponse*>(response.m_computingResponse.get()) != nullptr) {
+
+            Tucuxi::Common::XmlNode dataNode = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "dataPrediction");
+
+            Tucuxi::Common::XmlNode requestType = m_doc.createNode(
+                        Tucuxi::Common::EXmlNodeType::Element, "requestType", "prediction");
+            responseNode.addChild(requestType);
+
+            const Tucuxi::Core::SinglePredictionResponse* prediction =
+                    dynamic_cast<Tucuxi::Core::SinglePredictionResponse*>(response.m_computingResponse.get());
+
+            if (!exportSinglePrediction(prediction, dataNode)) {
+                Tucuxi::Common::XmlNode issue = m_doc.createNode(
+                            Tucuxi::Common::EXmlNodeType::Element, "error", "Cannot export the prediction");
+                issuesNode.addChild(issue);
+            }
+            responseNode.addChild(dataNode);
+
+        }
+        else if (dynamic_cast<Tucuxi::Core::SinglePointsResponse*>(response.m_computingResponse.get()) != nullptr) {
+
+            Tucuxi::Common::XmlNode dataNode = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "dataPoints");
+
+            Tucuxi::Common::XmlNode requestType = m_doc.createNode(
+                        Tucuxi::Common::EXmlNodeType::Element, "requestType", "singlePoints");
+            responseNode.addChild(requestType);
+
+            const Tucuxi::Core::SinglePointsResponse* prediction =
+                    dynamic_cast<Tucuxi::Core::SinglePointsResponse*>(response.m_computingResponse.get());
+
+            if (!exportSinglePoints(prediction, dataNode)) {
+                Tucuxi::Common::XmlNode issue = m_doc.createNode(
+                            Tucuxi::Common::EXmlNodeType::Element, "error", "Cannot export the points");
+                issuesNode.addChild(issue);
+            }
+            responseNode.addChild(dataNode);
+
+        }
+        else if (dynamic_cast<Tucuxi::Core::PercentilesResponse*>(response.m_computingResponse.get()) != nullptr) {
+
+            Tucuxi::Common::XmlNode dataNode = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "dataPercentiles");
+
+            Tucuxi::Common::XmlNode requestType = m_doc.createNode(
+                        Tucuxi::Common::EXmlNodeType::Element, "requestType", "percentiles");
+            responseNode.addChild(requestType);
+
+            const Tucuxi::Core::PercentilesResponse* prediction =
+                    dynamic_cast<Tucuxi::Core::PercentilesResponse*>(response.m_computingResponse.get());
+
+            if (!exportPercentiles(prediction, dataNode)) {
+                Tucuxi::Common::XmlNode issue = m_doc.createNode(
+                            Tucuxi::Common::EXmlNodeType::Element, "error", "Cannot export the percentiles");
+                issuesNode.addChild(issue);
+            }
+            responseNode.addChild(dataNode);
+
+        }
+        else {
+            // TODO : Not supported export
+        }
+
+    }
+
+
+
+
+    m_doc.toString(_xmlString, true);
+    return true;
+}
+
+
+bool ComputingQueryResponseXmlExport::exportAdjustment(const Tucuxi::Core::AdjustmentResponse *_prediction,
                       Tucuxi::Common::XmlNode &_rootNode)
 {
     Tucuxi::Common::XmlNode analyteIds = m_doc.createNode(
@@ -214,7 +338,7 @@ bool ComputingResponseXmlExport::exportAdjustment(const Tucuxi::Core::Adjustment
     return true;
 }
 
-bool ComputingResponseXmlExport::exportSinglePrediction(const Tucuxi::Core::SinglePredictionResponse *_prediction,
+bool ComputingQueryResponseXmlExport::exportSinglePrediction(const Tucuxi::Core::SinglePredictionResponse *_prediction,
                       Tucuxi::Common::XmlNode &_rootNode)
 {
     Tucuxi::Common::XmlNode analyteIds = m_doc.createNode(
@@ -249,7 +373,7 @@ std::string dateTimeToString(const Tucuxi::Common::DateTime &_dateTime)
     return result;
 }
 
-bool ComputingResponseXmlExport::exportSinglePoints(const Tucuxi::Core::SinglePointsResponse *_prediction,
+bool ComputingQueryResponseXmlExport::exportSinglePoints(const Tucuxi::Core::SinglePointsResponse *_prediction,
                       Tucuxi::Common::XmlNode &_rootNode)
 {
     addNode(_rootNode, "unit", _prediction->m_unit.toString());
@@ -270,7 +394,7 @@ bool ComputingResponseXmlExport::exportSinglePoints(const Tucuxi::Core::SinglePo
     return true;
 }
 
-void ComputingResponseXmlExport::addNode(Tucuxi::Common::XmlNode &_rootNode,
+void ComputingQueryResponseXmlExport::addNode(Tucuxi::Common::XmlNode &_rootNode,
              std::string _nodeName,
              std::string _nodeValue)
 {
@@ -279,7 +403,7 @@ void ComputingResponseXmlExport::addNode(Tucuxi::Common::XmlNode &_rootNode,
     _rootNode.addChild(node);
 }
 
-bool ComputingResponseXmlExport::exportPercentiles(const Tucuxi::Core::PercentilesResponse *_prediction,
+bool ComputingQueryResponseXmlExport::exportPercentiles(const Tucuxi::Core::PercentilesResponse *_prediction,
                       Tucuxi::Common::XmlNode &_rootNode)
 {
     size_t nbRanks = _prediction->getNbRanks();
@@ -297,7 +421,7 @@ bool ComputingResponseXmlExport::exportPercentiles(const Tucuxi::Core::Percentil
 }
 
 
-bool ComputingResponseXmlExport::exportCycleData(const Tucuxi::Core::CycleData &_cycleData,
+bool ComputingQueryResponseXmlExport::exportCycleData(const Tucuxi::Core::CycleData &_cycleData,
         Tucuxi::Common::XmlNode &_rootNode)
 {
     Tucuxi::Common::XmlNode cycleData = m_doc.createNode(
@@ -395,7 +519,7 @@ bool ComputingResponseXmlExport::exportCycleData(const Tucuxi::Core::CycleData &
     return true;
 }
 
-bool ComputingResponseXmlExport::exportCycleDatas(const std::vector<Tucuxi::Core::CycleData> &_cycleDatas,
+bool ComputingQueryResponseXmlExport::exportCycleDatas(const std::vector<Tucuxi::Core::CycleData> &_cycleDatas,
         Tucuxi::Common::XmlNode &_rootNode)
 {
     Tucuxi::Common::XmlNode cycleDatas = m_doc.createNode(
@@ -412,7 +536,7 @@ bool ComputingResponseXmlExport::exportCycleDatas(const std::vector<Tucuxi::Core
     return true;
 }
 
-bool ComputingResponseXmlExport::exportDosageHistory(const DosageHistory &_history,
+bool ComputingQueryResponseXmlExport::exportDosageHistory(const DosageHistory &_history,
         Tucuxi::Common::XmlNode &_rootNode)
 {
 
