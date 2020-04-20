@@ -36,6 +36,15 @@ class ComputingQueryResponse
 public:
     ComputingQueryResponse();
 
+    Tucuxi::Core::RequestResponseId getQueryId() const;
+    const std::vector<SingleResponseData>& getRequestResponses() const;
+
+    void addRequestResponse(std::unique_ptr<Tucuxi::Core::SingleComputingResponse>,
+                            Tucuxi::Core::ComputingResult _status,
+                            std::unique_ptr<QueryResponseMetaData> _metaData);
+
+    Tucuxi::Core::RequestResponseId m_queryId;
+
     Tucuxi::Core::ComputingResult m_queryStatus;
 
     std::vector<SingleResponseData> m_requestResponses;
