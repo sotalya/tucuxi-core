@@ -30,5 +30,5 @@ void QueryComputer::compute(std::string _queryString, ComputingQueryResponse& _r
 
 
 } // namespace Query
-} //
+} // namespace Tucuxi
 

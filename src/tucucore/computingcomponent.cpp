@@ -151,7 +151,7 @@ ComputingResult ComputingComponent::compute(const ComputingRequest &_request, st
         // Record end time
         auto finish = std::chrono::high_resolution_clock::now();
         // Store the computing time in the response
-        _response->setComputingTime(finish - start);
+        _response->setComputingTimeInSeconds(finish - start);
 
         return result;
 

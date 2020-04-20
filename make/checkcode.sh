@@ -13,7 +13,6 @@ clang-tidy-9 \
                               modernize-raw-string-literal,
                               readability-implicit-bool-conversion,
                               cppcoreguidelines-narrowing-conversions,
-                              readability-magic-numbers,
                               bugprone-multiple-statement-macro,
                               bugprone-integer-division,
                               readability-inconsistent-declaration-parameter-name', \
@@ -52,6 +51,10 @@ clang-tidy-9 \
     -I../libs/rapidxml-1.13 \
 	-std=c++14 \
 > clang-warnings.txt
+
+
+# Other checks:
+#                              readability-magic-numbers,
 
 # I don't know why I cannot get the static variables correctly analyzed
 # OK, I think because it applies to static variables, not class static variables

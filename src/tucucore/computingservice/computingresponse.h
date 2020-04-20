@@ -270,13 +270,13 @@ public:
     /// \brief Set the computing time of this request
     /// \param _computingTime the computing time of the request
     ///
-    void setComputingTime(std::chrono::duration<double> _computingTime);
+    void setComputingTimeInSeconds(std::chrono::duration<double> _computingTime);
 
     ///
     /// \brief get the computing time of this request
     /// \return the computing time of the request
     ///
-    std::chrono::duration<double> getComputingTime() const;
+    std::chrono::duration<double> getComputingTimeInSeconds() const;
 
 protected:
 
@@ -286,7 +286,7 @@ protected:
     /// Vector of responses
     std::vector<std::unique_ptr<SingleComputingResponse> > m_responses;
 
-    std::chrono::duration<double> m_computingTime{0};
+    std::chrono::duration<double, std::ratio<1,1> > m_computingTimeInSeconds{0};
 
 };
 
