@@ -24,22 +24,21 @@ QueryComputer::QueryComputer()
 
 void QueryComputer::compute(ComputingQuery& _query, ComputingQueryResponse& _response)
 {
-    // The ComputingRequest objects of the _query
-    Tucuxi::Core::RequestResponseId requestResponseId = _query.m_queryId;
-
-    std::unique_ptr<Core::ComputingResponse> computingResponse = std::make_unique<Core::ComputingResponse>(requestResponseId);
-
     Core::IComputingService* computingComponent = dynamic_cast<Core::IComputingService*>(Core::ComputingComponent::createComponent());
-
-    ComputingResponseMetaData computingResponseMetaData("DrugModelId");
 
     for(const std::unique_ptr<Core::ComputingRequest>& computingRequest : _query.m_computingRequests)
     {
+        // A ComputingResponse local to the loop iteration. Moved to the _response at the end of the loop
+        std::unique_ptr<Core::ComputingResponse> computingResponse = std::make_unique<Core::ComputingResponse>(computingRequest->getId());
+
         Core::ComputingResult result = computingComponent->compute(*computingRequest, computingResponse);
 
+        std::unique_ptr<ComputingResponseMetaData> computingResponseMetaData = std::make_unique<ComputingResponseMetaData>("DrugModelId");
+
+        // This for loop will be replaced by a getter in the future, as there is only one response
         for(std::unique_ptr<Core::SingleComputingResponse>& single : computingResponse->getResponses())
         {
-            _response.addRequestResponse(std::move(single), result, std::make_unique<ComputingResponseMetaData>(computingResponseMetaData));
+            _response.addRequestResponse(std::move(single), result, std::move(computingResponseMetaData));
         }
     }
 }
