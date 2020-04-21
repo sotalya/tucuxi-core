@@ -97,12 +97,13 @@ public:
     const std::string getRequestID() const;
     const std::string getDrugID() const;
     const std::string getDrugModelID() const;
+    const Tucuxi::Core::ComputingTrait& getpComputingTrait() const;
+    std::unique_ptr<Core::ComputingTrait> m_pComputingTrait;
 
 protected:
     const std::string m_requestID;
     const std::string m_drugID;
     const std::string m_drugModelID;
-    std::unique_ptr<Core::ComputingTrait> m_pComputingTrait;
 };
 
 } // namespace Query

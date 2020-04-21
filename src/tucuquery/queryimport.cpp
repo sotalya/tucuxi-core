@@ -825,50 +825,6 @@ unique_ptr<RequestData> QueryImport::createRequest(Tucuxi::Common::XmlNodeIterat
         computingTrait = getChildComputingTraitAtMeasures(_requestRootIterator, requestId);
     }
 
-//    string requestType = getChildStringValue(_requestRootIterator, REQUEST_TYPE_NODE_NAME);
-
-//    Common::XmlNodeIterator dateIntervalRootIterator = _requestRootIterator->getChildren(DATE_INTERVAL_NODE_NAME);
-//    Common::DateTime start = getChildDateTimeValue(dateIntervalRootIterator, DATE_INTERVAL_START_NODE_NAME);
-//    Common::DateTime end = getChildDateTimeValue(dateIntervalRootIterator, DATE_INTERVAL_END_NODE_NAME);
-//    unique_ptr<DateInterval> dateInterval = make_unique<DateInterval>(start, end);
-
-//    int nbPointsPerHour = getChildIntValue(_requestRootIterator, NBPOINTSPERHOUR_NODE_NAME);
-
-//    string parametersType = getChildStringValue(_requestRootIterator, PREDICTION_TYPE_NODE_NAME);
-
-//    Common::XmlNodeIterator graphRootIterator = _requestRootIterator->getChildren(GRAPH_NODE_NAME);
-//    unique_ptr<GraphData> pGraphData = createGraphData(graphRootIterator);
-
-//    Common::XmlNodeIterator percentilesRootIterator = _requestRootIterator->getChildren(PERCENTILES_NODE_NAME);
-//    Common::XmlNodeIterator percentilesIterator = percentilesRootIterator->getChildren();
-//    vector<double> percentiles;
-//    while(percentilesIterator != percentilesIterator.none()) {
-//        string percentileValue = percentilesIterator->getValue();
-//        double percentile = 0;
-//        try {
-//            percentile = static_cast<double>(std::stod(percentileValue));
-//        } catch (invalid_argument e) {
-//            percentile = 0;
-//        } catch (out_of_range e) {
-//            percentile = 0;
-//        }
-//        percentiles.push_back(percentile);
-//        percentilesIterator++;
-//    }
-
-//    Common::XmlNodeIterator pointsInTimeRootIterator = _requestRootIterator->getChildren(POINTSINTIME_NODE_NAME);
-//    Common::XmlNodeIterator pointsInTimeIterator = pointsInTimeRootIterator->getChildren();
-//    vector<DateTime> pointsInTime;
-//    while(pointsInTimeIterator != pointsInTimeIterator.none()) {
-//        string value = pointsInTimeIterator->getValue();
-//        Common::DateTime datetime(value, DATE_FORMAT);
-//        pointsInTime.push_back(datetime);
-//        pointsInTimeIterator++;
-//    }
-
-//    Common::XmlNodeIterator backextrapolationRootIterator = _requestRootIterator->getChildren(BACKEXTRAPOLATION_NODE_NAME);
-//    unique_ptr<Backextrapolation> pBackextrapolation = createBackextrapolation(backextrapolationRootIterator);
-
     return make_unique<RequestData>(
                 requestId,
                 drugId,

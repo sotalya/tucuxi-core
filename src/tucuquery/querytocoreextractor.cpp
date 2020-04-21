@@ -6,6 +6,7 @@
 #include "tucucore/drugmodelrepository.h"
 #include "tucucore/treatmentdrugmodelcompatibilitychecker.h"
 #include "tucucore/drugdefinitions.h"
+#include "tucucore/computingservice/computingrequest.h"
 
 #include "tucucommon/componentmanager.h"
 #include "tucucommon/loggerhelper.h"
@@ -29,18 +30,40 @@ Tucuxi::Query::ComputingQuery* QueryToCoreExtractor::extractComputingQuery(const
     // and add them to the ComputingQuery.
     // It can obviously use the extractor method of QueryToCoreExtractor for the various fields
 
+    Tucuxi::Common::LoggerHelper logHelper;
+
+    Tucuxi::Core::RequestResponseId requestResponseID;
+
+    Tucuxi::Core::DrugModel *drugModel = nullptr;
+    Tucuxi::Core::DrugTreatment *drugTreatment = nullptr;
+
     ComputingQuery *newQuery = new ComputingQuery(_query.getQueryID());
 
-    // Populate the newQuery
+    requestResponseID = _query.getQueryID();
 
-    // For the potential drugmodels, the DrugModelRepository is required. See CliComputer for a way of getting it
+    drugTreatment = extractDrugTreatment(_query);
 
+    if (drugTreatment == nullptr) {
+        logHelper.error("Error with the drug treatment import");
+        return nullptr;
+    }
 
-    // If something goes wrong, then return nullptr
+    drugModel = extractDrugModel(_query, drugTreatment);
+
+    if (drugModel == nullptr) {
+        logHelper.error("Could not find a suitable drug model");
+        return nullptr;
+    }
+    logHelper.info("Performing computation with drug model : {}", drugModel->getDrugModelId());
+
+    for(const std::unique_ptr<RequestData>& requestData : _query.getRequests())
+    {
+        std::unique_ptr<Tucuxi::Core::ComputingRequest> computingRequest = std::make_unique<Tucuxi::Core::ComputingRequest>(requestResponseID, *drugModel, *drugTreatment, std::move(requestData->m_pComputingTrait));
+        newQuery->addComputingRequest(std::move(computingRequest));
+    }
 
     return newQuery;
 }
-
 
 Tucuxi::Core::PatientVariates QueryToCoreExtractor::extractPatientVariates(const QueryData &_query) const
 {

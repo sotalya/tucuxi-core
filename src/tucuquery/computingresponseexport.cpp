@@ -4,7 +4,6 @@
 #include <sstream>
 #include <fstream>
 #include <iomanip>
-
 #include "tucucommon/loggerhelper.h"
 
 namespace Tucuxi {
@@ -16,14 +15,15 @@ ComputingResponseExport::ComputingResponseExport()
 }
 
 
-bool ComputingResponseExport::exportToFiles(const ComputingResponse &_computingResponse, std::string _filePath)
+bool ComputingResponseExport::exportToFiles(const Query::ComputingQueryResponse &_computingQueryResponse, std::string _filePath)
 {
 
-    for (auto &response : _computingResponse.getResponses()) {
+
+    for (auto &response : _computingQueryResponse.getRequestResponses()) {
 
         std::ofstream file;
 
-        std::string fileName = _filePath + "/" + _computingResponse.getId() + "_" + response->getId() + ".dat";
+        std::string fileName = _filePath + "/" + _computingQueryResponse.getQueryId() + "_" + response.m_computingResponse->getId() + ".dat";
         file.open(fileName);
         if ((file.rdstate() & std::ostream::failbit) != 0) {
             Tucuxi::Common::LoggerHelper logHelper;
@@ -32,9 +32,9 @@ bool ComputingResponseExport::exportToFiles(const ComputingResponse &_computingR
         }
 
         // We start by checking for adjustements, as AdjustmentResponse is a subclass of SinglePredictionResponse
-        if (dynamic_cast<Tucuxi::Core::AdjustmentResponse*>(response.get()) != nullptr) {
+        if (dynamic_cast<Tucuxi::Core::AdjustmentResponse*>(response.m_computingResponse.get()) != nullptr) {
             const Tucuxi::Core::AdjustmentResponse* prediction =
-                    dynamic_cast<Tucuxi::Core::AdjustmentResponse*>(response.get());
+                    dynamic_cast<Tucuxi::Core::AdjustmentResponse*>(response.m_computingResponse.get());
 
             for (const auto &dosage : prediction->getAdjustments()) {
                 for (const auto &timeRange : dosage.m_history.getDosageTimeRanges()) {
@@ -83,9 +83,9 @@ bool ComputingResponseExport::exportToFiles(const ComputingResponse &_computingR
             }
 
         }
-        else if (dynamic_cast<Tucuxi::Core::SinglePredictionResponse*>(response.get()) != nullptr) {
+        else if (dynamic_cast<Tucuxi::Core::SinglePredictionResponse*>(response.m_computingResponse.get()) != nullptr) {
             const Tucuxi::Core::SinglePredictionResponse* prediction =
-                    dynamic_cast<Tucuxi::Core::SinglePredictionResponse*>(response.get());
+                    dynamic_cast<Tucuxi::Core::SinglePredictionResponse*>(response.m_computingResponse.get());
 
             if (!prediction->getData().empty()) {
                 double firstTime = prediction->getData()[0].m_start.toSeconds();
@@ -97,9 +97,9 @@ bool ComputingResponseExport::exportToFiles(const ComputingResponse &_computingR
             }
 
         }
-        else if (dynamic_cast<Tucuxi::Core::SinglePointsResponse*>(response.get()) != nullptr) {
+        else if (dynamic_cast<Tucuxi::Core::SinglePointsResponse*>(response.m_computingResponse.get()) != nullptr) {
             const Tucuxi::Core::SinglePointsResponse* prediction =
-                    dynamic_cast<Tucuxi::Core::SinglePointsResponse*>(response.get());
+                    dynamic_cast<Tucuxi::Core::SinglePointsResponse*>(response.m_computingResponse.get());
 
             double firstTime = prediction->m_times[0].toSeconds();
 
@@ -107,9 +107,9 @@ bool ComputingResponseExport::exportToFiles(const ComputingResponse &_computingR
                 file << (prediction->m_times[i].toSeconds() - firstTime) / 3600.0 << "\t" << prediction->m_concentrations[0][i] << std::endl;
             }
         }
-        else if (dynamic_cast<Tucuxi::Core::PercentilesResponse*>(response.get()) != nullptr) {
+        else if (dynamic_cast<Tucuxi::Core::PercentilesResponse*>(response.m_computingResponse.get()) != nullptr) {
             const Tucuxi::Core::PercentilesResponse* prediction =
-                    dynamic_cast<Tucuxi::Core::PercentilesResponse*>(response.get());
+                    dynamic_cast<Tucuxi::Core::PercentilesResponse*>(response.m_computingResponse.get());
 
             double firstTime = prediction->getPercentileData(0)[0].m_start.toSeconds();
             for(size_t cycleIndex = 0; cycleIndex < prediction->getPercentileData(0).size(); cycleIndex ++) {

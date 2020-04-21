@@ -15,6 +15,12 @@ SingleResponseData::SingleResponseData(
 {
 }
 
+
+ComputingQueryResponse::ComputingQueryResponse()
+{
+
+}
+
 Tucuxi::Core::RequestResponseId ComputingQueryResponse::getQueryId() const
 {
     return m_queryId;
@@ -35,6 +41,14 @@ void ComputingQueryResponse::addRequestResponse(
                                   _status,
                                   std::move(_metaData)));
 }
+
+ComputingResponseMetaData::ComputingResponseMetaData(
+        std::string _drugModelID ) :
+    m_drugModelId(_drugModelID)
+{
+
+}
+
 
 } // namespace Query
 } // namespace Tucuxi

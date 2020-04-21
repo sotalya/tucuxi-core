@@ -23,7 +23,10 @@ class QueryResponseMetaData
 ///
 class ComputingResponseMetaData
 {
+public:
+    ComputingResponseMetaData(std::string drugModelId);
 
+private:
     std::string m_drugModelId;
 };
 

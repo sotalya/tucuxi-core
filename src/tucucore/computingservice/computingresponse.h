@@ -264,6 +264,7 @@ public:
     /// \brief Gets the vector of responses
     /// \return A const reference to the vector of responses
     ///
+    std::vector<std::unique_ptr<SingleComputingResponse> > & getResponses() { return m_responses;}
     const std::vector<std::unique_ptr<SingleComputingResponse> > & getResponses() const { return m_responses;}
 
     ///

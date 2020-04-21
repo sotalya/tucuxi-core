@@ -1,5 +1,18 @@
 #include "querycomputer.h"
 
+#include "tucuquery/queryimport.h"
+#include "tucucore/computingservice/icomputingservice.h"
+#include "tucucore/computingcomponent.h"
+#include "tucucore/computingservice/computingrequest.h"
+#include "tucuquery/computingresponseexport.h"
+#include "tucuquery/computingqueryresponsexmlexport.h"
+#include "tucucore/overloadevaluator.h"
+#include "tucuquery/querydata.h"
+#include "tucuquery/queryimport.h"
+#include "tucuquery/querytocoreextractor.h"
+#include "tucuquery/querycomputer.h"
+#include "tucucore/definitions.h"
+
 
 namespace Tucuxi {
 namespace Query {
@@ -12,11 +25,51 @@ QueryComputer::QueryComputer()
 void QueryComputer::compute(ComputingQuery& _query, ComputingQueryResponse& _response)
 {
     // The ComputingRequest objects of the _query
+    Tucuxi::Core::RequestResponseId requestResponseId = _query.m_queryId;
 
+    std::unique_ptr<Core::ComputingResponse> computingResponse = std::make_unique<Core::ComputingResponse>(requestResponseId);
+
+    Core::IComputingService* computingComponent = dynamic_cast<Core::IComputingService*>(Core::ComputingComponent::createComponent());
+
+    ComputingResponseMetaData computingResponseMetaData("DrugModelId");
+
+    for(const std::unique_ptr<Core::ComputingRequest>& computingRequest : _query.m_computingRequests)
+    {
+        Core::ComputingResult result = computingComponent->compute(*computingRequest, computingResponse);
+
+        for(std::unique_ptr<Core::SingleComputingResponse>& single : computingResponse->getResponses())
+        {
+            _response.addRequestResponse(std::move(single), result, std::make_unique<ComputingResponseMetaData>(computingResponseMetaData));
+        }
+    }
 }
 
-void QueryComputer::compute(std::string _queryString, ComputingQueryResponse& _response)
+int QueryComputer::compute(std::string _queryString, ComputingQueryResponse& _response)
 {
+    Tucuxi::Common::LoggerHelper logHelper;
+
+    QueryData *query = nullptr;
+
+    QueryImport importer;
+    QueryImport::Result importResult = importer.importFromString(query, _queryString);
+
+
+    if (importResult != QueryImport::Result::Ok) {
+        if (importResult == QueryImport::Result::CantOpenFile) {
+            logHelper.error("Error with the import of query file. Unable to open \"{}\"", _queryString);
+        }
+        else {
+            logHelper.error("Error with the import of query file \"{}\"", _queryString);
+        }
+        return 1;
+    }
+
+    QueryToCoreExtractor extractor;
+
+    ComputingQuery *computingQuery = extractor.extractComputingQuery(*query);
+
+    compute(*computingQuery, _response);
+
     // First build the ComputingQuery object
 
     // 1. Build the QueryData from _queryString
@@ -25,6 +78,7 @@ void QueryComputer::compute(std::string _queryString, ComputingQueryResponse& _r
     //    This can be done thanks to the QueryToCoreExtractor
 
     // Then call compute(query, _response);
+    return 0;
 
 }
 

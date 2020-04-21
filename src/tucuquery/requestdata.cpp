@@ -81,5 +81,10 @@ const string RequestData::getDrugModelID() const
     return m_drugModelID;
 }
 
+const Tucuxi::Core::ComputingTrait& RequestData::getpComputingTrait() const
+{
+    return *m_pComputingTrait;
+}
+
 } // namespace Query
 } // namespace Tucuxi

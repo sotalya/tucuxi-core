@@ -9,6 +9,7 @@
 #include "tucuquery/querydata.h"
 #include "tucuquery/queryimport.h"
 #include "tucuquery/querytocoreextractor.h"
+#include "tucuquery/querycomputer.h"
 
 using namespace Tucuxi::Core;
 using namespace Tucuxi::Query;
@@ -38,75 +39,20 @@ int CliComputer::compute(std::string _drugPath,
     // The output is also managed differently, so the QueryResponse from QueryComputer shall
     // be used by CliComputer and the REST server to generate the useful output.
 
+
     Tucuxi::Common::LoggerHelper logHelper;
 
+    ComputingQueryResponse computingQueryResponse;
+    QueryComputer *queryComputer = nullptr;
 
-    RequestResponseId requestResponseID;
+    std::ifstream ifs(_inputFileName);
+    std::string xmlString((std::istreambuf_iterator<char>(ifs)),(std::istreambuf_iterator<char>()));
 
-    DrugModel *drugModel = nullptr;
-    DrugTreatment *drugTreatment = nullptr;
-
-
-    QueryData *query = nullptr;
-    QueryImport importer;
-
-    QueryImport::Result importResult = importer.importFromFile(query, _inputFileName);
-
-
-    if (importResult != QueryImport::Result::Ok) {
-        if (importResult == QueryImport::Result::CantOpenFile) {
-            logHelper.error("Error with the import of query file. Unable to open \"{}\"", _inputFileName);
-        }
-        else {
-            logHelper.error("Error with the import of query file \"{}\"", _inputFileName);
-        }
-        return 1;
-    }
-
-    requestResponseID = query->getQueryID();
-
-    QueryToCoreExtractor extractor;
-
-    drugTreatment = extractor.extractDrugTreatment(*query);
-
-    if (drugTreatment == nullptr) {
-        logHelper.error("Error with the drug treatment import");
-        return 1;
-    }
-
-
-
-    drugModel = extractor.extractDrugModel(*query, drugTreatment);
-
-    if (drugModel == nullptr) {
-        logHelper.error("Could not find a suitable drug model");
-        return 1;
-    }
-
-    logHelper.info("Performing computation with drug model : {}", drugModel->getDrugModelId());
-
-
-    // TODO : Change that
-    /*
-    ComputingTraits* computingTraits = extractor.extractComputingTraits(*query);
-
-//    ComputingRequest request(requestResponseID, *drugModel, *drugTreatment, std::unique_ptr<ComputingTraits>(computingTraits));
-
-    std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseID);
-
-
-    IComputingService* computingComponent = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
-
-    ComputingResult result = computingComponent->compute(request, response);
-
-    if (result != ComputingResult::Ok) {
-        logHelper.error("Computing failed");
-        return 1;
-    }
+    queryComputer->compute(xmlString, computingQueryResponse);
 
     ComputingResponseExport exporter;
 
-    if (!exporter.exportToFiles(*response.get(), _outputPath)) {
+    if (!exporter.exportToFiles(computingQueryResponse, _outputPath)) {
         logHelper.error("Could not export the response file");
         return 1;
     }
@@ -114,9 +60,10 @@ int CliComputer::compute(std::string _drugPath,
         logHelper.info("The response files were successfully generated");
     }
 
-    ComputingResponseXmlExport xmlExporter;
 
-    if (!xmlExporter.exportToFile(*response.get(), _outputPath + "/" + query->getQueryID() + ".xml")) {
+    ComputingQueryResponseXmlExport xmlExporter;
+
+    if (!xmlExporter.exportToString(computingQueryResponse, xmlString)) {
         logHelper.error("Could not export the response XML file");
         return 1;
     }
@@ -124,6 +71,9 @@ int CliComputer::compute(std::string _drugPath,
         logHelper.info("The response XML file was successfully generated");
     }
 
+
+    // TODO : Change that
+    /*
 
     if (drugTreatment != nullptr) {
         delete drugTreatment;
