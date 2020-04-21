@@ -627,7 +627,7 @@ ComputingResult ComputingAdjustments::compute(
 
 
     // Now we have adjustments, predictions, and target evaluation results, let's build the response
-    std::unique_ptr<AdjustmentResponse> resp = std::make_unique<AdjustmentResponse>(_traits->getId());
+    std::unique_ptr<AdjustmentResponse> resp = std::make_unique<AdjustmentResponse>(_request.getId());
 
     resp->setAdjustments(finalCandidates);
 

@@ -36,10 +36,10 @@ ComputingTrait::ComputingTrait(RequestResponseId _id) : m_id(_id)
 }
 
 
-RequestResponseId ComputingTrait::getId() const
-{
-    return m_id;
-}
+//RequestResponseId ComputingTrait::getId() const
+//{
+//    return m_id;
+//}
 
 
 ComputingTraitStandard::ComputingTraitStandard(RequestResponseId _id,

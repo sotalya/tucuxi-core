@@ -10,6 +10,8 @@
 #include "tucucommon/componentmanager.h"
 #include "tucucommon/loggerhelper.h"
 
+#include "tucuquery/computingquery.h"
+
 namespace Tucuxi {
 namespace Query {
 
@@ -18,6 +20,25 @@ namespace Query {
 QueryToCoreExtractor::QueryToCoreExtractor()
 {
 
+}
+
+
+Tucuxi::Query::ComputingQuery* QueryToCoreExtractor::extractComputingQuery(const QueryData &_query) const
+{
+    // In this method we have to build all the ComputingRequest objects,
+    // and add them to the ComputingQuery.
+    // It can obviously use the extractor method of QueryToCoreExtractor for the various fields
+
+    ComputingQuery *newQuery = new ComputingQuery(_query.getQueryID());
+
+    // Populate the newQuery
+
+    // For the potential drugmodels, the DrugModelRepository is required. See CliComputer for a way of getting it
+
+
+    // If something goes wrong, then return nullptr
+
+    return newQuery;
 }
 
 
