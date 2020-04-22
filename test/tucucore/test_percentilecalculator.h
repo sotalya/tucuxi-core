@@ -124,7 +124,7 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
 
         std::unique_ptr<Tucuxi::Core::IAprioriPercentileCalculator> calculator(new Tucuxi::Core::AprioriMonteCarloPercentileCalculator());
 
-        Tucuxi::Core::ComputingResult res;
+        Tucuxi::Core::ComputingStatus res;
 
         Tucuxi::Core::ConcentrationCalculator concentrationCalculator;
         res = calculator->calculate(
@@ -144,7 +144,7 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
 
         // std::cout << "Apriori Percentile result is saved" << std::endl;
 
-        fructose_assert(res == Tucuxi::Core::ComputingResult::Ok);
+        fructose_assert(res == Tucuxi::Core::ComputingStatus::Ok);
     }
 
 
@@ -229,7 +229,7 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
                 std::unique_ptr<Tucuxi::Core::IAposterioriNormalApproximationMonteCarloPercentileCalculator>(
                     new Tucuxi::Core::AposterioriNormalApproximationMonteCarloPercentileCalculator());
 
-        Tucuxi::Core::ComputingResult res;
+        Tucuxi::Core::ComputingStatus res;
 
         Tucuxi::Core::ConcentrationCalculator concentrationCalculator;
         res = calculator->calculate(
@@ -250,7 +250,7 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
 
         // std::cout << "Aposteriori Normal Percentile result is saved" << std::endl;
 
-        fructose_assert(res == Tucuxi::Core::ComputingResult::Ok);
+        fructose_assert(res == Tucuxi::Core::ComputingStatus::Ok);
     }
 
     void testAposteriori(const std::string& /* _testName */)
@@ -334,7 +334,7 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
                 std::unique_ptr<Tucuxi::Core::IAposterioriPercentileCalculator>(
                     new Tucuxi::Core::AposterioriMonteCarloPercentileCalculator());
 
-        Tucuxi::Core::ComputingResult res;
+        Tucuxi::Core::ComputingStatus res;
 
         Tucuxi::Core::ConcentrationCalculator concentrationCalculator;
         res = calculator->calculate(
@@ -355,7 +355,7 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
 
         // std::cout << "Aposteriori Percentile result is saved" << std::endl;
 
-        fructose_assert(res == Tucuxi::Core::ComputingResult::Ok);
+        fructose_assert(res == Tucuxi::Core::ComputingStatus::Ok);
     }
 
     void testAposterioriMatrixCache(const std::string& /* _testName */)

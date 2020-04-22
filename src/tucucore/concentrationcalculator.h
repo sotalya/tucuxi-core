@@ -34,7 +34,7 @@ public:
     /// \param _onlyAnalytes If true, only fill the concentration of the analyte, no other compartment
     /// \return The status of computation
     ///
-    virtual ComputingResult computeConcentrations(
+    virtual ComputingStatus computeConcentrations(
         const ConcentrationPredictionPtr &_prediction,
         bool _isAll,
         const DateTime &_recordFrom,
@@ -62,7 +62,7 @@ public:
     /// \param _onlyAnalytes If true, only fill the concentration of the analyte, no other compartment
     /// \return The status of computation
     ///
-    virtual ComputingResult computeConcentrationsAtSteadyState(
+    virtual ComputingStatus computeConcentrationsAtSteadyState(
         const ConcentrationPredictionPtr &_prediction,
         bool _isAll,
         const DateTime &_recordFrom,
@@ -89,7 +89,7 @@ public:
     /// \param _onlyAnalytes If true, only fill the concentration of the analyte, no other compartment
     /// \return The status of computation
     ///
-    virtual ComputingResult computeConcentrationsAtTimes(
+    virtual ComputingStatus computeConcentrationsAtTimes(
         Concentrations& _concentrations,
         bool _isAll,
         const IntakeSeries& _intakes,
@@ -119,7 +119,7 @@ public:
     /// \param _isFixedDensity Indicates if the density of points could be changed within the method
     /// \return The status of computation
     ///
-    ComputingResult computeConcentrations(const ConcentrationPredictionPtr &_prediction,
+    ComputingStatus computeConcentrations(const ConcentrationPredictionPtr &_prediction,
         bool _isAll,
         const DateTime &_recordFrom,
         const DateTime &_recordTo,
@@ -146,7 +146,7 @@ public:
     /// \param _onlyAnalytes If true, only fill the concentration of the analyte, no other compartment
     /// \return The status of computation
     ///
-    ComputingResult computeConcentrationsAtSteadyState(
+    ComputingStatus computeConcentrationsAtSteadyState(
         const ConcentrationPredictionPtr &_prediction,
         bool _isAll,
         const DateTime &_recordFrom,
@@ -172,7 +172,7 @@ public:
     /// \param _etas vector of etas
     /// \return The status of computation
     ///
-    ComputingResult computeConcentrationsAtTimes(
+    ComputingStatus computeConcentrationsAtTimes(
         Concentrations& _concentrations,
         bool _isAll,
         const IntakeSeries& _intakes,

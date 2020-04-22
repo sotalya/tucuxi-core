@@ -66,7 +66,7 @@ DosageTimeRange *ComputingAdjustments::createSteadyStateDosage(const SimpleDosag
     return newTimeRange;
 }
 
-ComputingResult ComputingAdjustments::buildCandidates(const FullFormulationAndRoute* _formulationAndRoute, std::vector<ComputingAdjustments::SimpleDosageCandidate> &_candidates)
+ComputingStatus ComputingAdjustments::buildCandidates(const FullFormulationAndRoute* _formulationAndRoute, std::vector<ComputingAdjustments::SimpleDosageCandidate> &_candidates)
 {
     std::vector<Value> doseValues;
     std::vector<Duration> intervalValues;
@@ -89,18 +89,18 @@ ComputingResult ComputingAdjustments::buildCandidates(const FullFormulationAndRo
 
     if (doseValues.size() == 0) {
         m_logger.error("No available potential dose");
-        return ComputingResult::NoAvailableDose;
+        return ComputingStatus::NoAvailableDose;
     }
 
     if (intervalValues.size() == 0) {
         m_logger.error("No available interval");
-        return ComputingResult::NoAvailableInterval;
+        return ComputingStatus::NoAvailableInterval;
     }
 
     if (infusionTimes.size() == 0) {
         if (_formulationAndRoute->getFormulationAndRoute().getAbsorptionModel() == AbsorptionModel::Infusion) {
             m_logger.error("Infusion selected, but no potential infusion time");
-            return ComputingResult::NoAvailableInfusionTime;
+            return ComputingStatus::NoAvailableInfusionTime;
         }
         infusionTimes.push_back(Duration(0h));
     }
@@ -121,10 +121,10 @@ ComputingResult ComputingAdjustments::buildCandidates(const FullFormulationAndRo
             }
         }
     }
-    return ComputingResult::Ok;
+    return ComputingStatus::Ok;
 }
 
-ComputingResult ComputingAdjustments::buildCandidatesForInterval(const FullFormulationAndRoute* _formulationAndRoute,
+ComputingStatus ComputingAdjustments::buildCandidatesForInterval(const FullFormulationAndRoute* _formulationAndRoute,
                                                                  Duration _interval,
                                                                  std::vector<ComputingAdjustments::SimpleDosageCandidate> &_candidates)
 {
@@ -143,13 +143,13 @@ ComputingResult ComputingAdjustments::buildCandidatesForInterval(const FullFormu
 
     if (doseValues.size() == 0) {
         m_logger.error("No available potential dose");
-        return ComputingResult::NoAvailableDose;
+        return ComputingStatus::NoAvailableDose;
     }
 
     if (infusionTimes.size() == 0) {
         if (_formulationAndRoute->getFormulationAndRoute().getAbsorptionModel() == AbsorptionModel::Infusion) {
             m_logger.error("Infusion selected, but no potential infusion time");
-            return ComputingResult::NoAvailableInfusionTime;
+            return ComputingStatus::NoAvailableInfusionTime;
         }
         infusionTimes.push_back(Duration(0h));
     }
@@ -168,7 +168,7 @@ ComputingResult ComputingAdjustments::buildCandidatesForInterval(const FullFormu
 #endif // 0
         }
     }
-    return ComputingResult::Ok;
+    return ComputingStatus::Ok;
 }
 
 
@@ -273,7 +273,7 @@ std::vector<const FullFormulationAndRoute*> selectFormulationAndRoutes(
     return result;
 }
 
-ComputingResult ComputingAdjustments::compute(
+ComputingStatus ComputingAdjustments::compute(
         const ComputingTraitAdjustment *_traits,
         const ComputingRequest &_request,
         std::unique_ptr<ComputingResponse> &_response)
@@ -281,7 +281,7 @@ ComputingResult ComputingAdjustments::compute(
 
     if (_traits == nullptr) {
         m_logger.error("The computing traits sent for computation are nullptr");
-        return ComputingResult::NoComputingTraits;
+        return ComputingStatus::NoComputingTraits;
     }
 
     std::map<AnalyteGroupId, std::shared_ptr<PkModel> > pkModel;
@@ -292,7 +292,7 @@ ComputingResult ComputingAdjustments::compute(
     DateTime calculationStartTime;
 
     // Be carefull here, as the endTime could be different...
-    ComputingResult extractionResult = m_utils->m_generalExtractor->generalExtractions(_traits,
+    ComputingStatus extractionResult = m_utils->m_generalExtractor->generalExtractions(_traits,
                                                                                        _request,
                                                                                        m_utils->m_models.get(),
                                                                                        pkModel,
@@ -301,7 +301,7 @@ ComputingResult ComputingAdjustments::compute(
                                                                                        parameterSeries,
                                                                                        calculationStartTime);
 
-    if (extractionResult != ComputingResult::Ok) {
+    if (extractionResult != ComputingStatus::Ok) {
         return extractionResult;
     }
 
@@ -317,8 +317,8 @@ ComputingResult ComputingAdjustments::compute(
 
     for(auto analyteGroupId : allGroupIds) {
         if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Aposteriori) {
-            ComputingResult aposterioriEtasExtractionResult = m_utils->m_generalExtractor->extractAposterioriEtas(etas[analyteGroupId], _request, analyteGroupId, intakeSeries[analyteGroupId], parameterSeries[analyteGroupId], covariateSeries, calculationStartTime, _traits->getEnd());
-            if (aposterioriEtasExtractionResult != ComputingResult::Ok) {
+            ComputingStatus aposterioriEtasExtractionResult = m_utils->m_generalExtractor->extractAposterioriEtas(etas[analyteGroupId], _request, analyteGroupId, intakeSeries[analyteGroupId], parameterSeries[analyteGroupId], covariateSeries, calculationStartTime, _traits->getEnd());
+            if (aposterioriEtasExtractionResult != ComputingStatus::Ok) {
                 return aposterioriEtasExtractionResult;
             }
         }
@@ -335,7 +335,7 @@ ComputingResult ComputingAdjustments::compute(
 
     if (selectedFormulationAndRoutes.size() == 0) {
         m_logger.error("Can not find a formulation and route for adjustment");
-        return ComputingResult::NoFormulationAndRouteForAdjustment;
+        return ComputingStatus::NoFormulationAndRouteForAdjustment;
     }
 
 
@@ -348,13 +348,13 @@ ComputingResult ComputingAdjustments::compute(
 
         if (selectedFormulationAndRoute == nullptr) {
             m_logger.error("Can not find a formulation and route for adjustment");
-            return ComputingResult::NoFormulationAndRouteForAdjustment;
+            return ComputingStatus::NoFormulationAndRouteForAdjustment;
         }
 
 
-        ComputingResult buildingResult = buildCandidates(selectedFormulationAndRoute, candidates);
+        ComputingStatus buildingResult = buildCandidates(selectedFormulationAndRoute, candidates);
 
-        if (buildingResult != ComputingResult::Ok) {
+        if (buildingResult != ComputingStatus::Ok) {
             m_logger.error("Can not build adjustment candidates");
             return buildingResult;
         }
@@ -365,12 +365,12 @@ ComputingResult ComputingAdjustments::compute(
     TargetExtractionOption targetExtractionOption = _traits->getTargetExtractionOption();
 
     for (const auto &activeMoiety : _request.getDrugModel().getActiveMoieties()) {
-        ComputingResult targetExtractionResult =
+        ComputingStatus targetExtractionResult =
                 targetExtractor.extract(activeMoiety->getActiveMoietyId(), covariateSeries, activeMoiety.get()->getTargetDefinitions(),
                                         _request.getDrugTreatment().getTargets(), _traits->getStart(), _traits->getEnd(),
                                         targetExtractionOption, targetSeries[activeMoiety->getActiveMoietyId()]);
 
-        if (targetExtractionResult != ComputingResult::Ok) {
+        if (targetExtractionResult != ComputingStatus::Ok) {
             return targetExtractionResult;
         }
     }
@@ -427,28 +427,28 @@ ComputingResult ComputingAdjustments::compute(
 
             IntakeExtractor intakeExtractor;
             double nbPointsPerHour = _traits->getNbPointsPerHour();
-            ComputingResult intakeExtractionResult = intakeExtractor.extract(*newHistory, calculationStartTime, newEndTime,
+            ComputingStatus intakeExtractionResult = intakeExtractor.extract(*newHistory, calculationStartTime, newEndTime,
                                                                              nbPointsPerHour, intakeSeriesPerGroup[analyteGroupId],
                                                                              ExtractionOption::EndofDate);
 
             m_utils->m_generalExtractor->convertAnalytes(intakeSeriesPerGroup[analyteGroupId], _request.getDrugModel(), _request.getDrugModel().getAnalyteSet(analyteGroupId));
 
 
-            if (intakeExtractionResult != ComputingResult::Ok) {
+            if (intakeExtractionResult != ComputingStatus::Ok) {
                 return intakeExtractionResult;
             }
 
-            ComputingResult intakeAssociationResult =
+            ComputingStatus intakeAssociationResult =
                     IntakeToCalculatorAssociator::associate(intakeSeriesPerGroup[analyteGroupId], *pkModel[analyteGroupId]);
 
-            if (intakeAssociationResult != ComputingResult::Ok) {
+            if (intakeAssociationResult != ComputingStatus::Ok) {
                 m_logger.error("Can not associate intake calculators for the specified route");
                 return intakeAssociationResult;
             }
 
 
 
-            ComputingResult predictionComputingResult;
+            ComputingStatus predictionComputingResult;
 
             if (_traits->getSteadyStateTargetOption() == SteadyStateTargetOption::AtSteadyState) {
                 ConcentrationCalculator concentrationCalculator;
@@ -473,7 +473,7 @@ ComputingResult ComputingAdjustments::compute(
                             etas[analyteGroupId]);
             }
 
-            if (predictionComputingResult != ComputingResult::Ok) {
+            if (predictionComputingResult != ComputingStatus::Ok) {
                 m_logger.error("Error with the computation of a single adjustment candidate");
                 return predictionComputingResult;
             }
@@ -488,8 +488,8 @@ ComputingResult ComputingAdjustments::compute(
 
             for (const auto & activeMoiety : _request.getDrugModel().getActiveMoieties()) {
                 ConcentrationPredictionPtr activeMoietyPrediction = std::make_unique<ConcentrationPrediction>();
-                ComputingResult activeMoietyComputingResult = m_utils->computeActiveMoiety(activeMoiety.get(), analytesPredictions, activeMoietyPrediction);
-                if (activeMoietyComputingResult != ComputingResult::Ok) {
+                ComputingStatus activeMoietyComputingResult = m_utils->computeActiveMoiety(activeMoiety.get(), analytesPredictions, activeMoietyPrediction);
+                if (activeMoietyComputingResult != ComputingStatus::Ok) {
                     return activeMoietyComputingResult;
                 }
                 activeMoietiesPredictions.push_back(std::move(activeMoietyPrediction));
@@ -512,19 +512,19 @@ ComputingResult ComputingAdjustments::compute(
                 TargetEvaluationResult localResult;
 
                 // Now the score calculation
-                ComputingResult evaluationResult = targetEvaluator.evaluate(*activeMoietiesPredictions[moietyIndex].get(),
+                ComputingStatus evaluationResult = targetEvaluator.evaluate(*activeMoietiesPredictions[moietyIndex].get(),
                                                                             intakeSeriesPerGroup[allGroupIds[0]],
                                                                             target, localResult);
 
                 // Here we do not compare to Result::Ok, because the result can also be
                 // Result::InvalidCandidate
-                if (evaluationResult == ComputingResult::TargetEvaluationError) {
+                if (evaluationResult == ComputingStatus::TargetEvaluationError) {
                     m_logger.error("Error in the evaluation of targets");
                     return evaluationResult;
                 }
 
                 // If the candidate is valid:
-                if (evaluationResult == ComputingResult::Ok) {
+                if (evaluationResult == ComputingStatus::Ok) {
                     candidateResults.push_back(localResult);
                 }
                 else {
@@ -612,16 +612,16 @@ ComputingResult ComputingAdjustments::compute(
     std::vector<DosageAdjustment> finalCandidates;
     finalCandidates = sortAndFilterCandidates(dosageCandidates, _traits->getBestCandidatesOption());
 
-    ComputingResult addResult = addLoadOrRest(finalCandidates, _traits, _request, allGroupIds, initialCalculationTime,
+    ComputingStatus addResult = addLoadOrRest(finalCandidates, _traits, _request, allGroupIds, initialCalculationTime,
                                               pkModel, parameterSeries, etas);
-    if (addResult != ComputingResult::Ok) {
+    if (addResult != ComputingStatus::Ok) {
         return addResult;
     }
 
-    ComputingResult generateResult = generatePredictions(finalCandidates, _traits, _request,
+    ComputingStatus generateResult = generatePredictions(finalCandidates, _traits, _request,
                                                          allGroupIds, initialCalculationTime, pkModel, parameterSeries,
                                                          etas);
-    if (generateResult != ComputingResult::Ok) {
+    if (generateResult != ComputingStatus::Ok) {
         return generateResult;
     }
 
@@ -634,11 +634,11 @@ ComputingResult ComputingAdjustments::compute(
     // Finally add the response to the set of responses
     _response->addResponse(std::move(resp));
 
-    return ComputingResult::Ok;
+    return ComputingStatus::Ok;
 }
 
 
-ComputingResult ComputingAdjustments::addLoadOrRest(std::vector<DosageAdjustment> &_dosages,
+ComputingStatus ComputingAdjustments::addLoadOrRest(std::vector<DosageAdjustment> &_dosages,
                                                      const ComputingTraitAdjustment *_traits,
                                                      const ComputingRequest &_request,
                                                      const std::vector<AnalyteGroupId> &_allGroupIds,
@@ -648,13 +648,13 @@ ComputingResult ComputingAdjustments::addLoadOrRest(std::vector<DosageAdjustment
                                                      std::map<AnalyteGroupId, Etas> &_etas)
 {
     for (auto & dosage : _dosages) {
-        ComputingResult result = addLoadOrRest(dosage, _traits, _request, _allGroupIds, _calculationStartTime,
+        ComputingStatus result = addLoadOrRest(dosage, _traits, _request, _allGroupIds, _calculationStartTime,
                                                _pkModel, _parameterSeries, _etas);
-        if (result != ComputingResult::Ok) {
+        if (result != ComputingStatus::Ok) {
             return result;
         }
     }
-    return ComputingResult::Ok;
+    return ComputingStatus::Ok;
 }
 
 
@@ -664,7 +664,7 @@ typedef struct {
 } LoadingCandidate;
 
 
-ComputingResult ComputingAdjustments::addLoadOrRest(DosageAdjustment &_dosage,
+ComputingStatus ComputingAdjustments::addLoadOrRest(DosageAdjustment &_dosage,
                                                     const ComputingTraitAdjustment *_traits,
                                                     const ComputingRequest &_request,
                                                     const std::vector<AnalyteGroupId> &_allGroupIds,
@@ -674,7 +674,7 @@ ComputingResult ComputingAdjustments::addLoadOrRest(DosageAdjustment &_dosage,
                                                     std::map<AnalyteGroupId, Etas> &_etas)
 {
     if (_traits->getLoadingOption() == LoadingOption::NoLoadingDose) {
-        return ComputingResult::Ok;
+        return ComputingStatus::Ok;
     }
 
     const DosageRepeat *repeat = static_cast<const DosageRepeat *>(_dosage.m_history.getDosageTimeRanges()[0]->getDosage());
@@ -691,8 +691,8 @@ ComputingResult ComputingAdjustments::addLoadOrRest(DosageAdjustment &_dosage,
     // TODO : This is wrong to take the default here
     const FullFormulationAndRoute *fullFormulationAndRoute = _request.getDrugModel().getFormulationAndRoutes().getDefault();
     std::vector<ComputingAdjustments::SimpleDosageCandidate> candidates;
-    ComputingResult buildResult = buildCandidatesForInterval(fullFormulationAndRoute, interval, candidates);
-    if (buildResult != ComputingResult::Ok) {
+    ComputingStatus buildResult = buildCandidatesForInterval(fullFormulationAndRoute, interval, candidates);
+    if (buildResult != ComputingStatus::Ok) {
         return buildResult;
     }
 
@@ -705,10 +705,10 @@ ComputingResult ComputingAdjustments::addLoadOrRest(DosageAdjustment &_dosage,
                     createLoadingDosage(candidate, _traits->getAdjustmentTime()));
         loadingDosage.m_history.addTimeRange(*newDosage);
 
-        ComputingResult generateResult = generatePrediction(loadingDosage, _traits, _request,
+        ComputingStatus generateResult = generatePrediction(loadingDosage, _traits, _request,
                                                              _allGroupIds, _calculationStartTime, _pkModel, _parameterSeries,
                                                              _etas);
-        if (generateResult != ComputingResult::Ok) {
+        if (generateResult != ComputingStatus::Ok) {
             return generateResult;
         }
 
@@ -738,10 +738,10 @@ ComputingResult ComputingAdjustments::addLoadOrRest(DosageAdjustment &_dosage,
     _dosage.m_history.addTimeRange(*loadingCandidates[bestIndex].loadingDosage.m_history.getDosageTimeRanges()[0].get());
     _dosage.m_history.mergeDosage(&newRange);
 
-    return ComputingResult::Ok;
+    return ComputingStatus::Ok;
 }
 
-ComputingResult ComputingAdjustments::generatePredictions(std::vector<DosageAdjustment> &_dosages,
+ComputingStatus ComputingAdjustments::generatePredictions(std::vector<DosageAdjustment> &_dosages,
                                                           const ComputingTraitAdjustment *_traits,
                                                           const ComputingRequest &_request,
                                                           const std::vector<AnalyteGroupId> &_allGroupIds,
@@ -752,16 +752,16 @@ ComputingResult ComputingAdjustments::generatePredictions(std::vector<DosageAdju
                                                           )
 {
     for (auto & dosage : _dosages) {
-        ComputingResult result = generatePrediction(dosage, _traits, _request, _allGroupIds, _calculationStartTime, _pkModel, _parameterSeries, _etas);
-        if (result != ComputingResult::Ok) {
+        ComputingStatus result = generatePrediction(dosage, _traits, _request, _allGroupIds, _calculationStartTime, _pkModel, _parameterSeries, _etas);
+        if (result != ComputingStatus::Ok) {
             return result;
         }
     }
-    return ComputingResult::Ok;
+    return ComputingStatus::Ok;
 }
 
 
-ComputingResult ComputingAdjustments::generatePrediction(DosageAdjustment &_dosage,
+ComputingStatus ComputingAdjustments::generatePrediction(DosageAdjustment &_dosage,
                                                          const ComputingTraitAdjustment *_traits,
                                                          const ComputingRequest &_request,
                                                          const std::vector<AnalyteGroupId> &_allGroupIds,
@@ -791,28 +791,28 @@ ComputingResult ComputingAdjustments::generatePrediction(DosageAdjustment &_dosa
 
         IntakeExtractor intakeExtractor;
         double nbPointsPerHour = _traits->getNbPointsPerHour();
-        ComputingResult intakeExtractionResult = intakeExtractor.extract(*newHistory, _calculationStartTime, newEndTime,
+        ComputingStatus intakeExtractionResult = intakeExtractor.extract(*newHistory, _calculationStartTime, newEndTime,
                                                                          nbPointsPerHour, intakeSeriesPerGroup[analyteGroupId],
                                                                          ExtractionOption::EndofDate);
 
         m_utils->m_generalExtractor->convertAnalytes(intakeSeriesPerGroup[analyteGroupId], _request.getDrugModel(), _request.getDrugModel().getAnalyteSet(analyteGroupId));
 
 
-        if (intakeExtractionResult != ComputingResult::Ok) {
+        if (intakeExtractionResult != ComputingStatus::Ok) {
             return intakeExtractionResult;
         }
 
-        ComputingResult intakeAssociationResult =
+        ComputingStatus intakeAssociationResult =
                 IntakeToCalculatorAssociator::associate(intakeSeriesPerGroup[analyteGroupId], *_pkModel[analyteGroupId]);
 
-        if (intakeAssociationResult != ComputingResult::Ok) {
+        if (intakeAssociationResult != ComputingStatus::Ok) {
             m_logger.error("Can not associate intake calculators for the specified route");
             return intakeAssociationResult;
         }
 
 
 
-        ComputingResult predictionComputingResult;
+        ComputingStatus predictionComputingResult;
         ConcentrationCalculator concentrationCalculator;
         predictionComputingResult = concentrationCalculator.computeConcentrations(
                     pPrediction,
@@ -823,7 +823,7 @@ ComputingResult ComputingAdjustments::generatePrediction(DosageAdjustment &_dosa
                     _parameterSeries[analyteGroupId],
                     _etas[analyteGroupId]);
 
-        if (predictionComputingResult != ComputingResult::Ok) {
+        if (predictionComputingResult != ComputingStatus::Ok) {
             m_logger.error("Error with the computation of a single adjustment candidate");
             return predictionComputingResult;
         }
@@ -838,8 +838,8 @@ ComputingResult ComputingAdjustments::generatePrediction(DosageAdjustment &_dosa
 
         for (const auto & activeMoiety : _request.getDrugModel().getActiveMoieties()) {
             ConcentrationPredictionPtr activeMoietyPrediction = std::make_unique<ConcentrationPrediction>();
-            ComputingResult activeMoietyComputingResult = m_utils->computeActiveMoiety(activeMoiety.get(), analytesPredictions, activeMoietyPrediction);
-            if (activeMoietyComputingResult != ComputingResult::Ok) {
+            ComputingStatus activeMoietyComputingResult = m_utils->computeActiveMoiety(activeMoiety.get(), analytesPredictions, activeMoietyPrediction);
+            if (activeMoietyComputingResult != ComputingStatus::Ok) {
                 return activeMoietyComputingResult;
             }
             activeMoietiesPredictions.push_back(std::move(activeMoietyPrediction));
@@ -882,7 +882,7 @@ ComputingResult ComputingAdjustments::generatePrediction(DosageAdjustment &_dosa
         }
     }
 
-    return ComputingResult::Ok;
+    return ComputingStatus::Ok;
 }
 
 

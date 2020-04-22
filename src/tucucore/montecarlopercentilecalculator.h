@@ -43,7 +43,7 @@ public:
     /// \param _percentileRanks List of percentiles ranks
     /// \param _aborter An aborter object allowing to abort the calculation
     /// \return The status of calculation
-    virtual ComputingResult calculate(
+    virtual ComputingStatus calculate(
             PercentilesPrediction &_percentiles,
             const DateTime &_recordFrom,
             const DateTime &_recordTo,
@@ -77,7 +77,7 @@ public:
     /// \param _percentileRanks List of percentiles ranks
     /// \param _aborter An aborter object allowing to abort the calculation
     /// \return The status of calculation
-    virtual ComputingResult calculate(
+    virtual ComputingStatus calculate(
             PercentilesPrediction &_percentiles,
             const DateTime &_recordFrom,
             const DateTime &_recordTo,
@@ -112,7 +112,7 @@ public:
     /// \param _percentileRanks List of percentiles ranks
     /// \param _aborter An aborter object allowing to abort the calculation
     /// \return The status of calculation
-    virtual ComputingResult calculate(
+    virtual ComputingStatus calculate(
             PercentilesPrediction &_percentiles,
             const DateTime &_recordFrom,
             const DateTime &_recordTo,
@@ -175,7 +175,7 @@ public:
     /// \param _aborter An aborter object allowing to abort the calculation
     /// \return The status of calculation
     ///
-    ComputingResult computePredictionsAndSortPercentiles(
+    ComputingStatus computePredictionsAndSortPercentiles(
             PercentilesPrediction &_percentiles,
             const DateTime &_recordFrom,
             const DateTime &_recordTo,
@@ -188,7 +188,7 @@ public:
             IConcentrationCalculator &_concentrationCalculator,
             ComputingAborter *_aborter);
 
-    ComputingResult computePredictions(const DateTime &_recordFrom,
+    ComputingStatus computePredictions(const DateTime &_recordFrom,
             const DateTime &_recordTo,
             const IntakeSeries &_intakes,
             const ParameterSetSeries &_parameters,
@@ -202,7 +202,7 @@ public:
             std::vector< std::vector< std::vector<Concentration> > > &_concentrations,
             ComputingAborter *_aborter);
 
-    ComputingResult sortAndExtractPercentiles(PercentilesPrediction &_percentiles,
+    ComputingStatus sortAndExtractPercentiles(PercentilesPrediction &_percentiles,
             const PercentileRanks &_percentileRanks,
             unsigned int _nbPatients,
             std::vector<TimeOffsets> _times,
@@ -240,7 +240,7 @@ public:
     /// \param _aborter An aborter object allowing to abort the calculation
     /// \return The status of calculation
     ///
-    ComputingResult calculate(
+    ComputingStatus calculate(
             PercentilesPrediction &_percentiles,
             const DateTime &_recordFrom,
             const DateTime &_recordTo,
@@ -263,7 +263,7 @@ public:
     /// \param _initialEtas Set of initial Etas, used in case of a posteriori
     /// \return The status of calculation
     ///
-    ComputingResult calculateEtasAndEpsilons(std::vector<Etas> &_etas,
+    ComputingStatus calculateEtasAndEpsilons(std::vector<Etas> &_etas,
             std::vector<Deviations> &_epsilons,
             const OmegaMatrix& _omega,
             const IResidualErrorModel &_residualErrorModel,
@@ -290,7 +290,7 @@ public:
     /// \param _percentileRanks List of percentiles ranks
     /// \param _aborter An aborter object allowing to abort the calculation
     /// \return The status of calculation
-    ComputingResult calculate(
+    ComputingStatus calculate(
             PercentilesPrediction &_percentiles,
             const DateTime &_recordFrom,
             const DateTime &_recordTo,
@@ -316,7 +316,7 @@ public:
     /// \param _samples List of samples
     /// \param _aborter An aborter object allowing to abort the calculation
     /// \return The status of calculation
-    ComputingResult calculateEtasAndEpsilons(std::vector<Etas> &_fullEtas,
+    ComputingStatus calculateEtasAndEpsilons(std::vector<Etas> &_fullEtas,
             std::vector<Deviations> &_epsilons,
             const IntakeSeries &_intakes,
             const ParameterSetSeries &_parameters,
@@ -352,7 +352,7 @@ public:
     /// \param _percentileRanks List of percentiles ranks
     /// \param _aborter An aborter object allowing to abort the calculation
     /// \return The status of calculation
-    ComputingResult calculate(
+    ComputingStatus calculate(
             PercentilesPrediction &_percentiles,
             const DateTime &_recordFrom,
             const DateTime &_recordTo,
@@ -420,7 +420,7 @@ public:
     /// \param _percentileRanks List of percentiles ranks
     /// \param _aborter An aborter object allowing to abort the calculation
     /// \return The status of calculation
-    virtual ComputingResult calculate(
+    virtual ComputingStatus calculate(
             PercentilesPrediction &_percentiles,
             const DateTime &_recordFrom,
             const DateTime &_recordTo,
@@ -455,7 +455,7 @@ public:
     /// \param _percentileRanks List of percentiles ranks
     /// \param _aborter An aborter object allowing to abort the calculation
     /// \return The status of calculation
-    virtual ComputingResult calculate(
+    virtual ComputingStatus calculate(
             PercentilesPrediction &_percentiles,
             const DateTime &_recordFrom,
             const DateTime &_recordTo,
@@ -490,7 +490,7 @@ protected:
     /// \param _times The times calculated
     /// \return ComputingResult::Ok if everything went well
     ///
-    ComputingResult calculateActiveMoietyAndSort(PercentilesPrediction &_percentiles,
+    ComputingStatus calculateActiveMoietyAndSort(PercentilesPrediction &_percentiles,
             const PercentileRanks &_percentileRanks,
             const ActiveMoiety *_activeMoiety,
             std::vector<AnalyteGroupId> _analyteGroupIds,
@@ -518,7 +518,7 @@ public:
     /// \param _activeMoiety Active moiety that has to be calculated
     /// \param _aborter An aborter object allowing to abort the calculation
     /// \return The status of calculation
-    ComputingResult calculate(
+    ComputingStatus calculate(
             PercentilesPrediction &_percentiles,
             const DateTime &_recordFrom,
             const DateTime &_recordTo,
@@ -554,7 +554,7 @@ public:
     /// \param _percentileRanks List of percentiles ranks
     /// \param _aborter An aborter object allowing to abort the calculation
     /// \return The status of calculation
-    ComputingResult calculate(
+    ComputingStatus calculate(
             PercentilesPrediction &_percentiles,
             const DateTime &_recordFrom,
             const DateTime &_recordTo,

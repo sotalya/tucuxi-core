@@ -136,7 +136,7 @@ ParametersExtractor::ParametersExtractor(const CovariateSeries &_covariates,
 }
 
 
-ComputingResult ParametersExtractor::extract(ParameterSetSeries &_series)
+ComputingStatus ParametersExtractor::extract(ParameterSetSeries &_series)
 {
     std::vector<std::string> covariateIds;
     bool firstIteration = true;
@@ -206,7 +206,7 @@ ComputingResult ParametersExtractor::extract(ParameterSetSeries &_series)
 
 
 
-            return ComputingResult::ParameterExtractionError;
+            return ComputingStatus::ParameterExtractionError;
         }
 
         // Retrieve updated values.
@@ -215,7 +215,7 @@ ComputingResult ParametersExtractor::extract(ParameterSetSeries &_series)
         for (auto &cp : cParamMap) {
             rc = m_ogm.getValue(cp.first, newVal);
             if (!rc) {
-                return ComputingResult::ParameterExtractionError;
+                return ComputingStatus::ParameterExtractionError;
             }
 
             if (newVal != cp.second.second || tcv.first == m_timedCValues.begin()->first) {
@@ -241,11 +241,11 @@ ComputingResult ParametersExtractor::extract(ParameterSetSeries &_series)
         _series.addParameterSetEvent(pSetEvent);
     }
 
-    return ComputingResult::Ok;
+    return ComputingStatus::Ok;
 }
 
 
-ComputingResult ParametersExtractor::buildFullSet(const ParameterSetSeries &_inputSeries, ParameterSetSeries &_outputSeries) const
+ComputingStatus ParametersExtractor::buildFullSet(const ParameterSetSeries &_inputSeries, ParameterSetSeries &_outputSeries) const
 {
     // Start with the first set of parameters (it should contain the full set)
     ParameterSetEvent current(_inputSeries.m_parameterSets[0]);
@@ -268,11 +268,11 @@ ComputingResult ParametersExtractor::buildFullSet(const ParameterSetSeries &_inp
         // Add the new event to the output series
         _outputSeries.addParameterSetEvent(current);
     }
-    return ComputingResult::Ok;
+    return ComputingStatus::Ok;
 }
 
 
-ComputingResult ParametersExtractor::extractPopulation(ParameterSetSeries &_series)
+ComputingStatus ParametersExtractor::extractPopulation(ParameterSetSeries &_series)
 {
     // Parameters valid since the epoch
     ParameterSetEvent pSetEvent(DateTime(Tucuxi::Common::Duration(0h)));
@@ -286,7 +286,7 @@ ComputingResult ParametersExtractor::extractPopulation(ParameterSetSeries &_seri
 
     // Add the parameter set event to the series of events.
     _series.addParameterSetEvent(pSetEvent);
-    return ComputingResult::Ok;
+    return ComputingStatus::Ok;
 }
 
 } // namespace Core

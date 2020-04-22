@@ -21,7 +21,7 @@ public:
     ComputingAdjustments(ComputingUtils *_computingUtils);
 
 
-    ComputingResult compute(
+    ComputingStatus compute(
             const ComputingTraitAdjustment *_traits,
             const ComputingRequest &_request,
             std::unique_ptr<ComputingResponse> &_response);
@@ -56,10 +56,10 @@ protected:
     } SimpleDosageCandidate;
 
 
-    ComputingResult buildCandidates(const FullFormulationAndRoute* _formulationAndRoute,
+    ComputingStatus buildCandidates(const FullFormulationAndRoute* _formulationAndRoute,
                                     std::vector<SimpleDosageCandidate> &_candidates);
 
-    ComputingResult buildCandidatesForInterval(const FullFormulationAndRoute* _formulationAndRoute,
+    ComputingStatus buildCandidatesForInterval(const FullFormulationAndRoute* _formulationAndRoute,
                                                Common::Duration _interval,
                                                std::vector<ComputingAdjustments::SimpleDosageCandidate> &_candidates);
 
@@ -77,7 +77,7 @@ protected:
             const SimpleDosageCandidate &_candidate,
             DateTime _startTime);
 
-    ComputingResult addLoadOrRest(std::vector<DosageAdjustment> &_dosages,
+    ComputingStatus addLoadOrRest(std::vector<DosageAdjustment> &_dosages,
                                   const ComputingTraitAdjustment *_traits,
                                   const ComputingRequest &_request,
                                   const std::vector<AnalyteGroupId> &_allGroupIds,
@@ -86,7 +86,7 @@ protected:
                                   GroupsParameterSetSeries &_parameterSeries,
                                   std::map<AnalyteGroupId, Etas> &_etas);
 
-    ComputingResult addLoadOrRest(DosageAdjustment &_dosage,
+    ComputingStatus addLoadOrRest(DosageAdjustment &_dosage,
                                   const ComputingTraitAdjustment *_traits,
                                   const ComputingRequest &_request,
                                   const std::vector<AnalyteGroupId> &_allGroupIds,
@@ -95,7 +95,7 @@ protected:
                                   GroupsParameterSetSeries &_parameterSeries,
                                   std::map<AnalyteGroupId, Etas> &_etas);
 
-    ComputingResult generatePredictions(std::vector<DosageAdjustment> &_dosages,
+    ComputingStatus generatePredictions(std::vector<DosageAdjustment> &_dosages,
                                         const ComputingTraitAdjustment *_traits,
                                         const ComputingRequest &_request,
                                         const std::vector<AnalyteGroupId> &_allGroupIds,
@@ -106,7 +106,7 @@ protected:
                                         );
 
 
-    ComputingResult generatePrediction(DosageAdjustment &_dosage,
+    ComputingStatus generatePrediction(DosageAdjustment &_dosage,
                                        const ComputingTraitAdjustment *_traits,
                                        const ComputingRequest &_request,
                                        const std::vector<AnalyteGroupId> &_allGroupIds,

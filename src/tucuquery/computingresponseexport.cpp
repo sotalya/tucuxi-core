@@ -32,9 +32,9 @@ bool ComputingResponseExport::exportToFiles(const Query::ComputingQueryResponse 
         }
 
         // We start by checking for adjustements, as AdjustmentResponse is a subclass of SinglePredictionResponse
-        if (dynamic_cast<Tucuxi::Core::AdjustmentData*>(response.m_computingResponse.get()) != nullptr) {
+        if (dynamic_cast<const Tucuxi::Core::AdjustmentData*>(response.m_computingResponse->getData()) != nullptr) {
             const Tucuxi::Core::AdjustmentData* prediction =
-                    dynamic_cast<Tucuxi::Core::AdjustmentData*>(response.m_computingResponse.get());
+                    dynamic_cast<const Tucuxi::Core::AdjustmentData*>(response.m_computingResponse->getData());
 
             for (const auto &dosage : prediction->getAdjustments()) {
                 for (const auto &timeRange : dosage.m_history.getDosageTimeRanges()) {
@@ -83,9 +83,9 @@ bool ComputingResponseExport::exportToFiles(const Query::ComputingQueryResponse 
             }
 
         }
-        else if (dynamic_cast<Tucuxi::Core::SinglePredictionData*>(response.m_computingResponse.get()) != nullptr) {
+        else if (dynamic_cast<const Tucuxi::Core::SinglePredictionData*>(response.m_computingResponse->getData()) != nullptr) {
             const Tucuxi::Core::SinglePredictionData* prediction =
-                    dynamic_cast<Tucuxi::Core::SinglePredictionData*>(response.m_computingResponse.get());
+                    dynamic_cast<const Tucuxi::Core::SinglePredictionData*>(response.m_computingResponse->getData());
 
             if (!prediction->getData().empty()) {
                 double firstTime = prediction->getData()[0].m_start.toSeconds();
@@ -97,9 +97,9 @@ bool ComputingResponseExport::exportToFiles(const Query::ComputingQueryResponse 
             }
 
         }
-        else if (dynamic_cast<Tucuxi::Core::SinglePointsData*>(response.m_computingResponse.get()) != nullptr) {
+        else if (dynamic_cast<const Tucuxi::Core::SinglePointsData*>(response.m_computingResponse->getData()) != nullptr) {
             const Tucuxi::Core::SinglePointsData* prediction =
-                    dynamic_cast<Tucuxi::Core::SinglePointsData*>(response.m_computingResponse.get());
+                    dynamic_cast<const Tucuxi::Core::SinglePointsData*>(response.m_computingResponse->getData());
 
             double firstTime = prediction->m_times[0].toSeconds();
 
@@ -107,9 +107,9 @@ bool ComputingResponseExport::exportToFiles(const Query::ComputingQueryResponse 
                 file << (prediction->m_times[i].toSeconds() - firstTime) / 3600.0 << "\t" << prediction->m_concentrations[0][i] << std::endl;
             }
         }
-        else if (dynamic_cast<Tucuxi::Core::PercentilesData*>(response.m_computingResponse.get()) != nullptr) {
+        else if (dynamic_cast<const Tucuxi::Core::PercentilesData*>(response.m_computingResponse->getData()) != nullptr) {
             const Tucuxi::Core::PercentilesData* prediction =
-                    dynamic_cast<Tucuxi::Core::PercentilesData*>(response.m_computingResponse.get());
+                    dynamic_cast<const Tucuxi::Core::PercentilesData*>(response.m_computingResponse->getData());
 
             double firstTime = prediction->getPercentileData(0)[0].m_start.toSeconds();
             for(size_t cycleIndex = 0; cycleIndex < prediction->getPercentileData(0).size(); cycleIndex ++) {

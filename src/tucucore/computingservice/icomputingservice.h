@@ -35,7 +35,7 @@ public:
     /// \return ComputingResult::Ok if everything went well with the computation, another code else
     /// The response is a reference to a unique pointer that has to be allocated within compute()
     ///
-    virtual ComputingResult compute(const ComputingRequest &_request, std::unique_ptr<ComputingResponse> &_response) = 0;
+    virtual ComputingStatus compute(const ComputingRequest &_request, std::unique_ptr<ComputingResponse> &_response) = 0;
 
     ///
     /// \brief returns a description of the last error in case of failed computation

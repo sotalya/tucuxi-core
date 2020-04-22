@@ -6,9 +6,9 @@ namespace Tucuxi {
 namespace Core {
 
 ///
-/// \brief The ComputingResult enum
+/// \brief The ComputingStatus enum
 /// Describes the return value of a computation
-enum class ComputingResult {
+enum class ComputingStatus {
     /// Everything went well
     Ok = 0,
     /// Too Big computation required

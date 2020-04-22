@@ -13,7 +13,7 @@ ComputingUtils::ComputingUtils()
 }
 
 
-ComputingResult ComputingUtils::computeActiveMoiety(
+ComputingStatus ComputingUtils::computeActiveMoiety(
         const ActiveMoiety *_activeMoiety,
         const std::vector<ConcentrationPredictionPtr> &_analytesPredictions,
         ConcentrationPredictionPtr &_activeMoietyPredictions)
@@ -55,7 +55,7 @@ ComputingResult ComputingUtils::computeActiveMoiety(
                 double result;
                 if (!op->evaluate(inputList, result)) {
                     // Something went wrong
-                    return ComputingResult::ActiveMoietyCalculationError;
+                    return ComputingStatus::ActiveMoietyCalculationError;
                 }
                 concentration[c] = result;
             }
@@ -63,7 +63,7 @@ ComputingResult ComputingUtils::computeActiveMoiety(
         _activeMoietyPredictions->appendConcentrations(times, concentration);
     }
 
-    return ComputingResult::Ok;
+    return ComputingStatus::Ok;
 }
 
 

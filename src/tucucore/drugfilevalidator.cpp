@@ -164,9 +164,9 @@ bool DrugFileValidator::validate(std::string _drugFileName, std::string _testFil
                                                       patientVariates,
                                                       startDate,
                                                       endDate);
-                ComputingResult covariateExtractionResult = covariateExtractor.extract(covariatesSeries);
+                ComputingStatus covariateExtractionResult = covariateExtractor.extract(covariatesSeries);
 
-                if (covariateExtractionResult != ComputingResult::Ok) {
+                if (covariateExtractionResult != ComputingStatus::Ok) {
                     logger.error("Can not extract covariates");
                     return false;
                 }
@@ -186,7 +186,7 @@ bool DrugFileValidator::validate(std::string _drugFileName, std::string _testFil
                                                    startDate,
                                                    endDate);
 
-            ComputingResult parametersExtractionResult;
+            ComputingStatus parametersExtractionResult;
 
 
             ParameterSetSeries intermediateParameterSeries;
@@ -194,7 +194,7 @@ bool DrugFileValidator::validate(std::string _drugFileName, std::string _testFil
             parametersExtractionResult = parameterExtractor.extract(intermediateParameterSeries);
 
 
-            if (parametersExtractionResult != ComputingResult::Ok) {
+            if (parametersExtractionResult != ComputingStatus::Ok) {
                 logger.error("Can not extract parameters");
                 return false;
             }
@@ -204,7 +204,7 @@ bool DrugFileValidator::validate(std::string _drugFileName, std::string _testFil
             // The intermediateParameterSeries contains changes of parameters, so we build a full set of parameter
             // for each event.
             parametersExtractionResult = parameterExtractor.buildFullSet(intermediateParameterSeries, parameterSeries);
-            if (parametersExtractionResult != ComputingResult::Ok) {
+            if (parametersExtractionResult != ComputingStatus::Ok) {
                 logger.error("Can not consolidate parameters");
                 return false;
             }

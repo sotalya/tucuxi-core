@@ -34,12 +34,10 @@ class SingleResponseData {
 
 public:
 
-    SingleResponseData(std::unique_ptr<Tucuxi::Core::ComputedData> _computingResponse,
-                       Tucuxi::Core::ComputingResult _status,
+    SingleResponseData(std::unique_ptr<Tucuxi::Core::ComputingResponse> _computingResponse,
                        std::unique_ptr<ComputingResponseMetaData> _metaData);
 
-    std::unique_ptr<Tucuxi::Core::ComputedData> m_computingResponse;
-    Tucuxi::Core::ComputingResult m_status;
+    std::unique_ptr<Tucuxi::Core::ComputingResponse> m_computingResponse;
     std::unique_ptr<ComputingResponseMetaData> m_metaData;
 };
 
@@ -57,14 +55,13 @@ public:
     Tucuxi::Core::RequestResponseId getQueryId() const;
     const std::vector<SingleResponseData>& getRequestResponses() const;
 
-    void addRequestResponse(std::unique_ptr<Tucuxi::Core::ComputedData> _computingResponse,
-                            Tucuxi::Core::ComputingResult _status,
+    void addRequestResponse(std::unique_ptr<Tucuxi::Core::ComputingResponse> _computingResponse,
                             std::unique_ptr<ComputingResponseMetaData> _metaData);
     void setRequestResponseId(Tucuxi::Core::RequestResponseId _requestResponseId);
 
     Tucuxi::Core::RequestResponseId m_queryId;
 
-    Tucuxi::Core::ComputingResult m_queryStatus;
+    Tucuxi::Core::ComputingStatus m_queryStatus;
 
     std::vector<SingleResponseData> m_requestResponses;
 

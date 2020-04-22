@@ -53,7 +53,7 @@ public:
     /// \warning No checks are made on the initial content of _series. If it contains already some events, they will
     ///          still be there at the end of the function. It is up to the user to guarantee the consistency of the
     ///          _series element.
-    ComputingResult extract(ParameterSetSeries &_series);
+    ComputingStatus extract(ParameterSetSeries &_series);
 
     ///
     /// \brief Builds a set with every parameter for each event
@@ -63,7 +63,7 @@ public:
     /// \warning No cheks are made on the initial content of _inputSeries. This function is made to be called
     ///          after extract().
     ///
-    ComputingResult buildFullSet(const ParameterSetSeries &_inputSeries, ParameterSetSeries &_outputSeries) const;
+    ComputingStatus buildFullSet(const ParameterSetSeries &_inputSeries, ParameterSetSeries &_outputSeries) const;
 
     /// \brief Extract parameter set events in a given interval from population values of parameter definitions.
     /// \param _series Extracted set of parameter set events.
@@ -71,7 +71,7 @@ public:
     /// \warning No checks are made on the initial content of _series. If it contains already some events, they will
     ///          still be there at the end of the function. It is up to the user to guarantee the consistency of the
     ///          _series element.
-    ComputingResult extractPopulation(ParameterSetSeries &_series);
+    ComputingStatus extractPopulation(ParameterSetSeries &_series);
 
     // Make the test class friend, as this will allow us to test the helper methods (which are private).
     friend TestParameterExtractor;

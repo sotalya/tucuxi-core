@@ -81,7 +81,7 @@ double ComputingTraitStandard::getNbPointsPerHour() const
     return m_nbPointsPerHour;
 }
 
-ComputingResult ComputingTraitStandard::compute(ComputingComponent &_computingComponent,
+ComputingStatus ComputingTraitStandard::compute(ComputingComponent &_computingComponent,
                                 const ComputingRequest &_request,
                         std::unique_ptr<ComputingResponse> &_response) const
 {
@@ -89,7 +89,7 @@ ComputingResult ComputingTraitStandard::compute(ComputingComponent &_computingCo
     FINAL_UNUSED_PARAMETER(_computingComponent);
     FINAL_UNUSED_PARAMETER(_request);
     FINAL_UNUSED_PARAMETER(_response);
-    return ComputingResult::ComputingTraitStandardShouldNotBeCalled;
+    return ComputingStatus::ComputingTraitStandardShouldNotBeCalled;
 }
 
 
@@ -208,7 +208,7 @@ const std::vector<Tucuxi::Common::DateTime> &ComputingTraitSinglePoints::getTime
 }
 
 
-ComputingResult ComputingTraitConcentration::compute(
+ComputingStatus ComputingTraitConcentration::compute(
         ComputingComponent &_computingComponent,
         const ComputingRequest &_request,
         std::unique_ptr<ComputingResponse> &_response) const
@@ -217,7 +217,7 @@ ComputingResult ComputingTraitConcentration::compute(
 }
 
 
-ComputingResult ComputingTraitPercentiles::compute(
+ComputingStatus ComputingTraitPercentiles::compute(
         ComputingComponent &_computingComponent,
         const ComputingRequest &_request,
         std::unique_ptr<ComputingResponse> &_response) const
@@ -226,7 +226,7 @@ ComputingResult ComputingTraitPercentiles::compute(
 }
 
 
-ComputingResult ComputingTraitAdjustment::compute(
+ComputingStatus ComputingTraitAdjustment::compute(
         ComputingComponent &_computingComponent,
         const ComputingRequest &_request,
         std::unique_ptr<ComputingResponse> &_response) const
@@ -235,7 +235,7 @@ ComputingResult ComputingTraitAdjustment::compute(
 }
 
 
-ComputingResult ComputingTraitAtMeasures::compute(
+ComputingStatus ComputingTraitAtMeasures::compute(
         ComputingComponent &_computingComponent,
         const ComputingRequest &_request,
         std::unique_ptr<ComputingResponse> &_response) const
@@ -244,7 +244,7 @@ ComputingResult ComputingTraitAtMeasures::compute(
 }
 
 
-ComputingResult ComputingTraitSinglePoints::compute(
+ComputingStatus ComputingTraitSinglePoints::compute(
         ComputingComponent &_computingComponent,
         const ComputingRequest &_request,
         std::unique_ptr<ComputingResponse> &_response) const

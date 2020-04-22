@@ -137,10 +137,10 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
 
             std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
-            ComputingResult result;
+            ComputingStatus result;
             result = component->compute(request, response);
 
-            fructose_assert( result == ComputingResult::Ok);
+            fructose_assert( result == ComputingStatus::Ok);
 
             const ComputedData* responseData = response.get()->getData();
 
@@ -272,10 +272,10 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
 
             std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
-            ComputingResult result;
+            ComputingStatus result;
             result = component->compute(request, response);
 
-            fructose_assert( result == ComputingResult::Ok);
+            fructose_assert( result == ComputingStatus::Ok);
 
             const ComputedData* responseData = response->getData();
 
@@ -461,10 +461,10 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
 
             std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
-            ComputingResult result;
+            ComputingStatus result;
             result = component->compute(request, response);
 
-            fructose_assert( result == ComputingResult::Ok);
+            fructose_assert( result == ComputingStatus::Ok);
 
             const ComputedData* responseData = response->getData();
 

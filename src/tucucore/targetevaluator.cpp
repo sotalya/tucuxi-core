@@ -43,7 +43,7 @@ void TargetEvaluator::evaluateValue(
     }
 }
 
-ComputingResult TargetEvaluator::evaluate(
+ComputingStatus TargetEvaluator::evaluate(
         const ConcentrationPrediction& _prediction,
         const IntakeSeries& _intakeSeries,
         const Target &_target,
@@ -205,27 +205,27 @@ ComputingResult TargetEvaluator::evaluate(
 
     case TargetType::AucOverMic :
     {
-        return ComputingResult::TargetEvaluationError;
+        return ComputingStatus::TargetEvaluationError;
     } break;
 
     case TargetType::Auc24OverMic :
     {
-        return ComputingResult::TargetEvaluationError;
+        return ComputingStatus::TargetEvaluationError;
     } break;
 
     case TargetType::TimeOverMic :
     {
-        return ComputingResult::TargetEvaluationError;
+        return ComputingStatus::TargetEvaluationError;
     } break;
 
     case TargetType::PeakDividedByMic :
     {
-        return ComputingResult::TargetEvaluationError;
+        return ComputingStatus::TargetEvaluationError;
     } break;
 
     case TargetType::UnknownTarget :
     {
-        return ComputingResult::TargetEvaluationError;
+        return ComputingStatus::TargetEvaluationError;
 
     } break;
 
@@ -233,12 +233,12 @@ ComputingResult TargetEvaluator::evaluate(
     }
 
     if (!bOk) {
-        return ComputingResult::InvalidCandidate;
+        return ComputingStatus::InvalidCandidate;
     }
 
     // We build the result, as there was no error
     _result = TargetEvaluationResult(_target.m_targetType, score, translateToUnit(value, _target.m_unit, _target.m_finalUnit), _target.m_finalUnit);
-    return ComputingResult::Ok;
+    return ComputingStatus::Ok;
 }
 
 } // namespace Core

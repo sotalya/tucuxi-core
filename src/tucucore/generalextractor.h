@@ -28,7 +28,7 @@ public:
 
     Duration secureStartDuration(const HalfLife &_halfLife);
 
-    ComputingResult extractAposterioriEtas(
+    ComputingStatus extractAposterioriEtas(
             Etas &_etas,
             const ComputingRequest &_request,
             AnalyteGroupId _analyteGroupId,
@@ -38,14 +38,14 @@ public:
             Common::DateTime _calculationStartTime,
             Common::DateTime _endTime);
 
-    ComputingResult extractOmega(
+    ComputingStatus extractOmega(
             const DrugModel &_drugModel,
             AnalyteGroupId _analyteGroupId,
             std::vector<const FullFormulationAndRoute *> &_formulationAndRoutes,
             OmegaMatrix &_omega);
 
 
-    ComputingResult generalExtractions(
+    ComputingStatus generalExtractions(
             const Tucuxi::Core::ComputingTraitStandard *_traits,
             const ComputingRequest &_request,
             const PkModelCollection *_modelCollection,
@@ -59,7 +59,7 @@ public:
             const DrugModel &_drugModel,
             const IntakeSeries &_intakeSeries);
 
-    ComputingResult convertAnalytes(
+    ComputingStatus convertAnalytes(
             IntakeSeries &_intakeSeries,
             const DrugModel &_drugModel,
             const AnalyteSet *_analyteGroup);

@@ -25,7 +25,7 @@ bool sortSamples(const SampleEvent &_a, const SampleEvent &_b)
     return _a.getEventTime() < _b.getEventTime();
 }
 
-ComputingResult SampleExtractor::extract(
+ComputingStatus SampleExtractor::extract(
         const Samples &_samples,
         const AnalyteSet *_analyteGroup,
         const DateTime &_start,
@@ -50,7 +50,7 @@ ComputingResult SampleExtractor::extract(
                     // We currently do not support multi-analytes for measures
                     Tucuxi::Common::LoggerHelper logger;
                     logger.error("Multi-analytes measures are not yet supported");
-                    return ComputingResult::SampleExtractionError;
+                    return ComputingStatus::SampleExtractionError;
                 }
             }
         }
@@ -63,10 +63,10 @@ ComputingResult SampleExtractor::extract(
         return _a.getEventTime() < _b.getEventTime();
     });
 
-    return ComputingResult::Ok;
+    return ComputingStatus::Ok;
 }
 
-ComputingResult SampleExtractor::extract(
+ComputingStatus SampleExtractor::extract(
         const Samples &_samples,
         const DateTime &_start,
         const DateTime &_end,
@@ -85,7 +85,7 @@ ComputingResult SampleExtractor::extract(
                 // We currently do not support multi-analytes for measures
                 Tucuxi::Common::LoggerHelper logger;
                 logger.error("Multi-analytes measures are not yet supported");
-                return ComputingResult::SampleExtractionError;
+                return ComputingStatus::SampleExtractionError;
             }
         }
     }
@@ -97,7 +97,7 @@ ComputingResult SampleExtractor::extract(
         return _a.getEventTime() < _b.getEventTime();
     });
 
-    return ComputingResult::Ok;
+    return ComputingStatus::Ok;
 }
 
 } // namespace Core

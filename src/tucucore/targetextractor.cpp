@@ -354,7 +354,7 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(const TargetDefinit
     }
 }
 
-ComputingResult TargetExtractor::extract(
+ComputingStatus TargetExtractor::extract(
         ActiveMoietyId _activeMoietyId,
         const CovariateSeries &_covariates,
         const TargetDefinitions& _targetDefinitions,
@@ -368,7 +368,7 @@ ComputingResult TargetExtractor::extract(
     case TargetExtractionOption::AprioriValues :
     {
         // Not yet implemented
-        return ComputingResult::TargetExtractionError;
+        return ComputingStatus::TargetExtractionError;
 
     } break;
 
@@ -399,7 +399,7 @@ ComputingResult TargetExtractor::extract(
             }
             if (!foundDefinition) {
                 // TODO : Log, something went wrong
-                return ComputingResult::TargetExtractionError;
+                return ComputingStatus::TargetExtractionError;
             }
         }
     } break;
@@ -483,7 +483,7 @@ ComputingResult TargetExtractor::extract(
     TMP_UNUSED_PARAMETER(_start);
     TMP_UNUSED_PARAMETER(_end);
 
-    return ComputingResult::Ok;
+    return ComputingStatus::Ok;
 }
 
 } // namespace Core

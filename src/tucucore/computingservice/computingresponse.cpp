@@ -34,6 +34,18 @@ std::chrono::duration<double> ComputingResponse::getComputingTimeInSeconds() con
     return m_computingTimeInSeconds;
 }
 
+
+void ComputingResponse::setComputingStatus(ComputingStatus _result)
+{
+    m_computingResult = _result;
+}
+
+ComputingStatus ComputingResponse::getComputingStatus() const
+{
+    return m_computingResult;
+}
+
+
 ComputedData::ComputedData(RequestResponseId _id) :
     m_id(_id)
 {

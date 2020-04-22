@@ -112,7 +112,7 @@ void sortPercentiles(std::vector<ConcentrationPrediction*> &_predictions, int _c
 
 #endif // MULTITHREADEDSORT
 
-ComputingResult MonteCarloPercentileCalculatorBase::computePredictionsAndSortPercentiles(
+ComputingStatus MonteCarloPercentileCalculatorBase::computePredictionsAndSortPercentiles(
         PercentilesPrediction &_percentiles,
         const DateTime &_recordFrom,
         const DateTime &_recordTo,
@@ -134,7 +134,7 @@ ComputingResult MonteCarloPercentileCalculatorBase::computePredictionsAndSortPer
 
     std::vector< std::vector< std::vector<Concentration> > > concentrations;
 
-    ComputingResult predictionResult = computePredictions(_recordFrom,
+    ComputingStatus predictionResult = computePredictions(_recordFrom,
                                                           _recordTo,
                                                           _intakes,
                                                           _parameters,
@@ -148,7 +148,7 @@ ComputingResult MonteCarloPercentileCalculatorBase::computePredictionsAndSortPer
                                                           concentrations,
                                                           _aborter);
 
-    if (predictionResult != ComputingResult::Ok) {
+    if (predictionResult != ComputingStatus::Ok) {
         return predictionResult;
     }
 
@@ -157,7 +157,7 @@ ComputingResult MonteCarloPercentileCalculatorBase::computePredictionsAndSortPer
 }
 
 
-ComputingResult MonteCarloPercentileCalculatorBase::computePredictions(
+ComputingStatus MonteCarloPercentileCalculatorBase::computePredictions(
         const DateTime &_recordFrom,
         const DateTime &_recordTo,
         const IntakeSeries &_intakes,
@@ -226,7 +226,7 @@ ComputingResult MonteCarloPercentileCalculatorBase::computePredictions(
                     predictionPtr = std::make_unique<Tucuxi::Core::ConcentrationPrediction>();
 
                     // Call to apriori becomes population as its determined earlier in the parametersExtractor
-                    ComputingResult computingResult = _concentrationCalculator.computeConcentrations(
+                    ComputingStatus computingResult = _concentrationCalculator.computeConcentrations(
                                 predictionPtr,
                                 false, // fix to "false"
                                 _recordFrom,
@@ -240,7 +240,7 @@ ComputingResult MonteCarloPercentileCalculatorBase::computePredictions(
 
 
                     // Save the series of result of concentrations[cycle][nbPoints][patient] for each cycle
-                    if (computingResult == ComputingResult::Ok) {
+                    if (computingResult == ComputingStatus::Ok) {
 
                         // Save concentrations to array of [patient] for using sort() function
                         for (unsigned int cycle = 0; cycle < _recordedIntakes.size(); cycle++) {
@@ -278,10 +278,10 @@ ComputingResult MonteCarloPercentileCalculatorBase::computePredictions(
 //    start = std::chrono::steady_clock::now();
 
     if (abort) {
-        return ComputingResult::Aborted;
+        return ComputingStatus::Aborted;
     }
 
-    return ComputingResult::Ok;
+    return ComputingStatus::Ok;
 }
 
 typedef struct
@@ -290,7 +290,7 @@ typedef struct
     bool isValid; // NOLINT(readability-identifier-naming)
 } valid_concentration_t;
 
-ComputingResult MonteCarloPercentileCalculatorBase::sortAndExtractPercentiles(
+ComputingStatus MonteCarloPercentileCalculatorBase::sortAndExtractPercentiles(
         PercentilesPrediction &_percentiles,
         const PercentileRanks &_percentileRanks,
         unsigned int _nbPatients,
@@ -522,7 +522,7 @@ ComputingResult MonteCarloPercentileCalculatorBase::sortAndExtractPercentiles(
 
 //    elapsed = std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::steady_clock::now( ) - start );
 //    std::cout << "milliseconds for predictions sort : " << elapsed.count( ) << '\n';
-    return ComputingResult::Ok;
+    return ComputingStatus::Ok;
 }
 
 
@@ -531,7 +531,7 @@ AprioriMonteCarloPercentileCalculator::AprioriMonteCarloPercentileCalculator()
 
 }
 
-ComputingResult AprioriMonteCarloPercentileCalculator::calculate(
+ComputingStatus AprioriMonteCarloPercentileCalculator::calculate(
         PercentilesPrediction &_percentiles,
         const DateTime &_recordFrom,
         const DateTime &_recordTo,
@@ -547,14 +547,14 @@ ComputingResult AprioriMonteCarloPercentileCalculator::calculate(
     std::vector<Etas> etaSamples;
     std::vector<Deviations> epsilons;
 
-    ComputingResult preparationResult = calculateEtasAndEpsilons(
+    ComputingStatus preparationResult = calculateEtasAndEpsilons(
                 etaSamples,
                 epsilons,
                 _omega,
                 _residualErrorModel,
                 _initialEtas);
 
-    if (preparationResult != ComputingResult::Ok) {
+    if (preparationResult != ComputingStatus::Ok) {
         return preparationResult;
     }
 
@@ -573,7 +573,7 @@ ComputingResult AprioriMonteCarloPercentileCalculator::calculate(
 }
 
 
-ComputingResult AprioriMonteCarloPercentileCalculator::calculateEtasAndEpsilons(
+ComputingStatus AprioriMonteCarloPercentileCalculator::calculateEtasAndEpsilons(
         std::vector<Etas> &_etas,
         std::vector<Deviations> &_epsilons,
         const OmegaMatrix& _omega,
@@ -657,7 +657,7 @@ ComputingResult AprioriMonteCarloPercentileCalculator::calculateEtasAndEpsilons(
         }
     }
 
-    return ComputingResult::Ok;
+    return ComputingStatus::Ok;
 }
 
 
@@ -696,7 +696,7 @@ AposterioriMonteCarloPercentileCalculator::AposterioriMonteCarloPercentileCalcul
 {
 }
 
-ComputingResult AposterioriMonteCarloPercentileCalculator::calculate(
+ComputingStatus AposterioriMonteCarloPercentileCalculator::calculate(
         PercentilesPrediction &_percentiles,
         const DateTime &_recordFrom,
         const DateTime &_recordTo,
@@ -714,7 +714,7 @@ ComputingResult AposterioriMonteCarloPercentileCalculator::calculate(
     std::vector<Etas> etaSamples;
     std::vector<Deviations> epsilons;
 
-    ComputingResult preparationResult = calculateEtasAndEpsilons(
+    ComputingStatus preparationResult = calculateEtasAndEpsilons(
                 etaSamples,
                 epsilons,
                 _intakes,
@@ -726,7 +726,7 @@ ComputingResult AposterioriMonteCarloPercentileCalculator::calculate(
                 _concentrationCalculator,
                 _aborter);
 
-    if (preparationResult != ComputingResult::Ok) {
+    if (preparationResult != ComputingStatus::Ok) {
         return preparationResult;
     }
 
@@ -745,7 +745,7 @@ ComputingResult AposterioriMonteCarloPercentileCalculator::calculate(
 }
 
 
-ComputingResult AposterioriMonteCarloPercentileCalculator::calculateEtasAndEpsilons(
+ComputingStatus AposterioriMonteCarloPercentileCalculator::calculateEtasAndEpsilons(
         std::vector<Etas> &_fullEtas,
         std::vector<Deviations> &_epsilons,
         const IntakeSeries &_intakes,
@@ -759,7 +759,7 @@ ComputingResult AposterioriMonteCarloPercentileCalculator::calculateEtasAndEpsil
 {
     // If there is no sample, then there is no reason to calculate a posteriori percentiles
     if (_samples.size() == 0) {
-        return ComputingResult::AposterioriPercentilesNoSamplesError;
+        return ComputingStatus::AposterioriPercentilesNoSamplesError;
     }
 
     // Return value from non-negative hessian matrix and loglikelihood
@@ -899,7 +899,7 @@ ComputingResult AposterioriMonteCarloPercentileCalculator::calculateEtasAndEpsil
     });
 
     if (abort) {
-        return ComputingResult::Aborted;
+        return ComputingStatus::Aborted;
     }
 
     // 5. Calculate the weights
@@ -929,14 +929,14 @@ ComputingResult AposterioriMonteCarloPercentileCalculator::calculateEtasAndEpsil
         _fullEtas[patient] = etaSamples[discreteDistribution(rnGenerator)];
     }
 
-    return ComputingResult::Ok;
+    return ComputingStatus::Ok;
 }
 
 AposterioriNormalApproximationMonteCarloPercentileCalculator::AposterioriNormalApproximationMonteCarloPercentileCalculator()
 {
 }
 
-ComputingResult AposterioriNormalApproximationMonteCarloPercentileCalculator::calculate(
+ComputingStatus AposterioriNormalApproximationMonteCarloPercentileCalculator::calculate(
         PercentilesPrediction &_percentiles,
         const DateTime &_recordFrom,
         const DateTime &_recordTo,
@@ -977,7 +977,7 @@ ComputingResult AposterioriNormalApproximationMonteCarloPercentileCalculator::ca
                 _aborter);
 }
 
-ComputingResult AprioriPercentileCalculatorMulti::calculate(
+ComputingStatus AprioriPercentileCalculatorMulti::calculate(
         PercentilesPrediction &_percentiles,
         const DateTime &_recordFrom,
         const DateTime &_recordTo,
@@ -1013,13 +1013,13 @@ ComputingResult AprioriPercentileCalculatorMulti::calculate(
         recordedIntakes.clear();
         std::vector<Etas> etaSamples;
         std::vector<Deviations> epsilons;
-        ComputingResult result = simpleCalculator.calculateEtasAndEpsilons(etaSamples,
+        ComputingStatus result = simpleCalculator.calculateEtasAndEpsilons(etaSamples,
                                                   epsilons,
                                                   _omega.at(analyteGroupId),
                                                   *_residualErrorModel.at(analyteGroupId),
                                                   _etas.at(analyteGroupId));
 
-        if (result != ComputingResult::Ok) {
+        if (result != ComputingStatus::Ok) {
             return result;
         }
         concentrations.push_back(std::vector< std::vector< std::vector<Concentration> > >(0));
@@ -1037,7 +1037,7 @@ ComputingResult AprioriPercentileCalculatorMulti::calculate(
                                             recordedIntakes,
                                             concentrations[analyteGroupIndex],
                                             _aborter);
-        if (result != ComputingResult::Ok) {
+        if (result != ComputingStatus::Ok) {
             return result;
         }
 
@@ -1056,7 +1056,7 @@ ComputingResult AprioriPercentileCalculatorMulti::calculate(
                 times);
 }
 
-ComputingResult AposterioriMonteCarloPercentileCalculatorMulti::calculate(
+ComputingStatus AposterioriMonteCarloPercentileCalculatorMulti::calculate(
         PercentilesPrediction &_percentiles,
         const DateTime &_recordFrom,
         const DateTime &_recordTo,
@@ -1093,7 +1093,7 @@ ComputingResult AposterioriMonteCarloPercentileCalculatorMulti::calculate(
         recordedIntakes.clear();
         std::vector<Etas> etaSamples;
         std::vector<Deviations> epsilons;
-        ComputingResult result = simpleCalculator.calculateEtasAndEpsilons(etaSamples,
+        ComputingStatus result = simpleCalculator.calculateEtasAndEpsilons(etaSamples,
                                                                            epsilons,
                                                                            _intakes.at(analyteGroupId),
                                                                            _parameters.at(analyteGroupId),
@@ -1104,7 +1104,7 @@ ComputingResult AposterioriMonteCarloPercentileCalculatorMulti::calculate(
                                                                            _concentrationCalculator,
                                                                            _aborter);
 
-        if (result != ComputingResult::Ok) {
+        if (result != ComputingStatus::Ok) {
             return result;
         }
         concentrations.push_back(std::vector< std::vector< std::vector<Concentration> > >(0));
@@ -1122,7 +1122,7 @@ ComputingResult AposterioriMonteCarloPercentileCalculatorMulti::calculate(
                                             recordedIntakes,
                                             concentrations[analyteGroupIndex],
                                             _aborter);
-        if (result != ComputingResult::Ok) {
+        if (result != ComputingStatus::Ok) {
             return result;
         }
 
@@ -1141,7 +1141,7 @@ ComputingResult AposterioriMonteCarloPercentileCalculatorMulti::calculate(
                 times);
 }
 
-ComputingResult PercentileCalculatorMultiBase::calculateActiveMoietyAndSort(
+ComputingStatus PercentileCalculatorMultiBase::calculateActiveMoietyAndSort(
         PercentilesPrediction &_percentiles,
         const PercentileRanks &_percentileRanks,
         const ActiveMoiety *_activeMoiety,
@@ -1192,7 +1192,7 @@ ComputingResult PercentileCalculatorMultiBase::calculateActiveMoietyAndSort(
                     double result;
                     if (!op->evaluate(inputList, result)) {
                         // Something went wrong
-                        return ComputingResult::ActiveMoietyCalculationError;
+                        return ComputingStatus::ActiveMoietyCalculationError;
                     }
                     aConcentration[i][j][k] = result;
                 }

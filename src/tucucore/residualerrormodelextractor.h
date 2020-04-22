@@ -18,7 +18,7 @@ public:
 
     ResidualErrorModelExtractor();
 
-    ComputingResult extract(
+    ComputingStatus extract(
             const ErrorModel &_errorModel,
             const Unit &_fromUnit,
             const CovariateSeries &_covariateSeries,

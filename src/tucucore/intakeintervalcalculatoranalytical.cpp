@@ -9,7 +9,7 @@ IntakeIntervalCalculatorAnalytical::~IntakeIntervalCalculatorAnalytical()
 {
 }
 
-ComputingResult IntakeIntervalCalculatorAnalytical::calculateIntakePoints(
+ComputingStatus IntakeIntervalCalculatorAnalytical::calculateIntakePoints(
         std::vector<Concentrations>& _concentrations,
         TimeOffsets & _times,
         const IntakeEvent& _intakeEvent,
@@ -34,7 +34,7 @@ ComputingResult IntakeIntervalCalculatorAnalytical::calculateIntakePoints(
     if (!checkInputs(_intakeEvent, _parameters))
     {
         m_loggingErrors = true;
-        return ComputingResult::BadParameters;
+        return ComputingStatus::BadParameters;
     }
     m_loggingErrors = true;
 
@@ -54,17 +54,17 @@ ComputingResult IntakeIntervalCalculatorAnalytical::calculateIntakePoints(
     }
 
     if (!computeConcentrations(_inResiduals, _isAll, _concentrations, _outResiduals)) {
-        return ComputingResult::BadConcentration;
+        return ComputingStatus::BadConcentration;
     }
 
     times = times.array() + _intakeEvent.getOffsetTime().toHours();
     _times.assign(times.data(), times.data() + times.size());
 
-    return ComputingResult::Ok;
+    return ComputingStatus::Ok;
 }
 
 
-ComputingResult IntakeIntervalCalculatorAnalytical::calculateIntakeSinglePoint(
+ComputingStatus IntakeIntervalCalculatorAnalytical::calculateIntakeSinglePoint(
     std::vector<Concentrations>& _concentrations,
     const IntakeEvent& _intakeEvent,
     const ParameterSetEvent& _parameters,
@@ -85,7 +85,7 @@ ComputingResult IntakeIntervalCalculatorAnalytical::calculateIntakeSinglePoint(
     }
 
     if (!checkInputs(_intakeEvent, _parameters)) {
-        return ComputingResult::BadParameters;
+        return ComputingStatus::BadParameters;
     }
 
     // To reuse interface of computeExponentials with multiple points, remaine time as a vector.
@@ -95,10 +95,10 @@ ComputingResult IntakeIntervalCalculatorAnalytical::calculateIntakeSinglePoint(
     computeExponentials(times);
 
     if (!computeConcentration(_atTime, _inResiduals, _isAll, _concentrations, _outResiduals)) {
-        return ComputingResult::BadConcentration;
+        return ComputingStatus::BadConcentration;
     }
 
-    return ComputingResult::Ok;
+    return ComputingStatus::Ok;
 }
 
 

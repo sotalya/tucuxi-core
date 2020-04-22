@@ -10,7 +10,7 @@ IntakeIntervalCalculatorRK4::~IntakeIntervalCalculatorRK4()
 }
 
 
-ComputingResult IntakeIntervalCalculatorRK4::calculateIntakePoints(
+ComputingStatus IntakeIntervalCalculatorRK4::calculateIntakePoints(
         std::vector<Concentrations>& _concentrations,
         TimeOffsets & _times,
         const IntakeEvent& _intakeEvent,
@@ -33,7 +33,7 @@ ComputingResult IntakeIntervalCalculatorRK4::calculateIntakePoints(
     TMP_UNUSED_PARAMETER(_isDensityConstant);
     if (!checkInputs(_intakeEvent, _parameters))
     {
-        return ComputingResult::BadParameters;
+        return ComputingStatus::BadParameters;
     }
 
     // Create our serie of times
@@ -43,17 +43,17 @@ ComputingResult IntakeIntervalCalculatorRK4::calculateIntakePoints(
     m_pertinentTimesCalculator->calculateTimes(_intakeEvent, nbPoints, times);
 
     if (!computeConcentrations(times, _inResiduals, _isAll, _concentrations, _outResiduals)) {
-        return ComputingResult::BadConcentration;
+        return ComputingStatus::BadConcentration;
     }
 
     times = times.array() + _intakeEvent.getOffsetTime().toHours();
     _times.assign(times.data(), times.data() + times.size());
 
-    return ComputingResult::Ok;
+    return ComputingStatus::Ok;
 }
 
 
-ComputingResult IntakeIntervalCalculatorRK4::calculateIntakeSinglePoint(
+ComputingStatus IntakeIntervalCalculatorRK4::calculateIntakeSinglePoint(
         std::vector<Concentrations>& _concentrations,
         const IntakeEvent& _intakeEvent,
         const ParameterSetEvent& _parameters,
@@ -74,7 +74,7 @@ ComputingResult IntakeIntervalCalculatorRK4::calculateIntakeSinglePoint(
     }
 
     if (!checkInputs(_intakeEvent, _parameters)) {
-        return ComputingResult::BadParameters;
+        return ComputingStatus::BadParameters;
     }
 
     // To reuse interface of computeExponentials with multiple points, remaine time as a vector.
@@ -82,10 +82,10 @@ ComputingResult IntakeIntervalCalculatorRK4::calculateIntakeSinglePoint(
     times << static_cast<double>(_atTime), static_cast<double>(_intakeEvent.getInterval().toHours());
 
     if (!computeConcentration(_atTime, _inResiduals, _isAll, _concentrations, _outResiduals)) {
-        return ComputingResult::BadConcentration;
+        return ComputingStatus::BadConcentration;
     }
 
-    return ComputingResult::Ok;
+    return ComputingStatus::Ok;
 }
 
 

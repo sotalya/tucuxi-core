@@ -1,16 +1,15 @@
 #include "computingqueryresponse.h"
 
+#include "tucucore/computingservice/computingresponse.h"
 
 namespace Tucuxi {
 namespace Query {
 
 
 SingleResponseData::SingleResponseData(
-        std::unique_ptr<Tucuxi::Core::ComputedData> _computingResponse,
-        Tucuxi::Core::ComputingResult _status,
+        std::unique_ptr<Tucuxi::Core::ComputingResponse> _computingResponse,
         std::unique_ptr<ComputingResponseMetaData> _metaData) :
     m_computingResponse(std::move(_computingResponse)),
-    m_status(_status),
     m_metaData(std::move(_metaData))
 {
 }
@@ -32,14 +31,11 @@ const std::vector<SingleResponseData>& ComputingQueryResponse::getRequestRespons
 }
 
 
-void ComputingQueryResponse::addRequestResponse(
-        std::unique_ptr<Core::ComputedData> _computingResponse,
-        Tucuxi::Core::ComputingResult _status,
+void ComputingQueryResponse::addRequestResponse(std::unique_ptr<Core::ComputingResponse> _computingResponse,
         std::unique_ptr<ComputingResponseMetaData> _metaData)
 {
     m_requestResponses.push_back(SingleResponseData(std::move(_computingResponse),
-                                  _status,
-                                  std::move(_metaData)));
+                                                    std::move(_metaData)));
 }
 
 void ComputingQueryResponse::setRequestResponseId(Tucuxi::Core::RequestResponseId _requestResponseId)

@@ -12,7 +12,7 @@
 namespace Tucuxi {
 namespace Core {
 
-ComputingResult ConcentrationCalculator::computeConcentrations(const ConcentrationPredictionPtr &_prediction,
+ComputingStatus ConcentrationCalculator::computeConcentrations(const ConcentrationPredictionPtr &_prediction,
     bool _isAll,
     const DateTime &_recordFrom,
     const DateTime &_recordTo,
@@ -56,7 +56,7 @@ ComputingResult ConcentrationCalculator::computeConcentrations(const Concentrati
         if (parameters == nullptr) {
             Tucuxi::Common::LoggerHelper logHelper;
             logHelper.error("No parameters found!");
-            return ComputingResult::ConcentrationCalculatorNoParameters;
+            return ComputingStatus::ConcentrationCalculatorNoParameters;
         }
 
         DateTime intakeStartTime = intake.getEventTime();
@@ -74,13 +74,13 @@ ComputingResult ConcentrationCalculator::computeConcentrations(const Concentrati
 
     //        outResiduals.clear();
 
-            ComputingResult result = it->calculateIntakePoints(concentrations, times, intake, *parameters, inResiduals, _isAll, outResiduals, _isFixedDensity);
+            ComputingStatus result = it->calculateIntakePoints(concentrations, times, intake, *parameters, inResiduals, _isAll, outResiduals, _isFixedDensity);
 
             switch (result)
             {
-                case ComputingResult::Ok:
+                case ComputingStatus::Ok:
                     break;
-                case ComputingResult::DensityError:
+                case ComputingStatus::DensityError:
                     // Restart computation with more points...
 
                     // If nbpoints has changed (initial density was not the final density), change the density in the intakeevent
@@ -114,13 +114,13 @@ ComputingResult ConcentrationCalculator::computeConcentrations(const Concentrati
 
             _prediction->allocate(residualSize, intake.getNbPoints(), times, concentrations);
 
-            ComputingResult result = it->calculateIntakePoints(concentrations, times, intake, *parameters, inResiduals, _isAll, outResiduals, _isFixedDensity);
+            ComputingStatus result = it->calculateIntakePoints(concentrations, times, intake, *parameters, inResiduals, _isAll, outResiduals, _isFixedDensity);
 
             switch (result)
             {
-                case ComputingResult::Ok:
+                case ComputingStatus::Ok:
                     break;
-                case ComputingResult::DensityError:
+                case ComputingStatus::DensityError:
                     // Restart computation with more points...
 
                     // If nbpoints has changed (initial density was not the final density), change the density in the intakeevent
@@ -148,10 +148,10 @@ ComputingResult ConcentrationCalculator::computeConcentrations(const Concentrati
         }
     }
 
-    return ComputingResult::Ok;
+    return ComputingStatus::Ok;
 }
 
-ComputingResult ConcentrationCalculator::computeConcentrationsAtSteadyState(
+ComputingStatus ConcentrationCalculator::computeConcentrationsAtSteadyState(
         const ConcentrationPredictionPtr &_prediction,
         bool _isAll,
         const DateTime &_recordFrom,
@@ -200,7 +200,7 @@ ComputingResult ConcentrationCalculator::computeConcentrationsAtSteadyState(
             if (parameters == nullptr) {
                 Tucuxi::Common::LoggerHelper logHelper;
                 logHelper.error("No parameters found!");
-                return ComputingResult::ConcentrationCalculatorNoParameters;
+                return ComputingStatus::ConcentrationCalculatorNoParameters;
             }
 
             if (reachedSteadyState) {
@@ -212,13 +212,13 @@ ComputingResult ConcentrationCalculator::computeConcentrationsAtSteadyState(
 
                 _prediction->allocate(residualSize, intake.getNbPoints(), times, concentrations);
 
-                ComputingResult result = it->calculateIntakePoints(concentrations, times, intake, *parameters, inResiduals, _isAll, outResiduals, _isFixedDensity);
+                ComputingStatus result = it->calculateIntakePoints(concentrations, times, intake, *parameters, inResiduals, _isAll, outResiduals, _isFixedDensity);
 
                 switch (result)
                 {
-                case ComputingResult::Ok:
+                case ComputingStatus::Ok:
                     break;
-                case ComputingResult::DensityError:
+                case ComputingStatus::DensityError:
                     // Restart computation with more points...
 
                     // If nbpoints has changed (initial density was not the final density), change the density in the intakeevent
@@ -252,13 +252,13 @@ ComputingResult ConcentrationCalculator::computeConcentrationsAtSteadyState(
 
                 _prediction->allocate(residualSize, intake.getNbPoints(), times, concentrations);
 
-                ComputingResult result = it->calculateIntakePoints(concentrations, times, intake, *parameters, inResiduals, _isAll, outResiduals, _isFixedDensity);
+                ComputingStatus result = it->calculateIntakePoints(concentrations, times, intake, *parameters, inResiduals, _isAll, outResiduals, _isFixedDensity);
 
                 switch (result)
                 {
-                case ComputingResult::Ok:
+                case ComputingStatus::Ok:
                     break;
-                case ComputingResult::DensityError:
+                case ComputingStatus::DensityError:
                     // Restart computation with more points...
 
                     // If nbpoints has changed (initial density was not the final density), change the density in the intakeevent
@@ -299,11 +299,11 @@ ComputingResult ConcentrationCalculator::computeConcentrationsAtSteadyState(
     }
 
 
-    return ComputingResult::Ok;
+    return ComputingStatus::Ok;
 }
 
 
-ComputingResult ConcentrationCalculator::computeConcentrationsAtTimes(Concentrations &_concentrations,
+ComputingStatus ConcentrationCalculator::computeConcentrationsAtTimes(Concentrations &_concentrations,
     bool _isAll,
     const IntakeSeries &_intakes,
     const ParameterSetSeries &_parameters,
@@ -358,7 +358,7 @@ ComputingResult ConcentrationCalculator::computeConcentrationsAtTimes(Concentrat
         ParameterSetEventPtr parameters = _parameters.getAtTime(it->getEventTime(), _etas);
         if (parameters == nullptr) {
             //m_logger.error("No parameters found!");
-            return ComputingResult::ConcentrationCalculatorNoParameters;
+            return ComputingStatus::ConcentrationCalculatorNoParameters;
         }
 
         // If the next sample time greater than the next intake time, 
@@ -370,7 +370,7 @@ ComputingResult ConcentrationCalculator::computeConcentrationsAtTimes(Concentrat
 
         if (nextSampleTime > nextIntakeTime) {
 
-            ComputingResult result = it->calculateIntakeSinglePoint(
+            ComputingStatus result = it->calculateIntakeSinglePoint(
                 concentrations,
                 *it,
                 *parameters,
@@ -380,7 +380,7 @@ ComputingResult ConcentrationCalculator::computeConcentrationsAtTimes(Concentrat
                 _isAll,
                 outResiduals);
 
-            if (result != ComputingResult::Ok) {
+            if (result != ComputingStatus::Ok) {
                 _concentrations.clear();
                 return result;
             }
@@ -402,10 +402,10 @@ ComputingResult ConcentrationCalculator::computeConcentrationsAtTimes(Concentrat
                     concentrations[idx].clear();
                 }
 
-                ComputingResult result =
+                ComputingStatus result =
                 it->calculateIntakeSinglePoint(concentrations, *it, *parameters, inResiduals, atTime.toHours(), _isAll, outResiduals);
 
-                if (result != ComputingResult::Ok) {
+                if (result != ComputingStatus::Ok) {
                     _concentrations.clear();
                     return result;
                 }
@@ -416,7 +416,7 @@ ComputingResult ConcentrationCalculator::computeConcentrationsAtTimes(Concentrat
                 sit++;
 
                 if (sit == sampleEnd) {
-                    return ComputingResult::Ok;
+                    return ComputingStatus::Ok;
                 }
 
                 // Reset the next sample time
@@ -427,7 +427,7 @@ ComputingResult ConcentrationCalculator::computeConcentrationsAtTimes(Concentrat
         }
         it++; intakeNext++;
     }
-    return ComputingResult::Ok;
+    return ComputingStatus::Ok;
 }
 
 } // namespace Core

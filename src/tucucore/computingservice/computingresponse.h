@@ -281,6 +281,10 @@ public:
     ///
     std::chrono::duration<double> getComputingTimeInSeconds() const;
 
+    void setComputingStatus(ComputingStatus _result);
+
+    ComputingStatus getComputingStatus() const;
+
 protected:
 
     /// Id of the request
@@ -293,6 +297,7 @@ protected:
 
     std::chrono::duration<double, std::ratio<1,1> > m_computingTimeInSeconds{0};
 
+    ComputingStatus m_computingResult;
 };
 
 } // namespace Core

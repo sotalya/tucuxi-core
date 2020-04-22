@@ -27,7 +27,7 @@ public:
     ///
     /// This function also converts the samples to ug/l.
     ///
-    ComputingResult extract(
+    ComputingStatus extract(
             const Samples &_samples,
             const AnalyteSet *_analyteGroup,
             const DateTime &_start,
@@ -45,7 +45,7 @@ public:
     ///
     /// This function also converts the samples to ug/l.
     ///
-    ComputingResult extract(
+    ComputingStatus extract(
             const Samples &_samples,
             const DateTime &_start,
             const DateTime &_end,

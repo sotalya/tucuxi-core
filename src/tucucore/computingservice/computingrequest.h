@@ -36,10 +36,6 @@ public:
     /// \param _drugTreatment The patient drug treatment
     /// \param _computingTraits The list of computings to be performed
     ///
-//    ComputingRequest(RequestResponseId _id,
-//                      const DrugModel& _drugModel,
-//                      const DrugTreatment& _drugTreatment,
-//                      std::unique_ptr<ComputingTraits> _computingTraits);
 
 
     ComputingRequest(RequestResponseId _id,

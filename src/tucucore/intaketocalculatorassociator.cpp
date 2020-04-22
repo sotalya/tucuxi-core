@@ -9,7 +9,7 @@ namespace Tucuxi {
 namespace Core {
 
 
-ComputingResult IntakeToCalculatorAssociator::associate(
+ComputingStatus IntakeToCalculatorAssociator::associate(
         Tucuxi::Core::IntakeSeries& _intakes,
         const Tucuxi::Core::PkModel &_pkModel)
 {
@@ -17,12 +17,12 @@ ComputingResult IntakeToCalculatorAssociator::associate(
     while (it != _intakes.end()) {
         std::shared_ptr<IntakeIntervalCalculator> pCalc = _pkModel.getCalculatorForRoute(it->getRoute());
         if (pCalc == nullptr) {
-            return ComputingResult::UnsupportedRoute;
+            return ComputingStatus::UnsupportedRoute;
         }
         it->setCalculator(pCalc);
         it++;
     }
-    return ComputingResult::Ok;
+    return ComputingStatus::Ok;
 }
 
 } // namespace Core

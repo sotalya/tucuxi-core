@@ -88,10 +88,10 @@ struct TestComputingComponentConcentration : public fructose::test_base<TestComp
 
         std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
-        ComputingResult result;
+        ComputingStatus result;
         result = component->compute(request, response);
 
-        fructose_assert( result == ComputingResult::Ok);
+        fructose_assert( result == ComputingStatus::Ok);
 
         const ComputedData* responseData = response->getData();
         fructose_assert(dynamic_cast<const SinglePredictionData*>(responseData) != nullptr);
@@ -125,10 +125,10 @@ struct TestComputingComponentConcentration : public fructose::test_base<TestComp
 
             std::unique_ptr<ComputingResponse> partialResponse = std::make_unique<ComputingResponse>(requestResponseId);
 
-            ComputingResult result;
+            ComputingStatus result;
             result = component->compute(request, partialResponse);
 
-            fructose_assert( result == ComputingResult::Ok);
+            fructose_assert( result == ComputingStatus::Ok);
 
             const ComputedData* responseData = response->getData();
             fructose_assert(dynamic_cast<const SinglePredictionData*>(responseData) != nullptr);
@@ -206,10 +206,10 @@ struct TestComputingComponentConcentration : public fructose::test_base<TestComp
 
         std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
-        ComputingResult result;
+        ComputingStatus result;
         result = component->compute(request, response);
 
-        fructose_assert( result == ComputingResult::Ok);
+        fructose_assert( result == ComputingStatus::Ok);
 
         const ComputedData* responseData = response->getData();
         fructose_assert(dynamic_cast<const SinglePredictionData*>(responseData) != nullptr);

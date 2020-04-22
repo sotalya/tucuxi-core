@@ -47,7 +47,7 @@ public:
     /// (it would have been easier to simply empty the input _series, but this guarantees an uniform behavior across the
     /// whole set of calls)
     /// \post FORALL intake IN extracted_intakes, intake.time IN [_start, _end)
-    ComputingResult extract(const DosageHistory &_dosageHistory, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, IntakeSeries &_series,
+    ComputingStatus extract(const DosageHistory &_dosageHistory, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, IntakeSeries &_series,
                             ExtractionOption _option = ExtractionOption::EndofDate);
 
 private:

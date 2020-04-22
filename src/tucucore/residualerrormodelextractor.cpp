@@ -11,7 +11,7 @@ ResidualErrorModelExtractor::ResidualErrorModelExtractor()
 }
 
 
-ComputingResult ResidualErrorModelExtractor::extract(
+ComputingStatus ResidualErrorModelExtractor::extract(
         const ErrorModel &_errorModel,
         const Unit &_fromUnit,
         const CovariateSeries &_covariateSeries,
@@ -22,7 +22,7 @@ ComputingResult ResidualErrorModelExtractor::extract(
 
     if (_errorModel.m_errorModel == ResidualErrorType::SOFTCODED) {
         // Not supported yet
-        return ComputingResult::ErrorModelExtractionError;
+        return ComputingStatus::ErrorModelExtractionError;
     }
 
     SigmaResidualErrorModel *newErrorModel = new SigmaResidualErrorModel();
@@ -46,7 +46,7 @@ ComputingResult ResidualErrorModelExtractor::extract(
 
     _residualErrorModel = std::unique_ptr<IResidualErrorModel>(newErrorModel);
 
-    return ComputingResult::Ok;
+    return ComputingStatus::Ok;
 }
 
 } // namespace Core

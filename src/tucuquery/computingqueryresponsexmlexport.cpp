@@ -207,7 +207,7 @@ bool ComputingQueryResponseXmlExport::exportToString(const ComputingQueryRespons
         responseNode.addChild(issuesNode);
 
         // We start by checking for adjustements, as AdjustmentResponse is a subclass of SinglePredictionResponse
-        if (dynamic_cast<Tucuxi::Core::AdjustmentData*>(response.m_computingResponse.get()) != nullptr) {
+        if (dynamic_cast<const Tucuxi::Core::AdjustmentData*>(response.m_computingResponse->getData()) != nullptr) {
 
             Tucuxi::Common::XmlNode dataNode = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "dataAdjustment");
 
@@ -216,7 +216,7 @@ bool ComputingQueryResponseXmlExport::exportToString(const ComputingQueryRespons
             responseNode.addChild(requestType);
 
             const Tucuxi::Core::AdjustmentData* prediction =
-                    dynamic_cast<Tucuxi::Core::AdjustmentData*>(response.m_computingResponse.get());
+                    dynamic_cast<const Tucuxi::Core::AdjustmentData*>(response.m_computingResponse->getData());
 
             if (!exportAdjustment(prediction, dataNode)) {
                 Tucuxi::Common::XmlNode issue = m_doc.createNode(
@@ -226,7 +226,7 @@ bool ComputingQueryResponseXmlExport::exportToString(const ComputingQueryRespons
             responseNode.addChild(dataNode);
 
         }
-        else if (dynamic_cast<Tucuxi::Core::SinglePredictionData*>(response.m_computingResponse.get()) != nullptr) {
+        else if (dynamic_cast<const Tucuxi::Core::SinglePredictionData*>(response.m_computingResponse->getData()) != nullptr) {
 
             Tucuxi::Common::XmlNode dataNode = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "dataPrediction");
 
@@ -235,7 +235,7 @@ bool ComputingQueryResponseXmlExport::exportToString(const ComputingQueryRespons
             responseNode.addChild(requestType);
 
             const Tucuxi::Core::SinglePredictionData* prediction =
-                    dynamic_cast<Tucuxi::Core::SinglePredictionData*>(response.m_computingResponse.get());
+                    dynamic_cast<const Tucuxi::Core::SinglePredictionData*>(response.m_computingResponse->getData());
 
             if (!exportSinglePrediction(prediction, dataNode)) {
                 Tucuxi::Common::XmlNode issue = m_doc.createNode(
@@ -245,7 +245,7 @@ bool ComputingQueryResponseXmlExport::exportToString(const ComputingQueryRespons
             responseNode.addChild(dataNode);
 
         }
-        else if (dynamic_cast<Tucuxi::Core::SinglePointsData*>(response.m_computingResponse.get()) != nullptr) {
+        else if (dynamic_cast<const Tucuxi::Core::SinglePointsData*>(response.m_computingResponse->getData()) != nullptr) {
 
             Tucuxi::Common::XmlNode dataNode = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "dataPoints");
 
@@ -254,7 +254,7 @@ bool ComputingQueryResponseXmlExport::exportToString(const ComputingQueryRespons
             responseNode.addChild(requestType);
 
             const Tucuxi::Core::SinglePointsData* prediction =
-                    dynamic_cast<Tucuxi::Core::SinglePointsData*>(response.m_computingResponse.get());
+                    dynamic_cast<const Tucuxi::Core::SinglePointsData*>(response.m_computingResponse->getData());
 
             if (!exportSinglePoints(prediction, dataNode)) {
                 Tucuxi::Common::XmlNode issue = m_doc.createNode(
@@ -264,7 +264,7 @@ bool ComputingQueryResponseXmlExport::exportToString(const ComputingQueryRespons
             responseNode.addChild(dataNode);
 
         }
-        else if (dynamic_cast<Tucuxi::Core::PercentilesData*>(response.m_computingResponse.get()) != nullptr) {
+        else if (dynamic_cast<const Tucuxi::Core::PercentilesData*>(response.m_computingResponse->getData()) != nullptr) {
 
             Tucuxi::Common::XmlNode dataNode = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "dataPercentiles");
 
@@ -273,7 +273,7 @@ bool ComputingQueryResponseXmlExport::exportToString(const ComputingQueryRespons
             responseNode.addChild(requestType);
 
             const Tucuxi::Core::PercentilesData* prediction =
-                    dynamic_cast<Tucuxi::Core::PercentilesData*>(response.m_computingResponse.get());
+                    dynamic_cast<const Tucuxi::Core::PercentilesData*>(response.m_computingResponse->getData());
 
             if (!exportPercentiles(prediction, dataNode)) {
                 Tucuxi::Common::XmlNode issue = m_doc.createNode(

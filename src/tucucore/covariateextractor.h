@@ -51,7 +51,7 @@ public:
     /// \brief Extract covariate events.
     /// \param _series Set of extracted covariate events.
     /// \return 0 on success, an error code in case an issue arised.
-    virtual ComputingResult extract(CovariateSeries &_series) = 0;
+    virtual ComputingStatus extract(CovariateSeries &_series) = 0;
 
 
 protected:
@@ -93,7 +93,7 @@ public:
     /// \brief Extract covariate events.
     /// \param _series Set of extracted covariate events.
     /// \return ComputingResult::Ok on success, Result::ExtractionError in case an issue arised.
-    ComputingResult extract(CovariateSeries &_series) override;
+    ComputingStatus extract(CovariateSeries &_series) override;
 
     // Make the test class friend, as this will allow us to test the helper methods (which are private).
     friend TestCovariateExtractor;

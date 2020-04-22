@@ -8,19 +8,6 @@
 namespace Tucuxi {
 namespace Core {
 
-/*
-ComputingRequest::ComputingRequest(RequestResponseId _id,
-    const DrugModel& _drugModel,
-    const DrugTreatment& _drugTreatment,
-     std::unique_ptr<ComputingTraits> _computingTraits) :
-    m_id(_id),
-    m_drugModel(_drugModel),
-    m_drugTreatment(_drugTreatment),
-    m_computingTraits(std::move(_computingTraits))
-{
-}
-*/
-
 ComputingRequest::ComputingRequest(RequestResponseId _id,
     const DrugModel& _drugModel,
     const DrugTreatment& _drugTreatment,

@@ -32,7 +32,7 @@ public:
     /// \param _isDensityConstant Flag to indicate if initial number of points should be used with a constant density
     /// \return An indication if the computation was successful
     ///
-    ComputingResult calculateIntakePoints(
+    ComputingStatus calculateIntakePoints(
         std::vector<Concentrations>& _concentrations,
         TimeOffsets & _times,
         const IntakeEvent& _intakeEvent,
@@ -52,7 +52,7 @@ public:
     /// \param _outResiduals Final residual concentrations
     /// \return Returns an indication if the computation was successful
     ///
-    ComputingResult calculateIntakeSinglePoint(
+    ComputingStatus calculateIntakeSinglePoint(
         std::vector<Concentrations>& _concentrations,
         const IntakeEvent& _intakeEvent,
         const ParameterSetEvent& _parameters,

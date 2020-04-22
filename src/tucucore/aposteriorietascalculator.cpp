@@ -15,7 +15,7 @@ APosterioriEtasCalculator::APosterioriEtasCalculator()
 }
 
 
-ComputingResult APosterioriEtasCalculator::computeAposterioriEtas(
+ComputingStatus APosterioriEtasCalculator::computeAposterioriEtas(
         const IntakeSeries &_intakes,
         const ParameterSetSeries &_parameters,
         const OmegaMatrix &_omega,
@@ -26,13 +26,13 @@ ComputingResult APosterioriEtasCalculator::computeAposterioriEtas(
     // Verify we have a var-covar matrix
     if (isOmegaEmpty(_omega)) {
         //throw something
-        return ComputingResult::AposterioriEtasCalculationEmptyOmega;
+        return ComputingStatus::AposterioriEtasCalculationEmptyOmega;
     }
 
     // Verify is square matrix
     if ( !isOmegaSquare(_omega)) {
         //throw something
-        return ComputingResult::AposterioriEtasCalculationNoSquareOmega;
+        return ComputingStatus::AposterioriEtasCalculationNoSquareOmega;
     }
 
     // Check that there is at least one measure
@@ -40,7 +40,7 @@ ComputingResult APosterioriEtasCalculator::computeAposterioriEtas(
 
         _aPosterioriEtas.assign(_aPosterioriEtas.size(), 0.0);
 
-        return ComputingResult::Ok;
+        return ComputingStatus::Ok;
     }
 
 // Prints out the parameter values
@@ -78,7 +78,7 @@ ComputingResult APosterioriEtasCalculator::computeAposterioriEtas(
     //        QTextStream(stdout) << (double)_eta[i] << " " << endl;
     //    }
 
-    return ComputingResult::Ok;
+    return ComputingStatus::Ok;
 }
 
 

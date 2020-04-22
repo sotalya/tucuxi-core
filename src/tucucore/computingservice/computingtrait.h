@@ -182,7 +182,7 @@ private:
     /// It allows the use of a visitor pattern from the ComputingComponent that can then
     /// iterate on the list of ComputingRequest for starting the computations.
     ///
-    virtual ComputingResult compute(ComputingComponent &_computingComponent,
+    virtual ComputingStatus compute(ComputingComponent &_computingComponent,
                                     const ComputingRequest &_request,
                                     std::unique_ptr<ComputingResponse> &_response) const = 0;
 };
@@ -231,7 +231,7 @@ public:
     double getNbPointsPerHour() const;
 
     /// This function should not be called. It returns ERROR
-    ComputingResult compute(ComputingComponent &_computingComponent,
+    ComputingStatus compute(ComputingComponent &_computingComponent,
                             const ComputingRequest &_request,
                             std::unique_ptr<ComputingResponse> &_response) const override;
 
@@ -313,7 +313,7 @@ private:
     /// \param _response The response list in which we will add the new response
     /// \return ComputingResult::Success if everything went well, ComputingResult::Error else
     ///
-    ComputingResult compute(ComputingComponent &_computingComponent,
+    ComputingStatus compute(ComputingComponent &_computingComponent,
                             const ComputingRequest &_request,
                             std::unique_ptr<ComputingResponse> &_response) const override;
 
@@ -357,7 +357,7 @@ private:
     /// \param _response The response list in which we will add the new response
     /// \return ComputingResult::Success if everything went well, ComputingResult::Error else
     ///
-    ComputingResult compute(ComputingComponent &_computingComponent,
+    ComputingStatus compute(ComputingComponent &_computingComponent,
                             const ComputingRequest &_request,
                             std::unique_ptr<ComputingResponse> &_response) const override;
 };
@@ -576,7 +576,7 @@ private:
     /// \param _response The response list in which we will add the new response
     /// \return ComputingResult::Success if everything went well, ComputingResult::Error else
     ///
-    ComputingResult compute(ComputingComponent &_computingComponent,
+    ComputingStatus compute(ComputingComponent &_computingComponent,
                             const ComputingRequest &_request,
                             std::unique_ptr<ComputingResponse> &_response) const override;
 };
@@ -611,7 +611,7 @@ private:
     /// \param _response The response list in which we will add the new response
     /// \return ComputingResult::Success if everything went well, ComputingResult::Error else
     ///
-    ComputingResult compute(ComputingComponent &_computingComponent,
+    ComputingStatus compute(ComputingComponent &_computingComponent,
                             const ComputingRequest &_request,
                             std::unique_ptr<ComputingResponse> &_response) const override;
 };
@@ -675,7 +675,7 @@ private:
     /// \param _response The response list in which we will add the new response
     /// \return ComputingResult::Success if everything went well, ComputingResult::Error else
     ///
-    ComputingResult compute(
+    ComputingStatus compute(
             ComputingComponent &_computingComponent,
             const ComputingRequest &_request,
             std::unique_ptr<ComputingResponse> &_response) const override;

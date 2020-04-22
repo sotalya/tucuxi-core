@@ -40,7 +40,7 @@ public:
     /// \param _activeMoietyPredictions The resulting active moiety concentrations
     /// \return ComputingResult::Ok if everything went well, ComputingResult::ActiveMoietyCalculationError else
     ///
-    ComputingResult computeActiveMoiety(
+    ComputingStatus computeActiveMoiety(
             const ActiveMoiety *_activeMoiety,
             const std::vector<ConcentrationPredictionPtr> &_analytesPredictions,
             ConcentrationPredictionPtr &_activeMoietyPredictions);

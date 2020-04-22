@@ -21,7 +21,7 @@ class APosterioriEtasCalculator
 public:    
     APosterioriEtasCalculator();
 
-    ComputingResult computeAposterioriEtas(
+    ComputingStatus computeAposterioriEtas(
             const IntakeSeries &_intakes,
             const ParameterSetSeries &_parameters,
             const OmegaMatrix &_omega,

@@ -51,7 +51,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
                                        int _nbPoints)
     {
 
-        Tucuxi::Core::ComputingResult res;
+        Tucuxi::Core::ComputingStatus res;
         CalculatorMicroClass microCalculator;
         CalculatorMacroClass macroCalculator;
 
@@ -87,7 +87,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
                 interval.toHours(),
                 isAll,
                 outMicroResiduals);
-            fructose_assert(res == Tucuxi::Core::ComputingResult::Ok);
+            fructose_assert(res == Tucuxi::Core::ComputingStatus::Ok);
 
             // Check Macro class
             inMacroResiduals = outMacroResiduals;
@@ -99,7 +99,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
                 interval.toHours(),
                 isAll,
                 outMacroResiduals);
-            fructose_assert(res == Tucuxi::Core::ComputingResult::Ok);
+            fructose_assert(res == Tucuxi::Core::ComputingStatus::Ok);
 
 #if 0
             std::cout << "[" << cycle << "]";
@@ -110,7 +110,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
 #endif
         }
 
-        if (res == Tucuxi::Core::ComputingResult::Ok) {
+        if (res == Tucuxi::Core::ComputingStatus::Ok) {
             for (unsigned int i = 0; i < residualSize; i++) {
                 fructose_assert_double_eq_rel_abs(inMicroResiduals[i], outMicroResiduals[i], 0.01, 0.01)
                 fructose_assert_double_eq_rel_abs(inMacroResiduals[i], outMacroResiduals[i], 0.01, 0.01)
@@ -128,7 +128,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
                               std::chrono::seconds _infusionTime,
                               int _nbPoints)
     {
-        Tucuxi::Core::ComputingResult res;
+        Tucuxi::Core::ComputingStatus res;
         CalculatorMicroClass microCalculator;
         CalculatorMacroClass macroCalculator;
 
@@ -171,7 +171,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             }
         }
 
-        fructose_assert(res == Tucuxi::Core::ComputingResult::Ok);
+        fructose_assert(res == Tucuxi::Core::ComputingStatus::Ok);
 
         res = microCalculator.calculateIntakeSinglePoint(
             concentrations,
@@ -192,7 +192,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             }
         }
 
-        fructose_assert(res == Tucuxi::Core::ComputingResult::Ok);
+        fructose_assert(res == Tucuxi::Core::ComputingStatus::Ok);
 
         // Calculation of Macro Class
         res = macroCalculator.calculateIntakePoints(
@@ -216,7 +216,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             }
         }
 
-        fructose_assert(res == Tucuxi::Core::ComputingResult::Ok);
+        fructose_assert(res == Tucuxi::Core::ComputingStatus::Ok);
 
         res = macroCalculator.calculateIntakeSinglePoint(
             concentrations,
@@ -237,9 +237,9 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             }
         }
 
-        fructose_assert(res == Tucuxi::Core::ComputingResult::Ok);
+        fructose_assert(res == Tucuxi::Core::ComputingStatus::Ok);
 
-        if (res == Tucuxi::Core::ComputingResult::Ok) {
+        if (res == Tucuxi::Core::ComputingStatus::Ok) {
             for (unsigned int i = 0; i < residualSize; i++) {
                 fructose_assert_double_eq_rel_abs(outMicroMultiResiduals[i], outMicroSingleResiduals[i], 0.0001, 0.0)
                 fructose_assert_double_eq_rel_abs(outMacroMultiResiduals[i], outMacroSingleResiduals[i], 0.0001, 0.0)
@@ -258,7 +258,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
                               std::chrono::seconds _infusionTime,
                               int _nbPoints)
     {
-        Tucuxi::Core::ComputingResult res;
+        Tucuxi::Core::ComputingStatus res;
         CalculatorClass0 calculator0;
         CalculatorClass1 calculator1;
 
@@ -292,7 +292,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             outResiduals0,
             true);
 
-        fructose_assert(res == Tucuxi::Core::ComputingResult::Ok);
+        fructose_assert(res == Tucuxi::Core::ComputingStatus::Ok);
 
 
         std::vector<Tucuxi::Core::Concentrations> concentrations1;
@@ -309,9 +309,9 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             outResiduals1,
             true);
 
-        fructose_assert(res == Tucuxi::Core::ComputingResult::Ok);
+        fructose_assert(res == Tucuxi::Core::ComputingStatus::Ok);
 
-        if (res == Tucuxi::Core::ComputingResult::Ok) {
+        if (res == Tucuxi::Core::ComputingStatus::Ok) {
             for (unsigned int i = 0; i < static_cast<unsigned int>(_nbPoints); i++) {
 //                std::cout << i << " : " << concentrations0[0][i] << " , " << concentrations1[0][i] << std::endl;
                 fructose_assert_double_eq_rel_abs(concentrations0[0][i], concentrations1[0][i], 0.0001, 0.0);
@@ -440,7 +440,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
         microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
         Tucuxi::Core::ParameterSetEvent microParameters(DateTime(), microParameterDefs);
 
-        Tucuxi::Core::ComputingResult res;
+        Tucuxi::Core::ComputingStatus res;
         RK4TwoCompartmentErlangMacro<4> calculator0;
 
         DateTime now;
@@ -475,7 +475,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             outResiduals0,
             true);
 
-        fructose_assert(res == Tucuxi::Core::ComputingResult::Ok);
+        fructose_assert(res == Tucuxi::Core::ComputingStatus::Ok);
     }
 
 

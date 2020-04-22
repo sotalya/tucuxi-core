@@ -95,10 +95,10 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
 
         std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
-        ComputingResult result;
+        ComputingStatus result;
         result = component->compute(request, response);
 
-        fructose_assert( result == ComputingResult::Ok);
+        fructose_assert( result == ComputingStatus::Ok);
 
         const ComputedData* responseData = response->getData();
         fructose_assert(dynamic_cast<const AdjustmentData*>(responseData) != nullptr);
@@ -155,10 +155,10 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
 
         std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
-        ComputingResult result;
+        ComputingStatus result;
         result = component->compute(request, response);
 
-        fructose_assert( result == ComputingResult::Ok);
+        fructose_assert( result == ComputingStatus::Ok);
 
 
         const ComputedData* responseData = response->getData();
@@ -215,10 +215,10 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
 
         std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
-        ComputingResult result;
+        ComputingStatus result;
         result = component->compute(request, response);
 
-        fructose_assert( result == ComputingResult::Ok);
+        fructose_assert( result == ComputingStatus::Ok);
 
 
         const ComputedData* responseData = response->getData();
@@ -271,10 +271,10 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
 
         std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
-        ComputingResult result;
+        ComputingStatus result;
         result = component->compute(request, response);
 
-        fructose_assert( result == ComputingResult::Ok);
+        fructose_assert( result == ComputingStatus::Ok);
 
 
         const ComputedData* responseData = response->getData();
@@ -331,10 +331,10 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
 
         std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
-        ComputingResult result;
+        ComputingStatus result;
         result = component->compute(request, response);
 
-        fructose_assert( result == ComputingResult::Ok);
+        fructose_assert( result == ComputingStatus::Ok);
 
 
         const ComputedData* responseData = response->getData();
@@ -391,10 +391,10 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
 
         std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
-        ComputingResult result;
+        ComputingStatus result;
         result = component->compute(request, response);
 
-        fructose_assert( result == ComputingResult::Ok);
+        fructose_assert( result == ComputingStatus::Ok);
 
 
         const ComputedData* responseData = response->getData();
@@ -451,10 +451,10 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
 
         std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
-        ComputingResult result;
+        ComputingStatus result;
         result = component->compute(request, response);
 
-        fructose_assert( result == ComputingResult::Ok);
+        fructose_assert( result == ComputingStatus::Ok);
 
         const ComputedData* responseData = response->getData();
         fructose_assert(dynamic_cast<const AdjustmentData*>(responseData) != nullptr);
@@ -513,10 +513,10 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
 
         std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
-        ComputingResult result;
+        ComputingStatus result;
         result = component->compute(request, response);
 
-        fructose_assert( result == ComputingResult::Ok);
+        fructose_assert( result == ComputingStatus::Ok);
 
 
         const ComputedData* responseData = response->getData();
@@ -574,10 +574,10 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
 
             std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
-            ComputingResult result;
+            ComputingStatus result;
             result = component->compute(request, response);
 
-            fructose_assert( result == ComputingResult::Ok);
+            fructose_assert( result == ComputingStatus::Ok);
 
 
             const ComputedData* responseData = response->getData();
@@ -659,10 +659,10 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
 
         std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
-        ComputingResult result;
+        ComputingStatus result;
         result = component->compute(request, response);
 
-        fructose_assert( result == ComputingResult::Ok);
+        fructose_assert( result == ComputingStatus::Ok);
 
 
         const ComputedData* responseData = response->getData();
