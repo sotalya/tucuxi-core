@@ -142,13 +142,12 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
 
             fructose_assert( result == ComputingResult::Ok);
 
-            const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
-
-            fructose_assert_eq(responses.size(), size_t{1});
+            const SingleComputingResponse* responseData = response.get()->getSingleComputingResponse();
 
             {
-                fructose_assert(dynamic_cast<SinglePredictionResponse*>(responses[0].get()) != nullptr);
-                const SinglePredictionResponse *resp = dynamic_cast<SinglePredictionResponse*>(responses[0].get());
+                fructose_assert(responseData != nullptr);
+                const SinglePredictionResponse *resp = dynamic_cast<const SinglePredictionResponse*>(responseData);
+                fructose_assert(resp != nullptr);
 
                 fructose_assert_eq(resp->getIds().size(), size_t{3});
                 fructose_assert_eq(resp->getIds()[0], "activeMoietyMulti");
@@ -278,13 +277,13 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
 
             fructose_assert( result == ComputingResult::Ok);
 
-            const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
+            const SingleComputingResponse* responseData = response->getSingleComputingResponse();
 
-            fructose_assert_eq(responses.size(), size_t{1});
+            fructose_assert(responseData != nullptr);
 
             {
-                fructose_assert(dynamic_cast<SinglePredictionResponse*>(responses[0].get()) != nullptr);
-                const SinglePredictionResponse *resp = dynamic_cast<SinglePredictionResponse*>(responses[0].get());
+                fructose_assert(dynamic_cast<const SinglePredictionResponse*>(responseData) != nullptr);
+                const SinglePredictionResponse *resp = dynamic_cast<const SinglePredictionResponse*>(responseData);
 
                 fructose_assert_eq(resp->getIds().size(), size_t{3});
                 fructose_assert_eq(resp->getIds()[0], "activeMoietyMulti");
@@ -467,13 +466,13 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
 
             fructose_assert( result == ComputingResult::Ok);
 
-            const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
+            const SingleComputingResponse* responseData = response->getSingleComputingResponse();
 
-            fructose_assert_eq(responses.size(), size_t{1});
+            fructose_assert(responseData != nullptr);
 
             {
-                fructose_assert(dynamic_cast<AdjustmentResponse*>(responses[0].get()) != nullptr);
-                const AdjustmentResponse *resp = dynamic_cast<AdjustmentResponse*>(responses[0].get());
+                fructose_assert(dynamic_cast<const AdjustmentResponse*>(responseData) != nullptr);
+                const AdjustmentResponse *resp = dynamic_cast<const AdjustmentResponse*>(responseData);
 
                 fructose_assert_eq(resp->getAdjustments().size(), size_t{9});
 

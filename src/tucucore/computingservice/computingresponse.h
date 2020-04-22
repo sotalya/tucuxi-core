@@ -264,10 +264,10 @@ public:
     /// \brief Gets the vector of responses
     /// \return A const reference to the vector of responses
     ///
-    std::vector<std::unique_ptr<SingleComputingResponse> > & getResponses() { return m_responses;}
-    const std::vector<std::unique_ptr<SingleComputingResponse> > & getResponses() const { return m_responses;}
+    // std::vector<std::unique_ptr<SingleComputingResponse> > & getResponses() { return m_responses;}
+    // const std::vector<std::unique_ptr<SingleComputingResponse> > & getResponses() const { return m_responses;}
 
-    std::unique_ptr<SingleComputingResponse> & getSingleComputingResponse() { return m_response ;}
+    const SingleComputingResponse* getSingleComputingResponse() const { return m_response.get() ;}
 
     ///
     /// \brief Set the computing time of this request

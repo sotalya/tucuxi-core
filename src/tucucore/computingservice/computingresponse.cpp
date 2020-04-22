@@ -21,7 +21,7 @@ RequestResponseId ComputingResponse::getId() const
 
 void ComputingResponse::addResponse(std::unique_ptr<SingleComputingResponse> _response)
 {
-    m_responses.push_back(std::move(_response));
+    m_response = std::move(_response);
 }
 
 void ComputingResponse::setComputingTimeInSeconds(std::chrono::duration<double> _computingTime)

@@ -161,12 +161,9 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
                 fructose_assert( result == ComputingResult::Ok);
 
-                const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
-
-                fructose_assert_eq(responses.size(), size_t{1});
-
-                fructose_assert(dynamic_cast<PercentilesResponse*>(responses[0].get()) != nullptr);
-                const PercentilesResponse *resp = dynamic_cast<PercentilesResponse*>(responses[0].get());
+                const SingleComputingResponse* responseData = response->getSingleComputingResponse();
+                fructose_assert(dynamic_cast<const PercentilesResponse*>(responseData) != nullptr);
+                const PercentilesResponse *resp = dynamic_cast<const PercentilesResponse*>(responseData);
 
                 fructose_assert_eq(resp->getNbRanks(), percentileRanks.size());
 
@@ -188,12 +185,9 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
                 fructose_assert( result == ComputingResult::Ok);
 
-                const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
-
-                fructose_assert_eq(responses.size(), size_t{1});
-
-                fructose_assert(dynamic_cast<SinglePredictionResponse*>(responses[0].get()) != nullptr);
-                const SinglePredictionResponse *resp = dynamic_cast<SinglePredictionResponse*>(responses[0].get());
+                const SingleComputingResponse* responseData = response->getSingleComputingResponse();
+                fructose_assert(dynamic_cast<const SinglePredictionResponse*>(responseData) != nullptr);
+                const SinglePredictionResponse *resp = dynamic_cast<const SinglePredictionResponse*>(responseData);
 
                 fructose_assert_eq(resp->getIds().size(), size_t{1});
                 fructose_assert_eq(resp->getIds()[0], "analyte");
@@ -325,12 +319,9 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
                 fructose_assert( result == ComputingResult::Ok);
 
-                const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
-
-                fructose_assert_eq(responses.size(), size_t{1});
-
-                fructose_assert(dynamic_cast<PercentilesResponse*>(responses[0].get()) != nullptr);
-                const PercentilesResponse *resp = dynamic_cast<PercentilesResponse*>(responses[0].get());
+                const SingleComputingResponse* responseData = response->getSingleComputingResponse();
+                fructose_assert(dynamic_cast<const PercentilesResponse*>(responseData) != nullptr);
+                const PercentilesResponse *resp = dynamic_cast<const PercentilesResponse*>(responseData);
 
                 fructose_assert_eq(resp->getNbRanks(), percentileRanks.size());
 
@@ -352,12 +343,10 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
                 fructose_assert( result == ComputingResult::Ok);
 
-                const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
 
-                fructose_assert_eq(responses.size(), size_t{1});
-
-                fructose_assert(dynamic_cast<SinglePredictionResponse*>(responses[0].get()) != nullptr);
-                const SinglePredictionResponse *resp = dynamic_cast<SinglePredictionResponse*>(responses[0].get());
+                const SingleComputingResponse* responseData = response->getSingleComputingResponse();
+                fructose_assert(dynamic_cast<const SinglePredictionResponse*>(responseData) != nullptr);
+                const SinglePredictionResponse *resp = dynamic_cast<const SinglePredictionResponse*>(responseData);
 
                 fructose_assert_eq(resp->getIds().size(), size_t{1});
                 fructose_assert_eq(resp->getIds()[0], "analyte");
@@ -483,27 +472,21 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
             fructose_assert( result == ComputingResult::Ok);
 
-            const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
+            const SingleComputingResponse* responseData = response->getSingleComputingResponse();
+            fructose_assert(dynamic_cast<const PercentilesResponse*>(responseData) != nullptr);
+            const PercentilesResponse *resp = dynamic_cast<const PercentilesResponse*>(responseData);
 
-            fructose_assert_eq(responses.size(), size_t{1});
+            fructose_assert_eq(resp->getNbRanks(), percentileRanks.size());
 
-            {
-                fructose_assert(dynamic_cast<PercentilesResponse*>(responses[0].get()) != nullptr);
-                const PercentilesResponse *resp = dynamic_cast<PercentilesResponse*>(responses[0].get());
+            for(size_t p = 0; p < resp->getNbRanks(); p++) {
+                DateTime statTime;
+                Value statValue = 0.0;
+                resp->getData(p,0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
+                //fructose_assert_eq(statValue, 200001.0);
 
-                fructose_assert_eq(resp->getNbRanks(), percentileRanks.size());
-
-                for(size_t p = 0; p < resp->getNbRanks(); p++) {
-                    DateTime statTime;
-                    Value statValue = 0.0;
-                    resp->getData(p,0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
-                    //fructose_assert_eq(statValue, 200001.0);
-
-                    // Multiply the Inv CDF by SD (10), and by 1000.0 because of mg/l
-                    double expectedValue = invCdf[p] * 10.0 * 1000.0;
-                    fructose_assert_double_eq_rel_abs(statValue - 200000.0, expectedValue, 0.02, 10.0 * 10.0 * 1000.0 * 0.06);
-                }
-
+                // Multiply the Inv CDF by SD (10), and by 1000.0 because of mg/l
+                double expectedValue = invCdf[p] * 10.0 * 1000.0;
+                fructose_assert_double_eq_rel_abs(statValue - 200000.0, expectedValue, 0.02, 10.0 * 10.0 * 1000.0 * 0.06);
             }
 
             delete drugTreatment;
@@ -587,28 +570,23 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
             fructose_assert( result == ComputingResult::Ok);
 
-            const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
+            const SingleComputingResponse* responseData = response->getSingleComputingResponse();
+            fructose_assert(dynamic_cast<const PercentilesResponse*>(responseData) != nullptr);
+            const PercentilesResponse *resp = dynamic_cast<const PercentilesResponse*>(responseData);
 
-            fructose_assert_eq(responses.size(), size_t{1});
+            fructose_assert_eq(resp->getNbRanks(), percentileRanks.size());
 
-            {
-                fructose_assert(dynamic_cast<PercentilesResponse*>(responses[0].get()) != nullptr);
-                const PercentilesResponse *resp = dynamic_cast<PercentilesResponse*>(responses[0].get());
+            for(size_t p = 0; p < resp->getNbRanks(); p++) {
+                DateTime statTime;
+                Value statValue = 0.0;
+                resp->getData(p,0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
+                //fructose_assert_eq(statValue, 200001.0);
 
-                fructose_assert_eq(resp->getNbRanks(), percentileRanks.size());
-
-                for(size_t p = 0; p < resp->getNbRanks(); p++) {
-                    DateTime statTime;
-                    Value statValue = 0.0;
-                    resp->getData(p,0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
-                    //fructose_assert_eq(statValue, 200001.0);
-
-                    // Multiply the Inv CDF by SD (0.2)
-                    double expectedValue = 200000.0 * std::exp(invCdf[p] * 0.2);
-                    fructose_assert_double_eq_rel_abs(statValue, expectedValue, 0.05, 0.0);
-                }
-
+                // Multiply the Inv CDF by SD (0.2)
+                double expectedValue = 200000.0 * std::exp(invCdf[p] * 0.2);
+                fructose_assert_double_eq_rel_abs(statValue, expectedValue, 0.05, 0.0);
             }
+
             delete drugTreatment;
         }
 
@@ -690,27 +668,21 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
             fructose_assert( result == ComputingResult::Ok);
 
-            const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
+            const SingleComputingResponse* responseData = response->getSingleComputingResponse();
+            fructose_assert(dynamic_cast<const PercentilesResponse*>(responseData) != nullptr);
+            const PercentilesResponse *resp = dynamic_cast<const PercentilesResponse*>(responseData);
 
-            fructose_assert_eq(responses.size(), size_t{1});
+            fructose_assert_eq(resp->getNbRanks(), percentileRanks.size());
 
-            {
-                fructose_assert(dynamic_cast<PercentilesResponse*>(responses[0].get()) != nullptr);
-                const PercentilesResponse *resp = dynamic_cast<PercentilesResponse*>(responses[0].get());
+            for(size_t p = 0; p < resp->getNbRanks(); p++) {
+                DateTime statTime;
+                Value statValue = 0.0;
+                resp->getData(p,0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
+                //fructose_assert_eq(statValue, 200001.0);
 
-                fructose_assert_eq(resp->getNbRanks(), percentileRanks.size());
-
-                for(size_t p = 0; p < resp->getNbRanks(); p++) {
-                    DateTime statTime;
-                    Value statValue = 0.0;
-                    resp->getData(p,0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
-                    //fructose_assert_eq(statValue, 200001.0);
-
-                    // Multiply the Inv CDF by SD (0.2)
-                    double expectedValue = 200000.0 * (1 + invCdf[p] * 0.2);
-                    fructose_assert_double_eq_rel_abs(statValue, expectedValue, 0.05, 0.0);
-                }
-
+                // Multiply the Inv CDF by SD (0.2)
+                double expectedValue = 200000.0 * (1 + invCdf[p] * 0.2);
+                fructose_assert_double_eq_rel_abs(statValue, expectedValue, 0.05, 0.0);
             }
 
             delete drugTreatment;
@@ -794,27 +766,21 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
             fructose_assert( result == ComputingResult::Ok);
 
-            const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
+            const SingleComputingResponse* responseData = response->getSingleComputingResponse();
+            fructose_assert(dynamic_cast<const PercentilesResponse*>(responseData) != nullptr);
+            const PercentilesResponse *resp = dynamic_cast<const PercentilesResponse*>(responseData);
 
-            fructose_assert_eq(responses.size(), size_t{1});
+            fructose_assert_eq(resp->getNbRanks(), percentileRanks.size());
 
-            {
-                fructose_assert(dynamic_cast<PercentilesResponse*>(responses[0].get()) != nullptr);
-                const PercentilesResponse *resp = dynamic_cast<PercentilesResponse*>(responses[0].get());
+            for(size_t p = 0; p < resp->getNbRanks(); p++) {
+                DateTime statTime;
+                Value statValue = 0.0;
+                resp->getData(p,0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
+                //fructose_assert_eq(statValue, 200001.0);
 
-                fructose_assert_eq(resp->getNbRanks(), percentileRanks.size());
-
-                for(size_t p = 0; p < resp->getNbRanks(); p++) {
-                    DateTime statTime;
-                    Value statValue = 0.0;
-                    resp->getData(p,0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
-                    //fructose_assert_eq(statValue, 200001.0);
-
-                    // Multiply the Inv CDF by SD (0.2)
-                    double expectedValue = 200000.0 + invCdf[p] * std::sqrt(std::pow(200000.0 * 0.2, 2)  + std::pow(10.0, 2));
-                    fructose_assert_double_eq_rel_abs(statValue, expectedValue, 0.04, 0.0);
-                }
-
+                // Multiply the Inv CDF by SD (0.2)
+                double expectedValue = 200000.0 + invCdf[p] * std::sqrt(std::pow(200000.0 * 0.2, 2)  + std::pow(10.0, 2));
+                fructose_assert_double_eq_rel_abs(statValue, expectedValue, 0.04, 0.0);
             }
 
             delete drugTreatment;
@@ -908,27 +874,21 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
             fructose_assert( result == ComputingResult::Ok);
 
-            const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
+            const SingleComputingResponse* responseData = response->getSingleComputingResponse();
+            fructose_assert(dynamic_cast<const PercentilesResponse*>(responseData) != nullptr);
+            const PercentilesResponse *resp = dynamic_cast<const PercentilesResponse*>(responseData);
 
-            fructose_assert_eq(responses.size(), size_t{1});
+            fructose_assert_eq(resp->getNbRanks(), percentileRanks.size());
 
-            {
-                fructose_assert(dynamic_cast<PercentilesResponse*>(responses[0].get()) != nullptr);
-                const PercentilesResponse *resp = dynamic_cast<PercentilesResponse*>(responses[0].get());
+            for(size_t p = 0; p < resp->getNbRanks(); p++) {
+                DateTime statTime;
+                Value statValue = 0.0;
+                resp->getData(p,0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
+                //fructose_assert_eq(statValue, 200001.0);
 
-                fructose_assert_eq(resp->getNbRanks(), percentileRanks.size());
-
-                for(size_t p = 0; p < resp->getNbRanks(); p++) {
-                    DateTime statTime;
-                    Value statValue = 0.0;
-                    resp->getData(p,0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
-                    //fructose_assert_eq(statValue, 200001.0);
-
-                    // Multiply the Inv CDF by SD (10), and by 1000.0 because of mg/l
-                    double expectedValue = 200000.0 + invCdf[p] * 1000.0;
-                    fructose_assert_double_eq_rel_abs(statValue, expectedValue, .02, 0.02);
-                }
-
+                // Multiply the Inv CDF by SD (10), and by 1000.0 because of mg/l
+                double expectedValue = 200000.0 + invCdf[p] * 1000.0;
+                fructose_assert_double_eq_rel_abs(statValue, expectedValue, .02, 0.02);
             }
 
             delete drugTreatment;
@@ -1021,28 +981,22 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
             fructose_assert( result == ComputingResult::Ok);
 
-            const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
+            const SingleComputingResponse* responseData = response->getSingleComputingResponse();
+            fructose_assert(dynamic_cast<const PercentilesResponse*>(responseData) != nullptr);
+            const PercentilesResponse *resp = dynamic_cast<const PercentilesResponse*>(responseData);
 
-            fructose_assert_eq(responses.size(), size_t{1});
+            fructose_assert_eq(resp->getNbRanks(), percentileRanks.size());
 
-            {
-                fructose_assert(dynamic_cast<PercentilesResponse*>(responses[0].get()) != nullptr);
-                const PercentilesResponse *resp = dynamic_cast<PercentilesResponse*>(responses[0].get());
+            for(size_t p = 0; p < resp->getNbRanks(); p++) {
+                DateTime statTime;
+                Value statValue = 0.0;
+                resp->getData(p,0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
+                //fructose_assert_eq(statValue, 200001.0);
 
-                fructose_assert_eq(resp->getNbRanks(), percentileRanks.size());
+                // Multiply the Inv CDF by SD (10), and by 1000.0 because of mg/l
+                double expectedValue = 200000.0 + invCdf[p]*  std::sqrt(std::pow(1000.0, 2) + std::pow(10.0 * 1000.0, 2));
 
-                for(size_t p = 0; p < resp->getNbRanks(); p++) {
-                    DateTime statTime;
-                    Value statValue = 0.0;
-                    resp->getData(p,0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
-                    //fructose_assert_eq(statValue, 200001.0);
-
-                    // Multiply the Inv CDF by SD (10), and by 1000.0 because of mg/l
-                    double expectedValue = 200000.0 + invCdf[p]*  std::sqrt(std::pow(1000.0, 2) + std::pow(10.0 * 1000.0, 2));
-
-                    fructose_assert_double_eq_rel_abs(statValue, expectedValue, .01, 0.01);
-                }
-
+                fructose_assert_double_eq_rel_abs(statValue, expectedValue, .01, 0.01);
             }
 
             delete drugTreatment;
@@ -1134,30 +1088,25 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
             fructose_assert( result == ComputingResult::Ok);
 
-            const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
+            const SingleComputingResponse* responseData = response->getSingleComputingResponse();
+            fructose_assert(dynamic_cast<const PercentilesResponse*>(responseData) != nullptr);
+            const PercentilesResponse *resp = dynamic_cast<const PercentilesResponse*>(responseData);
 
-            fructose_assert_eq(responses.size(), size_t{1});
+            fructose_assert_eq(resp->getNbRanks(), percentileRanks.size());
 
-            {
-                fructose_assert(dynamic_cast<PercentilesResponse*>(responses[0].get()) != nullptr);
-                const PercentilesResponse *resp = dynamic_cast<PercentilesResponse*>(responses[0].get());
+            for(size_t p = 0; p < resp->getNbRanks(); p++) {
+                DateTime statTime;
+                Value statValue = 0.0;
+                resp->getData(p,0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
 
-                fructose_assert_eq(resp->getNbRanks(), percentileRanks.size());
+                // Calculate the resulting standard deviation
+                double newStd = std::sqrt(std::pow(0.2, 2) + std::pow(0.3, 2));
 
-                for(size_t p = 0; p < resp->getNbRanks(); p++) {
-                    DateTime statTime;
-                    Value statValue = 0.0;
-                    resp->getData(p,0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
-
-                    // Calculate the resulting standard deviation
-                    double newStd = std::sqrt(std::pow(0.2, 2) + std::pow(0.3, 2));
-
-                    // Multiply the Inv CDF by the new standard deviation
-                    double expectedValue = 200000.0 * std::exp(invCdf[p] * newStd);
-                    fructose_assert_double_eq_rel_abs(statValue, expectedValue, 0.05, 0.0);
-                }
-
+                // Multiply the Inv CDF by the new standard deviation
+                double expectedValue = 200000.0 * std::exp(invCdf[p] * newStd);
+                fructose_assert_double_eq_rel_abs(statValue, expectedValue, 0.05, 0.0);
             }
+
             delete drugTreatment;
         }
 
@@ -1247,39 +1196,34 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
             fructose_assert( result == ComputingResult::Ok);
 
-            const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
+            const SingleComputingResponse* responseData = response->getSingleComputingResponse();
+            fructose_assert(dynamic_cast<const PercentilesResponse*>(responseData) != nullptr);
+            const PercentilesResponse *resp = dynamic_cast<const PercentilesResponse*>(responseData);
 
-            fructose_assert_eq(responses.size(), size_t{1});
+            fructose_assert_eq(resp->getNbRanks(), percentileRanks.size());
 
-            {
-                fructose_assert(dynamic_cast<PercentilesResponse*>(responses[0].get()) != nullptr);
-                const PercentilesResponse *resp = dynamic_cast<PercentilesResponse*>(responses[0].get());
-
-                fructose_assert_eq(resp->getNbRanks(), percentileRanks.size());
-
-                for(size_t p = 0; p < resp->getNbRanks(); p++) {
-                    DateTime statTime;
-                    Value statValue = 0.0;
-                    resp->getData(p,0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
-                    //fructose_assert_eq(statValue, 200001.0);
+            for(size_t p = 0; p < resp->getNbRanks(); p++) {
+                DateTime statTime;
+                Value statValue = 0.0;
+                resp->getData(p,0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
+                //fructose_assert_eq(statValue, 200001.0);
 
 
-                    // Calculate the resulting standard deviation
-                    //double newStd = std::sqrt(1.0 / ( 1.0 /std::pow(0.2, 2) + 1.0 / std::pow(0.3, 2)));
-                    // double newStd = std::sqrt(std::pow(0.2, 2) * std::pow(0.3, 2) / ( std::pow(0.2, 2) + std::pow(0.3, 2)));
-                    //double newStd = std::sqrt(std::pow(0.2, 2) * std::pow(0.3, 2) / ( std::pow(0.2, 2) + std::pow(0.3, 2)));
-                    //std::cout << newStd << std::endl;
+                // Calculate the resulting standard deviation
+                //double newStd = std::sqrt(1.0 / ( 1.0 /std::pow(0.2, 2) + 1.0 / std::pow(0.3, 2)));
+                // double newStd = std::sqrt(std::pow(0.2, 2) * std::pow(0.3, 2) / ( std::pow(0.2, 2) + std::pow(0.3, 2)));
+                //double newStd = std::sqrt(std::pow(0.2, 2) * std::pow(0.3, 2) / ( std::pow(0.2, 2) + std::pow(0.3, 2)));
+                //std::cout << newStd << std::endl;
 
 
-                    // Multiply the Inv CDF by the new standard deviation
-                    // double expectedValue = 200000.0 * ( 1.0 + invCdf[p] * newStd);
+                // Multiply the Inv CDF by the new standard deviation
+                // double expectedValue = 200000.0 * ( 1.0 + invCdf[p] * newStd);
 
-                    // YTA : I do not know how to calculate the product of two Normal variables
+                // YTA : I do not know how to calculate the product of two Normal variables
 
-                    //fructose_assert_double_eq_rel_abs(statValue, expectedValue, 0.02, 0.0);
-                }
-
+                //fructose_assert_double_eq_rel_abs(statValue, expectedValue, 0.02, 0.0);
             }
+
             delete drugTreatment;
         }
 
@@ -1387,31 +1331,24 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
             fructose_assert( result == ComputingResult::Ok);
 
-            const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
+            const SingleComputingResponse* responseData = response->getSingleComputingResponse();
+            fructose_assert(dynamic_cast<const AdjustmentResponse*>(responseData) != nullptr);
+            const AdjustmentResponse *resp = dynamic_cast<const AdjustmentResponse*>(responseData);
 
-            fructose_assert_eq(responses.size(), size_t{1});
+            fructose_assert_eq(resp->getAdjustments().size(), size_t{9});
 
-            {
-                fructose_assert(dynamic_cast<AdjustmentResponse*>(responses[0].get()) != nullptr);
-                const AdjustmentResponse *resp = dynamic_cast<AdjustmentResponse*>(responses[0].get());
+            for (auto &adjustment : resp->getAdjustments()) {
 
-                fructose_assert_eq(resp->getAdjustments().size(), size_t{9});
+                fructose_assert_eq(adjustment.m_history.getDosageTimeRanges().size(), size_t{1});
 
-                for (auto &adjustment : resp->getAdjustments()) {
-
-                    fructose_assert_eq(adjustment.m_history.getDosageTimeRanges().size(), size_t{1});
-
-                    for (const auto &timeRange : adjustment.m_history.getDosageTimeRanges()) {
-                        const DosageRepeat *dosageRepeat = dynamic_cast<const DosageRepeat*>(timeRange->getDosage());
-                        fructose_assert(dosageRepeat != nullptr);
-                        const SingleDose *dosage = dynamic_cast<const SingleDose*>(dosageRepeat->getDosage());
-                        fructose_assert(dosage != nullptr);
-                        fructose_assert_double_ge(dosage->getDose(), 750.0);
-                        fructose_assert_double_le(dosage->getDose(), 1500.0);
-                    }
+                for (const auto &timeRange : adjustment.m_history.getDosageTimeRanges()) {
+                    const DosageRepeat *dosageRepeat = dynamic_cast<const DosageRepeat*>(timeRange->getDosage());
+                    fructose_assert(dosageRepeat != nullptr);
+                    const SingleDose *dosage = dynamic_cast<const SingleDose*>(dosageRepeat->getDosage());
+                    fructose_assert(dosage != nullptr);
+                    fructose_assert_double_ge(dosage->getDose(), 750.0);
+                    fructose_assert_double_le(dosage->getDose(), 1500.0);
                 }
-
-
             }
 
             delete drugTreatment;
@@ -1520,33 +1457,26 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
             fructose_assert( result == ComputingResult::Ok);
 
-            const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
+            const SingleComputingResponse* responseData = response->getSingleComputingResponse();
+            fructose_assert(dynamic_cast<const AdjustmentResponse*>(responseData) != nullptr);
+            const AdjustmentResponse *resp = dynamic_cast<const AdjustmentResponse*>(responseData);
 
-            fructose_assert_eq(responses.size(), size_t{1});
+            // 18 possibilities:
+            // 3 intervals for doses 300, 400, 500, 600, 700, 800
+            fructose_assert_eq(resp->getAdjustments().size(), size_t{18});
 
-            {
-                fructose_assert(dynamic_cast<AdjustmentResponse*>(responses[0].get()) != nullptr);
-                const AdjustmentResponse *resp = dynamic_cast<AdjustmentResponse*>(responses[0].get());
+            for (auto &adjustment : resp->getAdjustments()) {
 
-                // 18 possibilities:
-                // 3 intervals for doses 300, 400, 500, 600, 700, 800
-                fructose_assert_eq(resp->getAdjustments().size(), size_t{18});
+                fructose_assert_eq(adjustment.m_history.getDosageTimeRanges().size(), size_t{1});
 
-                for (auto &adjustment : resp->getAdjustments()) {
-
-                    fructose_assert_eq(adjustment.m_history.getDosageTimeRanges().size(), size_t{1});
-
-                    for (const auto &timeRange : adjustment.m_history.getDosageTimeRanges()) {
-                        const DosageRepeat *dosageRepeat = dynamic_cast<const DosageRepeat*>(timeRange->getDosage());
-                        fructose_assert(dosageRepeat != nullptr);
-                        const SingleDose *dosage = dynamic_cast<const SingleDose*>(dosageRepeat->getDosage());
-                        fructose_assert(dosage != nullptr);
-                        fructose_assert_double_ge((200.0 + dosage->getDose()) / 2.0, 250.0);
-                        fructose_assert_double_le((200.0 + dosage->getDose()) / 2.0, 500.0);
-                    }
+                for (const auto &timeRange : adjustment.m_history.getDosageTimeRanges()) {
+                    const DosageRepeat *dosageRepeat = dynamic_cast<const DosageRepeat*>(timeRange->getDosage());
+                    fructose_assert(dosageRepeat != nullptr);
+                    const SingleDose *dosage = dynamic_cast<const SingleDose*>(dosageRepeat->getDosage());
+                    fructose_assert(dosage != nullptr);
+                    fructose_assert_double_ge((200.0 + dosage->getDose()) / 2.0, 250.0);
+                    fructose_assert_double_le((200.0 + dosage->getDose()) / 2.0, 500.0);
                 }
-
-
             }
 
             delete drugTreatment;

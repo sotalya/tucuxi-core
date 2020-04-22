@@ -135,70 +135,64 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
 
             fructose_assert( result == ComputingResult::Ok);
 
-            const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
+            const SingleComputingResponse* responseData = response->getSingleComputingResponse();
+            fructose_assert(dynamic_cast<const SinglePredictionResponse*>(responseData) != nullptr);
+            const SinglePredictionResponse *resp = dynamic_cast<const SinglePredictionResponse*>(responseData);
 
-            fructose_assert_eq(responses.size(), size_t{1});
+            fructose_assert_eq(resp->getIds().size(), size_t{1});
+            fructose_assert_eq(resp->getIds()[0], "analyte");
 
-            if (responses.size() > 0)
-            {
-                fructose_assert(dynamic_cast<SinglePredictionResponse*>(responses[0].get()) != nullptr);
-                const SinglePredictionResponse *resp = dynamic_cast<SinglePredictionResponse*>(responses[0].get());
+            std::vector<CycleData> data = resp->getData();
+            fructose_assert(data.size() == 16);
+            fructose_assert(data[0].m_concentrations.size() == 1);
+            fructose_assert_eq(data[0].m_concentrations[0][0] , 0.0);
+            DateTime startSept2018(date::year_month_day(date::year(2018), date::month(9), date::day(1)),
+                                   Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
 
-                fructose_assert_eq(resp->getIds().size(), size_t{1});
-                fructose_assert_eq(resp->getIds()[0], "analyte");
+            fructose_assert_eq(data[0].m_start.toSeconds() + data[0].m_times[0][0] * 3600.0 , startSept2018.toSeconds());
+            fructose_assert_eq(data[1].m_start.toSeconds() + data[1].m_times[0][0] * 3600.0 , startSept2018.toSeconds() + 3600.0 * 6.0);
 
-                std::vector<CycleData> data = resp->getData();
-                fructose_assert(data.size() == 16);
-                fructose_assert(data[0].m_concentrations.size() == 1);
-                fructose_assert_eq(data[0].m_concentrations[0][0] , 0.0);
-                DateTime startSept2018(date::year_month_day(date::year(2018), date::month(9), date::day(1)),
-                                       Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
+            DateTime statTime;
+            Value statValue = 0.0;
+            data[0].m_statistics.getStatistic(0, CycleStatisticType::AUC).getValue(statTime, statValue);
+            fructose_assert_double_eq(statValue, (0.0 + 200000.0 * 0.5) / 2.0 * 6.0);
 
-                fructose_assert_eq(data[0].m_start.toSeconds() + data[0].m_times[0][0] * 3600.0 , startSept2018.toSeconds());
-                fructose_assert_eq(data[1].m_start.toSeconds() + data[1].m_times[0][0] * 3600.0 , startSept2018.toSeconds() + 3600.0 * 6.0);
+            data[0].m_statistics.getStatistic(0, CycleStatisticType::CumulativeAuc).getValue(statTime, statValue);
+            fructose_assert_double_eq(statValue, (0.0 + 200000.0 * 0.5) / 2.0 * 6.0);
 
-                DateTime statTime;
-                Value statValue = 0.0;
-                data[0].m_statistics.getStatistic(0, CycleStatisticType::AUC).getValue(statTime, statValue);
-                fructose_assert_double_eq(statValue, (0.0 + 200000.0 * 0.5) / 2.0 * 6.0);
+            data[0].m_statistics.getStatistic(0, CycleStatisticType::Peak).getValue(statTime, statValue);
+            fructose_assert_double_eq(statValue, 200000.0 * 0.5);
 
-                data[0].m_statistics.getStatistic(0, CycleStatisticType::CumulativeAuc).getValue(statTime, statValue);
-                fructose_assert_double_eq(statValue, (0.0 + 200000.0 * 0.5) / 2.0 * 6.0);
+            data[0].m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
+            fructose_assert_double_eq(statValue, 200000.0 * 0.5 / 2.0);
 
-                data[0].m_statistics.getStatistic(0, CycleStatisticType::Peak).getValue(statTime, statValue);
-                fructose_assert_double_eq(statValue, 200000.0 * 0.5);
+            data[1].m_statistics.getStatistic(0, CycleStatisticType::AUC).getValue(statTime, statValue);
+            fructose_assert_double_eq(statValue, (100000.0 + ((200000.0 - 100000.0) * 0.5) / 2.0) * 6.0);
 
-                data[0].m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
-                fructose_assert_double_eq(statValue, 200000.0 * 0.5 / 2.0);
+            data[1].m_statistics.getStatistic(0, CycleStatisticType::CumulativeAuc).getValue(statTime, statValue);
+            fructose_assert_double_eq(statValue, (0.0 + 200000.0 * 0.5) / 2.0 * 6.0 + (100000.0 + ((200000.0 - 100000.0) * 0.5) / 2.0) * 6.0);
 
-                data[1].m_statistics.getStatistic(0, CycleStatisticType::AUC).getValue(statTime, statValue);
-                fructose_assert_double_eq(statValue, (100000.0 + ((200000.0 - 100000.0) * 0.5) / 2.0) * 6.0);
+            data[1].m_statistics.getStatistic(0, CycleStatisticType::Peak).getValue(statTime, statValue);
+            fructose_assert_double_eq(statValue, 150000.0);
 
-                data[1].m_statistics.getStatistic(0, CycleStatisticType::CumulativeAuc).getValue(statTime, statValue);
-                fructose_assert_double_eq(statValue, (0.0 + 200000.0 * 0.5) / 2.0 * 6.0 + (100000.0 + ((200000.0 - 100000.0) * 0.5) / 2.0) * 6.0);
+            data[1].m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
+            fructose_assert_double_eq(statValue, 100000.0 + 25000.0);
 
-                data[1].m_statistics.getStatistic(0, CycleStatisticType::Peak).getValue(statTime, statValue);
-                fructose_assert_double_eq(statValue, 150000.0);
+            double residual = 0.0;
+            double dose = 200000.0;
+            double cumulativeAuc = 0.0;
+            double rate = 0.5;
+            for (size_t c = 0; c < 16; c++) {
 
-                data[1].m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
-                fructose_assert_double_eq(statValue, 100000.0 + 25000.0);
+                double auc = (residual + ((dose - residual) * rate) / 2.0) * 6.0;
+                cumulativeAuc += auc;
 
-                double residual = 0.0;
-                double dose = 200000.0;
-                double cumulativeAuc = 0.0;
-                double rate = 0.5;
-                for (size_t c = 0; c < 16; c++) {
+                data[c].m_statistics.getStatistic(0, CycleStatisticType::AUC).getValue(statTime, statValue);
+                fructose_assert_double_eq(statValue, auc);
 
-                    double auc = (residual + ((dose - residual) * rate) / 2.0) * 6.0;
-                    cumulativeAuc += auc;
-
-                    data[c].m_statistics.getStatistic(0, CycleStatisticType::AUC).getValue(statTime, statValue);
-                    fructose_assert_double_eq(statValue, auc);
-
-                    data[c].m_statistics.getStatistic(0, CycleStatisticType::CumulativeAuc).getValue(statTime, statValue);
-                    fructose_assert_double_eq(statValue, cumulativeAuc);
-                    residual = residual + ((dose - residual) * rate);
-                }
+                data[c].m_statistics.getStatistic(0, CycleStatisticType::CumulativeAuc).getValue(statTime, statValue);
+                fructose_assert_double_eq(statValue, cumulativeAuc);
+                residual = residual + ((dose - residual) * rate);
             }
 
             delete drugTreatment;
@@ -305,32 +299,25 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
 
             fructose_assert( result == ComputingResult::Ok);
 
-            const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
+            const SingleComputingResponse* responseData = response->getSingleComputingResponse();
+            fructose_assert(dynamic_cast<const AdjustmentResponse*>(responseData) != nullptr);
+            const AdjustmentResponse *resp = dynamic_cast<const AdjustmentResponse*>(responseData);
 
-            fructose_assert_eq(responses.size(), size_t{1});
+            // 8 doses reach the target, for the 3 possible intervals
+            fructose_assert_eq(resp->getAdjustments().size(), size_t{24});
 
-            {
-                fructose_assert(dynamic_cast<AdjustmentResponse*>(responses[0].get()) != nullptr);
-                const AdjustmentResponse *resp = dynamic_cast<AdjustmentResponse*>(responses[0].get());
+            for (auto &adjustment : resp->getAdjustments()) {
 
-                // 8 doses reach the target, for the 3 possible intervals
-                fructose_assert_eq(resp->getAdjustments().size(), size_t{24});
+                fructose_assert_eq(adjustment.m_history.getDosageTimeRanges().size(), size_t{1});
 
-                for (auto &adjustment : resp->getAdjustments()) {
-
-                    fructose_assert_eq(adjustment.m_history.getDosageTimeRanges().size(), size_t{1});
-
-                    for (const auto &timeRange : adjustment.m_history.getDosageTimeRanges()) {
-                        const DosageRepeat *dosageRepeat = dynamic_cast<const DosageRepeat*>(timeRange->getDosage());
-                        fructose_assert(dosageRepeat != nullptr);
-                        const SingleDose *dosage = dynamic_cast<const SingleDose*>(dosageRepeat->getDosage());
-                        fructose_assert(dosage != nullptr);
-                        fructose_assert_double_ge(dosage->getDose(), 750.0);
-                        fructose_assert_double_le(dosage->getDose(), 1500.0);
-                    }
+                for (const auto &timeRange : adjustment.m_history.getDosageTimeRanges()) {
+                    const DosageRepeat *dosageRepeat = dynamic_cast<const DosageRepeat*>(timeRange->getDosage());
+                    fructose_assert(dosageRepeat != nullptr);
+                    const SingleDose *dosage = dynamic_cast<const SingleDose*>(dosageRepeat->getDosage());
+                    fructose_assert(dosage != nullptr);
+                    fructose_assert_double_ge(dosage->getDose(), 750.0);
+                    fructose_assert_double_le(dosage->getDose(), 1500.0);
                 }
-
-
             }
 
             delete drugTreatment;
@@ -439,32 +426,25 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
 
             fructose_assert( result == ComputingResult::Ok);
 
-            const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
+            const SingleComputingResponse* responseData = response->getSingleComputingResponse();
+            fructose_assert(dynamic_cast<const AdjustmentResponse*>(responseData) != nullptr);
+            const AdjustmentResponse *resp = dynamic_cast<const AdjustmentResponse*>(responseData);
 
-            fructose_assert_eq(responses.size(), size_t{1});
+            // 8 doses reach the target, for the 3 possible intervals
+            fructose_assert_eq(resp->getAdjustments().size(), size_t{24});
 
-            {
-                fructose_assert(dynamic_cast<AdjustmentResponse*>(responses[0].get()) != nullptr);
-                const AdjustmentResponse *resp = dynamic_cast<AdjustmentResponse*>(responses[0].get());
+            for (auto &adjustment : resp->getAdjustments()) {
 
-                // 8 doses reach the target, for the 3 possible intervals
-                fructose_assert_eq(resp->getAdjustments().size(), size_t{24});
+                fructose_assert_eq(adjustment.m_history.getDosageTimeRanges().size(), size_t{1});
 
-                for (auto &adjustment : resp->getAdjustments()) {
-
-                    fructose_assert_eq(adjustment.m_history.getDosageTimeRanges().size(), size_t{1});
-
-                    for (const auto &timeRange : adjustment.m_history.getDosageTimeRanges()) {
-                        const DosageRepeat *dosageRepeat = dynamic_cast<const DosageRepeat*>(timeRange->getDosage());
-                        fructose_assert(dosageRepeat != nullptr);
-                        const SingleDose *dosage = dynamic_cast<const SingleDose*>(dosageRepeat->getDosage());
-                        fructose_assert(dosage != nullptr);
-                        fructose_assert_double_ge(dosage->getDose(), 750.0);
-                        fructose_assert_double_le(dosage->getDose(), 1500.0);
-                    }
+                for (const auto &timeRange : adjustment.m_history.getDosageTimeRanges()) {
+                    const DosageRepeat *dosageRepeat = dynamic_cast<const DosageRepeat*>(timeRange->getDosage());
+                    fructose_assert(dosageRepeat != nullptr);
+                    const SingleDose *dosage = dynamic_cast<const SingleDose*>(dosageRepeat->getDosage());
+                    fructose_assert(dosage != nullptr);
+                    fructose_assert_double_ge(dosage->getDose(), 750.0);
+                    fructose_assert_double_le(dosage->getDose(), 1500.0);
                 }
-
-
             }
 
             delete drugTreatment;
@@ -573,48 +553,41 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
 
             fructose_assert( result == ComputingResult::Ok);
 
-            const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
+            const SingleComputingResponse* responseData = response->getSingleComputingResponse();
+            fructose_assert(dynamic_cast<const AdjustmentResponse*>(responseData) != nullptr);
+            const AdjustmentResponse *resp = dynamic_cast<const AdjustmentResponse*>(responseData);
 
-            fructose_assert_eq(responses.size(), size_t{1});
+            // 8 doses reach the target, for the 3 possible intervals
+            fructose_assert_eq(resp->getAdjustments().size(), size_t{24});
 
-            {
-                fructose_assert(dynamic_cast<AdjustmentResponse*>(responses[0].get()) != nullptr);
-                const AdjustmentResponse *resp = dynamic_cast<AdjustmentResponse*>(responses[0].get());
+            for (auto &adjustment : resp->getAdjustments()) {
 
-                // 8 doses reach the target, for the 3 possible intervals
-                fructose_assert_eq(resp->getAdjustments().size(), size_t{24});
+                fructose_assert_eq(adjustment.m_history.getDosageTimeRanges().size(), size_t{2});
 
-                for (auto &adjustment : resp->getAdjustments()) {
+                //                    double r = adjustment.m_data[0].m_concentrations[0].back();
+                fructose_assert(std::abs(adjustment.m_data[0].m_concentrations[0].back() - adjustment.m_data.back().m_concentrations[0].back()) < 400.0);
 
-                    fructose_assert_eq(adjustment.m_history.getDosageTimeRanges().size(), size_t{2});
-
-//                    double r = adjustment.m_data[0].m_concentrations[0].back();
-                    fructose_assert(std::abs(adjustment.m_data[0].m_concentrations[0].back() - adjustment.m_data.back().m_concentrations[0].back()) < 400.0);
-
-                    {
-                        const auto &timeRange = adjustment.m_history.getDosageTimeRanges()[0];
-                        const DosageRepeat *dosageRepeat = dynamic_cast<const DosageRepeat*>(timeRange->getDosage());
-                        fructose_assert(dosageRepeat != nullptr);
-//                        const LastingDose *dosage = dynamic_cast<const LastingDose*>(dosageRepeat->getDosage());
-//                        double interval0 = dosage->getTimeStep().toHours();
-//                        double dose0 = dosage->getDose();
-//                        std::cout << interval0 << "\t" << dose0 << "\t" << r << std::endl;
-
-                    }
-
-                    const auto &timeRange = adjustment.m_history.getDosageTimeRanges().back();
+                {
+                    const auto &timeRange = adjustment.m_history.getDosageTimeRanges()[0];
                     const DosageRepeat *dosageRepeat = dynamic_cast<const DosageRepeat*>(timeRange->getDosage());
                     fructose_assert(dosageRepeat != nullptr);
-                    const LastingDose *dosage = dynamic_cast<const LastingDose*>(dosageRepeat->getDosage());
-//                    std::cout << dosage->getTimeStep().toHours() << "\t" << dosage->getDose() << "\t" << adjustment.m_data.back().m_concentrations[0].back() << std::endl;
+                    //                        const LastingDose *dosage = dynamic_cast<const LastingDose*>(dosageRepeat->getDosage());
+                    //                        double interval0 = dosage->getTimeStep().toHours();
+                    //                        double dose0 = dosage->getDose();
+                    //                        std::cout << interval0 << "\t" << dose0 << "\t" << r << std::endl;
 
-
-                    fructose_assert(dosage != nullptr);
-                    fructose_assert_double_ge(dosage->getDose(), 750.0);
-                    fructose_assert_double_le(dosage->getDose(), 1500.0);
                 }
 
+                const auto &timeRange = adjustment.m_history.getDosageTimeRanges().back();
+                const DosageRepeat *dosageRepeat = dynamic_cast<const DosageRepeat*>(timeRange->getDosage());
+                fructose_assert(dosageRepeat != nullptr);
+                const LastingDose *dosage = dynamic_cast<const LastingDose*>(dosageRepeat->getDosage());
+                //                    std::cout << dosage->getTimeStep().toHours() << "\t" << dosage->getDose() << "\t" << adjustment.m_data.back().m_concentrations[0].back() << std::endl;
 
+
+                fructose_assert(dosage != nullptr);
+                fructose_assert_double_ge(dosage->getDose(), 750.0);
+                fructose_assert_double_le(dosage->getDose(), 1500.0);
             }
 
             delete drugTreatment;
@@ -720,32 +693,25 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
 
             fructose_assert( result == ComputingResult::Ok);
 
-            const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
+            const SingleComputingResponse* responseData = response->getSingleComputingResponse();
+            fructose_assert(dynamic_cast<const AdjustmentResponse*>(responseData) != nullptr);
+            const AdjustmentResponse *resp = dynamic_cast<const AdjustmentResponse*>(responseData);
 
-            fructose_assert_eq(responses.size(), size_t{1});
+            // 8 doses reach the target, for the 3 possible intervals
+            fructose_assert_eq(resp->getAdjustments().size(), size_t{24});
 
-            {
-                fructose_assert(dynamic_cast<AdjustmentResponse*>(responses[0].get()) != nullptr);
-                const AdjustmentResponse *resp = dynamic_cast<AdjustmentResponse*>(responses[0].get());
+            for (auto &adjustment : resp->getAdjustments()) {
 
-                // 8 doses reach the target, for the 3 possible intervals
-                fructose_assert_eq(resp->getAdjustments().size(), size_t{24});
+                fructose_assert_eq(adjustment.m_history.getDosageTimeRanges().size(), size_t{1});
 
-                for (auto &adjustment : resp->getAdjustments()) {
-
-                    fructose_assert_eq(adjustment.m_history.getDosageTimeRanges().size(), size_t{1});
-
-                    for (const auto &timeRange : adjustment.m_history.getDosageTimeRanges()) {
-                        const DosageRepeat *dosageRepeat = dynamic_cast<const DosageRepeat*>(timeRange->getDosage());
-                        fructose_assert(dosageRepeat != nullptr);
-                        const SingleDose *dosage = dynamic_cast<const SingleDose*>(dosageRepeat->getDosage());
-                        fructose_assert(dosage != nullptr);
-                        fructose_assert_double_ge(dosage->getDose(), 750.0);
-                        fructose_assert_double_le(dosage->getDose(), 1500.0);
-                    }
+                for (const auto &timeRange : adjustment.m_history.getDosageTimeRanges()) {
+                    const DosageRepeat *dosageRepeat = dynamic_cast<const DosageRepeat*>(timeRange->getDosage());
+                    fructose_assert(dosageRepeat != nullptr);
+                    const SingleDose *dosage = dynamic_cast<const SingleDose*>(dosageRepeat->getDosage());
+                    fructose_assert(dosage != nullptr);
+                    fructose_assert_double_ge(dosage->getDose(), 750.0);
+                    fructose_assert_double_le(dosage->getDose(), 1500.0);
                 }
-
-
             }
 
             delete drugTreatment;
@@ -854,48 +820,41 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
 
             fructose_assert( result == ComputingResult::Ok);
 
-            const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
+            const SingleComputingResponse* responseData = response->getSingleComputingResponse();
+            fructose_assert(dynamic_cast<const AdjustmentResponse*>(responseData) != nullptr);
+            const AdjustmentResponse *resp = dynamic_cast<const AdjustmentResponse*>(responseData);
 
-            fructose_assert_eq(responses.size(), size_t{1});
+            // 8 doses reach the target, for the 3 possible intervals
+            fructose_assert_eq(resp->getAdjustments().size(), size_t{24});
 
-            {
-                fructose_assert(dynamic_cast<AdjustmentResponse*>(responses[0].get()) != nullptr);
-                const AdjustmentResponse *resp = dynamic_cast<AdjustmentResponse*>(responses[0].get());
+            for (auto &adjustment : resp->getAdjustments()) {
 
-                // 8 doses reach the target, for the 3 possible intervals
-                fructose_assert_eq(resp->getAdjustments().size(), size_t{24});
+                fructose_assert_eq(adjustment.m_history.getDosageTimeRanges().size(), size_t{2});
 
-                for (auto &adjustment : resp->getAdjustments()) {
+                //                    double r = adjustment.m_data[0].m_concentrations[0].back();
+                fructose_assert(std::abs(adjustment.m_data[0].m_concentrations[0].back() - adjustment.m_data.back().m_concentrations[0].back()) < 400.0);
 
-                    fructose_assert_eq(adjustment.m_history.getDosageTimeRanges().size(), size_t{2});
-
-//                    double r = adjustment.m_data[0].m_concentrations[0].back();
-                    fructose_assert(std::abs(adjustment.m_data[0].m_concentrations[0].back() - adjustment.m_data.back().m_concentrations[0].back()) < 400.0);
-
-                    {
-                        const auto &timeRange = adjustment.m_history.getDosageTimeRanges()[0];
-                        const DosageRepeat *dosageRepeat = dynamic_cast<const DosageRepeat*>(timeRange->getDosage());
-                        fructose_assert(dosageRepeat != nullptr);
-//                        const LastingDose *dosage = dynamic_cast<const LastingDose*>(dosageRepeat->getDosage());
-//                        double interval0 = dosage->getTimeStep().toHours();
-//                        double dose0 = dosage->getDose();
-//                        std::cout << interval0 << "\t" << dose0 << "\t" << r << std::endl;
-
-                    }
-
-                    const auto &timeRange = adjustment.m_history.getDosageTimeRanges().back();
+                {
+                    const auto &timeRange = adjustment.m_history.getDosageTimeRanges()[0];
                     const DosageRepeat *dosageRepeat = dynamic_cast<const DosageRepeat*>(timeRange->getDosage());
                     fructose_assert(dosageRepeat != nullptr);
-                    const LastingDose *dosage = dynamic_cast<const LastingDose*>(dosageRepeat->getDosage());
-//                    std::cout << dosage->getTimeStep().toHours() << "\t" << dosage->getDose() << "\t" << adjustment.m_data.back().m_concentrations[0].back() << std::endl;
+                    //                        const LastingDose *dosage = dynamic_cast<const LastingDose*>(dosageRepeat->getDosage());
+                    //                        double interval0 = dosage->getTimeStep().toHours();
+                    //                        double dose0 = dosage->getDose();
+                    //                        std::cout << interval0 << "\t" << dose0 << "\t" << r << std::endl;
 
-
-                    fructose_assert(dosage != nullptr);
-                    fructose_assert_double_ge(dosage->getDose(), 750.0);
-                    fructose_assert_double_le(dosage->getDose(), 1500.0);
                 }
 
+                const auto &timeRange = adjustment.m_history.getDosageTimeRanges().back();
+                const DosageRepeat *dosageRepeat = dynamic_cast<const DosageRepeat*>(timeRange->getDosage());
+                fructose_assert(dosageRepeat != nullptr);
+                const LastingDose *dosage = dynamic_cast<const LastingDose*>(dosageRepeat->getDosage());
+                //                    std::cout << dosage->getTimeStep().toHours() << "\t" << dosage->getDose() << "\t" << adjustment.m_data.back().m_concentrations[0].back() << std::endl;
 
+
+                fructose_assert(dosage != nullptr);
+                fructose_assert_double_ge(dosage->getDose(), 750.0);
+                fructose_assert_double_le(dosage->getDose(), 1500.0);
             }
 
             delete drugTreatment;

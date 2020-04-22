@@ -127,12 +127,12 @@ struct TestComputingComponentPercentiles : public fructose::test_base<TestComput
 
         fructose_assert( result == ComputingResult::Ok);
 
-        const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
-        for(std::size_t i = 0; i < responses.size(); i++) {
-            fructose_assert(dynamic_cast<PercentilesResponse*>(responses[i].get()) != nullptr);
-            const PercentilesResponse *resp = dynamic_cast<PercentilesResponse*>(responses[i].get());
-            TMP_UNUSED_PARAMETER(resp);
-            /*
+        const SingleComputingResponse* responseData = response->getSingleComputingResponse();
+        fructose_assert(dynamic_cast<const PercentilesResponse*>(responseData) != nullptr);
+        const PercentilesResponse *resp = dynamic_cast<const PercentilesResponse*>(responseData);
+
+        TMP_UNUSED_PARAMETER(resp);
+        /*
             std::vector<CycleData> data = resp->getData();
             fructose_assert(data.size() == 16);
             fructose_assert(data[0].m_concentrations.size() == 1);
@@ -143,7 +143,6 @@ struct TestComputingComponentPercentiles : public fructose::test_base<TestComput
             fructose_assert(data[0].m_start.toSeconds() + data[0].m_times[0][0] * 3600.0 == startSept2018.toSeconds());
             fructose_assert(data[1].m_start.toSeconds() + data[1].m_times[0][0] * 3600.0 == startSept2018.toSeconds() + 3600.0 * 6.0);
             */
-        }
 
 /*
         {
@@ -228,12 +227,12 @@ struct TestComputingComponentPercentiles : public fructose::test_base<TestComput
 
         fructose_assert( result == ComputingResult::Ok);
 
-        const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
-        for(std::size_t i = 0; i < responses.size(); i++) {
-            fructose_assert(dynamic_cast<PercentilesResponse*>(responses[i].get()) != nullptr);
-            const PercentilesResponse *resp = dynamic_cast<PercentilesResponse*>(responses[i].get());
-            TMP_UNUSED_PARAMETER(resp);
-            /*
+        const SingleComputingResponse* responseData = response->getSingleComputingResponse();
+        fructose_assert(dynamic_cast<const PercentilesResponse*>(responseData) != nullptr);
+        const PercentilesResponse *resp = dynamic_cast<const PercentilesResponse*>(responseData);
+
+        TMP_UNUSED_PARAMETER(resp);
+        /*
             std::vector<CycleData> data = resp->getData();
             fructose_assert(data.size() == 16);
             fructose_assert(data[0].m_concentrations.size() == 1);
@@ -244,7 +243,6 @@ struct TestComputingComponentPercentiles : public fructose::test_base<TestComput
             fructose_assert(data[0].m_start.toSeconds() + data[0].m_times[0][0] * 3600.0 == startSept2018.toSeconds());
             fructose_assert(data[1].m_start.toSeconds() + data[1].m_times[0][0] * 3600.0 == startSept2018.toSeconds() + 3600.0 * 6.0);
             */
-        }
 
 /*
         {

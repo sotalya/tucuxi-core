@@ -39,7 +39,8 @@ void QueryComputer::compute(ComputingQuery& _query, ComputingQueryResponse& _res
         std::unique_ptr<ComputingResponseMetaData> computingResponseMetaData = std::make_unique<ComputingResponseMetaData>("DrugModelId");
         Tucuxi::Core::RequestResponseId requestResponseId = computingRequest->getId();
         _response.setRequestResponseId(requestResponseId);
-        _response.addRequestResponse(std::move(computingResponse->getSingleComputingResponse()), result, std::move(computingResponseMetaData));
+        // TODO : JMY take care of that
+//        _response.addRequestResponse(std::move(computingResponse->getSingleComputingResponse()), result, std::move(computingResponseMetaData));
 
         // This for loop will be replaced by a getter in the future, as there is only one response
 //        for(std::unique_ptr<Core::SingleComputingResponse>& single : computingResponse->getResponses())

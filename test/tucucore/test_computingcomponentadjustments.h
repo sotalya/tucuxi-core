@@ -100,18 +100,16 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
 
         fructose_assert( result == ComputingResult::Ok);
 
-        const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
-        for(std::size_t i = 0; i < responses.size(); i++) {
-            fructose_assert(dynamic_cast<AdjustmentResponse*>(responses[i].get()) != nullptr);
-            const AdjustmentResponse *resp = dynamic_cast<AdjustmentResponse*>(responses[i].get());
+        const SingleComputingResponse* responseData = response->getSingleComputingResponse();
+        fructose_assert(dynamic_cast<const AdjustmentResponse*>(responseData) != nullptr);
+        const AdjustmentResponse *resp = dynamic_cast<const AdjustmentResponse*>(responseData);
 
-            // We expect 7 valid adjustment candidates
-            fructose_assert(resp->getAdjustments().size() == 7);
+        // We expect 7 valid adjustment candidates
+        fructose_assert(resp->getAdjustments().size() == 7);
 
-            for (auto const & adj : resp->getAdjustments()) {
-                fructose_assert(adj.m_history.getDosageTimeRanges()[0]->getStartDate() == adjustmentTime);
-                fructose_assert(adj.m_history.getLastFormulationAndRoute() == route );
-            }
+        for (auto const & adj : resp->getAdjustments()) {
+            fructose_assert(adj.m_history.getDosageTimeRanges()[0]->getStartDate() == adjustmentTime);
+            fructose_assert(adj.m_history.getLastFormulationAndRoute() == route );
         }
 
         // Delete all dynamically allocated objects
@@ -162,17 +160,16 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
 
         fructose_assert( result == ComputingResult::Ok);
 
-        const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
-        for(std::size_t i = 0; i < responses.size(); i++) {
-            fructose_assert(dynamic_cast<AdjustmentResponse*>(responses[i].get()) != nullptr);
-            const AdjustmentResponse *resp = dynamic_cast<AdjustmentResponse*>(responses[i].get());
 
-            // We expect 7 valid adjustment candidates
-            fructose_assert(resp->getAdjustments().size() == 7);
+        const SingleComputingResponse* responseData = response->getSingleComputingResponse();
+        fructose_assert(dynamic_cast<const AdjustmentResponse*>(responseData) != nullptr);
+        const AdjustmentResponse *resp = dynamic_cast<const AdjustmentResponse*>(responseData);
 
-            for (auto const & adj : resp->getAdjustments()) {
-                fructose_assert(adj.m_history.getLastFormulationAndRoute() == drugModel->getFormulationAndRoutes().getDefault()->getFormulationAndRoute() );
-            }
+        // We expect 7 valid adjustment candidates
+        fructose_assert(resp->getAdjustments().size() == 7);
+
+        for (auto const & adj : resp->getAdjustments()) {
+            fructose_assert(adj.m_history.getLastFormulationAndRoute() == drugModel->getFormulationAndRoutes().getDefault()->getFormulationAndRoute() );
         }
 
         // Delete all dynamically allocated objects
@@ -223,14 +220,13 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
 
         fructose_assert( result == ComputingResult::Ok);
 
-        const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
-        for(std::size_t i = 0; i < responses.size(); i++) {
-            fructose_assert(dynamic_cast<AdjustmentResponse*>(responses[i].get()) != nullptr);
-            const AdjustmentResponse *resp = dynamic_cast<AdjustmentResponse*>(responses[i].get());
 
-            // We expect 7 valid adjustment candidates
-            fructose_assert(resp->getAdjustments().size() != 7);
-        }
+        const SingleComputingResponse* responseData = response->getSingleComputingResponse();
+        fructose_assert(dynamic_cast<const AdjustmentResponse*>(responseData) != nullptr);
+        const AdjustmentResponse *resp = dynamic_cast<const AdjustmentResponse*>(responseData);
+
+        // We expect 7 valid adjustment candidates
+        fructose_assert(resp->getAdjustments().size() != 7);
 
         // Delete all dynamically allocated objects
         delete drugModel;
@@ -280,17 +276,16 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
 
         fructose_assert( result == ComputingResult::Ok);
 
-        const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
-        for(std::size_t i = 0; i < responses.size(); i++) {
-            fructose_assert(dynamic_cast<AdjustmentResponse*>(responses[i].get()) != nullptr);
-            const AdjustmentResponse *resp = dynamic_cast<AdjustmentResponse*>(responses[i].get());
 
-            // We expect 7 valid adjustment candidates
-            fructose_assert(resp->getAdjustments().size() == 1);
+        const SingleComputingResponse* responseData = response->getSingleComputingResponse();
+        fructose_assert(dynamic_cast<const AdjustmentResponse*>(responseData) != nullptr);
+        const AdjustmentResponse *resp = dynamic_cast<const AdjustmentResponse*>(responseData);
 
-            for (auto const & adj : resp->getAdjustments()) {
-                fructose_assert(adj.m_history.getLastFormulationAndRoute() == route );
-            }
+        // We expect 7 valid adjustment candidates
+        fructose_assert(resp->getAdjustments().size() == 1);
+
+        for (auto const & adj : resp->getAdjustments()) {
+            fructose_assert(adj.m_history.getLastFormulationAndRoute() == route );
         }
 
         // Delete all dynamically allocated objects
@@ -341,17 +336,16 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
 
         fructose_assert( result == ComputingResult::Ok);
 
-        const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
-        for(std::size_t i = 0; i < responses.size(); i++) {
-            fructose_assert(dynamic_cast<AdjustmentResponse*>(responses[i].get()) != nullptr);
-            const AdjustmentResponse *resp = dynamic_cast<AdjustmentResponse*>(responses[i].get());
 
-            // We expect 7 valid adjustment candidates
-            fructose_assert(resp->getAdjustments().size() == 1);
+        const SingleComputingResponse* responseData = response->getSingleComputingResponse();
+        fructose_assert(dynamic_cast<const AdjustmentResponse*>(responseData) != nullptr);
+        const AdjustmentResponse *resp = dynamic_cast<const AdjustmentResponse*>(responseData);
 
-            for (auto const & adj : resp->getAdjustments()) {
-                fructose_assert(adj.m_history.getLastFormulationAndRoute() == drugModel->getFormulationAndRoutes().getDefault()->getFormulationAndRoute() );
-            }
+        // We expect 7 valid adjustment candidates
+        fructose_assert(resp->getAdjustments().size() == 1);
+
+        for (auto const & adj : resp->getAdjustments()) {
+            fructose_assert(adj.m_history.getLastFormulationAndRoute() == drugModel->getFormulationAndRoutes().getDefault()->getFormulationAndRoute() );
         }
 
         // Delete all dynamically allocated objects
@@ -402,15 +396,13 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
 
         fructose_assert( result == ComputingResult::Ok);
 
-        const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
-        for(std::size_t i = 0; i < responses.size(); i++) {
-            fructose_assert(dynamic_cast<AdjustmentResponse*>(responses[i].get()) != nullptr);
-            const AdjustmentResponse *resp = dynamic_cast<AdjustmentResponse*>(responses[i].get());
 
-            // We expect 1 valid adjustment candidate
-            fructose_assert(resp->getAdjustments().size() == 1);
+        const SingleComputingResponse* responseData = response->getSingleComputingResponse();
+        fructose_assert(dynamic_cast<const AdjustmentResponse*>(responseData) != nullptr);
+        const AdjustmentResponse *resp = dynamic_cast<const AdjustmentResponse*>(responseData);
 
-        }
+        // We expect 1 valid adjustment candidate
+        fructose_assert(resp->getAdjustments().size() == 1);
 
         // Delete all dynamically allocated objects
         delete drugModel;
@@ -464,18 +456,16 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
 
         fructose_assert( result == ComputingResult::Ok);
 
-        const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
-        for(std::size_t i = 0; i < responses.size(); i++) {
-            fructose_assert(dynamic_cast<AdjustmentResponse*>(responses[i].get()) != nullptr);
-            const AdjustmentResponse *resp = dynamic_cast<AdjustmentResponse*>(responses[i].get());
-            TMP_UNUSED_PARAMETER(resp);
+        const SingleComputingResponse* responseData = response->getSingleComputingResponse();
+        fructose_assert(dynamic_cast<const AdjustmentResponse*>(responseData) != nullptr);
+        const AdjustmentResponse *resp = dynamic_cast<const AdjustmentResponse*>(responseData);
+        TMP_UNUSED_PARAMETER(resp);
             // We expect 7 valid adjustment candidates
             //fructose_assert(resp->getAdjustments().size() == 7);
 
 //            for (auto const & adj : resp->getAdjustments()) {
   //              fructose_assert(adj.m_history.getLastFormulationAndRoute() == drugModel->getFormulationAndRoutes().getDefault()->getFormulationAndRoute() );
     //        }
-        }
 
         // Delete all dynamically allocated objects
         delete drugModel;
@@ -528,17 +518,16 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
 
         fructose_assert( result == ComputingResult::Ok);
 
-        const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
-        for(std::size_t i = 0; i < responses.size(); i++) {
-            fructose_assert(dynamic_cast<AdjustmentResponse*>(responses[i].get()) != nullptr);
-            const AdjustmentResponse *resp = dynamic_cast<AdjustmentResponse*>(responses[i].get());
 
-            // We expect 4 valid adjustment candidates
-            fructose_assert(resp->getAdjustments().size() == 4);
+        const SingleComputingResponse* responseData = response->getSingleComputingResponse();
+        fructose_assert(dynamic_cast<const AdjustmentResponse*>(responseData) != nullptr);
+        const AdjustmentResponse *resp = dynamic_cast<const AdjustmentResponse*>(responseData);
 
-            for (auto const & adj : resp->getAdjustments()) {
-                fructose_assert(adj.m_history.getLastFormulationAndRoute() == route );
-            }
+        // We expect 4 valid adjustment candidates
+        fructose_assert(resp->getAdjustments().size() == 4);
+
+        for (auto const & adj : resp->getAdjustments()) {
+            fructose_assert(adj.m_history.getLastFormulationAndRoute() == route );
         }
 
         // Delete all dynamically allocated objects
@@ -590,17 +579,16 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
 
             fructose_assert( result == ComputingResult::Ok);
 
-            const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
-            for(std::size_t i = 0; i < responses.size(); i++) {
-                fructose_assert(dynamic_cast<AdjustmentResponse*>(responses[i].get()) != nullptr);
-                const AdjustmentResponse *resp = dynamic_cast<AdjustmentResponse*>(responses[i].get());
 
-                // We expect 2 valid adjustment candidates
-                fructose_assert(resp->getAdjustments().size() == 2);
+            const SingleComputingResponse* responseData = response->getSingleComputingResponse();
+            fructose_assert(dynamic_cast<const AdjustmentResponse*>(responseData) != nullptr);
+            const AdjustmentResponse *resp = dynamic_cast<const AdjustmentResponse*>(responseData);
 
-                for (auto const & adj : resp->getAdjustments()) {
-                    fructose_assert(adj.m_history.getLastFormulationAndRoute() == route );
-                }
+            // We expect 2 valid adjustment candidates
+            fructose_assert(resp->getAdjustments().size() == 2);
+
+            for (auto const & adj : resp->getAdjustments()) {
+                fructose_assert(adj.m_history.getLastFormulationAndRoute() == route );
             }
 
             // Delete all dynamically allocated objects
@@ -676,18 +664,17 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
 
         fructose_assert( result == ComputingResult::Ok);
 
-        const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
-        for(std::size_t i = 0; i < responses.size(); i++) {
-            fructose_assert(dynamic_cast<AdjustmentResponse*>(responses[i].get()) != nullptr);
-            const AdjustmentResponse *resp = dynamic_cast<AdjustmentResponse*>(responses[i].get());
 
-            // We expect 4 valid adjustment candidates
-            fructose_assert(resp->getAdjustments().size() == 4);
+        const SingleComputingResponse* responseData = response->getSingleComputingResponse();
+        fructose_assert(dynamic_cast<const AdjustmentResponse*>(responseData) != nullptr);
+        const AdjustmentResponse *resp = dynamic_cast<const AdjustmentResponse*>(responseData);
 
-            for (auto const & adj : resp->getAdjustments()) {
-                fructose_assert(adj.m_history.getDosageTimeRanges()[0]->getStartDate() == adjustmentTime);
-                fructose_assert(adj.m_history.getLastFormulationAndRoute() == route );
-            }
+        // We expect 4 valid adjustment candidates
+        fructose_assert(resp->getAdjustments().size() == 4);
+
+        for (auto const & adj : resp->getAdjustments()) {
+            fructose_assert(adj.m_history.getDosageTimeRanges()[0]->getStartDate() == adjustmentTime);
+            fructose_assert(adj.m_history.getLastFormulationAndRoute() == route );
         }
 
         // Delete all dynamically allocated objects

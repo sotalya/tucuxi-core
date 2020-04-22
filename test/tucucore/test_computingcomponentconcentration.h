@@ -93,22 +93,21 @@ struct TestComputingComponentConcentration : public fructose::test_base<TestComp
 
         fructose_assert( result == ComputingResult::Ok);
 
-        const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
-        for(std::size_t i = 0; i < responses.size(); i++) {
-            fructose_assert(dynamic_cast<SinglePredictionResponse*>(responses[i].get()) != nullptr);
-            const SinglePredictionResponse *resp = dynamic_cast<SinglePredictionResponse*>(responses[i].get());
-            fructose_assert_eq(resp->getIds().size(), size_t{1});
-            fructose_assert_eq(resp->getIds()[0], "imatinib");
-            std::vector<CycleData> data = resp->getData();
-            fructose_assert_eq(data.size() , size_t{16});
-            fructose_assert(data[0].m_concentrations.size() == 1);
-            fructose_assert(data[0].m_concentrations[0][0] == 0.0);
-            DateTime startSept2018(date::year_month_day(date::year(2018), date::month(9), date::day(1)),
-                                   Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
+        const SingleComputingResponse* responseData = response->getSingleComputingResponse();
+        fructose_assert(dynamic_cast<const SinglePredictionResponse*>(responseData) != nullptr);
+        const SinglePredictionResponse *resp = dynamic_cast<const SinglePredictionResponse*>(responseData);
 
-            fructose_assert_double_eq(data[0].m_start.toSeconds() + data[0].m_times[0][0] * 3600.0 , startSept2018.toSeconds());
-            fructose_assert_double_eq(data[1].m_start.toSeconds() + data[1].m_times[0][0] * 3600.0 , startSept2018.toSeconds() + 3600.0 * 6.0);
-        }
+        fructose_assert_eq(resp->getIds().size(), size_t{1});
+        fructose_assert_eq(resp->getIds()[0], "imatinib");
+        std::vector<CycleData> data = resp->getData();
+        fructose_assert_eq(data.size() , size_t{16});
+        fructose_assert(data[0].m_concentrations.size() == 1);
+        fructose_assert(data[0].m_concentrations[0][0] == 0.0);
+        DateTime startSept2018(date::year_month_day(date::year(2018), date::month(9), date::day(1)),
+                               Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
+
+        fructose_assert_double_eq(data[0].m_start.toSeconds() + data[0].m_times[0][0] * 3600.0 , startSept2018.toSeconds());
+        fructose_assert_double_eq(data[1].m_start.toSeconds() + data[1].m_times[0][0] * 3600.0 , startSept2018.toSeconds() + 3600.0 * 6.0);
 
 
         {
@@ -131,22 +130,21 @@ struct TestComputingComponentConcentration : public fructose::test_base<TestComp
 
             fructose_assert( result == ComputingResult::Ok);
 
-            const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = partialResponse.get()->getResponses();
-            for(std::size_t i = 0; i < responses.size(); i++) {
-                fructose_assert(dynamic_cast<SinglePredictionResponse*>(responses[i].get()) != nullptr);
-                const SinglePredictionResponse *resp = dynamic_cast<SinglePredictionResponse*>(responses[i].get());
-                fructose_assert_eq(resp->getIds().size(), size_t{1});
-                fructose_assert_eq(resp->getIds()[0], "imatinib");
-                std::vector<CycleData> data = resp->getData();
-                fructose_assert(data.size() == 15);
-                fructose_assert(data[0].m_concentrations.size() == 1);
-                fructose_assert(data[0].m_concentrations[0][0] != 0.0);
-                DateTime startSept2018(date::year_month_day(date::year(2018), date::month(9), date::day(1)),
-                                       Duration(std::chrono::hours(14), std::chrono::minutes(0), std::chrono::seconds(0)));
+            const SingleComputingResponse* responseData = response->getSingleComputingResponse();
+            fructose_assert(dynamic_cast<const SinglePredictionResponse*>(responseData) != nullptr);
+            const SinglePredictionResponse *resp = dynamic_cast<const SinglePredictionResponse*>(responseData);
 
-                fructose_assert_double_eq(data[0].m_start.toSeconds() + data[0].m_times[0][0] * 3600.0 , startSept2018.toSeconds());
-                fructose_assert_double_eq(data[1].m_start.toSeconds() + data[1].m_times[0][0] * 3600.0 , startSept2018.toSeconds() + 3600.0 * 6.0);
-            }
+            fructose_assert_eq(resp->getIds().size(), size_t{1});
+            fructose_assert_eq(resp->getIds()[0], "imatinib");
+            std::vector<CycleData> data = resp->getData();
+            fructose_assert(data.size() == 15);
+            fructose_assert(data[0].m_concentrations.size() == 1);
+            fructose_assert(data[0].m_concentrations[0][0] != 0.0);
+            DateTime startSept2018(date::year_month_day(date::year(2018), date::month(9), date::day(1)),
+                                   Duration(std::chrono::hours(14), std::chrono::minutes(0), std::chrono::seconds(0)));
+
+            fructose_assert_double_eq(data[0].m_start.toSeconds() + data[0].m_times[0][0] * 3600.0 , startSept2018.toSeconds());
+            fructose_assert_double_eq(data[1].m_start.toSeconds() + data[1].m_times[0][0] * 3600.0 , startSept2018.toSeconds() + 3600.0 * 6.0);
         }
 
         // Delete all dynamically allocated objects
@@ -213,42 +211,36 @@ struct TestComputingComponentConcentration : public fructose::test_base<TestComp
 
         fructose_assert( result == ComputingResult::Ok);
 
-        // We expect a single response
-        fructose_assert( response->getResponses().size() == 1);
+        const SingleComputingResponse* responseData = response->getSingleComputingResponse();
+        fructose_assert(dynamic_cast<const SinglePredictionResponse*>(responseData) != nullptr);
+        const SinglePredictionResponse *resp = dynamic_cast<const SinglePredictionResponse*>(responseData);
 
-        const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response->getResponses();
-        for(std::size_t i = 0; i < responses.size(); i++) {
+        // The response is what we excepted
+        fructose_assert(resp != nullptr);
 
-            // Get the response by casting it to what we expected
-            const SinglePredictionResponse *resp = dynamic_cast<SinglePredictionResponse*>(responses[i].get());
+        fructose_assert_eq(resp->getIds().size(), size_t{1});
+        fructose_assert_eq(resp->getIds()[0], "imatinib");
 
-            // The response is what we excepted
-            fructose_assert(resp != nullptr);
+        std::vector<CycleData> data = resp->getData();
 
-            fructose_assert_eq(resp->getIds().size(), size_t{1});
-            fructose_assert_eq(resp->getIds()[0], "imatinib");
+        // We asked for 4 cycles
+        fructose_assert(data.size() == 4);
 
-            std::vector<CycleData> data = resp->getData();
+        // Only a single compartment
+        fructose_assert(data[0].m_concentrations.size() == 1);
 
-            // We asked for 4 cycles
-            fructose_assert(data.size() == 4);
+        // Here we check that the relative difference of starting concentration for each cycle is small compared
+        // to its residual (less than 0.0001)
+        fructose_assert_double_eq_rel_abs(data[0].m_concentrations[0][0] , data[0].m_concentrations[0].back(), 0.0001, 0.0001);
+        fructose_assert_double_eq_rel_abs(data[1].m_concentrations[0][0] , data[1].m_concentrations[0].back(), 0.0001, 0.0001);
+        fructose_assert_double_eq_rel_abs(data[2].m_concentrations[0][0] , data[2].m_concentrations[0].back(), 0.0001, 0.0001);
+        fructose_assert_double_eq_rel_abs(data[3].m_concentrations[0][0] , data[3].m_concentrations[0].back(), 0.0001, 0.0001);
 
-            // Only a single compartment
-            fructose_assert(data[0].m_concentrations.size() == 1);
-
-            // Here we check that the relative difference of starting concentration for each cycle is small compared
-            // to its residual (less than 0.0001)
-            fructose_assert_double_eq_rel_abs(data[0].m_concentrations[0][0] , data[0].m_concentrations[0].back(), 0.0001, 0.0001);
-            fructose_assert_double_eq_rel_abs(data[1].m_concentrations[0][0] , data[1].m_concentrations[0].back(), 0.0001, 0.0001);
-            fructose_assert_double_eq_rel_abs(data[2].m_concentrations[0][0] , data[2].m_concentrations[0].back(), 0.0001, 0.0001);
-            fructose_assert_double_eq_rel_abs(data[3].m_concentrations[0][0] , data[3].m_concentrations[0].back(), 0.0001, 0.0001);
-
-            // Here we check that the relative difference of starting concentration for different cycles is small (less than 0.0001)
-            // Actually if the residual are correctly implemented these assertions are equivalent to the four previous ones
-            fructose_assert_double_eq_rel_abs(data[0].m_concentrations[0][0] , data[1].m_concentrations[0][0], 0.0001, 0.0001);
-            fructose_assert_double_eq_rel_abs(data[0].m_concentrations[0][0] , data[2].m_concentrations[0][0], 0.0001, 0.0001);
-            fructose_assert_double_eq_rel_abs(data[0].m_concentrations[0][0] , data[3].m_concentrations[0][0], 0.0001, 0.0001);
-         }
+        // Here we check that the relative difference of starting concentration for different cycles is small (less than 0.0001)
+        // Actually if the residual are correctly implemented these assertions are equivalent to the four previous ones
+        fructose_assert_double_eq_rel_abs(data[0].m_concentrations[0][0] , data[1].m_concentrations[0][0], 0.0001, 0.0001);
+        fructose_assert_double_eq_rel_abs(data[0].m_concentrations[0][0] , data[2].m_concentrations[0][0], 0.0001, 0.0001);
+        fructose_assert_double_eq_rel_abs(data[0].m_concentrations[0][0] , data[3].m_concentrations[0][0], 0.0001, 0.0001);
 
         // Delete all dynamically allocated objects
         delete drugModel;

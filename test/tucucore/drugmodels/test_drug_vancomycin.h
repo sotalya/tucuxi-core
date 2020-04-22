@@ -810,20 +810,17 @@ struct TestDrugVancomycin : public fructose::test_base<TestDrugVancomycin>
 
             fructose_assert( result == ComputingResult::Ok);
 
-            const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
-            for(std::size_t i = 0; i < responses.size(); i++) {
-                fructose_assert(dynamic_cast<SinglePredictionResponse*>(responses[i].get()) != nullptr);
-                const SinglePredictionResponse *resp = dynamic_cast<SinglePredictionResponse*>(responses[i].get());
+            const SingleComputingResponse* responseData = response->getSingleComputingResponse();
+            fructose_assert(dynamic_cast<const SinglePredictionResponse*>(responseData) != nullptr);
+            const SinglePredictionResponse *resp = dynamic_cast<const SinglePredictionResponse*>(responseData);
 
-                fructose_assert_eq(resp->getIds().size(), size_t{1});
-                fructose_assert_eq(resp->getIds()[0], "vancomycin");
+            fructose_assert_eq(resp->getIds().size(), size_t{1});
+            fructose_assert_eq(resp->getIds()[0], "vancomycin");
 
-                //std::cout << "Population parameters : " << std::endl;
-                //for (auto parameter : resp->getData()[0].m_parameters) {
-                //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
-                //}
-            }
-
+            //std::cout << "Population parameters : " << std::endl;
+            //for (auto parameter : resp->getData()[0].m_parameters) {
+            //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
+            //}
         }
 
         {
@@ -846,22 +843,17 @@ struct TestDrugVancomycin : public fructose::test_base<TestDrugVancomycin>
 
             fructose_assert( result == ComputingResult::Ok);
 
+            const SingleComputingResponse* responseData = response->getSingleComputingResponse();
+            fructose_assert(dynamic_cast<const SinglePredictionResponse*>(responseData) != nullptr);
+            const SinglePredictionResponse *resp = dynamic_cast<const SinglePredictionResponse*>(responseData);
 
-            const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = response.get()->getResponses();
-            for(std::size_t i = 0; i < responses.size(); i++) {
-                fructose_assert(dynamic_cast<SinglePredictionResponse*>(responses[i].get()) != nullptr);
-                const SinglePredictionResponse *resp = dynamic_cast<SinglePredictionResponse*>(responses[i].get());
+            fructose_assert_eq(resp->getIds().size(), size_t{1});
+            fructose_assert_eq(resp->getIds()[0], "vancomycin");
 
-                fructose_assert_eq(resp->getIds().size(), size_t{1});
-                fructose_assert_eq(resp->getIds()[0], "vancomycin");
-
-                //std::cout << "A priori parameters : " << std::endl;
-                //for (auto parameter : resp->getData()[0].m_parameters) {
-                //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
-                //}
-            }
-
-
+            //std::cout << "A priori parameters : " << std::endl;
+            //for (auto parameter : resp->getData()[0].m_parameters) {
+            //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
+            //}
         }
 
 
