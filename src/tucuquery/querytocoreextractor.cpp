@@ -34,30 +34,30 @@ Tucuxi::Query::ComputingQuery* QueryToCoreExtractor::extractComputingQuery(const
 
     Tucuxi::Core::RequestResponseId requestResponseID;
 
-    Tucuxi::Core::DrugModel *drugModel = nullptr;
+
     Tucuxi::Core::DrugTreatment *drugTreatment = nullptr;
 
     ComputingQuery *newQuery = new ComputingQuery(_query.getQueryID());
 
     requestResponseID = _query.getQueryID();
 
-    drugTreatment = extractDrugTreatment(_query);
-
-    if (drugTreatment == nullptr) {
-        logHelper.error("Error with the drug treatment import");
-        return nullptr;
-    }
-
-    drugModel = extractDrugModel(_query, drugTreatment);
-
-    if (drugModel == nullptr) {
-        logHelper.error("Could not find a suitable drug model");
-        return nullptr;
-    }
-    logHelper.info("Performing computation with drug model : {}", drugModel->getDrugModelId());
 
     for(const std::unique_ptr<RequestData>& requestData : _query.getRequests())
     {
+         drugTreatment = extractDrugTreatment(_query, *requestData);
+        if (drugTreatment == nullptr) {
+            logHelper.error("Error with the drug treatment import");
+            return nullptr;
+        }
+
+        Tucuxi::Core::DrugModel *drugModel = extractDrugModel(_query, *requestData, drugTreatment);
+
+        if (drugModel == nullptr) {
+            logHelper.error("Could not find a suitable drug model");
+            return nullptr;
+        }
+        logHelper.info("Performing computation with drug model : {}, Request ID : {}", drugModel->getDrugModelId(), requestData->getRequestID());
+
         std::unique_ptr<Tucuxi::Core::ComputingRequest> computingRequest = std::make_unique<Tucuxi::Core::ComputingRequest>(requestResponseID, *drugModel, *drugTreatment, std::move(requestData->m_pComputingTrait));
         newQuery->addComputingRequest(std::move(computingRequest));
     }
@@ -138,15 +138,14 @@ Tucuxi::Core::Samples QueryToCoreExtractor::extractSamples(const QueryData &_que
     return samples;
 }
 
-
-Tucuxi::Core::DrugTreatment *QueryToCoreExtractor::extractDrugTreatment(const QueryData &_query) const
+Tucuxi::Core::DrugTreatment *QueryToCoreExtractor::extractDrugTreatment(const QueryData &_query, const RequestData &_requestData) const
 {
     Tucuxi::Core::DrugTreatment *drugTreatment = nullptr;
 
     drugTreatment = new Tucuxi::Core::DrugTreatment();
 
     // Getting the drug related to the request
-    std::string drugID = _query.getRequests().at(0)->getDrugID();
+    std::string drugID = _requestData.getDrugID();
     const std::vector< std::unique_ptr<DrugData> >& drugs = _query.getpParameters().getDrugs();
     size_t drugPosition = 0;
     for (; drugPosition < drugs.size(); ++drugPosition) {
@@ -162,7 +161,7 @@ Tucuxi::Core::DrugTreatment *QueryToCoreExtractor::extractDrugTreatment(const Qu
     }
 
     // Getting the dosage history for the drug treatment
-    const Tucuxi::Core::DosageTimeRangeList& dosageTimeRangeList = drugs.at(0)
+    const Tucuxi::Core::DosageTimeRangeList& dosageTimeRangeList = drugs.at(drugPosition)
             ->getpTreatment()
             .getpDosageHistory()
             .getDosageTimeRanges();
@@ -193,7 +192,7 @@ Tucuxi::Core::DrugTreatment *QueryToCoreExtractor::extractDrugTreatment(const Qu
     return drugTreatment;
 }
 
-Tucuxi::Core::DrugModel *QueryToCoreExtractor::extractDrugModel(const QueryData &_query, const Tucuxi::Core::DrugTreatment *_drugTreatment) const
+Tucuxi::Core::DrugModel *QueryToCoreExtractor::extractDrugModel(const QueryData &_query, const RequestData &_requestData, const Tucuxi::Core::DrugTreatment *_drugTreatment) const
 {
     Tucuxi::Core::DrugModel *drugModel = nullptr;
 
@@ -209,36 +208,19 @@ Tucuxi::Core::DrugModel *QueryToCoreExtractor::extractDrugModel(const QueryData 
         return nullptr;
     }
 
-    std::vector<Tucuxi::Core::DrugModel * > drugModels;
-    bool isDefined = false;
-    for (const auto& request : _query.getRequests()) {
-        auto dModel = drugModelRepository->getDrugModelById(request->getDrugModelID());
 
-        Tucuxi::Core::TreatmentDrugModelCompatibilityChecker checker;
-        if (!checker.checkCompatibility(_drugTreatment, dModel)) {
-            return nullptr;
-        }
+    //TODO : MUST FIND A MODEL
+    drugModel = drugModelRepository->getDrugModelById(_requestData.getDrugModelID());
 
-        drugModels.push_back(dModel);
-        isDefined = true;
+
+    Tucuxi::Core::TreatmentDrugModelCompatibilityChecker checker;
+    if (!checker.checkCompatibility(_drugTreatment, drugModel)) {
+        return nullptr;
     }
-
-    if (!isDefined) {
-        std::vector<Tucuxi::Core::DrugModel *> drugModels = drugModelRepository->getDrugModelsByDrugId(_query.getpParameters().getDrugs()[0]->getDrugID());
-
-        for (const auto dM : drugModels) {
-            Tucuxi::Core::TreatmentDrugModelCompatibilityChecker checker;
-            if (checker.checkCompatibility(_drugTreatment, dM)) {
-                return dM;
-            }
-        }
-    }
-
-    // TODO : Be careful, this has to be fixed
-    return drugModels[0];
 
     return drugModel;
 }
+
 
 } // namespace Query
 } // namespace Tucuxi

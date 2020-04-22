@@ -267,6 +267,8 @@ public:
     std::vector<std::unique_ptr<SingleComputingResponse> > & getResponses() { return m_responses;}
     const std::vector<std::unique_ptr<SingleComputingResponse> > & getResponses() const { return m_responses;}
 
+    const std::unique_ptr<SingleComputingResponse> & getComputingResponse() const { return m_response ;}
+
     ///
     /// \brief Set the computing time of this request
     /// \param _computingTime the computing time of the request
@@ -286,6 +288,8 @@ protected:
 
     /// Vector of responses
     std::vector<std::unique_ptr<SingleComputingResponse> > m_responses;
+
+    std::unique_ptr<SingleComputingResponse> m_response;
 
     std::chrono::duration<double, std::ratio<1,1> > m_computingTimeInSeconds{0};
 

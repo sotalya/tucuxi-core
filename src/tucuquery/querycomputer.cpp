@@ -35,11 +35,13 @@ void QueryComputer::compute(ComputingQuery& _query, ComputingQueryResponse& _res
 
         std::unique_ptr<ComputingResponseMetaData> computingResponseMetaData = std::make_unique<ComputingResponseMetaData>("DrugModelId");
 
+//        _response.addRequestResponse(std::move(computingResponse->getComputingResponse()), result, std::move(computingResponseMetaData));
         // This for loop will be replaced by a getter in the future, as there is only one response
         for(std::unique_ptr<Core::SingleComputingResponse>& single : computingResponse->getResponses())
         {
             _response.addRequestResponse(std::move(single), result, std::move(computingResponseMetaData));
         }
+
     }
 }
 

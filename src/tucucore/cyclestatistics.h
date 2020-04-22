@@ -101,6 +101,8 @@ public:
         m_stats[_compartment][static_cast<size_t>(_type)] = _statistic;
     }
 
+    std::vector<std::vector<CycleStatistic> > getStats() const {return m_stats;}
+
 protected:
 
     // The list of statistics for each compartments (e.g m_stats[0][]: 1st compartment, m_stats[1][]: 2nd compartment etc)

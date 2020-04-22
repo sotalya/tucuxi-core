@@ -14,7 +14,6 @@ ComputingResponse::ComputingResponse(RequestResponseId _id) :
 {
 
 }
-
 RequestResponseId ComputingResponse::getId() const
 {
     return m_id;

@@ -91,6 +91,7 @@ QueryImport::Result QueryImport::importDocument(
     static const string DATE_NODE_NAME = "date";
     static const string LANGUAGE_NODE_NAME = "language";
     static const string REQUESTS_NODE_NAME = "requests";
+    static const string REQUEST_REQUESTS_NODE_NAME = "request";
 
     Common::XmlNode root = _document.getRoot();
 
@@ -106,7 +107,8 @@ QueryImport::Result QueryImport::importDocument(
     unique_ptr<DrugTreatmentData> pParametersData = createDrugTreatmentData(_document);
 
     Common::XmlNodeIterator requestsRootIterator = root.getChildren(REQUESTS_NODE_NAME);
-    Common::XmlNodeIterator requestsIterator = requestsRootIterator->getChildren();
+    Common::XmlNodeIterator requestsIterator = requestsRootIterator->getChildren(REQUEST_REQUESTS_NODE_NAME);
+
     vector< unique_ptr<RequestData> > requests;
     while(requestsIterator != requestsIterator.none()) {
         requests.emplace_back(createRequest(requestsIterator));
@@ -794,35 +796,35 @@ unique_ptr<RequestData> QueryImport::createRequest(Tucuxi::Common::XmlNodeIterat
 
     if(computingTraitAdjustmentRootIterator != Common::XmlNodeIterator::none())
     {
-        computingTrait = getChildComputingTraitAdjustment(_requestRootIterator, requestId);
+        computingTrait = getChildComputingTraitAdjustment(computingTraitAdjustmentRootIterator, requestId);
     }
 
     Common::XmlNodeIterator computingTraitConcentrationRootIterator = _requestRootIterator->getChildren(COMPUTING_TRAIT_CONCENTRATION_NAME);
 
     if(computingTraitConcentrationRootIterator != Common::XmlNodeIterator::none())
     {
-        computingTrait = getChildComputingTraitConcentration(_requestRootIterator, requestId);
+        computingTrait = getChildComputingTraitConcentration(computingTraitConcentrationRootIterator, requestId);
     }
 
     Common::XmlNodeIterator computingTraitPercentilesRootIterator = _requestRootIterator->getChildren(COMPUTING_TRAIT_PERCENTILES_NAME);
 
     if(computingTraitPercentilesRootIterator != Common::XmlNodeIterator::none())
     {
-        computingTrait = getChildComputingTraitPercentiles(_requestRootIterator, requestId);
+        computingTrait = getChildComputingTraitPercentiles(computingTraitPercentilesRootIterator, requestId);
     }
 
     Common::XmlNodeIterator computingTraitSinglePointRootIterator = _requestRootIterator->getChildren(COMPUTING_TRAIT_SINGLE_POINT_NAME);
 
     if(computingTraitSinglePointRootIterator != Common::XmlNodeIterator::none())
     {
-        computingTrait = getChildComputingTraitSinglePoints(_requestRootIterator, requestId);
+        computingTrait = getChildComputingTraitSinglePoints(computingTraitSinglePointRootIterator, requestId);
     }
 
     Common::XmlNodeIterator computingTraitAtMeasuresRootIterator = _requestRootIterator->getChildren(COMPUTING_TRAIT_AT_MESURE_NAME);
 
     if(computingTraitAtMeasuresRootIterator != Common::XmlNodeIterator::none())
     {
-        computingTrait = getChildComputingTraitAtMeasures(_requestRootIterator, requestId);
+        computingTrait = getChildComputingTraitAtMeasures(computingTraitAtMeasuresRootIterator, requestId);
     }
 
     return make_unique<RequestData>(

@@ -490,29 +490,32 @@ bool ComputingQueryResponseXmlExport::exportCycleData(const Tucuxi::Core::CycleD
     double peak = -1.0;
 //    double minimum = -1.0;
 //    double maximum = -1.0;
-    Tucuxi::Common::DateTime date;
-    bool ok = true;
 
+    if(!_cycleData.m_statistics.getStats().empty())
+    {
+        Tucuxi::Common::DateTime date;
+        bool ok = true;
+        ok &= _cycleData.m_statistics.getStatistic(0, Tucuxi::Core::CycleStatisticType::Mean).getValue(date, mean);
+        ok &= _cycleData.m_statistics.getStatistic(0, Tucuxi::Core::CycleStatisticType::AUC).getValue(date, auc);
+        ok &= _cycleData.m_statistics.getStatistic(0, Tucuxi::Core::CycleStatisticType::AUC24).getValue(date, auc24);
+        ok &= _cycleData.m_statistics.getStatistic(0, Tucuxi::Core::CycleStatisticType::CumulativeAuc).getValue(date, cumulativeAuc);
+        ok &= _cycleData.m_statistics.getStatistic(0, Tucuxi::Core::CycleStatisticType::Residual).getValue(date, residual);
+        ok &= _cycleData.m_statistics.getStatistic(0, Tucuxi::Core::CycleStatisticType::Peak).getValue(date, peak);
+        //ok &= _cycleData.m_statistics.getStatistic(0, Tucuxi::Core::CycleStatisticType::Minimum).getValue(date, minimum);
+        //ok &= _cycleData.m_statistics.getStatistic(0, Tucuxi::Core::CycleStatisticType::Maximum).getValue(date, maximum);
 
-    ok &= _cycleData.m_statistics.getStatistic(0, Tucuxi::Core::CycleStatisticType::Mean).getValue(date, mean);
-    ok &= _cycleData.m_statistics.getStatistic(0, Tucuxi::Core::CycleStatisticType::AUC).getValue(date, auc);
-    ok &= _cycleData.m_statistics.getStatistic(0, Tucuxi::Core::CycleStatisticType::AUC24).getValue(date, auc24);
-    ok &= _cycleData.m_statistics.getStatistic(0, Tucuxi::Core::CycleStatisticType::CumulativeAuc).getValue(date, cumulativeAuc);
-    ok &= _cycleData.m_statistics.getStatistic(0, Tucuxi::Core::CycleStatisticType::Residual).getValue(date, residual);
-    ok &= _cycleData.m_statistics.getStatistic(0, Tucuxi::Core::CycleStatisticType::Peak).getValue(date, peak);
-    //ok &= _cycleData.m_statistics.getStatistic(0, Tucuxi::Core::CycleStatisticType::Minimum).getValue(date, minimum);
-    //ok &= _cycleData.m_statistics.getStatistic(0, Tucuxi::Core::CycleStatisticType::Maximum).getValue(date, maximum);
+        addNode(statistics, "mean", mean);
+        addNode(statistics, "auc", auc);
+        addNode(statistics, "auc24", auc24);
+        addNode(statistics, "cumulativeAuc", cumulativeAuc);
+        addNode(statistics, "residual", residual);
+        addNode(statistics, "peak", peak);
+        //addNode(statistics, "minimum", minimum);
+        //addNode(statistics, "maximum", maximum);
+        if (!ok) {
+            std::cout << "Something went wrong here" << std::endl;
+        }
 
-    addNode(statistics, "mean", mean);
-    addNode(statistics, "auc", auc);
-    addNode(statistics, "auc24", auc24);
-    addNode(statistics, "cumulativeAuc", cumulativeAuc);
-    addNode(statistics, "residual", residual);
-    addNode(statistics, "peak", peak);
-    //addNode(statistics, "minimum", minimum);
-    //addNode(statistics, "maximum", maximum);
-    if (!ok) {
-        std::cout << "Something went wrong here" << std::endl;
     }
 
 
