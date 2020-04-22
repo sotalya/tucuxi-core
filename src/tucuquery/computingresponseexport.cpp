@@ -23,7 +23,7 @@ bool ComputingResponseExport::exportToFiles(const Query::ComputingQueryResponse 
 
         std::ofstream file;
 
-        std::string fileName = _filePath + "/" + response.m_computingResponse->getId() + ".dat";
+        std::string fileName = _filePath + "/" + _computingQueryResponse.getQueryId() + "_" + response.m_computingResponse->getId() + ".dat";
         file.open(fileName);
         if ((file.rdstate() & std::ostream::failbit) != 0) {
             Tucuxi::Common::LoggerHelper logHelper;

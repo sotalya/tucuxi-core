@@ -267,7 +267,7 @@ public:
     std::vector<std::unique_ptr<SingleComputingResponse> > & getResponses() { return m_responses;}
     const std::vector<std::unique_ptr<SingleComputingResponse> > & getResponses() const { return m_responses;}
 
-    const std::unique_ptr<SingleComputingResponse> & getComputingResponse() const { return m_response ;}
+    std::unique_ptr<SingleComputingResponse> & getSingleComputingResponse() { return m_response ;}
 
     ///
     /// \brief Set the computing time of this request

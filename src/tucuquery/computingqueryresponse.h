@@ -60,6 +60,7 @@ public:
     void addRequestResponse(std::unique_ptr<Tucuxi::Core::SingleComputingResponse> _computingResponse,
                             Tucuxi::Core::ComputingResult _status,
                             std::unique_ptr<ComputingResponseMetaData> _metaData);
+    void setRequestResponseId(Tucuxi::Core::RequestResponseId _requestResponseId);
 
     Tucuxi::Core::RequestResponseId m_queryId;
 

@@ -42,12 +42,18 @@ void ComputingQueryResponse::addRequestResponse(
                                   std::move(_metaData)));
 }
 
+void ComputingQueryResponse::setRequestResponseId(Tucuxi::Core::RequestResponseId _requestResponseId)
+{
+   m_queryId =_requestResponseId;
+}
+
 ComputingResponseMetaData::ComputingResponseMetaData(
         std::string _drugModelID ) :
     m_drugModelId(_drugModelID)
 {
 
 }
+
 
 
 } // namespace Query

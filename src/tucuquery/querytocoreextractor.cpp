@@ -32,14 +32,12 @@ Tucuxi::Query::ComputingQuery* QueryToCoreExtractor::extractComputingQuery(const
 
     Tucuxi::Common::LoggerHelper logHelper;
 
-    Tucuxi::Core::RequestResponseId requestResponseID;
+    Tucuxi::Core::RequestResponseId requestResponseID = _query.getQueryID();
 
 
     Tucuxi::Core::DrugTreatment *drugTreatment = nullptr;
 
     ComputingQuery *newQuery = new ComputingQuery(_query.getQueryID());
-
-    requestResponseID = _query.getQueryID();
 
 
     for(const std::unique_ptr<RequestData>& requestData : _query.getRequests())
