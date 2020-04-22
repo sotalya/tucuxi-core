@@ -25,16 +25,16 @@ protected:
 
     bool exportToString(const Tucuxi::Core::ComputingResponse &_computingResponse, std::string &_xmlString);
 
-    bool exportAdjustment(const Tucuxi::Core::AdjustmentResponse *_prediction,
+    bool exportAdjustment(const Tucuxi::Core::AdjustmentData *_prediction,
                           Tucuxi::Common::XmlNode &_rootNode);
 
-    bool exportSinglePrediction(const Tucuxi::Core::SinglePredictionResponse *_prediction,
+    bool exportSinglePrediction(const Tucuxi::Core::SinglePredictionData *_prediction,
                           Tucuxi::Common::XmlNode &_rootNode);
 
-    bool exportSinglePoints(const Tucuxi::Core::SinglePointsResponse *_prediction,
+    bool exportSinglePoints(const Tucuxi::Core::SinglePointsData *_prediction,
                           Tucuxi::Common::XmlNode &_rootNode);
 
-    bool exportPercentiles(const Tucuxi::Core::PercentilesResponse *_prediction,
+    bool exportPercentiles(const Tucuxi::Core::PercentilesData *_prediction,
                           Tucuxi::Common::XmlNode &_rootNode);
 
     bool exportCycleData(const Tucuxi::Core::CycleData &_cycleData,

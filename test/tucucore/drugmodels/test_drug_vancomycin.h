@@ -810,9 +810,9 @@ struct TestDrugVancomycin : public fructose::test_base<TestDrugVancomycin>
 
             fructose_assert( result == ComputingResult::Ok);
 
-            const SingleComputingResponse* responseData = response->getSingleComputingResponse();
-            fructose_assert(dynamic_cast<const SinglePredictionResponse*>(responseData) != nullptr);
-            const SinglePredictionResponse *resp = dynamic_cast<const SinglePredictionResponse*>(responseData);
+            const ComputedData* responseData = response->getData();
+            fructose_assert(dynamic_cast<const SinglePredictionData*>(responseData) != nullptr);
+            const SinglePredictionData *resp = dynamic_cast<const SinglePredictionData*>(responseData);
 
             fructose_assert_eq(resp->getIds().size(), size_t{1});
             fructose_assert_eq(resp->getIds()[0], "vancomycin");
@@ -843,9 +843,9 @@ struct TestDrugVancomycin : public fructose::test_base<TestDrugVancomycin>
 
             fructose_assert( result == ComputingResult::Ok);
 
-            const SingleComputingResponse* responseData = response->getSingleComputingResponse();
-            fructose_assert(dynamic_cast<const SinglePredictionResponse*>(responseData) != nullptr);
-            const SinglePredictionResponse *resp = dynamic_cast<const SinglePredictionResponse*>(responseData);
+            const ComputedData* responseData = response->getData();
+            fructose_assert(dynamic_cast<const SinglePredictionData*>(responseData) != nullptr);
+            const SinglePredictionData *resp = dynamic_cast<const SinglePredictionData*>(responseData);
 
             fructose_assert_eq(resp->getIds().size(), size_t{1});
             fructose_assert_eq(resp->getIds()[0], "vancomycin");

@@ -251,7 +251,7 @@ ComputingResult ComputingComponent::compute(
         }
     }
 
-    std::unique_ptr<SinglePredictionResponse> resp = std::make_unique<SinglePredictionResponse>(_request.getId());
+    std::unique_ptr<SinglePredictionData> resp = std::make_unique<SinglePredictionData>(_request.getId());
 
     IntakeSeries recordedIntakes;
     selectRecordedIntakes(recordedIntakes, intakeSeries[_request.getDrugModel().getAnalyteSets()[0]->getId()], _traits->getStart(), _traits->getEnd());
@@ -526,7 +526,7 @@ ComputingResult ComputingComponent::computePercentilesMulti(
             selectedIntakes.size() == pPrediction->getTimes().size() &&
             selectedIntakes.size() == pPrediction->getValues().size())
     {
-        std::unique_ptr<PercentilesResponse> resp = std::make_unique<PercentilesResponse>(_request.getId());
+        std::unique_ptr<PercentilesData> resp = std::make_unique<PercentilesData>(_request.getId());
 
         const std::vector<std::vector<std::vector<Value> > > allValues = percentiles.getValues();
 
@@ -725,7 +725,7 @@ ComputingResult ComputingComponent::computePercentilesSimple(
             selectedIntakes.size() == pPrediction->getTimes().size() &&
             selectedIntakes.size() == pPrediction->getValues().size())
     {
-        std::unique_ptr<PercentilesResponse> resp = std::make_unique<PercentilesResponse>(_request.getId());
+        std::unique_ptr<PercentilesData> resp = std::make_unique<PercentilesData>(_request.getId());
 
         const std::vector<std::vector<std::vector<Value> > > allValues = percentiles.getValues();
 
@@ -829,7 +829,7 @@ ComputingResult ComputingComponent::compute(
 
     if (_traits->getTimes().size() == 0) {
         // No time given, so we return an empty response
-        std::unique_ptr<SinglePointsResponse> resp = std::make_unique<SinglePointsResponse>(_request.getId());
+        std::unique_ptr<SinglePointsData> resp = std::make_unique<SinglePointsData>(_request.getId());
         _response->addResponse(std::move(resp));
         return ComputingResult::Ok;
     }
@@ -920,7 +920,7 @@ ComputingResult ComputingComponent::compute(
 
         if (computingResult == ComputingResult::Ok)
         {
-            std::unique_ptr<SinglePointsResponse> resp = std::make_unique<SinglePointsResponse>(_request.getId());
+            std::unique_ptr<SinglePointsData> resp = std::make_unique<SinglePointsData>(_request.getId());
 
             if (concentrations.size() != timesSeries.size()) {
                 // Something went wrong

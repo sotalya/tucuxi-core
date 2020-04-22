@@ -161,9 +161,9 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
                 fructose_assert( result == ComputingResult::Ok);
 
-                const SingleComputingResponse* responseData = response->getSingleComputingResponse();
-                fructose_assert(dynamic_cast<const PercentilesResponse*>(responseData) != nullptr);
-                const PercentilesResponse *resp = dynamic_cast<const PercentilesResponse*>(responseData);
+                const ComputedData* responseData = response->getData();
+                fructose_assert(dynamic_cast<const PercentilesData*>(responseData) != nullptr);
+                const PercentilesData *resp = dynamic_cast<const PercentilesData*>(responseData);
 
                 fructose_assert_eq(resp->getNbRanks(), percentileRanks.size());
 
@@ -185,9 +185,9 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
                 fructose_assert( result == ComputingResult::Ok);
 
-                const SingleComputingResponse* responseData = response->getSingleComputingResponse();
-                fructose_assert(dynamic_cast<const SinglePredictionResponse*>(responseData) != nullptr);
-                const SinglePredictionResponse *resp = dynamic_cast<const SinglePredictionResponse*>(responseData);
+                const ComputedData* responseData = response->getData();
+                fructose_assert(dynamic_cast<const SinglePredictionData*>(responseData) != nullptr);
+                const SinglePredictionData *resp = dynamic_cast<const SinglePredictionData*>(responseData);
 
                 fructose_assert_eq(resp->getIds().size(), size_t{1});
                 fructose_assert_eq(resp->getIds()[0], "analyte");
@@ -319,9 +319,9 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
                 fructose_assert( result == ComputingResult::Ok);
 
-                const SingleComputingResponse* responseData = response->getSingleComputingResponse();
-                fructose_assert(dynamic_cast<const PercentilesResponse*>(responseData) != nullptr);
-                const PercentilesResponse *resp = dynamic_cast<const PercentilesResponse*>(responseData);
+                const ComputedData* responseData = response->getData();
+                fructose_assert(dynamic_cast<const PercentilesData*>(responseData) != nullptr);
+                const PercentilesData *resp = dynamic_cast<const PercentilesData*>(responseData);
 
                 fructose_assert_eq(resp->getNbRanks(), percentileRanks.size());
 
@@ -344,9 +344,9 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
                 fructose_assert( result == ComputingResult::Ok);
 
 
-                const SingleComputingResponse* responseData = response->getSingleComputingResponse();
-                fructose_assert(dynamic_cast<const SinglePredictionResponse*>(responseData) != nullptr);
-                const SinglePredictionResponse *resp = dynamic_cast<const SinglePredictionResponse*>(responseData);
+                const ComputedData* responseData = response->getData();
+                fructose_assert(dynamic_cast<const SinglePredictionData*>(responseData) != nullptr);
+                const SinglePredictionData *resp = dynamic_cast<const SinglePredictionData*>(responseData);
 
                 fructose_assert_eq(resp->getIds().size(), size_t{1});
                 fructose_assert_eq(resp->getIds()[0], "analyte");
@@ -472,9 +472,9 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
             fructose_assert( result == ComputingResult::Ok);
 
-            const SingleComputingResponse* responseData = response->getSingleComputingResponse();
-            fructose_assert(dynamic_cast<const PercentilesResponse*>(responseData) != nullptr);
-            const PercentilesResponse *resp = dynamic_cast<const PercentilesResponse*>(responseData);
+            const ComputedData* responseData = response->getData();
+            fructose_assert(dynamic_cast<const PercentilesData*>(responseData) != nullptr);
+            const PercentilesData *resp = dynamic_cast<const PercentilesData*>(responseData);
 
             fructose_assert_eq(resp->getNbRanks(), percentileRanks.size());
 
@@ -570,9 +570,9 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
             fructose_assert( result == ComputingResult::Ok);
 
-            const SingleComputingResponse* responseData = response->getSingleComputingResponse();
-            fructose_assert(dynamic_cast<const PercentilesResponse*>(responseData) != nullptr);
-            const PercentilesResponse *resp = dynamic_cast<const PercentilesResponse*>(responseData);
+            const ComputedData* responseData = response->getData();
+            fructose_assert(dynamic_cast<const PercentilesData*>(responseData) != nullptr);
+            const PercentilesData *resp = dynamic_cast<const PercentilesData*>(responseData);
 
             fructose_assert_eq(resp->getNbRanks(), percentileRanks.size());
 
@@ -668,9 +668,9 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
             fructose_assert( result == ComputingResult::Ok);
 
-            const SingleComputingResponse* responseData = response->getSingleComputingResponse();
-            fructose_assert(dynamic_cast<const PercentilesResponse*>(responseData) != nullptr);
-            const PercentilesResponse *resp = dynamic_cast<const PercentilesResponse*>(responseData);
+            const ComputedData* responseData = response->getData();
+            fructose_assert(dynamic_cast<const PercentilesData*>(responseData) != nullptr);
+            const PercentilesData *resp = dynamic_cast<const PercentilesData*>(responseData);
 
             fructose_assert_eq(resp->getNbRanks(), percentileRanks.size());
 
@@ -766,9 +766,9 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
             fructose_assert( result == ComputingResult::Ok);
 
-            const SingleComputingResponse* responseData = response->getSingleComputingResponse();
-            fructose_assert(dynamic_cast<const PercentilesResponse*>(responseData) != nullptr);
-            const PercentilesResponse *resp = dynamic_cast<const PercentilesResponse*>(responseData);
+            const ComputedData* responseData = response->getData();
+            fructose_assert(dynamic_cast<const PercentilesData*>(responseData) != nullptr);
+            const PercentilesData *resp = dynamic_cast<const PercentilesData*>(responseData);
 
             fructose_assert_eq(resp->getNbRanks(), percentileRanks.size());
 
@@ -874,9 +874,9 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
             fructose_assert( result == ComputingResult::Ok);
 
-            const SingleComputingResponse* responseData = response->getSingleComputingResponse();
-            fructose_assert(dynamic_cast<const PercentilesResponse*>(responseData) != nullptr);
-            const PercentilesResponse *resp = dynamic_cast<const PercentilesResponse*>(responseData);
+            const ComputedData* responseData = response->getData();
+            fructose_assert(dynamic_cast<const PercentilesData*>(responseData) != nullptr);
+            const PercentilesData *resp = dynamic_cast<const PercentilesData*>(responseData);
 
             fructose_assert_eq(resp->getNbRanks(), percentileRanks.size());
 
@@ -981,9 +981,9 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
             fructose_assert( result == ComputingResult::Ok);
 
-            const SingleComputingResponse* responseData = response->getSingleComputingResponse();
-            fructose_assert(dynamic_cast<const PercentilesResponse*>(responseData) != nullptr);
-            const PercentilesResponse *resp = dynamic_cast<const PercentilesResponse*>(responseData);
+            const ComputedData* responseData = response->getData();
+            fructose_assert(dynamic_cast<const PercentilesData*>(responseData) != nullptr);
+            const PercentilesData *resp = dynamic_cast<const PercentilesData*>(responseData);
 
             fructose_assert_eq(resp->getNbRanks(), percentileRanks.size());
 
@@ -1088,9 +1088,9 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
             fructose_assert( result == ComputingResult::Ok);
 
-            const SingleComputingResponse* responseData = response->getSingleComputingResponse();
-            fructose_assert(dynamic_cast<const PercentilesResponse*>(responseData) != nullptr);
-            const PercentilesResponse *resp = dynamic_cast<const PercentilesResponse*>(responseData);
+            const ComputedData* responseData = response->getData();
+            fructose_assert(dynamic_cast<const PercentilesData*>(responseData) != nullptr);
+            const PercentilesData *resp = dynamic_cast<const PercentilesData*>(responseData);
 
             fructose_assert_eq(resp->getNbRanks(), percentileRanks.size());
 
@@ -1196,9 +1196,9 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
             fructose_assert( result == ComputingResult::Ok);
 
-            const SingleComputingResponse* responseData = response->getSingleComputingResponse();
-            fructose_assert(dynamic_cast<const PercentilesResponse*>(responseData) != nullptr);
-            const PercentilesResponse *resp = dynamic_cast<const PercentilesResponse*>(responseData);
+            const ComputedData* responseData = response->getData();
+            fructose_assert(dynamic_cast<const PercentilesData*>(responseData) != nullptr);
+            const PercentilesData *resp = dynamic_cast<const PercentilesData*>(responseData);
 
             fructose_assert_eq(resp->getNbRanks(), percentileRanks.size());
 
@@ -1331,9 +1331,9 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
             fructose_assert( result == ComputingResult::Ok);
 
-            const SingleComputingResponse* responseData = response->getSingleComputingResponse();
-            fructose_assert(dynamic_cast<const AdjustmentResponse*>(responseData) != nullptr);
-            const AdjustmentResponse *resp = dynamic_cast<const AdjustmentResponse*>(responseData);
+            const ComputedData* responseData = response->getData();
+            fructose_assert(dynamic_cast<const AdjustmentData*>(responseData) != nullptr);
+            const AdjustmentData *resp = dynamic_cast<const AdjustmentData*>(responseData);
 
             fructose_assert_eq(resp->getAdjustments().size(), size_t{9});
 
@@ -1457,9 +1457,9 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
             fructose_assert( result == ComputingResult::Ok);
 
-            const SingleComputingResponse* responseData = response->getSingleComputingResponse();
-            fructose_assert(dynamic_cast<const AdjustmentResponse*>(responseData) != nullptr);
-            const AdjustmentResponse *resp = dynamic_cast<const AdjustmentResponse*>(responseData);
+            const ComputedData* responseData = response->getData();
+            fructose_assert(dynamic_cast<const AdjustmentData*>(responseData) != nullptr);
+            const AdjustmentData *resp = dynamic_cast<const AdjustmentData*>(responseData);
 
             // 18 possibilities:
             // 3 intervals for doses 300, 400, 500, 600, 700, 800

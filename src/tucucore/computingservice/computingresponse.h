@@ -90,15 +90,15 @@ public:
 /// \brief The SingleComputingResponse class is the base class for every response
 /// It only contains an identifier
 ///
-class SingleComputingResponse
+class ComputedData
 {
 public:
-    virtual ~SingleComputingResponse() = 0;
+    virtual ~ComputedData() = 0;
     RequestResponseId getId() const;
 
 protected:
 
-    SingleComputingResponse(RequestResponseId _id);
+    ComputedData(RequestResponseId _id);
 
     RequestResponseId m_id;
 };
@@ -113,11 +113,11 @@ protected:
 /// Therefore it offers the absolute times corresponding to the request as well
 /// as the calculated concentrations at these points.
 ///
-class SinglePointsResponse : public SingleComputingResponse
+class SinglePointsData : public ComputedData
 {
 public:
 
-    SinglePointsResponse(RequestResponseId _id) : SingleComputingResponse(_id) {}
+    SinglePointsData(RequestResponseId _id) : ComputedData(_id) {}
 
     /// Absolute time of each concentration
     std::vector<Tucuxi::Common::DateTime> m_times;
@@ -132,10 +132,10 @@ public:
 ///
 /// \brief The SinglePredictionResponse class
 /// It contains data of a single prediction, as a vector of CycleData.
-class SinglePredictionResponse : public SingleComputingResponse
+class SinglePredictionData : public ComputedData
 {
 public:
-    SinglePredictionResponse(RequestResponseId _id) : SingleComputingResponse(_id) {}
+    SinglePredictionData(RequestResponseId _id) : ComputedData(_id) {}
     void addCycleData(const CycleData &_data) { m_data.push_back(_data); }
     const std::vector<CycleData>& getData() const { return m_data; }
     std::vector<CycleData>& getModifiableData() { return m_data; }
@@ -179,10 +179,10 @@ public:
 /// This class embeds a vector of potential adjustments, each one being a
 /// Dosage history, a score, and optionnally a concentration prediction.
 ///
-class AdjustmentResponse : public SinglePredictionResponse
+class AdjustmentData : public SinglePredictionData
 {
 public:
-    AdjustmentResponse(RequestResponseId _id) : SinglePredictionResponse(_id) {}
+    AdjustmentData(RequestResponseId _id) : SinglePredictionData(_id) {}
 
     void addAdjustment(DosageAdjustment _adjustment) { m_adjustments.push_back(_adjustment);}
 
@@ -204,10 +204,10 @@ protected:
 /// 2. The concentration of percentiles, as a vector of CycleMultiData,
 ///    one CycleData per percentile
 ///
-class PercentilesResponse : public SingleComputingResponse
+class PercentilesData : public ComputedData
 {
 public:
-    PercentilesResponse(RequestResponseId _id) : SingleComputingResponse(_id) {}
+    PercentilesData(RequestResponseId _id) : ComputedData(_id) {}
 
     void setRanks(const PercentileRanks &_ranks) { m_ranks = _ranks;}
 
@@ -258,7 +258,7 @@ public:
     /// \brief Adds a response to this list of responses
     /// \param _response The response to be added, as a unique_ptr
     ///
-    void addResponse(std::unique_ptr<SingleComputingResponse> _response);
+    void addResponse(std::unique_ptr<ComputedData> _response);
 
     ///
     /// \brief Gets the vector of responses
@@ -267,7 +267,7 @@ public:
     // std::vector<std::unique_ptr<SingleComputingResponse> > & getResponses() { return m_responses;}
     // const std::vector<std::unique_ptr<SingleComputingResponse> > & getResponses() const { return m_responses;}
 
-    const SingleComputingResponse* getSingleComputingResponse() const { return m_response.get() ;}
+    const ComputedData* getData() const { return m_data.get() ;}
 
     ///
     /// \brief Set the computing time of this request
@@ -287,9 +287,9 @@ protected:
     RequestResponseId m_id;
 
     /// Vector of responses
-    std::vector<std::unique_ptr<SingleComputingResponse> > m_responses;
+    std::vector<std::unique_ptr<ComputedData> > m_responses;
 
-    std::unique_ptr<SingleComputingResponse> m_response;
+    std::unique_ptr<ComputedData> m_data;
 
     std::chrono::duration<double, std::ratio<1,1> > m_computingTimeInSeconds{0};
 

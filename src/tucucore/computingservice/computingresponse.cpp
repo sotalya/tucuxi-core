@@ -19,9 +19,9 @@ RequestResponseId ComputingResponse::getId() const
     return m_id;
 }
 
-void ComputingResponse::addResponse(std::unique_ptr<SingleComputingResponse> _response)
+void ComputingResponse::addResponse(std::unique_ptr<ComputedData> _response)
 {
-    m_response = std::move(_response);
+    m_data = std::move(_response);
 }
 
 void ComputingResponse::setComputingTimeInSeconds(std::chrono::duration<double> _computingTime)
@@ -34,17 +34,17 @@ std::chrono::duration<double> ComputingResponse::getComputingTimeInSeconds() con
     return m_computingTimeInSeconds;
 }
 
-SingleComputingResponse::SingleComputingResponse(RequestResponseId _id) :
+ComputedData::ComputedData(RequestResponseId _id) :
     m_id(_id)
 {
 
 }
 
-SingleComputingResponse::~SingleComputingResponse()
+ComputedData::~ComputedData()
 {
 }
 
-RequestResponseId SingleComputingResponse::getId() const
+RequestResponseId ComputedData::getId() const
 {
     return m_id;
 }

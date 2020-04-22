@@ -100,9 +100,9 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
 
         fructose_assert( result == ComputingResult::Ok);
 
-        const SingleComputingResponse* responseData = response->getSingleComputingResponse();
-        fructose_assert(dynamic_cast<const AdjustmentResponse*>(responseData) != nullptr);
-        const AdjustmentResponse *resp = dynamic_cast<const AdjustmentResponse*>(responseData);
+        const ComputedData* responseData = response->getData();
+        fructose_assert(dynamic_cast<const AdjustmentData*>(responseData) != nullptr);
+        const AdjustmentData *resp = dynamic_cast<const AdjustmentData*>(responseData);
 
         // We expect 7 valid adjustment candidates
         fructose_assert(resp->getAdjustments().size() == 7);
@@ -161,9 +161,9 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
         fructose_assert( result == ComputingResult::Ok);
 
 
-        const SingleComputingResponse* responseData = response->getSingleComputingResponse();
-        fructose_assert(dynamic_cast<const AdjustmentResponse*>(responseData) != nullptr);
-        const AdjustmentResponse *resp = dynamic_cast<const AdjustmentResponse*>(responseData);
+        const ComputedData* responseData = response->getData();
+        fructose_assert(dynamic_cast<const AdjustmentData*>(responseData) != nullptr);
+        const AdjustmentData *resp = dynamic_cast<const AdjustmentData*>(responseData);
 
         // We expect 7 valid adjustment candidates
         fructose_assert(resp->getAdjustments().size() == 7);
@@ -221,9 +221,9 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
         fructose_assert( result == ComputingResult::Ok);
 
 
-        const SingleComputingResponse* responseData = response->getSingleComputingResponse();
-        fructose_assert(dynamic_cast<const AdjustmentResponse*>(responseData) != nullptr);
-        const AdjustmentResponse *resp = dynamic_cast<const AdjustmentResponse*>(responseData);
+        const ComputedData* responseData = response->getData();
+        fructose_assert(dynamic_cast<const AdjustmentData*>(responseData) != nullptr);
+        const AdjustmentData *resp = dynamic_cast<const AdjustmentData*>(responseData);
 
         // We expect 7 valid adjustment candidates
         fructose_assert(resp->getAdjustments().size() != 7);
@@ -277,9 +277,9 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
         fructose_assert( result == ComputingResult::Ok);
 
 
-        const SingleComputingResponse* responseData = response->getSingleComputingResponse();
-        fructose_assert(dynamic_cast<const AdjustmentResponse*>(responseData) != nullptr);
-        const AdjustmentResponse *resp = dynamic_cast<const AdjustmentResponse*>(responseData);
+        const ComputedData* responseData = response->getData();
+        fructose_assert(dynamic_cast<const AdjustmentData*>(responseData) != nullptr);
+        const AdjustmentData *resp = dynamic_cast<const AdjustmentData*>(responseData);
 
         // We expect 7 valid adjustment candidates
         fructose_assert(resp->getAdjustments().size() == 1);
@@ -337,9 +337,9 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
         fructose_assert( result == ComputingResult::Ok);
 
 
-        const SingleComputingResponse* responseData = response->getSingleComputingResponse();
-        fructose_assert(dynamic_cast<const AdjustmentResponse*>(responseData) != nullptr);
-        const AdjustmentResponse *resp = dynamic_cast<const AdjustmentResponse*>(responseData);
+        const ComputedData* responseData = response->getData();
+        fructose_assert(dynamic_cast<const AdjustmentData*>(responseData) != nullptr);
+        const AdjustmentData *resp = dynamic_cast<const AdjustmentData*>(responseData);
 
         // We expect 7 valid adjustment candidates
         fructose_assert(resp->getAdjustments().size() == 1);
@@ -397,9 +397,9 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
         fructose_assert( result == ComputingResult::Ok);
 
 
-        const SingleComputingResponse* responseData = response->getSingleComputingResponse();
-        fructose_assert(dynamic_cast<const AdjustmentResponse*>(responseData) != nullptr);
-        const AdjustmentResponse *resp = dynamic_cast<const AdjustmentResponse*>(responseData);
+        const ComputedData* responseData = response->getData();
+        fructose_assert(dynamic_cast<const AdjustmentData*>(responseData) != nullptr);
+        const AdjustmentData *resp = dynamic_cast<const AdjustmentData*>(responseData);
 
         // We expect 1 valid adjustment candidate
         fructose_assert(resp->getAdjustments().size() == 1);
@@ -456,9 +456,9 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
 
         fructose_assert( result == ComputingResult::Ok);
 
-        const SingleComputingResponse* responseData = response->getSingleComputingResponse();
-        fructose_assert(dynamic_cast<const AdjustmentResponse*>(responseData) != nullptr);
-        const AdjustmentResponse *resp = dynamic_cast<const AdjustmentResponse*>(responseData);
+        const ComputedData* responseData = response->getData();
+        fructose_assert(dynamic_cast<const AdjustmentData*>(responseData) != nullptr);
+        const AdjustmentData *resp = dynamic_cast<const AdjustmentData*>(responseData);
         TMP_UNUSED_PARAMETER(resp);
             // We expect 7 valid adjustment candidates
             //fructose_assert(resp->getAdjustments().size() == 7);
@@ -519,9 +519,9 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
         fructose_assert( result == ComputingResult::Ok);
 
 
-        const SingleComputingResponse* responseData = response->getSingleComputingResponse();
-        fructose_assert(dynamic_cast<const AdjustmentResponse*>(responseData) != nullptr);
-        const AdjustmentResponse *resp = dynamic_cast<const AdjustmentResponse*>(responseData);
+        const ComputedData* responseData = response->getData();
+        fructose_assert(dynamic_cast<const AdjustmentData*>(responseData) != nullptr);
+        const AdjustmentData *resp = dynamic_cast<const AdjustmentData*>(responseData);
 
         // We expect 4 valid adjustment candidates
         fructose_assert(resp->getAdjustments().size() == 4);
@@ -580,9 +580,9 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
             fructose_assert( result == ComputingResult::Ok);
 
 
-            const SingleComputingResponse* responseData = response->getSingleComputingResponse();
-            fructose_assert(dynamic_cast<const AdjustmentResponse*>(responseData) != nullptr);
-            const AdjustmentResponse *resp = dynamic_cast<const AdjustmentResponse*>(responseData);
+            const ComputedData* responseData = response->getData();
+            fructose_assert(dynamic_cast<const AdjustmentData*>(responseData) != nullptr);
+            const AdjustmentData *resp = dynamic_cast<const AdjustmentData*>(responseData);
 
             // We expect 2 valid adjustment candidates
             fructose_assert(resp->getAdjustments().size() == 2);
@@ -665,9 +665,9 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
         fructose_assert( result == ComputingResult::Ok);
 
 
-        const SingleComputingResponse* responseData = response->getSingleComputingResponse();
-        fructose_assert(dynamic_cast<const AdjustmentResponse*>(responseData) != nullptr);
-        const AdjustmentResponse *resp = dynamic_cast<const AdjustmentResponse*>(responseData);
+        const ComputedData* responseData = response->getData();
+        fructose_assert(dynamic_cast<const AdjustmentData*>(responseData) != nullptr);
+        const AdjustmentData *resp = dynamic_cast<const AdjustmentData*>(responseData);
 
         // We expect 4 valid adjustment candidates
         fructose_assert(resp->getAdjustments().size() == 4);

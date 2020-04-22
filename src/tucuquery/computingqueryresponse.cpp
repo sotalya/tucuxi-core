@@ -6,7 +6,7 @@ namespace Query {
 
 
 SingleResponseData::SingleResponseData(
-        std::unique_ptr<Tucuxi::Core::SingleComputingResponse> _computingResponse,
+        std::unique_ptr<Tucuxi::Core::ComputedData> _computingResponse,
         Tucuxi::Core::ComputingResult _status,
         std::unique_ptr<ComputingResponseMetaData> _metaData) :
     m_computingResponse(std::move(_computingResponse)),
@@ -33,7 +33,7 @@ const std::vector<SingleResponseData>& ComputingQueryResponse::getRequestRespons
 
 
 void ComputingQueryResponse::addRequestResponse(
-        std::unique_ptr<Core::SingleComputingResponse> _computingResponse,
+        std::unique_ptr<Core::ComputedData> _computingResponse,
         Tucuxi::Core::ComputingResult _status,
         std::unique_ptr<ComputingResponseMetaData> _metaData)
 {

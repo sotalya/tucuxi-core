@@ -142,11 +142,11 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
 
             fructose_assert( result == ComputingResult::Ok);
 
-            const SingleComputingResponse* responseData = response.get()->getSingleComputingResponse();
+            const ComputedData* responseData = response.get()->getData();
 
             {
                 fructose_assert(responseData != nullptr);
-                const SinglePredictionResponse *resp = dynamic_cast<const SinglePredictionResponse*>(responseData);
+                const SinglePredictionData *resp = dynamic_cast<const SinglePredictionData*>(responseData);
                 fructose_assert(resp != nullptr);
 
                 fructose_assert_eq(resp->getIds().size(), size_t{3});
@@ -277,13 +277,13 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
 
             fructose_assert( result == ComputingResult::Ok);
 
-            const SingleComputingResponse* responseData = response->getSingleComputingResponse();
+            const ComputedData* responseData = response->getData();
 
             fructose_assert(responseData != nullptr);
 
             {
-                fructose_assert(dynamic_cast<const SinglePredictionResponse*>(responseData) != nullptr);
-                const SinglePredictionResponse *resp = dynamic_cast<const SinglePredictionResponse*>(responseData);
+                fructose_assert(dynamic_cast<const SinglePredictionData*>(responseData) != nullptr);
+                const SinglePredictionData *resp = dynamic_cast<const SinglePredictionData*>(responseData);
 
                 fructose_assert_eq(resp->getIds().size(), size_t{3});
                 fructose_assert_eq(resp->getIds()[0], "activeMoietyMulti");
@@ -466,13 +466,13 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
 
             fructose_assert( result == ComputingResult::Ok);
 
-            const SingleComputingResponse* responseData = response->getSingleComputingResponse();
+            const ComputedData* responseData = response->getData();
 
             fructose_assert(responseData != nullptr);
 
             {
-                fructose_assert(dynamic_cast<const AdjustmentResponse*>(responseData) != nullptr);
-                const AdjustmentResponse *resp = dynamic_cast<const AdjustmentResponse*>(responseData);
+                fructose_assert(dynamic_cast<const AdjustmentData*>(responseData) != nullptr);
+                const AdjustmentData *resp = dynamic_cast<const AdjustmentData*>(responseData);
 
                 fructose_assert_eq(resp->getAdjustments().size(), size_t{9});
 

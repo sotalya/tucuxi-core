@@ -127,9 +127,9 @@ struct TestComputingComponentPercentiles : public fructose::test_base<TestComput
 
         fructose_assert( result == ComputingResult::Ok);
 
-        const SingleComputingResponse* responseData = response->getSingleComputingResponse();
-        fructose_assert(dynamic_cast<const PercentilesResponse*>(responseData) != nullptr);
-        const PercentilesResponse *resp = dynamic_cast<const PercentilesResponse*>(responseData);
+        const ComputedData* responseData = response->getData();
+        fructose_assert(dynamic_cast<const PercentilesData*>(responseData) != nullptr);
+        const PercentilesData *resp = dynamic_cast<const PercentilesData*>(responseData);
 
         TMP_UNUSED_PARAMETER(resp);
         /*
@@ -227,9 +227,9 @@ struct TestComputingComponentPercentiles : public fructose::test_base<TestComput
 
         fructose_assert( result == ComputingResult::Ok);
 
-        const SingleComputingResponse* responseData = response->getSingleComputingResponse();
-        fructose_assert(dynamic_cast<const PercentilesResponse*>(responseData) != nullptr);
-        const PercentilesResponse *resp = dynamic_cast<const PercentilesResponse*>(responseData);
+        const ComputedData* responseData = response->getData();
+        fructose_assert(dynamic_cast<const PercentilesData*>(responseData) != nullptr);
+        const PercentilesData *resp = dynamic_cast<const PercentilesData*>(responseData);
 
         TMP_UNUSED_PARAMETER(resp);
         /*

@@ -135,9 +135,9 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
 
             fructose_assert( result == ComputingResult::Ok);
 
-            const SingleComputingResponse* responseData = response->getSingleComputingResponse();
-            fructose_assert(dynamic_cast<const SinglePredictionResponse*>(responseData) != nullptr);
-            const SinglePredictionResponse *resp = dynamic_cast<const SinglePredictionResponse*>(responseData);
+            const ComputedData* responseData = response->getData();
+            fructose_assert(dynamic_cast<const SinglePredictionData*>(responseData) != nullptr);
+            const SinglePredictionData *resp = dynamic_cast<const SinglePredictionData*>(responseData);
 
             fructose_assert_eq(resp->getIds().size(), size_t{1});
             fructose_assert_eq(resp->getIds()[0], "analyte");
@@ -299,9 +299,9 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
 
             fructose_assert( result == ComputingResult::Ok);
 
-            const SingleComputingResponse* responseData = response->getSingleComputingResponse();
-            fructose_assert(dynamic_cast<const AdjustmentResponse*>(responseData) != nullptr);
-            const AdjustmentResponse *resp = dynamic_cast<const AdjustmentResponse*>(responseData);
+            const ComputedData* responseData = response->getData();
+            fructose_assert(dynamic_cast<const AdjustmentData*>(responseData) != nullptr);
+            const AdjustmentData *resp = dynamic_cast<const AdjustmentData*>(responseData);
 
             // 8 doses reach the target, for the 3 possible intervals
             fructose_assert_eq(resp->getAdjustments().size(), size_t{24});
@@ -426,9 +426,9 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
 
             fructose_assert( result == ComputingResult::Ok);
 
-            const SingleComputingResponse* responseData = response->getSingleComputingResponse();
-            fructose_assert(dynamic_cast<const AdjustmentResponse*>(responseData) != nullptr);
-            const AdjustmentResponse *resp = dynamic_cast<const AdjustmentResponse*>(responseData);
+            const ComputedData* responseData = response->getData();
+            fructose_assert(dynamic_cast<const AdjustmentData*>(responseData) != nullptr);
+            const AdjustmentData *resp = dynamic_cast<const AdjustmentData*>(responseData);
 
             // 8 doses reach the target, for the 3 possible intervals
             fructose_assert_eq(resp->getAdjustments().size(), size_t{24});
@@ -553,9 +553,9 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
 
             fructose_assert( result == ComputingResult::Ok);
 
-            const SingleComputingResponse* responseData = response->getSingleComputingResponse();
-            fructose_assert(dynamic_cast<const AdjustmentResponse*>(responseData) != nullptr);
-            const AdjustmentResponse *resp = dynamic_cast<const AdjustmentResponse*>(responseData);
+            const ComputedData* responseData = response->getData();
+            fructose_assert(dynamic_cast<const AdjustmentData*>(responseData) != nullptr);
+            const AdjustmentData *resp = dynamic_cast<const AdjustmentData*>(responseData);
 
             // 8 doses reach the target, for the 3 possible intervals
             fructose_assert_eq(resp->getAdjustments().size(), size_t{24});
@@ -693,9 +693,9 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
 
             fructose_assert( result == ComputingResult::Ok);
 
-            const SingleComputingResponse* responseData = response->getSingleComputingResponse();
-            fructose_assert(dynamic_cast<const AdjustmentResponse*>(responseData) != nullptr);
-            const AdjustmentResponse *resp = dynamic_cast<const AdjustmentResponse*>(responseData);
+            const ComputedData* responseData = response->getData();
+            fructose_assert(dynamic_cast<const AdjustmentData*>(responseData) != nullptr);
+            const AdjustmentData *resp = dynamic_cast<const AdjustmentData*>(responseData);
 
             // 8 doses reach the target, for the 3 possible intervals
             fructose_assert_eq(resp->getAdjustments().size(), size_t{24});
@@ -820,9 +820,9 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
 
             fructose_assert( result == ComputingResult::Ok);
 
-            const SingleComputingResponse* responseData = response->getSingleComputingResponse();
-            fructose_assert(dynamic_cast<const AdjustmentResponse*>(responseData) != nullptr);
-            const AdjustmentResponse *resp = dynamic_cast<const AdjustmentResponse*>(responseData);
+            const ComputedData* responseData = response->getData();
+            fructose_assert(dynamic_cast<const AdjustmentData*>(responseData) != nullptr);
+            const AdjustmentData *resp = dynamic_cast<const AdjustmentData*>(responseData);
 
             // 8 doses reach the target, for the 3 possible intervals
             fructose_assert_eq(resp->getAdjustments().size(), size_t{24});
