@@ -115,6 +115,7 @@ QueryImport::Result QueryImport::importDocument(
         requestsIterator++;
     }
 
+
     _query = new QueryData(
                 drugId,
                 clientId,
@@ -1142,7 +1143,12 @@ void QueryImport::setNodeError(Tucuxi::Common::XmlNodeIterator _node)
 
 Tucuxi::Core::BestCandidatesOption QueryImport::getChildBestCandidatesOptionEnum(Common::XmlNodeIterator _rootIterator, std::string _childName)
 {
-    Common::XmlNodeIterator BestCandidatesOptionRootIterator = _rootIterator->getChildren(_childName);
+
+    static const string BEST_CANDIDATE_OPTION_NODE          = "bestCandidatesOption";
+
+    Common::XmlNodeIterator optionsRootIterator = _rootIterator->getChildren(_childName);
+
+    Common::XmlNodeIterator BestCandidatesOptionRootIterator = optionsRootIterator->getChildren(BEST_CANDIDATE_OPTION_NODE);
 
     static std::map<std::string,Tucuxi::Core::BestCandidatesOption> m =
     {
@@ -1164,7 +1170,12 @@ Tucuxi::Core::BestCandidatesOption QueryImport::getChildBestCandidatesOptionEnum
 
 Tucuxi::Core::LoadingOption QueryImport::getChildLoadingOptionEnum(Common::XmlNodeIterator _rootIterator, std::string _childName)
 {
-    Common::XmlNodeIterator loadingOptionRootIterator = _rootIterator->getChildren(_childName);
+    static const string LOADING_OPTION_NODE          = "loadingOption";
+
+    Common::XmlNodeIterator optionsRootIterator = _rootIterator->getChildren(_childName);
+
+    Common::XmlNodeIterator loadingOptionRootIterator = optionsRootIterator->getChildren(LOADING_OPTION_NODE);
+
 
     static std::map<std::string,Tucuxi::Core::LoadingOption> m =
     {
@@ -1184,7 +1195,13 @@ Tucuxi::Core::LoadingOption QueryImport::getChildLoadingOptionEnum(Common::XmlNo
 
 Tucuxi::Core::RestPeriodOption QueryImport::getChildRestPeriodTargetOptionEnum(Common::XmlNodeIterator _rootIterator, std::string _childName)
 {
-    Common::XmlNodeIterator restPeriodOptionRootIterator = _rootIterator->getChildren(_childName);
+
+    static const string REST_PERIOD_OPTION_NODE          = "restPeriodOption";
+
+    Common::XmlNodeIterator optionsRootIterator = _rootIterator->getChildren(_childName);
+
+    Common::XmlNodeIterator restPeriodOptionRootIterator = optionsRootIterator->getChildren(REST_PERIOD_OPTION_NODE);
+
 
     static std::map<std::string,Tucuxi::Core::RestPeriodOption> m =
     {
@@ -1204,7 +1221,12 @@ Tucuxi::Core::RestPeriodOption QueryImport::getChildRestPeriodTargetOptionEnum(C
 
 Tucuxi::Core::SteadyStateTargetOption QueryImport::getChildSteadyStateTargetOptionEnum(Common::XmlNodeIterator _rootIterator, std::string _childName)
 {
-    Common::XmlNodeIterator steadyStateTargetOptionRootIterator = _rootIterator->getChildren(_childName);
+
+    static const string STEADY_STATE_TARGET_OPTION_NODE          = "steadyStateTargetOption";
+
+    Common::XmlNodeIterator optionsRootIterator = _rootIterator->getChildren(_childName);
+
+    Common::XmlNodeIterator steadyStateTargetOptionRootIterator = optionsRootIterator->getChildren(STEADY_STATE_TARGET_OPTION_NODE);
 
     static std::map<std::string,Tucuxi::Core::SteadyStateTargetOption> m =
     {
@@ -1224,7 +1246,13 @@ Tucuxi::Core::SteadyStateTargetOption QueryImport::getChildSteadyStateTargetOpti
 
 Tucuxi::Core::TargetExtractionOption QueryImport::getChildTargetExtractionOptionEnum(Common::XmlNodeIterator _rootIterator, std::string _childName)
 {
-    Common::XmlNodeIterator targetExtractionOptionRootIterator = _rootIterator->getChildren(_childName);
+
+    static const string TARGET_EXTRACTION_OPTION_NODE          = "targetExtractionOption";
+
+    Common::XmlNodeIterator optionsRootIterator = _rootIterator->getChildren(_childName);
+
+    Common::XmlNodeIterator targetExtractionOptionRootIterator = optionsRootIterator->getChildren(TARGET_EXTRACTION_OPTION_NODE);
+
 
     static std::map<std::string,Tucuxi::Core::TargetExtractionOption> m =
     {
@@ -1250,7 +1278,12 @@ Tucuxi::Core::TargetExtractionOption QueryImport::getChildTargetExtractionOption
 Tucuxi::Core::FormulationAndRouteSelectionOption QueryImport::getChildFormulationAndRouteSelectionOptionEnum(Common::XmlNodeIterator _rootIterator, std::string _childName)
 {
 
-    Common::XmlNodeIterator formulationAndRouteSelectionOptioneRootIterator = _rootIterator->getChildren(_childName);
+    static const string FORMULATION_AND_ROUTE_SELECTION_OPTION_NODE          = "formulationAndRouteSelectionOption";
+
+    Common::XmlNodeIterator optionsRootIterator = _rootIterator->getChildren(_childName);
+
+    Common::XmlNodeIterator formulationAndRouteSelectionOptioneRootIterator = optionsRootIterator->getChildren(FORMULATION_AND_ROUTE_SELECTION_OPTION_NODE);
+
 
     static std::map<std::string,Tucuxi::Core::FormulationAndRouteSelectionOption> m =
     {
@@ -1315,6 +1348,7 @@ Tucuxi::Core::ComputingOption QueryImport::getChildComputingOption(Common::XmlNo
 
 Tucuxi::Core::CompartmentsOption QueryImport::getChildCompartmentsOptionEnum(Common::XmlNodeIterator _rootIterator, std::string _childName)
 {
+
     Common::XmlNodeIterator compartmentOptionRootIterator = _rootIterator->getChildren(_childName);
 
     static std::map<std::string,Tucuxi::Core::CompartmentsOption> m =
@@ -1338,6 +1372,8 @@ Tucuxi::Core::CompartmentsOption QueryImport::getChildCompartmentsOptionEnum(Com
 
 Tucuxi::Core::PredictionParameterType QueryImport::getChildParametersTypeEnum(Common::XmlNodeIterator _rootIterator, std::string _childName)
 {
+
+
     Common::XmlNodeIterator parametersTypeRootIterator = _rootIterator->getChildren(_childName);
 
     static std::map<std::string,Tucuxi::Core::PredictionParameterType> m =
