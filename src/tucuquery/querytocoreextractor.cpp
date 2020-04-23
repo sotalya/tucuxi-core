@@ -32,8 +32,6 @@ Tucuxi::Query::ComputingQuery* QueryToCoreExtractor::extractComputingQuery(const
 
     Tucuxi::Common::LoggerHelper logHelper;
 
-    Tucuxi::Core::RequestResponseId requestResponseID = _query.getQueryID();
-
 
     Tucuxi::Core::DrugTreatment *drugTreatment = nullptr;
 
@@ -56,7 +54,7 @@ Tucuxi::Query::ComputingQuery* QueryToCoreExtractor::extractComputingQuery(const
         }
         logHelper.info("Performing computation with drug model : {}, Request ID : {}", drugModel->getDrugModelId(), requestData->getRequestID());
 
-        std::unique_ptr<Tucuxi::Core::ComputingRequest> computingRequest = std::make_unique<Tucuxi::Core::ComputingRequest>(requestResponseID, *drugModel, *drugTreatment, std::move(requestData->m_pComputingTrait));
+        std::unique_ptr<Tucuxi::Core::ComputingRequest> computingRequest = std::make_unique<Tucuxi::Core::ComputingRequest>(requestData->getRequestID(), *drugModel, *drugTreatment, std::move(requestData->m_pComputingTrait));
         newQuery->addComputingRequest(std::move(computingRequest));
     }
 

@@ -92,6 +92,7 @@ bool XmlDocument::toString(std::string& _xml, bool _prettyPrint)
         rapidxml::print(std::back_inserter(_xml), *m_pDocument, _prettyPrint ? 0 : rapidxml::print_no_indenting);
         _xml = std::regex_replace(_xml, std::regex("\""), "'");
         return true;
+
     }
     return false;
 }

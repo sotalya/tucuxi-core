@@ -87,8 +87,8 @@ public:
 };
 
 ///
-/// \brief The SingleComputingResponse class is the base class for every response
-/// It only contains an identifier
+/// \brief The ComputedData class is the base class for every response
+/// It contains all the computed data
 ///
 class ComputedData
 {
@@ -289,9 +289,6 @@ protected:
 
     /// Id of the request
     RequestResponseId m_id;
-
-    /// Vector of responses
-    std::vector<std::unique_ptr<ComputedData> > m_responses;
 
     std::unique_ptr<ComputedData> m_data;
 

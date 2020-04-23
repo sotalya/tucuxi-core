@@ -174,7 +174,7 @@ bool ComputingQueryResponseXmlExport::exportToString(const ComputingResponse &_c
 }
 
 
-bool ComputingQueryResponseXmlExport::exportToString(const ComputingQueryResponse &_computingQueryResponse, std::string &_xmlString)
+bool ComputingQueryResponseXmlExport::exportToString(const ComputingQueryResponse &_computingQueryResponse, std::string &_xmlString, std::string _filePath)
 {
 
     // Ensure the function is reentrant
@@ -193,7 +193,11 @@ bool ComputingQueryResponseXmlExport::exportToString(const ComputingQueryRespons
     Tucuxi::Common::XmlNode responses = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "responses");
     root.addChild(responses);
 
+    std::string fileName;
+
     for (const auto &response : _computingQueryResponse.getRequestResponses()) {
+
+        fileName = _filePath + "/" + _computingQueryResponse.getQueryId() + "_" + response.m_computingResponse->getId() + ".xml";
 
         Tucuxi::Common::XmlNode responseNode = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "response");
 
@@ -289,10 +293,8 @@ bool ComputingQueryResponseXmlExport::exportToString(const ComputingQueryRespons
 
     }
 
-
-
-
     m_doc.toString(_xmlString, true);
+    m_doc.save(fileName);
     return true;
 }
 

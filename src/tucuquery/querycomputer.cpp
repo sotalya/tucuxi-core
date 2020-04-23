@@ -26,9 +26,6 @@ void QueryComputer::compute(ComputingQuery& _query, ComputingQueryResponse& _res
 {
     Core::IComputingService* computingComponent = dynamic_cast<Core::IComputingService*>(Core::ComputingComponent::createComponent());
 
-    //TODO : Request ID not Query Id
-
-
     for(const std::unique_ptr<Core::ComputingRequest>& computingRequest : _query.m_computingRequests)
     {
         // A ComputingResponse local to the loop iteration. Moved to the _response at the end of the loop
@@ -36,9 +33,11 @@ void QueryComputer::compute(ComputingQuery& _query, ComputingQueryResponse& _res
 
         Core::ComputingStatus result = computingComponent->compute(*computingRequest, computingResponse);
 
+        computingResponse->setComputingStatus(result);
+
         std::unique_ptr<ComputingResponseMetaData> computingResponseMetaData = std::make_unique<ComputingResponseMetaData>(computingRequest->getDrugModel().getDrugModelId());
         Tucuxi::Core::RequestResponseId requestResponseId = computingRequest->getId();
-        _response.setRequestResponseId(requestResponseId);
+        _response.setRequestResponseId(_query.m_queryId);
         _response.addRequestResponse(std::move(computingResponse), std::move(computingResponseMetaData));
     }
 }
