@@ -74,41 +74,41 @@ struct TestComputingComponentConcentration : public fructose::test_base<TestComp
 
         buildDrugTreatment(drugTreatment, route);
 
+        {
+            RequestResponseId requestResponseId = "1";
+            Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
+            Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
+            double nbPointsPerHour = 10.0;
+            ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
+            std::unique_ptr<ComputingTraitConcentration> traits =
+                    std::make_unique<ComputingTraitConcentration>(
+                        requestResponseId, start, end, nbPointsPerHour, computingOption);
 
-        RequestResponseId requestResponseId = "1";
-        Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
-        Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
-        double nbPointsPerHour = 10.0;
-        ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
-        std::unique_ptr<ComputingTraitConcentration> traits =
-                std::make_unique<ComputingTraitConcentration>(
-                    requestResponseId, start, end, nbPointsPerHour, computingOption);
+            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
 
-        ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
+            std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
-        std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
+            ComputingStatus result;
+            result = component->compute(request, response);
 
-        ComputingStatus result;
-        result = component->compute(request, response);
+            fructose_assert( result == ComputingStatus::Ok);
 
-        fructose_assert( result == ComputingStatus::Ok);
+            const ComputedData* responseData = response->getData();
+            fructose_assert(dynamic_cast<const SinglePredictionData*>(responseData) != nullptr);
+            const SinglePredictionData *resp = dynamic_cast<const SinglePredictionData*>(responseData);
 
-        const ComputedData* responseData = response->getData();
-        fructose_assert(dynamic_cast<const SinglePredictionData*>(responseData) != nullptr);
-        const SinglePredictionData *resp = dynamic_cast<const SinglePredictionData*>(responseData);
+            fructose_assert_eq(resp->getIds().size(), size_t{1});
+            fructose_assert_eq(resp->getIds()[0], "imatinib");
+            std::vector<CycleData> data = resp->getData();
+            fructose_assert_eq(data.size() , size_t{16});
+            fructose_assert(data[0].m_concentrations.size() == 1);
+            fructose_assert(data[0].m_concentrations[0][0] == 0.0);
+            DateTime startSept2018(date::year_month_day(date::year(2018), date::month(9), date::day(1)),
+                                   Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
 
-        fructose_assert_eq(resp->getIds().size(), size_t{1});
-        fructose_assert_eq(resp->getIds()[0], "imatinib");
-        std::vector<CycleData> data = resp->getData();
-        fructose_assert_eq(data.size() , size_t{16});
-        fructose_assert(data[0].m_concentrations.size() == 1);
-        fructose_assert(data[0].m_concentrations[0][0] == 0.0);
-        DateTime startSept2018(date::year_month_day(date::year(2018), date::month(9), date::day(1)),
-                               Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
-
-        fructose_assert_double_eq(data[0].m_start.toSeconds() + data[0].m_times[0][0] * 3600.0 , startSept2018.toSeconds());
-        fructose_assert_double_eq(data[1].m_start.toSeconds() + data[1].m_times[0][0] * 3600.0 , startSept2018.toSeconds() + 3600.0 * 6.0);
-
+            fructose_assert_double_eq(data[0].m_start.toSeconds() + data[0].m_times[0][0] * 3600.0 , startSept2018.toSeconds());
+            fructose_assert_double_eq(data[1].m_start.toSeconds() + data[1].m_times[0][0] * 3600.0 , startSept2018.toSeconds() + 3600.0 * 6.0);
+        }
 
         {
             // Ask for 15 intakes, without the first one.
@@ -130,7 +130,7 @@ struct TestComputingComponentConcentration : public fructose::test_base<TestComp
 
             fructose_assert( result == ComputingStatus::Ok);
 
-            const ComputedData* responseData = response->getData();
+            const ComputedData* responseData = partialResponse->getData();
             fructose_assert(dynamic_cast<const SinglePredictionData*>(responseData) != nullptr);
             const SinglePredictionData *resp = dynamic_cast<const SinglePredictionData*>(responseData);
 
