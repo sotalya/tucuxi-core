@@ -42,6 +42,26 @@ bool ComputingQueryResponseXmlExport::exportToFile(const ComputingResponse &_com
     return true;
 }
 
+bool ComputingQueryResponseXmlExport::exportToFile(const ComputingQueryResponse &_computingQueryResponse, std::string _fileName)
+{
+    std::string xmlString;
+    if (!exportToString(_computingQueryResponse, xmlString)) {
+        return false;
+    }
+
+    std::ofstream file;
+    file.open(_fileName);
+    if ((file.rdstate() & std::ostream::failbit) != 0) {
+        Tucuxi::Common::LoggerHelper logHelper;
+        logHelper.error("The file {} could not be opened.", _fileName);
+        return false;
+    }
+    file << xmlString;
+    file.close();
+
+    return true;
+}
+
 bool ComputingQueryResponseXmlExport::exportToString(const ComputingResponse &_computingResponse, std::string &_xmlString)
 {
     // Ensure the function is reentrant
@@ -174,7 +194,7 @@ bool ComputingQueryResponseXmlExport::exportToString(const ComputingResponse &_c
 }
 
 
-bool ComputingQueryResponseXmlExport::exportToString(const ComputingQueryResponse &_computingQueryResponse, std::string &_xmlString, std::string _filePath)
+bool ComputingQueryResponseXmlExport::exportToString(const ComputingQueryResponse &_computingQueryResponse, std::string &_xmlString)
 {
 
     // Ensure the function is reentrant
@@ -193,11 +213,9 @@ bool ComputingQueryResponseXmlExport::exportToString(const ComputingQueryRespons
     Tucuxi::Common::XmlNode responses = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "responses");
     root.addChild(responses);
 
-    std::string fileName;
-
     for (const auto &response : _computingQueryResponse.getRequestResponses()) {
 
-        fileName = _filePath + "/" + _computingQueryResponse.getQueryId() + "_" + response.m_computingResponse->getId() + ".xml";
+
 
         Tucuxi::Common::XmlNode responseNode = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "response");
 
@@ -294,7 +312,6 @@ bool ComputingQueryResponseXmlExport::exportToString(const ComputingQueryRespons
     }
 
     m_doc.toString(_xmlString, true);
-    m_doc.save(fileName);
     return true;
 }
 

@@ -828,6 +828,13 @@ unique_ptr<RequestData> QueryImport::createRequest(Tucuxi::Common::XmlNodeIterat
         computingTrait = getChildComputingTraitAtMeasures(computingTraitAtMeasuresRootIterator, requestId);
     }
 
+    if(computingTrait == nullptr)
+    {
+        setResult(Result::Error);
+    }
+
+
+
     return make_unique<RequestData>(
                 requestId,
                 drugId,
@@ -945,19 +952,9 @@ Tucuxi::Core::PercentileRanks QueryImport::getChildPercentileRanks(Common::XmlNo
     Common::XmlNodeIterator it = _rootIterator->getChildren(_childName);
     Tucuxi::Core::PercentileRanks ranks;
     Tucuxi::Core::PercentileRank rank;
-    double finalValue;
-    string value;
+
     while(it != Common::XmlNodeIterator::none())
     {
-        value = it->getValue();
-        finalValue = 0.0;
-        try {
-            finalValue = stod(value);
-        } catch (invalid_argument e) {
-            finalValue = 0.0;
-        } catch (out_of_range e) {
-            finalValue = 0.0;
-        }
         rank = getChildDoubleValue(_rootIterator, _childName);
         ranks.push_back(rank);
         it ++;

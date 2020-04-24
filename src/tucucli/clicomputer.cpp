@@ -63,7 +63,9 @@ int CliComputer::compute(std::string _drugPath,
 
     ComputingQueryResponseXmlExport xmlExporter;
 
-    if (!xmlExporter.exportToString(computingQueryResponse, xmlString, _outputPath)) {
+    std::string fileName = _outputPath + "/" + computingQueryResponse.getQueryId() + ".xml";
+
+    if (!xmlExporter.exportToFile(computingQueryResponse, fileName)) {
         logHelper.error("Could not export the response XML file");
         return 1;
     }
