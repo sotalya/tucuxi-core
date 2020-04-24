@@ -46,7 +46,7 @@ Tucuxi::Query::ComputingQuery* QueryToCoreExtractor::extractComputingQuery(const
             return nullptr;
         }
 
-        Tucuxi::Core::DrugModel *drugModel = extractDrugModel(_query, *requestData, drugTreatment);
+        Tucuxi::Core::DrugModel *drugModel = extractDrugModel(*requestData, drugTreatment);
 
         if (drugModel == nullptr) {
             logHelper.error("Could not find a suitable drug model");
@@ -188,7 +188,7 @@ Tucuxi::Core::DrugTreatment *QueryToCoreExtractor::extractDrugTreatment(const Qu
     return drugTreatment;
 }
 
-Tucuxi::Core::DrugModel *QueryToCoreExtractor::extractDrugModel(const QueryData &_query, const RequestData &_requestData, const Tucuxi::Core::DrugTreatment *_drugTreatment) const
+Tucuxi::Core::DrugModel *QueryToCoreExtractor::extractDrugModel(const RequestData &_requestData, const Tucuxi::Core::DrugTreatment *_drugTreatment) const
 {
     Tucuxi::Core::DrugModel *drugModel = nullptr;
 

@@ -44,6 +44,12 @@ Tucuxi::Common::Interface* DrugModelRepository::getInterface(const std::string &
     return Tucuxi::Common::Component::getInterfaceImpl(_name);
 }
 
+
+void addFolderPath(std::string _folderPath)
+{
+
+}
+
 void DrugModelRepository::loadFile(std::string _fileName)
 {
     Tucuxi::Common::LoggerHelper logHelper;

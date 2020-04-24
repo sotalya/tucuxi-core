@@ -67,7 +67,7 @@ public:
 
     Tucuxi::Core::DrugTreatment *extractDrugTreatment(const QueryData &_query, const RequestData &_requestData) const;
 
-    Tucuxi::Core::DrugModel *extractDrugModel(const QueryData &_query, const RequestData &_requestData, const Tucuxi::Core::DrugTreatment *_drugTreatment) const;
+    Tucuxi::Core::DrugModel *extractDrugModel(const RequestData &_requestData, const Tucuxi::Core::DrugTreatment *_drugTreatment) const;
 
 
 };

@@ -60,10 +60,10 @@ RequestData::RequestData(string& _requestID,
         string& _drugID,
         string& _drugModelID,
         unique_ptr<Core::ComputingTrait> _pComputingTrait) :
+    m_pComputingTrait(move(_pComputingTrait)),
     m_requestID(_requestID),
     m_drugID(_drugID),
-    m_drugModelID(_drugModelID),
-    m_pComputingTrait(move(_pComputingTrait))
+    m_drugModelID(_drugModelID)
 {}
 
 const string RequestData::getRequestID() const
