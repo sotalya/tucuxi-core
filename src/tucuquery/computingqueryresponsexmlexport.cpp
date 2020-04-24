@@ -308,7 +308,6 @@ bool ComputingQueryResponseXmlExport::exportToString(const ComputingQueryRespons
         else {
             // TODO : Not supported export
         }
-
     }
 
     m_doc.toString(_xmlString, true);

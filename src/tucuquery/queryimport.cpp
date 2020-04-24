@@ -952,11 +952,6 @@ Tucuxi::Core::PercentileRanks QueryImport::getChildPercentileRanks(Common::XmlNo
     Common::XmlNodeIterator it = _rootIterator->getChildren(_childName);
     Tucuxi::Core::PercentileRanks ranks;
     Tucuxi::Core::PercentileRank rank;
-<<<<<<< HEAD
-
-=======
-    string value;
->>>>>>> d62acf3b5967bd836aa05e2dd147ad0bdf77674f
     while(it != Common::XmlNodeIterator::none())
     {
         rank = getChildDoubleValue(_rootIterator, _childName);
