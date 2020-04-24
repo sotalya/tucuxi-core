@@ -90,7 +90,11 @@ parse(int _argc, char* _argv[])
 
         pCmpMgr->registerComponent("DrugModelRepository", drugModelRepository);
 
-        drugModelRepository->loadFolder(drugPath);
+//        drugModelRepository->loadFolder(drugPath);
+
+        drugModelRepository->addFolderPath("C:\\Users\\Johan\\Documents\\HEIG-VD_REDS\\SOFT\\tucuxi-drugs\\d1");
+//        drugModelRepository->addFolderPath("C:\\Users\\Johan\\Documents\\HEIG-VD_REDS\\SOFT\\tucuxi-drugs\\d2");
+//        drugModelRepository->addFolderPath("C:\\Users\\Johan\\Documents\\HEIG-VD_REDS\\SOFT\\tucuxi-drugs\\d3");
 
         CliComputer computer;
         int exitCode = computer.compute(drugPath, inputFileName, outputPath);

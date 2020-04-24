@@ -107,7 +107,15 @@ public:
     ///
     /// This function loads the drug model from the specified file.
     ///
-    void loadFile(std::string _fileName);
+//    void loadFile(std::string _fileName);
+
+    ///
+    /// \brief loads a drug mode file
+    /// \param _fileName The file path
+    /// \return A pointer to the drug model, nullptr if not found
+    /// This function loads the drug model from the specified file.
+    ///
+    DrugModel* loadFile(std::string _fileName);
 
     ///
     /// \brief adds a drug model to the repository
@@ -146,6 +154,9 @@ protected:
 
     /// \brief The list of loaded drug models
     std::vector<DrugModel *> m_drugModels;
+
+    /// \brief The list of not loaded drug models
+    std::vector<std::string> m_drugPaths;
 
     /// \brief Access other interfaces of the same component.
     Tucuxi::Common::Interface* getInterface(const std::string &_name) override;
