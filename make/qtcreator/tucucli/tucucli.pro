@@ -17,6 +17,7 @@ include(../tucucommon.pri)
 include(../tucucore.pri)
 include(../tucuquery.pri)
 
+
 HEADERS += \
     ../../../src/tucucli/clicomputer.h
 

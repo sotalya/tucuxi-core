@@ -22,9 +22,12 @@ CliComputer::CliComputer()
 
 int CliComputer::compute(std::string _drugPath,
                           std::string _inputFileName,
-                          std::string _outputPath)
+                          std::string _outputPath,
+                         std::string _queryLog)
 {
     TMP_UNUSED_PARAMETER(_drugPath);
+    TMP_UNUSED_PARAMETER(_queryLog);
+
 
     // Change the settings for the tests
     Tucuxi::Core::SingleOverloadEvaluator::getInstance()->setValues(100000, 5000, 10000);

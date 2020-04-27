@@ -9,9 +9,9 @@ HEADERS += \
     $$PWD/../../src/tucuquery/querydata.h \
     $$PWD/../../src/tucuquery/queryimport.h \
     $$PWD/../../src/tucuquery/parametersdata.h \
+    $$PWD/../../src/tucuquery/querylogger.h \
     $$PWD/../../src/tucuquery/requestdata.h \
-    $$PWD/../../src/tucuquery/querytocoreextractor.h \
-    $$PWD/querylogger.h
+    $$PWD/../../src/tucuquery/querytocoreextractor.h
 
 
 SOURCES += \
@@ -24,9 +24,9 @@ SOURCES += \
     $$PWD/../../src/tucuquery/querydata.cpp \
     $$PWD/../../src/tucuquery/queryimport.cpp \
     $$PWD/../../src/tucuquery/parametersdata.cpp \
+    $$PWD/../../src/tucuquery/querylogger.cpp \
     $$PWD/../../src/tucuquery/requestdata.cpp \
-    $$PWD/../../src/tucuquery/querytocoreextractor.cpp \
-    $$PWD/querylogger.cpp
+    $$PWD/../../src/tucuquery/querytocoreextractor.cpp
 
 # DISTFILES += \
 #    $$PWD/../../src/tucucore/makefile

@@ -12,6 +12,7 @@
 #include "tucuquery/querytocoreextractor.h"
 #include "tucuquery/querycomputer.h"
 #include "tucucore/definitions.h"
+#include "tucuquery/querylogger.h"
 
 
 namespace Tucuxi {
@@ -61,6 +62,17 @@ int QueryComputer::compute(std::string _queryString, ComputingQueryResponse& _re
         }
         return 1;
     }
+
+    Tucuxi::Query::IQueryLogger *queryLogger;
+    Tucuxi::Common::ComponentManager* pCmpMgr = Tucuxi::Common::ComponentManager::getInstance();
+    if (pCmpMgr != nullptr) {
+        queryLogger = pCmpMgr->getComponent<Tucuxi::Query::IQueryLogger>("QueryLogger");
+        queryLogger->saveQuery(_queryString, query->getQueryID());
+    }
+    else {
+        return 0;
+    }
+
 
     QueryToCoreExtractor extractor;
 

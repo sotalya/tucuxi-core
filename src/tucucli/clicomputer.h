@@ -21,7 +21,8 @@ public:
     ///
     int compute(std::string _drugPath,
                  std::string _inputFileName,
-                 std::string _outputPath);
+                 std::string _outputPath,
+                std::string _queryLog);
 };
 
 #endif // CLICOMPUTER_H

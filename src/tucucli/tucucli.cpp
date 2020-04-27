@@ -14,6 +14,7 @@
 
 #include "cxxopts/include/cxxopts.hpp"
 #include "clicomputer.h"
+#include "tucuquery/querylogger.h"
 
 using namespace std::chrono_literals;
 
@@ -39,6 +40,7 @@ parse(int _argc, char* _argv[])
                 ("d,drugpath", "Drug files path", cxxopts::value<std::string>())
                 ("i,input", "Input request file", cxxopts::value<std::string>())
                 ("o,output", "Output response file", cxxopts::value<std::string>())
+                ("q,querylogpath", "Query folder path", cxxopts::value<std::string>())
                 ("help", "Print help")
                 ;
 
@@ -76,11 +78,15 @@ parse(int _argc, char* _argv[])
             exit(0);
         }
 
+        std::string queryLogPath;
+        if (result.count("querylogpath") > 0) {
+            queryLogPath = result["querylogpath"].as<std::string>();
+        }
+
         logHelper.info("Drugs directory : {}", drugPath);
         logHelper.info("Input file : {}", inputFileName);
         logHelper.info("Output directory : {}", outputPath);
-
-
+        logHelper.info("QueryLogs directory : {}", queryLogPath);
 
         Tucuxi::Common::ComponentManager* pCmpMgr = Tucuxi::Common::ComponentManager::getInstance();
 
@@ -90,18 +96,25 @@ parse(int _argc, char* _argv[])
 
         pCmpMgr->registerComponent("DrugModelRepository", drugModelRepository);
 
-//        drugModelRepository->loadFolder(drugPath);
-
         drugModelRepository->addFolderPath(drugPath);
 
+        Tucuxi::Query::QueryLogger *queryLogger = dynamic_cast<Tucuxi::Query::QueryLogger*>(
+                    Tucuxi::Query::QueryLogger::createComponent(queryLogPath));
+
+        pCmpMgr->registerComponent("QueryLogger", queryLogger);
+
+//        drugModelRepository->loadFolder(drugPath);
+
+
         CliComputer computer;
-        int exitCode = computer.compute(drugPath, inputFileName, outputPath);
+        int exitCode = computer.compute(drugPath, inputFileName, outputPath, queryLogPath);
 
         if (exitCode != 0) {
             exit(exitCode);
         }
 
         pCmpMgr->unregisterComponent("DrugModelRepository");
+        pCmpMgr->unregisterComponent("QueryLogger");
         delete drugModelRepository;
 
         return result;
