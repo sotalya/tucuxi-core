@@ -11,8 +11,7 @@ const char PATH_SEPARATOR = '\\';
 //rc(filename) = _wmkdir(filename);
 #else
 const char PATH_SEPARATOR = '/';
-//#include <sys/stat.h>
-//rc = mkdir(filename, 0755);
+#include <sys/stat.h>
 #endif
 
 using namespace std;
@@ -54,7 +53,7 @@ std::string QueryLogger::getFolderPath(void)
 
 void QueryLogger::saveQuery(std::string _queryString, std::string _queryID)
 {
-    Tucuxi::Common::DateTime date;
+        Tucuxi::Common::DateTime date;
 
     time_t rawtime;
     struct tm * timeinfo;
@@ -73,8 +72,11 @@ void QueryLogger::saveQuery(std::string _queryString, std::string _queryID)
     std::string fileName = filedate + "_" + _queryID + ".tqf";
 
 
-
-    _mkdir(directoryPath.c_str());
+    #ifdef WIN32
+        _mkdir(directoryPath.c_str());
+    #else
+        mkdir(directoryPath.c_str(), 0755);
+    #endif
 
     std::string filePath = directoryPath + PATH_SEPARATOR + fileName;
 

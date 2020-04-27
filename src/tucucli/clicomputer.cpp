@@ -22,11 +22,9 @@ CliComputer::CliComputer()
 
 int CliComputer::compute(std::string _drugPath,
                           std::string _inputFileName,
-                          std::string _outputPath,
-                         std::string _queryLog)
+                          std::string _outputPath)
 {
     TMP_UNUSED_PARAMETER(_drugPath);
-    TMP_UNUSED_PARAMETER(_queryLog);
 
 
     // Change the settings for the tests

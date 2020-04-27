@@ -107,7 +107,7 @@ parse(int _argc, char* _argv[])
 
 
         CliComputer computer;
-        int exitCode = computer.compute(drugPath, inputFileName, outputPath, queryLogPath);
+        int exitCode = computer.compute(drugPath, inputFileName, outputPath);
 
         if (exitCode != 0) {
             exit(exitCode);
