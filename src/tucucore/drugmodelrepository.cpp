@@ -174,6 +174,8 @@ DrugModel *DrugModelRepository::getDrugModelById(std::string _drugModelId)
 
 std::vector<DrugModel *> DrugModelRepository::getDrugModelsByDrugId(std::string _drugId)
 {
+    const int INDEX_POSITION = 10;
+
     bool drugModelExist = false;
     std::vector<DrugModel* > drugModels;
     for (auto drugModel : m_drugModels) {
@@ -182,17 +184,18 @@ std::vector<DrugModel *> DrugModelRepository::getDrugModelsByDrugId(std::string 
             drugModelExist = true;
         }
     }
-    if(drugModelExist) {return drugModels;}
-    std::vector<std::string> list;
 
+    if(drugModelExist) {return drugModels;}
+
+    std::vector<std::string> list;
     for (auto drugpath : m_drugPaths){
         read_directory(drugpath, list);
         for (auto filename : list) {
             if (filename.substr((filename.size() > 4) ? (filename.size() - 4) : 0, filename.size() - 1) == ".tdd") {
-                if(filename.substr(9, _drugId.npos) == _drugId)
+
+                if(filename.substr(INDEX_POSITION, _drugId.length()) == _drugId)
                 {
-                    loadFile(drugpath + "/" + filename);
-                    drugModelExist = true;
+                    drugModels.push_back(loadFile(drugpath + "/" + filename));
                 }
             }
         }
