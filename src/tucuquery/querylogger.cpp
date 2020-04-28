@@ -3,15 +3,17 @@
 #include "ctime"
 #include "fstream"
 #include "iostream"
+#include "tucucommon/timeofday.h"
 
 #ifdef WIN32
 #include "Windows.h"
 #include "direct.h"
 const char PATH_SEPARATOR = '\\';
-//rc(filename) = _wmkdir(filename);
+#define MKDIR(x) _mkdir(x)
 #else
 const char PATH_SEPARATOR = '/';
 #include <sys/stat.h>
+#define MKDIR(x) mkdir(x, 0755);
 #endif
 
 using namespace std;
@@ -53,7 +55,6 @@ std::string QueryLogger::getFolderPath(void)
 
 void QueryLogger::saveQuery(std::string _queryString, std::string _queryID)
 {
-        Tucuxi::Common::DateTime date;
 
     time_t rawtime;
     struct tm * timeinfo;
@@ -63,25 +64,15 @@ void QueryLogger::saveQuery(std::string _queryString, std::string _queryID)
     timeinfo = localtime(&rawtime);
 
     strftime(buffer,sizeof(buffer),"%Y-%m-%d",timeinfo);
-    std::string folderName(buffer);
-
-    std::string directoryPath = getFolderPath() + PATH_SEPARATOR +  folderName;
+    std::string directoryPath = getFolderPath() + PATH_SEPARATOR +  string(buffer);
 
     strftime(buffer,sizeof(buffer),"%Y-%m-%dT%H-%M-%S",timeinfo);
-    std::string filedate(buffer);
-    std::string fileName = filedate + "_" + _queryID + ".tqf";
+    std::string fileName = string(buffer) + "_" + _queryID + ".tqf";
 
-
-    #ifdef WIN32
-        _mkdir(directoryPath.c_str());
-    #else
-        mkdir(directoryPath.c_str(), 0755);
-    #endif
-
-    std::string filePath = directoryPath + PATH_SEPARATOR + fileName;
+    MKDIR(directoryPath.c_str());
 
     ofstream queryFile;
-    queryFile.open(filePath);
+    queryFile.open(directoryPath + PATH_SEPARATOR + fileName);
     queryFile << _queryString;
     queryFile.close();
 
