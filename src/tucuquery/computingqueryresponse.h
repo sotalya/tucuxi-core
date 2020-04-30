@@ -64,7 +64,7 @@ public:
 
     Tucuxi::Core::RequestResponseId m_queryId;
 
-    QueryStatus m_queryStatus;
+    QueryStatus m_queryStatus {QueryStatus::Undefined};
 
     std::vector<SingleResponseData> m_requestResponses;
 
