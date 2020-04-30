@@ -207,14 +207,18 @@ bool ComputingQueryResponseXmlExport::exportToString(const ComputingQueryRespons
     root.addAttribute(attribute1);
     root.addAttribute(attribute2);
     m_doc.setRoot(root);
-    Tucuxi::Common::XmlNode queryId = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "queryId",
-                                                       _computingQueryResponse.getQueryId());
+    Tucuxi::Common::XmlNode queryId = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "queryId", _computingQueryResponse.getQueryId());
     root.addChild(queryId);
+
+    Tucuxi::Common::XmlNode status = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "queryStatus", getQueryStatus(_computingQueryResponse.getQueryStatus()));
+    root.addChild(status);
+
     Tucuxi::Common::XmlNode responses = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "responses");
     root.addChild(responses);
 
-    for (const auto &response : _computingQueryResponse.getRequestResponses()) {
 
+
+    for (const auto &response : _computingQueryResponse.getRequestResponses()) {
 
 
         Tucuxi::Common::XmlNode responseNode = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "response");
@@ -224,6 +228,9 @@ bool ComputingQueryResponseXmlExport::exportToString(const ComputingQueryRespons
         Tucuxi::Common::XmlNode requestId = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "requestId",
                                                          response.m_computingResponse->getId());
         responseNode.addChild(requestId);
+
+        Tucuxi::Common::XmlNode status = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "requestStatus", getComputingStatus(response.m_computingResponse->getComputingStatus()));
+        responseNode.addChild(status);
 
         Tucuxi::Common::XmlNode issuesNode = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "issues");
         responseNode.addChild(issuesNode);
@@ -314,6 +321,77 @@ bool ComputingQueryResponseXmlExport::exportToString(const ComputingQueryRespons
     return true;
 }
 
+const std::string ComputingQueryResponseXmlExport::getComputingStatus(Tucuxi::Core::ComputingStatus _computingStatus) const
+{
+    static std::map<Tucuxi::Core::ComputingStatus, std::string> m =
+    {
+        {Tucuxi::Core::ComputingStatus::Ok, "Ok"},
+        {Tucuxi::Core::ComputingStatus::TooBig, "TooBig"},
+        {Tucuxi::Core::ComputingStatus::Aborted, "Aborted"},
+        {Tucuxi::Core::ComputingStatus::ParameterExtractionError, "ParameterExtractionError"},
+        {Tucuxi::Core::ComputingStatus::SampleExtractionError, "SampleExtractionError"},
+        {Tucuxi::Core::ComputingStatus::TargetExtractionError, "TargetExtractionError"},
+        {Tucuxi::Core::ComputingStatus::InvalidCandidate, "InvalidCandidate"},
+        {Tucuxi::Core::ComputingStatus::TargetEvaluationError, "TargetEvaluationError"},
+        {Tucuxi::Core::ComputingStatus::CovariateExtractionError, "CovariateExtractionError"},
+        {Tucuxi::Core::ComputingStatus::IntakeExtractionError, "IntakeExtractionError"},
+        {Tucuxi::Core::ComputingStatus::ErrorModelExtractionError, "ErrorModelExtractionError"},
+        {Tucuxi::Core::ComputingStatus::UnsupportedRoute, "UnsupportedRoute"},
+        {Tucuxi::Core::ComputingStatus::AnalyteConversionError, "AnalyteConversionError"},
+        {Tucuxi::Core::ComputingStatus::AposterioriPercentilesNoSamplesError, "AposterioriPercentilesNoSamplesError"},
+        {Tucuxi::Core::ComputingStatus::ConcentrationCalculatorNoParameters, "ConcentrationCalculatorNoParameters"},
+        {Tucuxi::Core::ComputingStatus::BadParameters, "BadParameters"},
+        {Tucuxi::Core::ComputingStatus::BadConcentration, "BadConcentration"},
+        {Tucuxi::Core::ComputingStatus::DensityError, "DensityError"},
+        {Tucuxi::Core::ComputingStatus::AposterioriEtasCalculationEmptyOmega, "AposterioriEtasCalculationEmptyOmega"},
+        {Tucuxi::Core::ComputingStatus::AposterioriEtasCalculationNoSquareOmega, "AposterioriEtasCalculationNoSquareOmega"},
+        {Tucuxi::Core::ComputingStatus::ComputingTraitStandardShouldNotBeCalled, "ComputingTraitStandardShouldNotBeCalled"},
+        {Tucuxi::Core::ComputingStatus::CouldNotFindSuitableFormulationAndRoute, "CouldNotFindSuitableFormulationAndRoute"},
+        {Tucuxi::Core::ComputingStatus::MultipleFormulationAndRoutesNotSupported, "MultipleFormulationAndRoutesNotSupported"},
+        {Tucuxi::Core::ComputingStatus::NoPkModelError, "NoPkModelError"},
+        {Tucuxi::Core::ComputingStatus::ComputingComponentExceptionError, "ComputingComponentExceptionError"},
+        {Tucuxi::Core::ComputingStatus::NoPkModels, "NoPkModels"},
+        {Tucuxi::Core::ComputingStatus::NoComputingTraits, "NoComputingTraits"},
+        {Tucuxi::Core::ComputingStatus::RecordedIntakesSizeError, "RecordedIntakesSizeError"},
+        {Tucuxi::Core::ComputingStatus::NoPercentilesCalculation, "NoPercentilesCalculation"},
+        {Tucuxi::Core::ComputingStatus::SelectedIntakesSizeError, "SelectedIntakesSizeError"},
+        {Tucuxi::Core::ComputingStatus::NoAvailableDose, "NoAvailableDose"},
+        {Tucuxi::Core::ComputingStatus::NoAvailableInterval, "NoAvailableInterval"},
+        {Tucuxi::Core::ComputingStatus::NoAvailableInfusionTime, "NoAvailableInfusionTime"},
+        {Tucuxi::Core::ComputingStatus::NoFormulationAndRouteForAdjustment, "NoFormulationAndRouteForAdjustment"},
+        {Tucuxi::Core::ComputingStatus::ConcentrationSizeError, "ConcentrationSizeError"},
+        {Tucuxi::Core::ComputingStatus::ActiveMoietyCalculationError, "ActiveMoietyCalculationError"},
+        {Tucuxi::Core::ComputingStatus::NoAnalytesGroup, "NoAnalytesGroup"},
+        {Tucuxi::Core::ComputingStatus::IncompatibleTreatmentModel, "IncompatibleTreatmentModel"},
+        {Tucuxi::Core::ComputingStatus::ComputingComponentNotInitialized, "ComputingComponentNotInitialized"},
+        {Tucuxi::Core::ComputingStatus::UncompatibleDrugDomain, "UncompatibleDrugDomain"}
+    };
+
+    auto it = m.find(_computingStatus);
+    if (it != m.end()) {
+        return it->second;
+    }
+
+    return "nothing";
+}
+
+const std::string ComputingQueryResponseXmlExport::getQueryStatus(QueryStatus _queryStatus) const
+{
+    static std::map<QueryStatus, std::string> m =
+    {
+        {QueryStatus::Ok, "Ok"},
+        {QueryStatus::PartiallyOk, "PartiallyOk"},
+        {QueryStatus::Error, "Error"},
+        {QueryStatus::ImportError, "ImportError"}
+    };
+
+    auto it = m.find(_queryStatus);
+    if (it != m.end()) {
+        return it->second;
+    }
+
+    return "nothing";
+}
 
 bool ComputingQueryResponseXmlExport::exportAdjustment(const Tucuxi::Core::AdjustmentData *_prediction,
                       Tucuxi::Common::XmlNode &_rootNode)

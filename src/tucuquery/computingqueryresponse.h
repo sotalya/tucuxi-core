@@ -3,6 +3,7 @@
 
 #include "tucucore/computingservice/computingresult.h"
 #include "tucucore/computingservice/computingresponse.h"
+#include "querystatus.h"
 
 namespace Tucuxi {
 namespace Query {
@@ -54,6 +55,8 @@ public:
 
     Tucuxi::Core::RequestResponseId getQueryId() const;
     const std::vector<SingleResponseData>& getRequestResponses() const;
+    QueryStatus getQueryStatus() const;
+    void setQueryStatus(QueryStatus _queryStatus);
 
     void addRequestResponse(std::unique_ptr<Tucuxi::Core::ComputingResponse> _computingResponse,
                             std::unique_ptr<ComputingResponseMetaData> _metaData);
@@ -61,7 +64,7 @@ public:
 
     Tucuxi::Core::RequestResponseId m_queryId;
 
-    Tucuxi::Core::ComputingStatus m_queryStatus;
+    QueryStatus m_queryStatus;
 
     std::vector<SingleResponseData> m_requestResponses;
 

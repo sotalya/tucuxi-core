@@ -10,6 +10,7 @@ HEADERS += \
     $$PWD/../../src/tucuquery/queryimport.h \
     $$PWD/../../src/tucuquery/parametersdata.h \
     $$PWD/../../src/tucuquery/querylogger.h \
+    $$PWD/../../src/tucuquery/querystatus.h \
     $$PWD/../../src/tucuquery/requestdata.h \
     $$PWD/../../src/tucuquery/querytocoreextractor.h
 

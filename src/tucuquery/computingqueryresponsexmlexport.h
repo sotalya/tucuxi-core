@@ -8,6 +8,7 @@
 #include "tucucommon/xmldocument.h"
 
 #include "tucuquery/computingqueryresponse.h"
+#include "querystatus.h"
 
 namespace Tucuxi {
 namespace Query {
@@ -20,6 +21,10 @@ public:
     bool exportToString(const ComputingQueryResponse &_computingQueryResponse, std::string &_xmlString);
 
     bool exportToFile(const ComputingQueryResponse &_computingQueryResponse, std::string _fileName);
+
+    const std::string getComputingStatus(Tucuxi::Core::ComputingStatus _computingStatus) const;
+
+    const std::string getQueryStatus(QueryStatus _queryStatus) const;
 
 protected:
 
