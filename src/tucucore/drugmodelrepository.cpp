@@ -153,7 +153,7 @@ DrugModel *DrugModelRepository::getDrugModelById(std::string _drugModelId)
     }
 
     for (auto drugpath : m_drugPaths){
-        DrugModel *drugModel = loadFile(drugpath + PATH_SEPARATOR + _drugModelId + ".Tdd");
+        DrugModel *drugModel = loadFile(drugpath + PATH_SEPARATOR + _drugModelId + ".tdd");
         if(drugModel != nullptr)
         {
             return drugModel;
