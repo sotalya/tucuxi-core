@@ -28,6 +28,7 @@ Tucuxi::Common::Interface* QueryLogger::createComponent(std::string _folderPath)
 {
     QueryLogger *cmp = new QueryLogger(_folderPath);
 
+
     return dynamic_cast<IQueryLogger*>(cmp);
 }
 

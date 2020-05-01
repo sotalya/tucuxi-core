@@ -22,7 +22,8 @@ class QueryLogger : public Tucuxi::Common::Component,
         public IQueryLogger
 {
 public:
-     static Tucuxi::Common::Interface* createComponent(std::string _folderPath);
+
+    static Tucuxi::Common::Interface* createComponent(std::string _folderPath);
 
     QueryLogger(std::string _folderPath);
 
