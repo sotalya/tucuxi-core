@@ -27,6 +27,7 @@ void QueryComputer::compute(ComputingQuery& _query, ComputingQueryResponse& _res
 {
     Core::IComputingService* computingComponent = dynamic_cast<Core::IComputingService*>(Core::ComputingComponent::createComponent());
 
+    unsigned int errorsCounter = 0;
     for(const std::unique_ptr<Core::ComputingRequest>& computingRequest : _query.m_computingRequests)
     {
         // A ComputingResponse local to the loop iteration. Moved to the _response at the end of the loop
@@ -37,9 +38,25 @@ void QueryComputer::compute(ComputingQuery& _query, ComputingQueryResponse& _res
         computingResponse->setComputingStatus(result);
 
         std::unique_ptr<ComputingResponseMetaData> computingResponseMetaData = std::make_unique<ComputingResponseMetaData>(computingRequest->getDrugModel().getDrugModelId());
-        Tucuxi::Core::RequestResponseId requestResponseId = computingRequest->getId();
         _response.setRequestResponseId(_query.m_queryId);
         _response.addRequestResponse(std::move(computingResponse), std::move(computingResponseMetaData));
+
+        if(result != Core::ComputingStatus::Ok)
+        {
+            errorsCounter++;
+        }
+    }
+
+    if(errorsCounter == _query.m_computingRequests.size())
+    {
+        _response.setQueryStatus(QueryStatus::Error);
+    }
+    else if(errorsCounter == 0)
+    {
+        _response.setQueryStatus(QueryStatus::Ok);
+    }
+    else{
+        _response.setQueryStatus(QueryStatus::PartiallyOk);
     }
 }
 
@@ -61,6 +78,7 @@ int QueryComputer::compute(std::string _queryString, ComputingQueryResponse& _re
             logHelper.error("Error with the import of query file \"{}\"", _queryString);
         }
         return 1;
+        _response.setQueryStatus(QueryStatus::ImportError);
     }
 
     Tucuxi::Query::IQueryLogger *queryLogger;
