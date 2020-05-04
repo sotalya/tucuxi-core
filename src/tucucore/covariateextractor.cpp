@@ -3,6 +3,8 @@
 */
 
 #include "tucucommon/general.h"
+#include "tucucommon/loggerhelper.h"
+
 #include "tucucore/covariateextractor.h"
 
 namespace Tucuxi {
@@ -325,7 +327,14 @@ ComputingStatus CovariateExtractor::extract(CovariateSeries &_series)
     std::map<DateTime, std::vector<std::string>> refreshMap;
     collectRefreshIntervals(refreshMap);
 
-    rc = computeEvents(refreshMap, _series);
+    try {
+         rc = computeEvents(refreshMap, _series);
+    } catch (std::invalid_argument e) {
+
+        Tucuxi::Common::LoggerHelper logHelper;
+        logHelper.error("Error with covariate extraction : {}", e.what());
+        return ComputingStatus::CovariateExtractionError;
+    }
 
     if (!rc) {
         return ComputingStatus::CovariateExtractionError;
