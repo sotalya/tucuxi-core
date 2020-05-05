@@ -22,9 +22,9 @@ public:
 
     bool exportToFile(const ComputingQueryResponse &_computingQueryResponse, std::string _fileName);
 
-    const std::string getComputingStatus(Tucuxi::Core::ComputingStatus _computingStatus) const;
+    const std::string getComputingStatus(Tucuxi::Core::ComputingStatus _computingStatus, bool _codeEnable) const;
 
-    const std::string getQueryStatus(QueryStatus _queryStatus) const;
+    const std::string getQueryStatus(QueryStatus _queryStatus, bool _codeEnable) const;
 
 protected:
 

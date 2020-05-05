@@ -210,8 +210,21 @@ bool ComputingQueryResponseXmlExport::exportToString(const ComputingQueryRespons
     Tucuxi::Common::XmlNode queryId = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "queryId", _computingQueryResponse.getQueryId());
     root.addChild(queryId);
 
-    Tucuxi::Common::XmlNode status = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "queryStatus", getQueryStatus(_computingQueryResponse.getQueryStatus()));
-    root.addChild(status);
+    Tucuxi::Common::XmlNode queryStatus = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "queryStatus", "queryStatus");
+    root.addChild(queryStatus);
+
+    Tucuxi::Common::XmlNode statusCode = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "statusCode", getQueryStatus(_computingQueryResponse.getQueryStatus(), true));
+    queryStatus.addChild(statusCode);
+
+    Tucuxi::Common::XmlNode statusCodeLit = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "statusCodeLit", getQueryStatus(_computingQueryResponse.getQueryStatus(), false));
+    queryStatus.addChild(statusCodeLit);
+
+    Tucuxi::Common::XmlNode message = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "message");
+    queryStatus.addChild(message);
+
+    Tucuxi::Common::XmlNode description = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "description");
+    queryStatus.addChild(description);
+
 
     Tucuxi::Common::XmlNode responses = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "responses");
     root.addChild(responses);
@@ -229,8 +242,20 @@ bool ComputingQueryResponseXmlExport::exportToString(const ComputingQueryRespons
                                                          response.m_computingResponse->getId());
         responseNode.addChild(requestId);
 
-        Tucuxi::Common::XmlNode status = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "requestStatus", getComputingStatus(response.m_computingResponse->getComputingStatus()));
-        responseNode.addChild(status);
+        Tucuxi::Common::XmlNode requestStatus = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "requestStatus");
+        responseNode.addChild(requestStatus);
+
+        Tucuxi::Common::XmlNode statusCode = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "statusCode", getComputingStatus(response.m_computingResponse->getComputingStatus(), true));
+        requestStatus.addChild(statusCode);
+
+        Tucuxi::Common::XmlNode statusCodeLit = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "statusCodeLit", getComputingStatus(response.m_computingResponse->getComputingStatus(), false));
+        requestStatus.addChild(statusCodeLit);
+
+        Tucuxi::Common::XmlNode message = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "message");
+        requestStatus.addChild(message);
+
+        Tucuxi::Common::XmlNode description = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "description");
+        requestStatus.addChild(description);
 
         Tucuxi::Common::XmlNode issuesNode = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "issues");
         responseNode.addChild(issuesNode);
@@ -321,73 +346,88 @@ bool ComputingQueryResponseXmlExport::exportToString(const ComputingQueryRespons
     return true;
 }
 
-const std::string ComputingQueryResponseXmlExport::getComputingStatus(Tucuxi::Core::ComputingStatus _computingStatus) const
+const std::string ComputingQueryResponseXmlExport::getComputingStatus(Tucuxi::Core::ComputingStatus _computingStatus, bool _codeEnable) const
 {
-    static std::map<Tucuxi::Core::ComputingStatus, std::string> m =
+    static std::map<Tucuxi::Core::ComputingStatus, std::pair<std::string, std::string>> m =
     {
-        {Tucuxi::Core::ComputingStatus::Ok, "Ok"},
-        {Tucuxi::Core::ComputingStatus::TooBig, "TooBig"},
-        {Tucuxi::Core::ComputingStatus::Aborted, "Aborted"},
-        {Tucuxi::Core::ComputingStatus::ParameterExtractionError, "ParameterExtractionError"},
-        {Tucuxi::Core::ComputingStatus::SampleExtractionError, "SampleExtractionError"},
-        {Tucuxi::Core::ComputingStatus::TargetExtractionError, "TargetExtractionError"},
-        {Tucuxi::Core::ComputingStatus::InvalidCandidate, "InvalidCandidate"},
-        {Tucuxi::Core::ComputingStatus::TargetEvaluationError, "TargetEvaluationError"},
-        {Tucuxi::Core::ComputingStatus::CovariateExtractionError, "CovariateExtractionError"},
-        {Tucuxi::Core::ComputingStatus::IntakeExtractionError, "IntakeExtractionError"},
-        {Tucuxi::Core::ComputingStatus::ErrorModelExtractionError, "ErrorModelExtractionError"},
-        {Tucuxi::Core::ComputingStatus::UnsupportedRoute, "UnsupportedRoute"},
-        {Tucuxi::Core::ComputingStatus::AnalyteConversionError, "AnalyteConversionError"},
-        {Tucuxi::Core::ComputingStatus::AposterioriPercentilesNoSamplesError, "AposterioriPercentilesNoSamplesError"},
-        {Tucuxi::Core::ComputingStatus::ConcentrationCalculatorNoParameters, "ConcentrationCalculatorNoParameters"},
-        {Tucuxi::Core::ComputingStatus::BadParameters, "BadParameters"},
-        {Tucuxi::Core::ComputingStatus::BadConcentration, "BadConcentration"},
-        {Tucuxi::Core::ComputingStatus::DensityError, "DensityError"},
-        {Tucuxi::Core::ComputingStatus::AposterioriEtasCalculationEmptyOmega, "AposterioriEtasCalculationEmptyOmega"},
-        {Tucuxi::Core::ComputingStatus::AposterioriEtasCalculationNoSquareOmega, "AposterioriEtasCalculationNoSquareOmega"},
-        {Tucuxi::Core::ComputingStatus::ComputingTraitStandardShouldNotBeCalled, "ComputingTraitStandardShouldNotBeCalled"},
-        {Tucuxi::Core::ComputingStatus::CouldNotFindSuitableFormulationAndRoute, "CouldNotFindSuitableFormulationAndRoute"},
-        {Tucuxi::Core::ComputingStatus::MultipleFormulationAndRoutesNotSupported, "MultipleFormulationAndRoutesNotSupported"},
-        {Tucuxi::Core::ComputingStatus::NoPkModelError, "NoPkModelError"},
-        {Tucuxi::Core::ComputingStatus::ComputingComponentExceptionError, "ComputingComponentExceptionError"},
-        {Tucuxi::Core::ComputingStatus::NoPkModels, "NoPkModels"},
-        {Tucuxi::Core::ComputingStatus::NoComputingTraits, "NoComputingTraits"},
-        {Tucuxi::Core::ComputingStatus::RecordedIntakesSizeError, "RecordedIntakesSizeError"},
-        {Tucuxi::Core::ComputingStatus::NoPercentilesCalculation, "NoPercentilesCalculation"},
-        {Tucuxi::Core::ComputingStatus::SelectedIntakesSizeError, "SelectedIntakesSizeError"},
-        {Tucuxi::Core::ComputingStatus::NoAvailableDose, "NoAvailableDose"},
-        {Tucuxi::Core::ComputingStatus::NoAvailableInterval, "NoAvailableInterval"},
-        {Tucuxi::Core::ComputingStatus::NoAvailableInfusionTime, "NoAvailableInfusionTime"},
-        {Tucuxi::Core::ComputingStatus::NoFormulationAndRouteForAdjustment, "NoFormulationAndRouteForAdjustment"},
-        {Tucuxi::Core::ComputingStatus::ConcentrationSizeError, "ConcentrationSizeError"},
-        {Tucuxi::Core::ComputingStatus::ActiveMoietyCalculationError, "ActiveMoietyCalculationError"},
-        {Tucuxi::Core::ComputingStatus::NoAnalytesGroup, "NoAnalytesGroup"},
-        {Tucuxi::Core::ComputingStatus::IncompatibleTreatmentModel, "IncompatibleTreatmentModel"},
-        {Tucuxi::Core::ComputingStatus::ComputingComponentNotInitialized, "ComputingComponentNotInitialized"},
-        {Tucuxi::Core::ComputingStatus::UncompatibleDrugDomain, "UncompatibleDrugDomain"}
+        {Tucuxi::Core::ComputingStatus::Ok, {"Ok", "0"}},
+        {Tucuxi::Core::ComputingStatus::TooBig, {"TooBig", "1"}},
+        {Tucuxi::Core::ComputingStatus::Aborted, {"Aborted", "2"}},
+        {Tucuxi::Core::ComputingStatus::ParameterExtractionError, {"ParameterExtractionError", "3"}},
+        {Tucuxi::Core::ComputingStatus::SampleExtractionError, {"SampleExtractionError", "4"}},
+        {Tucuxi::Core::ComputingStatus::TargetExtractionError, {"TargetExtractionError", "5"}},
+        {Tucuxi::Core::ComputingStatus::InvalidCandidate, {"InvalidCandidate", "6"}},
+        {Tucuxi::Core::ComputingStatus::TargetEvaluationError, {"TargetEvaluationError", "7"}},
+        {Tucuxi::Core::ComputingStatus::CovariateExtractionError, {"CovariateExtractionError", "8"}},
+        {Tucuxi::Core::ComputingStatus::IntakeExtractionError, {"IntakeExtractionError", "9"}},
+        {Tucuxi::Core::ComputingStatus::ErrorModelExtractionError, {"ErrorModelExtractionError", "10"}},
+        {Tucuxi::Core::ComputingStatus::UnsupportedRoute, {"UnsupportedRoute", "11"}},
+        {Tucuxi::Core::ComputingStatus::AnalyteConversionError, {"AnalyteConversionError", "12"}},
+        {Tucuxi::Core::ComputingStatus::AposterioriPercentilesNoSamplesError, {"AposterioriPercentilesNoSamplesError", "13"}},
+        {Tucuxi::Core::ComputingStatus::ConcentrationCalculatorNoParameters, {"ConcentrationCalculatorNoParameters", "14"}},
+        {Tucuxi::Core::ComputingStatus::BadParameters, {"BadParameters", "15"}},
+        {Tucuxi::Core::ComputingStatus::BadConcentration, {"BadConcentration", "16"}},
+        {Tucuxi::Core::ComputingStatus::DensityError, {"DensityError", "17"}},
+        {Tucuxi::Core::ComputingStatus::AposterioriEtasCalculationEmptyOmega, {"AposterioriEtasCalculationEmptyOmega", "18"}},
+        {Tucuxi::Core::ComputingStatus::AposterioriEtasCalculationNoSquareOmega, {"AposterioriEtasCalculationNoSquareOmega", "19"}},
+        {Tucuxi::Core::ComputingStatus::ComputingTraitStandardShouldNotBeCalled, {"ComputingTraitStandardShouldNotBeCalled", "20"}},
+        {Tucuxi::Core::ComputingStatus::CouldNotFindSuitableFormulationAndRoute, {"CouldNotFindSuitableFormulationAndRoute", "21"}},
+        {Tucuxi::Core::ComputingStatus::MultipleFormulationAndRoutesNotSupported, {"MultipleFormulationAndRoutesNotSupported", "22"}},
+        {Tucuxi::Core::ComputingStatus::NoPkModelError, {"NoPkModelError", "23"}},
+        {Tucuxi::Core::ComputingStatus::ComputingComponentExceptionError, {"ComputingComponentExceptionError", "24"}},
+        {Tucuxi::Core::ComputingStatus::NoPkModels, {"NoPkModels", "25"}},
+        {Tucuxi::Core::ComputingStatus::NoComputingTraits, {"NoComputingTraits", "26"}},
+        {Tucuxi::Core::ComputingStatus::RecordedIntakesSizeError, {"RecordedIntakesSizeError", "27"}},
+        {Tucuxi::Core::ComputingStatus::NoPercentilesCalculation, {"NoPercentilesCalculation", "28"}},
+        {Tucuxi::Core::ComputingStatus::SelectedIntakesSizeError, {"SelectedIntakesSizeError", "29"}},
+        {Tucuxi::Core::ComputingStatus::NoAvailableDose, {"NoAvailableDose", "30"}},
+        {Tucuxi::Core::ComputingStatus::NoAvailableInterval, {"NoAvailableInterval", "31"}},
+        {Tucuxi::Core::ComputingStatus::NoAvailableInfusionTime, {"NoAvailableInfusionTime", "32"}},
+        {Tucuxi::Core::ComputingStatus::NoFormulationAndRouteForAdjustment, {"NoFormulationAndRouteForAdjustment", "33"}},
+        {Tucuxi::Core::ComputingStatus::ConcentrationSizeError, {"ConcentrationSizeError", "34"}},
+        {Tucuxi::Core::ComputingStatus::ActiveMoietyCalculationError, {"ActiveMoietyCalculationError", "35"}},
+        {Tucuxi::Core::ComputingStatus::NoAnalytesGroup, {"NoAnalytesGroup", "36"}},
+        {Tucuxi::Core::ComputingStatus::IncompatibleTreatmentModel, {"IncompatibleTreatmentModel", "37"}},
+        {Tucuxi::Core::ComputingStatus::ComputingComponentNotInitialized, {"ComputingComponentNotInitialized", "38"}},
+        {Tucuxi::Core::ComputingStatus::UncompatibleDrugDomain, {"UncompatibleDrugDomain", "39"}}
     };
 
     auto it = m.find(_computingStatus);
     if (it != m.end()) {
-        return it->second;
+        static std::pair<std::string, std::string> m2 = it->second;
+        if(_codeEnable)
+        {
+            return m2.second;
+        }
+        else{
+            return m2.first;
+        }
     }
 
     return "nothing";
 }
 
-const std::string ComputingQueryResponseXmlExport::getQueryStatus(QueryStatus _queryStatus) const
+const std::string ComputingQueryResponseXmlExport::getQueryStatus(QueryStatus _queryStatus, bool _codeEnable) const
 {
-    static std::map<QueryStatus, std::string> m =
+    static std::map<QueryStatus, std::pair<std::string, std::string>> m =
     {
-        {QueryStatus::Ok, "Ok"},
-        {QueryStatus::PartiallyOk, "PartiallyOk"},
-        {QueryStatus::Error, "Error"},
-        {QueryStatus::ImportError, "ImportError"}
+        {QueryStatus::Ok, {"Ok", "0"}},
+        {QueryStatus::PartiallyOk, {"PartiallyOk", "1"}},
+        {QueryStatus::Error, {"Error", "2"}},
+        {QueryStatus::ImportError, {"ImportError", "3"}},
+        {QueryStatus::Undefined, {"Undefined", "4"}}
     };
 
     auto it = m.find(_queryStatus);
     if (it != m.end()) {
-        return it->second;
+        static std::pair<std::string, std::string> m2 = it->second;
+        if(_codeEnable)
+        {
+            return m2.second;
+        }
+        else{
+            return m2.first;
+        }
     }
 
     return "nothing";

@@ -9,7 +9,7 @@ enum class QueryStatus{
     PartiallyOk,
     /// None of the requests could be calculated correctly
     Error,
-    /// Error during xml query improt
+    /// Error during xml query import
     ImportError,
     /// Undefined (should not be observed when exporting a query)
     Undefined

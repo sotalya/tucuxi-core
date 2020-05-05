@@ -19,7 +19,7 @@ public:
     /// \return an error number. 0 if everything went well
     /// This method is the single entry point exploited by the Command Line Interface
     ///
-    int compute(std::string _drugPath,
+    QueryStatus compute(std::string _drugPath,
                  std::string _inputFileName,
                  std::string _outputPath);
 };

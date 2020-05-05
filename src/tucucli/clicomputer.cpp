@@ -20,7 +20,7 @@ CliComputer::CliComputer()
 }
 
 
-int CliComputer::compute(std::string _drugPath,
+QueryStatus CliComputer::compute(std::string _drugPath,
                           std::string _inputFileName,
                           std::string _outputPath)
 {
@@ -55,7 +55,7 @@ int CliComputer::compute(std::string _drugPath,
 
     if (!exporter.exportToFiles(computingQueryResponse, _outputPath)) {
         logHelper.error("Could not export the response file");
-        return 1;
+        return computingQueryResponse.getQueryStatus();
     }
     else {
         logHelper.info("The response files were successfully generated");
@@ -68,7 +68,7 @@ int CliComputer::compute(std::string _drugPath,
 
     if (!xmlExporter.exportToFile(computingQueryResponse, fileName)) {
         logHelper.error("Could not export the response XML file");
-        return 1;
+        return computingQueryResponse.getQueryStatus();
     }
     else {
         logHelper.info("The response XML file was successfully generated");
@@ -88,5 +88,5 @@ int CliComputer::compute(std::string _drugPath,
         delete computingComponent;
     }
 */
-    return 0;
+    return computingQueryResponse.getQueryStatus();
 }

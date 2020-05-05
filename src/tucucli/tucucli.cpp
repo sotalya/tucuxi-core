@@ -15,6 +15,7 @@
 #include "cxxopts/include/cxxopts.hpp"
 #include "clicomputer.h"
 #include "tucuquery/querylogger.h"
+#include "tucuquery/querystatus.h"
 
 using namespace std::chrono_literals;
 
@@ -107,10 +108,11 @@ parse(int _argc, char* _argv[])
 
 
         CliComputer computer;
-        int exitCode = computer.compute(drugPath, inputFileName, outputPath);
+        QueryStatus queryStatus = computer.compute(drugPath, inputFileName, outputPath);
 
-        if (exitCode != 0) {
-            exit(exitCode);
+        // TODO : More persistent
+        if (queryStatus == QueryStatus::Error) {
+            exit(1);
         }
 
         pCmpMgr->unregisterComponent("DrugModelRepository");
