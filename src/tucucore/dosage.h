@@ -24,6 +24,15 @@ using Tucuxi::Common::TimeOfDay; // NOLINT(google-global-names-in-headers)
 using namespace std::chrono_literals; // NOLINT(google-global-names-in-headers)
 
 namespace Tucuxi {
+
+namespace Common {
+class XmlNode;
+}
+
+namespace Query {
+class ComputingQueryResponseXmlExport;
+}
+
 namespace Core {
 
 class IntakeExtractor;
@@ -52,7 +61,8 @@ enum class ExtractionOption {
     std::unique_ptr<Dosage> cloneDosage() const override \
     { \
         return clone(); \
-    }
+    } \
+    bool exportXml(Tucuxi::Query::ComputingQueryResponseXmlExport &_exporter, Tucuxi::Common::XmlNode &_rootNode) const override;
 
 
 /// \ingroup TucuCore
@@ -98,6 +108,8 @@ public:
     /// TODO : A test should be written for that
     ///
     virtual std::vector<FormulationAndRoute> getFormulationAndRouteList() const = 0;
+
+    virtual bool exportXml(Tucuxi::Query::ComputingQueryResponseXmlExport &_exporter, Tucuxi::Common::XmlNode &_rootNode) const = 0;
 };
 
 
@@ -139,6 +151,8 @@ public:
     /// \brief Return a pointer to a clone of the correct subclass.
     /// \return Pointer to a new object of subclass' type.
     virtual std::unique_ptr<DosageBounded> clone() const = 0;
+
+    bool exportXml(Tucuxi::Query::ComputingQueryResponseXmlExport &/*_exporter*/, Tucuxi::Common::XmlNode &/*_rootNode*/) const override;
 };
 
 
@@ -658,6 +672,16 @@ public:
         return intakeTime;
     }
 
+    /// \brief Return the time
+    /// \return time.
+    TimeOfDay getTimeOfDay() const
+    {
+        return m_timeOfDay;
+    }
+
+
+
+
 protected:
     /// \brief Time of the day when the dose is administered.
     TimeOfDay m_timeOfDay;
@@ -724,6 +748,15 @@ public:
 
         return intakeTime;
     }
+
+    /// \brief Return the day of week
+    /// \return day of week.
+    DayOfWeek getDayOfWeek() const
+    {
+        return m_dayOfWeek;
+    }
+
+
 
 protected:
     /// \brief Day of the week the dose has to be administered.

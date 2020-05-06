@@ -53,6 +53,23 @@ protected:
     bool exportDosageHistory(const Tucuxi::Core::DosageHistory &_history,
             Tucuxi::Common::XmlNode &_rootNode);
 
+    bool exportDosageTimeRange(const std::unique_ptr<Tucuxi::Core::DosageTimeRange> &_timeRange,
+                               Tucuxi::Common::XmlNode &_rootNode);
+
+    void exportFormulationAndRoute(const Tucuxi::Core::SingleDose &_dosage, Tucuxi::Common::XmlNode &_rootNode);
+
+
+    void exportDose(const Tucuxi::Core::SingleDose &_dosage, Tucuxi::Common::XmlNode &_rootNode);
+
+
+    std::string formulationEnumToString(const Tucuxi::Core::Formulation &_formulation);
+
+
+    std::string administrationRouteEnumToString(const Tucuxi::Core::AdministrationRoute &_administrationRoute);
+
+
+
+
     void addNode(Tucuxi::Common::XmlNode &_rootNode,
                  std::string _nodeName,
                  std::string _nodeValue);
@@ -69,6 +86,36 @@ protected:
 
 
     Tucuxi::Common::XmlDocument m_doc;
+
+public:
+
+    bool exportDosage(const Tucuxi::Core::DosageBounded &_dosage,
+                          Tucuxi::Common::XmlNode &_rootNode);
+
+    bool exportDosage(const Tucuxi::Core::DosageLoop &_dosage,
+                          Tucuxi::Common::XmlNode &_rootNode);
+
+    bool exportDosage(const Tucuxi::Core::DosageSteadyState &_dosage,
+                      Tucuxi::Common::XmlNode &_rootNode);
+
+    bool exportDosage(const Tucuxi::Core::DosageRepeat &_dosage,
+                      Tucuxi::Common::XmlNode &_rootNode);
+
+    bool exportDosage(const Tucuxi::Core::DosageSequence &_dosage,
+                      Tucuxi::Common::XmlNode &_rootNode);
+
+    bool exportDosage(const Tucuxi::Core::ParallelDosageSequence &_dosage,
+                      Tucuxi::Common::XmlNode &_rootNode);
+
+    bool exportDosage(const Tucuxi::Core::LastingDose &_dosage,
+                      Tucuxi::Common::XmlNode &_rootNode);
+
+    bool exportDosage(const Tucuxi::Core::DailyDose &_dosage,
+                      Tucuxi::Common::XmlNode &_rootNode);
+
+    bool exportDosage(const Tucuxi::Core::WeeklyDose &_dosage,
+                      Tucuxi::Common::XmlNode &_rootNode);
+
 };
 
 } // namespace Query
