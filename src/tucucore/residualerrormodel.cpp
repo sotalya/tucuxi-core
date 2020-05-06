@@ -42,26 +42,25 @@ void SigmaResidualErrorModel::applyEpsToValue(Concentration &_concentration, con
 void SigmaResidualErrorModel::applyEpsToArray(Concentrations &_concentrations, const Deviations &_eps) const {
 
     // Loop through the main compartment concentrations and apply the residual error
-    for (auto it = _concentrations.begin(); it != _concentrations.end(); ++it) {
+    for (double & concentration : _concentrations) {
         switch (m_errorModel) {
         case ResidualErrorType::EXPONENTIAL:
-            *it *= std::exp(m_sigma[0] * _eps[0]);
+            concentration *= std::exp(m_sigma[0] * _eps[0]);
             break;
         case ResidualErrorType::PROPORTIONAL:
-            *it *= 1 + m_sigma[0] * _eps[0];
+            concentration *= 1 + m_sigma[0] * _eps[0];
             break;
         case ResidualErrorType::ADDITIVE:
-            *it += m_sigma[0] * _eps[0];
+            concentration += m_sigma[0] * _eps[0];
             break;
         case ResidualErrorType::MIXED:
-            *it += _eps[0] * std::sqrt(std::pow(*it * m_sigma[1], 2)  + std::pow(m_sigma[0], 2));
+            concentration += _eps[0] * std::sqrt(std::pow(concentration * m_sigma[1], 2)  + std::pow(m_sigma[0], 2));
             break;
         default:
             // Should never happen
             break;
         }
     }
-    return;
 };
 
 Value SigmaResidualErrorModel::calculateSampleLikelihood(Value _expected, Value _observed) const

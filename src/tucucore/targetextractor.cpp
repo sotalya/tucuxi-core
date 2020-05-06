@@ -389,7 +389,7 @@ ComputingStatus TargetExtractor::extract(
             bool foundDefinition = false;
             // First find the corresponding target definition
             for (const auto& targetDefinition : _targetDefinitions) {
-                if ((targetDefinition.get()->getActiveMoietyId() == target.get()->m_activeMoietyId) &&
+                if ((targetDefinition->getActiveMoietyId() == target.get()->m_activeMoietyId) &&
                         (targetDefinition.get()->getTargetType() == target.get()->m_targetType)){
                     // We create the TargetEvent with the target
                     _series.push_back(targetEventFromTarget(target.get(), targetDefinition.get()));

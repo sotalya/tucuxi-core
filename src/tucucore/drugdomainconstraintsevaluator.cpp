@@ -46,7 +46,7 @@ DrugDomainConstraintsEvaluator::Result DrugDomainConstraintsEvaluator::evaluate(
 
     // Allocate the vector at _start if no event present. Indeed, even if no covariate plays an influence on the
     // parameters, the parameters have to be determined at _start.
-    if (timedCValues.size() == 0) {
+    if (timedCValues.empty()) {
         timedCValues.insert(std::make_pair(_start, std::vector<std::pair<std::string, Value>>()));
     }
 
@@ -87,7 +87,7 @@ DrugDomainConstraintsEvaluator::Result DrugDomainConstraintsEvaluator::evaluate(
         timedCValues.erase(rm);
     }
 
-    if (timedCValues.size() > 0) {
+    if (timedCValues.empty()) {
         // Check for covariates that appear out of nowhere past the start time -- if any other covariate was present
         // before, then that was the initial time of parameters computation and all the covariates must be defined at
         // that moment.

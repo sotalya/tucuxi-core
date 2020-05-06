@@ -92,7 +92,7 @@ public:
     /// \param _operation A pointer to an Operation to add to the collection.
     /// \param _operationId Id of the operation, used to retrieve it later on.
     /// This function is typically used at startup to populate the collection with the existing hardcoded operations.
-    bool addOperation(std::shared_ptr<Operation> _operation, std::string _operationId);
+    bool addOperation(std::shared_ptr<Operation> _operation, const std::string& _operationId);
 
     /// \brief Given an Id, returns the operation with the corresponding identifier.
     /// \param _operation ID of the PkModel asked by the caller.

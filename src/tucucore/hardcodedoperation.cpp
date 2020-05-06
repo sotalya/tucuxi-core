@@ -557,7 +557,7 @@ sum2::fillRequiredInputs()
 
 
 
-bool OperationCollection::addOperation(std::shared_ptr<Operation> _operation, std::string _operationId)
+bool OperationCollection::addOperation(std::shared_ptr<Operation> _operation, const std::string& _operationId)
 {
     m_collection[_operationId] = _operation;
     return true;
