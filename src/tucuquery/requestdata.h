@@ -26,8 +26,8 @@ public:
     DateInterval(DateInterval& _other) = delete;
 
     // Getters
-    const Tucuxi::Common::DateTime getStart() const;
-    const Tucuxi::Common::DateTime getEnd() const;
+    Common::DateTime getStart() const;
+    Tucuxi::Common::DateTime getEnd() const;
 
 protected:
     const Tucuxi::Common::DateTime m_start;
@@ -94,10 +94,10 @@ public:
     RequestData(RequestData& _other) = delete;
 
     // Getters
-    const std::string getRequestID() const;
-    const std::string getDrugID() const;
-    const std::string getDrugModelID() const;
-    const Tucuxi::Core::ComputingTrait& getpComputingTrait() const;
+    std::string getRequestID() const;
+    std::string getDrugID() const;
+    std::string getDrugModelID() const;
+    Tucuxi::Core::ComputingTrait& getpComputingTrait() const;
     std::unique_ptr<Core::ComputingTrait> m_pComputingTrait;
 
 protected:

@@ -24,16 +24,21 @@ namespace Tucuxi {
 namespace Core {
 
 
-/// Macro to delete a pointer if it is not nullptr
-#define DELETE_IF_NON_NULL(p) {if (p != nullptr) { delete p;}}
+/// Function to delete a pointer if it is not nullptr
+template<typename T> inline constexpr void DELETE_IF_NON_NULL(T p)
+{
+    if (p != nullptr) {
+        delete p;
+    }
+}
 
-/// Macro to delete a vector of pointers.
+/// Function to delete a vector of pointers.
 /// It deletes every pointed value and emptied the vector.
-#define DELETE_PVECTOR(v) { \
-    while (v.size() != 0) { \
-    delete v.back(); \
-    v.pop_back(); \
-} \
+template<typename T> inline constexpr void DELETE_PVECTOR(T v) {
+    while (v.size() != 0) {
+        delete v.back();
+        v.pop_back();
+    }
 }
 
 
@@ -641,7 +646,6 @@ DrugModel* DrugModelImport::extractDrugModel(Tucuxi::Common::XmlNodeIterator _no
 
     std::string drugId;
     std::string drugModelId;
-    DrugModel *drugModel;
     while (it != XmlNodeIterator::none()) {
         std::string nodeName = it->getName();
         if (nodeName == "drugId") {
@@ -684,7 +688,7 @@ DrugModel* DrugModelImport::extractDrugModel(Tucuxi::Common::XmlNodeIterator _no
         return nullptr;
     }
 
-    drugModel = new DrugModel();
+    DrugModel *drugModel = new DrugModel();
     drugModel->setDrugId(drugId);
     drugModel->setDrugModelId(drugModelId);
     drugModel->setFormulationAndRoutes(std::unique_ptr<FormulationAndRoutes>(formulationAndRoutes));

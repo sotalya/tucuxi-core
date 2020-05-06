@@ -63,19 +63,12 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkDrugModel(const DrugMod
 }
 
 bool contains(std::vector<std::string> _vector, std::string _s) {
-    if(std::find(_vector.begin(), _vector.end(), _s) != _vector.end()) {
-        return true;
-    } else {
-        return false;
-    }
+    return std::find(_vector.begin(), _vector.end(), _s) != _vector.end();
 }
+
 template<class T>
 bool contains(std::vector<T> _vector, T _s) {
-    if(std::find(_vector.begin(), _vector.end(), _s) != _vector.end()) {
-        return true;
-    } else {
-        return false;
-    }
+    return std::find(_vector.begin(), _vector.end(), _s) != _vector.end();
 }
 
 DrugModelChecker::CheckerResult_t DrugModelChecker::checkAnalytes(const DrugModel *_drugModel)

@@ -35,7 +35,10 @@ void CycleStatistics::calculate(const std::vector<Concentrations> &_concentratio
             return;
         }
 
-        Value prevGradient = 0.0, gradient = 0.0, auc = 0.0, peak = 0.0;
+        Value prevGradient = 0.0;
+        Value gradient = 0.0;
+        Value auc = 0.0;
+        Value peak = 0.0;
         size_t peakPosition = 0;
 
         for (unsigned int nbPoints = 0; nbPoints < (_concentrations[compartment].size() - 1); nbPoints++) {
@@ -148,19 +151,19 @@ void CycleStatisticsCalculator::calculate(std::vector<CycleData> & _cycles)
     size_t nbComp = _cycles[0].m_concentrations.size();
 
     std::vector<double> auc(nbComp);
-    for(size_t i = 0; i < _cycles.size(); i++) {
-        CycleStatistics st(_cycles[i], auc);
+    for(auto & cycle : _cycles) {
+        CycleStatistics st(cycle, auc);
 
         for (size_t comp = 0; comp < nbComp; comp++) {
-            _cycles[i].m_statistics.setStatistics(comp, CycleStatisticType::Mean, st.getStatistic(comp, CycleStatisticType::Mean));
-            _cycles[i].m_statistics.setStatistics(comp, CycleStatisticType::Peak, st.getStatistic(comp, CycleStatisticType::Peak));
-            _cycles[i].m_statistics.setStatistics(comp, CycleStatisticType::Maximum, st.getStatistic(comp, CycleStatisticType::Maximum));
-            _cycles[i].m_statistics.setStatistics(comp, CycleStatisticType::Minimum, st.getStatistic(comp, CycleStatisticType::Minimum));
-            _cycles[i].m_statistics.setStatistics(comp, CycleStatisticType::AUC, st.getStatistic(comp, CycleStatisticType::AUC));
-            _cycles[i].m_statistics.setStatistics(comp, CycleStatisticType::AUC24, st.getStatistic(comp, CycleStatisticType::AUC24));
-            _cycles[i].m_statistics.setStatistics(comp, CycleStatisticType::CumulativeAuc, st.getStatistic(comp, CycleStatisticType::CumulativeAuc));
-            _cycles[i].m_statistics.setStatistics(comp, CycleStatisticType::Residual, st.getStatistic(comp, CycleStatisticType::Residual));
-            _cycles[i].m_statistics.setStatistics(comp, CycleStatisticType::CycleInterval, st.getStatistic(comp, CycleStatisticType::CycleInterval));
+            cycle.m_statistics.setStatistics(comp, CycleStatisticType::Mean, st.getStatistic(comp, CycleStatisticType::Mean));
+            cycle.m_statistics.setStatistics(comp, CycleStatisticType::Peak, st.getStatistic(comp, CycleStatisticType::Peak));
+            cycle.m_statistics.setStatistics(comp, CycleStatisticType::Maximum, st.getStatistic(comp, CycleStatisticType::Maximum));
+            cycle.m_statistics.setStatistics(comp, CycleStatisticType::Minimum, st.getStatistic(comp, CycleStatisticType::Minimum));
+            cycle.m_statistics.setStatistics(comp, CycleStatisticType::AUC, st.getStatistic(comp, CycleStatisticType::AUC));
+            cycle.m_statistics.setStatistics(comp, CycleStatisticType::AUC24, st.getStatistic(comp, CycleStatisticType::AUC24));
+            cycle.m_statistics.setStatistics(comp, CycleStatisticType::CumulativeAuc, st.getStatistic(comp, CycleStatisticType::CumulativeAuc));
+            cycle.m_statistics.setStatistics(comp, CycleStatisticType::Residual, st.getStatistic(comp, CycleStatisticType::Residual));
+            cycle.m_statistics.setStatistics(comp, CycleStatisticType::CycleInterval, st.getStatistic(comp, CycleStatisticType::CycleInterval));
         }
     }
 }

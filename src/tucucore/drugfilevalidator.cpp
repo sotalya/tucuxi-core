@@ -9,7 +9,7 @@
 #include <fstream>
 #include <streambuf>
 #include <sstream>
-
+#include <utility> 
 #include "tucucommon/loggerhelper.h"
 
 #include "tucucore/drugmodelimport.h"
@@ -41,7 +41,7 @@ public:
 };
 
 
-bool DrugFileValidator::validate(std::string _drugFileName, std::string _testFileName)
+bool DrugFileValidator::validate(std::string _drugFileName, const std::string& _testFileName)
 {
 
     static const string DATA_FORMAT = "%Y-%m-%dT%H:%M:%S";
@@ -64,7 +64,7 @@ bool DrugFileValidator::validate(std::string _drugFileName, std::string _testFil
     Tucuxi::Core::DrugModel *dModel;
 
     DrugModelImport importer;
-    if (importer.importFromFile(dModel, _drugFileName) != DrugModelImport::Result::Ok) {
+    if (importer.importFromFile(dModel, std::move(_drugFileName)) != DrugModelImport::Result::Ok) {
         logger.error("Can not import the drug file. {}", importer.getErrorMessage());
         return false;
     }
@@ -153,8 +153,9 @@ bool DrugFileValidator::validate(std::string _drugFileName, std::string _testFil
 
                 Unit unit(unitString);
                 Tucuxi::Common::DateTime date(std::chrono::hours(1));
-                Tucuxi::Core::PatientCovariate *covariate = new Tucuxi::Core::PatientCovariate(id, value, dataType, unit, date);
-                patientVariates.push_back(std::unique_ptr<Tucuxi::Core::PatientCovariate>(covariate));
+                std::unique_ptr<Tucuxi::Core::PatientCovariate> covariate =
+                        std::make_unique<Tucuxi::Core::PatientCovariate>(id, value, dataType, unit, date);
+                patientVariates.push_back(std::move(covariate));
             }
 
 

@@ -27,7 +27,7 @@
 #include "tucucore/percentilesprediction.h"
 #include "tucucore/targetevaluationresult.h"
 #include "tucucore/targetevaluator.h"
-#include "tucucore/overloadevaluator.h"
+//#include "tucucore/overloadevaluator.h"
 #include "tucucore/residualerrormodelextractor.h"
 #include "tucucore/generalextractor.h"
 #include "tucucore/cyclestatisticscalculator.h"
@@ -128,7 +128,7 @@ ComputingStatus ComputingComponent::compute(const ComputingRequest &_request, st
             return ComputingStatus::NoPkModels;
         }
         // First ensure there is at least a Pk Model available
-        if (m_utils->m_models->getPkModelList().size() == 0) {
+        if (m_utils->m_models->getPkModelList().empty()) {
             m_logger.error("No Pk Model loaded. Impossible to perform computation");
             _response->setComputingStatus(ComputingStatus::NoPkModels);
             return ComputingStatus::NoPkModels;
@@ -491,7 +491,8 @@ ComputingStatus ComputingComponent::computePercentilesMulti(
             etas[analyteGroupId] = Etas(0);
         }
 
-        std::unique_ptr<Tucuxi::Core::IAprioriPercentileCalculatorMulti> calculator(new Tucuxi::Core::AprioriPercentileCalculatorMulti());
+        std::unique_ptr<Tucuxi::Core::IAprioriPercentileCalculatorMulti> calculator =
+                std::make_unique<Tucuxi::Core::AprioriPercentileCalculatorMulti>();
         computingResult = calculator->calculate(
                     percentiles,
                     _traits->getStart(),
@@ -534,7 +535,7 @@ ComputingStatus ComputingComponent::computePercentilesMulti(
     {
         std::unique_ptr<PercentilesData> resp = std::make_unique<PercentilesData>(_request.getId());
 
-        const std::vector<std::vector<std::vector<Value> > > allValues = percentiles.getValues();
+        const std::vector<std::vector<std::vector<Value> > >& allValues = percentiles.getValues();
 
 
 
@@ -676,7 +677,8 @@ ComputingStatus ComputingComponent::computePercentilesSimple(
             return sampleExtractionResult;
         }
 
-        std::unique_ptr<Tucuxi::Core::IAposterioriPercentileCalculator> calculator(new Tucuxi::Core::AposterioriMonteCarloPercentileCalculator());
+        std::unique_ptr<Tucuxi::Core::IAposterioriPercentileCalculator> calculator =
+                std::make_unique<Tucuxi::Core::AposterioriMonteCarloPercentileCalculator>();
         computingResult = calculator->calculate(
                     percentiles,
                     _traits->getStart(),
@@ -693,7 +695,8 @@ ComputingStatus ComputingComponent::computePercentilesSimple(
 
     }
     else {
-        std::unique_ptr<Tucuxi::Core::IAprioriPercentileCalculator> calculator(new Tucuxi::Core::AprioriMonteCarloPercentileCalculator());
+        std::unique_ptr<Tucuxi::Core::IAprioriPercentileCalculator> calculator =
+                std::make_unique<Tucuxi::Core::AprioriMonteCarloPercentileCalculator>();
         computingResult = calculator->calculate(
                     percentiles,
                     _traits->getStart(),
@@ -833,7 +836,7 @@ ComputingStatus ComputingComponent::compute(
         return ComputingStatus::NoComputingTraits;
     }
 
-    if (_traits->getTimes().size() == 0) {
+    if (_traits->getTimes().empty()) {
         // No time given, so we return an empty response
         std::unique_ptr<SinglePointsData> resp = std::make_unique<SinglePointsData>(_request.getId());
         _response->addResponse(std::move(resp));
@@ -877,7 +880,7 @@ ComputingStatus ComputingComponent::compute(
         return extractionResult;
     }
 
-    if (_request.getDrugModel().getAnalyteSets().size() == 0) {
+    if (_request.getDrugModel().getAnalyteSets().empty()) {
         return ComputingStatus::NoAnalytesGroup;
     }
 

@@ -54,7 +54,7 @@ ParametersExtractor::ParametersExtractor(const CovariateSeries &_covariates,
 
     // Allocate the vector at m_start if no event present. Indeed, even if no covariate plays an influence on the
     // parameters, the parameters have to be determined at m_start.
-    if (m_timedCValues.size() == 0) {
+    if (m_timedCValues.empty()) {
         m_timedCValues.insert(std::make_pair(m_start, std::vector<std::pair<std::string, Value>>()));
     }
 
@@ -95,7 +95,7 @@ ParametersExtractor::ParametersExtractor(const CovariateSeries &_covariates,
         m_timedCValues.erase(rm);
     }
 
-    if (m_timedCValues.size() > 0) {
+    if (!m_timedCValues.empty()) {
         // Check for covariates that appear out of nowhere past the start time -- if any other covariate was present
         // before, then that was the initial time of parameters computation and all the covariates must be defined at
         // that moment.

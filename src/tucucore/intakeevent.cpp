@@ -9,7 +9,7 @@ namespace Core {
 
 void cloneIntakeSeries(const std::vector<IntakeEvent> &_input, std::vector<IntakeEvent> &_output)
 {
-    for (auto intake : _input) {
+    for (const auto& intake : _input) {
         IntakeEvent newIntakeEvent = intake;
         if (intake.getCalculator() != nullptr) {
             newIntakeEvent.setCalculator(intake.getCalculator()->getLightClone());

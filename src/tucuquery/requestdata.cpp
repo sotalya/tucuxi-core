@@ -12,12 +12,12 @@ DateInterval::DateInterval(Common::DateTime& _start, Common::DateTime& _end)
     : m_start(_start), m_end(_end)
 {}
 
-const Common::DateTime DateInterval::getStart() const
+Common::DateTime DateInterval::getStart() const
 {
     return m_start;
 }
 
-const Common::DateTime DateInterval::getEnd() const
+Tucuxi::Common::DateTime DateInterval::getEnd() const
 {
     return m_end;
 }
@@ -66,22 +66,22 @@ RequestData::RequestData(string& _requestID,
     m_drugModelID(_drugModelID)
 {}
 
-const string RequestData::getRequestID() const
+string RequestData::getRequestID() const
 {
     return m_requestID;
 }
 
-const string RequestData::getDrugID() const
+std::string RequestData::getDrugID() const
 {
     return m_drugID;
 }
 
-const string RequestData::getDrugModelID() const
+string RequestData::getDrugModelID() const
 {
     return m_drugModelID;
 }
 
-const Tucuxi::Core::ComputingTrait& RequestData::getpComputingTrait() const
+Tucuxi::Core::ComputingTrait &RequestData::getpComputingTrait() const
 {
     return *m_pComputingTrait;
 }
