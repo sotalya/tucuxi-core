@@ -44,7 +44,7 @@ QueryStatus CliComputer::compute(std::string _drugPath,
     Tucuxi::Common::LoggerHelper logHelper;
 
     ComputingQueryResponse computingQueryResponse;
-    QueryComputer *queryComputer = nullptr;
+    QueryComputer *queryComputer = new QueryComputer;
 
     std::ifstream ifs(_inputFileName);
     std::string xmlString((std::istreambuf_iterator<char>(ifs)),(std::istreambuf_iterator<char>()));

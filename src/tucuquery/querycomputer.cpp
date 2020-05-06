@@ -103,8 +103,6 @@ int QueryComputer::compute(std::string _queryString, ComputingQueryResponse& _re
 
     delete query;
 
-    delete computingQuery;
-
     return 0;
 
 }
