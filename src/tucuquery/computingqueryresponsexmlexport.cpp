@@ -188,7 +188,6 @@ bool ComputingQueryResponseXmlExport::exportToString(const ComputingResponse &_c
 
 
 
-
     m_doc.toString(_xmlString, true);
     return true;
 }
@@ -196,6 +195,8 @@ bool ComputingQueryResponseXmlExport::exportToString(const ComputingResponse &_c
 
 bool ComputingQueryResponseXmlExport::exportToString(const ComputingQueryResponse &_computingQueryResponse, std::string &_xmlString)
 {
+    static const bool STATUS_CODE_NUMBER = true;
+    static const bool STATUS_CODE_MESSAGE = false;
 
     // Ensure the function is reentrant
     static std::mutex mutex;
@@ -213,10 +214,10 @@ bool ComputingQueryResponseXmlExport::exportToString(const ComputingQueryRespons
     Tucuxi::Common::XmlNode queryStatus = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "queryStatus", "queryStatus");
     root.addChild(queryStatus);
 
-    Tucuxi::Common::XmlNode statusCode = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "statusCode", getQueryStatus(_computingQueryResponse.getQueryStatus(), true));
+    Tucuxi::Common::XmlNode statusCode = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "statusCode", getQueryStatus(_computingQueryResponse.getQueryStatus(), STATUS_CODE_NUMBER));
     queryStatus.addChild(statusCode);
 
-    Tucuxi::Common::XmlNode statusCodeLit = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "statusCodeLit", getQueryStatus(_computingQueryResponse.getQueryStatus(), false));
+    Tucuxi::Common::XmlNode statusCodeLit = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "statusCodeLit", getQueryStatus(_computingQueryResponse.getQueryStatus(), STATUS_CODE_MESSAGE));
     queryStatus.addChild(statusCodeLit);
 
     Tucuxi::Common::XmlNode message = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "message");
@@ -245,10 +246,10 @@ bool ComputingQueryResponseXmlExport::exportToString(const ComputingQueryRespons
         Tucuxi::Common::XmlNode requestStatus = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "requestStatus");
         responseNode.addChild(requestStatus);
 
-        Tucuxi::Common::XmlNode statusCode = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "statusCode", getComputingStatus(response.m_computingResponse->getComputingStatus(), true));
+        Tucuxi::Common::XmlNode statusCode = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "statusCode", getComputingStatus(response.m_computingResponse->getComputingStatus(), STATUS_CODE_NUMBER));
         requestStatus.addChild(statusCode);
 
-        Tucuxi::Common::XmlNode statusCodeLit = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "statusCodeLit", getComputingStatus(response.m_computingResponse->getComputingStatus(), false));
+        Tucuxi::Common::XmlNode statusCodeLit = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "statusCodeLit", getComputingStatus(response.m_computingResponse->getComputingStatus(), STATUS_CODE_MESSAGE));
         requestStatus.addChild(statusCodeLit);
 
         Tucuxi::Common::XmlNode message = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "message");

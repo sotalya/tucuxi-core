@@ -104,6 +104,7 @@ parse(int _argc, char* _argv[])
 
         pCmpMgr->registerComponent("QueryLogger", queryLogger);
 
+        // Drugs loaded by getDrugModelById and convert to drugModel
 //        drugModelRepository->loadFolder(drugPath);
 
 
@@ -117,7 +118,11 @@ parse(int _argc, char* _argv[])
 
         pCmpMgr->unregisterComponent("DrugModelRepository");
         pCmpMgr->unregisterComponent("QueryLogger");
+
+
         delete drugModelRepository;
+
+        delete queryLogger;
 
         return result;
 

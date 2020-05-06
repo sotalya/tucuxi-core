@@ -2,6 +2,7 @@
 #define CLICOMPUTER_H
 
 #include <string>
+#include "tucuquery/querystatus.h"
 
 ///
 /// \brief The CliComputer class

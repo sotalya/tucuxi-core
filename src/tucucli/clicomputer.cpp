@@ -74,19 +74,7 @@ QueryStatus CliComputer::compute(std::string _drugPath,
         logHelper.info("The response XML file was successfully generated");
     }
 
+    delete queryComputer;
 
-    // TODO : Change that
-    /*
-
-    if (drugTreatment != nullptr) {
-        delete drugTreatment;
-    }
-    if (query != nullptr) {
-        delete query;
-    }
-    if (computingComponent != nullptr) {
-        delete computingComponent;
-    }
-*/
     return computingQueryResponse.getQueryStatus();
 }

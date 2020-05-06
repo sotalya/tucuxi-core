@@ -101,14 +101,10 @@ int QueryComputer::compute(std::string _queryString, ComputingQueryResponse& _re
 
     compute(*computingQuery, _response);
 
-    // First build the ComputingQuery object
+    delete query;
 
-    // 1. Build the QueryData from _queryString
+    delete computingQuery;
 
-    // 2. Build a ComputingQuery from QueryData
-    //    This can be done thanks to the QueryToCoreExtractor
-
-    // Then call compute(query, _response);
     return 0;
 
 }
