@@ -113,6 +113,7 @@ public:
 };
 
 
+
 /// \ingroup TucuCore
 /// \brief Pure virtual class upon which dosage loops are based.
 class DosageUnbounded : public Dosage
@@ -153,6 +154,8 @@ public:
     virtual std::unique_ptr<DosageBounded> clone() const = 0;
 
     bool exportXml(Tucuxi::Query::ComputingQueryResponseXmlExport &/*_exporter*/, Tucuxi::Common::XmlNode &/*_rootNode*/) const override;
+
+
 };
 
 
@@ -256,6 +259,11 @@ public:
 
     DOSAGE_UTILS(DosageUnbounded, DosageSteadyState);
 
+    const DateTime getLastDoseTime()const
+    {
+        return m_lastDoseTime;
+    }
+
 private:
     DateTime m_lastDoseTime;
 
@@ -314,6 +322,10 @@ public:
 
     const DosageBounded * getDosage() const {
         return m_dosage.get();
+    }
+
+    const int getNbTimes() const {
+        return  m_nbTimes;
     }
 
 private:
@@ -394,6 +406,11 @@ public:
     {
         return (m_dosages[0])->getFirstIntakeInterval(_intervalStart);
     }
+
+    const DosageBoundedList&  getDosageList() const {
+        return m_dosages;
+    }
+
 
 private:
     /// \brief Sequence of bounded dosages that is administered.
@@ -489,6 +506,14 @@ public:
     {
         // We consider that a ParallelSequence starts immediately
         return _intervalStart;
+    }
+
+    const DosageBoundedList&  getDosageList() const{
+        return m_dosages;
+    }
+
+    const TimeOffsetList& getOffsetsList() const{
+        return m_offsets;
     }
 
 private:

@@ -62,10 +62,17 @@ protected:
     void exportDose(const Tucuxi::Core::SingleDose &_dosage, Tucuxi::Common::XmlNode &_rootNode);
 
 
-    std::string formulationEnumToString(const Tucuxi::Core::Formulation &_formulation);
+    void exportSingleDose(const Tucuxi::Core::SingleDose &_dosage, Tucuxi::Common::XmlNode &_rootNode);
 
 
-    std::string administrationRouteEnumToString(const Tucuxi::Core::AdministrationRoute &_administrationRoute);
+    const std::string formulationEnumToString(const Tucuxi::Core::Formulation &_formulation);
+
+
+    const std::string administrationRouteEnumToString(const Tucuxi::Core::AdministrationRoute &_administrationRoute);
+
+
+    const std::string absorptionModelEnumToString(const Tucuxi::Core::AbsorptionModel &_absorptionModel);
+
 
 
 

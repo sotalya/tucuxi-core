@@ -511,6 +511,14 @@ std::string dateTimeToString(const Tucuxi::Common::DateTime &_dateTime)
     return result;
 }
 
+std::string timeToString(const Tucuxi::Common::TimeOfDay &_timeOfDay)
+{
+    char str[10];
+    snprintf (str, 9, "%02d:%02d:%02d", _timeOfDay.hour(), _timeOfDay.minute(), _timeOfDay.second());
+
+    return std::string(str);
+}
+
 
 
 bool ComputingQueryResponseXmlExport::exportSinglePoints(const Tucuxi::Core::SinglePointsData *_prediction,
@@ -562,7 +570,8 @@ bool ComputingQueryResponseXmlExport::exportPercentiles(const Tucuxi::Core::Perc
 
 
 
-bool ComputingQueryResponseXmlExport::exportDosageTimeRange(const std::unique_ptr<Tucuxi::Core::DosageTimeRange> &_timeRange, Tucuxi::Common::XmlNode &_rootNode)
+bool ComputingQueryResponseXmlExport::exportDosageTimeRange(const std::unique_ptr<Tucuxi::Core::DosageTimeRange> &_timeRange,
+                                                            Tucuxi::Common::XmlNode &_rootNode)
 {
 
     Tucuxi::Common::XmlNode dosageTimeRange = m_doc.createNode(
@@ -576,37 +585,51 @@ bool ComputingQueryResponseXmlExport::exportDosageTimeRange(const std::unique_pt
                 Tucuxi::Common::EXmlNodeType::Element, "dosage");
     dosageTimeRange.addChild(dosage);
 
-    Tucuxi::Common::XmlNode dosageLoop = m_doc.createNode(
-                Tucuxi::Common::EXmlNodeType::Element, "dosageLoop");
-    dosage.addChild(dosageLoop);
-
-    _timeRange->getDosage()->exportXml(*this, dosageLoop);
-
+    _timeRange->getDosage()->exportXml(*this, dosage);
 
     return true;
 
 }
 
-//std::string durationToString(const Tucuxi::Common::Duration &_duration)
-//{
-//    std::string result;
-//    result = std::to_string(_duration.)
-//            + "." + std::to_string(_dateTime.month()) +
-//            "." + std::to_string(_dateTime.day()) +
-//            "T" + std::to_string(_dateTime.hour())
-//            + ":" + std::to_string(_dateTime.minute()) + ":"
-//            + std::to_string(_dateTime.second());
 
-//    char str[20];
-//    snprintf (str, 20, "%04d-%02d-%02dT%02d:%02d:%02d", _dateTime.year(),
-//              _dateTime.month(), _dateTime.day(), _dateTime.hour(), _dateTime.minute(), _dateTime.second());
-//    result = str;
-//    return result;
-//}
+bool ComputingQueryResponseXmlExport::exportDosage(const Tucuxi::Core::DosageBounded &_dosage, Tucuxi::Common::XmlNode &_rootNode)
+{
+
+    TMP_UNUSED_PARAMETER(_dosage);
+    TMP_UNUSED_PARAMETER(_rootNode);
+
+    //SHOULD NOT BE HERE
+    return false;
+}
+
+bool ComputingQueryResponseXmlExport::exportDosage(const Tucuxi::Core::DosageLoop &_dosage, Tucuxi::Common::XmlNode &_rootNode)
+{
+
+    _dosage.getDosage()->exportXml(*this, _rootNode);
+
+    return true;
+}
 
 
 bool ComputingQueryResponseXmlExport::exportDosage(const Tucuxi::Core::DosageSteadyState &_dosage, Tucuxi::Common::XmlNode &_rootNode)
 {
+
+    addNode(_rootNode, "lastDoseTime", dateTimeToString(_dosage.getLastDoseTime()));
+
+    return true;
+}
+
+bool ComputingQueryResponseXmlExport::exportDosage(const Tucuxi::Core::ParallelDosageSequence &_dosage, Tucuxi::Common::XmlNode &_rootNode)
+{
+    //TODO : check
+    auto it = _dosage.getOffsetsList().begin();
+
+    for(const std::unique_ptr<Tucuxi::Core::DosageBounded> &dosage : _dosage.getDosageList())
+    {
+        addNode(_rootNode, "offsets", timeToString(TimeOfDay(*it)));
+        dosage->exportXml(*this, _rootNode);
+        it++;
+    }
 
     return true;
 }
@@ -617,13 +640,8 @@ bool ComputingQueryResponseXmlExport::exportDosage(const Tucuxi::Core::DosageRep
                 Tucuxi::Common::EXmlNodeType::Element, "dosageRepeat");
     _rootNode.addChild(dosageRepeat);
 
-    Tucuxi::Common::XmlNode iterations = m_doc.createNode(
-                Tucuxi::Common::EXmlNodeType::Element, "iterations");
-    dosageRepeat.addChild(iterations);
+    addNode(dosageRepeat, "iterations", _dosage.getNbTimes());
 
-
-     //TODO : CALL RIGHT EXPORTDOSAGE (LASTING, DAILY OR WEEKLY)
-    // --> TO TEST
     _dosage.getDosage()->exportXml(*this, dosageRepeat);
 
     return true;
@@ -636,12 +654,10 @@ bool ComputingQueryResponseXmlExport::exportDosage(const Tucuxi::Core::DosageSeq
     _rootNode.addChild(dosageSequence);
 
 
-
-    return true;
-}
-
-bool ComputingQueryResponseXmlExport::exportDosage(const Tucuxi::Core::ParallelDosageSequence &_dosage, Tucuxi::Common::XmlNode &_rootNode)
-{
+    for(const std::unique_ptr<Tucuxi::Core::DosageBounded> &dosage : _dosage.getDosageList())
+    {
+        dosage->exportXml(*this, dosageSequence);
+    }
 
     return true;
 }
@@ -649,23 +665,12 @@ bool ComputingQueryResponseXmlExport::exportDosage(const Tucuxi::Core::ParallelD
 bool ComputingQueryResponseXmlExport::exportDosage(const Tucuxi::Core::LastingDose &_dosage, Tucuxi::Common::XmlNode &_rootNode)
 {
     Tucuxi::Common::XmlNode lastingDose = m_doc.createNode(
-                Tucuxi::Common::EXmlNodeType::Element, "lastingDose");
+                Tucuxi::Common::EXmlNodeType::Element, "lastingDosage");
     _rootNode.addChild(lastingDose);
 
-//    _dosage.getTimeStep().toHours()
+    addNode(lastingDose, "intervals", timeToString(TimeOfDay(_dosage.getTimeStep())));
 
-    std::string s = "top";
-
-    // TO TEST
-    addNode(lastingDose, "intervals", s);
-
-    Tucuxi::Common::XmlNode dose = m_doc.createNode(
-                Tucuxi::Common::EXmlNodeType::Element, "dose");
-    lastingDose.addChild(dose);
-
-    exportDose(_dosage, lastingDose);
-
-    exportFormulationAndRoute(_dosage, lastingDose);
+    exportSingleDose(_dosage, lastingDose);
 
 
     return true;
@@ -674,20 +679,12 @@ bool ComputingQueryResponseXmlExport::exportDosage(const Tucuxi::Core::LastingDo
 bool ComputingQueryResponseXmlExport::exportDosage(const Tucuxi::Core::DailyDose &_dosage, Tucuxi::Common::XmlNode &_rootNode)
 {
     Tucuxi::Common::XmlNode dailyDose = m_doc.createNode(
-                Tucuxi::Common::EXmlNodeType::Element, "dailyDose");
+                Tucuxi::Common::EXmlNodeType::Element, "dailyDosage");
     _rootNode.addChild(dailyDose);
 
-    //TODO : CONTROL
-    std::string timeOfDay = std::to_string(_dosage.getTimeOfDay().hour()) + std::to_string(_dosage.getTimeOfDay().minute()) + std::to_string(_dosage.getTimeOfDay().second());
-    addNode(dailyDose, "time", timeOfDay);
+    addNode(dailyDose, "time", timeToString(_dosage.getTimeOfDay()));
 
-    Tucuxi::Common::XmlNode dose = m_doc.createNode(
-                Tucuxi::Common::EXmlNodeType::Element, "dose");
-    dailyDose.addChild(dose);
-
-    exportDose(_dosage, dailyDose);
-
-    exportFormulationAndRoute(_dosage, dailyDose);
+    exportSingleDose(_dosage, dailyDose);
 
     return true;
 }
@@ -695,21 +692,27 @@ bool ComputingQueryResponseXmlExport::exportDosage(const Tucuxi::Core::DailyDose
 bool ComputingQueryResponseXmlExport::exportDosage(const Tucuxi::Core::WeeklyDose &_dosage, Tucuxi::Common::XmlNode &_rootNode)
 {
     Tucuxi::Common::XmlNode weeklyDose = m_doc.createNode(
-                Tucuxi::Common::EXmlNodeType::Element, "weeklyDose");
+                Tucuxi::Common::EXmlNodeType::Element, "weeklyDosage");
     _rootNode.addChild(weeklyDose);
 
-    //TODO : convert dayOfWeek to string
-//    addNode(weeklyDose, "day", _dosage.getDayOfWeek());
-
     //TODO : CONTROL
-    std::string timeOfDay = std::to_string(_dosage.getTimeOfDay().hour()) + std::to_string(_dosage.getTimeOfDay().minute()) + std::to_string(_dosage.getTimeOfDay().second());
-    addNode(weeklyDose, "time", timeOfDay);
+    addNode(weeklyDose, "day", _dosage.getDayOfWeek().operator unsigned int());
 
-    exportDose(_dosage, weeklyDose);
+    addNode(weeklyDose, "time", timeToString(_dosage.getTimeOfDay()));
 
-    exportFormulationAndRoute(_dosage, weeklyDose);
+    exportSingleDose(_dosage, weeklyDose);
 
     return true;
+}
+
+void ComputingQueryResponseXmlExport::exportSingleDose(const Tucuxi::Core::SingleDose &_dosage, Tucuxi::Common::XmlNode &_rootNode)
+{
+    exportDose(_dosage, _rootNode);
+
+    exportFormulationAndRoute(_dosage, _rootNode);
+
+    addNode(_rootNode, "infusionTimeInMinutes", _dosage.getInfusionTime().toMinutes());
+
 }
 
 void ComputingQueryResponseXmlExport::exportDose(const Tucuxi::Core::SingleDose &_dosage, Tucuxi::Common::XmlNode &_rootNode)
@@ -718,10 +721,8 @@ void ComputingQueryResponseXmlExport::exportDose(const Tucuxi::Core::SingleDose 
                 Tucuxi::Common::EXmlNodeType::Element, "dose");
     _rootNode.addChild(dose);
 
-    //TO TEST
     addNode(dose, "value", double(_dosage.getDose()));
     addNode(dose, "unit", std::string("mg"));
-    addNode(dose, "infusionTimeInMinutes", _dosage.getInfusionTime().toMinutes());
 
 }
 
@@ -733,13 +734,13 @@ void ComputingQueryResponseXmlExport::exportFormulationAndRoute(const Tucuxi::Co
 
     addNode(formulationAndRoute, "formulation", formulationEnumToString(_dosage.getLastFormulationAndRoute().getFormulation()));
     addNode(formulationAndRoute, "administrationName", _dosage.getLastFormulationAndRoute().getAdministrationName());
-    addNode(formulationAndRoute, "administrationRoute", _dosage.getLastFormulationAndRoute().getAdministrationRoute());
-    addNode(formulationAndRoute, "absorptionModel", _dosage.getLastFormulationAndRoute().getAbsorptionModel());
+    addNode(formulationAndRoute, "administrationRoute", administrationRouteEnumToString(_dosage.getLastFormulationAndRoute().getAdministrationRoute()));
+    addNode(formulationAndRoute, "absorptionModel", absorptionModelEnumToString(_dosage.getLastFormulationAndRoute().getAbsorptionModel()));
 
 
 }
 
-std::string ComputingQueryResponseXmlExport::formulationEnumToString(const Tucuxi::Core::Formulation &_formulation)
+const std::string ComputingQueryResponseXmlExport::formulationEnumToString(const Tucuxi::Core::Formulation &_formulation)
 {
     static std::map<Tucuxi::Core::Formulation, std::string> m =
     {
@@ -754,24 +755,26 @@ std::string ComputingQueryResponseXmlExport::formulationEnumToString(const Tucux
         return it->second;
     }
 
+    return "nothing";
+
 }
 
 
-std::string ComputingQueryResponseXmlExport::administrationRouteEnumToString(const Tucuxi::Core::AdministrationRoute &_administrationRoute)
+const std::string ComputingQueryResponseXmlExport::administrationRouteEnumToString(const Tucuxi::Core::AdministrationRoute &_administrationRoute)
 {
     static std::map<Tucuxi::Core::AdministrationRoute, std::string> m =
     {
-        {Tucuxi::Core::AdministrationRoute::Oral, "Oral"},
-        {Tucuxi::Core::AdministrationRoute::Nasal, "Nasal"},
-        {Tucuxi::Core::AdministrationRoute::Rectal, "Rectal"},
-        {Tucuxi::Core::AdministrationRoute::Vaginal, "Vaginal"},
-        {Tucuxi::Core::AdministrationRoute::Undefined, "Undefined"},
-        {Tucuxi::Core::AdministrationRoute::Sublingual, "Sublingual"},
-        {Tucuxi::Core::AdministrationRoute::Transdermal, "Transdermal"},
-        {Tucuxi::Core::AdministrationRoute::Subcutaneous, "Subcutaneous"},
-        {Tucuxi::Core::AdministrationRoute::Intramuscular, "Intramuscular"},
-        {Tucuxi::Core::AdministrationRoute::IntravenousDrip, "IntravenousDrip"},
-        {Tucuxi::Core::AdministrationRoute::IntravenousBolus, "IntravenousBolus"}
+        {Tucuxi::Core::AdministrationRoute::Oral, "oral"},
+        {Tucuxi::Core::AdministrationRoute::Nasal, "nasal"},
+        {Tucuxi::Core::AdministrationRoute::Rectal, "rectal"},
+        {Tucuxi::Core::AdministrationRoute::Vaginal, "vaginal"},
+        {Tucuxi::Core::AdministrationRoute::Undefined, "undefined"},
+        {Tucuxi::Core::AdministrationRoute::Sublingual, "sublingual"},
+        {Tucuxi::Core::AdministrationRoute::Transdermal, "transdermal"},
+        {Tucuxi::Core::AdministrationRoute::Subcutaneous, "subcutaneous"},
+        {Tucuxi::Core::AdministrationRoute::Intramuscular, "intramuscular"},
+        {Tucuxi::Core::AdministrationRoute::IntravenousDrip, "intravenousDrip"},
+        {Tucuxi::Core::AdministrationRoute::IntravenousBolus, "intravenousBolus"}
     };
 
     auto it = m.find(_administrationRoute);
@@ -779,7 +782,30 @@ std::string ComputingQueryResponseXmlExport::administrationRouteEnumToString(con
         return it->second;
     }
 
+    return "nothing";
 }
+
+const std::string ComputingQueryResponseXmlExport::absorptionModelEnumToString(const Tucuxi::Core::AbsorptionModel &_absorptionModel)
+{
+    static std::map<Tucuxi::Core::AbsorptionModel, std::string> m =
+    {
+        {Tucuxi::Core::AbsorptionModel::Undefined, "undefined"},
+        {Tucuxi::Core::AbsorptionModel::Infusion, "infusion"},
+        {Tucuxi::Core::AbsorptionModel::Extravascular, "extravascular"},
+        {Tucuxi::Core::AbsorptionModel::Intravascular, "intravascular"},
+        {Tucuxi::Core::AbsorptionModel::ExtravascularLag, "extravascularLag"}
+
+    };
+
+    auto it = m.find(_absorptionModel);
+    if (it != m.end()) {
+        return it->second;
+    }
+
+    return "nothing";
+
+}
+
 
 
 
