@@ -19,8 +19,7 @@ JSEngine::JSEngine()
 }
 
 JSEngine::~JSEngine()
-{
-}
+= default;
 
 
 template <>

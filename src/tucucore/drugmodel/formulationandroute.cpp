@@ -44,7 +44,7 @@ void FormulationAndRoutes::add(std::unique_ptr<FullFormulationAndRoute> _far, bo
 
 const FullFormulationAndRoute* FormulationAndRoutes::getDefault() const
 {
-    if (m_fars.size() == 0) {
+    if (m_fars.empty()) {
         return nullptr;
     }
     return m_fars[m_defaultIndex].get();

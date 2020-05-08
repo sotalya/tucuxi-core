@@ -12,9 +12,7 @@ ValidValues::ValidValues(Unit _unit, std::unique_ptr<PopulationValue> _defaultVa
 }
 
 ValidValues::~ValidValues()
-{
-
-}
+= default;
 
 Unit ValidValues::getUnit() const
 {
@@ -32,8 +30,8 @@ Value ValidValues::getDefaultValue() const
 std::vector<Value> ValidValues::getValues() const
 {
     std::vector<DoseValue> result;
-    for(std::size_t i = 0; i < m_valueSets.size(); i++) {
-        std::vector<Value> tmp = m_valueSets[i]->getValues();
+    for(const auto & valueSet : m_valueSets) {
+        std::vector<Value> tmp = valueSet->getValues();
         result.insert(std::end(result), std::begin(tmp), std::end(tmp));
     }
     return result;

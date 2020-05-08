@@ -10,8 +10,7 @@ namespace Tucuxi {
 namespace Core {
 
 DrugTreatment::DrugTreatment()
-{
-}
+= default;
 
 
 const DosageHistory &DrugTreatment::getDosageHistory() const
@@ -51,7 +50,7 @@ void DrugTreatment::addCovariate(std::unique_ptr<PatientCovariate> _covariate)
 
 void DrugTreatment::addDosageTimeRange(std::unique_ptr<DosageTimeRange> _timeRange)
 {
-    m_dosageHistory.addTimeRange(*_timeRange.get());
+    m_dosageHistory.addTimeRange(*_timeRange);
 }
 
 void DrugTreatment::mergeDosageTimeRange(std::unique_ptr<DosageTimeRange> _timeRange)

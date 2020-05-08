@@ -40,16 +40,14 @@ QueryLogger::QueryLogger(std::string _folderPath)
 }
 
 QueryLogger::~QueryLogger()
-{
-
-}
+= default;
 
 Tucuxi::Common::Interface* QueryLogger::getInterface(const std::string &_name)
 {
     return Tucuxi::Common::Component::getInterfaceImpl(_name);
 }
 
-std::string QueryLogger::getFolderPath(void)
+std::string QueryLogger::getFolderPath()
 {
     return m_folderPath;
 }

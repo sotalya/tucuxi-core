@@ -11,8 +11,7 @@ namespace Tucuxi {
 namespace Core {
 
 APosterioriEtasCalculator::APosterioriEtasCalculator()
-{
-}
+= default;
 
 
 ComputingStatus APosterioriEtasCalculator::computeAposterioriEtas(
@@ -36,7 +35,7 @@ ComputingStatus APosterioriEtasCalculator::computeAposterioriEtas(
     }
 
     // Check that there is at least one measure
-    if (_samples.size() == 0) {
+    if (_samples.empty()) {
 
         _aPosterioriEtas.assign(_aPosterioriEtas.size(), 0.0);
 

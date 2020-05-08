@@ -90,12 +90,12 @@ public:
     /// \brief Return a new DateTime object with the addition of the date and the specified duration.
     /// \param _duration The duration to be added. 
     /// \return The result of the addition.
-    const DateTime operator+(const Duration& _duration) const;
+    DateTime operator+(const Duration& _duration) const;
 
     /// \brief Return a new DateTime object with the addition of the date and the specified date.
     /// \param _dateTime The date to be added.
     /// \return The result of the addition.
-    const DateTime operator+(const DateTime& _dateTime) const;
+    DateTime operator+(const DateTime& _dateTime) const;
 
     /// \brief Add a duration to the date.
     /// \param _duration The duration to be added. 
@@ -110,7 +110,7 @@ public:
     /// \brief Return a new DateTime object with the substraction of the date and the specified duration.
     /// \param _duration The duration to be substracted.
     /// \return The result of the substraction.
-    const DateTime operator-(const Duration& _duration) const;
+    DateTime operator-(const Duration& _duration) const;
 
     /// \brief Substract a duration from the date.
     /// \param _duration The duration to be substracted. 
@@ -120,7 +120,7 @@ public:
     /// \brief Compute the duration between two dates.
     /// \param _date The other date to compute the difference with. 
     /// \return The computed duration.
-    const Duration operator-(const DateTime& _date) const;
+    Duration operator-(const DateTime& _date) const;
 
     /// \brief Is the date smaller?
     bool operator<(const DateTime& _other) const;

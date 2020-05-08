@@ -6,8 +6,7 @@ namespace Tucuxi {
 namespace Core {
 
 IntakeIntervalCalculatorRK4::~IntakeIntervalCalculatorRK4()
-{
-}
+= default;
 
 
 ComputingStatus IntakeIntervalCalculatorRK4::calculateIntakePoints(

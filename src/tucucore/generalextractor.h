@@ -31,7 +31,7 @@ public:
     ComputingStatus extractAposterioriEtas(
             Etas &_etas,
             const ComputingRequest &_request,
-            AnalyteGroupId _analyteGroupId,
+            const AnalyteGroupId& _analyteGroupId,
             const IntakeSeries &_intakeSeries,
             const ParameterSetSeries &_parameterSeries,
             const Tucuxi::Core::CovariateSeries &_covariateSeries,
@@ -40,7 +40,7 @@ public:
 
     ComputingStatus extractOmega(
             const DrugModel &_drugModel,
-            AnalyteGroupId _analyteGroupId,
+            const AnalyteGroupId& _analyteGroupId,
             std::vector<const FullFormulationAndRoute *> &_formulationAndRoutes,
             OmegaMatrix &_omega);
 

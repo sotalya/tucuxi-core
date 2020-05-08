@@ -34,7 +34,7 @@ protected:
     std::vector<std::unique_ptr<PopulationValue> > m_originalSigmas;
 
     /// The residual error model type
-    ResidualErrorType m_errorModel;
+    ResidualErrorType m_errorModel{ResidualErrorType::NONE};
 
     friend ResidualErrorModelExtractor;
 };

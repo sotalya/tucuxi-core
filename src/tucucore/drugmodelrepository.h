@@ -90,7 +90,7 @@ public:
     /// This function does not load the drug models, but only adds
     /// the path into the list of potential drug model files paths
     ///
-    void addFolderPath(std::string _folderPath);
+    void addFolderPath(const std::string& _folderPath);
 
     ///
     /// \brief loads all drug models from a folder
@@ -99,7 +99,7 @@ public:
     /// This function looks for all *.tdd files in that folder and
     /// loads all these files to populate the list of available drug models.
     ///
-    void loadFolder(std::string _folder);
+    void loadFolder(const std::string& _folder);
 
     ///
     /// \brief loads a drug mode file
@@ -115,7 +115,7 @@ public:
     /// \return A pointer to the drug model, nullptr if not found
     /// This function loads the drug model from the specified file.
     ///
-    DrugModel* loadFile(std::string _fileName);
+    DrugModel* loadFile(const std::string& _fileName);
 
     ///
     /// \brief adds a drug model to the repository

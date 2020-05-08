@@ -19,22 +19,22 @@ QueryData::QueryData(
     m_requests(move(_requests))
 {}
 
-const string QueryData::getQueryID() const
+string QueryData::getQueryID() const
 {
     return m_queryID;
 }
 
-const string QueryData::getClientID() const
+string QueryData::getClientID() const
 {
     return m_clientID;
 }
 
-const Common::DateTime QueryData::getpQueryDate() const
+Common::DateTime QueryData::getpQueryDate() const
 {
     return m_pQueryDate;
 }
 
-const string QueryData::getLanguage() const
+string QueryData::getLanguage() const
 {
     return m_language;
 }

@@ -35,7 +35,7 @@ ParameterDefinition::ParameterDefinition(std::string _name, Value _value, Operat
 }
 
 ParameterDefinition::~ParameterDefinition()
-{}
+= default;
 
 bool ParameterEvent::evaluate(const OperableGraphManager &_graphMgr)
 {

@@ -195,8 +195,7 @@ bool ThreeCompartmentInfusionMicro::computeConcentration(const Value& _atTime, c
 }
 
 ThreeCompartmentInfusionMacro::ThreeCompartmentInfusionMacro()
-{
-}
+= default;
 
 std::vector<std::string> ThreeCompartmentInfusionMacro::getParametersId()
 {

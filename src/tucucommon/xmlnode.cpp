@@ -30,8 +30,7 @@ XmlNode::XmlNode(rapidxml::xml_node<>* _pNode)
 
 
 XmlNode::~XmlNode()
-{
-}
+= default;
 
 
 std::string XmlNode::getName() const
@@ -153,7 +152,7 @@ XmlNode XmlNode::getParent() const
 }
 
 
-bool XmlNode::addChild(XmlNode _child)
+bool XmlNode::addChild(const XmlNode& _child)
 {
     if (m_pNode != nullptr && _child.isValid()) {
         m_pNode->append_node(_child.m_pNode);
@@ -163,7 +162,7 @@ bool XmlNode::addChild(XmlNode _child)
 }
 
 
-bool XmlNode::addAttribute(XmlAttribute _attribute)
+bool XmlNode::addAttribute(const XmlAttribute& _attribute)
 {
     if (m_pNode != nullptr && _attribute.isValid()) {
         m_pNode->append_attribute(_attribute.m_pAttribute);
@@ -214,7 +213,7 @@ char* XmlNode::allocateString(const std::string& _string)
         try {
             return m_pNode->document()->allocate_string(_string.c_str());
         }
-        catch (std::bad_alloc) {
+        catch (std::bad_alloc&) {
         }
     }
     return nullptr;

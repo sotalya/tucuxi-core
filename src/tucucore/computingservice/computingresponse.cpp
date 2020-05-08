@@ -2,6 +2,8 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
+#include <utility>
+
 #include "computingresponse.h"
 
 
@@ -10,7 +12,7 @@ namespace Core {
 
 
 ComputingResponse::ComputingResponse(RequestResponseId _id) :
-    m_id(_id)
+    m_id(std::move(_id))
 {
 
 }
@@ -47,14 +49,12 @@ ComputingStatus ComputingResponse::getComputingStatus() const
 
 
 ComputedData::ComputedData(RequestResponseId _id) :
-    m_id(_id)
+    m_id(std::move(_id))
 {
 
 }
 
-ComputedData::~ComputedData()
-{
-}
+ComputedData::~ComputedData() = default;
 
 RequestResponseId ComputedData::getId() const
 {

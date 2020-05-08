@@ -47,7 +47,7 @@ public:
     /// \brief Computes the duration between two times
     /// \param _time A time to compare to.
     /// \return The millisecond.
-    const Duration operator-(const TimeOfDay& _time) const;
+    Duration operator-(const TimeOfDay& _time) const;
 
     /// \brief Return the hour of the contained time
     /// \return The hour.
@@ -59,11 +59,11 @@ public:
 
     /// \brief Return the second of the contained time
     /// \return The second.
-    int64 second() const;
+    int second() const;
 
     /// \brief Return the millisecond of the contained time
     /// \return The millisecond.
-    int64 millisecond() const;
+    int millisecond() const;
 
     /// \brief Is the date smaller?
     bool operator<(const TimeOfDay& _other) const;
@@ -88,7 +88,7 @@ private:
     void normalize();
 
 private:
-    std::chrono::duration<ChronoBaseType> m_time;  /// The encapsulated time (a duration from 0h00)
+    std::chrono::duration<ChronoBaseType> m_time{};  /// The encapsulated time (a duration from 0h00)
 };
 
 } // namespace Common

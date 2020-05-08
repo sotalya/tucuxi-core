@@ -24,15 +24,11 @@ static const std::string DATE_FORMAT = "%Y-%m-%dT%H:%M:%S"; // NOLINT(readabilit
 
 
 QueryImport::QueryImport()
-{
-
-}
+= default;
 
 
 QueryImport::~QueryImport()
-{
-
-}
+= default;
 
 const std::vector<std::string> &QueryImport::ignoredTags() const
 {
@@ -40,7 +36,7 @@ const std::vector<std::string> &QueryImport::ignoredTags() const
     return ignored;
 }
 
-QueryImport::Result QueryImport::importFromFile(Tucuxi::Query::QueryData *&_query, std::string _fileName)
+QueryImport::Result QueryImport::importFromFile(Tucuxi::Query::QueryData *&_query, const std::string& _fileName)
 {
     // Ensure the function is reentrant
     std::lock_guard<std::mutex> lock(m_mutex);
@@ -57,7 +53,7 @@ QueryImport::Result QueryImport::importFromFile(Tucuxi::Query::QueryData *&_quer
 }
 
 
-QueryImport::Result QueryImport::importFromString(Tucuxi::Query::QueryData *&_query, std::string _xml)
+QueryImport::Result QueryImport::importFromString(Tucuxi::Query::QueryData *&_query, const std::string& _xml)
 {
     // Ensure the function is reentrant
     std::lock_guard<std::mutex> lock(m_mutex);
@@ -110,7 +106,7 @@ QueryImport::Result QueryImport::importDocument(
     Common::XmlNodeIterator requestsIterator = requestsRootIterator->getChildren(REQUEST_REQUESTS_NODE_NAME);
 
     vector< unique_ptr<RequestData> > requests;
-    while(requestsIterator != requestsIterator.none()) {
+    while(requestsIterator != Common::XmlNodeIterator::none()) {
         requests.emplace_back(createRequest(requestsIterator));
         requestsIterator++;
     }
@@ -290,7 +286,7 @@ unique_ptr<ClinicalData> QueryImport::createClinicalData(Common::XmlNodeIterator
     map<string, string> data;
 
     Common::XmlNodeIterator xmlNodeIterator = _clinicalDataRootIterator->getChildren();
-    while(xmlNodeIterator != xmlNodeIterator.none()) {
+    while(xmlNodeIterator != Common::XmlNodeIterator::none()) {
         data[xmlNodeIterator->getName()] = xmlNodeIterator->getValue();
         xmlNodeIterator++;
     }
@@ -318,7 +314,7 @@ unique_ptr<DrugTreatmentData> QueryImport::createDrugTreatmentData(Tucuxi::Commo
     vector< unique_ptr<DrugData> > drugs;
     Common::XmlNodeIterator drugsRootIterator  = parametersRootIterator->getChildren(DRUGS_NODE_NAME);
     Common::XmlNodeIterator drugsIterator = drugsRootIterator->getChildren();
-    while(drugsIterator != drugsIterator.none()) {
+    while(drugsIterator != Common::XmlNodeIterator::none()) {
         drugs.push_back(createDrugData(drugsIterator));
         drugsIterator++;
     }
@@ -338,7 +334,7 @@ unique_ptr<PatientData> QueryImport::createPatientData(Common::XmlNodeIterator& 
 
     Common::XmlNodeIterator covariatesRootIterator = _patientDataRootIterator->getChildren(COVARIATES_NODE_NAME);
     Common::XmlNodeIterator covariatesIterator = covariatesRootIterator->getChildren();
-    while(covariatesIterator != covariatesIterator.none()) {
+    while(covariatesIterator != Common::XmlNodeIterator::none()) {
         covariates.push_back(createCovariateData(covariatesIterator));
         covariatesIterator++;
     }
@@ -427,7 +423,7 @@ unique_ptr<DrugData> QueryImport::createDrugData(Common::XmlNodeIterator& _drugD
     vector< unique_ptr<SampleData> > samples;
     Common::XmlNodeIterator samplesRootIterator = _drugDataRootIterator->getChildren(SAMPLES_NODE_NAME);
     Common::XmlNodeIterator samplesIterator = samplesRootIterator->getChildren();
-    while(samplesIterator != samplesIterator.none()) {
+    while(samplesIterator != Common::XmlNodeIterator::none()) {
         samples.push_back(createSampleData(samplesIterator));
         samplesIterator++;
     }
@@ -439,7 +435,7 @@ unique_ptr<DrugData> QueryImport::createDrugData(Common::XmlNodeIterator& _drugD
     vector< unique_ptr<TargetData> > targets;
     Common::XmlNodeIterator targetsRootIterator = _drugDataRootIterator->getChildren(TARGETS_NODE_NAME);
     Common::XmlNodeIterator targetsIterator = targetsRootIterator->getChildren();
-    while(targetsIterator != targetsIterator.none()) {
+    while(targetsIterator != Common::XmlNodeIterator::none()) {
         targets.push_back(createTargetData(targetsIterator));
         targetsIterator++;
     }
@@ -501,7 +497,7 @@ unique_ptr<SampleData> QueryImport::createSampleData(Common::XmlNodeIterator& _s
 
     Common::XmlNodeIterator concentrationsRootIterator = _sampleDataRootIterator->getChildren(CONCENTRATIONS_NODE_NAME);
     Common::XmlNodeIterator concentrationsIterator = concentrationsRootIterator->getChildren();
-    while(concentrationsIterator != concentrationsIterator.none()) {
+    while(concentrationsIterator != Common::XmlNodeIterator::none()) {
         concentrations.push_back(createConcentrationData(concentrationsIterator));
         concentrationsIterator++;
     }
@@ -537,7 +533,7 @@ unique_ptr<Treatment> QueryImport::createTreatment(Common::XmlNodeIterator& _tre
     Common::XmlNodeIterator dosageTimeRangeIterator = dosageHistoryRootIterator->getChildren();
 
     unique_ptr<Core::DosageHistory> pDosageHistory = make_unique<Core::DosageHistory>();
-    while(dosageTimeRangeIterator != dosageTimeRangeIterator.none()) {
+    while(dosageTimeRangeIterator != Common::XmlNodeIterator::none()) {
         unique_ptr<Core::DosageTimeRange> pDosageTimeRange = createDosageTimeRange(dosageTimeRangeIterator);
         pDosageHistory->addTimeRange(*pDosageTimeRange);
         dosageTimeRangeIterator++;
@@ -573,11 +569,10 @@ unique_ptr<Core::Dosage> QueryImport::createDosage(Common::XmlNodeIterator& _dos
         // Create dosage loop from a bounded dosage
         unique_ptr<Core::DosageBounded> pDosageBounded = createDosageBounded(dosageIterator);
         return make_unique<Core::DosageLoop>(*pDosageBounded);
-    } else {
-        // Create bounded dosage
-        // For this case we give the same root iterator as the one given as parameter for this method
-        return createDosageBounded(_dosageRootIterator);
     }
+    // Create bounded dosage
+    // For this case we give the same root iterator as the one given as parameter for this method
+    return createDosageBounded(_dosageRootIterator);
 }
 
 unique_ptr<Core::DosageBounded> QueryImport::createDosageBounded(Common::XmlNodeIterator& _dosageBoundedRootIterator) const
@@ -603,7 +598,7 @@ unique_ptr<Core::DosageBounded> QueryImport::createDosageBounded(Common::XmlNode
     } else if (dosageBoundedIterator->getName() == DOSAGE_SEQUENCE_NODE_NAME) {
         Core::DosageBoundedList dosageBoundedList;
         Common::XmlNodeIterator dosageSequenceIterator = dosageBoundedIterator->getChildren();
-        while(dosageSequenceIterator != dosageSequenceIterator.none()) {
+        while(dosageSequenceIterator != Common::XmlNodeIterator::none()) {
             dosageBoundedList.push_back(createDosageBounded(dosageSequenceIterator));
             dosageSequenceIterator++;
         }
@@ -855,15 +850,15 @@ unique_ptr<GraphData> QueryImport::createGraphData(Common::XmlNodeIterator& _gra
     vector<unsigned short> percentiles;
     Common::XmlNodeIterator percentilesRootIterator = _graphDataRootIterator->getChildren(PERCENTILES_NODE_NAME);
     Common::XmlNodeIterator percentilesIterator = percentilesRootIterator->getChildren();
-    while(percentilesIterator != percentilesIterator.none()) {
+    while(percentilesIterator != Common::XmlNodeIterator::none()) {
         string value = percentilesIterator->getValue();
 
         unsigned short finalValue = 0;
         try {
             finalValue = static_cast<unsigned short>(stoul(value));
-        } catch (invalid_argument e) {
+        } catch (invalid_argument& e) {
             finalValue = 0;
-        } catch (out_of_range e) {
+        } catch (out_of_range& e) {
             finalValue = 0;
         }
 
@@ -893,42 +888,42 @@ unique_ptr<Backextrapolation> QueryImport::createBackextrapolation(Common::XmlNo
     return pBackextrapolation;
 }
 
-const string QueryImport::getChildStringValue(Common::XmlNodeIterator _rootIterator, string _childName) const
+string QueryImport::getChildStringValue(Common::XmlNodeIterator _rootIterator, const string& _childName) const
 {
     return _rootIterator->getChildren(_childName)->getValue();
 }
 
-int QueryImport::getChildIntValue(Common::XmlNodeIterator _rootIterator, string _childName) const
+int QueryImport::getChildIntValue(Common::XmlNodeIterator _rootIterator, const string& _childName) const
 {
     string value = _rootIterator->getChildren(_childName)->getValue();
     int finalValue = 0;
     try {
         finalValue = stoi(value);
-    } catch (invalid_argument e) {
+    } catch (invalid_argument& e) {
         finalValue = 0;
-    } catch (out_of_range e) {
+    } catch (out_of_range& e) {
         finalValue = 0;
     }
 
     return finalValue;
 }
 
-double QueryImport::getChildDoubleValue(Common::XmlNodeIterator _rootIterator, string _childName) const
+double QueryImport::getChildDoubleValue(Common::XmlNodeIterator _rootIterator, const string& _childName) const
 {
     string value = _rootIterator->getChildren(_childName)->getValue();
     double finalValue = 0.0;
     try {
         finalValue = stod(value);
-    } catch (invalid_argument e) {
+    } catch (invalid_argument& e) {
         finalValue = 0.0;
-    } catch (out_of_range e) {
+    } catch (out_of_range& e) {
         finalValue = 0.0;
     }
 
     return finalValue;
 }
 
-bool QueryImport::getChildBoolValue(Common::XmlNodeIterator _rootIterator, string _childName) const
+bool QueryImport::getChildBoolValue(Common::XmlNodeIterator _rootIterator, const string& _childName) const
 {
     string value = _rootIterator->getChildren(_childName)->getValue();
 
@@ -947,7 +942,7 @@ bool QueryImport::getChildBoolValue(Common::XmlNodeIterator _rootIterator, strin
     return finalValue;
 }
 
-Tucuxi::Core::PercentileRanks QueryImport::getChildPercentileRanks(Common::XmlNodeIterator _rootIterator, string _childName) const
+Tucuxi::Core::PercentileRanks QueryImport::getChildPercentileRanks(Common::XmlNodeIterator _rootIterator, const string& _childName) const
 {
     Common::XmlNodeIterator it = _rootIterator->getChildren(_childName);
     Tucuxi::Core::PercentileRanks ranks;
@@ -962,7 +957,7 @@ Tucuxi::Core::PercentileRanks QueryImport::getChildPercentileRanks(Common::XmlNo
     return ranks;
 }
 
-vector<Common::DateTime> QueryImport::getChildDateTimeList(Common::XmlNodeIterator _rootIterator, string _childName) const
+vector<Common::DateTime> QueryImport::getChildDateTimeList(Common::XmlNodeIterator _rootIterator, const string& _childName) const
 {
     Common::XmlNodeIterator it = _rootIterator->getChildren(_childName);
     vector<DateTime> times;
@@ -1123,7 +1118,7 @@ void QueryImport::setNodeError(Tucuxi::Common::XmlNodeIterator _node)
     std::string errorMessage;
     Tucuxi::Common::XmlNode node = _node->getParent();
     while (node.isValid()) {
-        if (node.getName().size() != 0) {
+        if (!node.getName().empty()) {
             errorMessage = "<" + node.getName() + ">" + errorMessage;
         }
         node = node.getParent();
@@ -1137,7 +1132,7 @@ void QueryImport::setNodeError(Tucuxi::Common::XmlNodeIterator _node)
     setResult(Result::Error, errorMessage);
 }
 
-Tucuxi::Core::BestCandidatesOption QueryImport::getChildBestCandidatesOptionEnum(Common::XmlNodeIterator _rootIterator, std::string _childName)
+Tucuxi::Core::BestCandidatesOption QueryImport::getChildBestCandidatesOptionEnum(Common::XmlNodeIterator _rootIterator, const std::string& _childName)
 {
 
     static const string BEST_CANDIDATE_OPTION_NODE          = "bestCandidatesOption";
@@ -1164,7 +1159,7 @@ Tucuxi::Core::BestCandidatesOption QueryImport::getChildBestCandidatesOptionEnum
     return Tucuxi::Core::BestCandidatesOption::BestDosage;
 }
 
-Tucuxi::Core::LoadingOption QueryImport::getChildLoadingOptionEnum(Common::XmlNodeIterator _rootIterator, std::string _childName)
+Tucuxi::Core::LoadingOption QueryImport::getChildLoadingOptionEnum(Common::XmlNodeIterator _rootIterator, const std::string& _childName)
 {
     static const string LOADING_OPTION_NODE          = "loadingOption";
 
@@ -1189,7 +1184,7 @@ Tucuxi::Core::LoadingOption QueryImport::getChildLoadingOptionEnum(Common::XmlNo
     return Tucuxi::Core::LoadingOption::NoLoadingDose;
 }
 
-Tucuxi::Core::RestPeriodOption QueryImport::getChildRestPeriodTargetOptionEnum(Common::XmlNodeIterator _rootIterator, std::string _childName)
+Tucuxi::Core::RestPeriodOption QueryImport::getChildRestPeriodTargetOptionEnum(Common::XmlNodeIterator _rootIterator, const std::string& _childName)
 {
 
     static const string REST_PERIOD_OPTION_NODE          = "restPeriodOption";
@@ -1215,7 +1210,7 @@ Tucuxi::Core::RestPeriodOption QueryImport::getChildRestPeriodTargetOptionEnum(C
     return Tucuxi::Core::RestPeriodOption::NoRestPeriod;
 }
 
-Tucuxi::Core::SteadyStateTargetOption QueryImport::getChildSteadyStateTargetOptionEnum(Common::XmlNodeIterator _rootIterator, std::string _childName)
+Tucuxi::Core::SteadyStateTargetOption QueryImport::getChildSteadyStateTargetOptionEnum(Common::XmlNodeIterator _rootIterator, const std::string& _childName)
 {
 
     static const string STEADY_STATE_TARGET_OPTION_NODE          = "steadyStateTargetOption";
@@ -1240,7 +1235,7 @@ Tucuxi::Core::SteadyStateTargetOption QueryImport::getChildSteadyStateTargetOpti
     return Tucuxi::Core::SteadyStateTargetOption::AtSteadyState;
 }
 
-Tucuxi::Core::TargetExtractionOption QueryImport::getChildTargetExtractionOptionEnum(Common::XmlNodeIterator _rootIterator, std::string _childName)
+Tucuxi::Core::TargetExtractionOption QueryImport::getChildTargetExtractionOptionEnum(Common::XmlNodeIterator _rootIterator, const std::string& _childName)
 {
 
     static const string TARGET_EXTRACTION_OPTION_NODE          = "targetExtractionOption";
@@ -1271,7 +1266,7 @@ Tucuxi::Core::TargetExtractionOption QueryImport::getChildTargetExtractionOption
     return Tucuxi::Core::TargetExtractionOption::PopulationValues;
 }
 
-Tucuxi::Core::FormulationAndRouteSelectionOption QueryImport::getChildFormulationAndRouteSelectionOptionEnum(Common::XmlNodeIterator _rootIterator, std::string _childName)
+Tucuxi::Core::FormulationAndRouteSelectionOption QueryImport::getChildFormulationAndRouteSelectionOptionEnum(Common::XmlNodeIterator _rootIterator, const std::string& _childName)
 {
 
     static const string FORMULATION_AND_ROUTE_SELECTION_OPTION_NODE          = "formulationAndRouteSelectionOption";
@@ -1300,7 +1295,7 @@ Tucuxi::Core::FormulationAndRouteSelectionOption QueryImport::getChildFormulatio
 }
 
 
-Tucuxi::Core::ComputingOption QueryImport::getChildComputingOption(Common::XmlNodeIterator _rootIterator, string _childName)
+Tucuxi::Core::ComputingOption QueryImport::getChildComputingOption(Common::XmlNodeIterator _rootIterator, const string& _childName)
 {
     static const string PARAMETERS_TYPE             = "parametersType";
     static const string COMPARTMENT_OPTION          = "compartmentOption";
@@ -1342,7 +1337,7 @@ Tucuxi::Core::ComputingOption QueryImport::getChildComputingOption(Common::XmlNo
 
 
 
-Tucuxi::Core::CompartmentsOption QueryImport::getChildCompartmentsOptionEnum(Common::XmlNodeIterator _rootIterator, std::string _childName)
+Tucuxi::Core::CompartmentsOption QueryImport::getChildCompartmentsOptionEnum(Common::XmlNodeIterator _rootIterator, const std::string& _childName)
 {
 
     Common::XmlNodeIterator compartmentOptionRootIterator = _rootIterator->getChildren(_childName);
@@ -1366,7 +1361,7 @@ Tucuxi::Core::CompartmentsOption QueryImport::getChildCompartmentsOptionEnum(Com
     return Tucuxi::Core::CompartmentsOption::AllActiveMoieties;
 }
 
-Tucuxi::Core::PredictionParameterType QueryImport::getChildParametersTypeEnum(Common::XmlNodeIterator _rootIterator, std::string _childName)
+Tucuxi::Core::PredictionParameterType QueryImport::getChildParametersTypeEnum(Common::XmlNodeIterator _rootIterator, const std::string& _childName)
 {
 
 
@@ -1393,7 +1388,7 @@ Tucuxi::Core::PredictionParameterType QueryImport::getChildParametersTypeEnum(Co
 
 
 
-Common::DateTime QueryImport::getChildDateTimeValue(Common::XmlNodeIterator _rootIterator, string _childName) const
+Common::DateTime QueryImport::getChildDateTimeValue(Common::XmlNodeIterator _rootIterator, const string& _childName) const
 {
     string value = _rootIterator->getChildren(_childName)->getValue();
     // TODO If value is empty, then something went wrong
@@ -1401,7 +1396,7 @@ Common::DateTime QueryImport::getChildDateTimeValue(Common::XmlNodeIterator _roo
     return datetime;
 }
 
-Common::Duration QueryImport::getChildDuration(Common::XmlNodeIterator _rootIterator, string _childName) const
+Common::Duration QueryImport::getChildDuration(Common::XmlNodeIterator _rootIterator, const string& _childName) const
 {
     string s = _rootIterator->getChildren(_childName)->getValue();
     std::string delimiter = ":";

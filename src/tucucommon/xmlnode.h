@@ -112,12 +112,12 @@ public:
     /// \brief Add a new child to the node
     /// \param _child The child to be added (see method XmlDocument::createNode)
     /// \return True if the node was added successfully
-    bool addChild(XmlNode _child);
+    bool addChild(const XmlNode& _child);
     
     /// \brief Add a new attribute to the node
     /// \param _attribute The attribute to be added (see method XmlDocument::createAttribute)
     /// \return True if the attribute was added successfully
-    bool addAttribute(XmlAttribute _attribute);
+    bool addAttribute(const XmlAttribute& _attribute);
     
     /// \brief Share the reference with the specified node (this method copies the wrapper not the actual underlying xml element!)
     /// \param _other The node to share the reference with

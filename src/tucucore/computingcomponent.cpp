@@ -85,8 +85,7 @@ ComputingComponent::ComputingComponent()
 
 
 ComputingComponent::~ComputingComponent()
-{
-}
+= default;
 
 bool ComputingComponent::initialize()
 {
@@ -736,7 +735,7 @@ ComputingStatus ComputingComponent::computePercentilesSimple(
     {
         std::unique_ptr<PercentilesData> resp = std::make_unique<PercentilesData>(_request.getId());
 
-        const std::vector<std::vector<std::vector<Value> > > allValues = percentiles.getValues();
+        const std::vector<std::vector<std::vector<Value> > >& allValues = percentiles.getValues();
 
 
 

@@ -37,8 +37,8 @@ ComputingStatus ConcentrationCalculator::computeConcentrations(const Concentrati
 
     // First calculate the size of residuals
     unsigned int residualSize = 0;
-    for (IntakeSeries::const_iterator it = _intakes.begin(); it != _intakes.end(); it++) {
-        std::shared_ptr<IntakeIntervalCalculator> pCalculator = (*it).getCalculator();
+    for (const auto & _intake : _intakes) {
+        std::shared_ptr<IntakeIntervalCalculator> pCalculator = _intake.getCalculator();
         unsigned int s = pCalculator->getResidualSize();
         residualSize = std::max(residualSize, s);
     }
@@ -47,8 +47,7 @@ ComputingStatus ConcentrationCalculator::computeConcentrations(const Concentrati
     Residuals outResiduals(residualSize);
 
     // Go through all intakes
-    for (IntakeSeries::const_iterator it = _intakes.begin(); it != _intakes.end(); it++) {
-        const IntakeEvent &intake = *it;
+    for (const auto & intake : _intakes) {
 
         // Get parameters at intake start time
         // For population calculation, could be done only once at the beginning
@@ -74,7 +73,7 @@ ComputingStatus ConcentrationCalculator::computeConcentrations(const Concentrati
 
     //        outResiduals.clear();
 
-            ComputingStatus result = it->calculateIntakePoints(concentrations, times, intake, *parameters, inResiduals, _isAll, outResiduals, _isFixedDensity);
+            ComputingStatus result = intake.calculateIntakePoints(concentrations, times, intake, *parameters, inResiduals, _isAll, outResiduals, _isFixedDensity);
 
             switch (result)
             {
@@ -97,7 +96,7 @@ ComputingStatus ConcentrationCalculator::computeConcentrations(const Concentrati
 
 
             // Apply the intra-individual error
-            if ((!_residualErrorModel.isEmpty()) && (_epsilons.size() != 0)) {
+            if ((!_residualErrorModel.isEmpty()) && (!_epsilons.empty())) {
                 _residualErrorModel.applyEpsToArray(concentrations[0], _epsilons);
             }
 
@@ -114,7 +113,7 @@ ComputingStatus ConcentrationCalculator::computeConcentrations(const Concentrati
 
             _prediction->allocate(residualSize, intake.getNbPoints(), times, concentrations);
 
-            ComputingStatus result = it->calculateIntakePoints(concentrations, times, intake, *parameters, inResiduals, _isAll, outResiduals, _isFixedDensity);
+            ComputingStatus result = intake.calculateIntakePoints(concentrations, times, intake, *parameters, inResiduals, _isAll, outResiduals, _isFixedDensity);
 
             switch (result)
             {
@@ -177,8 +176,8 @@ ComputingStatus ConcentrationCalculator::computeConcentrationsAtSteadyState(
 
     // First calculate the size of residuals
     unsigned int residualSize = 0;
-    for (IntakeSeries::const_iterator it = _intakes.begin(); it != _intakes.end(); it++) {
-        std::shared_ptr<IntakeIntervalCalculator> pCalculator = (*it).getCalculator();
+    for (const auto & _intake : _intakes) {
+        std::shared_ptr<IntakeIntervalCalculator> pCalculator = _intake.getCalculator();
         unsigned int s = pCalculator->getResidualSize();
         residualSize = std::max(residualSize, s);
     }
@@ -191,8 +190,7 @@ ComputingStatus ConcentrationCalculator::computeConcentrationsAtSteadyState(
 
     while (!finished) {
         // Go through all intakes
-        for (IntakeSeries::const_iterator it = _intakes.begin(); it != _intakes.end(); it++) {
-            const IntakeEvent &intake = *it;
+        for (const auto & intake : _intakes) {
 
             // Get parameters at intake start time
             // For population calculation, could be done only once at the beginning
@@ -212,7 +210,7 @@ ComputingStatus ConcentrationCalculator::computeConcentrationsAtSteadyState(
 
                 _prediction->allocate(residualSize, intake.getNbPoints(), times, concentrations);
 
-                ComputingStatus result = it->calculateIntakePoints(concentrations, times, intake, *parameters, inResiduals, _isAll, outResiduals, _isFixedDensity);
+                ComputingStatus result = intake.calculateIntakePoints(concentrations, times, intake, *parameters, inResiduals, _isAll, outResiduals, _isFixedDensity);
 
                 switch (result)
                 {
@@ -235,7 +233,7 @@ ComputingStatus ConcentrationCalculator::computeConcentrationsAtSteadyState(
 
 
                 // Apply the intra-individual error
-                if ((!_residualErrorModel.isEmpty()) && (_epsilons.size() != 0)) {
+                if ((!_residualErrorModel.isEmpty()) && (!_epsilons.empty())) {
                     _residualErrorModel.applyEpsToArray(concentrations[0], _epsilons);
                 }
 
@@ -252,7 +250,7 @@ ComputingStatus ConcentrationCalculator::computeConcentrationsAtSteadyState(
 
                 _prediction->allocate(residualSize, intake.getNbPoints(), times, concentrations);
 
-                ComputingStatus result = it->calculateIntakePoints(concentrations, times, intake, *parameters, inResiduals, _isAll, outResiduals, _isFixedDensity);
+                ComputingStatus result = intake.calculateIntakePoints(concentrations, times, intake, *parameters, inResiduals, _isAll, outResiduals, _isFixedDensity);
 
                 switch (result)
                 {
@@ -317,8 +315,8 @@ ComputingStatus ConcentrationCalculator::computeConcentrationsAtTimes(Concentrat
 
     // First calculate the size of residuals
     unsigned int residualSize = 0;
-    for (IntakeSeries::const_iterator it = _intakes.begin(); it != _intakes.end(); it++) {
-        residualSize = std::max(residualSize, (*it).getCalculator()->getResidualSize());
+    for (const auto & intake : _intakes) {
+        residualSize = std::max(residualSize, intake.getCalculator()->getResidualSize());
     }
     Residuals inResiduals(residualSize);
     Residuals outResiduals(residualSize);
@@ -330,7 +328,9 @@ ComputingStatus ConcentrationCalculator::computeConcentrationsAtTimes(Concentrat
     std::vector<Concentrations> concentrations;
     concentrations.resize(residualSize);
 
-    IntakeSeries::const_iterator it, intakeEnd, intakeNext;
+    IntakeSeries::const_iterator it;
+    IntakeSeries::const_iterator intakeEnd;
+    IntakeSeries::const_iterator intakeNext;
 
     intakeEnd = _intakes.end();
     intakeNext = it = _intakes.begin();

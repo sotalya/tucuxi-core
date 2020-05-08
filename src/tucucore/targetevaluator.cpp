@@ -11,9 +11,7 @@ namespace Tucuxi {
 namespace Core {
 
 TargetEvaluator::TargetEvaluator()
-{
-
-}
+= default;
 
 
 bool TargetEvaluator::isWithinBoundaries(
@@ -50,7 +48,7 @@ ComputingStatus TargetEvaluator::evaluate(
         TargetEvaluationResult & _result)
 {
 
-    assert(_prediction.getTimes().size() > 0);
+    assert(!_prediction.getTimes().empty());
 
     bool bOk = true;
     double score = 0.0;

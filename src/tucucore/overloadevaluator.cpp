@@ -37,7 +37,7 @@ bool OverloadEvaluator::isAcceptable(IntakeSeries &_intakeSeries,
 {
     // Calculate the total number of points to be calculated
     int nbPoints = 0;
-    for (auto intake : _intakeSeries) {
+    for (const auto& intake : _intakeSeries) {
         nbPoints += intake.getNbPoints();
     }
 

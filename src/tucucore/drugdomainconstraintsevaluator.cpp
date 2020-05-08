@@ -7,9 +7,7 @@ namespace Tucuxi {
 namespace Core {
 
 DrugDomainConstraintsEvaluator::DrugDomainConstraintsEvaluator()
-{
-
-}
+= default;
 
 DrugDomainConstraintsEvaluator::Result DrugDomainConstraintsEvaluator::evaluate(const DrugModelDomain &_drugDomain,
                                                                                 const CovariateSeries& _covariates,

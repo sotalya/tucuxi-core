@@ -36,7 +36,7 @@ public:
     /// \param _string The new string value
     /// \param _language The Id of the language
     ///
-    TranslatableString(std::string _string, std::string _language);
+    TranslatableString(std::string _string, const std::string& _language);
 
     ///
     /// \brief setDefaultLanguage defines the application default language
@@ -56,14 +56,14 @@ public:
     /// \param _string The new string value
     /// \param _language The Id of the language
     ///
-    void setString(std::string _string, std::string _language);
+    void setString(std::string _string, const std::string& _language);
 
     ///
     /// \brief getString Gets the string for a specific language
     /// \param _language The language corresponding
     /// \return
     ///
-    std::string getString(std::string _language) const;
+    std::string getString(const std::string& _language) const;
 
     ///
     /// \brief getString Gets the string for the default language

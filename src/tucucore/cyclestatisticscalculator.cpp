@@ -29,7 +29,7 @@ void CycleStatistics::calculate(const std::vector<Concentrations> &_concentratio
     for (unsigned int compartment = 0; compartment < _concentrations.size(); compartment++) {
 
         // if no concentrations, return... no data in concentrations
-        if (_concentrations[compartment].size() == 0) {
+        if (_concentrations[compartment].empty()) {
             Tucuxi::Common::LoggerHelper logHelper;
             logHelper.error("No data in concentrations");
             return;
@@ -129,7 +129,7 @@ CycleStatistics::CycleStatistics(const CycleData &_data, std::vector<Value>& _cu
     // m_stats.reserve(nbCompartments);
     for (unsigned int compartment = 0; compartment < nbCompartments; compartment++) {
 
-        m_stats.push_back(std::vector<Tucuxi::Core::CycleStatistic> ());
+        m_stats.emplace_back();
 
         for (unsigned int type= 0; type< static_cast<int>(CycleStatisticType::CYCLE_STATISTIC_TYPE_SIZE); type++) {
                 m_stats[compartment].push_back(CycleStatistic(_data.m_start, static_cast<CycleStatisticType>(type)));

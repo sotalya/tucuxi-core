@@ -19,9 +19,7 @@ namespace Tucuxi {
 namespace Query {
 
 QueryComputer::QueryComputer()
-{
-
-}
+= default;
 
 void QueryComputer::compute(ComputingQuery& _query, ComputingQueryResponse& _response)
 {
@@ -60,7 +58,7 @@ void QueryComputer::compute(ComputingQuery& _query, ComputingQueryResponse& _res
     }
 }
 
-int QueryComputer::compute(std::string _queryString, ComputingQueryResponse& _response)
+int QueryComputer::compute(const std::string& _queryString, ComputingQueryResponse& _response)
 {
     Tucuxi::Common::LoggerHelper logHelper;
 

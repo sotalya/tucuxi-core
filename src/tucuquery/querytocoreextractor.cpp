@@ -19,9 +19,7 @@ namespace Query {
 
 
 QueryToCoreExtractor::QueryToCoreExtractor()
-{
-
-}
+= default;
 
 
 Tucuxi::Query::ComputingQuery* QueryToCoreExtractor::extractComputingQuery(const QueryData &_query) const

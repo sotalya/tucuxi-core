@@ -43,7 +43,7 @@ ComputingStatus SampleExtractor::extract(
             if ((sample->getDate() > _start) && (sample->getDate() < _end)) {
                 _series.push_back(SampleEvent(sample->getDate(), translateToUnit(sample->getValue(), sample->getUnit(), Unit("ug/l"))));
                 nbRelevantSamples ++;
-                if (singleAnalyte.toString().size() == 0) {
+                if (singleAnalyte.toString().empty()) {
                     singleAnalyte = sample->getAnalyteId();
                 }
                 else if (sample->getAnalyteId() != singleAnalyte) {
@@ -78,7 +78,7 @@ ComputingStatus SampleExtractor::extract(
         if ((sample->getDate() > _start) && (sample->getDate() < _end)) {
             _series.push_back(SampleEvent(sample->getDate(), translateToUnit(sample->getValue(), sample->getUnit(), Unit("ug/l"))));
             nbRelevantSamples ++;
-            if (singleAnalyte.toString().size() == 0) {
+            if (singleAnalyte.toString().empty()) {
                 singleAnalyte = sample->getAnalyteId();
             }
             else if (sample->getAnalyteId() != singleAnalyte) {

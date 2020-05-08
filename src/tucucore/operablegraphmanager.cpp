@@ -151,13 +151,13 @@ OperableGraphManager::isValid()
 {
     // Check that no loops are present by checking if any back-edge is present.
     std::map<std::string, bool> visited;
-    for (auto it : m_operableInputs) {
+    for (const auto& it : m_operableInputs) {
         visited.insert(std::make_pair(it.first, false));
     }
 
     std::map<std::string, bool> gotBack = visited;
 
-    for (auto it : m_operableInputs) {
+    for (const auto& it : m_operableInputs) {
         if (isCyclic(it.first, visited, gotBack)) {
             return false;
         }
@@ -183,7 +183,7 @@ OperableGraphManager::isCyclic(const std::string &_cur,
             // Just need to check computed nodes!
             std::vector<std::string> deps = m_operables.at(nodeID).getDependencies();
 
-            for (auto depIt : deps) {
+            for (const auto& depIt : deps) {
                 if (!_visited.at(depIt) && isCyclic(depIt, _visited, _gotBack)) {
                     return true;
                 } else if (_gotBack.at(depIt)) {

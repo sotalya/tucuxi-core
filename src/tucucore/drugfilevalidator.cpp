@@ -28,9 +28,7 @@ namespace Tucuxi {
 namespace Core {
 
 DrugFileValidator::DrugFileValidator()
-{
-
-}
+= default;
 
 
 class ExpectedParameters

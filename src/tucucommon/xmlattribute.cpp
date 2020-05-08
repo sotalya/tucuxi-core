@@ -29,8 +29,7 @@ XmlAttribute::XmlAttribute(rapidxml::xml_attribute<>* _pAttribute)
 
 
 XmlAttribute::~XmlAttribute()
-{
-}
+= default;
 
 
 XmlNode XmlAttribute::getNode()
@@ -124,7 +123,7 @@ char* XmlAttribute::allocateString(const std::string& _string)
         try {
             return m_pAttribute->document()->allocate_string(_string.c_str());
         }
-        catch (std::bad_alloc) {
+        catch (std::bad_alloc&) {
         }
     }
     return nullptr;

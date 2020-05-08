@@ -259,7 +259,7 @@ public:
 
     DOSAGE_UTILS(DosageUnbounded, DosageSteadyState);
 
-    const DateTime getLastDoseTime()const
+    const DateTime getLastDoseTime() const
     {
         return m_lastDoseTime;
     }
@@ -324,7 +324,7 @@ public:
         return m_dosage.get();
     }
 
-    const int getNbTimes() const {
+    int getNbTimes() const {
         return  m_nbTimes;
     }
 

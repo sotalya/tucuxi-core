@@ -294,7 +294,7 @@ protected:
 
     std::chrono::duration<double, std::ratio<1,1> > m_computingTimeInSeconds{0};
 
-    ComputingStatus m_computingResult;
+    ComputingStatus m_computingResult{ComputingStatus::Undefined};
 };
 
 } // namespace Core

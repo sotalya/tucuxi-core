@@ -6,8 +6,7 @@ namespace Tucuxi {
 namespace Core {
 
 IntakeIntervalCalculatorAnalytical::~IntakeIntervalCalculatorAnalytical()
-{
-}
+= default;
 
 ComputingStatus IntakeIntervalCalculatorAnalytical::calculateIntakePoints(
         std::vector<Concentrations>& _concentrations,

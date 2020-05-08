@@ -131,7 +131,7 @@ void DateTime::addDays(int _nDays)
 }
 
 
-const DateTime DateTime::operator+(const Duration& _duration) const
+DateTime DateTime::operator+(const Duration& _duration) const
 {
     DateTime tmp(*this);
     tmp += _duration;
@@ -139,7 +139,7 @@ const DateTime DateTime::operator+(const Duration& _duration) const
 }
 
 
-const DateTime DateTime::operator+(const DateTime& _dateTime) const
+DateTime DateTime::operator+(const DateTime& _dateTime) const
 {
     DateTime tmp(*this);
     tmp += _dateTime.get<std::chrono::milliseconds>();
@@ -161,7 +161,7 @@ DateTime& DateTime::operator+=(const DateTime& _dateTime)
 }
 
 
-const DateTime DateTime::operator-(const Duration& _duration) const
+DateTime DateTime::operator-(const Duration& _duration) const
 {
     DateTime tmp(*this);
     tmp -= _duration;
@@ -176,7 +176,7 @@ DateTime& DateTime::operator-=(const Duration& _duration)
 }
 
 
-const Duration DateTime::operator-(const DateTime& _date) const
+Duration DateTime::operator-(const DateTime& _date) const
 {
     return Duration(std::chrono::duration_cast<std::chrono::milliseconds>(m_date - _date.m_date));
 }
@@ -249,21 +249,21 @@ int DateTime::hour() const
 int DateTime::minute() const
 {
     date::sys_days days = date::floor<date::days>(m_date);
-    return std::chrono::duration_cast<std::chrono::minutes>(m_date - days).count() % 60;
+    return static_cast<int>(std::chrono::duration_cast<std::chrono::minutes>(m_date - days).count() % 60);
 }
 
 
 int DateTime::second() const
 {
     date::sys_days days = date::floor<date::days>(m_date);
-    return std::chrono::duration_cast<std::chrono::seconds>(m_date - days).count() % 60;
+    return static_cast<int>(std::chrono::duration_cast<std::chrono::seconds>(m_date - days).count() % 60);
 }
 
 
 int DateTime::millisecond() const
 {
     date::sys_days days = date::floor<date::days>(m_date);
-    return std::chrono::duration_cast<std::chrono::milliseconds>(m_date - days).count() % 1000;
+    return static_cast<int>(std::chrono::duration_cast<std::chrono::milliseconds>(m_date - days).count() % 1000);
 }
 
 

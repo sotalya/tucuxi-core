@@ -193,7 +193,7 @@ Operation::check(const OperationInputList &_inputs) const
 
     // Check that all the inputs are there and they are valid:
     // For each required input, scan the list for a valid input with the same name and type.
-    for (auto reqIn : m_requiredInputs) {
+    for (const auto& reqIn : m_requiredInputs) {
         if (!checkInputIsDefined(_inputs, reqIn.getName(), reqIn.getType())) {
             return false;
         }
@@ -362,7 +362,7 @@ JSOperation::evaluate(const OperationInputList &_inputs, double &_result)
         JSEngine jsEngine;
         // Push the inputs
 
-        for (auto inVar: _inputs) {
+        for (const auto& inVar: _inputs) {
             switch (inVar.getType()) {
             ADD_VAR_CASE(InputType::BOOL, bool);
             ADD_VAR_CASE(InputType::INTEGER, int);
@@ -427,7 +427,7 @@ JSOperation::checkOperation(const OperationInputList &_inputs, double &_result)
         JSEngine jsEngine;
         // Push the inputs
 
-        for (auto inVar: _inputs) {
+        for (const auto& inVar: _inputs) {
             switch (inVar.getType()) {
             ADD_VAR_CASE(InputType::BOOL, bool);
             ADD_VAR_CASE(InputType::INTEGER, int);
@@ -505,7 +505,7 @@ DynamicOperation::addOperation(const Operation &_operation, unsigned int _prefer
     OperationInputList alreadyPresentInputs = getInputs();
     OperationInputList newInputs = _operation.getInputs();
 
-    for (auto newIn: newInputs) {
+    for (const auto& newIn: newInputs) {
         OperationInputIt it = findInputInList(alreadyPresentInputs, newIn.getName());
         if (it != alreadyPresentInputs.end()) {
             if (it->getType() != newIn.getType()) {
@@ -570,7 +570,7 @@ DynamicOperation::getInputs() const
     OperationInputList ret;
     for (auto&& op: m_operations) {
         OperationInputList tmp = op.first->getInputs();
-        for (auto input: tmp) {
+        for (const auto& input: tmp) {
             // Push missing inputs, skipping duplicates
             if (!checkInputIsPresent(ret, input.getName(), input.getType())) {
                 ret.push_back(input);

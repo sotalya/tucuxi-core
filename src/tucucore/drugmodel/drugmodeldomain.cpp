@@ -17,9 +17,7 @@ DrugModelDomain::DrugModelDomain(std::unique_ptr<Constraint> _constraint)
 }
 
 DrugModelDomain::~DrugModelDomain()
-{
-
-}
+= default;
 
 }
 }

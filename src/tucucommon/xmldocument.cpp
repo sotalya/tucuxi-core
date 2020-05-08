@@ -27,8 +27,7 @@ XmlDocument::XmlDocument()
 
 
 XmlDocument::~XmlDocument()
-{
-}
+= default;
 
 
 bool XmlDocument::isValid() const
@@ -77,7 +76,7 @@ bool XmlDocument::fromString(const std::string& _xml)
             m_pDocument->parse<0>(&m_rawXml[0]);
             return true;
         }
-        catch (rapidxml::parse_error) {
+        catch (rapidxml::parse_error&) {
             m_pDocument = nullptr;
             reset();
         }
@@ -148,7 +147,7 @@ XmlNode XmlDocument::createNode(EXmlNodeType _type, const std::string& _name, co
         try {
             pNode = m_pDocument->allocate_node(type, name, value);
         }
-        catch (std::bad_alloc ex) {
+        catch (std::bad_alloc& ex) {
             pNode = nullptr;
         }
     }
@@ -169,7 +168,7 @@ XmlAttribute XmlDocument::createAttribute(const std::string& _name, const std::s
         try {
             pAttribute = m_pDocument->allocate_attribute(name, value);
         }
-        catch (std::bad_alloc ex) {
+        catch (std::bad_alloc& ex) {
             pAttribute = nullptr;
         }
     }

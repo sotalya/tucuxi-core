@@ -169,7 +169,7 @@ public:
     void setDomain(std::unique_ptr<DrugModelDomain> _domain);
     const DrugModelDomain& getDomain() const { return *m_domain.get();}
 
-    void setMetadata(std::unique_ptr<DrugModelMetadata> _data);
+    void setMetadata(std::unique_ptr<DrugModelMetadata> _metadata);
     const DrugModelMetadata& getMetadata() const { return *m_metadata.get();}
 
     void addAnalyteSet(std::unique_ptr<AnalyteSet> _analyteSet);

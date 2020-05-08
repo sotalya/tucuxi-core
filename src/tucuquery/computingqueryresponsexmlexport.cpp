@@ -352,6 +352,7 @@ const std::string ComputingQueryResponseXmlExport::getComputingStatus(Tucuxi::Co
     static std::map<Tucuxi::Core::ComputingStatus, std::pair<std::string, std::string>> m =
     {
         {Tucuxi::Core::ComputingStatus::Ok, {"Ok", "0"}},
+        {Tucuxi::Core::ComputingStatus::Undefined, {"Undefined", "-1"}},
         {Tucuxi::Core::ComputingStatus::TooBig, {"TooBig", "1"}},
         {Tucuxi::Core::ComputingStatus::Aborted, {"Aborted", "2"}},
         {Tucuxi::Core::ComputingStatus::ParameterExtractionError, {"ParameterExtractionError", "3"}},

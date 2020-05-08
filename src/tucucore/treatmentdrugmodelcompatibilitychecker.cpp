@@ -8,9 +8,7 @@ namespace Tucuxi {
 namespace Core {
 
 TreatmentDrugModelCompatibilityChecker::TreatmentDrugModelCompatibilityChecker()
-{
-
-}
+= default;
 
 bool TreatmentDrugModelCompatibilityChecker::checkCompatibility(const DrugTreatment *_drugTreatment,
                         const DrugModel *_drugModel)

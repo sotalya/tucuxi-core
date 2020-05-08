@@ -25,7 +25,7 @@ namespace Core {
 
 
 /// Function to delete a pointer if it is not nullptr
-template<typename T> inline constexpr void DELETE_IF_NON_NULL(T p)
+template<typename T> inline void DELETE_IF_NON_NULL(T p)
 {
     if (p != nullptr) {
         delete p;
@@ -34,8 +34,8 @@ template<typename T> inline constexpr void DELETE_IF_NON_NULL(T p)
 
 /// Function to delete a vector of pointers.
 /// It deletes every pointed value and emptied the vector.
-template<typename T> inline constexpr void DELETE_PVECTOR(T v) {
-    while (v.size() != 0) {
+template<typename T> inline void DELETE_PVECTOR(T v) {
+    while (!v.empty()) {
         delete v.back();
         v.pop_back();
     }
@@ -47,9 +47,7 @@ template<typename T> inline constexpr void DELETE_PVECTOR(T v) {
 ///////////////////////////////////////////////////////////////////////////////
 
 DrugModelImport::DrugModelImport()
-{
-
-}
+= default;
 
 
 
@@ -170,7 +168,7 @@ void DrugModelImport::setNodeError(Tucuxi::Common::XmlNodeIterator _node)
     std::string errorMessage;
     Tucuxi::Common::XmlNode node = _node->getParent();
     while (node.isValid()) {
-        if (node.getName().size() != 0) {
+        if (!node.getName().empty()) {
             errorMessage = "<" + node.getName() + ">" + errorMessage;
         }
         node = node.getParent();
@@ -603,7 +601,7 @@ LightPopulationValue *DrugModelImport::extractPopulationValue(Tucuxi::Common::Xm
     LightPopulationValue *populationValue;
     Value value = 0.0;
     Operation *operation = nullptr;
-    std::string id = "";
+    std::string id;
 
     XmlNodeIterator it = _node->getChildren();
 
@@ -1104,7 +1102,7 @@ ActiveMoiety* DrugModelImport::extractActiveMoiety(Tucuxi::Common::XmlNodeIterat
 {
 
     ActiveMoiety *activeMoiety = nullptr;
-    std::string activeMoietyId = "";
+    std::string activeMoietyId;
     Unit unit;
     std::vector<AnalyteId> analyteIdList;
     Operation *formula = nullptr;
@@ -1899,9 +1897,9 @@ FullFormulationAndRoute* DrugModelImport::extractFullFormulationAndRoute(
 {
 
     FullFormulationAndRoute *formulationAndRoute = nullptr;
-    std::string formulationAndRouteId = "";
+    std::string formulationAndRouteId;
     Formulation formulation = Formulation::Undefined;
-    std::string administrationName = "";
+    std::string administrationName;
     AdministrationRoute administrationRoute = AdministrationRoute::Undefined;
     AbsorptionModel absorptionModelId = AbsorptionModel::Undefined;
     ParameterSetDefinition *absorptionParameters = nullptr;
@@ -1977,7 +1975,7 @@ FullFormulationAndRoute* DrugModelImport::extractFullFormulationAndRoute(
                     XmlNodeIterator analyteConversionsIt = dosageIt->getChildren();
 
                     while (analyteConversionsIt != XmlNodeIterator::none()) {
-                        std::string analyteId = "";
+                        std::string analyteId;
                         Value factor = 0.0;
 
                         if (analyteConversionsIt->getName() == "analyteConversion") {
@@ -2024,7 +2022,7 @@ FullFormulationAndRoute* DrugModelImport::extractFullFormulationAndRoute(
 
             XmlNodeIterator absorptionIt = it->getChildren();
 
-            std::string analyteGroupId = "";
+            std::string analyteGroupId;
             AnalyteSet *selectedAnalyteSet = nullptr;
             AbsorptionModel absorptionModelId = AbsorptionModel::Undefined;
             absorptionParameters = nullptr;

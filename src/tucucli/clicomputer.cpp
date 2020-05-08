@@ -14,18 +14,12 @@
 using namespace Tucuxi::Core;
 using namespace Tucuxi::Query;
 
-CliComputer::CliComputer()
+CliComputer::CliComputer() = default;
+
+
+QueryStatus CliComputer::compute(const std::string& _inputFileName,
+                                 const std::string& _outputPath)
 {
-
-}
-
-
-QueryStatus CliComputer::compute(std::string _drugPath,
-                          std::string _inputFileName,
-                          std::string _outputPath)
-{
-    TMP_UNUSED_PARAMETER(_drugPath);
-
 
     // Change the settings for the tests
     Tucuxi::Core::SingleOverloadEvaluator::getInstance()->setValues(100000, 5000, 10000);
@@ -44,7 +38,8 @@ QueryStatus CliComputer::compute(std::string _drugPath,
     Tucuxi::Common::LoggerHelper logHelper;
 
     ComputingQueryResponse computingQueryResponse;
-    QueryComputer *queryComputer = new QueryComputer;
+
+    auto queryComputer = std::make_unique<QueryComputer>();
 
     std::ifstream ifs(_inputFileName);
     std::string xmlString((std::istreambuf_iterator<char>(ifs)),(std::istreambuf_iterator<char>()));
@@ -57,9 +52,8 @@ QueryStatus CliComputer::compute(std::string _drugPath,
         logHelper.error("Could not export the response file");
         return computingQueryResponse.getQueryStatus();
     }
-    else {
-        logHelper.info("The response files were successfully generated");
-    }
+
+    logHelper.info("The response files were successfully generated");
 
 
     ComputingQueryResponseXmlExport xmlExporter;
@@ -70,11 +64,8 @@ QueryStatus CliComputer::compute(std::string _drugPath,
         logHelper.error("Could not export the response XML file");
         return computingQueryResponse.getQueryStatus();
     }
-    else {
-        logHelper.info("The response XML file was successfully generated");
-    }
 
-    delete queryComputer;
+    logHelper.info("The response XML file was successfully generated");
 
     return computingQueryResponse.getQueryStatus();
 }

@@ -18,9 +18,7 @@ ValidDurations::ValidDurations(Unit _unit, std::unique_ptr<PopulationValue> _def
 
 
 ValidDurations::~ValidDurations()
-{
-
-}
+= default;
 
 /*
 void ValidDurations::setDefaultDuration(Tucuxi::Common::Duration _duration)

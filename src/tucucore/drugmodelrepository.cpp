@@ -47,7 +47,7 @@ Tucuxi::Common::Interface* DrugModelRepository::getInterface(const std::string &
 }
 
 
-void DrugModelRepository::addFolderPath(std::string _folderPath)
+void DrugModelRepository::addFolderPath(const std::string& _folderPath)
 {
 
     m_drugPaths.push_back(_folderPath);
@@ -55,7 +55,7 @@ void DrugModelRepository::addFolderPath(std::string _folderPath)
 }
 
 
-DrugModel* DrugModelRepository::loadFile(std::string _fileName)
+DrugModel* DrugModelRepository::loadFile(const std::string& _fileName)
 {
     Tucuxi::Common::LoggerHelper logHelper;
 
@@ -123,7 +123,7 @@ void read_directory(const std::string& _name, std::vector<std::string>& _v)
 }
 #endif // _WIN32
 
-void DrugModelRepository::loadFolder(std::string _folder)
+void DrugModelRepository::loadFolder(const std::string& _folder)
 {
     Tucuxi::Common::LoggerHelper logHelper;
 
@@ -131,7 +131,7 @@ void DrugModelRepository::loadFolder(std::string _folder)
 
     read_directory(_folder, list);
 
-    for (auto filename : list) {
+    for (const auto& filename : list) {
         if (filename.substr((filename.size() > 4) ? (filename.size() - 4) : 0, filename.size() - 1) == ".tdd") {
             loadFile(_folder + "/" + filename);
         }
@@ -152,7 +152,7 @@ DrugModel *DrugModelRepository::getDrugModelById(std::string _drugModelId)
         }
     }
 
-    for (auto drugpath : m_drugPaths){
+    for (const auto& drugpath : m_drugPaths){
         DrugModel *drugModel = loadFile(drugpath + PATH_SEPARATOR + _drugModelId + ".tdd");
         if(drugModel != nullptr)
         {
@@ -160,7 +160,7 @@ DrugModel *DrugModelRepository::getDrugModelById(std::string _drugModelId)
         }
     }
 
-    for (auto drugpath : m_drugPaths){
+    for (const auto& drugpath : m_drugPaths){
         loadFolder(drugpath);
     }
 
@@ -188,9 +188,9 @@ std::vector<DrugModel *> DrugModelRepository::getDrugModelsByDrugId(std::string 
     if(drugModelExist) {return drugModels;}
 
     std::vector<std::string> list;
-    for (auto drugpath : m_drugPaths){
+    for (const auto& drugpath : m_drugPaths){
         read_directory(drugpath, list);
-        for (auto filename : list) {
+        for (const auto& filename : list) {
             if (filename.substr((filename.size() > 4) ? (filename.size() - 4) : 0, filename.size() - 1) == ".tdd") {
 
                 if(filename.substr(INDEX_POSITION, _drugId.length()) == _drugId)

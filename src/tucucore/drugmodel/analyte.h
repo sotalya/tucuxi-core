@@ -109,10 +109,6 @@ public:
 
     const Unit &getUnit() { return m_unit;}
 
-//    void addTarget(std::unique_ptr<TargetDefinition>& _target) { m_targets.push_back(std::move(_target));}
-//    const TargetDefinitions & getTargetDefinitions() const { return m_targets;}
-
-
     INVARIANTS(
             INVARIANT(Invariants::INV_ANALYTE_0001, (m_analyteId.size() > 0), "An analyte does not have an Id")
             INVARIANT(Invariants::INV_ANALYTE_0002, (m_residualErrorModel != nullptr), Tucuxi::Common::Utils::strFormat("The analyte %s does not have a residual error model", m_analyteId.toString().c_str()))
@@ -128,8 +124,6 @@ protected:
     Unit m_unit;
 
     std::unique_ptr<ErrorModel> m_residualErrorModel;
-
-//    TargetDefinitions m_targets;
 
     ActiveSubstance *m_activeSubstance;
 

@@ -30,7 +30,7 @@ ParameterSetEventPtr ParameterSetSeries::getAtTime(const DateTime &_date, const 
         ParameterSetEvent *pParameters = new ParameterSetEvent(*it);
 
         // Apply etas if available
-        if (_etas.size() > 0) {
+        if (!_etas.empty()) {
             pParameters->applyEtas(_etas);
         }
 
@@ -57,7 +57,7 @@ void ParameterSetEvent::addParameterEvent(const ParameterDefinition &_definition
 
     auto it = m_parameters.begin();
 
-    if (m_parameters.size() == 0) {
+    if (m_parameters.empty()) {
         m_parameters.push_back(Parameter(_definition, _value));
     }
     else {

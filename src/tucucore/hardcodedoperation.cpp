@@ -568,9 +568,8 @@ std::shared_ptr<Operation> OperationCollection::getOperationFromId(const std::st
     auto pos = m_collection.find(_operationId);
     if (pos == m_collection.end()) {
         return nullptr;
-    } else {
-        return pos->second;
     }
+    return pos->second;
 }
 
 #define ADD_OPERATION_TO_COLLECTION(_TYPE) \

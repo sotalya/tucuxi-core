@@ -6,9 +6,7 @@ namespace Tucuxi {
 namespace Core {
 
 ResidualErrorModelExtractor::ResidualErrorModelExtractor()
-{
-
-}
+= default;
 
 
 ComputingStatus ResidualErrorModelExtractor::extract(

@@ -2,6 +2,8 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
+#include <utility>
+
 #include "computingrequest.h"
 
 
@@ -12,7 +14,7 @@ ComputingRequest::ComputingRequest(RequestResponseId _id,
     const DrugModel& _drugModel,
     const DrugTreatment& _drugTreatment,
      std::unique_ptr<ComputingTrait> _computingTrait) :
-    m_id(_id),
+    m_id(std::move(_id)),
     m_drugModel(_drugModel),
     m_drugTreatment(_drugTreatment)
 {

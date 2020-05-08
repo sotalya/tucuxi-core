@@ -10,9 +10,7 @@ namespace Tucuxi {
 namespace Core {
 
 Version::Version()
-{
-
-}
+= default;
 
 std::string Version::getGitRevision()
 {

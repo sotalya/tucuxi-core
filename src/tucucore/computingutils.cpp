@@ -8,9 +8,7 @@ namespace Tucuxi {
 namespace Core {
 
 ComputingUtils::ComputingUtils()
-{
-
-}
+= default;
 
 
 ComputingStatus ComputingUtils::computeActiveMoiety(

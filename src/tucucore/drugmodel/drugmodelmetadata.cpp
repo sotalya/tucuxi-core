@@ -6,9 +6,7 @@ namespace Core {
 
 
 DrugModelMetadata::DrugModelMetadata()
-{
-
-}
+= default;
 
 } // namespace Core
 } // namespace Tucuxi

@@ -20,7 +20,7 @@
 using namespace std::chrono_literals;
 
 cxxopts::ParseResult
-parse(int _argc, char* _argv[])
+parse(int _argc, char* _argv[]) // NOLINT(cppcoreguidelines-avoid-c-arrays, modernize-avoid-c-arrays)
 {
     // Get application folder
     std::string appFolder = Tucuxi::Common::Utils::getAppFolder(_argv);
@@ -30,7 +30,7 @@ parse(int _argc, char* _argv[])
     try
     {
 
-        cxxopts::Options options(_argv[0], " - Tucuxi command line");
+        cxxopts::Options options(_argv[0], " - Tucuxi command line");  // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
         options
                 .positional_help("[optional args]")
                 .show_positional_help();
@@ -92,7 +92,7 @@ parse(int _argc, char* _argv[])
         Tucuxi::Common::ComponentManager* pCmpMgr = Tucuxi::Common::ComponentManager::getInstance();
 
 
-        Tucuxi::Core::DrugModelRepository *drugModelRepository = dynamic_cast<Tucuxi::Core::DrugModelRepository*>(
+        auto drugModelRepository = dynamic_cast<Tucuxi::Core::DrugModelRepository*>(
                     Tucuxi::Core::DrugModelRepository::createComponent());
 
         pCmpMgr->registerComponent("DrugModelRepository", drugModelRepository);
@@ -109,7 +109,7 @@ parse(int _argc, char* _argv[])
 
 
         CliComputer computer;
-        QueryStatus queryStatus = computer.compute(drugPath, inputFileName, outputPath);
+        QueryStatus queryStatus = computer.compute(inputFileName, outputPath);
 
         // TODO : More persistent
         if (queryStatus == QueryStatus::Error) {

@@ -1,3 +1,5 @@
+#include <utility>
+
 #include "computingqueryresponse.h"
 
 #include "tucucore/computingservice/computingresponse.h"
@@ -15,7 +17,7 @@ SingleResponseData::SingleResponseData(
 
 
 ComputingQueryResponse::ComputingQueryResponse()
-{}
+= default;
 
 Tucuxi::Core::RequestResponseId ComputingQueryResponse::getQueryId() const
 {
@@ -38,20 +40,20 @@ void ComputingQueryResponse::setQueryStatus(QueryStatus _queryStatus)
 }
 
 void ComputingQueryResponse::addRequestResponse(std::unique_ptr<Core::ComputingResponse> _computingResponse,
-        std::unique_ptr<ComputingResponseMetaData> _metaData)
+                                                std::unique_ptr<ComputingResponseMetaData> _metaData)
 {
-    m_requestResponses.push_back(SingleResponseData(std::move(_computingResponse),
-                                                    std::move(_metaData)));
+    m_requestResponses.emplace_back(std::move(_computingResponse),
+                                    std::move(_metaData));
 }
 
 void ComputingQueryResponse::setRequestResponseId(Tucuxi::Core::RequestResponseId _requestResponseId)
 {
-   m_queryId =_requestResponseId;
+   m_queryId =std::move(_requestResponseId);
 }
 
 ComputingResponseMetaData::ComputingResponseMetaData(
-        std::string _drugModelID ) :
-    m_drugModelId(_drugModelID)
+        std::string _drugModelID) :
+    m_drugModelId(std::move(_drugModelID))
 {
 
 }

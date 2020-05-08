@@ -14,7 +14,7 @@ void ParameterDefinitionIterator::build()
     m_total = 0;
 
     // Depending on the constructor invoked, we build the list of absorption parameters
-    if (m_fullFormulationAndRoutes.size() > 0) {
+    if (!m_fullFormulationAndRoutes.empty()) {
         for (const auto & f : m_fullFormulationAndRoutes) {
             const ParameterSetDefinition* parameter = m_model.getAbsorptionParameters(m_analyteGroupId, f->getFormulationAndRoute());
             if (parameter != nullptr) {
@@ -50,7 +50,7 @@ void ParameterDefinitionIterator::build()
     }
 
     // We sort alphabetically the parameter Ids
-    std::sort(m_parametersVector.begin(), m_parametersVector.end(), [&] (const ParameterInfo v1, const ParameterInfo v2) {
+    std::sort(m_parametersVector.begin(), m_parametersVector.end(), [&] (const ParameterInfo& v1, const ParameterInfo& v2) {
         if (v1.isVariable && !v2.isVariable)
             return true;
         if (!v1.isVariable && v2.isVariable)

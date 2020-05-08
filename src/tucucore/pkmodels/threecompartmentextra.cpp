@@ -185,8 +185,7 @@ bool ThreeCompartmentExtraMicro::computeConcentration(const Value& _atTime, cons
 }
 
 ThreeCompartmentExtraMacro::ThreeCompartmentExtraMacro()
-{
-}
+= default;
 
 std::vector<std::string> ThreeCompartmentExtraMacro::getParametersId()
 {

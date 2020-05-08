@@ -7,9 +7,7 @@ namespace Tucuxi {
 namespace Core {
 
 DrugModelChecker::DrugModelChecker()
-{
-
-}
+= default;
 
 DrugModelChecker::CheckerResult_t DrugModelChecker::checkDrugModel(const DrugModel *_drugModel, const PkModelCollection *_pkCollection)
 {
@@ -62,7 +60,7 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkDrugModel(const DrugMod
     return {true, ""};
 }
 
-bool contains(std::vector<std::string> _vector, std::string _s) {
+bool contains(std::vector<std::string> _vector, const std::string& _s) {
     return std::find(_vector.begin(), _vector.end(), _s) != _vector.end();
 }
 
@@ -81,9 +79,7 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkAnalytes(const DrugMode
             if (contains<AnalyteId>(activeMoietiesAnalytes, analyteId)) {
                 return {false, "The analyte " + analyteId.toString() + " is present at least twice in the active moieties"};
             }
-            else {
-                activeMoietiesAnalytes.push_back(analyteId);
-            }
+            activeMoietiesAnalytes.push_back(analyteId);
         }
     }
 
@@ -179,9 +175,9 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkParameters(const DrugMo
         for (const auto &formulation : _drugModel->getFormulationAndRoutes()) {
 
             std::vector<std::string> requiredParameters = pkModel->getParametersForRoute(formulation->getAbsorptionModel(analyteGroup->getId()));
-            if (requiredParameters.size() == 0) {
+            if (requiredParameters.empty()) {
                 requiredParameters = pkModel->getParametersForRoute(formulation->getFormulationAndRoute().getAbsorptionModel());
-                if (requiredParameters.size() == 0) {
+                if (requiredParameters.empty()) {
                     return {false, Tucuxi::Common::Utils::strFormat("It seems that there is no PK model for formulation and route %s", formulation->getId().c_str())};
                 }
             }
@@ -205,13 +201,13 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkParameters(const DrugMo
             if (requiredParameters.size() != formulationParameters.size()) {
 
                 std::string reqString;
-                for(size_t j = 0; j < requiredParameters.size(); j++) {
-                    reqString += requiredParameters[j] + "|";
+                for(const auto & requiredParameter : requiredParameters) {
+                    reqString += requiredParameter + "|";
                 }
 
                 std::string forString;
-                for(size_t j = 0; j < formulationParameters.size(); j++) {
-                    forString += formulationParameters[j] + "|";
+                for(const auto & formulationParameter : formulationParameters) {
+                    forString += formulationParameter + "|";
                 }
 
                 return {false, Tucuxi::Common::Utils::strFormat("The formulation and route %s does not have the same number of parameters. Required : %s. Given : %s", formulation->getId().c_str(), reqString.c_str(), forString.c_str())};
@@ -221,13 +217,13 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkParameters(const DrugMo
                 if (requiredParameters[i] != formulationParameters[i]) {
 
                     std::string reqString;
-                    for(size_t j = 0; j < requiredParameters.size(); j++) {
-                        reqString += requiredParameters[j] + "|";
+                    for(const auto & requiredParameter : requiredParameters) {
+                        reqString += requiredParameter + "|";
                     }
 
                     std::string forString;
-                    for(size_t j = 0; j < formulationParameters.size(); j++) {
-                        forString += formulationParameters[j] + "|";
+                    for(const auto & formulationParameter : formulationParameters) {
+                        forString += formulationParameter + "|";
                     }
                     return {false, Tucuxi::Common::Utils::strFormat("The formulation and route %s does not have the right PK parameters. Required : %s. Given : %s", formulation->getId().c_str(), reqString.c_str(), forString.c_str())};
                 }

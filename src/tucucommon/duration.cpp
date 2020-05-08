@@ -84,7 +84,7 @@ void Duration::clear()
 }
 
 
-const Duration Duration::operator+(const Duration &_other) const
+Duration Duration::operator+(const Duration &_other) const
 {
     return Duration(*this) += _other;
 }
@@ -97,7 +97,7 @@ Duration& Duration::operator+=(const Duration &_other)
 }
 
 
-const Duration Duration::operator-(const Duration &_other) const
+Duration Duration::operator-(const Duration &_other) const
 {
     return Duration(*this) -= _other;
 }
@@ -110,7 +110,7 @@ Duration& Duration::operator-=(const Duration &_other)
 }
 
 
-const Duration Duration::operator*(double _factor) const
+Duration Duration::operator*(double _factor) const
 {
     return Duration(*this) *= _factor;
 }
@@ -123,7 +123,7 @@ Duration& Duration::operator*=(double _factor)
 }
 
 
-const Duration Duration::operator/(double _divider) const
+Duration Duration::operator/(double _divider) const
 {
     return Duration(*this) /= _divider;
 }
@@ -142,7 +142,7 @@ double Duration::operator/(const Duration &_other) const
 }
 
 
-const Duration Duration::operator%(const Duration &_other) const
+Duration Duration::operator%(const Duration &_other) const
 {
     int64 n1 = std::chrono::duration_cast<std::chrono::seconds>(m_duration).count();
     int64 n2 = std::chrono::duration_cast<std::chrono::seconds>(_other.m_duration).count();
@@ -150,7 +150,7 @@ const Duration Duration::operator%(const Duration &_other) const
 }
 
 
-const Duration Duration::operator%(int _divider) const
+Duration Duration::operator%(int _divider) const
 {
     int64 n1 = std::chrono::duration_cast<std::chrono::seconds>(m_duration).count();
     return Duration(std::chrono::seconds(n1 % _divider));

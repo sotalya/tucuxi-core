@@ -42,7 +42,7 @@ Duration TimeOfDay::getRealDuration() const
 }
 
 
-const Duration TimeOfDay::operator-(const TimeOfDay& _time) const
+Duration TimeOfDay::operator-(const TimeOfDay& _time) const
 {
     return Duration(std::chrono::duration_cast<std::chrono::milliseconds>(m_time - _time.m_time));
 }
@@ -56,19 +56,19 @@ int TimeOfDay::hour() const
 
 int TimeOfDay::minute() const
 {
-    return std::chrono::duration_cast<std::chrono::minutes>(m_time).count() % 60;
+    return static_cast<int>(std::chrono::duration_cast<std::chrono::minutes>(m_time).count() % 60);
 }
 
 
-int64 TimeOfDay::second() const
+int TimeOfDay::second() const
 {
-    return std::chrono::duration_cast<std::chrono::seconds>(m_time).count() % 60;
+    return static_cast<int>(std::chrono::duration_cast<std::chrono::seconds>(m_time).count() % 60);
 }
 
 
-int64 TimeOfDay::millisecond() const
+int TimeOfDay::millisecond() const
 {
-    return std::chrono::duration_cast<std::chrono::milliseconds>(m_time).count() % 1000;
+    return static_cast<int>(std::chrono::duration_cast<std::chrono::milliseconds>(m_time).count() % 1000);
 }
 
 bool TimeOfDay::operator<(const TimeOfDay& _other) const

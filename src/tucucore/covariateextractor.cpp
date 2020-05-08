@@ -277,7 +277,7 @@ bool CovariateExtractor::computeEvents(const std::map<DateTime, std::vector<std:
             }
         }
 
-        if (m_cdComputed.size() > 0 && updatedCVs.size() > 0) {
+        if ((!m_cdComputed.empty()) && (!updatedCVs.empty())) {
             // If we are at start, we still have to create the events associated with computed CVs and push them in the
             // OGM!
             if (refreshTime == m_start) {

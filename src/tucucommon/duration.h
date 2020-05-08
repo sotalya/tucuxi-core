@@ -84,27 +84,27 @@ public:
     void clear();
 
     /// \brief Add two duration
-    const Duration operator+(const Duration &_other) const;
+    Duration operator+(const Duration &_other) const;
 
     /// \brief Add the two and assign them
     Duration& operator+=(const Duration &_other);
 
     /// \brief Substract two duration
     /// If the duration to substract is smaller than the duration substracted, the resulting duration will be negative.
-    const Duration operator-(const Duration &_other) const;
+    Duration operator-(const Duration &_other) const;
 
     /// \brief Substract the two and assign them
     Duration& operator-=(const Duration &_other);
 
     /// \brief Multiply the duration by this value
-    const Duration operator*(double _factor) const;
+    Duration operator*(double _factor) const;
 
     /// \brief Multiplication compound assignment overload.
     /// \param rhs Right-hand side integer.
     Duration& operator*=(double _factor);
 
     /// \brief Divide the duration by this value
-    const Duration operator/(double _divider) const;
+    Duration operator/(double _divider) const;
 
     /// \brief Divide the duration by this value
     Duration& operator/=(double _divider);
@@ -113,10 +113,10 @@ public:
     double operator/(const Duration &_other) const;
 
     /// \brief Obtain the remainder of dividing the duration by the specified one
-    const Duration operator%(const Duration &_other) const;
+    Duration operator%(const Duration &_other) const;
 
     /// \brief Obtain the remainder of dividing the duration by the speicifed divider
-    const Duration operator%(int _divider) const;
+    Duration operator%(int _divider) const;
 
     /// \brief Is the duration smaller?
     bool operator<(const Duration &) const;

@@ -93,7 +93,7 @@ void DosageHistory::mergeDosage(const DosageTimeRange *_newDosage)
     // We fill the gap by extending the last dosage of the initial history
     // No, that's not OK because it would add new doses instead of empty doses
 
-    if (m_history.size() > 0) {
+    if (!m_history.empty()) {
         if (m_history.back()->m_endDate < _newDosage->getStartDate()) {
 
             // At least a number of intervals allowing to fill the interval asked
@@ -110,7 +110,7 @@ void DosageHistory::mergeDosage(const DosageTimeRange *_newDosage)
 
 FormulationAndRoute DosageHistory::getLastFormulationAndRoute() const
 {
-    if (m_history.size() == 0) {
+    if (m_history.empty()) {
         return FormulationAndRoute(Formulation::Undefined, AdministrationRoute::Undefined, AbsorptionModel::Undefined);
     }
     return m_history.back()->m_dosage->getLastFormulationAndRoute();

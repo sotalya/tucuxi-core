@@ -8,8 +8,7 @@ namespace Tucuxi {
 namespace Common {
 
 ComponentManager::ComponentManager()
-{
-}
+= default;
 
 ComponentManager* ComponentManager::getInstance()
 {

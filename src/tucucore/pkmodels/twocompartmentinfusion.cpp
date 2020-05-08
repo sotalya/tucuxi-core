@@ -272,8 +272,7 @@ bool TwoCompartmentInfusionMicro::computeConcentration(const Value& _atTime, con
 }
 
 TwoCompartmentInfusionMacro::TwoCompartmentInfusionMacro()
-{
-}
+= default;
 
 std::vector<std::string> TwoCompartmentInfusionMacro::getParametersId()
 {

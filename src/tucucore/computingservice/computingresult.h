@@ -9,6 +9,8 @@ namespace Core {
 /// \brief The ComputingStatus enum
 /// Describes the return value of a computation
 enum class ComputingStatus {
+    /// Not yet defined
+    Undefined = -1,
     /// Everything went well
     Ok = 0,
     /// Too Big computation required

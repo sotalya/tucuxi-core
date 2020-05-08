@@ -18,9 +18,7 @@ namespace Tucuxi {
 namespace Core {
 
 ComputingAborter::~ComputingAborter()
-{
-
-}
+= default;
 
 const EigenMatrix &AposterioriMatrixCache::getAvecs(int _nbSamples, int _nbEtas)
 {
@@ -179,9 +177,9 @@ ComputingStatus MonteCarloPercentileCalculatorBase::computePredictions(
     selectRecordedIntakes(_recordedIntakes, _intakes, _recordFrom, _recordTo);
 
     // Set the size of vector "concentrations"
-    for (unsigned int cycle = 0; cycle < _recordedIntakes.size(); cycle++) {
+    for (auto & _recordedIntake : _recordedIntakes) {
         std::vector< std::vector<Concentration> > vec;
-        for (int point = 0; point < _recordedIntakes[cycle].getNbPoints(); point++) {
+        for (int point = 0; point < _recordedIntake.getNbPoints(); point++) {
             vec.push_back(std::vector<Concentration>(_nbPatients));
         }
         _concentrations.push_back(vec);
@@ -310,13 +308,16 @@ ComputingStatus MonteCarloPercentileCalculatorBase::sortAndExtractPercentiles(
     // The invalid will be ignored for selecting the percentiles
     for (unsigned int patient = 0; patient < _nbPatients; patient ++) {
         isPatientValid[patient] = true;
-        for (size_t cycle = 0; cycle < _concentrations.size(); cycle++) {
-            for (size_t pos = 0; pos < _concentrations[cycle].size(); pos ++) {
-                if (std::isnan(_concentrations[cycle][pos][patient])) {
+        for (auto & concentration : _concentrations) {
+            for (auto & pos : concentration) {
+                if (std::isnan(pos[patient])) {
                     isPatientValid[patient] = false;
+                    // MISRA allows to use goto in that specific case of breaking from an inner loop
+                    goto foundFalse;
                 }
             }
         }
+        foundFalse:
         if (isPatientValid[patient]) {
             realPatientNumber ++;
         }
@@ -344,8 +345,8 @@ ComputingStatus MonteCarloPercentileCalculatorBase::sortAndExtractPercentiles(
 
     // We create the vector of positions corresponding to the percentiles ranks.
     // Be careful, here we multiply by realPatientNumber
-    for (unsigned int percRankIdx = 0; percRankIdx < _percentileRanks.size(); percRankIdx++) {
-        positions.push_back( static_cast<int>(static_cast<double>(_percentileRanks[percRankIdx]) / 100.0
+    for (double _percentileRank : _percentileRanks) {
+        positions.push_back( static_cast<int>(static_cast<double>(_percentileRank) / 100.0
                                               * static_cast<double>(realPatientNumber)));
 
     }
@@ -366,8 +367,7 @@ ComputingStatus MonteCarloPercentileCalculatorBase::sortAndExtractPercentiles(
 
         sortWorkers.push_back(std::thread([
                                           &realConcentrations, _recordedIntakes, &positions, _percentileRanks,
-                                          &currentPoint, &_percentiles, &mutex, &currentCycle, nbCycles,
-                                          &isPatientValid,_nbPatients]()
+                                          &currentPoint, &_percentiles, &mutex, &currentCycle, nbCycles]()
         {
             bool cont = true;
             unsigned int cycle;
@@ -527,9 +527,7 @@ ComputingStatus MonteCarloPercentileCalculatorBase::sortAndExtractPercentiles(
 
 
 AprioriMonteCarloPercentileCalculator::AprioriMonteCarloPercentileCalculator()
-{
-
-}
+= default;
 
 ComputingStatus AprioriMonteCarloPercentileCalculator::calculate(
         PercentilesPrediction &_percentiles,
@@ -693,8 +691,7 @@ void MonteCarloPercentileCalculatorBase::calculateSubomega(
 
 
 AposterioriMonteCarloPercentileCalculator::AposterioriMonteCarloPercentileCalculator()
-{
-}
+= default;
 
 ComputingStatus AposterioriMonteCarloPercentileCalculator::calculate(
         PercentilesPrediction &_percentiles,
@@ -758,7 +755,7 @@ ComputingStatus AposterioriMonteCarloPercentileCalculator::calculateEtasAndEpsil
         ComputingAborter *_aborter)
 {
     // If there is no sample, then there is no reason to calculate a posteriori percentiles
-    if (_samples.size() == 0) {
+    if (_samples.empty()) {
         return ComputingStatus::AposterioriPercentilesNoSamplesError;
     }
 
@@ -933,8 +930,7 @@ ComputingStatus AposterioriMonteCarloPercentileCalculator::calculateEtasAndEpsil
 }
 
 AposterioriNormalApproximationMonteCarloPercentileCalculator::AposterioriNormalApproximationMonteCarloPercentileCalculator()
-{
-}
+= default;
 
 ComputingStatus AposterioriNormalApproximationMonteCarloPercentileCalculator::calculate(
         PercentilesPrediction &_percentiles,
@@ -1000,8 +996,8 @@ ComputingStatus AprioriPercentileCalculatorMulti::calculate(
 
     std::vector<AnalyteGroupId> analyteGroupIds;
 
-    for (auto it = _parameters.begin(); it != _parameters.end(); ++it) {
-        analyteGroupIds.push_back(it->first);
+    for (const auto & _parameter : _parameters) {
+        analyteGroupIds.push_back(_parameter.first);
     }
 
     std::vector< std::vector< std::vector< std::vector<Concentration> > > > concentrations;
@@ -1080,8 +1076,8 @@ ComputingStatus AposterioriMonteCarloPercentileCalculatorMulti::calculate(
 
     std::vector<AnalyteGroupId> analyteGroupIds;
 
-    for (auto it = _parameters.begin(); it != _parameters.end(); ++it) {
-        analyteGroupIds.push_back(it->first);
+    for (const auto & _parameter : _parameters) {
+        analyteGroupIds.push_back(_parameter.first);
     }
 
     std::vector< std::vector< std::vector< std::vector<Concentration> > > > concentrations;
@@ -1163,9 +1159,9 @@ ComputingStatus PercentileCalculatorMultiBase::calculateActiveMoietyAndSort(
 
 
         // Set the size of vector "concentrations"
-        for (unsigned int cycle = 0; cycle < _recordedIntakes.size(); cycle++) {
+        for (auto & recordedIntake : _recordedIntakes) {
             std::vector< std::vector<Concentration> > vec;
-            for (int point = 0; point < _recordedIntakes[cycle].getNbPoints(); point++) {
+            for (int point = 0; point < recordedIntake.getNbPoints(); point++) {
                 vec.push_back(std::vector<Concentration>(_nbPatients));
             }
             aConcentration.push_back(vec);

@@ -21,9 +21,7 @@ ComputingOption::ComputingOption(PredictionParameterType _parameterType,
 }
 
 ComputingTrait::~ComputingTrait()
-{
-
-}
+= default;
 
 void ComputingTraits::addTrait(std::unique_ptr<ComputingTrait> _trait)
 {
@@ -53,9 +51,7 @@ ComputingTraitStandard::ComputingTraitStandard(RequestResponseId _id,
 }
 
 ComputingTraitStandard::~ComputingTraitStandard()
-{
-
-}
+= default;
 
 
 ComputingOption ComputingTraitStandard::getComputingOption() const
@@ -100,7 +96,7 @@ ComputingTraitAdjustment::ComputingTraitAdjustment(
         double _nbPointsPerHour,
         ComputingOption _computingOption,
         Tucuxi::Common::DateTime _adjustmentTime,
-        BestCandidatesOption _adjustmentOption,
+        BestCandidatesOption _candidatesOption,
         LoadingOption _loadingOption,
         RestPeriodOption _restPeriodOption,
         SteadyStateTargetOption _steadyStateTargetOption,
@@ -108,7 +104,7 @@ ComputingTraitAdjustment::ComputingTraitAdjustment(
         FormulationAndRouteSelectionOption _formulationAndRouteSelectionOption) :
     ComputingTraitStandard(_id, _start, _end, _nbPointsPerHour, _computingOption),
     m_adjustmentTime(_adjustmentTime),
-    m_bestCandidatesOption(_adjustmentOption),
+    m_bestCandidatesOption(_candidatesOption),
     m_loadingOption(_loadingOption),
     m_restPeriodOption(_restPeriodOption),
     m_steadyStateTargetOption(_steadyStateTargetOption),

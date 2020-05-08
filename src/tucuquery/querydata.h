@@ -55,10 +55,10 @@ public:
     QueryData(QueryData& _other) = delete;
 
     // Getters
-    const std::string getQueryID() const;
-    const std::string getClientID() const;
-    const Tucuxi::Common::DateTime getpQueryDate() const;
-    const std::string getLanguage() const;
+    std::string getQueryID() const;
+    std::string getClientID() const;
+    Tucuxi::Common::DateTime getpQueryDate() const;
+    std::string getLanguage() const;
     const AdministrativeData& getpAdmin() const;
     const DrugTreatmentData& getpParameters() const;
     const std::vector< std::unique_ptr< RequestData > >& getRequests() const;

@@ -56,7 +56,7 @@ void PertinentTimesCalculatorInfusion::calculateTimes(const IntakeEvent& _intake
 
 
 IntakeIntervalCalculator::~IntakeIntervalCalculator()
-{}
+= default;
 
 
 

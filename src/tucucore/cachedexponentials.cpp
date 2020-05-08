@@ -11,8 +11,7 @@ namespace Tucuxi {
 namespace Core {
 
 CachedExponentials::CachedExponentials()
-{
-}
+= default;
 
 
 bool CachedExponentials::get(const Tucuxi::Common::Duration& _cycleDuration, const ParameterSetEvent& _parameters, CycleSize _nbPoints, PrecomputedExponentials& _exponentials)
@@ -39,8 +38,8 @@ std::size_t CachedExponentials::hash(const Tucuxi::Common::Duration& _cycleDurat
 
     boost::hash_combine(seed, hasher(static_cast<int>(_cycleDuration.toMilliseconds())));
     boost::hash_combine(seed, hasher(_nbPoints));
-    for (Parameters::const_iterator it = _parameters.begin(); it != _parameters.end(); ++it) {
-        boost::hash_combine(seed, hasher(it->getValue()));
+    for (const auto & parameter : _parameters) {
+        boost::hash_combine(seed, hasher(parameter.getValue()));
     }
     return seed;
 }

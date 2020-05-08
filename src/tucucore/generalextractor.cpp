@@ -22,9 +22,7 @@ namespace Tucuxi {
 namespace Core {
 
 GeneralExtractor::GeneralExtractor()
-{
-
-}
+= default;
 
 Duration GeneralExtractor::secureStartDuration(const HalfLife &_halfLife)
 {
@@ -47,7 +45,7 @@ Duration GeneralExtractor::secureStartDuration(const HalfLife &_halfLife)
 ComputingStatus GeneralExtractor::extractAposterioriEtas(
         Etas &_etas,
         const ComputingRequest &_request,
-        AnalyteGroupId _analyteGroupId,
+        const AnalyteGroupId& _analyteGroupId,
         const IntakeSeries &_intakeSeries,
         const ParameterSetSeries &_parameterSeries,
         const CovariateSeries &_covariateSeries,
@@ -72,7 +70,7 @@ ComputingStatus GeneralExtractor::extractAposterioriEtas(
         return sampleExtractionResult;
     }
 
-    if (sampleSeries.size() == 0) {
+    if (sampleSeries.empty()) {
         // Surprising. Something maybe wrong with the sample extractor
 
     }
@@ -95,7 +93,7 @@ ComputingStatus GeneralExtractor::extractAposterioriEtas(
 
 ComputingStatus GeneralExtractor::extractOmega(
         const DrugModel &_drugModel,
-        AnalyteGroupId _analyteGroupId,
+        const AnalyteGroupId& _analyteGroupId,
         std::vector<const FullFormulationAndRoute*> &_formulationAndRoutes,
         OmegaMatrix &_omega)
 {
@@ -135,15 +133,15 @@ ComputingStatus GeneralExtractor::extractOmega(
 
     const AnalyteSet *analyteSet = _drugModel.getAnalyteSet(_analyteGroupId);
     Correlations correlations = analyteSet->getDispositionParameters().getCorrelations();
-    for(size_t i = 0; i < correlations.size(); i++) {
-        std::string p1 = correlations[i].getParamId1();
-        std::string p2 = correlations[i].getParamId2();
-        Value correlation = correlations[i].getValue();
+    for(auto & correlation : correlations) {
+        std::string p1 = correlation.getParamId1();
+        std::string p2 = correlation.getParamId2();
+        Value correlationValue = correlation.getValue();
 
         int index1 = paramMap[p1];
         int index2 = paramMap[p2];
 
-        Value covariance = correlation * (std::sqrt(_omega(index1, index1) * _omega(index2, index2)));
+        Value covariance = correlationValue * (std::sqrt(_omega(index1, index1) * _omega(index2, index2)));
         _omega(index1, index2) = covariance;
         _omega(index2, index1) = covariance;
     }
@@ -161,6 +159,7 @@ std::vector<const FullFormulationAndRoute*> GeneralExtractor::extractFormulation
             allFormulationAndRoutes.push_back(f);
         }
     }
+    result.reserve(allFormulationAndRoutes.size());
     for (const auto & f : allFormulationAndRoutes) {
         result.push_back(_drugModel.getFormulationAndRoutes().get(f));
     }
@@ -186,7 +185,7 @@ ComputingStatus GeneralExtractor::generalExtractions(const ComputingTraitStandar
     Tucuxi::Common::DateTime firstEvent = _traits->getStart();
 
     if ((_traits->getComputingOption().getParametersType() == PredictionParameterType::Aposteriori)
-            && (_request.getDrugTreatment().getSamples().size() > 0)) {
+            && (!_request.getDrugTreatment().getSamples().empty())) {
         for (const auto &sample : _request.getDrugTreatment().getSamples()) {
             if (sample->getDate() < firstEvent) {
                 firstEvent = sample->getDate();
@@ -278,7 +277,7 @@ ComputingStatus GeneralExtractor::generalExtractions(const ComputingTraitStandar
     std::map<FormulationAndRoute, const FullFormulationAndRoute *> fullFormulationAndRoutes;
 
     // Only look for formulation and routes if there is an existing treatment
-    if (intakeSeries.size() > 0) {
+    if (!intakeSeries.empty()) {
         if (!findFormulationAndRoutes(allFormulationAndRoutes, _request.getDrugModel().getFormulationAndRoutes(), fullFormulationAndRoutes)) {
             m_logger.error("Could not find a suitable formulation and route in the drug model");
             return ComputingStatus::CouldNotFindSuitableFormulationAndRoute;
@@ -293,7 +292,7 @@ ComputingStatus GeneralExtractor::generalExtractions(const ComputingTraitStandar
     std::map<AnalyteGroupId, AbsorptionModel > absorptionModels;
 
     for (const auto &analyteSet : _request.getDrugModel().getAnalyteSets()) {
-        if (allFormulationAndRoutes.size() != 0) {
+        if (!allFormulationAndRoutes.empty()) {
             const FullFormulationAndRoute *singleFormulationAndRoute = fullFormulationAndRoutes[allFormulationAndRoutes[0]];
             absorptionModels[analyteSet->getId()] = singleFormulationAndRoute->getAbsorptionModel(analyteSet->getId());
         }
@@ -365,7 +364,7 @@ ComputingStatus GeneralExtractor::generalExtractions(const ComputingTraitStandar
         // TODO : This should not necessarily be a single formulation and route
         Formulation formulation = Formulation::Undefined;
         AdministrationRoute route = AdministrationRoute::Undefined;
-        if (allFormulationAndRoutes.size() > 0) {
+        if (!allFormulationAndRoutes.empty()) {
             formulation = allFormulationAndRoutes[0].getFormulation();
             route = allFormulationAndRoutes[0].getAdministrationRoute();
         }
@@ -460,8 +459,8 @@ bool GeneralExtractor::findFormulationAndRoutes(std::vector<FormulationAndRoute>
 
 ComputingStatus GeneralExtractor::convertAnalytes(IntakeSeries &_intakeSeries, const Tucuxi::Core::DrugModel &_drugModel, const AnalyteSet *_analyteGroup)
 {
-    for (size_t i = 0; i < _intakeSeries.size(); i++) {
-        const FullFormulationAndRoute *formulation = _drugModel.getFormulationAndRoutes().get(_intakeSeries[i].getFormulationAndRoute());
+    for (auto & intakeSerie : _intakeSeries) {
+        const FullFormulationAndRoute *formulation = _drugModel.getFormulationAndRoutes().get(intakeSerie.getFormulationAndRoute());
         if (formulation == nullptr) {
             return ComputingStatus::AnalyteConversionError;
         }
@@ -469,8 +468,8 @@ ComputingStatus GeneralExtractor::convertAnalytes(IntakeSeries &_intakeSeries, c
         const AnalyteConversion *analyteConversion = formulation->getAnalyteConversion(_analyteGroup->getAnalytes()[0]->getAnalyteId());
         if (analyteConversion != nullptr) {
             double factor = analyteConversion->getFactor();
-            DoseValue newDose = _intakeSeries[i].getDose() * factor;
-            _intakeSeries[i].setDose(newDose);
+            DoseValue newDose = intakeSerie.getDose() * factor;
+            intakeSerie.setDose(newDose);
         }
     }
     return ComputingStatus::Ok;

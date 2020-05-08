@@ -10,9 +10,7 @@ namespace Tucuxi {
 namespace Core {
 
 ComputingResponseExport::ComputingResponseExport()
-{
-
-}
+= default;
 
 
 bool ComputingResponseExport::exportToFiles(const Query::ComputingQueryResponse &_computingQueryResponse, std::string _filePath)
