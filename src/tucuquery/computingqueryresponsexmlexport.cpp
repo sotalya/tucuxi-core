@@ -712,8 +712,6 @@ void ComputingQueryResponseXmlExport::exportSingleDose(const Tucuxi::Core::Singl
 
     exportFormulationAndRoute(_dosage, _rootNode);
 
-    addNode(_rootNode, "infusionTimeInMinutes", _dosage.getInfusionTime().toMinutes());
-
 }
 
 void ComputingQueryResponseXmlExport::exportDose(const Tucuxi::Core::SingleDose &_dosage, Tucuxi::Common::XmlNode &_rootNode)
@@ -724,6 +722,7 @@ void ComputingQueryResponseXmlExport::exportDose(const Tucuxi::Core::SingleDose 
 
     addNode(dose, "value", double(_dosage.getDose()));
     addNode(dose, "unit", std::string("mg"));
+    addNode(dose, "infusionTimeInMinutes", _dosage.getInfusionTime().toMinutes());
 
 }
 
