@@ -97,10 +97,9 @@ string ConcentrationData::getUnit() const
 SampleData::SampleData(
         string& _sampleID,
         Common::DateTime& _pSampleDate,
-        vector<unique_ptr<ConcentrationData> >& _concentrations,
-        bool _likelyhoodUse
+        vector<unique_ptr<ConcentrationData> >& _concentrations
 ) : m_sampleID(_sampleID), m_pSampleDate(_pSampleDate),
-    m_concentrations(move(_concentrations)), m_likelyhoodUse(_likelyhoodUse)
+    m_concentrations(move(_concentrations))
 {}
 
 string SampleData::getSampleID() const
@@ -118,10 +117,6 @@ const vector<unique_ptr<ConcentrationData> >& SampleData::getConcentrations() co
     return m_concentrations;
 }
 
-bool SampleData::getLikelyhoodUse() const
-{
-    return m_likelyhoodUse;
-}
 
 // TargetData class
 

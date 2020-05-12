@@ -8,7 +8,7 @@
 #include "tucucommon/xmlnode.h"
 #include "tucucommon/xmldocument.h"
 #include "tucucommon/translatablestring.h"
-#include "tucucommon/iimport.h"
+#include "tucucommon/xmlimporter.h"
 
 #include "tucucore/definitions.h"
 #include "tucucore/drugmodel/errormodel.h"
@@ -61,7 +61,7 @@ public:
 };
 
 
-class DrugModelImport : public Tucuxi::Common::IImport
+class DrugModelImport : public Tucuxi::Common::XMLImporter
 {
 public:
 
@@ -171,8 +171,6 @@ protected:
     JSOperation* extractJSOperation(Tucuxi::Common::XmlNodeIterator _node);
     Tucuxi::Common::TranslatableString extractTranslatableString(Tucuxi::Common::XmlNodeIterator _node, std::string _insideName);
     DrugModelMetadata* extractHead(Tucuxi::Common::XmlNodeIterator _node);
-
-    void setNodeError(Tucuxi::Common::XmlNodeIterator _node);
 
 };
 

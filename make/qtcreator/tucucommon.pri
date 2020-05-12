@@ -1,6 +1,7 @@
 
 SOURCES +=  \
-    $$PWD/../../libs/spdlog-master-20170622/include/spdlog/fmt/bundled/format.cc
+    $$PWD/../../libs/spdlog-master-20170622/include/spdlog/fmt/bundled/format.cc \
+    $$PWD/../../src/tucucommon/xmlimporter.cpp
 
 HEADERS += \
     $$PWD/../../src/tucucommon/component.h \
@@ -17,6 +18,7 @@ HEADERS += \
     $$PWD/../../src/tucucommon/basetypes.h \
     $$PWD/../../src/tucucommon/xmlattribute.h \
     $$PWD/../../src/tucucommon/xmldocument.h \
+    $$PWD/../../src/tucucommon/xmlimporter.h \
     $$PWD/../../src/tucucommon/xmliterator.h \
     $$PWD/../../src/tucucommon/xmlnode.h \
     $$PWD/../../src/tucucommon/general.h \

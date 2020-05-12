@@ -42,7 +42,6 @@ public:
             const std::string& _clientID,
             const Tucuxi::Common::DateTime& _pQueryDate,
             const std::string& _language,
-            std::unique_ptr<AdministrativeData> _pAdmin,
             std::unique_ptr<DrugTreatmentData> _pParameters,
             std::vector< std::unique_ptr< RequestData > >& _requests
     );
@@ -59,7 +58,6 @@ public:
     std::string getClientID() const;
     Tucuxi::Common::DateTime getpQueryDate() const;
     std::string getLanguage() const;
-    const AdministrativeData& getpAdmin() const;
     const DrugTreatmentData& getpParameters() const;
     const std::vector< std::unique_ptr< RequestData > >& getRequests() const;
 
@@ -75,9 +73,6 @@ protected:
 
     /// The language supported by the client.
     const std::string m_language;
-
-    /// The administrative data used for the report generation.
-    std::unique_ptr<AdministrativeData> m_pAdmin;
 
     /// The data of the patient used for the computations.
     std::unique_ptr<DrugTreatmentData> m_pParameters;

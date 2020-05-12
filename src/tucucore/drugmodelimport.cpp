@@ -163,25 +163,6 @@ Unit DrugModelImport::extractUnit(Tucuxi::Common::XmlNodeIterator _node)
 }
 
 
-void DrugModelImport::setNodeError(Tucuxi::Common::XmlNodeIterator _node)
-{
-    std::string errorMessage;
-    Tucuxi::Common::XmlNode node = _node->getParent();
-    while (node.isValid()) {
-        if (!node.getName().empty()) {
-            errorMessage = "<" + node.getName() + ">" + errorMessage;
-        }
-        node = node.getParent();
-    }
-    if (_node->getValue() == "") {
-        errorMessage += "<" + _node->getName() + "> contains an empty value.";
-    }
-    else {
-        errorMessage += "<" + _node->getName() + "> contains an invalid value : " + _node->getValue();
-    }
-    setResult(Result::Error, errorMessage);
-}
-
 double DrugModelImport::extractDouble(Tucuxi::Common::XmlNodeIterator _node)
 {
     double result;

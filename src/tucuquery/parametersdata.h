@@ -113,8 +113,7 @@ public:
     SampleData(
         std::string& _sampleID,
         Tucuxi::Common::DateTime& _pSampleDate,
-        std::vector< std::unique_ptr<ConcentrationData> >& _concentrations,
-        bool _likelyhoodUse = false
+        std::vector< std::unique_ptr<ConcentrationData> >& _concentrations
     );
 
     SampleData(SampleData& _other) = delete;
@@ -123,13 +122,11 @@ public:
     std::string getSampleID() const;
     const Tucuxi::Common::DateTime getpSampleDate() const;
     const std::vector<std::unique_ptr<ConcentrationData> >& getConcentrations() const;
-    bool getLikelyhoodUse() const;
 
 protected:
     const std::string m_sampleID;
     const Tucuxi::Common::DateTime m_pSampleDate;
     std::vector< std::unique_ptr<ConcentrationData> > m_concentrations;
-    const bool m_likelyhoodUse;
 };
 
 class TargetData
