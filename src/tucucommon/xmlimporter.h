@@ -57,6 +57,8 @@ protected:
     DateTime getChildDateTime(Common::XmlNodeIterator _rootIterator, const string& _childName);
     Duration getChildDuration(Common::XmlNodeIterator _rootIterator, const string& _childName);
 
+    void isNodeIteratorValid(Common::XmlNodeIterator _rootIterator);
+
 
 
 private:

@@ -162,7 +162,6 @@ Duration XMLImporter::extractDuration(Common::XmlNodeIterator _node)
         size_t pos = 0;
         std::string token;
 
-
         while ((pos = s.find(delimiter)) != std::string::npos) {
             token = s.substr(0, pos);
             values.push_back(std::stoi(token));
@@ -191,10 +190,7 @@ Core::Unit XMLImporter::getChildUnit(Common::XmlNodeIterator _rootIterator, cons
 {
     auto child = _rootIterator->getChildren(_childName);
 
-    if(child == Common::XmlNodeIterator::none())
-    {
-        setNodeError(_rootIterator);
-    }
+    isNodeIteratorValid(child);
 
     return extractUnit(child);
 }
@@ -203,10 +199,7 @@ double XMLImporter::getChildDouble(Common::XmlNodeIterator _rootIterator, const 
 {
     auto child = _rootIterator->getChildren(_childName);
 
-    if(child == Common::XmlNodeIterator::none())
-    {
-        setNodeError(_rootIterator);
-    }
+    isNodeIteratorValid(child);
 
     return extractDouble(child);
 }
@@ -215,10 +208,7 @@ bool XMLImporter::getChildBool(Common::XmlNodeIterator _rootIterator, const std:
 {
     auto child = _rootIterator->getChildren(_childName);
 
-    if(child == Common::XmlNodeIterator::none())
-    {
-        setNodeError(_rootIterator);
-    }
+    isNodeIteratorValid(child);
 
     return extractBool(child);
 }
@@ -227,10 +217,7 @@ int XMLImporter::getChildInt(Common::XmlNodeIterator _rootIterator, const std::s
 {
     auto child = _rootIterator->getChildren(_childName);
 
-    if(child == Common::XmlNodeIterator::none())
-    {
-        setNodeError(_rootIterator);
-    }
+    isNodeIteratorValid(child);
 
     return extractInt(child);
 }
@@ -239,10 +226,7 @@ DateTime XMLImporter::getChildDateTime(Common::XmlNodeIterator _rootIterator, co
 {
     auto child = _rootIterator->getChildren(_childName);
 
-    if(child == Common::XmlNodeIterator::none())
-    {
-        setNodeError(_rootIterator);
-    }
+    isNodeIteratorValid(child);
 
     return extractDateTime(child);
 }
@@ -251,12 +235,17 @@ Duration XMLImporter::getChildDuration(Common::XmlNodeIterator _rootIterator, co
 {
     auto child = _rootIterator->getChildren(_childName);
 
-    if(child == Common::XmlNodeIterator::none())
+    isNodeIteratorValid(child);
+
+    return extractDuration(child);
+}
+
+void XMLImporter::isNodeIteratorValid(Common::XmlNodeIterator _rootIterator)
+{
+    if(_rootIterator == Common::XmlNodeIterator::none())
     {
         setNodeError(_rootIterator);
     }
-
-    return extractDuration(child);
 }
 
 } // namespace Common

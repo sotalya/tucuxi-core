@@ -103,6 +103,7 @@ QueryImport::Result QueryImport::importDocument(
     unique_ptr<DrugTreatmentData> pParametersData = createDrugTreatmentData(_document);
 
     Common::XmlNodeIterator requestsRootIterator = root.getChildren(REQUESTS_NODE_NAME);
+    isNodeIteratorValid(requestsRootIterator);
     Common::XmlNodeIterator requestsIterator = requestsRootIterator->getChildren(REQUEST_REQUESTS_NODE_NAME);
 
     vector< unique_ptr<RequestData> > requests;
@@ -133,19 +134,20 @@ unique_ptr<DrugTreatmentData> QueryImport::createDrugTreatmentData(Tucuxi::Commo
     static const string DRUGS_NODE_NAME = "drugs";
 
     Common::XmlNode root = _document.getRoot();
-    Common::XmlNodeIterator parametersRootIterator = root.getChildren(DRUGTREATMENT_NODE_NAME);
 
-    if (!parametersRootIterator->isValid()) {
-        // TODO
-        //return nullptr;
-    }
+    Common::XmlNodeIterator parametersRootIterator = root.getChildren(DRUGTREATMENT_NODE_NAME);
+    isNodeIteratorValid(parametersRootIterator);
 
     Common::XmlNodeIterator patientRootIterator = parametersRootIterator->getChildren(PATIENT_NODE_NAME);
+    isNodeIteratorValid(patientRootIterator);
+
     unique_ptr<PatientData> pPatient = createPatientData(patientRootIterator);
 
     vector< unique_ptr<DrugData> > drugs;
     Common::XmlNodeIterator drugsRootIterator  = parametersRootIterator->getChildren(DRUGS_NODE_NAME);
+    isNodeIteratorValid(drugsRootIterator);
     Common::XmlNodeIterator drugsIterator = drugsRootIterator->getChildren();
+
     while(drugsIterator != Common::XmlNodeIterator::none()) {
         drugs.push_back(createDrugData(drugsIterator));
         drugsIterator++;
