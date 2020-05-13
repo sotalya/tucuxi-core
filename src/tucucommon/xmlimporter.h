@@ -42,7 +42,6 @@ protected:
 
 
     Core::Unit extractUnit(Common::XmlNodeIterator _node) ;
-
     double extractDouble(Common::XmlNodeIterator _node) ;
     bool extractBool(Common::XmlNodeIterator _node) ;
     int extractInt(Common::XmlNodeIterator _node) ;

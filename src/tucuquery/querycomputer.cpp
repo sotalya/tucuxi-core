@@ -23,6 +23,7 @@ QueryComputer::QueryComputer()
 
 void QueryComputer::compute(ComputingQuery& _query, ComputingQueryResponse& _response)
 {
+
     Core::IComputingService* computingComponent = dynamic_cast<Core::IComputingService*>(Core::ComputingComponent::createComponent());
 
     unsigned int errorsCounter = 0;
@@ -45,20 +46,24 @@ void QueryComputer::compute(ComputingQuery& _query, ComputingQueryResponse& _res
         }
     }
 
-    if(errorsCounter == _query.m_computingRequests.size())
+    if(_response.getQueryStatus() == QueryStatus::Undefined)
     {
-        _response.setQueryStatus(QueryStatus::Error);
-    }
-    else if(errorsCounter == 0)
-    {
-        _response.setQueryStatus(QueryStatus::Ok);
-    }
-    else{
-        _response.setQueryStatus(QueryStatus::PartiallyOk);
+        // THERE WAS NO ERROR UNTIL NOW
+        if(errorsCounter == _query.m_computingRequests.size())
+        {
+            _response.setQueryStatus(QueryStatus::Error);
+        }
+        else if(errorsCounter == 0)
+        {
+            _response.setQueryStatus(QueryStatus::Ok);
+        }
+        else{
+            _response.setQueryStatus(QueryStatus::PartiallyOk);
+        }
     }
 }
 
-int QueryComputer::compute(const std::string& _queryString, ComputingQueryResponse& _response)
+QueryStatus QueryComputer::compute(const std::string& _queryString, ComputingQueryResponse& _response)
 {
     Tucuxi::Common::LoggerHelper logHelper;
 
@@ -70,13 +75,12 @@ int QueryComputer::compute(const std::string& _queryString, ComputingQueryRespon
 
     if (importResult != QueryImport::Result::Ok) {
         if (importResult == QueryImport::Result::CantOpenFile) {
-            logHelper.error("Error with the import of query file. Unable to open \"{}\"", _queryString);
+            logHelper.error("Error with the import of query file");
         }
         else {
-            logHelper.error("Error with the import of query file \"{}\"", _queryString);
+            logHelper.error("Error with the import of query file. {}", importer.getErrorMessage());
         }
-        return 1;
-        _response.setQueryStatus(QueryStatus::ImportError);
+        _response.setQueryStatus(QueryStatus::ImportError, importer.getErrorMessage());
     }
 
     Tucuxi::Query::IQueryLogger *queryLogger;
@@ -88,10 +92,6 @@ int QueryComputer::compute(const std::string& _queryString, ComputingQueryRespon
             queryLogger->saveQuery(_queryString, query->getQueryID());
         }
     }
-    else {
-        return 0;
-    }
-
 
     QueryToCoreExtractor extractor;
 
@@ -101,7 +101,7 @@ int QueryComputer::compute(const std::string& _queryString, ComputingQueryRespon
 
     delete query;
 
-    return 0;
+    return _response.getQueryStatus();
 
 }
 

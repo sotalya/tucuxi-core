@@ -44,17 +44,20 @@ QueryStatus CliComputer::compute(const std::string& _inputFileName,
     std::ifstream ifs(_inputFileName);
     std::string xmlString((std::istreambuf_iterator<char>(ifs)),(std::istreambuf_iterator<char>()));
 
-    queryComputer->compute(xmlString, computingQueryResponse);
+    QueryStatus queryStatus = queryComputer->compute(xmlString, computingQueryResponse);
 
-    ComputingResponseExport exporter;
+    if(queryStatus == QueryStatus::Ok)
+    {
+        ComputingResponseExport exporter;
 
-    if (!exporter.exportToFiles(computingQueryResponse, _outputPath)) {
-        logHelper.error("Could not export the response file");
-        return computingQueryResponse.getQueryStatus();
+        if (!exporter.exportToFiles(computingQueryResponse, _outputPath)) {
+            logHelper.error("Could not export the response file");
+            return computingQueryResponse.getQueryStatus();
+        }
+
+        logHelper.info("The response files were successfully generated");
+
     }
-
-    logHelper.info("The response files were successfully generated");
-
 
     ComputingQueryResponseXmlExport xmlExporter;
 
@@ -68,4 +71,8 @@ QueryStatus CliComputer::compute(const std::string& _inputFileName,
     logHelper.info("The response XML file was successfully generated");
 
     return computingQueryResponse.getQueryStatus();
+
+
+
+    return queryStatus;
 }

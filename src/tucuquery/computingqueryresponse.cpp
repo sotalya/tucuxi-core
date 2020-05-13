@@ -34,9 +34,20 @@ QueryStatus ComputingQueryResponse::getQueryStatus() const
     return m_queryStatus;
 }
 
+std::string ComputingQueryResponse::getErrorMessage() const
+{
+    return m_errorMessage;
+}
+
 void ComputingQueryResponse::setQueryStatus(QueryStatus _queryStatus)
 {
     m_queryStatus = _queryStatus;
+}
+
+void ComputingQueryResponse::setQueryStatus(QueryStatus _queryStatus, std::string _errorMessage)
+{
+    m_queryStatus = _queryStatus;
+    m_errorMessage = _errorMessage;
 }
 
 void ComputingQueryResponse::addRequestResponse(std::unique_ptr<Core::ComputingResponse> _computingResponse,
@@ -48,7 +59,7 @@ void ComputingQueryResponse::addRequestResponse(std::unique_ptr<Core::ComputingR
 
 void ComputingQueryResponse::setRequestResponseId(Tucuxi::Core::RequestResponseId _requestResponseId)
 {
-   m_queryId =std::move(_requestResponseId);
+   m_queryId = std::move(_requestResponseId);
 }
 
 ComputingResponseMetaData::ComputingResponseMetaData(

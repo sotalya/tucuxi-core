@@ -95,8 +95,8 @@ QueryImport::Result QueryImport::importDocument(
     string drugId = root.getChildren(DRUG_ID_NODE_NAME)->getValue();
     string clientId = root.getChildren(CLIENT_ID_NODE_NAME)->getValue();
 
-    string dateValue = root.getChildren(DATE_NODE_NAME)->getValue();
-    Common::DateTime date(dateValue, DATE_FORMAT);
+    Common::XmlNodeIterator dateIterator = root.getChildren(DATE_NODE_NAME);
+    Common::DateTime date = extractDateTime(dateIterator);
 
     string language = root.getChildren(LANGUAGE_NODE_NAME)->getValue();
 
@@ -365,7 +365,10 @@ unique_ptr<Treatment> QueryImport::createTreatment(Common::XmlNodeIterator& _tre
     unique_ptr<Core::DosageHistory> pDosageHistory = make_unique<Core::DosageHistory>();
     while(dosageTimeRangeIterator != Common::XmlNodeIterator::none()) {
         unique_ptr<Core::DosageTimeRange> pDosageTimeRange = createDosageTimeRange(dosageTimeRangeIterator);
-        pDosageHistory->addTimeRange(*pDosageTimeRange);
+        if(pDosageTimeRange != nullptr)
+        {
+           pDosageHistory->addTimeRange(*pDosageTimeRange);
+        }
         dosageTimeRangeIterator++;
     }
 
@@ -383,11 +386,17 @@ unique_ptr<Core::DosageTimeRange> QueryImport::createDosageTimeRange(Common::Xml
 
     Common::XmlNodeIterator dosageRootIterator = _dosageTimeRangeRootIterator->getChildren(DOSAGE_NODE_NAME);
     unique_ptr<Core::Dosage> pDosage = createDosage(dosageRootIterator);
+    if(pDosage == nullptr)
+    {
+        return nullptr;
+    }
+
     return make_unique<Core::DosageTimeRange>(
                 start,
                 end,
                 *pDosage
                 );
+
 }
 
 unique_ptr<Core::Dosage> QueryImport::createDosage(Common::XmlNodeIterator& _dosageRootIterator)
@@ -398,7 +407,13 @@ unique_ptr<Core::Dosage> QueryImport::createDosage(Common::XmlNodeIterator& _dos
     if (dosageIterator->getName() == DOSAGE_LOOP_NODE_NAME) {
         // Create dosage loop from a bounded dosage
         unique_ptr<Core::DosageBounded> pDosageBounded = createDosageBounded(dosageIterator);
+        if(pDosageBounded == nullptr)
+        {
+            return nullptr;
+        }
         return make_unique<Core::DosageLoop>(*pDosageBounded);
+
+
     }
     // Create bounded dosage
     // For this case we give the same root iterator as the one given as parameter for this method
@@ -438,24 +453,37 @@ unique_ptr<Core::DosageBounded> QueryImport::createDosageBounded(Common::XmlNode
         static const string INTERVAL_NODE_NAME                 = "interval";
 
 
-        // string intervalValue = dosageBoundedIterator->getChildren(INTERVAL_NODE_NAME)->getValue();
-        // Common::TimeOfDay inter = Common::DateTime(intervalValue, "%H:%M:%S").getTimeOfDay();
         Common::Duration interval = getChildDuration(dosageBoundedIterator, INTERVAL_NODE_NAME);
 
         Common::XmlNodeIterator doseRootIterator = dosageBoundedIterator->getChildren(DOSE_NODE_NAME);
         Core::DoseValue doseValue = getChildDouble(doseRootIterator, DOSE_VALUE_NODE_NAME);
+
         double infuTimeInMinutes = getChildDouble(doseRootIterator, DOSE_INFUSIONTIME_NAME);
         Common::Duration infusionTime = Duration(std::chrono::minutes(static_cast<int>(infuTimeInMinutes)));
 
         Common::XmlNodeIterator formulationAndRouteRootIterator = dosageBoundedIterator->getChildren(FORMULATION_AND_ROUTE_NODE_NAME);
         unique_ptr<Core::FormulationAndRoute> formulationAndRoute = createFormulationAndRoute(formulationAndRouteRootIterator);
 
-        pDosageBounded = make_unique<Core::LastingDose>(
-                    doseValue,
-                    *formulationAndRoute,
-                    infusionTime,
-                    interval
-                    );
+        if(interval > Duration(std::chrono::seconds(0)))
+        {
+            try {
+                pDosageBounded = make_unique<Core::LastingDose>(
+                            doseValue,
+                            *formulationAndRoute,
+                            infusionTime,
+                            interval
+                            );
+
+            } catch (std::invalid_argument &e) {
+                setNodeError(dosageBoundedIterator);
+                pDosageBounded = nullptr;
+            }
+        }
+        else
+        {
+            pDosageBounded = nullptr;
+        }
+
     } else if (dosageBoundedIterator->getName() == DAILY_DOSAGE_NODE_NAME) {
         static const string TIME_NODE_NAME = "time";
 
@@ -471,12 +499,19 @@ unique_ptr<Core::DosageBounded> QueryImport::createDosageBounded(Common::XmlNode
         double infuTimeInMinutes = getChildDouble(doseRootIterator, DOSE_INFUSIONTIME_NAME);
         Common::Duration infusionTime = Duration(std::chrono::minutes(static_cast<int>(infuTimeInMinutes)));
 
-        pDosageBounded = make_unique<Core::DailyDose>(
-                    doseValue,
-                    *formulationAndRoute,
-                    infusionTime,
-                    time
-                    );
+
+        try {
+            pDosageBounded = make_unique<Core::DailyDose>(
+                        doseValue,
+                        *formulationAndRoute,
+                        infusionTime,
+                        time
+                        );
+        } catch (std::invalid_argument &e) {
+             setNodeError(dosageBoundedIterator);
+             pDosageBounded = nullptr;
+        }
+
     } else if (dosageBoundedIterator->getName() == WEEKLY_DOSAGE_NODE_NAME) {
         static const string DAY_NODE_NAME = "day";
         static const string TIME_NODE_NAME = "time";
@@ -500,13 +535,18 @@ unique_ptr<Core::DosageBounded> QueryImport::createDosageBounded(Common::XmlNode
         double infuTimeInMinutes = getChildDouble(doseRootIterator, DOSE_INFUSIONTIME_NAME);
         Common::Duration infusionTime = Duration(std::chrono::minutes(static_cast<int>(infuTimeInMinutes)));
 
-        pDosageBounded = make_unique<Core::WeeklyDose>(
-                    doseValue,
-                    *formulationAndRoute,
-                    infusionTime,
-                    time,
-                    Core::DayOfWeek(static_cast<unsigned>(day))
-                    );
+        try{
+            pDosageBounded = make_unique<Core::WeeklyDose>(
+                        doseValue,
+                        *formulationAndRoute,
+                        infusionTime,
+                        time,
+                        Core::DayOfWeek(static_cast<unsigned>(day))
+                        );
+        } catch (std::invalid_argument &e) {
+             setNodeError(dosageBoundedIterator);
+             pDosageBounded = nullptr;
+        }
     }
 
     return pDosageBounded;

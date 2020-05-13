@@ -55,8 +55,14 @@ public:
 
     Tucuxi::Core::RequestResponseId getQueryId() const;
     const std::vector<SingleResponseData>& getRequestResponses() const;
+
     QueryStatus getQueryStatus() const;
+
+    std::string getErrorMessage() const;
+
     void setQueryStatus(QueryStatus _queryStatus);
+
+    void setQueryStatus(QueryStatus _queryStatus, std::string _errorMessage);
 
     void addRequestResponse(std::unique_ptr<Tucuxi::Core::ComputingResponse> _computingResponse,
                             std::unique_ptr<ComputingResponseMetaData> _metaData);
@@ -65,6 +71,8 @@ public:
     Tucuxi::Core::RequestResponseId m_queryId;
 
     QueryStatus m_queryStatus {QueryStatus::Undefined};
+
+    std::string m_errorMessage;
 
     std::vector<SingleResponseData> m_requestResponses;
 

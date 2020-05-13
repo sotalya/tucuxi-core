@@ -28,10 +28,6 @@ public:
 
 protected:
 
-    bool exportToFile(const Tucuxi::Core::ComputingResponse &_computingResponse, std::string _fileName);
-
-    bool exportToString(const Tucuxi::Core::ComputingResponse &_computingResponse, std::string &_xmlString);
-
     bool exportAdjustment(const Tucuxi::Core::AdjustmentData *_prediction,
                           Tucuxi::Common::XmlNode &_rootNode);
 

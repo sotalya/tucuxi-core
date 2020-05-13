@@ -18,29 +18,7 @@ namespace Query {
 using namespace Core;
 
 ComputingQueryResponseXmlExport::ComputingQueryResponseXmlExport()
-{
-
-}
-
-bool ComputingQueryResponseXmlExport::exportToFile(const ComputingResponse &_computingResponse, std::string _fileName)
-{
-    std::string xmlString;
-    if (!exportToString(_computingResponse, xmlString)) {
-        return false;
-    }
-
-    std::ofstream file;
-    file.open(_fileName);
-    if ((file.rdstate() & std::ostream::failbit) != 0) {
-        Tucuxi::Common::LoggerHelper logHelper;
-        logHelper.error("The file {} could not be opened.", _fileName);
-        return false;
-    }
-    file << xmlString;
-    file.close();
-
-    return true;
-}
+{}
 
 bool ComputingQueryResponseXmlExport::exportToFile(const ComputingQueryResponse &_computingQueryResponse, std::string _fileName)
 {
@@ -59,136 +37,6 @@ bool ComputingQueryResponseXmlExport::exportToFile(const ComputingQueryResponse 
     file << xmlString;
     file.close();
 
-    return true;
-}
-
-bool ComputingQueryResponseXmlExport::exportToString(const ComputingResponse &_computingResponse, std::string &_xmlString)
-{
-    // Ensure the function is reentrant
-    static std::mutex mutex;
-    std::lock_guard<std::mutex> lock(mutex);
-
-    Tucuxi::Common::XmlNode root = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "tucuxiComputation");
-    auto attribute1 = m_doc.createAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
-    auto attribute2 = m_doc.createAttribute("xsi:noNamespaceSchemaLocation", "computing_response.xsd");
-    root.addAttribute(attribute1);
-    root.addAttribute(attribute2);
-    m_doc.setRoot(root);
-    Tucuxi::Common::XmlNode queryId = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "queryId", _computingResponse.getId());
-    root.addChild(queryId);
-    Tucuxi::Common::XmlNode responses = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "responses");
-    root.addChild(responses);
-
-/*    Tucuxi::Common::XmlNode node1 = doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "CHILD", "Salut");
-    node1.addAttribute(doc.createAttribute("text", "abc"));
-    node1.addAttribute(doc.createAttribute("id", "1"));
-    root.addChild(node1);
-    Tucuxi::Common::XmlNode node2 = doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "CHILD", "Tcho");
-    node2.addAttribute(doc.createAttribute("text", "def"));
-    node2.addAttribute(doc.createAttribute("id", "2"));
-    root.addChild(node2);
-*/
-
-    const auto response = _computingResponse.getData();
-    if (response != nullptr) {
-
-        Tucuxi::Common::XmlNode responseNode = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "response");
-
-        responses.addChild(responseNode);
-
-        Tucuxi::Common::XmlNode requestId = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "requestId",
-                                                         response->getId());
-        responseNode.addChild(requestId);
-
-        Tucuxi::Common::XmlNode issuesNode = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "issues");
-        responseNode.addChild(issuesNode);
-
-        // We start by checking for adjustements, as AdjustmentResponse is a subclass of SinglePredictionResponse
-        if (dynamic_cast<const Tucuxi::Core::AdjustmentData*>(response) != nullptr) {
-
-            Tucuxi::Common::XmlNode dataNode = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "dataAdjustment");
-
-            Tucuxi::Common::XmlNode requestType = m_doc.createNode(
-                        Tucuxi::Common::EXmlNodeType::Element, "requestType", "adjustment");
-            responseNode.addChild(requestType);
-
-            const Tucuxi::Core::AdjustmentData* prediction =
-                    dynamic_cast<const Tucuxi::Core::AdjustmentData*>(response);
-
-            if (!exportAdjustment(prediction, dataNode)) {
-                Tucuxi::Common::XmlNode issue = m_doc.createNode(
-                            Tucuxi::Common::EXmlNodeType::Element, "error", "Cannot export the adjustments");
-                issuesNode.addChild(issue);
-            }
-            responseNode.addChild(dataNode);
-
-        }
-        else if (dynamic_cast<const Tucuxi::Core::SinglePredictionData*>(response) != nullptr) {
-
-            Tucuxi::Common::XmlNode dataNode = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "dataPrediction");
-
-            Tucuxi::Common::XmlNode requestType = m_doc.createNode(
-                        Tucuxi::Common::EXmlNodeType::Element, "requestType", "prediction");
-            responseNode.addChild(requestType);
-
-            const Tucuxi::Core::SinglePredictionData* prediction =
-                    dynamic_cast<const Tucuxi::Core::SinglePredictionData*>(response);
-
-            if (!exportSinglePrediction(prediction, dataNode)) {
-                Tucuxi::Common::XmlNode issue = m_doc.createNode(
-                            Tucuxi::Common::EXmlNodeType::Element, "error", "Cannot export the prediction");
-                issuesNode.addChild(issue);
-            }
-            responseNode.addChild(dataNode);
-
-        }
-        else if (dynamic_cast<const Tucuxi::Core::SinglePointsData*>(response) != nullptr) {
-
-            Tucuxi::Common::XmlNode dataNode = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "dataPoints");
-
-            Tucuxi::Common::XmlNode requestType = m_doc.createNode(
-                        Tucuxi::Common::EXmlNodeType::Element, "requestType", "singlePoints");
-            responseNode.addChild(requestType);
-
-            const Tucuxi::Core::SinglePointsData* prediction =
-                    dynamic_cast<const Tucuxi::Core::SinglePointsData*>(response);
-
-            if (!exportSinglePoints(prediction, dataNode)) {
-                Tucuxi::Common::XmlNode issue = m_doc.createNode(
-                            Tucuxi::Common::EXmlNodeType::Element, "error", "Cannot export the points");
-                issuesNode.addChild(issue);
-            }
-            responseNode.addChild(dataNode);
-
-        }
-        else if (dynamic_cast<const Tucuxi::Core::PercentilesData*>(response) != nullptr) {
-
-            Tucuxi::Common::XmlNode dataNode = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "dataPercentiles");
-
-            Tucuxi::Common::XmlNode requestType = m_doc.createNode(
-                        Tucuxi::Common::EXmlNodeType::Element, "requestType", "percentiles");
-            responseNode.addChild(requestType);
-
-            const Tucuxi::Core::PercentilesData* prediction =
-                    dynamic_cast<const Tucuxi::Core::PercentilesData*>(response);
-
-            if (!exportPercentiles(prediction, dataNode)) {
-                Tucuxi::Common::XmlNode issue = m_doc.createNode(
-                            Tucuxi::Common::EXmlNodeType::Element, "error", "Cannot export the percentiles");
-                issuesNode.addChild(issue);
-            }
-            responseNode.addChild(dataNode);
-
-        }
-        else {
-            // TODO : Not supported export
-        }
-
-    }
-
-
-
-    m_doc.toString(_xmlString, true);
     return true;
 }
 
@@ -220,12 +68,18 @@ bool ComputingQueryResponseXmlExport::exportToString(const ComputingQueryRespons
     Tucuxi::Common::XmlNode statusCodeLit = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "statusCodeLit", getQueryStatus(_computingQueryResponse.getQueryStatus(), STATUS_CODE_MESSAGE));
     queryStatus.addChild(statusCodeLit);
 
-    Tucuxi::Common::XmlNode message = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "message");
+    Tucuxi::Common::XmlNode message = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "message", _computingQueryResponse.getErrorMessage());
     queryStatus.addChild(message);
 
     Tucuxi::Common::XmlNode description = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "description");
     queryStatus.addChild(description);
 
+    if(_computingQueryResponse.getQueryStatus() != QueryStatus::Ok)
+    {
+        //Only queryId and queryStatus Information
+        m_doc.toString(_xmlString, true);
+        return true;
+    }
 
     Tucuxi::Common::XmlNode responses = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "responses");
     root.addChild(responses);
@@ -260,6 +114,7 @@ bool ComputingQueryResponseXmlExport::exportToString(const ComputingQueryRespons
 
         Tucuxi::Common::XmlNode issuesNode = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "issues");
         responseNode.addChild(issuesNode);
+
 
         // We start by checking for adjustements, as AdjustmentResponse is a subclass of SinglePredictionResponse
         if (dynamic_cast<const Tucuxi::Core::AdjustmentData*>(response.m_computingResponse->getData()) != nullptr) {

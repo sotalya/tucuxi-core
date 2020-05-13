@@ -29,7 +29,7 @@ public:
     /// The list of responses embedded in the query response correspond to the
     /// ComputingRequest embedded in _queryString
     ///
-    int compute(const std::string& _queryString, ComputingQueryResponse& _response);
+    QueryStatus compute(const std::string& _queryString, ComputingQueryResponse& _response);
 
 };
 

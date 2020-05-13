@@ -71,10 +71,7 @@ Tucuxi::Core::Unit XMLImporter::extractUnit(Tucuxi::Common::XmlNodeIterator _nod
     if (unitString == "min") {
         unitString = "m";
     }
-    else {
-        setNodeError(_node);
-        unitString = "error";
-    }
+
     Tucuxi::Core::Unit result(unitString);
     return result;
 }
@@ -98,24 +95,16 @@ double XMLImporter::extractDouble(Tucuxi::Common::XmlNodeIterator _node)
 
 bool XMLImporter::extractBool(Tucuxi::Common::XmlNodeIterator _node)
 {
-    if (_node->getValue() == "true") {
+
+    const string nodeValue = _node->getValue();
+
+    if ((nodeValue == "true") || (nodeValue == "True") || (nodeValue == "1")) {
         return true;
     }
-    if (_node->getValue() == "True") {
-        return true;
-    }
-    if (_node->getValue() == "1") {
-        return true;
-    }
-    if (_node->getValue() == "false") {
+    else if ((nodeValue == "false") || (nodeValue == "False") || (nodeValue == "0")) {
         return false;
     }
-    if (_node->getValue() == "False") {
-        return false;
-    }
-    if (_node->getValue() == "0") {
-        return false;
-    }
+
     setNodeError(_node);
     return false;
 }
