@@ -29,9 +29,9 @@ struct TestDateTime : public fructose::test_base<TestDateTime>
         Tucuxi::Common::DateTime d7(2016_y / jun / 26, 23min + 24s);
         Tucuxi::Common::DateTime d8(2017_y / jul / 27, 22h + 23min + 24s);
         Tucuxi::Common::DateTime d9(2018_y / aug / 28, Tucuxi::Common::TimeOfDay(22h + 23min + 24s));
-        Tucuxi::Common::DateTime d10("2017-12-17 17:34:20Z", "%Y-%m-%d %H:%M:%SX");
+        Tucuxi::Common::DateTime d10("2017-12-17 17:34:20", "%Y-%m-%d %H:%M:%SX");
         Tucuxi::Common::DateTime d11(1951_y / may / 25, 24s);
-        Tucuxi::Common::DateTime d12("1951-12-17 17:34:20Z", "%Y-%m-%d %H:%M:%SX");
+        Tucuxi::Common::DateTime d12("1951-12-17 17:34:20", "%Y-%m-%d %H:%M:%SX");
         checkDateTime(d1, 2017, 1, 1, 0, 0, 0);
         checkDateTime(d2, 2018, 1, 1, 0, 0, 0);
         checkDateTime(d3, 2012, 2, 22, 22, 0, 0);
