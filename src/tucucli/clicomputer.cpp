@@ -44,9 +44,10 @@ QueryStatus CliComputer::compute(const std::string& _inputFileName,
     std::ifstream ifs(_inputFileName);
     std::string xmlString((std::istreambuf_iterator<char>(ifs)),(std::istreambuf_iterator<char>()));
 
-    QueryStatus queryStatus = queryComputer->compute(xmlString, computingQueryResponse);
+    queryComputer->compute(xmlString, computingQueryResponse);
 
-    if(queryStatus == QueryStatus::Ok)
+
+    if(computingQueryResponse.getQueryStatus() != QueryStatus::ImportError)
     {
         ComputingResponseExport exporter;
 
@@ -72,7 +73,4 @@ QueryStatus CliComputer::compute(const std::string& _inputFileName,
 
     return computingQueryResponse.getQueryStatus();
 
-
-
-    return queryStatus;
 }

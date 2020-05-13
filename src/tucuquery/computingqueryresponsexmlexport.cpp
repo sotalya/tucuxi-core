@@ -74,7 +74,7 @@ bool ComputingQueryResponseXmlExport::exportToString(const ComputingQueryRespons
     Tucuxi::Common::XmlNode description = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "description");
     queryStatus.addChild(description);
 
-    if(_computingQueryResponse.getQueryStatus() != QueryStatus::Ok)
+    if(_computingQueryResponse.getQueryStatus() == QueryStatus::ImportError)
     {
         //Only queryId and queryStatus Information
         m_doc.toString(_xmlString, true);

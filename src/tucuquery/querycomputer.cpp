@@ -63,7 +63,7 @@ void QueryComputer::compute(ComputingQuery& _query, ComputingQueryResponse& _res
     }
 }
 
-QueryStatus QueryComputer::compute(const std::string& _queryString, ComputingQueryResponse& _response)
+void QueryComputer::compute(const std::string& _queryString, ComputingQueryResponse& _response)
 {
     Tucuxi::Common::LoggerHelper logHelper;
 
@@ -80,7 +80,10 @@ QueryStatus QueryComputer::compute(const std::string& _queryString, ComputingQue
         else {
             logHelper.error("Error with the import of query file. {}", importer.getErrorMessage());
         }
+        _response.setRequestResponseId(query->getQueryID());
         _response.setQueryStatus(QueryStatus::ImportError, importer.getErrorMessage());
+
+        return ;
     }
 
     Tucuxi::Query::IQueryLogger *queryLogger;
@@ -100,8 +103,6 @@ QueryStatus QueryComputer::compute(const std::string& _queryString, ComputingQue
     compute(*computingQuery, _response);
 
     delete query;
-
-    return _response.getQueryStatus();
 
 }
 
