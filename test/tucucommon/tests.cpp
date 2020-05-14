@@ -13,6 +13,7 @@
 #include "test_datetime.h"
 #include "test_xml.h"
 #include "test_iterator.h"
+#include "test_xmlimporter.h"
 
 int main(int argc, char** argv) 
 {
@@ -71,6 +72,14 @@ int main(int argc, char** argv)
     res = iteratorTests.run(argc, argv);
     if (res != 0) {
         printf("Iterator test failed\n");
+        exit(1);
+    }
+
+    TestXmlImporter xmlImporterTests;
+    xmlImporterTests.add_test("XmlImporter - XmlImporter", &TestXmlImporter::xmlImporter);
+    res = xmlImporterTests.run(argc, argv);
+    if (res != 0) {
+        printf("xmlImporter test failed\n");
         exit(1);
     }
 

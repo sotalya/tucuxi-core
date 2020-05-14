@@ -13,6 +13,7 @@
 
 #include "tucucommon/loggerhelper.h"
 #include "tucucommon/componentmanager.h"
+#include "tucucommon/utils.h"
 
 struct TestLogger : public fructose::test_base<TestLogger> 
 {

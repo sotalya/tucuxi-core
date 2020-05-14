@@ -29,9 +29,10 @@ struct TestDateTime : public fructose::test_base<TestDateTime>
         Tucuxi::Common::DateTime d7(2016_y / jun / 26, 23min + 24s);
         Tucuxi::Common::DateTime d8(2017_y / jul / 27, 22h + 23min + 24s);
         Tucuxi::Common::DateTime d9(2018_y / aug / 28, Tucuxi::Common::TimeOfDay(22h + 23min + 24s));
-        Tucuxi::Common::DateTime d10("2017-12-17 17:34:20", "%Y-%m-%d %H:%M:%SX");
+        Tucuxi::Common::DateTime d10("2017-12-17 17:34:20", "%Y-%m-%d %H:%M:%S");
         Tucuxi::Common::DateTime d11(1951_y / may / 25, 24s);
-        Tucuxi::Common::DateTime d12("1951-12-17 17:34:20", "%Y-%m-%d %H:%M:%SX");
+        Tucuxi::Common::DateTime d12("1951-12-17 17:34:20", "%Y-%m-%d %H:%M:%S");
+
         checkDateTime(d1, 2017, 1, 1, 0, 0, 0);
         checkDateTime(d2, 2018, 1, 1, 0, 0, 0);
         checkDateTime(d3, 2012, 2, 22, 22, 0, 0);
@@ -44,6 +45,12 @@ struct TestDateTime : public fructose::test_base<TestDateTime>
         checkDateTime(d10, 2017, 12, 17, 17, 34, 20);
         checkDateTime(d11, 1951, 5, 25, 0, 0, 24);
         checkDateTime(d12, 1951, 12, 17, 17, 34, 20);
+
+        // Test thrown exception
+        fructose_assert_exception(Tucuxi::Common::DateTime d13("mauvais format", "%Y-%m-%dT%H:%M:%S"), std::runtime_error);
+        fructose_assert_exception(Tucuxi::Common::DateTime d14("1911-12-17 s", "%Y-%m-%dT%H:%M:%S"), std::runtime_error);
+        fructose_assert_exception(Tucuxi::Common::DateTime d15("", "%Y-%m-%dT%H:%M:%S"), std::runtime_error);
+        fructose_assert_exception(Tucuxi::Common::DateTime d16("17:34:20", "%Y-%m-%dT%H:%M:%S"), std::runtime_error);
 
         // Test differences
         Tucuxi::Common::Duration diff = d2 - d1;

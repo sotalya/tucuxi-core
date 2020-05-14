@@ -119,7 +119,8 @@ int XMLImporter::extractInt(Common::XmlNodeIterator _node)
             setNodeError(_node);
             result = 0;
         }
-    } catch (...) {
+    }
+    catch (...) {
         setNodeError(_node);
         result = 0;
     }

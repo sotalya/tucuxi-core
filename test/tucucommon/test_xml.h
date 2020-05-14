@@ -8,6 +8,7 @@
 #include "tucucommon/xmlnode.h"
 #include "tucucommon/xmlattribute.h"
 #include "tucucommon/xmliterator.h"
+#include "tucucommon/utils.h"
 
 struct TestXml : public fructose::test_base<TestXml>
 {

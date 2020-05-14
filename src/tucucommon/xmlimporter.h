@@ -16,6 +16,8 @@
 #include "tucucore/unit.h"
 #include "tucucore/residualerrormodel.h"
 
+struct TestXmlImporter;
+
 using namespace std;
 
 namespace Tucuxi {
@@ -27,6 +29,7 @@ class XMLImporter : public IImport
 public:
 
     string getErrorMessage() const override;
+
 
 protected:
 
@@ -65,6 +68,8 @@ private:
     Result m_result;
 
     std::string m_errorMessage;
+
+//    friend TestXmlImporter;
 
 };
 
