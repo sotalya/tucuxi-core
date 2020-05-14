@@ -7,6 +7,7 @@
 #include <random>
 #include <time.h>
 #include <mutex>
+#include <algorithm>
 
 #include "definitions.h"
 #include "concentrationcalculator.h"
@@ -192,6 +193,8 @@ ComputingStatus MonteCarloPercentileCalculatorBase::computePredictions(
     // Parallelize this for loop with some shared and some copied-to-each-thread-with-current-state (firstprivate) variables
     int nbThreads = std::max(std::thread::hardware_concurrency(), static_cast<unsigned int>(1));
 
+    unsigned int nbPatientsPerThread = static_cast<unsigned int>(ceil(static_cast<double>(_nbPatients) / static_cast<double>(nbThreads)));
+
     std::vector<std::thread> workers;
     for(int thread = 0; thread < nbThreads; thread++) {
         // Duplicate an IntakeSeries for avoid a possible problem with multi-thread
@@ -201,13 +204,13 @@ ComputingStatus MonteCarloPercentileCalculatorBase::computePredictions(
         workers.push_back(std::thread([thread, _nbPatients, &abort, _aborter,
                                       &_etas, &_epsilons, &_parameters,
                                       newIntakes, &_residualErrorModel, &_times,
-                                      &_concentrations, nbThreads,
+                                      &_concentrations, nbPatientsPerThread,
                                       &_concentrationCalculator, _recordFrom,
                                       _recordTo, _recordedIntakes]()
         {
 
-            int start = thread * (_nbPatients / nbThreads);
-            int end = (thread + 1) * (_nbPatients / nbThreads);
+            int start = thread * nbPatientsPerThread;
+            int end = std::min((thread + 1) * nbPatientsPerThread, _nbPatients);
 
             for (int patient = start; patient < end; patient++) {
                 if (!abort) {
@@ -741,7 +744,6 @@ ComputingStatus AposterioriMonteCarloPercentileCalculator::calculate(
                 _aborter);
 }
 
-
 ComputingStatus AposterioriMonteCarloPercentileCalculator::calculateEtasAndEpsilons(
         std::vector<Etas> &_fullEtas,
         std::vector<Deviations> &_epsilons,
@@ -803,8 +805,9 @@ ComputingStatus AposterioriMonteCarloPercentileCalculator::calculateEtasAndEpsil
 
     //clock_t t1 = clock();
 
-    // TODO : This EigenMatrix could be static, in a cache to save time
-
+    // This cache allows to reuse the same matrix if we have the same number of
+    // etas and same number of initial samples. It fastens every computation except
+    // the first one
     static AposterioriMatrixCache matrixCache;
 
     const EigenMatrix &avecs = matrixCache.getAvecs(nbInitialSamples, _etas.size());
@@ -821,8 +824,6 @@ ComputingStatus AposterioriMonteCarloPercentileCalculator::calculateEtasAndEpsil
     // Parallelizing this for loop with shared variables
     unsigned int nbThreads = std::max(std::thread::hardware_concurrency(), unsigned{1});
 
-    // TODO : Should get rid of this, but claculation does not work as is, because of
-    // race condition in the calculation.
     //nbThreads = 1;
 
     auto meanEtasTransposed = meanEtas.transpose();
@@ -836,11 +837,14 @@ ComputingStatus AposterioriMonteCarloPercentileCalculator::calculateEtasAndEpsil
     double part2 = std::sqrt(subomega.determinant());
     double part3 = tgamma(v / 2) * std::pow(v * 3.14159, p/2);
 
+
+    int nbSamplePerThread = static_cast<int>(ceil(static_cast<double>(nbInitialSamples) / static_cast<double>(nbThreads)));
+
     std::vector<std::thread> workers;
     for(unsigned thread = 0;thread < nbThreads; thread++) {
 
-        workers.push_back(std::thread([thread, &abort, _aborter, nbThreads, _etas, meanEtas, avecs, etaLowerChol,
-                                      &etaSamples, subomega, &ratio, &meanEtasTransposed, nbInitialSamples,
+        workers.push_back(std::thread([thread, &abort, _aborter, nbSamplePerThread, _etas, meanEtas, avecs, etaLowerChol,
+                                      &etaSamples, subomega, &ratio, &meanEtasTransposed,
                                       v,p,top,part2,part3, &_intakes, &_omega, &_samples, &_residualErrorModel,
                                       &_parameters, &_concentrationCalculator]()
         {
@@ -853,8 +857,8 @@ ComputingStatus AposterioriMonteCarloPercentileCalculator::calculateEtasAndEpsil
             Likelihood threadLogLikelihood(_omega, _residualErrorModel, _samples, newIntakes, _parameters, _concentrationCalculator);
 
 
-            unsigned start = thread * (nbInitialSamples / nbThreads);
-            unsigned end = (thread + 1 ) * (nbInitialSamples / nbThreads);
+            unsigned start = thread * nbSamplePerThread;
+            unsigned end = std::min((thread + 1) * nbSamplePerThread, static_cast<unsigned int>(nbInitialSamples));
             for (unsigned sample = start; sample < end; sample++) {
                 if (!abort) {
                     if ((_aborter != nullptr) && (_aborter->shouldAbort())) {
