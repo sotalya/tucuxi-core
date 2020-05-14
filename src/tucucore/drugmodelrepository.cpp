@@ -62,7 +62,7 @@ DrugModel* DrugModelRepository::loadFile(const std::string& _fileName)
     DrugModel *drugModel;
     Tucuxi::Core::DrugModelImport drugModelImport;
 
-    if (drugModelImport.importFromFile(drugModel, _fileName) == DrugModelImport::Result::Ok) {
+    if (drugModelImport.importFromFile(drugModel, _fileName) == DrugModelImport::Status::Ok) {
 
         PkModelCollection pkCollection;
 

@@ -51,35 +51,35 @@ DrugModelImport::DrugModelImport()
 
 
 
-DrugModelImport::Result DrugModelImport::importFromFile(Tucuxi::Core::DrugModel *&_drugModel, std::string _fileName)
+DrugModelImport::Status DrugModelImport::importFromFile(Tucuxi::Core::DrugModel *&_drugModel, std::string _fileName)
 {
     // Ensure the function is reentrant
     std::lock_guard<std::mutex> lock(m_mutex);
 
-    setResult(Result::Ok);
+    setStatus(Status::Ok);
     _drugModel = nullptr;
 
     XmlDocument document;
     if (!document.open(_fileName)) {
-        return Result::CantOpenFile;
+        return Status::CantOpenFile;
     }
 
     return importDocument(_drugModel, document);
 }
 
 
-DrugModelImport::Result DrugModelImport::importFromString(Tucuxi::Core::DrugModel *&_drugModel, std::string _xml)
+DrugModelImport::Status DrugModelImport::importFromString(Tucuxi::Core::DrugModel *&_drugModel, std::string _xml)
 {
     // Ensure the function is reentrant
     std::lock_guard<std::mutex> lock(m_mutex);
 
-    setResult(Result::Ok);
+    setStatus(Status::Ok);
     _drugModel = nullptr;
 
     XmlDocument document;
 
     if (!document.fromString(_xml)) {
-        return Result::Error;
+        return Status::Error;
     }
 
     return importDocument(_drugModel, document);
@@ -90,7 +90,7 @@ DrugModelImport::Result DrugModelImport::importFromString(Tucuxi::Core::DrugMode
 /// General methods
 ///////////////////////////////////////////////////////////////////////////////
 
-DrugModelImport::Result DrugModelImport::importDocument(
+DrugModelImport::Status DrugModelImport::importDocument(
         Tucuxi::Core::DrugModel *&_drugModel,
         Tucuxi::Common::XmlDocument & _document)
 {
@@ -99,13 +99,13 @@ DrugModelImport::Result DrugModelImport::importDocument(
     XmlNodeIterator drugModelIterator = root.getChildren("drugModel");
 
     if (drugModelIterator == XmlNodeIterator::none()) {
-        return Result::Error;
+        return Status::Error;
     }
 
     _drugModel = extractDrugModel(drugModelIterator);
 
-    if (getResult() != Result::Ok) {
-        return getResult();
+    if (getStatus() != Status::Ok) {
+        return getStatus();
     }
 
     DrugModelMetadata *metaData = nullptr;
@@ -113,7 +113,7 @@ DrugModelImport::Result DrugModelImport::importDocument(
     XmlNodeIterator metadataIterator = root.getChildren("head");
 
     if (metadataIterator == XmlNodeIterator::none()) {
-        return Result::Error;
+        return Status::Error;
     }
 
     metaData = extractHead(metadataIterator);
@@ -121,7 +121,7 @@ DrugModelImport::Result DrugModelImport::importDocument(
 
     std::unique_ptr<PkModelCollection> models = std::make_unique<PkModelCollection>();
     if (!defaultPopulate(*models)) {
-        setResult(Result::Error);
+        setStatus(Status::Error);
     }
 
     if (_drugModel->getAnalyteSets().size() == 1) {
@@ -136,7 +136,7 @@ DrugModelImport::Result DrugModelImport::importDocument(
         _drugModel->setMetadata(std::unique_ptr<DrugModelMetadata>(metaData));
     }
 
-    return getResult();
+    return getStatus();
 }
 
 
@@ -209,7 +209,7 @@ Tucuxi::Common::TranslatableString DrugModelImport::extractTranslatableString(Tu
         if (nodeName == _insideName) {
             XmlAttribute langAttribute = it->getAttribute("lang");
             if (!langAttribute.isValid()) {
-                setResult(Result::Error);
+                setStatus(Status::Error);
                 return result;
             }
             std::string lang = langAttribute.getValue();
@@ -456,10 +456,10 @@ JSOperation* DrugModelImport::extractJSOperation(Tucuxi::Common::XmlNodeIterator
         if (nodeName == "code") {
             XmlNodeIterator cdataIt = it->getChildren();
             if (cdataIt == XmlNodeIterator::none()) {
-                setResult(Result::Error);
+                setStatus(Status::Error);
             }
             else if (cdataIt->getType() != EXmlNodeType::CData) {
-                setResult(Result::Error);
+                setStatus(Status::Error);
             }
             else {
                 formula = cdataIt->getValue();
@@ -502,7 +502,7 @@ JSOperation* DrugModelImport::extractJSOperation(Tucuxi::Common::XmlNodeIterator
                         inputIt ++;
                     }
 
-                    if (getResult() != Result::Error) {
+                    if (getStatus() != Status::Error) {
                         operationInputList.push_back( {id, inputType});
                     }
 
@@ -525,7 +525,7 @@ JSOperation* DrugModelImport::extractJSOperation(Tucuxi::Common::XmlNodeIterator
         it ++;
     }
 
-    if (getResult() != Result::Ok) {
+    if (getStatus() != Status::Ok) {
         return nullptr;
     }
 
@@ -565,13 +565,13 @@ Operation* DrugModelImport::extractOperation(Tucuxi::Common::XmlNodeIterator _no
         it ++;
     }
 
-    if (getResult() != Result::Ok) {
+    if (getStatus() != Status::Ok) {
         DELETE_IF_NON_NULL(operation);
         return nullptr;
     }
 
     if (operation == nullptr) {
-        setResult(Result::Error);
+        setStatus(Status::Error);
     }
 
     return operation;
@@ -657,7 +657,7 @@ DrugModel* DrugModelImport::extractDrugModel(Tucuxi::Common::XmlNodeIterator _no
         it ++;
     }
 
-    if (getResult() != Result::Ok) {
+    if (getStatus() != Status::Ok) {
         DELETE_PVECTOR(covariates);
         DELETE_PVECTOR(activeMoieties);
         DELETE_PVECTOR(analyteSets);
@@ -776,7 +776,7 @@ OutdatedMeasure* DrugModelImport::extractOutdatedMeasure(Tucuxi::Common::XmlNode
         it ++;
     }
 
-    if (getResult() != Result::Ok) {
+    if (getStatus() != Status::Ok) {
         DELETE_IF_NON_NULL(value);
         return nullptr;
     }
@@ -812,7 +812,7 @@ DrugModelDomain* DrugModelImport::extractDrugDomain(Tucuxi::Common::XmlNodeItera
         it ++;
     }
 
-    if (getResult() != Result::Ok) {
+    if (getStatus() != Status::Ok) {
         DELETE_IF_NON_NULL(domain);
         return nullptr;
     }
@@ -870,7 +870,7 @@ Constraint* DrugModelImport::extractConstraint(Tucuxi::Common::XmlNodeIterator _
                 constraint->setType(ConstraintType::SOFT);
             }
             else {
-                setResult(Result::Error);
+                setStatus(Status::Error);
             }
         }
         else if (nodeName == "requiredCovariates") {
@@ -896,7 +896,7 @@ Constraint* DrugModelImport::extractConstraint(Tucuxi::Common::XmlNodeIterator _
         it ++;
     }
 
-    if (getResult() != Result::Ok) {
+    if (getStatus() != Status::Ok) {
         DELETE_IF_NON_NULL(constraint);
         return nullptr;
     }
@@ -1028,7 +1028,7 @@ CovariateDefinition* DrugModelImport::extractCovariate(Tucuxi::Common::XmlNodeIt
         it ++;
     }
 
-    if (getResult() != Result::Ok) {
+    if (getStatus() != Status::Ok) {
         DELETE_IF_NON_NULL(validation);
         DELETE_IF_NON_NULL(value);
         return nullptr;
@@ -1130,7 +1130,7 @@ ActiveMoiety* DrugModelImport::extractActiveMoiety(Tucuxi::Common::XmlNodeIterat
         it ++;
     }
 
-    if (getResult() != Result::Ok) {
+    if (getStatus() != Status::Ok) {
         DELETE_IF_NON_NULL(formula);
         DELETE_PVECTOR(targets);
         return nullptr;
@@ -1285,7 +1285,7 @@ TargetDefinition* DrugModelImport::extractTarget(Tucuxi::Common::XmlNodeIterator
         it ++;
     }
 
-    if (getResult() != Result::Ok) {
+    if (getStatus() != Status::Ok) {
         DELETE_IF_NON_NULL(minValue);
         DELETE_IF_NON_NULL(maxValue);
         DELETE_IF_NON_NULL(bestValue);
@@ -1401,7 +1401,7 @@ AnalyteSet* DrugModelImport::extractAnalyteGroup(Tucuxi::Common::XmlNodeIterator
         it ++;
     }
 
-    if (getResult() != Result::Ok) {
+    if (getStatus() != Status::Ok) {
         DELETE_PVECTOR(analytes);
         DELETE_IF_NON_NULL(parameters);
         return nullptr;
@@ -1477,7 +1477,7 @@ Analyte* DrugModelImport::extractAnalyte(Tucuxi::Common::XmlNodeIterator _node)
         it ++;
     }
 
-    if (getResult() != Result::Ok) {
+    if (getStatus() != Status::Ok) {
         DELETE_IF_NON_NULL(molarMass);
         DELETE_IF_NON_NULL(errorModel);
         return nullptr;
@@ -1514,7 +1514,7 @@ MolarMass* DrugModelImport::extractMolarMass(Tucuxi::Common::XmlNodeIterator _no
         it ++;
     }
 
-    if (getResult() != Result::Ok) {
+    if (getStatus() != Status::Ok) {
         return nullptr;
     }
 
@@ -1549,7 +1549,7 @@ ErrorModel *DrugModelImport::extractErrorModel(Tucuxi::Common::XmlNodeIterator _
             while (sigmaIt != XmlNodeIterator::none()) {
                 if (sigmaIt->getName() == "sigma") {
                     LightPopulationValue* value = extractPopulationValue(sigmaIt);
-                    if (getResult() == Result::Ok) {
+                    if (getStatus() == Status::Ok) {
                         sigmas.push_back(value);
                     }
                 }
@@ -1567,7 +1567,7 @@ ErrorModel *DrugModelImport::extractErrorModel(Tucuxi::Common::XmlNodeIterator _
         it ++;
     }
 
-    if (getResult() != Result::Ok) {
+    if (getStatus() != Status::Ok) {
         DELETE_PVECTOR(sigmas);
         return nullptr;
     }
@@ -1609,7 +1609,7 @@ ParameterSetDefinition* DrugModelImport::extractParameterSet(Tucuxi::Common::Xml
         it ++;
     }
 
-    if (getResult() != Result::Ok) {
+    if (getStatus() != Status::Ok) {
         DELETE_PVECTOR(parameters);
         DELETE_PVECTOR(correlations);
 
@@ -1702,7 +1702,7 @@ ParameterDefinition* DrugModelImport::extractParameter(Tucuxi::Common::XmlNodeIt
         it ++;
     }
 
-    if (getResult() != Result::Ok) {
+    if (getStatus() != Status::Ok) {
         DELETE_IF_NON_NULL(value);
         DELETE_IF_NON_NULL(variability);
         DELETE_IF_NON_NULL(validation);
@@ -1771,7 +1771,7 @@ Correlation* DrugModelImport::extractCorrelation(Tucuxi::Common::XmlNodeIterator
         it ++;
     }
 
-    if (getResult() != Result::Ok) {
+    if (getStatus() != Status::Ok) {
         return nullptr;
     }
 
@@ -1800,7 +1800,7 @@ ParameterVariability* DrugModelImport::extractVariability(Tucuxi::Common::XmlNod
             while (stdDevIt != XmlNodeIterator::none()) {
                 if (stdDevIt->getName() == "stdDev") {
                     Value value = extractDouble(stdDevIt);
-                    if (getResult() == Result::Ok) {
+                    if (getStatus() == Status::Ok) {
                         stdDevs.push_back(value);
                     }
                 }
@@ -1818,7 +1818,7 @@ ParameterVariability* DrugModelImport::extractVariability(Tucuxi::Common::XmlNod
         it ++;
     }
 
-    if (getResult() != Result::Ok) {
+    if (getStatus() != Status::Ok) {
         return nullptr;
     }
 
@@ -1857,7 +1857,7 @@ FormulationAndRoutes* DrugModelImport::extractFullFormulationAndRoutes(
         it ++;
     }
 
-    if (getResult() != Result::Ok) {
+    if (getStatus() != Status::Ok) {
         DELETE_PVECTOR(formulationAndRoutesVector);
         return nullptr;
     }
@@ -1975,7 +1975,7 @@ FullFormulationAndRoute* DrugModelImport::extractFullFormulationAndRoute(
 
                         }
 
-                        if (getResult() == Result::Ok) {
+                        if (getStatus() == Status::Ok) {
                             analyteConversions.push_back(new AnalyteConversion(analyteId, factor));
                         }
 
@@ -2042,7 +2042,7 @@ FullFormulationAndRoute* DrugModelImport::extractFullFormulationAndRoute(
                 }
                 absorptionIt ++;
 
-                if ((getResult() == Result::Ok) && (absorptionParameters != nullptr)) {
+                if ((getStatus() == Status::Ok) && (absorptionParameters != nullptr)) {
                     if (selectedAnalyteSet != nullptr) {
                         AnalyteSetToAbsorptionAssociation *association = new AnalyteSetToAbsorptionAssociation(*selectedAnalyteSet);
                         association->setAbsorptionParameters(std::unique_ptr<ParameterSetDefinition>(absorptionParameters));
@@ -2062,7 +2062,7 @@ FullFormulationAndRoute* DrugModelImport::extractFullFormulationAndRoute(
         it ++;
     }
 
-    if (getResult() != Result::Ok) {
+    if (getStatus() != Status::Ok) {
         DELETE_IF_NON_NULL(absorptionParameters);
         DELETE_IF_NON_NULL(availableDoses);
         DELETE_IF_NON_NULL(intervals);
@@ -2131,7 +2131,7 @@ ValidDurations* DrugModelImport::extractValidDurations(Tucuxi::Common::XmlNodeIt
         it ++;
     }
 
-    if (getResult() != Result::Ok) {
+    if (getStatus() != Status::Ok) {
         DELETE_PVECTOR(formulationAndRoutesVector);
         DELETE_IF_NON_NULL(defaultValue);
         DELETE_IF_NON_NULL(valuesRange);
@@ -2198,7 +2198,7 @@ ValidDoses* DrugModelImport::extractValidDoses(Tucuxi::Common::XmlNodeIterator _
         it ++;
     }
 
-    if (getResult() != Result::Ok) {
+    if (getStatus() != Status::Ok) {
         DELETE_PVECTOR(formulationAndRoutesVector);
         DELETE_IF_NON_NULL(defaultValue);
         DELETE_PVECTOR(valuesRange);
@@ -2248,10 +2248,10 @@ ValidValuesRange* DrugModelImport::extractValuesRange(Tucuxi::Common::XmlNodeIte
     }
 
     if ((from == nullptr) || (to == nullptr) || (step == nullptr)){
-        setResult(Result::Error);
+        setStatus(Status::Error);
     }
 
-    if (getResult() != Result::Ok){
+    if (getStatus() != Status::Ok){
         DELETE_IF_NON_NULL(from);
         DELETE_IF_NON_NULL(to);
         DELETE_IF_NON_NULL(step);
@@ -2282,7 +2282,7 @@ ValidValuesFixed* DrugModelImport::extractValuesFixed(Tucuxi::Common::XmlNodeIte
         std::string nodeName = it->getName();
         if (nodeName == "value") {
             Value v = extractDouble(it);
-            if (getResult() != Result::Error) {
+            if (getStatus() != Status::Error) {
                 values.push_back(v);
             }
         }
@@ -2293,7 +2293,7 @@ ValidValuesFixed* DrugModelImport::extractValuesFixed(Tucuxi::Common::XmlNodeIte
         it ++;
     }
 
-    if (getResult() != Result::Ok){
+    if (getStatus() != Status::Ok){
         DELETE_IF_NON_NULL(valuesFixed);
         return nullptr;
     }
@@ -2401,7 +2401,7 @@ DrugModelMetadata* DrugModelImport::extractHead(Tucuxi::Common::XmlNodeIterator 
         it ++;
     }
 
-    if (getResult() != Result::Ok){
+    if (getStatus() != Status::Ok){
         return nullptr;
     }
 

@@ -37,7 +37,7 @@ public:
     /// \return Result::Ok if the import went well, another Result else.
     /// This function is reentrant.
     ///
-    Result importFromFile(Tucuxi::Query::QueryData *&_query, const std::string& _fileName);
+    Status importFromFile(Tucuxi::Query::QueryData *&_query, const std::string& _fileName);
 
     ///
     /// \brief importFromString
@@ -46,7 +46,7 @@ public:
     /// \return Result::Ok if the import went well, another Result else.
     /// This function is reentrant.
     ///
-    Result importFromString(Tucuxi::Query::QueryData *&_query, const std::string& _xml);
+    Status importFromString(Tucuxi::Query::QueryData *&_query, const std::string& _xml);
 
 protected:
 
@@ -62,7 +62,7 @@ protected:
     /// \return Result::Ok if the import went well, another Result else.
     /// This function is reentrant.
     ///
-    Result importDocument(Tucuxi::Query::QueryData *&_query, Tucuxi::Common::XmlDocument & _document);
+    Status importDocument(Tucuxi::Query::QueryData *&_query, Tucuxi::Common::XmlDocument & _document);
 
 protected:
 

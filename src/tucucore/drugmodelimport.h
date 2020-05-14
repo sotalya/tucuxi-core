@@ -78,7 +78,7 @@ public:
     /// \return Result::Ok if the import went well, another Result else.
     /// This function is reentrant.
     ///
-    Result importFromFile(Tucuxi::Core::DrugModel *&_drugModel, std::string _fileName);
+    Status importFromFile(Tucuxi::Core::DrugModel *&_drugModel, std::string _fileName);
 
     ///
     /// \brief importFromString
@@ -87,7 +87,7 @@ public:
     /// \return Result::Ok if the import went well, another Result else.
     /// This function is reentrant.
     ///
-    Result importFromString(Tucuxi::Core::DrugModel *&_drugModel, std::string _xml);
+    Status importFromString(Tucuxi::Core::DrugModel *&_drugModel, std::string _xml);
 
 protected:
 
@@ -103,7 +103,7 @@ protected:
     /// \return Result::Ok if the import went well, another Result else.
     /// This function is reentrant.
     ///
-    Result importDocument(Tucuxi::Core::DrugModel *&_drugModel, Tucuxi::Common::XmlDocument & _document);
+    Status importDocument(Tucuxi::Core::DrugModel *&_drugModel, Tucuxi::Common::XmlDocument & _document);
 
     ///////////////////////////////////////////////////////////////////////////////
     /// basic types imports

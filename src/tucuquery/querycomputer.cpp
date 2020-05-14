@@ -70,11 +70,11 @@ void QueryComputer::compute(const std::string& _queryString, ComputingQueryRespo
     QueryData *query = nullptr;
 
     QueryImport importer;
-    QueryImport::Result importResult = importer.importFromString(query, _queryString);
+    QueryImport::Status importResult = importer.importFromString(query, _queryString);
 
 
-    if (importResult != QueryImport::Result::Ok) {
-        if (importResult == QueryImport::Result::CantOpenFile) {
+    if (importResult != QueryImport::Status::Ok) {
+        if (importResult == QueryImport::Status::CantOpenFile) {
             logHelper.error("Error with the import of query file");
         }
         else {

@@ -62,7 +62,7 @@ bool DrugFileValidator::validate(std::string _drugFileName, const std::string& _
     Tucuxi::Core::DrugModel *dModel;
 
     DrugModelImport importer;
-    if (importer.importFromFile(dModel, std::move(_drugFileName)) != DrugModelImport::Result::Ok) {
+    if (importer.importFromFile(dModel, std::move(_drugFileName)) != DrugModelImport::Status::Ok) {
         logger.error("Can not import the drug file. {}", importer.getErrorMessage());
         return false;
     }

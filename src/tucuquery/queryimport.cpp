@@ -37,35 +37,35 @@ const std::vector<std::string> &QueryImport::ignoredTags() const
     return ignored;
 }
 
-QueryImport::Result QueryImport::importFromFile(Tucuxi::Query::QueryData *&_query, const std::string& _fileName)
+QueryImport::Status QueryImport::importFromFile(Tucuxi::Query::QueryData *&_query, const std::string& _fileName)
 {
     // Ensure the function is reentrant
     std::lock_guard<std::mutex> lock(m_mutex);
 
-    setResult(Result::Ok);
+    setStatus(Status::Ok);
     _query = nullptr;
 
     Tucuxi::Common::XmlDocument document;
     if (!document.open(_fileName)) {
-        return Result::CantOpenFile;
+        return Status::CantOpenFile;
     }
 
     return importDocument(_query, document);
 }
 
 
-QueryImport::Result QueryImport::importFromString(Tucuxi::Query::QueryData *&_query, const std::string& _xml)
+QueryImport::Status QueryImport::importFromString(Tucuxi::Query::QueryData *&_query, const std::string& _xml)
 {
     // Ensure the function is reentrant
     std::lock_guard<std::mutex> lock(m_mutex);
 
-    setResult(Result::Ok);
+    setStatus(Status::Ok);
     _query = nullptr;
 
     Tucuxi::Common::XmlDocument document;
 
     if (!document.fromString(_xml)) {
-        return Result::Error;
+        return Status::Error;
     }
 
     return importDocument(_query, document);
@@ -76,7 +76,7 @@ QueryImport::Result QueryImport::importFromString(Tucuxi::Query::QueryData *&_qu
 /// General methods
 ///////////////////////////////////////////////////////////////////////////////
 
-QueryImport::Result QueryImport::importDocument(
+QueryImport::Status QueryImport::importDocument(
         Tucuxi::Query::QueryData *&_query,
         Tucuxi::Common::XmlDocument & _document)
 {
@@ -123,7 +123,7 @@ QueryImport::Result QueryImport::importDocument(
                 );
 
 
-    return getResult();
+    return getStatus();
 
 }
 
@@ -695,7 +695,7 @@ unique_ptr<RequestData> QueryImport::createRequest(Tucuxi::Common::XmlNodeIterat
 
     if(computingTrait == nullptr)
     {
-        setResult(Result::Error);
+        setNodeError(computingTraitAdjustmentRootIterator);
     }
 
 

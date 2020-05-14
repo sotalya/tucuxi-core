@@ -13,20 +13,13 @@ namespace Common {
 class IImport
 {
 public:
-    enum class Result {
+    enum class Status {
         Ok = 0,
         Error,
         CantOpenFile
     };
 
     virtual std::string getErrorMessage() const = 0 ;
-
-protected:
-
-    virtual ~IImport() = default;
-
-
-
 
 };
 
