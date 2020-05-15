@@ -28,6 +28,10 @@ using namespace date;
 class ClassTestXmlImporter : Tucuxi::Common::XMLImporter
 {
 public:
+    ClassTestXmlImporter()
+    {
+        setStatus(Tucuxi::Common::IImport::Status::Ok);
+    }
     const std::vector<string> & ignoredTags() const override
     {
         return {};
@@ -51,26 +55,21 @@ struct TestXmlImporter : public fructose::test_base<TestXmlImporter>
 
 
 
-
+        //Good xml format
         checkIntExtraction(conversionSuccess);
-
-
         checkDoubleExtraction(conversionSuccess);
-
-
         checkBoolExtraction(conversionSuccess);
-
-
-
         checkUnitExtraction(conversionSuccess);
-
-
-
         checkDateTimeExtraction(conversionSuccess);
-
-
-
         checkDurationExtraction(conversionSuccess);
+
+        //Bad xml format
+        checkIntExtraction(conversionIssue);
+        checkDoubleExtraction(conversionIssue);
+        checkBoolExtraction(conversionIssue);
+        checkUnitExtraction(conversionIssue);
+        checkDateTimeExtraction(conversionIssue);
+        checkDurationExtraction(conversionIssue);
 
 
 
@@ -80,7 +79,7 @@ struct TestXmlImporter : public fructose::test_base<TestXmlImporter>
 
 private:
 
-    void checkIntExtraction(bool _conversionSuccess)
+    void checkIntExtraction(bool _conversionState)
     {
         static const std::string INT            = "int";
         static const std::string INT_1          = "int1";
@@ -99,31 +98,44 @@ private:
 
         Tucuxi::Common::XmlDocument xmlDocument;
 
-        if(!_conversionSuccess)
+        if(_conversionState)
         {
-            xmlString += "<foo>";
-            if(!xmlDocument.fromString(xmlString))
-            {
-                return ;
-            }
+            fructose_assert(xmlDocument.fromString(xmlString) == _conversionState);
+
+            ClassTestXmlImporter xmlImporterTestClass;
+
+            Tucuxi::Common::XmlNode xmlNode = xmlDocument.getRoot();
+
+            Tucuxi::Common::XmlNodeIterator xmlIterator = xmlNode.getChildren(INT);
+
+            //BAD
+            fructose_assert_eq(xmlImporterTestClass.getChildInt(xmlIterator, INT_1), 0);
+            fructose_assert(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Error);
+            xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
+
+            fructose_assert_eq(xmlImporterTestClass.getChildInt(xmlIterator, INT_2), 0);
+            fructose_assert(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Error);
+            xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
+
+            fructose_assert_eq(xmlImporterTestClass.getChildInt(xmlIterator, INT_3), 0);
+            fructose_assert(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Error);
+            xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
+
+            //GOOD
+            fructose_assert_eq(xmlImporterTestClass.getChildInt(xmlIterator, INT_4), 23);
+            fructose_assert(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Ok);
+            xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
+        }
+        else{
+
+            xmlString += "<wrong>";
+            fructose_assert(xmlDocument.fromString(xmlString) == _conversionState);
 
         }
-        fructose_assert(xmlDocument.fromString(xmlString) == _conversionSuccess);
 
-        ClassTestXmlImporter xmlImporterTestClass;
-
-        Tucuxi::Common::XmlNode xmlNode = xmlDocument.getRoot();
-
-        Tucuxi::Common::XmlNodeIterator xmlIterator = xmlNode.getChildren(INT);
-
-        fructose_assert_eq(xmlImporterTestClass.getChildInt(xmlIterator, INT_1), 0);
-        fructose_assert_eq(xmlImporterTestClass.getChildInt(xmlIterator, INT_2), 0);
-        fructose_assert_eq(xmlImporterTestClass.getChildInt(xmlIterator, INT_3), 0);
-
-        fructose_assert_eq(xmlImporterTestClass.getChildInt(xmlIterator, INT_4), 23);
     }
 
-    void checkDoubleExtraction(bool _conversionSuccess)
+    void checkDoubleExtraction(bool _conversionState)
     {
         static const std::string DOUBLE         = "double";
         static const std::string DOUBLE_1       = "double1";
@@ -142,32 +154,45 @@ private:
 
         Tucuxi::Common::XmlDocument xmlDocument;
 
-        if(!_conversionSuccess)
+        if(_conversionState)
         {
-            xmlString += "<foo>";
-            if(!xmlDocument.fromString(xmlString))
-            {
-                return ;
-            }
+
+            fructose_assert(xmlDocument.fromString(xmlString) == _conversionState);
+
+            ClassTestXmlImporter xmlImporterTestClass;
+
+            Tucuxi::Common::XmlNode xmlNode = xmlDocument.getRoot();
+
+            Tucuxi::Common::XmlNodeIterator xmlIterator = xmlNode.getChildren(DOUBLE);
+
+            //BAD
+            fructose_assert_eq(xmlImporterTestClass.getChildDouble(xmlIterator, DOUBLE_1), 0.0);
+            fructose_assert(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Error);
+            xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
+
+            fructose_assert_eq(xmlImporterTestClass.getChildDouble(xmlIterator, DOUBLE_2), 0.0);
+            fructose_assert(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Error);
+            xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
+
+            fructose_assert_eq(xmlImporterTestClass.getChildDouble(xmlIterator, DOUBLE_3), 0.0);
+            fructose_assert(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Error);
+            xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
+
+            //GOOD
+            fructose_assert_eq(xmlImporterTestClass.getChildDouble(xmlIterator, DOUBLE_4), 12.12);
+            fructose_assert(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Ok);
+            xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
 
         }
+        else{
 
-        fructose_assert(xmlDocument.fromString(xmlString) == _conversionSuccess);
+        xmlString += "<wrong>";
+        fructose_assert(xmlDocument.fromString(xmlString) == _conversionState);
 
-        ClassTestXmlImporter xmlImporterTestClass;
-
-        Tucuxi::Common::XmlNode xmlNode = xmlDocument.getRoot();
-
-        Tucuxi::Common::XmlNodeIterator xmlIterator = xmlNode.getChildren(DOUBLE);
-
-        fructose_assert_eq(xmlImporterTestClass.getChildDouble(xmlIterator, DOUBLE_1), 0.0);
-        fructose_assert_eq(xmlImporterTestClass.getChildDouble(xmlIterator, DOUBLE_2), 0.0);
-        fructose_assert_eq(xmlImporterTestClass.getChildDouble(xmlIterator, DOUBLE_3), 0.0);
-
-        fructose_assert_eq(xmlImporterTestClass.getChildDouble(xmlIterator, DOUBLE_4), 12.12);
+        }
     }
 
-    void checkBoolExtraction(bool _conversionSuccess)
+    void checkBoolExtraction(bool _conversionState)
     {
         static const std::string BOOL           = "bool";
         static const std::string BOOL_1         = "bool1";
@@ -198,38 +223,70 @@ private:
 
         Tucuxi::Common::XmlDocument xmlDocument;
 
-        if(!_conversionSuccess)
+        if(_conversionState)
         {
-            xmlString += "<foo>";
-            if(!xmlDocument.fromString(xmlString))
-            {
-                return ;
-            }
+
+            fructose_assert(xmlDocument.fromString(xmlString) == _conversionState);
+
+            ClassTestXmlImporter xmlImporterTestClass;
+
+            Tucuxi::Common::XmlNode xmlNode = xmlDocument.getRoot();
+
+            Tucuxi::Common::XmlNodeIterator xmlIterator = xmlNode.getChildren(BOOL);
+
+            //BAD
+            fructose_assert_eq(xmlImporterTestClass.getChildBool(xmlIterator, BOOL_1), false);
+            fructose_assert(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Error);
+            xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
+
+            fructose_assert_eq(xmlImporterTestClass.getChildBool(xmlIterator, BOOL_2), false);
+            fructose_assert(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Error);
+            xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
+
+            fructose_assert_eq(xmlImporterTestClass.getChildBool(xmlIterator, BOOL_3), false);
+            fructose_assert(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Error);
+            xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
+
+            fructose_assert_eq(xmlImporterTestClass.getChildBool(xmlIterator, BOOL_4), false);
+            fructose_assert(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Error);
+            xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
+
+
+            //GOOD
+            fructose_assert_eq(xmlImporterTestClass.getChildBool(xmlIterator, BOOL_5), true);
+            fructose_assert(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Ok);
+            xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
+
+            fructose_assert_eq(xmlImporterTestClass.getChildBool(xmlIterator, BOOL_6), true);
+            fructose_assert(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Ok);
+            xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
+
+            fructose_assert_eq(xmlImporterTestClass.getChildBool(xmlIterator, BOOL_7), true);
+            fructose_assert(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Ok);
+            xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
+
+            fructose_assert_eq(xmlImporterTestClass.getChildBool(xmlIterator, BOOL_8), false);
+            fructose_assert(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Ok);
+            xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
+
+            fructose_assert_eq(xmlImporterTestClass.getChildBool(xmlIterator, BOOL_9), false);
+            fructose_assert(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Ok);
+            xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
+
+            fructose_assert_eq(xmlImporterTestClass.getChildBool(xmlIterator, BOOL_10), false);
+            fructose_assert(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Ok);
+            xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
 
         }
+        else{
 
-        fructose_assert(xmlDocument.fromString(xmlString) == _conversionSuccess);
+        xmlString += "<wrong>";
+        fructose_assert(xmlDocument.fromString(xmlString) == _conversionState);
 
-        ClassTestXmlImporter xmlImporterTestClass;
-
-        Tucuxi::Common::XmlNode xmlNode = xmlDocument.getRoot();
-
-        Tucuxi::Common::XmlNodeIterator xmlIterator = xmlNode.getChildren(BOOL);
-
-        fructose_assert_eq(xmlImporterTestClass.getChildBool(xmlIterator, BOOL_1), false);
-        fructose_assert_eq(xmlImporterTestClass.getChildBool(xmlIterator, BOOL_2), false);
-        fructose_assert_eq(xmlImporterTestClass.getChildBool(xmlIterator, BOOL_3), false);
-        fructose_assert_eq(xmlImporterTestClass.getChildBool(xmlIterator, BOOL_4), false);
-
-        fructose_assert_eq(xmlImporterTestClass.getChildBool(xmlIterator, BOOL_5), true);
-        fructose_assert_eq(xmlImporterTestClass.getChildBool(xmlIterator, BOOL_6), true);
-        fructose_assert_eq(xmlImporterTestClass.getChildBool(xmlIterator, BOOL_7), true);
-        fructose_assert_eq(xmlImporterTestClass.getChildBool(xmlIterator, BOOL_8), false);
-        fructose_assert_eq(xmlImporterTestClass.getChildBool(xmlIterator, BOOL_9), false);
-        fructose_assert_eq(xmlImporterTestClass.getChildBool(xmlIterator, BOOL_10), false);
+        }
     }
 
-    void checkUnitExtraction(bool _conversionSuccess)
+    void checkUnitExtraction(bool _conversionState)
     {
 
         static const std::string UNIT             = "unit";
@@ -245,34 +302,41 @@ private:
 
         Tucuxi::Common::XmlDocument xmlDocument;
 
-        if(!_conversionSuccess)
+        if(_conversionState)
         {
-            xmlString += "<foo>";
-            if(!xmlDocument.fromString(xmlString))
-            {
-                return ;
-            }
+
+            fructose_assert(xmlDocument.fromString(xmlString) == _conversionState);
+
+            ClassTestXmlImporter xmlImporterTestClass;
+
+            Tucuxi::Common::XmlNode xmlNode = xmlDocument.getRoot();
+
+            Tucuxi::Common::XmlNodeIterator xmlIterator = xmlNode.getChildren(UNIT);
+
+            Tucuxi::Core::Unit u1("mg");
+            Tucuxi::Core::Unit u2("m");
+
+            //GOOD
+            fructose_assert(xmlImporterTestClass.getChildUnit(xmlIterator, UNIT_1) ==  u1);
+            fructose_assert(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Ok);
+            xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
+
+            fructose_assert(xmlImporterTestClass.getChildUnit(xmlIterator, UNIT_2) ==  u2);
+            fructose_assert(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Ok);
+            xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
+
+            //BAD --> TODO : NO ERROR FOR THE TIME
 
         }
+        else{
 
-        fructose_assert(xmlDocument.fromString(xmlString) == _conversionSuccess);
+        xmlString += "<wrong>";
+        fructose_assert(xmlDocument.fromString(xmlString) == _conversionState);
 
-        ClassTestXmlImporter xmlImporterTestClass;
-
-        Tucuxi::Common::XmlNode xmlNode = xmlDocument.getRoot();
-
-        Tucuxi::Common::XmlNodeIterator xmlIterator = xmlNode.getChildren(UNIT);
-
-        Tucuxi::Core::Unit u1("mg");
-        fructose_assert(xmlImporterTestClass.getChildUnit(xmlIterator, UNIT_1) ==  u1);
-
-        Tucuxi::Core::Unit u2("m");
-        fructose_assert(xmlImporterTestClass.getChildUnit(xmlIterator, UNIT_2) ==  u2);
-
-        //TODO : NO ERROR FOR THE TIME
+        }
     }
 
-    void checkDateTimeExtraction(bool _conversionSuccess)
+    void checkDateTimeExtraction(bool _conversionState)
     {
         static const std::string DATE_TIME           = "dateTime";
         static const std::string DATE_TIME_1         = "dateTime1";
@@ -295,37 +359,50 @@ private:
 
         Tucuxi::Common::XmlDocument xmlDocument;
 
-        if(!_conversionSuccess)
+        if(_conversionState)
         {
-            xmlString += "<foo>";
-            if(!xmlDocument.fromString(xmlString))
-            {
-                return ;
-            }
+
+            fructose_assert(xmlDocument.fromString(xmlString) == _conversionState);
+
+            ClassTestXmlImporter xmlImporterTestClass;
+
+            Tucuxi::Common::XmlNode xmlNode = xmlDocument.getRoot();
+
+            Tucuxi::Common::XmlNodeIterator xmlIterator = xmlNode.getChildren(DATE_TIME);
+
+            Tucuxi::Common::DateTime currentDateTime;
+            Tucuxi::Common::DateTime dt1("1993-11-11 12:34:56", "%Y-%m-%d %H:%M:%S");
+
+            //GOOD
+            fructose_assert(xmlImporterTestClass.getChildDateTime(xmlIterator, DATE_TIME_1) == dt1);
+            fructose_assert(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Ok);
+            xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
+
+            //BAD
+            checkDateTime(xmlImporterTestClass.getChildDateTime(xmlIterator, DATE_TIME_2), currentDateTime);
+            fructose_assert(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Error);
+            xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
+
+            checkDateTime(xmlImporterTestClass.getChildDateTime(xmlIterator, DATE_TIME_3), currentDateTime);
+            fructose_assert(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Error);
+            xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
+
+            checkDateTime(xmlImporterTestClass.getChildDateTime(xmlIterator, DATE_TIME_4), currentDateTime);
+            fructose_assert(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Error);
+            xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
 
         }
+        else{
 
-        fructose_assert(xmlDocument.fromString(xmlString) == _conversionSuccess);
+        xmlString += "<wrong>";
+        fructose_assert(xmlDocument.fromString(xmlString) == _conversionState);
 
-        ClassTestXmlImporter xmlImporterTestClass;
-
-        Tucuxi::Common::XmlNode xmlNode = xmlDocument.getRoot();
-
-        Tucuxi::Common::XmlNodeIterator xmlIterator = xmlNode.getChildren(DATE_TIME);
-
-        Tucuxi::Common::DateTime currentDateTime;
-        Tucuxi::Common::DateTime dt1("1993-11-11 12:34:56", "%Y-%m-%d %H:%M:%S");
-
-        fructose_assert_eq(xmlImporterTestClass.getChildDateTime(xmlIterator, DATE_TIME_1), dt1);
-
-        fructose_assert_eq(xmlImporterTestClass.getChildDateTime(xmlIterator, DATE_TIME_2), currentDateTime);
-        fructose_assert_eq(xmlImporterTestClass.getChildDateTime(xmlIterator, DATE_TIME_3), currentDateTime);
-        fructose_assert_eq(xmlImporterTestClass.getChildDateTime(xmlIterator, DATE_TIME_4), currentDateTime);
+        }
 
 
     }
 
-    void checkDurationExtraction(bool _conversionSuccess)
+    void checkDurationExtraction(bool _conversionState)
     {
 
         static const std::string DURATION       = "duration";
@@ -349,36 +426,65 @@ private:
 
         Tucuxi::Common::XmlDocument xmlDocument;
 
-        if(!_conversionSuccess)
+        if(_conversionState)
         {
-            xmlString += "<foo>";
-            if(!xmlDocument.fromString(xmlString))
-            {
-                return ;
-            }
+
+            fructose_assert(xmlDocument.fromString(xmlString) == _conversionState);
+
+            ClassTestXmlImporter xmlImporterTestClass;
+
+            Tucuxi::Common::XmlNode xmlNode = xmlDocument.getRoot();
+
+            Tucuxi::Common::XmlNodeIterator xmlIterator = xmlNode.getChildren(DURATION);
+
+
+            Tucuxi::Common::Duration emptyDuration;
+            Tucuxi::Common::Duration d1(std::chrono::hours(12), std::chrono::minutes(34), std::chrono::seconds(56));
+
+            //GOOD
+            fructose_assert_eq(xmlImporterTestClass.getChildDuration(xmlIterator, DURATION_1), d1);
+            fructose_assert(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Ok);
+            xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
+
+            //BAD
+            fructose_assert_eq(xmlImporterTestClass.getChildDuration(xmlIterator, DURATION_2), emptyDuration);
+            fructose_assert(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Error);
+            xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
+
+            fructose_assert_eq(xmlImporterTestClass.getChildDuration(xmlIterator, DURATION_3), emptyDuration);
+            fructose_assert(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Error);
+            xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
+
+            fructose_assert_eq(xmlImporterTestClass.getChildDuration(xmlIterator, DURATION_4), emptyDuration);
+            fructose_assert(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Error);
+            xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
+
+            fructose_assert_eq(xmlImporterTestClass.getChildDuration(xmlIterator, DURATION_5), emptyDuration);
+            fructose_assert(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Error);
+            xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
+
+            fructose_assert_eq(xmlImporterTestClass.getChildDuration(xmlIterator, DURATION_6), emptyDuration);
+            fructose_assert(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Error);
+            xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
+
+        }
+        else{
+
+        xmlString += "<wrong>";
+        fructose_assert(xmlDocument.fromString(xmlString) == _conversionState);
 
         }
 
-        fructose_assert(xmlDocument.fromString(xmlString) == _conversionSuccess);
+    }
 
-        ClassTestXmlImporter xmlImporterTestClass;
-
-        Tucuxi::Common::XmlNode xmlNode = xmlDocument.getRoot();
-
-        Tucuxi::Common::XmlNodeIterator xmlIterator = xmlNode.getChildren(DURATION);
-
-
-        Tucuxi::Common::Duration emptyDuration;
-        Tucuxi::Common::Duration d1(std::chrono::hours(12), std::chrono::minutes(34), std::chrono::seconds(56));
-
-        fructose_assert_eq(xmlImporterTestClass.getChildDuration(xmlIterator, DURATION_1), d1);
-
-        fructose_assert_eq(xmlImporterTestClass.getChildDuration(xmlIterator, DURATION_2), emptyDuration);
-        fructose_assert_eq(xmlImporterTestClass.getChildDuration(xmlIterator, DURATION_3), emptyDuration);
-        fructose_assert_eq(xmlImporterTestClass.getChildDuration(xmlIterator, DURATION_4), emptyDuration);
-        fructose_assert_eq(xmlImporterTestClass.getChildDuration(xmlIterator, DURATION_5), emptyDuration);
-        fructose_assert_eq(xmlImporterTestClass.getChildDuration(xmlIterator, DURATION_6), emptyDuration);
-
+    void checkDateTime(const Tucuxi::Common::DateTime& _date, const Tucuxi::Common::DateTime& _currentDate)
+    {
+        fructose_assert_eq(_date.year() , _currentDate.year());
+        fructose_assert_eq(_date.month() , _currentDate.month());
+        fructose_assert_eq(_date.day() , _currentDate.day());
+        fructose_assert_eq(_date.hour() , _currentDate.hour());
+        fructose_assert_eq(_date.minute() , _currentDate.minute());
+        fructose_assert_eq(_date.second() , _currentDate.second());
     }
 
 };

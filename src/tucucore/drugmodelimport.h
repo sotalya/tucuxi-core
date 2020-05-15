@@ -105,14 +105,6 @@ protected:
     ///
     Status importDocument(Tucuxi::Core::DrugModel *&_drugModel, Tucuxi::Common::XmlDocument & _document);
 
-    ///////////////////////////////////////////////////////////////////////////////
-    /// basic types imports
-    ///////////////////////////////////////////////////////////////////////////////
-
-    Unit extractUnit(Tucuxi::Common::XmlNodeIterator _node);
-    double extractDouble(Tucuxi::Common::XmlNodeIterator _node);
-    bool extractBool(Tucuxi::Common::XmlNodeIterator _node);
-
 
     ///////////////////////////////////////////////////////////////////////////////
     /// enum class imports
@@ -127,8 +119,6 @@ protected:
     Formulation extractFormulation(Tucuxi::Common::XmlNodeIterator _node);
     AdministrationRoute extractAdministrationRoute(Tucuxi::Common::XmlNodeIterator _node);
     AbsorptionModel extractAbsorptionModel(Tucuxi::Common::XmlNodeIterator _node);
-
-
 
 
     ///////////////////////////////////////////////////////////////////////////////

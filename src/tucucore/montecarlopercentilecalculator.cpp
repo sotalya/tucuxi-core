@@ -846,7 +846,7 @@ ComputingStatus AposterioriMonteCarloPercentileCalculator::calculateEtasAndEpsil
         workers.push_back(std::thread([thread, &abort, _aborter, nbSamplePerThread, _etas, meanEtas, avecs, etaLowerChol,
                                       &etaSamples, subomega, &ratio, &meanEtasTransposed,
                                       v,p,top,part2,part3, &_intakes, &_omega, &_samples, &_residualErrorModel,
-                                      &_parameters, &_concentrationCalculator]()
+                                      &_parameters, &_concentrationCalculator, nbInitialSamples]()
         {
 
             // Duplicate an IntakeSeries for avoid a possible problem with multi-thread

@@ -7,6 +7,7 @@
 #include "tucucommon/xmlattribute.h"
 #include "tucucommon/xmliterator.h"
 #include "tucucommon/translatablestring.h"
+#include "tucucommon/xmlimporter.h"
 
 #include "tucucore/drugmodel/drugmodel.h"
 #include "tucucore/drugdefinitions.h"
@@ -16,6 +17,7 @@
 #include "tucucore/residualerrormodel.h"
 #include "tucucore/pkmodel.h"
 #include "tucucore/iresidualerrormodel.h"
+
 
 using namespace Tucuxi::Common;
 using namespace Tucuxi::Core;
@@ -98,9 +100,7 @@ DrugModelImport::Status DrugModelImport::importDocument(
 
     XmlNodeIterator drugModelIterator = root.getChildren("drugModel");
 
-    if (drugModelIterator == XmlNodeIterator::none()) {
-        return Status::Error;
-    }
+    isNodeIteratorValid(drugModelIterator);
 
     _drugModel = extractDrugModel(drugModelIterator);
 
@@ -147,56 +147,6 @@ const std::vector<std::string>& DrugModelImport::ignoredTags() const {
     return ignoredTags;
 }
 
-///////////////////////////////////////////////////////////////////////////////
-/// basic types imports
-///////////////////////////////////////////////////////////////////////////////
-
-
-Unit DrugModelImport::extractUnit(Tucuxi::Common::XmlNodeIterator _node)
-{
-    std::string unitString = _node->getValue();
-    if (unitString == "min") {
-        unitString = "m";
-    }
-    Unit result(unitString);
-    return result;
-}
-
-
-double DrugModelImport::extractDouble(Tucuxi::Common::XmlNodeIterator _node)
-{
-    double result;
-    try {
-        std::size_t pos;
-        result = std::stod(_node->getValue(),&pos);
-        if (pos != _node->getValue().size()) {
-            setNodeError(_node);
-            result = 0.0;
-        }
-    } catch (...) {
-        setNodeError(_node);
-        result = 0.0;
-    }
-    return result;
-}
-
-bool DrugModelImport::extractBool(Tucuxi::Common::XmlNodeIterator _node)
-{
-    if (_node->getValue() == "true") {
-        return true;
-    }
-    if (_node->getValue() == "True") {
-        return true;
-    }
-    if (_node->getValue() == "false") {
-        return false;
-    }
-    if (_node->getValue() == "False") {
-        return false;
-    }
-    setNodeError(_node);
-    return false;
-}
 
 Tucuxi::Common::TranslatableString DrugModelImport::extractTranslatableString(Tucuxi::Common::XmlNodeIterator _node, std::string _insideName)
 {
@@ -209,7 +159,7 @@ Tucuxi::Common::TranslatableString DrugModelImport::extractTranslatableString(Tu
         if (nodeName == _insideName) {
             XmlAttribute langAttribute = it->getAttribute("lang");
             if (!langAttribute.isValid()) {
-                setStatus(Status::Error);
+                setNodeError(it);
                 return result;
             }
             std::string lang = langAttribute.getValue();
@@ -455,11 +405,9 @@ JSOperation* DrugModelImport::extractJSOperation(Tucuxi::Common::XmlNodeIterator
         std::string nodeName = it->getName();
         if (nodeName == "code") {
             XmlNodeIterator cdataIt = it->getChildren();
-            if (cdataIt == XmlNodeIterator::none()) {
-                setStatus(Status::Error);
-            }
-            else if (cdataIt->getType() != EXmlNodeType::CData) {
-                setStatus(Status::Error);
+            isNodeIteratorValid(cdataIt);
+            if (cdataIt->getType() != EXmlNodeType::CData) {
+                setNodeError(cdataIt);
             }
             else {
                 formula = cdataIt->getValue();
@@ -571,7 +519,7 @@ Operation* DrugModelImport::extractOperation(Tucuxi::Common::XmlNodeIterator _no
     }
 
     if (operation == nullptr) {
-        setStatus(Status::Error);
+        setNodeError(_node);
     }
 
     return operation;
@@ -622,6 +570,7 @@ DrugModel* DrugModelImport::extractDrugModel(Tucuxi::Common::XmlNodeIterator _no
     std::vector<ActiveMoiety *> activeMoieties;
     std::vector<AnalyteSet *> analyteSets;
     FormulationAndRoutes *formulationAndRoutes = nullptr;
+
 
     std::string drugId;
     std::string drugModelId;
@@ -870,7 +819,7 @@ Constraint* DrugModelImport::extractConstraint(Tucuxi::Common::XmlNodeIterator _
                 constraint->setType(ConstraintType::SOFT);
             }
             else {
-                setStatus(Status::Error);
+                setNodeError(it);
             }
         }
         else if (nodeName == "requiredCovariates") {
@@ -2248,7 +2197,7 @@ ValidValuesRange* DrugModelImport::extractValuesRange(Tucuxi::Common::XmlNodeIte
     }
 
     if ((from == nullptr) || (to == nullptr) || (step == nullptr)){
-        setStatus(Status::Error);
+        setNodeError(_node);
     }
 
     if (getStatus() != Status::Ok){
