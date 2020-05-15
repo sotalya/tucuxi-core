@@ -12,6 +12,7 @@
 #include "tucucommon/loggerhelper.h"
 #include "tucucommon/general.h"
 
+
 namespace Tucuxi {
 namespace Query {
 
@@ -79,7 +80,8 @@ bool ComputingQueryResponseXmlExport::exportToString(const ComputingQueryRespons
     Tucuxi::Common::XmlNode description = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "description");
     queryStatus.addChild(description);
 
-    if(_computingQueryResponse.getQueryStatus() == QueryStatus::ImportError)
+    if((_computingQueryResponse.getQueryStatus() == QueryStatus::ImportError)
+            || (_computingQueryResponse.getQueryStatus() == QueryStatus::BadFormat))
     {
         //Only queryId and queryStatus Information
         m_doc.toString(_xmlString, true);
@@ -256,7 +258,7 @@ const std::string ComputingQueryResponseXmlExport::getComputingStatus(Tucuxi::Co
 
     auto it = m.find(_computingStatus);
     if (it != m.end()) {
-        static std::pair<std::string, std::string> m2 = it->second;
+        std::pair<std::string, std::string> m2 = it->second;
         if(_codeEnable)
         {
             return m2.second;
@@ -282,9 +284,9 @@ const std::string ComputingQueryResponseXmlExport::getQueryStatus(QueryStatus _q
 
     };
 
-    auto it = m.find(_queryStatus);
-    if (it != m.end()) {
-        static std::pair<std::string, std::string> m2 = it->second;
+    auto pair = m.find(_queryStatus);
+    if (pair != m.end()) {
+        std::pair<std::string, std::string> m2 = pair->second;
         if(_codeEnable)
         {
             return m2.second;
