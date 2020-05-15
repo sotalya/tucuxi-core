@@ -47,7 +47,8 @@ QueryStatus CliComputer::compute(const std::string& _inputFileName,
     queryComputer->compute(xmlString, computingQueryResponse);
 
 
-    if(computingQueryResponse.getQueryStatus() != QueryStatus::ImportError)
+    if((computingQueryResponse.getQueryStatus() != QueryStatus::ImportError)
+            || (computingQueryResponse.getQueryStatus() != QueryStatus::BadFormat))
     {
         ComputingResponseExport exporter;
 
@@ -61,6 +62,7 @@ QueryStatus CliComputer::compute(const std::string& _inputFileName,
     }
 
     ComputingQueryResponseXmlExport xmlExporter;
+
 
     std::string fileName = _outputPath + "/" + computingQueryResponse.getQueryId() + ".xml";
 

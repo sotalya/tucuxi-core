@@ -16,7 +16,8 @@ public:
     enum class Status {
         Ok = 0,
         Error,
-        CantOpenFile
+        CantOpenFile,
+        CantCreateXmlDocument
     };
 
     virtual std::string getErrorMessage() const = 0 ;

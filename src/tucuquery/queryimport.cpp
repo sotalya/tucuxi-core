@@ -47,6 +47,7 @@ QueryImport::Status QueryImport::importFromFile(Tucuxi::Query::QueryData *&_quer
 
     Tucuxi::Common::XmlDocument document;
     if (!document.open(_fileName)) {
+        setStatus(Status::CantCreateXmlDocument, "file could not be opened");
         return Status::CantOpenFile;
     }
 
@@ -65,7 +66,8 @@ QueryImport::Status QueryImport::importFromString(Tucuxi::Query::QueryData *&_qu
     Tucuxi::Common::XmlDocument document;
 
     if (!document.fromString(_xml)) {
-        return Status::Error;
+        setStatus(Status::CantCreateXmlDocument, "xml document could not be created. The tags must be controlled");
+        return Status::CantCreateXmlDocument;
     }
 
     return importDocument(_query, document);
@@ -162,7 +164,6 @@ unique_ptr<DrugTreatmentData> QueryImport::createDrugTreatmentData(Tucuxi::Commo
 unique_ptr<PatientData> QueryImport::createPatientData(Common::XmlNodeIterator& _patientDataRootIterator)
 {
     static const string COVARIATES_NODE_NAME = "covariates";
-    static const string COVARIATE_NODE_NAME = "covariate";
 
     vector< unique_ptr<CovariateData> > covariates;
 

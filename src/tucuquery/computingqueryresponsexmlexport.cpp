@@ -56,19 +56,24 @@ bool ComputingQueryResponseXmlExport::exportToString(const ComputingQueryRespons
     root.addAttribute(attribute1);
     root.addAttribute(attribute2);
     m_doc.setRoot(root);
-    Tucuxi::Common::XmlNode queryId = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "queryId", _computingQueryResponse.getQueryId());
+    Tucuxi::Common::XmlNode queryId = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element,
+                                                       "queryId", _computingQueryResponse.getQueryId());
     root.addChild(queryId);
 
-    Tucuxi::Common::XmlNode queryStatus = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "queryStatus", "queryStatus");
+    Tucuxi::Common::XmlNode queryStatus = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element,
+                                                           "queryStatus", "queryStatus");
     root.addChild(queryStatus);
 
-    Tucuxi::Common::XmlNode statusCode = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "statusCode", getQueryStatus(_computingQueryResponse.getQueryStatus(), STATUS_CODE_NUMBER));
+    Tucuxi::Common::XmlNode statusCode = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element,
+                                                          "statusCode", getQueryStatus(_computingQueryResponse.getQueryStatus(), STATUS_CODE_NUMBER));
     queryStatus.addChild(statusCode);
 
-    Tucuxi::Common::XmlNode statusCodeLit = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "statusCodeLit", getQueryStatus(_computingQueryResponse.getQueryStatus(), STATUS_CODE_MESSAGE));
+    Tucuxi::Common::XmlNode statusCodeLit = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element,
+                                                             "statusCodeLit", getQueryStatus(_computingQueryResponse.getQueryStatus(), STATUS_CODE_MESSAGE));
     queryStatus.addChild(statusCodeLit);
 
-    Tucuxi::Common::XmlNode message = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "message", _computingQueryResponse.getErrorMessage());
+    Tucuxi::Common::XmlNode message = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element,
+                                                       "message", _computingQueryResponse.getErrorMessage());
     queryStatus.addChild(message);
 
     Tucuxi::Common::XmlNode description = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "description");
@@ -272,7 +277,9 @@ const std::string ComputingQueryResponseXmlExport::getQueryStatus(QueryStatus _q
         {QueryStatus::PartiallyOk, {"PartiallyOk", "1"}},
         {QueryStatus::Error, {"Error", "2"}},
         {QueryStatus::ImportError, {"ImportError", "3"}},
-        {QueryStatus::Undefined, {"Undefined", "4"}}
+        {QueryStatus::BadFormat, {"BadFormat", "4"}},
+        {QueryStatus::Undefined, {"Undefined", "5"}}
+
     };
 
     auto it = m.find(_queryStatus);

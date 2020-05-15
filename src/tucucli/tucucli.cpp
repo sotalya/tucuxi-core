@@ -19,8 +19,8 @@
 
 using namespace std::chrono_literals;
 
-cxxopts::ParseResult
-parse(int _argc, char* _argv[]) // NOLINT(cppcoreguidelines-avoid-c-arrays, modernize-avoid-c-arrays)
+
+int parse(int _argc, char* _argv[]) // NOLINT(cppcoreguidelines-avoid-c-arrays, modernize-avoid-c-arrays)
 {
     // Get application folder
     std::string appFolder = Tucuxi::Common::Utils::getAppFolder(_argv);
@@ -111,10 +111,6 @@ parse(int _argc, char* _argv[]) // NOLINT(cppcoreguidelines-avoid-c-arrays, mode
         CliComputer computer;
         QueryStatus queryStatus = computer.compute(inputFileName, outputPath);
 
-        // TODO : More persistent
-        if (queryStatus == QueryStatus::Error) {
-            exit(1);
-        }
 
         pCmpMgr->unregisterComponent("DrugModelRepository");
         pCmpMgr->unregisterComponent("QueryLogger");
@@ -124,12 +120,16 @@ parse(int _argc, char* _argv[]) // NOLINT(cppcoreguidelines-avoid-c-arrays, mode
 
         delete queryLogger;
 
-        return result;
+        return static_cast<int>(queryStatus);
 
     } catch (const cxxopts::OptionException& e)
     {
         logHelper.error("error parsing options: {}", e.what());
-        exit(1);
+
+        return -1;
+
+
+        //retourner -1
     }
 }
 
@@ -152,11 +152,11 @@ int main(int _argc, char** _argv)
     logHelper.info("********************************************************");
     logHelper.info("Tucuxi console application is starting up...");
 
-    auto result = parse(_argc, _argv);
+    int status = parse(_argc, _argv);
 
     logHelper.info("Tucuxi console application is exiting...");
 
     Tucuxi::Common::LoggerHelper::beforeExit();
 
-    return 0;
+    return status;
 }

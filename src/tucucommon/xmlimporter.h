@@ -36,7 +36,9 @@ protected:
 
     void setNodeError(Common::XmlNodeIterator _node);
 
-    void setStatus(Status _result, string _errorMessage = "");
+    void setErrorMessage(string _errorMessage);
+
+    void setStatus(Status _status, string _errorMessage = "");
 
     Status getStatus() const;
 

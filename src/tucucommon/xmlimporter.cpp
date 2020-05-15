@@ -23,13 +23,13 @@ void XMLImporter::unexpectedTag(std::string _tagName) {
     logHelper.warn("Unexpected tag <{}>", _tagName);
 }
 
-void XMLImporter::setStatus(Status _result, std::string _errorMessage) {
+void XMLImporter::setStatus(Status _status, std::string _errorMessage) {
     // Totally unuseful test, but good to add a breakpoint in the else during debugging
-    if (_result == Status::Ok) {
-        m_status = _result;
+    if (_status == Status::Ok) {
+        m_status = _status;
     }
     else {
-        m_status = _result;
+        m_status = _status;
     }
     m_errorMessage += _errorMessage + "\n";
 }
