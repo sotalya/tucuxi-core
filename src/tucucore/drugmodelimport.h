@@ -71,6 +71,8 @@ public:
     ///
     DrugModelImport();
 
+    virtual ~DrugModelImport() = default;
+
     ///
     /// \brief importFromFile
     /// \param _drugModel A reference to a DrugModel pointer that will be allocated within the function

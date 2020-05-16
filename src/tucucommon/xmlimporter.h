@@ -14,7 +14,6 @@
 #include "tucucommon/duration.h"
 
 #include "tucucore/unit.h"
-#include "tucucore/residualerrormodel.h"
 
 struct TestXmlImporter;
 

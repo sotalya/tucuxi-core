@@ -92,6 +92,9 @@ protected:
 
 public:
 
+    bool exportAbstractDosage(const Tucuxi::Core::Dosage &_dosage,
+                              Tucuxi::Common::XmlNode &_rootNode);
+
     bool exportDosage(const Tucuxi::Core::DosageBounded &_dosage,
                           Tucuxi::Common::XmlNode &_rootNode);
 

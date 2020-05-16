@@ -450,31 +450,43 @@ bool ComputingQueryResponseXmlExport::exportDosageTimeRange(const std::unique_pt
                 Tucuxi::Common::EXmlNodeType::Element, "dosage");
     dosageTimeRange.addChild(dosage);
 
-    _timeRange->getDosage()->exportXml(*this, dosage);
-
-    return true;
-
+    return exportAbstractDosage(*_timeRange->getDosage(), dosage);
 }
 
+#define TRY_EXPORT(Type) \
+if (dynamic_cast<const Tucuxi::Core::Type*>(&_dosage)) { \
+    return exportDosage(*dynamic_cast<const Tucuxi::Core::Type*>(&_dosage), _rootNode); \
+}
+
+bool ComputingQueryResponseXmlExport::exportAbstractDosage(const Tucuxi::Core::Dosage &_dosage, Tucuxi::Common::XmlNode &_rootNode)
+{
+    // The calls order is important here.
+    // First start with the subclasses, else it won't work
+    TRY_EXPORT(WeeklyDose);
+    TRY_EXPORT(DailyDose);
+    TRY_EXPORT(LastingDose);
+    TRY_EXPORT(ParallelDosageSequence);
+    TRY_EXPORT(DosageSteadyState);
+    TRY_EXPORT(DosageLoop);
+    TRY_EXPORT(DosageRepeat);
+    TRY_EXPORT(DosageSequence);
+
+return false;
+}
 
 bool ComputingQueryResponseXmlExport::exportDosage(const Tucuxi::Core::DosageBounded &_dosage, Tucuxi::Common::XmlNode &_rootNode)
 {
-
-    TMP_UNUSED_PARAMETER(_dosage);
-    TMP_UNUSED_PARAMETER(_rootNode);
-
-    //SHOULD NOT BE HERE
-    return false;
+    return exportAbstractDosage(_dosage, _rootNode);
 }
 
 bool ComputingQueryResponseXmlExport::exportDosage(const Tucuxi::Core::DosageLoop &_dosage, Tucuxi::Common::XmlNode &_rootNode)
 {
+    Tucuxi::Common::XmlNode dosageLoop = m_doc.createNode(
+                Tucuxi::Common::EXmlNodeType::Element, "dosageLoop");
+    _rootNode.addChild(dosageLoop);
 
-    _dosage.getDosage()->exportXml(*this, _rootNode);
-
-    return true;
+    return exportAbstractDosage(*_dosage.getDosage(), dosageLoop);
 }
-
 
 bool ComputingQueryResponseXmlExport::exportDosage(const Tucuxi::Core::DosageSteadyState &_dosage, Tucuxi::Common::XmlNode &_rootNode)
 {
@@ -492,7 +504,7 @@ bool ComputingQueryResponseXmlExport::exportDosage(const Tucuxi::Core::ParallelD
     for(const std::unique_ptr<Tucuxi::Core::DosageBounded> &dosage : _dosage.getDosageList())
     {
         addNode(_rootNode, "offsets", timeToString(TimeOfDay(*it)));
-        dosage->exportXml(*this, _rootNode);
+        exportAbstractDosage(*dosage, _rootNode);
         it++;
     }
 
@@ -507,9 +519,7 @@ bool ComputingQueryResponseXmlExport::exportDosage(const Tucuxi::Core::DosageRep
 
     addNode(dosageRepeat, "iterations", _dosage.getNbTimes());
 
-    _dosage.getDosage()->exportXml(*this, dosageRepeat);
-
-    return true;
+    return exportAbstractDosage(*_dosage.getDosage(), dosageRepeat);
 }
 
 bool ComputingQueryResponseXmlExport::exportDosage(const Tucuxi::Core::DosageSequence &_dosage, Tucuxi::Common::XmlNode &_rootNode)
@@ -521,7 +531,7 @@ bool ComputingQueryResponseXmlExport::exportDosage(const Tucuxi::Core::DosageSeq
 
     for(const std::unique_ptr<Tucuxi::Core::DosageBounded> &dosage : _dosage.getDosageList())
     {
-        dosage->exportXml(*this, dosageSequence);
+        exportAbstractDosage(*dosage, dosageSequence);
     }
 
     return true;

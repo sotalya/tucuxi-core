@@ -277,11 +277,9 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkOperations(const DrugMo
                 }
             }
 
-            double result;
-
             JSOperation *jsOperation = dynamic_cast<JSOperation*>(operation);
             if (jsOperation != nullptr) {
-                if (!jsOperation->checkOperation(inputList, result)) {
+                if (!jsOperation->checkOperation(inputList)) {
 
                     std::string exp = jsOperation->getExpression();
                     std::stringstream sstream(exp);

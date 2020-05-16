@@ -1096,11 +1096,11 @@ struct TestDrugModelImport : public fructose::test_base<TestDrugModelImport>
         DrugModel* fake;
         DrugModelImport *importer = new DrugModelImport();
 
-        DrugModelImport::Result result = importer->importFromString(fake, drug1);
+        DrugModelImport::Status status = importer->importFromString(fake, drug1);
         //        DrugModelImport::Result result = importer->importFromFile(imatinib, "/home/ythoma/docs/ezechiel/git/dev/src/newdrugs/last/ch.heig-vd.ezechiel.example.xml");
         //        DrugModelImport::Result result = importer->importFromFile(imatinib, "/home/ythoma/docs/ezechiel/git/dev/src/drugs2/ch.tucuxi.busulfan_children.xml");
 
-        fructose_assert( result == DrugModelImport::Result::Ok);
+        fructose_assert( status == DrugModelImport::Status::Ok);
 
         fructose_assert(fake != nullptr);
 
@@ -1114,9 +1114,9 @@ struct TestDrugModelImport : public fructose::test_base<TestDrugModelImport>
         DrugModel* busulfan;
         DrugModelImport *importer = new DrugModelImport();
 
-        DrugModelImport::Result result = importer->importFromString(busulfan, busulfan1);
+        DrugModelImport::Status status = importer->importFromString(busulfan, busulfan1);
 
-        fructose_assert( result == DrugModelImport::Result::Ok);
+        fructose_assert( status == DrugModelImport::Status::Ok);
 
         fructose_assert(busulfan != nullptr);
 

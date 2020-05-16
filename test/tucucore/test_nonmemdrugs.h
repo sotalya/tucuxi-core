@@ -144,7 +144,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
 
 
             {
-                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-05-12:00:00","YYYY-MM-DD-HH:mm:ss"),
+                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-05-12:00:00","%Y-%m-%d-%H:%M:%S"),
                                                       offsetTime,
                                                       600,
                                                       interval24,
@@ -158,7 +158,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
             }
 
             {
-                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-06-12:00:00","YYYY-MM-DD-HH:mm:ss"),
+                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-06-12:00:00","%Y-%m-%d-%H:%M:%S"),
                                                       offsetTime,
                                                       600,
                                                       interval24,
@@ -171,7 +171,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
                 intakeSeries.push_back(intakeEvent);
             }
             {
-                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-07-12:00:00","YYYY-MM-DD-HH:mm:ss"),
+                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-07-12:00:00","%Y-%m-%d-%H:%M:%S"),
                                                       offsetTime,
                                                       600,
                                                       interval24,
@@ -187,7 +187,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
             Tucuxi::Common::Duration shortInterval = 370min;
 
             {
-                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-08-12:00:00","YYYY-MM-DD-HH:mm:ss"),
+                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-08-12:00:00","%Y-%m-%d-%H:%M:%S"),
                                                       offsetTime,
                                                       600,
                                                       shortInterval,
@@ -202,7 +202,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
 
 
             {
-                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-08-18:10:00","YYYY-MM-DD-HH:mm:ss"),
+                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-08-18:10:00","%Y-%m-%d-%H:%M:%S"),
                                                       offsetTime,
                                                       400,
                                                       interval6,
@@ -216,7 +216,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
             }
 
             {
-                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-09-00:10:00","YYYY-MM-DD-HH:mm:ss"),
+                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-09-00:10:00","%Y-%m-%d-%H:%M:%S"),
                                                       offsetTime,
                                                       400,
                                                       interval6,
@@ -232,7 +232,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
             {
                 Tucuxi::Common::Duration shortInterval = 350min;
 
-                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-09-06:10:00","YYYY-MM-DD-HH:mm:ss"),
+                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-09-06:10:00","%Y-%m-%d-%H:%M:%S"),
                                                       offsetTime,
                                                       400,
                                                       shortInterval,
@@ -250,7 +250,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
             {
                 Tucuxi::Common::Duration shortInterval = 10min;
 
-                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-09-12:00:00","YYYY-MM-DD-HH:mm:ss"),
+                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-09-12:00:00","%Y-%m-%d-%H:%M:%S"),
                                                       offsetTime,
                                                       600,
                                                       shortInterval,
@@ -265,7 +265,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
 
 
             {
-                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-09-12:10:00","YYYY-MM-DD-HH:mm:ss"),
+                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-09-12:10:00","%Y-%m-%d-%H:%M:%S"),
                                                       offsetTime,
                                                       400,
                                                       interval6,
@@ -278,7 +278,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
                 intakeSeries.push_back(intakeEvent);
             }
             {
-                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-09-18:10:00","YYYY-MM-DD-HH:mm:ss"),
+                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-09-18:10:00","%Y-%m-%d-%H:%M:%S"),
                                                       offsetTime,
                                                       400,
                                                       interval6,
@@ -293,47 +293,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
 
 
             {
-                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-10-00:10:00","YYYY-MM-DD-HH:mm:ss"),
-                                                      offsetTime,
-                                                      400,
-                                                      interval6,
-                                                      formulationAndRoute,
-                                                      route,
-                                                      infusionTime,
-                                                      CYCLE_SIZE);
-
-                intakeEvent.setCalculator(calculator2);
-                intakeSeries.push_back(intakeEvent);
-            }
-
-            {
-                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-10-06:10:00","YYYY-MM-DD-HH:mm:ss"),
-                                                      offsetTime,
-                                                      400,
-                                                      interval6,
-                                                      formulationAndRoute,
-                                                      route,
-                                                      infusionTime,
-                                                      CYCLE_SIZE);
-
-                intakeEvent.setCalculator(calculator2);
-                intakeSeries.push_back(intakeEvent);
-            }
-            {
-                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-10-12:10:00","YYYY-MM-DD-HH:mm:ss"),
-                                                      offsetTime,
-                                                      400,
-                                                      interval6,
-                                                      formulationAndRoute,
-                                                      route,
-                                                      infusionTime,
-                                                      CYCLE_SIZE);
-
-                intakeEvent.setCalculator(calculator2);
-                intakeSeries.push_back(intakeEvent);
-            }
-            {
-                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-10-18:10:00","YYYY-MM-DD-HH:mm:ss"),
+                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-10-00:10:00","%Y-%m-%d-%H:%M:%S"),
                                                       offsetTime,
                                                       400,
                                                       interval6,
@@ -347,7 +307,33 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
             }
 
             {
-                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-11-00:10:00","YYYY-MM-DD-HH:mm:ss"),
+                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-10-06:10:00","%Y-%m-%d-%H:%M:%S"),
+                                                      offsetTime,
+                                                      400,
+                                                      interval6,
+                                                      formulationAndRoute,
+                                                      route,
+                                                      infusionTime,
+                                                      CYCLE_SIZE);
+
+                intakeEvent.setCalculator(calculator2);
+                intakeSeries.push_back(intakeEvent);
+            }
+            {
+                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-10-12:10:00","%Y-%m-%d-%H:%M:%S"),
+                                                      offsetTime,
+                                                      400,
+                                                      interval6,
+                                                      formulationAndRoute,
+                                                      route,
+                                                      infusionTime,
+                                                      CYCLE_SIZE);
+
+                intakeEvent.setCalculator(calculator2);
+                intakeSeries.push_back(intakeEvent);
+            }
+            {
+                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-10-18:10:00","%Y-%m-%d-%H:%M:%S"),
                                                       offsetTime,
                                                       400,
                                                       interval6,
@@ -361,7 +347,21 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
             }
 
             {
-                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-11-06:10:00","YYYY-MM-DD-HH:mm:ss"),
+                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-11-00:10:00","%Y-%m-%d-%H:%M:%S"),
+                                                      offsetTime,
+                                                      400,
+                                                      interval6,
+                                                      formulationAndRoute,
+                                                      route,
+                                                      infusionTime,
+                                                      CYCLE_SIZE);
+
+                intakeEvent.setCalculator(calculator2);
+                intakeSeries.push_back(intakeEvent);
+            }
+
+            {
+                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-11-06:10:00","%Y-%m-%d-%H:%M:%S"),
                                                       offsetTime,
                                                       400,
                                                       interval6,

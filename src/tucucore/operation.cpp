@@ -404,9 +404,8 @@ JSOperation::evaluate(const OperationInputList &_inputs, double &_result)
 }
 
 bool
-JSOperation::checkOperation(const OperationInputList &_inputs, double &_result)
+JSOperation::checkOperation(const OperationInputList &_inputs)
 {
-    TMP_UNUSED_PARAMETER(_result);
 
     /// \warning The JS engine does not return an error if variables are missing -- it will silently assume that they
     ///          are zeroes and happily perform the computation. This could go horribly bad if no precautions are taken,

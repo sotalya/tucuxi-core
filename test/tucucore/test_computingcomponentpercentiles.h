@@ -209,8 +209,8 @@ struct TestComputingComponentPercentiles : public fructose::test_base<TestComput
 
 
         RequestResponseId requestResponseId = "1";
-        Tucuxi::Common::DateTime start(2018_y / oct / 1, 8h + 0min);
-        Tucuxi::Common::DateTime end(2018_y / oct / 5, 8h + 0min);
+        Tucuxi::Common::DateTime start(2018_y / date::literals::oct / 1, 8h + 0min);
+        Tucuxi::Common::DateTime end(2018_y / date::literals::oct / 5, 8h + 0min);
         PercentileRanks percentileRanks({5, 25, 50, 75, 95});
         double nbPointsPerHour = 10.0;
         ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);

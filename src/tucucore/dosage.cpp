@@ -5,8 +5,6 @@
 #include "tucucore/dosage.h"
 #include "tucucore/intakeextractor.h"
 
-#include "tucuquery/computingqueryresponsexmlexport.h"
-
 namespace Tucuxi {
 namespace Core {
 
@@ -18,10 +16,6 @@ namespace Core {
 int className::extract(IntakeExtractor &_extractor, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, IntakeSeries &_series, ExtractionOption _option) const \
 { \
     return _extractor.extract(*this, _start, _end, _nbPointsPerHour, _series, _option); \
-}\
-bool className::exportXml(Tucuxi::Query::ComputingQueryResponseXmlExport &_exporter, Tucuxi::Common::XmlNode &_rootNode) const \
-{ \
-    return _exporter.exportDosage(*this, _rootNode); \
 }
 
 

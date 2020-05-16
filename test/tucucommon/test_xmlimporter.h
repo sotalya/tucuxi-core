@@ -34,7 +34,8 @@ public:
     }
     const std::vector<string> & ignoredTags() const override
     {
-        return {};
+        static std::vector<string> tags;
+        return tags;
     }
 private:
 
