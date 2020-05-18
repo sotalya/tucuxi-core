@@ -3,8 +3,6 @@ CONFIG += console c++11
 CONFIG -= app_bundle
 CONFIG -= qt
 
-LIBS += -lpthread
-
 win32{
     TARGET = tucutestquery.exe
 
@@ -39,6 +37,7 @@ SOURCES += \
 
 
 !win32 {
+    LIBS += -lpthread
     # Because of Eigen:
     QMAKE_CXXFLAGS += -Wno-int-in-bool-context
 

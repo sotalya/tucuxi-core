@@ -30,15 +30,39 @@ struct TestDosageImportExport : public fructose::test_base<TestDosageImportExpor
 
         std::cout << _testName << std::endl;
 
-        std::string ImportedXmlString = "<root>"
-                                    "<treatment>"
-                                        "<dosageHistory>"
-                                            "<test></test><test2></test2>"
-                                        "</dosageHistory>"
-                                    "</treatment>"
-                                "</root>";
 
-        unique_ptr<Tucuxi::Query::Treatment> pTreatment = importXml(ImportedXmlString);
+        std::string importedXmlString =
+        "<root>"
+         "<treatment>"
+          "<dosageHistory>"
+           "<dosageTimeRange>"
+            "<start>2018-10-02T10:00:00</start>"
+             "<end>2018-10-13T10:00:00</end>"
+             "<dosage>"
+              "<dosageLoop>"
+               "<lastingDosage>"
+                "<interval>24:00:00</interval>"
+                "<dose>"
+                 "<value>400</value>"
+                 "<unit>mg</unit>"
+                 "<infusionTimeInMinutes>30</infusionTimeInMinutes>"
+                "</dose>"
+                "<formulationAndRoute>"
+                 "<formulation>parenteralSolution</formulation>"
+                 "<administrationName>foo bar</administrationName>"
+                 "<administrationRoute>intravenousDrip</administrationRoute>"
+                 "<absorptionModel>infusion</absorptionModel>"
+                "</formulationAndRoute>"
+               "</lastingDosage>"
+              "</dosageLoop>"
+             "</dosage>"
+            "</dosageTimeRange>"
+           "</dosageHistory>"
+          "</treatment>"
+         "</root>";
+
+
+        unique_ptr<Tucuxi::Query::Treatment> pTreatment = importXml(importedXmlString);
 
         //TESTS de l'objet Treatment
 
@@ -46,12 +70,27 @@ struct TestDosageImportExport : public fructose::test_base<TestDosageImportExpor
 
         exportXml(std::move(pTreatment), exportedXmlString);
 
+        fructose_assert((importedXmlString.compare(exportedXmlString)) == 0);
+
+       std::cout << "Imported String " << importedXmlString << std::endl;
+       std::cout << std::endl;
+       std::cout << "Exported String" << exportedXmlString << std::endl;
+
 
         // The tests are exploiting the importer and the exporter, to validate the
         // dosage import/export.
         // From an XML string, import it to a dosage history, and then
         // export it to another XML string.
         // Then use string comparison to check wether they are identical or not
+       std::string s = "yo";
+       std::string a = "yo";
+
+       if(s.compare(a)==0)
+       {
+          std::cout << std::endl;
+          std::cout << std::endl;
+          std::cout << "Identique" << std::endl;
+       }
 
 
 
@@ -76,11 +115,11 @@ private:
     {
         Tucuxi::Query::ComputingQueryResponseXmlExport computingXmlExport;
 
-        Tucuxi::Common::XmlNode xmlNode;
-
         Tucuxi::Common::XmlDocument xmlDocument;
 
         Tucuxi::Common::XmlNode root = xmlDocument.createNode(Tucuxi::Common::EXmlNodeType::Element, "root");
+
+        xmlDocument.setRoot(root);
 
         Tucuxi::Common::XmlNode treatment = xmlDocument.createNode(Tucuxi::Common::EXmlNodeType::Element, "treatment");
         root.addChild(treatment);
