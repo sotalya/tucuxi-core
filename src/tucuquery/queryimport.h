@@ -14,8 +14,11 @@
 
 #include "tucucore/computingservice/computingtrait.h"
 
+struct TestDosageImportExport;
+
 namespace Tucuxi {
 namespace Query {
+
 
 class QueryImport : public Tucuxi::Common::XMLImporter
 {
@@ -102,6 +105,10 @@ protected:
     Tucuxi::Core::SteadyStateTargetOption getChildSteadyStateTargetOptionEnum(Common::XmlNodeIterator _rootIterator, const std::string& _childName);
     Tucuxi::Core::TargetExtractionOption getChildTargetExtractionOptionEnum(Common::XmlNodeIterator _rootIterator, const std::string& _childName);
     Tucuxi::Core::FormulationAndRouteSelectionOption getChildFormulationAndRouteSelectionOptionEnum(Common::XmlNodeIterator _rootIterator, const std::string& _childName);
+
+private:
+
+    friend TestDosageImportExport;
 };
 
 

@@ -10,6 +10,8 @@
 #include "tucuquery/computingqueryresponse.h"
 #include "querystatus.h"
 
+struct TestDosageImportExport;
+
 namespace Tucuxi {
 namespace Query {
 
@@ -122,6 +124,10 @@ public:
     bool exportDosage(const Tucuxi::Core::WeeklyDose &_dosage,
                       Tucuxi::Common::XmlNode &_rootNode);
 
+
+private:
+
+    friend TestDosageImportExport;
 };
 
 } // namespace Query

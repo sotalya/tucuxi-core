@@ -15,8 +15,6 @@
 
 #include "tucucore/unit.h"
 
-struct TestXmlImporter;
-
 using namespace std;
 
 namespace Tucuxi {
