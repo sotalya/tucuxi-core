@@ -244,7 +244,6 @@ struct CmpByDate
 unique_ptr<DrugData> QueryImport::createDrugData(Common::XmlNodeIterator& _drugDataRootIterator)
 {
     static const string DRUG_ID_NODE_NAME = "drugId";
-    static const string DRUG_MODEL_ID_NODE_NAME = "drugModelId";
     static const string ACTIVE_PRINCIPLE_NODE_NAME = "activePrinciple";
     static const string BRAND_NAME_NODE_NAME = "brandName";
     static const string ATC_NODE_NAME = "atc";
@@ -253,7 +252,6 @@ unique_ptr<DrugData> QueryImport::createDrugData(Common::XmlNodeIterator& _drugD
     static const string TARGETS_NODE_NAME = "targets";
 
     string drugId = getChildString(_drugDataRootIterator, DRUG_ID_NODE_NAME);
-    string drugModelId = getChildString(_drugDataRootIterator, DRUG_MODEL_ID_NODE_NAME);
     string activePrinciple = getChildString(_drugDataRootIterator, ACTIVE_PRINCIPLE_NODE_NAME);
     string brandName = getChildString(_drugDataRootIterator, BRAND_NAME_NODE_NAME);
     string atc = getChildString(_drugDataRootIterator, ATC_NODE_NAME);
