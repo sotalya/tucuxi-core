@@ -43,7 +43,7 @@ protected:
 
     void unexpectedTag(string _tagName);
 
-    void isNodeIteratorValid(Common::XmlNodeIterator _rootIterator);
+    string checkNodeIterator(Common::XmlNodeIterator _rootIterator, string _tagName);
 
     //Extract data from XML file
     Core::Unit extractUnit(Common::XmlNodeIterator _rootIterator);
@@ -52,6 +52,7 @@ protected:
     int extractInt(Common::XmlNodeIterator _rootIterator);
     DateTime extractDateTime(Common::XmlNodeIterator _rootIterator);
     Duration extractDuration(Common::XmlNodeIterator _rootIterator);
+    string extractString(Common::XmlNodeIterator _rootIterator);
 
 
     Core::Unit getChildUnit(Common::XmlNodeIterator _rootIterator, const string& _childName);
@@ -60,6 +61,7 @@ protected:
     int getChildInt(Common::XmlNodeIterator _rootIterator, const string& _childName);
     DateTime getChildDateTime(Common::XmlNodeIterator _rootIterator, const string& _childName);
     Duration getChildDuration(Common::XmlNodeIterator _rootIterator, const string& _childName);
+    string getChildString(Common::XmlNodeIterator _rootIterator, const string& _childName);
 
 
 private:

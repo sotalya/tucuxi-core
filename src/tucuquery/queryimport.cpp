@@ -98,15 +98,20 @@ QueryImport::Status QueryImport::importDocument(
     string clientId = root.getChildren(CLIENT_ID_NODE_NAME)->getValue();
 
     Common::XmlNodeIterator dateIterator = root.getChildren(DATE_NODE_NAME);
-    Common::DateTime date = extractDateTime(dateIterator);
+    Common::DateTime date;
+    if(!checkNodeIterator(dateIterator, DATE_NODE_NAME).empty())
+    {
+        date = extractDateTime(dateIterator);
+    }
 
     string language = root.getChildren(LANGUAGE_NODE_NAME)->getValue();
 
     unique_ptr<DrugTreatmentData> pParametersData = createDrugTreatmentData(_document);
 
     Common::XmlNodeIterator requestsRootIterator = root.getChildren(REQUESTS_NODE_NAME);
-    isNodeIteratorValid(requestsRootIterator);
+    checkNodeIterator(requestsRootIterator, REQUESTS_NODE_NAME);
     Common::XmlNodeIterator requestsIterator = requestsRootIterator->getChildren(REQUEST_REQUESTS_NODE_NAME);
+    checkNodeIterator(requestsIterator, REQUEST_REQUESTS_NODE_NAME);
 
     vector< unique_ptr<RequestData> > requests;
     while(requestsIterator != Common::XmlNodeIterator::none()) {
@@ -138,16 +143,16 @@ unique_ptr<DrugTreatmentData> QueryImport::createDrugTreatmentData(Tucuxi::Commo
     Common::XmlNode root = _document.getRoot();
 
     Common::XmlNodeIterator parametersRootIterator = root.getChildren(DRUGTREATMENT_NODE_NAME);
-    isNodeIteratorValid(parametersRootIterator);
+    checkNodeIterator(parametersRootIterator, DRUGTREATMENT_NODE_NAME);
 
     Common::XmlNodeIterator patientRootIterator = parametersRootIterator->getChildren(PATIENT_NODE_NAME);
-    isNodeIteratorValid(patientRootIterator);
+    checkNodeIterator(patientRootIterator, PATIENT_NODE_NAME);
 
     unique_ptr<PatientData> pPatient = createPatientData(patientRootIterator);
 
     vector< unique_ptr<DrugData> > drugs;
     Common::XmlNodeIterator drugsRootIterator  = parametersRootIterator->getChildren(DRUGS_NODE_NAME);
-    isNodeIteratorValid(drugsRootIterator);
+    checkNodeIterator(drugsRootIterator, DRUGS_NODE_NAME);
     Common::XmlNodeIterator drugsIterator = drugsRootIterator->getChildren();
 
     while(drugsIterator != Common::XmlNodeIterator::none()) {
@@ -168,6 +173,7 @@ unique_ptr<PatientData> QueryImport::createPatientData(Common::XmlNodeIterator& 
     vector< unique_ptr<CovariateData> > covariates;
 
     Common::XmlNodeIterator covariatesRootIterator = _patientDataRootIterator->getChildren(COVARIATES_NODE_NAME);
+    checkNodeIterator(covariatesRootIterator, COVARIATES_NODE_NAME);
     Common::XmlNodeIterator covariatesIterator = covariatesRootIterator->getChildren();
     while(covariatesIterator != Common::XmlNodeIterator::none()) {
         covariates.push_back(createCovariateData(covariatesIterator));
@@ -553,7 +559,7 @@ unique_ptr<Core::DosageBounded> QueryImport::createDosageBounded(Common::XmlNode
     return pDosageBounded;
 }
 
-unique_ptr<Core::FormulationAndRoute> QueryImport::createFormulationAndRoute(Common::XmlNodeIterator &_formulationAndRouteRootIterator) const
+unique_ptr<Core::FormulationAndRoute> QueryImport::createFormulationAndRoute(Common::XmlNodeIterator &_formulationAndRouteRootIterator)
 {
     static const string FORMULATION_NODE_NAME          = "formulation";
     static const string ADMINISTRATION_NAME_NODE_NAME  = "administrationName";
@@ -643,16 +649,6 @@ unique_ptr<RequestData> QueryImport::createRequest(Tucuxi::Common::XmlNodeIterat
     static const string COMPUTING_TRAIT_PERCENTILES_NAME            = "percentilesTraits";
     static const string COMPUTING_TRAIT_SINGLE_POINT_NAME           = "predictionAtTimesTraits";
     static const string COMPUTING_TRAIT_AT_MESURE_NAME              = "predictionAtSampleTimesTraits";
-    static const string REQUEST_TYPE_NODE_NAME                      = "requestType";
-    static const string NBPOINTSPERHOUR_NODE_NAME                   = "nbPointsPerHour";
-    static const string DATE_INTERVAL_NODE_NAME                     = "dateInterval";
-    static const string DATE_INTERVAL_START_NODE_NAME               = "start";
-    static const string DATE_INTERVAL_END_NODE_NAME                 = "end";
-    static const string PREDICTION_TYPE_NODE_NAME                   = "parametersType";
-    static const string GRAPH_NODE_NAME                             = "graph";
-    static const string PERCENTILES_NODE_NAME                       = "percentiles";
-    static const string POINTSINTIME_NODE_NAME                      = "pointsInTime";
-    static const string BACKEXTRAPOLATION_NODE_NAME                 = "backextrapolation";
 
     string requestId = getChildString(_requestRootIterator, REQUEST_ID_NODE_NAME);
     string drugId = getChildString(_requestRootIterator, DRUG_ID_NODE_NAME);
@@ -759,11 +755,6 @@ unique_ptr<Backextrapolation> QueryImport::createBackextrapolation(Common::XmlNo
     return pBackextrapolation;
 }
 
-string QueryImport::getChildString(Common::XmlNodeIterator _rootIterator, const string& _childName) const
-{
-    return _rootIterator->getChildren(_childName)->getValue();
-}
-
 Tucuxi::Core::PercentileRanks QueryImport::getChildPercentileRanks(Common::XmlNodeIterator _rootIterator, const string& _childName)
 {
     Common::XmlNodeIterator it = _rootIterator->getChildren(_childName);
@@ -775,6 +766,7 @@ Tucuxi::Core::PercentileRanks QueryImport::getChildPercentileRanks(Common::XmlNo
         ranks.push_back(rank);
         it ++;
     }
+
 
     return ranks;
 }

@@ -78,7 +78,7 @@ protected:
     std::unique_ptr<Core::DosageTimeRange> createDosageTimeRange(Common::XmlNodeIterator& _dosageTimeRangeRootIterator);
     std::unique_ptr<Core::Dosage> createDosage(Common::XmlNodeIterator& _dosageRootIterator) ;
     std::unique_ptr<Core::DosageBounded> createDosageBounded(Common::XmlNodeIterator& _dosageBoundedRootIterator) ;
-    std::unique_ptr<Core::FormulationAndRoute> createFormulationAndRoute(Common::XmlNodeIterator& _formulationAndRouteRootIterator) const;
+    std::unique_ptr<Core::FormulationAndRoute> createFormulationAndRoute(Common::XmlNodeIterator& _formulationAndRouteRootIterator) ;
 
     // Methods to separate the creation of the requests
     std::unique_ptr<RequestData> createRequest(Common::XmlNodeIterator& _requestRootIterator);
@@ -102,8 +102,6 @@ protected:
     Tucuxi::Core::SteadyStateTargetOption getChildSteadyStateTargetOptionEnum(Common::XmlNodeIterator _rootIterator, const std::string& _childName);
     Tucuxi::Core::TargetExtractionOption getChildTargetExtractionOptionEnum(Common::XmlNodeIterator _rootIterator, const std::string& _childName);
     Tucuxi::Core::FormulationAndRouteSelectionOption getChildFormulationAndRouteSelectionOptionEnum(Common::XmlNodeIterator _rootIterator, const std::string& _childName);
-
-    std::string getChildString(Common::XmlNodeIterator _rootIterator, const std::string& _childName) const;
 };
 
 

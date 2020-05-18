@@ -100,7 +100,7 @@ DrugModelImport::Status DrugModelImport::importDocument(
 
     XmlNodeIterator drugModelIterator = root.getChildren("drugModel");
 
-    isNodeIteratorValid(drugModelIterator);
+    checkNodeIterator(drugModelIterator, "drugModel");
 
     _drugModel = extractDrugModel(drugModelIterator);
 
@@ -405,7 +405,6 @@ JSOperation* DrugModelImport::extractJSOperation(Tucuxi::Common::XmlNodeIterator
         std::string nodeName = it->getName();
         if (nodeName == "code") {
             XmlNodeIterator cdataIt = it->getChildren();
-            isNodeIteratorValid(cdataIt);
             if (cdataIt->getType() != EXmlNodeType::CData) {
                 setNodeError(cdataIt);
             }

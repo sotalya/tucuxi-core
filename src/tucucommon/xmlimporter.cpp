@@ -54,12 +54,16 @@ void XMLImporter::setNodeError(Tucuxi::Common::XmlNodeIterator _nodeIterator)
         }
         node = node.getParent();
     }
-    if (_nodeIterator->getValue() == "") {
-        errorMessage += "<" + _nodeIterator->getName() + "> contains an empty value.";
-    }
-    else {
+
+
+   if (_nodeIterator->getValue() == "") {
+        errorMessage += '<' + _nodeIterator->getName() + "> contains an empty value.";
+   }
+   else {
         errorMessage += "<" + _nodeIterator->getName() + "> contains an invalid value : " + _nodeIterator->getValue();
-    }
+   }
+
+
     setStatus(Status::Error, errorMessage);
 
 }
@@ -175,67 +179,120 @@ Duration XMLImporter::extractDuration(Common::XmlNodeIterator _rootIterator)
 
 }
 
+string XMLImporter::extractString(Common::XmlNodeIterator _rootIterator)
+{
+    return _rootIterator->getValue();
+}
+
 
 Core::Unit XMLImporter::getChildUnit(Common::XmlNodeIterator _rootIterator, const string& _childName)
 {
     auto child = _rootIterator->getChildren(_childName);
 
-    isNodeIteratorValid(child);
+    if(checkNodeIterator(child, _childName).empty())
+    {
+        return Core::Unit("");
+    }
+    else{
+         return extractUnit(child);
+    }
 
-    return extractUnit(child);
+
 }
 
 double XMLImporter::getChildDouble(Common::XmlNodeIterator _rootIterator, const std::string& _childName)
 {
     auto child = _rootIterator->getChildren(_childName);
 
-    isNodeIteratorValid(child);
-
-    return extractDouble(child);
+    if(checkNodeIterator(child, _childName).empty())
+    {
+        return 0.0;
+    }
+    else{
+        return extractDouble(child);
+    }
 }
 
 bool XMLImporter::getChildBool(Common::XmlNodeIterator _rootIterator, const std::string& _childName)
 {
     auto child = _rootIterator->getChildren(_childName);
 
-    isNodeIteratorValid(child);
+    if(checkNodeIterator(child, _childName).empty())
+    {
+        return false;
+    }
+    else{
+        return extractBool(child);
+    }
 
-    return extractBool(child);
 }
 
 int XMLImporter::getChildInt(Common::XmlNodeIterator _rootIterator, const std::string& _childName)
 {
     auto child = _rootIterator->getChildren(_childName);
 
-    isNodeIteratorValid(child);
-
-    return extractInt(child);
+    if(checkNodeIterator(child, _childName).empty())
+    {
+        return 0;
+    }
+    else{
+        return extractInt(child);
+    }
 }
 
 DateTime XMLImporter::getChildDateTime(Common::XmlNodeIterator _rootIterator, const std::string& _childName)
 {
     auto child = _rootIterator->getChildren(_childName);
 
-    isNodeIteratorValid(child);
+    if(checkNodeIterator(child, _childName).empty())
+    {
+        return DateTime();
+    }
+    else{
+        return extractDateTime(child);
+    }
 
-    return extractDateTime(child);
+
 }
 
 Duration XMLImporter::getChildDuration(Common::XmlNodeIterator _rootIterator, const std::string& _childName)
 {
     auto child = _rootIterator->getChildren(_childName);
 
-    isNodeIteratorValid(child);
-
-    return extractDuration(child);
+    if(checkNodeIterator(child, _childName).empty())
+    {
+        return Common::Duration();
+    }
+    else{
+        return extractDuration(child);
+    }
 }
 
-void XMLImporter::isNodeIteratorValid(Common::XmlNodeIterator _rootIterator)
+string XMLImporter::getChildString(Common::XmlNodeIterator _rootIterator, const string& _childName)
+{
+    auto child = _rootIterator->getChildren(_childName);
+
+    if(checkNodeIterator(child, _childName).empty())
+    {
+        return "";
+    }
+    else{
+        return extractString(child);
+    }
+}
+
+
+
+string XMLImporter::checkNodeIterator(Common::XmlNodeIterator _rootIterator, string _tagName)
 {
     if(_rootIterator == Common::XmlNodeIterator::none())
     {
-        setNodeError(_rootIterator);
+        setStatus(Status::Error, "<" + _tagName + "> not found in xml request");
+        unexpectedTag(_tagName);
+        return "";
     }
+    return _rootIterator->getValue();
+
 }
 
 } // namespace Common
