@@ -543,7 +543,7 @@ bool ComputingQueryResponseXmlExport::exportDosage(const Tucuxi::Core::LastingDo
                 Tucuxi::Common::EXmlNodeType::Element, "lastingDosage");
     _rootNode.addChild(lastingDose);
 
-    addNode(lastingDose, "intervals", timeToString(TimeOfDay(_dosage.getTimeStep())));
+    addNode(lastingDose, "interval", timeToString(TimeOfDay(_dosage.getTimeStep())));
 
     exportSingleDose(_dosage, lastingDose);
 

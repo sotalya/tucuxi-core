@@ -5,6 +5,7 @@
 #include <string>
 #include <iostream>
 #include <stdexcept>
+#include <array>
 
 #include "fructose/fructose.h"
 
@@ -28,10 +29,11 @@ struct TestDosageImportExport : public fructose::test_base<TestDosageImportExpor
     void testall(const std::string& _testName)
     {
 
+
         std::cout << _testName << std::endl;
 
 
-        std::string importedXmlString =
+        std::string importedXmlString1 =
         "<root>"
          "<treatment>"
           "<dosageHistory>"
@@ -43,9 +45,9 @@ struct TestDosageImportExport : public fructose::test_base<TestDosageImportExpor
                "<lastingDosage>"
                 "<interval>24:00:00</interval>"
                 "<dose>"
-                 "<value>400</value>"
+                 "<value>400.000000</value>"
                  "<unit>mg</unit>"
-                 "<infusionTimeInMinutes>30</infusionTimeInMinutes>"
+                 "<infusionTimeInMinutes>30.000000</infusionTimeInMinutes>"
                 "</dose>"
                 "<formulationAndRoute>"
                  "<formulation>parenteralSolution</formulation>"
@@ -62,41 +64,110 @@ struct TestDosageImportExport : public fructose::test_base<TestDosageImportExpor
          "</root>";
 
 
-        unique_ptr<Tucuxi::Query::Treatment> pTreatment = importXml(importedXmlString);
+        unique_ptr<Tucuxi::Query::Treatment> pTreatment1 = importXml(importedXmlString1);
 
-        //TESTS de l'objet Treatment
+        std::string exportedXmlString1;
 
-        std::string exportedXmlString;
+        exportXml(std::move(pTreatment1), exportedXmlString1);
 
-        exportXml(std::move(pTreatment), exportedXmlString);
+        removeSpecialsCharacters(exportedXmlString1);
 
-        fructose_assert((importedXmlString.compare(exportedXmlString)) == 0);
+        int comparison1 = importedXmlString1.compare(exportedXmlString1);
 
-       std::cout << "Imported String " << importedXmlString << std::endl;
-       std::cout << std::endl;
-       std::cout << "Exported String" << exportedXmlString << std::endl;
+        fructose_assert(comparison1 == 0);
+
+        if(comparison1 != 0)
+        {
+           printImportExportString(importedXmlString1, exportedXmlString1);
+        }
+
+        //TEST2
+
+        std::string importedXmlString2 =
+                "<root>"
+                "<treatment>"
+                "<dosageHistory>"
+                    "<dosageTimeRange>"
+                        "<start>2018-07-06T13:45:30</start>"
+                        "<end>2018-07-08T23:45:30</end>"
+                        "<dosages>"
+                            "<dosageLoop>"
+                                "<lastingDosage>"
+                                    "<interval>12:00:00</interval>"
+                                    "<dose>"
+                                        "<value>400.000000</value>"
+                                        "<unit>mg</unit>"
+                                        "<infusionTimeInMinutes>60.000000</infusionTimeInMinutes>"
+                                    "</dose>"
+                                    "<formulationAndRoute>"
+                                        "<formulation>parenteralSolution</formulation>"
+                                        "<administrationName>foo bar</administrationName>"
+                                        "<administrationRoute>oral</administrationRoute>"
+                                        "<absorptionModel>extravascular</absorptionModel>"
+                                    "</formulationAndRoute>"
+                                "</lastingDosage>"
+                            "</dosageLoop>"
+                        "</dosage>"
+                    "</dosageTimeRange>"
+                        "<dosageTimeRange>"
+                            "<start>2018-07-08T23:45:30</start>"
+                            "<end>2018-07-10T23:45:30</end>"
+                            "<dosage>"
+                                "<dosageLoop>"
+                                    "<lastingDosage>"
+                                        "<interval>12:00:00</interval>"
+                                        "<dose>"
+                                           "<value>200.000000</value>"
+                                            "<unit>mg</unit>"
+                                            "<infusionTimeInMinutes>60.000000</infusionTimeInMinutes>"
+                                        "</dose>"
+                                        "<formulationAndRoute>"
+                                            "<formulation>parenteralSolution</formulation>"
+                                            "<administrationName>foo bar</administrationName>"
+                                            "<administrationRoute>oral</administrationRoute>"
+                                            "<absorptionModel>extravascular</absorptionModel>"
+                                        "</formulationAndRoute>"
+                                    "</lastingDosage>"
+                                "</dosageLoop>"
+                            "</dosage>"
+                        "</dosageTimeRange>"
+                "</dosageHistory>"
+            "</treatment>"
+            "</root>";
 
 
-        // The tests are exploiting the importer and the exporter, to validate the
-        // dosage import/export.
-        // From an XML string, import it to a dosage history, and then
-        // export it to another XML string.
-        // Then use string comparison to check wether they are identical or not
-       std::string s = "yo";
-       std::string a = "yo";
+        unique_ptr<Tucuxi::Query::Treatment> pTreatment2 = importXml(importedXmlString2);
 
-       if(s.compare(a)==0)
-       {
-          std::cout << std::endl;
-          std::cout << std::endl;
-          std::cout << "Identique" << std::endl;
-       }
+        std::string exportedXmlString2;
 
+        exportXml(std::move(pTreatment2), exportedXmlString2);
+
+        removeSpecialsCharacters(exportedXmlString2);
+
+        int comparison2 = importedXmlString2.compare(exportedXmlString2);
+
+        fructose_assert(comparison2 == 0);
+
+        if(comparison2 != 0)
+        {
+           printImportExportString(importedXmlString2, exportedXmlString2);
+        }
 
 
     }
 
 private:
+
+    void printImportExportString(std::string &_importString, std::string &_exportString)
+    {
+        std::cout << std::endl;
+        std::cout << "Imported String : " << std::endl << std::endl;
+        std::cout << _importString << std::endl;
+        std::cout << std::endl;
+        std::cout << "Exported String : " << std::endl << std::endl;
+        std::cout << _exportString << std::endl << std::endl;
+    }
+
     unique_ptr<Tucuxi::Query::Treatment> importXml(std::string _xmlString)
     {
         Tucuxi::Query::QueryImport queryImport;
@@ -104,9 +175,7 @@ private:
 
         fructose_assert(xmlDocument.fromString(_xmlString) == true);
 
-        Tucuxi::Common::XmlNode xmlNode = xmlDocument.getRoot();
-
-        Tucuxi::Common::XmlNodeIterator xmlNodeIterator = xmlNode.getChildren("treatment");
+        Tucuxi::Common::XmlNodeIterator xmlNodeIterator = xmlDocument.getRoot().getChildren("treatment");
 
         return queryImport.createTreatment(xmlNodeIterator);
     }
@@ -118,7 +187,6 @@ private:
         Tucuxi::Common::XmlDocument xmlDocument;
 
         Tucuxi::Common::XmlNode root = xmlDocument.createNode(Tucuxi::Common::EXmlNodeType::Element, "root");
-
         xmlDocument.setRoot(root);
 
         Tucuxi::Common::XmlNode treatment = xmlDocument.createNode(Tucuxi::Common::EXmlNodeType::Element, "treatment");
@@ -127,6 +195,17 @@ private:
         fructose_assert(computingXmlExport.exportDosageHistory(std::move(_pTreatment->getpDosageHistory()), treatment) == true);
 
         xmlDocument.toString(_xmlString, true);
+
+    }
+
+    void removeSpecialsCharacters(std::string &_exportedXmlString)
+    {
+        std::vector<char> specialCharacters{'\t', '\n', '\r'};
+
+        for(char characters : specialCharacters)
+        {
+             _exportedXmlString.erase(std::remove(_exportedXmlString.begin(), _exportedXmlString.end(), characters), _exportedXmlString.end());
+        }
 
     }
 };
