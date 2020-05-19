@@ -119,9 +119,6 @@ bool ComputingQueryResponseXmlExport::exportToString(const ComputingQueryRespons
         Tucuxi::Common::XmlNode description = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "description");
         requestStatus.addChild(description);
 
-        Tucuxi::Common::XmlNode issuesNode = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "issues");
-        responseNode.addChild(issuesNode);
-
 
         // We start by checking for adjustements, as AdjustmentResponse is a subclass of SinglePredictionResponse
         if (dynamic_cast<const Tucuxi::Core::AdjustmentData*>(response.m_computingResponse->getData()) != nullptr) {
@@ -136,9 +133,7 @@ bool ComputingQueryResponseXmlExport::exportToString(const ComputingQueryRespons
                     dynamic_cast<const Tucuxi::Core::AdjustmentData*>(response.m_computingResponse->getData());
 
             if (!exportAdjustment(prediction, dataNode)) {
-                Tucuxi::Common::XmlNode issue = m_doc.createNode(
-                            Tucuxi::Common::EXmlNodeType::Element, "error", "Cannot export the adjustments");
-                issuesNode.addChild(issue);
+                //Error
             }
             responseNode.addChild(dataNode);
 
@@ -155,9 +150,7 @@ bool ComputingQueryResponseXmlExport::exportToString(const ComputingQueryRespons
                     dynamic_cast<const Tucuxi::Core::SinglePredictionData*>(response.m_computingResponse->getData());
 
             if (!exportSinglePrediction(prediction, dataNode)) {
-                Tucuxi::Common::XmlNode issue = m_doc.createNode(
-                            Tucuxi::Common::EXmlNodeType::Element, "error", "Cannot export the prediction");
-                issuesNode.addChild(issue);
+                //Error
             }
             responseNode.addChild(dataNode);
 
@@ -174,9 +167,7 @@ bool ComputingQueryResponseXmlExport::exportToString(const ComputingQueryRespons
                     dynamic_cast<const Tucuxi::Core::SinglePointsData*>(response.m_computingResponse->getData());
 
             if (!exportSinglePoints(prediction, dataNode)) {
-                Tucuxi::Common::XmlNode issue = m_doc.createNode(
-                            Tucuxi::Common::EXmlNodeType::Element, "error", "Cannot export the points");
-                issuesNode.addChild(issue);
+                //Error
             }
             responseNode.addChild(dataNode);
 
@@ -193,9 +184,7 @@ bool ComputingQueryResponseXmlExport::exportToString(const ComputingQueryRespons
                     dynamic_cast<const Tucuxi::Core::PercentilesData*>(response.m_computingResponse->getData());
 
             if (!exportPercentiles(prediction, dataNode)) {
-                Tucuxi::Common::XmlNode issue = m_doc.createNode(
-                            Tucuxi::Common::EXmlNodeType::Element, "error", "Cannot export the percentiles");
-                issuesNode.addChild(issue);
+                //Error
             }
             responseNode.addChild(dataNode);
 

@@ -90,7 +90,7 @@ struct TestDosageImportExport : public fructose::test_base<TestDosageImportExpor
                     "<dosageTimeRange>"
                         "<start>2018-07-06T13:45:30</start>"
                         "<end>2018-07-08T23:45:30</end>"
-                        "<dosages>"
+                        "<dosage>"
                             "<dosageLoop>"
                                 "<lastingDosage>"
                                     "<interval>12:00:00</interval>"
