@@ -309,6 +309,8 @@ bool ComputingQueryResponseXmlExport::exportAdjustment(const Tucuxi::Core::Adjus
         addNode(adjustment, "score", adj.getGlobalScore());
         Tucuxi::Common::XmlNode targetEvaluations = m_doc.createNode(
                     Tucuxi::Common::EXmlNodeType::Element, "targetEvaluations");
+        adjustment.addChild(targetEvaluations);
+
         for (const auto &target : adj.m_targetsEvaluation) {
             Tucuxi::Common::XmlNode targetEvaluation = m_doc.createNode(
                         Tucuxi::Common::EXmlNodeType::Element, "targetEvaluation");
