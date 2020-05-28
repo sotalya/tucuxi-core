@@ -726,7 +726,7 @@ public:
     ///             _startDate,
     ///             _endDate,
     ///             nbPoints,
-    ///             Tucuxi::Core::ComputingOption::MainCompartment);
+    ///             Tucuxi::Core::CompartmentsOption::MainCompartment);
     ///
     /// Tucuxi::Core::ComputingTraits traits;
     ///

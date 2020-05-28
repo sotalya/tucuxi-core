@@ -1,6 +1,7 @@
 <target>
   <targetType>residual</targetType>
   <targetValues>
+    <unit>mg/l</unit>
     <min>
       <standardValue>10</standardValue>
     </min>

@@ -1,75 +1,40 @@
 <dosages>
   <analyteConversions>
-    <analyteConversion>
-      <analyteId>vanco</analyteId>
-      <factor>1</factor>
-    </analyteConversion>
-    <analyteConversion>
-      <analyteId>analyte2</analyteId>
-      <factor>0.4</factor>
-    </analyteConversion>
+      <analyteConversion>
+          <analyteId>imatinib</analyteId>
+          <factor>1</factor>
+      </analyteConversion>
   </analyteConversions>
-  
   <availableDoses>
-    <unit>mg</unit>
-    <default>
-      <standardValue>1000</standardValue>
-    </default>
-    <doseRange>
-      <from>
-        <standardValue>5</standardValue>
-      </from>
-      <to>
-        <standardValue>1500</standardValue>
-      </to>
-      <step>
-        <standardValue>5</standardValue>
-      </step>
-    </doseRange>
-    <fixedDoses>
-      <dose>250</dose>
-      <dose>500</dose>
-      <dose>750</dose>
-      <dose>1000</dose>
-      <dose>1250</dose>
-      <dose>1500</dose>
-      <dose>1750</dose>
-      <dose>2000</dose>
-      <dose>2500</dose>
-      <dose>3000</dose>
-    </fixedDoses>
+      <unit>mg</unit>
+      <default>
+          <standardValue>400</standardValue>
+      </default>
+      <rangeValues>
+          <from>
+              <standardValue>100</standardValue>
+          </from>
+          <to>
+              <standardValue>400</standardValue>
+          </to>
+          <step>
+              <standardValue>100</standardValue>
+          </step>
+      </rangeValues>
+      <fixedValues>
+          <value>600</value>
+          <value>800</value>
+      </fixedValues>
   </availableDoses>
-
   <intervals>
-    <unit>h</unit>
-    <default>
-      <standardValue>12</standardValue>
-    </default>
-    <fixedIntervals>
-      <interval>6</interval>
-      <interval>8</interval>
-      <interval>12</interval>
-      <interval>18</interval>
-      <interval>24</interval>
-      <interval>36</interval>
-      <interval>48</interval>
-      <interval>72</interval>
-      <interval>96</interval>
-    </fixedIntervals>
+      <unit>h</unit>
+      <default>
+          <standardValue>24</standardValue>
+      </default>
+      <fixedValues>
+          <value>12</value>
+          <value>24</value>
+      </fixedValues>
   </intervals>
-  <infusions>
-    <unit>min</unit>
-    <default>
-      <standardValue>60</standardValue>
-    </default>
-    <fixedInfusions>
-      <infusion>60</infusion>
-      <infusion>120</infusion>
-      <infusion>240</infusion>
-    </fixedInfusions>
-  </infusions>
-  <comments>
-    <comment lang="en">As seen with Aline for the different optional values</comment>
-    <comment lang="fr">Vu avec Aline pour les différentes valeurs optionnelles</comment>
-  </comments>
+  <comments/>
 </dosages>

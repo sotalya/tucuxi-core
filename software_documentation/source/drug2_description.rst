@@ -738,6 +738,7 @@ Targets
 The targets of an active moiety are described in the <target> tag. It contains all the data about the targeted residual concentration, peak concentration and mean concentration.
 The structure is as follows:
 
+.. This example does not show times nor the mic
 
 .. literalinclude:: drug_description/examples/target_example.xml
 	:language: xml
@@ -751,7 +752,7 @@ The structure is as follows:
  	 "<target>             ",          ,  , "A target"
 	 "____<targetType>                 ", :ref:`targetType`   , 1:1 , "Type of target, from an enumaration"
 	 "____<targetValues>               ",          , 1:1 , "The translated active moiety's names"
-	 "____<unit>               ", string   , 1:1 , "The target unit"
+	 "________<unit>               ", string   , 1:1 , "The target unit"
 	 "________<min>            ", :ref:`stdAprioriValue`   , 1:1 , "Minimum targeted value"
 	 "________<max>            ", :ref:`stdAprioriValue`   , 1:1 , "Maximum targeted value"
 	 "________<best>            ", :ref:`stdAprioriValue`   , 1:1 , "Best targeted value"

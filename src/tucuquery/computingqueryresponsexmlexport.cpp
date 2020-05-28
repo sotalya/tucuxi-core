@@ -728,24 +728,24 @@ bool ComputingQueryResponseXmlExport::exportCycleData(const Tucuxi::Core::CycleD
     }
     addNode(cycleData, "values", pointsString);
 
-    Tucuxi::Common::XmlNode statistics = m_doc.createNode(
-                Tucuxi::Common::EXmlNodeType::Element, "statistics");
-    cycleData.addChild(statistics);
-
-
-    // Extract statistics
-
-    double mean = -1.0;
-    double auc = -1.0;
-    double auc24 = -1.0;
-    double cumulativeAuc = -1.0;
-    double residual = -1.0;
-    double peak = -1.0;
-//    double minimum = -1.0;
-//    double maximum = -1.0;
-
     if(!_cycleData.m_statistics.getStats().empty())
     {
+
+        Tucuxi::Common::XmlNode statistics = m_doc.createNode(
+                    Tucuxi::Common::EXmlNodeType::Element, "statistics");
+        cycleData.addChild(statistics);
+
+        // Extract statistics
+
+        double mean = -1.0;
+        double auc = -1.0;
+        double auc24 = -1.0;
+        double cumulativeAuc = -1.0;
+        double residual = -1.0;
+        double peak = -1.0;
+    //    double minimum = -1.0;
+    //    double maximum = -1.0;
+
         Tucuxi::Common::DateTime date;
         bool ok = true;
         ok &= _cycleData.m_statistics.getStatistic(0, Tucuxi::Core::CycleStatisticType::Mean).getValue(date, mean);
