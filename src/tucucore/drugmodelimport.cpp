@@ -48,8 +48,7 @@ template<typename T> inline void DELETE_PVECTOR(T v) {
 /// public methods
 ///////////////////////////////////////////////////////////////////////////////
 
-DrugModelImport::DrugModelImport()
-= default;
+DrugModelImport::DrugModelImport() = default;
 
 
 
