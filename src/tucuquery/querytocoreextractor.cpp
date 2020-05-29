@@ -22,7 +22,7 @@ QueryToCoreExtractor::QueryToCoreExtractor()
 = default;
 
 
-Tucuxi::Query::ComputingQuery* QueryToCoreExtractor::extractComputingQuery(const QueryData &_query) const
+QueryStatus QueryToCoreExtractor::extractComputingQuery(const QueryData &_query, ComputingQuery &_computingQuery)
 {
     // In this method we have to build all the ComputingRequest objects,
     // and add them to the ComputingQuery.
@@ -33,30 +33,29 @@ Tucuxi::Query::ComputingQuery* QueryToCoreExtractor::extractComputingQuery(const
 
     Tucuxi::Core::DrugTreatment *drugTreatment = nullptr;
 
-    ComputingQuery *newQuery = new ComputingQuery(_query.getQueryID());
-
 
     for(const std::unique_ptr<RequestData>& requestData : _query.getRequests())
     {
          drugTreatment = extractDrugTreatment(_query, *requestData);
         if (drugTreatment == nullptr) {
-            logHelper.error("Error with the drug treatment import");
-            return nullptr;
+            logHelper.error("Error during drug treatment import. Drug Id issue");
+            setErrorMessage("Error during drug treatment import. Drug Id issue");
+            return QueryStatus::ImportError;
         }
 
         Tucuxi::Core::DrugModel *drugModel = extractDrugModel(*requestData, drugTreatment);
 
         if (drugModel == nullptr) {
             logHelper.error("Could not find a suitable drug model");
-            return nullptr;
+            return QueryStatus::ImportError;
         }
         logHelper.info("Performing computation with drug model : {}, Request ID : {}", drugModel->getDrugModelId(), requestData->getRequestID());
 
         std::unique_ptr<Tucuxi::Core::ComputingRequest> computingRequest = std::make_unique<Tucuxi::Core::ComputingRequest>(requestData->getRequestID(), *drugModel, *drugTreatment, std::move(requestData->m_pComputingTrait));
-        newQuery->addComputingRequest(std::move(computingRequest));
+        _computingQuery.addComputingRequest(std::move(computingRequest));
     }
 
-    return newQuery;
+    return QueryStatus::Ok;
 }
 
 Tucuxi::Core::PatientVariates QueryToCoreExtractor::extractPatientVariates(const QueryData &_query) const
@@ -149,8 +148,6 @@ Tucuxi::Core::DrugTreatment *QueryToCoreExtractor::extractDrugTreatment(const Qu
     }
 
     if (drugPosition == drugs.size()) {
-        Tucuxi::Common::LoggerHelper logHelper;
-        logHelper.warn("Issue with the drug Id");
         return nullptr;
     }
 

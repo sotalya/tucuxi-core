@@ -6,6 +6,7 @@
 #include "tucucore/drugtreatment/sample.h"
 #include "tucucore/targetevent.h"
 #include "tucucore/computingservice/computingtrait.h"
+#include "querystatus.h"
 
 #include "tucuquery/querydata.h"
 
@@ -36,11 +37,11 @@ public:
     ///
     /// \brief Extract a ComputingQuery from the XML pre-processed data
     /// \param _query The QueryData object built from XML
-    /// \return A pointer to a ComputingQuery, nullptr if something went wrong
+    /// \return A queryStatus
     ///
     /// This method should be the only public one.
     ///
-    Tucuxi::Query::ComputingQuery* extractComputingQuery(const QueryData &_query) const;
+    QueryStatus extractComputingQuery(const QueryData &_query, ComputingQuery &_computingQuery);
 
     ///
     /// \brief extractPatientVariates
@@ -69,6 +70,13 @@ public:
 
     Tucuxi::Core::DrugModel *extractDrugModel(const RequestData &_requestData, const Tucuxi::Core::DrugTreatment *_drugTreatment) const;
 
+    std::string getErrorMessage() const {return m_errorMessage;}
+
+    void setErrorMessage(std::string _errorMessage){m_errorMessage = _errorMessage;}
+
+private:
+
+    std::string m_errorMessage;
 
 };
 

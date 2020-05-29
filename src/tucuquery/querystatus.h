@@ -14,9 +14,7 @@ enum class QueryStatus{
     /// Xml file or string with bad format (not imported yet)
     BadFormat,
     /// Undefined (should not be observed when exporting a query)
-    Undefined,
-    /// Error durint xml query extracrt
-    ExtractError
+    Undefined
 
 };
 

@@ -107,21 +107,19 @@ void QueryComputer::compute(const std::string& _queryString, ComputingQueryRespo
     }
 
     QueryToCoreExtractor extractor;
+    ComputingQuery *computingQuery = new ComputingQuery(query->getQueryID());
 
-    ComputingQuery *computingQuery = extractor.extractComputingQuery(*query);
-    if(computingQuery == nullptr)
+    QueryStatus extractResult = extractor.extractComputingQuery(*query, *computingQuery);
+    if(extractResult != QueryStatus::Ok)
     {
-        _response.setQueryStatus(QueryStatus::ExtractError, "Error with the extraction");
+        _response.setRequestResponseId(query->getQueryID());
+        _response.setQueryStatus(QueryStatus::ImportError, extractor.getErrorMessage());
         return;
     }
 
     compute(*computingQuery, _response);
 
     delete query;
-
-
-
-
 
 
 
