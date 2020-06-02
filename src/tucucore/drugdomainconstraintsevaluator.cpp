@@ -9,6 +9,20 @@ namespace Core {
 DrugDomainConstraintsEvaluator::DrugDomainConstraintsEvaluator()
 = default;
 
+
+DrugDomainConstraintsEvaluator::Result DrugDomainConstraintsEvaluator::evaluate(const DrugModelDomain& _drugDomain,
+                                                const DrugTreatment& _drugTreatment,
+                                                const DateTime &_start,
+                                                const DateTime &_end,
+                                                std::vector<DrugDomainConstraintsEvaluator::EvaluationResult> &_results)
+{
+    // 1. Generate a CovariateSeries corresponding to the [_start, _end] interval
+
+    // 2. For each constraint, evaluate it on the entire CovariateSeries
+
+    return Result::Incompatible;
+}
+
 DrugDomainConstraintsEvaluator::Result DrugDomainConstraintsEvaluator::evaluate(const DrugModelDomain &_drugDomain,
                                                                                 const CovariateSeries& _covariates,
                                                                                 const DateTime &_start,
