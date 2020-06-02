@@ -247,7 +247,8 @@ ComputingStatus GeneralExtractor::generalExtractions(const ComputingTraitStandar
                 // We do this because the infusion calculators do not support infusionTime = 0
                 infusionTime = Duration(std::chrono::hours(1));
             }
-            int nbPoints = static_cast<int>(nbPointsPerHour * interval.toHours());
+            // We need at least one point. It could be less if the interval is very very small
+            int nbPoints = std::max(1, static_cast<int>(nbPointsPerHour * interval.toHours()));
 
             IntakeEvent intake(start, Duration(), dose, interval, lastIntake->getFormulationAndRoute(), absorptionModel, infusionTime, nbPoints);
             intakeSeries.push_back(intake);
