@@ -760,7 +760,7 @@ Tucuxi::Core::PercentileRanks QueryImport::getChildPercentileRanks(Common::XmlNo
     Tucuxi::Core::PercentileRank rank;
     while(it != Common::XmlNodeIterator::none())
     {
-        rank = getChildDouble(_rootIterator, _childName);
+        rank = extractDouble(it);
         ranks.push_back(rank);
         it ++;
     }
