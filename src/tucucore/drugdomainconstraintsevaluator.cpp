@@ -2,6 +2,10 @@
 
 #include "tucucore/covariateevent.h"
 #include "tucucore/drugmodel/drugmodeldomain.h"
+#include "tucucore/drugmodel/drugmodel.h"
+#include "tucucore/covariateextractor.h"
+#include "tucucore/drugtreatment/patientcovariate.h"
+#include "tucucore/drugtreatment/drugtreatment.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -10,7 +14,7 @@ DrugDomainConstraintsEvaluator::DrugDomainConstraintsEvaluator()
 = default;
 
 
-DrugDomainConstraintsEvaluator::Result DrugDomainConstraintsEvaluator::evaluate(const DrugModelDomain& _drugDomain,
+DrugDomainConstraintsEvaluator::Result DrugDomainConstraintsEvaluator::evaluate(const DrugModel& _drugModel,
                                                 const DrugTreatment& _drugTreatment,
                                                 const DateTime &_start,
                                                 const DateTime &_end,
@@ -20,13 +24,25 @@ DrugDomainConstraintsEvaluator::Result DrugDomainConstraintsEvaluator::evaluate(
 
     // 2. For each constraint, evaluate it on the entire CovariateSeries
 
-    return Result::Incompatible;
+    CovariateSeries covariateSeries;
+
+
+    CovariateExtractor extractor(_drugModel.getCovariates(),
+                                 _drugTreatment.getCovariates(),
+                                 _start,
+                                 _end);
+
+    extractor.extract(covariateSeries);
+
+    return evaluate(_drugModel.getDomain(), covariateSeries, _start, _end, _results);
+
 }
 
 DrugDomainConstraintsEvaluator::Result DrugDomainConstraintsEvaluator::evaluate(const DrugModelDomain &_drugDomain,
                                                                                 const CovariateSeries& _covariates,
                                                                                 const DateTime &_start,
-                                                                                const DateTime &_end)
+                                                                                const DateTime &_end,
+                                                                                std::vector<EvaluationResult> &_results)
 {
     /// \brief Collection of timed covariate events, used to build the set of parameters.
     std::map<DateTime, std::vector<std::pair<std::string, Value>>> timedCValues;
@@ -162,6 +178,7 @@ DrugDomainConstraintsEvaluator::Result DrugDomainConstraintsEvaluator::evaluate(
             inputList.push_back(OperationInput(kv.first,kv.second));
         }
 
+
         // Iterate over the constraints
         for (const auto & constraint : _drugDomain.getConstraints()) {
             std::unique_ptr<Operation> operation = constraint->getCheckOperation().clone();
@@ -180,12 +197,17 @@ DrugDomainConstraintsEvaluator::Result DrugDomainConstraintsEvaluator::evaluate(
                     if (resultStatus != Result::Incompatible) {
                         if (constraint->getType() == ConstraintType::SOFT) {
                             resultStatus = Result::PartiallyCompatible;
+
                         }
                         else {
                             resultStatus = Result::Incompatible;
                         }
                     }
                 }
+                DrugDomainConstraintsEvaluator::EvaluationResult evaluationResult;
+                evaluationResult.m_result = resultStatus;
+                evaluationResult.m_constraint = constraint.get();
+                _results.push_back(evaluationResult);
             }
         }
     }
