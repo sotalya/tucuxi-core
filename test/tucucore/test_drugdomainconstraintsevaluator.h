@@ -399,7 +399,7 @@ private:
 
         drugModel.setDomain(std::move(_domain));
 
-        std::unique_ptr<PatientCovariate> covariate1 = std::make_unique<PatientCovariate>("Age", "65", DataType::Int, Unit("year"), DATE_TIME_NO_VAR(2020, 6, 8, 8, 0, 0));
+        std::unique_ptr<PatientCovariate> covariate1 = std::make_unique<PatientCovariate>("Birthdate", "2020-05-08T10:00:00", DataType::Date, Unit("-"), DATE_TIME_NO_VAR(2020, 6, 8, 8, 0, 0));
         std::unique_ptr<PatientCovariate> covariate2 = std::make_unique<PatientCovariate>("Height", "180", DataType::Double, Unit("cm"), DATE_TIME_NO_VAR(2020, 6, 9, 8, 0, 0));
         std::unique_ptr<PatientCovariate> covariate3 = std::make_unique<PatientCovariate>("Weight", "55", DataType::Double, Unit("kg"), DATE_TIME_NO_VAR(2020, 6, 10, 8, 0, 0));
         std::unique_ptr<PatientCovariate> covariate4 = std::make_unique<PatientCovariate>("Sex", "0", DataType::Bool, Unit("-"), DATE_TIME_NO_VAR(2020, 6, 11, 8, 0, 0));
@@ -418,7 +418,7 @@ private:
         std::vector<DrugDomainConstraintsEvaluator::EvaluationResult> evaluationResults;
 
         rc = evaluator.evaluate(drugModel, drugTreatment,
-                                DATE_TIME_NO_VAR(2020, 6, 7, 8, 0, 0),
+                                DATE_TIME_NO_VAR(2020, 5, 7, 8, 0, 0),
                                 DATE_TIME_NO_VAR(2020, 6, 12, 8, 0, 0),
                                 evaluationResults);
 
@@ -444,7 +444,7 @@ private:
 
         drugModel.setDomain(std::move(_domain));
 
-        std::unique_ptr<PatientCovariate> covariate1 = std::make_unique<PatientCovariate>("Age", "65", DataType::Int, Unit("year"), DATE_TIME_NO_VAR(2020, 6, 8, 8, 0, 0));
+        std::unique_ptr<PatientCovariate> covariate1 = std::make_unique<PatientCovariate>("Birthdate", "2020-06-08T10:00:00", DataType::Date, Unit("-"), DATE_TIME_NO_VAR(2020, 6, 8, 8, 0, 0));
 
         DrugTreatment drugTreatment;
         drugTreatment.addCovariate(std::unique_ptr<PatientCovariate>(std::move(covariate1)));
