@@ -156,7 +156,7 @@ int main(int argc, char** argv)
 
     drugDomainConstraintsEvaluatorTests.add_test("simpleTest1", &TestDrugDomainConstraintsEvaluator::test1);
     drugDomainConstraintsEvaluatorTests.add_test("simpleTest2", &TestDrugDomainConstraintsEvaluator::test2);
-//    drugDomainConstraintsEvaluatorTests.add_test("simpleTest3", &TestDrugDomainConstraintsEvaluator::test3);
+    drugDomainConstraintsEvaluatorTests.add_test("simpleTest3", &TestDrugDomainConstraintsEvaluator::test3);
     drugDomainConstraintsEvaluatorTests.add_test("simpleTest4", &TestDrugDomainConstraintsEvaluator::test4);
 
     res = drugDomainConstraintsEvaluatorTests.run(argc, argv);
