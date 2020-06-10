@@ -1232,6 +1232,17 @@ TargetDefinition* DrugModelImport::extractTarget(Tucuxi::Common::XmlNodeIterator
         it ++;
     }
 
+    if ((type == TargetType::AucOverMic) ||
+            (type == TargetType::TimeOverMic) ||
+            (type == TargetType::Auc24OverMic) ||
+            (type == TargetType::AucDividedByMic) ||
+            (type == TargetType::PeakDividedByMic) ||
+            (type == TargetType::Auc24DividedByMic)) {
+        if (mic == nullptr) {
+            setStatus(Status::Error, "A target is using MIC, but no MIC tag is found in the target");
+        }
+    }
+
     if (getStatus() != Status::Ok) {
         DELETE_IF_NON_NULL(minValue);
         DELETE_IF_NON_NULL(maxValue);

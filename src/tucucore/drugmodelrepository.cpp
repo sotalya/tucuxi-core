@@ -75,6 +75,7 @@ DrugModel* DrugModelRepository::loadFile(const std::string& _fileName)
         DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel, &pkCollection);
         if (!checkerResult.m_ok) {
             logHelper.error("The drug file {} has internal errors : {}", _fileName, checkerResult.m_errorMessage);
+            return nullptr;
         }
         else {
             logHelper.info("Successfully loaded drug model : {}", drugModel->getDrugModelId());

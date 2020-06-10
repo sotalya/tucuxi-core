@@ -110,6 +110,12 @@ public:
 
     INVARIANTS(
             INVARIANT(Invariants::INV_TARGETDEFINITION_0001, (m_activeMoietyId.size() > 0), "a target has no active moiety Id")
+            INVARIANT(Invariants::INV_TARGETDEFINITION_0002, ((m_targetType != TargetType::AucOverMic) || (m_mic != nullptr)), "a target of type AucOverMic requires a MIC field")
+            INVARIANT(Invariants::INV_TARGETDEFINITION_0003, ((m_targetType != TargetType::Auc24OverMic) || (m_mic != nullptr)), "a target of type Auc24OverMic requires a MIC field")
+            INVARIANT(Invariants::INV_TARGETDEFINITION_0004, ((m_targetType != TargetType::TimeOverMic) || (m_mic != nullptr)), "a target of type TimeOverMic requires a MIC field")
+            INVARIANT(Invariants::INV_TARGETDEFINITION_0005, ((m_targetType != TargetType::AucDividedByMic) || (m_mic != nullptr)), "a target of type AucDividedByMic requires a MIC field")
+            INVARIANT(Invariants::INV_TARGETDEFINITION_0006, ((m_targetType != TargetType::Auc24DividedByMic) || (m_mic != nullptr)), "a target of type Auc24DividedByMic requires a MIC field")
+            INVARIANT(Invariants::INV_TARGETDEFINITION_0007, ((m_targetType != TargetType::PeakDividedByMic) || (m_mic != nullptr)), "a target of type PeakDividedByMic requires a MIC field")
             )
 
 protected:

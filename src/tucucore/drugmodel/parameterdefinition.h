@@ -70,6 +70,11 @@ public:
     Value getValue() const { return m_values[0]; }
     std::vector<Value> getValues() const { return m_values;}
 
+
+    INVARIANTS(
+            INVARIANT(Invariants::INV_PARAMETERVARIABILITY_0001, ((m_type == ParameterVariabilityType::None) || (m_values.size() > 0)), "A parameter variability has a variability but no Std Dev defined")
+            )
+
 private:
     ParameterVariabilityType m_type;
     std::vector<Value> m_values;
@@ -118,6 +123,7 @@ public:
     INVARIANTS(
             INVARIANT(Invariants::INV_PARAMETERDEFINITION_0001, (m_id.size() > 0), "A parameter has no Id")
             INVARIANT(Invariants::INV_PARAMETERDEFINITION_0002, (m_variability != nullptr), Tucuxi::Common::Utils::strFormat("A parameter %s has no variability defined", m_id.c_str()))
+            INVARIANT(Invariants::INV_PARAMETERDEFINITION_0003, (m_variability->checkInvariants()), "There is an error in a parameter variability")
             )
 
 private:
