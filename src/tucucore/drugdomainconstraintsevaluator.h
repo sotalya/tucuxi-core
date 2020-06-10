@@ -4,6 +4,7 @@
 #include "tucucommon/datetime.h"
 
 #include "tucucore/covariateevent.h"
+#include "tucucore/drugmodel/drugmodel.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -40,7 +41,7 @@ public:
     };
 
     typedef struct {
-        Constraint *m_constraint;
+        Constraint* m_constraint;
         Result m_result;
     } EvaluationResult;
 
@@ -55,6 +56,7 @@ public:
     /// \param _covariates A series of covariates
     /// \param _start A starting time from which the covariates are evaluated
     /// \param _end An ending time for the evaluation of covariates
+    /// \param _results An empty vector that will contain the evaluation of each constraint
     /// \return The result of computation
     ///
     /// This function returns:
@@ -68,7 +70,11 @@ public:
     /// this time frame there will be various evaluations of the adequation of covariates with respect to
     /// the constraints of the drug model domain.
     ///
-    Result evaluate(const DrugModelDomain& _drugDomain, const CovariateSeries& _covariates, const Common::DateTime &_start, const Common::DateTime &_end);
+    Result evaluate(const DrugModelDomain& _drugDomain,
+                    const CovariateSeries& _covariates,
+                    const Common::DateTime &_start,
+                    const Common::DateTime &_end,
+                    std::vector<EvaluationResult> &_results);
 
 
     ///
@@ -108,7 +114,7 @@ public:
     /// for a specific patient or not. It is not meant to by used within a ComputingComponent, as it is not the
     /// responsibility of a ComputingComponent to take this decision.
     ///
-    Result evaluate(const DrugModelDomain& _drugDomain,
+    Result evaluate(const DrugModel& _drugModel,
                     const DrugTreatment& _drugTreatment,
                     const DateTime &_start,
                     const DateTime &_end,

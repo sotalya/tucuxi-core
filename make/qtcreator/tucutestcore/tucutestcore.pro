@@ -2,7 +2,13 @@ TEMPLATE = app
 CONFIG += console
 CONFIG -= app_bundle
 
-LIBS += -lpthread
+unix {
+    LIBS += -lpthread
+}
+
+win32 {
+    include(../tinyjs.pri)
+}
 
 
 include(../general.pri)
@@ -57,4 +63,5 @@ SOURCES += \
 
     # Because of macros and clang:
     QMAKE_CXXFLAGS += -Wno-extra-semi-stmt
+
 }

@@ -191,6 +191,7 @@ Core::Unit XMLImporter::getChildUnit(Common::XmlNodeIterator _rootIterator, cons
 
     if(checkNodeIterator(child, _childName).empty())
     {
+        setNodeError(_rootIterator);
         return Core::Unit("");
     }
     else{
@@ -206,6 +207,7 @@ double XMLImporter::getChildDouble(Common::XmlNodeIterator _rootIterator, const 
 
     if(checkNodeIterator(child, _childName).empty())
     {
+        setNodeError(_rootIterator);
         return 0.0;
     }
     else{
@@ -219,6 +221,7 @@ bool XMLImporter::getChildBool(Common::XmlNodeIterator _rootIterator, const std:
 
     if(checkNodeIterator(child, _childName).empty())
     {
+        setNodeError(_rootIterator);
         return false;
     }
     else{
@@ -233,6 +236,7 @@ int XMLImporter::getChildInt(Common::XmlNodeIterator _rootIterator, const std::s
 
     if(checkNodeIterator(child, _childName).empty())
     {
+        setNodeError(_rootIterator);
         return 0;
     }
     else{
@@ -246,6 +250,7 @@ DateTime XMLImporter::getChildDateTime(Common::XmlNodeIterator _rootIterator, co
 
     if(checkNodeIterator(child, _childName).empty())
     {
+        setNodeError(_rootIterator);
         return DateTime();
     }
     else{
@@ -261,6 +266,7 @@ Duration XMLImporter::getChildDuration(Common::XmlNodeIterator _rootIterator, co
 
     if(checkNodeIterator(child, _childName).empty())
     {
+        setNodeError(_rootIterator);
         return Common::Duration();
     }
     else{
@@ -274,6 +280,7 @@ string XMLImporter::getChildString(Common::XmlNodeIterator _rootIterator, const 
 
     if(checkNodeIterator(child, _childName).empty())
     {
+        setNodeError(_rootIterator);
         return "";
     }
     else{
