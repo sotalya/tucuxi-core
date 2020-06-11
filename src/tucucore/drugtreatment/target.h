@@ -68,6 +68,7 @@ public:
            Value _vbest,
            Value _vmax,
            Value _mic,
+           Unit _micUnit,
            const Tucuxi::Common::Duration &_tmin,
            const Tucuxi::Common::Duration &_tbest,
            const Tucuxi::Common::Duration &_tmax);
@@ -92,6 +93,9 @@ private:
 
     /// Minimum inhibitory concentration (for antibiotics)
     Value m_mic;
+
+    /// Unit of the MIC
+    Unit m_micUnit;
 
     /// Value under which the drug is inefficient
     Value m_inefficacyAlarm;

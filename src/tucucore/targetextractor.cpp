@@ -28,6 +28,7 @@ TargetEvent TargetExtractor::targetEventFromTarget(const Target *_target) {
                     translateToUnit(_target->m_valueBest, _target->m_unit, Unit("ug/l")),
                     translateToUnit(_target->m_valueMax, _target->m_unit, Unit("ug/l")),
                     0.0, // we do not need the MIC
+                    Unit("ug/l"),
                     _target->m_tMin,
                     _target->m_tBest,
                     _target->m_tMax);
@@ -48,7 +49,8 @@ TargetEvent TargetExtractor::targetEventFromTarget(const Target *_target) {
                     translateToUnit(_target->m_valueMin,_target->m_unit, Unit("ug*h/l")),
                     translateToUnit(_target->m_valueBest, _target->m_unit, Unit("ug*h/l")),
                     translateToUnit(_target->m_valueMax, _target->m_unit, Unit("ug*h/l")),
-                    translateToUnit(_target->m_mic, _target->m_unit, Unit("ug/l")),
+                    translateToUnit(_target->m_mic, _target->m_micUnit, Unit("ug/l")),
+                    Unit("ug/l"),
                     _target->m_tMin,
                     _target->m_tBest,
                     _target->m_tMax);
@@ -67,7 +69,8 @@ TargetEvent TargetExtractor::targetEventFromTarget(const Target *_target) {
                     translateToUnit(_target->m_valueMin, _target->m_unit, Unit("h")),
                     translateToUnit(_target->m_valueBest, _target->m_unit, Unit("h")),
                     translateToUnit(_target->m_valueMax, _target->m_unit, Unit("h")),
-                    translateToUnit(_target->m_mic, _target->m_unit, Unit("ug/l")),
+                    translateToUnit(_target->m_mic, _target->m_micUnit, Unit("ug/l")),
+                    Unit("ug/l"),
                     _target->m_tMin,
                     _target->m_tBest,
                     _target->m_tMax);
@@ -85,7 +88,8 @@ TargetEvent TargetExtractor::targetEventFromTarget(const Target *_target) {
                     translateToUnit(_target->m_valueMin, _target->m_unit, Unit("")),
                     translateToUnit(_target->m_valueBest, _target->m_unit, Unit("")),
                     translateToUnit(_target->m_valueMax, _target->m_unit, Unit("")),
-                    translateToUnit(_target->m_mic, _target->m_unit, Unit("ug/l")),
+                    translateToUnit(_target->m_mic, _target->m_micUnit, Unit("ug/l")),
+                    Unit("ug/l"),
                     _target->m_tMin,
                     _target->m_tBest,
                     _target->m_tMax);
@@ -106,6 +110,7 @@ TargetEvent TargetExtractor::targetEventFromTarget(const Target *_target) {
                     _target->m_valueBest,
                     _target->m_valueMax,
                     _target->m_mic,
+                    _target->m_micUnit,
                     _target->m_tMin,
                     _target->m_tBest,
                     _target->m_tMax);
@@ -133,6 +138,7 @@ TargetEvent TargetExtractor::targetEventFromTarget(const Target *_target, const 
                     translateToUnit(_target->m_valueBest, _target->m_unit, Unit("ug/l")),
                     translateToUnit(_target->m_valueMax, _target->m_unit, Unit("ug/l")),
                     0.0, // we do not need the MIC
+                    Unit("ug/l"),
                     _target->m_tMin,
                     _target->m_tBest,
                     _target->m_tMax);
@@ -153,7 +159,8 @@ TargetEvent TargetExtractor::targetEventFromTarget(const Target *_target, const 
                     translateToUnit(_target->m_valueMin,_target->m_unit, Unit("ug*h/l")),
                     translateToUnit(_target->m_valueBest, _target->m_unit, Unit("ug*h/l")),
                     translateToUnit(_target->m_valueMax, _target->m_unit, Unit("ug*h/l")),
-                    translateToUnit(_target->m_mic, _target->m_unit, Unit("ug/l")),
+                    translateToUnit(_target->m_mic, _target->m_micUnit, Unit("ug/l")),
+                    Unit("ug/l"),
                     _target->m_tMin,
                     _target->m_tBest,
                     _target->m_tMax);
@@ -172,7 +179,8 @@ TargetEvent TargetExtractor::targetEventFromTarget(const Target *_target, const 
                     translateToUnit(_target->m_valueMin, _target->m_unit, Unit("h")),
                     translateToUnit(_target->m_valueBest, _target->m_unit, Unit("h")),
                     translateToUnit(_target->m_valueMax, _target->m_unit, Unit("h")),
-                    translateToUnit(_target->m_mic, _target->m_unit, Unit("ug/l")),
+                    translateToUnit(_target->m_mic, _target->m_micUnit, Unit("ug/l")),
+                    Unit("ug/l"),
                     _target->m_tMin,
                     _target->m_tBest,
                     _target->m_tMax);
@@ -190,7 +198,8 @@ TargetEvent TargetExtractor::targetEventFromTarget(const Target *_target, const 
                     translateToUnit(_target->m_valueMin, _target->m_unit, Unit("")),
                     translateToUnit(_target->m_valueBest, _target->m_unit, Unit("")),
                     translateToUnit(_target->m_valueMax, _target->m_unit, Unit("")),
-                    translateToUnit(_target->m_mic, _target->m_unit, Unit("ug/l")),
+                    translateToUnit(_target->m_mic, _target->m_micUnit, Unit("ug/l")),
+                    Unit("ug/l"),
                     _target->m_tMin,
                     _target->m_tBest,
                     _target->m_tMax);
@@ -211,6 +220,7 @@ TargetEvent TargetExtractor::targetEventFromTarget(const Target *_target, const 
                     _target->m_valueBest,
                     _target->m_valueMax,
                     _target->m_mic,
+                    _target->m_micUnit,
                     _target->m_tMin,
                     _target->m_tBest,
                     _target->m_tMax);
@@ -239,6 +249,7 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(const TargetDefinit
                     translateToUnit(_target->getCMax().getValue(), _target->getUnit(), Unit("ug/l")),
                     // Do not use Mic, so no unit translation
                     _target->getMic().getValue(),
+                    Unit("ug/l"),
                     Tucuxi::Common::Duration(
                         std::chrono::minutes(static_cast<int>(_target->getTMin().getValue()))),
                     Tucuxi::Common::Duration(
@@ -260,6 +271,7 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(const TargetDefinit
                     translateToUnit(_target->getCBest().getValue(), _target->getUnit(), Unit("ug*h/l")),
                     translateToUnit(_target->getCMax().getValue(), _target->getUnit(), Unit("ug*h/l")),
                     0.0,
+                    Unit("ug/l"),
                     Tucuxi::Common::Duration(
                         std::chrono::minutes(static_cast<int>(_target->getTMin().getValue()))),
                     Tucuxi::Common::Duration(
@@ -281,6 +293,7 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(const TargetDefinit
                     translateToUnit(_target->getCBest().getValue(), _target->getUnit(), Unit("ug*h/l")),
                     translateToUnit(_target->getCMax().getValue(), _target->getUnit(), Unit("ug*h/l")),
                     translateToUnit(_target->getMic().getValue(), _target->getMicUnit(), Unit("ug/l")),
+                    Unit("ug/l"),
                     Tucuxi::Common::Duration(
                         std::chrono::minutes(static_cast<int>(_target->getTMin().getValue()))),
                     Tucuxi::Common::Duration(
@@ -303,6 +316,7 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(const TargetDefinit
                     translateToUnit(_target->getCBest().getValue(), _target->getUnit(), Unit("h")),
                     translateToUnit(_target->getCMax().getValue(), _target->getUnit(), Unit("h")),
                     translateToUnit(_target->getMic().getValue(), _target->getMicUnit(), Unit("ug/l")),
+                    Unit("ug/l"),
                     Tucuxi::Common::Duration(
                         std::chrono::minutes(static_cast<int>(_target->getTMin().getValue()))),
                     Tucuxi::Common::Duration(
@@ -322,6 +336,7 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(const TargetDefinit
                     translateToUnit(_target->getCBest().getValue(), _target->getUnit(), Unit("")),
                     translateToUnit(_target->getCMax().getValue(), _target->getUnit(), Unit("")),
                     translateToUnit(_target->getMic().getValue(), _target->getMicUnit(), Unit("ug/l")),
+                    Unit("ug/l"),
                     Tucuxi::Common::Duration(
                         std::chrono::minutes(static_cast<int>(_target->getTMin().getValue()))),
                     Tucuxi::Common::Duration(
@@ -345,6 +360,7 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(const TargetDefinit
                     _target->getCMax().getValue(),
                     // No use of MIC, so no unit translation
                     _target->getMic().getValue(),
+                    Unit("ug/l"),
                     Tucuxi::Common::Duration(
                         std::chrono::minutes(static_cast<int>(_target->getTMin().getValue()))),
                     Tucuxi::Common::Duration(
