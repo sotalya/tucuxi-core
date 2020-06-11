@@ -334,8 +334,6 @@ private:
 
         std::vector<DrugDomainConstraintsEvaluator::EvaluationResult> evaluationResults = evaluateUniqueResult(drugModel, drugTreatment, RESULT_TYPE);
 
-        //Must define Specific test for results vector evaluationResults
-
 
         for(const auto evalResult : evaluationResults)
         {
@@ -364,13 +362,10 @@ private:
         drugModel.setDomain(std::move(domain));
 
 
-        //Generate wrong covariate
         drugTreatment = howManyPatientCovariate(nbPatientCovariate, DataIntegrity::BadDataBadFormat);
 
 
         std::vector<DrugDomainConstraintsEvaluator::EvaluationResult> evaluationResults = evaluateUniqueResult(drugModel, drugTreatment, RESULT_TYPE);
-
-        //Must define Specific test for results vector evaluationResults
 
 
         for(const auto evalResult : evaluationResults)
@@ -476,11 +471,12 @@ private:
                 break;
 
             default:
+
                 break;
             }
         }
 
-        return std::move(domain);
+        return std::unique_ptr<DrugModelDomain>(std::move(domain));
 
     }
 
@@ -558,7 +554,7 @@ private:
             break;
 
         case DataIntegrity::BadDataGoodFormat:
-            //Wrong due to constraints
+            //Consider as wrong due to actual constraints value
             birthdate = "1000-05-08T10:00:00";
             height = "250";
             weight = "200";
