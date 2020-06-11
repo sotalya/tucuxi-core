@@ -34,6 +34,7 @@ HEADERS += \
     ../../../test/tucucore/test_percentilecalculator.h \
     ../../../test/tucucore/test_covariateextractor.h \
     ../../../test/tucucore/test_parameterextractor.h \
+    ../../../test/tucucore/test_targetevaluator.h \
     ../../../test/tucucore/testutils.h \
     ../../../test/tucucore/test_drugmodelimport.h \
     ../../../test/tucucore/test_drugdomainconstraintsevaluator.h \
