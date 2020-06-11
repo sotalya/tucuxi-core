@@ -84,13 +84,32 @@ using namespace Tucuxi::Common::Utils;
 
 void compatibleTests();
 
-enum TypeOfTest{
-    GoodCovAndConst,
-    NoDefMultConst,
-    WrongCov,
-    OneGoodCovInTwo
+
+enum class DataIntegrity{
+    //Use to create good covariate
+    GoodDataGoodFormat,
+
+    //Use to create bad Data with good format --> match partiallyCompatible
+    BadDataGoodFormat,
+
+    //Use to create bad data with bad format --> match comutationError
+    BadDataBadFormat
 };
 
+enum class Result {
+
+    /// The patient covariates are incompatible with the drug model : hard constraints are not met
+    Incompatible,
+
+    /// The patient covariates are not totally compatible: soft constraints are not met
+    PartiallyCompatible,
+
+    /// The patient covariates are fully compatible with the drug model
+    Compatible,
+
+    /// A computation error occured
+    ComputationError
+};
 
 struct TestDrugDomainConstraintsEvaluator : public fructose::test_base<TestDrugDomainConstraintsEvaluator>
 {
@@ -273,10 +292,12 @@ struct TestDrugDomainConstraintsEvaluator : public fructose::test_base<TestDrugD
         computationErrorTests(ConstraintType::HARD, ConstraintType::HARD);
 
 
-        //FOR (soft, hard) ou (hard, hard), function should be different. Do not test it.
+
         incompatibleTests(ConstraintType::HARD, ConstraintType::HARD);
         incompatibleTests(ConstraintType::HARD, ConstraintType::SOFT);
+        incompatibleTests(ConstraintType::SOFT, ConstraintType::HARD);
 
+        // To obtain partiallyCompatible, only soft constraint without any change between them
         partiallyCompatibleTests();
 
 
@@ -289,48 +310,152 @@ private:
 
     void compatibleTests(ConstraintType _firstConstraintType, ConstraintType _secondConstraintType)
     {
+        const Result                                        RESULT_TYPE                     = Result::Compatible;
+        const DrugDomainConstraintsEvaluator::Result        CONSTRAINTS_RESULT_TYPE         = DrugDomainConstraintsEvaluator::Result::Compatible;
 
-        uint8_t maxNbConstraints = 2;
-        for(int i = 1; i <= maxNbConstraints; i++)
+        uint8_t nbConstraints = 2;
+        uint8_t nbCovariateDefinition = 4;
+        uint8_t nbPatientCovariate = 4;
+
+        std::unique_ptr<DrugModelDomain> domain;
+        DrugModel drugModel;
+        DrugTreatment drugTreatment;
+
+        domain = howManyConstraints(_firstConstraintType, _secondConstraintType, nbConstraints);
+
+        drugModel = howManyCovariateDefinition(nbCovariateDefinition);
+
+        drugModel.setDomain(std::move(domain));
+
+
+        //Generate wrong covariate
+        drugTreatment = howManyPatientCovariate(nbPatientCovariate, DataIntegrity::GoodDataGoodFormat);
+
+
+        std::vector<DrugDomainConstraintsEvaluator::EvaluationResult> evaluationResults = evaluateUniqueResult(drugModel, drugTreatment, RESULT_TYPE);
+
+        //Must define Specific test for results vector evaluationResults
+
+
+        for(const auto evalResult : evaluationResults)
         {
-            howManyConstraints(_firstConstraintType, _secondConstraintType, TypeOfTest::GoodCovAndConst, i);
+            fructose_assert(evalResult.m_result == CONSTRAINTS_RESULT_TYPE);
         }
 
     }
 
     void computationErrorTests(ConstraintType _firstConstraintType, ConstraintType _secondConstraintType)
     {
+        const Result                                        RESULT_TYPE                     = Result::ComputationError;
+        const DrugDomainConstraintsEvaluator::Result        CONSTRAINTS_RESULT_TYPE         = DrugDomainConstraintsEvaluator::Result::ComputationError;
 
-        uint8_t maxNbConstraints = 2;
-        for(int i = 1; i <= maxNbConstraints; i++)
+        uint8_t nbConstraints = 2;
+        uint8_t nbCovariateDefinition = 2;
+        uint8_t nbPatientCovariate = 2;
+
+        std::unique_ptr<DrugModelDomain> domain;
+        DrugModel drugModel;
+        DrugTreatment drugTreatment;
+
+        domain = howManyConstraints(_firstConstraintType, _secondConstraintType, nbConstraints);
+
+        drugModel = howManyCovariateDefinition(nbCovariateDefinition);
+
+        drugModel.setDomain(std::move(domain));
+
+
+        //Generate wrong covariate
+        drugTreatment = howManyPatientCovariate(nbPatientCovariate, DataIntegrity::BadDataBadFormat);
+
+
+        std::vector<DrugDomainConstraintsEvaluator::EvaluationResult> evaluationResults = evaluateUniqueResult(drugModel, drugTreatment, RESULT_TYPE);
+
+        //Must define Specific test for results vector evaluationResults
+
+
+        for(const auto evalResult : evaluationResults)
         {
-            howManyConstraints(_firstConstraintType, _secondConstraintType, TypeOfTest::NoDefMultConst, i );
+            fructose_assert(evalResult.m_result == CONSTRAINTS_RESULT_TYPE);
         }
     }
 
     void incompatibleTests(ConstraintType _firstConstraintType, ConstraintType _secondConstraintType)
     {
-        uint8_t maxNbConstraints = 2;
-        for(int i = 1; i <= maxNbConstraints; i++)
+
+        const Result                                        RESULT_TYPE                     = Result::Incompatible;
+        const DrugDomainConstraintsEvaluator::Result        CONSTRAINTS_RESULT_TYPE         = DrugDomainConstraintsEvaluator::Result::Incompatible;
+
+        uint8_t nbConstraints = 2;
+        uint8_t nbCovariateDefinition = 2;
+        uint8_t nbPatientCovariate = 2;
+
+        std::unique_ptr<DrugModelDomain> domain;
+        DrugModel drugModel;
+        DrugTreatment drugTreatment;
+
+        domain = howManyConstraints(_firstConstraintType, _secondConstraintType, nbConstraints);
+
+        drugModel = howManyCovariateDefinition(nbCovariateDefinition);
+
+        drugModel.setDomain(std::move(domain));
+
+
+        //Generate wrong covariate
+        drugTreatment = howManyPatientCovariate(nbPatientCovariate, DataIntegrity::BadDataGoodFormat);
+
+
+        std::vector<DrugDomainConstraintsEvaluator::EvaluationResult> evaluationResults = evaluateUniqueResult(drugModel, drugTreatment, RESULT_TYPE);
+
+        //Must define Specific test for results vector evaluationResults
+
+
+        for(const auto evalResult : evaluationResults)
         {
-            howManyConstraints(_firstConstraintType, _secondConstraintType, TypeOfTest::WrongCov, i );
+            fructose_assert(evalResult.m_result == CONSTRAINTS_RESULT_TYPE);
         }
     }
 
     void partiallyCompatibleTests()
     {
-        //PartiallyComatible onyl if SOFT constraint --> can be partially if SOFT = partially and HARD = compatible
-        ConstraintType _firstConstraint = ConstraintType::SOFT;
-        ConstraintType _secondConstraint = ConstraintType::HARD;
+        const Result                                        RESULT_TYPE                     = Result::PartiallyCompatible;
+        const DrugDomainConstraintsEvaluator::Result        CONSTRAINTS_RESULT_TYPE         = DrugDomainConstraintsEvaluator::Result::PartiallyCompatible;
 
-        uint8_t maxNbConstraints = 2;
-        for(int i = 1; i <= maxNbConstraints; i++)
+        ConstraintType _firstConstraint = ConstraintType::SOFT;
+        ConstraintType _secondConstraint = ConstraintType::SOFT;
+
+        uint8_t nbConstraints = 2;
+        uint8_t nbCovariateDefinition = 2;
+        uint8_t nbPatientCovariate = 2;
+
+        std::unique_ptr<DrugModelDomain> domain;
+        DrugModel drugModel;
+        DrugTreatment drugTreatment;
+
+        domain = howManyConstraints(_firstConstraint, _secondConstraint, nbConstraints);
+
+        drugModel = howManyCovariateDefinition(nbCovariateDefinition);
+
+        drugModel.setDomain(std::move(domain));
+
+
+        //Generate wrong covariate
+        drugTreatment = howManyPatientCovariate(nbPatientCovariate, DataIntegrity::BadDataGoodFormat);
+
+
+        std::vector<DrugDomainConstraintsEvaluator::EvaluationResult> evaluationResults = evaluateUniqueResult(drugModel, drugTreatment, RESULT_TYPE);
+
+        //Must define Specific test for results vector evaluationResults
+
+
+        for(const auto evalResult : evaluationResults)
         {
-            howManyConstraints(_firstConstraint, _secondConstraint, TypeOfTest::OneGoodCovInTwo, i );
+            fructose_assert(evalResult.m_result == CONSTRAINTS_RESULT_TYPE);
         }
+
+
     }
 
-    void howManyConstraints(ConstraintType _firstConstraintType, ConstraintType _secondConstraintType, TypeOfTest result, uint8_t _nbConstraint = 1)
+    std::unique_ptr<DrugModelDomain> howManyConstraints(ConstraintType _firstConstraintType, ConstraintType _secondConstraintType, uint8_t _nbConstraint = 1)
     {
         const int NB_CASE = 2;
 
@@ -340,7 +465,6 @@ private:
 
         for(int i = 0; i < _nbConstraint; i++)
         {
-            // WHEN ADDING NEW CONSTRAINT, MAKE SURE TO CREATE COVARIATEDEFINITION RELATIVE TO IT IN ALL FUNCTIONS EXCEPT FOR noDefinitiontMultipleConstraint
             switch (i) {
 
             case 0:
@@ -356,215 +480,176 @@ private:
             }
         }
 
-        // Only if 2 conststraints (soft and hard)
-        bool mix = (_nbConstraint > 1);
-
-        switch (result) {
-        case TypeOfTest::GoodCovAndConst:
-            goodCovariateAndConstraint(std::move(domain));
-            break;
-
-        case TypeOfTest::WrongCov:
-            wrongCovariate(std::move(domain));
-            break;
-
-        case TypeOfTest::NoDefMultConst:
-             noDefinitiontMultipleConstraint(std::move(domain));
-            break;
-
-        case TypeOfTest::OneGoodCovInTwo:
-             oneGoodCovariateInTwo(std::move(domain), mix);
-            break;
-
-        }
-
+        return std::move(domain);
 
     }
 
-    void goodCovariateAndConstraint(std::unique_ptr<DrugModelDomain> _domain)
+    DrugModel howManyCovariateDefinition(uint8_t _nbCovariateDefinition)
     {
-        CovariateDefinitions cDefinitions;
-
-        ADD_CDEF_NO_R(Gist, true, Standard, Bool, Direct, cDefinitions);
-        ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), kg, cDefinitions);
-        ADD_CDEF_NO_R_UNIT(Height, 100, Standard, Double, Linear, cm, cDefinitions);
-        ADD_CDEF_NO_R_UNIT(Age, 3, AgeInDays, Int, Linear, days, cDefinitions);
+        const int NB_CASE = 4;
 
         DrugModel drugModel;
+
+        CovariateDefinitions cDefinitions;
+
+        _nbCovariateDefinition = (_nbCovariateDefinition > NB_CASE) ? NB_CASE : _nbCovariateDefinition;
+
+        for(int i = 0; i < _nbCovariateDefinition; i++)
+        {
+            switch (i) {
+
+            case 0:
+                ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), kg, cDefinitions);
+                break;
+
+            case 1:
+                ADD_CDEF_NO_R(Gist, true, Standard, Bool, Direct, cDefinitions);
+                break;
+
+            case 2:
+                ADD_CDEF_NO_R_UNIT(Height, 100, Standard, Double, Linear, cm, cDefinitions);
+                break;
+
+            case 3:
+                ADD_CDEF_NO_R_UNIT(Age, 3, AgeInDays, Int, Linear, days, cDefinitions);
+                break;
+
+            default:
+
+                break;
+            }
+        }
+
 
         for (auto &cDefinition : cDefinitions)
         {
             drugModel.addCovariate(move(cDefinition));
         }
 
-        drugModel.setDomain(std::move(_domain));
+        return drugModel;
+    }
 
-        std::unique_ptr<PatientCovariate> covariate1 = std::make_unique<PatientCovariate>("Birthdate", "2020-05-08T10:00:00", DataType::Date, Unit("-"), DATE_TIME_NO_VAR(2020, 6, 8, 8, 0, 0));
-        std::unique_ptr<PatientCovariate> covariate2 = std::make_unique<PatientCovariate>("Height", "180", DataType::Double, Unit("cm"), DATE_TIME_NO_VAR(2020, 6, 9, 8, 0, 0));
-        std::unique_ptr<PatientCovariate> covariate3 = std::make_unique<PatientCovariate>("Weight", "55", DataType::Double, Unit("kg"), DATE_TIME_NO_VAR(2020, 6, 10, 8, 0, 0));
-        std::unique_ptr<PatientCovariate> covariate4 = std::make_unique<PatientCovariate>("Sex", "0", DataType::Bool, Unit("-"), DATE_TIME_NO_VAR(2020, 6, 11, 8, 0, 0));
+    DrugTreatment howManyPatientCovariate(uint8_t _nbPatientCovariate, DataIntegrity _dataIntegrity=DataIntegrity::GoodDataGoodFormat)
+    {
+        const int NB_CASE = 5;
 
         DrugTreatment drugTreatment;
 
-        drugTreatment.addCovariate(std::unique_ptr<PatientCovariate>(std::move(covariate1)));
-        drugTreatment.addCovariate(std::unique_ptr<PatientCovariate>(std::move(covariate2)));
-        drugTreatment.addCovariate(std::unique_ptr<PatientCovariate>(std::move(covariate3)));
-        drugTreatment.addCovariate(std::unique_ptr<PatientCovariate>(std::move(covariate4)));
+        _nbPatientCovariate = (_nbPatientCovariate > NB_CASE) ? NB_CASE : _nbPatientCovariate;
 
+        std::unique_ptr<PatientCovariate> covariate;
+
+        std::string birthdate;
+        std::string height;
+        std::string weight;
+        std::string sex;
+        std::string gist;
+
+        switch (_dataIntegrity) {
+
+        case DataIntegrity::BadDataBadFormat:
+
+            birthdate = "100-105-08-10:00:00";
+            height = "l";
+            weight = "true";
+            sex = "10h";
+            gist = "truffe";
+
+            break;
+
+        case DataIntegrity::BadDataGoodFormat:
+            //Wrong due to constraints
+            birthdate = "1000-05-08T10:00:00";
+            height = "250";
+            weight = "200";
+            sex = "0.5";
+            gist = "false";
+            break;
+
+        case DataIntegrity::GoodDataGoodFormat:
+
+            birthdate = "2020-05-08T10:00:00";
+            height = "180";
+            weight = "55";
+            sex = "0";
+            gist = "true";
+            break;
+
+        }
+
+
+
+        for(int i = 0; i < _nbPatientCovariate; i++)
+        {
+            switch (i) {
+
+            case 0:
+                covariate = std::make_unique<PatientCovariate>("Weight", weight, DataType::Double, Unit("kg"), DATE_TIME_NO_VAR(2020, 6, 8, 8, 0, 0));
+                break;
+
+            case 1:
+                covariate = std::make_unique<PatientCovariate>("Gist", gist, DataType::Bool, Unit("-"), DATE_TIME_NO_VAR(2020, 6, 9, 8, 0, 0));
+                break;
+
+            case 2:
+                covariate = std::make_unique<PatientCovariate>("Height", height, DataType::Double, Unit("cm"), DATE_TIME_NO_VAR(2020, 6, 10, 8, 0, 0));
+                break;
+
+            case 3:
+                covariate = std::make_unique<PatientCovariate>("Birthdate", birthdate, DataType::Date, Unit("-"), DATE_TIME_NO_VAR(2020, 6, 11, 8, 0, 0));
+                break;
+
+            case 4 :
+                covariate = std::make_unique<PatientCovariate>("Sex", sex, DataType::Bool, Unit("-"), DATE_TIME_NO_VAR(2020, 6, 12, 8, 0, 0));
+                break;
+
+            default:
+
+                break;
+            }
+
+            drugTreatment.addCovariate(std::move(covariate));
+        }
+
+        return drugTreatment;
+    }
+
+
+    std::vector<DrugDomainConstraintsEvaluator::EvaluationResult> evaluateUniqueResult(DrugModel &_drugModel, DrugTreatment &_drugTreatment, Result result)
+    {
         DrugDomainConstraintsEvaluator evaluator;
 
         DrugDomainConstraintsEvaluator::Result rc;
 
         std::vector<DrugDomainConstraintsEvaluator::EvaluationResult> evaluationResults;
 
-        rc = evaluator.evaluate(drugModel, drugTreatment,
+        rc = evaluator.evaluate(_drugModel, _drugTreatment,
                                 DATE_TIME_NO_VAR(2020, 5, 7, 8, 0, 0),
                                 DATE_TIME_NO_VAR(2020, 6, 12, 8, 0, 0),
                                 evaluationResults);
 
-        for(const auto evalResult : evaluationResults)
-        {
-            fructose_assert(evalResult.m_result == DrugDomainConstraintsEvaluator::Result::Compatible);
-        }
+        switch (result) {
 
-        fructose_assert(rc == DrugDomainConstraintsEvaluator::Result::Compatible);
-    }
+        case Result::Compatible :
+            fructose_assert(rc == DrugDomainConstraintsEvaluator::Result::Compatible);
+            break;
 
+        case Result::Incompatible:
+            fructose_assert(rc == DrugDomainConstraintsEvaluator::Result::Incompatible);
+            break;
 
-    void noDefinitiontMultipleConstraint(std::unique_ptr<DrugModelDomain> _domain)
-    {
-        CovariateDefinitions cDefinitions; // volontuntary empty
+        case Result::ComputationError:
+            fructose_assert(rc == DrugDomainConstraintsEvaluator::Result::ComputationError);
+            break;
 
-        DrugModel drugModel;
-
-        for (auto &cDefinition : cDefinitions)
-        {
-            drugModel.addCovariate(move(cDefinition));
-        }
-
-        drugModel.setDomain(std::move(_domain));
-
-        std::unique_ptr<PatientCovariate> covariate1 = std::make_unique<PatientCovariate>("Birthdate", "2020-06-08T10:00:00", DataType::Date, Unit("-"), DATE_TIME_NO_VAR(2020, 6, 8, 8, 0, 0));
-
-        DrugTreatment drugTreatment;
-        drugTreatment.addCovariate(std::unique_ptr<PatientCovariate>(std::move(covariate1)));
-
-        DrugDomainConstraintsEvaluator evaluator;
-
-        DrugDomainConstraintsEvaluator::Result rc;
-
-        std::vector<DrugDomainConstraintsEvaluator::EvaluationResult> evaluationResults;
-
-        rc = evaluator.evaluate(drugModel, drugTreatment,
-                                DATE_TIME_NO_VAR(2020, 6, 7, 8, 0, 0),
-                                DATE_TIME_NO_VAR(2020, 6, 9, 8, 0, 0),
-                                evaluationResults);
-
-        for(const auto evalResult : evaluationResults)
-        {
-            fructose_assert(evalResult.m_result == DrugDomainConstraintsEvaluator::Result::ComputationError);
-        }
-
-        fructose_assert(rc == DrugDomainConstraintsEvaluator::Result::ComputationError);
-    }
-
-    void oneGoodCovariateInTwo(std::unique_ptr<DrugModelDomain> _domain, bool mix=false)
-    {
-        CovariateDefinitions cDefinitions;
-
-        ADD_CDEF_NO_R(Gist, true, Standard, Bool, Direct, cDefinitions);
-        ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), kg, cDefinitions);
-        ADD_CDEF_NO_R_UNIT(Height, 100, Standard, Double, Linear, cm, cDefinitions);
-        ADD_CDEF_NO_R_UNIT(Age, 3, AgeInDays, Int, Linear, days, cDefinitions);
-
-        DrugModel drugModel;
-
-        for (auto &cDefinition : cDefinitions)
-        {
-            drugModel.addCovariate(move(cDefinition));
-        }
-
-        drugModel.setDomain(std::move(_domain));
-
-        DrugTreatment drugTreatment;
-
-        if(mix)
-        {
-            std::unique_ptr<PatientCovariate> covariate = std::make_unique<PatientCovariate>("Gist", "True", DataType::Bool, Unit("-"), DATE_TIME_NO_VAR(2020, 6, 10, 8, 0, 0));
-            drugTreatment.addCovariate(std::unique_ptr<PatientCovariate>(std::move(covariate)));
-        }
-
-        std::unique_ptr<PatientCovariate> covariate = std::make_unique<PatientCovariate>("Weight", "155", DataType::Double, Unit("kg"), DATE_TIME_NO_VAR(2020, 6, 9, 8, 0, 0));
-
-        drugTreatment.addCovariate(std::unique_ptr<PatientCovariate>(std::move(covariate)));
-
-        DrugDomainConstraintsEvaluator evaluator;
-
-        DrugDomainConstraintsEvaluator::Result rc;
-
-        std::vector<DrugDomainConstraintsEvaluator::EvaluationResult> evaluationResults;
-
-        rc = evaluator.evaluate(drugModel, drugTreatment,
-                                DATE_TIME_NO_VAR(2020, 6, 9, 6, 0, 0),
-                                DATE_TIME_NO_VAR(2020, 6, 10, 9, 0, 0),
-                                evaluationResults);
-
-        for(const auto evalResult : evaluationResults)
-        {
-
-          fructose_assert(evalResult.m_result == DrugDomainConstraintsEvaluator::Result::PartiallyCompatible);
+        case Result::PartiallyCompatible:
+            fructose_assert(rc == DrugDomainConstraintsEvaluator::Result::PartiallyCompatible);
+            break;
 
         }
 
-        fructose_assert(rc == DrugDomainConstraintsEvaluator::Result::PartiallyCompatible);
-    }
+        return evaluationResults;
 
-    void wrongCovariate(std::unique_ptr<DrugModelDomain> _domain)
-    {
-        CovariateDefinitions cDefinitions;
-
-        ADD_CDEF_NO_R(Gist, true, Standard, Bool, Direct, cDefinitions);
-        ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), kg, cDefinitions);
-        ADD_CDEF_NO_R_UNIT(Height, 100, Standard, Double, Linear, cm, cDefinitions);
-        ADD_CDEF_NO_R_UNIT(Age, 3, AgeInDays, Int, Linear, days, cDefinitions);
-
-        DrugModel drugModel;
-
-        for (auto &cDefinition : cDefinitions)
-        {
-            drugModel.addCovariate(move(cDefinition));
-        }
-
-        drugModel.setDomain(std::move(_domain));
-
-        DrugTreatment drugTreatment;
-
-        std::unique_ptr<PatientCovariate> covariate = std::make_unique<PatientCovariate>("Weight", "110", DataType::Double, Unit("kg"), DATE_TIME_NO_VAR(2020, 6, 9, 8, 0, 0));
-        std::unique_ptr<PatientCovariate> covariate1 = std::make_unique<PatientCovariate>("Gist", "False", DataType::Bool, Unit("-"), DATE_TIME_NO_VAR(2020, 6, 10, 8, 0, 0));
-
-        drugTreatment.addCovariate(std::unique_ptr<PatientCovariate>(std::move(covariate)));
-        drugTreatment.addCovariate(std::unique_ptr<PatientCovariate>(std::move(covariate1)));
-
-
-        DrugDomainConstraintsEvaluator evaluator;
-
-        DrugDomainConstraintsEvaluator::Result rc;
-
-        std::vector<DrugDomainConstraintsEvaluator::EvaluationResult> evaluationResults;
-
-        rc = evaluator.evaluate(drugModel, drugTreatment,
-                                DATE_TIME_NO_VAR(2020, 6, 9, 6, 0, 0),
-                                DATE_TIME_NO_VAR(2020, 6, 10, 9, 0, 0),
-                                evaluationResults);
-
-        for(const auto evalResult : evaluationResults)
-        {
-
-          fructose_assert(evalResult.m_result == DrugDomainConstraintsEvaluator::Result::Incompatible);
-
-        }
-
-        fructose_assert(rc == DrugDomainConstraintsEvaluator::Result::Incompatible);
     }
 
 };
