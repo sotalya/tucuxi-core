@@ -53,6 +53,16 @@ public:
         m_concentrations.push_back(_concentrations);
     }
 
+    std::vector<TimeOffsets> getTimes()
+    {
+        return m_times;
+    }
+
+    std::vector<Concentrations> getConcentrations()
+    {
+        return m_concentrations;
+    }
+
     /// \brief Absolute start time of the cycle
     Tucuxi::Common::DateTime m_start;
 
@@ -67,7 +77,7 @@ public:
     /// \brief A vector of vector of concentrations
     /// Each inner vector contains the concentrations of an analyte or a compartment
     /// The size of each inner vector has to be the same as m_times.
-    std::vector< std::vector<Concentration> > m_concentrations;
+    std::vector<Concentrations> m_concentrations;
 
     /// \brief Unit of concentrations
     /// The area under curve corresponds to this unit times hours

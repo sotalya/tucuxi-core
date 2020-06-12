@@ -13,6 +13,17 @@ namespace Core {
 TargetEvaluator::TargetEvaluator()
 = default;
 
+typedef struct{
+
+    std::vector<double> timeIntervals;
+    std::vector<bool> timeFound;
+    int nbCompleteInterval;
+//    double temporaryConcentration;
+//    bool concentrationEqualMic;
+
+
+}TimeStruct;
+
 
 bool TargetEvaluator::isWithinBoundaries(
         Value _value,
@@ -203,17 +214,113 @@ ComputingStatus TargetEvaluator::evaluate(
 
     case TargetType::AucOverMic :
     {
-        return ComputingStatus::TargetEvaluationError;
+        double auc = -1.0;
+        CycleStatistic cycleStatistic = statisticsCalculator.getStatistic(0, CycleStatisticType::AUC);
+        bOk = cycleStatistic.getValue(dateTime, auc);
+
+        double intervalInHours = 0.0;
+        CycleStatistic cycleStatisticForCycleInterval = statisticsCalculator.getStatistic(0, CycleStatisticType::CycleInterval);
+        bOk &= cycleStatisticForCycleInterval.getValue(dateTime, intervalInHours);
+
+        if (bOk) {
+            // Calculate the value between AUC and MIC
+            double aucOverMic = auc - _target.m_mic;
+
+            evaluateValue(aucOverMic, _target, bOk, score, value);
+        }
     } break;
 
     case TargetType::Auc24OverMic :
     {
-        return ComputingStatus::TargetEvaluationError;
+        double auc = -1.0;
+        CycleStatistic cycleStatistic = statisticsCalculator.getStatistic(0, CycleStatisticType::AUC);
+        bOk = cycleStatistic.getValue(dateTime, auc);
+
+        double intervalInHours = 0.0;
+        CycleStatistic cycleStatisticForCycleInterval = statisticsCalculator.getStatistic(0, CycleStatisticType::CycleInterval);
+        bOk &= cycleStatisticForCycleInterval.getValue(dateTime, intervalInHours);
+
+        if (bOk) {
+            // Calculate the value between AUC and MIC on 24h
+            double auc24 = auc * 24.0 /intervalInHours;
+            double auc24OverMic = auc24 - _target.m_mic;
+
+            evaluateValue(auc24OverMic, _target, bOk, score, value);
+        }
     } break;
 
     case TargetType::TimeOverMic :
     {
         return ComputingStatus::TargetEvaluationError;
+
+        double intervalInHours = 0.0;
+        CycleStatistic cycleStatisticForCycleInterval = statisticsCalculator.getStatistic(0, CycleStatisticType::CycleInterval);
+        bOk &= cycleStatisticForCycleInterval.getValue(dateTime, intervalInHours);
+
+        //intervalInHours vaut la dernièe valeur des TimeOffsets (47.5)
+
+        if (bOk) {
+            // Calculate the time when over mic
+            TimeStruct timeStruct;
+            Concentrations concentrations = cycle.getConcentrations()[0]; // [0] because only one concentrations (vector of concentration) in CycleData
+            timeStruct.nbCompleteInterval = 0;
+            for(int i = 0; i < int(concentrations.size()); i++){
+
+                //Trigger up
+                if ((concentrations[i] > _target.m_mic) && !timeStruct.timeFound[0]){
+
+                    if(i > 1)
+                    {
+                        double ratio = concentrations[i] / concentrations[i - 1];
+                        timeStruct.timeIntervals.push_back((cycle.getTimes()[0][i - 1]) * ratio);
+                    }
+                    else{
+                        timeStruct.timeIntervals.push_back(cycle.getTimes()[0][i]);
+                    }
+                    timeStruct.timeFound[0] = true;
+                    timeStruct.timeFound[1] = false;       // Can Trigger down again --> oscillation
+                }
+
+                //Trigger down if already up
+                if(timeStruct.timeFound[0] && ((concentrations[i] < _target.m_mic) && !timeStruct.timeFound[1])){
+
+                    double ratio = concentrations[i - 1] / concentrations[i];
+
+                    timeStruct.timeIntervals[timeStruct.timeIntervals.size() - 1] = ((cycle.getTimes()[0][i - 1] * ratio) - timeStruct.timeIntervals.back());
+                    timeStruct.timeFound[1] = true;
+                    timeStruct.timeFound[0] = false;               // Can Trigger up again --> oscillation
+                    timeStruct.nbCompleteInterval++;
+                }
+
+            }
+
+            double timeOverMic = 0.0;
+
+            //If no end value, use intervalInHours
+            if ((timeStruct.timeFound[0] && !timeStruct.timeFound[1]) && (timeStruct.nbCompleteInterval == 0)){
+                timeOverMic = intervalInHours - timeStruct.timeIntervals[0];
+            }
+
+            for(int j = 0; j < int(timeStruct.timeIntervals.size()); j++){
+
+                // Last interval without end value
+                if(timeStruct.nbCompleteInterval != int(timeStruct.timeIntervals.size())){
+
+                    if(j == (int(timeStruct.timeIntervals.size()) - 1)){
+                        timeOverMic += intervalInHours - timeStruct.timeIntervals[j];
+                    }
+                    else{
+                        timeOverMic += timeStruct.timeIntervals[j];
+                    }
+                }
+                else{
+                    timeOverMic += timeStruct.timeIntervals[j];
+                }
+            }
+            evaluateValue(timeOverMic, _target, bOk, score, value);
+
+        }
+
     } break;
 
     case TargetType::PeakDividedByMic :
