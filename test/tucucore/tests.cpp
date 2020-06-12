@@ -176,7 +176,7 @@ int main(int argc, char** argv)
     Tucuxi::Core::TestTargetEvaluator targetEvaluatorTests;
 
 
-    targetEvaluatorTests.add_test("simpleTest1", &Tucuxi::Core::TestTargetEvaluator::test1);
+    targetEvaluatorTests.add_test("simpleTest1", &Tucuxi::Core::TestTargetEvaluator::testResidual);
 
     res = targetEvaluatorTests.run(argc, argv);
     tot_res |= res;
