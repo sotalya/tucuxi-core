@@ -280,7 +280,6 @@ string XMLImporter::getChildString(Common::XmlNodeIterator _rootIterator, const 
 
     if(checkNodeIterator(child, _childName).empty())
     {
-        setNodeError(child);
         return "";
     }
     else{
