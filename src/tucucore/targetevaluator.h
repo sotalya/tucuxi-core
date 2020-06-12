@@ -33,10 +33,10 @@ public:
     /// \return Result::Ok if everything went well, Result::InvalidCandidate if the candidate is outside the boundaries, Result::EvaluationError if there is an internal with the evaluation
     ///
     ComputingStatus evaluate(
-            const ConcentrationPrediction& _prediction,
+            const ConcentrationPrediction &_prediction,
             const Tucuxi::Core::IntakeSeries &_intakeSeries,
-            const Target& _target,
-            TargetEvaluationResult & _result);
+            const Target &_target,
+            TargetEvaluationResult &_result);
 
 protected:
 

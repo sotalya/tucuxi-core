@@ -10,7 +10,8 @@ namespace Core {
 
 Value translateToUnit(Value _value, Unit _initialUnit, Unit _finalUnit)
 {
-    if (_initialUnit == _finalUnit) {
+    if (_initialUnit == _finalUnit)
+    {
         return _value;
     }
 

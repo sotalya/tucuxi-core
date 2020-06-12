@@ -94,6 +94,9 @@
 #if defined(test_targetextractor) or !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_targetextractor.h"
 #endif
+#if defined(test_targetevaluator) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#include "test_targetevaluator.h"
+#endif
 #if defined(test_constanteliminationbolus) or !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "drugmodels/test_constanteliminationbolus.h"
 #endif
@@ -166,6 +169,22 @@ int main(int argc, char** argv)
     }
     else {
         std::cout << "Drug model domain constraints evaluator test succeeded\n";
+    }
+#endif
+
+#if defined(test_targetevaluator) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+    Tucuxi::Core::TestTargetEvaluator targetEvaluatorTests;
+
+
+    targetEvaluatorTests.add_test("simpleTest1", &Tucuxi::Core::TestTargetEvaluator::test1);
+
+    res = targetEvaluatorTests.run(argc, argv);
+    tot_res |= res;
+    if (res != 0) {
+        std::cerr << "Target evaluator test failed\n";
+    }
+    else {
+        std::cout << "Target evaluator test succeeded\n";
     }
 #endif
 
