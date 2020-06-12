@@ -66,7 +66,7 @@ int parse(int _argc, char* _argv[]) // NOLINT(cppcoreguidelines-avoid-c-arrays, 
         else {
             std::cout << "The input file is mandatory" << std::endl << std::endl;
             std::cout << options.help({"", "Group"}) << std::endl;
-            exit(0);
+            exit(-2);
         }
 
         std::string outputPath;
@@ -76,7 +76,7 @@ int parse(int _argc, char* _argv[]) // NOLINT(cppcoreguidelines-avoid-c-arrays, 
         else {
             std::cout << "The output file is mandatory" << std::endl << std::endl;
             std::cout << options.help({"", "Group"}) << std::endl;
-            exit(0);
+            exit(-2);
         }
 
         std::string queryLogPath;
