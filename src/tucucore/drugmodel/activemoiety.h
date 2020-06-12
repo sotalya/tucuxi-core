@@ -30,6 +30,8 @@ public:
 
     void setName(const Tucuxi::Common::TranslatableString &_name) { m_name = _name;}
 
+    Unit getUnit() const { return m_unit;}
+
     INVARIANTS(
             std::string id = m_id.toString();
             INVARIANT(Invariants::INV_ACTIVEMOIETY_0001, (m_id.size() > 0), "An active moiety has no Id")
