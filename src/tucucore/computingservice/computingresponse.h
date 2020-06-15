@@ -53,12 +53,12 @@ public:
         m_concentrations.push_back(_concentrations);
     }
 
-    std::vector<TimeOffsets> getTimes()
+    const std::vector<TimeOffsets>& getTimes()
     {
         return m_times;
     }
 
-    std::vector<Concentrations> getConcentrations()
+    const std::vector<Concentrations>& getConcentrations()
     {
         return m_concentrations;
     }

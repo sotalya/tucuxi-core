@@ -156,7 +156,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
 
         Concentrations concentrations = {24, 29, 16, 9, 60};
 
-        double empiriqueValue = (24 + 29 + 16 + 9 + 60) / 5; // Je comprends pas comment le core calcule
+        double empiriqueValue = (24.0 / 2.0 + 29.0 + 16.0 + 9.0 + 60.0 / 2.0) / 4.0;
 
         ConcentrationPrediction concentrationPrediction;
         concentrationPrediction.appendConcentrations(timeOffsets, concentrations);
@@ -172,7 +172,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
 
         fructose_assert(targetEvaluationResult.getUnit() == Unit("mg/l"));
         fructose_assert(targetEvaluationResult.getTargetType() == TargetType::Mean);
-        fructose_assert(targetEvaluationResult.getValue() == empiriqueValue);
+        fructose_assert_eq(targetEvaluationResult.getValue() , empiriqueValue);
     }
 
     void testAuc(const std::string& /* _testName */)

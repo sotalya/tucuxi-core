@@ -13,6 +13,9 @@ using Tucuxi::Core::Value;
 std::string Utils::getAppFolder(char** _argv)
 {
     std::string::size_type found = std::string(_argv[0]).find_last_of("/\\");
+    if (found == std::string::npos) {
+        return ".";
+    }
     std::string appFolder = std::string(_argv[0]).substr(0, found);
     return appFolder;
 }
