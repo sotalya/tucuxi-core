@@ -176,7 +176,18 @@ int main(int argc, char** argv)
     Tucuxi::Core::TestTargetEvaluator targetEvaluatorTests;
 
 
-    targetEvaluatorTests.add_test("simpleTest1", &Tucuxi::Core::TestTargetEvaluator::testResidual);
+    targetEvaluatorTests.add_test("testResidual", &Tucuxi::Core::TestTargetEvaluator::testResidual);
+    targetEvaluatorTests.add_test("testPeak", &Tucuxi::Core::TestTargetEvaluator::testPeak);
+    targetEvaluatorTests.add_test("testMean", &Tucuxi::Core::TestTargetEvaluator::testMean);
+    targetEvaluatorTests.add_test("testAuc", &Tucuxi::Core::TestTargetEvaluator::testAuc);
+    targetEvaluatorTests.add_test("testAuc24", &Tucuxi::Core::TestTargetEvaluator::testAuc24);
+    targetEvaluatorTests.add_test("testCumulativeAuc", &Tucuxi::Core::TestTargetEvaluator::testCumulativeAuc);
+    targetEvaluatorTests.add_test("testAucOverMic", &Tucuxi::Core::TestTargetEvaluator::testAucOverMic);
+    targetEvaluatorTests.add_test("testAuc24OverMic", &Tucuxi::Core::TestTargetEvaluator::testAuc24OverMic);
+    targetEvaluatorTests.add_test("testTimeOverMic", &Tucuxi::Core::TestTargetEvaluator::testTimeOverMic);
+    targetEvaluatorTests.add_test("testAucDividedByMic", &Tucuxi::Core::TestTargetEvaluator::testAucDividedByMic);
+    targetEvaluatorTests.add_test("testAuc24DividedByMic", &Tucuxi::Core::TestTargetEvaluator::testAuc24DividedByMic);
+    targetEvaluatorTests.add_test("testPeakDividedByMic", &Tucuxi::Core::TestTargetEvaluator::testPeakDividedByMic);
 
     res = targetEvaluatorTests.run(argc, argv);
     tot_res |= res;
