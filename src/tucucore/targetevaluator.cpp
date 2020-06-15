@@ -13,17 +13,6 @@ namespace Core {
 TargetEvaluator::TargetEvaluator()
 = default;
 
-typedef struct{
-
-    std::vector<double> timeIntervals;
-    std::vector<bool> timeFound;
-    int nbCompleteInterval;
-//    double temporaryConcentration;
-//    bool concentrationEqualMic;
-
-
-}TimeStruct;
-
 
 bool TargetEvaluator::isWithinBoundaries(
         Value _value,
@@ -242,8 +231,8 @@ ComputingStatus TargetEvaluator::evaluate(
 
         if (bOk) {
             // Calculate the value between AUC and MIC on 24h
-            double auc24 = auc * 24.0 /intervalInHours;
-            double auc24OverMic = auc24 - _target.m_mic;
+            double aucOverMic = auc - _target.m_mic;
+            double auc24OverMic =  aucOverMic * 24.0 /intervalInHours;
 
             evaluateValue(auc24OverMic, _target, bOk, score, value);
         }
@@ -251,7 +240,8 @@ ComputingStatus TargetEvaluator::evaluate(
 
     case TargetType::TimeOverMic :
     {
-        return ComputingStatus::TargetEvaluationError;
+
+//        return ComputingStatus::TargetEvaluationError;
 
         double intervalInHours = 0.0;
         CycleStatistic cycleStatisticForCycleInterval = statisticsCalculator.getStatistic(0, CycleStatisticType::CycleInterval);
@@ -261,71 +251,83 @@ ComputingStatus TargetEvaluator::evaluate(
 
         if (bOk) {
             // Calculate the time when over mic
-            TimeStruct timeStruct;
+            double timeOverMic = 0.0;
             Concentrations concentrations = cycle.getConcentrations()[0]; // [0] because only one concentrations (vector of concentration) in CycleData
-            timeStruct.nbCompleteInterval = 0;
             for(int i = 0; i < int(concentrations.size()); i++){
 
-                //Trigger up
-                if ((concentrations[i] > _target.m_mic) && !timeStruct.timeFound[0]){
+                if (concentrations[i] > _target.m_mic){
 
-                    if(i > 1)
+                    if(i == 0)
                     {
-                        double ratio = concentrations[i] / concentrations[i - 1];
-                        timeStruct.timeIntervals.push_back((cycle.getTimes()[0][i - 1]) * ratio);
+                        timeOverMic += cycle.getTimes()[0][i];
                     }
                     else{
-                        timeStruct.timeIntervals.push_back(cycle.getTimes()[0][i]);
+
+                        if(concentrations[i-1] < _target.m_mic){
+
+                            double deltaX = cycle.getTimes()[0][i] - cycle.getTimes()[0][i - 1];
+                            double difference = concentrations[i] - concentrations[i - 1];
+                            double coefficient = (concentrations[i] - _target.m_mic) / difference;
+                            timeOverMic += deltaX * coefficient;
+                        }
+                        else{
+                            timeOverMic += cycle.getTimes()[0][i] - cycle.getTimes()[0][i - 1];
+                        }
                     }
-                    timeStruct.timeFound[0] = true;
-                    timeStruct.timeFound[1] = false;       // Can Trigger down again --> oscillation
+                }
+
+                if (concentrations[i] == _target.m_mic)
+                {
+                    if(i > 0)
+                    {
+                        if(concentrations[i - 1] > _target.m_mic)
+                        {
+                            timeOverMic += cycle.getTimes()[0][i] - cycle.getTimes()[0][i - 1];
+
+                        }
+                    }
                 }
 
                 //Trigger down if already up
-                if(timeStruct.timeFound[0] && ((concentrations[i] < _target.m_mic) && !timeStruct.timeFound[1])){
+                if(concentrations[i] < _target.m_mic){
+                    if(i > 0)
+                    {
+                        if(concentrations[i - 1] > _target.m_mic)
+                        {
+                            double deltaX = cycle.getTimes()[0][i] - cycle.getTimes()[0][i - 1];
+                            double difference = concentrations[i - 1] - concentrations[i];
+                            double coefficient = (concentrations[i - 1] - _target.m_mic) / difference;
 
-                    double ratio = concentrations[i - 1] / concentrations[i];
-
-                    timeStruct.timeIntervals[timeStruct.timeIntervals.size() - 1] = ((cycle.getTimes()[0][i - 1] * ratio) - timeStruct.timeIntervals.back());
-                    timeStruct.timeFound[1] = true;
-                    timeStruct.timeFound[0] = false;               // Can Trigger up again --> oscillation
-                    timeStruct.nbCompleteInterval++;
-                }
-
-            }
-
-            double timeOverMic = 0.0;
-
-            //If no end value, use intervalInHours
-            if ((timeStruct.timeFound[0] && !timeStruct.timeFound[1]) && (timeStruct.nbCompleteInterval == 0)){
-                timeOverMic = intervalInHours - timeStruct.timeIntervals[0];
-            }
-
-            for(int j = 0; j < int(timeStruct.timeIntervals.size()); j++){
-
-                // Last interval without end value
-                if(timeStruct.nbCompleteInterval != int(timeStruct.timeIntervals.size())){
-
-                    if(j == (int(timeStruct.timeIntervals.size()) - 1)){
-                        timeOverMic += intervalInHours - timeStruct.timeIntervals[j];
-                    }
-                    else{
-                        timeOverMic += timeStruct.timeIntervals[j];
+                            timeOverMic += deltaX * coefficient;
+                        }
                     }
                 }
-                else{
-                    timeOverMic += timeStruct.timeIntervals[j];
-                }
+
             }
+
             evaluateValue(timeOverMic, _target, bOk, score, value);
 
-        }
-
-    } break;
+            }
+    }
+    break;
 
     case TargetType::PeakDividedByMic :
     {
-        return ComputingStatus::TargetEvaluationError;
+        double peakConcentration = 0.0;
+        CycleStatistic cycleStatistic = statisticsCalculator.getStatistic(0, CycleStatisticType::Peak);
+        if (!cycleStatistic.getValue(dateTime, peakConcentration)) {
+            // Something wrong here
+        }
+
+        double peakTime = (dateTime - cycleStatistic.getCycleStartDate()).toMinutes();
+
+        bOk = isWithinBoundaries(peakTime, _target.m_tMin.toMinutes(), _target.m_tMax.toMinutes());
+        if (bOk) {
+
+            double peakDividedByMic = peakConcentration / _target.m_mic;
+
+            evaluateValue(peakDividedByMic, _target, bOk, score, value);
+        }
     } break;
 
     case TargetType::UnknownTarget :
