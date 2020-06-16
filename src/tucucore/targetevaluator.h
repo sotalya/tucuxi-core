@@ -5,6 +5,7 @@
 #include "tucucore/intakeevent.h"
 #include "tucucore/computingservice/computingresult.h"
 #include "tucucore/computingservice/computingresponse.h"
+#include "tucucore/targetevent.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -36,7 +37,7 @@ public:
     ComputingStatus evaluate(
             const ConcentrationPrediction &_prediction,
             const Tucuxi::Core::IntakeSeries &_intakeSeries,
-            const Target &_target,
+            const TargetEvent &_targetEvent,
             TargetEvaluationResult &_result);
 
     ///
@@ -45,7 +46,8 @@ public:
     /// \param cycle : Cycle containing times
     /// \return double value corresponding to Area under Curve which is over the mic value
     ///
-    double aucOverMicCalculator(const Target &_target, CycleData &cycle);
+    double aucOverMicCalculator(const TargetEvent &_targetEvent,
+                                CycleData &cycle);
 
 protected:
 
@@ -80,10 +82,11 @@ protected:
     /// _outputValue is only modified if _ok is true and will contain _value
     ///
     void evaluateValue(Value _value,
-            const Target &_target,
+            const TargetEvent &_targetEvent,
             bool &_ok,
             double &_score,
             double &_outputValue);
+
 };
 
 } // namespace Core

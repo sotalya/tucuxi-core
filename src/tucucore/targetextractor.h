@@ -11,8 +11,10 @@
 #include "tucucore/drugmodel/activemoiety.h"
 #include "tucucore/computingservice/computingtrait.h"
 #include "tucucore/computingservice/computingresult.h"
+#include "tucucore/targetevent.h"
 
 struct TestTargetExtractor;
+struct TestTargetEvaluator;
 
 namespace Tucuxi {
 namespace Core {
@@ -55,6 +57,7 @@ protected:
     TargetEvent targetEventFromTargetDefinition(const TargetDefinition *_target);
 
     friend TestTargetExtractor;
+    friend TestTargetEvaluator;
 };
 
 } // namespace Core

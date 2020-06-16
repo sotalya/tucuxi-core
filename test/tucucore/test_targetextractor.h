@@ -69,6 +69,7 @@ struct TestTargetExtractor : public fructose::test_base<TestTargetExtractor>
         TargetExtractionOption extractionOption;
         TargetSeries series;
 
+
         ComputingStatus result;
 
         {

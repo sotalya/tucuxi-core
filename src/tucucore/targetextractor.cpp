@@ -15,84 +15,205 @@ TargetEvent TargetExtractor::targetEventFromTarget(const Target *_target) {
     switch (_target->m_targetType) {
 
     case TargetType::Peak :
+
+        //TODO : VERIFY VALUE
+
+        return TargetEvent::createTargetEvent(_target->getActiveMoietyId(),
+                                       _target->m_targetType,
+                                       Unit("ug/l"),
+                                       _target->m_unit,
+                                       translateToUnit(_target->m_valueMin, _target->m_unit, Unit("ug/l")),
+                                       translateToUnit(_target->m_valueBest, _target->m_unit, Unit("ug/l")),
+                                       translateToUnit(_target->m_valueMax, _target->m_unit, Unit("ug/l")),
+                                       _target->m_tMin,
+                                       _target->m_tBest,
+                                       _target->m_tMax);
+
     case TargetType::Residual :
+
+        //TODO : VERIFY VALUE
+
+        return TargetEvent::createTargetEvent(_target->getActiveMoietyId(),
+                                       _target->m_targetType,
+                                       Unit("ug/l"),
+                                       _target->m_unit,
+                                       translateToUnit(_target->m_valueMin, _target->m_unit, Unit("ug/l")),
+                                       translateToUnit(_target->m_valueBest, _target->m_unit, Unit("ug/l")),
+                                       translateToUnit(_target->m_valueMax, _target->m_unit, Unit("ug/l")),
+                                       translateToUnit(_target->m_mic, _target->m_micUnit, Unit("mg/l")),
+                                       Unit("mg/l"));
+
     case TargetType::Mean :
     {
         // Here we consider times as minutes. This has to be fixed once
-        return TargetEvent(
-                    _target->getActiveMoietyId(),
-                    _target->m_targetType,
-                    Unit("ug/l"),
-                    _target->m_unit,
-                    translateToUnit(_target->m_valueMin, _target->m_unit, Unit("ug/l")),
-                    translateToUnit(_target->m_valueBest, _target->m_unit, Unit("ug/l")),
-                    translateToUnit(_target->m_valueMax, _target->m_unit, Unit("ug/l")),
-                    0.0, // we do not need the MIC
-                    Unit("ug/l"),
-                    _target->m_tMin,
-                    _target->m_tBest,
-                    _target->m_tMax);
+
+        return TargetEvent::createTargetEvent(_target->getActiveMoietyId(),
+                                       _target->m_targetType,
+                                       Unit("ug/l"),
+                                       _target->m_unit,
+                                       translateToUnit(_target->m_valueMin, _target->m_unit, Unit("ug/l")),
+                                       translateToUnit(_target->m_valueBest, _target->m_unit, Unit("ug/l")),
+                                       translateToUnit(_target->m_valueMax, _target->m_unit, Unit("ug/l")),
+                                       _target->m_tMin,
+                                       _target->m_tBest,
+                                       _target->m_tMax);
+
+
     } break;
     case TargetType::Auc :
+
+        //TODO : VERIFY VALUE
+
+        return TargetEvent::createTargetEvent(_target->getActiveMoietyId(),
+                                       _target->m_targetType,
+                                       Unit("ug/l"),
+                                       _target->m_unit,
+                                       translateToUnit(_target->m_valueMin, _target->m_unit, Unit("ug/l")),
+                                       translateToUnit(_target->m_valueBest, _target->m_unit, Unit("ug/l")),
+                                       translateToUnit(_target->m_valueMax, _target->m_unit, Unit("ug/l")),
+                                       translateToUnit(_target->m_mic, _target->m_micUnit, Unit("mg/l")),
+                                       Unit("mg/l"),
+                                       _target->m_tMin,
+                                       _target->m_tBest,
+                                       _target->m_tMax);
+
     case TargetType::Auc24 :
+
+        //TODO : VERIFY VALUE
+
+        return TargetEvent::createTargetEvent(_target->getActiveMoietyId(),
+                                       _target->m_targetType,
+                                       Unit("ug/l"),
+                                       _target->m_unit,
+                                       translateToUnit(_target->m_valueMin, _target->m_unit, Unit("ug/l")),
+                                       translateToUnit(_target->m_valueBest, _target->m_unit, Unit("ug/l")),
+                                       translateToUnit(_target->m_valueMax, _target->m_unit, Unit("ug/l")),
+                                       translateToUnit(_target->m_mic, _target->m_micUnit, Unit("mg/l")),
+                                       Unit("mg/l"),
+                                       _target->m_tMin,
+                                       _target->m_tBest,
+                                       _target->m_tMax);
     case TargetType::CumulativeAuc :
+
+        //TODO : VERIFY VALUE
+
+        return TargetEvent::createTargetEvent(_target->getActiveMoietyId(),
+                                       _target->m_targetType,
+                                       Unit("ug/l"),
+                                       _target->m_unit,
+                                       translateToUnit(_target->m_valueMin, _target->m_unit, Unit("ug/l")),
+                                       translateToUnit(_target->m_valueBest, _target->m_unit, Unit("ug/l")),
+                                       translateToUnit(_target->m_valueMax, _target->m_unit, Unit("ug/l")),
+                                       translateToUnit(_target->m_mic, _target->m_micUnit, Unit("mg/l")),
+                                       Unit("mg/l"),
+                                       _target->m_tMin,
+                                       _target->m_tBest,
+                                       _target->m_tMax);
     case TargetType::AucOverMic :
+
+        //TODO : VERIFY VALUE
+
+        return TargetEvent::createTargetEvent(_target->getActiveMoietyId(),
+                                       _target->m_targetType,
+                                       Unit("ug/l"),
+                                       _target->m_unit,
+                                       translateToUnit(_target->m_valueMin, _target->m_unit, Unit("ug/l")),
+                                       translateToUnit(_target->m_valueBest, _target->m_unit, Unit("ug/l")),
+                                       translateToUnit(_target->m_valueMax, _target->m_unit, Unit("ug/l")),
+                                       translateToUnit(_target->m_mic, _target->m_micUnit, Unit("mg/l")),
+                                       Unit("mg/l"),
+                                       _target->m_tMin,
+                                       _target->m_tBest,
+                                       _target->m_tMax);
+
     case TargetType::Auc24OverMic :
     {
 
         // Here we consider times as minutes. This has to be fixed once
-        return TargetEvent(
-                    _target->getActiveMoietyId(),
-                    _target->m_targetType,
-                    Unit("ug*h/l"),
-                    _target->m_unit,
-                    translateToUnit(_target->m_valueMin,_target->m_unit, Unit("ug*h/l")),
-                    translateToUnit(_target->m_valueBest, _target->m_unit, Unit("ug*h/l")),
-                    translateToUnit(_target->m_valueMax, _target->m_unit, Unit("ug*h/l")),
-                    translateToUnit(_target->m_mic, _target->m_micUnit, Unit("ug/l")),
-                    Unit("ug/l"),
-                    _target->m_tMin,
-                    _target->m_tBest,
-                    _target->m_tMax);
+
+        return TargetEvent::createTargetEvent(_target->getActiveMoietyId(),
+                                       _target->m_targetType,
+                                       Unit("ug*h/l"),
+                                       _target->m_unit,
+                                       translateToUnit(_target->m_valueMin, _target->m_unit, Unit("ug*h/l")),
+                                       translateToUnit(_target->m_valueBest, _target->m_unit, Unit("ug*h/l")),
+                                       translateToUnit(_target->m_valueMax, _target->m_unit, Unit("ug*h/l")),
+                                       translateToUnit(_target->m_mic, _target->m_micUnit, Unit("ug/l")),
+                                       Unit("ug/l"),
+                                       _target->m_tMin,
+                                       _target->m_tBest,
+                                       _target->m_tMax);
+
     } break;
     case TargetType::AucDividedByMic :
+
+        //TODO : VERIFY VALUE
+
+        return TargetEvent::createTargetEvent(_target->getActiveMoietyId(),
+                                       _target->m_targetType,
+                                       Unit("ug/l"),
+                                       _target->m_unit,
+                                       translateToUnit(_target->m_valueMin, _target->m_unit, Unit("ug/l")),
+                                       translateToUnit(_target->m_valueBest, _target->m_unit, Unit("ug/l")),
+                                       translateToUnit(_target->m_valueMax, _target->m_unit, Unit("ug/l")),
+                                       translateToUnit(_target->m_mic, _target->m_micUnit, Unit("mg/l")),
+                                       Unit("mg/l"),
+                                       _target->m_tMin,
+                                       _target->m_tBest,
+                                       _target->m_tMax);
+
     case TargetType::Auc24DividedByMic :
+
+        //TODO : VERIFY VALUE
+
+        return TargetEvent::createTargetEvent(_target->getActiveMoietyId(),
+                                       _target->m_targetType,
+                                       Unit("ug/l"),
+                                       _target->m_unit,
+                                       translateToUnit(_target->m_valueMin, _target->m_unit, Unit("ug/l")),
+                                       translateToUnit(_target->m_valueBest, _target->m_unit, Unit("ug/l")),
+                                       translateToUnit(_target->m_valueMax, _target->m_unit, Unit("ug/l")),
+                                       translateToUnit(_target->m_mic, _target->m_micUnit, Unit("mg/l")),
+                                       Unit("mg/l"),
+                                       _target->m_tMin,
+                                       _target->m_tBest,
+                                       _target->m_tMax);
     case TargetType::TimeOverMic :
     {
 
         // Here we consider times as minutes. This has to be fixed once
-        return TargetEvent(
-                    _target->getActiveMoietyId(),
-                    _target->m_targetType,
-                    Unit("h"),
-                    _target->m_unit,
-                    translateToUnit(_target->m_valueMin, _target->m_unit, Unit("h")),
-                    translateToUnit(_target->m_valueBest, _target->m_unit, Unit("h")),
-                    translateToUnit(_target->m_valueMax, _target->m_unit, Unit("h")),
-                    translateToUnit(_target->m_mic, _target->m_micUnit, Unit("ug/l")),
-                    Unit("ug/l"),
-                    _target->m_tMin,
-                    _target->m_tBest,
-                    _target->m_tMax);
+        return TargetEvent::createTargetEvent(_target->getActiveMoietyId(),
+                                       _target->m_targetType,
+                                       Unit("h"),
+                                       _target->m_unit,
+                                       translateToUnit(_target->m_valueMin, _target->m_unit, Unit("h")),
+                                       translateToUnit(_target->m_valueBest, _target->m_unit, Unit("h")),
+                                       translateToUnit(_target->m_valueMax, _target->m_unit, Unit("h")),
+                                       translateToUnit(_target->m_mic, _target->m_micUnit, Unit("ug/l")),
+                                       Unit("ug/l"),
+                                       _target->m_tMin,
+                                       _target->m_tBest,
+                                       _target->m_tMax);
+
     } break;
 
     case TargetType::PeakDividedByMic :
     {
 
         // Here we consider times as minutes. This has to be fixed once
-        return TargetEvent(
-                    _target->getActiveMoietyId(),
-                    _target->m_targetType,
-                    Unit(""),
-                    _target->m_unit,
-                    translateToUnit(_target->m_valueMin, _target->m_unit, Unit("")),
-                    translateToUnit(_target->m_valueBest, _target->m_unit, Unit("")),
-                    translateToUnit(_target->m_valueMax, _target->m_unit, Unit("")),
-                    translateToUnit(_target->m_mic, _target->m_micUnit, Unit("ug/l")),
-                    Unit("ug/l"),
-                    _target->m_tMin,
-                    _target->m_tBest,
-                    _target->m_tMax);
+
+        return TargetEvent::createTargetEvent(_target->getActiveMoietyId(),
+                                              _target->m_targetType,
+                                              Unit(""),
+                                              _target->m_unit,
+                                              translateToUnit(_target->m_valueMin, _target->m_unit, Unit("")),
+                                              translateToUnit(_target->m_valueBest, _target->m_unit, Unit("")),
+                                              translateToUnit(_target->m_valueMax, _target->m_unit, Unit("")),
+                                              translateToUnit(_target->m_mic, _target->m_micUnit, Unit("ug/l")),
+                                              Unit("ug/l"),
+                                              _target->m_tMin,
+                                              _target->m_tBest,
+                                              _target->m_tMax);
     } break;
 
     case TargetType::UnknownTarget :
@@ -101,19 +222,19 @@ TargetEvent TargetExtractor::targetEventFromTarget(const Target *_target) {
         Tucuxi::Common::LoggerHelper logger;
         logger.error("A target of an unkown type was given to the TargetExtractor");
 
-        return TargetEvent(
-                    _target->getActiveMoietyId(),
-                    _target->m_targetType,
-                    Unit(""),
-                    _target->m_unit,
-                    _target->m_valueMin,
-                    _target->m_valueBest,
-                    _target->m_valueMax,
-                    _target->m_mic,
-                    _target->m_micUnit,
-                    _target->m_tMin,
-                    _target->m_tBest,
-                    _target->m_tMax);
+        return TargetEvent::createTargetEvent(_target->getActiveMoietyId(),
+                                              _target->m_targetType,
+                                              Unit(""),
+                                              _target->m_unit,
+                                              _target->m_valueMin,
+                                              _target->m_valueBest,
+                                              _target->m_valueMax,
+                                              _target->m_mic,
+                                              _target->m_micUnit,
+                                              _target->m_tMin,
+                                              _target->m_tBest,
+                                              _target->m_tMax);
+
     } break;
     }
 }
@@ -129,19 +250,18 @@ TargetEvent TargetExtractor::targetEventFromTarget(const Target *_target, const 
     case TargetType::Mean :
     {
         // Here we consider times as minutes. This has to be fixed once
-        return TargetEvent(
-                    _target->getActiveMoietyId(),
-                    _target->m_targetType,
-                    Unit("ug/l"),
-                    _targetDefinition->getUnit(),
-                    translateToUnit(_target->m_valueMin, _target->m_unit, Unit("ug/l")),
-                    translateToUnit(_target->m_valueBest, _target->m_unit, Unit("ug/l")),
-                    translateToUnit(_target->m_valueMax, _target->m_unit, Unit("ug/l")),
-                    0.0, // we do not need the MIC
-                    Unit("ug/l"),
-                    _target->m_tMin,
-                    _target->m_tBest,
-                    _target->m_tMax);
+
+        return TargetEvent::createTargetEvent(_target->getActiveMoietyId(),
+                                              _target->m_targetType,
+                                              Unit("ug/l"),
+                                              _targetDefinition->getUnit(),
+                                              translateToUnit(_target->m_valueMin, _target->m_unit, Unit("ug/l")),
+                                              translateToUnit(_target->m_valueBest, _target->m_unit, Unit("ug/l")),
+                                              translateToUnit(_target->m_valueMax, _target->m_unit, Unit("ug/l")),
+                                              _target->m_tMin,
+                                              _target->m_tBest,
+                                              _target->m_tMax);
+
     } break;
     case TargetType::Auc :
     case TargetType::Auc24 :
@@ -151,19 +271,20 @@ TargetEvent TargetExtractor::targetEventFromTarget(const Target *_target, const 
     {
 
         // Here we consider times as minutes. This has to be fixed once
-        return TargetEvent(
-                    _target->getActiveMoietyId(),
-                    _target->m_targetType,
-                    Unit("ug*h/l"),
-                    _targetDefinition->getUnit(),
-                    translateToUnit(_target->m_valueMin,_target->m_unit, Unit("ug*h/l")),
-                    translateToUnit(_target->m_valueBest, _target->m_unit, Unit("ug*h/l")),
-                    translateToUnit(_target->m_valueMax, _target->m_unit, Unit("ug*h/l")),
-                    translateToUnit(_target->m_mic, _target->m_micUnit, Unit("ug/l")),
-                    Unit("ug/l"),
-                    _target->m_tMin,
-                    _target->m_tBest,
-                    _target->m_tMax);
+
+        return TargetEvent::createTargetEvent(_target->getActiveMoietyId(),
+                                              _target->m_targetType,
+                                              Unit("ug*h/l"),
+                                              _targetDefinition->getUnit(),
+                                              translateToUnit(_target->m_valueMin,_target->m_unit, Unit("ug*h/l")),
+                                              translateToUnit(_target->m_valueBest, _target->m_unit, Unit("ug*h/l")),
+                                              translateToUnit(_target->m_valueMax, _target->m_unit, Unit("ug*h/l")),
+                                              translateToUnit(_target->m_mic, _target->m_micUnit, Unit("ug/l")),
+                                              Unit("ug/l"),
+                                              _target->m_tMin,
+                                              _target->m_tBest,
+                                              _target->m_tMax);
+
     } break;
     case TargetType::AucDividedByMic :
     case TargetType::Auc24DividedByMic :
@@ -171,38 +292,38 @@ TargetEvent TargetExtractor::targetEventFromTarget(const Target *_target, const 
     {
 
         // Here we consider times as minutes. This has to be fixed once
-        return TargetEvent(
-                    _target->getActiveMoietyId(),
-                    _target->m_targetType,
-                    Unit("h"),
-                    _targetDefinition->getUnit(),
-                    translateToUnit(_target->m_valueMin, _target->m_unit, Unit("h")),
-                    translateToUnit(_target->m_valueBest, _target->m_unit, Unit("h")),
-                    translateToUnit(_target->m_valueMax, _target->m_unit, Unit("h")),
-                    translateToUnit(_target->m_mic, _target->m_micUnit, Unit("ug/l")),
-                    Unit("ug/l"),
-                    _target->m_tMin,
-                    _target->m_tBest,
-                    _target->m_tMax);
+
+        return TargetEvent::createTargetEvent(_target->getActiveMoietyId(),
+                                              _target->m_targetType,
+                                              Unit("h"),
+                                              _targetDefinition->getUnit(),
+                                              translateToUnit(_target->m_valueMin, _target->m_unit, Unit("h")),
+                                              translateToUnit(_target->m_valueBest, _target->m_unit, Unit("h")),
+                                              translateToUnit(_target->m_valueMax, _target->m_unit, Unit("h")),
+                                              translateToUnit(_target->m_mic, _target->m_micUnit, Unit("ug/l")),
+                                              Unit("ug/l"),
+                                              _target->m_tMin,
+                                              _target->m_tBest,
+                                              _target->m_tMax);
+
     } break;
 
     case TargetType::PeakDividedByMic :
     {
 
         // Here we consider times as minutes. This has to be fixed once
-        return TargetEvent(
-                    _target->getActiveMoietyId(),
-                    _target->m_targetType,
-                    Unit(""),
-                    _targetDefinition->getUnit(),
-                    translateToUnit(_target->m_valueMin, _target->m_unit, Unit("")),
-                    translateToUnit(_target->m_valueBest, _target->m_unit, Unit("")),
-                    translateToUnit(_target->m_valueMax, _target->m_unit, Unit("")),
-                    translateToUnit(_target->m_mic, _target->m_micUnit, Unit("ug/l")),
-                    Unit("ug/l"),
-                    _target->m_tMin,
-                    _target->m_tBest,
-                    _target->m_tMax);
+        return TargetEvent::createTargetEvent(_target->getActiveMoietyId(),
+                                              _target->m_targetType,
+                                              Unit(""),
+                                              _targetDefinition->getUnit(),
+                                              translateToUnit(_target->m_valueMin, _target->m_unit, Unit("")),
+                                              translateToUnit(_target->m_valueBest, _target->m_unit, Unit("")),
+                                              translateToUnit(_target->m_valueMax, _target->m_unit, Unit("")),
+                                              translateToUnit(_target->m_mic, _target->m_micUnit, Unit("ug/l")),
+                                              Unit("ug/l"),
+                                              _target->m_tMin,
+                                              _target->m_tBest,
+                                              _target->m_tMax);
     } break;
 
     case TargetType::UnknownTarget :
@@ -211,19 +332,18 @@ TargetEvent TargetExtractor::targetEventFromTarget(const Target *_target, const 
         Tucuxi::Common::LoggerHelper logger;
         logger.error("A target of an unkown type was given to the TargetExtractor");
 
-        return TargetEvent(
-                    _target->getActiveMoietyId(),
-                    _target->m_targetType,
-                    Unit(""),
-                    _targetDefinition->getUnit(),
-                    _target->m_valueMin,
-                    _target->m_valueBest,
-                    _target->m_valueMax,
-                    _target->m_mic,
-                    _target->m_micUnit,
-                    _target->m_tMin,
-                    _target->m_tBest,
-                    _target->m_tMax);
+        return TargetEvent::createTargetEvent(_target->getActiveMoietyId(),
+                                              _target->m_targetType,
+                                              Unit(""),
+                                              _targetDefinition->getUnit(),
+                                              _target->m_valueMin,
+                                              _target->m_valueBest,
+                                              _target->m_valueMax,
+                                              _target->m_mic,
+                                              _target->m_micUnit,
+                                              _target->m_tMin,
+                                              _target->m_tBest,
+                                              _target->m_tMax);
     } break;
     }
 }
@@ -239,30 +359,28 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(const TargetDefinit
     case TargetType::Mean :
 
         // Here we consider times as minutes. This has to be fixed once
-        return TargetEvent(
-                    _target->getActiveMoietyId(),
-                    _target->getTargetType(),
-                    Unit("ug/l"),
-                    _target->getUnit(),
-                    translateToUnit(_target->getCMin().getValue(), _target->getUnit(), Unit("ug/l")),
-                    translateToUnit(_target->getCBest().getValue(), _target->getUnit(), Unit("ug/l")),
-                    translateToUnit(_target->getCMax().getValue(), _target->getUnit(), Unit("ug/l")),
-                    // Do not use Mic, so no unit translation
-                    _target->getMic().getValue(),
-                    Unit("ug/l"),
-                    Tucuxi::Common::Duration(
-                        std::chrono::minutes(static_cast<int>(_target->getTMin().getValue()))),
-                    Tucuxi::Common::Duration(
-                        std::chrono::minutes(static_cast<int>(_target->getTBest().getValue()))),
-                    Tucuxi::Common::Duration(
-                        std::chrono::minutes(static_cast<int>(_target->getTMax().getValue()))));
+
+        return TargetEvent::createTargetEvent(_target->getActiveMoietyId(),
+                                              _target->getTargetType(),
+                                              Unit("ug/l"),
+                                              _target->getUnit(),
+                                              translateToUnit(_target->getCMin().getValue(), _target->getUnit(), Unit("ug/l")),
+                                              translateToUnit(_target->getCBest().getValue(), _target->getUnit(), Unit("ug/l")),
+                                              translateToUnit(_target->getCMax().getValue(), _target->getUnit(), Unit("ug/l")),
+                                              Tucuxi::Common::Duration(
+                                                  std::chrono::minutes(static_cast<int>(_target->getTMin().getValue()))),
+                                              Tucuxi::Common::Duration(
+                                                  std::chrono::minutes(static_cast<int>(_target->getTBest().getValue()))),
+                                              Tucuxi::Common::Duration(
+                                                  std::chrono::minutes(static_cast<int>(_target->getTMax().getValue()))));
 
     case TargetType::Auc :
     case TargetType::Auc24 :
     case TargetType::CumulativeAuc :
 
         // Here we consider times as minutes. This has to be fixed once
-        return TargetEvent(
+
+        return TargetEvent::createTargetEvent(
                     _target->getActiveMoietyId(),
                     _target->getTargetType(),
                     Unit("ug*h/l"),
@@ -270,8 +388,6 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(const TargetDefinit
                     translateToUnit(_target->getCMin().getValue(), _target->getUnit(), Unit("ug*h/l")),
                     translateToUnit(_target->getCBest().getValue(), _target->getUnit(), Unit("ug*h/l")),
                     translateToUnit(_target->getCMax().getValue(), _target->getUnit(), Unit("ug*h/l")),
-                    0.0,
-                    Unit("ug/l"),
                     Tucuxi::Common::Duration(
                         std::chrono::minutes(static_cast<int>(_target->getTMin().getValue()))),
                     Tucuxi::Common::Duration(
@@ -280,11 +396,13 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(const TargetDefinit
                         std::chrono::minutes(static_cast<int>(_target->getTMax().getValue()))));
 
 
+
     case TargetType::AucOverMic :
     case TargetType::Auc24OverMic :
 
         // Here we consider times as minutes. This has to be fixed once
-        return TargetEvent(
+
+        return TargetEvent::createTargetEvent(
                     _target->getActiveMoietyId(),
                     _target->getTargetType(),
                     Unit("ug*h/l"),
@@ -302,12 +420,13 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(const TargetDefinit
                         std::chrono::minutes(static_cast<int>(_target->getTMax().getValue()))));
 
 
+
     case TargetType::AucDividedByMic :
     case TargetType::Auc24DividedByMic :
     case TargetType::TimeOverMic :
 
         // Here we consider times as minutes. This has to be fixed once
-        return TargetEvent(
+        return TargetEvent::createTargetEvent(
                     _target->getActiveMoietyId(),
                     _target->getTargetType(),
                     Unit("h"),
@@ -324,10 +443,11 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(const TargetDefinit
                     Tucuxi::Common::Duration(
                         std::chrono::minutes(static_cast<int>(_target->getTMax().getValue()))));
 
+
     case TargetType::PeakDividedByMic :
 
         // Here we consider times as minutes. This has to be fixed once
-        return TargetEvent(
+        return TargetEvent::createTargetEvent(
                     _target->getActiveMoietyId(),
                     _target->getTargetType(),
                     Unit(""),
@@ -350,7 +470,7 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(const TargetDefinit
         Tucuxi::Common::LoggerHelper logger;
         logger.error("A target of an unkown type was given to the TargetExtractor");
 
-        return TargetEvent(
+        return TargetEvent::createTargetEvent(
                     _target->getActiveMoietyId(),
                     _target->getTargetType(),
                     Unit(""),
@@ -358,9 +478,6 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(const TargetDefinit
                     _target->getCMin().getValue(),
                     _target->getCBest().getValue(),
                     _target->getCMax().getValue(),
-                    // No use of MIC, so no unit translation
-                    _target->getMic().getValue(),
-                    Unit("ug/l"),
                     Tucuxi::Common::Duration(
                         std::chrono::minutes(static_cast<int>(_target->getTMin().getValue()))),
                     Tucuxi::Common::Duration(

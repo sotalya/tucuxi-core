@@ -27,25 +27,25 @@ bool TargetEvaluator::isWithinBoundaries(
 
 void TargetEvaluator::evaluateValue(
         Value _value,
-        const Target &_target,
+        const TargetEvent &_targetEvent,
         bool &_ok,
         double &_score,
         double &_outputValue)
 {
-    _ok &= isWithinBoundaries(_value, _target.m_valueMin, _target.m_valueMax);
+    _ok &= isWithinBoundaries(_value, _targetEvent.m_valueMin, _targetEvent.m_valueMax);
 
     if (_ok) {
-        _score = 1.0 - pow(log(_value) - log(_target.m_valueBest), 2)
-                / pow(0.5 *(log(_target.m_valueMax) - log(_target.m_valueMin)), 2);
+        _score = 1.0 - pow(log(_value) - log(_targetEvent.m_valueBest), 2)
+                / pow(0.5 *(log(_targetEvent.m_valueMax) - log(_targetEvent.m_valueMin)), 2);
         _outputValue = _value;
     }
 }
 
-double TargetEvaluator::aucOverMicCalculator(const Target &_target, CycleData &_cycle)
+double TargetEvaluator::aucOverMicCalculator(const TargetEvent &_targetEvent, CycleData &_cycle)
 {
     double aucOverMic = 0.0;
     double timeOverMic = 0.0;
-    Value mic = _target.m_mic;
+    Value mic = _targetEvent.m_mic;
     Concentrations concentrations = _cycle.getConcentrations()[0]; // [0] because only one concentrations (vector of concentration) in CycleData
     for(int i = 0; i < int(concentrations.size()); i++){
 
@@ -58,21 +58,8 @@ double TargetEvaluator::aucOverMicCalculator(const Target &_target, CycleData &_
                     timeOverMic = deltaX * coefficient;
                     aucOverMic += ((concentrations[i] - mic) * timeOverMic) / 2; //Triangle Area
                 }
-                else if(concentrations[i-1] == mic){
-                    aucOverMic += ((concentrations[i] - mic) * (_cycle.getTimes()[0][i] - _cycle.getTimes()[0][i - 1])) / 2; //Triangle Area
-                }
                 else{
-                    double smallerConcentration = concentrations[i];
-                    double triangleVerticalEdge = concentrations[i - 1] - concentrations[i];
-                    if(concentrations[i] > concentrations[i - 1])
-                    {
-                        smallerConcentration = concentrations[i-1];
-                        triangleVerticalEdge = concentrations[i] - concentrations[i - 1];
-                    }
-                    double squareArea = (smallerConcentration - mic) * (_cycle.getTimes()[0][i] - _cycle.getTimes()[0][i - 1]); // Square Area
-                    double triangleArea = (triangleVerticalEdge * (_cycle.getTimes()[0][i] - _cycle.getTimes()[0][i - 1])) / 2; //Triangle Area
-
-                    aucOverMic += (squareArea + triangleArea);
+                    aucOverMic += ((concentrations[i - 1] - mic + concentrations[i] - mic) * (_cycle.getTimes()[0][i] - _cycle.getTimes()[0][i - 1])) / 2; // Trapeze area
                 }
             }
         }
@@ -91,6 +78,7 @@ double TargetEvaluator::aucOverMicCalculator(const Target &_target, CycleData &_
                     double coefficient = (concentrations[i - 1] - mic) / difference;
                     timeOverMic = deltaX * coefficient;
                     aucOverMic += ((concentrations[i-1] - mic) * timeOverMic) / 2; //Triangle Area
+
                 }
             }
         }
@@ -101,7 +89,7 @@ double TargetEvaluator::aucOverMicCalculator(const Target &_target, CycleData &_
 ComputingStatus TargetEvaluator::evaluate(
         const ConcentrationPrediction& _prediction,
         const IntakeSeries& _intakeSeries,
-        const Target &_target,
+        const TargetEvent &_targetEvent,
         TargetEvaluationResult & _result)
 {
 
@@ -127,7 +115,7 @@ ComputingStatus TargetEvaluator::evaluate(
     DateTime dateTime;
     std::vector< std::vector<Tucuxi::Core::CycleStatistic> > stats;
 
-    switch( _target.m_targetType) {
+    switch( _targetEvent.m_targetType) {
     case TargetType::Peak :
     {
         double peakConcentration = 0.0;
@@ -138,9 +126,9 @@ ComputingStatus TargetEvaluator::evaluate(
 
         double peakTime = (dateTime - cycleStatistic.getCycleStartDate()).toMinutes();
 
-        bOk = isWithinBoundaries(peakTime, _target.m_tMin.toMinutes(), _target.m_tMax.toMinutes());
+        bOk = isWithinBoundaries(peakTime, _targetEvent.m_tMin.toMinutes(), _targetEvent.m_tMax.toMinutes());
         if (bOk) {
-            evaluateValue(peakConcentration, _target, bOk, score, value);
+            evaluateValue(peakConcentration, _targetEvent, bOk, score, value);
         }
     } break;
 
@@ -154,7 +142,7 @@ ComputingStatus TargetEvaluator::evaluate(
         bOk = cycleStatistic.getValue(dateTime, lastResidual);
 
         if (bOk) {
-            evaluateValue(lastResidual, _target, bOk, score, value);
+            evaluateValue(lastResidual, _targetEvent, bOk, score, value);
         }
     } break;
 
@@ -165,7 +153,7 @@ ComputingStatus TargetEvaluator::evaluate(
         bOk = cycleStatistic.getValue(dateTime, auc);
 
         if (bOk) {
-            evaluateValue(auc, _target, bOk, score, value);
+            evaluateValue(auc, _targetEvent, bOk, score, value);
         }
     } break;
 
@@ -184,7 +172,7 @@ ComputingStatus TargetEvaluator::evaluate(
             // Calculate the AUC on 24h
             double auc24 = auc * 24.0 / intervalInHours;
 
-            evaluateValue(auc24, _target, bOk, score, value);
+            evaluateValue(auc24, _targetEvent, bOk, score, value);
         }
     } break;
 
@@ -205,7 +193,7 @@ ComputingStatus TargetEvaluator::evaluate(
             CycleStatistics statisticsCalculator(cycle, cumulativeAuc);
         }
 
-        evaluateValue(cumulativeAuc[0], _target, bOk, score, value);
+        evaluateValue(cumulativeAuc[0], _targetEvent, bOk, score, value);
 
     } break;
 
@@ -216,7 +204,7 @@ ComputingStatus TargetEvaluator::evaluate(
         bOk = cycleStatistic.getValue(dateTime, mean);
 
         if (bOk) {
-            evaluateValue(mean, _target, bOk, score, value);
+            evaluateValue(mean, _targetEvent, bOk, score, value);
         }
     } break;
 
@@ -233,9 +221,9 @@ ComputingStatus TargetEvaluator::evaluate(
 
         if (bOk) {
             // Calculate the AUC
-            double aucDividedByMic = auc / _target.m_mic;
+            double aucDividedByMic = auc / _targetEvent.m_mic;
 
-            evaluateValue(aucDividedByMic, _target, bOk, score, value);
+            evaluateValue(aucDividedByMic, _targetEvent, bOk, score, value);
         }
     } break;
 
@@ -252,9 +240,9 @@ ComputingStatus TargetEvaluator::evaluate(
         if (bOk) {
             // Calculate the AUC on 24h
             double auc24 = auc * 24.0 / intervalInHours;
-            double aucDividedByMic = auc24 / _target.m_mic;
+            double aucDividedByMic = auc24 / _targetEvent.m_mic;
 
-            evaluateValue(aucDividedByMic, _target, bOk, score, value);
+            evaluateValue(aucDividedByMic, _targetEvent, bOk, score, value);
         }
     } break;
 
@@ -270,9 +258,9 @@ ComputingStatus TargetEvaluator::evaluate(
 
         if (bOk) {
             // Calculate the value between AUC and MIC
-            double aucOverMic = aucOverMicCalculator(_target, cycle);
+            double aucOverMic = aucOverMicCalculator(_targetEvent, cycle);
 
-            evaluateValue(aucOverMic, _target, bOk, score, value);
+            evaluateValue(aucOverMic, _targetEvent, bOk, score, value);
         }
     } break;
 
@@ -288,10 +276,10 @@ ComputingStatus TargetEvaluator::evaluate(
 
         if (bOk) {
             // Calculate the value between AUC and MIC on 24h
-            double aucOverMic = aucOverMicCalculator(_target, cycle);
+            double aucOverMic = aucOverMicCalculator(_targetEvent, cycle);
             double auc24OverMic =  aucOverMic * 24.0 /intervalInHours;
 
-            evaluateValue(auc24OverMic, _target, bOk, score, value);
+            evaluateValue(auc24OverMic, _targetEvent, bOk, score, value);
         }
     } break;
 
@@ -310,16 +298,16 @@ ComputingStatus TargetEvaluator::evaluate(
             Concentrations concentrations = cycle.getConcentrations()[0]; // [0] because only one concentrations (vector of concentration) in CycleData
             for(int i = 0; i < int(concentrations.size()); i++){
 
-                if (concentrations[i] > _target.m_mic){
+                if (concentrations[i] > _targetEvent.m_mic){
                     if(i == 0){
                         timeOverMic += cycle.getTimes()[0][i]; // needed if time not starting at 0
                     }
                     else{
 
-                        if(concentrations[i-1] < _target.m_mic){
+                        if(concentrations[i-1] < _targetEvent.m_mic){
                             double deltaX = cycle.getTimes()[0][i] - cycle.getTimes()[0][i - 1];
                             double difference = concentrations[i] - concentrations[i - 1];
-                            double coefficient = (concentrations[i] - _target.m_mic) / difference;
+                            double coefficient = (concentrations[i] - _targetEvent.m_mic) / difference;
                             timeOverMic += deltaX * coefficient;
                         }
                         else{
@@ -327,26 +315,26 @@ ComputingStatus TargetEvaluator::evaluate(
                         }
                     }
                 }
-                else if (concentrations[i] == _target.m_mic){
+                else if (concentrations[i] == _targetEvent.m_mic){
                     if(i > 0){
-                        if(concentrations[i - 1] > _target.m_mic){
+                        if(concentrations[i - 1] > _targetEvent.m_mic){
                             timeOverMic += cycle.getTimes()[0][i] - cycle.getTimes()[0][i - 1];
                         }
                     }
                 }
                 else{
                     if(i > 0){
-                        if(concentrations[i - 1] > _target.m_mic){
+                        if(concentrations[i - 1] > _targetEvent.m_mic){
                             double deltaX = cycle.getTimes()[0][i] - cycle.getTimes()[0][i - 1];
                             double difference = concentrations[i - 1] - concentrations[i];
-                            double coefficient = (concentrations[i - 1] - _target.m_mic) / difference;
+                            double coefficient = (concentrations[i - 1] - _targetEvent.m_mic) / difference;
                             timeOverMic += deltaX * coefficient;
                         }
                     }
                 }
             }
 
-            evaluateValue(timeOverMic, _target, bOk, score, value);
+            evaluateValue(timeOverMic, _targetEvent, bOk, score, value);
 
             }
     }
@@ -362,12 +350,12 @@ ComputingStatus TargetEvaluator::evaluate(
 
         double peakTime = (dateTime - cycleStatistic.getCycleStartDate()).toMinutes();
 
-        bOk = isWithinBoundaries(peakTime, _target.m_tMin.toMinutes(), _target.m_tMax.toMinutes());
+        bOk = isWithinBoundaries(peakTime, _targetEvent.m_tMin.toMinutes(), _targetEvent.m_tMax.toMinutes());
         if (bOk) {
 
-            double peakDividedByMic = peakConcentration / _target.m_mic;
+            double peakDividedByMic = peakConcentration / _targetEvent.m_mic;
 
-            evaluateValue(peakDividedByMic, _target, bOk, score, value);
+            evaluateValue(peakDividedByMic, _targetEvent, bOk, score, value);
         }
     } break;
 
@@ -385,7 +373,7 @@ ComputingStatus TargetEvaluator::evaluate(
     }
 
     // We build the result, as there was no error
-    _result = TargetEvaluationResult(_target.m_targetType, score, translateToUnit(value, _target.m_unit, _target.m_finalUnit), _target.m_finalUnit);
+    _result = TargetEvaluationResult(_targetEvent.m_targetType, score, translateToUnit(value, _targetEvent.m_unit, _targetEvent.m_finalUnit), _targetEvent.m_finalUnit);
     return ComputingStatus::Ok;
 }
 

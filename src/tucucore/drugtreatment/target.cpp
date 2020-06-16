@@ -79,7 +79,6 @@ Target::Target(ActiveMoietyId _activeMoietyId,
 Target::Target(ActiveMoietyId _activeMoietyId,
                TargetType _type,
                Unit _unit,
-               Unit _finalUnit,
                Value _vmin,
                Value _vbest,
                Value _vmax,
@@ -98,10 +97,10 @@ Target::Target(ActiveMoietyId _activeMoietyId,
       m_tMin(_tmin),
       m_tMax(_tmax),
       m_tBest(_tbest),
-      m_unit(_unit),
-      m_finalUnit(_finalUnit)
+      m_unit(_unit)
 {
 }
+
 
 }
 }

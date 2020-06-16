@@ -4,6 +4,7 @@
 #include "fructose/fructose.h"
 
 #include "tucucore/targetevaluator.h"
+#include "tucucore/targetextractor.h"
 #include "tucucore/targetevaluationresult.h"
 #include "tucucore/intakeevent.h"
 #include "tucucore/drugmodel/formulationandroute.h"
@@ -18,10 +19,7 @@
 
 #include "testutils.h"
 
-namespace Tucuxi {
-namespace Core {
-
-
+using namespace Tucuxi::Core;
 
 struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
 {
@@ -36,15 +34,13 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
     void testResidual(const std::string& /* _testName */)
     {
 
-
         IntakeSeries expectedIntakes = createIntakeSeries();
 
         TargetEvaluationResult targetEvaluationResult;
 
-        Target target(ActiveMoietyId("imatinib"),
+        const Target target(ActiveMoietyId("imatinib"),
                       TargetType::Residual,
                       Unit("mg/l"),     //unit
-                      Unit("ug/l"),     //final unit
                       Value(20),        //min
                       Value(25),        //best
                       Value(30),        //max
@@ -54,6 +50,8 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
                       Duration(),       //Not used
                       Duration());      //Not used
 
+        TargetExtractor extractor;
+        TargetEvent targetEvent = extractor.targetEventFromTarget(&target);
 
 
         double lastTime = 50;
@@ -75,7 +73,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
         TargetEvaluator targetEvaluator;
         ComputingStatus status = targetEvaluator.evaluate(concentrationPrediction,
                                                           expectedIntakes,
-                                                          target,
+                                                          targetEvent,
                                                           targetEvaluationResult);
 
 
@@ -98,7 +96,6 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
         Target target(ActiveMoietyId("imatinib"),
                       TargetType::Peak,
                       Unit("mg/l"),     //unit
-                      Unit("mg/l"),     //final unit
                       Value(5),        //min
                       Value(25),        //best
                       Value(30),        //max
@@ -107,6 +104,9 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
                       Duration(std::chrono::minutes(0)),       //min
                       Duration(std::chrono::minutes(60)),       //best
                       Duration(std::chrono::minutes(120)));      //max
+
+        TargetExtractor extractor;
+        TargetEvent targetEvent = extractor.targetEventFromTarget(&target);
 
         TimeOffsets timeOffsets = {0, 1, 2, 3, 4};
 
@@ -120,7 +120,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
         TargetEvaluator targetEvaluator;
         ComputingStatus status = targetEvaluator.evaluate(concentrationPrediction,
                                                           expectedIntakes,
-                                                          target,
+                                                          targetEvent,
                                                           targetEvaluationResult);
 
 
@@ -142,7 +142,6 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
         Target target(ActiveMoietyId("imatinib"),
                       TargetType::Mean,
                       Unit("mg/l"),     //unit
-                      Unit("mg/l"),     //final unit
                       Value(5),        //min
                       Value(25),        //best
                       Value(35),        //max
@@ -151,6 +150,9 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
                       Duration(std::chrono::minutes(0)),       //min
                       Duration(std::chrono::minutes(60)),       //best
                       Duration(std::chrono::minutes(120)));      //max
+
+        TargetExtractor extractor;
+        TargetEvent targetEvent = extractor.targetEventFromTarget(&target);
 
         TimeOffsets timeOffsets = {0, 1, 2, 3, 4};
 
@@ -164,7 +166,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
         TargetEvaluator targetEvaluator;
         ComputingStatus status = targetEvaluator.evaluate(concentrationPrediction,
                                                           expectedIntakes,
-                                                          target,
+                                                          targetEvent,
                                                           targetEvaluationResult);
 
 
@@ -184,7 +186,6 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
         Target target(ActiveMoietyId("imatinib"),
                       TargetType::Auc,
                       Unit("mg/l"),     //unit
-                      Unit("mg/l"),     //final unit
                       Value(5),        //min
                       Value(25),        //best
                       Value(100),        //max
@@ -193,6 +194,9 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
                       Duration(std::chrono::minutes(0)),       //min
                       Duration(std::chrono::minutes(60)),       //best
                       Duration(std::chrono::minutes(120)));      //max
+
+        TargetExtractor extractor;
+        TargetEvent targetEvent = extractor.targetEventFromTarget(&target);
 
         TimeOffsets timeOffsets = {0, 1, 2, 3, 4};
 
@@ -206,7 +210,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
         TargetEvaluator targetEvaluator;
         ComputingStatus status = targetEvaluator.evaluate(concentrationPrediction,
                                                           expectedIntakes,
-                                                          target,
+                                                          targetEvent,
                                                           targetEvaluationResult);
 
 
@@ -226,7 +230,6 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
         Target target(ActiveMoietyId("imatinib"),
                       TargetType::Auc24,
                       Unit("mg/l"),     //unit
-                      Unit("mg/l"),     //final unit
                       Value(400),        //min
                       Value(425),        //best
                       Value(450),        //max
@@ -235,6 +238,10 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
                       Duration(std::chrono::minutes(0)),       //min
                       Duration(std::chrono::minutes(60)),       //best
                       Duration(std::chrono::minutes(120)));      //max
+
+        TargetExtractor extractor;
+        TargetEvent targetEvent = extractor.targetEventFromTarget(&target);
+
 
         TimeOffsets timeOffsets = {0, 1, 2, 3, 4};
 
@@ -249,7 +256,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
         TargetEvaluator targetEvaluator;
         ComputingStatus status = targetEvaluator.evaluate(concentrationPrediction,
                                                           expectedIntakes,
-                                                          target,
+                                                          targetEvent,
                                                           targetEvaluationResult);
 
 
@@ -270,7 +277,6 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
         Target target(ActiveMoietyId("imatinib"),
                       TargetType::CumulativeAuc,
                       Unit("mg/l"),     //unit
-                      Unit("mg/l"),     //final unit
                       Value(5),        //min
                       Value(500),        //best
                       Value(1000),        //max
@@ -279,6 +285,11 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
                       Duration(std::chrono::minutes(0)),       //min
                       Duration(std::chrono::minutes(60)),       //best
                       Duration(std::chrono::minutes(120)));      //max
+
+
+
+        TargetExtractor extractor;
+        TargetEvent targetEvent = extractor.targetEventFromTarget(&target);
 
         TimeOffsets timeOffsets = {0, 1, 2, 3, 4};
 
@@ -292,7 +303,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
         TargetEvaluator targetEvaluator;
         ComputingStatus status = targetEvaluator.evaluate(concentrationPrediction,
                                                           expectedIntakes,
-                                                          target,
+                                                          targetEvent,
                                                           targetEvaluationResult);
 
 
@@ -312,7 +323,6 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
         Target target(ActiveMoietyId("imatinib"),
                       TargetType::AucOverMic,
                       Unit("mg/l"),     //unit
-                      Unit("mg/l"),     //final unit
                       Value(0),        //min
                       Value(25),        //best
                       Value(100),        //max
@@ -321,6 +331,9 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
                       Duration(std::chrono::minutes(0)),       //min
                       Duration(std::chrono::minutes(60)),       //best
                       Duration(std::chrono::minutes(120)));      //max
+
+        TargetExtractor extractor;
+        TargetEvent targetEvent = extractor.targetEventFromTarget(&target);
 
         TimeOffsets timeOffsets = {0, 1, 2, 3, 4, 5, 6, 7};
 
@@ -334,7 +347,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
         TargetEvaluator targetEvaluator;
         ComputingStatus status = targetEvaluator.evaluate(concentrationPrediction,
                                                           expectedIntakes,
-                                                          target,
+                                                          targetEvent,
                                                           targetEvaluationResult);
 
 
@@ -354,7 +367,6 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
         Target target(ActiveMoietyId("imatinib"),
                       TargetType::Auc24OverMic,
                       Unit("mg/l"),     //unit
-                      Unit("mg/l"),     //final unit
                       Value(0),        //min
                       Value(15),        //best
                       Value(30),        //max
@@ -363,6 +375,9 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
                       Duration(std::chrono::minutes(0)),       //min
                       Duration(std::chrono::minutes(60)),       //best
                       Duration(std::chrono::minutes(120)));      //max
+
+        TargetExtractor extractor;
+        TargetEvent targetEvent = extractor.targetEventFromTarget(&target);
 
         TimeOffsets timeOffsets = {0, 1, 2, 3, 4, 5, 6, 7};
 
@@ -376,7 +391,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
         TargetEvaluator targetEvaluator;
         ComputingStatus status = targetEvaluator.evaluate(concentrationPrediction,
                                                           expectedIntakes,
-                                                          target,
+                                                          targetEvent,
                                                           targetEvaluationResult);
 
 
@@ -397,15 +412,17 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
         Target target(ActiveMoietyId("imatinib"),
                       TargetType::TimeOverMic,
                       Unit("h"),     //unit
-                      Unit("h"),     //final unit
                       Value(15),        //min
                       Value(25),        //best
                       Value(30),        //max
                       Value(15),        //mic
                       Unit("mg/l"),     //mic Unit
-                      Duration(),       //Not used
-                      Duration(),       //Not used
-                      Duration());      //Not used
+                      Duration(std::chrono::minutes(0)),       //min
+                      Duration(std::chrono::minutes(60)),       //best
+                      Duration(std::chrono::minutes(120)));      //max
+
+        TargetExtractor extractor;
+        TargetEvent targetEvent = extractor.targetEventFromTarget(&target);
 
         double lastTime = 50;
         TimeOffsets timeOffsets = fillTimeOffsets(lastTime);
@@ -425,7 +442,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
             TargetEvaluator targetEvaluator;
             ComputingStatus status = targetEvaluator.evaluate(concentrationPrediction,
                                                               expectedIntakes,
-                                                              target,
+                                                              targetEvent,
                                                               targetEvaluationResult);
 
 
@@ -451,7 +468,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
             TargetEvaluator targetEvaluator;
             ComputingStatus status = targetEvaluator.evaluate(concentrationPrediction,
                                                               expectedIntakes,
-                                                              target,
+                                                              targetEvent,
                                                               targetEvaluationResult);
 
 
@@ -476,7 +493,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
             TargetEvaluator targetEvaluator;
             ComputingStatus status = targetEvaluator.evaluate(concentrationPrediction,
                                                               expectedIntakes,
-                                                              target,
+                                                              targetEvent,
                                                               targetEvaluationResult);
 
             fructose_assert(status == ComputingStatus::Ok);
@@ -491,15 +508,17 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
             Target target(ActiveMoietyId("imatinib"),
                           TargetType::TimeOverMic,
                           Unit("h"),     //unit
-                          Unit("h"),     //final unit
                           Value(0.0),        //min
                           Value(25),        //best
                           Value(30),        //max
                           Value(15),        //mic
                           Unit("mg/l"),     //mic Unit
-                          Duration(),       //Not used
-                          Duration(),       //Not used
-                          Duration());      //Not used
+                          Duration(std::chrono::minutes(0)),       //min
+                          Duration(std::chrono::minutes(60)),       //best
+                          Duration(std::chrono::minutes(120)));      //max
+
+            TargetExtractor extractor;
+            TargetEvent targetEvent = extractor.targetEventFromTarget(&target);
 
             Concentrations concentrations = {14, 13, 13, 12, 11, 13, 14, 12, 13, 11};
 
@@ -513,7 +532,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
             TargetEvaluator targetEvaluator;
             ComputingStatus status = targetEvaluator.evaluate(concentrationPrediction,
                                                               expectedIntakes,
-                                                              target,
+                                                              targetEvent,
                                                               targetEvaluationResult);
 
             fructose_assert(status == ComputingStatus::Ok);
@@ -528,15 +547,19 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
             Target target(ActiveMoietyId("imatinib"),
                           TargetType::TimeOverMic,
                           Unit("h"),     //unit
-                          Unit("h"),     //final unit
                           Value(15),        //min
                           Value(25),        //best
                           Value(55),        //max
                           Value(15),        //mic
                           Unit("mg/l"),     //mic Unit
-                          Duration(),       //Not used
-                          Duration(),       //Not used
-                          Duration());      //Not used
+                          Duration(std::chrono::minutes(0)),       //min
+                          Duration(std::chrono::minutes(60)),       //best
+                          Duration(std::chrono::minutes(120)));      //max
+
+            TargetExtractor extractor;
+            TargetEvent targetEvent = extractor.targetEventFromTarget(&target);
+
+
 
             Concentrations concentrations = {16, 19, 21, 17, 16, 18, 20, 17, 18, 22};
 
@@ -550,7 +573,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
             TargetEvaluator targetEvaluator;
             ComputingStatus status = targetEvaluator.evaluate(concentrationPrediction,
                                                               expectedIntakes,
-                                                              target,
+                                                              targetEvent,
                                                               targetEvaluationResult);
 
             fructose_assert(status == ComputingStatus::Ok);
@@ -571,7 +594,6 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
         Target target(ActiveMoietyId("imatinib"),
                       TargetType::AucDividedByMic,
                       Unit("mg/l"),     //unit
-                      Unit("mg/l"),     //final unit
                       Value(0),        //min
                       Value(25),        //best
                       Value(100),        //max
@@ -580,6 +602,9 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
                       Duration(std::chrono::minutes(0)),       //min
                       Duration(std::chrono::minutes(60)),       //best
                       Duration(std::chrono::minutes(120)));      //max
+
+        TargetExtractor extractor;
+        TargetEvent targetEvent = extractor.targetEventFromTarget(&target);
 
         TimeOffsets timeOffsets = {0, 1, 2, 3, 4};
 
@@ -593,7 +618,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
         TargetEvaluator targetEvaluator;
         ComputingStatus status = targetEvaluator.evaluate(concentrationPrediction,
                                                           expectedIntakes,
-                                                          target,
+                                                          targetEvent,
                                                           targetEvaluationResult);
 
 
@@ -614,7 +639,6 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
         Target target(ActiveMoietyId("imatinib"),
                       TargetType::Auc24DividedByMic,
                       Unit("mg/l"),     //unit
-                      Unit("mg/l"),     //final unit
                       Value(5),        //min
                       Value(25),        //best
                       Value(100),        //max
@@ -623,6 +647,9 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
                       Duration(std::chrono::minutes(0)),       //min
                       Duration(std::chrono::minutes(60)),       //best
                       Duration(std::chrono::minutes(120)));      //max
+
+        TargetExtractor extractor;
+        TargetEvent targetEvent = extractor.targetEventFromTarget(&target);
 
         TimeOffsets timeOffsets = {0, 1, 2, 3, 4};
 
@@ -636,7 +663,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
         TargetEvaluator targetEvaluator;
         ComputingStatus status = targetEvaluator.evaluate(concentrationPrediction,
                                                           expectedIntakes,
-                                                          target,
+                                                          targetEvent,
                                                           targetEvaluationResult);
 
 
@@ -656,7 +683,6 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
         Target target(ActiveMoietyId("imatinib"),
                       TargetType::PeakDividedByMic,
                       Unit("mg/l"),     //unit
-                      Unit("mg/l"),     //final unit
                       Value(0),        //min
                       Value(25),        //best
                       Value(100),        //max
@@ -665,6 +691,9 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
                       Duration(std::chrono::minutes(0)),       //min
                       Duration(std::chrono::minutes(60)),       //best
                       Duration(std::chrono::minutes(120)));      //max
+
+        TargetExtractor extractor;
+        TargetEvent targetEvent = extractor.targetEventFromTarget(&target);
 
         TimeOffsets timeOffsets = {0, 1, 2, 3, 4};
 
@@ -678,7 +707,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
         TargetEvaluator targetEvaluator;
         ComputingStatus status = targetEvaluator.evaluate(concentrationPrediction,
                                                           expectedIntakes,
-                                                          target,
+                                                          targetEvent,
                                                           targetEvaluationResult);
 
 
@@ -758,7 +787,5 @@ private:
 
 };
 
-}// Core
-}// Tucuxi
 
 #endif // TEST_TARGETEVALUATOR_H

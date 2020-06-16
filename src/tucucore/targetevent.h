@@ -13,52 +13,130 @@
 #include "tucucore/drugmodel/targetdefinition.h"
 #include "tucucommon/duration.h"
 
+
 namespace Tucuxi {
 namespace Core {
 
-/*
+class TargetEvaluator;
+class Target;
 
-class SubTarget : public IndividualValue<SubTargetDefinition>
+class TargetEvent
 {
 public:
+    TargetEvent() = delete;
 
-    SubTarget(const SubTargetDefinition &_def) :
-        IndividualValue<SubTargetDefinition>(_def)
-    {}
+    ActiveMoietyId getActiveMoietyId() const { return m_activeMoietyId;}
+
+    static TargetEvent createTargetEvent(ActiveMoietyId _activeMoietyId,
+                                         TargetType _type,
+                                         Unit _unit,
+                                         Unit _finalUnit,
+                                         Value _vmin,
+                                         Value _vbest,
+                                         Value _vmax,
+                                         Value _mic,
+                                         Unit _micUnit);
+
+    static TargetEvent createTargetEvent(ActiveMoietyId _activeMoietyId,
+                                         TargetType _type,
+                                         Unit _unit,
+                                         Unit _finalUnit,
+                                         Value _vmin,
+                                         Value _vbest,
+                                         Value _vmax,
+                                         const Tucuxi::Common::Duration &_tmin,
+                                         const Tucuxi::Common::Duration &_tbest,
+                                         const Tucuxi::Common::Duration &_tmax);
+
+    static TargetEvent createTargetEvent(ActiveMoietyId _activeMoietyId,
+                                         TargetType _type,
+                                         Unit _unit,
+                                         Unit _finalUnit,
+                                         Value _vmin,
+                                         Value _vbest,
+                                         Value _vmax);
+
+    static TargetEvent createTargetEvent(ActiveMoietyId _activeMoietyId,
+                                         TargetType _type,
+                                         Unit _unit,
+                                         Unit _finalUnit,
+                                         Value _vmin,
+                                         Value _vbest,
+                                         Value _vmax,
+                                         Value _mic,
+                                         Unit _micUnit,
+                                         const Tucuxi::Common::Duration &_tmin,
+                                         const Tucuxi::Common::Duration &_tbest,
+                                         const Tucuxi::Common::Duration &_tmax);
+
+
+
+private:
+
+    TargetEvent(ActiveMoietyId _activeMoietyId,
+           TargetType _type,
+           Unit _unit,
+           Unit _finalUnit,
+           Value _vmin,
+           Value _vbest,
+           Value _vmax,
+           Value _mic,
+           Unit _micUnit,
+           const Tucuxi::Common::Duration &_tmin,
+           const Tucuxi::Common::Duration &_tbest,
+           const Tucuxi::Common::Duration &_tmax);
+
+
+    /// Id of the active moiety on which applying the target
+    ActiveMoietyId m_activeMoietyId;
+
+    /// Type of target
+    TargetType m_targetType;
+
+    /// Target minimum acceptable value
+    Value m_valueMin;
+
+    /// Target maximum acceptable value
+    Value m_valueMax;
+
+    /// Target best value
+    Value m_valueBest;
+
+    /// Minimum inhibitory concentration (for antibiotics)
+    Value m_mic;
+
+    /// Unit of the MIC
+    Unit m_micUnit;
+
+    /// Value under which the drug is inefficient
+    Value m_inefficacyAlarm;
+
+    /// Value over which the drug can be toxic
+    Value m_toxicityAlarm;
+
+    /// Target minimum time from last intake (for peak targets)
+    Tucuxi::Common::Duration m_tMin;
+
+    /// Target maximum time from last intake (for peak targets)
+    Tucuxi::Common::Duration m_tMax;
+
+    /// Target best time from last intake (for peak targets)
+    Tucuxi::Common::Duration m_tBest;
+
+    /// Unit of the target
+    Unit m_unit;
+
+    /// Unit of the result we are interesting in
+    /// For instance, the target, internally could be ug/l, while we want the evaluation
+    /// to be in mg/l
+    Unit m_finalUnit;
+
+    friend TargetEvaluator;
 
 };
 
 
-class TargetEvent : public TimedEvent
-{
-
-public:
-    TargetEvent(const TargetDefinition& _targetDef, const DateTime& _date) :
-        TimedEvent(_date),
-        m_targetDefinition(_targetDef),
-        m_valueMin(_targetDef.getCMin()),
-        m_valueMax(_targetDef.getCMin()),
-        m_valueBest(_targetDef.getCMin()),
-        m_tMin(_targetDef.getCMin()),
-        m_tMax(_targetDef.getCMin()),
-        m_tBest(_targetDef.getCMin())
-    {}
-
-protected:
-
-    const TargetDefinition& m_targetDefinition;
-
-    SubTarget m_valueMin;
-    SubTarget m_valueMax;
-    SubTarget m_valueBest;
-    SubTarget m_tMin;
-    SubTarget m_tMax;
-    SubTarget m_tBest;
-
-};
-*/
-
-typedef Target TargetEvent;
+//typedef Target TargetEvent;
 
 typedef std::vector<TargetEvent> TargetSeries;
 } // namespace Core

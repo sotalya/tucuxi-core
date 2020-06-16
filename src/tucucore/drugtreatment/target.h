@@ -12,6 +12,7 @@
 #include "tucucore/drugmodel/activemoiety.h"
 #include "tucucore/drugmodel/targetdefinition.h"
 #include "tucucommon/duration.h"
+#include "tucucore/targetevent.h"
 
 struct TestTargetExtractor;
 
@@ -63,7 +64,6 @@ public:
     Target(ActiveMoietyId _activeMoietyId,
            TargetType _type,
            Unit _unit,
-           Unit _finalUnit,
            Value _vmin,
            Value _vbest,
            Value _vmax,
@@ -73,9 +73,12 @@ public:
            const Tucuxi::Common::Duration &_tbest,
            const Tucuxi::Common::Duration &_tmax);
 
+
     ActiveMoietyId getActiveMoietyId() const { return m_activeMoietyId;}
 
 private:
+
+
     /// Id of the active moiety on which applying the target
     ActiveMoietyId m_activeMoietyId;
 
@@ -114,11 +117,6 @@ private:
 
     /// Unit of the target
     Unit m_unit;
-
-    /// Unit of the result we are interesting in
-    /// For instance, the target, internally could be ug/l, while we want the evaluation
-    /// to be in mg/l
-    Unit m_finalUnit;
 
     friend TargetExtractor;
     friend TargetEvaluator;
