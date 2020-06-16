@@ -295,7 +295,6 @@ struct TestDrugDomainConstraintsEvaluator : public fructose::test_base<TestDrugD
 
         incompatibleTests(ConstraintType::HARD, ConstraintType::HARD);
         incompatibleTests(ConstraintType::HARD, ConstraintType::SOFT);
-        incompatibleTests(ConstraintType::SOFT, ConstraintType::HARD);
 
         // To obtain partiallyCompatible, only soft constraint without any change between them
         partiallyCompatibleTests();
@@ -545,7 +544,7 @@ private:
 
         case DataIntegrity::BadDataBadFormat:
 
-            birthdate = "100-105-08-10:00:00";
+            birthdate = "1000-05-08-10:00:00";
             height = "l";
             weight = "true";
             sex = "10h";
