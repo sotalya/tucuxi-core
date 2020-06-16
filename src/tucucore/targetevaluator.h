@@ -4,6 +4,7 @@
 // We need this include because IntakeSeries is a typedef, and as such can not be forward declared
 #include "tucucore/intakeevent.h"
 #include "tucucore/computingservice/computingresult.h"
+#include "tucucore/computingservice/computingresponse.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -37,6 +38,14 @@ public:
             const Tucuxi::Core::IntakeSeries &_intakeSeries,
             const Target &_target,
             TargetEvaluationResult &_result);
+
+    ///
+    /// \brief aucOverMicCalculator
+    /// \param _target : The target in evaluation
+    /// \param cycle : Cycle containing times
+    /// \return double value corresponding to Area under Curve which is over the mic value
+    ///
+    double aucOverMicCalculator(const Target &_target, CycleData &cycle);
 
 protected:
 

@@ -313,7 +313,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
                       TargetType::AucOverMic,
                       Unit("mg/l"),     //unit
                       Unit("mg/l"),     //final unit
-                      Value(5),        //min
+                      Value(0),        //min
                       Value(25),        //best
                       Value(100),        //max
                       Value(15),        //mic
@@ -322,11 +322,11 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
                       Duration(std::chrono::minutes(60)),       //best
                       Duration(std::chrono::minutes(120)));      //max
 
-        TimeOffsets timeOffsets = {0, 1, 2, 3, 4};
+        TimeOffsets timeOffsets = {0, 1, 2, 3, 4, 5, 6, 7};
 
-        Concentrations concentrations = {17, 18, 19, 18, 17};
+        Concentrations concentrations = {12, 16, 15, 13, 15, 17, 12, 22};
 
-        double empiriqueValue = (4 * 17 + ((4 * (19 - 17)) / 2)) - 15; // auc - mic
+        double empiriqueValue = 4.475;
 
         ConcentrationPrediction concentrationPrediction;
         concentrationPrediction.appendConcentrations(timeOffsets, concentrations);
@@ -355,20 +355,20 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
                       TargetType::Auc24OverMic,
                       Unit("mg/l"),     //unit
                       Unit("mg/l"),     //final unit
-                      Value(200),        //min
-                      Value(25),        //best
-                      Value(400),        //max
+                      Value(0),        //min
+                      Value(15),        //best
+                      Value(30),        //max
                       Value(15),        //mic
                       Unit("mg/l"),     //mic Unit
                       Duration(std::chrono::minutes(0)),       //min
                       Duration(std::chrono::minutes(60)),       //best
                       Duration(std::chrono::minutes(120)));      //max
 
-        TimeOffsets timeOffsets = {0, 1, 2, 3, 4};
+        TimeOffsets timeOffsets = {0, 1, 2, 3, 4, 5, 6, 7};
 
-        Concentrations concentrations = {17, 18, 19, 18, 17};
+        Concentrations concentrations = {12, 16, 15, 13, 15, 17, 12, 22};
 
-        double empiriqueValue = ((4 * 17 + ((4 * (19 - 17)) / 2)) - 15) * 24 / 4.0 ; // auc - mic * 24heures / intervale
+        double empiriqueValue = 4.475 * 24 / (timeOffsets.size() - 1); // divisé par le nombre d'intervales
 
         ConcentrationPrediction concentrationPrediction;
         concentrationPrediction.appendConcentrations(timeOffsets, concentrations);
