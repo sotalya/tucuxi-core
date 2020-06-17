@@ -14,6 +14,8 @@
 #include "tucucommon/duration.h"
 
 
+struct TestTargetExtractor;
+
 namespace Tucuxi {
 namespace Core {
 
@@ -132,6 +134,8 @@ private:
     Unit m_finalUnit;
 
     friend TargetEvaluator;
+
+    friend TestTargetExtractor;
 
 };
 

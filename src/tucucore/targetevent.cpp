@@ -21,7 +21,6 @@ TargetEvent::TargetEvent(ActiveMoietyId _activeMoietyId,
                          const Tucuxi::Common::Duration &_tmax)
         : m_activeMoietyId(_activeMoietyId),
           m_targetType(_type),
-          m_finalUnit(_finalUnit),
           m_valueMin(_vmin),
           m_valueMax(_vmax),
           m_valueBest(_vbest),
@@ -30,7 +29,8 @@ TargetEvent::TargetEvent(ActiveMoietyId _activeMoietyId,
           m_tMin(_tmin),
           m_tMax(_tmax),
           m_tBest(_tbest),
-          m_unit(_unit)
+          m_unit(_unit),
+          m_finalUnit(_finalUnit)
 {};
 
 TargetEvent TargetEvent::createTargetEventWithTime(ActiveMoietyId _activeMoietyId,

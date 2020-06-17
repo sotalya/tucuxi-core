@@ -101,12 +101,13 @@ struct TestTargetExtractor : public fructose::test_base<TestTargetExtractor>
 
             fructose_assert(series.size() == 1);
             {
-                Target targetResult = series[0];
+                TargetEvent targetResult = series[0];
 
                 fructose_assert( targetResult.m_valueMin == 750.0);
                 fructose_assert( targetResult.m_valueMax == 1500.0);
                 fructose_assert( targetResult.m_valueBest == 1000.0);
-                fructose_assert( targetResult.m_mic == 2.0);
+                // The MIC is not defined in a target event Residual
+                //fructose_assert( targetResult.m_mic == 2.0);
                 //fructose_assert( targetResult.m_tMin == 1000.0);
                 //fructose_assert( targetResult.m_tMax == 1200.0);
                 //fructose_assert( targetResult.m_tBest == 1100.0);
@@ -169,7 +170,7 @@ struct TestTargetExtractor : public fructose::test_base<TestTargetExtractor>
 
             fructose_assert(series.size() == 1);
             {
-                Target targetResult = series[0];
+                TargetEvent targetResult = series[0];
 
                 // Here the values are x1000 the target values, as the units in the definition are mg/l. The final
                 // target unit is in ug/l
@@ -218,7 +219,7 @@ struct TestTargetExtractor : public fructose::test_base<TestTargetExtractor>
 
             fructose_assert(series.size() == 1);
             {
-                Target targetResult = series[0];
+                TargetEvent targetResult = series[0];
 
                 // Here the values are x1000 the target values, as the units in the definition are mg/l. The final
                 // target unit is in ug/l
