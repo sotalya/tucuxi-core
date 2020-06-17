@@ -27,7 +27,7 @@ public:
 
     ActiveMoietyId getActiveMoietyId() const { return m_activeMoietyId;}
 
-    static TargetEvent createTargetEvent(ActiveMoietyId _activeMoietyId,
+    static TargetEvent createTargetEventWithMic(ActiveMoietyId _activeMoietyId,
                                          TargetType _type,
                                          Unit _unit,
                                          Unit _finalUnit,
@@ -37,7 +37,7 @@ public:
                                          Value _mic,
                                          Unit _micUnit);
 
-    static TargetEvent createTargetEvent(ActiveMoietyId _activeMoietyId,
+    static TargetEvent createTargetEventWithTime(ActiveMoietyId _activeMoietyId,
                                          TargetType _type,
                                          Unit _unit,
                                          Unit _finalUnit,
@@ -48,7 +48,7 @@ public:
                                          const Tucuxi::Common::Duration &_tbest,
                                          const Tucuxi::Common::Duration &_tmax);
 
-    static TargetEvent createTargetEvent(ActiveMoietyId _activeMoietyId,
+    static TargetEvent createTargetEventWithoutTimeAndMic(ActiveMoietyId _activeMoietyId,
                                          TargetType _type,
                                          Unit _unit,
                                          Unit _finalUnit,
@@ -56,7 +56,7 @@ public:
                                          Value _vbest,
                                          Value _vmax);
 
-    static TargetEvent createTargetEvent(ActiveMoietyId _activeMoietyId,
+    static TargetEvent createTargetEventWithMicAndTime(ActiveMoietyId _activeMoietyId,
                                          TargetType _type,
                                          Unit _unit,
                                          Unit _finalUnit,

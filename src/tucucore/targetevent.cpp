@@ -33,7 +33,7 @@ TargetEvent::TargetEvent(ActiveMoietyId _activeMoietyId,
           m_unit(_unit)
 {};
 
-TargetEvent TargetEvent::createTargetEvent(ActiveMoietyId _activeMoietyId,
+TargetEvent TargetEvent::createTargetEventWithTime(ActiveMoietyId _activeMoietyId,
                                            TargetType _type,
                                            Unit _unit,
                                            Unit _finalUnit,
@@ -58,7 +58,7 @@ TargetEvent TargetEvent::createTargetEvent(ActiveMoietyId _activeMoietyId,
                        _tmax);
 }
 
-TargetEvent TargetEvent::createTargetEvent(ActiveMoietyId _activeMoietyId,
+TargetEvent TargetEvent::createTargetEventWithMic(ActiveMoietyId _activeMoietyId,
                                            TargetType _type,
                                            Unit _unit,
                                            Unit _finalUnit,
@@ -82,7 +82,7 @@ TargetEvent TargetEvent::createTargetEvent(ActiveMoietyId _activeMoietyId,
                        Tucuxi::Common::Duration());
 }
 
-TargetEvent TargetEvent::createTargetEvent(ActiveMoietyId _activeMoietyId,
+TargetEvent TargetEvent::createTargetEventWithoutTimeAndMic(ActiveMoietyId _activeMoietyId,
                                            TargetType _type,
                                            Unit _unit,
                                            Unit _finalUnit,
@@ -104,7 +104,7 @@ TargetEvent TargetEvent::createTargetEvent(ActiveMoietyId _activeMoietyId,
                        Tucuxi::Common::Duration());
 }
 
-TargetEvent TargetEvent::createTargetEvent(ActiveMoietyId _activeMoietyId,
+TargetEvent TargetEvent::createTargetEventWithMicAndTime(ActiveMoietyId _activeMoietyId,
                                          TargetType _type,
                                          Unit _unit,
                                          Unit _finalUnit,
