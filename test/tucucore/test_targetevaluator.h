@@ -41,11 +41,11 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
         const Target target(ActiveMoietyId("imatinib"),
                       TargetType::Residual,
                       Unit("mg/l"),     //unit
-                      Value(20),        //min
-                      Value(25),        //best
-                      Value(30),        //max
-                      Value(15),        //mic
-                      Unit("mg/l"),     //mic Unit
+                      Value(1),        //min
+                      Value(5),        //best
+                      Value(10),        //max
+                      Value(0),         //not used
+                      Unit(""),         //not used
                       Duration(),       //Not used
                       Duration(),       //Not used
                       Duration());      //Not used
@@ -58,10 +58,10 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
         TimeOffsets timeOffsets = fillTimeOffsets(lastTime);
 
 
-        double minConcentration = 20;
-        double maxConcentration = 30;
+        double minConcentration = 0;
+        double maxConcentration = 10 * 1000;
         Concentrations concentrations = fillGrowingConcentrations(minConcentration, maxConcentration);
-        double higherValueConcentration = concentrations.at(NB_ARRAY_ELEMENTS - 1);
+        double higherValueConcentration = 9 ;
 
 
 
@@ -79,10 +79,12 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
 
         fructose_assert(status == ComputingStatus::Ok);
 
-        fructose_assert(targetEvaluationResult.getUnit() == Unit("ug/l")); //WRONG must be final unit ?
-        fructose_assert(targetEvaluationResult.getTargetType() == TargetType::Residual);
-        fructose_assert(targetEvaluationResult.getValue() == (higherValueConcentration * 1000)); //*1000 to convert in ug/l
-        //To compare score, create another function ?
+        if(status != ComputingStatus::InvalidCandidate)
+        {
+            fructose_assert(targetEvaluationResult.getUnit() == Unit("mg/l"));
+            fructose_assert(targetEvaluationResult.getTargetType() == TargetType::Residual);
+            fructose_assert(targetEvaluationResult.getValue() == higherValueConcentration);
+        }
 
     }
 
@@ -99,8 +101,8 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
                       Value(5),        //min
                       Value(25),        //best
                       Value(30),        //max
-                      Value(15),        //mic
-                      Unit("mg/l"),     //mic Unit
+                      Value(0),         //not used
+                      Unit(""),         //not used
                       Duration(std::chrono::minutes(0)),       //min
                       Duration(std::chrono::minutes(60)),       //best
                       Duration(std::chrono::minutes(120)));      //max
@@ -110,9 +112,10 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
 
         TimeOffsets timeOffsets = {0, 1, 2, 3, 4};
 
-        Concentrations concentrations = {24, 29, 16, 9, 20};
+        Concentrations concentrations = {24000, 29000, 16000, 9000, 20000}; // in ug/l
 
-        double empiriqueValue = 29.0;
+
+        double empiriqueValue = 29; // in mg/l
 
         ConcentrationPrediction concentrationPrediction;
         concentrationPrediction.appendConcentrations(timeOffsets, concentrations);
@@ -126,9 +129,12 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
 
         fructose_assert(status == ComputingStatus::Ok);
 
-        fructose_assert(targetEvaluationResult.getUnit() == Unit("mg/l"));
-        fructose_assert(targetEvaluationResult.getTargetType() == TargetType::Peak);
-        fructose_assert(targetEvaluationResult.getValue() == empiriqueValue);
+        if(status != ComputingStatus::InvalidCandidate)
+        {
+            fructose_assert(targetEvaluationResult.getUnit() == Unit("mg/l"));
+            fructose_assert(targetEvaluationResult.getTargetType() == TargetType::Peak);
+            fructose_assert(targetEvaluationResult.getValue() == empiriqueValue);
+        }
 
     }
 
@@ -141,12 +147,12 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
 
         Target target(ActiveMoietyId("imatinib"),
                       TargetType::Mean,
-                      Unit("mg/l"),     //unit
+                      Unit("ug/l"),     //unit
                       Value(5),        //min
                       Value(25),        //best
                       Value(35),        //max
-                      Value(15),        //mic
-                      Unit("mg/l"),     //mic Unit
+                      Value(0),         //not used
+                      Unit(""),         //not used
                       Duration(std::chrono::minutes(0)),       //min
                       Duration(std::chrono::minutes(60)),       //best
                       Duration(std::chrono::minutes(120)));      //max
@@ -172,9 +178,12 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
 
         fructose_assert(status == ComputingStatus::Ok);
 
-        fructose_assert(targetEvaluationResult.getUnit() == Unit("mg/l"));
-        fructose_assert(targetEvaluationResult.getTargetType() == TargetType::Mean);
-        fructose_assert_eq(targetEvaluationResult.getValue() , empiriqueValue);
+        if(status != ComputingStatus::InvalidCandidate)
+        {
+            fructose_assert(targetEvaluationResult.getUnit() == Unit("ug/l"));
+            fructose_assert(targetEvaluationResult.getTargetType() == TargetType::Mean);
+            fructose_assert_eq(targetEvaluationResult.getValue() , empiriqueValue);
+        }
     }
 
     void testAuc(const std::string& /* _testName */)
@@ -185,12 +194,12 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
 
         Target target(ActiveMoietyId("imatinib"),
                       TargetType::Auc,
-                      Unit("mg/l"),     //unit
+                      Unit("ug/l"),     //unit
                       Value(5),        //min
                       Value(25),        //best
                       Value(100),        //max
-                      Value(15),        //mic
-                      Unit("mg/l"),     //mic Unit
+                      Value(0),         //not used
+                      Unit(""),         //not used
                       Duration(std::chrono::minutes(0)),       //min
                       Duration(std::chrono::minutes(60)),       //best
                       Duration(std::chrono::minutes(120)));      //max
@@ -216,9 +225,12 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
 
         fructose_assert(status == ComputingStatus::Ok);
 
-        fructose_assert(targetEvaluationResult.getUnit() == Unit("mg/l"));
-        fructose_assert(targetEvaluationResult.getTargetType() == TargetType::Auc);
-        fructose_assert(targetEvaluationResult.getValue() == empiriqueValue);
+        if(status != ComputingStatus::InvalidCandidate)
+        {
+            fructose_assert(targetEvaluationResult.getUnit() == Unit("ug/l"));
+            fructose_assert(targetEvaluationResult.getTargetType() == TargetType::Auc);
+            fructose_assert(targetEvaluationResult.getValue() == empiriqueValue);
+        }
     }
 
     void testAuc24(const std::string& /* _testName */)
@@ -229,12 +241,12 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
 
         Target target(ActiveMoietyId("imatinib"),
                       TargetType::Auc24,
-                      Unit("mg/l"),     //unit
-                      Value(400),        //min
-                      Value(425),        //best
-                      Value(450),        //max
-                      Value(15),        //mic
-                      Unit("mg/l"),     //mic Unit
+                      Unit("ug/l"),     //unit
+                      Value(0),        //min
+                      Value(250),        //best
+                      Value(500),        //max
+                      Value(0),         //not used
+                      Unit(""),         //not used
                       Duration(std::chrono::minutes(0)),       //min
                       Duration(std::chrono::minutes(60)),       //best
                       Duration(std::chrono::minutes(120)));      //max
@@ -262,9 +274,12 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
 
         fructose_assert(status == ComputingStatus::Ok);
 
-        fructose_assert(targetEvaluationResult.getUnit() == Unit("mg/l"));
-        fructose_assert(targetEvaluationResult.getTargetType() == TargetType::Auc24);
-        fructose_assert(targetEvaluationResult.getValue() == empiriqueValue);
+        if(status != ComputingStatus::InvalidCandidate)
+        {
+            fructose_assert(targetEvaluationResult.getUnit() == Unit("ug/l"));
+            fructose_assert(targetEvaluationResult.getTargetType() == TargetType::Auc24);
+            fructose_assert(targetEvaluationResult.getValue() == empiriqueValue);
+        }
 
     }
 
@@ -276,12 +291,12 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
 
         Target target(ActiveMoietyId("imatinib"),
                       TargetType::CumulativeAuc,
-                      Unit("mg/l"),     //unit
-                      Value(5),        //min
-                      Value(500),        //best
-                      Value(1000),        //max
-                      Value(15),        //mic
-                      Unit("mg/l"),     //mic Unit
+                      Unit("ug/l"),     //unit
+                      Value(0),        //min
+                      Value(50),        //best
+                      Value(100),        //max
+                      Value(0),         //not used
+                      Unit(""),         //not used
                       Duration(std::chrono::minutes(0)),       //min
                       Duration(std::chrono::minutes(60)),       //best
                       Duration(std::chrono::minutes(120)));      //max
@@ -309,9 +324,12 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
 
         fructose_assert(status == ComputingStatus::Ok);
 
-        fructose_assert(targetEvaluationResult.getUnit() == Unit("mg/l"));
-        fructose_assert(targetEvaluationResult.getTargetType() == TargetType::CumulativeAuc);
-        fructose_assert(targetEvaluationResult.getValue() == empiriqueValue);
+        if(status != ComputingStatus::InvalidCandidate)
+        {
+            fructose_assert(targetEvaluationResult.getUnit() == Unit("ug/l"));
+            fructose_assert(targetEvaluationResult.getTargetType() == TargetType::CumulativeAuc);
+            fructose_assert(targetEvaluationResult.getValue() == empiriqueValue);
+        }
     }
 
     void testAucOverMic(const std::string& /* _testName */)
@@ -322,12 +340,12 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
 
         Target target(ActiveMoietyId("imatinib"),
                       TargetType::AucOverMic,
-                      Unit("mg/l"),     //unit
+                      Unit("ug/l"),     //unit
                       Value(0),        //min
                       Value(25),        //best
                       Value(100),        //max
                       Value(15),        //mic
-                      Unit("mg/l"),     //mic Unit
+                      Unit("ug/l"),     //mic Unit
                       Duration(std::chrono::minutes(0)),       //min
                       Duration(std::chrono::minutes(60)),       //best
                       Duration(std::chrono::minutes(120)));      //max
@@ -338,6 +356,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
         TimeOffsets timeOffsets = {0, 1, 2, 3, 4, 5, 6, 7};
 
         Concentrations concentrations = {12, 16, 15, 13, 15, 17, 12, 22};
+
 
         double empiriqueValue = 4.475;
 
@@ -353,9 +372,12 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
 
         fructose_assert(status == ComputingStatus::Ok);
 
-        fructose_assert(targetEvaluationResult.getUnit() == Unit("mg/l"));
-        fructose_assert(targetEvaluationResult.getTargetType() == TargetType::AucOverMic);
-        fructose_assert(targetEvaluationResult.getValue() == empiriqueValue);
+        if(status != ComputingStatus::InvalidCandidate)
+        {
+            fructose_assert(targetEvaluationResult.getUnit() == Unit("ug/l"));
+            fructose_assert(targetEvaluationResult.getTargetType() == TargetType::AucOverMic);
+            fructose_assert(targetEvaluationResult.getValue() == empiriqueValue);
+        }
     }
 
     void testAuc24OverMic(const std::string& /* _testName */)
@@ -366,12 +388,12 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
 
         Target target(ActiveMoietyId("imatinib"),
                       TargetType::Auc24OverMic,
-                      Unit("mg/l"),     //unit
+                      Unit("ug*h/l"),     //unit
                       Value(0),        //min
                       Value(15),        //best
                       Value(30),        //max
                       Value(15),        //mic
-                      Unit("mg/l"),     //mic Unit
+                      Unit("ug*h/l"),     //mic Unit
                       Duration(std::chrono::minutes(0)),       //min
                       Duration(std::chrono::minutes(60)),       //best
                       Duration(std::chrono::minutes(120)));      //max
@@ -397,9 +419,12 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
 
         fructose_assert(status == ComputingStatus::Ok);
 
-        fructose_assert(targetEvaluationResult.getUnit() == Unit("mg/l"));
-        fructose_assert(targetEvaluationResult.getTargetType() == TargetType::Auc24OverMic);
-        fructose_assert(targetEvaluationResult.getValue() == empiriqueValue);
+        if(status != ComputingStatus::InvalidCandidate)
+        {
+            fructose_assert(targetEvaluationResult.getUnit() == Unit("ug*h/l"));
+            fructose_assert(targetEvaluationResult.getTargetType() == TargetType::Auc24OverMic);
+            fructose_assert(targetEvaluationResult.getValue() == empiriqueValue);
+        }
 
     }
 
@@ -416,7 +441,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
                       Value(25),        //best
                       Value(30),        //max
                       Value(15),        //mic
-                      Unit("mg/l"),     //mic Unit
+                      Unit("h"),     //mic Unit
                       Duration(std::chrono::minutes(0)),       //min
                       Duration(std::chrono::minutes(60)),       //best
                       Duration(std::chrono::minutes(120)));      //max
@@ -448,9 +473,12 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
 
             fructose_assert(status == ComputingStatus::Ok);
 
-            fructose_assert(targetEvaluationResult.getUnit() == Unit("h"));
-            fructose_assert(targetEvaluationResult.getTargetType() == TargetType::TimeOverMic);
-            fructose_assert(targetEvaluationResult.getValue() == empiriqueValue);
+            if(status != ComputingStatus::InvalidCandidate)
+            {
+                fructose_assert(targetEvaluationResult.getUnit() == Unit("h"));
+                fructose_assert(targetEvaluationResult.getTargetType() == TargetType::TimeOverMic);
+                fructose_assert(targetEvaluationResult.getValue() == empiriqueValue);
+            }
         }
 
         //test2 (concentration values increasing)
@@ -474,9 +502,12 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
 
             fructose_assert(status == ComputingStatus::Ok);
 
-            fructose_assert(targetEvaluationResult.getUnit() == Unit("h"));
-            fructose_assert(targetEvaluationResult.getTargetType() == TargetType::TimeOverMic);
-            fructose_assert(targetEvaluationResult.getValue() == empiriqueValue);
+            if(status != ComputingStatus::InvalidCandidate)
+            {
+                fructose_assert(targetEvaluationResult.getUnit() == Unit("h"));
+                fructose_assert(targetEvaluationResult.getTargetType() == TargetType::TimeOverMic);
+                fructose_assert(targetEvaluationResult.getValue() == empiriqueValue);
+            }
         }
 
         //test3 (concentration values descreasing)
@@ -498,9 +529,12 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
 
             fructose_assert(status == ComputingStatus::Ok);
 
-            fructose_assert(targetEvaluationResult.getUnit() == Unit("h"));
-            fructose_assert(targetEvaluationResult.getTargetType() == TargetType::TimeOverMic);
-            fructose_assert(targetEvaluationResult.getValue() == empiriqueValue);
+            if(status != ComputingStatus::InvalidCandidate)
+            {
+                fructose_assert(targetEvaluationResult.getUnit() == Unit("h"));
+                fructose_assert(targetEvaluationResult.getTargetType() == TargetType::TimeOverMic);
+                fructose_assert(targetEvaluationResult.getValue() == empiriqueValue);
+            }
         }
 
         //test4 (concentration values under mic)
@@ -508,11 +542,11 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
             Target target(ActiveMoietyId("imatinib"),
                           TargetType::TimeOverMic,
                           Unit("h"),     //unit
-                          Value(0.0),        //min
+                          Value(0),        //min
                           Value(25),        //best
                           Value(30),        //max
                           Value(15),        //mic
-                          Unit("mg/l"),     //mic Unit
+                          Unit("h"),     //mic Unit
                           Duration(std::chrono::minutes(0)),       //min
                           Duration(std::chrono::minutes(60)),       //best
                           Duration(std::chrono::minutes(120)));      //max
@@ -537,9 +571,12 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
 
             fructose_assert(status == ComputingStatus::Ok);
 
-            fructose_assert(targetEvaluationResult.getUnit() == Unit("h"));
-            fructose_assert(targetEvaluationResult.getTargetType() == TargetType::TimeOverMic);
-            fructose_assert(targetEvaluationResult.getValue() == empiriqueValue);
+            if(status != ComputingStatus::InvalidCandidate)
+            {
+                fructose_assert(targetEvaluationResult.getUnit() == Unit("h"));
+                fructose_assert(targetEvaluationResult.getTargetType() == TargetType::TimeOverMic);
+                fructose_assert(targetEvaluationResult.getValue() == empiriqueValue);
+            }
         }
 
         //test5 (concentration values over mic)
@@ -551,7 +588,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
                           Value(25),        //best
                           Value(55),        //max
                           Value(15),        //mic
-                          Unit("mg/l"),     //mic Unit
+                          Unit("h"),     //mic Unit
                           Duration(std::chrono::minutes(0)),       //min
                           Duration(std::chrono::minutes(60)),       //best
                           Duration(std::chrono::minutes(120)));      //max
@@ -578,9 +615,12 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
 
             fructose_assert(status == ComputingStatus::Ok);
 
-            fructose_assert(targetEvaluationResult.getUnit() == Unit("h"));
-            fructose_assert(targetEvaluationResult.getTargetType() == TargetType::TimeOverMic);
-            fructose_assert(targetEvaluationResult.getValue() == empiriqueValue);
+            if(status != ComputingStatus::InvalidCandidate)
+            {
+                fructose_assert(targetEvaluationResult.getUnit() == Unit("h"));
+                fructose_assert(targetEvaluationResult.getTargetType() == TargetType::TimeOverMic);
+                fructose_assert(targetEvaluationResult.getValue() == empiriqueValue);
+            }
         }
 
     }
@@ -593,12 +633,12 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
 
         Target target(ActiveMoietyId("imatinib"),
                       TargetType::AucDividedByMic,
-                      Unit("mg/l"),     //unit
+                      Unit("ug/l"),     //unit
                       Value(0),        //min
                       Value(25),        //best
                       Value(100),        //max
                       Value(15),        //mic
-                      Unit("mg/l"),     //mic Unit
+                      Unit("ug/l"),     //mic Unit
                       Duration(std::chrono::minutes(0)),       //min
                       Duration(std::chrono::minutes(60)),       //best
                       Duration(std::chrono::minutes(120)));      //max
@@ -624,9 +664,12 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
 
         fructose_assert(status == ComputingStatus::Ok);
 
-        fructose_assert(targetEvaluationResult.getUnit() == Unit("mg/l"));
-        fructose_assert(targetEvaluationResult.getTargetType() == TargetType::AucDividedByMic);
-        fructose_assert(targetEvaluationResult.getValue() == empiriqueValue);
+        if(status != ComputingStatus::InvalidCandidate)
+        {
+            fructose_assert(targetEvaluationResult.getUnit() == Unit("ug/l"));
+            fructose_assert(targetEvaluationResult.getTargetType() == TargetType::AucDividedByMic);
+            fructose_assert(targetEvaluationResult.getValue() == empiriqueValue);
+        }
 
     }
 
@@ -638,12 +681,12 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
 
         Target target(ActiveMoietyId("imatinib"),
                       TargetType::Auc24DividedByMic,
-                      Unit("mg/l"),     //unit
+                      Unit("ug/l"),     //unit
                       Value(5),        //min
                       Value(25),        //best
                       Value(100),        //max
-                      Value(15.0),        //mic
-                      Unit("mg/l"),     //mic Unit
+                      Value(15),        //mic
+                      Unit("ug/l"),     //mic Unit
                       Duration(std::chrono::minutes(0)),       //min
                       Duration(std::chrono::minutes(60)),       //best
                       Duration(std::chrono::minutes(120)));      //max
@@ -669,9 +712,12 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
 
         fructose_assert(status == ComputingStatus::Ok);
 
-        fructose_assert(targetEvaluationResult.getUnit() == Unit("mg/l"));
-        fructose_assert(targetEvaluationResult.getTargetType() == TargetType::Auc24DividedByMic);
-        fructose_assert(targetEvaluationResult.getValue() == empiriqueValue);
+        if(status != ComputingStatus::InvalidCandidate)
+        {
+            fructose_assert(targetEvaluationResult.getUnit() == Unit("ug/l"));
+            fructose_assert(targetEvaluationResult.getTargetType() == TargetType::Auc24DividedByMic);
+            fructose_assert(targetEvaluationResult.getValue() == empiriqueValue);
+        }
     }
 
     void testPeakDividedByMic(const std::string& /* _testName */)
@@ -682,12 +728,12 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
 
         Target target(ActiveMoietyId("imatinib"),
                       TargetType::PeakDividedByMic,
-                      Unit("mg/l"),     //unit
+                      Unit("ug/l"),     //unit
                       Value(0),        //min
                       Value(25),        //best
                       Value(100),        //max
                       Value(15),        //mic
-                      Unit("mg/l"),     //mic Unit
+                      Unit("ug/l"),     //mic Unit
                       Duration(std::chrono::minutes(0)),       //min
                       Duration(std::chrono::minutes(60)),       //best
                       Duration(std::chrono::minutes(120)));      //max
@@ -713,9 +759,12 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
 
         fructose_assert(status == ComputingStatus::Ok);
 
-        fructose_assert(targetEvaluationResult.getUnit() == Unit("mg/l"));
-        fructose_assert(targetEvaluationResult.getTargetType() == TargetType::PeakDividedByMic);
-        fructose_assert(targetEvaluationResult.getValue() == empiriqueValue);
+        if(status != ComputingStatus::InvalidCandidate)
+        {
+            fructose_assert(targetEvaluationResult.getUnit() == Unit("ug/l"));
+            fructose_assert(targetEvaluationResult.getTargetType() == TargetType::PeakDividedByMic);
+            fructose_assert(targetEvaluationResult.getValue() == empiriqueValue);
+        }
     }
 
 
