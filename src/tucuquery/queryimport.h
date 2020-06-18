@@ -86,8 +86,6 @@ protected:
 
     // Methods to separate the creation of the requests
     std::unique_ptr<RequestData> createRequest(Common::XmlNodeIterator& _requestRootIterator);
-    std::unique_ptr<GraphData> createGraphData(Common::XmlNodeIterator& _graphDataRootIterator);
-    std::unique_ptr<Backextrapolation> createBackextrapolation(Common::XmlNodeIterator& _backextrapolationRootIterator);
 
     // Utilitary methods
     Tucuxi::Core::PercentileRanks getChildPercentileRanks(Common::XmlNodeIterator _rootIterator, const std::string& _childName);

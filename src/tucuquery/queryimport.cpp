@@ -740,56 +740,6 @@ unique_ptr<RequestData> QueryImport::createRequest(Tucuxi::Common::XmlNodeIterat
                 );
 }
 
-unique_ptr<GraphData> QueryImport::createGraphData(Common::XmlNodeIterator& _graphDataRootIterator)
-{
-    static const string START_NODE_NAME        = "start";
-    static const string END_NODE_NAME          = "end";
-    static const string PERCENTILES_NODE_NAME  = "percentiles";
-
-    Common::DateTime start = getChildDateTime(_graphDataRootIterator, START_NODE_NAME);
-    Common::DateTime end = getChildDateTime(_graphDataRootIterator, END_NODE_NAME);
-
-    vector<unsigned short> percentiles;
-    Common::XmlNodeIterator percentilesRootIterator = _graphDataRootIterator->getChildren(PERCENTILES_NODE_NAME);
-    Common::XmlNodeIterator percentilesIterator = percentilesRootIterator->getChildren();
-    while(percentilesIterator != Common::XmlNodeIterator::none()) {
-        string value = percentilesIterator->getValue();
-
-        unsigned short finalValue = 0;
-        try {
-            finalValue = static_cast<unsigned short>(stoul(value));
-        } catch (invalid_argument& e) {
-            finalValue = 0;
-        } catch (out_of_range& e) {
-            finalValue = 0;
-        }
-
-        percentiles.push_back(finalValue);
-        percentilesIterator++;
-    }
-
-    unique_ptr<DateInterval> pDateInterval = make_unique<DateInterval>(start, end);
-    return make_unique<GraphData>(move(pDateInterval), percentiles);
-}
-
-unique_ptr<Backextrapolation> QueryImport::createBackextrapolation(Common::XmlNodeIterator& _backextrapolationRootIterator)
-{
-    static const string SAMPLE_NODE_NAME               = "sample";
-    static const string INCOMPLETE_SAMPLE_NODE_NAME    = "incompleteSample";
-    static const string DOSAGE_NODE_NAME               = "dosage";
-
-    Common::XmlNodeIterator sampleRootIterator = _backextrapolationRootIterator->getChildren(SAMPLE_NODE_NAME);
-    unique_ptr<SampleData> pSampleData = createSampleData(sampleRootIterator);
-
-    Common::XmlNodeIterator dosageRootIterator = _backextrapolationRootIterator->getChildren(DOSAGE_NODE_NAME);
-    //unique_ptr<Core::Dosage> pDosage = createDosage(dosageRootIterator, );
-    // TODO
-
-    // WARNING! nullptr for now
-    unique_ptr<Backextrapolation> pBackextrapolation;
-    return pBackextrapolation;
-}
-
 Tucuxi::Core::PercentileRanks QueryImport::getChildPercentileRanks(Common::XmlNodeIterator _rootIterator, const string& _childName)
 {
     Common::XmlNodeIterator it = _rootIterator->getChildren(_childName);
