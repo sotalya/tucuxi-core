@@ -14,16 +14,18 @@
 using namespace Tucuxi::Core;
 using namespace Tucuxi::Query;
 
+std::string fileAndDirFromPath(std::string &_outputPath);
+
 CliComputer::CliComputer() = default;
 
 
 QueryStatus CliComputer::compute(const std::string& _inputFileName,
-                                 const std::string& _outputPath)
+                                 const std::string& _outputFileName,
+                                 const std::string& _dataFilePath)
 {
 
     // Change the settings for the tests
     Tucuxi::Core::SingleOverloadEvaluator::getInstance()->setValues(100000, 5000, 10000);
-
 
     // This method can be totally rewritten to take advantage of QueryComputer.
     // QueryComputer will be also used by the REST server, so all the common code should
@@ -47,12 +49,13 @@ QueryStatus CliComputer::compute(const std::string& _inputFileName,
     queryComputer->compute(xmlString, computingQueryResponse);
 
 
-    if((computingQueryResponse.getQueryStatus() != QueryStatus::ImportError)
-            || (computingQueryResponse.getQueryStatus() != QueryStatus::BadFormat))
+    if(!_dataFilePath.empty()
+            && (computingQueryResponse.getQueryStatus() != QueryStatus::ImportError
+                || computingQueryResponse.getQueryStatus() != QueryStatus::BadFormat))
     {
         ComputingResponseExport exporter;
 
-        if (!exporter.exportToFiles(computingQueryResponse, _outputPath)) {
+        if (!exporter.exportToFiles(computingQueryResponse, _dataFilePath)) {
             logHelper.error("Could not export the response file");
             return computingQueryResponse.getQueryStatus();
         }
@@ -64,9 +67,7 @@ QueryStatus CliComputer::compute(const std::string& _inputFileName,
     ComputingQueryResponseXmlExport xmlExporter;
 
 
-    std::string fileName = _outputPath + "/" + computingQueryResponse.getQueryId() + ".xml";
-
-    if (!xmlExporter.exportToFile(computingQueryResponse, fileName)) {
+    if (!xmlExporter.exportToFile(computingQueryResponse, _outputFileName)) {
         logHelper.error("Could not export the response XML file");
         return computingQueryResponse.getQueryStatus();
     }
@@ -76,3 +77,4 @@ QueryStatus CliComputer::compute(const std::string& _inputFileName,
     return computingQueryResponse.getQueryStatus();
 
 }
+

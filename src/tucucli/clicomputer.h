@@ -4,6 +4,15 @@
 #include <string>
 #include "tucuquery/querystatus.h"
 
+#ifdef WIN32
+const char SEPARATOR = '\\';
+const uint8_t NUMBER = 1;
+#else
+const char SEPARATOR = '/';
+const uint8_t NUMBER = 0;
+#endif
+
+
 ///
 /// \brief The CliComputer class
 ///
@@ -21,7 +30,9 @@ public:
     ///
     QueryStatus compute(
                  const std::string& _inputFileName,
-                 const std::string& _outputPath);
+                 const std::string& _outputFileName,
+                 const std::string& _dataFilePath);
 };
+
 
 #endif // CLICOMPUTER_H

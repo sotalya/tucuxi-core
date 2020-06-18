@@ -42,6 +42,7 @@ int parse(int _argc, char* _argv[]) // NOLINT(cppcoreguidelines-avoid-c-arrays, 
                 ("i,input", "Input request file", cxxopts::value<std::string>())
                 ("o,output", "Output response file", cxxopts::value<std::string>())
                 ("q,querylogpath", "Query folder path", cxxopts::value<std::string>())
+                ("csv", "Data file (.dat) folder path", cxxopts::value<std::string>())
                 ("help", "Print help")
                 ;
 
@@ -69,9 +70,9 @@ int parse(int _argc, char* _argv[]) // NOLINT(cppcoreguidelines-avoid-c-arrays, 
             exit(-2);
         }
 
-        std::string outputPath;
+        std::string outputFileName;
         if (result.count("output") > 0) {
-            outputPath = result["output"].as<std::string>();
+            outputFileName = result["output"].as<std::string>();
         }
         else {
             std::cout << "The output file is mandatory" << std::endl << std::endl;
@@ -84,12 +85,19 @@ int parse(int _argc, char* _argv[]) // NOLINT(cppcoreguidelines-avoid-c-arrays, 
             queryLogPath = result["querylogpath"].as<std::string>();
         }
 
+        std::string datafilepath;
+        if (result.count("csv") > 0) {
+            datafilepath = result["csv"].as<std::string>();
+        }
+
         logHelper.info("Drugs directory : {}", drugPath);
         logHelper.info("Input file : {}", inputFileName);
-        logHelper.info("Output directory : {}", outputPath);
+        logHelper.info("Output file name : {}", outputFileName);
         logHelper.info("QueryLogs directory : {}", queryLogPath);
+        logHelper.info("Data file directory : {}", datafilepath);
 
         Tucuxi::Common::ComponentManager* pCmpMgr = Tucuxi::Common::ComponentManager::getInstance();
+
 
 
         auto drugModelRepository = dynamic_cast<Tucuxi::Core::DrugModelRepository*>(
@@ -109,7 +117,7 @@ int parse(int _argc, char* _argv[]) // NOLINT(cppcoreguidelines-avoid-c-arrays, 
 
 
         CliComputer computer;
-        QueryStatus queryStatus = computer.compute(inputFileName, outputPath);
+        QueryStatus queryStatus = computer.compute(inputFileName, outputFileName, datafilepath);
 
 
         pCmpMgr->unregisterComponent("DrugModelRepository");
