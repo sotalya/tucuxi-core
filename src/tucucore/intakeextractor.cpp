@@ -68,7 +68,12 @@ int IntakeExtractor::extract(const DosageTimeRange &_timeRange, const DateTime &
 
     int nbIntakes = 0;
 //    DateTime iStart = std::max(_start, _timeRange.m_startDate);
+
+    // By default we maybe need the start time of the timeRange
     DateTime iStart = _timeRange.m_startDate;
+    // Or not, if it contains a steady state dosage.
+    // In that context we use the _start value instead of the on of the timeRange
+    // because it is irrelevant at steady state
     if (dynamic_cast<DosageSteadyState*>(_timeRange.m_dosage.get()) != nullptr) {
         iStart = _start;
     }

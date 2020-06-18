@@ -244,13 +244,16 @@ int XMLImporter::getChildInt(Common::XmlNodeIterator _rootIterator, const std::s
     }
 }
 
-DateTime XMLImporter::getChildDateTime(Common::XmlNodeIterator _rootIterator, const std::string& _childName)
+DateTime XMLImporter::getChildDateTime(Common::XmlNodeIterator _rootIterator, const std::string& _childName,
+                                       EmptynessAllowed _allowEmpty)
 {
     auto child = _rootIterator->getChildren(_childName);
 
     if(checkNodeIterator(child, _childName).empty())
     {
-        setNodeError(child);
+        if (_allowEmpty == EmptynessAllowed::DoNotAllowEmpty) {
+            setNodeError(child);
+        }
         return DateTime();
     }
     else{

@@ -81,6 +81,7 @@ protected:
     std::unique_ptr<Core::DosageTimeRange> createDosageTimeRange(Common::XmlNodeIterator& _dosageTimeRangeRootIterator);
     std::unique_ptr<Core::Dosage> createDosage(Common::XmlNodeIterator& _dosageRootIterator) ;
     std::unique_ptr<Core::DosageBounded> createDosageBounded(Common::XmlNodeIterator& _dosageBoundedRootIterator) ;
+    std::unique_ptr<Core::DosageBounded> createDosageBoundedFromIterator(Common::XmlNodeIterator& _dosageBoundedIterator);
     std::unique_ptr<Core::FormulationAndRoute> createFormulationAndRoute(Common::XmlNodeIterator& _formulationAndRouteRootIterator) ;
 
     // Methods to separate the creation of the requests

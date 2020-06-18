@@ -352,6 +352,9 @@ bool ComputingQueryResponseXmlExport::exportSinglePrediction(const Tucuxi::Core:
 
 std::string dateTimeToString(const Tucuxi::Common::DateTime &_dateTime)
 {
+    if (_dateTime.isUndefined()) {
+        return "";
+    }
     std::string result;
     result = std::to_string(_dateTime.year())
             + "." + std::to_string(_dateTime.month()) +
@@ -459,6 +462,7 @@ bool ComputingQueryResponseXmlExport::exportAbstractDosage(const Tucuxi::Core::D
     TRY_EXPORT(ParallelDosageSequence);
     TRY_EXPORT(DosageSteadyState);
     TRY_EXPORT(DosageLoop);
+    TRY_EXPORT(DosageSteadyState);
     TRY_EXPORT(DosageRepeat);
     TRY_EXPORT(DosageSequence);
 
@@ -481,10 +485,13 @@ bool ComputingQueryResponseXmlExport::exportDosage(const Tucuxi::Core::DosageLoo
 
 bool ComputingQueryResponseXmlExport::exportDosage(const Tucuxi::Core::DosageSteadyState &_dosage, Tucuxi::Common::XmlNode &_rootNode)
 {
+    Tucuxi::Common::XmlNode dosageSteadyState = m_doc.createNode(
+                Tucuxi::Common::EXmlNodeType::Element, "dosageSteadyState");
+    _rootNode.addChild(dosageSteadyState);
 
-    addNode(_rootNode, "lastDoseTime", dateTimeToString(_dosage.getLastDoseTime()));
+    addNode(dosageSteadyState, "lastDoseDate", dateTimeToString(_dosage.getLastDoseTime()));
 
-    return true;
+    return exportAbstractDosage(*_dosage.getDosage(), dosageSteadyState);
 }
 
 bool ComputingQueryResponseXmlExport::exportDosage(const Tucuxi::Core::ParallelDosageSequence &_dosage, Tucuxi::Common::XmlNode &_rootNode)

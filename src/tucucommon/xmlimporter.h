@@ -29,6 +29,11 @@ public:
 
 protected:
 
+    enum class EmptynessAllowed {
+        AllowEmpty = 0,
+        DoNotAllowEmpty
+    };
+
     virtual const std::vector<string> &ignoredTags() const = 0;
 
     void setNodeError(Common::XmlNodeIterator _node);
@@ -57,7 +62,8 @@ protected:
     double getChildDouble(Common::XmlNodeIterator _rootIterator, const string& _childName);
     bool getChildBool(Common::XmlNodeIterator _rootIterator, const string& _childName);
     int getChildInt(Common::XmlNodeIterator _rootIterator, const string& _childName);
-    DateTime getChildDateTime(Common::XmlNodeIterator _rootIterator, const string& _childName);
+    DateTime getChildDateTime(Common::XmlNodeIterator _rootIterator, const string& _childName,
+                              EmptynessAllowed _allowEmpty = EmptynessAllowed::DoNotAllowEmpty);
     Duration getChildDuration(Common::XmlNodeIterator _rootIterator, const string& _childName);
     string getChildString(Common::XmlNodeIterator _rootIterator, const string& _childName);
 
