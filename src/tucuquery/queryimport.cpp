@@ -661,6 +661,10 @@ unique_ptr<Core::FormulationAndRoute> QueryImport::createFormulationAndRoute(Com
         absorptionModel = Core::AbsorptionModel::Intravascular;
     } else if (absorptionModelValue == "infusion") {
         absorptionModel = Core::AbsorptionModel::Infusion;
+    } else if (absorptionModelValue == "bolus") {
+        absorptionModel = Core::AbsorptionModel::Intravascular;
+    } else if (absorptionModelValue == "extra") {
+        absorptionModel = Core::AbsorptionModel::Extravascular;
     } else {
         // Throw error or manage error
         absorptionModel = Core::AbsorptionModel::Undefined;
