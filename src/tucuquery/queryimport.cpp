@@ -85,7 +85,7 @@ QueryImport::Status QueryImport::importDocument(
 
     // TODO try to see if I can catch a parsing exception.
 
-    static const string DRUG_ID_NODE_NAME = "queryId";
+    static const string QUERY_ID_NODE_NAME = "queryId";
     static const string CLIENT_ID_NODE_NAME = "clientId";
     static const string DATE_NODE_NAME = "date";
     static const string LANGUAGE_NODE_NAME = "language";
@@ -94,7 +94,7 @@ QueryImport::Status QueryImport::importDocument(
 
     Common::XmlNode root = _document.getRoot();
 
-    string drugId = root.getChildren(DRUG_ID_NODE_NAME)->getValue();
+    string queryId = root.getChildren(QUERY_ID_NODE_NAME)->getValue();
     string clientId = root.getChildren(CLIENT_ID_NODE_NAME)->getValue();
 
     Common::XmlNodeIterator dateIterator = root.getChildren(DATE_NODE_NAME);
@@ -121,7 +121,7 @@ QueryImport::Status QueryImport::importDocument(
 
 
     _query = new QueryData(
-                drugId,
+                queryId,
                 clientId,
                 date,
                 language,

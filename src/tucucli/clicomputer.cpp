@@ -44,6 +44,11 @@ QueryStatus CliComputer::compute(const std::string& _inputFileName,
     auto queryComputer = std::make_unique<QueryComputer>();
 
     std::ifstream ifs(_inputFileName);
+    if (ifs.fail()) {
+        logHelper.error("Could not open the input file: " + _inputFileName);
+        computingQueryResponse.setQueryStatus(QueryStatus::ImportError, "Could not open the input file: " + _inputFileName);
+        return computingQueryResponse.getQueryStatus();
+    }
     std::string xmlString((std::istreambuf_iterator<char>(ifs)),(std::istreambuf_iterator<char>()));
 
     queryComputer->compute(xmlString, computingQueryResponse);
