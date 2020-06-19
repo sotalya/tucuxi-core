@@ -227,7 +227,7 @@ ComputingStatus GeneralExtractor::generalExtractions(const ComputingTraitStandar
             }
         }
 
-        const DosageTimeRangeList& timeRanges = _request.getDrugTreatment().getDosageHistory().getDosageTimeRanges();
+        // const DosageTimeRangeList& timeRanges = _request.getDrugTreatment().getDosageHistory().getDosageTimeRanges();
 
 
         IntakeEvent *lastIntake = &(intakeSeries.back());
@@ -239,7 +239,7 @@ ComputingStatus GeneralExtractor::generalExtractions(const ComputingTraitStandar
 
             DateTime start = lastIntake->getEventTime() + lastIntake->getInterval();
             Value dose = 0.0;
-            Duration interval = _traits->getEnd() - timeRanges.back()->getEndDate();
+            Duration interval = _traits->getEnd() - (lastIntake->getEventTime() + lastIntake->getInterval());
             auto absorptionModel = lastIntake->getRoute();
 
             Duration infusionTime;
