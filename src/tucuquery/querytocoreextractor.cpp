@@ -47,6 +47,7 @@ QueryStatus QueryToCoreExtractor::extractComputingQuery(const QueryData &_query,
 
         if (drugModel == nullptr) {
             logHelper.error("Could not find a suitable drug model");
+            setErrorMessage("Could not find a suitable drug model");
             return QueryStatus::ImportError;
         }
         logHelper.info("Performing computation with drug model : {}, Request ID : {}", drugModel->getDrugModelId(), requestData->getRequestID());
