@@ -61,6 +61,8 @@ public:
     /// \param _date The duration since epoch (see documentation of std::chrono::time_point)
     DateTime(const Duration &_durationSinceEpoch);
 
+    static DateTime getUndefined();
+
     /// \brief Returns the date part of the object.
     date::year_month_day getDate() const;
 

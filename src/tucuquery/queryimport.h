@@ -81,12 +81,11 @@ protected:
     std::unique_ptr<Core::DosageTimeRange> createDosageTimeRange(Common::XmlNodeIterator& _dosageTimeRangeRootIterator);
     std::unique_ptr<Core::Dosage> createDosage(Common::XmlNodeIterator& _dosageRootIterator) ;
     std::unique_ptr<Core::DosageBounded> createDosageBounded(Common::XmlNodeIterator& _dosageBoundedRootIterator) ;
+    std::unique_ptr<Core::DosageBounded> createDosageBoundedFromIterator(Common::XmlNodeIterator& _dosageBoundedIterator);
     std::unique_ptr<Core::FormulationAndRoute> createFormulationAndRoute(Common::XmlNodeIterator& _formulationAndRouteRootIterator) ;
 
     // Methods to separate the creation of the requests
     std::unique_ptr<RequestData> createRequest(Common::XmlNodeIterator& _requestRootIterator);
-    std::unique_ptr<GraphData> createGraphData(Common::XmlNodeIterator& _graphDataRootIterator);
-    std::unique_ptr<Backextrapolation> createBackextrapolation(Common::XmlNodeIterator& _backextrapolationRootIterator);
 
     // Utilitary methods
     Tucuxi::Core::PercentileRanks getChildPercentileRanks(Common::XmlNodeIterator _rootIterator, const std::string& _childName);

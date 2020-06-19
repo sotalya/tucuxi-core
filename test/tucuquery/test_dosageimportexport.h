@@ -33,7 +33,7 @@ struct TestDosageImportExport : public fructose::test_base<TestDosageImportExpor
         std::cout << _testName << std::endl;
 
 
-        std::string importedXmlString1 =
+        testString(
         "<root>"
          "<treatment>"
           "<dosageHistory>"
@@ -61,29 +61,11 @@ struct TestDosageImportExport : public fructose::test_base<TestDosageImportExpor
             "</dosageTimeRange>"
            "</dosageHistory>"
           "</treatment>"
-         "</root>";
-
-
-        unique_ptr<Tucuxi::Query::Treatment> pTreatment1 = importXml(importedXmlString1);
-
-        std::string exportedXmlString1;
-
-        exportXml(std::move(pTreatment1), exportedXmlString1);
-
-        removeSpecialsCharacters(exportedXmlString1);
-
-        int comparison1 = importedXmlString1.compare(exportedXmlString1);
-
-        fructose_assert(comparison1 == 0);
-
-        if(comparison1 != 0)
-        {
-           printImportExportString(importedXmlString1, exportedXmlString1);
-        }
+         "</root>");
 
         //TEST2
 
-        std::string importedXmlString2 =
+        testString(
                 "<root>"
                 "<treatment>"
                 "<dosageHistory>"
@@ -133,30 +115,64 @@ struct TestDosageImportExport : public fructose::test_base<TestDosageImportExpor
                         "</dosageTimeRange>"
                 "</dosageHistory>"
             "</treatment>"
-            "</root>";
+            "</root>"
+                    );
 
-
-        unique_ptr<Tucuxi::Query::Treatment> pTreatment2 = importXml(importedXmlString2);
-
-        std::string exportedXmlString2;
-
-        exportXml(std::move(pTreatment2), exportedXmlString2);
-
-        removeSpecialsCharacters(exportedXmlString2);
-
-        int comparison2 = importedXmlString2.compare(exportedXmlString2);
-
-        fructose_assert(comparison2 == 0);
-
-        if(comparison2 != 0)
-        {
-           printImportExportString(importedXmlString2, exportedXmlString2);
-        }
-
-
+        // Test steady state
+        testString(
+        "<root>"
+         "<treatment>"
+          "<dosageHistory>"
+           "<dosageTimeRange>"
+            "<start/>"
+             "<end>2018-10-13T10:00:00</end>"
+             "<dosage>"
+              "<dosageSteadyState>"
+               "<lastDoseDate>2018-10-13T10:00:00</lastDoseDate>"
+               "<lastingDosage>"
+                "<interval>24:00:00</interval>"
+                "<dose>"
+                 "<value>400.000000</value>"
+                 "<unit>mg</unit>"
+                 "<infusionTimeInMinutes>30.000000</infusionTimeInMinutes>"
+                "</dose>"
+                "<formulationAndRoute>"
+                 "<formulation>parenteralSolution</formulation>"
+                 "<administrationName>foo bar</administrationName>"
+                 "<administrationRoute>intravenousDrip</administrationRoute>"
+                 "<absorptionModel>infusion</absorptionModel>"
+                "</formulationAndRoute>"
+               "</lastingDosage>"
+              "</dosageSteadyState>"
+             "</dosage>"
+            "</dosageTimeRange>"
+           "</dosageHistory>"
+          "</treatment>"
+         "</root>");
     }
 
 private:
+
+
+    void testString(std::string _xmlInput)
+    {
+        unique_ptr<Tucuxi::Query::Treatment> pTreatment1 = importXml(_xmlInput);
+
+        std::string exportedXmlString1;
+
+        exportXml(std::move(pTreatment1), exportedXmlString1);
+
+        removeSpecialsCharacters(exportedXmlString1);
+
+        int comparison1 = _xmlInput.compare(exportedXmlString1);
+
+        fructose_assert(comparison1 == 0);
+
+        if(comparison1 != 0)
+        {
+           printImportExportString(_xmlInput, exportedXmlString1);
+        }
+    }
 
     void printImportExportString(std::string &_importString, std::string &_exportString)
     {

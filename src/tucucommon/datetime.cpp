@@ -76,6 +76,11 @@ DateTime::DateTime(const Duration &_durationSinceEpoch)
     m_date = std::chrono::time_point<std::chrono::system_clock>(d);
 }
 
+DateTime DateTime::getUndefined()
+{
+    return DateTime(Duration(std::chrono::milliseconds(0)));
+}
+
 
 date::year_month_day DateTime::getDate() const
 {
