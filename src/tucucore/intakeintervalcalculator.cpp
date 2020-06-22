@@ -17,6 +17,10 @@ void PertinentTimesCalculatorStandard::calculateTimes(const IntakeEvent& _intake
               int _nbPoints,
               Eigen::VectorXd& _times)
 {
+    if (_nbPoints == 1) {
+        _times[0] = _intakeEvent.getInterval().toHours();
+        return;
+    }
     for(int i = 0; i < _nbPoints; i++) {
         _times[i] = static_cast<double>(i) / static_cast<double>(_nbPoints - 1) * static_cast<double>(_intakeEvent.getInterval().toHours());
     }

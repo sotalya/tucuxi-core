@@ -121,8 +121,6 @@ protected:
 ///           The steady state residual concentration is D
 ///           The steady state AUC is interval * D
 ///
-/// When using R=0, S=0 and A=0, the concentration is simply the dose
-///
 class PkAsymptotic : public IntakeIntervalCalculatorBase<1, PkAsymptoticExponentials>
 {
     INTAKEINTERVALCALCULATOR_UTILS(PkAsymptotic)

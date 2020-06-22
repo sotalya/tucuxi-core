@@ -18,10 +18,11 @@ enum class ConstantEliminationBolusCompartments : int { First };
 /// \ingroup TucuCore
 /// \brief Intake interval calculator for tests. It is a bolus with a linear slope
 ///
-/// 3 parameters:
+/// 4 parameters:
 ///     - A
 ///     - S
 ///     - R
+///     - M
 /// The equation is the following:
 /// C(t) = max(0.0 , (D + residual * R) * ( 1 - t * S) * M + A)
 /// It allows to test other components with a simple equation:
