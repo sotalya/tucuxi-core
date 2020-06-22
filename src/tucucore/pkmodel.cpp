@@ -193,6 +193,7 @@ bool defaultPopulate(PkModelCollection &_collection)
         sharedPkModel = std::make_shared<PkModel>("test.constantelimination");
 
         rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
+        rc &= sharedPkModel->addParameterList(AbsorptionModel::Extravascular, Tucuxi::Core::ConstantEliminationBolus::getParametersId());
 
         _collection.addPkModel(sharedPkModel);
     }
@@ -201,6 +202,7 @@ bool defaultPopulate(PkModelCollection &_collection)
         sharedPkModel = std::make_shared<PkModel>("test.pkasymptotic");
 
         rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, PkAsymptotic::getCreator());
+        rc &= sharedPkModel->addParameterList(AbsorptionModel::Extravascular, Tucuxi::Core::PkAsymptotic::getParametersId());
 
         _collection.addPkModel(sharedPkModel);
     }

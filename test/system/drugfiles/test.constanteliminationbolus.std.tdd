@@ -348,7 +348,7 @@
                     <formulationAndRoutes default='id0'>
                         <formulationAndRoute>
                             <formulationAndRouteId>id0</formulationAndRouteId>
-                            <formulation>parenteralSolution</formulation>
+                            <formulation>parenteral solution</formulation>
                             <administrationName>Name</administrationName>
                             <administrationRoute>oral</administrationRoute>
                             <absorptionModelId>extra</absorptionModelId>

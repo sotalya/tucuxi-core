@@ -28,6 +28,8 @@ protected:
 
 Value translateToUnit(Value _value, Unit _initialUnit, Unit _finalUnit);
 
+double translationFactor(Unit _initialUnit, Unit _finalUnit);
+
 
 } // namespace Core
 } // namespace Tucuxi
