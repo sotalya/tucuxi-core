@@ -8,11 +8,12 @@
 namespace Tucuxi {
 namespace Core {
 
-Value translateToUnit(Value _value, Unit _initialUnit, Unit _finalUnit)
+
+double translationFactor(Unit _initialUnit, Unit _finalUnit)
 {
     if (_initialUnit == _finalUnit)
     {
-        return _value;
+        return 1.0;
     }
 
     static std::map<std::string, Value> factorMap = {
@@ -31,9 +32,12 @@ Value translateToUnit(Value _value, Unit _initialUnit, Unit _finalUnit)
         return 0.0;
     }
 
-    return _value * factorMap[key];
+    return factorMap[key];
+}
 
-
+Value translateToUnit(Value _value, Unit _initialUnit, Unit _finalUnit)
+{
+    return _value * translationFactor(_initialUnit, _finalUnit);
 }
 
 
