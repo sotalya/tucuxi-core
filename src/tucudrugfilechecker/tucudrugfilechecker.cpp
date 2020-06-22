@@ -11,6 +11,7 @@
 #include "tucucore/drugmodelchecker.h"
 #include "tucucore/pkmodel.h"
 #include "tucucore/drugmodelimport.h"
+#include <fstream>
 
 cxxopts::ParseResult
 parse(int _argc, char* _argv[])
@@ -30,7 +31,7 @@ parse(int _argc, char* _argv[])
         options
                 .allow_unrecognised_options()
                 .add_options()
-                ("d,drugfile", "Drug file content", cxxopts::value<std::string>())
+                ("d,drugfile", "Drug file path", cxxopts::value<std::string>())
                 ("help", "Print help")
                 ;
 
@@ -43,9 +44,9 @@ parse(int _argc, char* _argv[])
             exit(0);
         }
 
-        std::string drugFileContent;
+        std::string drugFile;
         if (result.count("drugfile") > 0) {
-            drugFileContent = result["drugfile"].as<std::string>();
+            drugFile = result["drugfile"].as<std::string>();
         }
         else {
             std::cout << "The drug file content is mandatory" << std::endl << std::endl;
@@ -66,7 +67,7 @@ parse(int _argc, char* _argv[])
         Tucuxi::Core::DrugModel *dModel;
 
         Tucuxi::Core::DrugModelImport importer;
-        if (importer.importFromString(dModel, drugFileContent) != Tucuxi::Core::DrugModelImport::Status::Ok) {
+        if (importer.importFromFile(dModel, drugFile) != Tucuxi::Core::DrugModelImport::Status::Ok) {
             std::cout << "Can not import the drug file.\n\n" << importer.getErrorMessage() << std::endl;
             exit(3);
         }

@@ -140,7 +140,7 @@ public:
             specificDoses->addValue(DoseValue(400));
             specificDoses->addValue(DoseValue(500));
             specificDoses->addValue(DoseValue(600));
-            specificDoses->addValue(DoseValue(700));
+            specificDoses->addValue(DoseValue(700));§
             specificDoses->addValue(DoseValue(800));
             specificDoses->addValue(DoseValue(900));
             specificDoses->addValue(DoseValue(1000));
