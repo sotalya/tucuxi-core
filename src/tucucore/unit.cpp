@@ -16,8 +16,15 @@ double translationFactor(Unit _initialUnit, Unit _finalUnit)
         return 1.0;
     }
 
-    static std::map<std::string, Value> factorMap = {
+    static const std::map<std::string, Value> factorMap = {
         {"h-m", 60.0},
+        {"m-h", 1.0 / 60.0},
+        {"m-s", 60.0},
+        {"s-m", 1.0 / 60.0},
+        {"kg-g", 1000.0},
+        {"g-kg", 0.001},
+        {"g-mg", 1000.0},
+        {"mg-g", 0.001},
         {"mg/l-ug/l", 1000.0},
         {"ug/l-mg/l", 0.001},
         {"mg*h/l-ug*h/l", 1000.0},
@@ -32,7 +39,7 @@ double translationFactor(Unit _initialUnit, Unit _finalUnit)
         return 0.0;
     }
 
-    return factorMap[key];
+    return factorMap.at(key);
 }
 
 Value translateToUnit(Value _value, Unit _initialUnit, Unit _finalUnit)
