@@ -32,8 +32,8 @@
         <comments/>
     </head>
     <drugModel>
-        <drugId>drugTest</drugId>
-        <drugModelId>test.constanteliminationbolus.std.drugid</drugModelId>
+        <drugId>test.constanteliminationbolus.std.drugid</drugId>
+        <drugModelId>test.constanteliminationbolus.std</drugModelId>
         <domain>
             <description/>
             <constraints/>
@@ -348,9 +348,9 @@
                     <formulationAndRoutes default='id0'>
                         <formulationAndRoute>
                             <formulationAndRouteId>id0</formulationAndRouteId>
-                            <formulation>parenteral solution</formulation>
+                            <formulation>parenteralSolution</formulation>
                             <administrationName>Name</administrationName>
-                            <administrationRoute>transdermal</administrationRoute>
+                            <administrationRoute>oral</administrationRoute>
                             <absorptionModelId>extra</absorptionModelId>
                             <dosages>
                                 <analyteConversions>
