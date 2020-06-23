@@ -31,7 +31,8 @@ parse(int _argc, char* _argv[])
         options
                 .allow_unrecognised_options()
                 .add_options()
-                ("d,drugfile", "Drug file path", cxxopts::value<std::string>())
+                ("d,drugfilecontent", "Drug file content", cxxopts::value<std::string>())
+                ("f,drugfilepath", "Drug file path", cxxopts::value<std::string>())
                 ("help", "Print help")
                 ;
 
@@ -44,15 +45,21 @@ parse(int _argc, char* _argv[])
             exit(0);
         }
 
-        std::string drugFile;
-        if (result.count("drugfile") > 0) {
-            drugFile = result["drugfile"].as<std::string>();
+        std::string drugFileContent;
+        std::string drugFilePath;
+        if (result.count("drugfilecontent") > 0) {
+            drugFileContent = result["drugfilecontent"].as<std::string>();
+        }
+        else if(result.count("drugfilepath") > 0){
+            drugFilePath = result["drugfilepath"].as<std::string>();
         }
         else {
-            std::cout << "The drug file content is mandatory" << std::endl << std::endl;
+            std::cout << "The drug file content of path is mandatory" << std::endl << std::endl;
             std::cout << options.help({"", "Group"}) << std::endl;
             exit(0);
         }
+
+
 
 
 //        Tucuxi::Common::LoggerHelper::init(logFileName);
@@ -67,10 +74,23 @@ parse(int _argc, char* _argv[])
         Tucuxi::Core::DrugModel *dModel;
 
         Tucuxi::Core::DrugModelImport importer;
-        if (importer.importFromFile(dModel, drugFile) != Tucuxi::Core::DrugModelImport::Status::Ok) {
-            std::cout << "Can not import the drug file.\n\n" << importer.getErrorMessage() << std::endl;
-            exit(3);
+
+        if(drugFileContent.empty())
+        {
+            if (importer.importFromFile(dModel, drugFilePath) != Tucuxi::Core::DrugModelImport::Status::Ok) {
+                std::cout << "Can not import the drug file.\n\n" << importer.getErrorMessage() << std::endl;
+                exit(3);
+            }
         }
+        else{
+            if (importer.importFromString(dModel, drugFileContent) != Tucuxi::Core::DrugModelImport::Status::Ok) {
+                std::cout << "Can not import the drug file.\n\n" << importer.getErrorMessage() << std::endl;
+                exit(3);
+            }
+
+        }
+
+
 
 
         Tucuxi::Core::DrugModelChecker checker;
