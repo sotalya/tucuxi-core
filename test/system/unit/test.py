@@ -4,6 +4,9 @@ from argparse import ArgumentParser
 from colorama import init
 from tucuxi.processing.tucuxirun import *
 import filecmp
+import sys
+from os.path import isfile, join
+from os import listdir
 
 
 parser = ArgumentParser(description='Tucuxi system test concerning data unit.',
@@ -70,18 +73,25 @@ def get_query_responses(args, queries):
 
 def get_queries_path(query_responses):
     global app_path
+    output_folder_name = "output"
+    input_folder_name = "in_tqf"
 
-    for r, d, f in os.walk(app_path):
-        for i, dir1 in enumerate(d):
-            for r1, d1, f1 in os.walk(os.path.join(r, dir1)):
-                for i1, dir2 in enumerate(d1):
-                    if dir2 == "in_tqf":
-                        query_responses.append([[]])
-                        for r2, d2, f2 in os.walk(os.path.join(r1, dir2)):
-                            for file in f2:
-                                query_responses[i][i1].append(os.path.join(r2, file))
-                    else:
-                        query_responses[i].append(os.path.join(r1, dir2))
+    list_test_folder = [f.name for f in os.scandir(app_path) if f.is_dir()]
+    for ti, testFolder in enumerate(list_test_folder):
+        query_responses.append([[]])
+        path_to_test_folder = os.path.join(app_path, testFolder)
+        path_to_queries = os.path.join(path_to_test_folder, input_folder_name)
+        if not os.path.exists(path_to_queries):
+            print(Fore.RED + "Missing '{miss}' folder in {test}".format(miss=input_folder_name, test=testFolder))
+            sys.exit(1)
+        path_to_output = os.path.join(path_to_test_folder, output_folder_name)
+        if not os.path.exists(path_to_output):
+            os.mkdir(path_to_output)
+
+        list_files = [f for f in listdir(path_to_queries) if isfile(join(path_to_queries, f))]
+        query_responses[ti].append(os.path.join(app_path, testFolder, output_folder_name))
+        for fi, file in enumerate(list_files):
+            query_responses[ti][0].append(os.path.join(path_to_queries, file))
 
 
 def main():

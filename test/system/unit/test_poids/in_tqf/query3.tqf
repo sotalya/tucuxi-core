@@ -1,81 +1,0 @@
-<?xml version="1.0" ?>
-<query xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.0" xsi:noNamespaceSchemaLocation="xml_query.xsd">
-	<queryId>test.constanteliminationbolus.std.query</queryId>
-	<clientId>1</clientId>
-	<date>2020-06-23T08:21:04</date>
-	<!-- Date the xml has been sent -->
-	<language>en</language>
-	<drugTreatment>
-		<!-- All the information regarding the patient -->
-		<patient>
-			<covariates>
-				<covariate>
-					<covariateId>covA</covariateId>
-					<date>2020-06-23T08:00:00</date>
-					<value>12000</value>
-					<unit>g</unit>
-					<dataType>double</dataType>
-					<nature>continuous</nature>
-				</covariate>
-				<covariate>					<covariateId>covM</covariateId>					<date>2020-06-23T08:00:00</date>					<value>140</value>					<unit>cm</unit>					<dataType>double</dataType>					<nature>continuous</nature>				</covariate>				<covariate>					<covariateId>covR</covariateId>					<date>2020-06-23T08:00:00</date>					<value>440</value>					<unit>mg/l</unit>					<dataType>double</dataType>					<nature>continuous</nature>				</covariate>				<covariate>					<covariateId>covS</covariateId>					<date>2020-06-23T08:00:00</date>					<value>6</value>					<unit>h</unit>					<dataType>double</dataType>					<nature>continuous</nature>				</covariate>
-			</covariates>
-		</patient>
-		<!-- List of the drugs informations we have concerning the patient -->
-		<drugs>
-			<!-- All the information regarding the drug -->
-			<drug>
-				<drugId>test.constanteliminationbolus.std.drugid</drugId>
-				<activePrinciple>veryStrongDrug</activePrinciple>
-				<brandName>Empty</brandName>
-				<atc>Empty</atc>
-				<!-- All the information regarding the treatment -->
-				<treatment>
-					<dosageHistory>
-						<dosageTimeRange>
-							<start>2020-06-21T08:00:00</start>
-							<end>2020-06-23T08:00:00</end>
-							<dosage>
-								<dosageLoop>
-									<lastingDosage>
-										<interval>24:00:00</interval>
-										<dose>
-											<value>400</value>
-											<unit>mg</unit>
-											<infusionTimeInMinutes>30</infusionTimeInMinutes>
-										</dose>
-										<formulationAndRoute>
-											<formulation>parenteral solution</formulation>
-											<administrationName>foo bar</administrationName>
-											<administrationRoute>oral</administrationRoute>
-											<absorptionModel>extra</absorptionModel>
-										</formulationAndRoute>
-									</lastingDosage>
-								</dosageLoop>
-							</dosage>
-						</dosageTimeRange>
-					</dosageHistory>
-				</treatment>
-				<!-- Samples history -->
-				<samples>
-					<sample>
-						<sampleId>1</sampleId>
-						<sampleDate>2020-06-15T08:00:00</sampleDate>
-						<concentrations>
-							<concentration>
-								<analyteId>tobramycin</analyteId>
-								<value>9.7</value>
-								<unit>mg/l</unit>
-							</concentration>
-						</concentrations>
-					</sample>
-				</samples>
-			</drug>
-		</drugs>
-	</drugTreatment>
-	<!-- List of the requests we want the server to take care of -->
-	<requests>
-		<request>
-			<requestId>test.constanteliminationbolus.std.prediction</requestId>			<drugId>test.constanteliminationbolus.std.drugid</drugId>			<drugModelId>test.constanteliminationbolus.std</drugModelId>			<predictionTraits>				<computingOption>					<parametersType>aposteriori</parametersType>					<compartmentOption>allActiveMoieties</compartmentOption>					<retrieveStatistics>true</retrieveStatistics>					<retrieveParameters>false</retrieveParameters>					<retrieveCovariates>false</retrieveCovariates>				</computingOption>				<nbPointsPerHour>20</nbPointsPerHour>				<dateInterval>					<start>2020-06-23T08:00:00</start>					<end>2020-06-24T08:00:00</end>				</dateInterval>			</predictionTraits>
-		</request>
-	</requests>
-</query>
