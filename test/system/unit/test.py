@@ -52,10 +52,11 @@ def compare_query_responses(queries):
     once = True
     print('\nRunning responses comparison ...')
     for i, test in enumerate(queries):
+        test_folder_name = test[1].split(os.path.sep)[-2]
         for r, d, f in os.walk(test[1]):
             for file in f:
                 if not filecmp.cmp(os.path.join(r, file), os.path.join(r, f[0]), shallow=False) and once:
-                    print(Fore.RED + "Test{} : queries responses not equal".format(i + 1))
+                    print(Fore.RED + "{} : queries responses not equal".format(test_folder_name))
                     once = False
         once = True
     print("Comparisons finished")

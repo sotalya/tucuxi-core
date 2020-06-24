@@ -229,28 +229,24 @@
                                         <unit>kg</unit>
                                         <parameterValue>
                                             <standardValue>1</standardValue>
+											<aprioriComputation>
+												<softFormula>
+													<inputs>
+														<input>
+															<id>covA</id>
+															<type>double</type>
+														</input>
+													</inputs>
+													<code>
+														<![CDATA[return covA;]]>
+													</code>
+												</softFormula>
+												<comments/>
+											</aprioriComputation>
                                         </parameterValue>
                                         <bsv>
                                             <bsvType>none</bsvType>
                                         </bsv>
-                                        <validation>
-                                            <errorMessage/>
-                                            <operation>
-                                                <softFormula>
-                                                    <inputs>
-                                                        <input>
-                                                            <id>covA</id>
-                                                            <type>double</type>
-                                                        </input>
-                                                    </inputs>
-                                                    <code>
-                                                        <![CDATA[return covA;]]>
-                                                    </code>
-                                                </softFormula>
-                                                <comments/>
-                                            </operation>
-                                            <comments/>
-                                        </validation>
                                         <comments/>
                                     </parameter>
                                     <parameter>
@@ -258,28 +254,24 @@
                                         <unit>cm</unit>
                                         <parameterValue>
                                             <standardValue>1</standardValue>
+											<aprioriComputation>
+												<softFormula>
+													<inputs>
+														<input>
+															<id>covM</id>
+															<type>double</type>
+														</input>
+													</inputs>
+													<code>
+														<![CDATA[return covM;]]>
+													</code>
+												</softFormula>
+												<comments/>
+											</aprioriComputation>
                                         </parameterValue>
                                         <bsv>
                                             <bsvType>none</bsvType>
                                         </bsv>
-                                        <validation>
-                                            <errorMessage/>
-                                            <operation>
-                                                <softFormula>
-                                                    <inputs>
-                                                        <input>
-                                                            <id>covM</id>
-                                                            <type>double</type>
-                                                        </input>
-                                                    </inputs>
-                                                    <code>
-                                                        <![CDATA[return covM;]]>
-                                                    </code>
-                                                </softFormula>
-                                                <comments/>
-                                            </operation>
-                                            <comments/>
-                                        </validation>
                                         <comments/>
                                     </parameter>
 									<parameter>
@@ -287,28 +279,24 @@
                                         <unit>mg/l</unit>
                                         <parameterValue>
                                             <standardValue>1</standardValue>
+											<aprioriComputation>
+												<softFormula>
+													<inputs>
+														<input>
+															<id>covR</id>
+															<type>double</type>
+														</input>
+													</inputs>
+													<code>
+														<![CDATA[return covR;]]>
+													</code>
+												</softFormula>
+												<comments/>
+											</aprioriComputation>
                                         </parameterValue>
                                         <bsv>
                                             <bsvType>none</bsvType>
                                         </bsv>
-                                        <validation>
-                                            <errorMessage/>
-                                            <operation>
-                                                <softFormula>
-                                                    <inputs>
-                                                        <input>
-                                                            <id>covR</id>
-                                                            <type>double</type>
-                                                        </input>
-                                                    </inputs>
-                                                    <code>
-                                                        <![CDATA[return covR;]]>
-                                                    </code>
-                                                </softFormula>
-                                                <comments/>
-                                            </operation>
-                                            <comments/>
-                                        </validation>
                                         <comments/>
                                     </parameter>
 									<parameter>
@@ -316,28 +304,24 @@
                                         <unit>h</unit>
                                         <parameterValue>
                                             <standardValue>1</standardValue>
+											<aprioriComputation>
+												<softFormula>
+													<inputs>
+														<input>
+															<id>covS</id>
+															<type>double</type>
+														</input>
+													</inputs>
+													<code>
+														<![CDATA[return covS;]]>
+													</code>
+												</softFormula>
+												<comments/>
+											</aprioriComputation>
                                         </parameterValue>
                                         <bsv>
                                             <bsvType>none</bsvType>
                                         </bsv>
-                                        <validation>
-                                            <errorMessage/>
-                                            <operation>
-                                                <softFormula>
-                                                    <inputs>
-                                                        <input>
-                                                            <id>covS</id>
-                                                            <type>double</type>
-                                                        </input>
-                                                    </inputs>
-                                                    <code>
-                                                        <![CDATA[return covS;]]>
-                                                    </code>
-                                                </softFormula>
-                                                <comments/>
-                                            </operation>
-                                            <comments/>
-                                        </validation>
                                         <comments/>
                                     </parameter>
                                 </parameters>

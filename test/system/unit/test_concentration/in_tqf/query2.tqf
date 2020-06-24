@@ -9,38 +9,7 @@
 		<!-- All the information regarding the patient -->
 		<patient>
 			<covariates>
-				<covariate>
-					<covariateId>covA</covariateId>
-					<date>2020-06-23T08:00:00</date>
-					<value>12</value>
-					<unit>kg</unit>
-					<dataType>double</dataType>
-					<nature>continuous</nature>
-				</covariate>
-				<covariate>
-					<covariateId>covM</covariateId>
-					<date>2020-06-23T08:00:00</date>
-					<value>140</value>
-					<unit>cm</unit>
-					<dataType>double</dataType>
-					<nature>continuous</nature>
-				</covariate>
-				<covariate>
-					<covariateId>covR</covariateId>
-					<date>2020-06-23T08:00:00</date>
-					<value>440</value>
-					<unit>mg/l</unit>
-					<dataType>double</dataType>
-					<nature>continuous</nature>
-				</covariate>
-				<covariate>
-					<covariateId>covS</covariateId>
-					<date>2020-06-23T08:00:00</date>
-					<value>6</value>
-					<unit>h</unit>
-					<dataType>double</dataType>
-					<nature>continuous</nature>
-				</covariate>
+				<covariate>					<covariateId>covA</covariateId>					<date>2020-06-23T08:00:00</date>					<value>12000</value>					<unit>g</unit>					<dataType>double</dataType>					<nature>continuous</nature>				</covariate>				<covariate>					<covariateId>covM</covariateId>					<date>2020-06-23T08:00:00</date>					<value>140</value>					<unit>cm</unit>					<dataType>double</dataType>					<nature>continuous</nature>				</covariate>				<covariate>					<covariateId>covR</covariateId>					<date>2020-06-23T08:00:00</date>					<value>400000</value>					<unit>ug/l</unit>					<dataType>double</dataType>					<nature>continuous</nature>				</covariate>				<covariate>					<covariateId>covS</covariateId>					<date>2020-06-23T08:00:00</date>					<value>6</value>					<unit>h</unit>					<dataType>double</dataType>					<nature>continuous</nature>				</covariate>
 			</covariates>
 		</patient>
 		<!-- List of the drugs informations we have concerning the patient -->
@@ -98,7 +67,7 @@
 	<!-- List of the requests we want the server to take care of -->
 	<requests>
 		<request>
-			<requestId>test.constanteliminationbolus.std.prediction</requestId>			<drugId>test.constanteliminationbolus.std.drugid</drugId>			<drugModelId>test.constanteliminationbolus.std</drugModelId>			<predictionTraits>				<computingOption>					<parametersType>aposteriori</parametersType>					<compartmentOption>allActiveMoieties</compartmentOption>					<retrieveStatistics>true</retrieveStatistics>					<retrieveParameters>true</retrieveParameters>					<retrieveCovariates>false</retrieveCovariates>				</computingOption>				<nbPointsPerHour>20</nbPointsPerHour>				<dateInterval>					<start>2020-06-23T08:00:00</start>					<end>2020-06-24T08:00:00</end>				</dateInterval>			</predictionTraits>
+			<requestId>test.constanteliminationbolus.std.prediction</requestId>			<drugId>test.constanteliminationbolus.std.drugid</drugId>			<drugModelId>test.constanteliminationbolus.std</drugModelId>			<predictionTraits>				<computingOption>					<parametersType>aposteriori</parametersType>					<compartmentOption>allActiveMoieties</compartmentOption>					<retrieveStatistics>true</retrieveStatistics>					<retrieveParameters>false</retrieveParameters>					<retrieveCovariates>false</retrieveCovariates>				</computingOption>				<nbPointsPerHour>20</nbPointsPerHour>				<dateInterval>					<start>2020-06-23T08:00:00</start>					<end>2020-06-24T08:00:00</end>				</dateInterval>			</predictionTraits>
 		</request>
 	</requests>
 </query>
