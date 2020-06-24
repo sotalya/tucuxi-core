@@ -12,7 +12,7 @@
 				<covariate>
 					<covariateId>covA</covariateId>
 					<date>2020-06-23T08:00:00</date>
-					<value>80000</value>
+					<value>100</value>
 					<unit>g</unit>
 					<dataType>double</dataType>
 					<nature>continuous</nature>
@@ -39,7 +39,7 @@
 									<lastingDosage>
 										<interval>24:00:00</interval>
 										<dose>
-											<value>560</value>
+											<value>400</value>
 											<unit>mg</unit>
 											<infusionTimeInMinutes>30</infusionTimeInMinutes>
 										</dose>
@@ -75,7 +75,7 @@
 	<!-- List of the requests we want the server to take care of -->
 	<requests>
 		<request>
-			<requestId>test.constanteliminationbolus.std.prediction</requestId>			<drugId>test.constanteliminationbolus.std.drugid</drugId>			<drugModelId>test.constanteliminationbolus.std</drugModelId>			<predictionTraits>				<computingOption>					<parametersType>aposteriori</parametersType>					<compartmentOption>allActiveMoieties</compartmentOption>					<retrieveStatistics>true</retrieveStatistics>					<retrieveParameters>true</retrieveParameters>					<retrieveCovariates>false</retrieveCovariates>				</computingOption>				<nbPointsPerHour>20</nbPointsPerHour>				<dateInterval>					<start>2020-06-22T08:00:00</start>					<end>2020-06-23T08:00:00</end>				</dateInterval>			</predictionTraits>
+			<requestId>test.constanteliminationbolus.std.prediction</requestId>			<drugId>test.constanteliminationbolus.std.drugid</drugId>			<drugModelId>test.constanteliminationbolus.std</drugModelId>			<predictionTraits>				<computingOption>					<parametersType>aposteriori</parametersType>					<compartmentOption>allActiveMoieties</compartmentOption>					<retrieveStatistics>true</retrieveStatistics>					<retrieveParameters>true</retrieveParameters>					<retrieveCovariates>false</retrieveCovariates>				</computingOption>				<nbPointsPerHour>20</nbPointsPerHour>				<dateInterval>					<start>2020-06-23T08:00:00</start>					<end>2020-06-24T08:00:00</end>				</dateInterval>			</predictionTraits>
 		</request>
 	</requests>
 </query>
