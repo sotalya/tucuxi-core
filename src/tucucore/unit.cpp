@@ -21,6 +21,7 @@ double translationFactor(Unit _initialUnit, Unit _finalUnit)
         {"m-h", 1.0 / 60.0},
         {"m-s", 60.0},
         {"s-m", 1.0 / 60.0},
+        {"", 1},
         {"kg-g", 1000.0},
         {"g-kg", 0.001},
         {"g-mg", 1000.0},

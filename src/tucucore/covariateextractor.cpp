@@ -130,6 +130,8 @@ CovariateExtractor::CovariateExtractor(const CovariateDefinitions &_defaults,
                 m_pvValued.insert(std::pair<std::string, std::vector<pvIterator_t>>((*it)->getId(),
                                                                                     std::vector<pvIterator_t>()));
             }
+
+//            double v = translateToUnit(std::stod((*it)->getValue()),(*it)->getUnit(), Unit("m"));
             m_pvValued.at((*it)->getId()).push_back(it);
         }
 

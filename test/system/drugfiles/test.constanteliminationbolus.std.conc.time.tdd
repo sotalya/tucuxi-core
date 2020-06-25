@@ -32,75 +32,40 @@
         <comments/>
     </head>
     <drugModel>
-        <drugId>test.constanteliminationbolus.std.drugid</drugId>
-        <drugModelId>test.constanteliminationbolus.std</drugModelId>
+        <drugId>test.constanteliminationbolus.std.conc.time.drugid</drugId>
+        <drugModelId>test.constanteliminationbolus.std.conc.time</drugModelId>
         <domain>
             <description/>
             <constraints/>
         </domain>
         <covariates>
-            <covariate>
-                <covariateId>covA</covariateId>
-                <covariateName/>
-                <description/>
-                <unit>kg</unit>
-                <covariateType>standard</covariateType>
-                <dataType>double</dataType>
-                <interpolationType>linear</interpolationType>
-                <refreshPeriod>
-                    <unit>d</unit>
-                    <value>30</value>
-                </refreshPeriod>
-                <covariateValue>
-                    <standardValue>1</standardValue>
-                </covariateValue>
-                <validation>
-                    <errorMessage/>
-                    <operation>
-                        <softFormula>
-                            <inputs>
-                                <input>
-                                    <id>covA</id>
-                                    <type>double</type>
-                                </input>
-                            </inputs>
-                            <code>
-                                <![CDATA[return ((covA>= 50) && (covA<= 150));]]>
-                                </code>
-                            </softFormula>
-                            <comments/>
-                        </operation>
-                        <comments/>
-                    </validation>
-                    <comments/>
-                </covariate>
-                <covariate>
-                    <covariateId>covM</covariateId>
-                    <covariateName/>
-                    <description/>
-                    <unit>cm</unit>
-                    <covariateType>standard</covariateType>
-                    <dataType>double</dataType>
-                    <interpolationType>linear</interpolationType>
-                    <refreshPeriod>
-                        <unit>d</unit>
-                        <value>30</value>
-                    </refreshPeriod>
-                    <covariateValue>
-                        <standardValue>1</standardValue>
-                    </covariateValue>
-                    <validation>
-                        <errorMessage/>
-                        <operation>
-                            <softFormula>
-                                <inputs>
-                                    <input>
-                                        <id>covM</id>
-                                        <type>double</type>
-                                    </input>
-                                </inputs>
-                                <code>
-                                    <![CDATA[return ((covM > 100) && (covM < 200))]]>
+                    <covariate>
+                        <covariateId>covA</covariateId>
+                        <covariateName/>
+                        <description/>
+                        <unit>mg/l</unit>
+                        <covariateType>standard</covariateType>
+                        <dataType>double</dataType>
+                        <interpolationType>linear</interpolationType>
+                        <refreshPeriod>
+                            <unit>d</unit>
+                            <value>30</value>
+                        </refreshPeriod>
+                        <covariateValue>
+                            <standardValue>1</standardValue>
+                        </covariateValue>
+                        <validation>
+                            <errorMessage/>
+                            <operation>
+                                <softFormula>
+                                    <inputs>
+                                        <input>
+                                            <id>covA</id>
+                                            <type>double</type>
+                                        </input>
+                                    </inputs>
+                                    <code>
+                                        <![CDATA[return (covA > 0)]]>
                                     </code>
                                 </softFormula>
                                 <comments/>
@@ -110,10 +75,45 @@
                         <comments/>
                     </covariate>
                     <covariate>
+                        <covariateId>covM</covariateId>
+                        <covariateName/>
+                        <description/>
+                        <unit>h</unit>
+                        <covariateType>standard</covariateType>
+                        <dataType>double</dataType>
+                        <interpolationType>linear</interpolationType>
+                        <refreshPeriod>
+                            <unit>d</unit>
+                            <value>30</value>
+                        </refreshPeriod>
+                        <covariateValue>
+                            <standardValue>1</standardValue>
+                        </covariateValue>
+                        <validation>
+                            <errorMessage/>
+                            <operation>
+                                <softFormula>
+                                    <inputs>
+                                        <input>
+                                            <id>covM</id>
+                                            <type>double</type>
+                                        </input>
+                                    </inputs>
+                                    <code>
+                                        <![CDATA[return ((1/covM) > 1)]]>
+                                        </code>
+                                    </softFormula>
+                                    <comments/>
+                                </operation>
+                                <comments/>
+                            </validation>
+                            <comments/>
+                        </covariate>
+						 <covariate>
                         <covariateId>covR</covariateId>
                         <covariateName/>
                         <description/>
-                        <unit>mg/l</unit>
+                        <unit>kg</unit>
                         <covariateType>standard</covariateType>
                         <dataType>double</dataType>
                         <interpolationType>linear</interpolationType>
@@ -135,7 +135,7 @@
                                         </input>
                                     </inputs>
                                     <code>
-                                        <![CDATA[return (covR > 0)]]>
+                                        <![CDATA[return (true);]]>
                                     </code>
                                 </softFormula>
                                 <comments/>
@@ -148,7 +148,7 @@
                         <covariateId>covS</covariateId>
                         <covariateName/>
                         <description/>
-                        <unit>h</unit>
+                        <unit>cm</unit>
                         <covariateType>standard</covariateType>
                         <dataType>double</dataType>
                         <interpolationType>linear</interpolationType>
@@ -157,7 +157,7 @@
                             <value>30</value>
                         </refreshPeriod>
                         <covariateValue>
-                            <standardValue>0.5</standardValue>
+                            <standardValue>1</standardValue>
                         </covariateValue>
                         <validation>
                             <errorMessage/>
@@ -170,7 +170,7 @@
                                         </input>
                                     </inputs>
                                     <code>
-                                        <![CDATA[return ((1/covS) < 1)]]>
+                                        <![CDATA[return (true);]]>
                                         </code>
                                     </softFormula>
                                     <comments/>
@@ -226,7 +226,7 @@
                                 <parameters>
                                     <parameter>
                                         <parameterId>TestA</parameterId>
-                                        <unit>kg</unit>
+                                        <unit>mg/l</unit>
                                         <parameterValue>
                                             <standardValue>1</standardValue>
 											<aprioriComputation>
@@ -251,7 +251,7 @@
                                     </parameter>
                                     <parameter>
                                         <parameterId>TestM</parameterId>
-                                        <unit>cm</unit>
+                                        <unit>h</unit>
                                         <parameterValue>
                                             <standardValue>1</standardValue>
 											<aprioriComputation>

@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <query xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.0" xsi:noNamespaceSchemaLocation="xml_query.xsd">
-	<queryId>test.constanteliminationbolus.std.query</queryId>
-	<clientId>1</clientId>
+	<queryId>test.constanteliminationbolus.std.weigt.heigt.query</queryId>
+	<clientId>2</clientId>
 	<date>2020-06-23T08:21:04</date>
 	<!-- Date the xml has been sent -->
 	<language>en</language>
@@ -9,21 +9,14 @@
 		<!-- All the information regarding the patient -->
 		<patient>
 			<covariates>
-				<covariate>
-					<covariateId>covA</covariateId>
-					<date>2020-06-23T08:00:00</date>
-					<value>21600</value>
-					<unit>s</unit>
-					<dataType>double</dataType>
-					<nature>continuous</nature>
-				</covariate>
+				<covariate>					<covariateId>covM</covariateId>					<date>2020-06-23T08:00:00</date>					<value>1.40</value>					<unit>m</unit>					<dataType>double</dataType>					<nature>linear</nature>				</covariate>
 			</covariates>
 		</patient>
 		<!-- List of the drugs informations we have concerning the patient -->
 		<drugs>
 			<!-- All the information regarding the drug -->
 			<drug>
-				<drugId>test.constanteliminationbolus.std.drugid</drugId>
+				<drugId>test.constanteliminationbolus.std.weigt.heigt.drugid</drugId>
 				<activePrinciple>veryStrongDrug</activePrinciple>
 				<brandName>Empty</brandName>
 				<atc>Empty</atc>
@@ -74,7 +67,7 @@
 	<!-- List of the requests we want the server to take care of -->
 	<requests>
 		<request>
-			<requestId>test.constanteliminationbolus.std.prediction</requestId>			<drugId>test.constanteliminationbolus.std.drugid</drugId>			<drugModelId>test.constanteliminationbolus.std</drugModelId>			<predictionTraits>				<computingOption>					<parametersType>aposteriori</parametersType>					<compartmentOption>allActiveMoieties</compartmentOption>					<retrieveStatistics>true</retrieveStatistics>					<retrieveParameters>false</retrieveParameters>					<retrieveCovariates>false</retrieveCovariates>				</computingOption>				<nbPointsPerHour>20</nbPointsPerHour>				<dateInterval>					<start>2020-06-23T08:00:00</start>					<end>2020-06-24T08:00:00</end>				</dateInterval>			</predictionTraits>
+			<requestId>test.constanteliminationbolus.std.weigt.heigt.prediction</requestId>			<drugId>test.constanteliminationbolus.std.weigt.heigt.drugid</drugId>			<drugModelId>test.constanteliminationbolus.std.weigt.heigt</drugModelId>			<predictionTraits>				<computingOption>					<parametersType>aposteriori</parametersType>					<compartmentOption>allActiveMoieties</compartmentOption>					<retrieveStatistics>true</retrieveStatistics>					<retrieveParameters>false</retrieveParameters>					<retrieveCovariates>false</retrieveCovariates>				</computingOption>				<nbPointsPerHour>20</nbPointsPerHour>				<dateInterval>					<start>2020-06-22T08:00:00</start>					<end>2020-06-23T08:00:00</end>				</dateInterval>			</predictionTraits>
 		</request>
 	</requests>
 </query>
