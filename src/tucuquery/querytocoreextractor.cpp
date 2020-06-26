@@ -99,7 +99,9 @@ Tucuxi::Core::Targets QueryToCoreExtractor::extractTargets(const QueryData &_que
                         td->getBest(),
                         td->getMax(),
                         td->getInefficacyAlarm(),
-                        td->getToxicityAlarm()
+                        td->getToxicityAlarm(),
+                        td->getMicValue(),
+                        td->getMicUnit()
                         )
                     );
     }

@@ -128,10 +128,13 @@ TargetData::TargetData(
         double _min,
         double _best,
         double _max,
-        double _toxicityAlarm
+        double _toxicityAlarm,
+        string& _micUnit,
+        double _micValue
 ) : m_activeMoietyID(_activeMoietyID), m_unit(_unit),
     m_inefficacyAlarm(_inefficacyAlarm), m_min(_min), m_best(_best),
-    m_max(_max), m_toxicityAlarm(_toxicityAlarm)
+    m_max(_max), m_toxicityAlarm(_toxicityAlarm), m_micUnit(_micUnit),
+    m_micValue(_micValue)
 {
     if (_targetType == "peak") {
         m_targetType = Core::TargetType::Peak;
@@ -192,6 +195,16 @@ double TargetData::getMax() const
 double TargetData::getToxicityAlarm() const
 {
     return m_toxicityAlarm;
+}
+
+string TargetData::getMicUnit() const
+{
+    return m_micUnit;
+}
+
+double TargetData::getMicValue() const
+{
+    return m_micValue;
 }
 
 // DrugData class

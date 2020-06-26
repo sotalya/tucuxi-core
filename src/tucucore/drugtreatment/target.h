@@ -73,6 +73,17 @@ public:
            const Tucuxi::Common::Duration &_tbest,
            const Tucuxi::Common::Duration &_tmax);
 
+    Target(ActiveMoietyId _activeMoietyId,
+           TargetType _type,
+           Unit _unit,
+           Value _vmin,
+           Value _vbest,
+           Value _vmax,
+           Value _inefficacyAlarm,
+           Value _toxicityAlarm,
+           Value _mic,
+           Unit _micUnit);
+
 
     ActiveMoietyId getActiveMoietyId() const { return m_activeMoietyId;}
 

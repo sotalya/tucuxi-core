@@ -1,0 +1,50 @@
+<?xml version="1.0" ?>
+<query xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.0" xsi:noNamespaceSchemaLocation="xml_query.xsd">
+	<queryId>test.constanteliminationbolus.std.target.query</queryId>
+	<clientId>1</clientId>
+	<date>2020-06-25T08:21:04</date>
+	<!-- Date the xml has been sent -->
+	<language>en</language>
+	<drugTreatment>			<!-- All the information regarding the patient -->			<patient>						<covariates>							<covariate>					<covariateId>covA</covariateId>					<date>2020-06-23T08:00:00</date>					<value>400</value>					<unit>mg/l</unit>					<dataType>double</dataType>					<nature>linear</nature>				</covariate>			</covariates>		</patient>
+		<!-- List of the drugs informations we have concerning the patient -->
+		<drugs>
+			<!-- All the information regarding the drug -->
+			<drug>
+				<drugId>test.constanteliminationbolus.std.target.drugid</drugId>
+				<activePrinciple>veryStrongDrug</activePrinciple>
+				<brandName>Empty</brandName>
+				<atc>Empty</atc>
+				<!-- All the information regarding the treatment -->
+				<treatment>
+					<dosageHistory>
+						<dosageTimeRange>
+							<start>2020-06-21T08:00:00</start>							<end>2020-06-23T08:00:00</end>
+							<dosage>
+								<dosageLoop>
+									<lastingDosage>
+										<interval>24:00:00</interval>
+										<dose>
+											<value>400</value>
+											<unit>mg</unit>
+											<infusionTimeInMinutes>30</infusionTimeInMinutes>
+										</dose>
+										<formulationAndRoute>
+											<formulation>parenteral solution</formulation>
+											<administrationName>foo bar</administrationName>
+											<administrationRoute>oral</administrationRoute>
+											<absorptionModel>extra</absorptionModel>
+										</formulationAndRoute>
+									</lastingDosage>
+								</dosageLoop>
+							</dosage>
+						</dosageTimeRange>
+					</dosageHistory>
+				</treatment>								<samples/>								<targets>										<target>											<activeMoietyId>drugtest</activeMoietyId>												<targetType>peak</targetType>												<unit>mg/l</unit>												<min>50</min>												<best>120</best>												<max>160</max>												<inefficacyAlarm>20</inefficacyAlarm>												<toxicityAlarm>200</toxicityAlarm>												<mic>														<unit>mg/l</unit>														<micValue>90</micValue>													</mic>										</target>									</targets>
+			</drug>
+		</drugs>
+	</drugTreatment>
+	<!-- List of the requests we want the server to take care of -->
+	<requests>
+		<request>			<requestId>test.constanteliminationbolus.std.target.adjustement</requestId>			<drugId>test.constanteliminationbolus.std.target.drugid</drugId>			<drugModelId>test.constanteliminationbolus.std.target</drugModelId>			<adjustmentTraits>				<computingOption>					<parametersType>aposteriori</parametersType>					<compartmentOption>allActiveMoieties</compartmentOption>					<retrieveStatistics>true</retrieveStatistics>					<retrieveParameters>false</retrieveParameters>					<retrieveCovariates>false</retrieveCovariates>				</computingOption>				<nbPointsPerHour>20</nbPointsPerHour>				<dateInterval>					<start>2018-10-22T10:00:00</start>					<end>2018-10-23T10:00:00</end>				</dateInterval>				<adjustmentDate>2018-10-22T10:00:00</adjustmentDate>				<options>					<bestCandidatesOption>bestDosage</bestCandidatesOption>					<loadingOption>noLoadingDose</loadingOption>					<restPeriodOption>noRestPeriod</restPeriodOption>					<steadyStateTargetOption>atSteadyState</steadyStateTargetOption>					<targetExtractionOption>individualTargets</targetExtractionOption>					<formulationAndRouteSelectionOption>lastFormulationAndRoute</formulationAndRouteSelectionOption>				</options>			</adjustmentTraits>		</request>
+	</requests>
+</query>

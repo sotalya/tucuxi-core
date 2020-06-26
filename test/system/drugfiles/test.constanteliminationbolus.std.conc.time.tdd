@@ -41,7 +41,10 @@
         <covariates>
                     <covariate>
                         <covariateId>covA</covariateId>
-                        <covariateName/>
+                        <covariateName>
+							<name lang='en'>Concentration</name>
+							<name lang='fr'>Concentration</name>
+						</covariateName>
                         <description/>
                         <unit>mg/l</unit>
                         <covariateType>standard</covariateType>
@@ -76,7 +79,10 @@
                     </covariate>
                     <covariate>
                         <covariateId>covM</covariateId>
-                        <covariateName/>
+                        <covariateName>
+							<name lang='en'>Time</name>
+							<name lang='fr'>Temps</name>
+						</covariateName>
                         <description/>
                         <unit>h</unit>
                         <covariateType>standard</covariateType>
@@ -111,7 +117,10 @@
                         </covariate>
 						 <covariate>
                         <covariateId>covR</covariateId>
-                        <covariateName/>
+                        <covariateName>
+							<name lang='en'>Total Body Weight</name>
+							<name lang='fr'>Poids total</name>
+						</covariateName>
                         <description/>
                         <unit>kg</unit>
                         <covariateType>standard</covariateType>
@@ -146,7 +155,10 @@
                     </covariate>
                     <covariate>
                         <covariateId>covS</covariateId>
-                        <covariateName/>
+                        <covariateName>
+							<name lang='en'>Body Height</name>
+							<name lang='fr'>Taille (hauteur)</name>
+						</covariateName>
                         <description/>
                         <unit>cm</unit>
                         <covariateType>standard</covariateType>

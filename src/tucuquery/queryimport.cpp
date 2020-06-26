@@ -300,6 +300,9 @@ unique_ptr<TargetData> QueryImport::createTargetData(Common::XmlNodeIterator& _t
     static const string BEST_NODE_NAME                 = "best";
     static const string MAX_ID_NODE_NAME               = "max";
     static const string TOXICITY_ALARM_NODE_NAME       = "toxicityAlarm";
+    static const string MIC_NODE_NAME                  = "mic";
+    static const string MIC_UNIT_NODE_NAME             = "unit";
+    static const string MIC_VALUE_NODE_NAME            = "micValue";
 
     string activeMoietyId = getChildString(_targetDataRootIterator, ANALYTE_ID_NODE_NAME);
     string targetType = getChildString(_targetDataRootIterator, TARGET_TYPE_NODE_NAME);
@@ -310,6 +313,11 @@ unique_ptr<TargetData> QueryImport::createTargetData(Common::XmlNodeIterator& _t
     double max = getChildDouble(_targetDataRootIterator, MAX_ID_NODE_NAME);
     double toxicityAlarm = getChildDouble(_targetDataRootIterator, TOXICITY_ALARM_NODE_NAME);
 
+    Common::XmlNodeIterator micRootIterator = _targetDataRootIterator->getChildren(MIC_NODE_NAME);
+    string micUnit = getChildString(micRootIterator, MIC_UNIT_NODE_NAME);
+    double micValue = getChildDouble(micRootIterator, MIC_VALUE_NODE_NAME);
+
+
     return make_unique<TargetData>(
                 activeMoietyId,
                 targetType,
@@ -318,7 +326,9 @@ unique_ptr<TargetData> QueryImport::createTargetData(Common::XmlNodeIterator& _t
                 min,
                 best,
                 max,
-                toxicityAlarm
+                toxicityAlarm,
+                micUnit,
+                micValue
                 );
 }
 

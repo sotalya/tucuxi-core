@@ -136,7 +136,7 @@ ComputingStatus TargetEvaluator::evaluate(
     {
         // Take compartment 0, could be different in the future
         //double lastResidual = cycle.m_concentrations[0].back();
-        // We have two options, I choose the cycle statistic calculator here
+        // We have two options, I choose the cycle statistic calculator here$
         double lastResidual = -1.0;
         CycleStatistic cycleStatistic = statisticsCalculator.getStatistic(0, CycleStatisticType::Residual);
         bOk = cycleStatistic.getValue(dateTime, lastResidual);

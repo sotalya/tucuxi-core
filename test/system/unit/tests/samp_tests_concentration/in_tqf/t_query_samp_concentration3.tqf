@@ -1,29 +1,16 @@
 <?xml version="1.0" ?>
 <query xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.0" xsi:noNamespaceSchemaLocation="xml_query.xsd">
-	<queryId>test.constanteliminationbolus.std.weight.height.query</queryId>
+	<queryId>test.constanteliminationbolus.std.sample.query</queryId>
 	<clientId>1</clientId>
-	<date>2020-06-23T08:21:04</date>
+	<date>2020-06-25T08:21:04</date>
 	<!-- Date the xml has been sent -->
 	<language>en</language>
-	<drugTreatment>
-		<!-- All the information regarding the patient -->
-		<patient>
-			<covariates>
-				<covariate>
-					<covariateId>covA</covariateId>
-					<date>2020-06-23T08:00:00</date>
-					<value>12000</value>
-					<unit>g</unit>
-					<dataType>double</dataType>
-					<nature>linear</nature>
-				</covariate>
-			</covariates>
-		</patient>
+	<drugTreatment>			<!-- All the information regarding the patient -->			<patient>						<covariates>							<covariate>					<covariateId>covA</covariateId>					<date>2020-06-23T08:00:00</date>					<value>100</value>					<unit>kg</unit>					<dataType>double</dataType>					<nature>linear</nature>				</covariate>			</covariates>					</patient>
 		<!-- List of the drugs informations we have concerning the patient -->
 		<drugs>
 			<!-- All the information regarding the drug -->
 			<drug>
-				<drugId>test.constanteliminationbolus.std.weight.height.drugid</drugId>
+				<drugId>test.constanteliminationbolus.std.sample.drugid</drugId>
 				<activePrinciple>veryStrongDrug</activePrinciple>
 				<brandName>Empty</brandName>
 				<atc>Empty</atc>
@@ -31,8 +18,7 @@
 				<treatment>
 					<dosageHistory>
 						<dosageTimeRange>
-							<start>2020-06-21T08:00:00</start>
-							<end>2020-06-23T08:00:00</end>
+							<start>2020-06-21T08:00:00</start>							<end>2020-06-23T08:00:00</end>
 							<dosage>
 								<dosageLoop>
 									<lastingDosage>
@@ -58,12 +44,12 @@
 				<samples>
 					<sample>
 						<sampleId>1</sampleId>
-						<sampleDate>2020-06-15T08:00:00</sampleDate>
+						<sampleDate>2020-06-22T12:00:00</sampleDate>
 						<concentrations>
 							<concentration>
-								<analyteId>tobramycin</analyteId>
-								<value>9.7</value>
-								<unit>mg/l</unit>
+								<analyteId>analyte</analyteId>
+								<value>0.0097</value>
+								<unit>mg/ml</unit>
 							</concentration>
 						</concentrations>
 					</sample>
@@ -74,7 +60,7 @@
 	<!-- List of the requests we want the server to take care of -->
 	<requests>
 		<request>
-			<requestId>test.constanteliminationbolus.std.weight.height.prediction</requestId>			<drugId>test.constanteliminationbolus.std.weight.height.drugid</drugId>			<drugModelId>test.constanteliminationbolus.std.weight.height</drugModelId>			<predictionTraits>				<computingOption>					<parametersType>aposteriori</parametersType>					<compartmentOption>allActiveMoieties</compartmentOption>					<retrieveStatistics>true</retrieveStatistics>					<retrieveParameters>false</retrieveParameters>					<retrieveCovariates>false</retrieveCovariates>				</computingOption>				<nbPointsPerHour>20</nbPointsPerHour>				<dateInterval>					<start>2020-06-23T08:00:00</start>					<end>2020-06-24T08:00:00</end>				</dateInterval>			</predictionTraits>
+			<requestId>test.constanteliminationbolus.std.sample.prediction</requestId>			<drugId>test.constanteliminationbolus.std.sample.drugid</drugId>			<drugModelId>test.constanteliminationbolus.std.sample</drugModelId>			<predictionTraits>				<computingOption>					<parametersType>aposteriori</parametersType>					<compartmentOption>allActiveMoieties</compartmentOption>					<retrieveStatistics>true</retrieveStatistics>					<retrieveParameters>false</retrieveParameters>					<retrieveCovariates>false</retrieveCovariates>				</computingOption>				<nbPointsPerHour>20</nbPointsPerHour>				<dateInterval>					<start>2020-06-22T08:00:00</start>					<end>2020-06-23T08:00:00</end>				</dateInterval>			</predictionTraits>
 		</request>
 	</requests>
 </query>

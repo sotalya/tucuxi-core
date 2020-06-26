@@ -8,6 +8,7 @@ import sys
 from os.path import isfile, join
 from os import listdir
 
+target_evaluation = []
 
 parser = ArgumentParser(description='Tucuxi system test concerning data unit.',
                         prog='test.py')
@@ -18,6 +19,7 @@ init(autoreset=True)
 app_path = os.path.dirname(os.path.realpath(__file__))
 output_folder_name = "output"
 input_folder_name = "in_tqf"
+query_responses = []
 
 
 def parse_the_args():
@@ -35,14 +37,20 @@ def parse_the_args():
     parser.add_argument('-t', '--tucucli', type=str, dest='tucucli',
                         help='Command to execute Tucuxi cli, default is tucucli',
                         default=cli)
+    parser.add_argument('-b', '--target', type=bool, dest='target',
+                        help='Command to execute Tucuxi cli, default is tucucli',
+                        default=False)
     return parser.parse_args()
 
 
-def process_queryfile(args, query_file: str, output_folder: str):
+def process_queryfile(args, query_file: str, output_folder: str, index):
     """
     Input : args, query_file, output_folder
     Generate query response for each query
     """
+    global target_evaluation
+    global query_responses
+
     test_folder_name = query_file.split(os.path.sep)[-3]
     test_query_name = query_file.split(os.path.sep)[-1]
     print("\nRunning file '{qid}' from folder '{testfolder}'".format(qid=test_query_name,
@@ -52,32 +60,57 @@ def process_queryfile(args, query_file: str, output_folder: str):
     output_file_path = output_folder + '/' + test_query_name + '.xml'
 
     tucuclirun = TucuCliRun(tucucli, drug_path, output_file_path)
-    tucuclirun.run_tucuxi_from_file(query_file)
+    query_responses.append(tucuclirun.run_tucuxi_from_file(query_file))
+
+    if hasattr(query_responses[index], "responses"):
+        for response in query_responses[index].responses:
+            if hasattr(response.computingTrait, "adjustments"):
+                for ad in response.computingTrait.adjustments:
+                    if hasattr(ad, "targetEvaluations"):
+                        for t in ad.targetEvaluations:
+                            t.unit = None
+                            t.value = 0.0
+                            target_evaluation.append(index)
 
 
-def compare_query_responses(queries):
+def compare_query_responses(args, queries):
     """
     Input : queries
     Compare the first query response to the other (for each test)
     """
+    global query_responses
+    global target_evaluation
 
+    index = 0
+    first_index = 0
     once = True
+    once_target = True
     print('\nRunning responses comparison ...')
     for i, test in enumerate(queries):
         test_folder_name = test[1].split(os.path.sep)[-2]
         for r, d, f in os.walk(test[1]):
-            for file in f:
-                if not filecmp.cmp(os.path.join(r, file), os.path.join(r, f[0]), shallow=False) and once:
-                    print(Fore.RED + "{} : queries responses not equal".format(test_folder_name))
-                    once = False
+            for j, file in enumerate(f):
+                if len(target_evaluation) != 0 and (index in target_evaluation):
+                    first_index = index - j
+                    if query_responses[index] != query_responses[first_index] and not once_target:
+                        print(Fore.RED + "{} : queries responses not equal".format(test_folder_name))
+                        once_target = False
+                else:
+                    if not filecmp.cmp(os.path.join(r, file), os.path.join(r, f[0]), shallow=False) and once:
+                        print(Fore.RED + "{} : queries responses not equal".format(test_folder_name))
+                        once = False
+                index += 1
         once = True
+        once_target = True
     print("Comparisons finished")
 
 
 def get_query_responses(args, queries):
+    index = 0
     for test in queries:
         for queryfile in test[0]:
-            process_queryfile(args, queryfile, test[1])
+            process_queryfile(args, queryfile, test[1], index)
+            index += 1
 
 
 def get_queries_path(queries):
@@ -117,7 +150,7 @@ def main():
 
     get_query_responses(args, queries)
 
-    compare_query_responses(queries)
+    compare_query_responses(args, queries)
 
     print(Fore.CYAN + 'End of script')
 

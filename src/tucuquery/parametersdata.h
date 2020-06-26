@@ -143,7 +143,9 @@ public:
         double _min,
         double _best,
         double _max,
-        double _toxicityAlarm
+        double _toxicityAlarm,
+        std::string& _micUnit,
+        double _micValue
     );
 
     TargetData(TargetData& _other) = delete;
@@ -157,6 +159,9 @@ public:
     double getBest() const;
     double getMax() const;
     double getToxicityAlarm() const;
+    std::string getMicUnit() const;
+    double getMicValue() const;
+
 
 protected:
     const std::string m_activeMoietyID;
@@ -167,6 +172,8 @@ protected:
     const double m_best;
     const double m_max;
     const double m_toxicityAlarm;
+    const std::string m_micUnit;
+    const double m_micValue;
 };
 
 class DrugData

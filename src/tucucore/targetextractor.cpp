@@ -14,36 +14,11 @@ TargetEvent TargetExtractor::targetEventFromTarget(const Target *_target) {
 
     switch (_target->m_targetType) {
 
-    case TargetType::Peak :
-
-        //TODO : VERIFY VALUE
-
-        return TargetEvent::createTargetEventWithTime(_target->getActiveMoietyId(),
-                                       _target->m_targetType,
-                                       Unit("ug/l"),
-                                       _target->m_unit,
-                                       translateToUnit(_target->m_valueMin, _target->m_unit, Unit("ug/l")),
-                                       translateToUnit(_target->m_valueBest, _target->m_unit, Unit("ug/l")),
-                                       translateToUnit(_target->m_valueMax, _target->m_unit, Unit("ug/l")),
-                                       _target->m_tMin,
-                                       _target->m_tBest,
-                                       _target->m_tMax);
-
-    case TargetType::Residual :
-
-        //TODO : VERIFY VALUE
-
-        return TargetEvent::createTargetEventWithoutTimeAndMic(_target->getActiveMoietyId(),
-                                       _target->m_targetType,
-                                       Unit("ug/l"),
-                                       _target->m_unit,
-                                       translateToUnit(_target->m_valueMin, _target->m_unit, Unit("ug/l")),
-                                       translateToUnit(_target->m_valueBest, _target->m_unit, Unit("ug/l")),
-                                       translateToUnit(_target->m_valueMax, _target->m_unit, Unit("ug/l")));
-
     case TargetType::Mean :
+    case TargetType::Residual :
+    case TargetType::Peak :
     {
-
+        //TODO : VERIFY VALUE
 
         return TargetEvent::createTargetEventWithTime(_target->getActiveMoietyId(),
                                        _target->m_targetType,
@@ -55,74 +30,14 @@ TargetEvent TargetExtractor::targetEventFromTarget(const Target *_target) {
                                        _target->m_tMin,
                                        _target->m_tBest,
                                        _target->m_tMax);
-
-
     } break;
+
     case TargetType::Auc :
-
-        //TODO : VERIFY VALUE
-
-        return TargetEvent::createTargetEventWithTime(_target->getActiveMoietyId(),
-                                       _target->m_targetType,
-                                       Unit("ug/l"),
-                                       _target->m_unit,
-                                       translateToUnit(_target->m_valueMin, _target->m_unit, Unit("ug/l")),
-                                       translateToUnit(_target->m_valueBest, _target->m_unit, Unit("ug/l")),
-                                       translateToUnit(_target->m_valueMax, _target->m_unit, Unit("ug/l")),
-                                       _target->m_tMin,
-                                       _target->m_tBest,
-                                       _target->m_tMax);
-
     case TargetType::Auc24 :
-
-        //TODO : VERIFY VALUE
-
-        return TargetEvent::createTargetEventWithTime(_target->getActiveMoietyId(),
-                                       _target->m_targetType,
-                                       Unit("ug/l"),
-                                       _target->m_unit,
-                                       translateToUnit(_target->m_valueMin, _target->m_unit, Unit("ug/l")),
-                                       translateToUnit(_target->m_valueBest, _target->m_unit, Unit("ug/l")),
-                                       translateToUnit(_target->m_valueMax, _target->m_unit, Unit("ug/l")),
-                                       _target->m_tMin,
-                                       _target->m_tBest,
-                                       _target->m_tMax);
     case TargetType::CumulativeAuc :
-
-        //TODO : VERIFY VALUE
-
-        return TargetEvent::createTargetEventWithTime(_target->getActiveMoietyId(),
-                                       _target->m_targetType,
-                                       Unit("ug/l"),
-                                       _target->m_unit,
-                                       translateToUnit(_target->m_valueMin, _target->m_unit, Unit("ug/l")),
-                                       translateToUnit(_target->m_valueBest, _target->m_unit, Unit("ug/l")),
-                                       translateToUnit(_target->m_valueMax, _target->m_unit, Unit("ug/l")),
-                                       _target->m_tMin,
-                                       _target->m_tBest,
-                                       _target->m_tMax);
     case TargetType::AucOverMic :
-
-        //TODO : VERIFY VALUE
-
-        return TargetEvent::createTargetEventWithMicAndTime(_target->getActiveMoietyId(),
-                                       _target->m_targetType,
-                                       Unit("ug/l"),
-                                       _target->m_unit,
-                                       translateToUnit(_target->m_valueMin, _target->m_unit, Unit("ug/l")),
-                                       translateToUnit(_target->m_valueBest, _target->m_unit, Unit("ug/l")),
-                                       translateToUnit(_target->m_valueMax, _target->m_unit, Unit("ug/l")),
-                                       translateToUnit(_target->m_mic, _target->m_micUnit, Unit("ug/l")),
-                                       _target->m_micUnit,
-                                       _target->m_tMin,
-                                       _target->m_tBest,
-                                       _target->m_tMax);
-
     case TargetType::Auc24OverMic :
     {
-
-
-
         return TargetEvent::createTargetEventWithMicAndTime(_target->getActiveMoietyId(),
                                        _target->m_targetType,
                                        Unit("ug*h/l"),
@@ -137,42 +52,30 @@ TargetEvent TargetExtractor::targetEventFromTarget(const Target *_target) {
                                        _target->m_tMax);
 
     } break;
-    case TargetType::AucDividedByMic :
 
-        //TODO : VERIFY VALUE
+    case TargetType::PeakDividedByMic :
 
-        return TargetEvent::createTargetEventWithMicAndTime(_target->getActiveMoietyId(),
-                                       _target->m_targetType,
-                                       Unit("ug/l"),
-                                       _target->m_unit,
-                                       translateToUnit(_target->m_valueMin, _target->m_unit, Unit("ug/l")),
-                                       translateToUnit(_target->m_valueBest, _target->m_unit, Unit("ug/l")),
-                                       translateToUnit(_target->m_valueMax, _target->m_unit, Unit("ug/l")),
-                                       translateToUnit(_target->m_mic, _target->m_micUnit, Unit("ug/l")),
-                                       _target->m_micUnit,
-                                       _target->m_tMin,
-                                       _target->m_tBest,
-                                       _target->m_tMax);
-
-    case TargetType::Auc24DividedByMic :
-
-        //TODO : VERIFY VALUE
-
-        return TargetEvent::createTargetEventWithMicAndTime(_target->getActiveMoietyId(),
-                                       _target->m_targetType,
-                                       Unit("ug/l"),
-                                       _target->m_unit,
-                                       translateToUnit(_target->m_valueMin, _target->m_unit, Unit("ug/l")),
-                                       translateToUnit(_target->m_valueBest, _target->m_unit, Unit("ug/l")),
-                                       translateToUnit(_target->m_valueMax, _target->m_unit, Unit("ug/l")),
-                                       translateToUnit(_target->m_mic, _target->m_micUnit, Unit("ug/l")),
-                                       _target->m_micUnit,
-                                       _target->m_tMin,
-                                       _target->m_tBest,
-                                       _target->m_tMax);
-    case TargetType::TimeOverMic :
     {
+        //TODO : VERIFY VALUE
 
+        return TargetEvent::createTargetEventWithMicAndTime(_target->getActiveMoietyId(),
+                                       _target->m_targetType,
+                                       Unit(""),
+                                       _target->m_unit,
+                                       translateToUnit(_target->m_valueMin, _target->m_unit, Unit("")),
+                                       translateToUnit(_target->m_valueBest, _target->m_unit, Unit("")),
+                                       translateToUnit(_target->m_valueMax, _target->m_unit, Unit("")),
+                                       translateToUnit(_target->m_mic, _target->m_micUnit, Unit("ug/l")),
+                                       _target->m_micUnit,
+                                       _target->m_tMin,
+                                       _target->m_tBest,
+                                       _target->m_tMax);
+    } break;
+
+    case TargetType::TimeOverMic :
+    case TargetType::AucDividedByMic :
+    case TargetType::Auc24DividedByMic :
+    {
 
         return TargetEvent::createTargetEventWithMicAndTime(_target->getActiveMoietyId(),
                                        _target->m_targetType,
@@ -181,31 +84,12 @@ TargetEvent TargetExtractor::targetEventFromTarget(const Target *_target) {
                                        translateToUnit(_target->m_valueMin, _target->m_unit, Unit("h")),
                                        translateToUnit(_target->m_valueBest, _target->m_unit, Unit("h")),
                                        translateToUnit(_target->m_valueMax, _target->m_unit, Unit("h")),
-                                       translateToUnit(_target->m_mic, _target->m_micUnit, Unit("h")),
+                                       translateToUnit(_target->m_mic, _target->m_micUnit, Unit("ug/l")),
                                        _target->m_micUnit,
                                        _target->m_tMin,
                                        _target->m_tBest,
                                        _target->m_tMax);
 
-    } break;
-
-    case TargetType::PeakDividedByMic :
-    {
-
-
-
-        return TargetEvent::createTargetEventWithMicAndTime(_target->getActiveMoietyId(),
-                                              _target->m_targetType,
-                                              Unit("ug/l"),
-                                              _target->m_unit,
-                                              translateToUnit(_target->m_valueMin, _target->m_unit, Unit("ug/l")),
-                                              translateToUnit(_target->m_valueBest, _target->m_unit, Unit("ug/l")),
-                                              translateToUnit(_target->m_valueMax, _target->m_unit, Unit("ug/l")),
-                                              translateToUnit(_target->m_mic, _target->m_micUnit, Unit("ug/l")),
-                                              Unit("ug/l"),
-                                              _target->m_tMin,
-                                              _target->m_tBest,
-                                              _target->m_tMax);
     } break;
 
     case TargetType::UnknownTarget :
@@ -348,6 +232,17 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(const TargetDefinit
 
     case TargetType::Peak :
     case TargetType::Residual :
+
+        //TODO : VERIFY VALUE
+
+        return TargetEvent::createTargetEventWithoutTimeAndMic(_target->getActiveMoietyId(),
+                                       _target->getTargetType(),
+                                       Unit("ug/l"),
+                                       _target->getUnit(),
+                                       translateToUnit(_target->getCMin().getValue(), _target->getUnit(), Unit("ug/l")),
+                                       translateToUnit(_target->getCBest().getValue(), _target->getUnit(), Unit("ug/l")),
+                                       translateToUnit(_target->getCMax().getValue(), _target->getUnit(), Unit("ug/l")));
+
     case TargetType::Mean :
 
 

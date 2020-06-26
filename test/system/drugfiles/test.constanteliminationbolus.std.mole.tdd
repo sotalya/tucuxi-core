@@ -32,8 +32,8 @@
         <comments/>
     </head>
     <drugModel>
-        <drugId>test.constanteliminationbolus.std.weigt.heigt.drugid</drugId>
-        <drugModelId>test.constanteliminationbolus.std.weigt.heigt</drugModelId>
+        <drugId>test.constanteliminationbolus.std.mole.drugid</drugId>
+        <drugModelId>test.constanteliminationbolus.std.mole</drugModelId>
         <domain>
             <description/>
             <constraints/>
@@ -41,9 +41,12 @@
         <covariates>
             <covariate>
                 <covariateId>covA</covariateId>
-                <covariateName/>
+                <covariateName>
+					<name lang='en'>Quantity</name>
+					<name lang='fr'>Quantité</name>
+				</covariateName>
                 <description/>
-                <unit>kg</unit>
+                <unit>mol/l</unit>
                 <covariateType>standard</covariateType>
                 <dataType>double</dataType>
                 <interpolationType>linear</interpolationType>
@@ -76,7 +79,10 @@
                 </covariate>
                 <covariate>
                     <covariateId>covM</covariateId>
-                    <covariateName/>
+                    <covariateName>
+						<name lang='en'>Body Height</name>
+						<name lang='fr'>Taille (hauteur)</name>
+					</covariateName>
                     <description/>
                     <unit>cm</unit>
                     <covariateType>standard</covariateType>
@@ -111,7 +117,10 @@
                     </covariate>
                     <covariate>
                         <covariateId>covR</covariateId>
-                        <covariateName/>
+                        <covariateName>
+							<name lang='en'>Concentration</name>
+							<name lang='fr'>Concentration</name>
+						</covariateName>
                         <description/>
                         <unit>mg/l</unit>
                         <covariateType>standard</covariateType>
@@ -146,7 +155,10 @@
                     </covariate>
                     <covariate>
                         <covariateId>covS</covariateId>
-                        <covariateName/>
+                        <covariateName>
+							<name lang='en'>Time</name>
+							<name lang='fr'>Temps</name>
+						</covariateName>
                         <description/>
                         <unit>h</unit>
                         <covariateType>standard</covariateType>
@@ -194,29 +206,7 @@
                             <hardFormula>direct</hardFormula>
                             <comments/>
                         </analytesToMoietyFormula>
-                        <targets>
-                            <target>
-                                <targetType>residual</targetType>
-                                <targetValues>
-                                    <unit>ug/l</unit>
-                                    <min>
-                                        <standardValue>750</standardValue>
-                                    </min>
-                                    <max>
-                                        <standardValue>1500</standardValue>
-                                    </max>
-                                    <best>
-                                        <standardValue>1000</standardValue>
-                                    </best>
-                                    <toxicityAlarm>
-                                        <standardValue>10000.0</standardValue>
-                                    </toxicityAlarm>
-                                    <inefficacyAlarm>
-                                        <standardValue>0.0</standardValue>
-                                    </inefficacyAlarm>
-                                </targetValues>
-                            </target>
-                        </targets>
+                        <targets/>
                     </activeMoiety>
                 </activeMoieties>
                 <analyteGroups>
@@ -248,7 +238,7 @@
                             <parameters>
                                 <parameter>
                                     <parameterId>TestA</parameterId>
-                                    <unit>kg</unit>
+                                    <unit>mol/l</unit>
                                     <parameterValue>
                                         <standardValue>1</standardValue>
                                         <aprioriComputation>

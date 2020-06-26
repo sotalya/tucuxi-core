@@ -101,6 +101,28 @@ Target::Target(ActiveMoietyId _activeMoietyId,
 {
 }
 
+Target::Target(ActiveMoietyId _activeMoietyId,
+               TargetType _type,
+               Unit _unit,
+               Value _min,
+               Value _best,
+               Value _max,
+               Value _inefficacyAlarm,
+               Value _toxicityAlarm,
+               Value _mic,
+               Unit _micUnit)
+    : m_activeMoietyId(_activeMoietyId),
+      m_targetType(_type),
+      m_valueMin(_min),
+      m_valueMax(_max),
+      m_valueBest(_best),
+      m_mic(_mic),
+      m_micUnit(_micUnit),
+      m_inefficacyAlarm(_inefficacyAlarm),
+      m_toxicityAlarm(_toxicityAlarm),
+      m_unit(_unit)
+{
+}
 
 }
 }
