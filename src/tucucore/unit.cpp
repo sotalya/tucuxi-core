@@ -8,8 +8,21 @@
 namespace Tucuxi {
 namespace Core {
 
+bool Unit::isTime() const
+{
+    return ((m_unitString == "d") || (m_unitString == "h") || (m_unitString == "m") || (m_unitString == "s"));
+}
 
-double translationFactor(Unit _initialUnit, Unit _finalUnit)
+bool Unit::isEmpty() const {
+    return m_unitString == "";
+}
+
+
+std::string Unit::toString() const {
+    return m_unitString;
+}
+
+double UnitManager::translationFactor(Unit _initialUnit, Unit _finalUnit)
 {
     if (_initialUnit == _finalUnit)
     {
@@ -80,11 +93,10 @@ double translationFactor(Unit _initialUnit, Unit _finalUnit)
     return factorMap.at(key);
 }
 
-Value translateToUnit(Value _value, Unit _initialUnit, Unit _finalUnit)
+Value UnitManager::translateToUnit(Value _value, Unit _initialUnit, Unit _finalUnit)
 {
     return _value * translationFactor(_initialUnit, _finalUnit);
 }
-
 
 
 

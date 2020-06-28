@@ -373,7 +373,7 @@ ComputingStatus TargetEvaluator::evaluate(
     }
 
     // We build the result, as there was no error
-    _result = TargetEvaluationResult(_targetEvent.m_targetType, score, translateToUnit(value, _targetEvent.m_unit, _targetEvent.m_finalUnit), _targetEvent.m_finalUnit);
+    _result = TargetEvaluationResult(_targetEvent.m_targetType, score, UnitManager::translateToUnit(value, _targetEvent.m_unit, _targetEvent.m_finalUnit), _targetEvent.m_finalUnit);
     return ComputingStatus::Ok;
 }
 
