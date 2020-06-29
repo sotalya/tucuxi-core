@@ -58,7 +58,7 @@ protected:
             return false;
         }
 
-        m_D = _intakeEvent.getDose() * 1000;
+        m_D = _intakeEvent.getDose() * 1000;  // TODO : Use TranslateToUnit
         m_S = _parameters.getValue(ParameterId::TestS);
         m_A = _parameters.getValue(ParameterId::TestA);
         m_R = _parameters.getValue(ParameterId::TestR);

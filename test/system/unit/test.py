@@ -7,6 +7,7 @@ import filecmp
 import sys
 from os.path import isfile, join
 from os import listdir
+from tucuxi.data.computingqueryresponse import TargetEvaluation
 
 target_evaluation = []
 
@@ -52,7 +53,7 @@ def process_queryfile(args, query_file: str, output_folder: str, index):
     global query_responses
 
     test_folder_name = query_file.split(os.path.sep)[-3]
-    test_query_name = query_file.split(os.path.sep)[-1]
+    test_query_name = (query_file.split(os.path.sep)[-1]).split('.')[-2]
     print("\nRunning file '{qid}' from folder '{testfolder}'".format(qid=test_query_name,
                                                                      testfolder=test_folder_name))
     tucucli = args.tucucli
@@ -62,14 +63,14 @@ def process_queryfile(args, query_file: str, output_folder: str, index):
     tucuclirun = TucuCliRun(tucucli, drug_path, output_file_path)
     query_responses.append(tucuclirun.run_tucuxi_from_file(query_file))
 
-    if hasattr(query_responses[index], "responses"):
-        for response in query_responses[index].responses:
-            if hasattr(response.computingTrait, "adjustments"):
-                for ad in response.computingTrait.adjustments:
-                    if hasattr(ad, "targetEvaluations"):
-                        for t in ad.targetEvaluations:
-                            t.unit = None
-                            t.value = 0.0
+    if query_responses[index].soup.responses:
+        responses = query_responses[index].soup.responses
+        for r in responses.find_all('response'):
+            if r.dataAdjustment:
+                for ad in r.dataAdjustment.adjustments.find_all('adjustment'):
+                    if ad.targetEvaluations:
+                        for te in ad.targetEvaluations.find_all('targetEvaluation'):
+                            te.decompose()
                             target_evaluation.append(index)
 
 
@@ -82,7 +83,6 @@ def compare_query_responses(args, queries):
     global target_evaluation
 
     index = 0
-    first_index = 0
     once = True
     once_target = True
     print('\nRunning responses comparison ...')
@@ -92,7 +92,7 @@ def compare_query_responses(args, queries):
             for j, file in enumerate(f):
                 if len(target_evaluation) != 0 and (index in target_evaluation):
                     first_index = index - j
-                    if query_responses[index] != query_responses[first_index] and not once_target:
+                    if query_responses[index].soup != query_responses[first_index].soup and once_target:
                         print(Fore.RED + "{} : queries responses not equal".format(test_folder_name))
                         once_target = False
                 else:

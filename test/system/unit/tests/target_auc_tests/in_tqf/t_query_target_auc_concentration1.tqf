@@ -18,7 +18,7 @@
 				<treatment>
 					<dosageHistory>
 						<dosageTimeRange>
-							<start>2020-06-21T08:00:00</start>							<end>2020-06-23T08:00:00</end>
+							<start>2020-06-21T08:00:00</start>							<end>2020-06-25T08:00:00</end>
 							<dosage>
 								<dosageLoop>
 									<lastingDosage>
@@ -39,12 +39,11 @@
 							</dosage>
 						</dosageTimeRange>
 					</dosageHistory>
-				</treatment>								<samples/>								<targets>										<target>											<activeMoietyId>drugtest</activeMoietyId>												<targetType>peak</targetType>												<unit>mg/l</unit>												<min>50</min>												<best>120</best>												<max>160</max>												<inefficacyAlarm>20</inefficacyAlarm>												<toxicityAlarm>200</toxicityAlarm>												<mic>														<unit>mg/l</unit>														<micValue>90</micValue>													</mic>										</target>									</targets>
+				</treatment>								<samples/>								<targets>										<target>											<activeMoietyId>drugtest</activeMoietyId>												<targetType>auc</targetType>												<unit>mg*h/l</unit>												<min>200</min>												<best>300</best>												<max>400</max>												<inefficacyAlarm>50</inefficacyAlarm>												<toxicityAlarm>600</toxicityAlarm>												<mic>														<unit>mg*h/l</unit>														<micValue>70</micValue>													</mic>										</target>									</targets>
 			</drug>
 		</drugs>
 	</drugTreatment>
 	<!-- List of the requests we want the server to take care of -->
-	<requests>
-		<request>			<requestId>test.constanteliminationbolus.std.target.adjustement</requestId>			<drugId>test.constanteliminationbolus.std.target.drugid</drugId>			<drugModelId>test.constanteliminationbolus.std.target</drugModelId>			<adjustmentTraits>				<computingOption>					<parametersType>aposteriori</parametersType>					<compartmentOption>allActiveMoieties</compartmentOption>					<retrieveStatistics>true</retrieveStatistics>					<retrieveParameters>false</retrieveParameters>					<retrieveCovariates>false</retrieveCovariates>				</computingOption>				<nbPointsPerHour>20</nbPointsPerHour>				<dateInterval>					<start>2018-10-22T10:00:00</start>					<end>2018-10-23T10:00:00</end>				</dateInterval>				<adjustmentDate>2018-10-22T10:00:00</adjustmentDate>				<options>					<bestCandidatesOption>bestDosage</bestCandidatesOption>					<loadingOption>noLoadingDose</loadingOption>					<restPeriodOption>noRestPeriod</restPeriodOption>					<steadyStateTargetOption>atSteadyState</steadyStateTargetOption>					<targetExtractionOption>individualTargets</targetExtractionOption>					<formulationAndRouteSelectionOption>lastFormulationAndRoute</formulationAndRouteSelectionOption>				</options>			</adjustmentTraits>		</request>
+	<requests>				<request>			<requestId>test.constanteliminationbolus.std.target.adjustement</requestId>			<drugId>test.constanteliminationbolus.std.target.drugid</drugId>			<drugModelId>test.constanteliminationbolus.std.target</drugModelId>			<adjustmentTraits>				<computingOption>					<parametersType>aposteriori</parametersType>					<compartmentOption>allActiveMoieties</compartmentOption>					<retrieveStatistics>true</retrieveStatistics>					<retrieveParameters>false</retrieveParameters>					<retrieveCovariates>false</retrieveCovariates>				</computingOption>				<nbPointsPerHour>20</nbPointsPerHour>				<dateInterval>					<start>2018-10-22T10:00:00</start>					<end>2018-10-23T10:00:00</end>				</dateInterval>				<adjustmentDate>2018-10-22T10:00:00</adjustmentDate>				<options>					<bestCandidatesOption>bestDosage</bestCandidatesOption>					<loadingOption>noLoadingDose</loadingOption>					<restPeriodOption>noRestPeriod</restPeriodOption>					<steadyStateTargetOption>atSteadyState</steadyStateTargetOption>					<targetExtractionOption>individualTargets</targetExtractionOption>					<formulationAndRouteSelectionOption>lastFormulationAndRoute</formulationAndRouteSelectionOption>				</options>			</adjustmentTraits>		</request>
 	</requests>
 </query>
