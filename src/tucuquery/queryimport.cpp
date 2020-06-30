@@ -313,10 +313,13 @@ unique_ptr<TargetData> QueryImport::createTargetData(Common::XmlNodeIterator& _t
     double max = getChildDouble(_targetDataRootIterator, MAX_ID_NODE_NAME);
     double toxicityAlarm = getChildDouble(_targetDataRootIterator, TOXICITY_ALARM_NODE_NAME);
 
+    string micUnit = "";
+    double micValue = 0.0;
     Common::XmlNodeIterator micRootIterator = _targetDataRootIterator->getChildren(MIC_NODE_NAME);
-    string micUnit = getChildString(micRootIterator, MIC_UNIT_NODE_NAME);
-    double micValue = getChildDouble(micRootIterator, MIC_VALUE_NODE_NAME);
-
+    if (micRootIterator != Common::XmlNodeIterator::none()) {
+        micUnit = getChildString(micRootIterator, MIC_UNIT_NODE_NAME);
+        micValue = getChildDouble(micRootIterator, MIC_VALUE_NODE_NAME);
+    }
 
     return make_unique<TargetData>(
                 activeMoietyId,
