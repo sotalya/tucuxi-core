@@ -34,7 +34,7 @@ DosageTimeRange *ComputingAdjustments::createDosage(const ComputingAdjustments::
 
     // At least a number of intervals allowing to fill the interval asked
     nbTimes = static_cast<unsigned int>(std::ceil((_endTime - _startTime) / _candidate.m_interval));
-    LastingDose lastingDose(_candidate.m_dose, _candidate.m_formulationAndRoute, _candidate.m_infusionTime, _candidate.m_interval);
+    LastingDose lastingDose(_candidate.m_dose, _candidate.m_doseUnit, _candidate.m_formulationAndRoute, _candidate.m_infusionTime, _candidate.m_interval);
     DosageRepeat repeat(lastingDose, nbTimes);
     DosageTimeRange *newTimeRange = new DosageTimeRange(_startTime, _endTime, repeat);
     return newTimeRange;
@@ -45,7 +45,7 @@ DosageTimeRange *ComputingAdjustments::createLoadingDosage(const SimpleDosageCan
 {
     unsigned int nbTimes = 1;
 
-    LastingDose lastingDose(_candidate.m_dose, _candidate.m_formulationAndRoute, _candidate.m_infusionTime, _candidate.m_interval);
+    LastingDose lastingDose(_candidate.m_dose, _candidate.m_doseUnit, _candidate.m_formulationAndRoute, _candidate.m_infusionTime, _candidate.m_interval);
     DosageRepeat repeat(lastingDose, nbTimes);
     DateTime endTime = _startTime + _candidate.m_interval;
     DosageTimeRange *newTimeRange = new DosageTimeRange(_startTime, endTime, repeat);
@@ -59,7 +59,7 @@ DosageTimeRange *ComputingAdjustments::createSteadyStateDosage(const SimpleDosag
 
     // A single interval
     nbTimes = 1;
-    LastingDose lastingDose(_candidate.m_dose, _candidate.m_formulationAndRoute, _candidate.m_infusionTime, _candidate.m_interval);
+    LastingDose lastingDose(_candidate.m_dose, _candidate.m_doseUnit, _candidate.m_formulationAndRoute, _candidate.m_infusionTime, _candidate.m_interval);
     DosageRepeat repeat(lastingDose, nbTimes);
     DateTime endTime = _startTime + _candidate.m_interval;
     DosageTimeRange *newTimeRange = new DosageTimeRange(_startTime, endTime, repeat);
@@ -69,12 +69,14 @@ DosageTimeRange *ComputingAdjustments::createSteadyStateDosage(const SimpleDosag
 ComputingStatus ComputingAdjustments::buildCandidates(const FullFormulationAndRoute* _formulationAndRoute, std::vector<ComputingAdjustments::SimpleDosageCandidate> &_candidates)
 {
     std::vector<Value> doseValues;
+    Unit doseUnit;
     std::vector<Duration> intervalValues;
     std::vector<Duration> infusionTimes;
 
     const ValidDoses * doses = _formulationAndRoute->getValidDoses();
     if (doses != nullptr) {
         doseValues = doses->getValues();
+        doseUnit = doses->getUnit();
     }
 
     const ValidDurations * intervals = _formulationAndRoute->getValidIntervals();
@@ -110,7 +112,7 @@ ComputingStatus ComputingAdjustments::buildCandidates(const FullFormulationAndRo
     for(auto dose : doseValues) {
         for(auto interval : intervalValues) {
             for(auto infusion : infusionTimes) {
-                _candidates.push_back({_formulationAndRoute->getFormulationAndRoute(), dose, interval, infusion});
+                _candidates.push_back({_formulationAndRoute->getFormulationAndRoute(), dose, doseUnit,  interval, infusion});
 #if 0
                 std::string mess;
                 mess = "Potential adjustment. Dose :  \t" + std::to_string(dose)
@@ -129,11 +131,13 @@ ComputingStatus ComputingAdjustments::buildCandidatesForInterval(const FullFormu
                                                                  std::vector<ComputingAdjustments::SimpleDosageCandidate> &_candidates)
 {
     std::vector<Value> doseValues;
+    Unit doseUnit;
     std::vector<Duration> infusionTimes;
 
     const ValidDoses * doses = _formulationAndRoute->getValidDoses();
     if (doses != nullptr) {
         doseValues = doses->getValues();
+        doseUnit = doses->getUnit();
     }
 
     const ValidDurations * infusions = _formulationAndRoute->getValidInfusionTimes();
@@ -158,7 +162,7 @@ ComputingStatus ComputingAdjustments::buildCandidatesForInterval(const FullFormu
     // Creation of all candidates
     for(auto dose : doseValues) {
         for(auto infusion : infusionTimes) {
-            _candidates.push_back({_formulationAndRoute->getFormulationAndRoute(), dose, _interval, infusion});
+            _candidates.push_back({_formulationAndRoute->getFormulationAndRoute(), dose, doseUnit, _interval, infusion});
 #if 0
             std::string mess;
             mess = "Potential adjustment. Dose :  \t" + std::to_string(dose)

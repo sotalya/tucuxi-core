@@ -521,6 +521,7 @@ public:
     /// \pre _dose >= 0
     /// \pre IF _routeOfAdministration == AbsorptionModel::Infusion THEN (!_infusionTime.isEmpty() && _infusionTime > 0)
     SingleDose(const DoseValue &_dose,
+               const Unit &_doseUnit,
                const FormulationAndRoute &_routeOfAdministration,
                const Duration &_infusionTime) :
         m_routeOfAdministration(_routeOfAdministration)
@@ -536,6 +537,7 @@ public:
 //            throw std::invalid_argument("Route of administration is INFUSION, but empty infusion time specified.");
 //        }
         m_dose = _dose;
+        m_doseUnit = _doseUnit;
         m_infusionTime = _infusionTime;
     }
 
@@ -567,9 +569,16 @@ public:
         return m_dose;
     }
 
+    Unit getDoseUnit() const
+    {
+        return m_doseUnit;
+    }
+
 protected:
     /// \brief Administered dose.
     DoseValue m_dose;
+    /// \brief Dose unit
+    Unit m_doseUnit;
     /// \brief Route of administration.
     FormulationAndRoute m_routeOfAdministration;
     /// \brief Duration in case of an infusion.
@@ -589,10 +598,11 @@ public:
     /// \param _interval Interval between two doses.
     /// \pre !_interval.isEmpty() && _interval > 0
     LastingDose(const DoseValue &_dose,
+                const Unit &_doseUnit,
                 const FormulationAndRoute &_routeOfAdministration,
                 const Duration &_infusionTime,
                 const Duration &_interval)
-        : SingleDose(_dose, _routeOfAdministration, _infusionTime)
+        : SingleDose(_dose, _doseUnit, _routeOfAdministration, _infusionTime)
     {
         if (_interval.isEmpty()) {
             throw std::invalid_argument("Interval between two doses not specified (empty).");
@@ -646,10 +656,11 @@ public:
     /// \param _infusionTime Duration in case of an infusion.
     /// \param _timeOfDay Time of the day when the dose is administered.
     DailyDose(const DoseValue &_dose,
+              const Unit &_doseUnit,
               const FormulationAndRoute &_routeOfAdministration,
               const Duration &_infusionTime,
               const TimeOfDay &_timeOfDay)
-        : SingleDose(_dose, _routeOfAdministration, _infusionTime)
+        : SingleDose(_dose, _doseUnit, _routeOfAdministration, _infusionTime)
     {
         m_timeOfDay = _timeOfDay;
     }
@@ -709,11 +720,12 @@ public:
     /// \param _timeOfDay Time of the day when the dose is administered.
     /// \param _dayOfWeek Day of the week the dose has to be administered.
     WeeklyDose(const DoseValue &_dose,
+               const Unit &_doseUnit,
                const FormulationAndRoute &_routeOfAdministration,
                const Duration &_infusionTime,
                const TimeOfDay &_timeOfDay,
                const DayOfWeek &_dayOfWeek)
-        : DailyDose(_dose, _routeOfAdministration, _infusionTime, _timeOfDay)
+        : DailyDose(_dose, _doseUnit, _routeOfAdministration, _infusionTime, _timeOfDay)
     {
         if (!_dayOfWeek.ok()) {
             throw std::invalid_argument("Invalid day of week specified for weekly dose.");

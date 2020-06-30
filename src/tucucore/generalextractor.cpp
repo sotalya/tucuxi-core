@@ -239,6 +239,7 @@ ComputingStatus GeneralExtractor::generalExtractions(const ComputingTraitStandar
 
             DateTime start = lastIntake->getEventTime() + lastIntake->getInterval();
             Value dose = 0.0;
+            Unit doseValue("-");
             Duration interval = _traits->getEnd() - (lastIntake->getEventTime() + lastIntake->getInterval());
             auto absorptionModel = lastIntake->getRoute();
 
@@ -250,7 +251,7 @@ ComputingStatus GeneralExtractor::generalExtractions(const ComputingTraitStandar
             // We need at least one point. It could be less if the interval is very very small
             int nbPoints = std::max(1, static_cast<int>(nbPointsPerHour * interval.toHours()));
 
-            IntakeEvent intake(start, Duration(), dose, interval, lastIntake->getFormulationAndRoute(), absorptionModel, infusionTime, nbPoints);
+            IntakeEvent intake(start, Duration(), dose, doseValue,  interval, lastIntake->getFormulationAndRoute(), absorptionModel, infusionTime, nbPoints);
             intakeSeries.push_back(intake);
         }
 

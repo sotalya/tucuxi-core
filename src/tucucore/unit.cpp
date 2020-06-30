@@ -46,9 +46,14 @@ double UnitManager::translationFactor(Unit _initialUnit, Unit _finalUnit)
 
         {"mg-g", 0.001},
         {"kg-g", 1000.0},
+        {"ug-g", 0.000001},
 
         {"g-mg", 1000.0},
         {"kg-mg", 1000000},
+        {"ug-mg", 0.001},
+
+        {"g-ug", 1000000},
+        {"mg-ug", 1000},
 
         {"mg/l-ug/l", 1000.0},
         {"mg/ml-ug/l", 1000000},
@@ -97,12 +102,13 @@ double UnitManager::translationFactor(Unit _initialUnit, Unit _finalUnit)
 
 Value UnitManager::translateToUnit(Value _value, Unit _initialUnit, Unit _finalUnit)
 {
+    double a = _value * translationFactor(_initialUnit, _finalUnit);
     return _value * translationFactor(_initialUnit, _finalUnit);
 }
 
 bool UnitManager::isKnown(const Unit& _unit)
 {
-
+    return true;
 }
 
 
