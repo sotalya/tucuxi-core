@@ -7,6 +7,8 @@
 
 #include "tucucore/sampleextractor.h"
 
+using Tucuxi::Common::UnitManager;
+
 namespace Tucuxi {
 namespace Core {
 

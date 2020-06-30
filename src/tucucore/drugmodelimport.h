@@ -29,7 +29,6 @@ class TimeConsiderations;
 class HalfLife;
 class OutdatedMeasure;
 class PopulationValue;
-class Unit;
 class Operation;
 class DrugModelDomain;
 class Constraint;

@@ -7,6 +7,8 @@
 #include "tucucore/drugtreatment/target.h"
 #include "tucucore/targetevaluationresult.h"
 
+using Tucuxi::Common::UnitManager;
+
 namespace Tucuxi {
 namespace Core {
 

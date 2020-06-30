@@ -6,7 +6,7 @@
 
 
 namespace Tucuxi {
-namespace Core {
+namespace Common {
 
 bool Unit::isTime() const
 {
@@ -29,7 +29,7 @@ double UnitManager::translationFactor(Unit _initialUnit, Unit _finalUnit)
         return 1.0;
     }
 
-    static const std::map<std::string, Value> factorMap = {
+    static const std::map<std::string, double> factorMap = {
         {"h-m", 60.0},
         {"s-m", 1.0 / 60.0},
 
@@ -100,7 +100,7 @@ double UnitManager::translationFactor(Unit _initialUnit, Unit _finalUnit)
     return factorMap.at(key);
 }
 
-Value UnitManager::translateToUnit(Value _value, Unit _initialUnit, Unit _finalUnit)
+double UnitManager::translateToUnit(double _value, Unit _initialUnit, Unit _finalUnit)
 {
     double a = _value * translationFactor(_initialUnit, _finalUnit);
     return _value * translationFactor(_initialUnit, _finalUnit);
@@ -136,5 +136,5 @@ bool UnitManager::isKnown(const Unit& _unit)
 
 
 
-} // namespace Core
+} // namespace Common
 } // namespace Tucuxi

@@ -1,9 +1,10 @@
 #ifndef TUCUXI_CORE_RESIDUALERRORMODELEXTRACTOR_H
 #define TUCUXI_CORE_RESIDUALERRORMODELEXTRACTOR_H
 
+#include "tucucommon/unit.h"
+
 #include "tucucore/covariateevent.h"
 #include "tucucore/sampleevent.h"
-#include "tucucore/unit.h"
 #include "tucucore/computingservice/computingresult.h"
 
 namespace Tucuxi {
@@ -20,7 +21,7 @@ public:
 
     ComputingStatus extract(
             const ErrorModel &_errorModel,
-            const Unit &_fromUnit,
+            const Common::Unit &_fromUnit,
             const CovariateSeries &_covariateSeries,
             std::unique_ptr<IResidualErrorModel> &_residualErrorModel);
 

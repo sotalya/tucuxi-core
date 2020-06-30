@@ -2,6 +2,8 @@
 #include "tucucore/residualerrormodel.h"
 #include "tucucore/drugmodel/errormodel.h"
 
+using Tucuxi::Common::UnitManager;
+
 namespace Tucuxi {
 namespace Core {
 

@@ -7,6 +7,9 @@
 
 #include "tucucore/targetextractor.h"
 
+
+using Tucuxi::Common::UnitManager;
+
 namespace Tucuxi {
 namespace Core {
 

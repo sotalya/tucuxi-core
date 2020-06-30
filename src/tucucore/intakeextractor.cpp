@@ -2,9 +2,13 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
+#include "tucucommon/unit.h"
+
 #include "tucucore/intakeextractor.h"
 
 #define DBC_VERIFICATION
+
+using Tucuxi::Common::UnitManager;
 
 namespace Tucuxi {
 namespace Core {

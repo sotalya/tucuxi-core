@@ -12,8 +12,7 @@
 #include "tucucommon/xmliterator.h"
 #include "tucucommon/datetime.h"
 #include "tucucommon/duration.h"
-
-#include "tucucore/unit.h"
+#include "tucucommon/unit.h"
 
 using namespace std;
 
@@ -34,6 +33,11 @@ protected:
         DoNotAllowEmpty
     };
 
+    enum class CheckUnit {
+        Check = 0,
+        DoNotCheck
+    };
+
     virtual const std::vector<string> &ignoredTags() const = 0;
 
     void setNodeError(Common::XmlNodeIterator _node);
@@ -49,8 +53,7 @@ protected:
     string checkNodeIterator(Common::XmlNodeIterator _rootIterator, string _tagName);
 
     //Extract data from XML file
-    Core::Unit extractUnit(Common::XmlNodeIterator _rootIterator);
-    Core::Unit extractUnit(Common::XmlNodeIterator _rootIterator, Tucuxi::Core::CheckUnit _checkUnit);
+    Unit extractUnit(Common::XmlNodeIterator _rootIterator, CheckUnit _checkUnit = CheckUnit::Check);
     double extractDouble(Common::XmlNodeIterator _rootIterator);
     bool extractBool(Common::XmlNodeIterator _rootIterator);
     int extractInt(Common::XmlNodeIterator _rootIterator);
@@ -59,7 +62,7 @@ protected:
     string extractString(Common::XmlNodeIterator _rootIterator);
 
 
-    Core::Unit getChildUnit(Common::XmlNodeIterator _rootIterator, const string& _childName);
+    Unit getChildUnit(Common::XmlNodeIterator _rootIterator, const string& _childName);
     double getChildDouble(Common::XmlNodeIterator _rootIterator, const string& _childName);
     bool getChildBool(Common::XmlNodeIterator _rootIterator, const string& _childName);
     int getChildInt(Common::XmlNodeIterator _rootIterator, const string& _childName);

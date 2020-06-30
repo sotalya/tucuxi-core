@@ -19,6 +19,8 @@
 #include "tucucore/timedevent.h"
 #include "tucucore/invariants.h"
 
+using Tucuxi::Common::Unit;
+
 namespace Tucuxi {
 namespace Core {
 

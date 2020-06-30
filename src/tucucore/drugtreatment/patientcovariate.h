@@ -5,6 +5,7 @@
 
 #include "tucucommon/duration.h"
 #include "tucucommon/utils.h"
+#include "tucucommon/unit.h"
 
 #include "tucucore/definitions.h"
 #include "tucucore/timedevent.h"
@@ -12,8 +13,12 @@
 #include "tucucore/operablegraphmanager.h"
 #include "tucucore/drugdefinitions.h"
 
+
+
 namespace Tucuxi {
 namespace Core {
+
+using Unit = Tucuxi::Common::Unit;
 
 ///
 /// \brief Change of a covariate value for a patient.

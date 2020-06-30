@@ -166,7 +166,7 @@ public:
 
         // Arbitrary 20h half life. To be checked. Multiplier of 20
         // With a multiplier of 10 it fails
-        std::unique_ptr<HalfLife> halfLife = std::make_unique<HalfLife>("halflife", 20, Tucuxi::Core::Unit("h"), 20);
+        std::unique_ptr<HalfLife> halfLife = std::make_unique<HalfLife>("halflife", 20, Tucuxi::Common::Unit("h"), 20);
         timeConsiderations->setHalfLife(std::move(halfLife));
         std::unique_ptr<OutdatedMeasure> outdatedMeasure = std::make_unique<OutdatedMeasure>("id", 0.0, Unit());
         timeConsiderations->setOutdatedMeasure(std::move(outdatedMeasure));

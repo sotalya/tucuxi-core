@@ -16,8 +16,8 @@
 #include "tucucommon/datetime.h"
 #include "tucucommon/duration.h"
 #include "tucucommon/utils.h"
+#include "tucucommon/unit.h"
 
-#include "tucucore/unit.h"
 
 #include "fructose/fructose.h"
 
@@ -314,8 +314,8 @@ private:
 
             Tucuxi::Common::XmlNodeIterator xmlIterator = xmlNode.getChildren(UNIT);
 
-            Tucuxi::Core::Unit u1("mg");
-            Tucuxi::Core::Unit u2("m");
+            Tucuxi::Common::Unit u1("mg");
+            Tucuxi::Common::Unit u2("m");
 
             //GOOD
             fructose_assert(xmlImporterTestClass.getChildUnit(xmlIterator, UNIT_1) ==  u1);

@@ -1,9 +1,10 @@
 #ifndef DRUGDEFINITIONS_H
 #define DRUGDEFINITIONS_H
 
+#include "tucucommon/unit.h"
+
 #include "tucucore/operation.h"
 #include "tucucore/definitions.h"
-#include "unit.h"
 
 namespace Tucuxi {
 namespace Core {

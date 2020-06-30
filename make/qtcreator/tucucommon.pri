@@ -11,6 +11,7 @@ HEADERS += \
     $$PWD/../../src/tucucommon/logger.h \
     $$PWD/../../src/tucucommon/loggerhelper.h \
     $$PWD/../../src/tucucommon/utils.h \
+    $$PWD/../../src/tucucommon/unit.h \
     $$PWD/../../src/tucucommon/datetime.h \
     $$PWD/../../src/tucucommon/duration.h \
     $$PWD/../../src/tucucommon/jsengine.h \
@@ -29,6 +30,7 @@ SOURCES += \
     $$PWD/../../src/tucucommon/componentmanager.cpp \
     $$PWD/../../src/tucucommon/logger.cpp \
     $$PWD/../../src/tucucommon/utils.cpp \
+    $$PWD/../../src/tucucommon/unit.cpp \
     $$PWD/../../src/tucucommon/datetime.cpp \
     $$PWD/../../src/tucucommon/duration.cpp \
     $$PWD/../../src/tucucommon/jsengine.cpp \

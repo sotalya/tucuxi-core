@@ -6,6 +6,9 @@
 #include "tucucore/drugdefinitions.h"
 #include "tucucore/invariants.h"
 
+
+using Tucuxi::Common::Unit;
+
 namespace Tucuxi {
 namespace Core {
 

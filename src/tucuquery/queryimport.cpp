@@ -514,7 +514,7 @@ unique_ptr<Core::DosageBounded> QueryImport::createDosageBoundedFromIterator(Com
         Common::XmlNodeIterator doseRootIterator = _dosageBoundedIterator->getChildren(DOSE_NODE_NAME);
         Core::DoseValue doseValue = getChildDouble(doseRootIterator, DOSE_VALUE_NODE_NAME);
 
-        Core::Unit doseUnit = getChildString(doseRootIterator, DOSE_UNIT_NODE_NAME);
+        Common::Unit doseUnit = getChildString(doseRootIterator, DOSE_UNIT_NODE_NAME);
 
         double infuTimeInMinutes = getChildDouble(doseRootIterator, DOSE_INFUSIONTIME_NAME);
         Common::Duration infusionTime = Duration(std::chrono::minutes(static_cast<int>(infuTimeInMinutes)));
@@ -552,7 +552,7 @@ unique_ptr<Core::DosageBounded> QueryImport::createDosageBoundedFromIterator(Com
         Common::XmlNodeIterator doseRootIterator = _dosageBoundedIterator->getChildren(DOSE_NODE_NAME);
         Core::DoseValue doseValue = getChildDouble(doseRootIterator, DOSE_VALUE_NODE_NAME);
 
-        Core::Unit doseUnit = getChildString(doseRootIterator, DOSE_UNIT_NODE_NAME);
+        Common::Unit doseUnit = getChildString(doseRootIterator, DOSE_UNIT_NODE_NAME);
 
         Common::XmlNodeIterator formulationAndRouteRootIterator = _dosageBoundedIterator->getChildren(FORMULATION_AND_ROUTE_NODE_NAME);
         unique_ptr<Core::FormulationAndRoute> formulationAndRoute = createFormulationAndRoute(formulationAndRouteRootIterator);
@@ -591,7 +591,7 @@ unique_ptr<Core::DosageBounded> QueryImport::createDosageBoundedFromIterator(Com
         Common::XmlNodeIterator doseRootIterator = _dosageBoundedIterator->getChildren(DOSE_NODE_NAME);
         Core::DoseValue doseValue = getChildDouble(doseRootIterator, DOSE_VALUE_NODE_NAME);
 
-        Core::Unit doseUnit = getChildString(doseRootIterator, DOSE_UNIT_NODE_NAME);
+        Common::Unit doseUnit = getChildString(doseRootIterator, DOSE_UNIT_NODE_NAME);
 
         Common::XmlNodeIterator formulationAndRouteRootIterator = _dosageBoundedIterator->getChildren(FORMULATION_AND_ROUTE_NODE_NAME);
         unique_ptr<Core::FormulationAndRoute> formulationAndRoute = createFormulationAndRoute(formulationAndRouteRootIterator);

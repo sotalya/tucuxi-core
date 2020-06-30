@@ -75,7 +75,6 @@ HEADERS += \
     $$PWD/../../src/tucucore/computingservice/icomputingservice.h \
     $$PWD/../../src/tucucore/validvalues.h \
     $$PWD/../../src/tucucore/computingservice/computingaborter.h \
-    $$PWD/../../src/tucucore/unit.h \
     $$PWD/../../src/tucucore/drugmodel/drugmodelmetadata.h \
     $$PWD/../../src/tucucore/drugmodelrepository.h \
     $$PWD/../../src/tucucore/overloadevaluator.h \
@@ -155,7 +154,6 @@ SOURCES += \
     $$PWD/../../src/tucucore/computingservice/icomputingservice.cpp \
     $$PWD/../../src/tucucore/validvalues.cpp \
     $$PWD/../../src/tucucore/computingservice/computingaborter.cpp \
-    $$PWD/../../src/tucucore/unit.cpp \
     $$PWD/../../src/tucucore/drugmodel/drugmodelmetadata.cpp \
     $$PWD/../../src/tucucore/drugmodelrepository.cpp \
     $$PWD/../../src/tucucore/overloadevaluator.cpp \

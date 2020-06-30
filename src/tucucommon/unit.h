@@ -1,12 +1,10 @@
-#ifndef TUCUXI_CORE_UNIT_H
-#define TUCUXI_CORE_UNIT_H
+#ifndef TUCUXI_COMMON_UNIT_H
+#define TUCUXI_COMMON_UNIT_H
 
 #include <string>
 
-#include "definitions.h"
-
 namespace Tucuxi {
-namespace Core {
+namespace Common {
 
 ///
 /// \brief The Unit class
@@ -140,7 +138,7 @@ public:
     ///
     /// If the units are not compatible, then the returned value is 0.0.
     ///
-    static Value translateToUnit(Value _value, Unit _initialUnit, Unit _finalUnit);
+    static double translateToUnit(double _value, Unit _initialUnit, Unit _finalUnit);
 
     ///
     /// \brief Translation factor from one unit to another compatible one
@@ -154,14 +152,9 @@ public:
 
 };
 
-enum class CheckUnit {
-    Check = 0,
-    DoNotCheck
-};
 
-
-} // namespace Core
+} // namespace Common
 } // namespace Tucuxi
 
 
-#endif // TUCUXI_CORE_UNIT_H
+#endif // TUCUXI_COMMON_UNIT_H
