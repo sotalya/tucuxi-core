@@ -238,8 +238,8 @@ static std::string vancomycin_tdd = R"(<?xml version="1.0" encoding="UTF-8" stan
                                                     <description>
                                                         <desc lang='en'>Sex of the patient</desc>
                                                     </description>
-                                                    <unit>y</unit>
-                                                    <covariateType>standard</covariateType>
+                                                    <unit>y</unit>)"
+                                                    R"(<covariateType>standard</covariateType>
                                                     <dataType>double</dataType>
                                                     <interpolationType>direct</interpolationType>
                                                     <refreshPeriod>
@@ -451,11 +451,11 @@ static std::string vancomycin_tdd = R"(<?xml version="1.0" encoding="UTF-8" stan
                                                                         <standardValue>1.0</standardValue>
                                                                     </micValue>
                                                                 </mic>
-                                                            </targetValues>
-                                                            <comments>
+                                                            </targetValues>)"
+                                                            R"(<comments>
                                                                 <comment lang="en">Targets suggested by Philip Drennan</comment>
-                                                            </comments>
-                                                        </target>
+                                                            </comments>)"
+                                                        R"(</target>
                                                     </targets>
                                                 </activeMoiety>
                                             </activeMoieties>
@@ -669,9 +669,9 @@ static std::string vancomycin_tdd = R"(<?xml version="1.0" encoding="UTF-8" stan
                                                                 <standardValue>250</standardValue>
                                                             </step>
                                                         </rangeValues>
-                                                    </availableDoses>
+                                                    </availableDoses>)"
 
-                                                    <intervals>
+                                                    R"(<intervals>
                                                         <unit>h</unit>
                                                         <default>
                                                             <standardValue>12</standardValue>
@@ -755,6 +755,7 @@ struct TestDrugVancomycin : public fructose::test_base<TestDrugVancomycin>
         // Add a treatment intake every ten days in June
         // 200mg via a intravascular at 08h30, starting the 01.06
         LastingDose periodicDose(DoseValue(200.0),
+                                 Unit("mg"),
                                  _route,
                                  Duration(),
                                  Duration(std::chrono::hours(6)));

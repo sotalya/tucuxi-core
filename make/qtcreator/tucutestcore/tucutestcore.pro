@@ -8,6 +8,7 @@ unix {
 
 win32 {
     include(../tinyjs.pri)
+    QMAKE_CXXFLAGS += -bigobj
 }
 
 

@@ -108,7 +108,30 @@ Value UnitManager::translateToUnit(Value _value, Unit _initialUnit, Unit _finalU
 
 bool UnitManager::isKnown(const Unit& _unit)
 {
-    return true;
+    static const std::vector<Unit> units = {
+        Unit(""),
+        Unit("-"),
+        Unit("h"),
+        Unit("m"),
+        Unit("s"),
+        Unit("kg"),
+        Unit("g"),
+        Unit("mg"),
+        Unit("ug"),
+        Unit("mg/l"),
+        Unit("mg/ml"),
+        Unit("ug/l"),
+        Unit("ug/ml"),
+        Unit("mg*h/l"),
+        Unit("h*mg/l"),
+        Unit("ug*h/l"),
+        Unit("h*ug/l"),
+        Unit("mol/l"),
+        Unit("mmol/l"),
+        Unit("umol/l")
+    };
+
+    return false;
 }
 
 

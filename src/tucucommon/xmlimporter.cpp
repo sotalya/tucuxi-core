@@ -68,7 +68,6 @@ void XMLImporter::setNodeError(Tucuxi::Common::XmlNodeIterator _nodeIterator)
 
 }
 
-
 Tucuxi::Core::Unit XMLImporter::extractUnit(Tucuxi::Common::XmlNodeIterator _rootIterator)
 {
     std::string unitString = _rootIterator->getValue();
@@ -76,8 +75,26 @@ Tucuxi::Core::Unit XMLImporter::extractUnit(Tucuxi::Common::XmlNodeIterator _roo
         unitString = "m";
     }
 
-    Tucuxi::Core::Unit result(unitString);
-    return result;
+    return Tucuxi::Core::Unit(unitString);
+}
+
+
+Tucuxi::Core::Unit XMLImporter::extractUnit(Tucuxi::Common::XmlNodeIterator _rootIterator, Core::CheckUnit _checkUnit)
+{
+    std::string unitString = _rootIterator->getValue();
+    if (unitString == "min") {
+        unitString = "m";
+    }
+
+    if (_checkUnit == Core::CheckUnit::Check)
+    {
+        if (!Core::UnitManager::isKnown(unitString))
+        {
+            return Tucuxi::Core::Unit("");
+        }
+    }
+
+    return Tucuxi::Core::Unit(unitString);
 }
 
 double XMLImporter::extractDouble(Tucuxi::Common::XmlNodeIterator _rootIterator)

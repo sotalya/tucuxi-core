@@ -50,6 +50,7 @@ protected:
 
     //Extract data from XML file
     Core::Unit extractUnit(Common::XmlNodeIterator _rootIterator);
+    Core::Unit extractUnit(Common::XmlNodeIterator _rootIterator, Tucuxi::Core::CheckUnit _checkUnit);
     double extractDouble(Common::XmlNodeIterator _rootIterator);
     bool extractBool(Common::XmlNodeIterator _rootIterator);
     int extractInt(Common::XmlNodeIterator _rootIterator);

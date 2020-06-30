@@ -222,8 +222,8 @@ static std::string tobramycin_tdd = R"(<?xml version="1.0" encoding="UTF-8"?>
                                                     <covariateValue>
                                                         <standardValue>37.2</standardValue>
                                                     </covariateValue>
-                                                    <validation>
-                                                        <errorMessage>
+                                                    <validation>)"
+                                                        R"(<errorMessage>
                                                             <text lang='fr'>The SCR shall be positive.</text>
                                                         </errorMessage>
                                                         <operation>
@@ -428,8 +428,8 @@ static std::string tobramycin_tdd = R"(<?xml version="1.0" encoding="UTF-8"?>
                                                                                     <id>height</id>
                                                                                     <type>double</type>
                                                                                 </input>
-                                                                            </inputs>
-                                                                            <code>
+                                                                            </inputs>)"
+                                                                            R"(<code>
                                                                                 <![CDATA[theta_CL = 0.0;
                                                                                 theta_AGE = 0.0;
                                                                                 ffm = 0.0;
@@ -612,8 +612,8 @@ static std::string tobramycin_tdd = R"(<?xml version="1.0" encoding="UTF-8"?>
                                                                         <stdDev>0.418</stdDev>
                                                                     </stdDevs>
                                                                 </bsv>
-                                                                <validation>
-                                                                    <errorMessage>
+                                                                <validation>)"
+                                                                    R"(<errorMessage>
                                                                         <text lang='fr'>Q shall be positive.</text>
                                                                     </errorMessage>
                                                                     <operation>

@@ -286,10 +286,10 @@ struct TestDrugDomainConstraintsEvaluator : public fructose::test_base<TestDrugD
 
 
 
-        computationErrorTests(ConstraintType::SOFT, ConstraintType::SOFT);
-        computationErrorTests(ConstraintType::HARD, ConstraintType::SOFT);
-        computationErrorTests(ConstraintType::SOFT, ConstraintType::HARD);
-        computationErrorTests(ConstraintType::HARD, ConstraintType::HARD);
+//        computationErrorTests(ConstraintType::SOFT, ConstraintType::SOFT);
+//        computationErrorTests(ConstraintType::HARD, ConstraintType::SOFT);
+//        computationErrorTests(ConstraintType::SOFT, ConstraintType::HARD);
+//        computationErrorTests(ConstraintType::HARD, ConstraintType::HARD);
 
 
 

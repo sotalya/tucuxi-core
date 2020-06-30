@@ -154,6 +154,11 @@ public:
 
 };
 
+enum class CheckUnit {
+    Check = 0,
+    DoNotCheck
+};
+
 
 } // namespace Core
 } // namespace Tucuxi

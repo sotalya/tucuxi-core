@@ -11,7 +11,7 @@
 
 
 /// The following strange way of including files is meant to include all of them
-/// or only a selection, thanks to DEFINES.
+/// || only a selection, thanks to DEFINES.
 /// If no specific DEFINES is added, then all tests are compiled.
 /// If DO_NOT_COMPILE_ALL_TESTS is set, then only the tests selected will be compiled.
 /// For instance, to compile only the dosage tests, then run
@@ -22,91 +22,91 @@
 /// Therefore, only selecting the test of interest allows to gain some time.
 
 
-#if defined(test_multianalytesmultiactivemoieties) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_multianalytesmultiactivemoieties) || !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "drugmodels/test_multianalytesmultiactivemoieties.h"
 #endif
-#if defined(test_computingcomponentadjustments) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_computingcomponentadjustments) || !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_computingcomponentadjustments.h"
 #endif
-#if defined(test_computingcomponentconcentration) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_computingcomponentconcentration) || !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_computingcomponentconcentration.h"
 #endif
-#if defined(test_computingcomponentpercentiles) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_computingcomponentpercentiles) || !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_computingcomponentpercentiles.h"
 #endif
-#if defined(test_concentrationcalculator) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_concentrationcalculator) || !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_concentrationcalculator.h"
 #endif
-#if defined(test_covariateextractor) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_covariateextractor) || !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_covariateextractor.h"
 #endif
-#if defined(test_cyclestatistics) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_cyclestatistics) || !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_cyclestatistics.h"
 #endif
-#if defined(test_dosage) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_dosage) || !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_dosage.h"
 #endif
-#if defined(test_drugdomainconstraintsevaluator) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_drugdomainconstraintsevaluator) || !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_drugdomainconstraintsevaluator.h"
 #endif
-#if defined(test_drugmodelimport) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_drugmodelimport) || !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_drugmodelimport.h"
 #endif
-#if defined(test_drugmodels) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_drugmodels) || !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_drugmodels.h"
 #endif
-#if defined(test_intakeextractor) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_intakeextractor) || !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_intakeextractor.h"
 #endif
-#if defined(test_intakeintervalcalculator) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_intakeintervalcalculator) || !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_intakeintervalcalculator.h"
 #endif
-#if defined(test_nonmemdrugs) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_nonmemdrugs) || !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_nonmemdrugs.h"
 #endif
-#if defined(test_operablegraphmanager) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_operablegraphmanager) || !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_operablegraphmanager.h"
 #endif
-#if defined(test_operation) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_operation) || !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_operation.h"
 #endif
-#if defined(test_operationcollection) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_operationcollection) || !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_operationcollection.h"
 #endif
-#if defined(test_parameterextractor) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_parameterextractor) || !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_parameterextractor.h"
 #endif
-#if defined(test_percentilecalculator) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_percentilecalculator) || !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_percentilecalculator.h"
 #endif
-#if defined(test_pertinenttimescalculator) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_pertinenttimescalculator) || !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_pertinenttimescalculator.h"
 #endif
-#if defined(test_pkmodel) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_pkmodel) || !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_pkmodel.h"
 #endif
-#if defined(test_residualerrormodel) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_residualerrormodel) || !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_residualerrormodel.h"
 #endif
-#if defined(test_sampleextractor) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_sampleextractor) || !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_sampleextractor.h"
 #endif
-#if defined(test_targetextractor) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_targetextractor) || !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_targetextractor.h"
 #endif
-#if defined(test_targetevaluator) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_targetevaluator) || !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_targetevaluator.h"
 #endif
-#if defined(test_constanteliminationbolus) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_constanteliminationbolus) || !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "drugmodels/test_constanteliminationbolus.h"
 #endif
-#if defined(test_pkasymptotic) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_pkasymptotic) || !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "drugmodels/test_pkasymptotic.h"
 #endif
-#if defined(test_drug_tobramycin) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_drug_tobramycin) || !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "drugmodels/test_drug_tobramycin.h"
 #endif
-#if defined(test_drug_vancomycin) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_drug_vancomycin) || !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "drugmodels/test_drug_vancomycin.h"
 #endif
 
@@ -122,7 +122,7 @@ int main(int argc, char** argv)
     int res = 0;
     int tot_res = 0;
 
-#if defined(test_residualerrormodel) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_residualerrormodel) || !defined(DO_NOT_COMPILE_ALL_TESTS)
     TestResidualErrorModel residualErrorModelTests;
 
     residualErrorModelTests.add_test("testLogLikelihood", &TestResidualErrorModel::testLogLikelihood);
@@ -138,7 +138,7 @@ int main(int argc, char** argv)
     }
 #endif
 
-#if defined(test_pertinenttimescalculator) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_pertinenttimescalculator) || !defined(DO_NOT_COMPILE_ALL_TESTS)
     TestPertinentTimesCalculator pertinentTimesCalculatorTests;
 
     pertinentTimesCalculatorTests.add_test("testStandard", &TestPertinentTimesCalculator::testStandard);
@@ -154,7 +154,7 @@ int main(int argc, char** argv)
     }
 #endif
 
-#if defined(test_drugdomainconstraintsevaluator) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_drugdomainconstraintsevaluator) || !defined(DO_NOT_COMPILE_ALL_TESTS)
     TestDrugDomainConstraintsEvaluator drugDomainConstraintsEvaluatorTests;
 
     drugDomainConstraintsEvaluatorTests.add_test("simpleTest1", &TestDrugDomainConstraintsEvaluator::test1);
@@ -172,7 +172,7 @@ int main(int argc, char** argv)
     }
 #endif
 
-#if defined(test_targetevaluator) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_targetevaluator) || !defined(DO_NOT_COMPILE_ALL_TESTS)
     TestTargetEvaluator targetEvaluatorTests;
 
 
@@ -199,7 +199,7 @@ int main(int argc, char** argv)
     }
 #endif
 
-#if defined(test_drugmodelimport) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_drugmodelimport) || !defined(DO_NOT_COMPILE_ALL_TESTS)
     TestDrugModelImport drugModelImportTests;
     drugModelImportTests.add_test("DrugModelImportFake", &TestDrugModelImport::testFake);
     drugModelImportTests.add_test("DrugModelImportBusulfan1", &TestDrugModelImport::testBusulfan1);
@@ -214,7 +214,7 @@ int main(int argc, char** argv)
     }
 #endif
 
-#if defined(test_computingcomponentconcentration) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_computingcomponentconcentration) || !defined(DO_NOT_COMPILE_ALL_TESTS)
     TestComputingComponentConcentration computingComponentConcentrationTests;
 
     // one compartment
@@ -233,7 +233,7 @@ int main(int argc, char** argv)
     }
 #endif
 
-#if defined(test_computingcomponentadjustments) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_computingcomponentadjustments) || !defined(DO_NOT_COMPILE_ALL_TESTS)
     TestComputingComponentAdjusements computingComponentAdjusementsTests;
 
     // one compartment
@@ -257,7 +257,7 @@ int main(int argc, char** argv)
     }
 #endif
 
-#if defined(test_intakeintervalcalculator) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_intakeintervalcalculator) || !defined(DO_NOT_COMPILE_ALL_TESTS)
     TestIntervalCalculator calculatorsTests;
 
     // one compartment
@@ -293,7 +293,7 @@ int main(int argc, char** argv)
     std::cout << "Calculators test succeeded\n";
 #endif
 
-#if defined(test_concentrationcalculator) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_concentrationcalculator) || !defined(DO_NOT_COMPILE_ALL_TESTS)
     // --- ConcentrationCalculator --- //
     TestConcentrationCalculator concentrationCalculatorTests;
     concentrationCalculatorTests.add_test("linear bolus test", &TestConcentrationCalculator::testConstantEliminationBolus);
@@ -318,7 +318,7 @@ int main(int argc, char** argv)
     std::cout << "ConcentrationCalculator test succeeded\n";
 #endif
 
-#if defined(test_dosage) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_dosage) || !defined(DO_NOT_COMPILE_ALL_TESTS)
     // --- DOSAGE --- //
     TestDosage dosageTests;
     dosageTests.add_test("SingleDose test", &TestDosage::testSingleDose);
@@ -336,7 +336,7 @@ int main(int argc, char** argv)
     }
 #endif
 
-#if defined(test_intakeextractor) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_intakeextractor) || !defined(DO_NOT_COMPILE_ALL_TESTS)
     // --- INTAKE EXTRACTOR --- //
     TestIntakeExtractor intakeExtractorTests;
     intakeExtractorTests.add_test("OncePerWeek test", &TestIntakeExtractor::testOncePerWeek);
@@ -361,7 +361,7 @@ int main(int argc, char** argv)
     }
 #endif
 
-#if defined(test_operation) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_operation) || !defined(DO_NOT_COMPILE_ALL_TESTS)
     // --- OPERATION --- //
     TestOperation operationTests;
     operationTests.add_test("OperationInput test", &TestOperation::testOperationInput);
@@ -386,7 +386,7 @@ int main(int argc, char** argv)
     }
 #endif
 
-#if defined(test_operationcollection) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_operationcollection) || !defined(DO_NOT_COMPILE_ALL_TESTS)
     // --- OPERATIONCOLLECTION --- //
     TestOperationCollection operationCollectionTests;
     operationCollectionTests.add_test("OperationCollection test", &TestOperationCollection::testOperationCollection);
@@ -412,7 +412,7 @@ int main(int argc, char** argv)
     }
 #endif
 
-#if defined(test_covariateextractor) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_covariateextractor) || !defined(DO_NOT_COMPILE_ALL_TESTS)
     // --- CovariateExtractor --- //
     TestCovariateExtractor ceTests;
     ceTests.add_test("testCE_constructor", &TestCovariateExtractor::testCE_constructor);
@@ -438,7 +438,7 @@ int main(int argc, char** argv)
     }
 #endif
 
-#if defined(test_parameterextractor) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_parameterextractor) || !defined(DO_NOT_COMPILE_ALL_TESTS)
     // --- ParameterExtractor --- //
     TestParameterExtractor peTests;
     peTests.add_test("testPE_constructor", &TestParameterExtractor::testPE_constructor);
@@ -456,7 +456,7 @@ int main(int argc, char** argv)
     }
 #endif
 
-#if defined(test_operablegraphmanager) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_operablegraphmanager) || !defined(DO_NOT_COMPILE_ALL_TESTS)
     // --- OperableGraphManager --- //
     TestOpGraph opGraphTests;
     opGraphTests.add_test("testOperableFunctions", &TestOpGraph::testOperableFunctions);
@@ -473,7 +473,7 @@ int main(int argc, char** argv)
     }
 #endif
 
-#if defined(test_percentilecalculator) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_percentilecalculator) || !defined(DO_NOT_COMPILE_ALL_TESTS)
     // --- percentile calculator --- //
     TestPercentileCalculator percentileCalculatorTests;
 
@@ -489,7 +489,7 @@ int main(int argc, char** argv)
     }
 #endif
 
-#if defined(test_nonmemdrugs) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_nonmemdrugs) || !defined(DO_NOT_COMPILE_ALL_TESTS)
     // --- NonMemDrugs --- //
     TestNonMemDrugs nonMemDrugsTests;
 
@@ -504,7 +504,7 @@ int main(int argc, char** argv)
     std::cout << "NonMem Drugs test succeeded\n";
 #endif
 
-#if defined(test_drugmodels) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_drugmodels) || !defined(DO_NOT_COMPILE_ALL_TESTS)
     TestDrugModels drugModelsTests;
 
     // one compartment
@@ -518,7 +518,7 @@ int main(int argc, char** argv)
     std::cout << "DrugModels test succeeded\n";
 #endif
 
-#if defined(test_cyclestatistics) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_cyclestatistics) || !defined(DO_NOT_COMPILE_ALL_TESTS)
     // --- cycle statistics --- //
     TestCycleStatistics cycleStatisticsTests;
 
@@ -533,7 +533,7 @@ int main(int argc, char** argv)
     std::cout << "Cycle Statistics Calculators test succeeded\n";
 #endif
 
-#if defined(test_computingcomponentpercentiles) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_computingcomponentpercentiles) || !defined(DO_NOT_COMPILE_ALL_TESTS)
     TestComputingComponentPercentiles computingComponentPercentilesTests;
 
     // one compartment
@@ -552,7 +552,7 @@ int main(int argc, char** argv)
     }
 #endif
 
-#if defined(test_sampleextractor) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_sampleextractor) || !defined(DO_NOT_COMPILE_ALL_TESTS)
     // --- SampleExtractor tests --- //
     TestSampleExtractor sampleExtractorTests;
 
@@ -569,7 +569,7 @@ int main(int argc, char** argv)
     }
 #endif
 
-#if defined(test_targetextractor) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_targetextractor) || !defined(DO_NOT_COMPILE_ALL_TESTS)
     // --- TargetExtractor tests --- //
     TestTargetExtractor targetExtractorTests;
 
@@ -586,7 +586,7 @@ int main(int argc, char** argv)
     }
 #endif
 
-#if defined(test_drug_tobramycin) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_drug_tobramycin) || !defined(DO_NOT_COMPILE_ALL_TESTS)
     // --- Tobramycin drug tests --- //
     TestDrugTobramycin tobramycinTests;
 
@@ -603,7 +603,7 @@ int main(int argc, char** argv)
     }
 #endif
 
-#if defined(test_drug_vancomycin) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_drug_vancomycin) || !defined(DO_NOT_COMPILE_ALL_TESTS)
     // --- Tobramycin drug tests --- //
     TestDrugVancomycin vancomycinTests;
 
@@ -620,7 +620,7 @@ int main(int argc, char** argv)
     }
 #endif
 
-#if defined(test_constanteliminationbolus) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_constanteliminationbolus) || !defined(DO_NOT_COMPILE_ALL_TESTS)
     // --- Constant elimination tests --- //
     TestConstantEliminationBolus constantEliminationBolusTests;
 
@@ -637,7 +637,7 @@ int main(int argc, char** argv)
 #endif
 
 
-#if defined(test_pkasymptotic) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_pkasymptotic) || !defined(DO_NOT_COMPILE_ALL_TESTS)
     // --- Constant elimination tests --- //
     TestPkAsymptotic pkAsymptoticTests;
 
@@ -654,7 +654,7 @@ int main(int argc, char** argv)
 #endif
 
 
-#if defined(test_multianalytesmultiactivemoieties) or !defined(DO_NOT_COMPILE_ALL_TESTS)
+#if defined(test_multianalytesmultiactivemoieties) || !defined(DO_NOT_COMPILE_ALL_TESTS)
     // --- Multi analytes multi active moieties tests --- //
     TestMultiAnalytesMultiActiveMoieties multiAnalytesMultiActiveMoietiesTests;
 

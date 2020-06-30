@@ -184,8 +184,8 @@ static std::string busulfan1 = R"(<?xml version="1.0" encoding="UTF-8" standalon
                                                <analytesToMoietyFormula>
                                                    <hardFormula>direct</hardFormula>
                                                    <comments/>
-                                               </analytesToMoietyFormula>
-                                               <!-- Drug targets -->
+                                               </analytesToMoietyFormula>)"
+                                               R"(<!-- Drug targets -->
                                                <targets>
                                                    <target>
                                                        <targetType>peak</targetType>
@@ -367,8 +367,8 @@ static std::string busulfan1 = R"(<?xml version="1.0" encoding="UTF-8" standalon
                                                                    <stdDev>0.22</stdDev>
                                                                </stdDevs>
                                                            </bsv>
-                                                           <validation>
-                                                               <errorMessage><text lang="fr"></text></errorMessage>
+                                                           <validation>)"
+                                                               R"(<errorMessage><text lang="fr"></text></errorMessage>
                                                                <operation>
                                                                    <softFormula>
                                                                        <inputs>
@@ -714,8 +714,8 @@ static std::string drug1 = R"(<?xml version="1.0" encoding="UTF-8" standalone="n
                                            <interpolationType>linear</interpolationType>
                                            <covariateValue>
                                                <standardValue>70</standardValue>
-                                           </covariateValue>
-                                           <validation> <!-- pourrait être une contrainte -->
+                                           </covariateValue>)"
+                                           R"(<validation> <!-- pourrait être une contrainte -->
                                                <errorMessage><text lang="fr"></text></errorMessage>
                                                <operation>
                                                    <softFormula>
@@ -954,9 +954,9 @@ static std::string drug1 = R"(<?xml version="1.0" encoding="UTF-8" standalone="n
                                                <correlations />
                                            </dispositionParameters>
                                        </analyteGroup>
-                                   </analyteGroups>
+                                   </analyteGroups>)"
 
-                                   <!-- We can have various formulation and routes, and for each one a set of absorption parameters and available dosages -->
+                                   R"(<!-- We can have various formulation and routes, and for each one a set of absorption parameters and available dosages -->
 
                                    <formulationAndRoutes default="id0">
                                        <formulationAndRoute>
