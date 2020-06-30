@@ -24,8 +24,8 @@
 									<lastingDosage>
 										<interval>24:00:00</interval>
 										<dose>
-											<value>300</value>
-											<unit>mg</unit>
+											<value>0.3</value>
+											<unit>g</unit>
 											<infusionTimeInMinutes>30</infusionTimeInMinutes>
 										</dose>
 										<formulationAndRoute>
