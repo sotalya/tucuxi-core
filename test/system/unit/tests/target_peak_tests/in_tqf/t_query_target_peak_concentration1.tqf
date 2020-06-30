@@ -18,7 +18,7 @@
 				<treatment>
 					<dosageHistory>
 						<dosageTimeRange>
-							<start>2020-06-21T08:00:00</start>							<end>2020-06-23T08:00:00</end>
+							<start>2020-06-21T08:00:00</start>							<end>2020-06-25T08:00:00</end>
 							<dosage>
 								<dosageLoop>
 									<lastingDosage>
@@ -39,7 +39,7 @@
 							</dosage>
 						</dosageTimeRange>
 					</dosageHistory>
-				</treatment>								<samples/>								<targets>										<target>											<activeMoietyId>drugtest</activeMoietyId>												<targetType>peak</targetType>												<unit>ug/l</unit>												<min>50000</min>												<best>120000</best>												<max>160000</max>												<inefficacyAlarm>20000</inefficacyAlarm>												<toxicityAlarm>200000</toxicityAlarm>												<mic>														<unit>ug/l</unit>														<micValue>90000</micValue>													</mic>										</target>									</targets>
+				</treatment>								<samples/>								<targets>										<target>											<activeMoietyId>drugtest</activeMoietyId>												<targetType>peak</targetType>												<unit>mg/l</unit>												<min>200</min>												<best>300</best>												<max>400</max>												<inefficacyAlarm>50</inefficacyAlarm>												<toxicityAlarm>600</toxicityAlarm>												<mic>														<unit>mg/l</unit>														<micValue>70</micValue>													</mic>										</target>									</targets>
 			</drug>
 		</drugs>
 	</drugTreatment>

@@ -68,9 +68,11 @@ double UnitManager::translationFactor(Unit _initialUnit, Unit _finalUnit)
 
         {"mg*h/l-ug*h/l", 1000.0},
         {"h*mg/l-ug*h/l", 1000.0},
+        {"h*ug/l-ug*h/l", 1},
 
         {"ug*h/l-mg*h/l", 0.001},
         {"h*ug/l-mg*h/l", 0.001},
+        {"h*mg/l-mg*h/l", 1},
 
         {"mol/l-umol/l", 1000000},
         {"mmol/l-umol/l", 0.001},
@@ -96,6 +98,11 @@ double UnitManager::translationFactor(Unit _initialUnit, Unit _finalUnit)
 Value UnitManager::translateToUnit(Value _value, Unit _initialUnit, Unit _finalUnit)
 {
     return _value * translationFactor(_initialUnit, _finalUnit);
+}
+
+bool UnitManager::isKnown(const Unit& _unit)
+{
+
 }
 
 
