@@ -53,7 +53,7 @@ protected:
     string checkNodeIterator(Common::XmlNodeIterator _rootIterator, string _tagName);
 
     //Extract data from XML file
-    Unit extractUnit(Common::XmlNodeIterator _rootIterator, CheckUnit _checkUnit = CheckUnit::Check);
+    Unit extractUnit(Common::XmlNodeIterator _rootIterator, CheckUnit _checkUnit = CheckUnit::DoNotCheck);
     double extractDouble(Common::XmlNodeIterator _rootIterator);
     bool extractBool(Common::XmlNodeIterator _rootIterator);
     int extractInt(Common::XmlNodeIterator _rootIterator);
