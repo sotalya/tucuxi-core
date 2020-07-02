@@ -6,6 +6,7 @@
 namespace Tucuxi {
 namespace Common {
 
+
 ///
 /// \brief The Unit class
 ///
@@ -108,6 +109,17 @@ class UnitManager
 {
 public:
 
+    enum class UnitType{
+        Weight = 0,
+        Concentration,
+        MoleConcentration,
+        Time,
+        ConcentrationTime,
+        Height,
+        NoUnit,
+        Undefined
+    };
+
     ///
     /// \brief Indicates if this unit is a known one
     /// \param _unit The unit to be tested
@@ -134,11 +146,12 @@ public:
     /// \param _value The value to convert
     /// \param _initialUnit The initial unit
     /// \param _finalUnit The final unit
+    /// \param _unitType The type of unit
     /// \return The value represented in the final unit
     ///
     /// If the units are not compatible, then the returned value is 0.0.
     ///
-    static double translateToUnit(double _value, Unit _initialUnit, Unit _finalUnit);
+    static double translateToUnit(double _value, Unit _initialUnit, Unit _finalUnit, UnitType _unitType);
 
     ///
     /// \brief Translation factor from one unit to another compatible one
@@ -150,6 +163,19 @@ public:
     ///
     static double translationFactor(Unit _initialUnit, Unit _finalUnit);
 
+    static double translateConcentrationTimeFactor(Unit _initialUnit, Unit _finalUnit);
+
+    static double translateWeightFactor(Unit _initialUnit, Unit _finalUnit);
+
+    static double translateConcentrationFactor(Unit _initialUnit, Unit _finalUnit);
+
+    static double translateMoleConcentrationFactor(Unit _initialUnit, Unit _finalUnit);
+
+    static double translateTimeFactor(Unit _initialUnit, Unit _finalUnit);
+
+    static double translateHeightFactor(Unit _initialUnit, Unit _finalUnit);
+
+    static double translateEmptyFactor(Unit _initialUnit, Unit _finalUnit);
 };
 
 

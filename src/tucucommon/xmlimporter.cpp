@@ -79,6 +79,10 @@ Unit XMLImporter::extractUnit(Tucuxi::Common::XmlNodeIterator _rootIterator, Che
     {
         if (!UnitManager::isKnown(unitString))
         {
+            setNodeError(_rootIterator);
+        }
+        else if (unitString == "" || unitString == "-")
+        {
             return Unit("");
         }
     }
@@ -191,7 +195,7 @@ string XMLImporter::extractString(Common::XmlNodeIterator _rootIterator)
 }
 
 
-Unit XMLImporter::getChildUnit(Common::XmlNodeIterator _rootIterator, const string& _childName)
+Unit XMLImporter::getChildUnit(Common::XmlNodeIterator _rootIterator, const string& _childName, CheckUnit _checkunit)
 {
     auto child = _rootIterator->getChildren(_childName);
 
@@ -201,7 +205,7 @@ Unit XMLImporter::getChildUnit(Common::XmlNodeIterator _rootIterator, const stri
         return Unit("");
     }
     else{
-         return extractUnit(child);
+         return extractUnit(child, _checkunit);
     }
 
 
@@ -295,7 +299,6 @@ string XMLImporter::getChildString(Common::XmlNodeIterator _rootIterator, const 
         return extractString(child);
     }
 }
-
 
 
 string XMLImporter::checkNodeIterator(Common::XmlNodeIterator _rootIterator, string _tagName)

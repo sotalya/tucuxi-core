@@ -84,6 +84,7 @@ DrugModel* DrugModelRepository::loadFile(const std::string& _fileName)
     }
     else {
         logHelper.error("Cannot import a drug file : {}", _fileName);
+        logHelper.error("{} ", drugModelImport.getErrorMessage());
         return nullptr;
     }
     return drugModel;

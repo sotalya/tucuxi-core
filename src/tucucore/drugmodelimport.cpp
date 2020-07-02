@@ -679,7 +679,7 @@ HalfLife* DrugModelImport::extractHalfLife(Tucuxi::Common::XmlNodeIterator _node
     while (it != XmlNodeIterator::none()) {
         std::string nodeName = it->getName();
         if (nodeName == "unit") {
-            unit = extractUnit(it);
+            unit = extractUnit(it, CheckUnit::Check);
         }
         else if (nodeName == "duration") {
             value = extractPopulationValue(it);
@@ -712,7 +712,7 @@ OutdatedMeasure* DrugModelImport::extractOutdatedMeasure(Tucuxi::Common::XmlNode
     while (it != XmlNodeIterator::none()) {
         std::string nodeName = it->getName();
         if (nodeName == "unit") {
-            unit = extractUnit(it);
+            unit = extractUnit(it, CheckUnit::Check);
         }
         else if (nodeName == "duration") {
             value = extractPopulationValue(it);
@@ -921,7 +921,7 @@ CovariateDefinition* DrugModelImport::extractCovariate(Tucuxi::Common::XmlNodeIt
             id = it->getValue();
         }
         else if (nodeName == "unit") {
-            unit = extractUnit(it);
+            unit = extractUnit(it, CheckUnit::Check);
         }
         else if (nodeName == "covariateName") {
             name = extractTranslatableString(it,"name");
@@ -940,7 +940,7 @@ CovariateDefinition* DrugModelImport::extractCovariate(Tucuxi::Common::XmlNodeIt
             XmlNodeIterator refreshIt = it->getChildren();
             while (refreshIt != XmlNodeIterator::none()) {
                 if (refreshIt->getName() == "unit") {
-                    refreshPeriodUnit = extractUnit(refreshIt);
+                    refreshPeriodUnit = extractUnit(refreshIt, CheckUnit::Check);
                 }
                 else if (refreshIt->getName() == "value") {
                     refreshPeriodValue = extractDouble(refreshIt);
@@ -1045,7 +1045,7 @@ ActiveMoiety* DrugModelImport::extractActiveMoiety(Tucuxi::Common::XmlNodeIterat
             activeMoietyId = it->getValue();
         }
         else if (nodeName == "unit") {
-            unit = extractUnit(it);
+            unit = extractUnit(it, CheckUnit::Check);
         }
         else if (nodeName == "activeMoietyName") {
             name = extractTranslatableString(it, "name");
@@ -1155,7 +1155,7 @@ TargetDefinition* DrugModelImport::extractTarget(Tucuxi::Common::XmlNodeIterator
                 std::string valueName = targetValuesIt->getName();
 
                 if (valueName == "unit") {
-                    unit = extractUnit(targetValuesIt);
+                    unit = extractUnit(targetValuesIt, CheckUnit::Check);
                 }
                 else if (valueName == "min") {
                     minValue = extractPopulationValue(targetValuesIt);
@@ -1173,7 +1173,7 @@ TargetDefinition* DrugModelImport::extractTarget(Tucuxi::Common::XmlNodeIterator
                     while (micIt != XmlNodeIterator::none()) {
                         std::string micName = micIt->getName();
                         if (micName == "unit") {
-                            micUnit = extractUnit(micIt);
+                            micUnit = extractUnit(micIt, CheckUnit::Check);
                         }
                         else if (micName == "micValue") {
                             mic = extractPopulationValue(micIt);
@@ -1206,7 +1206,7 @@ TargetDefinition* DrugModelImport::extractTarget(Tucuxi::Common::XmlNodeIterator
                 std::string valueName = timesIt->getName();
 
                 if (valueName == "unit") {
-                    tUnit = extractUnit(timesIt);
+                    tUnit = extractUnit(timesIt, CheckUnit::Check);
                 }
                 else if (valueName == "min") {
                     tMin = extractPopulationValue(timesIt);
@@ -1280,9 +1280,9 @@ TargetDefinition* DrugModelImport::extractTarget(Tucuxi::Common::XmlNodeIterator
                                   std::make_unique<SubTargetDefinition>("cMax", maxValue->getValue(), maxValue->getOperation()),
                                   std::make_unique<SubTargetDefinition>("cBest", bestValue->getValue(), bestValue->getOperation()),
                                   std::make_unique<SubTargetDefinition>("mic", mic->getValue(), mic->getOperation()),
-                                  std::make_unique<SubTargetDefinition>("tMin", UnitManager::translateToUnit(tMin->getValue(), tUnit, Unit("m")), tMin->getOperation()),
-                                  std::make_unique<SubTargetDefinition>("tMax", UnitManager::translateToUnit(tMax->getValue(), tUnit, Unit("m")), tMax->getOperation()),
-                                  std::make_unique<SubTargetDefinition>("tBest", UnitManager::translateToUnit(tBest->getValue(), tUnit, Unit("m")), tBest->getOperation()),
+                                  std::make_unique<SubTargetDefinition>("tMin", UnitManager::translateToUnit(tMin->getValue(), tUnit, Unit("m"), UnitManager::UnitType::Time), tMin->getOperation()),
+                                  std::make_unique<SubTargetDefinition>("tMax", UnitManager::translateToUnit(tMax->getValue(), tUnit, Unit("m"), UnitManager::UnitType::Time), tMax->getOperation()),
+                                  std::make_unique<SubTargetDefinition>("tBest", UnitManager::translateToUnit(tBest->getValue(), tUnit, Unit("m"), UnitManager::UnitType::Time), tBest->getOperation()),
                                   std::make_unique<SubTargetDefinition>("toxicity", toxicityAlarm->getValue(), toxicityAlarm->getOperation()),
                                   std::make_unique<SubTargetDefinition>("inefficacy", inefficacyAlarm->getValue(), inefficacyAlarm->getOperation()),
                                   micUnit,
@@ -1420,7 +1420,7 @@ Analyte* DrugModelImport::extractAnalyte(Tucuxi::Common::XmlNodeIterator _node)
             analyteId = it->getValue();
         }
         else if (nodeName == "unit") {
-            unit = extractUnit(it);
+            unit = extractUnit(it, CheckUnit::Check);
         }
         else if (nodeName == "molarMass") {
             molarMass = extractMolarMass(it);
@@ -1463,7 +1463,7 @@ MolarMass* DrugModelImport::extractMolarMass(Tucuxi::Common::XmlNodeIterator _no
             value = extractDouble(it);
         }
         else if (nodeName == "unit") {
-            unit = extractUnit(it);
+            unit = extractUnit(it, CheckUnit::Check);
         }
         else {
             unexpectedTag(nodeName);
@@ -1889,7 +1889,7 @@ FullFormulationAndRoute* DrugModelImport::extractFullFormulationAndRoute(
                             while (timeIt != XmlNodeIterator::none()) {
                                 std::string timeName = timeIt->getName();
                                 if (timeName == "unit") {
-                                    unit = extractUnit(timeIt);
+                                    unit = extractUnit(timeIt, CheckUnit::Check);
                                 }
                                 else if (timeName == "value") {
                                     value = extractDouble(timeIt);
@@ -2071,7 +2071,7 @@ ValidDurations* DrugModelImport::extractValidDurations(Tucuxi::Common::XmlNodeIt
     while (it != XmlNodeIterator::none()) {
         std::string nodeName = it->getName();
         if (nodeName == "unit") {
-            unit = extractUnit(it);
+            unit = extractUnit(it, CheckUnit::Check);
         }
         else if (nodeName =="default") {
             defaultValue = extractPopulationValue(it);
@@ -2132,7 +2132,7 @@ ValidDoses* DrugModelImport::extractValidDoses(Tucuxi::Common::XmlNodeIterator _
     while (it != XmlNodeIterator::none()) {
         std::string nodeName = it->getName();
         if (nodeName == "unit") {
-            unit = extractUnit(it);
+            unit = extractUnit(it, CheckUnit::Check);
         }
         else if (nodeName =="default") {
             defaultValue = extractPopulationValue(it);

@@ -7,6 +7,7 @@
 #include "tucucommon/datetime.h"
 #include "tucucore/definitions.h"
 #include "tucucore/dosage.h"
+#include "tucucore/drugtreatment/patientcovariate.h"
 
 namespace Tucuxi {
 namespace Query {
@@ -51,15 +52,15 @@ public:
     // Constructors
     PatientData() = delete;
 
-    PatientData(std::vector< std::unique_ptr<CovariateData> >& _covariates);
+    PatientData(std::vector< std::unique_ptr<Tucuxi::Core::PatientCovariate> >& _covariates);
 
     PatientData(PatientData& _other) = delete;
 
     // Getters
-    const std::vector<std::unique_ptr<CovariateData> >& getCovariates() const;
+    const std::vector<std::unique_ptr<Tucuxi::Core::PatientCovariate> >& getCovariates() const;
 
 protected:
-    std::vector< std::unique_ptr<CovariateData> > m_covariates;
+    std::vector< std::unique_ptr<Tucuxi::Core::PatientCovariate> > m_covariates;
 };
 
 class Treatment

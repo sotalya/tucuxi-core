@@ -170,7 +170,7 @@ unique_ptr<PatientData> QueryImport::createPatientData(Common::XmlNodeIterator& 
 {
     static const string COVARIATES_NODE_NAME = "covariates";
 
-    vector< unique_ptr<CovariateData> > covariates;
+    vector< unique_ptr<Core::PatientCovariate> > covariates;
 
     Common::XmlNodeIterator covariatesRootIterator = _patientDataRootIterator->getChildren(COVARIATES_NODE_NAME);
     checkNodeIterator(covariatesRootIterator, COVARIATES_NODE_NAME);
@@ -183,7 +183,7 @@ unique_ptr<PatientData> QueryImport::createPatientData(Common::XmlNodeIterator& 
     return make_unique<PatientData>(covariates);
 }
 
-unique_ptr<CovariateData> QueryImport::createCovariateData(Common::XmlNodeIterator& _covariateDataRootIterator)
+unique_ptr<Core::PatientCovariate> QueryImport::createCovariateData(Common::XmlNodeIterator& _covariateDataRootIterator)
 {
     static const string COVARIATEID_NODE_NAME = "covariateId";
     static const string DATE_NODE_NAME = "date";
@@ -220,16 +220,13 @@ unique_ptr<CovariateData> QueryImport::createCovariateData(Common::XmlNodeIterat
         value = Tucuxi::Common::Utils::varToString(valueAsDate);
     }
 
-    string nature = getChildString(_covariateDataRootIterator, NATURE_NODE_NAME);
+    string nature = getChildString(_covariateDataRootIterator, NATURE_NODE_NAME); // WARNING NOT USED BY SOFT
 
-    return make_unique<CovariateData>(
-                covariateId,
-                date,
-                value,
-                unit,
-                dataType,
-                nature
-                );
+    return make_unique<Core::PatientCovariate>(covariateId,
+                                                value,
+                                                dataType,
+                                                unit,
+                                                date);
 }
 
 
@@ -514,7 +511,7 @@ unique_ptr<Core::DosageBounded> QueryImport::createDosageBoundedFromIterator(Com
         Common::XmlNodeIterator doseRootIterator = _dosageBoundedIterator->getChildren(DOSE_NODE_NAME);
         Core::DoseValue doseValue = getChildDouble(doseRootIterator, DOSE_VALUE_NODE_NAME);
 
-        Common::Unit doseUnit = getChildString(doseRootIterator, DOSE_UNIT_NODE_NAME);
+        Unit doseUnit = getChildUnit(doseRootIterator, DOSE_UNIT_NODE_NAME, CheckUnit::Check);
 
         double infuTimeInMinutes = getChildDouble(doseRootIterator, DOSE_INFUSIONTIME_NAME);
         Common::Duration infusionTime = Duration(std::chrono::minutes(static_cast<int>(infuTimeInMinutes)));
@@ -552,7 +549,7 @@ unique_ptr<Core::DosageBounded> QueryImport::createDosageBoundedFromIterator(Com
         Common::XmlNodeIterator doseRootIterator = _dosageBoundedIterator->getChildren(DOSE_NODE_NAME);
         Core::DoseValue doseValue = getChildDouble(doseRootIterator, DOSE_VALUE_NODE_NAME);
 
-        Common::Unit doseUnit = getChildString(doseRootIterator, DOSE_UNIT_NODE_NAME);
+        Unit doseUnit = getChildUnit(doseRootIterator, DOSE_UNIT_NODE_NAME, CheckUnit::Check);
 
         Common::XmlNodeIterator formulationAndRouteRootIterator = _dosageBoundedIterator->getChildren(FORMULATION_AND_ROUTE_NODE_NAME);
         unique_ptr<Core::FormulationAndRoute> formulationAndRoute = createFormulationAndRoute(formulationAndRouteRootIterator);
@@ -591,7 +588,7 @@ unique_ptr<Core::DosageBounded> QueryImport::createDosageBoundedFromIterator(Com
         Common::XmlNodeIterator doseRootIterator = _dosageBoundedIterator->getChildren(DOSE_NODE_NAME);
         Core::DoseValue doseValue = getChildDouble(doseRootIterator, DOSE_VALUE_NODE_NAME);
 
-        Common::Unit doseUnit = getChildString(doseRootIterator, DOSE_UNIT_NODE_NAME);
+        Unit doseUnit = getChildUnit(doseRootIterator, DOSE_UNIT_NODE_NAME, CheckUnit::Check);
 
         Common::XmlNodeIterator formulationAndRouteRootIterator = _dosageBoundedIterator->getChildren(FORMULATION_AND_ROUTE_NODE_NAME);
         unique_ptr<Core::FormulationAndRoute> formulationAndRoute = createFormulationAndRoute(formulationAndRouteRootIterator);

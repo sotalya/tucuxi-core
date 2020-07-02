@@ -62,7 +62,7 @@ protected:
     string extractString(Common::XmlNodeIterator _rootIterator);
 
 
-    Unit getChildUnit(Common::XmlNodeIterator _rootIterator, const string& _childName);
+    Unit getChildUnit(Common::XmlNodeIterator _rootIterator, const string& _childName, CheckUnit _checkunit = CheckUnit::DoNotCheck);
     double getChildDouble(Common::XmlNodeIterator _rootIterator, const string& _childName);
     bool getChildBool(Common::XmlNodeIterator _rootIterator, const string& _childName);
     int getChildInt(Common::XmlNodeIterator _rootIterator, const string& _childName);

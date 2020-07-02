@@ -61,21 +61,11 @@ QueryStatus QueryToCoreExtractor::extractComputingQuery(const QueryData &_query,
 
 Tucuxi::Core::PatientVariates QueryToCoreExtractor::extractPatientVariates(const QueryData &_query) const
 {
-    const std::vector< std::unique_ptr<CovariateData> >& covariateData = _query.getpParameters()
-            .getpPatient()
-            .getCovariates();
+    const std::vector< std::unique_ptr<Tucuxi::Core::PatientCovariate> >& covariates = _query.getpParameters().getpPatient().getCovariates();
 
     Tucuxi::Core::PatientVariates patientVariates;
-    for (const std::unique_ptr<CovariateData>& covariate : covariateData) {
-        patientVariates.push_back(
-                    std::make_unique<Tucuxi::Core::PatientCovariate>(
-                        covariate->getCovariateId(),
-                        covariate->getValue(),
-                        covariate->getDatatype(),
-                        Common::Unit(covariate->getUnit()),
-                        covariate->getpDate()
-                        )
-                    );
+    for (const std::unique_ptr<Tucuxi::Core::PatientCovariate>& covariate : covariates) {
+        patientVariates.push_back(move(covariate));
     }
 
     return patientVariates;

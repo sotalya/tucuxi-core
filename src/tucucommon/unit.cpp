@@ -22,13 +22,222 @@ std::string Unit::toString() const {
     return m_unitString;
 }
 
-double UnitManager::translationFactor(Unit _initialUnit, Unit _finalUnit)
+double UnitManager::translateConcentrationTimeFactor(Unit _initialUnit, Unit _finalUnit)
 {
-    if (_initialUnit == _finalUnit)
-    {
-        return 1.0;
+    static const std::map<std::string, double> factorMap = {
+
+        {"mg*h/l-ug*h/l", 1000.0},
+        {"h*mg/l-ug*h/l", 1000.0},
+
+        {"h*ug/l-ug*h/l", 1.0},
+
+        {"h*g/l-ug*h/l", 1000000.0},
+        {"g*h/l-ug*h/l", 1000000.0},
+
+
+        {"mg*min/l-ug*h/l", 1000.0 / 60.0},
+        {"min*mg/l-ug*h/l", 1000.0 / 60.0},
+
+        {"g*min/l-ug*h/l", 10000000.0 / 60.0},
+        {"min*g/l-ug*h/l", 10000000.0 / 60.0},
+
+        {"ug*min/l-ug*h/l", 1.0 / 60.0},
+        {"min*ug/l-ug*h/l", 1.0 / 60.0},
+
+
+
+        {"mg*h/ml-ug*h/l", 1000000.0},
+        {"h*mg/ml-ug*h/l", 1000000.0},
+
+        {"h*ug/ml-ug*h/l", 1000.0},
+
+        {"h*g/ml-ug*h/l", 1000000000.0},
+        {"g*h/ml-ug*h/l", 1000000000.0},
+
+
+        {"mg*min/ml-ug*h/l", 1000000.0 / 60.0},
+        {"min*mg/ml-ug*h/l", 1000000.0 / 60.0},
+
+        {"g*min/ml-ug*h/l", 10000000000.0 / 60.0},
+        {"min*g/ml-ug*h/l", 10000000000.0 / 60.0},
+
+        {"ug*min/ml-ug*h/l", 1.0 / 60000.0},
+        {"min*ug/ml-ug*h/l", 1.0 / 60000.0}
+    };
+
+    std::string key = _initialUnit.toString() + "-" + _finalUnit.toString();
+    std::string reverseKey = _finalUnit.toString() + "-" + _initialUnit.toString();
+    if (factorMap.count(key) == 0) {
+        if (factorMap.count(reverseKey) == 0)
+        {
+            Tucuxi::Common::LoggerHelper logHelper;
+            logHelper.error("Error in unit conversion. No known conversion from {} to {} or reverse", _initialUnit.toString(), _finalUnit.toString());
+            return 0.0;
+        }
+        return 1.0 / factorMap.at(reverseKey);
     }
 
+
+    return factorMap.at(key);
+}
+
+double UnitManager::translateWeightFactor(Unit _initialUnit, Unit _finalUnit)
+{
+    static const std::map<std::string, double> factorMap = {
+
+        {"kg-g", 1000.0},
+        {"mg-g", 0.001},
+        {"ug-g", 0.000001}
+    };
+
+    std::string key = _initialUnit.toString() + "-" + _finalUnit.toString();
+    std::string reverseKey = _finalUnit.toString() + "-" + _initialUnit.toString();
+    if (factorMap.count(key) == 0) {
+        if (factorMap.count(reverseKey) == 0)
+        {
+            Tucuxi::Common::LoggerHelper logHelper;
+            logHelper.error("Error in unit conversion. No known conversion from {} to {} or reverse", _initialUnit.toString(), _finalUnit.toString());
+            return 0.0;
+        }
+        return 1.0 / factorMap.at(reverseKey);
+    }
+
+
+    return factorMap.at(key);
+}
+
+double UnitManager::translateConcentrationFactor(Unit _initialUnit, Unit _finalUnit)
+{
+    static const std::map<std::string, double> factorMap = {
+
+        {"g/l-ug/l", 1000000.0},
+        {"mg/l-ug/l", 1000.0},
+        {"g/ml-ug/l", 1000000000.0},
+        {"mg/ml-ug/l", 1000000.0},
+        {"ug/ml-ug/l", 1000.0}
+    };
+
+    std::string key = _initialUnit.toString() + "-" + _finalUnit.toString();
+    std::string reverseKey = _finalUnit.toString() + "-" + _initialUnit.toString();
+    if (factorMap.count(key) == 0) {
+        if (factorMap.count(reverseKey) == 0)
+        {
+            Tucuxi::Common::LoggerHelper logHelper;
+            logHelper.error("Error in unit conversion. No known conversion from {} to {} or reverse", _initialUnit.toString(), _finalUnit.toString());
+            return 0.0;
+        }
+        return 1.0 / factorMap.at(reverseKey);
+    }
+
+
+    return factorMap.at(key);
+}
+
+double UnitManager::translateMoleConcentrationFactor(Unit _initialUnit, Unit _finalUnit)
+{
+    static const std::map<std::string, double> factorMap = {
+
+        {"mmol/l-mol/l", 0.001},
+        {"umol/l-mol/l", 0.000001},
+        {"mol/ml-mol/l", 1000},
+        {"mmol/ml-mol/l", 1.0},
+        {"umol/ml-mol/l", 0.001}
+    };
+
+    std::string key = _initialUnit.toString() + "-" + _finalUnit.toString();
+    std::string reverseKey = _finalUnit.toString() + "-" + _initialUnit.toString();
+    if (factorMap.count(key) == 0) {
+        if (factorMap.count(reverseKey) == 0)
+        {
+            Tucuxi::Common::LoggerHelper logHelper;
+            logHelper.error("Error in unit conversion. No known conversion from {} to {} or reverse", _initialUnit.toString(), _finalUnit.toString());
+            return 0.0;
+        }
+        return 1.0 / factorMap.at(reverseKey);
+    }
+
+
+    return factorMap.at(key);
+}
+
+double UnitManager::translateTimeFactor(Unit _initialUnit, Unit _finalUnit)
+{
+    static const std::map<std::string, double> factorMap = {
+
+        {"s-m", 1.0 / 60.0},
+        {"h-m", 3600.0}
+    };
+
+    std::string key = _initialUnit.toString() + "-" + _finalUnit.toString();
+    std::string reverseKey = _finalUnit.toString() + "-" + _initialUnit.toString();
+    if (factorMap.count(key) == 0) {
+        if (factorMap.count(reverseKey) == 0)
+        {
+            Tucuxi::Common::LoggerHelper logHelper;
+            logHelper.error("Error in unit conversion. No known conversion from {} to {} or reverse", _initialUnit.toString(), _finalUnit.toString());
+            return 0.0;
+        }
+        return 1.0 / factorMap.at(reverseKey);
+    }
+
+
+    return factorMap.at(key);
+}
+
+double UnitManager::translateHeightFactor(Unit _initialUnit, Unit _finalUnit)
+{
+    static const std::map<std::string, double> factorMap = {
+
+        {"cm-m", 0.01},
+        {"dm-m", 0.1},
+        {"mm-m", 0.001},
+        {"ft-m", 0.3048},
+        {"in-m", 0.0254},
+
+    };
+
+    std::string key = _initialUnit.toString() + "-" + _finalUnit.toString();
+    std::string reverseKey = _finalUnit.toString() + "-" + _initialUnit.toString();
+    if (factorMap.count(key) == 0) {
+        if (factorMap.count(reverseKey) == 0)
+        {
+            Tucuxi::Common::LoggerHelper logHelper;
+            logHelper.error("Error in unit conversion. No known conversion from {} to {} or reverse", _initialUnit.toString(), _finalUnit.toString());
+            return 0.0;
+        }
+        return 1.0 / factorMap.at(reverseKey);
+    }
+
+
+    return factorMap.at(key);
+}
+
+double UnitManager::translateEmptyFactor(Unit _initialUnit, Unit _finalUnit)
+{
+    static const std::map<std::string, double> factorMap = {
+
+        {"-", 1.0}
+
+    };
+
+    std::string key = _initialUnit.toString() + "-" + _finalUnit.toString();
+    std::string reverseKey = _finalUnit.toString() + "-" + _initialUnit.toString();
+    if (factorMap.count(key) == 0) {
+        if (factorMap.count(reverseKey) == 0)
+        {
+            Tucuxi::Common::LoggerHelper logHelper;
+            logHelper.error("Error in unit conversion. No known conversion from {} to {} or reverse", _initialUnit.toString(), _finalUnit.toString());
+            return 0.0;
+        }
+        return 1.0 / factorMap.at(reverseKey);
+    }
+
+
+    return factorMap.at(key);
+}
+
+double UnitManager::translationFactor(Unit _initialUnit, Unit _finalUnit)
+{
     static const std::map<std::string, double> factorMap = {
         {"h-m", 60.0},
         {"s-m", 1.0 / 60.0},
@@ -100,10 +309,52 @@ double UnitManager::translationFactor(Unit _initialUnit, Unit _finalUnit)
     return factorMap.at(key);
 }
 
-double UnitManager::translateToUnit(double _value, Unit _initialUnit, Unit _finalUnit)
+double UnitManager::translateToUnit(double _value, Unit _initialUnit, Unit _finalUnit, UnitType _unitType)
 {
-    double a = _value * translationFactor(_initialUnit, _finalUnit);
-    return _value * translationFactor(_initialUnit, _finalUnit);
+
+    double tempValue;
+
+    if (_initialUnit == _finalUnit){
+        return _value;
+    }
+
+    switch (_unitType) {
+
+    case UnitType::Time :
+            tempValue = _value * translateTimeFactor(_initialUnit, _finalUnit);
+        break;
+
+    case UnitType::Height :
+            tempValue = _value * translateHeightFactor(_initialUnit, _finalUnit);
+        break;
+
+    case UnitType::Weight :
+            tempValue = _value * translateWeightFactor(_initialUnit, _finalUnit);
+        break;
+
+    case UnitType::Concentration :
+            tempValue = _value * translateConcentrationFactor(_initialUnit, _finalUnit);
+        break;
+
+    case UnitType::ConcentrationTime :
+            tempValue = _value * translateConcentrationTimeFactor(_initialUnit, _finalUnit);
+        break;
+
+    case UnitType::MoleConcentration :
+            tempValue = _value * translateMoleConcentrationFactor(_initialUnit, _finalUnit);
+        break;
+
+    case UnitType::NoUnit :
+            tempValue = _value * translateEmptyFactor(_initialUnit, _finalUnit);
+        break;
+
+    default:
+            tempValue = _value * translationFactor(_initialUnit, _finalUnit);
+        break;
+
+    }
+
+    return tempValue;
 }
 
 bool UnitManager::isKnown(const Unit& _unit)
@@ -111,6 +362,8 @@ bool UnitManager::isKnown(const Unit& _unit)
     static const std::vector<Unit> units = {
         Unit(""),
         Unit("-"),
+        Unit("y"),
+        Unit("d"),
         Unit("h"),
         Unit("m"),
         Unit("s"),
@@ -122,15 +375,44 @@ bool UnitManager::isKnown(const Unit& _unit)
         Unit("mg/ml"),
         Unit("ug/l"),
         Unit("ug/ml"),
+        Unit("g/l"),
+        Unit("g/ml"),
+
         Unit("mg*h/l"),
         Unit("h*mg/l"),
+        Unit("min*mg/l"),
+        Unit("mg*min/l"),
+        Unit("mg*h/ml"),
+        Unit("h*mg/ml"),
+        Unit("min*mg/ml"),
+        Unit("mg*min/ml"),
+
         Unit("ug*h/l"),
         Unit("h*ug/l"),
+        Unit("min*ug/l"),
+        Unit("ug*min/l"),
+        Unit("h*ug/ml"),
+        Unit("ug*h/ml"),
+        Unit("min*ug/ml"),
+        Unit("ug*min/ml"),
+
         Unit("mol/l"),
         Unit("mmol/l"),
-        Unit("umol/l")
+        Unit("umol/l"),
+        Unit("mol/ml"),
+        Unit("mmol/ml"),
+        Unit("umol/ml"),
+
+        Unit("g/mol")
     };
 
+    for( const auto unit : units)
+    {
+        if(unit == _unit)
+        {
+            return true;
+        }
+    }
 
     return false;
 }

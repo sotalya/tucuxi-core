@@ -12,6 +12,8 @@
 #include "tucucommon/xmlimporter.h"
 #include "querydata.h"
 
+#include "tucucore/drugtreatment/patientcovariate.h"
+
 #include "tucucore/computingservice/computingtrait.h"
 
 struct TestDosageImportExport;
@@ -72,7 +74,7 @@ protected:
     // Methods to separate the creation of a ParametersData
     std::unique_ptr<DrugTreatmentData> createDrugTreatmentData(Tucuxi::Common::XmlDocument & _document) ;
     std::unique_ptr<PatientData> createPatientData(Common::XmlNodeIterator& _patientDataRootIterator) ;
-    std::unique_ptr<CovariateData> createCovariateData(Common::XmlNodeIterator& _covariateDataRootIterator);
+    unique_ptr<Core::PatientCovariate> createCovariateData(Common::XmlNodeIterator& _covariateDataRootIterator);
     std::unique_ptr<DrugData> createDrugData(Common::XmlNodeIterator& _drugDataRootIterator) ;
     std::unique_ptr<TargetData> createTargetData(Common::XmlNodeIterator& _targetDataRootIterator) ;
     std::unique_ptr<SampleData> createSampleData(Common::XmlNodeIterator& _sampleDataRootIterator) ;

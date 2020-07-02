@@ -51,11 +51,11 @@ const string CovariateData::getNature() const
 
 // PatientData class
 
-PatientData::PatientData(vector<unique_ptr<CovariateData> >& _covariates)
+PatientData::PatientData(vector<unique_ptr<Tucuxi::Core::PatientCovariate> >& _covariates)
     : m_covariates(move(_covariates))
 {}
 
-const vector<unique_ptr<CovariateData> >& PatientData::getCovariates() const
+const vector<unique_ptr<Tucuxi::Core::PatientCovariate> >& PatientData::getCovariates() const
 {
     return m_covariates;
 }
