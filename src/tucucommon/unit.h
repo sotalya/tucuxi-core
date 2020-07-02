@@ -2,6 +2,7 @@
 #define TUCUXI_COMMON_UNIT_H
 
 #include <string>
+#include <map>
 
 namespace Tucuxi {
 namespace Common {
@@ -120,6 +121,42 @@ public:
         Undefined
     };
 
+    static const std::map<UnitManager::UnitType, std::map<std::string, double>>& getConversionMap();
+
+    ///
+    /// \brief Converts a specific unit type to another unit of the same type
+    /// \param _value
+    /// \param _initialUnit
+    /// \param _finalUnit
+    /// \return
+    ///
+    template<UnitType unitType>
+    static double convertToUnit(double _value, Unit _initialUnit, Unit _finalUnit)
+    {
+        const auto conversionMap = getConversionMap().at(unitType);
+
+        std::string key = _initialUnit.toString();
+        std::string reverseKey = _finalUnit.toString();
+        if ((conversionMap.count(key) == 0) || (conversionMap.count(reverseKey) == 0))
+        {
+            logConversionError(_initialUnit, _finalUnit);
+            throw std::invalid_argument("Error in unit conversion");
+        }
+
+        return _value * conversionMap.at(key) / conversionMap.at(reverseKey);
+    }
+
+    ///
+    /// \brief Converts a non-specified unit to another
+    /// \param _value
+    /// \param _initialUnit
+    /// \param _finalUnit
+    /// \return
+    ///
+    static double convertToUnit(double _value, Unit _initialUnit, Unit _finalUnit);
+
+    static void logConversionError(const Unit& _initialUnit, const Unit& _finalUnit);
+
     ///
     /// \brief Indicates if this unit is a known one
     /// \param _unit The unit to be tested
@@ -165,6 +202,13 @@ public:
 
     static double translateConcentrationTimeFactor(Unit _initialUnit, Unit _finalUnit);
 
+    ///
+    /// \brief translateWeightFactor
+    /// \param _initialUnit
+    /// \param _finalUnit
+    /// \return
+    /// \throw throw std::invalid_argument if the units are unknown or not compatible
+    ///
     static double translateWeightFactor(Unit _initialUnit, Unit _finalUnit);
 
     static double translateConcentrationFactor(Unit _initialUnit, Unit _finalUnit);

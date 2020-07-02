@@ -22,6 +22,47 @@ std::string Unit::toString() const {
     return m_unitString;
 }
 
+const std::map<UnitManager::UnitType, std::map<std::string, double>>& UnitManager::getConversionMap()
+{
+    static const std::map<UnitType, std::map<std::string, double>> sm_conversionMap =
+    {
+        {
+            UnitType::Weight,
+            {
+                {"kg", 1000.0},
+                {"g", 1.0},
+                {"mg", 0.001},
+                {"ug", 0.000001}
+            }
+        },
+        {
+            UnitType::Concentration,
+            {
+                {"g/l", 1.0},
+                {"mg/l", 1000.0},
+                {"ug/l", 1000000.0}
+            }
+        }
+    };
+
+    return sm_conversionMap;
+}
+
+void UnitManager::logConversionError(const Unit &_initialUnit, const Unit &_finalUnit)
+{
+    Tucuxi::Common::LoggerHelper logHelper;
+    logHelper.error("Error in unit conversion. No known conversion from {} to {}", _initialUnit.toString(), _finalUnit.toString());
+}
+
+double UnitManager::convertToUnit(double _value, Unit _initialUnit, Unit _finalUnit)
+{
+    // TODO : Iterate over the conversion map to see if we find the initial and final unit strings.
+    // If yes and they are of the same type, then conversion is applied,
+    // Else throw an std::invalid_argument
+    return 1.0;
+
+}
+
 double UnitManager::translateConcentrationTimeFactor(Unit _initialUnit, Unit _finalUnit)
 {
     static const std::map<std::string, double> factorMap = {
@@ -91,6 +132,8 @@ double UnitManager::translateWeightFactor(Unit _initialUnit, Unit _finalUnit)
         {"mg", 0.001},
         {"ug", 0.000001}
     };
+
+    convertToUnit(0.0, Unit(), Unit());
 
     std::string key = _initialUnit.toString();
     std::string reverseKey = _finalUnit.toString();
