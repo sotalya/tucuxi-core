@@ -83,28 +83,27 @@ double UnitManager::translateConcentrationTimeFactor(Unit _initialUnit, Unit _fi
 
 double UnitManager::translateWeightFactor(Unit _initialUnit, Unit _finalUnit)
 {
+    // The base unit is g
     static const std::map<std::string, double> factorMap = {
 
-        {"kg-g", 1000.0},
-        {"mg-g", 0.001},
-        {"ug-g", 0.000001}
+        {"kg", 1000.0},
+        {"g", 1.0},
+        {"mg", 0.001},
+        {"ug", 0.000001}
     };
 
-    std::string key = _initialUnit.toString() + "-" + _finalUnit.toString();
-    std::string reverseKey = _finalUnit.toString() + "-" + _initialUnit.toString();
-    if (factorMap.count(key) == 0) {
-        if (factorMap.count(reverseKey) == 0)
-        {
-            Tucuxi::Common::LoggerHelper logHelper;
-            logHelper.error("Error in unit conversion. No known conversion from {} to {} or reverse", _initialUnit.toString(), _finalUnit.toString());
-            return 0.0;
-        }
-        return 1.0 / factorMap.at(reverseKey);
+    std::string key = _initialUnit.toString();
+    std::string reverseKey = _finalUnit.toString();
+    if ((factorMap.count(key) == 0) || (factorMap.count(reverseKey) == 0))
+    {
+        Tucuxi::Common::LoggerHelper logHelper;
+        logHelper.error("Error in unit conversion. No known conversion from {} to {} or reverse", _initialUnit.toString(), _finalUnit.toString());
+        throw std::invalid_argument("Error in unit conversion");
     }
 
-
-    return factorMap.at(key);
+    return factorMap.at(key) / factorMap.at(reverseKey);
 }
+
 
 double UnitManager::translateConcentrationFactor(Unit _initialUnit, Unit _finalUnit)
 {
