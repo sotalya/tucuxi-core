@@ -991,7 +991,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
             for(size_t p = 0; p < resp->getNbRanks(); p++) {
                 DateTime statTime;
                 Value statValue = 0.0;
-                resp->getData(p,0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
+                 resp->getData(p,0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
                 //fructose_assert_eq(statValue, 200001.0);
 
                 // Multiply the Inv CDF by SD (10), and by 1000.0 because of mg/l

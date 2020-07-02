@@ -13,12 +13,11 @@
 #include "tucucore/operablegraphmanager.h"
 #include "tucucore/drugdefinitions.h"
 
-
+using Unit = Tucuxi::Common::Unit;
 
 namespace Tucuxi {
 namespace Core {
 
-using Unit = Tucuxi::Common::Unit;
 
 ///
 /// \brief Change of a covariate value for a patient.

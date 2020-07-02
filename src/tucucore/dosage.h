@@ -833,8 +833,9 @@ public:
     DosageTimeRange(const DateTime& _startDate, const DateTime& _endDate, const Dosage &_dosage)
         : m_startDate(_startDate), m_endDate(_endDate)
     {
+        m_dosage = _dosage.cloneDosage();
         // In case of a steady state dosage, then no need to check the start and end dates
-        if (dynamic_cast<DosageSteadyState*>(m_dosage.get()) != nullptr) {
+        if (dynamic_cast<DosageSteadyState*>(m_dosage.get()) == nullptr) {
             if (m_startDate.isUndefined()) {
                 throw std::invalid_argument("Undefined start date for a time range specified.");
             }
@@ -842,7 +843,6 @@ public:
                 throw std::invalid_argument("The start date for a time range has to precede the end date.");
             }
         }
-        m_dosage = _dosage.cloneDosage();
     }
 
     /// \brief Add a change in a scheduled intake.
