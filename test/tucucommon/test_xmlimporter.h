@@ -315,7 +315,7 @@ private:
             Tucuxi::Common::XmlNodeIterator xmlIterator = xmlNode.getChildren(UNIT);
 
             Tucuxi::Common::Unit u1("mg");
-            Tucuxi::Common::Unit u2("m");
+            Tucuxi::Common::Unit u2("min");
 
             //GOOD
             fructose_assert(xmlImporterTestClass.getChildUnit(xmlIterator, UNIT_1) ==  u1);

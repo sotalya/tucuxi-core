@@ -8,6 +8,7 @@
 #include "tucucore/definitions.h"
 #include "tucucore/dosage.h"
 #include "tucucore/drugtreatment/patientcovariate.h"
+#include "tucucore/drugtreatment/target.h"
 
 namespace Tucuxi {
 namespace Query {
@@ -189,7 +190,7 @@ public:
         std::string& _atc,
         std::unique_ptr<Treatment> _pTreatment,
         std::vector< std::unique_ptr<SampleData> >& _samples,
-        std::vector< std::unique_ptr<TargetData> >& _targets
+        std::vector< std::unique_ptr<Tucuxi::Core::Target> >& _targets
     );
 
     DrugData(DrugData& _other) = delete;
@@ -201,7 +202,7 @@ public:
     const std::string getAtc() const;
     const Treatment& getpTreatment() const;
     const std::vector<std::unique_ptr<SampleData> >& getSamples() const;
-    const std::vector<std::unique_ptr<TargetData> >& getTargets() const;
+    const std::vector<std::unique_ptr<Tucuxi::Core::Target> >& getTargets() const;
 
 protected:
     const std::string m_drugID;
@@ -210,7 +211,7 @@ protected:
     const std::string m_atc;
     std::unique_ptr<Treatment> m_pTreatment;
     std::vector< std::unique_ptr<SampleData> > m_samples;
-    std::vector< std::unique_ptr<TargetData> > m_targets;
+    std::vector< std::unique_ptr<Tucuxi::Core::Target> > m_targets;
 };
 
 class DrugTreatmentData

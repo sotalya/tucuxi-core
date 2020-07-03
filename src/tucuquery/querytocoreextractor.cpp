@@ -61,33 +61,44 @@ QueryStatus QueryToCoreExtractor::extractComputingQuery(const QueryData &_query,
 
 Tucuxi::Core::PatientVariates QueryToCoreExtractor::extractPatientVariates(const QueryData &_query) const
 {
-    const std::vector< std::unique_ptr<Tucuxi::Core::PatientCovariate> >& covariates = _query.getpParameters().getpPatient().getCovariates();
+    const std::vector< std::unique_ptr<Tucuxi::Core::PatientCovariate> >& covariates = _query.getpParameters()
+               .getpPatient()
+               .getCovariates();
 
-    Tucuxi::Core::PatientVariates patientVariates;
-    for (const std::unique_ptr<Tucuxi::Core::PatientCovariate>& covariate : covariates) {
-        patientVariates.push_back(move(covariate));
-    }
+       Tucuxi::Core::PatientVariates patientVariates;
+       for (const std::unique_ptr<Tucuxi::Core::PatientCovariate>& covariate : covariates) {
+           patientVariates.push_back(
+                       std::make_unique<Tucuxi::Core::PatientCovariate>(
+                           covariate->getId(),
+                           covariate->getValue(),
+                           covariate->getDataType(),
+                           Common::Unit(covariate->getUnit()),
+                           covariate->getValueAsDate()
+                           )
+                       );
+       }
 
-    return patientVariates;
+       return patientVariates;
+
 }
 
 Tucuxi::Core::Targets QueryToCoreExtractor::extractTargets(const QueryData &_query, size_t _drugPosition) const
 {
     Tucuxi::Core::Targets targets;
 
-    const std::vector< std::unique_ptr<TargetData> >& targetsData = _query.getpParameters()
+    const std::vector< std::unique_ptr<Tucuxi::Core::Target> >& targetData = _query.getpParameters()
             .getDrugs().at(_drugPosition)
             ->getTargets();
 
-    for (const std::unique_ptr<TargetData>& td : targetsData) {
+    for (const auto& td : targetData) {
         targets.push_back(
                     std::make_unique<Tucuxi::Core::Target>(
-                        Tucuxi::Core::ActiveMoietyId(td->getActiveMoietyID()),
+                        td->getActiveMoietyId(),
                         td->getTargetType(),
                         td->getUnit(),
-                        td->getMin(),
-                        td->getBest(),
-                        td->getMax(),
+                        td->getValueMin(),
+                        td->getValueBest(),
+                        td->getValueMax(),
                         td->getInefficacyAlarm(),
                         td->getToxicityAlarm(),
                         td->getMicValue(),
@@ -157,8 +168,9 @@ Tucuxi::Core::DrugTreatment *QueryToCoreExtractor::extractDrugTreatment(const Qu
 
     // Getting the patient's covariates for the drug treatment
     Tucuxi::Core::PatientVariates patientVariates = extractPatientVariates(_query);
-    for (auto& pc : patientVariates) {
-        drugTreatment->addCovariate(move(pc));
+//    Tucuxi::Core::PatientVariates patientVariates = _query.getpParameters().getpPatient().getCovariates();
+    for (auto& cov : patientVariates) {
+        drugTreatment->addCovariate(move(cov));
     }
 
     // Getting the samples for the drug treatment
@@ -169,6 +181,7 @@ Tucuxi::Core::DrugTreatment *QueryToCoreExtractor::extractDrugTreatment(const Qu
 
     // Getting the targets for the drug treatment
     Tucuxi::Core::Targets targets = extractTargets(_query, drugPosition);
+//    Tucuxi::Core::Targets targets = _query.getpParameters().getDrugs().at(drugPosition)->getTargets();
     for (auto& target : targets) {
         drugTreatment->addTarget(move(target));
     }

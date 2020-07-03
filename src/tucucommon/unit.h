@@ -7,7 +7,6 @@
 namespace Tucuxi {
 namespace Common {
 
-
 ///
 /// \brief The Unit class
 ///
@@ -121,29 +120,28 @@ public:
         Undefined
     };
 
-    static const std::map<UnitManager::UnitType, std::map<std::string, double>>& getConversionMap();
-
     ///
     /// \brief Converts a specific unit type to another unit of the same type
     /// \param _value
     /// \param _initialUnit
     /// \param _finalUnit
-    /// \return
+    /// \return converted value
     ///
     template<UnitType unitType>
     static double convertToUnit(double _value, Unit _initialUnit, Unit _finalUnit)
     {
         const auto conversionMap = getConversionMap().at(unitType);
 
-        std::string key = _initialUnit.toString();
-        std::string reverseKey = _finalUnit.toString();
-        if ((conversionMap.count(key) == 0) || (conversionMap.count(reverseKey) == 0))
+        std::string initialKey = _initialUnit.toString();
+        std::string finalKey = _finalUnit.toString();
+
+        if ((conversionMap.count(initialKey) == 0) || (conversionMap.count(finalKey) == 0))
         {
             logConversionError(_initialUnit, _finalUnit);
             throw std::invalid_argument("Error in unit conversion");
         }
 
-        return _value * conversionMap.at(key) / conversionMap.at(reverseKey);
+        return _value * conversionMap.at(initialKey) / conversionMap.at(finalKey);
     }
 
     ///
@@ -151,7 +149,7 @@ public:
     /// \param _value
     /// \param _initialUnit
     /// \param _finalUnit
-    /// \return
+    /// \return converted value
     ///
     static double convertToUnit(double _value, Unit _initialUnit, Unit _finalUnit);
 
@@ -178,48 +176,10 @@ public:
     ///
     static bool isCompatible(const Unit& _unit1, const Unit& _unit2);
 
-    ///
-    /// \brief Translates a value from one unit to a compatible unit
-    /// \param _value The value to convert
-    /// \param _initialUnit The initial unit
-    /// \param _finalUnit The final unit
-    /// \param _unitType The type of unit
-    /// \return The value represented in the final unit
-    ///
-    /// If the units are not compatible, then the returned value is 0.0.
-    ///
-    static double translateToUnit(double _value, Unit _initialUnit, Unit _finalUnit, UnitType _unitType);
+private:
 
-    ///
-    /// \brief Translation factor from one unit to another compatible one
-    /// \param _initialUnit The initial unit
-    /// \param _finalUnit The final unit
-    /// \return The factor by which a value in the initial unit should be multiplied to get a value in the final unit
-    ///
-    /// If the units are not compatible, then the returned value is 0.0.
-    ///
-    static double translationFactor(Unit _initialUnit, Unit _finalUnit);
+    static const std::map<UnitManager::UnitType, std::map<std::string, double>>& getConversionMap();
 
-    static double translateConcentrationTimeFactor(Unit _initialUnit, Unit _finalUnit);
-
-    ///
-    /// \brief translateWeightFactor
-    /// \param _initialUnit
-    /// \param _finalUnit
-    /// \return
-    /// \throw throw std::invalid_argument if the units are unknown or not compatible
-    ///
-    static double translateWeightFactor(Unit _initialUnit, Unit _finalUnit);
-
-    static double translateConcentrationFactor(Unit _initialUnit, Unit _finalUnit);
-
-    static double translateMoleConcentrationFactor(Unit _initialUnit, Unit _finalUnit);
-
-    static double translateTimeFactor(Unit _initialUnit, Unit _finalUnit);
-
-    static double translateHeightFactor(Unit _initialUnit, Unit _finalUnit);
-
-    static double translateEmptyFactor(Unit _initialUnit, Unit _finalUnit);
 };
 
 

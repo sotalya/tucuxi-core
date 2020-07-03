@@ -11,8 +11,12 @@
 #include "tucucommon/xmliterator.h"
 #include "tucucommon/xmlimporter.h"
 #include "querydata.h"
+#include "tucucore/definitions.h"
+#include "tucucore/drugmodel/targetdefinition.h"
 
 #include "tucucore/drugtreatment/patientcovariate.h"
+#include "tucucore/drugtreatment/sample.h"
+#include "tucucore/drugtreatment/target.h"
 
 #include "tucucore/computingservice/computingtrait.h"
 
@@ -76,7 +80,7 @@ protected:
     std::unique_ptr<PatientData> createPatientData(Common::XmlNodeIterator& _patientDataRootIterator) ;
     unique_ptr<Core::PatientCovariate> createCovariateData(Common::XmlNodeIterator& _covariateDataRootIterator);
     std::unique_ptr<DrugData> createDrugData(Common::XmlNodeIterator& _drugDataRootIterator) ;
-    std::unique_ptr<TargetData> createTargetData(Common::XmlNodeIterator& _targetDataRootIterator) ;
+    std::unique_ptr<Tucuxi::Core::Target> createTargetData(Common::XmlNodeIterator& _targetDataRootIterator) ;
     std::unique_ptr<SampleData> createSampleData(Common::XmlNodeIterator& _sampleDataRootIterator) ;
     std::unique_ptr<ConcentrationData> createConcentrationData(Common::XmlNodeIterator& _concentrationDataRootIterator) ;
     std::unique_ptr<Treatment> createTreatment(Common::XmlNodeIterator& _treatmentRootIterator) ;

@@ -215,7 +215,7 @@ DrugData::DrugData(string& _drugID,
                    string& _atc,
                    unique_ptr<Treatment> _pTreatment,
                    vector<unique_ptr<SampleData> >& _samples,
-                   vector<unique_ptr<TargetData> >& _targets
+                   vector<unique_ptr<Tucuxi::Core::Target> >& _targets
 ) : m_drugID(_drugID), m_activePrinciple(_activePrinciple), m_brandName(_brandName),
     m_atc(_atc), m_pTreatment(move(_pTreatment)), m_samples(move(_samples)),
     m_targets(move(_targets))
@@ -251,7 +251,7 @@ const vector<unique_ptr<SampleData> >& DrugData::getSamples() const
     return m_samples;
 }
 
-const vector<unique_ptr<TargetData> >& DrugData::getTargets() const
+const vector<unique_ptr<Tucuxi::Core::Target> >& DrugData::getTargets() const
 {
     return m_targets;
 }

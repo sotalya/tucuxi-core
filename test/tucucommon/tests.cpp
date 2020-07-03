@@ -14,6 +14,7 @@
 #include "test_xml.h"
 #include "test_iterator.h"
 #include "test_xmlimporter.h"
+#include "test_unit.h"
 
 int main(int argc, char** argv) 
 {
@@ -76,12 +77,21 @@ int main(int argc, char** argv)
     }
 
     TestXmlImporter xmlImporterTests;
-    xmlImporterTests.add_test("XmlImporter - XmlImporter", &TestXmlImporter::xmlImporter);
+    xmlImporterTests.add_test("XmlImporter", &TestXmlImporter::xmlImporter);
     res = xmlImporterTests.run(argc, argv);
     if (res != 0) {
         printf("xmlImporter test failed\n");
         exit(1);
     }
+
+    TestUnit unitTests;
+    unitTests.add_test("Unit", &TestUnit::unit);
+    res = unitTests.run(argc, argv);
+    if (res != 0) {
+        printf("unit test failed\n");
+        exit(1);
+    }
+
 
     Tucuxi::Common::LoggerHelper::beforeExit();
 

@@ -87,6 +87,24 @@ public:
 
     ActiveMoietyId getActiveMoietyId() const { return m_activeMoietyId;}
 
+    TargetType getTargetType() const {return m_targetType;}
+
+    Unit getUnit() const {return m_unit;}
+
+    Value getValueMin() const {return m_valueMin;}
+
+    Value getValueBest() const {return m_valueBest;}
+
+    Value getValueMax() const {return m_valueMax;}
+
+    Value getInefficacyAlarm() const {return m_inefficacyAlarm;}
+
+    Value getToxicityAlarm() const {return m_toxicityAlarm;}
+
+    Value getMicValue() const {return m_mic;}
+
+    Unit getMicUnit() const {return m_micUnit;}
+
 private:
 
 

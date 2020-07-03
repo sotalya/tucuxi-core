@@ -71,9 +71,6 @@ void XMLImporter::setNodeError(Tucuxi::Common::XmlNodeIterator _nodeIterator)
 Unit XMLImporter::extractUnit(Tucuxi::Common::XmlNodeIterator _rootIterator, CheckUnit _checkUnit)
 {
     std::string unitString = _rootIterator->getValue();
-    if (unitString == "min") {
-        unitString = "m";
-    }
 
     if (_checkUnit == CheckUnit::Check)
     {

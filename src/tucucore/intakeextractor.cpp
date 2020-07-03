@@ -255,12 +255,12 @@ int IntakeExtractor::extract(const LastingDose &_dosage, const DateTime &_start,
     if ((_dosage.m_routeOfAdministration.getAbsorptionModel() == AbsorptionModel::Infusion) &&
             (_dosage.m_infusionTime.isEmpty())) {
         // TODO : Be careful here, the formulation and route is not in line the AbsorptionModel::Intravascular
-        IntakeEvent intake(_start, Duration(), UnitManager::translateToUnit(_dosage.m_dose, _dosage.m_doseUnit, Unit("mg"), UnitManager::UnitType::Weight), _dosage.m_doseUnit, interval, _dosage.getLastFormulationAndRoute(), AbsorptionModel::Intravascular,
+        IntakeEvent intake(_start, Duration(), UnitManager::convertToUnit<UnitManager::UnitType::Weight>(_dosage.m_dose, _dosage.m_doseUnit, Unit("mg")), _dosage.m_doseUnit, interval, _dosage.getLastFormulationAndRoute(), AbsorptionModel::Intravascular,
                            _dosage.m_infusionTime, static_cast<int>(interval.toHours() * _nbPointsPerHour) + 1);
         _series.push_back(intake);
     }
     else {
-        IntakeEvent intake(_start, Duration(), UnitManager::translateToUnit(_dosage.m_dose, _dosage.m_doseUnit, Unit("mg"), UnitManager::UnitType::Weight), _dosage.m_doseUnit, interval, _dosage.getLastFormulationAndRoute(), _dosage.m_routeOfAdministration.getAbsorptionModel(),
+        IntakeEvent intake(_start, Duration(), UnitManager::convertToUnit<UnitManager::UnitType::Weight>(_dosage.m_dose, _dosage.m_doseUnit, Unit("mg")), _dosage.m_doseUnit, interval, _dosage.getLastFormulationAndRoute(), _dosage.m_routeOfAdministration.getAbsorptionModel(),
                            _dosage.m_infusionTime, static_cast<int>(interval.toHours() * _nbPointsPerHour) + 1);
         _series.push_back(intake);
     }
@@ -284,13 +284,13 @@ int IntakeExtractor::extract(const DailyDose &_dosage, const DateTime &_start, c
             (_dosage.m_infusionTime.isEmpty())) {
 
         // TODO : Be careful here, the formulation and route is not in line the AbsorptionModel::Intravascular
-        IntakeEvent intake(_start, Duration(), UnitManager::translateToUnit(_dosage.m_dose, _dosage.m_doseUnit, Unit("mg"), UnitManager::UnitType::Weight), _dosage.m_doseUnit, interval, _dosage.getLastFormulationAndRoute(),  AbsorptionModel::Intravascular,
+        IntakeEvent intake(_start, Duration(), UnitManager::convertToUnit<UnitManager::UnitType::Weight>(_dosage.m_dose, _dosage.m_doseUnit, Unit("mg")), _dosage.m_doseUnit, interval, _dosage.getLastFormulationAndRoute(),  AbsorptionModel::Intravascular,
                            _dosage.m_infusionTime, static_cast<int>(interval.toHours() * _nbPointsPerHour) + 1);
         _series.push_back(intake);
     }
     else {
 
-        IntakeEvent intake(_start, Duration(),UnitManager::translateToUnit(_dosage.m_dose, _dosage.m_doseUnit, Unit("mg"), UnitManager::UnitType::Weight), _dosage.m_doseUnit, interval, _dosage.getLastFormulationAndRoute(),  _dosage.m_routeOfAdministration.getAbsorptionModel(),
+        IntakeEvent intake(_start, Duration(),UnitManager::convertToUnit<UnitManager::UnitType::Weight>(_dosage.m_dose, _dosage.m_doseUnit, Unit("mg")), _dosage.m_doseUnit, interval, _dosage.getLastFormulationAndRoute(),  _dosage.m_routeOfAdministration.getAbsorptionModel(),
                            _dosage.m_infusionTime, static_cast<int>(interval.toHours() * _nbPointsPerHour) + 1);
         _series.push_back(intake);
     }
@@ -314,13 +314,13 @@ int IntakeExtractor::extract(const WeeklyDose &_dosage, const DateTime &_start, 
             (_dosage.m_infusionTime.isEmpty())) {
 
         // TODO : Be careful here, the formulation and route is not in line the AbsorptionModel::Intravascular
-        IntakeEvent intake(_start, Duration(), UnitManager::translateToUnit(_dosage.m_dose, _dosage.m_doseUnit, Unit("mg"), UnitManager::UnitType::Weight), _dosage.m_doseUnit, interval, _dosage.getLastFormulationAndRoute(),  AbsorptionModel::Intravascular,
+        IntakeEvent intake(_start, Duration(), UnitManager::convertToUnit<UnitManager::UnitType::Weight>(_dosage.m_dose, _dosage.m_doseUnit, Unit("mg")), _dosage.m_doseUnit, interval, _dosage.getLastFormulationAndRoute(),  AbsorptionModel::Intravascular,
                            _dosage.m_infusionTime, static_cast<int>(interval.toHours() * _nbPointsPerHour) + 1);
         _series.push_back(intake);
     }
     else {
 
-        IntakeEvent intake(_start, Duration(), UnitManager::translateToUnit(_dosage.m_dose, _dosage.m_doseUnit, Unit("mg"), UnitManager::UnitType::Weight), _dosage.m_doseUnit, interval, _dosage.getLastFormulationAndRoute(),  _dosage.m_routeOfAdministration.getAbsorptionModel(),
+        IntakeEvent intake(_start, Duration(), UnitManager::convertToUnit<UnitManager::UnitType::Weight>(_dosage.m_dose, _dosage.m_doseUnit, Unit("mg")), _dosage.m_doseUnit, interval, _dosage.getLastFormulationAndRoute(),  _dosage.m_routeOfAdministration.getAbsorptionModel(),
                            _dosage.m_infusionTime, static_cast<int>(interval.toHours() * _nbPointsPerHour) + 1);
         _series.push_back(intake);
     }

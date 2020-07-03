@@ -195,7 +195,7 @@ unique_ptr<Core::PatientCovariate> QueryImport::createCovariateData(Common::XmlN
     string covariateId = getChildString(_covariateDataRootIterator, COVARIATEID_NODE_NAME);
     Common::DateTime date = getChildDateTime(_covariateDataRootIterator, DATE_NODE_NAME);
     string value = getChildString(_covariateDataRootIterator, VALUE_NODE_NAME);
-    string unit = getChildString(_covariateDataRootIterator, UNIT_NODE_NAME);
+    Unit unit = getChildUnit(_covariateDataRootIterator, UNIT_NODE_NAME);
 
     string dataTypeString = getChildString(_covariateDataRootIterator, DATATYPE_NODE_NAME);
     Core::DataType dataType;
@@ -268,7 +268,7 @@ unique_ptr<DrugData> QueryImport::createDrugData(Common::XmlNodeIterator& _drugD
     sort(samples.begin(), samples.end(), CmpByDate());
 
 
-    vector< unique_ptr<TargetData> > targets;
+    vector< unique_ptr<Tucuxi::Core::Target> > targets;
     Common::XmlNodeIterator targetsRootIterator = _drugDataRootIterator->getChildren(TARGETS_NODE_NAME);
     Common::XmlNodeIterator targetsIterator = targetsRootIterator->getChildren();
     while(targetsIterator != Common::XmlNodeIterator::none()) {
@@ -287,7 +287,7 @@ unique_ptr<DrugData> QueryImport::createDrugData(Common::XmlNodeIterator& _drugD
                 );
 }
 
-unique_ptr<TargetData> QueryImport::createTargetData(Common::XmlNodeIterator& _targetDataRootIterator)
+unique_ptr<Tucuxi::Core::Target> QueryImport::createTargetData(Common::XmlNodeIterator& _targetDataRootIterator)
 {
     static const string ANALYTE_ID_NODE_NAME           = "activeMoietyId";
     static const string TARGET_TYPE_NODE_NAME          = "targetType";
@@ -302,33 +302,55 @@ unique_ptr<TargetData> QueryImport::createTargetData(Common::XmlNodeIterator& _t
     static const string MIC_VALUE_NODE_NAME            = "micValue";
 
     string activeMoietyId = getChildString(_targetDataRootIterator, ANALYTE_ID_NODE_NAME);
-    string targetType = getChildString(_targetDataRootIterator, TARGET_TYPE_NODE_NAME);
-    string unit = getChildString(_targetDataRootIterator, UNIT_NODE_NAME);
-    double inefficacyAlarm = getChildDouble(_targetDataRootIterator, INEFFICACY_ALARM_ID_NODE_NAME);
-    double min = getChildDouble(_targetDataRootIterator, MIN_NODE_NAME);
-    double best= getChildDouble(_targetDataRootIterator, BEST_NODE_NAME);
-    double max = getChildDouble(_targetDataRootIterator, MAX_ID_NODE_NAME);
-    double toxicityAlarm = getChildDouble(_targetDataRootIterator, TOXICITY_ALARM_NODE_NAME);
+    string targetTypeStr = getChildString(_targetDataRootIterator, TARGET_TYPE_NODE_NAME);
+    Unit unit = getChildUnit(_targetDataRootIterator, UNIT_NODE_NAME);
+    Tucuxi::Core::Value inefficacyAlarm = getChildDouble(_targetDataRootIterator, INEFFICACY_ALARM_ID_NODE_NAME);
+    Tucuxi::Core::Value min = getChildDouble(_targetDataRootIterator, MIN_NODE_NAME);
+    Tucuxi::Core::Value best= getChildDouble(_targetDataRootIterator, BEST_NODE_NAME);
+    Tucuxi::Core::Value max = getChildDouble(_targetDataRootIterator, MAX_ID_NODE_NAME);
+    Tucuxi::Core::Value toxicityAlarm = getChildDouble(_targetDataRootIterator, TOXICITY_ALARM_NODE_NAME);
 
-    string micUnit = "";
-    double micValue = 0.0;
+    Unit micUnit("");
+    Tucuxi::Core::Value micValue = 0.0;
     Common::XmlNodeIterator micRootIterator = _targetDataRootIterator->getChildren(MIC_NODE_NAME);
     if (micRootIterator != Common::XmlNodeIterator::none()) {
-        micUnit = getChildString(micRootIterator, MIC_UNIT_NODE_NAME);
+        micUnit = getChildUnit(micRootIterator, MIC_UNIT_NODE_NAME);
         micValue = getChildDouble(micRootIterator, MIC_VALUE_NODE_NAME);
     }
 
-    return make_unique<TargetData>(
-                activeMoietyId,
+    Tucuxi::Core::TargetType targetType;
+
+    if (targetTypeStr == "peak") {
+        targetType = Core::TargetType::Peak;
+    } else if (targetTypeStr == "residual") {
+        targetType = Core::TargetType::Residual;
+    } else if (targetTypeStr == "mean") {
+        targetType = Core::TargetType::Mean;
+    } else if (targetTypeStr == "auc") {
+        targetType = Core::TargetType::Auc;
+    } else if (targetTypeStr == "aucOverMic") {
+        targetType = Core::TargetType::AucOverMic;
+    } else if (targetTypeStr == "timeOverMic") {
+        targetType = Core::TargetType::TimeOverMic;
+    } else if (targetTypeStr == "aucDividedByMic") {
+        targetType = Core::TargetType::AucDividedByMic;
+    } else if (targetTypeStr == "peakDividedByMic") {
+        targetType = Core::TargetType::PeakDividedByMic;
+    } else {
+        targetType = Core::TargetType::UnknownTarget;
+    }
+
+    return make_unique<Tucuxi::Core::Target>(
+                Tucuxi::Core::ActiveMoietyId(activeMoietyId),
                 targetType,
                 unit,
-                inefficacyAlarm,
                 min,
                 best,
                 max,
+                inefficacyAlarm,
                 toxicityAlarm,
-                micUnit,
-                micValue
+                micValue,
+                micUnit
                 );
 }
 
