@@ -36,6 +36,15 @@ const std::map<UnitManager::UnitType, std::map<std::string, double>>& UnitManage
             }
         },
         {
+            UnitType::MolarMass,
+            {
+                {"g/mol", 1.0},
+                {"g/umol", 1000.0},
+                {"kg/mol", 0.001},
+                {"kg/umol", 0.000001}
+            }
+        },
+        {
             UnitType::Concentration,
             {
                 {"g/l", 1.0},
@@ -83,9 +92,27 @@ const std::map<UnitManager::UnitType, std::map<std::string, double>>& UnitManage
                 {"mol/l", 1.0},
                 {"mmol/l", 0.001},
                 {"umol/l", 0.000001},
+                {"µmol/l", 0.000001},
+                {"µmol/L", 0.000001},
                 {"mol/ml", 1000},
                 {"mmol/ml", 1.0},
-                {"umol/ml", 0.001}
+                {"umol/ml", 0.001},
+                {"µmol/ml", 0.001}
+            }
+        },
+        {
+            UnitType::FlowRate,
+            {
+                {"ml/min", 1.0},
+                {"l/min", 0.001},
+                {"ml/h", 60.0},
+                {"l/h", 0.06}
+            }
+        },
+        {
+            UnitType::Temperature,
+            {
+                {"celsius", 1.0}
             }
         },
         {
@@ -94,9 +121,15 @@ const std::map<UnitManager::UnitType, std::map<std::string, double>>& UnitManage
                 {"min", 1.0},
                 {"s", 1 / 60.0},
                 {"h", 60.0},
+                {"day", 24.0 * 60.0},
+                {"days", 24.0 * 60.0},
                 {"d", 24.0 * 60.0},
+                {"w", 7.0 * 24.0 * 60.0},
+                {"weeks", 7.0 * 24.0 * 60.0},
+                {"week", 7.0 * 24.0 * 60.0},
                 {"m", 30.0 * 24.0 * 60.0},
-                {"y", 12.0 * 30.0 * 24.0 * 60.0}
+                {"y", 365.0 * 24.0 * 60.0},
+                {"year", 365.0 * 24.0 * 60.0}
             }
         },
         {
@@ -113,7 +146,8 @@ const std::map<UnitManager::UnitType, std::map<std::string, double>>& UnitManage
         {
             UnitType::NoUnit,
             {
-                {"-", 1.0}
+                {"-", 1.0},
+                {"", 1.0}
             }
         }
     };

@@ -101,7 +101,7 @@ ComputingStatus TargetEvaluator::evaluate(
     double score = 0.0;
     double value = 0.0;
 
-    UnitManager::UnitType unitType = unitType = UnitManager::UnitType::Undefined;
+    UnitManager::UnitType unitType = UnitManager::UnitType::Undefined;
 
     std::size_t lastCycleIndex = _prediction.getTimes().size() - 1;
     TimeOffsets times = _prediction.getTimes()[lastCycleIndex];

@@ -116,6 +116,9 @@ public:
         Time,
         ConcentrationTime,
         Height,
+        MolarMass,
+        FlowRate,
+        Temperature,
         NoUnit,
         Undefined
     };
