@@ -39,20 +39,20 @@ const std::map<UnitManager::UnitType, std::map<std::string, double>>& UnitManage
             UnitType::MolarMass,
             {
                 {"g/mol", 1.0},
-                {"g/umol", 1000.0},
-                {"kg/mol", 0.001},
-                {"kg/umol", 0.000001}
+                {"g/umol", 1000000.0},
+                {"kg/mol", 1000.0},
+                {"kg/umol", 1000000000.0}
             }
         },
         {
             UnitType::Concentration,
             {
                 {"g/l", 1.0},
-                {"mg/l", 1000.0},
-                {"ug/l", 1000000.0},
-                {"g/ml", 0.001},
+                {"mg/l", 0.001},
+                {"ug/l", 0.000001},
+                {"g/ml", 1000},
                 {"mg/ml", 1.0},
-                {"ug/ml", 1000.0}
+                {"ug/ml", 0.001}
 
             }
         },
