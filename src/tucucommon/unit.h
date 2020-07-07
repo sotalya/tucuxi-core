@@ -147,6 +147,16 @@ public:
         return _value * conversionMap.at(initialKey) / conversionMap.at(finalKey);
     }
 
+    template<UnitType unitType>
+    static bool isOfType(Unit _unit)
+    {
+        const auto conversionMap = getConversionMap().at(unitType);
+
+        auto found = conversionMap.find(_unit.toString());
+
+        return (found != conversionMap.end());
+    }
+
     ///
     /// \brief Converts a non-specified unit to another
     /// \param _value

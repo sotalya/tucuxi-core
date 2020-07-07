@@ -118,7 +118,7 @@ const std::map<UnitManager::UnitType, std::map<std::string, double>>& UnitManage
         {
             UnitType::Time,
             {
-//                {"min", 1.0},
+                {"min", 1.0},
                 {"s", 1 / 60.0},
                 {"h", 60.0},
 //                {"day", 24.0 * 60.0},

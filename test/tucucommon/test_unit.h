@@ -34,7 +34,7 @@ struct TestUnit : public fructose::test_base<TestUnit>
         vector<string> timeUnits
         {
             "s",
-//            "min",
+            "min",
             "h",
 //            "day",
 //            "days",
@@ -272,7 +272,7 @@ private:
         }
 
         fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("s"), Tucuxi::Common::Unit("s")), 1.0);
-//        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("s"), Tucuxi::Common::Unit("min")), 1.0 / 60.0);
+        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("s"), Tucuxi::Common::Unit("min")), 1.0 / 60.0);
         fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("s"), Tucuxi::Common::Unit("h")), 1.0 / 3600.0);
 //        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("s"), Tucuxi::Common::Unit("day")), 1.0 / 86400);
 //        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("s"), Tucuxi::Common::Unit("day")), 1.0 / 86400);
@@ -284,21 +284,21 @@ private:
         fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("s"), Tucuxi::Common::Unit("y")), 1.0 / 31536000);
 //        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("s"), Tucuxi::Common::Unit("year")), 1.0 / 31536000);
 
-//        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("min"), Tucuxi::Common::Unit("s")), 60.0);
-//        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("min"), Tucuxi::Common::Unit("min")), 1.0 );
-//        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("min"), Tucuxi::Common::Unit("h")), 1.0 / 60.0);
+        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("min"), Tucuxi::Common::Unit("s")), 60.0);
+        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("min"), Tucuxi::Common::Unit("min")), 1.0 );
+        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("min"), Tucuxi::Common::Unit("h")), 1.0 / 60.0);
 //        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("min"), Tucuxi::Common::Unit("day")), 1.0 / 1440);
 //        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("min"), Tucuxi::Common::Unit("day")), 1.0 / 1440);
-//        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("min"), Tucuxi::Common::Unit("d")), 1.0 / 1440);
-//        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("min"), Tucuxi::Common::Unit("w")), 1.0 / 10080);
+        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("min"), Tucuxi::Common::Unit("d")), 1.0 / 1440);
+        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("min"), Tucuxi::Common::Unit("w")), 1.0 / 10080);
 //        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("min"), Tucuxi::Common::Unit("weeks")), 1.0 / 10080);
 //        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("min"), Tucuxi::Common::Unit("week")), 1.0 / 10080);
-//        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("min"), Tucuxi::Common::Unit("m")), 1.0 / 43200);
-//        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("min"), Tucuxi::Common::Unit("y")), 1.0 / 525600);
+        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("min"), Tucuxi::Common::Unit("m")), 1.0 / 43200);
+        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("min"), Tucuxi::Common::Unit("y")), 1.0 / 525600);
 //        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("min"), Tucuxi::Common::Unit("year")), 1.0 / 525600);
 
         fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("h"), Tucuxi::Common::Unit("s")), 3600.0);
-//        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("h"), Tucuxi::Common::Unit("min")), 60.0 );
+        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("h"), Tucuxi::Common::Unit("min")), 60.0 );
         fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("h"), Tucuxi::Common::Unit("h")), 1.0 );
 //        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("h"), Tucuxi::Common::Unit("day")), 1.0 / 24);
 //        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("h"), Tucuxi::Common::Unit("day")), 1.0 / 24);
@@ -337,7 +337,7 @@ private:
 //        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("days"), Tucuxi::Common::Unit("year")), 1.0 / 365.0);
 
         fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("d"), Tucuxi::Common::Unit("s")), 86400.0);
-//        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("d"), Tucuxi::Common::Unit("min")), 1440.0);
+        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("d"), Tucuxi::Common::Unit("min")), 1440.0);
         fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("d"), Tucuxi::Common::Unit("h")), 24.0);
 //        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("d"), Tucuxi::Common::Unit("day")), 1.0 );
 //        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("d"), Tucuxi::Common::Unit("day")), 1.0 );
@@ -350,7 +350,7 @@ private:
 //        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("d"), Tucuxi::Common::Unit("year")), 1.0 / 365.0);
 
         fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("w"), Tucuxi::Common::Unit("s")), 604800.0);
-//        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("w"), Tucuxi::Common::Unit("min")), 10080.0);
+        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("w"), Tucuxi::Common::Unit("min")), 10080.0);
         fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("w"), Tucuxi::Common::Unit("h")), 168.0);
 //        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("w"), Tucuxi::Common::Unit("day")), 7.0);
 //        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("w"), Tucuxi::Common::Unit("day")), 7.0);
@@ -389,7 +389,7 @@ private:
 //        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("weeks"), Tucuxi::Common::Unit("year")), 7.0 / 365.0);
 
         fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("m"), Tucuxi::Common::Unit("s")), 2592000.0);
-//        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("m"), Tucuxi::Common::Unit("min")), 43200.0);
+        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("m"), Tucuxi::Common::Unit("min")), 43200.0);
         fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("m"), Tucuxi::Common::Unit("h")), 720.0);
 //        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("m"), Tucuxi::Common::Unit("day")), 30.0);
 //        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("m"), Tucuxi::Common::Unit("day")), 30.0);
@@ -402,7 +402,7 @@ private:
 //        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("m"), Tucuxi::Common::Unit("year")), 30.0 / 365.0);
 
         fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("y"), Tucuxi::Common::Unit("s")), 31536000.0);
-//        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("y"), Tucuxi::Common::Unit("min")), 525600.0);
+        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("y"), Tucuxi::Common::Unit("min")), 525600.0);
         fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("y"), Tucuxi::Common::Unit("h")), 8760.0);
 //        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("y"), Tucuxi::Common::Unit("day")), 365.0);
 //        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("y"), Tucuxi::Common::Unit("day")), 365.0);
