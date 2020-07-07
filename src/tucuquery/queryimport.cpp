@@ -195,7 +195,7 @@ unique_ptr<Core::PatientCovariate> QueryImport::createCovariateData(Common::XmlN
     string covariateId = getChildString(_covariateDataRootIterator, COVARIATEID_NODE_NAME);
     Common::DateTime date = getChildDateTime(_covariateDataRootIterator, DATE_NODE_NAME);
     string value = getChildString(_covariateDataRootIterator, VALUE_NODE_NAME);
-    Unit unit = getChildUnit(_covariateDataRootIterator, UNIT_NODE_NAME);
+    Unit unit = getChildUnit(_covariateDataRootIterator, UNIT_NODE_NAME, CheckUnit::Check);
 
     string dataTypeString = getChildString(_covariateDataRootIterator, DATATYPE_NODE_NAME);
     Core::DataType dataType;
@@ -232,9 +232,9 @@ unique_ptr<Core::PatientCovariate> QueryImport::createCovariateData(Common::XmlN
 
 struct CmpByDate
 {
-    inline bool operator()(const std::unique_ptr<SampleData>& _a, const std::unique_ptr<SampleData>& _b)
+    inline bool operator()(const std::unique_ptr<Tucuxi::Core::Sample>& _a, const std::unique_ptr<Tucuxi::Core::Sample>& _b)
     {
-        return _a->getpSampleDate() < _b->getpSampleDate();
+        return _a->getDate() < _b->getDate();
     }
 };
 
@@ -246,6 +246,8 @@ unique_ptr<DrugData> QueryImport::createDrugData(Common::XmlNodeIterator& _drugD
     static const string ATC_NODE_NAME = "atc";
     static const string TREATMENT_NODE_NAME = "treatment";
     static const string SAMPLES_NODE_NAME = "samples";
+    static const string CONCENTRATIONS_NODE_NAME = "concentrations";
+    static const string CONCENTRATION_NODE_NAME = "concentration";
     static const string TARGETS_NODE_NAME = "targets";
 
     string drugId = getChildString(_drugDataRootIterator, DRUG_ID_NODE_NAME);
@@ -256,11 +258,16 @@ unique_ptr<DrugData> QueryImport::createDrugData(Common::XmlNodeIterator& _drugD
     Common::XmlNodeIterator treatmentRootIterator = _drugDataRootIterator->getChildren(TREATMENT_NODE_NAME);
     unique_ptr<Treatment> pTreatment = createTreatment(treatmentRootIterator);
 
-    vector< unique_ptr<SampleData> > samples;
+    vector< unique_ptr<Tucuxi::Core::Sample> > samples;
     Common::XmlNodeIterator samplesRootIterator = _drugDataRootIterator->getChildren(SAMPLES_NODE_NAME);
     Common::XmlNodeIterator samplesIterator = samplesRootIterator->getChildren();
     while(samplesIterator != Common::XmlNodeIterator::none()) {
-        samples.push_back(createSampleData(samplesIterator));
+        Common::XmlNodeIterator concentrationsIterator = samplesIterator->getChildren(CONCENTRATIONS_NODE_NAME);
+        while (concentrationsIterator != Common::XmlNodeIterator::none()) {
+            Common::XmlNodeIterator concentrationIterator = concentrationsIterator->getChildren(CONCENTRATION_NODE_NAME);
+            samples.push_back(createSampleData(samplesIterator, concentrationIterator));
+            concentrationsIterator++;
+        }
         samplesIterator++;
     }
 
@@ -303,7 +310,7 @@ unique_ptr<Tucuxi::Core::Target> QueryImport::createTargetData(Common::XmlNodeIt
 
     string activeMoietyId = getChildString(_targetDataRootIterator, ANALYTE_ID_NODE_NAME);
     string targetTypeStr = getChildString(_targetDataRootIterator, TARGET_TYPE_NODE_NAME);
-    Unit unit = getChildUnit(_targetDataRootIterator, UNIT_NODE_NAME);
+    Unit unit = getChildUnit(_targetDataRootIterator, UNIT_NODE_NAME, CheckUnit::Check);
     Tucuxi::Core::Value inefficacyAlarm = getChildDouble(_targetDataRootIterator, INEFFICACY_ALARM_ID_NODE_NAME);
     Tucuxi::Core::Value min = getChildDouble(_targetDataRootIterator, MIN_NODE_NAME);
     Tucuxi::Core::Value best= getChildDouble(_targetDataRootIterator, BEST_NODE_NAME);
@@ -314,7 +321,7 @@ unique_ptr<Tucuxi::Core::Target> QueryImport::createTargetData(Common::XmlNodeIt
     Tucuxi::Core::Value micValue = 0.0;
     Common::XmlNodeIterator micRootIterator = _targetDataRootIterator->getChildren(MIC_NODE_NAME);
     if (micRootIterator != Common::XmlNodeIterator::none()) {
-        micUnit = getChildUnit(micRootIterator, MIC_UNIT_NODE_NAME);
+        micUnit = getChildUnit(micRootIterator, MIC_UNIT_NODE_NAME, CheckUnit::Check);
         micValue = getChildDouble(micRootIterator, MIC_VALUE_NODE_NAME);
     }
 
@@ -354,43 +361,35 @@ unique_ptr<Tucuxi::Core::Target> QueryImport::createTargetData(Common::XmlNodeIt
                 );
 }
 
-unique_ptr<SampleData> QueryImport::createSampleData(Common::XmlNodeIterator& _sampleDataRootIterator)
+unique_ptr<Tucuxi::Core::Sample> QueryImport::createSampleData(Common::XmlNodeIterator& _sampleDataRootIterator, Common::XmlNodeIterator& _concentrationRootIterator)
 {
     static const string SAMPLE_ID_NODE_NAME = "sampleId";
     static const string SAMPLE_DATE_NODE_NAME = "sampleDate";
-    static const string CONCENTRATIONS_NODE_NAME = "concentrations";
-
-    string sampleId = getChildString(_sampleDataRootIterator, SAMPLE_ID_NODE_NAME);
-    Common::DateTime sampleDate = getChildDateTime(_sampleDataRootIterator, SAMPLE_DATE_NODE_NAME);
-
-    vector< unique_ptr<ConcentrationData> > concentrations;
-
-    Common::XmlNodeIterator concentrationsRootIterator = _sampleDataRootIterator->getChildren(CONCENTRATIONS_NODE_NAME);
-    Common::XmlNodeIterator concentrationsIterator = concentrationsRootIterator->getChildren();
-    while(concentrationsIterator != Common::XmlNodeIterator::none()) {
-        concentrations.push_back(createConcentrationData(concentrationsIterator));
-        concentrationsIterator++;
-    }
-
-    return make_unique<SampleData>(
-                sampleId,
-                sampleDate,
-                concentrations
-                );
-}
-
-unique_ptr<ConcentrationData> QueryImport::createConcentrationData(Common::XmlNodeIterator& _concentrationDataRootIterator)
-{
     static const string ANALYTE_ID_NODE_NAME = "analyteId";
     static const string VALUE_NODE_NAME = "value";
     static const string UNIT_NODE_NAME = "unit";
 
-    string analyteId = getChildString(_concentrationDataRootIterator, ANALYTE_ID_NODE_NAME);
-    double value = getChildDouble(_concentrationDataRootIterator, VALUE_NODE_NAME);
-    string unit = getChildString(_concentrationDataRootIterator, UNIT_NODE_NAME);
+    string sampleId = getChildString(_sampleDataRootIterator, SAMPLE_ID_NODE_NAME);
+    Common::DateTime sampleDate = getChildDateTime(_sampleDataRootIterator, SAMPLE_DATE_NODE_NAME);    
 
-    return make_unique<ConcentrationData>(analyteId, value, unit);
+    Tucuxi::Core::AnalyteId analyteId(getChildString(_concentrationRootIterator, ANALYTE_ID_NODE_NAME));
+    Tucuxi::Core::Value value(getChildDouble(_concentrationRootIterator, VALUE_NODE_NAME));
+    Unit unit = getChildUnit(_concentrationRootIterator, UNIT_NODE_NAME, CheckUnit::Check);
+
+    return make_unique<Tucuxi::Core::Sample>(
+                sampleId,
+                sampleDate,
+                analyteId,
+                value,
+                unit);
 }
+
+//unique_ptr<Tucuxi::Core::ConcentrationData> QueryImport::createConcentrationData(Common::XmlNodeIterator& _concentrationDataRootIterator)
+//{
+
+
+//    return make_unique<Tucuxi::Core::ConcentrationData>(analyteId, value, unit);
+//}
 
 unique_ptr<Treatment> QueryImport::createTreatment(Common::XmlNodeIterator& _treatmentRootIterator)
 {

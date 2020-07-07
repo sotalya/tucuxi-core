@@ -38,21 +38,21 @@ vector<unsigned short> GraphData::getPercentiles() const
     return m_percentiles;
 }
 
-// Backextrapolation class
+//// Backextrapolation class
 
-Backextrapolation::Backextrapolation(unique_ptr<SampleData> _pSample, unique_ptr<Core::Dosage> _pDosage)
-    : m_pSample(move(_pSample)), m_pDosage(move(_pDosage))
-{}
+//Backextrapolation::Backextrapolation(unique_ptr<SampleData> _pSample, unique_ptr<Core::Dosage> _pDosage)
+//    : m_pSample(move(_pSample)), m_pDosage(move(_pDosage))
+//{}
 
-const SampleData& Backextrapolation::getpSample() const
-{
-    return *m_pSample;
-}
+//const SampleData& Backextrapolation::getpSample() const
+//{
+//    return *m_pSample;
+//}
 
-const Core::Dosage& Backextrapolation::getpDosage() const
-{
-    return *m_pDosage;
-}
+//const Core::Dosage& Backextrapolation::getpDosage() const
+//{
+//    return *m_pDosage;
+//}
 
 // RequestData class
 

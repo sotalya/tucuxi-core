@@ -19,6 +19,7 @@
 #include "tucucore/drugtreatment/target.h"
 
 #include "tucucore/computingservice/computingtrait.h"
+#include "tucucore/drugmodel/analyte.h"
 
 struct TestDosageImportExport;
 
@@ -81,8 +82,8 @@ protected:
     unique_ptr<Core::PatientCovariate> createCovariateData(Common::XmlNodeIterator& _covariateDataRootIterator);
     std::unique_ptr<DrugData> createDrugData(Common::XmlNodeIterator& _drugDataRootIterator) ;
     std::unique_ptr<Tucuxi::Core::Target> createTargetData(Common::XmlNodeIterator& _targetDataRootIterator) ;
-    std::unique_ptr<SampleData> createSampleData(Common::XmlNodeIterator& _sampleDataRootIterator) ;
-    std::unique_ptr<ConcentrationData> createConcentrationData(Common::XmlNodeIterator& _concentrationDataRootIterator) ;
+    std::unique_ptr<Tucuxi::Core::Sample> createSampleData(Common::XmlNodeIterator& _sampleDataRootIterator, Common::XmlNodeIterator& _concentrationRootIterator) ;
+//    std::unique_ptr<Tucuxi::Core::ConcentrationData> createConcentrationData(Common::XmlNodeIterator& _concentrationDataRootIterator) ;
     std::unique_ptr<Treatment> createTreatment(Common::XmlNodeIterator& _treatmentRootIterator) ;
     std::unique_ptr<Core::DosageTimeRange> createDosageTimeRange(Common::XmlNodeIterator& _dosageTimeRangeRootIterator);
     std::unique_ptr<Core::Dosage> createDosage(Common::XmlNodeIterator& _dosageRootIterator) ;

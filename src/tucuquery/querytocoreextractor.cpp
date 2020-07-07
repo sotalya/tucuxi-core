@@ -73,7 +73,7 @@ Tucuxi::Core::PatientVariates QueryToCoreExtractor::extractPatientVariates(const
                            covariate->getValue(),
                            covariate->getDataType(),
                            Common::Unit(covariate->getUnit()),
-                           covariate->getValueAsDate()
+                           covariate->getEventTime()
                            )
                        );
        }
@@ -115,21 +115,17 @@ Tucuxi::Core::Samples QueryToCoreExtractor::extractSamples(const QueryData &_que
 {
     Tucuxi::Core::Samples samples;
 
-    const std::vector< std::unique_ptr<SampleData> >& samplesData = _query.getpParameters()
+    const std::vector< std::unique_ptr<Tucuxi::Core::Sample> >& samplesData = _query.getpParameters()
             .getDrugs().at(_drugPosition)
             ->getSamples();
 
-    for (const std::unique_ptr<SampleData>& sd : samplesData) {
-        for (const std::unique_ptr<ConcentrationData>& cd : sd->getConcentrations()) {
-            samples.push_back(
-                        std::make_unique<Tucuxi::Core::Sample>(
-                            sd->getpSampleDate(),
-                            cd->getAnalyteID(),
-                            cd->getValue(),
-                            Common::Unit(cd->getUnit())
-                            )
-                        );
-        }
+    for (const std::unique_ptr<Tucuxi::Core::Sample>& sd : samplesData) {
+        samples.push_back(std::make_unique<Tucuxi::Core::Sample>(
+                              sd->getSampleId(),
+                              sd->getDate(),
+                              sd->getAnalyteID(),
+                              sd->getValue(),
+                              sd->getUnit()));
     }
 
     return samples;

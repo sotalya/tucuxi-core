@@ -1630,7 +1630,7 @@ ParameterDefinition* DrugModelImport::extractParameter(Tucuxi::Common::XmlNodeIt
             id = it->getValue();
         }
         else if (nodeName == "unit") {
-            unit = extractUnit(it);
+            unit = extractUnit(it, CheckUnit::DoNotCheck);
         }
         else if (nodeName == "parameterValue") {
             value = extractPopulationValue(it);

@@ -73,139 +73,139 @@ const Core::DosageHistory& Treatment::getpDosageHistory() const
 
 // ConcentrationData class
 
-ConcentrationData::ConcentrationData(string _analyteID, double _value, string _unit)
-    : m_analyteID(_analyteID), m_value(_value), m_unit(_unit)
-{}
+//ConcentrationData::ConcentrationData(string _analyteID, double _value, string _unit)
+//    : m_analyteID(_analyteID), m_value(_value), m_unit(_unit)
+//{}
 
-string ConcentrationData::getAnalyteID() const
-{
-    return m_analyteID;
-}
+//string ConcentrationData::getAnalyteID() const
+//{
+//    return m_analyteID;
+//}
 
-double ConcentrationData::getValue() const
-{
-    return m_value;
-}
+//double ConcentrationData::getValue() const
+//{
+//    return m_value;
+//}
 
-string ConcentrationData::getUnit() const
-{
-    return m_unit;
-}
+//string ConcentrationData::getUnit() const
+//{
+//    return m_unit;
+//}
 
-// SampleData class
+//// SampleData class
 
-SampleData::SampleData(
-        string& _sampleID,
-        Common::DateTime& _pSampleDate,
-        vector<unique_ptr<ConcentrationData> >& _concentrations
-) : m_sampleID(_sampleID), m_pSampleDate(_pSampleDate),
-    m_concentrations(move(_concentrations))
-{}
+//SampleData::SampleData(
+//        string& _sampleID,
+//        Common::DateTime& _pSampleDate,
+//        vector<unique_ptr<ConcentrationData> >& _concentrations
+//) : m_sampleID(_sampleID), m_pSampleDate(_pSampleDate),
+//    m_concentrations(move(_concentrations))
+//{}
 
-string SampleData::getSampleID() const
-{
-    return m_sampleID;
-}
+//string SampleData::getSampleID() const
+//{
+//    return m_sampleID;
+//}
 
-const Common::DateTime SampleData::getpSampleDate() const
-{
-    return m_pSampleDate;
-}
+//const Common::DateTime SampleData::getpSampleDate() const
+//{
+//    return m_pSampleDate;
+//}
 
-const vector<unique_ptr<ConcentrationData> >& SampleData::getConcentrations() const
-{
-    return m_concentrations;
-}
+//const vector<unique_ptr<ConcentrationData> >& SampleData::getConcentrations() const
+//{
+//    return m_concentrations;
+//}
 
 
-// TargetData class
+//// TargetData class
 
-TargetData::TargetData(
-        string& _activeMoietyID,
-        string& _targetType,
-        string& _unit,
-        double _inefficacyAlarm,
-        double _min,
-        double _best,
-        double _max,
-        double _toxicityAlarm,
-        string& _micUnit,
-        double _micValue
-) : m_activeMoietyID(_activeMoietyID), m_unit(_unit),
-    m_inefficacyAlarm(_inefficacyAlarm), m_min(_min), m_best(_best),
-    m_max(_max), m_toxicityAlarm(_toxicityAlarm), m_micUnit(_micUnit),
-    m_micValue(_micValue)
-{
-    if (_targetType == "peak") {
-        m_targetType = Core::TargetType::Peak;
-    } else if (_targetType == "residual") {
-        m_targetType = Core::TargetType::Residual;
-    } else if (_targetType == "mean") {
-        m_targetType = Core::TargetType::Mean;
-    } else if (_targetType == "auc") {
-        m_targetType = Core::TargetType::Auc;
-    } else if (_targetType == "aucOverMic") {
-        m_targetType = Core::TargetType::AucOverMic;
-    } else if (_targetType == "timeOverMic") {
-        m_targetType = Core::TargetType::TimeOverMic;
-    } else if (_targetType == "aucDividedByMic") {
-        m_targetType = Core::TargetType::AucDividedByMic;
-    } else if (_targetType == "peakDividedByMic") {
-        m_targetType = Core::TargetType::PeakDividedByMic;
-    } else {
-        m_targetType = Core::TargetType::UnknownTarget;
-    }
-}
+//TargetData::TargetData(
+//        string& _activeMoietyID,
+//        string& _targetType,
+//        string& _unit,
+//        double _inefficacyAlarm,
+//        double _min,
+//        double _best,
+//        double _max,
+//        double _toxicityAlarm,
+//        string& _micUnit,
+//        double _micValue
+//) : m_activeMoietyID(_activeMoietyID), m_unit(_unit),
+//    m_inefficacyAlarm(_inefficacyAlarm), m_min(_min), m_best(_best),
+//    m_max(_max), m_toxicityAlarm(_toxicityAlarm), m_micUnit(_micUnit),
+//    m_micValue(_micValue)
+//{
+//    if (_targetType == "peak") {
+//        m_targetType = Core::TargetType::Peak;
+//    } else if (_targetType == "residual") {
+//        m_targetType = Core::TargetType::Residual;
+//    } else if (_targetType == "mean") {
+//        m_targetType = Core::TargetType::Mean;
+//    } else if (_targetType == "auc") {
+//        m_targetType = Core::TargetType::Auc;
+//    } else if (_targetType == "aucOverMic") {
+//        m_targetType = Core::TargetType::AucOverMic;
+//    } else if (_targetType == "timeOverMic") {
+//        m_targetType = Core::TargetType::TimeOverMic;
+//    } else if (_targetType == "aucDividedByMic") {
+//        m_targetType = Core::TargetType::AucDividedByMic;
+//    } else if (_targetType == "peakDividedByMic") {
+//        m_targetType = Core::TargetType::PeakDividedByMic;
+//    } else {
+//        m_targetType = Core::TargetType::UnknownTarget;
+//    }
+//}
 
-string TargetData::getActiveMoietyID() const
-{
-    return m_activeMoietyID;
-}
+//string TargetData::getActiveMoietyID() const
+//{
+//    return m_activeMoietyID;
+//}
 
-Core::TargetType TargetData::getTargetType() const
-{
-    return m_targetType;
-}
+//Core::TargetType TargetData::getTargetType() const
+//{
+//    return m_targetType;
+//}
 
-string TargetData::getUnit() const
-{
-    return m_unit;
-}
+//string TargetData::getUnit() const
+//{
+//    return m_unit;
+//}
 
-double TargetData::getInefficacyAlarm() const
-{
-    return m_inefficacyAlarm;
-}
+//double TargetData::getInefficacyAlarm() const
+//{
+//    return m_inefficacyAlarm;
+//}
 
-double TargetData::getMin() const
-{
-    return m_min;
-}
+//double TargetData::getMin() const
+//{
+//    return m_min;
+//}
 
-double TargetData::getBest() const
-{
-    return m_best;
-}
+//double TargetData::getBest() const
+//{
+//    return m_best;
+//}
 
-double TargetData::getMax() const
-{
-    return m_max;
-}
+//double TargetData::getMax() const
+//{
+//    return m_max;
+//}
 
-double TargetData::getToxicityAlarm() const
-{
-    return m_toxicityAlarm;
-}
+//double TargetData::getToxicityAlarm() const
+//{
+//    return m_toxicityAlarm;
+//}
 
-string TargetData::getMicUnit() const
-{
-    return m_micUnit;
-}
+//string TargetData::getMicUnit() const
+//{
+//    return m_micUnit;
+//}
 
-double TargetData::getMicValue() const
-{
-    return m_micValue;
-}
+//double TargetData::getMicValue() const
+//{
+//    return m_micValue;
+//}
 
 // DrugData class
 
@@ -214,7 +214,7 @@ DrugData::DrugData(string& _drugID,
                    string& _brandName,
                    string& _atc,
                    unique_ptr<Treatment> _pTreatment,
-                   vector<unique_ptr<SampleData> >& _samples,
+                   vector<unique_ptr<Tucuxi::Core::Sample> >& _samples,
                    vector<unique_ptr<Tucuxi::Core::Target> >& _targets
 ) : m_drugID(_drugID), m_activePrinciple(_activePrinciple), m_brandName(_brandName),
     m_atc(_atc), m_pTreatment(move(_pTreatment)), m_samples(move(_samples)),
@@ -246,7 +246,7 @@ const Treatment& DrugData::getpTreatment() const
     return *m_pTreatment;
 }
 
-const vector<unique_ptr<SampleData> >& DrugData::getSamples() const
+const vector<unique_ptr<Tucuxi::Core::Sample> >& DrugData::getSamples() const
 {
     return m_samples;
 }

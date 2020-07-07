@@ -41,14 +41,14 @@ ComputingStatus SampleExtractor::extract(
         potentialAnalyteIds.push_back(analyte->getAnalyteId());
     }
     for (const auto & sample : _samples) {
-        if (contains(potentialAnalyteIds, sample->getAnalyteId())) {
+        if (contains(potentialAnalyteIds, sample->getAnalyteID())) {
             if ((sample->getDate() > _start) && (sample->getDate() < _end)) {
                 _series.push_back(SampleEvent(sample->getDate(), UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(sample->getValue(), sample->getUnit(), Unit("ug/l"))));
                 nbRelevantSamples ++;
                 if (singleAnalyte.toString().empty()) {
-                    singleAnalyte = sample->getAnalyteId();
+                    singleAnalyte = sample->getAnalyteID();
                 }
-                else if (sample->getAnalyteId() != singleAnalyte) {
+                else if (sample->getAnalyteID() != singleAnalyte) {
                     // We currently do not support multi-analytes for measures
                     Tucuxi::Common::LoggerHelper logger;
                     logger.error("Multi-analytes measures are not yet supported");
@@ -81,9 +81,9 @@ ComputingStatus SampleExtractor::extract(
             _series.push_back(SampleEvent(sample->getDate(), UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(sample->getValue(), sample->getUnit(), Unit("ug/l"))));
             nbRelevantSamples ++;
             if (singleAnalyte.toString().empty()) {
-                singleAnalyte = sample->getAnalyteId();
+                singleAnalyte = sample->getAnalyteID();
             }
-            else if (sample->getAnalyteId() != singleAnalyte) {
+            else if (sample->getAnalyteID() != singleAnalyte) {
                 // We currently do not support multi-analytes for measures
                 Tucuxi::Common::LoggerHelper logger;
                 logger.error("Multi-analytes measures are not yet supported");

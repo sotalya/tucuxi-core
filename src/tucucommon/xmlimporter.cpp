@@ -74,13 +74,13 @@ Unit XMLImporter::extractUnit(Tucuxi::Common::XmlNodeIterator _rootIterator, Che
 
     if (_checkUnit == CheckUnit::Check)
     {
-        if (!UnitManager::isKnown(unitString))
-        {
-            setNodeError(_rootIterator);
-        }
-        else if (unitString == "" || unitString == "-")
+        if (unitString == "" || unitString == "-")
         {
             return Unit("");
+        }
+        else if (!UnitManager::isKnown(unitString))
+        {
+            setNodeError(_rootIterator);
         }
     }
 

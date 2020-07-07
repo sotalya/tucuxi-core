@@ -112,10 +112,6 @@ int parse(int _argc, char* _argv[]) // NOLINT(cppcoreguidelines-avoid-c-arrays, 
 
         pCmpMgr->registerComponent("QueryLogger", queryLogger);
 
-        // Drugs loaded by getDrugModelById and convert to drugModel
-//        drugModelRepository->loadFolder(drugPath);
-
-
         CliComputer computer;
         QueryStatus queryStatus = computer.compute(inputFileName, outputFileName, datafilepath);
 

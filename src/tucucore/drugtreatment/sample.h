@@ -18,6 +18,49 @@ using Tucuxi::Common::DateTime; // NOLINT(google-global-names-in-headers)
 namespace Tucuxi {
 namespace Core {
 
+
+//class ConcentrationData
+//{
+//public:
+//    // Constructors
+//    ConcentrationData() = delete;
+
+//    ConcentrationData(
+//        AnalyteId _analyteID,
+//        Value _value,
+//        Unit _unit
+//    );
+
+//    ConcentrationData(ConcentrationData& _other) = delete;
+
+//    ///
+//    /// \brief Returns the analyte ID
+//    /// \return The analyte ID
+//    ///
+//    AnalyteId getAnalyteID() const;
+
+//    ///
+//    /// \brief returns the measured value
+//    /// \return The measured value
+//    ///
+//    Value getValue() const;
+
+//    ///
+//    /// \brief Returns the unit of the measure
+//    /// \return The unit of the measure
+//    ///
+//    Unit getUnit() const;
+
+//protected:
+
+//    /// Analyte ID of the measured sample
+//    const AnalyteId m_analyteID;
+//    /// Measured value
+//    const Value m_value;
+//    /// Unit of the measure
+//    const Unit m_unit;
+//};
+
 ///
 /// \brief A Sample measured in a patient's blood
 /// This class embeds all data of a measure necessary for performing
@@ -36,19 +79,25 @@ public:
     /// \param _value Value of concentration
     /// \param _unit Unit of the value
     ///
-    Sample(DateTime _date, std::string _analyteId, Value _value, Unit _unit);
-
-    ///
-    /// \brief Returns the analyte ID
-    /// \return The analyte ID
-    ///
-    AnalyteId getAnalyteId() const;
+    Sample(std::string sampleId, DateTime _date, AnalyteId _analyteId, Value _value, Unit _unit);
 
     ///
     /// \brief Returns the date of measure
     /// \return The date of measure
     ///
     DateTime getDate() const;
+
+    ///
+    /// \brief Returns the sample ID
+    /// \return Sample ID
+    ///
+    std::string getSampleId() const;
+
+    ///
+    /// \brief Returns the analyte ID
+    /// \return The analyte ID
+    ///
+    AnalyteId getAnalyteID() const;
 
     ///
     /// \brief returns the measured value
@@ -62,23 +111,32 @@ public:
     ///
     Unit getUnit() const;
 
+
 protected:
 
-    /// Analyte ID of the measured sample
-    AnalyteId m_analyteId;
+    /// Sample ID
+    const std::string m_sampleID;
 
     /// Date of measure (date + time)
     DateTime m_date;
 
+    /// Analyte ID of the measured sample
+    const AnalyteId m_analyteID;
+
     /// Measured value
-    Value m_value;
+    const Value m_value;
 
     /// Unit of the measure
-    Unit m_unit;
+    const Unit m_unit;
+
+
+
 };
 
 /// A vector of unique_ptr on Sample objects
 typedef std::vector<std::unique_ptr<Sample> > Samples;
+
+
 
 } // namespace Core
 } // namespace Tucuxi

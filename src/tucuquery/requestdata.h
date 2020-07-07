@@ -56,27 +56,27 @@ protected:
     std::vector<unsigned short> m_percentiles;
 };
 
-class Backextrapolation
-{
-public:
-    // Constructors
-    Backextrapolation() = delete;
+//class Backextrapolation
+//{
+//public:
+//    // Constructors
+//    Backextrapolation() = delete;
 
-    Backextrapolation(
-        std::unique_ptr<SampleData> _pSample,
-        std::unique_ptr<Tucuxi::Core::Dosage> _pDosage
-    );
+//    Backextrapolation(
+//        std::unique_ptr<SampleData> _pSample,
+//        std::unique_ptr<Tucuxi::Core::Dosage> _pDosage
+//    );
 
-    Backextrapolation(Backextrapolation& _other) = delete;
+//    Backextrapolation(Backextrapolation& _other) = delete;
 
-    // Getters
-    const SampleData& getpSample() const;
-    const Tucuxi::Core::Dosage& getpDosage() const;
+//    // Getters
+//    const SampleData& getpSample() const;
+//    const Tucuxi::Core::Dosage& getpDosage() const;
 
-protected:
-    std::unique_ptr<SampleData> m_pSample;
-    std::unique_ptr<Tucuxi::Core::Dosage> m_pDosage;
-};
+//protected:
+//    std::unique_ptr<SampleData> m_pSample;
+//    std::unique_ptr<Tucuxi::Core::Dosage> m_pDosage;
+//};
 
 class RequestData
 {
