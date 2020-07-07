@@ -67,8 +67,8 @@ const std::map<UnitManager::UnitType, std::map<std::string, double>>& UnitManage
                 {"g*h/l", 1000000.0},
                 {"mg*min/l", 1000.0 / 60.0},
                 {"min*mg/l", 1000.0 / 60.0},
-                {"g*min/l", 10000000.0 / 60.0},
-                {"min*g/l", 10000000.0 / 60.0},
+                {"g*min/l", 1000000.0 / 60.0},
+                {"min*g/l", 1000000.0 / 60.0},
                 {"ug*min/l", 1.0 / 60.0},
                 {"min*ug/l", 1.0 / 60.0},
 
@@ -80,10 +80,10 @@ const std::map<UnitManager::UnitType, std::map<std::string, double>>& UnitManage
                 {"g*h/ml", 1000000000.0},
                 {"mg*min/ml", 1000000.0 / 60.0},
                 {"min*mg/ml", 1000000.0 / 60.0},
-                {"g*min/ml", 10000000000.0 / 60.0},
-                {"min*g/ml", 10000000000.0 / 60.0},
-                {"ug*min/ml", 1.0 / 60000.0},
-                {"min*ug/ml", 1.0 / 60000.0}
+                {"g*min/ml", 1000000000.0 / 60.0},
+                {"min*g/ml", 1000000000.0 / 60.0},
+                {"ug*min/ml", 1000.0 / 60.0 },
+                {"min*ug/ml", 1000.0 / 60.0}
             }
         },
         {
@@ -104,9 +104,9 @@ const std::map<UnitManager::UnitType, std::map<std::string, double>>& UnitManage
             UnitType::FlowRate,
             {
                 {"ml/min", 1.0},
-                {"l/min", 0.001},
-                {"ml/h", 60.0},
-                {"l/h", 0.06}
+                {"l/min", 1000.0},
+                {"ml/h", 1.0 / 60.0},
+                {"l/h", 1000.0 / 60.0}
             }
         },
         {
@@ -118,18 +118,18 @@ const std::map<UnitManager::UnitType, std::map<std::string, double>>& UnitManage
         {
             UnitType::Time,
             {
-                {"min", 1.0},
+//                {"min", 1.0},
                 {"s", 1 / 60.0},
                 {"h", 60.0},
-                {"day", 24.0 * 60.0},
-                {"days", 24.0 * 60.0},
+//                {"day", 24.0 * 60.0},
+//                {"days", 24.0 * 60.0},
                 {"d", 24.0 * 60.0},
                 {"w", 7.0 * 24.0 * 60.0},
-                {"weeks", 7.0 * 24.0 * 60.0},
-                {"week", 7.0 * 24.0 * 60.0},
+//                {"weeks", 7.0 * 24.0 * 60.0},
+//                {"week", 7.0 * 24.0 * 60.0},
                 {"m", 30.0 * 24.0 * 60.0},
-                {"y", 365.0 * 24.0 * 60.0},
-                {"year", 365.0 * 24.0 * 60.0}
+                {"y", 365.0 * 24.0 * 60.0}
+//                {"year", 365.0 * 24.0 * 60.0}
             }
         },
         {
