@@ -328,54 +328,78 @@ unique_ptr<Tucuxi::Core::Target> QueryImport::createTargetData(Common::XmlNodeIt
     Tucuxi::Core::TargetType targetType;
     Tucuxi::Common::UnitManager unitManager;
 
-
     if (targetTypeStr == "peak") {
         targetType = Core::TargetType::Peak;
-        unitManager.isOfType<Common::UnitManager::UnitType::Concentration>(unit);
+        if (!unitManager.isOfType<Common::UnitManager::UnitType::Concentration>(unit)){
+            setStatus(Status::Error, "Unit " + unit.toString() + " not compatible for concentration Target");
+        }
 
     } else if (targetTypeStr == "residual") {
         targetType = Core::TargetType::Residual;
-        unitManager.isOfType<Common::UnitManager::UnitType::Concentration>(unit);
+        if (!unitManager.isOfType<Common::UnitManager::UnitType::Concentration>(unit)){
+            setStatus(Status::Error, "Unit " + unit.toString() + " not compatible for concentration Target");
+        }
 
     } else if (targetTypeStr == "mean") {
         targetType = Core::TargetType::Mean;
-        unitManager.isOfType<Common::UnitManager::UnitType::Concentration>(unit);
+        if (!unitManager.isOfType<Common::UnitManager::UnitType::Concentration>(unit)){
+            setStatus(Status::Error, "Unit " + unit.toString() + " not compatible for concentration Target");
+        }
 
     } else if (targetTypeStr == "auc") {
         targetType = Core::TargetType::Auc;
-        unitManager.isOfType<Common::UnitManager::UnitType::ConcentrationTime>(unit);
+        if (!unitManager.isOfType<Common::UnitManager::UnitType::ConcentrationTime>(unit)){
+            setStatus(Status::Error, "Unit " + unit.toString() + " not compatible for concentration time Target");
+        }
 
     } else if (targetTypeStr == "auc24") {
         targetType = Core::TargetType::Auc24;
-        unitManager.isOfType<Common::UnitManager::UnitType::ConcentrationTime>(unit);
+        if (!unitManager.isOfType<Common::UnitManager::UnitType::ConcentrationTime>(unit)){
+            setStatus(Status::Error, "Unit " + unit.toString() + " not compatible for concentration time Target");
+        }
 
     } else if (targetTypeStr == "cumulativeAuc") {
         targetType = Core::TargetType::CumulativeAuc;
-        unitManager.isOfType<Common::UnitManager::UnitType::ConcentrationTime>(unit);
+        if (!unitManager.isOfType<Common::UnitManager::UnitType::ConcentrationTime>(unit)){
+            setStatus(Status::Error, "Unit " + unit.toString() + " not compatible for concentration time Target");
+        }
 
     } else if (targetTypeStr == "aucOverMic") {
         targetType = Core::TargetType::AucOverMic;
-        unitManager.isOfType<Common::UnitManager::UnitType::ConcentrationTime>(unit);
+        if (!unitManager.isOfType<Common::UnitManager::UnitType::ConcentrationTime>(unit)){
+            setStatus(Status::Error, "Unit " + unit.toString() + " not compatible for concentration time Target");
+        }
 
     } else if (targetTypeStr == "auc24OverMic") {
         targetType = Core::TargetType::Auc24OverMic;
-        unitManager.isOfType<Common::UnitManager::UnitType::ConcentrationTime>(unit);
+        if (!unitManager.isOfType<Common::UnitManager::UnitType::ConcentrationTime>(unit)){
+            setStatus(Status::Error, "Unit " + unit.toString() + " not compatible for concentration time Target");
+        }
 
     } else if (targetTypeStr == "timeOverMic") {
         targetType = Core::TargetType::TimeOverMic;
-        unitManager.isOfType<Common::UnitManager::UnitType::Time>(unit);
+        if (!unitManager.isOfType<Common::UnitManager::UnitType::Time>(unit)){
+            setStatus(Status::Error, "Unit " + unit.toString() + " not compatible for time Target");
+        }
+
 
     } else if (targetTypeStr == "aucDividedByMic") {
         targetType = Core::TargetType::AucDividedByMic;
-        unitManager.isOfType<Common::UnitManager::UnitType::Time>(unit);
+        if (!unitManager.isOfType<Common::UnitManager::UnitType::Time>(unit)){
+            setStatus(Status::Error, "Unit " + unit.toString() + " not compatible for time Target");
+        }
 
     } else if (targetTypeStr == "auc24DividedByMic") {
         targetType = Core::TargetType::Auc24DividedByMic;
-        unitManager.isOfType<Common::UnitManager::UnitType::Time>(unit);
+        if (!unitManager.isOfType<Common::UnitManager::UnitType::Time>(unit)){
+            setStatus(Status::Error, "Unit " + unit.toString() + " not compatible for time Target");
+        }
 
     } else if (targetTypeStr == "peakDividedByMic") {
         targetType = Core::TargetType::PeakDividedByMic;
-        unitManager.isOfType<Common::UnitManager::UnitType::NoUnit>(unit);
+        if (!unitManager.isOfType<Common::UnitManager::UnitType::NoUnit>(unit)){
+            setStatus(Status::Error, "Unit " + unit.toString() + " not compatible for no unit Target");
+        }
     } else {
         targetType = Core::TargetType::UnknownTarget;
     }
@@ -411,7 +435,6 @@ unique_ptr<Tucuxi::Core::Sample> QueryImport::createSampleData(Common::XmlNodeIt
     Unit unit = getChildUnit(_concentrationRootIterator, UNIT_NODE_NAME, CheckUnit::Check);
 
     return make_unique<Tucuxi::Core::Sample>(
-                sampleId,
                 sampleDate,
                 analyteId,
                 value,
