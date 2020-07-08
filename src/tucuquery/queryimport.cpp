@@ -326,26 +326,60 @@ unique_ptr<Tucuxi::Core::Target> QueryImport::createTargetData(Common::XmlNodeIt
     }
 
     Tucuxi::Core::TargetType targetType;
+    Tucuxi::Common::UnitManager unitManager;
+
 
     if (targetTypeStr == "peak") {
         targetType = Core::TargetType::Peak;
+        unitManager.isOfType<Common::UnitManager::UnitType::Concentration>(unit);
+
     } else if (targetTypeStr == "residual") {
         targetType = Core::TargetType::Residual;
+        unitManager.isOfType<Common::UnitManager::UnitType::Concentration>(unit);
+
     } else if (targetTypeStr == "mean") {
         targetType = Core::TargetType::Mean;
+        unitManager.isOfType<Common::UnitManager::UnitType::Concentration>(unit);
+
     } else if (targetTypeStr == "auc") {
         targetType = Core::TargetType::Auc;
+        unitManager.isOfType<Common::UnitManager::UnitType::ConcentrationTime>(unit);
+
+    } else if (targetTypeStr == "auc24") {
+        targetType = Core::TargetType::Auc24;
+        unitManager.isOfType<Common::UnitManager::UnitType::ConcentrationTime>(unit);
+
+    } else if (targetTypeStr == "cumulativeAuc") {
+        targetType = Core::TargetType::CumulativeAuc;
+        unitManager.isOfType<Common::UnitManager::UnitType::ConcentrationTime>(unit);
+
     } else if (targetTypeStr == "aucOverMic") {
         targetType = Core::TargetType::AucOverMic;
+        unitManager.isOfType<Common::UnitManager::UnitType::ConcentrationTime>(unit);
+
+    } else if (targetTypeStr == "auc24OverMic") {
+        targetType = Core::TargetType::Auc24OverMic;
+        unitManager.isOfType<Common::UnitManager::UnitType::ConcentrationTime>(unit);
+
     } else if (targetTypeStr == "timeOverMic") {
         targetType = Core::TargetType::TimeOverMic;
+        unitManager.isOfType<Common::UnitManager::UnitType::Time>(unit);
+
     } else if (targetTypeStr == "aucDividedByMic") {
         targetType = Core::TargetType::AucDividedByMic;
+        unitManager.isOfType<Common::UnitManager::UnitType::Time>(unit);
+
+    } else if (targetTypeStr == "auc24DividedByMic") {
+        targetType = Core::TargetType::Auc24DividedByMic;
+        unitManager.isOfType<Common::UnitManager::UnitType::Time>(unit);
+
     } else if (targetTypeStr == "peakDividedByMic") {
         targetType = Core::TargetType::PeakDividedByMic;
+        unitManager.isOfType<Common::UnitManager::UnitType::NoUnit>(unit);
     } else {
         targetType = Core::TargetType::UnknownTarget;
     }
+
 
     return make_unique<Tucuxi::Core::Target>(
                 Tucuxi::Core::ActiveMoietyId(activeMoietyId),

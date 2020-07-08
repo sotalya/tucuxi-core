@@ -14,6 +14,7 @@
 #include "tucucore/drugmodel/validdose.h"
 #include "tucucore/drugmodel/validduration.h"
 #include "tucucore/invariants.h"
+#include "tucucommon/unit.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -58,7 +59,7 @@ public:
 
     INVARIANTS(
             INVARIANT(Invariants::INV_STANDARDTREATMENT_0001, ((!m_isFixedDuration) || (m_duration > 0.0)), "A standard treatment duration is negative")
-            INVARIANT(Invariants::INV_STANDARDTREATMENT_0002, ((!m_isFixedDuration) || (m_unit.isTime())), "A standard treatment duration unit is not correct")
+            INVARIANT(Invariants::INV_STANDARDTREATMENT_0002, ((!m_isFixedDuration) || (Common::UnitManager::isOfType<Common::UnitManager::UnitType::Time>(m_unit))), "A standard treatment duration unit is not correct")
             )
 
 protected:
