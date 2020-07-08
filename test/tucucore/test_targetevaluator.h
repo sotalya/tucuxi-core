@@ -115,7 +115,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
         Concentrations concentrations = {24000, 29000, 16000, 9000, 20000}; // in ug/l
 
 
-        double empiriqueValue = 29; // in mg/l
+        double empiriqueValue = 29.0; // in mg/l
 
         ConcentrationPrediction concentrationPrediction;
         concentrationPrediction.appendConcentrations(timeOffsets, concentrations);
@@ -133,7 +133,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
         {
             fructose_assert(targetEvaluationResult.getUnit() == Unit("mg/l"));
             fructose_assert(targetEvaluationResult.getTargetType() == TargetType::Peak);
-            fructose_assert(targetEvaluationResult.getValue() == empiriqueValue);
+            fructose_assert_double_eq(targetEvaluationResult.getValue(), empiriqueValue);
         }
 
     }
