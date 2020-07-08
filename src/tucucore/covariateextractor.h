@@ -101,6 +101,8 @@ public:
     /// \brief Standard name for a covariate that carries the birth date.
     static const std::string BIRTHDATE_CNAME; // NOLINT(readability-identifier-naming)
 
+    const Unit getFinalUnit(const std::string _cvName) const;
+
 private:
     /// \brief Collect the time instants when the computed covariates have to be re-evaluated.
     /// \param _computedValuesMap Map that holds the pointers to the events due to computed covariates, as well as their

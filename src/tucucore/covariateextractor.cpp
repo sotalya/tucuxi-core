@@ -179,6 +179,7 @@ bool CovariateExtractor::computeEvents(const std::map<DateTime, std::vector<std:
         // Look at every non-computed covariate we are supposed to refresh.
         for (const auto &cvName : refreshEvent.second) {
             Value newVal = 0.0;
+            Common::UnitManager unitManager;
             if (((*m_cdValued.at(cvName))->getType() == CovariateType::Standard) || ((*m_cdValued.at(cvName))->getType() == CovariateType::Sex)) {
                 // Standard covariate -- get its value from the Patient Variates or from default values.
                 std::map<std::string, std::vector<pvIterator_t>>::iterator pvCurrentC = m_pvValued.find(cvName);
@@ -189,6 +190,8 @@ bool CovariateExtractor::computeEvents(const std::map<DateTime, std::vector<std:
                     // If single patient variate value, then take the first value.
                     newVal = stringToValue((*(pvCurrentC->second[0]))->getValue(),
                                            (*(pvCurrentC->second[0]))->getDataType());
+
+                    newVal = unitManager.convertToUnit(newVal, (*(pvCurrentC->second[0]))->getUnit(), getFinalUnit(cvName));
                 } else {
                     // We have more Patient Variates, therefore we have to compute the good value.
                     std::vector<pvIterator_t>::const_iterator pvIt = pvCurrentC->second.begin();
@@ -201,10 +204,15 @@ bool CovariateExtractor::computeEvents(const std::map<DateTime, std::vector<std:
                         // We are past in time after the last measurement we have, so we have to keep the value.
                         newVal = stringToValue((**(std::prev(pvIt)))->getValue(),
                                                (**(std::prev(pvIt)))->getDataType());
+
+                        newVal = unitManager.convertToUnit(newVal, (*(pvCurrentC->second[0]))->getUnit(), getFinalUnit(cvName));
                     } else if (pvIt == pvCurrentC->second.begin()) {
                         // The first measurement is already past the desired time -- we simply have to keep the level.
                         newVal = stringToValue((**(pvIt))->getValue(),
                                                (**(pvIt))->getDataType());
+
+                        newVal = unitManager.convertToUnit(newVal, (*(pvCurrentC->second[0]))->getUnit(), getFinalUnit(cvName));
+
                     } else {
                         // We have two measurements to interpolate from (we have dealt with the case of the first
                         // measurement being past the desired time, so we can safely assume we have a previous
@@ -219,6 +227,12 @@ bool CovariateExtractor::computeEvents(const std::map<DateTime, std::vector<std:
                                                (*m_cdValued.at(cvName))->getInterpolationType(),    // interpolationType
                                                newVal)) {                                           // valRes
                             return false;
+                        }
+                        else{
+                            newVal = unitManager.convertToUnit(stringToValue((**(std::prev(pvIt)))->getValue(),
+                                                                             (**(std::prev(pvIt)))->getDataType()),
+                                                               (*(pvCurrentC->second[0]))->getUnit(),
+                                                                getFinalUnit(cvName));
                         }
                     }
                 }
@@ -548,6 +562,16 @@ void CovariateExtractor::sortPatientVariates()
             (*(pvV.second[0]))->setEventTime(m_start);
         }
     }
+}
+
+const Unit CovariateExtractor::getFinalUnit(const std::string _cvName) const{
+    for(const auto &covInDM : m_defaults){
+        if(_cvName == covInDM->getId()){
+            return covInDM->getUnit();
+        }
+    }
+    //CAN'T GO THERE
+    return Unit("");
 }
 
 } // namespace Core
