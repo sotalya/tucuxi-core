@@ -32,7 +32,7 @@ const std::vector<std::pair<std::string, std::string> > getTolerateUnit()
     return toleratePairUnit;
 }
 
-bool UnitManager::isUnitTolerate(std::string& _unitString) {
+bool UnitManager::isUnitTolerated(std::string& _unitString) {
 
     auto toleratePairUnit = getTolerateUnit();
 
