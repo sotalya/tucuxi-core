@@ -57,37 +57,6 @@ public:
     ///
     bool isEmpty() const;
 
-    ///
-    /// \brief Indicates if the unit corresponds to a time unit
-    /// \return true if it is a time unit, false else
-    ///
-    /// A time is expressed in hours or any of its derivatives
-    ///
-    bool isTime() const;
-
-    ///
-    /// \brief Indicates if the unit corresponds to a concentration
-    /// \return true if it is a concentration unit, false else
-    ///
-    /// A concentration is expressed in grams per liter or any of its derivatives
-    ///
-    bool isConcentration() const;
-
-    ///
-    /// \brief Indicates if the unit corresponds to an area under curve
-    /// \return true if it is an area under curve, false else
-    ///
-    /// An area under curve is expressed in grams*hours/liters or any of its derivatives
-    ///
-    bool isAuc() const;
-
-    ///
-    /// \brief Indicates if the unit corresponds to a dose unit
-    /// \return true if it is a dose unit, false else
-    ///
-    /// A dose is expressed in grams or any of its derivatives
-    ///
-    bool isDose() const;
 
 protected:
 
@@ -122,6 +91,7 @@ public:
         NoUnit,
         Undefined
     };
+
 
     ///
     /// \brief Converts a specific unit type to another unit of the same type
@@ -188,6 +158,14 @@ public:
     /// while Unit("ug/l") is not compatible with Unit("ug").
     ///
     static bool isCompatible(const Unit& _unit1, const Unit& _unit2);
+
+    ///
+    /// \brief Checks if a unit is tolerate during import
+    /// and convert it to a known one for Tucuxi
+    /// \param _unitString The unit string extracted from query
+    /// \return true if the units are compatible, false else
+    ///
+    static bool isUnitTolerated(std::string& _unitString);
 
 private:
 

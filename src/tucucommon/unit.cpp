@@ -8,11 +8,6 @@
 namespace Tucuxi {
 namespace Common {
 
-bool Unit::isTime() const
-{
-    return ((m_unitString == "d") || (m_unitString == "h") || (m_unitString == "m") || (m_unitString == "s"));
-}
-
 bool Unit::isEmpty() const {
     return m_unitString == "";
 }
@@ -20,6 +15,34 @@ bool Unit::isEmpty() const {
 
 std::string Unit::toString() const {
     return m_unitString;
+}
+
+const std::vector<std::pair<std::string, std::string> > getTolerateUnit()
+{
+    static const std::vector<std::pair<std::string, std::string> > toleratePairUnit =
+    {
+        {"day","d"},
+        {"days", "d"},
+        {"week", "w"},
+        {"weeks", "w"},
+        {"month", "m"},
+        {"year", "y"}
+    };
+
+    return toleratePairUnit;
+}
+
+bool UnitManager::isUnitTolerate(std::string& _unitString) {
+
+    auto toleratePairUnit = getTolerateUnit();
+
+    for(const auto unit : toleratePairUnit){
+        if(_unitString == unit.first){
+            _unitString = unit.second;
+            return true;
+        }
+    }
+    return false;
 }
 
 const std::map<UnitManager::UnitType, std::map<std::string, double>>& UnitManager::getConversionMap()
@@ -121,15 +144,10 @@ const std::map<UnitManager::UnitType, std::map<std::string, double>>& UnitManage
                 {"min", 1.0},
                 {"s", 1 / 60.0},
                 {"h", 60.0},
-//                {"day", 24.0 * 60.0},
-//                {"days", 24.0 * 60.0},
                 {"d", 24.0 * 60.0},
                 {"w", 7.0 * 24.0 * 60.0},
-//                {"weeks", 7.0 * 24.0 * 60.0},
-//                {"week", 7.0 * 24.0 * 60.0},
                 {"m", 30.0 * 24.0 * 60.0},
                 {"y", 365.0 * 24.0 * 60.0}
-//                {"year", 365.0 * 24.0 * 60.0}
             }
         },
         {

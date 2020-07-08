@@ -72,15 +72,11 @@ Unit XMLImporter::extractUnit(Tucuxi::Common::XmlNodeIterator _rootIterator, Che
 {
     std::string unitString = _rootIterator->getValue();
 
-    if (_checkUnit == CheckUnit::Check)
-    {
-        if (unitString == "" || unitString == "-")
-        {
-            return Unit("");
-        }
-        else if (!UnitManager::isKnown(unitString))
-        {
-            setNodeError(_rootIterator);
+    if (_checkUnit == CheckUnit::Check){
+        if (!UnitManager::isUnitTolerated(unitString)){
+            if (!UnitManager::isKnown(unitString)){
+                setNodeError(_rootIterator);
+            }
         }
     }
 
@@ -196,15 +192,9 @@ Unit XMLImporter::getChildUnit(Common::XmlNodeIterator _rootIterator, const stri
 {
     auto child = _rootIterator->getChildren(_childName);
 
-    if(checkNodeIterator(child, _childName).empty())
-    {
-        setNodeError(child);
-        return Unit("");
-    }
-    else{
-         return extractUnit(child, _checkunit);
-    }
+    //TUCUXI tolerate empty unit
 
+    return extractUnit(child, _checkunit);
 
 }
 
