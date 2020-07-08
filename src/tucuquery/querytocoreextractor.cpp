@@ -121,7 +121,6 @@ Tucuxi::Core::Samples QueryToCoreExtractor::extractSamples(const QueryData &_que
 
     for (const std::unique_ptr<Tucuxi::Core::Sample>& sd : samplesData) {
         samples.push_back(std::make_unique<Tucuxi::Core::Sample>(
-                              sd->getSampleId(),
                               sd->getDate(),
                               sd->getAnalyteID(),
                               sd->getValue(),

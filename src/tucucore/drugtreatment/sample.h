@@ -79,7 +79,7 @@ public:
     /// \param _value Value of concentration
     /// \param _unit Unit of the value
     ///
-    Sample(std::string sampleId, DateTime _date, AnalyteId _analyteId, Value _value, Unit _unit);
+    Sample(DateTime _date, AnalyteId _analyteId, Value _value, Unit _unit);
 
     ///
     /// \brief Returns the date of measure
@@ -91,7 +91,7 @@ public:
     /// \brief Returns the sample ID
     /// \return Sample ID
     ///
-    std::string getSampleId() const;
+//    std::string getSampleId() const;
 
     ///
     /// \brief Returns the analyte ID
@@ -115,7 +115,7 @@ public:
 protected:
 
     /// Sample ID
-    const std::string m_sampleID;
+//    const std::string m_sampleID;
 
     /// Date of measure (date + time)
     DateTime m_date;

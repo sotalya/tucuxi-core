@@ -229,8 +229,7 @@ bool CovariateExtractor::computeEvents(const std::map<DateTime, std::vector<std:
                             return false;
                         }
                         else{
-                            newVal = unitManager.convertToUnit(stringToValue((**(std::prev(pvIt)))->getValue(),
-                                                                             (**(std::prev(pvIt)))->getDataType()),
+                            newVal = unitManager.convertToUnit(newVal,
                                                                (*(pvCurrentC->second[0]))->getUnit(),
                                                                 getFinalUnit(cvName));
                         }

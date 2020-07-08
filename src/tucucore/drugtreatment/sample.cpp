@@ -9,8 +9,8 @@ namespace Tucuxi {
 namespace Core {
 
 
-Sample::Sample(std::string _sampleId, DateTime _date, AnalyteId _analyteId, Value _value, Unit _unit) :
-    m_sampleID(_sampleId), m_date(_date), m_analyteID(_analyteId), m_value(_value), m_unit(_unit)
+Sample::Sample(DateTime _date, AnalyteId _analyteId, Value _value, Unit _unit) :
+    m_date(_date), m_analyteID(_analyteId), m_value(_value), m_unit(_unit)
 {}
 
 DateTime Sample::getDate() const
@@ -18,10 +18,10 @@ DateTime Sample::getDate() const
     return m_date;
 }
 
-std::string Sample::getSampleId() const
-{
-    return m_sampleID;
-}
+//std::string Sample::getSampleId() const
+//{
+//    return m_sampleID;
+//}
 
 Unit Sample::getUnit() const
 {

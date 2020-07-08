@@ -1067,7 +1067,7 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
         ComputingStatus rc;
         rc = extractor.extract(series);
 
-        //        printCovariateSeries(series);
+//                printCovariateSeries(series);
 
         fructose_assert(series.size() == 5);
         fructose_assert(rc == ComputingStatus::Ok);
@@ -1106,7 +1106,7 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
         series.clear();
         rc = extractor2.extract(series);
 
-        //        printCovariateSeries(series);
+//                printCovariateSeries(series);
 
         fructose_assert(series.size() == 4);
         fructose_assert(rc == ComputingStatus::Ok);
@@ -1132,7 +1132,7 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
 
         // gist == true @ 13.08.2017, 12h32.
         std::unique_ptr<PatientCovariate> patient_gist_3(new PatientCovariate("Gist", varToString(true),
-                                                                              DataType::Bool, Unit("kg"),
+                                                                              DataType::Bool, Unit("-"),
                                                                               DATE_TIME_NO_VAR(2017, 8, 13, 12, 32, 0)));
 
         // weight = 3.8 @ 13.08.2017, 9h00.
@@ -1157,7 +1157,7 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
         series.clear();
         rc = extractor3.extract(series);
 
-        //        printCovariateSeries(series);
+//                printCovariateSeries(series);
 
         fructose_assert(series.size() == 12);
         fructose_assert(rc == ComputingStatus::Ok);
@@ -1553,13 +1553,13 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
         ADD_PV_W_UNIT(Weight, 78.0, Double, kg, DATE_TIME_NO_VAR(2017, 8, 15, 14, 0, 0), pVariates);
 
         // height = 20.0 @ 12.08.2017, 20h00
-        ADD_PV_W_UNIT(Height, 20.0, Double, kg, DATE_TIME_NO_VAR(2017, 8, 12, 20, 0, 0), pVariates);
+        ADD_PV_W_UNIT(Height, 20.0, Double, cm, DATE_TIME_NO_VAR(2017, 8, 12, 20, 0, 0), pVariates);
         // height = 40.0 @ 12.08.2017, 22h00
-        ADD_PV_W_UNIT(Height, 40.0, Double, kg, DATE_TIME_NO_VAR(2017, 8, 12, 22, 0, 0), pVariates);
+        ADD_PV_W_UNIT(Height, 40.0, Double, cm, DATE_TIME_NO_VAR(2017, 8, 12, 22, 0, 0), pVariates);
         // height = 280.0 @ 13.08.2017, 22h00
-        ADD_PV_W_UNIT(Height, 280.0, Double, kg, DATE_TIME_NO_VAR(2017, 8, 13, 22, 0, 0), pVariates);
+        ADD_PV_W_UNIT(Height, 280.0, Double, cm, DATE_TIME_NO_VAR(2017, 8, 13, 22, 0, 0), pVariates);
         // height = 380.0 @ 14.08.2017, 08h00
-        ADD_PV_W_UNIT(Height, 380.0, Double, kg, DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0), pVariates);
+        ADD_PV_W_UNIT(Height, 380.0, Double, cm, DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0), pVariates);
 
         const DATE_TIME_VAR(startDate, 2017, 8, 12, 8, 0, 0);
         const DATE_TIME_VAR(endDate,   2017, 8, 16, 21, 0, 0);
