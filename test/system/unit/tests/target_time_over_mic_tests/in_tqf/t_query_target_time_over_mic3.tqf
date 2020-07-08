@@ -5,7 +5,7 @@
 	<date>2020-06-25T08:21:04</date>
 	<!-- Date the xml has been sent -->
 	<language>en</language>
-	<drugTreatment>			<!-- All the information regarding the patient -->			<patient>						<covariates>							<covariate>					<covariateId>covA</covariateId>					<date>2020-06-23T08:00:00</date>					<value>400000</value>					<unit>ug/l</unit>					<dataType>double</dataType>					<nature>linear</nature>				</covariate>								<covariate>					<covariateId>covM</covariateId>					<date>2020-06-23T08:00:00</date>					<value>0</value>					<unit>cm</unit>					<dataType>double</dataType>					<nature>linear</nature>				</covariate>			</covariates>		</patient>
+	<drugTreatment>			<!-- All the information regarding the patient -->			<patient>						<covariates>							<covariate>					<covariateId>covA</covariateId>					<date>2020-06-23T08:00:00</date>					<value>400000</value>					<unit>kg</unit>					<dataType>double</dataType>					<nature>linear</nature>				</covariate>								<covariate>					<covariateId>covM</covariateId>					<date>2020-06-23T08:00:00</date>					<value>0</value>					<unit>cm</unit>					<dataType>double</dataType>					<nature>linear</nature>				</covariate>			</covariates>		</patient>
 		<!-- List of the drugs informations we have concerning the patient -->
 		<drugs>
 			<!-- All the information regarding the drug -->

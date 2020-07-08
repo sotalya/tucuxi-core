@@ -5,7 +5,7 @@
 	<date>2020-06-25T08:21:04</date>
 	<!-- Date the xml has been sent -->
 	<language>en</language>
-	<drugTreatment>			<!-- All the information regarding the patient -->			<patient>						<covariates>							<covariate>					<covariateId>covA</covariateId>					<date>2020-06-23T08:00:00</date>					<value>400000</value>					<unit>ug/l</unit>					<dataType>double</dataType>					<nature>linear</nature>				</covariate>								<covariate>					<covariateId>covM</covariateId>					<date>2020-06-23T08:00:00</date>					<value>0</value>					<unit>cm</unit>					<dataType>double</dataType>					<nature>linear</nature>				</covariate>			</covariates>		</patient>
+	<drugTreatment>			<!-- All the information regarding the patient -->			<patient>						<covariates>							<covariate>					<covariateId>covA</covariateId>					<date>2020-06-23T08:00:00</date>					<value>400000</value>					<unit>kg</unit>					<dataType>double</dataType>					<nature>linear</nature>				</covariate>								<covariate>					<covariateId>covM</covariateId>					<date>2020-06-23T08:00:00</date>					<value>0</value>					<unit>cm</unit>					<dataType>double</dataType>					<nature>linear</nature>				</covariate>			</covariates>		</patient>
 		<!-- List of the drugs informations we have concerning the patient -->
 		<drugs>
 			<!-- All the information regarding the drug -->
@@ -39,7 +39,7 @@
 							</dosage>
 						</dosageTimeRange>
 					</dosageHistory>
-				</treatment>								<samples/>								<targets>										<target>											<activeMoietyId>drugtest</activeMoietyId>												<targetType>timeOverMic</targetType>												<unit>m</unit>												<min>360</min>												<best>720</best>												<max>1440</max>												<inefficacyAlarm>180</inefficacyAlarm>												<toxicityAlarm>2880</toxicityAlarm>												<mic>														<unit>ug/l</unit>														<micValue>1000</micValue>													</mic>										</target>									</targets>
+				</treatment>								<samples/>								<targets>										<target>											<activeMoietyId>drugtest</activeMoietyId>												<targetType>timeOverMic</targetType>												<unit>day</unit>												<min>0.25</min>												<best>0.5</best>												<max>1</max>												<inefficacyAlarm>0.125</inefficacyAlarm>												<toxicityAlarm>2</toxicityAlarm>												<mic>														<unit>ug/l</unit>														<micValue>1000</micValue>													</mic>										</target>									</targets>
 			</drug>
 		</drugs>
 	</drugTreatment>
