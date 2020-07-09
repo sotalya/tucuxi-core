@@ -237,25 +237,25 @@ private:
             fructose_assert_eq(unitManager.isKnown(unit), true);
         }
 
-        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Height>(value, Tucuxi::Common::Unit("mm"), Tucuxi::Common::Unit("mm")), 20.0);
-        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Height>(value, Tucuxi::Common::Unit("mm"), Tucuxi::Common::Unit("cm")), 2.0);
-        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Height>(value, Tucuxi::Common::Unit("mm"), Tucuxi::Common::Unit("dm")), 0.2);
-        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Height>(value, Tucuxi::Common::Unit("mm"), Tucuxi::Common::Unit("m")), 0.02);
+        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Length>(value, Tucuxi::Common::Unit("mm"), Tucuxi::Common::Unit("mm")), 20.0);
+        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Length>(value, Tucuxi::Common::Unit("mm"), Tucuxi::Common::Unit("cm")), 2.0);
+        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Length>(value, Tucuxi::Common::Unit("mm"), Tucuxi::Common::Unit("dm")), 0.2);
+        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Length>(value, Tucuxi::Common::Unit("mm"), Tucuxi::Common::Unit("m")), 0.02);
 
-        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Height>(value, Tucuxi::Common::Unit("cm"), Tucuxi::Common::Unit("mm")), 200.0);
-        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Height>(value, Tucuxi::Common::Unit("cm"), Tucuxi::Common::Unit("cm")), 20.0);
-        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Height>(value, Tucuxi::Common::Unit("cm"), Tucuxi::Common::Unit("dm")), 2.0);
-        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Height>(value, Tucuxi::Common::Unit("cm"), Tucuxi::Common::Unit("m")), 0.2);
+        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Length>(value, Tucuxi::Common::Unit("cm"), Tucuxi::Common::Unit("mm")), 200.0);
+        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Length>(value, Tucuxi::Common::Unit("cm"), Tucuxi::Common::Unit("cm")), 20.0);
+        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Length>(value, Tucuxi::Common::Unit("cm"), Tucuxi::Common::Unit("dm")), 2.0);
+        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Length>(value, Tucuxi::Common::Unit("cm"), Tucuxi::Common::Unit("m")), 0.2);
 
-        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Height>(value, Tucuxi::Common::Unit("dm"), Tucuxi::Common::Unit("mm")), 2000.0);
-        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Height>(value, Tucuxi::Common::Unit("dm"), Tucuxi::Common::Unit("cm")), 200.0);
-        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Height>(value, Tucuxi::Common::Unit("dm"), Tucuxi::Common::Unit("dm")), 20.0);
-        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Height>(value, Tucuxi::Common::Unit("dm"), Tucuxi::Common::Unit("m")), 2.0);
+        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Length>(value, Tucuxi::Common::Unit("dm"), Tucuxi::Common::Unit("mm")), 2000.0);
+        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Length>(value, Tucuxi::Common::Unit("dm"), Tucuxi::Common::Unit("cm")), 200.0);
+        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Length>(value, Tucuxi::Common::Unit("dm"), Tucuxi::Common::Unit("dm")), 20.0);
+        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Length>(value, Tucuxi::Common::Unit("dm"), Tucuxi::Common::Unit("m")), 2.0);
 
-        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Height>(value, Tucuxi::Common::Unit("m"), Tucuxi::Common::Unit("mm")), 20000.0);
-        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Height>(value, Tucuxi::Common::Unit("m"), Tucuxi::Common::Unit("cm")), 2000.0);
-        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Height>(value, Tucuxi::Common::Unit("m"), Tucuxi::Common::Unit("dm")), 200.0);
-        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Height>(value, Tucuxi::Common::Unit("m"), Tucuxi::Common::Unit("m")), 20.0);
+        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Length>(value, Tucuxi::Common::Unit("m"), Tucuxi::Common::Unit("mm")), 20000.0);
+        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Length>(value, Tucuxi::Common::Unit("m"), Tucuxi::Common::Unit("cm")), 2000.0);
+        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Length>(value, Tucuxi::Common::Unit("m"), Tucuxi::Common::Unit("dm")), 200.0);
+        fructose_assert_double_eq(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Length>(value, Tucuxi::Common::Unit("m"), Tucuxi::Common::Unit("m")), 20.0);
 
 
     }
