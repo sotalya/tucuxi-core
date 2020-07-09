@@ -193,9 +193,11 @@ bool CovariateExtractor::computeEvents(const std::map<DateTime, std::vector<std:
                 } else {
                     // We have more Patient Variates, therefore we have to compute the good value.
                     std::vector<pvIterator_t>::const_iterator pvIt = pvCurrentC->second.begin();
+                    uint8_t i = 0;
 
                     while (pvIt != pvCurrentC->second.end() && (**pvIt)->getEventTime() <= refreshTime) {
                         ++pvIt;
+                        ++i;
                     }
 
                     if (pvIt == pvCurrentC->second.end()) {
@@ -228,7 +230,7 @@ bool CovariateExtractor::computeEvents(const std::map<DateTime, std::vector<std:
                         }
                         else{
                             newVal = unitManager.convertToUnit(newVal,
-                                                               (*(pvCurrentC->second[0]))->getUnit(),
+                                                               (*(pvCurrentC->second[i]))->getUnit(),
                                                                 getFinalUnit(cvName));
                         }
                     }
