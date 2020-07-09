@@ -40,7 +40,7 @@ struct TestSampleExtractor : public fructose::test_base<TestSampleExtractor>
             DateTime end = DATE_TIME_NO_VAR(2018, 01, 10, 8, 00, 00);
             SampleSeries series;
 
-            std::string analyteId = "theAnalyte";
+            AnalyteId analyteId("theAnalyte");
 
             samples.push_back(std::make_unique<Sample>(DATE_TIME_NO_VAR(2018, 01, 02, 8, 00, 00), analyteId, 12.0, Unit("ug/l")));
 
@@ -61,7 +61,7 @@ struct TestSampleExtractor : public fructose::test_base<TestSampleExtractor>
             DateTime end = DATE_TIME_NO_VAR(2018, 01, 10, 8, 00, 00);
             SampleSeries series;
 
-            std::string analyteId = "theAnalyte";
+            AnalyteId analyteId("theAnalyte");
 
             // One sample is in mg/l. The result should be multiplied by 1000
             samples.push_back(std::make_unique<Sample>(DATE_TIME_NO_VAR(2017, 01, 02, 8, 00, 00), analyteId, 12.0, Unit("ug/l")));
@@ -73,10 +73,10 @@ struct TestSampleExtractor : public fructose::test_base<TestSampleExtractor>
 
             fructose_assert(result == ComputingStatus::Ok);
             fructose_assert_eq(series.size(), size_t{2});
-            fructose_assert_eq(series[0].getValue(), 10.0);
+            fructose_assert_double_eq(series[0].getValue(), 10.0);
             fructose_assert_eq(series[0].getEventTime(), DATE_TIME_NO_VAR(2018, 01, 02, 8, 00, 00));
             // Here we check the unit conversion
-            fructose_assert_eq(series[1].getValue(), 14000.0);
+            fructose_assert_double_eq(series[1].getValue(), 14000.0);
             fructose_assert_eq(series[1].getEventTime(), DATE_TIME_NO_VAR(2018, 01, 03, 8, 00, 00));
         }
     }
