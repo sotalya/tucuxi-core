@@ -23,7 +23,7 @@ struct TestUnit : public fructose::test_base<TestUnit>
             "kg"
         };
 
-        vector<string> heightUnits
+        vector<string> LengthUnits
         {
             "mm",
             "cm",
@@ -130,7 +130,7 @@ struct TestUnit : public fructose::test_base<TestUnit>
 
         testWeight(weightUnits);
 
-        testHeight(heightUnits);
+        testHeight(LengthUnits);
 
         testTime(timeUnits);
 
@@ -226,13 +226,13 @@ private:
 
     }
 
-    void testHeight(vector<string>& _heightUnits){
+    void testHeight(vector<string>& _lengthUnits){
 
         Tucuxi::Common::UnitManager unitManager;
 
         Tucuxi::Core::Value value = 20.0;
 
-        for(const auto unit : _heightUnits)
+        for(const auto unit : _lengthUnits)
         {
             fructose_assert_eq(unitManager.isKnown(unit), true);
         }

@@ -52,7 +52,7 @@ Tucuxi::Common::Duration ValidDurations::valueToDuration(Value _value) const
     else if (m_unit == Unit("h")) {
         return Duration(1h) * _value;
     }
-    else if (m_unit == Unit("m")) {
+    else if (m_unit == Unit("min")) {
         return Duration(1min) * _value;
     }
     else if (m_unit == Unit("s")) {
