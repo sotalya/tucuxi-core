@@ -195,6 +195,8 @@ unique_ptr<Core::PatientCovariate> QueryImport::createCovariateData(Common::XmlN
     string covariateId = getChildString(_covariateDataRootIterator, COVARIATEID_NODE_NAME);
     Common::DateTime date = getChildDateTime(_covariateDataRootIterator, DATE_NODE_NAME);
     string value = getChildString(_covariateDataRootIterator, VALUE_NODE_NAME);
+
+    // As a covariate can be of any type, the value could lead to a conversion issue
     Unit unit = getChildUnit(_covariateDataRootIterator, UNIT_NODE_NAME, CheckUnit::Check);
 
     string dataTypeString = getChildString(_covariateDataRootIterator, DATATYPE_NODE_NAME);

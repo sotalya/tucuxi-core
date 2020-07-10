@@ -940,6 +940,7 @@ CovariateDefinition* DrugModelImport::extractCovariate(Tucuxi::Common::XmlNodeIt
             XmlNodeIterator refreshIt = it->getChildren();
             while (refreshIt != XmlNodeIterator::none()) {
                 if (refreshIt->getName() == "unit") {
+                    // As a covariate can be of any type, the value could lead to a conversion issue
                     refreshPeriodUnit = extractUnit(refreshIt, CheckUnit::Check);
                 }
                 else if (refreshIt->getName() == "value") {
