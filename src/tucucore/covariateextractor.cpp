@@ -193,11 +193,9 @@ bool CovariateExtractor::computeEvents(const std::map<DateTime, std::vector<std:
                 } else {
                     // We have more Patient Variates, therefore we have to compute the good value.
                     std::vector<pvIterator_t>::const_iterator pvIt = pvCurrentC->second.begin();
-                    uint8_t i = 0;
 
                     while (pvIt != pvCurrentC->second.end() && (**pvIt)->getEventTime() <= refreshTime) {
                         ++pvIt;
-                        ++i;
                     }
 
                     if (pvIt == pvCurrentC->second.end()) {
@@ -205,7 +203,7 @@ bool CovariateExtractor::computeEvents(const std::map<DateTime, std::vector<std:
                         newVal = stringToValue((**(std::prev(pvIt)))->getValue(),
                                                (**(std::prev(pvIt)))->getDataType());
 
-                        newVal = unitManager.convertToUnit(newVal, (*(pvCurrentC->second[0]))->getUnit(), getFinalUnit(cvName));
+                        newVal = unitManager.convertToUnit(newVal, (**(std::prev(pvIt)))->getUnit(), getFinalUnit(cvName));
                     } else if (pvIt == pvCurrentC->second.begin()) {
                         // The first measurement is already past the desired time -- we simply have to keep the level.
                         newVal = stringToValue((**(pvIt))->getValue(),
@@ -217,21 +215,26 @@ bool CovariateExtractor::computeEvents(const std::map<DateTime, std::vector<std:
                         // We have two measurements to interpolate from (we have dealt with the case of the first
                         // measurement being past the desired time, so we can safely assume we have a previous
                         // measurement.
-                        if (!interpolateValues(stringToValue((**(std::prev(pvIt)))->getValue(),
-                                                             (**(std::prev(pvIt)))->getDataType()), // val1
+                        Value firstValue = stringToValue((**(std::prev(pvIt)))->getValue(),
+                                                         (**(std::prev(pvIt)))->getDataType());
+
+                        Value SecondValue = stringToValue((**(pvIt))->getValue(),
+                                                          (**(pvIt))->getDataType());
+
+                        if (!interpolateValues(unitManager.convertToUnit(
+                                                   firstValue,
+                                                   (**(std::prev(pvIt)))->getUnit(),
+                                                   getFinalUnit(cvName)),                           // val1
                                                (**(std::prev(pvIt)))->getEventTime(),               // date1
-                                               stringToValue((**(pvIt))->getValue(),
-                                                             (**(pvIt))->getDataType()),            // val2
+                                               unitManager.convertToUnit(
+                                                   SecondValue,
+                                                   (**(pvIt))->getUnit(),
+                                                   getFinalUnit(cvName)),                           // val2
                                                (**(pvIt))->getEventTime(),                          // date2
                                                refreshTime,                                         // dateRes
                                                (*m_cdValued.at(cvName))->getInterpolationType(),    // interpolationType
                                                newVal)) {                                           // valRes
                             return false;
-                        }
-                        else{
-                            newVal = unitManager.convertToUnit(newVal,
-                                                               (*(pvCurrentC->second[i]))->getUnit(),
-                                                                getFinalUnit(cvName));
                         }
                     }
                 }
@@ -492,6 +495,10 @@ bool CovariateExtractor::interpolateValues(const Value _val1, const DateTime &_d
         return true;
     }
 
+    double xa;
+    double xb;
+    double x;
+
     switch (_interpolationType) {
     case InterpolationType::Direct:
         if (_date2 > _dateRes) {
@@ -507,6 +514,9 @@ bool CovariateExtractor::interpolateValues(const Value _val1, const DateTime &_d
         Value m;
         m = (_val2 - _val1) / (_date2.toSeconds() - _date1.toSeconds());
         // Intercept.
+        xa = _date1.toSeconds();
+        xb = _date2.toSeconds();
+        x = _dateRes.toSeconds();
         Value b;
         b = _val2 - m * _date2.toSeconds();
         _valRes = _dateRes.toSeconds() * m + b;
