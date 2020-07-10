@@ -151,7 +151,7 @@ const std::map<UnitManager::UnitType, std::map<std::string, double>>& UnitManage
             }
         },
         {
-            UnitType::Height,
+            UnitType::Length,
             {
                 {"m", 1.0},
                 {"cm", 0.01},
