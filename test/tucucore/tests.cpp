@@ -427,6 +427,8 @@ int main(int argc, char** argv)
     ceTests.add_test("testOperableFunctions_3_0", &TestCovariateExtractor::testCovariateExtraction_test3_0);
     ceTests.add_test("testOperableFunctions_3_1", &TestCovariateExtractor::testCovariateExtraction_test3_1);
     ceTests.add_test("testOperableFunctions_3_2", &TestCovariateExtractor::testCovariateExtraction_test3_2);
+    ceTests.add_test("testOperableFunctions_3_3", &TestCovariateExtractor::testCovariateExtraction_test3_3);
+    ceTests.add_test("testOperableFunctions_3_4", &TestCovariateExtractor::testCovariateExtraction_test3_4);
 
     res = ceTests.run(argc, argv);
     tot_res |= res;

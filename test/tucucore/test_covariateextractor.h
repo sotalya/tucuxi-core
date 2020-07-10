@@ -2108,6 +2108,195 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
 
         fructose_assert(extractor.m_hasBirthDate == false);
     }
+
+    /// \brief Test the covariate conversions
+    ///
+    void testCovariateExtraction_test3_3(const std::string& /* _testName */){
+
+        CovariateDefinitions cDefinitions;
+
+        ADD_CDEF_W_R_UNIT(Weight, 40, Standard, Double, Linear, Tucuxi::Common::days(1), kg, cDefinitions);
+        ADD_CDEF_W_R_UNIT(Height, 195, Standard, Double, Linear, Tucuxi::Common::days(1), cm, cDefinitions);
+        ADD_CDEF_W_R_UNIT(Sex, 0, Standard, Int, Direct, Tucuxi::Common::days(1), -, cDefinitions);
+        ADD_CDEF_W_R_UNIT(Gist, false, Standard, Bool, Direct, Tucuxi::Common::days(1), , cDefinitions);
+        ADD_CDEF_W_R_UNIT(Scr, 50, Standard, Double, Linear, Tucuxi::Common::days(1), umol/l, cDefinitions);
+        ADD_CDEF_W_R_UNIT(CT, 50, Standard, Double, Linear, Tucuxi::Common::days(1), g*h/l, cDefinitions);
+        ADD_CDEF_W_R_UNIT(T, 12, Standard, Double, Linear, Tucuxi::Common::days(1), s, cDefinitions);
+        ADD_CDEF_W_R_UNIT(MM, 50, Standard, Double, Linear, Tucuxi::Common::days(1), kg/umol, cDefinitions);
+        ADD_CDEF_W_R_UNIT(FR, 15, Standard, Double, Linear, Tucuxi::Common::days(1), ml/h, cDefinitions);
+
+
+
+        fructose_assert_no_exception(CovariateExtractor(cDefinitions, PatientVariates(),
+                                                        DATE_TIME_NO_VAR(2017, 8, 12, 14, 32, 0),
+                                                        DATE_TIME_NO_VAR(2017, 8, 19, 14, 32, 0)));
+
+        PatientVariates pVariates;
+
+        ADD_PV_W_UNIT(Weight, 1000000.0, Double, mg, DATE_TIME_NO_VAR(2017, 8, 13, 16, 0, 0), pVariates);
+//        ADD_PV_W_UNIT(Weight, 1000000000.0, Double, ug, DATE_TIME_NO_VAR(2017, 8, 14, 16, 0, 0), pVariates);
+        ADD_PV_W_UNIT(Height, 1200, Double, mm, DATE_TIME_NO_VAR(2017, 8, 14, 16, 0, 0), pVariates);
+        ADD_PV_W_UNIT(Sex, 1, Int, , DATE_TIME_NO_VAR(2017, 8, 15, 16, 0, 0), pVariates);
+        ADD_PV_W_UNIT(Gist, true, Bool, -, DATE_TIME_NO_VAR(2017, 8, 16, 16, 0, 0), pVariates);
+        ADD_PV_W_UNIT(Scr, 0.08, Double, mmol/l, DATE_TIME_NO_VAR(2017, 8, 17, 16, 0, 0), pVariates);
+        ADD_PV_W_UNIT(CT, 1, Double, min*ug/ml, DATE_TIME_NO_VAR(2017, 8, 18, 16, 0, 0), pVariates);
+        ADD_PV_W_UNIT(T, 1, Double, h, DATE_TIME_NO_VAR(2017, 8, 19, 16, 0, 0), pVariates);
+        ADD_PV_W_UNIT(MM, 30, Double, g/umol, DATE_TIME_NO_VAR(2017, 8, 20, 16, 0, 0), pVariates);
+        ADD_PV_W_UNIT(FR, 10, Double, l/min, DATE_TIME_NO_VAR(2017, 8, 21, 16, 0, 0), pVariates);
+
+
+
+        CovariateExtractor extractor(cDefinitions, pVariates,
+                                     DATE_TIME_NO_VAR(2017, 8, 12, 14, 32, 0),
+                                     DATE_TIME_NO_VAR(2017, 8, 22, 14, 32, 0));
+
+        CovariateSeries cSeries;
+        ComputingStatus rc;
+
+        rc = extractor.extract(cSeries);
+
+        for(const auto &covariate : cSeries)
+        {
+            if(covariate.getId() == "Weight"){
+                // Weight : mg -> kg
+                fructose_assert_double_eq(covariate.getValue(), 1);
+
+            }else if(covariate.getId() == "Height"){
+                // Height : mm -> cm
+                fructose_assert_double_eq(covariate.getValue(), 120);
+
+            }else if(covariate.getId() == "Sex"){
+                // Sex : no unit -> no unit
+                fructose_assert_eq(covariate.getValue(), 1);
+
+            }else if(covariate.getId() == "Gist"){
+                // Gist : no unit -> no unit
+                fructose_assert_eq(covariate.getValue(), true);
+
+            }else if(covariate.getId() == "Scr"){
+                // Scr : mmol/l -> umol/l
+                fructose_assert_double_eq(covariate.getValue(), 80);
+
+            }else if(covariate.getId() == "CT"){
+                // ConcentrationTime : min*ug/ml -> g*h/l
+                fructose_assert_double_eq(covariate.getValue(), 1.0 / 60000);
+
+            }else if(covariate.getId() == "T"){
+                // Time : h -> s
+                fructose_assert_double_eq(covariate.getValue(), 3600);
+
+            }else if(covariate.getId() == "MM"){
+                // MolarMass : g/umol -> kg/umol
+                fructose_assert_double_eq(covariate.getValue(), 0.03);
+
+            }else if(covariate.getId() == "FR"){
+                // FlowRate : l/min -> ml/h
+                fructose_assert_double_eq(covariate.getValue(), 600000);
+
+            }
+        }
+
+        PatientVariates pVariates2;
+
+        ADD_PV_W_UNIT(Weight, 100000.0, Double, g, DATE_TIME_NO_VAR(2017, 8, 13, 16, 0, 0), pVariates2);
+//        ADD_PV_W_UNIT(Weight, 1000000000.0, Double, ug, DATE_TIME_NO_VAR(2017, 8, 14, 16, 0, 0), pVariates2);
+        ADD_PV_W_UNIT(Height, 1200, Double, dm, DATE_TIME_NO_VAR(2017, 8, 14, 16, 0, 0), pVariates2);
+        ADD_PV_W_UNIT(Sex, 0, Int, -, DATE_TIME_NO_VAR(2017, 8, 15, 16, 0, 0), pVariates2);
+        ADD_PV_W_UNIT(Gist, true, Bool, , DATE_TIME_NO_VAR(2017, 8, 16, 16, 0, 0), pVariates2);
+        ADD_PV_W_UNIT(Scr, 0.08, Double, umol/ml, DATE_TIME_NO_VAR(2017, 8, 17, 16, 0, 0), pVariates2);
+        ADD_PV_W_UNIT(CT, 3600, Double, mg*min/l, DATE_TIME_NO_VAR(2017, 8, 18, 16, 0, 0), pVariates2);
+        ADD_PV_W_UNIT(T, 1, Double, w, DATE_TIME_NO_VAR(2017, 8, 19, 16, 0, 0), pVariates2);
+        ADD_PV_W_UNIT(MM, 30, Double, kg/mol, DATE_TIME_NO_VAR(2017, 8, 20, 16, 0, 0), pVariates2);
+        ADD_PV_W_UNIT(FR, 10, Double, l/h, DATE_TIME_NO_VAR(2017, 8, 21, 16, 0, 0), pVariates2);
+
+
+
+        CovariateExtractor extractor2(cDefinitions, pVariates2,
+                                     DATE_TIME_NO_VAR(2017, 8, 12, 14, 32, 0),
+                                     DATE_TIME_NO_VAR(2017, 8, 22, 14, 32, 0));
+
+        CovariateSeries cSeries2;
+        ComputingStatus rc2;
+
+        rc2 = extractor2.extract(cSeries2);
+
+        for(const auto &covariate : cSeries2)
+        {
+            if(covariate.getId() == "Weight"){
+                // Weight : g -> kg
+                fructose_assert_double_eq(covariate.getValue(), 100);
+
+            }else if(covariate.getId() == "Height"){
+                // Height : dm -> cm
+                fructose_assert_double_eq(covariate.getValue(), 12000);
+
+            }else if(covariate.getId() == "Sex"){
+                // Sex : no unit -> no unit
+                fructose_assert_eq(covariate.getValue(), 0);
+
+            }else if(covariate.getId() == "Gist"){
+                // Gist : no unit -> no unit
+                fructose_assert_eq(covariate.getValue(), true);
+
+            }else if(covariate.getId() == "Scr"){
+                // Scr : umol/ml -> umol/l
+                fructose_assert_double_eq(covariate.getValue(), 80);
+
+            }else if(covariate.getId() == "CT"){
+                // ConcentrationTime : mg*min/l -> g*h/l
+                fructose_assert_double_eq(covariate.getValue(), 0.06);
+
+            }else if(covariate.getId() == "T"){
+                // Time : w -> s
+                fructose_assert_double_eq(covariate.getValue(), 604800);
+
+            }else if(covariate.getId() == "MM"){
+                // MolarMass : kg/mol -> kg/umol
+                fructose_assert_double_eq(covariate.getValue(), 0.00003);
+
+            }else if(covariate.getId() == "FR"){
+                // FlowRate : l/h -> ml/h
+                fructose_assert_double_eq(covariate.getValue(), 10000);
+
+            }
+        }
+    }
+
+    /// \brief Test the covariate conversion with interpolation
+    ///
+    void testCovariateExtraction_test3_4(const std::string& /* _testName */){
+
+        CovariateDefinitions cDefinitions;
+
+        ADD_CDEF_W_R_UNIT(Weight, 40, Standard, Double, Linear, Tucuxi::Common::days(1), g, cDefinitions);
+
+
+
+        fructose_assert_no_exception(CovariateExtractor(cDefinitions, PatientVariates(),
+                                                        DATE_TIME_NO_VAR(2017, 8, 12, 14, 32, 0),
+                                                        DATE_TIME_NO_VAR(2017, 8, 19, 14, 32, 0)));
+
+        PatientVariates pVariates;
+
+        ADD_PV_W_UNIT(Weight, 100.0, Double, mg, DATE_TIME_NO_VAR(2017, 8, 13, 16, 0, 0), pVariates);
+        ADD_PV_W_UNIT(Weight, 200000.0, Double, ug, DATE_TIME_NO_VAR(2017, 8, 14, 16, 0, 0), pVariates);
+
+
+
+        CovariateExtractor extractor(cDefinitions, pVariates,
+                                     DATE_TIME_NO_VAR(2017, 8, 13, 15, 0, 0),
+                                     DATE_TIME_NO_VAR(2017, 8, 14, 17, 0, 0));
+
+        CovariateSeries cSeries;
+        ComputingStatus rc;
+
+        rc = extractor.extract(cSeries);
+
+
+//        fructose_assert_double_eq(c.getValue(), 100);
+
+
+    }
 };
 
 #endif // TEST_COVARIATEEXTRACTOR_H
