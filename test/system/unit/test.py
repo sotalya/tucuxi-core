@@ -38,9 +38,6 @@ def parse_the_args():
     parser.add_argument('-t', '--tucucli', type=str, dest='tucucli',
                         help='Command to execute Tucuxi cli, default is tucucli',
                         default=cli)
-    parser.add_argument('-b', '--target', type=bool, dest='target',
-                        help='Command to execute Tucuxi cli, default is tucucli',
-                        default=False)
     return parser.parse_args()
 
 
