@@ -351,6 +351,7 @@ ComputingStatus CovariateExtractor::extract(CovariateSeries &_series)
 
         Tucuxi::Common::LoggerHelper logHelper;
         logHelper.error("Error with covariate extraction : {}", e.what());
+        logHelper.error("If error due to conversion, please check Query and DrugModel units");
         return ComputingStatus::CovariateExtractionError;
     }
 
