@@ -33,7 +33,7 @@ Duration GeneralExtractor::secureStartDuration(const HalfLife &_halfLife)
     else if (_halfLife.getUnit() == Unit("h")) {
         duration = Duration(1h) * _halfLife.getValue() * _halfLife.getMultiplier();
     }
-    else if (_halfLife.getUnit() == Unit("m")) {
+    else if (_halfLife.getUnit() == Unit("min")) {
         duration = Duration(1min) * _halfLife.getValue() * _halfLife.getMultiplier();
     }
     else if (_halfLife.getUnit() == Unit("s")) {

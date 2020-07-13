@@ -25,8 +25,9 @@ const std::vector<std::pair<std::string, std::string> > getTolerateUnit()
         {"days", "d"},
         {"week", "w"},
         {"weeks", "w"},
-        {"month", "m"},
-        {"year", "y"}
+        {"months", "month"},
+        {"year", "y"},
+        {"years", "y"}
     };
 
     return toleratePairUnit;
@@ -146,7 +147,7 @@ const std::map<UnitManager::UnitType, std::map<std::string, double>>& UnitManage
                 {"h", 60.0},
                 {"d", 24.0 * 60.0},
                 {"w", 7.0 * 24.0 * 60.0},
-                {"m", 30.0 * 24.0 * 60.0},
+                {"month", 30.0 * 24.0 * 60.0},
                 {"y", 365.0 * 24.0 * 60.0}
             }
         },
