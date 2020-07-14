@@ -310,7 +310,10 @@ bool CovariateExtractor::computeEvents(const std::map<DateTime, std::vector<std:
 
             // We have a change in at least a value and some of the values are computed:
             // -> we need to trigger a recomputation, and update the values that changed.
-            m_ogm.evaluate();
+            if (!m_ogm.evaluate()) {
+                // Something went wrong with the evaluation
+                return false;
+            }
 
             // If we are at the first iteration, then simply push all events, otherwise check those whose value has been
             // updated.
@@ -356,6 +359,8 @@ ComputingStatus CovariateExtractor::extract(CovariateSeries &_series)
     }
 
     if (!rc) {
+        Tucuxi::Common::LoggerHelper logHelper;
+        logHelper.error("Error with covariate extraction. It be caused by missing covariates used in a priori computations");
         return ComputingStatus::CovariateExtractionError;
     }
 

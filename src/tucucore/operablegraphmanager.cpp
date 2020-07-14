@@ -128,6 +128,10 @@ OperableGraphManager::evaluateOperableNode(IOperable_ID _id, std::map<IOperable_
     // If the m_operableInputs map marks it as a "simple" input, then just skip to the subsequent one. Otherwise check
     // in the _alreadyComputed map if it has already been computed. If this is not the case, recursively evaluate it.
     for (auto const &it : deps) {
+        if (m_operableInputs.find(it) == m_operableInputs.end()) {
+            // The input ID does not exist.
+            return false;
+        }
         if (m_operableInputs.at(it).isComputed()) {
             IOperable_ID opNodeId;
             opNodeId = m_operableInputs.at(it).getOperableID();
@@ -184,6 +188,10 @@ OperableGraphManager::isCyclic(const std::string &_cur,
             std::vector<std::string> deps = m_operables.at(nodeID).getDependencies();
 
             for (const auto& depIt : deps) {
+                if (_visited.find(depIt) == _visited.end()) {
+                    // Didn't find the corresponding input
+                    continue;
+                }
                 if (!_visited.at(depIt) && isCyclic(depIt, _visited, _gotBack)) {
                     return true;
                 } else if (_gotBack.at(depIt)) {

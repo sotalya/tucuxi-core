@@ -194,11 +194,6 @@ double UnitManager::convertToUnit(double _value, Unit _initialUnit, Unit _finalU
 
     logConversionError(_initialUnit, _finalUnit);
     throw std::invalid_argument("Error in unit conversion");
-
-    // TODO : Iterate over the conversion map to see if we find the initial and final unit strings.
-    // If yes and they are of the same type, then conversion is applied,
-    // Else throw an std::invalid_argument
-
 }
 
 bool UnitManager::isKnown(const Unit& _unit)
