@@ -43,7 +43,12 @@ ComputingStatus SampleExtractor::extract(
     for (const auto & sample : _samples) {
         if (contains(potentialAnalyteIds, sample->getAnalyteID())) {
             if ((sample->getDate() > _start) && (sample->getDate() < _end)) {
-                _series.push_back(SampleEvent(sample->getDate(), UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(sample->getValue(), sample->getUnit(), Unit("ug/l"))));
+                try {
+                    _series.push_back(SampleEvent(sample->getDate(), UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(sample->getValue(), sample->getUnit(), Unit("ug/l"))));
+                } catch (std::invalid_argument e) {
+                    Tucuxi::Common::LoggerHelper logger;
+                    logger.error("Sample unit not handle");
+                }
                 nbRelevantSamples ++;
                 if (singleAnalyte.toString().empty()) {
                     singleAnalyte = sample->getAnalyteID();
@@ -78,7 +83,13 @@ ComputingStatus SampleExtractor::extract(
     AnalyteId singleAnalyte = AnalyteId("");
     for (const auto & sample : _samples) {
         if ((sample->getDate() > _start) && (sample->getDate() < _end)) {
-            _series.push_back(SampleEvent(sample->getDate(), UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(sample->getValue(), sample->getUnit(), Unit("ug/l"))));
+            try {
+                _series.push_back(SampleEvent(sample->getDate(), UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(sample->getValue(), sample->getUnit(), Unit("ug/l"))));
+            } catch (std::invalid_argument e) {
+                Tucuxi::Common::LoggerHelper logger;
+                logger.error("Sample unit not handle");
+                return ComputingStatus::SampleExtractionError;
+            }
             nbRelevantSamples ++;
             if (singleAnalyte.toString().empty()) {
                 singleAnalyte = sample->getAnalyteID();

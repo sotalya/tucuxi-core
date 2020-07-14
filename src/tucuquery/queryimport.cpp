@@ -435,6 +435,7 @@ unique_ptr<Tucuxi::Core::Sample> QueryImport::createSampleData(Common::XmlNodeIt
     Tucuxi::Core::AnalyteId analyteId(getChildString(_concentrationRootIterator, ANALYTE_ID_NODE_NAME));
     Tucuxi::Core::Value value(getChildDouble(_concentrationRootIterator, VALUE_NODE_NAME));
     Unit unit = getChildUnit(_concentrationRootIterator, UNIT_NODE_NAME, CheckUnit::Check);
+    unit = Unit("toto");
 
     return make_unique<Tucuxi::Core::Sample>(
                 sampleDate,

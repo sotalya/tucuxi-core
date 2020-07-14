@@ -79,6 +79,42 @@ struct TestSampleExtractor : public fructose::test_base<TestSampleExtractor>
             fructose_assert_double_eq(series[1].getValue(), 14000.0);
             fructose_assert_eq(series[1].getEventTime(), DATE_TIME_NO_VAR(2018, 01, 03, 8, 00, 00));
         }
+        {
+            // Test with 3 sample. All sample have bad units
+            SampleExtractor extractor;
+
+            Samples samples;
+            DateTime start = DATE_TIME_NO_VAR(2018, 01, 01, 8, 00, 00);
+            DateTime end = DATE_TIME_NO_VAR(2018, 01, 03, 8, 00, 00);
+            SampleSeries series;
+
+            AnalyteId analyteId("theAnalyte");
+
+            samples.push_back(std::make_unique<Sample>(DATE_TIME_NO_VAR(2018, 01, 02, 8, 00, 00), analyteId, 12.0, Unit("test")));
+
+            ComputingStatus result = extractor.extract(samples, start, end, series);
+
+            fructose_assert(result == ComputingStatus::SampleExtractionError);
+            fructose_assert_eq(series.size(), size_t{0});
+
+            Samples samples2;
+
+            samples2.push_back(std::make_unique<Sample>(DATE_TIME_NO_VAR(2018, 01, 02, 8, 00, 00), analyteId, 10.0, Unit("km/l")));
+
+            result = extractor.extract(samples2, start, end, series);
+
+            fructose_assert(result == ComputingStatus::SampleExtractionError);
+            fructose_assert_eq(series.size(), size_t{0});
+
+            Samples samples3;
+
+            samples3.push_back(std::make_unique<Sample>(DATE_TIME_NO_VAR(2018, 01, 02, 8, 00, 00), analyteId, 14.0, Unit("5")));
+
+            result = extractor.extract(samples3, start, end, series);
+
+            fructose_assert(result == ComputingStatus::SampleExtractionError);
+            fructose_assert_eq(series.size(), size_t{0});
+        }
     }
 
 };
