@@ -269,9 +269,9 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
             fructose_assert(extractor.m_cdValued.count("AgeDays") == 0);
             fructose_assert(extractor.m_cdValued.count("AgeMonths") == 0);
             fructose_assert(extractor.m_cdValued.count("AgeYears") == 1);
-            fructose_assert(extractor.m_initAgeInDays == -1);
-            fructose_assert(extractor.m_initAgeInMonths == -1);
-            fructose_assert(extractor.m_initAgeInYears == 20);
+            fructose_assert_double_eq(extractor.m_initAgeInDays, -1);
+            fructose_assert_double_eq(extractor.m_initAgeInMonths, -1);
+            fructose_assert_double_eq(extractor.m_initAgeInYears, 20);
         }
 
         // Check that the definition of the age (expressed in years) is consistent (2).
@@ -2155,6 +2155,8 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
 
         rc = extractor.extract(cSeries);
 
+        fructose_assert(rc == ComputingStatus::Ok);
+
         for(const auto &covariate : cSeries)
         {
             if(covariate.getId() == "Weight"){
@@ -2219,6 +2221,8 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
         ComputingStatus rc2;
 
         rc2 = extractor2.extract(cSeries2);
+
+        fructose_assert(rc2 == ComputingStatus::Ok);
 
         for(const auto &covariate : cSeries2)
         {
@@ -2291,6 +2295,8 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
         ComputingStatus rc;
 
         rc = extractor.extract(cSeries);
+
+        fructose_assert(rc == ComputingStatus::Ok);
 
 
 //        fructose_assert_double_eq(c.getValue(), 100);

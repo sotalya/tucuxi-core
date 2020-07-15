@@ -501,10 +501,6 @@ bool CovariateExtractor::interpolateValues(const Value _val1, const DateTime &_d
         return true;
     }
 
-    double xa;
-    double xb;
-    double x;
-
     switch (_interpolationType) {
     case InterpolationType::Direct:
         if (_date2 > _dateRes) {
@@ -520,9 +516,6 @@ bool CovariateExtractor::interpolateValues(const Value _val1, const DateTime &_d
         Value m;
         m = (_val2 - _val1) / (_date2.toSeconds() - _date1.toSeconds());
         // Intercept.
-        xa = _date1.toSeconds();
-        xb = _date2.toSeconds();
-        x = _dateRes.toSeconds();
         Value b;
         b = _val2 - m * _date2.toSeconds();
         _valRes = _dateRes.toSeconds() * m + b;

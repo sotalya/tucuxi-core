@@ -97,6 +97,24 @@ protected:
                                   GroupsParameterSetSeries &_parameterSeries,
                                   std::map<AnalyteGroupId, Etas> &_etas);
 
+    ComputingStatus addLoad(DosageAdjustment &_dosage,
+                            const ComputingTraitAdjustment *_traits,
+                            const ComputingRequest &_request,
+                            const std::vector<AnalyteGroupId> &_allGroupIds,
+                            const DateTime &_calculationStartTime,
+                            std::map<AnalyteGroupId, std::shared_ptr<PkModel> > &_pkModel,
+                            GroupsParameterSetSeries &_parameterSeries,
+                            std::map<AnalyteGroupId, Etas> &_etas);
+
+    ComputingStatus addRest(DosageAdjustment &_dosage,
+                            const ComputingTraitAdjustment *_traits,
+                            const ComputingRequest &_request,
+                            const std::vector<AnalyteGroupId> &_allGroupIds,
+                            const DateTime &_calculationStartTime,
+                            std::map<AnalyteGroupId, std::shared_ptr<PkModel> > &_pkModel,
+                            GroupsParameterSetSeries &_parameterSeries,
+                            std::map<AnalyteGroupId, Etas> &_etas);
+
     ComputingStatus generatePredictions(std::vector<DosageAdjustment> &_dosages,
                                         const ComputingTraitAdjustment *_traits,
                                         const ComputingRequest &_request,

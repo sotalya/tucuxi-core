@@ -312,7 +312,7 @@ ComputingStatus TargetEvaluator::evaluate(
             // Calculate the time when over mic
             double timeOverMic = 0.0;
             Concentrations concentrations = cycle.getConcentrations()[0]; // [0] because only one concentrations (vector of concentration) in CycleData
-            for(int i = 0; i < int(concentrations.size()); i++){
+            for(size_t i = 0; i < concentrations.size(); i++){
 
                 if (concentrations[i] > _targetEvent.m_mic){
                     if(i == 0){
