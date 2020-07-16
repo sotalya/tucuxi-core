@@ -820,6 +820,9 @@ Constraint* DrugModelImport::extractConstraint(Tucuxi::Common::XmlNodeIterator _
                 setNodeError(it);
             }
         }
+        else if (nodeName == "errorMessage") {
+            constraint->setErrorMessage(extractTranslatableString(it, "name"));
+        }
         else if (nodeName == "requiredCovariates") {
 
             XmlNodeIterator reqCovariatesIt = it->getChildren();

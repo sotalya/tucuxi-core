@@ -39,6 +39,8 @@ public:
 
     void setDescription(Tucuxi::Common::TranslatableString _description) {m_description = _description;}
 
+    void setErrorMessage(Tucuxi::Common::TranslatableString _errorMessage) {m_errorMessage = _errorMessage;}
+
     INVARIANTS(
             INVARIANT(Invariants::INV_CONSTRAINT_0001, (m_checkOperation != nullptr), "A constraint has no operation")
             INVARIANT(Invariants::INV_CONSTRAINT_0001, (m_requiredCovariateIds.size() > 0), "A constraint has no required covariate Ids")
@@ -51,6 +53,8 @@ protected:
     Tucuxi::Common::TranslatableString m_description;
     std::vector<std::string> m_requiredCovariateIds;
     std::unique_ptr<Operation> m_checkOperation;
+    Tucuxi::Common::TranslatableString m_errorMessage;
+
 };
 
 class DrugModelDomain
