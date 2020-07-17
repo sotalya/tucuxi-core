@@ -41,6 +41,8 @@ public:
 
     void setErrorMessage(Tucuxi::Common::TranslatableString _errorMessage) {m_errorMessage = _errorMessage;}
 
+    Tucuxi::Common::TranslatableString getErrorMessage() const {return m_errorMessage;}
+
     INVARIANTS(
             INVARIANT(Invariants::INV_CONSTRAINT_0001, (m_checkOperation != nullptr), "A constraint has no operation")
             INVARIANT(Invariants::INV_CONSTRAINT_0001, (m_requiredCovariateIds.size() > 0), "A constraint has no required covariate Ids")
