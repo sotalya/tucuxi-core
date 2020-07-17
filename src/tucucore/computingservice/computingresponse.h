@@ -179,6 +179,8 @@ public:
         return sum / static_cast<double>(m_targetsEvaluation.size());
     }
 
+    DosageHistory getDosageHistory() const {return m_history;}
+
     DosageHistory m_history;
     std::vector<TargetEvaluationResult> m_targetsEvaluation;
     std::vector<CycleData> m_data;

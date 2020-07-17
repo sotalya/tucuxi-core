@@ -31,7 +31,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
 {
     TestComputingComponentAdjusements() { }
 
-    void buildDrugTreatment(DrugTreatment *&_drugTreatment, FormulationAndRoute _route)
+    void buildDrugTreatment(DrugTreatment *&_drugTreatment, FormulationAndRoute _route, DoseValue _doseValue = 200)
     {
          _drugTreatment = new DrugTreatment();
 
@@ -47,7 +47,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
          //const FormulationAndRoute route("formulation", AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular);
          // Add a treatment intake every ten days in June
          // 200mg via a intravascular at 08h30, starting the 01.06
-         LastingDose periodicDose(DoseValue(200.0),
+         LastingDose periodicDose(_doseValue,
                                   Unit("mg"),
                                   _route,
                                   Duration(),
@@ -678,6 +678,117 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
             fructose_assert(adj.m_history.getDosageTimeRanges()[0]->getStartDate() == adjustmentTime);
             fructose_assert(adj.m_history.getLastFormulationAndRoute() == route );
         }
+
+        // Delete all dynamically allocated objects
+        delete drugModel;
+        delete drugTreatment;
+        delete component;
+    }
+
+    void testImatinibAllFormulationAndRouteBestDosageLoadingDose(const std::string& /* _testName */)
+    {
+        IComputingService *component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+
+        fructose_assert( component != nullptr);
+
+        DrugModel* drugModel;
+        BuildImatinib builder;
+        drugModel = builder.buildDrugModel();
+        fructose_assert(drugModel != nullptr);
+
+        DrugTreatment *drugTreatment;
+        const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+
+        buildDrugTreatment(drugTreatment, route, DoseValue(2));
+
+
+        // Construct the adjustment traits object
+        RequestResponseId requestResponseId = "1";
+        Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
+        Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
+        double nbPointsPerHour = 10.0;
+        ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
+        Tucuxi::Common::DateTime adjustmentTime(2018_y / sep / 4, 8h + 0min);
+        BestCandidatesOption adjustmentOption = BestCandidatesOption::BestDosage;
+        std::unique_ptr<ComputingTraitAdjustment> adjustmentsTraits =
+                std::make_unique<ComputingTraitAdjustment>(
+                    requestResponseId, start, end, nbPointsPerHour, computingOption, adjustmentTime,
+                    adjustmentOption, LoadingOption::LoadingDoseAllowed, RestPeriodOption::NoRestPeriod,
+                    SteadyStateTargetOption::WithinTreatmentTimeRange,
+                    TargetExtractionOption::PopulationValues,
+                    FormulationAndRouteSelectionOption::AllFormulationAndRoutes);
+
+        ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(adjustmentsTraits));
+
+        std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
+
+        ComputingStatus result;
+        result = component->compute(request, response);
+
+        fructose_assert( result == ComputingStatus::Ok);
+
+
+        const ComputedData* responseData = response->getData();
+        fructose_assert(dynamic_cast<const AdjustmentData*>(responseData) != nullptr);
+        const AdjustmentData *resp = dynamic_cast<const AdjustmentData*>(responseData);
+
+        // We expect 2 dosage time range (loading dose)
+        fructose_assert(resp->getAdjustments()[0].getDosageHistory().getDosageTimeRanges().size() == 2);
+
+        // Delete all dynamically allocated objects
+        delete drugModel;
+        delete drugTreatment;
+        delete component;
+    }
+
+    void testImatinibAllFormulationAndRouteBestDosageRestPeriod(const std::string& /* _testName */)
+    {
+        IComputingService *component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+
+        fructose_assert( component != nullptr);
+
+        DrugModel* drugModel;
+        BuildImatinib builder;
+        drugModel = builder.buildDrugModel();
+        fructose_assert(drugModel != nullptr);
+
+        DrugTreatment *drugTreatment;
+        const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+
+        buildDrugTreatment(drugTreatment, route, DoseValue(20000));
+
+
+        // Construct the adjustment traits object
+        RequestResponseId requestResponseId = "1";
+        Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
+        Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
+        double nbPointsPerHour = 10.0;
+        ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
+        Tucuxi::Common::DateTime adjustmentTime(2018_y / sep / 4, 8h + 0min);
+        BestCandidatesOption adjustmentOption = BestCandidatesOption::BestDosage;
+        std::unique_ptr<ComputingTraitAdjustment> adjustmentsTraits =
+                std::make_unique<ComputingTraitAdjustment>(
+                    requestResponseId, start, end, nbPointsPerHour, computingOption, adjustmentTime,
+                    adjustmentOption, LoadingOption::NoLoadingDose, RestPeriodOption::RestPeriodAllowed,
+                    SteadyStateTargetOption::WithinTreatmentTimeRange,
+                    TargetExtractionOption::PopulationValues,
+                    FormulationAndRouteSelectionOption::AllFormulationAndRoutes);
+
+        ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(adjustmentsTraits));
+
+        std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
+
+        ComputingStatus result;
+        result = component->compute(request, response);
+
+        fructose_assert( result == ComputingStatus::Ok);
+
+
+        const ComputedData* responseData = response->getData();
+        fructose_assert(dynamic_cast<const AdjustmentData*>(responseData) != nullptr);
+        const AdjustmentData *resp = dynamic_cast<const AdjustmentData*>(responseData);
+
+        // We expect 2 dosage time range (rest period)
 
         // Delete all dynamically allocated objects
         delete drugModel;

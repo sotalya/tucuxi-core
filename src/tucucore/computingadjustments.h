@@ -65,15 +65,18 @@ protected:
                                                Common::Duration _interval,
                                                std::vector<ComputingAdjustments::SimpleDosageCandidate> &_candidates);
 
+    ComputingStatus buildEmptyCandidate(const FullFormulationAndRoute* _formulationAndRoute,
+                                          Duration _interval,
+                                          std::vector<ComputingAdjustments::SimpleDosageCandidate> &_candidates);
+
     DosageTimeRange *createDosage(
             const SimpleDosageCandidate &_candidate,
             DateTime _startTime,
             DateTime _endTime);
 
 
-    DosageTimeRange *createLoadingDosage(const SimpleDosageCandidate &_candidate,
+    DosageTimeRange *createLoadingDosageOrRestPeriod(const SimpleDosageCandidate &_candidate,
             DateTime _startTime);
-
 
     DosageTimeRange *createSteadyStateDosage(
             const SimpleDosageCandidate &_candidate,

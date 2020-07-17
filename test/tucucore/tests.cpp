@@ -246,6 +246,8 @@ int main(int argc, char** argv)
     computingComponentAdjusementsTests.add_test("Simple test 7", &TestComputingComponentAdjusements::testImatinibEmptyTreatmentDefaultFormulationAndRouteAllDosages);
     computingComponentAdjusementsTests.add_test("Simple test 8", &TestComputingComponentAdjusements::testImatinibSteadyStateLastFormulationAndRouteAllDosages);
     computingComponentAdjusementsTests.add_test("Simple test 9", &TestComputingComponentAdjusements::testImatinibLastFormulationAndRouteAllDosagesAtSteadyState);
+    computingComponentAdjusementsTests.add_test("Simple test 10", &TestComputingComponentAdjusements::testImatinibAllFormulationAndRouteBestDosageLoadingDose);
+    computingComponentAdjusementsTests.add_test("Simple test 11", &TestComputingComponentAdjusements::testImatinibAllFormulationAndRouteBestDosageRestPeriod);
 
     res = computingComponentAdjusementsTests.run(argc, argv);
     tot_res |= res;
