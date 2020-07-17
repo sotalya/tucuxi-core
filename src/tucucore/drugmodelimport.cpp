@@ -821,7 +821,7 @@ Constraint* DrugModelImport::extractConstraint(Tucuxi::Common::XmlNodeIterator _
             }
         }
         else if (nodeName == "errorMessage") {
-            constraint->setErrorMessage(extractTranslatableString(it, "name"));
+            constraint->setErrorMessage(extractTranslatableString(it, "text"));
         }
         else if (nodeName == "requiredCovariates") {
 
