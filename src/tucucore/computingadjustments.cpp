@@ -40,7 +40,7 @@ DosageTimeRange *ComputingAdjustments::createDosage(const ComputingAdjustments::
     return newTimeRange;
 }
 
-DosageTimeRange *ComputingAdjustments::createLoadingDosage(const SimpleDosageCandidate &_candidate,
+DosageTimeRange *ComputingAdjustments::createLoadingDosageOrRestPeriod(const SimpleDosageCandidate &_candidate,
         DateTime _startTime)
 {
     unsigned int nbTimes = 1;
@@ -121,6 +121,53 @@ ComputingStatus ComputingAdjustments::buildCandidates(const FullFormulationAndRo
                 m_logger.info(mess);
 #endif // 0
             }
+        }
+    }
+    return ComputingStatus::Ok;
+}
+
+ComputingStatus ComputingAdjustments::buildEmptyCandidate(const FullFormulationAndRoute* _formulationAndRoute,
+                                                            Duration _interval,
+                                                            std::vector<ComputingAdjustments::SimpleDosageCandidate> &_candidates)
+{
+    std::vector<Value> doseValues;
+    std::vector<Duration> infusionTimes;
+
+    const ValidDoses * doses = _formulationAndRoute->getValidDoses();
+    if (doses != nullptr) {
+        doseValues = doses->getValues();
+    }
+
+    const ValidDurations * infusions = _formulationAndRoute->getValidInfusionTimes();
+    if (infusions != nullptr) {
+        infusionTimes = infusions->getDurations();
+    }
+
+    if (doseValues.empty()) {
+        m_logger.error("No available potential dose");
+        return ComputingStatus::NoAvailableDose;
+    }
+
+    if (infusionTimes.empty()) {
+        if (_formulationAndRoute->getFormulationAndRoute().getAbsorptionModel() == AbsorptionModel::Infusion) {
+            m_logger.error("Infusion selected, but no potential infusion time");
+            return ComputingStatus::NoAvailableInfusionTime;
+        }
+        infusionTimes.emplace_back(0h);
+    }
+
+
+    // Creation of all candidates
+    for(auto dose : doseValues) {
+        for(auto infusion : infusionTimes) {
+            _candidates.push_back({_formulationAndRoute->getFormulationAndRoute(), Value(0.0), Unit("mg"), _interval, Duration()});
+#if 0
+            std::string mess;
+            mess = "Potential adjustment. Dose :  \t" + std::to_string(dose)
+                    + " , Interval: \t" + std::to_string((interval).toHours()) + " hours. "
+                    + " , Infusion: \t" + std::to_string((infusion).toMinutes()) + " minutes";
+            m_logger.info(mess);
+#endif // 0
         }
     }
     return ComputingStatus::Ok;
@@ -667,6 +714,11 @@ typedef struct {
     double score;             // NOLINT(readability-identifier-naming)
 } LoadingCandidate;
 
+typedef struct {
+    DosageAdjustment restDosage; // NOLINT(readability-identifier-naming)
+    double score;             // NOLINT(readability-identifier-naming)
+} RestCandidate;
+
 ComputingStatus ComputingAdjustments::addLoadOrRest(DosageAdjustment &_dosage,
                                               const ComputingTraitAdjustment *_traits,
                                               const ComputingRequest &_request,
@@ -697,7 +749,74 @@ ComputingStatus ComputingAdjustments::addRest(DosageAdjustment &_dosage,
                                               GroupsParameterSetSeries &_parameterSeries,
                                               std::map<AnalyteGroupId, Etas> &_etas)
 {
+    if (_traits->getRestPeriodOption() == RestPeriodOption::NoRestPeriod) {
+        return ComputingStatus::Ok;
+    }
+
+    const DosageRepeat *repeat = static_cast<const DosageRepeat *>(_dosage.m_history.getDosageTimeRanges()[0]->getDosage());
+    const LastingDose *dosage = static_cast<const LastingDose *>(repeat->getDosage());
+    Duration interval = dosage->getTimeStep();
+
+
+    std::vector<double> &lastConcentrations = _dosage.m_data.back().m_concentrations[0];
+    double steadyStateResidual = lastConcentrations.back();
+
+    FormulationAndRoute formulationAndRoute = dosage->getLastFormulationAndRoute();
+
+
+    // TODO : This is wrong to take the default here
+    const FullFormulationAndRoute *fullFormulationAndRoute = _request.getDrugModel().getFormulationAndRoutes().getDefault();
+    std::vector<ComputingAdjustments::SimpleDosageCandidate> candidates;
+    ComputingStatus buildResult = buildEmptyCandidate(fullFormulationAndRoute, interval, candidates);
+    if (buildResult != ComputingStatus::Ok) {
+        return buildResult;
+    }
+
+    std::vector<RestCandidate> restCandidates;
+
+    for (const auto &candidate : candidates) {
+        DosageAdjustment restDosage;
+        // Create the rest period
+        std::unique_ptr<DosageTimeRange> newDosage = std::unique_ptr<DosageTimeRange>(
+                    createLoadingDosageOrRestPeriod(candidate, _traits->getAdjustmentTime()));
+        restDosage.m_history.addTimeRange(*newDosage);
+
+        ComputingStatus generateResult = generatePrediction(restDosage, _traits, _request,
+                                                             _allGroupIds, _calculationStartTime, _pkModel, _parameterSeries,
+                                                             _etas);
+        if (generateResult != ComputingStatus::Ok) {
+            return generateResult;
+        }
+
+        std::vector<double> &concentrations = restDosage.m_data[0].m_concentrations[0];
+        double residual = concentrations.back();
+        double score = steadyStateResidual - residual;
+        restCandidates.push_back({restDosage, score});
+    }
+
+    double bestScore = 1000000000.0;
+    size_t bestIndex = 0;
+    size_t index = 0;
+    for (const auto & candidate : restCandidates) {
+        if (std::abs(candidate.score) < bestScore) {
+            bestScore = std::abs(candidate.score);
+            bestIndex = index;
+        }
+        index ++;
+    }
+
+
+    DosageHistory steadyStateHistory = _dosage.m_history;
+    DosageTimeRange range = *steadyStateHistory.getDosageTimeRanges()[0].get();
+    auto d = range.getDosage();
+    DosageTimeRange newRange(range.getStartDate() + interval, range.getEndDate(), *d);
+    _dosage.m_history = DosageHistory();
+    _dosage.m_history.addTimeRange(*restCandidates[bestIndex].restDosage.m_history.getDosageTimeRanges()[0].get());
+    _dosage.m_history.mergeDosage(&newRange);
+
     return ComputingStatus::Ok;
+
+
 }
 
 ComputingStatus ComputingAdjustments::addLoad(DosageAdjustment &_dosage,
@@ -738,7 +857,7 @@ ComputingStatus ComputingAdjustments::addLoad(DosageAdjustment &_dosage,
         DosageAdjustment loadingDosage;
         // Create the loading dose
         std::unique_ptr<DosageTimeRange> newDosage = std::unique_ptr<DosageTimeRange>(
-                    createLoadingDosage(candidate, _traits->getAdjustmentTime()));
+                    createLoadingDosageOrRestPeriod(candidate, _traits->getAdjustmentTime()));
         loadingDosage.m_history.addTimeRange(*newDosage);
 
         ComputingStatus generateResult = generatePrediction(loadingDosage, _traits, _request,
