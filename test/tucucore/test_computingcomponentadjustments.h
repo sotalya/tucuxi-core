@@ -764,13 +764,13 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
         Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
         double nbPointsPerHour = 10.0;
         ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
-        Tucuxi::Common::DateTime adjustmentTime(2018_y / sep / 4, 8h + 0min);
+        Tucuxi::Common::DateTime adjustmentTime(2018_y / sep / 3, 8h + 0min);
         BestCandidatesOption adjustmentOption = BestCandidatesOption::BestDosage;
         std::unique_ptr<ComputingTraitAdjustment> adjustmentsTraits =
                 std::make_unique<ComputingTraitAdjustment>(
                     requestResponseId, start, end, nbPointsPerHour, computingOption, adjustmentTime,
                     adjustmentOption, LoadingOption::NoLoadingDose, RestPeriodOption::RestPeriodAllowed,
-                    SteadyStateTargetOption::WithinTreatmentTimeRange,
+                    SteadyStateTargetOption::AtSteadyState,
                     TargetExtractionOption::PopulationValues,
                     FormulationAndRouteSelectionOption::AllFormulationAndRoutes);
 
@@ -789,6 +789,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
         const AdjustmentData *resp = dynamic_cast<const AdjustmentData*>(responseData);
 
         // We expect 2 dosage time range (rest period)
+        fructose_assert(resp->getAdjustments()[0].getDosageHistory().getDosageTimeRanges().size() == 2);
 
         // Delete all dynamically allocated objects
         delete drugModel;

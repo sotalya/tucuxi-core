@@ -839,7 +839,7 @@ public:
             if (m_startDate.isUndefined()) {
                 throw std::invalid_argument("Undefined start date for a time range specified.");
             }
-            if (!m_endDate.isUndefined() && (m_startDate > m_endDate)) {
+            if (!m_endDate.isUndefined() && (m_startDate >= m_endDate)) {
                 throw std::invalid_argument("The start date for a time range has to precede the end date.");
             }
         }
