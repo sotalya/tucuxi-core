@@ -711,56 +711,67 @@ ComputingStatus ComputingAdjustments::addRest(DosageAdjustment &_dosage,
         return ComputingStatus::Ok;
     }
 
-    const DosageRepeat *repeat = static_cast<const DosageRepeat *>(_dosage.m_history.getDosageTimeRanges()[0]->getDosage());
-    const LastingDose *dosage = static_cast<const LastingDose *>(repeat->getDosage());
-    Duration interval = dosage->getTimeStep();
-
-
     std::vector<double> &lastConcentrations = _dosage.m_data.back().m_concentrations[0];
     double steadyStateResidual = lastConcentrations.back();
-
-    FormulationAndRoute formulationAndRoute = dosage->getLastFormulationAndRoute();
-
 
     // TODO : This is wrong to take the default here
     const FullFormulationAndRoute *fullFormulationAndRoute = _request.getDrugModel().getFormulationAndRoutes().getDefault();
     std::vector<ComputingAdjustments::SimpleDosageCandidate> candidates;
 
-    // Create only one empty candidate --> 24h of rest
-    candidates.push_back({fullFormulationAndRoute->getFormulationAndRoute(), Value(0.0), Unit("mg"), interval, Duration()});
+    Duration oldInterval = Duration();
+    Duration interval = Duration();
+    std::vector<Duration> intervalMultiple;
+    const LastingDose *dosage = nullptr;
+
+    for (const auto &timeRange : _dosage.m_history.getDosageTimeRanges()){
+         const DosageRepeat *repeat = static_cast<const DosageRepeat *>(timeRange->getDosage());
+         dosage = static_cast<const LastingDose *>(repeat->getDosage());
+         interval = dosage->getTimeStep();
+         if (interval != oldInterval){
+            FormulationAndRoute formulationAndRoute = dosage->getLastFormulationAndRoute();
+
+            // Create empty candidate -->
+            candidates.push_back({fullFormulationAndRoute->getFormulationAndRoute(), Value(0.0), Unit("mg"), interval, Duration()});
+            candidates.push_back({fullFormulationAndRoute->getFormulationAndRoute(), Value(0.0), Unit("mg"), interval * 2.0, Duration()});
+            candidates.push_back({fullFormulationAndRoute->getFormulationAndRoute(), Value(0.0), Unit("mg"), interval * 3.0, Duration()});
+         }
+         oldInterval = interval;
+    }
 
     std::vector<RestCandidate> restCandidates;
 
-    ComputingAdjustments::SimpleDosageCandidate candidate = candidates[0];
-
     DosageAdjustment restDosage;
-    // Create the rest period dosage (0.0 mg)
-    std::unique_ptr<DosageTimeRange> newDosage = std::unique_ptr<DosageTimeRange>(
-                createLoadingDosageOrRestPeriod(candidate, _traits->getAdjustmentTime()));
-    restDosage.m_history.addTimeRange(*newDosage);
 
-    ComputingStatus generateResult = generatePrediction(restDosage, _traits, _request,
-                                                         _allGroupIds, _calculationStartTime, _pkModel, _parameterSeries,
-                                                         _etas);
-    if (generateResult != ComputingStatus::Ok) {
-        return generateResult;
+    for (const auto &candidate : candidates) {
+        // Create the rest period dosage (0.0 mg)
+        std::unique_ptr<DosageTimeRange> newDosage = std::unique_ptr<DosageTimeRange>(
+                    createLoadingDosageOrRestPeriod(candidate, _traits->getAdjustmentTime()));
+        restDosage.m_history.addTimeRange(*newDosage);
+
+        ComputingStatus generateResult = generatePrediction(restDosage, _traits, _request,
+                                                             _allGroupIds, _calculationStartTime, _pkModel, _parameterSeries,
+                                                             _etas);
+        if (generateResult != ComputingStatus::Ok) {
+            return generateResult;
+        }
+
+        std::vector<double> &concentrations = restDosage.m_data[0].m_concentrations[0];
+        double residual = concentrations.back();
+        double score = steadyStateResidual - residual;
+        restCandidates.push_back({restDosage, score});
     }
-
-    std::vector<double> &concentrations = restDosage.m_data[0].m_concentrations[0];
-    double residual = concentrations.back();
-    double score = steadyStateResidual - residual;
-    restCandidates.push_back({restDosage, score});
-
 
     double bestScore = 1000000000.0;
     size_t bestIndex = 0;
     size_t index = 0;
 
-    if (std::abs(score) < bestScore) {
-        bestScore = std::abs(score);
-        bestIndex = index;
+    for (const auto & candidate : restCandidates) {
+        if (std::abs(candidate.score) < bestScore) {
+            bestScore = std::abs(candidate.score);
+            bestIndex = index;
+        }
+        index ++;
     }
-    index ++;
 
     //Add the new time range to dosage history (rest)
     DosageHistory steadyStateHistory = _dosage.m_history;
