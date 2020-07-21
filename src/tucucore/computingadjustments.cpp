@@ -729,7 +729,7 @@ ComputingStatus ComputingAdjustments::addRest(DosageAdjustment &_dosage,
     // It will allow to decide if a rest period is worth it or not.
     // The same shall be applied to the Loading Dose.
     // The _modified argument shall then contain the information about whether a modification has been made to the dosage
-    //double firstResidual =
+    double firstResidual = _dosage.m_data[0].m_concentrations[0][0];
 
     // TODO : This is wrong to take the default here
     const FullFormulationAndRoute *fullFormulationAndRoute = _request.getDrugModel().getFormulationAndRoutes().getDefault();
@@ -747,7 +747,7 @@ ComputingStatus ComputingAdjustments::addRest(DosageAdjustment &_dosage,
          if (interval != oldInterval){
             FormulationAndRoute formulationAndRoute = dosage->getLastFormulationAndRoute();
 
-            // Create empty candidate -->
+            // Create empty candidates --> one for each multiple
             candidates.push_back({fullFormulationAndRoute->getFormulationAndRoute(), Value(0.0), Unit("mg"), interval, Duration()});
             candidates.push_back({fullFormulationAndRoute->getFormulationAndRoute(), Value(0.0), Unit("mg"), interval * 2.0, Duration()});
             candidates.push_back({fullFormulationAndRoute->getFormulationAndRoute(), Value(0.0), Unit("mg"), interval * 3.0, Duration()});
@@ -776,7 +776,13 @@ ComputingStatus ComputingAdjustments::addRest(DosageAdjustment &_dosage,
         std::vector<double> &concentrations = restDosage.m_data[0].m_concentrations[0];
         double residual = concentrations.back();
         double score = steadyStateResidual - residual;
-        restCandidates.push_back({restDosage, score, candidate.m_interval});
+        double scoreFirstResidual = firstResidual - residual;
+        if (std::abs(scoreFirstResidual) > std::abs(score)){
+            _modified = true;
+        }
+        else{
+            restCandidates.push_back({restDosage, score, candidate.m_interval});
+        }
     }
 
     double bestScore = 1000000000.0;
@@ -791,14 +797,16 @@ ComputingStatus ComputingAdjustments::addRest(DosageAdjustment &_dosage,
         index ++;
     }
 
-    //Add the new time range to dosage history (rest)
-    DosageHistory steadyStateHistory = _dosage.m_history;
-    DosageTimeRange range = *steadyStateHistory.getDosageTimeRanges()[0].get();
-    auto d = range.getDosage();
-    DosageTimeRange newRange(range.getStartDate() + restCandidates[bestIndex].interval, range.getEndDate(), *d);
-    _dosage.m_history = DosageHistory();
-    _dosage.m_history.addTimeRange(*restCandidates[bestIndex].restDosage.m_history.getDosageTimeRanges()[0].get());
-    _dosage.m_history.mergeDosage(&newRange);
+    if (restCandidates.size() != 0){
+        //Add the new time range to dosage history (rest)
+        DosageHistory steadyStateHistory = _dosage.m_history;
+        DosageTimeRange range = *steadyStateHistory.getDosageTimeRanges()[0].get();
+        auto d = range.getDosage();
+        DosageTimeRange newRange(range.getStartDate() + restCandidates[bestIndex].interval, range.getEndDate(), *d);
+        _dosage.m_history = DosageHistory();
+        _dosage.m_history.addTimeRange(*restCandidates[bestIndex].restDosage.m_history.getDosageTimeRanges()[0].get());
+        _dosage.m_history.mergeDosage(&newRange);
+    }
 
     return ComputingStatus::Ok;
 
