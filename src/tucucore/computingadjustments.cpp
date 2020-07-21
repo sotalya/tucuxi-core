@@ -721,6 +721,8 @@ ComputingStatus ComputingAdjustments::addRest(DosageAdjustment &_dosage,
         return ComputingStatus::Ok;
     }
 
+    _modified = false;
+
     std::vector<double> &lastConcentrations = _dosage.m_data.back().m_concentrations[0];
     double steadyStateResidual = lastConcentrations.back();
 
@@ -729,7 +731,9 @@ ComputingStatus ComputingAdjustments::addRest(DosageAdjustment &_dosage,
     // It will allow to decide if a rest period is worth it or not.
     // The same shall be applied to the Loading Dose.
     // The _modified argument shall then contain the information about whether a modification has been made to the dosage
-    double firstResidual = _dosage.m_data[0].m_concentrations[0][0];
+
+    // This is not correct here, as we can receive a single CycleData for steady state calculations
+    double firstResidual = _dosage.m_data[0].m_concentrations[0].back();
 
     // TODO : This is wrong to take the default here
     const FullFormulationAndRoute *fullFormulationAndRoute = _request.getDrugModel().getFormulationAndRoutes().getDefault();
@@ -758,6 +762,8 @@ ComputingStatus ComputingAdjustments::addRest(DosageAdjustment &_dosage,
     std::vector<RestCandidate> restCandidates;
 
 
+    double scoreFirstResidual = steadyStateResidual - firstResidual;
+
     for (const auto &candidate : candidates) {
         DosageAdjustment restDosage;
 
@@ -776,13 +782,14 @@ ComputingStatus ComputingAdjustments::addRest(DosageAdjustment &_dosage,
         std::vector<double> &concentrations = restDosage.m_data[0].m_concentrations[0];
         double residual = concentrations.back();
         double score = steadyStateResidual - residual;
-        double scoreFirstResidual = firstResidual - residual;
-        if (std::abs(scoreFirstResidual) > std::abs(score)){
+        // if (std::abs(scoreFirstResidual) > std::abs(score)){
             _modified = true;
-        }
-        else{
             restCandidates.push_back({restDosage, score, candidate.m_interval});
-        }
+        // }
+    }
+
+    if (!_modified) {
+        return ComputingStatus::Ok;
     }
 
     double bestScore = 1000000000.0;
