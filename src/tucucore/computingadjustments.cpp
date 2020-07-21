@@ -674,7 +674,8 @@ typedef struct {
 
 typedef struct {
     DosageAdjustment restDosage; // NOLINT(readability-identifier-naming)
-    double score;             // NOLINT(readability-identifier-naming)
+    double score;                // NOLINT(readability-identifier-naming)
+    Duration interval;             // NOLINT(readability-identifier-naming)
 } RestCandidate;
 
 ComputingStatus ComputingAdjustments::addLoadOrRest(DosageAdjustment &_dosage,
@@ -686,13 +687,21 @@ ComputingStatus ComputingAdjustments::addLoadOrRest(DosageAdjustment &_dosage,
                                               GroupsParameterSetSeries &_parameterSeries,
                                               std::map<AnalyteGroupId, Etas> &_etas)
 {
-    auto result1 = addLoad(_dosage, _traits, _request, _allGroupIds, _calculationStartTime, _pkModel, _parameterSeries, _etas);
-    auto result2 = addRest(_dosage, _traits, _request, _allGroupIds, _calculationStartTime, _pkModel, _parameterSeries, _etas);
-    if (result1 != ComputingStatus::Ok) {
-        return result1;
+    bool modified = false;
+    if (_traits->getRestPeriodOption() == RestPeriodOption::RestPeriodAllowed) {
+        auto result2 = addRest(_dosage, _traits, _request, _allGroupIds, _calculationStartTime, _pkModel, _parameterSeries, _etas, modified);
+        if (result2 != ComputingStatus::Ok) {
+            return result2;
+        }
+        if (modified) {
+            return ComputingStatus::Ok;
+        }
     }
-    if (result2 != ComputingStatus::Ok) {
-        return result2;
+    if (_traits->getLoadingOption() == LoadingOption::LoadingDoseAllowed) {
+        auto result1 = addLoad(_dosage, _traits, _request, _allGroupIds, _calculationStartTime, _pkModel, _parameterSeries, _etas, modified);
+        if (result1 != ComputingStatus::Ok) {
+            return result1;
+        }
     }
     return ComputingStatus::Ok;
 }
@@ -705,7 +714,8 @@ ComputingStatus ComputingAdjustments::addRest(DosageAdjustment &_dosage,
                                               const Common::DateTime &_calculationStartTime,
                                               std::map<AnalyteGroupId, std::shared_ptr<PkModel> > &_pkModel,
                                               GroupsParameterSetSeries &_parameterSeries,
-                                              std::map<AnalyteGroupId, Etas> &_etas)
+                                              std::map<AnalyteGroupId, Etas> &_etas,
+                                              bool &_modified)
 {
     if (_traits->getRestPeriodOption() == RestPeriodOption::NoRestPeriod) {
         return ComputingStatus::Ok;
@@ -713,6 +723,13 @@ ComputingStatus ComputingAdjustments::addRest(DosageAdjustment &_dosage,
 
     std::vector<double> &lastConcentrations = _dosage.m_data.back().m_concentrations[0];
     double steadyStateResidual = lastConcentrations.back();
+
+    // TODO : Find the first residual after adjustment
+    // Then calculate its score compared to the steadyStateResidual.
+    // It will allow to decide if a rest period is worth it or not.
+    // The same shall be applied to the Loading Dose.
+    // The _modified argument shall then contain the information about whether a modification has been made to the dosage
+    //double firstResidual =
 
     // TODO : This is wrong to take the default here
     const FullFormulationAndRoute *fullFormulationAndRoute = _request.getDrugModel().getFormulationAndRoutes().getDefault();
@@ -740,9 +757,10 @@ ComputingStatus ComputingAdjustments::addRest(DosageAdjustment &_dosage,
 
     std::vector<RestCandidate> restCandidates;
 
-    DosageAdjustment restDosage;
 
     for (const auto &candidate : candidates) {
+        DosageAdjustment restDosage;
+
         // Create the rest period dosage (0.0 mg)
         std::unique_ptr<DosageTimeRange> newDosage = std::unique_ptr<DosageTimeRange>(
                     createLoadingDosageOrRestPeriod(candidate, _traits->getAdjustmentTime()));
@@ -758,7 +776,7 @@ ComputingStatus ComputingAdjustments::addRest(DosageAdjustment &_dosage,
         std::vector<double> &concentrations = restDosage.m_data[0].m_concentrations[0];
         double residual = concentrations.back();
         double score = steadyStateResidual - residual;
-        restCandidates.push_back({restDosage, score});
+        restCandidates.push_back({restDosage, score, candidate.m_interval});
     }
 
     double bestScore = 1000000000.0;
@@ -777,7 +795,7 @@ ComputingStatus ComputingAdjustments::addRest(DosageAdjustment &_dosage,
     DosageHistory steadyStateHistory = _dosage.m_history;
     DosageTimeRange range = *steadyStateHistory.getDosageTimeRanges()[0].get();
     auto d = range.getDosage();
-    DosageTimeRange newRange(range.getStartDate() + interval, range.getEndDate(), *d);
+    DosageTimeRange newRange(range.getStartDate() + restCandidates[bestIndex].interval, range.getEndDate(), *d);
     _dosage.m_history = DosageHistory();
     _dosage.m_history.addTimeRange(*restCandidates[bestIndex].restDosage.m_history.getDosageTimeRanges()[0].get());
     _dosage.m_history.mergeDosage(&newRange);
@@ -794,7 +812,8 @@ ComputingStatus ComputingAdjustments::addLoad(DosageAdjustment &_dosage,
                                               const Common::DateTime &_calculationStartTime,
                                               std::map<AnalyteGroupId, std::shared_ptr<PkModel> > &_pkModel,
                                               GroupsParameterSetSeries &_parameterSeries,
-                                              std::map<AnalyteGroupId, Etas> &_etas)
+                                              std::map<AnalyteGroupId, Etas> &_etas,
+                                              bool& _modified)
 {
     if (_traits->getLoadingOption() == LoadingOption::NoLoadingDose) {
         return ComputingStatus::Ok;

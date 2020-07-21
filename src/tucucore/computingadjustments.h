@@ -103,7 +103,8 @@ protected:
                             const DateTime &_calculationStartTime,
                             std::map<AnalyteGroupId, std::shared_ptr<PkModel> > &_pkModel,
                             GroupsParameterSetSeries &_parameterSeries,
-                            std::map<AnalyteGroupId, Etas> &_etas);
+                            std::map<AnalyteGroupId, Etas> &_etas,
+                            bool &_modified);
 
     ComputingStatus addRest(DosageAdjustment &_dosage,
                             const ComputingTraitAdjustment *_traits,
@@ -112,7 +113,8 @@ protected:
                             const DateTime &_calculationStartTime,
                             std::map<AnalyteGroupId, std::shared_ptr<PkModel> > &_pkModel,
                             GroupsParameterSetSeries &_parameterSeries,
-                            std::map<AnalyteGroupId, Etas> &_etas);
+                            std::map<AnalyteGroupId, Etas> &_etas,
+                            bool &_modified);
 
     ComputingStatus generatePredictions(std::vector<DosageAdjustment> &_dosages,
                                         const ComputingTraitAdjustment *_traits,
