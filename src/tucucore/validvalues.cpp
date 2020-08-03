@@ -25,7 +25,17 @@ Value ValidValues::getDefaultValue() const
     return m_defaultValue->getValue();
 }
 
+Value ValidValues::getStepValue() const{
+    return std::move(m_valueSets[0])->getStepValue();
+}
 
+Value ValidValues::getToValue() const{
+    return std::move(m_valueSets[0])->getToValue();
+}
+
+Value ValidValues::getFromValue() const{
+    return std::move(m_valueSets[0])->getFromValue();
+}
 
 std::vector<Value> ValidValues::getValues() const
 {
@@ -36,7 +46,6 @@ std::vector<Value> ValidValues::getValues() const
     }
     return result;
 }
-
 
 void ValidValues::addValues(std::unique_ptr<IValidValues> _values)
 {
@@ -69,7 +78,17 @@ std::vector<Value> ValidValuesRange::getValues() const
     return result;
 }
 
+Value ValidValuesRange::getToValue() const{
+    return m_to->getValue();
+}
 
+Value ValidValuesRange::getFromValue() const{
+    return m_from->getValue();
+}
+
+Value ValidValuesRange::getStepValue() const{
+    return m_step->getValue();
+}
 
 
 ValidValuesFixed::ValidValuesFixed() :
