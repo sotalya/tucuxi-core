@@ -44,6 +44,9 @@ std::vector<Value> ValidValues::getValues() const
         std::vector<Value> tmp = valueSet->getValues();
         result.insert(std::end(result), std::begin(tmp), std::end(tmp));
     }
+
+    std::sort(result.begin(), result.end());
+    result.erase(std::unique(result.begin(), result.end() ), result.end());
     return result;
 }
 
