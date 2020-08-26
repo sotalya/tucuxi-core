@@ -124,7 +124,7 @@ struct TestDrugDomainConstraintsEvaluator : public fructose::test_base<TestDrugD
         ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
         ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), kg, cDefinitions);
         ADD_CDEF_NO_R_UNIT(Height, 100, Standard, Double, Linear, cm, cDefinitions);
-        ADD_CDEF_NO_R_UNIT(Age, 50, AgeInYears, Int, Linear, year, cDefinitions);
+        ADD_CDEF_NO_R_UNIT(Age, 50, AgeInYears, Int, Linear, y, cDefinitions);
 
 
         // Set of covariate events.
@@ -157,11 +157,6 @@ struct TestDrugDomainConstraintsEvaluator : public fructose::test_base<TestDrugD
                                 evaluationResults);
 
 
-        for(const auto result : evaluationResults)
-        {
-            fructose_assert(result.m_result == DrugDomainConstraintsEvaluator::Result::Incompatible);
-        }
-
         fructose_assert(rc == DrugDomainConstraintsEvaluator::Result::Incompatible);
 
     }
@@ -176,7 +171,7 @@ struct TestDrugDomainConstraintsEvaluator : public fructose::test_base<TestDrugD
         ADD_CDEF_NO_R(Gist, true, Standard, Bool, Direct, cDefinitions);
         ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), kg, cDefinitions);
         ADD_CDEF_NO_R_UNIT(Height, 100, Standard, Double, Linear, cm, cDefinitions);
-        ADD_CDEF_NO_R_UNIT(Age, 3, AgeInWeeks, Int, Linear, week, cDefinitions);
+        ADD_CDEF_NO_R_UNIT(Age, 3, AgeInWeeks, Int, Linear, w, cDefinitions);
 
 
         // Set of covariate events.
@@ -228,7 +223,7 @@ struct TestDrugDomainConstraintsEvaluator : public fructose::test_base<TestDrugD
         ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
         ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), kg, cDefinitions);
         ADD_CDEF_NO_R_UNIT(Height, 100, Standard, Double, Linear, cm, cDefinitions);
-        ADD_CDEF_NO_R_UNIT(Age, 3, AgeInDays, Int, Linear, week, cDefinitions);
+        ADD_CDEF_NO_R_UNIT(Age, 3, AgeInDays, Int, Linear, w, cDefinitions);
 
         // Set of covariate events.
         CovariateSeries cSeries;
@@ -261,13 +256,7 @@ struct TestDrugDomainConstraintsEvaluator : public fructose::test_base<TestDrugD
 
         for(const auto result : evaluationResults)
         {
-            if(result.m_constraint->getType() == ConstraintType::HARD)
-            {
-                fructose_assert(result.m_result == DrugDomainConstraintsEvaluator::Result::Compatible);
-            }
-            else{
-                fructose_assert(result.m_result == DrugDomainConstraintsEvaluator::Result::PartiallyCompatible);
-            }
+            fructose_assert(result.m_result == DrugDomainConstraintsEvaluator::Result::PartiallyCompatible);
         }
 
         fructose_assert(rc == DrugDomainConstraintsEvaluator::Result::PartiallyCompatible);
@@ -278,6 +267,10 @@ struct TestDrugDomainConstraintsEvaluator : public fructose::test_base<TestDrugD
     /// \brief Test the extraction capabilities of the Parameters extractor according to test 1_1.
     void test4(const std::string& /* _testName */)
     {
+
+
+        imatinibTest();
+
 
         compatibleTests(ConstraintType::SOFT, ConstraintType::SOFT);
         compatibleTests(ConstraintType::SOFT, ConstraintType::HARD);
@@ -445,8 +438,51 @@ private:
         {
             fructose_assert(evalResult.m_result == CONSTRAINTS_RESULT_TYPE);
         }
+    }
+
+    void imatinibTest(){
+
+        std::unique_ptr<DrugModelDomain> domain = std::make_unique<DrugModelDomain>();
+        // Computed parameters
+        ADD_OP1_CONSTRAINT(domain, "return ((bodyweight >= 44) && (bodyweight <= 110));", "bodyweight", ConstraintType::SOFT);
+        ADD_OP1_CONSTRAINT(domain, "return ((age <= 88) && (age >= 20));", "age", ConstraintType::HARD);
+
+        DrugModel drugModel;
+
+        CovariateDefinitions cDefinitions;
+        // Covariates of interest.
+        ADD_CDEF_W_R_UNIT(bodyweight, 70, Standard, Double, Linear, Tucuxi::Common::days(1), kg, cDefinitions);
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R_UNIT(sex, 0.5, Sex, Int, Linear, y, cDefinitions);
+        ADD_CDEF_NO_R_UNIT(age, 50, AgeInYears, Int, Linear, y, cDefinitions);
+
+        drugModel.addCovariate(std::move(cDefinitions[0]));
+        drugModel.addCovariate(std::move(cDefinitions[1]));
+        drugModel.addCovariate(std::move(cDefinitions[2]));
+        drugModel.addCovariate(std::move(cDefinitions[3]));
+
+        drugModel.setDomain(std::move(domain));
 
 
+        DrugTreatment drugTreatment;
+
+        drugTreatment.addCovariate(std::make_unique<PatientCovariate>("Birthdate","1990-01-01T00:00:00", DataType::Date, Unit("-"), DATE_TIME_NO_VAR(2020, 5, 8, 8, 0, 0)));
+        drugTreatment.addCovariate(std::make_unique<PatientCovariate>("bodyweight", "60", DataType::Double, Unit("kg"), DATE_TIME_NO_VAR(2020, 5, 9, 8, 0, 0)));
+
+
+
+        DrugDomainConstraintsEvaluator evaluator;
+
+        DrugDomainConstraintsEvaluator::Result rc;
+
+        std::vector<DrugDomainConstraintsEvaluator::EvaluationResult> evaluationResults;
+
+        rc = evaluator.evaluate(drugModel, drugTreatment,
+                                DATE_TIME_NO_VAR(2020, 5, 7, 8, 0, 0),
+                                DATE_TIME_NO_VAR(2020, 6, 12, 8, 0, 0),
+                                evaluationResults);
+
+        fructose_assert(rc == DrugDomainConstraintsEvaluator::Result::Compatible);
     }
 
     std::unique_ptr<DrugModelDomain> howManyConstraints(ConstraintType _firstConstraintType, ConstraintType _secondConstraintType, uint8_t _nbConstraint = 1)
@@ -506,7 +542,7 @@ private:
                 break;
 
             case 3:
-                ADD_CDEF_NO_R_UNIT(Age, 3, AgeInDays, Int, Linear, days, cDefinitions);
+                ADD_CDEF_NO_R_UNIT(Age, 3, AgeInDays, Int, Linear, d, cDefinitions);
                 break;
 
             default:

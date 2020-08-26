@@ -341,23 +341,26 @@ ComputingStatus GeneralExtractor::generalExtractions(const ComputingTraitStandar
 
         if (covariateExtractionResult != ComputingStatus::Ok) {
             m_logger.error("Can not extract covariates");
-            return covariateExtractionResult;
-        }
+            return covariateExtractionResult;        }
     }
 
-    /*
+
     // Evaluate the drug domain constraints with respect to the covariates
+    std::vector<DrugDomainConstraintsEvaluator::EvaluationResult> results;
     DrugDomainConstraintsEvaluator domainConstraintsEvaluator;
+
     DrugDomainConstraintsEvaluator::Result domainConstraintsResult =
-            domainConstraintsEvaluator.evaluate(_request.getDrugModel().getDomain(),
-                                                _covariatesSeries,
+            domainConstraintsEvaluator.evaluate(_request.getDrugModel(),
+                                                _request.getDrugTreatment(),
                                                 fantomStart,
-                                                _traits->getEnd());
+                                                _traits->getEnd(),
+                                                results);
 
     if (domainConstraintsResult != DrugDomainConstraintsEvaluator::Result::Compatible) {
-        return ComputingResult::UncompatibleDrugDomain;
+        m_logger.error("Drug domain constraints not respecting covariate");
+        return ComputingStatus::InvalidCandidate;
     }
-    */
+
 
     for (const auto &analyteSet : _request.getDrugModel().getAnalyteSets()) {
         const AnalyteGroupId analyteGroupId =analyteSet->getId();
