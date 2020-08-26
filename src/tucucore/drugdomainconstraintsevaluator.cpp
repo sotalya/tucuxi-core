@@ -204,11 +204,11 @@ DrugDomainConstraintsEvaluator::Result DrugDomainConstraintsEvaluator::evaluate(
                         }
                     }
                 }
-                DrugDomainConstraintsEvaluator::EvaluationResult evaluationResult;
-                evaluationResult.m_result = resultStatus;
-                evaluationResult.m_constraint = constraint.get();
-                _results.push_back(evaluationResult);
             }
+            DrugDomainConstraintsEvaluator::EvaluationResult evaluationResult;
+            evaluationResult.m_result = resultStatus;
+            evaluationResult.m_constraint = constraint.get();
+            _results.push_back(evaluationResult);
         }
     }
 
