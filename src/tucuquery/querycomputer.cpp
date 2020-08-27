@@ -61,6 +61,8 @@ void QueryComputer::compute(ComputingQuery& _query, ComputingQueryResponse& _res
             _response.setQueryStatus(QueryStatus::PartiallyOk);
         }
     }
+
+    delete computingComponent;
 }
 
 void QueryComputer::compute(const std::string& _queryString, ComputingQueryResponse& _response)
