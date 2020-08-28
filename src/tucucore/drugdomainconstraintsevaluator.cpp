@@ -1,5 +1,4 @@
 #include "drugdomainconstraintsevaluator.h"
-
 #include "tucucore/covariateevent.h"
 #include "tucucore/drugmodel/drugmodeldomain.h"
 #include "tucucore/drugmodel/drugmodel.h"
@@ -34,8 +33,34 @@ DrugDomainConstraintsEvaluator::Result DrugDomainConstraintsEvaluator::evaluate(
 
     extractor.extract(covariateSeries);
 
-    return evaluate(_drugModel.getDomain(), covariateSeries, _start, _end, _results);
+    DrugDomainConstraintsEvaluator::Result result = evaluate(_drugModel.getDomain(), covariateSeries, _start, _end, _results);
 
+
+    //Change result if hard constraint and covariate corresponding not in drug treatment
+    bool equal = false;
+    for (auto &res : _results){
+        if (res.m_constraint->getType() == ConstraintType::HARD){
+            for (const auto &dtCovariate : _drugTreatment.getCovariates()){
+                if (res.m_constraint->getRequiredCovariateIds()[0] == dtCovariate->getId()){
+                    equal = true;
+                }
+                else if(res.m_constraint->getRequiredCovariateIds()[0] == "age"
+                        || res.m_constraint->getRequiredCovariateIds()[0] == "Age"){
+                    if(dtCovariate->getId() == "Birthdate"
+                            || dtCovariate->getId() == "birthdate"){
+                        equal = true;
+                    }
+                }
+            }
+            if (!equal){
+                res.m_result = Result::Incompatible;
+                result = Result::Incompatible;
+            }
+            equal = false;
+        }
+    }
+
+    return result;
 }
 
 DrugDomainConstraintsEvaluator::Result DrugDomainConstraintsEvaluator::evaluate(const DrugModelDomain &_drugDomain,
