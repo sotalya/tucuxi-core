@@ -297,6 +297,96 @@ struct TestDrugDomainConstraintsEvaluator : public fructose::test_base<TestDrugD
 
     }
 
+    /// \brief Test the extraction capabilities of the Parameters extractor according to test 1_1.
+    void test5(const std::string& /* _testName */)
+    {
+
+        std::unique_ptr<DrugModelDomain> domain = std::make_unique<DrugModelDomain>();
+        // Computed parameters
+        ADD_OP1_CONSTRAINT(domain, "return ((bodyweight >= 44) && (bodyweight <= 110));", "bodyweight", ConstraintType::SOFT);
+        ADD_OP1_CONSTRAINT(domain, "return ((age <= 88) && (age >= 20));", "age", ConstraintType::HARD);
+        ADD_OP1_CONSTRAINT(domain, "return gist;", "gist", ConstraintType::HARD);
+
+        DrugModel drugModel;
+
+        CovariateDefinitions cDefinitions;
+        // Covariates of interest.
+        ADD_CDEF_W_R_UNIT(bodyweight, 70, Standard, Double, Linear, Tucuxi::Common::days(1), kg, cDefinitions);
+        ADD_CDEF_NO_R(gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R_UNIT(age, 50, AgeInYears, Int, Linear, y, cDefinitions);
+
+        drugModel.addCovariate(std::move(cDefinitions[0]));
+        drugModel.addCovariate(std::move(cDefinitions[1]));
+        drugModel.addCovariate(std::move(cDefinitions[2]));
+
+        drugModel.setDomain(std::move(domain));
+
+
+        DrugTreatment drugTreatment;
+
+        drugTreatment.addCovariate(std::make_unique<PatientCovariate>("bodyweight", "60", DataType::Double, Unit("kg"), DATE_TIME_NO_VAR(2020, 5, 9, 8, 0, 0))); // DM constraint : SOFT
+        drugTreatment.addCovariate(std::make_unique<PatientCovariate>("gist", "true", DataType::Bool, Unit("-"), DATE_TIME_NO_VAR(2020, 5, 10, 8, 0, 0))); // DM constraint : HARD
+
+        DrugDomainConstraintsEvaluator evaluator;
+
+        DrugDomainConstraintsEvaluator::Result rc;
+
+        std::vector<DrugDomainConstraintsEvaluator::EvaluationResult> evaluationResults;
+
+        rc = evaluator.evaluate(drugModel, drugTreatment,
+                                DATE_TIME_NO_VAR(2020, 5, 7, 8, 0, 0),
+                                DATE_TIME_NO_VAR(2020, 6, 12, 10, 0, 0),
+                                evaluationResults);
+
+        // Covariate in drugtreatment missing knowing that its constraint is hard
+        fructose_assert(rc == DrugDomainConstraintsEvaluator::Result::Incompatible);
+    }
+
+    /// \brief Test the extraction capabilities of the Parameters extractor according to test 1_1.
+    void test6(const std::string& /* _testName */)
+    {
+
+        std::unique_ptr<DrugModelDomain> domain = std::make_unique<DrugModelDomain>();
+        // Computed parameters
+        ADD_OP1_CONSTRAINT(domain, "return ((bodyweight >= 44) && (bodyweight <= 110));", "bodyweight", ConstraintType::HARD);
+        ADD_OP1_CONSTRAINT(domain, "return ((age <= 88) && (age >= 20));", "age", ConstraintType::SOFT);
+        ADD_OP1_CONSTRAINT(domain, "return gist;", "gist", ConstraintType::HARD);
+
+        DrugModel drugModel;
+
+        CovariateDefinitions cDefinitions;
+        // Covariates of interest.
+        ADD_CDEF_W_R_UNIT(bodyweight, 70, Standard, Double, Linear, Tucuxi::Common::days(1), kg, cDefinitions);
+        ADD_CDEF_NO_R(gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R_UNIT(age, 50, AgeInYears, Int, Linear, y, cDefinitions);
+
+        drugModel.addCovariate(std::move(cDefinitions[0]));
+        drugModel.addCovariate(std::move(cDefinitions[1]));
+        drugModel.addCovariate(std::move(cDefinitions[2]));
+
+        drugModel.setDomain(std::move(domain));
+
+
+        DrugTreatment drugTreatment;
+
+        drugTreatment.addCovariate(std::make_unique<PatientCovariate>("bodyweight", "60", DataType::Double, Unit("kg"), DATE_TIME_NO_VAR(2020, 5, 9, 8, 0, 0))); // DM constraint : HARD
+        drugTreatment.addCovariate(std::make_unique<PatientCovariate>("gist", "true", DataType::Bool, Unit("-"), DATE_TIME_NO_VAR(2020, 5, 10, 8, 0, 0))); // DM constraint : HARD
+
+        DrugDomainConstraintsEvaluator evaluator;
+
+        DrugDomainConstraintsEvaluator::Result rc;
+
+        std::vector<DrugDomainConstraintsEvaluator::EvaluationResult> evaluationResults;
+
+        rc = evaluator.evaluate(drugModel, drugTreatment,
+                                DATE_TIME_NO_VAR(2020, 5, 7, 8, 0, 0),
+                                DATE_TIME_NO_VAR(2020, 6, 12, 10, 0, 0),
+                                evaluationResults);
+
+        // Covariate in drugtreatment missing knowing that its constraint is soft
+        fructose_assert(rc == DrugDomainConstraintsEvaluator::Result::Compatible);
+    }
+
 private:
 
 

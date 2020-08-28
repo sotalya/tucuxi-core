@@ -161,6 +161,8 @@ int main(int argc, char** argv)
     drugDomainConstraintsEvaluatorTests.add_test("simpleTest2", &TestDrugDomainConstraintsEvaluator::test2);
     drugDomainConstraintsEvaluatorTests.add_test("simpleTest3", &TestDrugDomainConstraintsEvaluator::test3);
     drugDomainConstraintsEvaluatorTests.add_test("simpleTest4", &TestDrugDomainConstraintsEvaluator::test4);
+    drugDomainConstraintsEvaluatorTests.add_test("simpleTest5", &TestDrugDomainConstraintsEvaluator::test5);
+    drugDomainConstraintsEvaluatorTests.add_test("simpleTest6", &TestDrugDomainConstraintsEvaluator::test6);
 
     res = drugDomainConstraintsEvaluatorTests.run(argc, argv);
     tot_res |= res;
