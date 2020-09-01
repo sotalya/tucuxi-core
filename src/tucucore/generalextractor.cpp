@@ -356,7 +356,7 @@ ComputingStatus GeneralExtractor::generalExtractions(const ComputingTraitStandar
                                                 _traits->getEnd(),
                                                 results);
 
-    if (domainConstraintsResult != DrugDomainConstraintsEvaluator::Result::Compatible) {
+    if (domainConstraintsResult == DrugDomainConstraintsEvaluator::Result::Incompatible) {
         m_logger.error("Drug domain constraints not respecting covariate");
         return ComputingStatus::InvalidCandidate;
     }
