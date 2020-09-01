@@ -568,7 +568,7 @@ ComputingStatus ComputingAdjustments::compute(
                 for (size_t i = 0; i < intakeSeriesPerGroup[analyteGroupId].size(); i++) {
                     TimeOffsets times = activeMoietiesPredictions[0]->getTimes()[i];
                     DateTime start = intakeSeriesPerGroup[analyteGroupId][i].getEventTime();
-                    DateTime end = start + std::chrono::milliseconds(static_cast<int>(times.back()) * 1000);
+                    DateTime end = start + std::chrono::milliseconds(static_cast<int>(times.back()) * 1000 * 3600);
                     if (start >= _traits->getAdjustmentTime()) {
                         CycleData cycle(start, end, Unit("ug/l"));
                         cycle.addData(times, activeMoietiesPredictions[0]->getValues()[i]);
