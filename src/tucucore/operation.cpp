@@ -240,7 +240,15 @@ OperationInputIt
 findInputInList(const OperationInputList &_inputs, const std::string &_inputName, const InputType &_type)
 {
     OperationInputIt it = std::find_if(_inputs.begin(), _inputs.end(),
-                                       [&_inputName,&_type](const OperationInput &_in) -> bool { return _inputName == _in.getName() && _type == _in.getType(); });
+                                       [&_inputName,&_type](const OperationInput &_in) -> bool { return _inputName == _in.getName() &&
+                // Check if the types are similar
+                //
+                // The following has to be checked to see if we tolerate such integer-double equivalency
+                ((_type == _in.getType()) ||
+                 // Or double compatible with integer
+                 (_type == InputType::DOUBLE && _in.getType() == InputType::INTEGER) ||
+                 // Or integer compatible with double
+                 (_type == InputType::INTEGER && _in.getType() == InputType::DOUBLE)); });
     return it;
 }
 
