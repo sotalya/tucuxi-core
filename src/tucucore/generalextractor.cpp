@@ -235,12 +235,13 @@ ComputingStatus GeneralExtractor::generalExtractions(const ComputingTraitStandar
         // If the treatement end is before the last point we want to get, then we add an empty dose to get points
 
 //        if (_traits->getEnd() > timeRanges.back()->getEndDate()) {
-            if (_traits->getEnd() > lastIntake->getEventTime() + lastIntake->getInterval()) {
+        Duration interval = _traits->getEnd() - (lastIntake->getEventTime() + lastIntake->getInterval());
+        if (interval > Duration(std::chrono::hours(0))) {
 
             DateTime start = lastIntake->getEventTime() + lastIntake->getInterval();
             Value dose = 0.0;
             Unit doseValue("-");
-            Duration interval = _traits->getEnd() - (lastIntake->getEventTime() + lastIntake->getInterval());
+
             auto absorptionModel = lastIntake->getRoute();
 
             Duration infusionTime;
