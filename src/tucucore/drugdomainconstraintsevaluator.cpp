@@ -180,33 +180,38 @@ DrugDomainConstraintsEvaluator::Result DrugDomainConstraintsEvaluator::evaluate(
     // Map linking covariate events with their current value.
     std::map<std::string, double> cEvMap;
 
-    // Iterate on the time instants and calculate the evaluation function. Particular handling is required by the events at
-    // the beginning of the considered interval, but it is easier to do this inside the loop.
-    for (const auto &tcv : timedCValues) {
+    // Iterate over the constraints
+    for (const auto & constraint : _drugDomain.getConstraints()) {
+        std::unique_ptr<Operation> operation = constraint->getCheckOperation().clone();
 
-        OperationInputList inputList;
+        // By default, the result should indicate compabitility
+        Result constraintResultStatus = Result::Compatible;
 
-        if (tcv.first == timedCValues.begin()->first) {
-            // Add all covariates at the first time instant as inputs of the OGM.
-            for (const auto &cv : tcv.second) {
-                cEvMap.insert(std::make_pair(cv.first, cv.second));
+
+        // Iterate on the time instants and calculate the evaluation function. Particular handling is required by the events at
+        // the beginning of the considered interval, but it is easier to do this inside the loop.
+        for (const auto &tcv : timedCValues) {
+
+            OperationInputList inputList;
+
+            if (tcv.first == timedCValues.begin()->first) {
+                // Add all covariates at the first time instant as inputs of the OGM.
+                for (const auto &cv : tcv.second) {
+                    cEvMap.insert(std::make_pair(cv.first, cv.second));
+                }
+            } else {
+                // Just set the covariate values that are scheduled at this time instant.
+                for (const auto &cv : tcv.second) {
+                    cEvMap[cv.first] = cv.second;
+                }
             }
-        } else {
-            // Just set the covariate values that are scheduled at this time instant.
-            for (const auto &cv : tcv.second) {
-                cEvMap[cv.first] = cv.second;
+
+            // Build the input list by getting values from the map
+            for (auto & kv : cEvMap) {
+                inputList.push_back(OperationInput(kv.first,kv.second));
             }
-        }
-
-        // Build the input list by getting values from the map
-        for (auto & kv : cEvMap) {
-            inputList.push_back(OperationInput(kv.first,kv.second));
-        }
 
 
-        // Iterate over the constraints
-        for (const auto & constraint : _drugDomain.getConstraints()) {
-            std::unique_ptr<Operation> operation = constraint->getCheckOperation().clone();
 
             double result;
             bool status;
@@ -215,9 +220,23 @@ DrugDomainConstraintsEvaluator::Result DrugDomainConstraintsEvaluator::evaluate(
             // If an error occured, the result will indicate this
             if (!status) {
                 resultStatus = Result::ComputationError;
+                constraintResultStatus = Result::ComputationError;
             }
             // If the result is false and there is no previous computation error, then update the result status
             if (result == 0.0) {
+
+                if (constraintResultStatus != Result::ComputationError) {
+                    if (constraintResultStatus != Result::Incompatible) {
+                        if (constraint->getType() == ConstraintType::SOFT) {
+                            constraintResultStatus = Result::PartiallyCompatible;
+
+                        }
+                        else {
+                            constraintResultStatus = Result::Incompatible;
+                        }
+                    }
+                }
+
                 if (resultStatus != Result::ComputationError) {
                     if (resultStatus != Result::Incompatible) {
                         if (constraint->getType() == ConstraintType::SOFT) {
@@ -230,11 +249,11 @@ DrugDomainConstraintsEvaluator::Result DrugDomainConstraintsEvaluator::evaluate(
                     }
                 }
             }
-            DrugDomainConstraintsEvaluator::EvaluationResult evaluationResult;
-            evaluationResult.m_result = resultStatus;
-            evaluationResult.m_constraint = constraint.get();
-            _results.push_back(evaluationResult);
         }
+        DrugDomainConstraintsEvaluator::EvaluationResult evaluationResult;
+        evaluationResult.m_result = constraintResultStatus;
+        evaluationResult.m_constraint = constraint.get();
+        _results.push_back(evaluationResult);
     }
 
     return resultStatus;
