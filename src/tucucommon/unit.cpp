@@ -196,6 +196,22 @@ double UnitManager::convertToUnit(double _value, Unit _initialUnit, Unit _finalU
     throw std::invalid_argument("Error in unit conversion");
 }
 
+
+bool UnitManager::isCompatible(const Unit& _unit1, const Unit& _unit2)
+{
+    std::string unitString1 = _unit1.toString();
+    std::string unitString2 = _unit2.toString();
+    for(const auto &map : getConversionMap())
+    {
+        if ((map.second.count(unitString1) != 0) && (map.second.count(unitString2) != 0))
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 bool UnitManager::isKnown(const Unit& _unit)
 {
     std::string key = _unit.toString();
