@@ -188,6 +188,11 @@ private:
 
 private:
     std::chrono::duration<ChronoBaseType> m_duration;  /// The encapsulated duration
+
+#ifdef EASY_DEBUG
+    std::string m_durationString;
+    void updateDurationString();
+#endif // EASY_DEBUG
 };
 
 } // namespace Common

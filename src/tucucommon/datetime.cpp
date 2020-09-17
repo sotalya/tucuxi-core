@@ -19,12 +19,34 @@
 #define timegm _mkgmtime
 #endif
 
+#ifdef EASY_DEBUG
+#define UPDATESTRING updateString()
+#else
+#define UPDATESTRING
+#endif // EASY_DEBUG
+
 namespace Tucuxi {
 namespace Common {
+
+#ifdef EASY_DEBUG
+void DateTime::updateString()
+{
+    std::stringstream str;
+    str << day() << "/"
+        << month() << "/"
+        << year() << " "
+        << hour() << ":"
+        << minute() << ":"
+        << second();
+    m_dateString = str.str();
+}
+
+#endif
 
 DateTime::DateTime()
     : m_date(std::chrono::system_clock::now())
 {
+    UPDATESTRING;
 }
 
 
@@ -46,12 +68,14 @@ DateTime::DateTime(const std::string &_date, const std::string& _format)
         m_date = date::sys_days(day);
         m_date += std::chrono::milliseconds(tm.tm_hour * 3600 * 1000 + tm.tm_min * 60000 + tm.tm_sec * 1000);
     }
+    UPDATESTRING;
 }
 
 
 DateTime::DateTime(const date::year_month_day& _date)
     : m_date(date::sys_days(_date))
 {
+    UPDATESTRING;
 }
 
 
@@ -59,6 +83,7 @@ DateTime::DateTime(const date::year_month_day& _date, const TimeOfDay& _time)
 {
     m_date = date::sys_days(_date);
     m_date += std::chrono::milliseconds(_time.getDuration());
+    UPDATESTRING;
 }
 
 
@@ -66,6 +91,7 @@ DateTime::DateTime(const date::year_month_day& _date, const std::chrono::seconds
 {
     m_date = date::sys_days(_date);
     m_date += _time;
+    UPDATESTRING;
 }
 
 
@@ -74,6 +100,7 @@ DateTime::DateTime(const Duration &_durationSinceEpoch)
     int64 ms = _durationSinceEpoch.toMilliseconds();
     const std::chrono::system_clock::duration d = std::chrono::milliseconds(ms);
     m_date = std::chrono::time_point<std::chrono::system_clock>(d);
+    UPDATESTRING;
 }
 
 DateTime DateTime::getUndefined()
@@ -100,6 +127,7 @@ void DateTime::setDate(const date::year_month_day& _newDate)
     TimeOfDay tod = DateTime::getTimeOfDay();
     m_date = date::sys_days(_newDate);
     m_date += std::chrono::milliseconds(tod.getDuration());
+    UPDATESTRING;
 }
 
 
@@ -107,6 +135,7 @@ void DateTime::setTimeOfDay(const TimeOfDay& _newTime)
 {
     m_date = date::floor<date::days>(m_date);
     m_date += std::chrono::milliseconds(_newTime.getDuration());
+    UPDATESTRING;
 }
 
 
@@ -117,6 +146,7 @@ void DateTime::addYears(int _nYears)
     int years = year() + _nYears;
     m_date = date::sys_days(date::year_month_day(date::year(years), curDate.month(), curDate.day()));
     m_date += std::chrono::milliseconds(t.getDuration());
+    UPDATESTRING;
 }
 
 
@@ -131,12 +161,14 @@ void DateTime::addMonths(int _nMonths)
                                                  date::month(static_cast<unsigned int>(nMonths)),
                                                  curDate.day()));
     m_date += std::chrono::milliseconds(t.getDuration());
+    UPDATESTRING;
 }
 
 
 void DateTime::addDays(int _nDays)
 {
     m_date += std::chrono::hours(_nDays*24);
+    UPDATESTRING;
 }
 
 
@@ -159,6 +191,7 @@ DateTime DateTime::operator+(const DateTime& _dateTime) const
 DateTime& DateTime::operator+=(const Duration& _duration)
 {
     m_date += std::chrono::milliseconds(_duration.toMilliseconds());
+    UPDATESTRING;
     return *this;
 }
 
@@ -166,6 +199,7 @@ DateTime& DateTime::operator+=(const Duration& _duration)
 DateTime& DateTime::operator+=(const DateTime& _dateTime)
 {
     m_date += _dateTime.get<std::chrono::milliseconds>();
+    UPDATESTRING;
     return *this;
 }
 
@@ -181,6 +215,7 @@ DateTime DateTime::operator-(const Duration& _duration) const
 DateTime& DateTime::operator-=(const Duration& _duration)
 {
     m_date -= std::chrono::milliseconds(_duration.toMilliseconds());
+    UPDATESTRING;
     return *this;
 }
 

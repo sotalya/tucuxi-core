@@ -210,6 +210,13 @@ private:
 
 private:
     std::chrono::time_point<std::chrono::system_clock> m_date;  /// The date managed by the class
+
+#ifdef EASY_DEBUG
+    std::string m_dateString;
+
+    void updateString();
+#endif // EASY_DEBUG
+
 };
 
 } // namespace Common

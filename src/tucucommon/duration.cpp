@@ -10,51 +10,80 @@
 namespace Tucuxi {
 namespace Common {
 
+
+#ifdef EASY_DEBUG
+void Duration::updateDurationString()
+{
+    std::stringstream str;
+    int hours = static_cast<int>(toHours());
+    int minutes = static_cast<int>(toMinutes()) - hours * 60;
+    int seconds = static_cast<int>(toSeconds()) - hours * 3600 - minutes * 60;
+    str << hours << ":"
+        << minutes << ":"
+        << seconds;
+    m_durationString = str.str();
+}
+
+#define UPDATESTRING updateDurationString()
+
+#else
+#define UPDATESTRING
+#endif // EASY_DEBUG
+
+
 Duration::Duration()
     : m_duration(m_duration.zero())
 {
+    UPDATESTRING;
 }
 
 
 Duration::Duration(const date::years &_value)
     : m_duration(_value)
 {
+    UPDATESTRING;
 }
 
 
 Duration::Duration(const date::months &_value)
     : m_duration(_value)
 {
+    UPDATESTRING;
 }
 
 
 Duration::Duration(const date::days &_value)
     : m_duration(_value)
 {
+    UPDATESTRING;
 }
 
 
 Duration::Duration(const std::chrono::hours &_value)
     : m_duration(_value)
 {
+    UPDATESTRING;
 }
 
 
 Duration::Duration(const std::chrono::minutes &_value)
     : m_duration(_value)
 {
+    UPDATESTRING;
 }
 
 
 Duration::Duration(const std::chrono::seconds &_value)
     : m_duration(_value)
 {
+    UPDATESTRING;
 }
 
 
 Duration::Duration(const std::chrono::milliseconds &_value)
     : m_duration(_value)
 {
+    UPDATESTRING;
 }
 
 Duration::Duration(const std::chrono::hours &_hours,
@@ -64,6 +93,7 @@ Duration::Duration(const std::chrono::hours &_hours,
                  std::chrono::seconds(_minutes) +
                  _seconds)
 {
+    UPDATESTRING;
 }
 
 bool Duration::isEmpty() const
@@ -81,6 +111,7 @@ bool Duration::isNegative() const
 void Duration::clear()
 {
     m_duration = m_duration.zero();
+    UPDATESTRING;
 }
 
 
@@ -93,6 +124,7 @@ Duration Duration::operator+(const Duration &_other) const
 Duration& Duration::operator+=(const Duration &_other)
 {
     m_duration += _other.m_duration;
+    UPDATESTRING;
     return *this;
 }
 
@@ -106,6 +138,7 @@ Duration Duration::operator-(const Duration &_other) const
 Duration& Duration::operator-=(const Duration &_other)
 {
     m_duration -= _other.m_duration;
+    UPDATESTRING;
     return *this;
 }
 
@@ -119,6 +152,7 @@ Duration Duration::operator*(double _factor) const
 Duration& Duration::operator*=(double _factor)
 {
     m_duration *= _factor;
+    UPDATESTRING;
     return *this;
 }
 
@@ -132,6 +166,7 @@ Duration Duration::operator/(double _divider) const
 Duration& Duration::operator/=(double _divider)
 {
     m_duration /= _divider;
+    UPDATESTRING;
     return *this;
 }
 
