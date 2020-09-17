@@ -322,6 +322,7 @@ ComputingStatus ComputingAdjustments::compute(
     for(const auto& analyteGroupId : allGroupIds) {
         if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Aposteriori) {
             ComputingStatus aposterioriEtasExtractionResult = m_utils->m_generalExtractor->extractAposterioriEtas(etas[analyteGroupId], _request, analyteGroupId, intakeSeries[analyteGroupId], parameterSeries[analyteGroupId], covariateSeries, calculationStartTime, _traits->getEnd());
+
             if (aposterioriEtasExtractionResult != ComputingStatus::Ok) {
                 return aposterioriEtasExtractionResult;
             }
@@ -810,6 +811,7 @@ ComputingStatus ComputingAdjustments::addRest(DosageAdjustment &_dosage,
         DosageTimeRange range = *steadyStateHistory.getDosageTimeRanges()[0].get();
         auto d = range.getDosage();
         DosageTimeRange newRange(range.getStartDate() + restCandidates[bestIndex].interval, range.getEndDate(), *d);
+//        DosageTimeRange newRange(range.getStartDate() + restCandidates[bestIndex].interval, range.getEndDate() + restCandidates[bestIndex].interval, *d);
         _dosage.m_history = DosageHistory();
         _dosage.m_history.addTimeRange(*restCandidates[bestIndex].restDosage.m_history.getDosageTimeRanges()[0].get());
         _dosage.m_history.mergeDosage(&newRange);
@@ -837,6 +839,7 @@ ComputingStatus ComputingAdjustments::addLoad(DosageAdjustment &_dosage,
     const DosageRepeat *repeat = static_cast<const DosageRepeat *>(_dosage.m_history.getDosageTimeRanges()[0]->getDosage());
     const LastingDose *dosage = static_cast<const LastingDose *>(repeat->getDosage());
     Duration interval = dosage->getTimeStep();
+    auto dose = dosage->getDose();
 
 
     std::vector<double> &lastConcentrations = _dosage.m_data.back().m_concentrations[0];
@@ -857,6 +860,7 @@ ComputingStatus ComputingAdjustments::addLoad(DosageAdjustment &_dosage,
     std::vector<LoadingCandidate> loadingCandidates;
 
     for (const auto &candidate : candidates) {
+
         DosageAdjustment loadingDosage;
         // Create the loading dose
         std::unique_ptr<DosageTimeRange> newDosage = std::unique_ptr<DosageTimeRange>(
@@ -887,6 +891,19 @@ ComputingStatus ComputingAdjustments::addLoad(DosageAdjustment &_dosage,
         index ++;
     }
 
+    {
+        const DosageRepeat *repeat = static_cast<const DosageRepeat *>(loadingCandidates[bestIndex].loadingDosage.m_history.getDosageTimeRanges()[0]->getDosage());
+        const LastingDose *dosage = static_cast<const LastingDose *>(repeat->getDosage());
+        Duration loadInterval = dosage->getTimeStep();
+        auto loadDose = dosage->getDose();
+
+        if ((dose == loadDose) && (interval == loadInterval)) {
+            // We do not want to add the same dosage before the current adjustment. It is non sense
+            _modified = false;
+            return ComputingStatus::Ok;
+        }
+    }
+
     //Add the new time range to dosage history (load)
     DosageHistory steadyStateHistory = _dosage.m_history;
     DosageTimeRange range = *steadyStateHistory.getDosageTimeRanges()[0].get();
@@ -896,6 +913,7 @@ ComputingStatus ComputingAdjustments::addLoad(DosageAdjustment &_dosage,
     _dosage.m_history.addTimeRange(*loadingCandidates[bestIndex].loadingDosage.m_history.getDosageTimeRanges()[0].get());
     _dosage.m_history.mergeDosage(&newRange);
 
+    _modified = true;
     return ComputingStatus::Ok;
 }
 
@@ -1011,6 +1029,9 @@ ComputingStatus ComputingAdjustments::generatePrediction(DosageAdjustment &_dosa
 
     for (const auto& analyteGroupId : _allGroupIds) {
         for (size_t i = 0; i < intakeSeriesPerGroup[analyteGroupId].size(); i++) {
+            if (i >= activeMoietiesPredictions[0]->getTimes().size()) {
+                break;
+            }
             TimeOffsets times = activeMoietiesPredictions[0]->getTimes()[i];
             DateTime start = intakeSeriesPerGroup[analyteGroupId][i].getEventTime();
             DateTime end = start + std::chrono::milliseconds(static_cast<int>(times.back()) * 1000);
