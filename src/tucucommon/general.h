@@ -21,4 +21,17 @@ void TMP_UNUSED_PARAMETER(T &&)
 { }
 // #define TMP_UNUSED_PARAMETER(P) {ignore(P);}
 
+
+
+#ifndef TUCU_NOCATCH
+#define TUCU_TRY try
+#define TUCU_CATCH(x) catch (x)
+#define TUCU_ONEXCEPTION(x) {x}
+#else
+#define TUCU_TRY if (true)
+#define TUCU_CATCH(x) if (false)
+#define TUCU_ONEXCEPTION(x) {}
+#endif
+
+
 #endif // GENERAL_H
