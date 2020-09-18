@@ -5,6 +5,9 @@
 #include <chrono>  // for high_resolution_clock
 
 #include "computingcomponent.h"
+
+#include "tucucommon/general.h"
+
 #include "tucucore/drugmodel/drugmodel.h"
 
 #include "tucucore/computingcomponent.h"
@@ -115,7 +118,7 @@ ComputingStatus ComputingComponent::compute(const ComputingRequest &_request, st
 {
     // Record start time
     auto start = std::chrono::high_resolution_clock::now();
-//    try {
+    TUCU_TRY {
         if (m_utils == nullptr) {
             m_logger.error("The Computing Component has not been initialized");
             _response->setComputingStatus(ComputingStatus::ComputingComponentNotInitialized);
@@ -159,10 +162,11 @@ ComputingStatus ComputingComponent::compute(const ComputingRequest &_request, st
         _response->setComputingStatus(result);
         return result;
 
-//    } catch (...) {
-//        _response->setComputingStatus(ComputingComponentExceptionError);
-//        return ComputingResult::ComputingComponentExceptionError;
-//    }
+    }
+    TUCU_CATCH(...) {
+        _response->setComputingStatus(ComputingStatus::ComputingComponentExceptionError);
+        return ComputingStatus::ComputingComponentExceptionError;
+    }
 }
 
 

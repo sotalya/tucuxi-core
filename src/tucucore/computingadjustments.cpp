@@ -1025,15 +1025,23 @@ ComputingStatus ComputingAdjustments::generatePrediction(DosageAdjustment &_dosa
     }
 
     // We clear the prediction data
-    _dosage.m_data.clear();
+    _dosage.m_data.clear();    
 
     for (const auto& analyteGroupId : _allGroupIds) {
-        for (size_t i = 0; i < intakeSeriesPerGroup[analyteGroupId].size(); i++) {
+        IntakeSeries recordedIntakes;
+        selectRecordedIntakes(recordedIntakes, intakeSeriesPerGroup[analyteGroupId], _calculationStartTime, newEndTime);
+
+        if ((recordedIntakes.size() != activeMoietiesPredictions[0]->getTimes().size()) ||
+                (recordedIntakes.size() != activeMoietiesPredictions[0]->getValues().size())) {
+            return ComputingStatus::RecordedIntakesSizeError;
+        }
+
+        for (size_t i = 0; i < recordedIntakes.size(); i++) {
             if (i >= activeMoietiesPredictions[0]->getTimes().size()) {
                 break;
             }
             TimeOffsets times = activeMoietiesPredictions[0]->getTimes()[i];
-            DateTime start = intakeSeriesPerGroup[analyteGroupId][i].getEventTime();
+            DateTime start = recordedIntakes[i].getEventTime();
             DateTime end = start + std::chrono::milliseconds(static_cast<int>(times.back()) * 1000);
             if (start >= _traits->getAdjustmentTime()) {
                 CycleData cycle(start, end, Unit("ug/l"));
