@@ -292,8 +292,10 @@ string XMLImporter::checkNodeIterator(Common::XmlNodeIterator _rootIterator, str
 {
     if(_rootIterator == Common::XmlNodeIterator::none())
     {
-        setStatus(Status::Error, "<" + _tagName + "> not found in xml request");
-        unexpectedTag(_tagName);
+        setStatus(Status::Error, "<" + _tagName + "> not found in xml input");
+
+        LoggerHelper logHelper;
+        logHelper.warn("Tag <{}> not found in xml input", _tagName);
         return "";
     }
     return _rootIterator->getValue();

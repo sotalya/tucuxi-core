@@ -71,7 +71,7 @@ public:
     /// To have it as a member variable
     Tucuxi::Common::DateTime m_end;
 
-    /// \brief A serie of times exrpressed as offsets in millisecond to the start of a cycle
+    /// \brief A serie of times expressed as offsets in hours to the start of a cycle
     std::vector<TimeOffsets> m_times;
 
     /// \brief A vector of vector of concentrations

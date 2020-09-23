@@ -246,7 +246,7 @@ findInputInList(const OperationInputList &_inputs, const std::string &_inputName
                 // The following has to be checked to see if we tolerate such integer-double equivalency
                 ((_type == _in.getType()) ||
                  // Or double compatible with integer
-                 (_type == InputType::DOUBLE && _in.getType() == InputType::INTEGER) ||
+                 //(_type == InputType::DOUBLE && _in.getType() == InputType::INTEGER) ||
                  // Or integer compatible with double
                  (_type == InputType::INTEGER && _in.getType() == InputType::DOUBLE)); });
     return it;

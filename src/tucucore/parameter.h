@@ -9,10 +9,12 @@
 #include <vector>
 #include <memory>
 
+#include "tucucommon/general.h"
+#include "tucucommon/loggerhelper.h"
+
 #include "tucucore/definitions.h"
 #include "tucucore/timedevent.h"
 #include "tucucore/operation.h"
-#include "tucucommon/general.h"
 #include "tucucore/drugdefinitions.h"
 #include "tucucore/drugmodel/parameterdefinition.h"
 #include "tucucore/parameterids.h"
@@ -124,6 +126,8 @@ public:
         if (index >= 0) {
             return m_parameters[index].getValue();
         }
+        static Tucuxi::Common::LoggerHelper logger;
+        logger.error("Parameter not existing in ParameterSet");
         return 0;
     }
     int size() const { return static_cast<int>(m_parameters.size()); }

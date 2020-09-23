@@ -101,8 +101,6 @@ ComputingStatus TargetEvaluator::evaluate(
     double score = 0.0;
     double value = 0.0;
 
-    UnitManager::UnitType unitType = UnitManager::UnitType::Undefined;
-
     std::size_t lastCycleIndex = _prediction.getTimes().size() - 1;
     TimeOffsets times = _prediction.getTimes()[lastCycleIndex];
     DateTime start = _intakeSeries[lastCycleIndex].getEventTime();
@@ -134,7 +132,6 @@ ComputingStatus TargetEvaluator::evaluate(
         if (bOk) {
             evaluateValue(peakConcentration, _targetEvent, bOk, score, value);
         }
-        unitType = UnitManager::UnitType::Concentration;
     } break;
 
     case TargetType::Residual :
@@ -149,7 +146,6 @@ ComputingStatus TargetEvaluator::evaluate(
         if (bOk) {
             evaluateValue(lastResidual, _targetEvent, bOk, score, value);
         }
-        unitType = UnitManager::UnitType::Concentration;
     } break;
 
     case TargetType::Auc :
@@ -161,7 +157,6 @@ ComputingStatus TargetEvaluator::evaluate(
         if (bOk) {
             evaluateValue(auc, _targetEvent, bOk, score, value);
         }
-        unitType = UnitManager::UnitType::ConcentrationTime;
     } break;
 
     case TargetType::Auc24 :
@@ -181,7 +176,6 @@ ComputingStatus TargetEvaluator::evaluate(
 
             evaluateValue(auc24, _targetEvent, bOk, score, value);
         }
-        unitType = UnitManager::UnitType::ConcentrationTime;
     } break;
 
     case TargetType::CumulativeAuc :
@@ -202,9 +196,6 @@ ComputingStatus TargetEvaluator::evaluate(
         }
 
         evaluateValue(cumulativeAuc[0], _targetEvent, bOk, score, value);
-
-        unitType = UnitManager::UnitType::ConcentrationTime;
-
     } break;
 
     case TargetType::Mean :
@@ -216,7 +207,6 @@ ComputingStatus TargetEvaluator::evaluate(
         if (bOk) {
             evaluateValue(mean, _targetEvent, bOk, score, value);
         }
-        unitType = UnitManager::UnitType::Concentration;
     } break;
 
     case TargetType::AucDividedByMic :
@@ -236,8 +226,6 @@ ComputingStatus TargetEvaluator::evaluate(
 
             evaluateValue(aucDividedByMic, _targetEvent, bOk, score, value);
         }
-
-        unitType = UnitManager::UnitType::Time;
     } break;
 
     case TargetType::Auc24DividedByMic :
@@ -257,7 +245,6 @@ ComputingStatus TargetEvaluator::evaluate(
 
             evaluateValue(aucDividedByMic, _targetEvent, bOk, score, value);
         }
-        unitType = UnitManager::UnitType::Time;
     } break;
 
     case TargetType::AucOverMic :
@@ -276,7 +263,6 @@ ComputingStatus TargetEvaluator::evaluate(
 
             evaluateValue(aucOverMic, _targetEvent, bOk, score, value);
         }
-        unitType = UnitManager::UnitType::ConcentrationTime;
     } break;
 
     case TargetType::Auc24OverMic :
@@ -296,7 +282,6 @@ ComputingStatus TargetEvaluator::evaluate(
 
             evaluateValue(auc24OverMic, _targetEvent, bOk, score, value);
         }
-        unitType = UnitManager::UnitType::ConcentrationTime;
     } break;
 
     case TargetType::TimeOverMic :
@@ -352,8 +337,7 @@ ComputingStatus TargetEvaluator::evaluate(
 
             evaluateValue(timeOverMic, _targetEvent, bOk, score, value);
 
-            }
-            unitType = UnitManager::UnitType::Time;
+        }
 
     }
     break;
@@ -375,15 +359,12 @@ ComputingStatus TargetEvaluator::evaluate(
 
             evaluateValue(peakDividedByMic, _targetEvent, bOk, score, value);
         }
-        unitType = UnitManager::UnitType::NoUnit;
 
     } break;
 
     case TargetType::UnknownTarget :
     {
         return ComputingStatus::TargetEvaluationError;
-
-        unitType = UnitManager::UnitType::NoUnit;
 
     } break;
 

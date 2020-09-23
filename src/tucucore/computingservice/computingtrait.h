@@ -235,16 +235,15 @@ public:
                             const ComputingRequest &_request,
                             std::unique_ptr<ComputingResponse> &_response) const override;
 
-// protected:
-
     ///
-    /// \brief ComputingTraitStandard A simple protected constructor.
+    /// \brief ComputingTraitStandard A simple constructor.
     /// \param _id Id of the request
     /// \param _start Start date of prediction calculation
     /// \param _end End date of prediction calculation
     /// \param _nbPointsPerHour Requested number of points per hour
     /// \param _computingOption Some processing options (type of parameters, what compartments)
-    /// The constructor is protected, so that this class can not be directly created
+    /// The constructor is public because we use it in ComputingComponent, but this class
+    /// shall not be used directly for computing
     ///
     ComputingTraitStandard(RequestResponseId _id,
                             Tucuxi::Common::DateTime _start,

@@ -117,7 +117,6 @@ public:
     Value m_factor;
 };
 
-class ForumulationAndRoutes;
 
 class FormulationAndRoute
 {
