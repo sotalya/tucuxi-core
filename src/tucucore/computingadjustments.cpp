@@ -172,6 +172,7 @@ ComputingStatus ComputingAdjustments::buildCandidatesForInterval(const FullFormu
 #endif // 0
         }
     }
+
     return ComputingStatus::Ok;
 }
 
@@ -671,6 +672,7 @@ ComputingStatus ComputingAdjustments::addLoadOrRest(std::vector<DosageAdjustment
 typedef struct {
     DosageAdjustment loadingDosage; // NOLINT(readability-identifier-naming)
     double score;             // NOLINT(readability-identifier-naming)
+    Duration interval;        // NOLINT(readability-identifier-naming)
 } LoadingCandidate;
 
 typedef struct {
@@ -716,110 +718,125 @@ ComputingStatus ComputingAdjustments::addRest(DosageAdjustment &_dosage,
                                               std::map<AnalyteGroupId, std::shared_ptr<PkModel> > &_pkModel,
                                               GroupsParameterSetSeries &_parameterSeries,
                                               std::map<AnalyteGroupId, Etas> &_etas,
-                                              bool &_modified)
+                                              bool& _modified)
 {
     if (_traits->getRestPeriodOption() == RestPeriodOption::NoRestPeriod) {
         return ComputingStatus::Ok;
     }
 
-    _modified = false;
+    const DosageRepeat *repeat = static_cast<const DosageRepeat *>(_dosage.m_history.getDosageTimeRanges()[0]->getDosage());
+    const LastingDose *dosage = static_cast<const LastingDose *>(repeat->getDosage());
+    Duration interval = dosage->getTimeStep();
+    auto dose = dosage->getDose();
+
 
     std::vector<double> &lastConcentrations = _dosage.m_data.back().m_concentrations[0];
     double steadyStateResidual = lastConcentrations.back();
 
-    // TODO : Find the first residual after adjustment
-    // Then calculate its score compared to the steadyStateResidual.
-    // It will allow to decide if a rest period is worth it or not.
-    // The same shall be applied to the Loading Dose.
-    // The _modified argument shall then contain the information about whether a modification has been made to the dosage
+    FormulationAndRoute formulationAndRoute = dosage->getLastFormulationAndRoute();
 
-    // This is not correct here, as we can receive a single CycleData for steady state calculations
-    double firstResidual = _dosage.m_data[0].m_concentrations[0].back();
 
     // TODO : This is wrong to take the default here
     const FullFormulationAndRoute *fullFormulationAndRoute = _request.getDrugModel().getFormulationAndRoutes().getDefault();
     std::vector<ComputingAdjustments::SimpleDosageCandidate> candidates;
 
-    Duration oldInterval = Duration();
-    Duration interval = Duration();
-    std::vector<Duration> intervalMultiple;
-    const LastingDose *dosage = nullptr;
 
-    for (const auto &timeRange : _dosage.m_history.getDosageTimeRanges()){
-         const DosageRepeat *repeat = static_cast<const DosageRepeat *>(timeRange->getDosage());
-         dosage = static_cast<const LastingDose *>(repeat->getDosage());
-         interval = dosage->getTimeStep();
-         if (interval != oldInterval){
-            FormulationAndRoute formulationAndRoute = dosage->getLastFormulationAndRoute();
-
-            // Create empty candidates --> one for each multiple
-            candidates.push_back({fullFormulationAndRoute->getFormulationAndRoute(), Value(0.0), Unit("mg"), interval, Duration()});
-            candidates.push_back({fullFormulationAndRoute->getFormulationAndRoute(), Value(0.0), Unit("mg"), interval * 2.0, Duration()});
-            candidates.push_back({fullFormulationAndRoute->getFormulationAndRoute(), Value(0.0), Unit("mg"), interval * 3.0, Duration()});
-         }
-         oldInterval = interval;
+    // Add candidates in order to decrease dosage
+    const ValidDurations * intervals = fullFormulationAndRoute->getValidIntervals();
+    std::vector<Tucuxi::Common::Duration> intervalValues;
+    if (intervals != nullptr) {
+        intervalValues = intervals->getDurations();
+    }
+    Unit dUnit("ug");
+    for (auto interval : intervalValues) {
+        candidates.push_back({fullFormulationAndRoute->getFormulationAndRoute(), 0, dUnit, interval, Duration(std::chrono::hours(0))});
     }
 
-    std::vector<RestCandidate> restCandidates;
-
-
-    double scoreFirstResidual = steadyStateResidual - firstResidual;
+    std::vector<LoadingCandidate> loadingCandidates;
 
     for (const auto &candidate : candidates) {
-        DosageAdjustment restDosage;
 
-        // Create the rest period dosage (0.0 mg)
+        DosageAdjustment loadingDosage;
+        // Create the loading dose
         std::unique_ptr<DosageTimeRange> newDosage = std::unique_ptr<DosageTimeRange>(
                     createLoadingDosageOrRestPeriod(candidate, _traits->getAdjustmentTime()));
-        restDosage.m_history.addTimeRange(*newDosage);
+        loadingDosage.m_history.addTimeRange(*newDosage);
 
-        ComputingStatus generateResult = generatePrediction(restDosage, _traits, _request,
+        ComputingStatus generateResult = generatePrediction(loadingDosage, _traits, _request,
                                                              _allGroupIds, _calculationStartTime, _pkModel, _parameterSeries,
                                                              _etas);
         if (generateResult != ComputingStatus::Ok) {
             return generateResult;
         }
 
-        std::vector<double> &concentrations = restDosage.m_data[0].m_concentrations[0];
+        std::vector<double> &concentrations = loadingDosage.m_data[0].m_concentrations[0];
         double residual = concentrations.back();
         double score = steadyStateResidual - residual;
-        // if (std::abs(scoreFirstResidual) > std::abs(score)){
-            _modified = true;
-            restCandidates.push_back({restDosage, score, candidate.m_interval});
-        // }
+        loadingCandidates.push_back({loadingDosage, score, candidate.m_interval});
     }
 
-    if (!_modified) {
-        return ComputingStatus::Ok;
-    }
+    Duration loadingInterval;
 
     double bestScore = 1000000000.0;
     size_t bestIndex = 0;
     size_t index = 0;
-
-    for (const auto & candidate : restCandidates) {
+    for (const auto & candidate : loadingCandidates) {
         if (std::abs(candidate.score) < bestScore) {
             bestScore = std::abs(candidate.score);
+            loadingInterval = candidate.interval;
             bestIndex = index;
         }
         index ++;
     }
 
-    if (restCandidates.size() != 0){
-        //Add the new time range to dosage history (rest)
-        DosageHistory steadyStateHistory = _dosage.m_history;
-        DosageTimeRange range = *steadyStateHistory.getDosageTimeRanges()[0].get();
-        auto d = range.getDosage();
-        DosageTimeRange newRange(range.getStartDate() + restCandidates[bestIndex].interval, range.getEndDate(), *d);
-//        DosageTimeRange newRange(range.getStartDate() + restCandidates[bestIndex].interval, range.getEndDate() + restCandidates[bestIndex].interval, *d);
-        _dosage.m_history = DosageHistory();
-        _dosage.m_history.addTimeRange(*restCandidates[bestIndex].restDosage.m_history.getDosageTimeRanges()[0].get());
-        _dosage.m_history.mergeDosage(&newRange);
+    double existingDosageScore;
+    {
+
+        DosageAdjustment loadingDosage;
+        loadingDosage.m_history = _dosage.m_history;
+
+        ComputingStatus generateResult = generatePrediction(loadingDosage, _traits, _request,
+                                                             _allGroupIds, _calculationStartTime, _pkModel, _parameterSeries,
+                                                             _etas);
+        if (generateResult != ComputingStatus::Ok) {
+            return generateResult;
+        }
+
+        std::vector<double> &concentrations = loadingDosage.m_data[0].m_concentrations[0];
+        double residual = concentrations.back();
+        existingDosageScore = steadyStateResidual - residual;
     }
 
+    if (bestScore >= std::abs(existingDosageScore)) {
+        _modified = false;
+        return ComputingStatus::Ok;
+    }
+
+
+    {
+        const DosageRepeat *repeat = static_cast<const DosageRepeat *>(loadingCandidates[bestIndex].loadingDosage.m_history.getDosageTimeRanges()[0]->getDosage());
+        const LastingDose *dosage = static_cast<const LastingDose *>(repeat->getDosage());
+        Duration loadInterval = dosage->getTimeStep();
+        auto loadDose = dosage->getDose();
+
+        if ((dose == loadDose) && (interval == loadInterval)) {
+            // We do not want to add the same dosage before the current adjustment. It is non sense
+            _modified = false;
+            return ComputingStatus::Ok;
+        }
+    }
+
+    //Add the new time range to dosage history (load)
+    DosageHistory steadyStateHistory = _dosage.m_history;
+    DosageTimeRange range = *steadyStateHistory.getDosageTimeRanges()[0].get();
+    auto d = range.getDosage();
+    DosageTimeRange newRange(range.getStartDate() + loadingInterval, range.getEndDate(), *d);
+    _dosage.m_history = DosageHistory();
+    _dosage.m_history.addTimeRange(*loadingCandidates[bestIndex].loadingDosage.m_history.getDosageTimeRanges()[0].get());
+    _dosage.m_history.mergeDosage(&newRange);
+
+    _modified = true;
     return ComputingStatus::Ok;
-
-
 }
 
 ComputingStatus ComputingAdjustments::addLoad(DosageAdjustment &_dosage,
@@ -857,6 +874,22 @@ ComputingStatus ComputingAdjustments::addLoad(DosageAdjustment &_dosage,
         return buildResult;
     }
 
+/*
+    const ValidDurations * intervals = fullFormulationAndRoute->getValidIntervals();
+    std::vector<Tucuxi::Common::Duration> intervalValues;
+    if (intervals != nullptr) {
+        intervalValues = intervals->getDurations();
+    }
+    Unit dUnit("ug");
+    for (auto interval : intervalValues) {
+        candidates.push_back({fullFormulationAndRoute->getFormulationAndRoute(), 0, dUnit, interval, Duration(std::chrono::hours(0))});
+    }
+*/
+
+
+
+
+
     std::vector<LoadingCandidate> loadingCandidates;
 
     for (const auto &candidate : candidates) {
@@ -877,8 +910,10 @@ ComputingStatus ComputingAdjustments::addLoad(DosageAdjustment &_dosage,
         std::vector<double> &concentrations = loadingDosage.m_data[0].m_concentrations[0];
         double residual = concentrations.back();
         double score = steadyStateResidual - residual;
-        loadingCandidates.push_back({loadingDosage, score});
+        loadingCandidates.push_back({loadingDosage, score, candidate.m_interval});
     }
+
+    Duration loadingInterval;
 
     double bestScore = 1000000000.0;
     size_t bestIndex = 0;
@@ -886,9 +921,34 @@ ComputingStatus ComputingAdjustments::addLoad(DosageAdjustment &_dosage,
     for (const auto & candidate : loadingCandidates) {
         if (std::abs(candidate.score) < bestScore) {
             bestScore = std::abs(candidate.score);
+            loadingInterval = candidate.interval;
             bestIndex = index;
         }
         index ++;
+    }
+
+
+    double existingDosageScore;
+    {
+
+        DosageAdjustment loadingDosage;
+        loadingDosage.m_history = _dosage.m_history;
+
+        ComputingStatus generateResult = generatePrediction(loadingDosage, _traits, _request,
+                                                             _allGroupIds, _calculationStartTime, _pkModel, _parameterSeries,
+                                                             _etas);
+        if (generateResult != ComputingStatus::Ok) {
+            return generateResult;
+        }
+
+        std::vector<double> &concentrations = loadingDosage.m_data[0].m_concentrations[0];
+        double residual = concentrations.back();
+        existingDosageScore = steadyStateResidual - residual;
+    }
+
+    if (bestScore >= std::abs(existingDosageScore)) {
+        _modified = false;
+        return ComputingStatus::Ok;
     }
 
     {
@@ -908,7 +968,7 @@ ComputingStatus ComputingAdjustments::addLoad(DosageAdjustment &_dosage,
     DosageHistory steadyStateHistory = _dosage.m_history;
     DosageTimeRange range = *steadyStateHistory.getDosageTimeRanges()[0].get();
     auto d = range.getDosage();
-    DosageTimeRange newRange(range.getStartDate() + interval, range.getEndDate(), *d);
+    DosageTimeRange newRange(range.getStartDate() + loadingInterval, range.getEndDate(), *d);
     _dosage.m_history = DosageHistory();
     _dosage.m_history.addTimeRange(*loadingCandidates[bestIndex].loadingDosage.m_history.getDosageTimeRanges()[0].get());
     _dosage.m_history.mergeDosage(&newRange);
@@ -1042,7 +1102,7 @@ ComputingStatus ComputingAdjustments::generatePrediction(DosageAdjustment &_dosa
             }
             TimeOffsets times = activeMoietiesPredictions[0]->getTimes()[i];
             DateTime start = recordedIntakes[i].getEventTime();
-            DateTime end = start + std::chrono::milliseconds(static_cast<int>(times.back()) * 1000);
+            DateTime end = start + std::chrono::milliseconds(static_cast<int>(times.back()) * 1000 * 3600);
             if (start >= _traits->getAdjustmentTime()) {
                 CycleData cycle(start, end, Unit("ug/l"));
                 cycle.addData(times, activeMoietiesPredictions[0]->getValues()[i]);
