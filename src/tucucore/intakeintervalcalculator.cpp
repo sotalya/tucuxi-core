@@ -71,9 +71,84 @@ bool IntakeIntervalCalculator::checkValue(bool _isOk, const std::string& _errMsg
             static Tucuxi::Common::LoggerHelper logger;
             logger.error(_errMsg);
         }
+
     }
     return _isOk;
 }
+
+bool IntakeIntervalCalculator::checkPositiveValue(Value _value,  const std::string& _valueName)
+{
+    // First check for infinity
+    if (std::isinf(_value)) {
+        if (m_loggingErrors) {
+            static Tucuxi::Common::LoggerHelper logger;
+            logger.error("{} is Inf.", _valueName);
+        }
+        return false;
+    }
+
+    // If not infinity
+    // Here we use the fact that if _value is NaN, the comparison will return false
+    if (_value >= 0.0) {
+        return true;
+    }
+
+    // Finally check for NaN
+    if (std::isnan(_value)) {
+        if (m_loggingErrors) {
+            static Tucuxi::Common::LoggerHelper logger;
+            logger.error("{} is NaN.", _valueName);
+        }
+        return false;
+    }
+
+    // It is a negative number
+    if (m_loggingErrors) {
+        static Tucuxi::Common::LoggerHelper logger;
+        logger.error("{} is negative", _valueName);
+    }
+    return false;
+}
+
+bool IntakeIntervalCalculator::checkStrictlyPositiveValue(Value _value,  const std::string& _valueName)
+{
+    // First check for infinity
+    if (std::isinf(_value)) {
+        if (m_loggingErrors) {
+            static Tucuxi::Common::LoggerHelper logger;
+            logger.error("{} is Inf.", _valueName);
+        }
+        return false;
+    }
+
+    // If not infinity
+    // Here we use the fact that if _value is NaN, the comparison will return false
+    if (_value > 0.0) {
+        return true;
+    }
+
+    // Finally check for NaN
+    if (std::isnan(_value)) {
+        if (m_loggingErrors) {
+            static Tucuxi::Common::LoggerHelper logger;
+            logger.error("{} is NaN.", _valueName);
+        }
+        return false;
+    }
+
+    // It is a negative number
+    if (m_loggingErrors) {
+        static Tucuxi::Common::LoggerHelper logger;
+        if (_value == 0) {
+            logger.error("{} is equal to 0", _valueName);
+        }
+        else {
+            logger.error("{} is negative", _valueName);
+        }
+    }
+    return false;
+}
+
 
 
 } // namespace Core

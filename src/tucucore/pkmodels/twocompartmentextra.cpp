@@ -40,28 +40,18 @@ bool TwoCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
     m_NbPoints = _intakeEvent.getNbPoints();
     m_Int = (_intakeEvent.getInterval()).toHours();
 
-    bool bOK = checkValue(m_D >= 0, "The dose is negative.");
-    bOK &= checkValue(!std::isnan(m_D), "The dose is NaN.");
-    bOK &= checkValue(!std::isinf(m_D), "The dose is Inf.");
-    bOK &= checkValue(m_Ka > 0, "The m_Ka is not greater than zero.");
-    bOK &= checkValue(!std::isnan(m_Ka), "The m_Ka is NaN.");
-    bOK &= checkValue(!std::isinf(m_Ka), "The m_Ka is Inf.");
-    bOK &= checkValue(m_Ke > 0, "The m_Ke is not greater than zero.");
-    bOK &= checkValue(!std::isnan(m_Ke), "The m_Ke is NaN.");
-    bOK &= checkValue(!std::isinf(m_Ke), "The m_Ke is Inf.");
-    bOK &= checkValue(m_K12 > 0, "The K12 is not greater than zero.");
-    bOK &= checkValue(!std::isnan(m_K12), "The K12 is NaN.");
-    bOK &= checkValue(!std::isinf(m_K12), "The K12 is Inf.");
-    bOK &= checkValue(m_K21 > 0, "The K21 is not greater than zero.");
-    bOK &= checkValue(!std::isnan(m_K21), "The K21 is NaN.");
-    bOK &= checkValue(!std::isinf(m_K21), "The K21 is Inf.");
-    bOK &= checkValue(m_F > 0, "The F is not greater than zero.");
-    bOK &= checkValue(!std::isnan(m_F), "The F is NaN.");
-    bOK &= checkValue(!std::isinf(m_F), "The F is Inf.");
+    // check the inputs
+    bool bOK = checkPositiveValue(m_D, "The dose");
+    bOK &= checkStrictlyPositiveValue(m_Ka, "Ka");
+    bOK &= checkStrictlyPositiveValue(m_F, "F");
+    bOK &= checkStrictlyPositiveValue(m_V1, "V1");
+    bOK &= checkStrictlyPositiveValue(m_Ke, "Ke");
+    bOK &= checkStrictlyPositiveValue(m_K12, "K12");
+    bOK &= checkStrictlyPositiveValue(m_K21, "K21");
+    bOK &= checkPositiveValue(m_Alpha, "Alpha");
+    bOK &= checkPositiveValue(m_Beta, "Beta");
     bOK &= checkValue(m_NbPoints >= 0, "The number of points is zero or negative.");
-    bOK &= checkValue(m_Int > 0, "The interval time is not greater than zero.");
-    bOK &= checkValue(m_Alpha >= 0, "Alpha is negative.");
-    bOK &= checkValue(m_Beta >= 0, "Beta is negative.");
+    bOK &= checkValue(m_Int > 0, "The interval time is negative.");
 
     return true;
 }
@@ -174,28 +164,19 @@ bool TwoCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, cons
     m_NbPoints = _intakeEvent.getNbPoints();
     m_Int = (_intakeEvent.getInterval()).toHours();
 
-    bool bOK = checkValue(m_D >= 0, "The dose is negative.");
-    bOK &= checkValue(!std::isnan(m_D), "The dose is NaN.");
-    bOK &= checkValue(!std::isinf(m_D), "The dose is Inf.");
-    bOK &= checkValue(cl > 0, "The clearance is not greater than zero.");
-    bOK &= checkValue(!std::isnan(cl), "The CL is NaN.");
-    bOK &= checkValue(!std::isinf(cl), "The CL is Inf.");
-    bOK &= checkValue(m_V1 > 0, "The volume1 is not greater than zero.");
-    bOK &= checkValue(!std::isnan(m_V1), "The m_V1 is NaN.");
-    bOK &= checkValue(!std::isinf(m_V1), "The m_V1 is Inf.");
-    bOK &= checkValue(v2 > 0, "The volume2 is not greater than zero.");
-    bOK &= checkValue(!std::isnan(v2), "The V2 is NaN.");
-    bOK &= checkValue(!std::isinf(v2), "The V2 is Inf.");
-    bOK &= checkValue(m_Ka > 0, "The Ka is not greater than zero.");
-    bOK &= checkValue(!std::isnan(m_Ka), "The Ka is NaN.");
-    bOK &= checkValue(!std::isinf(m_Ka), "The Ka is Inf.");
-    bOK &= checkValue(m_F > 0, "The F is not greater than zero.");
-    bOK &= checkValue(!std::isnan(m_F), "The F is NaN.");
-    bOK &= checkValue(!std::isinf(m_F), "The F is Inf.");
+    // check the inputs
+    bool bOK = checkPositiveValue(m_D, "The dose");
+    bOK &= checkStrictlyPositiveValue(m_Ka, "Ka");
+    bOK &= checkStrictlyPositiveValue(m_F, "F");
+    bOK &= checkStrictlyPositiveValue(cl, "The clearance");
+    bOK &= checkStrictlyPositiveValue(q, "Q");
+    bOK &= checkStrictlyPositiveValue(m_V1, "V1");
+    bOK &= checkStrictlyPositiveValue(v2, "V2");
+    bOK &= checkPositiveValue(m_Alpha, "Alpha");
+    bOK &= checkPositiveValue(m_Beta, "Beta");
     bOK &= checkValue(m_NbPoints >= 0, "The number of points is zero or negative.");
-    bOK &= checkValue(m_Int > 0, "The interval time is not greater than zero.");
-    bOK &= checkValue(m_Alpha >= 0, "Alpha is negative.");
-    bOK &= checkValue(m_Beta >= 0, "Beta is negative.");
+    bOK &= checkValue(m_Int > 0, "The interval time is negative.");
+
 
     return true;
 }

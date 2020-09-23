@@ -132,6 +132,16 @@ protected:
     /// \param _errMsg Message to log in case of problem
     bool checkValue(bool _isOk,  const std::string& _errMsg);
 
+    /// \brief Check if a value is positive and log a message if it is not the case
+    /// \param _value Value to be tested
+    /// \param _valueName Name of the value to log in case of problem
+    bool checkPositiveValue(Value _value,  const std::string& _valueName);
+
+    /// \brief Check if a value is strictly positive and log a message if it is not the case
+    /// \param _value Value to be tested
+    /// \param _valueName Name of the value to log in case of problem
+    bool checkStrictlyPositiveValue(Value _value,  const std::string& _valueName);
+
 protected:
     typedef IntakeCalculatorSingleConcentrations SingleConcentrations;
 

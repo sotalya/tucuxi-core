@@ -74,35 +74,19 @@ bool ThreeCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, co
     logHelper.debug("m_Beta: {}", m_Beta);
     logHelper.debug("m_Gamma: {}", m_Gamma);
 #endif
-    bool bOK = checkValue(m_D >= 0, "The dose is negative.");
-    bOK &= checkValue(!std::isnan(m_D), "The dose is NaN.");
-    bOK &= checkValue(!std::isinf(m_D), "The dose is Inf.");
-    bOK &= checkValue(m_F > 0, "The F is not greater than zero.");
-    bOK &= checkValue(!std::isnan(m_F), "The F is NaN.");
-    bOK &= checkValue(!std::isinf(m_F), "The F is Inf.");
-    bOK &= checkValue(m_V1 > 0, "The volume1 is not greater than zero.");
-    bOK &= checkValue(!std::isnan(m_V1), "The V1 is NaN.");
-    bOK &= checkValue(!std::isinf(m_V1), "The V1 is Inf.");
-    bOK &= checkValue(m_Ke > 0, "The Ke is not greater than zero.");
-    bOK &= checkValue(!std::isnan(m_Ke), "The Ke is NaN.");
-    bOK &= checkValue(!std::isinf(m_Ke), "The Ke is Inf.");
-    bOK &= checkValue(m_K12 > 0, "The K12 is not greater than zero.");
-    bOK &= checkValue(!std::isnan(m_K12), "The K12 is NaN.");
-    bOK &= checkValue(!std::isinf(m_K12), "The K12 is Inf.");
-    bOK &= checkValue(m_K21 > 0, "The K21 is not greater than zero.");
-    bOK &= checkValue(!std::isnan(m_K21), "The K21 is NaN.");
-    bOK &= checkValue(!std::isinf(m_K21), "The K21 is Inf.");
-    bOK &= checkValue(m_K13 > 0, "The K13 is not greater than zero.");
-    bOK &= checkValue(!std::isnan(m_K13), "The K13 is NaN.");
-    bOK &= checkValue(!std::isinf(m_K13), "The K13 is Inf.");
-    bOK &= checkValue(m_K31 > 0, "The K31 is not greater than zero.");
-    bOK &= checkValue(!std::isnan(m_K31), "The K31 is NaN.");
-    bOK &= checkValue(!std::isinf(m_K31), "The K31 is Inf.");
+    // check the inputs
+    bool bOK = checkPositiveValue(m_D, "The dose");
+    bOK &= checkStrictlyPositiveValue(m_F, "F");
+    bOK &= checkStrictlyPositiveValue(m_Ke, "Ke");
+    bOK &= checkStrictlyPositiveValue(m_K12, "K12");
+    bOK &= checkStrictlyPositiveValue(m_K21, "K21");
+    bOK &= checkStrictlyPositiveValue(m_K13, "K13");
+    bOK &= checkStrictlyPositiveValue(m_K31, "K31");
+    bOK &= checkPositiveValue(m_Alpha, "Alpha");
+    bOK &= checkPositiveValue(m_Beta, "Beta");
+    bOK &= checkPositiveValue(m_Gamma, "Gamma");
     bOK &= checkValue(m_NbPoints >= 0, "The number of points is zero or negative.");
-    bOK &= checkValue(m_Int > 0, "The interval time is not greater than zero.");
-    bOK &= checkValue(m_Alpha >= 0, "Alpha is negative.");
-    bOK &= checkValue(m_Beta >= 0, "Beta is negative.");
-    bOK &= checkValue(m_Gamma >= 0, "Gamma is negative.");
+    bOK &= checkValue(m_Int > 0, "The interval time is negative.");
 
     return bOK;
 }
@@ -248,32 +232,20 @@ bool ThreeCompartmentBolusMacro::checkInputs(const IntakeEvent& _intakeEvent, co
     logHelper.debug("m_Int: {}", m_Int);
 #endif
 
-    bool bOK = checkValue(m_D >= 0, "The dose is negative.");
-    bOK &= checkValue(!std::isnan(m_D), "The dose is NaN.");
-    bOK &= checkValue(!std::isinf(m_D), "The dose is Inf.");
-    bOK &= checkValue(cl > 0, "The clearance is not greater than zero.");
-    bOK &= checkValue(!std::isnan(cl), "The CL is NaN.");
-    bOK &= checkValue(!std::isinf(cl), "The CL is Inf.");
-    bOK &= checkValue(m_F > 0, "The F is not greater than zero.");
-    bOK &= checkValue(!std::isnan(m_F), "The F is NaN.");
-    bOK &= checkValue(!std::isinf(m_F), "The F is Inf.");
-    bOK &= checkValue(q1 > 0, "The Q1 is not greater than zero.");
-    bOK &= checkValue(!std::isnan(q1), "The Q1 is NaN.");
-    bOK &= checkValue(!std::isinf(q1), "The Q1 is Inf.");
-    bOK &= checkValue(q2 > 0, "The Q2 is not greater than zero.");
-    bOK &= checkValue(!std::isnan(q2), "The Q2 is NaN.");
-    bOK &= checkValue(!std::isinf(q2), "The Q2 is Inf.");
-    bOK &= checkValue(m_V1 > 0, "The volume1 is not greater than zero.");
-    bOK &= checkValue(!std::isnan(m_V1), "The V1 is NaN.");
-    bOK &= checkValue(!std::isinf(m_V1), "The V1 is Inf.");
-    bOK &= checkValue(v2 > 0, "The volume2 is not greater than zero.");
-    bOK &= checkValue(!std::isnan(v2), "The V2 is NaN.");
-    bOK &= checkValue(!std::isinf(v2), "The V2 is Inf.");
+    // check the inputs
+    bool bOK = checkPositiveValue(m_D, "The dose");
+    bOK &= checkStrictlyPositiveValue(m_F, "F");
+    bOK &= checkStrictlyPositiveValue(cl, "The clearance");
+    bOK &= checkStrictlyPositiveValue(q, "Q");
+    bOK &= checkStrictlyPositiveValue(q1, "Q1");
+    bOK &= checkStrictlyPositiveValue(q2, "Q2");
+    bOK &= checkStrictlyPositiveValue(m_V1, "V1");
+    bOK &= checkStrictlyPositiveValue(v2, "V2");
+    bOK &= checkPositiveValue(m_Alpha, "Alpha");
+    bOK &= checkPositiveValue(m_Beta, "Beta");
+    bOK &= checkPositiveValue(m_Gamma, "Gamma");
     bOK &= checkValue(m_NbPoints >= 0, "The number of points is zero or negative.");
-    bOK &= checkValue(m_Int > 0, "The interval time is not greater than zero.");
-    bOK &= checkValue(m_Alpha >= 0, "Alpha is negative.");
-    bOK &= checkValue(m_Beta >= 0, "Beta is negative.");
-    bOK &= checkValue(m_Gamma >= 0, "Gamma is negative.");
+    bOK &= checkValue(m_Int > 0, "The interval time is negative.");
 
     return bOK;
 }

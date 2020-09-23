@@ -48,15 +48,9 @@ bool OneCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
 #endif
 
     // check the inputs
-    bool bOK = checkValue(m_D >= 0, "The dose is negative.");
-    bOK &= checkValue(!std::isnan(m_D), "The dose is NaN.");
-    bOK &= checkValue(!std::isinf(m_D), "The dose is Inf.");
-    bOK &= checkValue(m_V > 0, "The volume is not greater than zero.");
-    bOK &= checkValue(!std::isnan(m_V), "The V is NaN.");
-    bOK &= checkValue(!std::isinf(m_V), "The V is Inf.");
-    bOK &= checkValue(m_Ke > 0, "The Ke is not greater than zero.");
-    bOK &= checkValue(!std::isnan(m_Ke), "The Ke is NaN.");
-    bOK &= checkValue(!std::isinf(m_Ke), "The Ke is Inf.");
+    bool bOK = checkPositiveValue(m_D, "The dose");
+    bOK &= checkStrictlyPositiveValue(m_V, "The volume");
+    bOK &= checkStrictlyPositiveValue(m_Ke, "Ke");
     bOK &= checkValue(m_NbPoints >= 0, "The number of points is zero or negative.");
     bOK &= checkValue(m_Int > 0, "The interval time is negative.");
 
@@ -155,15 +149,9 @@ bool OneCompartmentBolusMacro::checkInputs(const IntakeEvent& _intakeEvent, cons
 #endif
 
     // check the inputs
-    bool bOK = checkValue(m_D >= 0, "The dose is negative.");
-    bOK &= checkValue(!std::isnan(m_D), "The dose is NaN.");
-    bOK &= checkValue(!std::isinf(m_D), "The dose is Inf.");
-    bOK &= checkValue(m_V > 0, "The volume is not greater than zero.");
-    bOK &= checkValue(!std::isnan(m_V), "The V is NaN.");
-    bOK &= checkValue(!std::isinf(m_V), "The V is Inf.");
-    bOK &= checkValue(cl > 0, "The clearance is not greater than zero.");
-    bOK &= checkValue(!std::isnan(cl), "The Ke is NaN.");
-    bOK &= checkValue(!std::isinf(cl), "The Ke is Inf.");
+    bool bOK = checkPositiveValue(m_D, "The dose");
+    bOK &= checkStrictlyPositiveValue(m_V, "The volume");
+    bOK &= checkStrictlyPositiveValue(cl, "The clearance");
     bOK &= checkValue(m_NbPoints >= 0, "The number of points is zero or negative.");
     bOK &= checkValue(m_Int > 0, "The interval time is negative.");
 
