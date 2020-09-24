@@ -132,7 +132,7 @@ protected:
         }
 
         // compute concentrations
-        compute(_times, _inResiduals, concentrations);
+        computeUnroll(_times, _inResiduals, concentrations);
 
         // Get the output residuals
         for (unsigned int i = 0; i < ResidualSize; i++) {
@@ -171,7 +171,7 @@ protected:
         times[0] = _atTime;
         times[1] = m_Int;
         // compute concentrations
-        compute(times, _inResiduals, concentrations);
+        computeUnroll(times, _inResiduals, concentrations);
 
         // return concentrations (computation with atTime (current time))
         _concentrations[0].push_back(concentrations[0][atTime]);
@@ -202,6 +202,179 @@ protected:
 
         return bOk;
     }
+
+    template<int from, int to>
+    struct setK1 {
+        static inline void apply(std::vector<double> &k1, double h, std::vector<double> &dcdt, std::vector<double> &c, std::vector<double> &concentrations) {
+            // Set k1's
+            k1[from] = h * dcdt[from];
+            c[from] = concentrations[from] + k1[from] / 2.0;
+            setK1<from + 1, to>::apply(k1, h, dcdt, c, concentrations);
+        }
+    };
+
+    // Terminal case
+    template<int from>
+    struct setK1<from, from> {
+        static inline void apply(std::vector<double> &k1, double h, std::vector<double> &dcdt, std::vector<double> &c, std::vector<double> &concentrations) {
+            k1[from] = h * dcdt[from];
+            c[from] = concentrations[from] + k1[from] / 2.0;
+        }
+    };
+
+    template<int from, int to>
+    struct setK2 {
+        static inline void apply(std::vector<double> &k2, double h, std::vector<double> &dcdt, std::vector<double> &c, std::vector<double> &concentrations) {
+            // Set k1's
+            k2[from] = h * dcdt[from];
+            c[from] = concentrations[from] + k2[from] / 2.0;
+            setK1<from + 1, to>::apply(k2, h, dcdt, c, concentrations);
+        }
+    };
+
+    // Terminal case
+    template<int from>
+    struct setK2<from, from> {
+        static inline void apply(std::vector<double> &k2, double h, std::vector<double> &dcdt, std::vector<double> &c, std::vector<double> &concentrations) {
+            k2[from] = h * dcdt[from];
+            c[from] = concentrations[from] + k2[from] / 2.0;
+        }
+    };
+
+    template<int from, int to>
+    struct setK3 {
+        static inline void apply(std::vector<double> &k3, double h, std::vector<double> &dcdt, std::vector<double> &c, std::vector<double> &concentrations) {
+            // Set k1's
+            k3[from] = h * dcdt[from];
+            c[from] = concentrations[from] + k3[from];
+            setK3<from + 1, to>::apply(k3, h, dcdt, c, concentrations);
+        }
+    };
+
+    // Terminal case
+    template<int from>
+    struct setK3<from, from> {
+        static inline void apply(std::vector<double> &k3, double h, std::vector<double> &dcdt, std::vector<double> &c, std::vector<double> &concentrations) {
+            k3[from] = h * dcdt[from];
+            c[from] = concentrations[from] + k3[from];
+        }
+    };
+
+    template<int from, int to>
+    struct setK4 {
+        static inline void apply(std::vector<double> &k1, std::vector<double> &k2,
+                                 std::vector<double> &k3, std::vector<double> &k4,
+                                 double h, std::vector<double> &dcdt, std::vector<double> &concentrations) {
+            k4[from] = h * dcdt[from];
+            // and directly compute the concentration of each compartment
+            concentrations[from] = concentrations[from] + k1[from] / 6.0 + k2[from] / 3.0 + k3[from] / 3.0 + k4[from] / 6.0;
+            setK4<from + 1, to>::apply(k1, k2, k3, k4, h, dcdt, concentrations);
+        }
+    };
+
+    // Terminal case
+    template<int from>
+    struct setK4<from, from> {
+        static inline void apply(std::vector<double> &k1, std::vector<double> &k2,
+                                 std::vector<double> &k3, std::vector<double> &k4,
+                                 double h, std::vector<double> &dcdt, std::vector<double> &concentrations) {
+            k4[from] = h * dcdt[from];
+            // and directly compute the concentration of each compartment
+            concentrations[from] = concentrations[from] + k1[from] / 6.0 + k2[from] / 3.0 + k3[from] / 3.0 + k4[from] / 6.0;
+        }
+    };
+
+
+
+    void computeUnroll(const Eigen::VectorXd &_times, const Residuals& _inResiduals, std::vector<Concentrations>& _concentrations)
+    {
+        // By default, we advance minute per minute
+        const double stdH = 1.0 / 60.0;
+
+        // h is the delta used and possibly modified at specific iterations
+        double h = stdH;
+
+        // The number of points to get corresponds to the size of the times of interest
+        Eigen::Index nbPoints = _times.size();
+
+        // The vectors of concentrations
+        std::vector<double> concentrations(ResidualSize);
+
+        // We initialize the first concentration
+        initConcentrations(_inResiduals, concentrations);
+
+        // The values used by RK4 during one iteration
+        std::vector<double> dcdt(ResidualSize);
+        std::vector<double> k1(ResidualSize);
+        std::vector<double> k2(ResidualSize);
+        std::vector<double> k3(ResidualSize);
+        std::vector<double> k4(ResidualSize);
+        std::vector<double> c(ResidualSize);
+
+        // Time t used for calculating the derivative
+        double t = 0.0;
+
+        // cont indicates if the loop is finished or not
+        bool cont = true;
+
+        // Next time of interest
+        double nextTime = _times[0];
+
+        // Index of the next time of interest
+        Eigen::Index nextPoint = 0;
+
+        // Looping on the points to calculate the concentrations of each compartment
+        while (cont) {
+
+            // Check if we are ready to get a concentration
+            while ((nextTime <= t) && (cont)) {
+                for(size_t i = 0; i < ResidualSize; i++) {
+                    _concentrations[i][static_cast<size_t>(nextPoint)] = concentrations[i];
+                }
+                nextPoint ++;
+                if (nextPoint >= nbPoints) {
+                    cont = false;
+                }
+                else {
+                    nextTime = _times[nextPoint];
+                }
+            }
+
+            // Adjust h if the next time is close, to reach the exact time point
+            if (nextTime - t < stdH) {
+                h = nextTime - t;
+            }
+            else {
+                h = stdH;
+            }
+
+            // Let's use static inheritance
+            static_cast<ImplementationClass*>(this)->derive(t, concentrations, dcdt);
+
+            // Set k1's
+            setK1<0, ResidualSize - 1>::apply(k1, h, dcdt, c, concentrations);
+
+            static_cast<ImplementationClass*>(this)->derive(t + h / 2.0, c, dcdt);
+
+
+            // Set k2's
+            setK2<0, ResidualSize - 1>::apply(k2, h, dcdt, c, concentrations);
+
+            static_cast<ImplementationClass*>(this)->derive(t + h / 2.0, c, dcdt);
+
+            // Set k3's
+            setK3<0, ResidualSize - 1>::apply(k3, h, dcdt, c, concentrations);
+
+            static_cast<ImplementationClass*>(this)->derive(t + h, c, dcdt);
+
+            // Set k4's
+            setK4<0, ResidualSize - 1>::apply(k1, k2, k3, k4, h, dcdt, concentrations);
+
+            t += h;
+        }
+
+    }
+
 
     void compute(const Eigen::VectorXd &_times, const Residuals& _inResiduals, std::vector<Concentrations>& _concentrations)
     {
