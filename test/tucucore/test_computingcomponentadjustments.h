@@ -786,10 +786,13 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
 
         const ComputedData* responseData = response->getData();
         fructose_assert(dynamic_cast<const AdjustmentData*>(responseData) != nullptr);
+
         const AdjustmentData *resp = dynamic_cast<const AdjustmentData*>(responseData);
 
-        // We expect 2 dosage time range (rest period)
-        fructose_assert(resp->getAdjustments()[0].getDosageHistory().getDosageTimeRanges().size() == 2);
+        if (resp) {
+            // We expect 2 dosage time range (rest period)
+            fructose_assert(resp->getAdjustments()[0].getDosageHistory().getDosageTimeRanges().size() == 2);
+        }
 
         // Delete all dynamically allocated objects
         delete drugModel;
