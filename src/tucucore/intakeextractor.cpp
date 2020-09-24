@@ -32,7 +32,8 @@ auto as_integer(Enumeration const _value)
 ComputingStatus IntakeExtractor::extract(const DosageHistory& _dosageHistory, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, IntakeSeries &_series,
                                          ExtractionOption _option)
 {
-    try {
+    TUCU_TRY {
+
         EXTRACT_PRECONDITIONS(_start, _end, _series);
 
         // Iterate on elements in dosage history that are in the appropriate time interval and add each of them to the
@@ -55,9 +56,8 @@ ComputingStatus IntakeExtractor::extract(const DosageHistory& _dosageHistory, co
         }
 
         std::sort(_series.begin(), _series.end());
-
     }
-    catch (...) {
+    TUCU_CATCH (...) {
         return ComputingStatus::IntakeExtractionError;
     }
 

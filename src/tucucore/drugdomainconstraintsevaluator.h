@@ -65,7 +65,7 @@ public:
     /// - Result::Compatible if all constraints are met.
     /// - Result::ComputationError if there was a computation error
     ///
-    /// The covariate series should typically the series extracted by a CovariateExtractor object.
+    /// The covariate series should typically be the series extracted by a CovariateExtractor object.
     /// The evaluation is made throughout the time span from _start to _end, so if covariates change during
     /// this time frame there will be various evaluations of the adequation of covariates with respect to
     /// the constraints of the drug model domain.

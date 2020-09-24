@@ -348,15 +348,15 @@ ComputingStatus CovariateExtractor::extract(CovariateSeries &_series)
     std::map<DateTime, std::vector<std::string>> refreshMap;
     collectRefreshIntervals(refreshMap);
 
-    try {
+    TUCU_TRY {
          rc = computeEvents(refreshMap, _series);
-    } catch (std::invalid_argument e) {
+    } TUCU_CATCH (std::invalid_argument e) TUCU_ONEXCEPTION( {
 
         Tucuxi::Common::LoggerHelper logHelper;
         logHelper.error("Error with covariate extraction : {}", e.what());
         logHelper.error("If error due to conversion, please check Query and DrugModel units");
         return ComputingStatus::CovariateExtractionError;
-    }
+    });
 
     if (!rc) {
         Tucuxi::Common::LoggerHelper logHelper;
