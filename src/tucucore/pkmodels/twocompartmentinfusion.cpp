@@ -27,7 +27,7 @@ std::vector<std::string> TwoCompartmentInfusionMicro::getParametersId()
 
 bool TwoCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
-    if (!checkValue(_parameters.size() >= 4, "The number of parameters should be equal to 4.")) {
+    if (!checkCondition(_parameters.size() >= 4, "The number of parameters should be equal to 4.")) {
         return false;
     }
 
@@ -70,9 +70,9 @@ bool TwoCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent, c
     bOK &= checkStrictlyPositiveValue(m_K21, "K21");
     bOK &= checkPositiveValue(m_Alpha, "Alpha");
     bOK &= checkPositiveValue(m_Beta, "Beta");
-    bOK &= checkValue(m_Tinf >= 0, "The infusion time is negative.");
-    bOK &= checkValue(m_NbPoints >= 0, "The number of points is zero or negative.");
-    bOK &= checkValue(m_Int > 0, "The interval time is negative.");
+    bOK &= checkCondition(m_Tinf >= 0, "The infusion time is negative.");
+    bOK &= checkCondition(m_NbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
     return bOK;
 }
@@ -122,8 +122,8 @@ bool TwoCompartmentInfusionMicro::computeConcentrations(const Residuals& _inResi
     }
 
     // Check output
-    bool bOK = checkValue(_outResiduals[firstCompartment] >= 0, "The concentration1 is negative.");
-    bOK &= checkValue(_outResiduals[secondCompartment] >= 0, "The concentration2 is negative.");
+    bool bOK = checkCondition(_outResiduals[firstCompartment] >= 0, "The concentration1 is negative.");
+    bOK &= checkCondition(_outResiduals[secondCompartment] >= 0, "The concentration2 is negative.");
 
     return bOK;
 }
@@ -254,8 +254,8 @@ bool TwoCompartmentInfusionMicro::computeConcentration(const Value& _atTime, con
 #endif
 
     // Check output
-    bool bOK = checkValue(_outResiduals[firstCompartment] >= 0, "The concentration1 is negative.");
-    bOK &= checkValue(_outResiduals[secondCompartment] >= 0, "The concentration2 is negative.");
+    bool bOK = checkCondition(_outResiduals[firstCompartment] >= 0, "The concentration1 is negative.");
+    bOK &= checkCondition(_outResiduals[secondCompartment] >= 0, "The concentration2 is negative.");
 
     return bOK;
 }
@@ -270,7 +270,7 @@ std::vector<std::string> TwoCompartmentInfusionMacro::getParametersId()
 
 bool TwoCompartmentInfusionMacro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
-    if (!checkValue(_parameters.size() >= 4, "The number of parameters should be equal to 4.")) {
+    if (!checkCondition(_parameters.size() >= 4, "The number of parameters should be equal to 4.")) {
         return false;
     }
 
@@ -320,9 +320,9 @@ bool TwoCompartmentInfusionMacro::checkInputs(const IntakeEvent& _intakeEvent, c
     bOK &= checkStrictlyPositiveValue(v2, "V2");
     bOK &= checkPositiveValue(m_Alpha, "Alpha");
     bOK &= checkPositiveValue(m_Beta, "Beta");
-    bOK &= checkValue(m_Tinf >= 0, "The infusion time is negative.");
-    bOK &= checkValue(m_NbPoints >= 0, "The number of points is zero or negative.");
-    bOK &= checkValue(m_Int > 0, "The interval time is negative.");
+    bOK &= checkCondition(m_Tinf >= 0, "The infusion time is negative.");
+    bOK &= checkCondition(m_NbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
     return bOK;
 }

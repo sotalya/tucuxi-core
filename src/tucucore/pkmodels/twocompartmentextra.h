@@ -101,7 +101,7 @@ _concentrations1, Eigen::VectorXd &_concentrations2, Eigen::VectorXd &_concentra
 	std::pow((sumK12K21 - 2 * m_Ka + m_Ke) * m_RootK,  2) 
 	- std::pow(std::pow(m_K12,2) + powDiffK21Ke + 2 * m_K12 * sumK21Ke, 2);
 
-    if(!checkValue(divider != 0.0, "Dividing by zero.")) {
+    if(!checkCondition(divider != 0.0, "Dividing by zero.")) {
 	    return false;
     }
 
@@ -130,7 +130,7 @@ _concentrations1, Eigen::VectorXd &_concentrations2, Eigen::VectorXd &_concentra
         -std::pow(std::pow(m_K12, 2) + powDiffK21Ke + 2 * m_K12 * sumK21Ke, 2) 
         + std::pow(sumK12K21 - 2 * m_Ka + m_Ke, 2) * std::pow(m_RootK, 2);
     
-    if(!checkValue(divider != 0.0, "Dividing by zero.")) {
+    if(!checkCondition(divider != 0.0, "Dividing by zero.")) {
 	    return false;
     }
 

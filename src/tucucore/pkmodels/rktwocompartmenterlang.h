@@ -135,7 +135,7 @@ protected:
 
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override
     {
-        if (!this->checkValue(_parameters.size() >= 6, "The number of parameters should be equal to 6.")) {
+        if (!this->checkCondition(_parameters.size() >= 6, "The number of parameters should be equal to 6.")) {
             return false;
         }
 
@@ -151,29 +151,16 @@ protected:
         this->m_Int = (_intakeEvent.getInterval()).toHours();
 
         // check the inputs
-        bool bOK = this->checkValue(m_D >= 0, "The dose is negative.");
-        bOK &= this->checkValue(!std::isnan(m_D), "The dose is NaN.");
-        bOK &= this->checkValue(!std::isinf(m_D), "The dose is Inf.");
-        bOK &= this->checkValue(m_V1 > 0, "The volume is not greater than zero.");
-        bOK &= this->checkValue(!std::isnan(m_V1), "The m_V is NaN.");
-        bOK &= this->checkValue(!std::isinf(m_V1), "The _V is Inf.");
-        bOK &= this->checkValue(m_F > 0, "The volume is not greater than zero.");
-        bOK &= this->checkValue(!std::isnan(m_F), "The F is NaN.");
-        bOK &= this->checkValue(!std::isinf(m_F), "The F is Inf.");
-        bOK &= this->checkValue(m_Ke > 0, "The clearance is not greater than zero.");
-        bOK &= this->checkValue(!std::isnan(m_Ke), "The CL is NaN.");
-        bOK &= this->checkValue(!std::isinf(m_Ke), "The CL is Inf.");
-        bOK &= this->checkValue(m_Ktr > 0, "The m_Ktr is not greater than zero.");
-        bOK &= this->checkValue(!std::isnan(m_Ktr), "The m_Ktr is NaN.");
-        bOK &= this->checkValue(!std::isinf(m_Ktr), "The m_Ktr is Inf.");
-        bOK &= this->checkValue(m_K12 > 0, "The m_K12 is not greater than zero.");
-        bOK &= this->checkValue(!std::isnan(m_K12), "The m_K12 is NaN.");
-        bOK &= this->checkValue(!std::isinf(m_K12), "The m_K12 is Inf.");
-        bOK &= this->checkValue(m_K21 > 0, "The m_K21 is not greater than zero.");
-        bOK &= this->checkValue(!std::isnan(m_K21), "The m_K21 is NaN.");
-        bOK &= this->checkValue(!std::isinf(m_K21), "The m_K21 is Inf.");
-        bOK &= this->checkValue(this->m_nbPoints >= 0, "The number of points is zero or negative.");
-        bOK &= this->checkValue(this->m_Int > 0, "The interval time is negative.");
+        bool bOK = true;
+        bOK &= this->checkPositiveValue(m_D, "The dose");
+        bOK &= this->checkStrictlyPositiveValue(m_V1, "The volume");
+        bOK &= this->checkStrictlyPositiveValue(m_F, "The biodisponibility");
+        bOK &= this->checkStrictlyPositiveValue(m_Ke, "The absorption constant");
+        bOK &= this->checkStrictlyPositiveValue(m_Ktr, "The Ktr");
+        bOK &= this->checkStrictlyPositiveValue(m_K12, "K12");
+        bOK &= this->checkStrictlyPositiveValue(m_K21, "K21");
+        bOK &= this->checkCondition(this->m_nbPoints >= 0, "The number of points is zero or negative.");
+        bOK &= this->checkCondition(this->m_Int > 0, "The interval time is negative.");
 
         return bOK;
     }
@@ -241,7 +228,7 @@ protected:
 
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override
     {
-        if (!this->checkValue(_parameters.size() >= 6, "The number of parameters should be equal to 6.")) {
+        if (!this->checkCondition(_parameters.size() >= 6, "The number of parameters should be equal to 6.")) {
             return false;
         }
 
@@ -262,29 +249,16 @@ protected:
         this->m_Int = (_intakeEvent.getInterval()).toHours();
 
         // check the inputs
-        bool bOK = this->checkValue(this->m_D >= 0, "The dose is negative.");
-        bOK &= this->checkValue(!std::isnan(this->m_D), "The dose is NaN.");
-        bOK &= this->checkValue(!std::isinf(this->m_D), "The dose is Inf.");
-        bOK &= this->checkValue(this->m_V1 > 0, "The volume is not greater than zero.");
-        bOK &= this->checkValue(!std::isnan(this->m_V1), "The m_V is NaN.");
-        bOK &= this->checkValue(!std::isinf(this->m_V1), "The _V is Inf.");
-        bOK &= this->checkValue(this->m_F > 0, "The volume is not greater than zero.");
-        bOK &= this->checkValue(!std::isnan(this->m_F), "The F is NaN.");
-        bOK &= this->checkValue(!std::isinf(this->m_F), "The F is Inf.");
-        bOK &= this->checkValue(this->m_Ke > 0, "The clearance is not greater than zero.");
-        bOK &= this->checkValue(!std::isnan(this->m_Ke), "The CL is NaN.");
-        bOK &= this->checkValue(!std::isinf(this->m_Ke), "The CL is Inf.");
-        bOK &= this->checkValue(this->m_Ktr > 0, "The m_Ktr is not greater than zero.");
-        bOK &= this->checkValue(!std::isnan(this->m_Ktr), "The m_Ktr is NaN.");
-        bOK &= this->checkValue(!std::isinf(this->m_Ktr), "The m_Ktr is Inf.");
-        bOK &= this->checkValue(this->m_K12 > 0, "The m_K12 is not greater than zero.");
-        bOK &= this->checkValue(!std::isnan(this->m_K12), "The m_K12 is NaN.");
-        bOK &= this->checkValue(!std::isinf(this->m_K12), "The m_K12 is Inf.");
-        bOK &= this->checkValue(this->m_K21 > 0, "The m_K21 is not greater than zero.");
-        bOK &= this->checkValue(!std::isnan(this->m_K21), "The m_K21 is NaN.");
-        bOK &= this->checkValue(!std::isinf(this->m_K21), "The m_K21 is Inf.");
-        bOK &= this->checkValue(this->m_nbPoints >= 0, "The number of points is zero or negative.");
-        bOK &= this->checkValue(this->m_Int > 0, "The interval time is negative.");
+        bool bOK = true;
+        bOK &= this->checkPositiveValue(this->m_D, "The dose");
+        bOK &= this->checkStrictlyPositiveValue(this->m_V1, "The volume");
+        bOK &= this->checkStrictlyPositiveValue(this->m_F, "The biodisponibility");
+        bOK &= this->checkStrictlyPositiveValue(this->m_Ke, "The absorption constant");
+        bOK &= this->checkStrictlyPositiveValue(this->m_Ktr, "The Ktr");
+        bOK &= this->checkStrictlyPositiveValue(this->m_K12, "K12");
+        bOK &= this->checkStrictlyPositiveValue(this->m_K21, "K21");
+        bOK &= this->checkCondition(this->m_nbPoints >= 0, "The number of points is zero or negative.");
+        bOK &= this->checkCondition(this->m_Int > 0, "The interval time is negative.");
 
         return bOK;
     }

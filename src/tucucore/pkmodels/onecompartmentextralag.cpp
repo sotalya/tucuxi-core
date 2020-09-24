@@ -23,7 +23,7 @@ std::vector<std::string> OneCompartmentExtraLagMicro::getParametersId()
 
 bool OneCompartmentExtraLagMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
-    if (!checkValue(_parameters.size() >= 4, "The number of parameters should be equal to 4.")) {
+    if (!checkCondition(_parameters.size() >= 4, "The number of parameters should be equal to 4.")) {
         return false;
     }
 
@@ -47,8 +47,8 @@ bool OneCompartmentExtraLagMicro::checkInputs(const IntakeEvent& _intakeEvent, c
     bOK &= checkStrictlyPositiveValue(m_Ka, "Ka");
     bOK &= checkStrictlyPositiveValue(m_Ke, "Ke");
     bOK &= checkPositiveValue(m_Tlag, "The lag time");
-    bOK &= checkValue(m_NbPoints >= 0, "The number of points is zero or negative.");
-    bOK &= checkValue(m_Int > 0, "The interval time is negative.");
+    bOK &= checkCondition(m_NbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
     if (m_NbPoints == 2) {
         m_nbPoints0 = static_cast<int>(std::min(ceil(m_Tlag/m_Int * m_NbPoints), ceil(m_NbPoints)));
@@ -152,8 +152,8 @@ bool OneCompartmentExtraLagMicro::computeConcentrations(const Residuals& _inResi
         _concentrations[secondCompartment].assign(concentrations2.data(), concentrations2.data() + concentrations2.size());	
     }
 
-    bool bOK = checkValue(_outResiduals[firstCompartment] >= 0, "The concentration1 is negative.");
-    bOK &= checkValue(_outResiduals[secondCompartment] >= 0, "The concentration2 is negative.");
+    bool bOK = checkCondition(_outResiduals[firstCompartment] >= 0, "The concentration1 is negative.");
+    bOK &= checkCondition(_outResiduals[secondCompartment] >= 0, "The concentration2 is negative.");
 
     return bOK;
 }
@@ -186,8 +186,8 @@ bool OneCompartmentExtraLagMicro::computeConcentration(const Value& _atTime, con
     _outResiduals[firstCompartment] = concentrations1[atEndInterval];
     _outResiduals[secondCompartment] = concentrations2[atEndInterval];
 
-    bool bOK = checkValue(_outResiduals[firstCompartment] >= 0, "The final residual1 is negative.");
-    bOK &= checkValue(_outResiduals[secondCompartment] >= 0, "The final residual2 is negative.");
+    bool bOK = checkCondition(_outResiduals[firstCompartment] >= 0, "The final residual1 is negative.");
+    bOK &= checkCondition(_outResiduals[secondCompartment] >= 0, "The final residual2 is negative.");
 
     return bOK;
 }
@@ -203,7 +203,7 @@ std::vector<std::string> OneCompartmentExtraLagMacro::getParametersId()
 
 bool OneCompartmentExtraLagMacro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
-    if (!checkValue(_parameters.size() >= 4, "The number of parameters should be equal to 4.")) {
+    if (!checkCondition(_parameters.size() >= 4, "The number of parameters should be equal to 4.")) {
         return false;
     }
 
@@ -228,8 +228,8 @@ bool OneCompartmentExtraLagMacro::checkInputs(const IntakeEvent& _intakeEvent, c
     bOK &= checkStrictlyPositiveValue(m_Ka, "Ka");
     bOK &= checkStrictlyPositiveValue(cl, "The clearance");
     bOK &= checkPositiveValue(m_Tlag, "The lag time");
-    bOK &= checkValue(m_NbPoints >= 0, "The number of points is zero or negative.");
-    bOK &= checkValue(m_Int > 0, "The interval time is negative.");
+    bOK &= checkCondition(m_NbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
     if (m_NbPoints == 2) {
         m_nbPoints0 = static_cast<int>(std::min(ceil(m_Tlag/m_Int * m_NbPoints), ceil(m_NbPoints)));

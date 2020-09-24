@@ -130,7 +130,12 @@ protected:
     /// \brief Check if a value is correct and log a message if it is not the case
     /// \param _isOk Indicates that the value is correct
     /// \param _errMsg Message to log in case of problem
-    bool checkValue(bool _isOk,  const std::string& _errMsg);
+    bool checkCondition(bool _isOk,  const std::string& _errMsg);
+
+    /// \brief Check if a value is a number and not infinity and log a message if it is not the case
+    /// \param _value Value to be tested
+    /// \param _valueName Name of the value to log in case of problem
+    bool checkValidValue(Value _value,  const std::string& _valueName);
 
     /// \brief Check if a value is positive and log a message if it is not the case
     /// \param _value Value to be tested

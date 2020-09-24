@@ -17,7 +17,7 @@ RK4OneCompartmentGammaExtraMicro::RK4OneCompartmentGammaExtraMicro() : IntakeInt
 
 bool RK4OneCompartmentGammaExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
-    if (!checkValue(_parameters.size() >= 5, "The number of parameters should be equal to 5.")) {
+    if (!checkCondition(_parameters.size() >= 5, "The number of parameters should be equal to 5.")) {
         return false;
     }
 
@@ -31,20 +31,13 @@ bool RK4OneCompartmentGammaExtraMicro::checkInputs(const IntakeEvent& _intakeEve
     m_b = _parameters.getValue(ParameterId::b);
 
     // check the inputs
-    bool bOK = checkValue(m_D >= 0, "The dose is negative.");
-    bOK &= checkValue(!std::isnan(m_D), "The dose is NaN.");
-    bOK &= checkValue(!std::isinf(m_D), "The dose is Inf.");
-    bOK &= checkValue(m_V > 0, "The volume is not greater than zero.");
-    bOK &= checkValue(!std::isnan(m_V), "The m_V is NaN.");
-    bOK &= checkValue(!std::isinf(m_V), "The _V is Inf.");
-    bOK &= checkValue(m_F > 0, "The volume is not greater than zero.");
-    bOK &= checkValue(!std::isnan(m_F), "The F is NaN.");
-    bOK &= checkValue(!std::isinf(m_F), "The F is Inf.");
-    bOK &= checkValue(m_Ke > 0, "The clearance is not greater than zero.");
-    bOK &= checkValue(!std::isnan(m_Ke), "The CL is NaN.");
-    bOK &= checkValue(!std::isinf(m_Ke), "The CL is Inf.");
-    bOK &= checkValue(m_nbPoints >= 0, "The number of points is zero or negative.");
-    bOK &= checkValue(m_Int > 0, "The interval time is negative.");
+    bool bOK = true;
+    bOK &= checkPositiveValue(m_D, "The dose");
+    bOK &= checkStrictlyPositiveValue(m_V, "The volume");
+    bOK &= checkStrictlyPositiveValue(m_F, "The biodisponibility");
+    bOK &= checkStrictlyPositiveValue(m_Ke, "The absorption constant");
+    bOK &= checkCondition(m_nbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
     return bOK;
 }
@@ -56,7 +49,7 @@ RK4OneCompartmentGammaExtraMacro::RK4OneCompartmentGammaExtraMacro() : RK4OneCom
 
 bool RK4OneCompartmentGammaExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
-    if (!checkValue(_parameters.size() >= 5, "The number of parameters should be equal to 5.")) {
+    if (!checkCondition(_parameters.size() >= 5, "The number of parameters should be equal to 5.")) {
         return false;
     }
 
@@ -71,20 +64,13 @@ bool RK4OneCompartmentGammaExtraMacro::checkInputs(const IntakeEvent& _intakeEve
     m_b = _parameters.getValue(ParameterId::b);
 
     // check the inputs
-    bool bOK = checkValue(m_D >= 0, "The dose is negative.");
-    bOK &= checkValue(!std::isnan(m_D), "The dose is NaN.");
-    bOK &= checkValue(!std::isinf(m_D), "The dose is Inf.");
-    bOK &= checkValue(m_V > 0, "The volume is not greater than zero.");
-    bOK &= checkValue(!std::isnan(m_V), "The m_V is NaN.");
-    bOK &= checkValue(!std::isinf(m_V), "The _V is Inf.");
-    bOK &= checkValue(m_F > 0, "The volume is not greater than zero.");
-    bOK &= checkValue(!std::isnan(m_F), "The F is NaN.");
-    bOK &= checkValue(!std::isinf(m_F), "The F is Inf.");
-    bOK &= checkValue(cl > 0, "The clearance is not greater than zero.");
-    bOK &= checkValue(!std::isnan(cl), "The clearance is NaN.");
-    bOK &= checkValue(!std::isinf(cl), "The clearance is Inf.");
-    bOK &= checkValue(m_nbPoints >= 0, "The number of points is zero or negative.");
-    bOK &= checkValue(m_Int > 0, "The interval time is negative.");
+    bool bOK = true;
+    bOK &= checkPositiveValue(m_D, "The dose");
+    bOK &= checkStrictlyPositiveValue(m_V, "The volume");
+    bOK &= checkStrictlyPositiveValue(m_F, "The biodisponibility");
+    bOK &= checkStrictlyPositiveValue(cl, "The clearance");
+    bOK &= checkCondition(m_nbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
     return bOK;
 }

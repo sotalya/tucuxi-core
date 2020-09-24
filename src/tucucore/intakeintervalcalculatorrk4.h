@@ -151,7 +151,7 @@ protected:
         // Check that the output residuals are positive
         bool bOk = true;
         for (unsigned int i = 0; i < ResidualSize; i++) {
-            bOk &= checkValue(_outResiduals[i] >= 0, "A concentration is negative.");
+            bOk &= checkCondition(_outResiduals[i] >= 0, "A concentration is negative.");
         }
 
         return bOk;
@@ -197,7 +197,7 @@ protected:
         // Checks that the output residuals are positive
         bool bOk = true;
         for (size_t i = 0; i < ResidualSize; i++) {
-            bOk &= checkValue(_outResiduals[i] >= 0, "A final residual is negative.");
+            bOk &= checkCondition(_outResiduals[i] >= 0, "A final residual is negative.");
         }
 
         return bOk;

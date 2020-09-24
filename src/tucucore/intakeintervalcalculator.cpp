@@ -64,7 +64,7 @@ IntakeIntervalCalculator::~IntakeIntervalCalculator()
 
 
 
-bool IntakeIntervalCalculator::checkValue(bool _isOk, const std::string& _errMsg)
+bool IntakeIntervalCalculator::checkCondition(bool _isOk, const std::string& _errMsg)
 {
     if (!_isOk) {
         if (m_loggingErrors) {
@@ -74,6 +74,29 @@ bool IntakeIntervalCalculator::checkValue(bool _isOk, const std::string& _errMsg
 
     }
     return _isOk;
+}
+
+bool IntakeIntervalCalculator::checkValidValue(Value _value, const std::string &_valueName)
+{
+    // First check for infinity
+    if (std::isinf(_value)) {
+        if (m_loggingErrors) {
+            static Tucuxi::Common::LoggerHelper logger;
+            logger.error("{} is Inf.", _valueName);
+        }
+        return false;
+    }
+
+    // Finally check for NaN
+    if (std::isnan(_value)) {
+        if (m_loggingErrors) {
+            static Tucuxi::Common::LoggerHelper logger;
+            logger.error("{} is NaN.", _valueName);
+        }
+        return false;
+    }
+
+    return true;
 }
 
 bool IntakeIntervalCalculator::checkPositiveValue(Value _value,  const std::string& _valueName)

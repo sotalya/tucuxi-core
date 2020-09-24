@@ -21,7 +21,7 @@ std::vector<std::string> TwoCompartmentExtraMicro::getParametersId()
 
 bool TwoCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
-    if (!checkValue(_parameters.size() >= 4, "The number of parameters should be equal to 4.")) {
+    if (!checkCondition(_parameters.size() >= 4, "The number of parameters should be equal to 4.")) {
         return false;
     }
 
@@ -50,8 +50,8 @@ bool TwoCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
     bOK &= checkStrictlyPositiveValue(m_K21, "K21");
     bOK &= checkPositiveValue(m_Alpha, "Alpha");
     bOK &= checkPositiveValue(m_Beta, "Beta");
-    bOK &= checkValue(m_NbPoints >= 0, "The number of points is zero or negative.");
-    bOK &= checkValue(m_Int > 0, "The interval time is negative.");
+    bOK &= checkCondition(m_NbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
     return true;
 }
@@ -86,9 +86,9 @@ bool TwoCompartmentExtraMicro::computeConcentrations(const Residuals& _inResidua
     // TODO: add calcuation concentrations of second and third compartment and condtions
     TMP_UNUSED_PARAMETER(_isAll);
 
-    bOK &= checkValue(_outResiduals[firstCompartment] >= 0, "The concentration is negative.");
-    bOK &= checkValue(_outResiduals[secondCompartment] >= 0, "The concentration is negative.");
-    bOK &= checkValue(_outResiduals[thirdCompartment] >= 0, "The concentration is negative.");
+    bOK &= checkCondition(_outResiduals[firstCompartment] >= 0, "The concentration is negative.");
+    bOK &= checkCondition(_outResiduals[secondCompartment] >= 0, "The concentration is negative.");
+    bOK &= checkCondition(_outResiduals[thirdCompartment] >= 0, "The concentration is negative.");
 
     return bOK;
 }
@@ -125,9 +125,9 @@ bool TwoCompartmentExtraMicro::computeConcentration(const Value& _atTime, const 
     _outResiduals[secondCompartment] = concentrations2[atEndInterval];
     _outResiduals[thirdCompartment] = concentrations3[atEndInterval];
 
-    bOK &= checkValue(_outResiduals[firstCompartment] >= 0, "The concentration is negative.");
-    bOK &= checkValue(_outResiduals[secondCompartment] >= 0, "The concentration is negative.");
-    bOK &= checkValue(_outResiduals[thirdCompartment] >= 0, "The concentration is negative.");
+    bOK &= checkCondition(_outResiduals[firstCompartment] >= 0, "The concentration is negative.");
+    bOK &= checkCondition(_outResiduals[secondCompartment] >= 0, "The concentration is negative.");
+    bOK &= checkCondition(_outResiduals[thirdCompartment] >= 0, "The concentration is negative.");
 
     return bOK;
 }
@@ -143,7 +143,7 @@ std::vector<std::string> TwoCompartmentExtraMacro::getParametersId()
 
 bool TwoCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
-    if(!checkValue(_parameters.size() >= 4, "The number of parameters should be equal to 4.")) {
+    if(!checkCondition(_parameters.size() >= 4, "The number of parameters should be equal to 4.")) {
         return false;
     }
     
@@ -174,8 +174,8 @@ bool TwoCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, cons
     bOK &= checkStrictlyPositiveValue(v2, "V2");
     bOK &= checkPositiveValue(m_Alpha, "Alpha");
     bOK &= checkPositiveValue(m_Beta, "Beta");
-    bOK &= checkValue(m_NbPoints >= 0, "The number of points is zero or negative.");
-    bOK &= checkValue(m_Int > 0, "The interval time is negative.");
+    bOK &= checkCondition(m_NbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
 
     return true;
