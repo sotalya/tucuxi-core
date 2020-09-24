@@ -36,10 +36,10 @@ DrugDomainConstraintsEvaluator::Result DrugDomainConstraintsEvaluator::evaluate(
     DrugDomainConstraintsEvaluator::Result result = evaluate(_drugModel.getDomain(), covariateSeries, _start, _end, _results);
 
 
-    //Change result if hard constraint and covariate corresponding not in drug treatment
+    //Change result if hard mandatory constraint and covariate corresponding not in drug treatment
     bool equal = false;
     for (auto &res : _results){
-        if (res.m_constraint->getType() == ConstraintType::HARD){
+        if (res.m_constraint->getType() == ConstraintType::MANDATORYHARD){
             for (const auto &dtCovariate : _drugTreatment.getCovariates()){
                 if (res.m_constraint->getRequiredCovariateIds()[0] == dtCovariate->getId()){
                     equal = true;
