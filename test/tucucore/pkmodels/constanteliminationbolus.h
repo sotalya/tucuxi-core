@@ -54,7 +54,7 @@ protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override
     {
 
-        if(!checkValue(_parameters.size() >= 4, "The number of parameters should be equal to 4.")) {
+        if(!checkCondition(_parameters.size() >= 4, "The number of parameters should be equal to 4.")) {
             return false;
         }
 
@@ -78,11 +78,8 @@ protected:
 
         // check the inputs
         bool bOK = true;
-        bOK &= checkValue(!std::isnan(m_S), "The dose is NaN.");
-        bOK &= checkValue(!std::isinf(m_S), "The dose is Inf.");
-        bOK &= checkValue(m_S >= 0, "The negative slope is not greater than zero.");
-        bOK &= checkValue(!std::isnan(m_A), "The V is NaN.");
-        bOK &= checkValue(!std::isinf(m_A), "The V is Inf.");
+        bOK &= checkPositiveValue(m_S, "S");
+        bOK &= checkValidValue(m_A, "A");
 
         return bOK;
     }
@@ -114,7 +111,7 @@ protected:
         // Only one compartment is existed.
         TMP_UNUSED_PARAMETER(_isAll);
 
-        return checkValue(_outResiduals[firstCompartment] >= 0, "The concentration is negative.");
+        return checkCondition(_outResiduals[firstCompartment] >= 0, "The concentration is negative.");
     }
 
     bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) override
@@ -142,7 +139,7 @@ protected:
         // Return final residual (computation with m_Int (interval))
         _outResiduals[firstCompartment] = concentrations[atEndInterval];
 
-        return checkValue(_outResiduals[firstCompartment] >= 0, "The concentration is negative.");
+        return checkCondition(_outResiduals[firstCompartment] >= 0, "The concentration is negative.");
     }
 
 

@@ -143,7 +143,7 @@ protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override
     {
 
-        if(!checkValue(_parameters.size() >= 2, "The number of parameters should be equal to 2.")) {
+        if(!checkCondition(_parameters.size() >= 2, "The number of parameters should be equal to 2.")) {
             return false;
         }
 
@@ -165,15 +165,9 @@ protected:
 
         // check the inputs
         bool bOK = true;
-        bOK &= checkValue(!std::isnan(m_D), "The dose is NaN.");
-        bOK &= checkValue(!std::isinf(m_D), "The dose is Inf.");
-        bOK &= checkValue(m_D >= 0, "The dose is negative.");
-
-        bOK &= checkValue(!std::isnan(m_TPeak), "The time to peak is NaN.");
-        bOK &= checkValue(!std::isinf(m_TPeak), "The time to peak is Inf.");
-
-        bOK &= checkValue(!std::isnan(m_R), "The convergence rate is NaN.");
-        bOK &= checkValue(!std::isinf(m_R), "The convergence rate is Inf.");
+        bOK &= checkPositiveValue(m_D, "The dose");
+        bOK &= checkValidValue(m_TPeak, "The time to peak");
+        bOK &= checkValidValue(m_R, "The convergence rate");
 
         // We have to set the time to peak to allow a correct calculation of times
         static_cast<PertinentTimesCalculatorAsymptotic*>(this->m_pertinentTimesCalculator.get())->setTPeak(m_TPeak);
@@ -203,7 +197,7 @@ protected:
         // Only one compartment is existed.
         TMP_UNUSED_PARAMETER(_isAll);
 
-        return checkValue(_outResiduals[firstCompartment] >= 0, "The concentration is negative.");
+        return checkCondition(_outResiduals[firstCompartment] >= 0, "The concentration is negative.");
     }
 
     bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) override
@@ -231,7 +225,7 @@ protected:
         // Return final residual (computation with m_Int (interval))
         _outResiduals[firstCompartment] = concentrations[atEndInterval];
 
-        return checkValue(_outResiduals[firstCompartment] >= 0, "The concentration is negative.");
+        return checkCondition(_outResiduals[firstCompartment] >= 0, "The concentration is negative.");
     }
 
 
