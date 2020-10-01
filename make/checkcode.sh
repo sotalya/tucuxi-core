@@ -25,6 +25,8 @@ clang-tidy-9 \
                         { key: readability-identifier-naming.EnumCase,            value: CamelCase }, \
                         { key: readability-identifier-naming.EnumConstCase,       value: CamelCase }, \
                         { key: readability-identifier-naming.StaticConstantCase,  value: UPPER_CASE }, \
+                        { key: readability-identifier-naming.GlobalConstantCase,  value: UPPER_CASE }, \
+
 
 
 			

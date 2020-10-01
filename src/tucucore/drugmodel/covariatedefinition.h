@@ -63,11 +63,11 @@ public:
 
     /// \brief Get the data's unit of measure.
     /// \return Data's unit of measure.
-    Tucuxi::Common::Unit getUnit() const { return m_unit; }
+    Unit getUnit() const { return m_unit; }
 
     /// \brief Set the data's unit of measure.
     /// \param _unit Data's unit of measure.
-    void setUnit(const Tucuxi::Common::Unit &_unit) { m_unit = _unit; }
+    void setUnit(const Unit &_unit) { m_unit = _unit; }
 
     /// \brief Get the refresh period.
     /// \return Refresh period.
