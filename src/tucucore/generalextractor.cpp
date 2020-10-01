@@ -345,24 +345,6 @@ ComputingStatus GeneralExtractor::generalExtractions(const ComputingTraitStandar
             return covariateExtractionResult;        }
     }
 
-
-    // Evaluate the drug domain constraints with respect to the covariates
-    std::vector<DrugDomainConstraintsEvaluator::EvaluationResult> results;
-    DrugDomainConstraintsEvaluator domainConstraintsEvaluator;
-
-    DrugDomainConstraintsEvaluator::Result domainConstraintsResult =
-            domainConstraintsEvaluator.evaluate(_request.getDrugModel(),
-                                                _request.getDrugTreatment(),
-                                                fantomStart,
-                                                _traits->getEnd(),
-                                                results);
-
-    if (domainConstraintsResult == DrugDomainConstraintsEvaluator::Result::Incompatible) {
-        m_logger.error("Drug domain constraints not respecting covariate");
-        return ComputingStatus::InvalidCandidate;
-    }
-
-
     for (const auto &analyteSet : _request.getDrugModel().getAnalyteSets()) {
         const AnalyteGroupId analyteGroupId =analyteSet->getId();
 

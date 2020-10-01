@@ -254,10 +254,9 @@ struct TestDrugDomainConstraintsEvaluator : public fructose::test_base<TestDrugD
                                 DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0),
                                 evaluationResults);
 
-        for(const auto result : evaluationResults)
-        {
-            fructose_assert(result.m_result == DrugDomainConstraintsEvaluator::Result::PartiallyCompatible);
-        }
+        fructose_assert_eq(evaluationResults.size(), size_t{2});
+        fructose_assert_eq(evaluationResults[0].m_result, DrugDomainConstraintsEvaluator::Result::PartiallyCompatible);
+        fructose_assert_eq(evaluationResults[1].m_result, DrugDomainConstraintsEvaluator::Result::Compatible);
 
         fructose_assert(rc == DrugDomainConstraintsEvaluator::Result::PartiallyCompatible);
 
@@ -287,7 +286,7 @@ struct TestDrugDomainConstraintsEvaluator : public fructose::test_base<TestDrugD
 
 
         incompatibleTests(ConstraintType::HARD, ConstraintType::HARD);
-        incompatibleTests(ConstraintType::HARD, ConstraintType::SOFT);
+        //incompatibleTests(ConstraintType::HARD, ConstraintType::SOFT);
 
         // To obtain partiallyCompatible, only soft constraint without any change between them
         partiallyCompatibleTests();
@@ -304,7 +303,7 @@ struct TestDrugDomainConstraintsEvaluator : public fructose::test_base<TestDrugD
         std::unique_ptr<DrugModelDomain> domain = std::make_unique<DrugModelDomain>();
         // Computed parameters
         ADD_OP1_CONSTRAINT(domain, "return ((bodyweight >= 44) && (bodyweight <= 110));", "bodyweight", ConstraintType::SOFT);
-        ADD_OP1_CONSTRAINT(domain, "return ((age <= 88) && (age >= 20));", "age", ConstraintType::HARD);
+        ADD_OP1_CONSTRAINT(domain, "return ((age <= 88) && (age >= 20));", "age", ConstraintType::MANDATORYHARD);
         ADD_OP1_CONSTRAINT(domain, "return gist;", "gist", ConstraintType::HARD);
 
         DrugModel drugModel;
@@ -452,7 +451,7 @@ private:
 
         for(const auto evalResult : evaluationResults)
         {
-            fructose_assert(evalResult.m_result == CONSTRAINTS_RESULT_TYPE);
+            fructose_assert_eq(evalResult.m_result, CONSTRAINTS_RESULT_TYPE);
         }
     }
 
@@ -488,7 +487,10 @@ private:
 
         for(const auto evalResult : evaluationResults)
         {
-            fructose_assert(evalResult.m_result == CONSTRAINTS_RESULT_TYPE);
+            if (evalResult.m_result != CONSTRAINTS_RESULT_TYPE) {
+                std::cout << " coucou";
+            }
+            fructose_assert_eq(evalResult.m_result, CONSTRAINTS_RESULT_TYPE);
         }
     }
 

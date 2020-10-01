@@ -19,7 +19,7 @@ class TranslatedText
 
 };
 
-enum class ConstraintType {HARD, SOFT};
+enum class ConstraintType {HARD, SOFT, MANDATORYHARD};
 
 class Constraint
 {
