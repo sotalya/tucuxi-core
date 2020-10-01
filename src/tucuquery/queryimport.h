@@ -79,7 +79,7 @@ protected:
     // Methods to separate the creation of a ParametersData
     std::unique_ptr<DrugTreatmentData> createDrugTreatmentData(Tucuxi::Common::XmlDocument & _document) ;
     std::unique_ptr<PatientData> createPatientData(Common::XmlNodeIterator& _patientDataRootIterator) ;
-    unique_ptr<Core::PatientCovariate> createCovariateData(Common::XmlNodeIterator& _covariateDataRootIterator);
+    std::unique_ptr<Core::PatientCovariate> createCovariateData(Common::XmlNodeIterator& _covariateDataRootIterator);
     std::unique_ptr<DrugData> createDrugData(Common::XmlNodeIterator& _drugDataRootIterator) ;
     std::unique_ptr<Tucuxi::Core::Target> createTargetData(Common::XmlNodeIterator& _targetDataRootIterator) ;
     std::unique_ptr<Tucuxi::Core::Sample> createSampleData(Common::XmlNodeIterator& _sampleDataRootIterator, Common::XmlNodeIterator& _concentrationRootIterator) ;

@@ -43,11 +43,11 @@ public:
     ///
     /// \brief aucOverMicCalculator
     /// \param _target : The target in evaluation
-    /// \param cycle : Cycle containing times
+    /// \param _cycle : Cycle containing times
     /// \return double value corresponding to Area under Curve which is over the mic value
     ///
     double aucOverMicCalculator(const TargetEvent &_targetEvent,
-                                CycleData &cycle);
+                                CycleData &_cycle);
 
 protected:
 

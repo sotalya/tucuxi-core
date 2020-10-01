@@ -204,83 +204,83 @@ protected:
     }
 
     template<int from, int to>
-    struct setK1 {
-        static inline void apply(std::vector<double> &k1, double h, std::vector<double> &dcdt, std::vector<double> &c, std::vector<double> &concentrations) {
+    struct ComputeK1 {
+        static inline void apply(std::vector<double> &_k1, double _h, std::vector<double> &_dcdt, std::vector<double> &_c, std::vector<double> &_concentrations) {
             // Set k1's
-            k1[from] = h * dcdt[from];
-            c[from] = concentrations[from] + k1[from] / 2.0;
-            setK1<from + 1, to>::apply(k1, h, dcdt, c, concentrations);
+            _k1[from] = _h * _dcdt[from];
+            _c[from] = _concentrations[from] + _k1[from] / 2.0;
+            ComputeK1<from + 1, to>::apply(_k1, _h, _dcdt, _c, _concentrations);
         }
     };
 
     // Terminal case
     template<int from>
-    struct setK1<from, from> {
-        static inline void apply(std::vector<double> &k1, double h, std::vector<double> &dcdt, std::vector<double> &c, std::vector<double> &concentrations) {
-            k1[from] = h * dcdt[from];
-            c[from] = concentrations[from] + k1[from] / 2.0;
+    struct ComputeK1<from, from> {
+        static inline void apply(std::vector<double> &_k1, double _h, std::vector<double> &_dcdt, std::vector<double> &_c, std::vector<double> &_concentrations) {
+            _k1[from] = _h * _dcdt[from];
+            _c[from] = _concentrations[from] + _k1[from] / 2.0;
         }
     };
 
     template<int from, int to>
-    struct setK2 {
-        static inline void apply(std::vector<double> &k2, double h, std::vector<double> &dcdt, std::vector<double> &c, std::vector<double> &concentrations) {
+    struct ComputeK2 {
+        static inline void apply(std::vector<double> &_k2, double _h, std::vector<double> &_dcdt, std::vector<double> &_c, std::vector<double> &_concentrations) {
             // Set k1's
-            k2[from] = h * dcdt[from];
-            c[from] = concentrations[from] + k2[from] / 2.0;
-            setK1<from + 1, to>::apply(k2, h, dcdt, c, concentrations);
+            _k2[from] = _h * _dcdt[from];
+            _c[from] = _concentrations[from] + _k2[from] / 2.0;
+            ComputeK2<from + 1, to>::apply(_k2, _h, _dcdt, _c, _concentrations);
         }
     };
 
     // Terminal case
     template<int from>
-    struct setK2<from, from> {
-        static inline void apply(std::vector<double> &k2, double h, std::vector<double> &dcdt, std::vector<double> &c, std::vector<double> &concentrations) {
-            k2[from] = h * dcdt[from];
-            c[from] = concentrations[from] + k2[from] / 2.0;
+    struct ComputeK2<from, from> {
+        static inline void apply(std::vector<double> &_k2, double _h, std::vector<double> &_dcdt, std::vector<double> &_c, std::vector<double> &_concentrations) {
+            _k2[from] = _h * _dcdt[from];
+            _c[from] = _concentrations[from] + _k2[from] / 2.0;
         }
     };
 
     template<int from, int to>
-    struct setK3 {
-        static inline void apply(std::vector<double> &k3, double h, std::vector<double> &dcdt, std::vector<double> &c, std::vector<double> &concentrations) {
+    struct ComputeK3 {
+        static inline void apply(std::vector<double> &_k3, double _h, std::vector<double> &_dcdt, std::vector<double> &_c, std::vector<double> &_concentrations) {
             // Set k1's
-            k3[from] = h * dcdt[from];
-            c[from] = concentrations[from] + k3[from];
-            setK3<from + 1, to>::apply(k3, h, dcdt, c, concentrations);
+            _k3[from] = _h * _dcdt[from];
+            _c[from] = _concentrations[from] + _k3[from];
+            ComputeK3<from + 1, to>::apply(_k3, _h, _dcdt, _c, _concentrations);
         }
     };
 
     // Terminal case
     template<int from>
-    struct setK3<from, from> {
-        static inline void apply(std::vector<double> &k3, double h, std::vector<double> &dcdt, std::vector<double> &c, std::vector<double> &concentrations) {
-            k3[from] = h * dcdt[from];
-            c[from] = concentrations[from] + k3[from];
+    struct ComputeK3<from, from> {
+        static inline void apply(std::vector<double> &_k3, double _h, std::vector<double> &_dcdt, std::vector<double> &_c, std::vector<double> &_concentrations) {
+            _k3[from] = _h * _dcdt[from];
+            _c[from] = _concentrations[from] + _k3[from];
         }
     };
 
     template<int from, int to>
-    struct setK4 {
-        static inline void apply(std::vector<double> &k1, std::vector<double> &k2,
-                                 std::vector<double> &k3, std::vector<double> &k4,
-                                 double h, std::vector<double> &dcdt, std::vector<double> &concentrations) {
-            k4[from] = h * dcdt[from];
+    struct ComputeK4 {
+        static inline void apply(std::vector<double> &_k1, std::vector<double> &_k2,
+                                 std::vector<double> &_k3, std::vector<double> &_k4,
+                                 double _h, std::vector<double> &_dcdt, std::vector<double> &_concentrations) {
+            _k4[from] = _h * _dcdt[from];
             // and directly compute the concentration of each compartment
-            concentrations[from] = concentrations[from] + k1[from] / 6.0 + k2[from] / 3.0 + k3[from] / 3.0 + k4[from] / 6.0;
-            setK4<from + 1, to>::apply(k1, k2, k3, k4, h, dcdt, concentrations);
+            _concentrations[from] = _concentrations[from] + _k1[from] / 6.0 + _k2[from] / 3.0 + _k3[from] / 3.0 + _k4[from] / 6.0;
+            ComputeK4<from + 1, to>::apply(_k1, _k2, _k3, _k4, _h, _dcdt, _concentrations);
         }
     };
 
     // Terminal case
     template<int from>
-    struct setK4<from, from> {
-        static inline void apply(std::vector<double> &k1, std::vector<double> &k2,
-                                 std::vector<double> &k3, std::vector<double> &k4,
-                                 double h, std::vector<double> &dcdt, std::vector<double> &concentrations) {
-            k4[from] = h * dcdt[from];
+    struct ComputeK4<from, from> {
+        static inline void apply(std::vector<double> &_k1, std::vector<double> &_k2,
+                                 std::vector<double> &_k3, std::vector<double> &_k4,
+                                 double _h, std::vector<double> &_dcdt, std::vector<double> &_concentrations) {
+            _k4[from] = _h * _dcdt[from];
             // and directly compute the concentration of each compartment
-            concentrations[from] = concentrations[from] + k1[from] / 6.0 + k2[from] / 3.0 + k3[from] / 3.0 + k4[from] / 6.0;
+            _concentrations[from] = _concentrations[from] + _k1[from] / 6.0 + _k2[from] / 3.0 + _k3[from] / 3.0 + _k4[from] / 6.0;
         }
     };
 
@@ -352,23 +352,23 @@ protected:
             static_cast<ImplementationClass*>(this)->derive(t, concentrations, dcdt);
 
             // Set k1's
-            setK1<0, ResidualSize - 1>::apply(k1, h, dcdt, c, concentrations);
+            ComputeK1<0, ResidualSize - 1>::apply(k1, h, dcdt, c, concentrations);
 
             static_cast<ImplementationClass*>(this)->derive(t + h / 2.0, c, dcdt);
 
 
             // Set k2's
-            setK2<0, ResidualSize - 1>::apply(k2, h, dcdt, c, concentrations);
+            ComputeK2<0, ResidualSize - 1>::apply(k2, h, dcdt, c, concentrations);
 
             static_cast<ImplementationClass*>(this)->derive(t + h / 2.0, c, dcdt);
 
             // Set k3's
-            setK3<0, ResidualSize - 1>::apply(k3, h, dcdt, c, concentrations);
+            ComputeK3<0, ResidualSize - 1>::apply(k3, h, dcdt, c, concentrations);
 
             static_cast<ImplementationClass*>(this)->derive(t + h, c, dcdt);
 
             // Set k4's
-            setK4<0, ResidualSize - 1>::apply(k1, k2, k3, k4, h, dcdt, concentrations);
+            ComputeK4<0, ResidualSize - 1>::apply(k1, k2, k3, k4, h, dcdt, concentrations);
 
             t += h;
         }

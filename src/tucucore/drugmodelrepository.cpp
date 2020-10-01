@@ -9,10 +9,10 @@
 
 
 #ifdef _WIN32
-const char PATH_SEPARATOR = '\\';
+static const char PATH_SEPARATOR = '\\';
 #include <windows.h>
 #else
-const char PATH_SEPARATOR = '/';
+static const char PATH_SEPARATOR = '/';
 #include <sys/types.h>
 #include <dirent.h>
 #endif

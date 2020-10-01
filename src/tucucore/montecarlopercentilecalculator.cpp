@@ -178,9 +178,9 @@ ComputingStatus MonteCarloPercentileCalculatorBase::computePredictions(
     selectRecordedIntakes(_recordedIntakes, _intakes, _recordFrom, _recordTo);
 
     // Set the size of vector "concentrations"
-    for (auto & _recordedIntake : _recordedIntakes) {
+    for (const auto & recordedIntake : _recordedIntakes) {
         std::vector< std::vector<Concentration> > vec;
-        for (int point = 0; point < _recordedIntake.getNbPoints(); point++) {
+        for (int point = 0; point < recordedIntake.getNbPoints(); point++) {
             vec.push_back(std::vector<Concentration>(_nbPatients));
         }
         _concentrations.push_back(vec);
@@ -348,8 +348,8 @@ ComputingStatus MonteCarloPercentileCalculatorBase::sortAndExtractPercentiles(
 
     // We create the vector of positions corresponding to the percentiles ranks.
     // Be careful, here we multiply by realPatientNumber
-    for (double _percentileRank : _percentileRanks) {
-        positions.push_back( static_cast<int>(static_cast<double>(_percentileRank) / 100.0
+    for (double percentileRank : _percentileRanks) {
+        positions.push_back( static_cast<int>(static_cast<double>(percentileRank) / 100.0
                                               * static_cast<double>(realPatientNumber)));
 
     }
@@ -1000,8 +1000,8 @@ ComputingStatus AprioriPercentileCalculatorMulti::calculate(
 
     std::vector<AnalyteGroupId> analyteGroupIds;
 
-    for (const auto & _parameter : _parameters) {
-        analyteGroupIds.push_back(_parameter.first);
+    for (const auto & parameter : _parameters) {
+        analyteGroupIds.push_back(parameter.first);
     }
 
     std::vector< std::vector< std::vector< std::vector<Concentration> > > > concentrations;
@@ -1080,8 +1080,8 @@ ComputingStatus AposterioriMonteCarloPercentileCalculatorMulti::calculate(
 
     std::vector<AnalyteGroupId> analyteGroupIds;
 
-    for (const auto & _parameter : _parameters) {
-        analyteGroupIds.push_back(_parameter.first);
+    for (const auto & parameter : _parameters) {
+        analyteGroupIds.push_back(parameter.first);
     }
 
     std::vector< std::vector< std::vector< std::vector<Concentration> > > > concentrations;

@@ -218,7 +218,7 @@ bool CovariateExtractor::computeEvents(const std::map<DateTime, std::vector<std:
                         Value firstValue = stringToValue((**(std::prev(pvIt)))->getValue(),
                                                          (**(std::prev(pvIt)))->getDataType());
 
-                        Value SecondValue = stringToValue((**(pvIt))->getValue(),
+                        Value secondValue = stringToValue((**(pvIt))->getValue(),
                                                           (**(pvIt))->getDataType());
 
                         if (!interpolateValues(unitManager.convertToUnit(
@@ -227,7 +227,7 @@ bool CovariateExtractor::computeEvents(const std::map<DateTime, std::vector<std:
                                                    getFinalUnit(cvName)),                           // val1
                                                (**(std::prev(pvIt)))->getEventTime(),               // date1
                                                unitManager.convertToUnit(
-                                                   SecondValue,
+                                                   secondValue,
                                                    (**(pvIt))->getUnit(),
                                                    getFinalUnit(cvName)),                           // val2
                                                (**(pvIt))->getEventTime(),                          // date2
@@ -572,7 +572,7 @@ void CovariateExtractor::sortPatientVariates()
     }
 }
 
-const Unit CovariateExtractor::getFinalUnit(const std::string _cvName) const{
+const Unit CovariateExtractor::getFinalUnit(const std::string &_cvName) const{
     for(const auto &covInDM : m_defaults){
         if(_cvName == covInDM->getId()){
             return covInDM->getUnit();

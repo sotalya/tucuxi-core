@@ -486,7 +486,7 @@ unique_ptr<Core::DosageTimeRange> QueryImport::createDosageTimeRange(Common::Xml
         return nullptr;
     }
 
-    if (dynamic_cast<Core::DosageSteadyState*>(pDosage.get())) {
+    if (dynamic_cast<Core::DosageSteadyState*>(pDosage.get()) != nullptr) {
         start = DateTime::getUndefined();
     }
 
@@ -1025,7 +1025,7 @@ Tucuxi::Core::BestCandidatesOption QueryImport::getChildBestCandidatesOptionEnum
 
     Common::XmlNodeIterator optionsRootIterator = _rootIterator->getChildren(_childName);
 
-    Common::XmlNodeIterator BestCandidatesOptionRootIterator = optionsRootIterator->getChildren(BEST_CANDIDATE_OPTION_NODE);
+    Common::XmlNodeIterator bestCandidatesOptionRootIterator = optionsRootIterator->getChildren(BEST_CANDIDATE_OPTION_NODE);
 
     static std::map<std::string,Tucuxi::Core::BestCandidatesOption> m =
     {
@@ -1034,13 +1034,13 @@ Tucuxi::Core::BestCandidatesOption QueryImport::getChildBestCandidatesOptionEnum
         {"bestDosagePerInterval", Tucuxi::Core::BestCandidatesOption::BestDosagePerInterval}
     };
 
-    string value = BestCandidatesOptionRootIterator->getValue();
+    string value = bestCandidatesOptionRootIterator->getValue();
     auto it = m.find(value);
     if (it != m.end()) {
         return it->second;
     }
 
-    setNodeError(BestCandidatesOptionRootIterator);
+    setNodeError(bestCandidatesOptionRootIterator);
 
     return Tucuxi::Core::BestCandidatesOption::BestDosage;
 }

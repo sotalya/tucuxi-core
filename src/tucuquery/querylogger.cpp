@@ -8,12 +8,12 @@
 #ifdef WIN32
 #include "Windows.h"
 #include "direct.h"
-const char PATH_SEPARATOR = '\\';
+static const char PATH_SEPARATOR = '\\';
 #define MKDIR(x) _mkdir(x)
 #else
-const char PATH_SEPARATOR = '/';
+static const char PATH_SEPARATOR = '/';
 #include <sys/stat.h>
-#define MKDIR(x) mkdir(x, 0755);
+#define MKDIR(x) mkdir(x, 0755)
 #endif
 
 using namespace std;

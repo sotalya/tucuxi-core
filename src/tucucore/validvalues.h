@@ -5,8 +5,6 @@
 #include "tucucore/drugdefinitions.h"
 
 
-using Tucuxi::Common::Unit;
-
 namespace Tucuxi {
 namespace Core {
 

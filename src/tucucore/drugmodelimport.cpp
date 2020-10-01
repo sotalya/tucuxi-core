@@ -27,19 +27,19 @@ namespace Core {
 
 
 /// Function to delete a pointer if it is not nullptr
-template<typename T> inline void DELETE_IF_NON_NULL(T p)
+template<typename T> inline void DELETE_IF_NON_NULL(T _p)
 {
-    if (p != nullptr) {
-        delete p;
+    if (_p != nullptr) {
+        delete _p;
     }
 }
 
 /// Function to delete a vector of pointers.
 /// It deletes every pointed value and emptied the vector.
-template<typename T> inline void DELETE_PVECTOR(T v) {
-    while (!v.empty()) {
-        delete v.back();
-        v.pop_back();
+template<typename T> inline void DELETE_PVECTOR(T _v) {
+    while (!_v.empty()) {
+        delete _v.back();
+        _v.pop_back();
     }
 }
 
@@ -1948,10 +1948,10 @@ FullFormulationAndRoute* DrugModelImport::extractFullFormulationAndRoute(
                 else if (nName == "availableDoses") {
                     availableDoses = extractValidDoses(dosageIt);
                 }
-                else if (nName == "intervals") {
+                else if ((nName == "availableIntervals") || (nName == "intervals")) {
                     intervals = extractValidDurations(dosageIt);
                 }
-                else if (nName == "infusions") {
+                else if ((nName == "availableInfusions") || (nName == "infusions")) {
                     infusions = extractValidDurations(dosageIt);
                 }
                 else {

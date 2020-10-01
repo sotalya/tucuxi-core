@@ -37,8 +37,8 @@ ComputingStatus ConcentrationCalculator::computeConcentrations(const Concentrati
 
     // First calculate the size of residuals
     unsigned int residualSize = 0;
-    for (const auto & _intake : _intakes) {
-        std::shared_ptr<IntakeIntervalCalculator> pCalculator = _intake.getCalculator();
+    for (const auto & intake : _intakes) {
+        std::shared_ptr<IntakeIntervalCalculator> pCalculator = intake.getCalculator();
         unsigned int s = pCalculator->getResidualSize();
         residualSize = std::max(residualSize, s);
     }
@@ -176,8 +176,8 @@ ComputingStatus ConcentrationCalculator::computeConcentrationsAtSteadyState(
 
     // First calculate the size of residuals
     unsigned int residualSize = 0;
-    for (const auto & _intake : _intakes) {
-        std::shared_ptr<IntakeIntervalCalculator> pCalculator = _intake.getCalculator();
+    for (const auto & intake : _intakes) {
+        std::shared_ptr<IntakeIntervalCalculator> pCalculator = intake.getCalculator();
         unsigned int s = pCalculator->getResidualSize();
         residualSize = std::max(residualSize, s);
     }
