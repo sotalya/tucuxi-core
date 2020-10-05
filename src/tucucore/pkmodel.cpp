@@ -190,7 +190,7 @@ bool defaultPopulate(PkModelCollection &_collection)
 
     {
         std::shared_ptr<PkModel> sharedPkModel;
-        sharedPkModel = std::make_shared<PkModel>("michaelismenten.1comp.macro");
+        sharedPkModel = std::make_shared<PkModel>("michaelismenten.1comp");
 
         rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, RkMichaelisMentenOneCompExtra::getCreator());
         rc &= sharedPkModel->addParameterList(AbsorptionModel::Extravascular, RkMichaelisMentenOneCompExtra::getParametersId());

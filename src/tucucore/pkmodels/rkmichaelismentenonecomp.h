@@ -38,7 +38,6 @@ protected:
     Value m_F;  /// Biodisponibility
     Value m_Ka; /// Absorption rate constant
     Value m_V;  /// Volume of the compartment
-    Value m_Ke; /// Elimination constant rate = Cl/V where Cl is the clearance and V is the volume of the compartment
     Value m_Km;
     Value m_Vmax;
     Value m_Tinf;

@@ -39,8 +39,9 @@ bool RkMichaelisMentenOneCompExtra::checkInputs(const IntakeEvent& _intakeEvent,
     bOK &= checkPositiveValue(m_D, "The dose");
     bOK &= checkStrictlyPositiveValue(m_V, "The volume");
     bOK &= checkStrictlyPositiveValue(m_F, "The biodisponibility");
-    bOK &= checkStrictlyPositiveValue(m_Ke, "The absorption constant");
-    bOK &= checkStrictlyPositiveValue(m_Ka, "The clearance");
+    bOK &= checkStrictlyPositiveValue(m_Km, "The Michaelis Menten constant");
+    bOK &= checkStrictlyPositiveValue(m_Vmax, "VMax");
+    bOK &= checkStrictlyPositiveValue(m_Ka, "The absorption rate");
     bOK &= checkCondition(m_nbPoints >= 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
@@ -68,7 +69,7 @@ bool RkMichaelisMentenOneCompBolus::checkInputs(const IntakeEvent& _intakeEvent,
     m_Km = _parameters.getValue(ParameterId::Km);
     m_Vmax = _parameters.getValue(ParameterId::Vmax);
     m_F = _parameters.getValue(ParameterId::F);
-    m_Ka = _parameters.getValue(ParameterId::Ka);
+    m_Ka = 0.0; // _parameters.getValue(ParameterId::Ka);
     m_nbPoints = _intakeEvent.getNbPoints();
     m_Int = (_intakeEvent.getInterval()).toHours();
 
@@ -77,8 +78,9 @@ bool RkMichaelisMentenOneCompBolus::checkInputs(const IntakeEvent& _intakeEvent,
     bOK &= checkPositiveValue(m_D, "The dose");
     bOK &= checkStrictlyPositiveValue(m_V, "The volume");
     bOK &= checkStrictlyPositiveValue(m_F, "The biodisponibility");
-    bOK &= checkStrictlyPositiveValue(m_Ke, "The absorption constant");
-    bOK &= checkStrictlyPositiveValue(m_Ka, "The clearance");
+    bOK &= checkStrictlyPositiveValue(m_Km, "The Michaelis Menten constant");
+    bOK &= checkStrictlyPositiveValue(m_Vmax, "VMax");
+    bOK &= checkPositiveValue(m_Ka, "The absorption rate");
     bOK &= checkCondition(m_nbPoints >= 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
@@ -115,8 +117,9 @@ bool RkMichaelisMentenOneCompInfusion::checkInputs(const IntakeEvent& _intakeEve
     bOK &= checkPositiveValue(m_D, "The dose");
     bOK &= checkStrictlyPositiveValue(m_V, "The volume");
     bOK &= checkStrictlyPositiveValue(m_F, "The biodisponibility");
-    bOK &= checkStrictlyPositiveValue(m_Ke, "The absorption constant");
-    bOK &= checkStrictlyPositiveValue(m_Ka, "The clearance");
+    bOK &= checkStrictlyPositiveValue(m_Km, "The Michaelis Menten constant");
+    bOK &= checkStrictlyPositiveValue(m_Vmax, "VMax");
+    bOK &= checkStrictlyPositiveValue(m_Ka, "The absorption rate");
     bOK &= checkCondition(m_nbPoints >= 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 

@@ -109,6 +109,9 @@
 #if defined(test_drug_vancomycin) || !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "drugmodels/test_drug_vancomycin.h"
 #endif
+#if defined(test_michaelismenten1comp) || !defined(DO_NOT_COMPILE_ALL_TESTS)
+#include "drugmodels/test_michaelismenten1comp.h"
+#endif
 
 int main(int argc, char** argv)
 {
@@ -677,6 +680,24 @@ int main(int argc, char** argv)
         std::cout << "Multi analytes multi active moieties test succeeded\n";
     }
 #endif
+
+
+#if defined(test_michaelismenten1comp) || !defined(DO_NOT_COMPILE_ALL_TESTS)
+    // --- Multi analytes multi active moieties tests --- //
+    TestMichaelisMenten1comp michaelisMentent1compTests;
+
+    michaelisMentent1compTests.add_test("testMichaelisMenten1comp", &TestMichaelisMenten1comp::testMichaelisMenten1comp);
+
+    res = michaelisMentent1compTests.run(argc, argv);
+    tot_res |= res;
+    if (res != 0) {
+        std::cerr << "Michaelis Menten 1 comp test failed\n";
+    }
+    else {
+        std::cout << "Michaelis Menten 1 comp test succeeded\n";
+    }
+#endif
+
 
 
     // Delete the logger to avoid a warning when using valgrind --leak-check=full
