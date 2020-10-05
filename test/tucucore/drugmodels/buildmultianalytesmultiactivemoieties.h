@@ -67,7 +67,7 @@ public:
             analyteSet0->setId("analyteSet0");
             analyteSet0->setPkModelId("test.constantelimination");
 
-            std::unique_ptr<Analyte> analyte0 = std::make_unique<Analyte>("analyte0", Unit("mg/l"), MolarMass(10.0, Unit("mol/l")));
+            std::unique_ptr<Analyte> analyte0 = std::make_unique<Analyte>("analyte0", TucuUnit("mg/l"), MolarMass(10.0, TucuUnit("mol/l")));
 
 
 
@@ -121,7 +121,7 @@ public:
             analyteSet1->setId("analyteSet1");
             analyteSet1->setPkModelId("test.constantelimination");
 
-            std::unique_ptr<Analyte> analyte1 = std::make_unique<Analyte>("analyte1", Unit("mg/l"), MolarMass(10.0, Unit("mol/l")));
+            std::unique_ptr<Analyte> analyte1 = std::make_unique<Analyte>("analyte1", TucuUnit("mg/l"), MolarMass(10.0, TucuUnit("mol/l")));
 
 
 
@@ -204,7 +204,7 @@ public:
             std::unique_ptr<AnalyteConversion> analyteConversion1 = std::make_unique<AnalyteConversion>("analyte1", _conversionFactor1);
             formulationAndRoute->addAnalyteConversion(std::move(analyteConversion1));
 
-            ValidDoses *validDoses = new ValidDoses(Unit("mg"), std::make_unique<PopulationValue>(400));
+            ValidDoses *validDoses = new ValidDoses(TucuUnit("mg"), std::make_unique<PopulationValue>(400));
             std::unique_ptr<ValidValuesFixed> specificDoses = std::make_unique<ValidValuesFixed>();
             specificDoses->addValue(DoseValue(100));
             specificDoses->addValue(DoseValue(200));
@@ -228,7 +228,7 @@ public:
             fixedIntervals->addValue(12);
             fixedIntervals->addValue(24);
 
-            ValidDurations *validIntervals = new ValidDurations(Unit("h"), std::make_unique<PopulationValue>("", 24));
+            ValidDurations *validIntervals = new ValidDurations(TucuUnit("h"), std::make_unique<PopulationValue>("", 24));
             validIntervals->addValues(std::unique_ptr<IValidValues>(fixedIntervals));
 
 
@@ -242,9 +242,9 @@ public:
 
         // Arbitrary 20h half life. To be checked. Multiplier of 20
         // With a multiplier of 10 it fails
-        std::unique_ptr<HalfLife> halfLife = std::make_unique<HalfLife>("halflife", 20, Tucuxi::Common::Unit("h"), 20);
+        std::unique_ptr<HalfLife> halfLife = std::make_unique<HalfLife>("halflife", 20, Tucuxi::Common::TucuUnit("h"), 20);
         timeConsiderations->setHalfLife(std::move(halfLife));
-        std::unique_ptr<OutdatedMeasure> outdatedMeasure = std::make_unique<OutdatedMeasure>("id", 0.0, Unit());
+        std::unique_ptr<OutdatedMeasure> outdatedMeasure = std::make_unique<OutdatedMeasure>("id", 0.0, TucuUnit());
         timeConsiderations->setOutdatedMeasure(std::move(outdatedMeasure));
         model->setTimeConsiderations(std::move(timeConsiderations));
 
@@ -257,7 +257,7 @@ public:
         std::vector<AnalyteId> analyteList;
         analyteList.push_back(AnalyteId("analyte0"));
         analyteList.push_back(AnalyteId("analyte1"));
-        std::unique_ptr<ActiveMoiety> activeMoiety = std::make_unique<ActiveMoiety>(ActiveMoietyId("activeMoietyMulti"), Unit("mg/l"), analyteList, std::move(activeMoietyOperation));
+        std::unique_ptr<ActiveMoiety> activeMoiety = std::make_unique<ActiveMoiety>(ActiveMoietyId("activeMoietyMulti"), TucuUnit("mg/l"), analyteList, std::move(activeMoietyOperation));
 
         Tucuxi::Common::TranslatableString activeMoietyName;
         activeMoietyName.setString("Active moiety name 2");

@@ -36,7 +36,7 @@ public:
     /// \param _route Route of administration.
     /// \param _infusionTime Duration in case of an infusion.
     /// \param _nbPoints Number of points to compute for this intake.
-    IntakeEvent(DateTime _time, Duration _offsetTime, DoseValue _dose, Unit _doseUnit, Duration _interval,
+    IntakeEvent(DateTime _time, Duration _offsetTime, DoseValue _dose, TucuUnit _doseUnit, Duration _interval,
                 FormulationAndRoute _formulationAndRoute,
                 AbsorptionModel _route, Duration _infusionTime, int _nbPoints)
         : TimedEvent(_time), 
@@ -211,7 +211,7 @@ private:
     /// The dose value
     DoseValue m_dose;
     /// The unit of the dose
-    Unit m_doseUnit;
+    TucuUnit m_doseUnit;
     /// Number of hours since the first dose
     Duration m_offsetTime;
     /// Number of points to compute for this intake

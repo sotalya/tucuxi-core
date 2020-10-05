@@ -63,7 +63,7 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
         // Add a treatment intake every ten days in June
         // 200mg via a intravascular at 08h30, starting the 01.06
         LastingDose periodicDose(DoseValue(200.0),
-                                 Unit("mg"),
+                                 TucuUnit("mg"),
                                  _route,
                                  Duration(),
                                  Duration(std::chrono::hours(6)));
@@ -118,9 +118,9 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
 
             buildDrugTreatment(drugTreatment, route);
 
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covS", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covA", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covR", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covS", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covA", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covR", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
 
             RequestResponseId requestResponseId = "1";
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
@@ -253,9 +253,9 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
 
             buildDrugTreatment(drugTreatment, route);
 
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covS", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covA", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covR", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covS", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covA", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covR", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
 
             RequestResponseId requestResponseId = "1";
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
@@ -432,9 +432,9 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
 
             buildDrugTreatment(drugTreatment, route);
 
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covS", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covA", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covR", "0.0", DataType::Double, Unit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covS", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covA", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covR", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
 
             RequestResponseId requestResponseId = "1";
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);

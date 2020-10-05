@@ -69,7 +69,7 @@ DosageTimeRange *ComputingAdjustments::createSteadyStateDosage(const SimpleDosag
 ComputingStatus ComputingAdjustments::buildCandidates(const FullFormulationAndRoute* _formulationAndRoute, std::vector<ComputingAdjustments::SimpleDosageCandidate> &_candidates)
 {
     std::vector<Value> doseValues;
-    Unit doseUnit;
+    TucuUnit doseUnit;
     std::vector<Duration> intervalValues;
     std::vector<Duration> infusionTimes;
 
@@ -131,7 +131,7 @@ ComputingStatus ComputingAdjustments::buildCandidatesForInterval(const FullFormu
                                                                  std::vector<ComputingAdjustments::SimpleDosageCandidate> &_candidates)
 {
     std::vector<Value> doseValues;
-    Unit doseUnit;
+    TucuUnit doseUnit;
     std::vector<Duration> infusionTimes;
 
     const ValidDoses * doses = _formulationAndRoute->getValidDoses();
@@ -572,7 +572,7 @@ ComputingStatus ComputingAdjustments::compute(
                     DateTime start = intakeSeriesPerGroup[analyteGroupId][i].getEventTime();
                     DateTime end = start + std::chrono::milliseconds(static_cast<int>(times.back()) * 1000 * 3600);
                     if (start >= _traits->getAdjustmentTime()) {
-                        CycleData cycle(start, end, Unit("ug/l"));
+                        CycleData cycle(start, end, TucuUnit("ug/l"));
                         cycle.addData(times, activeMoietiesPredictions[0]->getValues()[i]);
 
                         AnalyteGroupId analyteGroupId = _request.getDrugModel().getAnalyteSets()[0]->getId();
@@ -747,7 +747,7 @@ ComputingStatus ComputingAdjustments::addRest(DosageAdjustment &_dosage,
     if (intervals != nullptr) {
         intervalValues = intervals->getDurations();
     }
-    Unit dUnit("ug");
+    TucuUnit dUnit("ug");
     for (auto interval : intervalValues) {
         candidates.push_back({fullFormulationAndRoute->getFormulationAndRoute(), 0, dUnit, interval, Duration(std::chrono::hours(0))});
     }
@@ -1104,7 +1104,7 @@ ComputingStatus ComputingAdjustments::generatePrediction(DosageAdjustment &_dosa
             DateTime start = recordedIntakes[i].getEventTime();
             DateTime end = start + std::chrono::milliseconds(static_cast<int>(times.back()) * 1000 * 3600);
             if (start >= _traits->getAdjustmentTime()) {
-                CycleData cycle(start, end, Unit("ug/l"));
+                CycleData cycle(start, end, TucuUnit("ug/l"));
                 cycle.addData(times, activeMoietiesPredictions[0]->getValues()[i]);
 
                 AnalyteGroupId analyteGroupId = _request.getDrugModel().getAnalyteSets()[0]->getId();

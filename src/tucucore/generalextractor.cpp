@@ -27,16 +27,16 @@ GeneralExtractor::GeneralExtractor()
 Duration GeneralExtractor::secureStartDuration(const HalfLife &_halfLife)
 {
     Duration duration;
-    if (_halfLife.getUnit() == Unit("d")) {
+    if (_halfLife.getUnit() == TucuUnit("d")) {
         duration = Duration(24h) * _halfLife.getValue() * _halfLife.getMultiplier();
     }
-    else if (_halfLife.getUnit() == Unit("h")) {
+    else if (_halfLife.getUnit() == TucuUnit("h")) {
         duration = Duration(1h) * _halfLife.getValue() * _halfLife.getMultiplier();
     }
-    else if (_halfLife.getUnit() == Unit("min")) {
+    else if (_halfLife.getUnit() == TucuUnit("min")) {
         duration = Duration(1min) * _halfLife.getValue() * _halfLife.getMultiplier();
     }
-    else if (_halfLife.getUnit() == Unit("s")) {
+    else if (_halfLife.getUnit() == TucuUnit("s")) {
         duration = Duration(1s) * _halfLife.getValue() * _halfLife.getMultiplier();
     }
     return duration;
@@ -240,7 +240,7 @@ ComputingStatus GeneralExtractor::generalExtractions(const ComputingTraitStandar
 
             DateTime start = lastIntake->getEventTime() + lastIntake->getInterval();
             Value dose = 0.0;
-            Unit doseValue("-");
+            TucuUnit doseValue("-");
 
             auto absorptionModel = lastIntake->getRoute();
 

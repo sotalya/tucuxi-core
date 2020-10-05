@@ -129,7 +129,7 @@ public:
 
         // Arbitrary 20h half life. To be checked. Multiplier of 20
         // With a multiplier of 10 it fails
-        std::unique_ptr<HalfLife> halfLife = std::make_unique<HalfLife>("halflife", 20, Tucuxi::Common::Unit("h"), 20);
+        std::unique_ptr<HalfLife> halfLife = std::make_unique<HalfLife>("halflife", 20, Tucuxi::Common::TucuUnit("h"), 20);
         timeConsiderations->setHalfLife(std::move(halfLife));
         model->setTimeConsiderations(std::move(timeConsiderations));
 
@@ -152,7 +152,7 @@ public:
             std::unique_ptr<FullFormulationAndRoute> formulationAndRoute(new FullFormulationAndRoute(formulationSpecs, "extraId"));
             formulationAndRoute->addAssociation(std::unique_ptr<AnalyteSetToAbsorptionAssociation>(association));
 
-            ValidDoses *validDoses = new ValidDoses(Unit("mg"), std::make_unique<PopulationValue>(400));
+            ValidDoses *validDoses = new ValidDoses(TucuUnit("mg"), std::make_unique<PopulationValue>(400));
             std::unique_ptr<ValidValuesFixed> specificDoses = std::make_unique<ValidValuesFixed>();
             specificDoses->addValue(DoseValue(100));
             specificDoses->addValue(DoseValue(200));
@@ -171,7 +171,7 @@ public:
             fixedIntervals->addValue(12);
             fixedIntervals->addValue(24);
 
-            ValidDurations *validIntervals = new ValidDurations(Unit("h"), std::make_unique<PopulationValue>("", 24));
+            ValidDurations *validIntervals = new ValidDurations(TucuUnit("h"), std::make_unique<PopulationValue>("", 24));
             validIntervals->addValues(std::unique_ptr<IValidValues>(fixedIntervals));
 
 
@@ -199,7 +199,7 @@ public:
             formulationAndRoute->addAssociation(std::unique_ptr<AnalyteSetToAbsorptionAssociation>(association));
 
 
-            std::unique_ptr<ValidDoses> validDoses = std::make_unique<ValidDoses>(Unit("mg"), std::make_unique<PopulationValue>(400));
+            std::unique_ptr<ValidDoses> validDoses = std::make_unique<ValidDoses>(TucuUnit("mg"), std::make_unique<PopulationValue>(400));
             std::unique_ptr<ValidValuesFixed> specificDoses = std::make_unique<ValidValuesFixed>();
             specificDoses->addValue(DoseValue(100));
             specificDoses->addValue(DoseValue(200));
@@ -217,7 +217,7 @@ public:
             fixedIntervals->addValue(12);
             fixedIntervals->addValue(24);
 
-            ValidDurations *validIntervals = new ValidDurations(Unit("h"), std::make_unique<PopulationValue>("", 24));
+            ValidDurations *validIntervals = new ValidDurations(TucuUnit("h"), std::make_unique<PopulationValue>("", 24));
             validIntervals->addValues(std::unique_ptr<IValidValues>(fixedIntervals));
             formulationAndRoute->setValidIntervals(std::unique_ptr<ValidDurations>(validIntervals));
 
@@ -227,7 +227,7 @@ public:
             fixedInfusions->addValue(0.5);
             fixedInfusions->addValue(1);
 
-            ValidDurations *validInfusionTimes = new ValidDurations(Unit("h"), std::make_unique<PopulationValue>("", 1));
+            ValidDurations *validInfusionTimes = new ValidDurations(TucuUnit("h"), std::make_unique<PopulationValue>("", 1));
             validInfusionTimes->addValues(std::unique_ptr<IValidValues>(fixedInfusions));
             formulationAndRoute->setValidInfusionTimes(std::unique_ptr<ValidDurations>(validInfusionTimes));
 
@@ -251,7 +251,7 @@ public:
             std::unique_ptr<FullFormulationAndRoute> formulationAndRoute(new FullFormulationAndRoute(formulationSpecs, "infuId"));
             formulationAndRoute->addAssociation(std::unique_ptr<AnalyteSetToAbsorptionAssociation>(association));
 
-            std::unique_ptr<ValidDoses> validDoses = std::make_unique<ValidDoses>(Unit("mg"), std::make_unique<PopulationValue>(400));
+            std::unique_ptr<ValidDoses> validDoses = std::make_unique<ValidDoses>(TucuUnit("mg"), std::make_unique<PopulationValue>(400));
             std::unique_ptr<ValidValuesFixed> specificDoses = std::make_unique<ValidValuesFixed>();
             specificDoses->addValue(DoseValue(100));
             specificDoses->addValue(DoseValue(200));
@@ -281,7 +281,7 @@ public:
             fixedIntervals->addValue(12);
             fixedIntervals->addValue(24);
 
-            ValidDurations *validIntervals = new ValidDurations(Unit("h"), std::make_unique<PopulationValue>("", 24));
+            ValidDurations *validIntervals = new ValidDurations(TucuUnit("h"), std::make_unique<PopulationValue>("", 24));
             validIntervals->addValues(std::unique_ptr<IValidValues>(fixedIntervals));
             formulationAndRoute->setValidIntervals(std::unique_ptr<ValidDurations>(validIntervals));
 
@@ -291,7 +291,7 @@ public:
             fixedInfusions->addValue(0.5);
             fixedInfusions->addValue(1);
 
-            ValidDurations *validInfusionTimes = new ValidDurations(Unit("h"), std::make_unique<PopulationValue>("", 1));
+            ValidDurations *validInfusionTimes = new ValidDurations(TucuUnit("h"), std::make_unique<PopulationValue>("", 1));
             validInfusionTimes->addValues(std::unique_ptr<IValidValues>(fixedInfusions));
             formulationAndRoute->setValidInfusionTimes(std::unique_ptr<ValidDurations>(validInfusionTimes));
 

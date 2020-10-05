@@ -42,7 +42,7 @@ class CycleData
 {
 public:
     CycleData() {}
-    CycleData(const Tucuxi::Common::DateTime &_start, const Tucuxi::Common::DateTime &_end, const Unit &_unit)
+    CycleData(const Tucuxi::Common::DateTime &_start, const Tucuxi::Common::DateTime &_end, const TucuUnit &_unit)
         : m_start(_start), m_end(_end), m_unit(_unit)
     {
     }
@@ -81,7 +81,7 @@ public:
 
     /// \brief Unit of concentrations
     /// The area under curve corresponds to this unit times hours
-    Unit m_unit;
+    TucuUnit m_unit;
 
     /// \brief Pk parameter values for this cycle
     /// Can be used or not to store the values of the Pk parameters used for this cycle
@@ -136,7 +136,7 @@ public:
     std::vector<Concentrations> m_concentrations;
 
     /// Unit of concentrations
-    Unit m_unit;
+    TucuUnit m_unit;
 };
 
 ///

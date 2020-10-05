@@ -49,13 +49,13 @@ enum class AdministrationRoute
 class StandardTreatment
 {
 public:
-    StandardTreatment(bool _isFixedDuration = false, Value _duration = 0.0, Unit _unit = Unit("h")):
+    StandardTreatment(bool _isFixedDuration = false, Value _duration = 0.0, TucuUnit _unit = TucuUnit("h")):
         m_isFixedDuration(_isFixedDuration), m_duration(_duration), m_unit(_unit) {}
 
     bool getIsFixedDuration() const { return m_isFixedDuration;}
     //Tucuxi::Common::Duration getDuration() const { return m_duration;}
     Value getDuration() const { return m_duration;}
-    Unit getUnit() const { return m_unit;}
+    TucuUnit getUnit() const { return m_unit;}
 
     INVARIANTS(
             INVARIANT(Invariants::INV_STANDARDTREATMENT_0001, ((!m_isFixedDuration) || (m_duration > 0.0)), "A standard treatment duration is negative")
@@ -65,7 +65,7 @@ public:
 protected:
     bool m_isFixedDuration;
     Value m_duration;
-    Unit m_unit;
+    TucuUnit m_unit;
 };
 
 class AnalyteSetToAbsorptionAssociation

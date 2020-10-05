@@ -51,7 +51,7 @@ protected:
     std::string checkNodeIterator(Common::XmlNodeIterator _rootIterator, std::string _tagName);
 
     //Extract data from XML file
-    Unit extractUnit(Common::XmlNodeIterator _rootIterator, CheckUnit _checkUnit = CheckUnit::DoNotCheck);
+    TucuUnit extractUnit(Common::XmlNodeIterator _rootIterator, CheckUnit _checkUnit = CheckUnit::DoNotCheck);
     double extractDouble(Common::XmlNodeIterator _rootIterator);
     bool extractBool(Common::XmlNodeIterator _rootIterator);
     int extractInt(Common::XmlNodeIterator _rootIterator);
@@ -60,7 +60,7 @@ protected:
     std::string extractString(Common::XmlNodeIterator _rootIterator);
 
 
-    Unit getChildUnit(Common::XmlNodeIterator _rootIterator, const std::string& _childName, CheckUnit _checkunit = CheckUnit::DoNotCheck);
+    TucuUnit getChildUnit(Common::XmlNodeIterator _rootIterator, const std::string& _childName, CheckUnit _checkunit = CheckUnit::DoNotCheck);
     double getChildDouble(Common::XmlNodeIterator _rootIterator, const std::string& _childName);
     bool getChildBool(Common::XmlNodeIterator _rootIterator, const std::string& _childName);
     int getChildInt(Common::XmlNodeIterator _rootIterator, const std::string& _childName);

@@ -16,7 +16,7 @@ namespace Core {
 class ActiveMoiety
 {
 public:
-    ActiveMoiety(ActiveMoietyId _id, Unit _unit, std::vector<AnalyteId> _analyteIds,std::unique_ptr<Operation> _formula);
+    ActiveMoiety(ActiveMoietyId _id, TucuUnit _unit, std::vector<AnalyteId> _analyteIds,std::unique_ptr<Operation> _formula);
     ActiveMoiety();
 
     void addTarget(std::unique_ptr<TargetDefinition> _target) { m_targets.push_back(std::move(_target));}
@@ -30,7 +30,7 @@ public:
 
     void setName(const Tucuxi::Common::TranslatableString &_name) { m_name = _name;}
 
-    Unit getUnit() const { return m_unit;}
+    TucuUnit getUnit() const { return m_unit;}
 
     INVARIANTS(
             std::string id = m_id.toString();
@@ -44,7 +44,7 @@ public:
 protected:
     ActiveMoietyId m_id;
     Tucuxi::Common::TranslatableString m_name;
-    Unit m_unit;
+    TucuUnit m_unit;
     std::vector<AnalyteId> m_analyteIds;
     std::unique_ptr<Operation> m_formula;
 

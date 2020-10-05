@@ -19,14 +19,14 @@ namespace Common {
 ///
 /// TODO: List the known units
 ///
-class Unit
+class TucuUnit
 {
 public:
 
     ///
     /// \brief Constructs an empty unit
     ///
-    Unit() {}
+    TucuUnit() {}
 
     ///
     /// \brief Construct a unit from a string
@@ -36,14 +36,14 @@ public:
     /// can be performed later on depending on a specific type of unit required
     /// at a specific place in code.
     ///
-    Unit(std::string _unitString) : m_unitString(_unitString){}
+    TucuUnit(std::string _unitString) : m_unitString(_unitString){}
 
     ///
     /// \brief Compares two units for equality
     /// \param _rhs The unit to compare
     /// \return true if the units are equal, false else
     ///
-    inline bool operator==(const Unit& _rhs) const { return this->m_unitString == _rhs.m_unitString; }
+    inline bool operator==(const TucuUnit& _rhs) const { return this->m_unitString == _rhs.m_unitString; }
 
     ///
     /// \brief Converts the unit to a string
@@ -101,7 +101,7 @@ public:
     /// \return converted value
     ///
     template<UnitType unitType>
-    static double convertToUnit(double _value, Unit _initialUnit, Unit _finalUnit)
+    static double convertToUnit(double _value, TucuUnit _initialUnit, TucuUnit _finalUnit)
     {
         const auto conversionMap = getConversionMap().at(unitType);
 
@@ -118,7 +118,7 @@ public:
     }
 
     template<UnitType unitType>
-    static bool isOfType(Unit _unit)
+    static bool isOfType(TucuUnit _unit)
     {
         const auto conversionMap = getConversionMap().at(unitType);
 
@@ -134,9 +134,9 @@ public:
     /// \param _finalUnit
     /// \return converted value
     ///
-    static double convertToUnit(double _value, Unit _initialUnit, Unit _finalUnit);
+    static double convertToUnit(double _value, TucuUnit _initialUnit, TucuUnit _finalUnit);
 
-    static void logConversionError(const Unit& _initialUnit, const Unit& _finalUnit);
+    static void logConversionError(const TucuUnit& _initialUnit, const TucuUnit& _finalUnit);
 
     ///
     /// \brief Indicates if this unit is a known one
@@ -146,7 +146,7 @@ public:
     /// This function allows to check whether a unit can be used in a conversion.
     /// For instance, concentrations, doses, AUC and times have known units.
     ///
-    static bool isKnown(const Unit& _unit);
+    static bool isKnown(const TucuUnit& _unit);
 
     ///
     /// \brief Checks if a unit is compatible with another one
@@ -157,7 +157,7 @@ public:
     /// For instance, Unit("ug/l") is compatible with Unit("mg/l"),
     /// while Unit("ug/l") is not compatible with Unit("ug").
     ///
-    static bool isCompatible(const Unit& _unit1, const Unit& _unit2);
+    static bool isCompatible(const TucuUnit& _unit1, const TucuUnit& _unit2);
 
     ///
     /// \brief Checks if a unit is tolerate during import

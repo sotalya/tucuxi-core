@@ -118,8 +118,8 @@ public:
     /// \param _operation Operation used to validate the covariate value
     void setValidation(std::unique_ptr<Operation> _validation) { m_validation = std::move(_validation);}
 
-    void setUnit(Unit _unit) { m_unit = _unit;}
-    Unit getUnit() const { return m_unit;}
+    void setUnit(TucuUnit _unit) { m_unit = _unit;}
+    TucuUnit getUnit() const { return m_unit;}
 
     INVARIANTS(
             INVARIANT(Invariants::INV_PARAMETERDEFINITION_0001, (m_id.size() > 0), "A parameter has no Id")
@@ -129,7 +129,7 @@ public:
 
 private:
     std::unique_ptr<ParameterVariability> m_variability;
-    Unit m_unit;
+    TucuUnit m_unit;
 
     /// \brief Operation to validate the value of the covariate
     std::unique_ptr<Operation> m_validation;

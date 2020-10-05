@@ -13,13 +13,13 @@ namespace Core {
 class HalfLife : public PopulationValue
 {
 public:
-    HalfLife(const std::string _id, Value _value, Unit _unit, double _multiplier, Operation *_operation = nullptr)
+    HalfLife(const std::string _id, Value _value, TucuUnit _unit, double _multiplier, Operation *_operation = nullptr)
         : PopulationValue(_id, _value, _operation),
           m_multiplier(_multiplier), m_unit(_unit)
     {}
 
     double getMultiplier() const { return m_multiplier;}
-    Unit getUnit() const { return m_unit;}
+    TucuUnit getUnit() const { return m_unit;}
 
     INVARIANTS(
             INVARIANT(Invariants::INV_HALFLIFE_0001, (m_multiplier > 0.0), "A half life has a negative multiplier")
@@ -29,7 +29,7 @@ public:
 private:
     double m_multiplier;
 
-    Unit m_unit;
+    TucuUnit m_unit;
 };
 
 class OutdatedMeasure : public PopulationValue
@@ -42,7 +42,7 @@ public:
     /// \param _operation Operation associated with the parameter.
     /// \param _unit Unit associated to the value.
     /// The operation has a default value of nullptr
-    OutdatedMeasure(const std::string &_id, const Value _value, Unit _unit, Operation *_operation = nullptr) :
+    OutdatedMeasure(const std::string &_id, const Value _value, TucuUnit _unit, Operation *_operation = nullptr) :
         PopulationValue(_id, _value, _operation), m_unit(_unit)
     {}
 
@@ -51,7 +51,7 @@ public:
     EMPTYINVARIANTS
 
 private:
-    Unit m_unit;
+    TucuUnit m_unit;
 
 };
 

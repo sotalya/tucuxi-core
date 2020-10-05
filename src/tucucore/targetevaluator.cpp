@@ -105,7 +105,7 @@ ComputingStatus TargetEvaluator::evaluate(
     TimeOffsets times = _prediction.getTimes()[lastCycleIndex];
     DateTime start = _intakeSeries[lastCycleIndex].getEventTime();
     DateTime end = start + std::chrono::milliseconds(static_cast<int>(times.back()) * 1000);
-    CycleData cycle(start, end, Unit("ug/l"));
+    CycleData cycle(start, end, TucuUnit("ug/l"));
     cycle.addData(times, _prediction.getValues()[lastCycleIndex]);
 
     // TODO : Here we only take one compartment... To be checked
@@ -188,7 +188,7 @@ ComputingStatus TargetEvaluator::evaluate(
             TimeOffsets times = _prediction.getTimes()[i];
             DateTime start = _intakeSeries[i].getEventTime();
             DateTime end = start + std::chrono::milliseconds(static_cast<int>(times.back()) * 1000);
-            CycleData cycle(start, end, Unit("ug/l"));
+            CycleData cycle(start, end, TucuUnit("ug/l"));
             cycle.addData(times, _prediction.getValues()[i]);
 
             // The constructor accumulates in cumulativeAuc.

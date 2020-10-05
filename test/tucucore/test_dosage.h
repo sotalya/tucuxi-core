@@ -35,7 +35,7 @@ struct TestDosage : public fructose::test_base<TestDosage>
         const Duration validInterval(std::chrono::hours(10));
 
         fructose_assert_exception(Tucuxi::Core::LastingDose(invalidDose,
-                                                            Unit("mg"),
+                                                            TucuUnit("mg"),
                                                             routePerfusion,
                                                             validInfusionTime,
                                                             validInterval),
@@ -50,7 +50,7 @@ struct TestDosage : public fructose::test_base<TestDosage>
                                   std::invalid_argument);
         */
         fructose_assert_exception(Tucuxi::Core::LastingDose(validDose,
-                                                            Unit("mg"),
+                                                            TucuUnit("mg"),
                                                             routePerfusion,
                                                             invalidInfusionTime,
                                                             validInterval),
@@ -70,25 +70,25 @@ struct TestDosage : public fructose::test_base<TestDosage>
         const Duration validInterval(std::chrono::hours(10));
 
         fructose_assert_exception(Tucuxi::Core::LastingDose(validDose,
-                                                            Unit("mg"),
+                                                            TucuUnit("mg"),
                                                             routePerfusion,
                                                             validInfusionTime,
                                                             emptyInterval),
                                   std::invalid_argument);
         fructose_assert_exception(Tucuxi::Core::LastingDose(validDose,
-                                                            Unit("mg"),
+                                                            TucuUnit("mg"),
                                                             routePerfusion,
                                                             validInfusionTime,
                                                             invalidInterval),
                                   std::invalid_argument);
         fructose_assert_no_exception(Tucuxi::Core::LastingDose(validDose,
-                                                               Unit("mg"),
+                                                               TucuUnit("mg"),
                                                                routePerfusion,
                                                                validInfusionTime,
                                                                validInterval));
 
         std::unique_ptr<Tucuxi::Core::LastingDose> ptr(new Tucuxi::Core::LastingDose(validDose,
-                                                                                     Unit("mg"),
+                                                                                     TucuUnit("mg"),
                                                                                      routePerfusion,
                                                                                      validInfusionTime,
                                                                                      validInterval));
@@ -111,13 +111,13 @@ struct TestDosage : public fructose::test_base<TestDosage>
         const TimeOfDay validTimeOfDay(Duration(std::chrono::seconds(12345)));
 
         fructose_assert_no_exception(Tucuxi::Core::DailyDose(validDose,
-                                                             Unit("mg"),
+                                                             TucuUnit("mg"),
                                                              routePerfusion,
                                                              validInfusionTime,
                                                              validTimeOfDay));
 
         std::unique_ptr<Tucuxi::Core::DailyDose> ptr(new Tucuxi::Core::DailyDose(validDose,
-                                                                                 Unit("mg"),
+                                                                                 TucuUnit("mg"),
                                                                                  routePerfusion,
                                                                                  validInfusionTime,
                                                                                  validTimeOfDay));
@@ -166,7 +166,7 @@ struct TestDosage : public fructose::test_base<TestDosage>
         const DayOfWeek validDayOfWeek2(unsigned{MONDAY});
 
         fructose_assert_exception(Tucuxi::Core::WeeklyDose(validDose,
-                                                           Unit("mg"),
+                                                           TucuUnit("mg"),
                                                            routePerfusion,
                                                            validInfusionTime,
                                                            validTimeOfDay,
@@ -174,21 +174,21 @@ struct TestDosage : public fructose::test_base<TestDosage>
                                   std::invalid_argument);
 
         fructose_assert_no_exception(Tucuxi::Core::WeeklyDose(validDose,
-                                                              Unit("mg"),
+                                                              TucuUnit("mg"),
                                                               routePerfusion,
                                                               validInfusionTime,
                                                               validTimeOfDay,
                                                               validDayOfWeek1));
 
         fructose_assert_no_exception(Tucuxi::Core::WeeklyDose(validDose,
-                                                              Unit("mg"),
+                                                              TucuUnit("mg"),
                                                               routePerfusion,
                                                               validInfusionTime,
                                                               validTimeOfDay,
                                                               validDayOfWeek2));
 
         std::unique_ptr<Tucuxi::Core::WeeklyDose> ptr(new Tucuxi::Core::WeeklyDose(validDose,
-                                                                                   Unit("mg"),
+                                                                                   TucuUnit("mg"),
                                                                                    routePerfusion,
                                                                                    validInfusionTime,
                                                                                    validTimeOfDay,
@@ -275,7 +275,7 @@ struct TestDosage : public fructose::test_base<TestDosage>
         emptyDate.reset();
         const FormulationAndRoute routePerfusion(Formulation::Test, AdministrationRoute::IntravenousDrip, AbsorptionModel::Infusion);
         LastingDose fakeDose(DoseValue(200.0),
-                             Unit("mg"),
+                             TucuUnit("mg"),
                              routePerfusion,
                              Duration(std::chrono::minutes(20)),
                              Duration(std::chrono::hours(240)));

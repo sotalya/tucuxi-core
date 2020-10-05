@@ -521,7 +521,7 @@ public:
     /// \pre _dose >= 0
     /// \pre IF _routeOfAdministration == AbsorptionModel::Infusion THEN (!_infusionTime.isEmpty() && _infusionTime > 0)
     SingleDose(const DoseValue &_dose,
-               const Unit &_doseUnit,
+               const TucuUnit &_doseUnit,
                const FormulationAndRoute &_routeOfAdministration,
                const Duration &_infusionTime) :
         m_routeOfAdministration(_routeOfAdministration)
@@ -569,7 +569,7 @@ public:
         return m_dose;
     }
 
-    Unit getDoseUnit() const
+    TucuUnit getDoseUnit() const
     {
         return m_doseUnit;
     }
@@ -578,7 +578,7 @@ protected:
     /// \brief Administered dose.
     DoseValue m_dose;
     /// \brief Dose unit
-    Unit m_doseUnit;
+    TucuUnit m_doseUnit;
     /// \brief Route of administration.
     FormulationAndRoute m_routeOfAdministration;
     /// \brief Duration in case of an infusion.
@@ -598,7 +598,7 @@ public:
     /// \param _interval Interval between two doses.
     /// \pre !_interval.isEmpty() && _interval > 0
     LastingDose(const DoseValue &_dose,
-                const Unit &_doseUnit,
+                const TucuUnit &_doseUnit,
                 const FormulationAndRoute &_routeOfAdministration,
                 const Duration &_infusionTime,
                 const Duration &_interval)
@@ -656,7 +656,7 @@ public:
     /// \param _infusionTime Duration in case of an infusion.
     /// \param _timeOfDay Time of the day when the dose is administered.
     DailyDose(const DoseValue &_dose,
-              const Unit &_doseUnit,
+              const TucuUnit &_doseUnit,
               const FormulationAndRoute &_routeOfAdministration,
               const Duration &_infusionTime,
               const TimeOfDay &_timeOfDay)
@@ -720,7 +720,7 @@ public:
     /// \param _timeOfDay Time of the day when the dose is administered.
     /// \param _dayOfWeek Day of the week the dose has to be administered.
     WeeklyDose(const DoseValue &_dose,
-               const Unit &_doseUnit,
+               const TucuUnit &_doseUnit,
                const FormulationAndRoute &_routeOfAdministration,
                const Duration &_infusionTime,
                const TimeOfDay &_timeOfDay,

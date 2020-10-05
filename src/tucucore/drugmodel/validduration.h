@@ -19,7 +19,7 @@ namespace Core {
 class ValidDurations : public ValidValues
 {
 public:
-    ValidDurations(Unit _unit, std::unique_ptr<PopulationValue> _defaultValue);
+    ValidDurations(TucuUnit _unit, std::unique_ptr<PopulationValue> _defaultValue);
 
     ~ValidDurations() override;
 

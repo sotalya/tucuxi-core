@@ -15,8 +15,8 @@ namespace Core {
 class TargetEvaluationResult
 {
 public:
-    explicit TargetEvaluationResult() : m_targetType(TargetType::UnknownTarget), m_score(0.0), m_value(0.0), m_unit(Unit()) {}
-    explicit TargetEvaluationResult(TargetType _targetType, double _score, Value _value, Unit _unit);
+    explicit TargetEvaluationResult() : m_targetType(TargetType::UnknownTarget), m_score(0.0), m_value(0.0), m_unit(TucuUnit()) {}
+    explicit TargetEvaluationResult(TargetType _targetType, double _score, Value _value, TucuUnit _unit);
 
     TargetType getTargetType() const { return m_targetType;}
 
@@ -24,7 +24,7 @@ public:
 
     Value getValue() const { return m_value;}
 
-    Unit getUnit() const { return m_unit;}
+    TucuUnit getUnit() const { return m_unit;}
 
 protected:
 
@@ -38,7 +38,7 @@ protected:
     Value m_value;
 
     //! Unit of the target
-    Unit m_unit;
+    TucuUnit m_unit;
 };
 
 

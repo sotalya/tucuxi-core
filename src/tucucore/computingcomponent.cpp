@@ -287,7 +287,7 @@ ComputingStatus ComputingComponent::compute(
 
         if (end > _traits->getStart()) {
             // std::cout << "Selected Time index " << i << " : " << start << std::endl;
-            CycleData cycle(start, end, Unit("ug/l"));
+            CycleData cycle(start, end, TucuUnit("ug/l"));
 
             if (!_request.getDrugModel().isSingleAnalyte()) {
                 for (const auto &activeMoiety : activeMoietiesPredictions) {
@@ -562,7 +562,7 @@ ComputingStatus ComputingComponent::computePercentilesMulti(
                 DateTime end = start + ds;
 
                 if (end > _traits->getStart()) {
-                    CycleData cycleData(start, end, Unit("ug/l"));
+                    CycleData cycleData(start, end, TucuUnit("ug/l"));
                     cycleData.addData(times, allValues[p][cycle]);
                     percData.push_back(cycleData);
                 }
@@ -763,7 +763,7 @@ ComputingStatus ComputingComponent::computePercentilesSimple(
                 DateTime end = start + ds;
 
                 if (end > _traits->getStart()) {
-                    CycleData cycleData(start, end, Unit("ug/l"));
+                    CycleData cycleData(start, end, TucuUnit("ug/l"));
                     cycleData.addData(times, allValues[p][cycle]);
                     percData.push_back(cycleData);
                 }
@@ -947,7 +947,7 @@ ComputingStatus ComputingComponent::compute(
                 resp->m_times.push_back(timesSeries[i].getEventTime());
             }
             resp->m_concentrations.push_back(c);
-            resp->m_unit = Unit("ug/l");
+            resp->m_unit = TucuUnit("ug/l");
 
             _response->addResponse(std::move(resp));
         }

@@ -21,7 +21,7 @@ public:
 
     ComputingStatus extract(
             const ErrorModel &_errorModel,
-            const Common::Unit &_fromUnit,
+            const Common::TucuUnit &_fromUnit,
             const CovariateSeries &_covariateSeries,
             std::unique_ptr<IResidualErrorModel> &_residualErrorModel);
 

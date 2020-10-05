@@ -67,7 +67,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
         concentrations.resize(residualSize);
 
         Tucuxi::Core::TimeOffsets times;
-        Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, _dose, Unit("mg"), interval, Tucuxi::Core::FormulationAndRoute(_route), _route, infusionTime, _nbPoints);
+        Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, _dose, TucuUnit("mg"), interval, Tucuxi::Core::FormulationAndRoute(_route), _route, infusionTime, _nbPoints);
 
         // Checking if steady state is reached by iterative 100 times a calculation and
         // passing residuals to the next iteration
@@ -144,7 +144,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
         concentrations.resize(residualSize);
 
         Tucuxi::Core::TimeOffsets times;
-        Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, _dose, Unit("mg"), interval, Tucuxi::Core::FormulationAndRoute(_route), _route, infusionTime, _nbPoints);
+        Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, _dose, TucuUnit("mg"), interval, Tucuxi::Core::FormulationAndRoute(_route), _route, infusionTime, _nbPoints);
         Tucuxi::Core::Residuals inResiduals(residualSize), outMicroMultiResiduals(residualSize), outMicroSingleResiduals(residualSize), outMacroMultiResiduals(residualSize), outMacroSingleResiduals(residualSize);
 
         std::fill(inResiduals.begin(), inResiduals.end(), 0);
@@ -274,7 +274,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
         concentrations0.resize(residualSize);
 
         Tucuxi::Core::TimeOffsets times;
-        Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, _dose, Unit("mg"), interval, Tucuxi::Core::FormulationAndRoute(_route), _route, infusionTime, _nbPoints);
+        Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, _dose, TucuUnit("mg"), interval, Tucuxi::Core::FormulationAndRoute(_route), _route, infusionTime, _nbPoints);
         Tucuxi::Core::Residuals inResiduals(residualSize);
         Tucuxi::Core::Residuals outResiduals0(residualSize);
         Tucuxi::Core::Residuals outResiduals1(residualSize);
@@ -455,7 +455,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
         concentrations0.resize(residualSize);
 
         Tucuxi::Core::TimeOffsets times;
-        Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, 400, Unit("mg"), interval, Tucuxi::Core::FormulationAndRoute(
+        Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, 400, TucuUnit("mg"), interval, Tucuxi::Core::FormulationAndRoute(
                                                   Tucuxi::Core::AbsorptionModel::Extravascular),
                                               Tucuxi::Core::AbsorptionModel::Extravascular, infusionTime, CYCLE_SIZE);
         Tucuxi::Core::Residuals inResiduals(residualSize);

@@ -79,7 +79,7 @@ public:
     /// \param _value Value of concentration
     /// \param _unit Unit of the value
     ///
-    Sample(DateTime _date, AnalyteId _analyteId, Value _value, Unit _unit);
+    Sample(DateTime _date, AnalyteId _analyteId, Value _value, TucuUnit _unit);
 
     ///
     /// \brief Returns the date of measure
@@ -109,7 +109,7 @@ public:
     /// \brief Returns the unit of the measure
     /// \return The unit of the measure
     ///
-    Unit getUnit() const;
+    TucuUnit getUnit() const;
 
 
 protected:
@@ -127,7 +127,7 @@ protected:
     const Value m_value;
 
     /// Unit of the measure
-    const Unit m_unit;
+    const TucuUnit m_unit;
 
 
 

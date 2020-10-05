@@ -63,11 +63,11 @@ public:
 
     /// \brief Get the data's unit of measure.
     /// \return Data's unit of measure.
-    Unit getUnit() const { return m_unit; }
+    TucuUnit getUnit() const { return m_unit; }
 
     /// \brief Set the data's unit of measure.
     /// \param _unit Data's unit of measure.
-    void setUnit(const Unit &_unit) { m_unit = _unit; }
+    void setUnit(const TucuUnit &_unit) { m_unit = _unit; }
 
     /// \brief Get the refresh period.
     /// \return Refresh period.
@@ -101,7 +101,7 @@ protected:
     /// \brief Interpolation type.
     InterpolationType m_interpolationType;
     /// \brief Unit of measure used for the value.
-    Tucuxi::Common::Unit m_unit;
+    Tucuxi::Common::TucuUnit m_unit;
     /// \brief Interval between two interpolated values.
     Tucuxi::Common::Duration m_refreshPeriod;
     /// \brief Operation to validate the value of the covariate

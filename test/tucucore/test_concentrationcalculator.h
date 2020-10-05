@@ -70,7 +70,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
             concentrations.resize(residualSize);
 
             Tucuxi::Core::TimeOffsets times;
-            Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, _dose, Unit("mg"), interval, Tucuxi::Core::FormulationAndRoute(_route), _route, infusionTime, _nbPoints);
+            Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, _dose, TucuUnit("mg"), interval, Tucuxi::Core::FormulationAndRoute(_route), _route, infusionTime, _nbPoints);
 
             // std::cout << typeid(calculator).name() << std::endl;
 
@@ -152,7 +152,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
             {
                 // Be careful, the intakeEvent embedds the nb of points, but the intervalintakecalculator also. They have to agree
 
-                Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, _dose, Unit("mg"), interval * nbCycles, Tucuxi::Core::FormulationAndRoute(_route), _route, infusionTime, (_nbPoints - 1 ) * nbCycles + 1);
+                Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, _dose, TucuUnit("mg"), interval * nbCycles, Tucuxi::Core::FormulationAndRoute(_route), _route, infusionTime, (_nbPoints - 1 ) * nbCycles + 1);
 
                 Tucuxi::Core::Residuals inResiduals(residualSize);
                 Tucuxi::Core::Residuals outResiduals(residualSize);
@@ -190,7 +190,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
                 DateTime recordTo = now + interval * nbCycles;
 
                 for(int i = 0; i < nbCycles; i++) {
-                    Tucuxi::Core::IntakeEvent event(now + interval * i, offsetTime, _dose, Unit("mg"), interval, Tucuxi::Core::FormulationAndRoute(_route), _route, infusionTime, _nbPoints);
+                    Tucuxi::Core::IntakeEvent event(now + interval * i, offsetTime, _dose, TucuUnit("mg"), interval, Tucuxi::Core::FormulationAndRoute(_route), _route, infusionTime, _nbPoints);
                     event.setCalculator(calculator2);
                     intakeSeries.push_back(event);
                 }
@@ -247,7 +247,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
 
             Tucuxi::Core::Concentrations concentrations;
             Tucuxi::Core::TimeOffsets times;
-            Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, _dose, Unit("mg"), interval, Tucuxi::Core::FormulationAndRoute(_route), _route, infusionTime, nbPoints);
+            Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, _dose, TucuUnit("mg"), interval, Tucuxi::Core::FormulationAndRoute(_route), _route, infusionTime, nbPoints);
 
             Tucuxi::Core::ConcentrationPredictionPtr predictionPtr;
             {

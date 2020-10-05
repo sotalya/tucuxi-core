@@ -323,8 +323,8 @@ struct TestDrugDomainConstraintsEvaluator : public fructose::test_base<TestDrugD
 
         DrugTreatment drugTreatment;
 
-        drugTreatment.addCovariate(std::make_unique<PatientCovariate>("bodyweight", "60", DataType::Double, Unit("kg"), DATE_TIME_NO_VAR(2020, 5, 9, 8, 0, 0))); // DM constraint : SOFT
-        drugTreatment.addCovariate(std::make_unique<PatientCovariate>("gist", "true", DataType::Bool, Unit("-"), DATE_TIME_NO_VAR(2020, 5, 10, 8, 0, 0))); // DM constraint : HARD
+        drugTreatment.addCovariate(std::make_unique<PatientCovariate>("bodyweight", "60", DataType::Double, TucuUnit("kg"), DATE_TIME_NO_VAR(2020, 5, 9, 8, 0, 0))); // DM constraint : SOFT
+        drugTreatment.addCovariate(std::make_unique<PatientCovariate>("gist", "true", DataType::Bool, TucuUnit("-"), DATE_TIME_NO_VAR(2020, 5, 10, 8, 0, 0))); // DM constraint : HARD
 
         DrugDomainConstraintsEvaluator evaluator;
 
@@ -368,8 +368,8 @@ struct TestDrugDomainConstraintsEvaluator : public fructose::test_base<TestDrugD
 
         DrugTreatment drugTreatment;
 
-        drugTreatment.addCovariate(std::make_unique<PatientCovariate>("bodyweight", "60", DataType::Double, Unit("kg"), DATE_TIME_NO_VAR(2020, 5, 9, 8, 0, 0))); // DM constraint : HARD
-        drugTreatment.addCovariate(std::make_unique<PatientCovariate>("gist", "true", DataType::Bool, Unit("-"), DATE_TIME_NO_VAR(2020, 5, 10, 8, 0, 0))); // DM constraint : HARD
+        drugTreatment.addCovariate(std::make_unique<PatientCovariate>("bodyweight", "60", DataType::Double, TucuUnit("kg"), DATE_TIME_NO_VAR(2020, 5, 9, 8, 0, 0))); // DM constraint : HARD
+        drugTreatment.addCovariate(std::make_unique<PatientCovariate>("gist", "true", DataType::Bool, TucuUnit("-"), DATE_TIME_NO_VAR(2020, 5, 10, 8, 0, 0))); // DM constraint : HARD
 
         DrugDomainConstraintsEvaluator evaluator;
 
@@ -558,8 +558,8 @@ private:
 
         DrugTreatment drugTreatment;
 
-        drugTreatment.addCovariate(std::make_unique<PatientCovariate>("Birthdate","1990-01-01T00:00:00", DataType::Date, Unit("-"), DATE_TIME_NO_VAR(2020, 5, 8, 8, 0, 0)));
-        drugTreatment.addCovariate(std::make_unique<PatientCovariate>("bodyweight", "60", DataType::Double, Unit("kg"), DATE_TIME_NO_VAR(2020, 5, 9, 8, 0, 0)));
+        drugTreatment.addCovariate(std::make_unique<PatientCovariate>("Birthdate","1990-01-01T00:00:00", DataType::Date, TucuUnit("-"), DATE_TIME_NO_VAR(2020, 5, 8, 8, 0, 0)));
+        drugTreatment.addCovariate(std::make_unique<PatientCovariate>("bodyweight", "60", DataType::Double, TucuUnit("kg"), DATE_TIME_NO_VAR(2020, 5, 9, 8, 0, 0)));
 
 
 
@@ -707,23 +707,23 @@ private:
             switch (i) {
 
             case 0:
-                covariate = std::make_unique<PatientCovariate>("Weight", weight, DataType::Double, Unit("kg"), DATE_TIME_NO_VAR(2020, 6, 8, 8, 0, 0));
+                covariate = std::make_unique<PatientCovariate>("Weight", weight, DataType::Double, TucuUnit("kg"), DATE_TIME_NO_VAR(2020, 6, 8, 8, 0, 0));
                 break;
 
             case 1:
-                covariate = std::make_unique<PatientCovariate>("Gist", gist, DataType::Bool, Unit("-"), DATE_TIME_NO_VAR(2020, 6, 9, 8, 0, 0));
+                covariate = std::make_unique<PatientCovariate>("Gist", gist, DataType::Bool, TucuUnit("-"), DATE_TIME_NO_VAR(2020, 6, 9, 8, 0, 0));
                 break;
 
             case 2:
-                covariate = std::make_unique<PatientCovariate>("Height", height, DataType::Double, Unit("cm"), DATE_TIME_NO_VAR(2020, 6, 10, 8, 0, 0));
+                covariate = std::make_unique<PatientCovariate>("Height", height, DataType::Double, TucuUnit("cm"), DATE_TIME_NO_VAR(2020, 6, 10, 8, 0, 0));
                 break;
 
             case 3:
-                covariate = std::make_unique<PatientCovariate>("Birthdate", birthdate, DataType::Date, Unit("-"), DATE_TIME_NO_VAR(2020, 6, 11, 8, 0, 0));
+                covariate = std::make_unique<PatientCovariate>("Birthdate", birthdate, DataType::Date, TucuUnit("-"), DATE_TIME_NO_VAR(2020, 6, 11, 8, 0, 0));
                 break;
 
             case 4 :
-                covariate = std::make_unique<PatientCovariate>("Sex", sex, DataType::Bool, Unit("-"), DATE_TIME_NO_VAR(2020, 6, 12, 8, 0, 0));
+                covariate = std::make_unique<PatientCovariate>("Sex", sex, DataType::Bool, TucuUnit("-"), DATE_TIME_NO_VAR(2020, 6, 12, 8, 0, 0));
                 break;
 
             default:

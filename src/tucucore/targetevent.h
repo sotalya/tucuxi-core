@@ -31,18 +31,18 @@ public:
 
     static TargetEvent createTargetEventWithMic(ActiveMoietyId _activeMoietyId,
                                          TargetType _type,
-                                         Unit _unit,
-                                         Unit _finalUnit,
+                                         TucuUnit _unit,
+                                         TucuUnit _finalUnit,
                                          Value _vmin,
                                          Value _vbest,
                                          Value _vmax,
                                          Value _mic,
-                                         Unit _micUnit);
+                                         TucuUnit _micUnit);
 
     static TargetEvent createTargetEventWithTime(ActiveMoietyId _activeMoietyId,
                                          TargetType _type,
-                                         Unit _unit,
-                                         Unit _finalUnit,
+                                         TucuUnit _unit,
+                                         TucuUnit _finalUnit,
                                          Value _vmin,
                                          Value _vbest,
                                          Value _vmax,
@@ -52,21 +52,21 @@ public:
 
     static TargetEvent createTargetEventWithoutTimeAndMic(ActiveMoietyId _activeMoietyId,
                                          TargetType _type,
-                                         Unit _unit,
-                                         Unit _finalUnit,
+                                         TucuUnit _unit,
+                                         TucuUnit _finalUnit,
                                          Value _vmin,
                                          Value _vbest,
                                          Value _vmax);
 
     static TargetEvent createTargetEventWithMicAndTime(ActiveMoietyId _activeMoietyId,
                                          TargetType _type,
-                                         Unit _unit,
-                                         Unit _finalUnit,
+                                         TucuUnit _unit,
+                                         TucuUnit _finalUnit,
                                          Value _vmin,
                                          Value _vbest,
                                          Value _vmax,
                                          Value _mic,
-                                         Unit _micUnit,
+                                         TucuUnit _micUnit,
                                          const Tucuxi::Common::Duration &_tmin,
                                          const Tucuxi::Common::Duration &_tbest,
                                          const Tucuxi::Common::Duration &_tmax);
@@ -77,13 +77,13 @@ private:
 
     TargetEvent(ActiveMoietyId _activeMoietyId,
            TargetType _type,
-           Unit _unit,
-           Unit _finalUnit,
+           TucuUnit _unit,
+           TucuUnit _finalUnit,
            Value _vmin,
            Value _vbest,
            Value _vmax,
            Value _mic,
-           Unit _micUnit,
+           TucuUnit _micUnit,
            const Tucuxi::Common::Duration &_tmin,
            const Tucuxi::Common::Duration &_tbest,
            const Tucuxi::Common::Duration &_tmax);
@@ -108,7 +108,7 @@ private:
     Value m_mic;
 
     /// Unit of the MIC
-    Unit m_micUnit;
+    TucuUnit m_micUnit;
 
     /// Value under which the drug is inefficient
     Value m_inefficacyAlarm;
@@ -126,12 +126,12 @@ private:
     Tucuxi::Common::Duration m_tBest;
 
     /// Unit of the target
-    Unit m_unit;
+    TucuUnit m_unit;
 
     /// Unit of the result we are interesting in
     /// For instance, the target, internally could be ug/l, while we want the evaluation
     /// to be in mg/l
-    Unit m_finalUnit;
+    TucuUnit m_finalUnit;
 
     friend TargetEvaluator;
 

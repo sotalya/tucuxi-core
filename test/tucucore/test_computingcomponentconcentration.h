@@ -48,7 +48,7 @@ struct TestComputingComponentConcentration : public fructose::test_base<TestComp
         // Add a treatment intake every ten days in June
         // 200mg via a intravascular at 08h30, starting the 01.06
         LastingDose periodicDose(DoseValue(200.0),
-                                 Unit("mg"),
+                                 TucuUnit("mg"),
                                  _route,
                                  Duration(),
                                  Duration(std::chrono::hours(6)));
@@ -184,7 +184,7 @@ struct TestComputingComponentConcentration : public fructose::test_base<TestComp
         // Add a treatment intake every ten days in June
         // 200mg via a intravascular at 08h30, starting the 01.06
         LastingDose periodicDose(DoseValue(200.0),
-                                 Unit("mg"),
+                                 TucuUnit("mg"),
                                  route,
                                  Duration(),
                                  Duration(std::chrono::hours(24)));

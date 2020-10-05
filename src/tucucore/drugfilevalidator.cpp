@@ -149,7 +149,7 @@ bool DrugFileValidator::validate(std::string _drugFileName, const std::string& _
 
 
 
-                Unit unit(unitString);
+                TucuUnit unit(unitString);
                 Tucuxi::Common::DateTime date(std::chrono::hours(1));
                 std::unique_ptr<Tucuxi::Core::PatientCovariate> covariate =
                         std::make_unique<Tucuxi::Core::PatientCovariate>(id, value, dataType, unit, date);

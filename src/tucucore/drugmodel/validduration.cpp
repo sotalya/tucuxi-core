@@ -11,7 +11,7 @@ using Tucuxi::Common::Duration;
 
 using namespace std::chrono_literals;
 
-ValidDurations::ValidDurations(Unit _unit, std::unique_ptr<PopulationValue> _defaultValue) : ValidValues(_unit, std::move(_defaultValue))
+ValidDurations::ValidDurations(TucuUnit _unit, std::unique_ptr<PopulationValue> _defaultValue) : ValidValues(_unit, std::move(_defaultValue))
 {
 
 }
@@ -46,16 +46,16 @@ std::vector<Tucuxi::Common::Duration> ValidDurations::getDurations() const
 
 Tucuxi::Common::Duration ValidDurations::valueToDuration(Value _value) const
 {
-    if (m_unit == Unit("d")) {
+    if (m_unit == TucuUnit("d")) {
         return Duration(24h) * _value;
     }
-    else if (m_unit == Unit("h")) {
+    else if (m_unit == TucuUnit("h")) {
         return Duration(1h) * _value;
     }
-    else if (m_unit == Unit("min")) {
+    else if (m_unit == TucuUnit("min")) {
         return Duration(1min) * _value;
     }
-    else if (m_unit == Unit("s")) {
+    else if (m_unit == TucuUnit("s")) {
         return Duration(1s) * _value;
     }
     assert(false);

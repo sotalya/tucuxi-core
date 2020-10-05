@@ -50,7 +50,7 @@ protected:
         /// The dose value
         Value m_dose;
         /// The dose unit
-        Unit m_doseUnit;
+        TucuUnit m_doseUnit;
         /// The dosing interval
         Duration m_interval;
         /// The infusion time. 0 means no infusion for a model without infusion.

@@ -101,7 +101,7 @@ public:
     /// \brief Standard name for a covariate that carries the birth date.
     static const std::string BIRTHDATE_CNAME; // NOLINT(readability-identifier-naming)
 
-    const Unit getFinalUnit(const std::string& _cvName) const;
+    const TucuUnit getFinalUnit(const std::string& _cvName) const;
 
 private:
     /// \brief Collect the time instants when the computed covariates have to be re-evaluated.

@@ -572,14 +572,14 @@ void CovariateExtractor::sortPatientVariates()
     }
 }
 
-const Unit CovariateExtractor::getFinalUnit(const std::string &_cvName) const{
+const TucuUnit CovariateExtractor::getFinalUnit(const std::string &_cvName) const{
     for(const auto &covInDM : m_defaults){
         if(_cvName == covInDM->getId()){
             return covInDM->getUnit();
         }
     }
     //CAN'T GO THERE
-    return Unit("");
+    return TucuUnit("");
 }
 
 } // namespace Core

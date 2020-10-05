@@ -8,12 +8,12 @@
 namespace Tucuxi {
 namespace Common {
 
-bool Unit::isEmpty() const {
+bool TucuUnit::isEmpty() const {
     return m_unitString == "";
 }
 
 
-std::string Unit::toString() const {
+std::string TucuUnit::toString() const {
     return m_unitString;
 }
 
@@ -174,13 +174,13 @@ const std::map<UnitManager::UnitType, std::map<std::string, double>>& UnitManage
     return sm_conversionMap;
 }
 
-void UnitManager::logConversionError(const Unit &_initialUnit, const Unit &_finalUnit)
+void UnitManager::logConversionError(const TucuUnit &_initialUnit, const TucuUnit &_finalUnit)
 {
     Tucuxi::Common::LoggerHelper logHelper;
     logHelper.error("Error in unit conversion. No known conversion from {} to {}", _initialUnit.toString(), _finalUnit.toString());
 }
 
-double UnitManager::convertToUnit(double _value, Unit _initialUnit, Unit _finalUnit)
+double UnitManager::convertToUnit(double _value, TucuUnit _initialUnit, TucuUnit _finalUnit)
 {
     std::string initialKey = _initialUnit.toString();
     std::string finalKey = _finalUnit.toString();
@@ -197,7 +197,7 @@ double UnitManager::convertToUnit(double _value, Unit _initialUnit, Unit _finalU
 }
 
 
-bool UnitManager::isCompatible(const Unit& _unit1, const Unit& _unit2)
+bool UnitManager::isCompatible(const TucuUnit& _unit1, const TucuUnit& _unit2)
 {
     std::string unitString1 = _unit1.toString();
     std::string unitString2 = _unit2.toString();
@@ -212,7 +212,7 @@ bool UnitManager::isCompatible(const Unit& _unit1, const Unit& _unit2)
     return false;
 }
 
-bool UnitManager::isKnown(const Unit& _unit)
+bool UnitManager::isKnown(const TucuUnit& _unit)
 {
     std::string key = _unit.toString();
     for(const auto &map : getConversionMap()){

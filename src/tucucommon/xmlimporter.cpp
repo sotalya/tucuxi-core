@@ -68,7 +68,7 @@ void XMLImporter::setNodeError(Tucuxi::Common::XmlNodeIterator _nodeIterator)
 
 }
 
-Unit XMLImporter::extractUnit(Tucuxi::Common::XmlNodeIterator _rootIterator, CheckUnit _checkUnit)
+TucuUnit XMLImporter::extractUnit(Tucuxi::Common::XmlNodeIterator _rootIterator, CheckUnit _checkUnit)
 {
     std::string unitString = _rootIterator->getValue();
 
@@ -80,7 +80,7 @@ Unit XMLImporter::extractUnit(Tucuxi::Common::XmlNodeIterator _rootIterator, Che
         }
     }
 
-    return Unit(unitString);
+    return TucuUnit(unitString);
 }
 
 double XMLImporter::extractDouble(Tucuxi::Common::XmlNodeIterator _rootIterator)
@@ -188,7 +188,7 @@ string XMLImporter::extractString(Common::XmlNodeIterator _rootIterator)
 }
 
 
-Unit XMLImporter::getChildUnit(Common::XmlNodeIterator _rootIterator, const string& _childName, CheckUnit _checkunit)
+TucuUnit XMLImporter::getChildUnit(Common::XmlNodeIterator _rootIterator, const string& _childName, CheckUnit _checkunit)
 {
     auto child = _rootIterator->getChildren(_childName);
 

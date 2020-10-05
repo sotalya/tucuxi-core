@@ -669,7 +669,7 @@ HalfLife* DrugModelImport::extractHalfLife(Tucuxi::Common::XmlNodeIterator _node
 {
     std::string id;
     //    Value value;
-    Unit unit;
+    TucuUnit unit;
     double multiplier = 1.0;
     //    Operation *operation;
     LightPopulationValue *value = nullptr;
@@ -703,7 +703,7 @@ HalfLife* DrugModelImport::extractHalfLife(Tucuxi::Common::XmlNodeIterator _node
 OutdatedMeasure* DrugModelImport::extractOutdatedMeasure(Tucuxi::Common::XmlNodeIterator _node)
 {
     OutdatedMeasure *outdatedMeasure = nullptr;
-    Unit unit;
+    TucuUnit unit;
     LightPopulationValue *value = nullptr;
     std::string id;
 
@@ -881,7 +881,7 @@ std::vector<CovariateDefinition*> DrugModelImport::extractCovariates(Tucuxi::Com
     return covariates;
 }
 
-Duration castDuration(double _duration, Unit _unit)
+Duration castDuration(double _duration, TucuUnit _unit)
 {
     if (_unit.toString() == "d") {
         return Duration(std::chrono::seconds(static_cast<long>(_duration * 3600.0 * 24.0)));
@@ -908,12 +908,12 @@ CovariateDefinition* DrugModelImport::extractCovariate(Tucuxi::Common::XmlNodeIt
     std::string id;
     CovariateType type = CovariateType::Standard;
     DataType dataType = DataType::Int;
-    Unit unit;
+    TucuUnit unit;
     InterpolationType interpolationType = InterpolationType::Direct;
     LightPopulationValue *value = nullptr;
     Operation *validation = nullptr;
     TranslatableString name;
-    Unit refreshPeriodUnit;
+    TucuUnit refreshPeriodUnit;
     double refreshPeriodValue = 0.0;
 
     XmlNodeIterator it = _node->getChildren();
@@ -1035,7 +1035,7 @@ ActiveMoiety* DrugModelImport::extractActiveMoiety(Tucuxi::Common::XmlNodeIterat
 
     ActiveMoiety *activeMoiety = nullptr;
     std::string activeMoietyId;
-    Unit unit;
+    TucuUnit unit;
     std::vector<AnalyteId> analyteIdList;
     Operation *formula = nullptr;
     std::vector<TargetDefinition *> targets;
@@ -1129,7 +1129,7 @@ TargetDefinition* DrugModelImport::extractTarget(Tucuxi::Common::XmlNodeIterator
 {
 
     TargetDefinition *target = nullptr;
-    Unit unit("ug/l");
+    TucuUnit unit("ug/l");
     TargetType type = TargetType::UnknownTarget;
     LightPopulationValue *minValue = nullptr;
     LightPopulationValue *maxValue = nullptr;
@@ -1140,9 +1140,9 @@ TargetDefinition* DrugModelImport::extractTarget(Tucuxi::Common::XmlNodeIterator
     LightPopulationValue *tBest = nullptr;
     LightPopulationValue *toxicityAlarm = nullptr;
     LightPopulationValue *inefficacyAlarm = nullptr;
-    Unit micUnit("ug/l");
+    TucuUnit micUnit("ug/l");
 
-    Unit tUnit = Unit("h");
+    TucuUnit tUnit = TucuUnit("h");
 
     XmlNodeIterator it = _node->getChildren();
 
@@ -1284,9 +1284,9 @@ TargetDefinition* DrugModelImport::extractTarget(Tucuxi::Common::XmlNodeIterator
                                   std::make_unique<SubTargetDefinition>("cMax", maxValue->getValue(), maxValue->getOperation()),
                                   std::make_unique<SubTargetDefinition>("cBest", bestValue->getValue(), bestValue->getOperation()),
                                   std::make_unique<SubTargetDefinition>("mic", mic->getValue(), mic->getOperation()),
-                                  std::make_unique<SubTargetDefinition>("tMin", UnitManager::convertToUnit<UnitManager::UnitType::Time>(tMin->getValue(), tUnit, Unit("min")), tMin->getOperation()),
-                                  std::make_unique<SubTargetDefinition>("tMax", UnitManager::convertToUnit<UnitManager::UnitType::Time>(tMax->getValue(), tUnit, Unit("min")), tMax->getOperation()),
-                                  std::make_unique<SubTargetDefinition>("tBest", UnitManager::convertToUnit<UnitManager::UnitType::Time>(tBest->getValue(), tUnit, Unit("min")), tBest->getOperation()),
+                                  std::make_unique<SubTargetDefinition>("tMin", UnitManager::convertToUnit<UnitManager::UnitType::Time>(tMin->getValue(), tUnit, TucuUnit("min")), tMin->getOperation()),
+                                  std::make_unique<SubTargetDefinition>("tMax", UnitManager::convertToUnit<UnitManager::UnitType::Time>(tMax->getValue(), tUnit, TucuUnit("min")), tMax->getOperation()),
+                                  std::make_unique<SubTargetDefinition>("tBest", UnitManager::convertToUnit<UnitManager::UnitType::Time>(tBest->getValue(), tUnit, TucuUnit("min")), tBest->getOperation()),
                                   std::make_unique<SubTargetDefinition>("toxicity", toxicityAlarm->getValue(), toxicityAlarm->getOperation()),
                                   std::make_unique<SubTargetDefinition>("inefficacy", inefficacyAlarm->getValue(), inefficacyAlarm->getOperation()),
                                   micUnit,
@@ -1412,7 +1412,7 @@ Analyte* DrugModelImport::extractAnalyte(Tucuxi::Common::XmlNodeIterator _node)
 
     Analyte *analyte;
     std::string analyteId;
-    Unit unit;
+    TucuUnit unit;
     MolarMass *molarMass = nullptr;
     ErrorModel *errorModel = nullptr;
 
@@ -1457,7 +1457,7 @@ MolarMass* DrugModelImport::extractMolarMass(Tucuxi::Common::XmlNodeIterator _no
 {
     MolarMass *molarMass = nullptr;
     Value value = 0.0;
-    Unit unit;
+    TucuUnit unit;
 
     XmlNodeIterator it = _node->getChildren();
 
@@ -1621,7 +1621,7 @@ ParameterDefinition* DrugModelImport::extractParameter(Tucuxi::Common::XmlNodeIt
 
     ParameterDefinition *parameter;
     std::string id;
-    Unit unit;
+    TucuUnit unit;
     LightPopulationValue *value = nullptr;
     ParameterVariability *variability = nullptr;
     Operation *validation = nullptr;
@@ -1881,7 +1881,7 @@ FullFormulationAndRoute* DrugModelImport::extractFullFormulationAndRoute(
                 if (nName == "standardTreatment") {
                     XmlNodeIterator stdIt = dosageIt->getChildren();
                     bool isFixedDuration = false;
-                    Unit unit;
+                    TucuUnit unit;
                     double value = 0.0;
                     while (stdIt != XmlNodeIterator::none()) {
                         std::string stdName = stdIt->getName();
@@ -2059,7 +2059,7 @@ ValidDurations* DrugModelImport::extractValidDurations(Tucuxi::Common::XmlNodeIt
 {
 
     ValidDurations *validDurations;
-    Unit unit;
+    TucuUnit unit;
     LightPopulationValue *defaultValue = nullptr;
     ValidValuesRange *valuesRange = nullptr;
     ValidValuesFixed *valuesFixed = nullptr;
@@ -2120,7 +2120,7 @@ ValidDoses* DrugModelImport::extractValidDoses(Tucuxi::Common::XmlNodeIterator _
 {
 
     ValidDoses *validDoses;
-    Unit unit;
+    TucuUnit unit;
     LightPopulationValue *defaultValue = nullptr;
     std::vector<ValidValuesRange *> valuesRange;
     std::vector<ValidValuesFixed *> valuesFixed;

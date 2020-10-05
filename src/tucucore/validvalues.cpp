@@ -5,7 +5,7 @@ namespace Tucuxi {
 namespace Core {
 
 
-ValidValues::ValidValues(Unit _unit, std::unique_ptr<PopulationValue> _defaultValue) :
+ValidValues::ValidValues(TucuUnit _unit, std::unique_ptr<PopulationValue> _defaultValue) :
     m_unit(_unit), m_defaultValue(std::move(_defaultValue))
 {
 
@@ -14,7 +14,7 @@ ValidValues::ValidValues(Unit _unit, std::unique_ptr<PopulationValue> _defaultVa
 ValidValues::~ValidValues()
 = default;
 
-Unit ValidValues::getUnit() const
+TucuUnit ValidValues::getUnit() const
 {
     return m_unit;
 }

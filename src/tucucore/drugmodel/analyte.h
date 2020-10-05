@@ -23,7 +23,7 @@ class ActiveSubstance;
 class MolarMass
 {
 public:
-    MolarMass(Value _value, Unit _unit) : m_value(_value), m_unit(_unit)
+    MolarMass(Value _value, TucuUnit _unit) : m_value(_value), m_unit(_unit)
     {}
 
     MolarMass() {}
@@ -31,7 +31,7 @@ public:
 protected:
 
     Value m_value;
-    Unit m_unit;
+    TucuUnit m_unit;
 };
 
 ///
@@ -94,7 +94,7 @@ class Analyte
 public:
     Analyte();
 
-    Analyte(std::string _id, Unit _unit, MolarMass _molarMass) :
+    Analyte(std::string _id, TucuUnit _unit, MolarMass _molarMass) :
         m_analyteId(_id), m_unit(_unit), m_molarMass(_molarMass) {
     }
 
@@ -107,7 +107,7 @@ public:
     void setResidualErrorModel(std::unique_ptr<ErrorModel> _residualErrorModel) { m_residualErrorModel = std::move(_residualErrorModel);}
     const ErrorModel& getResidualErrorModel() const { return *m_residualErrorModel; }
 
-    const Unit &getUnit() { return m_unit;}
+    const TucuUnit &getUnit() { return m_unit;}
 
     INVARIANTS(
             INVARIANT(Invariants::INV_ANALYTE_0001, (m_analyteId.size() > 0), "An analyte does not have an Id")
@@ -121,7 +121,7 @@ protected:
 //    std::string m_name;
     AnalyteId m_analyteId;
 
-    Unit m_unit;
+    TucuUnit m_unit;
 
     std::unique_ptr<ErrorModel> m_residualErrorModel;
 

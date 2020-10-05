@@ -18,7 +18,7 @@ namespace Core {
 class ValidDoses : public ValidValues
 {
 public:
-    ValidDoses(Unit _unit, std::unique_ptr<PopulationValue> _defaultDose);
+    ValidDoses(TucuUnit _unit, std::unique_ptr<PopulationValue> _defaultDose);
 
     ~ValidDoses() override;
 

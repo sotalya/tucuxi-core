@@ -47,7 +47,7 @@ public:
 
     Target(ActiveMoietyId _activeMoietyId,
            TargetType _type,
-           Unit _unit,
+           TucuUnit _unit,
            Value _min,
            Value _best,
            Value _max,
@@ -63,33 +63,33 @@ public:
 
     Target(ActiveMoietyId _activeMoietyId,
            TargetType _type,
-           Unit _unit,
+           TucuUnit _unit,
            Value _vmin,
            Value _vbest,
            Value _vmax,
            Value _mic,
-           Unit _micUnit,
+           TucuUnit _micUnit,
            const Tucuxi::Common::Duration &_tmin,
            const Tucuxi::Common::Duration &_tbest,
            const Tucuxi::Common::Duration &_tmax);
 
     Target(ActiveMoietyId _activeMoietyId,
            TargetType _type,
-           Unit _unit,
+           TucuUnit _unit,
            Value _vmin,
            Value _vbest,
            Value _vmax,
            Value _inefficacyAlarm,
            Value _toxicityAlarm,
            Value _mic,
-           Unit _micUnit);
+           TucuUnit _micUnit);
 
 
     ActiveMoietyId getActiveMoietyId() const { return m_activeMoietyId;}
 
     TargetType getTargetType() const {return m_targetType;}
 
-    Unit getUnit() const {return m_unit;}
+    TucuUnit getUnit() const {return m_unit;}
 
     Value getValueMin() const {return m_valueMin;}
 
@@ -103,7 +103,7 @@ public:
 
     Value getMicValue() const {return m_mic;}
 
-    Unit getMicUnit() const {return m_micUnit;}
+    TucuUnit getMicUnit() const {return m_micUnit;}
 
 private:
 
@@ -127,7 +127,7 @@ private:
     Value m_mic;
 
     /// Unit of the MIC
-    Unit m_micUnit;
+    TucuUnit m_micUnit;
 
     /// Value under which the drug is inefficient
     Value m_inefficacyAlarm;
@@ -145,7 +145,7 @@ private:
     Tucuxi::Common::Duration m_tBest;
 
     /// Unit of the target
-    Unit m_unit;
+    TucuUnit m_unit;
 
     friend TargetExtractor;
     friend TargetEvaluator;

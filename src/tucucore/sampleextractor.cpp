@@ -44,7 +44,7 @@ ComputingStatus SampleExtractor::extract(
         if (contains(potentialAnalyteIds, sample->getAnalyteID())) {
             if ((sample->getDate() > _start) && (sample->getDate() < _end)) {
                 TUCU_TRY {
-                    _series.push_back(SampleEvent(sample->getDate(), UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(sample->getValue(), sample->getUnit(), Unit("ug/l"))));
+                    _series.push_back(SampleEvent(sample->getDate(), UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(sample->getValue(), sample->getUnit(), TucuUnit("ug/l"))));
                 } TUCU_CATCH (std::invalid_argument e) {
                     Tucuxi::Common::LoggerHelper logger;
                     logger.error("Sample unit not handle");
@@ -84,7 +84,7 @@ ComputingStatus SampleExtractor::extract(
     for (const auto & sample : _samples) {
         if ((sample->getDate() > _start) && (sample->getDate() < _end)) {
             TUCU_TRY {
-                _series.push_back(SampleEvent(sample->getDate(), UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(sample->getValue(), sample->getUnit(), Unit("ug/l"))));
+                _series.push_back(SampleEvent(sample->getDate(), UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(sample->getValue(), sample->getUnit(), TucuUnit("ug/l"))));
             } TUCU_CATCH (std::invalid_argument e) {
                 Tucuxi::Common::LoggerHelper logger;
                 logger.error("Sample unit not handle");

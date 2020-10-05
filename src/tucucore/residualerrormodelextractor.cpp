@@ -13,7 +13,7 @@ ResidualErrorModelExtractor::ResidualErrorModelExtractor()
 
 ComputingStatus ResidualErrorModelExtractor::extract(
         const ErrorModel &_errorModel,
-        const Unit &_fromUnit,
+        const TucuUnit &_fromUnit,
         const CovariateSeries &_covariateSeries,
         std::unique_ptr<IResidualErrorModel> &_residualErrorModel)
 {
@@ -27,7 +27,7 @@ ComputingStatus ResidualErrorModelExtractor::extract(
 
     SigmaResidualErrorModel *newErrorModel = new SigmaResidualErrorModel();
     newErrorModel->setErrorModel(_errorModel.m_errorModel);
-    Unit toUnit("ug/l");
+    TucuUnit toUnit("ug/l");
 
     Sigma sigma = Sigma(_errorModel.m_originalSigmas.size());
     for(std::size_t i = 0;i < _errorModel.m_originalSigmas.size(); i++) {

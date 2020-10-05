@@ -9,7 +9,7 @@ namespace Tucuxi {
 namespace Core {
 
 
-Sample::Sample(DateTime _date, AnalyteId _analyteId, Value _value, Unit _unit) :
+Sample::Sample(DateTime _date, AnalyteId _analyteId, Value _value, TucuUnit _unit) :
     m_date(_date), m_analyteID(_analyteId), m_value(_value), m_unit(_unit)
 {}
 
@@ -23,7 +23,7 @@ DateTime Sample::getDate() const
 //    return m_sampleID;
 //}
 
-Unit Sample::getUnit() const
+TucuUnit Sample::getUnit() const
 {
     return m_unit;
 }

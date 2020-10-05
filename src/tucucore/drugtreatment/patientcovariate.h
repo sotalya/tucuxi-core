@@ -34,7 +34,7 @@ public:
     /// \param _unit Unit of measure of the value.
     /// \param _date Time when the change happened.
     PatientCovariate(const std::string &_id, const std::string &_value, const DataType _dataType,
-                     const Unit _unit, DateTime _date)
+                     const TucuUnit _unit, DateTime _date)
         : TimedEvent(_date), m_id{_id}, m_value{_value}, m_dataType{_dataType}, m_unit{_unit} {}
 
     /// \brief Comparison (equality) operator.
@@ -84,7 +84,7 @@ public:
 
     /// \brief Get the data's unit of measure.
     /// \return Data's unit of measure.
-    Unit getUnit() const { return m_unit; }
+    TucuUnit getUnit() const { return m_unit; }
 
     ///
     /// \brief Set the value as a DateTime. Useful for birthdate
@@ -110,7 +110,7 @@ protected:
     /// \brief Type of the data stored.
     DataType m_dataType;
     /// \brief Unit of measure of the value.
-    Unit m_unit;
+    TucuUnit m_unit;
 };
 
 /// \brief List of patient variates.

@@ -61,7 +61,7 @@ public:
     {}
 
     TargetDefinition(TargetType _type,
-                     Unit _unit,
+                     TucuUnit _unit,
                      ActiveMoietyId _activeMoietyId,
                      std::unique_ptr<SubTargetDefinition> _valueMin,
                      std::unique_ptr<SubTargetDefinition> _valueMax,
@@ -72,8 +72,8 @@ public:
                      std::unique_ptr<SubTargetDefinition> _tBest,
                      std::unique_ptr<SubTargetDefinition> _toxicityAlarm,
                      std::unique_ptr<SubTargetDefinition> _inefficacyAlarm,
-                     Unit _micUnit = Unit(),
-                     Unit _timeUnit = Unit("h")) :
+                     TucuUnit _micUnit = TucuUnit(),
+                     TucuUnit _timeUnit = TucuUnit("h")) :
         m_targetType(_type),
         m_unit(_unit),
         m_micUnit(_micUnit),
@@ -95,9 +95,9 @@ public:
     void setActiveMoietyId(ActiveMoietyId _activeMoietyId) { m_activeMoietyId = _activeMoietyId;}
     TargetType getTargetType() const { return m_targetType;}
     ActiveMoietyId getActiveMoietyId() const { return m_activeMoietyId;}
-    Unit getUnit() const { return m_unit;}
-    Unit getMicUnit() const { return m_micUnit;}
-    Unit getTimeUnit() const { return m_timeUnit;}
+    TucuUnit getUnit() const { return m_unit;}
+    TucuUnit getMicUnit() const { return m_micUnit;}
+    TucuUnit getTimeUnit() const { return m_timeUnit;}
 
     const SubTargetDefinition & getCMin() const { return *m_valueMin;}
     const SubTargetDefinition & getCMax() const { return *m_valueMax;}
@@ -121,9 +121,9 @@ public:
 
 protected:
     TargetType m_targetType;
-    Unit m_unit;
-    Unit m_micUnit;
-    Unit m_timeUnit;
+    TucuUnit m_unit;
+    TucuUnit m_micUnit;
+    TucuUnit m_timeUnit;
     ActiveMoietyId m_activeMoietyId;
 
     std::unique_ptr<SubTargetDefinition> m_valueMin;

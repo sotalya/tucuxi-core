@@ -80,7 +80,7 @@ struct TestTargetExtractor : public fructose::test_base<TestTargetExtractor>
             std::unique_ptr<SubTargetDefinition> cMax(new SubTargetDefinition("cMax", 1500.0, nullptr));
             std::unique_ptr<SubTargetDefinition> cBest(new SubTargetDefinition("cBest", 1000.0, nullptr));
             TargetDefinition *target = new TargetDefinition(TargetType::Residual,
-                                                            Unit("ug/l"),
+                                                            TucuUnit("ug/l"),
                                                             ActiveMoietyId("imatinib"),
                                                             std::move(cMin),
                                                             std::move(cMax),
@@ -144,7 +144,7 @@ struct TestTargetExtractor : public fructose::test_base<TestTargetExtractor>
             std::unique_ptr<SubTargetDefinition> cMax(new SubTargetDefinition("cMax", 1500.0, nullptr));
             std::unique_ptr<SubTargetDefinition> cBest(new SubTargetDefinition("cBest", 1000.0, nullptr));
             TargetDefinition *target = new TargetDefinition(TargetType::Residual,
-                                                            Unit("mg/l"),
+                                                            TucuUnit("mg/l"),
                                                             ActiveMoietyId("imatinib"),
                                                             std::move(cMin),
                                                             std::move(cMax),
@@ -160,7 +160,7 @@ struct TestTargetExtractor : public fructose::test_base<TestTargetExtractor>
             targetDefinitions.push_back(std::unique_ptr<TargetDefinition>(target));
 
 
-            Target *patientTarget = new Target(ActiveMoietyId("imatinib"), TargetType::Residual, Unit("mg/l"), 50.0, 100.0, 150.0, 2.0, 200.0);
+            Target *patientTarget = new Target(ActiveMoietyId("imatinib"), TargetType::Residual, TucuUnit("mg/l"), 50.0, 100.0, 150.0, 2.0, 200.0);
 
             targets.push_back(std::unique_ptr<Target>(patientTarget));
 
@@ -209,7 +209,7 @@ struct TestTargetExtractor : public fructose::test_base<TestTargetExtractor>
 
             // Add targets
 
-            Target *patientTarget = new Target(ActiveMoietyId("imatinib"), TargetType::Residual, Unit("mg/l"), 50.0, 100.0, 150.0, 2.0, 200.0);
+            Target *patientTarget = new Target(ActiveMoietyId("imatinib"), TargetType::Residual, TucuUnit("mg/l"), 50.0, 100.0, 150.0, 2.0, 200.0);
 
             targets.push_back(std::unique_ptr<Target>(patientTarget));
 

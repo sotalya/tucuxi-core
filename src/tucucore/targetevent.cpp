@@ -9,13 +9,13 @@ namespace Core {
 
 TargetEvent::TargetEvent(ActiveMoietyId _activeMoietyId,
                          TargetType _type,
-                         Unit _unit,
-                         Unit _finalUnit,
+                         TucuUnit _unit,
+                         TucuUnit _finalUnit,
                          Value _vmin,
                          Value _vbest,
                          Value _vmax,
                          Value _mic,
-                         Unit _micUnit,
+                         TucuUnit _micUnit,
                          const Tucuxi::Common::Duration &_tmin,
                          const Tucuxi::Common::Duration &_tbest,
                          const Tucuxi::Common::Duration &_tmax)
@@ -35,8 +35,8 @@ TargetEvent::TargetEvent(ActiveMoietyId _activeMoietyId,
 
 TargetEvent TargetEvent::createTargetEventWithTime(ActiveMoietyId _activeMoietyId,
                                            TargetType _type,
-                                           Unit _unit,
-                                           Unit _finalUnit,
+                                           TucuUnit _unit,
+                                           TucuUnit _finalUnit,
                                            Value _vmin,
                                            Value _vbest,
                                            Value _vmax,
@@ -52,7 +52,7 @@ TargetEvent TargetEvent::createTargetEventWithTime(ActiveMoietyId _activeMoietyI
                        _vbest,
                        _vmax,
                        0.0,
-                       Unit(""),
+                       TucuUnit(""),
                        _tmin,
                        _tbest,
                        _tmax);
@@ -60,13 +60,13 @@ TargetEvent TargetEvent::createTargetEventWithTime(ActiveMoietyId _activeMoietyI
 
 TargetEvent TargetEvent::createTargetEventWithMic(ActiveMoietyId _activeMoietyId,
                                            TargetType _type,
-                                           Unit _unit,
-                                           Unit _finalUnit,
+                                           TucuUnit _unit,
+                                           TucuUnit _finalUnit,
                                            Value _vmin,
                                            Value _vbest,
                                            Value _vmax,
                                            Value _mic,
-                                           Unit _micUnit)
+                                           TucuUnit _micUnit)
 {
     return TargetEvent(_activeMoietyId,
                        _type,
@@ -84,8 +84,8 @@ TargetEvent TargetEvent::createTargetEventWithMic(ActiveMoietyId _activeMoietyId
 
 TargetEvent TargetEvent::createTargetEventWithoutTimeAndMic(ActiveMoietyId _activeMoietyId,
                                            TargetType _type,
-                                           Unit _unit,
-                                           Unit _finalUnit,
+                                           TucuUnit _unit,
+                                           TucuUnit _finalUnit,
                                            Value _vmin,
                                            Value _vbest,
                                            Value _vmax)
@@ -98,7 +98,7 @@ TargetEvent TargetEvent::createTargetEventWithoutTimeAndMic(ActiveMoietyId _acti
                        _vbest,
                        _vmax,
                        0.0,
-                       Unit(""),
+                       TucuUnit(""),
                        Tucuxi::Common::Duration(),
                        Tucuxi::Common::Duration(),
                        Tucuxi::Common::Duration());
@@ -106,13 +106,13 @@ TargetEvent TargetEvent::createTargetEventWithoutTimeAndMic(ActiveMoietyId _acti
 
 TargetEvent TargetEvent::createTargetEventWithMicAndTime(ActiveMoietyId _activeMoietyId,
                                          TargetType _type,
-                                         Unit _unit,
-                                         Unit _finalUnit,
+                                         TucuUnit _unit,
+                                         TucuUnit _finalUnit,
                                          Value _vmin,
                                          Value _vbest,
                                          Value _vmax,
                                          Value _mic,
-                                         Unit _micUnit,
+                                         TucuUnit _micUnit,
                                          const Tucuxi::Common::Duration &_tmin,
                                          const Tucuxi::Common::Duration &_tbest,
                                          const Tucuxi::Common::Duration &_tmax)

@@ -26,11 +26,11 @@ public:
 class ValidValues
 {
 public:
-    ValidValues(Unit _unit, std::unique_ptr<PopulationValue> _defaultValue);
+    ValidValues(TucuUnit _unit, std::unique_ptr<PopulationValue> _defaultValue);
 
     virtual ~ValidValues();
 
-    Unit getUnit() const;
+    TucuUnit getUnit() const;
     Value getDefaultValue() const;
     Value getStepValue() const;
     Value getToValue() const;
@@ -42,7 +42,7 @@ public:
 
 protected:
 
-    Unit m_unit;
+    TucuUnit m_unit;
     std::unique_ptr<PopulationValue> m_defaultValue;
 
     std::vector<std::unique_ptr<IValidValues> > m_valueSets;
