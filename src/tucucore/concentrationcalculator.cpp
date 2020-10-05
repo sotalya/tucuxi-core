@@ -188,6 +188,8 @@ ComputingStatus ConcentrationCalculator::computeConcentrationsAtSteadyState(
     bool reachedSteadyState = false;
     bool finished = false;
 
+    int nbIterations = 0;
+
     while (!finished) {
         // Go through all intakes
         for (const auto & intake : _intakes) {
@@ -293,6 +295,11 @@ ComputingStatus ConcentrationCalculator::computeConcentrationsAtSteadyState(
                 inResiduals[i] = outResiduals[i];
             }
 
+        }
+
+        nbIterations ++;
+        if (nbIterations > 100) {
+            return ComputingStatus::NoSteadyState;
         }
     }
 

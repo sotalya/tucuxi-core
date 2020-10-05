@@ -90,7 +90,9 @@ enum class ComputingStatus {
     /// The computing component has not been initialized
     ComputingComponentNotInitialized,
     /// The drug domain is uncompatible with the patient covariates
-    UncompatibleDrugDomain
+    UncompatibleDrugDomain,
+    /// Cannot attain steady state
+    NoSteadyState
 };
 
 
