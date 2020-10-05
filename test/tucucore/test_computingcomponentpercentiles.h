@@ -127,7 +127,7 @@ struct TestComputingComponentPercentiles : public fructose::test_base<TestComput
         ComputingStatus result;
         result = component->compute(request, response);
 
-        fructose_assert( result == ComputingStatus::Ok);
+        fructose_assert_eq( result, ComputingStatus::Ok);
 
         const ComputedData* responseData = response->getData();
         fructose_assert(dynamic_cast<const PercentilesData*>(responseData) != nullptr);
@@ -227,7 +227,7 @@ struct TestComputingComponentPercentiles : public fructose::test_base<TestComput
         ComputingStatus result;
         result = component->compute(request, response);
 
-        fructose_assert( result == ComputingStatus::Ok);
+        fructose_assert_eq( result, ComputingStatus::Ok);
 
         const ComputedData* responseData = response->getData();
         fructose_assert(dynamic_cast<const PercentilesData*>(responseData) != nullptr);

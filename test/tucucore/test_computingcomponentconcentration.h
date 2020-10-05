@@ -92,7 +92,7 @@ struct TestComputingComponentConcentration : public fructose::test_base<TestComp
             ComputingStatus result;
             result = component->compute(request, response);
 
-            fructose_assert( result == ComputingStatus::Ok);
+            fructose_assert_eq( result, ComputingStatus::Ok);
 
             const ComputedData* responseData = response->getData();
             fructose_assert(dynamic_cast<const SinglePredictionData*>(responseData) != nullptr);
@@ -129,7 +129,7 @@ struct TestComputingComponentConcentration : public fructose::test_base<TestComp
             ComputingStatus result;
             result = component->compute(request, partialResponse);
 
-            fructose_assert( result == ComputingStatus::Ok);
+            fructose_assert_eq( result, ComputingStatus::Ok);
 
             const ComputedData* responseData = partialResponse->getData();
             fructose_assert(dynamic_cast<const SinglePredictionData*>(responseData) != nullptr);
@@ -211,7 +211,7 @@ struct TestComputingComponentConcentration : public fructose::test_base<TestComp
         ComputingStatus result;
         result = component->compute(request, response);
 
-        fructose_assert( result == ComputingStatus::Ok);
+        fructose_assert_eq( result, ComputingStatus::Ok);
 
         const ComputedData* responseData = response->getData();
         fructose_assert(dynamic_cast<const SinglePredictionData*>(responseData) != nullptr);

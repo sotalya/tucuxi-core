@@ -160,7 +160,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
                 ComputingStatus result;
                 result = component->compute(request, response);
 
-                fructose_assert( result == ComputingStatus::Ok);
+                fructose_assert_eq( result, ComputingStatus::Ok);
 
                 const ComputedData* responseData = response->getData();
                 fructose_assert(dynamic_cast<const PercentilesData*>(responseData) != nullptr);
@@ -184,7 +184,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
                 ComputingStatus result;
                 result = component->compute(request, response);
 
-                fructose_assert( result == ComputingStatus::Ok);
+                fructose_assert_eq( result, ComputingStatus::Ok);
 
                 const ComputedData* responseData = response->getData();
                 fructose_assert(dynamic_cast<const SinglePredictionData*>(responseData) != nullptr);
@@ -318,7 +318,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
                 ComputingStatus result;
                 result = component->compute(request, response);
 
-                fructose_assert( result == ComputingStatus::Ok);
+                fructose_assert_eq( result, ComputingStatus::Ok);
 
                 const ComputedData* responseData = response->getData();
                 fructose_assert(dynamic_cast<const PercentilesData*>(responseData) != nullptr);
@@ -342,7 +342,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
                 ComputingStatus result;
                 result = component->compute(request, response);
 
-                fructose_assert( result == ComputingStatus::Ok);
+                fructose_assert_eq( result, ComputingStatus::Ok);
 
 
                 const ComputedData* responseData = response->getData();
@@ -471,7 +471,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
             ComputingStatus result;
             result = component->compute(request, response);
 
-            fructose_assert( result == ComputingStatus::Ok);
+            fructose_assert_eq( result, ComputingStatus::Ok);
 
             const ComputedData* responseData = response->getData();
             fructose_assert(dynamic_cast<const PercentilesData*>(responseData) != nullptr);
@@ -569,7 +569,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
             ComputingStatus result;
             result = component->compute(request, response);
 
-            fructose_assert( result == ComputingStatus::Ok);
+            fructose_assert_eq( result, ComputingStatus::Ok);
 
             const ComputedData* responseData = response->getData();
             fructose_assert(dynamic_cast<const PercentilesData*>(responseData) != nullptr);
@@ -667,7 +667,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
             ComputingStatus result;
             result = component->compute(request, response);
 
-            fructose_assert( result == ComputingStatus::Ok);
+            fructose_assert_eq( result, ComputingStatus::Ok);
 
             const ComputedData* responseData = response->getData();
             fructose_assert(dynamic_cast<const PercentilesData*>(responseData) != nullptr);
@@ -765,7 +765,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
             ComputingStatus result;
             result = component->compute(request, response);
 
-            fructose_assert( result == ComputingStatus::Ok);
+            fructose_assert_eq( result, ComputingStatus::Ok);
 
             const ComputedData* responseData = response->getData();
             fructose_assert(dynamic_cast<const PercentilesData*>(responseData) != nullptr);
@@ -873,7 +873,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
             ComputingStatus result;
             result = component->compute(request, response);
 
-            fructose_assert( result == ComputingStatus::Ok);
+            fructose_assert_eq( result, ComputingStatus::Ok);
 
             const ComputedData* responseData = response->getData();
             fructose_assert(dynamic_cast<const PercentilesData*>(responseData) != nullptr);
@@ -980,7 +980,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
             ComputingStatus result;
             result = component->compute(request, response);
 
-            fructose_assert( result == ComputingStatus::Ok);
+            fructose_assert_eq( result, ComputingStatus::Ok);
 
             const ComputedData* responseData = response->getData();
             fructose_assert(dynamic_cast<const PercentilesData*>(responseData) != nullptr);
@@ -1087,7 +1087,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
             ComputingStatus result;
             result = component->compute(request, response);
 
-            fructose_assert( result == ComputingStatus::Ok);
+            fructose_assert_eq( result, ComputingStatus::Ok);
 
             const ComputedData* responseData = response->getData();
             fructose_assert(dynamic_cast<const PercentilesData*>(responseData) != nullptr);
@@ -1195,7 +1195,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
             ComputingStatus result;
             result = component->compute(request, response);
 
-            fructose_assert( result == ComputingStatus::Ok);
+            fructose_assert_eq( result, ComputingStatus::Ok);
 
             const ComputedData* responseData = response->getData();
             fructose_assert(dynamic_cast<const PercentilesData*>(responseData) != nullptr);
@@ -1330,7 +1330,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
             ComputingStatus result;
             result = component->compute(request, response);
 
-            fructose_assert( result == ComputingStatus::Ok);
+            fructose_assert_eq( result, ComputingStatus::Ok);
 
             const ComputedData* responseData = response->getData();
             fructose_assert(dynamic_cast<const AdjustmentData*>(responseData) != nullptr);
@@ -1456,7 +1456,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
             ComputingStatus result;
             result = component->compute(request, response);
 
-            fructose_assert( result == ComputingStatus::Ok);
+            fructose_assert_eq( result, ComputingStatus::Ok);
 
             const ComputedData* responseData = response->getData();
             fructose_assert(dynamic_cast<const AdjustmentData*>(responseData) != nullptr);

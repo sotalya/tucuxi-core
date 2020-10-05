@@ -38,7 +38,7 @@ bool RkMichaelisMentenOneCompExtra::checkInputs(const IntakeEvent& _intakeEvent,
     bool bOK = true;
     bOK &= checkPositiveValue(m_D, "The dose");
     bOK &= checkStrictlyPositiveValue(m_V, "The volume");
-    bOK &= checkStrictlyPositiveValue(m_F, "The biodisponibility");
+    bOK &= checkStrictlyPositiveValue(m_F, "The bioavailability");
     bOK &= checkStrictlyPositiveValue(m_Km, "The Michaelis Menten constant");
     bOK &= checkStrictlyPositiveValue(m_Vmax, "VMax");
     bOK &= checkStrictlyPositiveValue(m_Ka, "The absorption rate");
@@ -77,7 +77,7 @@ bool RkMichaelisMentenOneCompBolus::checkInputs(const IntakeEvent& _intakeEvent,
     bool bOK = true;
     bOK &= checkPositiveValue(m_D, "The dose");
     bOK &= checkStrictlyPositiveValue(m_V, "The volume");
-    bOK &= checkStrictlyPositiveValue(m_F, "The biodisponibility");
+    bOK &= checkStrictlyPositiveValue(m_F, "The bioavailability");
     bOK &= checkStrictlyPositiveValue(m_Km, "The Michaelis Menten constant");
     bOK &= checkStrictlyPositiveValue(m_Vmax, "VMax");
     bOK &= checkPositiveValue(m_Ka, "The absorption rate");
@@ -116,7 +116,7 @@ bool RkMichaelisMentenOneCompInfusion::checkInputs(const IntakeEvent& _intakeEve
     bool bOK = true;
     bOK &= checkPositiveValue(m_D, "The dose");
     bOK &= checkStrictlyPositiveValue(m_V, "The volume");
-    bOK &= checkStrictlyPositiveValue(m_F, "The biodisponibility");
+    bOK &= checkStrictlyPositiveValue(m_F, "The bioavailability");
     bOK &= checkStrictlyPositiveValue(m_Km, "The Michaelis Menten constant");
     bOK &= checkStrictlyPositiveValue(m_Vmax, "VMax");
     bOK &= checkStrictlyPositiveValue(m_Ka, "The absorption rate");

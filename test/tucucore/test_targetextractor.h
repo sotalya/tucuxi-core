@@ -97,7 +97,7 @@ struct TestTargetExtractor : public fructose::test_base<TestTargetExtractor>
 
             extractionOption = TargetExtractionOption::PopulationValues;
             result = extractor.extract(ActiveMoietyId("imatinib"), covariates, targetDefinitions, targets, start, end, extractionOption, series);
-            fructose_assert( result == ComputingStatus::Ok);
+            fructose_assert_eq( result, ComputingStatus::Ok);
 
             fructose_assert(series.size() == 1);
             {
@@ -166,7 +166,7 @@ struct TestTargetExtractor : public fructose::test_base<TestTargetExtractor>
 
             extractionOption = TargetExtractionOption::IndividualTargets;
             result = extractor.extract(ActiveMoietyId("imatinib"), covariates, targetDefinitions, targets, start, end, extractionOption, series);
-            fructose_assert( result == ComputingStatus::Ok);
+            fructose_assert_eq( result, ComputingStatus::Ok);
 
             fructose_assert(series.size() == 1);
             {
@@ -215,7 +215,7 @@ struct TestTargetExtractor : public fructose::test_base<TestTargetExtractor>
 
             extractionOption = TargetExtractionOption::DefinitionIfNoIndividualTarget;
             result = extractor.extract(ActiveMoietyId("imatinib"), covariates, targetDefinitions, targets, start, end, extractionOption, series);
-            fructose_assert( result == ComputingStatus::Ok);
+            fructose_assert_eq( result, ComputingStatus::Ok);
 
             fructose_assert(series.size() == 1);
             {

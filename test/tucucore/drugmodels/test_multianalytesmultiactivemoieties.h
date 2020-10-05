@@ -141,7 +141,7 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
             ComputingStatus result;
             result = component->compute(request, response);
 
-            fructose_assert( result == ComputingStatus::Ok);
+            fructose_assert_eq( result, ComputingStatus::Ok);
 
             const ComputedData* responseData = response.get()->getData();
 
@@ -276,7 +276,7 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
             ComputingStatus result;
             result = component->compute(request, response);
 
-            fructose_assert( result == ComputingStatus::Ok);
+            fructose_assert_eq( result, ComputingStatus::Ok);
 
             const ComputedData* responseData = response->getData();
 
@@ -465,7 +465,7 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
             ComputingStatus result;
             result = component->compute(request, response);
 
-            fructose_assert( result == ComputingStatus::Ok);
+            fructose_assert_eq( result, ComputingStatus::Ok);
 
             const ComputedData* responseData = response->getData();
 

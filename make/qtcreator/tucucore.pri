@@ -17,6 +17,7 @@ HEADERS += \
     $$PWD/../../src/tucucore/invariants.h \
     $$PWD/../../src/tucucore/parameter.h \
     $$PWD/../../src/tucucore/pkmodels/rkmichaelismentenonecomp.h \
+    $$PWD/../../src/tucucore/pkmodels/rkmichaelismententwocomp.h \
     $$PWD/../../src/tucucore/timedevent.h \
     $$PWD/../../src/tucucore/operation.h \
     $$PWD/../../src/tucucore/pkmodels/onecompartmentbolus.h \
@@ -95,6 +96,7 @@ HEADERS += \
     $$PWD/../../src/tucucore/computingadjustments.h
 
 SOURCES += \
+    $$PWD/../../src/tucucore/computingservice/computingresult.cpp \
     $$PWD/../../src/tucucore/computingutils.cpp \
     $$PWD/../../src/tucucore/drugmodel/drugmodel.cpp \
     $$PWD/../../src/tucucore/cachedexponentials.cpp \
@@ -108,6 +110,7 @@ SOURCES += \
     $$PWD/../../src/tucucore/pkmodels/onecompartmentbolus.cpp \
     $$PWD/../../src/tucucore/pkmodels/onecompartmentextra.cpp \
     $$PWD/../../src/tucucore/pkmodels/rkmichaelismentenonecomp.cpp \
+    $$PWD/../../src/tucucore/pkmodels/rkmichaelismententwocomp.cpp \
     $$PWD/../../src/tucucore/pkmodels/rkonecompartmentextra.cpp \
     $$PWD/../../src/tucucore/pkmodels/rkonecompartmentgammaextra.cpp \
     $$PWD/../../src/tucucore/pkmodels/onecompartmentinfusion.cpp \

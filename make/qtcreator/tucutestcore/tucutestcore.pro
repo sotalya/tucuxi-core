@@ -19,6 +19,7 @@ include(../tucucore.pri)
 HEADERS += \
     ../../../test/tucucore/drugmodels/buildpkasymptotic.h \
     ../../../test/tucucore/drugmodels/test_michaelismenten1comp.h \
+    ../../../test/tucucore/drugmodels/test_michaelismenten2comp.h \
     ../../../test/tucucore/drugmodels/test_pkasymptotic.h \
     ../../../test/tucucore/pkmodels/pkasymptotic.h \
     ../../../test/tucucore/test_computingcomponentadjustments.h \

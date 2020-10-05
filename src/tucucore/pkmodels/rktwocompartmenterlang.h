@@ -154,7 +154,7 @@ protected:
         bool bOK = true;
         bOK &= this->checkPositiveValue(m_D, "The dose");
         bOK &= this->checkStrictlyPositiveValue(m_V1, "The volume");
-        bOK &= this->checkStrictlyPositiveValue(m_F, "The biodisponibility");
+        bOK &= this->checkStrictlyPositiveValue(m_F, "The bioavailability");
         bOK &= this->checkStrictlyPositiveValue(m_Ke, "The absorption constant");
         bOK &= this->checkStrictlyPositiveValue(m_Ktr, "The Ktr");
         bOK &= this->checkStrictlyPositiveValue(m_K12, "K12");
@@ -196,7 +196,7 @@ protected:
 
 
     Value m_D;	/// Quantity of drug
-    Value m_F;  /// Biodisponibility
+    Value m_F;  /// bioavailability
     Value m_V1;  /// Volume of the central compartment
     Value m_Ke; /// Elimination constant rate = Cl/V where Cl is the clearance and V is the volume of the compartment
     Value m_K12; /// Inter-compartment rate between central and peripheral
@@ -252,7 +252,7 @@ protected:
         bool bOK = true;
         bOK &= this->checkPositiveValue(this->m_D, "The dose");
         bOK &= this->checkStrictlyPositiveValue(this->m_V1, "The volume");
-        bOK &= this->checkStrictlyPositiveValue(this->m_F, "The biodisponibility");
+        bOK &= this->checkStrictlyPositiveValue(this->m_F, "The bioavailability");
         bOK &= this->checkStrictlyPositiveValue(this->m_Ke, "The absorption constant");
         bOK &= this->checkStrictlyPositiveValue(this->m_Ktr, "The Ktr");
         bOK &= this->checkStrictlyPositiveValue(this->m_K12, "K12");

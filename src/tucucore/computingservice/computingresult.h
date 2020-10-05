@@ -1,6 +1,8 @@
 #ifndef TUCUXI_CORE_COMPUTINGRESULT_H
 #define TUCUXI_CORE_COMPUTINGRESULT_H
 
+#include <iostream>
+
 
 namespace Tucuxi {
 namespace Core {
@@ -95,6 +97,7 @@ enum class ComputingStatus {
     NoSteadyState
 };
 
+std::ostream& operator<<(std::ostream& stream, const ComputingStatus& e);
 
 } // namespace Core
 } // namespace Tucuxi

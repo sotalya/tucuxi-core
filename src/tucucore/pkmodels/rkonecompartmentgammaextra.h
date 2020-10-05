@@ -51,7 +51,7 @@ protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
 
     Value m_D;	/// Quantity of drug
-    Value m_F;  /// Biodisponibility
+    Value m_F;  /// bioavailability
     Value m_V;  /// Volume of the compartment
     Value m_Ke; /// Elimination constant rate = Cl/V where Cl is the clearance and V is the volume of the compartment
     Value m_a;  /// Gamma distribution parameter

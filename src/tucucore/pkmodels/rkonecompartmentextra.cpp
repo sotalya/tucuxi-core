@@ -33,7 +33,7 @@ bool RK4OneCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, c
     bool bOK = true;
     bOK &= checkPositiveValue(m_D, "The dose");
     bOK &= checkStrictlyPositiveValue(m_V, "The volume");
-    bOK &= checkStrictlyPositiveValue(m_F, "The biodisponibility");
+    bOK &= checkStrictlyPositiveValue(m_F, "The bioavailability");
     bOK &= checkStrictlyPositiveValue(m_Ke, "The absorption constant");
     bOK &= checkStrictlyPositiveValue(m_Ka, "The clearance");
     bOK &= checkCondition(m_nbPoints >= 0, "The number of points is zero or negative.");
@@ -66,7 +66,7 @@ bool RK4OneCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, c
     bool bOK = true;
     bOK &= checkPositiveValue(m_D, "The dose");
     bOK &= checkStrictlyPositiveValue(m_V, "The volume");
-    bOK &= checkStrictlyPositiveValue(m_F, "The biodisponibility");
+    bOK &= checkStrictlyPositiveValue(m_F, "The bioavailability");
     bOK &= checkStrictlyPositiveValue(m_Ke, "The absorption constant");
     bOK &= checkStrictlyPositiveValue(m_Ka, "The clearance");
     bOK &= checkCondition(m_nbPoints >= 0, "The number of points is zero or negative.");

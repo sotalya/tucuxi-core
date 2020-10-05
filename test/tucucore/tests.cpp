@@ -112,6 +112,9 @@
 #if defined(test_michaelismenten1comp) || !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "drugmodels/test_michaelismenten1comp.h"
 #endif
+#if defined(test_michaelismenten2comp) || !defined(DO_NOT_COMPILE_ALL_TESTS)
+#include "drugmodels/test_michaelismenten2comp.h"
+#endif
 
 int main(int argc, char** argv)
 {
@@ -698,6 +701,25 @@ int main(int argc, char** argv)
     }
 #endif
 
+
+#if defined(test_michaelismenten2comp) || !defined(DO_NOT_COMPILE_ALL_TESTS)
+    // --- Multi analytes multi active moieties tests --- //
+    TestMichaelisMenten2comp michaelisMentent2compTests;
+
+    michaelisMentent2compTests.add_test("testMichaelisMenten2compBolus", &TestMichaelisMenten2comp::testBolus);
+    michaelisMentent2compTests.add_test("testMichaelisMenten2compInfusion", &TestMichaelisMenten2comp::testInfusion);
+    michaelisMentent2compTests.add_test("testMichaelisMenten2compExtra", &TestMichaelisMenten2comp::testExtra);
+    michaelisMentent2compTests.add_test("testMichaelisMenten2compExtraLag", &TestMichaelisMenten2comp::testExtraLag);
+
+    res = michaelisMentent2compTests.run(argc, argv);
+    tot_res |= res;
+    if (res != 0) {
+        std::cerr << "Michaelis Menten 2 comp test failed\n";
+    }
+    else {
+        std::cout << "Michaelis Menten 2 comp test succeeded\n";
+    }
+#endif
 
 
     // Delete the logger to avoid a warning when using valgrind --leak-check=full
