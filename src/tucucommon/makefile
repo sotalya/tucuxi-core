@@ -10,13 +10,10 @@ TYPE := LIB
 
 # Let's keep it in alphabetical order
 SOURCES := componentmanager.cpp \
-           cryptohelper.cpp \
            datetime.cpp \
            duration.cpp \
            jsengine.cpp \
-           licensemanager.cpp \
            logger.cpp \
-           systeminfo.cpp \
            timeofday.cpp \
            translatablestring.cpp \
            unit.cpp \
