@@ -11,13 +11,16 @@ TYPE := LIB
 # Let's keep it in alphabetical order
 SOURCES := \
            administrativedata.cpp \
-           computingresponseexport.cpp \
-           computingresponsexmlexport.cpp \
-		   parametersdata.cpp \
-		   query.cpp \
-		   queryimport.cpp \
-		   querytocoreextractor.cpp \
-		   requestdata.cpp
+           computingquery.cpp \
+           computingqueryresponse.cpp \
+           computingqueryresponsexmlexport.cpp \
+           parametersdata.cpp \
+           querycomputer.cpp \
+           querydata.cpp \
+           queryimport.cpp \
+           querylogger.cpp \
+           querytocoreextractor.cpp \
+           requestdata.cpp
 
 INCLUDES := . \
             ../../libs/eigen-3.3.2 \

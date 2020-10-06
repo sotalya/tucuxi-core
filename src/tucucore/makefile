@@ -69,12 +69,13 @@ SOURCES := \
            targetevaluator.cpp \
            targetevaluationresult.cpp \
            treatmentdrugmodelcompatibilitychecker.cpp \
-           unit.cpp \
            validvalues.cpp \
            pkmodels/onecompartmentbolus.cpp \
            pkmodels/onecompartmentextra.cpp \
            pkmodels/onecompartmentextralag.cpp \
            pkmodels/onecompartmentinfusion.cpp \
+           pkmodels/rkmichaelismentenonecomp.cpp \
+           pkmodels/rkmichaelismententwocomp.cpp \
            pkmodels/rkonecompartmentextra.cpp \
            pkmodels/rkonecompartmentgammaextra.cpp \
            pkmodels/rktwocompartmenterlang.cpp \

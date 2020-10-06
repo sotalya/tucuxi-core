@@ -197,7 +197,7 @@ unique_ptr<Core::PatientCovariate> QueryImport::createCovariateData(Common::XmlN
     string value = getChildString(_covariateDataRootIterator, VALUE_NODE_NAME);
 
     // As a covariate can be of any type, the value could lead to a conversion issue
-    Unit unit = getChildUnit(_covariateDataRootIterator, UNIT_NODE_NAME, CheckUnit::Check);
+    TucuUnit unit = getChildUnit(_covariateDataRootIterator, UNIT_NODE_NAME, CheckUnit::Check);
 
     string dataTypeString = getChildString(_covariateDataRootIterator, DATATYPE_NODE_NAME);
     Core::DataType dataType;
@@ -312,14 +312,14 @@ unique_ptr<Tucuxi::Core::Target> QueryImport::createTargetData(Common::XmlNodeIt
 
     string activeMoietyId = getChildString(_targetDataRootIterator, ANALYTE_ID_NODE_NAME);
     string targetTypeStr = getChildString(_targetDataRootIterator, TARGET_TYPE_NODE_NAME);
-    Unit unit = getChildUnit(_targetDataRootIterator, UNIT_NODE_NAME, CheckUnit::Check);
+    TucuUnit unit = getChildUnit(_targetDataRootIterator, UNIT_NODE_NAME, CheckUnit::Check);
     Tucuxi::Core::Value inefficacyAlarm = getChildDouble(_targetDataRootIterator, INEFFICACY_ALARM_ID_NODE_NAME);
     Tucuxi::Core::Value min = getChildDouble(_targetDataRootIterator, MIN_NODE_NAME);
     Tucuxi::Core::Value best= getChildDouble(_targetDataRootIterator, BEST_NODE_NAME);
     Tucuxi::Core::Value max = getChildDouble(_targetDataRootIterator, MAX_ID_NODE_NAME);
     Tucuxi::Core::Value toxicityAlarm = getChildDouble(_targetDataRootIterator, TOXICITY_ALARM_NODE_NAME);
 
-    Unit micUnit("");
+    TucuUnit micUnit("");
     Tucuxi::Core::Value micValue = 0.0;
     Common::XmlNodeIterator micRootIterator = _targetDataRootIterator->getChildren(MIC_NODE_NAME);
     if (micRootIterator != Common::XmlNodeIterator::none()) {
@@ -434,7 +434,7 @@ unique_ptr<Tucuxi::Core::Sample> QueryImport::createSampleData(Common::XmlNodeIt
 
     Tucuxi::Core::AnalyteId analyteId(getChildString(_concentrationRootIterator, ANALYTE_ID_NODE_NAME));
     Tucuxi::Core::Value value(getChildDouble(_concentrationRootIterator, VALUE_NODE_NAME));
-    Unit unit = getChildUnit(_concentrationRootIterator, UNIT_NODE_NAME, CheckUnit::Check);
+    TucuUnit unit = getChildUnit(_concentrationRootIterator, UNIT_NODE_NAME, CheckUnit::Check);
 
     return make_unique<Tucuxi::Core::Sample>(
                 sampleDate,
@@ -591,7 +591,7 @@ unique_ptr<Core::DosageBounded> QueryImport::createDosageBoundedFromIterator(Com
         Common::XmlNodeIterator doseRootIterator = _dosageBoundedIterator->getChildren(DOSE_NODE_NAME);
         Core::DoseValue doseValue = getChildDouble(doseRootIterator, DOSE_VALUE_NODE_NAME);
 
-        Unit doseUnit = getChildUnit(doseRootIterator, DOSE_UNIT_NODE_NAME, CheckUnit::Check);
+        TucuUnit doseUnit = getChildUnit(doseRootIterator, DOSE_UNIT_NODE_NAME, CheckUnit::Check);
 
         double infuTimeInMinutes = getChildDouble(doseRootIterator, DOSE_INFUSIONTIME_NAME);
         Common::Duration infusionTime = Duration(std::chrono::minutes(static_cast<int>(infuTimeInMinutes)));
@@ -629,7 +629,7 @@ unique_ptr<Core::DosageBounded> QueryImport::createDosageBoundedFromIterator(Com
         Common::XmlNodeIterator doseRootIterator = _dosageBoundedIterator->getChildren(DOSE_NODE_NAME);
         Core::DoseValue doseValue = getChildDouble(doseRootIterator, DOSE_VALUE_NODE_NAME);
 
-        Unit doseUnit = getChildUnit(doseRootIterator, DOSE_UNIT_NODE_NAME, CheckUnit::Check);
+        TucuUnit doseUnit = getChildUnit(doseRootIterator, DOSE_UNIT_NODE_NAME, CheckUnit::Check);
 
         Common::XmlNodeIterator formulationAndRouteRootIterator = _dosageBoundedIterator->getChildren(FORMULATION_AND_ROUTE_NODE_NAME);
         unique_ptr<Core::FormulationAndRoute> formulationAndRoute = createFormulationAndRoute(formulationAndRouteRootIterator);
@@ -668,7 +668,7 @@ unique_ptr<Core::DosageBounded> QueryImport::createDosageBoundedFromIterator(Com
         Common::XmlNodeIterator doseRootIterator = _dosageBoundedIterator->getChildren(DOSE_NODE_NAME);
         Core::DoseValue doseValue = getChildDouble(doseRootIterator, DOSE_VALUE_NODE_NAME);
 
-        Unit doseUnit = getChildUnit(doseRootIterator, DOSE_UNIT_NODE_NAME, CheckUnit::Check);
+        TucuUnit doseUnit = getChildUnit(doseRootIterator, DOSE_UNIT_NODE_NAME, CheckUnit::Check);
 
         Common::XmlNodeIterator formulationAndRouteRootIterator = _dosageBoundedIterator->getChildren(FORMULATION_AND_ROUTE_NODE_NAME);
         unique_ptr<Core::FormulationAndRoute> formulationAndRoute = createFormulationAndRoute(formulationAndRouteRootIterator);

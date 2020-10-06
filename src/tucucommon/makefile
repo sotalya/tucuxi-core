@@ -18,10 +18,12 @@ SOURCES := componentmanager.cpp \
            logger.cpp \
            systeminfo.cpp \
            timeofday.cpp \
-					 translatablestring.cpp \
+           translatablestring.cpp \
+           unit.cpp \
            utils.cpp \
            xmlattribute.cpp \
            xmldocument.cpp \
+           xmlimporter.cpp \
            xmlnode.cpp
 
 INCLUDES := ../../libs/spdlog-master-20170622/include \
