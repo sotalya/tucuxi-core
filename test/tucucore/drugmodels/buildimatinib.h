@@ -66,7 +66,7 @@ public:
         std::unique_ptr<SubTargetDefinition> cMax(new SubTargetDefinition("cMax", 1500.0, nullptr));
         std::unique_ptr<SubTargetDefinition> cBest(new SubTargetDefinition("cBest", 1000.0, nullptr));
         TargetDefinition *target = new TargetDefinition(TargetType::Residual,
-                                                        Unit("ug/l"),
+                                                        TucuUnit("ug/l"),
                                                         ActiveMoietyId("imatinib"),
                                                         std::move(cMin),
                                                         std::move(cMax),

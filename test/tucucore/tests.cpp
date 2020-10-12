@@ -115,6 +115,9 @@
 #if defined(test_michaelismenten2comp) || !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "drugmodels/test_michaelismenten2comp.h"
 #endif
+#if defined(test_cachecomputing) || !defined(DO_NOT_COMPILE_ALL_TESTS)
+#include "test_cachecomputing.h"
+#endif
 
 int main(int argc, char** argv)
 {
@@ -721,6 +724,24 @@ int main(int argc, char** argv)
     }
 #endif
 
+#if defined(test_cachecomputing) || !defined(DO_NOT_COMPILE_ALL_TESTS)
+    TestCacheComputing cacheComputingTests;
+
+    // one compartment
+    cacheComputingTests.add_test("Imatinib1", &TestCacheComputing::testImatinib1);
+    cacheComputingTests.add_test("ImatinibSteadyState", &TestCacheComputing::testImatinibSteadyState);
+
+
+
+    res = cacheComputingTests.run(argc, argv);
+    tot_res |= res;
+    if (res != 0) {
+        std::cerr << "Cache Computing test failed\n";
+    }
+    else {
+        std::cout << "Cache Computing test succeeded\n";
+    }
+#endif
 
     // Delete the logger to avoid a warning when using valgrind --leak-check=full
     Tucuxi::Common::LoggerHelper::beforeExit();

@@ -537,6 +537,7 @@ ComputingStatus ComputingComponent::computePercentilesMulti(
             selectedIntakes.size() == pPrediction->getValues().size())
     {
         std::unique_ptr<PercentilesData> resp = std::make_unique<PercentilesData>(_request.getId());
+        resp->setNbPointsPerHour(_traits->getNbPointsPerHour());
 
         const std::vector<std::vector<std::vector<Value> > >& allValues = percentiles.getValues();
 
@@ -738,6 +739,7 @@ ComputingStatus ComputingComponent::computePercentilesSimple(
             selectedIntakes.size() == pPrediction->getValues().size())
     {
         std::unique_ptr<PercentilesData> resp = std::make_unique<PercentilesData>(_request.getId());
+        resp->setNbPointsPerHour(_traits->getNbPointsPerHour());
 
         const std::vector<std::vector<std::vector<Value> > >& allValues = percentiles.getValues();
 

@@ -237,9 +237,13 @@ public:
         return m_data[_percentileIndex];
     }
 
+    void setNbPointsPerHour(int _nbPointsPerHour) { m_nbPointsPerHour = _nbPointsPerHour;}
+    int getNbPointsPerHour() const { return m_nbPointsPerHour;}
+
 private:
     std::vector<std::vector<CycleData> > m_data;
     PercentileRanks m_ranks;
+    int m_nbPointsPerHour{0};
 };
 
 
@@ -280,6 +284,8 @@ public:
     // const std::vector<std::unique_ptr<SingleComputingResponse> > & getResponses() const { return m_responses;}
 
     const ComputedData* getData() const { return m_data.get() ;}
+
+    std::unique_ptr<ComputedData> getUniquePointerData() { return std::move(m_data);}
 
     ///
     /// \brief Set the computing time of this request
