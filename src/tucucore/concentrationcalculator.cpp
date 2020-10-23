@@ -298,7 +298,7 @@ ComputingStatus ConcentrationCalculator::computeConcentrationsAtSteadyState(
         }
 
         nbIterations ++;
-        if (nbIterations > 100) {
+        if (nbIterations > 1000) {
             return ComputingStatus::NoSteadyState;
         }
     }

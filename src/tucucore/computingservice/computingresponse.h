@@ -237,6 +237,8 @@ public:
         return m_data[_percentileIndex];
     }
 
+    const PercentileRanks& getRanks() const { return m_ranks;}
+
     void setNbPointsPerHour(int _nbPointsPerHour) { m_nbPointsPerHour = _nbPointsPerHour;}
     int getNbPointsPerHour() const { return m_nbPointsPerHour;}
 

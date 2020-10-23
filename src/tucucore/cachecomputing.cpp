@@ -51,7 +51,11 @@ bool CacheComputing::isLastCallaHit() const
     return m_isLastCallaHit;
 }
 
-bool CacheComputing::getSpecificIntervalFromCache(DateTime _start, DateTime _end, double _nbPointsPerHour, std::unique_ptr<ComputingResponse> &_response)
+bool CacheComputing::getSpecificIntervalFromCache(
+        DateTime _start,
+        DateTime _end,
+        double _nbPointsPerHour,
+        std::unique_ptr<ComputingResponse> &_response)
 {
     // This function implements various ways of getting pertinent data from the Cache.
 
@@ -87,9 +91,106 @@ bool CacheComputing::getSpecificIntervalFromCache(DateTime _start, DateTime _end
 }
 
 
-bool CacheComputing::buildResponse(DateTime _start, DateTime _end, double _nbPointsPerHour, std::vector<PercentilesData*> _candidates, std::unique_ptr<ComputingResponse> &_response)
+bool CacheComputing::buildResponse(
+        DateTime _start,
+        DateTime _end,
+        double _nbPointsPerHour,
+        const std::vector<PercentilesData*> &_candidates,
+        std::unique_ptr<ComputingResponse> &_response)
 {
+    buildIndex(_start, _end, _nbPointsPerHour, _candidates);
+    if (isFullIntervalInCache(_start, _end)) {
+        PercentilesData pData(_response->getId());
+        for (const auto &index : m_indexVector) {
+            if (index.m_end > _start) {
+                const auto &ranks = _candidates[0]->getRanks();
+                pData.setRanks(ranks);
+                pData.setNbPointsPerHour(_nbPointsPerHour);
+                for (size_t rankIndex = 0; rankIndex < index.m_set->getNbRanks(); rankIndex ++) {
+                    pData.addPercentileData(index.m_set->getPercentileData(rankIndex));
+                }
+            }
+        }
+        _response->addResponse(std::make_unique<PercentilesData>(pData));
+        return true;
+    }
     return false;
+}
+
+bool CacheComputing::isFullIntervalInCache(DateTime _start, DateTime _end)
+{
+    if (m_indexVector.size() == 0) {
+        return false;
+    }
+    if (m_indexVector[0].m_start > _start) {
+        return false;
+    }
+    if (m_indexVector.back().m_end < _end) {
+        return false;
+    }
+    DateTime lastEnd = m_indexVector.front().m_start;
+    for (const auto & index : m_indexVector) {
+        if (index.m_start != lastEnd) {
+            return false;
+        }
+        lastEnd = index.m_end;
+    }
+    return true;
+}
+
+void CacheComputing::buildIndex(
+        DateTime _start,
+        DateTime _end,
+        double _nbPointsPerHour,
+        const std::vector<PercentilesData*> &_candidates)
+{
+    TMP_UNUSED_PARAMETER(_nbPointsPerHour);
+    m_indexVector.clear();
+    for (const auto &data : _candidates) {
+        PercentilesData *pData = dynamic_cast<PercentilesData*>(data);
+        if (pData != nullptr) {
+            const auto p0 = pData->getPercentileData(0);
+            const auto size = p0.size();
+            for (size_t i = 0; i < size; i++) {
+                auto start = p0[i].m_start;
+                auto end = p0[i].m_end;
+                if ((end > _start) && (start < _end)) {
+                    insertCycle(start, end, pData, i);
+                }
+            }
+        }
+    }
+}
+
+void CacheComputing::insertCycle(DateTime _start, DateTime _end, PercentilesData* _data, int cycleIndex)
+{
+    auto it = m_indexVector.rbegin();
+    while (it != m_indexVector.rend()) {
+        if (_start == (*it).m_start) {
+            return;
+        }
+        if (_start > (*it).m_start) {
+            break;
+        }
+        it ++;
+    }
+    m_indexVector.insert(it.base(), index_t{_data, cycleIndex, _start, _end});
+/*
+    size_t insertIndex = m_indexVector.size();
+    for(size_t i = m_indexVector.size() - 1; i >= 0; i--) {
+        if (_start == m_indexVector[i].m_start) {
+            return;
+        }
+        if (_start > m_indexVector[i].m_start) {
+            break;
+        }
+        insertIndex --;
+    }
+
+    auto vit = m_indexVector.begin() + insertIndex;
+
+    m_indexVector.insert(vit, index_t{_data, cycleIndex, _start, _end});
+    */
 }
 
 bool CacheComputing::getFromCache(const ComputingRequest &_request, std::unique_ptr<ComputingResponse> &_response)

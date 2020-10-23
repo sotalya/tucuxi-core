@@ -32,6 +32,7 @@ using Tucuxi::Common::DateTime; // NOLINT(google-global-names-in-headers)
 namespace Tucuxi {
 namespace Core {
 
+using Unit = Tucuxi::Common::TucuUnit;
 
 /// \ingroup TucuCore
 /// \brief The numeric type that will be used throughout the library (use this to set the precision for all number values)

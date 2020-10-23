@@ -92,7 +92,7 @@ protected:
     /// at least the required number of points per hour.
     /// It tries to build a response set from the candidates, and populate the response if possible.
     ///
-    bool buildResponse(DateTime _start, DateTime _end, double _nbPointsPerHour, std::vector<PercentilesData*> _candidates, std::unique_ptr<ComputingResponse> &_response);
+    bool buildResponse(DateTime _start, DateTime _end, double _nbPointsPerHour, const std::vector<PercentilesData *> &_candidates, std::unique_ptr<ComputingResponse> &_response);
 
     /// A mutex to protect the compute() method
     std::mutex m_mutex;
@@ -105,6 +105,57 @@ protected:
 
     /// Indicates if the last call to compute() was a hit (true) or a miss (false)
     bool m_isLastCallaHit{false};
+
+    /// This structure embeds information about a cycle data added in m_indexVector
+    typedef struct {
+        PercentilesData *m_set; ///! The percentile data containing the cycle data
+        int m_cycleIndex;       ///! Index of the cycle data
+        DateTime m_start;       ///! Start date of the cycle data
+        DateTime m_end;         ///! End date of the cycle data
+    } index_t;
+
+    /// A vector meant to embed information about the cycle datas that fill
+    /// the interval of interest. If the cache contain enough data, then
+    /// the content of this vector, after buildIndex() is called, should
+    /// fill the interval, each item having a starting date equal to the ending
+    /// date of the previous index.
+    std::vector<index_t> m_indexVector;
+
+    ///
+    /// \brief Builds an index of cycle data to fill the interval
+    /// \param _start Start date of the cycle data
+    /// \param _end End date of the cycle data
+    /// \param _nbPointsPerHour Minimum numbre of points per hours that should be retrieved
+    /// \param _candidates List of PercentilesData candidates
+    ///
+    /// This function assumes each candidate has an overlap with the [_start, _end] interval.
+    /// It fills m_indexVector with indexes to cycle datas
+    ///
+    void buildIndex(DateTime _start, DateTime _end, double _nbPointsPerHour, const std::vector<PercentilesData *> &_candidates);
+
+    ///
+    /// \brief Tries to insert a cycle data into the m_indexVector
+    /// \param _start Start date of the cycle data
+    /// \param _end End date of the cycle data
+    /// \param _data The original percentiles data
+    /// \param cycleIndex The cycle of interest in the original percentiles data
+    ///
+    /// This function iterates within the m_indexVector to find an empty slot corresponding to the
+    /// [_start,_end] interval. If it finds one, it inserts an index_t at this specific slot.
+    /// If the slot is already filled, then nothing happens.
+    ///
+    void insertCycle(DateTime _start, DateTime _end, PercentilesData* _data, int cycleIndex);
+
+    ///
+    /// \brief Checks if the data referenced by m_indexVector fills the interval
+    /// \param _start Start date of the interval
+    /// \param _end End date of the interval
+    /// \return true if m_indexVector contains data for the entire interval, false else
+    ///
+    /// This function shall be called after buildIndex(), to check if the built index fills the
+    /// [_start, _end] interval
+    ///
+    bool isFullIntervalInCache(DateTime _start, DateTime _end);
 
 };
 

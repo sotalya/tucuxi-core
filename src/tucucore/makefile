@@ -30,6 +30,7 @@ SOURCES := \
            computingservice/computingresponse.cpp \
            computingservice/computingtrait.cpp \
            aposteriorietascalculator.cpp \
+           cachecomputing.cpp \
            cachedexponentials.cpp \
            concentrationcalculator.cpp \
            computingadjustments.cpp \

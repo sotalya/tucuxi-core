@@ -728,10 +728,8 @@ int main(int argc, char** argv)
     TestCacheComputing cacheComputingTests;
 
     // one compartment
-    cacheComputingTests.add_test("Imatinib1", &TestCacheComputing::testImatinib1);
-    cacheComputingTests.add_test("ImatinibSteadyState", &TestCacheComputing::testImatinibSteadyState);
-
-
+    cacheComputingTests.add_test("ImatinibSplitInterval", &TestCacheComputing::testImatinibSplitInterval);
+    cacheComputingTests.add_test("ImatinibFullInterval", &TestCacheComputing::testImatinibFullInterval);
 
     res = cacheComputingTests.run(argc, argv);
     tot_res |= res;
