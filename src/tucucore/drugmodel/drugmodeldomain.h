@@ -32,6 +32,7 @@ public:
 
     void setCheckOperation(std::unique_ptr<Operation> _operation) {m_checkOperation = std::move(_operation);}
     const Operation& getCheckOperation() const { return *m_checkOperation;}
+    Operation* getCheckOperationPointer() const { return m_checkOperation.get();}
 
     void setType(ConstraintType _type) {m_type = _type;}
 

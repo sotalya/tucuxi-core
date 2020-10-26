@@ -81,6 +81,8 @@ public:
     /// \param _operation Operation used to validate the covariate value
     void setValidation(std::unique_ptr<Operation> _validation) { m_validation = std::move(_validation);}
 
+    Operation *getValidation() const { return m_validation.get(); }
+
     ///
     /// \brief Set the name of the covariate
     /// \param _name TranslatableString representing the covariate

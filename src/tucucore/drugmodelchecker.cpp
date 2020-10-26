@@ -247,6 +247,17 @@ void DrugModelChecker::getAllOperations(const DrugModel *_drugModel, std::vector
             }
         }
     }
+
+    for (const auto &constraint : _drugModel->getDomain().getConstraints()) {
+        _operations.push_back(constraint->getCheckOperationPointer());
+    }
+
+    for (const auto &covariate : _drugModel->getCovariates()) {
+        auto validation = covariate->getValidation();
+        if (validation != nullptr) {
+            _operations.push_back(covariate->getValidation());
+        }
+    }
 }
 
 

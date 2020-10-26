@@ -62,6 +62,7 @@ DrugModelImport::Status DrugModelImport::importFromFile(Tucuxi::Core::DrugModel 
 
     XmlDocument document;
     if (!document.open(_fileName)) {
+        setStatus(Status::CantOpenFile, "Can not open file");
         return Status::CantOpenFile;
     }
 
@@ -80,6 +81,7 @@ DrugModelImport::Status DrugModelImport::importFromString(Tucuxi::Core::DrugMode
     XmlDocument document;
 
     if (!document.fromString(_xml)) {
+        setStatus(Status::Error, "The XML is not valid.");
         return Status::Error;
     }
 
