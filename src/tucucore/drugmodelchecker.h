@@ -52,6 +52,20 @@ protected:
 
     CheckerResult_t checkOperations(const DrugModel *_drugModel);
 
+    ///
+    /// \brief Checks if the half life and its multiplier are OK
+    /// \param _drugModel The drug model to be validated
+    /// \return
+    ///
+    /// This method checks whether the half life and the associated multiplier offer a sufficient
+    /// duration to reach a kind of steady state. The check is done by creating a dosage corresponding
+    /// to the default formulation and route (dose + interval). Then, we compute two cycles at a
+    /// time being halfLife * multiplier from the first dose. We compare the first concentration of
+    /// the two cycles, and if the difference is smaller than 0.5%, then we consider the values
+    /// to be relevant.
+    ///
+    CheckerResult_t checkHalfLife(const DrugModel *_drugModel);
+
     void getAllOperations(const DrugModel *_drugModel, std::vector<Operation *> &_operations);
 };
 

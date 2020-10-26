@@ -1,7 +1,17 @@
+
+#include <chrono>
+
 #include "drugmodelchecker.h"
+
+#include "tucucommon/datetime.h"
 
 #include "tucucore/drugmodel/drugmodel.h"
 #include "tucucore/pkmodel.h"
+#include "tucucore/drugtreatment/drugtreatment.h"
+#include "tucucore/computingservice/icomputingservice.h"
+#include "tucucore/computingcomponent.h"
+#include "tucucore/computingservice/computingrequest.h"
+#include "tucucore/computingservice/computingresponse.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -55,6 +65,12 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkDrugModel(const DrugMod
     DrugModelChecker::CheckerResult_t operationsResult = checkOperations(_drugModel);
     if (!operationsResult.m_ok) {
         return operationsResult;
+    }
+
+    // Checks that the half life and the multiplier are correctly set
+    DrugModelChecker::CheckerResult_t halfLifeResult = checkHalfLife(_drugModel);
+    if (!halfLifeResult.m_ok) {
+        return halfLifeResult;
     }
 
     return {true, ""};
@@ -311,6 +327,101 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkOperations(const DrugMo
         }
     }
     return {true, ""};
+}
+
+DrugModelChecker::CheckerResult_t DrugModelChecker::checkHalfLife(const DrugModel *_drugModel)
+{
+    auto drugTreatment = std::make_unique<DrugTreatment>();
+
+    // List of time ranges that will be pushed into the history
+    DosageTimeRangeList timeRangeList;
+
+    // Create a time range starting at the beginning of june 2017, with no upper end (to test that the repetitions
+    // are handled correctly)
+    DateTime start(date::year_month_day(date::year(2018), date::month(1), date::day(1)),
+                   Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
+
+    auto defaultFormulationAndRoute = _drugModel->getFormulationAndRoutes().getDefault();
+    auto formulationAndRoute = defaultFormulationAndRoute->getFormulationAndRoute();
+    auto dose = defaultFormulationAndRoute->getValidDoses()->getDefaultValue();
+    auto doseUnit = defaultFormulationAndRoute->getValidDoses()->getUnit();
+    auto interval = defaultFormulationAndRoute->getValidIntervals()->getDefaultDuration();
+    //const FormulationAndRoute route("formulation", AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular);
+    // Add a treatment intake every ten days in June
+    // 200mg via a intravascular at 08h30, starting the 01.06
+    LastingDose periodicDose(dose,
+                             doseUnit,
+                             formulationAndRoute,
+                             Duration(),
+                             interval);
+    DosageRepeat repeatedDose(periodicDose, 10000);
+    auto timeRange = std::make_unique<Tucuxi::Core::DosageTimeRange>(start, repeatedDose);
+    drugTreatment->getModifiableDosageHistory().addTimeRange(*timeRange);
+
+    IComputingService *component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+
+    {
+        RequestResponseId requestResponseId = "1";
+
+        auto halfLife = _drugModel->getTimeConsiderations().getHalfLife().getValue();
+        auto unit = _drugModel->getTimeConsiderations().getHalfLife().getUnit();
+        auto multiplier = _drugModel->getTimeConsiderations().getHalfLife().getMultiplier();
+
+        Duration realHalfLife;
+        if (unit.toString() == "h") {
+            realHalfLife = Duration(std::chrono::minutes(static_cast<int>(halfLife * 60)));
+        }
+        else if (unit.toString() == "d") {
+            realHalfLife = Duration(std::chrono::minutes(static_cast<int>(halfLife * 60 * 24)));
+        }
+        else if (unit.toString() == "min") {
+            realHalfLife = Duration(std::chrono::minutes(static_cast<int>(halfLife)));
+        }
+        else {
+            return {false, "The half life unit should be \"h\", \"d\" or \"min\""};
+        }
+
+
+        Tucuxi::Common::DateTime startPred = start + realHalfLife * multiplier;
+
+        Tucuxi::Common::DateTime endPred = startPred + interval * 2;
+        double nbPointsPerHour = 10.0;
+        ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
+        std::unique_ptr<ComputingTraitConcentration> traits =
+                std::make_unique<ComputingTraitConcentration>(
+                    requestResponseId, startPred, endPred, nbPointsPerHour, computingOption);
+
+        ComputingRequest request(requestResponseId, *_drugModel, *drugTreatment.get(), std::move(traits));
+
+        std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
+
+        ComputingStatus result;
+        result = component->compute(request, response);
+
+        if (result != ComputingStatus::Ok) {
+            return {false, "A prediction calculation based on the halflife and the multiplier went wrong. Please check these values."};
+        }
+
+        const ComputedData* responseData = response->getData();
+        const SinglePredictionData *resp = dynamic_cast<const SinglePredictionData*>(responseData);
+
+        std::vector<double> residuals;
+        for (const auto d : resp->getData()) {
+            residuals.push_back(d.m_concentrations[0][0]);
+        }
+
+        auto diff = residuals[0] / residuals[1];
+
+        // If less than 0.5% difference, then the values seem OK
+        if ((diff > 1.005) || (diff < 0.995)) {
+
+            return {false, "The half life and the associated multiplier offer a too short period to reach a reasonable steady state. Please modify the multiplier."};
+        }
+
+    }
+
+    return {true, ""};
+
 }
 
 
