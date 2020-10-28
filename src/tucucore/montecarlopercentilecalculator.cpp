@@ -869,27 +869,38 @@ ComputingStatus AposterioriMonteCarloPercentileCalculator::calculateEtasAndEpsil
                     EigenVector avec = meanEtasTransposed + avecs.row(sample) * etaLowerChol;
                     Etas avecMat;
 
+                    bool within6sigmas = true;
+                    // Here we check that the sample etas are within 6 sigmas, else the weight shall be 0.0
                     for (unsigned int etasIdx = 0; etasIdx < _etas.size(); etasIdx++) {
                         avecMat.push_back(avec[etasIdx]);
+                        if (std::abs(avec[etasIdx]) > 6.0) {
+                            within6sigmas = false;
+                        }
                     }
 
-                    etaSamples[sample] = avecMat;
+                    if (within6sigmas) {
 
-                    // 4. Calculate the ratios for weighting this is h*
-                    // Be careful: hstart should be a logLikelihood, however we are minimizing the
-                    // negative loglikelyhood, so it is a negative h start.
-                    Value hstart = threadLogLikelihood.negativeLogLikelihood(avecMat);
+                        etaSamples[sample] = avecMat;
+
+                        // 4. Calculate the ratios for weighting this is h*
+                        // Be careful: hstart should be a logLikelihood, however we are minimizing the
+                        // negative loglikelyhood, so it is a negative h start.
+                        Value hstart = threadLogLikelihood.negativeLogLikelihood(avecMat);
 
 
-                    // This is g
-                    // Using the multi-t-dist pdf directly from this source: http://www.statlect.com/mcdstu1.htm
-                    // because the multi-t-dist doesnt exist in boost using the multi-t dist from wikipedia
-                    double part35 = 1 + 1/v * (avec - meanEtas).transpose() * subomega.inverse() * (avec - meanEtas);
-                    double part4 = std::pow(part35,(v + p)/2);
-                    double g = top / (part2 * part3 * part4);
+                        // This is g
+                        // Using the multi-t-dist pdf directly from this source: http://www.statlect.com/mcdstu1.htm
+                        // because the multi-t-dist doesnt exist in boost using the multi-t dist from wikipedia
+                        double part35 = 1 + 1/v * (avec - meanEtas).transpose() * subomega.inverse() * (avec - meanEtas);
+                        double part4 = std::pow(part35,(v + p)/2);
+                        double g = top / (part2 * part3 * part4);
 
-                    // Set the ratio
-                    ratio[sample] =  exp(-hstart) / g;
+                        // Set the ratio
+                        ratio[sample] =  exp(-hstart) / g;
+                    }
+                    else {
+                        ratio[sample] = 0.0;
+                    }
                 }
             }
         }));
