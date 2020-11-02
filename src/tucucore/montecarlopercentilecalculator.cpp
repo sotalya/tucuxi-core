@@ -801,7 +801,6 @@ ComputingStatus AposterioriMonteCarloPercentileCalculator::calculateEtasAndEpsil
 
     // This is ratio for the ratios in step 4
     EigenVector ratio(nbInitialSamples);
-    EigenVector weight(nbInitialSamples);
 
     //clock_t t1 = clock();
 
@@ -914,8 +913,12 @@ ComputingStatus AposterioriMonteCarloPercentileCalculator::calculateEtasAndEpsil
         return ComputingStatus::Aborted;
     }
 
+    const auto & weight = ratio;
+
+
+//    EigenVector weight(nbInitialSamples);
     // 5. Calculate the weights
-    weight = ratio / ratio.sum();
+//    weight = ratio / ratio.sum();
 
     // 6. Draw samples from discrete distribution using weights
     std::normal_distribution<> normalDistribution(0, 1.0);
