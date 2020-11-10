@@ -118,6 +118,9 @@
 #if defined(test_cachecomputing) || !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_cachecomputing.h"
 #endif
+#if defined(test_michaelismentenenzyme1comp) || !defined(DO_NOT_COMPILE_ALL_TESTS)
+#include "pkmodels/test_rkmichaelismentenenzyme.h"
+#endif
 
 int main(int argc, char** argv)
 {
@@ -237,10 +240,10 @@ int main(int argc, char** argv)
     res = computingComponentConcentrationTests.run(argc, argv);
     tot_res |= res;
     if (res != 0) {
-        std::cerr << "Computing Component Concentration test failed\n";
+        //std::cerr << "Computing Component Concentration test failed\n";
     }
     else {
-        std::cout << "Computing Component Concentration test succeeded\n";
+       // std::cout << "Computing Component Concentration test succeeded\n";
     }
 #endif
 
@@ -738,6 +741,24 @@ int main(int argc, char** argv)
     }
     else {
         std::cout << "Cache Computing test succeeded\n";
+    }
+#endif
+
+
+#if defined(test_michaelismentenenzyme1comp) || !defined(DO_NOT_COMPILE_ALL_TESTS)
+    // --- Multi analytes multi active moieties tests --- //
+    TestMichaelisMentenEnzyme1comp michaelisMententEnzyme1compTests;
+
+    //michaelisMententEnzyme1compTests.add_test("testMichaelisMenten2compBolus", &TestMichaelisMentenEnzyme1comp::testBolus);
+    michaelisMententEnzyme1compTests.add_test("testMichaelisMenten2compExtra", &TestMichaelisMentenEnzyme1comp::testExtra);
+
+    res = michaelisMententEnzyme1compTests.run(argc, argv);
+    tot_res |= res;
+    if (res != 0) {
+        std::cerr << "Michaelis Menten Enzyme 1 comp test failed\n";
+    }
+    else {
+        std::cout << "Michaelis Menten Enzyme 1 comp test succeeded\n";
     }
 #endif
 

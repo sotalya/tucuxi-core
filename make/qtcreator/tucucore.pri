@@ -17,6 +17,7 @@ HEADERS += \
     $$PWD/../../src/tucucore/intakeextractor.h \
     $$PWD/../../src/tucucore/invariants.h \
     $$PWD/../../src/tucucore/parameter.h \
+    $$PWD/../../src/tucucore/pkmodels/rkmichaelismentenenzyme.h \
     $$PWD/../../src/tucucore/pkmodels/rkmichaelismentenonecomp.h \
     $$PWD/../../src/tucucore/pkmodels/rkmichaelismententwocomp.h \
     $$PWD/../../src/tucucore/timedevent.h \
@@ -111,6 +112,7 @@ SOURCES += \
     $$PWD/../../src/tucucore/operation.cpp \
     $$PWD/../../src/tucucore/pkmodels/onecompartmentbolus.cpp \
     $$PWD/../../src/tucucore/pkmodels/onecompartmentextra.cpp \
+    $$PWD/../../src/tucucore/pkmodels/rkmichaelismentenenzyme.cpp \
     $$PWD/../../src/tucucore/pkmodels/rkmichaelismentenonecomp.cpp \
     $$PWD/../../src/tucucore/pkmodels/rkmichaelismententwocomp.cpp \
     $$PWD/../../src/tucucore/pkmodels/rkonecompartmentextra.cpp \

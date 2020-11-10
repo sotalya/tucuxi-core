@@ -17,6 +17,7 @@
 #include "tucucore/pkmodels/rktwocompartmenterlang.h"
 #include "tucucore/pkmodels/rkmichaelismentenonecomp.h"
 #include "tucucore/pkmodels/rkmichaelismententwocomp.h"
+#include "tucucore/pkmodels/rkmichaelismentenenzyme.h"
 
 #ifdef DRUGMODELTESTS
 #include "tucucore/../../test/tucucore/pkmodels/constanteliminationbolus.h"
@@ -262,6 +263,30 @@ bool defaultPopulate(PkModelCollection &_collection)
 
         Tucuxi::Common::TranslatableString distribution;
         distribution.setString("Extra- or intra-vascular", "en");
+        sharedPkModel->setDistribution(distribution);
+
+        _collection.addPkModel(sharedPkModel);
+    }
+
+    {
+        std::shared_ptr<PkModel> sharedPkModel;
+        sharedPkModel = std::make_shared<PkModel>("michaelismenten.enzyme.1comp");
+
+        rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, RkMichaelisMentenEnzymeExtra::getCreator());
+        rc &= sharedPkModel->addParameterList(AbsorptionModel::Extravascular, RkMichaelisMentenEnzymeExtra::getParametersId());
+
+        rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Intravascular, RkMichaelisMentenEnzymeBolus::getCreator());
+        rc &= sharedPkModel->addParameterList(AbsorptionModel::Intravascular, RkMichaelisMentenEnzymeBolus::getParametersId());
+
+       // rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Infusion, RkMichaelisMentenEnzymeInfusion::getCreator());
+       // rc &= sharedPkModel->addParameterList(AbsorptionModel::Infusion, RkMichaelisMentenEnzymeInfusion::getParametersId());
+
+        Tucuxi::Common::TranslatableString elimination;
+        elimination.setString("Michaelis-Menten", "en");
+        sharedPkModel->setElimination(elimination);
+
+        Tucuxi::Common::TranslatableString distribution;
+        distribution.setString("Extra- or intra-vascular, transit compartments", "en");
         sharedPkModel->setDistribution(distribution);
 
         _collection.addPkModel(sharedPkModel);

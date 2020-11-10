@@ -22,6 +22,7 @@ HEADERS += \
     ../../../test/tucucore/drugmodels/test_michaelismenten2comp.h \
     ../../../test/tucucore/drugmodels/test_pkasymptotic.h \
     ../../../test/tucucore/pkmodels/pkasymptotic.h \
+    ../../../test/tucucore/pkmodels/test_rkmichaelismentenenzyme.h \
     ../../../test/tucucore/test_cachecomputing.h \
     ../../../test/tucucore/test_computingcomponentadjustments.h \
     ../../../test/tucucore/test_concentrationcalculator.h \ \
