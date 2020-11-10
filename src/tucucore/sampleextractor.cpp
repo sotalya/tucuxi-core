@@ -32,6 +32,7 @@ ComputingStatus SampleExtractor::extract(
         const AnalyteSet *_analyteGroup,
         const DateTime &_start,
         const DateTime &_end,
+        const TucuUnit &_toUnit,
         SampleSeries &_series)
 {
     int nbRelevantSamples = 0;
@@ -44,10 +45,10 @@ ComputingStatus SampleExtractor::extract(
         if (contains(potentialAnalyteIds, sample->getAnalyteID())) {
             if ((sample->getDate() > _start) && (sample->getDate() < _end)) {
                 TUCU_TRY {
-                    _series.push_back(SampleEvent(sample->getDate(), UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(sample->getValue(), sample->getUnit(), TucuUnit("ug/l"))));
+                    _series.push_back(SampleEvent(sample->getDate(), UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(sample->getValue(), sample->getUnit(), _toUnit)));
                 } TUCU_CATCH (std::invalid_argument e) {
                     Tucuxi::Common::LoggerHelper logger;
-                    logger.error("Sample unit not handle");
+                    logger.error("Sample unit not handled");
                 }
                 nbRelevantSamples ++;
                 if (singleAnalyte.toString().empty()) {
@@ -77,6 +78,7 @@ ComputingStatus SampleExtractor::extract(
         const Samples &_samples,
         const DateTime &_start,
         const DateTime &_end,
+        const TucuUnit &_toUnit,
         SampleSeries &_series)
 {
     int nbRelevantSamples = 0;
@@ -84,10 +86,10 @@ ComputingStatus SampleExtractor::extract(
     for (const auto & sample : _samples) {
         if ((sample->getDate() > _start) && (sample->getDate() < _end)) {
             TUCU_TRY {
-                _series.push_back(SampleEvent(sample->getDate(), UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(sample->getValue(), sample->getUnit(), TucuUnit("ug/l"))));
+                _series.push_back(SampleEvent(sample->getDate(), UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(sample->getValue(), sample->getUnit(), _toUnit)));
             } TUCU_CATCH (std::invalid_argument e) {
                 Tucuxi::Common::LoggerHelper logger;
-                logger.error("Sample unit not handle");
+                logger.error("Sample unit not handled");
                 return ComputingStatus::SampleExtractionError;
             }
             nbRelevantSamples ++;

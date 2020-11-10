@@ -44,7 +44,7 @@ struct TestSampleExtractor : public fructose::test_base<TestSampleExtractor>
 
             samples.push_back(std::make_unique<Sample>(DATE_TIME_NO_VAR(2018, 01, 02, 8, 00, 00), analyteId, 12.0, TucuUnit("ug/l")));
 
-            ComputingStatus result = extractor.extract(samples, start, end, series);
+            ComputingStatus result = extractor.extract(samples, start, end, TucuUnit("ug/l"), series);
 
             fructose_assert(result == ComputingStatus::Ok);
             fructose_assert_eq(series.size(), size_t{1});
@@ -69,7 +69,7 @@ struct TestSampleExtractor : public fructose::test_base<TestSampleExtractor>
             samples.push_back(std::make_unique<Sample>(DATE_TIME_NO_VAR(2018, 01, 03, 8, 00, 00), analyteId, 14.0, TucuUnit("mg/l")));
             samples.push_back(std::make_unique<Sample>(DATE_TIME_NO_VAR(2018, 01, 12, 8, 00, 00), analyteId, 12.0, TucuUnit("ug/l")));
 
-            ComputingStatus result = extractor.extract(samples, start, end, series);
+            ComputingStatus result = extractor.extract(samples, start, end, TucuUnit("ug/l"), series);
 
             fructose_assert(result == ComputingStatus::Ok);
             fructose_assert_eq(series.size(), size_t{2});
@@ -78,6 +78,20 @@ struct TestSampleExtractor : public fructose::test_base<TestSampleExtractor>
             // Here we check the unit conversion
             fructose_assert_double_eq(series[1].getValue(), 14000.0);
             fructose_assert_eq(series[1].getEventTime(), DATE_TIME_NO_VAR(2018, 01, 03, 8, 00, 00));
+
+            {
+                // Test with another final unit
+                SampleSeries mgSeries;
+                ComputingStatus result = extractor.extract(samples, start, end, TucuUnit("mg/l"), mgSeries);
+                fructose_assert(result == ComputingStatus::Ok);
+                fructose_assert_eq(mgSeries.size(), size_t{2});
+                fructose_assert_double_eq(mgSeries[0].getValue(), 0.01);
+                fructose_assert_eq(mgSeries[0].getEventTime(), DATE_TIME_NO_VAR(2018, 01, 02, 8, 00, 00));
+                // Here we check the unit conversion
+                fructose_assert_double_eq(mgSeries[1].getValue(), 14.0);
+                fructose_assert_eq(mgSeries[1].getEventTime(), DATE_TIME_NO_VAR(2018, 01, 03, 8, 00, 00));
+            }
+
         }
         {
             // Test with 3 sample. All sample have bad units
@@ -92,7 +106,7 @@ struct TestSampleExtractor : public fructose::test_base<TestSampleExtractor>
 
             samples.push_back(std::make_unique<Sample>(DATE_TIME_NO_VAR(2018, 01, 02, 8, 00, 00), analyteId, 12.0, TucuUnit("test")));
 
-            ComputingStatus result = extractor.extract(samples, start, end, series);
+            ComputingStatus result = extractor.extract(samples, start, end, TucuUnit("ug/l"), series);
 
             fructose_assert(result == ComputingStatus::SampleExtractionError);
             fructose_assert_eq(series.size(), size_t{0});
@@ -101,7 +115,7 @@ struct TestSampleExtractor : public fructose::test_base<TestSampleExtractor>
 
             samples2.push_back(std::make_unique<Sample>(DATE_TIME_NO_VAR(2018, 01, 02, 8, 00, 00), analyteId, 10.0, TucuUnit("km/l")));
 
-            result = extractor.extract(samples2, start, end, series);
+            result = extractor.extract(samples2, start, end, TucuUnit("ug/l"), series);
 
             fructose_assert(result == ComputingStatus::SampleExtractionError);
             fructose_assert_eq(series.size(), size_t{0});
@@ -110,7 +124,7 @@ struct TestSampleExtractor : public fructose::test_base<TestSampleExtractor>
 
             samples3.push_back(std::make_unique<Sample>(DATE_TIME_NO_VAR(2018, 01, 02, 8, 00, 00), analyteId, 14.0, TucuUnit("5")));
 
-            result = extractor.extract(samples3, start, end, series);
+            result = extractor.extract(samples3, start, end, TucuUnit("ug/l"), series);
 
             fructose_assert(result == ComputingStatus::SampleExtractionError);
             fructose_assert_eq(series.size(), size_t{0});
