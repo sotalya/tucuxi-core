@@ -127,6 +127,10 @@ DrugModelImport::Status DrugModelImport::importDocument(
 
     if (_drugModel->getAnalyteSets().size() == 1) {
         std::shared_ptr<PkModel> model = models->getPkModelFromId(_drugModel->getAnalyteSet()->getPkModelId());
+        if (model == nullptr) {
+            setStatus(Status::Error, "The PK model ID is not a valid one supported by Tucuxi.");
+            return getStatus();
+        }
         metaData->setDistribution(model->getDistribution());
         metaData->setElimination(model->getElimination());
     }

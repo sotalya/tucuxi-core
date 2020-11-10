@@ -56,14 +56,14 @@ private:
 
 inline void TwoCompartmentInfusionMicro::compute(const Residuals& _inResiduals, int _forceSize, Eigen::VectorXd& _concentrations1, Eigen::VectorXd& _concentrations2)
 {
-    Eigen::VectorXd& alphaLogV = exponentials(Exponentials::Alpha);
-    Eigen::VectorXd& betaLogV = exponentials(Exponentials::Beta);
-    Eigen::VectorXd& alphaInfLogV = exponentials(Exponentials::AlphaInf);
-    Eigen::VectorXd& betaInfLogV = exponentials(Exponentials::BetaInf);
-    Eigen::VectorXd& betaInf2LogV = exponentials(Exponentials::BetaInf2);
-    Eigen::VectorXd& rootLogV = exponentials(Exponentials::Root);
-    Eigen::VectorXd& alphaPostInfLogV = exponentials(Exponentials::AlphaPostInf);
-    Eigen::VectorXd& betaPostInfLogV = exponentials(Exponentials::BetaPostInf);
+    const Eigen::VectorXd& alphaLogV = exponentials(Exponentials::Alpha);
+    const Eigen::VectorXd& betaLogV = exponentials(Exponentials::Beta);
+    const Eigen::VectorXd& alphaInfLogV = exponentials(Exponentials::AlphaInf);
+    const Eigen::VectorXd& betaInfLogV = exponentials(Exponentials::BetaInf);
+    const Eigen::VectorXd& betaInf2LogV = exponentials(Exponentials::BetaInf2);
+    const Eigen::VectorXd& rootLogV = exponentials(Exponentials::Root);
+    const Eigen::VectorXd& alphaPostInfLogV = exponentials(Exponentials::AlphaPostInf);
+    const Eigen::VectorXd& betaPostInfLogV = exponentials(Exponentials::BetaPostInf);
 
     Concentration resid1 = _inResiduals[0];
     Concentration resid2 = _inResiduals[1];

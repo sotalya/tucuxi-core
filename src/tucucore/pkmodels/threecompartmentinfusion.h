@@ -57,9 +57,9 @@ private:
 
 inline void ThreeCompartmentInfusionMicro::compute(int _forceSize, Eigen::VectorXd& _concentrations1, Value& _concentrations2, Value& _concentrations3)
 {
-    Eigen::VectorXd& alphaLogV = exponentials(Exponentials::Alpha);
-    Eigen::VectorXd& betaLogV = exponentials(Exponentials::Beta);
-    Eigen::VectorXd& gammaLogV = exponentials(Exponentials::Gamma);
+    const Eigen::VectorXd& alphaLogV = exponentials(Exponentials::Alpha);
+    const Eigen::VectorXd& betaLogV = exponentials(Exponentials::Beta);
+    const Eigen::VectorXd& gammaLogV = exponentials(Exponentials::Gamma);
 
     Value deltaD = (m_D / m_V1) / m_Tinf; 
     Value alphaTinf = std::exp(-m_Alpha* m_Tinf);
