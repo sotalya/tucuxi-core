@@ -50,6 +50,12 @@ bool OneCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
 
 void OneCompartmentExtraMicro::computeExponentials(Eigen::VectorXd& _times)
 {
+//    const auto size = _times.size();
+//    Eigen::VectorXd vec(size);
+//    for (int i = 0; i < size; i++) {
+//        vec[i] = std::exp(-m_Ka * _times[i]);
+//    }
+//    setExponentials(Exponentials::Ka, vec);
     setExponentials(Exponentials::Ka, (-m_Ka * _times).array().exp());
     setExponentials(Exponentials::Ke, (-m_Ke * _times).array().exp());
 }

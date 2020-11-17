@@ -43,7 +43,7 @@ if [ $BUILD_LIBS -eq 1 ] ; then
 fi
 
 if [ $BUILD_APP -eq 1 ] ; then
-   for MODULE in tucucommon tucucore tucuquery tucucli tucuvalidator tuculicense tucudrugfilechecker
+   for MODULE in tucucommon tucucore tucuquery tucucli tucuvalidator tucucrypto tuculicense tucudrugfilechecker
    do
       cd $TUCUXI_ROOT/src/$MODULE
       mkdir -p objs

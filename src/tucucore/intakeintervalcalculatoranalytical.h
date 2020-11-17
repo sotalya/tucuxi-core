@@ -117,7 +117,12 @@ protected:
 //        m_precomputedExponentials[static_cast<int>(_param)] = _logs;
     }
 
-    Eigen::VectorXd& exponentials(EParameters _param) {
+
+ //   void setExponentials(EParameters _param, Eigen::VectorXd &_logs) {
+ //       m_precomputedExponentials[static_cast<int>(_param)] = _logs;
+ //   }
+
+    /*const*/ Eigen::VectorXd& exponentials(EParameters _param) {
         return m_precomputedExponentials[static_cast<int>(_param)];
     }
 
