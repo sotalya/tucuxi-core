@@ -464,7 +464,7 @@ ComputingStatus ComputingComponent::computePercentilesMulti(
 
             SampleExtractor sampleExtractor;
             ComputingStatus sampleExtractionResult =
-                    sampleExtractor.extract(_request.getDrugTreatment().getSamples(), _request.getDrugModel().getAnalyteSet(analyteGroupId), calculationStartTime, _traits->getEnd(), sampleSeries[analyteGroupId]);
+                    sampleExtractor.extract(_request.getDrugTreatment().getSamples(), _request.getDrugModel().getAnalyteSet(analyteGroupId), calculationStartTime, _traits->getEnd(), TucuUnit("ug/l"), sampleSeries[analyteGroupId]);
 
             if (sampleExtractionResult != ComputingStatus::Ok) {
                 return sampleExtractionResult;
@@ -675,7 +675,7 @@ ComputingStatus ComputingComponent::computePercentilesSimple(
         SampleSeries sampleSeries;
         SampleExtractor sampleExtractor;
         ComputingStatus sampleExtractionResult =
-                sampleExtractor.extract(_request.getDrugTreatment().getSamples(), _request.getDrugModel().getAnalyteSet(analyteGroupId), calculationStartTime, _traits->getEnd(), sampleSeries);
+                sampleExtractor.extract(_request.getDrugTreatment().getSamples(), _request.getDrugModel().getAnalyteSet(analyteGroupId), calculationStartTime, _traits->getEnd(), TucuUnit("ug/l"), sampleSeries);
 
         if (sampleExtractionResult != ComputingStatus::Ok) {
             return sampleExtractionResult;
