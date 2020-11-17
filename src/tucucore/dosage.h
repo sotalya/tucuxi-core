@@ -45,7 +45,7 @@ enum class ExtractionOption {
 /// \brief Implement the extract and clone operations for Dosage subclasses.
 #define DOSAGE_UTILS(BaseClassName, ClassName) \
     friend IntakeExtractor; \
-    int extract(IntakeExtractor &_extractor, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, IntakeSeries &_series, ExtractionOption _option) const override; \
+    int extract(IntakeExtractor &_extractor, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, const TucuUnit &_toUnit, IntakeSeries &_series, ExtractionOption _option) const override; \
     std::unique_ptr<BaseClassName> clone() const override \
     { \
         return std::unique_ptr<BaseClassName>(new ClassName(*this)); \
@@ -71,6 +71,7 @@ public:
     /// \param _start Start time/date for the considered interval.
     /// \param _end End time/date for the considered interval, could be unset.
     /// \param _nbPointsPerHour Expected density of points in number of points per hour.
+    /// \param _toUnit Final unit expected for the intake series output.
     /// \param _series Returned series of intake in the considered interval.
     /// \return number of intakes in the given interval, -1 in case of error.
     ///
@@ -81,7 +82,7 @@ public:
     /// whole set of calls)
     /// \post FORALL intake IN extracted_intakes, intake.time IN [_start, _end)
     /// \see IntakeExtractor::extract()
-    virtual int extract(IntakeExtractor &_extractor, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, IntakeSeries &_series, ExtractionOption _option) const = 0;
+    virtual int extract(IntakeExtractor &_extractor, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, const TucuUnit &_toUnit, IntakeSeries &_series, ExtractionOption _option) const = 0;
 
     /// \brief Return a pointer to a clone of the correct subclass.
     /// \return Pointer to a new object of subclass' type.
@@ -125,7 +126,7 @@ public:
 
     ~DosageBounded() override {}
 
-    int extract(IntakeExtractor &_extractor, const DateTime &_start, const DateTime &_end,double _nbPointsPerHour, IntakeSeries &_series, ExtractionOption _option) const override;
+    int extract(IntakeExtractor &_extractor, const DateTime &_start, const DateTime &_end,double _nbPointsPerHour, const TucuUnit &_toUnit, IntakeSeries &_series, ExtractionOption _option) const override;
 
     /// \brief Return the instant of the first intake in the given interval.
     /// \param _intervalStart Starting point of the interval.

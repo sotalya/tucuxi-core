@@ -13,9 +13,9 @@ namespace Core {
 
 /// \brief Visitor function's implementation.
 #define DOSAGE_UTILS_IMPL(className) \
-int className::extract(IntakeExtractor &_extractor, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, IntakeSeries &_series, ExtractionOption _option) const \
+int className::extract(IntakeExtractor &_extractor, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, const TucuUnit &_toUnit, IntakeSeries &_series, ExtractionOption _option) const \
 { \
-    return _extractor.extract(*this, _start, _end, _nbPointsPerHour, _series, _option); \
+    return _extractor.extract(*this, _start, _end, _nbPointsPerHour, _toUnit, _series, _option); \
 }
 
 
