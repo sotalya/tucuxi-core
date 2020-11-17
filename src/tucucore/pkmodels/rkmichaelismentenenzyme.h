@@ -115,7 +115,6 @@ protected:
         }
         // TODO : Check if this induction should be set to 1 everytime,
         //        or only for the first dose
-        std::cout << _concentrations[2] << std::endl;
     }
 
 protected:
