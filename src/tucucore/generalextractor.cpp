@@ -64,7 +64,7 @@ ComputingStatus GeneralExtractor::extractAposterioriEtas(
     SampleSeries sampleSeries;
     SampleExtractor sampleExtractor;
     ComputingStatus sampleExtractionResult =
-    sampleExtractor.extract(_request.getDrugTreatment().getSamples(), _request.getDrugModel().getAnalyteSet(_analyteGroupId), _calculationStartTime, _endTime, sampleSeries);
+    sampleExtractor.extract(_request.getDrugTreatment().getSamples(), _request.getDrugModel().getAnalyteSet(_analyteGroupId), _calculationStartTime, _endTime, TucuUnit("ug/l"), sampleSeries);
 
     if (sampleExtractionResult != ComputingStatus::Ok) {
         return sampleExtractionResult;
