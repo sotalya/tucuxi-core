@@ -43,8 +43,7 @@ public: \
     class IntakeCreator : public IntakeIntervalCalculatorCreator \
     { \
         std::unique_ptr<IntakeIntervalCalculator> create() override { \
-            auto ptr = std::make_unique<entity>(); \
-            return std::move(ptr); \
+            return std::make_unique<entity>(); \
         } \
     }; \
     \

@@ -699,6 +699,11 @@ HalfLife* DrugModelImport::extractHalfLife(Tucuxi::Common::XmlNodeIterator _node
         it ++;
     }
 
+    if (value == nullptr) {
+        setStatus(Status::Error, "No duration value in half life.");
+        return nullptr;
+    }
+
     HalfLife *halfLife = new HalfLife(id, value->getValue(), unit, multiplier, value->getOperation());
 
     DELETE_IF_NON_NULL(value);
@@ -731,6 +736,11 @@ OutdatedMeasure* DrugModelImport::extractOutdatedMeasure(Tucuxi::Common::XmlNode
 
     if (getStatus() != Status::Ok) {
         DELETE_IF_NON_NULL(value);
+        return nullptr;
+    }
+
+    if (value == nullptr) {
+        setStatus(Status::Error, "No value in outdate measure");
         return nullptr;
     }
 
@@ -988,6 +998,12 @@ CovariateDefinition* DrugModelImport::extractCovariate(Tucuxi::Common::XmlNodeIt
     if (getStatus() != Status::Ok) {
         DELETE_IF_NON_NULL(validation);
         DELETE_IF_NON_NULL(value);
+        return nullptr;
+    }
+
+    if (value == nullptr) {
+        DELETE_IF_NON_NULL(validation);
+        setStatus(Status::Error, "no value in a covariate");
         return nullptr;
     }
 
@@ -1253,7 +1269,21 @@ TargetDefinition* DrugModelImport::extractTarget(Tucuxi::Common::XmlNodeIterator
         }
     }
 
-    if (getStatus() != Status::Ok) {
+
+    if ((getStatus() != Status::Ok) ||
+        (minValue == nullptr) || (maxValue == nullptr) || (bestValue == nullptr)) {
+
+        if (minValue == nullptr) {
+            setStatus(Status::Error, "No min value in a target");
+        }
+
+        if (maxValue == nullptr) {
+            setStatus(Status::Error, "No max value in a target");
+        }
+
+        if (bestValue == nullptr) {
+            setStatus(Status::Error, "No best value in a target");
+        }
         DELETE_IF_NON_NULL(minValue);
         DELETE_IF_NON_NULL(maxValue);
         DELETE_IF_NON_NULL(bestValue);
@@ -1446,6 +1476,13 @@ Analyte* DrugModelImport::extractAnalyte(Tucuxi::Common::XmlNodeIterator _node)
     }
 
     if (getStatus() != Status::Ok) {
+        DELETE_IF_NON_NULL(molarMass);
+        DELETE_IF_NON_NULL(errorModel);
+        return nullptr;
+    }
+
+    if (molarMass == nullptr) {
+        setStatus(Status::Error, "No molar mass in an analyte");
         DELETE_IF_NON_NULL(molarMass);
         DELETE_IF_NON_NULL(errorModel);
         return nullptr;
@@ -1671,6 +1708,15 @@ ParameterDefinition* DrugModelImport::extractParameter(Tucuxi::Common::XmlNodeIt
     }
 
     if (getStatus() != Status::Ok) {
+        DELETE_IF_NON_NULL(value);
+        DELETE_IF_NON_NULL(variability);
+        DELETE_IF_NON_NULL(validation);
+        return nullptr;
+    }
+
+
+    if (value == nullptr) {
+        setStatus(Status::Error, "No value in a PK parameter");
         DELETE_IF_NON_NULL(value);
         DELETE_IF_NON_NULL(variability);
         DELETE_IF_NON_NULL(validation);
@@ -2107,6 +2153,15 @@ ValidDurations* DrugModelImport::extractValidDurations(Tucuxi::Common::XmlNodeIt
         return nullptr;
     }
 
+    if (defaultValue == nullptr) {
+        setStatus(Status::Error, "No default value in valid durations.");
+        DELETE_PVECTOR(formulationAndRoutesVector);
+        DELETE_IF_NON_NULL(defaultValue);
+        DELETE_IF_NON_NULL(valuesRange);
+        DELETE_IF_NON_NULL(valuesFixed);
+        return nullptr;
+    }
+
     validDurations = new ValidDurations(unit, std::make_unique<PopulationValue>("default", defaultValue->getValue(), defaultValue->getOperation()));
 
     if (valuesRange != nullptr) {
@@ -2174,6 +2229,15 @@ ValidDoses* DrugModelImport::extractValidDoses(Tucuxi::Common::XmlNodeIterator _
         return nullptr;
     }
 
+    if (defaultValue == nullptr) {
+        setStatus(Status::Error, "No default value in valid doses.");
+        DELETE_PVECTOR(formulationAndRoutesVector);
+        DELETE_IF_NON_NULL(defaultValue);
+        DELETE_PVECTOR(valuesRange);
+        DELETE_PVECTOR(valuesFixed);
+        return nullptr;
+    }
+
     validDoses = new ValidDoses(unit, std::make_unique<PopulationValue>("default", defaultValue->getValue(), defaultValue->getOperation()));
 
     for (const auto value : valuesRange) {
@@ -2217,6 +2281,10 @@ ValidValuesRange* DrugModelImport::extractValuesRange(Tucuxi::Common::XmlNodeIte
 
     if ((from == nullptr) || (to == nullptr) || (step == nullptr)){
         setNodeError(_node);
+        DELETE_IF_NON_NULL(from);
+        DELETE_IF_NON_NULL(to);
+        DELETE_IF_NON_NULL(step);
+        return nullptr;
     }
 
     if (getStatus() != Status::Ok){

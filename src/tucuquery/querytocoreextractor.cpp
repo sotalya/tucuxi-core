@@ -30,13 +30,10 @@ QueryStatus QueryToCoreExtractor::extractComputingQuery(const QueryData &_query,
 
     Tucuxi::Common::LoggerHelper logHelper;
 
-
-    Tucuxi::Core::DrugTreatment *drugTreatment = nullptr;
-
-
     for(const std::unique_ptr<RequestData>& requestData : _query.getRequests())
     {
-         drugTreatment = extractDrugTreatment(_query, *requestData);
+
+        Tucuxi::Core::DrugTreatment *drugTreatment = extractDrugTreatment(_query, *requestData);
         if (drugTreatment == nullptr) {
             logHelper.error("Error during drug treatment import. Drug Id issue");
             setErrorMessage("Error during drug treatment import. Drug Id issue");
@@ -48,6 +45,7 @@ QueryStatus QueryToCoreExtractor::extractComputingQuery(const QueryData &_query,
         if (drugModel == nullptr) {
             logHelper.error("Could not find a suitable drug model");
             setErrorMessage("Could not find a suitable drug model");
+            delete drugTreatment;
             return QueryStatus::ImportError;
         }
         logHelper.info("Performing computation with drug model : {}, Request ID : {}", drugModel->getDrugModelId(), requestData->getRequestID());
@@ -132,9 +130,6 @@ Tucuxi::Core::Samples QueryToCoreExtractor::extractSamples(const QueryData &_que
 
 Tucuxi::Core::DrugTreatment *QueryToCoreExtractor::extractDrugTreatment(const QueryData &_query, const RequestData &_requestData) const
 {
-    Tucuxi::Core::DrugTreatment *drugTreatment = nullptr;
-
-    drugTreatment = new Tucuxi::Core::DrugTreatment();
 
     // Getting the drug related to the request
     std::string drugID = _requestData.getDrugID();
@@ -150,6 +145,8 @@ Tucuxi::Core::DrugTreatment *QueryToCoreExtractor::extractDrugTreatment(const Qu
         return nullptr;
     }
 
+    Tucuxi::Core::DrugTreatment *drugTreatment = new Tucuxi::Core::DrugTreatment();
+
     // Getting the dosage history for the drug treatment
     const Tucuxi::Core::DosageTimeRangeList& dosageTimeRangeList = drugs.at(drugPosition)
             ->getpTreatment()
@@ -157,13 +154,11 @@ Tucuxi::Core::DrugTreatment *QueryToCoreExtractor::extractDrugTreatment(const Qu
             .getDosageTimeRanges();
 
     for (const auto& dosageTimeRange : dosageTimeRangeList) {
-        //drugTreatment.addDosageTimeRange(make_unique<DosageTimeRange>(*dosageTimeRange));
         drugTreatment->getModifiableDosageHistory().addTimeRange(*dosageTimeRange);
     }
 
     // Getting the patient's covariates for the drug treatment
     Tucuxi::Core::PatientVariates patientVariates = extractPatientVariates(_query);
-//    Tucuxi::Core::PatientVariates patientVariates = _query.getpParameters().getpPatient().getCovariates();
     for (auto& cov : patientVariates) {
         drugTreatment->addCovariate(move(cov));
     }
@@ -176,7 +171,6 @@ Tucuxi::Core::DrugTreatment *QueryToCoreExtractor::extractDrugTreatment(const Qu
 
     // Getting the targets for the drug treatment
     Tucuxi::Core::Targets targets = extractTargets(_query, drugPosition);
-//    Tucuxi::Core::Targets targets = _query.getpParameters().getDrugs().at(drugPosition)->getTargets();
     for (auto& target : targets) {
         drugTreatment->addTarget(move(target));
     }

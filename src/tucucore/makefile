@@ -75,6 +75,7 @@ SOURCES := \
            pkmodels/onecompartmentextra.cpp \
            pkmodels/onecompartmentextralag.cpp \
            pkmodels/onecompartmentinfusion.cpp \
+           pkmodels/rkmichaelismentenenzyme.cpp \
            pkmodels/rkmichaelismentenonecomp.cpp \
            pkmodels/rkmichaelismententwocomp.cpp \
            pkmodels/rkonecompartmentextra.cpp \
