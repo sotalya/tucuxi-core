@@ -435,7 +435,7 @@ ComputingStatus ComputingAdjustments::compute(
             IntakeExtractor intakeExtractor;
             double nbPointsPerHour = _traits->getNbPointsPerHour();
             ComputingStatus intakeExtractionResult = intakeExtractor.extract(*newHistory, calculationStartTime, newEndTime,
-                                                                             nbPointsPerHour, intakeSeriesPerGroup[analyteGroupId],
+                                                                             nbPointsPerHour, TucuUnit("mg"), intakeSeriesPerGroup[analyteGroupId],
                                                                              ExtractionOption::EndofDate);
 
             m_utils->m_generalExtractor->convertAnalytes(intakeSeriesPerGroup[analyteGroupId], _request.getDrugModel(), _request.getDrugModel().getAnalyteSet(analyteGroupId));
@@ -1038,7 +1038,7 @@ ComputingStatus ComputingAdjustments::generatePrediction(DosageAdjustment &_dosa
         double nbPointsPerHour = _traits->getNbPointsPerHour();
         //Extract all Time range
         ComputingStatus intakeExtractionResult = intakeExtractor.extract(*newHistory, _calculationStartTime, newEndTime,
-                                                                         nbPointsPerHour, intakeSeriesPerGroup[analyteGroupId],
+                                                                         nbPointsPerHour, TucuUnit("mg"), intakeSeriesPerGroup[analyteGroupId],
                                                                          ExtractionOption::EndofDate);
 
         m_utils->m_generalExtractor->convertAnalytes(intakeSeriesPerGroup[analyteGroupId], _request.getDrugModel(), _request.getDrugModel().getAnalyteSet(analyteGroupId));
