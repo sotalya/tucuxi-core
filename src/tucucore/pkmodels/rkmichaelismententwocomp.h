@@ -40,15 +40,14 @@ public:
 
         if (m_isInfusion) {
             if (_t <= m_Tinf) {
-                // By default, we advance minute per minute
-                // const double stdH = 1.0 / 60.0;
-                // This has to be consistent with the RK4 calculator. To be refactored
                 _dcdt[0] += m_infusionRate;
             }
         }
         if (m_isWithLag) {
             if ((!m_delivered) && (_t >= m_Tlag)) {
-                _dcdt[2] = m_D / m_V1 * m_F;
+                // 60.0 has to be coherent with the delta of RK4.
+                _dcdt[2] += m_D / m_V1 * m_F * 60.0;
+                m_delivered = true;
             }
         }
     }
@@ -66,9 +65,9 @@ protected:
     Value m_K21;
     Value m_Tinf;
     Value m_Tlag;
-    Value m_infusionRate;
+    Value m_infusionRate{0};
     bool m_delivered;
-    bool m_isInfusion;
+    bool m_isInfusion{false};
     bool m_isWithLag;
 
 
@@ -98,7 +97,8 @@ protected:
     void initConcentrations (const Residuals& _inResiduals, std::vector<double> &_concentrations) override
     {
         _concentrations[0] = _inResiduals[0];
-        _concentrations[1] = _inResiduals[1] + m_D / m_V1 * m_F;
+        _concentrations[1] = _inResiduals[1];
+        _concentrations[2] = _inResiduals[2] + m_D / m_V1 * m_F;
     }
 
 protected:
@@ -182,7 +182,7 @@ protected:
 
     void initConcentrations (const Residuals& _inResiduals, std::vector<double> &_concentrations) override
     {
-        m_infusionRate = m_D / m_V1 * m_F / m_Tinf / 60.0;
+        m_infusionRate = m_D / m_V1 / m_Tinf;
         _concentrations[0] = _inResiduals[0];
         _concentrations[1] = _inResiduals[1];
         _concentrations[2] = _inResiduals[2];

@@ -91,6 +91,11 @@ int IntakeExtractor::extract(const DosageTimeRange &_timeRange, const DateTime &
         iEnd = std::min(_end, _timeRange.m_endDate);
     }
 
+    // To be verified we never have issues with that
+    if (iEnd == iStart) {
+        return 0;
+    }
+
     // We check the extraction range
     if (iEnd >= iStart) {
         nbIntakes = _timeRange.m_dosage->extract(*this, iStart, iEnd, _nbPointsPerHour, _toUnit, _series, _option);

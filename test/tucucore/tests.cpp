@@ -716,6 +716,7 @@ int main(int argc, char** argv)
     michaelisMentent2compTests.add_test("testMichaelisMenten2compInfusion", &TestMichaelisMenten2comp::testInfusion);
     michaelisMentent2compTests.add_test("testMichaelisMenten2compExtra", &TestMichaelisMenten2comp::testExtra);
     michaelisMentent2compTests.add_test("testMichaelisMenten2compExtraLag", &TestMichaelisMenten2comp::testExtraLag);
+    michaelisMentent2compTests.add_test("testMichaelisMenten2compMix", &TestMichaelisMenten2comp::testMix);
 
     res = michaelisMentent2compTests.run(argc, argv);
     tot_res |= res;

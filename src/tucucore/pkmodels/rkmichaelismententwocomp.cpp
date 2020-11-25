@@ -132,6 +132,8 @@ bool RkMichaelisMentenTwoCompBolusMicro::checkInputs(const IntakeEvent& _intakeE
     m_V1 = _parameters.getValue(ParameterId::V1);
     m_Km = _parameters.getValue(ParameterId::Km);
     m_Vmax = _parameters.getValue(ParameterId::Vmax);
+    m_F = _parameters.getValue(ParameterId::F);
+    m_Ka = _parameters.getValue(ParameterId::Ka);
     m_K12 = _parameters.getValue(ParameterId::K12);
     m_K21 = _parameters.getValue(ParameterId::K21);
     m_nbPoints = _intakeEvent.getNbPoints();
@@ -179,6 +181,8 @@ bool RkMichaelisMentenTwoCompInfusionMicro::checkInputs(const IntakeEvent& _inta
     m_V1 = _parameters.getValue(ParameterId::V1);
     m_Km = _parameters.getValue(ParameterId::Km);
     m_Vmax = _parameters.getValue(ParameterId::Vmax);
+    m_F = _parameters.getValue(ParameterId::F);
+    m_Ka = _parameters.getValue(ParameterId::Ka);
     m_K12 = _parameters.getValue(ParameterId::K12);
     m_K21 = _parameters.getValue(ParameterId::K21);
     m_nbPoints = _intakeEvent.getNbPoints();

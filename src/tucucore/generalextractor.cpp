@@ -287,18 +287,20 @@ ComputingStatus GeneralExtractor::generalExtractions(const ComputingTraitStandar
         }
     }
 
+    /*
     if (fullFormulationAndRoutes.size() > 1) {
         m_logger.error("The computing engine does not support multiple formulations and routes");
         return ComputingStatus::MultipleFormulationAndRoutesNotSupported;
     }
+    */
 
-    std::map<AnalyteGroupId, AbsorptionModel > absorptionModels;
+    // std::map<AnalyteGroupId, AbsorptionModel > absorptionModels;
 
     for (const auto &analyteSet : _request.getDrugModel().getAnalyteSets()) {
-        if (!allFormulationAndRoutes.empty()) {
-            const FullFormulationAndRoute *singleFormulationAndRoute = fullFormulationAndRoutes[allFormulationAndRoutes[0]];
-            absorptionModels[analyteSet->getId()] = singleFormulationAndRoute->getAbsorptionModel(analyteSet->getId());
-        }
+        //if (!allFormulationAndRoutes.empty()) {
+        //    const FullFormulationAndRoute *singleFormulationAndRoute = fullFormulationAndRoutes[allFormulationAndRoutes[0]];
+        //    absorptionModels[analyteSet->getId()] = singleFormulationAndRoute->getAbsorptionModel(analyteSet->getId());
+        //}
 
         _pkModel[analyteSet->getId()] = _modelCollection->getPkModelFromId(analyteSet->getPkModelId());
         if (_pkModel[analyteSet->getId()] == nullptr) {
@@ -345,11 +347,17 @@ ComputingStatus GeneralExtractor::generalExtractions(const ComputingTraitStandar
             return covariateExtractionResult;        }
     }
 
+    auto formulationsAndRoutes = _request.getDrugTreatment().getDosageHistory().getFormulationAndRouteList();
+
     for (const auto &analyteSet : _request.getDrugModel().getAnalyteSets()) {
         const AnalyteGroupId analyteGroupId =analyteSet->getId();
 
+        // If we are dealing with a treatment mixing different intakes
+        ParameterDefinitionIterator itMix = _request.getDrugModel().getParameterDefinitions(analyteGroupId, formulationsAndRoutes);
 
-        // TODO : This should not necessarily be a single formulation and route
+        /*
+        // Or a single type of intake
+
         Formulation formulation = Formulation::Undefined;
         AdministrationRoute route = AdministrationRoute::Undefined;
         if (!allFormulationAndRoutes.empty()) {
@@ -361,10 +369,13 @@ ComputingStatus GeneralExtractor::generalExtractions(const ComputingTraitStandar
             route = _request.getDrugModel().getFormulationAndRoutes().getDefault()->getFormulationAndRoute().getAdministrationRoute();
         }
 
-        ParameterDefinitionIterator it = _request.getDrugModel().getParameterDefinitions(analyteGroupId, formulation, route);
+        ParameterDefinitionIterator itSingle = _request.getDrugModel().getParameterDefinitions(analyteGroupId, formulation, route);
 
+        // Here we choose the Mix iterator or the single intake operator
+        ParameterDefinitionIterator it = (formulationsAndRoutes.size() > 1) ? itMix : itSingle;
+*/
         ParametersExtractor parameterExtractor(_covariatesSeries,
-                                               it,
+                                               itMix,
                                                fantomStart,
                                                _traits->getEnd());
 
@@ -430,19 +441,27 @@ ComputingStatus GeneralExtractor::generalExtractions(const ComputingTraitStandar
 
 bool GeneralExtractor::findFormulationAndRoutes(std::vector<FormulationAndRoute> &_treatmentFandR, const FormulationAndRoutes &_drugModelFandR, std::map<FormulationAndRoute, const FullFormulationAndRoute *> &_result)
 {
+    /*
     if (_treatmentFandR.size() > 1) {
         m_logger.error("The computing component does not support multi-formulation and routes treatments");
         return false;
     }
-    for (const auto & f : _drugModelFandR) {
-        if (f->getFormulationAndRoute().getAbsorptionModel() == _treatmentFandR[0].getAbsorptionModel()) {
-            _result[_treatmentFandR[0]] = f.get();
-            return true;
+    */
+    for (const auto &fTreatment : _treatmentFandR) {
+        bool found = false;
+        for (const auto & f : _drugModelFandR) {
+            if (f->getFormulationAndRoute().getAbsorptionModel() == fTreatment.getAbsorptionModel()) {
+                _result[fTreatment] = f.get();
+                found = true;
+            }
+        }
+        if (!found) {
+            m_logger.error("Could not find a formulation and route compatible with the treatment");
+            return false;
+
         }
     }
-
-    m_logger.error("Could not find a formulation and route compatible with the treatment");
-    return false;
+    return true;
 }
 
 ComputingStatus GeneralExtractor::convertAnalytes(IntakeSeries &_intakeSeries, const Tucuxi::Core::DrugModel &_drugModel, const AnalyteSet *_analyteGroup)
