@@ -482,5 +482,102 @@ ComputingStatus GeneralExtractor::convertAnalytes(IntakeSeries &_intakeSeries, c
     return ComputingStatus::Ok;
 }
 
+
+ComputingStatus GeneralExtractor::extractParameters(const std::vector<FormulationAndRoute> _formulationsAndRoutes,
+                                                    const AnalyteSets &_analyteSets,
+                                                    const DrugModel &_drugModel,
+                                                    const CovariateSeries &_covariatesSeries,
+                                                    DateTime _start,
+                                                    DateTime _end,
+                                                    PredictionParameterType _parametersType,
+                                                    GroupsParameterSetSeries &_parameterSeries)
+{
+
+    for (const auto &analyteSet : _analyteSets) {
+        const AnalyteGroupId analyteGroupId =analyteSet->getId();
+
+        // If we are dealing with a treatment mixing different intakes
+        ParameterDefinitionIterator itMix = _drugModel.getParameterDefinitions(analyteGroupId, _formulationsAndRoutes);
+
+        /*
+    // Or a single type of intake
+
+    Formulation formulation = Formulation::Undefined;
+    AdministrationRoute route = AdministrationRoute::Undefined;
+    if (!allFormulationAndRoutes.empty()) {
+        formulation = allFormulationAndRoutes[0].getFormulation();
+        route = allFormulationAndRoutes[0].getAdministrationRoute();
+    }
+    else {
+        formulation = _request.getDrugModel().getFormulationAndRoutes().getDefault()->getFormulationAndRoute().getFormulation();
+        route = _request.getDrugModel().getFormulationAndRoutes().getDefault()->getFormulationAndRoute().getAdministrationRoute();
+    }
+
+    ParameterDefinitionIterator itSingle = _request.getDrugModel().getParameterDefinitions(analyteGroupId, formulation, route);
+
+    // Here we choose the Mix iterator or the single intake operator
+    ParameterDefinitionIterator it = (_formulationsAndRoutes.size() > 1) ? itMix : itSingle;
+*/
+        ParametersExtractor parameterExtractor(_covariatesSeries,
+                                               itMix,
+                                               _start,
+                                               _end);
+
+        ComputingStatus parametersExtractionResult;
+
+
+        if (_parametersType == PredictionParameterType::Population) {
+#ifdef POPPARAMETERSFROMDEFAULTVALUES
+            parametersExtractionResult = parameterExtractor.extractPopulation(_parameterSeries);
+#else
+            //parametersExtractionResult = parameterExtractor.extract(_parameterSeries);
+
+            ParameterSetSeries intermediateParameterSeries;
+
+            parametersExtractionResult = parameterExtractor.extract(intermediateParameterSeries);
+
+            if (parametersExtractionResult != ComputingStatus::Ok) {
+                m_logger.error("Can not extract parameters");
+                return parametersExtractionResult;
+            }
+
+            // The intermediateParameterSeries contains changes of parameters, so we build a full set of parameter
+            // for each event.
+            parametersExtractionResult = parameterExtractor.buildFullSet(intermediateParameterSeries, _parameterSeries[analyteGroupId]);
+            if (parametersExtractionResult != ComputingStatus::Ok) {
+                m_logger.error("Can not consolidate parameters");
+                return parametersExtractionResult;
+            }
+
+#endif // POPPARAMETERSFROMDEFAULTVALUES
+
+            if (parametersExtractionResult != ComputingStatus::Ok) {
+                m_logger.error("Can not extract parameters");
+                return parametersExtractionResult;
+            }
+
+        }
+        else {
+            ParameterSetSeries intermediateParameterSeries;
+
+            parametersExtractionResult = parameterExtractor.extract(intermediateParameterSeries);
+
+            if (parametersExtractionResult != ComputingStatus::Ok) {
+                m_logger.error("Can not extract parameters");
+                return parametersExtractionResult;
+            }
+
+            // The intermediateParameterSeries contains changes of parameters, so we build a full set of parameter
+            // for each event.
+            parametersExtractionResult = parameterExtractor.buildFullSet(intermediateParameterSeries, _parameterSeries[analyteGroupId]);
+            if (parametersExtractionResult != ComputingStatus::Ok) {
+                m_logger.error("Can not consolidate parameters");
+                return parametersExtractionResult;
+            }
+
+        }
+    }
+}
+
 } // namespace Core
 } // namespace Tucuxi

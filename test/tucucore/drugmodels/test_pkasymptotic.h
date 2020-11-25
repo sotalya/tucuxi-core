@@ -694,6 +694,10 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
 
             fructose_assert_eq( result, ComputingStatus::Ok);
 
+            if (result != ComputingStatus::Ok) {
+                return;
+            }
+
             const ComputedData* responseData = response->getData();
             fructose_assert(dynamic_cast<const AdjustmentData*>(responseData) != nullptr);
             const AdjustmentData *resp = dynamic_cast<const AdjustmentData*>(responseData);

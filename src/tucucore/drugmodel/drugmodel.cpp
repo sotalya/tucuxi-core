@@ -12,6 +12,7 @@ namespace Core {
 void ParameterDefinitionIterator::build()
 {
     m_total = 0;
+    bool empty = true;
 
     // Depending on the constructor invoked, we build the list of absorption parameters
     if (!m_fullFormulationAndRoutes.empty()) {
@@ -20,6 +21,7 @@ void ParameterDefinitionIterator::build()
             if (parameter != nullptr) {
                 m_absorptionParameters.push_back(parameter);
                 m_total += parameter->getNbParameters();
+                empty = false;
             }
         }
     }
@@ -29,6 +31,7 @@ void ParameterDefinitionIterator::build()
             if (parameter != nullptr) {
                 m_absorptionParameters.push_back(parameter);
                 m_total += parameter->getNbParameters();
+                empty = false;
             }
         }
     }
@@ -37,7 +40,12 @@ void ParameterDefinitionIterator::build()
         if (parameter != nullptr) {
             m_absorptionParameters.push_back(parameter);
             m_total += parameter->getNbParameters();
+            empty = false;
         }
+    }
+
+    if (empty) {
+        return;
     }
 
     const ParameterSetDefinition* dispositionParameters = m_model.getDispositionParameters(m_analyteGroupId);

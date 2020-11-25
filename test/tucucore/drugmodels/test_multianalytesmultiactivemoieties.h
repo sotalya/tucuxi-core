@@ -149,6 +149,9 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
                 fructose_assert(responseData != nullptr);
                 const SinglePredictionData *resp = dynamic_cast<const SinglePredictionData*>(responseData);
                 fructose_assert(resp != nullptr);
+                if (resp == nullptr) {
+                    return;
+                }
 
                 fructose_assert_eq(resp->getIds().size(), size_t{3});
                 fructose_assert_eq(resp->getIds()[0], "activeMoietyMulti");
@@ -281,6 +284,9 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
             const ComputedData* responseData = response->getData();
 
             fructose_assert(responseData != nullptr);
+            if (responseData == nullptr) {
+                return;
+            }
 
             {
                 fructose_assert(dynamic_cast<const SinglePredictionData*>(responseData) != nullptr);

@@ -350,7 +350,7 @@ ComputingStatus CovariateExtractor::extract(CovariateSeries &_series)
 
     TUCU_TRY {
          rc = computeEvents(refreshMap, _series);
-    } TUCU_CATCH (std::invalid_argument e) TUCU_ONEXCEPTION( {
+    } TUCU_CATCH (std::invalid_argument& e) TUCU_ONEXCEPTION( {
 
         Tucuxi::Common::LoggerHelper logHelper;
         logHelper.error("Error with covariate extraction : {}", e.what());

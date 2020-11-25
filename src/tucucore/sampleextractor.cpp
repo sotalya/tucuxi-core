@@ -46,7 +46,7 @@ ComputingStatus SampleExtractor::extract(
             if ((sample->getDate() > _start) && (sample->getDate() < _end)) {
                 TUCU_TRY {
                     _series.push_back(SampleEvent(sample->getDate(), UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(sample->getValue(), sample->getUnit(), _toUnit)));
-                } TUCU_CATCH (std::invalid_argument e) {
+                } TUCU_CATCH (std::invalid_argument& e) {
                     Tucuxi::Common::LoggerHelper logger;
                     logger.error("Sample unit not handled");
                 }
@@ -87,7 +87,7 @@ ComputingStatus SampleExtractor::extract(
         if ((sample->getDate() > _start) && (sample->getDate() < _end)) {
             TUCU_TRY {
                 _series.push_back(SampleEvent(sample->getDate(), UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(sample->getValue(), sample->getUnit(), _toUnit)));
-            } TUCU_CATCH (std::invalid_argument e) {
+            } TUCU_CATCH (std::invalid_argument& e) {
                 Tucuxi::Common::LoggerHelper logger;
                 logger.error("Sample unit not handled");
                 return ComputingStatus::SampleExtractionError;
