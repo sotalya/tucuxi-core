@@ -278,6 +278,50 @@ std::vector<const FullFormulationAndRoute*> selectFormulationAndRoutes(
     return result;
 }
 
+ComputingStatus ComputingAdjustments::extractCandidates(
+        const ComputingTraitAdjustment *_traits,
+        const ComputingRequest &_request,
+        std::vector<SimpleDosageCandidate> &_candidates,
+        bool &_multipleFormulationAndRoutes
+        )
+{
+
+    const FormulationAndRoutes &formulationAndRoutes = _request.getDrugModel().getFormulationAndRoutes();
+
+    const DosageHistory &dosageHistory = _request.getDrugTreatment().getDosageHistory();
+
+    std::vector<const FullFormulationAndRoute*> selectedFormulationAndRoutes = selectFormulationAndRoutes(
+                _traits->getFormulationAndRouteSelectionOption(),
+                formulationAndRoutes,
+                dosageHistory);
+
+    _multipleFormulationAndRoutes = (selectedFormulationAndRoutes.size() > 1);
+
+    if (selectedFormulationAndRoutes.empty()) {
+        m_logger.error("Can not find a formulation and route for adjustment");
+        return ComputingStatus::NoFormulationAndRouteForAdjustment;
+    }
+
+    // We iterate over the potential formulation and routes
+    for (auto const *selectedFormulationAndRoute : selectedFormulationAndRoutes) {
+
+        if (selectedFormulationAndRoute == nullptr) {
+            m_logger.error("Can not find a formulation and route for adjustment");
+            return ComputingStatus::NoFormulationAndRouteForAdjustment;
+        }
+
+
+        ComputingStatus buildingResult = buildCandidates(selectedFormulationAndRoute, _candidates);
+
+        if (buildingResult != ComputingStatus::Ok) {
+            m_logger.error("Can not build adjustment candidates");
+            return buildingResult;
+        }
+    }
+
+    return ComputingStatus::Ok;
+}
+
 ComputingStatus ComputingAdjustments::compute(
         const ComputingTraitAdjustment *_traits,
         const ComputingRequest &_request,
@@ -289,6 +333,20 @@ ComputingStatus ComputingAdjustments::compute(
         return ComputingStatus::NoComputingTraits;
     }
 
+
+
+    int index = 0;
+
+    std::vector<SimpleDosageCandidate> candidates;
+    bool multipleFormulationAndRoutes = false;
+
+    extractCandidates(_traits, _request, candidates, multipleFormulationAndRoutes);
+/*
+    if (multipleFormulationAndRoutes) {
+        m_logger.error("The adjustment computing engine does not support multiple formulation and routes yet.");
+        return ComputingStatus::MultipleFormulationAndRoutesNotSupported;
+    }
+*/
     std::map<AnalyteGroupId, std::shared_ptr<PkModel> > pkModel;
 
     GroupsIntakeSeries intakeSeries;
@@ -330,41 +388,6 @@ ComputingStatus ComputingAdjustments::compute(
         }
     }
 
-    const FormulationAndRoutes &formulationAndRoutes = _request.getDrugModel().getFormulationAndRoutes();
-
-    const DosageHistory &dosageHistory = _request.getDrugTreatment().getDosageHistory();
-
-    std::vector<const FullFormulationAndRoute*> selectedFormulationAndRoutes = selectFormulationAndRoutes(
-                _traits->getFormulationAndRouteSelectionOption(),
-                formulationAndRoutes,
-                dosageHistory);
-
-    if (selectedFormulationAndRoutes.empty()) {
-        m_logger.error("Can not find a formulation and route for adjustment");
-        return ComputingStatus::NoFormulationAndRouteForAdjustment;
-    }
-
-
-    std::vector<SimpleDosageCandidate> candidates;
-
-    int index = 0;
-
-    // We iterate over the potential formulation and routes
-    for (auto const *selectedFormulationAndRoute : selectedFormulationAndRoutes) {
-
-        if (selectedFormulationAndRoute == nullptr) {
-            m_logger.error("Can not find a formulation and route for adjustment");
-            return ComputingStatus::NoFormulationAndRouteForAdjustment;
-        }
-
-
-        ComputingStatus buildingResult = buildCandidates(selectedFormulationAndRoute, candidates);
-
-        if (buildingResult != ComputingStatus::Ok) {
-            m_logger.error("Can not build adjustment candidates");
-            return buildingResult;
-        }
-    }
 
     TargetExtractor targetExtractor;
     std::map<ActiveMoietyId, TargetSeries> targetSeries;

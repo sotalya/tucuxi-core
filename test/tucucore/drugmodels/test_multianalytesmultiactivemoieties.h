@@ -477,6 +477,10 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
 
             fructose_assert(responseData != nullptr);
 
+            if (responseData == nullptr) {
+                return;
+            }
+
             {
                 fructose_assert(dynamic_cast<const AdjustmentData*>(responseData) != nullptr);
                 const AdjustmentData *resp = dynamic_cast<const AdjustmentData*>(responseData);

@@ -62,6 +62,8 @@ HEADERS += \
 SOURCES += \
     ../../../test/tucucore/tests.cpp
 
+# We need the test PK models for successful tests
+DEFINES += DRUGMODELTESTS
 
 !win32 {
     # Because of Eigen:

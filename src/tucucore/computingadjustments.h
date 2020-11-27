@@ -137,6 +137,13 @@ protected:
                                        std::map<AnalyteGroupId, Etas> &_etas
                                        );
 
+    ComputingStatus extractCandidates(
+            const ComputingTraitAdjustment *_traits,
+            const ComputingRequest &_request,
+            std::vector<SimpleDosageCandidate> &_candidates,
+            bool &_multipleFormulationAndRoutes
+            );
+
 protected:
 
     Tucuxi::Common::LoggerHelper m_logger;

@@ -120,6 +120,14 @@ public:
     Parameters::const_iterator begin() const { return m_parameters.begin(); }
     Parameters::const_iterator end() const { return m_parameters.end(); }
 
+    ///
+    /// \brief Gets the value of a parameter
+    /// \param _id Id of the parameter
+    /// \return The value of the parameter if it exists, 0 else
+    ///
+    /// This function considers a missing parameter to be an error,
+    /// and in such case adds a message in the logs and returns 0.
+    ///
     Value getValue(ParameterId::Enum _id) const
     {
         int index = m_IdToIndex[_id];
@@ -128,8 +136,26 @@ public:
         }
         static Tucuxi::Common::LoggerHelper logger;
         logger.error("Parameter not existing in ParameterSet");
-        return 0;
+        return 0.0;
     }
+
+    ///
+    /// \brief Gets the value of a parameter if it exists
+    /// \param _id Id of the parameter
+    /// \return The value of the parameter if it exists, 0 else
+    ///
+    /// This function does not consider a missing parameter to be an error,
+    /// while getValue() would.
+    ///
+    Value getOptionalValue(ParameterId::Enum _id) const
+    {
+        int index = m_IdToIndex[_id];
+        if (index >= 0) {
+            return m_parameters[index].getValue();
+        }
+        return 0.0;
+    }
+
     int size() const { return static_cast<int>(m_parameters.size()); }
 
     bool equals(const ParameterSetEvent *_other) const {
