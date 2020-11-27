@@ -340,57 +340,65 @@ ComputingStatus ComputingAdjustments::compute(
     std::vector<SimpleDosageCandidate> candidates;
     bool multipleFormulationAndRoutes = false;
 
+    // 1. Extract all candidates
     extractCandidates(_traits, _request, candidates, multipleFormulationAndRoutes);
-/*
-    if (multipleFormulationAndRoutes) {
-        m_logger.error("The adjustment computing engine does not support multiple formulation and routes yet.");
-        return ComputingStatus::MultipleFormulationAndRoutesNotSupported;
-    }
-*/
-    std::map<AnalyteGroupId, std::shared_ptr<PkModel> > pkModel;
-
-    GroupsIntakeSeries intakeSeries;
-    CovariateSeries covariateSeries;
-    GroupsParameterSetSeries parameterSeries;
-    DateTime calculationStartTime;
-
-    // Be carefull here, as the endTime could be different...
-    ComputingStatus extractionResult = m_utils->m_generalExtractor->generalExtractions(_traits,
-                                                                                       _request,
-                                                                                       m_utils->m_models.get(),
-                                                                                       pkModel,
-                                                                                       intakeSeries,
-                                                                                       covariateSeries,
-                                                                                       parameterSeries,
-                                                                                       calculationStartTime);
-
-    if (extractionResult != ComputingStatus::Ok) {
-        return extractionResult;
-    }
-
-    DateTime initialCalculationTime = calculationStartTime;
 
 
-    std::map<AnalyteGroupId, Etas> etas;
-
+    // 2. Get the list of drug model analyte group Ids
     std::vector<AnalyteGroupId> allGroupIds;
     for(const auto &analyteGroup : _request.getDrugModel().getAnalyteSets()) {
         allGroupIds.push_back(analyteGroup->getId());
     }
 
-    for(const auto& analyteGroupId : allGroupIds) {
-        if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Aposteriori) {
-            ComputingStatus aposterioriEtasExtractionResult = m_utils->m_generalExtractor->extractAposterioriEtas(etas[analyteGroupId], _request, analyteGroupId, intakeSeries[analyteGroupId], parameterSeries[analyteGroupId], covariateSeries, calculationStartTime, _traits->getEnd());
+    std::map<AnalyteGroupId, std::shared_ptr<PkModel> > pkModel;
 
-            if (aposterioriEtasExtractionResult != ComputingStatus::Ok) {
-                return aposterioriEtasExtractionResult;
+    CovariateSeries covariateSeries;
+    DateTime calculationStartTime;
+
+    std::map<AnalyteGroupId, Etas> etas;
+
+    // 2. Use the general extractor to get the covariates, the pkModel, and the calculationStartTime.
+    // The parameterSeries and intakeSeries are declared within a new scope, to be sure they
+    // won't be used as is.
+    // They are only used to get the etas of parameters
+    {
+        GroupsParameterSetSeries parameterSeries;
+        GroupsIntakeSeries intakeSeries;
+
+        ComputingStatus extractionResult = m_utils->m_generalExtractor->generalExtractions(_traits,
+                                                                                           _request,
+                                                                                           m_utils->m_models.get(),
+                                                                                           pkModel,
+                                                                                           intakeSeries,
+                                                                                           covariateSeries,
+                                                                                           parameterSeries,
+                                                                                           calculationStartTime);
+
+        if (extractionResult != ComputingStatus::Ok) {
+            return extractionResult;
+        }
+
+
+
+
+        for(const auto& analyteGroupId : allGroupIds) {
+            if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Aposteriori) {
+                ComputingStatus aposterioriEtasExtractionResult = m_utils->m_generalExtractor->extractAposterioriEtas(etas[analyteGroupId], _request, analyteGroupId, intakeSeries[analyteGroupId], parameterSeries[analyteGroupId], covariateSeries, calculationStartTime, _traits->getEnd());
+
+                if (aposterioriEtasExtractionResult != ComputingStatus::Ok) {
+                    return aposterioriEtasExtractionResult;
+                }
             }
         }
+
     }
 
 
-    TargetExtractor targetExtractor;
+    // For each active moiety, a target series
     std::map<ActiveMoietyId, TargetSeries> targetSeries;
+
+    // Extract the targets
+    TargetExtractor targetExtractor;
     TargetExtractionOption targetExtractionOption = _traits->getTargetExtractionOption();
 
     for (const auto &activeMoiety : _request.getDrugModel().getActiveMoieties()) {
@@ -404,6 +412,13 @@ ComputingStatus ComputingAdjustments::compute(
         }
     }
 
+
+
+    DateTime initialCalculationTime = calculationStartTime;
+
+
+
+
     std::vector<DosageAdjustment> dosageCandidates;
 
     // A vector of vector because each adjustment candidate can have various targets
@@ -413,6 +428,11 @@ ComputingStatus ComputingAdjustments::compute(
     // Iterate over pre-selected candidates
     TargetEvaluator targetEvaluator;
     for (const auto& candidate : candidates) {
+
+
+        GroupsParameterSetSeries parameterSeries;
+
+
         DateTime newEndTime;
 
         std::unique_ptr<DosageTimeRange> newDosage;
@@ -448,11 +468,39 @@ ComputingStatus ComputingAdjustments::compute(
             newHistory->mergeDosage(newDosage.get());
         }
 
-        GroupsIntakeSeries intakeSeriesPerGroup;
+
+        // TODO : To be checked. The adjustment engine should not depend on the user choice
+        double nbPointsPerHour = _traits->getNbPointsPerHour();
+        nbPointsPerHour = 20;
+
+        ComputingTraitConcentration traits("0", _traits->getAdjustmentTime(), newEndTime, nbPointsPerHour, _traits->getComputingOption());
+
+
+        GroupsIntakeSeries intakeSeries;
+        CovariateSeries unusedCovariateSeries;
+        ComputingStatus extractionResult = m_utils->m_generalExtractor->generalExtractions(&traits,
+                                                                                           _request.getDrugModel(),
+                                                                                           *newHistory.get(),
+                                                                                           _request.getDrugTreatment().getSamples(),
+                                                                                           _request.getDrugTreatment().getCovariates(),
+                                                                                           m_utils->m_models.get(),
+                                                                                           pkModel,
+                                                                                           intakeSeries,
+                                                                                           unusedCovariateSeries,
+                                                                                           parameterSeries,
+                                                                                           calculationStartTime);
+
+        if (extractionResult != ComputingStatus::Ok) {
+            return extractionResult;
+        }
 
         std::vector<ConcentrationPredictionPtr> analytesPredictions;
 
+        GroupsIntakeSeries intakeSeriesPerGroup;
+
         for (const auto& analyteGroupId : allGroupIds) {
+
+
             ConcentrationPredictionPtr pPrediction = std::make_unique<ConcentrationPrediction>();
 
             IntakeExtractor intakeExtractor;
@@ -650,6 +698,8 @@ ComputingStatus ComputingAdjustments::compute(
     }
 #endif // 0
 
+
+    GroupsParameterSetSeries parameterSeries;
 
 
     std::vector<DosageAdjustment> finalCandidates;
@@ -1054,6 +1104,31 @@ ComputingStatus ComputingAdjustments::generatePrediction(DosageAdjustment &_dosa
 
     std::vector<ConcentrationPredictionPtr> analytesPredictions;
 
+
+    CovariateSeries covariateSeries;
+    DateTime calculationStartTime;
+
+    std::map<AnalyteGroupId, Etas> etas;
+
+    GroupsParameterSetSeries parameterSeries;
+    GroupsIntakeSeries intakeSeries;
+    ComputingStatus extractionResult = m_utils->m_generalExtractor->generalExtractions(_traits,
+                                                                                       _request.getDrugModel(),
+                                                                                       *newHistory.get(),
+                                                                                       _request.getDrugTreatment().getSamples(),
+                                                                                       _request.getDrugTreatment().getCovariates(),
+                                                                                       m_utils->m_models.get(),
+                                                                                       _pkModel,
+                                                                                       intakeSeries,
+                                                                                       covariateSeries,
+                                                                                       parameterSeries,
+                                                                                       calculationStartTime);
+    if (extractionResult != ComputingStatus::Ok) {
+        return extractionResult;
+    }
+
+
+
     for (const auto& analyteGroupId : _allGroupIds) {
         ConcentrationPredictionPtr pPrediction = std::make_unique<ConcentrationPrediction>();
 
@@ -1089,7 +1164,7 @@ ComputingStatus ComputingAdjustments::generatePrediction(DosageAdjustment &_dosa
                     _calculationStartTime,
                     newEndTime,
                     intakeSeriesPerGroup[analyteGroupId],
-                    _parameterSeries[analyteGroupId],
+                    parameterSeries[analyteGroupId],
                     _etas[analyteGroupId]);
 
         if (predictionComputingResult != ComputingStatus::Ok) {
@@ -1142,7 +1217,7 @@ ComputingStatus ComputingAdjustments::generatePrediction(DosageAdjustment &_dosa
                 cycle.addData(times, activeMoietiesPredictions[0]->getValues()[i]);
 
                 AnalyteGroupId analyteGroupId = _request.getDrugModel().getAnalyteSets()[0]->getId();
-                ParameterSetEventPtr params = _parameterSeries[analyteGroupId].getAtTime(start, _etas[analyteGroupId]);
+                ParameterSetEventPtr params = parameterSeries[analyteGroupId].getAtTime(start, _etas[analyteGroupId]);
 
 
                 if (_traits->getComputingOption().retrieveParameters() == RetrieveParametersOption::RetrieveParameters) {

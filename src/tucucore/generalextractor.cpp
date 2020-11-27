@@ -2,6 +2,7 @@
 
 #include "tucucore/computingservice/computingrequest.h"
 #include "tucucore/computingservice/icomputingservice.h"
+#include "tucucore/drugtreatment/sample.h"
 #include "tucucore/sampleevent.h"
 #include "tucucore/sampleextractor.h"
 #include "tucucore/residualerrormodelextractor.h"
@@ -166,8 +167,12 @@ std::vector<const FullFormulationAndRoute*> GeneralExtractor::extractFormulation
     return result;
 }
 
+
 ComputingStatus GeneralExtractor::generalExtractions(const ComputingTraitStandard *_traits,
-        const ComputingRequest &_request,
+                                                     const DrugModel &_drugModel,
+                                                     const DosageHistory &_dosageHistory,
+                                                     const Samples &_samples,
+                                                     const PatientVariates &_patientVariates,
         const PkModelCollection *_modelCollection,
         std::map<AnalyteGroupId, std::shared_ptr<PkModel> > &_pkModel,
         GroupsIntakeSeries &_intakeSeries,
@@ -178,15 +183,15 @@ ComputingStatus GeneralExtractor::generalExtractions(const ComputingTraitStandar
 {
 
 
-    const HalfLife &halfLife = _request.getDrugModel().getTimeConsiderations().getHalfLife();
+    const HalfLife &halfLife = _drugModel.getTimeConsiderations().getHalfLife();
 
     Duration fantomDuration = secureStartDuration(halfLife);
 
     Tucuxi::Common::DateTime firstEvent = _traits->getStart();
 
     if ((_traits->getComputingOption().getParametersType() == PredictionParameterType::Aposteriori)
-            && (!_request.getDrugTreatment().getSamples().empty())) {
-        for (const auto &sample : _request.getDrugTreatment().getSamples()) {
+            && (!_samples.empty())) {
+        for (const auto &sample : _samples) {
             if (sample->getDate() < firstEvent) {
                 firstEvent = sample->getDate();
             }
@@ -201,7 +206,7 @@ ComputingStatus GeneralExtractor::generalExtractions(const ComputingTraitStandar
     double nbPointsPerHour = _traits->getNbPointsPerHour();
 
     IntakeSeries intakeSeries;
-    ComputingStatus intakeExtractionResult = intakeExtractor.extract(_request.getDrugTreatment().getDosageHistory(), fantomStart /*_traits->getStart()*/, _traits->getEnd() /* + Duration(24h)*/, nbPointsPerHour, TucuUnit("mg"), intakeSeries);
+    ComputingStatus intakeExtractionResult = intakeExtractor.extract(_dosageHistory, fantomStart /*_traits->getStart()*/, _traits->getEnd() /* + Duration(24h)*/, nbPointsPerHour, TucuUnit("mg"), intakeSeries);
 
     if (intakeExtractionResult != ComputingStatus::Ok) {
         m_logger.error("Error with the intakes extraction.");
@@ -227,7 +232,7 @@ ComputingStatus GeneralExtractor::generalExtractions(const ComputingTraitStandar
             }
         }
 
-        // const DosageTimeRangeList& timeRanges = _request.getDrugTreatment().getDosageHistory().getDosageTimeRanges();
+        // const DosageTimeRangeList& timeRanges = _drugTreatment.getDosageHistory().getDosageTimeRanges();
 
 
         IntakeEvent *lastIntake = &(intakeSeries.back());
@@ -281,7 +286,7 @@ ComputingStatus GeneralExtractor::generalExtractions(const ComputingTraitStandar
 
     // Only look for formulation and routes if there is an existing treatment
     if (!intakeSeries.empty()) {
-        if (!findFormulationAndRoutes(allFormulationAndRoutes, _request.getDrugModel().getFormulationAndRoutes(), fullFormulationAndRoutes)) {
+        if (!findFormulationAndRoutes(allFormulationAndRoutes, _drugModel.getFormulationAndRoutes(), fullFormulationAndRoutes)) {
             m_logger.error("Could not find a suitable formulation and route in the drug model");
             return ComputingStatus::CouldNotFindSuitableFormulationAndRoute;
         }
@@ -296,23 +301,17 @@ ComputingStatus GeneralExtractor::generalExtractions(const ComputingTraitStandar
 
     // std::map<AnalyteGroupId, AbsorptionModel > absorptionModels;
 
-    for (const auto &analyteSet : _request.getDrugModel().getAnalyteSets()) {
-        //if (!allFormulationAndRoutes.empty()) {
-        //    const FullFormulationAndRoute *singleFormulationAndRoute = fullFormulationAndRoutes[allFormulationAndRoutes[0]];
-        //    absorptionModels[analyteSet->getId()] = singleFormulationAndRoute->getAbsorptionModel(analyteSet->getId());
-        //}
-
-        _pkModel[analyteSet->getId()] = _modelCollection->getPkModelFromId(analyteSet->getPkModelId());
-        if (_pkModel[analyteSet->getId()] == nullptr) {
-            m_logger.error("Can not find a Pk Model for the calculation");
-            return ComputingStatus::NoPkModelError;
-        }
+    // Extraction of the PK model for each analyte group
+    auto pkModelExtractionResult = extractPkModel(_drugModel, _modelCollection, _pkModel);
+    if (pkModelExtractionResult != ComputingStatus::Ok) {
+        return pkModelExtractionResult;
     }
 
-    for (const auto &analyteSet : _request.getDrugModel().getAnalyteSets()) {
+
+    for (const auto &analyteSet : _drugModel.getAnalyteSets()) {
         cloneIntakeSeries(intakeSeries, _intakeSeries[analyteSet->getId()]);
 
-        convertAnalytes(_intakeSeries[analyteSet->getId()], _request.getDrugModel(), analyteSet.get());
+        convertAnalytes(_intakeSeries[analyteSet->getId()], _drugModel, analyteSet.get());
 
         ComputingStatus intakeAssociationResult = IntakeToCalculatorAssociator::associate(_intakeSeries[analyteSet->getId()], *_pkModel[analyteSet->getId()]);
 
@@ -324,7 +323,7 @@ ComputingStatus GeneralExtractor::generalExtractions(const ComputingTraitStandar
 
     if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Population) {
         PatientVariates emptyPatientVariates;
-        CovariateExtractor covariateExtractor(_request.getDrugModel().getCovariates(),
+        CovariateExtractor covariateExtractor(_drugModel.getCovariates(),
                                               emptyPatientVariates,
                                               fantomStart,
                                               _traits->getEnd());
@@ -336,8 +335,8 @@ ComputingStatus GeneralExtractor::generalExtractions(const ComputingTraitStandar
         }
     }
     else {
-        CovariateExtractor covariateExtractor(_request.getDrugModel().getCovariates(),
-                                              _request.getDrugTreatment().getCovariates(),
+        CovariateExtractor covariateExtractor(_drugModel.getCovariates(),
+                                              _patientVariates,
                                               fantomStart,
                                               _traits->getEnd());
         ComputingStatus covariateExtractionResult = covariateExtractor.extract(_covariatesSeries);
@@ -347,13 +346,13 @@ ComputingStatus GeneralExtractor::generalExtractions(const ComputingTraitStandar
             return covariateExtractionResult;        }
     }
 
-    auto formulationsAndRoutes = _request.getDrugTreatment().getDosageHistory().getFormulationAndRouteList();
+    auto formulationsAndRoutes = _dosageHistory.getFormulationAndRouteList();
 
-    for (const auto &analyteSet : _request.getDrugModel().getAnalyteSets()) {
+    for (const auto &analyteSet : _drugModel.getAnalyteSets()) {
         const AnalyteGroupId analyteGroupId =analyteSet->getId();
 
         // If we are dealing with a treatment mixing different intakes
-        ParameterDefinitionIterator itMix = _request.getDrugModel().getParameterDefinitions(analyteGroupId, formulationsAndRoutes);
+        ParameterDefinitionIterator itMix = _drugModel.getParameterDefinitions(analyteGroupId, formulationsAndRoutes);
 
         /*
         // Or a single type of intake
@@ -365,11 +364,11 @@ ComputingStatus GeneralExtractor::generalExtractions(const ComputingTraitStandar
             route = allFormulationAndRoutes[0].getAdministrationRoute();
         }
         else {
-            formulation = _request.getDrugModel().getFormulationAndRoutes().getDefault()->getFormulationAndRoute().getFormulation();
-            route = _request.getDrugModel().getFormulationAndRoutes().getDefault()->getFormulationAndRoute().getAdministrationRoute();
+            formulation = _drugModel.getFormulationAndRoutes().getDefault()->getFormulationAndRoute().getFormulation();
+            route = _drugModel.getFormulationAndRoutes().getDefault()->getFormulationAndRoute().getAdministrationRoute();
         }
 
-        ParameterDefinitionIterator itSingle = _request.getDrugModel().getParameterDefinitions(analyteGroupId, formulation, route);
+        ParameterDefinitionIterator itSingle = _drugModel.getParameterDefinitions(analyteGroupId, formulation, route);
 
         // Here we choose the Mix iterator or the single intake operator
         ParameterDefinitionIterator it = (formulationsAndRoutes.size() > 1) ? itMix : itSingle;
@@ -438,6 +437,57 @@ ComputingStatus GeneralExtractor::generalExtractions(const ComputingTraitStandar
     return ComputingStatus::Ok;
 
 }
+
+
+
+ComputingStatus GeneralExtractor::generalExtractions(const ComputingTraitStandard *_traits,
+        const ComputingRequest &_request,
+        const PkModelCollection *_modelCollection,
+        std::map<AnalyteGroupId, std::shared_ptr<PkModel> > &_pkModel,
+        GroupsIntakeSeries &_intakeSeries,
+        CovariateSeries &_covariatesSeries,
+        GroupsParameterSetSeries &_parameterSeries,
+        DateTime &_calculationStartTime
+        )
+{
+    return generalExtractions(_traits,
+                              _request.getDrugModel(),
+                              _request.getDrugTreatment().getDosageHistory(),
+                              _request.getDrugTreatment().getSamples(),
+                              _request.getDrugTreatment().getCovariates(),
+                              _modelCollection,
+                              _pkModel,
+                              _intakeSeries,
+                              _covariatesSeries,
+                              _parameterSeries,
+                              _calculationStartTime);
+}
+
+
+
+ComputingStatus GeneralExtractor::extractPkModel(
+        const DrugModel &_drugModel,
+        const PkModelCollection *_modelCollection,
+        std::map<AnalyteGroupId, std::shared_ptr<PkModel> > &_pkModel
+        )
+{
+
+    for (const auto &analyteSet : _drugModel.getAnalyteSets()) {
+        //if (!allFormulationAndRoutes.empty()) {
+        //    const FullFormulationAndRoute *singleFormulationAndRoute = fullFormulationAndRoutes[allFormulationAndRoutes[0]];
+        //    absorptionModels[analyteSet->getId()] = singleFormulationAndRoute->getAbsorptionModel(analyteSet->getId());
+        //}
+
+        _pkModel[analyteSet->getId()] = _modelCollection->getPkModelFromId(analyteSet->getPkModelId());
+        if (_pkModel[analyteSet->getId()] == nullptr) {
+            m_logger.error("Can not find a Pk Model for the calculation");
+            return ComputingStatus::NoPkModelError;
+        }
+    }
+
+    return ComputingStatus::Ok;
+}
+
 
 bool GeneralExtractor::findFormulationAndRoutes(std::vector<FormulationAndRoute> &_treatmentFandR, const FormulationAndRoutes &_drugModelFandR, std::map<FormulationAndRoute, const FullFormulationAndRoute *> &_result)
 {

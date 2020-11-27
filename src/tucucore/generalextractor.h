@@ -10,6 +10,7 @@
 #include "tucucore/covariateevent.h"
 #include "tucucore/drugmodel/drugmodel.h"
 #include "tucucore/computingservice/computingtrait.h"
+#include "tucucore/drugtreatment/sample.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -22,6 +23,7 @@ class ComputingTraitStandard;
 class PkModel;
 class HalfLife;
 class PkModelCollection;
+class DrugTreatment;
 
 class GeneralExtractor
 {
@@ -46,6 +48,18 @@ public:
             std::vector<const FullFormulationAndRoute *> &_formulationAndRoutes,
             OmegaMatrix &_omega);
 
+    ComputingStatus generalExtractions(
+            const Tucuxi::Core::ComputingTraitStandard *_traits,
+            const DrugModel &_drugModel,
+            const DosageHistory &_dosageHistory,
+            const Samples &_samples,
+            const PatientVariates &_patientVariates,
+            const PkModelCollection *_modelCollection,
+            std::map<AnalyteGroupId, std::shared_ptr<PkModel> > &_pkModel,
+            GroupsIntakeSeries &_intakeSeries,
+            CovariateSeries &_covariatesSeries,
+            GroupsParameterSetSeries &_parameterSeries,
+            Common::DateTime &_calculationStartTime);
 
     ComputingStatus generalExtractions(
             const Tucuxi::Core::ComputingTraitStandard *_traits,
@@ -74,6 +88,11 @@ public:
             DateTime _end,
             PredictionParameterType _parametersType,
             GroupsParameterSetSeries &_parameterSeries);
+
+
+    ComputingStatus extractPkModel(const DrugModel &_drugModel,
+            const PkModelCollection *_modelCollection,
+            std::map<AnalyteGroupId, std::shared_ptr<PkModel> > &_pkModel);
 
 protected:
 
