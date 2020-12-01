@@ -812,6 +812,57 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
     }
 
 
+    void buildDrugTreatmentMix3(DrugTreatment *&_drugTreatment, FormulationAndRoute _route1, FormulationAndRoute _route2, FormulationAndRoute _route3)
+    {
+        _drugTreatment = new DrugTreatment();
+
+        // List of time ranges that will be pushed into the history
+        DosageTimeRangeList timeRangeList;
+
+        // Create a time range starting at the beginning of june 2017, with no upper end (to test that the repetitions
+        // are handled correctly)
+        DateTime startSept2018(date::year_month_day(date::year(2018), date::month(9), date::day(1)),
+                               Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
+
+
+        //const FormulationAndRoute route("formulation", AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular);
+        // Add a treatment intake every ten days in June
+        // 200mg via a intravascular at 08h30, starting the 01.06
+        LastingDose periodicDose(DoseValue(200.0),
+                                 TucuUnit("mg"),
+                                 _route1,
+                                 Duration(),
+                                 Duration(std::chrono::hours(24)));
+        DosageRepeat repeatedDose(periodicDose, 2);
+        std::unique_ptr<Tucuxi::Core::DosageTimeRange> sept2018(new Tucuxi::Core::DosageTimeRange(startSept2018, repeatedDose));
+
+
+        _drugTreatment->getModifiableDosageHistory().addTimeRange(*sept2018);
+
+        LastingDose periodicDose2(DoseValue(200.0),
+                                 TucuUnit("mg"),
+                                 _route2,
+                                 Duration(),
+                                 Duration(std::chrono::hours(24)));
+        DosageRepeat repeatedDose2(periodicDose2, 1);
+        std::unique_ptr<Tucuxi::Core::DosageTimeRange> second(new Tucuxi::Core::DosageTimeRange(startSept2018 + Duration(std::chrono::hours(2*24)), repeatedDose2));
+
+        _drugTreatment->getModifiableDosageHistory().addTimeRange(*second);
+
+        LastingDose periodicDose3(DoseValue(200.0),
+                                 TucuUnit("mg"),
+                                 _route3,
+                                 Duration(),
+                                 Duration(std::chrono::hours(24)));
+        DosageRepeat repeatedDose3(periodicDose3, 1);
+        std::unique_ptr<Tucuxi::Core::DosageTimeRange> third(new Tucuxi::Core::DosageTimeRange(startSept2018 + Duration(std::chrono::hours(3*24)), repeatedDose3));
+
+        _drugTreatment->getModifiableDosageHistory().addTimeRange(*third);
+
+
+    }
+
+
     /// \brief Check that objects are correctly constructed by the constructor.
     void testBolus(const std::string& /* _testName */)
     {
@@ -1325,6 +1376,86 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
             //}
         }
 
+
+        if (drugTreatment != nullptr) {
+            delete drugTreatment;
+        }
+        if (drugModel != nullptr) {
+            delete drugModel;
+        }
+        if (component != nullptr) {
+            delete component;
+        }
+    }
+
+
+    /// \brief Checks a drug treatment with 2 different intakes
+    void testMixPercentiles(const std::string& /* _testName */)
+    {
+        DrugModelImport importer;
+
+        DrugModel *drugModel;
+
+        importer.importFromString(drugModel, test_mm_2comp_tdd);
+
+        fructose_assert(drugModel != nullptr);
+
+
+        IComputingService *component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+
+        fructose_assert( component != nullptr);
+
+
+        DrugTreatment *drugTreatment;
+
+        const FormulationAndRoute route1(Formulation::ParenteralSolution,
+                                        AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular);
+
+        const FormulationAndRoute route2(Formulation::ParenteralSolution,
+                                        AdministrationRoute::Intramuscular, AbsorptionModel::Extravascular);
+
+
+        const FormulationAndRoute route3(Formulation::ParenteralSolution,
+                                        AdministrationRoute::IntravenousDrip, AbsorptionModel::Infusion);
+
+        buildDrugTreatmentMix3(drugTreatment, route1, route2, route3);
+
+        {
+
+            RequestResponseId requestResponseId = "1";
+            Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
+            Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
+            double nbPointsPerHour = 10.0;
+            ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
+            std::vector<double> ranks = {5,10,25,50,75,90,95};
+            std::unique_ptr<ComputingTraitPercentiles> traits =
+                    std::make_unique<ComputingTraitPercentiles>(
+                        requestResponseId, start, end, ranks, nbPointsPerHour, computingOption);
+
+            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
+
+            std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
+
+            ComputingStatus result;
+            result = component->compute(request, response);
+
+            fructose_assert_eq( result, ComputingStatus::Ok);
+
+            const ComputedData* responseData = response->getData();
+            fructose_assert(dynamic_cast<const PercentilesData*>(responseData) != nullptr);
+            if (dynamic_cast<const PercentilesData*>(responseData) == nullptr) {
+                return;
+            }
+            const PercentilesData *resp = dynamic_cast<const PercentilesData*>(responseData);
+            fructose_assert_eq(resp->getPercentileData(0).size(), 4);
+//            fructose_assert_eq(resp->getIds().size(), size_t{1});
+//            fructose_assert_eq(resp->getIds()[0], "analyte");
+
+            //std::cout << "Population parameters : " << std::endl;
+            //for (auto parameter : resp->getData()[0].m_parameters) {
+            //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
+            //}
+        }
 
         if (drugTreatment != nullptr) {
             delete drugTreatment;

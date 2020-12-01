@@ -25,7 +25,7 @@ TimeOfDay::TimeOfDay(std::chrono::seconds& _time)
 
 
 TimeOfDay::TimeOfDay(const Duration& _time)
-    : m_time(_time.toMilliseconds()/1000.0) // Initialization must be done in seconds but we use milliseconds for better precision
+    : m_time(static_cast<double>(_time.toMilliseconds())/1000.0) // Initialization must be done in seconds but we use milliseconds for better precision
 {
     normalize();
 }
@@ -50,7 +50,7 @@ Duration TimeOfDay::operator-(const TimeOfDay& _time) const
 
 int TimeOfDay::hour() const
 {
-    return std::chrono::duration_cast<std::chrono::hours>(m_time).count();
+    return static_cast<int>(std::chrono::duration_cast<std::chrono::hours>(m_time).count());
 }
 
 

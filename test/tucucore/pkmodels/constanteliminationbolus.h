@@ -87,7 +87,7 @@ protected:
     void computeExponentials(Eigen::VectorXd& _times) override
     {
         Eigen::VectorXd val = _times;
-        int s = val.size();
+        auto s = val.size();
         for(int i = 0; i < s; i++) {
             val[i] = (1 - _times[i] * m_S) * m_M;
         }

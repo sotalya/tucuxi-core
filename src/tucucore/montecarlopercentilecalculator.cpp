@@ -598,7 +598,7 @@ ComputingStatus AprioriMonteCarloPercentileCalculator::calculateEtasAndEpsilons(
     // This method does not work anymore (Linux Ubuntu 16.04, gcc 5.4.0, changing it to a time seed
     //static std::random_device randomDevice;
     //std::mt19937 rnGenerator(randomDevice());
-    unsigned seed1 = std::chrono::system_clock::now().time_since_epoch().count();
+    unsigned seed1 = static_cast<unsigned>(std::chrono::system_clock::now().time_since_epoch().count());
     std::mt19937 rnGenerator(seed1);
 
     // The variables are normally distributed, we use a standard normal, then apply lower cholesky
@@ -809,7 +809,7 @@ ComputingStatus AposterioriMonteCarloPercentileCalculator::calculateEtasAndEpsil
     // the first one
     static AposterioriMatrixCache matrixCache;
 
-    const EigenMatrix &avecs = matrixCache.getAvecs(nbInitialSamples, _etas.size());
+    const EigenMatrix &avecs = matrixCache.getAvecs(nbInitialSamples, static_cast<int>(_etas.size()));
 
 
     //clock_t t2 = clock();
@@ -845,7 +845,7 @@ ComputingStatus AposterioriMonteCarloPercentileCalculator::calculateEtasAndEpsil
         workers.push_back(std::thread([thread, &abort, _aborter, nbSamplePerThread, _etas, meanEtas, avecs, etaLowerChol,
                                       &etaSamples, subomega, &ratio, &meanEtasTransposed,
                                       v,p,top,part2,part3, &_intakes, &_omega, &_samples, &_residualErrorModel,
-                                      &_parameters, &_concentrationCalculator, nbInitialSamples]()
+                                      &_parameters, &_concentrationCalculator/*, nbInitialSamples*/]()
         {
 
             // Duplicate an IntakeSeries for avoid a possible problem with multi-thread
@@ -866,12 +866,13 @@ ComputingStatus AposterioriMonteCarloPercentileCalculator::calculateEtasAndEpsil
                     }
 
                     EigenVector avec = meanEtasTransposed + avecs.row(sample) * etaLowerChol;
-                    Etas avecMat;
+                    auto etasSize = _etas.size();
+                    Etas avecMat(etasSize);
 
                     bool within6sigmas = true;
                     // Here we check that the sample etas are within 6 sigmas, else the weight shall be 0.0
                     for (unsigned int etasIdx = 0; etasIdx < _etas.size(); etasIdx++) {
-                        avecMat.push_back(avec[etasIdx]);
+                        avecMat[etasIdx] = avec[etasIdx];
                         if (std::abs(avec[etasIdx]) > 6.0) {
                             within6sigmas = false;
                         }

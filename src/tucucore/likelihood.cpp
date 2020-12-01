@@ -109,7 +109,7 @@ Value Likelihood::negativeLogPrior(const EigenVector& _etas, const OmegaMatrix &
     //here we calculate the log of all the parts and sum them, neglecting the negative because we minimize
     return 0.5 *
            (_etas.transpose() * _omega.inverse() * _etas +
-            _omega.rows() * log(2 * PI) +
+            static_cast<double>(_omega.rows()) * log(2 * PI) +
             log(_omega.determinant()));
 }
 

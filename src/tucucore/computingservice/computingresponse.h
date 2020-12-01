@@ -239,13 +239,13 @@ public:
 
     const PercentileRanks& getRanks() const { return m_ranks;}
 
-    void setNbPointsPerHour(int _nbPointsPerHour) { m_nbPointsPerHour = _nbPointsPerHour;}
-    int getNbPointsPerHour() const { return m_nbPointsPerHour;}
+    void setNbPointsPerHour(double _nbPointsPerHour) { m_nbPointsPerHour = _nbPointsPerHour;}
+    double getNbPointsPerHour() const { return m_nbPointsPerHour;}
 
 private:
     std::vector<std::vector<CycleData> > m_data;
     PercentileRanks m_ranks;
-    int m_nbPointsPerHour{0};
+    double m_nbPointsPerHour{0.0};
 };
 
 

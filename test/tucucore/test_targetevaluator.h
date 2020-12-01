@@ -27,7 +27,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
 
     static constexpr double NB_POINTS_PER_HOUR = CYCLE_SIZE / 24.0;
 
-    static constexpr double NB_ARRAY_ELEMENTS = 10;
+    static constexpr std::size_t NB_ARRAY_ELEMENTS = 10;
 
     TestTargetEvaluator() {}
 
@@ -405,7 +405,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
 
         Concentrations concentrations = {12, 16, 15, 13, 15, 17, 12, 22};
 
-        double empiriqueValue = 4.475 * 24 / (timeOffsets.size() - 1); // divisé par le nombre d'intervales
+        double empiriqueValue = 4.475 * 24.0 / (static_cast<double>(timeOffsets.size() - 1)); // divisé par le nombre d'intervales
 
         ConcentrationPrediction concentrationPrediction;
         concentrationPrediction.appendConcentrations(timeOffsets, concentrations);
@@ -780,7 +780,7 @@ private:
     {
         Concentrations concentrations;
 
-        double concentrationInterval = (maxValue - minValue) / (NB_ARRAY_ELEMENTS);
+        double concentrationInterval = (maxValue - minValue) / static_cast<double>(NB_ARRAY_ELEMENTS);
 
         for(double i = minValue; i < maxValue; i += concentrationInterval)
         {
@@ -804,7 +804,7 @@ private:
     {
         TimeOffsets timeOffsets;
 
-        double timeInterval = lastTime / NB_ARRAY_ELEMENTS;
+        double timeInterval = lastTime / static_cast<double>(NB_ARRAY_ELEMENTS);
 
         for(double i = 0; i < lastTime; i += timeInterval)
         {

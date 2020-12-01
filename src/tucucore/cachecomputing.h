@@ -108,10 +108,10 @@ protected:
 
     /// This structure embeds information about a cycle data added in m_indexVector
     typedef struct {
-        PercentilesData *m_set; ///! The percentile data containing the cycle data
-        int m_cycleIndex;       ///! Index of the cycle data
-        DateTime m_start;       ///! Start date of the cycle data
-        DateTime m_end;         ///! End date of the cycle data
+        PercentilesData *m_set;   ///! The percentile data containing the cycle data
+        std::size_t m_cycleIndex; ///! Index of the cycle data
+        DateTime m_start;         ///! Start date of the cycle data
+        DateTime m_end;           ///! End date of the cycle data
     } index_t;
 
     /// A vector meant to embed information about the cycle datas that fill
@@ -144,7 +144,7 @@ protected:
     /// [_start,_end] interval. If it finds one, it inserts an index_t at this specific slot.
     /// If the slot is already filled, then nothing happens.
     ///
-    void insertCycle(DateTime _start, DateTime _end, PercentilesData* _data, int cycleIndex);
+    void insertCycle(DateTime _start, DateTime _end, PercentilesData* _data, std::size_t cycleIndex);
 
     ///
     /// \brief Checks if the data referenced by m_indexVector fills the interval

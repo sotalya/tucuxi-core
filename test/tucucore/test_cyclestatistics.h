@@ -54,7 +54,7 @@ struct TestCycleStatistics : public fructose::test_base<TestCycleStatistics>
             // allocate memory for local variable stats
             stats.push_back(std::vector<Tucuxi::Core::CycleStatistic> ());
             for (unsigned int type= 0; type< static_cast<int>(CycleStatisticType::CYCLE_STATISTIC_TYPE_SIZE); type++) {
-                stats[compartment].push_back(CycleStatistic(cycleData.m_start, (CycleStatisticType)type));
+                stats[compartment].push_back(CycleStatistic(cycleData.m_start, static_cast<CycleStatisticType>(type)));
             }
         }
 

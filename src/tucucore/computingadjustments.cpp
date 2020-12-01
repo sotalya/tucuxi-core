@@ -1091,6 +1091,7 @@ ComputingStatus ComputingAdjustments::generatePrediction(DosageAdjustment &_dosa
                                                          std::map<AnalyteGroupId, Etas> &_etas
                                                          )
 {
+    TMP_UNUSED_PARAMETER(_parameterSeries);
     DateTime newEndTime = _traits->getEnd();
 
     std::unique_ptr<DosageHistory> newHistory;
