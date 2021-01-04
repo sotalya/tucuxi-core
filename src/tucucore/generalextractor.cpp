@@ -627,6 +627,7 @@ ComputingStatus GeneralExtractor::extractParameters(const std::vector<Formulatio
 
         }
     }
+    return ComputingStatus::Ok;
 }
 
 } // namespace Core

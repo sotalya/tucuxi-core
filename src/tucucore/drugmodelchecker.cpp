@@ -415,6 +415,82 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkHalfLife(const DrugMode
         // If less than 0.5% difference, then the values seem OK
         if ((diff > 1.005) || (diff < 0.995)) {
 
+
+            {
+                RequestResponseId requestResponseId = "1";
+
+                auto halfLife = _drugModel->getTimeConsiderations().getHalfLife().getValue();
+                auto unit = _drugModel->getTimeConsiderations().getHalfLife().getUnit();
+
+                Duration realHalfLife;
+                if (unit.toString() == "h") {
+                    realHalfLife = Duration(std::chrono::minutes(static_cast<int>(halfLife * 60)));
+                }
+                else if (unit.toString() == "d") {
+                    realHalfLife = Duration(std::chrono::minutes(static_cast<int>(halfLife * 60 * 24)));
+                }
+                else if (unit.toString() == "min") {
+                    realHalfLife = Duration(std::chrono::minutes(static_cast<int>(halfLife)));
+                }
+                else {
+                    return {false, "The half life unit should be \"h\", \"d\" or \"min\""};
+                }
+
+
+                Tucuxi::Common::DateTime startPred = start;
+
+                Tucuxi::Common::DateTime endPred = startPred + interval * 500;
+                double nbPointsPerHour = 0.1;
+                ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
+                std::unique_ptr<ComputingTraitConcentration> traits =
+                        std::make_unique<ComputingTraitConcentration>(
+                            requestResponseId, startPred, endPred, nbPointsPerHour, computingOption);
+
+                ComputingRequest request(requestResponseId, *_drugModel, *drugTreatment.get(), std::move(traits));
+
+                std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
+
+                ComputingStatus result;
+                result = component->compute(request, response);
+
+                if (result != ComputingStatus::Ok) {
+                    return {false, "A prediction calculation based on the halflife and the multiplier went wrong. Please check these values."};
+                }
+
+                const ComputedData* responseData = response->getData();
+                const SinglePredictionData *resp = dynamic_cast<const SinglePredictionData*>(responseData);
+
+                std::vector<double> residuals;
+                double lastResidual = 10000000.0;
+                int index = 0;
+                for (const auto d : resp->getData()) {
+                    auto residual = d.m_concentrations[0][0];
+                    auto diff = residual / lastResidual;
+                    lastResidual = residual;
+                    // If less than 0.5% difference, then the values seem OK
+                    if ((diff < 1.005) && (diff > 0.995)) {
+
+                        Tucuxi::Common::Duration duration = interval * index;
+                        int factor = static_cast<int>(std::ceil(duration / realHalfLife));
+
+                        return {false, "The half life and the associated multiplier offer a too short period to reach a reasonable steady state. Please modify the multiplier. As far as I could try, the value " +
+                            std::to_string(factor) + " should be all right."};
+                    }
+
+                    index ++;
+
+                }
+
+
+                // If less than 0.5% difference, then the values seem OK
+                if ((diff > 1.005) || (diff < 0.995)) {
+
+                    return {false, "The half life and the associated multiplier offer a too short period to reach a reasonable steady state. However I couldn't find a good multiplier to suggest. Is there another problem with the model?"};
+                }
+
+            }
+
+
             return {false, "The half life and the associated multiplier offer a too short period to reach a reasonable steady state. Please modify the multiplier."};
         }
 
