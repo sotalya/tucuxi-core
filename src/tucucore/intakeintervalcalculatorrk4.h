@@ -171,7 +171,12 @@ protected:
         times[0] = _atTime;
         times[1] = m_Int;
         // compute concentrations
-        computeUnroll(times, _inResiduals, concentrations);
+        // Use try and catch to catch computation errors. Typically in rkmichaelismentenzyme, where assertions are raised
+        try {
+            computeUnroll(times, _inResiduals, concentrations);
+        } catch (std::exception &e) {
+            return false;
+        }
 
         // return concentrations (computation with atTime (current time))
         _concentrations[0].push_back(concentrations[0][atTime]);

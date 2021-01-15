@@ -9,6 +9,14 @@ namespace Core {
 
 enum class RkMichaelisMentenEnzymeCompartments : int { First = 0, Second, Enzyme };
 
+class CalculationException : public std::exception
+{
+    virtual const char* what() const throw()
+    {
+      return "Computation value NaN in RkMichaelisMentenEnzyme calculator";
+    }
+};
+
 /// \ingroup TucuCore
 /// \brief Intake interval calculator for the one compartment extravascular algorithm
 /// \sa IntakeIntervalCalculator
@@ -30,7 +38,7 @@ public:
         //auto cp = c0 / m_V;
         // We get concentration 0 in mg/l instead of ug/l
         auto cp = _c[0] / 1000.0;
-        _dcdt[0] = m_Ka * _c[1] - m_Vmax * cp / (m_Km + cp) * _c[2]; // / m_V;
+        _dcdt[0] = m_Ka * _c[1] - m_Vmax * cp * m_AllmCL / (m_Km + cp) * _c[2]; // / m_V;
         auto ktt = m_ktr * _t;
         if (m_MTT == 0.0) {
             _dcdt[1] = -m_Ka * _c[1];
@@ -43,9 +51,18 @@ public:
         // Here we modify the derivative on the central compartment, in order
         // to consider it in ug/l     (1000.0 for ug, and /m_V for concentration)
         _dcdt[0] *= 1000.0 / m_V;
-        assert(!std::isnan(_dcdt[0]));
-        assert(!std::isnan(_dcdt[1]));
-        assert(!std::isnan(_dcdt[2]));
+        if (std::isnan(_dcdt[0])) {
+            throw CalculationException();
+        }
+        if (std::isnan(_dcdt[1])) {
+            throw CalculationException();
+        }
+        if (std::isnan(_dcdt[2])) {
+            throw CalculationException();
+        }
+        //assert(!std::isnan(_dcdt[0]));
+        //assert(!std::isnan(_dcdt[1]));
+        //assert(!std::isnan(_dcdt[2]));
     }
 
 protected:
@@ -57,6 +74,7 @@ protected:
     Value m_V;  /// Volume of the compartment
     Value m_Km;
     Value m_Vmax;
+    Value m_AllmCL; /// Allometric clearance
     Value m_Tinf;
 
     Value m_Kenz;

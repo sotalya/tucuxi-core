@@ -16,7 +16,7 @@ RkMichaelisMentenEnzymeExtra::RkMichaelisMentenEnzymeExtra() : RkMichaelisMenten
 
 std::vector<std::string> RkMichaelisMentenEnzymeExtra::getParametersId()
 {
-    return {"V", "Km", "Vmax", "F", "Ka", "Kenz", "Emax", "ECmid", "EDmid", "DoseMid", "Fmax", "NN", "MTT"};
+    return {"V", "Km", "Vmax", "F", "Ka", "Kenz", "Emax", "ECmid", "EDmid", "DoseMid", "Fmax", "NN", "MTT", "AllmCL"};
 }
 
 Value toUgL(Value _v) { return _v * 1.0;}
@@ -33,6 +33,7 @@ bool RkMichaelisMentenEnzymeExtra::checkInputs(const IntakeEvent& _intakeEvent, 
     m_Vmax = toUgL(_parameters.getValue(ParameterId::Vmax));// * 1000.0;
     m_F = _parameters.getValue(ParameterId::F);
     m_Ka = _parameters.getValue(ParameterId::Ka);
+    m_AllmCL = _parameters.getValue(ParameterId::AllmCL);
 
     m_Kenz = _parameters.getValue(ParameterId::Kenz);
     m_Emax = _parameters.getValue(ParameterId::Emax);
@@ -85,8 +86,6 @@ bool RkMichaelisMentenEnzymeExtra::checkInputs(const IntakeEvent& _intakeEvent, 
     auto lktr = std::log(m_ktr);
     m_cumul = lbpd + lktr - l;
 
-
-
     // check the inputs
     bool bOK = true;
     bOK &= checkPositiveValue(m_D, "The dose");
@@ -99,6 +98,7 @@ bool RkMichaelisMentenEnzymeExtra::checkInputs(const IntakeEvent& _intakeEvent, 
     bOK &= checkStrictlyPositiveValue(m_Emax, "Emax");
     bOK &= checkStrictlyPositiveValue(m_ECmid, "ECmid");
     bOK &= checkStrictlyPositiveValue(m_EDmid, "EDmid");
+    bOK &= checkStrictlyPositiveValue(m_AllmCL, "Allometric clearance");
     bOK &= checkStrictlyPositiveValue(m_DoseMid, "DoseMid");
     bOK &= checkStrictlyPositiveValue(m_NN, "NN");
     bOK &= checkStrictlyPositiveValue(m_MTT, "MTT");
@@ -115,7 +115,7 @@ RkMichaelisMentenEnzymeBolus::RkMichaelisMentenEnzymeBolus() : RkMichaelisMenten
 
 std::vector<std::string> RkMichaelisMentenEnzymeBolus::getParametersId()
 {
-    return {"V", "Km", "Vmax", "F", "Kenz", "Emax", "ECmid"};
+    return {"V", "Km", "Vmax", "F", "Kenz", "Emax", "ECmid", "AllmCL"};
 }
 
 bool RkMichaelisMentenEnzymeBolus::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)

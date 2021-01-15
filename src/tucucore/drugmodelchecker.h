@@ -63,6 +63,8 @@ protected:
     /// time being halfLife * multiplier from the first dose. We compare the first concentration of
     /// the two cycles, and if the difference is smaller than 0.5%, then we consider the values
     /// to be relevant.
+    /// If the check fails, then we try to find a multiplier that would fit the check. If found, then
+    /// the error message contains a sentence with the suggested multiplier.
     ///
     CheckerResult_t checkHalfLife(const DrugModel *_drugModel);
 

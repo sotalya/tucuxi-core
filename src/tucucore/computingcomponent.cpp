@@ -351,7 +351,7 @@ ComputingStatus ComputingComponent::compute(
         std::unique_ptr<ComputingResponse> &_response)
 {
 #ifdef NO_PERCENTILES
-    return ComputingResult::NoPercentilesCalculation;
+    return ComputingStatus::NoPercentilesCalculation;
 #endif
     if (_request.getDrugModel().getAnalyteSets().size() > 1) {
         return computePercentilesMulti(_traits, _request, _response);
@@ -367,7 +367,7 @@ ComputingStatus ComputingComponent::computePercentilesMulti(
         std::unique_ptr<ComputingResponse> &_response)
 {
 #ifdef NO_PERCENTILES
-    return ComputingResult::NoPercentilesCalculation;
+    return ComputingStatus::NoPercentilesCalculation;
 #endif
     if (_traits == nullptr) {
         m_logger.error("The computing traits sent for computation are nullptr");
@@ -597,7 +597,7 @@ ComputingStatus ComputingComponent::computePercentilesSimple(
         std::unique_ptr<ComputingResponse> &_response)
 {
 #ifdef NO_PERCENTILES
-    return ComputingResult::NoPercentilesCalculation;
+    return ComputingStatus::NoPercentilesCalculation;
 #endif
     if (_traits == nullptr) {
         m_logger.error("The computing traits sent for computation are nullptr");
