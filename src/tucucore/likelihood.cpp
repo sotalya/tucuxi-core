@@ -26,6 +26,8 @@ Likelihood::Likelihood(const OmegaMatrix& _omega,
       m_samples(&_samples),
       m_intakes(&_intakes),
       m_parameters(&_parameters),
+      m_inverseOmega(_omega.inverse()),
+      m_omegaAdd(static_cast<double>(_omega.rows()) * log(2 * PI) + log(_omega.determinant())),
       m_concentrationCalculator(&_concentrationCalculator)
 {
     initBounds(_omega, m_omax, m_omin);
@@ -76,7 +78,7 @@ Value Likelihood::negativeLogLikelihood(const ValueVector& _etas) const
     Value gll = 0;
 
     //calculate the prior which depends only on eta and omega (not the measure)
-    Value logPrior = negativeLogPrior(Eigen::Map<const EigenVector>(&_etas[0], _etas.size()), *m_omega);
+    Value logPrior = negativeLogPrior(Eigen::Map<const EigenVector>(&_etas[0], _etas.size()) /*, *m_omega*/);
     SampleSeries::const_iterator sit = m_samples->begin();
     SampleSeries::const_iterator sitEnd = m_samples->end();
     int sampleCounter = 0;
@@ -104,13 +106,19 @@ Value Likelihood::calculateSampleNegativeLogLikelihood(Value _expected,
     return - _residualErrorModel.calculateSampleLikelihood(_expected, _observed.getValue());
 }
 
-Value Likelihood::negativeLogPrior(const EigenVector& _etas, const OmegaMatrix &_omega) const
+Value Likelihood::negativeLogPrior(const EigenVector& _etas/*, const OmegaMatrix &_omega*/) const
 {
+    //here we calculate the log of all the parts and sum them, neglecting the negative because we minimize
+
+    // I think we could get rid of m_omegaAdd for the computations we are doing, but to be checked
+    return 0.5 * (_etas.transpose() * m_inverseOmega * _etas + m_omegaAdd);
+    /*
     //here we calculate the log of all the parts and sum them, neglecting the negative because we minimize
     return 0.5 *
            (_etas.transpose() * _omega.inverse() * _etas +
             static_cast<double>(_omega.rows()) * log(2 * PI) +
             log(_omega.determinant()));
+            */
 }
 
 } // namespace Core

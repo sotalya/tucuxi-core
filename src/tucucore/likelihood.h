@@ -25,7 +25,7 @@ class IConcentrationCalculator;
 /// An instance is passed to the optimizer in minimize.h to calculate mode of posterior distribution
 class Likelihood {
 public:
-    Likelihood() {}
+    //Likelihood() {}
     Likelihood(const OmegaMatrix& _omega,
                const IResidualErrorModel& _residualErrorModel,
                const SampleSeries& _samples,
@@ -115,7 +115,7 @@ public:
     /// \param _etas vector of eta values being optimized
     /// \param _omega covariance matrix of inter-individual error
     /// \return The calculated negative log of the prior
-    Value negativeLogPrior(const EigenVector& _etas, const OmegaMatrix &_omega) const;
+    Value negativeLogPrior(const EigenVector& _etas /*, const OmegaMatrix &_omega*/) const;
 
 private:
 
@@ -140,6 +140,13 @@ private:
     /// multi-index of parameters for entire curve
     const ParameterSetSeries* m_parameters;
 
+    /// inter-individual var-covar matrix, inversed
+    const OmegaMatrix m_inverseOmega;
+
+    /// Value to add for the negative log prior calculation
+    const double m_omegaAdd{0};
+
+    // Concentration calculator used for all calculations
     IConcentrationCalculator* m_concentrationCalculator;
 };
 
