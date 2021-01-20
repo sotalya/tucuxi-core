@@ -2,6 +2,7 @@
 #define TUCUXI_CORE_INTAKEINTERVALCALCULATORRK4_H
 
 #include <thread>
+// #include <cfenv>
 
 #include "intakeintervalcalculator.h"
 
@@ -173,7 +174,15 @@ protected:
         // compute concentrations
         // Use try and catch to catch computation errors. Typically in rkmichaelismentenzyme, where assertions are raised
         try {
+
+            // Just a test to catch floating point exceptions. Let's forget it for now, as we should test it on various platforms
+            //fexcept_t ex0;
+            //feclearexcept(FE_ALL_EXCEPT);
             computeUnroll(times, _inResiduals, concentrations);
+            //int res0 = fegetexceptflag(&ex0, FE_ALL_EXCEPT);
+            //if (ex0 != 0) {
+            //    return false;
+            //}
         } catch (std::exception &e) {
             return false;
         }

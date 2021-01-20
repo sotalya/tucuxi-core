@@ -275,6 +275,40 @@ static std::string test_mm_1comp_enzyme_bolus_tdd = R"(<?xml version="1.0" encod
                                                                                 </validation>
                                                                                 <comments/>
                                                                             </parameter>
+                                                    <parameter>
+                                                        <parameterId>AllmCL</parameterId>
+                                                        <unit>1/h</unit>
+                                                        <parameterValue>
+                                                            <standardValue>1.0</standardValue>
+                                                        </parameterValue>
+                                                        <bsv>
+                                                            <bsvType>none</bsvType>
+                                                        </bsv>
+                                                        <validation>
+                                                            <errorMessage>
+                                                                <text lang='fr'>
+                                                                </text>
+                                                            </errorMessage>
+                                                            <operation>
+                                                                <softFormula>
+                                                                    <inputs>
+                                                                        <input>
+                                                                            <id>AllmCl</id>
+                                                                            <type>double</type>
+                                                                        </input>
+                                                                    </inputs>
+                                                                    <code>
+                                                                        <![CDATA[
+                                                                        return AllmCl > 0.0;
+                                                                        ]]>
+                                                                    </code>
+                                                                </softFormula>
+                                                                <comments/>
+                                                            </operation>
+                                                            <comments/>
+                                                        </validation>
+                                                        <comments/>
+                                                    </parameter>
                                                                             <parameter>
                                                                                 <parameterId>Emax</parameterId>
                                                                                 <unit>l</unit>
