@@ -110,7 +110,14 @@ void ParameterSetEvent::addParameterEvent(const ParameterDefinition &_definition
     // Update index
 
     int index = 0;
+    int omegaIndex = 0;
     for (it = m_parameters.begin(); it != m_parameters.end(); it++) {
+
+        if (it->getDefinition().isVariable()) {
+            it->m_omegaIndex = omegaIndex;
+            it->m_nbEtas = it->getDefinition().getVariability().getValues().size();
+            omegaIndex += it->m_nbEtas;
+        }
 
         // Update our mapping between id (string) to index
         ParameterId::Enum id = ParameterId::fromString(it->getParameterId());
@@ -127,8 +134,18 @@ void ParameterSetEvent::applyEtas(const Etas& _etas)
     Parameters::iterator it;
     for (it = m_parameters.begin(); it != m_parameters.end(); it++) {
         if (it->isVariable()) {
-            it->applyEta(_etas[k]);
-            k++;
+            if (it->m_nbEtas == 1) {
+                it->applyEta(_etas[k]);
+                k++;
+            }
+            else {
+                Value sum = 0.0;
+                for (int i = 0; i < it->m_nbEtas; i++) {
+                    sum += _etas[k];
+                    k++;
+                }
+                it->applyEta(sum);
+            }
         }
     }
     if (_etas.size() != k) {

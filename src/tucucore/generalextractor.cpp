@@ -101,33 +101,42 @@ ComputingStatus GeneralExtractor::extractOmega(
     ParameterDefinitionIterator it = _drugModel.getParameterDefinitions(_analyteGroupId, _formulationAndRoutes);
 
     int nbVariableParameters = 0;
+    int nbEtas = 0;
 
     it.reset();
     while (!it.isDone()) {
         if ((*it)->getVariability().getType() != ParameterVariabilityType::None) {
             nbVariableParameters ++;
+            nbEtas += (*it)->getVariability().getValues().size();
         }
         it.next();
     }
 
-    _omega = Tucuxi::Core::OmegaMatrix(nbVariableParameters, nbVariableParameters);
+    _omega = Tucuxi::Core::OmegaMatrix(nbEtas, nbEtas);
 
-    for(int x = 0; x < nbVariableParameters; x++) {
-        for(int y = 0; y < nbVariableParameters; y++) {
+    for(int x = 0; x < nbEtas; x++) {
+        for(int y = 0; y < nbEtas; y++) {
             _omega(x,y) = 0.0;
         }
     }
 
     std::map<std::string, int> paramMap;
-    int nbParameter = 0;
+    int etaNumber = 0;
     it.reset();
     while (!it.isDone()) {
         if ((*it)->getVariability().getType() != ParameterVariabilityType::None) {
             // const ParameterDefinition *p = (*it);
             // Value v = (*it)->getVariability().getValue() ;
-            _omega(nbParameter, nbParameter) = (*it)->getVariability().getValue() * (*it)->getVariability().getValue();
-            paramMap[(*it)->getId()] = nbParameter;
-            nbParameter ++;
+            _omega(etaNumber, etaNumber) = (*it)->getVariability().getValue() * (*it)->getVariability().getValue();
+            paramMap[(*it)->getId()] = etaNumber;
+            etaNumber ++;
+            if ((*it)->getVariability().getValues().size() > 1) {
+                for (int i = 1; i < (*it)->getVariability().getValues().size(); i++) {
+                    _omega(etaNumber, etaNumber) = (*it)->getVariability().getValues()[i] * (*it)->getVariability().getValues()[i];
+                    etaNumber ++;
+                }
+
+            }
         }
         it.next();
     }
