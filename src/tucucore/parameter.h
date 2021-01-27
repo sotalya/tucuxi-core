@@ -64,8 +64,8 @@ public:
     // Make the test class friend, as this will allow us to manually check the available events.
     friend TestParameterExtractor;
 
-    int m_omegaIndex;
-    int m_nbEtas;
+    size_t m_omegaIndex;
+    size_t m_nbEtas;
 
 private:
     Value m_value;

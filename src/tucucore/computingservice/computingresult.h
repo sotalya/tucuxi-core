@@ -10,7 +10,7 @@ namespace Core {
 ///
 /// \brief The ComputingStatus enum
 /// Describes the return value of a computation
-enum class ComputingStatus {
+enum class [[nodiscard]] ComputingStatus {
     /// Not yet defined
     Undefined = -1,
     /// Everything went well

@@ -12,6 +12,7 @@
 
 #include "tucucommon/general.h"
 
+#include "tucucore/computingservice/computingresult.h"
 #include "tucucore/montecarlopercentilecalculator.h"
 #include "tucucore/residualerrormodel.h"
 #include "tucucore/pkmodels/onecompartmentextra.h"
@@ -82,7 +83,7 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
             predictionPtr = std::make_unique<Tucuxi::Core::ConcentrationPrediction>();
 
             Tucuxi::Core::IConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::ConcentrationCalculator();
-            concentrationCalculator->computeConcentrations(
+            auto status = concentrationCalculator->computeConcentrations(
                         predictionPtr,
                         false,
                         recordFrom,
@@ -90,6 +91,8 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
                         intakeSeries,
                         parametersSeries);
             delete concentrationCalculator;
+
+            fructose_assert_eq(status, ComputingStatus::Ok);
 
             predictionPtr->streamToFile("values_imatinib_percentile.dat");
         }
@@ -191,7 +194,7 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
             predictionPtr = std::make_unique<Tucuxi::Core::ConcentrationPrediction>();
 
             Tucuxi::Core::IConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::ConcentrationCalculator();
-            concentrationCalculator->computeConcentrations(
+            auto status = concentrationCalculator->computeConcentrations(
                         predictionPtr,
                         false,
                         recordFrom,
@@ -199,7 +202,7 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
                         intakeSeries,
                         parametersSeries);
             delete concentrationCalculator;
-
+            fructose_assert_eq(status, ComputingStatus::Ok);
             predictionPtr->streamToFile("values_imatinib_percentile.dat");
         }
 
@@ -296,7 +299,7 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
             predictionPtr = std::make_unique<Tucuxi::Core::ConcentrationPrediction>();
 
             Tucuxi::Core::IConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::ConcentrationCalculator();
-            concentrationCalculator->computeConcentrations(
+            auto status = concentrationCalculator->computeConcentrations(
                         predictionPtr,
                         false,
                         recordFrom,
@@ -304,7 +307,7 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
                         intakeSeries,
                         parametersSeries);
             delete concentrationCalculator;
-
+            fructose_assert_eq(status, ComputingStatus::Ok);
             predictionPtr->streamToFile("values_imatinib_percentile.dat");
         }
 

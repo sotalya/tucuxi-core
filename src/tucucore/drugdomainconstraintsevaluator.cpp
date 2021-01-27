@@ -31,7 +31,10 @@ DrugDomainConstraintsEvaluator::Result DrugDomainConstraintsEvaluator::evaluate(
                                  _start,
                                  _end);
 
-    extractor.extract(covariateSeries);
+    auto status = extractor.extract(covariateSeries);
+    if (status != ComputingStatus::Ok) {
+        return DrugDomainConstraintsEvaluator::Result::ComputationError;
+    }
 
     DrugDomainConstraintsEvaluator::Result result = evaluate(_drugModel.getDomain(), covariateSeries, _start, _end, _results);
 

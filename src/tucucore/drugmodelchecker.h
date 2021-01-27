@@ -16,7 +16,7 @@ class DrugModelChecker
 {
 public:
 
-    typedef struct {
+    typedef struct [[nodiscard]] {
         bool m_ok;
         std::string m_errorMessage;
     } CheckerResult_t;

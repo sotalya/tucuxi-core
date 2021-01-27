@@ -106,7 +106,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
                 intakeEvent.setCalculator(calculator2);
                 intakeSeries.push_back(intakeEvent);
                 Tucuxi::Core::IConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::ConcentrationCalculator();
-                concentrationCalculator->computeConcentrations(
+                auto status = concentrationCalculator->computeConcentrations(
                     predictionPtr,
                     isAll,
                     recordFrom,
@@ -114,6 +114,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
                     intakeSeries,
                     _parameters);
                 delete concentrationCalculator;
+                fructose_assert_eq(status, ComputingStatus::Ok);
             }
 
             for (int i = 0; i < _nbPoints; i++) {
@@ -195,7 +196,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
                     intakeSeries.push_back(event);
                 }
                 Tucuxi::Core::IConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::ConcentrationCalculator();
-                concentrationCalculator->computeConcentrations(
+                auto status = concentrationCalculator->computeConcentrations(
                     predictionPtr,
                     isAll,
                     recordFrom,
@@ -203,6 +204,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
                     intakeSeries,
                     _parameters);
                 delete concentrationCalculator;
+                fructose_assert_eq(status, ComputingStatus::Ok);
 
 #if 0
                 for(int testCycle = 0; testCycle < nbCycles; testCycle++) {
@@ -261,7 +263,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
                 intakeEvent.setCalculator(calculator2);
                 intakeSeries.push_back(intakeEvent);
                 Tucuxi::Core::IConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::ConcentrationCalculator();
-                concentrationCalculator->computeConcentrations(
+                auto status = concentrationCalculator->computeConcentrations(
                     predictionPtr,
                     isAll,
                     recordFrom,
@@ -269,6 +271,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
                     intakeSeries,
                     _parameters);
                 delete concentrationCalculator;
+                fructose_assert_eq(status, ComputingStatus::Ok);
 
 #if 0
                 for (int i = 0; i<nbPoints; i++) {

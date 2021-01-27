@@ -86,7 +86,10 @@ ComputingStatus GeneralExtractor::extractAposterioriEtas(
         }
 
         APosterioriEtasCalculator etasCalculator;
-        etasCalculator.computeAposterioriEtas(_intakeSeries, _parameterSeries, omega, *residualErrorModel, sampleSeries, _etas);
+        auto status = etasCalculator.computeAposterioriEtas(_intakeSeries, _parameterSeries, omega, *residualErrorModel, sampleSeries, _etas);
+        if (status != ComputingStatus::Ok) {
+            return status;
+        }
 
     }
     return ComputingStatus::Ok;
@@ -101,7 +104,7 @@ ComputingStatus GeneralExtractor::extractOmega(
     ParameterDefinitionIterator it = _drugModel.getParameterDefinitions(_analyteGroupId, _formulationAndRoutes);
 
     int nbVariableParameters = 0;
-    int nbEtas = 0;
+    std::size_t nbEtas = 0;
 
     it.reset();
     while (!it.isDone()) {
@@ -114,8 +117,8 @@ ComputingStatus GeneralExtractor::extractOmega(
 
     _omega = Tucuxi::Core::OmegaMatrix(nbEtas, nbEtas);
 
-    for(int x = 0; x < nbEtas; x++) {
-        for(int y = 0; y < nbEtas; y++) {
+    for(std::size_t x = 0; x < nbEtas; x++) {
+        for(std::size_t y = 0; y < nbEtas; y++) {
             _omega(x,y) = 0.0;
         }
     }
@@ -131,7 +134,7 @@ ComputingStatus GeneralExtractor::extractOmega(
             paramMap[(*it)->getId()] = etaNumber;
             etaNumber ++;
             if ((*it)->getVariability().getValues().size() > 1) {
-                for (int i = 1; i < (*it)->getVariability().getValues().size(); i++) {
+                for (std::size_t i = 1; i < (*it)->getVariability().getValues().size(); i++) {
                     _omega(etaNumber, etaNumber) = (*it)->getVariability().getValues()[i] * (*it)->getVariability().getValues()[i];
                     etaNumber ++;
                 }
@@ -320,7 +323,10 @@ ComputingStatus GeneralExtractor::generalExtractions(const ComputingTraitStandar
     for (const auto &analyteSet : _drugModel.getAnalyteSets()) {
         cloneIntakeSeries(intakeSeries, _intakeSeries[analyteSet->getId()]);
 
-        convertAnalytes(_intakeSeries[analyteSet->getId()], _drugModel, analyteSet.get());
+        auto status = convertAnalytes(_intakeSeries[analyteSet->getId()], _drugModel, analyteSet.get());
+        if (status != ComputingStatus::Ok) {
+            return status;
+        }
 
         ComputingStatus intakeAssociationResult = IntakeToCalculatorAssociator::associate(_intakeSeries[analyteSet->getId()], *_pkModel[analyteSet->getId()]);
 

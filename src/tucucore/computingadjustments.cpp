@@ -341,7 +341,10 @@ ComputingStatus ComputingAdjustments::compute(
     bool multipleFormulationAndRoutes = false;
 
     // 1. Extract all candidates
-    extractCandidates(_traits, _request, candidates, multipleFormulationAndRoutes);
+    auto status = extractCandidates(_traits, _request, candidates, multipleFormulationAndRoutes);
+    if (status != ComputingStatus::Ok) {
+        return status;
+    }
 
 
     // 2. Get the list of drug model analyte group Ids
@@ -509,11 +512,13 @@ ComputingStatus ComputingAdjustments::compute(
                                                                              nbPointsPerHour, TucuUnit("mg"), intakeSeriesPerGroup[analyteGroupId],
                                                                              ExtractionOption::EndofDate);
 
-            m_utils->m_generalExtractor->convertAnalytes(intakeSeriesPerGroup[analyteGroupId], _request.getDrugModel(), _request.getDrugModel().getAnalyteSet(analyteGroupId));
-
-
             if (intakeExtractionResult != ComputingStatus::Ok) {
                 return intakeExtractionResult;
+            }
+
+            auto status = m_utils->m_generalExtractor->convertAnalytes(intakeSeriesPerGroup[analyteGroupId], _request.getDrugModel(), _request.getDrugModel().getAnalyteSet(analyteGroupId));
+            if (status != ComputingStatus::Ok) {
+                return status;
             }
 
             ComputingStatus intakeAssociationResult =
@@ -1140,7 +1145,10 @@ ComputingStatus ComputingAdjustments::generatePrediction(DosageAdjustment &_dosa
                                                                          nbPointsPerHour, TucuUnit("mg"), intakeSeriesPerGroup[analyteGroupId],
                                                                          ExtractionOption::EndofDate);
 
-        m_utils->m_generalExtractor->convertAnalytes(intakeSeriesPerGroup[analyteGroupId], _request.getDrugModel(), _request.getDrugModel().getAnalyteSet(analyteGroupId));
+        auto status = m_utils->m_generalExtractor->convertAnalytes(intakeSeriesPerGroup[analyteGroupId], _request.getDrugModel(), _request.getDrugModel().getAnalyteSet(analyteGroupId));
+        if (status != ComputingStatus::Ok) {
+            return status;
+        }
 
 
         if (intakeExtractionResult != ComputingStatus::Ok) {

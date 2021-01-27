@@ -110,7 +110,7 @@ void ParameterSetEvent::addParameterEvent(const ParameterDefinition &_definition
     // Update index
 
     int index = 0;
-    int omegaIndex = 0;
+    size_t omegaIndex = 0;
     for (it = m_parameters.begin(); it != m_parameters.end(); it++) {
 
         if (it->getDefinition().isVariable()) {
@@ -140,7 +140,7 @@ void ParameterSetEvent::applyEtas(const Etas& _etas)
             }
             else {
                 Value sum = 0.0;
-                for (int i = 0; i < it->m_nbEtas; i++) {
+                for (size_t i = 0; i < it->m_nbEtas; i++) {
                     sum += _etas[k];
                     k++;
                 }

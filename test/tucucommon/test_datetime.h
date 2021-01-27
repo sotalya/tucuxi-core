@@ -84,7 +84,7 @@ struct TestDateTime : public fructose::test_base<TestDateTime>
 
         // Test to and from seconds
         double nSeconds = d10.toSeconds();
-        Tucuxi::Common::DateTime d30(Tucuxi::Common::Duration(std::chrono::seconds((int64)nSeconds)));
+        Tucuxi::Common::DateTime d30(Tucuxi::Common::Duration(std::chrono::seconds(static_cast<int64>(nSeconds))));
         checkDateTime(d30, 2017, 12, 17, 17, 34, 20);
 
         // Test addDays, addMonth and addYears
@@ -219,7 +219,7 @@ private:
         fructose_assert_double_eq(_duration.toMinutes(), nSeconds/60);
         fructose_assert_double_eq(_duration.toHours(), nSeconds/60/60);
         fructose_assert_double_eq(_duration.toDays(), nSeconds / 60 / 60 / 24);
-        double d = _duration.toMilliseconds() / 1000.0;
+        double d = static_cast<double>(_duration.toMilliseconds()) / 1000.0;
         fructose_assert_double_eq(d, _nbSeconds);
     }
 };

@@ -64,7 +64,7 @@ struct TestLogger : public fructose::test_base<TestLogger>
         Tucuxi::Common::LoggerHelper logger3;
         logger3.info("asdfa {}");
         logger3.info("asdfa {}", 12, 22);
-        logger3.info("asdfa {}", ((char*)0x00));
+        logger3.info("asdfa {}", (static_cast<char*>(0x00)));
     }
 
 private:

@@ -16,6 +16,7 @@
 
 #include "tucucommon/general.h"
 
+#include "tucucore/computingservice/computingresult.h"
 #include "tucucore/dosage.h"
 #include "tucucore/intakeextractor.h"
 #include "tucucore/intakeintervalcalculator.h"
@@ -402,7 +403,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
         parametersSeries.addParameterSetEvent(parameters);
 
         Tucuxi::Core::IConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::ConcentrationCalculator();
-        concentrationCalculator->computeConcentrations(
+        auto status = concentrationCalculator->computeConcentrations(
             predictionPtr,
             isAll,
             DateTime(), // YJ: Fix this with a meaningfull date
@@ -410,6 +411,8 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
             intakeSeries,
             parametersSeries);
         delete concentrationCalculator;
+
+        fructose_assert_eq(status, ComputingStatus::Ok);
 
         predictionPtr->streamToFile("values_imatinib_nonmemdrugs.dat");
     }

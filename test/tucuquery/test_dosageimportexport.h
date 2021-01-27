@@ -156,7 +156,7 @@ private:
 
     void testString(std::string _xmlInput)
     {
-        unique_ptr<Tucuxi::Query::Treatment> pTreatment1 = importXml(_xmlInput);
+        std::unique_ptr<Tucuxi::Query::Treatment> pTreatment1 = importXml(_xmlInput);
 
         std::string exportedXmlString1;
 
@@ -184,7 +184,7 @@ private:
         std::cout << _exportString << std::endl << std::endl;
     }
 
-    unique_ptr<Tucuxi::Query::Treatment> importXml(std::string _xmlString)
+    std::unique_ptr<Tucuxi::Query::Treatment> importXml(std::string _xmlString)
     {
         Tucuxi::Query::QueryImport queryImport;
         Tucuxi::Common::XmlDocument xmlDocument;
@@ -196,7 +196,7 @@ private:
         return queryImport.createTreatment(xmlNodeIterator);
     }
 
-    void exportXml(unique_ptr<Tucuxi::Query::Treatment> _pTreatment, std::string &_xmlString)
+    void exportXml(std::unique_ptr<Tucuxi::Query::Treatment> _pTreatment, std::string &_xmlString)
     {
         Tucuxi::Query::ComputingQueryResponseXmlExport computingXmlExport;
 
