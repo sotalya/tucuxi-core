@@ -870,7 +870,8 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
 
         DrugModel *drugModel;
 
-        importer.importFromString(drugModel, test_mm_2comp_tdd);
+        auto importStatus = importer.importFromString(drugModel, test_mm_2comp_tdd);
+        fructose_assert_eq(importStatus, DrugModelImport::Status::Ok);
 
         fructose_assert(drugModel != nullptr);
 
@@ -976,7 +977,8 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
 
         DrugModel *drugModel;
 
-        importer.importFromString(drugModel, test_mm_2comp_tdd);
+        auto importStatus = importer.importFromString(drugModel, test_mm_2comp_tdd);
+        fructose_assert_eq(importStatus, DrugModelImport::Status::Ok);
 
         fructose_assert(drugModel != nullptr);
 
@@ -1082,7 +1084,8 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
 
         DrugModel *drugModel;
 
-        importer.importFromString(drugModel, test_mm_2comp_tdd);
+        auto importStatus = importer.importFromString(drugModel, test_mm_2comp_tdd);
+        fructose_assert_eq(importStatus, DrugModelImport::Status::Ok);
 
         fructose_assert(drugModel != nullptr);
 
@@ -1185,7 +1188,8 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
 
         DrugModel *drugModel;
 
-        importer.importFromString(drugModel, test_mm_2comp_tdd);
+        auto importStatus = importer.importFromString(drugModel, test_mm_2comp_tdd);
+        fructose_assert_eq(importStatus, DrugModelImport::Status::Ok);
 
         fructose_assert(drugModel != nullptr);
 
@@ -1288,7 +1292,8 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
 
         DrugModel *drugModel;
 
-        importer.importFromString(drugModel, test_mm_2comp_tdd);
+        auto importStatus = importer.importFromString(drugModel, test_mm_2comp_tdd);
+        fructose_assert_eq(importStatus, DrugModelImport::Status::Ok);
 
         fructose_assert(drugModel != nullptr);
 
@@ -1396,7 +1401,8 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
 
         DrugModel *drugModel;
 
-        importer.importFromString(drugModel, test_mm_2comp_tdd);
+        auto importStatus = importer.importFromString(drugModel, test_mm_2comp_tdd);
+        fructose_assert_eq(importStatus, DrugModelImport::Status::Ok);
 
         fructose_assert(drugModel != nullptr);
 

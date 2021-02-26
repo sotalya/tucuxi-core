@@ -408,7 +408,8 @@ struct TestMichaelisMenten1comp : public fructose::test_base<TestMichaelisMenten
 
         DrugModel *drugModel;
 
-        importer.importFromString(drugModel, test_mm_1comp_bolus_tdd);
+        auto importStatus = importer.importFromString(drugModel, test_mm_1comp_bolus_tdd);
+        fructose_assert_eq(importStatus, DrugModelImport::Status::Ok);
 
         fructose_assert(drugModel != nullptr);
 

@@ -1,7 +1,7 @@
 #ifndef QUERYSTATUS_H
 #define QUERYSTATUS_H
 
-enum class QueryStatus{
+enum class [[nodiscard]] QueryStatus{
 
     /// Everything fine
     Ok = 0,

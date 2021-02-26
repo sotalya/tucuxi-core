@@ -14,7 +14,7 @@
 #include "fructose/fructose.h"
 
 #include "tucucore/drugmodelimport.h"
-
+#include "tucucore/drugmodel/drugmodel.h"
 
 using namespace Tucuxi::Core;
 
@@ -821,7 +821,8 @@ struct TestDrugTobramycin : public fructose::test_base<TestDrugTobramycin>
 
         DrugModel *drugModel;
 
-        importer.importFromString(drugModel, tobramycin_tdd);
+        auto status = importer.importFromString(drugModel, tobramycin_tdd);
+        fructose_assert_eq(status, DrugModelImport::Status::Ok);
 
         fructose_assert(drugModel != nullptr);
 

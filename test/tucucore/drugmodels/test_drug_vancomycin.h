@@ -774,7 +774,8 @@ struct TestDrugVancomycin : public fructose::test_base<TestDrugVancomycin>
 
         DrugModel *drugModel;
 
-        importer.importFromString(drugModel, vancomycin_tdd);
+        auto importStatus = importer.importFromString(drugModel, vancomycin_tdd);
+        fructose_assert_eq(importStatus, DrugModelImport::Status::Ok);
 //        importer.importFromFile(drugModel, "/home/ythoma/docs/ezechiel/git/dev/src/drugs2/ch.tucuxi.vancomycin.tdd");
 
         fructose_assert(drugModel != nullptr);

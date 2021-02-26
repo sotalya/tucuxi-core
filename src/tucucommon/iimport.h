@@ -13,7 +13,7 @@ namespace Common {
 class IImport
 {
 public:
-    enum class Status {
+    enum class [[nodiscard]] Status {
         Ok = 0,
         Error,
         CantOpenFile,
