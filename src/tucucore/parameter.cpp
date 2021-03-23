@@ -31,7 +31,9 @@ ParameterSetEventPtr ParameterSetSeries::getAtTime(const DateTime &_date, const 
 
         // Apply etas if available
         if (!_etas.empty()) {
-            pParameters->applyEtas(_etas);
+            if (!pParameters->applyEtas(_etas)) {
+                return nullptr;
+            }
         }
 
         return ParameterSetEventPtr(pParameters);
@@ -128,14 +130,15 @@ void ParameterSetEvent::addParameterEvent(const ParameterDefinition &_definition
 
 }
 
-void ParameterSetEvent::applyEtas(const Etas& _etas)
+bool ParameterSetEvent::applyEtas(const Etas& _etas)
 {
     unsigned int k = 0;
     Parameters::iterator it;
+    bool ok = true;
     for (it = m_parameters.begin(); it != m_parameters.end(); it++) {
         if (it->isVariable()) {
             if (it->m_nbEtas == 1) {
-                it->applyEta(_etas[k]);
+                ok &= it->applyEta(_etas[k]);
                 k++;
             }
             else {
@@ -144,7 +147,7 @@ void ParameterSetEvent::applyEtas(const Etas& _etas)
                     sum += _etas[k];
                     k++;
                 }
-                it->applyEta(sum);
+                ok &= it->applyEta(sum);
             }
         }
     }
@@ -152,10 +155,12 @@ void ParameterSetEvent::applyEtas(const Etas& _etas)
         Tucuxi::Common::LoggerHelper logger;
         logger.error("The eta vector does not fit the variable parameters size.");
     }
+    return ok;
 }
 
-void Parameter::applyEta(Deviation _eta)
+bool Parameter::applyEta(Deviation _eta)
 {
+    bool ok = true;
     if (m_definition.isVariable()) {
         switch (m_definition.getVariability().getType()) {
         case ParameterVariabilityType::Additive:
@@ -181,20 +186,25 @@ void Parameter::applyEta(Deviation _eta)
         }
         }
         if (m_value <= 0.0) {
-            m_value = 0.00000001;
-            Tucuxi::Common::LoggerHelper logger;
+        //    m_value = 0.00000001;
+        //    Tucuxi::Common::LoggerHelper logger;
             //logger.warn("Applying Eta to Parameter {} makes it negative", m_definition.getId());
+        //    ok = false;
         }
         else if (std::isinf(m_value)) {
             m_value = std::numeric_limits<double>::max();
             Tucuxi::Common::LoggerHelper logger;
             logger.warn("Applying Eta to Parameter {} makes it infinite", m_definition.getId());
+            ok = false;
         }
         else if (std::isnan(m_value)) {
             Tucuxi::Common::LoggerHelper logger;
             logger.warn("Applying Eta to Parameter {} makes it not a number", m_definition.getId());
+            ok = false;
         }
     }
+    //return true;
+    return ok;
 }
 
 

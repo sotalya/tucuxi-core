@@ -55,7 +55,7 @@ public:
         return *this;
     }
 */
-    void applyEta(Deviation _eta);
+    bool applyEta(Deviation _eta);
     Value getValue() const { return m_value; }
     bool isVariable() const { return m_definition.isVariable(); }
 
@@ -119,7 +119,7 @@ public:
     }
 
 
-    void applyEtas(const Etas& _etas);
+    bool applyEtas(const Etas& _etas);
     Parameters::const_iterator begin() const { return m_parameters.begin(); }
     Parameters::const_iterator end() const { return m_parameters.end(); }
 
