@@ -37,7 +37,7 @@ bool UnitManager::isUnitTolerated(std::string& _unitString) {
 
     auto toleratePairUnit = getTolerateUnit();
 
-    for(const auto unit : toleratePairUnit){
+    for(const auto &unit : toleratePairUnit){
         if(_unitString == unit.first){
             _unitString = unit.second;
             return true;
@@ -147,6 +147,7 @@ const std::map<UnitManager::UnitType, std::map<std::string, double>>& UnitManage
                 {"h", 60.0},
                 {"d", 24.0 * 60.0},
                 {"w", 7.0 * 24.0 * 60.0},
+                {"week", 7.0 * 24.0 * 60.0},
                 {"month", 30.0 * 24.0 * 60.0},
                 {"y", 365.0 * 24.0 * 60.0}
             }
