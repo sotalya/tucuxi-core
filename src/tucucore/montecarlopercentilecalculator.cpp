@@ -190,33 +190,50 @@ ComputingStatus MonteCarloPercentileCalculatorBase::computePredictions(
 //    std::cout << "milliseconds for preparation: " << elapsed.count( ) << '\n';
 //    start = std::chrono::steady_clock::now();
 
+
+#define MULTITHREAD_MT
+
+#ifdef MULTITHREAD_MT
     // Parallelize this for loop with some shared and some copied-to-each-thread-with-current-state (firstprivate) variables
     int nbThreads = std::max(std::thread::hardware_concurrency(), static_cast<unsigned int>(1));
 
     unsigned int nbPatientsPerThread = static_cast<unsigned int>(ceil(static_cast<double>(_nbPatients) / static_cast<double>(nbThreads)));
 
     std::vector<std::thread> workers;
-    for(int thread = 0; thread < nbThreads; thread++) {
+    for(int threadIndex = 0; threadIndex < nbThreads; threadIndex++) {
         // Duplicate an IntakeSeries for avoid a possible problem with multi-thread
         IntakeSeries newIntakes;
         cloneIntakeSeries(_intakes, newIntakes);
 
-        workers.push_back(std::thread([thread, _nbPatients, &abort, _aborter,
+        workers.emplace_back(std::thread([threadIndex, _nbPatients, &abort, _aborter,
                                       &_etas, &_epsilons, &_parameters,
                                       newIntakes, &_residualErrorModel, &_times,
                                       &_concentrations, nbPatientsPerThread,
                                       &_concentrationCalculator, _recordFrom,
                                       _recordTo, _recordedIntakes]()
         {
+#else
+    // Parallelize this for loop with some shared and some copied-to-each-thread-with-current-state (firstprivate) variables
+    int nbThreads = 1;
 
-            int start = thread * nbPatientsPerThread;
-            int end = std::min((thread + 1) * nbPatientsPerThread, _nbPatients);
+    unsigned int nbPatientsPerThread = static_cast<unsigned int>(ceil(static_cast<double>(_nbPatients) / static_cast<double>(nbThreads)));
+
+    int threadIndex = 0;
+    IntakeSeries newIntakes;
+    cloneIntakeSeries(_intakes, newIntakes);
+#endif // MULTITHREAD_MT
+            int start = threadIndex * nbPatientsPerThread;
+            int end = std::min((threadIndex + 1) * nbPatientsPerThread, _nbPatients);
 
             for (int patient = start; patient < end; patient++) {
                 if (!abort) {
                     if ((_aborter != nullptr) && (_aborter->shouldAbort())) {
                         abort = true;
+#ifdef MULTITHREAD_MT
                         return;
+#else // MULTITHREAD_MT
+                        break;
+#endif // MULTITHREAD_MT
                     }
 
 
@@ -258,6 +275,9 @@ ComputingStatus MonteCarloPercentileCalculatorBase::computePredictions(
                             }
                         }
                     }
+                    else {
+                        _concentrations[0][0][patient] = std::numeric_limits<double>::quiet_NaN();
+                    }
 
                 }
 #if 0
@@ -267,12 +287,14 @@ ComputingStatus MonteCarloPercentileCalculatorBase::computePredictions(
                 predictionPtr->streamToFile(filename);
 #endif
             }
+#ifdef MULTITHREAD_MT
         }));
     }
 
     std::for_each(workers.begin(), workers.end(), [](std::thread &_t) {
         _t.join();
     });
+#endif // MULTITHREAD_MT
 
 //    elapsed = std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::steady_clock::now( ) - start );
 //    std::cout << "milliseconds for predictions calculation : " << elapsed.count( ) << '\n';
