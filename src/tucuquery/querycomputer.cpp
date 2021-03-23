@@ -122,6 +122,7 @@ void QueryComputer::compute(const std::string& _queryString, ComputingQueryRespo
     compute(*computingQuery, _response);
 
     delete query;
+    delete computingQuery;
 
 
 

@@ -37,6 +37,7 @@ QueryStatus QueryToCoreExtractor::extractComputingQuery(const QueryData &_query,
         if (drugTreatment == nullptr) {
             logHelper.error("Error during drug treatment import. Drug Id issue");
             setErrorMessage("Error during drug treatment import. Drug Id issue");
+            delete drugTreatment;
             return QueryStatus::ImportError;
         }
 

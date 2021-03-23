@@ -358,7 +358,8 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkHalfLife(const DrugMode
     auto timeRange = std::make_unique<Tucuxi::Core::DosageTimeRange>(start, repeatedDose);
     drugTreatment->getModifiableDosageHistory().addTimeRange(*timeRange);
 
-    IComputingService *component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    IComputingService *componentPtr = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    std::unique_ptr<IComputingService> component = std::unique_ptr<IComputingService>(componentPtr);
 
     {
         RequestResponseId requestResponseId = "1";
