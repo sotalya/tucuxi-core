@@ -258,8 +258,20 @@ void DrugModelChecker::getAllOperations(const DrugModel *_drugModel, std::vector
 
     for (const auto &analyteGroup : _drugModel->getAnalyteSets()) {
         for (const auto &parameter : analyteGroup->getDispositionParameters().m_parameters) {
-            if (parameter->isVariable()) {
+            if (parameter->isComputed()) {
                 _operations.push_back(&parameter->getOperation());
+            }
+        }
+    }
+
+    for (const auto &formulation : _drugModel->getFormulationAndRoutes()) {
+        for (const auto &analyteGroup : _drugModel->getAnalyteSets()) {
+            auto parameters = formulation->getParameterDefinitions(analyteGroup->getId());
+            for (size_t index = 0; index < parameters->getNbParameters(); index ++) {
+                const auto parameter = parameters->getParameter(index);
+                if (parameter->isComputed()) {
+                    _operations.push_back(&parameter->getOperation());
+                }
             }
         }
     }
