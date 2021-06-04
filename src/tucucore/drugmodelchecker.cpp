@@ -267,10 +267,12 @@ void DrugModelChecker::getAllOperations(const DrugModel *_drugModel, std::vector
     for (const auto &formulation : _drugModel->getFormulationAndRoutes()) {
         for (const auto &analyteGroup : _drugModel->getAnalyteSets()) {
             auto parameters = formulation->getParameterDefinitions(analyteGroup->getId());
-            for (size_t index = 0; index < parameters->getNbParameters(); index ++) {
-                const auto parameter = parameters->getParameter(index);
-                if (parameter->isComputed()) {
-                    _operations.push_back(&parameter->getOperation());
+            if (parameters != nullptr) {
+                for (size_t index = 0; index < parameters->getNbParameters(); index ++) {
+                    const auto parameter = parameters->getParameter(index);
+                    if (parameter->isComputed()) {
+                        _operations.push_back(&parameter->getOperation());
+                    }
                 }
             }
         }
