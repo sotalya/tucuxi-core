@@ -13,7 +13,7 @@
 #include "tucucore/computingcomponent.h"
 #include "tucucore/drugtreatment/drugtreatment.h"
 #include "tucucore/intakeextractor.h"
-#include "tucucore/covariateextractor.h"
+//#include "tucucore/covariateextractor.h"
 #include "tucucore/targetextractor.h"
 #include "tucucore/sampleextractor.h"
 #include "tucucore/parametersextractor.h"

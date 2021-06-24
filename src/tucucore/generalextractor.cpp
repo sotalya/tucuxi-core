@@ -218,12 +218,18 @@ ComputingStatus GeneralExtractor::generalExtractions(const ComputingTraitStandar
     double nbPointsPerHour = _traits->getNbPointsPerHour();
 
     IntakeSeries intakeSeries;
-    ComputingStatus intakeExtractionResult = intakeExtractor.extract(_dosageHistory, fantomStart /*_traits->getStart()*/, _traits->getEnd() /* + Duration(24h)*/, nbPointsPerHour, TucuUnit("mg"), intakeSeries);
+    TUCU_TRY {
+        ComputingStatus intakeExtractionResult = intakeExtractor.extract(_dosageHistory, fantomStart /*_traits->getStart()*/, _traits->getEnd() /* + Duration(24h)*/, nbPointsPerHour, TucuUnit("mg"), intakeSeries);
+        if (intakeExtractionResult != ComputingStatus::Ok) {
+            m_logger.error("Error with the intakes extraction.");
+            return intakeExtractionResult;
+        }
 
-    if (intakeExtractionResult != ComputingStatus::Ok) {
-        m_logger.error("Error with the intakes extraction.");
-        return intakeExtractionResult;
+    } TUCU_CATCH (std::runtime_error &e) {
+        m_logger.error(e.what());
+        return ComputingStatus::IntakeExtractionError;
     }
+
 
     size_t nIntakes = intakeSeries.size();
 
@@ -336,29 +342,34 @@ ComputingStatus GeneralExtractor::generalExtractions(const ComputingTraitStandar
         }
     }
 
-    if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Population) {
-        PatientVariates emptyPatientVariates;
-        CovariateExtractor covariateExtractor(_drugModel.getCovariates(),
-                                              emptyPatientVariates,
-                                              fantomStart,
-                                              _traits->getEnd());
-        ComputingStatus covariateExtractionResult = covariateExtractor.extract(_covariatesSeries);
+    TUCU_TRY {
+        if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Population) {
+            PatientVariates emptyPatientVariates;
+            CovariateExtractor covariateExtractor(_drugModel.getCovariates(),
+                                                  emptyPatientVariates,
+                                                  fantomStart,
+                                                  _traits->getEnd());
+            ComputingStatus covariateExtractionResult = covariateExtractor.extract(_covariatesSeries);
 
-        if (covariateExtractionResult != ComputingStatus::Ok) {
-            m_logger.error("Can not extract covariates");
-            return covariateExtractionResult;
+            if (covariateExtractionResult != ComputingStatus::Ok) {
+                m_logger.error("Can not extract covariates");
+                return covariateExtractionResult;
+            }
         }
-    }
-    else {
-        CovariateExtractor covariateExtractor(_drugModel.getCovariates(),
-                                              _patientVariates,
-                                              fantomStart,
-                                              _traits->getEnd());
-        ComputingStatus covariateExtractionResult = covariateExtractor.extract(_covariatesSeries);
+        else {
+            CovariateExtractor covariateExtractor(_drugModel.getCovariates(),
+                                                  _patientVariates,
+                                                  fantomStart,
+                                                  _traits->getEnd());
+            ComputingStatus covariateExtractionResult = covariateExtractor.extract(_covariatesSeries);
 
-        if (covariateExtractionResult != ComputingStatus::Ok) {
-            m_logger.error("Can not extract covariates");
-            return covariateExtractionResult;        }
+            if (covariateExtractionResult != ComputingStatus::Ok) {
+                m_logger.error("Can not extract covariates");
+                return covariateExtractionResult;        }
+        }
+    } TUCU_CATCH(std::runtime_error &e) {
+        m_logger.error(e.what());
+        return ComputingStatus::CovariateExtractionError;
     }
 
     auto formulationsAndRoutes = _dosageHistory.getFormulationAndRouteList();

@@ -19,7 +19,17 @@ auto as_integer(Enumeration const _value)
 {
     return static_cast<typename std::underlying_type<Enumeration>::type>(_value);
 }
-
+#ifdef EASY_DEBUG
+void EXTRACT_PRECONDITIONS(const DateTime &start, const DateTime &end, IntakeSeries &series)
+{
+    if (start.isUndefined()) {
+        throw std::runtime_error("[IntakeExtractor] Start time is undefined");
+    }
+    if (!(end.isUndefined() || start < end)) {
+        throw std::runtime_error("[IntakeExtractor] start is greater than end and end is defined");
+    }
+}
+#else // EASY_DEBUG
 #define EXTRACT_PRECONDITIONS(start, end, series) \
     if (start.isUndefined()) { \
         throw std::runtime_error("[IntakeExtractor] Start time is undefined"); \
@@ -27,7 +37,7 @@ auto as_integer(Enumeration const _value)
     if (!(end.isUndefined() || start < end)) { \
         throw std::runtime_error("[IntakeExtractor] start is greater than end and end is defined"); \
     }
-
+#endif // EASY_DEBUG
 
 ComputingStatus IntakeExtractor::extract(const DosageHistory& _dosageHistory, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, const TucuUnit &_toUnit, IntakeSeries &_series,
                                          ExtractionOption _option)
