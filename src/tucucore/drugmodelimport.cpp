@@ -243,7 +243,8 @@ TargetType DrugModelImport::extractTargetType(Tucuxi::Common::XmlNodeIterator _n
         {"timeOverMic", TargetType::TimeOverMic},
         {"aucDividedByMic", TargetType::AucDividedByMic},
         {"auc24DividedByMic", TargetType::Auc24DividedByMic},
-        {"peakDividedByMic", TargetType::PeakDividedByMic}
+        {"peakDividedByMic", TargetType::PeakDividedByMic},
+        {"residualDividedByMic", TargetType::ResidualDividedByMic}
     };
 
     auto it = m.find(_node->getValue());
@@ -1263,6 +1264,7 @@ TargetDefinition* DrugModelImport::extractTarget(Tucuxi::Common::XmlNodeIterator
             (type == TargetType::Auc24OverMic) ||
             (type == TargetType::AucDividedByMic) ||
             (type == TargetType::PeakDividedByMic) ||
+            (type == TargetType::ResidualDividedByMic) ||
             (type == TargetType::Auc24DividedByMic)) {
         if (mic == nullptr) {
             setStatus(Status::Error, "A target is using MIC, but no MIC tag is found in the target");

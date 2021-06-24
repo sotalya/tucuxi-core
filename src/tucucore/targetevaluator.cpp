@@ -362,6 +362,21 @@ ComputingStatus TargetEvaluator::evaluate(
 
     } break;
 
+    case TargetType::ResidualDividedByMic :
+    {
+        double residualConcentration = 0.0;
+        CycleStatistic cycleStatistic = statisticsCalculator.getStatistic(0, CycleStatisticType::Residual);
+        bOk = cycleStatistic.getValue(dateTime, residualConcentration);
+
+        if (bOk) {
+
+            double peakDividedByMic = residualConcentration / _targetEvent.m_mic;
+
+            evaluateValue(peakDividedByMic, _targetEvent, bOk, score, value);
+        }
+
+    } break;
+
     case TargetType::UnknownTarget :
     {
         return ComputingStatus::TargetEvaluationError;

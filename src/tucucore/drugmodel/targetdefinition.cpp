@@ -19,6 +19,7 @@ std::string toString(TargetType _type)
                                                     {TargetType::AucDividedByMic, "aucDividedByMic"},
                                                     {TargetType::Auc24DividedByMic, "auc24DividedByMic"},
                                                     {TargetType::PeakDividedByMic, "peakDividedByMic"},
+                                                    {TargetType::ResidualDividedByMic, "residualDividedByMic"},
                                                    };
     return map.at(_type);
 }
