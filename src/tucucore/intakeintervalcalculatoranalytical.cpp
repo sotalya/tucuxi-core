@@ -83,9 +83,12 @@ ComputingStatus IntakeIntervalCalculatorAnalytical::calculateIntakeSinglePoint(
         }
     }
 
+    m_loggingErrors = false;
     if (!checkInputs(_intakeEvent, _parameters)) {
+        m_loggingErrors = true;
         return ComputingStatus::BadParameters;
     }
+    m_loggingErrors = true;
 
     // To reuse interface of computeExponentials with multiple points, remaine time as a vector.
     Eigen::VectorXd times(2);

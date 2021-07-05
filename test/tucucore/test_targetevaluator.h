@@ -767,6 +767,52 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
         }
     }
 
+    void testResidualDividedByMic(const std::string& /* _testName */)
+    {
+        IntakeSeries expectedIntakes = createIntakeSeries();
+
+        TargetEvaluationResult targetEvaluationResult;
+
+        Target target(ActiveMoietyId("imatinib"),
+                      TargetType::ResidualDividedByMic,
+                      TucuUnit(""),     //unit
+                      Value(0),        //min
+                      Value(25),        //best
+                      Value(100),        //max
+                      Value(15),        //mic
+                      TucuUnit("ug/l"),     //mic Unit
+                      Duration(std::chrono::minutes(0)),       //min
+                      Duration(std::chrono::minutes(60)),       //best
+                      Duration(std::chrono::minutes(120)));      //max
+
+        TargetExtractor extractor;
+        TargetEvent targetEvent = extractor.targetEventFromTarget(&target);
+
+        TimeOffsets timeOffsets = {0, 1, 2, 3, 4};
+
+        Concentrations concentrations = {17, 18, 19, 18, 13};
+
+        double empiriqueValue = 13 / 15.0; // resdidual value / mic value
+
+        ConcentrationPrediction concentrationPrediction;
+        concentrationPrediction.appendConcentrations(timeOffsets, concentrations);
+
+        TargetEvaluator targetEvaluator;
+        ComputingStatus status = targetEvaluator.evaluate(concentrationPrediction,
+                                                          expectedIntakes,
+                                                          targetEvent,
+                                                          targetEvaluationResult);
+
+
+        fructose_assert(status == ComputingStatus::Ok);
+
+        if(status != ComputingStatus::InvalidCandidate)
+        {
+            fructose_assert(targetEvaluationResult.getUnit() == TucuUnit(""));
+            fructose_assert(targetEvaluationResult.getTargetType() == TargetType::ResidualDividedByMic);
+            fructose_assert(targetEvaluationResult.getValue() == empiriqueValue);
+        }
+    }
 
 private:
 

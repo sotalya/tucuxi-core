@@ -225,10 +225,10 @@ ComputingStatus GeneralExtractor::generalExtractions(const ComputingTraitStandar
             return intakeExtractionResult;
         }
 
-    } TUCU_CATCH (std::runtime_error &e) {
+    } TUCU_CATCH (std::runtime_error &e) TUCU_ONEXCEPTION({
         m_logger.error(e.what());
         return ComputingStatus::IntakeExtractionError;
-    }
+    })
 
 
     size_t nIntakes = intakeSeries.size();
@@ -367,10 +367,10 @@ ComputingStatus GeneralExtractor::generalExtractions(const ComputingTraitStandar
                 m_logger.error("Can not extract covariates");
                 return covariateExtractionResult;        }
         }
-    } TUCU_CATCH(std::runtime_error &e) {
+    } TUCU_CATCH(std::runtime_error &e) TUCU_ONEXCEPTION({
         m_logger.error(e.what());
         return ComputingStatus::CovariateExtractionError;
-    }
+    })
 
     auto formulationsAndRoutes = _dosageHistory.getFormulationAndRouteList();
 
