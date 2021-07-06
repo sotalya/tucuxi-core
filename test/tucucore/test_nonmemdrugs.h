@@ -38,7 +38,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
                         Tucuxi::Core::AbsorptionModel _route,
                         std::chrono::hours _interval,
                         std::chrono::seconds _infusionTime,
-                        int _nbPoints)
+                        size_t _nbPoints)
     {
         // Compare the result on one interval
         // with ConcentrationCalculator vs directly with the IntakeIntervalCalculator
@@ -90,18 +90,19 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
                 intakeEvent.setCalculator(&calculator2);
                 intakeSeries.push_back(intakeEvent);
                 Tucuxi::Core::IConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::ConcentrationCalculator();
-                concentrationCalculator->computeConcentrations(
+                auto status = concentrationCalculator->computeConcentrations(
                     predictionPtr,
                     isAll,
                     DateTime(), // YJ: Fix this with a meaningfull date
                     DateTime(), // YJ: Fix this with a meaningfull date
                     intakeSeries,
                     _parameters);
+                fructose_assert_eq(status, Tucuxi::Core::ComputingStatus::Ok);
                 delete concentrationCalculator;
             }
 
 
-            for(int i = 0; i < _nbPoints; i++) {
+            for(size_t i = 0; i < _nbPoints; i++) {
                 Tucuxi::Core::Concentrations concentration2;
                 concentration2 = predictionPtr->getValues()[0];
                 // std::cout << i <<  " :: " << concentrations[i] << " : " << concentration2[i] << std::endl;

@@ -37,7 +37,7 @@ bool TwoCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
     m_RootK = std::sqrt((sumK * sumK) - (4 * m_K21 * m_Ke));
     m_Alpha = (sumK + m_RootK)/2;
     m_Beta = (sumK - m_RootK)/2;
-    m_NbPoints = _intakeEvent.getNbPoints();
+    m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());
     m_Int = (_intakeEvent.getInterval()).toHours();
 
     // check the inputs
@@ -50,7 +50,7 @@ bool TwoCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
     bOK &= checkStrictlyPositiveValue(m_K21, "K21");
     bOK &= checkPositiveValue(m_Alpha, "Alpha");
     bOK &= checkPositiveValue(m_Beta, "Beta");
-    bOK &= checkCondition(m_NbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_nbPoints >= 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
     return true;
@@ -69,17 +69,17 @@ bool TwoCompartmentExtraMicro::computeConcentrations(const Residuals& _inResidua
 {
     Eigen::VectorXd concentrations1;
     Eigen::VectorXd concentrations2, concentrations3;
-    int firstCompartment = static_cast<int>(Compartments::First);
-    int secondCompartment = static_cast<int>(Compartments::Second);
-    int thirdCompartment = static_cast<int>(Compartments::Third);
+    size_t firstCompartment = static_cast<size_t>(Compartments::First);
+    size_t secondCompartment = static_cast<size_t>(Compartments::Second);
+    size_t thirdCompartment = static_cast<size_t>(Compartments::Third);
 
     // Compute concentrations
     bool bOK = compute(_inResiduals, concentrations1, concentrations2, concentrations3);
 
     // Return residuals of comp1, comp2 and comp3
-    _outResiduals[firstCompartment] = concentrations1[m_NbPoints - 1];
-    _outResiduals[secondCompartment] = concentrations2[m_NbPoints - 1];
-    _outResiduals[thirdCompartment] = concentrations3[m_NbPoints - 1];
+    _outResiduals[firstCompartment] = concentrations1[m_nbPoints - 1];
+    _outResiduals[secondCompartment] = concentrations2[m_nbPoints - 1];
+    _outResiduals[thirdCompartment] = concentrations3[m_nbPoints - 1];
 
     // Return concentrations of comp1, comp2 and comp3
     _concentrations[firstCompartment].assign(concentrations1.data(), concentrations1.data() + concentrations1.size());
@@ -97,11 +97,11 @@ bool TwoCompartmentExtraMicro::computeConcentration(const Value& _atTime, const 
 {
     Eigen::VectorXd concentrations1;
     Eigen::VectorXd concentrations2, concentrations3;
-    int firstCompartment = static_cast<int>(Compartments::First);
-    int secondCompartment = static_cast<int>(Compartments::Second);
-    int thirdCompartment = static_cast<int>(Compartments::Third);
-    int atTime = static_cast<int>(SingleConcentrations::AtTime);
-    int atEndInterval = static_cast<int>(SingleConcentrations::AtEndInterval);
+    size_t firstCompartment = static_cast<size_t>(Compartments::First);
+    size_t secondCompartment = static_cast<size_t>(Compartments::Second);
+    size_t thirdCompartment = static_cast<size_t>(Compartments::Third);
+    Eigen::Index atTime = static_cast<Eigen::Index>(SingleConcentrations::AtTime);
+    Eigen::Index atEndInterval = static_cast<Eigen::Index>(SingleConcentrations::AtEndInterval);
 
     TMP_UNUSED_PARAMETER(_atTime);
 
@@ -161,7 +161,7 @@ bool TwoCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, cons
     m_RootK = std::sqrt((sumK * sumK) - (4 * m_K21 * m_Ke));
     m_Alpha = (sumK + m_RootK)/2;
     m_Beta = (sumK - m_RootK)/2;
-    m_NbPoints = _intakeEvent.getNbPoints();
+    m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());
     m_Int = (_intakeEvent.getInterval()).toHours();
 
     // check the inputs
@@ -174,7 +174,7 @@ bool TwoCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, cons
     bOK &= checkStrictlyPositiveValue(v2, "V2");
     bOK &= checkPositiveValue(m_Alpha, "Alpha");
     bOK &= checkPositiveValue(m_Beta, "Beta");
-    bOK &= checkCondition(m_NbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_nbPoints >= 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
 

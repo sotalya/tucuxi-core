@@ -43,7 +43,7 @@ bool TwoCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent, c
     m_Beta = (m_SumK - m_RootK)/2;
     m_Tinf = (_intakeEvent.getInfusionTime()).toHours();
     m_Int = (_intakeEvent.getInterval()).toHours();
-    m_NbPoints = _intakeEvent.getNbPoints();
+    m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());
     
 #ifdef DEBUG
     Tucuxi::Common::LoggerHelper logHelper;
@@ -71,7 +71,7 @@ bool TwoCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent, c
     bOK &= checkPositiveValue(m_Alpha, "Alpha");
     bOK &= checkPositiveValue(m_Beta, "Beta");
     bOK &= checkCondition(m_Tinf >= 0, "The infusion time is negative.");
-    bOK &= checkCondition(m_NbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_nbPoints >= 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
     return bOK;
@@ -98,22 +98,22 @@ void TwoCompartmentInfusionMicro::computeExponentials(Eigen::VectorXd& _times)
 bool TwoCompartmentInfusionMicro::computeConcentrations(const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1, concentrations2;
-    int firstCompartment = static_cast<int>(Compartments::First);
-    int secondCompartment = static_cast<int>(Compartments::Second);
+    size_t firstCompartment = static_cast<size_t>(Compartments::First);
+    size_t secondCompartment = static_cast<size_t>(Compartments::Second);
     int forcesize;
-    if (m_NbPoints == 2) {
-        forcesize = static_cast<int>(std::min(ceil(m_Tinf/m_Int * m_NbPoints), ceil(m_NbPoints)));
+    if (m_nbPoints == 2) {
+        forcesize = static_cast<int>(std::min(ceil(m_Tinf/m_Int * static_cast<double>(m_nbPoints)), ceil(static_cast<double>(m_nbPoints))));
     }
     else {
-        forcesize = std::min(m_NbPoints, std::max(2, static_cast<int>((m_Tinf / m_Int) * static_cast<double>(m_NbPoints))));
+        forcesize = std::min(static_cast<int>(m_nbPoints), std::max(2, static_cast<int>((m_Tinf / m_Int) * static_cast<double>(m_nbPoints))));
     }
 
     // Compute concentrations
     compute(_inResiduals, forcesize, concentrations1, concentrations2);
 
     // Return final residuals of comp1 and comp2
-    _outResiduals[firstCompartment] = concentrations1[m_NbPoints - 1];
-    _outResiduals[secondCompartment] = concentrations2[m_NbPoints - 1];
+    _outResiduals[firstCompartment] = concentrations1[m_nbPoints - 1];
+    _outResiduals[secondCompartment] = concentrations2[m_nbPoints - 1];
 
     // Return concentrations of comp1
     _concentrations[firstCompartment].assign(concentrations1.data(), concentrations1.data() + concentrations1.size());
@@ -132,10 +132,10 @@ bool TwoCompartmentInfusionMicro::computeConcentrations(const Residuals& _inResi
 bool TwoCompartmentInfusionMicro::computeConcentration(const Value& _atTime, const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1, concentrations2;
-    int firstCompartment = static_cast<int>(Compartments::First);
-    int secondCompartment = static_cast<int>(Compartments::Second);
-    int atTime = static_cast<int>(SingleConcentrations::AtTime);
-    int atEndInterval = static_cast<int>(SingleConcentrations::AtEndInterval);
+    size_t firstCompartment = static_cast<size_t>(Compartments::First);
+    size_t secondCompartment = static_cast<size_t>(Compartments::Second);
+    Eigen::Index atTime = static_cast<Eigen::Index>(SingleConcentrations::AtTime);
+    Eigen::Index atEndInterval = static_cast<Eigen::Index>(SingleConcentrations::AtEndInterval);
 
     int forcesize = 0;
 
@@ -289,7 +289,7 @@ bool TwoCompartmentInfusionMacro::checkInputs(const IntakeEvent& _intakeEvent, c
     m_Beta = (m_SumK - m_RootK)/2;
     m_Tinf = (_intakeEvent.getInfusionTime()).toHours();
     m_Int = (_intakeEvent.getInterval()).toHours();
-    m_NbPoints = _intakeEvent.getNbPoints();
+    m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());
     
 #ifdef DEBUG
     Tucuxi::Common::LoggerHelper logHelper;
@@ -321,7 +321,7 @@ bool TwoCompartmentInfusionMacro::checkInputs(const IntakeEvent& _intakeEvent, c
     bOK &= checkPositiveValue(m_Alpha, "Alpha");
     bOK &= checkPositiveValue(m_Beta, "Beta");
     bOK &= checkCondition(m_Tinf >= 0, "The infusion time is negative.");
-    bOK &= checkCondition(m_NbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_nbPoints >= 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
     return bOK;

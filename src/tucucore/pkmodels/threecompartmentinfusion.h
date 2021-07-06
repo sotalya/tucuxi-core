@@ -49,7 +49,7 @@ protected:
     Value m_Gamma;
     Value m_Tinf; /// Infusion time (hours)
     Value m_Int; /// Interval (hours)
-    int m_NbPoints; /// number measure points during interval
+    Eigen::Index m_nbPoints; /// number measure points during interval
 
 private:
     typedef ThreeCompartmentInfusionCompartments Compartments;
@@ -93,7 +93,7 @@ inline void ThreeCompartmentInfusionMicro::compute(int _forceSize, Eigen::Vector
 		+ B/m_Beta * (1 - betaTinf) * betaLogV.tail(therest) / betaTinf 
 	        + C/m_Gamma * (1 - gammaTinf) * gammaLogV.tail(therest) / gammaTinf);
 
-    // Do NOT use m_NbPoints because in case of single calculation "m_NbPoints = 0"
+    // Do NOT use m_nbPoints because in case of single calculation "m_nbPoints = 0"
     _concentrations2 =
         deltaD * 
         (A2/m_Alpha * (1 - alphaTinf) * alphaLogV(alphaLogV.size() - 1) / alphaTinf 

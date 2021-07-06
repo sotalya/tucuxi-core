@@ -32,7 +32,7 @@ public:
 
     Value calculateSampleLikelihood(Value _expected, Value _observed) const override;
 
-    int nbEpsilons() const override { return m_nbEpsilons; }
+    size_t nbEpsilons() const override { return m_nbEpsilons; }
 
 protected:
 
@@ -43,7 +43,7 @@ protected:
     ResidualErrorType m_errorModel;
 
     /// Number of epsilons requested by applyEpsToArray()
-    int m_nbEpsilons;
+    size_t m_nbEpsilons;
 
 };
 
@@ -64,7 +64,7 @@ public:
 
     Value calculateSampleLikelihood(Value _expected, Value _observed) const override;
 
-    int nbEpsilons() const override { return m_nbEpsilons; }
+    size_t nbEpsilons() const override { return m_nbEpsilons; }
 
 protected:
 
@@ -75,7 +75,7 @@ protected:
     Sigma m_sigma;
 
     /// Number of epsilons requested by applyEpsToArray()
-    int m_nbEpsilons;
+    size_t m_nbEpsilons;
 
 };
 
@@ -103,7 +103,7 @@ public:
         return 0.0;
     }
 
-    int nbEpsilons() const override { return 0; }
+    size_t nbEpsilons() const override { return 0; }
 
 };
 

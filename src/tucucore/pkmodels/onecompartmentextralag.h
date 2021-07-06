@@ -43,9 +43,9 @@ protected:
     Value m_Ke; /// Elimination constant rate = Cl/V where Cl is the clearance and V is the volume of the compartment
     Value m_Tlag; /// Lag time (in hours)
     Value m_Int; /// Interval time (Hours)
-    int m_NbPoints; /// Number measure points during interval
-    int m_nbPoints0; /// Number of points during lag time
-    int m_nbPoints1; /// Number of points after lag time
+    Eigen::Index m_nbPoints; /// Number measure points during interval
+    Eigen::Index m_nbPoints0; /// Number of points during lag time
+    Eigen::Index m_nbPoints1; /// Number of points after lag time
 
 
 private:

@@ -92,7 +92,7 @@ void DosageHistory::mergeDosage(const DosageTimeRange *_newDosage)
 
             // At least a number of intervals allowing to fill the interval asked
             Duration duration = _newDosage->getStartDate() - m_history.back()->m_endDate;
-            int nbTimes = 1;
+            unsigned int nbTimes = 1;
             LastingDose lastingDose(0.0, TucuUnit("mg"), m_history.back()->getDosage()->getLastFormulationAndRoute(), Duration(), duration);
             DosageRepeat repeat(lastingDose, nbTimes);
             DosageTimeRange gapFiller = DosageTimeRange(m_history.back()->m_endDate, m_history.back()->m_endDate + duration, repeat);

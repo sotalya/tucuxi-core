@@ -42,7 +42,7 @@ bool ThreeCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent,
     m_K31 =_parameters.getValue(ParameterId::K31);
     m_Tinf = _intakeEvent.getInfusionTime().toHours();
     m_Int = _intakeEvent.getInterval().toHours();
-    m_NbPoints = _intakeEvent.getNbPoints();
+    m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());
 
     a0 = m_Ke * m_K21 * m_K31;
     a1 = m_Ke * m_K31 + m_K21 * m_K31 + m_K21 * m_K13 + m_Ke * m_K21 + m_K31 * m_K12;
@@ -70,7 +70,7 @@ bool ThreeCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent,
     logHelper.debug("m_K13: {}", m_K13);
     logHelper.debug("m_K31: {}", m_K31);
     logHelper.debug("m_Tinf: {}", m_Tinf);
-    logHelper.debug("m_NbPoints: {}", m_NbPoints);
+    logHelper.debug("m_nbPoints: {}", m_nbPoints);
     logHelper.debug("m_Int: {}", m_Int);
 #endif
 
@@ -86,7 +86,7 @@ bool ThreeCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent,
     bOK &= checkPositiveValue(m_Beta, "Beta");
     bOK &= checkPositiveValue(m_Gamma, "Gamma");
     bOK &= checkPositiveValue(m_Tinf, "The infusion time");
-    bOK &= checkCondition(m_NbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_nbPoints >= 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
 
@@ -103,17 +103,17 @@ void ThreeCompartmentInfusionMicro::computeExponentials(Eigen::VectorXd& _times)
 
 bool ThreeCompartmentInfusionMicro::computeConcentrations(const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
 {
-    Eigen::VectorXd concentrations1(m_NbPoints);
+    Eigen::VectorXd concentrations1(m_nbPoints);
     Value concentrations2, concentrations3;
-    int firstCompartment = static_cast<int>(Compartments::First);
-    int secondCompartment = static_cast<int>(Compartments::Second);
-    int thirdCompartment = static_cast<int>(Compartments::Third);
+    size_t firstCompartment = static_cast<size_t>(Compartments::First);
+    size_t secondCompartment = static_cast<size_t>(Compartments::Second);
+    size_t thirdCompartment = static_cast<size_t>(Compartments::Third);
     int forcesize;
-    if (m_NbPoints == 2) {
-        forcesize = static_cast<int>(std::min(ceil(m_Tinf/m_Int * m_NbPoints), ceil(m_NbPoints)));
+    if (m_nbPoints == 2) {
+        forcesize = static_cast<int>(std::min(ceil(m_Tinf/m_Int * static_cast<double>(m_nbPoints)), ceil(static_cast<double>(m_nbPoints))));
     }
     else {
-        forcesize = std::min(m_NbPoints, std::max(2, static_cast<int>((m_Tinf / m_Int) * static_cast<double>(m_NbPoints))));
+        forcesize = std::min(static_cast<int>(m_nbPoints), std::max(2, static_cast<int>((m_Tinf / m_Int) * static_cast<double>(m_nbPoints))));
     }
     TMP_UNUSED_PARAMETER(_inResiduals);
 
@@ -121,7 +121,7 @@ bool ThreeCompartmentInfusionMicro::computeConcentrations(const Residuals& _inRe
     compute(forcesize, concentrations1, concentrations2, concentrations3);
 
     // return concentrations of comp1, comp2 and comp3
-    _outResiduals[firstCompartment] = concentrations1[m_NbPoints - 1];
+    _outResiduals[firstCompartment] = concentrations1[m_nbPoints - 1];
     _outResiduals[secondCompartment] = concentrations2;
     _outResiduals[thirdCompartment] = concentrations3;
 
@@ -140,11 +140,11 @@ bool ThreeCompartmentInfusionMicro::computeConcentration(const Value& _atTime, c
 {
     Eigen::VectorXd concentrations1(2);
     Value concentrations2, concentrations3;
-    int firstCompartment = static_cast<int>(Compartments::First);
-    int secondCompartment = static_cast<int>(Compartments::Second);
-    int thirdCompartment = static_cast<int>(Compartments::Third);
-    int atTime = static_cast<int>(SingleConcentrations::AtTime);
-    int atEndInterval = static_cast<int>(SingleConcentrations::AtEndInterval);
+    size_t firstCompartment = static_cast<size_t>(Compartments::First);
+    size_t secondCompartment = static_cast<size_t>(Compartments::Second);
+    size_t thirdCompartment = static_cast<size_t>(Compartments::Third);
+    Eigen::Index atTime = static_cast<Eigen::Index>(SingleConcentrations::AtTime);
+    Eigen::Index atEndInterval = static_cast<Eigen::Index>(SingleConcentrations::AtEndInterval);
 
     int forcesize = 0;
 
@@ -212,7 +212,7 @@ bool ThreeCompartmentInfusionMacro::checkInputs(const IntakeEvent& _intakeEvent,
     m_K31 = q2 / v2;
     m_Tinf = _intakeEvent.getInfusionTime().toHours();
     m_Int = _intakeEvent.getInterval().toHours();
-    m_NbPoints = _intakeEvent.getNbPoints();
+    m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());
 
     a0 = m_Ke * m_K21 * m_K31;
     a1 = m_Ke * m_K31 + m_K21 * m_K31 + m_K21 * m_K13 + m_Ke * m_K21 + m_K31 * m_K12;
@@ -240,7 +240,7 @@ bool ThreeCompartmentInfusionMacro::checkInputs(const IntakeEvent& _intakeEvent,
     bOK &= checkPositiveValue(m_Beta, "Beta");
     bOK &= checkPositiveValue(m_Gamma, "Gamma");
     bOK &= checkPositiveValue(m_Tinf, "The infusion time");
-    bOK &= checkCondition(m_NbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_nbPoints >= 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
     return true;

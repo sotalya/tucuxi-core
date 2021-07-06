@@ -48,7 +48,7 @@ protected:
     Value m_Alpha;
     Value m_Beta;
     Value m_Gamma;
-    int m_NbPoints; /// number measure points during interval
+    Eigen::Index m_nbPoints; /// number measure points during interval
     Value m_Int; /// Interval (hours)
 
 private:
@@ -80,7 +80,7 @@ _concentrations1, Value& _concentrations2, Value& _concentrations3)
             + C * exponentials(Exponentials::Gamma)
             - (A + B + C) * exponentials(Exponentials::Ka));
 
-    // Do NOT use m_NbPoints because in case of single point calculation m_NbPoints = 0.
+    // Do NOT use m_nbPoints because in case of single point calculation m_nbPoints = 0.
     _concentrations2 = 
         resid2 + resid1 * (B2 * exponentials(Exponentials::Beta)((exponentials(Exponentials::Beta)).size() - 1)
             + A2 * exponentials(Exponentials::Alpha)((exponentials(Exponentials::Alpha)).size() - 1)

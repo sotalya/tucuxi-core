@@ -122,7 +122,7 @@ public:
 
 protected:
 
-    int m_nbPoints; /// Number measure points during interval
+    CycleSize m_nbPoints; /// Number measure points during interval
     Value m_Int; /// Interval time (Hours)
 
     bool computeConcentrations(Eigen::VectorXd &_times, const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) override

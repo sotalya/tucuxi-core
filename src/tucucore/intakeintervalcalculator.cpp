@@ -14,20 +14,20 @@ namespace Core {
 
 
 void PertinentTimesCalculatorStandard::calculateTimes(const IntakeEvent& _intakeEvent,
-              int _nbPoints,
+              Eigen::Index _nbPoints,
               Eigen::VectorXd& _times)
 {
     if (_nbPoints == 1) {
         _times[0] = _intakeEvent.getInterval().toHours();
         return;
     }
-    for(int i = 0; i < _nbPoints; i++) {
+    for(Eigen::Index i = 0; i < _nbPoints; i++) {
         _times[i] = static_cast<double>(i) / static_cast<double>(_nbPoints - 1) * static_cast<double>(_intakeEvent.getInterval().toHours());
     }
 }
 
 void PertinentTimesCalculatorInfusion::calculateTimes(const IntakeEvent& _intakeEvent,
-              int _nbPoints,
+              Eigen::Index _nbPoints,
               Eigen::VectorXd& _times)
 {
     double infusionTime = std::min(_intakeEvent.getInfusionTime().toHours(), _intakeEvent.getInterval().toHours());
@@ -46,14 +46,14 @@ void PertinentTimesCalculatorInfusion::calculateTimes(const IntakeEvent& _intake
 
     double postTime = interval - infusionTime;
 
-    int nbInfus = std::min(_nbPoints, std::max(2, static_cast<int>((infusionTime / interval) * static_cast<double>(_nbPoints))));
-    int nbPost = _nbPoints - nbInfus;
+    Eigen::Index nbInfus = std::min(_nbPoints, std::max(Eigen::Index{2}, static_cast<Eigen::Index>((infusionTime / interval) * static_cast<double>(_nbPoints))));
+    Eigen::Index nbPost = _nbPoints - nbInfus;
 
-    for(int i = 0; i < nbInfus; i++) {
+    for(Eigen::Index i = 0; i < nbInfus; i++) {
         _times[i] = static_cast<double>(i) / static_cast<double>(nbInfus - 1) * infusionTime;
     }
 
-    for(int i = 0; i < nbPost; i++) {
+    for(Eigen::Index i = 0; i < nbPost; i++) {
         _times[i + nbInfus] = infusionTime + static_cast<double>(i + 1) / static_cast<double>(nbPost) * postTime;
     }
 }

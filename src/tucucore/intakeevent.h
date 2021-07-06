@@ -38,7 +38,7 @@ public:
     /// \param _nbPoints Number of points to compute for this intake.
     IntakeEvent(DateTime _time, Duration _offsetTime, DoseValue _dose, TucuUnit _doseUnit, Duration _interval,
                 FormulationAndRoute _formulationAndRoute,
-                AbsorptionModel _route, Duration _infusionTime, int _nbPoints)
+                AbsorptionModel _route, Duration _infusionTime, CycleSize _nbPoints)
         : TimedEvent(_time), 
           m_dose(_dose),
           m_doseUnit(_doseUnit),
@@ -105,14 +105,14 @@ public:
 
     /// \brief Change the number of points to compute for this intake
     /// \param _interval New number of points
-    void setNbPoints(int _nbPoints)
+    void setNbPoints(CycleSize _nbPoints)
     {
         m_nbPoints = _nbPoints;
     }
 
     /// \brief Get the number of points to compute for this intake
     /// \return Number of points to compute for this intake
-    int getNbPoints() const
+    CycleSize getNbPoints() const
     {
         return m_nbPoints;
     }

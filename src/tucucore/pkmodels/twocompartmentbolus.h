@@ -44,7 +44,7 @@ protected:
     Value m_RootK; /// sqrt(sumK*sumK - 4*K21*Ke)
     Value m_Alpha; /// (sumK + root)/2
     Value m_Beta; /// (sumK - root)/2
-    int m_NbPoints; /// Number measure points during interval
+    Eigen::Index m_nbPoints; /// Number measure points during interval
     Value m_Int; /// Interval (hours)
 
 private:

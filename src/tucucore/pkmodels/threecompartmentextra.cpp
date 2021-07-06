@@ -41,7 +41,7 @@ bool ThreeCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, co
     m_K21 =_parameters.getValue(ParameterId::K21);
     m_K13 =_parameters.getValue(ParameterId::K13);
     m_K31 =_parameters.getValue(ParameterId::K31);
-    m_NbPoints = _intakeEvent.getNbPoints();
+    m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());
     m_Int = (_intakeEvent.getInterval()).toHours();
 
     a0 = m_Ke * m_K21 * m_K31;
@@ -70,7 +70,7 @@ bool ThreeCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, co
     logHelper.debug("m_K21: {}", m_K21);
     logHelper.debug("m_K13: {}", m_K13);
     logHelper.debug("m_K31: {}", m_K31);
-    logHelper.debug("m_NbPoints: {}", m_NbPoints);
+    logHelper.debug("m_nbPoints: {}", m_nbPoints);
     logHelper.debug("m_Int: {}", m_Int);
 #endif
 
@@ -86,7 +86,7 @@ bool ThreeCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, co
     bOK &= checkPositiveValue(m_Alpha, "Alpha");
     bOK &= checkPositiveValue(m_Beta, "Beta");
     bOK &= checkPositiveValue(m_Gamma, "Gamma");
-    bOK &= checkCondition(m_NbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_nbPoints >= 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
     return bOK;
@@ -105,15 +105,15 @@ bool ThreeCompartmentExtraMicro::computeConcentrations(const Residuals& _inResid
 {
     Eigen::VectorXd concentrations1;
     Value concentrations2, concentrations3;
-    int firstCompartment = static_cast<int>(Compartments::First);
-    int secondCompartment = static_cast<int>(Compartments::Second);
-    int thirdCompartment = static_cast<int>(Compartments::Third);
+    size_t firstCompartment = static_cast<size_t>(Compartments::First);
+    size_t secondCompartment = static_cast<size_t>(Compartments::Second);
+    size_t thirdCompartment = static_cast<size_t>(Compartments::Third);
 
     // Calculate concentrations for comp1 and comp2
     compute(_inResiduals, concentrations1, concentrations2, concentrations3);
 
     // return residuals of comp1, comp2 and comp3
-    _outResiduals[firstCompartment] = concentrations1[m_NbPoints - 1];
+    _outResiduals[firstCompartment] = concentrations1[m_nbPoints - 1];
     _outResiduals[secondCompartment] = concentrations2;
     _outResiduals[thirdCompartment] = concentrations3;
 
@@ -134,11 +134,11 @@ bool ThreeCompartmentExtraMicro::computeConcentration(const Value& _atTime, cons
     TMP_UNUSED_PARAMETER(_atTime);
     Eigen::VectorXd concentrations1;
     Value concentrations2, concentrations3;
-    int firstCompartment = static_cast<int>(Compartments::First);
-    int secondCompartment = static_cast<int>(Compartments::Second);
-    int thirdCompartment = static_cast<int>(Compartments::Third);
-    int atTime = static_cast<int>(SingleConcentrations::AtTime);
-    int atEndInterval = static_cast<int>(SingleConcentrations::AtEndInterval);
+    size_t firstCompartment = static_cast<size_t>(Compartments::First);
+    size_t secondCompartment = static_cast<size_t>(Compartments::Second);
+    size_t thirdCompartment = static_cast<size_t>(Compartments::Third);
+    Eigen::Index atTime = static_cast<Eigen::Index>(SingleConcentrations::AtTime);
+    Eigen::Index atEndInterval = static_cast<Eigen::Index>(SingleConcentrations::AtEndInterval);
 
     // Calculate concentrations for comp1 and comp2
     compute(_inResiduals, concentrations1, concentrations2, concentrations3);
@@ -196,7 +196,7 @@ bool ThreeCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, co
     m_K21 = q1 / v2;
     m_K13 = q2 / m_V1;
     m_K31 = q2 / v2;
-    m_NbPoints = _intakeEvent.getNbPoints();
+    m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());
     m_Int = (_intakeEvent.getInterval()).toHours();
 
     a0 = m_Ke * m_K21 * m_K31;
@@ -229,7 +229,7 @@ bool ThreeCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, co
     logHelper.debug("m_K21: {}", m_K21);
     logHelper.debug("m_K13: {}", m_K13);
     logHelper.debug("m_K31: {}", m_K31);
-    logHelper.debug("m_NbPoints: {}", m_NbPoints);
+    logHelper.debug("m_nbPoints: {}", m_nbPoints);
     logHelper.debug("m_Int: {}", m_Int);
 #endif
 
@@ -246,7 +246,7 @@ bool ThreeCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, co
     bOK &= checkPositiveValue(m_Alpha, "Alpha");
     bOK &= checkPositiveValue(m_Beta, "Beta");
     bOK &= checkPositiveValue(m_Gamma, "Gamma");
-    bOK &= checkCondition(m_NbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_nbPoints >= 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
     return bOK;

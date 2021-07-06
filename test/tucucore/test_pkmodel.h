@@ -48,13 +48,16 @@ do { \
 do { \
     std::shared_ptr<IntakeIntervalCalculator> CExtraCalc = \
             _PK_MODEL->getCalculatorForRoute(AbsorptionModel::Extravascular); \
-    fructose_assert (typeid(*CExtraCalc) == typeid(_COMP_NO_LIT ## CompartmentExtra ## _TYPE_NAME)); \
+    auto CExtra = CExtraCalc.get(); \
+    fructose_assert (typeid(*CExtra) == typeid(_COMP_NO_LIT ## CompartmentExtra ## _TYPE_NAME)); \
     std::shared_ptr<IntakeIntervalCalculator> CBolusCalc = \
             _PK_MODEL->getCalculatorForRoute(AbsorptionModel::Intravascular); \
-    fructose_assert (typeid(*CBolusCalc) == typeid(_COMP_NO_LIT ## CompartmentBolus ## _TYPE_NAME)); \
+    auto CBolus = CBolusCalc.get(); \
+    fructose_assert (typeid(*CBolus) == typeid(_COMP_NO_LIT ## CompartmentBolus ## _TYPE_NAME)); \
     std::shared_ptr<IntakeIntervalCalculator> CInfusionCalc = \
             _PK_MODEL->getCalculatorForRoute(AbsorptionModel::Infusion); \
-    fructose_assert (typeid(*CInfusionCalc) == typeid(_COMP_NO_LIT ## CompartmentInfusion ## _TYPE_NAME)); \
+    auto CInfusion = CInfusionCalc.get(); \
+    fructose_assert (typeid(*CInfusion) == typeid(_COMP_NO_LIT ## CompartmentInfusion ## _TYPE_NAME)); \
 } while (0);
 
 struct TestPkModel : public fructose::test_base<TestPkModel>

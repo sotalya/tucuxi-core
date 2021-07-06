@@ -50,7 +50,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
                         Tucuxi::Core::AbsorptionModel _route,
                         std::chrono::hours _interval,
                         std::chrono::seconds _infusionTime,
-                        int _nbPoints)
+                        CycleSize _nbPoints)
     {
         // Compare the result on one interval
         // with ConcentrationCalculator vs directly with the IntakeIntervalCalculator
@@ -117,7 +117,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
                 fructose_assert_eq(status, ComputingStatus::Ok);
             }
 
-            for (int i = 0; i < _nbPoints; i++) {
+            for (size_t i = 0; i < _nbPoints; i++) {
                 Tucuxi::Core::Concentrations concentration2;
                 concentration2 = predictionPtr->getValues()[0];
                 // std::cout << i <<  " :: " << concentrations[0][i] << " : " << concentration2[i] << std::endl;
@@ -135,7 +135,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
         // With the new calculation of pertinent times for infusion, this test fails.
         // The test should behave differently in case of infusion
         if (_route != AbsorptionModel::Infusion) {
-            int nbCycles = 10;
+            size_t nbCycles = 10;
 
             Tucuxi::Core::ComputingStatus res;
             CalculatorClass calculator;
@@ -190,7 +190,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
                 DateTime recordFrom = now;
                 DateTime recordTo = now + interval * nbCycles;
 
-                for(int i = 0; i < nbCycles; i++) {
+                for(size_t i = 0; i < nbCycles; i++) {
                     Tucuxi::Core::IntakeEvent event(now + interval * i, offsetTime, _dose, TucuUnit("mg"), interval, Tucuxi::Core::FormulationAndRoute(_route), _route, infusionTime, _nbPoints);
                     event.setCalculator(calculator2);
                     intakeSeries.push_back(event);
@@ -217,12 +217,12 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
 
             // Only works for linear elimination, so do not perform that for some classes
             if (typeid(CalculatorClass) != typeid(ConstantEliminationBolus)) {
-                for (int cycle = 0; cycle < nbCycles; cycle ++) {
+                for (size_t cycle = 0; cycle < nbCycles; cycle ++) {
                     Tucuxi::Core::Concentrations concentration2;
                     concentration2 = predictionPtr->getValues()[cycle];
-                    for (int i = 0; i < _nbPoints - 1; i++) {
+                    for (CycleSize i = 0; i < _nbPoints - 1; i++) {
                         double sumConcentration = 0.0;
-                        for (int c = 0; c < cycle + 1; c++) {
+                        for (size_t c = 0; c < cycle + 1; c++) {
                             sumConcentration += concentrations[0][c * (_nbPoints - 1) + i];
                             // std::cout << c <<  " : " << sumConcentration << " : " << concentrations[0][c * (_nbPoints - 1) + i] << std::endl;
                         }
@@ -239,7 +239,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
         if (_route != AbsorptionModel::Infusion){
             CalculatorClass calculator;
 
-            int nbPoints = 201;
+            CycleSize nbPoints = 201;
             bool isAll = false;
 
             DateTime now;
@@ -309,8 +309,8 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
                 delete concentrationCalculator;
             }
 
-            int n0 = (nbPoints - 1) / 4;
-            int n1 = (nbPoints - 1) * 3 / 4;
+            size_t n0 = (nbPoints - 1) / 4;
+            size_t n1 = (nbPoints - 1) * 3 / 4;
 
             // compare the result of compartment1
             fructose_assert_double_eq(concentrations[0], predictionPtr->getValues()[0][n0]);

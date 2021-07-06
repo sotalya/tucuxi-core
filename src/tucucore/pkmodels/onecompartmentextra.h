@@ -42,7 +42,7 @@ protected:
     Value m_V;  /// Volume of the compartment
     Value m_Ke; /// Elimination constant rate = Cl/V where Cl is the clearance and V is the volume of the compartment
     Value m_Int; /// Interval time (Hours)
-    int m_NbPoints; /// Number measure points during interval
+    Eigen::Index m_nbPoints; /// Number measure points during interval
 
 private:
     typedef OneCompartmentExtraCompartments Compartments;

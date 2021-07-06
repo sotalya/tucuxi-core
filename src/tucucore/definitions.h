@@ -96,7 +96,7 @@ typedef std::vector<Concentration> Residuals;
 
 /// \ingroup TucuCore
 /// \brief The number of points in the cycle.
-typedef int CycleSize;
+typedef size_t CycleSize;
 
 /// \ingroup TucuCore
 /// \brief A type representing the Identifier of ComputingRequests and ComputingResponses

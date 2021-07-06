@@ -62,7 +62,7 @@ public:
 
     /// \brief Returns the number of epsilons requested by a specific implementation
     /// \return The number of epsilons requested by applyEpsToArray
-    virtual int nbEpsilons() const = 0;
+    virtual size_t nbEpsilons() const = 0;
 
 };
 

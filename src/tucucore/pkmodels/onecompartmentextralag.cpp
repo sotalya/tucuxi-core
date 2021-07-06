@@ -33,7 +33,7 @@ bool OneCompartmentExtraLagMicro::checkInputs(const IntakeEvent& _intakeEvent, c
     m_Ka = _parameters.getValue(ParameterId::Ka);
     m_F = _parameters.getValue(ParameterId::F);
     m_Tlag = _parameters.getValue(ParameterId::Tlag);
-    m_NbPoints = _intakeEvent.getNbPoints();
+    m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());
     m_Int = (_intakeEvent.getInterval()).toHours();
 
     if (m_Tlag < 0.0) {
@@ -47,17 +47,17 @@ bool OneCompartmentExtraLagMicro::checkInputs(const IntakeEvent& _intakeEvent, c
     bOK &= checkStrictlyPositiveValue(m_Ka, "Ka");
     bOK &= checkStrictlyPositiveValue(m_Ke, "Ke");
     bOK &= checkPositiveValue(m_Tlag, "The lag time");
-    bOK &= checkCondition(m_NbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_nbPoints >= 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
-    if (m_NbPoints == 2) {
-        m_nbPoints0 = static_cast<int>(std::min(ceil(m_Tlag/m_Int * m_NbPoints), ceil(m_NbPoints)));
+    if (m_nbPoints == 2) {
+        m_nbPoints0 = static_cast<Eigen::Index>(std::min(ceil(m_Tlag/m_Int * static_cast<double>(m_nbPoints)), ceil(static_cast<double>(m_nbPoints))));
     }
     else {
-    //    m_nbPoints0 = std::min(m_NbPoints, std::max(2, static_cast<int>((m_Tlag / m_Int) * static_cast<double>(m_NbPoints))));
-        m_nbPoints0 = std::min(m_NbPoints, std::max(2, static_cast<int>(std::min(ceil(m_Tlag/m_Int * m_NbPoints), ceil(m_NbPoints)))));
+    //    m_nbPoints0 = std::min(m_nbPoints, std::max(2, static_cast<int>((m_Tlag / m_Int) * static_cast<double>(m_nbPoints))));
+        m_nbPoints0 = std::min(static_cast<Eigen::Index>(m_nbPoints), std::max(Eigen::Index{2}, static_cast<Eigen::Index>(std::min(ceil(m_Tlag/m_Int * static_cast<double>(m_nbPoints)), ceil(static_cast<double>(m_nbPoints))))));
     }
-    m_nbPoints1 = m_NbPoints - m_nbPoints0;
+    m_nbPoints1 = m_nbPoints - m_nbPoints0;
 
 
     return bOK;
@@ -97,13 +97,13 @@ inline void OneCompartmentExtraLagMicro::compute(const Residuals& _inResiduals, 
                 + (exponentials(Exponentials::KaPost) - exponentials(Exponentials::KePost)) * postLagPart2;
         Eigen::VectorXd concentrations2post = postLagResid2 * exponentials(Exponentials::KaPost);
 
-        _concentrations1 = Eigen::VectorXd(m_NbPoints);
-        _concentrations2 = Eigen::VectorXd(m_NbPoints);
-        for(int i = 0; i < m_nbPoints0; i++) {
+        _concentrations1 = Eigen::VectorXd(m_nbPoints);
+        _concentrations2 = Eigen::VectorXd(m_nbPoints);
+        for(Eigen::Index i = 0; i < static_cast<Eigen::Index>(m_nbPoints0); i++) {
             _concentrations1[i] = concentrations1[i];
             _concentrations2[i] = concentrations2[i];
         }
-        for(int i = m_nbPoints0; i < m_NbPoints; i++) {
+        for(Eigen::Index i = static_cast<Eigen::Index>(m_nbPoints0); i < static_cast<Eigen::Index>(m_nbPoints); i++) {
             _concentrations1[i] = concentrations1post[i];
             _concentrations2[i] = concentrations2post[i];
         }
@@ -137,13 +137,13 @@ void OneCompartmentExtraLagMicro::computeExponentials(Eigen::VectorXd& _times)
 bool OneCompartmentExtraLagMicro::computeConcentrations(const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1, concentrations2;
-    int firstCompartment = static_cast<int>(Compartments::First);
-    int secondCompartment = static_cast<int>(Compartments::Second);
+    size_t firstCompartment = static_cast<size_t>(Compartments::First);
+    size_t secondCompartment = static_cast<size_t>(Compartments::Second);
 
     // compute concenration1 and 2
     compute(_inResiduals, concentrations1, concentrations2);
-    _outResiduals[firstCompartment] = concentrations1[m_NbPoints - 1];
-    _outResiduals[secondCompartment] = concentrations2[m_NbPoints - 1];
+    _outResiduals[firstCompartment] = concentrations1[m_nbPoints - 1];
+    _outResiduals[secondCompartment] = concentrations2[m_nbPoints - 1];
 
     // Return concentrations of first compartment
     _concentrations[firstCompartment].assign(concentrations1.data(), concentrations1.data() + concentrations1.size());	
@@ -162,8 +162,8 @@ bool OneCompartmentExtraLagMicro::computeConcentration(const Value& _atTime, con
 {
     TMP_UNUSED_PARAMETER(_atTime);
     Eigen::VectorXd concentrations1, concentrations2;
-    int firstCompartment = static_cast<int>(Compartments::First);
-    int secondCompartment = static_cast<int>(Compartments::Second);
+    size_t firstCompartment = static_cast<size_t>(Compartments::First);
+    size_t secondCompartment = static_cast<size_t>(Compartments::Second);
     int atTime = static_cast<int>(SingleConcentrations::AtTime);
     int atEndInterval = static_cast<int>(SingleConcentrations::AtEndInterval);
 
@@ -214,7 +214,7 @@ bool OneCompartmentExtraLagMacro::checkInputs(const IntakeEvent& _intakeEvent, c
     m_F = _parameters.getValue(ParameterId::F);
     m_Ke = cl / m_V;
     m_Tlag = _parameters.getValue(ParameterId::Tlag);
-    m_NbPoints = _intakeEvent.getNbPoints();
+    m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());
     m_Int = (_intakeEvent.getInterval()).toHours();
 
     if (m_Tlag < 0.0) {
@@ -228,17 +228,17 @@ bool OneCompartmentExtraLagMacro::checkInputs(const IntakeEvent& _intakeEvent, c
     bOK &= checkStrictlyPositiveValue(m_Ka, "Ka");
     bOK &= checkStrictlyPositiveValue(cl, "The clearance");
     bOK &= checkPositiveValue(m_Tlag, "The lag time");
-    bOK &= checkCondition(m_NbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_nbPoints >= 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
-    if (m_NbPoints == 2) {
-        m_nbPoints0 = static_cast<int>(std::min(ceil(m_Tlag/m_Int * m_NbPoints), ceil(m_NbPoints)));
+    if (m_nbPoints == 2) {
+        m_nbPoints0 = static_cast<Eigen::Index>(std::min(ceil(m_Tlag/m_Int * static_cast<double>(m_nbPoints)), ceil(static_cast<double>(m_nbPoints))));
     }
     else {
-    //    m_nbPoints0 = std::min(m_NbPoints, std::max(2, static_cast<int>((m_Tlag / m_Int) * static_cast<double>(m_NbPoints))));
-        m_nbPoints0 = std::min(m_NbPoints, std::max(2, static_cast<int>(std::min(ceil(m_Tlag/m_Int * m_NbPoints), ceil(m_NbPoints)))));
+    //    m_nbPoints0 = std::min(m_nbPoints, std::max(2, static_cast<int>((m_Tlag / m_Int) * static_cast<double>(m_nbPoints))));
+        m_nbPoints0 = std::min(static_cast<Eigen::Index>(m_nbPoints), std::max(Eigen::Index{2}, static_cast<Eigen::Index>(std::min(ceil(m_Tlag/m_Int * static_cast<double>(m_nbPoints)), ceil(static_cast<double>(m_nbPoints))))));
     }
-    m_nbPoints1 = m_NbPoints - m_nbPoints0;
+    m_nbPoints1 = m_nbPoints - m_nbPoints0;
 
 
     return bOK;

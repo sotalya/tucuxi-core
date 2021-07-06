@@ -49,7 +49,7 @@ double TargetEvaluator::aucOverMicCalculator(const TargetEvent &_targetEvent, Cy
     double timeOverMic = 0.0;
     Value mic = _targetEvent.m_mic;
     Concentrations concentrations = _cycle.getConcentrations()[0]; // [0] because only one concentrations (vector of concentration) in CycleData
-    for(int i = 0; i < int(concentrations.size()); i++){
+    for(size_t i = 0; i < concentrations.size(); i++){
 
         if (concentrations[i] > mic){
             if(i > 0){

@@ -99,6 +99,12 @@ public:
     /// \brief Multiply the duration by this value
     Duration operator*(double _factor) const;
 
+    /// \brief Multiply the duration by this value, considering a convertion to double is valid
+    template<typename T>
+    Duration operator*(T _factor) const {
+        return (*this) * static_cast<double>(_factor);
+    }
+
     /// \brief Multiplication compound assignment overload.
     /// \param rhs Right-hand side integer.
     Duration& operator*=(double _factor);

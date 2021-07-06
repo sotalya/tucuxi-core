@@ -43,7 +43,7 @@ protected:
     Value m_Ke; /// Elimination constant rate = Cl/V where Cl is the clearance and V is the volume of the compartment
     Value m_Tinf; /// Infusion time (hours)
     Value m_Int; /// Interval (hours)
-    int m_NbPoints; /// number measure points during interval
+    Eigen::Index m_nbPoints; /// number measure points during interval
 
 private:
     typedef OneCompartmentInfusionCompartments Compartments;

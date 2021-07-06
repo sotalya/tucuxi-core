@@ -36,10 +36,10 @@ ComputingStatus IntakeIntervalCalculatorRK4::calculateIntakePoints(
     }
 
     // Create our serie of times
-    int nbPoints = _intakeEvent.getNbPoints();
+    CycleSize nbPoints = _intakeEvent.getNbPoints();
 
     Eigen::VectorXd times(nbPoints);
-    m_pertinentTimesCalculator->calculateTimes(_intakeEvent, nbPoints, times);
+    m_pertinentTimesCalculator->calculateTimes(_intakeEvent, static_cast<Eigen::Index>(nbPoints), times);
 
     if (!computeConcentrations(times, _inResiduals, _isAll, _concentrations, _outResiduals)) {
         return ComputingStatus::BadConcentration;

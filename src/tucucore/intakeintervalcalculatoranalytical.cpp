@@ -38,13 +38,13 @@ ComputingStatus IntakeIntervalCalculatorAnalytical::calculateIntakePoints(
     m_loggingErrors = true;
 
     // Create our serie of times
-    int nbPoints = _intakeEvent.getNbPoints();
+    CycleSize nbPoints = _intakeEvent.getNbPoints();
 
     // YTA : This LinSpaced function crashes on Linux, so using a custom
     // method...
 //    Eigen::VectorXd times = Eigen::VectorXd::LinSpaced(_intakeEvent.getNbPoints(), 0, _intakeEvent.getInterval().toHours());
     Eigen::VectorXd times(nbPoints);
-    m_pertinentTimesCalculator->calculateTimes(_intakeEvent, nbPoints, times);
+    m_pertinentTimesCalculator->calculateTimes(_intakeEvent, static_cast<Eigen::Index>(nbPoints), times);
 
     // Can we reuse cached exponentials?
     if (!m_cache.get(_intakeEvent.getInterval(), _parameters, nbPoints, m_precomputedExponentials))	{

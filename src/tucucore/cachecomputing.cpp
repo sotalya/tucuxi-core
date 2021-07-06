@@ -106,7 +106,7 @@ bool CacheComputing::buildResponse(
                 const auto &ranks = _candidates[0]->getRanks();
                 pData.setRanks(ranks);
                 pData.setNbPointsPerHour(_nbPointsPerHour);
-                for (int rankIndex = 0; rankIndex < static_cast<int>(index.m_set->getNbRanks()); rankIndex ++) {
+                for (size_t rankIndex = 0; rankIndex < index.m_set->getNbRanks(); rankIndex ++) {
                     pData.addPercentileData(index.m_set->getPercentileData(rankIndex));
                 }
             }

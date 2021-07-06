@@ -15,9 +15,10 @@ namespace Tucuxi {
 namespace Core {
 
 
-CycleStatistic::CycleStatistic(const DateTime &_cycleStartDate, const CycleStatisticType _type)
-    : m_cycleStartDate(_cycleStartDate),
-      m_type(_type)
+CycleStatistic::CycleStatistic(const DateTime &_cycleStartDate, const CycleStatisticType /*_type*/)
+    : m_cycleStartDate(_cycleStartDate) //,
+    // Currently unused
+    //  m_type(_type)
 {
 }
 
@@ -41,7 +42,7 @@ void CycleStatistics::calculate(const std::vector<Concentrations> &_concentratio
         Value peak = 0.0;
         size_t peakPosition = 0;
 
-        for (unsigned int nbPoints = 0; nbPoints < (_concentrations[compartment].size() - 1); nbPoints++) {
+        for (size_t nbPoints = 0; nbPoints < (_concentrations[compartment].size() - 1); nbPoints++) {
 
             // compute current gradient
             gradient = _concentrations[compartment][nbPoints+1] - _concentrations[compartment][nbPoints];

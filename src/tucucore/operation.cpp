@@ -618,7 +618,7 @@ DynamicOperation::evaluate(const OperationInputList &_inputs, double &_result)
         return false;
     }
 
-    return m_operations[idxBest].first->evaluate(_inputs, _result);
+    return m_operations[static_cast<size_t>(idxBest)].first->evaluate(_inputs, _result);
 }
 
 

@@ -310,7 +310,7 @@ public:
         return m_dosage.get();
     }
 
-    int getNbTimes() const {
+    unsigned int getNbTimes() const {
         return  m_nbTimes;
     }
 
@@ -751,8 +751,9 @@ public:
     DateTime getFirstIntakeInterval(const DateTime &_intervalStart) const override
     {
         // Really ugly cast required by the library to extract the day of week from the date
-        const int numStartDayOfWeek = static_cast<unsigned>(DayOfWeek(_intervalStart.getDate()));
-        const int numPlannedDayOfWeek = static_cast<unsigned>(m_dayOfWeek);
+        // dayofweek can be cast to unsigned int, so we need the two successive casts
+        const int numStartDayOfWeek = static_cast<int>(static_cast<unsigned>(DayOfWeek(_intervalStart.getDate())));
+        const int numPlannedDayOfWeek = static_cast<int>(static_cast<unsigned>(m_dayOfWeek));
         int dayDiff = numPlannedDayOfWeek - numStartDayOfWeek;
 
         if (dayDiff < 0) {

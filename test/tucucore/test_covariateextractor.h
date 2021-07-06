@@ -702,12 +702,12 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
             CHECK_REFRESH(AgeYears, DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0), refreshMap);
 
             // 18.08-16.09.2017
-            for (int i = 18; i <= 31; ++i) {
+            for (unsigned int i = 18; i <= 31; ++i) {
                 fructose_assert(refreshMap[DATE_TIME_NO_VAR(2017, 8, i, 14, 0, 0)].size() == 1);
                 CHECK_REFRESH(AgeDays, DATE_TIME_NO_VAR(2017, 8, i, 14, 0, 0), refreshMap);
             }
-            for (int i = 1; i <= 16; ++i) {
-                fructose_assert(refreshMap[DATE_TIME_NO_VAR(2017, 9, i, 14, 0, 0)].size() == 1);
+            for (unsigned int i = 1; i <= 16; ++i) {
+                fructose_assert_eq(refreshMap[DATE_TIME_NO_VAR(2017, 9, i, 14, 0, 0)].size(), 1);
                 CHECK_REFRESH(AgeDays, DATE_TIME_NO_VAR(2017, 9, i, 14, 0, 0), refreshMap);
             }
 

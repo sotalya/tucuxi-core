@@ -32,7 +32,7 @@ bool OneCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
     m_Ke = _parameters.getValue(ParameterId::Ke);
     m_Ka = _parameters.getValue(ParameterId::Ka);
     m_F = _parameters.getValue(ParameterId::F);
-    m_NbPoints = _intakeEvent.getNbPoints();
+    m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());
     m_Int = (_intakeEvent.getInterval()).toHours();
 
     // check the inputs
@@ -41,7 +41,7 @@ bool OneCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
     bOK &= checkStrictlyPositiveValue(m_F, "F");
     bOK &= checkStrictlyPositiveValue(m_Ka, "Ka");
     bOK &= checkStrictlyPositiveValue(m_Ke, "Ke");
-    bOK &= checkCondition(m_NbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_nbPoints >= 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
     return bOK;
@@ -64,13 +64,13 @@ void OneCompartmentExtraMicro::computeExponentials(Eigen::VectorXd& _times)
 bool OneCompartmentExtraMicro::computeConcentrations(const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1, concentrations2;
-    int firstCompartment = static_cast<int>(Compartments::First);
-    int secondCompartment = static_cast<int>(Compartments::Second);
+    size_t firstCompartment = static_cast<size_t>(Compartments::First);
+    size_t secondCompartment = static_cast<size_t>(Compartments::Second);
 
     // compute concenration1 and 2
     compute(_inResiduals, concentrations1, concentrations2);
-    _outResiduals[firstCompartment] = concentrations1[m_NbPoints - 1];
-    _outResiduals[secondCompartment] = concentrations2[m_NbPoints - 1];
+    _outResiduals[firstCompartment] = concentrations1[m_nbPoints - 1];
+    _outResiduals[secondCompartment] = concentrations2[m_nbPoints - 1];
 
     // Return concentrations of first compartment
     _concentrations[firstCompartment].assign(concentrations1.data(), concentrations1.data() + concentrations1.size());	
@@ -89,10 +89,10 @@ bool OneCompartmentExtraMicro::computeConcentration(const Value& _atTime, const 
 {
     TMP_UNUSED_PARAMETER(_atTime);
     Eigen::VectorXd concentrations1, concentrations2;
-    int firstCompartment = static_cast<int>(Compartments::First);
-    int secondCompartment = static_cast<int>(Compartments::Second);
-    int atTime = static_cast<int>(SingleConcentrations::AtTime);
-    int atEndInterval = static_cast<int>(SingleConcentrations::AtEndInterval);
+    size_t firstCompartment = static_cast<size_t>(Compartments::First);
+    size_t secondCompartment = static_cast<size_t>(Compartments::Second);
+    Eigen::Index atTime = static_cast<Eigen::Index>(SingleConcentrations::AtTime);
+    Eigen::Index atEndInterval = static_cast<Eigen::Index>(SingleConcentrations::AtEndInterval);
 
     // compute concenration1 and 2
     compute(_inResiduals, concentrations1, concentrations2);
@@ -140,7 +140,7 @@ bool OneCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, cons
     m_Ka = _parameters.getValue(ParameterId::Ka);
     m_F = _parameters.getValue(ParameterId::F);
     m_Ke = cl / m_V;
-    m_NbPoints = _intakeEvent.getNbPoints();
+    m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());
     m_Int = (_intakeEvent.getInterval()).toHours();
 
     // check the inputs
@@ -149,7 +149,7 @@ bool OneCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, cons
     bOK &= checkStrictlyPositiveValue(m_F, "F");
     bOK &= checkStrictlyPositiveValue(m_Ka, "Ka");
     bOK &= checkStrictlyPositiveValue(cl, "The clearance");
-    bOK &= checkCondition(m_NbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_nbPoints >= 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
     return bOK;

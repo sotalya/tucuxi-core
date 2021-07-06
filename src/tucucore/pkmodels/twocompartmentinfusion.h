@@ -48,7 +48,7 @@ protected:
     Value m_Beta; /// (sumK - root)/2
     Value m_Tinf; /// Infusion time (Hours)
     Value m_Int; /// Interval (Hours)
-    int m_NbPoints; /// number measure points during interval
+    Eigen::Index m_nbPoints; /// number measure points during interval
 
 private:
     typedef TwoCompartmentInfusionCompartments Compartments;

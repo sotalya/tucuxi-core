@@ -65,7 +65,7 @@ ComputingStatus APosterioriEtasCalculator::computeAposterioriEtas(
     Frprmn<Likelihood> frprmn(funcd);
 
     // Initial etas (0)
-    ValueVector initialEtas(omegaSize(_omega));
+    ValueVector initialEtas(static_cast<size_t>(omegaSize(_omega)));
 
     // Execute the minimizer
     _aPosterioriEtas = frprmn.minimize(initialEtas);

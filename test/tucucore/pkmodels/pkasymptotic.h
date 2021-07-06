@@ -48,7 +48,7 @@ public:
     ///     - From (Interval - m_tPeak) to Interval
     ///
     void calculateTimes(const IntakeEvent& _intakeEvent,
-                        int _nbPoints,
+                        Eigen::Index _nbPoints,
                         Eigen::VectorXd& _times) override
     {
         double interval = _intakeEvent.getInterval().toHours();
@@ -75,19 +75,19 @@ public:
 
         double middleTime = interval - 2 * tPeak;
 
-        int nbPointsBeforePeak = std::min(_nbPoints, std::max(2, static_cast<int>((tPeak / interval)
+        Eigen::Index nbPointsBeforePeak = std::min(_nbPoints, std::max(Eigen::Index{2}, static_cast<Eigen::Index>((tPeak / interval)
                                                                                   * static_cast<double>(_nbPoints))));
-        int nbPointsMiddle = _nbPoints - 2 * nbPointsBeforePeak;
+        Eigen::Index nbPointsMiddle = _nbPoints - 2 * nbPointsBeforePeak;
 
-        for(int i = 0; i < nbPointsBeforePeak; i++) {
+        for(Eigen::Index i = 0; i < nbPointsBeforePeak; i++) {
             _times[i] = static_cast<double>(i) / static_cast<double>(nbPointsBeforePeak - 1) * tPeak;
         }
 
-        for(int i = 0; i < nbPointsMiddle; i++) {
+        for(Eigen::Index i = 0; i < nbPointsMiddle; i++) {
             _times[i + nbPointsBeforePeak] = tPeak + static_cast<double>(i + 1) / static_cast<double>(nbPointsMiddle + 1) * middleTime;
         }
 
-        for(int i = 0; i < nbPointsBeforePeak; i++) {
+        for(Eigen::Index i = 0; i < nbPointsBeforePeak; i++) {
             _times[i + nbPointsBeforePeak + nbPointsMiddle] = interval - tPeak + static_cast<double>(i) / static_cast<double>(nbPointsBeforePeak - 1) * tPeak;
         }
 
@@ -150,7 +150,7 @@ protected:
         m_D = _intakeEvent.getDose() * 1000;
         m_R = _parameters.getValue(ParameterId::TestR);
         m_TPeak = _parameters.getValue(ParameterId::TestT);
-        m_NbPoints = _intakeEvent.getNbPoints();
+        m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());
         m_Int = static_cast<int>((_intakeEvent.getInterval()).toHours());
 
     #ifdef DEBUG
@@ -159,7 +159,7 @@ protected:
         logHelper.debug("<<Input Values>>");
         logHelper.debug("m_R: {}", m_R);
         logHelper.debug("m_T: {}", m_TPeak);
-        logHelper.debug("m_NbPoints: {}", m_NbPoints);
+        logHelper.debug("m_nbPoints: {}", m_nbPoints);
         logHelper.debug("m_Int: {}", m_Int);
     #endif
 
@@ -183,14 +183,14 @@ protected:
     bool computeConcentrations(const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) override
     {
         Eigen::VectorXd concentrations;
-        int firstCompartment = static_cast<int>(Compartments::First);
+        size_t firstCompartment = static_cast<size_t>(Compartments::First);
 
 
         // Compute concentrations
         compute(_inResiduals, concentrations);
 
         // Return finla residual
-        _outResiduals[firstCompartment] = concentrations[m_NbPoints - 1];
+        _outResiduals[firstCompartment] = concentrations[m_nbPoints - 1];
 
         // Return concentraions of first compartment
         _concentrations[firstCompartment].assign(concentrations.data(), concentrations.data() + concentrations.size());
@@ -205,9 +205,9 @@ protected:
         TMP_UNUSED_PARAMETER(_atTime);
 
         Eigen::VectorXd concentrations;
-        int firstCompartment = static_cast<int>(Compartments::First);
-        int atTime = static_cast<int>(SingleConcentrations::AtTime);
-        int atEndInterval = static_cast<int>(SingleConcentrations::AtEndInterval);
+        size_t firstCompartment = static_cast<size_t>(Compartments::First);
+        Eigen::Index atTime = static_cast<Eigen::Index>(SingleConcentrations::AtTime);
+        Eigen::Index atEndInterval = static_cast<Eigen::Index>(SingleConcentrations::AtEndInterval);
 
         // Compute concentrations
         compute(_inResiduals, concentrations);
@@ -234,7 +234,7 @@ protected:
     Value m_D;	/// Quantity of drug
     Value m_R;	/// Convergence rate
     Value m_TPeak;	/// Time to peak
-    int m_NbPoints; /// Number measure points during interval
+    Eigen::Index m_nbPoints; /// Number measure points during interval
     Value m_Int; /// Interval (hours)
 
 private:

@@ -37,7 +37,7 @@ std::size_t CachedExponentials::hash(const Tucuxi::Common::Duration& _cycleDurat
     boost::hash<double> hasher;
 
     boost::hash_combine(seed, hasher(static_cast<int>(_cycleDuration.toMilliseconds())));
-    boost::hash_combine(seed, hasher(_nbPoints));
+    boost::hash_combine(seed, hasher(static_cast<double>(_nbPoints)));
     for (const auto & parameter : _parameters) {
         boost::hash_combine(seed, hasher(parameter.getValue()));
     }

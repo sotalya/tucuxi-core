@@ -58,7 +58,7 @@ bool XmlDocument::save(const std::string& _fileName)
     if (toString(xml)) {
         std::ofstream outFile(_fileName);
         if (outFile) {
-            outFile.write(xml.c_str(), xml.length());
+            outFile.write(xml.c_str(), static_cast<std::streamsize>(xml.length()));
             if (outFile) {
                 return true;
             }

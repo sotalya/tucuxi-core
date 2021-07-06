@@ -229,11 +229,11 @@ public:
 
     void addPercentileData(const std::vector<CycleData> &_data) { m_data.push_back(_data);}
 
-    const CycleData& getData(size_t _percentileIndex, unsigned int _cycleIndex) const {
+    const CycleData& getData(size_t _percentileIndex, size_t _cycleIndex) const {
         return m_data[_percentileIndex][_cycleIndex];
     }
 
-    const std::vector<CycleData>& getPercentileData(unsigned int _percentileIndex) const {
+    const std::vector<CycleData>& getPercentileData(size_t _percentileIndex) const {
         return m_data[_percentileIndex];
     }
 

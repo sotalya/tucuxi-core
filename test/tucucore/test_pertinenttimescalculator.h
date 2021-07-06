@@ -25,16 +25,16 @@ struct TestPertinentTimesCalculator : public fructose::test_base<TestPertinentTi
         {
             PertinentTimesCalculatorStandard calculator;
 
-            int nbPoints = 10;
+            Eigen::Index nbPoints = 10;
             Eigen::VectorXd times(nbPoints);
             Duration interval(Duration(std::chrono::hours(24)));
             Duration infusionTime(Duration(std::chrono::minutes(0)));
-            IntakeEvent intake(DateTime(), Duration(), 0.0, Tucuxi::Common::TucuUnit("mg"), interval, Tucuxi::Core::FormulationAndRoute(AbsorptionModel::Extravascular), AbsorptionModel::Extravascular, infusionTime, nbPoints);
+            IntakeEvent intake(DateTime(), Duration(), 0.0, Tucuxi::Common::TucuUnit("mg"), interval, Tucuxi::Core::FormulationAndRoute(AbsorptionModel::Extravascular), AbsorptionModel::Extravascular, infusionTime, static_cast<size_t>(nbPoints));
             calculator.calculateTimes(intake, nbPoints, times);
 
-            double delta = (interval.toHours() / (nbPoints - 1));
-            for (int i = 0; i < nbPoints; i++) {
-                fructose_assert_double_eq(times[i], i * delta);
+            double delta = (interval.toHours() / static_cast<double>(nbPoints - 1));
+            for (Eigen::Index i = 0; i < nbPoints; i++) {
+                fructose_assert_double_eq(times[i], static_cast<double>(i) * delta);
             }
         }
     }
@@ -45,27 +45,27 @@ struct TestPertinentTimesCalculator : public fructose::test_base<TestPertinentTi
 
         {
             // Test a linear time, as the second point is exactly at the end of infusion time
-            int nbPoints = 25;
+            size_t nbPoints = 25;
             Eigen::VectorXd times(nbPoints);
             Duration interval(Duration(std::chrono::hours(24)));
             Duration infusionTime(Duration(std::chrono::minutes(60)));
             IntakeEvent intake(DateTime(), Duration(), 0.0, Tucuxi::Common::TucuUnit("mg"), interval, Tucuxi::Core::FormulationAndRoute(AbsorptionModel::Infusion), AbsorptionModel::Infusion, infusionTime, nbPoints);
-            calculator.calculateTimes(intake, nbPoints, times);
+            calculator.calculateTimes(intake, static_cast<Eigen::Index>(nbPoints), times);
 
-            double delta = (interval.toHours() / (nbPoints - 1));
-            for (int i = 0; i < nbPoints; i++) {
-                fructose_assert_double_eq(times[i], i * delta);
+            double delta = (interval.toHours() / static_cast<double>(nbPoints - 1));
+            for (Eigen::Index i = 0; i < static_cast<Eigen::Index>(nbPoints); i++) {
+                fructose_assert_double_eq(times[i], static_cast<double>(i) * delta);
             }
         }
 
         {
             // Test three points
-            int nbPoints = 3;
+            size_t nbPoints = 3;
             Eigen::VectorXd times(nbPoints);
             Duration interval(Duration(std::chrono::hours(24)));
             Duration infusionTime(Duration(std::chrono::minutes(60)));
             IntakeEvent intake(DateTime(), Duration(), 0.0, Tucuxi::Common::TucuUnit("mg"), interval, Tucuxi::Core::FormulationAndRoute(AbsorptionModel::Infusion), AbsorptionModel::Infusion, infusionTime, nbPoints);
-            calculator.calculateTimes(intake, nbPoints, times);
+            calculator.calculateTimes(intake, static_cast<Eigen::Index>(nbPoints), times);
 
             fructose_assert_double_eq(times[0], 0.0);
             fructose_assert_double_eq(times[1], 1.0);
@@ -74,12 +74,12 @@ struct TestPertinentTimesCalculator : public fructose::test_base<TestPertinentTi
 
         {
             // Test five points
-            int nbPoints = 5;
+            size_t nbPoints = 5;
             Eigen::VectorXd times(nbPoints);
             Duration interval(Duration(std::chrono::hours(24)));
             Duration infusionTime(Duration(std::chrono::minutes(60)));
             IntakeEvent intake(DateTime(), Duration(), 0.0, Tucuxi::Common::TucuUnit("mg"), interval, Tucuxi::Core::FormulationAndRoute(AbsorptionModel::Infusion), AbsorptionModel::Infusion, infusionTime, nbPoints);
-            calculator.calculateTimes(intake, nbPoints, times);
+            calculator.calculateTimes(intake, static_cast<Eigen::Index>(nbPoints), times);
 
             fructose_assert_double_eq(times[0], 0.0);
             fructose_assert_double_eq(times[1], 1.0);
@@ -89,12 +89,12 @@ struct TestPertinentTimesCalculator : public fructose::test_base<TestPertinentTi
         }
         {
             // Test five points
-            int nbPoints = 5;
+            size_t nbPoints = 5;
             Eigen::VectorXd times(nbPoints);
             Duration interval(Duration(std::chrono::hours(24)));
             Duration infusionTime(Duration(std::chrono::minutes(60*10)));
             IntakeEvent intake(DateTime(), Duration(), 0.0, Tucuxi::Common::TucuUnit("mg"), interval, Tucuxi::Core::FormulationAndRoute(AbsorptionModel::Infusion), AbsorptionModel::Infusion, infusionTime, nbPoints);
-            calculator.calculateTimes(intake, nbPoints, times);
+            calculator.calculateTimes(intake, static_cast<Eigen::Index>(nbPoints), times);
 
             fructose_assert_double_eq(times[0], 0.0);
             fructose_assert_double_eq(times[1], 10.0);

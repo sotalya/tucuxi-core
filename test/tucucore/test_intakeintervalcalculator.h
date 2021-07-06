@@ -48,7 +48,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
                                        Tucuxi::Core::AbsorptionModel _route,
                                        std::chrono::hours _interval,
                                        std::chrono::seconds _infusionTime,
-                                       int _nbPoints)
+                                       size_t _nbPoints)
     {
 
         Tucuxi::Core::ComputingStatus res;
@@ -126,7 +126,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
                               Tucuxi::Core::AbsorptionModel _route,
                               std::chrono::hours _interval,
                               std::chrono::seconds _infusionTime,
-                              int _nbPoints)
+                              CycleSize _nbPoints)
     {
         Tucuxi::Core::ComputingStatus res;
         CalculatorMicroClass microCalculator;
@@ -256,7 +256,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
                               Tucuxi::Core::AbsorptionModel _route,
                               std::chrono::hours _interval,
                               std::chrono::seconds _infusionTime,
-                              int _nbPoints)
+                              size_t _nbPoints)
     {
         Tucuxi::Core::ComputingStatus res;
         CalculatorClass0 calculator0;
@@ -331,7 +331,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
                         Tucuxi::Core::AbsorptionModel _route,
                         std::chrono::hours _interval,
                         std::chrono::seconds _infusionTime,
-                        int _nbPoints)
+                        size_t _nbPoints)
     {
         testSingleVsMultiple<CalculatorMicroClass, CalculatorMacroClass>(_microParameters, _macroParameters, _dose, _route, _interval, _infusionTime, _nbPoints);
         testSteadyState<CalculatorMicroClass, CalculatorMacroClass>(_microParameters, _macroParameters, _dose, _route, _interval, _infusionTime, _nbPoints);

@@ -58,7 +58,7 @@ const EigenMatrix &AposterioriMatrixCache::getAvecs(int _nbSamples, int _nbEtas)
 
 
 
-unsigned int MonteCarloPercentileCalculatorBase::sm_nbPatients = 0; // NOLINT(readability-identifier-naming)
+size_t MonteCarloPercentileCalculatorBase::sm_nbPatients = 0; // NOLINT(readability-identifier-naming)
 
 MonteCarloPercentileCalculatorBase::MonteCarloPercentileCalculatorBase()
 {
@@ -126,7 +126,7 @@ ComputingStatus MonteCarloPercentileCalculatorBase::computePredictionsAndSortPer
 {
 //    auto start = std::chrono::steady_clock::now();
 
-    unsigned int nbPatients = Tucuxi::Core::MonteCarloPercentileCalculatorBase::getNumberPatients();
+    size_t nbPatients = Tucuxi::Core::MonteCarloPercentileCalculatorBase::getNumberPatients();
     std::vector<TimeOffsets> times;
 
     IntakeSeries recordedIntakes;
@@ -165,7 +165,7 @@ ComputingStatus MonteCarloPercentileCalculatorBase::computePredictions(
         const std::vector<Etas> &_etas,
         const std::vector<Deviations> &_epsilons,
         IConcentrationCalculator &_concentrationCalculator,
-        unsigned int _nbPatients,
+        size_t _nbPatients,
         std::vector<TimeOffsets> &_times,
         IntakeSeries &_recordedIntakes,
         std::vector< std::vector< std::vector<Concentration> > > &_concentrations,
@@ -180,7 +180,7 @@ ComputingStatus MonteCarloPercentileCalculatorBase::computePredictions(
     // Set the size of vector "concentrations"
     for (const auto & recordedIntake : _recordedIntakes) {
         std::vector< std::vector<Concentration> > vec;
-        for (int point = 0; point < recordedIntake.getNbPoints(); point++) {
+        for (size_t point = 0; point < recordedIntake.getNbPoints(); point++) {
             vec.push_back(std::vector<Concentration>(_nbPatients));
         }
         _concentrations.push_back(vec);
@@ -195,12 +195,12 @@ ComputingStatus MonteCarloPercentileCalculatorBase::computePredictions(
 
 #ifdef MULTITHREAD_MT
     // Parallelize this for loop with some shared and some copied-to-each-thread-with-current-state (firstprivate) variables
-    int nbThreads = std::max(std::thread::hardware_concurrency(), static_cast<unsigned int>(1));
+    unsigned int nbThreads = std::max(std::thread::hardware_concurrency(), static_cast<unsigned int>(1));
 
     unsigned int nbPatientsPerThread = static_cast<unsigned int>(ceil(static_cast<double>(_nbPatients) / static_cast<double>(nbThreads)));
 
     std::vector<std::thread> workers;
-    for(int threadIndex = 0; threadIndex < nbThreads; threadIndex++) {
+    for(unsigned int threadIndex = 0; threadIndex < nbThreads; threadIndex++) {
         // Duplicate an IntakeSeries for avoid a possible problem with multi-thread
         IntakeSeries newIntakes;
         cloneIntakeSeries(_intakes, newIntakes);
@@ -222,10 +222,10 @@ ComputingStatus MonteCarloPercentileCalculatorBase::computePredictions(
     IntakeSeries newIntakes;
     cloneIntakeSeries(_intakes, newIntakes);
 #endif // MULTITHREAD_MT
-            int start = threadIndex * nbPatientsPerThread;
-            int end = std::min((threadIndex + 1) * nbPatientsPerThread, _nbPatients);
+            size_t start = threadIndex * nbPatientsPerThread;
+            size_t end = std::min(static_cast<size_t>((threadIndex + 1) * nbPatientsPerThread), _nbPatients);
 
-            for (int patient = start; patient < end; patient++) {
+            for (size_t patient = start; patient < end; patient++) {
                 if (!abort) {
                     if ((_aborter != nullptr) && (_aborter->shouldAbort())) {
                         abort = true;
@@ -261,16 +261,16 @@ ComputingStatus MonteCarloPercentileCalculatorBase::computePredictions(
                     if (computingResult == ComputingStatus::Ok) {
 
                         // Save concentrations to array of [patient] for using sort() function
-                        for (unsigned int cycle = 0; cycle < _recordedIntakes.size(); cycle++) {
+                        for (size_t cycle = 0; cycle < _recordedIntakes.size(); cycle++) {
 
-                            int cyclePoints = _recordedIntakes[cycle].getNbPoints();
+                            CycleSize cyclePoints = _recordedIntakes[cycle].getNbPoints();
 
                             // Save times only one time (when patient is equal to 0)
                             if (patient == 0) {
                                 _times.push_back((predictionPtr->getTimes())[cycle]);
                             }
 
-                            for (int point = 0; point < cyclePoints; point++) {
+                            for (CycleSize point = 0; point < cyclePoints; point++) {
                                 _concentrations[cycle][point][patient] = (predictionPtr->getValues())[cycle][point];
                             }
                         }
@@ -313,10 +313,9 @@ typedef struct
     bool isValid; // NOLINT(readability-identifier-naming)
 } valid_concentration_t;
 
-ComputingStatus MonteCarloPercentileCalculatorBase::sortAndExtractPercentiles(
-        PercentilesPrediction &_percentiles,
+ComputingStatus MonteCarloPercentileCalculatorBase::sortAndExtractPercentiles(PercentilesPrediction &_percentiles,
         const PercentileRanks &_percentileRanks,
-        unsigned int _nbPatients,
+        size_t _nbPatients,
         std::vector<TimeOffsets> _times,
         IntakeSeries &_recordedIntakes,
         std::vector< std::vector< std::vector<Concentration> > > &_concentrations
@@ -386,17 +385,17 @@ ComputingStatus MonteCarloPercentileCalculatorBase::sortAndExtractPercentiles(
     unsigned int currentPoint = 0;
     size_t nbCycles = _recordedIntakes.size();
 
-    int nbThreads = std::max(std::thread::hardware_concurrency(), static_cast<unsigned int>(1));
+    unsigned int nbThreads = std::max(std::thread::hardware_concurrency(), static_cast<unsigned int>(1));
 
-    for(int thread = 0; thread < nbThreads; thread++) {
+    for(unsigned int thread = 0; thread < nbThreads; thread++) {
 
         sortWorkers.push_back(std::thread([
                                           &realConcentrations, _recordedIntakes, &positions, _percentileRanks,
                                           &currentPoint, &_percentiles, &mutex, &currentCycle, nbCycles]()
         {
             bool cont = true;
-            unsigned int cycle;
-            unsigned int point;
+            size_t cycle;
+            size_t point;
 
             while (cont) {
                 mutex.lock();
@@ -408,7 +407,7 @@ ComputingStatus MonteCarloPercentileCalculatorBase::sortAndExtractPercentiles(
                 else {
                     point = currentPoint;
                     cycle = currentCycle;
-                    if ((static_cast<int>(point)) == _recordedIntakes[cycle].getNbPoints() - 1) {
+                    if (point == _recordedIntakes[cycle].getNbPoints() - 1) {
                         currentPoint = 0;
                         currentCycle ++;
                         if (currentCycle >= nbCycles) {
@@ -428,7 +427,7 @@ ComputingStatus MonteCarloPercentileCalculatorBase::sortAndExtractPercentiles(
                           [&] (const double _v1, const double _v2) { return _v1 < _v2; });
 
                 for (unsigned int percRankIdx = 0; percRankIdx < _percentileRanks.size(); percRankIdx++) {
-                    int pos = positions[percRankIdx];
+                    size_t pos = static_cast<size_t>(positions[percRankIdx]);
 
                     double conc = realConcentrations [cycle][point][pos];
 
@@ -607,7 +606,7 @@ ComputingStatus AprioriMonteCarloPercentileCalculator::calculateEtasAndEpsilons(
     EigenMatrix errorMatrix; // Error matrix of both omega and sigma combined (inter and intra errors)
 
     // Extracting the variances from error matrix into vector
-    size_t omegaRank = omegaSize(_omega);
+    Eigen::Index omegaRank = omegaSize(_omega);
     errorMatrix = _omega;
 
     choleskyMatrix = EigenMatrix::Zero(omegaRank, omegaRank);
@@ -626,10 +625,10 @@ ComputingStatus AprioriMonteCarloPercentileCalculator::calculateEtasAndEpsilons(
     // The variables are normally distributed, we use a standard normal, then apply lower cholesky
     std::normal_distribution<> normalDistribution(0, 1.0);
 
-    Etas eta(omegaRank);
+    Etas eta(static_cast<size_t>(omegaRank));
     Tucuxi::Core::ConcentrationPredictionPtr predictionPtr = std::make_unique<Tucuxi::Core::ConcentrationPrediction>();
 
-    unsigned int nbPatients = getNumberPatients();
+    size_t nbPatients = getNumberPatients();
 
 
     //clock_t t1 = clock();
@@ -638,11 +637,11 @@ ComputingStatus AprioriMonteCarloPercentileCalculator::calculateEtasAndEpsilons(
     // TODO : epsilons and rands could be static, in a cache to save time
 
     // Generating the random numbers
-    EigenMatrix rands = EigenMatrix::Zero(nbPatients, omegaRank);
+    EigenMatrix rands = EigenMatrix::Zero(static_cast<Eigen::Index>(nbPatients), omegaRank);
 
     _epsilons = std::vector<Deviations>(nbPatients);
     // We fill the epsilons
-    for (unsigned int p = 0; p < nbPatients; p++) {
+    for (size_t p = 0; p < nbPatients; p++) {
         _epsilons[p] = Deviations(_residualErrorModel.nbEpsilons(), normalDistribution(rnGenerator));
     }
 
@@ -700,7 +699,7 @@ void MonteCarloPercentileCalculatorBase::calculateSubomega(
     _logLikelihood.initBounds(_omega, etaMax, etaMin);
 
     // Get working eta
-    map2EigenVectorType etas(etasPtr, _etas.size());
+    map2EigenVectorType etas(etasPtr, static_cast<Eigen::Index>(_etas.size()));
 
     EigenMatrix hessian(etas.size(), etas.size());
 
@@ -798,7 +797,7 @@ ComputingStatus AposterioriMonteCarloPercentileCalculator::calculateEtasAndEpsil
     // TODO check Map functions correctly or not when test MC
     const Value* etasPtr = &_etas[0]; // get _etas pointer
 
-    map2EigenVectorType meanEtas(etasPtr, _etas.size());
+    map2EigenVectorType meanEtas(etasPtr, static_cast<Eigen::Index>(_etas.size()));
 
     Eigen::LLT<EigenMatrix> subomegaLLT(subomega);
     EigenMatrix etaLowerChol = subomegaLLT.matrixL().transpose();
@@ -859,7 +858,7 @@ ComputingStatus AposterioriMonteCarloPercentileCalculator::calculateEtasAndEpsil
     double part3 = tgamma(v / 2) * std::pow(v * 3.14159, p/2);
 
 
-    int nbSamplePerThread = static_cast<int>(ceil(static_cast<double>(nbInitialSamples) / static_cast<double>(nbThreads)));
+    unsigned int nbSamplePerThread = static_cast<unsigned int>(ceil(static_cast<double>(nbInitialSamples) / static_cast<double>(nbThreads)));
 
     std::vector<std::thread> workers;
     for(unsigned thread = 0;thread < nbThreads; thread++) {
@@ -878,9 +877,9 @@ ComputingStatus AposterioriMonteCarloPercentileCalculator::calculateEtasAndEpsil
             Likelihood threadLogLikelihood(_omega, _residualErrorModel, _samples, newIntakes, _parameters, _concentrationCalculator);
 
 
-            unsigned start = thread * nbSamplePerThread;
-            unsigned end = std::min((thread + 1) * nbSamplePerThread, static_cast<unsigned int>(nbInitialSamples));
-            for (unsigned sample = start; sample < end; sample++) {
+            Eigen::Index start = static_cast<Eigen::Index>(thread * nbSamplePerThread);
+            Eigen::Index end = static_cast<Eigen::Index>(std::min((thread + 1) * nbSamplePerThread, static_cast<unsigned int>(nbInitialSamples)));
+            for (Eigen::Index sample = start; sample < end; sample++) {
                 if (!abort) {
                     if ((_aborter != nullptr) && (_aborter->shouldAbort())) {
                         abort = true;
@@ -902,7 +901,7 @@ ComputingStatus AposterioriMonteCarloPercentileCalculator::calculateEtasAndEpsil
 
                     if (within6sigmas) {
 
-                        etaSamples[sample] = avecMat;
+                        etaSamples[static_cast<size_t>(sample)] = avecMat;
 
                         // 4. Calculate the ratios for weighting this is h*
                         // Be careful: hstart should be a logLikelihood, however we are minimizing the
@@ -949,13 +948,13 @@ ComputingStatus AposterioriMonteCarloPercentileCalculator::calculateEtasAndEpsil
 
     // TODO : These epsilons could be stored in a cache to save time
     _epsilons = std::vector<Deviations>(nbReSamples);
-    int nbEpsilons = _residualErrorModel.nbEpsilons();
+    size_t nbEpsilons = _residualErrorModel.nbEpsilons();
     // We fill the epsilons
     for (std::size_t p = 0; p < nbReSamples; p++) {
         _epsilons[p] = Deviations(nbEpsilons, normalDistribution(rnGenerator));
         // If more than one epsilon, fill the remaining ones with new values
         if (nbEpsilons > 1) {
-            for (int e = 1; e < nbEpsilons; e++) {
+            for (size_t e = 1; e < nbEpsilons; e++) {
                 _epsilons[p][e] = normalDistribution(rnGenerator);
             }
         }
@@ -1030,7 +1029,7 @@ ComputingStatus AprioriPercentileCalculatorMulti::calculate(
 {
     AprioriMonteCarloPercentileCalculator simpleCalculator;
 
-    unsigned int nbPatients = Tucuxi::Core::MonteCarloPercentileCalculatorBase::getNumberPatients();
+    size_t nbPatients = Tucuxi::Core::MonteCarloPercentileCalculatorBase::getNumberPatients();
     std::vector<TimeOffsets> times;
 
     IntakeSeries recordedIntakes;
@@ -1110,7 +1109,7 @@ ComputingStatus AposterioriMonteCarloPercentileCalculatorMulti::calculate(
 {
     AposterioriMonteCarloPercentileCalculator simpleCalculator;
 
-    unsigned int nbPatients = Tucuxi::Core::MonteCarloPercentileCalculatorBase::getNumberPatients();
+    size_t nbPatients = Tucuxi::Core::MonteCarloPercentileCalculatorBase::getNumberPatients();
     std::vector<TimeOffsets> times;
 
     IntakeSeries recordedIntakes;
@@ -1184,7 +1183,7 @@ ComputingStatus PercentileCalculatorMultiBase::calculateActiveMoietyAndSort(
         const ActiveMoiety *_activeMoiety,
         std::vector<AnalyteGroupId> _analyteGroupIds,
         IntakeSeries _recordedIntakes,
-        unsigned int _nbPatients,
+        size_t _nbPatients,
         std::vector< std::vector< std::vector< std::vector<Concentration> > > > &_concentrations,
         MonteCarloPercentileCalculatorBase &_simpleCalculator,
         std::vector<TimeOffsets> _times)
@@ -1202,7 +1201,7 @@ ComputingStatus PercentileCalculatorMultiBase::calculateActiveMoietyAndSort(
         // Set the size of vector "concentrations"
         for (auto & recordedIntake : _recordedIntakes) {
             std::vector< std::vector<Concentration> > vec;
-            for (int point = 0; point < recordedIntake.getNbPoints(); point++) {
+            for (size_t point = 0; point < recordedIntake.getNbPoints(); point++) {
                 vec.push_back(std::vector<Concentration>(_nbPatients));
             }
             aConcentration.push_back(vec);

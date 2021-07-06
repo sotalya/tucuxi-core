@@ -72,7 +72,7 @@ public:
 
 private:
     Tucuxi::Common::DateTime m_cycleStartDate; // Date and time of the start of the corresponding cycle
-    CycleStatisticType m_type; // The type of statistic
+    // CycleStatisticType m_type; // The type of statistic
 
     struct Data {
         Tucuxi::Common::Duration m_offset;

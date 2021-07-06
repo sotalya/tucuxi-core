@@ -421,7 +421,7 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkHalfLife(const DrugMode
         const SinglePredictionData *resp = dynamic_cast<const SinglePredictionData*>(responseData);
 
         std::vector<double> residuals;
-        for (const auto d : resp->getData()) {
+        for (const auto& d : resp->getData()) {
             residuals.push_back(d.m_concentrations[0][0]);
         }
 
@@ -478,7 +478,7 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkHalfLife(const DrugMode
                 std::vector<double> residuals;
                 double lastResidual = 10000000.0;
                 int index = 0;
-                for (const auto d : resp->getData()) {
+                for (const auto& d : resp->getData()) {
                     auto residual = d.m_concentrations[0][0];
                     auto diff = residual / lastResidual;
                     lastResidual = residual;

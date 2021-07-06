@@ -119,7 +119,7 @@ ComputingStatus GeneralExtractor::extractOmega(
 
     for(std::size_t x = 0; x < nbEtas; x++) {
         for(std::size_t y = 0; y < nbEtas; y++) {
-            _omega(x,y) = 0.0;
+            _omega(static_cast<Eigen::Index>(x),static_cast<Eigen::Index>(y)) = 0.0;
         }
     }
 
@@ -240,7 +240,7 @@ ComputingStatus GeneralExtractor::generalExtractions(const ComputingTraitStandar
         // next intake
         for (size_t i = 0; i < nIntakes - 1; i++) {
             Duration interval = intakeSeries[i + 1].getEventTime() - intakeSeries[i].getEventTime();
-            intakeSeries[i].setNbPoints(static_cast<int>(interval.toHours() * nbPointsPerHour) + 1);
+            intakeSeries[i].setNbPoints(static_cast<CycleSize>(interval.toHours() * nbPointsPerHour) + 1);
             intakeSeries[i].setInterval(interval);
         }
 
@@ -273,7 +273,7 @@ ComputingStatus GeneralExtractor::generalExtractions(const ComputingTraitStandar
                 infusionTime = Duration(std::chrono::hours(1));
             }
             // We need at least one point. It could be less if the interval is very very small
-            int nbPoints = std::max(1, static_cast<int>(nbPointsPerHour * interval.toHours()));
+            size_t nbPoints = std::max(size_t{1}, static_cast<size_t>(nbPointsPerHour * interval.toHours()));
 
             IntakeEvent intake(start, Duration(), dose, doseValue,  interval, lastIntake->getFormulationAndRoute(), absorptionModel, infusionTime, nbPoints);
             intakeSeries.push_back(intake);

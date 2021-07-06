@@ -126,7 +126,7 @@ private:
     EigenVector m_omax;
 
     /// inter-individual var-covar matrix
-    const OmegaMatrix* m_omega;
+    // const OmegaMatrix* m_omega;
 
     /// intra-individual error model
     const IResidualErrorModel* m_residualErrorModel;

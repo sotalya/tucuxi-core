@@ -36,7 +36,7 @@ bool TwoCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
     m_Ke = _parameters.getValue(ParameterId::Ke);
     m_K12 = _parameters.getValue(ParameterId::K12);
     m_K21 = _parameters.getValue(ParameterId::K21);
-    m_NbPoints = _intakeEvent.getNbPoints();
+    m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());
     m_Int = (_intakeEvent.getInterval()).toHours();
 
     Value sumK = m_Ke + m_K12 + m_K21;
@@ -51,7 +51,7 @@ bool TwoCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
     bOK &= checkStrictlyPositiveValue(m_K21, "K21");
     bOK &= checkPositiveValue(m_Alpha, "Alpha");
     bOK &= checkPositiveValue(m_Beta, "Beta");
-    bOK &= checkCondition(m_NbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_nbPoints >= 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
 
@@ -64,7 +64,7 @@ bool TwoCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
     logHelper.debug("m_Ke: {}", m_Ke);
     logHelper.debug("m_K12: {}", m_K12);
     logHelper.debug("m_K21: {}", m_K21);
-    logHelper.debug("m_NbPoints: {}", m_NbPoints);
+    logHelper.debug("m_nbPoints: {}", m_nbPoints);
     logHelper.debug("m_Int: {}", m_Int);
     logHelper.debug("m_Alpha: {}", m_Alpha);
     logHelper.debug("m_Beta: {}", m_Beta);
@@ -84,15 +84,15 @@ void TwoCompartmentBolusMicro::computeExponentials(Eigen::VectorXd& _times)
 bool TwoCompartmentBolusMicro::computeConcentrations(const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1, concentrations2;
-    int firstCompartment = static_cast<int>(Compartments::First);
-    int secondCompartment = static_cast<int>(Compartments::Second);
+    size_t firstCompartment = static_cast<size_t>(Compartments::First);
+    size_t secondCompartment = static_cast<size_t>(Compartments::Second);
 
     // Calculate concentrations for comp1 and comp2
     compute(_inResiduals, concentrations1, concentrations2);
 
     // return residuals of comp1 and comp2
-    _outResiduals[firstCompartment] = concentrations1[m_NbPoints - 1];
-    _outResiduals[secondCompartment] = concentrations2[m_NbPoints - 1];
+    _outResiduals[firstCompartment] = concentrations1[m_nbPoints - 1];
+    _outResiduals[secondCompartment] = concentrations2[m_nbPoints - 1];
 
     // return concentration of comp1
     _concentrations[firstCompartment].assign(concentrations1.data(), concentrations1.data() + concentrations1.size());	
@@ -113,10 +113,10 @@ bool TwoCompartmentBolusMicro::computeConcentration(const Value& _atTime, const 
 {
     TMP_UNUSED_PARAMETER(_atTime);
     Eigen::VectorXd concentrations1, concentrations2;
-    int firstCompartment = static_cast<int>(Compartments::First);
-    int secondCompartment = static_cast<int>(Compartments::Second);
-    int atTime = static_cast<int>(SingleConcentrations::AtTime);
-    int atEndInterval = static_cast<int>(SingleConcentrations::AtEndInterval);
+    size_t firstCompartment = static_cast<size_t>(Compartments::First);
+    size_t secondCompartment = static_cast<size_t>(Compartments::Second);
+    Eigen::Index atTime = static_cast<Eigen::Index>(SingleConcentrations::AtTime);
+    Eigen::Index atEndInterval = static_cast<Eigen::Index>(SingleConcentrations::AtEndInterval);
 
     // Calculate concentrations for comp1 and comp2
     compute(_inResiduals, concentrations1, concentrations2);
@@ -167,7 +167,7 @@ bool TwoCompartmentBolusMacro::checkInputs(const IntakeEvent& _intakeEvent, cons
     m_Ke = cl / m_V1;
     m_K12 = q / m_V1;
     m_K21 = q / v2;
-    m_NbPoints = _intakeEvent.getNbPoints();
+    m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());
     m_Int = (_intakeEvent.getInterval()).toHours();
 
     Value sumK = m_Ke + m_K12 + m_K21;
@@ -187,7 +187,7 @@ bool TwoCompartmentBolusMacro::checkInputs(const IntakeEvent& _intakeEvent, cons
     logHelper.debug("m_Ke: {}", m_Ke);
     logHelper.debug("m_K12: {}", m_K12);
     logHelper.debug("m_K21: {}", m_K21);
-    logHelper.debug("m_NbPoints: {}", m_NbPoints);
+    logHelper.debug("m_nbPoints: {}", m_nbPoints);
     logHelper.debug("m_Int: {}", m_Int);
 #endif
 
@@ -199,7 +199,7 @@ bool TwoCompartmentBolusMacro::checkInputs(const IntakeEvent& _intakeEvent, cons
     bOK &= checkStrictlyPositiveValue(v2, "V2");
     bOK &= checkPositiveValue(m_Alpha, "Alpha");
     bOK &= checkPositiveValue(m_Beta, "Beta");
-    bOK &= checkCondition(m_NbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_nbPoints >= 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
     return bOK;

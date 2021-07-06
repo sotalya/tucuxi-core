@@ -33,7 +33,7 @@ bool OneCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
     m_D = _intakeEvent.getDose() * 1000;
     m_V = _parameters.getValue(ParameterId::V);
     m_Ke = _parameters.getValue(ParameterId::Ke);
-    m_NbPoints = _intakeEvent.getNbPoints();
+    m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());
     m_Int = static_cast<int>((_intakeEvent.getInterval()).toHours());
 
 #ifdef DEBUG
@@ -43,7 +43,7 @@ bool OneCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
     logHelper.debug("m_D: {}", m_D);
     logHelper.debug("m_V: {}", m_V);
     logHelper.debug("m_Ke: {}", m_Ke);
-    logHelper.debug("m_NbPoints: {}", m_NbPoints);
+    logHelper.debug("m_nbPoints: {}", m_nbPoints);
     logHelper.debug("m_Int: {}", m_Int);
 #endif
 
@@ -51,7 +51,7 @@ bool OneCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
     bool bOK = checkPositiveValue(m_D, "The dose");
     bOK &= checkStrictlyPositiveValue(m_V, "The volume");
     bOK &= checkStrictlyPositiveValue(m_Ke, "Ke");
-    bOK &= checkCondition(m_NbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_nbPoints >= 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
     return bOK;
@@ -67,14 +67,14 @@ void OneCompartmentBolusMicro::computeExponentials(Eigen::VectorXd& _times)
 bool OneCompartmentBolusMicro::computeConcentrations(const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations;
-    int firstCompartment = static_cast<int>(Compartments::First);
+    size_t firstCompartment = static_cast<size_t>(Compartments::First);
 
 
     // Compute concentrations
     compute(_inResiduals, concentrations);
 
     // Return finla residual
-    _outResiduals[firstCompartment] = concentrations[m_NbPoints - 1];
+    _outResiduals[firstCompartment] = concentrations[m_nbPoints - 1];
 
     // Return concentraions of first compartment
     _concentrations[firstCompartment].assign(concentrations.data(), concentrations.data() + concentrations.size());
@@ -90,9 +90,9 @@ _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residua
     TMP_UNUSED_PARAMETER(_atTime);
 
     Eigen::VectorXd concentrations;
-    int firstCompartment = static_cast<int>(Compartments::First);
-    int atTime = static_cast<int>(SingleConcentrations::AtTime);
-    int atEndInterval = static_cast<int>(SingleConcentrations::AtEndInterval);
+    size_t firstCompartment = static_cast<size_t>(Compartments::First);
+    Eigen::Index atTime = static_cast<Eigen::Index>(SingleConcentrations::AtTime);
+    Eigen::Index atEndInterval = static_cast<Eigen::Index>(SingleConcentrations::AtEndInterval);
 
     // Compute concentrations
     compute(_inResiduals, concentrations);
@@ -133,7 +133,7 @@ bool OneCompartmentBolusMacro::checkInputs(const IntakeEvent& _intakeEvent, cons
     m_V = _parameters.getValue(ParameterId::V);
     Value cl = _parameters.getValue(ParameterId::CL);
     m_Ke = cl / m_V;
-    m_NbPoints = _intakeEvent.getNbPoints();
+    m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());
     m_Int = (_intakeEvent.getInterval()).toHours();
 
 #ifdef DEBUG
@@ -144,7 +144,7 @@ bool OneCompartmentBolusMacro::checkInputs(const IntakeEvent& _intakeEvent, cons
     logHelper.debug("m_V: {}", m_V);
     logHelper.debug("cl: {}", cl);
     logHelper.debug("m_Ke: {}", m_Ke);
-    logHelper.debug("m_NbPoints: {}", m_NbPoints);
+    logHelper.debug("m_nbPoints: {}", m_nbPoints);
     logHelper.debug("m_Int: {}", m_Int);
 #endif
 
@@ -152,7 +152,7 @@ bool OneCompartmentBolusMacro::checkInputs(const IntakeEvent& _intakeEvent, cons
     bool bOK = checkPositiveValue(m_D, "The dose");
     bOK &= checkStrictlyPositiveValue(m_V, "The volume");
     bOK &= checkStrictlyPositiveValue(cl, "The clearance");
-    bOK &= checkCondition(m_NbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_nbPoints >= 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
     return bOK;

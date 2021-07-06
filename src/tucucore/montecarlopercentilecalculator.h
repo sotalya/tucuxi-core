@@ -140,8 +140,8 @@ public:
         sm_nbPatients = _nbPatients;
     }
 
-    void setNumberPatients(const unsigned int _nbPatients) { m_nbPatients = _nbPatients; }
-    unsigned int getNumberPatients() { return m_nbPatients; }
+    void setNumberPatients(const size_t _nbPatients) { m_nbPatients = _nbPatients; }
+    size_t getNumberPatients() { return m_nbPatients; }
 
 protected:
     ///
@@ -196,7 +196,7 @@ public:
             const std::vector<Etas> &_etas,
             const std::vector<Deviations> &_epsilons,
             IConcentrationCalculator &_concentrationCalculator,
-            unsigned int _nbPatients,
+            size_t _nbPatients,
             std::vector<TimeOffsets> &_times,
             IntakeSeries &_recordedIntakes,
             std::vector< std::vector< std::vector<Concentration> > > &_concentrations,
@@ -204,15 +204,15 @@ public:
 
     ComputingStatus sortAndExtractPercentiles(PercentilesPrediction &_percentiles,
             const PercentileRanks &_percentileRanks,
-            unsigned int _nbPatients,
+            size_t _nbPatients,
             std::vector<TimeOffsets> _times,
             IntakeSeries &_recordedIntakes,
             std::vector< std::vector< std::vector<Concentration> > > &_concentrations);
 
 private:
-    unsigned int m_nbPatients;
+    size_t m_nbPatients;
 
-    static unsigned int sm_nbPatients; // NOLINT(readability-identifier-naming)
+    static size_t sm_nbPatients; // NOLINT(readability-identifier-naming)
 };
 
 
@@ -495,7 +495,7 @@ protected:
             const ActiveMoiety *_activeMoiety,
             std::vector<AnalyteGroupId> _analyteGroupIds,
             IntakeSeries _recordedIntakes,
-            unsigned int _nbPatients,
+            size_t _nbPatients,
             std::vector<std::vector<std::vector<std::vector<Concentration> > > > &_concentrations,
             MonteCarloPercentileCalculatorBase &_simpleCalculator, std::vector<TimeOffsets> _times);
 

@@ -174,7 +174,7 @@ public:
     /// It is meant to be subclassed for specific needs.
     ///
     virtual void calculateTimes(const IntakeEvent& _intakeEvent,
-                        int _nbPoints,
+                        Eigen::Index _nbPoints,
                         Eigen::VectorXd& _times) = 0;
 
     /// Virtual destructor
@@ -199,7 +199,7 @@ public:
     /// This function simply divides the interval in (_nbPoints-1) subintervals.
     ///
     void calculateTimes(const IntakeEvent& _intakeEvent,
-                        int _nbPoints,
+                        Eigen::Index _nbPoints,
                         Eigen::VectorXd& _times) override;
 };
 
@@ -222,7 +222,7 @@ public:
     /// It tries to do the best to keep the time deltas as linear as possible.
     ///
     void calculateTimes(const IntakeEvent& _intakeEvent,
-                        int _nbPoints,
+                        Eigen::Index _nbPoints,
                         Eigen::VectorXd& _times) override;
 };
 

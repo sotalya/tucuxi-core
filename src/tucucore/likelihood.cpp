@@ -21,7 +21,7 @@ Likelihood::Likelihood(const OmegaMatrix& _omega,
                        const IntakeSeries& _intakes,
                        const ParameterSetSeries& _parameters,
                        IConcentrationCalculator &_concentrationCalculator)
-    : m_omega(&_omega),
+    : // m_omega(&_omega),
       m_residualErrorModel(&_residualErrorModel),
       m_samples(&_samples),
       m_intakes(&_intakes),
@@ -42,9 +42,9 @@ void Likelihood::initBounds(const OmegaMatrix& _omega, EigenVector& _oMax, Eigen
 
 Value Likelihood::operator()(const Eigen::VectorXd& _etas)
 {
-    ValueVector etasmd(_etas.size());
-    for (int i = 0; i < _etas.size(); ++i) {
-        etasmd[i] = _etas[i];
+    ValueVector etasmd(static_cast<size_t>(_etas.size()));
+    for (Eigen::Index i = 0; i < _etas.size(); ++i) {
+        etasmd[static_cast<size_t>(i)] = _etas[i];
     }
     return (*this)(etasmd);
 }
@@ -78,10 +78,10 @@ Value Likelihood::negativeLogLikelihood(const ValueVector& _etas) const
     Value gll = 0;
 
     //calculate the prior which depends only on eta and omega (not the measure)
-    Value logPrior = negativeLogPrior(Eigen::Map<const EigenVector>(&_etas[0], _etas.size()) /*, *m_omega*/);
+    Value logPrior = negativeLogPrior(Eigen::Map<const EigenVector>(&_etas[0], static_cast<Eigen::Index>(_etas.size())) /*, *m_omega*/);
     SampleSeries::const_iterator sit = m_samples->begin();
     SampleSeries::const_iterator sitEnd = m_samples->end();
-    int sampleCounter = 0;
+    size_t sampleCounter = 0;
     while( sit != sitEnd ) {
         // SampleEvent s = *sit;
         gll += calculateSampleNegativeLogLikelihood(concentrations[sampleCounter], *sit, *m_residualErrorModel);

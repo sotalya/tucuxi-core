@@ -64,7 +64,7 @@ public:
     const std::vector<TimeOffsets>& getTimes() const { return m_times; }
     const std::vector<std::vector<std::vector<Value> > >& getValues() const { return m_values; }
 
-    void appendPercentile(int _percentileRank, int _cycle, int _point, Value _value) 
+    void appendPercentile(size_t _percentileRank, size_t _cycle, size_t _point, Value _value)
     { 
         m_values[_percentileRank][_cycle][_point] = _value; 
     }
