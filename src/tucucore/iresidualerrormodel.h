@@ -21,6 +21,7 @@ enum class ResidualErrorType {
     EXPONENTIAL,
     ADDITIVE,
     MIXED,
+    PROPEXP, // Mix of proportional for loglikelihood and exponential for percentiles
     ///! Not yet supported
     SOFTCODED,
     NONE

@@ -21,15 +21,20 @@ public:
 
     SigmaResidualErrorModel() : m_nbEpsilons(1) {}
 
-    void setSigma(Sigma _sigma) { m_sigma = _sigma;}
-    void setErrorModel(ResidualErrorType _errorModel) { m_errorModel = _errorModel;
-                                                        if (_errorModel == ResidualErrorType::NONE) {
-                                                            m_nbEpsilons = 0;
-                                                        }}
+    void setSigma(Sigma _sigma);
+    void setErrorModel(ResidualErrorType _errorModel);
     bool isEmpty() const override;
     void applyEpsToValue(Concentration &_concentration, const Deviations &_eps) const override;
     void applyEpsToArray(Concentrations &_concentrations, const Deviations &_eps) const override;
 
+    ///
+    /// \brief calculateSampleLikelihood
+    /// \param _expected
+    /// \param _observed
+    /// \return
+    ///
+    /// \unittest{TestResidualErrorModel::testLogLikelihood()}
+    ///
     Value calculateSampleLikelihood(Value _expected, Value _observed) const override;
 
     size_t nbEpsilons() const override { return m_nbEpsilons; }

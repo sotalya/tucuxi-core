@@ -11,6 +11,20 @@ namespace Tucuxi {
 namespace Core {
 
 
+
+void SigmaResidualErrorModel::setSigma(Sigma _sigma)
+{
+    m_sigma = _sigma;
+}
+
+void SigmaResidualErrorModel::setErrorModel(ResidualErrorType _errorModel)
+{
+    m_errorModel = _errorModel;
+    if (_errorModel == ResidualErrorType::NONE) {
+        m_nbEpsilons = 0;
+    }
+}
+
 bool SigmaResidualErrorModel::isEmpty() const
 {
     return m_sigma.size() == 0;
@@ -21,6 +35,7 @@ void SigmaResidualErrorModel::applyEpsToValue(Concentration &_concentration, con
 
     switch (m_errorModel) {
     case ResidualErrorType::EXPONENTIAL:
+    case ResidualErrorType::PROPEXP:
         _concentration *= std::exp(m_sigma[0] * _eps[0]);
         break;
     case ResidualErrorType::PROPORTIONAL:
@@ -45,6 +60,7 @@ void SigmaResidualErrorModel::applyEpsToArray(Concentrations &_concentrations, c
     for (double & concentration : _concentrations) {
         switch (m_errorModel) {
         case ResidualErrorType::EXPONENTIAL:
+        case ResidualErrorType::PROPEXP:
             concentration *= std::exp(m_sigma[0] * _eps[0]);
             break;
         case ResidualErrorType::PROPORTIONAL:
@@ -83,6 +99,15 @@ Value SigmaResidualErrorModel::calculateSampleLikelihood(Value _expected, Value 
         expectedObservedDiff = log(_observed) - log(_expected);
         sig = m_sigma(0);
     } break;
+    case ResidualErrorType::PROPEXP: {
+        // The following should be used for real Exponential models
+        // Unfortunately NONMEM does not work that way
+        // expectedObservedDiff = log(_observed) - log(_expected);
+        // sig = m_sigma(0);
+        // Use proportional instead of Exponential for NONMEM compatibility
+        expectedObservedDiff = _observed - _expected;
+        sig = m_sigma(0) * _expected;
+    } break;
     case ResidualErrorType::MIXED: {
         expectedObservedDiff = _observed - _expected;
         sig = std::sqrt(std::pow(m_sigma(1) * _expected, 2) + std::pow(m_sigma(0),2));
@@ -106,11 +131,24 @@ Value SigmaResidualErrorModel::calculateSampleLikelihood(Value _expected, Value 
     }
 
 
-    // This is the calculation with a sig of one element
-    Value phi =
-            (0.5 * log(2 * PI)) +
-            log(sig) +
-            0.5 * expectedObservedDiff * 1.0/(std::pow(sig,2)) * expectedObservedDiff;
+    Value phi = 0.0;
+
+    // The following should be used for real Exponential models
+    // Unfortunately NONMEM does not work that way
+    if (m_errorModel == ResidualErrorType::EXPONENTIAL) {
+        phi =
+                (0.5 * log(2 * PI)) +
+                log(_expected) +     // There is this specific log(_expected for LogNormal distribution
+                log(sig) +
+                0.5 * expectedObservedDiff * 1.0/(std::pow(sig,2)) * expectedObservedDiff;
+    }
+    else {
+        // This is the calculation with a sig of one element
+        phi =
+                (0.5 * log(2 * PI)) +
+                log(sig) +
+                0.5 * expectedObservedDiff * 1.0/(std::pow(sig,2)) * expectedObservedDiff;
+    }
 
     // If we have a really big problem, like we have a log of zero
     if (std::isnan(phi)) {

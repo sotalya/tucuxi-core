@@ -76,6 +76,9 @@ struct TestResidualErrorModel : public fructose::test_base<TestResidualErrorMode
     }
 
     /// \brief Test basic functionalities of a PkModel.
+    ///
+    /// \testing{Tucuxi::Core::SigmaResidualErrorModel::calculateSampleLikelihood()}
+    ///
     void testLogLikelihood(const std::string& /* _testName */)
     {
         Value logLikelihood0 = 0.0;
@@ -92,9 +95,24 @@ struct TestResidualErrorModel : public fructose::test_base<TestResidualErrorMode
         fructose_assert_double_gt(logLikelihood1, logLikelihood0);
         fructose_assert_double_gt(logLikelihood1, logLikelihood2);
 
+
+        logLikelihood0 = calculateSampleLikelihood(ResidualErrorType::PROPEXP, 2.0, 10.0, 10.0);
+        logLikelihood1 = calculateSampleLikelihood(ResidualErrorType::PROPEXP, 2.0, 12.0, 12.0);
+        // For a proportional error model, the log likelihood depends on the expected value, even
+        // if expected and observed are equal
+        fructose_assert_double_ne(logLikelihood0, logLikelihood1);
+
+        logLikelihood0 = calculateSampleLikelihood(ResidualErrorType::PROPEXP, 2.0, 10.0, 10.1);
+        logLikelihood1 = calculateSampleLikelihood(ResidualErrorType::PROPEXP, 2.0, 10.0, 10.0);
+        logLikelihood2 = calculateSampleLikelihood(ResidualErrorType::PROPEXP, 2.0, 10.0, 9.9);
+        fructose_assert_double_gt(logLikelihood1, logLikelihood0);
+        fructose_assert_double_gt(logLikelihood1, logLikelihood2);
+
         logLikelihood0 = calculateSampleLikelihood(ResidualErrorType::EXPONENTIAL, 2.0, 10.0, 10.0);
         logLikelihood1 = calculateSampleLikelihood(ResidualErrorType::EXPONENTIAL, 2.0, 12.0, 12.0);
-        fructose_assert_double_eq(logLikelihood0, logLikelihood1);
+        // There is an additional term of log(expected) for exponential variability, so update the
+        // values here
+        fructose_assert_double_eq(logLikelihood0 + std::log(10.0), logLikelihood1 + std::log(12.0));
 
         logLikelihood0 = calculateSampleLikelihood(ResidualErrorType::EXPONENTIAL, 2.0, 10.0, 10.1);
         logLikelihood1 = calculateSampleLikelihood(ResidualErrorType::EXPONENTIAL, 2.0, 10.0, 10.0);
@@ -149,6 +167,10 @@ struct TestResidualErrorModel : public fructose::test_base<TestResidualErrorMode
 
         // If epsilon is 0, then the value should not change
         calculated = applyEpsToValue2(ResidualErrorType::MIXED, 2.0, 1.5, 10.0, 0.0);
+        fructose_assert_eq(calculated, 10.0);
+
+        // If epsilon is 0, then the value should not change
+        calculated = applyEpsToValue(ResidualErrorType::PROPEXP, 2.0, 10.0, 0.0);
         fructose_assert_eq(calculated, 10.0);
     }
 

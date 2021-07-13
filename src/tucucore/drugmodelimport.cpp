@@ -284,6 +284,7 @@ ResidualErrorType DrugModelImport::extractResidualErrorType(Tucuxi::Common::XmlN
         {"additive", ResidualErrorType::ADDITIVE},
         {"proportional", ResidualErrorType::PROPORTIONAL},
         {"exponential", ResidualErrorType::EXPONENTIAL},
+        {"propexp", ResidualErrorType::PROPEXP},
         {"mixed", ResidualErrorType::MIXED},
         {"softcoded", ResidualErrorType::SOFTCODED},
         {"none", ResidualErrorType::NONE}
