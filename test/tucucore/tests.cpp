@@ -22,6 +22,9 @@
 /// Therefore, only selecting the test of interest allows to gain some time.
 
 
+#if defined(test_parameter) || !defined(DO_NOT_COMPILE_ALL_TESTS)
+#include "test_parameter.h"
+#endif
 #if defined(test_multianalytesmultiactivemoieties) || !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "drugmodels/test_multianalytesmultiactivemoieties.h"
 #endif
@@ -133,6 +136,21 @@ int main(int argc, char** argv)
 
     int res = 0;
     int tot_res = 0;
+
+#if defined(test_parameter) || !defined(DO_NOT_COMPILE_ALL_TESTS)
+    TestParameter parameterTests;
+
+    parameterTests.add_test("testApplyEta", &TestParameter::testApplyEta);
+
+    res = parameterTests.run(argc, argv);
+    tot_res |= res;
+    if (res != 0) {
+        std::cerr << "Parameter test failed\n";
+    }
+    else {
+        std::cout << "Parameter test succeeded\n";
+    }
+#endif
 
 #if defined(test_residualerrormodel) || !defined(DO_NOT_COMPILE_ALL_TESTS)
     TestResidualErrorModel residualErrorModelTests;
