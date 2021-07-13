@@ -59,6 +59,9 @@ enum class ExtractionOption {
 /// \ingroup TucuCore
 /// \brief Abstract class at the base of the dosage class hierarchy.
 /// Dosages are implemented as either bounded or unbounded dosages.
+///
+/// All dosages are tested by the class TestDosage.
+///
 class Dosage
 {
 public:
@@ -589,6 +592,9 @@ protected:
 /// \ingroup TucuCore
 /// \brief Dose supposed to last for a certain, specified time interval.
 /// When used in a DosageLoop, a LastingDose object allows to represent a dosage history with fixed intervals.
+///
+/// \unittest{TestDosage::testLastingDose()}
+///
 class LastingDose : public SingleDose
 {
 public:
