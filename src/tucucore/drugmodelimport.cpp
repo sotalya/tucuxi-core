@@ -308,6 +308,7 @@ ParameterVariabilityType DrugModelImport::extractParameterVariabilityType(Tucuxi
         {"proportional", ParameterVariabilityType::Proportional},
         {"exponential", ParameterVariabilityType::Exponential},
         {"additive", ParameterVariabilityType::Additive},
+        {"logit", ParameterVariabilityType::Logit},
         {"none", ParameterVariabilityType::None}
     };
 

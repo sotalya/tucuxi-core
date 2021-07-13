@@ -179,6 +179,15 @@ bool Parameter::applyEta(Deviation _eta)
             // Actually if _eta is less than -1, then there is an issue
             m_value = m_value * (1 + _eta);
             break;
+        case ParameterVariabilityType::Logit: {
+            // Transform the parameter value to logit
+            double logitP = std::log(m_value / (1 - m_value));
+            // Apply the eta as an additive to the logit
+            double newLogitP = logitP + _eta;
+            // Go back to the parameter with the inverse of logit
+            m_value = 1.0 / (1 + std::exp(- newLogitP));
+        }
+            break;
         default: {
             Tucuxi::Common::LoggerHelper logger;
             logger.warn("Parameter {} has an unknown error model", m_definition.getId());

@@ -49,7 +49,10 @@ enum class ParameterVariabilityType
     Proportional,
 
     /// The variability is exponential
-    Exponential
+    Exponential,
+
+    /// The variability follows a logit function
+    Logit
 };
 
 ///

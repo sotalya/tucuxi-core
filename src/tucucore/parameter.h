@@ -55,6 +55,17 @@ public:
         return *this;
     }
 */
+
+    ///
+    /// \brief applys and eta to this parameter
+    /// \param _eta The eta value
+    /// \return True if the resulting value is a number
+    ///
+    /// This function modifies the parameter value, so be careful about the
+    /// further use of this parameter.
+    ///
+    /// \unittest{TestParameter::testApplyEta()}
+    ///
     bool applyEta(Deviation _eta);
     Value getValue() const { return m_value; }
     bool isVariable() const { return m_definition.isVariable(); }
