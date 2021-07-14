@@ -56,7 +56,7 @@ bool OneCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent, c
     bOK &= checkStrictlyPositiveValue(m_V, "The volume");
     bOK &= checkStrictlyPositiveValue(m_Ke, "The clearance");
     bOK &= checkCondition(m_Tinf >= 0, "The infusion time is negative.");
-    bOK &= checkCondition(m_nbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_nbPoints > 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
     return bOK;
@@ -168,7 +168,7 @@ bool OneCompartmentInfusionMacro::checkInputs(const IntakeEvent& _intakeEvent, c
     bOK &= checkStrictlyPositiveValue(m_V, "The volume");
     bOK &= checkStrictlyPositiveValue(cl, "The clearance");
     bOK &= checkCondition(m_Tinf >= 0, "The infusion time is negative.");
-    bOK &= checkCondition(m_nbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_nbPoints > 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
 

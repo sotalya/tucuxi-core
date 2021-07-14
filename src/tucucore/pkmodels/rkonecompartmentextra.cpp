@@ -36,7 +36,7 @@ bool RK4OneCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, c
     bOK &= checkStrictlyPositiveValue(m_F, "The bioavailability");
     bOK &= checkStrictlyPositiveValue(m_Ke, "The absorption constant");
     bOK &= checkStrictlyPositiveValue(m_Ka, "The clearance");
-    bOK &= checkCondition(m_nbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_nbPoints > 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
     return bOK;
@@ -69,7 +69,7 @@ bool RK4OneCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, c
     bOK &= checkStrictlyPositiveValue(m_F, "The bioavailability");
     bOK &= checkStrictlyPositiveValue(m_Ke, "The absorption constant");
     bOK &= checkStrictlyPositiveValue(m_Ka, "The clearance");
-    bOK &= checkCondition(m_nbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_nbPoints > 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
     return bOK;

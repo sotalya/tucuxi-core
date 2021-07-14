@@ -42,7 +42,7 @@ bool RkMichaelisMentenOneCompExtra::checkInputs(const IntakeEvent& _intakeEvent,
     bOK &= checkStrictlyPositiveValue(m_Km, "The Michaelis Menten constant");
     bOK &= checkStrictlyPositiveValue(m_Vmax, "VMax");
     bOK &= checkStrictlyPositiveValue(m_Ka, "The absorption rate");
-    bOK &= checkCondition(m_nbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_nbPoints > 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
     return bOK;
@@ -81,7 +81,7 @@ bool RkMichaelisMentenOneCompBolus::checkInputs(const IntakeEvent& _intakeEvent,
     bOK &= checkStrictlyPositiveValue(m_Km, "The Michaelis Menten constant");
     bOK &= checkStrictlyPositiveValue(m_Vmax, "VMax");
     bOK &= checkPositiveValue(m_Ka, "The absorption rate");
-    bOK &= checkCondition(m_nbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_nbPoints > 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
     return bOK;
@@ -120,7 +120,7 @@ bool RkMichaelisMentenOneCompInfusion::checkInputs(const IntakeEvent& _intakeEve
     bOK &= checkStrictlyPositiveValue(m_Km, "The Michaelis Menten constant");
     bOK &= checkStrictlyPositiveValue(m_Vmax, "VMax");
     bOK &= checkStrictlyPositiveValue(m_Ka, "The absorption rate");
-    bOK &= checkCondition(m_nbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_nbPoints > 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
     return bOK;

@@ -51,7 +51,7 @@ bool OneCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
     bool bOK = checkPositiveValue(m_D, "The dose");
     bOK &= checkStrictlyPositiveValue(m_V, "The volume");
     bOK &= checkStrictlyPositiveValue(m_Ke, "Ke");
-    bOK &= checkCondition(m_nbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_nbPoints > 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
     return bOK;
@@ -152,7 +152,7 @@ bool OneCompartmentBolusMacro::checkInputs(const IntakeEvent& _intakeEvent, cons
     bool bOK = checkPositiveValue(m_D, "The dose");
     bOK &= checkStrictlyPositiveValue(m_V, "The volume");
     bOK &= checkStrictlyPositiveValue(cl, "The clearance");
-    bOK &= checkCondition(m_nbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_nbPoints > 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
     return bOK;

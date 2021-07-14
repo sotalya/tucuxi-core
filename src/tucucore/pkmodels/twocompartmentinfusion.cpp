@@ -71,7 +71,7 @@ bool TwoCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent, c
     bOK &= checkPositiveValue(m_Alpha, "Alpha");
     bOK &= checkPositiveValue(m_Beta, "Beta");
     bOK &= checkCondition(m_Tinf >= 0, "The infusion time is negative.");
-    bOK &= checkCondition(m_nbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_nbPoints > 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
     return bOK;
@@ -321,7 +321,7 @@ bool TwoCompartmentInfusionMacro::checkInputs(const IntakeEvent& _intakeEvent, c
     bOK &= checkPositiveValue(m_Alpha, "Alpha");
     bOK &= checkPositiveValue(m_Beta, "Beta");
     bOK &= checkCondition(m_Tinf >= 0, "The infusion time is negative.");
-    bOK &= checkCondition(m_nbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_nbPoints > 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
     return bOK;

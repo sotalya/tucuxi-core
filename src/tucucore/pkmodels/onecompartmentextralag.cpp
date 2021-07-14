@@ -47,7 +47,7 @@ bool OneCompartmentExtraLagMicro::checkInputs(const IntakeEvent& _intakeEvent, c
     bOK &= checkStrictlyPositiveValue(m_Ka, "Ka");
     bOK &= checkStrictlyPositiveValue(m_Ke, "Ke");
     bOK &= checkPositiveValue(m_Tlag, "The lag time");
-    bOK &= checkCondition(m_nbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_nbPoints > 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
     if (m_nbPoints == 2) {
@@ -228,7 +228,7 @@ bool OneCompartmentExtraLagMacro::checkInputs(const IntakeEvent& _intakeEvent, c
     bOK &= checkStrictlyPositiveValue(m_Ka, "Ka");
     bOK &= checkStrictlyPositiveValue(cl, "The clearance");
     bOK &= checkPositiveValue(m_Tlag, "The lag time");
-    bOK &= checkCondition(m_nbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_nbPoints > 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
     if (m_nbPoints == 2) {

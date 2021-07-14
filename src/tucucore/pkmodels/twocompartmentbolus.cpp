@@ -51,7 +51,7 @@ bool TwoCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
     bOK &= checkStrictlyPositiveValue(m_K21, "K21");
     bOK &= checkPositiveValue(m_Alpha, "Alpha");
     bOK &= checkPositiveValue(m_Beta, "Beta");
-    bOK &= checkCondition(m_nbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_nbPoints > 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
 
@@ -199,7 +199,7 @@ bool TwoCompartmentBolusMacro::checkInputs(const IntakeEvent& _intakeEvent, cons
     bOK &= checkStrictlyPositiveValue(v2, "V2");
     bOK &= checkPositiveValue(m_Alpha, "Alpha");
     bOK &= checkPositiveValue(m_Beta, "Beta");
-    bOK &= checkCondition(m_nbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_nbPoints > 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
     return bOK;

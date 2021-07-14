@@ -41,7 +41,7 @@ bool OneCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
     bOK &= checkStrictlyPositiveValue(m_F, "F");
     bOK &= checkStrictlyPositiveValue(m_Ka, "Ka");
     bOK &= checkStrictlyPositiveValue(m_Ke, "Ke");
-    bOK &= checkCondition(m_nbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_nbPoints > 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
     return bOK;
@@ -149,7 +149,7 @@ bool OneCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, cons
     bOK &= checkStrictlyPositiveValue(m_F, "F");
     bOK &= checkStrictlyPositiveValue(m_Ka, "Ka");
     bOK &= checkStrictlyPositiveValue(cl, "The clearance");
-    bOK &= checkCondition(m_nbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_nbPoints > 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
     return bOK;

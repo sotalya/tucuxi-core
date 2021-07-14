@@ -86,7 +86,7 @@ bool ThreeCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, co
     bOK &= checkPositiveValue(m_Alpha, "Alpha");
     bOK &= checkPositiveValue(m_Beta, "Beta");
     bOK &= checkPositiveValue(m_Gamma, "Gamma");
-    bOK &= checkCondition(m_nbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_nbPoints > 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
     return bOK;
@@ -246,7 +246,7 @@ bool ThreeCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, co
     bOK &= checkPositiveValue(m_Alpha, "Alpha");
     bOK &= checkPositiveValue(m_Beta, "Beta");
     bOK &= checkPositiveValue(m_Gamma, "Gamma");
-    bOK &= checkCondition(m_nbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_nbPoints > 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
     return bOK;

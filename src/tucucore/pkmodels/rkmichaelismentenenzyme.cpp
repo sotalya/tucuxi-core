@@ -102,7 +102,7 @@ bool RkMichaelisMentenEnzymeExtra::checkInputs(const IntakeEvent& _intakeEvent, 
     bOK &= checkStrictlyPositiveValue(m_DoseMid, "DoseMid");
     bOK &= checkStrictlyPositiveValue(m_NN, "NN");
     bOK &= checkStrictlyPositiveValue(m_MTT, "MTT");
-    bOK &= checkCondition(m_nbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_nbPoints > 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
     return bOK;
@@ -153,7 +153,7 @@ bool RkMichaelisMentenEnzymeBolus::checkInputs(const IntakeEvent& _intakeEvent, 
     bOK &= checkStrictlyPositiveValue(m_Kenz, "Kenz");
     bOK &= checkStrictlyPositiveValue(m_Emax, "Emax");
     bOK &= checkStrictlyPositiveValue(m_ECmid, "ECmid");
-    bOK &= checkCondition(m_nbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_nbPoints > 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
     return bOK;
@@ -192,7 +192,7 @@ bool RkMichaelisMentenEnzymeInfusion::checkInputs(const IntakeEvent& _intakeEven
     bOK &= checkStrictlyPositiveValue(m_Km, "The Michaelis Menten constant");
     bOK &= checkStrictlyPositiveValue(m_Vmax, "VMax");
     bOK &= checkStrictlyPositiveValue(m_Ka, "The absorption rate");
-    bOK &= checkCondition(m_nbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_nbPoints > 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
     return bOK;

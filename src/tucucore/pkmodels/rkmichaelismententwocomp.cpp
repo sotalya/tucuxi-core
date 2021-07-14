@@ -52,7 +52,7 @@ bool RkMichaelisMentenTwoCompExtraMicro::checkInputs(const IntakeEvent& _intakeE
     bOK &= checkPositiveValue(m_Tlag, "The lag time");
     bOK &= checkPositiveValue(m_K12, "K12");
     bOK &= checkPositiveValue(m_K21, "K21");
-    bOK &= checkCondition(m_nbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_nbPoints > 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
     return bOK;
@@ -100,7 +100,7 @@ bool RkMichaelisMentenTwoCompExtraLagMicro::checkInputs(const IntakeEvent& _inta
     bOK &= checkPositiveValue(m_Tlag, "The lag time");
     bOK &= checkPositiveValue(m_K12, "K12");
     bOK &= checkPositiveValue(m_K21, "K21");
-    bOK &= checkCondition(m_nbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_nbPoints > 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
     return bOK;
@@ -150,7 +150,7 @@ bool RkMichaelisMentenTwoCompBolusMicro::checkInputs(const IntakeEvent& _intakeE
     bOK &= checkPositiveValue(m_Tlag, "The lag time");
     bOK &= checkPositiveValue(m_K12, "K12");
     bOK &= checkPositiveValue(m_K21, "K21");
-    bOK &= checkCondition(m_nbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_nbPoints > 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
     return bOK;
@@ -199,7 +199,7 @@ bool RkMichaelisMentenTwoCompInfusionMicro::checkInputs(const IntakeEvent& _inta
     bOK &= checkPositiveValue(m_Tlag, "The lag time");
     bOK &= checkPositiveValue(m_K12, "K12");
     bOK &= checkPositiveValue(m_K21, "K21");
-    bOK &= checkCondition(m_nbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_nbPoints > 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
     return bOK;
@@ -268,7 +268,7 @@ bool RkMichaelisMentenTwoCompExtraMacro::checkInputs(const IntakeEvent& _intakeE
     bOK &= checkPositiveValue(m_Tlag, "The lag time");
     bOK &= checkPositiveValue(m_K12, "K12");
     bOK &= checkPositiveValue(m_K21, "K21");
-    bOK &= checkCondition(m_nbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_nbPoints > 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
     return bOK;
@@ -315,7 +315,7 @@ bool RkMichaelisMentenTwoCompExtraLagMacro::checkInputs(const IntakeEvent& _inta
     bOK &= checkPositiveValue(m_Tlag, "The lag time");
     bOK &= checkPositiveValue(m_K12, "K12");
     bOK &= checkPositiveValue(m_K21, "K21");
-    bOK &= checkCondition(m_nbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_nbPoints > 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
     return bOK;
@@ -359,7 +359,7 @@ bool RkMichaelisMentenTwoCompBolusMacro::checkInputs(const IntakeEvent& _intakeE
     bOK &= checkPositiveValue(m_Tlag, "The lag time");
     bOK &= checkPositiveValue(m_K12, "K12");
     bOK &= checkPositiveValue(m_K21, "K21");
-    bOK &= checkCondition(m_nbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_nbPoints > 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
     return bOK;
@@ -420,7 +420,7 @@ bool RkMichaelisMentenTwoCompInfusionMacro::checkInputs(const IntakeEvent& _inta
     bOK &= checkPositiveValue(m_Tlag, "The lag time");
     bOK &= checkPositiveValue(m_K12, "K12");
     bOK &= checkPositiveValue(m_K21, "K21");
-    bOK &= checkCondition(m_nbPoints >= 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_nbPoints > 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
     return bOK;
