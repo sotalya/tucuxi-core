@@ -1,0 +1,1012 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model version='0.6' xsi:noNamespaceSchemaLocation='drugfile.xsd' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+    <history>
+        <revisions>
+            <revision>
+                <revisionAction>creation</revisionAction>
+                <revisionAuthorName>Yann Thoma</revisionAuthorName>
+                <institution>HEIG-VD // REDS</institution>
+                <email>yann.thoma@heig-vd.ch</email>
+                <date>2018-10-30</date>
+                <comments>
+                    <comment lang='en'>Test drug for 2 analytes with Lag time</comment>
+                </comments>
+            </revision>
+            <revision>
+                <revisionAction>modification</revisionAction>
+                <revisionAuthorName>Yann Thoma</revisionAuthorName>
+                <institution>HEIG-VD // REDS</institution>
+                <email>yann.thoma@heig-vd.ch</email>
+                <date>2018-11-07</date>
+                <comments>
+                    <comment lang='en'>Now the Ka and F parameters are absorption parameters.
+                                                                                </comment>
+                </comments>
+            </revision>
+        </revisions>
+    </history>
+    <head>
+        <drug>
+            <atcs>
+                <atc>L01XE01</atc>
+            </atcs>
+            <activeSubstances>
+                <activeSubstance>2analytes</activeSubstance>
+            </activeSubstances>
+            <drugName>
+                <name lang='en'>test2analytes</name>
+                <name lang='fr'>test2analytes</name>
+            </drugName>
+            <drugDescription>
+                <desc lang='en'>TODO : Add a description here</desc>
+            </drugDescription>
+            <tdmStrategy>
+                <text lang='en'>TODO : Add a TDM strategy</text>
+            </tdmStrategy>
+        </drug>
+        <study>
+            <studyName>
+                <name lang='en'>Test for 2 analytes</name>
+            </studyName>
+            <studyAuthors>-</studyAuthors>
+            <description>
+                <desc lang='en'>Test for 2 analytes</desc>
+            </description>
+            <references>
+            </references>
+        </study>
+        <comments/>
+    </head>
+    <drugModel>
+        <drugId>test2analytes</drugId>
+        <drugModelId>ch.tucuxi.test.2analytes</drugModelId>
+        <domain>
+            <description>
+                <desc lang='en'>Adult, (Disease: CML and GIST, Age range: 20-88 yrs, Weight range: 44-110kg, AGP plasma concentration range: 0.4–2.0 g/L)</desc>
+            </description>
+            <constraints>
+                <constraint>
+                    <constraintType>hard</constraintType>
+                    <errorMessage>
+                        <text lang='en'>The age shall be in the range [20,88]</text>
+                    </errorMessage>
+                    <requiredCovariates>
+                        <covariateId>age</covariateId>
+                    </requiredCovariates>
+                    <checkOperation>
+                        <softFormula>
+                            <inputs>
+                                <input>
+                                    <id>age</id>
+                                    <type>double</type>
+                                </input>
+                            </inputs>
+                            <code>
+                                <![CDATA[return ((age >= 20) && (age <= 88));
+                                ]]>
+                            </code>
+                        </softFormula>
+                        <comments/>
+                    </checkOperation>
+                    <comments/>
+                </constraint>
+                <constraint>
+                    <constraintType>soft</constraintType>
+                    <errorMessage>
+                        <text lang='en'>The weight should be in the range [44,110]</text>
+                    </errorMessage>
+                    <requiredCovariates>
+                        <covariateId>bodyweight</covariateId>
+                    </requiredCovariates>
+                    <checkOperation>
+                        <softFormula>
+                            <inputs>
+                                <input>
+                                    <id>bodyweight</id>
+                                    <type>double</type>
+                                </input>
+                            </inputs>
+                            <code>
+                                <![CDATA[return ((bodyweight >= 44) && (bodyweight <= 110));
+                                ]]>
+                            </code>
+                        </softFormula>
+                        <comments/>
+                    </checkOperation>
+                    <comments/>
+                </constraint>
+            </constraints>
+        </domain>
+        <covariates>
+            <covariate>
+                <covariateId>bodyweight</covariateId>
+                <covariateName>
+                    <name lang='en'>Total Body Weight</name>
+                    <name lang='fr'>Poids total</name>
+                </covariateName>
+                <description>
+                    <desc lang='en'>Total body weight of patient, in kilogramms</desc>
+                    <desc lang='fr'>Poids total du patient, en kilogramme</desc>
+                </description>
+                <unit>kg</unit>
+                <covariateType>standard</covariateType>
+                <dataType>double</dataType>
+                <interpolationType>linear</interpolationType>
+                <refreshPeriod>
+                  <unit>y</unit>
+                  <value>1</value>
+                </refreshPeriod>
+                <covariateValue>
+                    <standardValue>70</standardValue>
+                </covariateValue>
+                <validation>
+                    <errorMessage>
+                        <text lang='fr'>The body weight shall be in the interval [44,100].</text>
+                    </errorMessage>
+                    <operation>
+                        <softFormula>
+                            <inputs>
+                                <input>
+                                    <id>bodyweight</id>
+                                    <type>double</type>
+                                </input>
+                            </inputs>
+                            <code>
+                                <![CDATA[return ((bodyweight >= 44) && (bodyweight <= 110));
+                                ]]>
+                            </code>
+                        </softFormula>
+                        <comments/>
+                    </operation>
+                    <comments/>
+                </validation>
+                <comments/>
+            </covariate>
+            <covariate>
+                <covariateId>gist</covariateId>
+                <covariateName>
+                    <name lang='en'>GIST</name>
+                    <name lang='fr'>GIST</name>
+                </covariateName>
+                <description>
+                    <desc lang='en'>Gastrointestinal stromal tumour</desc>
+                    <desc lang='fr'>Tumeur stromale gastro-intestinale</desc>
+                </description>
+                <unit>-</unit>
+                <covariateType>standard</covariateType>
+                <dataType>bool</dataType>
+                <interpolationType>direct</interpolationType>
+                <refreshPeriod>
+                  <unit>y</unit>
+                  <value>1</value>
+                </refreshPeriod>
+                <covariateValue>
+                    <standardValue>0</standardValue>
+                </covariateValue>
+                <validation>
+                    <errorMessage>
+                        <text lang='fr'>Always correct.</text>
+                    </errorMessage>
+                    <operation>
+                        <softFormula>
+                            <inputs>
+                                <input>
+                                    <id>gist</id>
+                                    <type>bool</type>
+                                </input>
+                            </inputs>
+                            <code>
+                                <![CDATA[return true;
+                                ]]>
+                            </code>
+                        </softFormula>
+                        <comments/>
+                    </operation>
+                    <comments/>
+                </validation>
+                <comments/>
+            </covariate>
+            <covariate>
+                <covariateId>sex</covariateId>
+                <covariateName>
+                    <name lang='en'>Sex</name>
+                    <name lang='fr'>Sexe</name>
+                </covariateName>
+                <description>
+                    <desc lang='en'>Sex of the patient</desc>
+                    <desc lang='fr'>Sexe du patient</desc>
+                </description>
+                <unit>-</unit>
+                <covariateType>sex</covariateType>
+                <dataType>double</dataType>
+                <interpolationType>direct</interpolationType>
+                <refreshPeriod>
+                  <unit>y</unit>
+                  <value>1</value>
+                </refreshPeriod>
+                <covariateValue>
+                    <standardValue>0.5</standardValue>
+                </covariateValue>
+                <validation>
+                    <errorMessage>
+                        <text lang='fr'>The sex is a double within the range [0,1]. 0 for female, 1 for male</text>
+                    </errorMessage>
+                    <operation>
+                        <softFormula>
+                            <inputs>
+                                <input>
+                                    <id>sex</id>
+                                    <type>double</type>
+                                </input>
+                            </inputs>
+                            <code>
+                                <![CDATA[return ((sex >= 0.0) && (sex <= 1.0));
+                                ]]>
+                            </code>
+                        </softFormula>
+                        <comments/>
+                    </operation>
+                    <comments/>
+                </validation>
+                <comments/>
+            </covariate>
+            <covariate>
+                <covariateId>age</covariateId>
+                <covariateName>
+                    <name lang='en'>Age</name>
+                    <name lang='fr'>Age</name>
+                </covariateName>
+                <description>
+                    <desc lang='en'>Age of the patient, in years</desc>
+                    <desc lang='fr'>Âge du patient, en années</desc>
+                </description>
+                <unit>y</unit>
+                <covariateType>ageInYears</covariateType>
+                <dataType>double</dataType>
+                <interpolationType>direct</interpolationType>
+                <refreshPeriod>
+                  <unit>y</unit>
+                  <value>1</value>
+                </refreshPeriod>
+                <covariateValue>
+                    <standardValue>50</standardValue>
+                </covariateValue>
+                <validation>
+                    <errorMessage>
+                        <text lang='fr'>The age shall be in the interval [20,88].</text>
+                    </errorMessage>
+                    <operation>
+                        <softFormula>
+                            <inputs>
+                                <input>
+                                    <id>age</id>
+                                    <type>double</type>
+                                </input>
+                            </inputs>
+                            <code>
+                                <![CDATA[return ((age >= 20) && (age <= 88));
+                                ]]>
+                            </code>
+                        </softFormula>
+                        <comments/>
+                    </operation>
+                    <comments/>
+                </validation>
+                <comments/>
+            </covariate>
+        </covariates>
+        <activeMoieties>
+            <activeMoiety>
+                <activeMoietyId>test2analytes</activeMoietyId>
+                <activeMoietyName>
+                    <name lang='en'>test2analytes</name>
+                </activeMoietyName>
+                <unit>ug/l</unit>
+                <analyteIdList>
+                    <analyteId>analyte1</analyteId>
+                    <analyteId>analyte2</analyteId>
+                </analyteIdList>
+                <analytesToMoietyFormula>
+                    <hardFormula>sum2</hardFormula>
+                    <comments/>
+                </analytesToMoietyFormula>
+                <targets>
+                    <target>
+                        <targetType>residual</targetType>
+                        <targetValues>
+                            <unit>ug/l</unit>
+                            <min>
+                                <standardValue>750</standardValue>
+                            </min>
+                            <max>
+                                <standardValue>1500</standardValue>
+                            </max>
+                            <best>
+                                <standardValue>1000</standardValue>
+                            </best>
+                            <toxicityAlarm>
+                                <standardValue>10000.0</standardValue>
+                            </toxicityAlarm>
+                            <inefficacyAlarm>
+                                <standardValue>0.0</standardValue>
+                            </inefficacyAlarm>
+                        </targetValues>
+                        <comments>
+                            <comment lang='en'>A Toxicity and inefficacyAlarm should be added</comment>
+                        </comments>
+                    </target>
+                </targets>
+            </activeMoiety>
+        </activeMoieties>
+        <analyteGroups>
+            <analyteGroup>
+                <groupId>group1</groupId>
+                <pkModelId>linear.1comp.macro</pkModelId>
+                <analytes>
+                    <analyte>
+                        <analyteId>analyte1</analyteId>
+                        <unit>ug/l</unit>
+                        <molarMass>
+                            <value>493.603</value>
+                            <unit>g/mol</unit>
+                        </molarMass>
+                        <description>
+                            <desc lang='en'>There is only a single analyte : imatinib.</desc>
+                        </description>
+                        <errorModel>
+                            <errorModelType>proportional</errorModelType>
+                            <sigmas>
+                                <sigma>
+                                    <standardValue>0.3138</standardValue>
+                                </sigma>
+                            </sigmas>
+                            <comments/>
+                        </errorModel>
+                        <comments/>
+                    </analyte>
+                </analytes>
+                <dispositionParameters>
+                    <parameters>
+                        <parameter>
+                            <parameterId>CL</parameterId>
+                            <unit>l/h</unit>
+                            <parameterValue>
+                                <standardValue>14.3</standardValue>
+                                <aprioriComputation>
+                                    <softFormula>
+                                        <inputs>
+                                            <input>
+                                                <id>CL_population</id>
+                                                <type>double</type>
+                                            </input>
+                                            <input>
+                                                <id>bodyweight</id>
+                                                <type>double</type>
+                                            </input>
+                                            <input>
+                                                <id>age</id>
+                                                <type>double</type>
+                                            </input>
+                                            <input>
+                                                <id>gist</id>
+                                                <type>bool</type>
+                                            </input>
+                                            <input>
+                                                <id>sex</id>
+                                                <type>double</type>
+                                            </input>
+                                        </inputs>
+                                        <code>
+                                            <![CDATA[
+                                            theta1 = CL_population;
+                                            theta4 = 5.42;
+                                            theta5 = 1.49;
+                                            theta6 = -5.81;
+                                            theta7 = -0.806;
+
+                                            MEANBW = 70;
+                                            FBW = (bodyweight - MEANBW) / MEANBW;
+
+                                            MEANAG = 50;
+                                            FAGE = (age - MEANAG) / MEANAG;
+
+                                            if (gist)
+                                              PATH = 1;
+                                            else
+                                              PATH = 0;
+
+                                            MALE = sex;
+
+                                            TVCL = theta1 + theta4 * FBW + theta5 * MALE-theta5 * (1-MALE) + theta6 * FAGE + theta7 * PATH - theta7 * (1 - PATH);
+
+                                            return TVCL;
+                                                                     ]]>
+                                        </code>
+                                    </softFormula>
+                                    <comments/>
+                                </aprioriComputation>
+                            </parameterValue>
+                            <bsv>
+                                <bsvType>exponential</bsvType>
+                                <stdDevs>
+                                    <stdDev>0.356</stdDev>
+                                </stdDevs>
+                            </bsv>
+                            <validation>
+                                <errorMessage>
+                                    <text lang='fr'>Clearance shall be in the range [0, 300].</text>
+                                </errorMessage>
+                                <operation>
+                                    <softFormula>
+                                        <inputs>
+                                            <input>
+                                                <id>CL</id>
+                                                <type>double</type>
+                                            </input>
+                                        </inputs>
+                                        <code>
+                                            <![CDATA[
+                                            return CL < 300.0 and CL > 0.0;
+                                                        ]]>
+                                            </code>
+                                        </softFormula>
+                                        <comments/>
+                                    </operation>
+                                    <comments/>
+                                </validation>
+                                <comments/>
+                            </parameter>
+                            <parameter>
+                                <parameterId>V</parameterId>
+                                <unit>l</unit>
+                                <parameterValue>
+                                    <standardValue>347</standardValue>
+                                    <aprioriComputation>
+                                        <softFormula>
+                                            <inputs>
+                                                <input>
+                                                    <id>V_population</id>
+                                                    <type>double</type>
+                                                </input>
+                                                <input>
+                                                    <id>sex</id>
+                                                    <type>double</type>
+                                                </input>
+                                            </inputs>
+                                            <code>
+                                                <![CDATA[
+                                                theta2 = V_population;
+                                                theta8 = 46.2;
+                                                tvv = theta2 + theta8 * sex - theta8 * (1 - sex);
+                                                return tvv;
+                                                                                            ]]>
+                                            </code>
+                                        </softFormula>
+                                        <comments/>
+                                    </aprioriComputation>
+                                </parameterValue>
+                                <bsv>
+                                    <bsvType>exponential</bsvType>
+                                    <stdDevs>
+                                        <stdDev>0.629</stdDev>
+                                    </stdDevs>
+                                </bsv>
+                                <validation>
+                                    <errorMessage>
+                                        <text lang='fr'>V shall be positive.</text>
+                                    </errorMessage>
+                                    <operation>
+                                        <softFormula>
+                                            <inputs>
+                                                <input>
+                                                    <id>V</id>
+                                                    <type>double</type>
+                                                </input>
+                                            </inputs>
+                                            <code>
+                                                <![CDATA[
+                                                return V < 300.0 and V > 0.0;
+                                                            ]]>
+                                                </code>
+                                            </softFormula>
+                                            <comments/>
+                                        </operation>
+                                        <comments/>
+                                    </validation>
+                                    <comments/>
+                                </parameter>
+                            </parameters>
+                            <correlations>
+                                <correlation>
+                                    <param1>CL</param1>
+                                    <param2>V</param2>
+                                    <value>0.798</value>
+                                    <comments>
+                                        <comment lang='fr'>coefficient de correlation correspondant à omega2=0.179</comment>
+                                    </comments>
+                                </correlation>
+                            </correlations>
+                        </dispositionParameters>
+                    </analyteGroup>
+                    <analyteGroup>
+                        <groupId>group2</groupId>
+                        <pkModelId>linear.1comp.macro</pkModelId>
+                        <analytes>
+                            <analyte>
+                                <analyteId>analyte2</analyteId>
+                                <unit>ug/l</unit>
+                                <molarMass>
+                                    <value>493.603</value>
+                                    <unit>g/mol</unit>
+                                </molarMass>
+                                <description>
+                                    <desc lang='en'>There is only a single analyte : imatinib.</desc>
+                                </description>
+                                <errorModel>
+                                    <errorModelType>proportional</errorModelType>
+                                    <sigmas>
+                                        <sigma>
+                                            <standardValue>0.3138</standardValue>
+                                        </sigma>
+                                    </sigmas>
+                                    <comments/>
+                                </errorModel>
+                                <comments/>
+                            </analyte>
+                        </analytes>
+                        <dispositionParameters>
+                            <parameters>
+                                <parameter>
+                                    <parameterId>CL</parameterId>
+                                    <unit>l/h</unit>
+                                    <parameterValue>
+                                        <standardValue>4.3</standardValue>
+                                        <aprioriComputation>
+                                            <softFormula>
+                                                <inputs>
+                                                    <input>
+                                                        <id>CL_population</id>
+                                                        <type>double</type>
+                                                    </input>
+                                                    <input>
+                                                        <id>bodyweight</id>
+                                                        <type>double</type>
+                                                    </input>
+                                                    <input>
+                                                        <id>age</id>
+                                                        <type>double</type>
+                                                    </input>
+                                                    <input>
+                                                        <id>gist</id>
+                                                        <type>bool</type>
+                                                    </input>
+                                                    <input>
+                                                        <id>sex</id>
+                                                        <type>double</type>
+                                                    </input>
+                                                </inputs>
+                                                <code>
+                                                    <![CDATA[
+                                                    theta1 = CL_population;
+                                                    theta4 = 5.42;
+                                                    theta5 = 1.49;
+                                                    theta6 = -5.81;
+                                                    theta7 = -0.806;
+
+                                                    MEANBW = 70;
+                                                    FBW = (bodyweight - MEANBW) / MEANBW;
+
+                                                    MEANAG = 50;
+                                                    FAGE = (age - MEANAG) / MEANAG;
+
+                                                    if (gist)
+                                                      PATH = 1;
+                                                    else
+                                                      PATH = 0;
+
+                                                    MALE = sex;
+
+                                                    TVCL = theta1 + theta4 * FBW + theta5 * MALE-theta5 * (1-MALE) + theta6 * FAGE + theta7 * PATH - theta7 * (1 - PATH);
+
+                                                    return TVCL;
+                                                                             ]]>
+                                                </code>
+                                            </softFormula>
+                                            <comments/>
+                                        </aprioriComputation>
+                                    </parameterValue>
+                                    <bsv>
+                                        <bsvType>exponential</bsvType>
+                                        <stdDevs>
+                                            <stdDev>0.356</stdDev>
+                                        </stdDevs>
+                                    </bsv>
+                                    <validation>
+                                        <errorMessage>
+                                            <text lang='fr'>Clearance shall be in the range [0, 300].</text>
+                                        </errorMessage>
+                                        <operation>
+                                            <softFormula>
+                                                <inputs>
+                                                    <input>
+                                                        <id>CL</id>
+                                                        <type>double</type>
+                                                    </input>
+                                                </inputs>
+                                                <code>
+                                                    <![CDATA[
+                                                    return CL < 300.0 and CL > 0.0;
+                                                                ]]>
+                                                    </code>
+                                                </softFormula>
+                                                <comments/>
+                                            </operation>
+                                            <comments/>
+                                        </validation>
+                                        <comments/>
+                                    </parameter>
+                                    <parameter>
+                                        <parameterId>V</parameterId>
+                                        <unit>l</unit>
+                                        <parameterValue>
+                                            <standardValue>247</standardValue>
+                                            <aprioriComputation>
+                                                <softFormula>
+                                                    <inputs>
+                                                        <input>
+                                                            <id>V_population</id>
+                                                            <type>double</type>
+                                                        </input>
+                                                        <input>
+                                                            <id>sex</id>
+                                                            <type>double</type>
+                                                        </input>
+                                                    </inputs>
+                                                    <code>
+                                                        <![CDATA[
+                                                        theta2 = V_population;
+                                                        theta8 = 46.2;
+                                                        tvv = theta2 + theta8 * sex - theta8 * (1 - sex);
+                                                        return tvv;
+                                                                                                    ]]>
+                                                    </code>
+                                                </softFormula>
+                                                <comments/>
+                                            </aprioriComputation>
+                                        </parameterValue>
+                                        <bsv>
+                                            <bsvType>exponential</bsvType>
+                                            <stdDevs>
+                                                <stdDev>0.629</stdDev>
+                                            </stdDevs>
+                                        </bsv>
+                                        <validation>
+                                            <errorMessage>
+                                                <text lang='fr'>V shall be positive.</text>
+                                            </errorMessage>
+                                            <operation>
+                                                <softFormula>
+                                                    <inputs>
+                                                        <input>
+                                                            <id>V</id>
+                                                            <type>double</type>
+                                                        </input>
+                                                    </inputs>
+                                                    <code>
+                                                        <![CDATA[
+                                                        return V < 300.0 and V > 0.0;
+                                                                    ]]>
+                                                        </code>
+                                                    </softFormula>
+                                                    <comments/>
+                                                </operation>
+                                                <comments/>
+                                            </validation>
+                                            <comments/>
+                                        </parameter>
+                                    </parameters>
+                                    <correlations>
+                                        <correlation>
+                                            <param1>CL</param1>
+                                            <param2>V</param2>
+                                            <value>0.798</value>
+                                            <comments>
+                                                <comment lang='fr'>coefficient de correlation correspondant à omega2=0.179</comment>
+                                            </comments>
+                                        </correlation>
+                                    </correlations>
+                                </dispositionParameters>
+                            </analyteGroup>
+                </analyteGroups>
+                <formulationAndRoutes default='id0'>
+                    <formulationAndRoute>
+                        <formulationAndRouteId>id0</formulationAndRouteId>
+                        <formulation>parenteral solution</formulation>
+                        <administrationName>champ libre</administrationName>
+                        <administrationRoute>oral</administrationRoute>
+                        <absorptionModelId>extra.lag</absorptionModelId>
+                        <dosages>
+                            <analyteConversions>
+                                <analyteConversion>
+                                    <analyteId>analyte1</analyteId>
+                                    <factor>1</factor>
+                                </analyteConversion>
+                                    <analyteConversion>
+                                        <analyteId>analyte2</analyteId>
+                                        <factor>1</factor>
+                                    </analyteConversion>
+                            </analyteConversions>
+                            <availableDoses>
+                                <unit>mg</unit>
+                                <default>
+                                    <standardValue>400</standardValue>
+                                </default>
+                                <rangeValues>
+                                    <from>
+                                        <standardValue>100</standardValue>
+                                    </from>
+                                    <to>
+                                        <standardValue>400</standardValue>
+                                    </to>
+                                    <step>
+                                        <standardValue>100</standardValue>
+                                    </step>
+                                </rangeValues>
+                                <fixedValues>
+                                    <value>600</value>
+                                    <value>800</value>
+                                </fixedValues>
+                            </availableDoses>
+                            <availableIntervals>
+                                <unit>h</unit>
+                                <default>
+                                    <standardValue>24</standardValue>
+                                </default>
+                                <fixedValues>
+                                    <value>12</value>
+                                    <value>24</value>
+                                </fixedValues>
+                            </availableIntervals>
+                            <comments/>
+                        </dosages>
+                        <absorptionParameters>
+                            <parameterSetAnalyteGroup>
+                                <analyteGroupId>group1</analyteGroupId>
+                                <absorptionModelId>extra.lag</absorptionModelId>
+                                <parameterSet>
+                                    <parameters>
+                                        <parameter>
+                                            <parameterId>F</parameterId>
+                                            <unit>%</unit>
+                                            <parameterValue>
+                                                <standardValue>1</standardValue>
+                                            </parameterValue>
+                                            <bsv>
+                                                <bsvType>none</bsvType>
+                                            </bsv>
+                                            <validation>
+                                                <errorMessage>
+                                                    <text lang='fr'>F shall be in the interval [0,1].</text>
+                                                </errorMessage>
+                                                <operation>
+                                                    <softFormula>
+                                                        <inputs>
+                                                            <input>
+                                                                <id>F</id>
+                                                                <type>double</type>
+                                                            </input>
+                                                        </inputs>
+                                                        <code>
+                                                            <![CDATA[
+                                                            return F <= 1.0 and F > 0.0;
+                                                                        ]]>
+                                                            </code>
+                                                        </softFormula>
+                                                        <comments/>
+                                                    </operation>
+                                                    <comments/>
+                                                </validation>
+                                                <comments/>
+                                            </parameter>
+                                            <parameter>
+                                                <parameterId>Ka</parameterId>
+                                                <unit>h-1</unit>
+                                                <parameterValue>
+                                                    <standardValue>0.609</standardValue>
+                                                </parameterValue>
+                                                <bsv>
+                                                    <bsvType>none</bsvType>
+                                                </bsv>
+                                                <validation>
+                                                    <errorMessage>
+                                                        <text lang='fr'>No check on Ka now.</text>
+                                                    </errorMessage>
+                                                    <operation>
+                                                        <softFormula>
+                                                            <inputs>
+                                                                <input>
+                                                                    <id>Ka</id>
+                                                                    <type>double</type>
+                                                                </input>
+                                                            </inputs>
+                                                            <code>
+                                                                <![CDATA[
+                                                                return true;
+                                                                ]]>
+                                                            </code>
+                                                        </softFormula>
+                                                        <comments/>
+                                                    </operation>
+                                                    <comments/>
+                                                </validation>
+                                                <comments/>
+                                            </parameter>
+                                            <parameter>
+                                                <parameterId>Tlag</parameterId>
+                                                <unit>h</unit>
+                                                <parameterValue>
+                                                    <standardValue>2</standardValue>
+                                                </parameterValue>
+                                                <bsv>
+                                                    <bsvType>none</bsvType>
+                                                </bsv>
+                                                <validation>
+                                                    <errorMessage>
+                                                        <text lang='fr'>To be described</text>
+                                                    </errorMessage>
+                                                    <operation>
+                                                        <softFormula>
+                                                            <inputs>
+                                                                <input>
+                                                                    <id>Tlag</id>
+                                                                    <type>double</type>
+                                                                </input>
+                                                            </inputs>
+                                                            <code>
+                                                                <![CDATA[return true;]]>
+                                                            </code>
+                                                        </softFormula>
+                                                        <comments/>
+                                                    </operation>
+                                                    <comments/>
+                                                </validation>
+                                                <comments/>
+                                            </parameter>
+                                        </parameters>
+                                        <correlations/>
+                                    </parameterSet>
+                            </parameterSetAnalyteGroup>
+                            <parameterSetAnalyteGroup>
+                                <analyteGroupId>group2</analyteGroupId>
+                                <absorptionModelId>extra.lag</absorptionModelId>
+                                <parameterSet>
+                                    <parameters>
+                                        <parameter>
+                                            <parameterId>F</parameterId>
+                                            <unit>%</unit>
+                                            <parameterValue>
+                                                <standardValue>1</standardValue>
+                                            </parameterValue>
+                                            <bsv>
+                                                <bsvType>none</bsvType>
+                                            </bsv>
+                                            <validation>
+                                                <errorMessage>
+                                                    <text lang='fr'>F shall be in the interval [0,1].</text>
+                                                </errorMessage>
+                                                <operation>
+                                                    <softFormula>
+                                                        <inputs>
+                                                            <input>
+                                                                <id>F</id>
+                                                                <type>double</type>
+                                                            </input>
+                                                        </inputs>
+                                                        <code>
+                                                            <![CDATA[
+                                                            return F <= 1.0 and F > 0.0;
+                                                                        ]]>
+                                                            </code>
+                                                        </softFormula>
+                                                        <comments/>
+                                                    </operation>
+                                                    <comments/>
+                                                </validation>
+                                                <comments/>
+                                            </parameter>
+                                            <parameter>
+                                                <parameterId>Ka</parameterId>
+                                                <unit>h-1</unit>
+                                                <parameterValue>
+                                                    <standardValue>0.609</standardValue>
+                                                </parameterValue>
+                                                <bsv>
+                                                    <bsvType>none</bsvType>
+                                                </bsv>
+                                                <validation>
+                                                    <errorMessage>
+                                                        <text lang='fr'>No check on Ka now.</text>
+                                                    </errorMessage>
+                                                    <operation>
+                                                        <softFormula>
+                                                            <inputs>
+                                                                <input>
+                                                                    <id>Ka</id>
+                                                                    <type>double</type>
+                                                                </input>
+                                                            </inputs>
+                                                            <code>
+                                                                <![CDATA[
+                                                                return true;
+                                                                ]]>
+                                                            </code>
+                                                        </softFormula>
+                                                        <comments/>
+                                                    </operation>
+                                                    <comments/>
+                                                </validation>
+                                                <comments/>
+                                            </parameter>
+                                            <parameter>
+                                                <parameterId>Tlag</parameterId>
+                                                <unit>h</unit>
+                                                <parameterValue>
+                                                    <standardValue>4</standardValue>
+                                                </parameterValue>
+                                                <bsv>
+                                                    <bsvType>none</bsvType>
+                                                </bsv>
+                                                <validation>
+                                                    <errorMessage>
+                                                        <text lang='fr'>To be described</text>
+                                                    </errorMessage>
+                                                    <operation>
+                                                        <softFormula>
+                                                            <inputs>
+                                                                <input>
+                                                                    <id>Tlag</id>
+                                                                    <type>double</type>
+                                                                </input>
+                                                            </inputs>
+                                                            <code>
+                                                                <![CDATA[return true;]]>
+                                                            </code>
+                                                        </softFormula>
+                                                        <comments/>
+                                                    </operation>
+                                                    <comments/>
+                                                </validation>
+                                                <comments/>
+                                            </parameter>
+
+                                        </parameters>
+                                        <correlations/>
+                                    </parameterSet>
+                                </parameterSetAnalyteGroup>
+                            </absorptionParameters>
+                        </formulationAndRoute>
+                    </formulationAndRoutes>
+                    <timeConsiderations>
+                        <halfLife>
+                            <unit>h</unit>
+                            <duration>
+                                <standardValue>12</standardValue>
+                            </duration>
+                            <multiplier>20</multiplier>
+                            <comments>
+                                <comment lang='en'>TODO : Find the half life</comment>
+                            </comments>
+                        </halfLife>
+                        <outdatedMeasure>
+                            <unit>d</unit>
+                            <duration>
+                                <standardValue>100</standardValue>
+                            </duration>
+                            <comments>
+                                <comment lang='en'>TODO : This value is not set now</comment>
+                            </comments>
+                        </outdatedMeasure>
+                    </timeConsiderations>
+                    <comments/>
+                </drugModel>
+            </model>
