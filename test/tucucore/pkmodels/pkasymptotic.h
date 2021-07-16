@@ -147,7 +147,7 @@ protected:
             return false;
         }
 
-        m_D = _intakeEvent.getDose() * 1000;
+        m_D = _intakeEvent.getDose();
         m_R = _parameters.getValue(ParameterId::TestR);
         m_TPeak = _parameters.getValue(ParameterId::TestT);
         m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());

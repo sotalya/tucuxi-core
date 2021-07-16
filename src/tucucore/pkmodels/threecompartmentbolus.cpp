@@ -32,7 +32,7 @@ bool ThreeCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, co
 
     Value a0, a1, a2, p, q, r1, r2, phi;
 
-    m_D = _intakeEvent.getDose() * 1000;
+    m_D = _intakeEvent.getDose();
     m_F = _parameters.getValue(ParameterId::F);
     m_V1 = _parameters.getValue(ParameterId::V1);
     m_Ke = _parameters.getValue(ParameterId::Ke);
@@ -184,7 +184,7 @@ bool ThreeCompartmentBolusMacro::checkInputs(const IntakeEvent& _intakeEvent, co
 
     Value a0, a1, a2, p, q, r1, r2, phi;
 
-    m_D = _intakeEvent.getDose() * 1000;
+    m_D = _intakeEvent.getDose();
     Value cl = _parameters.getValue(ParameterId::CL);
     m_F = _parameters.getValue(ParameterId::F);
     Value q1 = _parameters.getValue(ParameterId::Q1);

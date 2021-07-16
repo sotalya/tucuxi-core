@@ -67,7 +67,7 @@ public:
             analyteSet0->setId("analyteSet0");
             analyteSet0->setPkModelId("test.constantelimination");
 
-            std::unique_ptr<Analyte> analyte0 = std::make_unique<Analyte>("analyte0", TucuUnit("mg/l"), MolarMass(10.0, TucuUnit("mol/l")));
+            std::unique_ptr<Analyte> analyte0 = std::make_unique<Analyte>("analyte0", TucuUnit("ug/l"), MolarMass(10.0, TucuUnit("mol/l")));
 
 
 
@@ -121,7 +121,7 @@ public:
             analyteSet1->setId("analyteSet1");
             analyteSet1->setPkModelId("test.constantelimination");
 
-            std::unique_ptr<Analyte> analyte1 = std::make_unique<Analyte>("analyte1", TucuUnit("mg/l"), MolarMass(10.0, TucuUnit("mol/l")));
+            std::unique_ptr<Analyte> analyte1 = std::make_unique<Analyte>("analyte1", TucuUnit("ug/l"), MolarMass(10.0, TucuUnit("mol/l")));
 
 
 
@@ -257,7 +257,7 @@ public:
         std::vector<AnalyteId> analyteList;
         analyteList.push_back(AnalyteId("analyte0"));
         analyteList.push_back(AnalyteId("analyte1"));
-        std::unique_ptr<ActiveMoiety> activeMoiety = std::make_unique<ActiveMoiety>(ActiveMoietyId("activeMoietyMulti"), TucuUnit("mg/l"), analyteList, std::move(activeMoietyOperation));
+        std::unique_ptr<ActiveMoiety> activeMoiety = std::make_unique<ActiveMoiety>(ActiveMoietyId("activeMoietyMulti"), TucuUnit("ug/l"), analyteList, std::move(activeMoietyOperation));
 
         Tucuxi::Common::TranslatableString activeMoietyName;
         activeMoietyName.setString("Active moiety name 2");

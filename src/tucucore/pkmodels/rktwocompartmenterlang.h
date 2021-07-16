@@ -139,7 +139,7 @@ protected:
             return false;
         }
 
-        m_D = _intakeEvent.getDose() * 1000;
+        m_D = _intakeEvent.getDose();
         m_V1 = _parameters.getValue(ParameterId::V1);
         m_Ktr = _parameters.getValue(ParameterId::Ktr);
         m_Ke = _parameters.getValue(ParameterId::Ke);
@@ -159,7 +159,7 @@ protected:
         bOK &= this->checkStrictlyPositiveValue(m_Ktr, "The Ktr");
         bOK &= this->checkStrictlyPositiveValue(m_K12, "K12");
         bOK &= this->checkStrictlyPositiveValue(m_K21, "K21");
-        bOK &= this->checkCondition(this->m_nbPoints >= 0, "The number of points is zero or negative.");
+        bOK &= this->checkCondition(this->m_nbPoints > 0, "The number of points is zero or negative.");
         bOK &= this->checkCondition(this->m_Int > 0, "The interval time is negative.");
 
         return bOK;
@@ -233,7 +233,7 @@ protected:
         }
 
 
-        this->m_D = _intakeEvent.getDose() * 1000;
+        this->m_D = _intakeEvent.getDose();
         this->m_V1 = _parameters.getValue(ParameterId::V1);
         Value v2 = _parameters.getValue(ParameterId::V2);
         this->m_Ktr = _parameters.getValue(ParameterId::Ktr);
@@ -257,7 +257,7 @@ protected:
         bOK &= this->checkStrictlyPositiveValue(this->m_Ktr, "The Ktr");
         bOK &= this->checkStrictlyPositiveValue(this->m_K12, "K12");
         bOK &= this->checkStrictlyPositiveValue(this->m_K21, "K21");
-        bOK &= this->checkCondition(this->m_nbPoints >= 0, "The number of points is zero or negative.");
+        bOK &= this->checkCondition(this->m_nbPoints > 0, "The number of points is zero or negative.");
         bOK &= this->checkCondition(this->m_Int > 0, "The interval time is negative.");
 
         return bOK;

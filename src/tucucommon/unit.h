@@ -3,6 +3,7 @@
 
 #include <string>
 #include <map>
+#include <vector>
 
 namespace Tucuxi {
 namespace Common {
@@ -114,7 +115,65 @@ public:
             throw std::invalid_argument("Error in unit conversion");
         }
 
-        return _value * conversionMap.at(initialKey) / conversionMap.at(finalKey);
+        return _value / conversionMap.at(finalKey) * conversionMap.at(initialKey);
+    }
+
+    ///
+    /// \brief Converts a specific unit type to another unit of the same type on a vector
+    /// \param _value
+    /// \param _initialUnit
+    /// \param _finalUnit
+    /// \return converted vector
+    ///
+    template<UnitType unitType>
+    static std::vector<double> convertToUnit(const std::vector<double>& _value, TucuUnit _initialUnit, TucuUnit _finalUnit)
+    {
+        std::vector<double> result(_value.size());
+        const auto conversionMap = getConversionMap().at(unitType);
+
+        std::string initialKey = _initialUnit.toString();
+        std::string finalKey = _finalUnit.toString();
+
+        if ((conversionMap.count(initialKey) == 0) || (conversionMap.count(finalKey) == 0))
+        {
+            logConversionError(_initialUnit, _finalUnit);
+            throw std::invalid_argument("Error in unit conversion");
+        }
+
+        double factor =  1.0 / conversionMap.at(finalKey) * conversionMap.at(initialKey);
+
+        for (size_t i = 0; i < _value.size(); i++) {
+            result[i] = _value[i] * factor;
+        }
+
+        return result;
+    }
+
+    ///
+    /// \brief Converts a specific unit type to another unit of the same type on a vector
+    /// \param _value
+    /// \param _initialUnit
+    /// \param _finalUnit
+    ///
+    template<UnitType unitType>
+    static void updateAndConvertToUnit(std::vector<double>& _value, TucuUnit _initialUnit, TucuUnit _finalUnit)
+    {
+        const auto conversionMap = getConversionMap().at(unitType);
+
+        std::string initialKey = _initialUnit.toString();
+        std::string finalKey = _finalUnit.toString();
+
+        if ((conversionMap.count(initialKey) == 0) || (conversionMap.count(finalKey) == 0))
+        {
+            logConversionError(_initialUnit, _finalUnit);
+            throw std::invalid_argument("Error in unit conversion");
+        }
+
+        double factor =  1.0 / conversionMap.at(finalKey) * conversionMap.at(initialKey);
+
+        for (size_t i = 0; i < _value.size(); i++) {
+            _value[i] = _value[i] * factor;
+        }
     }
 
     template<UnitType unitType>
@@ -166,6 +225,18 @@ public:
     /// \return true if the units are compatible, false else
     ///
     static bool isUnitTolerated(std::string& _unitString);
+
+    ///
+    /// \brief Gets the weight corresponding to a concentration unit
+    /// \param _unit The concentration unit
+    /// \return A weight unit
+    ///
+    /// Examples:
+    /// -   ug/l    -> ug
+    /// -   g/l     -> g
+    /// -   ug/ml   -> ug
+    ///
+    static TucuUnit getWeightFromConcentration(const TucuUnit& _unit);
 
 private:
 

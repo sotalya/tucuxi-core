@@ -13,7 +13,26 @@ using Tucuxi::Common::UnitManager;
 namespace Tucuxi {
 namespace Core {
 
-TargetEvent TargetExtractor::targetEventFromTarget(const Target *_target) {
+TucuUnit getConcentrationTimeUnit(const TucuUnit &_concentrationUnit)
+{
+    static const std::map<std::string, std::string> sm_conversionMap =
+    {
+        {"ug/l", "ug*h/l"},
+        {"mg/l", "mg*h/l"},
+        {"g/l", "h*g/l"},
+        {"g/ml", "g*h/ml"},
+        {"mg/ml", "mg*h/ml"},
+        {"ug/ml", "ug*h/ml"}
+    };
+
+    std::string key = _concentrationUnit.toString();
+    if (sm_conversionMap.count(key) > 0) {
+        return TucuUnit(sm_conversionMap.at(key));
+    }
+    throw std::invalid_argument("Error in concentration unit conversion");
+}
+
+TargetEvent TargetExtractor::targetEventFromTarget(const Target *_target, const TucuUnit &_concentrationUnit) {
 
     switch (_target->m_targetType) {
 
@@ -25,11 +44,11 @@ TargetEvent TargetExtractor::targetEventFromTarget(const Target *_target) {
 
         return TargetEvent::createTargetEventWithTime(_target->getActiveMoietyId(),
                                        _target->m_targetType,
-                                       TucuUnit("ug/l"),
+                                       _concentrationUnit,
                                        _target->m_unit,
-                                       UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(_target->m_valueMin, _target->m_unit, TucuUnit("ug/l")),
-                                       UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(_target->m_valueBest, _target->m_unit, TucuUnit("ug/l")),
-                                       UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(_target->m_valueMax, _target->m_unit, TucuUnit("ug/l")),
+                                       UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(_target->m_valueMin, _target->m_unit, _concentrationUnit),
+                                       UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(_target->m_valueBest, _target->m_unit, _concentrationUnit),
+                                       UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(_target->m_valueMax, _target->m_unit, _concentrationUnit),
                                        _target->m_tMin,
                                        _target->m_tBest,
                                        _target->m_tMax);
@@ -43,12 +62,12 @@ TargetEvent TargetExtractor::targetEventFromTarget(const Target *_target) {
     {
         return TargetEvent::createTargetEventWithMicAndTime(_target->getActiveMoietyId(),
                                        _target->m_targetType,
-                                       TucuUnit("ug*h/l"),
+                                       getConcentrationTimeUnit(_concentrationUnit),
                                        _target->m_unit,
-                                       UnitManager::convertToUnit<UnitManager::UnitType::ConcentrationTime>(_target->m_valueMin, _target->m_unit, TucuUnit("ug*h/l")),
-                                       UnitManager::convertToUnit<UnitManager::UnitType::ConcentrationTime>(_target->m_valueBest, _target->m_unit, TucuUnit("ug*h/l")),
-                                       UnitManager::convertToUnit<UnitManager::UnitType::ConcentrationTime>(_target->m_valueMax, _target->m_unit, TucuUnit("ug*h/l")),
-                                       UnitManager::convertToUnit<UnitManager::UnitType::ConcentrationTime>(_target->m_mic, _target->m_micUnit, TucuUnit("ug*h/l")),
+                                       UnitManager::convertToUnit<UnitManager::UnitType::ConcentrationTime>(_target->m_valueMin, _target->m_unit, getConcentrationTimeUnit(_concentrationUnit)),
+                                       UnitManager::convertToUnit<UnitManager::UnitType::ConcentrationTime>(_target->m_valueBest, _target->m_unit, getConcentrationTimeUnit(_concentrationUnit)),
+                                       UnitManager::convertToUnit<UnitManager::UnitType::ConcentrationTime>(_target->m_valueMax, _target->m_unit, getConcentrationTimeUnit(_concentrationUnit)),
+                                       UnitManager::convertToUnit<UnitManager::UnitType::ConcentrationTime>(_target->m_mic, _target->m_micUnit, getConcentrationTimeUnit(_concentrationUnit)),
                                        _target->m_micUnit,
                                        _target->m_tMin,
                                        _target->m_tBest,
@@ -69,7 +88,7 @@ TargetEvent TargetExtractor::targetEventFromTarget(const Target *_target) {
                                        UnitManager::convertToUnit<UnitManager::UnitType::NoUnit>(_target->m_valueMin, _target->m_unit, TucuUnit("")),
                                        UnitManager::convertToUnit<UnitManager::UnitType::NoUnit>(_target->m_valueBest, _target->m_unit, TucuUnit("")),
                                        UnitManager::convertToUnit<UnitManager::UnitType::NoUnit>(_target->m_valueMax, _target->m_unit, TucuUnit("")),
-                                       UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(_target->m_mic, _target->m_micUnit, TucuUnit("ug/l")),
+                                       UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(_target->m_mic, _target->m_micUnit, _concentrationUnit),
                                        _target->m_micUnit,
                                        _target->m_tMin,
                                        _target->m_tBest,
@@ -88,7 +107,7 @@ TargetEvent TargetExtractor::targetEventFromTarget(const Target *_target) {
                                        UnitManager::convertToUnit<UnitManager::UnitType::Time>(_target->m_valueMin, _target->m_unit, TucuUnit("h")),
                                        UnitManager::convertToUnit<UnitManager::UnitType::Time>(_target->m_valueBest, _target->m_unit, TucuUnit("h")),
                                        UnitManager::convertToUnit<UnitManager::UnitType::Time>(_target->m_valueMax, _target->m_unit, TucuUnit("h")),
-                                       UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(_target->m_mic, _target->m_micUnit, TucuUnit("ug/l")),
+                                       UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(_target->m_mic, _target->m_micUnit, _concentrationUnit),
                                        _target->m_micUnit,
                                        _target->m_tMin,
                                        _target->m_tBest,
@@ -121,7 +140,7 @@ TargetEvent TargetExtractor::targetEventFromTarget(const Target *_target) {
 
 
 
-TargetEvent TargetExtractor::targetEventFromTarget(const Target *_target, const TargetDefinition *_targetDefinition) {
+TargetEvent TargetExtractor::targetEventFromTarget(const Target *_target, const TargetDefinition *_targetDefinition, const TucuUnit &_concentrationUnit) {
 
     switch (_targetDefinition->m_targetType) {
 
@@ -133,11 +152,11 @@ TargetEvent TargetExtractor::targetEventFromTarget(const Target *_target, const 
 
         return TargetEvent::createTargetEventWithTime(_target->getActiveMoietyId(),
                                               _target->m_targetType,
-                                              TucuUnit("ug/l"),
+                                              _concentrationUnit,
                                               _targetDefinition->getUnit(),
-                                              UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(_target->m_valueMin, _target->m_unit, TucuUnit("ug/l")),
-                                              UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(_target->m_valueBest, _target->m_unit, TucuUnit("ug/l")),
-                                              UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(_target->m_valueMax, _target->m_unit, TucuUnit("ug/l")),
+                                              UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(_target->m_valueMin, _target->m_unit, _concentrationUnit),
+                                              UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(_target->m_valueBest, _target->m_unit, _concentrationUnit),
+                                              UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(_target->m_valueMax, _target->m_unit, _concentrationUnit),
                                               _target->m_tMin,
                                               _target->m_tBest,
                                               _target->m_tMax);
@@ -154,13 +173,13 @@ TargetEvent TargetExtractor::targetEventFromTarget(const Target *_target, const 
 
         return TargetEvent::createTargetEventWithMicAndTime(_target->getActiveMoietyId(),
                                               _target->m_targetType,
-                                              TucuUnit("ug*h/l"),
+                                              getConcentrationTimeUnit(_concentrationUnit),
                                               _targetDefinition->getUnit(),
-                                              UnitManager::convertToUnit<UnitManager::UnitType::ConcentrationTime>(_target->m_valueMin,_target->m_unit, TucuUnit("ug*h/l")),
-                                              UnitManager::convertToUnit<UnitManager::UnitType::ConcentrationTime>(_target->m_valueBest, _target->m_unit, TucuUnit("ug*h/l")),
-                                              UnitManager::convertToUnit<UnitManager::UnitType::ConcentrationTime>(_target->m_valueMax, _target->m_unit, TucuUnit("ug*h/l")),
-                                              UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(_target->m_mic, _target->m_micUnit, TucuUnit("ug/l")),
-                                              TucuUnit("ug/l"),
+                                              UnitManager::convertToUnit<UnitManager::UnitType::ConcentrationTime>(_target->m_valueMin,_target->m_unit, getConcentrationTimeUnit(_concentrationUnit)),
+                                              UnitManager::convertToUnit<UnitManager::UnitType::ConcentrationTime>(_target->m_valueBest, _target->m_unit, getConcentrationTimeUnit(_concentrationUnit)),
+                                              UnitManager::convertToUnit<UnitManager::UnitType::ConcentrationTime>(_target->m_valueMax, _target->m_unit, getConcentrationTimeUnit(_concentrationUnit)),
+                                              UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(_target->m_mic, _target->m_micUnit, _concentrationUnit),
+                                              _concentrationUnit,
                                               _target->m_tMin,
                                               _target->m_tBest,
                                               _target->m_tMax);
@@ -180,8 +199,8 @@ TargetEvent TargetExtractor::targetEventFromTarget(const Target *_target, const 
                                               UnitManager::convertToUnit<UnitManager::UnitType::Time>(_target->m_valueMin, _target->m_unit, TucuUnit("h")),
                                               UnitManager::convertToUnit<UnitManager::UnitType::Time>(_target->m_valueBest, _target->m_unit, TucuUnit("h")),
                                               UnitManager::convertToUnit<UnitManager::UnitType::Time>(_target->m_valueMax, _target->m_unit, TucuUnit("h")),
-                                              UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(_target->m_mic, _target->m_micUnit, TucuUnit("ug/l")),
-                                              TucuUnit("ug/l"),
+                                              UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(_target->m_mic, _target->m_micUnit, _concentrationUnit),
+                                              _concentrationUnit,
                                               _target->m_tMin,
                                               _target->m_tBest,
                                               _target->m_tMax);
@@ -200,8 +219,8 @@ TargetEvent TargetExtractor::targetEventFromTarget(const Target *_target, const 
                                               UnitManager::convertToUnit<UnitManager::UnitType::NoUnit>(_target->m_valueMin, _target->m_unit, TucuUnit("")),
                                               UnitManager::convertToUnit<UnitManager::UnitType::NoUnit>(_target->m_valueBest, _target->m_unit, TucuUnit("")),
                                               UnitManager::convertToUnit<UnitManager::UnitType::NoUnit>(_target->m_valueMax, _target->m_unit, TucuUnit("")),
-                                              UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(_target->m_mic, _target->m_micUnit, TucuUnit("ug/l")),
-                                              TucuUnit("ug/l"),
+                                              UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(_target->m_mic, _target->m_micUnit, _concentrationUnit),
+                                              _concentrationUnit,
                                               _target->m_tMin,
                                               _target->m_tBest,
                                               _target->m_tMax);
@@ -230,7 +249,7 @@ TargetEvent TargetExtractor::targetEventFromTarget(const Target *_target, const 
 }
 
 
-TargetEvent TargetExtractor::targetEventFromTargetDefinition(const TargetDefinition *_target) {
+TargetEvent TargetExtractor::targetEventFromTargetDefinition(const TargetDefinition *_target, const TucuUnit &_concentrationUnit) {
 
 
     switch (_target->m_targetType) {
@@ -242,11 +261,11 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(const TargetDefinit
 
         return TargetEvent::createTargetEventWithoutTimeAndMic(_target->getActiveMoietyId(),
                                        _target->getTargetType(),
-                                       TucuUnit("ug/l"),
+                                       _concentrationUnit,
                                        _target->getUnit(),
-                                       UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(_target->getCMin().getValue(), _target->getUnit(), TucuUnit("ug/l")),
-                                       UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(_target->getCBest().getValue(), _target->getUnit(), TucuUnit("ug/l")),
-                                       UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(_target->getCMax().getValue(), _target->getUnit(), TucuUnit("ug/l")));
+                                       UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(_target->getCMin().getValue(), _target->getUnit(), _concentrationUnit),
+                                       UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(_target->getCBest().getValue(), _target->getUnit(), _concentrationUnit),
+                                       UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(_target->getCMax().getValue(), _target->getUnit(), _concentrationUnit));
 
     case TargetType::Mean :
 
@@ -254,11 +273,11 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(const TargetDefinit
 
         return TargetEvent::createTargetEventWithTime(_target->getActiveMoietyId(),
                                               _target->getTargetType(),
-                                              TucuUnit("ug/l"),
+                                              _concentrationUnit,
                                               _target->getUnit(),
-                                              UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(_target->getCMin().getValue(), _target->getUnit(), TucuUnit("ug/l")),
-                                              UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(_target->getCBest().getValue(), _target->getUnit(), TucuUnit("ug/l")),
-                                              UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(_target->getCMax().getValue(), _target->getUnit(), TucuUnit("ug/l")),
+                                              UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(_target->getCMin().getValue(), _target->getUnit(), _concentrationUnit),
+                                              UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(_target->getCBest().getValue(), _target->getUnit(), _concentrationUnit),
+                                              UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(_target->getCMax().getValue(), _target->getUnit(), _concentrationUnit),
                                               Tucuxi::Common::Duration(
                                                   std::chrono::minutes(static_cast<int>(_target->getTMin().getValue()))),
                                               Tucuxi::Common::Duration(
@@ -275,11 +294,11 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(const TargetDefinit
         return TargetEvent::createTargetEventWithTime(
                     _target->getActiveMoietyId(),
                     _target->getTargetType(),
-                    TucuUnit("ug*h/l"),
+                    getConcentrationTimeUnit(_concentrationUnit),
                     _target->getUnit(),
-                    UnitManager::convertToUnit<UnitManager::UnitType::ConcentrationTime>(_target->getCMin().getValue(), _target->getUnit(), TucuUnit("ug*h/l")),
-                    UnitManager::convertToUnit<UnitManager::UnitType::ConcentrationTime>(_target->getCBest().getValue(), _target->getUnit(), TucuUnit("ug*h/l")),
-                    UnitManager::convertToUnit<UnitManager::UnitType::ConcentrationTime>(_target->getCMax().getValue(), _target->getUnit(), TucuUnit("ug*h/l")),
+                    UnitManager::convertToUnit<UnitManager::UnitType::ConcentrationTime>(_target->getCMin().getValue(), _target->getUnit(), getConcentrationTimeUnit(_concentrationUnit)),
+                    UnitManager::convertToUnit<UnitManager::UnitType::ConcentrationTime>(_target->getCBest().getValue(), _target->getUnit(), getConcentrationTimeUnit(_concentrationUnit)),
+                    UnitManager::convertToUnit<UnitManager::UnitType::ConcentrationTime>(_target->getCMax().getValue(), _target->getUnit(), getConcentrationTimeUnit(_concentrationUnit)),
                     Tucuxi::Common::Duration(
                         std::chrono::minutes(static_cast<int>(_target->getTMin().getValue()))),
                     Tucuxi::Common::Duration(
@@ -297,13 +316,13 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(const TargetDefinit
         return TargetEvent::createTargetEventWithMicAndTime(
                     _target->getActiveMoietyId(),
                     _target->getTargetType(),
-                    TucuUnit("ug*h/l"),
+                    getConcentrationTimeUnit(_concentrationUnit),
                     _target->getUnit(),
-                    UnitManager::convertToUnit<UnitManager::UnitType::ConcentrationTime>(_target->getCMin().getValue(), _target->getUnit(), TucuUnit("ug*h/l")),
-                    UnitManager::convertToUnit<UnitManager::UnitType::ConcentrationTime>(_target->getCBest().getValue(), _target->getUnit(), TucuUnit("ug*h/l")),
-                    UnitManager::convertToUnit<UnitManager::UnitType::ConcentrationTime>(_target->getCMax().getValue(), _target->getUnit(), TucuUnit("ug*h/l")),
-                    UnitManager::convertToUnit<UnitManager::UnitType::ConcentrationTime>(_target->getMic().getValue(), _target->getMicUnit(), TucuUnit("ug/l")),
-                    TucuUnit("ug/l"),
+                    UnitManager::convertToUnit<UnitManager::UnitType::ConcentrationTime>(_target->getCMin().getValue(), _target->getUnit(), getConcentrationTimeUnit(_concentrationUnit)),
+                    UnitManager::convertToUnit<UnitManager::UnitType::ConcentrationTime>(_target->getCBest().getValue(), _target->getUnit(), getConcentrationTimeUnit(_concentrationUnit)),
+                    UnitManager::convertToUnit<UnitManager::UnitType::ConcentrationTime>(_target->getCMax().getValue(), _target->getUnit(), getConcentrationTimeUnit(_concentrationUnit)),
+                    UnitManager::convertToUnit<UnitManager::UnitType::ConcentrationTime>(_target->getMic().getValue(), _target->getMicUnit(), _concentrationUnit),
+                    _concentrationUnit,
                     Tucuxi::Common::Duration(
                         std::chrono::minutes(static_cast<int>(_target->getTMin().getValue()))),
                     Tucuxi::Common::Duration(
@@ -326,8 +345,8 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(const TargetDefinit
                     UnitManager::convertToUnit<UnitManager::UnitType::Time>(_target->getCMin().getValue(), _target->getUnit(), TucuUnit("h")),
                     UnitManager::convertToUnit<UnitManager::UnitType::Time>(_target->getCBest().getValue(), _target->getUnit(), TucuUnit("h")),
                     UnitManager::convertToUnit<UnitManager::UnitType::Time>(_target->getCMax().getValue(), _target->getUnit(), TucuUnit("h")),
-                    UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(_target->getMic().getValue(), _target->getMicUnit(), TucuUnit("ug/l")),
-                    TucuUnit("ug/l"),
+                    UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(_target->getMic().getValue(), _target->getMicUnit(), _concentrationUnit),
+                    _concentrationUnit,
                     Tucuxi::Common::Duration(
                         std::chrono::minutes(static_cast<int>(_target->getTMin().getValue()))),
                     Tucuxi::Common::Duration(
@@ -348,8 +367,8 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(const TargetDefinit
                     UnitManager::convertToUnit<UnitManager::UnitType::NoUnit>(_target->getCMin().getValue(), _target->getUnit(), TucuUnit("")),
                     UnitManager::convertToUnit<UnitManager::UnitType::NoUnit>(_target->getCBest().getValue(), _target->getUnit(), TucuUnit("")),
                     UnitManager::convertToUnit<UnitManager::UnitType::NoUnit>(_target->getCMax().getValue(), _target->getUnit(), TucuUnit("")),
-                    UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(_target->getMic().getValue(), _target->getMicUnit(), TucuUnit("ug/l")),
-                    TucuUnit("ug/l"),
+                    UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(_target->getMic().getValue(), _target->getMicUnit(), _concentrationUnit),
+                    _concentrationUnit,
                     Tucuxi::Common::Duration(
                         std::chrono::minutes(static_cast<int>(_target->getTMin().getValue()))),
                     Tucuxi::Common::Duration(
@@ -387,6 +406,7 @@ ComputingStatus TargetExtractor::extract(
         const Targets &_targets,
         const DateTime &_start,
         const DateTime &_end,
+        const TucuUnit &_concentrationUnit,
         TargetExtractionOption _extractionOption,
         TargetSeries &_series)
 {
@@ -403,7 +423,7 @@ ComputingStatus TargetExtractor::extract(
     {
         for (const auto& target : _targets) {
             if (target->m_activeMoietyId == _activeMoietyId) {
-                _series.push_back(targetEventFromTarget(target.get()));
+                _series.push_back(targetEventFromTarget(target.get(), _concentrationUnit));
             }
         }
     } break;
@@ -418,7 +438,7 @@ ComputingStatus TargetExtractor::extract(
                 if ((targetDefinition->getActiveMoietyId() == target.get()->m_activeMoietyId) &&
                         (targetDefinition.get()->getTargetType() == target.get()->m_targetType)){
                     // We create the TargetEvent with the target
-                    _series.push_back(targetEventFromTarget(target.get(), targetDefinition.get()));
+                    _series.push_back(targetEventFromTarget(target.get(), targetDefinition.get(), _concentrationUnit));
                     foundDefinition = true;
                     break;
                 }
@@ -441,13 +461,13 @@ ComputingStatus TargetExtractor::extract(
                             (targetDefinition.get()->getTargetType() == target.get()->m_targetType)){
                         foundTarget = true;
                         // We create the TargetEvent with the target
-                        _series.push_back(targetEventFromTarget(target.get(), targetDefinition.get()));
+                        _series.push_back(targetEventFromTarget(target.get(), targetDefinition.get(), _concentrationUnit));
                     }
                 }
 
                 if (!foundTarget) {
                     // We create the TargetEvent with the target, without the target definition
-                    _series.push_back(targetEventFromTarget(target.get()));
+                    _series.push_back(targetEventFromTarget(target.get(), _concentrationUnit));
                 }
             }
         }
@@ -462,7 +482,7 @@ ComputingStatus TargetExtractor::extract(
             if (!foundTarget) {
                 // Then we create the TargetEvent with the definition
 
-                _series.push_back(targetEventFromTargetDefinition(targetDefinition.get()));
+                _series.push_back(targetEventFromTargetDefinition(targetDefinition.get(), _concentrationUnit));
             }
         }
     } break;
@@ -475,7 +495,7 @@ ComputingStatus TargetExtractor::extract(
                     if ((targetDefinition.get()->getActiveMoietyId() == target.get()->m_activeMoietyId) &&
                             (targetDefinition.get()->getTargetType() == target.get()->m_targetType)){
                         // We create the TargetEvent with the target
-                        _series.push_back(targetEventFromTarget(target.get(), targetDefinition.get()));
+                        _series.push_back(targetEventFromTarget(target.get(), targetDefinition.get(), _concentrationUnit));
                     }
                 }
             }
@@ -491,7 +511,7 @@ ComputingStatus TargetExtractor::extract(
             if (!foundTarget) {
                 // Then we create the TargetEvent with the definition
 
-                _series.push_back(targetEventFromTargetDefinition(targetDefinition.get()));
+                _series.push_back(targetEventFromTargetDefinition(targetDefinition.get(), _concentrationUnit));
             }
         }
     } break;
@@ -500,7 +520,7 @@ ComputingStatus TargetExtractor::extract(
     {
         for (const auto& targetDefinition : _targetDefinitions) {
 
-            _series.push_back(targetEventFromTargetDefinition(targetDefinition.get()));
+            _series.push_back(targetEventFromTargetDefinition(targetDefinition.get(), _concentrationUnit));
         }
 
     } break;

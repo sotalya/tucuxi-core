@@ -33,7 +33,7 @@ bool OneCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent, c
         return false;
     }
 
-    m_D = _intakeEvent.getDose() * 1000;
+    m_D = _intakeEvent.getDose();
     m_Ke = _parameters.getValue(ParameterId::Ke);
     m_V = _parameters.getValue(ParameterId::V);
     m_Tinf = (_intakeEvent.getInfusionTime()).toHours();
@@ -143,7 +143,7 @@ bool OneCompartmentInfusionMacro::checkInputs(const IntakeEvent& _intakeEvent, c
         return false;
     }
 
-    m_D = _intakeEvent.getDose() * 1000;
+    m_D = _intakeEvent.getDose();
     double cl = _parameters.getValue(ParameterId::CL);
     m_V = _parameters.getValue(ParameterId::V);
     m_Ke = cl / m_V;

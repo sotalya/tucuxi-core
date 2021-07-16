@@ -48,7 +48,7 @@ struct TestTargetExtractor : public fructose::test_base<TestTargetExtractor>
         {
             extractionOption = TargetExtractionOption::AprioriValues;
 
-            result = extractor.extract(ActiveMoietyId("NoId"), covariates, targetDefinitions, targets, start, end, extractionOption, series);
+            result = extractor.extract(ActiveMoietyId("NoId"), covariates, targetDefinitions, targets, start, end, TucuUnit("ug/l"), extractionOption, series);
 
             // Not yet implemented, so extraction error
             fructose_assert( result == ComputingStatus::TargetExtractionError);
@@ -96,7 +96,7 @@ struct TestTargetExtractor : public fructose::test_base<TestTargetExtractor>
             targetDefinitions.push_back(std::unique_ptr<TargetDefinition>(target));
 
             extractionOption = TargetExtractionOption::PopulationValues;
-            result = extractor.extract(ActiveMoietyId("imatinib"), covariates, targetDefinitions, targets, start, end, extractionOption, series);
+            result = extractor.extract(ActiveMoietyId("imatinib"), covariates, targetDefinitions, targets, start, end, TucuUnit("ug/l"), extractionOption, series);
             fructose_assert_eq( result, ComputingStatus::Ok);
 
             fructose_assert(series.size() == 1);
@@ -165,7 +165,7 @@ struct TestTargetExtractor : public fructose::test_base<TestTargetExtractor>
             targets.push_back(std::unique_ptr<Target>(patientTarget));
 
             extractionOption = TargetExtractionOption::IndividualTargets;
-            result = extractor.extract(ActiveMoietyId("imatinib"), covariates, targetDefinitions, targets, start, end, extractionOption, series);
+            result = extractor.extract(ActiveMoietyId("imatinib"), covariates, targetDefinitions, targets, start, end, TucuUnit("ug/l"), extractionOption, series);
             fructose_assert_eq( result, ComputingStatus::Ok);
 
             fructose_assert(series.size() == 1);
@@ -214,7 +214,7 @@ struct TestTargetExtractor : public fructose::test_base<TestTargetExtractor>
             targets.push_back(std::unique_ptr<Target>(patientTarget));
 
             extractionOption = TargetExtractionOption::DefinitionIfNoIndividualTarget;
-            result = extractor.extract(ActiveMoietyId("imatinib"), covariates, targetDefinitions, targets, start, end, extractionOption, series);
+            result = extractor.extract(ActiveMoietyId("imatinib"), covariates, targetDefinitions, targets, start, end, TucuUnit("ug/l"), extractionOption, series);
             fructose_assert_eq( result, ComputingStatus::Ok);
 
             fructose_assert(series.size() == 1);

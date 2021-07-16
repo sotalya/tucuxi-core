@@ -60,10 +60,10 @@ public:
 private:
 
     ///  Maximum number of points for a prediction
-    int m_nbPredictionPoints;
+    CycleSize m_nbPredictionPoints;
 
     /// Maximum number of points for percentiles
-    int m_nbPercentilePoints;
+    CycleSize m_nbPercentilePoints;
 
     /// Maximum number of dosage possibilities for an adjustment
     int m_nbDosagePossibilities;

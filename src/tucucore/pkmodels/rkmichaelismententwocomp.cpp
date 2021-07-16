@@ -30,7 +30,7 @@ bool RkMichaelisMentenTwoCompExtraMicro::checkInputs(const IntakeEvent& _intakeE
         return false;
     }
 
-    m_D = _intakeEvent.getDose() * 1000;
+    m_D = _intakeEvent.getDose();
     m_V1 = _parameters.getValue(ParameterId::V1);
     m_Km = _parameters.getValue(ParameterId::Km);
     m_Vmax = _parameters.getValue(ParameterId::Vmax);
@@ -77,7 +77,7 @@ bool RkMichaelisMentenTwoCompExtraLagMicro::checkInputs(const IntakeEvent& _inta
         return false;
     }
 
-    m_D = _intakeEvent.getDose() * 1000;
+    m_D = _intakeEvent.getDose();
     m_V1 = _parameters.getValue(ParameterId::V1);
     m_Km = _parameters.getValue(ParameterId::Km);
     m_Vmax = _parameters.getValue(ParameterId::Vmax);
@@ -128,7 +128,7 @@ bool RkMichaelisMentenTwoCompBolusMicro::checkInputs(const IntakeEvent& _intakeE
         return false;
     }
 
-    m_D = _intakeEvent.getDose() * 1000;
+    m_D = _intakeEvent.getDose();
     m_V1 = _parameters.getValue(ParameterId::V1);
     m_Km = _parameters.getValue(ParameterId::Km);
     m_Vmax = _parameters.getValue(ParameterId::Vmax);
@@ -177,7 +177,7 @@ bool RkMichaelisMentenTwoCompInfusionMicro::checkInputs(const IntakeEvent& _inta
 
     m_Tinf = (_intakeEvent.getInfusionTime()).toHours();
 
-    m_D = _intakeEvent.getDose() * 1000;
+    m_D = _intakeEvent.getDose();
     m_V1 = _parameters.getValue(ParameterId::V1);
     m_Km = _parameters.getValue(ParameterId::Km);
     m_Vmax = _parameters.getValue(ParameterId::Vmax);
@@ -244,7 +244,7 @@ bool RkMichaelisMentenTwoCompExtraMacro::checkInputs(const IntakeEvent& _intakeE
         return false;
     }
 
-    m_D = _intakeEvent.getDose() * 1000;
+    m_D = _intakeEvent.getDose();
     m_V1 = _parameters.getValue(ParameterId::V1);
     m_Km = _parameters.getValue(ParameterId::Km);
     m_Vmax = _parameters.getValue(ParameterId::Vmax);
@@ -290,7 +290,7 @@ bool RkMichaelisMentenTwoCompExtraLagMacro::checkInputs(const IntakeEvent& _inta
         return false;
     }
 
-    m_D = _intakeEvent.getDose() * 1000;
+    m_D = _intakeEvent.getDose();
     m_V1 = _parameters.getValue(ParameterId::V1);
     m_Km = _parameters.getValue(ParameterId::Km);
     m_Vmax = _parameters.getValue(ParameterId::Vmax);
@@ -337,7 +337,7 @@ bool RkMichaelisMentenTwoCompBolusMacro::checkInputs(const IntakeEvent& _intakeE
         return false;
     }
 
-    m_D = _intakeEvent.getDose() * 1000;
+    m_D = _intakeEvent.getDose();
     m_V1 = _parameters.getValue(ParameterId::V1);
     m_Km = _parameters.getValue(ParameterId::Km);
     m_Vmax = _parameters.getValue(ParameterId::Vmax);
@@ -398,7 +398,7 @@ bool RkMichaelisMentenTwoCompInfusionMacro::checkInputs(const IntakeEvent& _inta
 
     m_Tinf = (_intakeEvent.getInfusionTime()).toHours();
 
-    m_D = _intakeEvent.getDose() * 1000;
+    m_D = _intakeEvent.getDose();
     m_V1 = _parameters.getValue(ParameterId::V1);
     m_Km = _parameters.getValue(ParameterId::Km);
     m_Vmax = _parameters.getValue(ParameterId::Vmax);

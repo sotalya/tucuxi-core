@@ -65,7 +65,10 @@ ComputingStatus GeneralExtractor::extractAposterioriEtas(
     SampleSeries sampleSeries;
     SampleExtractor sampleExtractor;
     ComputingStatus sampleExtractionResult =
-    sampleExtractor.extract(_request.getDrugTreatment().getSamples(), _request.getDrugModel().getAnalyteSet(_analyteGroupId), _calculationStartTime, _endTime, TucuUnit("ug/l"), sampleSeries);
+    sampleExtractor.extract(_request.getDrugTreatment().getSamples(), _request.getDrugModel().getAnalyteSet(_analyteGroupId),
+                            _calculationStartTime,
+                            _endTime,
+                            _request.getDrugModel().getAnalyteSet(_analyteGroupId)->getConcentrationUnit(), sampleSeries);
 
     if (sampleExtractionResult != ComputingStatus::Ok) {
         return sampleExtractionResult;
@@ -79,8 +82,9 @@ ComputingStatus GeneralExtractor::extractAposterioriEtas(
         ResidualErrorModelExtractor errorModelExtractor;
         std::unique_ptr<IResidualErrorModel> residualErrorModel;
         ComputingStatus errorModelExtractionResult = errorModelExtractor.extract(_request.getDrugModel().getAnalyteSet(_analyteGroupId)->getAnalytes()[0]->getResidualErrorModel(),
-                                                                                _request.getDrugModel().getAnalyteSet(_analyteGroupId)->getAnalytes()[0]->getUnit(),
-                                                                                _covariateSeries, residualErrorModel);
+                _request.getDrugModel().getAnalyteSet(_analyteGroupId)->getAnalytes()[0]->getUnit(),
+                _request.getDrugModel().getAnalyteSet(_analyteGroupId)->getAnalytes()[0]->getUnit(),
+                _covariateSeries, residualErrorModel);
         if (errorModelExtractionResult != ComputingStatus::Ok) {
             return errorModelExtractionResult;
         }
@@ -219,7 +223,11 @@ ComputingStatus GeneralExtractor::generalExtractions(const ComputingTraitStandar
 
     IntakeSeries intakeSeries;
     TUCU_TRY {
-        ComputingStatus intakeExtractionResult = intakeExtractor.extract(_dosageHistory, fantomStart /*_traits->getStart()*/, _traits->getEnd() /* + Duration(24h)*/, nbPointsPerHour, TucuUnit("mg"), intakeSeries);
+        ComputingStatus intakeExtractionResult = intakeExtractor.extract(_dosageHistory, fantomStart /*_traits->getStart()*/,
+                                                                         _traits->getEnd() /* + Duration(24h)*/,
+                                                                         nbPointsPerHour,
+                                                                         // TODO : This is a code smell. Does not work if 2 analyte sets do not share the same concentration unit
+                                                                         _drugModel.getAnalyteSets()[0]->getDoseUnit(), intakeSeries);
         if (intakeExtractionResult != ComputingStatus::Ok) {
             m_logger.error("Error with the intakes extraction.");
             return intakeExtractionResult;

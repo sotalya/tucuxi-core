@@ -41,7 +41,7 @@ public:
         analyteSet->setId("analyteSet");
         analyteSet->setPkModelId("test.pkasymptotic");
 
-        std::unique_ptr<Analyte> analyte = std::make_unique<Analyte>("analyte", TucuUnit("mg/l"), MolarMass(10.0, TucuUnit("mol/l")));
+        std::unique_ptr<Analyte> analyte = std::make_unique<Analyte>("analyte", TucuUnit("ug/l"), MolarMass(10.0, TucuUnit("mol/l")));
         analyte->setAnalyteId("analyte");
 
 
@@ -180,7 +180,7 @@ public:
 
         std::vector<AnalyteId> analyteList;
         analyteList.push_back(AnalyteId("analyte"));
-        std::unique_ptr<ActiveMoiety> activeMoiety = std::make_unique<ActiveMoiety>(ActiveMoietyId("activeMoietyConstant"), TucuUnit("mg/l"), analyteList, std::move(activeMoietyOperation));
+        std::unique_ptr<ActiveMoiety> activeMoiety = std::make_unique<ActiveMoiety>(ActiveMoietyId("activeMoietyConstant"), TucuUnit("ug/l"), analyteList, std::move(activeMoietyOperation));
 
 
         Tucuxi::Common::TranslatableString activeMoietyName;

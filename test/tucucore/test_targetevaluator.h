@@ -51,7 +51,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
                       Duration());      //Not used
 
         TargetExtractor extractor;
-        TargetEvent targetEvent = extractor.targetEventFromTarget(&target);
+        TargetEvent targetEvent = extractor.targetEventFromTarget(&target, TucuUnit("ug/l"));
 
 
         double lastTime = 50;
@@ -108,7 +108,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
                       Duration(std::chrono::minutes(120)));      //max
 
         TargetExtractor extractor;
-        TargetEvent targetEvent = extractor.targetEventFromTarget(&target);
+        TargetEvent targetEvent = extractor.targetEventFromTarget(&target, TucuUnit("ug/l"));
 
         TimeOffsets timeOffsets = {0, 1, 2, 3, 4};
 
@@ -158,7 +158,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
                       Duration(std::chrono::minutes(120)));      //max
 
         TargetExtractor extractor;
-        TargetEvent targetEvent = extractor.targetEventFromTarget(&target);
+        TargetEvent targetEvent = extractor.targetEventFromTarget(&target, TucuUnit("ug/l"));
 
         TimeOffsets timeOffsets = {0, 1, 2, 3, 4};
 
@@ -205,7 +205,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
                       Duration(std::chrono::minutes(120)));      //max
 
         TargetExtractor extractor;
-        TargetEvent targetEvent = extractor.targetEventFromTarget(&target);
+        TargetEvent targetEvent = extractor.targetEventFromTarget(&target, TucuUnit("ug/l"));
 
         TimeOffsets timeOffsets = {0, 1, 2, 3, 4};
 
@@ -252,7 +252,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
                       Duration(std::chrono::minutes(120)));      //max
 
         TargetExtractor extractor;
-        TargetEvent targetEvent = extractor.targetEventFromTarget(&target);
+        TargetEvent targetEvent = extractor.targetEventFromTarget(&target, TucuUnit("ug/l"));
 
 
         TimeOffsets timeOffsets = {0, 1, 2, 3, 4};
@@ -304,7 +304,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
 
 
         TargetExtractor extractor;
-        TargetEvent targetEvent = extractor.targetEventFromTarget(&target);
+        TargetEvent targetEvent = extractor.targetEventFromTarget(&target, TucuUnit("ug/l"));
 
         TimeOffsets timeOffsets = {0, 1, 2, 3, 4};
 
@@ -351,7 +351,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
                       Duration(std::chrono::minutes(120)));      //max
 
         TargetExtractor extractor;
-        TargetEvent targetEvent = extractor.targetEventFromTarget(&target);
+        TargetEvent targetEvent = extractor.targetEventFromTarget(&target, TucuUnit("ug/l"));
 
         TimeOffsets timeOffsets = {0, 1, 2, 3, 4, 5, 6, 7};
 
@@ -399,7 +399,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
                       Duration(std::chrono::minutes(120)));      //max
 
         TargetExtractor extractor;
-        TargetEvent targetEvent = extractor.targetEventFromTarget(&target);
+        TargetEvent targetEvent = extractor.targetEventFromTarget(&target, TucuUnit("ug/l"));
 
         TimeOffsets timeOffsets = {0, 1, 2, 3, 4, 5, 6, 7};
 
@@ -447,7 +447,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
                       Duration(std::chrono::minutes(120)));      //max
 
         TargetExtractor extractor;
-        TargetEvent targetEvent = extractor.targetEventFromTarget(&target);
+        TargetEvent targetEvent = extractor.targetEventFromTarget(&target, TucuUnit("ug/l"));
 
         double lastTime = 50;
         TimeOffsets timeOffsets = fillTimeOffsets(lastTime);
@@ -552,7 +552,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
                           Duration(std::chrono::minutes(120)));      //max
 
             TargetExtractor extractor;
-            TargetEvent targetEvent = extractor.targetEventFromTarget(&target);
+            TargetEvent targetEvent = extractor.targetEventFromTarget(&target, TucuUnit("ug/l"));
 
             Concentrations concentrations = {14, 13, 13, 12, 11, 13, 14, 12, 13, 11};
 
@@ -594,7 +594,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
                           Duration(std::chrono::minutes(120)));      //max
 
             TargetExtractor extractor;
-            TargetEvent targetEvent = extractor.targetEventFromTarget(&target);
+            TargetEvent targetEvent = extractor.targetEventFromTarget(&target, TucuUnit("ug/l"));
 
 
 
@@ -644,7 +644,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
                       Duration(std::chrono::minutes(120)));      //max
 
         TargetExtractor extractor;
-        TargetEvent targetEvent = extractor.targetEventFromTarget(&target);
+        TargetEvent targetEvent = extractor.targetEventFromTarget(&target, TucuUnit("ug/l"));
 
         TimeOffsets timeOffsets = {0, 1, 2, 3, 4};
 
@@ -692,7 +692,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
                       Duration(std::chrono::minutes(120)));      //max
 
         TargetExtractor extractor;
-        TargetEvent targetEvent = extractor.targetEventFromTarget(&target);
+        TargetEvent targetEvent = extractor.targetEventFromTarget(&target, TucuUnit("ug/l"));
 
         TimeOffsets timeOffsets = {0, 1, 2, 3, 4};
 
@@ -739,7 +739,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
                       Duration(std::chrono::minutes(120)));      //max
 
         TargetExtractor extractor;
-        TargetEvent targetEvent = extractor.targetEventFromTarget(&target);
+        TargetEvent targetEvent = extractor.targetEventFromTarget(&target, TucuUnit("ug/l"));
 
         TimeOffsets timeOffsets = {0, 1, 2, 3, 4};
 
@@ -786,7 +786,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
                       Duration(std::chrono::minutes(120)));      //max
 
         TargetExtractor extractor;
-        TargetEvent targetEvent = extractor.targetEventFromTarget(&target);
+        TargetEvent targetEvent = extractor.targetEventFromTarget(&target, TucuUnit("ug/l"));
 
         TimeOffsets timeOffsets = {0, 1, 2, 3, 4};
 

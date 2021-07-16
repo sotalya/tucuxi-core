@@ -405,9 +405,17 @@ ComputingStatus ComputingAdjustments::compute(
     TargetExtractionOption targetExtractionOption = _traits->getTargetExtractionOption();
 
     for (const auto &activeMoiety : _request.getDrugModel().getActiveMoieties()) {
+
+        // The final unit depends on the computing options
+        TucuUnit finalUnit("ug/l");
+        if (_traits->getComputingOption().forceUgPerLiter() == ForceUgPerLiterOption::DoNotForce) {
+            finalUnit = activeMoiety->getUnit();
+        }
+
         ComputingStatus targetExtractionResult =
                 targetExtractor.extract(activeMoiety->getActiveMoietyId(), covariateSeries, activeMoiety->getTargetDefinitions(),
                                         _request.getDrugTreatment().getTargets(), _traits->getStart(), _traits->getEnd(),
+                                        finalUnit,
                                         targetExtractionOption, targetSeries[activeMoiety->getActiveMoietyId()]);
 
         if (targetExtractionResult != ComputingStatus::Ok) {
@@ -509,7 +517,9 @@ ComputingStatus ComputingAdjustments::compute(
             IntakeExtractor intakeExtractor;
             double nbPointsPerHour = _traits->getNbPointsPerHour();
             ComputingStatus intakeExtractionResult = intakeExtractor.extract(*newHistory, calculationStartTime, newEndTime,
-                                                                             nbPointsPerHour, TucuUnit("mg"), intakeSeriesPerGroup[analyteGroupId],
+                                                                             nbPointsPerHour,
+                                                                             _request.getDrugModel().getAnalyteSet(analyteGroupId)->getDoseUnit(),
+                                                                             intakeSeriesPerGroup[analyteGroupId],
                                                                              ExtractionOption::EndofDate);
 
             if (intakeExtractionResult != ComputingStatus::Ok) {
@@ -561,6 +571,18 @@ ComputingStatus ComputingAdjustments::compute(
                 return predictionComputingResult;
             }
             else {
+
+                // The final unit depends on the computing options
+                TucuUnit finalUnit("ug/l");
+                if (_traits->getComputingOption().forceUgPerLiter() == ForceUgPerLiterOption::DoNotForce) {
+                    finalUnit = _request.getDrugModel().getActiveMoieties()[0]->getUnit();
+                }
+                for (size_t i = 0; i < pPrediction->getValues().size(); i++) {
+                    Tucuxi::Common::UnitManager::updateAndConvertToUnit<Tucuxi::Common::UnitManager::UnitType::Concentration>(
+                        pPrediction->getModifiableValues()[i],
+                        _request.getDrugModel().getActiveMoieties()[0]->getUnit(),
+                        finalUnit);
+                }
                 analytesPredictions.push_back(std::move(pPrediction));
             }
         }
@@ -642,14 +664,24 @@ ComputingStatus ComputingAdjustments::compute(
             dosage.m_history.addTimeRange(*newDosage);
 
 
+            // The final unit depends on the computing options
+            TucuUnit finalUnit("ug/l");
+            if (_traits->getComputingOption().forceUgPerLiter() == ForceUgPerLiterOption::DoNotForce) {
+                finalUnit = _request.getDrugModel().getActiveMoieties()[0]->getUnit();
+            }
+
             for (const auto& analyteGroupId : allGroupIds) {
                 for (size_t i = 0; i < intakeSeriesPerGroup[analyteGroupId].size(); i++) {
                     TimeOffsets times = activeMoietiesPredictions[0]->getTimes()[i];
                     DateTime start = intakeSeriesPerGroup[analyteGroupId][i].getEventTime();
                     DateTime end = start + std::chrono::milliseconds(static_cast<int>(times.back()) * 1000 * 3600);
                     if (start >= _traits->getAdjustmentTime()) {
-                        CycleData cycle(start, end, TucuUnit("ug/l"));
-                        cycle.addData(times, activeMoietiesPredictions[0]->getValues()[i]);
+                        CycleData cycle(start, end, finalUnit);
+                        cycle.addData(times,
+                                      Tucuxi::Common::UnitManager::convertToUnit<Tucuxi::Common::UnitManager::UnitType::Concentration>(
+                                          activeMoietiesPredictions[0]->getValues()[i],
+                                          _request.getDrugModel().getActiveMoieties()[0]->getUnit(),
+                                          finalUnit));
 
                         AnalyteGroupId analyteGroupId = _request.getDrugModel().getAnalyteSets()[0]->getId();
                         ParameterSetEventPtr params = parameterSeries[analyteGroupId].getAtTime(start, etas[analyteGroupId]);
@@ -1142,7 +1174,8 @@ ComputingStatus ComputingAdjustments::generatePrediction(DosageAdjustment &_dosa
         double nbPointsPerHour = _traits->getNbPointsPerHour();
         //Extract all Time range
         ComputingStatus intakeExtractionResult = intakeExtractor.extract(*newHistory, _calculationStartTime, newEndTime,
-                                                                         nbPointsPerHour, TucuUnit("mg"), intakeSeriesPerGroup[analyteGroupId],
+                                                                         nbPointsPerHour,_request.getDrugModel().getAnalyteSet(analyteGroupId)->getDoseUnit(),
+                                                                         intakeSeriesPerGroup[analyteGroupId],
                                                                          ExtractionOption::EndofDate);
 
         auto status = m_utils->m_generalExtractor->convertAnalytes(intakeSeriesPerGroup[analyteGroupId], _request.getDrugModel(), _request.getDrugModel().getAnalyteSet(analyteGroupId));
@@ -1206,6 +1239,13 @@ ComputingStatus ComputingAdjustments::generatePrediction(DosageAdjustment &_dosa
     _dosage.m_data.clear();    
 
     for (const auto& analyteGroupId : _allGroupIds) {
+
+        // The final unit depends on the computing options
+        TucuUnit finalUnit("ug/l");
+        if (_traits->getComputingOption().forceUgPerLiter() == ForceUgPerLiterOption::DoNotForce) {
+            finalUnit = _request.getDrugModel().getActiveMoieties()[0]->getUnit();
+        }
+
         IntakeSeries recordedIntakes;
         selectRecordedIntakes(recordedIntakes, intakeSeriesPerGroup[analyteGroupId], _calculationStartTime, newEndTime);
 
@@ -1222,8 +1262,12 @@ ComputingStatus ComputingAdjustments::generatePrediction(DosageAdjustment &_dosa
             DateTime start = recordedIntakes[i].getEventTime();
             DateTime end = start + std::chrono::milliseconds(static_cast<int>(times.back()) * 1000 * 3600);
             if (start >= _traits->getAdjustmentTime()) {
-                CycleData cycle(start, end, TucuUnit("ug/l"));
-                cycle.addData(times, activeMoietiesPredictions[0]->getValues()[i]);
+                CycleData cycle(start, end, finalUnit);
+                cycle.addData(times,
+                              Tucuxi::Common::UnitManager::convertToUnit<Tucuxi::Common::UnitManager::UnitType::Concentration>(
+                                  activeMoietiesPredictions[0]->getValues()[i],
+                                  _request.getDrugModel().getActiveMoieties()[0]->getUnit(),
+                                  finalUnit));
 
                 AnalyteGroupId analyteGroupId = _request.getDrugModel().getAnalyteSets()[0]->getId();
                 ParameterSetEventPtr params = parameterSeries[analyteGroupId].getAtTime(start, _etas[analyteGroupId]);

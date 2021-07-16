@@ -78,8 +78,7 @@ public:
                                                         std::unique_ptr<SubTargetDefinition>(new SubTargetDefinition("toxicity", 10000.0, nullptr)),
                                                         std::unique_ptr<SubTargetDefinition>(new SubTargetDefinition("inefficacy", 000.0, nullptr)));
 
-        ActiveMoiety *activeMoiety = new ActiveMoiety();
-
+        ActiveMoiety *activeMoiety = new ActiveMoiety(ActiveMoietyId("imatinib"), TucuUnit("ug/l"), {AnalyteId("imatinib")}, nullptr);
         activeMoiety->addTarget(std::unique_ptr<TargetDefinition>(target));
         model->addActiveMoiety(std::unique_ptr<ActiveMoiety>(activeMoiety));
 

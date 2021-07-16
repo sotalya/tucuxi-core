@@ -80,7 +80,12 @@ struct TestComputingComponentConcentration : public fructose::test_base<TestComp
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
             double nbPointsPerHour = 10.0;
-            ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
+            ComputingOption computingOption(PredictionParameterType::Population,
+                                            CompartmentsOption::MainCompartment,
+                                            RetrieveStatisticsOption::DoNotRetrieveStatistics,
+                                            RetrieveParametersOption::DoNotRetrieveParameters,
+                                            RetrieveCovariatesOption::DoNotRetrieveCovariates,
+                                            ForceUgPerLiterOption::Force);
             std::unique_ptr<ComputingTraitConcentration> traits =
                     std::make_unique<ComputingTraitConcentration>(
                         requestResponseId, start, end, nbPointsPerHour, computingOption);

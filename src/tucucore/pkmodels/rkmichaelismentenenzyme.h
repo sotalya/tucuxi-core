@@ -37,7 +37,8 @@ public:
         //auto c0 = _c[0] / 1000.0 * m_V;
         //auto cp = c0 / m_V;
         // We get concentration 0 in mg/l instead of ug/l
-        auto cp = _c[0] / 1000.0;
+//        auto cp = _c[0] / 1000.0;
+        auto cp = _c[0];
         _dcdt[0] = m_Ka * _c[1] - m_Vmax * cp * m_AllmCL / (m_Km + cp) * _c[2]; // / m_V;
         auto ktt = m_ktr * _t;
         if (m_MTT == 0.0) {
@@ -50,7 +51,8 @@ public:
 
         // Here we modify the derivative on the central compartment, in order
         // to consider it in ug/l     (1000.0 for ug, and /m_V for concentration)
-        _dcdt[0] *= 1000.0 / m_V;
+        //_dcdt[0] *= 1000.0 / m_V;
+        _dcdt[0] *= 1.0 / m_V;
         if (std::isnan(_dcdt[0])) {
             throw CalculationException();
         }

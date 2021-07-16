@@ -21,7 +21,7 @@ bool RK4OneCompartmentGammaExtraMicro::checkInputs(const IntakeEvent& _intakeEve
         return false;
     }
 
-    m_D = _intakeEvent.getDose() * 1000;
+    m_D = _intakeEvent.getDose();
     m_V = _parameters.getValue(ParameterId::V);
     m_Ke = _parameters.getValue(ParameterId::Ke);
     m_F = _parameters.getValue(ParameterId::F);
@@ -53,7 +53,7 @@ bool RK4OneCompartmentGammaExtraMacro::checkInputs(const IntakeEvent& _intakeEve
         return false;
     }
 
-    m_D = _intakeEvent.getDose() * 1000;
+    m_D = _intakeEvent.getDose();
     m_V = _parameters.getValue(ParameterId::V);
     Value cl = _parameters.getValue(ParameterId::CL); // clearance
     m_F = _parameters.getValue(ParameterId::F);

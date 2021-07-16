@@ -28,8 +28,6 @@
 #include "tucucore/pkmodel.h"
 #include "tucucore/montecarlopercentilecalculator.h"
 #include "tucucore/percentilesprediction.h"
-#include "tucucore/targetevaluationresult.h"
-#include "tucucore/targetevaluator.h"
 //#include "tucucore/overloadevaluator.h"
 #include "tucucore/residualerrormodelextractor.h"
 #include "tucucore/generalextractor.h"
@@ -287,11 +285,22 @@ ComputingStatus ComputingComponent::compute(
 
         if (end > _traits->getStart()) {
             // std::cout << "Selected Time index " << i << " : " << start << std::endl;
-            CycleData cycle(start, end, TucuUnit("ug/l"));
+
+            // The final unit depends on the computing options
+            TucuUnit unit("ug/l");
+            if (_traits->getComputingOption().forceUgPerLiter() == ForceUgPerLiterOption::DoNotForce) {
+                unit = _request.getDrugModel().getActiveMoieties()[0]->getUnit();
+            }
+
+            CycleData cycle(start, end, unit);
 
             if (!_request.getDrugModel().isSingleAnalyte()) {
                 for (const auto &activeMoiety : activeMoietiesPredictions) {
-                    cycle.addData(times, activeMoiety->getValues()[i]);
+                    cycle.addData(times,
+                                  Tucuxi::Common::UnitManager::convertToUnit<Tucuxi::Common::UnitManager::UnitType::Concentration>(
+                                      activeMoiety->getValues()[i],
+                                      _request.getDrugModel().getActiveMoieties()[0]->getUnit(),
+                                      unit));
                 }
             }
 
@@ -299,7 +308,10 @@ ComputingStatus ComputingComponent::compute(
             for(const auto &analyteGroup : _request.getDrugModel().getAnalyteSets()) {
                 AnalyteGroupId analyteGroupId = analyteGroup->getId();
 
-                cycle.addData(times, analytesPredictions[index]->getValues()[i]);
+                cycle.addData(times, Tucuxi::Common::UnitManager::convertToUnit<Tucuxi::Common::UnitManager::UnitType::Concentration>(
+                                  analytesPredictions[index]->getValues()[i],
+                                  _request.getDrugModel().getActiveMoieties()[0]->getUnit(),
+                                  unit));
                 index ++;
             }
 
@@ -415,6 +427,7 @@ ComputingStatus ComputingComponent::computePercentilesMulti(
         std::unique_ptr<IResidualErrorModel> errorModel;
 
         ComputingStatus errorModelExtractionResult = errorModelExtractor.extract(analyteGroup->getAnalytes()[0]->getResidualErrorModel(),
+                                                                                 analyteGroup->getAnalytes()[0]->getUnit(),
                                                                                  analyteGroup->getAnalytes()[0]->getUnit(),
                                                                                  covariateSeries, errorModel);
         residualErrorModel[analyteGroupId] = std::move(errorModel);
@@ -542,6 +555,11 @@ ComputingStatus ComputingComponent::computePercentilesMulti(
         const std::vector<std::vector<std::vector<Value> > >& allValues = percentiles.getValues();
 
 
+        // The final unit depends on the computing options
+        TucuUnit finalUnit("ug/l");
+        if (_traits->getComputingOption().forceUgPerLiter() == ForceUgPerLiterOption::DoNotForce) {
+            finalUnit = _request.getDrugModel().getActiveMoieties()[0]->getUnit();
+        }
 
         for (unsigned int p = 0; p < percentiles.getRanks().size(); p++) {
             std::vector<CycleData> percData;
@@ -562,9 +580,15 @@ ComputingStatus ComputingComponent::computePercentilesMulti(
                 Duration ds(ms);
                 DateTime end = start + ds;
 
-                if (end > _traits->getStart()) {
-                    CycleData cycleData(start, end, TucuUnit("ug/l"));
-                    cycleData.addData(times, allValues[p][cycle]);
+                if (end > _traits->getStart()) {                    
+                    CycleData cycleData(start, end, finalUnit);
+//                    cycleData.addData(times, allValues[p][cycle]);
+                    cycleData.addData(times,
+                                  Tucuxi::Common::UnitManager::convertToUnit<Tucuxi::Common::UnitManager::UnitType::Concentration>(
+                                      allValues[p][cycle],
+                                      _request.getDrugModel().getActiveMoieties()[0]->getUnit(),
+                                      finalUnit));
+
                     percData.push_back(cycleData);
                 }
             }
@@ -644,6 +668,7 @@ ComputingStatus ComputingComponent::computePercentilesSimple(
     ResidualErrorModelExtractor errorModelExtractor;
     std::unique_ptr<IResidualErrorModel> residualErrorModel;
     ComputingStatus errorModelExtractionResult = errorModelExtractor.extract(_request.getDrugModel().getAnalyteSet()->getAnalytes()[0]->getResidualErrorModel(),
+                                                                             _request.getDrugModel().getAnalyteSet()->getAnalytes()[0]->getUnit(),
                                                                              _request.getDrugModel().getAnalyteSet()->getAnalytes()[0]->getUnit(),
                                                                              covariateSeries, residualErrorModel);
     if (errorModelExtractionResult != ComputingStatus::Ok) {
@@ -744,6 +769,11 @@ ComputingStatus ComputingComponent::computePercentilesSimple(
         const std::vector<std::vector<std::vector<Value> > >& allValues = percentiles.getValues();
 
 
+        // The final unit depends on the computing options
+        TucuUnit finalUnit("ug/l");
+        if (_traits->getComputingOption().forceUgPerLiter() == ForceUgPerLiterOption::DoNotForce) {
+            finalUnit = _request.getDrugModel().getActiveMoieties()[0]->getUnit();
+        }
 
         for (unsigned int p = 0; p < percentiles.getRanks().size(); p++) {
             std::vector<CycleData> percData;
@@ -765,8 +795,13 @@ ComputingStatus ComputingComponent::computePercentilesSimple(
                 DateTime end = start + ds;
 
                 if (end > _traits->getStart()) {
-                    CycleData cycleData(start, end, TucuUnit("ug/l"));
-                    cycleData.addData(times, allValues[p][cycle]);
+                    CycleData cycleData(start, end, finalUnit);
+                    //                    cycleData.addData(times, allValues[p][cycle]);
+                    cycleData.addData(times,
+                                      Tucuxi::Common::UnitManager::convertToUnit<Tucuxi::Common::UnitManager::UnitType::Concentration>(
+                                          allValues[p][cycle],
+                                          _request.getDrugModel().getActiveMoieties()[0]->getUnit(),
+                                      finalUnit));
                     percData.push_back(cycleData);
                 }
             }

@@ -10,12 +10,14 @@ namespace Core {
 
 
 ComputingOption::ComputingOption(PredictionParameterType _parameterType,
-        CompartmentsOption _compartmentsOption, RetrieveStatisticsOption _retrieveStatistics, RetrieveParametersOption _retrieveParameters, RetrieveCovariatesOption _retrieveCovariates) :
+        CompartmentsOption _compartmentsOption, RetrieveStatisticsOption _retrieveStatistics, RetrieveParametersOption _retrieveParameters, RetrieveCovariatesOption _retrieveCovariates,
+                                 ForceUgPerLiterOption _forceUgPerLiter) :
     m_parameterType(_parameterType),
     m_compartmentsOption(_compartmentsOption),
     m_retrieveStatistics(_retrieveStatistics),
     m_retrieveParameters(_retrieveParameters),
-    m_retrieveCovariates(_retrieveCovariates)
+    m_retrieveCovariates(_retrieveCovariates),
+    m_forceUgPerLiterOption(_forceUgPerLiter)
 {
 
 }

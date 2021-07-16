@@ -227,6 +227,20 @@ bool XMLImporter::getChildBool(Common::XmlNodeIterator _rootIterator, const std:
 
 }
 
+bool XMLImporter::getChildBoolOptional(Common::XmlNodeIterator _rootIterator, const std::string& _childName, bool defaultValue)
+{
+    auto child = _rootIterator->getChildren(_childName);
+
+    if(child == Common::XmlNodeIterator::none())
+    {
+        return defaultValue;
+    }
+    else{
+        return extractBool(child);
+    }
+
+}
+
 int XMLImporter::getChildInt(Common::XmlNodeIterator _rootIterator, const std::string& _childName)
 {
     auto child = _rootIterator->getChildren(_childName);

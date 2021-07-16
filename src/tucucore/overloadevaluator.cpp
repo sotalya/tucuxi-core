@@ -36,7 +36,7 @@ bool OverloadEvaluator::isAcceptable(IntakeSeries &_intakeSeries,
                                      const ComputingTrait *_trait)
 {
     // Calculate the total number of points to be calculated
-    int nbPoints = 0;
+    CycleSize nbPoints = 0;
     for (const auto& intake : _intakeSeries) {
         nbPoints += intake.getNbPoints();
     }

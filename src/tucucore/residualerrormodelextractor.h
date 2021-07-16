@@ -19,11 +19,11 @@ public:
 
     ResidualErrorModelExtractor();
 
-    ComputingStatus extract(
-            const ErrorModel &_errorModel,
-            const Common::TucuUnit &_fromUnit,
-            const CovariateSeries &_covariateSeries,
-            std::unique_ptr<IResidualErrorModel> &_residualErrorModel);
+    ComputingStatus extract(const ErrorModel &_errorModel,
+                            const Common::TucuUnit &_fromUnit,
+                            const Common::TucuUnit &_toUnit,
+                            const CovariateSeries &_covariateSeries,
+                            std::unique_ptr<IResidualErrorModel> &_residualErrorModel);
 
 };
 

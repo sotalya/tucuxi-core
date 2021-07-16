@@ -225,6 +225,26 @@ bool UnitManager::isKnown(const TucuUnit& _unit)
 }
 
 
+TucuUnit UnitManager::getWeightFromConcentration(const TucuUnit& _unit)
+{
+
+    static const std::map<std::string, std::string> sm_conversionMap =
+    {
+        {"g/l", "g"},
+        {"mg/l", "mg"},
+        {"ug/l", "ug"},
+        {"g/ml", "g"},
+        {"mg/ml", "mg"},
+        {"ug/ml", "ug"}
+    };
+
+    std::string key = _unit.toString();
+    if (sm_conversionMap.count(key) > 0) {
+        return TucuUnit(sm_conversionMap.at(key));
+    }
+    throw std::invalid_argument("Error in concentration to weight unit conversion");
+}
+
 
 } // namespace Common
 } // namespace Tucuxi

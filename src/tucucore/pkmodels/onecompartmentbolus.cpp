@@ -30,7 +30,7 @@ bool OneCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
         return false;
     }
     
-    m_D = _intakeEvent.getDose() * 1000;
+    m_D = _intakeEvent.getDose();
     m_V = _parameters.getValue(ParameterId::V);
     m_Ke = _parameters.getValue(ParameterId::Ke);
     m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());
@@ -129,7 +129,7 @@ bool OneCompartmentBolusMacro::checkInputs(const IntakeEvent& _intakeEvent, cons
         return false;
     }
 
-    m_D = _intakeEvent.getDose() * 1000;
+    m_D = _intakeEvent.getDose();
     m_V = _parameters.getValue(ParameterId::V);
     Value cl = _parameters.getValue(ParameterId::CL);
     m_Ke = cl / m_V;

@@ -56,6 +56,7 @@ public:
     // Very important to return const references, else a copy is made and it makes percentiles very slow
     const std::vector<TimeOffsets>& getTimes() const { return m_times; }
     const std::vector<Concentrations>& getValues() const { return m_values; }
+    std::vector<Concentrations>& getModifiableValues() { return m_values; }
 
 private:
     std::vector<TimeOffsets> m_times;

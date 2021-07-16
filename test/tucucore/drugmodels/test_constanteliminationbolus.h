@@ -142,7 +142,8 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
             ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment,
                                             RetrieveStatisticsOption::RetrieveStatistics,
                                             RetrieveParametersOption::RetrieveParameters,
-                                            RetrieveCovariatesOption::RetrieveCovariates);
+                                            RetrieveCovariatesOption::RetrieveCovariates,
+                                            ForceUgPerLiterOption::Force);
             std::unique_ptr<ComputingTraitConcentration> traits =
                     std::make_unique<ComputingTraitConcentration>(
                         requestResponseId, start, end, nbPointsPerHour, computingOption);
@@ -196,7 +197,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
                 std::vector<CycleData> data = resp->getData();
                 fructose_assert(data.size() == 16);
                 fructose_assert(data[0].m_concentrations.size() == 1);
-                fructose_assert_eq(data[0].m_concentrations[0][0] , 200000.0);
+                fructose_assert_double_eq(data[0].m_concentrations[0][0] , 200000.0);
                 DateTime startSept2018(date::year_month_day(date::year(2018), date::month(9), date::day(1)),
                                        Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
 
@@ -355,7 +356,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
                 std::vector<CycleData> data = resp->getData();
                 fructose_assert(data.size() == 16);
                 fructose_assert(data[0].m_concentrations.size() == 1);
-                fructose_assert_eq(data[0].m_concentrations[0][0] , 200001.0);
+                fructose_assert_double_eq(data[0].m_concentrations[0][0] , 200001.0);
                 DateTime startSept2018(date::year_month_day(date::year(2018), date::month(9), date::day(1)),
                                        Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
 
@@ -403,7 +404,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         BuildConstantElimination builder;
         DrugModel *drugModel = builder.buildDrugModel(
                     ResidualErrorType::ADDITIVE,
-                    std::vector<Value>({10.0}));
+                    std::vector<Value>({10000.0}));
 
         fructose_assert(drugModel != nullptr);
 
@@ -906,7 +907,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         BuildConstantElimination builder;
         DrugModel *drugModel = builder.buildDrugModel(
                     ResidualErrorType::ADDITIVE,
-                    std::vector<Value>({10.0}),
+                    std::vector<Value>({10000.0}),
                     ParameterVariabilityType::Additive,
                     ParameterVariabilityType::None,
                     ParameterVariabilityType::None,

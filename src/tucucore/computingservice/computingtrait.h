@@ -65,6 +65,15 @@ enum class RetrieveCovariatesOption {
     DoNotRetrieveCovariates //!< Do not retrieve the covariates
 };
 
+
+///
+/// \brief The RetrieveCovariatesOption enum
+/// This enum allows to define if covariates shall be retrieved or not
+enum class ForceUgPerLiterOption {
+    Force = 0, //!< Force the output to be in ug/l
+    DoNotForce //!< Please, respect the drug model
+};
+
 ///
 /// \brief The ComputingOption class.
 /// This class embeds some general options for computation. It is used by all requests.
@@ -81,12 +90,14 @@ public:
     /// \param _retrieveStatistics Indicates if statistics have to be computed
     /// \param _retrieveParameters Indicates if parameter values have to be retrieved
     /// \param _retrieveCovariates Indicates if covariate values have to be retrieved
+    /// \param _forceUgPerLiter Indicates if the results should be forced in ug/l
     ///
     ComputingOption(PredictionParameterType _parameterType,
             CompartmentsOption _compartmentsOption,
             RetrieveStatisticsOption _retrieveStatistics = RetrieveStatisticsOption::DoNotRetrieveStatistics,
             RetrieveParametersOption _retrieveParameters = RetrieveParametersOption::DoNotRetrieveParameters,
-            RetrieveCovariatesOption _retrieveCovariates = RetrieveCovariatesOption::DoNotRetrieveCovariates);
+            RetrieveCovariatesOption _retrieveCovariates = RetrieveCovariatesOption::DoNotRetrieveCovariates,
+            ForceUgPerLiterOption    _forceUgPerLiter    = ForceUgPerLiterOption::Force);
 
     ///
     /// \brief getParametersType Gets the type of parameters
@@ -118,6 +129,12 @@ public:
     ///
     RetrieveCovariatesOption retrieveCovariates() const { return m_retrieveCovariates;}
 
+    ///
+    /// \brief forceUgPerLiter Indicates if the results shall be in ug/l
+    /// \return ForceUgPerLiterOption::Foce if it should be forced
+    ///
+    ForceUgPerLiterOption forceUgPerLiter() const { return m_forceUgPerLiterOption;}
+
 protected:
 
     //! Type of parameters
@@ -134,6 +151,9 @@ protected:
 
     //! Shall we retrieve the covariates
     RetrieveCovariatesOption m_retrieveCovariates;
+
+    //! Shall the results be in ug/l or shall they respect the drug model
+    ForceUgPerLiterOption m_forceUgPerLiterOption;
 };
 
 

@@ -157,6 +157,10 @@ public:
     void setPkModelId(std::string _pkModelId) { m_pkModelId = _pkModelId;}
     std::string getPkModelId() const { return m_pkModelId;}
 
+    void setDoseUnit(TucuUnit _unit) { m_doseUnit = _unit;}
+    TucuUnit getDoseUnit() const { return m_doseUnit;}
+
+    TucuUnit getConcentrationUnit() const { return m_analytes[0]->getUnit();}
 
     INVARIANTS(
             INVARIANT(Invariants::INV_ANALYTESET_0001, (m_analyteSetId.size() > 0), "An analyte group has no Id")
@@ -179,6 +183,9 @@ protected:
     std::unique_ptr<ParameterSetDefinition> m_dispositionParameters;
 
     std::string m_pkModelId;
+
+    TucuUnit m_doseUnit{"ug"};
+
 };
 
 } // namespace Core

@@ -1188,6 +1188,7 @@ Tucuxi::Core::ComputingOption QueryImport::getChildComputingOption(Common::XmlNo
     static const string RETRIEVE_STATISTICS         = "retrieveStatistics";
     static const string RETRIEVE_PARAMETERS         = "retrieveParameters";
     static const string RETRIEVE_COVARIATES         = "retrieveCovariates";
+    static const string FORCE_UG_PER_LITER          = "forceUgPerLiter";
 
     Common::XmlNodeIterator computingOptionRootIterator = _rootIterator->getChildren(_childName);
     Tucuxi::Core::PredictionParameterType predictionParameterType = getChildParametersTypeEnum(computingOptionRootIterator, PARAMETERS_TYPE);
@@ -1195,6 +1196,7 @@ Tucuxi::Core::ComputingOption QueryImport::getChildComputingOption(Common::XmlNo
     Tucuxi::Core::RetrieveStatisticsOption retrieveStatisticsOption;
     Tucuxi::Core::RetrieveParametersOption retrieveParametersOption;
     Tucuxi::Core::RetrieveCovariatesOption retrieveCovariatesOption;
+    Tucuxi::Core::ForceUgPerLiterOption forceUgPerLiter = Tucuxi::Core::ForceUgPerLiterOption::Force;
 
     if(getChildBool(computingOptionRootIterator, RETRIEVE_STATISTICS))
     {
@@ -1217,8 +1219,16 @@ Tucuxi::Core::ComputingOption QueryImport::getChildComputingOption(Common::XmlNo
         retrieveCovariatesOption = Tucuxi::Core::RetrieveCovariatesOption::DoNotRetrieveCovariates;
     }
 
+    if(getChildBoolOptional(computingOptionRootIterator, FORCE_UG_PER_LITER, true))
+    {
+        forceUgPerLiter = Tucuxi::Core::ForceUgPerLiterOption::Force;
+    }else {
+        forceUgPerLiter = Tucuxi::Core::ForceUgPerLiterOption::DoNotForce;
+    }
 
-    return Tucuxi::Core::ComputingOption(predictionParameterType, compartmentOption, retrieveStatisticsOption, retrieveParametersOption, retrieveCovariatesOption);
+
+    return Tucuxi::Core::ComputingOption(predictionParameterType, compartmentOption, retrieveStatisticsOption, retrieveParametersOption, retrieveCovariatesOption,
+                                         forceUgPerLiter);
 }
 
 

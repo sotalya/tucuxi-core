@@ -63,6 +63,7 @@ protected:
     TucuUnit getChildUnit(Common::XmlNodeIterator _rootIterator, const std::string& _childName, CheckUnit _checkunit = CheckUnit::DoNotCheck);
     double getChildDouble(Common::XmlNodeIterator _rootIterator, const std::string& _childName);
     bool getChildBool(Common::XmlNodeIterator _rootIterator, const std::string& _childName);
+    bool getChildBoolOptional(Common::XmlNodeIterator _rootIterator, const std::string& _childName, bool defaultValue);
     int getChildInt(Common::XmlNodeIterator _rootIterator, const std::string& _childName);
     DateTime getChildDateTime(Common::XmlNodeIterator _rootIterator, const std::string& _childName,
                               EmptynessAllowed _allowEmpty = EmptynessAllowed::DoNotAllowEmpty);

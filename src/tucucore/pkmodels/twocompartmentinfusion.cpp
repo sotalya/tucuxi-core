@@ -31,7 +31,7 @@ bool TwoCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent, c
         return false;
     }
 
-    m_D = _intakeEvent.getDose() * 1000;
+    m_D = _intakeEvent.getDose();
     m_V1 = _parameters.getValue(ParameterId::V1);
     m_Ke = _parameters.getValue(ParameterId::Ke);
     m_K12 = _parameters.getValue(ParameterId::K12);
@@ -274,7 +274,7 @@ bool TwoCompartmentInfusionMacro::checkInputs(const IntakeEvent& _intakeEvent, c
         return false;
     }
 
-    m_D = _intakeEvent.getDose() * 1000;
+    m_D = _intakeEvent.getDose();
     Value cl = _parameters.getValue(ParameterId::CL);
     Value q = _parameters.getValue(ParameterId::Q);
     m_V1 = _parameters.getValue(ParameterId::V1);

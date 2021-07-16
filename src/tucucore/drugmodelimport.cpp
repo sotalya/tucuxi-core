@@ -1377,6 +1377,8 @@ AnalyteSet* DrugModelImport::extractAnalyteGroup(Tucuxi::Common::XmlNodeIterator
     AnalyteSet *analyteGroup = nullptr;
     std::string groupId;
     std::string pkModelId;
+    // Use a default value for the concentration unit, for backward compatibility purpose
+    TucuUnit concentrationUnit{"ug/l"};
     std::vector<Analyte*> analytes;
     ParameterSetDefinition* parameters = nullptr;
     std::vector<TargetDefinition *> targets;
@@ -1412,6 +1414,10 @@ AnalyteSet* DrugModelImport::extractAnalyteGroup(Tucuxi::Common::XmlNodeIterator
     analyteGroup = new AnalyteSet();
     analyteGroup->setId(groupId);
     analyteGroup->setPkModelId(pkModelId);
+    if (analytes.size() > 0) {
+        // Here we assume all analytes will share the same unit
+        analyteGroup->setDoseUnit(Tucuxi::Common::UnitManager::getWeightFromConcentration(analytes[0]->getUnit()));
+    }
     for (const auto & analyte : analytes) {
         analyteGroup->addAnalyte(std::unique_ptr<Analyte>(analyte));
     }

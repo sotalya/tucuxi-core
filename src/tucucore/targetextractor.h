@@ -30,6 +30,7 @@ public:
     /// \param _targets
     /// \param _start
     /// \param _end
+    /// \param _concentrationUnit
     /// \param _extractionOption
     /// \param _series
     /// \return
@@ -45,16 +46,17 @@ public:
             const Targets &_targets,
             const DateTime &_start,
             const DateTime &_end,
+            const TucuUnit &_concentrationUnit,
             TargetExtractionOption _extractionOption,
             TargetSeries &_series);
 
 protected:
 
-    TargetEvent targetEventFromTarget(const Target *_target);
+    TargetEvent targetEventFromTarget(const Target *_target, const TucuUnit &_concentrationUnit);
 
-    TargetEvent targetEventFromTarget(const Target *_target, const TargetDefinition *_targetDefinition);
+    TargetEvent targetEventFromTarget(const Target *_target, const TargetDefinition *_targetDefinition, const TucuUnit &_concentrationUnit);
 
-    TargetEvent targetEventFromTargetDefinition(const TargetDefinition *_target);
+    TargetEvent targetEventFromTargetDefinition(const TargetDefinition *_target, const TucuUnit &_concentrationUnit);
 
     friend TestTargetExtractor;
     friend TestTargetEvaluator;

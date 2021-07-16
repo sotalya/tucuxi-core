@@ -161,9 +161,9 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
                 std::vector<CycleData> data = resp->getData();
                 fructose_assert(data.size() == 16);
                 fructose_assert(data[0].m_concentrations.size() == 3);
-                fructose_assert_eq(data[0].m_concentrations[0][0] , 400000.0);
-                fructose_assert_eq(data[0].m_concentrations[1][0] , 200000.0);
-                fructose_assert_eq(data[0].m_concentrations[2][0] , 200000.0);
+                fructose_assert_double_eq(data[0].m_concentrations[0][0] , 400000.0);
+                fructose_assert_double_eq(data[0].m_concentrations[1][0] , 200000.0);
+                fructose_assert_double_eq(data[0].m_concentrations[2][0] , 200000.0);
                 fructose_assert_eq(data[0].m_concentrations[0].size() , size_t{61});
                 fructose_assert_eq(data[0].m_concentrations[1].size() , size_t{61});
                 fructose_assert_eq(data[0].m_concentrations[2].size() , size_t{61});
@@ -300,9 +300,9 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
                 std::vector<CycleData> data = resp->getData();
                 fructose_assert(data.size() == 16);
                 fructose_assert(data[0].m_concentrations.size() == 3);
-                fructose_assert_eq(data[0].m_concentrations[0][0] , 200000.0 * 0.8);
-                fructose_assert_eq(data[0].m_concentrations[1][0] , 200000.0 * 0.3);
-                fructose_assert_eq(data[0].m_concentrations[2][0] , 200000.0 * 0.5);
+                fructose_assert_double_eq(data[0].m_concentrations[0][0] , 200000.0 * 0.8);
+                fructose_assert_double_eq(data[0].m_concentrations[1][0] , 200000.0 * 0.3);
+                fructose_assert_double_eq(data[0].m_concentrations[2][0] , 200000.0 * 0.5);
                 fructose_assert_eq(data[0].m_concentrations[0].size() , size_t{61});
                 fructose_assert_eq(data[0].m_concentrations[1].size() , size_t{61});
                 fructose_assert_eq(data[0].m_concentrations[2].size() , size_t{61});
