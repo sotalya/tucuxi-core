@@ -19,27 +19,25 @@ std::vector<std::string> RkMichaelisMentenEnzymeExtra::getParametersId()
     return {"V", "Km", "Vmax", "F", "Ka", "Kenz", "Emax", "ECmid", "EDmid", "DoseMid", "Fmax", "NN", "MTT", "AllmCL"};
 }
 
-Value toUgL(Value _v) { return _v * 1.0;}
-
 bool RkMichaelisMentenEnzymeExtra::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
     if (!checkCondition(_parameters.size() >= 11, "The number of parameters should be equal to 10.")) {
         return false;
     }
 
-    m_D = toUgL(_intakeEvent.getDose());// * 1000.0;
+    m_D = _intakeEvent.getDose();
     m_V = _parameters.getValue(ParameterId::V);
-    m_Km = toUgL(_parameters.getValue(ParameterId::Km));// * 1000.0;
-    m_Vmax = toUgL(_parameters.getValue(ParameterId::Vmax));// * 1000.0;
+    m_Km = _parameters.getValue(ParameterId::Km);
+    m_Vmax = _parameters.getValue(ParameterId::Vmax);
     m_F = _parameters.getValue(ParameterId::F);
     m_Ka = _parameters.getValue(ParameterId::Ka);
     m_AllmCL = _parameters.getValue(ParameterId::AllmCL);
 
     m_Kenz = _parameters.getValue(ParameterId::Kenz);
     m_Emax = _parameters.getValue(ParameterId::Emax);
-    m_ECmid = toUgL(_parameters.getValue(ParameterId::ECmid));// * 1000.0;
-    m_EDmid = toUgL(_parameters.getValue(ParameterId::EDmid));// * 1000.0;
-    m_DoseMid = toUgL(_parameters.getValue(ParameterId::DoseMid));// * 1000.0;
+    m_ECmid = _parameters.getValue(ParameterId::ECmid);
+    m_EDmid = _parameters.getValue(ParameterId::EDmid);
+    m_DoseMid = _parameters.getValue(ParameterId::DoseMid);
     m_Fmax = _parameters.getValue(ParameterId::Fmax);
     m_NN = _parameters.getValue(ParameterId::NN);
     m_MTT = _parameters.getValue(ParameterId::MTT);
@@ -59,9 +57,9 @@ bool RkMichaelisMentenEnzymeExtra::checkInputs(const IntakeEvent& _intakeEvent, 
     auto criticalPoint = m_DoseMid - m_EDmid;
 
     // Then arbitrarily define a lower bound where the curve should be OK
-    auto lowBound = criticalPoint - toUgL(23.0);
+    auto lowBound = criticalPoint - 23.0;
     // And a higher bound as well
-    auto highBound = criticalPoint + toUgL(37.0);
+    auto highBound = criticalPoint + 37.0;
     if ((m_D < criticalPoint) && (m_D > lowBound)) {
         // If the dose is in [lowerBoud, criticalPoint], use the value at the bound
         tvbio = m_F *(1.0 + m_Fmax * (lowBound - m_DoseMid) / (m_EDmid + (lowBound - m_DoseMid)));
