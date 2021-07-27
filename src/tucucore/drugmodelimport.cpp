@@ -328,8 +328,12 @@ Formulation DrugModelImport::extractFormulation(Tucuxi::Common::XmlNodeIterator 
     static std::map<std::string, Formulation> m =
     {
         {"undefined", Formulation::Undefined},
+        // We should get rid of the space to prefer the next option
         {"parenteral solution", Formulation::ParenteralSolution},
+        {"parenteralSolution", Formulation::ParenteralSolution},
+        // We should get rid of the space to prefer the next option
         {"oral solution", Formulation::OralSolution},
+        {"oralSolution", Formulation::OralSolution},
         {"test", Formulation::Test}
     };
 

@@ -297,6 +297,7 @@ int main(int argc, char** argv)
     // one compartment
     calculatorsTests.add_test("1 comp bolus single vs multiple test", &TestIntervalCalculator::test1compBolusSingleVsMultiple);
     calculatorsTests.add_test("1 comp extra single vs multiple test", &TestIntervalCalculator::test1compExtraSingleVsMultiple);
+    calculatorsTests.add_test("1 comp extra lag single vs multiple test", &TestIntervalCalculator::test1compExtraLagSingleVsMultiple);
     calculatorsTests.add_test("1 comp infusion single vs multiple test", &TestIntervalCalculator::test1compInfusionSingleVsMultiple);
 
     calculatorsTests.add_test("rk 1 comp extra single vs multiple test", &TestIntervalCalculator::testRK41compExtraSingleVsMultiple);

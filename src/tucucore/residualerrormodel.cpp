@@ -135,14 +135,18 @@ Value SigmaResidualErrorModel::calculateSampleLikelihood(Value _expected, Value 
 
     // The following should be used for real Exponential models
     // Unfortunately NONMEM does not work that way
-    if (m_errorModel == ResidualErrorType::EXPONENTIAL) {
+/*    if (m_errorModel == ResidualErrorType::EXPONENTIAL) {
         phi =
                 (0.5 * log(2 * PI)) +
                 log(_expected) +     // There is this specific log(_expected for LogNormal distribution
                 log(sig) +
                 0.5 * expectedObservedDiff * 1.0/(std::pow(sig,2)) * expectedObservedDiff;
     }
-    else {
+    else*/
+
+    // Actually it is perfectly fine like this. It validates against NONMEM if NONMEM performs computations on
+    // the log scale
+    {
         // This is the calculation with a sig of one element
         phi =
                 (0.5 * log(2 * PI)) +

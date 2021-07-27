@@ -15,6 +15,7 @@
 #include "tucucore/pkmodels/onecompartmentbolus.h"
 #include "tucucore/pkmodels/onecompartmentextra.h"
 #include "tucucore/pkmodels/onecompartmentinfusion.h"
+#include "tucucore/pkmodels/onecompartmentextralag.h"
 #include "tucucore/pkmodels/twocompartmentbolus.h"
 #include "tucucore/pkmodels/twocompartmentextra.h"
 #include "tucucore/pkmodels/twocompartmentinfusion.h"
@@ -143,11 +144,26 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
         std::vector<Tucuxi::Core::Concentrations> concentrations;
         concentrations.resize(residualSize);
 
+        std::vector<Tucuxi::Core::Concentrations> concentrationsInterval2;
+        concentrationsInterval2.resize(residualSize);
+
+        std::vector<Tucuxi::Core::Concentrations> concentrations2;
+        concentrations2.resize(residualSize);
+
+        std::vector<Tucuxi::Core::Concentrations> concentrations2Interval2;
+        concentrations2Interval2.resize(residualSize);
+
         Tucuxi::Core::TimeOffsets times;
         Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, _dose, TucuUnit("mg"), interval, Tucuxi::Core::FormulationAndRoute(_route), _route, infusionTime, _nbPoints);
-        Tucuxi::Core::Residuals inResiduals(residualSize), outMicroMultiResiduals(residualSize), outMicroSingleResiduals(residualSize), outMacroMultiResiduals(residualSize), outMacroSingleResiduals(residualSize);
 
-        std::fill(inResiduals.begin(), inResiduals.end(), 0);
+        // Start with an empty residual
+        const Tucuxi::Core::Residuals firstInResidual(residualSize, 0);
+        Tucuxi::Core::Residuals outMicroMultiResiduals(residualSize);
+        Tucuxi::Core::Residuals outMicroSingleResiduals(residualSize);
+        Tucuxi::Core::Residuals outMacroMultiResiduals(residualSize);
+        Tucuxi::Core::Residuals outMacroMultiResiduals2(residualSize);
+        Tucuxi::Core::Residuals outMacroSingleResiduals(residualSize);
+        Tucuxi::Core::Residuals outMacroSingleResiduals2(residualSize);
 
         // Calculation of Micro Class
         res = microCalculator.calculateIntakePoints(
@@ -155,7 +171,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             times,
             intakeEvent,
             _microParameters,
-            inResiduals,
+            firstInResidual,
             isAll,
             outMicroMultiResiduals,
             true);
@@ -177,7 +193,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             concentrations,
             intakeEvent,
             _microParameters,
-            inResiduals,
+            firstInResidual,
             interval.toHours(),
             isAll,
             outMicroSingleResiduals);
@@ -200,7 +216,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             times,
             intakeEvent,
             _macroParameters,
-            inResiduals,
+            firstInResidual,
             isAll,
             outMacroMultiResiduals,
             true);
@@ -218,11 +234,13 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
 
         fructose_assert(res == Tucuxi::Core::ComputingStatus::Ok);
 
+
+        // Just check the residuals
         res = macroCalculator.calculateIntakeSinglePoint(
-            concentrations,
+            concentrations2,
             intakeEvent,
             _macroParameters,
-            inResiduals,
+            firstInResidual,
             interval.toHours(),
             isAll,
             outMacroSingleResiduals);
@@ -247,6 +265,84 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
                 fructose_assert_double_eq_rel_abs(outMicroSingleResiduals[i], outMacroSingleResiduals[i], 0.001, 0.001)
             }
         }
+
+
+        // Then a full check on all points
+        for (size_t t = 0; t < times.size(); t ++) {
+
+            std::vector<Tucuxi::Core::Concentrations> concentrations3;
+            concentrations3.resize(residualSize);
+
+            Tucuxi::Core::Residuals outResiduals(residualSize);
+
+            res = macroCalculator.calculateIntakeSinglePoint(
+                        concentrations3,
+                        intakeEvent,
+                        _macroParameters,
+                        firstInResidual,
+                        times[t],
+                        isAll,
+                        outResiduals);
+
+            fructose_assert(res == Tucuxi::Core::ComputingStatus::Ok);
+
+            if (res == Tucuxi::Core::ComputingStatus::Ok) {
+                fructose_assert_double_eq_rel_abs(concentrations[0][t], concentrations3[0][0], 0.0001, 0.0);
+            }
+        }
+
+
+
+        // Calculation of Macro Class with the previous residual
+        res = macroCalculator.calculateIntakePoints(
+            concentrationsInterval2,
+            times,
+            intakeEvent,
+            _macroParameters,
+            outMacroMultiResiduals,
+            isAll,
+            outMacroMultiResiduals2,
+            true);
+
+        if (verbose()) {
+            std::cout << "\n[Macro Class Calculation]"<< std::endl;
+            for(unsigned int i = 0; i < residualSize; i++) {
+                std::cout << "Multiple Out residual["
+                          << i
+                          << "] = "
+                          << outMacroMultiResiduals[i]
+                          << std::endl;
+            }
+        }
+
+        fructose_assert(res == Tucuxi::Core::ComputingStatus::Ok);
+
+
+
+        // Then a full check on all points
+        for (size_t t = 0; t < times.size(); t ++) {
+
+            std::vector<Tucuxi::Core::Concentrations> concentrations3;
+            concentrations3.resize(residualSize);
+
+            res = macroCalculator.calculateIntakeSinglePoint(
+                        concentrations3,
+                        intakeEvent,
+                        _macroParameters,
+                        outMacroSingleResiduals,
+                        times[t],
+                        isAll,
+                        outMacroSingleResiduals2);
+
+            fructose_assert(res == Tucuxi::Core::ComputingStatus::Ok);
+
+            if (res == Tucuxi::Core::ComputingStatus::Ok) {
+                fructose_assert_double_eq_rel_abs(concentrationsInterval2[0][t], concentrations3[0][0], 0.0001, 0.0);
+            }
+        }
+
+
+
     }
 
 
@@ -426,6 +522,36 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             CYCLE_SIZE);
     }
 
+    void test1compExtraLagSingleVsMultiple(const std::string& /* _testName */)
+    {
+        // parameter for micro class
+        Tucuxi::Core::ParameterDefinitions microParameterDefs;
+        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterVariabilityType::None)));
+        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ke", 0.0435331, Tucuxi::Core::ParameterVariabilityType::None)));
+        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
+        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
+        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Tlag", 1, Tucuxi::Core::ParameterVariabilityType::None)));
+        Tucuxi::Core::ParameterSetEvent microParameters(DateTime(), microParameterDefs);
+
+        // parameter for macro class
+        Tucuxi::Core::ParameterDefinitions macroParameterDefs;
+        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterVariabilityType::None)));
+        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("CL", 15.106, Tucuxi::Core::ParameterVariabilityType::None)));
+        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
+        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
+        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Tlag", 1, Tucuxi::Core::ParameterVariabilityType::None)));
+        Tucuxi::Core::ParameterSetEvent macroParameters(DateTime(), macroParameterDefs);
+
+        testCalculator<Tucuxi::Core::OneCompartmentExtraLagMicro, Tucuxi::Core::OneCompartmentExtraLagMacro>(
+            microParameters,
+            macroParameters,
+            400.0,
+            Tucuxi::Core::AbsorptionModel::ExtravascularLag,
+            12h,
+            0s,
+            CYCLE_SIZE);
+    }
+
     /// \brief Test the concentration calculation of erlang transit compartments.
     /// \param _testName Test name.
     void test2compErlang(const std::string& /* _testName */)
@@ -575,6 +701,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             1h,
             CYCLE_SIZE);
     }
+
 
     /// \brief Test the residual calculation of Bolus. Compares single point vs multiple points
     /// \param _testName Test name.

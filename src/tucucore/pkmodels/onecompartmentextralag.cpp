@@ -167,13 +167,25 @@ bool OneCompartmentExtraLagMicro::computeConcentration(const Value& _atTime, con
     int atTime = static_cast<int>(SingleConcentrations::AtTime);
     int atEndInterval = static_cast<int>(SingleConcentrations::AtEndInterval);
 
-    // compute concenration1 and 2
+    // We fix nb points to be 2, to be coherent with calculateExponentials
+    m_nbPoints = 2;
+    // Then, depending on the fact that the time of interest is before the lag time
+    // or not we set the number of points for each of these two intervals
+    if (_atTime <= m_Tlag) {
+        m_nbPoints0 = 1;
+        m_nbPoints1 = 1;
+    }
+    else {
+        m_nbPoints0 = 0;
+        m_nbPoints1 = 2;
+    }
+    // compute concentration1 and 2
     compute(_inResiduals, concentrations1, concentrations2);
 
     // return concentraions (computation with atTime (current time))
     _concentrations[firstCompartment].push_back(concentrations1[atTime]);
     if (_isAll == true) {
-	_concentrations[secondCompartment].push_back(concentrations2[atTime]);
+        _concentrations[secondCompartment].push_back(concentrations2[atTime]);
     }
     
     // interval=0 means that it is the last cycle, so final residual = 0

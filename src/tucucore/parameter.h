@@ -121,7 +121,7 @@ public:
     void addParameterEvent(const ParameterDefinition &_definition, Value _value);
 
     ParameterSetEvent(const DateTime& _date, const ParameterDefinitions &_definitions)
-        : TimedEvent(_date)
+        : ParameterSetEvent(_date)
     {
         ParameterDefinitions::const_iterator it;
         for (it = _definitions.begin(); it != _definitions.end(); it++) {
