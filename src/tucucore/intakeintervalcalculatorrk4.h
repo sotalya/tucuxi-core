@@ -125,6 +125,8 @@ protected:
     CycleSize m_nbPoints; /// Number measure points during interval
     Value m_Int; /// Interval time (Hours)
 
+    double m_h; /// Internal h value for advancing on RK4
+
     bool computeConcentrations(Eigen::VectorXd &_times, const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) override
     {
         std::vector<Concentrations> concentrations;
@@ -306,7 +308,7 @@ protected:
         const double stdH = 1.0 / 60.0;
 
         // h is the delta used and possibly modified at specific iterations
-        double h = stdH;
+        m_h = stdH;
 
         // The number of points to get corresponds to the size of the times of interest
         Eigen::Index nbPoints = _times.size();
@@ -356,35 +358,37 @@ protected:
 
             // Adjust h if the next time is close, to reach the exact time point
             if (nextTime - t < stdH) {
-                h = nextTime - t;
+                m_h = nextTime - t;
             }
             else {
-                h = stdH;
+                m_h = stdH;
             }
 
             // Let's use static inheritance
             static_cast<ImplementationClass*>(this)->derive(t, concentrations, dcdt);
 
             // Set k1's
-            ComputeK1<0, ResidualSize - 1>::apply(k1, h, dcdt, c, concentrations);
+            ComputeK1<0, ResidualSize - 1>::apply(k1, m_h, dcdt, c, concentrations);
 
-            static_cast<ImplementationClass*>(this)->derive(t + h / 2.0, c, dcdt);
+            static_cast<ImplementationClass*>(this)->derive(t + m_h / 2.0, c, dcdt);
 
 
             // Set k2's
-            ComputeK2<0, ResidualSize - 1>::apply(k2, h, dcdt, c, concentrations);
+            ComputeK2<0, ResidualSize - 1>::apply(k2, m_h, dcdt, c, concentrations);
 
-            static_cast<ImplementationClass*>(this)->derive(t + h / 2.0, c, dcdt);
+            static_cast<ImplementationClass*>(this)->derive(t + m_h / 2.0, c, dcdt);
 
             // Set k3's
-            ComputeK3<0, ResidualSize - 1>::apply(k3, h, dcdt, c, concentrations);
+            ComputeK3<0, ResidualSize - 1>::apply(k3, m_h, dcdt, c, concentrations);
 
-            static_cast<ImplementationClass*>(this)->derive(t + h, c, dcdt);
+            static_cast<ImplementationClass*>(this)->derive(t + m_h, c, dcdt);
 
             // Set k4's
-            ComputeK4<0, ResidualSize - 1>::apply(k1, k2, k3, k4, h, dcdt, concentrations);
+            ComputeK4<0, ResidualSize - 1>::apply(k1, k2, k3, k4, m_h, dcdt, concentrations);
 
-            t += h;
+            static_cast<ImplementationClass*>(this)->addFixedValue(t, concentrations);
+
+            t += m_h;
         }
 
     }
@@ -396,7 +400,7 @@ protected:
         const double stdH = 1.0 / 60.0;
 
         // h is the delta used and possibly modified at specific iterations
-        double h = stdH;
+        m_h = stdH;
 
         // The number of points to get corresponds to the size of the times of interest
         Eigen::Index nbPoints = _times.size();
@@ -446,10 +450,10 @@ protected:
 
             // Adjust h if the next time is close, to reach the exact time point
             if (nextTime - t < stdH) {
-                h = nextTime - t;
+                m_h = nextTime - t;
             }
             else {
-                h = stdH;
+                m_h = stdH;
             }
 
             // Let's use static inheritance
@@ -457,36 +461,36 @@ protected:
 
             // Set k1's
             for(size_t i = 0; i < ResidualSize; i++) {
-                k1[i] = h * dcdt[i];
+                k1[i] = m_h * dcdt[i];
                 c[i] = concentrations[i] + k1[i] / 2.0;
             }
 
-            static_cast<ImplementationClass*>(this)->derive(t + h / 2.0, c, dcdt);
+            static_cast<ImplementationClass*>(this)->derive(t + m_h / 2.0, c, dcdt);
 
             // Set k2's
             for(size_t i = 0; i < ResidualSize; i++) {
-                k2[i] = h * dcdt[i];
+                k2[i] = m_h * dcdt[i];
                 c[i] = concentrations[i] + k2[i] / 2.0;
             }
 
-            static_cast<ImplementationClass*>(this)->derive(t + h / 2.0, c, dcdt);
+            static_cast<ImplementationClass*>(this)->derive(t + m_h / 2.0, c, dcdt);
 
             // Set k3's
             for(size_t i = 0; i < ResidualSize; i++) {
-                k3[i] = h * dcdt[i];
+                k3[i] = m_h * dcdt[i];
                 c[i] = concentrations[i] + k3[i];
             }
 
-            static_cast<ImplementationClass*>(this)->derive(t + h, c, dcdt);
+            static_cast<ImplementationClass*>(this)->derive(t + m_h, c, dcdt);
 
             // Set k4's
             for(size_t i = 0; i < ResidualSize; i++) {
-                k4[i] = h * dcdt[i];
+                k4[i] = m_h * dcdt[i];
                 // and directly compute the concentration of each compartment
                 concentrations[i] = concentrations[i] + k1[i] / 6.0 + k2[i] / 3.0 + k3[i] / 3.0 + k4[i] / 6.0;
             }
 
-            t += h;
+            t += m_h;
         }
 
     }

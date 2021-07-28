@@ -67,6 +67,13 @@ public:
         //assert(!std::isnan(_dcdt[2]));
     }
 
+
+    inline void addFixedValue(double _t, std::vector<double>& _concentrations)
+    {
+        FINAL_UNUSED_PARAMETER(_t);
+        FINAL_UNUSED_PARAMETER(_concentrations);
+    }
+
 protected:
 
 

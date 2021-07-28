@@ -31,6 +31,12 @@ public:
         _dcdt[1] = -m_Ka * _c[1];
     }
 
+    inline void addFixedValue(double _t, std::vector<double>& _concentrations)
+    {
+        FINAL_UNUSED_PARAMETER(_t);
+        FINAL_UNUSED_PARAMETER(_concentrations);
+    }
+
 protected:
 
 

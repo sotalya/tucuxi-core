@@ -43,10 +43,13 @@ public:
                 _dcdt[0] += m_infusionRate;
             }
         }
+    }
+
+    inline void addFixedValue(double _t, std::vector<double>& _concentrations)
+    {
         if (m_isWithLag) {
             if ((!m_delivered) && (_t >= m_Tlag)) {
-                // 60.0 has to be coherent with the delta of RK4.
-                _dcdt[2] += m_D / m_V1 * m_F * 60.0;
+                _concentrations[2] += m_D / m_V1 * m_F;
                 m_delivered = true;
             }
         }

@@ -46,6 +46,12 @@ public:
         _dcdt[0] = m_F * m_D * probDensityAbsorptionTimes(_t) - m_Ke * _c[0];
     }
 
+    inline void addFixedValue(double _t, std::vector<double>& _concentrations)
+    {
+        FINAL_UNUSED_PARAMETER(_t);
+        FINAL_UNUSED_PARAMETER(_concentrations);
+    }
+
 
 protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
