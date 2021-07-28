@@ -3,9 +3,9 @@
 namespace Tucuxi {
 namespace Common {
 
-std::ostream& operator<<(std::ostream& stream, const IImport::Status& e)
+std::ostream& operator<<(std::ostream& _stream, const IImport::Status& _e)
 {
-    return stream << static_cast<typename std::underlying_type<IImport::Status>::type>(e);
+    return _stream << static_cast<typename std::underlying_type<IImport::Status>::type>(_e);
 }
 
 

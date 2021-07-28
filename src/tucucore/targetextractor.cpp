@@ -15,7 +15,7 @@ namespace Core {
 
 TucuUnit getConcentrationTimeUnit(const TucuUnit &_concentrationUnit)
 {
-    static const std::map<std::string, std::string> sm_conversionMap =
+    static const std::map<std::string, std::string> sm_conversionMap = // NOLINT(readability-identifier-naming)
     {
         {"ug/l", "ug*h/l"},
         {"mg/l", "mg*h/l"},

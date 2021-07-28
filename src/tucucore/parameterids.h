@@ -14,7 +14,7 @@ namespace Core {
 class ParameterId 
 {
 public:
-    static const int size = 35;
+    static const int size = 35;  // NOLINT(readability-identifier-naming)
     enum Enum { V, V1, V2, CL, Ka, Ke, K12, K21, K13, K31, F, Q, Q1, Q2, Ktr, Tlag, Km,
                 Vmax, TestA, TestM, TestR, TestS, TestT, a, b, Kenz, Emax, ECmid, EDmid,
                 DoseMid, Fmax, NN, MTT, AllmCL, Unknown };

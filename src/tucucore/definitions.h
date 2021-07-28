@@ -26,7 +26,7 @@
 #include "tucucommon/datetime.h"
 #include "tucucommon/unit.h"
 
-using Tucuxi::Common::TucuUnit;
+using Tucuxi::Common::TucuUnit; // NOLINT(google-global-names-in-headers)
 using Tucuxi::Common::DateTime; // NOLINT(google-global-names-in-headers)
 
 namespace Tucuxi {

@@ -176,7 +176,7 @@ DrugModel *DrugModelRepository::getDrugModelById(std::string _drugModelId)
 
 std::vector<DrugModel *> DrugModelRepository::getDrugModelsByDrugId(std::string _drugId)
 {
-    const int INDEX_POSITION = 10;
+    static const int INDEX_POSITION = 10;
 
     bool drugModelExist = false;
     std::vector<DrugModel* > drugModels;

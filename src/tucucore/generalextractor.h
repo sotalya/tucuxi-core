@@ -80,7 +80,8 @@ public:
             const DrugModel &_drugModel,
             const AnalyteSet *_analyteGroup);
 
-    ComputingStatus extractParameters(const std::vector<FormulationAndRoute> _formulationsAndRoutes,
+    ComputingStatus extractParameters(
+            const std::vector<FormulationAndRoute> &_formulationsAndRoutes,
             const AnalyteSets &_analyteSets,
             const DrugModel &_drugModel,
             const CovariateSeries &_covariatesSeries,

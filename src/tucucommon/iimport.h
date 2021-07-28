@@ -24,7 +24,7 @@ public:
 
 };
 
-std::ostream& operator<<(std::ostream& stream, const IImport::Status& e);
+std::ostream& operator<<(std::ostream& _stream, const IImport::Status& _e);
 
 } // namespace Common
 } // namespace Tucuxi

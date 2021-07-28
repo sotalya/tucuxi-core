@@ -393,7 +393,7 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkHalfLife(const DrugMode
             realHalfLife = Duration(std::chrono::minutes(static_cast<int>(halfLife)));
         }
         else {
-            return {false, "The half life unit should be \"h\", \"d\" or \"min\""};
+            return {false, R"(The half life unit should be "h", "d" or "min")"};
         }
 
 
@@ -448,7 +448,7 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkHalfLife(const DrugMode
                     realHalfLife = Duration(std::chrono::minutes(static_cast<int>(halfLife)));
                 }
                 else {
-                    return {false, "The half life unit should be \"h\", \"d\" or \"min\""};
+                    return {false, R"(The half life unit should be "h", "d" or "min")"};
                 }
 
 

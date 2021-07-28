@@ -1,4 +1,4 @@
-clang-tidy-9 \
+clang-tidy \
 	-config="{Checks: '-*,readability-braces-around-statements, \
                               readability-identifier-naming, \
                               readability-avoid-const-params-in-decls, \

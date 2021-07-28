@@ -567,7 +567,7 @@ ComputingStatus GeneralExtractor::convertAnalytes(IntakeSeries &_intakeSeries, c
 }
 
 
-ComputingStatus GeneralExtractor::extractParameters(const std::vector<FormulationAndRoute> _formulationsAndRoutes,
+ComputingStatus GeneralExtractor::extractParameters(const std::vector<Tucuxi::Core::FormulationAndRoute> &_formulationsAndRoutes,
                                                     const AnalyteSets &_analyteSets,
                                                     const DrugModel &_drugModel,
                                                     const CovariateSeries &_covariatesSeries,

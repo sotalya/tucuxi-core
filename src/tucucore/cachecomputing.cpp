@@ -162,7 +162,7 @@ void CacheComputing::buildIndex(
     }
 }
 
-void CacheComputing::insertCycle(DateTime _start, DateTime _end, PercentilesData* _data, std::size_t cycleIndex)
+void CacheComputing::insertCycle(DateTime _start, DateTime _end, PercentilesData* _data, std::size_t _cycleIndex)
 {
     auto it = m_indexVector.rbegin();
     while (it != m_indexVector.rend()) {
@@ -174,7 +174,7 @@ void CacheComputing::insertCycle(DateTime _start, DateTime _end, PercentilesData
         }
         it ++;
     }
-    m_indexVector.insert(it.base(), index_t{_data, cycleIndex, _start, _end});
+    m_indexVector.insert(it.base(), index_t{_data, _cycleIndex, _start, _end});
 /*
     size_t insertIndex = m_indexVector.size();
     for(size_t i = m_indexVector.size() - 1; i >= 0; i--) {

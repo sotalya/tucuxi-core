@@ -11,7 +11,7 @@ enum class RkMichaelisMentenEnzymeCompartments : int { First = 0, Second, Enzyme
 
 class CalculationException : public std::exception
 {
-    virtual const char* what() const throw()
+    const char* what() const throw() override
     {
       return "Computation value NaN in RkMichaelisMentenEnzyme calculator";
     }

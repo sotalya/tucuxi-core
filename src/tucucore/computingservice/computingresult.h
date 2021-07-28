@@ -97,7 +97,7 @@ enum class [[nodiscard]] ComputingStatus {
     NoSteadyState
 };
 
-std::ostream& operator<<(std::ostream& stream, const ComputingStatus& e);
+std::ostream& operator<<(std::ostream& _stream, const ComputingStatus& _e);
 
 } // namespace Core
 } // namespace Tucuxi

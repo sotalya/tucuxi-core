@@ -19,7 +19,7 @@ std::string TucuUnit::toString() const {
 
 const std::vector<std::pair<std::string, std::string> > getTolerateUnit()
 {
-    static const std::vector<std::pair<std::string, std::string> > toleratePairUnit =
+    static const std::vector<std::pair<std::string, std::string> > sm_toleratePairUnit =  // NOLINT(readability-identifier-naming)
     {
         {"day","d"},
         {"days", "d"},
@@ -30,7 +30,7 @@ const std::vector<std::pair<std::string, std::string> > getTolerateUnit()
         {"years", "y"}
     };
 
-    return toleratePairUnit;
+    return sm_toleratePairUnit;
 }
 
 bool UnitManager::isUnitTolerated(std::string& _unitString) {
@@ -48,7 +48,7 @@ bool UnitManager::isUnitTolerated(std::string& _unitString) {
 
 const std::map<UnitManager::UnitType, std::map<std::string, double>>& UnitManager::getConversionMap()
 {
-    static const std::map<UnitType, std::map<std::string, double>> sm_conversionMap =
+    static const std::map<UnitType, std::map<std::string, double>> sm_conversionMap = // NOLINT(readability-identifier-naming)
     {
         {
             UnitType::Weight,
@@ -228,7 +228,7 @@ bool UnitManager::isKnown(const TucuUnit& _unit)
 TucuUnit UnitManager::getWeightFromConcentration(const TucuUnit& _unit)
 {
 
-    static const std::map<std::string, std::string> sm_conversionMap =
+    static const std::map<std::string, std::string> sm_conversionMap = // NOLINT(readability-identifier-naming)
     {
         {"g/l", "g"},
         {"mg/l", "mg"},

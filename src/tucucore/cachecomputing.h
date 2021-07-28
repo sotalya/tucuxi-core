@@ -144,7 +144,7 @@ protected:
     /// [_start,_end] interval. If it finds one, it inserts an index_t at this specific slot.
     /// If the slot is already filled, then nothing happens.
     ///
-    void insertCycle(DateTime _start, DateTime _end, PercentilesData* _data, std::size_t cycleIndex);
+    void insertCycle(DateTime _start, DateTime _end, PercentilesData* _data, std::size_t _cycleIndex);
 
     ///
     /// \brief Checks if the data referenced by m_indexVector fills the interval
