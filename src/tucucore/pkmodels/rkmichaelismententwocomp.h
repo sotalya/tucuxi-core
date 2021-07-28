@@ -128,6 +128,8 @@ protected:
         _concentrations[0] = _inResiduals[0];
         _concentrations[1] = _inResiduals[1];
         _concentrations[2] = _inResiduals[2];
+        // Do not forget to reinitialize the flag for delivery of the drug
+        m_delivered = false;
     }
 
 protected:
