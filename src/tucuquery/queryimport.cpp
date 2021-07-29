@@ -699,7 +699,7 @@ unique_ptr<Core::FormulationAndRoute> QueryImport::createFormulationAndRoute(Com
     static const string FORMULATION_NODE_NAME          = "formulation";
     static const string ADMINISTRATION_NAME_NODE_NAME  = "administrationName";
     static const string ADMINISTRATION_ROUTE_NODE_NAME = "administrationRoute";
-    static const string ABSORPTION_MODEL_NODE_NAME     = "absorptionModel";
+    static const string ABSORPTION_MODEL_NODE_NAME     = "absorptionModelId";
 
     string formulationValue = getChildString(_formulationAndRouteRootIterator, FORMULATION_NODE_NAME);
     Core::Formulation formulation = Core::Formulation::Undefined;
