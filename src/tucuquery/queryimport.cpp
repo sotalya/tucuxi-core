@@ -765,6 +765,8 @@ unique_ptr<Core::FormulationAndRoute> QueryImport::createFormulationAndRoute(Com
         absorptionModel = Core::AbsorptionModel::Intravascular;
     } else if (absorptionModelValue == "extra") {
         absorptionModel = Core::AbsorptionModel::Extravascular;
+    } else if (absorptionModelValue == "extra.lag") {
+        absorptionModel = Core::AbsorptionModel::ExtravascularLag;
     } else {
         // Throw error or manage error
         absorptionModel = Core::AbsorptionModel::Undefined;
