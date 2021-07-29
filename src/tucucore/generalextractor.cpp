@@ -16,6 +16,7 @@
 #include "tucucore/overloadevaluator.h"
 #include "tucucore/drugmodel/timeconsiderations.h"
 #include "tucucore/drugdomainconstraintsevaluator.h"
+#include "tucucore/treatmentdrugmodelcompatibilitychecker.h"
 
 using namespace Tucuxi::Common;
 
@@ -333,6 +334,14 @@ ComputingStatus GeneralExtractor::generalExtractions(const ComputingTraitStandar
         return pkModelExtractionResult;
     }
 
+    for (const auto &analyteSet : _drugModel.getAnalyteSets()) {
+
+
+        TreatmentDrugModelCompatibilityChecker checker;
+        if (!checker.checkPkModelCompatibility(&_dosageHistory, _pkModel[analyteSet->getId()].get())) {
+            return ComputingStatus::NoPkModelError;
+        }
+    }
 
     for (const auto &analyteSet : _drugModel.getAnalyteSets()) {
         cloneIntakeSeries(intakeSeries, _intakeSeries[analyteSet->getId()]);

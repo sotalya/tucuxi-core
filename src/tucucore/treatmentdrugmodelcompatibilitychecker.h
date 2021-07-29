@@ -6,6 +6,8 @@ namespace Core {
 
 class DrugModel;
 class DrugTreatment;
+class DosageHistory;
+class PkModel;
 
 ///
 /// \brief The TreatmentDrugModelCompatibilityChecker class
@@ -33,6 +35,19 @@ public:
     ///
     bool checkCompatibility(const DrugTreatment *_drugTreatment,
                             const DrugModel *_drugModel);
+
+    ///
+    /// \brief Checks compatibility between a dosage history and a Pk model
+    /// \param _dosageHistory The dosage history
+    /// \param _pkModel The PK model
+    /// \return true if the PK model is compatible with the dosage history, false else
+    ///
+    /// This function should be called after the drug model compatibility has
+    /// been assessed, typically just before starting a computation.
+    ///
+    bool checkPkModelCompatibility(const Tucuxi::Core::DosageHistory *_dosageHistory,
+                                   const PkModel *_pkModel);
+
 
 };
 

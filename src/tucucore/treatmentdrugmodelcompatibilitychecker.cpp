@@ -3,6 +3,7 @@
 #include "tucucore/drugtreatment/drugtreatment.h"
 #include "tucucore/drugmodel/drugmodel.h"
 #include "tucucore/drugmodel/formulationandroute.h"
+#include "tucucore/pkmodel.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -37,6 +38,19 @@ bool TreatmentDrugModelCompatibilityChecker::checkCompatibility(const DrugTreatm
         }
     }
 
+    return true;
+}
+
+bool TreatmentDrugModelCompatibilityChecker::checkPkModelCompatibility(const DosageHistory *_dosageHistory,
+                                                                       const PkModel *_pkModel)
+{
+    // Get the formulation and routes of the drug treatment
+    std::vector<FormulationAndRoute> treatmentList = _dosageHistory->getFormulationAndRouteList();
+
+    // Here we just check if the PK model allows for multiple routes and the treatment embeds multiple routes
+    if ((treatmentList.size() > 1) && (_pkModel->allowMultipleRoutes() == PkModel::AllowMultipleRoutes::No)) {
+        return false;
+    }
     return true;
 }
 

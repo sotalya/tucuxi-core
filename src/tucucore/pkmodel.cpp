@@ -27,8 +27,8 @@
 namespace Tucuxi {
 namespace Core {
 
-PkModel::PkModel(const std::string &_pkModelId)
-    : m_pkModelId(_pkModelId)
+PkModel::PkModel(const std::string &_pkModelId, AllowMultipleRoutes _allowMultipleRoutes)
+    : m_pkModelId(_pkModelId), m_allowMultipleRoutes(_allowMultipleRoutes)
 {
 }
 
@@ -139,7 +139,7 @@ std::vector<std::shared_ptr<PkModel>> PkModelCollection::getPkModelList() const
 #define ADD_2COMP_ERLANG_PK_MODEL_TO_COLLECTION(_COLLECTION, _COMP_NO_NUM, _RC) \
 do { \
     { \
-        std::shared_ptr<PkModel> pkmodel = std::make_shared<PkModel>("linear.2comp.erlang" #_COMP_NO_NUM ".micro"); \
+        std::shared_ptr<PkModel> pkmodel = std::make_shared<PkModel>("linear.2comp.erlang" #_COMP_NO_NUM ".micro", PkModel::AllowMultipleRoutes::Yes); \
         rc |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, Tucuxi::Core::RK4TwoCompartmentErlangMicro<_COMP_NO_NUM>::getCreator()); \
         rc |= pkmodel->addParameterList(AbsorptionModel::Extravascular, Tucuxi::Core::RK4TwoCompartmentErlangMicro<_COMP_NO_NUM>::getParametersId()); \
         Tucuxi::Common::TranslatableString distribution; \
@@ -153,7 +153,7 @@ do { \
         _collection.addPkModel(pkmodel); \
     } \
     { \
-        std::shared_ptr<PkModel> pkmodel = std::make_shared<PkModel>("linear.2comp.erlang" #_COMP_NO_NUM ".macro"); \
+        std::shared_ptr<PkModel> pkmodel = std::make_shared<PkModel>("linear.2comp.erlang" #_COMP_NO_NUM ".macro", PkModel::AllowMultipleRoutes::Yes); \
         rc |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, Tucuxi::Core::RK4TwoCompartmentErlangMacro<_COMP_NO_NUM>::getCreator()); \
         rc |= pkmodel->addParameterList(AbsorptionModel::Extravascular, Tucuxi::Core::RK4TwoCompartmentErlangMacro<_COMP_NO_NUM>::getParametersId()); \
         Tucuxi::Common::TranslatableString distribution; \
@@ -192,7 +192,7 @@ bool defaultPopulate(PkModelCollection &_collection)
 
     {
         std::shared_ptr<PkModel> sharedPkModel;
-        sharedPkModel = std::make_shared<PkModel>("michaelismenten.1comp");
+        sharedPkModel = std::make_shared<PkModel>("michaelismenten.1comp", PkModel::AllowMultipleRoutes::Yes);
 
         rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, RkMichaelisMentenOneCompExtra::getCreator());
         rc &= sharedPkModel->addParameterList(AbsorptionModel::Extravascular, RkMichaelisMentenOneCompExtra::getParametersId());
@@ -216,7 +216,7 @@ bool defaultPopulate(PkModelCollection &_collection)
 
     {
         std::shared_ptr<PkModel> sharedPkModel;
-        sharedPkModel = std::make_shared<PkModel>("michaelismenten.2comp.micro");
+        sharedPkModel = std::make_shared<PkModel>("michaelismenten.2comp.micro", PkModel::AllowMultipleRoutes::Yes);
 
         rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, RkMichaelisMentenTwoCompExtraMicro::getCreator());
         rc &= sharedPkModel->addParameterList(AbsorptionModel::Extravascular, RkMichaelisMentenTwoCompExtraMicro::getParametersId());
@@ -243,7 +243,7 @@ bool defaultPopulate(PkModelCollection &_collection)
 
     {
         std::shared_ptr<PkModel> sharedPkModel;
-        sharedPkModel = std::make_shared<PkModel>("michaelismenten.2comp.macro");
+        sharedPkModel = std::make_shared<PkModel>("michaelismenten.2comp.macro", PkModel::AllowMultipleRoutes::Yes);
 
         rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, RkMichaelisMentenTwoCompExtraMacro::getCreator());
         rc &= sharedPkModel->addParameterList(AbsorptionModel::Extravascular, RkMichaelisMentenTwoCompExtraMacro::getParametersId());
@@ -270,7 +270,7 @@ bool defaultPopulate(PkModelCollection &_collection)
 
     {
         std::shared_ptr<PkModel> sharedPkModel;
-        sharedPkModel = std::make_shared<PkModel>("michaelismenten.enzyme.1comp");
+        sharedPkModel = std::make_shared<PkModel>("michaelismenten.enzyme.1comp", PkModel::AllowMultipleRoutes::Yes);
 
         rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, RkMichaelisMentenEnzymeExtra::getCreator());
         rc &= sharedPkModel->addParameterList(AbsorptionModel::Extravascular, RkMichaelisMentenEnzymeExtra::getParametersId());

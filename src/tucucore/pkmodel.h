@@ -30,10 +30,16 @@ class IntakeIntervalCalculatorCreator;
 class PkModel
 {
 public:
+
+    enum class [[nodiscard]] AllowMultipleRoutes {
+        No = 0,
+        Yes
+    };
+
     /// \brief Create a PkModel, setting its Id.
     /// \param _pkModelId the Id to set.
     /// \warning The ID shall be unique within the software
-    PkModel(const std::string &_pkModelId);
+    PkModel(const std::string &_pkModelId, AllowMultipleRoutes _allowMultipleRoutes);
 
     /// \brief Get the PkModel Id.
     /// \return ID of the PkModel
@@ -71,6 +77,12 @@ public:
     void setDistribution(const Tucuxi::Common::TranslatableString& _distribution) { m_distribution = _distribution;}
     void setElimination(const Tucuxi::Common::TranslatableString& _elimination) { m_elimination = _elimination;}
 
+    /// \brief Indicates if multiple routes can be managed in a single dosage history
+    /// \return AllowMultipleRoutes::Yes if multiple routes can be combined in a a DosageHistory, AllowMultipleRoutes::No else
+    ///
+    /// Not all PkModels allow for multiple routes, therefore it is important to check that before starting a
+    /// computation.
+    AllowMultipleRoutes allowMultipleRoutes() const { return m_allowMultipleRoutes;}
 protected:
     /// \brief Identifier of the PkModel.
     std::string m_pkModelId;
@@ -83,6 +95,9 @@ protected:
 
     Tucuxi::Common::TranslatableString m_distribution;
     Tucuxi::Common::TranslatableString m_elimination;
+
+    /// \brief Indicates if multiple routes can be managed in a single dosage history
+    const AllowMultipleRoutes m_allowMultipleRoutes;
 };
 
 
@@ -133,7 +148,7 @@ bool defaultPopulate(PkModelCollection &_collection);
 /// \param _RC Boolean return type (ORed result of all the add operations).
 #define ADD_PKMODEL_TO_COLLECTION(_COLLECTION, _COMP_NO_NUM, _COMP_NO_LIT, _TYPE, _TYPE_NAME, _RC) \
 do { \
-    std::shared_ptr<PkModel> pkmodel = std::make_shared<PkModel>("linear." #_COMP_NO_NUM "comp." #_TYPE_NAME); \
+    std::shared_ptr<PkModel> pkmodel = std::make_shared<PkModel>("linear." #_COMP_NO_NUM "comp." #_TYPE_NAME, PkModel::AllowMultipleRoutes::No); \
     _RC |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, Tucuxi::Core::_COMP_NO_LIT ## CompartmentExtra ## _TYPE::getCreator()); \
     _RC |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Intravascular, Tucuxi::Core::_COMP_NO_LIT ## CompartmentBolus ## _TYPE::getCreator()); \
     _RC |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Infusion, Tucuxi::Core::_COMP_NO_LIT ## CompartmentInfusion## _TYPE::getCreator());\
@@ -164,7 +179,7 @@ do { \
 /// \param _RC Boolean return type (ORed result of all the add operations).
 #define ADD_PKMODEL_TO_COLLECTION_LAG(_COLLECTION, _COMP_NO_NUM, _COMP_NO_LIT, _TYPE, _TYPE_NAME, _RC) \
 do { \
-    std::shared_ptr<PkModel> pkmodel = std::make_shared<PkModel>("linear." #_COMP_NO_NUM "comp." #_TYPE_NAME); \
+    std::shared_ptr<PkModel> pkmodel = std::make_shared<PkModel>("linear." #_COMP_NO_NUM "comp." #_TYPE_NAME, PkModel::AllowMultipleRoutes::No); \
     _RC |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, Tucuxi::Core::_COMP_NO_LIT ## CompartmentExtra ## _TYPE::getCreator()); \
     _RC |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::ExtravascularLag, Tucuxi::Core::_COMP_NO_LIT ## CompartmentExtraLag ## _TYPE::getCreator()); \
     _RC |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Intravascular, Tucuxi::Core::_COMP_NO_LIT ## CompartmentBolus ## _TYPE::getCreator()); \
