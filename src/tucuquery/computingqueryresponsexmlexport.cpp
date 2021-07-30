@@ -323,7 +323,7 @@ bool ComputingQueryResponseXmlExport::exportAdjustment(const Tucuxi::Core::Adjus
         if (!exportDosageHistory(adj.m_history, adjustment)) {
             return false;
         }
-        if (!exportCycleDatas(adj.m_data, adjustment)) {
+        if (!exportCycleDatas(adj.getData(), adjustment)) {
             return false;
         }
 

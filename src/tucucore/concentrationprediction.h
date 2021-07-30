@@ -53,6 +53,14 @@ public:
         m_values.push_back(_values);
     }
 
+    ConcentrationPrediction *copy()
+    {
+        ConcentrationPrediction *result = new ConcentrationPrediction();
+        result->m_times = this->m_times;
+        result->m_values = this->m_values;
+        return result;
+    }
+
     // Very important to return const references, else a copy is made and it makes percentiles very slow
     const std::vector<TimeOffsets>& getTimes() const { return m_times; }
     const std::vector<Concentrations>& getValues() const { return m_values; }

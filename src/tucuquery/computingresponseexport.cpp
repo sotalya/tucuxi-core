@@ -48,17 +48,17 @@ bool ComputingResponseExport::exportToFiles(const Query::ComputingQueryResponse 
                 }
 
 
-                for (const auto& p : dosage.m_data[0].m_parameters) {
+                for (const auto& p : dosage.getData()[0].m_parameters) {
                     file << p.m_value << "\t";
                 }
                 file << std::endl;
 
-                double firstTime = dosage.m_data[0].m_start.toSeconds();
+                double firstTime = dosage.getData()[0].m_start.toSeconds();
                 size_t dataIndex = 0;
-                for (auto &cycleData : dosage.m_data) {
+                for (auto &cycleData : dosage.getData()) {
                     for (size_t i = 0; i < cycleData.m_concentrations[0].size(); i++) {
                         file << (cycleData.m_start.toSeconds() - firstTime) / 3600.0 + cycleData.m_times[0][i];
-                        if ((i != cycleData.m_concentrations[0].size() - 1) || (dataIndex != dosage.m_data.size() - 1)) {
+                        if ((i != cycleData.m_concentrations[0].size() - 1) || (dataIndex != dosage.getData().size() - 1)) {
                             file << "\t";
                         }
                     }
@@ -67,10 +67,10 @@ bool ComputingResponseExport::exportToFiles(const Query::ComputingQueryResponse 
                 file << std::endl;
 
                 dataIndex = 0;
-                for (auto &cycleData : dosage.m_data) {
+                for (auto &cycleData : dosage.getData()) {
                     for (size_t i = 0; i < cycleData.m_concentrations[0].size(); i++) {
                         file << cycleData.m_concentrations[0][i];
-                        if ((i != cycleData.m_concentrations[0].size() - 1) || (dataIndex != dosage.m_data.size() - 1)) {
+                        if ((i != cycleData.m_concentrations[0].size() - 1) || (dataIndex != dosage.getData().size() - 1)) {
                             file << "\t";
                         }
                     }

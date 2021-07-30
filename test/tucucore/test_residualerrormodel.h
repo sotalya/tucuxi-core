@@ -110,9 +110,7 @@ struct TestResidualErrorModel : public fructose::test_base<TestResidualErrorMode
 
         logLikelihood0 = calculateSampleLikelihood(ResidualErrorType::EXPONENTIAL, 2.0, 10.0, 10.0);
         logLikelihood1 = calculateSampleLikelihood(ResidualErrorType::EXPONENTIAL, 2.0, 12.0, 12.0);
-        // There is an additional term of log(expected) for exponential variability, so update the
-        // values here
-        fructose_assert_double_eq(logLikelihood0 + std::log(10.0), logLikelihood1 + std::log(12.0));
+        fructose_assert_double_eq(logLikelihood0, logLikelihood1);
 
         logLikelihood0 = calculateSampleLikelihood(ResidualErrorType::EXPONENTIAL, 2.0, 10.0, 10.1);
         logLikelihood1 = calculateSampleLikelihood(ResidualErrorType::EXPONENTIAL, 2.0, 10.0, 10.0);

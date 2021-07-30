@@ -78,7 +78,7 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
         DrugModelChecker checker;
 
         std::shared_ptr<PkModel> sharedPkModel;
-        sharedPkModel = std::make_shared<PkModel>("test.pkasymptotic");
+        sharedPkModel = std::make_shared<PkModel>("test.pkasymptotic", PkModel::AllowMultipleRoutes::No);
 
         bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, PkAsymptotic::getCreator());
         fructose_assert(addResult);
@@ -233,7 +233,7 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
         DrugModelChecker checker;
 
         std::shared_ptr<PkModel> sharedPkModel;
-        sharedPkModel = std::make_shared<PkModel>("test.pkasymptotic");
+        sharedPkModel = std::make_shared<PkModel>("test.pkasymptotic", PkModel::AllowMultipleRoutes::No);
 
         bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, PkAsymptotic::getCreator());
         fructose_assert(addResult);
@@ -360,7 +360,7 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
         DrugModelChecker checker;
 
         std::shared_ptr<PkModel> sharedPkModel;
-        sharedPkModel = std::make_shared<PkModel>("test.pkasymptotic");
+        sharedPkModel = std::make_shared<PkModel>("test.pkasymptotic", PkModel::AllowMultipleRoutes::No);
 
         bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, PkAsymptotic::getCreator());
         fructose_assert(addResult);
@@ -487,7 +487,7 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
         DrugModelChecker checker;
 
         std::shared_ptr<PkModel> sharedPkModel;
-        sharedPkModel = std::make_shared<PkModel>("test.pkasymptotic");
+        sharedPkModel = std::make_shared<PkModel>("test.pkasymptotic", PkModel::AllowMultipleRoutes::No);
 
         bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, PkAsymptotic::getCreator());
         fructose_assert(addResult);
@@ -566,7 +566,7 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
                 fructose_assert_eq(adjustment.m_history.getDosageTimeRanges().size(), size_t{2});
 
                 //                    double r = adjustment.m_data[0].m_concentrations[0].back();
-                fructose_assert(std::abs(adjustment.m_data[0].m_concentrations[0].back() - adjustment.m_data.back().m_concentrations[0].back()) < 400.0);
+                fructose_assert(std::abs(adjustment.getData()[0].m_concentrations[0].back() - adjustment.getData().back().m_concentrations[0].back()) < 400.0);
 
                 {
                     const auto &timeRange = adjustment.m_history.getDosageTimeRanges()[0];
@@ -629,7 +629,7 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
         DrugModelChecker checker;
 
         std::shared_ptr<PkModel> sharedPkModel;
-        sharedPkModel = std::make_shared<PkModel>("test.pkasymptotic");
+        sharedPkModel = std::make_shared<PkModel>("test.pkasymptotic", PkModel::AllowMultipleRoutes::No);
 
         bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, PkAsymptotic::getCreator());
         fructose_assert(addResult);
@@ -758,7 +758,7 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
         DrugModelChecker checker;
 
         std::shared_ptr<PkModel> sharedPkModel;
-        sharedPkModel = std::make_shared<PkModel>("test.pkasymptotic");
+        sharedPkModel = std::make_shared<PkModel>("test.pkasymptotic", PkModel::AllowMultipleRoutes::No);
 
         bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, PkAsymptotic::getCreator());
         fructose_assert(addResult);
@@ -837,7 +837,7 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
                 fructose_assert_eq(adjustment.m_history.getDosageTimeRanges().size(), size_t{2});
 
                 //                    double r = adjustment.m_data[0].m_concentrations[0].back();
-                fructose_assert(std::abs(adjustment.m_data[0].m_concentrations[0].back() - adjustment.m_data.back().m_concentrations[0].back()) < 400.0);
+                fructose_assert(std::abs(adjustment.getData()[0].m_concentrations[0].back() - adjustment.getData().back().m_concentrations[0].back()) < 400.0);
 
                 {
                     const auto &timeRange = adjustment.m_history.getDosageTimeRanges()[0];

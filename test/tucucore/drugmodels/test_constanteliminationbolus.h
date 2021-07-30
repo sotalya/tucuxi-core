@@ -94,7 +94,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         DrugModelChecker checker;
 
         std::shared_ptr<PkModel> sharedPkModel;
-        sharedPkModel = std::make_shared<PkModel>("test.constantelimination");
+        sharedPkModel = std::make_shared<PkModel>("test.constantelimination", PkModel::AllowMultipleRoutes::No);
 
         bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
         fructose_assert(addResult);
@@ -253,7 +253,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         DrugModelChecker checker;
 
         std::shared_ptr<PkModel> sharedPkModel;
-        sharedPkModel = std::make_shared<PkModel>("test.constantelimination");
+        sharedPkModel = std::make_shared<PkModel>("test.constantelimination", PkModel::AllowMultipleRoutes::No);
 
         bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
         fructose_assert(addResult);
@@ -413,7 +413,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         DrugModelChecker checker;
 
         std::shared_ptr<PkModel> sharedPkModel;
-        sharedPkModel = std::make_shared<PkModel>("test.constantelimination");
+        sharedPkModel = std::make_shared<PkModel>("test.constantelimination", PkModel::AllowMultipleRoutes::No);
 
         bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
         fructose_assert(addResult);
@@ -513,7 +513,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         DrugModelChecker checker;
 
         std::shared_ptr<PkModel> sharedPkModel;
-        sharedPkModel = std::make_shared<PkModel>("test.constantelimination");
+        sharedPkModel = std::make_shared<PkModel>("test.constantelimination", PkModel::AllowMultipleRoutes::No);
 
         bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
         fructose_assert(addResult);
@@ -612,7 +612,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         DrugModelChecker checker;
 
         std::shared_ptr<PkModel> sharedPkModel;
-        sharedPkModel = std::make_shared<PkModel>("test.constantelimination");
+        sharedPkModel = std::make_shared<PkModel>("test.constantelimination", PkModel::AllowMultipleRoutes::No);
 
         bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
         fructose_assert(addResult);
@@ -709,7 +709,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         DrugModelChecker checker;
 
         std::shared_ptr<PkModel> sharedPkModel;
-        sharedPkModel = std::make_shared<PkModel>("test.constantelimination");
+        sharedPkModel = std::make_shared<PkModel>("test.constantelimination", PkModel::AllowMultipleRoutes::No);
 
         bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
         fructose_assert(addResult);
@@ -781,7 +781,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
                 //fructose_assert_eq(statValue, 200001.0);
 
                 // Multiply the Inv CDF by SD (0.2)
-                double expectedValue = 200000.0 + invCdf[p] * std::sqrt(std::pow(200000.0 * 0.2, 2)  + std::pow(10.0, 2));
+                double expectedValue = 200000.0 + invCdf[p] * std::sqrt(std::pow(200000.0 * 0.2, 2));
                 fructose_assert_double_eq_rel_abs(statValue, expectedValue, 0.04, 0.0);
             }
 
@@ -817,7 +817,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         DrugModelChecker checker;
 
         std::shared_ptr<PkModel> sharedPkModel;
-        sharedPkModel = std::make_shared<PkModel>("test.constantelimination");
+        sharedPkModel = std::make_shared<PkModel>("test.constantelimination", PkModel::AllowMultipleRoutes::No);
 
         bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
         fructose_assert(addResult);
@@ -924,7 +924,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         DrugModelChecker checker;
 
         std::shared_ptr<PkModel> sharedPkModel;
-        sharedPkModel = std::make_shared<PkModel>("test.constantelimination");
+        sharedPkModel = std::make_shared<PkModel>("test.constantelimination", PkModel::AllowMultipleRoutes::No);
 
         bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
         fructose_assert(addResult);
@@ -1031,7 +1031,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         DrugModelChecker checker;
 
         std::shared_ptr<PkModel> sharedPkModel;
-        sharedPkModel = std::make_shared<PkModel>("test.constantelimination");
+        sharedPkModel = std::make_shared<PkModel>("test.constantelimination", PkModel::AllowMultipleRoutes::No);
 
         bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
         fructose_assert(addResult);
@@ -1139,7 +1139,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         DrugModelChecker checker;
 
         std::shared_ptr<PkModel> sharedPkModel;
-        sharedPkModel = std::make_shared<PkModel>("test.constantelimination");
+        sharedPkModel = std::make_shared<PkModel>("test.constantelimination", PkModel::AllowMultipleRoutes::No);
 
         bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
         fructose_assert(addResult);
@@ -1264,7 +1264,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         DrugModelChecker checker;
 
         std::shared_ptr<PkModel> sharedPkModel;
-        sharedPkModel = std::make_shared<PkModel>("test.constantelimination");
+        sharedPkModel = std::make_shared<PkModel>("test.constantelimination", PkModel::AllowMultipleRoutes::No);
 
         bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
         fructose_assert(addResult);
@@ -1391,7 +1391,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         DrugModelChecker checker;
 
         std::shared_ptr<PkModel> sharedPkModel;
-        sharedPkModel = std::make_shared<PkModel>("test.constantelimination");
+        sharedPkModel = std::make_shared<PkModel>("test.constantelimination", PkModel::AllowMultipleRoutes::No);
 
         bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
         fructose_assert(addResult);

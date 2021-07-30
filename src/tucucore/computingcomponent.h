@@ -40,6 +40,7 @@ class GeneralExtractor;
 class ActiveMoiety;
 class ComputingAdjustments;
 class ComputingUtils;
+class PercentilesPrediction;
 
 
 ///
@@ -131,6 +132,33 @@ private:
             const ComputingTraitPercentiles *_traits,
             const ComputingRequest &_request,
             std::unique_ptr<ComputingResponse> &_response);
+
+    ComputingStatus preparePercentilesResponse(
+            const ComputingTraitPercentiles *_traits,
+            const ComputingRequest &_request,
+            std::unique_ptr<ComputingResponse> &_response,
+            GroupsIntakeSeries &_intakeSeries,
+            const ConcentrationPredictionPtr &_pPrediction,
+            const PercentilesPrediction &_percentiles,
+            const PercentileRanks &_percentileRanks);
+
+    static ComputingStatus recordCycle(const ComputingTraitStandard *_traits,
+            const ComputingRequest &_request,
+            ConcentrationData &_concentrationData,
+            DateTime _start,
+            DateTime _end,
+            const TimeOffsets &_times,
+            const std::vector<ConcentrationPredictionPtr> &_activeMoietiesPredictions,
+            const std::vector<ConcentrationPredictionPtr> &_analytesPredictions,
+            size_t _valueIndex,
+            const std::map<AnalyteGroupId, Etas> &_etas,
+            GroupsParameterSetSeries &_parameterSeries
+            );
+
+    static void endRecord(const ComputingTraitStandard *_traits,
+            const ComputingRequest &_request,
+            ConcentrationData &_concentrationData
+            );
 
 
     friend class ComputingTraitSinglePoints;

@@ -67,10 +67,10 @@ struct TestPkModel : public fructose::test_base<TestPkModel>
     /// \brief Test basic functionalities of a PkModel.
     void testPkModelFunctions(const std::string& /* _testName */)
     {
-        std::shared_ptr<PkModel> l1CMicro = std::make_shared<PkModel>("linear.1comp.micro");
-        std::shared_ptr<PkModel> l1CMacro = std::make_shared<PkModel>("linear.1comp.macro");
-        std::shared_ptr<PkModel> l2CMicro = std::make_shared<PkModel>("linear.2comp.micro");
-        std::shared_ptr<PkModel> l2CMacro = std::make_shared<PkModel>("linear.2comp.macro");
+        std::shared_ptr<PkModel> l1CMicro = std::make_shared<PkModel>("linear.1comp.micro", PkModel::AllowMultipleRoutes::No);
+        std::shared_ptr<PkModel> l1CMacro = std::make_shared<PkModel>("linear.1comp.macro", PkModel::AllowMultipleRoutes::No);
+        std::shared_ptr<PkModel> l2CMicro = std::make_shared<PkModel>("linear.2comp.micro", PkModel::AllowMultipleRoutes::No);
+        std::shared_ptr<PkModel> l2CMacro = std::make_shared<PkModel>("linear.2comp.macro", PkModel::AllowMultipleRoutes::No);
 
         // Check correct model ID
         fructose_assert (l1CMicro->getPkModelId() == "linear.1comp.micro");

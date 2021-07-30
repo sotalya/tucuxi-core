@@ -12,12 +12,7 @@
 
 #include "tucucore/computingcomponent.h"
 #include "tucucore/drugtreatment/drugtreatment.h"
-#include "tucucore/intakeextractor.h"
-//#include "tucucore/covariateextractor.h"
-#include "tucucore/targetextractor.h"
 #include "tucucore/sampleextractor.h"
-#include "tucucore/parametersextractor.h"
-#include "tucucore/intakeintervalcalculator.h"
 #include "tucucore/concentrationcalculator.h"
 #include "tucucore/aposteriorietascalculator.h"
 #include "tucucore/computingservice/icomputingservice.h"
@@ -168,6 +163,94 @@ ComputingStatus ComputingComponent::compute(const ComputingRequest &_request, st
 }
 
 
+ComputingStatus ComputingComponent::recordCycle(const ComputingTraitStandard *_traits,
+        const ComputingRequest &_request,
+        ConcentrationData &_concentrationData,
+        DateTime _start,
+        DateTime _end,
+        const TimeOffsets &_times,
+        const std::vector<ConcentrationPredictionPtr> &_activeMoietiesPredictions,
+        const std::vector<ConcentrationPredictionPtr> &_analytesPredictions,
+        size_t _valueIndex,
+        const std::map<AnalyteGroupId, Etas> &_etas,
+        GroupsParameterSetSeries &_parameterSeries
+        )
+{
+    // The final unit depends on the computing options
+    TucuUnit unit("ug/l");
+    if (_traits->getComputingOption().forceUgPerLiter() == ForceUgPerLiterOption::DoNotForce) {
+        unit = _request.getDrugModel().getActiveMoieties()[0]->getUnit();
+    }
+
+    CycleData cycle(_start, _end, unit);
+
+    if (!_request.getDrugModel().isSingleAnalyte()) {
+        for (const auto &activeMoiety : _activeMoietiesPredictions) {
+            cycle.addData(_times,
+                          Tucuxi::Common::UnitManager::convertToUnit<Tucuxi::Common::UnitManager::UnitType::Concentration>(
+                              activeMoiety->getValues()[_valueIndex],
+                              _request.getDrugModel().getActiveMoieties()[0]->getUnit(),
+                              unit));
+        }
+    }
+
+    size_t index = 0;
+    for(const auto &analyteGroup : _request.getDrugModel().getAnalyteSets()) {
+        AnalyteGroupId analyteGroupId = analyteGroup->getId();
+
+        cycle.addData(_times, Tucuxi::Common::UnitManager::convertToUnit<Tucuxi::Common::UnitManager::UnitType::Concentration>(
+                          _analytesPredictions[index]->getValues()[_valueIndex],
+                          _request.getDrugModel().getActiveMoieties()[0]->getUnit(),
+                          unit));
+        index ++;
+    }
+
+    AnalyteGroupId analyteGroupId = _request.getDrugModel().getAnalyteSets()[0]->getId();
+    ParameterSetEventPtr params = _parameterSeries[analyteGroupId].getAtTime(_start, _etas.at(analyteGroupId));
+
+    if (_traits->getComputingOption().retrieveParameters() == RetrieveParametersOption::RetrieveParameters) {
+        for (auto p = params.get()->begin() ; p < params.get()->end() ; p++) {
+            cycle.m_parameters.push_back({(*p).getParameterId(), (*p).getValue()});
+        }
+        std::sort(cycle.m_parameters.begin(), cycle.m_parameters.end(),
+                  [&] (const ParameterValue &_v1, const ParameterValue &_v2)
+        { return _v1.m_parameterId < _v2.m_parameterId; });
+    }
+
+    if (_traits->getComputingOption().retrieveCovariates() == RetrieveCovariatesOption::RetrieveCovariates) {
+        for (const auto &cov : params->m_covariates) {
+            cycle.m_covariates.push_back({cov.m_id, cov.m_value});
+        }
+    }
+
+    _concentrationData.addCycleData(cycle);
+
+    return ComputingStatus::Ok;
+}
+
+void ComputingComponent::endRecord(
+        const ComputingTraitStandard *_traits,
+        const ComputingRequest &_request,
+        ConcentrationData &_concentrationData
+        )
+{
+    if (!_request.getDrugModel().isSingleAnalyte()) {
+        for (const auto & activeMoiety : _request.getDrugModel().getActiveMoieties()) {
+            _concentrationData.addAnalyteId(activeMoiety->getActiveMoietyId().toString());
+        }
+    }
+
+    for(const auto &analyteGroup : _request.getDrugModel().getAnalyteSets()) {
+        AnalyteId analyteId = analyteGroup->getAnalytes()[0]->getAnalyteId();
+        _concentrationData.addAnalyteId(analyteId.toString());
+    }
+
+    if (_traits->getComputingOption().retrieveStatistics() == RetrieveStatisticsOption::RetrieveStatistics) {
+        CycleStatisticsCalculator c;
+        c.calculate(_concentrationData.getModifiableData());
+    }
+}
+
 
 ComputingStatus ComputingComponent::compute(
         const ComputingTraitConcentration *_traits,
@@ -268,9 +351,6 @@ ComputingStatus ComputingComponent::compute(
         return ComputingStatus::RecordedIntakesSizeError;
     }
 
-
-    ConcentrationPredictionPtr pPrediction = std::make_unique<ConcentrationPrediction>();
-
     // std::cout << "Start Time : " << _traits->getStart() << std::endl;
     for (size_t i = 0; i < recordedIntakes.size(); i++) {
 
@@ -285,73 +365,25 @@ ComputingStatus ComputingComponent::compute(
 
         if (end > _traits->getStart()) {
             // std::cout << "Selected Time index " << i << " : " << start << std::endl;
-
-            // The final unit depends on the computing options
-            TucuUnit unit("ug/l");
-            if (_traits->getComputingOption().forceUgPerLiter() == ForceUgPerLiterOption::DoNotForce) {
-                unit = _request.getDrugModel().getActiveMoieties()[0]->getUnit();
+            ComputingStatus recordStatus = recordCycle(
+                        _traits,
+                        _request,
+                        *resp.get(),
+                        start,
+                        end,
+                        times,
+                        activeMoietiesPredictions,
+                        analytesPredictions,
+                        i,
+                        allEtas,
+                        parameterSeries);
+            if (recordStatus != ComputingStatus::Ok) {
+                return recordStatus;
             }
-
-            CycleData cycle(start, end, unit);
-
-            if (!_request.getDrugModel().isSingleAnalyte()) {
-                for (const auto &activeMoiety : activeMoietiesPredictions) {
-                    cycle.addData(times,
-                                  Tucuxi::Common::UnitManager::convertToUnit<Tucuxi::Common::UnitManager::UnitType::Concentration>(
-                                      activeMoiety->getValues()[i],
-                                      _request.getDrugModel().getActiveMoieties()[0]->getUnit(),
-                                      unit));
-                }
-            }
-
-            size_t index = 0;
-            for(const auto &analyteGroup : _request.getDrugModel().getAnalyteSets()) {
-                AnalyteGroupId analyteGroupId = analyteGroup->getId();
-
-                cycle.addData(times, Tucuxi::Common::UnitManager::convertToUnit<Tucuxi::Common::UnitManager::UnitType::Concentration>(
-                                  analytesPredictions[index]->getValues()[i],
-                                  _request.getDrugModel().getActiveMoieties()[0]->getUnit(),
-                                  unit));
-                index ++;
-            }
-
-            AnalyteGroupId analyteGroupId = _request.getDrugModel().getAnalyteSets()[0]->getId();
-            ParameterSetEventPtr params = parameterSeries[analyteGroupId].getAtTime(start, allEtas[analyteGroupId]);
-
-            if (_traits->getComputingOption().retrieveParameters() == RetrieveParametersOption::RetrieveParameters) {
-                for (auto p = params.get()->begin() ; p < params.get()->end() ; p++) {
-                    cycle.m_parameters.push_back({(*p).getParameterId(), (*p).getValue()});
-                }
-                std::sort(cycle.m_parameters.begin(), cycle.m_parameters.end(),
-                          [&] (const ParameterValue &_v1, const ParameterValue &_v2)
-                { return _v1.m_parameterId < _v2.m_parameterId; });
-            }
-
-            if (_traits->getComputingOption().retrieveCovariates() == RetrieveCovariatesOption::RetrieveCovariates) {
-                for (const auto &cov : params->m_covariates) {
-                    cycle.m_covariates.push_back({cov.m_id, cov.m_value});
-                }
-            }
-
-            resp->addCycleData(cycle);
         }
     }
 
-    if (!_request.getDrugModel().isSingleAnalyte()) {
-        for (const auto & activeMoiety : _request.getDrugModel().getActiveMoieties()) {
-            resp->addAnalyteId(activeMoiety->getActiveMoietyId().toString());
-        }
-    }
-
-    for(const auto &analyteGroup : _request.getDrugModel().getAnalyteSets()) {
-        AnalyteId analyteId = analyteGroup->getAnalytes()[0]->getAnalyteId();
-        resp->addAnalyteId(analyteId.toString());
-    }
-
-    if (_traits->getComputingOption().retrieveStatistics() == RetrieveStatisticsOption::RetrieveStatistics) {
-        CycleStatisticsCalculator c;
-        c.calculate(resp->getModifiableData());
-    }
+    endRecord(_traits, _request, *resp.get());
 
     _response->addResponse(std::move(resp));
     return ComputingStatus::Ok;
@@ -524,6 +556,10 @@ ComputingStatus ComputingComponent::computePercentilesMulti(
                     aborter);
     }
 
+    if (computingResult != ComputingStatus::Ok) {
+        return computingResult;
+    }
+
     // We use a single prediction to get back time offsets. Could be optimized
     // YTA: I do not think this is relevant. It could be deleted I guess
     ConcentrationPredictionPtr pPrediction = std::make_unique<ConcentrationPrediction>();
@@ -542,77 +578,14 @@ ComputingStatus ComputingComponent::computePercentilesMulti(
         return predictionResult;
     }
 
-    IntakeSeries selectedIntakes;
-    selectRecordedIntakes(selectedIntakes, intakeSeries[analyteGroupId], _traits->getStart(), _traits->getEnd());
-
-    if (computingResult == ComputingStatus::Ok &&
-            selectedIntakes.size() == pPrediction->getTimes().size() &&
-            selectedIntakes.size() == pPrediction->getValues().size())
-    {
-        std::unique_ptr<PercentilesData> resp = std::make_unique<PercentilesData>(_request.getId());
-        resp->setNbPointsPerHour(_traits->getNbPointsPerHour());
-
-        const std::vector<std::vector<std::vector<Value> > >& allValues = percentiles.getValues();
-
-
-        // The final unit depends on the computing options
-        TucuUnit finalUnit("ug/l");
-        if (_traits->getComputingOption().forceUgPerLiter() == ForceUgPerLiterOption::DoNotForce) {
-            finalUnit = _request.getDrugModel().getActiveMoieties()[0]->getUnit();
-        }
-
-        for (unsigned int p = 0; p < percentiles.getRanks().size(); p++) {
-            std::vector<CycleData> percData;
-
-            if (selectedIntakes.size() != allValues[p].size()) {
-                return ComputingStatus::SelectedIntakesSizeError;
-            }
-            if (selectedIntakes.size() != pPrediction->getTimes().size()) {
-                return ComputingStatus::SelectedIntakesSizeError;
-            }
-
-            for (unsigned int cycle = 0; cycle < allValues[p].size(); cycle ++) {
-
-                TimeOffsets times = pPrediction->getTimes()[cycle];
-                DateTime start = selectedIntakes[cycle].getEventTime();
-
-                std::chrono::milliseconds ms = std::chrono::milliseconds(static_cast<int>(times.back())) * 3600 * 1000;
-                Duration ds(ms);
-                DateTime end = start + ds;
-
-                if (end > _traits->getStart()) {                    
-                    CycleData cycleData(start, end, finalUnit);
-//                    cycleData.addData(times, allValues[p][cycle]);
-                    cycleData.addData(times,
-                                  Tucuxi::Common::UnitManager::convertToUnit<Tucuxi::Common::UnitManager::UnitType::Concentration>(
-                                      allValues[p][cycle],
-                                      _request.getDrugModel().getActiveMoieties()[0]->getUnit(),
-                                      finalUnit));
-
-                    percData.push_back(cycleData);
-                }
-            }
-
-            if (_traits->getComputingOption().retrieveStatistics() == RetrieveStatisticsOption::RetrieveStatistics) {
-                CycleStatisticsCalculator c;
-                c.calculate(percData);
-            }
-
-            resp->addPercentileData(percData);
-        }
-        resp->setRanks(percentileRanks);
-
-        _response->addResponse(std::move(resp));
-        return ComputingStatus::Ok;
-    }
-    else {
-        if (computingResult != ComputingStatus::Ok) {
-            return computingResult;
-        }
-        else {
-            return ComputingStatus::SelectedIntakesSizeError;
-        }
-    }
+    return preparePercentilesResponse(
+                _traits,
+                _request,
+                _response,
+                intakeSeries,
+                std::move(pPrediction),
+                percentiles,
+                percentileRanks);
 }
 
 ComputingStatus ComputingComponent::computePercentilesSimple(
@@ -740,6 +713,10 @@ ComputingStatus ComputingComponent::computePercentilesSimple(
                     aborter);
     }
 
+    if (computingResult != ComputingStatus::Ok) {
+        return computingResult;
+    }
+
     // We use a single prediction to get back time offsets. Could be optimized
     // YTA: I do not think this is relevant. It could be deleted I guess
     ConcentrationPredictionPtr pPrediction = std::make_unique<ConcentrationPrediction>();
@@ -756,17 +733,38 @@ ComputingStatus ComputingComponent::computePercentilesSimple(
         return predictionResult;
     }
 
-    IntakeSeries selectedIntakes;
-    selectRecordedIntakes(selectedIntakes, intakeSeries[analyteGroupId], _traits->getStart(), _traits->getEnd());
+    return preparePercentilesResponse(
+                _traits,
+                _request,
+                _response,
+                intakeSeries,
+                std::move(pPrediction),
+                percentiles,
+                percentileRanks);
+}
 
-    if (computingResult == ComputingStatus::Ok &&
-            selectedIntakes.size() == pPrediction->getTimes().size() &&
-            selectedIntakes.size() == pPrediction->getValues().size())
+ComputingStatus ComputingComponent::preparePercentilesResponse(
+        const ComputingTraitPercentiles *_traits,
+        const ComputingRequest &_request,
+        std::unique_ptr<ComputingResponse> &_response,
+        GroupsIntakeSeries &_intakeSeries,
+        const ConcentrationPredictionPtr &_pPrediction,
+        const Tucuxi::Core::PercentilesPrediction &_percentiles,
+        const Tucuxi::Core::PercentileRanks &_percentileRanks
+        )
+{
+
+    auto defaultAnalyteGroupId = _request.getDrugModel().getAnalyteSets()[0]->getId();
+    IntakeSeries selectedIntakes;
+    selectRecordedIntakes(selectedIntakes, _intakeSeries[defaultAnalyteGroupId], _traits->getStart(), _traits->getEnd());
+
+    if (selectedIntakes.size() == _pPrediction->getTimes().size() &&
+            selectedIntakes.size() == _pPrediction->getValues().size())
     {
         std::unique_ptr<PercentilesData> resp = std::make_unique<PercentilesData>(_request.getId());
         resp->setNbPointsPerHour(_traits->getNbPointsPerHour());
 
-        const std::vector<std::vector<std::vector<Value> > >& allValues = percentiles.getValues();
+        const std::vector<std::vector<std::vector<Value> > >& allValues = _percentiles.getValues();
 
 
         // The final unit depends on the computing options
@@ -775,19 +773,19 @@ ComputingStatus ComputingComponent::computePercentilesSimple(
             finalUnit = _request.getDrugModel().getActiveMoieties()[0]->getUnit();
         }
 
-        for (unsigned int p = 0; p < percentiles.getRanks().size(); p++) {
+        for (unsigned int p = 0; p < _percentiles.getRanks().size(); p++) {
             std::vector<CycleData> percData;
 
             if (selectedIntakes.size() != allValues[p].size()) {
                 return ComputingStatus::SelectedIntakesSizeError;
             }
-            if (selectedIntakes.size() != pPrediction->getTimes().size()) {
+            if (selectedIntakes.size() != _pPrediction->getTimes().size()) {
                 return ComputingStatus::SelectedIntakesSizeError;
             }
 
             for (unsigned int cycle = 0; cycle < allValues[p].size(); cycle ++) {
 
-                TimeOffsets times = pPrediction->getTimes()[cycle];
+                TimeOffsets times = _pPrediction->getTimes()[cycle];
                 DateTime start = selectedIntakes[cycle].getEventTime();
 
                 std::chrono::milliseconds ms = std::chrono::milliseconds(static_cast<int>(times.back())) * 3600 * 1000;
@@ -813,18 +811,13 @@ ComputingStatus ComputingComponent::computePercentilesSimple(
 
             resp->addPercentileData(percData);
         }
-        resp->setRanks(percentileRanks);
+        resp->setRanks(_percentileRanks);
 
         _response->addResponse(std::move(resp));
         return ComputingStatus::Ok;
     }
     else {
-        if (computingResult != ComputingStatus::Ok) {
-            return computingResult;
-        }
-        else {
-            return ComputingStatus::SelectedIntakesSizeError;
-        }
+        return ComputingStatus::SelectedIntakesSizeError;
     }
 }
 
