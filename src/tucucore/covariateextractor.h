@@ -18,6 +18,7 @@
 
 #include "tucucore/definitions.h"
 #include "tucucore/covariateevent.h"
+#include "tucucore/intakeevent.h"
 #include "tucucore/computingservice/computingresult.h"
 
 struct TestCovariateExtractor;
@@ -102,6 +103,15 @@ public:
     static const std::string BIRTHDATE_CNAME; // NOLINT(readability-identifier-naming)
 
     const TucuUnit getFinalUnit(const std::string& _cvName) const;
+
+    /// \brief Extract Dose covariates from an IntakeSeries
+    /// This method can be used if the dose has to be used as a covariate in the drug model.
+    /// \param _intakeSeries The series of intakes extracted by the IntakeExtractor
+    /// \param _covariateDefinition The covariate definition corresponding to the dose covariate
+    /// \param _patientCovariates The output list of patient covariates embedding the doses (in out param)
+    static ComputingStatus extractDosePatientVariate(const IntakeSeries &_intakeSeries,
+                                                     const CovariateDefinition &_covariateDefinition,
+                                                     PatientVariates &_patientCovariates);
 
 private:
     /// \brief Collect the time instants when the computed covariates have to be re-evaluated.

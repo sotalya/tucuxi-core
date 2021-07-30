@@ -131,6 +131,26 @@ const CovariateDefinitions& DrugModel::getCovariates() const
     return m_covariates;
 }
 
+bool DrugModel::hasDoseCovariate() const
+{
+    for (const auto &covariate : m_covariates) {
+        if (covariate->getType() == CovariateType::Dose) {
+            return true;
+        }
+    }
+    return false;
+}
+
+
+CovariateDefinition *DrugModel::getDoseCovariate() const
+{
+    for (const auto &covariate : m_covariates) {
+        if (covariate->getType() == CovariateType::Dose) {
+            return covariate.get();
+        }
+    }
+    return nullptr;
+}
 
 const FormulationAndRoutes& DrugModel::getFormulationAndRoutes() const
 {

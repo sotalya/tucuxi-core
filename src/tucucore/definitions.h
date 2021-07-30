@@ -164,7 +164,11 @@ enum class CovariateType {
 
     /// \brief Sex of the person, based on his administrative data. 1 for male, 0 for female.
     /// Strangely, if Sex is at the second position, the test_covariateextractor.h tests will fail.
-    Sex
+    Sex,
+
+    /// \brief Automatic calculation of the dose, based on the intakes.
+    /// The unit of the covariate will be used to convert the actual dose to the covariate.
+    Dose
 };
 
 /// \brief Allowed data types.

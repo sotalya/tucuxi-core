@@ -226,6 +226,20 @@ public:
         return (m_activeMoieties.size() == 1) && (m_analyteSets.size() == 1) && (m_analyteSets[0]->getAnalytes().size() == 1);
     }
 
+    ///
+    /// \brief Indicates if the drug model has a "dose" covariate
+    /// \return true if it has a "dose" covariate, false else
+    ///
+    /// This function is used to know if a list of dose PatientVariate has to be generated.
+    ///
+    bool hasDoseCovariate() const;
+
+    ///
+    /// \brief Gets the "dose" covariate if it exists
+    /// \return The CovariateDefinition of the "dose" covariate if it exists, nullptr else
+    ///
+    CovariateDefinition *getDoseCovariate() const;
+
 
 private:
 

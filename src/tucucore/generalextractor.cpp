@@ -272,7 +272,7 @@ ComputingStatus GeneralExtractor::generalExtractions(const ComputingTraitStandar
 
             DateTime start = lastIntake->getEventTime() + lastIntake->getInterval();
             Value dose = 0.0;
-            TucuUnit doseValue("-");
+            TucuUnit doseUnit = _drugModel.getAnalyteSets()[0]->getDoseUnit();
 
             auto absorptionModel = lastIntake->getRoute();
 
@@ -284,7 +284,7 @@ ComputingStatus GeneralExtractor::generalExtractions(const ComputingTraitStandar
             // We need at least one point. It could be less if the interval is very very small
             size_t nbPoints = std::max(size_t{1}, static_cast<size_t>(nbPointsPerHour * interval.toHours()));
 
-            IntakeEvent intake(start, Duration(), dose, doseValue,  interval, lastIntake->getFormulationAndRoute(), absorptionModel, infusionTime, nbPoints);
+            IntakeEvent intake(start, Duration(), dose, doseUnit,  interval, lastIntake->getFormulationAndRoute(), absorptionModel, infusionTime, nbPoints);
             intakeSeries.push_back(intake);
         }
 
@@ -362,6 +362,13 @@ ComputingStatus GeneralExtractor::generalExtractions(const ComputingTraitStandar
     TUCU_TRY {
         if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Population) {
             PatientVariates emptyPatientVariates;
+            // Special case if there is a dose covariate
+            if (_drugModel.hasDoseCovariate()) {
+                ComputingStatus exStatus = CovariateExtractor::extractDosePatientVariate(intakeSeries, *_drugModel.getDoseCovariate(), emptyPatientVariates);
+                if (exStatus != ComputingStatus::Ok) {
+                    return exStatus;
+                }
+            }
             CovariateExtractor covariateExtractor(_drugModel.getCovariates(),
                                                   emptyPatientVariates,
                                                   fantomStart,
@@ -374,8 +381,21 @@ ComputingStatus GeneralExtractor::generalExtractions(const ComputingTraitStandar
             }
         }
         else {
+            PatientVariates patientVariatesList;
+            // First copy the list of patient variates
+            for (const auto &patientVariate : _patientVariates) {
+                // Using the copy constructor
+                patientVariatesList.emplace_back(std::make_unique<PatientCovariate>(*patientVariate.get()));
+            }
+            // Special case if there is a dose covariate
+            if (_drugModel.hasDoseCovariate()) {
+                ComputingStatus exStatus = CovariateExtractor::extractDosePatientVariate(intakeSeries, *_drugModel.getDoseCovariate(), patientVariatesList);
+                if (exStatus != ComputingStatus::Ok) {
+                    return exStatus;
+                }
+            }
             CovariateExtractor covariateExtractor(_drugModel.getCovariates(),
-                                                  _patientVariates,
+                                                  patientVariatesList,
                                                   fantomStart,
                                                   _traits->getEnd());
             ComputingStatus covariateExtractionResult = covariateExtractor.extract(_covariatesSeries);

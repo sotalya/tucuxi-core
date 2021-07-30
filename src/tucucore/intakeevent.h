@@ -130,6 +130,13 @@ public:
     {
         return m_dose;
     }
+
+    /// \brief Get the dose unit
+    /// \return The dose unit
+    TucuUnit getUnit() const
+    {
+        return m_doseUnit;
+    }
     
     /// \brief Get the time (in milliseconds) since the start of the treatment.
     /// \return Time in ms since the beginning of the treatment.

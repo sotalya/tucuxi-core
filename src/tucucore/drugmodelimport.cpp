@@ -194,7 +194,8 @@ CovariateType DrugModelImport::extractCovariateType(Tucuxi::Common::XmlNodeItera
         {"ageInYears", CovariateType::AgeInYears},
         {"ageInDays", CovariateType::AgeInDays},
         {"ageInWeeks", CovariateType::AgeInWeeks},
-        {"ageInMonths", CovariateType::AgeInMonths}
+        {"ageInMonths", CovariateType::AgeInMonths},
+        {"dose", CovariateType::Dose}
     };
 
 

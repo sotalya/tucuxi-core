@@ -61,7 +61,8 @@ CovariateExtractor::CovariateExtractor(const CovariateDefinitions &_defaults,
             rc = m_cdValued.insert(std::pair<std::string, cdIterator_t>((*it)->getId(), it));
         }
         // In case on non-standard covariates set the initial values.
-        if (((*it)->getType() != CovariateType::Standard) && ((*it)->getType() != CovariateType::Sex)) {
+        if (((*it)->getType() != CovariateType::Standard) && ((*it)->getType() != CovariateType::Sex)
+                 && ((*it)->getType() != CovariateType::Dose)) {
             switch ((*it)->getType()) {
             case CovariateType::AgeInDays:
                 if (m_initAgeInDays >= 0) {
@@ -125,7 +126,8 @@ CovariateExtractor::CovariateExtractor(const CovariateDefinitions &_defaults,
         // patient variate.
         if (m_cdValued.find((*it)->getId()) != m_cdValued.end() &&
                 ((*m_cdValued.at((*it)->getId()))->getType() == CovariateType::Standard ||
-                 (*m_cdValued.at((*it)->getId()))->getType() == CovariateType::Sex)) {
+                 (*m_cdValued.at((*it)->getId()))->getType() == CovariateType::Sex ||
+                 (*m_cdValued.at((*it)->getId()))->getType() == CovariateType::Dose)) {
             if (m_pvValued.find((*it)->getId()) == m_pvValued.end()) {
                 m_pvValued.insert(std::pair<std::string, std::vector<pvIterator_t>>((*it)->getId(),
                                                                                     std::vector<pvIterator_t>()));
@@ -178,7 +180,8 @@ bool CovariateExtractor::computeEvents(const std::map<DateTime, std::vector<std:
         for (const auto &cvName : refreshEvent.second) {
             Value newVal = 0.0;
             Common::UnitManager unitManager;
-            if (((*m_cdValued.at(cvName))->getType() == CovariateType::Standard) || ((*m_cdValued.at(cvName))->getType() == CovariateType::Sex)) {
+            if (((*m_cdValued.at(cvName))->getType() == CovariateType::Standard) || ((*m_cdValued.at(cvName))->getType() == CovariateType::Sex)
+                     || ((*m_cdValued.at(cvName))->getType() == CovariateType::Dose)) {
                 // Standard covariate -- get its value from the Patient Variates or from default values.
                 std::map<std::string, std::vector<pvIterator_t>>::iterator pvCurrentC = m_pvValued.find(cvName);
                 if (pvCurrentC == m_pvValued.end()) {
@@ -390,7 +393,8 @@ void CovariateExtractor::collectRefreshIntervals(std::map<DateTime, std::vector<
             // # ages #
             // - if a covariate named m_birthDateCName is present, then use it to set the refresh dates.
             // - else use the start interval and the type to set them.
-            if (((*(cdv.second))->getType() == CovariateType::Standard) || ((*(cdv.second))->getType() == CovariateType::Sex)) {
+            if (((*(cdv.second))->getType() == CovariateType::Standard) || ((*(cdv.second))->getType() == CovariateType::Sex)
+                     || ((*(cdv.second))->getType() == CovariateType::Dose)) {
                 DateTime t = m_start;
                 if (_refreshMap.find(t) == _refreshMap.end()) {
                     _refreshMap.insert(std::pair<DateTime, std::vector<std::string>>(t, std::vector<std::string>()));
@@ -580,6 +584,35 @@ const TucuUnit CovariateExtractor::getFinalUnit(const std::string &_cvName) cons
     }
     //CAN'T GO THERE
     return TucuUnit("");
+}
+
+
+ComputingStatus CovariateExtractor::extractDosePatientVariate(const IntakeSeries &_intakeSeries,
+                                                              const CovariateDefinition &_covariateDefinition,
+                                                              PatientVariates &_patientCovariates)
+{
+    TUCU_TRY {
+    // Default value that is not valid
+    Value currentDose = -1.0;
+    for (const auto &intake : _intakeSeries) {
+        Value finalValue = Tucuxi::Common::UnitManager::convertToUnit(intake.getDose(), intake.getUnit(), _covariateDefinition.getUnit());
+        // Be careful with a dose of 0. It should not be used as covariate
+        if ((finalValue != currentDose) && (finalValue != 0.0)) {
+            auto patientCovariate = std::make_unique<PatientCovariate>(_covariateDefinition.getId(),
+                                                                       std::to_string(finalValue),
+                                                                       DataType::Double,
+                                                                       _covariateDefinition.getUnit(),
+                                                                       intake.getEventTime());
+            _patientCovariates.push_back(std::move(patientCovariate));
+        }
+    }
+    return ComputingStatus::Ok;
+    }
+    TUCU_CATCH(std::runtime_error &err) TUCU_ONEXCEPTION({
+        Tucuxi::Common::LoggerHelper logHelper;
+        logHelper.error("Error with dose covariate extraction. Probably a conversion unit issue.");
+        return ComputingStatus::CovariateExtractionError;
+    })
 }
 
 } // namespace Core
