@@ -1,5 +1,5 @@
-#ifndef TARGETEVALUATIONRESULT_H
-#define TARGETEVALUATIONRESULT_H
+#ifndef TUCUXI_CORE_TARGETEVALUATIONRESULT_H
+#define TUCUXI_CORE_TARGETEVALUATIONRESULT_H
 
 #include "tucucore/drugmodel/targetdefinition.h"
 #include "tucucore/definitions.h"
@@ -45,4 +45,4 @@ protected:
 } // namespace Core
 } // namespace Tucuxi
 
-#endif // TARGETEVALUATIONRESULT_H
+#endif // TUCUXI_CORE_TARGETEVALUATIONRESULT_H

@@ -915,8 +915,9 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
             if (resp == nullptr) {
                 return;
             }
-            fructose_assert_eq(resp->getIds().size(), size_t{1});
-            fructose_assert_eq(resp->getIds()[0], "analyte");
+            fructose_assert_eq(resp->getCompartmentInfos().size(), size_t{1});
+            fructose_assert_eq(resp->getCompartmentInfos()[0].getId(), "analyte");
+            fructose_assert_eq(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
             //std::cout << "Population parameters : " << std::endl;
             //for (auto parameter : resp->getData()[0].m_parameters) {
@@ -948,8 +949,9 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
             fructose_assert(dynamic_cast<const SinglePredictionData*>(responseData) != nullptr);
             const SinglePredictionData *resp = dynamic_cast<const SinglePredictionData*>(responseData);
 
-            fructose_assert_eq(resp->getIds().size(), size_t{1});
-            fructose_assert_eq(resp->getIds()[0], "analyte");
+            fructose_assert_eq(resp->getCompartmentInfos().size(), size_t{1});
+            fructose_assert_eq(resp->getCompartmentInfos()[0].getId(), "analyte");
+            fructose_assert_eq(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
             //std::cout << "A priori parameters : " << std::endl;
             //for (auto parameter : resp->getData()[0].m_parameters) {
@@ -1022,8 +1024,9 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
                 return;
             }
 
-            fructose_assert_eq(resp->getIds().size(), size_t{1});
-            fructose_assert_eq(resp->getIds()[0], "analyte");
+            fructose_assert_eq(resp->getCompartmentInfos().size(), size_t{1});
+            fructose_assert_eq(resp->getCompartmentInfos()[0].getId(), "analyte");
+            fructose_assert_eq(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
             //std::cout << "Population parameters : " << std::endl;
             //for (auto parameter : resp->getData()[0].m_parameters) {
@@ -1055,8 +1058,9 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
             fructose_assert(dynamic_cast<const SinglePredictionData*>(responseData) != nullptr);
             const SinglePredictionData *resp = dynamic_cast<const SinglePredictionData*>(responseData);
 
-            fructose_assert_eq(resp->getIds().size(), size_t{1});
-            fructose_assert_eq(resp->getIds()[0], "analyte");
+            fructose_assert_eq(resp->getCompartmentInfos().size(), size_t{1});
+            fructose_assert_eq(resp->getCompartmentInfos()[0].getId(), "analyte");
+            fructose_assert_eq(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
             //std::cout << "A priori parameters : " << std::endl;
             //for (auto parameter : resp->getData()[0].m_parameters) {
@@ -1126,8 +1130,9 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
             fructose_assert(dynamic_cast<const SinglePredictionData*>(responseData) != nullptr);
             const SinglePredictionData *resp = dynamic_cast<const SinglePredictionData*>(responseData);
 
-            fructose_assert_eq(resp->getIds().size(), size_t{1});
-            fructose_assert_eq(resp->getIds()[0], "analyte");
+            fructose_assert_eq(resp->getCompartmentInfos().size(), size_t{1});
+            fructose_assert_eq(resp->getCompartmentInfos()[0].getId(), "analyte");
+            fructose_assert_eq(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
             //std::cout << "Population parameters : " << std::endl;
             //for (auto parameter : resp->getData()[0].m_parameters) {
@@ -1159,8 +1164,9 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
             fructose_assert(dynamic_cast<const SinglePredictionData*>(responseData) != nullptr);
             const SinglePredictionData *resp = dynamic_cast<const SinglePredictionData*>(responseData);
 
-            fructose_assert_eq(resp->getIds().size(), size_t{1});
-            fructose_assert_eq(resp->getIds()[0], "analyte");
+            fructose_assert_eq(resp->getCompartmentInfos().size(), size_t{1});
+            fructose_assert_eq(resp->getCompartmentInfos()[0].getId(), "analyte");
+            fructose_assert_eq(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
             //std::cout << "A priori parameters : " << std::endl;
             //for (auto parameter : resp->getData()[0].m_parameters) {
@@ -1230,8 +1236,9 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
             fructose_assert(dynamic_cast<const SinglePredictionData*>(responseData) != nullptr);
             const SinglePredictionData *resp = dynamic_cast<const SinglePredictionData*>(responseData);
 
-            fructose_assert_eq(resp->getIds().size(), size_t{1});
-            fructose_assert_eq(resp->getIds()[0], "analyte");
+            fructose_assert_eq(resp->getCompartmentInfos().size(), size_t{1});
+            fructose_assert_eq(resp->getCompartmentInfos()[0].getId(), "analyte");
+            fructose_assert_eq(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
             //std::cout << "Population parameters : " << std::endl;
             //for (auto parameter : resp->getData()[0].m_parameters) {
@@ -1263,8 +1270,9 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
             fructose_assert(dynamic_cast<const SinglePredictionData*>(responseData) != nullptr);
             const SinglePredictionData *resp = dynamic_cast<const SinglePredictionData*>(responseData);
 
-            fructose_assert_eq(resp->getIds().size(), size_t{1});
-            fructose_assert_eq(resp->getIds()[0], "analyte");
+            fructose_assert_eq(resp->getCompartmentInfos().size(), size_t{1});
+            fructose_assert_eq(resp->getCompartmentInfos()[0].getId(), "analyte");
+            fructose_assert_eq(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
             //std::cout << "A priori parameters : " << std::endl;
             //for (auto parameter : resp->getData()[0].m_parameters) {
@@ -1339,8 +1347,9 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
             }
             const SinglePredictionData *resp = dynamic_cast<const SinglePredictionData*>(responseData);
 
-            fructose_assert_eq(resp->getIds().size(), size_t{1});
-            fructose_assert_eq(resp->getIds()[0], "analyte");
+            fructose_assert_eq(resp->getCompartmentInfos().size(), size_t{1});
+            fructose_assert_eq(resp->getCompartmentInfos()[0].getId(), "analyte");
+            fructose_assert_eq(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
             //std::cout << "Population parameters : " << std::endl;
             //for (auto parameter : resp->getData()[0].m_parameters) {
@@ -1372,8 +1381,9 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
             fructose_assert(dynamic_cast<const SinglePredictionData*>(responseData) != nullptr);
             const SinglePredictionData *resp = dynamic_cast<const SinglePredictionData*>(responseData);
 
-            fructose_assert_eq(resp->getIds().size(), size_t{1});
-            fructose_assert_eq(resp->getIds()[0], "analyte");
+            fructose_assert_eq(resp->getCompartmentInfos().size(), size_t{1});
+            fructose_assert_eq(resp->getCompartmentInfos()[0].getId(), "analyte");
+            fructose_assert_eq(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
             //std::cout << "A priori parameters : " << std::endl;
             //for (auto parameter : resp->getData()[0].m_parameters) {

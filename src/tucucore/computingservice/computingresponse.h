@@ -2,8 +2,8 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
-#ifndef COMPUTINGRESPONSE_H
-#define COMPUTINGRESPONSE_H
+#ifndef TUCUXI_CORE_COMPUTINGRESPONSE_H
+#define TUCUXI_CORE_COMPUTINGRESPONSE_H
 
 #include <string>
 #include <vector>
@@ -147,12 +147,12 @@ public:
     const std::vector<CycleData>& getData() const { return m_data; }
     std::vector<CycleData>& getModifiableData() { return m_data; }
 
-    void addAnalyteId(std::string _id) { m_ids.push_back(_id);}
+    void addCompartmentInfo(CompartmentInfo _info) { m_infos.push_back(_info);}
 
-    const std::vector<std::string>& getIds() const { return m_ids;}
+    const std::vector<CompartmentInfo>& getCompartmentInfos() const { return m_infos;}
 protected:
     std::vector<CycleData> m_data;
-    std::vector<std::string> m_ids;
+    std::vector<CompartmentInfo> m_infos;
 
 };
 
@@ -328,4 +328,4 @@ protected:
 } // namespace Core
 } // namespace Tucuxi
 
-#endif // COMPUTINGRESPONSE_H
+#endif // TUCUXI_CORE_COMPUTINGRESPONSE_H

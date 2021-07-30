@@ -191,8 +191,9 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
                 fructose_assert(dynamic_cast<const SinglePredictionData*>(responseData) != nullptr);
                 const SinglePredictionData *resp = dynamic_cast<const SinglePredictionData*>(responseData);
 
-                fructose_assert_eq(resp->getIds().size(), size_t{1});
-                fructose_assert_eq(resp->getIds()[0], "analyte");
+                fructose_assert_eq(resp->getCompartmentInfos().size(), size_t{1});
+                fructose_assert_eq(resp->getCompartmentInfos()[0].getId(), "analyte");
+                fructose_assert_eq(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
                 std::vector<CycleData> data = resp->getData();
                 fructose_assert(data.size() == 16);
@@ -350,8 +351,9 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
                 fructose_assert(dynamic_cast<const SinglePredictionData*>(responseData) != nullptr);
                 const SinglePredictionData *resp = dynamic_cast<const SinglePredictionData*>(responseData);
 
-                fructose_assert_eq(resp->getIds().size(), size_t{1});
-                fructose_assert_eq(resp->getIds()[0], "analyte");
+                fructose_assert_eq(resp->getCompartmentInfos().size(), size_t{1});
+                fructose_assert_eq(resp->getCompartmentInfos()[0].getId(), "analyte");
+                fructose_assert_eq(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
                 std::vector<CycleData> data = resp->getData();
                 fructose_assert(data.size() == 16);

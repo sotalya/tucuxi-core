@@ -203,6 +203,62 @@ enum class InterpolationType
     Tanh
 };
 
+
+///
+/// \brief The CompartmentInfo class
+///
+/// This class is meant to represent the organization of prediction curves. As there can be more
+/// than one analyte or active moiety, and that there could be compartments concentration in the
+/// results, there is a need to identify what is present in the resulting vectors.
+///
+/// For instance, a SinglePredictionData will embed a vector of CompartmentInfo.
+///
+/// The id should embed the analyte Id, the activeMoiety Id, or a compartment Id.
+///
+class CompartmentInfo
+{
+public:
+
+    /// The type of prediction
+    enum class CompartmentType {
+        /// An active moiety
+        ActiveMoiety,
+        /// An analyte
+        Analyte,
+        /// For a single analyte/single active moiety, we face both an analyte and an active moiety
+        ActiveMoietyAndAnalyte,
+        /// A compartment, not representing an analyte, but an internal compartment of the PK model
+        Compartment
+    };
+
+    ///
+    /// \brief CompartmentInfo constructor
+    /// \param _type The type of prediction
+    /// \param _id The Id of the prediction
+    ///
+    CompartmentInfo(CompartmentType _type, std::string _id) : m_type(_type), m_id(_id) {}
+
+    ///
+    /// \brief gets the Id of this prediction
+    /// \return The Id of this prediction
+    ///
+    std::string getId() const { return m_id;}
+
+    ///
+    /// \brief gets the CompartmentType of this prediction
+    /// \return The CompartmentType of this prediction
+    ///
+    CompartmentType getType() const { return m_type;}
+
+protected:
+
+    /// The prediction type
+    CompartmentType m_type;
+
+    /// The Id of this prediction
+    std::string m_id;
+};
+
 } // namespace Core
 } // namespace Tucuxi
 

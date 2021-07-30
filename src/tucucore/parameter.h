@@ -201,6 +201,15 @@ typedef std::unique_ptr<const ParameterSetEvent> ParameterSetEventPtr;
 class ParameterSetSeries
 {
 public:
+
+    ///
+    /// \brief getAtTime
+    /// \param _date
+    /// \param _etas
+    /// \return
+    ///
+    /// \unittest{TestParameter::testGetAtTime()}
+    ///
     ParameterSetEventPtr getAtTime(const DateTime &_date, const Etas &_etas = Etas(0)) const;
     void addParameterSetEvent(const ParameterSetEvent &_parameterSetEvent);
 

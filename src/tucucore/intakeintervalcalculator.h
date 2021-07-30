@@ -10,10 +10,10 @@
 
 #include "Eigen/Dense"
 
+#include "tucucore/computingservice/computingresult.h"
 #include "tucucore/definitions.h"
 #include "tucucore/parameter.h"
 #include "tucucore/cachedexponentials.h"
-#include "tucucore/computingservice/computingresult.h"
 
 namespace Tucuxi {
 namespace Core {

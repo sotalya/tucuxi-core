@@ -19,6 +19,8 @@ using Tucuxi::Common::Duration; // NOLINT(google-global-names-in-headers)
 namespace Tucuxi {
 namespace Core {
 
+class IntakeIntervalCalculator;
+
 /// \ingroup TucuCore
 /// \brief A class reprensting the event of taking a dose.
 /// Represents a Dose, as extracted from a DAL Dosage.

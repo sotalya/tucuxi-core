@@ -68,9 +68,6 @@ public:
 
     std::vector<std::string> getParametersForRoute(AbsorptionModel _route) const;
 
-    //std::string getDistribution() const { return m_distribution.getString();}
-    //std::string getElimination() const { return m_elimination.getString();}
-
     const Tucuxi::Common::TranslatableString& getDistribution() const { return m_distribution;}
     const Tucuxi::Common::TranslatableString& getElimination() const { return m_elimination;}
 
@@ -83,6 +80,16 @@ public:
     /// Not all PkModels allow for multiple routes, therefore it is important to check that before starting a
     /// computation.
     AllowMultipleRoutes allowMultipleRoutes() const { return m_allowMultipleRoutes;}
+
+    ///
+    /// \brief Gets all the PK model compartment infos
+    /// \return The vector of CompartmentInfo
+    ///
+    /// This method is useful to know what does the results of a concentration calculation represent in
+    /// case of a multi-analytes PK model or if we ask for all compartments to be returned as results.
+    ///
+    const std::vector<CompartmentInfo> &getCompartmentInfos() const { return m_compartmentInfos;}
+
 protected:
     /// \brief Identifier of the PkModel.
     std::string m_pkModelId;
@@ -98,6 +105,9 @@ protected:
 
     /// \brief Indicates if multiple routes can be managed in a single dosage history
     const AllowMultipleRoutes m_allowMultipleRoutes;
+
+    /// \brief Compartment infos. To be set soon.
+    const std::vector<CompartmentInfo> m_compartmentInfos;
 };
 
 

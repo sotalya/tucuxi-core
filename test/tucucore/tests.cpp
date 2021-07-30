@@ -141,6 +141,7 @@ int main(int argc, char** argv)
     TestParameter parameterTests;
 
     parameterTests.add_test("testApplyEta", &TestParameter::testApplyEta);
+    parameterTests.add_test("testGetTime", &TestParameter::testGetAtTime);
 
     res = parameterTests.run(argc, argv);
     tot_res |= res;
