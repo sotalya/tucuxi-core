@@ -294,8 +294,8 @@ bool ComputingQueryResponseXmlExport::exportAdjustment(const Tucuxi::Core::Adjus
     Tucuxi::Common::XmlNode analyteIds = m_doc.createNode(
                 Tucuxi::Common::EXmlNodeType::Element, "analyteIds");
     _rootNode.addChild(analyteIds);
-    for (const auto &analyteId: _prediction->getIds()) {
-        addNode(analyteIds, "analyteId", analyteId);
+    for (const auto &comp: _prediction->getCompartmentInfos()) {
+        addNode(analyteIds, "analyteId", comp.getId());
     }
 
     Tucuxi::Common::XmlNode adjustments = m_doc.createNode(
@@ -338,8 +338,8 @@ bool ComputingQueryResponseXmlExport::exportSinglePrediction(const Tucuxi::Core:
     Tucuxi::Common::XmlNode analyteIds = m_doc.createNode(
                 Tucuxi::Common::EXmlNodeType::Element, "analyteIds");
     _rootNode.addChild(analyteIds);
-    for (const auto &analyteId: _prediction->getIds()) {
-        addNode(analyteIds, "analyteId", analyteId);
+    for (const auto &comp: _prediction->getCompartmentInfos()) {
+        addNode(analyteIds, "analyteId", comp.getId());
     }
 
     if (!exportCycleDatas(_prediction->getData(), _rootNode)) {
