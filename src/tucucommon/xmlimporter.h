@@ -62,6 +62,7 @@ protected:
 
     TucuUnit getChildUnit(Common::XmlNodeIterator _rootIterator, const std::string& _childName, CheckUnit _checkunit = CheckUnit::DoNotCheck);
     double getChildDouble(Common::XmlNodeIterator _rootIterator, const std::string& _childName);
+    double getChildDoubleOptional(Common::XmlNodeIterator _rootIterator, const std::string& _childName, double _defaultValue);
     bool getChildBool(Common::XmlNodeIterator _rootIterator, const std::string& _childName);
     bool getChildBoolOptional(Common::XmlNodeIterator _rootIterator, const std::string& _childName, bool _defaultValue);
     int getChildInt(Common::XmlNodeIterator _rootIterator, const std::string& _childName);

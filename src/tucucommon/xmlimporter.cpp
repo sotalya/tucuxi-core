@@ -212,6 +212,19 @@ double XMLImporter::getChildDouble(Common::XmlNodeIterator _rootIterator, const 
     }
 }
 
+double XMLImporter::getChildDoubleOptional(Common::XmlNodeIterator _rootIterator, const std::string& _childName, double _defaultValue)
+{
+    auto child = _rootIterator->getChildren(_childName);
+
+    if(child == Common::XmlNodeIterator::none())
+    {
+        return _defaultValue;
+    }
+    else{
+        return extractDouble(child);
+    }
+}
+
 bool XMLImporter::getChildBool(Common::XmlNodeIterator _rootIterator, const std::string& _childName)
 {
     auto child = _rootIterator->getChildren(_childName);

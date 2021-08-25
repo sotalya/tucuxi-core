@@ -84,6 +84,20 @@ public:
            Value _mic,
            TucuUnit _micUnit);
 
+    Target(ActiveMoietyId _activeMoietyId,
+           TargetType _type,
+           TucuUnit _unit,
+           Value _vmin,
+           Value _vbest,
+           Value _vmax,
+           Value _inefficacyAlarm,
+           Value _toxicityAlarm,
+           Value _mic,
+           TucuUnit _micUnit,
+           const Tucuxi::Common::Duration &_tmin,
+           const Tucuxi::Common::Duration &_tbest,
+           const Tucuxi::Common::Duration &_tmax);
+
 
     ActiveMoietyId getActiveMoietyId() const { return m_activeMoietyId;}
 

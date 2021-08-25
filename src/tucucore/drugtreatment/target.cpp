@@ -124,5 +124,35 @@ Target::Target(ActiveMoietyId _activeMoietyId,
 {
 }
 
+
+Target::Target(ActiveMoietyId _activeMoietyId,
+               TargetType _type,
+               TucuUnit _unit,
+               Value _min,
+               Value _best,
+               Value _max,
+               Value _inefficacyAlarm,
+               Value _toxicityAlarm,
+               Value _mic,
+               TucuUnit _micUnit,
+               const Tucuxi::Common::Duration &_tmin,
+               const Tucuxi::Common::Duration &_tbest,
+               const Tucuxi::Common::Duration &_tmax)
+    : m_activeMoietyId(_activeMoietyId),
+      m_targetType(_type),
+      m_valueMin(_min),
+      m_valueMax(_max),
+      m_valueBest(_best),
+      m_mic(_mic),
+      m_micUnit(_micUnit),
+      m_inefficacyAlarm(_inefficacyAlarm),
+      m_toxicityAlarm(_toxicityAlarm),
+      m_tMin(_tmin),
+      m_tMax(_tmax),
+      m_tBest(_tbest),
+      m_unit(_unit)
+{
+}
+
 }
 }

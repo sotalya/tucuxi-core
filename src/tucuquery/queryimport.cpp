@@ -309,6 +309,9 @@ unique_ptr<Tucuxi::Core::Target> QueryImport::createTargetData(Common::XmlNodeIt
     static const string MIC_NODE_NAME                  = "mic";
     static const string MIC_UNIT_NODE_NAME             = "unit";
     static const string MIC_VALUE_NODE_NAME            = "micValue";
+    static const string TMIN_NODE_NAME                  = "tMin";
+    static const string TBEST_NODE_NAME                 = "tBest";
+    static const string TMAX_ID_NODE_NAME               = "tMax";
 
     string activeMoietyId = getChildString(_targetDataRootIterator, ANALYTE_ID_NODE_NAME);
     string targetTypeStr = getChildString(_targetDataRootIterator, TARGET_TYPE_NODE_NAME);
@@ -318,6 +321,9 @@ unique_ptr<Tucuxi::Core::Target> QueryImport::createTargetData(Common::XmlNodeIt
     Tucuxi::Core::Value best= getChildDouble(_targetDataRootIterator, BEST_NODE_NAME);
     Tucuxi::Core::Value max = getChildDouble(_targetDataRootIterator, MAX_ID_NODE_NAME);
     Tucuxi::Core::Value toxicityAlarm = getChildDouble(_targetDataRootIterator, TOXICITY_ALARM_NODE_NAME);
+    Tucuxi::Common::Duration tMin;
+    Tucuxi::Common::Duration tBest;
+    Tucuxi::Common::Duration tMax;
 
     TucuUnit micUnit("");
     Tucuxi::Core::Value micValue = 0.0;
@@ -335,6 +341,10 @@ unique_ptr<Tucuxi::Core::Target> QueryImport::createTargetData(Common::XmlNodeIt
         if (!unitManager.isOfType<Common::UnitManager::UnitType::Concentration>(unit)){
             setStatus(Status::Error, "Unit " + unit.toString() + " not compatible for concentration Target");
         }
+
+        tMin = getChildDuration(_targetDataRootIterator, TMIN_NODE_NAME);
+        tBest= getChildDuration(_targetDataRootIterator, TBEST_NODE_NAME);
+        tMax = getChildDuration(_targetDataRootIterator, TMAX_ID_NODE_NAME);
 
     } else if (targetTypeStr == "residual") {
         targetType = Core::TargetType::Residual;
@@ -397,11 +407,22 @@ unique_ptr<Tucuxi::Core::Target> QueryImport::createTargetData(Common::XmlNodeIt
             setStatus(Status::Error, "Unit " + unit.toString() + " not compatible for time Target");
         }
 
-    } else if (targetTypeStr == "peakDividedByMic") {
+    } else if (targetTypeStr == "peakDividedByMic") {        
         targetType = Core::TargetType::PeakDividedByMic;
         if (!unitManager.isOfType<Common::UnitManager::UnitType::NoUnit>(unit)){
             setStatus(Status::Error, "Unit " + unit.toString() + " not compatible for no unit Target");
         }
+
+        tMin = getChildDuration(_targetDataRootIterator, TMIN_NODE_NAME);
+        tBest= getChildDuration(_targetDataRootIterator, TBEST_NODE_NAME);
+        tMax = getChildDuration(_targetDataRootIterator, TMAX_ID_NODE_NAME);
+
+    } else if (targetTypeStr == "residualDividedByMic") {
+        targetType = Core::TargetType::ResidualDividedByMic;
+        if (!unitManager.isOfType<Common::UnitManager::UnitType::NoUnit>(unit)){
+            setStatus(Status::Error, "Unit " + unit.toString() + " not compatible for residual divided by MIC Target");
+        }
+
     } else {
         targetType = Core::TargetType::UnknownTarget;
     }
@@ -417,7 +438,10 @@ unique_ptr<Tucuxi::Core::Target> QueryImport::createTargetData(Common::XmlNodeIt
                 inefficacyAlarm,
                 toxicityAlarm,
                 micValue,
-                micUnit
+                micUnit,
+                tMin,
+                tBest,
+                tMax
                 );
 }
 
