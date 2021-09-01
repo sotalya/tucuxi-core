@@ -17,6 +17,7 @@ HEADERS += \
     $$PWD/../../src/tucucore/intakeextractor.h \
     $$PWD/../../src/tucucore/invariants.h \
     $$PWD/../../src/tucucore/parameter.h \
+    $$PWD/../../src/tucucore/parameterids.h \
     $$PWD/../../src/tucucore/pkmodels/rkmichaelismentenenzyme.h \
     $$PWD/../../src/tucucore/pkmodels/rkmichaelismentenonecomp.h \
     $$PWD/../../src/tucucore/pkmodels/rkmichaelismententwocomp.h \
