@@ -15,6 +15,8 @@
 namespace Tucuxi {
 namespace Core {
 
+class MultiComputingComponent;
+
 ///
 /// \brief The PredictionParameterType enum
 /// This enum represents the type of Pk parameters to use for computation.
@@ -191,6 +193,7 @@ protected:
 
 private:
     friend class ComputingComponent;
+    friend class MultiComputingComponent;
 
     ///
     /// \brief compute Calls the compute() method in ComputingComponent.
@@ -203,6 +206,10 @@ private:
     /// iterate on the list of ComputingRequest for starting the computations.
     ///
     virtual ComputingStatus compute(ComputingComponent &_computingComponent,
+                                    const ComputingRequest &_request,
+                                    std::unique_ptr<ComputingResponse> &_response) const = 0;
+
+    virtual ComputingStatus compute(MultiComputingComponent &_computingComponent,
                                     const ComputingRequest &_request,
                                     std::unique_ptr<ComputingResponse> &_response) const = 0;
 };
@@ -252,6 +259,10 @@ public:
 
     /// This function should not be called. It returns ERROR
     ComputingStatus compute(ComputingComponent &_computingComponent,
+                            const ComputingRequest &_request,
+                            std::unique_ptr<ComputingResponse> &_response) const override;
+
+    ComputingStatus compute(MultiComputingComponent &_computingComponent,
                             const ComputingRequest &_request,
                             std::unique_ptr<ComputingResponse> &_response) const override;
 
@@ -336,6 +347,10 @@ private:
                             const ComputingRequest &_request,
                             std::unique_ptr<ComputingResponse> &_response) const override;
 
+    ComputingStatus compute(MultiComputingComponent &_computingComponent,
+                            const ComputingRequest &_request,
+                            std::unique_ptr<ComputingResponse> &_response) const override;
+
     friend ComputingComponent;
 };
 
@@ -377,6 +392,10 @@ private:
     /// \return ComputingResult::Success if everything went well, ComputingResult::Error else
     ///
     ComputingStatus compute(ComputingComponent &_computingComponent,
+                            const ComputingRequest &_request,
+                            std::unique_ptr<ComputingResponse> &_response) const override;
+
+    ComputingStatus compute(MultiComputingComponent &_computingComponent,
                             const ComputingRequest &_request,
                             std::unique_ptr<ComputingResponse> &_response) const override;
 };
@@ -598,6 +617,10 @@ private:
     ComputingStatus compute(ComputingComponent &_computingComponent,
                             const ComputingRequest &_request,
                             std::unique_ptr<ComputingResponse> &_response) const override;
+
+    ComputingStatus compute(MultiComputingComponent &_computingComponent,
+                            const ComputingRequest &_request,
+                            std::unique_ptr<ComputingResponse> &_response) const override;
 };
 
 ///
@@ -631,6 +654,10 @@ private:
     /// \return ComputingResult::Success if everything went well, ComputingResult::Error else
     ///
     ComputingStatus compute(ComputingComponent &_computingComponent,
+                            const ComputingRequest &_request,
+                            std::unique_ptr<ComputingResponse> &_response) const override;
+
+    ComputingStatus compute(MultiComputingComponent &_computingComponent,
                             const ComputingRequest &_request,
                             std::unique_ptr<ComputingResponse> &_response) const override;
 };
@@ -698,6 +725,10 @@ private:
             ComputingComponent &_computingComponent,
             const ComputingRequest &_request,
             std::unique_ptr<ComputingResponse> &_response) const override;
+
+    ComputingStatus compute(MultiComputingComponent &_computingComponent,
+                            const ComputingRequest &_request,
+                            std::unique_ptr<ComputingResponse> &_response) const override;
 };
 
 

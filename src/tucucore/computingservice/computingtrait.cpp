@@ -4,6 +4,7 @@
 #include "computingtrait.h"
 
 #include "tucucore/computingcomponent.h"
+#include "tucucore/multicomputingcomponent.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -80,6 +81,17 @@ double ComputingTraitStandard::getNbPointsPerHour() const
 }
 
 ComputingStatus ComputingTraitStandard::compute(ComputingComponent &_computingComponent,
+                                const ComputingRequest &_request,
+                        std::unique_ptr<ComputingResponse> &_response) const
+{
+    // A ComputingTraitStandard is not a final class, so this method should not be called
+    FINAL_UNUSED_PARAMETER(_computingComponent);
+    FINAL_UNUSED_PARAMETER(_request);
+    FINAL_UNUSED_PARAMETER(_response);
+    return ComputingStatus::ComputingTraitStandardShouldNotBeCalled;
+}
+
+ComputingStatus ComputingTraitStandard::compute(MultiComputingComponent &_computingComponent,
                                 const ComputingRequest &_request,
                         std::unique_ptr<ComputingResponse> &_response) const
 {
@@ -250,6 +262,50 @@ ComputingStatus ComputingTraitSinglePoints::compute(
     return _computingComponent.compute(this, _request, _response);
 }
 
+
+ComputingStatus ComputingTraitConcentration::compute(
+        MultiComputingComponent &_computingComponent,
+        const ComputingRequest &_request,
+        std::unique_ptr<ComputingResponse> &_response) const
+{
+    return _computingComponent.compute(this, _request, _response);
+}
+
+
+ComputingStatus ComputingTraitPercentiles::compute(
+        MultiComputingComponent &_computingComponent,
+        const ComputingRequest &_request,
+        std::unique_ptr<ComputingResponse> &_response) const
+{
+    return _computingComponent.compute(this, _request, _response);
+}
+
+
+ComputingStatus ComputingTraitAdjustment::compute(
+        MultiComputingComponent &_computingComponent,
+        const ComputingRequest &_request,
+        std::unique_ptr<ComputingResponse> &_response) const
+{
+    return _computingComponent.compute(this, _request, _response);
+}
+
+
+ComputingStatus ComputingTraitAtMeasures::compute(
+        MultiComputingComponent &_computingComponent,
+        const ComputingRequest &_request,
+        std::unique_ptr<ComputingResponse> &_response) const
+{
+    return _computingComponent.compute(this, _request, _response);
+}
+
+
+ComputingStatus ComputingTraitSinglePoints::compute(
+        MultiComputingComponent &_computingComponent,
+        const ComputingRequest &_request,
+        std::unique_ptr<ComputingResponse> &_response) const
+{
+    return _computingComponent.compute(this, _request, _response);
+}
 
 
 
