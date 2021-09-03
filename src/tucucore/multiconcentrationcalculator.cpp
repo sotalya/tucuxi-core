@@ -25,6 +25,18 @@ ComputingStatus MultiConcentrationCalculator::computeConcentrations(
         bool _onlyAnalytes,
         bool _isFixedDensity)
 {
+    TMP_UNUSED_PARAMETER(_prediction);
+    TMP_UNUSED_PARAMETER(_isAll);
+    TMP_UNUSED_PARAMETER(_recordFrom);
+    TMP_UNUSED_PARAMETER(_recordTo);
+    TMP_UNUSED_PARAMETER(_intakes);
+    TMP_UNUSED_PARAMETER(_parameters);
+    TMP_UNUSED_PARAMETER(_etas);
+    TMP_UNUSED_PARAMETER(_residualErrorModels);
+    TMP_UNUSED_PARAMETER(_epsilons);
+    TMP_UNUSED_PARAMETER(_onlyAnalytes);
+    TMP_UNUSED_PARAMETER(_isFixedDensity);
+    return ComputingStatus::Undefined;
     /*
     if (_recordFrom == DateTime()) {
         Tucuxi::Common::LoggerHelper logHelper;
@@ -166,6 +178,19 @@ ComputingStatus MultiConcentrationCalculator::computeConcentrationsAtSteadyState
         bool _onlyAnalytes,
         bool _isFixedDensity)
 {
+
+    TMP_UNUSED_PARAMETER(_prediction);
+    TMP_UNUSED_PARAMETER(_isAll);
+    TMP_UNUSED_PARAMETER(_recordFrom);
+    TMP_UNUSED_PARAMETER(_recordTo);
+    TMP_UNUSED_PARAMETER(_intakes);
+    TMP_UNUSED_PARAMETER(_parameters);
+    TMP_UNUSED_PARAMETER(_etas);
+    TMP_UNUSED_PARAMETER(_residualErrorModels);
+    TMP_UNUSED_PARAMETER(_epsilons);
+    TMP_UNUSED_PARAMETER(_onlyAnalytes);
+    TMP_UNUSED_PARAMETER(_isFixedDensity);
+    return ComputingStatus::Undefined;
     /*
     if (_recordFrom == DateTime()) {
         Tucuxi::Common::LoggerHelper logHelper;
@@ -321,6 +346,14 @@ ComputingStatus MultiConcentrationCalculator::computeConcentrationsAtTimes(Conce
     const Etas &_etas,
     bool _onlyAnalytes)
 {
+    TMP_UNUSED_PARAMETER(_concentrations);
+    TMP_UNUSED_PARAMETER(_isAll);
+    TMP_UNUSED_PARAMETER(_intakes);
+    TMP_UNUSED_PARAMETER(_parameters);
+    TMP_UNUSED_PARAMETER(_samples);
+    TMP_UNUSED_PARAMETER(_etas);
+    TMP_UNUSED_PARAMETER(_onlyAnalytes);
+    return ComputingStatus::Undefined;
     /*
     TMP_UNUSED_PARAMETER(_onlyAnalytes);
 
