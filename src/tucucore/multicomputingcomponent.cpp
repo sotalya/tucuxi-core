@@ -21,7 +21,6 @@
 #include "tucucore/computingservice/computingtrait.h"
 #include "tucucore/intaketocalculatorassociator.h"
 #include "tucucore/pkmodel.h"
-#include "tucucore/montecarlopercentilecalculator.h"
 #include "tucucore/multimontecarlopercentilecalculator.h"
 #include "tucucore/percentilesprediction.h"
 //#include "tucucore/overloadevaluator.h"
@@ -30,7 +29,7 @@
 #include "tucucore/cyclestatisticscalculator.h"
 #include "tucucore/computingservice/computingresult.h"
 #include "tucucore/treatmentdrugmodelcompatibilitychecker.h"
-#include "tucucore/computingadjustments.h"
+#include "tucucore/multicomputingadjustments.h"
 #include "tucucore/computingutils.h"
 
 namespace Tucuxi {
@@ -378,22 +377,6 @@ ComputingStatus MultiComputingComponent::compute(
 #ifdef NO_PERCENTILES
     return ComputingStatus::NoPercentilesCalculation;
 #endif
-    if (_request.getDrugModel().getAnalyteSets().size() > 1) {
-        return computePercentilesMulti(_traits, _request, _response);
-    }
-    else {
-        return computePercentilesSimple(_traits, _request, _response);
-    }
-}
-
-ComputingStatus MultiComputingComponent::computePercentilesMulti(
-        const ComputingTraitPercentiles *_traits,
-        const ComputingRequest &_request,
-        std::unique_ptr<ComputingResponse> &_response)
-{
-#ifdef NO_PERCENTILES
-    return ComputingStatus::NoPercentilesCalculation;
-#endif
     if (_traits == nullptr) {
         m_logger.error("The computing traits sent for computation are nullptr");
         return ComputingStatus::NoComputingTraits;
@@ -569,160 +552,6 @@ ComputingStatus MultiComputingComponent::computePercentilesMulti(
                 percentileRanks);
 }
 
-ComputingStatus MultiComputingComponent::computePercentilesSimple(
-        const ComputingTraitPercentiles *_traits,
-        const ComputingRequest &_request,
-        std::unique_ptr<ComputingResponse> &_response)
-{
-#ifdef NO_PERCENTILES
-    return ComputingStatus::NoPercentilesCalculation;
-#endif
-    if (_traits == nullptr) {
-        m_logger.error("The computing traits sent for computation are nullptr");
-        return ComputingStatus::NoComputingTraits;
-    }
-
-    std::map<AnalyteGroupId, std::shared_ptr<PkModel> > pkModel;
-
-    GroupsIntakeSeries intakeSeries;
-    CovariateSeries covariateSeries;
-    GroupsParameterSetSeries parameterSeries;
-    DateTime calculationStartTime;
-
-    ComputingStatus extractionResult = m_utils->m_generalExtractor->generalExtractions(_traits,
-                                                                              _request,
-                                                                              m_utils->m_models.get(),
-                                                                              pkModel,
-                                                                              intakeSeries,
-                                                                              covariateSeries,
-                                                                              parameterSeries,
-                                                                              calculationStartTime);
-
-    if (extractionResult != ComputingStatus::Ok) {
-        return extractionResult;
-    }
-
-    // Now ready to do the real computing with all the extracted values
-
-
-
-    // TODO : Change this analyte group
-    AnalyteGroupId analyteGroupId = _request.getDrugModel().getAnalyteSets()[0]->getId();
-
-
-    Tucuxi::Core::PercentilesPrediction percentiles;
-
-    Tucuxi::Core::PercentileRanks percentileRanks;
-    Tucuxi::Core::OmegaMatrix omega;
-    Tucuxi::Core::ComputingAborter *aborter = _traits->getAborter();
-
-    percentileRanks = _traits->getRanks();
-
-
-    ResidualErrorModelExtractor errorModelExtractor;
-    std::unique_ptr<IResidualErrorModel> residualErrorModel;
-    ComputingStatus errorModelExtractionResult = errorModelExtractor.extract(_request.getDrugModel().getAnalyteSet()->getAnalytes()[0]->getResidualErrorModel(),
-                                                                             _request.getDrugModel().getAnalyteSet()->getAnalytes()[0]->getUnit(),
-                                                                             _request.getDrugModel().getAnalyteSet()->getAnalytes()[0]->getUnit(),
-                                                                             covariateSeries, residualErrorModel);
-    if (errorModelExtractionResult != ComputingStatus::Ok) {
-        return errorModelExtractionResult;
-    }
-
-    std::vector<const FullFormulationAndRoute *> fullFormulationAndRoutes = m_utils->m_generalExtractor->extractFormulationAndRoutes(_request.getDrugModel(), intakeSeries[analyteGroupId]);
-
-    ComputingStatus omegaComputingResult = m_utils->m_generalExtractor->extractOmega(_request.getDrugModel(), analyteGroupId, fullFormulationAndRoutes, omega);
-    if (omegaComputingResult != ComputingStatus::Ok) {
-        return omegaComputingResult;
-    }
-
-
-    // Set initial etas to 0 for all variable parameters
-    Tucuxi::Core::Etas etas(static_cast<size_t>(omega.cols()), 0.0);
-
-    Tucuxi::Core::ComputingStatus computingResult;
-
-    Tucuxi::Core::ConcentrationCalculator concentrationCalculator;
-
-    if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Aposteriori)   {
-        ComputingStatus aposterioriEtasExtractionResult = m_utils->m_generalExtractor->extractAposterioriEtas(etas, _request, analyteGroupId, intakeSeries[analyteGroupId], parameterSeries[analyteGroupId], covariateSeries, calculationStartTime, _traits->getEnd());
-        if (aposterioriEtasExtractionResult != ComputingStatus::Ok) {
-            return aposterioriEtasExtractionResult;
-        }
-
-        // This extraction is already done in extractAposterioriEtas... Could be optimized
-        SampleSeries sampleSeries;
-        SampleExtractor sampleExtractor;
-        ComputingStatus sampleExtractionResult =
-                sampleExtractor.extract(_request.getDrugTreatment().getSamples(), _request.getDrugModel().getAnalyteSet(analyteGroupId), calculationStartTime, _traits->getEnd(), TucuUnit("ug/l"), sampleSeries);
-
-        if (sampleExtractionResult != ComputingStatus::Ok) {
-            return sampleExtractionResult;
-        }
-
-        std::unique_ptr<Tucuxi::Core::IAposterioriPercentileCalculator> calculator =
-                std::make_unique<Tucuxi::Core::AposterioriMonteCarloPercentileCalculator>();
-        computingResult = calculator->calculate(
-                    percentiles,
-                    _traits->getStart(),
-                    _traits->getEnd(),
-                    intakeSeries[analyteGroupId],
-                    parameterSeries[analyteGroupId],
-                    omega,
-                    *residualErrorModel,
-                    etas,
-                    sampleSeries,
-                    percentileRanks,
-                    concentrationCalculator,
-                    aborter);
-
-    }
-    else {
-        std::unique_ptr<Tucuxi::Core::IAprioriPercentileCalculator> calculator =
-                std::make_unique<Tucuxi::Core::AprioriMonteCarloPercentileCalculator>();
-        computingResult = calculator->calculate(
-                    percentiles,
-                    _traits->getStart(),
-                    _traits->getEnd(),
-                    intakeSeries[analyteGroupId],
-                    parameterSeries[analyteGroupId],
-                    omega,
-                    *residualErrorModel,
-                    etas,
-                    percentileRanks,
-                    concentrationCalculator,
-                    aborter);
-    }
-
-    if (computingResult != ComputingStatus::Ok) {
-        return computingResult;
-    }
-
-    // We use a single prediction to get back time offsets. Could be optimized
-    // YTA: I do not think this is relevant. It could be deleted I guess
-    ConcentrationPredictionPtr pPrediction = std::make_unique<ConcentrationPrediction>();
-
-    ComputingStatus predictionResult = concentrationCalculator.computeConcentrations(
-                pPrediction,
-                false,
-                _traits->getStart(),
-                _traits->getEnd(),
-                intakeSeries[analyteGroupId],
-                parameterSeries[analyteGroupId]);
-
-    if (predictionResult != ComputingStatus::Ok) {
-        return predictionResult;
-    }
-
-    return preparePercentilesResponse(
-                _traits,
-                _request,
-                _response,
-                intakeSeries,
-                std::move(pPrediction),
-                percentiles,
-                percentileRanks);
-}
 
 ComputingStatus MultiComputingComponent::preparePercentilesResponse(
         const ComputingTraitPercentiles *_traits,
@@ -813,7 +642,7 @@ ComputingStatus MultiComputingComponent::compute(
         m_logger.error("The computing traits sent for computation are nullptr");
         return ComputingStatus::NoComputingTraits;
     }
-   ComputingAdjustments computer(m_utils.get());
+   MultiComputingAdjustments computer(m_utils.get());
    return computer.compute(_traits, _request, _response);
 }
 

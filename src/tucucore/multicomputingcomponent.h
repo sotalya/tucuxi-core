@@ -123,16 +123,6 @@ private:
             const ComputingRequest &_request,
             std::unique_ptr<ComputingResponse> &_response);
 
-    ComputingStatus computePercentilesSimple(
-            const ComputingTraitPercentiles *_traits,
-            const ComputingRequest &_request,
-            std::unique_ptr<ComputingResponse> &_response);
-
-    ComputingStatus computePercentilesMulti(
-            const ComputingTraitPercentiles *_traits,
-            const ComputingRequest &_request,
-            std::unique_ptr<ComputingResponse> &_response);
-
     ComputingStatus preparePercentilesResponse(
             const ComputingTraitPercentiles *_traits,
             const ComputingRequest &_request,
