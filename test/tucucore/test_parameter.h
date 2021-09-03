@@ -71,10 +71,14 @@ struct TestParameter : public fructose::test_base<TestParameter>
         }
         {
             // Test logit variability with wrong parameter value
+
+            Tucuxi::Common::LoggerHelper logHelper;
+            logHelper.disable();
             ParameterDefinition pDef("pid", 0.5, std::make_unique<ParameterVariability>(ParameterVariabilityType::Logit, 1.0));
             Parameter p(pDef, 1.6);
             bool valid = p.applyEta(2.0);
             fructose_assert_eq(valid, false);
+            logHelper.enable();
         }
     }
 
