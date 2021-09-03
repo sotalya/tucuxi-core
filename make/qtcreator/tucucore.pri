@@ -16,6 +16,8 @@ HEADERS += \
     $$PWD/../../src/tucucore/intakeintervalcalculator.h \
     $$PWD/../../src/tucucore/intakeextractor.h \
     $$PWD/../../src/tucucore/invariants.h \
+    $$PWD/../../src/tucucore/multiconcentrationcalculator.h \
+    $$PWD/../../src/tucucore/multiconcentrationprediction.h \
     $$PWD/../../src/tucucore/parameter.h \
     $$PWD/../../src/tucucore/parameterids.h \
     $$PWD/../../src/tucucore/pkmodels/rkmichaelismentenenzyme.h \
@@ -110,6 +112,7 @@ SOURCES += \
     $$PWD/../../src/tucucore/intakeextractor.cpp \
     $$PWD/../../src/tucucore/dosage.cpp \
     $$PWD/../../src/tucucore/drugdomainconstraintsevaluator.cpp \
+    $$PWD/../../src/tucucore/multiconcentrationcalculator.cpp \
     $$PWD/../../src/tucucore/operation.cpp \
     $$PWD/../../src/tucucore/pkmodels/onecompartmentbolus.cpp \
     $$PWD/../../src/tucucore/pkmodels/onecompartmentextra.cpp \
