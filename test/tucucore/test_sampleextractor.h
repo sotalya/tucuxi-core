@@ -16,6 +16,7 @@
 #include "tucucore/drugmodel/covariatedefinition.h"
 #include "tucucore/drugtreatment/patientcovariate.h"
 
+#include "tucucommon/loggerhelper.h"
 #include "tucucommon/basetypes.h"
 #include "tucucommon/timeofday.h"
 
@@ -104,6 +105,10 @@ struct TestSampleExtractor : public fructose::test_base<TestSampleExtractor>
 
             AnalyteId analyteId("theAnalyte");
 
+            // First disable the logger
+            Tucuxi::Common::LoggerHelper logHelper;
+            logHelper.disable();
+
             samples.push_back(std::make_unique<Sample>(DATE_TIME_NO_VAR(2018, 01, 02, 8, 00, 00), analyteId, 12.0, TucuUnit("test")));
 
             ComputingStatus result = extractor.extract(samples, start, end, TucuUnit("ug/l"), series);
@@ -128,6 +133,9 @@ struct TestSampleExtractor : public fructose::test_base<TestSampleExtractor>
 
             fructose_assert(result == ComputingStatus::SampleExtractionError);
             fructose_assert_eq(series.size(), size_t{0});
+
+            // Enable the logger
+            logHelper.enable();
         }
     }
 
