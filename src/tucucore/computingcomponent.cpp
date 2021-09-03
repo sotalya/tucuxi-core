@@ -22,6 +22,7 @@
 #include "tucucore/intaketocalculatorassociator.h"
 #include "tucucore/pkmodel.h"
 #include "tucucore/montecarlopercentilecalculator.h"
+#include "tucucore/multimontecarlopercentilecalculator.h"
 #include "tucucore/percentilesprediction.h"
 //#include "tucucore/overloadevaluator.h"
 #include "tucucore/residualerrormodelextractor.h"
