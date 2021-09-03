@@ -65,5 +65,30 @@ ComputingStatus ComputingUtils::computeActiveMoiety(
 }
 
 
+
+CovariateEvent ComputingUtils::getCovariateAtTime(const DateTime &_date, const CovariateSeries &_covariates)
+{
+    // Find the lasted change that occured before the given date
+    std::vector<CovariateEvent>::const_iterator it = _covariates.begin();
+    if (it != _covariates.end()) {
+        std::vector<CovariateEvent>::const_iterator itNext = it;
+        while (++itNext != _covariates.end() && _date > itNext->getEventTime()) {
+            it++;
+        }
+    }
+
+    // Did we find something?
+    if (it != _covariates.end())
+    {
+        // Make a copy to hold values with applied etas
+        return CovariateEvent(*it);
+    }
+
+    // Should not happen
+    std::cout << "Something bad is currently happening" << std::endl;
+    return CovariateEvent(*it);
+}
+
+
 } // namespace Core
 } // namespace Tucuxi

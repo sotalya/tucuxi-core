@@ -4,7 +4,7 @@
 
 #include <chrono>  // for high_resolution_clock
 
-#include "computingcomponent.h"
+#include "multicomputingcomponent.h"
 
 #include "tucucommon/general.h"
 
@@ -37,30 +37,30 @@ namespace Tucuxi {
 namespace Core {
 
 
-Tucuxi::Common::Interface* ComputingComponent::createComponent()
+Tucuxi::Common::Interface* MultiComputingComponent::createComponent()
 {
-    ComputingComponent *cmp = new ComputingComponent();
+    MultiComputingComponent *cmp = new MultiComputingComponent();
 
     cmp->initialize();
 
     return dynamic_cast<IComputingService*>(cmp);
 }
 
-Tucuxi::Common::Interface* ComputingComponent::getInterface(const std::string &_name)
+Tucuxi::Common::Interface* MultiComputingComponent::getInterface(const std::string &_name)
 {
     return Tucuxi::Common::Component::getInterfaceImpl(_name);
 }
 
-ComputingComponent::ComputingComponent()
+MultiComputingComponent::MultiComputingComponent()
 {
     registerInterface(dynamic_cast<IComputingService*>(this));
 }
 
 
-ComputingComponent::~ComputingComponent()
+MultiComputingComponent::~MultiComputingComponent()
 = default;
 
-bool ComputingComponent::initialize()
+bool MultiComputingComponent::initialize()
 {
     m_utils = std::make_unique<ComputingUtils>();
 
@@ -73,18 +73,18 @@ bool ComputingComponent::initialize()
     return true;
 }
 
-void ComputingComponent::setPkModelCollection(std::shared_ptr<PkModelCollection> _collection) {
+void MultiComputingComponent::setPkModelCollection(std::shared_ptr<PkModelCollection> _collection) {
     m_utils->m_models = _collection;
 }
 
 
-std::string ComputingComponent::getErrorString() const
+std::string MultiComputingComponent::getErrorString() const
 {
     return "Error message function not yet implemented";
 }
 
 
-ComputingStatus ComputingComponent::compute(const ComputingRequest &_request, std::unique_ptr<ComputingResponse> &_response)
+ComputingStatus MultiComputingComponent::compute(const ComputingRequest &_request, std::unique_ptr<ComputingResponse> &_response)
 {
     // Record start time
     auto start = std::chrono::high_resolution_clock::now();
@@ -140,7 +140,7 @@ ComputingStatus ComputingComponent::compute(const ComputingRequest &_request, st
 }
 
 
-ComputingStatus ComputingComponent::recordCycle(const ComputingTraitStandard *_traits,
+ComputingStatus MultiComputingComponent::recordCycle(const ComputingTraitStandard *_traits,
         const ComputingRequest &_request,
         ConcentrationData &_concentrationData,
         DateTime _start,
@@ -205,7 +205,7 @@ ComputingStatus ComputingComponent::recordCycle(const ComputingTraitStandard *_t
     return ComputingStatus::Ok;
 }
 
-void ComputingComponent::endRecord(
+void MultiComputingComponent::endRecord(
         const ComputingTraitStandard *_traits,
         const ComputingRequest &_request,
         ConcentrationData &_concentrationData
@@ -233,7 +233,7 @@ void ComputingComponent::endRecord(
 }
 
 
-ComputingStatus ComputingComponent::compute(
+ComputingStatus MultiComputingComponent::compute(
         const ComputingTraitConcentration *_traits,
         const ComputingRequest &_request,
         std::unique_ptr<ComputingResponse> &_response)
@@ -370,7 +370,7 @@ ComputingStatus ComputingComponent::compute(
     return ComputingStatus::Ok;
 }
 
-ComputingStatus ComputingComponent::compute(
+ComputingStatus MultiComputingComponent::compute(
         const ComputingTraitPercentiles *_traits,
         const ComputingRequest &_request,
         std::unique_ptr<ComputingResponse> &_response)
@@ -386,7 +386,7 @@ ComputingStatus ComputingComponent::compute(
     }
 }
 
-ComputingStatus ComputingComponent::computePercentilesMulti(
+ComputingStatus MultiComputingComponent::computePercentilesMulti(
         const ComputingTraitPercentiles *_traits,
         const ComputingRequest &_request,
         std::unique_ptr<ComputingResponse> &_response)
@@ -569,7 +569,7 @@ ComputingStatus ComputingComponent::computePercentilesMulti(
                 percentileRanks);
 }
 
-ComputingStatus ComputingComponent::computePercentilesSimple(
+ComputingStatus MultiComputingComponent::computePercentilesSimple(
         const ComputingTraitPercentiles *_traits,
         const ComputingRequest &_request,
         std::unique_ptr<ComputingResponse> &_response)
@@ -724,7 +724,7 @@ ComputingStatus ComputingComponent::computePercentilesSimple(
                 percentileRanks);
 }
 
-ComputingStatus ComputingComponent::preparePercentilesResponse(
+ComputingStatus MultiComputingComponent::preparePercentilesResponse(
         const ComputingTraitPercentiles *_traits,
         const ComputingRequest &_request,
         std::unique_ptr<ComputingResponse> &_response,
@@ -803,7 +803,7 @@ ComputingStatus ComputingComponent::preparePercentilesResponse(
 }
 
 
-ComputingStatus ComputingComponent::compute(
+ComputingStatus MultiComputingComponent::compute(
         const ComputingTraitAdjustment *_traits,
         const ComputingRequest &_request,
         std::unique_ptr<ComputingResponse> &_response)
@@ -819,7 +819,7 @@ ComputingStatus ComputingComponent::compute(
 
 
 
-ComputingStatus ComputingComponent::compute(
+ComputingStatus MultiComputingComponent::compute(
         const ComputingTraitAtMeasures *_traits,
         const ComputingRequest &_request,
         std::unique_ptr<ComputingResponse> &_response)
@@ -839,7 +839,7 @@ ComputingStatus ComputingComponent::compute(
     return compute(&traits, _request, _response);
 }
 
-ComputingStatus ComputingComponent::compute(
+ComputingStatus MultiComputingComponent::compute(
         const ComputingTraitSinglePoints *_traits,
         const ComputingRequest &_request,
         std::unique_ptr<ComputingResponse> &_response)

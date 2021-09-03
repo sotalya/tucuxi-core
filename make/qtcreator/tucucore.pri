@@ -16,8 +16,11 @@ HEADERS += \
     $$PWD/../../src/tucucore/intakeintervalcalculator.h \
     $$PWD/../../src/tucucore/intakeextractor.h \
     $$PWD/../../src/tucucore/invariants.h \
+    $$PWD/../../src/tucucore/multicomputingadjustments.h \
+    $$PWD/../../src/tucucore/multicomputingcomponent.h \
     $$PWD/../../src/tucucore/multiconcentrationcalculator.h \
     $$PWD/../../src/tucucore/multiconcentrationprediction.h \
+    $$PWD/../../src/tucucore/multilikelihood.h \
     $$PWD/../../src/tucucore/multimontecarlopercentilecalculator.h \
     $$PWD/../../src/tucucore/parameter.h \
     $$PWD/../../src/tucucore/parameterids.h \
@@ -113,7 +116,10 @@ SOURCES += \
     $$PWD/../../src/tucucore/intakeextractor.cpp \
     $$PWD/../../src/tucucore/dosage.cpp \
     $$PWD/../../src/tucucore/drugdomainconstraintsevaluator.cpp \
+    $$PWD/../../src/tucucore/multicomputingadjustments.cpp \
+    $$PWD/../../src/tucucore/multicomputingcomponent.cpp \
     $$PWD/../../src/tucucore/multiconcentrationcalculator.cpp \
+    $$PWD/../../src/tucucore/multilikelihood.cpp \
     $$PWD/../../src/tucucore/multimontecarlopercentilecalculator.cpp \
     $$PWD/../../src/tucucore/operation.cpp \
     $$PWD/../../src/tucucore/pkmodels/onecompartmentbolus.cpp \

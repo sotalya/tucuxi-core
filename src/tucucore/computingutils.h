@@ -7,6 +7,7 @@
 
 #include "tucucore/computingservice/computingresult.h"
 #include "tucucore/concentrationprediction.h"
+#include "tucucore/covariateevent.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -51,6 +52,18 @@ public:
 
     /// The general extractor that can be shared by various calculators
     std::unique_ptr<GeneralExtractor> m_generalExtractor;
+
+
+    ///
+    /// \brief getCovariateAtTime retrieves the covariate value at a specific date
+    /// \param _date The date of interest
+    /// \param _covariates A CovariateSeries
+    /// \return A CovariateEvent corresponding to the covariate value at the specified date
+    ///
+    /// This function is currently usused
+    ///
+    CovariateEvent getCovariateAtTime(const DateTime &_date, const CovariateSeries &_covariates);
+
 
 };
 
