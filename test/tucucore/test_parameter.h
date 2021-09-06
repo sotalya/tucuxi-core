@@ -23,6 +23,10 @@ struct TestParameter : public fructose::test_base<TestParameter>
     TestParameter() { }
 
     /// \brief Test the function Parameter::applyEta().
+    ///
+    /// \testing{Parameter::applyEta()}
+    /// \testing{Parameter::getValue()}
+    ///
     void testApplyEta(const std::string& /* _testName */)
     {
         {
@@ -67,10 +71,14 @@ struct TestParameter : public fructose::test_base<TestParameter>
         }
         {
             // Test logit variability with wrong parameter value
+
+            Tucuxi::Common::LoggerHelper logHelper;
+            logHelper.disable();
             ParameterDefinition pDef("pid", 0.5, std::make_unique<ParameterVariability>(ParameterVariabilityType::Logit, 1.0));
             Parameter p(pDef, 1.6);
             bool valid = p.applyEta(2.0);
             fructose_assert_eq(valid, false);
+            logHelper.enable();
         }
     }
 
@@ -80,6 +88,9 @@ struct TestParameter : public fructose::test_base<TestParameter>
     ///
     /// If the ParameterSetEvent is set at the same time as the one asked by getAtTime() it shall return this one, and not
     /// the previous one.
+    ///
+    /// \testing{Tucuxi::Core::ParameterSetSeries()}
+    ///
     void testGetAtTime(const std::string& /* _testName */)
     {
         ParameterSetSeries series;

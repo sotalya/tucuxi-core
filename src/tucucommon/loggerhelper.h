@@ -94,6 +94,9 @@ public:
     /// \param _msg The message to log
     void debug(const char* _msg)
     {
+        if (!enabled()) {
+            return;
+        }
         if (m_pLogger != nullptr) {
             m_pLogger->debug(_msg);
         }
@@ -124,6 +127,9 @@ public:
     /// \param _msg The message to log
     void info(const char* _msg)
     {
+        if (!enabled()) {
+            return;
+        }
         if (m_pLogger != nullptr) {
             m_pLogger->info(_msg);
         }
@@ -154,6 +160,9 @@ public:
     /// \param _msg The message to log
     void warn(const char* _msg)
     {
+        if (!enabled()) {
+            return;
+        }
         if (m_pLogger != nullptr) {
             m_pLogger->warn(_msg);
         }
@@ -184,6 +193,9 @@ public:
     /// \param _msg The message to log
     void error(const char* _msg)
     {
+        if (!enabled()) {
+            return;
+        }
         if (m_pLogger != nullptr) {
             m_pLogger->error(_msg);
         }
@@ -214,6 +226,9 @@ public:
     /// \param _msg The message to log
     void critical(const char* _msg)
     {
+        if (!enabled()) {
+            return;
+        }
         if (m_pLogger != nullptr) {
             m_pLogger->critical(_msg);
         }
@@ -240,8 +255,16 @@ public:
         }
     }
 
+
+    /// Allows to disable the logger, for testing purpose
+    static void enable() { smEnable() = true;}
+    static void disable() { smEnable() = false;}
+    static bool & smEnable() { static bool sm_enable = true; return sm_enable;}
+    static bool enabled() { return smEnable();}
+
 private:
     ILogger *m_pLogger; /// The pointer to the actual logger component
+
 };
 
 } // namespace Common
