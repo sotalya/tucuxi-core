@@ -9,7 +9,7 @@ namespace Tucuxi {
 namespace Common {
 
 bool TucuUnit::isEmpty() const {
-    return m_unitString == "";
+    return m_unitString.empty();
 }
 
 
@@ -17,7 +17,7 @@ std::string TucuUnit::toString() const {
     return m_unitString;
 }
 
-const std::vector<std::pair<std::string, std::string> > getTolerateUnit()
+const std::vector<std::pair<std::string, std::string> >& getTolerateUnit()
 {
     static const std::vector<std::pair<std::string, std::string> > sm_toleratePairUnit =  // NOLINT(readability-identifier-naming)
     {
@@ -175,13 +175,13 @@ const std::map<UnitManager::UnitType, std::map<std::string, double>>& UnitManage
     return sm_conversionMap;
 }
 
-void UnitManager::logConversionError(const TucuUnit &_initialUnit, const TucuUnit &_finalUnit)
+void UnitManager::logConversionError(const TucuUnit& _initialUnit, const TucuUnit& _finalUnit)
 {
     static Tucuxi::Common::LoggerHelper logHelper;
     logHelper.error("Error in unit conversion. No known conversion from {} to {}", _initialUnit.toString(), _finalUnit.toString());
 }
 
-double UnitManager::convertToUnit(double _value, TucuUnit _initialUnit, TucuUnit _finalUnit)
+double UnitManager::convertToUnit(double _value, const TucuUnit& _initialUnit, const TucuUnit& _finalUnit)
 {
     std::string initialKey = _initialUnit.toString();
     std::string finalKey = _finalUnit.toString();

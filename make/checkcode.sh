@@ -6,15 +6,16 @@ clang-tidy \
                               google-readability-casting, \
                               llvm-namespace-comment, \
                               google-global-names-in-headers, \
-                              misc-unused-parameters,
-                              modernize-make-unique,
-                              modernize-use-nullptr,
-                              modernize-use-override,
-                              modernize-raw-string-literal,
-                              readability-implicit-bool-conversion,
-                              cppcoreguidelines-narrowing-conversions,
-                              bugprone-multiple-statement-macro,
-                              bugprone-integer-division,
+                              misc-unused-parameters, \
+                              modernize-make-unique, \
+                              modernize-use-nullptr, \
+                              modernize-use-override, \
+                              modernize-raw-string-literal, \
+                              readability-implicit-bool-conversion, \
+                              cppcoreguidelines-narrowing-conversions, \
+                              bugprone-multiple-statement-macro, \
+                              bugprone-integer-division, \
+                              readability-magic-numbers, \
                               readability-inconsistent-declaration-parameter-name', \
 		CheckOptions: [ \
 			{ key: readability-identifier-naming.ClassCase,           value: CamelCase }, \
