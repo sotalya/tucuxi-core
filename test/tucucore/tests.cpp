@@ -21,7 +21,9 @@
 /// As all the tests are in headers, a compilation can be quite time consuming.
 /// Therefore, only selecting the test of interest allows to gain some time.
 
-
+#if defined(test_multiconstanteliminationbolus) || !defined(DO_NOT_COMPILE_ALL_TESTS)
+#include "test_multiconstanteliminationbolus.h"
+#endif
 #if defined(test_parameter) || !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_parameter.h"
 #endif
@@ -357,6 +359,18 @@ int main(int argc, char** argv)
     std::cout << "ConcentrationCalculator test succeeded\n";
 #endif
 
+#if defined(test_multiconstanteliminationbolus) || !defined(DO_NOT_COMPILE_ALL_TESTS)
+    // --- ConcentrationCalculator --- //
+    TestMultiConstantEliminationBolus multiConstantEliminationBolusTests;
+    multiConstantEliminationBolusTests.add_test("multiConstant bolus test", &TestMultiConstantEliminationBolus::testMultiConstantEliminationBolus);
+
+    res = multiConstantEliminationBolusTests.run(argc, argv);
+    tot_res |= res;
+    if (res != 0) {
+        std::cerr << "MultiConstantEliminationBolus test failed\n";
+    }
+    std::cout << "MultiConstantEliminationBolus test succeeded\n";
+#endif
 
 #if defined(test_multiconcentrationcalculator) || !defined(DO_NOT_COMPILE_ALL_TESTS)
     // --- ConcentrationCalculator --- //
@@ -377,7 +391,6 @@ int main(int argc, char** argv)
     }
     std::cout << "MultiConcentrationCalculator test succeeded\n";
 #endif
-
 #if defined(test_dosage) || !defined(DO_NOT_COMPILE_ALL_TESTS)
     // --- DOSAGE --- //
     TestDosage dosageTests;

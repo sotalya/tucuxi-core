@@ -21,6 +21,7 @@ HEADERS += \
     ../../../test/tucucore/drugmodels/test_michaelismenten1comp.h \
     ../../../test/tucucore/drugmodels/test_michaelismenten2comp.h \
     ../../../test/tucucore/drugmodels/test_pkasymptotic.h \
+    ../../../test/tucucore/pkmodels/multiconstanteliminationbolus.h \
     ../../../test/tucucore/pkmodels/pkasymptotic.h \
     ../../../test/tucucore/pkmodels/test_rkmichaelismentenenzyme.h \
     ../../../test/tucucore/test_cachecomputing.h \
@@ -30,7 +31,7 @@ HEADERS += \
     ../../../test/tucucore/test_drugmodels.h \
     ../../../test/tucucore/test_intakeextractor.h \
     ../../../test/tucucore/test_intakeintervalcalculator.h \
-    ../../../test/tucucore/test_multiconcentrationcalculator.h \
+    ../../../test/tucucore/test_multiconstanteliminationbolus.h \
     ../../../test/tucucore/test_parameter.h \
     ../../../test/tucucore/test_pkmodel.h \
     ../../../test/tucucore/test_operablegraphmanager.h \

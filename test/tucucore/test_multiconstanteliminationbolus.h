@@ -2,8 +2,8 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
-#ifndef TEST_MULTICONCENTRATIONCALCULATOR_H
-#define TEST_MULTICONCENTRATIONCALCULATOR_H
+#ifndef TEST_MULTICONSTANTELIMINATIONBOLUS_H
+#define TEST_MULTICONSTANTELIMINATIONBOLUS_H
 
 #include <iostream>
 #include <memory>
@@ -39,11 +39,11 @@ std::ostream& operator<<(typename std::enable_if<std::is_enum<T>::value, std::os
     return stream << static_cast<typename std::underlying_type<T>::type>(e);
 }
 */
-struct TestMultiConcentrationCalculator : public fructose::test_base<TestMultiConcentrationCalculator>
+struct TestMultiConstantEliminationBolus : public fructose::test_base<TestMultiConstantEliminationBolus>
 {
     static const int CYCLE_SIZE = 251;
 
-    TestMultiConcentrationCalculator() { }
+    TestMultiConstantEliminationBolus() { }
 
     template<class CalculatorClass>
     void testCalculator(const Tucuxi::Core::ParameterSetSeries &_parameters,
@@ -53,18 +53,6 @@ struct TestMultiConcentrationCalculator : public fructose::test_base<TestMultiCo
                         std::chrono::seconds _infusionTime,
                         CycleSize _nbPoints)
     {
-
-        // Just a reminder that this test is not yet written
-        fructose_assert(false);
-        // The following 6 lines should be removed when implementing the function
-        TMP_UNUSED_PARAMETER(_parameters);
-        TMP_UNUSED_PARAMETER(_dose);
-        TMP_UNUSED_PARAMETER(_route);
-        TMP_UNUSED_PARAMETER(_interval);
-        TMP_UNUSED_PARAMETER(_infusionTime);
-        TMP_UNUSED_PARAMETER(_nbPoints);
-
-        /*
         // Compare the result on one interval
         // with ConcentrationCalculator vs directly with the IntakeIntervalCalculator
         {
@@ -333,13 +321,11 @@ struct TestMultiConcentrationCalculator : public fructose::test_base<TestMultiCo
         // Create samples and compare the result of computeConcentrations() and pointsAtTime().
         // This can be done by creating samples corresponding to the number of points asked, and
         // synchronized with the times at which the concentration points are expected
-
-
-        */
     }
 
 
-    void testConstantEliminationBolus(const std::string& /* _testName */)
+
+    void testMultiConstantEliminationBolus(const std::string& /* _testName */)
     {
         Tucuxi::Core::ParameterDefinitions parameterDefs;
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestA", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
@@ -553,33 +539,8 @@ struct TestMultiConcentrationCalculator : public fructose::test_base<TestMultiCo
             1h,
             CYCLE_SIZE);
     }
-
-
-    void testMultiConstantEliminationBolus(const std::string& /* _testName */)
-    {
-        Tucuxi::Core::ParameterDefinitions parameterDefs;
-        // TODO : Modify these parameters
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 2, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V1", 340, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ke", 0.0444294, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K12", 0.0588235, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K21", 0.0584795, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K13", 0.0882353, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K31", 0.0877193, Tucuxi::Core::ParameterVariabilityType::None)));
-        Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
-        Tucuxi::Core::ParameterSetSeries parametersSeries;
-        parametersSeries.addParameterSetEvent(parameters);
-
-        testCalculator<Tucuxi::Core::MultiConstantEliminationBolus>(
-            parametersSeries,
-            400.0,
-            Tucuxi::Core::AbsorptionModel::Intravascular,
-            12h,
-            1h,
-            CYCLE_SIZE);
-    }
 };
 
 }
 }
-#endif // TEST_MULTICONCENTRATIONCALCULATOR_H
+#endif // TEST_CONCENTRATIONCALCULATOR_H
