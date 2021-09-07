@@ -106,7 +106,7 @@ public:
     /// \param _atTime The time of the point of interest
     /// \param _outResiduals Final residual concentrations
     /// \return Returns an indication if the computation was successful
-    virtual ComputingStatus calculateIntakeSinglePoint(
+    virtual ComputingStatus calculateIntakeSinglePoint(   
         std::vector<Concentrations>& _concentrations,
         const IntakeEvent& _intakeEvent,
         const ParameterSetEvent& _parameters,

@@ -327,22 +327,57 @@ struct TestMultiConstantEliminationBolus : public fructose::test_base<TestMultiC
 
     void testMultiConstantEliminationBolus(const std::string& /* _testName */)
     {
+
+
         Tucuxi::Core::ParameterDefinitions parameterDefs;
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestA", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestR", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestS", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestM", 1.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestA0", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestR0", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestS0", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestM0", 1.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestA1", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestR1", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestS1", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestM1", 1.0, Tucuxi::Core::ParameterVariabilityType::None)));
         Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
         Tucuxi::Core::ParameterSetSeries parametersSeries;
         parametersSeries.addParameterSetEvent(parameters);
 
-        testCalculator<Tucuxi::Core::ConstantEliminationBolus>(
-            parametersSeries,
-            400.0,
-            Tucuxi::Core::AbsorptionModel::Extravascular,
-            12h,
-            0s,
-            CYCLE_SIZE);
+        //I think that I need to add here an object of multiconstanteliminationbolus, and call the method calculateIntakePoints(), creating all the arguments to send to the method (navigating through the code)
+
+        MultiConstantEliminationBolus aux;
+        Tucuxi::Core::ComputingStatus res;
+        auto concentrations = std::vector<Concentrations>();
+        concentrations.push_back(std::vector<double>(CYCLE_SIZE, -1));
+        concentrations.push_back(std::vector<double>(CYCLE_SIZE, -1));
+
+        TimeOffsets times;
+
+        // First calculate the size of residuals
+        unsigned int residualSize = aux.getResidualSize();
+        Residuals inResiduals(residualSize);
+        Residuals outResiduals(residualSize);
+        DateTime now;
+        Tucuxi::Common::Duration offsetTime = 0s;
+        double dose = 200;
+        Tucuxi::Common::Duration interval = 12h;
+        Tucuxi::Common::Duration infusionTime = 0h;
+
+
+
+        Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, dose, TucuUnit("mg"), interval, Tucuxi::Core::FormulationAndRoute(Tucuxi::Core::AbsorptionModel::Intravascular), Tucuxi::Core::AbsorptionModel::Intravascular, infusionTime, CYCLE_SIZE);
+
+        bool isAll = false;
+        res = aux.calculateIntakePoints(
+            concentrations,
+            times,
+            intakeEvent,
+            parameters,
+            inResiduals,
+            isAll,
+            outResiduals,
+            true);
+
+        fructose_assert(res == Tucuxi::Core::ComputingStatus::Ok);
     }
 
 
