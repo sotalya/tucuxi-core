@@ -57,17 +57,14 @@ DateTime::DateTime(const std::string &_date, const std::string& _format)
     // std::istringstream ss(_date);
     ss >> std::get_time(&tm, _format.c_str());
     if(ss.fail()){
-
         throw std::runtime_error("Date Time parsing failed");
     }
-    else{
-        date::year_month_day day = date::year_month_day(date::year(1900 + tm.tm_year),
-                                                        date::month(static_cast<unsigned int>(tm.tm_mon + 1)),
-                                                        date::day(static_cast<unsigned int>(tm.tm_mday)));
+    date::year_month_day day = date::year_month_day(date::year(1900 + tm.tm_year),
+                                                    date::month(static_cast<unsigned int>(tm.tm_mon + 1)),
+                                                    date::day(static_cast<unsigned int>(tm.tm_mday)));
 
-        m_date = date::sys_days(day);
-        m_date += std::chrono::milliseconds(tm.tm_hour * 3600 * 1000 + tm.tm_min * 60000 + tm.tm_sec * 1000);
-    }
+    m_date = date::sys_days(day);
+    m_date += std::chrono::milliseconds(tm.tm_hour * 3600 * 1000 + tm.tm_min * 60000 + tm.tm_sec * 1000);
     UPDATESTRING;
 }
 

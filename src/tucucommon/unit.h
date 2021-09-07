@@ -4,6 +4,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <stdexcept>
 
 namespace Tucuxi {
 namespace Common {
@@ -193,7 +194,7 @@ public:
     /// \param _finalUnit
     /// \return converted value
     ///
-    static double convertToUnit(double _value, TucuUnit _initialUnit, TucuUnit _finalUnit);
+    static double convertToUnit(double _value, const TucuUnit &_initialUnit, const TucuUnit &_finalUnit);
 
     static void logConversionError(const TucuUnit& _initialUnit, const TucuUnit& _finalUnit);
 
