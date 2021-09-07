@@ -40,6 +40,9 @@
 #if defined(test_concentrationcalculator) || !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_concentrationcalculator.h"
 #endif
+#if defined(test_multiconcentrationcalculator) || !defined(DO_NOT_COMPILE_ALL_TESTS)
+#include "test_multiconcentrationcalculator.h"
+#endif
 #if defined(test_covariateextractor) || !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_covariateextractor.h"
 #endif
@@ -352,6 +355,27 @@ int main(int argc, char** argv)
         std::cerr << "ConcentrationCalculator test failed\n";
     }
     std::cout << "ConcentrationCalculator test succeeded\n";
+#endif
+
+
+#if defined(test_multiconcentrationcalculator) || !defined(DO_NOT_COMPILE_ALL_TESTS)
+    // --- ConcentrationCalculator --- //
+    TestMultiConcentrationCalculator multiConcentrationCalculatorTests;
+    multiConcentrationCalculatorTests.add_test("linear bolus test", &TestMultiConcentrationCalculator::testConstantEliminationBolus);
+    multiConcentrationCalculatorTests.add_test("1 comp bolus test", &TestMultiConcentrationCalculator::test1compBolus);
+    multiConcentrationCalculatorTests.add_test("1 comp extra test", &TestMultiConcentrationCalculator::test1compExtra);
+    multiConcentrationCalculatorTests.add_test("1 comp infusion test", &TestMultiConcentrationCalculator::test1compInfusion);
+    multiConcentrationCalculatorTests.add_test("2 comp bolus test", &TestMultiConcentrationCalculator::test2compBolus);
+    multiConcentrationCalculatorTests.add_test("2 comp extra test", &TestMultiConcentrationCalculator::test2compExtra);
+    multiConcentrationCalculatorTests.add_test("2 comp infusion test", &TestMultiConcentrationCalculator::test2compInfusion);
+    multiConcentrationCalculatorTests.add_test("multiconstanteliminationbolus", &TestMultiConcentrationCalculator::testMultiConstantEliminationBolus);
+
+    res = multiConcentrationCalculatorTests.run(argc, argv);
+    tot_res |= res;
+    if (res != 0) {
+        std::cerr << "MultiConcentrationCalculator test failed\n";
+    }
+    std::cout << "MultiConcentrationCalculator test succeeded\n";
 #endif
 
 #if defined(test_dosage) || !defined(DO_NOT_COMPILE_ALL_TESTS)
