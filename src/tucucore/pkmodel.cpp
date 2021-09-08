@@ -21,6 +21,7 @@
 
 #ifdef DRUGMODELTESTS
 #include "tucucore/../../test/tucucore/pkmodels/constanteliminationbolus.h"
+#include "tucucore/../../test/tucucore/pkmodels/multiconstanteliminationbolus.h"
 #include "tucucore/../../test/tucucore/pkmodels/pkasymptotic.h"
 #endif // DRUGMODELTESTS
 
@@ -309,6 +310,15 @@ bool defaultPopulate(PkModelCollection &_collection)
 
         rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, PkAsymptotic::getCreator());
         rc &= sharedPkModel->addParameterList(AbsorptionModel::Extravascular, Tucuxi::Core::PkAsymptotic::getParametersId());
+
+        _collection.addPkModel(sharedPkModel);
+    }
+    {
+        std::shared_ptr<PkModel> sharedPkModel;
+        sharedPkModel = std::make_shared<PkModel>("test.multiconstantelimination");
+
+        rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, MultiConstantEliminationBolus::getCreator());
+        rc &= sharedPkModel->addParameterList(AbsorptionModel::Extravascular, Tucuxi::Core::MultiConstantEliminationBolus::getParametersId());
 
         _collection.addPkModel(sharedPkModel);
     }
