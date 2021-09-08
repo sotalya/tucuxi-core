@@ -330,14 +330,14 @@ struct TestMultiConstantEliminationBolus : public fructose::test_base<TestMultiC
 
 
         Tucuxi::Core::ParameterDefinitions parameterDefs;
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestA0", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestR0", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestS0", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestM0", 1.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestA1", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestR1", 1.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestS1", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestM1", 1.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestA0", 1.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestR0", 2.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestS0", 0.03, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestM0", 4.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestA1", 10.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestR1", 20.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestS1", 0.003, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestM1", 40.0, Tucuxi::Core::ParameterVariabilityType::None)));
         Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
         Tucuxi::Core::ParameterSetSeries parametersSeries;
         parametersSeries.addParameterSetEvent(parameters);
@@ -378,8 +378,20 @@ struct TestMultiConstantEliminationBolus : public fructose::test_base<TestMultiC
             true);
 
         fructose_assert(res == Tucuxi::Core::ComputingStatus::Ok);
-        fructose_assert_double_eq(concentrations[0][10], 12.2);  //this is checking if the value 10 of the concentration nb 0 is 12.2
-        fructose_assert_double_eq(concentrations[1][20], 24.2);
+
+        // The intake calculator implements these functions:
+        // C0(t) = max(0.0 , (D + residual * R0) * ( 1 - t * S0) * M0 + A0)
+        // C1(t) = max(0.0 , (D + residual * R1) * ( 1 - t * S1) * M1 + A1)
+        //
+        // So:
+        // C0(t) = max(0.0 , (D + residual * 2) * ( 1 - t * 0.03) * 4 + 1)
+        // C1(t) = max(0.0 , (D + residual * 20) * ( 1 - t * 0.003) * 40 + 10)
+        //
+
+        for (int i = 0; i < CYCLE_SIZE; i++) {
+            fructose_assert_double_eq(concentrations[0][i], std::max(0.0, ( 200.0 + inResiduals[0] * 2.0) * ( 1.0 - times[i] * 0.03) * 4.0 + 1.0));
+            fructose_assert_double_eq(concentrations[1][i], std::max(0.0, ( 200.0 + inResiduals[0] * 20.0) * ( 1.0 - times[i] * 0.003) * 40.0 + 10.0));
+        }
 
         testCalculator<Tucuxi::Core::MultiConstantEliminationBolus>(
             parametersSeries,
@@ -388,7 +400,6 @@ struct TestMultiConstantEliminationBolus : public fructose::test_base<TestMultiC
             12h,
             0s,
             CYCLE_SIZE);
-
     }
 
 

@@ -8,7 +8,7 @@
 namespace Tucuxi {
 namespace Core {
 
-enum class MultiConstantEliminationBolusExponentials : int { P };
+enum class MultiConstantEliminationBolusExponentials : int { P0, P1 };
 enum class MultiConstantEliminationBolusCompartments : int { First, Second };
 
 
@@ -21,7 +21,7 @@ enum class MultiConstantEliminationBolusCompartments : int { First, Second };
 ///     - R
 ///     - M
 /// The equation is the following:
-/// C0(t) = max(0.0 , (D + residual * R) * ( 1 - t * S) * M + A)
+/// C0(t) = max(0.0 , (D + residual * R0) * ( 1 - t * S0) * M0 + A0)
 /// C1(t) = max(0.0 , (D + residual * R1) * ( 1 - t * S1) * M1 + A1)
 /// It allows to test other components with a simple equation:
 ///     - Easy to calculate AUC
@@ -94,16 +94,26 @@ protected:
 
     void computeExponentials(Eigen::VectorXd& _times) override
     {
-        Eigen::VectorXd val = _times;
+        Eigen::VectorXd val0 = _times;
+        Eigen::VectorXd val1 = _times;
+        auto s1 = val0.size();
+        for(int i = 0; i < s1; i++) {
+            val0[i] = (1 - _times[i] * m_S0) * m_M0;
+        }
+        for(int j = 0; j <s1; j++){
+            val1[j] = (1 - _times[j] * m_S1) * m_M1;
+        }
+
+        /*
         auto s1 = val.size();
         for(int i = 0; i < s1/2; i++) {
             val[i] = (1 - _times[i] * m_S0) * m_M0;
         }
         for(int j = s1/2; j <s1; j++){
             val[j] = (1 - _times[j] * m_S1) * m_M1;
-        }
-
-        setExponentials(Exponentials::P, val.array());
+        }*/
+        setExponentials(Exponentials::P0, val0.array());
+        setExponentials(Exponentials::P1, val1.array());
     }
 
     bool computeConcentrations(const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) override
@@ -196,7 +206,7 @@ private:
 
 inline void MultiConstantEliminationBolus::compute(const Residuals& _inResiduals, Eigen::VectorXd& _concentrations1, Eigen::VectorXd& _concentrations2)
 {
-    _concentrations1 = ((m_D + m_R0 * _inResiduals[0]) * exponentials(Exponentials::P));
+    _concentrations1 = ((m_D + m_R0 * _inResiduals[0]) * exponentials(Exponentials::P0));
     for (int i = 0; i < _concentrations1.size(); i++) {
         _concentrations1[i] += m_A0;
         if (_concentrations1[i] < 0.0) {
@@ -205,7 +215,7 @@ inline void MultiConstantEliminationBolus::compute(const Residuals& _inResiduals
     }
 
 
-     _concentrations2 = ((m_D + m_R1 * _inResiduals[1]) * exponentials(Exponentials::P));
+     _concentrations2 = ((m_D + m_R1 * _inResiduals[1]) * exponentials(Exponentials::P1));
      for (int i = 0; i < _concentrations2.size(); i++) {
          _concentrations2[i] += m_A1;
          if (_concentrations2[i] < 0.0) {
