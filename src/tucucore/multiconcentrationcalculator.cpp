@@ -338,7 +338,8 @@ ComputingStatus MultiConcentrationCalculator::computeConcentrationsAtSteadyState
 }
 
 
-ComputingStatus MultiConcentrationCalculator::computeConcentrationsAtTimes(Concentrations &_concentrations,
+ComputingStatus MultiConcentrationCalculator::computeConcentrationsAtTimes(
+    std::vector<Concentrations> &_concentrations,
     bool _isAll,
     const IntakeSeries &_intakes,
     const ParameterSetSeries &_parameters,
