@@ -331,7 +331,9 @@ int main(int argc, char** argv)
     if (res != 0) {
         std::cerr << "Calculators test failed\n";
     }
-    std::cout << "Calculators test succeeded\n";
+    else {
+        std::cout << "Calculators test succeeded\n";
+    }
 #endif
 
 #if defined(test_concentrationcalculator) || !defined(DO_NOT_COMPILE_ALL_TESTS)
@@ -356,7 +358,9 @@ int main(int argc, char** argv)
     if (res != 0) {
         std::cerr << "ConcentrationCalculator test failed\n";
     }
-    std::cout << "ConcentrationCalculator test succeeded\n";
+    else {
+        std::cout << "ConcentrationCalculator test succeeded\n";
+    }
 #endif
 
 #if defined(test_multiconstanteliminationbolus) || !defined(DO_NOT_COMPILE_ALL_TESTS)
@@ -369,7 +373,9 @@ int main(int argc, char** argv)
     if (res != 0) {
         std::cerr << "MultiConstantEliminationBolus test failed\n";
     }
-    std::cout << "MultiConstantEliminationBolus test succeeded\n";
+    else {
+        std::cout << "MultiConstantEliminationBolus test succeeded\n";
+    }
 #endif
 
 #if defined(test_multiconcentrationcalculator) || !defined(DO_NOT_COMPILE_ALL_TESTS)
@@ -389,7 +395,9 @@ int main(int argc, char** argv)
     if (res != 0) {
         std::cerr << "MultiConcentrationCalculator test failed\n";
     }
-    std::cout << "MultiConcentrationCalculator test succeeded\n";
+    else {
+        std::cout << "MultiConcentrationCalculator test succeeded\n";
+    }
 #endif
 #if defined(test_dosage) || !defined(DO_NOT_COMPILE_ALL_TESTS)
     // --- DOSAGE --- //
