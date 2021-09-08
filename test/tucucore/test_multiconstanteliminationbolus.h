@@ -217,7 +217,7 @@ struct TestMultiConstantEliminationBolus : public fructose::test_base<TestMultiC
             }
 
             // Only works for linear elimination, so do not perform that for some classes
-            if (typeid(CalculatorClass) != typeid(ConstantEliminationBolus)) {
+            if (!(typeid(CalculatorClass) == typeid(ConstantEliminationBolus) or typeid(CalculatorClass) == typeid(MultiConstantEliminationBolus))) {
                 for (size_t cycle = 0; cycle < nbCycles; cycle ++) {
                     Tucuxi::Core::Concentrations concentration2;
                     concentration2 = predictionPtr->getValues()[cycle];
@@ -378,7 +378,20 @@ struct TestMultiConstantEliminationBolus : public fructose::test_base<TestMultiC
             true);
 
         fructose_assert(res == Tucuxi::Core::ComputingStatus::Ok);
+        fructose_assert_double_eq(concentrations[0][10], 12.2);  //this is checking if the value 10 of the concentration nb 0 is 12.2
+        fructose_assert_double_eq(concentrations[1][20], 24.2);
+
+        testCalculator<Tucuxi::Core::MultiConstantEliminationBolus>(
+            parametersSeries,
+            400.0,
+            Tucuxi::Core::AbsorptionModel::Intravascular,
+            12h,
+            0s,
+            CYCLE_SIZE);
+
     }
+
+
 
 
     void test1compBolus(const std::string& /* _testName */)
