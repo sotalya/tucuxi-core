@@ -38,7 +38,8 @@ public:
     /// \brief Constructor
     MultiConstantEliminationBolus() : IntakeIntervalCalculatorBase<2, MultiConstantEliminationBolusExponentials> (new PertinentTimesCalculatorStandard())
     {
-
+       // By default there is a single analyte. So, set m_nbAnalytes to the correct value for this specific intake interval calculator.
+        m_nbAnalytes = 2;
     }
 
     typedef MultiConstantEliminationBolusExponentials Exponentials;
@@ -188,19 +189,6 @@ protected:
 
 private:
 
-    //
-    //
-    //
-    //
-    //
-    // There was no space after typedef here
-    //
-    // I justs added
-    // #include "pkmodels/multiconstanteliminationbolus.h"
-    // in tests.cpp, so a compilation would use this .h file. Then the error was very clear :-)
-    //
-    //
-    //
     typedef MultiConstantEliminationBolusCompartments Compartments;
 };
 
@@ -214,16 +202,13 @@ inline void MultiConstantEliminationBolus::compute(const Residuals& _inResiduals
         }
     }
 
-
-     _concentrations2 = ((m_D + m_R1 * _inResiduals[1]) * exponentials(Exponentials::P1));
-     for (int i = 0; i < _concentrations2.size(); i++) {
-         _concentrations2[i] += m_A1;
-         if (_concentrations2[i] < 0.0) {
-             _concentrations2[i] = 0;
-         }
-     }
-
-
+    _concentrations2 = ((m_D + m_R1 * _inResiduals[1]) * exponentials(Exponentials::P1));
+    for (int i = 0; i < _concentrations2.size(); i++) {
+        _concentrations2[i] += m_A1;
+        if (_concentrations2[i] < 0.0) {
+            _concentrations2[i] = 0;
+        }
+    }
 }
 
 } // namespace Core
