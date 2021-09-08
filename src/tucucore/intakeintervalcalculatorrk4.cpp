@@ -35,6 +35,8 @@ ComputingStatus IntakeIntervalCalculatorRK4::calculateIntakePoints(
         return ComputingStatus::BadParameters;
     }
 
+    CHECK_CALCULATEINTAKEPOINTS_INPUTS;
+
     // Create our serie of times
     CycleSize nbPoints = _intakeEvent.getNbPoints();
 
@@ -75,6 +77,8 @@ ComputingStatus IntakeIntervalCalculatorRK4::calculateIntakeSinglePoint(
     if (!checkInputs(_intakeEvent, _parameters)) {
         return ComputingStatus::BadParameters;
     }
+
+    CHECK_CALCULATEINTAKESINGLEPOINT_INPUTS;
 
     // To reuse interface of computeExponentials with multiple points, remaine time as a vector.
     Eigen::VectorXd times(2);

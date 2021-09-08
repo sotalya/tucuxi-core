@@ -37,6 +37,8 @@ ComputingStatus IntakeIntervalCalculatorAnalytical::calculateIntakePoints(
     }
     m_loggingErrors = true;
 
+    CHECK_CALCULATEINTAKEPOINTS_INPUTS;
+
     // Create our serie of times
     CycleSize nbPoints = _intakeEvent.getNbPoints();
 
@@ -89,6 +91,8 @@ ComputingStatus IntakeIntervalCalculatorAnalytical::calculateIntakeSinglePoint(
         return ComputingStatus::BadParameters;
     }
     m_loggingErrors = true;
+
+    CHECK_CALCULATEINTAKESINGLEPOINT_INPUTS;
 
     // To reuse interface of computeExponentials with multiple points, remaine time as a vector.
     Eigen::VectorXd times(2);

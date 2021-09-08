@@ -31,12 +31,12 @@ enum class MultiConstantEliminationBolusCompartments : int { First, Second };
 /// When using R=0, S=0 and A=0, the concentration is simply the dose
 ///
 
-class MultiConstantEliminationBolus : public IntakeIntervalCalculatorBase<1, MultiConstantEliminationBolusExponentials>
+class MultiConstantEliminationBolus : public IntakeIntervalCalculatorBase<2, MultiConstantEliminationBolusExponentials>
 {
    INTAKEINTERVALCALCULATOR_UTILS(MultiConstantEliminationBolus)
 public:
     /// \brief Constructor
-    MultiConstantEliminationBolus() : IntakeIntervalCalculatorBase<1, MultiConstantEliminationBolusExponentials> (new PertinentTimesCalculatorStandard())
+    MultiConstantEliminationBolus() : IntakeIntervalCalculatorBase<2, MultiConstantEliminationBolusExponentials> (new PertinentTimesCalculatorStandard())
     {
 
     }

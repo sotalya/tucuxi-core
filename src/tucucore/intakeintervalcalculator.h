@@ -57,6 +57,41 @@ public: \
         return std::shared_ptr<IntakeIntervalCalculator>(new entity()); \
     }
 
+//#ifndef NDEBUG
+#define CHECK_CALCULATEINTAKEPOINTS_INPUTS \
+{ \
+    if (_inResiduals.size() < getResidualSize()) { \
+        throw std::runtime_error("[IntakeIntervalCalculator] Input residual vector size too short"); \
+    } \
+    if (_outResiduals.size() < getResidualSize()) { \
+        throw std::runtime_error("[IntakeIntervalCalculator] Output residual vector size too short"); \
+    } \
+}
+/*
+ * The next checks would be relevant if the concentrations are allocated
+ * outside of the intake calculator. But that's actually not the case
+    if (_concentrations.size() < m_nbAnalytes) { \
+        throw std::runtime_error("[IntakeIntervalCalculator] _concentrations vector does not have a size corresponding to the number of analytes"); \
+    } \
+    for (size_t i = 0; i < m_nbAnalytes; i++) { \
+        if (_concentrations[i].size() < _intakeEvent.getNbPoints()) { \
+            throw std::runtime_error("[IntakeIntervalCalculator] _concentrations vector does not have a correct number of points"); \
+        } \
+    } \
+}
+*/
+//#endif
+
+
+#define CHECK_CALCULATEINTAKESINGLEPOINT_INPUTS \
+{ \
+    if (_inResiduals.size() < getResidualSize()) { \
+        throw std::runtime_error("[IntakeIntervalCalculator] Input residual vector size too short"); \
+    } \
+    if (_outResiduals.size() < getResidualSize()) { \
+        throw std::runtime_error("[IntakeIntervalCalculator] Output residual vector size too short"); \
+    } \
+}
 
 /// \ingroup TucuCore
 /// \brief Base class for the computation of a single intake
@@ -119,6 +154,12 @@ public:
     /// \return the number of compartments for the residuals
     virtual unsigned int getResidualSize() const = 0;
 
+    ///
+    /// \brief Returns the number of analytes computed by this calculator
+    /// \return The number of analytes computed
+    ///
+    unsigned int getNbAnalytes() const;
+
 protected:
     /// \brief Allows derived classes to make some checks on input data	
     /// \param _intakeEvent intake for the cycle (all cyles start with an intake)
@@ -154,6 +195,10 @@ protected:
     /// can be wrong because of big etas
     bool m_loggingErrors;
 
+    /// By default the number of analytes is 1, as it is the most common case
+    /// If there are more than one analyte, then the IntakeIntervalCalculator can set
+    /// this value in its constructor
+    unsigned int m_nbAnalytes{1};
 
 };
 
