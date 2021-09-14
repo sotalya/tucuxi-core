@@ -94,7 +94,9 @@ enum class [[nodiscard]] ComputingStatus {
     /// The drug domain is uncompatible with the patient covariates
     UncompatibleDrugDomain,
     /// Cannot attain steady state
-    NoSteadyState
+    NoSteadyState,
+    /// A posteriori percentiles calculation, but samples are out of scope
+    AposterioriPercentilesOutOfScopeSamplesError
 };
 
 std::ostream& operator<<(std::ostream& _stream, const ComputingStatus& _e);

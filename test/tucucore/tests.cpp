@@ -564,6 +564,7 @@ int main(int argc, char** argv)
     percentileCalculatorTests.add_test("Aposteriori Normal Monte Carlo Percentile", &TestPercentileCalculator::testAposterioriNormal);
     percentileCalculatorTests.add_test("Aposteriori Matrix cache", &TestPercentileCalculator::testAposterioriMatrixCache);
     percentileCalculatorTests.add_test("Aposteriori Monte Carlo Percentile", &TestPercentileCalculator::testAposteriori);
+    percentileCalculatorTests.add_test("Aposteriori percentiles with samples far away in time", &TestPercentileCalculator::testAposterioriFarSamples);
 
     res = percentileCalculatorTests.run(argc, argv);
     tot_res |= res;

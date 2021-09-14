@@ -242,7 +242,9 @@ const std::string ComputingQueryResponseXmlExport::getComputingStatus(Tucuxi::Co
         {Tucuxi::Core::ComputingStatus::NoAnalytesGroup, {"NoAnalytesGroup", "36"}},
         {Tucuxi::Core::ComputingStatus::IncompatibleTreatmentModel, {"IncompatibleTreatmentModel", "37"}},
         {Tucuxi::Core::ComputingStatus::ComputingComponentNotInitialized, {"ComputingComponentNotInitialized", "38"}},
-        {Tucuxi::Core::ComputingStatus::UncompatibleDrugDomain, {"UncompatibleDrugDomain", "39"}}
+        {Tucuxi::Core::ComputingStatus::UncompatibleDrugDomain, {"UncompatibleDrugDomain", "39"}},
+        {Tucuxi::Core::ComputingStatus::NoSteadyState, {"NoSteadyState", "40"}},
+        {Tucuxi::Core::ComputingStatus::AposterioriPercentilesOutOfScopeSamplesError, {"AposterioriPercentilesOutOfScopeSamplesError", "41"}}
     };
 
     auto it = m.find(_computingStatus);
