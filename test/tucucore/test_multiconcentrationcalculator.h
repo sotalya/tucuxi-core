@@ -57,14 +57,8 @@ struct TestMultiConcentrationCalculator : public fructose::test_base<TestMultiCo
         // Just a reminder that this test is not yet written
         fructose_assert(false);
         // The following 6 lines should be removed when implementing the function
-        TMP_UNUSED_PARAMETER(_parameters);
-        TMP_UNUSED_PARAMETER(_dose);
-        TMP_UNUSED_PARAMETER(_route);
-        TMP_UNUSED_PARAMETER(_interval);
-        TMP_UNUSED_PARAMETER(_infusionTime);
-        TMP_UNUSED_PARAMETER(_nbPoints);
 
-        /*
+
         // Compare the result on one interval
         // with ConcentrationCalculator vs directly with the IntakeIntervalCalculator
         {
@@ -335,7 +329,7 @@ struct TestMultiConcentrationCalculator : public fructose::test_base<TestMultiCo
         // synchronized with the times at which the concentration points are expected
 
 
-        */
+
     }
 
 
@@ -555,7 +549,7 @@ struct TestMultiConcentrationCalculator : public fructose::test_base<TestMultiCo
     }
 
 
-    void testMultiConstantEliminationBolus(const std::string& /* _testName */)
+    void testMultiConcentrationCalculator(const std::string& /* _testName */)
     {
         Tucuxi::Core::ParameterDefinitions parameterDefs;
         // TODO : Modify these parameters
@@ -569,6 +563,8 @@ struct TestMultiConcentrationCalculator : public fructose::test_base<TestMultiCo
         Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
         Tucuxi::Core::ParameterSetSeries parametersSeries;
         parametersSeries.addParameterSetEvent(parameters);
+
+
 
         testCalculator<Tucuxi::Core::MultiConstantEliminationBolus>(
             parametersSeries,

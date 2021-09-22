@@ -388,7 +388,7 @@ int main(int argc, char** argv)
     multiConcentrationCalculatorTests.add_test("2 comp bolus test", &TestMultiConcentrationCalculator::test2compBolus);
     multiConcentrationCalculatorTests.add_test("2 comp extra test", &TestMultiConcentrationCalculator::test2compExtra);
     multiConcentrationCalculatorTests.add_test("2 comp infusion test", &TestMultiConcentrationCalculator::test2compInfusion);
-    multiConcentrationCalculatorTests.add_test("multiconstanteliminationbolus", &TestMultiConcentrationCalculator::testMultiConstantEliminationBolus);
+    multiConcentrationCalculatorTests.add_test("multiconcentrationcalculator", &TestMultiConcentrationCalculator::testMultiConcentrationCalculator);
 
     res = multiConcentrationCalculatorTests.run(argc, argv);
     tot_res |= res;

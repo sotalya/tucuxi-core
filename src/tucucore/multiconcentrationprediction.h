@@ -25,8 +25,9 @@ namespace Core {
 class MultiConcentrationPrediction
 {
 public:
+
 /*
-    bool streamToFile(const std::string _fileName) 
+    bool streamToFile(const std::string _fileName)
     {
         std::ofstream ostrm(_fileName, std::ios::binary);
         if ((ostrm.rdstate() & std::ios_base::failbit) != 0) {
@@ -47,6 +48,8 @@ public:
         return true;
     }
 
+    */
+
     bool allocate(unsigned int _residualSize, CycleSize _nbPoints, TimeOffsets &_times, std::vector<Concentrations> &_values) const
     {
         _times.reserve(_nbPoints);
@@ -56,12 +59,13 @@ public:
         return true;
     }
 
-    void appendConcentrations(TimeOffsets &_times, Concentrations &_values)
+    void appendConcentrations(TimeOffsets &_times, std::vector<Concentrations> &_values)
     {
         m_times.push_back(_times);
         m_values.push_back(_values);
     }
 
+    /*
     MultiConcentrationPrediction *copy()
     {
         MultiConcentrationPrediction *result = new MultiConcentrationPrediction();
@@ -87,6 +91,8 @@ private:
     /// It would accessed like m_values[intakeIndex][compartmentIndex][timeIndex]
     ///
     std::vector<std::vector<Concentrations> > m_values;
+
+
 };
 typedef std::unique_ptr<MultiConcentrationPrediction> MultiConcentrationPredictionPtr;
 

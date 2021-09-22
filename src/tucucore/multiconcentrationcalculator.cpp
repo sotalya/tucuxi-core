@@ -24,20 +24,9 @@ ComputingStatus MultiConcentrationCalculator::computeConcentrations(
         const std::vector<Deviations>& _epsilons,
         bool _onlyAnalytes,
         bool _isFixedDensity)
+
 {
-    TMP_UNUSED_PARAMETER(_prediction);
-    TMP_UNUSED_PARAMETER(_isAll);
-    TMP_UNUSED_PARAMETER(_recordFrom);
-    TMP_UNUSED_PARAMETER(_recordTo);
-    TMP_UNUSED_PARAMETER(_intakes);
-    TMP_UNUSED_PARAMETER(_parameters);
-    TMP_UNUSED_PARAMETER(_etas);
-    TMP_UNUSED_PARAMETER(_residualErrorModels);
-    TMP_UNUSED_PARAMETER(_epsilons);
-    TMP_UNUSED_PARAMETER(_onlyAnalytes);
-    TMP_UNUSED_PARAMETER(_isFixedDensity);
-    return ComputingStatus::Undefined;
-    /*
+
     if (_recordFrom == DateTime()) {
         Tucuxi::Common::LoggerHelper logHelper;
         logHelper.error("Invalid record from");
@@ -48,6 +37,8 @@ ComputingStatus MultiConcentrationCalculator::computeConcentrations(
     }
 
     TMP_UNUSED_PARAMETER(_onlyAnalytes);
+
+
 
     // First calculate the size of residuals
     unsigned int residualSize = 0;
@@ -83,9 +74,8 @@ ComputingStatus MultiConcentrationCalculator::computeConcentrations(
             std::vector<Concentrations> concentrations;
             concentrations.resize(residualSize);
 
-            _prediction->allocate(residualSize, intake.getNbPoints(), times, concentrations);
-
-    //        outResiduals.clear();
+          _prediction->allocate(residualSize, intake.getNbPoints(), times, concentrations);
+          outResiduals.clear();
 
             ComputingStatus result = intake.calculateIntakePoints(concentrations, times, intake, *parameters, inResiduals, _isAll, outResiduals, _isFixedDensity);
 
@@ -98,9 +88,10 @@ ComputingStatus MultiConcentrationCalculator::computeConcentrations(
 
                     // If nbpoints has changed (initial density was not the final density), change the density in the intakeevent
                     // so it can be used if this intake is recalculated.
+                    //IntakeSeries::const_iterator it;
                     //if (it->getNbPoints() != ink.getNbPoints()) {
-                    //    intake_series_t::index<tags::times>::type& intakes_times_index = intakes.get<tags::times>();
-                    //    intakes_times_index.modify(it, IntakeEvent::change_density(ink.nbPoints));
+                    //   intake_series_t::index<tags::times>::type& intakes_times_index = intakes.get<tags::times>();
+                    //   intakes_times_index.modify(it, IntakeEvent::change_density(ink.nbPoints));
                     //}
                     break;
                 default:
@@ -110,12 +101,16 @@ ComputingStatus MultiConcentrationCalculator::computeConcentrations(
 
 
             // Apply the intra-individual error
-            if ((!_residualErrorModel.isEmpty()) && (!_epsilons.empty())) {
-                _residualErrorModel.applyEpsToArray(concentrations[0], _epsilons);
+
+
+            //no estoy seguro de esto que acabo de poner
+
+            if (!(_residualErrorModels.size() == 0) && !(_epsilons.size() == 0)) {
+                for(int i = 0; i < _residualErrorModels.size(); ++i) _residualErrorModels[i]->applyEpsToArray(concentrations[0], _epsilons[0]);
             }
 
             // Append computed values to our prediction
-            _prediction->appendConcentrations(times, concentrations[0]);
+            _prediction->appendConcentrations(times, concentrations);
         }
         else {
             // Do not record data, only get residual
@@ -162,7 +157,7 @@ ComputingStatus MultiConcentrationCalculator::computeConcentrations(
     }
 
     return ComputingStatus::Ok;
-    */
+
 }
 
 ComputingStatus MultiConcentrationCalculator::computeConcentrationsAtSteadyState(
@@ -179,19 +174,8 @@ ComputingStatus MultiConcentrationCalculator::computeConcentrationsAtSteadyState
         bool _isFixedDensity)
 {
 
-    TMP_UNUSED_PARAMETER(_prediction);
-    TMP_UNUSED_PARAMETER(_isAll);
-    TMP_UNUSED_PARAMETER(_recordFrom);
-    TMP_UNUSED_PARAMETER(_recordTo);
-    TMP_UNUSED_PARAMETER(_intakes);
-    TMP_UNUSED_PARAMETER(_parameters);
-    TMP_UNUSED_PARAMETER(_etas);
-    TMP_UNUSED_PARAMETER(_residualErrorModels);
-    TMP_UNUSED_PARAMETER(_epsilons);
-    TMP_UNUSED_PARAMETER(_onlyAnalytes);
-    TMP_UNUSED_PARAMETER(_isFixedDensity);
-    return ComputingStatus::Undefined;
-    /*
+
+
     if (_recordFrom == DateTime()) {
         Tucuxi::Common::LoggerHelper logHelper;
         logHelper.error("Invalid record from");
@@ -264,12 +248,12 @@ ComputingStatus MultiConcentrationCalculator::computeConcentrationsAtSteadyState
 
 
                 // Apply the intra-individual error
-                if ((!_residualErrorModel.isEmpty()) && (!_epsilons.empty())) {
-                    _residualErrorModel.applyEpsToArray(concentrations[0], _epsilons);
+                if (!(_residualErrorModels.size() == 0) && !(_epsilons.size() == 0)) {
+                    for(int i = 0; i < _residualErrorModels.size(); ++i) _residualErrorModels[i]->applyEpsToArray(concentrations[0], _epsilons[0]);
                 }
 
                 // Append computed values to our prediction
-                _prediction->appendConcentrations(times, concentrations[0]);
+                _prediction->appendConcentrations(times, concentrations);
             }
             else {
                 // Do not record data, only get residual
@@ -334,8 +318,9 @@ ComputingStatus MultiConcentrationCalculator::computeConcentrationsAtSteadyState
 
 
     return ComputingStatus::Ok;
-    */
+
 }
+
 
 
 ComputingStatus MultiConcentrationCalculator::computeConcentrationsAtTimes(
@@ -347,15 +332,7 @@ ComputingStatus MultiConcentrationCalculator::computeConcentrationsAtTimes(
     const Etas &_etas,
     bool _onlyAnalytes)
 {
-    TMP_UNUSED_PARAMETER(_concentrations);
-    TMP_UNUSED_PARAMETER(_isAll);
-    TMP_UNUSED_PARAMETER(_intakes);
-    TMP_UNUSED_PARAMETER(_parameters);
-    TMP_UNUSED_PARAMETER(_samples);
-    TMP_UNUSED_PARAMETER(_etas);
-    TMP_UNUSED_PARAMETER(_onlyAnalytes);
-    return ComputingStatus::Undefined;
-    /*
+
     TMP_UNUSED_PARAMETER(_onlyAnalytes);
 
     _concentrations.clear();
@@ -457,7 +434,7 @@ ComputingStatus MultiConcentrationCalculator::computeConcentrationsAtTimes(
                     return result;
                 }
 
-                _concentrations.push_back(concentrations[0][0]);
+                _concentrations.push_back(concentrations[0]);
 
                 // We processed a sample so increment samples and output concentrations iterators.
                 sit++;
@@ -475,7 +452,7 @@ ComputingStatus MultiConcentrationCalculator::computeConcentrationsAtTimes(
         it++; intakeNext++;
     }
     return ComputingStatus::Ok;
-    */
+
 }
 
 } // namespace Core

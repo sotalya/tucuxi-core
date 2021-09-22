@@ -61,6 +61,7 @@ typedef Value Concentration;
 /// \brief The type used to represent a serie of concentrations
 typedef std::vector<Concentration> Concentrations;
 
+
 /// \ingroup TucuCore
 /// Percentile rank, between 0.0 and 100.0
 typedef double PercentileRank;

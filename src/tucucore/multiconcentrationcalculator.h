@@ -115,7 +115,7 @@ public:
         bool _onlyAnalytes = true) = 0;
 
     /// \brief virtual empty destructor
-    virtual ~IMultiConcentrationCalculator() {}
+    virtual ~IMultiConcentrationCalculator() = default;
 };
 
 
