@@ -473,7 +473,7 @@ ComputingStatus MultiComputingComponent::compute(
 
             SampleExtractor sampleExtractor;
             ComputingStatus sampleExtractionResult =
-                    sampleExtractor.extract(_request.getDrugTreatment().getSamples(), _request.getDrugModel().getAnalyteSet(analyteGroupId), calculationStartTime, _traits->getEnd(), TucuUnit("ug/l"), sampleSeries[analyteGroupId]);
+                    sampleExtractor.extract(_request.getDrugTreatment().getSamples(), _request.getDrugModel().getAnalyteSet(analyteGroupId), calculationStartTime, _traits->getEnd(), _request.getDrugModel().getAnalyteSet(analyteGroupId)->getConcentrationUnit(), sampleSeries[analyteGroupId]);
 
             if (sampleExtractionResult != ComputingStatus::Ok) {
                 return sampleExtractionResult;

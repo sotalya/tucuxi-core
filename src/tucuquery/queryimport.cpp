@@ -316,11 +316,11 @@ unique_ptr<Tucuxi::Core::Target> QueryImport::createTargetData(Common::XmlNodeIt
     string activeMoietyId = getChildString(_targetDataRootIterator, ANALYTE_ID_NODE_NAME);
     string targetTypeStr = getChildString(_targetDataRootIterator, TARGET_TYPE_NODE_NAME);
     TucuUnit unit = getChildUnit(_targetDataRootIterator, UNIT_NODE_NAME, CheckUnit::Check);
-    Tucuxi::Core::Value inefficacyAlarm = getChildDouble(_targetDataRootIterator, INEFFICACY_ALARM_ID_NODE_NAME);
+    Tucuxi::Core::Value inefficacyAlarm = getChildDoubleOptional(_targetDataRootIterator, INEFFICACY_ALARM_ID_NODE_NAME, 0.0);
     Tucuxi::Core::Value min = getChildDouble(_targetDataRootIterator, MIN_NODE_NAME);
     Tucuxi::Core::Value best= getChildDouble(_targetDataRootIterator, BEST_NODE_NAME);
     Tucuxi::Core::Value max = getChildDouble(_targetDataRootIterator, MAX_ID_NODE_NAME);
-    Tucuxi::Core::Value toxicityAlarm = getChildDouble(_targetDataRootIterator, TOXICITY_ALARM_NODE_NAME);
+    Tucuxi::Core::Value toxicityAlarm = getChildDoubleOptional(_targetDataRootIterator, TOXICITY_ALARM_NODE_NAME, 0.0);
     Tucuxi::Common::Duration tMin;
     Tucuxi::Common::Duration tBest;
     Tucuxi::Common::Duration tMax;
