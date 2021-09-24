@@ -155,11 +155,11 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
 
                 fructose_assert_eq(resp->getCompartmentInfos().size(), size_t{3});
                 fructose_assert_eq(resp->getCompartmentInfos()[0].getId(), "activeMoietyMulti");
-                fructose_assert_eq(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoiety);
+                fructose_assert(resp->getCompartmentInfos()[0].getType() == CompartmentInfo::CompartmentType::ActiveMoiety);
                 fructose_assert_eq(resp->getCompartmentInfos()[1].getId(), "analyte0");
-                fructose_assert_eq(resp->getCompartmentInfos()[1].getType(), CompartmentInfo::CompartmentType::Analyte);
+                fructose_assert(resp->getCompartmentInfos()[1].getType() == CompartmentInfo::CompartmentType::Analyte);
                 fructose_assert_eq(resp->getCompartmentInfos()[2].getId(), "analyte1");
-                fructose_assert_eq(resp->getCompartmentInfos()[2].getType(), CompartmentInfo::CompartmentType::Analyte);
+                fructose_assert(resp->getCompartmentInfos()[2].getType() == CompartmentInfo::CompartmentType::Analyte);
 
                 std::vector<CycleData> data = resp->getData();
                 fructose_assert(data.size() == 16);
@@ -297,11 +297,11 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
 
                 fructose_assert_eq(resp->getCompartmentInfos().size(), size_t{3});
                 fructose_assert_eq(resp->getCompartmentInfos()[0].getId(), "activeMoietyMulti");
-                fructose_assert_eq(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoiety);
+                fructose_assert(resp->getCompartmentInfos()[0].getType() == CompartmentInfo::CompartmentType::ActiveMoiety);
                 fructose_assert_eq(resp->getCompartmentInfos()[1].getId(), "analyte0");
-                fructose_assert_eq(resp->getCompartmentInfos()[1].getType(), CompartmentInfo::CompartmentType::Analyte);
+                fructose_assert(resp->getCompartmentInfos()[1].getType() == CompartmentInfo::CompartmentType::Analyte);
                 fructose_assert_eq(resp->getCompartmentInfos()[2].getId(), "analyte1");
-                fructose_assert_eq(resp->getCompartmentInfos()[2].getType(), CompartmentInfo::CompartmentType::Analyte);
+                fructose_assert(resp->getCompartmentInfos()[2].getType() == CompartmentInfo::CompartmentType::Analyte);
 
                 std::vector<CycleData> data = resp->getData();
                 fructose_assert(data.size() == 16);

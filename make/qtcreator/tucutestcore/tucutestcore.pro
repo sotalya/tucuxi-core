@@ -17,9 +17,11 @@ include(../tucucommon.pri)
 include(../tucucore.pri)
 
 HEADERS += \
+    ../../../test/tucucore/drugmodels/buildmultianalytessingleactivemoiety.h \
     ../../../test/tucucore/drugmodels/buildpkasymptotic.h \
     ../../../test/tucucore/drugmodels/test_michaelismenten1comp.h \
     ../../../test/tucucore/drugmodels/test_michaelismenten2comp.h \
+    ../../../test/tucucore/drugmodels/test_multianalytessingleactivemoiety.h \
     ../../../test/tucucore/drugmodels/test_pkasymptotic.h \
     ../../../test/tucucore/pkmodels/multiconstanteliminationbolus.h \
     ../../../test/tucucore/pkmodels/pkasymptotic.h \

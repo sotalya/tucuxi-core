@@ -27,6 +27,9 @@
 #if defined(test_parameter) || !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_parameter.h"
 #endif
+#if defined(test_multianalytessingleactivemoiety) || !defined(DO_NOT_COMPILE_ALL_TESTS)
+#include "drugmodels/test_multianalytessingleactivemoiety.h"
+#endif
 #if defined(test_multianalytesmultiactivemoieties) || !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "drugmodels/test_multianalytesmultiactivemoieties.h"
 #endif
@@ -623,6 +626,7 @@ int main(int argc, char** argv)
     // one compartment
     computingComponentPercentilesTests.add_test("ImatinibPercentiles", &TestComputingComponentPercentiles::testImatinib1);
     computingComponentPercentilesTests.add_test("ImatinibSteadyStatePercentiles", &TestComputingComponentPercentiles::testImatinibSteadyState);
+    computingComponentPercentilesTests.add_test("AposterioriPercentiles", &TestComputingComponentPercentiles::testAposterioriPercentiles);
 
 
 
@@ -737,6 +741,23 @@ int main(int argc, char** argv)
     }
 #endif
 
+#if defined(test_multianalytessingleactivemoiety) || !defined(DO_NOT_COMPILE_ALL_TESTS)
+    // --- Multi analytes multi active moieties tests --- //
+    TestMultiAnalytesSingleActiveMoiety multiAnalytesSingleActiveMoietyTests;
+
+    multiAnalytesSingleActiveMoietyTests.add_test("testMultiAnalytesMultiActiveMoieties", &TestMultiAnalytesSingleActiveMoiety::testMultiAnalytesSingleActiveMoiety);
+    multiAnalytesSingleActiveMoietyTests.add_test("testMultiAnalytesMultiActiveMoietiesConversion", &TestMultiAnalytesSingleActiveMoiety::testMultiAnalytesSingleActiveMoietyConversion);
+    multiAnalytesSingleActiveMoietyTests.add_test("testAdjustments", &TestMultiAnalytesSingleActiveMoiety::testAdjustments);
+
+    res = multiAnalytesSingleActiveMoietyTests.run(argc, argv);
+    tot_res |= res;
+    if (res != 0) {
+        std::cerr << "Multi analytes single active moiety test failed\n";
+    }
+    else {
+        std::cout << "Multi analytes single active moiety test succeeded\n";
+    }
+#endif
 
 #if defined(test_multianalytesmultiactivemoieties) || !defined(DO_NOT_COMPILE_ALL_TESTS)
     // --- Multi analytes multi active moieties tests --- //

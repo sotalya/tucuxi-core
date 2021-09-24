@@ -1,5 +1,5 @@
-#ifndef BUILDMULTIANALYTESMULTIACTIVEMOIETIES_H
-#define BUILDMULTIANALYTESMULTIACTIVEMOIETIES_H
+#ifndef BUILDMULTIANALYTESSINGLAACTIVEMOIETY_H
+#define BUILDMULTIANALYTESSINGLAACTIVEMOIETY_H
 
 
 #include "drugmodelbuilder.h"
@@ -9,10 +9,10 @@
 
 using namespace Tucuxi::Core;
 
-class BuildMultiAnalytesMultiActiveMoieties
+class BuildMultiAnalytesSingleActiveMoiety
 {
 public:
-    BuildMultiAnalytesMultiActiveMoieties() {}
+    BuildMultiAnalytesSingleActiveMoiety() {}
 
     Tucuxi::Core::DrugModel *buildDrugModel(
             double _conversionFactor0 = 1.0,
@@ -31,13 +31,13 @@ public:
         Tucuxi::Core::DrugModel *model;
         model = new Tucuxi::Core::DrugModel();
 
-        model->setDrugId("drugTestMultiAnalytesMultiActiveMoieties");
-        model->setDrugModelId("MultiAnalytesMultiActiveMoieties");
+        model->setDrugId("drugTestMultiAnalytesSingleActiveMoiety");
+        model->setDrugModelId("MultiAnalytesSingleActiveMoiety");
 
         std::unique_ptr<DrugModelMetadata> metaData = std::make_unique<DrugModelMetadata>();
         metaData->addAtc("fake Atc");
         Tucuxi::Common::TranslatableString drugName;
-        drugName.setString("Multi analytes multi active moieties test");
+        drugName.setString("Multi analytes single active moiety test");
         metaData->setDrugName(drugName);
         metaData->setAuthorName("The authors");
         model->setMetadata(std::move(metaData));
@@ -293,4 +293,4 @@ public:
 };
 
 
-#endif // BUILDMULTIANALYTESMULTIACTIVEMOIETIES_H
+#endif // BUILDMULTIANALYTESSINGLAACTIVEMOIETY_H

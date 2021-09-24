@@ -15,6 +15,7 @@
 
 #include <vector>
 #include <map>
+#include <iostream>
 
 #undef min  // Prevent problems with date.h
 #undef max  // Prevent problems with date.h
