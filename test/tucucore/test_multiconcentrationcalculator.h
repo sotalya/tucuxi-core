@@ -16,6 +16,7 @@
 #include "tucucore/intakeextractor.h"
 #include "tucucore/intakeintervalcalculator.h"
 #include "tucucore/concentrationcalculator.h"
+#include "tucucore/multiconcentrationcalculator.h"
 #include "tucucore/pkmodels/onecompartmentbolus.h"
 #include "tucucore/pkmodels/onecompartmentinfusion.h"
 #include "tucucore/pkmodels/onecompartmentextra.h"
@@ -27,6 +28,7 @@
 #include "tucucore/pkmodels/threecompartmentextra.h"
 #include "pkmodels/constanteliminationbolus.h"
 #include "pkmodels/multiconstanteliminationbolus.h"
+
 
 using namespace Tucuxi::Core;
 
@@ -101,9 +103,9 @@ struct TestMultiConcentrationCalculator : public fructose::test_base<TestMultiCo
                 fructose_assert(res == Tucuxi::Core::ComputingStatus::Ok);
             }
 
-            Tucuxi::Core::ConcentrationPredictionPtr predictionPtr;
+            Tucuxi::Core::MultiConcentrationPredictionPtr predictionPtr;
             {
-                predictionPtr = std::make_unique<Tucuxi::Core::ConcentrationPrediction>();
+                predictionPtr = std::make_unique<Tucuxi::Core::MultiConcentrationPrediction>();
 
                 DateTime recordFrom = now;
                 DateTime recordTo = now + intakeEvent.getInterval();
@@ -112,7 +114,7 @@ struct TestMultiConcentrationCalculator : public fructose::test_base<TestMultiCo
                 std::shared_ptr<IntakeIntervalCalculator> calculator2 = std::make_shared<CalculatorClass>();
                 intakeEvent.setCalculator(calculator2);
                 intakeSeries.push_back(intakeEvent);
-                Tucuxi::Core::IConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::ConcentrationCalculator();
+                Tucuxi::Core::IMultiConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::MultiConcentrationCalculator();
                 auto status = concentrationCalculator->computeConcentrations(
                     predictionPtr,
                     isAll,
@@ -124,12 +126,13 @@ struct TestMultiConcentrationCalculator : public fructose::test_base<TestMultiCo
                 fructose_assert_eq(status, ComputingStatus::Ok);
             }
 
+            //int analytes = getNbAnalytes();
             for (size_t i = 0; i < _nbPoints; i++) {
-                Tucuxi::Core::Concentrations concentration2;
+                std::vector<Tucuxi::Core::Concentrations> concentration2;
                 concentration2 = predictionPtr->getValues()[0];
                 // std::cout << i <<  " :: " << concentrations[0][i] << " : " << concentration2[i] << std::endl;
                 // compare concentrations of compartment 1
-                fructose_assert_double_eq(concentrations[0][i], concentration2[i]);
+                fructose_assert_double_eq(concentrations[0][i], concentration2[0][i]);
             }
         }
 
@@ -187,9 +190,9 @@ struct TestMultiConcentrationCalculator : public fructose::test_base<TestMultiCo
                 fructose_assert(res == Tucuxi::Core::ComputingStatus::Ok);
             }
 
-            Tucuxi::Core::ConcentrationPredictionPtr predictionPtr;
+            Tucuxi::Core::MultiConcentrationPredictionPtr predictionPtr;
             {
-                predictionPtr = std::make_unique<Tucuxi::Core::ConcentrationPrediction>();
+                predictionPtr = std::make_unique<Tucuxi::Core::MultiConcentrationPrediction>();
 
                 Tucuxi::Core::IntakeSeries intakeSeries;
                 std::shared_ptr<IntakeIntervalCalculator> calculator2 = std::make_shared<CalculatorClass>();
@@ -202,7 +205,7 @@ struct TestMultiConcentrationCalculator : public fructose::test_base<TestMultiCo
                     event.setCalculator(calculator2);
                     intakeSeries.push_back(event);
                 }
-                Tucuxi::Core::IConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::ConcentrationCalculator();
+                Tucuxi::Core::IMultiConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::MultiConcentrationCalculator();
                 auto status = concentrationCalculator->computeConcentrations(
                     predictionPtr,
                     isAll,
@@ -223,9 +226,9 @@ struct TestMultiConcentrationCalculator : public fructose::test_base<TestMultiCo
             }
 
             // Only works for linear elimination, so do not perform that for some classes
-            if (typeid(CalculatorClass) != typeid(ConstantEliminationBolus)) {
+            if (!(typeid(CalculatorClass) == typeid(ConstantEliminationBolus) or typeid(CalculatorClass) == typeid(MultiConstantEliminationBolus))){
                 for (size_t cycle = 0; cycle < nbCycles; cycle ++) {
-                    Tucuxi::Core::Concentrations concentration2;
+                    std::vector<Tucuxi::Core::Concentrations> concentration2;
                     concentration2 = predictionPtr->getValues()[cycle];
                     for (CycleSize i = 0; i < _nbPoints - 1; i++) {
                         double sumConcentration = 0.0;
@@ -234,7 +237,7 @@ struct TestMultiConcentrationCalculator : public fructose::test_base<TestMultiCo
                             // std::cout << c <<  " : " << sumConcentration << " : " << concentrations[0][c * (_nbPoints - 1) + i] << std::endl;
                         }
                         // std::cout << cycle <<  " : " << i << " :: " << predictionPtr->getTimes()[cycle][i] << " . " << sumConcentration << " : " << concentration2[i] << std::endl;
-                        fructose_assert_double_eq(sumConcentration, concentration2[i]);
+                        fructose_assert_double_eq(sumConcentration, concentration2[i][cycle]);
                     }
                 }
             }
@@ -254,13 +257,14 @@ struct TestMultiConcentrationCalculator : public fructose::test_base<TestMultiCo
             Tucuxi::Common::Duration interval = _interval;
             Tucuxi::Common::Duration infusionTime = _infusionTime;
 
-            Tucuxi::Core::Concentrations concentrations;
+
+            std::vector<Tucuxi::Core::Concentrations> concentrations;
             Tucuxi::Core::TimeOffsets times;
             Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, _dose, TucuUnit("mg"), interval, Tucuxi::Core::FormulationAndRoute(_route), _route, infusionTime, nbPoints);
 
-            Tucuxi::Core::ConcentrationPredictionPtr predictionPtr;
+            Tucuxi::Core::MultiConcentrationPredictionPtr predictionPtr;
             {
-                predictionPtr = std::make_unique<Tucuxi::Core::ConcentrationPrediction>();
+                predictionPtr = std::make_unique<Tucuxi::Core::MultiConcentrationPrediction>();
 
                 DateTime recordFrom = now;
                 DateTime recordTo = recordFrom + interval;
@@ -269,7 +273,7 @@ struct TestMultiConcentrationCalculator : public fructose::test_base<TestMultiCo
                 std::shared_ptr<IntakeIntervalCalculator> calculator2 = std::make_shared<CalculatorClass>();
                 intakeEvent.setCalculator(calculator2);
                 intakeSeries.push_back(intakeEvent);
-                Tucuxi::Core::IConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::ConcentrationCalculator();
+                Tucuxi::Core::IMultiConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::MultiConcentrationCalculator();
                 auto status = concentrationCalculator->computeConcentrations(
                     predictionPtr,
                     isAll,
@@ -302,7 +306,7 @@ struct TestMultiConcentrationCalculator : public fructose::test_base<TestMultiCo
                 Tucuxi::Core::SampleEvent s1(date1);
                 sampleSeries.push_back(s1);
 
-                Tucuxi::Core::IConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::ConcentrationCalculator();
+                Tucuxi::Core::IMultiConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::MultiConcentrationCalculator();
                 ComputingStatus res = concentrationCalculator->computeConcentrationsAtTimes(
                     concentrations,
                     isAll,
@@ -333,18 +337,22 @@ struct TestMultiConcentrationCalculator : public fructose::test_base<TestMultiCo
     }
 
 
-    void testConstantEliminationBolus(const std::string& /* _testName */)
+    void testMultiConcentrationCalculator(const std::string& /* _testName */)
     {
         Tucuxi::Core::ParameterDefinitions parameterDefs;
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestA", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestR", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestS", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestM", 1.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestA0", 1.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestR0", 2.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestS0", 0.03, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestM0", 4.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestA1", 10.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestR1", 20.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestS1", 0.003, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestM1", 40.0, Tucuxi::Core::ParameterVariabilityType::None)));
         Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
         Tucuxi::Core::ParameterSetSeries parametersSeries;
         parametersSeries.addParameterSetEvent(parameters);
 
-        testCalculator<Tucuxi::Core::ConstantEliminationBolus>(
+        testCalculator<Tucuxi::Core::MultiConstantEliminationBolus>(
             parametersSeries,
             400.0,
             Tucuxi::Core::AbsorptionModel::Extravascular,
@@ -549,31 +557,6 @@ struct TestMultiConcentrationCalculator : public fructose::test_base<TestMultiCo
     }
 
 
-    void testMultiConcentrationCalculator(const std::string& /* _testName */)
-    {
-        Tucuxi::Core::ParameterDefinitions parameterDefs;
-        // TODO : Modify these parameters
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 2, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V1", 340, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ke", 0.0444294, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K12", 0.0588235, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K21", 0.0584795, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K13", 0.0882353, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K31", 0.0877193, Tucuxi::Core::ParameterVariabilityType::None)));
-        Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
-        Tucuxi::Core::ParameterSetSeries parametersSeries;
-        parametersSeries.addParameterSetEvent(parameters);
-
-
-
-        testCalculator<Tucuxi::Core::MultiConstantEliminationBolus>(
-            parametersSeries,
-            400.0,
-            Tucuxi::Core::AbsorptionModel::Intravascular,
-            12h,
-            1h,
-            CYCLE_SIZE);
-    }
 };
 
 }
