@@ -22,6 +22,7 @@
 #include "tucucore/drugtreatment/drugtreatment.h"
 #include "drugmodels/buildimatinib.h"
 #include "tucucore/montecarlopercentilecalculator.h"
+#include "drugmodels/buildconstantelimination.h"
 
 using namespace Tucuxi::Core;
 
@@ -289,6 +290,285 @@ struct TestComputingComponentPercentiles : public fructose::test_base<TestComput
         // Delete all dynamically allocated objects
         delete drugModel;
         delete drugTreatment;
+        delete component;
+    }
+
+
+    void buildSimpleDrugTreatment(DrugTreatment *&_drugTreatment, FormulationAndRoute _route, DateTime &_startTime, Duration _interval, Duration _treatmentDuration)
+    {
+         _drugTreatment = new DrugTreatment();
+
+         // List of time ranges that will be pushed into the history
+         DosageTimeRangeList timeRangeList;
+
+         // Create a time range starting at the beginning of june 2018, with no upper end (to test that the repetitions
+         // are handled correctly)
+
+
+         //const FormulationAndRoute route("formulation", AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular);
+         // Add a treatment intake every ten days in June
+         // 200mg via a intravascular at 08h30, starting the 01.06
+         LastingDose periodicDose(DoseValue(200.0),
+                                  TucuUnit("mg"),
+                                  _route,
+                                  Duration(),
+                                  _interval);
+         DosageRepeat repeatedDose(periodicDose, static_cast<int>(_treatmentDuration / _interval));
+         std::unique_ptr<Tucuxi::Core::DosageTimeRange> dosageTimeRange(new Tucuxi::Core::DosageTimeRange(_startTime, repeatedDose));
+
+         _drugTreatment->getModifiableDosageHistory().addTimeRange(*dosageTimeRange);
+    }
+
+
+    void testAposterioriPercentiles(const std::string& /* _testName */)
+    {
+        IComputingService *component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+
+        BuildConstantElimination builder;
+        DrugModel *drugModel = builder.buildDrugModel(
+                    ResidualErrorType::ADDITIVE,
+                    std::vector<Value>({10000.0}),
+                    ParameterVariabilityType::Additive,
+                    ParameterVariabilityType::None,
+                    ParameterVariabilityType::None,
+                    ParameterVariabilityType::None,
+                    1000.0,
+                    0.0,
+                    0.0,
+                    0.0);
+
+        const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+
+
+        DateTime startTreatment(date::year_month_day(date::year(2018), date::month(9), date::day(1)),
+                               Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
+        Duration interval(std::chrono::hours(6));
+        Duration treatmentDuration(std::chrono::hours(24 * 60));
+        DateTime endTreatment = startTreatment + treatmentDuration;
+
+
+        {
+            // Test of a posteriori percentiles with no samples
+            DrugTreatment *drugTreatment;
+            buildSimpleDrugTreatment(drugTreatment, route, startTreatment, interval, treatmentDuration);
+
+            RequestResponseId requestResponseId = "1";
+            Tucuxi::Common::DateTime start = startTreatment;
+            Tucuxi::Common::DateTime end = startTreatment + Duration(std::chrono::hours(48));
+            PercentileRanks percentileRanks({5, 25, 50, 75, 95});
+            double nbPointsPerHour = 10.0;
+            ComputingOption computingOption(PredictionParameterType::Aposteriori, CompartmentsOption::MainCompartment);
+            std::unique_ptr<ComputingTraitPercentiles> traits =
+                    std::make_unique<ComputingTraitPercentiles>(
+                        requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
+
+            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
+
+            std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
+
+            ComputingStatus result;
+            result = component->compute(request, response);
+
+            fructose_assert_eq( result, ComputingStatus::AposterioriPercentilesNoSamplesError);
+
+            fructose_assert(response->getData() == nullptr);
+            delete drugTreatment;
+        }
+
+        {
+            // Test of a posteriori percentiles with one valid sample
+            DrugTreatment *drugTreatment;
+            buildSimpleDrugTreatment(drugTreatment, route, startTreatment, interval, treatmentDuration);
+            drugTreatment->addSample(std::make_unique<Sample>(startTreatment + Duration(std::chrono::hours(3)), AnalyteId("analyte"), 100.0, TucuUnit("mg/l")));
+
+            RequestResponseId requestResponseId = "1";
+            Tucuxi::Common::DateTime start = startTreatment;
+            Tucuxi::Common::DateTime end = startTreatment + Duration(std::chrono::hours(48));
+            PercentileRanks percentileRanks({5, 25, 50, 75, 95});
+            double nbPointsPerHour = 10.0;
+            ComputingOption computingOption(PredictionParameterType::Aposteriori, CompartmentsOption::MainCompartment);
+            std::unique_ptr<ComputingTraitPercentiles> traits =
+                    std::make_unique<ComputingTraitPercentiles>(
+                        requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
+
+            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
+
+            std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
+
+            ComputingStatus result;
+            result = component->compute(request, response);
+
+            fructose_assert_eq( result, ComputingStatus::Ok);
+
+            const ComputedData* responseData = response->getData();
+            fructose_assert(dynamic_cast<const PercentilesData*>(responseData) != nullptr);
+//            const PercentilesData *resp = dynamic_cast<const PercentilesData*>(responseData);
+            delete drugTreatment;
+
+
+        }
+
+        {
+            // Test of a posteriori percentiles with one valid sample just before the end of treatment
+            DrugTreatment *drugTreatment;
+            buildSimpleDrugTreatment(drugTreatment, route, startTreatment, interval, treatmentDuration);
+            drugTreatment->addSample(std::make_unique<Sample>(endTreatment - Duration(std::chrono::hours(3)), AnalyteId("analyte"), 100.0, TucuUnit("mg/l")));
+
+            RequestResponseId requestResponseId = "1";
+            Tucuxi::Common::DateTime start = startTreatment;
+            Tucuxi::Common::DateTime end = startTreatment + Duration(std::chrono::hours(48));
+            PercentileRanks percentileRanks({5, 25, 50, 75, 95});
+            double nbPointsPerHour = 10.0;
+            ComputingOption computingOption(PredictionParameterType::Aposteriori, CompartmentsOption::MainCompartment);
+            std::unique_ptr<ComputingTraitPercentiles> traits =
+                    std::make_unique<ComputingTraitPercentiles>(
+                        requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
+
+            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
+
+            std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
+
+            ComputingStatus result;
+            result = component->compute(request, response);
+
+            fructose_assert_eq( result, ComputingStatus::Ok);
+
+            const ComputedData* responseData = response->getData();
+            fructose_assert(dynamic_cast<const PercentilesData*>(responseData) != nullptr);
+//            const PercentilesData *resp = dynamic_cast<const PercentilesData*>(responseData);
+            delete drugTreatment;
+
+
+        }
+
+        {
+            // Test of a posteriori percentiles with one valid sample just after the end of treatment
+            DrugTreatment *drugTreatment;
+            buildSimpleDrugTreatment(drugTreatment, route, startTreatment, interval, treatmentDuration);
+            drugTreatment->addSample(std::make_unique<Sample>(endTreatment + Duration(std::chrono::hours(3)), AnalyteId("analyte"), 100.0, TucuUnit("mg/l")));
+
+            RequestResponseId requestResponseId = "1";
+            Tucuxi::Common::DateTime start = startTreatment;
+            Tucuxi::Common::DateTime end = startTreatment + Duration(std::chrono::hours(48));
+            PercentileRanks percentileRanks({5, 25, 50, 75, 95});
+            double nbPointsPerHour = 10.0;
+            ComputingOption computingOption(PredictionParameterType::Aposteriori, CompartmentsOption::MainCompartment);
+            std::unique_ptr<ComputingTraitPercentiles> traits =
+                    std::make_unique<ComputingTraitPercentiles>(
+                        requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
+
+            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
+
+            std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
+
+            ComputingStatus result;
+            result = component->compute(request, response);
+
+            fructose_assert_eq( result, ComputingStatus::Ok);
+
+            const ComputedData* responseData = response->getData();
+            fructose_assert(dynamic_cast<const PercentilesData*>(responseData) != nullptr);
+//            const PercentilesData *resp = dynamic_cast<const PercentilesData*>(responseData);
+            delete drugTreatment;
+
+
+        }
+
+        {
+            // Test of a posteriori percentiles with one valid sample but a prediction start not being the treatment start
+            DrugTreatment *drugTreatment;
+            buildSimpleDrugTreatment(drugTreatment, route, startTreatment, interval, treatmentDuration);
+            drugTreatment->addSample(std::make_unique<Sample>(startTreatment + Duration(std::chrono::hours(3)), AnalyteId("analyte"), 100.0, TucuUnit("mg/l")));
+
+            RequestResponseId requestResponseId = "1";
+            Tucuxi::Common::DateTime start = startTreatment + Duration(std::chrono::hours(48));
+            Tucuxi::Common::DateTime end = startTreatment + Duration(std::chrono::hours(48));
+            PercentileRanks percentileRanks({5, 25, 50, 75, 95});
+            double nbPointsPerHour = 10.0;
+            ComputingOption computingOption(PredictionParameterType::Aposteriori, CompartmentsOption::MainCompartment);
+            std::unique_ptr<ComputingTraitPercentiles> traits =
+                    std::make_unique<ComputingTraitPercentiles>(
+                        requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
+
+            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
+
+            std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
+
+            ComputingStatus result;
+            result = component->compute(request, response);
+
+            fructose_assert_eq( result, ComputingStatus::Ok);
+
+            const ComputedData* responseData = response->getData();
+            fructose_assert(dynamic_cast<const PercentilesData*>(responseData) != nullptr);
+//            const PercentilesData *resp = dynamic_cast<const PercentilesData*>(responseData);
+            delete drugTreatment;
+
+
+        }
+
+
+        {
+            // Test of a posteriori percentiles with one unvalid sample too early in time
+            DrugTreatment *drugTreatment;
+            buildSimpleDrugTreatment(drugTreatment, route, startTreatment, interval, treatmentDuration);
+            // The sample is prior to the treatment start
+            drugTreatment->addSample(std::make_unique<Sample>(startTreatment - Duration(std::chrono::hours(3)), AnalyteId("analyte"), 100.0, TucuUnit("mg/l")));
+
+            RequestResponseId requestResponseId = "1";
+            Tucuxi::Common::DateTime start = startTreatment;
+            Tucuxi::Common::DateTime end = startTreatment + Duration(std::chrono::hours(48));
+            PercentileRanks percentileRanks({5, 25, 50, 75, 95});
+            double nbPointsPerHour = 10.0;
+            ComputingOption computingOption(PredictionParameterType::Aposteriori, CompartmentsOption::MainCompartment);
+            std::unique_ptr<ComputingTraitPercentiles> traits =
+                    std::make_unique<ComputingTraitPercentiles>(
+                        requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
+
+            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
+
+            std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
+
+            ComputingStatus result;
+            result = component->compute(request, response);
+
+            fructose_assert_eq( result, ComputingStatus::AposterioriPercentilesOutOfScopeSamplesError);
+
+            fructose_assert(response->getData() == nullptr);
+            delete drugTreatment;
+        }
+
+        {
+            // Test of a posteriori percentiles with one unvalid sample too far away in time
+            DrugTreatment *drugTreatment;
+            buildSimpleDrugTreatment(drugTreatment, route, startTreatment, interval, treatmentDuration);
+            // The sample is prior to the treatment start
+            drugTreatment->addSample(std::make_unique<Sample>(endTreatment + Duration(std::chrono::hours(3000)), AnalyteId("analyte"), 100.0, TucuUnit("mg/l")));
+
+            RequestResponseId requestResponseId = "1";
+            Tucuxi::Common::DateTime start = startTreatment;
+            Tucuxi::Common::DateTime end = startTreatment + Duration(std::chrono::hours(48));
+            PercentileRanks percentileRanks({5, 25, 50, 75, 95});
+            double nbPointsPerHour = 10.0;
+            ComputingOption computingOption(PredictionParameterType::Aposteriori, CompartmentsOption::MainCompartment);
+            std::unique_ptr<ComputingTraitPercentiles> traits =
+                    std::make_unique<ComputingTraitPercentiles>(
+                        requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
+
+            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
+
+            std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
+
+            ComputingStatus result;
+            result = component->compute(request, response);
+
+            fructose_assert_eq( result, ComputingStatus::AposterioriPercentilesOutOfScopeSamplesError);
+
+            fructose_assert(response->getData() == nullptr);
+            delete drugTreatment;
+        }
+
+        delete drugModel;
         delete component;
     }
 

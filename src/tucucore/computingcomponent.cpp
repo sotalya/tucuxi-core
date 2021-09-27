@@ -490,7 +490,7 @@ ComputingStatus ComputingComponent::computePercentilesMulti(
 
             SampleExtractor sampleExtractor;
             ComputingStatus sampleExtractionResult =
-                    sampleExtractor.extract(_request.getDrugTreatment().getSamples(), _request.getDrugModel().getAnalyteSet(analyteGroupId), calculationStartTime, _traits->getEnd(), TucuUnit("ug/l"), sampleSeries[analyteGroupId]);
+                    sampleExtractor.extract(_request.getDrugTreatment().getSamples(), _request.getDrugModel().getAnalyteSet(analyteGroupId), calculationStartTime, _traits->getEnd(), _request.getDrugModel().getAnalyteSet(analyteGroupId)->getConcentrationUnit(), sampleSeries[analyteGroupId]);
 
             if (sampleExtractionResult != ComputingStatus::Ok) {
                 return sampleExtractionResult;
@@ -650,14 +650,22 @@ ComputingStatus ComputingComponent::computePercentilesSimple(
             return aposterioriEtasExtractionResult;
         }
 
+        if (_request.getDrugTreatment().getSamples().empty()) {
+            return ComputingStatus::AposterioriPercentilesNoSamplesError;
+        }
+
         // This extraction is already done in extractAposterioriEtas... Could be optimized
         SampleSeries sampleSeries;
         SampleExtractor sampleExtractor;
         ComputingStatus sampleExtractionResult =
-                sampleExtractor.extract(_request.getDrugTreatment().getSamples(), _request.getDrugModel().getAnalyteSet(analyteGroupId), calculationStartTime, _traits->getEnd(), TucuUnit("ug/l"), sampleSeries);
+                sampleExtractor.extract(_request.getDrugTreatment().getSamples(), _request.getDrugModel().getAnalyteSet(analyteGroupId), calculationStartTime, _traits->getEnd(), _request.getDrugModel().getAnalyteSet(analyteGroupId)->getConcentrationUnit(), sampleSeries);
 
         if (sampleExtractionResult != ComputingStatus::Ok) {
             return sampleExtractionResult;
+        }
+
+        if (sampleSeries.empty()) {
+            return ComputingStatus::AposterioriPercentilesOutOfScopeSamplesError;
         }
 
         std::unique_ptr<Tucuxi::Core::IAposterioriPercentileCalculator> calculator =

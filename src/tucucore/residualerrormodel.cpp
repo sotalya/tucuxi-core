@@ -96,7 +96,12 @@ Value SigmaResidualErrorModel::calculateSampleLikelihood(Value _expected, Value 
         sig = m_sigma(0) * _expected;
     } break;
     case ResidualErrorType::EXPONENTIAL: {
-        expectedObservedDiff = log(_observed) - log(_expected);
+        if (_observed == 0.0) {
+            expectedObservedDiff = log(1e-10) - log(_expected);
+        }
+        else {
+            expectedObservedDiff = log(_observed) - log(_expected);
+        }
         sig = m_sigma(0);
     } break;
     case ResidualErrorType::PROPEXP: {

@@ -18,6 +18,7 @@
 
 struct TestConstantEliminationBolus;
 struct TestPkAsymptotic;
+struct TestMultiAnalytesSingleActiveMoiety;
 struct TestMultiAnalytesMultiActiveMoieties;
 
 #ifdef DRUGMODELTESTS
@@ -302,6 +303,7 @@ private:
     friend ParameterDefinitionIterator;
     friend DrugModelChecker;
     friend TestConstantEliminationBolus;
+    friend TestMultiAnalytesSingleActiveMoiety;
     friend TestMultiAnalytesMultiActiveMoieties;
     friend TestPkAsymptotic;
 #ifdef DRUGMODELTESTS

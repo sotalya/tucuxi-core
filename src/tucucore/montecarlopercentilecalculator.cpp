@@ -347,6 +347,13 @@ ComputingStatus MonteCarloPercentileCalculatorBase::sortAndExtractPercentiles(Pe
         }
     }
 
+    if (realPatientNumber == 0) {
+        // Should be because of no samples
+        //return ComputingStatus::AposterioriPercentilesNoSamplesError;
+
+        // But what about if there are not 0 patients, but too less...
+    }
+
     // Then, from this vector we create the list of all valid concentrations.
     // This list is the one used for percentiles extractions
     std::vector< std::vector< std::vector<Concentration> > > realConcentrations(_concentrations.size());
@@ -780,6 +787,21 @@ ComputingStatus AposterioriMonteCarloPercentileCalculator::calculateEtasAndEpsil
     // If there is no sample, then there is no reason to calculate a posteriori percentiles
     if (_samples.empty()) {
         return ComputingStatus::AposterioriPercentilesNoSamplesError;
+    }
+
+    size_t nbSamplesOut = 0;
+    for (const auto &sample: _samples) {
+        if (sample.getEventTime() < _intakes.at(0).getEventTime()) {
+            nbSamplesOut ++;
+        }
+        else if (sample.getEventTime() > _intakes.at(_intakes.size() - 1).getEventTime() +
+                 _intakes.at(_intakes.size() -1 ).getInterval()) {
+            nbSamplesOut ++;
+        }
+    }
+    if (nbSamplesOut == _samples.size()) {
+        // If there is no sample on the intake series time, then something goes wrong
+        return ComputingStatus::AposterioriPercentilesOutOfScopeSamplesError;
     }
 
     // Return value from non-negative hessian matrix and loglikelihood
