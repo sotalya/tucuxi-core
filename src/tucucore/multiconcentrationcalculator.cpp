@@ -75,7 +75,6 @@ ComputingStatus MultiConcentrationCalculator::computeConcentrations(
             concentrations.resize(residualSize);
 
           _prediction->allocate(residualSize, intake.getNbPoints(), times, concentrations);
-          outResiduals.clear();
 
             ComputingStatus result = intake.calculateIntakePoints(concentrations, times, intake, *parameters, inResiduals, _isAll, outResiduals, _isFixedDensity);
 

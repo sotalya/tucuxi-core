@@ -277,14 +277,14 @@ ComputingStatus MultiComputingComponent::compute(
         ConcentrationPredictionPtr pPrediction = std::make_unique<ConcentrationPrediction>();
 
         Etas etas;
-
+/*
         if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Aposteriori) {
             ComputingStatus extractionResult = m_utils->m_generalExtractor->extractAposterioriEtas(etas, _request, analyteGroupId, intakeSeries[analyteGroupId], parameterSeries[analyteGroupId], covariateSeries, calculationStartTime, _traits->getEnd());
             if (extractionResult != ComputingStatus::Ok) {
                 return extractionResult;
             }
         }
-
+*/
         allEtas[analyteGroupId] = etas;
 
 
@@ -309,7 +309,7 @@ ComputingStatus MultiComputingComponent::compute(
     }
     std::vector<ConcentrationPredictionPtr> activeMoietiesPredictions;
 
-    if (!_request.getDrugModel().isSingleAnalyte()) {
+    //if (!_request.getDrugModel().isSingleAnalyte()) {
 
         for (const auto & activeMoiety : _request.getDrugModel().getActiveMoieties()) {
             ConcentrationPredictionPtr activeMoietyPrediction = std::make_unique<ConcentrationPrediction>();
@@ -319,7 +319,7 @@ ComputingStatus MultiComputingComponent::compute(
             }
             activeMoietiesPredictions.push_back(std::move(activeMoietyPrediction));
         }
-    }
+    //}
 
     std::unique_ptr<SinglePredictionData> resp = std::make_unique<SinglePredictionData>(_request.getId());
 

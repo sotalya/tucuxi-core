@@ -37,6 +37,13 @@ ComputingStatus IntakeIntervalCalculatorAnalytical::calculateIntakePoints(
     }
     m_loggingErrors = true;
 
+
+    if (_inResiduals.size() < getResidualSize()) {
+        throw std::runtime_error("[IntakeIntervalCalculator] Input residual vector size too short");
+    }
+    if (_outResiduals.size() < getResidualSize()) {
+        throw std::runtime_error("[IntakeIntervalCalculator] Output residual vector size too short");
+    }
     CHECK_CALCULATEINTAKEPOINTS_INPUTS;
 
     // Create our serie of times

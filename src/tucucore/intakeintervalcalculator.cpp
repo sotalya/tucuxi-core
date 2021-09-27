@@ -62,7 +62,10 @@ void PertinentTimesCalculatorInfusion::calculateTimes(const IntakeEvent& _intake
 IntakeIntervalCalculator::~IntakeIntervalCalculator()
 = default;
 
-
+unsigned int IntakeIntervalCalculator::getNbAnalytes() const
+{
+    return m_nbAnalytes;
+}
 
 bool IntakeIntervalCalculator::checkCondition(bool _isOk, const std::string& _errMsg)
 {
