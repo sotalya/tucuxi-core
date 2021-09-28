@@ -324,6 +324,11 @@ struct TestMultiConcentrationCalculator : public fructose::test_base<TestMultiCo
             size_t n1 = (nbPoints - 1) * 3 / 4;
             std::shared_ptr<IntakeIntervalCalculator> calculator2 = std::make_shared<CalculatorClass>();
 
+             //asser that the vector size is the one we expect
+            fructose_assert_eq(concentrations.size(),2);
+            fructose_assert_eq(concentrations[0].size(), calculator2->getNbAnalytes());
+            fructose_assert_eq(concentrations[0].size(), calculator2->getNbAnalytes());
+
             // compare the result of compartment1
             for (size_t i = 0; i<calculator2->getNbAnalytes(); i++) {
                 const auto values0 = predictionPtr->getValues();
