@@ -221,7 +221,7 @@
                 <formulation>parenteral solution</formulation>
                 <administrationName>admname</administrationName>
                 <administrationRoute>intravenousBolus</administrationRoute>
-                <absorptionModelId>bolus</absorptionModelId>
+                <absorptionModel>bolus</absorptionModel>
                 <dosages>
                     <analyteConversions>
                         <analyteConversion>
@@ -267,7 +267,7 @@
                 <absorptionParameters>
                     <parameterSetAnalyteGroup>
                     <analyteGroupId>group</analyteGroupId>
-                    <absorptionModelId>bolus</absorptionModelId>
+                    <absorptionModel>bolus</absorptionModel>
                         <parameterSet>
                             <parameters>
                                 <parameter>

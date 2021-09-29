@@ -641,7 +641,7 @@ static std::string vancomycin_tdd = R"(<?xml version="1.0" encoding="UTF-8" stan
                                                     <formulation>parenteral solution</formulation><!-- dictionnaire -->
                                                     <administrationName>champ libre</administrationName>
                                                     <administrationRoute>intravenousDrip</administrationRoute> <!-- dictionnaire -->
-                                                    <absorptionModelId>infusion</absorptionModelId>
+                                                    <absorptionModel>infusion</absorptionModel>
 
 
                                                     <!-- Drug dosages -->

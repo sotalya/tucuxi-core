@@ -388,7 +388,7 @@ static std::string test_mm_1comp_enzyme_bolus_tdd = R"(<?xml version="1.0" encod
                                                                     <formulation>parenteral solution</formulation>
                                                                     <administrationName>admname</administrationName>
                                                                     <administrationRoute>intravenousBolus</administrationRoute>
-                                                                    <absorptionModelId>bolus</absorptionModelId>
+                                                                    <absorptionModel>bolus</absorptionModel>
                                                                     <dosages>
                                                                         <analyteConversions>
                                                                             <analyteConversion>
@@ -434,7 +434,7 @@ static std::string test_mm_1comp_enzyme_bolus_tdd = R"(<?xml version="1.0" encod
                                                                     <absorptionParameters>
                                                                         <parameterSetAnalyteGroup>
                                                                         <analyteGroupId>group</analyteGroupId>
-                                                                        <absorptionModelId>bolus</absorptionModelId>
+                                                                        <absorptionModel>bolus</absorptionModel>
                                                                             <parameterSet>
                                                                                 <parameters>
                                                                                     <parameter>
@@ -479,7 +479,7 @@ static std::string test_mm_1comp_enzyme_bolus_tdd = R"(<?xml version="1.0" encod
                                                                     <formulation>parenteral solution</formulation>
                                                                     <administrationName>admname</administrationName>
                                                                     <administrationRoute>oral</administrationRoute>
-                                                                    <absorptionModelId>extra</absorptionModelId>
+                                                                    <absorptionModel>extra</absorptionModel>
                                                                     <dosages>
                                                                         <analyteConversions>
                                                                             <analyteConversion>
@@ -525,7 +525,7 @@ static std::string test_mm_1comp_enzyme_bolus_tdd = R"(<?xml version="1.0" encod
                                                                     <absorptionParameters>
                                                                         <parameterSetAnalyteGroup>
                                                                         <analyteGroupId>group</analyteGroupId>
-                                                                        <absorptionModelId>extra</absorptionModelId>
+                                                                        <absorptionModel>extra</absorptionModel>
                                                                             <parameterSet>
                                                                                 <parameters>
                                                                                     <parameter>

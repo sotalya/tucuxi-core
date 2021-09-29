@@ -591,7 +591,7 @@
                 <formulation>parenteral solution</formulation>
                 <administrationName>asdf</administrationName>
                 <administrationRoute>oral</administrationRoute>
-                <absorptionModelId>extra</absorptionModelId>
+                <absorptionModel>extra</absorptionModel>
                 <dosages>
                     <analyteConversions>
                         <analyteConversion>
@@ -639,7 +639,7 @@
                 <absorptionParameters>
                     <parameterSetAnalyteGroup>
                         <analyteGroupId>group0</analyteGroupId>
-                        <absorptionModelId>extra</absorptionModelId>
+                        <absorptionModel>extra</absorptionModel>
                         <parameterSet>
                             <parameters>
                                 <parameter>
@@ -732,7 +732,7 @@
                         </parameterSetAnalyteGroup>
                         <parameterSetAnalyteGroup>
                             <analyteGroupId>group1</analyteGroupId>
-                            <absorptionModelId>extra</absorptionModelId>
+                            <absorptionModel>extra</absorptionModel>
                             <parameterSet>
                                 <parameters>
                                     <parameter>

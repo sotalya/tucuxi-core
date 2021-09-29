@@ -467,7 +467,7 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
 
         // std::cout << "Aposteriori Percentile result is saved" << std::endl;
 
-        fructose_assert(res == Tucuxi::Core::ComputingStatus::AposterioriPercentilesNoSamplesError);
+        fructose_assert_eq(res, Tucuxi::Core::ComputingStatus::AposterioriPercentilesOutOfScopeSamplesError);
         }
         {
 
@@ -507,7 +507,7 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
 
             // std::cout << "Aposteriori Percentile result is saved" << std::endl;
 
-            fructose_assert(res == Tucuxi::Core::ComputingStatus::AposterioriPercentilesNoSamplesError);
+            fructose_assert_eq(res, Tucuxi::Core::ComputingStatus::AposterioriPercentilesOutOfScopeSamplesError);
 
         }
     }

@@ -372,7 +372,7 @@
                         <formulation>parenteral solution</formulation>
                         <administrationName>Name</administrationName>
                         <administrationRoute>oral</administrationRoute>
-                        <absorptionModelId>extra</absorptionModelId>
+                        <absorptionModel>extra</absorptionModel>
                         <dosages>
                             <analyteConversions>
                                 <analyteConversion>
