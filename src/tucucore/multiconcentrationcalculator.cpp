@@ -105,7 +105,7 @@ ComputingStatus MultiConcentrationCalculator::computeConcentrations(
             //no estoy seguro de esto que acabo de poner
 
             if (!(_residualErrorModels.size() == 0) && !(_epsilons.size() == 0)) {
-                for(int i = 0; i < _residualErrorModels.size(); ++i) _residualErrorModels[i]->applyEpsToArray(concentrations[0], _epsilons[0]);
+                for(int i = 0; i < _residualErrorModels.size(); ++i) _residualErrorModels[i]->applyEpsToArray(concentrations[i], _epsilons[i]);
             }
 
             // Append computed values to our prediction
@@ -248,7 +248,7 @@ ComputingStatus MultiConcentrationCalculator::computeConcentrationsAtSteadyState
 
                 // Apply the intra-individual error
                 if (!(_residualErrorModels.size() == 0) && !(_epsilons.size() == 0)) {
-                    for(int i = 0; i < _residualErrorModels.size(); ++i) _residualErrorModels[i]->applyEpsToArray(concentrations[0], _epsilons[0]);
+                    for(int i = 0; i < _residualErrorModels.size(); ++i) _residualErrorModels[i]->applyEpsToArray(concentrations[i], _epsilons[i]);
                 }
 
                 // Append computed values to our prediction
@@ -433,7 +433,13 @@ ComputingStatus MultiConcentrationCalculator::computeConcentrationsAtTimes(
                     return result;
                 }
 
-                _concentrations.push_back(concentrations[0]);
+                Concentrations concentrationsAtMeasure(concentrations.size());
+
+                for(size_t i = 0; i < concentrations.size(); i++) {
+                    concentrationsAtMeasure[i] = concentrations[i][0];
+                }
+
+                _concentrations.push_back(concentrationsAtMeasure);
 
                 // We processed a sample so increment samples and output concentrations iterators.
                 sit++;
