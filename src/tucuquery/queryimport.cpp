@@ -595,8 +595,16 @@ unique_ptr<Core::DosageBounded> QueryImport::createDosageBoundedFromIterator(Com
         static const string ITERATIONS_NODE_NAME = "iterations";
 
         int iterations = getChildInt(_dosageBoundedIterator, ITERATIONS_NODE_NAME);
-        unique_ptr<Core::DosageBounded> pDosageBounded = createDosageBounded(_dosageBoundedIterator);
-        pDosageBounded = make_unique<Core::DosageRepeat>(*pDosageBounded, iterations);
+        auto childrenNode = _dosageBoundedIterator->getChildren();
+        childrenNode ++;
+        if (childrenNode == Common::XmlNodeIterator::none()) {
+            setNodeError(_dosageBoundedIterator);
+            pDosageBounded = nullptr;
+        }
+        else {
+            unique_ptr<Core::DosageBounded> pDosageBoundedIn = createDosageBoundedFromIterator(childrenNode);
+            pDosageBounded = make_unique<Core::DosageRepeat>(*pDosageBoundedIn, iterations);
+        }
     } else if (_dosageBoundedIterator->getName() == DOSAGE_SEQUENCE_NODE_NAME) {
         Core::DosageBoundedList dosageBoundedList;
         Common::XmlNodeIterator dosageSequenceIterator = _dosageBoundedIterator->getChildren();
