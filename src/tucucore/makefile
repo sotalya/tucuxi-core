@@ -55,10 +55,11 @@ SOURCES := \
            intaketocalculatorassociator.cpp \
            likelihood.cpp \
            montecarlopercentilecalculator.cpp \
-		   multicomputingadjustments.cpp \
-		   multiconcentrationcalculator.cpp \
-		   multilikelihood.cpp \
-		   multimontecarlopercentilecalculator.cpp \
+           multicomputingadjustments.cpp \
+           multicomputingcomponent.cpp \
+           multiconcentrationcalculator.cpp \
+           multilikelihood.cpp \
+           multimontecarlopercentilecalculator.cpp \
            operablegraphmanager.cpp \
            operation.cpp \
            overloadevaluator.cpp \
