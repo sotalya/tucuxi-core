@@ -38,8 +38,8 @@ struct TestTargetExtractor : public fructose::test_base<TestTargetExtractor>
         CovariateSeries covariates;
         TargetDefinitions targetDefinitions;
         Targets targets;
-        DateTime start;
-        DateTime end;
+        DateTime start = DateTime::now();
+        DateTime end = DateTime::now();
         TargetExtractionOption extractionOption;
         TargetSeries series;
 
@@ -64,8 +64,8 @@ struct TestTargetExtractor : public fructose::test_base<TestTargetExtractor>
         CovariateSeries covariates;
         TargetDefinitions targetDefinitions;
         Targets targets;
-        DateTime start;
-        DateTime end;
+        DateTime start = DateTime::now();
+        DateTime end = DateTime::now();
         TargetExtractionOption extractionOption;
         TargetSeries series;
 
@@ -128,8 +128,8 @@ struct TestTargetExtractor : public fructose::test_base<TestTargetExtractor>
         CovariateSeries covariates;
         TargetDefinitions targetDefinitions;
         Targets targets;
-        DateTime start;
-        DateTime end;
+        DateTime start = DateTime::now();
+        DateTime end = DateTime::now();
         TargetExtractionOption extractionOption;
         TargetSeries series;
 
@@ -196,8 +196,8 @@ struct TestTargetExtractor : public fructose::test_base<TestTargetExtractor>
         CovariateSeries covariates;
         TargetDefinitions targetDefinitions;
         Targets targets;
-        DateTime start;
-        DateTime end;
+        DateTime start = DateTime::now();
+        DateTime end = DateTime::now();
         TargetExtractionOption extractionOption;
         TargetSeries series;
 

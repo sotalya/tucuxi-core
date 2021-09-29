@@ -58,7 +58,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
             Tucuxi::Core::ComputingStatus res;
             std::shared_ptr<IntakeIntervalCalculator> calculator = std::make_shared<CalculatorClass>();
 
-            DateTime now;
+            DateTime now = DateTime::now();
             Tucuxi::Common::Duration offsetTime = 0s;
             Tucuxi::Common::Duration interval = _interval;
             Tucuxi::Common::Duration infusionTime = _infusionTime;
@@ -140,7 +140,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
             Tucuxi::Core::ComputingStatus res;
             CalculatorClass calculator;
 
-            DateTime now;
+            DateTime now = DateTime::now();
             Tucuxi::Common::Duration offsetTime = 0s;
             Tucuxi::Common::Duration interval = _interval;
             Tucuxi::Common::Duration infusionTime = _infusionTime;
@@ -242,7 +242,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
             CycleSize nbPoints = 201;
             bool isAll = false;
 
-            DateTime now;
+            DateTime now = DateTime::now();
             Tucuxi::Common::Duration offsetTime = 0s;
             Tucuxi::Common::Duration interval = _interval;
             Tucuxi::Common::Duration infusionTime = _infusionTime;
@@ -330,7 +330,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestR", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestS", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestM", 1.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
+        Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
         Tucuxi::Core::ParameterSetSeries parametersSeries;
         parametersSeries.addParameterSetEvent(parameters);
 
@@ -349,7 +349,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
         Tucuxi::Core::ParameterDefinitions parameterDefs;
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterVariabilityType::None)));
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ke", 22.97, Tucuxi::Core::ParameterVariabilityType::None)));
-        Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
+        Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
         Tucuxi::Core::ParameterSetSeries parametersSeries;
         parametersSeries.addParameterSetEvent(parameters);
 
@@ -370,7 +370,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ke", 0.0435331, Tucuxi::Core::ParameterVariabilityType::None)));
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
-        Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
+        Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
         Tucuxi::Core::ParameterSetSeries parametersSeries;
         parametersSeries.addParameterSetEvent(parameters);
 
@@ -389,7 +389,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
         Tucuxi::Core::ParameterDefinitions parameterDefs;
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterVariabilityType::None)));
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ke", 22.97, Tucuxi::Core::ParameterVariabilityType::None)));
-        Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
+        Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
         Tucuxi::Core::ParameterSetSeries parametersSeries;
         parametersSeries.addParameterSetEvent(parameters);
 
@@ -409,7 +409,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ke", 0.0444294, Tucuxi::Core::ParameterVariabilityType::None)));
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K12", 0.0588235, Tucuxi::Core::ParameterVariabilityType::None)));
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K21", 0.0584795, Tucuxi::Core::ParameterVariabilityType::None)));
-        Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
+        Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
         Tucuxi::Core::ParameterSetSeries parametersSeries;
         parametersSeries.addParameterSetEvent(parameters);
 
@@ -432,7 +432,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K21", 0.0584795, Tucuxi::Core::ParameterVariabilityType::None)));
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
-        Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
+        Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
         Tucuxi::Core::ParameterSetSeries parametersSeries;
         parametersSeries.addParameterSetEvent(parameters);
 
@@ -453,7 +453,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ke", 0.0444294, Tucuxi::Core::ParameterVariabilityType::None)));
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K12", 0.0588235, Tucuxi::Core::ParameterVariabilityType::None)));
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K21", 0.0584795, Tucuxi::Core::ParameterVariabilityType::None)));
-        Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
+        Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
         Tucuxi::Core::ParameterSetSeries parametersSeries;
         parametersSeries.addParameterSetEvent(parameters);
 
@@ -476,7 +476,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K21", 0.0584795, Tucuxi::Core::ParameterVariabilityType::None)));
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K13", 0.0882353, Tucuxi::Core::ParameterVariabilityType::None)));
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K31", 0.0877193, Tucuxi::Core::ParameterVariabilityType::None)));
-        Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
+        Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
         Tucuxi::Core::ParameterSetSeries parametersSeries;
         parametersSeries.addParameterSetEvent(parameters);
 
@@ -501,7 +501,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K21", 0.0584795, Tucuxi::Core::ParameterVariabilityType::None)));
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K13", 0.0882353, Tucuxi::Core::ParameterVariabilityType::None)));
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K31", 0.0877193, Tucuxi::Core::ParameterVariabilityType::None)));
-        Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
+        Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
         Tucuxi::Core::ParameterSetSeries parametersSeries;
         parametersSeries.addParameterSetEvent(parameters);
 
@@ -525,7 +525,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K21", 0.0584795, Tucuxi::Core::ParameterVariabilityType::None)));
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K13", 0.0882353, Tucuxi::Core::ParameterVariabilityType::None)));
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K31", 0.0877193, Tucuxi::Core::ParameterVariabilityType::None)));
-        Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
+        Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
         Tucuxi::Core::ParameterSetSeries parametersSeries;
         parametersSeries.addParameterSetEvent(parameters);
 

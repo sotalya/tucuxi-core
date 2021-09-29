@@ -105,7 +105,7 @@ License::License(const LicenseRequest& _request, const DateTime& _endDate) :
 {
     m_keyword = LICENSE_KEYWORD;
     m_validityDate = dateToInt(_endDate);
-    m_lastUsedDate = dateToInt(DateTime());
+    m_lastUsedDate = dateToInt(DateTime::now());
 }
 
 bool License::fromString(const std::string& _strLisence)
@@ -135,7 +135,7 @@ std::string License::toString() const
 
 void License::update()
 {
-    m_lastUsedDate = dateToInt(DateTime());
+    m_lastUsedDate = dateToInt(DateTime::now());
 }
 
 LicenseError LicenseManager::checkLicenseFile(const std::string &_filename)
@@ -203,7 +203,7 @@ LicenseError LicenseManager::checklicense(const std::string &_cryptedLicense)
     }
 
     // Check dates
-    int today = dateToInt(DateTime());
+    int today = dateToInt(DateTime::now());
     int endValidity = license.getValidityDate();  // >= today
     int lastUsed = license.getLastUsedDate();     // <= today
     if (endValidity < today || lastUsed > today) {
@@ -247,7 +247,7 @@ LicenseError LicenseManager::generateRequestString(std::string& _request, const 
     }
 
     // Create the request
-    LicenseRequest request(idType, hashedFingerprint, DateTime(), _version);
+    LicenseRequest request(idType, hashedFingerprint, DateTime::now(), _version);
 
     // Encrypt content of licence file
     std::string fuck = request.toString();
@@ -335,7 +335,7 @@ LicenseRequestError LicenseManager::generateLicense(const LicenseRequest &_reque
     Tucuxi::Common::LoggerHelper logger;
 
     // Build license end date
-    DateTime today;
+    DateTime today = DateTime::now();
     DateTime endDate = today + _duration;
 
     // Create the license

@@ -211,16 +211,14 @@ public:
 
     /// \brief Construct a dosage loop from a bounded dosage.
     /// \param _dosage Dosage to add to the loop.
-    DosageSteadyState(const DosageBounded &_dosage, DateTime _lastDoseTime) : DosageLoop (_dosage)
+    DosageSteadyState(const DosageBounded &_dosage, DateTime _lastDoseTime) : DosageLoop (_dosage), m_lastDoseTime(_lastDoseTime)
     {
-        m_lastDoseTime = _lastDoseTime;
     }
 
     /// \brief Copy-construct a dosage loop.
     /// \param _other Dosage loop to clone.
-    DosageSteadyState(const DosageSteadyState &_other) : DosageLoop (_other)
+    DosageSteadyState(const DosageSteadyState &_other) : DosageLoop (_other), m_lastDoseTime(_other.m_lastDoseTime)
     {
-        m_lastDoseTime = _other.m_lastDoseTime;
     }
 
     ~DosageSteadyState() override {}
@@ -813,7 +811,7 @@ public:
     /// \pre !_startDate.isUndefined()
     /// \post m_startDate == _startDate
     /// \post _endDate.isUndefined()
-    DosageTimeRange(const DateTime &_startDate, const Dosage &_dosage) : m_startDate(_startDate)
+    DosageTimeRange(const DateTime &_startDate, const Dosage &_dosage) : m_startDate(_startDate), m_endDate(DateTime::undefinedDateTime())
     {
         if (_startDate.isUndefined()) {
             throw std::invalid_argument("Undefined start date for a time range specified.");

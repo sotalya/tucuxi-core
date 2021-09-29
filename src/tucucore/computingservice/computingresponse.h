@@ -41,7 +41,7 @@ typedef struct {
 class CycleData
 {
 public:
-    CycleData() {}
+    CycleData() : m_start(DateTime::undefinedDateTime()), m_end(DateTime::undefinedDateTime()){}
     CycleData(const Tucuxi::Common::DateTime &_start, const Tucuxi::Common::DateTime &_end, const TucuUnit &_unit)
         : m_start(_start), m_end(_end), m_unit(_unit)
     {

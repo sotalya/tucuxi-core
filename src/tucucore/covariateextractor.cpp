@@ -31,7 +31,7 @@ CovariateExtractor::CovariateExtractor(const CovariateDefinitions &_defaults,
                                        const DateTime &_start,
                                        const DateTime &_end)
     : ICovariateExtractor(_defaults, _patientCovariates, _start, _end),
-      m_hasBirthDate{false}, m_initAgeInDays{-1.0}, m_initAgeInWeeks{-1.0}, m_initAgeInMonths{-1.0}, m_initAgeInYears{-1.0}
+      m_hasBirthDate{false}, m_birthDate(DateTime::undefinedDateTime()), m_initAgeInDays{-1.0}, m_initAgeInWeeks{-1.0}, m_initAgeInMonths{-1.0}, m_initAgeInYears{-1.0}
 {
     // *** Verify preconditions ***
     // Invalid ptrs in covariate definitions.
