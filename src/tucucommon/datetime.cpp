@@ -19,14 +19,40 @@
 #define timegm _mkgmtime
 #endif
 
-#ifdef EASY_DEBUG
-#define UPDATESTRING updateString()
-#else
-#define UPDATESTRING
-#endif // EASY_DEBUG
-
 namespace Tucuxi {
 namespace Common {
+
+#ifdef EASY_DEBUG
+
+static bool sm_enableChecks = true;
+
+void DateTime::enableChecks()
+{
+    sm_enableChecks = true;
+}
+
+void DateTime::disableChecks()
+{
+    sm_enableChecks = false;
+}
+
+void errorUndefinedDateTime(const DateTime &_date)
+{
+    int i = 0;
+}
+
+#define UPDATESTRING updateString()
+#define CHECKDEFINED {if (sm_enableChecks && this->isUndefined()){errorUndefinedDateTime(*this);throw std::runtime_error("Date Time used but undefined");}}
+#define CHECKOTHERDEFINED {if (sm_enableChecks && _other.isUndefined()) {errorUndefinedDateTime(_other);throw std::runtime_error("Date Time used but undefined");}}
+#else
+#define UPDATESTRING
+#define CHECKDEFINED
+#define CHECKOTHERDEFINED
+void DateTime::enableChecks() {}
+void DateTime::disableChecks() {}
+#endif // EASY_DEBUG
+
+
 
 #ifdef EASY_DEBUG
 void DateTime::updateString()
@@ -46,13 +72,19 @@ void DateTime::updateString()
 DateTime::DateTime()
     : m_date(std::chrono::time_point<std::chrono::system_clock>())
 {
-    UPDATESTRING;
+    //UPDATESTRING;
 }
 
 
 DateTime::DateTime(std::chrono::time_point<std::chrono::system_clock> _clockTime) : m_date(_clockTime)
 {
+#ifdef EASY_DEBUG
+    if (!this->isUndefined()) {
+        UPDATESTRING;
+    }
+#else // EASY_DEBUG
     UPDATESTRING;
+#endif // EASY_DEBUG
 }
 
 DateTime DateTime::undefinedDateTime()
@@ -114,7 +146,13 @@ DateTime::DateTime(const Duration &_durationSinceEpoch)
     int64 ms = _durationSinceEpoch.toMilliseconds();
     const std::chrono::system_clock::duration d = std::chrono::milliseconds(ms);
     m_date = std::chrono::time_point<std::chrono::system_clock>(d);
-    UPDATESTRING;
+#ifdef EASY_DEBUG
+    if (!isUndefined()) {
+        UPDATESTRING;
+    }
+#else // EASY_DEBUG
+    UPDATESTRING
+#endif // EASY_DEBUG
 }
 
 DateTime DateTime::getUndefined()
@@ -125,12 +163,14 @@ DateTime DateTime::getUndefined()
 
 date::year_month_day DateTime::getDate() const
 {
+    CHECKDEFINED;
     return date::year_month_day(date::floor<date::days>(m_date));
 }
 
 
 TimeOfDay DateTime::getTimeOfDay() const
 {
+//    CHECKDEFINED;
     date::sys_days today = date::floor<date::days>(m_date);
     return TimeOfDay(Duration(std::chrono::duration_cast<std::chrono::milliseconds>(m_date - today)));
 }
@@ -138,7 +178,8 @@ TimeOfDay DateTime::getTimeOfDay() const
 
 void DateTime::setDate(const date::year_month_day& _newDate)
 {
-    TimeOfDay tod = DateTime::getTimeOfDay();
+    // CHECKDEFINED;
+    TimeOfDay tod = getTimeOfDay();
     m_date = date::sys_days(_newDate);
     m_date += std::chrono::milliseconds(tod.getDuration());
     UPDATESTRING;
@@ -147,6 +188,7 @@ void DateTime::setDate(const date::year_month_day& _newDate)
 
 void DateTime::setTimeOfDay(const TimeOfDay& _newTime)
 {
+    // CHECKDEFINED;
     m_date = date::floor<date::days>(m_date);
     m_date += std::chrono::milliseconds(_newTime.getDuration());
     UPDATESTRING;
@@ -155,6 +197,7 @@ void DateTime::setTimeOfDay(const TimeOfDay& _newTime)
 
 void DateTime::addYears(int _nYears)
 {    
+    CHECKDEFINED;
     date::year_month_day curDate = DateTime::getDate();
     TimeOfDay t = getTimeOfDay();
     int years = year() + _nYears;
@@ -166,6 +209,7 @@ void DateTime::addYears(int _nYears)
 
 void DateTime::addMonths(int _nMonths)
 {
+    CHECKDEFINED;
     date::year_month_day curDate = DateTime::getDate();
     TimeOfDay t = getTimeOfDay();
     int nMonths = year() *12 + month() + _nMonths;
@@ -181,6 +225,7 @@ void DateTime::addMonths(int _nMonths)
 
 void DateTime::addDays(int _nDays)
 {
+    CHECKDEFINED;
     m_date += std::chrono::hours(_nDays*24);
     UPDATESTRING;
 }
@@ -188,6 +233,7 @@ void DateTime::addDays(int _nDays)
 
 DateTime DateTime::operator+(const Duration& _duration) const
 {
+    CHECKDEFINED;
     DateTime tmp(*this);
     tmp += _duration;
     return tmp;
@@ -196,6 +242,7 @@ DateTime DateTime::operator+(const Duration& _duration) const
 
 DateTime DateTime::operator+(const DateTime& _dateTime) const
 {
+    CHECKDEFINED;
     DateTime tmp(*this);
     tmp += _dateTime.get<std::chrono::milliseconds>();
     return DateTime(*this);
@@ -204,6 +251,7 @@ DateTime DateTime::operator+(const DateTime& _dateTime) const
 
 DateTime& DateTime::operator+=(const Duration& _duration)
 {
+    CHECKDEFINED;
     m_date += std::chrono::milliseconds(_duration.toMilliseconds());
     UPDATESTRING;
     return *this;
@@ -212,6 +260,7 @@ DateTime& DateTime::operator+=(const Duration& _duration)
 
 DateTime& DateTime::operator+=(const DateTime& _dateTime)
 {
+    CHECKDEFINED;
     m_date += _dateTime.get<std::chrono::milliseconds>();
     UPDATESTRING;
     return *this;
@@ -220,6 +269,7 @@ DateTime& DateTime::operator+=(const DateTime& _dateTime)
 
 DateTime DateTime::operator-(const Duration& _duration) const
 {
+    CHECKDEFINED;
     DateTime tmp(*this);
     tmp -= _duration;
     return tmp;
@@ -228,6 +278,7 @@ DateTime DateTime::operator-(const Duration& _duration) const
 
 DateTime& DateTime::operator-=(const Duration& _duration)
 {
+    CHECKDEFINED;
     m_date -= std::chrono::milliseconds(_duration.toMilliseconds());
     UPDATESTRING;
     return *this;
@@ -236,48 +287,62 @@ DateTime& DateTime::operator-=(const Duration& _duration)
 
 Duration DateTime::operator-(const DateTime& _date) const
 {
+    CHECKDEFINED;
     return Duration(std::chrono::duration_cast<std::chrono::milliseconds>(m_date - _date.m_date));
 }
 
 
 bool DateTime::operator<(const DateTime& _other) const
 {
+    CHECKDEFINED;
+    CHECKOTHERDEFINED;
     return m_date < _other.m_date;
 }
 
 
 bool DateTime::operator>(const DateTime& _other) const
 {
+    CHECKDEFINED;
+    CHECKOTHERDEFINED;
     return m_date > _other.m_date;
 }
 
 
 bool DateTime::operator>=(const DateTime& _other) const
 {
+    CHECKDEFINED;
+    CHECKOTHERDEFINED;
     return m_date >= _other.m_date;
 }
 
 
 bool DateTime::operator<=(const DateTime& _other) const
 {
+    CHECKDEFINED;
+    CHECKOTHERDEFINED;
     return m_date <= _other.m_date;
 }
 
 
 bool DateTime::operator==(const DateTime& _other) const
 {
+    CHECKDEFINED;
+    CHECKOTHERDEFINED;
     return m_date == _other.m_date;
 }
 
 
 bool DateTime::operator!=(const DateTime& _other) const
 {
+    CHECKDEFINED;
+    CHECKOTHERDEFINED;
     return m_date != _other.m_date;
 }
 
 
 int DateTime::year() const
 {
+    CHECKDEFINED;
     date::sys_days days = date::floor<date::days>(m_date);
     return static_cast<int>(date::year_month_day(days).year());
 }
@@ -285,6 +350,7 @@ int DateTime::year() const
 
 int DateTime::month() const
 {
+    CHECKDEFINED;
     date::sys_days days = date::floor<date::days>(m_date);
     return static_cast<int>(static_cast<unsigned>(date::year_month_day(days).month()));
 }
@@ -292,6 +358,7 @@ int DateTime::month() const
 
 int DateTime::day() const
 {
+    CHECKDEFINED;
     date::sys_days days = date::floor<date::days>(m_date);
     return static_cast<int>(static_cast<unsigned>(date::year_month_day(days).day()));
 }
@@ -299,6 +366,7 @@ int DateTime::day() const
 
 int DateTime::hour() const
 {
+    CHECKDEFINED;
     date::sys_days days = date::floor<date::days>(m_date);
     return static_cast<int>(std::chrono::duration_cast<std::chrono::hours>(m_date - days).count());
 }
@@ -306,6 +374,7 @@ int DateTime::hour() const
 
 int DateTime::minute() const
 {
+    CHECKDEFINED;
     date::sys_days days = date::floor<date::days>(m_date);
     return static_cast<int>(std::chrono::duration_cast<std::chrono::minutes>(m_date - days).count() % 60);
 }
@@ -313,6 +382,7 @@ int DateTime::minute() const
 
 int DateTime::second() const
 {
+    CHECKDEFINED;
     date::sys_days days = date::floor<date::days>(m_date);
     return static_cast<int>(std::chrono::duration_cast<std::chrono::seconds>(m_date - days).count() % 60);
 }
@@ -320,6 +390,7 @@ int DateTime::second() const
 
 int DateTime::millisecond() const
 {
+    CHECKDEFINED;
     date::sys_days days = date::floor<date::days>(m_date);
     return static_cast<int>(std::chrono::duration_cast<std::chrono::milliseconds>(m_date - days).count() % 1000);
 }
@@ -339,11 +410,13 @@ bool DateTime::isUndefined() const
 
 double DateTime::toSeconds() const
 {
+    CHECKDEFINED;
     return static_cast<double>(get<std::chrono::seconds>().count());
 }
 
 double DateTime::toDays() const
 {
+    CHECKDEFINED;
     return std::floor(static_cast<double>(get<std::chrono::hours>().count()) / 24);
 }
 
