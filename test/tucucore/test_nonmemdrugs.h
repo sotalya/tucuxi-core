@@ -47,7 +47,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
             Tucuxi::Core::ComputingStatus res;
             CalculatorClass calculator;
 
-            DateTime now;
+            DateTime now = DateTime::now();
             Tucuxi::Common::Duration offsetTime = 0s;
             Tucuxi::Common::Duration interval = _interval;
             Tucuxi::Common::Duration infusionTime = _infusionTime;
@@ -93,8 +93,8 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
                 auto status = concentrationCalculator->computeConcentrations(
                     predictionPtr,
                     isAll,
-                    DateTime(), // YJ: Fix this with a meaningfull date
-                    DateTime(), // YJ: Fix this with a meaningfull date
+                    DateTime::now(), // YJ: Fix this with a meaningfull date
+                    DateTime::now(), // YJ: Fix this with a meaningfull date
                     intakeSeries,
                     _parameters);
                 fructose_assert_eq(status, Tucuxi::Core::ComputingStatus::Ok);
@@ -399,7 +399,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("CL", 15.106, Tucuxi::Core::ParameterVariabilityType::None)));
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
-        Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
+        Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
         Tucuxi::Core::ParameterSetSeries parametersSeries;
         parametersSeries.addParameterSetEvent(parameters);
 
@@ -407,8 +407,8 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
         auto status = concentrationCalculator->computeConcentrations(
             predictionPtr,
             isAll,
-            DateTime(), // YJ: Fix this with a meaningfull date
-            DateTime(), // YJ: Fix this with a meaningfull date
+            DateTime::now(), // YJ: Fix this with a meaningfull date
+            DateTime::now(), // YJ: Fix this with a meaningfull date
             intakeSeries,
             parametersSeries);
         delete concentrationCalculator;

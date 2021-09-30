@@ -160,7 +160,7 @@ int IntakeExtractor::extract(const DosageLoop &_dosageLoop, const DateTime &_sta
 
     DateTime currentTime = _dosageLoop.m_dosage->getFirstIntakeInterval(_start);
     // If the end time is undefined, then take the current instant, otherwise take the specified end time.
-    DateTime iEnd = _end.isUndefined() ? DateTime() : _end;
+    DateTime iEnd = _end.isUndefined() ? DateTime::now() : _end;
 
     while (currentTime < iEnd) {
         nbIntakes += extract(*(_dosageLoop.m_dosage), currentTime, iEnd, _nbPointsPerHour, _toUnit, _series, _option);

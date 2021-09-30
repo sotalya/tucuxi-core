@@ -289,7 +289,7 @@
                 <formulation>parenteral solution</formulation>
                 <administrationName>admname</administrationName>
                 <administrationRoute>intravenousBolus</administrationRoute>
-                <absorptionModelId>bolus</absorptionModelId>
+                <absorptionModel>bolus</absorptionModel>
                 <dosages>
                     <analyteConversions>
                         <analyteConversion>
@@ -341,7 +341,7 @@
                                            <formulation>parenteral solution</formulation>
                                            <administrationName>admname2</administrationName>
                                            <administrationRoute>intravenousDrip</administrationRoute>
-                                           <absorptionModelId>infusion</absorptionModelId>
+                                           <absorptionModel>infusion</absorptionModel>
                                            <dosages>
                                                <analyteConversions>
                                                    <analyteConversion>
@@ -403,7 +403,7 @@
                                            <formulation>parenteral solution</formulation>
                                            <administrationName>admname2</administrationName>
                                            <administrationRoute>intramuscular</administrationRoute>
-                                           <absorptionModelId>extra</absorptionModelId>
+                                           <absorptionModel>extra</absorptionModel>
                                            <dosages>
                                                <analyteConversions>
                                                    <analyteConversion>
@@ -449,7 +449,7 @@
                                            <absorptionParameters>
                                                <parameterSetAnalyteGroup>
                                                <analyteGroupId>group</analyteGroupId>
-                                               <absorptionModelId>extra</absorptionModelId>
+                                               <absorptionModel>extra</absorptionModel>
                                                    <parameterSet>
                                                        <parameters>
                                        <parameter>
@@ -528,7 +528,7 @@
                                            <formulation>parenteral solution</formulation>
                                            <administrationName>admname2</administrationName>
                                            <administrationRoute>oral</administrationRoute>
-                                           <absorptionModelId>extra.lag</absorptionModelId>
+                                           <absorptionModel>extra.lag</absorptionModel>
                                            <dosages>
                                                <analyteConversions>
                                                    <analyteConversion>
@@ -574,7 +574,7 @@
                                            <absorptionParameters>
                                                <parameterSetAnalyteGroup>
                                                <analyteGroupId>group</analyteGroupId>
-                                               <absorptionModelId>extra.lag</absorptionModelId>
+                                               <absorptionModel>extra.lag</absorptionModel>
                                                    <parameterSet>
                                                        <parameters>
                                        <parameter>

@@ -24,11 +24,11 @@ ComputingStatus ConcentrationCalculator::computeConcentrations(const Concentrati
     bool _onlyAnalytes,
     bool _isFixedDensity)
 {
-    if (_recordFrom == DateTime()) {
+    if (_recordFrom.isUndefined()) {
         Tucuxi::Common::LoggerHelper logHelper;
         logHelper.error("Invalid record from");
     }
-    if (_recordTo == DateTime()) {
+    if (_recordTo.isUndefined()) {
         Tucuxi::Common::LoggerHelper logHelper;
         logHelper.error("Invalid record to");
     }
@@ -163,11 +163,11 @@ ComputingStatus ConcentrationCalculator::computeConcentrationsAtSteadyState(
         bool _onlyAnalytes,
         bool _isFixedDensity)
 {
-    if (_recordFrom == DateTime()) {
+    if (_recordFrom.isUndefined()) {
         Tucuxi::Common::LoggerHelper logHelper;
         logHelper.error("Invalid record from");
     }
-    if (_recordTo == DateTime()) {
+    if (_recordTo.isUndefined()) {
         Tucuxi::Common::LoggerHelper logHelper;
         logHelper.error("Invalid record to");
     }

@@ -46,10 +46,10 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V", 347, std::make_unique<Tucuxi::Core::ParameterVariability>(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.629))));
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
-        Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
+        Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
         parametersSeries.addParameterSetEvent(parameters);
 
-        DateTime now;
+        DateTime now = DateTime::now();
         Tucuxi::Common::Duration offsetTime = 0s;
         Tucuxi::Common::Duration interval = 24h;
         Tucuxi::Common::Duration infusionTime = 0h;
@@ -169,10 +169,10 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V", 347, std::make_unique<Tucuxi::Core::ParameterVariability>(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.629))));
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
-        Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
+        Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
         parametersSeries.addParameterSetEvent(parameters);
 
-        DateTime now;
+        DateTime now = DateTime::now();
         Tucuxi::Common::Duration offsetTime = 0s;
         Tucuxi::Common::Duration interval = 24h;
         Tucuxi::Common::Duration infusionTime = 0h;
@@ -274,10 +274,10 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V", 347, std::make_unique<Tucuxi::Core::ParameterVariability>(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.629))));
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
-        Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
+        Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
         parametersSeries.addParameterSetEvent(parameters);
 
-        DateTime now;
+        DateTime now = DateTime::now();
         Tucuxi::Common::Duration offsetTime = 0s;
         Tucuxi::Common::Duration interval = 24h;
         Tucuxi::Common::Duration infusionTime = 0h;
@@ -380,10 +380,10 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V", 347, std::make_unique<Tucuxi::Core::ParameterVariability>(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.629))));
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
-        Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
+        Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
         parametersSeries.addParameterSetEvent(parameters);
 
-        DateTime now;
+        DateTime now = DateTime::now();
         Tucuxi::Common::Duration offsetTime = 0s;
         Tucuxi::Common::Duration interval = 24h;
         Tucuxi::Common::Duration infusionTime = 0h;
@@ -467,12 +467,12 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
 
         // std::cout << "Aposteriori Percentile result is saved" << std::endl;
 
-        fructose_assert(res == Tucuxi::Core::ComputingStatus::AposterioriPercentilesNoSamplesError);
+        fructose_assert_eq(res, Tucuxi::Core::ComputingStatus::AposterioriPercentilesOutOfScopeSamplesError);
         }
         {
 
             Tucuxi::Core::ParameterSetSeries parametersSeries;
-            Tucuxi::Core::ParameterSetEvent parameters(DateTime(), parameterDefs);
+            Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
             parametersSeries.addParameterSetEvent(parameters);
 
 
@@ -507,7 +507,7 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
 
             // std::cout << "Aposteriori Percentile result is saved" << std::endl;
 
-            fructose_assert(res == Tucuxi::Core::ComputingStatus::AposterioriPercentilesNoSamplesError);
+            fructose_assert_eq(res, Tucuxi::Core::ComputingStatus::AposterioriPercentilesOutOfScopeSamplesError);
 
         }
     }

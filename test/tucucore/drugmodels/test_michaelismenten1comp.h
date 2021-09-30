@@ -254,7 +254,7 @@ static std::string test_mm_1comp_bolus_tdd = R"(<?xml version="1.0" encoding="UT
                 <formulation>parenteral solution</formulation>
                 <administrationName>admname</administrationName>
                 <administrationRoute>intravenousBolus</administrationRoute>
-                <absorptionModelId>bolus</absorptionModelId>
+                <absorptionModel>bolus</absorptionModel>
                 <dosages>
                     <analyteConversions>
                         <analyteConversion>
@@ -300,7 +300,7 @@ static std::string test_mm_1comp_bolus_tdd = R"(<?xml version="1.0" encoding="UT
                 <absorptionParameters>
                     <parameterSetAnalyteGroup>
                     <analyteGroupId>group</analyteGroupId>
-                    <absorptionModelId>bolus</absorptionModelId>
+                    <absorptionModel>bolus</absorptionModel>
                         <parameterSet>
                             <parameters>
                                 <parameter>

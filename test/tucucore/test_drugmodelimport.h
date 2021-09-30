@@ -406,7 +406,7 @@ static std::string busulfan1 = R"(<?xml version="1.0" encoding="UTF-8" standalon
                                                <formulation>parenteral solution</formulation><!-- dictionnaire -->
                                                <administrationName>champ libre</administrationName>
                                                <administrationRoute>intravenousDrip</administrationRoute> <!-- dictionnaire -->
-                                               <absorptionModelId>infusion</absorptionModelId>
+                                               <absorptionModel>infusion</absorptionModel>
 
 
                                                <!-- Drug dosages -->
@@ -964,7 +964,7 @@ static std::string drug1 = R"(<?xml version="1.0" encoding="UTF-8" standalone="n
                                            <formulation>parenteral solution</formulation><!-- dictionnaire -->
                                            <administrationName>champ libre</administrationName>
                                            <administrationRoute>intravenousDrip</administrationRoute> <!-- dictionnaire -->
-                                           <absorptionModelId>infusion</absorptionModelId>
+                                           <absorptionModel>infusion</absorptionModel>
 
 
                                            <!-- Drug dosages -->

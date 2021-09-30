@@ -44,9 +44,26 @@ void DateTime::updateString()
 #endif
 
 DateTime::DateTime()
-    : m_date(std::chrono::system_clock::now())
+    : m_date(std::chrono::time_point<std::chrono::system_clock>())
 {
     UPDATESTRING;
+}
+
+
+DateTime::DateTime(std::chrono::time_point<std::chrono::system_clock> _clockTime) : m_date(_clockTime)
+{
+    UPDATESTRING;
+}
+
+DateTime DateTime::undefinedDateTime()
+{
+    return DateTime(std::chrono::time_point<std::chrono::system_clock>());
+}
+
+
+DateTime DateTime::now()
+{
+    return DateTime(std::chrono::system_clock::now());
 }
 
 

@@ -34,8 +34,16 @@ class TimeOfDay;
 class DateTime
 {
 public:
-    /// \brief Build a date with the current date and time.
+    /// \brief Build a date as an undefined date.
     DateTime();
+
+    /// \brief Return the exact current date
+    /// \return The current date
+    static DateTime now();
+
+    /// \brief Return an undefined date
+    /// \return An undefined date
+    static DateTime undefinedDateTime();
 
     /// \brief Build a date from the specified string
     /// This constructor uses std::get_time internally. See get_time documentation for information about the _format  parameter.
@@ -200,6 +208,11 @@ public:
     }
 
 private:
+
+    /// \brief Build a date from a system clock
+    /// \param _clockTime a system clock
+    DateTime(std::chrono::time_point<std::chrono::system_clock> _clockTime);
+
 
     /// \brief Returns the duration in one of the std::chrono duration class (years, months, days, ...)    
     /// \return The duration in the specified T unit.

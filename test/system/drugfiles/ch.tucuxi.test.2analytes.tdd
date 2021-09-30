@@ -724,7 +724,7 @@
                         <formulation>parenteral solution</formulation>
                         <administrationName>champ libre</administrationName>
                         <administrationRoute>oral</administrationRoute>
-                        <absorptionModelId>extra.lag</absorptionModelId>
+                        <absorptionModel>extra.lag</absorptionModel>
                         <dosages>
                             <analyteConversions>
                                 <analyteConversion>
@@ -772,7 +772,7 @@
                         <absorptionParameters>
                             <parameterSetAnalyteGroup>
                                 <analyteGroupId>group1</analyteGroupId>
-                                <absorptionModelId>extra.lag</absorptionModelId>
+                                <absorptionModel>extra.lag</absorptionModel>
                                 <parameterSet>
                                     <parameters>
                                         <parameter>
@@ -878,7 +878,7 @@
                             </parameterSetAnalyteGroup>
                             <parameterSetAnalyteGroup>
                                 <analyteGroupId>group2</analyteGroupId>
-                                <absorptionModelId>extra.lag</absorptionModelId>
+                                <absorptionModel>extra.lag</absorptionModel>
                                 <parameterSet>
                                     <parameters>
                                         <parameter>

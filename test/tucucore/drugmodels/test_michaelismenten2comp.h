@@ -321,7 +321,7 @@ static std::string test_mm_2comp_tdd = R"(
                 <formulation>parenteral solution</formulation>
                 <administrationName>admname</administrationName>
                 <administrationRoute>intravenousBolus</administrationRoute>
-                <absorptionModelId>bolus</absorptionModelId>
+                <absorptionModel>bolus</absorptionModel>
                 <dosages>
                     <analyteConversions>
                         <analyteConversion>
@@ -373,7 +373,7 @@ static std::string test_mm_2comp_tdd = R"(
                                            <formulation>parenteral solution</formulation>
                                            <administrationName>admname2</administrationName>
                                            <administrationRoute>intravenousDrip</administrationRoute>
-                                           <absorptionModelId>infusion</absorptionModelId>
+                                           <absorptionModel>infusion</absorptionModel>
                                            <dosages>
                                                <analyteConversions>
                                                    <analyteConversion>
@@ -435,7 +435,7 @@ static std::string test_mm_2comp_tdd = R"(
                                            <formulation>parenteral solution</formulation>
                                            <administrationName>admname2</administrationName>
                                            <administrationRoute>intramuscular</administrationRoute>
-                                           <absorptionModelId>extra</absorptionModelId>
+                                           <absorptionModel>extra</absorptionModel>
                                            <dosages>
                                                <analyteConversions>
                                                    <analyteConversion>
@@ -481,7 +481,7 @@ static std::string test_mm_2comp_tdd = R"(
                                            <absorptionParameters>
                                                <parameterSetAnalyteGroup>
                                                <analyteGroupId>group</analyteGroupId>
-                                               <absorptionModelId>extra</absorptionModelId>
+                                               <absorptionModel>extra</absorptionModel>
                                                    <parameterSet>
                                                        <parameters>
                                        <parameter>
@@ -560,7 +560,7 @@ static std::string test_mm_2comp_tdd = R"(
                                            <formulation>parenteral solution</formulation>
                                            <administrationName>admname2</administrationName>
                                            <administrationRoute>oral</administrationRoute>
-                                           <absorptionModelId>extra.lag</absorptionModelId>
+                                           <absorptionModel>extra.lag</absorptionModel>
                                            <dosages>
                                                <analyteConversions>
                                                    <analyteConversion>
@@ -606,7 +606,7 @@ static std::string test_mm_2comp_tdd = R"(
                                            <absorptionParameters>
                                                <parameterSetAnalyteGroup>
                                                <analyteGroupId>group</analyteGroupId>
-                                               <absorptionModelId>extra.lag</absorptionModelId>
+                                               <absorptionModel>extra.lag</absorptionModel>
                                                    <parameterSet>
                                                        <parameters>
                                        <parameter>

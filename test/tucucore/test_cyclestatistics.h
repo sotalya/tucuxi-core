@@ -29,7 +29,7 @@ struct TestCycleStatistics : public fructose::test_base<TestCycleStatistics>
     void test1CycleStatistics(const std::string& /* _testName */)
     {
         // set cycleData
-        DateTime now;
+        DateTime now = DateTime::now();
         size_t nbCompartments = 1;
         size_t nbPoints = 10;
         Tucuxi::Core::CycleData cycleData;
@@ -59,7 +59,7 @@ struct TestCycleStatistics : public fructose::test_base<TestCycleStatistics>
         }
 
         // calculate cycle statistics
-        DateTime dateTime;
+        DateTime dateTime = DateTime::now();
         Value value;
         std::vector<Value> cumulativeAuc(1, 0.0);
         Tucuxi::Core::CycleStatistics cycleStatistics(cycleData, cumulativeAuc);

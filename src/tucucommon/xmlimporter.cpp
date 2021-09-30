@@ -141,7 +141,7 @@ DateTime XMLImporter::extractDateTime(Common::XmlNodeIterator _rootIterator)
         return dateTime;
     }catch (std::runtime_error &e){
         setNodeError(_rootIterator);
-        return DateTime();
+        return DateTime::undefinedDateTime();
     }
 
 }
@@ -278,7 +278,7 @@ DateTime XMLImporter::getChildDateTime(Common::XmlNodeIterator _rootIterator, co
         if (_allowEmpty == EmptynessAllowed::DoNotAllowEmpty) {
             setNodeError(child);
         }
-        return DateTime();
+        return DateTime::undefinedDateTime();
     }
     else{
         return extractDateTime(child);

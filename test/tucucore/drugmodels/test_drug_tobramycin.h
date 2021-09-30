@@ -735,7 +735,7 @@ static std::string tobramycin_tdd = R"(<?xml version="1.0" encoding="UTF-8"?>
                                                     <formulation>parenteral solution</formulation>
                                                     <administrationName>To be defined</administrationName>
                                                     <administrationRoute>intravenousDrip</administrationRoute>
-                                                    <absorptionModelId>infusion</absorptionModelId>
+                                                    <absorptionModel>infusion</absorptionModel>
                                                     <dosages>
                                                         <analyteConversions>
                                                             <analyteConversion>
