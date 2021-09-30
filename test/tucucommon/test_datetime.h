@@ -9,6 +9,7 @@
 #include "tucucommon/datetime.h"
 #include "tucucommon/timeofday.h"
 #include "tucucommon/duration.h"
+#include "tucucommon/utils.h"
 
 using namespace std::chrono_literals;
 using namespace date;
@@ -111,6 +112,21 @@ struct TestDateTime : public fructose::test_base<TestDateTime>
         checkDateTime(d33, 2020, 12, 17, 17, 34, 20);
         d33.addYears(-5);
         checkDateTime(d33, 2015, 12, 17, 17, 34, 20);
+
+        {
+
+            // dateDiffInDays and related functions are in utils.cpp, but it seems
+            // reasonable to test them here
+            Tucuxi::Common::DateTime d100(2016_y / jun / 26, 23min + 24s);
+            Tucuxi::Common::DateTime d101(2017_y / jun / 26, 23min + 24s);
+
+            fructose_assert_eq(Tucuxi::Common::Utils::dateDiffInYears(d100, d101), 1);
+            fructose_assert_eq(Tucuxi::Common::Utils::dateDiffInYears(d101, d100), 1);
+            fructose_assert_eq(Tucuxi::Common::Utils::dateDiffInDays(d100, d101), 365);
+            fructose_assert_eq(Tucuxi::Common::Utils::dateDiffInDays(d101, d100), 365);
+            fructose_assert_eq(Tucuxi::Common::Utils::dateDiffInWeeks(d100, d101), 52);
+            fructose_assert_eq(Tucuxi::Common::Utils::dateDiffInWeeks(d101, d100), 52);
+        }
     }
 
     void timeofday(const std::string& _testName)
@@ -180,7 +196,7 @@ struct TestDateTime : public fructose::test_base<TestDateTime>
         d2.clear();
         checkDuration(d2, 0);
 
-        Tucuxi::Common::DateTime now;
+        Tucuxi::Common::DateTime now = Tucuxi::Common::DateTime::now();
         Tucuxi::Common::DateTime later = now + 2h;
         fructose_assert(later - now == 2h);
         fructose_assert(now - later == -2h);

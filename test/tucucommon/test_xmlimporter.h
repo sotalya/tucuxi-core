@@ -380,6 +380,7 @@ private:
             xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
 
             //BAD
+            Tucuxi::Common::DateTime::disableChecks();
             checkDateTime(xmlImporterTestClass.getChildDateTime(xmlIterator, DATE_TIME_2), currentDateTime);
             fructose_assert(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Error);
             xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
@@ -391,6 +392,7 @@ private:
             checkDateTime(xmlImporterTestClass.getChildDateTime(xmlIterator, DATE_TIME_4), currentDateTime);
             fructose_assert(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Error);
             xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
+            Tucuxi::Common::DateTime::enableChecks();
 
         }
         else{

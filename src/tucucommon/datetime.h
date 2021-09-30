@@ -45,6 +45,10 @@ public:
     /// \return An undefined date
     static DateTime undefinedDateTime();
 
+    static void enableChecks();
+
+    static void disableChecks();
+
     /// \brief Build a date from the specified string
     /// This constructor uses std::get_time internally. See get_time documentation for information about the _format  parameter.
     /// \param _date The string to be parsed
