@@ -384,14 +384,14 @@ int main(int argc, char** argv)
 #if defined(test_multiconcentrationcalculator) || !defined(DO_NOT_COMPILE_ALL_TESTS)
     // --- ConcentrationCalculator --- //
     TestMultiConcentrationCalculator multiConcentrationCalculatorTests;
-    multiConcentrationCalculatorTests.add_test("linear bolus test", &TestMultiConcentrationCalculator::testMultiConcentrationCalculator);
+    multiConcentrationCalculatorTests.add_test("constant elimination bolus test", &TestMultiConcentrationCalculator::testConstantEliminationBolus);
     multiConcentrationCalculatorTests.add_test("1 comp bolus test", &TestMultiConcentrationCalculator::test1compBolus);
     multiConcentrationCalculatorTests.add_test("1 comp extra test", &TestMultiConcentrationCalculator::test1compExtra);
     multiConcentrationCalculatorTests.add_test("1 comp infusion test", &TestMultiConcentrationCalculator::test1compInfusion);
     multiConcentrationCalculatorTests.add_test("2 comp bolus test", &TestMultiConcentrationCalculator::test2compBolus);
     multiConcentrationCalculatorTests.add_test("2 comp extra test", &TestMultiConcentrationCalculator::test2compExtra);
     multiConcentrationCalculatorTests.add_test("2 comp infusion test", &TestMultiConcentrationCalculator::test2compInfusion);
-    multiConcentrationCalculatorTests.add_test("multiconcentrationcalculator", &TestMultiConcentrationCalculator::testMultiConcentrationCalculator);
+    multiConcentrationCalculatorTests.add_test("multiconstant elimination bolus test", &TestMultiConcentrationCalculator::testMultiConstantEliminationBolus);
 
     res = multiConcentrationCalculatorTests.run(argc, argv);
     tot_res |= res;

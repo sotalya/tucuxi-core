@@ -15,7 +15,8 @@
 #include "tucucore/dosage.h"
 #include "tucucore/intakeextractor.h"
 #include "tucucore/intakeintervalcalculator.h"
-#include "tucucore/concentrationcalculator.h"
+#include "tucucore/multiconcentrationcalculator.h"
+#include "tucucore/multiconcentrationprediction.h"
 #include "tucucore/pkmodels/onecompartmentbolus.h"
 #include "tucucore/pkmodels/onecompartmentinfusion.h"
 #include "tucucore/pkmodels/onecompartmentextra.h"
@@ -344,7 +345,27 @@ struct TestMultiConcentrationCalculator : public fructose::test_base<TestMultiCo
     }
 
 
-    void testMultiConcentrationCalculator(const std::string& /* _testName */)
+    void testConstantEliminationBolus(const std::string& /* _testName */)
+    {
+        Tucuxi::Core::ParameterDefinitions parameterDefs;
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestA", 1.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestR", 2.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestS", 0.03, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestM", 4.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
+        Tucuxi::Core::ParameterSetSeries parametersSeries;
+        parametersSeries.addParameterSetEvent(parameters);
+
+        testCalculator<Tucuxi::Core::ConstantEliminationBolus>(
+            parametersSeries,
+            400.0,
+            Tucuxi::Core::AbsorptionModel::Extravascular,
+            12h,
+            0s,
+            CYCLE_SIZE);
+    }
+
+    void testMultiConstantEliminationBolus(const std::string& /* _testName */)
     {
         Tucuxi::Core::ParameterDefinitions parameterDefs;
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestA0", 1.0, Tucuxi::Core::ParameterVariabilityType::None)));
@@ -359,7 +380,7 @@ struct TestMultiConcentrationCalculator : public fructose::test_base<TestMultiCo
         Tucuxi::Core::ParameterSetSeries parametersSeries;
         parametersSeries.addParameterSetEvent(parameters);
 
-        testCalculator<Tucuxi::Core::ConstantEliminationBolus>(
+        testCalculator<Tucuxi::Core::MultiConstantEliminationBolus>(
             parametersSeries,
             400.0,
             Tucuxi::Core::AbsorptionModel::Extravascular,

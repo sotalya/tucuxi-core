@@ -99,13 +99,11 @@ ComputingStatus MultiConcentrationCalculator::computeConcentrations(
             }
 
 
-            // Apply the intra-individual error
-
-
-            //no estoy seguro de esto que acabo de poner
-
+            // Apply the intra-individual errors
             if (!(_residualErrorModels.size() == 0) && !(_epsilons.size() == 0)) {
-                for(int i = 0; i < _residualErrorModels.size(); ++i) _residualErrorModels[i]->applyEpsToArray(concentrations[i], _epsilons[i]);
+                for(size_t i = 0; i < _residualErrorModels.size(); ++i) {
+                    _residualErrorModels[i]->applyEpsToArray(concentrations[i], _epsilons[i]);
+                }
             }
 
             // Append computed values to our prediction
@@ -246,9 +244,11 @@ ComputingStatus MultiConcentrationCalculator::computeConcentrationsAtSteadyState
                 }
 
 
-                // Apply the intra-individual error
+                // Apply the intra-individual errors
                 if (!(_residualErrorModels.size() == 0) && !(_epsilons.size() == 0)) {
-                    for(int i = 0; i < _residualErrorModels.size(); ++i) _residualErrorModels[i]->applyEpsToArray(concentrations[i], _epsilons[i]);
+                    for(size_t i = 0; i < _residualErrorModels.size(); ++i) {
+                        _residualErrorModels[i]->applyEpsToArray(concentrations[i], _epsilons[i]);
+                    }
                 }
 
                 // Append computed values to our prediction
@@ -433,9 +433,10 @@ ComputingStatus MultiConcentrationCalculator::computeConcentrationsAtTimes(
                     return result;
                 }
 
-                Concentrations concentrationsAtMeasure(concentrations.size());
+                auto nbAnalytes = it->getCalculator()->getNbAnalytes();
+                Concentrations concentrationsAtMeasure(nbAnalytes);
 
-                for(size_t i = 0; i < concentrations.size(); i++) {
+                for(size_t i = 0; i < nbAnalytes; i++) {
                     concentrationsAtMeasure[i] = concentrations[i][0];
                 }
 
