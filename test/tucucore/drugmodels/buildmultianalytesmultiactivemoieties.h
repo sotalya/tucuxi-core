@@ -168,6 +168,66 @@ public:
             model->addAnalyteSet(std::move(analyteSet1));
         }
 
+
+        //Build AnalyteSet2
+
+        std::unique_ptr<AnalyteSet> analyteSet2(new AnalyteSet());
+
+        analyteSet2->setId("analyteSet2");
+        analyteSet2->setPkModelId("test.multiconstantelimination");
+
+        std::unique_ptr<Analyte> analyte2 = std::make_unique<Analyte>("analyte2", TucuUnit("ug/l"), MolarMass(10.0, TucuUnit("mol/l")));
+        std::unique_ptr<Analyte> analyte3 = std::make_unique<Analyte>("analyte3", TucuUnit("ug/l"), MolarMass(10.0, TucuUnit("mol/l")));
+
+
+        ErrorModel* errorModel = new ErrorModel();
+
+        errorModel->setErrorModel(_errorModelType);
+        for (size_t i = 0; i < _sigmas.size(); i++) {
+            std::string sigmaName = "sigma" + std::to_string(i);
+            errorModel->addOriginalSigma(std::make_unique<PopulationValue>(sigmaName, _sigmas[i]));
+        }
+
+        std::unique_ptr<ErrorModel> err(errorModel);
+
+        analyte2->setResidualErrorModel(std::move(err));
+        analyte3->setResidualErrorModel(std::move(err));
+        analyteSet2->addAnalyte(std::move(analyte2));
+        analyteSet2->addAnalyte(std::move(analyte3));
+
+        std::unique_ptr<ParameterSetDefinition> dispositionParameters(new ParameterSetDefinition());
+
+        Operation *opS = new JSOperation(" \
+                                         return covS;",
+        { OperationInput("covS", InputType::DOUBLE)});
+        std::unique_ptr<ParameterDefinition> PS(new Tucuxi::Core::ParameterDefinition("TestS", 0.0, opS, std::make_unique<ParameterVariability>(_variabilityTypeS, _variabilityValueS)));
+        dispositionParameters->addParameter(std::move(PS));
+        Operation *opA = new JSOperation(" \
+                                         return covA;",
+        { OperationInput("covA", InputType::DOUBLE)});
+        std::unique_ptr<ParameterDefinition> PA(new Tucuxi::Core::ParameterDefinition("TestA", 0.0, opA, std::make_unique<ParameterVariability>(_variabilityTypeA, _variabilityValueA)));
+        dispositionParameters->addParameter(std::move(PA));
+        Operation *opR = new JSOperation(" \
+                                         return covR;",
+        { OperationInput("covR", InputType::DOUBLE)});
+        std::unique_ptr<ParameterDefinition> PR(new Tucuxi::Core::ParameterDefinition("TestR", 0.0, opR, std::make_unique<ParameterVariability>(_variabilityTypeR, _variabilityValueR)));
+        dispositionParameters->addParameter(std::move(PR));
+        Operation *opM = new JSOperation(" \
+                                         return covM;",
+        { OperationInput("covM", InputType::DOUBLE)});
+        std::unique_ptr<ParameterDefinition> PM(new Tucuxi::Core::ParameterDefinition("TestM", 1.0, opM, std::make_unique<ParameterVariability>(_variabilityTypeM, _variabilityValueM)));
+        dispositionParameters->addParameter(std::move(PM));
+
+        analyteSet2->setDispositionParameters(std::move(dispositionParameters));
+
+
+
+        model->addAnalyteSet(std::move(analyteSet2));
+
+
+
+
+
         std::unique_ptr<DrugModelDomain> drugDomain(new DrugModelDomain());
 
         model->setDomain(std::move(drugDomain));
@@ -202,6 +262,10 @@ public:
             std::unique_ptr<AnalyteConversion> analyteConversion0 = std::make_unique<AnalyteConversion>("analyte0", _conversionFactor0);
             formulationAndRoute->addAnalyteConversion(std::move(analyteConversion0));
             std::unique_ptr<AnalyteConversion> analyteConversion1 = std::make_unique<AnalyteConversion>("analyte1", _conversionFactor1);
+            formulationAndRoute->addAnalyteConversion(std::move(analyteConversion1));
+            std::unique_ptr<AnalyteConversion> analyteConversion2 = std::make_unique<AnalyteConversion>("analyte2", _conversionFactor1);
+            formulationAndRoute->addAnalyteConversion(std::move(analyteConversion1));
+            std::unique_ptr<AnalyteConversion> analyteConversion3 = std::make_unique<AnalyteConversion>("analyte3", _conversionFactor1);
             formulationAndRoute->addAnalyteConversion(std::move(analyteConversion1));
 
             ValidDoses *validDoses = new ValidDoses(TucuUnit("mg"), std::make_unique<PopulationValue>(400));
@@ -257,11 +321,20 @@ public:
         std::vector<AnalyteId> analyteList;
         analyteList.push_back(AnalyteId("analyte0"));
         analyteList.push_back(AnalyteId("analyte1"));
-        std::unique_ptr<ActiveMoiety> activeMoiety = std::make_unique<ActiveMoiety>(ActiveMoietyId("activeMoietyMulti"), TucuUnit("ug/l"), analyteList, std::move(activeMoietyOperation));
 
-        Tucuxi::Common::TranslatableString activeMoietyName;
-        activeMoietyName.setString("Active moiety name 2");
-        activeMoiety->setName(activeMoietyName);
+        std::unique_ptr<ActiveMoiety> activeMoiety0 = std::make_unique<ActiveMoiety>(ActiveMoietyId("activeMoietyMulti"), TucuUnit("ug/l"), analyteList, std::move(activeMoietyOperation));
+
+        analyteList.push_back(AnalyteId("analyte2"));
+        analyteList.push_back(AnalyteId("analyte3"));
+        std::unique_ptr<ActiveMoiety> activeMoiety1 = std::make_unique<ActiveMoiety>(ActiveMoietyId("activeMoietyMulti"), TucuUnit("ug/l"), analyteList, std::move(activeMoietyOperation));
+
+        Tucuxi::Common::TranslatableString activeMoietyName0;
+        activeMoietyName0.setString("Active moiety name 2");
+        activeMoiety0->setName(activeMoietyName0);
+
+        Tucuxi::Common::TranslatableString activeMoietyName1;
+        activeMoietyName1.setString("Active moiety with a group of 2 analytes");
+        activeMoiety1->setName(activeMoietyName1);
 
         // I removed the targets from the build, to let tests define various targets
 /*
