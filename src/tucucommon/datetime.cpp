@@ -23,7 +23,12 @@ namespace Tucuxi {
 namespace Common {
 
 #ifdef EASY_DEBUG
+#define UPDATESTRING updateString()
+#else
+#define UPDATESTRING
+#endif // EASY_DEBUG
 
+#ifdef CHECK_DATETIME
 static bool sm_enableChecks = true;
 
 void DateTime::enableChecks()
@@ -36,27 +41,32 @@ void DateTime::disableChecks()
     sm_enableChecks = false;
 }
 
-void errorUndefinedDateTime(const DateTime &_date)
+/// This function is just useful to place a breakpoint during debugging
+void errorUndefinedDateTime(const DateTime &/*_date*/)
 {
-    int i = 0;
+    std::cerr << "Error : Using an undefined DateTime" << std::endl;
 }
 
-#define UPDATESTRING updateString()
+#define SETDEFINED(value) {m_isDefined = value;}
 #define CHECKDEFINED {if (sm_enableChecks && this->isUndefined()){errorUndefinedDateTime(*this);throw std::runtime_error("Date Time used but undefined");}}
 #define CHECKOTHERDEFINED {if (sm_enableChecks && _other.isUndefined()) {errorUndefinedDateTime(_other);throw std::runtime_error("Date Time used but undefined");}}
-#else
-#define UPDATESTRING
+#else // CHECK_DATETIME
+#define SETDEFINED(value) {m_isDefined = value;}
 #define CHECKDEFINED
 #define CHECKOTHERDEFINED
 void DateTime::enableChecks() {}
 void DateTime::disableChecks() {}
-#endif // EASY_DEBUG
+#endif // CHECK_DATETIME
 
 
 
 #ifdef EASY_DEBUG
 void DateTime::updateString()
 {
+    if (!m_isDefined) {
+        m_dateString = "Undefined date time. Should not be used before proper initialization";
+        return;
+    }
     std::stringstream str;
     str << day() << "/"
         << month() << "/"
@@ -72,30 +82,30 @@ void DateTime::updateString()
 DateTime::DateTime()
     : m_date(std::chrono::time_point<std::chrono::system_clock>())
 {
-    //UPDATESTRING;
+    m_isDefined = false;
+    UPDATESTRING;
 }
 
 
 DateTime::DateTime(std::chrono::time_point<std::chrono::system_clock> _clockTime) : m_date(_clockTime)
 {
-#ifdef EASY_DEBUG
-    if (!this->isUndefined()) {
-        UPDATESTRING;
-    }
-#else // EASY_DEBUG
+    m_isDefined = true;
     UPDATESTRING;
-#endif // EASY_DEBUG
 }
 
 DateTime DateTime::undefinedDateTime()
 {
-    return DateTime(std::chrono::time_point<std::chrono::system_clock>());
+    auto date = DateTime(std::chrono::time_point<std::chrono::system_clock>());
+    date.m_isDefined = false;
+    return date;
 }
 
 
 DateTime DateTime::now()
 {
-    return DateTime(std::chrono::system_clock::now());
+    auto date = DateTime(std::chrono::system_clock::now());
+    date.m_isDefined = true;
+    return date;
 }
 
 
@@ -114,6 +124,7 @@ DateTime::DateTime(const std::string &_date, const std::string& _format)
 
     m_date = date::sys_days(day);
     m_date += std::chrono::milliseconds(tm.tm_hour * 3600 * 1000 + tm.tm_min * 60000 + tm.tm_sec * 1000);
+    SETDEFINED(true);
     UPDATESTRING;
 }
 
@@ -121,6 +132,7 @@ DateTime::DateTime(const std::string &_date, const std::string& _format)
 DateTime::DateTime(const date::year_month_day& _date)
     : m_date(date::sys_days(_date))
 {
+    SETDEFINED(true);
     UPDATESTRING;
 }
 
@@ -129,6 +141,7 @@ DateTime::DateTime(const date::year_month_day& _date, const TimeOfDay& _time)
 {
     m_date = date::sys_days(_date);
     m_date += std::chrono::milliseconds(_time.getDuration());
+    SETDEFINED(true);
     UPDATESTRING;
 }
 
@@ -137,6 +150,7 @@ DateTime::DateTime(const date::year_month_day& _date, const std::chrono::seconds
 {
     m_date = date::sys_days(_date);
     m_date += _time;
+    SETDEFINED(true);
     UPDATESTRING;
 }
 
@@ -146,18 +160,8 @@ DateTime::DateTime(const Duration &_durationSinceEpoch)
     int64 ms = _durationSinceEpoch.toMilliseconds();
     const std::chrono::system_clock::duration d = std::chrono::milliseconds(ms);
     m_date = std::chrono::time_point<std::chrono::system_clock>(d);
-#ifdef EASY_DEBUG
-    if (!isUndefined()) {
-        UPDATESTRING;
-    }
-#else // EASY_DEBUG
-    UPDATESTRING
-#endif // EASY_DEBUG
-}
-
-DateTime DateTime::getUndefined()
-{
-    return DateTime(Duration(std::chrono::milliseconds(0)));
+    SETDEFINED(true);
+    UPDATESTRING;
 }
 
 
@@ -170,6 +174,7 @@ date::year_month_day DateTime::getDate() const
 
 TimeOfDay DateTime::getTimeOfDay() const
 {
+    // Not sure we should keep it without a check
 //    CHECKDEFINED;
     date::sys_days today = date::floor<date::days>(m_date);
     return TimeOfDay(Duration(std::chrono::duration_cast<std::chrono::milliseconds>(m_date - today)));
@@ -178,19 +183,25 @@ TimeOfDay DateTime::getTimeOfDay() const
 
 void DateTime::setDate(const date::year_month_day& _newDate)
 {
+    // Do not check here, as we could use this function on an undefined datetime
     // CHECKDEFINED;
     TimeOfDay tod = getTimeOfDay();
     m_date = date::sys_days(_newDate);
     m_date += std::chrono::milliseconds(tod.getDuration());
+    // The next line is only partially true, but we consider it enough
+    SETDEFINED(true);
     UPDATESTRING;
 }
 
 
 void DateTime::setTimeOfDay(const TimeOfDay& _newTime)
 {
+    // Do not check here, as we could use this function on an undefined datetime
     // CHECKDEFINED;
     m_date = date::floor<date::days>(m_date);
     m_date += std::chrono::milliseconds(_newTime.getDuration());
+    // The next line is only partially true, but we consider it enough
+    SETDEFINED(true);
     UPDATESTRING;
 }
 
@@ -326,16 +337,12 @@ bool DateTime::operator<=(const DateTime& _other) const
 
 bool DateTime::operator==(const DateTime& _other) const
 {
-    CHECKDEFINED;
-    CHECKOTHERDEFINED;
     return m_date == _other.m_date;
 }
 
 
 bool DateTime::operator!=(const DateTime& _other) const
 {
-    CHECKDEFINED;
-    CHECKOTHERDEFINED;
     return m_date != _other.m_date;
 }
 
@@ -399,12 +406,13 @@ int DateTime::millisecond() const
 void DateTime::reset()
 {
     m_date = std::chrono::time_point<std::chrono::system_clock>();
+    SETDEFINED(false);
 }
 
 
 bool DateTime::isUndefined() const
 {
-    return (m_date.time_since_epoch().count() == 0);
+    return !m_isDefined;
 }
 
 

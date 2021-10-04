@@ -31,6 +31,14 @@ class TimeOfDay;
 /// between the two.
 /// Methods year, month, day, hour, minute, second can be used to extract the different components of a date.
 /// \sa TimeOfDay, Duration
+///
+/// This class can be compiled with DEFINES+=EASY_DEBUG. In that case it embeds a string
+/// representing its state. Very useful for debugging.
+///
+/// It can also be compiled with DEFINES+=CHECK_DATETIME. In that case the status of the object
+/// is checked before being used. For instance, adding days to an undefined DateTime is unvalid and would
+/// throw an exception. These checks cost a bit of performance, so by default they are disabled.
+///
 class DateTime
 {
 public:
@@ -45,8 +53,14 @@ public:
     /// \return An undefined date
     static DateTime undefinedDateTime();
 
+    /// \brief Enables thorough checks of undefined DateTime
+    ///
+    /// The checks are only done if compiled with DEFINES+=CHECK_DATETIME
     static void enableChecks();
 
+    /// \brief Disables thorough checks of undefined DateTime
+    ///
+    /// The checks are only done if compiled with DEFINES+=CHECK_DATETIME
     static void disableChecks();
 
     /// \brief Build a date from the specified string
@@ -72,8 +86,6 @@ public:
     /// \brief Build a date and time with the specified duration 
     /// \param _date The duration since epoch (see documentation of std::chrono::time_point)
     DateTime(const Duration &_durationSinceEpoch);
-
-    static DateTime getUndefined();
 
     /// \brief Returns the date part of the object.
     date::year_month_day getDate() const;
@@ -226,12 +238,22 @@ private:
     }
 
 private:
+
+    /// The current date time
     std::chrono::time_point<std::chrono::system_clock> m_date;  /// The date managed by the class
 
+    /// Indicates if the date time is defined or not
+    /// If not, then its value should not be used
+    bool m_isDefined{false};
+
 #ifdef EASY_DEBUG
+
+    /// This string is used to store a representation of the DateTime for easier debuggingg
     std::string m_dateString;
 
+    /// This function is called after every modification of the object, to update m_dateString
     void updateString();
+
 #endif // EASY_DEBUG
 
 };

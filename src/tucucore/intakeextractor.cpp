@@ -20,7 +20,7 @@ auto as_integer(Enumeration const _value)
     return static_cast<typename std::underlying_type<Enumeration>::type>(_value);
 }
 #ifdef EASY_DEBUG
-void EXTRACT_PRECONDITIONS(const DateTime &start, const DateTime &end, IntakeSeries &series)
+void EXTRACT_PRECONDITIONS(const DateTime &start, const DateTime &end, IntakeSeries &/*series*/)
 {
     if (start.isUndefined()) {
         throw std::runtime_error("[IntakeExtractor] Start time is undefined");
