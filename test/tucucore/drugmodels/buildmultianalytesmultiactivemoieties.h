@@ -318,15 +318,16 @@ public:
 
         std::unique_ptr<Operation> activeMoietyOperation = std::unique_ptr<Operation>(sharedOperation.get()->clone());
 
-        std::vector<AnalyteId> analyteList;
-        analyteList.push_back(AnalyteId("analyte0"));
-        analyteList.push_back(AnalyteId("analyte1"));
+        std::vector<AnalyteId> analyteList0;
+        analyteList0.push_back(AnalyteId("analyte0"));
+        analyteList0.push_back(AnalyteId("analyte1"));
 
-        std::unique_ptr<ActiveMoiety> activeMoiety0 = std::make_unique<ActiveMoiety>(ActiveMoietyId("activeMoietyMulti"), TucuUnit("ug/l"), analyteList, std::move(activeMoietyOperation));
+        std::unique_ptr<ActiveMoiety> activeMoiety0 = std::make_unique<ActiveMoiety>(ActiveMoietyId("activeMoietyMulti"), TucuUnit("ug/l"), analyteList0, std::move(activeMoietyOperation));
 
-        analyteList.push_back(AnalyteId("analyte2"));
-        analyteList.push_back(AnalyteId("analyte3"));
-        std::unique_ptr<ActiveMoiety> activeMoiety1 = std::make_unique<ActiveMoiety>(ActiveMoietyId("activeMoietyMulti"), TucuUnit("ug/l"), analyteList, std::move(activeMoietyOperation));
+        std::vector<AnalyteId> analyteList1;
+        analyteList1.push_back(AnalyteId("analyte2"));
+        analyteList1.push_back(AnalyteId("analyte3"));
+        std::unique_ptr<ActiveMoiety> activeMoiety1 = std::make_unique<ActiveMoiety>(ActiveMoietyId("activeMoietyMulti"), TucuUnit("ug/l"), analyteList1, std::move(activeMoietyOperation));
 
         Tucuxi::Common::TranslatableString activeMoietyName0;
         activeMoietyName0.setString("Active moiety name 2");
@@ -359,7 +360,8 @@ public:
         activeMoiety->addTarget(std::unique_ptr<TargetDefinition>(target));
 */
 
-        model->addActiveMoiety(std::move(activeMoiety));
+        model->addActiveMoiety(std::move(activeMoiety0));
+        model->addActiveMoiety(std::move(activeMoiety1));
 
         return model;
     }
