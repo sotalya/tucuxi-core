@@ -511,7 +511,7 @@ unique_ptr<Core::DosageTimeRange> QueryImport::createDosageTimeRange(Common::Xml
     }
 
     if (dynamic_cast<Core::DosageSteadyState*>(pDosage.get()) != nullptr) {
-        start = DateTime::getUndefined();
+        start = DateTime::undefinedDateTime();
     }
 
     return make_unique<Core::DosageTimeRange>(
