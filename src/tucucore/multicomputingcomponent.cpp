@@ -32,6 +32,10 @@
 #include "tucucore/multicomputingadjustments.h"
 #include "tucucore/computingutils.h"
 
+
+#include "multiconcentrationcalculator.h"
+
+
 namespace Tucuxi {
 namespace Core {
 
@@ -89,9 +93,9 @@ ComputingStatus MultiComputingComponent::compute(const ComputingRequest &_reques
     auto start = std::chrono::high_resolution_clock::now();
     TUCU_TRY {
         if (m_utils == nullptr) {
-            m_logger.error("The Computing Component has not been initialized");
-            _response->setComputingStatus(ComputingStatus::ComputingComponentNotInitialized);
-            return ComputingStatus::ComputingComponentNotInitialized;
+            m_logger.error("The MultiComputing Component has not been initialized");
+            _response->setComputingStatus(ComputingStatus::MultiComputingComponentNotInitialized);
+            return ComputingStatus::MultiComputingComponentNotInitialized;
         }
         if (m_utils->m_models == nullptr) {
             m_logger.error("No Pk Model loaded. Impossible to perform computation");
@@ -132,9 +136,13 @@ ComputingStatus MultiComputingComponent::compute(const ComputingRequest &_reques
         return result;
 
     }
+
+
+
+
     TUCU_CATCH(...) {
-        _response->setComputingStatus(ComputingStatus::ComputingComponentExceptionError);
-        return ComputingStatus::ComputingComponentExceptionError;
+        _response->setComputingStatus(ComputingStatus::MultiComputingComponentExceptionError);
+        return ComputingStatus::MultiComputingComponentExceptionError;
     }
 }
 
@@ -232,7 +240,7 @@ void MultiComputingComponent::endRecord(
 }
 
 
-ComputingStatus MultiComputingComponent::compute(
+ComputingStatus MultiComputingComponent::compute(   //HAY QUE PROGRAMAR ESTA FUNCION
         const ComputingTraitConcentration *_traits,
         const ComputingRequest &_request,
         std::unique_ptr<ComputingResponse> &_response)
@@ -265,7 +273,7 @@ ComputingStatus MultiComputingComponent::compute(
 
     // Now ready to do the real computing with all the extracted values
 
-    std::vector<ConcentrationPredictionPtr> analytesPredictions;
+    std::vector<MultiConcentrationPredictionPtr> analytesPredictions;
 
     ComputingStatus computingResult;
 
@@ -274,7 +282,7 @@ ComputingStatus MultiComputingComponent::compute(
     for(const auto &analyteGroup : _request.getDrugModel().getAnalyteSets()) {
         AnalyteGroupId analyteGroupId = analyteGroup->getId();
 
-        ConcentrationPredictionPtr pPrediction = std::make_unique<ConcentrationPrediction>();
+        MultiConcentrationPredictionPtr pPrediction = std::make_unique<MultiConcentrationPrediction>();
 
         Etas etas;
 /*
@@ -288,7 +296,7 @@ ComputingStatus MultiComputingComponent::compute(
         allEtas[analyteGroupId] = etas;
 
 
-        Tucuxi::Core::ConcentrationCalculator concentrationCalculator;
+        Tucuxi::Core::MultiConcentrationCalculator concentrationCalculator;
         computingResult = concentrationCalculator.computeConcentrations(
                     pPrediction,
                     false,
@@ -307,12 +315,12 @@ ComputingStatus MultiComputingComponent::compute(
             return computingResult;
         }
     }
-    std::vector<ConcentrationPredictionPtr> activeMoietiesPredictions;
+    std::vector<MultiConcentrationPredictionPtr> activeMoietiesPredictions;
 
     //if (!_request.getDrugModel().isSingleAnalyte()) {
 
         for (const auto & activeMoiety : _request.getDrugModel().getActiveMoieties()) {
-            ConcentrationPredictionPtr activeMoietyPrediction = std::make_unique<ConcentrationPrediction>();
+            MultiConcentrationPredictionPtr activeMoietyPrediction = std::make_unique<MultiConcentrationPrediction>();
             ComputingStatus activeMoietyComputingResult = m_utils->computeActiveMoiety(activeMoiety.get(), analytesPredictions, activeMoietyPrediction);
             if (activeMoietyComputingResult != ComputingStatus::Ok) {
                 return activeMoietyComputingResult;

@@ -63,6 +63,8 @@ enum class [[nodiscard]] ComputingStatus {
     NoPkModelError,
     /// An exception was raised in ComputingComponent
     ComputingComponentExceptionError,
+    /// An exception was raised in MultiComputingComponent
+    MultiComputingComponentExceptionError,
     /// No Pk Models in the collection
     NoPkModels,
     /// The ComputingTraits sent for computation are nullptr
@@ -91,6 +93,8 @@ enum class [[nodiscard]] ComputingStatus {
     IncompatibleTreatmentModel,
     /// The computing component has not been initialized
     ComputingComponentNotInitialized,
+    /// The multicomputing component has not been initialized
+    MultiComputingComponentNotInitialized,
     /// The drug domain is uncompatible with the patient covariates
     UncompatibleDrugDomain,
     /// Cannot attain steady state

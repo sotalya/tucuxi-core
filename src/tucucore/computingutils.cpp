@@ -3,6 +3,7 @@
 #include "tucucore/operation.h"
 #include "tucucore/drugmodel/activemoiety.h"
 #include "tucucore/generalextractor.h"
+#include "multiconcentrationprediction.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -14,6 +15,7 @@ ComputingUtils::ComputingUtils()
 ComputingStatus ComputingUtils::computeActiveMoiety(
         const ActiveMoiety *_activeMoiety,
         const std::vector<ConcentrationPredictionPtr> &_analytesPredictions,
+        const std::vector<MultiConcentrationPredictionPtr> &_multianalytesPredictions,
         ConcentrationPredictionPtr &_activeMoietyPredictions)
 {
 

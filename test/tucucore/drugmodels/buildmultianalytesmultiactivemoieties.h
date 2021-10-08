@@ -15,6 +15,7 @@ public:
     BuildMultiAnalytesMultiActiveMoieties() {}
 
     Tucuxi::Core::DrugModel *buildDrugModel(
+            //the method buildDrugModel() takes a certain number of arguments, that were relevant for other drug models. Do not hesitate to add some (for instance we could have 4 times a conversionFactor instead of 2, ...).
             double _conversionFactor0 = 1.0,
             double _conversionFactor1 = 1.0,
             ResidualErrorType _errorModelType = ResidualErrorType::NONE,
