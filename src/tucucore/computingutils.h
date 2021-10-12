@@ -7,6 +7,7 @@
 
 #include "tucucore/computingservice/computingresult.h"
 #include "tucucore/concentrationprediction.h"
+#include "tucucore/multiconcentrationprediction.h"
 #include "tucucore/covariateevent.h"
 
 namespace Tucuxi {
@@ -46,6 +47,10 @@ public:
             const std::vector<ConcentrationPredictionPtr> &_analytesPredictions,
             ConcentrationPredictionPtr &_activeMoietyPredictions);
 
+    ComputingStatus computeMultiActiveMoiety(
+            const ActiveMoiety *_activeMoiety,
+            const std::vector<MultiConcentrationPredictionPtr> &_analytesPredictions,
+            MultiConcentrationPredictionPtr &_activeMoietyPredictions);
 
     /// The set of available Pk models, shared throughout the application
     std::shared_ptr<PkModelCollection> m_models;

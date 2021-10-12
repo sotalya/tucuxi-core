@@ -13,7 +13,7 @@
 #include "tucucore/dosage.h"
 #include "tucucore/sampleevent.h"
 #include "tucucore/computingservice/icomputingservice.h"
-#include "tucucore/concentrationprediction.h"
+#include "tucucore/multiconcentrationprediction.h"
 #include "tucucore/idatamodelservices.h"
 #include "tucucore/pkmodel.h"
 #include "tucucore/covariateevent.h"
@@ -128,7 +128,7 @@ private:
             const ComputingRequest &_request,
             std::unique_ptr<ComputingResponse> &_response,
             GroupsIntakeSeries &_intakeSeries,
-            const ConcentrationPredictionPtr &_pPrediction,
+            const MultiConcentrationPredictionPtr &_pPrediction,
             const PercentilesPrediction &_percentiles,
             const PercentileRanks &_percentileRanks);
 
@@ -138,12 +138,14 @@ private:
             DateTime _start,
             DateTime _end,
             const TimeOffsets &_times,
-            const std::vector<ConcentrationPredictionPtr> &_activeMoietiesPredictions,
-            const std::vector<ConcentrationPredictionPtr> &_analytesPredictions,
+            const std::vector<MultiConcentrationPredictionPtr> &_activeMoietiesPredictions,
+            const std::vector<MultiConcentrationPredictionPtr> &_analytesPredictions,
             size_t _valueIndex,
             const std::map<AnalyteGroupId, Etas> &_etas,
             GroupsParameterSetSeries &_parameterSeries
             );
+
+
 
     static void endRecord(const ComputingTraitStandard *_traits,
             const ComputingRequest &_request,

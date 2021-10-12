@@ -153,8 +153,8 @@ ComputingStatus MultiComputingComponent::recordCycle(const ComputingTraitStandar
         DateTime _start,
         DateTime _end,
         const TimeOffsets &_times,
-        const std::vector<ConcentrationPredictionPtr> &_activeMoietiesPredictions,
-        const std::vector<ConcentrationPredictionPtr> &_analytesPredictions,
+        const std::vector<MultiConcentrationPredictionPtr> &_activeMoietiesPredictions,
+        const std::vector<MultiConcentrationPredictionPtr> &_analytesPredictions,
         size_t _valueIndex,
         const std::map<AnalyteGroupId, Etas> &_etas,
         GroupsParameterSetSeries &_parameterSeries
@@ -285,14 +285,16 @@ ComputingStatus MultiComputingComponent::compute(   //HAY QUE PROGRAMAR ESTA FUN
         MultiConcentrationPredictionPtr pPrediction = std::make_unique<MultiConcentrationPrediction>();
 
         Etas etas;
-/*
+
+        /*
         if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Aposteriori) {
             ComputingStatus extractionResult = m_utils->m_generalExtractor->extractAposterioriEtas(etas, _request, analyteGroupId, intakeSeries[analyteGroupId], parameterSeries[analyteGroupId], covariateSeries, calculationStartTime, _traits->getEnd());
             if (extractionResult != ComputingStatus::Ok) {
                 return extractionResult;
             }
         }
-*/
+
+        */
         allEtas[analyteGroupId] = etas;
 
 
@@ -321,7 +323,7 @@ ComputingStatus MultiComputingComponent::compute(   //HAY QUE PROGRAMAR ESTA FUN
 
         for (const auto & activeMoiety : _request.getDrugModel().getActiveMoieties()) {
             MultiConcentrationPredictionPtr activeMoietyPrediction = std::make_unique<MultiConcentrationPrediction>();
-            ComputingStatus activeMoietyComputingResult = m_utils->computeActiveMoiety(activeMoiety.get(), analytesPredictions, activeMoietyPrediction);
+            ComputingStatus activeMoietyComputingResult = m_utils->computeMultiActiveMoiety(activeMoiety.get(), analytesPredictions, activeMoietyPrediction);
             if (activeMoietyComputingResult != ComputingStatus::Ok) {
                 return activeMoietyComputingResult;
             }

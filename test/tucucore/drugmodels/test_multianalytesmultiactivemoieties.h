@@ -47,7 +47,7 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
 
     void buildDrugTreatment(DrugTreatment *&_drugTreatment, FormulationAndRoute _route)
     {
-
+        //all the two active moieties with two different activeMoietyId, else there will be some issues. You will also have to check the PK parameters for this new analyte group. As it will use the MultiConstantEliminationBolus, there should be 8 parameters instead of 4.
         _drugTreatment = new DrugTreatment();
 
         // List of time ranges that will be pushed into the history

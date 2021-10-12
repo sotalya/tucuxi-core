@@ -108,7 +108,7 @@ private:
     std::vector<ParameterInfo> m_parametersVector;
 };
 
-class DrugModel
+class DrugModel            //Some modifications required for checking the structure of the drugmodel to find some issues in it
 {
 
     INVARIANTS(
