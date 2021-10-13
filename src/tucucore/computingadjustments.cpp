@@ -1070,11 +1070,14 @@ ComputingStatus ComputingAdjustments::addLoad(DosageAdjustment &_dosage,
     //Add the new time range to dosage history (load)
     DosageHistory steadyStateHistory = _dosage.m_history;
     DosageTimeRange range = *steadyStateHistory.getDosageTimeRanges()[0].get();
-    auto d = range.getDosage();
-    DosageTimeRange newRange(range.getStartDate() + loadingInterval, range.getEndDate(), *d);
     _dosage.m_history = DosageHistory();
     _dosage.m_history.addTimeRange(*loadingCandidates[bestIndex].loadingDosage.m_history.getDosageTimeRanges()[0].get());
-    _dosage.m_history.mergeDosage(&newRange);
+    // We shift the existing dosage, if the new range is valid
+    if (range.getStartDate() + loadingInterval < range.getEndDate()) {
+        auto d = range.getDosage();
+        DosageTimeRange newRange(range.getStartDate() + loadingInterval, range.getEndDate(), *d);
+        _dosage.m_history.mergeDosage(&newRange);
+    }
 
     _modified = true;
     return ComputingStatus::Ok;
