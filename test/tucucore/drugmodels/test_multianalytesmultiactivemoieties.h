@@ -28,6 +28,7 @@ using namespace date;
 using namespace Tucuxi::Core;
 
 
+//EMPEZAR ESTO
 struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMultiAnalytesMultiActiveMoieties>
 {
     TestMultiAnalytesMultiActiveMoieties() { }
@@ -153,13 +154,18 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
                     return;
                 }
 
-                fructose_assert_eq(resp->getCompartmentInfos().size(), size_t{3});
+                fructose_assert_eq(resp->getCompartmentInfos().size(), size_t{5});
                 fructose_assert_eq(resp->getCompartmentInfos()[0].getId(), "activeMoietyMulti");
                 fructose_assert(resp->getCompartmentInfos()[0].getType() == CompartmentInfo::CompartmentType::ActiveMoiety);
                 fructose_assert_eq(resp->getCompartmentInfos()[1].getId(), "analyte0");
                 fructose_assert(resp->getCompartmentInfos()[1].getType() == CompartmentInfo::CompartmentType::Analyte);
                 fructose_assert_eq(resp->getCompartmentInfos()[2].getId(), "analyte1");
                 fructose_assert(resp->getCompartmentInfos()[2].getType() == CompartmentInfo::CompartmentType::Analyte);
+                fructose_assert_eq(resp->getCompartmentInfos()[3].getId(), "analyte2");
+                fructose_assert(resp->getCompartmentInfos()[3].getType() == CompartmentInfo::CompartmentType::Analyte);
+                fructose_assert_eq(resp->getCompartmentInfos()[4].getId(), "analyte3");
+                fructose_assert(resp->getCompartmentInfos()[4].getType() == CompartmentInfo::CompartmentType::Analyte);
+
 
                 std::vector<CycleData> data = resp->getData();
                 fructose_assert(data.size() == 16);
@@ -167,9 +173,13 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
                 fructose_assert_double_eq(data[0].m_concentrations[0][0] , 400000.0);
                 fructose_assert_double_eq(data[0].m_concentrations[1][0] , 200000.0);
                 fructose_assert_double_eq(data[0].m_concentrations[2][0] , 200000.0);
+                fructose_assert_double_eq(data[0].m_concentrations[3][0] , 200000.0);
+                fructose_assert_double_eq(data[0].m_concentrations[4][0] , 200000.0);
                 fructose_assert_eq(data[0].m_concentrations[0].size() , size_t{61});
                 fructose_assert_eq(data[0].m_concentrations[1].size() , size_t{61});
                 fructose_assert_eq(data[0].m_concentrations[2].size() , size_t{61});
+                fructose_assert_eq(data[0].m_concentrations[3].size() , size_t{61});
+                fructose_assert_eq(data[0].m_concentrations[4].size() , size_t{61});
 
                 DateTime startSept2018(date::year_month_day(date::year(2018), date::month(9), date::day(1)),
                                        Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
