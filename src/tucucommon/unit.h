@@ -83,7 +83,6 @@ public:
     enum class UnitType{
         Weight = 0,
         Concentration,
-        MultiConcentration,
         MoleConcentration,
         Time,
         ConcentrationTime,

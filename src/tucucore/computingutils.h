@@ -47,10 +47,7 @@ public:
             const std::vector<ConcentrationPredictionPtr> &_analytesPredictions,
             ConcentrationPredictionPtr &_activeMoietyPredictions);
 
-    ComputingStatus computeMultiActiveMoiety(
-            const ActiveMoiety *_activeMoiety,
-            const std::vector<MultiConcentrationPredictionPtr> &_analytesPredictions,
-            MultiConcentrationPredictionPtr &_activeMoietyPredictions);
+
 
     /// The set of available Pk models, shared throughout the application
     std::shared_ptr<PkModelCollection> m_models;
@@ -68,6 +65,12 @@ public:
     /// This function is currently usused
     ///
     CovariateEvent getCovariateAtTime(const DateTime &_date, const CovariateSeries &_covariates);
+
+    ComputingStatus computeMultiActiveMoiety(
+            const ActiveMoiety *_activeMoiety0,
+            const ActiveMoiety *_activeMoiety1,
+            const std::vector<MultiConcentrationPredictionPtr> &_analytesPredictions,
+            MultiConcentrationPredictionPtr &_activeMoietyPredictions);
 
 
 };
