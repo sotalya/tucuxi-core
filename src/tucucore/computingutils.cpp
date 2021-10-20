@@ -117,17 +117,17 @@ ComputingStatus ComputingUtils::computeMultiActiveMoiety(
         }
 
         size_t nbConcentrations = analyteC[0].size();
-        Concentrations concentration(nbConcentrations);
+        std::vector<Concentrations> concentration(nbConcentrations);
 
         if (op1 == nullptr) {
             for(size_t c = 0; c < nbConcentrations; c++) {
-                concentration[c] = analyteC[0][c];
+                concentration[c][0] = analyteC[0][c];
             }
         }
 
         else if (op2 == nullptr){
             for(size_t c = 0; c < nbConcentrations; c++) {
-                concentration[c] = analyteC[0][c];
+                concentration[c][1] = analyteC[1][c];
             }
         }
         else {
@@ -144,9 +144,10 @@ ComputingStatus ComputingUtils::computeMultiActiveMoiety(
                 double result;
                 if (!op1->evaluate(inputList, result) || !op2->evaluate(inputList, result)) {
                     // Something went wrong
-                    return ComputingStatus::ActiveMoietyCalculationError;
+                    return ComputingStatus::MultiActiveMoietyCalculationError;
                 }
-                concentration[c] = result;
+                concentration[c][0] = result;
+                concentration[c][1] = result;
             }
         }
         _activeMoietyPredictions->appendConcentrations(times, concentration); //i have to put it in function of a vector of concentrations and not a single concentration

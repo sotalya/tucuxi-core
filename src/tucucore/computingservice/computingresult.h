@@ -101,6 +101,8 @@ enum class [[nodiscard]] ComputingStatus {
     MultiComputingComponentExceptionError,
     /// The multicomputing component has not been initialized
     MultiComputingComponentNotInitialized,
+    /// Error during calculation of multi active moiety concentration values
+    MultiActiveMoietyCalculationError
 };
 
 std::ostream& operator<<(std::ostream& _stream, const ComputingStatus& _e);

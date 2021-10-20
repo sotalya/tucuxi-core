@@ -322,7 +322,10 @@ ComputingStatus MultiComputingComponent::compute(   //HAY QUE PROGRAMAR ESTA FUN
     //if (!_request.getDrugModel().isSingleAnalyte()) {
 
         for (const auto & activeMoiety : _request.getDrugModel().getActiveMoieties()) {
+
             MultiConcentrationPredictionPtr activeMoietyPrediction = std::make_unique<MultiConcentrationPrediction>();
+            activeMoiety active1 = activeMoiety.get();
+
             ComputingStatus activeMoietyComputingResult = m_utils->computeMultiActiveMoiety(activeMoiety.get(), analytesPredictions, activeMoietyPrediction);
             if (activeMoietyComputingResult != ComputingStatus::Ok) {
                 return activeMoietyComputingResult;

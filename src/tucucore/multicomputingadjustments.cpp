@@ -13,6 +13,7 @@
 #include "tucucore/intakeextractor.h"
 #include "tucucore/intaketocalculatorassociator.h"
 #include "tucucore/concentrationcalculator.h"
+#include "tucucore/multiconcentrationcalculator.h"
 #include "tucucore/computingutils.h"
 #include "tucucore/cyclestatisticscalculator.h"
 
@@ -1117,7 +1118,8 @@ ComputingStatus MultiComputingAdjustments::generatePrediction(DosageAdjustment &
 
     GroupsIntakeSeries intakeSeriesPerGroup;
 
-    std::vector<ConcentrationPredictionPtr> analytesPredictions;
+
+    std::vector<MultiConcentrationPredictionPtr> multianalytesPredictions;
 
 
     CovariateSeries covariateSeries;
@@ -1143,7 +1145,7 @@ ComputingStatus MultiComputingAdjustments::generatePrediction(DosageAdjustment &
 
 
     for (const auto& analyteGroupId : _allGroupIds) {
-        ConcentrationPredictionPtr pPrediction = std::make_unique<ConcentrationPrediction>();
+        MultiConcentrationPredictionPtr pPrediction = std::make_unique<MultiConcentrationPrediction>();
 
         IntakeExtractor intakeExtractor;
         double nbPointsPerHour = _traits->getNbPointsPerHour();
@@ -1174,7 +1176,7 @@ ComputingStatus MultiComputingAdjustments::generatePrediction(DosageAdjustment &
 
 
         ComputingStatus predictionComputingResult;
-        ConcentrationCalculator concentrationCalculator;
+        MultiConcentrationCalculator concentrationCalculator;
         predictionComputingResult = concentrationCalculator.computeConcentrations(
                     pPrediction,
                     false,
@@ -1189,7 +1191,7 @@ ComputingStatus MultiComputingAdjustments::generatePrediction(DosageAdjustment &
             return predictionComputingResult;
         }
 
-        analytesPredictions.push_back(std::move(pPrediction));
+        multianalytesPredictions.push_back(std::move(pPrediction));
         
     }
 
@@ -1197,15 +1199,18 @@ ComputingStatus MultiComputingAdjustments::generatePrediction(DosageAdjustment &
 
     if (!_request.getDrugModel().isSingleAnalyte()) {
 
+        active1 = new ActiveMoiety;
+        active2 = new ActiveMoiety;
         for (const auto & activeMoiety : _request.getDrugModel().getActiveMoieties()) {
+
             ConcentrationPredictionPtr activeMoietyPrediction = std::make_unique<ConcentrationPrediction>();
-            ComputingStatus activeMoietyComputingResult = m_utils->computeActiveMoiety(activeMoiety.get(), analytesPredictions, activeMoietyPrediction);
+            ComputingStatus activeMoietyComputingResult = m_utils->computeMultiActiveMoiety(activeMoiety.get(), multianalytesPredictions, activeMoietyPrediction);
             if (activeMoietyComputingResult != ComputingStatus::Ok) {
                 return activeMoietyComputingResult;
             }
             activeMoietiesPredictions.push_back(std::move(activeMoietyPrediction));
         }
-    }
+
     // else {
     //     activeMoietiesPredictions.push_back(std::move(analytesPredictions[0]));
     // }
@@ -1219,18 +1224,18 @@ ComputingStatus MultiComputingAdjustments::generatePrediction(DosageAdjustment &
     IntakeSeries recordedIntakes;
     selectRecordedIntakes(recordedIntakes, intakeSeriesPerGroup[defaultGroupId], _calculationStartTime, newEndTime);
 
-    if ((recordedIntakes.size() != analytesPredictions[0]->getTimes().size()) ||
-            (recordedIntakes.size() != analytesPredictions[0]->getValues().size())) {
+    if ((recordedIntakes.size() != multianalytesPredictions[0]->getTimes().size()) ||
+            (recordedIntakes.size() != multianalytesPredictions[0]->getValues().size())) {
         return ComputingStatus::RecordedIntakesSizeError;
     }
 
 
 
     for (size_t i = 0; i < recordedIntakes.size(); i++) {
-        if (i >= analytesPredictions[0]->getTimes().size()) {
+        if (i >= multianalytesPredictions[0]->getTimes().size()) {
             break;
         }
-        TimeOffsets times = analytesPredictions[0]->getTimes()[i];
+        TimeOffsets times = multianalytesPredictions[0]->getTimes()[i];
         DateTime start = recordedIntakes[i].getEventTime();
         DateTime end = start + std::chrono::milliseconds(static_cast<int>(times.back()) * 1000 * 3600);
         if (start >= _traits->getAdjustmentTime()) {
@@ -1243,7 +1248,7 @@ ComputingStatus MultiComputingAdjustments::generatePrediction(DosageAdjustment &
                         end,
                         times,
                         activeMoietiesPredictions,
-                        analytesPredictions,
+                        multianalytesPredictions,
                         i,
                         _etas,
                         parameterSeries);
