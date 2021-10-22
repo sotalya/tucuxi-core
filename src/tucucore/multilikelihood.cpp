@@ -4,7 +4,7 @@
 
 
 #include "multilikelihood.h"
-#include "concentrationcalculator.h"
+#include "multiconcentrationcalculator.h"
 #include "residualerrormodel.h"
 
 #include <boost/math/special_functions/erf.hpp>
@@ -20,7 +20,7 @@ MultiLikelihood::MultiLikelihood(const OmegaMatrix& _omega,
                        const SampleSeries& _samples,
                        const IntakeSeries& _intakes,
                        const ParameterSetSeries& _parameters,
-                       IConcentrationCalculator &_concentrationCalculator)
+                       IMultiConcentrationCalculator &_multiconcentrationCalculator)
     : // m_omega(&_omega),
       m_residualErrorModel(&_residualErrorModel),
       m_samples(&_samples),
@@ -28,7 +28,7 @@ MultiLikelihood::MultiLikelihood(const OmegaMatrix& _omega,
       m_parameters(&_parameters),
       m_inverseOmega(_omega.inverse()),
       m_omegaAdd(static_cast<double>(_omega.rows()) * log(2 * PI) + log(_omega.determinant())),
-      m_concentrationCalculator(&_concentrationCalculator)
+      m_concentrationCalculator(&_multiconcentrationCalculator)
 {
     initBounds(_omega, m_omax, m_omin);
 }

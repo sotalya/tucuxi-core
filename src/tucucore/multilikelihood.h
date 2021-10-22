@@ -18,7 +18,7 @@ namespace Tucuxi {
 namespace Core {
 
 class IResidualErrorModel;
-class IConcentrationCalculator;
+class IMultiConcentrationCalculator;
 
 /// \brief The MultiLikelihood class
 /// This is the class that calculates the log-likelihood for aposteriori of multi-analytes equations
@@ -31,7 +31,7 @@ public:
                const SampleSeries& _samples,
                const IntakeSeries& _intakes,
                const ParameterSetSeries& _parameters,
-               IConcentrationCalculator& _concentrationCalculator);
+               IMultiConcentrationCalculator& _multiconcentrationCalculator);
 
     /// \brief operator ()
     /// This method calculates the negative log of the posterior (its a misnomer to call it loglikelihood i guess).
@@ -147,7 +147,7 @@ private:
     const double m_omegaAdd{0};
 
     // Concentration calculator used for all calculations
-    IConcentrationCalculator* m_concentrationCalculator;
+    IMultiConcentrationCalculator* m_concentrationCalculator;
 };
 
 

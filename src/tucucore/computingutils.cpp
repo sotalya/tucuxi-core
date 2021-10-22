@@ -96,13 +96,13 @@ CovariateEvent ComputingUtils::getCovariateAtTime(const DateTime &_date, const C
 
 
 ComputingStatus ComputingUtils::computeMultiActiveMoiety(
-        const ActiveMoiety *_activeMoiety0,
-        const ActiveMoiety *_activeMoiety1,
+        const std::vector<ActiveMoiety> *_activemoieties,
         const std::vector<MultiConcentrationPredictionPtr> &_analytesPredictions,
         MultiConcentrationPredictionPtr &_activeMoietyPredictions)
 {
-    Operation *op1 = _activeMoiety1->getFormula();
-    Operation *op2 = _activeMoiety0->getFormula();
+    const std::vector<Operation>& op = std::vector<Operation>();
+    for(size_t i = 0; i < _activemoieties->size(); ++i) op[i] = _activemoieties[i]->getFormula(); //i don't understand why it doesn't work
+
 
     size_t fullSize = _analytesPredictions[0]->getValues().size();
 
@@ -119,37 +119,38 @@ ComputingStatus ComputingUtils::computeMultiActiveMoiety(
         size_t nbConcentrations = analyteC[0].size();
         std::vector<Concentrations> concentration(nbConcentrations);
 
-        if (op1 == nullptr) {
-            for(size_t c = 0; c < nbConcentrations; c++) {
-                concentration[c][0] = analyteC[0][c];
-            }
-        }
+        for(size_t i = 0; i < _activemoieties->size(); ++i){
 
-        else if (op2 == nullptr){
-            for(size_t c = 0; c < nbConcentrations; c++) {
-                concentration[c][1] = analyteC[1][c];
+            if(op[i] == nullptr)
+            {
+                for(size_t c = 0; c < nbConcentrations; c++) {
+                    concentration[c][1] = analyteC[1][c];
+                }
             }
-        }
-        else {
+            else {
 
-            OperationInputList inputList;
-            for (size_t an = 0; an < nbAnalytes; an++) {
-                inputList.push_back(OperationInput("input" + std::to_string(an), 0.0));
-            }
-
-            for(size_t c = 0; c < nbConcentrations; c++) {
+                OperationInputList inputList;
                 for (size_t an = 0; an < nbAnalytes; an++) {
-                    inputList[an].setValue(analyteC[an][c]);
+                    inputList.push_back(OperationInput("input" + std::to_string(an), 0.0));
                 }
-                double result;
-                if (!op1->evaluate(inputList, result) || !op2->evaluate(inputList, result)) {
-                    // Something went wrong
-                    return ComputingStatus::MultiActiveMoietyCalculationError;
+
+                for(size_t c = 0; c < nbConcentrations; c++) {
+                    for (size_t an = 0; an < nbAnalytes; an++) {
+                        inputList[an].setValue(analyteC[an][c]);
+                    }
+                    double result;
+                    if (!op[i]->evaluate(inputList, result) ){
+                        // Something went wrong
+                        return ComputingStatus::MultiActiveMoietyCalculationError;
+                    }
+                    concentration[c][0] = result;
+                    concentration[c][1] = result;
                 }
-                concentration[c][0] = result;
-                concentration[c][1] = result;
             }
+
         }
+
+
         _activeMoietyPredictions->appendConcentrations(times, concentration); //i have to put it in function of a vector of concentrations and not a single concentration
     }
 

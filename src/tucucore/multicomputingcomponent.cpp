@@ -185,7 +185,7 @@ ComputingStatus MultiComputingComponent::recordCycle(const ComputingTraitStandar
         cycle.addData(_times, Tucuxi::Common::UnitManager::convertToUnit<Tucuxi::Common::UnitManager::UnitType::Concentration>(
                           _analytesPredictions[index]->getValues()[_valueIndex],
                           _request.getDrugModel().getActiveMoieties()[0]->getUnit(),
-                          unit));
+                           unit));
         index ++;
     }
 
@@ -324,8 +324,6 @@ ComputingStatus MultiComputingComponent::compute(   //HAY QUE PROGRAMAR ESTA FUN
         for (const auto & activeMoiety : _request.getDrugModel().getActiveMoieties()) {
 
             MultiConcentrationPredictionPtr activeMoietyPrediction = std::make_unique<MultiConcentrationPrediction>();
-            activeMoiety active1 = activeMoiety.get();
-
             ComputingStatus activeMoietyComputingResult = m_utils->computeMultiActiveMoiety(activeMoiety.get(), analytesPredictions, activeMoietyPrediction);
             if (activeMoietyComputingResult != ComputingStatus::Ok) {
                 return activeMoietyComputingResult;

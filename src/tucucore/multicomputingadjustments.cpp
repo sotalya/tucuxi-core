@@ -16,6 +16,7 @@
 #include "tucucore/multiconcentrationcalculator.h"
 #include "tucucore/computingutils.h"
 #include "tucucore/cyclestatisticscalculator.h"
+#include "tucucore/hardcodedoperation.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -1197,12 +1198,21 @@ ComputingStatus MultiComputingAdjustments::generatePrediction(DosageAdjustment &
 
     std::vector<ConcentrationPredictionPtr> activeMoietiesPredictions;
 
+/*
     if (!_request.getDrugModel().isSingleAnalyte()) {
+       Tucuxi::Core::OperationCollection collection;
+        collection.populate();
+        std::shared_ptr<Operation> sharedOperation = collection.getOperationFromId("sum2");
+        std::unique_ptr<Operation> activeMoietyOperation = std::unique_ptr<Operation>(sharedOperation.get()->clone());
+        std::vector<AnalyteId> analyteList0;
+        std::unique_ptr<ActiveMoiety> activeMoiety0 = std::make_unique<ActiveMoiety>(ActiveMoietyId("activeMoietyMulti"), TucuUnit("ug/l"), analyteList0, std::move(activeMoietyOperation));
 
-        active1 = new ActiveMoiety;
-        active2 = new ActiveMoiety;
-        for (const auto & activeMoiety : _request.getDrugModel().getActiveMoieties()) {
+        ActiveMoiety *a1 = new ActiveMoiety();
+        ActiveMoiety *a2 = new ActiveMoiety();
 
+        for (const auto & activeMoiety : _request.getDrugModel().getActiveMoieties())
+            {
+            //a1 = activeMoiety.get();
             ConcentrationPredictionPtr activeMoietyPrediction = std::make_unique<ConcentrationPrediction>();
             ComputingStatus activeMoietyComputingResult = m_utils->computeMultiActiveMoiety(activeMoiety.get(), multianalytesPredictions, activeMoietyPrediction);
             if (activeMoietyComputingResult != ComputingStatus::Ok) {
@@ -1264,6 +1274,8 @@ ComputingStatus MultiComputingAdjustments::generatePrediction(DosageAdjustment &
     return ComputingStatus::Ok;
 }
 
+*/
 
 } // namespace Core
 } // namespace Tucuxi
+}
