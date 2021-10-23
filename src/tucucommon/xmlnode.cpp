@@ -29,10 +29,6 @@ XmlNode::XmlNode(rapidxml::xml_node<>* _pNode)
 }
 
 
-XmlNode::~XmlNode()
-= default;
-
-
 std::string XmlNode::getName() const
 {
     if (m_pNode != nullptr) {

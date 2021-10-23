@@ -246,7 +246,7 @@ public:
 
     DOSAGE_UTILS(DosageUnbounded, DosageSteadyState);
 
-    const DateTime getLastDoseTime() const
+    DateTime getLastDoseTime() const
     {
         return m_lastDoseTime;
     }
@@ -356,7 +356,7 @@ public:
 
     FormulationAndRoute getLastFormulationAndRoute() const override
     {
-        if (m_dosages.size() == 0) {
+        if (m_dosages.empty()) {
             return FormulationAndRoute(Formulation::Undefined, AdministrationRoute::Undefined, AbsorptionModel::Undefined);
         }
         return m_dosages.back()->getLastFormulationAndRoute();
@@ -450,7 +450,7 @@ public:
 
     FormulationAndRoute getLastFormulationAndRoute() const override
     {
-        if (m_dosages.size() == 0) {
+        if (m_dosages.empty()) {
             return FormulationAndRoute(Formulation::Undefined, AdministrationRoute::Undefined, AbsorptionModel::Undefined);
         }
         return m_dosages.back()->getLastFormulationAndRoute();
@@ -933,7 +933,7 @@ public:
     DosageHistory( const DosageHistory &_obj)
     {
         for (const auto& timeRange : _obj.m_history) {
-            this->addTimeRange(*timeRange.get());
+            this->addTimeRange(*timeRange);
         }
     }
 
@@ -945,7 +945,7 @@ public:
     DosageHistory( const DosageHistory &&_obj)
     {
         for (const auto& timeRange : _obj.m_history) {
-            this->addTimeRange(*timeRange.get());
+            this->addTimeRange(*timeRange);
         }
     }
 
@@ -955,11 +955,11 @@ public:
     /// \return The modified DosageHistory
     ///
     /// TODO : A test for this function needs to be written
-    DosageHistory& operator=(DosageHistory _other)
+    DosageHistory& operator=(const DosageHistory& _other)
     {
         this->m_history.clear();
         for (const auto& timeRange : _other.m_history) {
-            this->addTimeRange(*timeRange.get());
+            this->addTimeRange(*timeRange);
         }
         return *this;
     }
@@ -970,7 +970,7 @@ public:
     ///
     bool isEmpty() const
     {
-        return (m_history.size() == 0);
+        return (m_history.empty());
     }
 
 
@@ -991,7 +991,7 @@ public:
     {
         DosageHistory *newDosageHistory = new DosageHistory();
         for (const auto& timeRange : m_history) {
-            newDosageHistory->addTimeRange(*timeRange.get());
+            newDosageHistory->addTimeRange(*timeRange);
         }
         return newDosageHistory;
     }

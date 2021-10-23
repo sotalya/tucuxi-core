@@ -54,7 +54,7 @@ public:
     XmlNode(const XmlNode& _other);
 
     /// \brief Destructor
-    ~XmlNode();
+    ~XmlNode() = default;
     
     /// \brief Check if the node is valid
     /// \return True if the node is valid
@@ -142,8 +142,7 @@ private:
     
     /// \brief Helper method asking the associated docuement to allocate a string.
     char* allocateString(const std::string& _string);
-    
-private:
+
     rapidxml::xml_node<char> *m_pNode;  /// The "wrapped" rapidxml node.
     
     friend class XmlDocument;

@@ -126,7 +126,7 @@ class SinglePointsData : public ComputedData
 {
 public:
 
-    SinglePointsData(RequestResponseId _id) : ComputedData(_id) {}
+    SinglePointsData(RequestResponseId _id) : ComputedData(std::move(_id)) {}
 
     /// Absolute time of each concentration
     std::vector<Tucuxi::Common::DateTime> m_times;
@@ -147,7 +147,7 @@ public:
     const std::vector<CycleData>& getData() const { return m_data; }
     std::vector<CycleData>& getModifiableData() { return m_data; }
 
-    void addCompartmentInfo(CompartmentInfo _info) { m_infos.push_back(_info);}
+    void addCompartmentInfo(const CompartmentInfo& _info) { m_infos.push_back(_info);}
 
     const std::vector<CompartmentInfo>& getCompartmentInfos() const { return m_infos;}
 protected:
@@ -162,7 +162,7 @@ protected:
 class SinglePredictionData : public ComputedData, public ConcentrationData
 {
 public:
-    SinglePredictionData(RequestResponseId _id) : ComputedData(_id) {}
+    SinglePredictionData(RequestResponseId _id) : ComputedData(std::move(_id)) {}
 };
 
 ///
@@ -175,10 +175,10 @@ class DosageAdjustment : public ConcentrationData
 {
 public:
 
-    DosageAdjustment() : ConcentrationData() {}
+    DosageAdjustment() = default;
 
     double getGlobalScore() const {
-        if (m_targetsEvaluation.size() == 0) {
+        if (m_targetsEvaluation.empty()) {
             return 0.0;
         }
         double sum = 0.0;
@@ -202,13 +202,16 @@ public:
 class AdjustmentData : public SinglePredictionData
 {
 public:
-    AdjustmentData(RequestResponseId _id) : SinglePredictionData(_id) {}
+    AdjustmentData(RequestResponseId _id) : SinglePredictionData(std::move(_id)) {}
 
     void addAdjustment(DosageAdjustment _adjustment) { m_adjustments.push_back(_adjustment);}
 
-    void setAdjustments(std::vector<DosageAdjustment> &_adjustments) { m_adjustments = _adjustments;}
+    void setAdjustments(const std::vector<DosageAdjustment> &_adjustments) { m_adjustments = _adjustments;}
 
-    const std::vector<DosageAdjustment> getAdjustments() const { return m_adjustments;}
+    const std::vector<DosageAdjustment>& getAdjustments() const { return m_adjustments;}
+
+    // To be checked if we need that function instead of the previous one
+    // std::vector<DosageAdjustment> getAdjustments() const { return m_adjustments;}
 
 protected:
 
@@ -227,7 +230,7 @@ protected:
 class PercentilesData : public ComputedData
 {
 public:
-    PercentilesData(RequestResponseId _id) : ComputedData(_id) {}
+    PercentilesData(RequestResponseId _id) : ComputedData(std::move(_id)) {}
 
     void setRanks(const PercentileRanks &_ranks) { m_ranks = _ranks;}
 

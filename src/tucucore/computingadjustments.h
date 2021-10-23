@@ -144,7 +144,6 @@ protected:
             bool &_multipleFormulationAndRoutes
             );
 
-protected:
 
     Tucuxi::Common::LoggerHelper m_logger;
     ComputingUtils *m_utils;

@@ -30,8 +30,6 @@ public:
     /// \return The list of required PK parameters Ids
     static std::vector<std::string> getParametersId();
 
-
-public:
     inline void derive(double _t, const std::vector<double> &_c, std::vector<double>& _dcdt)
     {
         //auto c0 = _c[0] / 1000.0 * m_V;
@@ -144,8 +142,6 @@ protected:
         //        or only for the first dose
     }
 
-protected:
-
 };
 
 /// \ingroup TucuCore
@@ -177,8 +173,6 @@ protected:
         }
     }
 
-protected:
-
 };
 
 /*
@@ -205,8 +199,6 @@ protected:
         _concentrations[1] = _inResiduals[1];
 
     }
-
-protected:
 
 };
 */

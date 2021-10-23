@@ -12,6 +12,7 @@
 namespace Tucuxi {
 namespace Core {
 
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define HARDCODED_OPERATION(NAME)                                                   \
 class NAME : public HardcodedOperation                                              \
 {                                                                                   \

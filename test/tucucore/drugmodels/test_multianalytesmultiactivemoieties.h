@@ -143,7 +143,7 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
 
             fructose_assert_eq( result, ComputingStatus::Ok);
 
-            const ComputedData* responseData = response.get()->getData();
+            const ComputedData* responseData = response->getData();
 
             {
                 fructose_assert(responseData != nullptr);

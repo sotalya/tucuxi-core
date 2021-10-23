@@ -87,7 +87,6 @@ private:
     /// \brief Make sure the time is not longer than one day.
     void normalize();
 
-private:
     std::chrono::duration<ChronoBaseType> m_time{};  /// The encapsulated time (a duration from 0h00)
 };
 

@@ -38,6 +38,7 @@ public:
 
 /// This macro shall be inserted at the beginning of each class of IntakeIntervalCalculator, passing the class name
 /// as parameter to the macro
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define INTAKEINTERVALCALCULATOR_UTILS(entity) \
 public: \
     class IntakeCreator : public IntakeIntervalCalculatorCreator \
@@ -58,6 +59,7 @@ public: \
     }
 
 //#ifndef NDEBUG
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define CHECK_CALCULATEINTAKEPOINTS_INPUTS \
 { \
     if (_inResiduals.size() < getResidualSize()) { \
@@ -82,7 +84,7 @@ public: \
 */
 //#endif
 
-
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define CHECK_CALCULATEINTAKESINGLEPOINT_INPUTS \
 { \
     if (_inResiduals.size() < getResidualSize()) { \

@@ -26,16 +26,6 @@ public:
     /// \return The list of required PK parameters Ids
     static std::vector<std::string> getParametersId();
 
-protected:
-    bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
-
-    void initConcentrations (const Residuals& _inResiduals, std::vector<double> &_concentrations) override
-    {
-        _concentrations[0] = _inResiduals[0];
-        _concentrations[1] = _inResiduals[1] + m_D / m_V;
-    }
-
-public:
     inline void derive(double _t, const std::vector<double> &_c, std::vector<double>& _dcdt)
     {
         FINAL_UNUSED_PARAMETER(_t);
@@ -50,7 +40,13 @@ public:
     }
 
 protected:
+    bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
 
+    void initConcentrations (const Residuals& _inResiduals, std::vector<double> &_concentrations) override
+    {
+        _concentrations[0] = _inResiduals[0];
+        _concentrations[1] = _inResiduals[1] + m_D / m_V;
+    }
 
     Value m_D;	/// Quantity of drug
     Value m_F;  /// bioavailability

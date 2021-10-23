@@ -177,7 +177,7 @@ OperableGraphManager::isCyclic(const std::string &_cur,
                                std::map<std::string, bool> &_visited,
                                std::map<std::string, bool> &_gotBack) const
 {
-    if (_visited.at(_cur) == false) {
+    if (!_visited.at(_cur)) {
         _visited.at(_cur) = true;
         _gotBack.at(_cur) = true;
 

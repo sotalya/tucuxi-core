@@ -42,13 +42,13 @@ protected:
 
     void setErrorMessage(std::string _errorMessage);
 
-    void setStatus(Status _status, std::string _errorMessage = "");
+    void setStatus(Status _status, const std::string& _errorMessage = "");
 
     Status getStatus() const;
 
-    void unexpectedTag(std::string _tagName);
+    void unexpectedTag(const std::string& _tagName);
 
-    std::string checkNodeIterator(Common::XmlNodeIterator _rootIterator, std::string _tagName);
+    std::string checkNodeIterator(Common::XmlNodeIterator _rootIterator, const std::string &_tagName);
 
     //Extract data from XML file
     TucuUnit extractUnit(Common::XmlNodeIterator _rootIterator, CheckUnit _checkUnit = CheckUnit::DoNotCheck);

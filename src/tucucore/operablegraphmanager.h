@@ -109,7 +109,6 @@ private:
     bool isValid();
 
 
-private:
     /// \brief Input node in the Operable graph.
     class OperableInputNode
     {

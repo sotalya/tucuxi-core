@@ -642,7 +642,7 @@ ComputingStatus MultiComputingAdjustments::compute(
             // Stream that to file, only for debugging purpose
             // To be removed later on, or at least commented
             std::string fileName = "candidate_" + std::to_string(index) + ".dat";
-            pPrediction.get()->streamToFile(fileName);
+            pPrediction->streamToFile(fileName);
 #endif // 0
             index ++;
 

@@ -119,7 +119,7 @@ bool CacheComputing::buildResponse(
 
 bool CacheComputing::isFullIntervalInCache(DateTime _start, DateTime _end)
 {
-    if (m_indexVector.size() == 0) {
+    if (m_indexVector.empty()) {
         return false;
     }
     if (m_indexVector[0].m_start > _start) {

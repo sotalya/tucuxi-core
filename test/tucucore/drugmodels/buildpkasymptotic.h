@@ -176,7 +176,7 @@ public:
         collection.populate();
         std::shared_ptr<Operation> sharedOperation = collection.getOperationFromId("direct");
 
-        std::unique_ptr<Operation> activeMoietyOperation = std::unique_ptr<Operation>(sharedOperation.get()->clone());
+        std::unique_ptr<Operation> activeMoietyOperation = std::unique_ptr<Operation>(sharedOperation->clone());
 
         std::vector<AnalyteId> analyteList;
         analyteList.push_back(AnalyteId("analyte"));

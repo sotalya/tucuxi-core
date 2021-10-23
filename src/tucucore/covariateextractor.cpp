@@ -576,7 +576,7 @@ void CovariateExtractor::sortPatientVariates()
     }
 }
 
-const TucuUnit CovariateExtractor::getFinalUnit(const std::string &_cvName) const{
+TucuUnit CovariateExtractor::getFinalUnit(const std::string &_cvName) const {
     for(const auto &covInDM : m_defaults){
         if(_cvName == covInDM->getId()){
             return covInDM->getUnit();

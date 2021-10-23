@@ -171,7 +171,7 @@ struct TestComputingComponentPercentiles : public fructose::test_base<TestComput
 
             fructose_assert( result == ComputingResult::Success);
 
-            const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = partialResponse.get()->getResponses();
+            const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = partialResponse->getResponses();
             for(std::size_t i = 0; i < responses.size(); i++) {
                 fructose_assert(dynamic_cast<SinglePredictionResponse*>(responses[i].get()) != nullptr);
                 const SinglePredictionResponse *resp = dynamic_cast<SinglePredictionResponse*>(responses[i].get());
@@ -271,7 +271,7 @@ struct TestComputingComponentPercentiles : public fructose::test_base<TestComput
 
             fructose_assert( result == ComputingResult::Success);
 
-            const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = partialResponse.get()->getResponses();
+            const std::vector<std::unique_ptr<SingleComputingResponse> > &responses = partialResponse->getResponses();
             for(std::size_t i = 0; i < responses.size(); i++) {
                 fructose_assert(dynamic_cast<SinglePredictionResponse*>(responses[i].get()) != nullptr);
                 const SinglePredictionResponse *resp = dynamic_cast<SinglePredictionResponse*>(responses[i].get());

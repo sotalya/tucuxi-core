@@ -57,9 +57,6 @@ ComputingComponent::ComputingComponent()
 }
 
 
-ComputingComponent::~ComputingComponent()
-= default;
-
 bool ComputingComponent::initialize()
 {
     m_utils = std::make_unique<ComputingUtils>();
@@ -186,7 +183,7 @@ ComputingStatus ComputingComponent::recordCycle(const ComputingTraitStandard *_t
     ParameterSetEventPtr params = _parameterSeries[analyteGroupId].getAtTime(_start, _etas.at(analyteGroupId));
 
     if (_traits->getComputingOption().retrieveParameters() == RetrieveParametersOption::RetrieveParameters) {
-        for (auto p = params.get()->begin() ; p < params.get()->end() ; p++) {
+        for (auto p = params->begin() ; p < params->end() ; p++) {
             cycle.m_parameters.push_back({(*p).getParameterId(), (*p).getValue()});
         }
         std::sort(cycle.m_parameters.begin(), cycle.m_parameters.end(),

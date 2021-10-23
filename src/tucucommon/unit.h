@@ -38,7 +38,7 @@ public:
     /// can be performed later on depending on a specific type of unit required
     /// at a specific place in code.
     ///
-    TucuUnit(std::string _unitString) : m_unitString(_unitString){}
+    TucuUnit(const std::string& _unitString) : m_unitString(_unitString){}
 
     ///
     /// \brief Compares two units for equality
@@ -103,7 +103,7 @@ public:
     /// \return converted value
     ///
     template<UnitType unitType>
-    static double convertToUnit(double _value, TucuUnit _initialUnit, TucuUnit _finalUnit)
+    static double convertToUnit(double _value, const TucuUnit& _initialUnit, const TucuUnit& _finalUnit)
     {
         const auto conversionMap = getConversionMap().at(unitType);
 
@@ -127,7 +127,7 @@ public:
     /// \return converted vector
     ///
     template<UnitType unitType>
-    static std::vector<double> convertToUnit(const std::vector<double>& _value, TucuUnit _initialUnit, TucuUnit _finalUnit)
+    static std::vector<double> convertToUnit(const std::vector<double>& _value, const TucuUnit& _initialUnit, const TucuUnit& _finalUnit)
     {
         std::vector<double> result(_value.size());
         const auto conversionMap = getConversionMap().at(unitType);
@@ -157,7 +157,7 @@ public:
     /// \param _finalUnit
     ///
     template<UnitType unitType>
-    static void updateAndConvertToUnit(std::vector<double>& _value, TucuUnit _initialUnit, TucuUnit _finalUnit)
+    static void updateAndConvertToUnit(std::vector<double>& _value, const TucuUnit& _initialUnit, const TucuUnit& _finalUnit)
     {
         const auto conversionMap = getConversionMap().at(unitType);
 
@@ -178,7 +178,7 @@ public:
     }
 
     template<UnitType unitType>
-    static bool isOfType(TucuUnit _unit)
+    static bool isOfType(const TucuUnit& _unit)
     {
         const auto conversionMap = getConversionMap().at(unitType);
 

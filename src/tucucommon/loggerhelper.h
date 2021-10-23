@@ -89,7 +89,6 @@ public:
         }
     }
 
-public:
     /// \brief Log a "debug" message.
     /// \param _msg The message to log
     void debug(const char* _msg)
@@ -258,8 +257,14 @@ public:
 
     /// Allows to disable the logger, for testing purpose
     static void enable() { smEnable() = true;}
+
     static void disable() { smEnable() = false;}
-    static bool & smEnable() { static bool sm_enable = true; return sm_enable;}
+
+    static bool & smEnable() {
+        static bool sm_enable = true;// NOLINT(readability-identifier-naming)
+        return sm_enable;
+    }
+
     static bool enabled() { return smEnable();}
 
 private:

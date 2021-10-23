@@ -131,11 +131,11 @@ typedef std::vector<Value> ValueVector;
 typedef Eigen::Map<const EigenVector> map2EigenVectorType;
 
 // The three following defines could be moved somewhere else
-#define isOmegaEmpty(matrix) (matrix.rows() == 0)
+#define isOmegaEmpty(matrix) ((matrix).rows() == 0)
 
-#define isOmegaSquare(matrix) (matrix.rows() == matrix.cols())
+#define isOmegaSquare(matrix) ((matrix).rows() == (matrix).cols())
 
-#define omegaSize(matrix) (matrix.rows())
+#define omegaSize(matrix) ((matrix).rows())
 
 /// \brief Define the covariate types.
 enum class CovariateType {
@@ -238,7 +238,7 @@ public:
     /// \param _type The type of prediction
     /// \param _id The Id of the prediction
     ///
-    CompartmentInfo(CompartmentType _type, std::string _id) : m_type(_type), m_id(_id) {}
+    CompartmentInfo(CompartmentType _type, std::string _id) : m_type(_type), m_id(std::move(_id)) {}
 
     ///
     /// \brief gets the Id of this prediction

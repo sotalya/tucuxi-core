@@ -294,7 +294,6 @@ protected:
     /// \brief Force the user of the class to implement a function filling the vector of required inputs.
     virtual void fillRequiredInputs() = 0;
 
-protected:
     /// \brief Flag marking required inputs as not yet entered.
     bool m_filledInputs;
 };

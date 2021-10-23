@@ -85,7 +85,6 @@ private:
     /// \return True if the document was created
     bool createDocument();
 
-private:
     std::string m_rawXml;                       /// The raw XML data as recieved by fromString() or open().
     std::unique_ptr<rapidxml::xml_document<char> > m_pDocument;  /// A pointer to the actual "rapidxml" document object
 };

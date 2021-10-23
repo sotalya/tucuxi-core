@@ -237,8 +237,6 @@ private:
         return std::chrono::duration_cast<T>(m_date.time_since_epoch());
     }
 
-private:
-
     /// The current date time
     std::chrono::time_point<std::chrono::system_clock> m_date;  /// The date managed by the class
 

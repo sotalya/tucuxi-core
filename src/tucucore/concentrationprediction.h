@@ -17,7 +17,7 @@ class ConcentrationPrediction
 {
 public:
 
-    bool streamToFile(const std::string _fileName) 
+    bool streamToFile(const std::string& _fileName)
     {
         std::ofstream ostrm(_fileName, std::ios::binary);
         if ((ostrm.rdstate() & std::ios_base::failbit) != 0) {

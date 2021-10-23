@@ -98,7 +98,7 @@ public:
         while (m_stats.size() <= _compartment) {
             m_stats.push_back(std::vector<CycleStatistic>(static_cast<int>(CycleStatisticType::CYCLE_STATISTIC_TYPE_SIZE),CycleStatistic(Tucuxi::Common::DateTime::now(), CycleStatisticType::CYCLE_STATISTIC_TYPE_SIZE)));
         }
-        m_stats[_compartment][static_cast<size_t>(_type)] = _statistic;
+        m_stats[_compartment][static_cast<size_t>(_type)] = std::move(_statistic);
     }
 
     std::vector<std::vector<CycleStatistic> > getStats() const {return m_stats;}

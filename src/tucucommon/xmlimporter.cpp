@@ -11,7 +11,7 @@ static const int SECONDE = MINUTE;
 static const string DATE_FORMAT = "%Y-%m-%dT%H:%M:%S"; // NOLINT(readability-identifier-naming)
 
 
-void XMLImporter::unexpectedTag(std::string _tagName) {
+void XMLImporter::unexpectedTag(const std::string& _tagName) {
 
     std::vector<std::string> ignored = ignoredTags();
     for(const auto & s : ignored) {
@@ -23,7 +23,7 @@ void XMLImporter::unexpectedTag(std::string _tagName) {
     logHelper.warn("Unexpected tag <{}>", _tagName);
 }
 
-void XMLImporter::setStatus(Status _status, std::string _errorMessage) {
+void XMLImporter::setStatus(Status _status, const string& _errorMessage) {
     // Totally unuseful test, but good to add a breakpoint in the else during debugging
     if (_status == Status::Ok) {
         m_status = _status;
@@ -56,7 +56,7 @@ void XMLImporter::setNodeError(Tucuxi::Common::XmlNodeIterator _nodeIterator)
     }
 
 
-   if (_nodeIterator->getValue() == "") {
+   if (_nodeIterator->getValue().empty()) {
         errorMessage += '<' + _nodeIterator->getName() + "> contains an empty value.";
    }
    else {
@@ -315,7 +315,7 @@ string XMLImporter::getChildString(Common::XmlNodeIterator _rootIterator, const 
 }
 
 
-string XMLImporter::checkNodeIterator(Common::XmlNodeIterator _rootIterator, string _tagName)
+string XMLImporter::checkNodeIterator(Common::XmlNodeIterator _rootIterator, const string& _tagName)
 {
     if(_rootIterator == Common::XmlNodeIterator::none())
     {

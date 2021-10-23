@@ -43,7 +43,6 @@ public:
     /// \return The component manager itself
     static ComponentManager* getInstance();
 
-public:
     /// \brief Register a factory and associate it with a name.
     /// \param _name The name that will allow creating instances via method createComponent
     /// \param _pFactory A pointer to a function that "knows" how to create a component of the given type.
@@ -97,7 +96,6 @@ private:
     /// \brief Constructor. Used internal to create the singleton instance.
     ComponentManager();
 
-private:
     std::map<std::string, TComponentFactory> m_factories;   /// The list of registered factories
     std::map<std::string, Interface*> m_components;         /// The lisf of registered components
 };

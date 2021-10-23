@@ -192,7 +192,6 @@ private:
         return std::chrono::duration_cast<T>(m_duration);
     }
 
-private:
     std::chrono::duration<ChronoBaseType> m_duration;  /// The encapsulated duration
 
 #ifdef EASY_DEBUG

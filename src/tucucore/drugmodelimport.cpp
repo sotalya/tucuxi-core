@@ -513,7 +513,7 @@ Operation* DrugModelImport::extractOperation(Tucuxi::Common::XmlNodeIterator _no
             collection.populate();
             std::shared_ptr<Operation> sharedOperation = collection.getOperationFromId(it->getValue());
             if (sharedOperation != nullptr) {
-                operation = sharedOperation.get()->clone().release();
+                operation = sharedOperation->clone().release();
             }
         }
         else if (nodeName == "multiFormula") {

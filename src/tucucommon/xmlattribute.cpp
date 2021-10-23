@@ -28,10 +28,6 @@ XmlAttribute::XmlAttribute(rapidxml::xml_attribute<>* _pAttribute)
 }
 
 
-XmlAttribute::~XmlAttribute()
-= default;
-
-
 XmlNode XmlAttribute::getNode()
 {
     rapidxml::xml_node<>* pNode = nullptr;
