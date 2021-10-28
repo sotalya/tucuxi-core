@@ -320,16 +320,17 @@ ComputingStatus MultiComputingComponent::compute(   //HAY QUE PROGRAMAR ESTA FUN
     std::vector<MultiConcentrationPredictionPtr> activeMoietiesPredictions;
 
     //if (!_request.getDrugModel().isSingleAnalyte()) {
-
+        const std::vector<ActiveMoiety*> _activemoieties;
         for (const auto & activeMoiety : _request.getDrugModel().getActiveMoieties()) {
-
+                   _activemoieties.push_back(activeMoiety.get());
+                }
             MultiConcentrationPredictionPtr activeMoietyPrediction = std::make_unique<MultiConcentrationPrediction>();
-            ComputingStatus activeMoietyComputingResult = m_utils->computeMultiActiveMoiety(activeMoiety.get(), analytesPredictions, activeMoietyPrediction);
+            ComputingStatus activeMoietyComputingResult = m_utils->computeMultiActiveMoiety(_activemoieties, analytesPredictions, activeMoietyPrediction);
             if (activeMoietyComputingResult != ComputingStatus::Ok) {
                 return activeMoietyComputingResult;
             }
             activeMoietiesPredictions.push_back(std::move(activeMoietyPrediction));
-        }
+
     //}
 
     std::unique_ptr<SinglePredictionData> resp = std::make_unique<SinglePredictionData>(_request.getId());

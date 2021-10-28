@@ -16,8 +16,8 @@ namespace Tucuxi {
 namespace Core {
 
 MultiLikelihood::MultiLikelihood(const OmegaMatrix& _omega,
-                       const IResidualErrorModel& _residualErrorModel,
-                       const SampleSeries& _samples,
+                       const std::vector<IResidualErrorModel>& _residualErrorModel,
+                       const std::vector<SampleSeries>& _samples,
                        const IntakeSeries& _intakes,
                        const ParameterSetSeries& _parameters,
                        IMultiConcentrationCalculator &_multiconcentrationCalculator)
@@ -59,11 +59,12 @@ Value MultiLikelihood::operator()(const ValueVector& _etas)
 Value MultiLikelihood::negativeLogLikelihood(const ValueVector& _etas) const
 {
     ValueVector concentrations(m_samples->size());
+    std::vector<Concentrations>& _concentrations(m_samples->size());
     bool isAll = false;
 
     // Getting the concentration values at these _times and m_samples.
     ComputingStatus result = m_concentrationCalculator->computeConcentrationsAtTimes(
-        concentrations,
+        _concentrations,
         isAll,
         *m_intakes,
         *m_parameters,

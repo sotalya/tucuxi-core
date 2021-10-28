@@ -22,20 +22,23 @@ class IMultiConcentrationCalculator;
 
 /// \brief The MultiLikelihood class
 /// This is the class that calculates the log-likelihood for aposteriori of multi-analytes equations
-/// An instance is passed to the optimizer in minimize.h to calculate mode of posterior distribution
+/// An instance is passed to the optimizer in minimize.h to calculate mode of posterior distribution.
+///
+/// As there can multiple analytes, the constructor takes a vector of residual error models, one per
+/// analyte, and a vector of sample series, also one per analyte.
 class MultiLikelihood {
 public:
-    //Likelihood() {}
+
     MultiLikelihood(const OmegaMatrix& _omega,
-               const IResidualErrorModel& _residualErrorModel,
-               const SampleSeries& _samples,
+               const std::vector<IResidualErrorModel>& _residualErrorModel,
+               const std::vector<SampleSeries>& _samples,
                const IntakeSeries& _intakes,
                const ParameterSetSeries& _parameters,
-               IMultiConcentrationCalculator& _multiconcentrationCalculator);
+               IMultiConcentrationCalculator& _concentrationCalculator);
 
     /// \brief operator ()
-    /// This method calculates the negative log of the posterior (its a misnomer to call it loglikelihood i guess).
-    /// The concentrations (_cxns) at given etas and sample (measure) times are calculated first using aprioriAtTimes.
+    /// This method calculates the negative log of the posterior and prior.
+    /// The concentrations at given etas and sample (measure) times are calculated first using aprioriAtTimes.
     /// Then, the log of the the prior is calculated (only once).
     /// Then, the log of the likelihood at each sample is calculated.
     /// All the negative log values are added together (do a big AND operation).
@@ -45,19 +48,31 @@ public:
     Value operator()(const ValueVector& _etas);
 
     /// \brief negativeLogLikelihood
-    /// This method calculates the negative log of the posterior (its a misnomer to call it loglikelihood i guess).
-    /// The concentrations (_cxns) at given etas and sample (measure) times are calculated first using aprioriAtTimes.
+    /// This method calculates the negative log of the posterior added to the prior.
+    /// The concentrations at given etas and sample (measure) times are calculated first using aprioriAtTimes.
     /// Then, the log of the the prior is calculated (only once).
     /// Then, the log of the likelihood at each sample is calculated.
     /// All the negative log values are added together (do a big AND operation)
+    ///
+    /// As we can have multiple analytes, the concentrations at sample times have to be calculated for each
+    /// sample, independently of their analyte. It means it can be done by first compute the times at which
+    /// we need a concentration, and then run the computation.
+    /// Then, the calculation of the log of the likelihood for each sample has to take care of the analyte
+    /// of each sample. We can simply iterate over the analytes in an outter loop, and over the samples of
+    /// this analyte in the inner loop.
+    /// Be careful as we could have, for a 2-analyte example, cases where at a certain time only one
+    /// analyte has been sampled, and at certain times there could be a sample per analyte. As the sample series
+    /// are analyte-agnostic, it means each SampleSeries of _samples refers to a specific analyte. The analyte
+    /// index shall correspond to the analyte index in the IntakeCalculator.
+    ///
     /// \param _etas The vector of etas being optimized
-    /// \return
+    /// \return The negative log likelihood of the samples based on the _etas
     Value negativeLogLikelihood(const ValueVector& _etas) const;
 
     ///
     /// \brief operator ()
-    /// This method calculates the negative log of the posterior (its a misnomer to call it loglikelihood i guess).
-    /// The concentrations (_cxns) at given etas and sample (measure) times are calculated first using aprioriAtTimes.
+    /// This method calculates the negative log of the posterior and the prior.
+    /// The concentrations at given etas and sample (measure) times are calculated first using aprioriAtTimes.
     /// Then, the log of the the prior is calculated (only once).
     /// Then, the log of the likelihood at each sample is calculated.
     /// All the negative log values are added together (do a big AND operation)
@@ -129,10 +144,10 @@ private:
     // const OmegaMatrix* m_omega;
 
     /// intra-individual error model
-    const IResidualErrorModel* m_residualErrorModel;
+    const std::vector<IResidualErrorModel>* m_residualErrorModel;
 
     /// multi-index of samples for entire curve
-    const SampleSeries* m_samples;
+    const std::vector<SampleSeries>* m_samples;
 
     /// multi-index of intakes for entire curve
     const IntakeSeries* m_intakes;
@@ -155,6 +170,4 @@ private:
 } // namespace Tucuxi
 
 #endif // TUCUXI_CORE_MULTILIKELIHOOD_H
-
-
 

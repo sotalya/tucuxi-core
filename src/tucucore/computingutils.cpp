@@ -96,12 +96,12 @@ CovariateEvent ComputingUtils::getCovariateAtTime(const DateTime &_date, const C
 
 
 ComputingStatus ComputingUtils::computeMultiActiveMoiety(
-        const std::vector<ActiveMoiety> *_activemoieties,
+        const std::vector<ActiveMoiety*> _activemoieties,
         const std::vector<MultiConcentrationPredictionPtr> &_analytesPredictions,
         MultiConcentrationPredictionPtr &_activeMoietyPredictions)
 {
-    const std::vector<Operation>& op = std::vector<Operation>();
-    for(size_t i = 0; i < _activemoieties->size(); ++i) op[i] = _activemoieties[i]->getFormula(); //i don't understand why it doesn't work
+    std::vector<Operation*> op = std::vector<Operation*>();
+    for(size_t i = 0; i < _activemoieties.size(); ++i) op[i] = _activemoieties[i]->getFormula(); //i don't understand why it doesn't work
 
 
     size_t fullSize = _analytesPredictions[0]->getValues().size();
@@ -119,7 +119,7 @@ ComputingStatus ComputingUtils::computeMultiActiveMoiety(
         size_t nbConcentrations = analyteC[0].size();
         std::vector<Concentrations> concentration(nbConcentrations);
 
-        for(size_t i = 0; i < _activemoieties->size(); ++i){
+        for(size_t i = 0; i < _activemoieties.size(); ++i){
 
             if(op[i] == nullptr)
             {
