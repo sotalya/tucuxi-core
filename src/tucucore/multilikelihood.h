@@ -13,6 +13,7 @@
 #include "sampleevent.h"
 #include "dosage.h"
 #include "parameter.h"
+#include "multiconcentrationcalculator.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -162,7 +163,7 @@ private:
     const double m_omegaAdd{0};
 
     // Concentration calculator used for all calculations
-    IMultiConcentrationCalculator* m_concentrationCalculator;
+    MultiConcentrationCalculator* m_concentrationCalculator;
 };
 
 

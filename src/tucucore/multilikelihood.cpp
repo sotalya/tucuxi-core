@@ -15,9 +15,12 @@
 namespace Tucuxi {
 namespace Core {
 
+//Likelihood -> Combination between residual error, and variabilty
+//Multilikelihood -> Likelihood adapted for multianalytes, multiconcentration...
+
 MultiLikelihood::MultiLikelihood(const OmegaMatrix& _omega,
-                       const std::vector<IResidualErrorModel>& _residualErrorModel,
-                       const std::vector<SampleSeries>& _samples,
+                       const std::vector<IResidualErrorModel>& _residualErrorModel, //we need a vector of residual error models
+                       const std::vector<SampleSeries>& _samples, //we need a vector of samples to know what sample is for each analyte
                        const IntakeSeries& _intakes,
                        const ParameterSetSeries& _parameters,
                        IMultiConcentrationCalculator &_multiconcentrationCalculator)
@@ -28,7 +31,7 @@ MultiLikelihood::MultiLikelihood(const OmegaMatrix& _omega,
       m_parameters(&_parameters),
       m_inverseOmega(_omega.inverse()),
       m_omegaAdd(static_cast<double>(_omega.rows()) * log(2 * PI) + log(_omega.determinant())),
-      m_concentrationCalculator(&_multiconcentrationCalculator)
+      m_concentrationCalculator(&_multiconcentrationCalculator) //i have to fix that
 {
     initBounds(_omega, m_omax, m_omin);
 }
@@ -57,9 +60,9 @@ Value MultiLikelihood::operator()(const ValueVector& _etas)
 }
 
 Value MultiLikelihood::negativeLogLikelihood(const ValueVector& _etas) const
-{
+{  //returns the negative prior of the likelihood
     ValueVector concentrations(m_samples->size());
-    std::vector<Concentrations>& _concentrations(m_samples->size());
+    std::vector<Concentrations> _concentrations(m_samples->size());
     bool isAll = false;
 
     // Getting the concentration values at these _times and m_samples.
@@ -80,8 +83,8 @@ Value MultiLikelihood::negativeLogLikelihood(const ValueVector& _etas) const
 
     //calculate the prior which depends only on eta and omega (not the measure)
     Value logPrior = negativeLogPrior(Eigen::Map<const EigenVector>(&_etas[0], static_cast<Eigen::Index>(_etas.size())) /*, *m_omega*/);
-    SampleSeries::const_iterator sit = m_samples->begin();
-    SampleSeries::const_iterator sitEnd = m_samples->end();
+    SampleSeries::const_iterator sit = m_samples->begin();   //i have to fix that
+    SampleSeries::const_iterator sitEnd = m_samples->end();   // i have to fix that
     size_t sampleCounter = 0;
     while( sit != sitEnd ) {
         // SampleEvent s = *sit;

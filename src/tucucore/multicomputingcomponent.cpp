@@ -320,7 +320,7 @@ ComputingStatus MultiComputingComponent::compute(   //HAY QUE PROGRAMAR ESTA FUN
     std::vector<MultiConcentrationPredictionPtr> activeMoietiesPredictions;
 
     //if (!_request.getDrugModel().isSingleAnalyte()) {
-        const std::vector<ActiveMoiety*> _activemoieties;
+        const std::vector<const ActiveMoiety*> _activemoieties;
         for (const auto & activeMoiety : _request.getDrugModel().getActiveMoieties()) {
                    _activemoieties.push_back(activeMoiety.get());
                 }
