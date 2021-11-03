@@ -138,7 +138,7 @@ private:
             DateTime _start,
             DateTime _end,
             const TimeOffsets &_times,
-            const std::vector<MultiConcentrationPredictionPtr> &_activeMoietiesPredictions,
+            const MultiConcentrationPredictionPtr &_activeMoietiesPredictions,
             const std::vector<MultiConcentrationPredictionPtr> &_analytesPredictions,
             size_t _valueIndex,
             const std::map<AnalyteGroupId, Etas> &_etas,

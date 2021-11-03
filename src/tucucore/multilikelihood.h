@@ -35,7 +35,7 @@ public:
                const std::vector<SampleSeries>& _samples,
                const IntakeSeries& _intakes,
                const ParameterSetSeries& _parameters,
-               IMultiConcentrationCalculator& _concentrationCalculator);
+               MultiConcentrationCalculator& _concentrationCalculator);
 
     /// \brief operator ()
     /// This method calculates the negative log of the posterior and prior.

@@ -153,7 +153,7 @@ ComputingStatus MultiComputingComponent::recordCycle(const ComputingTraitStandar
         DateTime _start,
         DateTime _end,
         const TimeOffsets &_times,
-        const std::vector<MultiConcentrationPredictionPtr> &_activeMoietiesPredictions,
+        const MultiConcentrationPredictionPtr &_activeMoietiesPredictions,
         const std::vector<MultiConcentrationPredictionPtr> &_analytesPredictions,
         size_t _valueIndex,
         const std::map<AnalyteGroupId, Etas> &_etas,
@@ -169,10 +169,10 @@ ComputingStatus MultiComputingComponent::recordCycle(const ComputingTraitStandar
     CycleData cycle(_start, _end, unit);
 
     if (!_request.getDrugModel().isSingleAnalyte()) {
-        for (const auto &activeMoiety : _activeMoietiesPredictions) {
+        for (const auto &activeMoiety : _activeMoietiesPredictions->getValues()) {
             cycle.addData(_times,
                           Tucuxi::Common::UnitManager::convertToUnit<Tucuxi::Common::UnitManager::UnitType::Concentration>(
-                              activeMoiety->getValues()[_valueIndex],
+                              activeMoiety[_valueIndex],
                               _request.getDrugModel().getActiveMoieties()[0]->getUnit(),
                               unit));
         }
@@ -181,11 +181,13 @@ ComputingStatus MultiComputingComponent::recordCycle(const ComputingTraitStandar
     size_t index = 0;
     for(const auto &analyteGroup : _request.getDrugModel().getAnalyteSets()) {
         AnalyteGroupId analyteGroupId = analyteGroup->getId();
+        for(const auto &analyte : _analytesPredictions[index]->getValues()) {
 
-        cycle.addData(_times, Tucuxi::Common::UnitManager::convertToUnit<Tucuxi::Common::UnitManager::UnitType::Concentration>(
-                          _analytesPredictions[index]->getValues()[_valueIndex],
-                          _request.getDrugModel().getActiveMoieties()[0]->getUnit(),
-                           unit));
+            cycle.addData(_times, Tucuxi::Common::UnitManager::convertToUnit<Tucuxi::Common::UnitManager::UnitType::Concentration>(
+                              analyte[_valueIndex],
+                              _request.getDrugModel().getActiveMoieties()[0]->getUnit(),
+                          unit));
+        }
         index ++;
     }
 
@@ -317,19 +319,19 @@ ComputingStatus MultiComputingComponent::compute(   //HAY QUE PROGRAMAR ESTA FUN
             return computingResult;
         }
     }
-    std::vector<MultiConcentrationPredictionPtr> activeMoietiesPredictions;
+
 
     //if (!_request.getDrugModel().isSingleAnalyte()) {
-        const std::vector<const ActiveMoiety*> _activemoieties;
+        std::vector<ActiveMoiety*> activemoieties;
         for (const auto & activeMoiety : _request.getDrugModel().getActiveMoieties()) {
-                   _activemoieties.push_back(activeMoiety.get());
+                   activemoieties.push_back(activeMoiety.get());
                 }
-            MultiConcentrationPredictionPtr activeMoietyPrediction = std::make_unique<MultiConcentrationPrediction>();
-            ComputingStatus activeMoietyComputingResult = m_utils->computeMultiActiveMoiety(_activemoieties, analytesPredictions, activeMoietyPrediction);
+            MultiConcentrationPredictionPtr activeMoietiesPredictions = std::make_unique<MultiConcentrationPrediction>();
+            ComputingStatus activeMoietyComputingResult = m_utils->computeMultiActiveMoiety(activemoieties, analytesPredictions, activeMoietiesPredictions);
             if (activeMoietyComputingResult != ComputingStatus::Ok) {
                 return activeMoietyComputingResult;
             }
-            activeMoietiesPredictions.push_back(std::move(activeMoietyPrediction));
+
 
     //}
 
@@ -554,7 +556,7 @@ ComputingStatus MultiComputingComponent::compute(
         return predictionResult;
     }
 
-    return preparePercentilesResponse(
+   /* return preparePercentilesResponse(
                 _traits,
                 _request,
                 _response,
@@ -562,6 +564,8 @@ ComputingStatus MultiComputingComponent::compute(
                 std::move(pPrediction),
                 percentiles,
                 percentileRanks);
+
+                */
 }
 
 
@@ -570,7 +574,7 @@ ComputingStatus MultiComputingComponent::preparePercentilesResponse(
         const ComputingRequest &_request,
         std::unique_ptr<ComputingResponse> &_response,
         GroupsIntakeSeries &_intakeSeries,
-        const ConcentrationPredictionPtr &_pPrediction,
+        const MultiConcentrationPredictionPtr &_pPrediction,
         const Tucuxi::Core::PercentilesPrediction &_percentiles,
         const Tucuxi::Core::PercentileRanks &_percentileRanks
         )

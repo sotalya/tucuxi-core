@@ -23,7 +23,7 @@ MultiLikelihood::MultiLikelihood(const OmegaMatrix& _omega,
                        const std::vector<SampleSeries>& _samples, //we need a vector of samples to know what sample is for each analyte
                        const IntakeSeries& _intakes,
                        const ParameterSetSeries& _parameters,
-                       IMultiConcentrationCalculator &_multiconcentrationCalculator)
+                       MultiConcentrationCalculator &_multiconcentrationCalculator)
     : // m_omega(&_omega),
       m_residualErrorModel(&_residualErrorModel),
       m_samples(&_samples),
@@ -66,6 +66,9 @@ Value MultiLikelihood::negativeLogLikelihood(const ValueVector& _etas) const
     bool isAll = false;
 
     // Getting the concentration values at these _times and m_samples.
+
+
+    //here i need to add a loop that works for all samples
     ComputingStatus result = m_concentrationCalculator->computeConcentrationsAtTimes(
         _concentrations,
         isAll,
