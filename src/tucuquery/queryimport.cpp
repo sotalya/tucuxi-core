@@ -334,11 +334,10 @@ unique_ptr<Tucuxi::Core::Target> QueryImport::createTargetData(Common::XmlNodeIt
     }
 
     Tucuxi::Core::TargetType targetType;
-    Tucuxi::Common::UnitManager unitManager;
 
     if (targetTypeStr == "peak") {
         targetType = Core::TargetType::Peak;
-        if (!unitManager.isOfType<Common::UnitManager::UnitType::Concentration>(unit)){
+        if (!Tucuxi::Common::UnitManager::isOfType<Common::UnitManager::UnitType::Concentration>(unit)){
             setStatus(Status::Error, "Unit " + unit.toString() + " not compatible for concentration Target");
         }
 
@@ -348,68 +347,68 @@ unique_ptr<Tucuxi::Core::Target> QueryImport::createTargetData(Common::XmlNodeIt
 
     } else if (targetTypeStr == "residual") {
         targetType = Core::TargetType::Residual;
-        if (!unitManager.isOfType<Common::UnitManager::UnitType::Concentration>(unit)){
+        if (!Tucuxi::Common::UnitManager::isOfType<Common::UnitManager::UnitType::Concentration>(unit)){
             setStatus(Status::Error, "Unit " + unit.toString() + " not compatible for concentration Target");
         }
 
     } else if (targetTypeStr == "mean") {
         targetType = Core::TargetType::Mean;
-        if (!unitManager.isOfType<Common::UnitManager::UnitType::Concentration>(unit)){
+        if (!Tucuxi::Common::UnitManager::isOfType<Common::UnitManager::UnitType::Concentration>(unit)){
             setStatus(Status::Error, "Unit " + unit.toString() + " not compatible for concentration Target");
         }
 
     } else if (targetTypeStr == "auc") {
         targetType = Core::TargetType::Auc;
-        if (!unitManager.isOfType<Common::UnitManager::UnitType::ConcentrationTime>(unit)){
+        if (!Tucuxi::Common::UnitManager::isOfType<Common::UnitManager::UnitType::ConcentrationTime>(unit)){
             setStatus(Status::Error, "Unit " + unit.toString() + " not compatible for concentration time Target");
         }
 
     } else if (targetTypeStr == "auc24") {
         targetType = Core::TargetType::Auc24;
-        if (!unitManager.isOfType<Common::UnitManager::UnitType::ConcentrationTime>(unit)){
+        if (!Tucuxi::Common::UnitManager::isOfType<Common::UnitManager::UnitType::ConcentrationTime>(unit)){
             setStatus(Status::Error, "Unit " + unit.toString() + " not compatible for concentration time Target");
         }
 
     } else if (targetTypeStr == "cumulativeAuc") {
         targetType = Core::TargetType::CumulativeAuc;
-        if (!unitManager.isOfType<Common::UnitManager::UnitType::ConcentrationTime>(unit)){
+        if (!Tucuxi::Common::UnitManager::isOfType<Common::UnitManager::UnitType::ConcentrationTime>(unit)){
             setStatus(Status::Error, "Unit " + unit.toString() + " not compatible for concentration time Target");
         }
 
     } else if (targetTypeStr == "aucOverMic") {
         targetType = Core::TargetType::AucOverMic;
-        if (!unitManager.isOfType<Common::UnitManager::UnitType::ConcentrationTime>(unit)){
+        if (!Tucuxi::Common::UnitManager::isOfType<Common::UnitManager::UnitType::ConcentrationTime>(unit)){
             setStatus(Status::Error, "Unit " + unit.toString() + " not compatible for concentration time Target");
         }
 
     } else if (targetTypeStr == "auc24OverMic") {
         targetType = Core::TargetType::Auc24OverMic;
-        if (!unitManager.isOfType<Common::UnitManager::UnitType::ConcentrationTime>(unit)){
+        if (!Tucuxi::Common::UnitManager::isOfType<Common::UnitManager::UnitType::ConcentrationTime>(unit)){
             setStatus(Status::Error, "Unit " + unit.toString() + " not compatible for concentration time Target");
         }
 
     } else if (targetTypeStr == "timeOverMic") {
         targetType = Core::TargetType::TimeOverMic;
-        if (!unitManager.isOfType<Common::UnitManager::UnitType::Time>(unit)){
+        if (!Tucuxi::Common::UnitManager::isOfType<Common::UnitManager::UnitType::Time>(unit)){
             setStatus(Status::Error, "Unit " + unit.toString() + " not compatible for time Target");
         }
 
 
     } else if (targetTypeStr == "aucDividedByMic") {
         targetType = Core::TargetType::AucDividedByMic;
-        if (!unitManager.isOfType<Common::UnitManager::UnitType::Time>(unit)){
+        if (!Tucuxi::Common::UnitManager::isOfType<Common::UnitManager::UnitType::Time>(unit)){
             setStatus(Status::Error, "Unit " + unit.toString() + " not compatible for time Target");
         }
 
     } else if (targetTypeStr == "auc24DividedByMic") {
         targetType = Core::TargetType::Auc24DividedByMic;
-        if (!unitManager.isOfType<Common::UnitManager::UnitType::Time>(unit)){
+        if (!Tucuxi::Common::UnitManager::isOfType<Common::UnitManager::UnitType::Time>(unit)){
             setStatus(Status::Error, "Unit " + unit.toString() + " not compatible for time Target");
         }
 
     } else if (targetTypeStr == "peakDividedByMic") {        
         targetType = Core::TargetType::PeakDividedByMic;
-        if (!unitManager.isOfType<Common::UnitManager::UnitType::NoUnit>(unit)){
+        if (!Tucuxi::Common::UnitManager::isOfType<Common::UnitManager::UnitType::NoUnit>(unit)){
             setStatus(Status::Error, "Unit " + unit.toString() + " not compatible for no unit Target");
         }
 
@@ -419,7 +418,7 @@ unique_ptr<Tucuxi::Core::Target> QueryImport::createTargetData(Common::XmlNodeIt
 
     } else if (targetTypeStr == "residualDividedByMic") {
         targetType = Core::TargetType::ResidualDividedByMic;
-        if (!unitManager.isOfType<Common::UnitManager::UnitType::NoUnit>(unit)){
+        if (!Tucuxi::Common::UnitManager::isOfType<Common::UnitManager::UnitType::NoUnit>(unit)){
             setStatus(Status::Error, "Unit " + unit.toString() + " not compatible for residual divided by MIC Target");
         }
 
@@ -689,7 +688,7 @@ unique_ptr<Core::DosageBounded> QueryImport::createDosageBoundedFromIterator(Com
 
         unsigned int day = static_cast<unsigned int>(getChildInt(_dosageBoundedIterator, DAY_NODE_NAME));
 
-        if (day > SATURDAY) {
+        if (day > Tucuxi::Core::SATURDAY) {
             // TODO throw or manage error
             day = day % 7;
         }
@@ -747,6 +746,7 @@ unique_ptr<Core::FormulationAndRoute> QueryImport::createFormulationAndRoute(Com
     } else {
         // Throw error or manage error
         formulation = Core::Formulation::Undefined;
+        setStatus(Status::Error, "Unvalid formulation value");
     }
 
     string administrationName = getChildString(_formulationAndRouteRootIterator, ADMINISTRATION_NAME_NODE_NAME);
@@ -778,6 +778,7 @@ unique_ptr<Core::FormulationAndRoute> QueryImport::createFormulationAndRoute(Com
     } else {
         // Throw error or manage error
         formulation = Core::Formulation::Undefined;
+        setStatus(Status::Error, "Unvalid administration route");
     }
 
     string absorptionModelValue = getChildString(_formulationAndRouteRootIterator, ABSORPTION_MODEL_NODE_NAME);
@@ -785,23 +786,18 @@ unique_ptr<Core::FormulationAndRoute> QueryImport::createFormulationAndRoute(Com
 
     if (absorptionModelValue == "Undefined") {
         absorptionModel = Core::AbsorptionModel::Undefined;
-    } else if (absorptionModelValue == "extravascular") {
+    } else if ((absorptionModelValue == "extravascular") || (absorptionModelValue == "extra")) {
         absorptionModel = Core::AbsorptionModel::Extravascular;
-    } else if (absorptionModelValue == "extravascularLag") {
+    } else if ((absorptionModelValue == "extravascularLag") ||(absorptionModelValue == "extra.lag")) {
         absorptionModel = Core::AbsorptionModel::ExtravascularLag;
-    } else if (absorptionModelValue == "intravascular") {
+    } else if ((absorptionModelValue == "intravascular") || (absorptionModelValue == "bolus")) {
         absorptionModel = Core::AbsorptionModel::Intravascular;
     } else if (absorptionModelValue == "infusion") {
         absorptionModel = Core::AbsorptionModel::Infusion;
-    } else if (absorptionModelValue == "bolus") {
-        absorptionModel = Core::AbsorptionModel::Intravascular;
-    } else if (absorptionModelValue == "extra") {
-        absorptionModel = Core::AbsorptionModel::Extravascular;
-    } else if (absorptionModelValue == "extra.lag") {
-        absorptionModel = Core::AbsorptionModel::ExtravascularLag;
     } else {
         // Throw error or manage error
         absorptionModel = Core::AbsorptionModel::Undefined;
+        setStatus(Status::Error, "Unvalid absorption model");
     }
 
     return make_unique<Core::FormulationAndRoute>(
@@ -911,20 +907,21 @@ vector<Common::DateTime> QueryImport::getChildDateTimeList(Common::XmlNodeIterat
     return times;
 }
 
-unique_ptr<Tucuxi::Core::ComputingTraitAtMeasures> QueryImport::getChildComputingTraitAtMeasures(Common::XmlNodeIterator _rootIterator, string _requestResponseId)
+unique_ptr<Tucuxi::Core::ComputingTraitAtMeasures> QueryImport::getChildComputingTraitAtMeasures(Common::XmlNodeIterator _rootIterator, const string& _requestResponseId)
 {
     static const string COMPUTING_OPTION                = "computingOption";
 
 
     Tucuxi::Core::RequestResponseId requestResponseId = _requestResponseId;
-    Tucuxi::Core::ComputingOption computingOption = getChildComputingOption(_rootIterator, COMPUTING_OPTION);
+    // Here we move the iterator, as it is the only use of it
+    Tucuxi::Core::ComputingOption computingOption = getChildComputingOption(std::move(_rootIterator), COMPUTING_OPTION);
 
     return make_unique<Tucuxi::Core::ComputingTraitAtMeasures> (requestResponseId,
                                                                 computingOption);
 }
 
 
-unique_ptr<Tucuxi::Core::ComputingTraitSinglePoints> QueryImport::getChildComputingTraitSinglePoints(Common::XmlNodeIterator _rootIterator, string _requestResponseId)
+unique_ptr<Tucuxi::Core::ComputingTraitSinglePoints> QueryImport::getChildComputingTraitSinglePoints(Common::XmlNodeIterator _rootIterator, const string& _requestResponseId)
 {
     static const string COMPUTING_OPTION                = "computingOption";
     static const string DATES_NODE_NAME                 = "dates";
@@ -942,7 +939,7 @@ unique_ptr<Tucuxi::Core::ComputingTraitSinglePoints> QueryImport::getChildComput
                                                                   computingOption);
 }
 
-unique_ptr<Tucuxi::Core::ComputingTraitPercentiles> QueryImport::getChildComputingTraitPercentiles(Common::XmlNodeIterator _rootIterator, string _requestResponseId)
+unique_ptr<Tucuxi::Core::ComputingTraitPercentiles> QueryImport::getChildComputingTraitPercentiles(Common::XmlNodeIterator _rootIterator, const string& _requestResponseId)
 {
     static const string NB_POINTS_PER_HOUR              = "nbPointsPerHour";
     static const string DATE_INTERVAL_NODE_NAME         = "dateInterval";
@@ -973,7 +970,7 @@ unique_ptr<Tucuxi::Core::ComputingTraitPercentiles> QueryImport::getChildComputi
                                                                  computingOption);
 }
 
-unique_ptr<Tucuxi::Core::ComputingTraitConcentration> QueryImport::getChildComputingTraitConcentration(Common::XmlNodeIterator _rootIterator, string _requestResponseId)
+unique_ptr<Tucuxi::Core::ComputingTraitConcentration> QueryImport::getChildComputingTraitConcentration(Common::XmlNodeIterator _rootIterator, const string& _requestResponseId)
 {
     static const string NB_POINTS_PER_HOUR              = "nbPointsPerHour";
     static const string DATE_INTERVAL_NODE_NAME         = "dateInterval";
@@ -999,7 +996,7 @@ unique_ptr<Tucuxi::Core::ComputingTraitConcentration> QueryImport::getChildCompu
                                                                    computingOption);
 }
 
-unique_ptr<Tucuxi::Core::ComputingTraitAdjustment> QueryImport::getChildComputingTraitAdjustment(Common::XmlNodeIterator _rootIterator, string _requestResponseId)
+unique_ptr<Tucuxi::Core::ComputingTraitAdjustment> QueryImport::getChildComputingTraitAdjustment(Common::XmlNodeIterator _rootIterator, const string& _requestResponseId)
 {
     static const string NB_POINTS_PER_HOUR              = "nbPointsPerHour";
     static const string DATE_INTERVAL_NODE_NAME         = "dateInterval";

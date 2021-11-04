@@ -12,7 +12,7 @@
 namespace Tucuxi {
 namespace Core {
 
-#define DEFAULT_DERIV_TOL 2e-5
+constexpr Value DEFAULT_DERIV_TOL = 2e-5;
 
 
 /// Calculates derivatives for jacobian and hessians.
@@ -107,7 +107,8 @@ inline x& deriv1_impl(x& ans, // NOLINT(readability-identifier-naming)
 
     size_t vecsize = loc.size();
 
-    x xm, xp;
+    x xm;
+    x xp;
     xm = xp = loc;
     for (size_t i = 0; i < vecsize; ++i) {
         xp[i] = loc[i] + tol;
@@ -148,7 +149,8 @@ inline x& deriv1_impl(x& ans, // NOLINT(readability-identifier-naming)
     int vecsize = loc.size();
 
     typedef typename boost::remove_pointer<x> basex;
-    basex xm, xp;
+    basex xm;
+    basex xp;
     xm = xp = loc;
     for (int i = 0; i < vecsize; ++i) {
         xp[i] = loc[i] + tol;
@@ -220,7 +222,8 @@ void deriv2_impl(func fxn, x& loc, y& answer, /*const*/ Value tol) { // NOLINT(r
     int size = loc.size();
 
     // Diagonal elements
-    x xm, xp;
+    x xm;
+    x xp;
     for (int i = 0; i < size; ++i) {
         xm = xp = loc;
         xp[i] = loc[i] + tol;
@@ -230,7 +233,10 @@ void deriv2_impl(func fxn, x& loc, y& answer, /*const*/ Value tol) { // NOLINT(r
 
     // Off-diagonal elements
     if (size > 1) {
-        x xpp, xmm, xpm, xmp;
+        x xpp;
+        x xmm;
+        x xpm;
+        x xmp;
         for (int i = 0; i < size - 1; ++i) {
             for (int j = i + 1; j < size; ++j) {
                 xpp = xmm = xpm = xmp = loc;
@@ -263,7 +269,8 @@ void deriv2_impl(func fxn, Eigen::VectorXd& loc, Eigen::MatrixXd& answer, const 
 
     // Diagonal elements
     for (long i = 0; i < size; ++i) {
-        Eigen::VectorXd xm, xp;
+        Eigen::VectorXd xm;
+        Eigen::VectorXd xp;
         xm = xp = loc;
         xp(i) = loc(i) + tol;
         xm(i) = loc(i) - tol;
@@ -274,7 +281,10 @@ void deriv2_impl(func fxn, Eigen::VectorXd& loc, Eigen::MatrixXd& answer, const 
     if (size > 1) {
         for (long i = 0; i < size - 1; ++i) {
             for (long j = i + 1; j < size; ++j) {
-                Eigen::VectorXd xpp, xmm, xpm, xmp;
+                Eigen::VectorXd xpp;
+                Eigen::VectorXd xmm;
+                Eigen::VectorXd xpm;
+                Eigen::VectorXd xmp;
                 xpp = xmm = xpm = xmp = loc;
                 xpp(i) = loc(i) + tol;
                 xpp(j) = loc(j) + tol;

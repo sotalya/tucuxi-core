@@ -23,7 +23,7 @@ class SubTargetDefinition : public PopulationValue
 {
 public:
 
-    SubTargetDefinition(std::string _id, Value _value, Operation *_operation) :
+    SubTargetDefinition(const std::string& _id, Value _value, Operation *_operation) :
         PopulationValue(_id, _value, _operation) {}
 
     SubTargetDefinition() : PopulationValue("",0, nullptr) {}
@@ -76,10 +76,10 @@ public:
                      TucuUnit _micUnit = TucuUnit(),
                      TucuUnit _timeUnit = TucuUnit("h")) :
         m_targetType(_type),
-        m_unit(_unit),
-        m_micUnit(_micUnit),
-        m_timeUnit(_timeUnit),
-        m_activeMoietyId(_activeMoietyId),
+        m_unit(std::move(_unit)),
+        m_micUnit(std::move(_micUnit)),
+        m_timeUnit(std::move(_timeUnit)),
+        m_activeMoietyId(std::move(_activeMoietyId)),
         m_valueMin(std::move(_valueMin)),
         m_valueMax(std::move(_valueMax)),
         m_valueBest(std::move(_valueBest)),
@@ -93,7 +93,7 @@ public:
 
     }
 
-    void setActiveMoietyId(ActiveMoietyId _activeMoietyId) { m_activeMoietyId = _activeMoietyId;}
+    void setActiveMoietyId(ActiveMoietyId _activeMoietyId) { m_activeMoietyId = std::move(_activeMoietyId);}
     TargetType getTargetType() const { return m_targetType;}
     ActiveMoietyId getActiveMoietyId() const { return m_activeMoietyId;}
     TucuUnit getUnit() const { return m_unit;}
@@ -111,7 +111,7 @@ public:
     const SubTargetDefinition & getInefficacyAlarm() const { return *m_inefficacyAlarm;}
 
     INVARIANTS(
-            INVARIANT(Invariants::INV_TARGETDEFINITION_0001, (m_activeMoietyId.size() > 0), "a target has no active moiety Id")
+            INVARIANT(Invariants::INV_TARGETDEFINITION_0001, (!m_activeMoietyId.empty()), "a target has no active moiety Id")
             INVARIANT(Invariants::INV_TARGETDEFINITION_0002, ((m_targetType != TargetType::AucOverMic) || (m_mic != nullptr)), "a target of type AucOverMic requires a MIC field")
             INVARIANT(Invariants::INV_TARGETDEFINITION_0003, ((m_targetType != TargetType::Auc24OverMic) || (m_mic != nullptr)), "a target of type Auc24OverMic requires a MIC field")
             INVARIANT(Invariants::INV_TARGETDEFINITION_0004, ((m_targetType != TargetType::TimeOverMic) || (m_mic != nullptr)), "a target of type TimeOverMic requires a MIC field")
@@ -122,7 +122,7 @@ public:
             )
 
 protected:
-    TargetType m_targetType;
+    TargetType m_targetType{TargetType::UnknownTarget};
     TucuUnit m_unit;
     TucuUnit m_micUnit;
     TucuUnit m_timeUnit;

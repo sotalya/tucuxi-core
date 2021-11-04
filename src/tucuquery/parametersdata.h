@@ -32,12 +32,12 @@ public:
     CovariateData(CovariateData& _other) = delete;
 
     // Getters
-    const std::string getCovariateId() const;
-    const Tucuxi::Common::DateTime getpDate() const;
-    const std::string getValue() const;
-    const std::string getUnit() const;
+    const std::string& getCovariateId() const;
+    const Tucuxi::Common::DateTime& getpDate() const;
+    const std::string& getValue() const;
+    const std::string& getUnit() const;
     Tucuxi::Core::DataType getDatatype() const;
-    const std::string getNature() const;
+    const std::string& getNature() const;
 
 protected:
     const std::string m_covariateId;
@@ -197,10 +197,10 @@ public:
     DrugData(DrugData& _other) = delete;
 
     // Getters
-    const std::string getDrugID() const;
-    const std::string getActivePrinciple() const;
-    const std::string getBrandName() const;
-    const std::string getAtc() const;
+    const std::string& getDrugID() const;
+    const std::string& getActivePrinciple() const;
+    const std::string& getBrandName() const;
+    const std::string& getAtc() const;
     const Treatment& getpTreatment() const;
     const std::vector<std::unique_ptr<Tucuxi::Core::Sample> >& getSamples() const;
     const std::vector<std::unique_ptr<Tucuxi::Core::Target> >& getTargets() const;

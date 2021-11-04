@@ -111,10 +111,10 @@ private:
     TucuUnit m_micUnit;
 
     /// Value under which the drug is inefficient
-    Value m_inefficacyAlarm;
+    Value m_inefficacyAlarm{0.0};
 
     /// Value over which the drug can be toxic
-    Value m_toxicityAlarm;
+    Value m_toxicityAlarm{0.0};
 
     /// Target minimum time from last intake (for peak targets)
     Tucuxi::Common::Duration m_tMin;

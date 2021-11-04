@@ -81,7 +81,7 @@ OperationInput::getType() const
 bool
 OperationInput::getValue(bool &_value) const
 {
-    if (m_type == InputType::BOOL && m_isDefined == true) {
+    if (m_type == InputType::BOOL && m_isDefined) {
         _value = m_value.b;
         return true;
     }
@@ -104,7 +104,7 @@ OperationInput::setValue(const bool &_value)
 bool
 OperationInput::getValue(int &_value) const
 {
-    if (m_type == InputType::INTEGER && m_isDefined == true) {
+    if (m_type == InputType::INTEGER && m_isDefined) {
         _value = m_value.i;
         return true;
     }
@@ -132,7 +132,7 @@ OperationInput::setValue(const int &_value)
 bool
 OperationInput::getValue(double &_value) const
 {
-    if (m_type == InputType::DOUBLE && m_isDefined == true) {
+    if (m_type == InputType::DOUBLE && m_isDefined) {
         _value = m_value.d;
         return true;
     }

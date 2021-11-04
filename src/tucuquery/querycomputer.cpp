@@ -77,16 +77,11 @@ void QueryComputer::compute(const std::string& _queryString, ComputingQueryRespo
 
     if (importResult != QueryImport::Status::Ok) {
 
-        if (importResult == QueryImport::Status::CantOpenFile) {
+        if ((importResult == QueryImport::Status::CantOpenFile) ||
+            (importResult == QueryImport::Status::CantCreateXmlDocument)){
             logHelper.error("Error, see details : {}", importer.getErrorMessage());
             _response.setRequestResponseId("bad.format");
             _response.setQueryStatus(QueryStatus::BadFormat, importer.getErrorMessage());
-        }
-        else if (importResult == QueryImport::Status::CantCreateXmlDocument){
-            logHelper.error("Error, see details : {}", importer.getErrorMessage());
-            _response.setRequestResponseId("bad.format");
-            _response.setQueryStatus(QueryStatus::BadFormat, importer.getErrorMessage());
-
         }
         else{
             logHelper.error("Error, see details : {}", importer.getErrorMessage());

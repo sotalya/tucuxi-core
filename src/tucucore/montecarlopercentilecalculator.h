@@ -205,12 +205,12 @@ public:
     ComputingStatus sortAndExtractPercentiles(PercentilesPrediction &_percentiles,
             const PercentileRanks &_percentileRanks,
             size_t _nbPatients,
-            std::vector<TimeOffsets> _times,
+            const std::vector<TimeOffsets> &_times,
             IntakeSeries &_recordedIntakes,
             std::vector< std::vector< std::vector<Concentration> > > &_concentrations);
 
 private:
-    size_t m_nbPatients;
+    size_t m_nbPatients{0};
 
     static size_t sm_nbPatients; // NOLINT(readability-identifier-naming)
 };

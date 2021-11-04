@@ -14,11 +14,11 @@ Address::Address(
         string _city,
         string _state,
         string _country
-) : m_street(_street), m_postCode(_postCode), m_city(_city),
-    m_state(_state), m_country(_country)
+) : m_street(std::move(_street)), m_postCode(_postCode), m_city(std::move(_city)),
+    m_state(std::move(_state)), m_country(std::move(_country))
 {}
 
-const string Address::getStreet() const
+const string& Address::getStreet() const
 {
     return m_street;
 }
@@ -28,17 +28,17 @@ int Address::getPostCode() const
     return m_postCode;
 }
 
-const string Address::getCity() const
+const string& Address::getCity() const
 {
     return m_city;
 }
 
-const string Address::getState() const
+const string& Address::getState() const
 {
     return m_state;
 }
 
-const string Address::getCountry() const
+const string& Address::getCountry() const
 {
     return m_country;
 }
@@ -49,12 +49,12 @@ Phone::Phone(string& _number, string& _type)
     : m_number(_number), m_type(_type)
 {}
 
-const string Phone::getNumber() const
+const string& Phone::getNumber() const
 {
     return m_number;
 }
 
-const string Phone::getType() const
+const string& Phone::getType() const
 {
     return m_type;
 }
@@ -65,12 +65,12 @@ Email::Email(string& _address, string& _type)
     : m_address(_address), m_type(_type)
 {}
 
-const string Email::getAddress() const
+const string& Email::getAddress() const
 {
     return m_address;
 }
 
-const string Email::getType() const
+const string& Email::getType() const
 {
     return m_type;
 }
@@ -90,22 +90,22 @@ PersonalContact::PersonalContact(
     m_pPhone(move(_pPhone)), m_pEmail(move(_pEmail))
 {}
 
-const string PersonalContact::getId() const
+const string& PersonalContact::getId() const
 {
     return m_id;
 }
 
-const string PersonalContact::getTitle() const
+const string& PersonalContact::getTitle() const
 {
     return m_title;
 }
 
-const string PersonalContact::getFirstName() const
+const string& PersonalContact::getFirstName() const
 {
     return m_firstName;
 }
 
-const string PersonalContact::getLastName() const
+const string& PersonalContact::getLastName() const
 {
     return m_lastName;
 }
@@ -137,12 +137,12 @@ InstituteContact::InstituteContact(
     m_pPhone(move(_pPhone)), m_pEmail(move(_pEmail))
 {}
 
-const string InstituteContact::getId() const
+const string& InstituteContact::getId() const
 {
     return m_id;
 }
 
-const string InstituteContact::getName() const
+const std::string& InstituteContact::getName() const
 {
     return m_name;
 }

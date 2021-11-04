@@ -43,6 +43,7 @@ enum class ExtractionOption {
 
 
 /// \brief Implement the extract and clone operations for Dosage subclasses.
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define DOSAGE_UTILS(BaseClassName, ClassName) \
     friend IntakeExtractor; \
     int extract(IntakeExtractor &_extractor, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, const TucuUnit &_toUnit, IntakeSeries &_series, ExtractionOption _option) const override; \
@@ -730,12 +731,11 @@ public:
                const Duration &_infusionTime,
                const TimeOfDay &_timeOfDay,
                const DayOfWeek &_dayOfWeek)
-        : DailyDose(_dose, _doseUnit, _routeOfAdministration, _infusionTime, _timeOfDay)
+        : DailyDose(_dose, _doseUnit, _routeOfAdministration, _infusionTime, _timeOfDay), m_dayOfWeek(_dayOfWeek)
     {
         if (!_dayOfWeek.ok()) {
             throw std::invalid_argument("Invalid day of week specified for weekly dose.");
         }
-        m_dayOfWeek = _dayOfWeek;
     }
 
     ~WeeklyDose() override {}
@@ -942,7 +942,7 @@ public:
     /// \param obj original DosageHistory object
     ///
     /// TODO : A test for this function needs to be written
-    DosageHistory( const DosageHistory &&_obj)
+    DosageHistory( const DosageHistory &&_obj) noexcept
     {
         for (const auto& timeRange : _obj.m_history) {
             this->addTimeRange(*timeRange);

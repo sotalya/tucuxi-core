@@ -68,7 +68,7 @@ OperableGraphManager::isInputPresent(const std::string &_name) const
 
 
 bool
-OperableGraphManager::registerInput(std::shared_ptr<IOperableInput> _input, const std::string &_scriptVarName,
+OperableGraphManager::registerInput(const std::shared_ptr<IOperableInput>& _input, const std::string &_scriptVarName,
                                     bool _isComputed, IOperable_ID _id)
 {
     if (_input == nullptr || (_isComputed && _id < 0)) {
@@ -94,7 +94,7 @@ OperableGraphManager::registerInput(std::shared_ptr<IOperableInput> _input, cons
 
 
 bool
-OperableGraphManager::registerOperable(std::shared_ptr<IOperable> _operable, const std::string &_scriptVarName)
+OperableGraphManager::registerOperable(const std::shared_ptr<IOperable> &_operable, const std::string &_scriptVarName)
 {
     if (_operable == nullptr) {
         return false;
@@ -192,9 +192,7 @@ OperableGraphManager::isCyclic(const std::string &_cur,
                     // Didn't find the corresponding input
                     continue;
                 }
-                if (!_visited.at(depIt) && isCyclic(depIt, _visited, _gotBack)) {
-                    return true;
-                } else if (_gotBack.at(depIt)) {
+                if ((!_visited.at(depIt) && isCyclic(depIt, _visited, _gotBack)) || (_gotBack.at(depIt))) {
                     return true;
                 }
             }
@@ -207,7 +205,7 @@ OperableGraphManager::isCyclic(const std::string &_cur,
 
 OperableGraphManager::OperableInputNode::OperableInputNode(std::shared_ptr<IOperableInput> _ptr,
                                                            bool _isComputed, IOperable_ID _id)
-    : m_sptr{_ptr}, m_isComputed{_isComputed}, m_id{_id}
+    : m_sptr{std::move(_ptr)}, m_isComputed{_isComputed}, m_id{_id}
 {
 
 }
@@ -238,7 +236,7 @@ OperableGraphManager::OperableInputNode::isComputed() const
 
 
 OperableGraphManager::OperableComputeNode::OperableComputeNode(std::shared_ptr<IOperable> _ptr)
-    : m_sptr{_ptr}
+    : m_sptr{std::move(_ptr)}
 {
     OperationInputList inList = m_sptr->getInputs();
 

@@ -21,7 +21,7 @@ using namespace Core;
 ComputingQueryResponseXmlExport::ComputingQueryResponseXmlExport()
 {}
 
-bool ComputingQueryResponseXmlExport::exportToFile(const ComputingQueryResponse &_computingQueryResponse, std::string _fileName)
+bool ComputingQueryResponseXmlExport::exportToFile(const ComputingQueryResponse &_computingQueryResponse, const std::string& _fileName)
 {
     std::string xmlString;
     if (!exportToString(_computingQueryResponse, xmlString)) {
@@ -198,7 +198,7 @@ bool ComputingQueryResponseXmlExport::exportToString(const ComputingQueryRespons
     return true;
 }
 
-const std::string ComputingQueryResponseXmlExport::getComputingStatus(Tucuxi::Core::ComputingStatus _computingStatus, bool _codeEnable) const
+std::string ComputingQueryResponseXmlExport::getComputingStatus(Tucuxi::Core::ComputingStatus _computingStatus, bool _codeEnable) const
 {
     static std::map<Tucuxi::Core::ComputingStatus, std::pair<std::string, std::string>> m =
     {
@@ -254,15 +254,13 @@ const std::string ComputingQueryResponseXmlExport::getComputingStatus(Tucuxi::Co
         {
             return m2.second;
         }
-        else{
-            return m2.first;
-        }
+        return m2.first;
     }
 
     return "nothing";
 }
 
-const std::string ComputingQueryResponseXmlExport::getQueryStatus(QueryStatus _queryStatus, bool _codeEnable) const
+std::string ComputingQueryResponseXmlExport::getQueryStatus(QueryStatus _queryStatus, bool _codeEnable) const
 {
     static std::map<QueryStatus, std::pair<std::string, std::string>> m =
     {
@@ -282,9 +280,7 @@ const std::string ComputingQueryResponseXmlExport::getQueryStatus(QueryStatus _q
         {
             return m2.second;
         }
-        else{
-            return m2.first;
-        }
+        return m2.first;
     }
 
     return "nothing";
@@ -344,12 +340,7 @@ bool ComputingQueryResponseXmlExport::exportSinglePrediction(const Tucuxi::Core:
         addNode(analyteIds, "analyteId", comp.getId());
     }
 
-    if (!exportCycleDatas(_prediction->getData(), _rootNode)) {
-
-        return false;
-    }
-
-    return true;
+    return exportCycleDatas(_prediction->getData(), _rootNode);
 }
 
 std::string dateTimeToString(const Tucuxi::Common::DateTime &_dateTime)
@@ -404,8 +395,8 @@ bool ComputingQueryResponseXmlExport::exportSinglePoints(const Tucuxi::Core::Sin
 }
 
 void ComputingQueryResponseXmlExport::addNode(Tucuxi::Common::XmlNode &_rootNode,
-             std::string _nodeName,
-             std::string _nodeValue)
+             const std::string& _nodeName,
+             const std::string& _nodeValue)
 {
     Tucuxi::Common::XmlNode node = m_doc.createNode(
                 Tucuxi::Common::EXmlNodeType::Element, _nodeName, _nodeValue);
@@ -449,6 +440,7 @@ bool ComputingQueryResponseXmlExport::exportDosageTimeRange(const std::unique_pt
     return exportAbstractDosage(*_timeRange->getDosage(), dosage);
 }
 
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define TRY_EXPORT(Type) \
 if (dynamic_cast<const Tucuxi::Core::Type*>(&_dosage)) { \
     return exportDosage(*dynamic_cast<const Tucuxi::Core::Type*>(&_dosage), _rootNode); \
@@ -614,7 +606,7 @@ void ComputingQueryResponseXmlExport::exportFormulationAndRoute(const Tucuxi::Co
 
 }
 
-const std::string ComputingQueryResponseXmlExport::formulationEnumToString(const Tucuxi::Core::Formulation &_formulation)
+std::string ComputingQueryResponseXmlExport::formulationEnumToString(const Tucuxi::Core::Formulation &_formulation)
 {
     static std::map<Tucuxi::Core::Formulation, std::string> m =
     {
@@ -634,7 +626,7 @@ const std::string ComputingQueryResponseXmlExport::formulationEnumToString(const
 }
 
 
-const std::string ComputingQueryResponseXmlExport::administrationRouteEnumToString(const Tucuxi::Core::AdministrationRoute &_administrationRoute)
+std::string ComputingQueryResponseXmlExport::administrationRouteEnumToString(const Tucuxi::Core::AdministrationRoute &_administrationRoute)
 {
     static std::map<Tucuxi::Core::AdministrationRoute, std::string> m =
     {
@@ -659,7 +651,7 @@ const std::string ComputingQueryResponseXmlExport::administrationRouteEnumToStri
     return "nothing";
 }
 
-const std::string ComputingQueryResponseXmlExport::absorptionModelEnumToString(const Tucuxi::Core::AbsorptionModel &_absorptionModel)
+std::string ComputingQueryResponseXmlExport::absorptionModelEnumToString(const Tucuxi::Core::AbsorptionModel &_absorptionModel)
 {
     static std::map<Tucuxi::Core::AbsorptionModel, std::string> m =
     {

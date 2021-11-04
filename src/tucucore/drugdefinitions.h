@@ -20,9 +20,10 @@ namespace Core {
 class ActiveMoietyId
 {
 public:
-    explicit ActiveMoietyId(std::string _s) : m_s(_s) {}
+    explicit ActiveMoietyId(std::string _s) : m_s(std::move(_s)) {}
     explicit ActiveMoietyId(const char* _s) : m_s(_s) {}
     size_t size() const { return m_s.size();}
+    bool empty() const { return m_s.empty();}
 
     std::string toString() const { return m_s; }
 

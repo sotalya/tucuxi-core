@@ -199,13 +199,13 @@ protected:
     }
 
 
-    Value m_D;	/// Quantity of drug
-    Value m_F;  /// bioavailability
-    Value m_V1;  /// Volume of the central compartment
-    Value m_Ke; /// Elimination constant rate = Cl/V where Cl is the clearance and V is the volume of the compartment
-    Value m_K12; /// Inter-compartment rate between central and peripheral
-    Value m_K21; /// Inter-compartment rate between peripheral and central
-    Value m_Ktr; /// Transit compartments constant rate
+    Value m_D{0.0};	/// Quantity of drug
+    Value m_F{0.0};  /// bioavailability
+    Value m_V1{0.0};  /// Volume of the central compartment
+    Value m_Ke{0.0}; /// Elimination constant rate = Cl/V where Cl is the clearance and V is the volume of the compartment
+    Value m_K12{0.0}; /// Inter-compartment rate between central and peripheral
+    Value m_K21{0.0}; /// Inter-compartment rate between peripheral and central
+    Value m_Ktr{0.0}; /// Transit compartments constant rate
 
 private:
     typedef CompartmentsEnum Compartments;

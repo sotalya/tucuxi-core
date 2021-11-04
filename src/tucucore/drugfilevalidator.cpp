@@ -39,7 +39,7 @@ public:
 };
 
 
-bool DrugFileValidator::validate(std::string _drugFileName, const std::string& _testFileName)
+bool DrugFileValidator::validate(const std::string& _drugFileName, const std::string& _testFileName)
 {
 
     static const string DATA_FORMAT = "%Y-%m-%dT%H:%M:%S";
@@ -62,7 +62,7 @@ bool DrugFileValidator::validate(std::string _drugFileName, const std::string& _
     Tucuxi::Core::DrugModel *dModel;
 
     DrugModelImport importer;
-    if (importer.importFromFile(dModel, std::move(_drugFileName)) != DrugModelImport::Status::Ok) {
+    if (importer.importFromFile(dModel, _drugFileName) != DrugModelImport::Status::Ok) {
         logger.error("Can not import the drug file. {}", importer.getErrorMessage());
         return false;
     }

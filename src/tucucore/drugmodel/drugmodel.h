@@ -94,8 +94,8 @@ private:
     const AdministrationRoute m_route;
     const std::vector<const FullFormulationAndRoute*> m_fullFormulationAndRoutes;
     const std::vector<FormulationAndRoute> m_formulationAndRoutes;
-    size_t m_index;
-    size_t m_total;
+    size_t m_index{0};
+    size_t m_total{0};
 
     std::vector<const ParameterSetDefinition * > m_absorptionParameters;
 
@@ -112,9 +112,9 @@ class DrugModel
 {
 
     INVARIANTS(
-            INVARIANT(Invariants::INV_DRUGMODEL_0001, (m_drugId.size() > 0), "A drug model has no drug Id")
-            INVARIANT(Invariants::INV_DRUGMODEL_0002, (m_drugModelId.size() > 0), "A drug model has no drug model Id")
-            INVARIANT(Invariants::INV_DRUGMODEL_0003, (m_analyteSets.size() > 0), "A drug model has no set of analytes")
+            INVARIANT(Invariants::INV_DRUGMODEL_0001, (!m_drugId.empty()), "A drug model has no drug Id")
+            INVARIANT(Invariants::INV_DRUGMODEL_0002, (!m_drugModelId.empty()), "A drug model has no drug model Id")
+            INVARIANT(Invariants::INV_DRUGMODEL_0003, (!m_analyteSets.empty()), "A drug model has no set of analytes")
             LAMBDA_INVARIANT(Invariants::INV_DRUGMODEL_0004, {bool ok = true;for(size_t i = 0; i < m_analyteSets.size(); i++) {ok &= m_analyteSets[i]->checkInvariants();} return ok;}, "There is an error in an analyte group")
             INVARIANT(Invariants::INV_DRUGMODEL_0005, (m_domain != nullptr), "A drug model has no domain")
             INVARIANT(Invariants::INV_DRUGMODEL_0006, (m_domain->checkInvariants()), "A drug model has an error in its domain")
@@ -122,7 +122,7 @@ class DrugModel
             INVARIANT(Invariants::INV_DRUGMODEL_0008, (m_formulationAndRoutes != nullptr), "A drug model has no formulation and route")
             INVARIANT(Invariants::INV_DRUGMODEL_0009, (m_formulationAndRoutes->checkInvariants()), "There is an error in a drug model formulation and route")
             LAMBDA_INVARIANT(Invariants::INV_DRUGMODEL_0010, {bool ok = true;for(size_t i = 0; i < m_interParameterSetCorrelations.size(); i++) {ok &= m_interParameterSetCorrelations[i].checkInvariants();} return ok;}, "There is an error in an inter-parameter set correlation")
-            INVARIANT(Invariants::INV_DRUGMODEL_0011, (m_activeMoieties.size() > 0), "A drug model has no active moiety")
+            INVARIANT(Invariants::INV_DRUGMODEL_0011, (!m_activeMoieties.empty()), "A drug model has no active moiety")
             LAMBDA_INVARIANT(Invariants::INV_DRUGMODEL_0012, {bool ok = true;for(size_t i = 0; i < m_activeMoieties.size(); i++) {ok &= m_activeMoieties[i]->checkInvariants();} return ok;}, "There is an error in an active moiety")
             INVARIANT(Invariants::INV_DRUGMODEL_0013, (m_timeConsiderations != nullptr), "A drug model has no time consideration")
             INVARIANT(Invariants::INV_DRUGMODEL_0014, (m_timeConsiderations->checkInvariants()), "There is an error in a drug model time consideration")
@@ -133,8 +133,8 @@ class DrugModel
 public:
     DrugModel();
 
-    void setDrugId(std::string _drugId) { m_drugId = _drugId;}
-    void setDrugModelId(std::string _drugModelId) { m_drugModelId = _drugModelId;}
+    void setDrugId(std::string _drugId) { m_drugId = std::move(_drugId);}
+    void setDrugModelId(std::string _drugModelId) { m_drugModelId = std::move(_drugModelId);}
 
     std::string getDrugId() const { return m_drugId;}
     std::string getDrugModelId() const { return m_drugModelId;}
@@ -181,10 +181,10 @@ public:
     void addFormulationAndRoute(std::unique_ptr<FullFormulationAndRoute> _formulationAndRoute, bool _isDefault = false);
 
     void setDomain(std::unique_ptr<DrugModelDomain> _domain);
-    const DrugModelDomain& getDomain() const { return *m_domain.get();}
+    const DrugModelDomain& getDomain() const { return *m_domain;}
 
     void setMetadata(std::unique_ptr<DrugModelMetadata> _metadata);
-    const DrugModelMetadata& getMetadata() const { return *m_metadata.get();}
+    const DrugModelMetadata& getMetadata() const { return *m_metadata;}
 
     void addAnalyteSet(std::unique_ptr<AnalyteSet> _analyteSet);
 
@@ -276,7 +276,6 @@ private:
         return nullptr;
     }
 
-private:
 
     std::string m_drugId;
 

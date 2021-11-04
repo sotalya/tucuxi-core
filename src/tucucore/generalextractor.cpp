@@ -385,7 +385,7 @@ ComputingStatus GeneralExtractor::generalExtractions(const ComputingTraitStandar
             // First copy the list of patient variates
             for (const auto &patientVariate : _patientVariates) {
                 // Using the copy constructor
-                patientVariatesList.emplace_back(std::make_unique<PatientCovariate>(*patientVariate.get()));
+                patientVariatesList.emplace_back(std::make_unique<PatientCovariate>(*patientVariate));
             }
             // Special case if there is a dose covariate
             if (_drugModel.hasDoseCovariate()) {

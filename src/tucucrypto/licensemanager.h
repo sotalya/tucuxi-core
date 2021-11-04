@@ -45,7 +45,6 @@ protected:
     bool extract(std::string& _license, std::string &_value) const;
     bool extract(std::string& _license, int &_value) const;
 
-protected:
     std::string m_keyword;
 };
 
@@ -55,20 +54,18 @@ public:
     LicenseRequest() {}
     LicenseRequest(MachineIdType _type, const std::string& _hashedFingerprint, const DateTime& _date, const std::string& _version);
 
-public:
     bool fromString(const std::string& _strLisence);
     std::string toString() const;
 
-public:
     MachineIdType getIdType() const                     { return static_cast<MachineIdType>(m_type); }
     const std::string& getHashedFingerprint() const     { return m_hashedFingerprint; }
     int getDate() const                                 { return m_date; }
     const std::string& getVersion() const               { return m_version; }
 
 private:
-    int m_type;                         // Provided by enum class MachineIdType.
+    int m_type{0};                      // Provided by enum class MachineIdType.
     std::string m_hashedFingerprint;    // It is a unique id that identifies the machine.
-    int m_date;                         // Date of request.
+    int m_date{0};                      // Date of request.
     std::string m_version;              // Version of Tucuxi.
 };
 
@@ -78,7 +75,6 @@ public:
     License() {}
     License(const LicenseRequest& _request, const DateTime& _endDate);
 
-public:
     bool fromString(const std::string& _strLisence);
     std::string toString() const;
 
@@ -90,10 +86,10 @@ public:
     int getLastUsedDate() const                         { return m_lastUsedDate; }
 
 private:
-    int m_type;                       // Provided by enum class MachineIdType
+    int m_type{0};                    // Provided by enum class MachineIdType
     std::string m_hashedFingerprint;  // It is a unique id that identifies the machine
-    int m_validityDate;               // Date of validity
-    int m_lastUsedDate;               // Date of the last use
+    int m_validityDate{0};            // Date of validity
+    int m_lastUsedDate{0};            // Date of the last use
 };
 
 /// \ingroup LicenseManager
@@ -150,7 +146,6 @@ public:
 
 // -------------------------------------------------------
 // Methods used by the server
-public: 
     /// \brief Decrypt and return plain request.
     /// @param _encryptedRequest : encrypted request from application.
     /// @param _plainRequest : request from application.
@@ -173,7 +168,6 @@ private:
 
     static bool getHashedFingerprint(MachineIdType &_idType, std::string& _hashedFingerprint);
 
-private:
     static const std::string sm_key; // NOLINT(readability-identifier-naming)
 };
 

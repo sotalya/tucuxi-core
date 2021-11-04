@@ -41,7 +41,7 @@ std::string PkModel::getPkModelId() const
 
 
 bool PkModel::addIntakeIntervalCalculatorFactory(AbsorptionModel _route,
-                                                 std::shared_ptr<IntakeIntervalCalculatorCreator> _creator)
+                                                 const std::shared_ptr<IntakeIntervalCalculatorCreator>& _creator)
 {
     std::pair<std::map<AbsorptionModel, std::shared_ptr<IntakeIntervalCalculatorCreator>>::iterator, bool> rc;
     rc = m_calculatorCreators.insert(std::make_pair(_route, _creator));
@@ -53,7 +53,7 @@ bool PkModel::addParameterList(AbsorptionModel _route,
                       std::vector<std::string> _parameterList)
 {
     std::pair<std::map<AbsorptionModel, std::vector<std::string>>::iterator, bool> rc;
-    rc = m_parameters.insert(std::make_pair(_route, _parameterList));
+    rc = m_parameters.insert(std::make_pair(_route, std::move(_parameterList)));
     return rc.second;
 }
 
@@ -74,9 +74,7 @@ std::shared_ptr<IntakeIntervalCalculator> PkModel::getCalculatorForRoute(Absorpt
     if (search != m_calculatorCreators.end()) {
         return search->second->create();
     }
-    else {
-        return nullptr;
-    }
+    return nullptr;
 }
 
 
@@ -87,13 +85,11 @@ std::vector<std::string> PkModel::getParametersForRoute(AbsorptionModel _route) 
     if (search != m_parameters.end()) {
         return search->second;
     }
-    else {
-        return std::vector<std::string>();
-    }
+    return std::vector<std::string>();
 }
 
 
-bool PkModelCollection::addPkModel(std::shared_ptr<PkModel> _pkModel)
+bool PkModelCollection::addPkModel(const std::shared_ptr<PkModel>& _pkModel)
 {
     // Check that no previous PkModel with the same Id was inserted in the collection.
     auto it = std::find_if(m_collection.begin(), m_collection.end(),
@@ -137,6 +133,7 @@ std::vector<std::shared_ptr<PkModel>> PkModelCollection::getPkModelList() const
 /// \param _COLLECTION Collection to which the PkModel has to be added.
 /// \param _COMP_NO_NUM Number of transit compartments (expressed in numerical form).
 /// \param _RC Boolean return type (ORed result of all the add operations).
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define ADD_2COMP_ERLANG_PK_MODEL_TO_COLLECTION(_COLLECTION, _COMP_NO_NUM, _RC) \
 do { \
     { \

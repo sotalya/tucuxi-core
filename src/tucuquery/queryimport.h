@@ -97,11 +97,11 @@ protected:
     // Utilitary methods
     Tucuxi::Core::PercentileRanks getChildPercentileRanks(Common::XmlNodeIterator _rootIterator, const std::string& _childName);
     std::vector<Common::DateTime> getChildDateTimeList(Common::XmlNodeIterator _rootIterator, const std::string& _childName) const;
-    std::unique_ptr<Tucuxi::Core::ComputingTraitAdjustment> getChildComputingTraitAdjustment(Common::XmlNodeIterator _rootIterator, std::string) ;
-    std::unique_ptr<Tucuxi::Core::ComputingTraitConcentration> getChildComputingTraitConcentration(Common::XmlNodeIterator _rootIterator, std::string) ;
-    std::unique_ptr<Tucuxi::Core::ComputingTraitPercentiles> getChildComputingTraitPercentiles(Common::XmlNodeIterator _rootIterator, std::string) ;
-    std::unique_ptr<Tucuxi::Core::ComputingTraitSinglePoints> getChildComputingTraitSinglePoints(Common::XmlNodeIterator _rootIterator, std::string) ;
-    std::unique_ptr<Tucuxi::Core::ComputingTraitAtMeasures> getChildComputingTraitAtMeasures(Common::XmlNodeIterator _rootIterator, std::string) ;
+    std::unique_ptr<Tucuxi::Core::ComputingTraitAdjustment> getChildComputingTraitAdjustment(Common::XmlNodeIterator _rootIterator, const std::string &) ;
+    std::unique_ptr<Tucuxi::Core::ComputingTraitConcentration> getChildComputingTraitConcentration(Common::XmlNodeIterator _rootIterator, const std::string &) ;
+    std::unique_ptr<Tucuxi::Core::ComputingTraitPercentiles> getChildComputingTraitPercentiles(Common::XmlNodeIterator _rootIterator, const std::string &) ;
+    std::unique_ptr<Tucuxi::Core::ComputingTraitSinglePoints> getChildComputingTraitSinglePoints(Common::XmlNodeIterator _rootIterator, const std::string &) ;
+    std::unique_ptr<Tucuxi::Core::ComputingTraitAtMeasures> getChildComputingTraitAtMeasures(Common::XmlNodeIterator _rootIterator, const std::string &) ;
     Tucuxi::Core::ComputingOption getChildComputingOption(Common::XmlNodeIterator _rootIterator, const std::string& _childName);
     Tucuxi::Core::PredictionParameterType getChildParametersTypeEnum(Common::XmlNodeIterator _rootIterator, const std::string& _childName);
     Tucuxi::Core::CompartmentsOption getChildCompartmentsOptionEnum(Common::XmlNodeIterator _rootIterator, const std::string& _childName);

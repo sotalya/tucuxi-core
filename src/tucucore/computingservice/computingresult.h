@@ -96,7 +96,9 @@ enum class [[nodiscard]] ComputingStatus {
     /// Cannot attain steady state
     NoSteadyState,
     /// A posteriori percentiles calculation, but samples are out of scope
-    AposterioriPercentilesOutOfScopeSamplesError
+    AposterioriPercentilesOutOfScopeSamplesError,
+    /// Something went wrong with adjustments
+    AdjustmentsInternalError
 };
 
 std::ostream& operator<<(std::ostream& _stream, const ComputingStatus& _e);

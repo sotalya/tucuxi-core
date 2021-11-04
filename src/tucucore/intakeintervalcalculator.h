@@ -189,7 +189,7 @@ protected:
     /// \param _valueName Name of the value to log in case of problem
     bool checkStrictlyPositiveValue(Value _value,  const std::string& _valueName);
 
-protected:
+
     typedef IntakeCalculatorSingleConcentrations SingleConcentrations;
 
     /// Indicates if we shall log errors or not. Unsed to disable it for single points

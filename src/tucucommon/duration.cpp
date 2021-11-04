@@ -32,7 +32,7 @@ void Duration::updateDurationString()
 
 
 Duration::Duration()
-    : m_duration(m_duration.zero())
+    : m_duration(std::chrono::duration<ChronoBaseType>::zero())
 {
     UPDATESTRING;
 }
@@ -98,19 +98,19 @@ Duration::Duration(const std::chrono::hours &_hours,
 
 bool Duration::isEmpty() const
 {
-    return (m_duration == m_duration.zero());
+    return (m_duration == std::chrono::duration<ChronoBaseType>::zero());
 }
 
 
 bool Duration::isNegative() const
 {
-    return (m_duration < m_duration.zero());
+    return (m_duration < std::chrono::duration<ChronoBaseType>::zero());
 }
 
 
 void Duration::clear()
 {
-    m_duration = m_duration.zero();
+    m_duration = std::chrono::duration<ChronoBaseType>::zero();
     UPDATESTRING;
 }
 

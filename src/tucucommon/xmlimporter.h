@@ -74,7 +74,7 @@ protected:
 
 private:
 
-    Status m_status;
+    Status m_status{Status::Ok};
 
     std::string m_errorMessage;
 

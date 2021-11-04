@@ -400,7 +400,7 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(const TargetDefinit
 }
 
 ComputingStatus TargetExtractor::extract(
-        ActiveMoietyId _activeMoietyId,
+        const ActiveMoietyId& _activeMoietyId,
         const CovariateSeries &_covariates,
         const TargetDefinitions& _targetDefinitions,
         const Targets &_targets,

@@ -47,7 +47,7 @@ void ComputingQueryResponse::setQueryStatus(QueryStatus _queryStatus)
 void ComputingQueryResponse::setQueryStatus(QueryStatus _queryStatus, std::string _errorMessage)
 {
     m_queryStatus = _queryStatus;
-    m_errorMessage = _errorMessage;
+    m_errorMessage = std::move(_errorMessage);
 }
 
 void ComputingQueryResponse::addRequestResponse(std::unique_ptr<Core::ComputingResponse> _computingResponse,

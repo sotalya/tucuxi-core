@@ -48,7 +48,7 @@ protected:
         /// Formulation and route of the candidate
         FormulationAndRoute m_formulationAndRoute;
         /// The dose value
-        Value m_dose;
+        Value m_dose{0};
         /// The dose unit
         TucuUnit m_doseUnit;
         /// The dosing interval

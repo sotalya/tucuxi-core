@@ -29,9 +29,8 @@ namespace Core {
 /// Function to delete a pointer if it is not nullptr
 template<typename T> inline void DELETE_IF_NON_NULL(T _p)
 {
-    if (_p != nullptr) {
-        delete _p;
-    }
+    // Removed the if (_p == nullptr) because of readability-delete-null-pointer
+    delete _p;
 }
 
 /// Function to delete a vector of pointers.
@@ -52,7 +51,7 @@ DrugModelImport::DrugModelImport() = default;
 
 
 
-DrugModelImport::Status DrugModelImport::importFromFile(Tucuxi::Core::DrugModel *&_drugModel, std::string _fileName)
+DrugModelImport::Status DrugModelImport::importFromFile(Tucuxi::Core::DrugModel *&_drugModel, const std::string& _fileName)
 {
     // Ensure the function is reentrant
     std::lock_guard<std::mutex> lock(m_mutex);
@@ -70,7 +69,7 @@ DrugModelImport::Status DrugModelImport::importFromFile(Tucuxi::Core::DrugModel 
 }
 
 
-DrugModelImport::Status DrugModelImport::importFromString(Tucuxi::Core::DrugModel *&_drugModel, std::string _xml)
+DrugModelImport::Status DrugModelImport::importFromString(Tucuxi::Core::DrugModel *&_drugModel, const std::string& _xml)
 {
     // Ensure the function is reentrant
     std::lock_guard<std::mutex> lock(m_mutex);
@@ -153,7 +152,7 @@ const std::vector<std::string>& DrugModelImport::ignoredTags() const {
 }
 
 
-Tucuxi::Common::TranslatableString DrugModelImport::extractTranslatableString(Tucuxi::Common::XmlNodeIterator _node, std::string _insideName)
+Tucuxi::Common::TranslatableString DrugModelImport::extractTranslatableString(Tucuxi::Common::XmlNodeIterator _node, const std::string& _insideName)
 {
     Tucuxi::Common::TranslatableString result;
 
@@ -905,7 +904,7 @@ std::vector<CovariateDefinition*> DrugModelImport::extractCovariates(Tucuxi::Com
     return covariates;
 }
 
-Duration castDuration(double _duration, TucuUnit _unit)
+Duration castDuration(double _duration, const TucuUnit& _unit)
 {
     if (_unit.toString() == "d") {
         return Duration(std::chrono::seconds(static_cast<long>(_duration * 3600.0 * 24.0)));
@@ -1419,7 +1418,7 @@ AnalyteSet* DrugModelImport::extractAnalyteGroup(Tucuxi::Common::XmlNodeIterator
     analyteGroup = new AnalyteSet();
     analyteGroup->setId(groupId);
     analyteGroup->setPkModelId(pkModelId);
-    if (analytes.size() > 0) {
+    if (!analytes.empty()) {
         // Here we assume all analytes will share the same unit
         analyteGroup->setDoseUnit(Tucuxi::Common::UnitManager::getWeightFromConcentration(analytes[0]->getUnit()));
     }
@@ -2005,7 +2004,7 @@ FullFormulationAndRoute* DrugModelImport::extractFullFormulationAndRoute(
                         }
 
                         if (getStatus() == Status::Ok) {
-                            analyteConversions.push_back(new AnalyteConversion(analyteId, factor));
+                            analyteConversions.push_back(new AnalyteConversion(AnalyteId(analyteId), factor));
                         }
 
                         analyteConversionsIt ++;

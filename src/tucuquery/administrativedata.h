@@ -25,11 +25,11 @@ public:
     Address(Address& _other) = delete;
 
     // Getters
-    const std::string getStreet() const;
+    const std::string& getStreet() const;
     int getPostCode() const;
-    const std::string getCity() const;
-    const std::string getState() const;
-    const std::string getCountry() const;
+    const std::string& getCity() const;
+    const std::string& getState() const;
+    const std::string& getCountry() const;
 
 protected:
     const std::string m_street;
@@ -50,8 +50,8 @@ public:
     Phone(Phone& _other) = delete;
 
     // Getters
-    const std::string getNumber() const;
-    const std::string getType() const;
+    const std::string& getNumber() const;
+    const std::string& getType() const;
 
 protected:
     const std::string m_number;
@@ -69,8 +69,8 @@ public:
     Email(Email& _other) = delete;
 
     // Getters;
-    const std::string getAddress() const;
-    const std::string getType() const;
+    const std::string& getAddress() const;
+    const std::string& getType() const;
 
 protected:
     const std::string m_address;
@@ -96,10 +96,10 @@ public:
     PersonalContact(PersonalContact& _other) = delete;
 
     // Getters
-    const std::string getId() const;
-    const std::string getTitle() const;
-    const std::string getFirstName() const;
-    const std::string getLastName() const;
+    const std::string& getId() const;
+    const std::string& getTitle() const;
+    const std::string& getFirstName() const;
+    const std::string& getLastName() const;
     const Address& getpAddress() const;
     const Phone& getpPhone() const;
     const Email& getpEmail() const;
@@ -132,8 +132,8 @@ public:
     InstituteContact(InstituteContact& _other) = delete;
 
     // Getters
-    const std::string getId() const;
-    const std::string getName() const;
+    const std::string& getId() const;
+    const std::string& getName() const;
     const Address& getpAddress() const;
     const Phone& getpPhone() const;
     const Email& getpEmail() const;

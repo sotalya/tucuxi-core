@@ -76,7 +76,7 @@ private:
 
     struct Data {
         Tucuxi::Common::Duration m_offset;
-        Value m_value;
+        Value m_value{0.0};
     };
 
     std::vector<Data> m_data; // The list of values (in case of maximum and minimum, we can have a list)

@@ -39,8 +39,7 @@ public:
     /// - A priori values
     /// - Priority to targets over targetDefinitions
     /// - Only individual targets
-    ComputingStatus extract(
-            ActiveMoietyId _activeMoietyId,
+    ComputingStatus extract(const ActiveMoietyId &_activeMoietyId,
             const CovariateSeries &_covariates,
             const TargetDefinitions& _targetDefinitions,
             const Targets &_targets,

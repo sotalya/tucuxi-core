@@ -93,7 +93,6 @@ protected:
     ///
     virtual void initConcentrations(const Residuals& _inResiduals, std::vector<double> &_concentrations) = 0;
 
-protected:
 
     typedef IntakeCalculatorSingleConcentrations SingleConcentrations;
 
@@ -122,10 +121,10 @@ public:
 
 protected:
 
-    CycleSize m_nbPoints; /// Number measure points during interval
-    Value m_Int; /// Interval time (Hours)
+    CycleSize m_nbPoints{0}; /// Number measure points during interval
+    Value m_Int{0.0}; /// Interval time (Hours)
 
-    double m_h; /// Internal h value for advancing on RK4
+    double m_h{1.0 / 60.0}; /// Internal h value for advancing on RK4
 
     bool computeConcentrations(Eigen::VectorXd &_times, const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) override
     {
@@ -145,7 +144,7 @@ protected:
         // Return concentrations of first compartment
         _concentrations[0].assign(concentrations[0].data(), concentrations[0].data() + concentrations[0].size());
         // Return concentrations of other compartments if required
-        if (_isAll == true) {
+        if (_isAll) {
             for (size_t i = 1; i < ResidualSize; i++) {
                 _concentrations[i].assign(concentrations[i].data(), concentrations[i].data() + concentrations[i].size());
             }
@@ -192,7 +191,7 @@ protected:
         // return concentrations (computation with atTime (current time))
         _concentrations[0].push_back(concentrations[0][atTime]);
         // return all compartments if required
-        if (_isAll == true) {
+        if (_isAll) {
             for (size_t i = 1; i < ResidualSize; i++) {
                 _concentrations[i].push_back(concentrations[i][atTime]);
             }

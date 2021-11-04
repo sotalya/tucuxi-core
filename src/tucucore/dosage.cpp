@@ -12,6 +12,7 @@ namespace Core {
 // SingleDose::~SingleDose() { }
 
 /// \brief Visitor function's implementation.
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define DOSAGE_UTILS_IMPL(className) \
 int className::extract(IntakeExtractor &_extractor, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, const TucuUnit &_toUnit, IntakeSeries &_series, ExtractionOption _option) const \
 { \
@@ -43,16 +44,17 @@ bool timeRangesOverlap(const DosageTimeRange &_first, const DosageTimeRange &_se
 {
     if (_first.m_endDate.isUndefined() && _second.m_endDate.isUndefined()) {
         return true;
-    } else if (_first.m_endDate.isUndefined()) {
-        return (_first.m_startDate  < _second.m_endDate);
-    } else if (_second.m_endDate.isUndefined()) {
-        return (_second.m_startDate < _first.m_endDate );
-    } else {
-        return  (_first.m_endDate   < _second.m_endDate   && _first.m_endDate   > _second.m_startDate) ||
-                (_first.m_startDate > _second.m_startDate && _first.m_startDate < _second.m_endDate  ) ||
-                (_first.m_startDate < _second.m_startDate && _first.m_endDate   > _second.m_endDate  ) ||
-                (_first.m_startDate > _second.m_startDate && _first.m_endDate   < _second.m_endDate  );
     }
+    if (_first.m_endDate.isUndefined()) {
+        return (_first.m_startDate  < _second.m_endDate);
+    }
+    if (_second.m_endDate.isUndefined()) {
+        return (_second.m_startDate < _first.m_endDate );
+    }
+    return  (_first.m_endDate   < _second.m_endDate   && _first.m_endDate   > _second.m_startDate) ||
+            (_first.m_startDate > _second.m_startDate && _first.m_startDate < _second.m_endDate  ) ||
+            (_first.m_startDate < _second.m_startDate && _first.m_endDate   > _second.m_endDate  ) ||
+            (_first.m_startDate > _second.m_startDate && _first.m_endDate   < _second.m_endDate  );
 }
 
 

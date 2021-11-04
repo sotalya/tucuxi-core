@@ -51,7 +51,7 @@ public:
     /// \return True if the insertion was performed successfully, false if the route already had an associated creator.
     ///         In either cases, the creator is recorded.
     bool addIntakeIntervalCalculatorFactory(AbsorptionModel _route,
-                                            std::shared_ptr<IntakeIntervalCalculatorCreator> _creator);
+                                            const std::shared_ptr<IntakeIntervalCalculatorCreator>& _creator);
 
     bool addParameterList(AbsorptionModel _route,
                           std::vector<std::string> _parameterList);
@@ -121,7 +121,7 @@ public:
     /// \brief Add a PkModel to the collection.
     /// \param _pkModel A pointer to a PkModel to add to the collection.
     /// This function is typically used at startup to populate the collection with the existing models of computation.
-    bool addPkModel(std::shared_ptr<PkModel> _pkModel);
+    bool addPkModel(const std::shared_ptr<Core::PkModel> &_pkModel);
 
     /// \brief Given an Id, returns the PkModel with the corresponding identifier.
     /// \param _pkModelId ID of the PkModel asked by the caller.
@@ -156,19 +156,20 @@ bool defaultPopulate(PkModelCollection &_collection);
 /// \param _TYPE Type (either Micro or Macro).
 /// \param _TYPE_NAME Type in literal form (either micro or macro).
 /// \param _RC Boolean return type (ORed result of all the add operations).
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define ADD_PKMODEL_TO_COLLECTION(_COLLECTION, _COMP_NO_NUM, _COMP_NO_LIT, _TYPE, _TYPE_NAME, _RC) \
 do { \
     std::shared_ptr<PkModel> pkmodel = std::make_shared<PkModel>("linear." #_COMP_NO_NUM "comp." #_TYPE_NAME, PkModel::AllowMultipleRoutes::No); \
-    _RC |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, Tucuxi::Core::_COMP_NO_LIT ## CompartmentExtra ## _TYPE::getCreator()); \
-    _RC |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Intravascular, Tucuxi::Core::_COMP_NO_LIT ## CompartmentBolus ## _TYPE::getCreator()); \
-    _RC |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Infusion, Tucuxi::Core::_COMP_NO_LIT ## CompartmentInfusion## _TYPE::getCreator());\
-    _RC |= pkmodel->addParameterList(AbsorptionModel::Extravascular, Tucuxi::Core::_COMP_NO_LIT ## CompartmentExtra ## _TYPE::getParametersId()); \
-    _RC |= pkmodel->addParameterList(AbsorptionModel::Intravascular, Tucuxi::Core::_COMP_NO_LIT ## CompartmentBolus ## _TYPE::getParametersId()); \
-    _RC |= pkmodel->addParameterList(AbsorptionModel::Infusion, Tucuxi::Core::_COMP_NO_LIT ## CompartmentInfusion## _TYPE::getParametersId());\
+    (_RC) |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, Tucuxi::Core::_COMP_NO_LIT ## CompartmentExtra ## _TYPE::getCreator()); \
+    (_RC) |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Intravascular, Tucuxi::Core::_COMP_NO_LIT ## CompartmentBolus ## _TYPE::getCreator()); \
+    (_RC) |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Infusion, Tucuxi::Core::_COMP_NO_LIT ## CompartmentInfusion## _TYPE::getCreator());\
+    (_RC) |= pkmodel->addParameterList(AbsorptionModel::Extravascular, Tucuxi::Core::_COMP_NO_LIT ## CompartmentExtra ## _TYPE::getParametersId()); \
+    (_RC) |= pkmodel->addParameterList(AbsorptionModel::Intravascular, Tucuxi::Core::_COMP_NO_LIT ## CompartmentBolus ## _TYPE::getParametersId()); \
+    (_RC) |= pkmodel->addParameterList(AbsorptionModel::Infusion, Tucuxi::Core::_COMP_NO_LIT ## CompartmentInfusion## _TYPE::getParametersId());\
     Tucuxi::Common::TranslatableString distribution; \
     Tucuxi::Common::TranslatableString elimination; \
     std::string comps; \
-    if (_COMP_NO_NUM == 1) \
+    if ((_COMP_NO_NUM) == 1) \
         comps = "compartment"; \
     else \
         comps = "compartments"; \
@@ -176,7 +177,7 @@ do { \
     elimination.setString("linear", "en"); \
     pkmodel->setDistribution(distribution); \
     pkmodel->setElimination(elimination); \
-    _COLLECTION.addPkModel(pkmodel); \
+    (_COLLECTION).addPkModel(pkmodel); \
 } while (0);
 
 
@@ -187,21 +188,22 @@ do { \
 /// \param _TYPE Type (either Micro or Macro).
 /// \param _TYPE_NAME Type in literal form (either micro or macro).
 /// \param _RC Boolean return type (ORed result of all the add operations).
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define ADD_PKMODEL_TO_COLLECTION_LAG(_COLLECTION, _COMP_NO_NUM, _COMP_NO_LIT, _TYPE, _TYPE_NAME, _RC) \
 do { \
     std::shared_ptr<PkModel> pkmodel = std::make_shared<PkModel>("linear." #_COMP_NO_NUM "comp." #_TYPE_NAME, PkModel::AllowMultipleRoutes::No); \
-    _RC |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, Tucuxi::Core::_COMP_NO_LIT ## CompartmentExtra ## _TYPE::getCreator()); \
-    _RC |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::ExtravascularLag, Tucuxi::Core::_COMP_NO_LIT ## CompartmentExtraLag ## _TYPE::getCreator()); \
-    _RC |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Intravascular, Tucuxi::Core::_COMP_NO_LIT ## CompartmentBolus ## _TYPE::getCreator()); \
-    _RC |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Infusion, Tucuxi::Core::_COMP_NO_LIT ## CompartmentInfusion## _TYPE::getCreator());\
-    _RC |= pkmodel->addParameterList(AbsorptionModel::Extravascular, Tucuxi::Core::_COMP_NO_LIT ## CompartmentExtra ## _TYPE::getParametersId()); \
-    _RC |= pkmodel->addParameterList(AbsorptionModel::ExtravascularLag, Tucuxi::Core::_COMP_NO_LIT ## CompartmentExtraLag ## _TYPE::getParametersId()); \
-    _RC |= pkmodel->addParameterList(AbsorptionModel::Intravascular, Tucuxi::Core::_COMP_NO_LIT ## CompartmentBolus ## _TYPE::getParametersId()); \
-    _RC |= pkmodel->addParameterList(AbsorptionModel::Infusion, Tucuxi::Core::_COMP_NO_LIT ## CompartmentInfusion## _TYPE::getParametersId());\
+    (_RC) |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, Tucuxi::Core::_COMP_NO_LIT ## CompartmentExtra ## _TYPE::getCreator()); \
+    (_RC) |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::ExtravascularLag, Tucuxi::Core::_COMP_NO_LIT ## CompartmentExtraLag ## _TYPE::getCreator()); \
+    (_RC) |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Intravascular, Tucuxi::Core::_COMP_NO_LIT ## CompartmentBolus ## _TYPE::getCreator()); \
+    (_RC) |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Infusion, Tucuxi::Core::_COMP_NO_LIT ## CompartmentInfusion## _TYPE::getCreator());\
+    (_RC) |= pkmodel->addParameterList(AbsorptionModel::Extravascular, Tucuxi::Core::_COMP_NO_LIT ## CompartmentExtra ## _TYPE::getParametersId()); \
+    (_RC) |= pkmodel->addParameterList(AbsorptionModel::ExtravascularLag, Tucuxi::Core::_COMP_NO_LIT ## CompartmentExtraLag ## _TYPE::getParametersId()); \
+    (_RC) |= pkmodel->addParameterList(AbsorptionModel::Intravascular, Tucuxi::Core::_COMP_NO_LIT ## CompartmentBolus ## _TYPE::getParametersId()); \
+    (_RC) |= pkmodel->addParameterList(AbsorptionModel::Infusion, Tucuxi::Core::_COMP_NO_LIT ## CompartmentInfusion## _TYPE::getParametersId());\
     Tucuxi::Common::TranslatableString distribution; \
     Tucuxi::Common::TranslatableString elimination; \
     std::string comps; \
-    if (_COMP_NO_NUM == 1) \
+    if ((_COMP_NO_NUM) == 1) \
         comps = "compartment"; \
     else \
         comps = "compartments"; \
@@ -209,7 +211,7 @@ do { \
     elimination.setString("linear", "en"); \
     pkmodel->setDistribution(distribution); \
     pkmodel->setElimination(elimination); \
-    _COLLECTION.addPkModel(pkmodel); \
+    (_COLLECTION).addPkModel(pkmodel); \
 } while (0);
 
 

@@ -37,7 +37,7 @@ class ParametersExtractor;
 class Parameter : public IndividualValue<ParameterDefinition>
 {
 public:
-    Parameter(const ParameterDefinition &_def, const Value _value) :
+    Parameter(const ParameterDefinition &_def, Value _value) :
         IndividualValue<ParameterDefinition>(_def),
         m_value(_value)
     {
@@ -75,8 +75,8 @@ public:
     // Make the test class friend, as this will allow us to manually check the available events.
     friend TestParameterExtractor;
 
-    size_t m_omegaIndex;
-    size_t m_nbEtas;
+    size_t m_omegaIndex{0};
+    size_t m_nbEtas{0};
 
 private:
     Value m_value;
@@ -92,9 +92,10 @@ public:
     ParameterSetEvent(const DateTime &_date)
         : TimedEvent(_date)
     {
-        for (int i = 0; i < ParameterId::size; i++) {
-            m_IdToIndex[i] = -1;
-        }
+        m_IdToIndex.fill(-1);
+//        for (int i = 0; i < ParameterId::size; i++) {
+//            m_IdToIndex[i] = -1;
+//        }
     }
 
     void setEventTime(const DateTime &_date)
@@ -144,7 +145,7 @@ public:
     ///
     Value getValue(ParameterId::Enum _id) const
     {
-        int index = m_IdToIndex[_id];
+        int index = m_IdToIndex.at(_id);
         if (index >= 0) {
             return m_parameters[static_cast<size_t>(index)].getValue();
         }
@@ -163,7 +164,7 @@ public:
     ///
     Value getOptionalValue(ParameterId::Enum _id) const
     {
-        int index = m_IdToIndex[_id];
+        int index = m_IdToIndex.at(_id);
         if (index >= 0) {
             return m_parameters[static_cast<size_t>(index)].getValue();
         }
@@ -194,7 +195,7 @@ public:
 
 private:
     Parameters m_parameters;
-    int m_IdToIndex[ParameterId::size];
+    std::array<int, ParameterId::size> m_IdToIndex;
 };
 typedef std::unique_ptr<const ParameterSetEvent> ParameterSetEventPtr;
 

@@ -129,7 +129,7 @@ public:
             std::unique_ptr<FullFormulationAndRoute> formulationAndRoute(new FullFormulationAndRoute(formulationSpecs, "extraId"));
             formulationAndRoute->addAssociation(std::unique_ptr<AnalyteSetToAbsorptionAssociation>(association));
 
-            std::unique_ptr<AnalyteConversion> analyteConversion = std::make_unique<AnalyteConversion>("analyte", 1.0);
+            std::unique_ptr<AnalyteConversion> analyteConversion = std::make_unique<AnalyteConversion>(AnalyteId("analyte"), 1.0);
             formulationAndRoute->addAnalyteConversion(std::move(analyteConversion));
 
             ValidDoses *validDoses = new ValidDoses(TucuUnit("mg"), std::make_unique<PopulationValue>(400));

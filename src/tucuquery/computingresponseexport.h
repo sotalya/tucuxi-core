@@ -12,7 +12,7 @@ class ComputingResponseExport
 public:
     ComputingResponseExport();
 
-    bool exportToFiles(const Query::ComputingQueryResponse &_computingQueryResponse, std::string _filePath);
+    bool exportToFiles(const Query::ComputingQueryResponse &_computingQueryResponse, const std::string &_filePath);
 };
 
 } // namespace Core

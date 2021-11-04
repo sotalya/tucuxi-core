@@ -47,11 +47,11 @@ void errorUndefinedDateTime(const DateTime &/*_date*/)
     std::cerr << "Error : Using an undefined DateTime" << std::endl;
 }
 
-#define SETDEFINED(value) {m_isDefined = value;}
+#define SETDEFINED(value) {m_isDefined = value;} // NOLINT(cppcoreguidelines-macro-usage)
 #define CHECKDEFINED {if (sm_enableChecks && this->isUndefined()){errorUndefinedDateTime(*this);throw std::runtime_error("Date Time used but undefined");}}
 #define CHECKOTHERDEFINED {if (sm_enableChecks && _other.isUndefined()) {errorUndefinedDateTime(_other);throw std::runtime_error("Date Time used but undefined");}}
 #else // CHECK_DATETIME
-#define SETDEFINED(value) {m_isDefined = value;}
+#define SETDEFINED(value) {m_isDefined = value;} // NOLINT(cppcoreguidelines-macro-usage)
 #define CHECKDEFINED
 #define CHECKOTHERDEFINED
 void DateTime::enableChecks() {}

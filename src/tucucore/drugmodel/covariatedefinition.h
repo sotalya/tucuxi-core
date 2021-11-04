@@ -93,7 +93,7 @@ public:
 
 
     INVARIANTS(
-            INVARIANT(Invariants::INV_COVARIATEDEFINITION_0001, (m_id.size() > 0), "A covariate has no Id")
+            INVARIANT(Invariants::INV_COVARIATEDEFINITION_0001, (!m_id.empty()), "A covariate has no Id")
             )
 protected:
     /// \brief Covariate type.

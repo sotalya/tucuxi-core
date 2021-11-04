@@ -559,7 +559,7 @@ sum2::fillRequiredInputs()
 
 bool OperationCollection::addOperation(std::shared_ptr<Operation> _operation, const std::string& _operationId)
 {
-    m_collection[_operationId] = _operation;
+    m_collection[_operationId] = std::move(_operation);
     return true;
 }
 
@@ -572,6 +572,7 @@ std::shared_ptr<Operation> OperationCollection::getOperationFromId(const std::st
     return pos->second;
 }
 
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define ADD_OPERATION_TO_COLLECTION(_TYPE) \
     do { \
         std::shared_ptr<Operation> operation = std::make_shared<_TYPE>(); \

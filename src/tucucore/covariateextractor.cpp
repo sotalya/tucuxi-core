@@ -14,6 +14,7 @@ using namespace Tucuxi::Common::Utils;
 
 const std::string CovariateExtractor::BIRTHDATE_CNAME = "birthdate"; // NOLINT(readability-identifier-naming)
 
+/*
 /// \brief Create an event and push it in the event series.
 /// \param COV_DEF Corresponding covariate definition.
 /// \param TIME Time of the event.
@@ -25,6 +26,7 @@ const std::string CovariateExtractor::BIRTHDATE_CNAME = "birthdate"; // NOLINT(r
     std::make_shared<CovariateEvent>(COV_DEF, TIME, VALUE); \
     SERIES.push_back(*event);                               \
 } while(0);
+*/
 
 CovariateExtractor::CovariateExtractor(const CovariateDefinitions &_defaults,
                                        const PatientVariates &_patientCovariates,
@@ -114,7 +116,7 @@ CovariateExtractor::CovariateExtractor(const CovariateDefinitions &_defaults,
             }
         }
 
-        if (rc.second == false) {
+        if (!rc.second) {
             // Duplicate ID!
             throw std::runtime_error("[CovariateExtractor] Duplicate covariate variable (" + (*it)->getId() + ")");
         }
@@ -179,7 +181,6 @@ bool CovariateExtractor::computeEvents(const std::map<DateTime, std::vector<std:
         // Look at every non-computed covariate we are supposed to refresh.
         for (const auto &cvName : refreshEvent.second) {
             Value newVal = 0.0;
-            Common::UnitManager unitManager;
             if (((*m_cdValued.at(cvName))->getType() == CovariateType::Standard) || ((*m_cdValued.at(cvName))->getType() == CovariateType::Sex)
                      || ((*m_cdValued.at(cvName))->getType() == CovariateType::Dose)) {
                 // Standard covariate -- get its value from the Patient Variates or from default values.
@@ -192,7 +193,7 @@ bool CovariateExtractor::computeEvents(const std::map<DateTime, std::vector<std:
                     newVal = stringToValue((*(pvCurrentC->second[0]))->getValue(),
                                            (*(pvCurrentC->second[0]))->getDataType());
 
-                    newVal = unitManager.convertToUnit(newVal, (*(pvCurrentC->second[0]))->getUnit(), getFinalUnit(cvName));
+                    newVal = Tucuxi::Common::UnitManager::convertToUnit(newVal, (*(pvCurrentC->second[0]))->getUnit(), getFinalUnit(cvName));
                 } else {
                     // We have more Patient Variates, therefore we have to compute the good value.
                     std::vector<pvIterator_t>::const_iterator pvIt = pvCurrentC->second.begin();
@@ -206,13 +207,13 @@ bool CovariateExtractor::computeEvents(const std::map<DateTime, std::vector<std:
                         newVal = stringToValue((**(std::prev(pvIt)))->getValue(),
                                                (**(std::prev(pvIt)))->getDataType());
 
-                        newVal = unitManager.convertToUnit(newVal, (**(std::prev(pvIt)))->getUnit(), getFinalUnit(cvName));
+                        newVal = Tucuxi::Common::UnitManager::convertToUnit(newVal, (**(std::prev(pvIt)))->getUnit(), getFinalUnit(cvName));
                     } else if (pvIt == pvCurrentC->second.begin()) {
                         // The first measurement is already past the desired time -- we simply have to keep the level.
                         newVal = stringToValue((**(pvIt))->getValue(),
                                                (**(pvIt))->getDataType());
 
-                        newVal = unitManager.convertToUnit(newVal, (*(pvCurrentC->second[0]))->getUnit(), getFinalUnit(cvName));
+                        newVal = Tucuxi::Common::UnitManager::convertToUnit(newVal, (*(pvCurrentC->second[0]))->getUnit(), getFinalUnit(cvName));
 
                     } else {
                         // We have two measurements to interpolate from (we have dealt with the case of the first
@@ -224,12 +225,12 @@ bool CovariateExtractor::computeEvents(const std::map<DateTime, std::vector<std:
                         Value secondValue = stringToValue((**(pvIt))->getValue(),
                                                           (**(pvIt))->getDataType());
 
-                        if (!interpolateValues(unitManager.convertToUnit(
+                        if (!interpolateValues(Tucuxi::Common::UnitManager::convertToUnit(
                                                    firstValue,
                                                    (**(std::prev(pvIt)))->getUnit(),
                                                    getFinalUnit(cvName)),                           // val1
                                                (**(std::prev(pvIt)))->getEventTime(),               // date1
-                                               unitManager.convertToUnit(
+                                               Tucuxi::Common::UnitManager::convertToUnit(
                                                    secondValue,
                                                    (**(pvIt))->getUnit(),
                                                    getFinalUnit(cvName)),                           // val2
@@ -490,9 +491,8 @@ bool CovariateExtractor::interpolateValues(const Value _val1, const DateTime &_d
         if (fabs(_val1 - _val2) < 1e-6) {
             _valRes = _val1;
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     // If the result's date corresponds to either date1 or date2, then return the corresponding value immediately.

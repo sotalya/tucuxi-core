@@ -2,7 +2,7 @@
 
 // The following 3 lines are here to avoid linting messages
 #ifndef TUCUXI_GIT_REVISION
-    #define TUCUXI_GIT_REVISION "ERROR_NOREVISION"
+    #define TUCUXI_GIT_REVISION "ERROR_NOREVISION" // NOLINT(cppcoreguidelines-macro-usage)
 #endif // TUCUXI_GIT_REVISION
 
 

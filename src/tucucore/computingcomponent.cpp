@@ -71,7 +71,7 @@ bool ComputingComponent::initialize()
 }
 
 void ComputingComponent::setPkModelCollection(std::shared_ptr<PkModelCollection> _collection) {
-    m_utils->m_models = _collection;
+    m_utils->m_models = std::move(_collection);
 }
 
 
@@ -346,7 +346,7 @@ ComputingStatus ComputingComponent::compute(
             ComputingStatus recordStatus = recordCycle(
                         _traits,
                         _request,
-                        *resp.get(),
+                        *resp,
                         start,
                         end,
                         times,
@@ -361,7 +361,7 @@ ComputingStatus ComputingComponent::compute(
         }
     }
 
-    endRecord(_traits, _request, *resp.get());
+    endRecord(_traits, _request, *resp);
 
     _response->addResponse(std::move(resp));
     return ComputingStatus::Ok;
@@ -378,9 +378,7 @@ ComputingStatus ComputingComponent::compute(
     if (_request.getDrugModel().getAnalyteSets().size() > 1) {
         return computePercentilesMulti(_traits, _request, _response);
     }
-    else {
-        return computePercentilesSimple(_traits, _request, _response);
-    }
+    return computePercentilesSimple(_traits, _request, _response);
 }
 
 ComputingStatus ComputingComponent::computePercentilesMulti(
@@ -561,7 +559,7 @@ ComputingStatus ComputingComponent::computePercentilesMulti(
                 _request,
                 _response,
                 intakeSeries,
-                std::move(pPrediction),
+                pPrediction,
                 percentiles,
                 percentileRanks);
 }
@@ -724,7 +722,7 @@ ComputingStatus ComputingComponent::computePercentilesSimple(
                 _request,
                 _response,
                 intakeSeries,
-                std::move(pPrediction),
+                pPrediction,
                 percentiles,
                 percentileRanks);
 }
@@ -802,9 +800,7 @@ ComputingStatus ComputingComponent::preparePercentilesResponse(
         _response->addResponse(std::move(resp));
         return ComputingStatus::Ok;
     }
-    else {
-        return ComputingStatus::SelectedIntakesSizeError;
-    }
+    return ComputingStatus::SelectedIntakesSizeError;
 }
 
 

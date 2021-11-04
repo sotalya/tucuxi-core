@@ -79,7 +79,7 @@ public:
     /// \return Result::Ok if the import went well, another Result else.
     /// This function is reentrant.
     ///
-    Status importFromFile(Tucuxi::Core::DrugModel *&_drugModel, std::string _fileName);
+    Status importFromFile(Tucuxi::Core::DrugModel *&_drugModel, const std::string &_fileName);
 
     ///
     /// \brief importFromString
@@ -88,7 +88,7 @@ public:
     /// \return Result::Ok if the import went well, another Result else.
     /// This function is reentrant.
     ///
-    Status importFromString(Tucuxi::Core::DrugModel *&_drugModel, std::string _xml);
+    Status importFromString(Tucuxi::Core::DrugModel *&_drugModel, const std::string &_xml);
 
 protected:
 
@@ -160,7 +160,7 @@ protected:
     LightPopulationValue* extractPopulationValue(Tucuxi::Common::XmlNodeIterator _node);
     Operation* extractOperation(Tucuxi::Common::XmlNodeIterator _node);
     JSOperation* extractJSOperation(Tucuxi::Common::XmlNodeIterator _node);
-    Tucuxi::Common::TranslatableString extractTranslatableString(Tucuxi::Common::XmlNodeIterator _node, std::string _insideName);
+    Tucuxi::Common::TranslatableString extractTranslatableString(Tucuxi::Common::XmlNodeIterator _node, const std::string &_insideName);
     DrugModelMetadata* extractHead(Tucuxi::Common::XmlNodeIterator _node);
 
 };

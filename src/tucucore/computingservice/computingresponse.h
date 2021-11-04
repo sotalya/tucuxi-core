@@ -204,7 +204,7 @@ class AdjustmentData : public SinglePredictionData
 public:
     AdjustmentData(RequestResponseId _id) : SinglePredictionData(std::move(_id)) {}
 
-    void addAdjustment(DosageAdjustment _adjustment) { m_adjustments.push_back(_adjustment);}
+    void addAdjustment(const DosageAdjustment& _adjustment) { m_adjustments.push_back(_adjustment);}
 
     void setAdjustments(const std::vector<DosageAdjustment> &_adjustments) { m_adjustments = _adjustments;}
 

@@ -119,7 +119,7 @@ ComputingStatus ConcentrationCalculator::computeConcentrations(const Concentrati
             {
                 case ComputingStatus::Ok:
                     break;
-                case ComputingStatus::DensityError:
+                // case ComputingStatus::DensityError:
                     // Restart computation with more points...
 
                     // If nbpoints has changed (initial density was not the final density), change the density in the intakeevent
@@ -128,7 +128,7 @@ ComputingStatus ConcentrationCalculator::computeConcentrations(const Concentrati
                     //    intake_series_t::index<tags::times>::type& intakes_times_index = intakes.get<tags::times>();
                     //    intakes_times_index.modify(it, IntakeEvent::change_density(ink.nbPoints));
                     //}
-                    break;
+                //    break;
                 default:
                     //m_logger.error("Failed in calculation with given parameter values.");
                     return result;
@@ -218,7 +218,7 @@ ComputingStatus ConcentrationCalculator::computeConcentrationsAtSteadyState(
                 {
                 case ComputingStatus::Ok:
                     break;
-                case ComputingStatus::DensityError:
+                //case ComputingStatus::DensityError:
                     // Restart computation with more points...
 
                     // If nbpoints has changed (initial density was not the final density), change the density in the intakeevent
@@ -227,7 +227,7 @@ ComputingStatus ConcentrationCalculator::computeConcentrationsAtSteadyState(
                     //    intake_series_t::index<tags::times>::type& intakes_times_index = intakes.get<tags::times>();
                     //    intakes_times_index.modify(it, IntakeEvent::change_density(ink.nbPoints));
                     //}
-                    break;
+                //    break;
                 default:
                     //m_logger.error("Failed in calculation with given parameter values.");
                     return result;
@@ -258,7 +258,7 @@ ComputingStatus ConcentrationCalculator::computeConcentrationsAtSteadyState(
                 {
                 case ComputingStatus::Ok:
                     break;
-                case ComputingStatus::DensityError:
+                //case ComputingStatus::DensityError:
                     // Restart computation with more points...
 
                     // If nbpoints has changed (initial density was not the final density), change the density in the intakeevent
@@ -267,7 +267,7 @@ ComputingStatus ConcentrationCalculator::computeConcentrationsAtSteadyState(
                     //    intake_series_t::index<tags::times>::type& intakes_times_index = intakes.get<tags::times>();
                     //    intakes_times_index.modify(it, IntakeEvent::change_density(ink.nbPoints));
                     //}
-                    break;
+                //    break;
                 default:
                     //m_logger.error("Failed in calculation with given parameter values.");
                     return result;

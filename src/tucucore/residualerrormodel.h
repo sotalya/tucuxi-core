@@ -19,7 +19,7 @@ class SigmaResidualErrorModel : public IResidualErrorModel
 public:
 
 
-    SigmaResidualErrorModel() : m_nbEpsilons(1) {}
+    SigmaResidualErrorModel() : m_errorModel(ResidualErrorType::NONE), m_nbEpsilons(1) {}
 
     void setSigma(Sigma _sigma);
     void setErrorModel(ResidualErrorType _errorModel);
@@ -62,7 +62,7 @@ public:
 
     void setApplyFormula(std::unique_ptr<Operation> _applyFormula) {m_applyFormula = std::move(_applyFormula);}
     void setLikelyhoodFormula(std::unique_ptr<Operation> _likelyhoodFormula) {m_likelyhoodFormula = std::move(_likelyhoodFormula);}
-    void setSigma(Sigma _sigma) { m_sigma = _sigma;}
+    void setSigma(Sigma _sigma) { m_sigma = std::move(_sigma);}
     bool isEmpty() const override;
     void applyEpsToValue(Concentration &_concentration, const Deviations &_eps) const override;
     void applyEpsToArray(Concentrations &_concentrations, const Deviations &_eps) const override;
@@ -114,6 +114,7 @@ public:
 
 //#define EMPTY_RESIDUAL_ERROR_MODEL ResidualErrorModel{EMPTY_SIGMA, ResidualErrorType::NONE}
 // static const ResidualErrorModel EMPTY_RESIDUAL_ERROR_MODEL;
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define EMPTY_RESIDUAL_ERROR_MODEL EmptyResidualErrorModel()
 
 } // namespace Core
