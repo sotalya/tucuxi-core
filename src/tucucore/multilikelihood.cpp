@@ -68,42 +68,51 @@ Value MultiLikelihood::negativeLogLikelihood(const ValueVector& _etas) const
     // Getting the concentration values at these _times and m_samples.
 
 
-    //here i need to add a loop that works for all samples
-    ComputingStatus result = m_concentrationCalculator->computeConcentrationsAtTimes(
-        _concentrations,
-        isAll,
-        *m_intakes,
-        *m_parameters,
-        *m_samples,
-        _etas);
+    //here i need to add a loop that works for all samples, iterating on each index of the vector
+
+
+    for (unsigned int i = 0; i < m_samples->size(); ++i){
+
+        ComputingStatus result = m_concentrationCalculator->computeConcentrationsAtTimes(
+            _concentrations,
+            isAll,
+            *m_intakes,
+            *m_parameters,
+            *m_samples[i],
+            _etas);
+        if (result != ComputingStatus::Ok) {
+            return std::numeric_limits<double>::max();
+        }
+        Value gll = 0;
+       }
 
     // If the calculation fails, its highly unlikely so we return the largest number we can
 
-    if (result != ComputingStatus::Ok) {
-        return std::numeric_limits<double>::max();
-    }
-    Value gll = 0;
+
 
     //calculate the prior which depends only on eta and omega (not the measure)
     Value logPrior = negativeLogPrior(Eigen::Map<const EigenVector>(&_etas[0], static_cast<Eigen::Index>(_etas.size())) /*, *m_omega*/);
-    SampleSeries::const_iterator sit = m_samples->begin();   //i have to fix that
-    SampleSeries::const_iterator sitEnd = m_samples->end();   // i have to fix that
-    size_t sampleCounter = 0;
-    while( sit != sitEnd ) {
-        // SampleEvent s = *sit;
-        gll += calculateSampleNegativeLogLikelihood(concentrations[sampleCounter], *sit, *m_residualErrorModel);
-        sampleCounter++;
-        sit++;
-    }
-    gll += logPrior;
 
-    // If we have a really big problem, like we have a log of zero
-    if (std::isnan(gll)) {
-        //        EXLOG(QtWarningMsg, ezechiel::math::NOEZERROR, QObject::tr("Log likelihood is NAN"))
-        gll = std::numeric_limits<double>::max();
-    }
+    for (unsigned int i = 0; i < m_samples->size(); ++i){
+        SampleSeries::const_iterator sit = *m_samples[i]->begin();   //i have to fix that
+        SampleSeries::const_iterator sitEnd = *m_samples[i]->end();   // i have to fix that
+        size_t sampleCounter = 0;
+        while( sit != sitEnd ) {
+            // SampleEvent s = *sit;
+            gll += calculateSampleNegativeLogLikelihood(concentrations[sampleCounter], *sit, *m_residualErrorModel);
+            sampleCounter++;
+            sit++;
+        }
+        gll += logPrior;
 
-    return gll;
+        // If we have a really big problem, like we have a log of zero
+        if (std::isnan(gll)) {
+            //        EXLOG(QtWarningMsg, ezechiel::math::NOEZERROR, QObject::tr("Log likelihood is NAN"))
+            gll = std::numeric_limits<double>::max();
+        }
+
+        return gll;
+    }
 }
 
 Value MultiLikelihood::calculateSampleNegativeLogLikelihood(Value _expected,
