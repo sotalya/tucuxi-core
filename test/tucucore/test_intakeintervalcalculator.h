@@ -449,14 +449,14 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
 
         // parameter for micro class
         Tucuxi::Core::ParameterDefinitions microParameterDefs;
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ke", 0.0435331, Tucuxi::Core::ParameterVariabilityType::None)));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("V", 347, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Ke", 0.0435331, Tucuxi::Core::ParameterVariabilityType::None));
         Tucuxi::Core::ParameterSetEvent microParameters(DateTime::now(), microParameterDefs);
 
         // parameter for macro class
         Tucuxi::Core::ParameterDefinitions macroParameterDefs;
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterVariabilityType::None)));
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("CL", 15.106, Tucuxi::Core::ParameterVariabilityType::None)));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("V", 347, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("CL", 15.106, Tucuxi::Core::ParameterVariabilityType::None));
         Tucuxi::Core::ParameterSetEvent macroParameters(DateTime::now(), macroParameterDefs);
         testCalculator<Tucuxi::Core::OneCompartmentBolusMicro, Tucuxi::Core::OneCompartmentBolusMacro>(
             microParameters,
@@ -477,18 +477,18 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
     {
         // parameter for micro class
         Tucuxi::Core::ParameterDefinitions microParameterDefs;
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ke", 0.0435331, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("V", 347, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Ke", 0.0435331, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 1, Tucuxi::Core::ParameterVariabilityType::None));
         Tucuxi::Core::ParameterSetEvent microParameters(DateTime::now(), microParameterDefs);
 
         // parameter for macro class
         Tucuxi::Core::ParameterDefinitions macroParameterDefs;
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterVariabilityType::None)));
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("CL", 15.106, Tucuxi::Core::ParameterVariabilityType::None)));
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("V", 347, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("CL", 15.106, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 1, Tucuxi::Core::ParameterVariabilityType::None));
         Tucuxi::Core::ParameterSetEvent macroParameters(DateTime::now(), macroParameterDefs);
 
         testCalculator<Tucuxi::Core::OneCompartmentExtraMicro, Tucuxi::Core::OneCompartmentExtraMacro>(
@@ -509,10 +509,10 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
     {
         // parameter for micro class
         Tucuxi::Core::ParameterDefinitions microParameterDefs;
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ke", 0.0435331, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("V", 347, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Ke", 0.0435331, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 1, Tucuxi::Core::ParameterVariabilityType::None));
         Tucuxi::Core::ParameterSetEvent microParameters(DateTime::now(), microParameterDefs);
 
         testCompare<Tucuxi::Core::OneCompartmentExtraMicro, Tucuxi::Core::RK4OneCompartmentExtraMicro>(
@@ -528,20 +528,20 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
     {
         // parameter for micro class
         Tucuxi::Core::ParameterDefinitions microParameterDefs;
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ke", 0.0435331, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Tlag", 1, Tucuxi::Core::ParameterVariabilityType::None)));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("V", 347, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Ke", 0.0435331, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 1, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Tlag", 1, Tucuxi::Core::ParameterVariabilityType::None));
         Tucuxi::Core::ParameterSetEvent microParameters(DateTime::now(), microParameterDefs);
 
         // parameter for macro class
         Tucuxi::Core::ParameterDefinitions macroParameterDefs;
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterVariabilityType::None)));
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("CL", 15.106, Tucuxi::Core::ParameterVariabilityType::None)));
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Tlag", 1, Tucuxi::Core::ParameterVariabilityType::None)));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("V", 347, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("CL", 15.106, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 1, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Tlag", 1, Tucuxi::Core::ParameterVariabilityType::None));
         Tucuxi::Core::ParameterSetEvent macroParameters(DateTime::now(), macroParameterDefs);
 
         testCalculator<Tucuxi::Core::OneCompartmentExtraLagMicro, Tucuxi::Core::OneCompartmentExtraLagMacro>(
@@ -560,12 +560,12 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
     {
         // parameter for micro class
         Tucuxi::Core::ParameterDefinitions microParameterDefs;
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V1", 347, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V2", 347, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Q", 347, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("CL", 0.0435331, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ktr", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("V1", 347, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("V2", 347, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Q", 347, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("CL", 0.0435331, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Ktr", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 1, Tucuxi::Core::ParameterVariabilityType::None));
         Tucuxi::Core::ParameterSetEvent microParameters(DateTime::now(), microParameterDefs);
 
         Tucuxi::Core::ComputingStatus res;
@@ -616,18 +616,18 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
     {
         // parameter for micro class
         Tucuxi::Core::ParameterDefinitions microParameterDefs;
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ke", 0.0435331, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("V", 347, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Ke", 0.0435331, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 1, Tucuxi::Core::ParameterVariabilityType::None));
         Tucuxi::Core::ParameterSetEvent microParameters(DateTime::now(), microParameterDefs);
 
         // parameter for macro class
         Tucuxi::Core::ParameterDefinitions macroParameterDefs;
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterVariabilityType::None)));
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("CL", 15.106, Tucuxi::Core::ParameterVariabilityType::None)));
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("V", 347, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("CL", 15.106, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 1, Tucuxi::Core::ParameterVariabilityType::None));
         Tucuxi::Core::ParameterSetEvent macroParameters(DateTime::now(), macroParameterDefs);
 
         testCalculator<Tucuxi::Core::RK4OneCompartmentExtraMicro, Tucuxi::Core::RK4OneCompartmentExtraMacro>(
@@ -649,20 +649,20 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
     {
         // parameter for micro class
         Tucuxi::Core::ParameterDefinitions microParameterDefs;
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ke", 0.0435331, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("a", 6, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("b", 10, Tucuxi::Core::ParameterVariabilityType::None)));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("V", 347, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Ke", 0.0435331, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 1, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("a", 6, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("b", 10, Tucuxi::Core::ParameterVariabilityType::None));
         Tucuxi::Core::ParameterSetEvent microParameters(DateTime::now(), microParameterDefs);
 
         // parameter for macro class
         Tucuxi::Core::ParameterDefinitions macroParameterDefs;
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterVariabilityType::None)));
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("CL", 15.106, Tucuxi::Core::ParameterVariabilityType::None)));
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("a", 6, Tucuxi::Core::ParameterVariabilityType::None)));
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("b", 10, Tucuxi::Core::ParameterVariabilityType::None)));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("V", 347, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("CL", 15.106, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 1, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("a", 6, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("b", 10, Tucuxi::Core::ParameterVariabilityType::None));
         Tucuxi::Core::ParameterSetEvent macroParameters(DateTime::now(), macroParameterDefs);
 
         testCalculator<Tucuxi::Core::RK4OneCompartmentGammaExtraMicro, Tucuxi::Core::RK4OneCompartmentGammaExtraMacro>(
@@ -684,14 +684,14 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
     {
         // parameter for micro class
         Tucuxi::Core::ParameterDefinitions microParameterDefs;
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ke", 0.0435331, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterVariabilityType::None)));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Ke", 0.0435331, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("V", 347, Tucuxi::Core::ParameterVariabilityType::None));
         Tucuxi::Core::ParameterSetEvent microParameters(DateTime::now(), microParameterDefs);
 
         // parameter for macro class
         Tucuxi::Core::ParameterDefinitions macroParameterDefs;
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("CL", 15.106, Tucuxi::Core::ParameterVariabilityType::None)));
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterVariabilityType::None)));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("CL", 15.106, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("V", 347, Tucuxi::Core::ParameterVariabilityType::None));
         Tucuxi::Core::ParameterSetEvent macroParameters(DateTime::now(), macroParameterDefs);
 
         testCalculator<Tucuxi::Core::OneCompartmentInfusionMicro, Tucuxi::Core::OneCompartmentInfusionMacro>(
@@ -714,18 +714,18 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
     {
         // parameter for micro class
         Tucuxi::Core::ParameterDefinitions microParameterDefs;
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V1", 340, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ke", 0.0444294, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K12", 0.0588235, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K21", 0.0584795, Tucuxi::Core::ParameterVariabilityType::None)));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("V1", 340, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Ke", 0.0444294, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("K12", 0.0588235, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("K21", 0.0584795, Tucuxi::Core::ParameterVariabilityType::None));
         Tucuxi::Core::ParameterSetEvent microParameters(DateTime::now(), microParameterDefs);
 
         // parameter for macro class
         Tucuxi::Core::ParameterDefinitions macroParameterDefs;
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("CL", 15.106, Tucuxi::Core::ParameterVariabilityType::None)));
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Q", 20, Tucuxi::Core::ParameterVariabilityType::None)));
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V1", 340, Tucuxi::Core::ParameterVariabilityType::None)));
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V2", 342, Tucuxi::Core::ParameterVariabilityType::None)));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("CL", 15.106, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Q", 20, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("V1", 340, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("V2", 342, Tucuxi::Core::ParameterVariabilityType::None));
         Tucuxi::Core::ParameterSetEvent macroParameters(DateTime::now(), macroParameterDefs);
 
         testCalculator<Tucuxi::Core::TwoCompartmentBolusMicro, Tucuxi::Core::TwoCompartmentBolusMacro>(
@@ -747,22 +747,22 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
     {
         // parameter for micro class
         Tucuxi::Core::ParameterDefinitions microParameterDefs;
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V1", 340, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ke", 0.0444294, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K12", 0.0588235, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K21", 0.0584795, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("V1", 340, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Ke", 0.0444294, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("K12", 0.0588235, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("K21", 0.0584795, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 1, Tucuxi::Core::ParameterVariabilityType::None));
         Tucuxi::Core::ParameterSetEvent microParameters(DateTime::now(), microParameterDefs);
 
         // parameter for macro class
         Tucuxi::Core::ParameterDefinitions macroParameterDefs;
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("CL", 15.106, Tucuxi::Core::ParameterVariabilityType::None)));
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Q", 20, Tucuxi::Core::ParameterVariabilityType::None)));
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V2", 342, Tucuxi::Core::ParameterVariabilityType::None)));
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V1", 340, Tucuxi::Core::ParameterVariabilityType::None)));
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("CL", 15.106, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Q", 20, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("V2", 342, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("V1", 340, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 1, Tucuxi::Core::ParameterVariabilityType::None));
         Tucuxi::Core::ParameterSetEvent macroParameters(DateTime::now(), macroParameterDefs);
 
         testCalculator<Tucuxi::Core::TwoCompartmentExtraMicro, Tucuxi::Core::TwoCompartmentExtraMacro>(
@@ -784,18 +784,18 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
     {
         // parameter for micro class
         Tucuxi::Core::ParameterDefinitions microParameterDefs;
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V1", 340, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ke", 0.0444294, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K12", 0.0588235, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K21", 0.0584795, Tucuxi::Core::ParameterVariabilityType::None)));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("V1", 340, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Ke", 0.0444294, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("K12", 0.0588235, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("K21", 0.0584795, Tucuxi::Core::ParameterVariabilityType::None));
         Tucuxi::Core::ParameterSetEvent microParameters(DateTime::now(), microParameterDefs);
 
         // parameter for macro class
         Tucuxi::Core::ParameterDefinitions macroParameterDefs;
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("CL", 15.106, Tucuxi::Core::ParameterVariabilityType::None)));
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Q", 20, Tucuxi::Core::ParameterVariabilityType::None)));
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V1", 340, Tucuxi::Core::ParameterVariabilityType::None)));
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V2", 342, Tucuxi::Core::ParameterVariabilityType::None)));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("CL", 15.106, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Q", 20, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("V1", 340, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("V2", 342, Tucuxi::Core::ParameterVariabilityType::None));
         Tucuxi::Core::ParameterSetEvent macroParameters(DateTime::now(), macroParameterDefs);
 
         testCalculator<Tucuxi::Core::TwoCompartmentInfusionMicro, Tucuxi::Core::TwoCompartmentInfusionMacro>(
@@ -812,24 +812,24 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
     {
         // parameter for micro class
         Tucuxi::Core::ParameterDefinitions microParameterDefs;
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V1", 58.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K12", 10.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K21", 6.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ke", 0.075, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Tlag", 1, Tucuxi::Core::ParameterVariabilityType::None)));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("V1", 58.0, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("K12", 10.0, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("K21", 6.0, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Ke", 0.075, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 1, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Tlag", 1, Tucuxi::Core::ParameterVariabilityType::None));
         Tucuxi::Core::ParameterSetEvent microParameters(DateTime::now(), microParameterDefs);
 
         // parameter for macro class
         Tucuxi::Core::ParameterDefinitions macroParameterDefs;
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V1", 58.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V2", 96.6666666, Tucuxi::Core::ParameterVariabilityType::None)));
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Q", 580.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("CL", 4.35, Tucuxi::Core::ParameterVariabilityType::None)));
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Tlag", 1, Tucuxi::Core::ParameterVariabilityType::None)));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("V1", 58.0, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("V2", 96.6666666, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Q", 580.0, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("CL", 4.35, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 1, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Tlag", 1, Tucuxi::Core::ParameterVariabilityType::None));
         Tucuxi::Core::ParameterSetEvent macroParameters(DateTime::now(), macroParameterDefs);
 
         testCalculator<Tucuxi::Core::TwoCompartmentExtraLagMicro, Tucuxi::Core::TwoCompartmentExtraLagMacro>(
@@ -850,13 +850,13 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
     {
         // parameter for micro class
         Tucuxi::Core::ParameterDefinitions microParameterDefs;
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V1", 58.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K12", 10.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K21", 6.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ke", 0.075, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Tlag", 0, Tucuxi::Core::ParameterVariabilityType::None)));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("V1", 58.0, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("K12", 10.0, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("K21", 6.0, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Ke", 0.075, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 1, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Tlag", 0, Tucuxi::Core::ParameterVariabilityType::None));
         Tucuxi::Core::ParameterSetEvent microParameters(DateTime::now(), microParameterDefs);
 
         testCompare<Tucuxi::Core::TwoCompartmentExtraLagMicro, Tucuxi::Core::RK4TwoCompartmentExtraLagMicro>(
@@ -877,23 +877,23 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
     {
         // parameter for micro class
         Tucuxi::Core::ParameterDefinitions microParameterDefs;
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 2, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V1", 340, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ke", 0.0444294, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K12", 0.0588235, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K21", 0.0584795, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K13", 0.0882353, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K31", 0.0877193, Tucuxi::Core::ParameterVariabilityType::None)));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 2, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("V1", 340, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Ke", 0.0444294, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("K12", 0.0588235, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("K21", 0.0584795, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("K13", 0.0882353, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("K31", 0.0877193, Tucuxi::Core::ParameterVariabilityType::None));
         Tucuxi::Core::ParameterSetEvent microParameters(DateTime::now(), microParameterDefs);
 
         // parameter for macro class
         Tucuxi::Core::ParameterDefinitions macroParameterDefs;
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("CL", 15.106, Tucuxi::Core::ParameterVariabilityType::None)));
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 2, Tucuxi::Core::ParameterVariabilityType::None)));
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Q1", 20, Tucuxi::Core::ParameterVariabilityType::None)));
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Q2", 30, Tucuxi::Core::ParameterVariabilityType::None)));
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V1", 340, Tucuxi::Core::ParameterVariabilityType::None)));
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V2", 342, Tucuxi::Core::ParameterVariabilityType::None)));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("CL", 15.106, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 2, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Q1", 20, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Q2", 30, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("V1", 340, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("V2", 342, Tucuxi::Core::ParameterVariabilityType::None));
         Tucuxi::Core::ParameterSetEvent macroParameters(DateTime::now(), macroParameterDefs);
 
         testCalculator<Tucuxi::Core::ThreeCompartmentBolusMicro, Tucuxi::Core::ThreeCompartmentBolusMacro>(
@@ -915,25 +915,25 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
     {
         // parameter for micro class
         Tucuxi::Core::ParameterDefinitions microParameterDefs;
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 2, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V1", 340, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ke", 0.0444294, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K12", 0.0588235, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K21", 0.0584795, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K13", 0.0882353, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K31", 0.0877193, Tucuxi::Core::ParameterVariabilityType::None)));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 2, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("V1", 340, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Ke", 0.0444294, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("K12", 0.0588235, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("K21", 0.0584795, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("K13", 0.0882353, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("K31", 0.0877193, Tucuxi::Core::ParameterVariabilityType::None));
         Tucuxi::Core::ParameterSetEvent microParameters(DateTime::now(), microParameterDefs);
 
         // parameter for macro class
         Tucuxi::Core::ParameterDefinitions macroParameterDefs;
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("CL", 15.106, Tucuxi::Core::ParameterVariabilityType::None)));
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 2, Tucuxi::Core::ParameterVariabilityType::None)));
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Q1", 20, Tucuxi::Core::ParameterVariabilityType::None)));
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Q2", 30, Tucuxi::Core::ParameterVariabilityType::None)));
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V1", 340, Tucuxi::Core::ParameterVariabilityType::None)));
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V2", 342, Tucuxi::Core::ParameterVariabilityType::None)));
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("CL", 15.106, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 2, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Q1", 20, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Q2", 30, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("V1", 340, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("V2", 342, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
         Tucuxi::Core::ParameterSetEvent macroParameters(DateTime::now(), macroParameterDefs);
 
         testCalculator<Tucuxi::Core::ThreeCompartmentExtraMicro, Tucuxi::Core::ThreeCompartmentExtraMacro>(
@@ -956,23 +956,23 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
     {
         // parameter for micro class
         Tucuxi::Core::ParameterDefinitions microParameterDefs;
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 2, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V1", 340, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ke", 0.0444294, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K12", 0.0588235, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K21", 0.0584795, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K13", 0.0882353, Tucuxi::Core::ParameterVariabilityType::None)));
-        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K31", 0.0877193, Tucuxi::Core::ParameterVariabilityType::None)));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 2, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("V1", 340, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Ke", 0.0444294, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("K12", 0.0588235, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("K21", 0.0584795, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("K13", 0.0882353, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("K31", 0.0877193, Tucuxi::Core::ParameterVariabilityType::None));
         Tucuxi::Core::ParameterSetEvent microParameters(DateTime::now(), microParameterDefs);
 
         // parameter for macro class
         Tucuxi::Core::ParameterDefinitions macroParameterDefs;
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("CL", 15.106, Tucuxi::Core::ParameterVariabilityType::None)));
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 2, Tucuxi::Core::ParameterVariabilityType::None)));
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Q1", 20, Tucuxi::Core::ParameterVariabilityType::None)));
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Q2", 30, Tucuxi::Core::ParameterVariabilityType::None)));
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V1", 340, Tucuxi::Core::ParameterVariabilityType::None)));
-        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V2", 342, Tucuxi::Core::ParameterVariabilityType::None)));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("CL", 15.106, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 2, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Q1", 20, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Q2", 30, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("V1", 340, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("V2", 342, Tucuxi::Core::ParameterVariabilityType::None));
         Tucuxi::Core::ParameterSetEvent macroParameters(DateTime::now(), macroParameterDefs);
 
         testCalculator<Tucuxi::Core::ThreeCompartmentInfusionMicro, Tucuxi::Core::ThreeCompartmentInfusionMacro>(
