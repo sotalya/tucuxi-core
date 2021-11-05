@@ -27,6 +27,8 @@ HEADERS += \
     $$PWD/../../src/tucucore/pkmodels/rkmichaelismentenenzyme.h \
     $$PWD/../../src/tucucore/pkmodels/rkmichaelismentenonecomp.h \
     $$PWD/../../src/tucucore/pkmodels/rkmichaelismententwocomp.h \
+    $$PWD/../../src/tucucore/pkmodels/rktwocompartmentextralag.h \
+    $$PWD/../../src/tucucore/pkmodels/twocompartmentextralag.h \
     $$PWD/../../src/tucucore/timedevent.h \
     $$PWD/../../src/tucucore/operation.h \
     $$PWD/../../src/tucucore/pkmodels/onecompartmentbolus.h \
@@ -130,11 +132,13 @@ SOURCES += \
     $$PWD/../../src/tucucore/pkmodels/rkonecompartmentextra.cpp \
     $$PWD/../../src/tucucore/pkmodels/rkonecompartmentgammaextra.cpp \
     $$PWD/../../src/tucucore/pkmodels/onecompartmentinfusion.cpp \
+    $$PWD/../../src/tucucore/pkmodels/rktwocompartmentextralag.cpp \
     $$PWD/../../src/tucucore/pkmodels/threecompartmentbolus.cpp \
     $$PWD/../../src/tucucore/pkmodels/threecompartmentextra.cpp \
     $$PWD/../../src/tucucore/pkmodels/threecompartmentinfusion.cpp \
     $$PWD/../../src/tucucore/pkmodels/twocompartmentbolus.cpp \
     $$PWD/../../src/tucucore/pkmodels/twocompartmentextra.cpp \
+    $$PWD/../../src/tucucore/pkmodels/twocompartmentextralag.cpp \
     $$PWD/../../src/tucucore/pkmodels/twocompartmentinfusion.cpp \
     $$PWD/../../src/tucucore/computingcomponent.cpp \
     $$PWD/../../src/tucucore/covariateextractor.cpp \

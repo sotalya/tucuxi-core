@@ -19,6 +19,7 @@
 #include "tucucore/pkmodels/twocompartmentbolus.h"
 #include "tucucore/pkmodels/twocompartmentextra.h"
 #include "tucucore/pkmodels/twocompartmentinfusion.h"
+#include "tucucore/pkmodels/twocompartmentextralag.h"
 #include "tucucore/pkmodels/threecompartmentbolus.h"
 #include "tucucore/pkmodels/threecompartmentextra.h"
 #include "tucucore/pkmodels/threecompartmentinfusion.h"
@@ -26,6 +27,7 @@
 #include "tucucore/pkmodels/rkonecompartmentextra.h"
 #include "tucucore/pkmodels/rkonecompartmentgammaextra.h"
 #include "tucucore/pkmodels/rktwocompartmenterlang.h"
+#include "tucucore/pkmodels/rktwocompartmentextralag.h"
 
 #include "tucucore/drugmodel/formulationandroute.h"
 #include "tucucore/intakeevent.h"
@@ -803,6 +805,66 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             Tucuxi::Core::AbsorptionModel::Infusion,
             12h,
             1h,
+            CYCLE_SIZE);
+    }
+
+    void test2compExtraLagSingleVsMultiple(const std::string& /* _testName */)
+    {
+        // parameter for micro class
+        Tucuxi::Core::ParameterDefinitions microParameterDefs;
+        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V1", 58.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K12", 10.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K21", 6.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ke", 0.075, Tucuxi::Core::ParameterVariabilityType::None)));
+        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
+        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
+        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Tlag", 1, Tucuxi::Core::ParameterVariabilityType::None)));
+        Tucuxi::Core::ParameterSetEvent microParameters(DateTime::now(), microParameterDefs);
+
+        // parameter for macro class
+        Tucuxi::Core::ParameterDefinitions macroParameterDefs;
+        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V1", 58.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V2", 96.6666666, Tucuxi::Core::ParameterVariabilityType::None)));
+        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Q", 580.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("CL", 4.35, Tucuxi::Core::ParameterVariabilityType::None)));
+        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
+        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
+        macroParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Tlag", 1, Tucuxi::Core::ParameterVariabilityType::None)));
+        Tucuxi::Core::ParameterSetEvent macroParameters(DateTime::now(), macroParameterDefs);
+
+        testCalculator<Tucuxi::Core::TwoCompartmentExtraLagMicro, Tucuxi::Core::TwoCompartmentExtraLagMacro>(
+            microParameters,
+            macroParameters,
+            400.0,
+            Tucuxi::Core::AbsorptionModel::ExtravascularLag,
+            12h,
+            0s,
+            CYCLE_SIZE);
+    }
+
+    /// \brief Test the concentration calculation of extravascular lag for 2 compartments. Compares analytical and Rk4 intake calculators
+    /// \param _testName Test name.
+    /// Two calculators are instanciated, and concentrations are computed with both.
+    /// The concentrations are then compared and shall be identical.
+    void test2compExtraLagAnalyticalVsRk4(const std::string& /* _testName */)
+    {
+        // parameter for micro class
+        Tucuxi::Core::ParameterDefinitions microParameterDefs;
+        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V1", 58.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K12", 10.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K21", 6.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ke", 0.075, Tucuxi::Core::ParameterVariabilityType::None)));
+        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
+        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
+        microParameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Tlag", 0, Tucuxi::Core::ParameterVariabilityType::None)));
+        Tucuxi::Core::ParameterSetEvent microParameters(DateTime::now(), microParameterDefs);
+
+        testCompare<Tucuxi::Core::TwoCompartmentExtraLagMicro, Tucuxi::Core::RK4TwoCompartmentExtraLagMicro>(
+            microParameters,
+            400.0,
+            Tucuxi::Core::AbsorptionModel::Extravascular,
+            12h,
+            0s,
             CYCLE_SIZE);
     }
 
