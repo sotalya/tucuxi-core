@@ -132,6 +132,9 @@
 #if defined(test_michaelismentenenzyme1comp) || !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "pkmodels/test_rkmichaelismentenenzyme.h"
 #endif
+#if defined(test_twocompartmentextralag) || !defined(DO_NOT_COMPILE_ALL_TESTS)
+#include "pkmodels/test_twocompartmentextralag.h"
+#endif
 
 int main(int argc, char** argv)
 {
@@ -320,6 +323,8 @@ int main(int argc, char** argv)
     calculatorsTests.add_test("2 comp bolus single vs multiple test", &TestIntervalCalculator::test2compBolusSingleVsMultiple);
     calculatorsTests.add_test("2 comp extra single vs multiple test", &TestIntervalCalculator::test2compExtraSingleVsMultiple);
     calculatorsTests.add_test("2 comp infusion single vs multiple test", &TestIntervalCalculator::test2compInfusionSingleVsMultiple);
+    calculatorsTests.add_test("2 comp extra lag single vs multiple test", &TestIntervalCalculator::test2compExtraLagSingleVsMultiple);
+    calculatorsTests.add_test("2 comp extra lag analytical vs Rk4 test", &TestIntervalCalculator::test2compExtraLagAnalyticalVsRk4);
 
     // three compartment
     // TODO Active following test after fixing input parameters
@@ -848,6 +853,23 @@ int main(int argc, char** argv)
     }
     else {
         std::cout << "Michaelis Menten Enzyme 1 comp test succeeded\n";
+    }
+#endif
+
+
+#if defined(test_twocompartmentextralag) || !defined(DO_NOT_COMPILE_ALL_TESTS)
+    // --- Multi analytes multi active moieties tests --- //
+    TestTwoCompartmentExtraLag twoCompartmentExtraLagTests;
+
+    twoCompartmentExtraLagTests.add_test("testTwoCompartmentExtraLag", &TestTwoCompartmentExtraLag::test2compExtraLagSingleDose);
+
+    res = twoCompartmentExtraLagTests.run(argc, argv);
+    tot_res |= res;
+    if (res != 0) {
+        std::cerr << "2 comp extra lag test failed\n";
+    }
+    else {
+        std::cout << "2 comp extra lag test succeeded\n";
     }
 #endif
 
