@@ -366,10 +366,10 @@ void TwoCompartmentExtraLagMicro::computeExponentials(Eigen::VectorXd& _times)
     setExponentials(Exponentials::Alpha, (-m_Alpha * _times).array().exp());
     setExponentials(Exponentials::Beta, (-m_Beta * _times).array().exp());
     setExponentials(Exponentials::Ka, (-m_Ka * _times).array().exp());
-    Eigen::VectorXd diff = m_Tlag * Eigen::VectorXd::Ones(_times.size());
-    setExponentials(Exponentials::AlphaPost, (-m_Alpha * (_times - diff)).array().exp());
-    setExponentials(Exponentials::BetaPost, (-m_Beta * (_times - diff)).array().exp());
-    setExponentials(Exponentials::KaPost, (-m_Ka * (_times - diff)).array().exp());
+    Eigen::VectorXd postTimes = _times - m_Tlag * Eigen::VectorXd::Ones(_times.size());
+    setExponentials(Exponentials::AlphaPost, (-m_Alpha * postTimes).array().exp());
+    setExponentials(Exponentials::BetaPost, (-m_Beta * postTimes).array().exp());
+    setExponentials(Exponentials::KaPost, (-m_Ka * postTimes).array().exp());
 }
 
 
