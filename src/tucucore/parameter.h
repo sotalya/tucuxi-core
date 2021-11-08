@@ -195,6 +195,9 @@ public:
 
 private:
     Parameters m_parameters;
+
+    // It is OK, as we fill it with -1s in the constructor. No way to do it differently in C++
+    // NOLINT(cppcoreguidelines-pro-type-member-init)
     std::array<int, ParameterId::size> m_IdToIndex;
 };
 typedef std::unique_ptr<const ParameterSetEvent> ParameterSetEventPtr;

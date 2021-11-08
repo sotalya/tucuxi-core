@@ -80,17 +80,19 @@ _concentrations1, Eigen::VectorXd &_concentrations2, Eigen::VectorXd &_concentra
     Value B; // NOLINT(readability-identifier-naming)
     Value C; // NOLINT(readability-identifier-naming)
     Value divider; // NOLINT(readability-identifier-naming)
-    Concentration resid1 = _inResiduals[0];
-    Concentration resid2 = _inResiduals[1];
-    Concentration resid3 = _inResiduals[2] + (m_F * m_D / m_V1);
-    Value sumResid13 = resid1 + resid3;
-    Value sumK12K21 = m_K12 + m_K21;
-    Value sumK21Ke = m_K21 + m_Ke;
-    Value diffK21Ka = m_K21 - m_Ka;
-    Value diffK21Ke = m_K21 - m_Ke;
-    Value powDiffK21Ke = std::pow(diffK21Ke, 2);
 
     if (m_Tlag <= 0.0) {
+
+        Concentration resid1 = _inResiduals[0];
+        Concentration resid2 = _inResiduals[1];
+        Concentration resid3 = _inResiduals[2] + (m_F * m_D / m_V1);
+        Value sumResid13 = resid1 + resid3;
+        Value sumK12K21 = m_K12 + m_K21;
+        Value sumK21Ke = m_K21 + m_Ke;
+        Value diffK21Ka = m_K21 - m_Ka;
+        Value diffK21Ke = m_K21 - m_Ke;
+        Value powDiffK21Ke = std::pow(diffK21Ke, 2);
+
         // For compartment1, calculate A, B, C and divider
         A =
                 std::pow(m_K12, 3) * m_Ka * resid1
@@ -178,6 +180,12 @@ _concentrations1, Eigen::VectorXd &_concentrations2, Eigen::VectorXd &_concentra
         Concentration resid1 = _inResiduals[0];
         Concentration resid2 = _inResiduals[1];
         Concentration resid3 = _inResiduals[2];
+        Value sumResid13 = resid1 + resid3;
+        Value sumK12K21 = m_K12 + m_K21;
+        Value sumK21Ke = m_K21 + m_Ke;
+        Value diffK21Ka = m_K21 - m_Ka;
+        Value diffK21Ke = m_K21 - m_Ke;
+        Value powDiffK21Ke = std::pow(diffK21Ke, 2);
 
 
         // For compartment1, calculate A, B, C and divider
@@ -257,10 +265,18 @@ _concentrations1, Eigen::VectorXd &_concentrations2, Eigen::VectorXd &_concentra
         Eigen::VectorXd concentrations3 =
                 exponentials(Exponentials::Ka) * resid3;
 
+        // Let's now compute the part after Tlag
 
+        // First the new residuals
         resid1 = resid1post;
         resid2 = 2 * (B * exp(-m_Beta * m_Tlag) + A * exp(-m_Alpha * m_Tlag) + C * exp(-m_Ka * m_Tlag)) / divider;
-        resid3 = exp(-m_Ka * m_Tlag) * resid3;
+        resid3 = exp(-m_Ka * m_Tlag) * resid3 + m_F * m_D / m_V1;
+        sumResid13 = resid1 + resid3;
+        sumK12K21 = m_K12 + m_K21;
+        sumK21Ke = m_K21 + m_Ke;
+        diffK21Ka = m_K21 - m_Ka;
+        diffK21Ke = m_K21 - m_Ke;
+        powDiffK21Ke = std::pow(diffK21Ke, 2);
 
 
         // For compartment1, calculate A, B, C and divider

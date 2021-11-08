@@ -856,16 +856,17 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
         microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Ke", 0.075, Tucuxi::Core::ParameterVariabilityType::None));
         microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
         microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 1, Tucuxi::Core::ParameterVariabilityType::None));
-        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Tlag", 0, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Tlag", 4.0, Tucuxi::Core::ParameterVariabilityType::None));
         Tucuxi::Core::ParameterSetEvent microParameters(DateTime::now(), microParameterDefs);
 
         testCompare<Tucuxi::Core::TwoCompartmentExtraLagMicro, Tucuxi::Core::RK4TwoCompartmentExtraLagMicro>(
             microParameters,
             400.0,
-            Tucuxi::Core::AbsorptionModel::Extravascular,
+            Tucuxi::Core::AbsorptionModel::ExtravascularLag,
             12h,
             0s,
-            CYCLE_SIZE);
+                    241); // 241 allows to be aligned on the hours, else the test fails because of RK4 lag time
+//            CYCLE_SIZE);
     }
 
     /// \brief Test the residual calculation of Bolus. Compares single point vs multiple points
