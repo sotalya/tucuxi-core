@@ -35,6 +35,7 @@ HEADERS += \
     ../../../test/tucucore/test_intakeintervalcalculator.h \
     ../../../test/tucucore/test_multiconstanteliminationbolus.h \
     ../../../test/tucucore/test_multiconcentrationcalculator.h \
+    ../../../test/tucucore/test_multilikelihood.h \
     ../../../test/tucucore/test_parameter.h \
     ../../../test/tucucore/test_pkmodel.h \
     ../../../test/tucucore/test_operablegraphmanager.h \
