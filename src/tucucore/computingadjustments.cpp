@@ -772,13 +772,13 @@ ComputingStatus ComputingAdjustments::addLoadOrRest(std::vector<DosageAdjustment
 
 typedef struct {
     DosageAdjustment loadingDosage; // NOLINT(readability-identifier-naming)
-    double score{0.0};              // NOLINT(readability-identifier-naming)
+    double score;              // NOLINT(readability-identifier-naming)
     Duration interval;              // NOLINT(readability-identifier-naming)
 } LoadingCandidate;
 
 typedef struct {
     DosageAdjustment restDosage; // NOLINT(readability-identifier-naming)
-    double score{0.0};           // NOLINT(readability-identifier-naming)
+    double score;           // NOLINT(readability-identifier-naming)
     Duration interval;           // NOLINT(readability-identifier-naming)
 } RestCandidate;
 
