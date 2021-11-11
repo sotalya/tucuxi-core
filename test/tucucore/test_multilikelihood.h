@@ -38,12 +38,51 @@ template<typename T>
 std::ostream& operator<<(typename std::enable_if<std::is_enum<T>::value, std::ostream>::type& stream, const T& e)
 {
     return stream << static_cast<typename std::underlying_type<T>::type>(e);
+
+
+ASK ABOUT THIS
+
+
+
 }
 */
 
 
 struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
 
+    static const int CYCLE_SIZE = 251;
+
+    TestMultiLikeliHood(){   }
+
+
+    void testSimple(const std::string& /* _testName */){
+
+        Tucuxi::Core::OmegaMatrix omega;
+        std::vector<IResidualErrorModel> m_residualErrorModel;
+        std::vector<SampleSeries> _samples;
+        IntakeSeries _intakes;
+        ParameterSetSeries _parameters;
+        MultiConcentrationCalculator _concentrationCalculator;
+
+        const ValueVector _etas;
+
+        Tucucore::MultiLikelihood::negativeLogLikelihood(_etas); //have to fix that and add the 7 scenarios, understood how to do it
+
+
+    }
+
+/*     template<class CalculatorClass>
+     void testCalculator(const Tucuxi::Core::ParameterSetSeries &_parameters,
+                            double _dose,
+                            Tucuxi::Core::AbsorptionModel _route,
+                            std::chrono::hours _interval,
+                            std::chrono::seconds _infusionTime,
+                            CycleSize _nbPoints);
+
+*/
+
 };
+
+}
 
 }
