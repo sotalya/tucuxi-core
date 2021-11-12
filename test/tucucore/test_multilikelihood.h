@@ -66,9 +66,34 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
 
         const ValueVector _etas;
 
-        Tucucore::MultiLikelihood::negativeLogLikelihood(_etas); //have to fix that and add the 7 scenarios, understood how to do it
+        Value x = Tucuxi::Core::MultiLikelihood::negativeLogLikelihood(_etas); //have to fix that and add the 7 scenarios, understood how to do it
 
 
+    }
+
+    void test1(const std::string& /* _testName */){
+        Tucuxi::Core::OmegaMatrix omega;
+        std::vector<IResidualErrorModel> m_residualErrorModel;
+        std::SampleSeries _samples;
+        IntakeSeries _intakes;
+        ParameterSetSeries _parameters;
+        MultiConcentrationCalculator _concentrationCalculator;
+
+        const Value _etas;
+        Value x = Tucuxi::Core::MultiLikelihood::negativeLogLikelihood(_etas);
+
+    }
+
+    void test2(const std::string& /* _testName */){
+        Tucuxi::Core::OmegaMatrix omega;
+        std::vector<IResidualErrorModel> m_residualErrorModel;
+        std::vector<SampleSeries> _samples;
+        IntakeSeries _intakes;
+        ParameterSetSeries _parameters;
+        MultiConcentrationCalculator _concentrationCalculator;
+
+        const ValueVector _etas;
+        Value x = Tucuxi::Core::MultiLikelihood::negativeLogLikelihood(_etas);
     }
 
 /*     template<class CalculatorClass>
