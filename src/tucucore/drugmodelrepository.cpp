@@ -59,7 +59,7 @@ DrugModel* DrugModelRepository::loadFile(const std::string& _fileName)
 {
     Tucuxi::Common::LoggerHelper logHelper;
 
-    DrugModel *drugModel;
+    DrugModel *drugModel = nullptr;
     Tucuxi::Core::DrugModelImport drugModelImport;
 
     if (drugModelImport.importFromFile(drugModel, _fileName) == DrugModelImport::Status::Ok) {

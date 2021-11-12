@@ -46,9 +46,7 @@ bool ParameterEvent::evaluate(const OperableGraphManager &_graphMgr)
 
     for (auto &input : inputs) {
         double val;
-        bool rc;
-
-        rc = _graphMgr.getValue(input.getName(), val);
+        bool rc = _graphMgr.getValue(input.getName(), val);
         if (!rc) {
             return false;
         }

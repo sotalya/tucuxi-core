@@ -138,16 +138,16 @@ private:
     Value m_valueBest;
 
     /// Minimum inhibitory concentration (for antibiotics)
-    Value m_mic;
+    Value m_mic{};
 
     /// Unit of the MIC
     TucuUnit m_micUnit;
 
     /// Value under which the drug is inefficient
-    Value m_inefficacyAlarm;
+    Value m_inefficacyAlarm{};
 
     /// Value over which the drug can be toxic
-    Value m_toxicityAlarm;
+    Value m_toxicityAlarm{};
 
     /// Target minimum time from last intake (for peak targets)
     Tucuxi::Common::Duration m_tMin;

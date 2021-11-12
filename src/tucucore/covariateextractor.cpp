@@ -516,14 +516,13 @@ bool CovariateExtractor::interpolateValues(const Value _val1, const DateTime &_d
         }
         break;
     case InterpolationType::Linear:
+    {
         // Angular coefficient.
-        Value m;
-        m = (_val2 - _val1) / (_date2.toSeconds() - _date1.toSeconds());
+        Value m = (_val2 - _val1) / (_date2.toSeconds() - _date1.toSeconds());
         // Intercept.
-        Value b;
-        b = _val2 - m * _date2.toSeconds();
+        Value b = _val2 - m * _date2.toSeconds();
         _valRes = _dateRes.toSeconds() * m + b;
-        break;
+    }    break;
     default:
         // Other interpolation types not yet implemented.
         return false;

@@ -59,7 +59,7 @@ bool DrugFileValidator::validate(const std::string& _drugFileName, const std::st
 
     Tucuxi::Core::PatientVariates covariates;
 
-    Tucuxi::Core::DrugModel *dModel;
+    Tucuxi::Core::DrugModel *dModel = nullptr;
 
     DrugModelImport importer;
     if (importer.importFromFile(dModel, _drugFileName) != DrugModelImport::Status::Ok) {
@@ -89,7 +89,10 @@ bool DrugFileValidator::validate(const std::string& _drugFileName, const std::st
     bool validationResult = true;
     {
         const rapidjson::Value& parametersTests = document["parameterstests"]; // Using a reference for consecutive access is handy and faster.
-        assert(parametersTests.IsArray());
+        if (!parametersTests.IsArray()) {
+            logger.error("The parameterstests shall be an array, but it is not");
+            return false;
+        }
         for (rapidjson::SizeType i = 0; i < parametersTests.Size(); i++) {// rapidjson uses SizeType instead of size_t.
             const rapidjson::Value &test = parametersTests[i];
             const rapidjson::Value &covariates = test["covariates"];

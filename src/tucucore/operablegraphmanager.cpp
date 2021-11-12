@@ -133,8 +133,7 @@ OperableGraphManager::evaluateOperableNode(IOperable_ID _id, std::map<IOperable_
             return false;
         }
         if (m_operableInputs.at(it).isComputed()) {
-            IOperable_ID opNodeId;
-            opNodeId = m_operableInputs.at(it).getOperableID();
+            IOperable_ID opNodeId = m_operableInputs.at(it).getOperableID();
             if (!_alreadyComputed.at(opNodeId)) {
                 bool rc = evaluateOperableNode(opNodeId, _alreadyComputed);
                 if (!rc) {
@@ -284,8 +283,7 @@ Operable::evaluate(const OperableGraphManager &_graphMgr)
 
     for (auto &input : inputs) {
         double val;
-        bool rc;
-        rc = _graphMgr.getValue(input.getName(), val);
+        bool rc = _graphMgr.getValue(input.getName(), val);
         if (!rc) {
             return false;
         }

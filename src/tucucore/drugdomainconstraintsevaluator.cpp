@@ -216,9 +216,8 @@ DrugDomainConstraintsEvaluator::Result DrugDomainConstraintsEvaluator::evaluate(
 
 
 
-            double result;
-            bool status;
-            status = operation->evaluate(inputList, result);
+            double result = NAN;
+            bool status = operation->evaluate(inputList, result);
 
             // If an error occured, the result will indicate this
             if (!status) {

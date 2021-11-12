@@ -30,10 +30,8 @@ DosageTimeRange *ComputingAdjustments::createDosage(const ComputingAdjustments::
         DateTime _startTime,
         DateTime _endTime)
 {
-    unsigned int nbTimes;
-
     // At least a number of intervals allowing to fill the interval asked
-    nbTimes = static_cast<unsigned int>(std::ceil((_endTime - _startTime) / _candidate.m_interval));
+    unsigned int nbTimes = static_cast<unsigned int>(std::ceil((_endTime - _startTime) / _candidate.m_interval));
     LastingDose lastingDose(_candidate.m_dose, _candidate.m_doseUnit, _candidate.m_formulationAndRoute, _candidate.m_infusionTime, _candidate.m_interval);
     DosageRepeat repeat(lastingDose, nbTimes);
     DosageTimeRange *newTimeRange = new DosageTimeRange(_startTime, _endTime, repeat);
@@ -55,10 +53,8 @@ DosageTimeRange *ComputingAdjustments::createLoadingDosageOrRestPeriod(const Sim
 DosageTimeRange *ComputingAdjustments::createSteadyStateDosage(const SimpleDosageCandidate &_candidate,
         DateTime _startTime)
 {
-    unsigned int nbTimes;
-
     // A single interval
-    nbTimes = 1;
+    unsigned int nbTimes = 1;
     LastingDose lastingDose(_candidate.m_dose, _candidate.m_doseUnit, _candidate.m_formulationAndRoute, _candidate.m_infusionTime, _candidate.m_interval);
     DosageRepeat repeat(lastingDose, nbTimes);
     DateTime endTime = _startTime + _candidate.m_interval;
