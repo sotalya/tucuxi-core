@@ -122,20 +122,19 @@ bool XMLImporter::extractBool(Tucuxi::Common::XmlNodeIterator _rootIterator)
 
 int XMLImporter::extractInt(Common::XmlNodeIterator _rootIterator)
 {
-    int result;
     try {
-        std::size_t pos;
-        result = std::stoi(_rootIterator->getValue(),&pos);
+        std::size_t pos = 0;
+        int result = std::stoi(_rootIterator->getValue(),&pos);
         if (pos != _rootIterator->getValue().size()) {
             setNodeError(_rootIterator);
             result = 0;
         }
+        return result;
     }
     catch (...) {
         setNodeError(_rootIterator);
-        result = 0;
+        return 0;
     }
-    return result;
 }
 
 DateTime XMLImporter::extractDateTime(Common::XmlNodeIterator _rootIterator)

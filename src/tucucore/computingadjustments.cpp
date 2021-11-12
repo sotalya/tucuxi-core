@@ -26,7 +26,7 @@ ComputingAdjustments::ComputingAdjustments(ComputingUtils *_computingUtils) :
 }
 
 
-DosageTimeRange *ComputingAdjustments::createDosage(const ComputingAdjustments::SimpleDosageCandidate &_candidate,
+std::unique_ptr<DosageTimeRange> ComputingAdjustments::createDosage(const ComputingAdjustments::SimpleDosageCandidate &_candidate,
         DateTime _startTime,
         DateTime _endTime)
 {
@@ -34,11 +34,11 @@ DosageTimeRange *ComputingAdjustments::createDosage(const ComputingAdjustments::
     unsigned int nbTimes = static_cast<unsigned int>(std::ceil((_endTime - _startTime) / _candidate.m_interval));
     LastingDose lastingDose(_candidate.m_dose, _candidate.m_doseUnit, _candidate.m_formulationAndRoute, _candidate.m_infusionTime, _candidate.m_interval);
     DosageRepeat repeat(lastingDose, nbTimes);
-    DosageTimeRange *newTimeRange = new DosageTimeRange(_startTime, _endTime, repeat);
+    auto newTimeRange = std::make_unique<DosageTimeRange>(_startTime, _endTime, repeat);
     return newTimeRange;
 }
 
-DosageTimeRange *ComputingAdjustments::createLoadingDosageOrRestPeriod(const SimpleDosageCandidate &_candidate,
+std::unique_ptr<DosageTimeRange> ComputingAdjustments::createLoadingDosageOrRestPeriod(const SimpleDosageCandidate &_candidate,
         DateTime _startTime)
 {
     unsigned int nbTimes = 1;
@@ -46,11 +46,11 @@ DosageTimeRange *ComputingAdjustments::createLoadingDosageOrRestPeriod(const Sim
     LastingDose lastingDose(_candidate.m_dose, _candidate.m_doseUnit, _candidate.m_formulationAndRoute, _candidate.m_infusionTime, _candidate.m_interval);
     DosageRepeat repeat(lastingDose, nbTimes);
     DateTime endTime = _startTime + _candidate.m_interval;
-    DosageTimeRange *newTimeRange = new DosageTimeRange(_startTime, endTime, repeat);
+    auto newTimeRange = std::make_unique<DosageTimeRange>(_startTime, endTime, repeat);
     return newTimeRange;
 }
 
-DosageTimeRange *ComputingAdjustments::createSteadyStateDosage(const SimpleDosageCandidate &_candidate,
+std::unique_ptr<DosageTimeRange> ComputingAdjustments::createSteadyStateDosage(const SimpleDosageCandidate &_candidate,
         DateTime _startTime)
 {
     // A single interval
@@ -58,7 +58,7 @@ DosageTimeRange *ComputingAdjustments::createSteadyStateDosage(const SimpleDosag
     LastingDose lastingDose(_candidate.m_dose, _candidate.m_doseUnit, _candidate.m_formulationAndRoute, _candidate.m_infusionTime, _candidate.m_interval);
     DosageRepeat repeat(lastingDose, nbTimes);
     DateTime endTime = _startTime + _candidate.m_interval;
-    DosageTimeRange *newTimeRange = new DosageTimeRange(_startTime, endTime, repeat);
+    auto newTimeRange = std::make_unique<DosageTimeRange>(_startTime, endTime, repeat);
     return newTimeRange;
 }
 
@@ -106,8 +106,8 @@ ComputingStatus ComputingAdjustments::buildCandidates(const FullFormulationAndRo
 
     // Creation of all candidates
     for(auto dose : doseValues) {
-        for(auto interval : intervalValues) {
-            for(auto infusion : infusionTimes) {
+        for(const auto &interval : intervalValues) {
+            for(const auto &infusion : infusionTimes) {
                 _candidates.push_back({_formulationAndRoute->getFormulationAndRoute(), dose, doseUnit,  interval, infusion});
 #if 0
                 std::string mess;
@@ -157,7 +157,7 @@ ComputingStatus ComputingAdjustments::buildCandidatesForInterval(const FullFormu
 
     // Creation of all candidates
     for(auto dose : doseValues) {
-        for(auto infusion : infusionTimes) {
+        for(const auto &infusion : infusionTimes) {
             _candidates.push_back({_formulationAndRoute->getFormulationAndRoute(), dose, doseUnit, _interval, infusion});
 #if 0
             std::string mess;
@@ -459,8 +459,7 @@ ComputingStatus ComputingAdjustments::compute(
             // We only need to start at the time of adjustments
             calculationStartTime = _traits->getAdjustmentTime();
 
-            newDosage = std::unique_ptr<DosageTimeRange>(
-                        createSteadyStateDosage(candidate, _traits->getAdjustmentTime()));
+            newDosage = createSteadyStateDosage(candidate, _traits->getAdjustmentTime());
 
             newHistory = std::make_unique<DosageHistory>();
             newHistory->addTimeRange(*newDosage);
@@ -468,8 +467,7 @@ ComputingStatus ComputingAdjustments::compute(
         else {
             newEndTime = _traits->getEnd();
 
-            newDosage = std::unique_ptr<DosageTimeRange>(
-                        createDosage(candidate, _traits->getAdjustmentTime(), newEndTime));
+            newDosage = createDosage(candidate, _traits->getAdjustmentTime(), newEndTime);
 
             newHistory = std::unique_ptr<DosageHistory>(_request.getDrugTreatment().getDosageHistory().clone());
             newHistory->mergeDosage(newDosage.get());
@@ -651,8 +649,7 @@ ComputingStatus ComputingAdjustments::compute(
 
             if (_traits->getSteadyStateTargetOption() == SteadyStateTargetOption::AtSteadyState) {
                 // In that case we create the dosage with a good end time
-                newDosage = std::unique_ptr<DosageTimeRange>(
-                            createDosage(candidate, _traits->getAdjustmentTime(), _traits->getEnd()));
+                newDosage = createDosage(candidate, _traits->getAdjustmentTime(), _traits->getEnd());
 
             }
             dosage.m_history.addTimeRange(*newDosage);
@@ -854,7 +851,7 @@ ComputingStatus ComputingAdjustments::addRest(DosageAdjustment &_dosage,
     }
     TucuUnit dUnit("ug");
     candidates.reserve(intervalValues.size());
-    for (auto interval : intervalValues) {
+    for (const auto &interval : intervalValues) {
         candidates.push_back({fullFormulationAndRoute->getFormulationAndRoute(), 0, dUnit, interval, Duration(std::chrono::hours(0))});
     }
 
@@ -864,8 +861,7 @@ ComputingStatus ComputingAdjustments::addRest(DosageAdjustment &_dosage,
 
         DosageAdjustment loadingDosage;
         // Create the loading dose
-        std::unique_ptr<DosageTimeRange> newDosage = std::unique_ptr<DosageTimeRange>(
-                    createLoadingDosageOrRestPeriod(candidate, _traits->getAdjustmentTime()));
+        std::unique_ptr<DosageTimeRange> newDosage = createLoadingDosageOrRestPeriod(candidate, _traits->getAdjustmentTime());
         loadingDosage.m_history.addTimeRange(*newDosage);
 
         ComputingStatus generateResult = generatePrediction(loadingDosage, _traits, _request,
@@ -1020,8 +1016,7 @@ ComputingStatus ComputingAdjustments::addLoad(DosageAdjustment &_dosage,
 
         DosageAdjustment loadingDosage;
         // Create the loading dose
-        std::unique_ptr<DosageTimeRange> newDosage = std::unique_ptr<DosageTimeRange>(
-                    createLoadingDosageOrRestPeriod(candidate, _traits->getAdjustmentTime()));
+        std::unique_ptr<DosageTimeRange> newDosage = createLoadingDosageOrRestPeriod(candidate, _traits->getAdjustmentTime());
         loadingDosage.m_history.addTimeRange(*newDosage);
 
         ComputingStatus generateResult = generatePrediction(loadingDosage, _traits, _request,
