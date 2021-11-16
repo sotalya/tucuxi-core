@@ -57,30 +57,38 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
 
     void testSimple(const std::string& /* _testName */){
 
-        Tucuxi::Core::OmegaMatrix omega;
-        std::vector<IResidualErrorModel> m_residualErrorModel;
-        std::vector<SampleSeries> _samples;
-        IntakeSeries _intakes;
-        ParameterSetSeries _parameters;
-        MultiConcentrationCalculator _concentrationCalculator;
+
 
         const ValueVector _etas;
 
-        Value x = Tucuxi::Core::MultiLikelihood::negativeLogLikelihood(_etas); //have to fix that and add the 7 scenarios, understood how to do it
+
+        Tucuxi::Core::MultiLikelihood aux(
+                    Tucuxi::Core::OmegaMatrix omega,
+                    std::vector<IResidualErrorModel> m_residualErrorModel,
+                    std::vector<SampleSeries> _samples,
+                    IntakeSeries _intakes,
+                    ParameterSetSeries _parameters,
+                    MultiConcentrationCalculator _concentrationCalculator
+                    );
+
+        Value x = aux.negativeLogLikelihood(_etas); //have to fix that and add the 7 scenarios, understood how to do it
 
 
     }
 
     void test1(const std::string& /* _testName */){
-        Tucuxi::Core::OmegaMatrix omega;
-        std::vector<IResidualErrorModel> m_residualErrorModel;
-        std::SampleSeries _samples;
-        IntakeSeries _intakes;
-        ParameterSetSeries _parameters;
-        MultiConcentrationCalculator _concentrationCalculator;
 
-        const Value _etas;
-        Value x = Tucuxi::Core::MultiLikelihood::negativeLogLikelihood(_etas);
+        Tucuxi::Core::MultiLikelihood aux(
+            Tucuxi::Core::OmegaMatrix omega,
+            std::vector<IResidualErrorModel> m_residualErrorModel,
+            SampleSeries _samples,
+            IntakeSeries _intakes,
+            ParameterSetSeries _parameters,
+            MultiConcentrationCalculator _concentrationCalculator
+        );
+
+        Value _etas;
+        Value x = aux.negativeLogLikelihood(_etas);
 
     }
 
