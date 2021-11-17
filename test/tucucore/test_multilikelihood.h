@@ -55,28 +55,10 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
     TestMultiLikeliHood(){   }
 
 
-    void testSimple(const std::string& /* _testName */){
 
-
-
-        const ValueVector _etas;
-
-
-        Tucuxi::Core::MultiLikelihood aux(
-                    Tucuxi::Core::OmegaMatrix omega,
-                    std::vector<IResidualErrorModel> m_residualErrorModel,
-                    std::vector<SampleSeries> _samples,
-                    IntakeSeries _intakes,
-                    ParameterSetSeries _parameters,
-                    MultiConcentrationCalculator _concentrationCalculator
-                    );
-
-        Value x = aux.negativeLogLikelihood(_etas); //have to fix that and add the 7 scenarios, understood how to do it
-
-
-    }
-
-    void test1(const std::string& /* _testName */){
+    void test1(const std::string& /* _testName */){ 
+        
+        //first scenario: Only a single analyte and one sample (Using ConstantEliminationBolus intakes)
 
         Tucuxi::Core::MultiLikelihood aux(
             Tucuxi::Core::OmegaMatrix omega,
@@ -93,15 +75,131 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
     }
 
     void test2(const std::string& /* _testName */){
-        Tucuxi::Core::OmegaMatrix omega;
-        std::vector<IResidualErrorModel> m_residualErrorModel;
-        std::vector<SampleSeries> _samples;
-        IntakeSeries _intakes;
-        ParameterSetSeries _parameters;
-        MultiConcentrationCalculator _concentrationCalculator;
+        
+        //Second scenario: A single analyte and 3 samples
+        Tucuxi::Core::MultiLikelihood aux(
+            Tucuxi::Core::OmegaMatrix omega,
+            std::vector<IResidualErrorModel> m_residualErrorModel,
+            std::vector<SampleSeries> _samples,     //it has to have size = 3, but it can't be modified as it is a parameter
+            IntakeSeries _intakes,
+            ParameterSetSeries _parameters,
+            MultiConcentrationCalculator _concentrationCalculator
+           );
 
         const ValueVector _etas;
-        Value x = Tucuxi::Core::MultiLikelihood::negativeLogLikelihood(_etas);
+        Value x = aux.negativeLogLikelihood(_etas);
+    }
+    
+    
+    void test3(const std::string& /* _testName */){
+        //A 2-analyte with one sample on analyte 1 (using MultiConstantEliminationBolus)
+
+        Tucuxi::Core::MultiLikelihood aux(
+            Tucuxi::Core::OmegaMatrix omega,
+            std::vector<IResidualErrorModel> m_residualErrorModel,
+            std::vector<SampleSeries> _samples,
+            IntakeSeries _intakes,
+            ParameterSetSeries _parameters,
+            MultiConcentrationCalculator _concentrationCalculator
+           );
+
+        const ValueVector _etas;
+        Value _etas2;
+
+        //As we have a vector of residual error models, one per analyte, and a vector of sample series, also one per analyte, we can iterate on
+        //the size of m_residualErrorModel, as it will represent the number of analytes
+
+
+        Value x = aux.negativeLogLikelihood(_etas); //analyte1
+        Value x = aux.negativeLogLikelihood(_etas2); //analyte2
+    }
+
+
+    void test4(const std::string& /* _testName */){
+        //A 2-analyte with one sample on analyte 2
+
+        Tucuxi::Core::MultiLikelihood aux(
+            Tucuxi::Core::OmegaMatrix omega,
+            std::vector<IResidualErrorModel> m_residualErrorModel,
+            std::vector<SampleSeries> _samples,
+            IntakeSeries _intakes,
+            ParameterSetSeries _parameters,
+            MultiConcentrationCalculator _concentrationCalculator
+           );
+
+        const ValueVector _etas;
+        Value _etas2;
+
+        Value x = aux.negativeLogLikelihood(_etas2); //analyte1
+        Value x = aux.negativeLogLikelihood(_etas); //analyte2
+
+    }
+
+    void test5(const std::string& /* _testName */ ){
+
+        //A 2-analyte with one sample per analytes at different times
+
+        Tucuxi::Core::MultiLikelihood aux(
+            Tucuxi::Core::OmegaMatrix omega,
+            std::vector<IResidualErrorModel> m_residualErrorModel,
+            std::vector<SampleSeries> _samples,
+            IntakeSeries _intakes,
+            ParameterSetSeries _parameters,
+            MultiConcentrationCalculator _concentrationCalculator
+           );
+
+        const ValueVector _etas;
+        Value _etas2;
+
+        Value x = aux.negativeLogLikelihood(_etas2); //analyte1
+        Value x = aux.negativeLogLikelihood(_etas); //analyte2
+
+        //THIS IS NOT GOOD, I HAVE TO LOOK FOR HOW TO DO THE THING OF THE TIMES
+    }
+
+    void test6(const std::string& /* _testName */ ){
+
+        //A 2-analyte with one sample per analytes at different times
+
+        Tucuxi::Core::MultiLikelihood aux(
+            Tucuxi::Core::OmegaMatrix omega,
+            std::vector<IResidualErrorModel> m_residualErrorModel,
+            std::vector<SampleSeries> _samples,
+            IntakeSeries _intakes,
+            ParameterSetSeries _parameters,
+            MultiConcentrationCalculator _concentrationCalculator
+           );
+
+        const ValueVector _etas;
+        Value _etas2;
+
+        Value x = aux.negativeLogLikelihood(_etas2); //analyte1
+        Value x = aux.negativeLogLikelihood(_etas); //analyte2
+
+        //THIS IS NOT GOOD, I HAVE TO LOOK FOR HOW TO DO THE THING OF THE TIMES
+    }
+
+
+    void test7(const std::string& /* _testName */ ){
+
+        //A 2-analyte with one sample per analytes at different times
+
+        Tucuxi::Core::MultiLikelihood aux(
+            Tucuxi::Core::OmegaMatrix omega,
+            std::vector<IResidualErrorModel> m_residualErrorModel,
+            std::vector<SampleSeries> _samples,
+            IntakeSeries _intakes,
+            ParameterSetSeries _parameters,
+            MultiConcentrationCalculator _concentrationCalculator
+           );
+
+        const ValueVector _etas;
+        Value _etas2;
+
+        Value x = aux.negativeLogLikelihood(_etas2); //analyte1
+        Value x = aux.negativeLogLikelihood(_etas); //analyte2
+
+        //THIS IS NOT GOOD, I HAVE TO LOOK FOR HOW TO DO THE THING OF THE TIMES
     }
 
 /*     template<class CalculatorClass>
