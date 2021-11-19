@@ -24,6 +24,9 @@
 #include "tucucore/pkmodels/threecompartmentinfusion.h"
 #include "tucucore/pkmodels/threecompartmentextra.h"
 
+#include "pkmodels/constanteliminationbolus.h"
+#include "pkmodels/multiconstanteliminationbolus.h"
+
 #include "tucucore/multilikelihood.h"
 
 //I'll let you add a test_multilikelihood.h file in the tests, and start with a first test. This test should create the objects we send to the constructor of MultiLikelihood, a set of Etas, and then call negativeLogLikelihood() on it. It is quite hard to know what results would be expected, but already having a computation with "something" would be good. I would suggest various scenarios: 1) Only a single analyte and one sample (Using ConstantEliminationBolus intakes, 2) A single analyte and 3 samples, 3) A 2-analyte with one sample on analyte 1 (using MultiConstantEliminationBolus), 4) A 2-analyte with one sample on analyte 2, 5) A 2-analyte with one sample per analytes at different times, 6) A 2-analyte with one sample per analytes at the same time, 7) A 2-analyte with three samples per analyte, with one of them at the same time, the others at different times.
@@ -82,10 +85,11 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
         //definition of the m_residualErrorModel
 
         m_residualErrorModel.push_back(EMPTY_RESIDUAL_ERROR_MODEL);
+        //here i'm supposed to use a vector of pointers of IResidualErrorModel or a vector of pointers of SigmaResidualErrorModel
 
         //definition of the samples
         Tucuxi::Core::SampleSeries sampleSeries;
-        DateTime date0 = DateTime::now();
+        DateTime date0 = date::year_month_day(date::year(2018), date::month(9), date::day(1));
 
         Tucuxi::Core::SampleEvent s0(date0);
         sampleSeries.push_back(s0);
@@ -104,21 +108,31 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
         Tucuxi::Core::AbsorptionModel route = Tucuxi::Core::AbsorptionModel::Extravascular;
         Tucuxi::Core::TimeOffsets times;
         Tucuxi::Core::IntakeEvent intakeEvent(DateTime::now(), offsetTime, dose, Tucuxi::Common::TucuUnit("mg"), interval, Tucuxi::Core::FormulationAndRoute(route), route, infusionTime, CYCLE_SIZE);
-        std::shared_ptr<Tucuxi::Core::IntakeIntervalCalculator> calculator2 = std::make_shared<Tucuxi::Core::OneCompartmentExtraMacro>();
-        intakeEvent.setCalculator(calculator2);
+        std::shared_ptr<Tucuxi::Core::IntakeIntervalCalculator> calculator = std::make_shared<Tucuxi::Core::ConstantEliminationBolus>();
+        intakeEvent.setCalculator(calculator);
         _intakes.push_back(intakeEvent);
 
 
         //Definition of the parameters
 
+
         Tucuxi::Core::ParameterDefinitions parameterDefs;
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("CL", 15.106, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestA", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestR", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestS", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestM", 1.0, Tucuxi::Core::ParameterVariabilityType::None)));
         Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
         Tucuxi::Core::ParameterSetSeries parametersSeries;
         parametersSeries.addParameterSetEvent(parameters);
+
+        <Tucuxi::Core::ConstantEliminationBolus>(
+            parametersSeries,
+            400.0,
+            Tucuxi::Core::AbsorptionModel::Extravascular,
+            12h,
+            0s,
+            CYCLE_SIZE);
+    }
 
 
         //Definition of the Concentration Calculator
