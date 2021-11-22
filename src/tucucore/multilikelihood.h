@@ -31,7 +31,7 @@ class MultiLikelihood {
 public:
 
     MultiLikelihood(const OmegaMatrix& _omega,
-               const std::vector<IResidualErrorModel>& _residualErrorModel,
+               const std::vector<IResidualErrorModel*>& _residualErrorModel,
                const std::vector<SampleSeries>& _samples,
                const IntakeSeries& _intakes,
                const ParameterSetSeries& _parameters,
