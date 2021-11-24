@@ -73,6 +73,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
         IntakeSeries _intakes;
         ParameterSetSeries _parameters;
         MultiConcentrationCalculator _concentrationCalculator;
+        Etas _etas;
 
         //definition of the omega matrix
         omega = Tucuxi::Core::OmegaMatrix(2,2);
@@ -80,6 +81,9 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
         omega(0,1) = 0.798 * 0.356 * 0.629; // Covariance of CL and V
         omega(1,1) = 0.629 * 0.629; // Variance of V
         omega(1,0) = 0.798 * 0.356 * 0.629; // Covariance of CL and V
+
+
+
 
 
 
@@ -128,15 +132,6 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
         Tucuxi::Core::ParameterSetSeries parametersSeries;
         parametersSeries.addParameterSetEvent(parameters);
 
-        //have to use a template here, look how to do it
-        Tucuxi::Core::MultiConcentrationCalculator<Tucuxi::Core::ConstantEliminationBolus>(
-            parametersSeries,
-            400.0,
-            Tucuxi::Core::AbsorptionModel::Extravascular,
-            12h,
-            0s,
-            CYCLE_SIZE);
-
 
         //Definition of the Concentration Calculator
 
@@ -169,10 +164,15 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
     #endif
         }
 
+
+
             Tucuxi::Core::MultiLikelihood aux(omega, m_residualErrorModel, _samples, _intakes, _parameters, _concentrationCalculator);
 
-            ValueVector _etas;
-            Value x = aux.negativeLogLikelihood(_etas);
+            // Set initial etas to 0 for CL and V
+            _etas.push_back(0.0);
+            _etas.push_back(0.0);
+
+            aux.negativeLogLikelihood(_etas);
 
     }
 
@@ -258,18 +258,6 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
         Tucuxi::Core::ParameterSetSeries parametersSeries;
         parametersSeries.addParameterSetEvent(parameters);
 
-        //have to use a template here, look how to do it
-        TestMultiLikeliHood<Tucuxi::Core::ConstantEliminationBolus>(
-            parametersSeries,
-            400.0,
-            Tucuxi::Core::AbsorptionModel::Extravascular,
-            12h,
-            0s,
-            CYCLE_SIZE);
-
-
-        //preguntar a Yann cuando vuelva
-
         //Definition of the Concentration Calculator
 
         Tucuxi::Core::MultiConcentrationPredictionPtr predictionPtr;
@@ -304,6 +292,11 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
             Tucuxi::Core::MultiLikelihood aux(omega, m_residualErrorModel, _samples, _intakes, _parameters, _concentrationCalculator);
 
             ValueVector _etas;
+            // Set initial etas to 0 for CL and V
+            _etas.push_back(0.0);
+            _etas.push_back(0.0);
+
+
             Value x = aux.negativeLogLikelihood(_etas);
     }
     
@@ -345,17 +338,6 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
             Tucuxi::Core::SampleEvent s0(date0);
             sampleSeries.push_back(s0);
 
-
-            DateTime date1 = date::year_month_day(date::year(2019), date::month(9), date::day(1));
-
-            Tucuxi::Core::SampleEvent s1(date1);
-            sampleSeries.push_back(s1);
-
-
-            DateTime date2 = date::year_month_day(date::year(2020), date::month(9), date::day(1));
-
-            Tucuxi::Core::SampleEvent s2(date2);
-            sampleSeries.push_back(s2);
             _samples.push_back(sampleSeries);
 
 
@@ -370,7 +352,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
             Tucuxi::Core::AbsorptionModel route = Tucuxi::Core::AbsorptionModel::Extravascular;
             Tucuxi::Core::TimeOffsets times;
             Tucuxi::Core::IntakeEvent intakeEvent(DateTime::now(), offsetTime, dose, Tucuxi::Common::TucuUnit("mg"), interval, Tucuxi::Core::FormulationAndRoute(route), route, infusionTime, CYCLE_SIZE);
-            std::shared_ptr<Tucuxi::Core::IntakeIntervalCalculator> calculator = std::make_shared<Tucuxi::Core::ConstantEliminationBolus>();
+            std::shared_ptr<Tucuxi::Core::IntakeIntervalCalculator> calculator = std::make_shared<Tucuxi::Core::MultiConstantEliminationBolus>();
             intakeEvent.setCalculator(calculator);
             _intakes.push_back(intakeEvent);
 
@@ -379,25 +361,18 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
 
 
             Tucuxi::Core::ParameterDefinitions parameterDefs;
-            parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestA", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
-            parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestR", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
-            parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestS", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
-            parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestM", 1.0, Tucuxi::Core::ParameterVariabilityType::None)));
+            parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestA0", 1.0, Tucuxi::Core::ParameterVariabilityType::None)));
+            parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestR0", 2.0, Tucuxi::Core::ParameterVariabilityType::None)));
+            parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestS0", 0.03, Tucuxi::Core::ParameterVariabilityType::None)));
+            parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestM0", 4.0, Tucuxi::Core::ParameterVariabilityType::None)));
+            parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestA1", 10.0, Tucuxi::Core::ParameterVariabilityType::None)));
+            parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestR1", 20.0, Tucuxi::Core::ParameterVariabilityType::None)));
+            parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestS1", 0.003, Tucuxi::Core::ParameterVariabilityType::None)));
+            parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestM1", 40.0, Tucuxi::Core::ParameterVariabilityType::None)));
             Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
             Tucuxi::Core::ParameterSetSeries parametersSeries;
             parametersSeries.addParameterSetEvent(parameters);
 
-            //have to use a template here, look how to do it
-            TestMultiLikeliHood<Tucuxi::Core::MultiConstantEliminationBolus>(
-                parametersSeries,
-                400.0,
-                Tucuxi::Core::AbsorptionModel::Extravascular,
-                12h,
-                0s,
-                CYCLE_SIZE);
-
-
-            //preguntar a Yann cuando vuelva
 
             //Definition of the Concentration Calculator
 
@@ -429,6 +404,8 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
                 }
         #endif
             }
+
+
 
                 Tucuxi::Core::MultiLikelihood aux(omega, m_residualErrorModel, _samples, _intakes, _parameters, _concentrationCalculator);
 
