@@ -19,7 +19,7 @@ namespace Core {
 //Multilikelihood -> Likelihood adapted for multianalytes, multiconcentration...
 
 MultiLikelihood::MultiLikelihood(const OmegaMatrix& _omega,
-                       const std::vector<IResidualErrorModel>& _residualErrorModel, //we need a vector of residual error models
+                       const std::vector<IResidualErrorModel*>& _residualErrorModel, //we need a vector of residual error models
                        const std::vector<SampleSeries>& _samples, //we need a vector of samples to know what sample is for each analyte
                        const IntakeSeries& _intakes,
                        const ParameterSetSeries& _parameters,

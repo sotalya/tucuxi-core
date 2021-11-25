@@ -61,10 +61,21 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
 
     template<class CalculatorClass>
 
+    FormulationAndRoute getBolusFormulationAndRoute()
+    {
+        return FormulationAndRoute(
+                    Formulation::Test,
+                    AdministrationRoute::IntravenousBolus,
+                    AbsorptionModel::Intravascular);
+    }
 
     void test1(const std::string& /* _testName */){ 
         
         //first scenario: Only a single analyte and one sample (Using ConstantEliminationBolus intakes)
+
+        if (verbose()) {
+              std::cout << __FUNCTION__ << std::endl;
+          }
 
 
         Tucuxi::Core::OmegaMatrix omega;
@@ -192,6 +203,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
         IntakeSeries _intakes;
         ParameterSetSeries _parameters;
         MultiConcentrationCalculator _concentrationCalculator;
+        Etas _etas;
 
         //definition of the omega matrix
         omega = Tucuxi::Core::OmegaMatrix(2,2);
@@ -291,7 +303,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
 
             Tucuxi::Core::MultiLikelihood aux(omega, m_residualErrorModel, _samples, _intakes, _parameters, _concentrationCalculator);
 
-            ValueVector _etas;
+
             // Set initial etas to 0 for CL and V
             _etas.push_back(0.0);
             _etas.push_back(0.0);
@@ -327,8 +339,11 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
             //definition of the m_residualErrorModel
 
 
-            SigmaResidualErrorModel *newErrorModel = new SigmaResidualErrorModel();
-            m_residualErrorModel.push_back(newErrorModel);
+            SigmaResidualErrorModel *newErrorModel1 = new SigmaResidualErrorModel();
+            m_residualErrorModel.push_back(newErrorModel1);
+
+            SigmaResidualErrorModel *newErrorModel2 = new SigmaResidualErrorModel();
+            m_residualErrorModel.push_back(newErrorModel2);
             //here i'm supposed to use a vector of pointers of IResidualErrorModel or a vector of pointers of SigmaResidualErrorModel
 
             //definition of the samples
@@ -336,10 +351,17 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
             DateTime date0 = date::year_month_day(date::year(2018), date::month(9), date::day(1));
 
             Tucuxi::Core::SampleEvent s0(date0);
+
             sampleSeries.push_back(s0);
 
-            _samples.push_back(sampleSeries);
 
+            DateTime dateempty = DateTime::undefinedDateTime();
+            Tucuxi::Core::SampleEvent s1(dateempty);
+
+            sampleSeries.push_back(s1);
+
+
+            _samples.push_back(sampleSeries);
 
 
             //definition of the intakes
@@ -417,88 +439,494 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
     void test4(const std::string& /* _testName */){
         //A 2-analyte with one sample on analyte 2
 
-        Tucuxi::Core::MultiLikelihood aux(
-            Tucuxi::Core::OmegaMatrix omega,
-            std::vector<IResidualErrorModel> m_residualErrorModel,
-            std::vector<SampleSeries> _samples,
-            IntakeSeries _intakes,
-            ParameterSetSeries _parameters,
-            MultiConcentrationCalculator _concentrationCalculator
-           );
 
-        const ValueVector _etas;
-        Value _etas2;
 
-        Value x = aux.negativeLogLikelihood(_etas2); //analyte1
-        Value x = aux.negativeLogLikelihood(_etas); //analyte2
+
+                Tucuxi::Core::OmegaMatrix omega;
+                std::vector<IResidualErrorModel*> m_residualErrorModel;
+                std::vector<SampleSeries> _samples;
+                IntakeSeries _intakes;
+                ParameterSetSeries _parameters;
+                MultiConcentrationCalculator _concentrationCalculator;
+
+                //definition of the omega matrix
+                omega = Tucuxi::Core::OmegaMatrix(2,2);
+                omega(0,0) = 0.356 * 0.356; // Variance of CL
+                omega(0,1) = 0.798 * 0.356 * 0.629; // Covariance of CL and V
+                omega(1,1) = 0.629 * 0.629; // Variance of V
+                omega(1,0) = 0.798 * 0.356 * 0.629; // Covariance of CL and V
+
+
+
+                //definition of the m_residualErrorModel
+
+
+                SigmaResidualErrorModel *newErrorModel1 = new SigmaResidualErrorModel();
+                m_residualErrorModel.push_back(newErrorModel1);
+
+                SigmaResidualErrorModel *newErrorModel2 = new SigmaResidualErrorModel();
+                m_residualErrorModel.push_back(newErrorModel2);
+                //here i'm supposed to use a vector of pointers of IResidualErrorModel or a vector of pointers of SigmaResidualErrorModel
+
+                //definition of the samples
+                Tucuxi::Core::SampleSeries sampleSeries;
+
+                DateTime dateempty = DateTime::undefinedDateTime();
+                Tucuxi::Core::SampleEvent s0(dateempty);
+                sampleSeries.push_back(s0);
+
+
+
+                DateTime date0 = date::year_month_day(date::year(2018), date::month(9), date::day(1));
+                Tucuxi::Core::SampleEvent s1(date0);
+                sampleSeries.push_back(s1);
+
+
+                _samples.push_back(sampleSeries);
+
+
+                //definition of the intakes
+
+
+                Tucuxi::Common::Duration offsetTime = 0s;
+                Tucuxi::Common::Duration interval = 24h;
+                Tucuxi::Common::Duration infusionTime = 0h;
+                double dose = 400;
+                Tucuxi::Core::AbsorptionModel route = Tucuxi::Core::AbsorptionModel::Extravascular;
+                Tucuxi::Core::TimeOffsets times;
+                Tucuxi::Core::IntakeEvent intakeEvent(DateTime::now(), offsetTime, dose, Tucuxi::Common::TucuUnit("mg"), interval, Tucuxi::Core::FormulationAndRoute(route), route, infusionTime, CYCLE_SIZE);
+                std::shared_ptr<Tucuxi::Core::IntakeIntervalCalculator> calculator = std::make_shared<Tucuxi::Core::MultiConstantEliminationBolus>();
+                intakeEvent.setCalculator(calculator);
+                _intakes.push_back(intakeEvent);
+
+
+                //Definition of the parameters
+
+
+                Tucuxi::Core::ParameterDefinitions parameterDefs;
+                parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestA0", 1.0, Tucuxi::Core::ParameterVariabilityType::None)));
+                parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestR0", 2.0, Tucuxi::Core::ParameterVariabilityType::None)));
+                parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestS0", 0.03, Tucuxi::Core::ParameterVariabilityType::None)));
+                parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestM0", 4.0, Tucuxi::Core::ParameterVariabilityType::None)));
+                parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestA1", 10.0, Tucuxi::Core::ParameterVariabilityType::None)));
+                parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestR1", 20.0, Tucuxi::Core::ParameterVariabilityType::None)));
+                parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestS1", 0.003, Tucuxi::Core::ParameterVariabilityType::None)));
+                parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestM1", 40.0, Tucuxi::Core::ParameterVariabilityType::None)));
+                Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
+                Tucuxi::Core::ParameterSetSeries parametersSeries;
+                parametersSeries.addParameterSetEvent(parameters);
+
+
+                //Definition of the Concentration Calculator
+
+                Tucuxi::Core::MultiConcentrationPredictionPtr predictionPtr;
+                {
+                    predictionPtr = std::make_unique<Tucuxi::Core::MultiConcentrationPrediction>();
+
+                    DateTime recordFrom = date::year_month_day(date::year(2018), date::month(9), date::day(1));
+                    DateTime recordTo = recordFrom + interval;
+
+                    Tucuxi::Core::IntakeSeries intakeSeries;
+                    std::shared_ptr<IntakeIntervalCalculator> calculator2 = std::make_shared<CalculatorClass>();
+                    intakeEvent.setCalculator(calculator2);
+                    intakeSeries.push_back(intakeEvent);
+                    Tucuxi::Core::IMultiConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::MultiConcentrationCalculator();
+                    auto status = concentrationCalculator->computeConcentrations(
+                        predictionPtr,
+                        false,
+                        recordFrom,
+                        recordTo,
+                        intakeSeries,
+                        _parameters);
+                    delete concentrationCalculator;
+                    fructose_assert_eq(status, ComputingStatus::Ok);
+
+            #if 0
+                    for (int i = 0; i<nbPoints; i++) {
+                        std::cout << i << ":" << predictionPtr->getValues()[0][i] << std::endl;
+                    }
+            #endif
+                }
+
+
+
+                    Tucuxi::Core::MultiLikelihood aux(omega, m_residualErrorModel, _samples, _intakes, _parameters, _concentrationCalculator);
+
+                    ValueVector _etas;
+                    Value x = aux.negativeLogLikelihood(_etas);
+
 
     }
 
     void test5(const std::string& /* _testName */ ){
 
         //A 2-analyte with one sample per analytes at different times
+        Tucuxi::Core::OmegaMatrix omega;
+        std::vector<IResidualErrorModel*> m_residualErrorModel;
+        std::vector<SampleSeries> _samples;
+        IntakeSeries _intakes;
+        ParameterSetSeries _parameters;
+        MultiConcentrationCalculator _concentrationCalculator;
 
-        Tucuxi::Core::MultiLikelihood aux(
-            Tucuxi::Core::OmegaMatrix omega,
-            std::vector<IResidualErrorModel> m_residualErrorModel,
-            std::vector<SampleSeries> _samples,
-            IntakeSeries _intakes,
-            ParameterSetSeries _parameters,
-            MultiConcentrationCalculator _concentrationCalculator
-           );
+        //definition of the omega matrix
+        omega = Tucuxi::Core::OmegaMatrix(2,2);
+        omega(0,0) = 0.356 * 0.356; // Variance of CL
+        omega(0,1) = 0.798 * 0.356 * 0.629; // Covariance of CL and V
+        omega(1,1) = 0.629 * 0.629; // Variance of V
+        omega(1,0) = 0.798 * 0.356 * 0.629; // Covariance of CL and V
 
-        const ValueVector _etas;
-        Value _etas2;
 
-        Value x = aux.negativeLogLikelihood(_etas2); //analyte1
-        Value x = aux.negativeLogLikelihood(_etas); //analyte2
 
-        //THIS IS NOT GOOD, I HAVE TO LOOK FOR HOW TO DO THE THING OF THE TIMES
+        //definition of the m_residualErrorModel
+
+
+        SigmaResidualErrorModel *newErrorModel1 = new SigmaResidualErrorModel();
+        m_residualErrorModel.push_back(newErrorModel1);
+
+        SigmaResidualErrorModel *newErrorModel2 = new SigmaResidualErrorModel();
+        m_residualErrorModel.push_back(newErrorModel2);
+        //here i'm supposed to use a vector of pointers of IResidualErrorModel or a vector of pointers of SigmaResidualErrorModel
+
+        //definition of the samples
+        Tucuxi::Core::SampleSeries sampleSeries;
+
+        DateTime date0 = date::year_month_day(date::year(2015), date::month(9), date::day(1));
+        Tucuxi::Core::SampleEvent s0(date0);
+        sampleSeries.push_back(s0);
+
+
+
+        DateTime date1 = date::year_month_day(date::year(2018), date::month(9), date::day(1));
+        Tucuxi::Core::SampleEvent s1(date1);
+        sampleSeries.push_back(s1);
+
+
+        _samples.push_back(sampleSeries);
+
+
+        //definition of the intakes
+
+
+        Tucuxi::Common::Duration offsetTime = 0s;
+        Tucuxi::Common::Duration interval = 24h;
+        Tucuxi::Common::Duration infusionTime = 0h;
+        double dose = 400;
+        Tucuxi::Core::AbsorptionModel route = Tucuxi::Core::AbsorptionModel::Extravascular;
+        Tucuxi::Core::TimeOffsets times;
+        Tucuxi::Core::IntakeEvent intakeEvent(DateTime::now(), offsetTime, dose, Tucuxi::Common::TucuUnit("mg"), interval, Tucuxi::Core::FormulationAndRoute(route), route, infusionTime, CYCLE_SIZE);
+        std::shared_ptr<Tucuxi::Core::IntakeIntervalCalculator> calculator = std::make_shared<Tucuxi::Core::MultiConstantEliminationBolus>();
+        intakeEvent.setCalculator(calculator);
+        _intakes.push_back(intakeEvent);
+
+
+        //Definition of the parameters
+
+
+        Tucuxi::Core::ParameterDefinitions parameterDefs;
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestA0", 1.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestR0", 2.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestS0", 0.03, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestM0", 4.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestA1", 10.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestR1", 20.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestS1", 0.003, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestM1", 40.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
+        Tucuxi::Core::ParameterSetSeries parametersSeries;
+        parametersSeries.addParameterSetEvent(parameters);
+
+
+        //Definition of the Concentration Calculator
+
+        Tucuxi::Core::MultiConcentrationPredictionPtr predictionPtr;
+        {
+            predictionPtr = std::make_unique<Tucuxi::Core::MultiConcentrationPrediction>();
+
+            DateTime recordFrom = date::year_month_day(date::year(2018), date::month(9), date::day(1));
+            DateTime recordTo = recordFrom + interval;
+
+            Tucuxi::Core::IntakeSeries intakeSeries;
+            std::shared_ptr<IntakeIntervalCalculator> calculator2 = std::make_shared<CalculatorClass>();
+            intakeEvent.setCalculator(calculator2);
+            intakeSeries.push_back(intakeEvent);
+            Tucuxi::Core::IMultiConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::MultiConcentrationCalculator();
+            auto status = concentrationCalculator->computeConcentrations(
+                predictionPtr,
+                false,
+                recordFrom,
+                recordTo,
+                intakeSeries,
+                _parameters);
+            delete concentrationCalculator;
+            fructose_assert_eq(status, ComputingStatus::Ok);
+
+    #if 0
+            for (int i = 0; i<nbPoints; i++) {
+                std::cout << i << ":" << predictionPtr->getValues()[0][i] << std::endl;
+            }
+    #endif
+        }
+
+
+
+            Tucuxi::Core::MultiLikelihood aux(omega, m_residualErrorModel, _samples, _intakes, _parameters, _concentrationCalculator);
+
+            ValueVector _etas;
+            Value x = aux.negativeLogLikelihood(_etas);
     }
 
     void test6(const std::string& /* _testName */ ){
 
         //A 2-analyte with one sample per analytes at different times
+        Tucuxi::Core::OmegaMatrix omega;
+        std::vector<IResidualErrorModel*> m_residualErrorModel;
+        std::vector<SampleSeries> _samples;
+        IntakeSeries _intakes;
+        ParameterSetSeries _parameters;
+        MultiConcentrationCalculator _concentrationCalculator;
 
-        Tucuxi::Core::MultiLikelihood aux(
-            Tucuxi::Core::OmegaMatrix omega,
-            std::vector<IResidualErrorModel> m_residualErrorModel,
-            std::vector<SampleSeries> _samples,
-            IntakeSeries _intakes,
-            ParameterSetSeries _parameters,
-            MultiConcentrationCalculator _concentrationCalculator
-           );
+        //definition of the omega matrix
+        omega = Tucuxi::Core::OmegaMatrix(2,2);
+        omega(0,0) = 0.356 * 0.356; // Variance of CL
+        omega(0,1) = 0.798 * 0.356 * 0.629; // Covariance of CL and V
+        omega(1,1) = 0.629 * 0.629; // Variance of V
+        omega(1,0) = 0.798 * 0.356 * 0.629; // Covariance of CL and V
 
-        const ValueVector _etas;
-        Value _etas2;
 
-        Value x = aux.negativeLogLikelihood(_etas2); //analyte1
-        Value x = aux.negativeLogLikelihood(_etas); //analyte2
 
-        //THIS IS NOT GOOD, I HAVE TO LOOK FOR HOW TO DO THE THING OF THE TIMES
+        //definition of the m_residualErrorModel
+
+
+        SigmaResidualErrorModel *newErrorModel1 = new SigmaResidualErrorModel();
+        m_residualErrorModel.push_back(newErrorModel1);
+
+        SigmaResidualErrorModel *newErrorModel2 = new SigmaResidualErrorModel();
+        m_residualErrorModel.push_back(newErrorModel2);
+        //here i'm supposed to use a vector of pointers of IResidualErrorModel or a vector of pointers of SigmaResidualErrorModel
+
+        //definition of the samples
+        Tucuxi::Core::SampleSeries sampleSeries;
+
+        DateTime date0 = date::year_month_day(date::year(2018), date::month(9), date::day(1));
+        Tucuxi::Core::SampleEvent s0(date0);
+        sampleSeries.push_back(s0);
+
+
+
+        DateTime date1 = date::year_month_day(date::year(2018), date::month(9), date::day(1));
+        Tucuxi::Core::SampleEvent s1(date1);
+        sampleSeries.push_back(s1);
+
+
+        _samples.push_back(sampleSeries);
+
+
+        //definition of the intakes
+
+
+        Tucuxi::Common::Duration offsetTime = 0s;
+        Tucuxi::Common::Duration interval = 24h;
+        Tucuxi::Common::Duration infusionTime = 0h;
+        double dose = 400;
+        Tucuxi::Core::AbsorptionModel route = Tucuxi::Core::AbsorptionModel::Extravascular;
+        Tucuxi::Core::TimeOffsets times;
+        Tucuxi::Core::IntakeEvent intakeEvent(DateTime::now(), offsetTime, dose, Tucuxi::Common::TucuUnit("mg"), interval, Tucuxi::Core::FormulationAndRoute(route), route, infusionTime, CYCLE_SIZE);
+        std::shared_ptr<Tucuxi::Core::IntakeIntervalCalculator> calculator = std::make_shared<Tucuxi::Core::MultiConstantEliminationBolus>();
+        intakeEvent.setCalculator(calculator);
+        _intakes.push_back(intakeEvent);
+
+
+        //Definition of the parameters
+
+
+        Tucuxi::Core::ParameterDefinitions parameterDefs;
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestA0", 1.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestR0", 2.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestS0", 0.03, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestM0", 4.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestA1", 10.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestR1", 20.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestS1", 0.003, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestM1", 40.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
+        Tucuxi::Core::ParameterSetSeries parametersSeries;
+        parametersSeries.addParameterSetEvent(parameters);
+
+
+        //Definition of the Concentration Calculator
+
+        Tucuxi::Core::MultiConcentrationPredictionPtr predictionPtr;
+        {
+            predictionPtr = std::make_unique<Tucuxi::Core::MultiConcentrationPrediction>();
+
+            DateTime recordFrom = date::year_month_day(date::year(2018), date::month(9), date::day(1));
+            DateTime recordTo = recordFrom + interval;
+
+            Tucuxi::Core::IntakeSeries intakeSeries;
+            std::shared_ptr<IntakeIntervalCalculator> calculator2 = std::make_shared<CalculatorClass>();
+            intakeEvent.setCalculator(calculator2);
+            intakeSeries.push_back(intakeEvent);
+            Tucuxi::Core::IMultiConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::MultiConcentrationCalculator();
+            auto status = concentrationCalculator->computeConcentrations(
+                predictionPtr,
+                false,
+                recordFrom,
+                recordTo,
+                intakeSeries,
+                _parameters);
+            delete concentrationCalculator;
+            fructose_assert_eq(status, ComputingStatus::Ok);
+
+    #if 0
+            for (int i = 0; i<nbPoints; i++) {
+                std::cout << i << ":" << predictionPtr->getValues()[0][i] << std::endl;
+            }
+    #endif
+        }
+
+
+
+            Tucuxi::Core::MultiLikelihood aux(omega, m_residualErrorModel, _samples, _intakes, _parameters, _concentrationCalculator);
+
+            ValueVector _etas;
+            Value x = aux.negativeLogLikelihood(_etas);
     }
 
 
     void test7(const std::string& /* _testName */ ){
 
-        //A 2-analyte with one sample per analytes at different times
+        //A 2-analyte with three samples per analyte, with one of them at the same time, the others at different times.
 
-        Tucuxi::Core::MultiLikelihood aux(
-            Tucuxi::Core::OmegaMatrix omega,
-            std::vector<IResidualErrorModel> m_residualErrorModel,
-            std::vector<SampleSeries> _samples,
-            IntakeSeries _intakes,
-            ParameterSetSeries _parameters,
-            MultiConcentrationCalculator _concentrationCalculator
-           );
+        Tucuxi::Core::OmegaMatrix omega;
+        std::vector<IResidualErrorModel*> m_residualErrorModel;
+        std::vector<SampleSeries> _samples;
+        IntakeSeries _intakes;
+        ParameterSetSeries _parameters;
+        MultiConcentrationCalculator _concentrationCalculator;
 
-        const ValueVector _etas;
-        Value _etas2;
+        //definition of the omega matrix
+        omega = Tucuxi::Core::OmegaMatrix(2,2);
+        omega(0,0) = 0.356 * 0.356; // Variance of CL
+        omega(0,1) = 0.798 * 0.356 * 0.629; // Covariance of CL and V
+        omega(1,1) = 0.629 * 0.629; // Variance of V
+        omega(1,0) = 0.798 * 0.356 * 0.629; // Covariance of CL and V
 
-        Value x = aux.negativeLogLikelihood(_etas2); //analyte1
-        Value x = aux.negativeLogLikelihood(_etas); //analyte2
 
-        //THIS IS NOT GOOD, I HAVE TO LOOK FOR HOW TO DO THE THING OF THE TIMES
+
+        //definition of the m_residualErrorModel
+
+
+        SigmaResidualErrorModel *newErrorModel1 = new SigmaResidualErrorModel();
+        m_residualErrorModel.push_back(newErrorModel1);
+
+        SigmaResidualErrorModel *newErrorModel2 = new SigmaResidualErrorModel();
+        m_residualErrorModel.push_back(newErrorModel2);
+        //here i'm supposed to use a vector of pointers of IResidualErrorModel or a vector of pointers of SigmaResidualErrorModel
+
+        //definition of the samples
+        Tucuxi::Core::SampleSeries sampleSeries;
+
+        DateTime date0 = date::year_month_day(date::year(2018), date::month(9), date::day(1));
+        Tucuxi::Core::SampleEvent s0(date0);
+        sampleSeries.push_back(s0);
+
+
+
+        DateTime date1 = date::year_month_day(date::year(2015), date::month(9), date::day(1));
+        Tucuxi::Core::SampleEvent s1(date1);
+        sampleSeries.push_back(s1);
+
+        DateTime date2 = date::year_month_day(date::year(2016), date::month(9), date::day(1));
+        Tucuxi::Core::SampleEvent s2(date2);
+        sampleSeries.push_back(s2);
+
+
+        DateTime date3 = date::year_month_day(date::year(2018), date::month(9), date::day(1));
+        Tucuxi::Core::SampleEvent s3(date3);
+        sampleSeries.push_back(s3);
+
+
+        DateTime date4 = date::year_month_day(date::year(2017), date::month(9), date::day(1));
+        Tucuxi::Core::SampleEvent s4(date4);
+        sampleSeries.push_back(s4);
+
+
+        DateTime date5 = date::year_month_day(date::year(2019), date::month(9), date::day(1));
+        Tucuxi::Core::SampleEvent s5(date5);
+        sampleSeries.push_back(s5);
+
+        _samples.push_back(sampleSeries);
+
+
+        //definition of the intakes
+
+
+        Tucuxi::Common::Duration offsetTime = 0s;
+        Tucuxi::Common::Duration interval = 24h;
+        Tucuxi::Common::Duration infusionTime = 0h;
+        double dose = 400;
+        Tucuxi::Core::AbsorptionModel route = Tucuxi::Core::AbsorptionModel::Extravascular;
+        Tucuxi::Core::TimeOffsets times;
+        Tucuxi::Core::IntakeEvent intakeEvent(DateTime::now(), offsetTime, dose, Tucuxi::Common::TucuUnit("mg"), interval, Tucuxi::Core::FormulationAndRoute(route), route, infusionTime, CYCLE_SIZE);
+        std::shared_ptr<Tucuxi::Core::IntakeIntervalCalculator> calculator = std::make_shared<Tucuxi::Core::MultiConstantEliminationBolus>();
+        intakeEvent.setCalculator(calculator);
+        _intakes.push_back(intakeEvent);
+
+
+        //Definition of the parameters
+
+
+        Tucuxi::Core::ParameterDefinitions parameterDefs;
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestA0", 1.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestR0", 2.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestS0", 0.03, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestM0", 4.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestA1", 10.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestR1", 20.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestS1", 0.003, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestM1", 40.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
+        Tucuxi::Core::ParameterSetSeries parametersSeries;
+        parametersSeries.addParameterSetEvent(parameters);
+
+
+        //Definition of the Concentration Calculator
+
+        Tucuxi::Core::MultiConcentrationPredictionPtr predictionPtr;
+        {
+            predictionPtr = std::make_unique<Tucuxi::Core::MultiConcentrationPrediction>();
+
+            DateTime recordFrom = date::year_month_day(date::year(2018), date::month(9), date::day(1));
+            DateTime recordTo = recordFrom + interval;
+
+            Tucuxi::Core::IntakeSeries intakeSeries;
+            std::shared_ptr<IntakeIntervalCalculator> calculator2 = std::make_shared<CalculatorClass>();
+            intakeEvent.setCalculator(calculator2);
+            intakeSeries.push_back(intakeEvent);
+            Tucuxi::Core::IMultiConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::MultiConcentrationCalculator();
+            auto status = concentrationCalculator->computeConcentrations(
+                predictionPtr,
+                false,
+                recordFrom,
+                recordTo,
+                intakeSeries,
+                _parameters);
+            delete concentrationCalculator;
+            fructose_assert_eq(status, ComputingStatus::Ok);
+
+    #if 0
+            for (int i = 0; i<nbPoints; i++) {
+                std::cout << i << ":" << predictionPtr->getValues()[0][i] << std::endl;
+            }
+    #endif
+        }
+
+
+
+            Tucuxi::Core::MultiLikelihood aux(omega, m_residualErrorModel, _samples, _intakes, _parameters, _concentrationCalculator);
+
+            ValueVector _etas;
+            Value x = aux.negativeLogLikelihood(_etas);
     }
 
 /*     template<class CalculatorClass>
