@@ -120,7 +120,7 @@ public:
         std::unique_ptr<ParameterDefinition> PCL(new Tucuxi::Core::ParameterDefinition("CL", 14.3, opCl, std::make_unique<ParameterVariability>(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.356)));
         dispositionParameters->addParameter(std::move(PCL));
 
-        dispositionParameters->addCorrelation(Correlation("CL", "V", 0.798));
+        dispositionParameters->addCorrelation(std::make_unique<Correlation>("CL", "V", 0.798));
         analyteSet->setDispositionParameters(std::move(dispositionParameters));
 
 

@@ -53,9 +53,9 @@ public:
         m_values.push_back(_values);
     }
 
-    ConcentrationPrediction *copy()
+    std::unique_ptr<ConcentrationPrediction> copy()
     {
-        ConcentrationPrediction *result = new ConcentrationPrediction();
+        auto result = std::make_unique<ConcentrationPrediction>();
         result->m_times = this->m_times;
         result->m_values = this->m_values;
         return result;

@@ -987,9 +987,9 @@ public:
     /// \return The clone
     /// TODO : A test for this function needs to be written
     ///
-    DosageHistory *clone() const
+    std::unique_ptr<DosageHistory> clone() const
     {
-        DosageHistory *newDosageHistory = new DosageHistory();
+        auto newDosageHistory = std::make_unique<DosageHistory>();
         for (const auto& timeRange : m_history) {
             newDosageHistory->addTimeRange(*timeRange);
         }

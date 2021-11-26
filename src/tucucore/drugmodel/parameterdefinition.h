@@ -196,7 +196,7 @@ protected:
     std::vector<std::string> m_parameterId;
 };
 
-typedef std::vector<Correlation> Correlations;
+typedef std::vector<std::unique_ptr<Correlation> > Correlations;
 
 class InterParameterSetCorrelation
 {
@@ -233,7 +233,7 @@ class ParameterSetDefinition
 public:
     void addParameter(std::unique_ptr<ParameterDefinition> _parameter) { m_parameters.push_back(std::move(_parameter));}
 
-    void addCorrelation(Correlation _correlation) { m_correlations.push_back(std::move(_correlation));}
+    void addCorrelation(std::unique_ptr<Correlation> _correlation) { m_correlations.push_back(std::move(_correlation));}
 
     size_t getNbParameters() const { return m_parameters.size(); }
     const ParameterDefinition* getParameter(size_t _index) const {
@@ -248,7 +248,7 @@ public:
 
     INVARIANTS(
             LAMBDA_INVARIANT(Invariants::INV_PARAMETERSETDEFINITION_0001, {bool ok = true;for(size_t i = 0; i < m_parameters.size(); i++) {ok &= m_parameters[i]->checkInvariants();} return ok;}, "There is an error in a parameter of an inter-parameter set correlation")
-            LAMBDA_INVARIANT(Invariants::INV_PARAMETERSETDEFINITION_0002, {bool ok = true;for(size_t i = 0; i < m_correlations.size(); i++) {ok &= m_correlations[i].checkInvariants();} return ok;}, "There is an error in a correlation of an inter-parameter set correlation")
+            LAMBDA_INVARIANT(Invariants::INV_PARAMETERSETDEFINITION_0002, {bool ok = true;for(size_t i = 0; i < m_correlations.size(); i++) {ok &= m_correlations[i]->checkInvariants();} return ok;}, "There is an error in a correlation of an inter-parameter set correlation")
             )
 
 protected:

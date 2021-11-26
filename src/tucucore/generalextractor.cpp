@@ -150,11 +150,11 @@ ComputingStatus GeneralExtractor::extractOmega(
     }
 
     const AnalyteSet *analyteSet = _drugModel.getAnalyteSet(_analyteGroupId);
-    Correlations correlations = analyteSet->getDispositionParameters().getCorrelations();
-    for(auto & correlation : correlations) {
-        std::string p1 = correlation.getParamId1();
-        std::string p2 = correlation.getParamId2();
-        Value correlationValue = correlation.getValue();
+//    const Correlations correlations = analyteSet->getDispositionParameters().getCorrelations();
+    for(const auto & correlation : analyteSet->getDispositionParameters().getCorrelations()) {
+        std::string p1 = correlation->getParamId1();
+        std::string p2 = correlation->getParamId2();
+        Value correlationValue = correlation->getValue();
 
         int index1 = paramMap[p1];
         int index2 = paramMap[p2];

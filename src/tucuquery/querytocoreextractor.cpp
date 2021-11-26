@@ -22,7 +22,9 @@ QueryToCoreExtractor::QueryToCoreExtractor()
 = default;
 
 
-QueryStatus QueryToCoreExtractor::extractComputingQuery(const QueryData &_query, ComputingQuery &_computingQuery)
+QueryStatus QueryToCoreExtractor::extractComputingQuery(const QueryData &_query,
+                                                        ComputingQuery &_computingQuery,
+                                                        std::vector<std::unique_ptr<Core::DrugTreatment> > &_drugTreatments)
 {
     // In this method we have to build all the ComputingRequest objects,
     // and add them to the ComputingQuery.
@@ -33,26 +35,29 @@ QueryStatus QueryToCoreExtractor::extractComputingQuery(const QueryData &_query,
     for(const std::unique_ptr<RequestData>& requestData : _query.getRequests())
     {
 
-        Tucuxi::Core::DrugTreatment *drugTreatment = extractDrugTreatment(_query, *requestData);
+        auto drugTreatment = extractDrugTreatment(_query, *requestData);
         if (drugTreatment == nullptr) {
             logHelper.error("Error during drug treatment import. Drug Id issue");
             setErrorMessage("Error during drug treatment import. Drug Id issue");
-            delete drugTreatment;
             return QueryStatus::ImportError;
         }
 
-        Tucuxi::Core::DrugModel *drugModel = extractDrugModel(*requestData, drugTreatment);
+        Tucuxi::Core::DrugModel *drugModel = extractDrugModel(*requestData, drugTreatment.get());
 
         if (drugModel == nullptr) {
             logHelper.error("Could not find a suitable drug model");
             setErrorMessage("Could not find a suitable drug model");
-            delete drugTreatment;
             return QueryStatus::ImportError;
         }
         logHelper.info("Performing computation with drug model : {}, Request ID : {}", drugModel->getDrugModelId(), requestData->getRequestID());
 
-        std::unique_ptr<Tucuxi::Core::ComputingRequest> computingRequest = std::make_unique<Tucuxi::Core::ComputingRequest>(requestData->getRequestID(), *drugModel, *drugTreatment, std::move(requestData->m_pComputingTrait));
+        std::unique_ptr<Tucuxi::Core::ComputingRequest> computingRequest = std::make_unique<Tucuxi::Core::ComputingRequest>(requestData->getRequestID(),
+                                                                                                                            *drugModel,
+                                                                                                                            *drugTreatment,
+                                                                                                                            std::move(requestData->m_pComputingTrait));
         _computingQuery.addComputingRequest(std::move(computingRequest));
+
+        _drugTreatments.push_back(std::move(drugTreatment));
     }
 
     return QueryStatus::Ok;
@@ -129,7 +134,7 @@ Tucuxi::Core::Samples QueryToCoreExtractor::extractSamples(const QueryData &_que
     return samples;
 }
 
-Tucuxi::Core::DrugTreatment *QueryToCoreExtractor::extractDrugTreatment(const QueryData &_query, const RequestData &_requestData) const
+std::unique_ptr<Tucuxi::Core::DrugTreatment> QueryToCoreExtractor::extractDrugTreatment(const QueryData &_query, const RequestData &_requestData) const
 {
 
     // Getting the drug related to the request
@@ -146,7 +151,7 @@ Tucuxi::Core::DrugTreatment *QueryToCoreExtractor::extractDrugTreatment(const Qu
         return nullptr;
     }
 
-    Tucuxi::Core::DrugTreatment *drugTreatment = new Tucuxi::Core::DrugTreatment();
+    auto drugTreatment = std::make_unique<Tucuxi::Core::DrugTreatment>();
 
     // Getting the dosage history for the drug treatment
     const Tucuxi::Core::DosageTimeRangeList& dosageTimeRangeList = drugs.at(drugPosition)

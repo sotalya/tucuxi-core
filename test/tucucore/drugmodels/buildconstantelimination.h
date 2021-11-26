@@ -45,7 +45,7 @@ public:
         analyteSet->setId("analyteSet");
         analyteSet->setPkModelId("test.constantelimination");
 
-        std::unique_ptr<Analyte> analyte = std::make_unique<Analyte>("analyte", TucuUnit("ug/l"), MolarMass(10.0, TucuUnit("mol/l")));
+        std::unique_ptr<Analyte> analyte = std::make_unique<Analyte>("analyte", TucuUnit("ug/l"), std::make_unique<MolarMass>(10.0, TucuUnit("mol/l")));
         analyte->setAnalyteId("analyte");
 
 

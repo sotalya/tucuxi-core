@@ -96,7 +96,7 @@ class Analyte
 public:
     Analyte();
 
-    Analyte(std::string _id, TucuUnit _unit, MolarMass _molarMass) :
+    Analyte(std::string _id, TucuUnit _unit, std::unique_ptr<MolarMass> _molarMass) :
         m_analyteId(std::move(_id)), m_unit(std::move(_unit)), m_molarMass(std::move(_molarMass)) {
     }
 
@@ -120,16 +120,13 @@ public:
 
 protected:
 
-//    std::string m_name;
     AnalyteId m_analyteId;
 
     TucuUnit m_unit;
 
     std::unique_ptr<ErrorModel> m_residualErrorModel;
 
-    ActiveSubstance *m_activeSubstance{nullptr};
-
-    MolarMass m_molarMass;
+    std::unique_ptr<MolarMass> m_molarMass;
 
 };
 

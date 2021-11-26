@@ -469,7 +469,7 @@ ComputingStatus ComputingAdjustments::compute(
 
             newDosage = createDosage(candidate, _traits->getAdjustmentTime(), newEndTime);
 
-            newHistory = std::unique_ptr<DosageHistory>(_request.getDrugTreatment().getDosageHistory().clone());
+            newHistory = _request.getDrugTreatment().getDosageHistory().clone();
             newHistory->mergeDosage(newDosage.get());
         }
 
@@ -1141,9 +1141,7 @@ ComputingStatus ComputingAdjustments::generatePrediction(DosageAdjustment &_dosa
     TMP_UNUSED_PARAMETER(_parameterSeries);
     DateTime newEndTime = _traits->getEnd();
 
-    std::unique_ptr<DosageHistory> newHistory;
-
-    newHistory = std::unique_ptr<DosageHistory>(_request.getDrugTreatment().getDosageHistory().clone());
+    std::unique_ptr<DosageHistory> newHistory = _request.getDrugTreatment().getDosageHistory().clone();
     for (const auto & timeRange : _dosage.m_history.getDosageTimeRanges()) {
         newHistory->mergeDosage(timeRange.get());
     }

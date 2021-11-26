@@ -991,7 +991,6 @@ std::unique_ptr<CovariateDefinition> DrugModelImport::extractCovariate(Tucuxi::C
     std::string valueString = std::to_string(value->getValue());
 
     auto covariate = std::make_unique<CovariateDefinition>(id, valueString, value->getOperation(), type, dataType);
-    //    covariate = new CovariateDefinition(id, valueString, nullptr, type, dataType);
     covariate->setInterpolationType(interpolationType);
     covariate->setUnit(unit);
     covariate->setValidation(std::move(validation));
@@ -1435,7 +1434,7 @@ std::unique_ptr<Analyte> DrugModelImport::extractAnalyte(Tucuxi::Common::XmlNode
         return nullptr;
     }
 
-    auto analyte = std::make_unique<Analyte>(analyteId, unit, *molarMass.release());
+    auto analyte = std::make_unique<Analyte>(analyteId, unit, std::move(molarMass));
     analyte->setResidualErrorModel(std::move(errorModel));
 
     return analyte;
@@ -1559,7 +1558,7 @@ std::unique_ptr<ParameterSetDefinition> DrugModelImport::extractParameterSet(Tuc
     auto parameterSet = std::make_unique<ParameterSetDefinition>();
 
     for (auto & correlation : correlations) {
-        parameterSet->addCorrelation(*correlation.release());
+        parameterSet->addCorrelation(std::move(correlation));
     }
     for (auto & parameter : parameters) {
         parameterSet->addParameter(std::move(parameter));

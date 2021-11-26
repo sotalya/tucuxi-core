@@ -26,7 +26,7 @@ ComputingStatus ResidualErrorModelExtractor::extract(
         return ComputingStatus::ErrorModelExtractionError;
     }
 
-    SigmaResidualErrorModel *newErrorModel = new SigmaResidualErrorModel();
+    auto newErrorModel = std::make_unique<SigmaResidualErrorModel>();
     newErrorModel->setErrorModel(_errorModel.m_errorModel);
 
     Sigma sigma = Sigma(_errorModel.m_originalSigmas.size());
@@ -42,7 +42,7 @@ ComputingStatus ResidualErrorModelExtractor::extract(
 
     newErrorModel->setSigma(sigma);
 
-    _residualErrorModel = std::unique_ptr<IResidualErrorModel>(newErrorModel);
+    _residualErrorModel = std::move(newErrorModel);
 
     return ComputingStatus::Ok;
 }

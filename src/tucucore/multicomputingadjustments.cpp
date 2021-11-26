@@ -470,7 +470,7 @@ ComputingStatus MultiComputingAdjustments::compute(
             newDosage = std::unique_ptr<DosageTimeRange>(
                         createDosage(candidate, _traits->getAdjustmentTime(), newEndTime));
 
-            newHistory = std::unique_ptr<DosageHistory>(_request.getDrugTreatment().getDosageHistory().clone());
+            newHistory = _request.getDrugTreatment().getDosageHistory().clone();
             newHistory->mergeDosage(newDosage.get());
         }
 
@@ -1110,7 +1110,7 @@ ComputingStatus MultiComputingAdjustments::generatePrediction(DosageAdjustment &
 
     std::unique_ptr<DosageHistory> newHistory;
 
-    newHistory = std::unique_ptr<DosageHistory>(_request.getDrugTreatment().getDosageHistory().clone());
+    newHistory = _request.getDrugTreatment().getDosageHistory().clone();
     for (const auto & timeRange : _dosage.m_history.getDosageTimeRanges()) {
         newHistory->mergeDosage(timeRange.get());
     }

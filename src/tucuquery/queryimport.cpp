@@ -37,7 +37,7 @@ const std::vector<std::string> &QueryImport::ignoredTags() const
     return ignored;
 }
 
-QueryImport::Status QueryImport::importFromFile(Tucuxi::Query::QueryData *&_query, const std::string& _fileName)
+QueryImport::Status QueryImport::importFromFile(std::unique_ptr<Tucuxi::Query::QueryData> &_query, const std::string& _fileName)
 {
     // Ensure the function is reentrant
     std::lock_guard<std::mutex> lock(m_mutex);
@@ -55,7 +55,7 @@ QueryImport::Status QueryImport::importFromFile(Tucuxi::Query::QueryData *&_quer
 }
 
 
-QueryImport::Status QueryImport::importFromString(Tucuxi::Query::QueryData *&_query, const std::string& _xml)
+QueryImport::Status QueryImport::importFromString(std::unique_ptr<Tucuxi::Query::QueryData> &_query, const std::string& _xml)
 {
     // Ensure the function is reentrant
     std::lock_guard<std::mutex> lock(m_mutex);
@@ -79,7 +79,7 @@ QueryImport::Status QueryImport::importFromString(Tucuxi::Query::QueryData *&_qu
 ///////////////////////////////////////////////////////////////////////////////
 
 QueryImport::Status QueryImport::importDocument(
-        Tucuxi::Query::QueryData *&_query,
+        std::unique_ptr<Tucuxi::Query::QueryData> &_query,
         Tucuxi::Common::XmlDocument & _document)
 {
 
@@ -120,7 +120,7 @@ QueryImport::Status QueryImport::importDocument(
     }
 
 
-    _query = new QueryData(
+    _query = std::make_unique<QueryData>(
                 queryId,
                 clientId,
                 date,

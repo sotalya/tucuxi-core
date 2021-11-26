@@ -27,7 +27,7 @@ ParameterSetEventPtr ParameterSetSeries::getAtTime(const DateTime &_date, const 
     if (it != m_parameterSets.end())
     {
         // Make a copy to hold values with applied etas
-        ParameterSetEvent *pParameters = new ParameterSetEvent(*it);
+        auto pParameters = std::make_unique<ParameterSetEvent>(*it);
 
         // Apply etas if available
         if (!_etas.empty()) {
@@ -36,7 +36,7 @@ ParameterSetEventPtr ParameterSetSeries::getAtTime(const DateTime &_date, const 
             }
         }
 
-        return ParameterSetEventPtr(pParameters);
+        return ParameterSetEventPtr(std::move(pParameters));
     }
 
     return nullptr;
