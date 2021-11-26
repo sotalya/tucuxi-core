@@ -154,7 +154,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
             DateTime recordTo = recordFrom + interval;
 
             Tucuxi::Core::IntakeSeries intakeSeries;
-            std::shared_ptr<IntakeIntervalCalculator> calculator2 = std::make_shared<CalculatorClass>();
+            std::shared_ptr<IntakeIntervalCalculator> calculator2 = std::make_shared<ConstantEliminationBolus>();
             intakeEvent.setCalculator(calculator2);
             intakeSeries.push_back(intakeEvent);
             Tucuxi::Core::IMultiConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::MultiConcentrationCalculator();
@@ -280,7 +280,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
             DateTime recordTo = recordFrom + interval;
 
             Tucuxi::Core::IntakeSeries intakeSeries;
-            std::shared_ptr<IntakeIntervalCalculator> calculator2 = std::make_shared<CalculatorClass>();
+            std::shared_ptr<IntakeIntervalCalculator> calculator2 = std::make_shared<ConstantEliminationBolus>();
             intakeEvent.setCalculator(calculator2);
             intakeSeries.push_back(intakeEvent);
             Tucuxi::Core::IMultiConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::MultiConcentrationCalculator();
@@ -308,8 +308,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
             _etas.push_back(0.0);
             _etas.push_back(0.0);
 
-
-            Value x = aux.negativeLogLikelihood(_etas);
+            aux.negativeLogLikelihood(_etas);
     }
     
     
@@ -326,6 +325,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
             IntakeSeries _intakes;
             ParameterSetSeries _parameters;
             MultiConcentrationCalculator _concentrationCalculator;
+            Etas _etas;
 
             //definition of the omega matrix
             omega = Tucuxi::Core::OmegaMatrix(2,2);
@@ -347,21 +347,23 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
             //here i'm supposed to use a vector of pointers of IResidualErrorModel or a vector of pointers of SigmaResidualErrorModel
 
             //definition of the samples
-            Tucuxi::Core::SampleSeries sampleSeries;
+            Tucuxi::Core::SampleSeries sampleSeries1;
             DateTime date0 = date::year_month_day(date::year(2018), date::month(9), date::day(1));
 
             Tucuxi::Core::SampleEvent s0(date0);
 
-            sampleSeries.push_back(s0);
+            sampleSeries1.push_back(s0);
 
+            _samples.push_back(sampleSeries1);
 
+            Tucuxi::Core::SampleSeries sampleSeries2;
             DateTime dateempty = DateTime::undefinedDateTime();
             Tucuxi::Core::SampleEvent s1(dateempty);
 
-            sampleSeries.push_back(s1);
+            sampleSeries2.push_back(s1);
 
 
-            _samples.push_back(sampleSeries);
+
 
 
             //definition of the intakes
@@ -406,7 +408,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
                 DateTime recordTo = recordFrom + interval;
 
                 Tucuxi::Core::IntakeSeries intakeSeries;
-                std::shared_ptr<IntakeIntervalCalculator> calculator2 = std::make_shared<CalculatorClass>();
+                std::shared_ptr<IntakeIntervalCalculator> calculator2 = std::make_shared<MultiConstantEliminationBolus>();
                 intakeEvent.setCalculator(calculator2);
                 intakeSeries.push_back(intakeEvent);
                 Tucuxi::Core::IMultiConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::MultiConcentrationCalculator();
@@ -429,10 +431,14 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
 
 
 
-                Tucuxi::Core::MultiLikelihood aux(omega, m_residualErrorModel, _samples, _intakes, _parameters, _concentrationCalculator);
+            Tucuxi::Core::MultiLikelihood aux(omega, m_residualErrorModel, _samples, _intakes, _parameters, _concentrationCalculator);
 
-                ValueVector _etas;
-                Value x = aux.negativeLogLikelihood(_etas);
+
+            // Set initial etas to 0 for CL and V
+            _etas.push_back(0.0);
+            _etas.push_back(0.0);
+
+            aux.negativeLogLikelihood(_etas);
         }
 
 
@@ -448,6 +454,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
                 IntakeSeries _intakes;
                 ParameterSetSeries _parameters;
                 MultiConcentrationCalculator _concentrationCalculator;
+                Etas _etas;
 
                 //definition of the omega matrix
                 omega = Tucuxi::Core::OmegaMatrix(2,2);
@@ -469,20 +476,21 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
                 //here i'm supposed to use a vector of pointers of IResidualErrorModel or a vector of pointers of SigmaResidualErrorModel
 
                 //definition of the samples
-                Tucuxi::Core::SampleSeries sampleSeries;
+                Tucuxi::Core::SampleSeries sampleSeries1;
 
                 DateTime dateempty = DateTime::undefinedDateTime();
                 Tucuxi::Core::SampleEvent s0(dateempty);
-                sampleSeries.push_back(s0);
+                sampleSeries1.push_back(s0);
 
+                _samples.push_back(sampleSeries1);
 
-
+                Tucuxi::Core::SampleSeries sampleSeries2;
                 DateTime date0 = date::year_month_day(date::year(2018), date::month(9), date::day(1));
                 Tucuxi::Core::SampleEvent s1(date0);
-                sampleSeries.push_back(s1);
+                sampleSeries2.push_back(s1);
 
+                 _samples.push_back(sampleSeries2);
 
-                _samples.push_back(sampleSeries);
 
 
                 //definition of the intakes
@@ -527,7 +535,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
                     DateTime recordTo = recordFrom + interval;
 
                     Tucuxi::Core::IntakeSeries intakeSeries;
-                    std::shared_ptr<IntakeIntervalCalculator> calculator2 = std::make_shared<CalculatorClass>();
+                    std::shared_ptr<IntakeIntervalCalculator> calculator2 = std::make_shared<MultiConstantEliminationBolus>();
                     intakeEvent.setCalculator(calculator2);
                     intakeSeries.push_back(intakeEvent);
                     Tucuxi::Core::IMultiConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::MultiConcentrationCalculator();
@@ -550,10 +558,14 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
 
 
 
-                    Tucuxi::Core::MultiLikelihood aux(omega, m_residualErrorModel, _samples, _intakes, _parameters, _concentrationCalculator);
+                Tucuxi::Core::MultiLikelihood aux(omega, m_residualErrorModel, _samples, _intakes, _parameters, _concentrationCalculator);
 
-                    ValueVector _etas;
-                    Value x = aux.negativeLogLikelihood(_etas);
+
+                // Set initial etas to 0 for CL and V
+                _etas.push_back(0.0);
+                _etas.push_back(0.0);
+
+                aux.negativeLogLikelihood(_etas);
 
 
     }
@@ -567,6 +579,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
         IntakeSeries _intakes;
         ParameterSetSeries _parameters;
         MultiConcentrationCalculator _concentrationCalculator;
+        Etas _etas;
 
         //definition of the omega matrix
         omega = Tucuxi::Core::OmegaMatrix(2,2);
@@ -588,20 +601,21 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
         //here i'm supposed to use a vector of pointers of IResidualErrorModel or a vector of pointers of SigmaResidualErrorModel
 
         //definition of the samples
-        Tucuxi::Core::SampleSeries sampleSeries;
+        Tucuxi::Core::SampleSeries sampleSeries1;
 
         DateTime date0 = date::year_month_day(date::year(2015), date::month(9), date::day(1));
         Tucuxi::Core::SampleEvent s0(date0);
-        sampleSeries.push_back(s0);
+        sampleSeries1.push_back(s0);
+        _samples.push_back(sampleSeries1);
 
-
-
+        Tucuxi::Core::SampleSeries sampleSeries2;
         DateTime date1 = date::year_month_day(date::year(2018), date::month(9), date::day(1));
         Tucuxi::Core::SampleEvent s1(date1);
-        sampleSeries.push_back(s1);
+        sampleSeries2.push_back(s1);
+        _samples.push_back(sampleSeries2);
 
 
-        _samples.push_back(sampleSeries);
+
 
 
         //definition of the intakes
@@ -646,7 +660,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
             DateTime recordTo = recordFrom + interval;
 
             Tucuxi::Core::IntakeSeries intakeSeries;
-            std::shared_ptr<IntakeIntervalCalculator> calculator2 = std::make_shared<CalculatorClass>();
+            std::shared_ptr<IntakeIntervalCalculator> calculator2 = std::make_shared<MultiConstantEliminationBolus>();
             intakeEvent.setCalculator(calculator2);
             intakeSeries.push_back(intakeEvent);
             Tucuxi::Core::IMultiConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::MultiConcentrationCalculator();
@@ -669,10 +683,14 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
 
 
 
-            Tucuxi::Core::MultiLikelihood aux(omega, m_residualErrorModel, _samples, _intakes, _parameters, _concentrationCalculator);
+        Tucuxi::Core::MultiLikelihood aux(omega, m_residualErrorModel, _samples, _intakes, _parameters, _concentrationCalculator);
 
-            ValueVector _etas;
-            Value x = aux.negativeLogLikelihood(_etas);
+
+        // Set initial etas to 0 for CL and V
+        _etas.push_back(0.0);
+        _etas.push_back(0.0);
+
+        aux.negativeLogLikelihood(_etas);
     }
 
     void test6(const std::string& /* _testName */ ){
@@ -684,6 +702,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
         IntakeSeries _intakes;
         ParameterSetSeries _parameters;
         MultiConcentrationCalculator _concentrationCalculator;
+        Etas _etas;
 
         //definition of the omega matrix
         omega = Tucuxi::Core::OmegaMatrix(2,2);
@@ -705,20 +724,21 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
         //here i'm supposed to use a vector of pointers of IResidualErrorModel or a vector of pointers of SigmaResidualErrorModel
 
         //definition of the samples
-        Tucuxi::Core::SampleSeries sampleSeries;
+        Tucuxi::Core::SampleSeries sampleSeries1;
 
         DateTime date0 = date::year_month_day(date::year(2018), date::month(9), date::day(1));
         Tucuxi::Core::SampleEvent s0(date0);
-        sampleSeries.push_back(s0);
+        sampleSeries1.push_back(s0);
 
+        _samples.push_back(sampleSeries1);
 
-
+        Tucuxi::Core::SampleSeries sampleSeries2;
         DateTime date1 = date::year_month_day(date::year(2018), date::month(9), date::day(1));
         Tucuxi::Core::SampleEvent s1(date1);
-        sampleSeries.push_back(s1);
+        sampleSeries2.push_back(s1);
 
 
-        _samples.push_back(sampleSeries);
+
 
 
         //definition of the intakes
@@ -763,7 +783,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
             DateTime recordTo = recordFrom + interval;
 
             Tucuxi::Core::IntakeSeries intakeSeries;
-            std::shared_ptr<IntakeIntervalCalculator> calculator2 = std::make_shared<CalculatorClass>();
+            std::shared_ptr<IntakeIntervalCalculator> calculator2 = std::make_shared<MultiConstantEliminationBolus>();
             intakeEvent.setCalculator(calculator2);
             intakeSeries.push_back(intakeEvent);
             Tucuxi::Core::IMultiConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::MultiConcentrationCalculator();
@@ -785,11 +805,14 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
         }
 
 
+        Tucuxi::Core::MultiLikelihood aux(omega, m_residualErrorModel, _samples, _intakes, _parameters, _concentrationCalculator);
 
-            Tucuxi::Core::MultiLikelihood aux(omega, m_residualErrorModel, _samples, _intakes, _parameters, _concentrationCalculator);
 
-            ValueVector _etas;
-            Value x = aux.negativeLogLikelihood(_etas);
+        // Set initial etas to 0 for CL and V
+        _etas.push_back(0.0);
+        _etas.push_back(0.0);
+
+        aux.negativeLogLikelihood(_etas);
     }
 
 
@@ -803,6 +826,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
         IntakeSeries _intakes;
         ParameterSetSeries _parameters;
         MultiConcentrationCalculator _concentrationCalculator;
+        Etas _etas;
 
         //definition of the omega matrix
         omega = Tucuxi::Core::OmegaMatrix(2,2);
@@ -900,7 +924,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
             DateTime recordTo = recordFrom + interval;
 
             Tucuxi::Core::IntakeSeries intakeSeries;
-            std::shared_ptr<IntakeIntervalCalculator> calculator2 = std::make_shared<CalculatorClass>();
+            std::shared_ptr<IntakeIntervalCalculator> calculator2 = std::make_shared<MultiConstantEliminationBolus>();
             intakeEvent.setCalculator(calculator2);
             intakeSeries.push_back(intakeEvent);
             Tucuxi::Core::IMultiConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::MultiConcentrationCalculator();
@@ -922,11 +946,14 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
         }
 
 
+        Tucuxi::Core::MultiLikelihood aux(omega, m_residualErrorModel, _samples, _intakes, _parameters, _concentrationCalculator);
 
-            Tucuxi::Core::MultiLikelihood aux(omega, m_residualErrorModel, _samples, _intakes, _parameters, _concentrationCalculator);
 
-            ValueVector _etas;
-            Value x = aux.negativeLogLikelihood(_etas);
+        // Set initial etas to 0 for CL and V
+        _etas.push_back(0.0);
+        _etas.push_back(0.0);
+
+        aux.negativeLogLikelihood(_etas);
     }
 
 /*     template<class CalculatorClass>

@@ -25,7 +25,7 @@ MultiLikelihood::MultiLikelihood(const OmegaMatrix& _omega,
                        const ParameterSetSeries& _parameters,
                        MultiConcentrationCalculator &_multiconcentrationCalculator)
     : // m_omega(&_omega),
-      m_residualErrorModel(_residualErrorModel),
+      m_residualErrorModel( _residualErrorModel),
       m_samples(_samples),
       m_intakes(&_intakes),
       m_parameters(&_parameters),
@@ -59,7 +59,7 @@ Value MultiLikelihood::operator()(const ValueVector& _etas)
     return negativeLogLikelihood(_etas);
 }
 
-Value MultiLikelihood::negativeLogLikelihood(const ValueVector& _etas) const
+Value MultiLikelihood::negativeLogLikelihood(const Etas& _etas) const
 {  //returns the negative prior of the likelihood
     ValueVector concentrations(m_samples.size());
     std::vector<Concentrations> _concentrations(m_samples.size());
@@ -94,8 +94,8 @@ Value MultiLikelihood::negativeLogLikelihood(const ValueVector& _etas) const
     Value logPrior = negativeLogPrior(Eigen::Map<const EigenVector>(&_etas[0], static_cast<Eigen::Index>(_etas.size())) /*, *m_omega*/);
 
     for (unsigned int i = 0; i < m_samples.size(); ++i){
-        SampleSeries::const_iterator sit = m_samples[i].begin();   //i have to fix that
-        SampleSeries::const_iterator sitEnd = m_samples[i].end();   // i have to fix that
+        SampleSeries::const_iterator sit = m_samples[i].begin();
+        SampleSeries::const_iterator sitEnd= m_samples[i].begin();
         size_t sampleCounter = 0;
         while( sit != sitEnd ) {
             // SampleEvent s = *sit;
@@ -117,10 +117,10 @@ Value MultiLikelihood::negativeLogLikelihood(const ValueVector& _etas) const
 
 Value MultiLikelihood::calculateSampleNegativeLogLikelihood(Value _expected,
                                                        const SampleEvent& _observed,
-                                                       const std::vector<IResidualErrorModel> &_residualErrorModel) const
+                                                       const std::vector<IResidualErrorModel*> &_residualErrorModel) const
 {
     for (unsigned int i = 0; i < m_samples.size(); ++i){
-        return - _residualErrorModel[i].calculateSampleLikelihood(_expected, _observed.getValue());
+        return - _residualErrorModel[i]->calculateSampleLikelihood(_expected, _observed.getValue());
     }
 }
 
