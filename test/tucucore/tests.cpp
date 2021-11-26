@@ -24,6 +24,9 @@
 #if defined(test_multiconstanteliminationbolus) || !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_multiconstanteliminationbolus.h"
 #endif
+#if defined(test_likelihood) || !defined(DO_NOT_COMPILE_ALL_TESTS)
+#include "test_likelihood.h"
+#endif
 #if defined(test_parameter) || !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_parameter.h"
 #endif
@@ -818,6 +821,22 @@ int main(int argc, char** argv)
     }
     else {
         std::cout << "Michaelis Menten 2 comp test succeeded\n";
+    }
+#endif
+
+#if defined(test_likelihood) || !defined(DO_NOT_COMPILE_ALL_TESTS)
+    // --- Multi analytes multi active moieties tests --- //
+    TestLikelihood likelihoodTests;
+
+    likelihoodTests.add_test("testLikelihood", &TestLikelihood::testSimple);
+
+    res = likelihoodTests.run(argc, argv);
+    tot_res |= res;
+    if (res != 0) {
+        std::cerr << "Likelihood comp test failed\n";
+    }
+    else {
+        std::cout << "Likelihood test succeeded\n";
     }
 #endif
 
