@@ -111,7 +111,7 @@ public:
     /// \return the negative log-likelihood of a concentration at the sample time
     Value calculateSampleNegativeLogLikelihood(Value _expected,
                                                const SampleEvent& _observed,
-                                               const std::vector<IResidualErrorModel*> &_residualErrorModel) const;
+                                               const IResidualErrorModel* _residualErrorModel) const;
 
     /// Sets the bounds on etas to extreme values of normal distribution
     /// using the equation for the inverse of the cdf for normal distribution

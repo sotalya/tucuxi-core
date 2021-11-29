@@ -33,6 +33,7 @@ HEADERS += \
     ../../../test/tucucore/test_drugmodels.h \
     ../../../test/tucucore/test_intakeextractor.h \
     ../../../test/tucucore/test_intakeintervalcalculator.h \
+    ../../../test/tucucore/test_likelihood.h \
     ../../../test/tucucore/test_multiconstanteliminationbolus.h \
     ../../../test/tucucore/test_multiconcentrationcalculator.h \
     ../../../test/tucucore/test_multilikelihood.h \

@@ -99,29 +99,33 @@ Value MultiLikelihood::negativeLogLikelihood(const Etas& _etas) const
         size_t sampleCounter = 0;
         while( sit != sitEnd ) {
             // SampleEvent s = *sit;
-            gll += calculateSampleNegativeLogLikelihood(concentrations[sampleCounter], *sit, m_residualErrorModel);
+            gll += calculateSampleNegativeLogLikelihood(concentrations[sampleCounter], *sit, m_residualErrorModel[i]);
             sampleCounter++;
             sit++;
         }
-        gll += logPrior;
 
-        // If we have a really big problem, like we have a log of zero
-        if (std::isnan(gll)) {
-            //        EXLOG(QtWarningMsg, ezechiel::math::NOEZERROR, QObject::tr("Log likelihood is NAN"))
-            gll = std::numeric_limits<double>::max();
-        }
 
-        return gll;
+
     }
+
+    gll += logPrior;
+
+    // If we have a really big problem, like we have a log of zero
+    if (std::isnan(gll)) {
+        //        EXLOG(QtWarningMsg, ezechiel::math::NOEZERROR, QObject::tr("Log likelihood is NAN"))
+        gll = std::numeric_limits<double>::max();
+    }
+
+    return gll;
 }
 
 Value MultiLikelihood::calculateSampleNegativeLogLikelihood(Value _expected,
                                                        const SampleEvent& _observed,
-                                                       const std::vector<IResidualErrorModel*> &_residualErrorModel) const
+                                                       const IResidualErrorModel* _residualErrorModel) const
 {
-    for (unsigned int i = 0; i < m_samples.size(); ++i){
-        return - _residualErrorModel[i]->calculateSampleLikelihood(_expected, _observed.getValue());
-    }
+
+        return - _residualErrorModel->calculateSampleLikelihood(_expected, _observed.getValue());
+
 }
 
 Value MultiLikelihood::negativeLogPrior(const EigenVector& _etas/*, const OmegaMatrix &_omega*/) const
