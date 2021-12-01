@@ -52,6 +52,17 @@ public:
     /// All the negative log values are added together (do a big AND operation)
     /// \param _etas The vector of etas being optimized
     /// \return
+    ///
+    /// \unittest{TestLikelihood::testWrongParameters}
+    ///
+    /// \unittest{TestLikelihood::test1Sample}
+    ///
+    /// \unittest{TestLikelihood::test2SamplesSameDate}
+    ///
+    /// \unittest{TestLikelihood::test2SamplesDifferentDates}
+    ///
+    /// \unittest{TestLikelihood::test3SamplesDifferentDates}
+    ///
     Value negativeLogLikelihood(const ValueVector& _etas) const;
 
     ///

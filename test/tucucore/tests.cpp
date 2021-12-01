@@ -828,7 +828,11 @@ int main(int argc, char** argv)
     // --- Multi analytes multi active moieties tests --- //
     TestLikelihood likelihoodTests;
 
-    likelihoodTests.add_test("testLikelihood", &TestLikelihood::testSimple);
+    likelihoodTests.add_test("testLikelihoodWrongParameters", &TestLikelihood::testWrongParameters);
+    likelihoodTests.add_test("testLikelihood1Sample", &TestLikelihood::test1Sample);
+    likelihoodTests.add_test("testLikelihood2SamplesSameDate", &TestLikelihood::test2SamplesSameDate);
+    likelihoodTests.add_test("testLikelihood2SamplesDifferentDates", &TestLikelihood::test2SamplesDifferentDates);
+    likelihoodTests.add_test("testLikelihood3SamplesDifferentDates", &TestLikelihood::test3SamplesDifferentDates);
 
     res = likelihoodTests.run(argc, argv);
     tot_res |= res;
