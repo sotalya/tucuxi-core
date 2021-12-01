@@ -132,6 +132,9 @@
 #if defined(test_michaelismentenenzyme1comp) || !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "pkmodels/test_rkmichaelismentenenzyme.h"
 #endif
+#if defined(test_multilikelihood) || !defined(DO_NOT_COMPILE_ALL_TESTS)
+#include "test_multilikelihood.h"
+#endif
 
 int main(int argc, char** argv)
 {
@@ -417,6 +420,29 @@ int main(int argc, char** argv)
         std::cerr << "Dosage test failed\n";
     } else {
         std::cout << "Dosage test succeeded\n";
+    }
+#endif
+
+
+#if defined(test_multilikelihood) || !defined(DO_NOT_COMPILE_ALL_TESTS)
+    // --- MultiLikelihood tests --- //
+    TestMultiLikeliHood multilikelihoodTests;
+
+    multilikelihoodTests.add_test("multilikelihoodTest1", &TestMultiLikeliHood::test1);
+    multilikelihoodTests.add_test("multilikelihoodTest2", &TestMultiLikeliHood::test2);
+    multilikelihoodTests.add_test("multilikelihoodTest3", &TestMultiLikeliHood::test3);
+    multilikelihoodTests.add_test("multilikelihoodTest4", &TestMultiLikeliHood::test4);
+    multilikelihoodTests.add_test("multilikelihoodTest5", &TestMultiLikeliHood::test5);
+    multilikelihoodTests.add_test("multilikelihoodTest6", &TestMultiLikeliHood::test6);
+    multilikelihoodTests.add_test("multilikelihoodTest7", &TestMultiLikeliHood::test7);
+
+    res = multilikelihoodTests.run(argc, argv);
+    tot_res |= res;
+    if (res != 0) {
+        std::cerr << "Multilikelihood test failed\n";
+    }
+    else {
+        std::cout << "Multilikelihood test succeeded\n";
     }
 #endif
 
