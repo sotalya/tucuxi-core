@@ -362,101 +362,103 @@ ComputingStatus MultiConcentrationCalculator::computeConcentrationsAtTimes(
     // The size of residuals vectors equals the number of compartments. This shouldnt be hardcoded here.
     SampleSeries::const_iterator sampleEnd = _samples.end();
     SampleSeries::const_iterator sit = _samples.begin();
+    if(_samples.size() != 0){
+        DateTime nextSampleTime = sit->getEventTime();
+        // double _nextsampletime = intakes.begin()->time.secsTo(sit->time)/3600.0;
 
-    DateTime nextSampleTime = sit->getEventTime();
-    // double _nextsampletime = intakes.begin()->time.secsTo(sit->time)/3600.0;
+        while (it != intakeEnd && sit != sampleEnd) {
+            // If there are samples, calculate cycles until there are no more samples or no more intakes
+            // Get the offset time of the current intake from the first dose
+            // (redundant because IntakeEvent now has offsettime)
 
-    while (it != intakeEnd && sit != sampleEnd) {
-        // If there are samples, calculate cycles until there are no more samples or no more intakes
-        // Get the offset time of the current intake from the first dose
-        // (redundant because IntakeEvent now has offsettime)
+            DateTime currentIntakeTime = it->getEventTime();
+            // double _current = _intakes.begin()->time.secsTo(it->time) / total_second_in_hour;
 
-        DateTime currentIntakeTime = it->getEventTime();
-        // double _current = _intakes.begin()->time.secsTo(it->time) / total_second_in_hour;
+            // Get the offset time from the first dose
+            DateTime nextIntakeTime = currentIntakeTime + it->getInterval();
 
-        // Get the offset time from the first dose
-        DateTime nextIntakeTime = currentIntakeTime + it->getInterval();
-
-        // Get parameters at intake start time
-        ParameterSetEventPtr parameters = _parameters.getAtTime(it->getEventTime(), _etas);
-        if (parameters == nullptr) {
-            //m_logger.error("No parameters found!");
-            return ComputingStatus::ConcentrationCalculatorNoParameters;
-        }
-
-        // If the next sample time greater than the next intake time, 
-        // the sample doesnt occur during this cycle, so we only care about residuals
-        // clear locally defined concentration
-        for (unsigned int idx= 0; idx < residualSize; idx++) {
-            concentrations[idx].clear();
-        }
-
-        if (nextSampleTime > nextIntakeTime) {
-
-            ComputingStatus result = it->calculateIntakeSinglePoint(
-                concentrations,
-                *it,
-                *parameters,
-                inResiduals,
-                // We only need the residuals, so we don't care about a specific time
-                0.0,
-                _isAll,
-                outResiduals);
-
-            if (result != ComputingStatus::Ok) {
-                _concentrations.clear();
-                return result;
+            // Get parameters at intake start time
+            ParameterSetEventPtr parameters = _parameters.getAtTime(it->getEventTime(), _etas);
+            if (parameters == nullptr) {
+                //m_logger.error("No parameters found!");
+                return ComputingStatus::ConcentrationCalculatorNoParameters;
             }
 
-            // Reset input residuals for the next cycle
-            inResiduals = outResiduals;
-        }
+            // If the next sample time greater than the next intake time,
+            // the sample doesnt occur during this cycle, so we only care about residuals
+            // clear locally defined concentration
+            for (unsigned int idx= 0; idx < residualSize; idx++) {
+                concentrations[idx].clear();
+            }
 
-        // If the next sample time greater than the cycle start time 
-        // and less than the next cycle start time, the sample occurs during this cycle.
-        // We care about residuals and the value at the next sample time.
-        if ((nextSampleTime >= currentIntakeTime) && (nextSampleTime <= nextIntakeTime)) {
-            while ((nextSampleTime >= currentIntakeTime) && (nextSampleTime <= nextIntakeTime)) {
+            if (nextSampleTime > nextIntakeTime) {
 
-                Duration atTime = nextSampleTime - currentIntakeTime;
-
-                // clear locally defined concentration
-                for (unsigned int idx= 0; idx < residualSize; idx++) {
-                    concentrations[idx].clear();
-                }
-
-                ComputingStatus result =
-                it->calculateIntakeSinglePoint(concentrations, *it, *parameters, inResiduals, atTime.toHours(), _isAll, outResiduals);
+                ComputingStatus result = it->calculateIntakeSinglePoint(
+                    concentrations,
+                    *it,
+                    *parameters,
+                    inResiduals,
+                    // We only need the residuals, so we don't care about a specific time
+                    0.0,
+                    _isAll,
+                    outResiduals);
 
                 if (result != ComputingStatus::Ok) {
                     _concentrations.clear();
                     return result;
                 }
 
-                auto nbAnalytes = it->getCalculator()->getNbAnalytes();
-                Concentrations concentrationsAtMeasure(nbAnalytes);
-
-                for(size_t i = 0; i < nbAnalytes; i++) {
-                    concentrationsAtMeasure[i] = concentrations[i][0];
-                }
-
-                _concentrations.push_back(concentrationsAtMeasure);
-
-                // We processed a sample so increment samples and output concentrations iterators.
-                sit++;
-
-                if (sit == sampleEnd) {
-                    return ComputingStatus::Ok;
-                }
-
-                // Reset the next sample time
-                nextSampleTime = sit->getEventTime();
+                // Reset input residuals for the next cycle
+                inResiduals = outResiduals;
             }
 
-            inResiduals = outResiduals;
+            // If the next sample time greater than the cycle start time
+            // and less than the next cycle start time, the sample occurs during this cycle.
+            // We care about residuals and the value at the next sample time.
+            if ((nextSampleTime >= currentIntakeTime) && (nextSampleTime <= nextIntakeTime)) {
+                while ((nextSampleTime >= currentIntakeTime) && (nextSampleTime <= nextIntakeTime)) {
+
+                    Duration atTime = nextSampleTime - currentIntakeTime;
+
+                    // clear locally defined concentration
+                    for (unsigned int idx= 0; idx < residualSize; idx++) {
+                        concentrations[idx].clear();
+                    }
+
+                    ComputingStatus result =
+                    it->calculateIntakeSinglePoint(concentrations, *it, *parameters, inResiduals, atTime.toHours(), _isAll, outResiduals);
+
+                    if (result != ComputingStatus::Ok) {
+                        _concentrations.clear();
+                        return result;
+                    }
+
+                    auto nbAnalytes = it->getCalculator()->getNbAnalytes();
+                    Concentrations concentrationsAtMeasure(nbAnalytes);
+
+                    for(size_t i = 0; i < nbAnalytes; i++) {
+                        concentrationsAtMeasure[i] = concentrations[i][0];
+                    }
+
+                    _concentrations.push_back(concentrationsAtMeasure);
+
+                    // We processed a sample so increment samples and output concentrations iterators.
+                    sit++;
+
+                    if (sit == sampleEnd) {
+                        return ComputingStatus::Ok;
+                    }
+
+                    // Reset the next sample time
+                    nextSampleTime = sit->getEventTime();
+                }
+
+                inResiduals = outResiduals;
+            }
+            it++; intakeNext++;
         }
-        it++; intakeNext++;
-    }
+
+        }
     return ComputingStatus::Ok;
 
 }
