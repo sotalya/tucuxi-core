@@ -205,6 +205,7 @@ ComputingStatus GeneralExtractor::generalExtractions(const ComputingTraitStandar
     Duration fantomDuration = secureStartDuration(halfLife);
 
     Tucuxi::Common::DateTime firstEvent = _traits->getStart();
+    Tucuxi::Common::DateTime lastEvent = _traits->getEnd();
 
     if ((_traits->getComputingOption().getParametersType() == PredictionParameterType::Aposteriori)
             && (!_samples.empty())) {
@@ -212,7 +213,15 @@ ComputingStatus GeneralExtractor::generalExtractions(const ComputingTraitStandar
             if (sample->getDate() < firstEvent) {
                 firstEvent = sample->getDate();
             }
+            if (sample->getDate() > lastEvent) {
+                lastEvent = sample->getDate();
+            }
         }
+    }
+
+    if (lastEvent != _traits->getEnd()) {
+        // It means there is a sample after the end
+        lastEvent = lastEvent + Duration(24h);
     }
 
     Tucuxi::Common::DateTime fantomStart = firstEvent - fantomDuration;
@@ -225,7 +234,7 @@ ComputingStatus GeneralExtractor::generalExtractions(const ComputingTraitStandar
     IntakeSeries intakeSeries;
     TUCU_TRY {
         ComputingStatus intakeExtractionResult = intakeExtractor.extract(_dosageHistory, fantomStart /*_traits->getStart()*/,
-                                                                         _traits->getEnd() /* + Duration(24h)*/,
+                                                                         lastEvent, // _traits->getEnd() /* + Duration(24h)*/,
                                                                          nbPointsPerHour,
                                                                          // TODO : This is a code smell. Does not work if 2 analyte sets do not share the same concentration unit
                                                                          _drugModel.getAnalyteSets()[0]->getDoseUnit(), intakeSeries);

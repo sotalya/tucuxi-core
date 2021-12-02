@@ -652,8 +652,10 @@ ComputingStatus ComputingComponent::computePercentilesSimple(
         // This extraction is already done in extractAposterioriEtas... Could be optimized
         SampleSeries sampleSeries;
         SampleExtractor sampleExtractor;
+        // We take all samples
         ComputingStatus sampleExtractionResult =
-                sampleExtractor.extract(_request.getDrugTreatment().getSamples(), _request.getDrugModel().getAnalyteSet(analyteGroupId), calculationStartTime, _traits->getEnd(), _request.getDrugModel().getAnalyteSet(analyteGroupId)->getConcentrationUnit(), sampleSeries);
+                sampleExtractor.extract(_request.getDrugTreatment().getSamples(), _request.getDrugModel().getAnalyteSet(analyteGroupId), DateTime::min(), DateTime::max(), _request.getDrugModel().getAnalyteSet(analyteGroupId)->getConcentrationUnit(), sampleSeries);
+        //sampleExtractor.extract(_request.getDrugTreatment().getSamples(), _request.getDrugModel().getAnalyteSet(analyteGroupId), calculationStartTime, _traits->getEnd(), _request.getDrugModel().getAnalyteSet(analyteGroupId)->getConcentrationUnit(), sampleSeries);
 
         if (sampleExtractionResult != ComputingStatus::Ok) {
             return sampleExtractionResult;

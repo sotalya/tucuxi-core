@@ -428,5 +428,19 @@ double DateTime::toDays() const
     return std::floor(static_cast<double>(get<std::chrono::hours>().count()) / 24);
 }
 
+
+DateTime DateTime::max() {
+    DateTime result;
+    result.m_date = std::chrono::time_point<std::chrono::system_clock>::max();
+    return result;
+}
+
+DateTime DateTime::min() {
+    DateTime result;
+    result.m_date = std::chrono::time_point<std::chrono::system_clock>::min();
+    return result;
+}
+
+
 } // namespace Common
 } // namespace Tucuxi
