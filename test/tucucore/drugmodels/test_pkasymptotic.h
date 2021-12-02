@@ -37,7 +37,7 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
 {
     TestPkAsymptotic() { }
 
-    std::unique_ptr<DrugTreatment> buildDrugTreatment(FormulationAndRoute _route)
+    std::unique_ptr<DrugTreatment> buildDrugTreatment(const FormulationAndRoute& _route)
     {
 
         auto drugTreatment = std::make_unique<DrugTreatment>();

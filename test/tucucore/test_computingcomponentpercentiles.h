@@ -38,7 +38,7 @@ struct TestComputingComponentPercentiles : public fructose::test_base<TestComput
 
     }
 
-    std::unique_ptr<DrugTreatment> buildDrugTreatment(FormulationAndRoute _route)
+    std::unique_ptr<DrugTreatment> buildDrugTreatment(const FormulationAndRoute& _route)
     {
         auto drugTreatment = std::make_unique<DrugTreatment>();
 
@@ -68,7 +68,7 @@ struct TestComputingComponentPercentiles : public fructose::test_base<TestComput
         return drugTreatment;
     }
 
-    std::unique_ptr<DrugTreatment> buildDrugTreatmentSteadyState(FormulationAndRoute _route)
+    std::unique_ptr<DrugTreatment> buildDrugTreatmentSteadyState(const FormulationAndRoute& _route)
     {
         auto drugTreatment = std::make_unique<DrugTreatment>();
 

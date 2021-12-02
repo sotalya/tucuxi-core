@@ -738,7 +738,7 @@ struct TestDrugVancomycin : public fructose::test_base<TestDrugVancomycin>
 {
     TestDrugVancomycin() { }
 
-    std::unique_ptr<DrugTreatment> buildDrugTreatment(FormulationAndRoute _route)
+    std::unique_ptr<DrugTreatment> buildDrugTreatment(const FormulationAndRoute& _route)
     {
         auto drugTreatment = std::make_unique<DrugTreatment>();
 
@@ -773,7 +773,7 @@ struct TestDrugVancomycin : public fructose::test_base<TestDrugVancomycin>
     {
         DrugModelImport importer;
 
-        DrugModel *drugModel;
+        std::unique_ptr<DrugModel> drugModel;
 
         auto importStatus = importer.importFromString(drugModel, vancomycin_tdd);
         fructose_assert_eq(importStatus, DrugModelImport::Status::Ok);
@@ -861,9 +861,6 @@ struct TestDrugVancomycin : public fructose::test_base<TestDrugVancomycin>
             //}
         }
 
-        if (drugModel != nullptr) {
-            delete drugModel;
-        }
         if (component != nullptr) {
             delete component;
         }

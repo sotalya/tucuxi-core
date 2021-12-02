@@ -53,7 +53,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
     std::vector<Value> percentileRanks = {5, 10, 25, 50, 75, 90, 95};
 
-    std::unique_ptr<DrugTreatment> buildDrugTreatment(FormulationAndRoute _route)
+    std::unique_ptr<DrugTreatment> buildDrugTreatment(const FormulationAndRoute& _route)
     {
 
         auto drugTreatment = std::make_unique<DrugTreatment>();

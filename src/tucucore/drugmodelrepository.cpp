@@ -59,7 +59,7 @@ DrugModel* DrugModelRepository::loadFile(const std::string& _fileName)
 {
     Tucuxi::Common::LoggerHelper logHelper;
 
-    DrugModel *drugModel = nullptr;
+    std::unique_ptr<DrugModel> drugModel;
     Tucuxi::Core::DrugModelImport drugModelImport;
 
     if (drugModelImport.importFromFile(drugModel, _fileName) == DrugModelImport::Status::Ok) {
@@ -72,20 +72,20 @@ DrugModel* DrugModelRepository::loadFile(const std::string& _fileName)
         }
 
         DrugModelChecker checker;
-        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel, &pkCollection);
+        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel.get(), &pkCollection);
         if (!checkerResult.m_ok) {
             logHelper.error("The drug file {} has internal errors : {}", _fileName, checkerResult.m_errorMessage);
             return nullptr;
         }
         logHelper.info("Successfully loaded drug model : {}", drugModel->getDrugModelId());
-        addDrugModel(drugModel);
+        addDrugModel(drugModel.get());
     }
     else {
         logHelper.error("Cannot import a drug file : {}", _fileName);
         logHelper.error("{} ", drugModelImport.getErrorMessage());
         return nullptr;
     }
-    return drugModel;
+    return drugModel.release();
 }
 
 // Solution taken here: http://www.martinbroadhurst.com/list-the-files-in-a-directory-in-c.html

@@ -819,16 +819,12 @@ struct TestDrugTobramycin : public fructose::test_base<TestDrugTobramycin>
     {
         DrugModelImport importer;
 
-        DrugModel *drugModel;
+        std::unique_ptr<DrugModel> drugModel;
 
         auto status = importer.importFromString(drugModel, tobramycin_tdd);
         fructose_assert_eq(status, DrugModelImport::Status::Ok);
 
         fructose_assert(drugModel != nullptr);
-
-        if (drugModel != nullptr) {
-            delete drugModel;
-        }
     }
 };
 

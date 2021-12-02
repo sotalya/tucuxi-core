@@ -801,7 +801,7 @@ struct TestMichaelisMentenEnzyme1comp : public fructose::test_base<TestMichaelis
 {
     TestMichaelisMentenEnzyme1comp() { }
 
-    std::unique_ptr<DrugTreatment> buildDrugTreatment(FormulationAndRoute _route)
+    std::unique_ptr<DrugTreatment> buildDrugTreatment(const FormulationAndRoute& _route)
     {
         auto drugTreatment = std::make_unique<DrugTreatment>();
 
@@ -836,7 +836,7 @@ struct TestMichaelisMentenEnzyme1comp : public fructose::test_base<TestMichaelis
     {
         DrugModelImport importer;
 
-        DrugModel *drugModel;
+        std::unique_ptr<DrugModel> drugModel;
 
         auto importStatus = importer.importFromString(drugModel, test_mm_1comp_enzyme_bolus_tdd);
         fructose_assert_eq(importStatus, DrugModelImport::Status::Ok);
@@ -923,9 +923,6 @@ struct TestMichaelisMentenEnzyme1comp : public fructose::test_base<TestMichaelis
             //}
         }
 
-        if (drugModel != nullptr) {
-            delete drugModel;
-        }
         if (component != nullptr) {
             delete component;
         }
@@ -937,7 +934,7 @@ struct TestMichaelisMentenEnzyme1comp : public fructose::test_base<TestMichaelis
     {
         DrugModelImport importer;
 
-        DrugModel *drugModel;
+        std::unique_ptr<DrugModel> drugModel;
 
         auto importStatus = importer.importFromString(drugModel, test_mm_1comp_enzyme_bolus_tdd);
         fructose_assert_eq(importStatus, DrugModelImport::Status::Ok);
@@ -1025,9 +1022,6 @@ struct TestMichaelisMentenEnzyme1comp : public fructose::test_base<TestMichaelis
             //}
         }
 
-        if (drugModel != nullptr) {
-            delete drugModel;
-        }
         if (component != nullptr) {
             delete component;
         }

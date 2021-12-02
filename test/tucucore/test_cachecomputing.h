@@ -38,7 +38,7 @@ struct TestCacheComputing : public fructose::test_base<TestCacheComputing>
     }
 
 
-    std::unique_ptr<DrugTreatment> buildDrugTreatment(FormulationAndRoute _route)
+    std::unique_ptr<DrugTreatment> buildDrugTreatment(const FormulationAndRoute& _route)
     {
         auto drugTreatment = std::make_unique<DrugTreatment>();
 
@@ -69,7 +69,7 @@ struct TestCacheComputing : public fructose::test_base<TestCacheComputing>
     }
 
 
-    std::unique_ptr<DrugTreatment> buildDrugTreatment2(FormulationAndRoute _route)
+    std::unique_ptr<DrugTreatment> buildDrugTreatment2(const FormulationAndRoute& _route)
     {
         auto drugTreatment = std::make_unique<DrugTreatment>();
 
@@ -99,7 +99,7 @@ struct TestCacheComputing : public fructose::test_base<TestCacheComputing>
         return drugTreatment;
     }
 
-    std::unique_ptr<DrugTreatment> buildDrugTreatmentSteadyState(FormulationAndRoute _route)
+    std::unique_ptr<DrugTreatment> buildDrugTreatmentSteadyState(const FormulationAndRoute& _route)
     {
         auto drugTreatment = std::make_unique<DrugTreatment>();
 

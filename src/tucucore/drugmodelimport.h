@@ -74,21 +74,21 @@ public:
 
     ///
     /// \brief importFromFile
-    /// \param _drugModel A reference to a DrugModel pointer that will be allocated within the function
+    /// \param _drugModel A reference to a DrugModel unique pointer that will be allocated within the function
     /// \param _fileName The name of the file in which the drug model is stored
     /// \return Result::Ok if the import went well, another Result else.
     /// This function is reentrant.
     ///
-    Status importFromFile(Tucuxi::Core::DrugModel *&_drugModel, const std::string &_fileName);
+    Status importFromFile(std::unique_ptr<Tucuxi::Core::DrugModel>& _drugModel, const std::string &_fileName);
 
     ///
     /// \brief importFromString
-    /// \param _drugModel A reference to a DrugModel pointer that will be allocated within the function
+    /// \param _drugModel A reference to a DrugModel unique pointer that will be allocated within the function
     /// \param _xml A string in which the drug model is stored
     /// \return Result::Ok if the import went well, another Result else.
     /// This function is reentrant.
     ///
-    Status importFromString(Tucuxi::Core::DrugModel *&_drugModel, const std::string &_xml);
+    Status importFromString(std::unique_ptr<DrugModel> &_drugModel, const std::string &_xml);
 
 protected:
 
@@ -99,12 +99,12 @@ protected:
 
     ///
     /// \brief importFromString
-    /// \param _drugModel A reference to a DrugModel pointer that will be allocated within the function
+    /// \param _drugModel A reference to a DrugModel unique pointer that will be allocated within the function
     /// \param _document An XmlDocument in which the drug model is stored
     /// \return Result::Ok if the import went well, another Result else.
     /// This function is reentrant.
     ///
-    Status importDocument(Tucuxi::Core::DrugModel *&_drugModel, Tucuxi::Common::XmlDocument & _document);
+    Status importDocument(std::unique_ptr<DrugModel> &_drugModel, Tucuxi::Common::XmlDocument & _document);
 
 
     ///////////////////////////////////////////////////////////////////////////////

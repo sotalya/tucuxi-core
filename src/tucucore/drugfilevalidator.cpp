@@ -59,10 +59,10 @@ bool DrugFileValidator::validate(const std::string& _drugFileName, const std::st
 
     Tucuxi::Core::PatientVariates covariates;
 
-    Tucuxi::Core::DrugModel *dModel = nullptr;
+    std::unique_ptr<Tucuxi::Core::DrugModel> drugModel;
 
     DrugModelImport importer;
-    if (importer.importFromFile(dModel, _drugFileName) != DrugModelImport::Status::Ok) {
+    if (importer.importFromFile(drugModel, _drugFileName) != DrugModelImport::Status::Ok) {
         logger.error("Can not import the drug file. {}", importer.getErrorMessage());
         return false;
     }
@@ -78,13 +78,11 @@ bool DrugFileValidator::validate(const std::string& _drugFileName, const std::st
         return false;
     }
 
-    DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(dModel, &pkCollection);
+    DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel.get(), &pkCollection);
     if (!checkerResult.m_ok) {
         logger.error(checkerResult.m_errorMessage);
         return false;
     }
-
-    std::unique_ptr<Tucuxi::Core::DrugModel> drugModel(dModel);
 
     bool validationResult = true;
     {

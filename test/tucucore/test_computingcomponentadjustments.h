@@ -31,7 +31,7 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
 {
     TestComputingComponentAdjusements() { }
 
-    std::unique_ptr<DrugTreatment> buildDrugTreatment(FormulationAndRoute _route, DoseValue _doseValue = 200)
+    std::unique_ptr<DrugTreatment> buildDrugTreatment(const FormulationAndRoute& _route, DoseValue _doseValue = 200)
     {
         auto drugTreatment = std::make_unique<DrugTreatment>();
 

@@ -1093,7 +1093,7 @@ struct TestDrugModelImport : public fructose::test_base<TestDrugModelImport>
 
     void testFake(const std::string& /* _testName */)
     {
-        DrugModel* fake;
+        std::unique_ptr<DrugModel> fake;
         auto importer = std::make_unique<DrugModelImport>();
 
         DrugModelImport::Status status = importer->importFromString(fake, drug1);
@@ -1103,13 +1103,11 @@ struct TestDrugModelImport : public fructose::test_base<TestDrugModelImport>
         fructose_assert( status == DrugModelImport::Status::Ok);
 
         fructose_assert(fake != nullptr);
-
-        delete fake;
     }
 
     void testBusulfan1(const std::string& /* _testName */)
     {
-        DrugModel* busulfan;
+        std::unique_ptr<DrugModel> busulfan;
         auto importer = std::make_unique<DrugModelImport>();
 
         DrugModelImport::Status status = importer->importFromString(busulfan, busulfan1);
@@ -1117,8 +1115,6 @@ struct TestDrugModelImport : public fructose::test_base<TestDrugModelImport>
         fructose_assert( status == DrugModelImport::Status::Ok);
 
         fructose_assert(busulfan != nullptr);
-
-        delete busulfan;
     }
 
 };

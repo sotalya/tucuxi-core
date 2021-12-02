@@ -52,7 +52,7 @@ DrugModelImport::DrugModelImport() = default;
 
 
 
-DrugModelImport::Status DrugModelImport::importFromFile(Tucuxi::Core::DrugModel *&_drugModel, const std::string& _fileName)
+DrugModelImport::Status DrugModelImport::importFromFile(std::unique_ptr<DrugModel> &_drugModel, const std::string& _fileName)
 {
     // Ensure the function is reentrant
     std::lock_guard<std::mutex> lock(m_mutex);
@@ -70,7 +70,7 @@ DrugModelImport::Status DrugModelImport::importFromFile(Tucuxi::Core::DrugModel 
 }
 
 
-DrugModelImport::Status DrugModelImport::importFromString(Tucuxi::Core::DrugModel *&_drugModel, const std::string& _xml)
+DrugModelImport::Status DrugModelImport::importFromString(std::unique_ptr<Tucuxi::Core::DrugModel>& _drugModel, const std::string& _xml)
 {
     // Ensure the function is reentrant
     std::lock_guard<std::mutex> lock(m_mutex);
@@ -94,8 +94,8 @@ DrugModelImport::Status DrugModelImport::importFromString(Tucuxi::Core::DrugMode
 ///////////////////////////////////////////////////////////////////////////////
 
 DrugModelImport::Status DrugModelImport::importDocument(
-        Tucuxi::Core::DrugModel *&_drugModel,
-        Tucuxi::Common::XmlDocument & _document)
+        std::unique_ptr<Tucuxi::Core::DrugModel>& _drugModel,
+        Tucuxi::Common::XmlDocument& _document)
 {
     XmlNode root = _document.getRoot();
 
@@ -103,7 +103,7 @@ DrugModelImport::Status DrugModelImport::importDocument(
 
     checkNodeIterator(drugModelIterator, "drugModel");
 
-    _drugModel = extractDrugModel(drugModelIterator).release();
+    _drugModel = extractDrugModel(drugModelIterator);
 
     if (getStatus() != Status::Ok) {
         return getStatus();
