@@ -76,24 +76,21 @@ struct TestTargetExtractor : public fructose::test_base<TestTargetExtractor>
             // Test with only population values
 
             // Add targets
-            std::unique_ptr<SubTargetDefinition> cMin(new SubTargetDefinition("cMin", 750.0, nullptr));
-            std::unique_ptr<SubTargetDefinition> cMax(new SubTargetDefinition("cMax", 1500.0, nullptr));
-            std::unique_ptr<SubTargetDefinition> cBest(new SubTargetDefinition("cBest", 1000.0, nullptr));
-            TargetDefinition *target = new TargetDefinition(TargetType::Residual,
+            auto target = std::make_unique<TargetDefinition>(TargetType::Residual,
                                                             TucuUnit("ug/l"),
                                                             ActiveMoietyId("imatinib"),
-                                                            std::move(cMin),
-                                                            std::move(cMax),
-                                                            std::move(cBest),
-                                                            std::unique_ptr<SubTargetDefinition>(new SubTargetDefinition("mic", 2.0, nullptr)),
-                                                            std::unique_ptr<SubTargetDefinition>(new SubTargetDefinition("tMin", 1000.0, nullptr)),
-                                                            std::unique_ptr<SubTargetDefinition>(new SubTargetDefinition("tMax", 1200.0, nullptr)),
-                                                            std::unique_ptr<SubTargetDefinition>(new SubTargetDefinition("tBest", 1100.0, nullptr)),
-                                                            std::unique_ptr<SubTargetDefinition>(new SubTargetDefinition("toxicity", 10000.0, nullptr)),
-                                                            std::unique_ptr<SubTargetDefinition>(new SubTargetDefinition("inefficacy", 1.0, nullptr)));
+                                                            std::make_unique<SubTargetDefinition>("cMin", 750.0, nullptr),
+                                                            std::make_unique<SubTargetDefinition>("cMax", 1500.0, nullptr),
+                                                            std::make_unique<SubTargetDefinition>("cBest", 1000.0, nullptr),
+                                                            std::make_unique<SubTargetDefinition>("mic", 2.0, nullptr),
+                                                            std::make_unique<SubTargetDefinition>("tMin", 1000.0, nullptr),
+                                                            std::make_unique<SubTargetDefinition>("tMax", 1200.0, nullptr),
+                                                            std::make_unique<SubTargetDefinition>("tBest", 1100.0, nullptr),
+                                                            std::make_unique<SubTargetDefinition>("toxicity", 10000.0, nullptr),
+                                                            std::make_unique<SubTargetDefinition>("inefficacy", 1.0, nullptr));
 
 
-            targetDefinitions.push_back(std::unique_ptr<TargetDefinition>(target));
+            targetDefinitions.push_back(std::move(target));
 
             extractionOption = TargetExtractionOption::PopulationValues;
             result = extractor.extract(ActiveMoietyId("imatinib"), covariates, targetDefinitions, targets, start, end, TucuUnit("ug/l"), extractionOption, series);
@@ -140,29 +137,27 @@ struct TestTargetExtractor : public fructose::test_base<TestTargetExtractor>
             // Test with individual values
 
             // Add targets
-            std::unique_ptr<SubTargetDefinition> cMin(new SubTargetDefinition("cMin", 750.0, nullptr));
-            std::unique_ptr<SubTargetDefinition> cMax(new SubTargetDefinition("cMax", 1500.0, nullptr));
-            std::unique_ptr<SubTargetDefinition> cBest(new SubTargetDefinition("cBest", 1000.0, nullptr));
-            TargetDefinition *target = new TargetDefinition(TargetType::Residual,
-                                                            TucuUnit("mg/l"),
-                                                            ActiveMoietyId("imatinib"),
-                                                            std::move(cMin),
-                                                            std::move(cMax),
-                                                            std::move(cBest),
-                                                            std::unique_ptr<SubTargetDefinition>(new SubTargetDefinition("mic", 2.0, nullptr)),
-                                                            std::unique_ptr<SubTargetDefinition>(new SubTargetDefinition("tMin", 1000.0, nullptr)),
-                                                            std::unique_ptr<SubTargetDefinition>(new SubTargetDefinition("tMax", 1200.0, nullptr)),
-                                                            std::unique_ptr<SubTargetDefinition>(new SubTargetDefinition("tBest", 1100.0, nullptr)),
-                                                            std::unique_ptr<SubTargetDefinition>(new SubTargetDefinition("toxicity", 10000.0, nullptr)),
-                                                            std::unique_ptr<SubTargetDefinition>(new SubTargetDefinition("inefficacy", 1.0, nullptr)));
+            auto target = std::make_unique<TargetDefinition>(
+                        TargetType::Residual,
+                        TucuUnit("mg/l"),
+                        ActiveMoietyId("imatinib"),
+                        std::make_unique<SubTargetDefinition>("cMin", 750.0, nullptr),
+                        std::make_unique<SubTargetDefinition>("cMax", 1500.0, nullptr),
+                        std::make_unique<SubTargetDefinition>("cBest", 1000.0, nullptr),
+                        std::make_unique<SubTargetDefinition>("mic", 2.0, nullptr),
+                        std::make_unique<SubTargetDefinition>("tMin", 1000.0, nullptr),
+                        std::make_unique<SubTargetDefinition>("tMax", 1200.0, nullptr),
+                        std::make_unique<SubTargetDefinition>("tBest", 1100.0, nullptr),
+                        std::make_unique<SubTargetDefinition>("toxicity", 10000.0, nullptr),
+                        std::make_unique<SubTargetDefinition>("inefficacy", 1.0, nullptr));
 
 
-            targetDefinitions.push_back(std::unique_ptr<TargetDefinition>(target));
+            targetDefinitions.push_back(std::move(target));
 
 
-            Target *patientTarget = new Target(ActiveMoietyId("imatinib"), TargetType::Residual, TucuUnit("mg/l"), 50.0, 100.0, 150.0, 2.0, 200.0);
+            auto patientTarget = std::make_unique<Target>(ActiveMoietyId("imatinib"), TargetType::Residual, TucuUnit("mg/l"), 50.0, 100.0, 150.0, 2.0, 200.0);
 
-            targets.push_back(std::unique_ptr<Target>(patientTarget));
+            targets.push_back(std::move(patientTarget));
 
             extractionOption = TargetExtractionOption::IndividualTargets;
             result = extractor.extract(ActiveMoietyId("imatinib"), covariates, targetDefinitions, targets, start, end, TucuUnit("ug/l"), extractionOption, series);
@@ -209,9 +204,9 @@ struct TestTargetExtractor : public fructose::test_base<TestTargetExtractor>
 
             // Add targets
 
-            Target *patientTarget = new Target(ActiveMoietyId("imatinib"), TargetType::Residual, TucuUnit("mg/l"), 50.0, 100.0, 150.0, 2.0, 200.0);
+            auto patientTarget = std::make_unique<Target>(ActiveMoietyId("imatinib"), TargetType::Residual, TucuUnit("mg/l"), 50.0, 100.0, 150.0, 2.0, 200.0);
 
-            targets.push_back(std::unique_ptr<Target>(patientTarget));
+            targets.push_back(std::move(patientTarget));
 
             extractionOption = TargetExtractionOption::DefinitionIfNoIndividualTarget;
             result = extractor.extract(ActiveMoietyId("imatinib"), covariates, targetDefinitions, targets, start, end, TucuUnit("ug/l"), extractionOption, series);

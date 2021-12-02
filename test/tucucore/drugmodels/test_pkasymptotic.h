@@ -37,10 +37,10 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
 {
     TestPkAsymptotic() { }
 
-    void buildDrugTreatment(DrugTreatment *&_drugTreatment, FormulationAndRoute _route)
+    std::unique_ptr<DrugTreatment> buildDrugTreatment(FormulationAndRoute _route)
     {
 
-        _drugTreatment = new DrugTreatment();
+        auto drugTreatment = std::make_unique<DrugTreatment>();
 
         // List of time ranges that will be pushed into the history
         DosageTimeRangeList timeRangeList;
@@ -60,16 +60,17 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
                                  Duration(),
                                  Duration(std::chrono::hours(6)));
         DosageRepeat repeatedDose(periodicDose, 16);
-        std::unique_ptr<Tucuxi::Core::DosageTimeRange> sept2018(new Tucuxi::Core::DosageTimeRange(startSept2018, repeatedDose));
+        auto sept2018 = std::make_unique<Tucuxi::Core::DosageTimeRange>(startSept2018, repeatedDose);
 
+        drugTreatment->getModifiableDosageHistory().addTimeRange(*sept2018);
 
-        _drugTreatment->getModifiableDosageHistory().addTimeRange(*sept2018);
+        return drugTreatment;
     }
 
 
     void test0() {
         BuildPkAsymptotic builder;
-        DrugModel *drugModel = builder.buildDrugModel();
+        auto drugModel = builder.buildDrugModel();
 
         fructose_assert(drugModel != nullptr);
 
@@ -87,7 +88,7 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
 
         std::shared_ptr<PkModelCollection> collection = std::make_shared<PkModelCollection>();
         collection->addPkModel(sharedPkModel);
-        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel, collection.get());
+        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel.get(), collection.get());
 
         fructose_assert(checkerResult.m_ok);
 
@@ -106,11 +107,9 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
 
 
         {
-
-            DrugTreatment *drugTreatment;
             const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
-            buildDrugTreatment(drugTreatment, route);
+            auto drugTreatment = buildDrugTreatment(route);
 
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covR", "0.5", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covT", "1.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
@@ -196,25 +195,22 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
                 fructose_assert_double_eq(statValue, cumulativeAuc);
                 residual = residual + ((dose - residual) * rate);
             }
-
-            delete drugTreatment;
         }
 
         // Delete all dynamically allocated objects
         delete component;
-        delete drugModel;
 
     }
 
     void testAdjustments() {
         BuildPkAsymptotic builder;
-        DrugModel *drugModel = builder.buildDrugModel();
+        auto drugModel = builder.buildDrugModel();
 
         fructose_assert(drugModel != nullptr);
 
 
         // Add targets
-        TargetDefinition *target = new TargetDefinition(TargetType::Residual,
+        auto target = std::make_unique<TargetDefinition>(TargetType::Residual,
                                                         Unit("mg/l"),
                                                         ActiveMoietyId("analyte"),
                                                         std::make_unique<SubTargetDefinition>("cMin", 750.0, nullptr),
@@ -227,7 +223,7 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
                                                         std::make_unique<SubTargetDefinition>("toxicity", 10000.0, nullptr),
                                                         std::make_unique<SubTargetDefinition>("inefficacy", 000.0, nullptr));
 
-        drugModel->m_activeMoieties[0]->addTarget(std::unique_ptr<TargetDefinition>(target));
+        drugModel->m_activeMoieties[0]->addTarget(std::move(target));
 
         fructose_assert(drugModel->checkInvariants());
 
@@ -242,7 +238,7 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
 
         std::shared_ptr<PkModelCollection> collection = std::make_shared<PkModelCollection>();
         collection->addPkModel(sharedPkModel);
-        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel, collection.get());
+        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel.get(), collection.get());
 
         fructose_assert(checkerResult.m_ok);
 
@@ -261,11 +257,9 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
 
 
         {
-
-            DrugTreatment *drugTreatment;
             const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
-            buildDrugTreatment(drugTreatment, route);
+            auto drugTreatment = buildDrugTreatment(route);
 
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covR", "0.5", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covT", "1.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
@@ -321,13 +315,10 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
                     fructose_assert_double_le(dosage->getDose(), 1500.0);
                 }
             }
-
-            delete drugTreatment;
         }
 
         // Delete all dynamically allocated objects
         delete component;
-        delete drugModel;
 
     }
 
@@ -335,13 +326,13 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
     void testAdjustmentsSlowRate() {
 
         BuildPkAsymptotic builder;
-        DrugModel *drugModel = builder.buildDrugModel();
+        auto drugModel = builder.buildDrugModel();
 
         fructose_assert(drugModel != nullptr);
 
 
-        // Add targets
-        TargetDefinition *target = new TargetDefinition(TargetType::Residual,
+        // Add targetsDrugModel *
+        auto target = std::make_unique<TargetDefinition>(TargetType::Residual,
                                                         Unit("mg/l"),
                                                         ActiveMoietyId("analyte"),
                                                         std::make_unique<SubTargetDefinition>("cMin", 750.0, nullptr),
@@ -354,7 +345,7 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
                                                         std::make_unique<SubTargetDefinition>("toxicity", 10000.0, nullptr),
                                                         std::make_unique<SubTargetDefinition>("inefficacy", 000.0, nullptr));
 
-        drugModel->m_activeMoieties[0]->addTarget(std::unique_ptr<TargetDefinition>(target));
+        drugModel->m_activeMoieties[0]->addTarget(std::move(target));
 
         fructose_assert(drugModel->checkInvariants());
 
@@ -369,7 +360,7 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
 
         std::shared_ptr<PkModelCollection> collection = std::make_shared<PkModelCollection>();
         collection->addPkModel(sharedPkModel);
-        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel, collection.get());
+        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel.get(), collection.get());
 
         fructose_assert(checkerResult.m_ok);
 
@@ -388,11 +379,9 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
 
 
         {
-
-            DrugTreatment *drugTreatment;
             const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
-            buildDrugTreatment(drugTreatment, route);
+            auto drugTreatment = buildDrugTreatment(route);
 
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covR", "0.05", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covT", "1.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
@@ -448,27 +437,23 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
                     fructose_assert_double_le(dosage->getDose(), 1500.0);
                 }
             }
-
-            delete drugTreatment;
         }
 
         // Delete all dynamically allocated objects
         delete component;
-        delete drugModel;
-
     }
 
 
 
     void testAdjustmentsLoadingDose() {
         BuildPkAsymptotic builder;
-        DrugModel *drugModel = builder.buildDrugModel();
+        auto drugModel = builder.buildDrugModel();
 
         fructose_assert(drugModel != nullptr);
 
 
         // Add targets
-        TargetDefinition *target = new TargetDefinition(TargetType::Residual,
+        auto target = std::make_unique<TargetDefinition>(TargetType::Residual,
                                                         Unit("mg/l"),
                                                         ActiveMoietyId("analyte"),
                                                         std::make_unique<SubTargetDefinition>("cMin", 750.0, nullptr),
@@ -481,7 +466,7 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
                                                         std::make_unique<SubTargetDefinition>("toxicity", 10000.0, nullptr),
                                                         std::make_unique<SubTargetDefinition>("inefficacy", 000.0, nullptr));
 
-        drugModel->m_activeMoieties[0]->addTarget(std::unique_ptr<TargetDefinition>(target));
+        drugModel->m_activeMoieties[0]->addTarget(std::move(target));
 
         fructose_assert(drugModel->checkInvariants());
 
@@ -496,7 +481,7 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
 
         std::shared_ptr<PkModelCollection> collection = std::make_shared<PkModelCollection>();
         collection->addPkModel(sharedPkModel);
-        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel, collection.get());
+        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel.get(), collection.get());
 
         fructose_assert(checkerResult.m_ok);
 
@@ -515,11 +500,9 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
 
 
         {
-
-            DrugTreatment *drugTreatment;
             const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
-            buildDrugTreatment(drugTreatment, route);
+            auto drugTreatment = buildDrugTreatment(route);
 
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covR", "0.5", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covT", "1.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
@@ -591,26 +574,23 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
                 fructose_assert_double_ge(dosage->getDose(), 750.0);
                 fructose_assert_double_le(dosage->getDose(), 1500.0);
             }
-
-            delete drugTreatment;
         }
 
         // Delete all dynamically allocated objects
         delete component;
-        delete drugModel;
 
     }
 
 
     void testAdjustmentsFirstDose() {
         BuildPkAsymptotic builder;
-        DrugModel *drugModel = builder.buildDrugModel();
+        auto drugModel = builder.buildDrugModel();
 
         fructose_assert(drugModel != nullptr);
 
 
         // Add targets
-        TargetDefinition *target = new TargetDefinition(TargetType::Residual,
+        auto target = std::make_unique<TargetDefinition>(TargetType::Residual,
                                                         Unit("mg/l"),
                                                         ActiveMoietyId("analyte"),
                                                         std::make_unique<SubTargetDefinition>("cMin", 750.0, nullptr),
@@ -623,7 +603,7 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
                                                         std::make_unique<SubTargetDefinition>("toxicity", 10000.0, nullptr),
                                                         std::make_unique<SubTargetDefinition>("inefficacy", 000.0, nullptr));
 
-        drugModel->m_activeMoieties[0]->addTarget(std::unique_ptr<TargetDefinition>(target));
+        drugModel->m_activeMoieties[0]->addTarget(std::move(target));
 
         fructose_assert(drugModel->checkInvariants());
 
@@ -638,7 +618,7 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
 
         std::shared_ptr<PkModelCollection> collection = std::make_shared<PkModelCollection>();
         collection->addPkModel(sharedPkModel);
-        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel, collection.get());
+        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel.get(), collection.get());
 
         fructose_assert(checkerResult.m_ok);
 
@@ -657,8 +637,7 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
 
 
         {
-
-            DrugTreatment *drugTreatment = new DrugTreatment();
+            auto drugTreatment = std::make_unique<DrugTreatment>();
             // const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covR", "0.5", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
@@ -719,27 +698,23 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
                     fructose_assert_double_le(dosage->getDose(), 1500.0);
                 }
             }
-
-            delete drugTreatment;
         }
 
         // Delete all dynamically allocated objects
         delete component;
-        delete drugModel;
-
     }
 
 
 
     void testAdjustmentsLoadingDoseFirstDose() {
         BuildPkAsymptotic builder;
-        DrugModel *drugModel = builder.buildDrugModel();
+        auto drugModel = builder.buildDrugModel();
 
         fructose_assert(drugModel != nullptr);
 
 
         // Add targets
-        TargetDefinition *target = new TargetDefinition(TargetType::Residual,
+        auto target = std::make_unique<TargetDefinition>(TargetType::Residual,
                                                         Unit("mg/l"),
                                                         ActiveMoietyId("analyte"),
                                                         std::make_unique<SubTargetDefinition>("cMin", 750.0, nullptr),
@@ -752,7 +727,7 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
                                                         std::make_unique<SubTargetDefinition>("toxicity", 10000.0, nullptr),
                                                         std::make_unique<SubTargetDefinition>("inefficacy", 000.0, nullptr));
 
-        drugModel->m_activeMoieties[0]->addTarget(std::unique_ptr<TargetDefinition>(target));
+        drugModel->m_activeMoieties[0]->addTarget(std::move(target));
 
         fructose_assert(drugModel->checkInvariants());
 
@@ -767,7 +742,7 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
 
         std::shared_ptr<PkModelCollection> collection = std::make_shared<PkModelCollection>();
         collection->addPkModel(sharedPkModel);
-        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel, collection.get());
+        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel.get(), collection.get());
 
         fructose_assert(checkerResult.m_ok);
 
@@ -786,11 +761,9 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
 
 
         {
-
-            DrugTreatment *drugTreatment;
             const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
-            buildDrugTreatment(drugTreatment, route);
+            auto drugTreatment = buildDrugTreatment(route);
 
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covR", "0.5", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covT", "1.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
@@ -862,13 +835,10 @@ struct TestPkAsymptotic : public fructose::test_base<TestPkAsymptotic> //, publi
                 fructose_assert_double_ge(dosage->getDose(), 750.0);
                 fructose_assert_double_le(dosage->getDose(), 1500.0);
             }
-
-            delete drugTreatment;
         }
 
         // Delete all dynamically allocated objects
         delete component;
-        delete drugModel;
 
     }
 

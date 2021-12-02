@@ -80,7 +80,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                                      std::chrono::seconds(0))),
                                   DayOfWeek(TUESDAY));
         DosageLoop juneDose(juneWeeklyDose);
-        std::unique_ptr<Tucuxi::Core::DosageTimeRange> june2017(new Tucuxi::Core::DosageTimeRange(startJune2017, endJune2017, juneDose));
+        auto june2017 = std::make_unique<Tucuxi::Core::DosageTimeRange>(startJune2017, endJune2017, juneDose);
 
         // Add a weekly treatment in July
         // 400mg via a 10-minutes perfusion at 11h30 on Wednesday
@@ -93,7 +93,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                                      std::chrono::seconds(0))),
                                   DayOfWeek(WEDNESDAY));
         DosageLoop julyDose(julyWeeklyDose);
-        std::unique_ptr<Tucuxi::Core::DosageTimeRange> july2017(new Tucuxi::Core::DosageTimeRange(startJuly2017, endJuly2017, julyDose));
+        auto july2017 = std::make_unique<Tucuxi::Core::DosageTimeRange>(startJuly2017, endJuly2017, julyDose);
         assert(!timeRangesOverlap(*june2017, *july2017));
 
         // Create the dosage history
@@ -230,7 +230,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                      Duration(std::chrono::minutes(20)),
                                      Duration(std::chrono::hours(10 * 24)));
         DosageLoop juneDose(junePeriodicDose);
-        std::unique_ptr<Tucuxi::Core::DosageTimeRange> june2017(new Tucuxi::Core::DosageTimeRange(startJune2017, endJune2017, juneDose));
+        auto june2017 = std::make_unique<Tucuxi::Core::DosageTimeRange>(startJune2017, endJune2017, juneDose);
 
         // Add a treatment intake every four days in June
         // 400mg via a 10-minutes perfusion at 11h30, starting the 01.07
@@ -240,7 +240,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                      Duration(std::chrono::minutes(10)),
                                      Duration(std::chrono::hours(4 * 24)));
         DosageLoop julyDose(julyPeriodicDose);
-        std::unique_ptr<Tucuxi::Core::DosageTimeRange> july2017(new Tucuxi::Core::DosageTimeRange(startJuly2017, endJuly2017, julyDose));
+        auto july2017 = std::make_unique<Tucuxi::Core::DosageTimeRange>(startJuly2017, endJuly2017, julyDose);
         assert(!timeRangesOverlap(*june2017, *july2017));
 
         // Create the dosage history
@@ -350,7 +350,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                      Duration(),
                                      Duration(std::chrono::hours(36)));
         DosageLoop juneDose(junePeriodicDose);
-        std::unique_ptr<Tucuxi::Core::DosageTimeRange> june2017(new Tucuxi::Core::DosageTimeRange(startJune2017, endJune2017, juneDose));
+        auto june2017 = std::make_unique<Tucuxi::Core::DosageTimeRange>(startJune2017, endJune2017, juneDose);
 
         // Create the dosage history
         DosageHistory dh;
@@ -448,7 +448,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                  Duration(),
                                  Duration(std::chrono::hours(12)));
         DosageRepeat repeatedDose(periodicDose, 5);
-        std::unique_ptr<Tucuxi::Core::DosageTimeRange> june2017(new Tucuxi::Core::DosageTimeRange(startJune2017, repeatedDose));
+        auto june2017 = std::make_unique<Tucuxi::Core::DosageTimeRange>(startJune2017, repeatedDose);
 
         // Create the dosage history
         DosageHistory dh;
@@ -542,7 +542,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                  Duration(),
                                  Duration(std::chrono::hours(12)));
         DosageRepeat repeatedDose(periodicDose, 5);
-        std::unique_ptr<Tucuxi::Core::DosageTimeRange> june2017(new Tucuxi::Core::DosageTimeRange(startJune2017, repeatedDose));
+        auto june2017 = std::make_unique<Tucuxi::Core::DosageTimeRange>(startJune2017, repeatedDose);
 
         // Create the dosage history
         DosageHistory dh;
@@ -626,7 +626,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
         DosageSequence ds(periodicDose200);
         ds.addDosage(periodicDose300);
         DosageRepeat repeatedDose(ds, 3);
-        std::unique_ptr<Tucuxi::Core::DosageTimeRange> june2017(new Tucuxi::Core::DosageTimeRange(startJune2017, repeatedDose));
+        auto june2017 = std::make_unique<Tucuxi::Core::DosageTimeRange>(startJune2017, repeatedDose);
 
         // Create the dosage history
         DosageHistory dh;
@@ -731,7 +731,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
                                    Duration(),
                                    TimeOfDay(Duration(std::chrono::hours(12), std::chrono::minutes(30), std::chrono::seconds(0))));
         DosageLoop juneDose(junePeriodicDose);
-        std::unique_ptr<Tucuxi::Core::DosageTimeRange> june2017(new Tucuxi::Core::DosageTimeRange(startJune2017, endJune2017, juneDose));
+        auto june2017 = std::make_unique<Tucuxi::Core::DosageTimeRange>(startJune2017, endJune2017, juneDose);
 
         // Create the dosage history
         DosageHistory dh;
@@ -863,7 +863,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
         ds.addDosage(dose2, Duration());
         ds.addDosage(dose3, Duration());
         DosageLoop juneDose(ds);
-        std::unique_ptr<Tucuxi::Core::DosageTimeRange> june2017(new Tucuxi::Core::DosageTimeRange(startJune2017, endJune2017, juneDose));
+        auto june2017 = std::make_unique<Tucuxi::Core::DosageTimeRange>(startJune2017, endJune2017, juneDose);
 
         // Create the dosage history
         DosageHistory dh;
@@ -1154,7 +1154,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
         DosageRepeat repeatEvery6Hours(doseEvery6Hours, 4);
         ds.addDosage(repeatEvery6Hours, Duration(std::chrono::hours(6), std::chrono::minutes(30), std::chrono::seconds(0)));
         DosageRepeat juneDoses(ds, 2);
-        std::unique_ptr<Tucuxi::Core::DosageTimeRange> june2017(new Tucuxi::Core::DosageTimeRange(startJune2017, juneDoses));
+        auto june2017 = std::make_unique<Tucuxi::Core::DosageTimeRange>(startJune2017, juneDoses);
 
         Duration expectedTimeStepDS(std::chrono::hours(32), std::chrono::minutes(30), std::chrono::seconds(0));
         fructose_assert(ds.getTimeStep() == expectedTimeStepDS);
@@ -1564,7 +1564,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
         DosageRepeat repeatEvery6Hours(doseEvery6Hours, 4);
         ds.addDosage(repeatEvery6Hours, Duration(std::chrono::hours(6), std::chrono::minutes(30), std::chrono::seconds(0)));
         DosageRepeat juneDoses(ds, 2);
-        std::unique_ptr<Tucuxi::Core::DosageTimeRange> june2017(new Tucuxi::Core::DosageTimeRange(startJune2017, juneDoses));
+        auto june2017 = std::make_unique<Tucuxi::Core::DosageTimeRange>(startJune2017, juneDoses);
 
         Duration expectedTimeStepDS(std::chrono::hours(32), std::chrono::minutes(30), std::chrono::seconds(0));
         fructose_assert(ds.getTimeStep() == expectedTimeStepDS);
@@ -2009,7 +2009,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
         ds.addDosage(fridayDose, Duration());
         ds.addDosage(saturdayDose, Duration());
         DosageLoop treatment(ds);
-        std::unique_ptr<Tucuxi::Core::DosageTimeRange> trFromJuly2017(new Tucuxi::Core::DosageTimeRange(startJuly2017, treatment));
+        auto trFromJuly2017 = std::make_unique<Tucuxi::Core::DosageTimeRange>(startJuly2017, treatment);
 
         // Create the dosage history
         DosageHistory dh;
@@ -2178,7 +2178,7 @@ struct TestIntakeExtractor : public fructose::test_base<TestIntakeExtractor>
         DateTime lastDose(date::year_month_day(date::year(2017), date::month(6), date::day(4)),
                           Duration(std::chrono::hours(8), std::chrono::minutes(30), std::chrono::seconds(0)));
         DosageSteadyState juneDose(junePeriodicDose, lastDose);
-        std::unique_ptr<Tucuxi::Core::DosageTimeRange> june2017(new Tucuxi::Core::DosageTimeRange(emptyStart, emptyEnd, juneDose));
+        auto june2017 = std::make_unique<Tucuxi::Core::DosageTimeRange>(emptyStart, emptyEnd, juneDose);
 
         // Create the dosage history
         DosageHistory dh;

@@ -89,7 +89,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
                 CalculatorClass calculator2;
                 intakeEvent.setCalculator(&calculator2);
                 intakeSeries.push_back(intakeEvent);
-                Tucuxi::Core::IConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::ConcentrationCalculator();
+                auto concentrationCalculator = std::make_unique<Tucuxi::Core::ConcentrationCalculator>();
                 auto status = concentrationCalculator->computeConcentrations(
                     predictionPtr,
                     isAll,
@@ -98,7 +98,6 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
                     intakeSeries,
                     _parameters);
                 fructose_assert_eq(status, Tucuxi::Core::ComputingStatus::Ok);
-                delete concentrationCalculator;
             }
 
 
@@ -395,15 +394,15 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
 
         // Imatinib parameters, as in the XML drug file
         Tucuxi::Core::ParameterDefinitions parameterDefs;
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("CL", 15.106, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("V", 347, Tucuxi::Core::ParameterVariabilityType::None));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("CL", 15.106, Tucuxi::Core::ParameterVariabilityType::None));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 1, Tucuxi::Core::ParameterVariabilityType::None));
         Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
         Tucuxi::Core::ParameterSetSeries parametersSeries;
         parametersSeries.addParameterSetEvent(parameters);
 
-        Tucuxi::Core::IConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::ConcentrationCalculator();
+        auto concentrationCalculator = std::make_unique<Tucuxi::Core::ConcentrationCalculator>();
         auto status = concentrationCalculator->computeConcentrations(
             predictionPtr,
             isAll,
@@ -411,7 +410,6 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
             DateTime::now(), // YJ: Fix this with a meaningfull date
             intakeSeries,
             parametersSeries);
-        delete concentrationCalculator;
 
         fructose_assert_eq(status, ComputingStatus::Ok);
 

@@ -106,7 +106,7 @@ struct TestMultiConstantEliminationBolus : public fructose::test_base<TestMultiC
                 std::shared_ptr<IntakeIntervalCalculator> calculator2 = std::make_shared<CalculatorClass>();
                 intakeEvent.setCalculator(calculator2);
                 intakeSeries.push_back(intakeEvent);
-                Tucuxi::Core::IConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::ConcentrationCalculator();
+                auto concentrationCalculator = std::make_unique<Tucuxi::Core::ConcentrationCalculator>();
                 auto status = concentrationCalculator->computeConcentrations(
                     predictionPtr,
                     isAll,
@@ -114,7 +114,6 @@ struct TestMultiConstantEliminationBolus : public fructose::test_base<TestMultiC
                     recordTo,
                     intakeSeries,
                     _parameters);
-                delete concentrationCalculator;
                 fructose_assert_eq(status, ComputingStatus::Ok);
             }
 
@@ -196,7 +195,7 @@ struct TestMultiConstantEliminationBolus : public fructose::test_base<TestMultiC
                     event.setCalculator(calculator2);
                     intakeSeries.push_back(event);
                 }
-                Tucuxi::Core::IConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::ConcentrationCalculator();
+                auto concentrationCalculator = std::make_unique<Tucuxi::Core::ConcentrationCalculator>();
                 auto status = concentrationCalculator->computeConcentrations(
                     predictionPtr,
                     isAll,
@@ -204,7 +203,6 @@ struct TestMultiConstantEliminationBolus : public fructose::test_base<TestMultiC
                     recordTo,
                     intakeSeries,
                     _parameters);
-                delete concentrationCalculator;
                 fructose_assert_eq(status, ComputingStatus::Ok);
 
 #if 0
@@ -263,7 +261,7 @@ struct TestMultiConstantEliminationBolus : public fructose::test_base<TestMultiC
                 std::shared_ptr<IntakeIntervalCalculator> calculator2 = std::make_shared<CalculatorClass>();
                 intakeEvent.setCalculator(calculator2);
                 intakeSeries.push_back(intakeEvent);
-                Tucuxi::Core::IConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::ConcentrationCalculator();
+                auto concentrationCalculator = std::make_unique<Tucuxi::Core::ConcentrationCalculator>();
                 auto status = concentrationCalculator->computeConcentrations(
                     predictionPtr,
                     isAll,
@@ -271,7 +269,6 @@ struct TestMultiConstantEliminationBolus : public fructose::test_base<TestMultiC
                     recordTo,
                     intakeSeries,
                     _parameters);
-                delete concentrationCalculator;
                 fructose_assert_eq(status, ComputingStatus::Ok);
 
 #if 0
@@ -296,7 +293,7 @@ struct TestMultiConstantEliminationBolus : public fructose::test_base<TestMultiC
                 Tucuxi::Core::SampleEvent s1(date1);
                 sampleSeries.push_back(s1);
 
-                Tucuxi::Core::IConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::ConcentrationCalculator();
+                auto concentrationCalculator = std::make_unique<Tucuxi::Core::ConcentrationCalculator>();
                 ComputingStatus res = concentrationCalculator->computeConcentrationsAtTimes(
                     concentrations,
                     isAll,
@@ -306,8 +303,6 @@ struct TestMultiConstantEliminationBolus : public fructose::test_base<TestMultiC
 
                 fructose_assert(res == ComputingStatus::Ok);
                 fructose_assert_eq(res , ComputingStatus::Ok);
-
-                delete concentrationCalculator;
             }
 
             size_t n0 = (nbPoints - 1) / 4;

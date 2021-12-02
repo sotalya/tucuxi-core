@@ -81,7 +81,7 @@ protected:
 
     template<typename T>
     void addNode(Tucuxi::Common::XmlNode &_rootNode,
-                 std::string _nodeName,
+                 const std::string& _nodeName,
                  T _nodeValue)
     {
         Tucuxi::Common::XmlNode node = m_doc.createNode(

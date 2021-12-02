@@ -87,11 +87,11 @@ struct TestDosage : public fructose::test_base<TestDosage>
                                                                validInfusionTime,
                                                                validInterval));
 
-        std::unique_ptr<Tucuxi::Core::LastingDose> ptr(new Tucuxi::Core::LastingDose(validDose,
-                                                                                     TucuUnit("mg"),
-                                                                                     routePerfusion,
-                                                                                     validInfusionTime,
-                                                                                     validInterval));
+        auto ptr = std::make_unique<Tucuxi::Core::LastingDose>(validDose,
+                                                               TucuUnit("mg"),
+                                                               routePerfusion,
+                                                               validInfusionTime,
+                                                               validInterval);
 
         fructose_assert(ptr->getTimeStep() == validInterval);
         DateTime dt(date::year_month_day(date::year(2017), date::month(7), date::day(20)),
@@ -116,11 +116,11 @@ struct TestDosage : public fructose::test_base<TestDosage>
                                                              validInfusionTime,
                                                              validTimeOfDay));
 
-        std::unique_ptr<Tucuxi::Core::DailyDose> ptr(new Tucuxi::Core::DailyDose(validDose,
-                                                                                 TucuUnit("mg"),
-                                                                                 routePerfusion,
-                                                                                 validInfusionTime,
-                                                                                 validTimeOfDay));
+        auto ptr = std::make_unique<Tucuxi::Core::DailyDose>(validDose,
+                                                             TucuUnit("mg"),
+                                                             routePerfusion,
+                                                             validInfusionTime,
+                                                             validTimeOfDay);
 
         // Check that the step is exactly 24 hours
         fructose_assert(ptr->getTimeStep().toHours() == 24);
@@ -187,12 +187,12 @@ struct TestDosage : public fructose::test_base<TestDosage>
                                                               validTimeOfDay,
                                                               validDayOfWeek2));
 
-        std::unique_ptr<Tucuxi::Core::WeeklyDose> ptr(new Tucuxi::Core::WeeklyDose(validDose,
-                                                                                   TucuUnit("mg"),
-                                                                                   routePerfusion,
-                                                                                   validInfusionTime,
-                                                                                   validTimeOfDay,
-                                                                                   validDayOfWeek1));
+        auto ptr = std::make_unique<Tucuxi::Core::WeeklyDose>(validDose,
+                                                              TucuUnit("mg"),
+                                                              routePerfusion,
+                                                              validInfusionTime,
+                                                              validTimeOfDay,
+                                                              validDayOfWeek1);
 
         // Check that the step is exactly 7 * 24 hours
         fructose_assert(ptr->getTimeStep().toHours() == 7 * 24);
@@ -288,7 +288,7 @@ struct TestDosage : public fructose::test_base<TestDosage>
 
         // Give a valid start date but no end date, expect no exception but the end date must be undefined
         fructose_assert_no_exception(Tucuxi::Core::DosageTimeRange *d = new Tucuxi::Core::DosageTimeRange(startDate, fakeDose); delete d;);
-        std::unique_ptr<Tucuxi::Core::DosageTimeRange> ptr1(new Tucuxi::Core::DosageTimeRange(startDate, fakeDose));
+        auto ptr1 = std::make_unique<Tucuxi::Core::DosageTimeRange>(startDate, fakeDose);
         fructose_assert(ptr1->getStartDate() == startDate);
         fructose_assert(ptr1->getEndDate().isUndefined());
 
@@ -298,7 +298,7 @@ struct TestDosage : public fructose::test_base<TestDosage>
         fructose_assert_exception({Tucuxi::Core::DosageTimeRange *d = new Tucuxi::Core::DosageTimeRange(endDate, startDate, fakeDose); delete d;}, std::invalid_argument);
         fructose_assert_no_exception({Tucuxi::Core::DosageTimeRange *d = new Tucuxi::Core::DosageTimeRange(startDate, emptyDate, fakeDose); delete d;});
         fructose_assert_no_exception({Tucuxi::Core::DosageTimeRange *d = new Tucuxi::Core::DosageTimeRange(startDate, endDate, fakeDose); delete d;});
-        std::unique_ptr<Tucuxi::Core::DosageTimeRange> ptr2(new Tucuxi::Core::DosageTimeRange(startDate, endDate, fakeDose));
+        auto ptr2 = std::make_unique<Tucuxi::Core::DosageTimeRange>(startDate, endDate, fakeDose);
         fructose_assert(ptr2->getStartDate() == startDate);
         fructose_assert(ptr2->getEndDate() == endDate);
 
@@ -313,36 +313,29 @@ struct TestDosage : public fructose::test_base<TestDosage>
         DateTime afterEndDate(date::year_month_day(date::year(2017), date::month(8), date::day(19)),
                               std::chrono::seconds(12345));
 
-        std::unique_ptr<Tucuxi::Core::DosageTimeRange> beforeToMiddle(new Tucuxi::Core::DosageTimeRange(beforeStartDate,
-                                                                                                        afterStartBeforeEndDate,
-                                                                                                        fakeDose));
+        auto beforeToMiddle = std::make_unique<Tucuxi::Core::DosageTimeRange>(beforeStartDate,afterStartBeforeEndDate,
+                                                                              fakeDose);
         fructose_assert(timeRangesOverlap(*ptr2, *beforeToMiddle));
 
-        std::unique_ptr<Tucuxi::Core::DosageTimeRange> middleToAfter(new Tucuxi::Core::DosageTimeRange(afterStartBeforeEndDate,
-                                                                                                       afterEndDate,
-                                                                                                       fakeDose));
+        auto middleToAfter = std::make_unique<Tucuxi::Core::DosageTimeRange>(afterStartBeforeEndDate, afterEndDate,
+                                                                             fakeDose);
         fructose_assert(timeRangesOverlap(*ptr2, *middleToAfter));
 
-        std::unique_ptr<Tucuxi::Core::DosageTimeRange> beforeToAfter(new Tucuxi::Core::DosageTimeRange(beforeStartDate,
-                                                                                                       afterEndDate,
-                                                                                                       fakeDose));
+        auto beforeToAfter = std::make_unique<Tucuxi::Core::DosageTimeRange>(beforeStartDate, afterEndDate,
+                                                                             fakeDose);
         fructose_assert(timeRangesOverlap(*ptr2, *beforeToAfter));
 
-        std::unique_ptr<Tucuxi::Core::DosageTimeRange> insideInterval(new Tucuxi::Core::DosageTimeRange(afterStartBeforeEndDate,
-                                                                                                        afterMiddleBeforeEndDate,
-                                                                                                        fakeDose));
+        auto insideInterval = std::make_unique<Tucuxi::Core::DosageTimeRange>(afterStartBeforeEndDate, afterMiddleBeforeEndDate,
+                                                                              fakeDose);
         fructose_assert(timeRangesOverlap(*ptr2, *insideInterval));
 
-        std::unique_ptr<Tucuxi::Core::DosageTimeRange> beforeToOpenEnd(new Tucuxi::Core::DosageTimeRange(beforeStartDate,
-                                                                                                         fakeDose));
+        auto beforeToOpenEnd = std::make_unique<Tucuxi::Core::DosageTimeRange>(beforeStartDate, fakeDose);
         fructose_assert(timeRangesOverlap(*ptr2, *beforeToOpenEnd));
 
-        std::unique_ptr<Tucuxi::Core::DosageTimeRange> middleToOpenEnd(new Tucuxi::Core::DosageTimeRange(afterStartBeforeEndDate,
-                                                                                                         fakeDose));
+        auto middleToOpenEnd = std::make_unique<Tucuxi::Core::DosageTimeRange>(afterStartBeforeEndDate, fakeDose);
         fructose_assert(timeRangesOverlap(*ptr2, *middleToOpenEnd));
 
-        std::unique_ptr<Tucuxi::Core::DosageTimeRange> afterToOpenEnd(new Tucuxi::Core::DosageTimeRange(afterEndDate,
-                                                                                                        fakeDose));
+        auto afterToOpenEnd = std::make_unique<Tucuxi::Core::DosageTimeRange>(afterEndDate, fakeDose);
         fructose_assert(!timeRangesOverlap(*ptr2, *afterToOpenEnd));
 
         // Check that two neighboring time ranges are not considered as overlapping
@@ -352,8 +345,8 @@ struct TestDosage : public fructose::test_base<TestDosage>
                            std::chrono::seconds(12345));
         DateTime neigh2Start(date::year_month_day(date::year(2017), date::month(7), date::day(19)),
                              std::chrono::seconds(12345));
-        std::unique_ptr<Tucuxi::Core::DosageTimeRange> neigh1(new Tucuxi::Core::DosageTimeRange(neigh1Start, neigh1End, fakeDose));
-        std::unique_ptr<Tucuxi::Core::DosageTimeRange> neigh2(new Tucuxi::Core::DosageTimeRange(neigh2Start, fakeDose));
+        auto neigh1 = std::make_unique<Tucuxi::Core::DosageTimeRange>(neigh1Start, neigh1End, fakeDose);
+        auto neigh2 = std::make_unique<Tucuxi::Core::DosageTimeRange>(neigh2Start, fakeDose);
         fructose_assert(!timeRangesOverlap(*neigh1, *neigh2));
 
         // Check the overlap detection for a time range against a list of time ranges

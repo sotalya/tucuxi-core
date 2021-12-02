@@ -401,8 +401,6 @@ ComputingStatus MonteCarloPercentileCalculatorBase::sortAndExtractPercentiles(Pe
                                           &currentPoint, &_percentiles, &mutex, &currentCycle, nbCycles]()
         {
             bool cont = true;
-            size_t cycle;
-            size_t point;
 
             while (cont) {
                 mutex.lock();
@@ -412,8 +410,8 @@ ComputingStatus MonteCarloPercentileCalculatorBase::sortAndExtractPercentiles(Pe
                     break;
                 }
                 // no time for a break, let's continue
-                point = currentPoint;
-                cycle = currentCycle;
+                size_t point = currentPoint;
+                size_t cycle = currentCycle;
                 if (point == _recordedIntakes[cycle].getNbPoints() - 1) {
                     currentPoint = 0;
                     currentCycle ++;

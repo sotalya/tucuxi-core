@@ -870,11 +870,11 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
             extractor.sortPatientVariates();
 
             std::vector<std::unique_ptr<PatientCovariate>> res_pvVec;
-            res_pvVec.push_back(std::unique_ptr<PatientCovariate>(new PatientCovariate("Weight", varToString(7.6), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 12, 12, 32, 0))));
-            res_pvVec.push_back(std::unique_ptr<PatientCovariate>(new PatientCovariate("Weight", varToString(7.2), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 19, 12, 32, 0))));
-            res_pvVec.push_back(std::unique_ptr<PatientCovariate>(new PatientCovariate("Weight", varToString(6.3), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 19, 22, 32, 0))));
-            res_pvVec.push_back(std::unique_ptr<PatientCovariate>(new PatientCovariate("Weight", varToString(7.4), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 21, 12, 32, 0))));
-            res_pvVec.push_back(std::unique_ptr<PatientCovariate>(new PatientCovariate("Weight", varToString(7.0), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 30, 12, 32, 0))));
+            res_pvVec.push_back(std::make_unique<PatientCovariate>("Weight", varToString(7.6), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 12, 12, 32, 0)));
+            res_pvVec.push_back(std::make_unique<PatientCovariate>("Weight", varToString(7.2), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 19, 12, 32, 0)));
+            res_pvVec.push_back(std::make_unique<PatientCovariate>("Weight", varToString(6.3), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 19, 22, 32, 0)));
+            res_pvVec.push_back(std::make_unique<PatientCovariate>("Weight", varToString(7.4), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 21, 12, 32, 0)));
+            res_pvVec.push_back(std::make_unique<PatientCovariate>("Weight", varToString(7.0), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 30, 12, 32, 0)));
 
             const auto &pvVals = extractor.m_pvValued.at("Weight");
 
@@ -921,13 +921,13 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
             extractor.sortPatientVariates();
 
             std::vector<std::unique_ptr<PatientCovariate>> res_pvVec;
-            res_pvVec.push_back(std::unique_ptr<PatientCovariate>(new PatientCovariate("Weight", varToString(7.9), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 11, 12, 32, 0))));
-            res_pvVec.push_back(std::unique_ptr<PatientCovariate>(new PatientCovariate("Weight", varToString(7.6), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 12, 12, 32, 0))));
-            res_pvVec.push_back(std::unique_ptr<PatientCovariate>(new PatientCovariate("Weight", varToString(7.2), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 19, 12, 32, 0))));
-            res_pvVec.push_back(std::unique_ptr<PatientCovariate>(new PatientCovariate("Weight", varToString(6.3), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 19, 22, 32, 0))));
-            res_pvVec.push_back(std::unique_ptr<PatientCovariate>(new PatientCovariate("Weight", varToString(7.4), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 21, 12, 32, 0))));
-            res_pvVec.push_back(std::unique_ptr<PatientCovariate>(new PatientCovariate("Weight", varToString(7.0), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 30, 12, 32, 0))));
-            res_pvVec.push_back(std::unique_ptr<PatientCovariate>(new PatientCovariate("Weight", varToString(7.8), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 30, 16, 32, 0))));
+            res_pvVec.push_back(std::make_unique<PatientCovariate>("Weight", varToString(7.9), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 11, 12, 32, 0)));
+            res_pvVec.push_back(std::make_unique<PatientCovariate>("Weight", varToString(7.6), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 12, 12, 32, 0)));
+            res_pvVec.push_back(std::make_unique<PatientCovariate>("Weight", varToString(7.2), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 19, 12, 32, 0)));
+            res_pvVec.push_back(std::make_unique<PatientCovariate>("Weight", varToString(6.3), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 19, 22, 32, 0)));
+            res_pvVec.push_back(std::make_unique<PatientCovariate>("Weight", varToString(7.4), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 21, 12, 32, 0)));
+            res_pvVec.push_back(std::make_unique<PatientCovariate>("Weight", varToString(7.0), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 30, 12, 32, 0)));
+            res_pvVec.push_back(std::make_unique<PatientCovariate>("Weight", varToString(7.8), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 30, 16, 32, 0)));
 
             const auto &pvVals = extractor.m_pvValued.at("Weight");
 
@@ -959,13 +959,13 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
             extractor.sortPatientVariates();
 
             std::vector<std::unique_ptr<PatientCovariate>> res_pvVec;
-            res_pvVec.push_back(std::unique_ptr<PatientCovariate>(new PatientCovariate("Weight", varToString(7.9), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 11, 12, 32, 0))));
-            res_pvVec.push_back(std::unique_ptr<PatientCovariate>(new PatientCovariate("Weight", varToString(7.6), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 12, 12, 32, 0))));
-            res_pvVec.push_back(std::unique_ptr<PatientCovariate>(new PatientCovariate("Weight", varToString(7.2), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 19, 12, 32, 0))));
-            res_pvVec.push_back(std::unique_ptr<PatientCovariate>(new PatientCovariate("Weight", varToString(6.3), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 19, 22, 32, 0))));
-            res_pvVec.push_back(std::unique_ptr<PatientCovariate>(new PatientCovariate("Weight", varToString(7.4), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 21, 12, 32, 0))));
-            res_pvVec.push_back(std::unique_ptr<PatientCovariate>(new PatientCovariate("Weight", varToString(7.0), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 30, 12, 32, 0))));
-            res_pvVec.push_back(std::unique_ptr<PatientCovariate>(new PatientCovariate("Weight", varToString(7.8), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 30, 16, 32, 0))));
+            res_pvVec.push_back(std::make_unique<PatientCovariate>("Weight", varToString(7.9), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 11, 12, 32, 0)));
+            res_pvVec.push_back(std::make_unique<PatientCovariate>("Weight", varToString(7.6), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 12, 12, 32, 0)));
+            res_pvVec.push_back(std::make_unique<PatientCovariate>("Weight", varToString(7.2), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 19, 12, 32, 0)));
+            res_pvVec.push_back(std::make_unique<PatientCovariate>("Weight", varToString(6.3), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 19, 22, 32, 0)));
+            res_pvVec.push_back(std::make_unique<PatientCovariate>("Weight", varToString(7.4), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 21, 12, 32, 0)));
+            res_pvVec.push_back(std::make_unique<PatientCovariate>("Weight", varToString(7.0), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 30, 12, 32, 0)));
+            res_pvVec.push_back(std::make_unique<PatientCovariate>("Weight", varToString(7.8), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 30, 16, 32, 0)));
 
             const auto &pvVals = extractor.m_pvValued.at("Weight");
 
@@ -992,8 +992,8 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
             extractor.sortPatientVariates();
 
             std::vector<std::unique_ptr<PatientCovariate>> res_pvVec;
-            res_pvVec.push_back(std::unique_ptr<PatientCovariate>(new PatientCovariate("Weight", varToString(6.3), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 9, 22, 32, 0))));
-            res_pvVec.push_back(std::unique_ptr<PatientCovariate>(new PatientCovariate("Weight", varToString(7.2), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 12, 12, 32, 0))));
+            res_pvVec.push_back(std::make_unique<PatientCovariate>("Weight", varToString(6.3), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 9, 22, 32, 0)));
+            res_pvVec.push_back(std::make_unique<PatientCovariate>("Weight", varToString(7.2), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 12, 12, 32, 0)));
 
             const auto &pvVals = extractor.m_pvValued.at("Weight");
 
@@ -1025,8 +1025,8 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
             extractor.sortPatientVariates();
 
             std::vector<std::unique_ptr<PatientCovariate>> res_pvVec;
-            res_pvVec.push_back(std::unique_ptr<PatientCovariate>(new PatientCovariate("Weight", varToString(7.2), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 19, 12, 32, 0))));
-            res_pvVec.push_back(std::unique_ptr<PatientCovariate>(new PatientCovariate("Weight", varToString(6.3), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 19, 22, 32, 0))));
+            res_pvVec.push_back(std::make_unique<PatientCovariate>("Weight", varToString(7.2), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 19, 12, 32, 0)));
+            res_pvVec.push_back(std::make_unique<PatientCovariate>("Weight", varToString(6.3), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 19, 22, 32, 0)));
 
             const auto &pvVals = extractor.m_pvValued.at("Weight");
 
@@ -1131,22 +1131,22 @@ struct TestCovariateExtractor : public fructose::test_base<TestCovariateExtracto
         // Test 3: add gist and model weight and special changes.
 
         // gist == true @ 13.08.2017, 12h32.
-        std::unique_ptr<PatientCovariate> patient_gist_3(new PatientCovariate("Gist", varToString(true),
-                                                                              DataType::Bool, TucuUnit("-"),
-                                                                              DATE_TIME_NO_VAR(2017, 8, 13, 12, 32, 0)));
+        auto patient_gist_3 = std::make_unique<PatientCovariate>("Gist", varToString(true),
+                                                                 DataType::Bool, TucuUnit("-"),
+                                                                 DATE_TIME_NO_VAR(2017, 8, 13, 12, 32, 0));
 
         // weight = 3.8 @ 13.08.2017, 9h00.
-        std::unique_ptr<PatientCovariate> patient_weight_1(new PatientCovariate("Weight", varToString(3.8),
-                                                                                DataType::Double, TucuUnit("kg"),
-                                                                                DATE_TIME_NO_VAR(2017, 8, 13, 9, 0, 0)));
+        auto patient_weight_1 = std::make_unique<PatientCovariate>("Weight", varToString(3.8),
+                                                                   DataType::Double, TucuUnit("kg"),
+                                                                   DATE_TIME_NO_VAR(2017, 8, 13, 9, 0, 0));
         // weight = 4.05 @ 15.08.2017, 21h00.
-        std::unique_ptr<PatientCovariate> patient_weight_2(new PatientCovariate("Weight", varToString(4.05),
-                                                                                DataType::Double, TucuUnit("kg"),
-                                                                                DATE_TIME_NO_VAR(2017, 8, 15, 21, 0, 0)));
+        auto patient_weight_2 = std::make_unique<PatientCovariate>("Weight", varToString(4.05),
+                                                                   DataType::Double, TucuUnit("kg"),
+                                                                   DATE_TIME_NO_VAR(2017, 8, 15, 21, 0, 0));
         // weight = 4.25 @ 16.08.2017, 21h00.
-        std::unique_ptr<PatientCovariate> patient_weight_3(new PatientCovariate("Weight", varToString(4.25),
-                                                                                DataType::Double, TucuUnit("kg"),
-                                                                                DATE_TIME_NO_VAR(2017, 8, 16, 21, 0, 0)));
+        auto patient_weight_3 = std::make_unique<PatientCovariate>("Weight", varToString(4.25),
+                                                                   DataType::Double, TucuUnit("kg"),
+                                                                   DATE_TIME_NO_VAR(2017, 8, 16, 21, 0, 0));
         PatientVariates pVariates3;
         pVariates3.push_back(std::move(patient_gist_3));
         pVariates3.push_back(std::move(patient_weight_1));

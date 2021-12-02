@@ -74,8 +74,6 @@ protected:
     ///
     Status importDocument(std::unique_ptr<Tucuxi::Query::QueryData> &_query, Tucuxi::Common::XmlDocument & _document);
 
-protected:
-
     // Methods to separate the creation of a ParametersData
     std::unique_ptr<DrugTreatmentData> createDrugTreatmentData(Tucuxi::Common::XmlDocument & _document) ;
     std::unique_ptr<PatientData> createPatientData(Common::XmlNodeIterator& _patientDataRootIterator) ;

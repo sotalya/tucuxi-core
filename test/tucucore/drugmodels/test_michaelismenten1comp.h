@@ -27,7 +27,7 @@ using namespace date;
 using namespace Tucuxi::Core;
 
 
-static std::string test_mm_1comp_bolus_tdd = R"(<?xml version="1.0" encoding="UTF-8"?>
+static const std::string test_mm_1comp_bolus_tdd = R"(<?xml version="1.0" encoding="UTF-8"?>
 <model version='0.6' xsi:noNamespaceSchemaLocation='drug2.xsd' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
     <history>
         <revisions>
@@ -372,9 +372,9 @@ struct TestMichaelisMenten1comp : public fructose::test_base<TestMichaelisMenten
 {
     TestMichaelisMenten1comp() { }
 
-    void buildDrugTreatment(DrugTreatment *&_drugTreatment, FormulationAndRoute _route)
+    std::unique_ptr<DrugTreatment> buildDrugTreatment(FormulationAndRoute _route)
     {
-        _drugTreatment = new DrugTreatment();
+        auto drugTreatment = std::make_unique<DrugTreatment>();
 
         // List of time ranges that will be pushed into the history
         DosageTimeRangeList timeRangeList;
@@ -394,10 +394,11 @@ struct TestMichaelisMenten1comp : public fructose::test_base<TestMichaelisMenten
                                  Duration(),
                                  Duration(std::chrono::hours(6)));
         DosageRepeat repeatedDose(periodicDose, 16);
-        std::unique_ptr<Tucuxi::Core::DosageTimeRange> sept2018(new Tucuxi::Core::DosageTimeRange(startSept2018, repeatedDose));
+        auto sept2018 = std::make_unique<Tucuxi::Core::DosageTimeRange>(startSept2018, repeatedDose);
 
+        drugTreatment->getModifiableDosageHistory().addTimeRange(*sept2018);
 
-        _drugTreatment->getModifiableDosageHistory().addTimeRange(*sept2018);
+        return drugTreatment;
     }
 
 
@@ -418,13 +419,10 @@ struct TestMichaelisMenten1comp : public fructose::test_base<TestMichaelisMenten
 
         fructose_assert( component != nullptr);
 
-
-        DrugTreatment *drugTreatment;
         const FormulationAndRoute route(Formulation::ParenteralSolution,
                                         AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular);
 
-
-        buildDrugTreatment(drugTreatment, route);
+        auto drugTreatment = buildDrugTreatment(route);
 
         {
 
@@ -494,10 +492,6 @@ struct TestMichaelisMenten1comp : public fructose::test_base<TestMichaelisMenten
             //}
         }
 
-
-        if (drugTreatment != nullptr) {
-            delete drugTreatment;
-        }
         if (drugModel != nullptr) {
             delete drugModel;
         }

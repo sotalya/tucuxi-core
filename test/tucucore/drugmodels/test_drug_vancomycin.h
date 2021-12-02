@@ -30,7 +30,7 @@ using namespace date;
 using namespace Tucuxi::Core;
 
 
-static std::string vancomycin_tdd = R"(<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+static const std::string vancomycin_tdd = R"(<?xml version="1.0" encoding="UTF-8" standalone="no"?>
                                     <?xml-stylesheet href="drugsmodel.xsl" type="text/xsl" ?>
                                     <model xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.6" xsi:noNamespaceSchemaLocation="drug2.xsd">
                                         <!-- Drug history -->
@@ -738,9 +738,9 @@ struct TestDrugVancomycin : public fructose::test_base<TestDrugVancomycin>
 {
     TestDrugVancomycin() { }
 
-    void buildDrugTreatment(DrugTreatment *&_drugTreatment, FormulationAndRoute _route)
+    std::unique_ptr<DrugTreatment> buildDrugTreatment(FormulationAndRoute _route)
     {
-        _drugTreatment = new DrugTreatment();
+        auto drugTreatment = std::make_unique<DrugTreatment>();
 
         // List of time ranges that will be pushed into the history
         DosageTimeRangeList timeRangeList;
@@ -760,10 +760,11 @@ struct TestDrugVancomycin : public fructose::test_base<TestDrugVancomycin>
                                  Duration(),
                                  Duration(std::chrono::hours(6)));
         DosageRepeat repeatedDose(periodicDose, 16);
-        std::unique_ptr<Tucuxi::Core::DosageTimeRange> sept2018(new Tucuxi::Core::DosageTimeRange(startSept2018, repeatedDose));
+        auto sept2018 = std::make_unique<Tucuxi::Core::DosageTimeRange>(startSept2018, repeatedDose);
 
+        drugTreatment->getModifiableDosageHistory().addTimeRange(*sept2018);
 
-        _drugTreatment->getModifiableDosageHistory().addTimeRange(*sept2018);
+        return drugTreatment;
     }
 
 
@@ -785,12 +786,9 @@ struct TestDrugVancomycin : public fructose::test_base<TestDrugVancomycin>
 
         fructose_assert( component != nullptr);
 
-
-        DrugTreatment *drugTreatment;
         const FormulationAndRoute route(Formulation::ParenteralSolution, AdministrationRoute::IntravenousDrip, AbsorptionModel::Infusion);
 
-
-        buildDrugTreatment(drugTreatment, route);
+        auto drugTreatment = buildDrugTreatment(route);
 
         {
 
@@ -863,10 +861,6 @@ struct TestDrugVancomycin : public fructose::test_base<TestDrugVancomycin>
             //}
         }
 
-
-        if (drugTreatment != nullptr) {
-            delete drugTreatment;
-        }
         if (drugModel != nullptr) {
             delete drugModel;
         }

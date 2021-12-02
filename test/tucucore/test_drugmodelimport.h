@@ -9,7 +9,7 @@
 
 using namespace Tucuxi::Core;
 
-static std::string busulfan1 = R"(<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+static const std::string busulfan1 = R"(<?xml version="1.0" encoding="UTF-8" standalone="no"?>
                                <?xml-stylesheet href="drugsmodel.xsl" type="text/xsl" ?>
                                <model xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.6" xsi:noNamespaceSchemaLocation="drug2.xsd">
                                    <!-- Drug history -->
@@ -500,7 +500,7 @@ static std::string busulfan1 = R"(<?xml version="1.0" encoding="UTF-8" standalon
         )";
 
 
-static std::string drug1 = R"(<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+static const std::string drug1 = R"(<?xml version="1.0" encoding="UTF-8" standalone="no"?>
                            <?xml-stylesheet href="drugsmodel.xsl" type="text/xsl" ?>
                            <model xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.6" xsi:noNamespaceSchemaLocation="drug2.xsd">
                                <!-- Drug history -->
@@ -1085,7 +1085,7 @@ struct TestDrugModelImport : public fructose::test_base<TestDrugModelImport>
 {
     TestDrugModelImport() { }
 
-    DrugModel *buildImatinib()
+    std::unique_ptr<Tucuxi::Core::DrugModel> buildImatinib()
     {
         BuildImatinib builder;
         return builder.buildDrugModel();
@@ -1094,7 +1094,7 @@ struct TestDrugModelImport : public fructose::test_base<TestDrugModelImport>
     void testFake(const std::string& /* _testName */)
     {
         DrugModel* fake;
-        DrugModelImport *importer = new DrugModelImport();
+        auto importer = std::make_unique<DrugModelImport>();
 
         DrugModelImport::Status status = importer->importFromString(fake, drug1);
         //        DrugModelImport::Result result = importer->importFromFile(imatinib, "/home/ythoma/docs/ezechiel/git/dev/src/newdrugs/last/ch.heig-vd.ezechiel.example.xml");
@@ -1104,23 +1104,19 @@ struct TestDrugModelImport : public fructose::test_base<TestDrugModelImport>
 
         fructose_assert(fake != nullptr);
 
-        delete importer;
-
         delete fake;
     }
 
     void testBusulfan1(const std::string& /* _testName */)
     {
         DrugModel* busulfan;
-        DrugModelImport *importer = new DrugModelImport();
+        auto importer = std::make_unique<DrugModelImport>();
 
         DrugModelImport::Status status = importer->importFromString(busulfan, busulfan1);
 
         fructose_assert( status == DrugModelImport::Status::Ok);
 
         fructose_assert(busulfan != nullptr);
-
-        delete importer;
 
         delete busulfan;
     }

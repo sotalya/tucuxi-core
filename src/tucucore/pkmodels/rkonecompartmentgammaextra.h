@@ -36,9 +36,9 @@ public:
 //        return h * index;
 //   };
 
-    inline double probDensityAbsorptionTimes(const double& t)
+    inline double probDensityAbsorptionTimes(const double& _t)
     {
-        return pow(m_b, m_a) / std::tgamma(m_a) * pow(t, m_a - 1) * exp(-m_b * t);
+        return pow(m_b, m_a) / std::tgamma(m_a) * pow(_t, m_a - 1) * exp(-m_b * _t);
     }
 
     inline void derive(double _t, const std::vector<double>& _c, std::vector<double>& _dcdt)
