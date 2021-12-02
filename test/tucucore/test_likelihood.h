@@ -35,6 +35,8 @@
 #include "tucucore/residualerrormodel.h"
 #include "tucucore/concentrationcalculator.h"
 
+#include "test_base.h"
+
 using namespace Tucuxi::Core;
 using namespace std::chrono_literals;
 

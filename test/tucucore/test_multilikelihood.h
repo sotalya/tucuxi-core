@@ -81,7 +81,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
 
 
 
-    void test1(const std::string& /* _testName */){ 
+    void test1(const std::string& /* _testName */){
         
         //first scenario: Only a single analyte and one sample (Using ConstantEliminationBolus intakes)
 
@@ -161,9 +161,9 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
 
         Tucuxi::Core::ParameterDefinitions parameterDefs;
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestA", 1.0, Tucuxi::Core::ParameterVariabilityType::Additive)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestM", 1.0, Tucuxi::Core::ParameterVariabilityType::None)));
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestR", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestS", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestM", 1.0, Tucuxi::Core::ParameterVariabilityType::None)));
         Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
         Tucuxi::Core::ParameterSetSeries parametersSeries;
         parametersSeries.addParameterSetEvent(parameters);

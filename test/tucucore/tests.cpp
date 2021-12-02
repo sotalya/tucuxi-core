@@ -135,6 +135,9 @@
 #if defined(test_multilikelihood) || !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_multilikelihood.h"
 #endif
+#if defined(test_likelihood) || !defined(DO_NOT_COMPILE_ALL_TESTS)
+#include "test_likelihood.h"
+#endif
 
 int main(int argc, char** argv)
 {
@@ -435,6 +438,28 @@ int main(int argc, char** argv)
     multilikelihoodTests.add_test("multilikelihoodTest5", &TestMultiLikeliHood::test5);
     multilikelihoodTests.add_test("multilikelihoodTest6", &TestMultiLikeliHood::test6);
     multilikelihoodTests.add_test("multilikelihoodTest7", &TestMultiLikeliHood::test7);
+
+    res = multilikelihoodTests.run(argc, argv);
+    tot_res |= res;
+    if (res != 0) {
+        std::cerr << "Multilikelihood test failed\n";
+    }
+    else {
+        std::cout << "Multilikelihood test succeeded\n";
+    }
+#endif
+
+#if defined(test_likelihood) || !defined(DO_NOT_COMPILE_ALL_TESTS)
+    // --- MultiLikelihood tests --- //
+    TestLikelihood likelihoodTests;
+
+    likelihoodTests.add_test("likelihoodTestWrongParameters", &TestLikeliHood:testWrongParameters);
+    multilikelihoodTests.add_test("likelihoodTest2", &LikeliHood::test2);
+    multilikelihoodTests.add_test("likelihoodTest3", &TestMultiLikeliHood::test3);
+    multilikelihoodTests.add_test("likelihoodTest4", &TestMultiLikeliHood::test4);
+    multilikelihoodTests.add_test("likelihoodTest5", &TestMultiLikeliHood::test5);
+    multilikelihoodTests.add_test("likelihoodTest6", &TestMultiLikeliHood::test6);
+    multilikelihoodTests.add_test("likelihoodTest7", &TestMultiLikeliHood::test7);
 
     res = multilikelihoodTests.run(argc, argv);
     tot_res |= res;
