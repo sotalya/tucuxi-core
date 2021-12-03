@@ -102,7 +102,7 @@ public:
     /// \brief Standard name for a covariate that carries the birth date.
     static const std::string BIRTHDATE_CNAME; // NOLINT(readability-identifier-naming)
 
-    const TucuUnit getFinalUnit(const std::string& _cvName) const;
+    TucuUnit getFinalUnit(const std::string& _cvName) const;
 
     /// \brief Extract Dose covariates from an IntakeSeries
     /// This method can be used if the dose has to be used as a covariate in the drug model.

@@ -22,8 +22,6 @@ public:
     /// \return The list of required PK parameters Ids
     static std::vector<std::string> getParametersId();
 
-
-public:
     inline void derive(double _t, const std::vector<double> &_c, std::vector<double>& _dcdt)
     {
         FINAL_UNUSED_PARAMETER(_t);
@@ -38,7 +36,6 @@ public:
     }
 
 protected:
-
 
     Value m_D;	/// Quantity of drug
     Value m_F;  /// bioavailability
@@ -78,8 +75,6 @@ protected:
         _concentrations[1] = _inResiduals[1] + m_D / m_V * m_F;
     }
 
-protected:
-
 };
 
 /// \ingroup TucuCore
@@ -105,8 +100,6 @@ protected:
         _concentrations[1] = _inResiduals[1];
     }
 
-protected:
-
 };
 
 /// \ingroup TucuCore
@@ -131,8 +124,6 @@ protected:
         _concentrations[0] = _inResiduals[0];
         _concentrations[1] = _inResiduals[1];
     }
-
-protected:
 
 };
 

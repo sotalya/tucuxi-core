@@ -15,7 +15,7 @@ public:
 
     virtual std::string getFolderPath(void) = 0;
 
-    virtual void saveQuery(std::string _queryString, std::string _queryID) = 0;
+    virtual void saveQuery(const std::string& _queryString, const std::string& _queryID) = 0;
 };
 
 class QueryLogger : public Tucuxi::Common::Component,
@@ -23,13 +23,13 @@ class QueryLogger : public Tucuxi::Common::Component,
 {
 public:
 
-    static Tucuxi::Common::Interface* createComponent(std::string _folderPath);
+    static Tucuxi::Common::Interface* createComponent(const std::string &_folderPath);
 
-    QueryLogger(std::string _folderPath);
+    QueryLogger(const std::string &_folderPath);
 
     ~QueryLogger() override;
 
-    void saveQuery(std::string _queryString, std::string _queryID) override;
+    void saveQuery(const std::string &_queryString, const std::string &_queryID) override;
 
     std::string getFolderPath(void) override;
 

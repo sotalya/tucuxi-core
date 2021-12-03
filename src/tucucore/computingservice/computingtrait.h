@@ -712,8 +712,6 @@ private:
     //! An aborter to cancel current computing
     ComputingAborter *m_aborter;
 
-private:
-
     ///
     /// \brief Calls the compute() method in ComputingComponent
     /// \param _computingComponent The computing component that will do the computing job

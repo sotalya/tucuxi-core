@@ -17,7 +17,7 @@ class ConcentrationPrediction
 {
 public:
 
-    bool streamToFile(const std::string _fileName) 
+    bool streamToFile(const std::string& _fileName)
     {
         std::ofstream ostrm(_fileName, std::ios::binary);
         if ((ostrm.rdstate() & std::ios_base::failbit) != 0) {
@@ -53,9 +53,9 @@ public:
         m_values.push_back(_values);
     }
 
-    ConcentrationPrediction *copy()
+    std::unique_ptr<ConcentrationPrediction> copy()
     {
-        ConcentrationPrediction *result = new ConcentrationPrediction();
+        auto result = std::make_unique<ConcentrationPrediction>();
         result->m_times = this->m_times;
         result->m_values = this->m_values;
         return result;

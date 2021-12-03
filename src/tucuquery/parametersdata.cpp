@@ -19,22 +19,22 @@ CovariateData::CovariateData(
     m_unit(_unit), m_datatype(_datatype), m_nature(_nature)
 {}
 
-const string CovariateData::getCovariateId() const
+const string& CovariateData::getCovariateId() const
 {
     return m_covariateId;
 }
 
-const Common::DateTime CovariateData::getpDate() const
+const Common::DateTime& CovariateData::getpDate() const
 {
     return m_pDate;
 }
 
-const string CovariateData::getValue() const
+const string& CovariateData::getValue() const
 {
     return m_value;
 }
 
-const string CovariateData::getUnit() const
+const string& CovariateData::getUnit() const
 {
     return m_unit;
 }
@@ -44,7 +44,7 @@ Core::DataType CovariateData::getDatatype() const
     return m_datatype;
 }
 
-const string CovariateData::getNature() const
+const std::string& CovariateData::getNature() const
 {
     return m_nature;
 }
@@ -221,22 +221,22 @@ DrugData::DrugData(string& _drugID,
     m_targets(move(_targets))
 {}
 
-const string DrugData::getDrugID() const
+const string& DrugData::getDrugID() const
 {
     return m_drugID;
 }
 
-const string DrugData::getActivePrinciple() const
+const string& DrugData::getActivePrinciple() const
 {
     return m_activePrinciple;
 }
 
-const string DrugData::getBrandName() const
+const string& DrugData::getBrandName() const
 {
     return m_brandName;
 }
 
-const string DrugData::getAtc() const
+const string& DrugData::getAtc() const
 {
     return m_atc;
 }

@@ -55,7 +55,7 @@ public:
     static Tucuxi::Common::Interface* createComponent();
 
     /// \brief Destructor
-    ~ComputingComponent() override;
+    ~ComputingComponent() override = default;
 
     ///
     /// \brief compute is the entry point for any computation

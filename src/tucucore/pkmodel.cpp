@@ -11,6 +11,8 @@
 #include "tucucore/pkmodels/twocompartmentbolus.h"
 #include "tucucore/pkmodels/twocompartmentextra.h"
 #include "tucucore/pkmodels/twocompartmentinfusion.h"
+#include "tucucore/pkmodels/twocompartmentextralag.h"
+#include "tucucore/pkmodels/rktwocompartmentextralag.h"
 #include "tucucore/pkmodels/threecompartmentbolus.h"
 #include "tucucore/pkmodels/threecompartmentextra.h"
 #include "tucucore/pkmodels/threecompartmentinfusion.h"
@@ -41,7 +43,7 @@ std::string PkModel::getPkModelId() const
 
 
 bool PkModel::addIntakeIntervalCalculatorFactory(AbsorptionModel _route,
-                                                 std::shared_ptr<IntakeIntervalCalculatorCreator> _creator)
+                                                 const std::shared_ptr<IntakeIntervalCalculatorCreator>& _creator)
 {
     std::pair<std::map<AbsorptionModel, std::shared_ptr<IntakeIntervalCalculatorCreator>>::iterator, bool> rc;
     rc = m_calculatorCreators.insert(std::make_pair(_route, _creator));
@@ -53,7 +55,7 @@ bool PkModel::addParameterList(AbsorptionModel _route,
                       std::vector<std::string> _parameterList)
 {
     std::pair<std::map<AbsorptionModel, std::vector<std::string>>::iterator, bool> rc;
-    rc = m_parameters.insert(std::make_pair(_route, _parameterList));
+    rc = m_parameters.insert(std::make_pair(_route, std::move(_parameterList)));
     return rc.second;
 }
 
@@ -74,9 +76,7 @@ std::shared_ptr<IntakeIntervalCalculator> PkModel::getCalculatorForRoute(Absorpt
     if (search != m_calculatorCreators.end()) {
         return search->second->create();
     }
-    else {
-        return nullptr;
-    }
+    return nullptr;
 }
 
 
@@ -87,13 +87,11 @@ std::vector<std::string> PkModel::getParametersForRoute(AbsorptionModel _route) 
     if (search != m_parameters.end()) {
         return search->second;
     }
-    else {
-        return std::vector<std::string>();
-    }
+    return std::vector<std::string>();
 }
 
 
-bool PkModelCollection::addPkModel(std::shared_ptr<PkModel> _pkModel)
+bool PkModelCollection::addPkModel(const std::shared_ptr<PkModel>& _pkModel)
 {
     // Check that no previous PkModel with the same Id was inserted in the collection.
     auto it = std::find_if(m_collection.begin(), m_collection.end(),
@@ -137,6 +135,7 @@ std::vector<std::shared_ptr<PkModel>> PkModelCollection::getPkModelList() const
 /// \param _COLLECTION Collection to which the PkModel has to be added.
 /// \param _COMP_NO_NUM Number of transit compartments (expressed in numerical form).
 /// \param _RC Boolean return type (ORed result of all the add operations).
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define ADD_2COMP_ERLANG_PK_MODEL_TO_COLLECTION(_COLLECTION, _COMP_NO_NUM, _RC) \
 do { \
     { \
@@ -170,8 +169,40 @@ do { \
 } while (0);
 
 
-
-
+/// \brief Add a PkModel with Lag time to a collection.
+/// \param _COLLECTION Collection to which the PkModel has to be added.
+/// \param _COMP_NO_NUM Number of components (expressed in numerical form).
+/// \param _COMP_NO_LIT Number of components (expressed in literal form).
+/// \param _TYPE Type (either Micro or Macro).
+/// \param _TYPE_NAME Type in literal form (either micro or macro).
+/// \param _RC Boolean return type (ORed result of all the add operations).
+///
+/// The lag time model is built in rk4
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
+#define ADD_PKMODEL_TO_COLLECTION_LAG_RK4(_COLLECTION, _COMP_NO_NUM, _COMP_NO_LIT, _TYPE, _TYPE_NAME, _RC) \
+do { \
+    std::shared_ptr<PkModel> pkmodel = std::make_shared<PkModel>("linear." #_COMP_NO_NUM "comp." #_TYPE_NAME, PkModel::AllowMultipleRoutes::No); \
+    (_RC) |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, Tucuxi::Core::_COMP_NO_LIT ## CompartmentExtra ## _TYPE::getCreator()); \
+    (_RC) |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::ExtravascularLag, Tucuxi::Core::RK4 ## _COMP_NO_LIT ## CompartmentExtraLag ## _TYPE::getCreator()); \
+    (_RC) |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Intravascular, Tucuxi::Core::_COMP_NO_LIT ## CompartmentBolus ## _TYPE::getCreator()); \
+    (_RC) |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Infusion, Tucuxi::Core::_COMP_NO_LIT ## CompartmentInfusion## _TYPE::getCreator());\
+    (_RC) |= pkmodel->addParameterList(AbsorptionModel::Extravascular, Tucuxi::Core::_COMP_NO_LIT ## CompartmentExtra ## _TYPE::getParametersId()); \
+    (_RC) |= pkmodel->addParameterList(AbsorptionModel::ExtravascularLag, Tucuxi::Core::RK4 ## _COMP_NO_LIT ## CompartmentExtraLag ## _TYPE::getParametersId()); \
+    (_RC) |= pkmodel->addParameterList(AbsorptionModel::Intravascular, Tucuxi::Core::_COMP_NO_LIT ## CompartmentBolus ## _TYPE::getParametersId()); \
+    (_RC) |= pkmodel->addParameterList(AbsorptionModel::Infusion, Tucuxi::Core::_COMP_NO_LIT ## CompartmentInfusion## _TYPE::getParametersId());\
+    Tucuxi::Common::TranslatableString distribution; \
+    Tucuxi::Common::TranslatableString elimination; \
+    std::string comps; \
+    if ((_COMP_NO_NUM) == 1) \
+        comps = "compartment"; \
+    else \
+        comps = "compartments"; \
+    distribution.setString(std::to_string(_COMP_NO_NUM) + " " + comps, "en"); \
+    elimination.setString("linear", "en"); \
+    pkmodel->setDistribution(distribution); \
+    pkmodel->setElimination(elimination); \
+    (_COLLECTION).addPkModel(pkmodel); \
+} while (0);
 
 bool defaultPopulate(PkModelCollection &_collection)
 {
@@ -179,8 +210,8 @@ bool defaultPopulate(PkModelCollection &_collection)
 
     ADD_PKMODEL_TO_COLLECTION_LAG(_collection, 1, One, Macro, macro, rc);
     ADD_PKMODEL_TO_COLLECTION_LAG(_collection, 1, One, Micro, micro, rc);
-    ADD_PKMODEL_TO_COLLECTION(_collection, 2, Two, Macro, macro, rc);
-    ADD_PKMODEL_TO_COLLECTION(_collection, 2, Two, Micro, micro, rc);
+    ADD_PKMODEL_TO_COLLECTION_LAG(_collection, 2, Two, Macro, macro, rc);
+    ADD_PKMODEL_TO_COLLECTION_LAG(_collection, 2, Two, Micro, micro, rc);
     ADD_PKMODEL_TO_COLLECTION(_collection, 3, Three, Macro, macro, rc);
     ADD_PKMODEL_TO_COLLECTION(_collection, 3, Three, Micro, micro, rc);
 

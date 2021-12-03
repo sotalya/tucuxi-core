@@ -27,7 +27,7 @@ Likelihood::Likelihood(const OmegaMatrix& _omega,
       m_intakes(&_intakes),
       m_parameters(&_parameters),
       m_inverseOmega(_omega.inverse()),
-      m_omegaAdd(static_cast<double>(_omega.rows()) * log(2 * PI) + log(_omega.determinant())),
+      m_omegaAdd(static_cast<double>(_omega.rows()) * log(2.0 * PI) + log(_omega.determinant())),
       m_concentrationCalculator(&_concentrationCalculator)
 {
     initBounds(_omega, m_omax, m_omin);

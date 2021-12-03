@@ -51,7 +51,7 @@ ComputingStatus ComputingUtils::computeActiveMoiety(
                 for (size_t an = 0; an < nbAnalytes; an++) {
                     inputList[an].setValue(analyteC[an][c]);
                 }
-                double result;
+                double result{0.0};
                 if (!op->evaluate(inputList, result)) {
                     // Something went wrong
                     return ComputingStatus::ActiveMoietyCalculationError;

@@ -152,7 +152,7 @@ Value Utils::stringToValue(const std::string &_str, const DataType &_dataType)
 
 std::string Utils::varToString(const bool &_value)
 {
-    return _value == true ? "1" : "0";
+    return _value ? "1" : "0";
 }
 
 

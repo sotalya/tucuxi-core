@@ -13,10 +13,10 @@ namespace Core {
 /// Should use that implementation its better as it can fall back to simper methods
 /// For documentation just check out the link here: http://www.boost.org/doc/libs/1_60_0/libs/math/doc/html/math_toolkit/roots/brent_minima.html
 struct Bracketmethod {
-    double ax,bx,cx,fa,fb,fc; // NOLINT(readability-identifier-naming)
+    double ax,bx,cx,fa,fb,fc; // NOLINT(readability-identifier-naming, readability-isolate-declaration)
     template <class T>
     void bracket(const double a, const double b, T &func) { // NOLINT(readability-identifier-naming)
-        const double GOLD=1.618034,GLIMIT=100.0,TINY=1.0e-20; // NOLINT(readability-identifier-naming)
+        const double GOLD=1.618034,GLIMIT=100.0,TINY=1.0e-20; // NOLINT(readability-identifier-naming, readability-isolate-declaration)
         ax=a; bx=b;
         double fu;
         fa=func(ax);
@@ -40,7 +40,9 @@ struct Bracketmethod {
                     fa=fb;
                     fb=fu;
                     return;
-                } else if (fu > fb) {
+                }
+                // Do not use else after return
+                if (fu > fb) {
                     cx=u;
                     fc=fu;
                     return;
@@ -79,14 +81,14 @@ struct Bracketmethod {
 struct Dbrent : Bracketmethod {
     double xmin,fmin; // NOLINT(readability-identifier-naming)
     const double tol; // NOLINT(readability-identifier-naming)
-    Dbrent(const double toll=3.0e-8) : tol(toll) {} // NOLINT(readability-identifier-naming)
+    Dbrent(const double toll=3.0e-8) : tol(toll) {} // NOLINT(readability-identifier-naming, cppcoreguidelines-pro-type-member-init)
     template <class T>
     double minimize(T &funcd) { // NOLINT(readability-identifier-naming)
         const int ITMAX=100; // NOLINT(readability-identifier-naming)
         const double ZEPS=std::numeric_limits<double>::epsilon()*1.0e-3; // NOLINT(readability-identifier-naming)
-        bool ok1,ok2;
-        double a,b,d=0.0,d1,d2,du,dv,dw,dx,e=0.0;
-        double fu,fv,fw,fx,olde,tol1,tol2,u,u1,u2,v,w,x,xm;
+        bool ok1,ok2; // NOLINT(readability-isolate-declaration)
+        double a,b,d=0.0,d1,d2,du,dv,dw,dx,e=0.0; // NOLINT(readability-isolate-declaration)
+        double fu,fv,fw,fx,olde,tol1,tol2,u,u1,u2,v,w,x,xm; // NOLINT(readability-isolate-declaration)
         a=(ax < cx ? ax : cx);
         b=(ax > cx ? ax : cx);
         x=w=v=bx;
@@ -210,9 +212,9 @@ struct Dlinemethod {
     ValueVector xi; // NOLINT(readability-identifier-naming)
     T &func; // NOLINT(readability-identifier-naming)
     size_t n; // NOLINT(readability-identifier-naming)
-    Dlinemethod(T &funcc) : func(funcc) {} // NOLINT(readability-identifier-naming)
+    Dlinemethod(T &funcc) : func(funcc) {} // NOLINT(readability-identifier-naming, cppcoreguidelines-pro-type-member-init)
     double linmin() {
-        double ax,xx,xmin;
+        double ax,xx,xmin; // NOLINT(readability-isolate-declaration)
         n=p.size();
         Df1dim<T> df1dim(p,xi,func);
         ax=0.0;
@@ -237,17 +239,17 @@ struct Frprmn : Dlinemethod<T> {
     using Dlinemethod<T>::p;
     using Dlinemethod<T>::xi;
     const double ftol; // NOLINT(readability-identifier-naming)
-    Frprmn(T &funcd, const double ftoll=3.0e-8) : Dlinemethod<T>(funcd), // NOLINT(readability-identifier-naming)
+    Frprmn(T &funcd, const double ftoll=3.0e-8) : Dlinemethod<T>(funcd), // NOLINT(readability-identifier-naming, cppcoreguidelines-pro-type-member-init)
         ftol(ftoll) {}
 
     ValueVector minimize(const ValueVector &pp) { // NOLINT(readability-identifier-naming)
         const int ITMAX=200; // NOLINT(readability-identifier-naming)
         const double EPS=1.0e-18; // NOLINT(readability-identifier-naming)
         const double GTOL=1.0e-8; // NOLINT(readability-identifier-naming)
-        double gg,dgg;
+        double gg,dgg; // NOLINT(readability-isolate-declaration)
         size_t n=pp.size();
         p=pp;
-        ValueVector g(n),h(n);
+        ValueVector g(n),h(n); // NOLINT(readability-isolate-declaration)
         xi.resize(n);
         double fp=func(p);
         func.df(p,xi);

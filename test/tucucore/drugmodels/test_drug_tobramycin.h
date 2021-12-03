@@ -19,7 +19,7 @@
 using namespace Tucuxi::Core;
 
 
-static std::string tobramycin_tdd = R"(<?xml version="1.0" encoding="UTF-8"?>
+static const std::string tobramycin_tdd = R"(<?xml version="1.0" encoding="UTF-8"?>
                                     <model version='0.6' xsi:noNamespaceSchemaLocation='drug2.xsd' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
                                         <history>
                                             <revisions>
@@ -819,16 +819,12 @@ struct TestDrugTobramycin : public fructose::test_base<TestDrugTobramycin>
     {
         DrugModelImport importer;
 
-        DrugModel *drugModel;
+        std::unique_ptr<DrugModel> drugModel;
 
         auto status = importer.importFromString(drugModel, tobramycin_tdd);
         fructose_assert_eq(status, DrugModelImport::Status::Ok);
 
         fructose_assert(drugModel != nullptr);
-
-        if (drugModel != nullptr) {
-            delete drugModel;
-        }
     }
 };
 

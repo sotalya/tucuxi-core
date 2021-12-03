@@ -22,11 +22,11 @@ public:
 
     bool exportToString(const ComputingQueryResponse &_computingQueryResponse, std::string &_xmlString);
 
-    bool exportToFile(const ComputingQueryResponse &_computingQueryResponse, std::string _fileName);
+    bool exportToFile(const ComputingQueryResponse &_computingQueryResponse, const std::string &_fileName);
 
-    const std::string getComputingStatus(Tucuxi::Core::ComputingStatus _computingStatus, bool _codeEnable) const;
+    std::string getComputingStatus(Tucuxi::Core::ComputingStatus _computingStatus, bool _codeEnable) const;
 
-    const std::string getQueryStatus(QueryStatus _queryStatus, bool _codeEnable) const;
+    std::string getQueryStatus(QueryStatus _queryStatus, bool _codeEnable) const;
 
 protected:
 
@@ -63,25 +63,25 @@ protected:
     void exportSingleDose(const Tucuxi::Core::SingleDose &_dosage, Tucuxi::Common::XmlNode &_rootNode);
 
 
-    const std::string formulationEnumToString(const Tucuxi::Core::Formulation &_formulation);
+    std::string formulationEnumToString(const Tucuxi::Core::Formulation &_formulation);
 
 
-    const std::string administrationRouteEnumToString(const Tucuxi::Core::AdministrationRoute &_administrationRoute);
+    std::string administrationRouteEnumToString(const Tucuxi::Core::AdministrationRoute &_administrationRoute);
 
 
-    const std::string absorptionModelEnumToString(const Tucuxi::Core::AbsorptionModel &_absorptionModel);
+    std::string absorptionModelEnumToString(const Tucuxi::Core::AbsorptionModel &_absorptionModel);
 
 
 
 
 
     void addNode(Tucuxi::Common::XmlNode &_rootNode,
-                 std::string _nodeName,
-                 std::string _nodeValue);
+                 const std::string &_nodeName,
+                 const std::string &_nodeValue);
 
     template<typename T>
     void addNode(Tucuxi::Common::XmlNode &_rootNode,
-                 std::string _nodeName,
+                 const std::string& _nodeName,
                  T _nodeValue)
     {
         Tucuxi::Common::XmlNode node = m_doc.createNode(

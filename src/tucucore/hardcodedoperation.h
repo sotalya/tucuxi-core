@@ -12,14 +12,15 @@
 namespace Tucuxi {
 namespace Core {
 
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage,bugprone-macro-parentheses)
 #define HARDCODED_OPERATION(NAME)                                                   \
 class NAME : public HardcodedOperation                                              \
 {                                                                                   \
 public:                                                                             \
-    NAME() {fillRequiredInputs();m_filledInputs = true;} \
+    NAME() {fillRequiredInputs();m_filledInputs = true;}                            \
     virtual std::unique_ptr<Operation> clone() const                                \
     {                                                                               \
-        return std::unique_ptr<Operation>(new NAME(*this));                         \
+        return std::unique_ptr<Operation>(new (NAME)(*this));                       \
     }                                                                               \
 protected:                                                                          \
     virtual bool compute(const OperationInputList &_inputs, double &_result) const; \

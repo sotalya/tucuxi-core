@@ -24,6 +24,9 @@
 #if defined(test_multiconstanteliminationbolus) || !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_multiconstanteliminationbolus.h"
 #endif
+#if defined(test_likelihood) || !defined(DO_NOT_COMPILE_ALL_TESTS)
+#include "test_likelihood.h"
+#endif
 #if defined(test_parameter) || !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_parameter.h"
 #endif
@@ -135,8 +138,8 @@
 #if defined(test_multilikelihood) || !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_multilikelihood.h"
 #endif
-#if defined(test_likelihood) || !defined(DO_NOT_COMPILE_ALL_TESTS)
-#include "test_likelihood.h"
+#if defined(test_twocompartmentextralag) || !defined(DO_NOT_COMPILE_ALL_TESTS)
+#include "pkmodels/test_twocompartmentextralag.h"
 #endif
 
 int main(int argc, char** argv)
@@ -326,6 +329,8 @@ int main(int argc, char** argv)
     calculatorsTests.add_test("2 comp bolus single vs multiple test", &TestIntervalCalculator::test2compBolusSingleVsMultiple);
     calculatorsTests.add_test("2 comp extra single vs multiple test", &TestIntervalCalculator::test2compExtraSingleVsMultiple);
     calculatorsTests.add_test("2 comp infusion single vs multiple test", &TestIntervalCalculator::test2compInfusionSingleVsMultiple);
+    calculatorsTests.add_test("2 comp extra lag single vs multiple test", &TestIntervalCalculator::test2compExtraLagSingleVsMultiple);
+    calculatorsTests.add_test("2 comp extra lag analytical vs Rk4 test", &TestIntervalCalculator::test2compExtraLagAnalyticalVsRk4);
 
     // three compartment
     // TODO Active following test after fixing input parameters
@@ -438,28 +443,6 @@ int main(int argc, char** argv)
     multilikelihoodTests.add_test("multilikelihoodTest5", &TestMultiLikeliHood::test5);
     multilikelihoodTests.add_test("multilikelihoodTest6", &TestMultiLikeliHood::test6);
     multilikelihoodTests.add_test("multilikelihoodTest7", &TestMultiLikeliHood::test7);
-
-    res = multilikelihoodTests.run(argc, argv);
-    tot_res |= res;
-    if (res != 0) {
-        std::cerr << "Multilikelihood test failed\n";
-    }
-    else {
-        std::cout << "Multilikelihood test succeeded\n";
-    }
-#endif
-
-#if defined(test_likelihood) || !defined(DO_NOT_COMPILE_ALL_TESTS)
-    // --- MultiLikelihood tests --- //
-    TestLikelihood likelihoodTests;
-
-    likelihoodTests.add_test("likelihoodTestWrongParameters", &TestLikeliHood:testWrongParameters);
-    multilikelihoodTests.add_test("likelihoodTest2", &LikeliHood::test2);
-    multilikelihoodTests.add_test("likelihoodTest3", &TestMultiLikeliHood::test3);
-    multilikelihoodTests.add_test("likelihoodTest4", &TestMultiLikeliHood::test4);
-    multilikelihoodTests.add_test("likelihoodTest5", &TestMultiLikeliHood::test5);
-    multilikelihoodTests.add_test("likelihoodTest6", &TestMultiLikeliHood::test6);
-    multilikelihoodTests.add_test("likelihoodTest7", &TestMultiLikeliHood::test7);
 
     res = multilikelihoodTests.run(argc, argv);
     tot_res |= res;
@@ -867,6 +850,26 @@ int main(int argc, char** argv)
     }
 #endif
 
+#if defined(test_likelihood) || !defined(DO_NOT_COMPILE_ALL_TESTS)
+    // --- Multi analytes multi active moieties tests --- //
+    TestLikelihood likelihoodTests;
+
+    likelihoodTests.add_test("testLikelihoodWrongParameters", &TestLikelihood::testWrongParameters);
+    likelihoodTests.add_test("testLikelihood1Sample", &TestLikelihood::test1Sample);
+    likelihoodTests.add_test("testLikelihood2SamplesSameDate", &TestLikelihood::test2SamplesSameDate);
+    likelihoodTests.add_test("testLikelihood2SamplesDifferentDates", &TestLikelihood::test2SamplesDifferentDates);
+    likelihoodTests.add_test("testLikelihood3SamplesDifferentDates", &TestLikelihood::test3SamplesDifferentDates);
+
+    res = likelihoodTests.run(argc, argv);
+    tot_res |= res;
+    if (res != 0) {
+        std::cerr << "Likelihood comp test failed\n";
+    }
+    else {
+        std::cout << "Likelihood test succeeded\n";
+    }
+#endif
+
 #if defined(test_cachecomputing) || !defined(DO_NOT_COMPILE_ALL_TESTS)
     TestCacheComputing cacheComputingTests;
 
@@ -899,6 +902,23 @@ int main(int argc, char** argv)
     }
     else {
         std::cout << "Michaelis Menten Enzyme 1 comp test succeeded\n";
+    }
+#endif
+
+
+#if defined(test_twocompartmentextralag) || !defined(DO_NOT_COMPILE_ALL_TESTS)
+    // --- Multi analytes multi active moieties tests --- //
+    TestTwoCompartmentExtraLag twoCompartmentExtraLagTests;
+
+    twoCompartmentExtraLagTests.add_test("testTwoCompartmentExtraLag", &TestTwoCompartmentExtraLag::test2compExtraLagSingleDose);
+
+    res = twoCompartmentExtraLagTests.run(argc, argv);
+    tot_res |= res;
+    if (res != 0) {
+        std::cerr << "2 comp extra lag test failed\n";
+    }
+    else {
+        std::cout << "2 comp extra lag test succeeded\n";
     }
 #endif
 

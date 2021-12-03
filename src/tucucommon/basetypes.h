@@ -12,6 +12,7 @@ typedef long long int int64;
 typedef double ChronoBaseType;
 
  // 3.14159;
-static const double PI = acos(-1); // NOLINT(readability-identifier-naming)
+// static const double PI = acos(-1); // NOLINT(readability-identifier-naming)
+constexpr double PI = M_PI; // NOLINT(readability-identifier-naming)
 
 #endif // TUCUXI_TUCUCOMMON_BASETYPES_H

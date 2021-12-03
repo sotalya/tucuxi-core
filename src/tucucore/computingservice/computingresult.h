@@ -97,6 +97,8 @@ enum class [[nodiscard]] ComputingStatus {
     NoSteadyState,
     /// A posteriori percentiles calculation, but samples are out of scope
     AposterioriPercentilesOutOfScopeSamplesError,
+    /// Something went wrong with adjustments
+    AdjustmentsInternalError,
     /// An exception was raised in MultiComputingComponent
     MultiComputingComponentExceptionError,
     /// The multicomputing component has not been initialized

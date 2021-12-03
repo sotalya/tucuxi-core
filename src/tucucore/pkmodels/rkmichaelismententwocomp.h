@@ -22,8 +22,6 @@ public:
     /// \return The list of required PK parameters Ids
     static std::vector<std::string> getParametersId();
 
-
-public:
     inline void derive(double _t, const std::vector<double> &_c, std::vector<double>& _dcdt)
     {
         FINAL_UNUSED_PARAMETER(_t);
@@ -73,7 +71,6 @@ protected:
     bool m_isInfusion{false};
     bool m_isWithLag;
 
-
 private:
     typedef RkMichaelisMentenTwoCompCompartments Compartments;
 };
@@ -104,8 +101,6 @@ protected:
         _concentrations[2] = _inResiduals[2] + m_D / m_V1 * m_F;
     }
 
-protected:
-
 };
 
 
@@ -135,8 +130,6 @@ protected:
         m_delivered = false;
     }
 
-protected:
-
 };
 
 
@@ -164,8 +157,6 @@ protected:
         _concentrations[2] = _inResiduals[2];
     }
 
-protected:
-
 };
 
 /// \ingroup TucuCore
@@ -192,8 +183,6 @@ protected:
         _concentrations[1] = _inResiduals[1];
         _concentrations[2] = _inResiduals[2];
     }
-
-protected:
 
 };
 
@@ -276,16 +265,6 @@ protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
 
 };
-
-
-
-
-
-
-
-
-
-
 
 } // namespace Core
 } // namespace Tucuxi

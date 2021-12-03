@@ -29,7 +29,7 @@ public:
     XmlAttribute(const XmlAttribute& _node);
 
     /// \brief Destructor
-    ~XmlAttribute();
+    ~XmlAttribute() = default;
     
     /// \brief Check if the attribute is valid
     /// \return True if the attribute is valid
@@ -80,8 +80,7 @@ private:
     
     /// \brief Helper method asking the associated docuement to allocate a string.
     char* allocateString(const std::string& _string);
-    
-private:
+
     rapidxml::xml_attribute<char>* m_pAttribute;    /// The "wrapped" rapdixml attribute
     
     friend class XmlDocument;

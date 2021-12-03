@@ -31,9 +31,9 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
 {
     TestComputingComponentAdjusements() { }
 
-    void buildDrugTreatment(DrugTreatment *&_drugTreatment, FormulationAndRoute _route, DoseValue _doseValue = 200)
+    std::unique_ptr<DrugTreatment> buildDrugTreatment(const FormulationAndRoute& _route, DoseValue _doseValue = 200)
     {
-         _drugTreatment = new DrugTreatment();
+        auto drugTreatment = std::make_unique<DrugTreatment>();
 
          // List of time ranges that will be pushed into the history
          DosageTimeRangeList timeRangeList;
@@ -53,10 +53,11 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
                                   Duration(),
                                   Duration(std::chrono::hours(6)));
          DosageRepeat repeatedDose(periodicDose, 16);
-         std::unique_ptr<Tucuxi::Core::DosageTimeRange> sept2018(new Tucuxi::Core::DosageTimeRange(startSept2018, repeatedDose));
+         auto sept2018 = std::make_unique<Tucuxi::Core::DosageTimeRange>(startSept2018, repeatedDose);
 
+         drugTreatment->getModifiableDosageHistory().addTimeRange(*sept2018);
 
-         _drugTreatment->getModifiableDosageHistory().addTimeRange(*sept2018);
+         return drugTreatment;
     }
 
     void testImatinibLastFormulationAndRouteAllDosages(const std::string& /* _testName */)
@@ -65,16 +66,13 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
 
         fructose_assert( component != nullptr);
 
-        DrugModel* drugModel;
         BuildImatinib builder;
-        drugModel = builder.buildDrugModel();
+        auto drugModel = builder.buildDrugModel();
         fructose_assert(drugModel != nullptr);
 
-        DrugTreatment *drugTreatment;
         const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
-        buildDrugTreatment(drugTreatment, route);
-
+        auto drugTreatment = buildDrugTreatment(route);
 
         // Construct the adjustment traits object
         RequestResponseId requestResponseId = "1";
@@ -114,8 +112,6 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
         }
 
         // Delete all dynamically allocated objects
-        delete drugModel;
-        delete drugTreatment;
         delete component;
     }
 
@@ -125,16 +121,13 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
 
         fructose_assert( component != nullptr);
 
-        DrugModel* drugModel;
         BuildImatinib builder;
-        drugModel = builder.buildDrugModel();
+        auto drugModel = builder.buildDrugModel();
         fructose_assert(drugModel != nullptr);
 
-        DrugTreatment *drugTreatment;
         const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
-        buildDrugTreatment(drugTreatment, route);
-
+        auto drugTreatment = buildDrugTreatment(route);
 
         // Construct the adjustment traits object
         RequestResponseId requestResponseId = "1";
@@ -174,8 +167,6 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
         }
 
         // Delete all dynamically allocated objects
-        delete drugModel;
-        delete drugTreatment;
         delete component;
     }
 
@@ -244,16 +235,13 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
 
         fructose_assert( component != nullptr);
 
-        DrugModel* drugModel;
         BuildImatinib builder;
-        drugModel = builder.buildDrugModel();
+        auto drugModel = builder.buildDrugModel();
         fructose_assert(drugModel != nullptr);
 
-        DrugTreatment *drugTreatment;
         const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
-        buildDrugTreatment(drugTreatment, route);
-
+        auto drugTreatment = buildDrugTreatment(route);
 
         // Construct the adjustment traits object
         RequestResponseId requestResponseId = "1";
@@ -293,8 +281,6 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
         }
 
         // Delete all dynamically allocated objects
-        delete drugModel;
-        delete drugTreatment;
         delete component;
     }
 
@@ -304,16 +290,13 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
 
         fructose_assert( component != nullptr);
 
-        DrugModel* drugModel;
         BuildImatinib builder;
-        drugModel = builder.buildDrugModel();
+        auto drugModel = builder.buildDrugModel();
         fructose_assert(drugModel != nullptr);
 
-        DrugTreatment *drugTreatment;
         const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
-        buildDrugTreatment(drugTreatment, route);
-
+        auto drugTreatment = buildDrugTreatment(route);
 
         // Construct the adjustment traits object
         RequestResponseId requestResponseId = "1";
@@ -353,8 +336,6 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
         }
 
         // Delete all dynamically allocated objects
-        delete drugModel;
-        delete drugTreatment;
         delete component;
     }
 
@@ -425,18 +406,12 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
 
         fructose_assert( component != nullptr);
 
-        DrugModel* drugModel;
         BuildImatinib builder;
-        drugModel = builder.buildDrugModel();
+        auto drugModel = builder.buildDrugModel();
         fructose_assert(drugModel != nullptr);
 
-        DrugTreatment *drugTreatment;
-
         // We start with an empty treatment
-        drugTreatment = new DrugTreatment();
-
-
-
+        auto drugTreatment = std::make_unique<DrugTreatment>();
 
         // Construct the adjustment traits object
         RequestResponseId requestResponseId = "1";
@@ -475,8 +450,6 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
     //        }
 
         // Delete all dynamically allocated objects
-        delete drugModel;
-        delete drugTreatment;
         delete component;
     }
 
@@ -489,15 +462,13 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
 
         fructose_assert( component != nullptr);
 
-        DrugModel* drugModel;
         BuildImatinib builder;
-        drugModel = builder.buildDrugModel();
+        auto drugModel = builder.buildDrugModel();
         fructose_assert(drugModel != nullptr);
 
-        DrugTreatment *drugTreatment;
         const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
-        buildDrugTreatment(drugTreatment, route);
+        auto drugTreatment = buildDrugTreatment(route);
 
 
         // Construct the adjustment traits object
@@ -538,8 +509,6 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
         }
 
         // Delete all dynamically allocated objects
-        delete drugModel;
-        delete drugTreatment;
         delete component;
 
 
@@ -550,15 +519,13 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
 
             fructose_assert( component != nullptr);
 
-            DrugModel* drugModel;
             BuildImatinib builder;
-            drugModel = builder.buildDrugModel();
+            auto drugModel = builder.buildDrugModel();
             fructose_assert(drugModel != nullptr);
 
-            DrugTreatment *drugTreatment;
             const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
-            buildDrugTreatment(drugTreatment, route);
+            auto drugTreatment = buildDrugTreatment(route);
 
 
             // Construct the adjustment traits object
@@ -599,8 +566,6 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
             }
 
             // Delete all dynamically allocated objects
-            delete drugModel;
-            delete drugTreatment;
             delete component;
         }
     }
@@ -612,16 +577,13 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
 
         fructose_assert( component != nullptr);
 
-        DrugModel* drugModel;
         BuildImatinib builder;
-        drugModel = builder.buildDrugModel();
+        auto drugModel = builder.buildDrugModel();
         fructose_assert(drugModel != nullptr);
 
-        DrugTreatment *drugTreatment;
         const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
-
-        drugTreatment = new DrugTreatment();
+        auto drugTreatment = std::make_unique<DrugTreatment>();
 
         // List of time ranges that will be pushed into the history
         DosageTimeRangeList timeRangeList;
@@ -641,11 +603,9 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
                                  Duration(),
                                  Duration(std::chrono::hours(24)));
         DosageRepeat repeatedDose(periodicDose, 300);
-        std::unique_ptr<Tucuxi::Core::DosageTimeRange> jun2018(new Tucuxi::Core::DosageTimeRange(startJun2018, repeatedDose));
-
+        auto jun2018 = std::make_unique<Tucuxi::Core::DosageTimeRange>(startJun2018, repeatedDose);
 
         drugTreatment->getModifiableDosageHistory().addTimeRange(*jun2018);
-
 
         // Construct the adjustment traits object
         RequestResponseId requestResponseId = "1";
@@ -686,8 +646,6 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
         }
 
         // Delete all dynamically allocated objects
-        delete drugModel;
-        delete drugTreatment;
         delete component;
     }
 
@@ -756,15 +714,13 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
 
         fructose_assert( component != nullptr);
 
-        DrugModel* drugModel;
         BuildImatinib builder;
-        drugModel = builder.buildDrugModel();
+        auto drugModel = builder.buildDrugModel();
         fructose_assert(drugModel != nullptr);
 
-        DrugTreatment *drugTreatment;
         const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
-        buildDrugTreatment(drugTreatment, route, DoseValue(20000));
+        auto drugTreatment = buildDrugTreatment(route, DoseValue(20000));
 
 
         // Construct the adjustment traits object
@@ -804,8 +760,6 @@ struct TestComputingComponentAdjusements : public fructose::test_base<TestComput
         }
 
         // Delete all dynamically allocated objects
-        delete drugModel;
-        delete drugTreatment;
         delete component;
     }
 

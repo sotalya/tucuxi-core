@@ -25,7 +25,7 @@ class QueryResponseMetaData
 class ComputingResponseMetaData
 {
 public:
-    ComputingResponseMetaData(std::string drugModelId);
+    ComputingResponseMetaData(std::string _drugModelId);
 
 private:
     std::string m_drugModelId;

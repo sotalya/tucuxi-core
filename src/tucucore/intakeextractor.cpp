@@ -20,7 +20,7 @@ auto as_integer(Enumeration const _value)
     return static_cast<typename std::underlying_type<Enumeration>::type>(_value);
 }
 #ifdef EASY_DEBUG
-void EXTRACT_PRECONDITIONS(const DateTime &start, const DateTime &end, IntakeSeries &/*series*/)
+inline void EXTRACT_PRECONDITIONS(const DateTime &start, const DateTime &end, IntakeSeries &/*series*/)
 {
     if (start.isUndefined()) {
         throw std::runtime_error("[IntakeExtractor] Start time is undefined");
@@ -30,11 +30,12 @@ void EXTRACT_PRECONDITIONS(const DateTime &start, const DateTime &end, IntakeSer
     }
 }
 #else // EASY_DEBUG
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define EXTRACT_PRECONDITIONS(start, end, series) \
-    if (start.isUndefined()) { \
+    if ((start).isUndefined()) { \
         throw std::runtime_error("[IntakeExtractor] Start time is undefined"); \
     } \
-    if (!(end.isUndefined() || start < end)) { \
+    if (!((end).isUndefined() || (start) < (end))) { \
         throw std::runtime_error("[IntakeExtractor] start is greater than end and end is defined"); \
     }
 #endif // EASY_DEBUG

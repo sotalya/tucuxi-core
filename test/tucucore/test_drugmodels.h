@@ -19,7 +19,7 @@ struct TestDrugModels : public fructose::test_base<TestDrugModels>
 {
     TestDrugModels() { }
 
-    DrugModel *buildImatinib()
+    std::unique_ptr<DrugModel> buildImatinib()
     {
         BuildImatinib builder;
         return builder.buildDrugModel();
@@ -27,14 +27,9 @@ struct TestDrugModels : public fructose::test_base<TestDrugModels>
 
     void testImatinib(const std::string& /* _testName */)
     {
-        DrugModel* imatinib;
-        imatinib = buildImatinib();
+        auto imatinib = buildImatinib();
 
         fructose_assert(imatinib != nullptr);
-
-        if (imatinib) {
-            delete imatinib;
-        }
     }
 
 };

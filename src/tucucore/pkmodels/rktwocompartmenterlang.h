@@ -131,6 +131,26 @@ public:
 
     enum class CompartmentsEnum : int { Central = 0, Peripheral, Dose, A2, A3, A4, A5 };
 
+
+    inline void derive(double _t, const std::vector<double> &_c, std::vector<double>& _dcdt)
+    {
+        FINAL_UNUSED_PARAMETER(_t);
+        _dcdt[0] = m_Ktr * _c[3 + NbTransitCompartment - 1] - m_Ke * _c[0] + m_K21 * _c[1] - m_K12 * _c[0];
+        _dcdt[1] = m_K12 * _c[0] - m_K21 * _c[1];
+        _dcdt[2] = - m_Ktr * _c[2];
+        TransitComps<3,3 + NbTransitCompartment - 1>::derive(m_Ktr, _c, _dcdt);
+//        _dcdt[3] = m_Ktr * _c[2] - m_Ktr * _c[3];
+//        _dcdt[4] = m_Ktr * _c[3] - m_Ktr * _c[4];
+//        _dcdt[5] = m_Ktr * _c[4] - m_Ktr * _c[5];
+//        _dcdt[6] = m_Ktr * _c[5] - m_Ktr * _c[6];
+    }
+
+    inline void addFixedValue(double _t, std::vector<double>& _concentrations)
+    {
+        FINAL_UNUSED_PARAMETER(_t);
+        FINAL_UNUSED_PARAMETER(_concentrations);
+    }
+
 protected:
 
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override
@@ -178,36 +198,14 @@ protected:
 //        _concentrations[6] = _inResiduals[6];
     }
 
-public:
-    inline void derive(double _t, const std::vector<double> &_c, std::vector<double>& _dcdt)
-    {
-        FINAL_UNUSED_PARAMETER(_t);
-        _dcdt[0] = m_Ktr * _c[3 + NbTransitCompartment - 1] - m_Ke * _c[0] + m_K21 * _c[1] - m_K12 * _c[0];
-        _dcdt[1] = m_K12 * _c[0] - m_K21 * _c[1];
-        _dcdt[2] = - m_Ktr * _c[2];
-        TransitComps<3,3 + NbTransitCompartment - 1>::derive(m_Ktr, _c, _dcdt);
-//        _dcdt[3] = m_Ktr * _c[2] - m_Ktr * _c[3];
-//        _dcdt[4] = m_Ktr * _c[3] - m_Ktr * _c[4];
-//        _dcdt[5] = m_Ktr * _c[4] - m_Ktr * _c[5];
-//        _dcdt[6] = m_Ktr * _c[5] - m_Ktr * _c[6];
-    }
 
-    inline void addFixedValue(double _t, std::vector<double>& _concentrations)
-    {
-        FINAL_UNUSED_PARAMETER(_t);
-        FINAL_UNUSED_PARAMETER(_concentrations);
-    }
-
-protected:
-
-
-    Value m_D;	/// Quantity of drug
-    Value m_F;  /// bioavailability
-    Value m_V1;  /// Volume of the central compartment
-    Value m_Ke; /// Elimination constant rate = Cl/V where Cl is the clearance and V is the volume of the compartment
-    Value m_K12; /// Inter-compartment rate between central and peripheral
-    Value m_K21; /// Inter-compartment rate between peripheral and central
-    Value m_Ktr; /// Transit compartments constant rate
+    Value m_D{0.0};	/// Quantity of drug
+    Value m_F{0.0};  /// bioavailability
+    Value m_V1{0.0};  /// Volume of the central compartment
+    Value m_Ke{0.0}; /// Elimination constant rate = Cl/V where Cl is the clearance and V is the volume of the compartment
+    Value m_K12{0.0}; /// Inter-compartment rate between central and peripheral
+    Value m_K21{0.0}; /// Inter-compartment rate between peripheral and central
+    Value m_Ktr{0.0}; /// Transit compartments constant rate
 
 private:
     typedef CompartmentsEnum Compartments;
@@ -268,7 +266,6 @@ protected:
 
         return bOK;
     }
-
 
 };
 

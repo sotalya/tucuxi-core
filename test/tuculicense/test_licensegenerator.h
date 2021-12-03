@@ -8,8 +8,8 @@
 
 #include "fructose/fructose.h"
 
-#include "tucucommon/cryptohelper.h"
-#include "tucucommon/licensemanager.h"
+#include "tucucrypto/cryptohelper.h"
+#include "tucucrypto/licensemanager.h"
 #include "tuculicense/licensegenerator.h"
 
 struct TestLicenseGenerator : public fructose::test_base<TestLicenseGenerator>

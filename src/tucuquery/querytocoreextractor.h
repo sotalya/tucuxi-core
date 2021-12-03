@@ -37,11 +37,16 @@ public:
     ///
     /// \brief Extract a ComputingQuery from the XML pre-processed data
     /// \param _query The QueryData object built from XML
+    /// \param _computingQuery The extracted computing query
+    /// \param _drugTreatments The extracted drug treatments
     /// \return A queryStatus
     ///
     /// This method should be the only public one.
+    /// The drug treatments should live as long as the _computingQuery does.
     ///
-    QueryStatus extractComputingQuery(const QueryData &_query, ComputingQuery &_computingQuery);
+    QueryStatus extractComputingQuery(const QueryData &_query,
+                                      ComputingQuery &_computingQuery,
+                                      std::vector<std::unique_ptr<Core::DrugTreatment> > &_drugTreatments);
 
     ///
     /// \brief extractPatientVariates
@@ -66,7 +71,7 @@ public:
     ///
     Tucuxi::Core::Samples extractSamples(const QueryData &_query, size_t _drugPosition) const;
 
-    Tucuxi::Core::DrugTreatment *extractDrugTreatment(const QueryData &_query, const RequestData &_requestData) const;
+    std::unique_ptr<Core::DrugTreatment> extractDrugTreatment(const QueryData &_query, const RequestData &_requestData) const;
 
     Tucuxi::Core::DrugModel *extractDrugModel(const RequestData &_requestData, const Tucuxi::Core::DrugTreatment *_drugTreatment) const;
 

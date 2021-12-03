@@ -55,7 +55,7 @@ public:
     /// \return True if the insertion was successful, false otherwise.
     /// \post if (m_operableInputs.find(_scriptVarName) == false && (_isComputed == false || _id >= 0)) { m_operableInputs += _input && [RETURN] == true }
     ///       else { m_operableInputs == PREV(m_operableInputs) && m_operables == PREV(m_operables) && [RETURN] == false };
-    bool registerInput(std::shared_ptr<IOperableInput> _input, const std::string &_scriptVarName,
+    bool registerInput(const std::shared_ptr<IOperableInput> &_input, const std::string &_scriptVarName,
                        bool _isComputed = false, IOperable_ID _id = -1);
 
     /// \brief Record an operable in the operable graph.
@@ -66,7 +66,7 @@ public:
     /// \post if (_operable != nullptr && (_scriptVarName == "" || m_operableInputs.find(_scriptVarName) == false))
     ///           { m_operables += _operable && (if (_scriptVarName != "") { m_operableInputs.find(_scriptVarName) == true }) && [RETURN] == true }
     ///       else { m_operableInputs == PREV(m_operableInputs) && m_operables == PREV(m_operables) && [RETURN] == false };
-    bool registerOperable(std::shared_ptr<IOperable> _operable, const std::string &_scriptVarName = "");
+    bool registerOperable(const std::shared_ptr<IOperable>& _operable, const std::string &_scriptVarName = "");
 
 
     /// \brief Class' output operator.
@@ -109,7 +109,6 @@ private:
     bool isValid();
 
 
-private:
     /// \brief Input node in the Operable graph.
     class OperableInputNode
     {

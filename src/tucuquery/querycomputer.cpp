@@ -69,7 +69,7 @@ void QueryComputer::compute(const std::string& _queryString, ComputingQueryRespo
 {
     Tucuxi::Common::LoggerHelper logHelper;
 
-    QueryData *query = nullptr;
+    std::unique_ptr<QueryData> query = nullptr;
 
     QueryImport importer;
     QueryImport::Status importResult = importer.importFromString(query, _queryString);
@@ -77,16 +77,11 @@ void QueryComputer::compute(const std::string& _queryString, ComputingQueryRespo
 
     if (importResult != QueryImport::Status::Ok) {
 
-        if (importResult == QueryImport::Status::CantOpenFile) {
+        if ((importResult == QueryImport::Status::CantOpenFile) ||
+            (importResult == QueryImport::Status::CantCreateXmlDocument)){
             logHelper.error("Error, see details : {}", importer.getErrorMessage());
             _response.setRequestResponseId("bad.format");
             _response.setQueryStatus(QueryStatus::BadFormat, importer.getErrorMessage());
-        }
-        else if (importResult == QueryImport::Status::CantCreateXmlDocument){
-            logHelper.error("Error, see details : {}", importer.getErrorMessage());
-            _response.setRequestResponseId("bad.format");
-            _response.setQueryStatus(QueryStatus::BadFormat, importer.getErrorMessage());
-
         }
         else{
             logHelper.error("Error, see details : {}", importer.getErrorMessage());
@@ -109,9 +104,10 @@ void QueryComputer::compute(const std::string& _queryString, ComputingQueryRespo
     }
 
     QueryToCoreExtractor extractor;
-    ComputingQuery *computingQuery = new ComputingQuery(query->getQueryID());
+    auto computingQuery = std::make_unique<ComputingQuery>(query->getQueryID());
 
-    QueryStatus extractResult = extractor.extractComputingQuery(*query, *computingQuery);
+    std::vector<std::unique_ptr<Tucuxi::Core::DrugTreatment> > drugTreatments;
+    QueryStatus extractResult = extractor.extractComputingQuery(*query, *computingQuery, drugTreatments);
     if(extractResult != QueryStatus::Ok)
     {
         _response.setRequestResponseId(query->getQueryID());
@@ -120,12 +116,6 @@ void QueryComputer::compute(const std::string& _queryString, ComputingQueryRespo
     }
 
     compute(*computingQuery, _response);
-
-    delete query;
-    delete computingQuery;
-
-
-
 }
 
 

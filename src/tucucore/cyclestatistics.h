@@ -76,7 +76,7 @@ private:
 
     struct Data {
         Tucuxi::Common::Duration m_offset;
-        Value m_value;
+        Value m_value{0.0};
     };
 
     std::vector<Data> m_data; // The list of values (in case of maximum and minimum, we can have a list)
@@ -98,7 +98,7 @@ public:
         while (m_stats.size() <= _compartment) {
             m_stats.push_back(std::vector<CycleStatistic>(static_cast<int>(CycleStatisticType::CYCLE_STATISTIC_TYPE_SIZE),CycleStatistic(Tucuxi::Common::DateTime::now(), CycleStatisticType::CYCLE_STATISTIC_TYPE_SIZE)));
         }
-        m_stats[_compartment][static_cast<size_t>(_type)] = _statistic;
+        m_stats[_compartment][static_cast<size_t>(_type)] = std::move(_statistic);
     }
 
     std::vector<std::vector<CycleStatistic> > getStats() const {return m_stats;}

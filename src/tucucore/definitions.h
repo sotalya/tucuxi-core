@@ -84,13 +84,13 @@ enum class ScheduledIntakeOp { Skip, Add };
 typedef date::weekday DayOfWeek;
 // Days are defined using a #define and not an enum since the library wants
 // unsigned variables as input to the constructor
-#define SUNDAY       0U
-#define MONDAY       1U
-#define TUESDAY      2U
-#define WEDNESDAY    3U
-#define THURSDAY     4U
-#define FRIDAY       5U
-#define SATURDAY     6U
+constexpr unsigned int SUNDAY    = 0U;
+constexpr unsigned int MONDAY    = 1U;
+constexpr unsigned int TUESDAY   = 2U;
+constexpr unsigned int WEDNESDAY = 3U;
+constexpr unsigned int THURSDAY  = 4U;
+constexpr unsigned int FRIDAY    = 5U;
+constexpr unsigned int SATURDAY  = 6U;
 
 /// \ingroup TucuCore
 /// \brief The type used to represent a serie of residuals.
@@ -131,11 +131,11 @@ typedef std::vector<Value> ValueVector;
 typedef Eigen::Map<const EigenVector> map2EigenVectorType;
 
 // The three following defines could be moved somewhere else
-#define isOmegaEmpty(matrix) (matrix.rows() == 0)
+#define isOmegaEmpty(matrix) ((matrix).rows() == 0) // NOLINT(cppcoreguidelines-macro-usage)
 
-#define isOmegaSquare(matrix) (matrix.rows() == matrix.cols())
+#define isOmegaSquare(matrix) ((matrix).rows() == (matrix).cols()) // NOLINT(cppcoreguidelines-macro-usage)
 
-#define omegaSize(matrix) (matrix.rows())
+#define omegaSize(matrix) ((matrix).rows()) // NOLINT(cppcoreguidelines-macro-usage)
 
 /// \brief Define the covariate types.
 enum class CovariateType {
@@ -238,7 +238,7 @@ public:
     /// \param _type The type of prediction
     /// \param _id The Id of the prediction
     ///
-    CompartmentInfo(CompartmentType _type, std::string _id) : m_type(_type), m_id(_id) {}
+    CompartmentInfo(CompartmentType _type, std::string _id) : m_type(_type), m_id(std::move(_id)) {}
 
     ///
     /// \brief gets the Id of this prediction

@@ -79,7 +79,7 @@ protected:
     /// \param _outResiduals Final residual concentrations
     virtual bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) = 0;
 
-protected:
+
     PrecomputedExponentials m_precomputedExponentials;      /// List of precomputed exponentials
     typedef IntakeCalculatorSingleConcentrations SingleConcentrations;
 

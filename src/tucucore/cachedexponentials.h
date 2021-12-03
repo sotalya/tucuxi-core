@@ -50,7 +50,6 @@ private:
     /// \return Returns the computed hash
     std::size_t hash(const Tucuxi::Common::Duration& _cycleDuration, const ParameterSetEvent& _parameters, CycleSize _nbPoints) const;
 
-private:
     std::map<std::size_t, PrecomputedExponentials> m_cache; /// The actual cache of exponentials
 };
 

@@ -35,8 +35,6 @@
 #include "tucucore/residualerrormodel.h"
 #include "tucucore/concentrationcalculator.h"
 
-#include "test_base.h"
-
 using namespace Tucuxi::Core;
 using namespace std::chrono_literals;
 
@@ -96,7 +94,12 @@ struct TestLikelihood : public fructose::test_base<TestLikelihood>
 
     /// \brief Test the likelihood calculation
     /// \param _testName Test name.
+    ///
+    /// \testing{Tucuxi::Core::Likelihood::negativeLogLikelihood()}
+    ///
     /// A Likelihood object computes a negativeLogLikelihood.
+    /// This test uses wrong parameters, and as such the result should be the maximum value for double.
+    ///
     void testWrongParameters(const std::string& /* _testName */)
     {
 
@@ -140,6 +143,14 @@ struct TestLikelihood : public fructose::test_base<TestLikelihood>
         fructose_assert_double_eq(res, std::numeric_limits<double>::max());
     }
 
+    /// \brief Test the likelihood calculation
+    /// \param _testName Test name.
+    ///
+    /// \testing{Tucuxi::Core::Likelihood::negativeLogLikelihood()}
+    ///
+    /// A Likelihood object computes a negativeLogLikelihood.
+    /// This test is done thanks to ConstantEliminationBolus, with one single sample.
+    ///
     void test1Sample(const std::string& /* _testName */)
     {
 
@@ -197,7 +208,15 @@ struct TestLikelihood : public fructose::test_base<TestLikelihood>
         fructose_assert_double_eq(res, expectedValue);
     }
 
-    void test2SampleSameDate(const std::string& /* _testName */)
+    /// \brief Test the likelihood calculation
+    /// \param _testName Test name.
+    ///
+    /// \testing{Tucuxi::Core::Likelihood::negativeLogLikelihood()}
+    ///
+    /// A Likelihood object computes a negativeLogLikelihood.
+    /// This test is done thanks to ConstantEliminationBolus, with two samples at the same date.
+    ///
+    void test2SamplesSameDate(const std::string& /* _testName */)
     {
         IntakeSeries intakes = buildIntakeSeries();
 
@@ -259,6 +278,14 @@ struct TestLikelihood : public fructose::test_base<TestLikelihood>
     }
 
 
+    /// \brief Test the likelihood calculation
+    /// \param _testName Test name.
+    ///
+    /// \testing{Tucuxi::Core::Likelihood::negativeLogLikelihood()}
+    ///
+    /// A Likelihood object computes a negativeLogLikelihood.
+    /// This test is done thanks to ConstantEliminationBolus, with two samples at different dates.
+    ///
     void test2SamplesDifferentDates(const std::string& /* _testName */)
     {
         IntakeSeries intakes = buildIntakeSeries();
@@ -325,6 +352,14 @@ struct TestLikelihood : public fructose::test_base<TestLikelihood>
     }
 
 
+    /// \brief Test the likelihood calculation
+    /// \param _testName Test name.
+    ///
+    /// \testing{Tucuxi::Core::Likelihood::negativeLogLikelihood()}
+    ///
+    /// A Likelihood object computes a negativeLogLikelihood.
+    /// This test is done thanks to ConstantEliminationBolus, with three samples at the different dates.
+    ///
     void test3SamplesDifferentDates(const std::string& /* _testName */)
     {
         IntakeSeries intakes = buildIntakeSeries();

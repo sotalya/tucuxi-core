@@ -14,7 +14,7 @@ namespace Core {
 
 void SigmaResidualErrorModel::setSigma(Sigma _sigma)
 {
-    m_sigma = _sigma;
+    m_sigma = std::move(_sigma);
 }
 
 void SigmaResidualErrorModel::setErrorModel(ResidualErrorType _errorModel)
@@ -129,10 +129,9 @@ Value SigmaResidualErrorModel::calculateSampleLikelihood(Value _expected, Value 
         // Something wrong happened
         if (expectedObservedDiff == 0.0)
         {
-            return 0;
-        } else {
-            return -std::numeric_limits<double>::max();
+            return 0.0;
         }
+        return -std::numeric_limits<double>::max();
     }
 
 

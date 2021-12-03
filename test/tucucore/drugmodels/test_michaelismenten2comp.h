@@ -27,7 +27,7 @@ using namespace date;
 using namespace Tucuxi::Core;
 
 
-static std::string test_mm_2comp_tdd = R"(
+static const std::string test_mm_2comp_tdd = R"(
 <?xml version="1.0" encoding="UTF-8"?>
 <model version='0.6' xsi:noNamespaceSchemaLocation='drug2.xsd' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
     <history>
@@ -742,9 +742,9 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
 {
     TestMichaelisMenten2comp() { }
 
-    void buildDrugTreatment(DrugTreatment *&_drugTreatment, FormulationAndRoute _route)
+    std::unique_ptr<DrugTreatment> buildDrugTreatment(const FormulationAndRoute& _route)
     {
-        _drugTreatment = new DrugTreatment();
+        auto drugTreatment = std::make_unique<DrugTreatment>();
 
         // List of time ranges that will be pushed into the history
         DosageTimeRangeList timeRangeList;
@@ -764,16 +764,17 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
                                  Duration(),
                                  Duration(std::chrono::hours(6)));
         DosageRepeat repeatedDose(periodicDose, 16);
-        std::unique_ptr<Tucuxi::Core::DosageTimeRange> sept2018(new Tucuxi::Core::DosageTimeRange(startSept2018, repeatedDose));
+        auto sept2018 = std::make_unique<Tucuxi::Core::DosageTimeRange>(startSept2018, repeatedDose);
 
+        drugTreatment->getModifiableDosageHistory().addTimeRange(*sept2018);
 
-        _drugTreatment->getModifiableDosageHistory().addTimeRange(*sept2018);
+        return drugTreatment;
     }
 
 
-    void buildDrugTreatmentMix(DrugTreatment *&_drugTreatment, FormulationAndRoute _route1, FormulationAndRoute _route2)
+    std::unique_ptr<DrugTreatment> buildDrugTreatmentMix(const FormulationAndRoute& _route1, const FormulationAndRoute& _route2)
     {
-        _drugTreatment = new DrugTreatment();
+        auto drugTreatment = std::make_unique<DrugTreatment>();
 
         // List of time ranges that will be pushed into the history
         DosageTimeRangeList timeRangeList;
@@ -793,10 +794,10 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
                                  Duration(),
                                  Duration(std::chrono::hours(6)));
         DosageRepeat repeatedDose(periodicDose, 16);
-        std::unique_ptr<Tucuxi::Core::DosageTimeRange> sept2018(new Tucuxi::Core::DosageTimeRange(startSept2018, repeatedDose));
+        auto sept2018 = std::make_unique<DosageTimeRange>(startSept2018, repeatedDose);
 
 
-        _drugTreatment->getModifiableDosageHistory().addTimeRange(*sept2018);
+        drugTreatment->getModifiableDosageHistory().addTimeRange(*sept2018);
 
         LastingDose periodicDose2(DoseValue(200.0),
                                  TucuUnit("mg"),
@@ -804,17 +805,17 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
                                  Duration(),
                                  Duration(std::chrono::hours(6)));
         DosageRepeat repeatedDose2(periodicDose2, 16);
-        std::unique_ptr<Tucuxi::Core::DosageTimeRange> second(new Tucuxi::Core::DosageTimeRange(startSept2018 + Duration(std::chrono::hours(6*16)), repeatedDose2));
+        auto second = std::make_unique<DosageTimeRange>(startSept2018 + Duration(std::chrono::hours(6*16)), repeatedDose2);
 
-        _drugTreatment->getModifiableDosageHistory().addTimeRange(*second);
+        drugTreatment->getModifiableDosageHistory().addTimeRange(*second);
 
-
+        return drugTreatment;
     }
 
 
-    void buildDrugTreatmentMix3(DrugTreatment *&_drugTreatment, FormulationAndRoute _route1, FormulationAndRoute _route2, FormulationAndRoute _route3)
+    std::unique_ptr<DrugTreatment> buildDrugTreatmentMix3(const FormulationAndRoute& _route1, const FormulationAndRoute& _route2, const FormulationAndRoute& _route3)
     {
-        _drugTreatment = new DrugTreatment();
+        auto drugTreatment = std::make_unique<DrugTreatment>();
 
         // List of time ranges that will be pushed into the history
         DosageTimeRangeList timeRangeList;
@@ -834,10 +835,10 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
                                  Duration(),
                                  Duration(std::chrono::hours(24)));
         DosageRepeat repeatedDose(periodicDose, 2);
-        std::unique_ptr<Tucuxi::Core::DosageTimeRange> sept2018(new Tucuxi::Core::DosageTimeRange(startSept2018, repeatedDose));
+        auto sept2018 = std::make_unique<Tucuxi::Core::DosageTimeRange>(startSept2018, repeatedDose);
 
 
-        _drugTreatment->getModifiableDosageHistory().addTimeRange(*sept2018);
+        drugTreatment->getModifiableDosageHistory().addTimeRange(*sept2018);
 
         LastingDose periodicDose2(DoseValue(200.0),
                                  TucuUnit("mg"),
@@ -845,9 +846,9 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
                                  Duration(),
                                  Duration(std::chrono::hours(24)));
         DosageRepeat repeatedDose2(periodicDose2, 1);
-        std::unique_ptr<Tucuxi::Core::DosageTimeRange> second(new Tucuxi::Core::DosageTimeRange(startSept2018 + Duration(std::chrono::hours(2*24)), repeatedDose2));
+        auto second = std::make_unique<Tucuxi::Core::DosageTimeRange>(startSept2018 + Duration(std::chrono::hours(2*24)), repeatedDose2);
 
-        _drugTreatment->getModifiableDosageHistory().addTimeRange(*second);
+        drugTreatment->getModifiableDosageHistory().addTimeRange(*second);
 
         LastingDose periodicDose3(DoseValue(200.0),
                                  TucuUnit("mg"),
@@ -855,11 +856,11 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
                                  Duration(),
                                  Duration(std::chrono::hours(24)));
         DosageRepeat repeatedDose3(periodicDose3, 1);
-        std::unique_ptr<Tucuxi::Core::DosageTimeRange> third(new Tucuxi::Core::DosageTimeRange(startSept2018 + Duration(std::chrono::hours(3*24)), repeatedDose3));
+        auto third = std::make_unique<Tucuxi::Core::DosageTimeRange>(startSept2018 + Duration(std::chrono::hours(3*24)), repeatedDose3);
 
-        _drugTreatment->getModifiableDosageHistory().addTimeRange(*third);
+        drugTreatment->getModifiableDosageHistory().addTimeRange(*third);
 
-
+        return drugTreatment;
     }
 
 
@@ -868,7 +869,7 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
     {
         DrugModelImport importer;
 
-        DrugModel *drugModel;
+        std::unique_ptr<DrugModel> drugModel;
 
         auto importStatus = importer.importFromString(drugModel, test_mm_2comp_tdd);
         fructose_assert_eq(importStatus, DrugModelImport::Status::Ok);
@@ -880,13 +881,10 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
 
         fructose_assert( component != nullptr);
 
-
-        DrugTreatment *drugTreatment;
         const FormulationAndRoute route(Formulation::ParenteralSolution,
                                         AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular);
 
-
-        buildDrugTreatment(drugTreatment, route);
+        auto drugTreatment = buildDrugTreatment(route);
 
         {
 
@@ -959,13 +957,6 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
             //}
         }
 
-
-        if (drugTreatment != nullptr) {
-            delete drugTreatment;
-        }
-        if (drugModel != nullptr) {
-            delete drugModel;
-        }
         if (component != nullptr) {
             delete component;
         }
@@ -977,7 +968,7 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
     {
         DrugModelImport importer;
 
-        DrugModel *drugModel;
+        std::unique_ptr<DrugModel> drugModel;
 
         auto importStatus = importer.importFromString(drugModel, test_mm_2comp_tdd);
         fructose_assert_eq(importStatus, DrugModelImport::Status::Ok);
@@ -989,13 +980,10 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
 
         fructose_assert( component != nullptr);
 
-
-        DrugTreatment *drugTreatment;
         const FormulationAndRoute route(Formulation::ParenteralSolution,
                                         AdministrationRoute::IntravenousDrip, AbsorptionModel::Infusion);
 
-
-        buildDrugTreatment(drugTreatment, route);
+        auto drugTreatment = buildDrugTreatment(route);
 
         {
 
@@ -1068,13 +1056,6 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
             //}
         }
 
-
-        if (drugTreatment != nullptr) {
-            delete drugTreatment;
-        }
-        if (drugModel != nullptr) {
-            delete drugModel;
-        }
         if (component != nullptr) {
             delete component;
         }
@@ -1086,7 +1067,7 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
     {
         DrugModelImport importer;
 
-        DrugModel *drugModel;
+        std::unique_ptr<DrugModel> drugModel;
 
         auto importStatus = importer.importFromString(drugModel, test_mm_2comp_tdd);
         fructose_assert_eq(importStatus, DrugModelImport::Status::Ok);
@@ -1098,13 +1079,10 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
 
         fructose_assert( component != nullptr);
 
-
-        DrugTreatment *drugTreatment;
         const FormulationAndRoute route(Formulation::ParenteralSolution,
                                         AdministrationRoute::Intramuscular, AbsorptionModel::Extravascular);
 
-
-        buildDrugTreatment(drugTreatment, route);
+        auto drugTreatment = buildDrugTreatment(route);
 
         {
 
@@ -1174,13 +1152,6 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
             //}
         }
 
-
-        if (drugTreatment != nullptr) {
-            delete drugTreatment;
-        }
-        if (drugModel != nullptr) {
-            delete drugModel;
-        }
         if (component != nullptr) {
             delete component;
         }
@@ -1192,7 +1163,7 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
     {
         DrugModelImport importer;
 
-        DrugModel *drugModel;
+        std::unique_ptr<DrugModel> drugModel;
 
         auto importStatus = importer.importFromString(drugModel, test_mm_2comp_tdd);
         fructose_assert_eq(importStatus, DrugModelImport::Status::Ok);
@@ -1205,12 +1176,9 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
         fructose_assert( component != nullptr);
 
 
-        DrugTreatment *drugTreatment;
         const FormulationAndRoute route(Formulation::ParenteralSolution,
                                         AdministrationRoute::Oral, AbsorptionModel::ExtravascularLag);
-
-
-        buildDrugTreatment(drugTreatment, route);
+        auto drugTreatment = buildDrugTreatment(route);
 
         {
 
@@ -1280,13 +1248,6 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
             //}
         }
 
-
-        if (drugTreatment != nullptr) {
-            delete drugTreatment;
-        }
-        if (drugModel != nullptr) {
-            delete drugModel;
-        }
         if (component != nullptr) {
             delete component;
         }
@@ -1298,7 +1259,7 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
     {
         DrugModelImport importer;
 
-        DrugModel *drugModel;
+        std::unique_ptr<DrugModel> drugModel;
 
         auto importStatus = importer.importFromString(drugModel, test_mm_2comp_tdd);
         fructose_assert_eq(importStatus, DrugModelImport::Status::Ok);
@@ -1310,15 +1271,13 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
 
         fructose_assert( component != nullptr);
 
-
-        DrugTreatment *drugTreatment;
         const FormulationAndRoute route1(Formulation::ParenteralSolution,
                                         AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular);
 
         const FormulationAndRoute route2(Formulation::ParenteralSolution,
                                         AdministrationRoute::Intramuscular, AbsorptionModel::Extravascular);
 
-        buildDrugTreatmentMix(drugTreatment, route1, route2);
+        auto drugTreatment = buildDrugTreatmentMix(route1, route2);
 
         {
 
@@ -1391,13 +1350,6 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
             //}
         }
 
-
-        if (drugTreatment != nullptr) {
-            delete drugTreatment;
-        }
-        if (drugModel != nullptr) {
-            delete drugModel;
-        }
         if (component != nullptr) {
             delete component;
         }
@@ -1409,7 +1361,7 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
     {
         DrugModelImport importer;
 
-        DrugModel *drugModel;
+        std::unique_ptr<DrugModel> drugModel;
 
         auto importStatus = importer.importFromString(drugModel, test_mm_2comp_tdd);
         fructose_assert_eq(importStatus, DrugModelImport::Status::Ok);
@@ -1421,20 +1373,16 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
 
         fructose_assert( component != nullptr);
 
-
-        DrugTreatment *drugTreatment;
-
         const FormulationAndRoute route1(Formulation::ParenteralSolution,
                                         AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular);
 
         const FormulationAndRoute route2(Formulation::ParenteralSolution,
                                         AdministrationRoute::Intramuscular, AbsorptionModel::Extravascular);
 
-
         const FormulationAndRoute route3(Formulation::ParenteralSolution,
                                         AdministrationRoute::IntravenousDrip, AbsorptionModel::Infusion);
 
-        buildDrugTreatmentMix3(drugTreatment, route1, route2, route3);
+        auto drugTreatment = buildDrugTreatmentMix3(route1, route2, route3);
 
         {
 
@@ -1473,12 +1421,6 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
             //}
         }
 
-        if (drugTreatment != nullptr) {
-            delete drugTreatment;
-        }
-        if (drugModel != nullptr) {
-            delete drugModel;
-        }
         if (component != nullptr) {
             delete component;
         }

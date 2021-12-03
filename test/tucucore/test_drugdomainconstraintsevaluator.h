@@ -41,12 +41,12 @@ using namespace Tucuxi::Common::Utils;
     new JSOperation(OPERATION, { \
     OperationInput(OP1, InputType::DOUBLE), \
     OperationInput(OP2, InputType::DOUBLE)}); \
-    Constraint *c = new Constraint(); \
+    auto c = std::make_unique<Constraint>(); \
     c->addRequiredCovariateId(OP1); \
     c->addRequiredCovariateId(OP2); \
     c->setType(TYPE); \
     c->setCheckOperation(std::unique_ptr<Operation>(op)); \
-    DOMAIN.addConstraint(std::unique_ptr<Constraint>(c)); \
+    DOMAIN.addConstraint(std::move(c)); \
     } while (0);
 
 /// \brief Add a constraint to a drug model domain.
@@ -62,12 +62,12 @@ using namespace Tucuxi::Common::Utils;
     new JSOperation(OPERATION, { \
     OperationInput(OP1, InputType::DOUBLE), \
     OperationInput(OP2, InputType::DOUBLE)}); \
-    Constraint *c = new Constraint(); \
+    auto c = std::make_unique<Constraint>(); \
     c->addRequiredCovariateId(OP1); \
     c->addRequiredCovariateId(OP2); \
     c->setType(TYPE); \
     c->setCheckOperation(std::unique_ptr<Operation>(op)); \
-    DOMAIN->addConstraint(std::unique_ptr<Constraint>(c)); \
+    DOMAIN->addConstraint(std::move(c)); \
     } while (0);
 
 #define ADD_OP1_CONSTRAINT(DOMAIN, OPERATION, OP1, TYPE) \
@@ -75,11 +75,11 @@ using namespace Tucuxi::Common::Utils;
     Operation *op = \
     new JSOperation(OPERATION, { \
     OperationInput(OP1, InputType::DOUBLE)}); \
-    Constraint *c = new Constraint(); \
+    auto c = std::make_unique<Constraint>(); \
     c->addRequiredCovariateId(OP1); \
     c->setType(TYPE); \
     c->setCheckOperation(std::unique_ptr<Operation>(op)); \
-    DOMAIN->addConstraint(std::unique_ptr<Constraint>(c)); \
+    DOMAIN->addConstraint(std::move(c)); \
     } while (0);
 
 void compatibleTests();

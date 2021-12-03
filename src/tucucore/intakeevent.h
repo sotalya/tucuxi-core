@@ -43,9 +43,9 @@ public:
                 AbsorptionModel _route, Duration _infusionTime, CycleSize _nbPoints)
         : TimedEvent(_time), 
           m_dose(_dose),
-          m_doseUnit(_doseUnit),
+          m_doseUnit(std::move(_doseUnit)),
           m_offsetTime(_offsetTime),
-          m_formulationAndRoute(_formulationAndRoute),
+          m_formulationAndRoute(std::move(_formulationAndRoute)),
           m_route(_route),
           m_interval(_interval),
           m_infusionTime(_infusionTime),
@@ -183,7 +183,7 @@ public:
     /// \param _calculator The calculator itself
     void setCalculator(std::shared_ptr<IntakeIntervalCalculator> _calculator)
     {
-        m_calculator = _calculator;
+        m_calculator = std::move(_calculator);
     }
 
     std::shared_ptr<IntakeIntervalCalculator> getCalculator() const

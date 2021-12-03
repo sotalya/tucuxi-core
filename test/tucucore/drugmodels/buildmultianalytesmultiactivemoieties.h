@@ -16,8 +16,8 @@ public:
 
     Tucuxi::Core::DrugModel *buildDrugModel(
             //the method buildDrugModel() takes a certain number of arguments, that were relevant for other drug models. Do not hesitate to add some (for instance we could have 4 times a conversionFactor instead of 2, ...).
-            double _conversionFactor0 = 1.0,
-            double _conversionFactor1 = 1.0,
+            double conversionFactor0 = 1.0,
+            double conversionFactor1 = 1.0,
             ResidualErrorType _errorModelType = ResidualErrorType::NONE,
             std::vector<Value> _sigmas = {0.0},
             Tucuxi::Core::ParameterVariabilityType _variabilityTypeA = Tucuxi::Core::ParameterVariabilityType::None,
@@ -88,7 +88,7 @@ public:
             analyteSet0->setId("analyteSet0");
             analyteSet0->setPkModelId("test.multiconstantelimination");
 
-            std::unique_ptr<Analyte> analyte0 = std::make_unique<Analyte>("analyte0", TucuUnit("ug/l"), MolarMass(10.0, TucuUnit("mol/l")));
+            std::unique_ptr<Analyte> analyte0 = std::make_unique<Analyte>("analyte0", TucuUnit("ug/l"), std::make_unique<MolarMass>(10.0, TucuUnit("mol/l")));
 
 
 
@@ -142,7 +142,7 @@ public:
             analyteSet1->setId("analyteSet1");
             analyteSet1->setPkModelId("test.constantelimination");
 
-            std::unique_ptr<Analyte> analyte1 = std::make_unique<Analyte>("analyte1", TucuUnit("ug/l"), MolarMass(10.0, TucuUnit("mol/l")));
+            std::unique_ptr<Analyte> analyte1 = std::make_unique<Analyte>("analyte1", TucuUnit("ug/l"), std::make_unique<MolarMass>(10.0, TucuUnit("mol/l")));
 
 
 
@@ -197,8 +197,8 @@ public:
         analyteSet2->setId("analyteSet2");
         analyteSet2->setPkModelId("test.multiconstantelimination");
 
-        std::unique_ptr<Analyte> analyte2 = std::make_unique<Analyte>("analyte2", TucuUnit("ug/l"), MolarMass(10.0, TucuUnit("mol/l")));
-        std::unique_ptr<Analyte> analyte3 = std::make_unique<Analyte>("analyte3", TucuUnit("ug/l"), MolarMass(10.0, TucuUnit("mol/l")));
+        std::unique_ptr<Analyte> analyte2 = std::make_unique<Analyte>("analyte2", TucuUnit("ug/l"), std::make_unique<MolarMass>(10.0, TucuUnit("mol/l")));
+        std::unique_ptr<Analyte> analyte3 = std::make_unique<Analyte>("analyte3", TucuUnit("ug/l"), std::make_unique<MolarMass>(10.0, TucuUnit("mol/l")));
 
 
         ErrorModel* errorModel = new ErrorModel();
@@ -301,13 +301,13 @@ public:
                 formulationAndRoute->addAssociation(std::unique_ptr<AnalyteSetToAbsorptionAssociation>(association1));
             }
 
-            std::unique_ptr<AnalyteConversion> analyteConversion0 = std::make_unique<AnalyteConversion>("analyte0", _conversionFactor0);
+            std::unique_ptr<AnalyteConversion> analyteConversion0 = std::make_unique<AnalyteConversion>(AnalyteId("analyte0"), conversionFactor0);
             formulationAndRoute->addAnalyteConversion(std::move(analyteConversion0));
-            std::unique_ptr<AnalyteConversion> analyteConversion1 = std::make_unique<AnalyteConversion>("analyte1", _conversionFactor1);
+            std::unique_ptr<AnalyteConversion> analyteConversion1 = std::make_unique<AnalyteConversion>(AnalyteId("analyte1"), conversionFactor1);
             formulationAndRoute->addAnalyteConversion(std::move(analyteConversion1));
-            std::unique_ptr<AnalyteConversion> analyteConversion2 = std::make_unique<AnalyteConversion>("analyte2", _conversionFactor1);
+            std::unique_ptr<AnalyteConversion> analyteConversion2 = std::make_unique<AnalyteConversion>(AnalyteId("analyte2"), conversionFactor1);
             formulationAndRoute->addAnalyteConversion(std::move(analyteConversion1));
-            std::unique_ptr<AnalyteConversion> analyteConversion3 = std::make_unique<AnalyteConversion>("analyte3", _conversionFactor1);
+            std::unique_ptr<AnalyteConversion> analyteConversion3 = std::make_unique<AnalyteConversion>(AnalyteId("analyte3"), conversionFactor1);
             formulationAndRoute->addAnalyteConversion(std::move(analyteConversion1));
 
             ValidDoses *validDoses = new ValidDoses(TucuUnit("mg"), std::make_unique<PopulationValue>(400));
@@ -358,7 +358,7 @@ public:
         collection.populate();
         std::shared_ptr<Operation> sharedOperation = collection.getOperationFromId("sum2");
 
-        std::unique_ptr<Operation> activeMoietyOperation = std::unique_ptr<Operation>(sharedOperation.get()->clone());
+        std::unique_ptr<Operation> activeMoietyOperation = std::unique_ptr<Operation>(sharedOperation->clone());
 
         std::vector<AnalyteId> analyteList0;
         analyteList0.push_back(AnalyteId("analyte0"));

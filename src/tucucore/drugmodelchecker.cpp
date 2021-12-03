@@ -356,7 +356,7 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkHalfLife(const DrugMode
                    Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
 
     auto defaultFormulationAndRoute = _drugModel->getFormulationAndRoutes().getDefault();
-    auto formulationAndRoute = defaultFormulationAndRoute->getFormulationAndRoute();
+    const auto &formulationAndRoute = defaultFormulationAndRoute->getFormulationAndRoute();
     auto dose = defaultFormulationAndRoute->getValidDoses()->getDefaultValue();
     auto doseUnit = defaultFormulationAndRoute->getValidDoses()->getUnit();
     auto interval = defaultFormulationAndRoute->getValidIntervals()->getDefaultDuration();
@@ -406,7 +406,7 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkHalfLife(const DrugMode
                 std::make_unique<ComputingTraitConcentration>(
                     requestResponseId, startPred, endPred, nbPointsPerHour, computingOption);
 
-        ComputingRequest request(requestResponseId, *_drugModel, *drugTreatment.get(), std::move(traits));
+        ComputingRequest request(requestResponseId, *_drugModel, *drugTreatment, std::move(traits));
 
         std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
@@ -461,7 +461,7 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkHalfLife(const DrugMode
                         std::make_unique<ComputingTraitConcentration>(
                             requestResponseId, startPred, endPred, nbPointsPerHour, computingOption);
 
-                ComputingRequest request(requestResponseId, *_drugModel, *drugTreatment.get(), std::move(traits));
+                ComputingRequest request(requestResponseId, *_drugModel, *drugTreatment, std::move(traits));
 
                 std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 

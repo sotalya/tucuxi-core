@@ -39,7 +39,7 @@ public:
 };
 
 
-bool DrugFileValidator::validate(std::string _drugFileName, const std::string& _testFileName)
+bool DrugFileValidator::validate(const std::string& _drugFileName, const std::string& _testFileName)
 {
 
     static const string DATA_FORMAT = "%Y-%m-%dT%H:%M:%S";
@@ -59,10 +59,10 @@ bool DrugFileValidator::validate(std::string _drugFileName, const std::string& _
 
     Tucuxi::Core::PatientVariates covariates;
 
-    Tucuxi::Core::DrugModel *dModel;
+    std::unique_ptr<Tucuxi::Core::DrugModel> drugModel;
 
     DrugModelImport importer;
-    if (importer.importFromFile(dModel, std::move(_drugFileName)) != DrugModelImport::Status::Ok) {
+    if (importer.importFromFile(drugModel, _drugFileName) != DrugModelImport::Status::Ok) {
         logger.error("Can not import the drug file. {}", importer.getErrorMessage());
         return false;
     }
@@ -78,18 +78,19 @@ bool DrugFileValidator::validate(std::string _drugFileName, const std::string& _
         return false;
     }
 
-    DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(dModel, &pkCollection);
+    DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel.get(), &pkCollection);
     if (!checkerResult.m_ok) {
         logger.error(checkerResult.m_errorMessage);
         return false;
     }
 
-    std::unique_ptr<Tucuxi::Core::DrugModel> drugModel(dModel);
-
     bool validationResult = true;
     {
         const rapidjson::Value& parametersTests = document["parameterstests"]; // Using a reference for consecutive access is handy and faster.
-        assert(parametersTests.IsArray());
+        if (!parametersTests.IsArray()) {
+            logger.error("The parameterstests shall be an array, but it is not");
+            return false;
+        }
         for (rapidjson::SizeType i = 0; i < parametersTests.Size(); i++) {// rapidjson uses SizeType instead of size_t.
             const rapidjson::Value &test = parametersTests[i];
             const rapidjson::Value &covariates = test["covariates"];

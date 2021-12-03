@@ -65,16 +65,16 @@ protected:
                                                Common::Duration _interval,
                                                std::vector<ComputingAdjustments::SimpleDosageCandidate> &_candidates);
 
-    DosageTimeRange *createDosage(
+    std::unique_ptr<DosageTimeRange> createDosage(
             const SimpleDosageCandidate &_candidate,
             DateTime _startTime,
             DateTime _endTime);
 
 
-    DosageTimeRange *createLoadingDosageOrRestPeriod(const SimpleDosageCandidate &_candidate,
+    std::unique_ptr<DosageTimeRange> createLoadingDosageOrRestPeriod(const SimpleDosageCandidate &_candidate,
             DateTime _startTime);
 
-    DosageTimeRange *createSteadyStateDosage(
+    std::unique_ptr<DosageTimeRange> createSteadyStateDosage(
             const SimpleDosageCandidate &_candidate,
             DateTime _startTime);
 
@@ -144,7 +144,6 @@ protected:
             bool &_multipleFormulationAndRoutes
             );
 
-protected:
 
     Tucuxi::Common::LoggerHelper m_logger;
     ComputingUtils *m_utils;

@@ -47,11 +47,11 @@ void errorUndefinedDateTime(const DateTime &/*_date*/)
     std::cerr << "Error : Using an undefined DateTime" << std::endl;
 }
 
-#define SETDEFINED(value) {m_isDefined = value;}
+#define SETDEFINED(value) {m_isDefined = value;} // NOLINT(cppcoreguidelines-macro-usage)
 #define CHECKDEFINED {if (sm_enableChecks && this->isUndefined()){errorUndefinedDateTime(*this);throw std::runtime_error("Date Time used but undefined");}}
 #define CHECKOTHERDEFINED {if (sm_enableChecks && _other.isUndefined()) {errorUndefinedDateTime(_other);throw std::runtime_error("Date Time used but undefined");}}
 #else // CHECK_DATETIME
-#define SETDEFINED(value) {m_isDefined = value;}
+#define SETDEFINED(value) {m_isDefined = value;} // NOLINT(cppcoreguidelines-macro-usage)
 #define CHECKDEFINED
 #define CHECKOTHERDEFINED
 void DateTime::enableChecks() {}
@@ -427,6 +427,20 @@ double DateTime::toDays() const
     CHECKDEFINED;
     return std::floor(static_cast<double>(get<std::chrono::hours>().count()) / 24);
 }
+
+
+DateTime DateTime::max() {
+    DateTime result;
+    result.m_date = std::chrono::time_point<std::chrono::system_clock>::max();
+    return result;
+}
+
+DateTime DateTime::min() {
+    DateTime result;
+    result.m_date = std::chrono::time_point<std::chrono::system_clock>::min();
+    return result;
+}
+
 
 } // namespace Common
 } // namespace Tucuxi

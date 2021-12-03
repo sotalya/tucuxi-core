@@ -56,7 +56,6 @@ private:
     Logger(const std::string &_filename);
     friend class LoggerHelper;
 
-private:
     std::shared_ptr<spdlog::logger> m_logger; /// The pointer to the instance of spdlog logger
 };
 

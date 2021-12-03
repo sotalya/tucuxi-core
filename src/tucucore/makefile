@@ -91,6 +91,7 @@ SOURCES := \
            pkmodels/threecompartmentinfusion.cpp \
            pkmodels/twocompartmentbolus.cpp \
            pkmodels/twocompartmentextra.cpp \
+           pkmodels/twocompartmentextralag.cpp \
            pkmodels/twocompartmentinfusion.cpp
 
 INCLUDES := . \

@@ -7,7 +7,7 @@ namespace Query {
 
 
 
-ComputingQuery::ComputingQuery(std::string _queryId) : m_queryId(_queryId)
+ComputingQuery::ComputingQuery(std::string _queryId) : m_queryId(std::move(_queryId))
 {
 }
 

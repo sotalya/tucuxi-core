@@ -57,9 +57,6 @@ ComputingComponent::ComputingComponent()
 }
 
 
-ComputingComponent::~ComputingComponent()
-= default;
-
 bool ComputingComponent::initialize()
 {
     m_utils = std::make_unique<ComputingUtils>();
@@ -74,7 +71,7 @@ bool ComputingComponent::initialize()
 }
 
 void ComputingComponent::setPkModelCollection(std::shared_ptr<PkModelCollection> _collection) {
-    m_utils->m_models = _collection;
+    m_utils->m_models = std::move(_collection);
 }
 
 
@@ -186,7 +183,7 @@ ComputingStatus ComputingComponent::recordCycle(const ComputingTraitStandard *_t
     ParameterSetEventPtr params = _parameterSeries[analyteGroupId].getAtTime(_start, _etas.at(analyteGroupId));
 
     if (_traits->getComputingOption().retrieveParameters() == RetrieveParametersOption::RetrieveParameters) {
-        for (auto p = params.get()->begin() ; p < params.get()->end() ; p++) {
+        for (auto p = params->begin() ; p < params->end() ; p++) {
             cycle.m_parameters.push_back({(*p).getParameterId(), (*p).getValue()});
         }
         std::sort(cycle.m_parameters.begin(), cycle.m_parameters.end(),
@@ -349,7 +346,7 @@ ComputingStatus ComputingComponent::compute(
             ComputingStatus recordStatus = recordCycle(
                         _traits,
                         _request,
-                        *resp.get(),
+                        *resp,
                         start,
                         end,
                         times,
@@ -364,7 +361,7 @@ ComputingStatus ComputingComponent::compute(
         }
     }
 
-    endRecord(_traits, _request, *resp.get());
+    endRecord(_traits, _request, *resp);
 
     _response->addResponse(std::move(resp));
     return ComputingStatus::Ok;
@@ -381,9 +378,7 @@ ComputingStatus ComputingComponent::compute(
     if (_request.getDrugModel().getAnalyteSets().size() > 1) {
         return computePercentilesMulti(_traits, _request, _response);
     }
-    else {
-        return computePercentilesSimple(_traits, _request, _response);
-    }
+    return computePercentilesSimple(_traits, _request, _response);
 }
 
 ComputingStatus ComputingComponent::computePercentilesMulti(
@@ -564,7 +559,7 @@ ComputingStatus ComputingComponent::computePercentilesMulti(
                 _request,
                 _response,
                 intakeSeries,
-                std::move(pPrediction),
+                pPrediction,
                 percentiles,
                 percentileRanks);
 }
@@ -657,8 +652,10 @@ ComputingStatus ComputingComponent::computePercentilesSimple(
         // This extraction is already done in extractAposterioriEtas... Could be optimized
         SampleSeries sampleSeries;
         SampleExtractor sampleExtractor;
+        // We take all samples
         ComputingStatus sampleExtractionResult =
-                sampleExtractor.extract(_request.getDrugTreatment().getSamples(), _request.getDrugModel().getAnalyteSet(analyteGroupId), calculationStartTime, _traits->getEnd(), _request.getDrugModel().getAnalyteSet(analyteGroupId)->getConcentrationUnit(), sampleSeries);
+                sampleExtractor.extract(_request.getDrugTreatment().getSamples(), _request.getDrugModel().getAnalyteSet(analyteGroupId), DateTime::min(), DateTime::max(), _request.getDrugModel().getAnalyteSet(analyteGroupId)->getConcentrationUnit(), sampleSeries);
+        //sampleExtractor.extract(_request.getDrugTreatment().getSamples(), _request.getDrugModel().getAnalyteSet(analyteGroupId), calculationStartTime, _traits->getEnd(), _request.getDrugModel().getAnalyteSet(analyteGroupId)->getConcentrationUnit(), sampleSeries);
 
         if (sampleExtractionResult != ComputingStatus::Ok) {
             return sampleExtractionResult;
@@ -727,7 +724,7 @@ ComputingStatus ComputingComponent::computePercentilesSimple(
                 _request,
                 _response,
                 intakeSeries,
-                std::move(pPrediction),
+                pPrediction,
                 percentiles,
                 percentileRanks);
 }
@@ -805,9 +802,7 @@ ComputingStatus ComputingComponent::preparePercentilesResponse(
         _response->addResponse(std::move(resp));
         return ComputingStatus::Ok;
     }
-    else {
-        return ComputingStatus::SelectedIntakesSizeError;
-    }
+    return ComputingStatus::SelectedIntakesSizeError;
 }
 
 

@@ -24,7 +24,7 @@ public:
     /// \return Pointer to a new object of subclass' type.
     virtual std::unique_ptr<Operation> clone() const
     {
-        return std::unique_ptr<Operation>(new DiffOperation(*this));
+        return std::make_unique<DiffOperation>(*this);
     }
 
 

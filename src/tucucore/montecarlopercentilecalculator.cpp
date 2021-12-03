@@ -316,7 +316,7 @@ typedef struct
 ComputingStatus MonteCarloPercentileCalculatorBase::sortAndExtractPercentiles(PercentilesPrediction &_percentiles,
         const PercentileRanks &_percentileRanks,
         size_t _nbPatients,
-        std::vector<TimeOffsets> _times,
+        const std::vector<TimeOffsets>& _times,
         IntakeSeries &_recordedIntakes,
         std::vector< std::vector< std::vector<Concentration> > > &_concentrations
         )
@@ -401,8 +401,6 @@ ComputingStatus MonteCarloPercentileCalculatorBase::sortAndExtractPercentiles(Pe
                                           &currentPoint, &_percentiles, &mutex, &currentCycle, nbCycles]()
         {
             bool cont = true;
-            size_t cycle;
-            size_t point;
 
             while (cont) {
                 mutex.lock();
@@ -411,19 +409,18 @@ ComputingStatus MonteCarloPercentileCalculatorBase::sortAndExtractPercentiles(Pe
                     mutex.unlock();
                     break;
                 }
+                // no time for a break, let's continue
+                size_t point = currentPoint;
+                size_t cycle = currentCycle;
+                if (point == _recordedIntakes[cycle].getNbPoints() - 1) {
+                    currentPoint = 0;
+                    currentCycle ++;
+                    if (currentCycle >= nbCycles) {
+                        cont = false;
+                    }
+                }
                 else {
-                    point = currentPoint;
-                    cycle = currentCycle;
-                    if (point == _recordedIntakes[cycle].getNbPoints() - 1) {
-                        currentPoint = 0;
-                        currentCycle ++;
-                        if (currentCycle >= nbCycles) {
-                            cont = false;
-                        }
-                    }
-                    else {
-                        currentPoint ++;
-                    }
+                    currentPoint ++;
                 }
                 mutex.unlock();
 
@@ -791,11 +788,9 @@ ComputingStatus AposterioriMonteCarloPercentileCalculator::calculateEtasAndEpsil
 
     size_t nbSamplesOut = 0;
     for (const auto &sample: _samples) {
-        if (sample.getEventTime() < _intakes.at(0).getEventTime()) {
-            nbSamplesOut ++;
-        }
-        else if (sample.getEventTime() > _intakes.at(_intakes.size() - 1).getEventTime() +
-                 _intakes.at(_intakes.size() -1 ).getInterval()) {
+        if ((sample.getEventTime() < _intakes.at(0).getEventTime()) ||
+                (sample.getEventTime() > _intakes.at(_intakes.size() - 1).getEventTime() +
+                                 _intakes.at(_intakes.size() -1 ).getInterval())) {
             nbSamplesOut ++;
         }
     }

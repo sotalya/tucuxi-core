@@ -19,7 +19,7 @@ class TranslatedText
 
 };
 
-enum class ConstraintType {HARD, SOFT, MANDATORYHARD};
+enum class ConstraintType {HARD, SOFT, MANDATORYHARD, UNDEFINED};
 
 class Constraint
 {
@@ -27,7 +27,7 @@ public:
     Constraint(){};
     virtual ~Constraint(){};
 
-    void addRequiredCovariateId(std::string _id) {m_requiredCovariateIds.push_back(_id);};
+    void addRequiredCovariateId(std::string _id) {m_requiredCovariateIds.push_back(std::move(_id));};
     const std::vector<std::string>& getRequiredCovariateIds() const {return m_requiredCovariateIds;}
 
     void setCheckOperation(std::unique_ptr<Operation> _operation) {m_checkOperation = std::move(_operation);}
@@ -38,21 +38,22 @@ public:
 
     ConstraintType getType() const { return m_type;}
 
-    void setDescription(Tucuxi::Common::TranslatableString _description) {m_description = _description;}
+    void setDescription(Tucuxi::Common::TranslatableString _description) {m_description = std::move(_description);}
 
-    void setErrorMessage(Tucuxi::Common::TranslatableString _errorMessage) {m_errorMessage = _errorMessage;}
+    void setErrorMessage(Tucuxi::Common::TranslatableString _errorMessage) {m_errorMessage = std::move(_errorMessage);}
 
     Tucuxi::Common::TranslatableString getErrorMessage() const {return m_errorMessage;}
 
     INVARIANTS(
             INVARIANT(Invariants::INV_CONSTRAINT_0001, (m_checkOperation != nullptr), "A constraint has no operation")
-            INVARIANT(Invariants::INV_CONSTRAINT_0001, (m_requiredCovariateIds.size() > 0), "A constraint has no required covariate Ids")
-            LAMBDA_INVARIANT(Invariants::INV_CONSTRAINT_0003, {bool ok = true; for(size_t i = 0; i < m_requiredCovariateIds.size(); i++) {ok &= m_requiredCovariateIds[i].size() > 0;} return ok;}, "There is an empty covariate Id in the required covariates list of a constraint")
+            INVARIANT(Invariants::INV_CONSTRAINT_0002, (!m_requiredCovariateIds.empty()), "A constraint has no required covariate Ids")
+            INVARIANT(Invariants::INV_CONSTRAINT_0003, (m_type != ConstraintType::UNDEFINED), "A constraint type should not be undefined")
+            LAMBDA_INVARIANT(Invariants::INV_CONSTRAINT_0004, {bool ok = true; for(size_t i = 0; i < m_requiredCovariateIds.size(); i++) {ok &= !m_requiredCovariateIds[i].empty();} return ok;}, "There is an empty covariate Id in the required covariates list of a constraint")
             )
 
 protected:
 
-    ConstraintType m_type;
+    ConstraintType m_type{ConstraintType::UNDEFINED};
     Tucuxi::Common::TranslatableString m_description;
     std::vector<std::string> m_requiredCovariateIds;
     std::unique_ptr<Operation> m_checkOperation;
@@ -70,7 +71,7 @@ public:
     void addConstraint(std::unique_ptr<Constraint> _constraint) { m_constraints.push_back(std::move(_constraint));}
     const std::vector<std::unique_ptr< Constraint > >& getConstraints() const { return m_constraints;}
 
-    void setDescription(Tucuxi::Common::TranslatableString _description) { m_description = _description;}
+    void setDescription(Tucuxi::Common::TranslatableString _description) { m_description = std::move(_description);}
 
     const Tucuxi::Common::TranslatableString& getDescription() const { return m_description;}
 

@@ -400,7 +400,7 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(const TargetDefinit
 }
 
 ComputingStatus TargetExtractor::extract(
-        ActiveMoietyId _activeMoietyId,
+        const ActiveMoietyId& _activeMoietyId,
         const CovariateSeries &_covariates,
         const TargetDefinitions& _targetDefinitions,
         const Targets &_targets,
@@ -435,8 +435,8 @@ ComputingStatus TargetExtractor::extract(
             bool foundDefinition = false;
             // First find the corresponding target definition
             for (const auto& targetDefinition : _targetDefinitions) {
-                if ((targetDefinition->getActiveMoietyId() == target.get()->m_activeMoietyId) &&
-                        (targetDefinition.get()->getTargetType() == target.get()->m_targetType)){
+                if ((targetDefinition->getActiveMoietyId() == target->m_activeMoietyId) &&
+                        (targetDefinition->getTargetType() == target->m_targetType)){
                     // We create the TargetEvent with the target
                     _series.push_back(targetEventFromTarget(target.get(), targetDefinition.get(), _concentrationUnit));
                     foundDefinition = true;
@@ -453,12 +453,12 @@ ComputingStatus TargetExtractor::extract(
     case TargetExtractionOption::DefinitionIfNoIndividualTarget :
     {
         for (const auto& target : _targets) {
-            if ((_activeMoietyId == target.get()->m_activeMoietyId)){
+            if ((_activeMoietyId == target->m_activeMoietyId)){
                 bool foundTarget = false;
 
                 for (const auto& targetDefinition : _targetDefinitions) {
-                    if ((targetDefinition.get()->getActiveMoietyId() == target.get()->m_activeMoietyId) &&
-                            (targetDefinition.get()->getTargetType() == target.get()->m_targetType)){
+                    if ((targetDefinition->getActiveMoietyId() == target->m_activeMoietyId) &&
+                            (targetDefinition->getTargetType() == target->m_targetType)){
                         foundTarget = true;
                         // We create the TargetEvent with the target
                         _series.push_back(targetEventFromTarget(target.get(), targetDefinition.get(), _concentrationUnit));
@@ -474,8 +474,8 @@ ComputingStatus TargetExtractor::extract(
         for (const auto& targetDefinition : _targetDefinitions) {
             bool foundTarget = false;
             for (const auto& target : _targets) {
-                if ((targetDefinition.get()->getActiveMoietyId() == target.get()->m_activeMoietyId) &&
-                        (targetDefinition.get()->getTargetType() == target.get()->m_targetType)){
+                if ((targetDefinition->getActiveMoietyId() == target->m_activeMoietyId) &&
+                        (targetDefinition->getTargetType() == target->m_targetType)){
                     foundTarget = true;
                 }
             }
@@ -490,10 +490,10 @@ ComputingStatus TargetExtractor::extract(
     case TargetExtractionOption::IndividualTargetsIfDefinitionExistsAndDefinitionIfNoIndividualTarget :
     {
         for (const auto& target : _targets) {
-            if ((_activeMoietyId == target.get()->m_activeMoietyId)){
+            if ((_activeMoietyId == target->m_activeMoietyId)){
                 for (const auto& targetDefinition : _targetDefinitions) {
-                    if ((targetDefinition.get()->getActiveMoietyId() == target.get()->m_activeMoietyId) &&
-                            (targetDefinition.get()->getTargetType() == target.get()->m_targetType)){
+                    if ((targetDefinition->getActiveMoietyId() == target->m_activeMoietyId) &&
+                            (targetDefinition->getTargetType() == target->m_targetType)){
                         // We create the TargetEvent with the target
                         _series.push_back(targetEventFromTarget(target.get(), targetDefinition.get(), _concentrationUnit));
                     }
@@ -503,8 +503,8 @@ ComputingStatus TargetExtractor::extract(
         for (const auto& targetDefinition : _targetDefinitions) {
             bool foundTarget = false;
             for (const auto& target : _targets) {
-                if ((targetDefinition.get()->getActiveMoietyId() == target.get()->m_activeMoietyId) &&
-                        (targetDefinition.get()->getTargetType() == target.get()->m_targetType)){
+                if ((targetDefinition->getActiveMoietyId() == target->m_activeMoietyId) &&
+                        (targetDefinition->getTargetType() == target->m_targetType)){
                     foundTarget = true;
                 }
             }

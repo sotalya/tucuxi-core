@@ -42,10 +42,10 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
 
         // Build parameters as Imatinib ones
         Tucuxi::Core::ParameterDefinitions parameterDefs;
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("CL", 15.106, std::make_unique<Tucuxi::Core::ParameterVariability>(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.356))));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V", 347, std::make_unique<Tucuxi::Core::ParameterVariability>(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.629))));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("CL", 15.106, std::make_unique<Tucuxi::Core::ParameterVariability>(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.356)));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("V", 347, std::make_unique<Tucuxi::Core::ParameterVariability>(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.629)));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 1, Tucuxi::Core::ParameterVariabilityType::None));
         Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
         parametersSeries.addParameterSetEvent(parameters);
 
@@ -83,7 +83,7 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
         {
             predictionPtr = std::make_unique<Tucuxi::Core::ConcentrationPrediction>();
 
-            Tucuxi::Core::IConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::ConcentrationCalculator();
+            auto concentrationCalculator = std::make_unique<Tucuxi::Core::ConcentrationCalculator>();
             auto status = concentrationCalculator->computeConcentrations(
                         predictionPtr,
                         false,
@@ -91,7 +91,6 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
                         recordTo,
                         intakeSeries,
                         parametersSeries);
-            delete concentrationCalculator;
 
             fructose_assert_eq(status, Tucuxi::Core::ComputingStatus::Ok);
 
@@ -126,7 +125,7 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
         etas.push_back(0.0);
         etas.push_back(0.0);
 
-        std::unique_ptr<Tucuxi::Core::IAprioriPercentileCalculator> calculator(new Tucuxi::Core::AprioriMonteCarloPercentileCalculator());
+        auto calculator = std::make_unique<Tucuxi::Core::AprioriMonteCarloPercentileCalculator>();
 
         Tucuxi::Core::ComputingStatus res;
 
@@ -165,10 +164,10 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
 
         // Build parameters as Imatinib ones
         Tucuxi::Core::ParameterDefinitions parameterDefs;
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("CL", 15.106, std::make_unique<Tucuxi::Core::ParameterVariability>(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.356))));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V", 347, std::make_unique<Tucuxi::Core::ParameterVariability>(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.629))));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("CL", 15.106, std::make_unique<Tucuxi::Core::ParameterVariability>(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.356)));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("V", 347, std::make_unique<Tucuxi::Core::ParameterVariability>(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.629)));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 1, Tucuxi::Core::ParameterVariabilityType::None));
         Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
         parametersSeries.addParameterSetEvent(parameters);
 
@@ -194,7 +193,7 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
         {
             predictionPtr = std::make_unique<Tucuxi::Core::ConcentrationPrediction>();
 
-            Tucuxi::Core::IConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::ConcentrationCalculator();
+            auto concentrationCalculator = std::make_unique<Tucuxi::Core::ConcentrationCalculator>();
             auto status = concentrationCalculator->computeConcentrations(
                         predictionPtr,
                         false,
@@ -202,7 +201,6 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
                         recordTo,
                         intakeSeries,
                         parametersSeries);
-            delete concentrationCalculator;
             fructose_assert_eq(status, Tucuxi::Core::ComputingStatus::Ok);
             predictionPtr->streamToFile("values_imatinib_percentile.dat");
         }
@@ -230,8 +228,7 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
         sampleSeries.push_back(sampleEvent);
 
         std::unique_ptr<Tucuxi::Core::IAposterioriNormalApproximationMonteCarloPercentileCalculator> calculator =
-                std::unique_ptr<Tucuxi::Core::IAposterioriNormalApproximationMonteCarloPercentileCalculator>(
-                    new Tucuxi::Core::AposterioriNormalApproximationMonteCarloPercentileCalculator());
+                std::make_unique<Tucuxi::Core::AposterioriNormalApproximationMonteCarloPercentileCalculator>();
 
         Tucuxi::Core::ComputingStatus res;
 
@@ -270,10 +267,10 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
 
         // Build parameters as Imatinib ones
         Tucuxi::Core::ParameterDefinitions parameterDefs;
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("CL", 15.106, std::make_unique<Tucuxi::Core::ParameterVariability>(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.356))));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V", 347, std::make_unique<Tucuxi::Core::ParameterVariability>(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.629))));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("CL", 15.106, std::make_unique<Tucuxi::Core::ParameterVariability>(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.356)));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("V", 347, std::make_unique<Tucuxi::Core::ParameterVariability>(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.629)));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 1, Tucuxi::Core::ParameterVariabilityType::None));
         Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
         parametersSeries.addParameterSetEvent(parameters);
 
@@ -299,7 +296,7 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
         {
             predictionPtr = std::make_unique<Tucuxi::Core::ConcentrationPrediction>();
 
-            Tucuxi::Core::IConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::ConcentrationCalculator();
+            auto concentrationCalculator = std::make_unique<Tucuxi::Core::ConcentrationCalculator>();
             auto status = concentrationCalculator->computeConcentrations(
                         predictionPtr,
                         false,
@@ -307,7 +304,6 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
                         recordTo,
                         intakeSeries,
                         parametersSeries);
-            delete concentrationCalculator;
             fructose_assert_eq(status, Tucuxi::Core::ComputingStatus::Ok);
             predictionPtr->streamToFile("values_imatinib_percentile.dat");
         }
@@ -335,8 +331,7 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
         sampleSeries.push_back(sampleEvent);
 
         std::unique_ptr<Tucuxi::Core::IAposterioriPercentileCalculator> calculator =
-                std::unique_ptr<Tucuxi::Core::IAposterioriPercentileCalculator>(
-                    new Tucuxi::Core::AposterioriMonteCarloPercentileCalculator());
+                std::make_unique<Tucuxi::Core::AposterioriMonteCarloPercentileCalculator>();
 
         Tucuxi::Core::ComputingStatus res;
 
@@ -376,10 +371,10 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
 
         // Build parameters as Imatinib ones
         Tucuxi::Core::ParameterDefinitions parameterDefs;
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("CL", 15.106, std::make_unique<Tucuxi::Core::ParameterVariability>(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.356))));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V", 347, std::make_unique<Tucuxi::Core::ParameterVariability>(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.629))));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("CL", 15.106, std::make_unique<Tucuxi::Core::ParameterVariability>(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.356)));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("V", 347, std::make_unique<Tucuxi::Core::ParameterVariability>(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.629)));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 1, Tucuxi::Core::ParameterVariabilityType::None));
         Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
         parametersSeries.addParameterSetEvent(parameters);
 
@@ -405,7 +400,7 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
         {
             predictionPtr = std::make_unique<Tucuxi::Core::ConcentrationPrediction>();
 
-            Tucuxi::Core::IConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::ConcentrationCalculator();
+            auto concentrationCalculator = std::make_unique<Tucuxi::Core::ConcentrationCalculator>();
             auto status = concentrationCalculator->computeConcentrations(
                         predictionPtr,
                         false,
@@ -413,7 +408,6 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
                         recordTo,
                         intakeSeries,
                         parametersSeries);
-            delete concentrationCalculator;
             fructose_assert_eq(status, Tucuxi::Core::ComputingStatus::Ok);
             predictionPtr->streamToFile("values_imatinib_percentile.dat");
         }
@@ -442,9 +436,7 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
         Tucuxi::Core::SampleSeries sampleSeries;
         sampleSeries.push_back(sampleEvent);
 
-        std::unique_ptr<Tucuxi::Core::IAposterioriPercentileCalculator> calculator =
-                std::unique_ptr<Tucuxi::Core::IAposterioriPercentileCalculator>(
-                    new Tucuxi::Core::AposterioriMonteCarloPercentileCalculator());
+        auto calculator = std::make_unique<Tucuxi::Core::AposterioriMonteCarloPercentileCalculator>();
 
         Tucuxi::Core::ComputingStatus res;
 
@@ -482,9 +474,7 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
             Tucuxi::Core::SampleSeries sampleSeries;
             sampleSeries.push_back(sampleEvent);
 
-            std::unique_ptr<Tucuxi::Core::IAposterioriPercentileCalculator> calculator =
-                    std::unique_ptr<Tucuxi::Core::IAposterioriPercentileCalculator>(
-                        new Tucuxi::Core::AposterioriMonteCarloPercentileCalculator());
+            auto calculator = std::make_unique<Tucuxi::Core::AposterioriMonteCarloPercentileCalculator>();
 
             Tucuxi::Core::ComputingStatus res;
 

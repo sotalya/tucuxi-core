@@ -223,6 +223,20 @@ public:
         return _output;
     }
 
+    /// \brief Returns the latest date possible
+    /// \return The maximum representable date
+    ///
+    /// This function can be used to initialize a date when then looking
+    /// for events in time.
+    static DateTime max();
+
+    /// \brief Returns the first date possible
+    /// \return The minimum representable date
+    ///
+    /// This function can be used to initialize a date when then looking
+    /// for events in time.
+    static DateTime min();
+
 private:
 
     /// \brief Build a date from a system clock
@@ -236,8 +250,6 @@ private:
     {
         return std::chrono::duration_cast<T>(m_date.time_since_epoch());
     }
-
-private:
 
     /// The current date time
     std::chrono::time_point<std::chrono::system_clock> m_date;  /// The date managed by the class

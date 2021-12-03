@@ -24,13 +24,13 @@ void TMP_UNUSED_PARAMETER(T &&)
 
 
 #ifndef TUCU_NOCATCH
-#define TUCU_TRY try
-#define TUCU_CATCH(x) catch (x)
-#define TUCU_ONEXCEPTION(x) {x}
+#define TUCU_TRY try // NOLINT(cppcoreguidelines-macro-usage)
+#define TUCU_CATCH(x) catch (x) // NOLINT(cppcoreguidelines-macro-usage)
+#define TUCU_ONEXCEPTION(x) {x} // NOLINT(cppcoreguidelines-macro-usage)
 #else
-#define TUCU_TRY if (true)
-#define TUCU_CATCH(x) if (false)
-#define TUCU_ONEXCEPTION(x) {}
+#define TUCU_TRY if (true) // NOLINT(cppcoreguidelines-macro-usage)
+#define TUCU_CATCH(x) if (false) // NOLINT(cppcoreguidelines-macro-usage)
+#define TUCU_ONEXCEPTION(x) {} // NOLINT(cppcoreguidelines-macro-usage)
 #endif
 
 

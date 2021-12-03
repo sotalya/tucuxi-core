@@ -11,7 +11,7 @@ static const int SECONDE = MINUTE;
 static const string DATE_FORMAT = "%Y-%m-%dT%H:%M:%S"; // NOLINT(readability-identifier-naming)
 
 
-void XMLImporter::unexpectedTag(std::string _tagName) {
+void XMLImporter::unexpectedTag(const std::string& _tagName) {
 
     std::vector<std::string> ignored = ignoredTags();
     for(const auto & s : ignored) {
@@ -23,14 +23,18 @@ void XMLImporter::unexpectedTag(std::string _tagName) {
     logHelper.warn("Unexpected tag <{}>", _tagName);
 }
 
-void XMLImporter::setStatus(Status _status, std::string _errorMessage) {
+void XMLImporter::setStatus(Status _status, const string& _errorMessage) {
+#ifdef EASY_DEBUG
     // Totally unuseful test, but good to add a breakpoint in the else during debugging
-    if (_status == Status::Ok) {
+    if (_status == Status::Ok) { // NOLINT(bugprone-branch-clone)
         m_status = _status;
     }
     else {
         m_status = _status;
     }
+#else
+    m_status = _status;
+#endif // EASY_DEBUG
     m_errorMessage += _errorMessage + "\n";
 }
 
@@ -56,7 +60,7 @@ void XMLImporter::setNodeError(Tucuxi::Common::XmlNodeIterator _nodeIterator)
     }
 
 
-   if (_nodeIterator->getValue() == "") {
+   if (_nodeIterator->getValue().empty()) {
         errorMessage += '<' + _nodeIterator->getName() + "> contains an empty value.";
    }
    else {
@@ -108,7 +112,7 @@ bool XMLImporter::extractBool(Tucuxi::Common::XmlNodeIterator _rootIterator)
     if ((nodeValue == "true") || (nodeValue == "True") || (nodeValue == "1")) {
         return true;
     }
-    else if ((nodeValue == "false") || (nodeValue == "False") || (nodeValue == "0")) {
+    if ((nodeValue == "false") || (nodeValue == "False") || (nodeValue == "0")) {
         return false;
     }
 
@@ -118,20 +122,19 @@ bool XMLImporter::extractBool(Tucuxi::Common::XmlNodeIterator _rootIterator)
 
 int XMLImporter::extractInt(Common::XmlNodeIterator _rootIterator)
 {
-    int result;
     try {
-        std::size_t pos;
-        result = std::stoi(_rootIterator->getValue(),&pos);
+        std::size_t pos = 0;
+        int result = std::stoi(_rootIterator->getValue(),&pos);
         if (pos != _rootIterator->getValue().size()) {
             setNodeError(_rootIterator);
             result = 0;
         }
+        return result;
     }
     catch (...) {
         setNodeError(_rootIterator);
-        result = 0;
+        return 0;
     }
-    return result;
 }
 
 DateTime XMLImporter::extractDateTime(Common::XmlNodeIterator _rootIterator)
@@ -207,9 +210,7 @@ double XMLImporter::getChildDouble(Common::XmlNodeIterator _rootIterator, const 
         setNodeError(child);
         return 0.0;
     }
-    else{
-        return extractDouble(child);
-    }
+    return extractDouble(child);
 }
 
 double XMLImporter::getChildDoubleOptional(Common::XmlNodeIterator _rootIterator, const std::string& _childName, double _defaultValue)
@@ -220,9 +221,7 @@ double XMLImporter::getChildDoubleOptional(Common::XmlNodeIterator _rootIterator
     {
         return _defaultValue;
     }
-    else{
-        return extractDouble(child);
-    }
+    return extractDouble(child);
 }
 
 bool XMLImporter::getChildBool(Common::XmlNodeIterator _rootIterator, const std::string& _childName)
@@ -234,10 +233,7 @@ bool XMLImporter::getChildBool(Common::XmlNodeIterator _rootIterator, const std:
         setNodeError(child);
         return false;
     }
-    else{
-        return extractBool(child);
-    }
-
+    return extractBool(child);
 }
 
 bool XMLImporter::getChildBoolOptional(Common::XmlNodeIterator _rootIterator, const std::string& _childName, bool _defaultValue)
@@ -248,10 +244,7 @@ bool XMLImporter::getChildBoolOptional(Common::XmlNodeIterator _rootIterator, co
     {
         return _defaultValue;
     }
-    else{
-        return extractBool(child);
-    }
-
+    return extractBool(child);
 }
 
 int XMLImporter::getChildInt(Common::XmlNodeIterator _rootIterator, const std::string& _childName)
@@ -263,9 +256,7 @@ int XMLImporter::getChildInt(Common::XmlNodeIterator _rootIterator, const std::s
         setNodeError(child);
         return 0;
     }
-    else{
-        return extractInt(child);
-    }
+    return extractInt(child);
 }
 
 DateTime XMLImporter::getChildDateTime(Common::XmlNodeIterator _rootIterator, const std::string& _childName,
@@ -280,11 +271,7 @@ DateTime XMLImporter::getChildDateTime(Common::XmlNodeIterator _rootIterator, co
         }
         return DateTime::undefinedDateTime();
     }
-    else{
-        return extractDateTime(child);
-    }
-
-
+    return extractDateTime(child);
 }
 
 Duration XMLImporter::getChildDuration(Common::XmlNodeIterator _rootIterator, const std::string& _childName)
@@ -296,9 +283,7 @@ Duration XMLImporter::getChildDuration(Common::XmlNodeIterator _rootIterator, co
         setNodeError(child);
         return Common::Duration();
     }
-    else{
-        return extractDuration(child);
-    }
+    return extractDuration(child);
 }
 
 string XMLImporter::getChildString(Common::XmlNodeIterator _rootIterator, const string& _childName)
@@ -309,13 +294,11 @@ string XMLImporter::getChildString(Common::XmlNodeIterator _rootIterator, const 
     {
         return "";
     }
-    else{
-        return extractString(child);
-    }
+    return extractString(child);
 }
 
 
-string XMLImporter::checkNodeIterator(Common::XmlNodeIterator _rootIterator, string _tagName)
+string XMLImporter::checkNodeIterator(Common::XmlNodeIterator _rootIterator, const string& _tagName)
 {
     if(_rootIterator == Common::XmlNodeIterator::none())
     {
@@ -326,7 +309,6 @@ string XMLImporter::checkNodeIterator(Common::XmlNodeIterator _rootIterator, str
         return "";
     }
     return _rootIterator->getValue();
-
 }
 
 } // namespace Common

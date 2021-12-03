@@ -31,9 +31,9 @@ struct TestComputingComponentConcentration : public fructose::test_base<TestComp
 {
     TestComputingComponentConcentration() { }
 
-    void buildDrugTreatment(DrugTreatment *&_drugTreatment, FormulationAndRoute _route)
+    std::unique_ptr<DrugTreatment> buildDrugTreatment(const FormulationAndRoute& _route)
     {
-        _drugTreatment = new DrugTreatment();
+        auto drugTreatment = std::make_unique<DrugTreatment>();
 
         // List of time ranges that will be pushed into the history
         DosageTimeRangeList timeRangeList;
@@ -53,10 +53,12 @@ struct TestComputingComponentConcentration : public fructose::test_base<TestComp
                                  Duration(),
                                  Duration(std::chrono::hours(6)));
         DosageRepeat repeatedDose(periodicDose, 16);
-        std::unique_ptr<Tucuxi::Core::DosageTimeRange> sept2018(new Tucuxi::Core::DosageTimeRange(startSept2018, repeatedDose));
+        auto sept2018 = std::make_unique<Tucuxi::Core::DosageTimeRange>(startSept2018, repeatedDose);
 
 
-        _drugTreatment->getModifiableDosageHistory().addTimeRange(*sept2018);
+        drugTreatment->getModifiableDosageHistory().addTimeRange(*sept2018);
+
+        return drugTreatment;
     }
 
     void testImatinib1(const std::string& /* _testName */)
@@ -65,15 +67,13 @@ struct TestComputingComponentConcentration : public fructose::test_base<TestComp
 
         fructose_assert( component != nullptr);
 
-        DrugModel* drugModel;
         BuildImatinib builder;
-        drugModel = builder.buildDrugModel();
+        auto drugModel = builder.buildDrugModel();
         fructose_assert(drugModel != nullptr);
 
-        DrugTreatment *drugTreatment;
         const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
-        buildDrugTreatment(drugTreatment, route);
+        auto drugTreatment = buildDrugTreatment(route);
 
         {
             RequestResponseId requestResponseId = "1";
@@ -157,8 +157,6 @@ struct TestComputingComponentConcentration : public fructose::test_base<TestComp
         }
 
         // Delete all dynamically allocated objects
-        delete drugModel;
-        delete drugTreatment;
         delete component;
     }
 
@@ -169,15 +167,13 @@ struct TestComputingComponentConcentration : public fructose::test_base<TestComp
 
         fructose_assert( component != nullptr);
 
-        DrugModel* drugModel;
         BuildImatinib builder;
-        drugModel = builder.buildDrugModel();
+        auto drugModel = builder.buildDrugModel();
         fructose_assert(drugModel != nullptr);
 
-        DrugTreatment *drugTreatment;
         const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
-        drugTreatment = new DrugTreatment();
+        auto drugTreatment = std::make_unique<DrugTreatment>();
 
         // List of time ranges that will be pushed into the history
         DosageTimeRangeList timeRangeList;
@@ -197,7 +193,7 @@ struct TestComputingComponentConcentration : public fructose::test_base<TestComp
                                  Duration(),
                                  Duration(std::chrono::hours(24)));
         DosageRepeat repeatedDose(periodicDose, 1000);
-        std::unique_ptr<Tucuxi::Core::DosageTimeRange> jun2018(new Tucuxi::Core::DosageTimeRange(startJun2018, repeatedDose));
+        auto jun2018 = std::make_unique<Tucuxi::Core::DosageTimeRange>(startJun2018, repeatedDose);
 
 
         drugTreatment->getModifiableDosageHistory().addTimeRange(*jun2018);
@@ -254,8 +250,6 @@ struct TestComputingComponentConcentration : public fructose::test_base<TestComp
         fructose_assert_double_eq_rel_abs(data[0].m_concentrations[0][0] , data[3].m_concentrations[0][0], 0.0001, 0.0001);
 
         // Delete all dynamically allocated objects
-        delete drugModel;
-        delete drugTreatment;
         delete component;
     }
 

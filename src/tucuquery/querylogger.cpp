@@ -9,11 +9,15 @@
 #include "Windows.h"
 #include "direct.h"
 static const char PATH_SEPARATOR = '\\';
-#define MKDIR(x) _mkdir(x)
+template<typename T>
+void MKDIR(T _x) { _mkdir(_x);}
+//#define MKDIR(x) _mkdir(x)
 #else
 static const char PATH_SEPARATOR = '/';
 #include <sys/stat.h>
-#define MKDIR(x) mkdir(x, 0755)
+template<typename T>
+void MKDIR(T _x) { mkdir(_x, 0755);}
+//#define MKDIR(x) mkdir(x, 0755)
 #endif
 
 using namespace std;
@@ -24,7 +28,7 @@ namespace Query {
 static const std::string DATE_FORMAT = "%Y-%m-%dT%H:%M:%S";
 
 
-Tucuxi::Common::Interface* QueryLogger::createComponent(std::string _folderPath)
+Tucuxi::Common::Interface* QueryLogger::createComponent(const std::string& _folderPath)
 {
     QueryLogger *cmp = new QueryLogger(_folderPath);
 
@@ -33,7 +37,7 @@ Tucuxi::Common::Interface* QueryLogger::createComponent(std::string _folderPath)
 }
 
 
-QueryLogger::QueryLogger(std::string _folderPath)
+QueryLogger::QueryLogger(const std::string& _folderPath)
 {
     m_folderPath = _folderPath;
     registerInterface(dynamic_cast<IQueryLogger*>(this));
@@ -42,7 +46,7 @@ QueryLogger::QueryLogger(std::string _folderPath)
 QueryLogger::~QueryLogger()
 = default;
 
-Tucuxi::Common::Interface* QueryLogger::getInterface(const std::string &_name)
+Tucuxi::Common::Interface* QueryLogger::getInterface(const std::string& _name)
 {
     return Tucuxi::Common::Component::getInterfaceImpl(_name);
 }
@@ -52,21 +56,21 @@ std::string QueryLogger::getFolderPath()
     return m_folderPath;
 }
 
-void QueryLogger::saveQuery(std::string _queryString, std::string _queryID)
+void QueryLogger::saveQuery(const std::string& _queryString, const std::string& _queryID)
 {
 
     time_t rawtime;
     struct tm * timeinfo;
-    char buffer[20];
+    std::array<char, 20> buffer;
 
     time (&rawtime);
     timeinfo = localtime(&rawtime);
 
-    strftime(buffer,sizeof(buffer),"%Y-%m-%d",timeinfo);
-    std::string directoryPath = getFolderPath() + PATH_SEPARATOR +  string(buffer);
+    strftime(buffer.data(),sizeof(buffer),"%Y-%m-%d",timeinfo);
+    std::string directoryPath = getFolderPath() + PATH_SEPARATOR +  string(buffer.data());
 
-    strftime(buffer,sizeof(buffer),"%Y-%m-%dT%H-%M-%S",timeinfo);
-    std::string fileName = string(buffer) + "_" + _queryID + ".tqf";
+    strftime(buffer.data(),sizeof(buffer),"%Y-%m-%dT%H-%M-%S",timeinfo);
+    std::string fileName = string(buffer.data()) + "_" + _queryID + ".tqf";
 
     MKDIR(directoryPath.c_str());
 

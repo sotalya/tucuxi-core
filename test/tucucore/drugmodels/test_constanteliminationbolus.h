@@ -53,10 +53,10 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
     std::vector<Value> percentileRanks = {5, 10, 25, 50, 75, 90, 95};
 
-    void buildDrugTreatment(DrugTreatment *&_drugTreatment, FormulationAndRoute _route)
+    std::unique_ptr<DrugTreatment> buildDrugTreatment(const FormulationAndRoute& _route)
     {
 
-        _drugTreatment = new DrugTreatment();
+        auto drugTreatment = std::make_unique<DrugTreatment>();
 
         // List of time ranges that will be pushed into the history
         DosageTimeRangeList timeRangeList;
@@ -76,16 +76,18 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
                                  Duration(),
                                  Duration(std::chrono::hours(6)));
         DosageRepeat repeatedDose(periodicDose, 16);
-        std::unique_ptr<Tucuxi::Core::DosageTimeRange> sept2018(new Tucuxi::Core::DosageTimeRange(startSept2018, repeatedDose));
+        auto sept2018 = std::make_unique<Tucuxi::Core::DosageTimeRange>(startSept2018, repeatedDose);
 
 
-        _drugTreatment->getModifiableDosageHistory().addTimeRange(*sept2018);
+        drugTreatment->getModifiableDosageHistory().addTimeRange(*sept2018);
+
+        return drugTreatment;
     }
 
 
     void test0() {
         BuildConstantElimination builder;
-        DrugModel *drugModel = builder.buildDrugModel();
+        auto drugModel = builder.buildDrugModel();
 
         fructose_assert(drugModel != nullptr);
 
@@ -103,7 +105,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
         std::shared_ptr<PkModelCollection> collection = std::make_shared<PkModelCollection>();
         collection->addPkModel(sharedPkModel);
-        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel, collection.get());
+        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel.get(), collection.get());
 
         fructose_assert(checkerResult.m_ok);
 
@@ -122,11 +124,9 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
 
         {
-
-            DrugTreatment *drugTreatment;
             const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
-            buildDrugTreatment(drugTreatment, route);
+            auto drugTreatment = buildDrugTreatment(route);
 
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covS", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covA", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
@@ -232,20 +232,17 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
                 fructose_assert_double_eq(statValue, 200000.0);
 
             }
-
-            delete drugTreatment;
         }
 
         // Delete all dynamically allocated objects
         delete component;
-        delete drugModel;
 
     }
 
 
     void test1() {
         BuildConstantElimination builder;
-        DrugModel *drugModel = builder.buildDrugModel();
+        auto drugModel = builder.buildDrugModel();
 
         fructose_assert(drugModel != nullptr);
 
@@ -264,7 +261,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
         std::shared_ptr<PkModelCollection> collection = std::make_shared<PkModelCollection>();
         collection->addPkModel(sharedPkModel);
-        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel, collection.get());
+        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel.get(), collection.get());
 
         fructose_assert(checkerResult.m_ok);
 
@@ -283,11 +280,9 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
 
         {
-
-            DrugTreatment *drugTreatment;
             const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
-            buildDrugTreatment(drugTreatment, route);
+            auto drugTreatment = buildDrugTreatment(route);
 
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covS", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covA", "1.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
@@ -392,19 +387,16 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
                 fructose_assert_double_eq(statValue, 200001.0);
 
             }
-
-            delete drugTreatment;
         }
 
         // Delete all dynamically allocated objects
         delete component;
-        delete drugModel;
 
     }
 
     void testResidualErrorModelAdditive() {
         BuildConstantElimination builder;
-        DrugModel *drugModel = builder.buildDrugModel(
+        auto drugModel = builder.buildDrugModel(
                     ResidualErrorType::ADDITIVE,
                     std::vector<Value>({10000.0}));
 
@@ -424,7 +416,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
         std::shared_ptr<PkModelCollection> collection = std::make_shared<PkModelCollection>();
         collection->addPkModel(sharedPkModel);
-        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel, collection.get());
+        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel.get(), collection.get());
 
         fructose_assert(checkerResult.m_ok);
 
@@ -443,11 +435,9 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
 
         {
-
-            DrugTreatment *drugTreatment;
             const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
-            buildDrugTreatment(drugTreatment, route);
+            auto drugTreatment = buildDrugTreatment(route);
 
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covS", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covA", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
@@ -492,19 +482,16 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
                 double expectedValue = invCdf[p] * 10.0 * 1000.0;
                 fructose_assert_double_eq_rel_abs(statValue - 200000.0, expectedValue, 0.02, 10.0 * 10.0 * 1000.0 * 0.06);
             }
-
-            delete drugTreatment;
         }
 
         // Delete all dynamically allocated objects
         delete component;
-        delete drugModel;
 
     }
 
     void testResidualErrorModelExponential() {
         BuildConstantElimination builder;
-        DrugModel *drugModel = builder.buildDrugModel(
+        auto drugModel = builder.buildDrugModel(
                     ResidualErrorType::EXPONENTIAL,
                     std::vector<Value>({0.2}));
 
@@ -523,7 +510,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
         std::shared_ptr<PkModelCollection> collection = std::make_shared<PkModelCollection>();
         collection->addPkModel(sharedPkModel);
-        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel, collection.get());
+        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel.get(), collection.get());
 
         fructose_assert(checkerResult.m_ok);
 
@@ -542,11 +529,9 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
 
         {
-
-            DrugTreatment *drugTreatment;
             const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
-            buildDrugTreatment(drugTreatment, route);
+            auto drugTreatment = buildDrugTreatment(route);
 
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covS", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covA", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
@@ -590,20 +575,17 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
                 double expectedValue = 200000.0 * std::exp(invCdf[p] * 0.2);
                 fructose_assert_double_eq_rel_abs(statValue, expectedValue, 0.05, 0.0);
             }
-
-            delete drugTreatment;
         }
 
         // Delete all dynamically allocated objects
         delete component;
-        delete drugModel;
 
     }
 
 
     void testResidualErrorModelProportional() {
         BuildConstantElimination builder;
-        DrugModel *drugModel = builder.buildDrugModel(
+        auto drugModel = builder.buildDrugModel(
                     ResidualErrorType::PROPORTIONAL,
                     std::vector<Value>({0.2}));
 
@@ -622,7 +604,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
         std::shared_ptr<PkModelCollection> collection = std::make_shared<PkModelCollection>();
         collection->addPkModel(sharedPkModel);
-        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel, collection.get());
+        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel.get(), collection.get());
 
         fructose_assert(checkerResult.m_ok);
 
@@ -640,11 +622,9 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         static_cast<ComputingComponent *>(component)->setPkModelCollection(collection);
 
         {
-
-            DrugTreatment *drugTreatment;
             const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
-            buildDrugTreatment(drugTreatment, route);
+            auto drugTreatment = buildDrugTreatment(route);
 
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covS", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covA", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
@@ -688,19 +668,16 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
                 double expectedValue = 200000.0 * (1 + invCdf[p] * 0.2);
                 fructose_assert_double_eq_rel_abs(statValue, expectedValue, 0.05, 0.0);
             }
-
-            delete drugTreatment;
         }
 
         // Delete all dynamically allocated objects
         delete component;
-        delete drugModel;
 
     }
 
     void testResidualErrorModelMixed() {
         BuildConstantElimination builder;
-        DrugModel *drugModel = builder.buildDrugModel(
+        auto drugModel = builder.buildDrugModel(
                     ResidualErrorType::MIXED,
                     std::vector<Value>({10.0, 0.2}));
 
@@ -719,7 +696,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
         std::shared_ptr<PkModelCollection> collection = std::make_shared<PkModelCollection>();
         collection->addPkModel(sharedPkModel);
-        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel, collection.get());
+        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel.get(), collection.get());
 
         fructose_assert(checkerResult.m_ok);
 
@@ -738,11 +715,9 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
 
         {
-
-            DrugTreatment *drugTreatment;
             const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
-            buildDrugTreatment(drugTreatment, route);
+            auto drugTreatment = buildDrugTreatment(route);
 
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covS", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covA", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
@@ -786,13 +761,10 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
                 double expectedValue = 200000.0 + invCdf[p] * std::sqrt(std::pow(200000.0 * 0.2, 2));
                 fructose_assert_double_eq_rel_abs(statValue, expectedValue, 0.04, 0.0);
             }
-
-            delete drugTreatment;
         }
 
         // Delete all dynamically allocated objects
         delete component;
-        delete drugModel;
 
     }
 
@@ -800,7 +772,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
     void testParamAdditive() {
         BuildConstantElimination builder;
-        DrugModel *drugModel = builder.buildDrugModel(
+        auto drugModel = builder.buildDrugModel(
                     ResidualErrorType::NONE,
                     std::vector<Value>({0.0}),
                     ParameterVariabilityType::Additive,
@@ -827,7 +799,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
         std::shared_ptr<PkModelCollection> collection = std::make_shared<PkModelCollection>();
         collection->addPkModel(sharedPkModel);
-        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel, collection.get());
+        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel.get(), collection.get());
 
         fructose_assert(checkerResult.m_ok);
 
@@ -846,11 +818,9 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
 
         {
-
-            DrugTreatment *drugTreatment;
             const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
-            buildDrugTreatment(drugTreatment, route);
+            auto drugTreatment = buildDrugTreatment(route);
 
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covS", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covA", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
@@ -894,20 +864,17 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
                 double expectedValue = 200000.0 + invCdf[p] * 1000.0;
                 fructose_assert_double_eq_rel_abs(statValue, expectedValue, .02, 0.02);
             }
-
-            delete drugTreatment;
         }
 
         // Delete all dynamically allocated objects
         delete component;
-        delete drugModel;
 
     }
 
 
     void testParamAdditiveResidualErrorModelAdditive() {
         BuildConstantElimination builder;
-        DrugModel *drugModel = builder.buildDrugModel(
+        auto drugModel = builder.buildDrugModel(
                     ResidualErrorType::ADDITIVE,
                     std::vector<Value>({10000.0}),
                     ParameterVariabilityType::Additive,
@@ -934,7 +901,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
         std::shared_ptr<PkModelCollection> collection = std::make_shared<PkModelCollection>();
         collection->addPkModel(sharedPkModel);
-        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel, collection.get());
+        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel.get(), collection.get());
 
         fructose_assert(checkerResult.m_ok);
 
@@ -953,11 +920,9 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
 
         {
-
-            DrugTreatment *drugTreatment;
             const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
-            buildDrugTreatment(drugTreatment, route);
+            auto drugTreatment = buildDrugTreatment(route);
 
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covS", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covA", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
@@ -1002,19 +967,16 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
                 fructose_assert_double_eq_rel_abs(statValue, expectedValue, .01, 0.01);
             }
-
-            delete drugTreatment;
         }
 
         // Delete all dynamically allocated objects
         delete component;
-        delete drugModel;
 
     }
 
     void testParamExponentialResidualErrorModelExponential() {
         BuildConstantElimination builder;
-        DrugModel *drugModel = builder.buildDrugModel(
+        auto drugModel = builder.buildDrugModel(
                     ResidualErrorType::EXPONENTIAL,
                     std::vector<Value>({0.3}),
                     ParameterVariabilityType::None,
@@ -1041,7 +1003,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
         std::shared_ptr<PkModelCollection> collection = std::make_shared<PkModelCollection>();
         collection->addPkModel(sharedPkModel);
-        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel, collection.get());
+        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel.get(), collection.get());
 
         fructose_assert(checkerResult.m_ok);
 
@@ -1060,11 +1022,9 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
 
         {
-
-            DrugTreatment *drugTreatment;
             const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
-            buildDrugTreatment(drugTreatment, route);
+            auto drugTreatment = buildDrugTreatment(route);
 
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covS", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covA", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
@@ -1110,19 +1070,16 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
                 double expectedValue = 200000.0 * std::exp(invCdf[p] * newStd);
                 fructose_assert_double_eq_rel_abs(statValue, expectedValue, 0.05, 0.0);
             }
-
-            delete drugTreatment;
         }
 
         // Delete all dynamically allocated objects
         delete component;
-        delete drugModel;
 
     }
 
     void testParamProportionalResidualErrorModelProportional() {
         BuildConstantElimination builder;
-        DrugModel *drugModel = builder.buildDrugModel(
+        auto drugModel = builder.buildDrugModel(
                     ResidualErrorType::PROPORTIONAL,
                     std::vector<Value>({0.3}),
                     ParameterVariabilityType::None,
@@ -1149,7 +1106,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
         std::shared_ptr<PkModelCollection> collection = std::make_shared<PkModelCollection>();
         collection->addPkModel(sharedPkModel);
-        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel, collection.get());
+        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel.get(), collection.get());
 
         fructose_assert(checkerResult.m_ok);
 
@@ -1168,11 +1125,9 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
 
         {
-
-            DrugTreatment *drugTreatment;
             const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
-            buildDrugTreatment(drugTreatment, route);
+            auto drugTreatment = buildDrugTreatment(route);
 
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covS", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covA", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
@@ -1227,26 +1182,23 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
                 //fructose_assert_double_eq_rel_abs(statValue, expectedValue, 0.02, 0.0);
             }
-
-            delete drugTreatment;
         }
 
         // Delete all dynamically allocated objects
         delete component;
-        delete drugModel;
 
     }
 
 
     void testAdjustments() {
         BuildConstantElimination builder;
-        DrugModel *drugModel = builder.buildDrugModel();
+        auto drugModel = builder.buildDrugModel();
 
         fructose_assert(drugModel != nullptr);
 
 
         // Add targets
-        TargetDefinition *target = new TargetDefinition(TargetType::Residual,
+        auto target = std::make_unique<TargetDefinition>(TargetType::Residual,
                                                         Unit("mg/l"),
                                                         ActiveMoietyId("analyte"),
                                                         std::make_unique<SubTargetDefinition>("cMin", 750.0, nullptr),
@@ -1259,7 +1211,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
                                                         std::make_unique<SubTargetDefinition>("toxicity", 10000.0, nullptr),
                                                         std::make_unique<SubTargetDefinition>("inefficacy", 000.0, nullptr));
 
-        drugModel->m_activeMoieties[0]->addTarget(std::unique_ptr<TargetDefinition>(target));
+        drugModel->m_activeMoieties[0]->addTarget(std::move(target));
 
         fructose_assert(drugModel->checkInvariants());
 
@@ -1274,7 +1226,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
         std::shared_ptr<PkModelCollection> collection = std::make_shared<PkModelCollection>();
         collection->addPkModel(sharedPkModel);
-        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel, collection.get());
+        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel.get(), collection.get());
 
         fructose_assert(checkerResult.m_ok);
 
@@ -1293,11 +1245,9 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
 
         {
-
-            DrugTreatment *drugTreatment;
             const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
-            buildDrugTreatment(drugTreatment, route);
+            auto drugTreatment = buildDrugTreatment(route);
 
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covS", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covA", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
@@ -1354,26 +1304,23 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
                     fructose_assert_double_le(dosage->getDose(), 1500.0);
                 }
             }
-
-            delete drugTreatment;
         }
 
         // Delete all dynamically allocated objects
         delete component;
-        delete drugModel;
 
     }
 
 
     void testAdjustments2() {
         BuildConstantElimination builder;
-        DrugModel *drugModel = builder.buildDrugModel();
+        auto drugModel = builder.buildDrugModel();
 
         fructose_assert(drugModel != nullptr);
 
 
         // Add targets
-        TargetDefinition *target = new TargetDefinition(TargetType::CumulativeAuc,
+        auto target = std::make_unique<TargetDefinition>(TargetType::CumulativeAuc,
                                                         Unit("mg*h/l"),
                                                         ActiveMoietyId("analyte"),
                                                         std::make_unique<SubTargetDefinition>("cMin", 4.0 * 24.0 * 250.0, nullptr),
@@ -1386,7 +1333,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
                                                         std::make_unique<SubTargetDefinition>("toxicity", 10000.0, nullptr),
                                                         std::make_unique<SubTargetDefinition>("inefficacy", 000.0, nullptr));
 
-        drugModel->m_activeMoieties[0]->addTarget(std::unique_ptr<TargetDefinition>(target));
+        drugModel->m_activeMoieties[0]->addTarget(std::move(target));
 
         fructose_assert(drugModel->checkInvariants());
 
@@ -1401,7 +1348,7 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
         std::shared_ptr<PkModelCollection> collection = std::make_shared<PkModelCollection>();
         collection->addPkModel(sharedPkModel);
-        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel, collection.get());
+        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel.get(), collection.get());
 
         fructose_assert(checkerResult.m_ok);
 
@@ -1420,11 +1367,9 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
 
         {
-
-            DrugTreatment *drugTreatment;
             const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
-            buildDrugTreatment(drugTreatment, route);
+            auto drugTreatment = buildDrugTreatment(route);
 
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covS", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covA", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
@@ -1482,13 +1427,10 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
                     fructose_assert_double_le((200.0 + dosage->getDose()) / 2.0, 500.0);
                 }
             }
-
-            delete drugTreatment;
         }
 
         // Delete all dynamically allocated objects
         delete component;
-        delete drugModel;
 
     }
 

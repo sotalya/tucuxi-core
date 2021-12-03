@@ -14,11 +14,7 @@ namespace Core {
 
 template<class T>
 bool contains(std::vector<T> _vector, T _s) {
-    if(std::find(_vector.begin(), _vector.end(), _s) != _vector.end()) {
-        return true;
-    } else {
-        return false;
-    }
+    return (std::find(_vector.begin(), _vector.end(), _s) != _vector.end());
 }
 
 

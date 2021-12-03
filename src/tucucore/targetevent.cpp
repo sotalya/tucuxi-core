@@ -19,18 +19,18 @@ TargetEvent::TargetEvent(ActiveMoietyId _activeMoietyId,
                          const Tucuxi::Common::Duration &_tmin,
                          const Tucuxi::Common::Duration &_tbest,
                          const Tucuxi::Common::Duration &_tmax)
-        : m_activeMoietyId(_activeMoietyId),
+        : m_activeMoietyId(std::move(_activeMoietyId)),
           m_targetType(_type),
           m_valueMin(_vmin),
           m_valueMax(_vmax),
           m_valueBest(_vbest),
           m_mic(_mic),
-          m_micUnit(_micUnit),
+          m_micUnit(std::move(_micUnit)),
           m_tMin(_tmin),
           m_tMax(_tmax),
           m_tBest(_tbest),
-          m_unit(_unit),
-          m_finalUnit(_finalUnit)
+          m_unit(std::move(_unit)),
+          m_finalUnit(std::move(_finalUnit))
 {};
 
 TargetEvent TargetEvent::createTargetEventWithTime(ActiveMoietyId _activeMoietyId,
@@ -44,10 +44,10 @@ TargetEvent TargetEvent::createTargetEventWithTime(ActiveMoietyId _activeMoietyI
                                            const Tucuxi::Common::Duration &_tbest,
                                            const Tucuxi::Common::Duration &_tmax)
 {
-    return TargetEvent(_activeMoietyId,
+    return TargetEvent(std::move(_activeMoietyId),
                        _type,
-                       _unit,
-                       _finalUnit,
+                       std::move(_unit),
+                       std::move(_finalUnit),
                        _vmin,
                        _vbest,
                        _vmax,
@@ -68,15 +68,15 @@ TargetEvent TargetEvent::createTargetEventWithMic(ActiveMoietyId _activeMoietyId
                                            Value _mic,
                                            TucuUnit _micUnit)
 {
-    return TargetEvent(_activeMoietyId,
+    return TargetEvent(std::move(_activeMoietyId),
                        _type,
-                       _unit,
-                       _finalUnit,
+                       std::move(_unit),
+                       std::move(_finalUnit),
                        _vmin,
                        _vbest,
                        _vmax,
                        _mic,
-                       _micUnit,
+                       std::move(_micUnit),
                        Tucuxi::Common::Duration(),
                        Tucuxi::Common::Duration(),
                        Tucuxi::Common::Duration());
@@ -90,10 +90,10 @@ TargetEvent TargetEvent::createTargetEventWithoutTimeAndMic(ActiveMoietyId _acti
                                            Value _vbest,
                                            Value _vmax)
 {
-    return TargetEvent(_activeMoietyId,
+    return TargetEvent(std::move(_activeMoietyId),
                        _type,
-                       _unit,
-                       _finalUnit,
+                       std::move(_unit),
+                       std::move(_finalUnit),
                        _vmin,
                        _vbest,
                        _vmax,
@@ -117,15 +117,15 @@ TargetEvent TargetEvent::createTargetEventWithMicAndTime(ActiveMoietyId _activeM
                                          const Tucuxi::Common::Duration &_tbest,
                                          const Tucuxi::Common::Duration &_tmax)
 {
-    return TargetEvent(_activeMoietyId,
+    return TargetEvent(std::move(_activeMoietyId),
                        _type,
-                       _unit,
-                       _finalUnit,
+                       std::move(_unit),
+                       std::move(_finalUnit),
                        _vmin,
                        _vbest,
                        _vmax,
                        _mic,
-                       _micUnit,
+                       std::move(_micUnit),
                        _tmin,
                        _tbest,
                        _tmax);

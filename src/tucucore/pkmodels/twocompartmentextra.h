@@ -56,7 +56,10 @@ private:
 inline bool TwoCompartmentExtraMicro::compute(const Residuals& _inResiduals, Eigen::VectorXd&
 _concentrations1, Eigen::VectorXd &_concentrations2, Eigen::VectorXd &_concentrations3)
 {
-    Value A, B, C, divider; // NOLINT(readability-identifier-naming)
+    Value A; // NOLINT(readability-identifier-naming)
+    Value B; // NOLINT(readability-identifier-naming)
+    Value C; // NOLINT(readability-identifier-naming)
+    Value divider; // NOLINT(readability-identifier-naming)
     Concentration resid1 = _inResiduals[0];
     Concentration resid2 = _inResiduals[1];
     Concentration resid3 = _inResiduals[2] + (m_F * m_D / m_V1);

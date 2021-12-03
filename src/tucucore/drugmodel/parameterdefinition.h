@@ -67,7 +67,7 @@ public:
         m_values.push_back(_value);
     }
 
-    ParameterVariability(ParameterVariabilityType _type, std::vector<Value> _values) : m_type(_type), m_values(_values) {
+    ParameterVariability(ParameterVariabilityType _type, std::vector<Value> _values) : m_type(_type), m_values(std::move(_values)) {
     }
 
     ParameterVariabilityType getType() const { return m_type; }
@@ -76,7 +76,7 @@ public:
 
 
     INVARIANTS(
-            INVARIANT(Invariants::INV_PARAMETERVARIABILITY_0001, ((m_type == ParameterVariabilityType::None) || (m_values.size() > 0)), "A parameter variability has a variability but no Std Dev defined")
+            INVARIANT(Invariants::INV_PARAMETERVARIABILITY_0001, ((m_type == ParameterVariabilityType::None) || (!m_values.empty())), "A parameter variability has a variability but no Std Dev defined")
             )
 
 private:
@@ -121,11 +121,11 @@ public:
     /// \param _operation Operation used to validate the covariate value
     void setValidation(std::unique_ptr<Operation> _validation) { m_validation = std::move(_validation);}
 
-    void setUnit(TucuUnit _unit) { m_unit = _unit;}
+    void setUnit(TucuUnit _unit) { m_unit = std::move(_unit);}
     TucuUnit getUnit() const { return m_unit;}
 
     INVARIANTS(
-            INVARIANT(Invariants::INV_PARAMETERDEFINITION_0001, (m_id.size() > 0), "A parameter has no Id")
+            INVARIANT(Invariants::INV_PARAMETERDEFINITION_0001, (!m_id.empty()), "A parameter has no Id")
             INVARIANT(Invariants::INV_PARAMETERDEFINITION_0002, (m_variability != nullptr), Tucuxi::Common::Utils::strFormat("A parameter %s has no variability defined", m_id.c_str()))
             INVARIANT(Invariants::INV_PARAMETERDEFINITION_0003, (m_variability->checkInvariants()), "There is an error in a parameter variability")
             )
@@ -179,8 +179,8 @@ public:
     Correlation(std::string _parameter1, std::string _parameter2, Value _correlation) :
         m_correlation(_correlation)
     {
-        m_parameterId.push_back(_parameter1);
-        m_parameterId.push_back(_parameter2);
+        m_parameterId.push_back(std::move(_parameter1));
+        m_parameterId.push_back(std::move(_parameter2));
     }
 
     Value getValue() const { return m_correlation;}
@@ -196,7 +196,7 @@ protected:
     std::vector<std::string> m_parameterId;
 };
 
-typedef std::vector<Correlation> Correlations;
+typedef std::vector<std::unique_ptr<Correlation> > Correlations;
 
 class InterParameterSetCorrelation
 {
@@ -209,10 +209,10 @@ public:
             Value _correlation) :
         m_correlation(_correlation)
     {
-        m_analyteSetId.push_back(_analyteSetId1);
-        m_analyteSetId.push_back(_analyteSetId2);
-        m_parameterId.push_back(_parameterId1);
-        m_parameterId.push_back(_parameterId2);
+        m_analyteSetId.push_back(std::move(_analyteSetId1));
+        m_analyteSetId.push_back(std::move(_analyteSetId2));
+        m_parameterId.push_back(std::move(_parameterId1));
+        m_parameterId.push_back(std::move(_parameterId2));
     }
 
     INVARIANTS(
@@ -233,7 +233,7 @@ class ParameterSetDefinition
 public:
     void addParameter(std::unique_ptr<ParameterDefinition> _parameter) { m_parameters.push_back(std::move(_parameter));}
 
-    void addCorrelation(Correlation _correlation) { m_correlations.push_back(_correlation);}
+    void addCorrelation(std::unique_ptr<Correlation> _correlation) { m_correlations.push_back(std::move(_correlation));}
 
     size_t getNbParameters() const { return m_parameters.size(); }
     const ParameterDefinition* getParameter(size_t _index) const {
@@ -248,7 +248,7 @@ public:
 
     INVARIANTS(
             LAMBDA_INVARIANT(Invariants::INV_PARAMETERSETDEFINITION_0001, {bool ok = true;for(size_t i = 0; i < m_parameters.size(); i++) {ok &= m_parameters[i]->checkInvariants();} return ok;}, "There is an error in a parameter of an inter-parameter set correlation")
-            LAMBDA_INVARIANT(Invariants::INV_PARAMETERSETDEFINITION_0002, {bool ok = true;for(size_t i = 0; i < m_correlations.size(); i++) {ok &= m_correlations[i].checkInvariants();} return ok;}, "There is an error in a correlation of an inter-parameter set correlation")
+            LAMBDA_INVARIANT(Invariants::INV_PARAMETERSETDEFINITION_0002, {bool ok = true;for(size_t i = 0; i < m_correlations.size(); i++) {ok &= m_correlations[i]->checkInvariants();} return ok;}, "There is an error in a correlation of an inter-parameter set correlation")
             )
 
 protected:

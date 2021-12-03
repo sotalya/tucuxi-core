@@ -5,7 +5,7 @@ namespace Tucuxi {
 namespace Core {
 
 
-ValidValues::ValidValues(TucuUnit _unit, std::unique_ptr<PopulationValue> _defaultValue) :
+ValidValues::ValidValues(const TucuUnit& _unit, std::unique_ptr<PopulationValue> _defaultValue) :
     m_unit(_unit), m_defaultValue(std::move(_defaultValue))
 {
 
@@ -59,7 +59,6 @@ void ValidValues::addValues(std::unique_ptr<IValidValues> _values)
 ValidValuesRange::ValidValuesRange(std::unique_ptr<PopulationValue> _from,
         std::unique_ptr<PopulationValue> _to,
         std::unique_ptr<PopulationValue> _step) :
-    IValidValues(),
     m_from(std::move(_from)),
     m_to(std::move(_to)),
     m_step(std::move(_step))
@@ -94,10 +93,8 @@ Value ValidValuesRange::getStepValue() const{
 }
 
 
-ValidValuesFixed::ValidValuesFixed() :
-    IValidValues()
+ValidValuesFixed::ValidValuesFixed()
 {
-
 }
 
 void ValidValuesFixed::addValue(Value _dose)

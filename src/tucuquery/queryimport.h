@@ -47,7 +47,7 @@ public:
     /// \return Result::Ok if the import went well, another Result else.
     /// This function is reentrant.
     ///
-    Status importFromFile(Tucuxi::Query::QueryData *&_query, const std::string& _fileName);
+    Status importFromFile(std::unique_ptr<Tucuxi::Query::QueryData> &_query, const std::string& _fileName);
 
     ///
     /// \brief importFromString
@@ -56,7 +56,7 @@ public:
     /// \return Result::Ok if the import went well, another Result else.
     /// This function is reentrant.
     ///
-    Status importFromString(Tucuxi::Query::QueryData *&_query, const std::string& _xml);
+    Status importFromString(std::unique_ptr<Tucuxi::Query::QueryData> &_query, const std::string& _xml);
 
 protected:
 
@@ -72,9 +72,7 @@ protected:
     /// \return Result::Ok if the import went well, another Result else.
     /// This function is reentrant.
     ///
-    Status importDocument(Tucuxi::Query::QueryData *&_query, Tucuxi::Common::XmlDocument & _document);
-
-protected:
+    Status importDocument(std::unique_ptr<Tucuxi::Query::QueryData> &_query, Tucuxi::Common::XmlDocument & _document);
 
     // Methods to separate the creation of a ParametersData
     std::unique_ptr<DrugTreatmentData> createDrugTreatmentData(Tucuxi::Common::XmlDocument & _document) ;
@@ -97,11 +95,11 @@ protected:
     // Utilitary methods
     Tucuxi::Core::PercentileRanks getChildPercentileRanks(Common::XmlNodeIterator _rootIterator, const std::string& _childName);
     std::vector<Common::DateTime> getChildDateTimeList(Common::XmlNodeIterator _rootIterator, const std::string& _childName) const;
-    std::unique_ptr<Tucuxi::Core::ComputingTraitAdjustment> getChildComputingTraitAdjustment(Common::XmlNodeIterator _rootIterator, std::string) ;
-    std::unique_ptr<Tucuxi::Core::ComputingTraitConcentration> getChildComputingTraitConcentration(Common::XmlNodeIterator _rootIterator, std::string) ;
-    std::unique_ptr<Tucuxi::Core::ComputingTraitPercentiles> getChildComputingTraitPercentiles(Common::XmlNodeIterator _rootIterator, std::string) ;
-    std::unique_ptr<Tucuxi::Core::ComputingTraitSinglePoints> getChildComputingTraitSinglePoints(Common::XmlNodeIterator _rootIterator, std::string) ;
-    std::unique_ptr<Tucuxi::Core::ComputingTraitAtMeasures> getChildComputingTraitAtMeasures(Common::XmlNodeIterator _rootIterator, std::string) ;
+    std::unique_ptr<Tucuxi::Core::ComputingTraitAdjustment> getChildComputingTraitAdjustment(Common::XmlNodeIterator _rootIterator, const std::string &) ;
+    std::unique_ptr<Tucuxi::Core::ComputingTraitConcentration> getChildComputingTraitConcentration(Common::XmlNodeIterator _rootIterator, const std::string &) ;
+    std::unique_ptr<Tucuxi::Core::ComputingTraitPercentiles> getChildComputingTraitPercentiles(Common::XmlNodeIterator _rootIterator, const std::string &) ;
+    std::unique_ptr<Tucuxi::Core::ComputingTraitSinglePoints> getChildComputingTraitSinglePoints(Common::XmlNodeIterator _rootIterator, const std::string &) ;
+    std::unique_ptr<Tucuxi::Core::ComputingTraitAtMeasures> getChildComputingTraitAtMeasures(Common::XmlNodeIterator _rootIterator, const std::string &) ;
     Tucuxi::Core::ComputingOption getChildComputingOption(Common::XmlNodeIterator _rootIterator, const std::string& _childName);
     Tucuxi::Core::PredictionParameterType getChildParametersTypeEnum(Common::XmlNodeIterator _rootIterator, const std::string& _childName);
     Tucuxi::Core::CompartmentsOption getChildCompartmentsOptionEnum(Common::XmlNodeIterator _rootIterator, const std::string& _childName);

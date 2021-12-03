@@ -43,6 +43,7 @@ enum class ExtractionOption {
 
 
 /// \brief Implement the extract and clone operations for Dosage subclasses.
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define DOSAGE_UTILS(BaseClassName, ClassName) \
     friend IntakeExtractor; \
     int extract(IntakeExtractor &_extractor, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, const TucuUnit &_toUnit, IntakeSeries &_series, ExtractionOption _option) const override; \
@@ -246,7 +247,7 @@ public:
 
     DOSAGE_UTILS(DosageUnbounded, DosageSteadyState);
 
-    const DateTime getLastDoseTime() const
+    DateTime getLastDoseTime() const
     {
         return m_lastDoseTime;
     }
@@ -356,7 +357,7 @@ public:
 
     FormulationAndRoute getLastFormulationAndRoute() const override
     {
-        if (m_dosages.size() == 0) {
+        if (m_dosages.empty()) {
             return FormulationAndRoute(Formulation::Undefined, AdministrationRoute::Undefined, AbsorptionModel::Undefined);
         }
         return m_dosages.back()->getLastFormulationAndRoute();
@@ -450,7 +451,7 @@ public:
 
     FormulationAndRoute getLastFormulationAndRoute() const override
     {
-        if (m_dosages.size() == 0) {
+        if (m_dosages.empty()) {
             return FormulationAndRoute(Formulation::Undefined, AdministrationRoute::Undefined, AbsorptionModel::Undefined);
         }
         return m_dosages.back()->getLastFormulationAndRoute();
@@ -730,12 +731,11 @@ public:
                const Duration &_infusionTime,
                const TimeOfDay &_timeOfDay,
                const DayOfWeek &_dayOfWeek)
-        : DailyDose(_dose, _doseUnit, _routeOfAdministration, _infusionTime, _timeOfDay)
+        : DailyDose(_dose, _doseUnit, _routeOfAdministration, _infusionTime, _timeOfDay), m_dayOfWeek(_dayOfWeek)
     {
         if (!_dayOfWeek.ok()) {
             throw std::invalid_argument("Invalid day of week specified for weekly dose.");
         }
-        m_dayOfWeek = _dayOfWeek;
     }
 
     ~WeeklyDose() override {}
@@ -933,7 +933,7 @@ public:
     DosageHistory( const DosageHistory &_obj)
     {
         for (const auto& timeRange : _obj.m_history) {
-            this->addTimeRange(*timeRange.get());
+            this->addTimeRange(*timeRange);
         }
     }
 
@@ -942,10 +942,10 @@ public:
     /// \param obj original DosageHistory object
     ///
     /// TODO : A test for this function needs to be written
-    DosageHistory( const DosageHistory &&_obj)
+    DosageHistory( const DosageHistory &&_obj) noexcept
     {
         for (const auto& timeRange : _obj.m_history) {
-            this->addTimeRange(*timeRange.get());
+            this->addTimeRange(*timeRange);
         }
     }
 
@@ -955,11 +955,11 @@ public:
     /// \return The modified DosageHistory
     ///
     /// TODO : A test for this function needs to be written
-    DosageHistory& operator=(DosageHistory _other)
+    DosageHistory& operator=(const DosageHistory& _other)
     {
         this->m_history.clear();
         for (const auto& timeRange : _other.m_history) {
-            this->addTimeRange(*timeRange.get());
+            this->addTimeRange(*timeRange);
         }
         return *this;
     }
@@ -970,7 +970,7 @@ public:
     ///
     bool isEmpty() const
     {
-        return (m_history.size() == 0);
+        return (m_history.empty());
     }
 
 
@@ -987,11 +987,11 @@ public:
     /// \return The clone
     /// TODO : A test for this function needs to be written
     ///
-    DosageHistory *clone() const
+    std::unique_ptr<DosageHistory> clone() const
     {
-        DosageHistory *newDosageHistory = new DosageHistory();
+        auto newDosageHistory = std::make_unique<DosageHistory>();
         for (const auto& timeRange : m_history) {
-            newDosageHistory->addTimeRange(*timeRange.get());
+            newDosageHistory->addTimeRange(*timeRange);
         }
         return newDosageHistory;
     }
