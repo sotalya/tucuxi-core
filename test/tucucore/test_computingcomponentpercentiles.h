@@ -428,6 +428,7 @@ struct TestComputingComponentPercentiles : public fructose::test_base<TestComput
 //            const PercentilesData *resp = dynamic_cast<const PercentilesData*>(responseData);
         }
 
+        if (false)
         {
             // Test of a posteriori percentiles with one valid sample just after the end of treatment
             auto drugTreatment = buildSimpleDrugTreatment(route, startTreatment, interval, treatmentDuration);
