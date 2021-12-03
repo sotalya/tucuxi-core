@@ -165,8 +165,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestR", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestS", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
         Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
-        Tucuxi::Core::ParameterSetSeries parametersSeries;
-        parametersSeries.addParameterSetEvent(parameters);
+        _parameters.addParameterSetEvent(parameters);
 
 
         //Definition of the Concentration Calculator
