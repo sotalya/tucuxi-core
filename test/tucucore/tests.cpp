@@ -454,6 +454,8 @@ int main(int argc, char** argv)
     }
 #endif
 
+
+
 #if defined(test_intakeextractor) || !defined(DO_NOT_COMPILE_ALL_TESTS)
     // --- INTAKE EXTRACTOR --- //
     TestIntakeExtractor intakeExtractorTests;
@@ -860,6 +862,8 @@ int main(int argc, char** argv)
     likelihoodTests.add_test("testLikelihood2SamplesDifferentDates", &TestLikelihood::test2SamplesDifferentDates);
     likelihoodTests.add_test("testLikelihood3SamplesDifferentDates", &TestLikelihood::test3SamplesDifferentDates);
 
+
+
     res = likelihoodTests.run(argc, argv);
     tot_res |= res;
     if (res != 0) {
@@ -869,6 +873,7 @@ int main(int argc, char** argv)
         std::cout << "Likelihood test succeeded\n";
     }
 #endif
+
 
 #if defined(test_cachecomputing) || !defined(DO_NOT_COMPILE_ALL_TESTS)
     TestCacheComputing cacheComputingTests;

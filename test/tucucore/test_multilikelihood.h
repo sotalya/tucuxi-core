@@ -149,9 +149,9 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
                              getBolusFormulationAndRoute(),
                              getBolusFormulationAndRoute().getAbsorptionModel(),
                              Duration(std::chrono::minutes(20)),
-
                              static_cast<int>(CYCLE_SIZE));
-        std::shared_ptr<Tucuxi::Core::IntakeIntervalCalculator> calculator = std::make_shared<Tucuxi::Core::ConstantEliminationBolus>();
+
+        std::shared_ptr<Tucuxi::Core::IntakeIntervalCalculator> calculator = std::make_shared<Tucuxi::Core::MultiConstantEliminationBolus>();
         _intakes[0].setCalculator(calculator);
         _intakes[1].setCalculator(calculator);
 
@@ -227,6 +227,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
             fructose_assert_double_eq(x, expectedValue);
 
     }
+
 
 
 
@@ -1250,5 +1251,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
 };
 
 }
+
+
 
 }
