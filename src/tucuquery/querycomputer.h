@@ -30,7 +30,6 @@ public:
     /// ComputingRequest embedded in _queryString
     ///
     void compute(const std::string& _queryString, ComputingQueryResponse& _response);
-
 };
 
 

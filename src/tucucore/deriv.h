@@ -38,13 +38,14 @@ constexpr Value DEFAULT_DERIV_TOL = 2e-5;
 /// \param tol value of derivative calculation step (as h in f(x+h)...)
 ///
 /// \return x derivative
-template <typename func, typename x = double, bool is_ptr, bool is_array, bool is_class>
-inline x deriv1_impl(func fxn, // NOLINT(readability-identifier-naming)
-         x loc, // NOLINT(readability-identifier-naming)
-         const boost::integral_constant<bool, is_ptr>&,
-         const boost::integral_constant<bool, is_array>&,
-         const boost::integral_constant<bool, is_class>&,
-         const Value tol = DEFAULT_DERIV_TOL) // NOLINT(readability-identifier-naming)
+template<typename func, typename x = double, bool is_ptr, bool is_array, bool is_class>
+inline x deriv1_impl(
+        func fxn, // NOLINT(readability-identifier-naming)
+        x loc,    // NOLINT(readability-identifier-naming)
+        const boost::integral_constant<bool, is_ptr>&,
+        const boost::integral_constant<bool, is_array>&,
+        const boost::integral_constant<bool, is_class>&,
+        const Value tol = DEFAULT_DERIV_TOL) // NOLINT(readability-identifier-naming)
 {
     return (fxn(loc + tol) - fxn(loc - tol)) / (2 * tol);
 }
@@ -64,13 +65,14 @@ inline x deriv1_impl(func fxn, // NOLINT(readability-identifier-naming)
 /// \param tol value of derivative calculation step (as h in f(x+h)...)
 ///
 /// \return x derivative
-template <typename func, typename x>
-inline x deriv1_impl(func fxn, // NOLINT(readability-identifier-naming)
-         x loc, // NOLINT(readability-identifier-naming)
-         const boost::true_type&,
-         const boost::false_type&,
-         const boost::false_type&,
-         const Value tol = DEFAULT_DERIV_TOL) // NOLINT(readability-identifier-naming)
+template<typename func, typename x>
+inline x deriv1_impl(
+        func fxn, // NOLINT(readability-identifier-naming)
+        x loc,    // NOLINT(readability-identifier-naming)
+        const boost::true_type&,
+        const boost::false_type&,
+        const boost::false_type&,
+        const Value tol = DEFAULT_DERIV_TOL) // NOLINT(readability-identifier-naming)
 {
     auto xp = *loc + tol;
     auto xm = *loc - tol;
@@ -95,14 +97,15 @@ inline x deriv1_impl(func fxn, // NOLINT(readability-identifier-naming)
 /// \param answer where to put the results
 /// \param tol value of derivative calculation step (as h in f(x+h)...)
 /// \return x& derivative
-template <typename func, typename x = ValueVector>
-inline x& deriv1_impl(x& ans, // NOLINT(readability-identifier-naming)
-         func fxn, // NOLINT(readability-identifier-naming)
-         x& loc, // NOLINT(readability-identifier-naming)
-         const boost::false_type&,
-         const boost::false_type&,
-         const boost::true_type&,
-         const Value tol = DEFAULT_DERIV_TOL) // NOLINT(readability-identifier-naming)
+template<typename func, typename x = ValueVector>
+inline x& deriv1_impl(
+        x& ans,   // NOLINT(readability-identifier-naming)
+        func fxn, // NOLINT(readability-identifier-naming)
+        x& loc,   // NOLINT(readability-identifier-naming)
+        const boost::false_type&,
+        const boost::false_type&,
+        const boost::true_type&,
+        const Value tol = DEFAULT_DERIV_TOL) // NOLINT(readability-identifier-naming)
 {
 
     size_t vecsize = loc.size();
@@ -136,14 +139,15 @@ inline x& deriv1_impl(x& ans, // NOLINT(readability-identifier-naming)
 /// \param tol value of derivative calculation step (as h in f(x+h)...)
 ///
 /// \return x& derivative
-template <typename func, typename x = ValueVector>
-inline x& deriv1_impl(x& ans, // NOLINT(readability-identifier-naming)
-         func fxn, // NOLINT(readability-identifier-naming)
-         x& loc, // NOLINT(readability-identifier-naming)
-         const boost::true_type&,
-         const boost::false_type&,
-         const boost::true_type&,
-         const Value tol = DEFAULT_DERIV_TOL) // NOLINT(readability-identifier-naming)
+template<typename func, typename x = ValueVector>
+inline x& deriv1_impl(
+        x& ans,   // NOLINT(readability-identifier-naming)
+        func fxn, // NOLINT(readability-identifier-naming)
+        x& loc,   // NOLINT(readability-identifier-naming)
+        const boost::true_type&,
+        const boost::false_type&,
+        const boost::true_type&,
+        const Value tol = DEFAULT_DERIV_TOL) // NOLINT(readability-identifier-naming)
 {
 
     int vecsize = loc.size();
@@ -175,7 +179,7 @@ inline x& deriv1_impl(x& ans, // NOLINT(readability-identifier-naming)
 /// \param tol value of derivative calculation step (as h in f(x+h)...)
 ///
 /// \return x derivative
-template <typename func, typename x = ValueVector>
+template<typename func, typename x = ValueVector>
 inline x deriv1(func fxn, x& loc, x& ans, const Value tol = DEFAULT_DERIV_TOL) // NOLINT(readability-identifier-naming)
 {
     TMP_UNUSED_PARAMETER(tol);
@@ -195,7 +199,7 @@ inline x deriv1(func fxn, x& loc, x& ans, const Value tol = DEFAULT_DERIV_TOL) /
 /// \param tol value of derivative calculation step (as h in f(x+h)...)
 ///
 /// \return x derivative
-template <typename func, typename x = ValueVector>
+template<typename func, typename x = ValueVector>
 inline x deriv1(func fxn, x& loc, const Value tol = DEFAULT_DERIV_TOL) // NOLINT(readability-identifier-naming)
 {
     TMP_UNUSED_PARAMETER(tol);
@@ -217,8 +221,9 @@ inline x deriv1(func fxn, x& loc, const Value tol = DEFAULT_DERIV_TOL) // NOLINT
 /// \param loc where to take the derivative
 /// \param answer where to put the results
 /// \param tol value of derivative calculation step (as h in f(x+h)...)
-template <typename func, typename x, typename y>
-void deriv2_impl(func fxn, x& loc, y& answer, /*const*/ Value tol) { // NOLINT(readability-identifier-naming)
+template<typename func, typename x, typename y>
+void deriv2_impl(func fxn, x& loc, y& answer, /*const*/ Value tol)
+{ // NOLINT(readability-identifier-naming)
     int size = loc.size();
 
     // Diagonal elements
@@ -228,7 +233,7 @@ void deriv2_impl(func fxn, x& loc, y& answer, /*const*/ Value tol) { // NOLINT(r
         xm = xp = loc;
         xp[i] = loc[i] + tol;
         xm[i] = loc[i] - tol;
-        answer[i * size + i] = (fxn(xp) + fxn(xm) - 2 * fxn(loc)) / std::pow(tol,2);
+        answer[i * size + i] = (fxn(xp) + fxn(xm) - 2 * fxn(loc)) / std::pow(tol, 2);
     }
 
     // Off-diagonal elements
@@ -248,7 +253,8 @@ void deriv2_impl(func fxn, x& loc, y& answer, /*const*/ Value tol) { // NOLINT(r
                 xpm[j] = loc[j] - tol;
                 xmp[i] = loc[i] - tol;
                 xmp[j] = loc[j] + tol;
-                answer[i * size + j] = answer[j * size + i] = (fxn(xpp) + fxn(xmm) - fxn(xmp) - fxn(xpm)) / (4 * std::pow(tol,2));
+                answer[i * size + j] = answer[j * size + i] =
+                        (fxn(xpp) + fxn(xmm) - fxn(xmp) - fxn(xpm)) / (4 * std::pow(tol, 2));
             }
         }
     }
@@ -263,8 +269,9 @@ void deriv2_impl(func fxn, x& loc, y& answer, /*const*/ Value tol) { // NOLINT(r
 /// \param loc where to take the derivative
 /// \param answer where to put the results
 /// \param tol value of derivative calculation step (as h in f(x+h)...)
-template <typename func>
-void deriv2_impl(func fxn, Eigen::VectorXd& loc, Eigen::MatrixXd& answer, const Value tol) { // NOLINT(readability-identifier-naming)
+template<typename func>
+void deriv2_impl(func fxn, Eigen::VectorXd& loc, Eigen::MatrixXd& answer, const Value tol)
+{ // NOLINT(readability-identifier-naming)
     long size = loc.size();
 
     // Diagonal elements
@@ -274,7 +281,7 @@ void deriv2_impl(func fxn, Eigen::VectorXd& loc, Eigen::MatrixXd& answer, const 
         xm = xp = loc;
         xp(i) = loc(i) + tol;
         xm(i) = loc(i) - tol;
-        answer(i,i) = (fxn(xp) + fxn(xm) - 2 * fxn(loc)) / std::pow(tol,2);
+        answer(i, i) = (fxn(xp) + fxn(xm) - 2 * fxn(loc)) / std::pow(tol, 2);
     }
 
     // Off-diagonal elements
@@ -294,7 +301,7 @@ void deriv2_impl(func fxn, Eigen::VectorXd& loc, Eigen::MatrixXd& answer, const 
                 xpm(j) = loc(j) - tol;
                 xmp(i) = loc(i) - tol;
                 xmp(j) = loc(j) + tol;
-                answer(i,j) = answer(j,i) = (fxn(xpp) + fxn(xmm) - fxn(xmp) - fxn(xpm)) / (4 * std::pow(tol,2));
+                answer(i, j) = answer(j, i) = (fxn(xpp) + fxn(xmm) - fxn(xmp) - fxn(xpm)) / (4 * std::pow(tol, 2));
             }
         }
     }
@@ -311,15 +318,16 @@ void deriv2_impl(func fxn, Eigen::VectorXd& loc, Eigen::MatrixXd& answer, const 
 /// \param loc where to take the derivative
 /// \param ret where to put the results
 /// \param tol value of derivative calculation step (as h in f(x+h)...)
-template <typename func, typename x = ValueVector, typename y>
-inline void deriv2(func fxn, x& loc, y& ret, /*const*/ Value tol = DEFAULT_DERIV_TOL) // NOLINT(readability-identifier-naming)
+template<typename func, typename x = ValueVector, typename y>
+inline void deriv2(
+        func fxn, x& loc, y& ret, /*const*/ Value tol = DEFAULT_DERIV_TOL) // NOLINT(readability-identifier-naming)
 {
     // Using boost typetraits here to better handle typical specializations
 
-// If you want to inspect the types, I found uncommenting the following lines useful,
-//    bool lala1 = boost::is_pointer<x>();
-//    bool lala2 = boost::is_array<x>();
-//    bool lala3 = boost::is_class<x>();
+    // If you want to inspect the types, I found uncommenting the following lines useful,
+    //    bool lala1 = boost::is_pointer<x>();
+    //    bool lala2 = boost::is_array<x>();
+    //    bool lala3 = boost::is_class<x>();
 
     deriv2_impl(fxn, loc, ret, tol);
 }
@@ -333,8 +341,12 @@ inline void deriv2(func fxn, x& loc, y& ret, /*const*/ Value tol = DEFAULT_DERIV
 /// \param loc where to take the derivative
 /// \param ret where to put the results
 /// \param tol value of derivative calculation step (as h in f(x+h)...)
-template <typename func>
-inline void deriv2(func fxn, Eigen::VectorXd& loc, Eigen::MatrixXd& ret, const Value tol = DEFAULT_DERIV_TOL)  // NOLINT(readability-identifier-naming)
+template<typename func>
+inline void deriv2(
+        func fxn,
+        Eigen::VectorXd& loc,
+        Eigen::MatrixXd& ret,
+        const Value tol = DEFAULT_DERIV_TOL) // NOLINT(readability-identifier-naming)
 {
     deriv2_impl(fxn, loc, ret, tol);
 }

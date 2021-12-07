@@ -5,8 +5,7 @@ namespace Tucuxi {
 namespace Core {
 
 
-DrugModelMetadata::DrugModelMetadata()
-= default;
+DrugModelMetadata::DrugModelMetadata() = default;
 
 } // namespace Core
 } // namespace Tucuxi

@@ -2,43 +2,38 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
-#include "tucucommon/utils.h"
-#include "tucucommon/loggerhelper.h"
 #include "tucucommon/general.h"
+#include "tucucommon/loggerhelper.h"
+#include "tucucommon/utils.h"
 
 #include "tucucore/drugfilevalidator.h"
 
 #include "cxxopts/include/cxxopts.hpp"
 
-cxxopts::ParseResult
-parse(int _argc, char* _argv[])
+cxxopts::ParseResult parse(int _argc, char* _argv[])
 {
     // Get application folder
     std::string appFolder = Tucuxi::Common::Utils::getAppFolder(_argv);
 
 
-    try
-    {
+    try {
 
         cxxopts::Options options(_argv[0], " - Tucuxi drug file validator");
-        options
-                .positional_help("[optional args]")
-                .show_positional_help();
+        options.positional_help("[optional args]").show_positional_help();
 
-        options
-                .allow_unrecognised_options()
+        // clang-format off
+        options.allow_unrecognised_options()
                 .add_options()
                 ("d,drugfile", "Drug file", cxxopts::value<std::string>())
                 ("t,testfile", "Tests to be conducted", cxxopts::value<std::string>())
                 ("l,logfile", "Log file", cxxopts::value<std::string>())
                 ("help", "Print help")
                 ;
-
+clang-format on
 
         auto result = options.parse(_argc, _argv);
 
-        if (result.count("help") > 0)
-        {
+        if (result.count("help") > 0) {
             std::cout << options.help({"", "Group"}) << std::endl;
             exit(0);
         }
@@ -85,9 +80,8 @@ parse(int _argc, char* _argv[])
         validator.validate(drugFileName, testsFileName);
 
         return result;
-
-    } catch (const cxxopts::OptionException& e)
-    {
+    }
+    catch (const cxxopts::OptionException& e) {
         Tucuxi::Common::LoggerHelper logHelper;
         logHelper.error("error parsing options: {}", e.what());
         exit(1);

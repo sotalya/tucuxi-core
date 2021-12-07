@@ -1,8 +1,8 @@
 #ifndef TUCUXI_CORE_OVERLOADEVALUATOR_H
 #define TUCUXI_CORE_OVERLOADEVALUATOR_H
 
-#include "tucucore/dosage.h"
 #include "tucucore/computingservice/computingrequest.h"
+#include "tucucore/dosage.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -17,7 +17,6 @@ namespace Core {
 class OverloadEvaluator
 {
 public:
-
     ///
     /// \brief Empty constructor
     ///
@@ -37,8 +36,7 @@ public:
     /// \param _trait The procesing traits embedding the computation instructions
     /// \return true if the calculation is feasible, false else
     ///
-    bool isAcceptable(IntakeSeries &_intakeSeries,
-                      const ComputingTrait *_trait);
+    bool isAcceptable(IntakeSeries& _intakeSeries, const ComputingTrait* _trait);
 
     ///
     /// \brief Set the maximum values
@@ -58,7 +56,6 @@ public:
 
 
 private:
-
     ///  Maximum number of points for a prediction
     CycleSize m_nbPredictionPoints;
 
@@ -75,7 +72,6 @@ private:
 class SingleOverloadEvaluator
 {
 public:
-
     static OverloadEvaluator* getInstance();
 };
 

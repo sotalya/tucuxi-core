@@ -2,6 +2,7 @@
 #define TUCUXI_CORE_COMPUTINGRESPONSEEXPORT_H
 
 #include "tucucore/computingservice/computingresponse.h"
+
 #include "tucuquery/computingqueryresponse.h"
 
 namespace Tucuxi {
@@ -12,7 +13,7 @@ class ComputingResponseExport
 public:
     ComputingResponseExport();
 
-    bool exportToFiles(const Query::ComputingQueryResponse &_computingQueryResponse, const std::string &_filePath);
+    bool exportToFiles(const Query::ComputingQueryResponse& _computingQueryResponse, const std::string& _filePath);
 };
 
 } // namespace Core

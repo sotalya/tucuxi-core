@@ -4,9 +4,9 @@
 
 #include <vector>
 
-#include "fructose/fructose.h"
-
 #include "tucucommon/iterator.h"
+
+#include "fructose/fructose.h"
 
 struct TestIterator : public fructose::test_base<TestIterator>
 {

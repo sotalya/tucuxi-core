@@ -3,24 +3,24 @@
 */
 
 #include "aposteriorietascalculator.h"
+
+#include "concentrationcalculator.h"
 #include "likelihood.h"
 #include "minimize.h"
-#include "concentrationcalculator.h"
 
 namespace Tucuxi {
 namespace Core {
 
-APosterioriEtasCalculator::APosterioriEtasCalculator()
-= default;
+APosterioriEtasCalculator::APosterioriEtasCalculator() = default;
 
 
 ComputingStatus APosterioriEtasCalculator::computeAposterioriEtas(
-        const IntakeSeries &_intakes,
-        const ParameterSetSeries &_parameters,
-        const OmegaMatrix &_omega,
-        const IResidualErrorModel &_residualErrorModel,
-        const SampleSeries &_samples,
-        Etas &_aPosterioriEtas)
+        const IntakeSeries& _intakes,
+        const ParameterSetSeries& _parameters,
+        const OmegaMatrix& _omega,
+        const IResidualErrorModel& _residualErrorModel,
+        const SampleSeries& _samples,
+        Etas& _aPosterioriEtas)
 {
     // Verify we have a var-covar matrix
     if (isOmegaEmpty(_omega)) {
@@ -29,7 +29,7 @@ ComputingStatus APosterioriEtasCalculator::computeAposterioriEtas(
     }
 
     // Verify is square matrix
-    if ( !isOmegaSquare(_omega)) {
+    if (!isOmegaSquare(_omega)) {
         //throw something
         return ComputingStatus::AposterioriEtasCalculationNoSquareOmega;
     }
@@ -42,7 +42,7 @@ ComputingStatus APosterioriEtasCalculator::computeAposterioriEtas(
         return ComputingStatus::Ok;
     }
 
-// Prints out the parameter values
+    // Prints out the parameter values
     //    parameters_series_t::const_iterator pit, pit_end;
     //    pit = parameters.begin();
     //    pit_end = parameters.end();

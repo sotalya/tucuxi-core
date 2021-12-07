@@ -21,7 +21,7 @@ std::string Utils::getAppFolder(char** _argv)
 }
 
 
-int Utils::dateDiffInDays(const DateTime &_t1, const DateTime &_t2)
+int Utils::dateDiffInDays(const DateTime& _t1, const DateTime& _t2)
 {
     DateTime t1;
     DateTime t2;
@@ -29,15 +29,16 @@ int Utils::dateDiffInDays(const DateTime &_t1, const DateTime &_t2)
     if (_t1 > _t2) {
         t1 = _t1;
         t2 = _t2;
-    } else {
+    }
+    else {
         t1 = _t2;
         t2 = _t1;
     }
     return static_cast<int>((t1 - t2).toDays());
-    return static_cast<int>(ValueToDate(varToValue(t1)- varToValue(t2)).toDays());
+    return static_cast<int>(ValueToDate(varToValue(t1) - varToValue(t2)).toDays());
 }
 
-int Utils::dateDiffInWeeks(const DateTime &_t1, const DateTime &_t2)
+int Utils::dateDiffInWeeks(const DateTime& _t1, const DateTime& _t2)
 {
     DateTime t1;
     DateTime t2;
@@ -45,16 +46,17 @@ int Utils::dateDiffInWeeks(const DateTime &_t1, const DateTime &_t2)
     if (_t1 > _t2) {
         t1 = _t1;
         t2 = _t2;
-    } else {
+    }
+    else {
         t1 = _t2;
         t2 = _t1;
     }
     return static_cast<int>((t1 - t2).toDays() / 7.0);
-    return static_cast<int>(ValueToDate(varToValue(t1)- varToValue(t2)).toDays() / 7.0);
+    return static_cast<int>(ValueToDate(varToValue(t1) - varToValue(t2)).toDays() / 7.0);
 }
 
 
-int Utils::dateDiffInMonths(const DateTime &_t1, const DateTime &_t2)
+int Utils::dateDiffInMonths(const DateTime& _t1, const DateTime& _t2)
 {
     DateTime t1;
     DateTime t2;
@@ -62,7 +64,8 @@ int Utils::dateDiffInMonths(const DateTime &_t1, const DateTime &_t2)
     if (_t1 > _t2) {
         t1 = _t1;
         t2 = _t2;
-    } else {
+    }
+    else {
         t1 = _t2;
         t2 = _t1;
     }
@@ -70,7 +73,7 @@ int Utils::dateDiffInMonths(const DateTime &_t1, const DateTime &_t2)
 }
 
 
-int Utils::dateDiffInYears(const DateTime &_t1, const DateTime &_t2)
+int Utils::dateDiffInYears(const DateTime& _t1, const DateTime& _t2)
 {
     DateTime t1;
     DateTime t2;
@@ -78,7 +81,8 @@ int Utils::dateDiffInYears(const DateTime &_t1, const DateTime &_t2)
     if (_t1 > _t2) {
         t1 = _t1;
         t2 = _t2;
-    } else {
+    }
+    else {
         t1 = _t2;
         t2 = _t1;
     }
@@ -86,31 +90,28 @@ int Utils::dateDiffInYears(const DateTime &_t1, const DateTime &_t2)
 }
 
 
-Value Utils::varToValue(const bool &_value)
+Value Utils::varToValue(const bool& _value)
 {
     return _value ? 1.0 : 0.0;
 }
 
 
-Value Utils::varToValue(const DateTime &_value)
+Value Utils::varToValue(const DateTime& _value)
 {
     return stringToValue(varToString(_value), DataType::Date);
 }
 
 
-Value Utils::stringToValue(const std::string &_str, const DataType &_dataType)
+Value Utils::stringToValue(const std::string& _str, const DataType& _dataType)
 {
     Value v;
     std::string str = _str;
     std::transform(str.begin(), str.end(), str.begin(), ::tolower);
-    switch (_dataType)
-    {
-    case DataType::Int:
-    {
+    switch (_dataType) {
+    case DataType::Int: {
         int tmp = std::stoi(str);
         v = tmp;
-    }
-        break;
+    } break;
 
     case DataType::Double:
         v = std::stod(str);
@@ -128,18 +129,16 @@ Value Utils::stringToValue(const std::string &_str, const DataType &_dataType)
         }
         if (str == "0" || str == "false" || is0) {
             v = 0.0;
-        } else {
+        }
+        else {
             v = 1.0;
         }
-    }
-        break;
+    } break;
 
-    case DataType::Date:
-    {
+    case DataType::Date: {
         DateTime dt(str, "%Y-%m-%d %H:%M:%S");
         v = dt.toSeconds();
-    }
-        break;
+    } break;
 
     default:
         // Invalid type, set the value to 0.0.
@@ -150,35 +149,40 @@ Value Utils::stringToValue(const std::string &_str, const DataType &_dataType)
 }
 
 
-std::string Utils::varToString(const bool &_value)
+std::string Utils::varToString(const bool& _value)
 {
     return _value ? "1" : "0";
 }
 
 
-std::string Utils::varToString(const int &_value)
+std::string Utils::varToString(const int& _value)
 {
     return std::to_string(_value);
 }
 
 
-std::string Utils::varToString(const double &_value)
+std::string Utils::varToString(const double& _value)
 {
     return std::to_string(_value);
 }
 
 
-std::string Utils::varToString(const DateTime &_value)
+std::string Utils::varToString(const DateTime& _value)
 {
     char buf[64];
-    sprintf(buf, "%04d-%02d-%02d %02d:%02d:%02d",
-            _value.year(), _value.month(), _value.day(),
-            _value.hour(), _value.minute(), _value.second());
+    sprintf(buf,
+            "%04d-%02d-%02d %02d:%02d:%02d",
+            _value.year(),
+            _value.month(),
+            _value.day(),
+            _value.hour(),
+            _value.minute(),
+            _value.second());
     return std::string(buf);
 }
 
 
-DateTime Utils::ValueToDate(const Value &_value)
+DateTime Utils::ValueToDate(const Value& _value)
 {
     DateTime dt(Duration(std::chrono::seconds(static_cast<int64>(_value))));
 

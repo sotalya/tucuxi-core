@@ -5,40 +5,39 @@
 #ifndef TEST_NONMEMDRUGS_H
 #define TEST_NONMEMDRUGS_H
 
+#include <fstream>
 #include <iostream>
 #include <memory>
-#include <iostream>
-#include <fstream>
 #include <string>
-
-
-#include "fructose/fructose.h"
 
 #include "tucucommon/general.h"
 
 #include "tucucore/computingservice/computingresult.h"
+#include "tucucore/concentrationcalculator.h"
 #include "tucucore/dosage.h"
 #include "tucucore/intakeextractor.h"
 #include "tucucore/intakeintervalcalculator.h"
-#include "tucucore/concentrationcalculator.h"
 #include "tucucore/pkmodels/onecompartmentbolus.h"
-#include "tucucore/pkmodels/onecompartmentinfusion.h"
 #include "tucucore/pkmodels/onecompartmentextra.h"
+#include "tucucore/pkmodels/onecompartmentinfusion.h"
+
+#include "fructose/fructose.h"
 
 struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
 {
     static const int CYCLE_SIZE = 251;
 
-    TestNonMemDrugs() { }
+    TestNonMemDrugs() {}
 
     template<class CalculatorClass>
-    void testCalculator(const Tucuxi::Core::ParameterSetSeries &_parameters,
-                        double _dose,
-                        Tucuxi::Core::FormulationAndRoute _formulationAndRoute,
-                        Tucuxi::Core::AbsorptionModel _route,
-                        std::chrono::hours _interval,
-                        std::chrono::seconds _infusionTime,
-                        size_t _nbPoints)
+    void testCalculator(
+            const Tucuxi::Core::ParameterSetSeries& _parameters,
+            double _dose,
+            Tucuxi::Core::FormulationAndRoute _formulationAndRoute,
+            Tucuxi::Core::AbsorptionModel _route,
+            std::chrono::hours _interval,
+            std::chrono::seconds _infusionTime,
+            size_t _nbPoints)
     {
         // Compare the result on one interval
         // with ConcentrationCalculator vs directly with the IntakeIntervalCalculator
@@ -54,7 +53,16 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
 
             Tucuxi::Core::Concentrations concentrations;
             Tucuxi::Core::TimeOffsets times;
-            Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, _dose, Tucuxi::Common::TucuUnit("mg"), interval, _formulationAndRoute, _route, infusionTime, _nbPoints);
+            Tucuxi::Core::IntakeEvent intakeEvent(
+                    now,
+                    offsetTime,
+                    _dose,
+                    Tucuxi::Common::TucuUnit("mg"),
+                    interval,
+                    _formulationAndRoute,
+                    _route,
+                    infusionTime,
+                    _nbPoints);
 
             bool isAll = false;
 
@@ -69,14 +77,7 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
 
                 Tucuxi::Core::ParameterSetEvent event = *(_parameters.getAtTime(now));
                 res = calculator.calculateIntakePoints(
-                    concentrations,
-                    times,
-                    intakeEvent,
-                    event,
-                    inResiduals,
-                    isAll,
-                    outResiduals,
-                    true);
+                        concentrations, times, intakeEvent, event, inResiduals, isAll, outResiduals, true);
 
                 fructose_assert(res == Tucuxi::Core::ComputingStatus::Ok);
             }
@@ -91,24 +92,23 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
                 intakeSeries.push_back(intakeEvent);
                 auto concentrationCalculator = std::make_unique<Tucuxi::Core::ConcentrationCalculator>();
                 auto status = concentrationCalculator->computeConcentrations(
-                    predictionPtr,
-                    isAll,
-                    DateTime::now(), // YJ: Fix this with a meaningfull date
-                    DateTime::now(), // YJ: Fix this with a meaningfull date
-                    intakeSeries,
-                    _parameters);
+                        predictionPtr,
+                        isAll,
+                        DateTime::now(), // YJ: Fix this with a meaningfull date
+                        DateTime::now(), // YJ: Fix this with a meaningfull date
+                        intakeSeries,
+                        _parameters);
                 fructose_assert_eq(status, Tucuxi::Core::ComputingStatus::Ok);
             }
 
 
-            for(size_t i = 0; i < _nbPoints; i++) {
+            for (size_t i = 0; i < _nbPoints; i++) {
                 Tucuxi::Core::Concentrations concentration2;
                 concentration2 = predictionPtr->getValues()[0];
                 // std::cout << i <<  " :: " << concentrations[i] << " : " << concentration2[i] << std::endl;
                 fructose_assert_double_eq(concentrations[i], concentration2[i]);
             }
         }
-
     }
 
     void testImatinib(const std::string& /* _testName */)
@@ -134,10 +134,10 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
         Tucuxi::Core::AbsorptionModel route = Tucuxi::Core::AbsorptionModel::Intravascular;
 
         Tucuxi::Core::FormulationAndRoute formulationAndRoute(
-                    Tucuxi::Core::Formulation::ParenteralSolution,
-                    Tucuxi::Core::AdministrationRoute::IntravenousBolus,
-                    Tucuxi::Core::AbsorptionModel::Intravascular,
-                    "");
+                Tucuxi::Core::Formulation::ParenteralSolution,
+                Tucuxi::Core::AdministrationRoute::IntravenousBolus,
+                Tucuxi::Core::AbsorptionModel::Intravascular,
+                "");
 
         Tucuxi::Core::IntakeSeries intakeSeries;
         {
@@ -145,44 +145,47 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
 
 
             {
-                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-05-12:00:00","%Y-%m-%d-%H:%M:%S"),
-                                                      offsetTime,
-                                                      600,
-                                                      Tucuxi::Common::TucuUnit("mg"),
-                                                      interval24,
-                                                      formulationAndRoute,
-                                                      route,
-                                                      infusionTime,
-                                                      CYCLE_SIZE);
+                Tucuxi::Core::IntakeEvent intakeEvent(
+                        DateTime("2015-09-05-12:00:00", "%Y-%m-%d-%H:%M:%S"),
+                        offsetTime,
+                        600,
+                        Tucuxi::Common::TucuUnit("mg"),
+                        interval24,
+                        formulationAndRoute,
+                        route,
+                        infusionTime,
+                        CYCLE_SIZE);
 
                 intakeEvent.setCalculator(calculator2);
                 intakeSeries.push_back(intakeEvent);
             }
 
             {
-                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-06-12:00:00","%Y-%m-%d-%H:%M:%S"),
-                                                      offsetTime,
-                                                      600,
-                                                      Tucuxi::Common::TucuUnit("mg"),
-                                                      interval24,
-                                                      formulationAndRoute,
-                                                      route,
-                                                      infusionTime,
-                                                      CYCLE_SIZE);
+                Tucuxi::Core::IntakeEvent intakeEvent(
+                        DateTime("2015-09-06-12:00:00", "%Y-%m-%d-%H:%M:%S"),
+                        offsetTime,
+                        600,
+                        Tucuxi::Common::TucuUnit("mg"),
+                        interval24,
+                        formulationAndRoute,
+                        route,
+                        infusionTime,
+                        CYCLE_SIZE);
 
                 intakeEvent.setCalculator(calculator2);
                 intakeSeries.push_back(intakeEvent);
             }
             {
-                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-07-12:00:00","%Y-%m-%d-%H:%M:%S"),
-                                                      offsetTime,
-                                                      600,
-                                                      Tucuxi::Common::TucuUnit("mg"),
-                                                      interval24,
-                                                      formulationAndRoute,
-                                                      route,
-                                                      infusionTime,
-                                                      CYCLE_SIZE);
+                Tucuxi::Core::IntakeEvent intakeEvent(
+                        DateTime("2015-09-07-12:00:00", "%Y-%m-%d-%H:%M:%S"),
+                        offsetTime,
+                        600,
+                        Tucuxi::Common::TucuUnit("mg"),
+                        interval24,
+                        formulationAndRoute,
+                        route,
+                        infusionTime,
+                        CYCLE_SIZE);
 
                 intakeEvent.setCalculator(calculator2);
                 intakeSeries.push_back(intakeEvent);
@@ -191,15 +194,16 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
             Tucuxi::Common::Duration shortInterval = 370min;
 
             {
-                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-08-12:00:00","%Y-%m-%d-%H:%M:%S"),
-                                                      offsetTime,
-                                                      600,
-                                                      Tucuxi::Common::TucuUnit("mg"),
-                                                      shortInterval,
-                                                      formulationAndRoute,
-                                                      route,
-                                                      infusionTime,
-                                                      CYCLE_SIZE);
+                Tucuxi::Core::IntakeEvent intakeEvent(
+                        DateTime("2015-09-08-12:00:00", "%Y-%m-%d-%H:%M:%S"),
+                        offsetTime,
+                        600,
+                        Tucuxi::Common::TucuUnit("mg"),
+                        shortInterval,
+                        formulationAndRoute,
+                        route,
+                        infusionTime,
+                        CYCLE_SIZE);
 
                 intakeEvent.setCalculator(calculator2);
                 intakeSeries.push_back(intakeEvent);
@@ -207,30 +211,32 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
 
 
             {
-                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-08-18:10:00","%Y-%m-%d-%H:%M:%S"),
-                                                      offsetTime,
-                                                      400,
-                                                      Tucuxi::Common::TucuUnit("mg"),
-                                                      interval6,
-                                                      formulationAndRoute,
-                                                      route,
-                                                      infusionTime,
-                                                      CYCLE_SIZE);
+                Tucuxi::Core::IntakeEvent intakeEvent(
+                        DateTime("2015-09-08-18:10:00", "%Y-%m-%d-%H:%M:%S"),
+                        offsetTime,
+                        400,
+                        Tucuxi::Common::TucuUnit("mg"),
+                        interval6,
+                        formulationAndRoute,
+                        route,
+                        infusionTime,
+                        CYCLE_SIZE);
 
                 intakeEvent.setCalculator(calculator2);
                 intakeSeries.push_back(intakeEvent);
             }
 
             {
-                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-09-00:10:00","%Y-%m-%d-%H:%M:%S"),
-                                                      offsetTime,
-                                                      400,
-                                                      Tucuxi::Common::TucuUnit("mg"),
-                                                      interval6,
-                                                      formulationAndRoute,
-                                                      route,
-                                                      infusionTime,
-                                                      CYCLE_SIZE);
+                Tucuxi::Core::IntakeEvent intakeEvent(
+                        DateTime("2015-09-09-00:10:00", "%Y-%m-%d-%H:%M:%S"),
+                        offsetTime,
+                        400,
+                        Tucuxi::Common::TucuUnit("mg"),
+                        interval6,
+                        formulationAndRoute,
+                        route,
+                        infusionTime,
+                        CYCLE_SIZE);
 
                 intakeEvent.setCalculator(calculator2);
                 intakeSeries.push_back(intakeEvent);
@@ -239,15 +245,16 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
             {
                 Tucuxi::Common::Duration shortInterval = 350min;
 
-                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-09-06:10:00","%Y-%m-%d-%H:%M:%S"),
-                                                      offsetTime,
-                                                      400,
-                                                      Tucuxi::Common::TucuUnit("mg"),
-                                                      shortInterval,
-                                                      formulationAndRoute,
-                                                      route,
-                                                      infusionTime,
-                                                      CYCLE_SIZE);
+                Tucuxi::Core::IntakeEvent intakeEvent(
+                        DateTime("2015-09-09-06:10:00", "%Y-%m-%d-%H:%M:%S"),
+                        offsetTime,
+                        400,
+                        Tucuxi::Common::TucuUnit("mg"),
+                        shortInterval,
+                        formulationAndRoute,
+                        route,
+                        infusionTime,
+                        CYCLE_SIZE);
 
                 intakeEvent.setCalculator(calculator2);
                 intakeSeries.push_back(intakeEvent);
@@ -258,15 +265,16 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
             {
                 Tucuxi::Common::Duration shortInterval = 10min;
 
-                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-09-12:00:00","%Y-%m-%d-%H:%M:%S"),
-                                                      offsetTime,
-                                                      600,
-                                                      Tucuxi::Common::TucuUnit("mg"),
-                                                      shortInterval,
-                                                      formulationAndRoute,
-                                                      route,
-                                                      infusionTime,
-                                                      CYCLE_SIZE);
+                Tucuxi::Core::IntakeEvent intakeEvent(
+                        DateTime("2015-09-09-12:00:00", "%Y-%m-%d-%H:%M:%S"),
+                        offsetTime,
+                        600,
+                        Tucuxi::Common::TucuUnit("mg"),
+                        shortInterval,
+                        formulationAndRoute,
+                        route,
+                        infusionTime,
+                        CYCLE_SIZE);
 
                 intakeEvent.setCalculator(calculator2);
                 intakeSeries.push_back(intakeEvent);
@@ -274,29 +282,31 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
 
 
             {
-                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-09-12:10:00","%Y-%m-%d-%H:%M:%S"),
-                                                      offsetTime,
-                                                      400,
-                                                      Tucuxi::Common::TucuUnit("mg"),
-                                                      interval6,
-                                                      formulationAndRoute,
-                                                      route,
-                                                      infusionTime,
-                                                      CYCLE_SIZE);
+                Tucuxi::Core::IntakeEvent intakeEvent(
+                        DateTime("2015-09-09-12:10:00", "%Y-%m-%d-%H:%M:%S"),
+                        offsetTime,
+                        400,
+                        Tucuxi::Common::TucuUnit("mg"),
+                        interval6,
+                        formulationAndRoute,
+                        route,
+                        infusionTime,
+                        CYCLE_SIZE);
 
                 intakeEvent.setCalculator(calculator2);
                 intakeSeries.push_back(intakeEvent);
             }
             {
-                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-09-18:10:00","%Y-%m-%d-%H:%M:%S"),
-                                                      offsetTime,
-                                                      400,
-                                                      Tucuxi::Common::TucuUnit("mg"),
-                                                      interval6,
-                                                      formulationAndRoute,
-                                                      route,
-                                                      infusionTime,
-                                                      CYCLE_SIZE);
+                Tucuxi::Core::IntakeEvent intakeEvent(
+                        DateTime("2015-09-09-18:10:00", "%Y-%m-%d-%H:%M:%S"),
+                        offsetTime,
+                        400,
+                        Tucuxi::Common::TucuUnit("mg"),
+                        interval6,
+                        formulationAndRoute,
+                        route,
+                        infusionTime,
+                        CYCLE_SIZE);
 
                 intakeEvent.setCalculator(calculator2);
                 intakeSeries.push_back(intakeEvent);
@@ -304,88 +314,94 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
 
 
             {
-                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-10-00:10:00","%Y-%m-%d-%H:%M:%S"),
-                                                      offsetTime,
-                                                      400,
-                                                      Tucuxi::Common::TucuUnit("mg"),
-                                                      interval6,
-                                                      formulationAndRoute,
-                                                      route,
-                                                      infusionTime,
-                                                      CYCLE_SIZE);
-
-                intakeEvent.setCalculator(calculator2);
-                intakeSeries.push_back(intakeEvent);
-            }
-
-            {
-                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-10-06:10:00","%Y-%m-%d-%H:%M:%S"),
-                                                      offsetTime,
-                                                      400,
-                                                      Tucuxi::Common::TucuUnit("mg"),
-                                                      interval6,
-                                                      formulationAndRoute,
-                                                      route,
-                                                      infusionTime,
-                                                      CYCLE_SIZE);
-
-                intakeEvent.setCalculator(calculator2);
-                intakeSeries.push_back(intakeEvent);
-            }
-            {
-                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-10-12:10:00","%Y-%m-%d-%H:%M:%S"),
-                                                      offsetTime,
-                                                      400,
-                                                      Tucuxi::Common::TucuUnit("mg"),
-                                                      interval6,
-                                                      formulationAndRoute,
-                                                      route,
-                                                      infusionTime,
-                                                      CYCLE_SIZE);
-
-                intakeEvent.setCalculator(calculator2);
-                intakeSeries.push_back(intakeEvent);
-            }
-            {
-                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-10-18:10:00","%Y-%m-%d-%H:%M:%S"),
-                                                      offsetTime,
-                                                      400,
-                                                      Tucuxi::Common::TucuUnit("mg"),
-                                                      interval6,
-                                                      formulationAndRoute,
-                                                      route,
-                                                      infusionTime,
-                                                      CYCLE_SIZE);
+                Tucuxi::Core::IntakeEvent intakeEvent(
+                        DateTime("2015-09-10-00:10:00", "%Y-%m-%d-%H:%M:%S"),
+                        offsetTime,
+                        400,
+                        Tucuxi::Common::TucuUnit("mg"),
+                        interval6,
+                        formulationAndRoute,
+                        route,
+                        infusionTime,
+                        CYCLE_SIZE);
 
                 intakeEvent.setCalculator(calculator2);
                 intakeSeries.push_back(intakeEvent);
             }
 
             {
-                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-11-00:10:00","%Y-%m-%d-%H:%M:%S"),
-                                                      offsetTime,
-                                                      400,
-                                                      Tucuxi::Common::TucuUnit("mg"),
-                                                      interval6,
-                                                      formulationAndRoute,
-                                                      route,
-                                                      infusionTime,
-                                                      CYCLE_SIZE);
+                Tucuxi::Core::IntakeEvent intakeEvent(
+                        DateTime("2015-09-10-06:10:00", "%Y-%m-%d-%H:%M:%S"),
+                        offsetTime,
+                        400,
+                        Tucuxi::Common::TucuUnit("mg"),
+                        interval6,
+                        formulationAndRoute,
+                        route,
+                        infusionTime,
+                        CYCLE_SIZE);
+
+                intakeEvent.setCalculator(calculator2);
+                intakeSeries.push_back(intakeEvent);
+            }
+            {
+                Tucuxi::Core::IntakeEvent intakeEvent(
+                        DateTime("2015-09-10-12:10:00", "%Y-%m-%d-%H:%M:%S"),
+                        offsetTime,
+                        400,
+                        Tucuxi::Common::TucuUnit("mg"),
+                        interval6,
+                        formulationAndRoute,
+                        route,
+                        infusionTime,
+                        CYCLE_SIZE);
+
+                intakeEvent.setCalculator(calculator2);
+                intakeSeries.push_back(intakeEvent);
+            }
+            {
+                Tucuxi::Core::IntakeEvent intakeEvent(
+                        DateTime("2015-09-10-18:10:00", "%Y-%m-%d-%H:%M:%S"),
+                        offsetTime,
+                        400,
+                        Tucuxi::Common::TucuUnit("mg"),
+                        interval6,
+                        formulationAndRoute,
+                        route,
+                        infusionTime,
+                        CYCLE_SIZE);
 
                 intakeEvent.setCalculator(calculator2);
                 intakeSeries.push_back(intakeEvent);
             }
 
             {
-                Tucuxi::Core::IntakeEvent intakeEvent(DateTime("2015-09-11-06:10:00","%Y-%m-%d-%H:%M:%S"),
-                                                      offsetTime,
-                                                      400,
-                                                      Tucuxi::Common::TucuUnit("mg"),
-                                                      interval6,
-                                                      formulationAndRoute,
-                                                      route,
-                                                      infusionTime,
-                                                      CYCLE_SIZE);
+                Tucuxi::Core::IntakeEvent intakeEvent(
+                        DateTime("2015-09-11-00:10:00", "%Y-%m-%d-%H:%M:%S"),
+                        offsetTime,
+                        400,
+                        Tucuxi::Common::TucuUnit("mg"),
+                        interval6,
+                        formulationAndRoute,
+                        route,
+                        infusionTime,
+                        CYCLE_SIZE);
+
+                intakeEvent.setCalculator(calculator2);
+                intakeSeries.push_back(intakeEvent);
+            }
+
+            {
+                Tucuxi::Core::IntakeEvent intakeEvent(
+                        DateTime("2015-09-11-06:10:00", "%Y-%m-%d-%H:%M:%S"),
+                        offsetTime,
+                        400,
+                        Tucuxi::Common::TucuUnit("mg"),
+                        interval6,
+                        formulationAndRoute,
+                        route,
+                        infusionTime,
+                        CYCLE_SIZE);
 
                 intakeEvent.setCalculator(calculator2);
                 intakeSeries.push_back(intakeEvent);
@@ -394,22 +410,26 @@ struct TestNonMemDrugs : public fructose::test_base<TestNonMemDrugs>
 
         // Imatinib parameters, as in the XML drug file
         Tucuxi::Core::ParameterDefinitions parameterDefs;
-        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("V", 347, Tucuxi::Core::ParameterVariabilityType::None));
-        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("CL", 15.106, Tucuxi::Core::ParameterVariabilityType::None));
-        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
-        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 1, Tucuxi::Core::ParameterVariabilityType::None));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "V", 347, Tucuxi::Core::ParameterVariabilityType::None));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "CL", 15.106, Tucuxi::Core::ParameterVariabilityType::None));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "F", 1, Tucuxi::Core::ParameterVariabilityType::None));
         Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
         Tucuxi::Core::ParameterSetSeries parametersSeries;
         parametersSeries.addParameterSetEvent(parameters);
 
         auto concentrationCalculator = std::make_unique<Tucuxi::Core::ConcentrationCalculator>();
         auto status = concentrationCalculator->computeConcentrations(
-            predictionPtr,
-            isAll,
-            DateTime::now(), // YJ: Fix this with a meaningfull date
-            DateTime::now(), // YJ: Fix this with a meaningfull date
-            intakeSeries,
-            parametersSeries);
+                predictionPtr,
+                isAll,
+                DateTime::now(), // YJ: Fix this with a meaningfull date
+                DateTime::now(), // YJ: Fix this with a meaningfull date
+                intakeSeries,
+                parametersSeries);
 
         fructose_assert_eq(status, ComputingStatus::Ok);
 

@@ -7,12 +7,13 @@
 
 #include <vector>
 
-#include "tucucore/timedevent.h"
+#include "tucucommon/duration.h"
+
 #include "tucucore/drugdefinitions.h"
 #include "tucucore/drugmodel/activemoiety.h"
 #include "tucucore/drugmodel/targetdefinition.h"
-#include "tucucommon/duration.h"
 #include "tucucore/targetevent.h"
+#include "tucucore/timedevent.h"
 
 struct TestTargetExtractor;
 
@@ -31,11 +32,13 @@ class Target
 public:
     Target() = delete;
 
+    // clang-format off
     Target(ActiveMoietyId _activeMoietyId,
            TargetType _type, 
            Value _min, 
            Value _best, 
            Value _max);
+    // clang-format on
 
     Target(ActiveMoietyId _activeMoietyId,
            TargetType _type,
@@ -54,12 +57,14 @@ public:
            Value _inefficacyAlarm,
            Value _toxicityAlarm);
 
+    // clang-format off
     Target(ActiveMoietyId _activeMoietyId,
            TargetType _type,
            Value _min,
            Value _best,
            Value _max,
            Value _mic);
+    // clang-format on
 
     Target(ActiveMoietyId _activeMoietyId,
            TargetType _type,
@@ -69,9 +74,9 @@ public:
            Value _vmax,
            Value _mic,
            TucuUnit _micUnit,
-           const Tucuxi::Common::Duration &_tmin,
-           const Tucuxi::Common::Duration &_tbest,
-           const Tucuxi::Common::Duration &_tmax);
+           const Tucuxi::Common::Duration& _tmin,
+           const Tucuxi::Common::Duration& _tbest,
+           const Tucuxi::Common::Duration& _tmax);
 
     Target(ActiveMoietyId _activeMoietyId,
            TargetType _type,
@@ -94,34 +99,62 @@ public:
            Value _toxicityAlarm,
            Value _mic,
            TucuUnit _micUnit,
-           const Tucuxi::Common::Duration &_tmin,
-           const Tucuxi::Common::Duration &_tbest,
-           const Tucuxi::Common::Duration &_tmax);
+           const Tucuxi::Common::Duration& _tmin,
+           const Tucuxi::Common::Duration& _tbest,
+           const Tucuxi::Common::Duration& _tmax);
 
 
-    ActiveMoietyId getActiveMoietyId() const { return m_activeMoietyId;}
+    ActiveMoietyId getActiveMoietyId() const
+    {
+        return m_activeMoietyId;
+    }
 
-    TargetType getTargetType() const {return m_targetType;}
+    TargetType getTargetType() const
+    {
+        return m_targetType;
+    }
 
-    TucuUnit getUnit() const {return m_unit;}
+    TucuUnit getUnit() const
+    {
+        return m_unit;
+    }
 
-    Value getValueMin() const {return m_valueMin;}
+    Value getValueMin() const
+    {
+        return m_valueMin;
+    }
 
-    Value getValueBest() const {return m_valueBest;}
+    Value getValueBest() const
+    {
+        return m_valueBest;
+    }
 
-    Value getValueMax() const {return m_valueMax;}
+    Value getValueMax() const
+    {
+        return m_valueMax;
+    }
 
-    Value getInefficacyAlarm() const {return m_inefficacyAlarm;}
+    Value getInefficacyAlarm() const
+    {
+        return m_inefficacyAlarm;
+    }
 
-    Value getToxicityAlarm() const {return m_toxicityAlarm;}
+    Value getToxicityAlarm() const
+    {
+        return m_toxicityAlarm;
+    }
 
-    Value getMicValue() const {return m_mic;}
+    Value getMicValue() const
+    {
+        return m_mic;
+    }
 
-    TucuUnit getMicUnit() const {return m_micUnit;}
+    TucuUnit getMicUnit() const
+    {
+        return m_micUnit;
+    }
 
 private:
-
-
     /// Id of the active moiety on which applying the target
     ActiveMoietyId m_activeMoietyId;
 

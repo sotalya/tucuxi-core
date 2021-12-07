@@ -11,7 +11,7 @@
 #include "tucucommon/basetypes.h"
 
 namespace date {
-    class year_month_day; // NOLINT(readability-identifier-naming)
+class year_month_day; // NOLINT(readability-identifier-naming)
 } // namespace date
 
 namespace Tucuxi {
@@ -66,26 +66,26 @@ public:
     /// \brief Build a date from the specified string
     /// This constructor uses std::get_time internally. See get_time documentation for information about the _format  parameter.
     /// \param _date The string to be parsed
-    /// \param _date The parsing format (see std::get_time documentation). 
-    DateTime(const std::string &_date, const std::string& _format);
+    /// \param _date The parsing format (see std::get_time documentation).
+    DateTime(const std::string& _date, const std::string& _format);
 
     /// \brief Build a date with the specified data at 0h00.
-    /// \param _date The date to be used. 
+    /// \param _date The date to be used.
     DateTime(const date::year_month_day& _date);
 
     /// \brief Build a date and time with the specified data and time.
-    /// \param _date The date to be used. 
-    /// \param _time The time to be used. 
+    /// \param _date The date to be used.
+    /// \param _time The time to be used.
     DateTime(const date::year_month_day& _date, const TimeOfDay& _time);
 
     /// \brief Build a date and time with the specified data and time.
-    /// \param _date The date to be used. 
+    /// \param _date The date to be used.
     /// \param _time The time to be used (as a number of seconds since 0h00.
     DateTime(const date::year_month_day& _date, const std::chrono::seconds& _time);
 
-    /// \brief Build a date and time with the specified duration 
+    /// \brief Build a date and time with the specified duration
     /// \param _date The duration since epoch (see documentation of std::chrono::time_point)
-    DateTime(const Duration &_durationSinceEpoch);
+    DateTime(const Duration& _durationSinceEpoch);
 
     /// \brief Returns the date part of the object.
     date::year_month_day getDate() const;
@@ -94,27 +94,27 @@ public:
     TimeOfDay getTimeOfDay() const;
 
     /// \brief Set the date part of the object.
-    /// \param _newDate The date to be used. 
+    /// \param _newDate The date to be used.
     void setDate(const date::year_month_day& _newDate);
 
     /// \brief Set the time of the day part of the object.
-    /// \param _newTime The time to be used. 
+    /// \param _newTime The time to be used.
     void setTimeOfDay(const TimeOfDay& _newTime);
 
     /// \brief Add the specified number of years to the date.
-    /// \param _nYears The number of years to be added 
+    /// \param _nYears The number of years to be added
     void addYears(int _nYears);
 
     /// \brief Add the specified number of months to the date.
-    /// \param _nMonths The number of months to be added 
+    /// \param _nMonths The number of months to be added
     void addMonths(int _nMonths);
 
     /// \brief Add the specified number of days to the date.
-    /// \param _nDays The number of days to be added 
+    /// \param _nDays The number of days to be added
     void addDays(int _nDays);
 
     /// \brief Return a new DateTime object with the addition of the date and the specified duration.
-    /// \param _duration The duration to be added. 
+    /// \param _duration The duration to be added.
     /// \return The result of the addition.
     DateTime operator+(const Duration& _duration) const;
 
@@ -124,7 +124,7 @@ public:
     DateTime operator+(const DateTime& _dateTime) const;
 
     /// \brief Add a duration to the date.
-    /// \param _duration The duration to be added. 
+    /// \param _duration The duration to be added.
     /// \return A reference to the modified DateTime.
     DateTime& operator+=(const Duration& _duration);
 
@@ -139,12 +139,12 @@ public:
     DateTime operator-(const Duration& _duration) const;
 
     /// \brief Substract a duration from the date.
-    /// \param _duration The duration to be substracted. 
+    /// \param _duration The duration to be substracted.
     /// \return A reference to the modified DateTime.
     DateTime& operator-=(const Duration& _duration);
 
     /// \brief Compute the duration between two dates.
-    /// \param _date The other date to compute the difference with. 
+    /// \param _date The other date to compute the difference with.
     /// \return The computed duration.
     Duration operator-(const DateTime& _date) const;
 
@@ -213,13 +213,16 @@ public:
     /// \param _output Output stream.
     /// \param _dt Self reference to the DateTime to print.
     /// \return Output stream given as input (for output chaining).
-    friend std::ostream& operator<<(std::ostream &_output, const DateTime &_dt) {
+    friend std::ostream& operator<<(std::ostream& _output, const DateTime& _dt)
+    {
+        // clang-format off
         _output << _dt.day() << "."
                 << _dt.month() << "."
                 << _dt.year() << " "
                 << _dt.hour() << "h"
                 << _dt.minute() << "m"
                 << _dt.second() << "s";
+        // clang-format on
         return _output;
     }
 
@@ -238,21 +241,21 @@ public:
     static DateTime min();
 
 private:
-
     /// \brief Build a date from a system clock
     /// \param _clockTime a system clock
     DateTime(std::chrono::time_point<std::chrono::system_clock> _clockTime);
 
 
-    /// \brief Returns the duration in one of the std::chrono duration class (years, months, days, ...)    
+    /// \brief Returns the duration in one of the std::chrono duration class (years, months, days, ...)
     /// \return The duration in the specified T unit.
-    template<class T> T get() const
+    template<class T>
+    T get() const
     {
         return std::chrono::duration_cast<T>(m_date.time_since_epoch());
     }
 
     /// The current date time
-    std::chrono::time_point<std::chrono::system_clock> m_date;  /// The date managed by the class
+    std::chrono::time_point<std::chrono::system_clock> m_date; /// The date managed by the class
 
     /// Indicates if the date time is defined or not
     /// If not, then its value should not be used
@@ -267,7 +270,6 @@ private:
     void updateString();
 
 #endif // EASY_DEBUG
-
 };
 
 } // namespace Common

@@ -6,12 +6,14 @@
 #include <Eigen/LU>
 
 #include "tucucore/pkmodels/onecompartmentextra.h"
+
 #include "tucucore/intakeevent.h"
 
 namespace Tucuxi {
 namespace Core {
 
-OneCompartmentExtraMicro::OneCompartmentExtraMicro() : IntakeIntervalCalculatorBase<2, OneCompartmentExtraExponentials> (new PertinentTimesCalculatorStandard())
+OneCompartmentExtraMicro::OneCompartmentExtraMicro()
+    : IntakeIntervalCalculatorBase<2, OneCompartmentExtraExponentials>(new PertinentTimesCalculatorStandard())
 {
 }
 
@@ -50,18 +52,22 @@ bool OneCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
 
 void OneCompartmentExtraMicro::computeExponentials(Eigen::VectorXd& _times)
 {
-//    const auto size = _times.size();
-//    Eigen::VectorXd vec(size);
-//    for (int i = 0; i < size; i++) {
-//        vec[i] = std::exp(-m_Ka * _times[i]);
-//    }
-//    setExponentials(Exponentials::Ka, vec);
+    //    const auto size = _times.size();
+    //    Eigen::VectorXd vec(size);
+    //    for (int i = 0; i < size; i++) {
+    //        vec[i] = std::exp(-m_Ka * _times[i]);
+    //    }
+    //    setExponentials(Exponentials::Ka, vec);
     setExponentials(Exponentials::Ka, (-m_Ka * _times).array().exp());
     setExponentials(Exponentials::Ke, (-m_Ke * _times).array().exp());
 }
 
 
-bool OneCompartmentExtraMicro::computeConcentrations(const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
+bool OneCompartmentExtraMicro::computeConcentrations(
+        const Residuals& _inResiduals,
+        bool _isAll,
+        std::vector<Concentrations>& _concentrations,
+        Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1, concentrations2;
     size_t firstCompartment = static_cast<size_t>(Compartments::First);
@@ -73,10 +79,11 @@ bool OneCompartmentExtraMicro::computeConcentrations(const Residuals& _inResidua
     _outResiduals[secondCompartment] = concentrations2[m_nbPoints - 1];
 
     // Return concentrations of first compartment
-    _concentrations[firstCompartment].assign(concentrations1.data(), concentrations1.data() + concentrations1.size());	
+    _concentrations[firstCompartment].assign(concentrations1.data(), concentrations1.data() + concentrations1.size());
     // Return concentrations of other compartments
     if (_isAll == true) {
-        _concentrations[secondCompartment].assign(concentrations2.data(), concentrations2.data() + concentrations2.size());	
+        _concentrations[secondCompartment].assign(
+                concentrations2.data(), concentrations2.data() + concentrations2.size());
     }
 
     bool bOK = checkCondition(_outResiduals[firstCompartment] >= 0, "The concentration1 is negative.");
@@ -85,7 +92,12 @@ bool OneCompartmentExtraMicro::computeConcentrations(const Residuals& _inResidua
     return bOK;
 }
 
-bool OneCompartmentExtraMicro::computeConcentration(const Value& _atTime, const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
+bool OneCompartmentExtraMicro::computeConcentration(
+        const Value& _atTime,
+        const Residuals& _inResiduals,
+        bool _isAll,
+        std::vector<Concentrations>& _concentrations,
+        Residuals& _outResiduals)
 {
     TMP_UNUSED_PARAMETER(_atTime);
     Eigen::VectorXd concentrations1, concentrations2;
@@ -100,9 +112,9 @@ bool OneCompartmentExtraMicro::computeConcentration(const Value& _atTime, const 
     // return concentraions (computation with atTime (current time))
     _concentrations[firstCompartment].push_back(concentrations1[atTime]);
     if (_isAll == true) {
-	_concentrations[secondCompartment].push_back(concentrations2[atTime]);
+        _concentrations[secondCompartment].push_back(concentrations2[atTime]);
     }
-    
+
     // interval=0 means that it is the last cycle, so final residual = 0
     if (m_Int == 0) {
         concentrations1[atEndInterval] = 0;
@@ -119,9 +131,7 @@ bool OneCompartmentExtraMicro::computeConcentration(const Value& _atTime, const 
     return bOK;
 }
 
-OneCompartmentExtraMacro::OneCompartmentExtraMacro() : OneCompartmentExtraMicro()
-{
-}
+OneCompartmentExtraMacro::OneCompartmentExtraMacro() : OneCompartmentExtraMicro() {}
 
 std::vector<std::string> OneCompartmentExtraMacro::getParametersId()
 {
@@ -155,5 +165,5 @@ bool OneCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, cons
     return bOK;
 }
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi

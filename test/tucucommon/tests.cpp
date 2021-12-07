@@ -32,7 +32,7 @@
 #include "test_unit.h"
 #endif
 
-int main(int argc, char** argv) 
+int main(int argc, char** argv)
 {
     // Get application folder
     std::string appFolder = Tucuxi::Common::Utils::getAppFolder(argv);
@@ -49,7 +49,8 @@ int main(int argc, char** argv)
     if (res != 0) {
         printf("Date and time test failed\n");
         exit(1);
-    }else {
+    }
+    else {
         std::cout << "Target evaluator test succeeded\n";
     }
 #endif
@@ -62,7 +63,8 @@ int main(int argc, char** argv)
     if (res != 0) {
         printf("ComponentManager test failed\n");
         exit(1);
-    }else {
+    }
+    else {
         std::cout << "Target evaluator test succeeded\n";
     }
 #endif
@@ -76,7 +78,8 @@ int main(int argc, char** argv)
     if (res != 0) {
         printf("Logger test failed\n");
         exit(1);
-    }else {
+    }
+    else {
         std::cout << "Target evaluator test succeeded\n";
     }
 
@@ -91,7 +94,8 @@ int main(int argc, char** argv)
     if (res != 0) {
         printf("Script engine test failed\n");
         exit(1);
-    }else {
+    }
+    else {
         std::cout << "Target evaluator test succeeded\n";
     }
 #endif
@@ -106,7 +110,8 @@ int main(int argc, char** argv)
     if (res != 0) {
         printf("XML test failed\n");
         exit(1);
-    }else {
+    }
+    else {
         std::cout << "Target evaluator test succeeded\n";
     }
 #endif
@@ -119,7 +124,8 @@ int main(int argc, char** argv)
     if (res != 0) {
         printf("Iterator test failed\n");
         exit(1);
-    }else {
+    }
+    else {
         std::cout << "Target evaluator test succeeded\n";
     }
 #endif
@@ -132,7 +138,8 @@ int main(int argc, char** argv)
     if (res != 0) {
         printf("xmlImporter test failed\n");
         exit(1);
-    }else {
+    }
+    else {
         std::cout << "Target evaluator test succeeded\n";
     }
 #endif
@@ -145,7 +152,8 @@ int main(int argc, char** argv)
     if (res != 0) {
         printf("unit test failed\n");
         exit(1);
-    }else {
+    }
+    else {
         std::cout << "Target evaluator test succeeded\n";
     }
 #endif

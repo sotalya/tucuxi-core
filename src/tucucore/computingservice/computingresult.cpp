@@ -1,7 +1,7 @@
 
-#include "computingresult.h"
-
 #include <iostream>
+
+#include "computingresult.h"
 
 namespace Tucuxi {
 namespace Core {

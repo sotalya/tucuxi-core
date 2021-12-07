@@ -7,14 +7,23 @@
 
 #include <string>
 
+#include "xmltypes.h"
+
 namespace rapidxml {
-    template<class Ch> class xml_attribute; // NOLINT(readability-identifier-naming)
+template<class Ch>
+class xml_attribute; // NOLINT(readability-identifier-naming)
 } // namespace rapidxml
 
 namespace Tucuxi {
 namespace Common {
 
 class XmlNode;
+class XmlDocument;
+
+template<class T>
+class XmlIterator;
+
+
 
 /// \ingroup TucuCommon
 /// \brief Models an XML attribute
@@ -30,7 +39,7 @@ public:
 
     /// \brief Destructor
     ~XmlAttribute() = default;
-    
+
     /// \brief Check if the attribute is valid
     /// \return True if the attribute is valid
     bool isValid() const;
@@ -56,7 +65,7 @@ public:
     /// \param _value The new value
     /// \return True if successful
     bool setValue(const std::string& _value);
-    
+
     /// \brief Share the reference with the specified node (this method copies the wrapper not the actual underlying xml attribute!)
     /// \param _other The attribute to share the reference with
     /// \return The attribute itself
@@ -73,16 +82,16 @@ public:
 private:
     /// \brief Create a new node and initialize it with a pointer to a rapidxml attribute.
     XmlAttribute(rapidxml::xml_attribute<char>* _pAttribute);
-    
+
     /// \brief Used by XmlAttributeIterator to move to the next sibling.
     /// \return The next sibling. The returned node will be invalid if there is no more sibling.
     XmlAttribute next() const;
-    
+
     /// \brief Helper method asking the associated docuement to allocate a string.
     char* allocateString(const std::string& _string);
 
-    rapidxml::xml_attribute<char>* m_pAttribute;    /// The "wrapped" rapdixml attribute
-    
+    rapidxml::xml_attribute<char>* m_pAttribute; /// The "wrapped" rapdixml attribute
+
     friend class XmlDocument;
     friend class XmlNode;
     friend class XmlIterator<XmlAttribute>;

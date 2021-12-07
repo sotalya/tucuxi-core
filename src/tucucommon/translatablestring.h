@@ -19,7 +19,6 @@ namespace Common {
 class TranslatableString
 {
 public:
-
     ///
     /// \brief TranslatableString empty constructor
     ///
@@ -72,14 +71,12 @@ public:
     std::string getString() const;
 
 protected:
-
     /// A map of <language, text> to store a string for each language
     std::map<std::string, std::string> m_map;
 
     /// A static variable storing the default language used by every instance of
     /// TranslatableString
     static std::string sm_language; // NOLINT(readability-identifier-naming)
-
 };
 
 } // namespace Common

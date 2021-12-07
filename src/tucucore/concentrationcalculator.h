@@ -5,13 +5,13 @@
 #ifndef TUCUXI_CORE_CONCENTRATIONCALCULATOR_H
 #define TUCUXI_CORE_CONCENTRATIONCALCULATOR_H
 
+#include "tucucore/computingservice/computingresult.h"
+#include "tucucore/concentrationprediction.h"
 #include "tucucore/definitions.h"
-#include "tucucore/parameter.h"
 #include "tucucore/dosage.h"
+#include "tucucore/parameter.h"
 #include "tucucore/residualerrormodel.h"
 #include "tucucore/sampleevent.h"
-#include "tucucore/concentrationprediction.h"
-#include "tucucore/computingservice/computingresult.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -35,17 +35,17 @@ public:
     /// \return The status of computation
     ///
     virtual ComputingStatus computeConcentrations(
-        const ConcentrationPredictionPtr &_prediction,
-        bool _isAll,
-        const DateTime &_recordFrom,
-        const DateTime &_recordTo,
-        const IntakeSeries &_intakes,
-        const ParameterSetSeries& _parameters,
-        const Etas& _etas = Etas(0),
-        const IResidualErrorModel &_residualErrorModel = EMPTY_RESIDUAL_ERROR_MODEL,
-        const Deviations& _epsilons = Deviations(0),
-        bool _onlyAnalytes = true,
-        bool _isFixedDensity = false) = 0;
+            const ConcentrationPredictionPtr& _prediction,
+            bool _isAll,
+            const DateTime& _recordFrom,
+            const DateTime& _recordTo,
+            const IntakeSeries& _intakes,
+            const ParameterSetSeries& _parameters,
+            const Etas& _etas = Etas(0),
+            const IResidualErrorModel& _residualErrorModel = EMPTY_RESIDUAL_ERROR_MODEL,
+            const Deviations& _epsilons = Deviations(0),
+            bool _onlyAnalytes = true,
+            bool _isFixedDensity = false) = 0;
 
     ///
     /// \brief computeConcentrationsAtSteadyState
@@ -63,17 +63,17 @@ public:
     /// \return The status of computation
     ///
     virtual ComputingStatus computeConcentrationsAtSteadyState(
-        const ConcentrationPredictionPtr &_prediction,
-        bool _isAll,
-        const DateTime &_recordFrom,
-        const DateTime &_recordTo,
-        const IntakeSeries &_intakes,
-        const ParameterSetSeries& _parameters,
-        const Etas& _etas = Etas(0),
-        const IResidualErrorModel &_residualErrorModel = EMPTY_RESIDUAL_ERROR_MODEL,
-        const Deviations& _epsilons = Deviations(0),
-        bool _onlyAnalytes = true,
-        bool _isFixedDensity = false) = 0;
+            const ConcentrationPredictionPtr& _prediction,
+            bool _isAll,
+            const DateTime& _recordFrom,
+            const DateTime& _recordTo,
+            const IntakeSeries& _intakes,
+            const ParameterSetSeries& _parameters,
+            const Etas& _etas = Etas(0),
+            const IResidualErrorModel& _residualErrorModel = EMPTY_RESIDUAL_ERROR_MODEL,
+            const Deviations& _epsilons = Deviations(0),
+            bool _onlyAnalytes = true,
+            bool _isFixedDensity = false) = 0;
 
     ///
     /// \brief Calculates concentrations at specific times
@@ -90,13 +90,13 @@ public:
     /// \return The status of computation
     ///
     virtual ComputingStatus computeConcentrationsAtTimes(
-        Concentrations& _concentrations,
-        bool _isAll,
-        const IntakeSeries& _intakes,
-        const ParameterSetSeries& _parameters,
-        const SampleSeries& _samples,
-        const Etas& _etas = Etas(0),
-        bool _onlyAnalytes = true) = 0;
+            Concentrations& _concentrations,
+            bool _isAll,
+            const IntakeSeries& _intakes,
+            const ParameterSetSeries& _parameters,
+            const SampleSeries& _samples,
+            const Etas& _etas = Etas(0),
+            bool _onlyAnalytes = true) = 0;
 
     /// \brief virtual empty destructor
     virtual ~IConcentrationCalculator() {}
@@ -107,7 +107,6 @@ public:
 class ConcentrationCalculator : public IConcentrationCalculator
 {
 public:
-
     ///
     /// \brief computeConcentrations
     /// \param _prediction The calculated concentrations
@@ -119,17 +118,18 @@ public:
     /// \param _isFixedDensity Indicates if the density of points could be changed within the method
     /// \return The status of computation
     ///
-    ComputingStatus computeConcentrations(const ConcentrationPredictionPtr &_prediction,
-        bool _isAll,
-        const DateTime &_recordFrom,
-        const DateTime &_recordTo,
-        const IntakeSeries &_intakes,
-        const ParameterSetSeries& _parameters,
-        const Etas& _etas = Etas(0),
-        const IResidualErrorModel &_residualErrorModel = EMPTY_RESIDUAL_ERROR_MODEL,
-        const Deviations& _epsilons = Deviations(0),
-        bool _onlyAnalytes = true,
-        bool _isFixedDensity = false) override;
+    ComputingStatus computeConcentrations(
+            const ConcentrationPredictionPtr& _prediction,
+            bool _isAll,
+            const DateTime& _recordFrom,
+            const DateTime& _recordTo,
+            const IntakeSeries& _intakes,
+            const ParameterSetSeries& _parameters,
+            const Etas& _etas = Etas(0),
+            const IResidualErrorModel& _residualErrorModel = EMPTY_RESIDUAL_ERROR_MODEL,
+            const Deviations& _epsilons = Deviations(0),
+            bool _onlyAnalytes = true,
+            bool _isFixedDensity = false) override;
 
     ///
     /// \brief computeConcentrationsAtSteadyState
@@ -147,17 +147,17 @@ public:
     /// \return The status of computation
     ///
     ComputingStatus computeConcentrationsAtSteadyState(
-        const ConcentrationPredictionPtr &_prediction,
-        bool _isAll,
-        const DateTime &_recordFrom,
-        const DateTime &_recordTo,
-        const IntakeSeries &_intakes,
-        const ParameterSetSeries& _parameters,
-        const Etas& _etas = Etas(0),
-        const IResidualErrorModel &_residualErrorModel = EMPTY_RESIDUAL_ERROR_MODEL,
-        const Deviations& _epsilons = Deviations(0),
-        bool _onlyAnalytes = true,
-        bool _isFixedDensity = false) override;
+            const ConcentrationPredictionPtr& _prediction,
+            bool _isAll,
+            const DateTime& _recordFrom,
+            const DateTime& _recordTo,
+            const IntakeSeries& _intakes,
+            const ParameterSetSeries& _parameters,
+            const Etas& _etas = Etas(0),
+            const IResidualErrorModel& _residualErrorModel = EMPTY_RESIDUAL_ERROR_MODEL,
+            const Deviations& _epsilons = Deviations(0),
+            bool _onlyAnalytes = true,
+            bool _isFixedDensity = false) override;
 
 
     ///
@@ -173,14 +173,13 @@ public:
     /// \return The status of computation
     ///
     ComputingStatus computeConcentrationsAtTimes(
-        Concentrations& _concentrations,
-        bool _isAll,
-        const IntakeSeries& _intakes,
-        const ParameterSetSeries& _parameters,
-        const SampleSeries& _samples,
-        const Etas& _etas = Etas(0),
-        bool _onlyAnalytes = true) override;
-
+            Concentrations& _concentrations,
+            bool _isAll,
+            const IntakeSeries& _intakes,
+            const ParameterSetSeries& _parameters,
+            const SampleSeries& _samples,
+            const Etas& _etas = Etas(0),
+            bool _onlyAnalytes = true) override;
 };
 
 } // namespace Core

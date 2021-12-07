@@ -2,33 +2,33 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
-#include "tucucommon/loggerhelper.h"
+#include "tucucore/intakeintervalcalculator.h"
+
 #include "tucucommon/general.h"
+#include "tucucommon/loggerhelper.h"
 
 #include "tucucore/intakeevent.h"
-#include "tucucore/intakeintervalcalculator.h"
 
 namespace Tucuxi {
 namespace Core {
 
 
 
-void PertinentTimesCalculatorStandard::calculateTimes(const IntakeEvent& _intakeEvent,
-              Eigen::Index _nbPoints,
-              Eigen::VectorXd& _times)
+void PertinentTimesCalculatorStandard::calculateTimes(
+        const IntakeEvent& _intakeEvent, Eigen::Index _nbPoints, Eigen::VectorXd& _times)
 {
     if (_nbPoints == 1) {
         _times[0] = _intakeEvent.getInterval().toHours();
         return;
     }
-    for(Eigen::Index i = 0; i < _nbPoints; i++) {
-        _times[i] = static_cast<double>(i) / static_cast<double>(_nbPoints - 1) * static_cast<double>(_intakeEvent.getInterval().toHours());
+    for (Eigen::Index i = 0; i < _nbPoints; i++) {
+        _times[i] = static_cast<double>(i) / static_cast<double>(_nbPoints - 1)
+                    * static_cast<double>(_intakeEvent.getInterval().toHours());
     }
 }
 
-void PertinentTimesCalculatorInfusion::calculateTimes(const IntakeEvent& _intakeEvent,
-              Eigen::Index _nbPoints,
-              Eigen::VectorXd& _times)
+void PertinentTimesCalculatorInfusion::calculateTimes(
+        const IntakeEvent& _intakeEvent, Eigen::Index _nbPoints, Eigen::VectorXd& _times)
 {
     double infusionTime = std::min(_intakeEvent.getInfusionTime().toHours(), _intakeEvent.getInterval().toHours());
     double interval = _intakeEvent.getInterval().toHours();
@@ -46,21 +46,24 @@ void PertinentTimesCalculatorInfusion::calculateTimes(const IntakeEvent& _intake
 
     double postTime = interval - infusionTime;
 
-    Eigen::Index nbInfus = std::min(_nbPoints, std::max(Eigen::Index{2}, static_cast<Eigen::Index>((infusionTime / interval) * static_cast<double>(_nbPoints))));
+    Eigen::Index nbInfus = std::min(
+            _nbPoints,
+            std::max(
+                    Eigen::Index{2},
+                    static_cast<Eigen::Index>((infusionTime / interval) * static_cast<double>(_nbPoints))));
     Eigen::Index nbPost = _nbPoints - nbInfus;
 
-    for(Eigen::Index i = 0; i < nbInfus; i++) {
+    for (Eigen::Index i = 0; i < nbInfus; i++) {
         _times[i] = static_cast<double>(i) / static_cast<double>(nbInfus - 1) * infusionTime;
     }
 
-    for(Eigen::Index i = 0; i < nbPost; i++) {
+    for (Eigen::Index i = 0; i < nbPost; i++) {
         _times[i + nbInfus] = infusionTime + static_cast<double>(i + 1) / static_cast<double>(nbPost) * postTime;
     }
 }
 
 
-IntakeIntervalCalculator::~IntakeIntervalCalculator()
-= default;
+IntakeIntervalCalculator::~IntakeIntervalCalculator() = default;
 
 unsigned int IntakeIntervalCalculator::getNbAnalytes() const
 {
@@ -74,12 +77,11 @@ bool IntakeIntervalCalculator::checkCondition(bool _isOk, const std::string& _er
             static Tucuxi::Common::LoggerHelper logger;
             logger.error(_errMsg);
         }
-
     }
     return _isOk;
 }
 
-bool IntakeIntervalCalculator::checkValidValue(Value _value, const std::string &_valueName)
+bool IntakeIntervalCalculator::checkValidValue(Value _value, const std::string& _valueName)
 {
     // First check for infinity
     if (std::isinf(_value)) {
@@ -102,7 +104,7 @@ bool IntakeIntervalCalculator::checkValidValue(Value _value, const std::string &
     return true;
 }
 
-bool IntakeIntervalCalculator::checkPositiveValue(Value _value,  const std::string& _valueName)
+bool IntakeIntervalCalculator::checkPositiveValue(Value _value, const std::string& _valueName)
 {
     // First check for infinity
     if (std::isinf(_value)) {
@@ -136,7 +138,7 @@ bool IntakeIntervalCalculator::checkPositiveValue(Value _value,  const std::stri
     return false;
 }
 
-bool IntakeIntervalCalculator::checkStrictlyPositiveValue(Value _value,  const std::string& _valueName)
+bool IntakeIntervalCalculator::checkStrictlyPositiveValue(Value _value, const std::string& _valueName)
 {
     // First check for infinity
     if (std::isinf(_value)) {
@@ -179,4 +181,3 @@ bool IntakeIntervalCalculator::checkStrictlyPositiveValue(Value _value,  const s
 
 } // namespace Core
 } // namespace Tucuxi
-

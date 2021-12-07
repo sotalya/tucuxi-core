@@ -7,7 +7,11 @@ namespace Tucuxi {
 namespace Core {
 
 
-enum class RkMichaelisMentenTwoCompCompartments : int { First = 0, Second };
+enum class RkMichaelisMentenTwoCompCompartments : int
+{
+    First = 0,
+    Second
+};
 
 /// \ingroup TucuCore
 /// \brief Intake interval calculator for the one compartment extravascular algorithm
@@ -22,7 +26,7 @@ public:
     /// \return The list of required PK parameters Ids
     static std::vector<std::string> getParametersId();
 
-    inline void derive(double _t, const std::vector<double> &_c, std::vector<double>& _dcdt)
+    inline void derive(double _t, const std::vector<double>& _c, std::vector<double>& _dcdt)
     {
         FINAL_UNUSED_PARAMETER(_t);
         // This function _dcdt[0] needs to be checked. I used the one of ADAPT5-User-Guide, but used
@@ -54,12 +58,10 @@ public:
     }
 
 protected:
-
-
-    Value m_D;	/// Quantity of drug
+    Value m_D;  /// Quantity of drug
     Value m_F;  /// bioavailability
     Value m_Ka; /// Absorption rate constant
-    Value m_V1;  /// Volume of the compartment
+    Value m_V1; /// Volume of the compartment
     Value m_Km;
     Value m_Vmax;
     Value m_K12;
@@ -94,13 +96,12 @@ public:
 protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
 
-    void initConcentrations (const Residuals& _inResiduals, std::vector<double> &_concentrations) override
+    void initConcentrations(const Residuals& _inResiduals, std::vector<double>& _concentrations) override
     {
         _concentrations[0] = _inResiduals[0];
         _concentrations[1] = _inResiduals[1];
         _concentrations[2] = _inResiduals[2] + m_D / m_V1 * m_F;
     }
-
 };
 
 
@@ -121,7 +122,7 @@ public:
 protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
 
-    void initConcentrations (const Residuals& _inResiduals, std::vector<double> &_concentrations) override
+    void initConcentrations(const Residuals& _inResiduals, std::vector<double>& _concentrations) override
     {
         _concentrations[0] = _inResiduals[0];
         _concentrations[1] = _inResiduals[1];
@@ -129,7 +130,6 @@ protected:
         // Do not forget to reinitialize the flag for delivery of the drug
         m_delivered = false;
     }
-
 };
 
 
@@ -150,13 +150,12 @@ public:
 protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
 
-    void initConcentrations (const Residuals& _inResiduals, std::vector<double> &_concentrations) override
+    void initConcentrations(const Residuals& _inResiduals, std::vector<double>& _concentrations) override
     {
         _concentrations[0] = _inResiduals[0] + m_D / m_V1;
         _concentrations[1] = _inResiduals[1];
         _concentrations[2] = _inResiduals[2];
     }
-
 };
 
 /// \ingroup TucuCore
@@ -176,14 +175,13 @@ public:
 protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
 
-    void initConcentrations (const Residuals& _inResiduals, std::vector<double> &_concentrations) override
+    void initConcentrations(const Residuals& _inResiduals, std::vector<double>& _concentrations) override
     {
         m_infusionRate = m_D / m_V1 / m_Tinf;
         _concentrations[0] = _inResiduals[0];
         _concentrations[1] = _inResiduals[1];
         _concentrations[2] = _inResiduals[2];
     }
-
 };
 
 
@@ -204,7 +202,6 @@ public:
 
 protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
-
 };
 
 
@@ -224,7 +221,6 @@ public:
 
 protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
-
 };
 
 
@@ -244,7 +240,6 @@ public:
 
 protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
-
 };
 
 /// \ingroup TucuCore
@@ -263,7 +258,6 @@ public:
 
 protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
-
 };
 
 } // namespace Core

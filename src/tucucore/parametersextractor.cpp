@@ -4,22 +4,25 @@
 
 #include <chrono>
 
-#include "tucucommon/general.h"
 #include "tucucore/parametersextractor.h"
-#include "tucucore/drugmodel/drugmodel.h"
+
 #include "tucucommon/duration.h"
+#include "tucucommon/general.h"
 #include "tucucommon/loggerhelper.h"
+
+#include "tucucore/drugmodel/drugmodel.h"
 
 using namespace std::chrono_literals;
 
 namespace Tucuxi {
 namespace Core {
 
-ParametersExtractor::ParametersExtractor(const CovariateSeries &_covariates,
-                                         Tucuxi::Common::Iterator<const ParameterDefinition*> &_paramsIterator,
-                                         const DateTime &_start,
-                                         const DateTime &_end)
-    : m_paramsIterator{ _paramsIterator }, m_start{_start}, m_end{_end}
+ParametersExtractor::ParametersExtractor(
+        const CovariateSeries& _covariates,
+        Tucuxi::Common::Iterator<const ParameterDefinition*>& _paramsIterator,
+        const DateTime& _start,
+        const DateTime& _end)
+    : m_paramsIterator{_paramsIterator}, m_start{_start}, m_end{_end}
 {
     // Check that start time is past end time.
     if (m_start > m_end) {
@@ -29,7 +32,7 @@ ParametersExtractor::ParametersExtractor(const CovariateSeries &_covariates,
     // Create a list of time instants at which to compute the parameters, together with the covariate values that have
     // to be set at those instants.
     //std::cout << "New" << std::endl;
-    for (const auto &cv : _covariates) {
+    for (const auto& cv : _covariates) {
         const DateTime dt = cv.getEventTime();
 
 
@@ -67,22 +70,24 @@ ParametersExtractor::ParametersExtractor(const CovariateSeries &_covariates,
         m_timedCValues.insert(std::make_pair(m_start, std::vector<std::pair<std::string, Value>>()));
 
         // This is the vector we seek to fill with the first values of the covariate events.
-        std::vector<std::pair<std::string, Value>> &startCVs = m_timedCValues.at(m_start);
+        std::vector<std::pair<std::string, Value>>& startCVs = m_timedCValues.at(m_start);
         // Propagate forward the covariates whose events happen before _start.
-        for (auto &tcVec : m_timedCValues) {
+        for (auto& tcVec : m_timedCValues) {
             if (tcVec.first >= m_start) {
                 // We can stop as soon as we reach m_start.
                 break;
             }
-            for (auto &tcVal : tcVec.second) {
+            for (auto& tcVal : tcVec.second) {
                 // If the covariate is not present, then simply add it. If it is present, then change its value to a
                 // more up-to-date one.
-                auto it = std::find_if(startCVs.begin(),
-                                       startCVs.end(),
-                                       [tcVal](const std::pair<std::string, Value> &_event) { return _event.first == tcVal.first; });
+                auto it = std::find_if(
+                        startCVs.begin(), startCVs.end(), [tcVal](const std::pair<std::string, Value>& _event) {
+                            return _event.first == tcVal.first;
+                        });
                 if (it == startCVs.end()) {
                     startCVs.push_back(tcVal);
-                } else {
+                }
+                else {
                     it->second = tcVal.second;
                 }
             }
@@ -91,7 +96,7 @@ ParametersExtractor::ParametersExtractor(const CovariateSeries &_covariates,
         }
     }
     // Clean up the set of time intervals.
-    for (const auto &rm : toErase) {
+    for (const auto& rm : toErase) {
         m_timedCValues.erase(rm);
     }
 
@@ -100,27 +105,36 @@ ParametersExtractor::ParametersExtractor(const CovariateSeries &_covariates,
         // before, then that was the initial time of parameters computation and all the covariates must be defined at
         // that moment.
         std::vector<std::string> knownCovariates;
-        for (const auto &startCV : (m_timedCValues.begin())->second) {
+        for (const auto& startCV : (m_timedCValues.begin())->second) {
             knownCovariates.push_back(startCV.first);
         }
 
         // First vector checked twice, but the algorithm looks more clear in this way.
-        for (auto &tcVec : m_timedCValues) {
-            for (auto &tcVal : tcVec.second) {
+        for (auto& tcVec : m_timedCValues) {
+            for (auto& tcVal : tcVec.second) {
                 if (std::find(knownCovariates.begin(), knownCovariates.end(), tcVal.first) == knownCovariates.end()) {
-                    throw std::runtime_error("[ParametersExtractor] Covariate event for " + tcVal.first
-                                             + " comes out blue sky!");
+                    throw std::runtime_error(
+                            "[ParametersExtractor] Covariate event for " + tcVal.first + " comes out blue sky!");
                 }
             }
             // Since we are already passing on individual dates, check that the covariates have no duplicate definition
             // (that is, for a given time instant, two possible values).
-            std::sort(tcVec.second.begin(), tcVec.second.end(),
-                      [](const std::pair<std::string, Value> &_a, const std::pair<std::string, Value> &_b) { return _a.first < _b.first; });
+            std::sort(
+                    tcVec.second.begin(),
+                    tcVec.second.end(),
+                    [](const std::pair<std::string, Value>& _a, const std::pair<std::string, Value>& _b) {
+                        return _a.first < _b.first;
+                    });
             // We consider wrong to have two covariate events referring to the same covariate at the same time instant
             // -- even if the value is the same, as this is possibly a mistake of the algorithm that extracted covariate
             // events.
-            if (std::adjacent_find(tcVec.second.begin(), tcVec.second.end(),
-                                   [](const std::pair<std::string, Value> &_a, const std::pair<std::string, Value> &_b) { return _a.first == _b.first; }) != tcVec.second.end()) {
+            if (std::adjacent_find(
+                        tcVec.second.begin(),
+                        tcVec.second.end(),
+                        [](const std::pair<std::string, Value>& _a, const std::pair<std::string, Value>& _b) {
+                            return _a.first == _b.first;
+                        })
+                != tcVec.second.end()) {
                 throw std::runtime_error("[ParametersExtractor] Duplicate values for the same covariate event.");
             }
         }
@@ -129,14 +143,15 @@ ParametersExtractor::ParametersExtractor(const CovariateSeries &_covariates,
     // Add default values of all parameters
     m_paramsIterator.reset();
     while (!m_paramsIterator.isDone()) {
-        std::shared_ptr<ParameterEvent> event = std::make_shared<ParameterEvent>(ParameterEvent(**m_paramsIterator, (*m_paramsIterator)->getValue()));
+        std::shared_ptr<ParameterEvent> event =
+                std::make_shared<ParameterEvent>(ParameterEvent(**m_paramsIterator, (*m_paramsIterator)->getValue()));
         m_ogm.registerInput(event, (*m_paramsIterator)->getId() + "_population");
         m_paramsIterator.next();
     }
 }
 
 
-ComputingStatus ParametersExtractor::extract(ParameterSetSeries &_series)
+ComputingStatus ParametersExtractor::extract(ParameterSetSeries& _series)
 {
     std::vector<std::string> covariateIds;
     bool firstIteration = true;
@@ -149,7 +164,7 @@ ComputingStatus ParametersExtractor::extract(ParameterSetSeries &_series)
 
     // Iterate on the time instants and generate the parameter events. Particular handling is required by the events at
     // the beginning of the considered interval, but it is easier to do this inside the loop.
-    for (const auto &tcv : m_timedCValues) {
+    for (const auto& tcv : m_timedCValues) {
         ParameterSetEvent pSetEvent(tcv.first);
 
         if (tcv.first == m_timedCValues.begin()->first) {
@@ -160,27 +175,31 @@ ComputingStatus ParametersExtractor::extract(ParameterSetSeries &_series)
                 if (!(*m_paramsIterator)->isComputed()) {
                     // Add the parameter to the event set without change.
                     pSetEvent.addParameterEvent(**m_paramsIterator, (*m_paramsIterator)->getValue());
-                } else {
+                }
+                else {
                     // Add the parameter to the OGM for later computation of its value. Also, add its name to a map that
                     // keeps track of the computed parameters and their values.
-                    std::shared_ptr<ParameterEvent> event = std::make_shared<ParameterEvent>(ParameterEvent(**m_paramsIterator, 0.0));
+                    std::shared_ptr<ParameterEvent> event =
+                            std::make_shared<ParameterEvent>(ParameterEvent(**m_paramsIterator, 0.0));
                     m_ogm.registerOperable(event, (*m_paramsIterator)->getId());
 
-                    cParamMap.insert(std::make_pair((*m_paramsIterator)->getId(), std::make_pair(*m_paramsIterator, 0.0)));
+                    cParamMap.insert(
+                            std::make_pair((*m_paramsIterator)->getId(), std::make_pair(*m_paramsIterator, 0.0)));
                 }
                 m_paramsIterator.next();
             }
             // Add all covariates at the first time instant as inputs of the OGM.
-            for (const auto &cv : tcv.second) {
+            for (const auto& cv : tcv.second) {
 
                 if (firstIteration) {
                     covariateIds.push_back(cv.first);
                 }
 
                 // Create ex-novo a fake covariate.
-                std::shared_ptr<CovariateEvent> event =
-                        std::make_shared<CovariateEvent>(CovariateEvent(CovariateDefinition(cv.first, Tucuxi::Common::Utils::varToString(cv.second), nullptr),
-                                                                        tcv.first, cv.second));
+                std::shared_ptr<CovariateEvent> event = std::make_shared<CovariateEvent>(CovariateEvent(
+                        CovariateDefinition(cv.first, Tucuxi::Common::Utils::varToString(cv.second), nullptr),
+                        tcv.first,
+                        cv.second));
 
                 // std::cout << "Covariate " << cv.first << " : " << cv.second << std::endl;
                 m_ogm.registerInput(event, cv.first);
@@ -188,10 +207,10 @@ ComputingStatus ParametersExtractor::extract(ParameterSetSeries &_series)
             }
 
             firstIteration = false;
-
-        } else {
+        }
+        else {
             // Just set the covariate values that are scheduled at this time instant.
-            for (const auto &cv : tcv.second) {
+            for (const auto& cv : tcv.second) {
                 // std::cout << "Covariate " << cv.first << " : " << cv.second << std::endl;
                 cEvMap.at(cv.first)->setValue(cv.second);
             }
@@ -212,7 +231,7 @@ ComputingStatus ParametersExtractor::extract(ParameterSetSeries &_series)
         // Retrieve updated values.
         Value newVal;
         bool rc;
-        for (auto &cp : cParamMap) {
+        for (auto& cp : cParamMap) {
             rc = m_ogm.getValue(cp.first, newVal);
             if (!rc) {
                 return ComputingStatus::ParameterExtractionError;
@@ -229,7 +248,7 @@ ComputingStatus ParametersExtractor::extract(ParameterSetSeries &_series)
         std::vector<SimpleCovariate> covariateValues;
 
         // Get the covariate values used here:
-        for (const auto &cov : covariateIds) {
+        for (const auto& cov : covariateIds) {
             double value;
             m_ogm.getValue(cov, value);
             covariateValues.push_back({cov, value});
@@ -245,14 +264,15 @@ ComputingStatus ParametersExtractor::extract(ParameterSetSeries &_series)
 }
 
 
-ComputingStatus ParametersExtractor::buildFullSet(const ParameterSetSeries &_inputSeries, ParameterSetSeries &_outputSeries) const
+ComputingStatus ParametersExtractor::buildFullSet(
+        const ParameterSetSeries& _inputSeries, ParameterSetSeries& _outputSeries) const
 {
     // Start with the first set of parameters (it should contain the full set)
     ParameterSetEvent current(_inputSeries.m_parameterSets[0]);
     _outputSeries.addParameterSetEvent(current);
 
     // Then iterate over the modifications
-    for(size_t i = 1; i < _inputSeries.m_parameterSets.size(); i++) {
+    for (size_t i = 1; i < _inputSeries.m_parameterSets.size(); i++) {
 
         current.setEventTime(_inputSeries.m_parameterSets[i].getEventTime());
 
@@ -260,7 +280,7 @@ ComputingStatus ParametersExtractor::buildFullSet(const ParameterSetSeries &_inp
         auto it = _inputSeries.m_parameterSets[i].begin();
         while (it != _inputSeries.m_parameterSets[i].end()) {
             current.addParameterEvent((*it).getDefinition(), (*it).getValue());
-            it ++;
+            it++;
         }
 
         current.m_covariates = _inputSeries.m_parameterSets[i].m_covariates;
@@ -272,7 +292,7 @@ ComputingStatus ParametersExtractor::buildFullSet(const ParameterSetSeries &_inp
 }
 
 
-ComputingStatus ParametersExtractor::extractPopulation(ParameterSetSeries &_series)
+ComputingStatus ParametersExtractor::extractPopulation(ParameterSetSeries& _series)
 {
     // Parameters valid since the epoch
     ParameterSetEvent pSetEvent(DateTime(Tucuxi::Common::Duration(0h)));
@@ -291,4 +311,3 @@ ComputingStatus ParametersExtractor::extractPopulation(ParameterSetSeries &_seri
 
 } // namespace Core
 } // namespace Tucuxi
-

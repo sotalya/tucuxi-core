@@ -5,11 +5,12 @@
 #ifndef TUCUXI_TUCUCOMMON_XMLDOCUMENT_H
 #define TUCUXI_TUCUCOMMON_XMLDOCUMENT_H
 
-#include <string>
 #include <memory>
+#include <string>
 
 namespace rapidxml {
-    template<class Ch> class xml_document; // NOLINT(readability-identifier-naming)
+template<class Ch>
+class xml_document; // NOLINT(readability-identifier-naming)
 } // namespace rapidxml
 
 namespace Tucuxi {
@@ -21,7 +22,7 @@ enum class EXmlNodeType;
 
 /// \ingroup TucuCommon
 /// \brief Models an XML document.
-/// This class allows reading and writing XML data from/to a string or a file. 
+/// This class allows reading and writing XML data from/to a string or a file.
 /// \sa XmlNode, XmlAttribute
 class XmlDocument
 {
@@ -34,11 +35,11 @@ public:
 
     /// \brief Destructor that will free all memory used by the document
     ~XmlDocument();
-    
+
     /// \brief Check if the document is valid
     /// \return True if the document is valid
     bool isValid() const;
-    
+
     /// \brief Load and parse XML data from the specified file
     /// \param _fileName The location of the XML file
     bool open(const std::string& _fileName);
@@ -46,7 +47,7 @@ public:
     /// \brief Save XML data into the specified file
     /// \param _fileName The location of the XML file
     bool save(const std::string& _fileName);
-    
+
     /// \brief Parse XML data from the specified string
     /// \param _xml The string containing XML data
     bool fromString(const std::string& _xml);
@@ -64,7 +65,7 @@ public:
     /// \param The new root element
     /// \return True if ok.
     bool setRoot(const XmlNode& _root);
-    
+
     /// \brief Create a new node
     /// \param _type The type of node to be created
     /// \param _name The name of the node
@@ -85,8 +86,8 @@ private:
     /// \return True if the document was created
     bool createDocument();
 
-    std::string m_rawXml;                       /// The raw XML data as recieved by fromString() or open().
-    std::unique_ptr<rapidxml::xml_document<char> > m_pDocument;  /// A pointer to the actual "rapidxml" document object
+    std::string m_rawXml; /// The raw XML data as recieved by fromString() or open().
+    std::unique_ptr<rapidxml::xml_document<char> > m_pDocument; /// A pointer to the actual "rapidxml" document object
 };
 
 } // namespace Common

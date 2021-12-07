@@ -20,7 +20,10 @@ public:
     /// This function should be called at some points in calculation in order to abort as soon as possible
     /// when asked by an external component
     ///
-    virtual bool shouldAbort() { return false;}
+    virtual bool shouldAbort()
+    {
+        return false;
+    }
 
     virtual ~ComputingAborter();
 };

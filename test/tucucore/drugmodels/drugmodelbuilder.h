@@ -8,8 +8,8 @@ namespace Core {
 
 class DrugModel;
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 
 
 class DrugModelBuilder

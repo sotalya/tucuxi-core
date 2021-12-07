@@ -1,11 +1,11 @@
 #ifndef TEST_DRUGMODELIMPORT_H
 #define TEST_DRUGMODELIMPORT_H
 
-#include "fructose/fructose.h"
-
 #include "tucucore/drugmodel/drugmodel.h"
 #include "tucucore/drugmodelimport.h"
+
 #include "drugmodels/buildimatinib.h"
+#include "fructose/fructose.h"
 
 using namespace Tucuxi::Core;
 
@@ -185,7 +185,7 @@ static const std::string busulfan1 = R"(<?xml version="1.0" encoding="UTF-8" sta
                                                    <hardFormula>direct</hardFormula>
                                                    <comments/>
                                                </analytesToMoietyFormula>)"
-                                               R"(<!-- Drug targets -->
+                                     R"(<!-- Drug targets -->
                                                <targets>
                                                    <target>
                                                        <targetType>peak</targetType>
@@ -368,7 +368,7 @@ static const std::string busulfan1 = R"(<?xml version="1.0" encoding="UTF-8" sta
                                                                </stdDevs>
                                                            </bsv>
                                                            <validation>)"
-                                                               R"(<errorMessage><text lang="fr"></text></errorMessage>
+                                     R"(<errorMessage><text lang="fr"></text></errorMessage>
                                                                <operation>
                                                                    <softFormula>
                                                                        <inputs>
@@ -500,7 +500,8 @@ static const std::string busulfan1 = R"(<?xml version="1.0" encoding="UTF-8" sta
         )";
 
 
-static const std::string drug1 = R"(<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+static const std::string drug1 =
+        R"(<?xml version="1.0" encoding="UTF-8" standalone="no"?>
                            <?xml-stylesheet href="drugsmodel.xsl" type="text/xsl" ?>
                            <model xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.6" xsi:noNamespaceSchemaLocation="drug2.xsd">
                                <!-- Drug history -->
@@ -715,7 +716,7 @@ static const std::string drug1 = R"(<?xml version="1.0" encoding="UTF-8" standal
                                            <covariateValue>
                                                <standardValue>70</standardValue>
                                            </covariateValue>)"
-                                           R"(<validation> <!-- pourrait être une contrainte -->
+        R"(<validation> <!-- pourrait être une contrainte -->
                                                <errorMessage><text lang="fr"></text></errorMessage>
                                                <operation>
                                                    <softFormula>
@@ -956,7 +957,7 @@ static const std::string drug1 = R"(<?xml version="1.0" encoding="UTF-8" standal
                                        </analyteGroup>
                                    </analyteGroups>)"
 
-                                   R"(<!-- We can have various formulation and routes, and for each one a set of absorption parameters and available dosages -->
+        R"(<!-- We can have various formulation and routes, and for each one a set of absorption parameters and available dosages -->
 
                                    <formulationAndRoutes default="id0">
                                        <formulationAndRoute>
@@ -1083,7 +1084,7 @@ static const std::string drug1 = R"(<?xml version="1.0" encoding="UTF-8" standal
 
 struct TestDrugModelImport : public fructose::test_base<TestDrugModelImport>
 {
-    TestDrugModelImport() { }
+    TestDrugModelImport() {}
 
     std::unique_ptr<Tucuxi::Core::DrugModel> buildImatinib()
     {
@@ -1100,7 +1101,7 @@ struct TestDrugModelImport : public fructose::test_base<TestDrugModelImport>
         //        DrugModelImport::Result result = importer->importFromFile(imatinib, "/home/ythoma/docs/ezechiel/git/dev/src/newdrugs/last/ch.heig-vd.ezechiel.example.xml");
         //        DrugModelImport::Result result = importer->importFromFile(imatinib, "/home/ythoma/docs/ezechiel/git/dev/src/drugs2/ch.tucuxi.busulfan_children.xml");
 
-        fructose_assert( status == DrugModelImport::Status::Ok);
+        fructose_assert(status == DrugModelImport::Status::Ok);
 
         fructose_assert(fake != nullptr);
     }
@@ -1112,11 +1113,10 @@ struct TestDrugModelImport : public fructose::test_base<TestDrugModelImport>
 
         DrugModelImport::Status status = importer->importFromString(busulfan, busulfan1);
 
-        fructose_assert( status == DrugModelImport::Status::Ok);
+        fructose_assert(status == DrugModelImport::Status::Ok);
 
         fructose_assert(busulfan != nullptr);
     }
-
 };
 
 #endif // TEST_DRUGMODELIMPORT_H

@@ -2,6 +2,7 @@
 #define MINIMIZE_H
 
 #include "tucucommon/general.h"
+
 #include "tucucore/definitions.h"
 
 namespace Tucuxi {
@@ -12,217 +13,254 @@ namespace Core {
 /// cute Numerical Recipes
 /// Should use that implementation its better as it can fall back to simper methods
 /// For documentation just check out the link here: http://www.boost.org/doc/libs/1_60_0/libs/math/doc/html/math_toolkit/roots/brent_minima.html
-struct Bracketmethod {
-    double ax,bx,cx,fa,fb,fc; // NOLINT(readability-identifier-naming, readability-isolate-declaration)
-    template <class T>
-    void bracket(const double a, const double b, T &func) { // NOLINT(readability-identifier-naming)
-        const double GOLD=1.618034,GLIMIT=100.0,TINY=1.0e-20; // NOLINT(readability-identifier-naming, readability-isolate-declaration)
-        ax=a; bx=b;
+struct Bracketmethod
+{
+    double ax, bx, cx, fa, fb, fc; // NOLINT(readability-identifier-naming, readability-isolate-declaration)
+    template<class T>
+    void bracket(const double a, const double b, T& func)
+    { // NOLINT(readability-identifier-naming)
+        const double GOLD = 1.618034, GLIMIT = 100.0,
+                     TINY = 1.0e-20; // NOLINT(readability-identifier-naming, readability-isolate-declaration)
+        ax = a;
+        bx = b;
         double fu;
-        fa=func(ax);
-        fb=func(bx);
+        fa = func(ax);
+        fb = func(bx);
         if (fb > fa) {
-            std::swap(ax,bx);
-            std::swap(fb,fa);
+            std::swap(ax, bx);
+            std::swap(fb, fa);
         }
-        cx=bx+GOLD*(bx-ax);
-        fc=func(cx);
+        cx = bx + GOLD * (bx - ax);
+        fc = func(cx);
         while (fb > fc) {
-            double r=(bx-ax)*(fb-fc);
-            double q=(bx-cx)*(fb-fa);
-            double u=bx-((bx-cx)*q-(bx-ax)*r)/(2.0*copysign(std::max(std::abs(q-r),TINY),q-r));
-            double ulim=bx+GLIMIT*(cx-bx);
-            if ((bx-u)*(u-cx) > 0.0) {
-                fu=func(u);
+            double r = (bx - ax) * (fb - fc);
+            double q = (bx - cx) * (fb - fa);
+            double u = bx - ((bx - cx) * q - (bx - ax) * r) / (2.0 * copysign(std::max(std::abs(q - r), TINY), q - r));
+            double ulim = bx + GLIMIT * (cx - bx);
+            if ((bx - u) * (u - cx) > 0.0) {
+                fu = func(u);
                 if (fu < fc) {
-                    ax=bx;
-                    bx=u;
-                    fa=fb;
-                    fb=fu;
+                    ax = bx;
+                    bx = u;
+                    fa = fb;
+                    fb = fu;
                     return;
                 }
                 // Do not use else after return
                 if (fu > fb) {
-                    cx=u;
-                    fc=fu;
+                    cx = u;
+                    fc = fu;
                     return;
                 }
-                u=cx+GOLD*(cx-bx);
-                fu=func(u);
-            } else if ((cx-u)*(u-ulim) > 0.0) {
-                fu=func(u);
-                if (fu < fc) {
-                    shft3(bx,cx,u,u+GOLD*(u-cx));
-                    shft3(fb,fc,fu,func(u));
-                }
-            } else if ((u-ulim)*(ulim-cx) >= 0.0) {
-                u=ulim;
-                fu=func(u);
-            } else {
-                u=cx+GOLD*(cx-bx);
-                fu=func(u);
+                u = cx + GOLD * (cx - bx);
+                fu = func(u);
             }
-            shft3(ax,bx,cx,u);
-            shft3(fa,fb,fc,fu);
+            else if ((cx - u) * (u - ulim) > 0.0) {
+                fu = func(u);
+                if (fu < fc) {
+                    shft3(bx, cx, u, u + GOLD * (u - cx));
+                    shft3(fb, fc, fu, func(u));
+                }
+            }
+            else if ((u - ulim) * (ulim - cx) >= 0.0) {
+                u = ulim;
+                fu = func(u);
+            }
+            else {
+                u = cx + GOLD * (cx - bx);
+                fu = func(u);
+            }
+            shft3(ax, bx, cx, u);
+            shft3(fa, fb, fc, fu);
         }
     }
 
-    inline void shft2(double &a, double &b, const double c) { // NOLINT(readability-identifier-naming)
-        a=b; b=c;
+    inline void shft2(double& a, double& b, const double c)
+    { // NOLINT(readability-identifier-naming)
+        a = b;
+        b = c;
     }
-    inline void shft3(double &a, double &b, double &c, const double d) { // NOLINT(readability-identifier-naming)
-        a=b; b=c; c=d;
+    inline void shft3(double& a, double& b, double& c, const double d)
+    { // NOLINT(readability-identifier-naming)
+        a = b;
+        b = c;
+        c = d;
     }
-    inline void mov3(double &a, double &b, double &c, const double d, const double e, const double f) { // NOLINT(readability-identifier-naming)
-        a=d; b=e; c=f;
+    inline void mov3(double& a, double& b, double& c, const double d, const double e, const double f)
+    { // NOLINT(readability-identifier-naming)
+        a = d;
+        b = e;
+        c = f;
     }
 };
 
-struct Dbrent : Bracketmethod {
-    double xmin,fmin; // NOLINT(readability-identifier-naming)
-    const double tol; // NOLINT(readability-identifier-naming)
-    Dbrent(const double toll=3.0e-8) : tol(toll) {} // NOLINT(readability-identifier-naming, cppcoreguidelines-pro-type-member-init)
-    template <class T>
-    double minimize(T &funcd) { // NOLINT(readability-identifier-naming)
-        const int ITMAX=100; // NOLINT(readability-identifier-naming)
-        const double ZEPS=std::numeric_limits<double>::epsilon()*1.0e-3; // NOLINT(readability-identifier-naming)
-        bool ok1,ok2; // NOLINT(readability-isolate-declaration)
-        double a,b,d=0.0,d1,d2,du,dv,dw,dx,e=0.0; // NOLINT(readability-isolate-declaration)
-        double fu,fv,fw,fx,olde,tol1,tol2,u,u1,u2,v,w,x,xm; // NOLINT(readability-isolate-declaration)
-        a=(ax < cx ? ax : cx);
-        b=(ax > cx ? ax : cx);
-        x=w=v=bx;
-        fw=fv=fx=funcd(x);
-        dw=dv=dx=funcd.df(x);
-        for (int iter=0;iter<ITMAX;iter++) {
-            xm=0.5*(a+b);
-            tol1=tol*std::abs(x)+ZEPS;
-            tol2=2.0*tol1;
-            if (std::abs(x-xm) <= (tol2-0.5*(b-a))) {
-                fmin=fx;
-                return xmin=x;
+struct Dbrent : Bracketmethod
+{
+    double xmin, fmin; // NOLINT(readability-identifier-naming)
+    const double tol;  // NOLINT(readability-identifier-naming)
+    Dbrent(const double toll = 3.0e-8)
+        : tol(toll) {} // NOLINT(readability-identifier-naming, cppcoreguidelines-pro-type-member-init)
+    template<class T>
+    double minimize(T& funcd)
+    {                                                                        // NOLINT(readability-identifier-naming)
+        const int ITMAX = 100;                                               // NOLINT(readability-identifier-naming)
+        const double ZEPS = std::numeric_limits<double>::epsilon() * 1.0e-3; // NOLINT(readability-identifier-naming)
+        bool ok1, ok2;                                                       // NOLINT(readability-isolate-declaration)
+        double a, b, d = 0.0, d1, d2, du, dv, dw, dx, e = 0.0;               // NOLINT(readability-isolate-declaration)
+        double fu, fv, fw, fx, olde, tol1, tol2, u, u1, u2, v, w, x, xm;     // NOLINT(readability-isolate-declaration)
+        a = (ax < cx ? ax : cx);
+        b = (ax > cx ? ax : cx);
+        x = w = v = bx;
+        fw = fv = fx = funcd(x);
+        dw = dv = dx = funcd.df(x);
+        for (int iter = 0; iter < ITMAX; iter++) {
+            xm = 0.5 * (a + b);
+            tol1 = tol * std::abs(x) + ZEPS;
+            tol2 = 2.0 * tol1;
+            if (std::abs(x - xm) <= (tol2 - 0.5 * (b - a))) {
+                fmin = fx;
+                return xmin = x;
             }
             if (std::abs(e) > tol1) {
-                d1=2.0*(b-a);
-                d2=d1;
+                d1 = 2.0 * (b - a);
+                d2 = d1;
                 if (dw != dx) {
-                    d1=(w-x)*dx/(dx-dw);
+                    d1 = (w - x) * dx / (dx - dw);
                 }
                 if (dv != dx) {
-                    d2=(v-x)*dx/(dx-dv);
+                    d2 = (v - x) * dx / (dx - dv);
                 }
-                u1=x+d1;
-                u2=x+d2;
-                ok1 = (a-u1)*(u1-b) > 0.0 && dx*d1 <= 0.0;
-                ok2 = (a-u2)*(u2-b) > 0.0 && dx*d2 <= 0.0;
-                olde=e;
-                e=d;
+                u1 = x + d1;
+                u2 = x + d2;
+                ok1 = (a - u1) * (u1 - b) > 0.0 && dx * d1 <= 0.0;
+                ok2 = (a - u2) * (u2 - b) > 0.0 && dx * d2 <= 0.0;
+                olde = e;
+                e = d;
                 if (ok1 || ok2) {
                     if (ok1 && ok2) {
-                        d=(std::abs(d1) < std::abs(d2) ? d1 : d2);
-                    } else if (ok1) {
-                        d=d1;
-                    } else {
-                        d=d2;
+                        d = (std::abs(d1) < std::abs(d2) ? d1 : d2);
                     }
-                    if (std::abs(d) <= std::abs(0.5*olde)) {
-                        u=x+d;
-                        if (u-a < tol2 || b-u < tol2) {
-                            d=copysign(tol1,xm-x);
+                    else if (ok1) {
+                        d = d1;
+                    }
+                    else {
+                        d = d2;
+                    }
+                    if (std::abs(d) <= std::abs(0.5 * olde)) {
+                        u = x + d;
+                        if (u - a < tol2 || b - u < tol2) {
+                            d = copysign(tol1, xm - x);
                         }
-                    } else {
-                        d=0.5*(e=(dx >= 0.0 ? a-x : b-x));
                     }
-                } else {
-                    d=0.5*(e=(dx >= 0.0 ? a-x : b-x));
+                    else {
+                        d = 0.5 * (e = (dx >= 0.0 ? a - x : b - x));
+                    }
                 }
-            } else {
-                d=0.5*(e=(dx >= 0.0 ? a-x : b-x));
+                else {
+                    d = 0.5 * (e = (dx >= 0.0 ? a - x : b - x));
+                }
+            }
+            else {
+                d = 0.5 * (e = (dx >= 0.0 ? a - x : b - x));
             }
             if (std::abs(d) >= tol1) {
-                u=x+d;
-                fu=funcd(u);
-            } else {
-                u=x+copysign(tol1,d);
-                fu=funcd(u);
+                u = x + d;
+                fu = funcd(u);
+            }
+            else {
+                u = x + copysign(tol1, d);
+                fu = funcd(u);
                 if (fu > fx) {
-                    fmin=fx;
-                    return xmin=x;
+                    fmin = fx;
+                    return xmin = x;
                 }
             }
-            du=funcd.df(u);
+            du = funcd.df(u);
             if (fu <= fx) {
                 if (u >= x) {
-                    a=x;
-                } else {
-                    b=x;
+                    a = x;
                 }
-                mov3(v,fv,dv,w,fw,dw);
-                mov3(w,fw,dw,x,fx,dx);
-                mov3(x,fx,dx,u,fu,du);
-            } else {
-                if (u < x) {
-                    a=u; }
                 else {
-                    b=u;
+                    b = x;
+                }
+                mov3(v, fv, dv, w, fw, dw);
+                mov3(w, fw, dw, x, fx, dx);
+                mov3(x, fx, dx, u, fu, du);
+            }
+            else {
+                if (u < x) {
+                    a = u;
+                }
+                else {
+                    b = u;
                 }
                 if (fu <= fw || w == x) {
-                    mov3(v,fv,dv,w,fw,dw);
-                    mov3(w,fw,dw,u,fu,du);
-                } else if (fu < fv || v == x || v == w) {
-                    mov3(v,fv,dv,u,fu,du);
+                    mov3(v, fv, dv, w, fw, dw);
+                    mov3(w, fw, dw, u, fu, du);
+                }
+                else if (fu < fv || v == x || v == w) {
+                    mov3(v, fv, dv, u, fu, du);
                 }
             }
         }
-        return xmin=x;
+        return xmin = x;
         //        throw("Too many iterations in routine dbrent");
     }
 };
 
-template <typename T>
-struct Df1dim {
-    const ValueVector &p; // NOLINT(readability-identifier-naming)
-    const ValueVector &xi; // NOLINT(readability-identifier-naming)
-    size_t n; // NOLINT(readability-identifier-naming)
-    T &funcd; // NOLINT(readability-identifier-naming)
-    ValueVector xt; // NOLINT(readability-identifier-naming)
-    ValueVector dft; // NOLINT(readability-identifier-naming)
-    Df1dim(ValueVector &pp, ValueVector &xii, T &funcdd) : p(pp), // NOLINT(readability-identifier-naming)
-        xi(xii), n(pp.size()), funcd(funcdd), xt(n), dft(n) {} // NOLINT(readability-identifier-naming)
-    double operator()(const Value x){ // NOLINT(readability-identifier-naming)
-        for (size_t j=0;j<n;j++) {
-            xt[j]=p[j]+x*xi[j];
+template<typename T>
+struct Df1dim
+{
+    const ValueVector& p;  // NOLINT(readability-identifier-naming)
+    const ValueVector& xi; // NOLINT(readability-identifier-naming)
+    size_t n;              // NOLINT(readability-identifier-naming)
+    T& funcd;              // NOLINT(readability-identifier-naming)
+    ValueVector xt;        // NOLINT(readability-identifier-naming)
+    ValueVector dft;       // NOLINT(readability-identifier-naming)
+    Df1dim(ValueVector& pp, ValueVector& xii, T& funcdd)
+        : p(pp), // NOLINT(readability-identifier-naming)
+          xi(xii), n(pp.size()), funcd(funcdd), xt(n), dft(n)
+    {
+    } // NOLINT(readability-identifier-naming)
+    double operator()(const Value x)
+    { // NOLINT(readability-identifier-naming)
+        for (size_t j = 0; j < n; j++) {
+            xt[j] = p[j] + x * xi[j];
         }
         return funcd(xt);
     }
-    double df(const Value x){ // NOLINT(readability-identifier-naming)
+    double df(const Value x)
+    { // NOLINT(readability-identifier-naming)
         TMP_UNUSED_PARAMETER(x);
-        double df1=0.0;
-        funcd.df(xt,dft);
-        for (size_t j=0;j<n;j++) {
-            df1 += dft[j]*xi[j];
+        double df1 = 0.0;
+        funcd.df(xt, dft);
+        for (size_t j = 0; j < n; j++) {
+            df1 += dft[j] * xi[j];
         }
         return df1;
     }
 };
 
-template <typename T>
-struct Dlinemethod {
-    ValueVector p; // NOLINT(readability-identifier-naming)
+template<typename T>
+struct Dlinemethod
+{
+    ValueVector p;  // NOLINT(readability-identifier-naming)
     ValueVector xi; // NOLINT(readability-identifier-naming)
-    T &func; // NOLINT(readability-identifier-naming)
-    size_t n; // NOLINT(readability-identifier-naming)
-    Dlinemethod(T &funcc) : func(funcc) {} // NOLINT(readability-identifier-naming, cppcoreguidelines-pro-type-member-init)
-    double linmin() {
-        double ax,xx,xmin; // NOLINT(readability-isolate-declaration)
-        n=p.size();
-        Df1dim<T> df1dim(p,xi,func);
-        ax=0.0;
-        xx=1.0;
+    T& func;        // NOLINT(readability-identifier-naming)
+    size_t n;       // NOLINT(readability-identifier-naming)
+    Dlinemethod(T& funcc)
+        : func(funcc) {} // NOLINT(readability-identifier-naming, cppcoreguidelines-pro-type-member-init)
+    double linmin()
+    {
+        double ax, xx, xmin; // NOLINT(readability-isolate-declaration)
+        n = p.size();
+        Df1dim<T> df1dim(p, xi, func);
+        ax = 0.0;
+        xx = 1.0;
         Dbrent dbrent;
-        dbrent.bracket(ax,xx,df1dim);
-        xmin=dbrent.minimize(df1dim);
-        for (size_t j=0;j<n;j++) {
+        dbrent.bracket(ax, xx, df1dim);
+        xmin = dbrent.minimize(df1dim);
+        for (size_t j = 0; j < n; j++) {
             xi[j] *= xmin;
             p[j] += xi[j];
         }
@@ -230,8 +268,9 @@ struct Dlinemethod {
     }
 };
 
-template <typename T>
-struct Frprmn : Dlinemethod<T> {
+template<typename T>
+struct Frprmn : Dlinemethod<T>
+{
     //int iter;
     double fret; // NOLINT(readability-identifier-naming)
     using Dlinemethod<T>::func;
@@ -239,41 +278,45 @@ struct Frprmn : Dlinemethod<T> {
     using Dlinemethod<T>::p;
     using Dlinemethod<T>::xi;
     const double ftol; // NOLINT(readability-identifier-naming)
-    Frprmn(T &funcd, const double ftoll=3.0e-8) : Dlinemethod<T>(funcd), // NOLINT(readability-identifier-naming, cppcoreguidelines-pro-type-member-init)
-        ftol(ftoll) {}
+    Frprmn(T& funcd, const double ftoll = 3.0e-8)
+        : Dlinemethod<T>(funcd), // NOLINT(readability-identifier-naming, cppcoreguidelines-pro-type-member-init)
+          ftol(ftoll)
+    {
+    }
 
-    ValueVector minimize(const ValueVector &pp) { // NOLINT(readability-identifier-naming)
-        const int ITMAX=200; // NOLINT(readability-identifier-naming)
-        const double EPS=1.0e-18; // NOLINT(readability-identifier-naming)
-        const double GTOL=1.0e-8; // NOLINT(readability-identifier-naming)
-        double gg,dgg; // NOLINT(readability-isolate-declaration)
-        size_t n=pp.size();
-        p=pp;
-        ValueVector g(n),h(n); // NOLINT(readability-isolate-declaration)
+    ValueVector minimize(const ValueVector& pp)
+    {                               // NOLINT(readability-identifier-naming)
+        const int ITMAX = 200;      // NOLINT(readability-identifier-naming)
+        const double EPS = 1.0e-18; // NOLINT(readability-identifier-naming)
+        const double GTOL = 1.0e-8; // NOLINT(readability-identifier-naming)
+        double gg, dgg;             // NOLINT(readability-isolate-declaration)
+        size_t n = pp.size();
+        p = pp;
+        ValueVector g(n), h(n); // NOLINT(readability-isolate-declaration)
         xi.resize(n);
-        double fp=func(p);
-        func.df(p,xi);
+        double fp = func(p);
+        func.df(p, xi);
 
-        for (size_t j=0;j<n;j++) {
+        for (size_t j = 0; j < n; j++) {
             g[j] = -xi[j];
-            xi[j]=h[j]=g[j];
+            xi[j] = h[j] = g[j];
         }
 
-        for (int its=0;its<ITMAX;its++) {
+        for (int its = 0; its < ITMAX; its++) {
             // iter=its;
-            fret=linmin();
-            if (2.0*std::abs(fret-fp) <= ftol*(std::abs(fret)+std::abs(fp)+EPS)) {
+            fret = linmin();
+            if (2.0 * std::abs(fret - fp) <= ftol * (std::abs(fret) + std::abs(fp) + EPS)) {
                 return p;
             }
-            fp=fret;
-            func.df(p,xi);
-            double test=0.0;
-            double den=std::max(fp,1.0);
+            fp = fret;
+            func.df(p, xi);
+            double test = 0.0;
+            double den = std::max(fp, 1.0);
 
-            for (size_t j=0;j<n;j++) {
-                double temp=std::abs(xi[j])*std::max(std::abs(p[j]),Value(1.0))/den;
+            for (size_t j = 0; j < n; j++) {
+                double temp = std::abs(xi[j]) * std::max(std::abs(p[j]), Value(1.0)) / den;
                 if (temp > test) {
-                    test=temp;
+                    test = temp;
                 }
             }
 
@@ -281,22 +324,22 @@ struct Frprmn : Dlinemethod<T> {
                 return p;
             }
 
-            dgg=gg=0.0;
+            dgg = gg = 0.0;
 
-            for (size_t j=0;j<n;j++) {
-                gg += g[j]*g[j];
+            for (size_t j = 0; j < n; j++) {
+                gg += g[j] * g[j];
                 //                dgg += xi[j]*xi[j]; //This statement for Fletcher-Reeves.
-                dgg += (xi[j]+g[j])*xi[j]; //This statement for Polak-Ribiere.
+                dgg += (xi[j] + g[j]) * xi[j]; //This statement for Polak-Ribiere.
             }
 
             if (gg == 0.0) {
                 return p;
             }
 
-            double gam=dgg/gg;
-            for (size_t j=0;j<n;j++) {
+            double gam = dgg / gg;
+            for (size_t j = 0; j < n; j++) {
                 g[j] = -xi[j];
-                xi[j]=h[j]=g[j]+gam*h[j];
+                xi[j] = h[j] = g[j] + gam * h[j];
             }
         }
         return p;
@@ -308,4 +351,3 @@ struct Frprmn : Dlinemethod<T> {
 } // namespace Tucuxi
 
 #endif // MINIMIZE_H
-

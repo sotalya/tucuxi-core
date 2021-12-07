@@ -16,7 +16,6 @@ namespace Core {
 class ConcentrationPrediction
 {
 public:
-
     bool streamToFile(const std::string& _fileName)
     {
         std::ofstream ostrm(_fileName, std::ios::binary);
@@ -38,7 +37,11 @@ public:
         return true;
     }
 
-    bool allocate(unsigned int _residualSize, CycleSize _nbPoints, TimeOffsets &_times, std::vector<Concentrations> &_values) const
+    bool allocate(
+            unsigned int _residualSize,
+            CycleSize _nbPoints,
+            TimeOffsets& _times,
+            std::vector<Concentrations>& _values) const
     {
         _times.reserve(_nbPoints);
         for (unsigned int compartement = 0; compartement < _residualSize; compartement++) {
@@ -47,7 +50,7 @@ public:
         return true;
     }
 
-    void appendConcentrations(TimeOffsets &_times, Concentrations &_values)
+    void appendConcentrations(TimeOffsets& _times, Concentrations& _values)
     {
         m_times.push_back(_times);
         m_values.push_back(_values);
@@ -62,9 +65,18 @@ public:
     }
 
     // Very important to return const references, else a copy is made and it makes percentiles very slow
-    const std::vector<TimeOffsets>& getTimes() const { return m_times; }
-    const std::vector<Concentrations>& getValues() const { return m_values; }
-    std::vector<Concentrations>& getModifiableValues() { return m_values; }
+    const std::vector<TimeOffsets>& getTimes() const
+    {
+        return m_times;
+    }
+    const std::vector<Concentrations>& getValues() const
+    {
+        return m_values;
+    }
+    std::vector<Concentrations>& getModifiableValues()
+    {
+        return m_values;
+    }
 
 private:
     std::vector<TimeOffsets> m_times;
@@ -76,4 +88,3 @@ typedef std::unique_ptr<ConcentrationPrediction> ConcentrationPredictionPtr;
 } // namespace Tucuxi
 
 #endif // TUCUXI_CORE_CONCENTRATIONPREDICTION_H
-

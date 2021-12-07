@@ -10,9 +10,9 @@
 #include <utility>
 #include <vector>
 
-#include "tucucore/definitions.h"
-
 #include "tucucommon/jsengine.h"
+
+#include "tucucore/definitions.h"
 
 using Tucuxi::Common::JSEngine; // NOLINT(google-global-names-in-headers)
 
@@ -27,41 +27,41 @@ public:
     /// \brief Create an operand from its name and type.
     /// \param _name Name of the operand.
     /// \param _type Type of the operand.
-    OperationInput(const std::string &_name, const InputType &_type = InputType::DOUBLE);
+    OperationInput(const std::string& _name, const InputType& _type = InputType::DOUBLE);
 
     /// \brief Create an operand from its name and value.
     /// \param _name Name of the operand.
     /// \param _value Numerical value of the input.
-    OperationInput(const std::string &_name, const bool &_value);
+    OperationInput(const std::string& _name, const bool& _value);
 
     /// \brief Create an operand from its name and value.
     /// \param _name Name of the operand.
     /// \param _value Numerical value of the input.
-    OperationInput(const std::string &_name, const int &_value);
+    OperationInput(const std::string& _name, const int& _value);
 
     /// \brief Create an operand from its name and value.
     /// \param _name Name of the operand.
     /// \param _value Numerical value of the input.
-    OperationInput(const std::string &_name, const double &_value);
+    OperationInput(const std::string& _name, const double& _value);
 
     /// \brief Default copy-construct an operation input.
     /// \param _other OperationInput used for copy-construction.
-    OperationInput(const OperationInput &_other) = default;
+    OperationInput(const OperationInput& _other) = default;
 
     /// \brief Default destructor.
     virtual ~OperationInput() = default;
 
     /// \brief Default operator assignment function.
     /// \param _rhs Source operation input.
-    OperationInput& operator=(const OperationInput &_rhs) = default;
+    OperationInput& operator=(const OperationInput& _rhs) = default;
 
     /// \brief Comparison (equality) operator.
     /// param _rhs OperationInput to compare to.
-    bool operator==(const OperationInput &_rhs) const;
+    bool operator==(const OperationInput& _rhs) const;
 
     /// \brief Comparison (difference) operator.
     /// param _rhs OperationInput to compare to.
-    bool operator!=(const OperationInput &_rhs) const;
+    bool operator!=(const OperationInput& _rhs) const;
 
     /// \brief Return whether the input value is defined or not.
     /// \return true if the value is defined, false otherwise.
@@ -79,40 +79,40 @@ public:
     /// \return true if the value can be successfully retrieved, false otherwise.
     /// \post if (isDefined() && m_type == InputType::BOOL) { _value == m_value && [RETURN] == true }
     ///       else { [RETURN] == false };
-    bool getValue(bool &_value) const;
+    bool getValue(bool& _value) const;
 
     /// \brief Set the value of a boolean input (exploiting function overloading).
     /// \param _value Boolean value to set.
     /// \return true if the value could be set, false otherwise (type mismatch).
     /// \post if (m_type == InputType::BOOL) { m_value == _value && [RETURN] == true }
     ///       else { m_value == PREV(m_value) && [RETURN] == false };
-    bool setValue(const bool &_value);
+    bool setValue(const bool& _value);
 
     /// \brief Get the integer value stored in the operand (if present and the stored type is indeed an integer).
     /// \return true if the value can be successfully retrieved, false otherwise.
     /// \post if (isDefined() && m_type == InputType::INTEGER) { _value == m_value && [RETURN] == true }
     ///       else { [RETURN] == false };
-    bool getValue(int &_value) const;
+    bool getValue(int& _value) const;
 
     /// \brief Set the value of an integer input (exploiting function overloading).
     /// \param _value Integer value to set.
     /// \return true if the value could be set, false otherwise (type mismatch).
     /// \post if (m_type == InputType::INTEGER) { m_value == _value && [RETURN] == true }
     ///       else { m_value == PREV(m_value) && [RETURN] == false };
-    bool setValue(const int &_value);
+    bool setValue(const int& _value);
 
     /// \brief Get the floating point value stored in the operand (if present and the stored type is indeed a floating point).
     /// \return true if the value can be successfully retrieved, false otherwise.
     /// \post if (isDefined() && m_type == InputType::DOUBLE) { _value == m_value && [RETURN] == true }
     ///       else { [RETURN] == false };
-    bool getValue(double &_value) const;
+    bool getValue(double& _value) const;
 
     /// \brief Set the value of a floating point input (exploiting function overloading).
     /// \param _value Floating point value to set.
     /// \return true if the value could be set, false otherwise (type mismatch).
     /// \post if (m_type == InputType::DOUBLE) { m_value == _value && [RETURN] == true }
     ///       else { m_value == PREV(m_value) && [RETURN] == false };
-    bool setValue(const double &_value);
+    bool setValue(const double& _value);
 
 
 private:
@@ -123,7 +123,8 @@ private:
     /// \brief Mark the input as defined or undefined.
     bool m_isDefined;
     /// \brief Store the value in the most appropriate type.
-    union {
+    union
+    {
         double d; // NOLINT(readability-identifier-naming)
         bool b;   // NOLINT(readability-identifier-naming)
         int i;    // NOLINT(readability-identifier-naming)
@@ -142,27 +143,28 @@ typedef std::vector<OperationInput>::const_iterator OperationInputIt;
 /// \param _inputName Sought input name.
 /// \param _type Sought input type.
 /// \return true if the sought input is present, false otherwise.
-bool checkInputIsDefined(const OperationInputList &_inputs, const std::string &_inputName, const InputType &_type);
+bool checkInputIsDefined(const OperationInputList& _inputs, const std::string& _inputName, const InputType& _type);
 
 /// \brief Helper function to check if an input is present in a list of inputs.
 /// \param _inputs Input list to scan.
 /// \param _inputName Sought input name.
 /// \param _type Sought input type.
 /// \return true if the sought input is present, false otherwise.
-bool checkInputIsPresent(const OperationInputList &_inputs, const std::string &_inputName, const InputType &_type);
+bool checkInputIsPresent(const OperationInputList& _inputs, const std::string& _inputName, const InputType& _type);
 
 /// \brief Helper function to check if an input is present in a list of inputs, considering the name alone.
 /// \param _inputs Input list to scan.
 /// \param _inputName Sought input name.
 /// \return true if the sought input is present, false otherwise.
-OperationInputIt findInputInList(const OperationInputList &_inputs, const std::string &_inputName);
+OperationInputIt findInputInList(const OperationInputList& _inputs, const std::string& _inputName);
 
 /// \brief Helper function to check if an input is present in a list of inputs.
 /// \param _inputs Input list to scan.
 /// \param _inputName Sought input name.
 /// \param _type Sought input type.
 /// \return true if the sought input is present, false otherwise.
-OperationInputIt findInputInList(const OperationInputList &_inputs, const std::string &_inputName, const InputType &_type);
+OperationInputIt findInputInList(
+        const OperationInputList& _inputs, const std::string& _inputName, const InputType& _type);
 
 /// \brief Helper function to ease input retrieval from an input list.
 /// \param _inputs Input list to scan.
@@ -171,7 +173,7 @@ OperationInputIt findInputInList(const OperationInputList &_inputs, const std::s
 /// \return true if the value can be successfully retrieved, false otherwise.
 /// \post if (inputIsDefined() && inputType == InputType::BOOLEAN) { _value == inputValue && [RETURN] == true }
 ///       else { [RETURN] == false };
-bool getInputValue(const OperationInputList &_inputs, const std::string &_inputName, bool &_value);
+bool getInputValue(const OperationInputList& _inputs, const std::string& _inputName, bool& _value);
 
 /// \brief Helper function to ease input retrieval from an input list.
 /// \param _inputs Input list to scan.
@@ -180,7 +182,7 @@ bool getInputValue(const OperationInputList &_inputs, const std::string &_inputN
 /// \return true if the value can be successfully retrieved, false otherwise.
 /// \post if (inputIsDefined() && inputType == InputType::INTEGER) { _value == inputValue && [RETURN] == true }
 ///       else { [RETURN] == false };
-bool getInputValue(const OperationInputList &_inputs, const std::string &_inputName, int &_value);
+bool getInputValue(const OperationInputList& _inputs, const std::string& _inputName, int& _value);
 
 /// \brief Helper function to ease input retrieval from an input list.
 /// \param _inputs Input list to scan.
@@ -189,7 +191,7 @@ bool getInputValue(const OperationInputList &_inputs, const std::string &_inputN
 /// \return true if the value can be successfully retrieved, false otherwise.
 /// \post if (inputIsDefined() && inputType == InputType::DOUBLE) { _value == inputValue && [RETURN] == true }
 ///       else { [RETURN] == false };
-bool getInputValue(const OperationInputList &_inputs, const std::string &_inputName, double &_value);
+bool getInputValue(const OperationInputList& _inputs, const std::string& _inputName, double& _value);
 
 
 /// \ingroup TucuCore
@@ -202,7 +204,7 @@ public:
 
     /// \brief Create an operation already setting the list of required inputs.
     /// \param _requiredInputs List of required inputs.
-    Operation(const OperationInputList &_requiredInputs);
+    Operation(const OperationInputList& _requiredInputs);
 
     /// \brief Default destructor.
     virtual ~Operation() = default;
@@ -213,13 +215,13 @@ public:
 
     /// \brief Default operator assignment function.
     /// \param _rhs Source operation.
-    Operation& operator=(const Operation &_rhs) = default;
+    Operation& operator=(const Operation& _rhs) = default;
 
     /// \brief Check if the given input list satisfies operation's requirements.
     /// \param _inputList List of inputs that have to be checked.
     /// \post if ((FOREACH(input: _inputs, required: m_requiredInputs) { input.isDefined() && input.getType() == required.getType() }) { [RETURN] == true }
     ///       else { [RETURN] == false };
-    virtual bool check(const OperationInputList &_inputs) const;
+    virtual bool check(const OperationInputList& _inputs) const;
 
     /// \brief Evaluate the operation on the given inputs.
     /// \warning No control on types is performed -- you can for instance divide a boolean by a double without the
@@ -229,7 +231,7 @@ public:
     /// \return true if the operation could be performed, false otherwise.
     /// \post if (check(_inputs)) { _result == [OPERATION_RESULT] && [RETURN] == true }
     ///       else { [RETURN] == false };
-    virtual bool evaluate(const OperationInputList &_inputs, double &_result) = 0;
+    virtual bool evaluate(const OperationInputList& _inputs, double& _result) = 0;
 
     /// \brief Return the list of required input operands.
     /// This list can be filled by the caller to have all the values ready for evaluation.
@@ -280,7 +282,7 @@ public:
     /// \return true if the operation could be performed, false otherwise.
     /// \post if (check(_inputs) == true) { _result == [OPERATION_RESULT] && [RETURN] == true }
     ///       else { [RETURN] == false };
-    bool evaluate(const OperationInputList &_inputs, double &_result) final;
+    bool evaluate(const OperationInputList& _inputs, double& _result) final;
 
 
 protected:
@@ -289,7 +291,7 @@ protected:
     /// \param _result Result of the operation.
     /// \return true if the operation could be performed, false otherwise.
     /// \pre check(_inputs) == true
-    virtual bool compute(const OperationInputList &_inputs, double &_result) const = 0;
+    virtual bool compute(const OperationInputList& _inputs, double& _result) const = 0;
 
     /// \brief Force the user of the class to implement a function filling the vector of required inputs.
     virtual void fillRequiredInputs() = 0;
@@ -309,7 +311,7 @@ public:
     /// \brief Build a JS operation from an expression and a set of required inputs.
     /// \param _expression Expression to evaluate.
     /// \param _requiredInputs List of required inputs.
-    JSOperation(const std::string &_expression, const OperationInputList &_requiredInputs);
+    JSOperation(const std::string& _expression, const OperationInputList& _requiredInputs);
 
     /// \brief Clone function returning a pointer to the base class.
     /// \return Pointer to the base Operation class.
@@ -323,7 +325,7 @@ public:
     /// \return true if the operation could be performed, false otherwise.
     /// \post if (check(_inputs) && m_jsEngine.evaluate(m_expression) == true) { _result == [OPERATION_RESULT] && [RETURN] == true }
     ///       else { [RETURN] == false };
-    bool evaluate(const OperationInputList &_inputs, double &_result) override;
+    bool evaluate(const OperationInputList& _inputs, double& _result) override;
 
     /// \brief Checks the operation on the given inputs using the JSEngine.
     /// \warning No control on types is performed -- you can for instance divide a boolean by a double without the
@@ -337,12 +339,15 @@ public:
     /// "\n}\n result = calc();" at the end,
     /// and also removing the last "return" statement
     ///
-    bool checkOperation(const OperationInputList &_inputs);
+    bool checkOperation(const OperationInputList& _inputs);
 
     /// \brief Get the expression as a string
     /// \return The expression
     /// This function is meant to be used by the DrugModelChecker, not for any other evaluation
-    std::string getExpression() { return m_expression;}
+    std::string getExpression()
+    {
+        return m_expression;
+    }
 
 protected:
     /// \brief JavaScript expression representing the operation to perform.
@@ -351,7 +356,7 @@ protected:
     /// \brief Build a JS operation from a set of required inputs.
     /// \param _requiredInputs List of required inputs.
     /// Only used as super class constructor for JSExpression
-    JSOperation(const OperationInputList &_requiredInputs);
+    JSOperation(const OperationInputList& _requiredInputs);
 };
 
 
@@ -366,8 +371,7 @@ public:
     /// \brief Build a JS expression from an expression and a set of required inputs.
     /// \param _expression Expression to evaluate.
     /// \param _requiredInputs List of required inputs.
-    JSExpression(const std::string &_expression, const OperationInputList &_requiredInputs);
-
+    JSExpression(const std::string& _expression, const OperationInputList& _requiredInputs);
 };
 
 
@@ -381,7 +385,7 @@ public:
 
     /// \brief Copy-construct a dynamic operation.
     /// \param _other Operation used for copy-construction.
-    DynamicOperation(const DynamicOperation &_other);
+    DynamicOperation(const DynamicOperation& _other);
 
     /// \brief Default destructor.
     ~DynamicOperation() override = default;
@@ -392,14 +396,14 @@ public:
 
     /// \brief Default operator assignment function.
     /// \param _rhs Source operation.
-    DynamicOperation& operator=(const DynamicOperation &_rhs) = default;
+    DynamicOperation& operator=(const DynamicOperation& _rhs) = default;
 
     /// \brief Add an operation to the list of operations to choose from.
     /// \param _operation Operation to add.
     /// \param _preferenceLevel Preference level of the operation (if another one with the same number of matching
     ///                         inputs is available)
     /// \return true if the operation was successfully added to the list, false otherwise.
-    bool addOperation(const Operation &_operation, unsigned int _preferenceLevel);
+    bool addOperation(const Operation& _operation, unsigned int _preferenceLevel);
 
     /// \brief Check if the given input list satisfies the requirements of at least one of the operations stored.
     /// \param _inputList List of inputs that have to be checked.
@@ -407,7 +411,7 @@ public:
     ///         otherwise.
     /// \post if (ANY(operation: m_operations) { operation.check(_inputs) } { [RETURN] == true }
     ///       else { [RETURN] == false };
-    bool check(const OperationInputList &_inputs) const override;
+    bool check(const OperationInputList& _inputs) const override;
 
     /// \brief Evaluate an operation on the given inputs, choosing the one that suits best.
     /// The parameter match is taken as a first match measure, using the preference level as a second discrimination
@@ -423,7 +427,7 @@ public:
     ///                                                 PREFERENCE(operation) <= { PREFERENCE({op2 IN m_operations | op2.check(_inputs == true) && op2 != operation })} };
     ///       if (EXISTS(bestMatch)) { _result == [RESULT(bestMatch)] && [RETURN] == true }
     ///       else { [RETURN] == false };
-    bool evaluate(const OperationInputList &_inputs, double &_result) override;
+    bool evaluate(const OperationInputList& _inputs, double& _result) override;
 
     /// \brief Return the list of *possibly* required input operands.
     /// This list contains *ALL* the operands that could be needed by *ALL* the stored operations -- only a subset might

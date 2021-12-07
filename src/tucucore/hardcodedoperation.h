@@ -13,19 +13,24 @@ namespace Tucuxi {
 namespace Core {
 
 // NOLINTNEXTLINE(cppcoreguidelines-macro-usage,bugprone-macro-parentheses)
-#define HARDCODED_OPERATION(NAME)                                                   \
-class NAME : public HardcodedOperation                                              \
-{                                                                                   \
-public:                                                                             \
-    NAME() {fillRequiredInputs();m_filledInputs = true;}                            \
-    virtual std::unique_ptr<Operation> clone() const                                \
-    {                                                                               \
-        return std::unique_ptr<Operation>(new (NAME)(*this));                       \
-    }                                                                               \
-protected:                                                                          \
-    virtual bool compute(const OperationInputList &_inputs, double &_result) const; \
-    virtual void fillRequiredInputs();                                              \
-};
+#define HARDCODED_OPERATION(NAME)                                                       \
+    class NAME : public HardcodedOperation                                              \
+    {                                                                                   \
+    public:                                                                             \
+        NAME()                                                                          \
+        {                                                                               \
+            fillRequiredInputs();                                                       \
+            m_filledInputs = true;                                                      \
+        }                                                                               \
+        virtual std::unique_ptr<Operation> clone() const                                \
+        {                                                                               \
+            return std::unique_ptr<Operation>(new (NAME)(*this));                       \
+        }                                                                               \
+                                                                                        \
+    protected:                                                                          \
+        virtual bool compute(const OperationInputList& _inputs, double& _result) const; \
+        virtual void fillRequiredInputs();                                              \
+    };
 
 /// \ingroup TucuCore
 /// \brief Ideal Body Weight computation.
@@ -98,7 +103,7 @@ public:
     /// \brief Given an Id, returns the operation with the corresponding identifier.
     /// \param _operation ID of the PkModel asked by the caller.
     /// \return A PkModel corresponding to the ID if available, nullptr if no PkModel is found for the specified ID.
-    std::shared_ptr<Operation> getOperationFromId(const std::string &_operationId) const;
+    std::shared_ptr<Operation> getOperationFromId(const std::string& _operationId) const;
 
     /// \brief Adds all available hardcoded operations to a collection.
     /// \param _collection The collection to populate.

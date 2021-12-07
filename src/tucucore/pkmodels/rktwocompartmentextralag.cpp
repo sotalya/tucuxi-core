@@ -6,12 +6,14 @@
 #include <Eigen/LU>
 
 #include "tucucore/pkmodels/rktwocompartmentextralag.h"
+
 #include "tucucore/intakeevent.h"
 
 namespace Tucuxi {
 namespace Core {
 
-RK4TwoCompartmentExtraLagMicro::RK4TwoCompartmentExtraLagMicro() : IntakeIntervalCalculatorRK4Base<3, RK4TwoCompartmentExtraLagMicro> (new PertinentTimesCalculatorStandard())
+RK4TwoCompartmentExtraLagMicro::RK4TwoCompartmentExtraLagMicro()
+    : IntakeIntervalCalculatorRK4Base<3, RK4TwoCompartmentExtraLagMicro>(new PertinentTimesCalculatorStandard())
 {
 }
 
@@ -58,9 +60,7 @@ bool RK4TwoCompartmentExtraLagMicro::checkInputs(const IntakeEvent& _intakeEvent
 }
 
 
-RK4TwoCompartmentExtraLagMacro::RK4TwoCompartmentExtraLagMacro() : RK4TwoCompartmentExtraLagMicro()
-{
-}
+RK4TwoCompartmentExtraLagMacro::RK4TwoCompartmentExtraLagMacro() : RK4TwoCompartmentExtraLagMicro() {}
 
 
 std::vector<std::string> RK4TwoCompartmentExtraLagMacro::getParametersId()
@@ -70,7 +70,7 @@ std::vector<std::string> RK4TwoCompartmentExtraLagMacro::getParametersId()
 
 bool RK4TwoCompartmentExtraLagMacro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
-    if(!checkCondition(_parameters.size() >= 5, "The number of parameters should be equal to 5.")) {
+    if (!checkCondition(_parameters.size() >= 5, "The number of parameters should be equal to 5.")) {
         return false;
     }
 
@@ -107,6 +107,5 @@ bool RK4TwoCompartmentExtraLagMacro::checkInputs(const IntakeEvent& _intakeEvent
     return bOK;
 }
 
-}
-}
-
+} // namespace Core
+} // namespace Tucuxi

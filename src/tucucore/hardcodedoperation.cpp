@@ -2,8 +2,7 @@
 
 using namespace Tucuxi::Core;
 
-bool
-IdealBodyWeight::compute(const OperationInputList &_inputs, double &_result) const
+bool IdealBodyWeight::compute(const OperationInputList& _inputs, double& _result) const
 {
     int height;
     bool isMale;
@@ -14,7 +13,8 @@ IdealBodyWeight::compute(const OperationInputList &_inputs, double &_result) con
 
     if (isMale) {
         _result = height - 100 - (height - 150) / 4.0;
-    } else {
+    }
+    else {
         _result = height - 100 - (height - 150) / 2.5;
     }
 
@@ -22,8 +22,7 @@ IdealBodyWeight::compute(const OperationInputList &_inputs, double &_result) con
 }
 
 
-void
-IdealBodyWeight::fillRequiredInputs()
+void IdealBodyWeight::fillRequiredInputs()
 {
     OperationInput height("height", InputType::INTEGER);
     OperationInput isMale("isMale", InputType::BOOL);
@@ -32,8 +31,7 @@ IdealBodyWeight::fillRequiredInputs()
 }
 
 
-bool
-BodySurfaceArea::compute(const OperationInputList &_inputs, double &_result) const
+bool BodySurfaceArea::compute(const OperationInputList& _inputs, double& _result) const
 {
     int height;
     double weight;
@@ -48,8 +46,7 @@ BodySurfaceArea::compute(const OperationInputList &_inputs, double &_result) con
 }
 
 
-void
-BodySurfaceArea::fillRequiredInputs()
+void BodySurfaceArea::fillRequiredInputs()
 {
     OperationInput height("height", InputType::INTEGER);
     OperationInput weight("bodyweight", InputType::DOUBLE);
@@ -58,16 +55,15 @@ BodySurfaceArea::fillRequiredInputs()
 }
 
 
-bool
-eGFR_CockcroftGaultGeneral::compute(const OperationInputList &_inputs, double &_result) const
+bool eGFR_CockcroftGaultGeneral::compute(const OperationInputList& _inputs, double& _result) const
 {
     double weight;
     int age;
     double creatinine;
     bool isMale;
 
-    if (!getInputValue(_inputs, "bodyweight", weight) || !getInputValue(_inputs, "age", age) ||
-            !getInputValue(_inputs, "creatinine", creatinine) || !getInputValue(_inputs, "isMale", isMale)) {
+    if (!getInputValue(_inputs, "bodyweight", weight) || !getInputValue(_inputs, "age", age)
+        || !getInputValue(_inputs, "creatinine", creatinine) || !getInputValue(_inputs, "isMale", isMale)) {
         return false;
     }
 
@@ -82,8 +78,7 @@ eGFR_CockcroftGaultGeneral::compute(const OperationInputList &_inputs, double &_
 }
 
 
-void
-eGFR_CockcroftGaultGeneral::fillRequiredInputs()
+void eGFR_CockcroftGaultGeneral::fillRequiredInputs()
 {
     OperationInput weight("bodyweight", InputType::DOUBLE);
     OperationInput age("age", InputType::INTEGER);
@@ -96,8 +91,7 @@ eGFR_CockcroftGaultGeneral::fillRequiredInputs()
     m_requiredInputs.push_back(isMale);
 }
 
-bool
-OperationEGFRCockcroftGaultGeneral::compute(const OperationInputList &_inputs, double &_result) const
+bool OperationEGFRCockcroftGaultGeneral::compute(const OperationInputList& _inputs, double& _result) const
 {
     double weight;
     int age;
@@ -105,8 +99,8 @@ OperationEGFRCockcroftGaultGeneral::compute(const OperationInputList &_inputs, d
     double sex;
     bool isMale;
 
-    if (!getInputValue(_inputs, "bodyweight", weight) || !getInputValue(_inputs, "age", age) ||
-            !getInputValue(_inputs, "creatinine", creatinine) || !getInputValue(_inputs, "sex", sex)) {
+    if (!getInputValue(_inputs, "bodyweight", weight) || !getInputValue(_inputs, "age", age)
+        || !getInputValue(_inputs, "creatinine", creatinine) || !getInputValue(_inputs, "sex", sex)) {
         return false;
     }
 
@@ -123,8 +117,7 @@ OperationEGFRCockcroftGaultGeneral::compute(const OperationInputList &_inputs, d
 }
 
 
-void
-OperationEGFRCockcroftGaultGeneral::fillRequiredInputs()
+void OperationEGFRCockcroftGaultGeneral::fillRequiredInputs()
 {
     OperationInput weight("bodyweight", InputType::DOUBLE);
     OperationInput age("age", InputType::INTEGER);
@@ -138,8 +131,7 @@ OperationEGFRCockcroftGaultGeneral::fillRequiredInputs()
 }
 
 
-bool
-eGFR_CockcroftGaultIBW::compute(const OperationInputList &_inputs, double &_result) const
+bool eGFR_CockcroftGaultIBW::compute(const OperationInputList& _inputs, double& _result) const
 {
     double weight;
     int age;
@@ -148,9 +140,9 @@ eGFR_CockcroftGaultIBW::compute(const OperationInputList &_inputs, double &_resu
     bool isMale;
     double IBW; // NOLINT(readability-identifier-naming)
 
-    if (!getInputValue(_inputs, "bodyweight", weight) || !getInputValue(_inputs, "age", age) ||
-            !getInputValue(_inputs, "height", height) ||
-            !getInputValue(_inputs, "creatinine", creatinine) || !getInputValue(_inputs, "isMale", isMale)) {
+    if (!getInputValue(_inputs, "bodyweight", weight) || !getInputValue(_inputs, "age", age)
+        || !getInputValue(_inputs, "height", height) || !getInputValue(_inputs, "creatinine", creatinine)
+        || !getInputValue(_inputs, "isMale", isMale)) {
         return false;
     }
 
@@ -160,7 +152,7 @@ eGFR_CockcroftGaultIBW::compute(const OperationInputList &_inputs, double &_resu
     }
 
     IdealBodyWeight IBWComputation; // NOLINT(readability-identifier-naming)
-    bool rc = IBWComputation.evaluate({ OperationInput("height", height), OperationInput("isMale", isMale) }, IBW);
+    bool rc = IBWComputation.evaluate({OperationInput("height", height), OperationInput("isMale", isMale)}, IBW);
     if (!rc || IBW <= 0) {
         return false;
     }
@@ -171,8 +163,7 @@ eGFR_CockcroftGaultIBW::compute(const OperationInputList &_inputs, double &_resu
 }
 
 
-void
-eGFR_CockcroftGaultIBW::fillRequiredInputs()
+void eGFR_CockcroftGaultIBW::fillRequiredInputs()
 {
     OperationInput weight("bodyweight", InputType::DOUBLE);
     OperationInput height("height", InputType::INTEGER);
@@ -188,8 +179,7 @@ eGFR_CockcroftGaultIBW::fillRequiredInputs()
 }
 
 
-bool
-eGFR_CockcroftGaultAdjIBW::compute(const OperationInputList &_inputs, double &_result) const
+bool eGFR_CockcroftGaultAdjIBW::compute(const OperationInputList& _inputs, double& _result) const
 {
     double weight;
     int age;
@@ -198,9 +188,9 @@ eGFR_CockcroftGaultAdjIBW::compute(const OperationInputList &_inputs, double &_r
     bool isMale;
     double IBW; // NOLINT(readability-identifier-naming)
 
-    if (!getInputValue(_inputs, "bodyweight", weight) || !getInputValue(_inputs, "age", age) ||
-            !getInputValue(_inputs, "height", height) ||
-            !getInputValue(_inputs, "creatinine", creatinine) || !getInputValue(_inputs, "isMale", isMale)) {
+    if (!getInputValue(_inputs, "bodyweight", weight) || !getInputValue(_inputs, "age", age)
+        || !getInputValue(_inputs, "height", height) || !getInputValue(_inputs, "creatinine", creatinine)
+        || !getInputValue(_inputs, "isMale", isMale)) {
         return false;
     }
 
@@ -210,7 +200,7 @@ eGFR_CockcroftGaultAdjIBW::compute(const OperationInputList &_inputs, double &_r
     }
 
     IdealBodyWeight IBWComputation; // NOLINT(readability-identifier-naming)
-    bool rc = IBWComputation.evaluate({ OperationInput("height", height), OperationInput("isMale", isMale) }, IBW);
+    bool rc = IBWComputation.evaluate({OperationInput("height", height), OperationInput("isMale", isMale)}, IBW);
     if (!rc || IBW <= 0) {
         return false;
     }
@@ -221,8 +211,7 @@ eGFR_CockcroftGaultAdjIBW::compute(const OperationInputList &_inputs, double &_r
 }
 
 
-void
-eGFR_CockcroftGaultAdjIBW::fillRequiredInputs()
+void eGFR_CockcroftGaultAdjIBW::fillRequiredInputs()
 {
     OperationInput weight("bodyweight", InputType::DOUBLE);
     OperationInput height("height", InputType::INTEGER);
@@ -238,8 +227,7 @@ eGFR_CockcroftGaultAdjIBW::fillRequiredInputs()
 }
 
 
-bool
-GFR_MDRD::compute(const OperationInputList &_inputs, double &_result) const
+bool GFR_MDRD::compute(const OperationInputList& _inputs, double& _result) const
 {
     double weight;
     int height;
@@ -248,9 +236,9 @@ GFR_MDRD::compute(const OperationInputList &_inputs, double &_result) const
     bool isMale;
     bool isAB;
 
-    if (!getInputValue(_inputs, "bodyweight", weight) || !getInputValue(_inputs, "height", height) ||
-            !getInputValue(_inputs, "age", age) || !getInputValue(_inputs, "creatinine", creatinine) ||
-            !getInputValue(_inputs, "isMale", isMale) || !getInputValue(_inputs, "isAB", isAB)) {
+    if (!getInputValue(_inputs, "bodyweight", weight) || !getInputValue(_inputs, "height", height)
+        || !getInputValue(_inputs, "age", age) || !getInputValue(_inputs, "creatinine", creatinine)
+        || !getInputValue(_inputs, "isMale", isMale) || !getInputValue(_inputs, "isAB", isAB)) {
         return false;
     }
 
@@ -259,11 +247,12 @@ GFR_MDRD::compute(const OperationInputList &_inputs, double &_result) const
         return false;
     }
 
-    double eGFR = 175 * std::pow(0.0113 * creatinine, -1.154) * std::pow(age, -0.203) * (isMale ? 1 : 0.742) * (isAB ? 1.212 : 1);
+    double eGFR = 175 * std::pow(0.0113 * creatinine, -1.154) * std::pow(age, -0.203) * (isMale ? 1 : 0.742)
+                  * (isAB ? 1.212 : 1);
 
-    double BSA; // NOLINT(readability-identifier-naming)
+    double BSA;                     // NOLINT(readability-identifier-naming)
     BodySurfaceArea BSAComputation; // NOLINT(readability-identifier-naming)
-    bool rc = BSAComputation.evaluate({ OperationInput("height", height), OperationInput("bodyweight", weight) }, BSA);
+    bool rc = BSAComputation.evaluate({OperationInput("height", height), OperationInput("bodyweight", weight)}, BSA);
     if (!rc || BSA <= 0) {
         return false;
     }
@@ -274,8 +263,7 @@ GFR_MDRD::compute(const OperationInputList &_inputs, double &_result) const
 }
 
 
-void
-GFR_MDRD::fillRequiredInputs()
+void GFR_MDRD::fillRequiredInputs()
 {
     OperationInput weight("bodyweight", InputType::DOUBLE);
     OperationInput height("height", InputType::INTEGER);
@@ -293,8 +281,7 @@ GFR_MDRD::fillRequiredInputs()
 }
 
 
-bool
-GFR_CKD_EPI::compute(const OperationInputList &_inputs, double &_result) const
+bool GFR_CKD_EPI::compute(const OperationInputList& _inputs, double& _result) const
 {
     double weight;
     int height;
@@ -303,9 +290,9 @@ GFR_CKD_EPI::compute(const OperationInputList &_inputs, double &_result) const
     bool isMale;
     bool isAB;
 
-    if (!getInputValue(_inputs, "bodyweight", weight) || !getInputValue(_inputs, "height", height) ||
-            !getInputValue(_inputs, "age", age) || !getInputValue(_inputs, "creatinine", creatinine) ||
-            !getInputValue(_inputs, "isMale", isMale) || !getInputValue(_inputs, "isAB", isAB)) {
+    if (!getInputValue(_inputs, "bodyweight", weight) || !getInputValue(_inputs, "height", height)
+        || !getInputValue(_inputs, "age", age) || !getInputValue(_inputs, "creatinine", creatinine)
+        || !getInputValue(_inputs, "isMale", isMale) || !getInputValue(_inputs, "isAB", isAB)) {
         return false;
     }
 
@@ -314,13 +301,13 @@ GFR_CKD_EPI::compute(const OperationInputList &_inputs, double &_result) const
         return false;
     }
 
-    double eGFR = 141 * std::pow(std::min(0.0113 * creatinine / (isMale ? 0.9 : 0.7), 1.0), isMale ? -0.411 : -0.329) * \
-            std::pow(std::max(0.0113 * creatinine / (isMale ? 0.9 : 0.7), 1.0), -1.209) * std::pow(0.993, age) * \
-            (isMale ? 1 : 1.018) * (isAB ? 1.159 : 1);
+    double eGFR = 141 * std::pow(std::min(0.0113 * creatinine / (isMale ? 0.9 : 0.7), 1.0), isMale ? -0.411 : -0.329)
+                  * std::pow(std::max(0.0113 * creatinine / (isMale ? 0.9 : 0.7), 1.0), -1.209) * std::pow(0.993, age)
+                  * (isMale ? 1 : 1.018) * (isAB ? 1.159 : 1);
 
-    double BSA; // NOLINT(readability-identifier-naming)
+    double BSA;                     // NOLINT(readability-identifier-naming)
     BodySurfaceArea BSAComputation; // NOLINT(readability-identifier-naming)
-    bool rc = BSAComputation.evaluate({ OperationInput("height", height), OperationInput("bodyweight", weight) }, BSA);
+    bool rc = BSAComputation.evaluate({OperationInput("height", height), OperationInput("bodyweight", weight)}, BSA);
     if (!rc || BSA <= 0) {
         return false;
     }
@@ -331,8 +318,7 @@ GFR_CKD_EPI::compute(const OperationInputList &_inputs, double &_result) const
 }
 
 
-void
-GFR_CKD_EPI::fillRequiredInputs()
+void GFR_CKD_EPI::fillRequiredInputs()
 {
     OperationInput weight("bodyweight", InputType::DOUBLE);
     OperationInput height("height", InputType::INTEGER);
@@ -350,8 +336,7 @@ GFR_CKD_EPI::fillRequiredInputs()
 }
 
 
-bool
-eGFR_Schwartz::compute(const OperationInputList &_inputs, double &_result) const
+bool eGFR_Schwartz::compute(const OperationInputList& _inputs, double& _result) const
 {
     double weight;
     int height;
@@ -360,9 +345,9 @@ eGFR_Schwartz::compute(const OperationInputList &_inputs, double &_result) const
     bool isMale;
     bool bornAtTerm;
 
-    if (!getInputValue(_inputs, "bodyweight", weight) || !getInputValue(_inputs, "height", height) ||
-            !getInputValue(_inputs, "age", age) || !getInputValue(_inputs, "creatinine", creatinine) ||
-            !getInputValue(_inputs, "isMale", isMale) || !getInputValue(_inputs, "bornAtTerm", bornAtTerm)) {
+    if (!getInputValue(_inputs, "bodyweight", weight) || !getInputValue(_inputs, "height", height)
+        || !getInputValue(_inputs, "age", age) || !getInputValue(_inputs, "creatinine", creatinine)
+        || !getInputValue(_inputs, "isMale", isMale) || !getInputValue(_inputs, "bornAtTerm", bornAtTerm)) {
         return false;
     }
 
@@ -374,13 +359,17 @@ eGFR_Schwartz::compute(const OperationInputList &_inputs, double &_result) const
     _result = height / creatinine;
     if (age <= 1 && weight <= 2.5) {
         _result *= 0.33;
-    } else if (age <= 1 && bornAtTerm) {
+    }
+    else if (age <= 1 && bornAtTerm) {
         _result *= 0.45;
-    } else if (age > 2 && (age <= 13 || (age <= 20 && !isMale))) {
+    }
+    else if (age > 2 && (age <= 13 || (age <= 20 && !isMale))) {
         _result *= 0.55;
-    } else if (age > 13 && age <= 20 && isMale) {
+    }
+    else if (age > 13 && age <= 20 && isMale) {
         _result *= 0.70;
-    } else {
+    }
+    else {
         return false;
     }
 
@@ -388,8 +377,7 @@ eGFR_Schwartz::compute(const OperationInputList &_inputs, double &_result) const
 }
 
 
-void
-eGFR_Schwartz::fillRequiredInputs()
+void eGFR_Schwartz::fillRequiredInputs()
 {
     OperationInput weight("bodyweight", InputType::DOUBLE);
     OperationInput height("height", InputType::INTEGER);
@@ -407,8 +395,7 @@ eGFR_Schwartz::fillRequiredInputs()
 }
 
 
-bool
-GFR_Jelliffe::compute(const OperationInputList &_inputs, double &_result) const
+bool GFR_Jelliffe::compute(const OperationInputList& _inputs, double& _result) const
 {
     double weight;
     int age;
@@ -416,9 +403,9 @@ GFR_Jelliffe::compute(const OperationInputList &_inputs, double &_result) const
     double creatinine;
     bool isMale;
 
-    if (!getInputValue(_inputs, "bodyweight", weight) || !getInputValue(_inputs, "age", age) ||
-            !getInputValue(_inputs, "height", height) ||
-            !getInputValue(_inputs, "creatinine", creatinine) || !getInputValue(_inputs, "isMale", isMale)) {
+    if (!getInputValue(_inputs, "bodyweight", weight) || !getInputValue(_inputs, "age", age)
+        || !getInputValue(_inputs, "height", height) || !getInputValue(_inputs, "creatinine", creatinine)
+        || !getInputValue(_inputs, "isMale", isMale)) {
         return false;
     }
 
@@ -429,9 +416,9 @@ GFR_Jelliffe::compute(const OperationInputList &_inputs, double &_result) const
 
     double eGFR = (isMale ? 1 : 0.9) * (98 - (0.8 * age - 20)) / (0.0113 * creatinine);
 
-    double BSA; // NOLINT(readability-identifier-naming)
+    double BSA;                     // NOLINT(readability-identifier-naming)
     BodySurfaceArea BSAComputation; // NOLINT(readability-identifier-naming)
-    bool rc = BSAComputation.evaluate({ OperationInput("height", height), OperationInput("bodyweight", weight) }, BSA);
+    bool rc = BSAComputation.evaluate({OperationInput("height", height), OperationInput("bodyweight", weight)}, BSA);
     if (!rc || BSA <= 0) {
         return false;
     }
@@ -442,8 +429,7 @@ GFR_Jelliffe::compute(const OperationInputList &_inputs, double &_result) const
 }
 
 
-void
-GFR_Jelliffe::fillRequiredInputs()
+void GFR_Jelliffe::fillRequiredInputs()
 {
     OperationInput weight("bodyweight", InputType::DOUBLE);
     OperationInput height("height", InputType::INTEGER);
@@ -459,8 +445,7 @@ GFR_Jelliffe::fillRequiredInputs()
 }
 
 
-bool
-eGFR_SalazarCorcoran::compute(const OperationInputList &_inputs, double &_result) const
+bool eGFR_SalazarCorcoran::compute(const OperationInputList& _inputs, double& _result) const
 {
     double weight;
     int age;
@@ -468,9 +453,9 @@ eGFR_SalazarCorcoran::compute(const OperationInputList &_inputs, double &_result
     double creatinine;
     bool isMale;
 
-    if (!getInputValue(_inputs, "bodyweight", weight) || !getInputValue(_inputs, "age", age) ||
-            !getInputValue(_inputs, "height", height) ||
-            !getInputValue(_inputs, "creatinine", creatinine) || !getInputValue(_inputs, "isMale", isMale)) {
+    if (!getInputValue(_inputs, "bodyweight", weight) || !getInputValue(_inputs, "age", age)
+        || !getInputValue(_inputs, "height", height) || !getInputValue(_inputs, "creatinine", creatinine)
+        || !getInputValue(_inputs, "isMale", isMale)) {
         return false;
     }
 
@@ -479,15 +464,14 @@ eGFR_SalazarCorcoran::compute(const OperationInputList &_inputs, double &_result
         return false;
     }
 
-    _result = isMale ? ((137 - age) * (0.285 * weight + 12.1 * height * height) * 0.0113 / (51 * creatinine)) \
+    _result = isMale ? ((137 - age) * (0.285 * weight + 12.1 * height * height) * 0.0113 / (51 * creatinine))
                      : ((146 - age) * (0.287 * weight + 9.74 * height * height) * 0.0113 / (60 * creatinine));
 
     return true;
 }
 
 
-void
-eGFR_SalazarCorcoran::fillRequiredInputs()
+void eGFR_SalazarCorcoran::fillRequiredInputs()
 {
     OperationInput weight("bodyweight", InputType::DOUBLE);
     OperationInput height("height", InputType::INTEGER);
@@ -503,8 +487,7 @@ eGFR_SalazarCorcoran::fillRequiredInputs()
 }
 
 
-bool
-direct::compute(const OperationInputList &_inputs, double &_result) const
+bool direct::compute(const OperationInputList& _inputs, double& _result) const
 {
     double input0;
 
@@ -518,16 +501,14 @@ direct::compute(const OperationInputList &_inputs, double &_result) const
 }
 
 
-void
-direct::fillRequiredInputs()
+void direct::fillRequiredInputs()
 {
     OperationInput input0("input0", InputType::DOUBLE);
 
     m_requiredInputs.push_back(input0);
 }
 
-bool
-sum2::compute(const OperationInputList &_inputs, double &_result) const
+bool sum2::compute(const OperationInputList& _inputs, double& _result) const
 {
     double input0;
     double input1;
@@ -545,8 +526,7 @@ sum2::compute(const OperationInputList &_inputs, double &_result) const
 }
 
 
-void
-sum2::fillRequiredInputs()
+void sum2::fillRequiredInputs()
 {
     OperationInput input0("input0", InputType::DOUBLE);
     OperationInput input1("input1", InputType::DOUBLE);
@@ -563,7 +543,7 @@ bool OperationCollection::addOperation(std::shared_ptr<Operation> _operation, co
     return true;
 }
 
-std::shared_ptr<Operation> OperationCollection::getOperationFromId(const std::string &_operationId) const
+std::shared_ptr<Operation> OperationCollection::getOperationFromId(const std::string& _operationId) const
 {
     auto pos = m_collection.find(_operationId);
     if (pos == m_collection.end()) {
@@ -573,10 +553,10 @@ std::shared_ptr<Operation> OperationCollection::getOperationFromId(const std::st
 }
 
 // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
-#define ADD_OPERATION_TO_COLLECTION(_TYPE) \
-    do { \
+#define ADD_OPERATION_TO_COLLECTION(_TYPE)                                \
+    do {                                                                  \
         std::shared_ptr<Operation> operation = std::make_shared<_TYPE>(); \
-        addOperation(operation, #_TYPE); \
+        addOperation(operation, #_TYPE);                                  \
     } while (0);
 
 

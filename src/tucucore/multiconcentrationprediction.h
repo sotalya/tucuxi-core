@@ -25,8 +25,7 @@ namespace Core {
 class MultiConcentrationPrediction
 {
 public:
-
-/*
+    /*
     bool streamToFile(const std::string _fileName)
     {
         std::ofstream ostrm(_fileName, std::ios::binary);
@@ -50,7 +49,11 @@ public:
 
     */
 
-    bool allocate(unsigned int _residualSize, CycleSize _nbPoints, TimeOffsets &_times, std::vector<Concentrations> &_values) const
+    bool allocate(
+            unsigned int _residualSize,
+            CycleSize _nbPoints,
+            TimeOffsets& _times,
+            std::vector<Concentrations>& _values) const
     {
         _times.reserve(_nbPoints);
         for (unsigned int compartement = 0; compartement < _residualSize; compartement++) {
@@ -59,25 +62,34 @@ public:
         return true;
     }
 
-    void appendConcentrations(TimeOffsets &_times, std::vector<Concentrations> &_values)
+    void appendConcentrations(TimeOffsets& _times, std::vector<Concentrations>& _values)
     {
         m_times.push_back(_times);
         m_values.push_back(_values);
     }
 
 
-    MultiConcentrationPrediction *copy()
+    MultiConcentrationPrediction* copy()
     {
-        MultiConcentrationPrediction *result = new MultiConcentrationPrediction();
+        MultiConcentrationPrediction* result = new MultiConcentrationPrediction();
         result->m_times = this->m_times;
         result->m_values = this->m_values;
         return result;
     }
 
     // Very important to return const references, else a copy is made and it makes percentiles very slow
-    const std::vector<TimeOffsets>& getTimes() const { return m_times; }
-    const std::vector<std::vector<Concentrations> >& getValues() const { return m_values; }
-    std::vector<std::vector<Concentrations> >& getModifiableValues() { return m_values; }
+    const std::vector<TimeOffsets>& getTimes() const
+    {
+        return m_times;
+    }
+    const std::vector<std::vector<Concentrations> >& getValues() const
+    {
+        return m_values;
+    }
+    std::vector<std::vector<Concentrations> >& getModifiableValues()
+    {
+        return m_values;
+    }
 
 private:
     std::vector<TimeOffsets> m_times;
@@ -91,8 +103,6 @@ private:
     /// It would accessed like m_values[intakeIndex][compartmentIndex][timeIndex]
     ///
     std::vector<std::vector<Concentrations> > m_values;
-
-
 };
 typedef std::unique_ptr<MultiConcentrationPrediction> MultiConcentrationPredictionPtr;
 
@@ -100,4 +110,3 @@ typedef std::unique_ptr<MultiConcentrationPrediction> MultiConcentrationPredicti
 } // namespace Tucuxi
 
 #endif // TUCUXI_CORE_MULTICONCENTRATIONPREDICTION_H
-

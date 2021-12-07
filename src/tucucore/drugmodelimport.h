@@ -1,19 +1,19 @@
 #ifndef DRUGMODELIMPORT_H
 #define DRUGMODELIMPORT_H
 
+#include <mutex>
 #include <string>
 #include <vector>
-#include <mutex>
 
-#include "tucucommon/xmlnode.h"
-#include "tucucommon/xmldocument.h"
 #include "tucucommon/translatablestring.h"
+#include "tucucommon/xmldocument.h"
 #include "tucucommon/xmlimporter.h"
+#include "tucucommon/xmlnode.h"
 
 #include "tucucore/definitions.h"
 #include "tucucore/drugmodel/errormodel.h"
-#include "tucucore/drugmodel/parameterdefinition.h"
 #include "tucucore/drugmodel/formulationandroute.h"
+#include "tucucore/drugmodel/parameterdefinition.h"
 
 
 namespace Tucuxi {
@@ -52,10 +52,16 @@ class LightPopulationValue
 public:
     LightPopulationValue() : m_operation(nullptr), m_value(0.0) {}
 
-    Operation* getOperation() { return m_operation;}
-    Value getValue() { return m_value;}
+    Operation* getOperation()
+    {
+        return m_operation;
+    }
+    Value getValue()
+    {
+        return m_value;
+    }
 
-    Operation *m_operation;
+    Operation* m_operation;
     Value m_value;
 };
 
@@ -63,8 +69,6 @@ public:
 class DrugModelImport : public Tucuxi::Common::XMLImporter
 {
 public:
-
-
     ///
     /// \brief DrugModelImport empty constructor
     ///
@@ -79,7 +83,7 @@ public:
     /// \return Result::Ok if the import went well, another Result else.
     /// This function is reentrant.
     ///
-    Status importFromFile(std::unique_ptr<Tucuxi::Core::DrugModel>& _drugModel, const std::string &_fileName);
+    Status importFromFile(std::unique_ptr<Tucuxi::Core::DrugModel>& _drugModel, const std::string& _fileName);
 
     ///
     /// \brief importFromString
@@ -88,11 +92,10 @@ public:
     /// \return Result::Ok if the import went well, another Result else.
     /// This function is reentrant.
     ///
-    Status importFromString(std::unique_ptr<DrugModel> &_drugModel, const std::string &_xml);
+    Status importFromString(std::unique_ptr<DrugModel>& _drugModel, const std::string& _xml);
 
 protected:
-
-    const std::vector<std::string> &ignoredTags() const override;
+    const std::vector<std::string>& ignoredTags() const override;
 
     /// A mutex to ensure the public methods are reentrant
     std::mutex m_mutex;
@@ -104,7 +107,7 @@ protected:
     /// \return Result::Ok if the import went well, another Result else.
     /// This function is reentrant.
     ///
-    Status importDocument(std::unique_ptr<DrugModel> &_drugModel, Tucuxi::Common::XmlDocument & _document);
+    Status importDocument(std::unique_ptr<DrugModel>& _drugModel, Tucuxi::Common::XmlDocument& _document);
 
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -149,8 +152,10 @@ protected:
     std::vector<std::unique_ptr<Correlation> > extractCorrelations(Tucuxi::Common::XmlNodeIterator _node);
     std::unique_ptr<Correlation> extractCorrelation(Tucuxi::Common::XmlNodeIterator _node);
     std::unique_ptr<ParameterVariability> extractVariability(Tucuxi::Common::XmlNodeIterator _node);
-    std::unique_ptr<FormulationAndRoutes> extractFullFormulationAndRoutes(Tucuxi::Common::XmlNodeIterator _node, const std::vector<std::unique_ptr<AnalyteSet> > &_analyteSets);
-    std::unique_ptr<FullFormulationAndRoute> extractFullFormulationAndRoute(Tucuxi::Common::XmlNodeIterator _node, const std::vector<std::unique_ptr<AnalyteSet> > &_analyteSets);
+    std::unique_ptr<FormulationAndRoutes> extractFullFormulationAndRoutes(
+            Tucuxi::Common::XmlNodeIterator _node, const std::vector<std::unique_ptr<AnalyteSet> >& _analyteSets);
+    std::unique_ptr<FullFormulationAndRoute> extractFullFormulationAndRoute(
+            Tucuxi::Common::XmlNodeIterator _node, const std::vector<std::unique_ptr<AnalyteSet> >& _analyteSets);
     std::unique_ptr<ValidDurations> extractValidDurations(Tucuxi::Common::XmlNodeIterator _node);
     std::unique_ptr<ValidDoses> extractValidDoses(Tucuxi::Common::XmlNodeIterator _node);
     std::unique_ptr<ValidValuesRange> extractValuesRange(Tucuxi::Common::XmlNodeIterator _node);
@@ -160,9 +165,9 @@ protected:
     std::unique_ptr<LightPopulationValue> extractPopulationValue(Tucuxi::Common::XmlNodeIterator _node);
     std::unique_ptr<Operation> extractOperation(Tucuxi::Common::XmlNodeIterator _node);
     std::unique_ptr<JSOperation> extractJSOperation(Tucuxi::Common::XmlNodeIterator _node);
-    Tucuxi::Common::TranslatableString extractTranslatableString(Tucuxi::Common::XmlNodeIterator _node, const std::string &_insideName);
+    Tucuxi::Common::TranslatableString extractTranslatableString(
+            Tucuxi::Common::XmlNodeIterator _node, const std::string& _insideName);
     std::unique_ptr<DrugModelMetadata> extractHead(Tucuxi::Common::XmlNodeIterator _node);
-
 };
 
 

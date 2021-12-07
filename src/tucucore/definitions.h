@@ -13,22 +13,22 @@
 ///    - computing suggestions for the adaptation of treatments
 ///    - modeling relevant data for above computations
 
-#include <vector>
-#include <map>
 #include <iostream>
+#include <map>
+#include <vector>
 
-#undef min  // Prevent problems with date.h
-#undef max  // Prevent problems with date.h
+#undef min // Prevent problems with date.h
+#undef max // Prevent problems with date.h
 #include "date/iso_week.h"
-
-#include "Eigen/Dense"
 
 #include "tucucommon/basetypes.h"
 #include "tucucommon/datetime.h"
 #include "tucucommon/unit.h"
 
-using Tucuxi::Common::TucuUnit; // NOLINT(google-global-names-in-headers)
+#include "Eigen/Dense"
+
 using Tucuxi::Common::DateTime; // NOLINT(google-global-names-in-headers)
+using Tucuxi::Common::TucuUnit; // NOLINT(google-global-names-in-headers)
 
 namespace Tucuxi {
 namespace Core {
@@ -56,7 +56,7 @@ typedef Value DoseValue;
 typedef Value Concentration;
 
 /// \brief The type used to represent a serie of times exrpressed as offsets in hours to the start of a cycle
- typedef std::vector<double> TimeOffsets;
+typedef std::vector<double> TimeOffsets;
 
 /// \ingroup TucuCore
 /// \brief The type used to represent a serie of concentrations
@@ -73,24 +73,35 @@ typedef std::vector<PercentileRank> PercentileRanks;
 
 /// \ingroup TucuCore
 /// \brief Way a dose is administered.
-enum class AbsorptionModel { Undefined, Intravascular, Extravascular, Infusion, ExtravascularLag };
+enum class AbsorptionModel
+{
+    Undefined,
+    Intravascular,
+    Extravascular,
+    Infusion,
+    ExtravascularLag
+};
 
 /// \ingroup TucuCore
 /// \brief Operations on scheduled intakes.
-enum class ScheduledIntakeOp { Skip, Add };
+enum class ScheduledIntakeOp
+{
+    Skip,
+    Add
+};
 
 /// \ingroup TucuCore
 /// \brief Days of the week (in [0, 6]), starting on Sunday.
 typedef date::weekday DayOfWeek;
 // Days are defined using a #define and not an enum since the library wants
 // unsigned variables as input to the constructor
-constexpr unsigned int SUNDAY    = 0U;
-constexpr unsigned int MONDAY    = 1U;
-constexpr unsigned int TUESDAY   = 2U;
+constexpr unsigned int SUNDAY = 0U;
+constexpr unsigned int MONDAY = 1U;
+constexpr unsigned int TUESDAY = 2U;
 constexpr unsigned int WEDNESDAY = 3U;
-constexpr unsigned int THURSDAY  = 4U;
-constexpr unsigned int FRIDAY    = 5U;
-constexpr unsigned int SATURDAY  = 6U;
+constexpr unsigned int THURSDAY = 4U;
+constexpr unsigned int FRIDAY = 5U;
+constexpr unsigned int SATURDAY = 6U;
 
 /// \ingroup TucuCore
 /// \brief The type used to represent a serie of residuals.
@@ -111,11 +122,16 @@ typedef std::map<int, Eigen::VectorXd> PrecomputedExponentials;
 
 /// \ingroup TucuCore
 /// \brief Input operand types.
-enum class InputType { BOOL, INTEGER, DOUBLE };
+enum class InputType
+{
+    BOOL,
+    INTEGER,
+    DOUBLE
+};
 
-typedef Value Deviation;		    // Used for deviations (e.g. std dev)
-typedef std::vector<Deviation> Deviations;  // Used for epsilons array (e.g. std dev)
-typedef std::vector<Deviation> Etas;	    // Used for values in eta and error vectors
+typedef Value Deviation;                   // Used for deviations (e.g. std dev)
+typedef std::vector<Deviation> Deviations; // Used for epsilons array (e.g. std dev)
+typedef std::vector<Deviation> Etas;       // Used for values in eta and error vectors
 
 typedef Eigen::Matrix<Deviation, Eigen::Dynamic, Eigen::Dynamic> OmegaMatrix;
 typedef Eigen::Matrix<Deviation, Eigen::Dynamic, 1> Sigma;
@@ -138,7 +154,8 @@ typedef Eigen::Map<const EigenVector> map2EigenVectorType;
 #define omegaSize(matrix) ((matrix).rows()) // NOLINT(cppcoreguidelines-macro-usage)
 
 /// \brief Define the covariate types.
-enum class CovariateType {
+enum class CovariateType
+{
 
     /// \brief Standard, no particular treatment of the value
     /// - if no patient variate exist -> use operation in drug model to generate a new value each time one or more
@@ -174,7 +191,8 @@ enum class CovariateType {
 };
 
 /// \brief Allowed data types.
-enum class DataType {
+enum class DataType
+{
 
     /// An integer
     Int = 0,
@@ -220,9 +238,9 @@ enum class InterpolationType
 class CompartmentInfo
 {
 public:
-
     /// The type of prediction
-    enum class CompartmentType {
+    enum class CompartmentType
+    {
         /// An active moiety
         ActiveMoiety,
         /// An analyte
@@ -244,16 +262,21 @@ public:
     /// \brief gets the Id of this prediction
     /// \return The Id of this prediction
     ///
-    std::string getId() const { return m_id;}
+    std::string getId() const
+    {
+        return m_id;
+    }
 
     ///
     /// \brief gets the CompartmentType of this prediction
     /// \return The CompartmentType of this prediction
     ///
-    CompartmentType getType() const { return m_type;}
+    CompartmentType getType() const
+    {
+        return m_type;
+    }
 
 protected:
-
     /// The prediction type
     CompartmentType m_type;
 

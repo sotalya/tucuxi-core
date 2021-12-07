@@ -5,18 +5,17 @@
 namespace Tucuxi {
 namespace Core {
 
-IntakeIntervalCalculatorRK4::~IntakeIntervalCalculatorRK4()
-= default;
+IntakeIntervalCalculatorRK4::~IntakeIntervalCalculatorRK4() = default;
 
 
 ComputingStatus IntakeIntervalCalculatorRK4::calculateIntakePoints(
         std::vector<Concentrations>& _concentrations,
-        TimeOffsets & _times,
+        TimeOffsets& _times,
         const IntakeEvent& _intakeEvent,
         const ParameterSetEvent& _parameters,
         const Residuals& _inResiduals,
         bool _isAll,
-        Residuals & _outResiduals,
+        Residuals& _outResiduals,
         const bool _isDensityConstant)
 {
     if (m_firstCalculation) {
@@ -30,8 +29,7 @@ ComputingStatus IntakeIntervalCalculatorRK4::calculateIntakePoints(
         }
     }
     TMP_UNUSED_PARAMETER(_isDensityConstant);
-    if (!checkInputs(_intakeEvent, _parameters))
-    {
+    if (!checkInputs(_intakeEvent, _parameters)) {
         return ComputingStatus::BadParameters;
     }
 

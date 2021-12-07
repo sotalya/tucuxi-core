@@ -2,22 +2,23 @@
 #define QUERYTOCOREEXTRACTOR_H
 
 
+#include "tucucore/computingservice/computingtrait.h"
 #include "tucucore/covariateevent.h"
 #include "tucucore/drugtreatment/sample.h"
 #include "tucucore/targetevent.h"
-#include "tucucore/computingservice/computingtrait.h"
-#include "querystatus.h"
 
 #include "tucuquery/querydata.h"
+
+#include "querystatus.h"
 
 namespace Tucuxi {
 
 namespace Core {
-    class DrugTreatment;
-    class ComputingTrait;
-    class ComputingTraits;
-    class DrugModel;
-}
+class DrugTreatment;
+class ComputingTrait;
+class ComputingTraits;
+class DrugModel;
+} // namespace Core
 
 namespace Query {
 
@@ -44,16 +45,17 @@ public:
     /// This method should be the only public one.
     /// The drug treatments should live as long as the _computingQuery does.
     ///
-    QueryStatus extractComputingQuery(const QueryData &_query,
-                                      ComputingQuery &_computingQuery,
-                                      std::vector<std::unique_ptr<Core::DrugTreatment> > &_drugTreatments);
+    QueryStatus extractComputingQuery(
+            const QueryData& _query,
+            ComputingQuery& _computingQuery,
+            std::vector<std::unique_ptr<Core::DrugTreatment> >& _drugTreatments);
 
     ///
     /// \brief extractPatientVariates
     /// \param _query
     /// \return
     ///
-    Tucuxi::Core::PatientVariates extractPatientVariates(const QueryData &_query) const;
+    Tucuxi::Core::PatientVariates extractPatientVariates(const QueryData& _query) const;
 
     ///
     /// \brief extractTargets
@@ -61,7 +63,7 @@ public:
     /// \param _drugPosition
     /// \return
     ///
-    Tucuxi::Core::Targets extractTargets(const QueryData &_query, size_t _drugPosition) const;
+    Tucuxi::Core::Targets extractTargets(const QueryData& _query, size_t _drugPosition) const;
 
     ///
     /// \brief extractSamples
@@ -69,20 +71,26 @@ public:
     /// \param _drugPosition
     /// \return
     ///
-    Tucuxi::Core::Samples extractSamples(const QueryData &_query, size_t _drugPosition) const;
+    Tucuxi::Core::Samples extractSamples(const QueryData& _query, size_t _drugPosition) const;
 
-    std::unique_ptr<Core::DrugTreatment> extractDrugTreatment(const QueryData &_query, const RequestData &_requestData) const;
+    std::unique_ptr<Core::DrugTreatment> extractDrugTreatment(
+            const QueryData& _query, const RequestData& _requestData) const;
 
-    Tucuxi::Core::DrugModel *extractDrugModel(const RequestData &_requestData, const Tucuxi::Core::DrugTreatment *_drugTreatment) const;
+    Tucuxi::Core::DrugModel* extractDrugModel(
+            const RequestData& _requestData, const Tucuxi::Core::DrugTreatment* _drugTreatment) const;
 
-    std::string getErrorMessage() const {return m_errorMessage;}
+    std::string getErrorMessage() const
+    {
+        return m_errorMessage;
+    }
 
-    void setErrorMessage(std::string _errorMessage){m_errorMessage = _errorMessage;}
+    void setErrorMessage(std::string _errorMessage)
+    {
+        m_errorMessage = _errorMessage;
+    }
 
 private:
-
     std::string m_errorMessage;
-
 };
 
 } // namespace Query

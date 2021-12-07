@@ -15,8 +15,10 @@ class IntakeIntervalCalculatorRK4 : public IntakeIntervalCalculator
 
 public:
     /// \brief Constructor
-    IntakeIntervalCalculatorRK4(IPertinentTimesCalculator *_pertinentTimesCalculator) : m_firstCalculation(true),
-    m_pertinentTimesCalculator(_pertinentTimesCalculator) {}
+    IntakeIntervalCalculatorRK4(IPertinentTimesCalculator* _pertinentTimesCalculator)
+        : m_firstCalculation(true), m_pertinentTimesCalculator(_pertinentTimesCalculator)
+    {
+    }
 
     ~IntakeIntervalCalculatorRK4() override;
 
@@ -34,14 +36,14 @@ public:
     /// \return An indication if the computation was successful
     ///
     ComputingStatus calculateIntakePoints(
-        std::vector<Concentrations>& _concentrations,
-        TimeOffsets & _times,
-        const IntakeEvent& _intakeEvent,
-        const ParameterSetEvent& _parameters,
-        const Residuals& _inResiduals,
-        bool _isAll,
-        Residuals& _outResiduals,
-        bool _isDensityConstant) override;
+            std::vector<Concentrations>& _concentrations,
+            TimeOffsets& _times,
+            const IntakeEvent& _intakeEvent,
+            const ParameterSetEvent& _parameters,
+            const Residuals& _inResiduals,
+            bool _isAll,
+            Residuals& _outResiduals,
+            bool _isDensityConstant) override;
 
     ///
     /// \brief Compute one single point at the specified time as well as final residuals
@@ -54,16 +56,15 @@ public:
     /// \return Returns an indication if the computation was successful
     ///
     ComputingStatus calculateIntakeSinglePoint(
-        std::vector<Concentrations>& _concentrations,
-        const IntakeEvent& _intakeEvent,
-        const ParameterSetEvent& _parameters,
-        const Residuals& _inResiduals,
-        const Value& _atTime,
-        bool _isAll,
-        Residuals& _outResiduals) override;
+            std::vector<Concentrations>& _concentrations,
+            const IntakeEvent& _intakeEvent,
+            const ParameterSetEvent& _parameters,
+            const Residuals& _inResiduals,
+            const Value& _atTime,
+            bool _isAll,
+            Residuals& _outResiduals) override;
 
 protected:
-
     ///
     /// \brief Compute concentrations using a specific algorithm
     /// \param _times times for which we need the concentrations
@@ -72,7 +73,12 @@ protected:
     /// \param _concentrations vector of concentrations.
     /// \param _outResiduals Final residual concentrations
     ///
-    virtual bool computeConcentrations(Eigen::VectorXd &_times, const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) = 0;
+    virtual bool computeConcentrations(
+            Eigen::VectorXd& _times,
+            const Residuals& _inResiduals,
+            bool _isAll,
+            std::vector<Concentrations>& _concentrations,
+            Residuals& _outResiduals) = 0;
 
     ///
     /// \brief Compute concentrations using a specific algorithm
@@ -82,7 +88,12 @@ protected:
     /// \param _concentrations vector of concentrations.
     /// \param _outResiduals Final residual concentrations
     ///
-    virtual bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) = 0;
+    virtual bool computeConcentration(
+            const Value& _atTime,
+            const Residuals& _inResiduals,
+            bool _isAll,
+            std::vector<Concentrations>& _concentrations,
+            Residuals& _outResiduals) = 0;
 
     ///
     /// \brief Set the initial concentrations for each compartment
@@ -91,7 +102,7 @@ protected:
     ///
     /// In a typical use cas, this function uses the dose and the residuals to set the new concentration.
     ///
-    virtual void initConcentrations(const Residuals& _inResiduals, std::vector<double> &_concentrations) = 0;
+    virtual void initConcentrations(const Residuals& _inResiduals, std::vector<double>& _concentrations) = 0;
 
 
     typedef IntakeCalculatorSingleConcentrations SingleConcentrations;
@@ -105,28 +116,34 @@ protected:
     /// It corresponds to a strategy (or injection) pattern.
     ///
     std::unique_ptr<IPertinentTimesCalculator> m_pertinentTimesCalculator;
-
 };
 
 template<unsigned int ResidualSize, class ImplementationClass>
 class IntakeIntervalCalculatorRK4Base : public IntakeIntervalCalculatorRK4
 {
 public:
-    IntakeIntervalCalculatorRK4Base(IPertinentTimesCalculator *_pertinentTimesCalculator) :
-        IntakeIntervalCalculatorRK4(_pertinentTimesCalculator) {}
+    IntakeIntervalCalculatorRK4Base(IPertinentTimesCalculator* _pertinentTimesCalculator)
+        : IntakeIntervalCalculatorRK4(_pertinentTimesCalculator)
+    {
+    }
 
-    unsigned int getResidualSize() const override {
+    unsigned int getResidualSize() const override
+    {
         return ResidualSize;
     }
 
 protected:
-
     CycleSize m_nbPoints{0}; /// Number measure points during interval
-    Value m_Int{0.0}; /// Interval time (Hours)
+    Value m_Int{0.0};        /// Interval time (Hours)
 
     double m_h{1.0 / 60.0}; /// Internal h value for advancing on RK4
 
-    bool computeConcentrations(Eigen::VectorXd &_times, const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) override
+    bool computeConcentrations(
+            Eigen::VectorXd& _times,
+            const Residuals& _inResiduals,
+            bool _isAll,
+            std::vector<Concentrations>& _concentrations,
+            Residuals& _outResiduals) override
     {
         std::vector<Concentrations> concentrations;
         for (unsigned int i = 0; i < ResidualSize; i++) {
@@ -146,7 +163,8 @@ protected:
         // Return concentrations of other compartments if required
         if (_isAll) {
             for (size_t i = 1; i < ResidualSize; i++) {
-                _concentrations[i].assign(concentrations[i].data(), concentrations[i].data() + concentrations[i].size());
+                _concentrations[i].assign(
+                        concentrations[i].data(), concentrations[i].data() + concentrations[i].size());
             }
         }
 
@@ -159,7 +177,12 @@ protected:
         return bOk;
     }
 
-    bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) override
+    bool computeConcentration(
+            const Value& _atTime,
+            const Residuals& _inResiduals,
+            bool _isAll,
+            std::vector<Concentrations>& _concentrations,
+            Residuals& _outResiduals) override
     {
         std::vector<Concentrations> concentrations;
         for (size_t i = 0; i < ResidualSize; i++) {
@@ -184,7 +207,8 @@ protected:
             //if (ex0 != 0) {
             //    return false;
             //}
-        } catch (std::exception &e) {
+        }
+        catch (std::exception& e) {
             return false;
         }
 
@@ -219,8 +243,15 @@ protected:
     }
 
     template<int from, int to>
-    struct ComputeK1 {
-        static inline void apply(std::vector<double> &_k1, double _h, std::vector<double> &_dcdt, std::vector<double> &_c, std::vector<double> &_concentrations) {
+    struct ComputeK1
+    {
+        static inline void apply(
+                std::vector<double>& _k1,
+                double _h,
+                std::vector<double>& _dcdt,
+                std::vector<double>& _c,
+                std::vector<double>& _concentrations)
+        {
             // Set k1's
             _k1[from] = _h * _dcdt[from];
             _c[from] = _concentrations[from] + _k1[from] / 2.0;
@@ -230,16 +261,30 @@ protected:
 
     // Terminal case
     template<int from>
-    struct ComputeK1<from, from> {
-        static inline void apply(std::vector<double> &_k1, double _h, std::vector<double> &_dcdt, std::vector<double> &_c, std::vector<double> &_concentrations) {
+    struct ComputeK1<from, from>
+    {
+        static inline void apply(
+                std::vector<double>& _k1,
+                double _h,
+                std::vector<double>& _dcdt,
+                std::vector<double>& _c,
+                std::vector<double>& _concentrations)
+        {
             _k1[from] = _h * _dcdt[from];
             _c[from] = _concentrations[from] + _k1[from] / 2.0;
         }
     };
 
     template<int from, int to>
-    struct ComputeK2 {
-        static inline void apply(std::vector<double> &_k2, double _h, std::vector<double> &_dcdt, std::vector<double> &_c, std::vector<double> &_concentrations) {
+    struct ComputeK2
+    {
+        static inline void apply(
+                std::vector<double>& _k2,
+                double _h,
+                std::vector<double>& _dcdt,
+                std::vector<double>& _c,
+                std::vector<double>& _concentrations)
+        {
             // Set k1's
             _k2[from] = _h * _dcdt[from];
             _c[from] = _concentrations[from] + _k2[from] / 2.0;
@@ -249,16 +294,30 @@ protected:
 
     // Terminal case
     template<int from>
-    struct ComputeK2<from, from> {
-        static inline void apply(std::vector<double> &_k2, double _h, std::vector<double> &_dcdt, std::vector<double> &_c, std::vector<double> &_concentrations) {
+    struct ComputeK2<from, from>
+    {
+        static inline void apply(
+                std::vector<double>& _k2,
+                double _h,
+                std::vector<double>& _dcdt,
+                std::vector<double>& _c,
+                std::vector<double>& _concentrations)
+        {
             _k2[from] = _h * _dcdt[from];
             _c[from] = _concentrations[from] + _k2[from] / 2.0;
         }
     };
 
     template<int from, int to>
-    struct ComputeK3 {
-        static inline void apply(std::vector<double> &_k3, double _h, std::vector<double> &_dcdt, std::vector<double> &_c, std::vector<double> &_concentrations) {
+    struct ComputeK3
+    {
+        static inline void apply(
+                std::vector<double>& _k3,
+                double _h,
+                std::vector<double>& _dcdt,
+                std::vector<double>& _c,
+                std::vector<double>& _concentrations)
+        {
             // Set k1's
             _k3[from] = _h * _dcdt[from];
             _c[from] = _concentrations[from] + _k3[from];
@@ -268,40 +327,64 @@ protected:
 
     // Terminal case
     template<int from>
-    struct ComputeK3<from, from> {
-        static inline void apply(std::vector<double> &_k3, double _h, std::vector<double> &_dcdt, std::vector<double> &_c, std::vector<double> &_concentrations) {
+    struct ComputeK3<from, from>
+    {
+        static inline void apply(
+                std::vector<double>& _k3,
+                double _h,
+                std::vector<double>& _dcdt,
+                std::vector<double>& _c,
+                std::vector<double>& _concentrations)
+        {
             _k3[from] = _h * _dcdt[from];
             _c[from] = _concentrations[from] + _k3[from];
         }
     };
 
     template<int from, int to>
-    struct ComputeK4 {
-        static inline void apply(std::vector<double> &_k1, std::vector<double> &_k2,
-                                 std::vector<double> &_k3, std::vector<double> &_k4,
-                                 double _h, std::vector<double> &_dcdt, std::vector<double> &_concentrations) {
+    struct ComputeK4
+    {
+        static inline void apply(
+                std::vector<double>& _k1,
+                std::vector<double>& _k2,
+                std::vector<double>& _k3,
+                std::vector<double>& _k4,
+                double _h,
+                std::vector<double>& _dcdt,
+                std::vector<double>& _concentrations)
+        {
             _k4[from] = _h * _dcdt[from];
             // and directly compute the concentration of each compartment
-            _concentrations[from] = _concentrations[from] + _k1[from] / 6.0 + _k2[from] / 3.0 + _k3[from] / 3.0 + _k4[from] / 6.0;
+            _concentrations[from] =
+                    _concentrations[from] + _k1[from] / 6.0 + _k2[from] / 3.0 + _k3[from] / 3.0 + _k4[from] / 6.0;
             ComputeK4<from + 1, to>::apply(_k1, _k2, _k3, _k4, _h, _dcdt, _concentrations);
         }
     };
 
     // Terminal case
     template<int from>
-    struct ComputeK4<from, from> {
-        static inline void apply(std::vector<double> &_k1, std::vector<double> &_k2,
-                                 std::vector<double> &_k3, std::vector<double> &_k4,
-                                 double _h, std::vector<double> &_dcdt, std::vector<double> &_concentrations) {
+    struct ComputeK4<from, from>
+    {
+        static inline void apply(
+                std::vector<double>& _k1,
+                std::vector<double>& _k2,
+                std::vector<double>& _k3,
+                std::vector<double>& _k4,
+                double _h,
+                std::vector<double>& _dcdt,
+                std::vector<double>& _concentrations)
+        {
             _k4[from] = _h * _dcdt[from];
             // and directly compute the concentration of each compartment
-            _concentrations[from] = _concentrations[from] + _k1[from] / 6.0 + _k2[from] / 3.0 + _k3[from] / 3.0 + _k4[from] / 6.0;
+            _concentrations[from] =
+                    _concentrations[from] + _k1[from] / 6.0 + _k2[from] / 3.0 + _k3[from] / 3.0 + _k4[from] / 6.0;
         }
     };
 
 
 
-    void computeUnroll(const Eigen::VectorXd &_times, const Residuals& _inResiduals, std::vector<Concentrations>& _concentrations)
+    void computeUnroll(
+            const Eigen::VectorXd& _times, const Residuals& _inResiduals, std::vector<Concentrations>& _concentrations)
     {
         // By default, we advance minute per minute
         const double stdH = 1.0 / 60.0;
@@ -343,10 +426,10 @@ protected:
 
             // Check if we are ready to get a concentration
             while ((nextTime <= t) && (cont)) {
-                for(size_t i = 0; i < ResidualSize; i++) {
+                for (size_t i = 0; i < ResidualSize; i++) {
                     _concentrations[i][static_cast<size_t>(nextPoint)] = concentrations[i];
                 }
-                nextPoint ++;
+                nextPoint++;
                 if (nextPoint >= nbPoints) {
                     cont = false;
                 }
@@ -390,11 +473,11 @@ protected:
 
             t += m_h;
         }
-
     }
 
 
-    void compute(const Eigen::VectorXd &_times, const Residuals& _inResiduals, std::vector<Concentrations>& _concentrations)
+    void compute(
+            const Eigen::VectorXd& _times, const Residuals& _inResiduals, std::vector<Concentrations>& _concentrations)
     {
         // By default, we advance minute per minute
         const double stdH = 1.0 / 60.0;
@@ -436,10 +519,10 @@ protected:
 
             // Check if we are ready to get a concentration
             while ((nextTime <= t) && (cont)) {
-                for(size_t i = 0; i < ResidualSize; i++) {
+                for (size_t i = 0; i < ResidualSize; i++) {
                     _concentrations[i][static_cast<size_t>(nextPoint)] = concentrations[i];
                 }
-                nextPoint ++;
+                nextPoint++;
                 if (nextPoint >= nbPoints) {
                     cont = false;
                 }
@@ -460,7 +543,7 @@ protected:
             static_cast<ImplementationClass*>(this)->derive(t, concentrations, dcdt);
 
             // Set k1's
-            for(size_t i = 0; i < ResidualSize; i++) {
+            for (size_t i = 0; i < ResidualSize; i++) {
                 k1[i] = m_h * dcdt[i];
                 c[i] = concentrations[i] + k1[i] / 2.0;
             }
@@ -468,7 +551,7 @@ protected:
             static_cast<ImplementationClass*>(this)->derive(t + m_h / 2.0, c, dcdt);
 
             // Set k2's
-            for(size_t i = 0; i < ResidualSize; i++) {
+            for (size_t i = 0; i < ResidualSize; i++) {
                 k2[i] = m_h * dcdt[i];
                 c[i] = concentrations[i] + k2[i] / 2.0;
             }
@@ -476,7 +559,7 @@ protected:
             static_cast<ImplementationClass*>(this)->derive(t + m_h / 2.0, c, dcdt);
 
             // Set k3's
-            for(size_t i = 0; i < ResidualSize; i++) {
+            for (size_t i = 0; i < ResidualSize; i++) {
                 k3[i] = m_h * dcdt[i];
                 c[i] = concentrations[i] + k3[i];
             }
@@ -484,7 +567,7 @@ protected:
             static_cast<ImplementationClass*>(this)->derive(t + m_h, c, dcdt);
 
             // Set k4's
-            for(size_t i = 0; i < ResidualSize; i++) {
+            for (size_t i = 0; i < ResidualSize; i++) {
                 k4[i] = m_h * dcdt[i];
                 // and directly compute the concentration of each compartment
                 concentrations[i] = concentrations[i] + k1[i] / 6.0 + k2[i] / 3.0 + k3[i] / 3.0 + k4[i] / 6.0;
@@ -492,9 +575,7 @@ protected:
 
             t += m_h;
         }
-
     }
-
 };
 
 

@@ -7,11 +7,12 @@
 
 #include <vector>
 
-#include "tucucore/timedevent.h"
-#include "tucucore/drugtreatment/target.h"
+#include "tucucommon/duration.h"
+
 #include "tucucore/drugdefinitions.h"
 #include "tucucore/drugmodel/targetdefinition.h"
-#include "tucucommon/duration.h"
+#include "tucucore/drugtreatment/target.h"
+#include "tucucore/timedevent.h"
 
 
 struct TestTargetExtractor;
@@ -27,66 +28,73 @@ class TargetEvent
 public:
     TargetEvent() = delete;
 
-    ActiveMoietyId getActiveMoietyId() const { return m_activeMoietyId;}
+    ActiveMoietyId getActiveMoietyId() const
+    {
+        return m_activeMoietyId;
+    }
 
-    static TargetEvent createTargetEventWithMic(ActiveMoietyId _activeMoietyId,
-                                         TargetType _type,
-                                         TucuUnit _unit,
-                                         TucuUnit _finalUnit,
-                                         Value _vmin,
-                                         Value _vbest,
-                                         Value _vmax,
-                                         Value _mic,
-                                         TucuUnit _micUnit);
+    static TargetEvent createTargetEventWithMic(
+            ActiveMoietyId _activeMoietyId,
+            TargetType _type,
+            TucuUnit _unit,
+            TucuUnit _finalUnit,
+            Value _vmin,
+            Value _vbest,
+            Value _vmax,
+            Value _mic,
+            TucuUnit _micUnit);
 
-    static TargetEvent createTargetEventWithTime(ActiveMoietyId _activeMoietyId,
-                                         TargetType _type,
-                                         TucuUnit _unit,
-                                         TucuUnit _finalUnit,
-                                         Value _vmin,
-                                         Value _vbest,
-                                         Value _vmax,
-                                         const Tucuxi::Common::Duration &_tmin,
-                                         const Tucuxi::Common::Duration &_tbest,
-                                         const Tucuxi::Common::Duration &_tmax);
+    static TargetEvent createTargetEventWithTime(
+            ActiveMoietyId _activeMoietyId,
+            TargetType _type,
+            TucuUnit _unit,
+            TucuUnit _finalUnit,
+            Value _vmin,
+            Value _vbest,
+            Value _vmax,
+            const Tucuxi::Common::Duration& _tmin,
+            const Tucuxi::Common::Duration& _tbest,
+            const Tucuxi::Common::Duration& _tmax);
 
-    static TargetEvent createTargetEventWithoutTimeAndMic(ActiveMoietyId _activeMoietyId,
-                                         TargetType _type,
-                                         TucuUnit _unit,
-                                         TucuUnit _finalUnit,
-                                         Value _vmin,
-                                         Value _vbest,
-                                         Value _vmax);
+    static TargetEvent createTargetEventWithoutTimeAndMic(
+            ActiveMoietyId _activeMoietyId,
+            TargetType _type,
+            TucuUnit _unit,
+            TucuUnit _finalUnit,
+            Value _vmin,
+            Value _vbest,
+            Value _vmax);
 
-    static TargetEvent createTargetEventWithMicAndTime(ActiveMoietyId _activeMoietyId,
-                                         TargetType _type,
-                                         TucuUnit _unit,
-                                         TucuUnit _finalUnit,
-                                         Value _vmin,
-                                         Value _vbest,
-                                         Value _vmax,
-                                         Value _mic,
-                                         TucuUnit _micUnit,
-                                         const Tucuxi::Common::Duration &_tmin,
-                                         const Tucuxi::Common::Duration &_tbest,
-                                         const Tucuxi::Common::Duration &_tmax);
+    static TargetEvent createTargetEventWithMicAndTime(
+            ActiveMoietyId _activeMoietyId,
+            TargetType _type,
+            TucuUnit _unit,
+            TucuUnit _finalUnit,
+            Value _vmin,
+            Value _vbest,
+            Value _vmax,
+            Value _mic,
+            TucuUnit _micUnit,
+            const Tucuxi::Common::Duration& _tmin,
+            const Tucuxi::Common::Duration& _tbest,
+            const Tucuxi::Common::Duration& _tmax);
 
 
 
 private:
-
-    TargetEvent(ActiveMoietyId _activeMoietyId,
-           TargetType _type,
-           TucuUnit _unit,
-           TucuUnit _finalUnit,
-           Value _vmin,
-           Value _vbest,
-           Value _vmax,
-           Value _mic,
-           TucuUnit _micUnit,
-           const Tucuxi::Common::Duration &_tmin,
-           const Tucuxi::Common::Duration &_tbest,
-           const Tucuxi::Common::Duration &_tmax);
+    TargetEvent(
+            ActiveMoietyId _activeMoietyId,
+            TargetType _type,
+            TucuUnit _unit,
+            TucuUnit _finalUnit,
+            Value _vmin,
+            Value _vbest,
+            Value _vmax,
+            Value _mic,
+            TucuUnit _micUnit,
+            const Tucuxi::Common::Duration& _tmin,
+            const Tucuxi::Common::Duration& _tbest,
+            const Tucuxi::Common::Duration& _tmax);
 
 
     /// Id of the active moiety on which applying the target
@@ -136,7 +144,6 @@ private:
     friend TargetEvaluator;
 
     friend TestTargetExtractor;
-
 };
 
 

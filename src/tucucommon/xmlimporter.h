@@ -2,17 +2,16 @@
 #define XMLIMPORTER_H
 
 
-#include "iimport.h"
+#include <regex>
 
-#include "regex"
-
-#include "tucucommon/xmldocument.h"
-#include "tucucommon/xmlnode.h"
-#include "tucucommon/xmlattribute.h"
-#include "tucucommon/xmliterator.h"
 #include "tucucommon/datetime.h"
 #include "tucucommon/duration.h"
+#include "tucucommon/iimport.h"
 #include "tucucommon/unit.h"
+#include "tucucommon/xmlattribute.h"
+#include "tucucommon/xmldocument.h"
+#include "tucucommon/xmliterator.h"
+#include "tucucommon/xmlnode.h"
 
 namespace Tucuxi {
 namespace Common {
@@ -21,22 +20,22 @@ class XMLImporter : public IImport
 {
 
 public:
-
     std::string getErrorMessage() const override;
 
 protected:
-
-    enum class EmptynessAllowed {
+    enum class EmptynessAllowed
+    {
         AllowEmpty = 0,
         DoNotAllowEmpty
     };
 
-    enum class CheckUnit {
+    enum class CheckUnit
+    {
         Check = 0,
         DoNotCheck
     };
 
-    virtual const std::vector<std::string> &ignoredTags() const = 0;
+    virtual const std::vector<std::string>& ignoredTags() const = 0;
 
     void setNodeError(Common::XmlNodeIterator _node);
 
@@ -48,7 +47,7 @@ protected:
 
     void unexpectedTag(const std::string& _tagName);
 
-    std::string checkNodeIterator(Common::XmlNodeIterator _rootIterator, const std::string &_tagName);
+    std::string checkNodeIterator(Common::XmlNodeIterator _rootIterator, const std::string& _tagName);
 
     //Extract data from XML file
     TucuUnit extractUnit(Common::XmlNodeIterator _rootIterator, CheckUnit _checkUnit = CheckUnit::DoNotCheck);
@@ -60,24 +59,28 @@ protected:
     std::string extractString(Common::XmlNodeIterator _rootIterator);
 
 
-    TucuUnit getChildUnit(Common::XmlNodeIterator _rootIterator, const std::string& _childName, CheckUnit _checkunit = CheckUnit::DoNotCheck);
+    TucuUnit getChildUnit(
+            Common::XmlNodeIterator _rootIterator,
+            const std::string& _childName,
+            CheckUnit _checkunit = CheckUnit::DoNotCheck);
     double getChildDouble(Common::XmlNodeIterator _rootIterator, const std::string& _childName);
-    double getChildDoubleOptional(Common::XmlNodeIterator _rootIterator, const std::string& _childName, double _defaultValue);
+    double getChildDoubleOptional(
+            Common::XmlNodeIterator _rootIterator, const std::string& _childName, double _defaultValue);
     bool getChildBool(Common::XmlNodeIterator _rootIterator, const std::string& _childName);
     bool getChildBoolOptional(Common::XmlNodeIterator _rootIterator, const std::string& _childName, bool _defaultValue);
     int getChildInt(Common::XmlNodeIterator _rootIterator, const std::string& _childName);
-    DateTime getChildDateTime(Common::XmlNodeIterator _rootIterator, const std::string& _childName,
-                              EmptynessAllowed _allowEmpty = EmptynessAllowed::DoNotAllowEmpty);
+    DateTime getChildDateTime(
+            Common::XmlNodeIterator _rootIterator,
+            const std::string& _childName,
+            EmptynessAllowed _allowEmpty = EmptynessAllowed::DoNotAllowEmpty);
     Duration getChildDuration(Common::XmlNodeIterator _rootIterator, const std::string& _childName);
     std::string getChildString(Common::XmlNodeIterator _rootIterator, const std::string& _childName);
 
 
 private:
-
     Status m_status{Status::Ok};
 
     std::string m_errorMessage;
-
 };
 
 } // namespace Common

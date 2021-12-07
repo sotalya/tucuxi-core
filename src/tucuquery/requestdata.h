@@ -1,13 +1,16 @@
 #ifndef TUCUXI_QUERY_REQUESTDATA_H
 #define TUCUXI_QUERY_REQUESTDATA_H
 
+#include <memory>
 #include <string>
 #include <vector>
-#include <memory>
+
 #include "tucucommon/datetime.h"
-#include "tucucore/dosage.h"
-#include "parametersdata.h"
+
 #include "tucucore/computingservice/computingtrait.h"
+#include "tucucore/dosage.h"
+
+#include "parametersdata.h"
 
 namespace Tucuxi {
 namespace Query {
@@ -18,10 +21,7 @@ public:
     //Constructors
     DateInterval() = delete;
 
-    DateInterval(
-        Tucuxi::Common::DateTime& _start,
-        Tucuxi::Common::DateTime& _end
-    );
+    DateInterval(Tucuxi::Common::DateTime& _start, Tucuxi::Common::DateTime& _end);
 
     DateInterval(DateInterval& _other) = delete;
 
@@ -40,10 +40,7 @@ public:
     // Constructors
     GraphData() = delete;
 
-    GraphData(
-        std::unique_ptr<DateInterval> _pDateInterval,
-        std::vector<unsigned short> _percentiles
-    );
+    GraphData(std::unique_ptr<DateInterval> _pDateInterval, std::vector<unsigned short> _percentiles);
 
     GraphData(GraphData& _other) = delete;
 
@@ -85,11 +82,10 @@ public:
     RequestData() = delete;
 
     RequestData(
-        std::string& _requestID,
-        std::string& _drugID,
-        std::string& _drugModelID,
-        std::unique_ptr<Core::ComputingTrait> _pComputingTrait
-    );
+            std::string& _requestID,
+            std::string& _drugID,
+            std::string& _drugModelID,
+            std::unique_ptr<Core::ComputingTrait> _pComputingTrait);
 
     RequestData(RequestData& _other) = delete;
 

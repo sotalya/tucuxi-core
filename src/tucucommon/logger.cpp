@@ -2,12 +2,12 @@
  * Copyright (C) 2017 Tucuxi SA
  */
 
-#include <memory>
 #include <iostream>
-
-#include "spdlog/spdlog.h"
+#include <memory>
 
 #include "tucucommon/logger.h"
+
+#include "spdlog/spdlog.h"
 
 namespace Tucuxi {
 namespace Common {
@@ -70,20 +70,18 @@ void Logger::critical(const char* _msg)
 }
 
 
-Tucuxi::Common::Interface* Logger::getInterface(const std::string &_name)
+Tucuxi::Common::Interface* Logger::getInterface(const std::string& _name)
 {
     return Tucuxi::Common::Component::getInterfaceImpl(_name);
 }
 
-Logger::Logger(const std::string &_filename)
-    : m_logger(nullptr)
+Logger::Logger(const std::string& _filename) : m_logger(nullptr)
 {
     registerInterface(dynamic_cast<ILogger*>(this));
 
     // Spdlog will not throw exceptions while logging but it might throw during
     // the construction logger.
-    try
-    {
+    try {
         // Creating loggers with multiple sinks. Every log are written in
         // multiple target (e.g file, console).
 
@@ -96,15 +94,15 @@ Logger::Logger(const std::string &_filename)
 
         std::vector<spdlog::sink_ptr> sinks;
 
-        #ifdef _WIN32
+#ifdef _WIN32
         // Windows console
         spdlog::sink_ptr sinkColorConsole = std::make_shared<spdlog::sinks::wincolor_stdout_sink_mt>();
         sinks.push_back(sinkColorConsole);
-        #else
+#else
         // Linux console
         spdlog::sink_ptr sinkColorConsole = std::make_shared<spdlog::sinks::ansicolor_stdout_sink_mt>();
         sinks.push_back(sinkColorConsole);
-        #endif
+#endif
 
         // Sink for daily file
         //sinks.push_back(std::make_shared<spdlog::sinks::daily_file_sink_mt>(_filename, "txt", 23, 59));

@@ -1,11 +1,11 @@
 #include "drugmodelrepository.h"
 
-#include "tucucore/drugmodel/drugmodel.h"
-#include "tucucore/drugmodelimport.h"
-#include "tucucore/drugmodelchecker.h"
-#include "tucucore/pkmodel.h"
-
 #include "tucucommon/loggerhelper.h"
+
+#include "tucucore/drugmodel/drugmodel.h"
+#include "tucucore/drugmodelchecker.h"
+#include "tucucore/drugmodelimport.h"
+#include "tucucore/pkmodel.h"
 
 
 #ifdef _WIN32
@@ -13,8 +13,9 @@ static const char PATH_SEPARATOR = '\\';
 #include <windows.h>
 #else
 static const char PATH_SEPARATOR = '/';
-#include <sys/types.h>
 #include <dirent.h>
+
+#include <sys/types.h>
 #endif
 
 namespace Tucuxi {
@@ -24,7 +25,7 @@ namespace Core {
 
 Tucuxi::Common::Interface* DrugModelRepository::createComponent()
 {
-    DrugModelRepository *cmp = new DrugModelRepository();
+    DrugModelRepository* cmp = new DrugModelRepository();
 
     return dynamic_cast<IDrugModelRepository*>(cmp);
 }
@@ -41,7 +42,7 @@ DrugModelRepository::~DrugModelRepository()
     }
 }
 
-Tucuxi::Common::Interface* DrugModelRepository::getInterface(const std::string &_name)
+Tucuxi::Common::Interface* DrugModelRepository::getInterface(const std::string& _name)
 {
     return Tucuxi::Common::Component::getInterfaceImpl(_name);
 }
@@ -51,7 +52,6 @@ void DrugModelRepository::addFolderPath(const std::string& _folderPath)
 {
 
     m_drugPaths.push_back(_folderPath);
-
 }
 
 
@@ -68,7 +68,7 @@ DrugModel* DrugModelRepository::loadFile(const std::string& _fileName)
 
         if (!defaultPopulate(pkCollection)) {
             logHelper.error("Could not populate the Pk models collection. No model will be available");
-//            return;
+            //            return;
         }
 
         DrugModelChecker checker;
@@ -102,7 +102,7 @@ void read_directory(const std::string& name, std::vector<std::string>& v)
         do {
             char ch[260];
             char DefChar = ' ';
-            WideCharToMultiByte(CP_ACP,0,data.cFileName,-1, ch,260,&DefChar, NULL);
+            WideCharToMultiByte(CP_ACP, 0, data.cFileName, -1, ch, 260, &DefChar, NULL);
             v.push_back(ch);
         } while (FindNextFile(hFind, &data) != 0);
         FindClose(hFind);
@@ -115,7 +115,7 @@ void read_directory(const std::string& _name, std::vector<std::string>& _v)
     if (dirp == nullptr) {
         return;
     }
-    struct dirent * dp;
+    struct dirent* dp;
     while ((dp = readdir(dirp)) != nullptr) {
         _v.push_back(dp->d_name);
     }
@@ -138,12 +138,12 @@ void DrugModelRepository::loadFolder(const std::string& _folder)
     }
 }
 
-void DrugModelRepository::addDrugModel(DrugModel *_drugModel)
+void DrugModelRepository::addDrugModel(DrugModel* _drugModel)
 {
     m_drugModels.push_back(_drugModel);
 }
 
-DrugModel *DrugModelRepository::getDrugModelById(std::string _drugModelId)
+DrugModel* DrugModelRepository::getDrugModelById(std::string _drugModelId)
 {
 
     for (auto drugModel : m_drugModels) {
@@ -152,15 +152,14 @@ DrugModel *DrugModelRepository::getDrugModelById(std::string _drugModelId)
         }
     }
 
-    for (const auto& drugpath : m_drugPaths){
-        DrugModel *drugModel = loadFile(drugpath + PATH_SEPARATOR + _drugModelId + ".tdd");
-        if(drugModel != nullptr)
-        {
+    for (const auto& drugpath : m_drugPaths) {
+        DrugModel* drugModel = loadFile(drugpath + PATH_SEPARATOR + _drugModelId + ".tdd");
+        if (drugModel != nullptr) {
             return drugModel;
         }
     }
 
-    for (const auto& drugpath : m_drugPaths){
+    for (const auto& drugpath : m_drugPaths) {
         loadFolder(drugpath);
     }
 
@@ -172,12 +171,12 @@ DrugModel *DrugModelRepository::getDrugModelById(std::string _drugModelId)
     return nullptr;
 }
 
-std::vector<DrugModel *> DrugModelRepository::getDrugModelsByDrugId(std::string _drugId)
+std::vector<DrugModel*> DrugModelRepository::getDrugModelsByDrugId(std::string _drugId)
 {
     static const int INDEX_POSITION = 10;
 
     bool drugModelExist = false;
-    std::vector<DrugModel* > drugModels;
+    std::vector<DrugModel*> drugModels;
     for (auto drugModel : m_drugModels) {
         if (drugModel->getDrugId() == _drugId) {
             drugModels.push_back(drugModel);
@@ -185,23 +184,23 @@ std::vector<DrugModel *> DrugModelRepository::getDrugModelsByDrugId(std::string 
         }
     }
 
-    if(drugModelExist) {return drugModels;}
+    if (drugModelExist) {
+        return drugModels;
+    }
 
     std::vector<std::string> list;
-    for (const auto& drugpath : m_drugPaths){
+    for (const auto& drugpath : m_drugPaths) {
         read_directory(drugpath, list);
         for (const auto& filename : list) {
             if (filename.substr((filename.size() > 4) ? (filename.size() - 4) : 0, filename.size() - 1) == ".tdd") {
 
-                if(filename.substr(INDEX_POSITION, _drugId.length()) == _drugId)
-                {
+                if (filename.substr(INDEX_POSITION, _drugId.length()) == _drugId) {
                     drugModels.push_back(loadFile(drugpath + "/" + filename));
                 }
             }
         }
     }
     return drugModels;
-
 }
 
 } // namespace Core

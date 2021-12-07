@@ -2,24 +2,24 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
-#include <string>
+#include <array>
 #include <iostream>
 #include <stdexcept>
-#include <array>
+#include <string>
 
-#include "fructose/fructose.h"
+#include "tucucommon/utils.h"
+#include "tucucommon/xmlattribute.h"
+#include "tucucommon/xmldocument.h"
+#include "tucucommon/xmliterator.h"
+#include "tucucommon/xmlnode.h"
+
+#include "tucucore/definitions.h"
+#include "tucucore/dosage.h"
 
 #include "tucuquery/computingqueryresponsexmlexport.h"
 #include "tucuquery/queryimport.h"
 
-#include "tucucore/dosage.h"
-#include "tucucore/definitions.h"
-
-#include "tucucommon/xmldocument.h"
-#include "tucucommon/xmlnode.h"
-#include "tucucommon/xmlattribute.h"
-#include "tucucommon/xmliterator.h"
-#include "tucucommon/utils.h"
+#include "fructose/fructose.h"
 
 
 
@@ -33,6 +33,7 @@ struct TestDosageImportExport : public fructose::test_base<TestDosageImportExpor
         std::cout << _testName << std::endl;
 
 
+        // clang-format off
         testString(
         "<root>"
          "<treatment>"
@@ -204,11 +205,11 @@ struct TestDosageImportExport : public fructose::test_base<TestDosageImportExpor
                     "</dosageHistory>"
                     "</treatment>"
          "</root>)");
+
+        // clang-format on
     }
 
 private:
-
-
     void testString(std::string _xmlInput)
     {
         std::unique_ptr<Tucuxi::Query::Treatment> pTreatment1 = importXml(_xmlInput);
@@ -223,13 +224,12 @@ private:
 
         fructose_assert(comparison1 == 0);
 
-        if(comparison1 != 0)
-        {
-           printImportExportString(_xmlInput, exportedXmlString1);
+        if (comparison1 != 0) {
+            printImportExportString(_xmlInput, exportedXmlString1);
         }
     }
 
-    void printImportExportString(std::string &_importString, std::string &_exportString)
+    void printImportExportString(std::string& _importString, std::string& _exportString)
     {
         std::cout << std::endl;
         std::cout << "Imported String : " << std::endl << std::endl;
@@ -251,7 +251,7 @@ private:
         return queryImport.createTreatment(xmlNodeIterator);
     }
 
-    void exportXml(std::unique_ptr<Tucuxi::Query::Treatment> _pTreatment, std::string &_xmlString)
+    void exportXml(std::unique_ptr<Tucuxi::Query::Treatment> _pTreatment, std::string& _xmlString)
     {
         Tucuxi::Query::ComputingQueryResponseXmlExport computingXmlExport;
 
@@ -263,20 +263,20 @@ private:
         Tucuxi::Common::XmlNode treatment = xmlDocument.createNode(Tucuxi::Common::EXmlNodeType::Element, "treatment");
         root.addChild(treatment);
 
-        fructose_assert(computingXmlExport.exportDosageHistory(std::move(_pTreatment->getpDosageHistory()), treatment) == true);
+        fructose_assert(
+                computingXmlExport.exportDosageHistory(std::move(_pTreatment->getpDosageHistory()), treatment) == true);
 
         xmlDocument.toString(_xmlString, true);
-
     }
 
-    void removeSpecialsCharacters(std::string &_exportedXmlString)
+    void removeSpecialsCharacters(std::string& _exportedXmlString)
     {
         std::vector<char> specialCharacters{'\t', '\n', '\r'};
 
-        for(char characters : specialCharacters)
-        {
-             _exportedXmlString.erase(std::remove(_exportedXmlString.begin(), _exportedXmlString.end(), characters), _exportedXmlString.end());
+        for (char characters : specialCharacters) {
+            _exportedXmlString.erase(
+                    std::remove(_exportedXmlString.begin(), _exportedXmlString.end(), characters),
+                    _exportedXmlString.end());
         }
-
     }
 };

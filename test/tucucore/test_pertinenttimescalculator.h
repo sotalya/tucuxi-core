@@ -2,14 +2,14 @@
 #define TEST_PERTINENTTIMESCALCULATOR_H
 
 
+#include <chrono>
 #include <iostream>
 #include <memory>
-#include <chrono>
+
+#include "tucucore/intakeevent.h"
+#include "tucucore/intakeintervalcalculator.h"
 
 #include "fructose/fructose.h"
-
-#include "tucucore/intakeintervalcalculator.h"
-#include "tucucore/intakeevent.h"
 
 using namespace Tucuxi::Core;
 using namespace Tucuxi::Common;
@@ -17,7 +17,7 @@ using namespace Tucuxi::Common;
 
 struct TestPertinentTimesCalculator : public fructose::test_base<TestPertinentTimesCalculator>
 {
-    TestPertinentTimesCalculator() { }
+    TestPertinentTimesCalculator() {}
 
     /// \brief Test basic functionalities of a PkModel.
     void testStandard(const std::string& /* _testName */)
@@ -29,7 +29,16 @@ struct TestPertinentTimesCalculator : public fructose::test_base<TestPertinentTi
             Eigen::VectorXd times(nbPoints);
             Duration interval(Duration(std::chrono::hours(24)));
             Duration infusionTime(Duration(std::chrono::minutes(0)));
-            IntakeEvent intake(DateTime::now(), Duration(), 0.0, Tucuxi::Common::TucuUnit("mg"), interval, Tucuxi::Core::FormulationAndRoute(AbsorptionModel::Extravascular), AbsorptionModel::Extravascular, infusionTime, static_cast<size_t>(nbPoints));
+            IntakeEvent intake(
+                    DateTime::now(),
+                    Duration(),
+                    0.0,
+                    Tucuxi::Common::TucuUnit("mg"),
+                    interval,
+                    Tucuxi::Core::FormulationAndRoute(AbsorptionModel::Extravascular),
+                    AbsorptionModel::Extravascular,
+                    infusionTime,
+                    static_cast<size_t>(nbPoints));
             calculator.calculateTimes(intake, nbPoints, times);
 
             double delta = (interval.toHours() / static_cast<double>(nbPoints - 1));
@@ -49,7 +58,16 @@ struct TestPertinentTimesCalculator : public fructose::test_base<TestPertinentTi
             Eigen::VectorXd times(nbPoints);
             Duration interval(Duration(std::chrono::hours(24)));
             Duration infusionTime(Duration(std::chrono::minutes(60)));
-            IntakeEvent intake(DateTime::now(), Duration(), 0.0, Tucuxi::Common::TucuUnit("mg"), interval, Tucuxi::Core::FormulationAndRoute(AbsorptionModel::Infusion), AbsorptionModel::Infusion, infusionTime, nbPoints);
+            IntakeEvent intake(
+                    DateTime::now(),
+                    Duration(),
+                    0.0,
+                    Tucuxi::Common::TucuUnit("mg"),
+                    interval,
+                    Tucuxi::Core::FormulationAndRoute(AbsorptionModel::Infusion),
+                    AbsorptionModel::Infusion,
+                    infusionTime,
+                    nbPoints);
             calculator.calculateTimes(intake, static_cast<Eigen::Index>(nbPoints), times);
 
             double delta = (interval.toHours() / static_cast<double>(nbPoints - 1));
@@ -64,7 +82,16 @@ struct TestPertinentTimesCalculator : public fructose::test_base<TestPertinentTi
             Eigen::VectorXd times(nbPoints);
             Duration interval(Duration(std::chrono::hours(24)));
             Duration infusionTime(Duration(std::chrono::minutes(60)));
-            IntakeEvent intake(DateTime::now(), Duration(), 0.0, Tucuxi::Common::TucuUnit("mg"), interval, Tucuxi::Core::FormulationAndRoute(AbsorptionModel::Infusion), AbsorptionModel::Infusion, infusionTime, nbPoints);
+            IntakeEvent intake(
+                    DateTime::now(),
+                    Duration(),
+                    0.0,
+                    Tucuxi::Common::TucuUnit("mg"),
+                    interval,
+                    Tucuxi::Core::FormulationAndRoute(AbsorptionModel::Infusion),
+                    AbsorptionModel::Infusion,
+                    infusionTime,
+                    nbPoints);
             calculator.calculateTimes(intake, static_cast<Eigen::Index>(nbPoints), times);
 
             fructose_assert_double_eq(times[0], 0.0);
@@ -78,7 +105,16 @@ struct TestPertinentTimesCalculator : public fructose::test_base<TestPertinentTi
             Eigen::VectorXd times(nbPoints);
             Duration interval(Duration(std::chrono::hours(24)));
             Duration infusionTime(Duration(std::chrono::minutes(60)));
-            IntakeEvent intake(DateTime::now(), Duration(), 0.0, Tucuxi::Common::TucuUnit("mg"), interval, Tucuxi::Core::FormulationAndRoute(AbsorptionModel::Infusion), AbsorptionModel::Infusion, infusionTime, nbPoints);
+            IntakeEvent intake(
+                    DateTime::now(),
+                    Duration(),
+                    0.0,
+                    Tucuxi::Common::TucuUnit("mg"),
+                    interval,
+                    Tucuxi::Core::FormulationAndRoute(AbsorptionModel::Infusion),
+                    AbsorptionModel::Infusion,
+                    infusionTime,
+                    nbPoints);
             calculator.calculateTimes(intake, static_cast<Eigen::Index>(nbPoints), times);
 
             fructose_assert_double_eq(times[0], 0.0);
@@ -92,18 +128,26 @@ struct TestPertinentTimesCalculator : public fructose::test_base<TestPertinentTi
             size_t nbPoints = 5;
             Eigen::VectorXd times(nbPoints);
             Duration interval(Duration(std::chrono::hours(24)));
-            Duration infusionTime(Duration(std::chrono::minutes(60*10)));
-            IntakeEvent intake(DateTime::now(), Duration(), 0.0, Tucuxi::Common::TucuUnit("mg"), interval, Tucuxi::Core::FormulationAndRoute(AbsorptionModel::Infusion), AbsorptionModel::Infusion, infusionTime, nbPoints);
+            Duration infusionTime(Duration(std::chrono::minutes(60 * 10)));
+            IntakeEvent intake(
+                    DateTime::now(),
+                    Duration(),
+                    0.0,
+                    Tucuxi::Common::TucuUnit("mg"),
+                    interval,
+                    Tucuxi::Core::FormulationAndRoute(AbsorptionModel::Infusion),
+                    AbsorptionModel::Infusion,
+                    infusionTime,
+                    nbPoints);
             calculator.calculateTimes(intake, static_cast<Eigen::Index>(nbPoints), times);
 
             fructose_assert_double_eq(times[0], 0.0);
             fructose_assert_double_eq(times[1], 10.0);
-            fructose_assert_double_eq(times[2], 10.0 + 14.0/3.0);
-            fructose_assert_double_eq(times[3], 10.0 + 28.0/3.0);
+            fructose_assert_double_eq(times[2], 10.0 + 14.0 / 3.0);
+            fructose_assert_double_eq(times[3], 10.0 + 28.0 / 3.0);
             fructose_assert_double_eq(times[4], 24.0);
         }
     }
-
 };
 
 

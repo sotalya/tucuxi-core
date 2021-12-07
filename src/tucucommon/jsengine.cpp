@@ -2,11 +2,11 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
+#include "jsengine.h"
+
 #include "TinyJS.h"
 #include "TinyJS_Functions.h"
 #include "TinyJS_MathFunctions.h"
-
-#include "jsengine.h"
 #include "utils.h"
 
 namespace Tucuxi {
@@ -14,15 +14,14 @@ namespace Common {
 
 
 JSEngine::JSEngine()
-{    
+{
     reset();
 }
 
-JSEngine::~JSEngine()
-= default;
+JSEngine::~JSEngine() = default;
 
 
-template <>
+template<>
 bool JSEngine::getVariable<std::string>(const std::string& _name, std::string& _value)
 {
     if (m_pEngine != nullptr) {
@@ -35,7 +34,7 @@ bool JSEngine::getVariable<std::string>(const std::string& _name, std::string& _
     return false;
 }
 
-template <>
+template<>
 bool JSEngine::getVariable<int>(const std::string& _name, int& _value)
 {
     std::string value;
@@ -50,7 +49,7 @@ bool JSEngine::getVariable<int>(const std::string& _name, int& _value)
     return false;
 }
 
-template <>
+template<>
 bool JSEngine::getVariable<double>(const std::string& _name, double& _value)
 {
     std::string value;
@@ -66,7 +65,7 @@ bool JSEngine::getVariable<double>(const std::string& _name, double& _value)
 }
 
 
-template <>
+template<>
 bool JSEngine::getVariable<bool>(const std::string& _name, bool& _value)
 {
     std::string value;
@@ -106,5 +105,3 @@ void JSEngine::reset()
 
 } // namespace Common
 } // namespace Tucuxi
-
-

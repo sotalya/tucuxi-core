@@ -5,13 +5,13 @@
 #ifndef TUCUXI_CORE_MONTECARLOPERCENTILECALCULATOR_H
 #define TUCUXI_CORE_MONTECARLOPERCENTILECALCULATOR_H
 
-#include "likelihood.h"
-
-#include "tucucore/parameter.h"
-#include "tucucore/sampleevent.h"
-#include "tucucore/dosage.h"
 #include "tucucore/computingservice/computingaborter.h"
 #include "tucucore/computingservice/computingresult.h"
+#include "tucucore/dosage.h"
+#include "tucucore/parameter.h"
+#include "tucucore/sampleevent.h"
+
+#include "likelihood.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -44,17 +44,17 @@ public:
     /// \param _aborter An aborter object allowing to abort the calculation
     /// \return The status of calculation
     virtual ComputingStatus calculate(
-            PercentilesPrediction &_percentiles,
-            const DateTime &_recordFrom,
-            const DateTime &_recordTo,
-            const IntakeSeries &_intakes,
-            const ParameterSetSeries &_parameters,
+            PercentilesPrediction& _percentiles,
+            const DateTime& _recordFrom,
+            const DateTime& _recordTo,
+            const IntakeSeries& _intakes,
+            const ParameterSetSeries& _parameters,
             const OmegaMatrix& _omega,
-            const IResidualErrorModel &_residualErrorModel,
+            const IResidualErrorModel& _residualErrorModel,
             const Etas& _etas,
-            const PercentileRanks &_percentileRanks,
-            IConcentrationCalculator &_concentrationCalculator,
-            ComputingAborter *_aborter) = 0;
+            const PercentileRanks& _percentileRanks,
+            IConcentrationCalculator& _concentrationCalculator,
+            ComputingAborter* _aborter) = 0;
 
     virtual ~IAprioriPercentileCalculator() {}
 };
@@ -62,7 +62,6 @@ public:
 class IAposterioriPercentileCalculator : public IPercentileCalculator
 {
 public:
-
     ///
     /// \brief calculate
     /// \param _percentiles percentiles calculated within the method
@@ -78,18 +77,18 @@ public:
     /// \param _aborter An aborter object allowing to abort the calculation
     /// \return The status of calculation
     virtual ComputingStatus calculate(
-            PercentilesPrediction &_percentiles,
-            const DateTime &_recordFrom,
-            const DateTime &_recordTo,
-            const IntakeSeries &_intakes,
-            const ParameterSetSeries &_parameters,
+            PercentilesPrediction& _percentiles,
+            const DateTime& _recordFrom,
+            const DateTime& _recordTo,
+            const IntakeSeries& _intakes,
+            const ParameterSetSeries& _parameters,
             const OmegaMatrix& _omega,
-            const IResidualErrorModel &_residualErrorModel,
+            const IResidualErrorModel& _residualErrorModel,
             const Etas& _etas,
-            const SampleSeries &_samples,
-            const PercentileRanks &_percentileRanks,
-            IConcentrationCalculator &_concentrationCalculator,
-            ComputingAborter *_aborter) = 0;
+            const SampleSeries& _samples,
+            const PercentileRanks& _percentileRanks,
+            IConcentrationCalculator& _concentrationCalculator,
+            ComputingAborter* _aborter) = 0;
 
     virtual ~IAposterioriPercentileCalculator() {}
 };
@@ -97,7 +96,6 @@ public:
 class IAposterioriNormalApproximationMonteCarloPercentileCalculator : public IPercentileCalculator
 {
 public:
-
     ///
     /// \brief calculate
     /// \param _percentiles percentiles calculated within the method
@@ -113,18 +111,18 @@ public:
     /// \param _aborter An aborter object allowing to abort the calculation
     /// \return The status of calculation
     virtual ComputingStatus calculate(
-            PercentilesPrediction &_percentiles,
-            const DateTime &_recordFrom,
-            const DateTime &_recordTo,
-            const IntakeSeries &_intakes,
-            const ParameterSetSeries &_parameters,
+            PercentilesPrediction& _percentiles,
+            const DateTime& _recordFrom,
+            const DateTime& _recordTo,
+            const IntakeSeries& _intakes,
+            const ParameterSetSeries& _parameters,
             const OmegaMatrix& _omega,
-            const IResidualErrorModel &_residualErrorModel,
+            const IResidualErrorModel& _residualErrorModel,
             const Etas& _etas,
-            const SampleSeries &_samples,
-            const PercentileRanks &_percentileRanks,
-            IConcentrationCalculator &_concentrationCalculator,
-            ComputingAborter *_aborter) = 0;
+            const SampleSeries& _samples,
+            const PercentileRanks& _percentileRanks,
+            IConcentrationCalculator& _concentrationCalculator,
+            ComputingAborter* _aborter) = 0;
 
     virtual ~IAposterioriNormalApproximationMonteCarloPercentileCalculator() {}
 };
@@ -136,12 +134,19 @@ class MonteCarloPercentileCalculatorBase : public IPercentileCalculator
 public:
     MonteCarloPercentileCalculatorBase();
 
-    static void setStaticNumberPatients(const unsigned int _nbPatients) {
+    static void setStaticNumberPatients(const unsigned int _nbPatients)
+    {
         sm_nbPatients = _nbPatients;
     }
 
-    void setNumberPatients(const size_t _nbPatients) { m_nbPatients = _nbPatients; }
-    size_t getNumberPatients() { return m_nbPatients; }
+    void setNumberPatients(const size_t _nbPatients)
+    {
+        m_nbPatients = _nbPatients;
+    }
+    size_t getNumberPatients()
+    {
+        return m_nbPatients;
+    }
 
 protected:
     ///
@@ -154,13 +159,9 @@ protected:
     /// \param _samples List of samples
     /// \param _subomega Result of this function, non-negative hessian matrix
     void calculateSubomega(
-            const OmegaMatrix& _omega,
-            const Etas& _etas,
-            Likelihood &_logLikelihood,
-            EigenMatrix &_subomega);
+            const OmegaMatrix& _omega, const Etas& _etas, Likelihood& _logLikelihood, EigenMatrix& _subomega);
 
 public:
-
     ///
     /// \brief computePredictionsAndSortPercentiles
     /// \param _percentiles percentiles calculated within the method
@@ -176,38 +177,40 @@ public:
     /// \return The status of calculation
     ///
     ComputingStatus computePredictionsAndSortPercentiles(
-            PercentilesPrediction &_percentiles,
-            const DateTime &_recordFrom,
-            const DateTime &_recordTo,
-            const IntakeSeries &_intakes,
-            const ParameterSetSeries &_parameters,
-            const IResidualErrorModel &_residualErrorModel,
-            const PercentileRanks &_percentileRanks,
-            const std::vector<Etas> &_etas,
-            const std::vector<Deviations> &_epsilons,
-            IConcentrationCalculator &_concentrationCalculator,
-            ComputingAborter *_aborter);
+            PercentilesPrediction& _percentiles,
+            const DateTime& _recordFrom,
+            const DateTime& _recordTo,
+            const IntakeSeries& _intakes,
+            const ParameterSetSeries& _parameters,
+            const IResidualErrorModel& _residualErrorModel,
+            const PercentileRanks& _percentileRanks,
+            const std::vector<Etas>& _etas,
+            const std::vector<Deviations>& _epsilons,
+            IConcentrationCalculator& _concentrationCalculator,
+            ComputingAborter* _aborter);
 
-    ComputingStatus computePredictions(const DateTime &_recordFrom,
-            const DateTime &_recordTo,
-            const IntakeSeries &_intakes,
-            const ParameterSetSeries &_parameters,
-            const IResidualErrorModel &_residualErrorModel,
-            const std::vector<Etas> &_etas,
-            const std::vector<Deviations> &_epsilons,
-            IConcentrationCalculator &_concentrationCalculator,
+    ComputingStatus computePredictions(
+            const DateTime& _recordFrom,
+            const DateTime& _recordTo,
+            const IntakeSeries& _intakes,
+            const ParameterSetSeries& _parameters,
+            const IResidualErrorModel& _residualErrorModel,
+            const std::vector<Etas>& _etas,
+            const std::vector<Deviations>& _epsilons,
+            IConcentrationCalculator& _concentrationCalculator,
             size_t _nbPatients,
-            std::vector<TimeOffsets> &_times,
-            IntakeSeries &_recordedIntakes,
-            std::vector< std::vector< std::vector<Concentration> > > &_concentrations,
-            ComputingAborter *_aborter);
+            std::vector<TimeOffsets>& _times,
+            IntakeSeries& _recordedIntakes,
+            std::vector<std::vector<std::vector<Concentration> > >& _concentrations,
+            ComputingAborter* _aborter);
 
-    ComputingStatus sortAndExtractPercentiles(PercentilesPrediction &_percentiles,
-            const PercentileRanks &_percentileRanks,
+    ComputingStatus sortAndExtractPercentiles(
+            PercentilesPrediction& _percentiles,
+            const PercentileRanks& _percentileRanks,
             size_t _nbPatients,
-            const std::vector<TimeOffsets> &_times,
-            IntakeSeries &_recordedIntakes,
-            std::vector< std::vector< std::vector<Concentration> > > &_concentrations);
+            const std::vector<TimeOffsets>& _times,
+            IntakeSeries& _recordedIntakes,
+            std::vector<std::vector<std::vector<Concentration> > >& _concentrations);
 
 private:
     size_t m_nbPatients{0};
@@ -220,8 +223,9 @@ private:
 * Used to calculated Monte Carlo of population or apriori curves
 * The number of simulated curves is hardcoded to be 10,000
 */
-class AprioriMonteCarloPercentileCalculator : public IAprioriPercentileCalculator,
-        public MonteCarloPercentileCalculatorBase
+class AprioriMonteCarloPercentileCalculator :
+    public IAprioriPercentileCalculator,
+    public MonteCarloPercentileCalculatorBase
 {
 public:
     AprioriMonteCarloPercentileCalculator();
@@ -241,17 +245,17 @@ public:
     /// \return The status of calculation
     ///
     ComputingStatus calculate(
-            PercentilesPrediction &_percentiles,
-            const DateTime &_recordFrom,
-            const DateTime &_recordTo,
-            const IntakeSeries &_intakes,
-            const ParameterSetSeries &_parameters,
+            PercentilesPrediction& _percentiles,
+            const DateTime& _recordFrom,
+            const DateTime& _recordTo,
+            const IntakeSeries& _intakes,
+            const ParameterSetSeries& _parameters,
             const OmegaMatrix& _omega,
-            const IResidualErrorModel &_residualErrorModel,
+            const IResidualErrorModel& _residualErrorModel,
             const Etas& _initialEtas,
-            const PercentileRanks &_percentileRanks,
-            IConcentrationCalculator &_concentrationCalculator,
-            ComputingAborter *_aborter) override;
+            const PercentileRanks& _percentileRanks,
+            IConcentrationCalculator& _concentrationCalculator,
+            ComputingAborter* _aborter) override;
 
 
     ///
@@ -263,15 +267,18 @@ public:
     /// \param _initialEtas Set of initial Etas, used in case of a posteriori
     /// \return The status of calculation
     ///
-    ComputingStatus calculateEtasAndEpsilons(std::vector<Etas> &_etas,
-            std::vector<Deviations> &_epsilons,
+    ComputingStatus calculateEtasAndEpsilons(
+            std::vector<Etas>& _etas,
+            std::vector<Deviations>& _epsilons,
             const OmegaMatrix& _omega,
-            const IResidualErrorModel &_residualErrorModel,
+            const IResidualErrorModel& _residualErrorModel,
             const Etas& _initialEtas);
 };
 
 
-class AposterioriMonteCarloPercentileCalculator : public IAposterioriPercentileCalculator, public MonteCarloPercentileCalculatorBase 
+class AposterioriMonteCarloPercentileCalculator :
+    public IAposterioriPercentileCalculator,
+    public MonteCarloPercentileCalculatorBase
 {
 public:
     AposterioriMonteCarloPercentileCalculator();
@@ -291,18 +298,18 @@ public:
     /// \param _aborter An aborter object allowing to abort the calculation
     /// \return The status of calculation
     ComputingStatus calculate(
-            PercentilesPrediction &_percentiles,
-            const DateTime &_recordFrom,
-            const DateTime &_recordTo,
-            const IntakeSeries &_intakes,
-            const ParameterSetSeries &_parameters,
+            PercentilesPrediction& _percentiles,
+            const DateTime& _recordFrom,
+            const DateTime& _recordTo,
+            const IntakeSeries& _intakes,
+            const ParameterSetSeries& _parameters,
             const OmegaMatrix& _omega,
-            const IResidualErrorModel &_residualErrorModel,
+            const IResidualErrorModel& _residualErrorModel,
             const Etas& _etas,
-            const SampleSeries &_samples,
-            const PercentileRanks &_percentileRanks,
-            IConcentrationCalculator &_concentrationCalculator,
-            ComputingAborter *_aborter) override;
+            const SampleSeries& _samples,
+            const PercentileRanks& _percentileRanks,
+            IConcentrationCalculator& _concentrationCalculator,
+            ComputingAborter* _aborter) override;
 
 
     ///
@@ -316,26 +323,29 @@ public:
     /// \param _samples List of samples
     /// \param _aborter An aborter object allowing to abort the calculation
     /// \return The status of calculation
-    ComputingStatus calculateEtasAndEpsilons(std::vector<Etas> &_fullEtas,
-            std::vector<Deviations> &_epsilons,
-            const IntakeSeries &_intakes,
-            const ParameterSetSeries &_parameters,
+    ComputingStatus calculateEtasAndEpsilons(
+            std::vector<Etas>& _fullEtas,
+            std::vector<Deviations>& _epsilons,
+            const IntakeSeries& _intakes,
+            const ParameterSetSeries& _parameters,
             const OmegaMatrix& _omega,
-            const IResidualErrorModel &_residualErrorModel,
+            const IResidualErrorModel& _residualErrorModel,
             const Etas& _etas,
-            const SampleSeries &_samples,
-            IConcentrationCalculator &_concentrationCalculator,
-            ComputingAborter *_aborter);
+            const SampleSeries& _samples,
+            IConcentrationCalculator& _concentrationCalculator,
+            ComputingAborter* _aborter);
 };
 
 
 /// \brief The AposterioriNormalApproximationMonteCarloPercentileCalculator class
 /// This class implements the normal approximation of the posterior, and
 /// only apply steps 1 and 2 of the Annex A of Aziz document (posteriori2.pdf)
-class AposterioriNormalApproximationMonteCarloPercentileCalculator : public IAposterioriNormalApproximationMonteCarloPercentileCalculator, public MonteCarloPercentileCalculatorBase {
+class AposterioriNormalApproximationMonteCarloPercentileCalculator :
+    public IAposterioriNormalApproximationMonteCarloPercentileCalculator,
+    public MonteCarloPercentileCalculatorBase
+{
 
 public:
-
     AposterioriNormalApproximationMonteCarloPercentileCalculator();
 
     ///
@@ -353,18 +363,18 @@ public:
     /// \param _aborter An aborter object allowing to abort the calculation
     /// \return The status of calculation
     ComputingStatus calculate(
-            PercentilesPrediction &_percentiles,
-            const DateTime &_recordFrom,
-            const DateTime &_recordTo,
-            const IntakeSeries &_intakes,
-            const ParameterSetSeries &_parameters,
+            PercentilesPrediction& _percentiles,
+            const DateTime& _recordFrom,
+            const DateTime& _recordTo,
+            const IntakeSeries& _intakes,
+            const ParameterSetSeries& _parameters,
             const OmegaMatrix& _omega,
-            const IResidualErrorModel &_residualErrorModel,
+            const IResidualErrorModel& _residualErrorModel,
             const Etas& _etas,
-            const SampleSeries &_samples,
-            const PercentileRanks &_percentileRanks,
-            IConcentrationCalculator &_concentrationCalculator,
-            ComputingAborter *_aborter) override;
+            const SampleSeries& _samples,
+            const PercentileRanks& _percentileRanks,
+            IConcentrationCalculator& _concentrationCalculator,
+            ComputingAborter* _aborter) override;
 };
 
 ///
@@ -377,9 +387,9 @@ public:
 ///
 /// Tested by TestPercentileCalculator
 ///
-class AposterioriMatrixCache {
+class AposterioriMatrixCache
+{
 public:
-
     ///
     /// \brief get a matrix
     /// \param _nbSamples Number of samples of the matrix
@@ -394,9 +404,9 @@ public:
     /// If not, then the matrix would be copied and so the system would be less
     /// efficient.
     ///
-    const EigenMatrix &getAvecs(int _nbSamples, int _nbEtas);
-protected:
+    const EigenMatrix& getAvecs(int _nbSamples, int _nbEtas);
 
+protected:
     ///! The map of matrices
     std::map<std::pair<int, int>, EigenMatrix> m_matrices;
 };

@@ -33,8 +33,7 @@ public:
     /// Second, it checks that each formulation and route of the drug treatment
     /// is available in the drug model. If this is not the case, false is returned.
     ///
-    bool checkCompatibility(const DrugTreatment *_drugTreatment,
-                            const DrugModel *_drugModel);
+    bool checkCompatibility(const DrugTreatment* _drugTreatment, const DrugModel* _drugModel);
 
     ///
     /// \brief Checks compatibility between a dosage history and a Pk model
@@ -45,10 +44,7 @@ public:
     /// This function should be called after the drug model compatibility has
     /// been assessed, typically just before starting a computation.
     ///
-    bool checkPkModelCompatibility(const Tucuxi::Core::DosageHistory *_dosageHistory,
-                                   const PkModel *_pkModel);
-
-
+    bool checkPkModelCompatibility(const Tucuxi::Core::DosageHistory* _dosageHistory, const PkModel* _pkModel);
 };
 
 } // namespace Core

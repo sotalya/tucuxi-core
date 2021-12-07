@@ -8,5 +8,4 @@ namespace Tucuxi {
 namespace Core {
 
 }
-}
-
+} // namespace Tucuxi

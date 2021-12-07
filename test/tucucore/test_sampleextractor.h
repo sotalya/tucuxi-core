@@ -8,18 +8,16 @@
 
 #include <date/date.h>
 
-#include "fructose/fructose.h"
-
-#include "tucucore/sampleextractor.h"
-#include "tucucore/operation.h"
+#include "tucucommon/basetypes.h"
+#include "tucucommon/loggerhelper.h"
+#include "tucucommon/timeofday.h"
 
 #include "tucucore/drugmodel/covariatedefinition.h"
 #include "tucucore/drugtreatment/patientcovariate.h"
+#include "tucucore/operation.h"
+#include "tucucore/sampleextractor.h"
 
-#include "tucucommon/loggerhelper.h"
-#include "tucucommon/basetypes.h"
-#include "tucucommon/timeofday.h"
-
+#include "fructose/fructose.h"
 #include "testutils.h"
 
 using namespace Tucuxi::Common::Utils;
@@ -28,7 +26,7 @@ using namespace Tucuxi::Core;
 
 struct TestSampleExtractor : public fructose::test_base<TestSampleExtractor>
 {
-    TestSampleExtractor() { }
+    TestSampleExtractor() {}
 
     void testStandard(const std::string& /* _testName */)
     {
@@ -43,7 +41,8 @@ struct TestSampleExtractor : public fructose::test_base<TestSampleExtractor>
 
             AnalyteId analyteId("theAnalyte");
 
-            samples.push_back(std::make_unique<Sample>(DATE_TIME_NO_VAR(2018, 01, 02, 8, 00, 00), analyteId, 12.0, TucuUnit("ug/l")));
+            samples.push_back(std::make_unique<Sample>(
+                    DATE_TIME_NO_VAR(2018, 01, 02, 8, 00, 00), analyteId, 12.0, TucuUnit("ug/l")));
 
             ComputingStatus result = extractor.extract(samples, start, end, TucuUnit("ug/l"), series);
 
@@ -65,10 +64,14 @@ struct TestSampleExtractor : public fructose::test_base<TestSampleExtractor>
             AnalyteId analyteId("theAnalyte");
 
             // One sample is in mg/l. The result should be multiplied by 1000
-            samples.push_back(std::make_unique<Sample>(DATE_TIME_NO_VAR(2017, 01, 02, 8, 00, 00), analyteId, 12.0, TucuUnit("ug/l")));
-            samples.push_back(std::make_unique<Sample>(DATE_TIME_NO_VAR(2018, 01, 02, 8, 00, 00), analyteId, 10.0, TucuUnit("ug/l")));
-            samples.push_back(std::make_unique<Sample>(DATE_TIME_NO_VAR(2018, 01, 03, 8, 00, 00), analyteId, 14.0, TucuUnit("mg/l")));
-            samples.push_back(std::make_unique<Sample>(DATE_TIME_NO_VAR(2018, 01, 12, 8, 00, 00), analyteId, 12.0, TucuUnit("ug/l")));
+            samples.push_back(std::make_unique<Sample>(
+                    DATE_TIME_NO_VAR(2017, 01, 02, 8, 00, 00), analyteId, 12.0, TucuUnit("ug/l")));
+            samples.push_back(std::make_unique<Sample>(
+                    DATE_TIME_NO_VAR(2018, 01, 02, 8, 00, 00), analyteId, 10.0, TucuUnit("ug/l")));
+            samples.push_back(std::make_unique<Sample>(
+                    DATE_TIME_NO_VAR(2018, 01, 03, 8, 00, 00), analyteId, 14.0, TucuUnit("mg/l")));
+            samples.push_back(std::make_unique<Sample>(
+                    DATE_TIME_NO_VAR(2018, 01, 12, 8, 00, 00), analyteId, 12.0, TucuUnit("ug/l")));
 
             ComputingStatus result = extractor.extract(samples, start, end, TucuUnit("ug/l"), series);
 
@@ -92,7 +95,6 @@ struct TestSampleExtractor : public fructose::test_base<TestSampleExtractor>
                 fructose_assert_double_eq(mgSeries[1].getValue(), 14.0);
                 fructose_assert_eq(mgSeries[1].getEventTime(), DATE_TIME_NO_VAR(2018, 01, 03, 8, 00, 00));
             }
-
         }
         {
             // Test with 3 sample. All sample have bad units
@@ -109,7 +111,8 @@ struct TestSampleExtractor : public fructose::test_base<TestSampleExtractor>
             Tucuxi::Common::LoggerHelper logHelper;
             logHelper.disable();
 
-            samples.push_back(std::make_unique<Sample>(DATE_TIME_NO_VAR(2018, 01, 02, 8, 00, 00), analyteId, 12.0, TucuUnit("test")));
+            samples.push_back(std::make_unique<Sample>(
+                    DATE_TIME_NO_VAR(2018, 01, 02, 8, 00, 00), analyteId, 12.0, TucuUnit("test")));
 
             ComputingStatus result = extractor.extract(samples, start, end, TucuUnit("ug/l"), series);
 
@@ -118,7 +121,8 @@ struct TestSampleExtractor : public fructose::test_base<TestSampleExtractor>
 
             Samples samples2;
 
-            samples2.push_back(std::make_unique<Sample>(DATE_TIME_NO_VAR(2018, 01, 02, 8, 00, 00), analyteId, 10.0, TucuUnit("km/l")));
+            samples2.push_back(std::make_unique<Sample>(
+                    DATE_TIME_NO_VAR(2018, 01, 02, 8, 00, 00), analyteId, 10.0, TucuUnit("km/l")));
 
             result = extractor.extract(samples2, start, end, TucuUnit("ug/l"), series);
 
@@ -127,7 +131,8 @@ struct TestSampleExtractor : public fructose::test_base<TestSampleExtractor>
 
             Samples samples3;
 
-            samples3.push_back(std::make_unique<Sample>(DATE_TIME_NO_VAR(2018, 01, 02, 8, 00, 00), analyteId, 14.0, TucuUnit("5")));
+            samples3.push_back(std::make_unique<Sample>(
+                    DATE_TIME_NO_VAR(2018, 01, 02, 8, 00, 00), analyteId, 14.0, TucuUnit("5")));
 
             result = extractor.extract(samples3, start, end, TucuUnit("ug/l"), series);
 
@@ -138,7 +143,6 @@ struct TestSampleExtractor : public fructose::test_base<TestSampleExtractor>
             logHelper.enable();
         }
     }
-
 };
 
 

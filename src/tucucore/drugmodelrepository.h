@@ -14,13 +14,11 @@ class DrugModel;
 class IDrugModelRepository : public Tucuxi::Common::Interface
 {
 public:
-
     virtual ~IDrugModelRepository() = default;
 
-    virtual DrugModel *getDrugModelById(std::string _drugModelId) = 0;
+    virtual DrugModel* getDrugModelById(std::string _drugModelId) = 0;
 
-    virtual std::vector<DrugModel *> getDrugModelsByDrugId(std::string _drugId) = 0;
-
+    virtual std::vector<DrugModel*> getDrugModelsByDrugId(std::string _drugId) = 0;
 };
 
 ///
@@ -71,8 +69,7 @@ public:
 /// repository will look in the list of already loaded drug models, and if it is not found, then
 /// it will try to load a file from one of the available folders.
 ///
-class DrugModelRepository : public Tucuxi::Common::Component,
-        public IDrugModelRepository
+class DrugModelRepository : public Tucuxi::Common::Component, public IDrugModelRepository
 {
 public:
     static Tucuxi::Common::Interface* createComponent();
@@ -107,7 +104,7 @@ public:
     ///
     /// This function loads the drug model from the specified file.
     ///
-//    void loadFile(std::string _fileName);
+    //    void loadFile(std::string _fileName);
 
     ///
     /// \brief loads a drug mode file
@@ -124,7 +121,7 @@ public:
     /// The ownership of the drug model is given to the repository who
     /// is then responsible to delete in the repository destructor.
     ///
-    void addDrugModel(DrugModel *_drugModel);
+    void addDrugModel(DrugModel* _drugModel);
 
     ///
     /// \brief get a drug model from its Id
@@ -137,7 +134,7 @@ public:
     /// addFolderPath(). If it is still not there, then it tries to load all the
     /// files from all available paths.
     ///
-    DrugModel *getDrugModelById(std::string _drugModelId) override;
+    DrugModel* getDrugModelById(std::string _drugModelId) override;
 
     ///
     /// \brief get a vector of drug models that correspond to a specific drug
@@ -148,19 +145,17 @@ public:
     /// folder patsh available. Then it looks for all the compatible drug models
     /// and adds them in the resulting vector.
     ///
-    std::vector<DrugModel *> getDrugModelsByDrugId(std::string _drugId) override;
+    std::vector<DrugModel*> getDrugModelsByDrugId(std::string _drugId) override;
 
 protected:
-
     /// \brief The list of loaded drug models
-    std::vector<DrugModel *> m_drugModels;
+    std::vector<DrugModel*> m_drugModels;
 
     /// \brief The list of not loaded drug models
     std::vector<std::string> m_drugPaths;
 
     /// \brief Access other interfaces of the same component.
-    Tucuxi::Common::Interface* getInterface(const std::string &_name) override;
-
+    Tucuxi::Common::Interface* getInterface(const std::string& _name) override;
 };
 
 

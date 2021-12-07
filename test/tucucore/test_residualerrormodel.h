@@ -1,20 +1,18 @@
 #ifndef TEST_RESIDUALERRORMODEL_H
 #define TEST_RESIDUALERRORMODEL_H
 
-#include "fructose/fructose.h"
-
 #include "tucucore/residualerrormodel.h"
+
+#include "fructose/fructose.h"
 
 using namespace Tucuxi::Core;
 
 struct TestResidualErrorModel : public fructose::test_base<TestResidualErrorModel>
 {
-    TestResidualErrorModel() { }
+    TestResidualErrorModel() {}
 
-    Value calculateSampleLikelihood(ResidualErrorType _errorModelType,
-                                    double _sigma,
-                                    double _expected,
-                                    double _observed)
+    Value calculateSampleLikelihood(
+            ResidualErrorType _errorModelType, double _sigma, double _expected, double _observed)
     {
         Tucuxi::Core::SigmaResidualErrorModel errorModel;
         errorModel.setErrorModel(_errorModelType);
@@ -24,11 +22,8 @@ struct TestResidualErrorModel : public fructose::test_base<TestResidualErrorMode
         return errorModel.calculateSampleLikelihood(_expected, _observed);
     }
 
-    Value calculateSampleLikelihood2(ResidualErrorType _errorModelType,
-                                    double _sigma0,
-                                    double _sigma1,
-                                    double _expected,
-                                    double _observed)
+    Value calculateSampleLikelihood2(
+            ResidualErrorType _errorModelType, double _sigma0, double _sigma1, double _expected, double _observed)
     {
         Tucuxi::Core::SigmaResidualErrorModel errorModel;
         errorModel.setErrorModel(_errorModelType);
@@ -39,10 +34,7 @@ struct TestResidualErrorModel : public fructose::test_base<TestResidualErrorMode
         return errorModel.calculateSampleLikelihood(_expected, _observed);
     }
 
-    Value applyEpsToValue(ResidualErrorType _errorModelType,
-                                    double _sigma,
-                                    double _value,
-                                    double _eps)
+    Value applyEpsToValue(ResidualErrorType _errorModelType, double _sigma, double _value, double _eps)
     {
         Tucuxi::Core::SigmaResidualErrorModel errorModel;
         errorModel.setErrorModel(_errorModelType);
@@ -56,11 +48,8 @@ struct TestResidualErrorModel : public fructose::test_base<TestResidualErrorMode
         return value;
     }
 
-    Value applyEpsToValue2(ResidualErrorType _errorModelType,
-                           double _sigma0,
-                           double _sigma1,
-                                    double _value,
-                                    double _eps)
+    Value applyEpsToValue2(
+            ResidualErrorType _errorModelType, double _sigma0, double _sigma1, double _value, double _eps)
     {
         Tucuxi::Core::SigmaResidualErrorModel errorModel;
         errorModel.setErrorModel(_errorModelType);
@@ -144,7 +133,6 @@ struct TestResidualErrorModel : public fructose::test_base<TestResidualErrorMode
         logLikelihood2 = calculateSampleLikelihood2(ResidualErrorType::MIXED, 2.0, 0.5, 10.0, 9.9);
         fructose_assert_double_gt(logLikelihood1, logLikelihood0);
         fructose_assert_double_gt(logLikelihood1, logLikelihood2);
-
     }
 
     void testApplyEpsToValue(const std::string& /* _testName */)
@@ -171,7 +159,6 @@ struct TestResidualErrorModel : public fructose::test_base<TestResidualErrorMode
         calculated = applyEpsToValue(ResidualErrorType::PROPEXP, 2.0, 10.0, 0.0);
         fructose_assert_eq(calculated, 10.0);
     }
-
 };
 
 

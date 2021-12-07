@@ -38,12 +38,12 @@ public:
     /// \param _name Name of the sought value.
     /// \param _value Value of the sought value.
     /// \return True if the value could be retrieved, false otherwise.
-    bool getValue(const std::string &_name, double &_value) const;
+    bool getValue(const std::string& _name, double& _value) const;
 
     /// \brief Check if a given input is present in the Operable Graph.
     /// \param _name Name of the sought value.
     /// \return True if the input is present, false otherwise.
-    bool isInputPresent(const std::string &_name) const;
+    bool isInputPresent(const std::string& _name) const;
 
     /// \brief Record an input to an operable in the operable graph.
     /// \param _input Shared pointer to the Operable input.
@@ -55,8 +55,11 @@ public:
     /// \return True if the insertion was successful, false otherwise.
     /// \post if (m_operableInputs.find(_scriptVarName) == false && (_isComputed == false || _id >= 0)) { m_operableInputs += _input && [RETURN] == true }
     ///       else { m_operableInputs == PREV(m_operableInputs) && m_operables == PREV(m_operables) && [RETURN] == false };
-    bool registerInput(const std::shared_ptr<IOperableInput> &_input, const std::string &_scriptVarName,
-                       bool _isComputed = false, IOperable_ID _id = -1);
+    bool registerInput(
+            const std::shared_ptr<IOperableInput>& _input,
+            const std::string& _scriptVarName,
+            bool _isComputed = false,
+            IOperable_ID _id = -1);
 
     /// \brief Record an operable in the operable graph.
     /// \param _operable Operable to insert.
@@ -66,23 +69,24 @@ public:
     /// \post if (_operable != nullptr && (_scriptVarName == "" || m_operableInputs.find(_scriptVarName) == false))
     ///           { m_operables += _operable && (if (_scriptVarName != "") { m_operableInputs.find(_scriptVarName) == true }) && [RETURN] == true }
     ///       else { m_operableInputs == PREV(m_operableInputs) && m_operables == PREV(m_operables) && [RETURN] == false };
-    bool registerOperable(const std::shared_ptr<IOperable>& _operable, const std::string &_scriptVarName = "");
+    bool registerOperable(const std::shared_ptr<IOperable>& _operable, const std::string& _scriptVarName = "");
 
 
     /// \brief Class' output operator.
     /// \param _output Output stream.
     /// \param _dt Self reference to the OperableGraphManager to print.
     /// \return Output stream given as input (for output chaining).
-    friend std::ostream& operator<<(std::ostream &_output, const OperableGraphManager &_ogm) {
+    friend std::ostream& operator<<(std::ostream& _output, const OperableGraphManager& _ogm)
+    {
         _output << "-- OperableGraphManager INPUTS --\n";
-        for (const auto &i : _ogm.m_operableInputs) {
+        for (const auto& i : _ogm.m_operableInputs) {
             _output << "\t" << i.first << "\n"
                     << "\t\tValue = " << i.second.getValue() << "\n"
                     << "\t\tID = " << i.second.getOperableID() << "\n"
                     << "\t\tisComputed = " << i.second.isComputed() << "\n";
         }
         _output << "-- OperableGraphManager m_operables --\n";
-        for (const auto &i : _ogm.m_operableInputs) {
+        for (const auto& i : _ogm.m_operableInputs) {
             _output << "\t" << i.first << "\n";
         }
         return _output;
@@ -94,7 +98,7 @@ private:
     /// \param _id ID of the node that has to be evaluated.
     /// \param _alreadyComputed Map containing the evaluation state of the graph's nodes.
     /// \return True if the evaluation was successful, false otherwise.
-    bool evaluateOperableNode(IOperable_ID _id, std::map<IOperable_ID, bool> &_alreadyComputed);
+    bool evaluateOperableNode(IOperable_ID _id, std::map<IOperable_ID, bool>& _alreadyComputed);
 
     /// \brief Helper function that checks if a subgraph starting at the given node gets back to a previously visited
     ///        node.
@@ -102,7 +106,8 @@ private:
     /// \param _visited Map marking nodes as visited or not.
     /// \param _gotBack Map used to check whether we are getting back to a previously-visited node.
     /// \return True if there is a cycle in the graph, false otherwise.
-    bool isCyclic(const std::string &_cur, std::map<std::string, bool> &_visited, std::map<std::string, bool> &_gotBack) const;
+    bool isCyclic(const std::string& _cur, std::map<std::string, bool>& _visited, std::map<std::string, bool>& _gotBack)
+            const;
 
     /// \brief Check if a graph is valid --- that is, if does not contain loops.
     /// \return Returns true if the graph is valid, false otherwise.
@@ -122,8 +127,7 @@ private:
         /// computed then it has to be in the m_operables map too, and therefore it has an id too.
         /// \pre _isComputed == false || (_isComputed == true && _id >= 0 && m_operables.find(_id) != false)
         /// \pre _ptr != nullptr
-        OperableInputNode(std::shared_ptr<IOperableInput> _ptr,
-                          bool _isComputed = false, IOperable_ID _id = -1);
+        OperableInputNode(std::shared_ptr<IOperableInput> _ptr, bool _isComputed = false, IOperable_ID _id = -1);
 
         /// \brief If the node has to be computed, return the ID of the linked operable.
         /// \return ID of the linked operable if the node has to be computed, -1 otherwise.
@@ -171,7 +175,7 @@ private:
         /// \param _graphMgr Reference to the graph manager where the Operable has to seek its inputs.
         /// \param _value Computed result.
         /// \return True if the evaluation could be performed, false in case of errors.
-        virtual bool evaluate(const OperableGraphManager &_graphMgr);
+        virtual bool evaluate(const OperableGraphManager& _graphMgr);
 
         /// \brief Retrieve the list of dependencies of the Operable node.
         /// \return Vector containing the dependencies of the node.
@@ -232,7 +236,7 @@ public:
     ///        OperableGraphManager.
     /// \param _graphMgr Reference to the graph manager where the Operable has to seek its inputs.
     /// \return True if the evaluation could be performed, false in case of errors.
-    virtual bool evaluate(const OperableGraphManager &_graphMgr) = 0;
+    virtual bool evaluate(const OperableGraphManager& _graphMgr) = 0;
 
     /// \brief Return the list of required input operands.
     /// \return Vector containing a list of the operands required for the operation.
@@ -252,7 +256,7 @@ class Operable : public IOperable
 public:
     /// \brief Create an operable from a fixed value.
     /// \param _value Value of the operable.
-    Operable(const double &_value);
+    Operable(const double& _value);
 
     /// \brief Default virtual destructor, required for proper object's destruction.
     ~Operable() override = default;
@@ -261,7 +265,7 @@ public:
     ///        OperableGraphManager.
     /// \param _graphMgr Reference to the graph manager where the Operable has to seek its inputs.
     /// \return True if the evaluation could be performed, false in case of errors.
-    bool evaluate(const OperableGraphManager &_graphMgr) override;
+    bool evaluate(const OperableGraphManager& _graphMgr) override;
 
     /// \brief Return the list of required input operands.
     /// \return Vector containing a list of the operands required for the operation.
@@ -270,7 +274,7 @@ public:
 
     /// \brief Get the associated operation.
     /// \return Reference to the associated operation.
-    virtual Operation &getOperation() const = 0;
+    virtual Operation& getOperation() const = 0;
 
     /// \brief Return the latest value computed by the node.
     /// \return Value computed by the node.
@@ -293,25 +297,26 @@ class OperableImpl : public Operable
 public:
     /// \brief Create an operable from a fixed value.
     /// \param _value Value of the operable.
-    OperableImpl(const double &_value)
-        : Operable(_value) {}
+    OperableImpl(const double& _value) : Operable(_value) {}
 
-   /// \brief Create an operable from a shared pointer to an Operation.
-   /// \param _ptr Shared pointer to an Operation object.
-   OperableImpl(const std::shared_ptr<Operation> &_ptr)
-       : Operable(0), m_sptr{_ptr} {}
+    /// \brief Create an operable from a shared pointer to an Operation.
+    /// \param _ptr Shared pointer to an Operation object.
+    OperableImpl(const std::shared_ptr<Operation>& _ptr) : Operable(0), m_sptr{_ptr} {}
 
-   /// \brief Default virtual destructor, required for proper object's destruction.
-   ~OperableImpl() override = default;
+    /// \brief Default virtual destructor, required for proper object's destruction.
+    ~OperableImpl() override = default;
 
-   /// \brief Get the associated operation.
-   /// \return Reference to the associated operation.
-   Operation &getOperation() const override { return *m_sptr; }
+    /// \brief Get the associated operation.
+    /// \return Reference to the associated operation.
+    Operation& getOperation() const override
+    {
+        return *m_sptr;
+    }
 
 
 protected:
-   /// \brief Pointer to the operation.
-   std::shared_ptr<Operation> m_sptr;
+    /// \brief Pointer to the operation.
+    std::shared_ptr<Operation> m_sptr;
 };
 
 

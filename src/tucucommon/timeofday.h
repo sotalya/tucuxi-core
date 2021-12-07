@@ -7,8 +7,8 @@
 
 #include <chrono>
 
-#undef min  // Prevent problems with date.h
-#undef max  // Prevent problems with date.h
+#undef min // Prevent problems with date.h
+#undef max // Prevent problems with date.h
 #include <date/date.h>
 
 #include "tucucommon/basetypes.h"
@@ -36,7 +36,7 @@ public:
     /// In case the specifed duration is bigger than one day, we only use the remainder.
     TimeOfDay(std::chrono::seconds& _time);
 
-    /// \brief Returns the duration since 0h00 in milliseconds 
+    /// \brief Returns the duration since 0h00 in milliseconds
     /// \return The duration in milliseconds.
     int64 getDuration() const;
 
@@ -87,7 +87,7 @@ private:
     /// \brief Make sure the time is not longer than one day.
     void normalize();
 
-    std::chrono::duration<ChronoBaseType> m_time{};  /// The encapsulated time (a duration from 0h00)
+    std::chrono::duration<ChronoBaseType> m_time{}; /// The encapsulated time (a duration from 0h00)
 };
 
 } // namespace Common

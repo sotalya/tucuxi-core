@@ -4,15 +4,16 @@
 
 #include <memory>
 
+#include "tucucore/parameter.h"
+
 #include "tucucommon/general.h"
 #include "tucucommon/loggerhelper.h"
-#include "tucucore/parameter.h"
 
 namespace Tucuxi {
 namespace Core {
 
 
-ParameterSetEventPtr ParameterSetSeries::getAtTime(const DateTime &_date, const Etas &_etas) const
+ParameterSetEventPtr ParameterSetSeries::getAtTime(const DateTime& _date, const Etas& _etas) const
 {
     // Find the lasted change that occured before the given date
     std::vector<ParameterSetEvent>::const_iterator it = m_parameterSets.begin();
@@ -24,8 +25,7 @@ ParameterSetEventPtr ParameterSetSeries::getAtTime(const DateTime &_date, const 
     }
 
     // Did we find something?
-    if (it != m_parameterSets.end())
-    {
+    if (it != m_parameterSets.end()) {
         // Make a copy to hold values with applied etas
         auto pParameters = std::make_unique<ParameterSetEvent>(*it);
 
@@ -42,12 +42,12 @@ ParameterSetEventPtr ParameterSetSeries::getAtTime(const DateTime &_date, const 
     return nullptr;
 }
 
-void ParameterSetSeries::addParameterSetEvent(const ParameterSetEvent &_parameterSetEvent)
+void ParameterSetSeries::addParameterSetEvent(const ParameterSetEvent& _parameterSetEvent)
 {
     m_parameterSets.push_back(_parameterSetEvent);
 }
 
-void ParameterSetEvent::addParameterEvent(const ParameterDefinition &_definition, Value _value)
+void ParameterSetEvent::addParameterEvent(const ParameterDefinition& _definition, Value _value)
 {
     // This method ensures the parameters are always sorted:
     // variable parameters first, then fixed parameters.
@@ -74,14 +74,14 @@ void ParameterSetEvent::addParameterEvent(const ParameterDefinition &_definition
                 break;
             }
             if (!_definition.isVariable() && it->isVariable()) {
-                insertIndex ++;
+                insertIndex++;
                 continue;
             }
             if (_definition.getId() < it->getParameterId()) {
                 break;
             }
 
-            insertIndex ++;
+            insertIndex++;
         }
 
         Parameters oldParams;
@@ -102,7 +102,7 @@ void ParameterSetEvent::addParameterEvent(const ParameterDefinition &_definition
             else {
                 m_parameters.push_back(Parameter(*it));
             }
-            pIndex ++;
+            pIndex++;
         }
         if (insertIndex == oldParams.size()) {
             m_parameters.push_back(Parameter(_definition, _value));
@@ -127,7 +127,6 @@ void ParameterSetEvent::addParameterEvent(const ParameterDefinition &_definition
 
         index++;
     }
-
 }
 
 bool ParameterSetEvent::applyEtas(const Etas& _etas)
@@ -181,9 +180,8 @@ bool Parameter::applyEta(Deviation _eta)
             // Apply the eta as an additive to the logit
             double newLogitP = logitP + _eta;
             // Go back to the parameter with the inverse of logit
-            m_value = 1.0 / (1 + std::exp(- newLogitP));
-        }
-            break;
+            m_value = 1.0 / (1 + std::exp(-newLogitP));
+        } break;
         default: {
             Tucuxi::Common::LoggerHelper logger;
             logger.warn("Parameter {} has an unknown error model", m_definition.getId());
@@ -191,10 +189,10 @@ bool Parameter::applyEta(Deviation _eta)
         }
         }
         if (m_value <= 0.0) {
-        //    m_value = 0.00000001;
-        //    Tucuxi::Common::LoggerHelper logger;
+            //    m_value = 0.00000001;
+            //    Tucuxi::Common::LoggerHelper logger;
             //logger.warn("Applying Eta to Parameter {} makes it negative", m_definition.getId());
-        //    ok = false;
+            //    ok = false;
         }
         else if (std::isinf(m_value)) {
             m_value = std::numeric_limits<double>::max();

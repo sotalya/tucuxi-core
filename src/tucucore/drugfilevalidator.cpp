@@ -1,24 +1,26 @@
+#include <cstdio>
+#include <fstream>
+#include <iosfwd>
+#include <iostream>
+#include <sstream>
+#include <streambuf>
+#include <string>
+#include <utility>
+
 #include "drugfilevalidator.h"
+
+#include "tucucommon/loggerhelper.h"
+
+#include "tucucore/covariateextractor.h"
+#include "tucucore/drugmodel/drugmodel.h"
+#include "tucucore/drugmodelchecker.h"
+#include "tucucore/drugmodelimport.h"
+#include "tucucore/drugtreatment/patientcovariate.h"
+#include "tucucore/parametersextractor.h"
+#include "tucucore/pkmodel.h"
 
 #include "rapidjson/document.h"     // rapidjson's DOM-style API
 #include "rapidjson/prettywriter.h" // for stringify JSON
-#include <cstdio>
-#include <iostream>
-#include <iosfwd>
-#include <string>
-#include <fstream>
-#include <streambuf>
-#include <sstream>
-#include <utility> 
-#include "tucucommon/loggerhelper.h"
-
-#include "tucucore/drugmodelimport.h"
-#include "tucucore/drugtreatment/patientcovariate.h"
-#include "tucucore/covariateextractor.h"
-#include "tucucore/parametersextractor.h"
-#include "tucucore/drugmodel/drugmodel.h"
-#include "tucucore/drugmodelchecker.h"
-#include "tucucore/pkmodel.h"
 
 //using namespace rapidjson;
 using namespace std;
@@ -27,8 +29,7 @@ using namespace std;
 namespace Tucuxi {
 namespace Core {
 
-DrugFileValidator::DrugFileValidator()
-= default;
+DrugFileValidator::DrugFileValidator() = default;
 
 
 class ExpectedParameters
@@ -46,7 +47,7 @@ bool DrugFileValidator::validate(const std::string& _drugFileName, const std::st
 
 
     Tucuxi::Common::LoggerHelper logger;
-    rapidjson::Document document;  // Default template parameter uses UTF8 and MemoryPoolAllocator.
+    rapidjson::Document document; // Default template parameter uses UTF8 and MemoryPoolAllocator.
 
     std::ifstream t(_testFileName);
     std::stringstream buffer;
@@ -86,15 +87,16 @@ bool DrugFileValidator::validate(const std::string& _drugFileName, const std::st
 
     bool validationResult = true;
     {
-        const rapidjson::Value& parametersTests = document["parameterstests"]; // Using a reference for consecutive access is handy and faster.
+        const rapidjson::Value& parametersTests =
+                document["parameterstests"]; // Using a reference for consecutive access is handy and faster.
         if (!parametersTests.IsArray()) {
             logger.error("The parameterstests shall be an array, but it is not");
             return false;
         }
-        for (rapidjson::SizeType i = 0; i < parametersTests.Size(); i++) {// rapidjson uses SizeType instead of size_t.
-            const rapidjson::Value &test = parametersTests[i];
-            const rapidjson::Value &covariates = test["covariates"];
-            const rapidjson::Value &parameters = test["parameters"];
+        for (rapidjson::SizeType i = 0; i < parametersTests.Size(); i++) { // rapidjson uses SizeType instead of size_t.
+            const rapidjson::Value& test = parametersTests[i];
+            const rapidjson::Value& covariates = test["covariates"];
+            const rapidjson::Value& parameters = test["parameters"];
 
             std::string testId = test["testId"].GetString();
             std::string comment = test["comment"].GetString();
@@ -126,13 +128,17 @@ bool DrugFileValidator::validate(const std::string& _drugFileName, const std::st
 
                 if (dataTypeString == "int") {
                     dataType = Core::DataType::Int;
-                } else if (dataTypeString == "double") {
+                }
+                else if (dataTypeString == "double") {
                     dataType = Core::DataType::Double;
-                } else if (dataTypeString == "bool") {
+                }
+                else if (dataTypeString == "bool") {
                     dataType = Core::DataType::Bool;
-                } else if (dataTypeString == "date") {
+                }
+                else if (dataTypeString == "date") {
                     dataType = Core::DataType::Date;
-                } else {
+                }
+                else {
                     // Maybe we could have an Undefined here
                     dataType = Core::DataType::Int;
                     logger.error("Data type unknown");
@@ -160,10 +166,7 @@ bool DrugFileValidator::validate(const std::string& _drugFileName, const std::st
 
             CovariateSeries covariatesSeries;
             {
-                CovariateExtractor covariateExtractor(drugModel->getCovariates(),
-                                                      patientVariates,
-                                                      startDate,
-                                                      endDate);
+                CovariateExtractor covariateExtractor(drugModel->getCovariates(), patientVariates, startDate, endDate);
                 ComputingStatus covariateExtractionResult = covariateExtractor.extract(covariatesSeries);
 
                 if (covariateExtractionResult != ComputingStatus::Ok) {
@@ -175,16 +178,17 @@ bool DrugFileValidator::validate(const std::string& _drugFileName, const std::st
             // TODO : This should not necessarily be the default formulation and route
             // Should get rid of the next 3 lines
             const AnalyteGroupId analyteGroupId = drugModel->getAnalyteSet()->getId();
-            const Formulation formulation = drugModel->getFormulationAndRoutes().getDefault()->getFormulationAndRoute().getFormulation();
-            const AdministrationRoute route = drugModel->getFormulationAndRoutes().getDefault()->getFormulationAndRoute().getAdministrationRoute();
+            const Formulation formulation =
+                    drugModel->getFormulationAndRoutes().getDefault()->getFormulationAndRoute().getFormulation();
+            const AdministrationRoute route = drugModel->getFormulationAndRoutes()
+                                                      .getDefault()
+                                                      ->getFormulationAndRoute()
+                                                      .getAdministrationRoute();
 
 
             ParameterDefinitionIterator it = drugModel->getParameterDefinitions(analyteGroupId, formulation, route);
 
-            ParametersExtractor parameterExtractor(covariatesSeries,
-                                                   it,
-                                                   startDate,
-                                                   endDate);
+            ParametersExtractor parameterExtractor(covariatesSeries, it, startDate, endDate);
 
             ComputingStatus parametersExtractionResult;
 
@@ -224,7 +228,12 @@ bool DrugFileValidator::validate(const std::string& _drugFileName, const std::st
                     if ((*itr)["id"].GetString() == pit->getParameterId()) {
                         found = true;
                         if (std::abs((*itr)["value"].GetDouble() - pit->getValue()) > threshold) {
-                            logger.error("Test {}: Error with calculation of parameter {}. Expected {}, calculated {}", testId, pit->getParameterId(), (*itr)["value"].GetDouble(), pit->getValue());
+                            logger.error(
+                                    "Test {}: Error with calculation of parameter {}. Expected {}, calculated {}",
+                                    testId,
+                                    pit->getParameterId(),
+                                    (*itr)["value"].GetDouble(),
+                                    pit->getValue());
                             validationResult = false;
                         }
                     }

@@ -7,8 +7,7 @@
 namespace Tucuxi {
 namespace Common {
 
-ComponentManager::ComponentManager()
-= default;
+ComponentManager::ComponentManager() = default;
 
 ComponentManager* ComponentManager::getInstance()
 {
@@ -17,13 +16,13 @@ ComponentManager* ComponentManager::getInstance()
 }
 
 
-void ComponentManager::registerComponentFactory(const std::string &_name, TComponentFactory _pFactory)
+void ComponentManager::registerComponentFactory(const std::string& _name, TComponentFactory _pFactory)
 {
     m_factories[_name] = _pFactory;
 }
 
 
-void ComponentManager::registerComponent(const std::string &_name, Interface *_pComponent)
+void ComponentManager::registerComponent(const std::string& _name, Interface* _pComponent)
 {
     if (_pComponent != nullptr) {
         m_components[_name] = _pComponent;
@@ -31,7 +30,7 @@ void ComponentManager::registerComponent(const std::string &_name, Interface *_p
 }
 
 
-void ComponentManager::unregisterComponent(const std::string &_name)
+void ComponentManager::unregisterComponent(const std::string& _name)
 {
     m_components.erase(_name);
 }

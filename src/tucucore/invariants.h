@@ -6,7 +6,8 @@ namespace Tucuxi {
 namespace Core {
 
 
-enum class Invariants {
+enum class Invariants
+{
     INV_0000 = 0,
     INV_ACTIVEMOIETY_0001,
     INV_ACTIVEMOIETY_0002,
@@ -94,14 +95,18 @@ enum class Invariants {
 };
 
 // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
-#define INVARIANT(invariant, expression, message) { \
-    bool result = expression; if (!result) { \
-    std::cout << "Drug model invariant failure : " << \
-    static_cast<int>(invariant) << \
-    ". " << (message) \
-    << std::endl;} \
-    ok &= result; \
-    if (!ok) {return false;} }
+#define INVARIANT(invariant, expression, message)                                                              \
+    {                                                                                                          \
+        bool result = expression;                                                                              \
+        if (!result) {                                                                                         \
+            std::cout << "Drug model invariant failure : " << static_cast<int>(invariant) << ". " << (message) \
+                      << std::endl;                                                                            \
+        }                                                                                                      \
+        ok &= result;                                                                                          \
+        if (!ok) {                                                                                             \
+            return false;                                                                                      \
+        }                                                                                                      \
+    }
 
 /*
 #define INVARIANT(invariant, expression) { \
@@ -118,21 +123,41 @@ enum class Invariants {
 #define COMPLEX_INVARIANT(invariant, expression) expression;
 
 // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
-#define INVARIANTS(decl) public : bool checkInvariants() const {bool ok=true;decl;return ok;}
+#define INVARIANTS(decl)         \
+public:                          \
+    bool checkInvariants() const \
+    {                            \
+        bool ok = true;          \
+        decl;                    \
+        return ok;               \
+    }
 
 // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
-#define EMPTYINVARIANTS public : bool checkInvariants() const {return true;}
+#define EMPTYINVARIANTS          \
+public:                          \
+    bool checkInvariants() const \
+    {                            \
+        return true;             \
+    }
 
 // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define CHECKINVARIANTS checkInvariants()
 
 // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
-#define LAMBDA_INVARIANT(invariant, expression, message) {auto f=[this]() {expression}; {bool result = f();if (!result) { \
-    std::cout << "Drug model invariant failure : " << \
-    static_cast<int>(invariant) << \
-    ". " << (message) << \
-    std::endl;} \
-    ok &= result; if (!ok) return false;}}
+#define LAMBDA_INVARIANT(invariant, expression, message)                                                           \
+    {                                                                                                              \
+        auto f = [this]() { expression };                                                                          \
+        {                                                                                                          \
+            bool result = f();                                                                                     \
+            if (!result) {                                                                                         \
+                std::cout << "Drug model invariant failure : " << static_cast<int>(invariant) << ". " << (message) \
+                          << std::endl;                                                                            \
+            }                                                                                                      \
+            ok &= result;                                                                                          \
+            if (!ok)                                                                                               \
+                return false;                                                                                      \
+        }                                                                                                          \
+    }
 
 /*
 #define LAMBDA_INVARIANT(invariant, expression) {auto f=[this]() {expression}; {bool result = f();if (!result) { \

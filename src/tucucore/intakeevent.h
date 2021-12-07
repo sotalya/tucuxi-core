@@ -9,9 +9,9 @@
 #include "tucucommon/duration.h"
 
 #include "tucucore/definitions.h"
-#include "tucucore/timedevent.h"
-#include "tucucore/intakeintervalcalculator.h"
 #include "tucucore/drugmodel/formulationandroute.h"
+#include "tucucore/intakeintervalcalculator.h"
+#include "tucucore/timedevent.h"
 
 using Tucuxi::Common::DateTime; // NOLINT(google-global-names-in-headers)
 using Tucuxi::Common::Duration; // NOLINT(google-global-names-in-headers)
@@ -24,12 +24,12 @@ class IntakeIntervalCalculator;
 /// \ingroup TucuCore
 /// \brief A class reprensting the event of taking a dose.
 /// Represents a Dose, as extracted from a DAL Dosage.
-class IntakeEvent : public TimedEvent 
+class IntakeEvent : public TimedEvent
 {
 public:
     /// \brief The default constructor is not needed
     IntakeEvent() = delete;
-    
+
     /// \brief Constructor
     /// \param _time Time of the dose intake.
     /// \param _offsetTime Number of hours since the first dose.
@@ -38,18 +38,19 @@ public:
     /// \param _route Route of administration.
     /// \param _infusionTime Duration in case of an infusion.
     /// \param _nbPoints Number of points to compute for this intake.
-    IntakeEvent(DateTime _time, Duration _offsetTime, DoseValue _dose, TucuUnit _doseUnit, Duration _interval,
-                FormulationAndRoute _formulationAndRoute,
-                AbsorptionModel _route, Duration _infusionTime, CycleSize _nbPoints)
-        : TimedEvent(_time), 
-          m_dose(_dose),
-          m_doseUnit(std::move(_doseUnit)),
-          m_offsetTime(_offsetTime),
-          m_formulationAndRoute(std::move(_formulationAndRoute)),
-          m_route(_route),
-          m_interval(_interval),
-          m_infusionTime(_infusionTime),
-          m_calculator(nullptr)
+    IntakeEvent(
+            DateTime _time,
+            Duration _offsetTime,
+            DoseValue _dose,
+            TucuUnit _doseUnit,
+            Duration _interval,
+            FormulationAndRoute _formulationAndRoute,
+            AbsorptionModel _route,
+            Duration _infusionTime,
+            CycleSize _nbPoints)
+        : TimedEvent(_time), m_dose(_dose), m_doseUnit(std::move(_doseUnit)), m_offsetTime(_offsetTime),
+          m_formulationAndRoute(std::move(_formulationAndRoute)), m_route(_route), m_interval(_interval),
+          m_infusionTime(_infusionTime), m_calculator(nullptr)
     {
         // YTA : I don't get why we should have odd numbers...
         m_nbPoints = _nbPoints; // % 2 != 0 ? _nbPoints : _nbPoints + 1;  // Must use an odd number
@@ -68,24 +69,20 @@ public:
 
     /// \brief Default copy constructor.
     /// \param _other Source object to copy from.
-    IntakeEvent(const IntakeEvent &_other) = default;
+    IntakeEvent(const IntakeEvent& _other) = default;
 
     /// \brief Default assignment operator.
     /// \param _other Source object to copy from.
-    IntakeEvent& operator=(const IntakeEvent &_other) = default;
+    IntakeEvent& operator=(const IntakeEvent& _other) = default;
 
     /// \brief Comparison operator.
     /// \param _other Object to compare to.
     /// \return true if the two objects are equal, false otherwise.
-    bool operator==(const IntakeEvent &_other) const
+    bool operator==(const IntakeEvent& _other) const
     {
-        return (m_time == _other.m_time &&
-                m_dose == _other.m_dose &&
-                m_offsetTime == _other.m_offsetTime &&
-                m_nbPoints == _other.m_nbPoints &&
-                m_route == _other.m_route &&
-                m_interval == _other.m_interval &&
-                m_infusionTime == _other.m_infusionTime);
+        return (m_time == _other.m_time && m_dose == _other.m_dose && m_offsetTime == _other.m_offsetTime
+                && m_nbPoints == _other.m_nbPoints && m_route == _other.m_route && m_interval == _other.m_interval
+                && m_infusionTime == _other.m_infusionTime);
     }
 
     /// \brief Change the time before the next intake.
@@ -139,7 +136,7 @@ public:
     {
         return m_doseUnit;
     }
-    
+
     /// \brief Get the time (in milliseconds) since the start of the treatment.
     /// \return Time in ms since the beginning of the treatment.
     Duration getOffsetTime() const
@@ -154,7 +151,7 @@ public:
     {
         return m_formulationAndRoute;
     }
-    
+
     /// \brief Get the route of administration of the treatment.
     /// \return Route of administration.
     AbsorptionModel getRoute() const
@@ -192,28 +189,37 @@ public:
     }
 
     ComputingStatus calculateIntakePoints(
-        std::vector<Concentrations>& _concentrations,
-        TimeOffsets & _times,
-        const IntakeEvent& _intakeEvent,
-        const ParameterSetEvent& _parameters,
-        const Residuals& _inResiduals,
-        bool _isAll,
-        Residuals& _outResiduals,
-        const bool _isDensityConstant) const
+            std::vector<Concentrations>& _concentrations,
+            TimeOffsets& _times,
+            const IntakeEvent& _intakeEvent,
+            const ParameterSetEvent& _parameters,
+            const Residuals& _inResiduals,
+            bool _isAll,
+            Residuals& _outResiduals,
+            const bool _isDensityConstant) const
     {
-        return m_calculator->calculateIntakePoints(_concentrations, _times, _intakeEvent, _parameters, _inResiduals, _isAll, _outResiduals, _isDensityConstant);
+        return m_calculator->calculateIntakePoints(
+                _concentrations,
+                _times,
+                _intakeEvent,
+                _parameters,
+                _inResiduals,
+                _isAll,
+                _outResiduals,
+                _isDensityConstant);
     }
 
     ComputingStatus calculateIntakeSinglePoint(
-	std::vector<Concentrations>& _concentrations,
-	const IntakeEvent& _intakeEvent,
-	const ParameterSetEvent& _parameters,
-	const Residuals& _inResiduals,
-	const Value& _atTime,
-	bool _isAll,
-	Residuals& _outResiduals) const
+            std::vector<Concentrations>& _concentrations,
+            const IntakeEvent& _intakeEvent,
+            const ParameterSetEvent& _parameters,
+            const Residuals& _inResiduals,
+            const Value& _atTime,
+            bool _isAll,
+            Residuals& _outResiduals) const
     {
-        return m_calculator->calculateIntakeSinglePoint(_concentrations, _intakeEvent, _parameters, _inResiduals, _atTime, _isAll, _outResiduals);
+        return m_calculator->calculateIntakeSinglePoint(
+                _concentrations, _intakeEvent, _parameters, _inResiduals, _atTime, _isAll, _outResiduals);
     }
 
 private:
@@ -248,12 +254,11 @@ typedef std::map<AnalyteGroupId, IntakeSeries> GroupsIntakeSeries;
 
 
 
-void cloneIntakeSeries(const std::vector<IntakeEvent> &_input, std::vector<IntakeEvent> &_output);
+void cloneIntakeSeries(const std::vector<IntakeEvent>& _input, std::vector<IntakeEvent>& _output);
 
 
 void selectRecordedIntakes(
-        IntakeSeries &_selectionSeries, const IntakeSeries &_intakeSeries,
-        DateTime _recordFrom, DateTime _recordTo);
+        IntakeSeries& _selectionSeries, const IntakeSeries& _intakeSeries, DateTime _recordFrom, DateTime _recordTo);
 
 } // namespace Core
 } // namespace Tucuxi

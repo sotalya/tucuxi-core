@@ -15,7 +15,17 @@
 namespace Tucuxi {
 namespace Common {
 
-enum class MachineIdType {CPU, MOTHERBOARD, DISK, MAC, BIOS, PRODUCT, NAME, UNDEFINED};
+enum class MachineIdType
+{
+    CPU,
+    MOTHERBOARD,
+    DISK,
+    MAC,
+    BIOS,
+    PRODUCT,
+    NAME,
+    UNDEFINED
+};
 
 /// \ingroup SystemInfo
 /// \brief This class provides a unique id that identifies a machine.
@@ -63,7 +73,6 @@ private:
 #ifndef _WIN32
     static std::string readDMIfile(std::string _filename);
 #endif
-
 };
 
 } // namespace Common

@@ -10,10 +10,10 @@
 /// This module defines a set of basic and application independent classes and components for
 /// use in other Tucuxi's libraries and applications.
 
-#include "spdlog/spdlog.h"
-
 #include "tucucommon/component.h"
 #include "tucucommon/ilogger.h"
+
+#include "spdlog/spdlog.h"
 
 namespace Tucuxi {
 namespace Common {
@@ -49,11 +49,11 @@ public:
 
 protected:
     /// \brief Access other interfaces of the same component.
-    Tucuxi::Common::Interface* getInterface(const std::string &_name) override;
+    Tucuxi::Common::Interface* getInterface(const std::string& _name) override;
 
 private:
     /// \brief Constructor call by LoggerHelper
-    Logger(const std::string &_filename);
+    Logger(const std::string& _filename);
     friend class LoggerHelper;
 
     std::shared_ptr<spdlog::logger> m_logger; /// The pointer to the instance of spdlog logger

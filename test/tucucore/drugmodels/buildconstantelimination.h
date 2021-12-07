@@ -2,10 +2,10 @@
 #define BUILDCONSTANTELIMINATION_H
 
 
-#include "drugmodelbuilder.h"
-
 #include "tucucore/drugmodel/drugmodel.h"
 #include "tucucore/hardcodedoperation.h"
+
+#include "drugmodelbuilder.h"
 
 using namespace Tucuxi::Core;
 
@@ -46,26 +46,43 @@ public:
         analyteSet->setId("analyteSet");
         analyteSet->setPkModelId("test.constantelimination");
 
-        std::unique_ptr<Analyte> analyte = std::make_unique<Analyte>("analyte", TucuUnit("ug/l"), std::make_unique<MolarMass>(10.0, TucuUnit("mol/l")));
+        std::unique_ptr<Analyte> analyte = std::make_unique<Analyte>(
+                "analyte", TucuUnit("ug/l"), std::make_unique<MolarMass>(10.0, TucuUnit("mol/l")));
         analyte->setAnalyteId("analyte");
 
 
 
         model->addCovariate(std::make_unique<Tucuxi::Core::CovariateDefinition>(
-                                "covS", "0.0", nullptr, CovariateType::Standard, DataType::Double,
-                                Tucuxi::Common::TranslatableString("covS")));
+                "covS",
+                "0.0",
+                nullptr,
+                CovariateType::Standard,
+                DataType::Double,
+                Tucuxi::Common::TranslatableString("covS")));
 
         model->addCovariate(std::make_unique<Tucuxi::Core::CovariateDefinition>(
-                                "covA", "0.0", nullptr, CovariateType::Standard, DataType::Double,
-                                Tucuxi::Common::TranslatableString("covA")));
+                "covA",
+                "0.0",
+                nullptr,
+                CovariateType::Standard,
+                DataType::Double,
+                Tucuxi::Common::TranslatableString("covA")));
 
         model->addCovariate(std::make_unique<Tucuxi::Core::CovariateDefinition>(
-                                "covR", "0.0", nullptr, CovariateType::Standard, DataType::Double,
-                                Tucuxi::Common::TranslatableString("covR")));
+                "covR",
+                "0.0",
+                nullptr,
+                CovariateType::Standard,
+                DataType::Double,
+                Tucuxi::Common::TranslatableString("covR")));
 
         model->addCovariate(std::make_unique<Tucuxi::Core::CovariateDefinition>(
-                                "covM", "1.0", nullptr, CovariateType::Standard, DataType::Double,
-                                Tucuxi::Common::TranslatableString("covM")));
+                "covM",
+                "1.0",
+                nullptr,
+                CovariateType::Standard,
+                DataType::Double,
+                Tucuxi::Common::TranslatableString("covM")));
 
         auto errorModel = std::make_unique<ErrorModel>();
 
@@ -80,25 +97,33 @@ public:
 
         auto dispositionParameters = std::make_unique<ParameterSetDefinition>();
 
-        Operation *opS = new JSOperation(" \
+        Operation* opS = new JSOperation(
+                " \
                                             return covS;",
-                                            { OperationInput("covS", InputType::DOUBLE)});
-        auto PS=std::make_unique<Tucuxi::Core::ParameterDefinition>("TestS", 0.0, opS, std::make_unique<ParameterVariability>(_variabilityTypeS, _variabilityValueS));
+                {OperationInput("covS", InputType::DOUBLE)});
+        auto PS = std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestS", 0.0, opS, std::make_unique<ParameterVariability>(_variabilityTypeS, _variabilityValueS));
         dispositionParameters->addParameter(std::move(PS));
-        Operation *opA = new JSOperation(" \
+        Operation* opA = new JSOperation(
+                " \
                                             return covA;",
-                                            { OperationInput("covA", InputType::DOUBLE)});
-        auto PA = std::make_unique<Tucuxi::Core::ParameterDefinition>("TestA", 0.0, opA, std::make_unique<ParameterVariability>(_variabilityTypeA, _variabilityValueA));
+                {OperationInput("covA", InputType::DOUBLE)});
+        auto PA = std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestA", 0.0, opA, std::make_unique<ParameterVariability>(_variabilityTypeA, _variabilityValueA));
         dispositionParameters->addParameter(std::move(PA));
-        Operation *opR = new JSOperation(" \
+        Operation* opR = new JSOperation(
+                " \
                                             return covR;",
-                                            { OperationInput("covR", InputType::DOUBLE)});
-        auto PR = std::make_unique<Tucuxi::Core::ParameterDefinition>("TestR", 0.0, opR, std::make_unique<ParameterVariability>(_variabilityTypeR, _variabilityValueR));
+                {OperationInput("covR", InputType::DOUBLE)});
+        auto PR = std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestR", 0.0, opR, std::make_unique<ParameterVariability>(_variabilityTypeR, _variabilityValueR));
         dispositionParameters->addParameter(std::move(PR));
-        Operation *opM = new JSOperation(" \
+        Operation* opM = new JSOperation(
+                " \
                                             return covM;",
-                                            { OperationInput("covM", InputType::DOUBLE)});
-        auto PM = std::make_unique<Tucuxi::Core::ParameterDefinition>("TestM", 1.0, opM, std::make_unique<ParameterVariability>(_variabilityTypeM, _variabilityValueM));
+                {OperationInput("covM", InputType::DOUBLE)});
+        auto PM = std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestM", 1.0, opM, std::make_unique<ParameterVariability>(_variabilityTypeM, _variabilityValueM));
         dispositionParameters->addParameter(std::move(PM));
 
         analyteSet->setDispositionParameters(std::move(dispositionParameters));
@@ -112,18 +137,20 @@ public:
         model->setDomain(std::move(drugDomain));
 
         {
-            const AnalyteSet *a = model->getAnalyteSet();
+            const AnalyteSet* a = model->getAnalyteSet();
             auto association = std::make_unique<AnalyteSetToAbsorptionAssociation>(*a);
             association->setAbsorptionModel(AbsorptionModel::Extravascular);
 
             auto absorptionParameters = std::make_unique<ParameterSetDefinition>();
 
             association->setAbsorptionParameters(std::move(absorptionParameters));
-            FormulationAndRoute formulationSpecs(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular, "No details");
+            FormulationAndRoute formulationSpecs(
+                    Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular, "No details");
             auto formulationAndRoute = std::make_unique<FullFormulationAndRoute>(formulationSpecs, "extraId");
             formulationAndRoute->addAssociation(std::move(association));
 
-            std::unique_ptr<AnalyteConversion> analyteConversion = std::make_unique<AnalyteConversion>(AnalyteId("analyte"), 1.0);
+            std::unique_ptr<AnalyteConversion> analyteConversion =
+                    std::make_unique<AnalyteConversion>(AnalyteId("analyte"), 1.0);
             formulationAndRoute->addAnalyteConversion(std::move(analyteConversion));
 
             auto validDoses = std::make_unique<ValidDoses>(TucuUnit("mg"), std::make_unique<PopulationValue>(400));
@@ -148,7 +175,8 @@ public:
             fixedIntervals->addValue(12);
             fixedIntervals->addValue(24);
 
-            auto validIntervals = std::make_unique<ValidDurations>(TucuUnit("h"), std::make_unique<PopulationValue>("", 24));
+            auto validIntervals =
+                    std::make_unique<ValidDurations>(TucuUnit("h"), std::make_unique<PopulationValue>("", 24));
             validIntervals->addValues(std::move(fixedIntervals));
 
             formulationAndRoute->setValidIntervals(std::move(validIntervals));
@@ -160,7 +188,8 @@ public:
 
         // Arbitrary 20h half life. To be checked. Multiplier of 20
         // With a multiplier of 10 it fails
-        std::unique_ptr<HalfLife> halfLife = std::make_unique<HalfLife>("halflife", 20, Tucuxi::Common::TucuUnit("h"), 20);
+        std::unique_ptr<HalfLife> halfLife =
+                std::make_unique<HalfLife>("halflife", 20, Tucuxi::Common::TucuUnit("h"), 20);
         timeConsiderations->setHalfLife(std::move(halfLife));
         std::unique_ptr<OutdatedMeasure> outdatedMeasure = std::make_unique<OutdatedMeasure>("id", 0.0, TucuUnit());
         timeConsiderations->setOutdatedMeasure(std::move(outdatedMeasure));
@@ -174,7 +203,11 @@ public:
 
         std::vector<AnalyteId> analyteList;
         analyteList.push_back(AnalyteId("analyte"));
-        std::unique_ptr<ActiveMoiety> activeMoiety = std::make_unique<ActiveMoiety>(ActiveMoietyId("activeMoietyConstant"), TucuUnit("ug/l"), analyteList, std::move(activeMoietyOperation));
+        std::unique_ptr<ActiveMoiety> activeMoiety = std::make_unique<ActiveMoiety>(
+                ActiveMoietyId("activeMoietyConstant"),
+                TucuUnit("ug/l"),
+                analyteList,
+                std::move(activeMoietyOperation));
 
 
         Tucuxi::Common::TranslatableString activeMoietyName;

@@ -10,12 +10,12 @@
 /// This module defines a set of basic and application independent classes and components for
 /// use in other Tucuxi's libraries and applications.
 
-#include <typeinfo>
-#include <string>
 #include <map>
+#include <string>
+#include <typeinfo>
 
-#include "tucucommon/interface.h"
 #include "tucucommon/component.h"
+#include "tucucommon/interface.h"
 
 namespace Tucuxi {
 namespace Common {
@@ -28,7 +28,7 @@ typedef Interface* (*TComponentFactory)();
 /// \ingroup TucuCommon
 /// \brief Singleton managing the creation and the registration of Tucuxi's components.
 ///
-/// This class act as the entry point of our "Component Oriented Programming" framework. 
+/// This class act as the entry point of our "Component Oriented Programming" framework.
 /// It offers services to:
 ///   1. Register component factories
 ///   2. Create instances from registered factories
@@ -47,28 +47,28 @@ public:
     /// \param _name The name that will allow creating instances via method createComponent
     /// \param _pFactory A pointer to a function that "knows" how to create a component of the given type.
     /// \return None
-    void registerComponentFactory(const std::string &_name, TComponentFactory _pFactory);
+    void registerComponentFactory(const std::string& _name, TComponentFactory _pFactory);
 
     /// \brief Register a component so to make it available globally to the rest of the application.
     /// \param _name The name that will allow other parts of the software to retrieve the component.
     /// \param _pComponent A pointer to the interface of an existing component.
     /// \return None
-    void registerComponent(const std::string &_name, Interface *_pComponent);
+    void registerComponent(const std::string& _name, Interface* _pComponent);
 
     /// \brief Unregister a previously registered component.
     /// \param _name The name of the component
     /// \return None
-    void unregisterComponent(const std::string &_name);
+    void unregisterComponent(const std::string& _name);
 
     /// \brief Create an instance of a component from a previously registered factory.
     /// \param _factoryName The name of the factory.
     /// \param T The type of the desired interface
     /// \return A pointer on the specified interface of the newly created component
-    template <typename T> T* createComponent(const std::string &_factoryName)
+    template<typename T>
+    T* createComponent(const std::string& _factoryName)
     {
-        if (m_factories.end() != m_factories.find(_factoryName))
-        {
-            Interface *cmp = m_factories[_factoryName]();
+        if (m_factories.end() != m_factories.find(_factoryName)) {
+            Interface* cmp = m_factories[_factoryName]();
             if (cmp != nullptr) {
                 return cmp->getInterface<T>();
             }
@@ -80,10 +80,10 @@ public:
     /// \param _name The name of the component.
     /// \param T The type of the desired interface
     /// \return A pointer on the specified interface of the specified component
-    template <typename T> T* getComponent(const std::string &_name)
+    template<typename T>
+    T* getComponent(const std::string& _name)
     {
-        if (m_components.end() != m_components.find(_name))
-        {
+        if (m_components.end() != m_components.find(_name)) {
             Interface* itf = m_components[_name];
             if (itf != nullptr) {
                 return itf->getInterface<T>();
@@ -96,8 +96,8 @@ private:
     /// \brief Constructor. Used internal to create the singleton instance.
     ComponentManager();
 
-    std::map<std::string, TComponentFactory> m_factories;   /// The list of registered factories
-    std::map<std::string, Interface*> m_components;         /// The lisf of registered components
+    std::map<std::string, TComponentFactory> m_factories; /// The list of registered factories
+    std::map<std::string, Interface*> m_components;       /// The lisf of registered components
 };
 
 } // namespace Common

@@ -5,14 +5,12 @@ namespace Tucuxi {
 namespace Core {
 
 
-ValidValues::ValidValues(const TucuUnit& _unit, std::unique_ptr<PopulationValue> _defaultValue) :
-    m_unit(_unit), m_defaultValue(std::move(_defaultValue))
+ValidValues::ValidValues(const TucuUnit& _unit, std::unique_ptr<PopulationValue> _defaultValue)
+    : m_unit(_unit), m_defaultValue(std::move(_defaultValue))
 {
-
 }
 
-ValidValues::~ValidValues()
-= default;
+ValidValues::~ValidValues() = default;
 
 TucuUnit ValidValues::getUnit() const
 {
@@ -25,28 +23,31 @@ Value ValidValues::getDefaultValue() const
     return m_defaultValue->getValue();
 }
 
-Value ValidValues::getStepValue() const{
+Value ValidValues::getStepValue() const
+{
     return std::move(m_valueSets[0])->getStepValue();
 }
 
-Value ValidValues::getToValue() const{
+Value ValidValues::getToValue() const
+{
     return std::move(m_valueSets[0])->getToValue();
 }
 
-Value ValidValues::getFromValue() const{
+Value ValidValues::getFromValue() const
+{
     return std::move(m_valueSets[0])->getFromValue();
 }
 
 std::vector<Value> ValidValues::getValues() const
 {
     std::vector<DoseValue> result;
-    for(const auto & valueSet : m_valueSets) {
+    for (const auto& valueSet : m_valueSets) {
         std::vector<Value> tmp = valueSet->getValues();
         result.insert(std::end(result), std::begin(tmp), std::end(tmp));
     }
 
     std::sort(result.begin(), result.end());
-    result.erase(std::unique(result.begin(), result.end() ), result.end());
+    result.erase(std::unique(result.begin(), result.end()), result.end());
     return result;
 }
 
@@ -56,14 +57,12 @@ void ValidValues::addValues(std::unique_ptr<IValidValues> _values)
 }
 
 
-ValidValuesRange::ValidValuesRange(std::unique_ptr<PopulationValue> _from,
+ValidValuesRange::ValidValuesRange(
+        std::unique_ptr<PopulationValue> _from,
         std::unique_ptr<PopulationValue> _to,
-        std::unique_ptr<PopulationValue> _step) :
-    m_from(std::move(_from)),
-    m_to(std::move(_to)),
-    m_step(std::move(_step))
+        std::unique_ptr<PopulationValue> _step)
+    : m_from(std::move(_from)), m_to(std::move(_to)), m_step(std::move(_step))
 {
-
 }
 
 std::vector<Value> ValidValuesRange::getValues() const
@@ -80,22 +79,23 @@ std::vector<Value> ValidValuesRange::getValues() const
     return result;
 }
 
-Value ValidValuesRange::getToValue() const{
+Value ValidValuesRange::getToValue() const
+{
     return m_to->getValue();
 }
 
-Value ValidValuesRange::getFromValue() const{
+Value ValidValuesRange::getFromValue() const
+{
     return m_from->getValue();
 }
 
-Value ValidValuesRange::getStepValue() const{
+Value ValidValuesRange::getStepValue() const
+{
     return m_step->getValue();
 }
 
 
-ValidValuesFixed::ValidValuesFixed()
-{
-}
+ValidValuesFixed::ValidValuesFixed() {}
 
 void ValidValuesFixed::addValue(Value _dose)
 {

@@ -5,12 +5,14 @@
 #include <Eigen/Dense>
 
 #include "tucucore/pkmodels/twocompartmentextralag.h"
+
 #include "tucucore/intakeevent.h"
 
 namespace Tucuxi {
 namespace Core {
 
-TwoCompartmentExtraLagMicro::TwoCompartmentExtraLagMicro() : IntakeIntervalCalculatorBase<3, TwoCompartmentExtraLagExponentials> (new PertinentTimesCalculatorStandard())
+TwoCompartmentExtraLagMicro::TwoCompartmentExtraLagMicro()
+    : IntakeIntervalCalculatorBase<3, TwoCompartmentExtraLagExponentials>(new PertinentTimesCalculatorStandard())
 {
 }
 
@@ -36,8 +38,8 @@ bool TwoCompartmentExtraLagMicro::checkInputs(const IntakeEvent& _intakeEvent, c
 
     Value sumK = m_Ke + m_K12 + m_K21;
     m_RootK = std::sqrt((sumK * sumK) - (4 * m_K21 * m_Ke));
-    m_Alpha = (sumK + m_RootK)/2;
-    m_Beta = (sumK - m_RootK)/2;
+    m_Alpha = (sumK + m_RootK) / 2;
+    m_Beta = (sumK - m_RootK) / 2;
     m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());
     m_Int = (_intakeEvent.getInterval()).toHours();
 
@@ -60,11 +62,18 @@ bool TwoCompartmentExtraLagMicro::checkInputs(const IntakeEvent& _intakeEvent, c
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
     if (m_nbPoints == 2) {
-        m_nbPoints0 = static_cast<Eigen::Index>(std::min(ceil(m_Tlag/m_Int * static_cast<double>(m_nbPoints)), ceil(static_cast<double>(m_nbPoints))));
+        m_nbPoints0 = static_cast<Eigen::Index>(std::min(
+                ceil(m_Tlag / m_Int * static_cast<double>(m_nbPoints)), ceil(static_cast<double>(m_nbPoints))));
     }
     else {
-    //    m_nbPoints0 = std::min(m_nbPoints, std::max(2, static_cast<int>((m_Tlag / m_Int) * static_cast<double>(m_nbPoints))));
-        m_nbPoints0 = std::min(static_cast<Eigen::Index>(m_nbPoints), std::max(Eigen::Index{2}, static_cast<Eigen::Index>(std::min(ceil(m_Tlag/m_Int * static_cast<double>(m_nbPoints)), ceil(static_cast<double>(m_nbPoints))))));
+        //    m_nbPoints0 = std::min(m_nbPoints, std::max(2, static_cast<int>((m_Tlag / m_Int) * static_cast<double>(m_nbPoints))));
+        m_nbPoints0 = std::min(
+                static_cast<Eigen::Index>(m_nbPoints),
+                std::max(
+                        Eigen::Index{2},
+                        static_cast<Eigen::Index>(std::min(
+                                ceil(m_Tlag / m_Int * static_cast<double>(m_nbPoints)),
+                                ceil(static_cast<double>(m_nbPoints))))));
     }
     m_nbPoints1 = m_nbPoints - m_nbPoints0;
 
@@ -73,12 +82,15 @@ bool TwoCompartmentExtraLagMicro::checkInputs(const IntakeEvent& _intakeEvent, c
 }
 
 
-inline bool TwoCompartmentExtraLagMicro::compute(const Residuals& _inResiduals, Eigen::VectorXd&
-_concentrations1, Eigen::VectorXd &_concentrations2, Eigen::VectorXd &_concentrations3)
+inline bool TwoCompartmentExtraLagMicro::compute(
+        const Residuals& _inResiduals,
+        Eigen::VectorXd& _concentrations1,
+        Eigen::VectorXd& _concentrations2,
+        Eigen::VectorXd& _concentrations3)
 {
-    Value A; // NOLINT(readability-identifier-naming)
-    Value B; // NOLINT(readability-identifier-naming)
-    Value C; // NOLINT(readability-identifier-naming)
+    Value A;       // NOLINT(readability-identifier-naming)
+    Value B;       // NOLINT(readability-identifier-naming)
+    Value C;       // NOLINT(readability-identifier-naming)
     Value divider; // NOLINT(readability-identifier-naming)
 
     if (m_Tlag <= 0.0) {
@@ -94,79 +106,84 @@ _concentrations1, Eigen::VectorXd &_concentrations2, Eigen::VectorXd &_concentra
         Value powDiffK21Ke = std::pow(diffK21Ke, 2);
 
         // For compartment1, calculate A, B, C and divider
-        A =
-                std::pow(m_K12, 3) * m_Ka * resid1
-                + diffK21Ka * (powDiffK21Ke * (-m_Ke * resid1 + m_Ka * sumResid13)
-                               + ((m_Ka - m_Ke) * (m_Ke * resid1 - m_K21 * (resid1 + 2 * resid2))
-                                  + m_Ka * (-m_K21 + m_Ke) * resid3) * m_RootK)
-                + std::pow(m_K12, 2) * (m_K21 * (-m_Ke * resid1 + m_Ka * (3 * resid1 + resid3))
-                                        + m_Ka * (-m_Ka * sumResid13 + resid1 * (3 * m_Ke + m_RootK)))
-                + m_K12 * (std::pow(m_K21, 2) * (3 * m_Ka * resid1 - 2 * m_Ke * resid1 + 2 * m_Ka * resid3)
-                           - m_K21 * (2 * std::pow(m_Ka, 2) * sumResid13 - 2 * m_Ka * m_Ke * sumResid13
+        A = std::pow(m_K12, 3) * m_Ka * resid1
+            + diffK21Ka
+                      * (powDiffK21Ke * (-m_Ke * resid1 + m_Ka * sumResid13)
+                         + ((m_Ka - m_Ke) * (m_Ke * resid1 - m_K21 * (resid1 + 2 * resid2))
+                            + m_Ka * (-m_K21 + m_Ke) * resid3)
+                                   * m_RootK)
+            + std::pow(m_K12, 2)
+                      * (m_K21 * (-m_Ke * resid1 + m_Ka * (3 * resid1 + resid3))
+                         + m_Ka * (-m_Ka * sumResid13 + resid1 * (3 * m_Ke + m_RootK)))
+            + m_K12
+                      * (std::pow(m_K21, 2) * (3 * m_Ka * resid1 - 2 * m_Ke * resid1 + 2 * m_Ka * resid3)
+                         - m_K21
+                                   * (2 * std::pow(m_Ka, 2) * sumResid13 - 2 * m_Ka * m_Ke * sumResid13
                                       + m_Ka * (2 * resid2 + resid3) * m_RootK + m_Ke * resid1 * (2 * m_Ke + m_RootK))
-                           - m_Ka * (m_Ka * sumResid13 * (2 * m_Ke + m_RootK)
-                                     - m_Ke * resid1 * (3 * m_Ke + 2 * m_RootK)));
+                         - m_Ka
+                                   * (m_Ka * sumResid13 * (2 * m_Ke + m_RootK)
+                                      - m_Ke * resid1 * (3 * m_Ke + 2 * m_RootK)));
 
-        B =
-                std::pow(m_K12, 3) * m_Ka * resid1
-                + diffK21Ka * (powDiffK21Ke * (-m_Ke * resid1 + m_Ka * sumResid13)
-                               + ((m_Ka - m_Ke) * (-m_Ke * resid1 + m_K21 * (resid1 + 2 * resid2))
-                                  + m_Ka * diffK21Ke * resid3) * m_RootK)
-                + std::pow(m_K12, 2) * (m_K21 * (-m_Ke * resid1 + m_Ka * (3 * resid1 + resid3))
-                                        - m_Ka * (m_Ka * sumResid13 + resid1 * (-3 * m_Ke + m_RootK)))
-                + m_K12 * (std::pow(m_K21, 2) * (3 * m_Ka * resid1 - 2 * m_Ke * resid1 + 2 * m_Ka * resid3)
-                           + m_Ka * (m_Ke * resid1 * (3 * m_Ke - 2 * m_RootK)
-                                     - m_Ka * sumResid13 * (2 * m_Ke - m_RootK))
-                           + m_K21 * (-2 * std::pow(m_Ka, 2) * sumResid13 + 2 * m_Ka * m_Ke * sumResid13
-                                      + m_Ka * (2 * resid2 + resid3) * m_RootK + m_Ke * resid1 * (-2 * m_Ke + m_RootK)));
+        B = std::pow(m_K12, 3) * m_Ka * resid1
+            + diffK21Ka
+                      * (powDiffK21Ke * (-m_Ke * resid1 + m_Ka * sumResid13)
+                         + ((m_Ka - m_Ke) * (-m_Ke * resid1 + m_K21 * (resid1 + 2 * resid2))
+                            + m_Ka * diffK21Ke * resid3)
+                                   * m_RootK)
+            + std::pow(m_K12, 2)
+                      * (m_K21 * (-m_Ke * resid1 + m_Ka * (3 * resid1 + resid3))
+                         - m_Ka * (m_Ka * sumResid13 + resid1 * (-3 * m_Ke + m_RootK)))
+            + m_K12
+                      * (std::pow(m_K21, 2) * (3 * m_Ka * resid1 - 2 * m_Ke * resid1 + 2 * m_Ka * resid3)
+                         + m_Ka * (m_Ke * resid1 * (3 * m_Ke - 2 * m_RootK) - m_Ka * sumResid13 * (2 * m_Ke - m_RootK))
+                         + m_K21
+                                   * (-2 * std::pow(m_Ka, 2) * sumResid13 + 2 * m_Ka * m_Ke * sumResid13
+                                      + m_Ka * (2 * resid2 + resid3) * m_RootK
+                                      + m_Ke * resid1 * (-2 * m_Ke + m_RootK)));
 
-        C =
-                - 2 * diffK21Ka * m_Ka * (std::pow(m_K12, 2) + powDiffK21Ke + 2 * m_K12 * sumK21Ke) * resid3;
+        C = -2 * diffK21Ka * m_Ka * (std::pow(m_K12, 2) + powDiffK21Ke + 2 * m_K12 * sumK21Ke) * resid3;
 
-        divider =
-                std::pow((sumK12K21 - 2 * m_Ka + m_Ke) * m_RootK,  2)
-                - std::pow(std::pow(m_K12,2) + powDiffK21Ke + 2 * m_K12 * sumK21Ke, 2);
+        divider = std::pow((sumK12K21 - 2 * m_Ka + m_Ke) * m_RootK, 2)
+                  - std::pow(std::pow(m_K12, 2) + powDiffK21Ke + 2 * m_K12 * sumK21Ke, 2);
 
-        if(!checkCondition(divider != 0.0, "Dividing by zero.")) {
+        if (!checkCondition(divider != 0.0, "Dividing by zero.")) {
             return false;
         }
 
         // Calculate concentrations of compartment 1
-        _concentrations1 =
-                -2 * (B * exponentials(Exponentials::Beta)
-                      + A * exponentials(Exponentials::Alpha) + C * exponentials(Exponentials::Ka)) / divider;
+        _concentrations1 = -2
+                           * (B * exponentials(Exponentials::Beta) + A * exponentials(Exponentials::Alpha)
+                              + C * exponentials(Exponentials::Ka))
+                           / divider;
 
         // For compartment1, calculate A, B, C and divider
-        A =
-                -(std::pow(m_K12, 2) + powDiffK21Ke + 2 * m_K12 * sumK21Ke)
-                * (diffK21Ka * (m_Ka - m_Ke) * resid2 + m_K12 * m_Ka * (resid2 + resid3))
-                + ((m_K12 * m_Ka + diffK21Ka * (m_Ka -m_Ke)) * (2 * m_K12 * resid1 + (m_K12 - diffK21Ke) * resid2)
-                   + m_K12 * m_Ka * (sumK12K21 - 2 * m_Ka + m_Ke) * resid3) * m_RootK;
+        A = -(std::pow(m_K12, 2) + powDiffK21Ke + 2 * m_K12 * sumK21Ke)
+                    * (diffK21Ka * (m_Ka - m_Ke) * resid2 + m_K12 * m_Ka * (resid2 + resid3))
+            + ((m_K12 * m_Ka + diffK21Ka * (m_Ka - m_Ke)) * (2 * m_K12 * resid1 + (m_K12 - diffK21Ke) * resid2)
+               + m_K12 * m_Ka * (sumK12K21 - 2 * m_Ka + m_Ke) * resid3)
+                      * m_RootK;
 
-        B =
-                -(std::pow(m_K12, 2) + powDiffK21Ke + 2 * m_K12 * sumK21Ke)
-                * (diffK21Ka * (m_Ka - m_Ke) * resid2 + m_K12 * m_Ka * (resid2 + resid3))
-                - ((m_K12 * m_Ka + diffK21Ka * (m_Ka - m_Ke)) * (2 * m_K12 * resid1 + (m_K12 - diffK21Ke) * resid2)
-                   + m_K12 * m_Ka * (sumK12K21 - 2 * m_Ka + m_Ke) * resid3) * m_RootK;
+        B = -(std::pow(m_K12, 2) + powDiffK21Ke + 2 * m_K12 * sumK21Ke)
+                    * (diffK21Ka * (m_Ka - m_Ke) * resid2 + m_K12 * m_Ka * (resid2 + resid3))
+            - ((m_K12 * m_Ka + diffK21Ka * (m_Ka - m_Ke)) * (2 * m_K12 * resid1 + (m_K12 - diffK21Ke) * resid2)
+               + m_K12 * m_Ka * (sumK12K21 - 2 * m_Ka + m_Ke) * resid3)
+                      * m_RootK;
 
-        C =
-                2 * m_K12 * m_Ka * (std::pow(m_K12, 2) + powDiffK21Ke + 2 * m_K12 * sumK21Ke) *resid3;
+        C = 2 * m_K12 * m_Ka * (std::pow(m_K12, 2) + powDiffK21Ke + 2 * m_K12 * sumK21Ke) * resid3;
 
-        divider =
-                -std::pow(std::pow(m_K12, 2) + powDiffK21Ke + 2 * m_K12 * sumK21Ke, 2)
-                + std::pow(sumK12K21 - 2 * m_Ka + m_Ke, 2) * std::pow(m_RootK, 2);
+        divider = -std::pow(std::pow(m_K12, 2) + powDiffK21Ke + 2 * m_K12 * sumK21Ke, 2)
+                  + std::pow(sumK12K21 - 2 * m_Ka + m_Ke, 2) * std::pow(m_RootK, 2);
 
-        if(!checkCondition(divider != 0.0, "Dividing by zero.")) {
+        if (!checkCondition(divider != 0.0, "Dividing by zero.")) {
             return false;
         }
 
         // Calculate concentrations of compartment 2 and 3
-        _concentrations2 =
-                2 * (B * exponentials(Exponentials::Beta)
-                     + A * exponentials(Exponentials::Alpha)
-                     + C * exponentials(Exponentials::Ka)) / divider;
-        _concentrations3 =
-                exponentials(Exponentials::Ka) * resid3;
+        _concentrations2 = 2
+                           * (B * exponentials(Exponentials::Beta) + A * exponentials(Exponentials::Alpha)
+                              + C * exponentials(Exponentials::Ka))
+                           / divider;
+        _concentrations3 = exponentials(Exponentials::Ka) * resid3;
 
         // I added these lines to get rid of calculus approximations making the first concentration to be potentially negative.
         if (abs(_concentrations1[0]) < 1e-10) {
@@ -189,81 +206,89 @@ _concentrations1, Eigen::VectorXd &_concentrations2, Eigen::VectorXd &_concentra
 
 
         // For compartment1, calculate A, B, C and divider
-        A =
-                std::pow(m_K12, 3) * m_Ka * resid1
-                + diffK21Ka * (powDiffK21Ke * (-m_Ke * resid1 + m_Ka * sumResid13)
-                               + ((m_Ka - m_Ke) * (m_Ke * resid1 - m_K21 * (resid1 + 2 * resid2))
-                                  + m_Ka * (-m_K21 + m_Ke) * resid3) * m_RootK)
-                + std::pow(m_K12, 2) * (m_K21 * (-m_Ke * resid1 + m_Ka * (3 * resid1 + resid3))
-                                        + m_Ka * (-m_Ka * sumResid13 + resid1 * (3 * m_Ke + m_RootK)))
-                + m_K12 * (std::pow(m_K21, 2) * (3 * m_Ka * resid1 - 2 * m_Ke * resid1 + 2 * m_Ka * resid3)
-                           - m_K21 * (2 * std::pow(m_Ka, 2) * sumResid13 - 2 * m_Ka * m_Ke * sumResid13
+        A = std::pow(m_K12, 3) * m_Ka * resid1
+            + diffK21Ka
+                      * (powDiffK21Ke * (-m_Ke * resid1 + m_Ka * sumResid13)
+                         + ((m_Ka - m_Ke) * (m_Ke * resid1 - m_K21 * (resid1 + 2 * resid2))
+                            + m_Ka * (-m_K21 + m_Ke) * resid3)
+                                   * m_RootK)
+            + std::pow(m_K12, 2)
+                      * (m_K21 * (-m_Ke * resid1 + m_Ka * (3 * resid1 + resid3))
+                         + m_Ka * (-m_Ka * sumResid13 + resid1 * (3 * m_Ke + m_RootK)))
+            + m_K12
+                      * (std::pow(m_K21, 2) * (3 * m_Ka * resid1 - 2 * m_Ke * resid1 + 2 * m_Ka * resid3)
+                         - m_K21
+                                   * (2 * std::pow(m_Ka, 2) * sumResid13 - 2 * m_Ka * m_Ke * sumResid13
                                       + m_Ka * (2 * resid2 + resid3) * m_RootK + m_Ke * resid1 * (2 * m_Ke + m_RootK))
-                           - m_Ka * (m_Ka * sumResid13 * (2 * m_Ke + m_RootK)
-                                     - m_Ke * resid1 * (3 * m_Ke + 2 * m_RootK)));
+                         - m_Ka
+                                   * (m_Ka * sumResid13 * (2 * m_Ke + m_RootK)
+                                      - m_Ke * resid1 * (3 * m_Ke + 2 * m_RootK)));
 
-        B =
-                std::pow(m_K12, 3) * m_Ka * resid1
-                + diffK21Ka * (powDiffK21Ke * (-m_Ke * resid1 + m_Ka * sumResid13)
-                               + ((m_Ka - m_Ke) * (-m_Ke * resid1 + m_K21 * (resid1 + 2 * resid2))
-                                  + m_Ka * diffK21Ke * resid3) * m_RootK)
-                + std::pow(m_K12, 2) * (m_K21 * (-m_Ke * resid1 + m_Ka * (3 * resid1 + resid3))
-                                        - m_Ka * (m_Ka * sumResid13 + resid1 * (-3 * m_Ke + m_RootK)))
-                + m_K12 * (std::pow(m_K21, 2) * (3 * m_Ka * resid1 - 2 * m_Ke * resid1 + 2 * m_Ka * resid3)
-                           + m_Ka * (m_Ke * resid1 * (3 * m_Ke - 2 * m_RootK)
-                                     - m_Ka * sumResid13 * (2 * m_Ke - m_RootK))
-                           + m_K21 * (-2 * std::pow(m_Ka, 2) * sumResid13 + 2 * m_Ka * m_Ke * sumResid13
-                                      + m_Ka * (2 * resid2 + resid3) * m_RootK + m_Ke * resid1 * (-2 * m_Ke + m_RootK)));
+        B = std::pow(m_K12, 3) * m_Ka * resid1
+            + diffK21Ka
+                      * (powDiffK21Ke * (-m_Ke * resid1 + m_Ka * sumResid13)
+                         + ((m_Ka - m_Ke) * (-m_Ke * resid1 + m_K21 * (resid1 + 2 * resid2))
+                            + m_Ka * diffK21Ke * resid3)
+                                   * m_RootK)
+            + std::pow(m_K12, 2)
+                      * (m_K21 * (-m_Ke * resid1 + m_Ka * (3 * resid1 + resid3))
+                         - m_Ka * (m_Ka * sumResid13 + resid1 * (-3 * m_Ke + m_RootK)))
+            + m_K12
+                      * (std::pow(m_K21, 2) * (3 * m_Ka * resid1 - 2 * m_Ke * resid1 + 2 * m_Ka * resid3)
+                         + m_Ka * (m_Ke * resid1 * (3 * m_Ke - 2 * m_RootK) - m_Ka * sumResid13 * (2 * m_Ke - m_RootK))
+                         + m_K21
+                                   * (-2 * std::pow(m_Ka, 2) * sumResid13 + 2 * m_Ka * m_Ke * sumResid13
+                                      + m_Ka * (2 * resid2 + resid3) * m_RootK
+                                      + m_Ke * resid1 * (-2 * m_Ke + m_RootK)));
 
-        C =
-                - 2 * diffK21Ka * m_Ka * (std::pow(m_K12, 2) + powDiffK21Ke + 2 * m_K12 * sumK21Ke) * resid3;
+        C = -2 * diffK21Ka * m_Ka * (std::pow(m_K12, 2) + powDiffK21Ke + 2 * m_K12 * sumK21Ke) * resid3;
 
-        divider =
-                std::pow((sumK12K21 - 2 * m_Ka + m_Ke) * m_RootK,  2)
-                - std::pow(std::pow(m_K12,2) + powDiffK21Ke + 2 * m_K12 * sumK21Ke, 2);
+        divider = std::pow((sumK12K21 - 2 * m_Ka + m_Ke) * m_RootK, 2)
+                  - std::pow(std::pow(m_K12, 2) + powDiffK21Ke + 2 * m_K12 * sumK21Ke, 2);
 
-        if(!checkCondition(divider != 0.0, "Dividing by zero.")) {
+        if (!checkCondition(divider != 0.0, "Dividing by zero.")) {
             return false;
         }
 
         // Calculate concentrations of compartment 1
         Eigen::VectorXd concentrations1 =
-                -2 * (B * exponentials(Exponentials::Beta)
-                      + A * exponentials(Exponentials::Alpha) + C * exponentials(Exponentials::Ka)) / divider;
+                -2
+                * (B * exponentials(Exponentials::Beta) + A * exponentials(Exponentials::Alpha)
+                   + C * exponentials(Exponentials::Ka))
+                / divider;
 
-        Concentration resid1post = -2 * (B * exp(-m_Beta * m_Tlag) + A * exp(-m_Alpha * m_Tlag) + C * exp(-m_Ka * m_Tlag)) / divider;
+        Concentration resid1post =
+                -2 * (B * exp(-m_Beta * m_Tlag) + A * exp(-m_Alpha * m_Tlag) + C * exp(-m_Ka * m_Tlag)) / divider;
 
         // For compartment1, calculate A, B, C and divider
-        A =
-                -(std::pow(m_K12, 2) + powDiffK21Ke + 2 * m_K12 * sumK21Ke)
-                * (diffK21Ka * (m_Ka - m_Ke) * resid2 + m_K12 * m_Ka * (resid2 + resid3))
-                + ((m_K12 * m_Ka + diffK21Ka * (m_Ka -m_Ke)) * (2 * m_K12 * resid1 + (m_K12 - diffK21Ke) * resid2)
-                   + m_K12 * m_Ka * (sumK12K21 - 2 * m_Ka + m_Ke) * resid3) * m_RootK;
+        A = -(std::pow(m_K12, 2) + powDiffK21Ke + 2 * m_K12 * sumK21Ke)
+                    * (diffK21Ka * (m_Ka - m_Ke) * resid2 + m_K12 * m_Ka * (resid2 + resid3))
+            + ((m_K12 * m_Ka + diffK21Ka * (m_Ka - m_Ke)) * (2 * m_K12 * resid1 + (m_K12 - diffK21Ke) * resid2)
+               + m_K12 * m_Ka * (sumK12K21 - 2 * m_Ka + m_Ke) * resid3)
+                      * m_RootK;
 
-        B =
-                -(std::pow(m_K12, 2) + powDiffK21Ke + 2 * m_K12 * sumK21Ke)
-                * (diffK21Ka * (m_Ka - m_Ke) * resid2 + m_K12 * m_Ka * (resid2 + resid3))
-                - ((m_K12 * m_Ka + diffK21Ka * (m_Ka - m_Ke)) * (2 * m_K12 * resid1 + (m_K12 - diffK21Ke) * resid2)
-                   + m_K12 * m_Ka * (sumK12K21 - 2 * m_Ka + m_Ke) * resid3) * m_RootK;
+        B = -(std::pow(m_K12, 2) + powDiffK21Ke + 2 * m_K12 * sumK21Ke)
+                    * (diffK21Ka * (m_Ka - m_Ke) * resid2 + m_K12 * m_Ka * (resid2 + resid3))
+            - ((m_K12 * m_Ka + diffK21Ka * (m_Ka - m_Ke)) * (2 * m_K12 * resid1 + (m_K12 - diffK21Ke) * resid2)
+               + m_K12 * m_Ka * (sumK12K21 - 2 * m_Ka + m_Ke) * resid3)
+                      * m_RootK;
 
-        C =
-                2 * m_K12 * m_Ka * (std::pow(m_K12, 2) + powDiffK21Ke + 2 * m_K12 * sumK21Ke) *resid3;
+        C = 2 * m_K12 * m_Ka * (std::pow(m_K12, 2) + powDiffK21Ke + 2 * m_K12 * sumK21Ke) * resid3;
 
-        divider =
-                -std::pow(std::pow(m_K12, 2) + powDiffK21Ke + 2 * m_K12 * sumK21Ke, 2)
-                + std::pow(sumK12K21 - 2 * m_Ka + m_Ke, 2) * std::pow(m_RootK, 2);
+        divider = -std::pow(std::pow(m_K12, 2) + powDiffK21Ke + 2 * m_K12 * sumK21Ke, 2)
+                  + std::pow(sumK12K21 - 2 * m_Ka + m_Ke, 2) * std::pow(m_RootK, 2);
 
-        if(!checkCondition(divider != 0.0, "Dividing by zero.")) {
+        if (!checkCondition(divider != 0.0, "Dividing by zero.")) {
             return false;
         }
 
         // Calculate concentrations of compartment 2 and 3
         Eigen::VectorXd concentrations2 =
-                2 * (B * exponentials(Exponentials::Beta)
-                     + A * exponentials(Exponentials::Alpha)
-                     + C * exponentials(Exponentials::Ka)) / divider;
-        Eigen::VectorXd concentrations3 =
-                exponentials(Exponentials::Ka) * resid3;
+                2
+                * (B * exponentials(Exponentials::Beta) + A * exponentials(Exponentials::Alpha)
+                   + C * exponentials(Exponentials::Ka))
+                / divider;
+        Eigen::VectorXd concentrations3 = exponentials(Exponentials::Ka) * resid3;
 
         // Let's now compute the part after Tlag
 
@@ -280,89 +305,96 @@ _concentrations1, Eigen::VectorXd &_concentrations2, Eigen::VectorXd &_concentra
 
 
         // For compartment1, calculate A, B, C and divider
-        A =
-                std::pow(m_K12, 3) * m_Ka * resid1
-                + diffK21Ka * (powDiffK21Ke * (-m_Ke * resid1 + m_Ka * sumResid13)
-                               + ((m_Ka - m_Ke) * (m_Ke * resid1 - m_K21 * (resid1 + 2 * resid2))
-                                  + m_Ka * (-m_K21 + m_Ke) * resid3) * m_RootK)
-                + std::pow(m_K12, 2) * (m_K21 * (-m_Ke * resid1 + m_Ka * (3 * resid1 + resid3))
-                                        + m_Ka * (-m_Ka * sumResid13 + resid1 * (3 * m_Ke + m_RootK)))
-                + m_K12 * (std::pow(m_K21, 2) * (3 * m_Ka * resid1 - 2 * m_Ke * resid1 + 2 * m_Ka * resid3)
-                           - m_K21 * (2 * std::pow(m_Ka, 2) * sumResid13 - 2 * m_Ka * m_Ke * sumResid13
+        A = std::pow(m_K12, 3) * m_Ka * resid1
+            + diffK21Ka
+                      * (powDiffK21Ke * (-m_Ke * resid1 + m_Ka * sumResid13)
+                         + ((m_Ka - m_Ke) * (m_Ke * resid1 - m_K21 * (resid1 + 2 * resid2))
+                            + m_Ka * (-m_K21 + m_Ke) * resid3)
+                                   * m_RootK)
+            + std::pow(m_K12, 2)
+                      * (m_K21 * (-m_Ke * resid1 + m_Ka * (3 * resid1 + resid3))
+                         + m_Ka * (-m_Ka * sumResid13 + resid1 * (3 * m_Ke + m_RootK)))
+            + m_K12
+                      * (std::pow(m_K21, 2) * (3 * m_Ka * resid1 - 2 * m_Ke * resid1 + 2 * m_Ka * resid3)
+                         - m_K21
+                                   * (2 * std::pow(m_Ka, 2) * sumResid13 - 2 * m_Ka * m_Ke * sumResid13
                                       + m_Ka * (2 * resid2 + resid3) * m_RootK + m_Ke * resid1 * (2 * m_Ke + m_RootK))
-                           - m_Ka * (m_Ka * sumResid13 * (2 * m_Ke + m_RootK)
-                                     - m_Ke * resid1 * (3 * m_Ke + 2 * m_RootK)));
+                         - m_Ka
+                                   * (m_Ka * sumResid13 * (2 * m_Ke + m_RootK)
+                                      - m_Ke * resid1 * (3 * m_Ke + 2 * m_RootK)));
 
-        B =
-                std::pow(m_K12, 3) * m_Ka * resid1
-                + diffK21Ka * (powDiffK21Ke * (-m_Ke * resid1 + m_Ka * sumResid13)
-                               + ((m_Ka - m_Ke) * (-m_Ke * resid1 + m_K21 * (resid1 + 2 * resid2))
-                                  + m_Ka * diffK21Ke * resid3) * m_RootK)
-                + std::pow(m_K12, 2) * (m_K21 * (-m_Ke * resid1 + m_Ka * (3 * resid1 + resid3))
-                                        - m_Ka * (m_Ka * sumResid13 + resid1 * (-3 * m_Ke + m_RootK)))
-                + m_K12 * (std::pow(m_K21, 2) * (3 * m_Ka * resid1 - 2 * m_Ke * resid1 + 2 * m_Ka * resid3)
-                           + m_Ka * (m_Ke * resid1 * (3 * m_Ke - 2 * m_RootK)
-                                     - m_Ka * sumResid13 * (2 * m_Ke - m_RootK))
-                           + m_K21 * (-2 * std::pow(m_Ka, 2) * sumResid13 + 2 * m_Ka * m_Ke * sumResid13
-                                      + m_Ka * (2 * resid2 + resid3) * m_RootK + m_Ke * resid1 * (-2 * m_Ke + m_RootK)));
+        B = std::pow(m_K12, 3) * m_Ka * resid1
+            + diffK21Ka
+                      * (powDiffK21Ke * (-m_Ke * resid1 + m_Ka * sumResid13)
+                         + ((m_Ka - m_Ke) * (-m_Ke * resid1 + m_K21 * (resid1 + 2 * resid2))
+                            + m_Ka * diffK21Ke * resid3)
+                                   * m_RootK)
+            + std::pow(m_K12, 2)
+                      * (m_K21 * (-m_Ke * resid1 + m_Ka * (3 * resid1 + resid3))
+                         - m_Ka * (m_Ka * sumResid13 + resid1 * (-3 * m_Ke + m_RootK)))
+            + m_K12
+                      * (std::pow(m_K21, 2) * (3 * m_Ka * resid1 - 2 * m_Ke * resid1 + 2 * m_Ka * resid3)
+                         + m_Ka * (m_Ke * resid1 * (3 * m_Ke - 2 * m_RootK) - m_Ka * sumResid13 * (2 * m_Ke - m_RootK))
+                         + m_K21
+                                   * (-2 * std::pow(m_Ka, 2) * sumResid13 + 2 * m_Ka * m_Ke * sumResid13
+                                      + m_Ka * (2 * resid2 + resid3) * m_RootK
+                                      + m_Ke * resid1 * (-2 * m_Ke + m_RootK)));
 
-        C =
-                - 2 * diffK21Ka * m_Ka * (std::pow(m_K12, 2) + powDiffK21Ke + 2 * m_K12 * sumK21Ke) * resid3;
+        C = -2 * diffK21Ka * m_Ka * (std::pow(m_K12, 2) + powDiffK21Ke + 2 * m_K12 * sumK21Ke) * resid3;
 
-        divider =
-                std::pow((sumK12K21 - 2 * m_Ka + m_Ke) * m_RootK,  2)
-                - std::pow(std::pow(m_K12,2) + powDiffK21Ke + 2 * m_K12 * sumK21Ke, 2);
+        divider = std::pow((sumK12K21 - 2 * m_Ka + m_Ke) * m_RootK, 2)
+                  - std::pow(std::pow(m_K12, 2) + powDiffK21Ke + 2 * m_K12 * sumK21Ke, 2);
 
-        if(!checkCondition(divider != 0.0, "Dividing by zero.")) {
+        if (!checkCondition(divider != 0.0, "Dividing by zero.")) {
             return false;
         }
 
         // Calculate concentrations of compartment 1
         Eigen::VectorXd concentrations1post =
-                -2 * (B * exponentials(Exponentials::BetaPost)
-                      + A * exponentials(Exponentials::AlphaPost) + C * exponentials(Exponentials::KaPost)) / divider;
+                -2
+                * (B * exponentials(Exponentials::BetaPost) + A * exponentials(Exponentials::AlphaPost)
+                   + C * exponentials(Exponentials::KaPost))
+                / divider;
 
         // For compartment1, calculate A, B, C and divider
-        A =
-                -(std::pow(m_K12, 2) + powDiffK21Ke + 2 * m_K12 * sumK21Ke)
-                * (diffK21Ka * (m_Ka - m_Ke) * resid2 + m_K12 * m_Ka * (resid2 + resid3))
-                + ((m_K12 * m_Ka + diffK21Ka * (m_Ka -m_Ke)) * (2 * m_K12 * resid1 + (m_K12 - diffK21Ke) * resid2)
-                   + m_K12 * m_Ka * (sumK12K21 - 2 * m_Ka + m_Ke) * resid3) * m_RootK;
+        A = -(std::pow(m_K12, 2) + powDiffK21Ke + 2 * m_K12 * sumK21Ke)
+                    * (diffK21Ka * (m_Ka - m_Ke) * resid2 + m_K12 * m_Ka * (resid2 + resid3))
+            + ((m_K12 * m_Ka + diffK21Ka * (m_Ka - m_Ke)) * (2 * m_K12 * resid1 + (m_K12 - diffK21Ke) * resid2)
+               + m_K12 * m_Ka * (sumK12K21 - 2 * m_Ka + m_Ke) * resid3)
+                      * m_RootK;
 
-        B =
-                -(std::pow(m_K12, 2) + powDiffK21Ke + 2 * m_K12 * sumK21Ke)
-                * (diffK21Ka * (m_Ka - m_Ke) * resid2 + m_K12 * m_Ka * (resid2 + resid3))
-                - ((m_K12 * m_Ka + diffK21Ka * (m_Ka - m_Ke)) * (2 * m_K12 * resid1 + (m_K12 - diffK21Ke) * resid2)
-                   + m_K12 * m_Ka * (sumK12K21 - 2 * m_Ka + m_Ke) * resid3) * m_RootK;
+        B = -(std::pow(m_K12, 2) + powDiffK21Ke + 2 * m_K12 * sumK21Ke)
+                    * (diffK21Ka * (m_Ka - m_Ke) * resid2 + m_K12 * m_Ka * (resid2 + resid3))
+            - ((m_K12 * m_Ka + diffK21Ka * (m_Ka - m_Ke)) * (2 * m_K12 * resid1 + (m_K12 - diffK21Ke) * resid2)
+               + m_K12 * m_Ka * (sumK12K21 - 2 * m_Ka + m_Ke) * resid3)
+                      * m_RootK;
 
-        C =
-                2 * m_K12 * m_Ka * (std::pow(m_K12, 2) + powDiffK21Ke + 2 * m_K12 * sumK21Ke) *resid3;
+        C = 2 * m_K12 * m_Ka * (std::pow(m_K12, 2) + powDiffK21Ke + 2 * m_K12 * sumK21Ke) * resid3;
 
-        divider =
-                -std::pow(std::pow(m_K12, 2) + powDiffK21Ke + 2 * m_K12 * sumK21Ke, 2)
-                + std::pow(sumK12K21 - 2 * m_Ka + m_Ke, 2) * std::pow(m_RootK, 2);
+        divider = -std::pow(std::pow(m_K12, 2) + powDiffK21Ke + 2 * m_K12 * sumK21Ke, 2)
+                  + std::pow(sumK12K21 - 2 * m_Ka + m_Ke, 2) * std::pow(m_RootK, 2);
 
-        if(!checkCondition(divider != 0.0, "Dividing by zero.")) {
+        if (!checkCondition(divider != 0.0, "Dividing by zero.")) {
             return false;
         }
 
         // Calculate concentrations of compartment 2 and 3
         Eigen::VectorXd concentrations2post =
-                2 * (B * exponentials(Exponentials::BetaPost)
-                     + A * exponentials(Exponentials::AlphaPost)
-                     + C * exponentials(Exponentials::KaPost)) / divider;
-        Eigen::VectorXd concentrations3post =
-                exponentials(Exponentials::KaPost) * resid3;
+                2
+                * (B * exponentials(Exponentials::BetaPost) + A * exponentials(Exponentials::AlphaPost)
+                   + C * exponentials(Exponentials::KaPost))
+                / divider;
+        Eigen::VectorXd concentrations3post = exponentials(Exponentials::KaPost) * resid3;
 
         _concentrations1 = Eigen::VectorXd(m_nbPoints);
         _concentrations2 = Eigen::VectorXd(m_nbPoints);
         _concentrations3 = Eigen::VectorXd(m_nbPoints);
-        for(Eigen::Index i = 0; i < static_cast<Eigen::Index>(m_nbPoints0); i++) {
+        for (Eigen::Index i = 0; i < static_cast<Eigen::Index>(m_nbPoints0); i++) {
             _concentrations1[i] = concentrations1[i];
             _concentrations2[i] = concentrations2[i];
             _concentrations3[i] = concentrations3[i];
         }
-        for(Eigen::Index i = static_cast<Eigen::Index>(m_nbPoints0); i < static_cast<Eigen::Index>(m_nbPoints); i++) {
+        for (Eigen::Index i = static_cast<Eigen::Index>(m_nbPoints0); i < static_cast<Eigen::Index>(m_nbPoints); i++) {
             _concentrations1[i] = concentrations1post[i];
             _concentrations2[i] = concentrations2post[i];
             _concentrations3[i] = concentrations3post[i];
@@ -389,7 +421,11 @@ void TwoCompartmentExtraLagMicro::computeExponentials(Eigen::VectorXd& _times)
 }
 
 
-bool TwoCompartmentExtraLagMicro::computeConcentrations(const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
+bool TwoCompartmentExtraLagMicro::computeConcentrations(
+        const Residuals& _inResiduals,
+        bool _isAll,
+        std::vector<Concentrations>& _concentrations,
+        Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1;
     Eigen::VectorXd concentrations2;
@@ -418,7 +454,12 @@ bool TwoCompartmentExtraLagMicro::computeConcentrations(const Residuals& _inResi
     return bOK;
 }
 
-bool TwoCompartmentExtraLagMicro::computeConcentration(const Value& _atTime, const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
+bool TwoCompartmentExtraLagMicro::computeConcentration(
+        const Value& _atTime,
+        const Residuals& _inResiduals,
+        bool _isAll,
+        std::vector<Concentrations>& _concentrations,
+        Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1;
     Eigen::VectorXd concentrations2, concentrations3;
@@ -468,9 +509,7 @@ bool TwoCompartmentExtraLagMicro::computeConcentration(const Value& _atTime, con
     return bOK;
 }
 
-TwoCompartmentExtraLagMacro::TwoCompartmentExtraLagMacro() : TwoCompartmentExtraLagMicro()
-{
-}
+TwoCompartmentExtraLagMacro::TwoCompartmentExtraLagMacro() : TwoCompartmentExtraLagMicro() {}
 
 std::vector<std::string> TwoCompartmentExtraLagMacro::getParametersId()
 {
@@ -479,10 +518,10 @@ std::vector<std::string> TwoCompartmentExtraLagMacro::getParametersId()
 
 bool TwoCompartmentExtraLagMacro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
-    if(!checkCondition(_parameters.size() >= 5, "The number of parameters should be equal to 5.")) {
+    if (!checkCondition(_parameters.size() >= 5, "The number of parameters should be equal to 5.")) {
         return false;
     }
-    
+
     m_D = _intakeEvent.getDose();
     Value cl = _parameters.getValue(ParameterId::CL);
     Value q = _parameters.getValue(ParameterId::Q);
@@ -496,8 +535,8 @@ bool TwoCompartmentExtraLagMacro::checkInputs(const IntakeEvent& _intakeEvent, c
     m_K21 = q / v2;
     Value sumK = m_Ke + m_K12 + m_K21;
     m_RootK = std::sqrt((sumK * sumK) - (4 * m_K21 * m_Ke));
-    m_Alpha = (sumK + m_RootK)/2;
-    m_Beta = (sumK - m_RootK)/2;
+    m_Alpha = (sumK + m_RootK) / 2;
+    m_Beta = (sumK - m_RootK) / 2;
     m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());
     m_Int = (_intakeEvent.getInterval()).toHours();
 
@@ -519,17 +558,23 @@ bool TwoCompartmentExtraLagMacro::checkInputs(const IntakeEvent& _intakeEvent, c
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
     if (m_nbPoints == 2) {
-        m_nbPoints0 = static_cast<Eigen::Index>(std::min(ceil(m_Tlag/m_Int * static_cast<double>(m_nbPoints)), ceil(static_cast<double>(m_nbPoints))));
+        m_nbPoints0 = static_cast<Eigen::Index>(std::min(
+                ceil(m_Tlag / m_Int * static_cast<double>(m_nbPoints)), ceil(static_cast<double>(m_nbPoints))));
     }
     else {
-    //    m_nbPoints0 = std::min(m_nbPoints, std::max(2, static_cast<int>((m_Tlag / m_Int) * static_cast<double>(m_nbPoints))));
-        m_nbPoints0 = std::min(static_cast<Eigen::Index>(m_nbPoints), std::max(Eigen::Index{2}, static_cast<Eigen::Index>(std::min(ceil(m_Tlag/m_Int * static_cast<double>(m_nbPoints)), ceil(static_cast<double>(m_nbPoints))))));
+        //    m_nbPoints0 = std::min(m_nbPoints, std::max(2, static_cast<int>((m_Tlag / m_Int) * static_cast<double>(m_nbPoints))));
+        m_nbPoints0 = std::min(
+                static_cast<Eigen::Index>(m_nbPoints),
+                std::max(
+                        Eigen::Index{2},
+                        static_cast<Eigen::Index>(std::min(
+                                ceil(m_Tlag / m_Int * static_cast<double>(m_nbPoints)),
+                                ceil(static_cast<double>(m_nbPoints))))));
     }
     m_nbPoints1 = m_nbPoints - m_nbPoints0;
 
     return bOK;
 }
 
-}
-}
-
+} // namespace Core
+} // namespace Tucuxi

@@ -3,9 +3,9 @@
 
 #include "tucucommon/unit.h"
 
+#include "tucucore/computingservice/computingresult.h"
 #include "tucucore/covariateevent.h"
 #include "tucucore/sampleevent.h"
-#include "tucucore/computingservice/computingresult.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -16,15 +16,14 @@ class IResidualErrorModel;
 class ResidualErrorModelExtractor
 {
 public:
-
     ResidualErrorModelExtractor();
 
-    ComputingStatus extract(const ErrorModel &_errorModel,
-                            const Common::TucuUnit &_fromUnit,
-                            const Common::TucuUnit &_toUnit,
-                            const CovariateSeries &_covariateSeries,
-                            std::unique_ptr<IResidualErrorModel> &_residualErrorModel);
-
+    ComputingStatus extract(
+            const ErrorModel& _errorModel,
+            const Common::TucuUnit& _fromUnit,
+            const Common::TucuUnit& _toUnit,
+            const CovariateSeries& _covariateSeries,
+            std::unique_ptr<IResidualErrorModel>& _residualErrorModel);
 };
 
 } // namespace Core

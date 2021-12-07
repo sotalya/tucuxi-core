@@ -1,6 +1,6 @@
-#include "validduration.h"
-
 #include <chrono>
+
+#include "validduration.h"
 
 #include "tucucore/drugdefinitions.h"
 
@@ -11,14 +11,13 @@ using Tucuxi::Common::Duration;
 
 using namespace std::chrono_literals;
 
-ValidDurations::ValidDurations(TucuUnit _unit, std::unique_ptr<PopulationValue> _defaultValue) : ValidValues(_unit, std::move(_defaultValue))
+ValidDurations::ValidDurations(TucuUnit _unit, std::unique_ptr<PopulationValue> _defaultValue)
+    : ValidValues(_unit, std::move(_defaultValue))
 {
-
 }
 
 
-ValidDurations::~ValidDurations()
-= default;
+ValidDurations::~ValidDurations() = default;
 
 /*
 void ValidDurations::setDefaultDuration(Tucuxi::Common::Duration _duration)
@@ -30,7 +29,7 @@ void ValidDurations::setDefaultDuration(Tucuxi::Common::Duration _duration)
 Tucuxi::Common::Duration ValidDurations::getDefaultDuration() const
 {
     // TODO : Manage covariates
-    return valueToDuration(m_defaultValue->getValue() );
+    return valueToDuration(m_defaultValue->getValue());
 }
 
 
@@ -62,5 +61,5 @@ Tucuxi::Common::Duration ValidDurations::valueToDuration(Value _value) const
 }
 
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi

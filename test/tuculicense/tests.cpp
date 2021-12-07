@@ -9,7 +9,7 @@
 
 #include "test_licensegenerator.h"
 
-int main(int argc, char** argv) 
+int main(int argc, char** argv)
 {
     // Get application folder
     std::string appFolder = Tucuxi::Common::Utils::getAppFolder(argv);
@@ -24,5 +24,5 @@ int main(int argc, char** argv)
         exit(1);
     }
 
-   return 0;
+    return 0;
 }

@@ -7,24 +7,23 @@
 
 #include <chrono>
 #include <iostream>
+#include <math.h>
 #include <memory>
 
 #include <date/date.h>
-#include <math.h>
 
-#include "fructose/fructose.h"
-
-#include "tucucore/drugmodelimport.h"
-#include "tucucore/pkmodel.h"
-#include "tucucore/drugmodelchecker.h"
-#include "tucucore/drugtreatment/drugtreatment.h"
 #include "tucucore/computingcomponent.h"
 #include "tucucore/computingservice/computingrequest.h"
+#include "tucucore/drugmodelchecker.h"
+#include "tucucore/drugmodelimport.h"
+#include "tucucore/drugtreatment/drugtreatment.h"
 #include "tucucore/drugtreatment/patientcovariate.h"
+#include "tucucore/pkmodel.h"
 
-#include "buildconstantelimination.h"
 #include "../pkmodels/constanteliminationbolus.h"
 #include "../testutils.h"
+#include "buildconstantelimination.h"
+#include "fructose/fructose.h"
 
 using namespace std::chrono_literals;
 using namespace date;
@@ -33,12 +32,11 @@ using namespace Tucuxi::Core;
 
 class GeneralTest
 {
-
 };
 
 struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEliminationBolus>, public GeneralTest
 {
-    TestConstantEliminationBolus() { }
+    TestConstantEliminationBolus() {}
 
     // The inv CDF is calculated using the probit() function in octave:
     // probit(0.05)
@@ -63,18 +61,15 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
         // Create a time range starting at the beginning of june 2017, with no upper end (to test that the repetitions
         // are handled correctly)
-        DateTime startSept2018(date::year_month_day(date::year(2018), date::month(9), date::day(1)),
-                               Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
+        DateTime startSept2018(
+                date::year_month_day(date::year(2018), date::month(9), date::day(1)),
+                Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
 
 
         //const FormulationAndRoute route("formulation", AdministrationRoute::IntravenousBolus, AbsorptionModel::Extravascular);
         // Add a treatment intake every ten days in June
         // 200mg via a intravascular at 08h30, starting the 01.06
-        LastingDose periodicDose(DoseValue(200.0),
-                                 TucuUnit("mg"),
-                                 _route,
-                                 Duration(),
-                                 Duration(std::chrono::hours(6)));
+        LastingDose periodicDose(DoseValue(200.0), TucuUnit("mg"), _route, Duration(), Duration(std::chrono::hours(6)));
         DosageRepeat repeatedDose(periodicDose, 16);
         auto sept2018 = std::make_unique<Tucuxi::Core::DosageTimeRange>(startSept2018, repeatedDose);
 
@@ -85,7 +80,8 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
     }
 
 
-    void test0() {
+    void test0()
+    {
         BuildConstantElimination builder;
         auto drugModel = builder.buildDrugModel();
 
@@ -98,7 +94,8 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         std::shared_ptr<PkModel> sharedPkModel;
         sharedPkModel = std::make_shared<PkModel>("test.constantelimination", PkModel::AllowMultipleRoutes::No);
 
-        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
+        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(
+                AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
         fructose_assert(addResult);
 
         sharedPkModel->addParameterList(AbsorptionModel::Extravascular, ConstantEliminationBolus::getParametersId());
@@ -116,21 +113,25 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         // Now the drug model is ready to be used
 
 
-        IComputingService *component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+        IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
 
-        fructose_assert( component != nullptr);
+        fructose_assert(component != nullptr);
 
-        static_cast<ComputingComponent *>(component)->setPkModelCollection(collection);
+        static_cast<ComputingComponent*>(component)->setPkModelCollection(collection);
 
 
         {
-            const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+            const FormulationAndRoute route(
+                    Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
             auto drugTreatment = buildDrugTreatment(route);
 
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covS", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covA", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covR", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                    "covS", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                    "covA", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                    "covR", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
 
 
             std::unique_ptr<ComputingTraits> computingTraits = std::make_unique<ComputingTraits>();
@@ -139,19 +140,19 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
             double nbPointsPerHour = 10.0;
-            ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment,
-                                            RetrieveStatisticsOption::RetrieveStatistics,
-                                            RetrieveParametersOption::RetrieveParameters,
-                                            RetrieveCovariatesOption::RetrieveCovariates,
-                                            ForceUgPerLiterOption::Force);
-            std::unique_ptr<ComputingTraitConcentration> traits =
-                    std::make_unique<ComputingTraitConcentration>(
-                        requestResponseId, start, end, nbPointsPerHour, computingOption);
+            ComputingOption computingOption(
+                    PredictionParameterType::Apriori,
+                    CompartmentsOption::MainCompartment,
+                    RetrieveStatisticsOption::RetrieveStatistics,
+                    RetrieveParametersOption::RetrieveParameters,
+                    RetrieveCovariatesOption::RetrieveCovariates,
+                    ForceUgPerLiterOption::Force);
+            std::unique_ptr<ComputingTraitConcentration> traits = std::make_unique<ComputingTraitConcentration>(
+                    requestResponseId, start, end, nbPointsPerHour, computingOption);
 
 
-            std::unique_ptr<ComputingTraitPercentiles> traitsPercentiles =
-                    std::make_unique<ComputingTraitPercentiles>(
-                        requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
+            std::unique_ptr<ComputingTraitPercentiles> traitsPercentiles = std::make_unique<ComputingTraitPercentiles>(
+                    requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
 
             {
                 ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traitsPercentiles));
@@ -161,21 +162,22 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
                 ComputingStatus result;
                 result = component->compute(request, response);
 
-                fructose_assert_eq( result, ComputingStatus::Ok);
+                fructose_assert_eq(result, ComputingStatus::Ok);
 
                 const ComputedData* responseData = response->getData();
                 fructose_assert(dynamic_cast<const PercentilesData*>(responseData) != nullptr);
-                const PercentilesData *resp = dynamic_cast<const PercentilesData*>(responseData);
+                const PercentilesData* resp = dynamic_cast<const PercentilesData*>(responseData);
 
                 fructose_assert_eq(resp->getNbRanks(), percentileRanks.size());
 
-                for(size_t p = 0; p < resp->getNbRanks(); p++) {
+                for (size_t p = 0; p < resp->getNbRanks(); p++) {
                     DateTime statTime = DateTime::now();
                     Value statValue = 0.0;
-                    resp->getData(p,0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
+                    resp->getData(p, 0)
+                            .m_statistics.getStatistic(0, CycleStatisticType::Mean)
+                            .getValue(statTime, statValue);
                     fructose_assert_double_eq(statValue, 200000.0);
                 }
-
             }
             {
                 ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
@@ -185,25 +187,31 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
                 ComputingStatus result;
                 result = component->compute(request, response);
 
-                fructose_assert_eq( result, ComputingStatus::Ok);
+                fructose_assert_eq(result, ComputingStatus::Ok);
 
                 const ComputedData* responseData = response->getData();
                 fructose_assert(dynamic_cast<const SinglePredictionData*>(responseData) != nullptr);
-                const SinglePredictionData *resp = dynamic_cast<const SinglePredictionData*>(responseData);
+                const SinglePredictionData* resp = dynamic_cast<const SinglePredictionData*>(responseData);
 
                 fructose_assert_eq(resp->getCompartmentInfos().size(), size_t{1});
                 fructose_assert_eq(resp->getCompartmentInfos()[0].getId(), "analyte");
-                fructose_assert_eq(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
+                fructose_assert_eq(
+                        resp->getCompartmentInfos()[0].getType(),
+                        CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
                 std::vector<CycleData> data = resp->getData();
                 fructose_assert(data.size() == 16);
                 fructose_assert(data[0].m_concentrations.size() == 1);
-                fructose_assert_double_eq(data[0].m_concentrations[0][0] , 200000.0);
-                DateTime startSept2018(date::year_month_day(date::year(2018), date::month(9), date::day(1)),
-                                       Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
+                fructose_assert_double_eq(data[0].m_concentrations[0][0], 200000.0);
+                DateTime startSept2018(
+                        date::year_month_day(date::year(2018), date::month(9), date::day(1)),
+                        Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
 
-                fructose_assert_eq(data[0].m_start.toSeconds() + data[0].m_times[0][0] * 3600.0 , startSept2018.toSeconds());
-                fructose_assert_eq(data[1].m_start.toSeconds() + data[1].m_times[0][0] * 3600.0 , startSept2018.toSeconds() + 3600.0 * 6.0);
+                fructose_assert_eq(
+                        data[0].m_start.toSeconds() + data[0].m_times[0][0] * 3600.0, startSept2018.toSeconds());
+                fructose_assert_eq(
+                        data[1].m_start.toSeconds() + data[1].m_times[0][0] * 3600.0,
+                        startSept2018.toSeconds() + 3600.0 * 6.0);
 
                 DateTime statTime = DateTime::now();
                 Value statValue = 0.0;
@@ -230,17 +238,16 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
                 data[1].m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
                 fructose_assert_double_eq(statValue, 200000.0);
-
             }
         }
 
         // Delete all dynamically allocated objects
         delete component;
-
     }
 
 
-    void test1() {
+    void test1()
+    {
         BuildConstantElimination builder;
         auto drugModel = builder.buildDrugModel();
 
@@ -253,7 +260,8 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         std::shared_ptr<PkModel> sharedPkModel;
         sharedPkModel = std::make_shared<PkModel>("test.constantelimination", PkModel::AllowMultipleRoutes::No);
 
-        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
+        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(
+                AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
         fructose_assert(addResult);
 
         sharedPkModel->addParameterList(AbsorptionModel::Extravascular, ConstantEliminationBolus::getParametersId());
@@ -272,38 +280,42 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         // Now the drug model is ready to be used
 
 
-        IComputingService *component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+        IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
 
-        fructose_assert( component != nullptr);
+        fructose_assert(component != nullptr);
 
-        static_cast<ComputingComponent *>(component)->setPkModelCollection(collection);
+        static_cast<ComputingComponent*>(component)->setPkModelCollection(collection);
 
 
         {
-            const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+            const FormulationAndRoute route(
+                    Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
             auto drugTreatment = buildDrugTreatment(route);
 
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covS", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covA", "1.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covR", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                    "covS", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                    "covA", "1.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                    "covR", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
 
             RequestResponseId requestResponseId = "1";
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
             double nbPointsPerHour = 10.0;
-            ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment,
-                                            RetrieveStatisticsOption::RetrieveStatistics,
-                                            RetrieveParametersOption::RetrieveParameters,
-                                            RetrieveCovariatesOption::RetrieveCovariates);
-            std::unique_ptr<ComputingTraitConcentration> traits =
-                    std::make_unique<ComputingTraitConcentration>(
-                        requestResponseId, start, end, nbPointsPerHour, computingOption);
+            ComputingOption computingOption(
+                    PredictionParameterType::Apriori,
+                    CompartmentsOption::MainCompartment,
+                    RetrieveStatisticsOption::RetrieveStatistics,
+                    RetrieveParametersOption::RetrieveParameters,
+                    RetrieveCovariatesOption::RetrieveCovariates);
+            std::unique_ptr<ComputingTraitConcentration> traits = std::make_unique<ComputingTraitConcentration>(
+                    requestResponseId, start, end, nbPointsPerHour, computingOption);
 
 
-            std::unique_ptr<ComputingTraitPercentiles> traitsPercentiles =
-                    std::make_unique<ComputingTraitPercentiles>(
-                        requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
+            std::unique_ptr<ComputingTraitPercentiles> traitsPercentiles = std::make_unique<ComputingTraitPercentiles>(
+                    requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
 
 
             {
@@ -315,21 +327,22 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
                 ComputingStatus result;
                 result = component->compute(request, response);
 
-                fructose_assert_eq( result, ComputingStatus::Ok);
+                fructose_assert_eq(result, ComputingStatus::Ok);
 
                 const ComputedData* responseData = response->getData();
                 fructose_assert(dynamic_cast<const PercentilesData*>(responseData) != nullptr);
-                const PercentilesData *resp = dynamic_cast<const PercentilesData*>(responseData);
+                const PercentilesData* resp = dynamic_cast<const PercentilesData*>(responseData);
 
                 fructose_assert_eq(resp->getNbRanks(), percentileRanks.size());
 
-                for(size_t p = 0; p < resp->getNbRanks(); p++) {
+                for (size_t p = 0; p < resp->getNbRanks(); p++) {
                     DateTime statTime = DateTime::now();
                     Value statValue = 0.0;
-                    resp->getData(p,0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
+                    resp->getData(p, 0)
+                            .m_statistics.getStatistic(0, CycleStatisticType::Mean)
+                            .getValue(statTime, statValue);
                     fructose_assert_double_eq(statValue, 200001.0);
                 }
-
             }
             {
                 ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
@@ -339,26 +352,32 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
                 ComputingStatus result;
                 result = component->compute(request, response);
 
-                fructose_assert_eq( result, ComputingStatus::Ok);
+                fructose_assert_eq(result, ComputingStatus::Ok);
 
 
                 const ComputedData* responseData = response->getData();
                 fructose_assert(dynamic_cast<const SinglePredictionData*>(responseData) != nullptr);
-                const SinglePredictionData *resp = dynamic_cast<const SinglePredictionData*>(responseData);
+                const SinglePredictionData* resp = dynamic_cast<const SinglePredictionData*>(responseData);
 
                 fructose_assert_eq(resp->getCompartmentInfos().size(), size_t{1});
                 fructose_assert_eq(resp->getCompartmentInfos()[0].getId(), "analyte");
-                fructose_assert_eq(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
+                fructose_assert_eq(
+                        resp->getCompartmentInfos()[0].getType(),
+                        CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
                 std::vector<CycleData> data = resp->getData();
                 fructose_assert(data.size() == 16);
                 fructose_assert(data[0].m_concentrations.size() == 1);
-                fructose_assert_double_eq(data[0].m_concentrations[0][0] , 200001.0);
-                DateTime startSept2018(date::year_month_day(date::year(2018), date::month(9), date::day(1)),
-                                       Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
+                fructose_assert_double_eq(data[0].m_concentrations[0][0], 200001.0);
+                DateTime startSept2018(
+                        date::year_month_day(date::year(2018), date::month(9), date::day(1)),
+                        Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
 
-                fructose_assert_eq(data[0].m_start.toSeconds() + data[0].m_times[0][0] * 3600.0 , startSept2018.toSeconds());
-                fructose_assert_eq(data[1].m_start.toSeconds() + data[1].m_times[0][0] * 3600.0 , startSept2018.toSeconds() + 3600.0 * 6.0);
+                fructose_assert_eq(
+                        data[0].m_start.toSeconds() + data[0].m_times[0][0] * 3600.0, startSept2018.toSeconds());
+                fructose_assert_eq(
+                        data[1].m_start.toSeconds() + data[1].m_times[0][0] * 3600.0,
+                        startSept2018.toSeconds() + 3600.0 * 6.0);
 
                 DateTime statTime = DateTime::now();
                 Value statValue = 0.0;
@@ -385,20 +404,17 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
                 data[1].m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
                 fructose_assert_double_eq(statValue, 200001.0);
-
             }
         }
 
         // Delete all dynamically allocated objects
         delete component;
-
     }
 
-    void testResidualErrorModelAdditive() {
+    void testResidualErrorModelAdditive()
+    {
         BuildConstantElimination builder;
-        auto drugModel = builder.buildDrugModel(
-                    ResidualErrorType::ADDITIVE,
-                    std::vector<Value>({10000.0}));
+        auto drugModel = builder.buildDrugModel(ResidualErrorType::ADDITIVE, std::vector<Value>({10000.0}));
 
         fructose_assert(drugModel != nullptr);
 
@@ -409,7 +425,8 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         std::shared_ptr<PkModel> sharedPkModel;
         sharedPkModel = std::make_shared<PkModel>("test.constantelimination", PkModel::AllowMultipleRoutes::No);
 
-        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
+        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(
+                AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
         fructose_assert(addResult);
 
         sharedPkModel->addParameterList(AbsorptionModel::Extravascular, ConstantEliminationBolus::getParametersId());
@@ -427,35 +444,40 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         // Now the drug model is ready to be used
 
 
-        IComputingService *component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+        IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
 
-        fructose_assert( component != nullptr);
+        fructose_assert(component != nullptr);
 
-        static_cast<ComputingComponent *>(component)->setPkModelCollection(collection);
+        static_cast<ComputingComponent*>(component)->setPkModelCollection(collection);
 
 
         {
-            const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+            const FormulationAndRoute route(
+                    Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
             auto drugTreatment = buildDrugTreatment(route);
 
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covS", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covA", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covR", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                    "covS", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                    "covA", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                    "covR", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
 
             RequestResponseId requestResponseId = "1";
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
             double nbPointsPerHour = 10.0;
-            ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment,
-                                            RetrieveStatisticsOption::RetrieveStatistics,
-                                            RetrieveParametersOption::RetrieveParameters,
-                                            RetrieveCovariatesOption::RetrieveCovariates);
+            ComputingOption computingOption(
+                    PredictionParameterType::Apriori,
+                    CompartmentsOption::MainCompartment,
+                    RetrieveStatisticsOption::RetrieveStatistics,
+                    RetrieveParametersOption::RetrieveParameters,
+                    RetrieveCovariatesOption::RetrieveCovariates);
 
 
-            std::unique_ptr<ComputingTraitPercentiles> traitsPercentiles =
-                    std::make_unique<ComputingTraitPercentiles>(
-                        requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
+            std::unique_ptr<ComputingTraitPercentiles> traitsPercentiles = std::make_unique<ComputingTraitPercentiles>(
+                    requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
 
             ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traitsPercentiles));
 
@@ -464,36 +486,37 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
             ComputingStatus result;
             result = component->compute(request, response);
 
-            fructose_assert_eq( result, ComputingStatus::Ok);
+            fructose_assert_eq(result, ComputingStatus::Ok);
 
             const ComputedData* responseData = response->getData();
             fructose_assert(dynamic_cast<const PercentilesData*>(responseData) != nullptr);
-            const PercentilesData *resp = dynamic_cast<const PercentilesData*>(responseData);
+            const PercentilesData* resp = dynamic_cast<const PercentilesData*>(responseData);
 
             fructose_assert_eq(resp->getNbRanks(), percentileRanks.size());
 
-            for(size_t p = 0; p < resp->getNbRanks(); p++) {
+            for (size_t p = 0; p < resp->getNbRanks(); p++) {
                 DateTime statTime = DateTime::now();
                 Value statValue = 0.0;
-                resp->getData(p,0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
+                resp->getData(p, 0)
+                        .m_statistics.getStatistic(0, CycleStatisticType::Mean)
+                        .getValue(statTime, statValue);
                 //fructose_assert_eq(statValue, 200001.0);
 
                 // Multiply the Inv CDF by SD (10), and by 1000.0 because of mg/l
                 double expectedValue = invCdf[p] * 10.0 * 1000.0;
-                fructose_assert_double_eq_rel_abs(statValue - 200000.0, expectedValue, 0.02, 10.0 * 10.0 * 1000.0 * 0.06);
+                fructose_assert_double_eq_rel_abs(
+                        statValue - 200000.0, expectedValue, 0.02, 10.0 * 10.0 * 1000.0 * 0.06);
             }
         }
 
         // Delete all dynamically allocated objects
         delete component;
-
     }
 
-    void testResidualErrorModelExponential() {
+    void testResidualErrorModelExponential()
+    {
         BuildConstantElimination builder;
-        auto drugModel = builder.buildDrugModel(
-                    ResidualErrorType::EXPONENTIAL,
-                    std::vector<Value>({0.2}));
+        auto drugModel = builder.buildDrugModel(ResidualErrorType::EXPONENTIAL, std::vector<Value>({0.2}));
 
         fructose_assert(drugModel != nullptr);
 
@@ -504,7 +527,8 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         std::shared_ptr<PkModel> sharedPkModel;
         sharedPkModel = std::make_shared<PkModel>("test.constantelimination", PkModel::AllowMultipleRoutes::No);
 
-        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
+        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(
+                AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
         fructose_assert(addResult);
         sharedPkModel->addParameterList(AbsorptionModel::Extravascular, ConstantEliminationBolus::getParametersId());
 
@@ -521,34 +545,39 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         // Now the drug model is ready to be used
 
 
-        IComputingService *component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+        IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
 
-        fructose_assert( component != nullptr);
+        fructose_assert(component != nullptr);
 
-        static_cast<ComputingComponent *>(component)->setPkModelCollection(collection);
+        static_cast<ComputingComponent*>(component)->setPkModelCollection(collection);
 
 
         {
-            const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+            const FormulationAndRoute route(
+                    Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
             auto drugTreatment = buildDrugTreatment(route);
 
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covS", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covA", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covR", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                    "covS", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                    "covA", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                    "covR", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
 
             RequestResponseId requestResponseId = "1";
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
             double nbPointsPerHour = 10.0;
-            ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment,
-                                            RetrieveStatisticsOption::RetrieveStatistics,
-                                            RetrieveParametersOption::RetrieveParameters,
-                                            RetrieveCovariatesOption::RetrieveCovariates);
+            ComputingOption computingOption(
+                    PredictionParameterType::Apriori,
+                    CompartmentsOption::MainCompartment,
+                    RetrieveStatisticsOption::RetrieveStatistics,
+                    RetrieveParametersOption::RetrieveParameters,
+                    RetrieveCovariatesOption::RetrieveCovariates);
 
-            std::unique_ptr<ComputingTraitPercentiles> traitsPercentiles =
-                    std::make_unique<ComputingTraitPercentiles>(
-                        requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
+            std::unique_ptr<ComputingTraitPercentiles> traitsPercentiles = std::make_unique<ComputingTraitPercentiles>(
+                    requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
 
             ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traitsPercentiles));
 
@@ -557,18 +586,20 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
             ComputingStatus result;
             result = component->compute(request, response);
 
-            fructose_assert_eq( result, ComputingStatus::Ok);
+            fructose_assert_eq(result, ComputingStatus::Ok);
 
             const ComputedData* responseData = response->getData();
             fructose_assert(dynamic_cast<const PercentilesData*>(responseData) != nullptr);
-            const PercentilesData *resp = dynamic_cast<const PercentilesData*>(responseData);
+            const PercentilesData* resp = dynamic_cast<const PercentilesData*>(responseData);
 
             fructose_assert_eq(resp->getNbRanks(), percentileRanks.size());
 
-            for(size_t p = 0; p < resp->getNbRanks(); p++) {
+            for (size_t p = 0; p < resp->getNbRanks(); p++) {
                 DateTime statTime = DateTime::now();
                 Value statValue = 0.0;
-                resp->getData(p,0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
+                resp->getData(p, 0)
+                        .m_statistics.getStatistic(0, CycleStatisticType::Mean)
+                        .getValue(statTime, statValue);
                 //fructose_assert_eq(statValue, 200001.0);
 
                 // Multiply the Inv CDF by SD (0.2)
@@ -579,15 +610,13 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
         // Delete all dynamically allocated objects
         delete component;
-
     }
 
 
-    void testResidualErrorModelProportional() {
+    void testResidualErrorModelProportional()
+    {
         BuildConstantElimination builder;
-        auto drugModel = builder.buildDrugModel(
-                    ResidualErrorType::PROPORTIONAL,
-                    std::vector<Value>({0.2}));
+        auto drugModel = builder.buildDrugModel(ResidualErrorType::PROPORTIONAL, std::vector<Value>({0.2}));
 
         fructose_assert(drugModel != nullptr);
 
@@ -598,7 +627,8 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         std::shared_ptr<PkModel> sharedPkModel;
         sharedPkModel = std::make_shared<PkModel>("test.constantelimination", PkModel::AllowMultipleRoutes::No);
 
-        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
+        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(
+                AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
         fructose_assert(addResult);
         sharedPkModel->addParameterList(AbsorptionModel::Extravascular, ConstantEliminationBolus::getParametersId());
 
@@ -615,33 +645,38 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         // Now the drug model is ready to be used
 
 
-        IComputingService *component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+        IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
 
-        fructose_assert( component != nullptr);
+        fructose_assert(component != nullptr);
 
-        static_cast<ComputingComponent *>(component)->setPkModelCollection(collection);
+        static_cast<ComputingComponent*>(component)->setPkModelCollection(collection);
 
         {
-            const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+            const FormulationAndRoute route(
+                    Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
             auto drugTreatment = buildDrugTreatment(route);
 
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covS", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covA", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covR", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                    "covS", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                    "covA", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                    "covR", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
 
             RequestResponseId requestResponseId = "1";
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
             double nbPointsPerHour = 10.0;
-            ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment,
-                                            RetrieveStatisticsOption::RetrieveStatistics,
-                                            RetrieveParametersOption::RetrieveParameters,
-                                            RetrieveCovariatesOption::RetrieveCovariates);
+            ComputingOption computingOption(
+                    PredictionParameterType::Apriori,
+                    CompartmentsOption::MainCompartment,
+                    RetrieveStatisticsOption::RetrieveStatistics,
+                    RetrieveParametersOption::RetrieveParameters,
+                    RetrieveCovariatesOption::RetrieveCovariates);
 
-            std::unique_ptr<ComputingTraitPercentiles> traitsPercentiles =
-                    std::make_unique<ComputingTraitPercentiles>(
-                        requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
+            std::unique_ptr<ComputingTraitPercentiles> traitsPercentiles = std::make_unique<ComputingTraitPercentiles>(
+                    requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
 
             ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traitsPercentiles));
 
@@ -650,18 +685,20 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
             ComputingStatus result;
             result = component->compute(request, response);
 
-            fructose_assert_eq( result, ComputingStatus::Ok);
+            fructose_assert_eq(result, ComputingStatus::Ok);
 
             const ComputedData* responseData = response->getData();
             fructose_assert(dynamic_cast<const PercentilesData*>(responseData) != nullptr);
-            const PercentilesData *resp = dynamic_cast<const PercentilesData*>(responseData);
+            const PercentilesData* resp = dynamic_cast<const PercentilesData*>(responseData);
 
             fructose_assert_eq(resp->getNbRanks(), percentileRanks.size());
 
-            for(size_t p = 0; p < resp->getNbRanks(); p++) {
+            for (size_t p = 0; p < resp->getNbRanks(); p++) {
                 DateTime statTime = DateTime::now();
                 Value statValue = 0.0;
-                resp->getData(p,0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
+                resp->getData(p, 0)
+                        .m_statistics.getStatistic(0, CycleStatisticType::Mean)
+                        .getValue(statTime, statValue);
                 //fructose_assert_eq(statValue, 200001.0);
 
                 // Multiply the Inv CDF by SD (0.2)
@@ -672,14 +709,12 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
         // Delete all dynamically allocated objects
         delete component;
-
     }
 
-    void testResidualErrorModelMixed() {
+    void testResidualErrorModelMixed()
+    {
         BuildConstantElimination builder;
-        auto drugModel = builder.buildDrugModel(
-                    ResidualErrorType::MIXED,
-                    std::vector<Value>({10.0, 0.2}));
+        auto drugModel = builder.buildDrugModel(ResidualErrorType::MIXED, std::vector<Value>({10.0, 0.2}));
 
         fructose_assert(drugModel != nullptr);
 
@@ -690,7 +725,8 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         std::shared_ptr<PkModel> sharedPkModel;
         sharedPkModel = std::make_shared<PkModel>("test.constantelimination", PkModel::AllowMultipleRoutes::No);
 
-        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
+        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(
+                AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
         fructose_assert(addResult);
         sharedPkModel->addParameterList(AbsorptionModel::Extravascular, ConstantEliminationBolus::getParametersId());
 
@@ -707,34 +743,39 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         // Now the drug model is ready to be used
 
 
-        IComputingService *component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+        IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
 
-        fructose_assert( component != nullptr);
+        fructose_assert(component != nullptr);
 
-        static_cast<ComputingComponent *>(component)->setPkModelCollection(collection);
+        static_cast<ComputingComponent*>(component)->setPkModelCollection(collection);
 
 
         {
-            const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+            const FormulationAndRoute route(
+                    Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
             auto drugTreatment = buildDrugTreatment(route);
 
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covS", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covA", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covR", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                    "covS", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                    "covA", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                    "covR", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
 
             RequestResponseId requestResponseId = "1";
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
             double nbPointsPerHour = 10.0;
-            ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment,
-                                            RetrieveStatisticsOption::RetrieveStatistics,
-                                            RetrieveParametersOption::RetrieveParameters,
-                                            RetrieveCovariatesOption::RetrieveCovariates);
+            ComputingOption computingOption(
+                    PredictionParameterType::Apriori,
+                    CompartmentsOption::MainCompartment,
+                    RetrieveStatisticsOption::RetrieveStatistics,
+                    RetrieveParametersOption::RetrieveParameters,
+                    RetrieveCovariatesOption::RetrieveCovariates);
 
-            std::unique_ptr<ComputingTraitPercentiles> traitsPercentiles =
-                    std::make_unique<ComputingTraitPercentiles>(
-                        requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
+            std::unique_ptr<ComputingTraitPercentiles> traitsPercentiles = std::make_unique<ComputingTraitPercentiles>(
+                    requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
 
             ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traitsPercentiles));
 
@@ -743,18 +784,20 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
             ComputingStatus result;
             result = component->compute(request, response);
 
-            fructose_assert_eq( result, ComputingStatus::Ok);
+            fructose_assert_eq(result, ComputingStatus::Ok);
 
             const ComputedData* responseData = response->getData();
             fructose_assert(dynamic_cast<const PercentilesData*>(responseData) != nullptr);
-            const PercentilesData *resp = dynamic_cast<const PercentilesData*>(responseData);
+            const PercentilesData* resp = dynamic_cast<const PercentilesData*>(responseData);
 
             fructose_assert_eq(resp->getNbRanks(), percentileRanks.size());
 
-            for(size_t p = 0; p < resp->getNbRanks(); p++) {
+            for (size_t p = 0; p < resp->getNbRanks(); p++) {
                 DateTime statTime = DateTime::now();
                 Value statValue = 0.0;
-                resp->getData(p,0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
+                resp->getData(p, 0)
+                        .m_statistics.getStatistic(0, CycleStatisticType::Mean)
+                        .getValue(statTime, statValue);
                 //fructose_assert_eq(statValue, 200001.0);
 
                 // Multiply the Inv CDF by SD (0.2)
@@ -765,24 +808,24 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
         // Delete all dynamically allocated objects
         delete component;
-
     }
 
 
 
-    void testParamAdditive() {
+    void testParamAdditive()
+    {
         BuildConstantElimination builder;
         auto drugModel = builder.buildDrugModel(
-                    ResidualErrorType::NONE,
-                    std::vector<Value>({0.0}),
-                    ParameterVariabilityType::Additive,
-                    ParameterVariabilityType::None,
-                    ParameterVariabilityType::None,
-                    ParameterVariabilityType::None,
-                    1000.0,
-                    0.0,
-                    0.0,
-                    0.0);
+                ResidualErrorType::NONE,
+                std::vector<Value>({0.0}),
+                ParameterVariabilityType::Additive,
+                ParameterVariabilityType::None,
+                ParameterVariabilityType::None,
+                ParameterVariabilityType::None,
+                1000.0,
+                0.0,
+                0.0,
+                0.0);
 
         fructose_assert(drugModel != nullptr);
 
@@ -793,7 +836,8 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         std::shared_ptr<PkModel> sharedPkModel;
         sharedPkModel = std::make_shared<PkModel>("test.constantelimination", PkModel::AllowMultipleRoutes::No);
 
-        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
+        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(
+                AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
         fructose_assert(addResult);
         sharedPkModel->addParameterList(AbsorptionModel::Extravascular, ConstantEliminationBolus::getParametersId());
 
@@ -810,34 +854,39 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         // Now the drug model is ready to be used
 
 
-        IComputingService *component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+        IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
 
-        fructose_assert( component != nullptr);
+        fructose_assert(component != nullptr);
 
-        static_cast<ComputingComponent *>(component)->setPkModelCollection(collection);
+        static_cast<ComputingComponent*>(component)->setPkModelCollection(collection);
 
 
         {
-            const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+            const FormulationAndRoute route(
+                    Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
             auto drugTreatment = buildDrugTreatment(route);
 
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covS", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covA", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covR", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                    "covS", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                    "covA", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                    "covR", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
 
             RequestResponseId requestResponseId = "1";
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
             double nbPointsPerHour = 10.0;
-            ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment,
-                                            RetrieveStatisticsOption::RetrieveStatistics,
-                                            RetrieveParametersOption::RetrieveParameters,
-                                            RetrieveCovariatesOption::RetrieveCovariates);
+            ComputingOption computingOption(
+                    PredictionParameterType::Apriori,
+                    CompartmentsOption::MainCompartment,
+                    RetrieveStatisticsOption::RetrieveStatistics,
+                    RetrieveParametersOption::RetrieveParameters,
+                    RetrieveCovariatesOption::RetrieveCovariates);
 
-            std::unique_ptr<ComputingTraitPercentiles> traitsPercentiles =
-                    std::make_unique<ComputingTraitPercentiles>(
-                        requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
+            std::unique_ptr<ComputingTraitPercentiles> traitsPercentiles = std::make_unique<ComputingTraitPercentiles>(
+                    requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
 
             ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traitsPercentiles));
 
@@ -846,18 +895,20 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
             ComputingStatus result;
             result = component->compute(request, response);
 
-            fructose_assert_eq( result, ComputingStatus::Ok);
+            fructose_assert_eq(result, ComputingStatus::Ok);
 
             const ComputedData* responseData = response->getData();
             fructose_assert(dynamic_cast<const PercentilesData*>(responseData) != nullptr);
-            const PercentilesData *resp = dynamic_cast<const PercentilesData*>(responseData);
+            const PercentilesData* resp = dynamic_cast<const PercentilesData*>(responseData);
 
             fructose_assert_eq(resp->getNbRanks(), percentileRanks.size());
 
-            for(size_t p = 0; p < resp->getNbRanks(); p++) {
+            for (size_t p = 0; p < resp->getNbRanks(); p++) {
                 DateTime statTime = DateTime::now();
                 Value statValue = 0.0;
-                resp->getData(p,0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
+                resp->getData(p, 0)
+                        .m_statistics.getStatistic(0, CycleStatisticType::Mean)
+                        .getValue(statTime, statValue);
                 //fructose_assert_eq(statValue, 200001.0);
 
                 // Multiply the Inv CDF by SD (10), and by 1000.0 because of mg/l
@@ -868,23 +919,23 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
         // Delete all dynamically allocated objects
         delete component;
-
     }
 
 
-    void testParamAdditiveResidualErrorModelAdditive() {
+    void testParamAdditiveResidualErrorModelAdditive()
+    {
         BuildConstantElimination builder;
         auto drugModel = builder.buildDrugModel(
-                    ResidualErrorType::ADDITIVE,
-                    std::vector<Value>({10000.0}),
-                    ParameterVariabilityType::Additive,
-                    ParameterVariabilityType::None,
-                    ParameterVariabilityType::None,
-                    ParameterVariabilityType::None,
-                    1000.0,
-                    0.0,
-                    0.0,
-                    0.0);
+                ResidualErrorType::ADDITIVE,
+                std::vector<Value>({10000.0}),
+                ParameterVariabilityType::Additive,
+                ParameterVariabilityType::None,
+                ParameterVariabilityType::None,
+                ParameterVariabilityType::None,
+                1000.0,
+                0.0,
+                0.0,
+                0.0);
 
         fructose_assert(drugModel != nullptr);
 
@@ -895,7 +946,8 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         std::shared_ptr<PkModel> sharedPkModel;
         sharedPkModel = std::make_shared<PkModel>("test.constantelimination", PkModel::AllowMultipleRoutes::No);
 
-        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
+        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(
+                AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
         fructose_assert(addResult);
         sharedPkModel->addParameterList(AbsorptionModel::Extravascular, ConstantEliminationBolus::getParametersId());
 
@@ -912,34 +964,39 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         // Now the drug model is ready to be used
 
 
-        IComputingService *component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+        IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
 
-        fructose_assert( component != nullptr);
+        fructose_assert(component != nullptr);
 
-        static_cast<ComputingComponent *>(component)->setPkModelCollection(collection);
+        static_cast<ComputingComponent*>(component)->setPkModelCollection(collection);
 
 
         {
-            const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+            const FormulationAndRoute route(
+                    Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
             auto drugTreatment = buildDrugTreatment(route);
 
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covS", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covA", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covR", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                    "covS", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                    "covA", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                    "covR", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
 
             RequestResponseId requestResponseId = "1";
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
             double nbPointsPerHour = 10.0;
-            ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment,
-                                            RetrieveStatisticsOption::RetrieveStatistics,
-                                            RetrieveParametersOption::RetrieveParameters,
-                                            RetrieveCovariatesOption::RetrieveCovariates);
+            ComputingOption computingOption(
+                    PredictionParameterType::Apriori,
+                    CompartmentsOption::MainCompartment,
+                    RetrieveStatisticsOption::RetrieveStatistics,
+                    RetrieveParametersOption::RetrieveParameters,
+                    RetrieveCovariatesOption::RetrieveCovariates);
 
-            std::unique_ptr<ComputingTraitPercentiles> traitsPercentiles =
-                    std::make_unique<ComputingTraitPercentiles>(
-                        requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
+            std::unique_ptr<ComputingTraitPercentiles> traitsPercentiles = std::make_unique<ComputingTraitPercentiles>(
+                    requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
 
             ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traitsPercentiles));
 
@@ -948,22 +1005,25 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
             ComputingStatus result;
             result = component->compute(request, response);
 
-            fructose_assert_eq( result, ComputingStatus::Ok);
+            fructose_assert_eq(result, ComputingStatus::Ok);
 
             const ComputedData* responseData = response->getData();
             fructose_assert(dynamic_cast<const PercentilesData*>(responseData) != nullptr);
-            const PercentilesData *resp = dynamic_cast<const PercentilesData*>(responseData);
+            const PercentilesData* resp = dynamic_cast<const PercentilesData*>(responseData);
 
             fructose_assert_eq(resp->getNbRanks(), percentileRanks.size());
 
-            for(size_t p = 0; p < resp->getNbRanks(); p++) {
+            for (size_t p = 0; p < resp->getNbRanks(); p++) {
                 DateTime statTime = DateTime::now();
                 Value statValue = 0.0;
-                 resp->getData(p,0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
+                resp->getData(p, 0)
+                        .m_statistics.getStatistic(0, CycleStatisticType::Mean)
+                        .getValue(statTime, statValue);
                 //fructose_assert_eq(statValue, 200001.0);
 
                 // Multiply the Inv CDF by SD (10), and by 1000.0 because of mg/l
-                double expectedValue = 200000.0 + invCdf[p]*  std::sqrt(std::pow(1000.0, 2) + std::pow(10.0 * 1000.0, 2));
+                double expectedValue =
+                        200000.0 + invCdf[p] * std::sqrt(std::pow(1000.0, 2) + std::pow(10.0 * 1000.0, 2));
 
                 fructose_assert_double_eq_rel_abs(statValue, expectedValue, .01, 0.01);
             }
@@ -971,22 +1031,22 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
         // Delete all dynamically allocated objects
         delete component;
-
     }
 
-    void testParamExponentialResidualErrorModelExponential() {
+    void testParamExponentialResidualErrorModelExponential()
+    {
         BuildConstantElimination builder;
         auto drugModel = builder.buildDrugModel(
-                    ResidualErrorType::EXPONENTIAL,
-                    std::vector<Value>({0.3}),
-                    ParameterVariabilityType::None,
-                    ParameterVariabilityType::Exponential,
-                    ParameterVariabilityType::None,
-                    ParameterVariabilityType::None,
-                    0.0,
-                    0.2,
-                    0.0,
-                    0.0);
+                ResidualErrorType::EXPONENTIAL,
+                std::vector<Value>({0.3}),
+                ParameterVariabilityType::None,
+                ParameterVariabilityType::Exponential,
+                ParameterVariabilityType::None,
+                ParameterVariabilityType::None,
+                0.0,
+                0.2,
+                0.0,
+                0.0);
 
         fructose_assert(drugModel != nullptr);
 
@@ -997,7 +1057,8 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         std::shared_ptr<PkModel> sharedPkModel;
         sharedPkModel = std::make_shared<PkModel>("test.constantelimination", PkModel::AllowMultipleRoutes::No);
 
-        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
+        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(
+                AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
         fructose_assert(addResult);
         sharedPkModel->addParameterList(AbsorptionModel::Extravascular, ConstantEliminationBolus::getParametersId());
 
@@ -1014,34 +1075,39 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         // Now the drug model is ready to be used
 
 
-        IComputingService *component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+        IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
 
-        fructose_assert( component != nullptr);
+        fructose_assert(component != nullptr);
 
-        static_cast<ComputingComponent *>(component)->setPkModelCollection(collection);
+        static_cast<ComputingComponent*>(component)->setPkModelCollection(collection);
 
 
         {
-            const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+            const FormulationAndRoute route(
+                    Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
             auto drugTreatment = buildDrugTreatment(route);
 
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covS", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covA", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covR", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                    "covS", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                    "covA", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                    "covR", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
 
             RequestResponseId requestResponseId = "1";
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
             double nbPointsPerHour = 10.0;
-            ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment,
-                                            RetrieveStatisticsOption::RetrieveStatistics,
-                                            RetrieveParametersOption::RetrieveParameters,
-                                            RetrieveCovariatesOption::RetrieveCovariates);
+            ComputingOption computingOption(
+                    PredictionParameterType::Apriori,
+                    CompartmentsOption::MainCompartment,
+                    RetrieveStatisticsOption::RetrieveStatistics,
+                    RetrieveParametersOption::RetrieveParameters,
+                    RetrieveCovariatesOption::RetrieveCovariates);
 
-            std::unique_ptr<ComputingTraitPercentiles> traitsPercentiles =
-                    std::make_unique<ComputingTraitPercentiles>(
-                        requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
+            std::unique_ptr<ComputingTraitPercentiles> traitsPercentiles = std::make_unique<ComputingTraitPercentiles>(
+                    requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
 
             ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traitsPercentiles));
 
@@ -1050,18 +1116,20 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
             ComputingStatus result;
             result = component->compute(request, response);
 
-            fructose_assert_eq( result, ComputingStatus::Ok);
+            fructose_assert_eq(result, ComputingStatus::Ok);
 
             const ComputedData* responseData = response->getData();
             fructose_assert(dynamic_cast<const PercentilesData*>(responseData) != nullptr);
-            const PercentilesData *resp = dynamic_cast<const PercentilesData*>(responseData);
+            const PercentilesData* resp = dynamic_cast<const PercentilesData*>(responseData);
 
             fructose_assert_eq(resp->getNbRanks(), percentileRanks.size());
 
-            for(size_t p = 0; p < resp->getNbRanks(); p++) {
+            for (size_t p = 0; p < resp->getNbRanks(); p++) {
                 DateTime statTime = DateTime::now();
                 Value statValue = 0.0;
-                resp->getData(p,0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
+                resp->getData(p, 0)
+                        .m_statistics.getStatistic(0, CycleStatisticType::Mean)
+                        .getValue(statTime, statValue);
 
                 // Calculate the resulting standard deviation
                 double newStd = std::sqrt(std::pow(0.2, 2) + std::pow(0.3, 2));
@@ -1074,22 +1142,22 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
         // Delete all dynamically allocated objects
         delete component;
-
     }
 
-    void testParamProportionalResidualErrorModelProportional() {
+    void testParamProportionalResidualErrorModelProportional()
+    {
         BuildConstantElimination builder;
         auto drugModel = builder.buildDrugModel(
-                    ResidualErrorType::PROPORTIONAL,
-                    std::vector<Value>({0.3}),
-                    ParameterVariabilityType::None,
-                    ParameterVariabilityType::Proportional,
-                    ParameterVariabilityType::None,
-                    ParameterVariabilityType::None,
-                    0.0,
-                    0.2,
-                    0.0,
-                    0.0);
+                ResidualErrorType::PROPORTIONAL,
+                std::vector<Value>({0.3}),
+                ParameterVariabilityType::None,
+                ParameterVariabilityType::Proportional,
+                ParameterVariabilityType::None,
+                ParameterVariabilityType::None,
+                0.0,
+                0.2,
+                0.0,
+                0.0);
 
         fructose_assert(drugModel != nullptr);
 
@@ -1100,7 +1168,8 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         std::shared_ptr<PkModel> sharedPkModel;
         sharedPkModel = std::make_shared<PkModel>("test.constantelimination", PkModel::AllowMultipleRoutes::No);
 
-        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
+        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(
+                AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
         fructose_assert(addResult);
         sharedPkModel->addParameterList(AbsorptionModel::Extravascular, ConstantEliminationBolus::getParametersId());
 
@@ -1117,34 +1186,39 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         // Now the drug model is ready to be used
 
 
-        IComputingService *component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+        IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
 
-        fructose_assert( component != nullptr);
+        fructose_assert(component != nullptr);
 
-        static_cast<ComputingComponent *>(component)->setPkModelCollection(collection);
+        static_cast<ComputingComponent*>(component)->setPkModelCollection(collection);
 
 
         {
-            const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+            const FormulationAndRoute route(
+                    Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
             auto drugTreatment = buildDrugTreatment(route);
 
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covS", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covA", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covR", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                    "covS", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                    "covA", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                    "covR", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
 
             RequestResponseId requestResponseId = "1";
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
             double nbPointsPerHour = 10.0;
-            ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment,
-                                            RetrieveStatisticsOption::RetrieveStatistics,
-                                            RetrieveParametersOption::RetrieveParameters,
-                                            RetrieveCovariatesOption::RetrieveCovariates);
+            ComputingOption computingOption(
+                    PredictionParameterType::Apriori,
+                    CompartmentsOption::MainCompartment,
+                    RetrieveStatisticsOption::RetrieveStatistics,
+                    RetrieveParametersOption::RetrieveParameters,
+                    RetrieveCovariatesOption::RetrieveCovariates);
 
-            std::unique_ptr<ComputingTraitPercentiles> traitsPercentiles =
-                    std::make_unique<ComputingTraitPercentiles>(
-                        requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
+            std::unique_ptr<ComputingTraitPercentiles> traitsPercentiles = std::make_unique<ComputingTraitPercentiles>(
+                    requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
 
             ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traitsPercentiles));
 
@@ -1153,18 +1227,20 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
             ComputingStatus result;
             result = component->compute(request, response);
 
-            fructose_assert_eq( result, ComputingStatus::Ok);
+            fructose_assert_eq(result, ComputingStatus::Ok);
 
             const ComputedData* responseData = response->getData();
             fructose_assert(dynamic_cast<const PercentilesData*>(responseData) != nullptr);
-            const PercentilesData *resp = dynamic_cast<const PercentilesData*>(responseData);
+            const PercentilesData* resp = dynamic_cast<const PercentilesData*>(responseData);
 
             fructose_assert_eq(resp->getNbRanks(), percentileRanks.size());
 
-            for(size_t p = 0; p < resp->getNbRanks(); p++) {
+            for (size_t p = 0; p < resp->getNbRanks(); p++) {
                 DateTime statTime = DateTime::now();
                 Value statValue = 0.0;
-                resp->getData(p,0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
+                resp->getData(p, 0)
+                        .m_statistics.getStatistic(0, CycleStatisticType::Mean)
+                        .getValue(statTime, statValue);
                 //fructose_assert_eq(statValue, 200001.0);
 
 
@@ -1186,11 +1262,11 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
         // Delete all dynamically allocated objects
         delete component;
-
     }
 
 
-    void testAdjustments() {
+    void testAdjustments()
+    {
         BuildConstantElimination builder;
         auto drugModel = builder.buildDrugModel();
 
@@ -1198,18 +1274,19 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
 
         // Add targets
-        auto target = std::make_unique<TargetDefinition>(TargetType::Residual,
-                                                        Unit("mg/l"),
-                                                        ActiveMoietyId("analyte"),
-                                                        std::make_unique<SubTargetDefinition>("cMin", 750.0, nullptr),
-                                                        std::make_unique<SubTargetDefinition>("cMax", 1500.0, nullptr),
-                                                        std::make_unique<SubTargetDefinition>("cBest", 1000.0, nullptr),
-                                                        std::make_unique<SubTargetDefinition>("mic", 0.0, nullptr),
-                                                        std::make_unique<SubTargetDefinition>("tMin", 1000.0, nullptr),
-                                                        std::make_unique<SubTargetDefinition>("tMax", 1000.0, nullptr),
-                                                        std::make_unique<SubTargetDefinition>("tBest", 1000.0, nullptr),
-                                                        std::make_unique<SubTargetDefinition>("toxicity", 10000.0, nullptr),
-                                                        std::make_unique<SubTargetDefinition>("inefficacy", 000.0, nullptr));
+        auto target = std::make_unique<TargetDefinition>(
+                TargetType::Residual,
+                Unit("mg/l"),
+                ActiveMoietyId("analyte"),
+                std::make_unique<SubTargetDefinition>("cMin", 750.0, nullptr),
+                std::make_unique<SubTargetDefinition>("cMax", 1500.0, nullptr),
+                std::make_unique<SubTargetDefinition>("cBest", 1000.0, nullptr),
+                std::make_unique<SubTargetDefinition>("mic", 0.0, nullptr),
+                std::make_unique<SubTargetDefinition>("tMin", 1000.0, nullptr),
+                std::make_unique<SubTargetDefinition>("tMax", 1000.0, nullptr),
+                std::make_unique<SubTargetDefinition>("tBest", 1000.0, nullptr),
+                std::make_unique<SubTargetDefinition>("toxicity", 10000.0, nullptr),
+                std::make_unique<SubTargetDefinition>("inefficacy", 000.0, nullptr));
 
         drugModel->m_activeMoieties[0]->addTarget(std::move(target));
 
@@ -1220,7 +1297,8 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         std::shared_ptr<PkModel> sharedPkModel;
         sharedPkModel = std::make_shared<PkModel>("test.constantelimination", PkModel::AllowMultipleRoutes::No);
 
-        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
+        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(
+                AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
         fructose_assert(addResult);
         sharedPkModel->addParameterList(AbsorptionModel::Extravascular, ConstantEliminationBolus::getParametersId());
 
@@ -1237,30 +1315,36 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         // Now the drug model is ready to be used
 
 
-        IComputingService *component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+        IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
 
-        fructose_assert( component != nullptr);
+        fructose_assert(component != nullptr);
 
-        static_cast<ComputingComponent *>(component)->setPkModelCollection(collection);
+        static_cast<ComputingComponent*>(component)->setPkModelCollection(collection);
 
 
         {
-            const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+            const FormulationAndRoute route(
+                    Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
             auto drugTreatment = buildDrugTreatment(route);
 
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covS", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covA", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covR", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                    "covS", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                    "covA", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                    "covR", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
 
             RequestResponseId requestResponseId = "1";
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
             double nbPointsPerHour = 10.0;
-            ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment,
-                                            RetrieveStatisticsOption::RetrieveStatistics,
-                                            RetrieveParametersOption::RetrieveParameters,
-                                            RetrieveCovariatesOption::RetrieveCovariates);
+            ComputingOption computingOption(
+                    PredictionParameterType::Apriori,
+                    CompartmentsOption::MainCompartment,
+                    RetrieveStatisticsOption::RetrieveStatistics,
+                    RetrieveParametersOption::RetrieveParameters,
+                    RetrieveCovariatesOption::RetrieveCovariates);
 
             Tucuxi::Common::DateTime adjustmentTime(2018_y / sep / 3, 8h + 0min);
             BestCandidatesOption adjustmentOption = BestCandidatesOption::AllDosages;
@@ -1268,12 +1352,22 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
             RestPeriodOption restPeriodOption = RestPeriodOption::NoRestPeriod;
             SteadyStateTargetOption steadyStateTargetOption = SteadyStateTargetOption::AtSteadyState;
             TargetExtractionOption targetExtractionOption = TargetExtractionOption::PopulationValues;
-            FormulationAndRouteSelectionOption formulationAndRouteOption = FormulationAndRouteSelectionOption::LastFormulationAndRoute;
+            FormulationAndRouteSelectionOption formulationAndRouteOption =
+                    FormulationAndRouteSelectionOption::LastFormulationAndRoute;
 
-            std::unique_ptr<ComputingTraitAdjustment> traits =
-                    std::make_unique<ComputingTraitAdjustment>(
-                        requestResponseId, start, end, nbPointsPerHour, computingOption, adjustmentTime, adjustmentOption,
-                        loadingOption, restPeriodOption, steadyStateTargetOption, targetExtractionOption, formulationAndRouteOption);
+            std::unique_ptr<ComputingTraitAdjustment> traits = std::make_unique<ComputingTraitAdjustment>(
+                    requestResponseId,
+                    start,
+                    end,
+                    nbPointsPerHour,
+                    computingOption,
+                    adjustmentTime,
+                    adjustmentOption,
+                    loadingOption,
+                    restPeriodOption,
+                    steadyStateTargetOption,
+                    targetExtractionOption,
+                    formulationAndRouteOption);
 
 
             ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
@@ -1283,22 +1377,22 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
             ComputingStatus result;
             result = component->compute(request, response);
 
-            fructose_assert_eq( result, ComputingStatus::Ok);
+            fructose_assert_eq(result, ComputingStatus::Ok);
 
             const ComputedData* responseData = response->getData();
             fructose_assert(dynamic_cast<const AdjustmentData*>(responseData) != nullptr);
-            const AdjustmentData *resp = dynamic_cast<const AdjustmentData*>(responseData);
+            const AdjustmentData* resp = dynamic_cast<const AdjustmentData*>(responseData);
 
             fructose_assert_eq(resp->getAdjustments().size(), size_t{9});
 
-            for (auto &adjustment : resp->getAdjustments()) {
+            for (auto& adjustment : resp->getAdjustments()) {
 
                 fructose_assert_eq(adjustment.m_history.getDosageTimeRanges().size(), size_t{1});
 
-                for (const auto &timeRange : adjustment.m_history.getDosageTimeRanges()) {
-                    const DosageRepeat *dosageRepeat = dynamic_cast<const DosageRepeat*>(timeRange->getDosage());
+                for (const auto& timeRange : adjustment.m_history.getDosageTimeRanges()) {
+                    const DosageRepeat* dosageRepeat = dynamic_cast<const DosageRepeat*>(timeRange->getDosage());
                     fructose_assert(dosageRepeat != nullptr);
-                    const SingleDose *dosage = dynamic_cast<const SingleDose*>(dosageRepeat->getDosage());
+                    const SingleDose* dosage = dynamic_cast<const SingleDose*>(dosageRepeat->getDosage());
                     fructose_assert(dosage != nullptr);
                     fructose_assert_double_ge(dosage->getDose(), 750.0);
                     fructose_assert_double_le(dosage->getDose(), 1500.0);
@@ -1308,11 +1402,11 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
         // Delete all dynamically allocated objects
         delete component;
-
     }
 
 
-    void testAdjustments2() {
+    void testAdjustments2()
+    {
         BuildConstantElimination builder;
         auto drugModel = builder.buildDrugModel();
 
@@ -1320,18 +1414,19 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
 
         // Add targets
-        auto target = std::make_unique<TargetDefinition>(TargetType::CumulativeAuc,
-                                                        Unit("mg*h/l"),
-                                                        ActiveMoietyId("analyte"),
-                                                        std::make_unique<SubTargetDefinition>("cMin", 4.0 * 24.0 * 250.0, nullptr),
-                                                        std::make_unique<SubTargetDefinition>("cMax", 4.0 * 24.0 * 500.0, nullptr),
-                                                        std::make_unique<SubTargetDefinition>("cBest", 4.0 * 24.0 * 300.0, nullptr),
-                                                        std::make_unique<SubTargetDefinition>("mic", 0.0, nullptr),
-                                                        std::make_unique<SubTargetDefinition>("tMin", 1000.0, nullptr),
-                                                        std::make_unique<SubTargetDefinition>("tMax", 1000.0, nullptr),
-                                                        std::make_unique<SubTargetDefinition>("tBest", 1000.0, nullptr),
-                                                        std::make_unique<SubTargetDefinition>("toxicity", 10000.0, nullptr),
-                                                        std::make_unique<SubTargetDefinition>("inefficacy", 000.0, nullptr));
+        auto target = std::make_unique<TargetDefinition>(
+                TargetType::CumulativeAuc,
+                Unit("mg*h/l"),
+                ActiveMoietyId("analyte"),
+                std::make_unique<SubTargetDefinition>("cMin", 4.0 * 24.0 * 250.0, nullptr),
+                std::make_unique<SubTargetDefinition>("cMax", 4.0 * 24.0 * 500.0, nullptr),
+                std::make_unique<SubTargetDefinition>("cBest", 4.0 * 24.0 * 300.0, nullptr),
+                std::make_unique<SubTargetDefinition>("mic", 0.0, nullptr),
+                std::make_unique<SubTargetDefinition>("tMin", 1000.0, nullptr),
+                std::make_unique<SubTargetDefinition>("tMax", 1000.0, nullptr),
+                std::make_unique<SubTargetDefinition>("tBest", 1000.0, nullptr),
+                std::make_unique<SubTargetDefinition>("toxicity", 10000.0, nullptr),
+                std::make_unique<SubTargetDefinition>("inefficacy", 000.0, nullptr));
 
         drugModel->m_activeMoieties[0]->addTarget(std::move(target));
 
@@ -1342,7 +1437,8 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         std::shared_ptr<PkModel> sharedPkModel;
         sharedPkModel = std::make_shared<PkModel>("test.constantelimination", PkModel::AllowMultipleRoutes::No);
 
-        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
+        bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(
+                AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
         fructose_assert(addResult);
         sharedPkModel->addParameterList(AbsorptionModel::Extravascular, ConstantEliminationBolus::getParametersId());
 
@@ -1359,30 +1455,36 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         // Now the drug model is ready to be used
 
 
-        IComputingService *component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+        IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
 
-        fructose_assert( component != nullptr);
+        fructose_assert(component != nullptr);
 
-        static_cast<ComputingComponent *>(component)->setPkModelCollection(collection);
+        static_cast<ComputingComponent*>(component)->setPkModelCollection(collection);
 
 
         {
-            const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+            const FormulationAndRoute route(
+                    Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
             auto drugTreatment = buildDrugTreatment(route);
 
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covS", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covA", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
-            drugTreatment->addCovariate(std::make_unique<PatientCovariate>("covR", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                    "covS", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                    "covA", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                    "covR", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
 
             RequestResponseId requestResponseId = "1";
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
             double nbPointsPerHour = 10.0;
-            ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment,
-                                            RetrieveStatisticsOption::RetrieveStatistics,
-                                            RetrieveParametersOption::RetrieveParameters,
-                                            RetrieveCovariatesOption::RetrieveCovariates);
+            ComputingOption computingOption(
+                    PredictionParameterType::Apriori,
+                    CompartmentsOption::MainCompartment,
+                    RetrieveStatisticsOption::RetrieveStatistics,
+                    RetrieveParametersOption::RetrieveParameters,
+                    RetrieveCovariatesOption::RetrieveCovariates);
 
             Tucuxi::Common::DateTime adjustmentTime(2018_y / sep / 3, 8h + 0min);
             BestCandidatesOption adjustmentOption = BestCandidatesOption::AllDosages;
@@ -1390,12 +1492,22 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
             RestPeriodOption restPeriodOption = RestPeriodOption::NoRestPeriod;
             SteadyStateTargetOption steadyStateTargetOption = SteadyStateTargetOption::WithinTreatmentTimeRange;
             TargetExtractionOption targetExtractionOption = TargetExtractionOption::PopulationValues;
-            FormulationAndRouteSelectionOption formulationAndRouteOption = FormulationAndRouteSelectionOption::LastFormulationAndRoute;
+            FormulationAndRouteSelectionOption formulationAndRouteOption =
+                    FormulationAndRouteSelectionOption::LastFormulationAndRoute;
 
-            std::unique_ptr<ComputingTraitAdjustment> traits =
-                    std::make_unique<ComputingTraitAdjustment>(
-                        requestResponseId, start, end, nbPointsPerHour, computingOption, adjustmentTime, adjustmentOption,
-                        loadingOption, restPeriodOption, steadyStateTargetOption, targetExtractionOption, formulationAndRouteOption);
+            std::unique_ptr<ComputingTraitAdjustment> traits = std::make_unique<ComputingTraitAdjustment>(
+                    requestResponseId,
+                    start,
+                    end,
+                    nbPointsPerHour,
+                    computingOption,
+                    adjustmentTime,
+                    adjustmentOption,
+                    loadingOption,
+                    restPeriodOption,
+                    steadyStateTargetOption,
+                    targetExtractionOption,
+                    formulationAndRouteOption);
 
             ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
 
@@ -1404,24 +1516,24 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
             ComputingStatus result;
             result = component->compute(request, response);
 
-            fructose_assert_eq( result, ComputingStatus::Ok);
+            fructose_assert_eq(result, ComputingStatus::Ok);
 
             const ComputedData* responseData = response->getData();
             fructose_assert(dynamic_cast<const AdjustmentData*>(responseData) != nullptr);
-            const AdjustmentData *resp = dynamic_cast<const AdjustmentData*>(responseData);
+            const AdjustmentData* resp = dynamic_cast<const AdjustmentData*>(responseData);
 
             // 18 possibilities:
             // 3 intervals for doses 300, 400, 500, 600, 700, 800
             fructose_assert_eq(resp->getAdjustments().size(), size_t{18});
 
-            for (auto &adjustment : resp->getAdjustments()) {
+            for (auto& adjustment : resp->getAdjustments()) {
 
                 fructose_assert_eq(adjustment.m_history.getDosageTimeRanges().size(), size_t{1});
 
-                for (const auto &timeRange : adjustment.m_history.getDosageTimeRanges()) {
-                    const DosageRepeat *dosageRepeat = dynamic_cast<const DosageRepeat*>(timeRange->getDosage());
+                for (const auto& timeRange : adjustment.m_history.getDosageTimeRanges()) {
+                    const DosageRepeat* dosageRepeat = dynamic_cast<const DosageRepeat*>(timeRange->getDosage());
                     fructose_assert(dosageRepeat != nullptr);
-                    const SingleDose *dosage = dynamic_cast<const SingleDose*>(dosageRepeat->getDosage());
+                    const SingleDose* dosage = dynamic_cast<const SingleDose*>(dosageRepeat->getDosage());
                     fructose_assert(dosage != nullptr);
                     fructose_assert_double_ge((200.0 + dosage->getDose()) / 2.0, 250.0);
                     fructose_assert_double_le((200.0 + dosage->getDose()) / 2.0, 500.0);
@@ -1431,7 +1543,6 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
 
         // Delete all dynamically allocated objects
         delete component;
-
     }
 
 
@@ -1451,7 +1562,6 @@ struct TestConstantEliminationBolus : public fructose::test_base<TestConstantEli
         testAdjustments2();
         // testParamProportionalResidualErrorModelProportional();
     }
-
 };
 
 

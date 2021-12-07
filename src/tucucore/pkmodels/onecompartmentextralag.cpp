@@ -6,12 +6,14 @@
 #include <Eigen/LU>
 
 #include "tucucore/pkmodels/onecompartmentextralag.h"
+
 #include "tucucore/intakeevent.h"
 
 namespace Tucuxi {
 namespace Core {
 
-OneCompartmentExtraLagMicro::OneCompartmentExtraLagMicro() : IntakeIntervalCalculatorBase<2, OneCompartmentExtraLagExponentials> (new PertinentTimesCalculatorStandard())
+OneCompartmentExtraLagMicro::OneCompartmentExtraLagMicro()
+    : IntakeIntervalCalculatorBase<2, OneCompartmentExtraLagExponentials>(new PertinentTimesCalculatorStandard())
 {
 }
 
@@ -51,11 +53,18 @@ bool OneCompartmentExtraLagMicro::checkInputs(const IntakeEvent& _intakeEvent, c
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
     if (m_nbPoints == 2) {
-        m_nbPoints0 = static_cast<Eigen::Index>(std::min(ceil(m_Tlag/m_Int * static_cast<double>(m_nbPoints)), ceil(static_cast<double>(m_nbPoints))));
+        m_nbPoints0 = static_cast<Eigen::Index>(std::min(
+                ceil(m_Tlag / m_Int * static_cast<double>(m_nbPoints)), ceil(static_cast<double>(m_nbPoints))));
     }
     else {
-    //    m_nbPoints0 = std::min(m_nbPoints, std::max(2, static_cast<int>((m_Tlag / m_Int) * static_cast<double>(m_nbPoints))));
-        m_nbPoints0 = std::min(static_cast<Eigen::Index>(m_nbPoints), std::max(Eigen::Index{2}, static_cast<Eigen::Index>(std::min(ceil(m_Tlag/m_Int * static_cast<double>(m_nbPoints)), ceil(static_cast<double>(m_nbPoints))))));
+        //    m_nbPoints0 = std::min(m_nbPoints, std::max(2, static_cast<int>((m_Tlag / m_Int) * static_cast<double>(m_nbPoints))));
+        m_nbPoints0 = std::min(
+                static_cast<Eigen::Index>(m_nbPoints),
+                std::max(
+                        Eigen::Index{2},
+                        static_cast<Eigen::Index>(std::min(
+                                ceil(m_Tlag / m_Int * static_cast<double>(m_nbPoints)),
+                                ceil(static_cast<double>(m_nbPoints))))));
     }
     m_nbPoints1 = m_nbPoints - m_nbPoints0;
 
@@ -64,16 +73,16 @@ bool OneCompartmentExtraLagMicro::checkInputs(const IntakeEvent& _intakeEvent, c
 }
 
 
-inline void OneCompartmentExtraLagMicro::compute(const Residuals& _inResiduals, Eigen::VectorXd& _concentrations1, Eigen::VectorXd& _concentrations2)
+inline void OneCompartmentExtraLagMicro::compute(
+        const Residuals& _inResiduals, Eigen::VectorXd& _concentrations1, Eigen::VectorXd& _concentrations2)
 {
     if (m_Tlag <= 0.0) {
         Concentration resid1 = _inResiduals[0];
         Concentration resid2 = _inResiduals[1] + m_F * m_D / m_V;
         Concentration part2 = m_Ka * resid2 / (-m_Ka + m_Ke);
 
-        _concentrations1 =
-                exponentials(Exponentials::Ke) * resid1
-                + (exponentials(Exponentials::Ka) - exponentials(Exponentials::Ke)) * part2;
+        _concentrations1 = exponentials(Exponentials::Ke) * resid1
+                           + (exponentials(Exponentials::Ka) - exponentials(Exponentials::Ke)) * part2;
         _concentrations2 = resid2 * exponentials(Exponentials::Ka);
     }
     else {
@@ -81,15 +90,13 @@ inline void OneCompartmentExtraLagMicro::compute(const Residuals& _inResiduals, 
         Concentration resid2 = _inResiduals[1];
         Concentration part2 = m_Ka * resid2 / (-m_Ka + m_Ke);
 
-        Eigen::VectorXd concentrations1 =
-                exponentials(Exponentials::Ke) * resid1
-                + (exponentials(Exponentials::Ka) - exponentials(Exponentials::Ke)) * part2;
+        Eigen::VectorXd concentrations1 = exponentials(Exponentials::Ke) * resid1
+                                          + (exponentials(Exponentials::Ka) - exponentials(Exponentials::Ke)) * part2;
         Eigen::VectorXd concentrations2 = resid2 * exponentials(Exponentials::Ka);
 
         Concentration postLagResid1 =
-                exp(- m_Ke * m_Tlag) * resid1
-                + (exp(- m_Ka * m_Tlag) - exp(- m_Ke * m_Tlag)) * part2;
-        Concentration postLagResid2 = resid2 * exp(- m_Ka * m_Tlag) + m_F * m_D / m_V;
+                exp(-m_Ke * m_Tlag) * resid1 + (exp(-m_Ka * m_Tlag) - exp(-m_Ke * m_Tlag)) * part2;
+        Concentration postLagResid2 = resid2 * exp(-m_Ka * m_Tlag) + m_F * m_D / m_V;
         Concentration postLagPart2 = m_Ka * postLagResid2 / (-m_Ka + m_Ke);
 
         Eigen::VectorXd concentrations1post =
@@ -99,29 +106,27 @@ inline void OneCompartmentExtraLagMicro::compute(const Residuals& _inResiduals, 
 
         _concentrations1 = Eigen::VectorXd(m_nbPoints);
         _concentrations2 = Eigen::VectorXd(m_nbPoints);
-        for(Eigen::Index i = 0; i < static_cast<Eigen::Index>(m_nbPoints0); i++) {
+        for (Eigen::Index i = 0; i < static_cast<Eigen::Index>(m_nbPoints0); i++) {
             _concentrations1[i] = concentrations1[i];
             _concentrations2[i] = concentrations2[i];
         }
-        for(Eigen::Index i = static_cast<Eigen::Index>(m_nbPoints0); i < static_cast<Eigen::Index>(m_nbPoints); i++) {
+        for (Eigen::Index i = static_cast<Eigen::Index>(m_nbPoints0); i < static_cast<Eigen::Index>(m_nbPoints); i++) {
             _concentrations1[i] = concentrations1post[i];
             _concentrations2[i] = concentrations2post[i];
         }
-
-
     }
 
 
-    // In ezechiel, the equation of cencenrations2 for single points was different.
-    // After the test, if the result is strange,
-    // try to use following equation for calculation of single points
-    #if 0
+// In ezechiel, the equation of cencenrations2 for single points was different.
+// After the test, if the result is strange,
+// try to use following equation for calculation of single points
+#if 0
     // a.cwiseQuotient(b): element wise division of Matrix
     Eigen::VectorXd concentrations2 =
         (m_F * m_D * logs(Exponentials::Ka)).
     cwiseQuotient((m_V * (1*Eigen::VectorXd::Ones(logs(Exponentials::Ka).size()) -
         logs(Exponentials::Ka))));
-    #endif
+#endif
 }
 
 void OneCompartmentExtraLagMicro::computeExponentials(Eigen::VectorXd& _times)
@@ -134,7 +139,11 @@ void OneCompartmentExtraLagMicro::computeExponentials(Eigen::VectorXd& _times)
 }
 
 
-bool OneCompartmentExtraLagMicro::computeConcentrations(const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
+bool OneCompartmentExtraLagMicro::computeConcentrations(
+        const Residuals& _inResiduals,
+        bool _isAll,
+        std::vector<Concentrations>& _concentrations,
+        Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1, concentrations2;
     size_t firstCompartment = static_cast<size_t>(Compartments::First);
@@ -146,10 +155,11 @@ bool OneCompartmentExtraLagMicro::computeConcentrations(const Residuals& _inResi
     _outResiduals[secondCompartment] = concentrations2[m_nbPoints - 1];
 
     // Return concentrations of first compartment
-    _concentrations[firstCompartment].assign(concentrations1.data(), concentrations1.data() + concentrations1.size());	
+    _concentrations[firstCompartment].assign(concentrations1.data(), concentrations1.data() + concentrations1.size());
     // Return concentrations of other compartments
     if (_isAll == true) {
-        _concentrations[secondCompartment].assign(concentrations2.data(), concentrations2.data() + concentrations2.size());	
+        _concentrations[secondCompartment].assign(
+                concentrations2.data(), concentrations2.data() + concentrations2.size());
     }
 
     bool bOK = checkCondition(_outResiduals[firstCompartment] >= 0, "The concentration1 is negative.");
@@ -158,7 +168,12 @@ bool OneCompartmentExtraLagMicro::computeConcentrations(const Residuals& _inResi
     return bOK;
 }
 
-bool OneCompartmentExtraLagMicro::computeConcentration(const Value& _atTime, const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
+bool OneCompartmentExtraLagMicro::computeConcentration(
+        const Value& _atTime,
+        const Residuals& _inResiduals,
+        bool _isAll,
+        std::vector<Concentrations>& _concentrations,
+        Residuals& _outResiduals)
 {
     TMP_UNUSED_PARAMETER(_atTime);
     Eigen::VectorXd concentrations1, concentrations2;
@@ -187,7 +202,7 @@ bool OneCompartmentExtraLagMicro::computeConcentration(const Value& _atTime, con
     if (_isAll == true) {
         _concentrations[secondCompartment].push_back(concentrations2[atTime]);
     }
-    
+
     // interval=0 means that it is the last cycle, so final residual = 0
     if (m_Int == 0) {
         concentrations1[atEndInterval] = 0;
@@ -204,9 +219,7 @@ bool OneCompartmentExtraLagMicro::computeConcentration(const Value& _atTime, con
     return bOK;
 }
 
-OneCompartmentExtraLagMacro::OneCompartmentExtraLagMacro() : OneCompartmentExtraLagMicro()
-{
-}
+OneCompartmentExtraLagMacro::OneCompartmentExtraLagMacro() : OneCompartmentExtraLagMicro() {}
 
 std::vector<std::string> OneCompartmentExtraLagMacro::getParametersId()
 {
@@ -244,11 +257,18 @@ bool OneCompartmentExtraLagMacro::checkInputs(const IntakeEvent& _intakeEvent, c
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
     if (m_nbPoints == 2) {
-        m_nbPoints0 = static_cast<Eigen::Index>(std::min(ceil(m_Tlag/m_Int * static_cast<double>(m_nbPoints)), ceil(static_cast<double>(m_nbPoints))));
+        m_nbPoints0 = static_cast<Eigen::Index>(std::min(
+                ceil(m_Tlag / m_Int * static_cast<double>(m_nbPoints)), ceil(static_cast<double>(m_nbPoints))));
     }
     else {
-    //    m_nbPoints0 = std::min(m_nbPoints, std::max(2, static_cast<int>((m_Tlag / m_Int) * static_cast<double>(m_nbPoints))));
-        m_nbPoints0 = std::min(static_cast<Eigen::Index>(m_nbPoints), std::max(Eigen::Index{2}, static_cast<Eigen::Index>(std::min(ceil(m_Tlag/m_Int * static_cast<double>(m_nbPoints)), ceil(static_cast<double>(m_nbPoints))))));
+        //    m_nbPoints0 = std::min(m_nbPoints, std::max(2, static_cast<int>((m_Tlag / m_Int) * static_cast<double>(m_nbPoints))));
+        m_nbPoints0 = std::min(
+                static_cast<Eigen::Index>(m_nbPoints),
+                std::max(
+                        Eigen::Index{2},
+                        static_cast<Eigen::Index>(std::min(
+                                ceil(m_Tlag / m_Int * static_cast<double>(m_nbPoints)),
+                                ceil(static_cast<double>(m_nbPoints))))));
     }
     m_nbPoints1 = m_nbPoints - m_nbPoints0;
 
@@ -256,5 +276,5 @@ bool OneCompartmentExtraLagMacro::checkInputs(const IntakeEvent& _intakeEvent, c
     return bOK;
 }
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi

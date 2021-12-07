@@ -5,9 +5,9 @@
 #ifndef TUCUXI_CORE_SAMPLEEXTRACTOR_H
 #define TUCUXI_CORE_SAMPLEEXTRACTOR_H
 
+#include "tucucore/computingservice/computingresult.h"
 #include "tucucore/drugtreatment/sample.h"
 #include "tucucore/sampleevent.h"
-#include "tucucore/computingservice/computingresult.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -15,7 +15,6 @@ namespace Core {
 class SampleExtractor
 {
 public:
-
     ///
     /// \brief extract relevant samples
     /// \param _samples The list of available samples
@@ -29,12 +28,12 @@ public:
     /// This function also converts the samples to ug/l.
     ///
     ComputingStatus extract(
-            const Samples &_samples,
-            const AnalyteSet *_analyteGroup,
-            const DateTime &_start,
-            const DateTime &_end,
-            const TucuUnit &_toUnit,
-            SampleSeries &_series);
+            const Samples& _samples,
+            const AnalyteSet* _analyteGroup,
+            const DateTime& _start,
+            const DateTime& _end,
+            const TucuUnit& _toUnit,
+            SampleSeries& _series);
 
 
     ///
@@ -49,11 +48,11 @@ public:
     /// This function also converts the samples to ug/l.
     ///
     ComputingStatus extract(
-            const Samples &_samples,
-            const DateTime &_start,
-            const DateTime &_end,
-            const TucuUnit &_toUnit,
-            SampleSeries &_series);
+            const Samples& _samples,
+            const DateTime& _start,
+            const DateTime& _end,
+            const TucuUnit& _toUnit,
+            SampleSeries& _series);
 };
 
 } // namespace Core

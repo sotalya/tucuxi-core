@@ -5,13 +5,13 @@
 #ifndef TUCUXI_CORE_MULTICONCENTRATIONCALCULATOR_H
 #define TUCUXI_CORE_MULTICONCENTRATIONCALCULATOR_H
 
+#include "tucucore/computingservice/computingresult.h"
 #include "tucucore/definitions.h"
-#include "tucucore/parameter.h"
 #include "tucucore/dosage.h"
+#include "tucucore/multiconcentrationprediction.h"
+#include "tucucore/parameter.h"
 #include "tucucore/residualerrormodel.h"
 #include "tucucore/sampleevent.h"
-#include "tucucore/multiconcentrationprediction.h"
-#include "tucucore/computingservice/computingresult.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -43,17 +43,17 @@ public:
     /// of _espsilons.
     ///
     virtual ComputingStatus computeConcentrations(
-        const MultiConcentrationPredictionPtr &_prediction,
-        bool _isAll,
-        const DateTime &_recordFrom,
-        const DateTime &_recordTo,
-        const IntakeSeries &_intakes,
-        const ParameterSetSeries& _parameters,
-        const Etas& _etas = Etas(0),
-        const std::vector<std::unique_ptr<IResidualErrorModel> > &_residualErrorModels = {},
-        const std::vector<Deviations>& _epsilons = {},
-        bool _onlyAnalytes = true,
-        bool _isFixedDensity = false) = 0;
+            const MultiConcentrationPredictionPtr& _prediction,
+            bool _isAll,
+            const DateTime& _recordFrom,
+            const DateTime& _recordTo,
+            const IntakeSeries& _intakes,
+            const ParameterSetSeries& _parameters,
+            const Etas& _etas = Etas(0),
+            const std::vector<std::unique_ptr<IResidualErrorModel> >& _residualErrorModels = {},
+            const std::vector<Deviations>& _epsilons = {},
+            bool _onlyAnalytes = true,
+            bool _isFixedDensity = false) = 0;
 
     ///
     /// \brief computeConcentrationsAtSteadyState
@@ -79,17 +79,17 @@ public:
     /// of _espsilons.
     ///
     virtual ComputingStatus computeConcentrationsAtSteadyState(
-        const MultiConcentrationPredictionPtr &_prediction,
-        bool _isAll,
-        const DateTime &_recordFrom,
-        const DateTime &_recordTo,
-        const IntakeSeries &_intakes,
-        const ParameterSetSeries& _parameters,
-        const Etas& _etas = Etas(0),
-        const std::vector<std::unique_ptr<IResidualErrorModel> > &_residualErrorModels = {},
-        const std::vector<Deviations>& _epsilons = {},
-        bool _onlyAnalytes = true,
-        bool _isFixedDensity = false) = 0;
+            const MultiConcentrationPredictionPtr& _prediction,
+            bool _isAll,
+            const DateTime& _recordFrom,
+            const DateTime& _recordTo,
+            const IntakeSeries& _intakes,
+            const ParameterSetSeries& _parameters,
+            const Etas& _etas = Etas(0),
+            const std::vector<std::unique_ptr<IResidualErrorModel> >& _residualErrorModels = {},
+            const std::vector<Deviations>& _epsilons = {},
+            bool _onlyAnalytes = true,
+            bool _isFixedDensity = false) = 0;
 
     ///
     /// \brief Calculates concentrations at specific times
@@ -106,13 +106,13 @@ public:
     /// \return The status of computation
     ///
     virtual ComputingStatus computeConcentrationsAtTimes(
-        std::vector<Concentrations>& _concentrations,
-        bool _isAll,
-        const IntakeSeries& _intakes,
-        const ParameterSetSeries& _parameters,
-        const SampleSeries& _samples,
-        const Etas& _etas = Etas(0),
-        bool _onlyAnalytes = true) = 0;
+            std::vector<Concentrations>& _concentrations,
+            bool _isAll,
+            const IntakeSeries& _intakes,
+            const ParameterSetSeries& _parameters,
+            const SampleSeries& _samples,
+            const Etas& _etas = Etas(0),
+            bool _onlyAnalytes = true) = 0;
 
     /// \brief virtual empty destructor
     virtual ~IMultiConcentrationCalculator() = default;
@@ -123,7 +123,6 @@ public:
 class MultiConcentrationCalculator : public IMultiConcentrationCalculator
 {
 public:
-
     ///
     /// \brief computeConcentrations
     /// \param _prediction The calculated concentrations
@@ -144,17 +143,17 @@ public:
     /// of _espsilons.
     ///
     ComputingStatus computeConcentrations(
-        const MultiConcentrationPredictionPtr &_prediction,
-        bool _isAll,
-        const DateTime &_recordFrom,
-        const DateTime &_recordTo,
-        const IntakeSeries &_intakes,
-        const ParameterSetSeries& _parameters,
-        const Etas& _etas = Etas(0),
-        const std::vector<std::unique_ptr<IResidualErrorModel> > &_residualErrorModels = {},
-        const std::vector<Deviations>& _epsilons = {},
-        bool _onlyAnalytes = true,
-        bool _isFixedDensity = false) override;
+            const MultiConcentrationPredictionPtr& _prediction,
+            bool _isAll,
+            const DateTime& _recordFrom,
+            const DateTime& _recordTo,
+            const IntakeSeries& _intakes,
+            const ParameterSetSeries& _parameters,
+            const Etas& _etas = Etas(0),
+            const std::vector<std::unique_ptr<IResidualErrorModel> >& _residualErrorModels = {},
+            const std::vector<Deviations>& _epsilons = {},
+            bool _onlyAnalytes = true,
+            bool _isFixedDensity = false) override;
 
     ///
     /// \brief computeConcentrationsAtSteadyState
@@ -180,17 +179,17 @@ public:
     /// of _espsilons.
     ///
     ComputingStatus computeConcentrationsAtSteadyState(
-        const MultiConcentrationPredictionPtr &_prediction,
-        bool _isAll,
-        const DateTime &_recordFrom,
-        const DateTime &_recordTo,
-        const IntakeSeries &_intakes,
-        const ParameterSetSeries& _parameters,
-        const Etas& _etas = Etas(0),
-        const std::vector<std::unique_ptr<IResidualErrorModel> > &_residualErrorModels = {},
-        const std::vector<Deviations>& _epsilons = {},
-        bool _onlyAnalytes = true,
-        bool _isFixedDensity = false) override;
+            const MultiConcentrationPredictionPtr& _prediction,
+            bool _isAll,
+            const DateTime& _recordFrom,
+            const DateTime& _recordTo,
+            const IntakeSeries& _intakes,
+            const ParameterSetSeries& _parameters,
+            const Etas& _etas = Etas(0),
+            const std::vector<std::unique_ptr<IResidualErrorModel> >& _residualErrorModels = {},
+            const std::vector<Deviations>& _epsilons = {},
+            bool _onlyAnalytes = true,
+            bool _isFixedDensity = false) override;
 
 
     ///
@@ -206,14 +205,13 @@ public:
     /// \return The status of computation
     ///
     ComputingStatus computeConcentrationsAtTimes(
-        std::vector<Concentrations>& _concentrations,
-        bool _isAll,
-        const IntakeSeries& _intakes,
-        const ParameterSetSeries& _parameters,
-        const SampleSeries& _samples,
-        const Etas& _etas = Etas(0),
-        bool _onlyAnalytes = true) override;
-
+            std::vector<Concentrations>& _concentrations,
+            bool _isAll,
+            const IntakeSeries& _intakes,
+            const ParameterSetSeries& _parameters,
+            const SampleSeries& _samples,
+            const Etas& _etas = Etas(0),
+            bool _onlyAnalytes = true) override;
 };
 
 } // namespace Core

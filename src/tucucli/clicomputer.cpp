@@ -1,27 +1,27 @@
 #include "clicomputer.h"
 
-#include "tucucore/computingservice/icomputingservice.h"
 #include "tucucore/computingcomponent.h"
 #include "tucucore/computingservice/computingrequest.h"
-#include "tucuquery/computingresponseexport.h"
-#include "tucuquery/computingqueryresponsexmlexport.h"
+#include "tucucore/computingservice/icomputingservice.h"
 #include "tucucore/overloadevaluator.h"
+
+#include "tucuquery/computingqueryresponsexmlexport.h"
+#include "tucuquery/computingresponseexport.h"
+#include "tucuquery/querycomputer.h"
 #include "tucuquery/querydata.h"
 #include "tucuquery/queryimport.h"
 #include "tucuquery/querytocoreextractor.h"
-#include "tucuquery/querycomputer.h"
 
 using namespace Tucuxi::Core;
 using namespace Tucuxi::Query;
 
-std::string fileAndDirFromPath(std::string &_outputPath);
+std::string fileAndDirFromPath(std::string& _outputPath);
 
 CliComputer::CliComputer() = default;
 
 
-QueryStatus CliComputer::compute(const std::string& _inputFileName,
-                                 const std::string& _outputFileName,
-                                 const std::string& _dataFilePath)
+QueryStatus CliComputer::compute(
+        const std::string& _inputFileName, const std::string& _outputFileName, const std::string& _dataFilePath)
 {
 
     // Change the settings for the tests
@@ -46,18 +46,18 @@ QueryStatus CliComputer::compute(const std::string& _inputFileName,
     std::ifstream ifs(_inputFileName);
     if (ifs.fail()) {
         logHelper.error("Could not open the input file: " + _inputFileName);
-        computingQueryResponse.setQueryStatus(QueryStatus::ImportError, "Could not open the input file: " + _inputFileName);
+        computingQueryResponse.setQueryStatus(
+                QueryStatus::ImportError, "Could not open the input file: " + _inputFileName);
         return computingQueryResponse.getQueryStatus();
     }
-    std::string xmlString((std::istreambuf_iterator<char>(ifs)),(std::istreambuf_iterator<char>()));
+    std::string xmlString((std::istreambuf_iterator<char>(ifs)), (std::istreambuf_iterator<char>()));
 
     queryComputer->compute(xmlString, computingQueryResponse);
 
 
-    if(!_dataFilePath.empty()
-            && (computingQueryResponse.getQueryStatus() != QueryStatus::ImportError
-                || computingQueryResponse.getQueryStatus() != QueryStatus::BadFormat))
-    {
+    if (!_dataFilePath.empty()
+        && (computingQueryResponse.getQueryStatus() != QueryStatus::ImportError
+            || computingQueryResponse.getQueryStatus() != QueryStatus::BadFormat)) {
         ComputingResponseExport exporter;
 
         if (!exporter.exportToFiles(computingQueryResponse, _dataFilePath)) {
@@ -66,7 +66,6 @@ QueryStatus CliComputer::compute(const std::string& _inputFileName,
         }
 
         logHelper.info("The response files were successfully generated");
-
     }
 
     ComputingQueryResponseXmlExport xmlExporter;
@@ -80,6 +79,4 @@ QueryStatus CliComputer::compute(const std::string& _inputFileName,
     logHelper.info("The response XML file was successfully generated");
 
     return computingQueryResponse.getQueryStatus();
-
 }
-

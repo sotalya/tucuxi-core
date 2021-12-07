@@ -5,8 +5,8 @@
 #ifndef TUCUXI_CORE_DRUGTREATMENT_H
 #define TUCUXI_CORE_DRUGTREATMENT_H
 
-#include "tucucore/dosage.h"
 #include "tucucore/covariateevent.h"
+#include "tucucore/dosage.h"
 #include "tucucore/drugtreatment/sample.h"
 #include "tucucore/drugtreatment/target.h"
 
@@ -25,7 +25,6 @@ namespace Core {
 class DrugTreatment
 {
 public:
-
     ///
     /// \brief Empty constructor
     ///
@@ -95,9 +94,8 @@ public:
     /// \param _sample The sample measure to add
     ///
     void addSample(std::unique_ptr<Sample> _sample);
-    
-private:
 
+private:
     /// The patient dosage history
     DosageHistory m_dosageHistory;
 
@@ -109,7 +107,6 @@ private:
 
     /// The measures samples
     Samples m_samples;
-
 };
 
 } // namespace Core

@@ -1,9 +1,8 @@
 #ifndef TUCUXI_CORE_RK4TWOCOMPARTMENTERLANG4_H
 #define TUCUXI_CORE_RK4TWOCOMPARTMENTERLANG4_H
 
-#include "tucucore/intakeintervalcalculatorrk4.h"
-
 #include "tucucore/intakeevent.h"
+#include "tucucore/intakeintervalcalculatorrk4.h"
 
 
 namespace Tucuxi {
@@ -73,27 +72,33 @@ namespace Core {
 ///
 ///
 template<int from, int to>
-struct TransitComps {
-    static inline void init(const Residuals& _inResiduals,  std::vector<double> &_concentrations) {
+struct TransitComps
+{
+    static inline void init(const Residuals& _inResiduals, std::vector<double>& _concentrations)
+    {
         _concentrations[from] = _inResiduals[from];
-        TransitComps<from+1,to>:: init(_inResiduals, _concentrations);
+        TransitComps<from + 1, to>::init(_inResiduals, _concentrations);
     }
 
-    static inline void derive(Value _ktr, const std::vector<double> &_c, std::vector<double>& _dcdt) {
-        _dcdt[from] =  _ktr * _c[from - 1] - _ktr * _c[from];
-        TransitComps<from+1,to>:: derive(_ktr, _c, _dcdt);
+    static inline void derive(Value _ktr, const std::vector<double>& _c, std::vector<double>& _dcdt)
+    {
+        _dcdt[from] = _ktr * _c[from - 1] - _ktr * _c[from];
+        TransitComps<from + 1, to>::derive(_ktr, _c, _dcdt);
     }
 };
 
 // Terminal case
 template<int from>
-struct TransitComps<from, from> {
-    static inline void init(const Residuals& _inResiduals,  std::vector<double> &_concentrations) {
+struct TransitComps<from, from>
+{
+    static inline void init(const Residuals& _inResiduals, std::vector<double>& _concentrations)
+    {
         _concentrations[from] = _inResiduals[from];
     }
 
-    static inline void derive(Value _ktr, const std::vector<double> &_c, std::vector<double>& _dcdt) {
-        _dcdt[from] =  _ktr * _c[from - 1] - _ktr * _c[from];
+    static inline void derive(Value _ktr, const std::vector<double>& _c, std::vector<double>& _dcdt)
+    {
+        _dcdt[from] = _ktr * _c[from - 1] - _ktr * _c[from];
     }
 };
 
@@ -114,13 +119,20 @@ struct TransitComps<from, from> {
 /// The template parameter NbTransitCompartment allows to define the number of transit compartments.
 ///
 template<int NbTransitCompartment>
-class RK4TwoCompartmentErlangMicro : public IntakeIntervalCalculatorRK4Base<NbTransitCompartment + 3, RK4TwoCompartmentErlangMicro<NbTransitCompartment> >
+class RK4TwoCompartmentErlangMicro :
+    public IntakeIntervalCalculatorRK4Base<
+            NbTransitCompartment + 3,
+            RK4TwoCompartmentErlangMicro<NbTransitCompartment> >
 {
     INTAKEINTERVALCALCULATOR_UTILS(RK4TwoCompartmentErlangMicro<NbTransitCompartment>)
 public:
     /// \brief Constructor
-    RK4TwoCompartmentErlangMicro() : IntakeIntervalCalculatorRK4Base<NbTransitCompartment + 3, RK4TwoCompartmentErlangMicro<NbTransitCompartment> > (new PertinentTimesCalculatorStandard())
-    {}
+    RK4TwoCompartmentErlangMicro()
+        : IntakeIntervalCalculatorRK4Base<
+                NbTransitCompartment + 3,
+                RK4TwoCompartmentErlangMicro<NbTransitCompartment> >(new PertinentTimesCalculatorStandard())
+    {
+    }
 
     /// \brief Returns the list of required PK parameters Ids
     /// \return The list of required PK parameters Ids
@@ -129,20 +141,29 @@ public:
         return {"V1", "Ktr", "Ke", "K12", "K21", "F"};
     }
 
-    enum class CompartmentsEnum : int { Central = 0, Peripheral, Dose, A2, A3, A4, A5 };
+    enum class CompartmentsEnum : int
+    {
+        Central = 0,
+        Peripheral,
+        Dose,
+        A2,
+        A3,
+        A4,
+        A5
+    };
 
 
-    inline void derive(double _t, const std::vector<double> &_c, std::vector<double>& _dcdt)
+    inline void derive(double _t, const std::vector<double>& _c, std::vector<double>& _dcdt)
     {
         FINAL_UNUSED_PARAMETER(_t);
         _dcdt[0] = m_Ktr * _c[3 + NbTransitCompartment - 1] - m_Ke * _c[0] + m_K21 * _c[1] - m_K12 * _c[0];
         _dcdt[1] = m_K12 * _c[0] - m_K21 * _c[1];
-        _dcdt[2] = - m_Ktr * _c[2];
-        TransitComps<3,3 + NbTransitCompartment - 1>::derive(m_Ktr, _c, _dcdt);
-//        _dcdt[3] = m_Ktr * _c[2] - m_Ktr * _c[3];
-//        _dcdt[4] = m_Ktr * _c[3] - m_Ktr * _c[4];
-//        _dcdt[5] = m_Ktr * _c[4] - m_Ktr * _c[5];
-//        _dcdt[6] = m_Ktr * _c[5] - m_Ktr * _c[6];
+        _dcdt[2] = -m_Ktr * _c[2];
+        TransitComps<3, 3 + NbTransitCompartment - 1>::derive(m_Ktr, _c, _dcdt);
+        //        _dcdt[3] = m_Ktr * _c[2] - m_Ktr * _c[3];
+        //        _dcdt[4] = m_Ktr * _c[3] - m_Ktr * _c[4];
+        //        _dcdt[5] = m_Ktr * _c[4] - m_Ktr * _c[5];
+        //        _dcdt[6] = m_Ktr * _c[5] - m_Ktr * _c[6];
     }
 
     inline void addFixedValue(double _t, std::vector<double>& _concentrations)
@@ -152,7 +173,6 @@ public:
     }
 
 protected:
-
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override
     {
         if (!this->checkCondition(_parameters.size() >= 6, "The number of parameters should be equal to 6.")) {
@@ -186,23 +206,24 @@ protected:
     }
 
 
-    void initConcentrations (const Residuals& _inResiduals, std::vector<double> &_concentrations) override
+    void initConcentrations(const Residuals& _inResiduals, std::vector<double>& _concentrations) override
     {
         _concentrations[0] = _inResiduals[0];
         _concentrations[1] = _inResiduals[1];
         _concentrations[2] = _inResiduals[2] + m_D / m_V1;
-        TransitComps<3,3 + NbTransitCompartment - 1>::init(_inResiduals, _concentrations);
-//        _concentrations[3] = _inResiduals[3];
-//        _concentrations[4] = _inResiduals[4];
-//        _concentrations[5] = _inResiduals[5];
-//        _concentrations[6] = _inResiduals[6];
+        TransitComps<3, 3 + NbTransitCompartment - 1>::init(_inResiduals, _concentrations);
+        //        _concentrations[3] = _inResiduals[3];
+        //        _concentrations[4] = _inResiduals[4];
+        //        _concentrations[5] = _inResiduals[5];
+        //        _concentrations[6] = _inResiduals[6];
     }
 
 
-    Value m_D{0.0};	/// Quantity of drug
+    Value m_D{0.0};  /// Quantity of drug
     Value m_F{0.0};  /// bioavailability
-    Value m_V1{0.0};  /// Volume of the central compartment
-    Value m_Ke{0.0}; /// Elimination constant rate = Cl/V where Cl is the clearance and V is the volume of the compartment
+    Value m_V1{0.0}; /// Volume of the central compartment
+    Value m_Ke{
+            0.0}; /// Elimination constant rate = Cl/V where Cl is the clearance and V is the volume of the compartment
     Value m_K12{0.0}; /// Inter-compartment rate between central and peripheral
     Value m_K21{0.0}; /// Inter-compartment rate between peripheral and central
     Value m_Ktr{0.0}; /// Transit compartments constant rate
@@ -229,7 +250,6 @@ public:
     }
 
 protected:
-
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override
     {
         if (!this->checkCondition(_parameters.size() >= 6, "The number of parameters should be equal to 6.")) {
@@ -266,7 +286,6 @@ protected:
 
         return bOK;
     }
-
 };
 
 } // namespace Core

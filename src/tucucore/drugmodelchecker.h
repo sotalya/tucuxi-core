@@ -15,18 +15,18 @@ class Operation;
 class DrugModelChecker
 {
 public:
-
-    typedef struct [[nodiscard]] {
+    typedef struct [[nodiscard]]
+    {
         bool m_ok;
         std::string m_errorMessage;
-    } CheckerResult_t;
+    }
+    CheckerResult_t;
 
     DrugModelChecker();
 
-    CheckerResult_t checkDrugModel(const DrugModel *_drugModel, const PkModelCollection *_pkCollection);
+    CheckerResult_t checkDrugModel(const DrugModel* _drugModel, const PkModelCollection* _pkCollection);
 
 protected:
-
     ///
     /// \brief checkAnalytes
     /// \param _drugModel
@@ -44,13 +44,13 @@ protected:
     /// 4. Check that there is an exact match between the conversions and the analyte groups
     ///    ( no need to check with the active moieties, as rule 3 validates that)
     ///
-    CheckerResult_t checkAnalytes(const DrugModel *_drugModel);
+    CheckerResult_t checkAnalytes(const DrugModel* _drugModel);
 
-    CheckerResult_t checkFormulaInputs(const DrugModel *_drugModel);
+    CheckerResult_t checkFormulaInputs(const DrugModel* _drugModel);
 
-    CheckerResult_t checkParameters(const DrugModel *_drugModel, const PkModelCollection *_pkCollection);
+    CheckerResult_t checkParameters(const DrugModel* _drugModel, const PkModelCollection* _pkCollection);
 
-    CheckerResult_t checkOperations(const DrugModel *_drugModel);
+    CheckerResult_t checkOperations(const DrugModel* _drugModel);
 
     ///
     /// \brief Checks if the half life and its multiplier are OK
@@ -66,9 +66,9 @@ protected:
     /// If the check fails, then we try to find a multiplier that would fit the check. If found, then
     /// the error message contains a sentence with the suggested multiplier.
     ///
-    CheckerResult_t checkHalfLife(const DrugModel *_drugModel);
+    CheckerResult_t checkHalfLife(const DrugModel* _drugModel);
 
-    void getAllOperations(const DrugModel *_drugModel, std::vector<Operation *> &_operations);
+    void getAllOperations(const DrugModel* _drugModel, std::vector<Operation*>& _operations);
 };
 
 } // namespace Core

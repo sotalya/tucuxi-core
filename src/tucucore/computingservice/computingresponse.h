@@ -5,25 +5,27 @@
 #ifndef TUCUXI_CORE_COMPUTINGRESPONSE_H
 #define TUCUXI_CORE_COMPUTINGRESPONSE_H
 
+#include <memory>
 #include <string>
 #include <vector>
-#include <memory>
 
+#include "tucucore/cyclestatistics.h"
 #include "tucucore/definitions.h"
 #include "tucucore/dosage.h"
 #include "tucucore/targetevaluationresult.h"
-#include "tucucore/cyclestatistics.h"
 
 namespace Tucuxi {
 namespace Core {
 
 
-typedef struct {
+typedef struct
+{
     std::string m_parameterId;
     Value m_value;
 } ParameterValue;
 
-typedef struct {
+typedef struct
+{
     std::string m_covariateId;
     Value m_value;
 } CovariateValue;
@@ -41,13 +43,13 @@ typedef struct {
 class CycleData
 {
 public:
-    CycleData() : m_start(DateTime::undefinedDateTime()), m_end(DateTime::undefinedDateTime()){}
-    CycleData(const Tucuxi::Common::DateTime &_start, const Tucuxi::Common::DateTime &_end, const TucuUnit &_unit)
+    CycleData() : m_start(DateTime::undefinedDateTime()), m_end(DateTime::undefinedDateTime()) {}
+    CycleData(const Tucuxi::Common::DateTime& _start, const Tucuxi::Common::DateTime& _end, const TucuUnit& _unit)
         : m_start(_start), m_end(_end), m_unit(_unit)
     {
     }
 
-    void addData(const TimeOffsets &_offsets, const std::vector<Concentration> &_concentrations)
+    void addData(const TimeOffsets& _offsets, const std::vector<Concentration>& _concentrations)
     {
         m_times.push_back(_offsets);
         m_concentrations.push_back(_concentrations);
@@ -107,7 +109,6 @@ public:
     RequestResponseId getId() const;
 
 protected:
-
     ComputedData(RequestResponseId _id);
 
     RequestResponseId m_id;
@@ -125,7 +126,6 @@ protected:
 class SinglePointsData : public ComputedData
 {
 public:
-
     SinglePointsData(RequestResponseId _id) : ComputedData(std::move(_id)) {}
 
     /// Absolute time of each concentration
@@ -142,18 +142,32 @@ public:
 class ConcentrationData
 {
 public:
+    void addCycleData(const CycleData& _data)
+    {
+        m_data.push_back(_data);
+    }
+    const std::vector<CycleData>& getData() const
+    {
+        return m_data;
+    }
+    std::vector<CycleData>& getModifiableData()
+    {
+        return m_data;
+    }
 
-    void addCycleData(const CycleData &_data) { m_data.push_back(_data); }
-    const std::vector<CycleData>& getData() const { return m_data; }
-    std::vector<CycleData>& getModifiableData() { return m_data; }
+    void addCompartmentInfo(const CompartmentInfo& _info)
+    {
+        m_infos.push_back(_info);
+    }
 
-    void addCompartmentInfo(const CompartmentInfo& _info) { m_infos.push_back(_info);}
+    const std::vector<CompartmentInfo>& getCompartmentInfos() const
+    {
+        return m_infos;
+    }
 
-    const std::vector<CompartmentInfo>& getCompartmentInfos() const { return m_infos;}
 protected:
     std::vector<CycleData> m_data;
     std::vector<CompartmentInfo> m_infos;
-
 };
 
 ///
@@ -174,21 +188,24 @@ public:
 class DosageAdjustment : public ConcentrationData
 {
 public:
-
     DosageAdjustment() = default;
 
-    double getGlobalScore() const {
+    double getGlobalScore() const
+    {
         if (m_targetsEvaluation.empty()) {
             return 0.0;
         }
         double sum = 0.0;
-        for (const auto& target: m_targetsEvaluation) {
+        for (const auto& target : m_targetsEvaluation) {
             sum += target.getScore();
         }
         return sum / static_cast<double>(m_targetsEvaluation.size());
     }
 
-    DosageHistory getDosageHistory() const {return m_history;}
+    DosageHistory getDosageHistory() const
+    {
+        return m_history;
+    }
 
     DosageHistory m_history;
     std::vector<TargetEvaluationResult> m_targetsEvaluation;
@@ -204,17 +221,25 @@ class AdjustmentData : public SinglePredictionData
 public:
     AdjustmentData(RequestResponseId _id) : SinglePredictionData(std::move(_id)) {}
 
-    void addAdjustment(const DosageAdjustment& _adjustment) { m_adjustments.push_back(_adjustment);}
+    void addAdjustment(const DosageAdjustment& _adjustment)
+    {
+        m_adjustments.push_back(_adjustment);
+    }
 
-    void setAdjustments(const std::vector<DosageAdjustment> &_adjustments) { m_adjustments = _adjustments;}
+    void setAdjustments(const std::vector<DosageAdjustment>& _adjustments)
+    {
+        m_adjustments = _adjustments;
+    }
 
-    const std::vector<DosageAdjustment>& getAdjustments() const { return m_adjustments;}
+    const std::vector<DosageAdjustment>& getAdjustments() const
+    {
+        return m_adjustments;
+    }
 
     // To be checked if we need that function instead of the previous one
     // std::vector<DosageAdjustment> getAdjustments() const { return m_adjustments;}
 
 protected:
-
     /// A vector of possible dosage adjustments
     std::vector<DosageAdjustment> m_adjustments;
 };
@@ -232,26 +257,49 @@ class PercentilesData : public ComputedData
 public:
     PercentilesData(RequestResponseId _id) : ComputedData(std::move(_id)) {}
 
-    void setRanks(const PercentileRanks &_ranks) { m_ranks = _ranks;}
+    void setRanks(const PercentileRanks& _ranks)
+    {
+        m_ranks = _ranks;
+    }
 
-    size_t getNbRanks() const { return m_ranks.size(); }
+    size_t getNbRanks() const
+    {
+        return m_ranks.size();
+    }
 
-    PercentileRank getRank(unsigned int _index) const { return m_ranks[_index]; }
+    PercentileRank getRank(unsigned int _index) const
+    {
+        return m_ranks[_index];
+    }
 
-    void addPercentileData(const std::vector<CycleData> &_data) { m_data.push_back(_data);}
+    void addPercentileData(const std::vector<CycleData>& _data)
+    {
+        m_data.push_back(_data);
+    }
 
-    const CycleData& getData(size_t _percentileIndex, size_t _cycleIndex) const {
+    const CycleData& getData(size_t _percentileIndex, size_t _cycleIndex) const
+    {
         return m_data[_percentileIndex][_cycleIndex];
     }
 
-    const std::vector<CycleData>& getPercentileData(size_t _percentileIndex) const {
+    const std::vector<CycleData>& getPercentileData(size_t _percentileIndex) const
+    {
         return m_data[_percentileIndex];
     }
 
-    const PercentileRanks& getRanks() const { return m_ranks;}
+    const PercentileRanks& getRanks() const
+    {
+        return m_ranks;
+    }
 
-    void setNbPointsPerHour(double _nbPointsPerHour) { m_nbPointsPerHour = _nbPointsPerHour;}
-    double getNbPointsPerHour() const { return m_nbPointsPerHour;}
+    void setNbPointsPerHour(double _nbPointsPerHour)
+    {
+        m_nbPointsPerHour = _nbPointsPerHour;
+    }
+    double getNbPointsPerHour() const
+    {
+        return m_nbPointsPerHour;
+    }
 
 private:
     std::vector<std::vector<CycleData> > m_data;
@@ -270,7 +318,6 @@ private:
 class ComputingResponse
 {
 public:
-
     ///
     /// \brief ComputingResponse constructor
     /// \param _id The Id of the request
@@ -296,9 +343,15 @@ public:
     // std::vector<std::unique_ptr<SingleComputingResponse> > & getResponses() { return m_responses;}
     // const std::vector<std::unique_ptr<SingleComputingResponse> > & getResponses() const { return m_responses;}
 
-    const ComputedData* getData() const { return m_data.get() ;}
+    const ComputedData* getData() const
+    {
+        return m_data.get();
+    }
 
-    std::unique_ptr<ComputedData> getUniquePointerData() { return std::move(m_data);}
+    std::unique_ptr<ComputedData> getUniquePointerData()
+    {
+        return std::move(m_data);
+    }
 
     ///
     /// \brief Set the computing time of this request
@@ -317,13 +370,12 @@ public:
     ComputingStatus getComputingStatus() const;
 
 protected:
-
     /// Id of the request
     RequestResponseId m_id;
 
     std::unique_ptr<ComputedData> m_data;
 
-    std::chrono::duration<double, std::ratio<1,1> > m_computingTimeInSeconds{0};
+    std::chrono::duration<double, std::ratio<1, 1> > m_computingTimeInSeconds{0};
 
     ComputingStatus m_computingResult{ComputingStatus::Undefined};
 };

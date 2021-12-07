@@ -2,32 +2,27 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
-#include <iostream>
-#include <sstream>
-#include <regex>
 #include <fstream>
+#include <iostream>
+#include <regex>
 #include <sstream>
 #include <string>
 
+#include "xmldocument.h"
+
 #include "rapidxml.hpp"
 #include "rapidxml_print.hpp"
-
-#include "xmldocument.h"
-#include "xmlnode.h"
 #include "xmlattribute.h"
+#include "xmlnode.h"
 
 namespace Tucuxi {
 namespace Common {
 
 
-XmlDocument::XmlDocument()
-    : m_pDocument(nullptr)
-{
-}
+XmlDocument::XmlDocument() : m_pDocument(nullptr) {}
 
 
-XmlDocument::~XmlDocument()
-= default;
+XmlDocument::~XmlDocument() = default;
 
 
 bool XmlDocument::isValid() const
@@ -87,11 +82,10 @@ bool XmlDocument::fromString(const std::string& _xml)
 
 bool XmlDocument::toString(std::string& _xml, bool _prettyPrint)
 {
-    if (m_pDocument != nullptr) {        
+    if (m_pDocument != nullptr) {
         rapidxml::print(std::back_inserter(_xml), *m_pDocument, _prettyPrint ? 0 : rapidxml::print_no_indenting);
         _xml = std::regex_replace(_xml, std::regex("\""), "'");
         return true;
-
     }
     return false;
 }
@@ -131,6 +125,7 @@ XmlNode XmlDocument::createNode(EXmlNodeType _type, const std::string& _name, co
     rapidxml::xml_node<>* pNode = nullptr;
     if (m_pDocument != nullptr && _type != EXmlNodeType::Undefined) {
         rapidxml::node_type type = rapidxml::node_type::node_document;
+        // clang-format off
         switch (_type) {
             case EXmlNodeType::Document:    type = rapidxml::node_type::node_document; break;
             case EXmlNodeType::Element:     type = rapidxml::node_type::node_element; break;
@@ -142,6 +137,7 @@ XmlNode XmlDocument::createNode(EXmlNodeType _type, const std::string& _name, co
             case EXmlNodeType::Pi:          type = rapidxml::node_type::node_pi; break;            
             case EXmlNodeType::Undefined:   break;
         }
+        // clang-format on
         const char* name = _name.empty() ? nullptr : m_pDocument->allocate_string(_name.c_str());
         const char* value = _value.empty() ? nullptr : m_pDocument->allocate_string(_value.c_str());
         try {

@@ -2,10 +2,10 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
+#include "tucucore/covariateextractor.h"
+
 #include "tucucommon/general.h"
 #include "tucucommon/loggerhelper.h"
-
-#include "tucucore/covariateextractor.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -28,22 +28,24 @@ const std::string CovariateExtractor::BIRTHDATE_CNAME = "birthdate"; // NOLINT(r
 } while(0);
 */
 
-CovariateExtractor::CovariateExtractor(const CovariateDefinitions &_defaults,
-                                       const PatientVariates &_patientCovariates,
-                                       const DateTime &_start,
-                                       const DateTime &_end)
-    : ICovariateExtractor(_defaults, _patientCovariates, _start, _end),
-      m_hasBirthDate{false}, m_birthDate(DateTime::undefinedDateTime()), m_initAgeInDays{-1.0}, m_initAgeInWeeks{-1.0}, m_initAgeInMonths{-1.0}, m_initAgeInYears{-1.0}
+CovariateExtractor::CovariateExtractor(
+        const CovariateDefinitions& _defaults,
+        const PatientVariates& _patientCovariates,
+        const DateTime& _start,
+        const DateTime& _end)
+    : ICovariateExtractor(_defaults, _patientCovariates, _start, _end), m_hasBirthDate{false},
+      m_birthDate(DateTime::undefinedDateTime()), m_initAgeInDays{-1.0}, m_initAgeInWeeks{-1.0},
+      m_initAgeInMonths{-1.0}, m_initAgeInYears{-1.0}
 {
     // *** Verify preconditions ***
     // Invalid ptrs in covariate definitions.
-    for (const auto &cd : m_defaults) {
+    for (const auto& cd : m_defaults) {
         if (cd == nullptr) {
             throw std::runtime_error("[CovariateExtractor] Invalid pointer in covariate definitions");
         }
     }
     // Invalid ptrs in patient variates.
-    for (const auto &pv : m_patientCovariates) {
+    for (const auto& pv : m_patientCovariates) {
         if (pv == nullptr) {
             throw std::runtime_error("[CovariateExtractor] Invalid pointer in patient covariates");
         }
@@ -59,21 +61,22 @@ CovariateExtractor::CovariateExtractor(const CovariateDefinitions &_defaults,
         std::pair<std::map<std::string, cdIterator_t>::iterator, bool> rc;
         if ((*it)->isComputed()) {
             rc = m_cdComputed.insert(std::pair<std::string, cdIterator_t>((*it)->getId(), it));
-        } else {
+        }
+        else {
             rc = m_cdValued.insert(std::pair<std::string, cdIterator_t>((*it)->getId(), it));
         }
         // In case on non-standard covariates set the initial values.
         if (((*it)->getType() != CovariateType::Standard) && ((*it)->getType() != CovariateType::Sex)
-                 && ((*it)->getType() != CovariateType::Dose)) {
+            && ((*it)->getType() != CovariateType::Dose)) {
             switch ((*it)->getType()) {
             case CovariateType::AgeInDays:
                 if (m_initAgeInDays >= 0) {
                     throw std::runtime_error("[CovariateExtractor] Too many AgeInDays-type covariates");
                 }
                 if ((*it)->getValue() < 0) {
-                    throw std::runtime_error("[CovariateExtractor] Invalid default value ("
-                                             + std::to_string((*it)->getValue())
-                                             + ") for an age expressed in days.");
+                    throw std::runtime_error(
+                            "[CovariateExtractor] Invalid default value (" + std::to_string((*it)->getValue())
+                            + ") for an age expressed in days.");
                 }
                 m_initAgeInDays = (*it)->getValue();
                 break;
@@ -82,9 +85,9 @@ CovariateExtractor::CovariateExtractor(const CovariateDefinitions &_defaults,
                     throw std::runtime_error("[CovariateExtractor] Too many AgeInWeeks-type covariates");
                 }
                 if ((*it)->getValue() < 0) {
-                    throw std::runtime_error("[CovariateExtractor] Invalid default value ("
-                                             + std::to_string((*it)->getValue())
-                                             + ") for an age expressed in weeks.");
+                    throw std::runtime_error(
+                            "[CovariateExtractor] Invalid default value (" + std::to_string((*it)->getValue())
+                            + ") for an age expressed in weeks.");
                 }
                 m_initAgeInWeeks = (*it)->getValue();
                 break;
@@ -93,9 +96,9 @@ CovariateExtractor::CovariateExtractor(const CovariateDefinitions &_defaults,
                     throw std::runtime_error("[CovariateExtractor] Too many AgeInMonths-type covariates");
                 }
                 if ((*it)->getValue() < 0) {
-                    throw std::runtime_error("[CovariateExtractor] Invalid default value ("
-                                             + std::to_string((*it)->getValue())
-                                             + ") for an age expressed in months.");
+                    throw std::runtime_error(
+                            "[CovariateExtractor] Invalid default value (" + std::to_string((*it)->getValue())
+                            + ") for an age expressed in months.");
                 }
                 m_initAgeInMonths = (*it)->getValue();
                 break;
@@ -104,14 +107,16 @@ CovariateExtractor::CovariateExtractor(const CovariateDefinitions &_defaults,
                     throw std::runtime_error("[CovariateExtractor] Too many AgeInYears-type covariates");
                 }
                 if ((*it)->getValue() < 0) {
-                    throw std::runtime_error("[CovariateExtractor] Invalid default value ("
-                                             + std::to_string((*it)->getValue())
-                                             + ") for an age expressed in years.");
+                    throw std::runtime_error(
+                            "[CovariateExtractor] Invalid default value (" + std::to_string((*it)->getValue())
+                            + ") for an age expressed in years.");
                 }
                 m_initAgeInYears = (*it)->getValue();
                 break;
             default:
-                throw std::runtime_error("[CovariateExtractor] Invalid covariate type (" + std::to_string(static_cast<int>((*it)->getType())) + ")");
+                throw std::runtime_error(
+                        "[CovariateExtractor] Invalid covariate type ("
+                        + std::to_string(static_cast<int>((*it)->getType())) + ")");
                 break;
             }
         }
@@ -126,13 +131,13 @@ CovariateExtractor::CovariateExtractor(const CovariateDefinitions &_defaults,
     for (pvIterator_t it = m_patientCovariates.begin(); it != m_patientCovariates.end(); ++it) {
         // If we cannot find a corresponding covariate definition or if it is a non-standard type, we can safely drop a
         // patient variate.
-        if (m_cdValued.find((*it)->getId()) != m_cdValued.end() &&
-                ((*m_cdValued.at((*it)->getId()))->getType() == CovariateType::Standard ||
-                 (*m_cdValued.at((*it)->getId()))->getType() == CovariateType::Sex ||
-                 (*m_cdValued.at((*it)->getId()))->getType() == CovariateType::Dose)) {
+        if (m_cdValued.find((*it)->getId()) != m_cdValued.end()
+            && ((*m_cdValued.at((*it)->getId()))->getType() == CovariateType::Standard
+                || (*m_cdValued.at((*it)->getId()))->getType() == CovariateType::Sex
+                || (*m_cdValued.at((*it)->getId()))->getType() == CovariateType::Dose)) {
             if (m_pvValued.find((*it)->getId()) == m_pvValued.end()) {
-                m_pvValued.insert(std::pair<std::string, std::vector<pvIterator_t>>((*it)->getId(),
-                                                                                    std::vector<pvIterator_t>()));
+                m_pvValued.insert(
+                        std::pair<std::string, std::vector<pvIterator_t>>((*it)->getId(), std::vector<pvIterator_t>()));
             }
             m_pvValued.at((*it)->getId()).push_back(it);
         }
@@ -146,7 +151,7 @@ CovariateExtractor::CovariateExtractor(const CovariateDefinitions &_defaults,
             }
         }
     }
-/*
+    /*
     // If a birth date is present, then set it.
     if (m_cdValued.find(sm_birthDateCName) != m_cdValued.end()) {
         if ((*m_cdValued.at(sm_birthDateCName))->getDataType() != DataType::Date) {
@@ -167,34 +172,38 @@ CovariateExtractor::CovariateExtractor(const CovariateDefinitions &_defaults,
 }
 
 
-bool CovariateExtractor::computeEvents(const std::map<DateTime, std::vector<std::string>> &_refreshMap,
-                                       CovariateSeries &_series)
+bool CovariateExtractor::computeEvents(
+        const std::map<DateTime, std::vector<std::string>>& _refreshMap, CovariateSeries& _series)
 {
     // Map holding the pointers to the events linked with covariates and their latest values.
     std::map<std::string, std::pair<std::shared_ptr<CovariateEvent>, Value>> cEventsMap;
 
     // For each date in the refresh map, set all the values appropriately and then (if needed) launch the computation
     // via the Operable Graph Manager.
-    for (const auto &refreshEvent : _refreshMap) {
+    for (const auto& refreshEvent : _refreshMap) {
         const DateTime refreshTime = refreshEvent.first;
         std::vector<std::string> updatedCVs;
         // Look at every non-computed covariate we are supposed to refresh.
-        for (const auto &cvName : refreshEvent.second) {
+        for (const auto& cvName : refreshEvent.second) {
             Value newVal = 0.0;
-            if (((*m_cdValued.at(cvName))->getType() == CovariateType::Standard) || ((*m_cdValued.at(cvName))->getType() == CovariateType::Sex)
-                     || ((*m_cdValued.at(cvName))->getType() == CovariateType::Dose)) {
+            if (((*m_cdValued.at(cvName))->getType() == CovariateType::Standard)
+                || ((*m_cdValued.at(cvName))->getType() == CovariateType::Sex)
+                || ((*m_cdValued.at(cvName))->getType() == CovariateType::Dose)) {
                 // Standard covariate -- get its value from the Patient Variates or from default values.
                 std::map<std::string, std::vector<pvIterator_t>>::iterator pvCurrentC = m_pvValued.find(cvName);
                 if (pvCurrentC == m_pvValued.end()) {
                     // If no patient variates associated, take the default value.
                     newVal = (*m_cdValued.at(cvName))->getValue();
-                } else if (pvCurrentC->second.size() == 1) {
+                }
+                else if (pvCurrentC->second.size() == 1) {
                     // If single patient variate value, then take the first value.
-                    newVal = stringToValue((*(pvCurrentC->second[0]))->getValue(),
-                                           (*(pvCurrentC->second[0]))->getDataType());
+                    newVal = stringToValue(
+                            (*(pvCurrentC->second[0]))->getValue(), (*(pvCurrentC->second[0]))->getDataType());
 
-                    newVal = Tucuxi::Common::UnitManager::convertToUnit(newVal, (*(pvCurrentC->second[0]))->getUnit(), getFinalUnit(cvName));
-                } else {
+                    newVal = Tucuxi::Common::UnitManager::convertToUnit(
+                            newVal, (*(pvCurrentC->second[0]))->getUnit(), getFinalUnit(cvName));
+                }
+                else {
                     // We have more Patient Variates, therefore we have to compute the good value.
                     std::vector<pvIterator_t>::const_iterator pvIt = pvCurrentC->second.begin();
 
@@ -204,45 +213,47 @@ bool CovariateExtractor::computeEvents(const std::map<DateTime, std::vector<std:
 
                     if (pvIt == pvCurrentC->second.end()) {
                         // We are past in time after the last measurement we have, so we have to keep the value.
-                        newVal = stringToValue((**(std::prev(pvIt)))->getValue(),
-                                               (**(std::prev(pvIt)))->getDataType());
+                        newVal = stringToValue((**(std::prev(pvIt)))->getValue(), (**(std::prev(pvIt)))->getDataType());
 
-                        newVal = Tucuxi::Common::UnitManager::convertToUnit(newVal, (**(std::prev(pvIt)))->getUnit(), getFinalUnit(cvName));
-                    } else if (pvIt == pvCurrentC->second.begin()) {
+                        newVal = Tucuxi::Common::UnitManager::convertToUnit(
+                                newVal, (**(std::prev(pvIt)))->getUnit(), getFinalUnit(cvName));
+                    }
+                    else if (pvIt == pvCurrentC->second.begin()) {
                         // The first measurement is already past the desired time -- we simply have to keep the level.
-                        newVal = stringToValue((**(pvIt))->getValue(),
-                                               (**(pvIt))->getDataType());
+                        newVal = stringToValue((**(pvIt))->getValue(), (**(pvIt))->getDataType());
 
-                        newVal = Tucuxi::Common::UnitManager::convertToUnit(newVal, (*(pvCurrentC->second[0]))->getUnit(), getFinalUnit(cvName));
-
-                    } else {
+                        newVal = Tucuxi::Common::UnitManager::convertToUnit(
+                                newVal, (*(pvCurrentC->second[0]))->getUnit(), getFinalUnit(cvName));
+                    }
+                    else {
                         // We have two measurements to interpolate from (we have dealt with the case of the first
                         // measurement being past the desired time, so we can safely assume we have a previous
                         // measurement.
-                        Value firstValue = stringToValue((**(std::prev(pvIt)))->getValue(),
-                                                         (**(std::prev(pvIt)))->getDataType());
+                        Value firstValue =
+                                stringToValue((**(std::prev(pvIt)))->getValue(), (**(std::prev(pvIt)))->getDataType());
 
-                        Value secondValue = stringToValue((**(pvIt))->getValue(),
-                                                          (**(pvIt))->getDataType());
+                        Value secondValue = stringToValue((**(pvIt))->getValue(), (**(pvIt))->getDataType());
 
-                        if (!interpolateValues(Tucuxi::Common::UnitManager::convertToUnit(
-                                                   firstValue,
-                                                   (**(std::prev(pvIt)))->getUnit(),
-                                                   getFinalUnit(cvName)),                           // val1
-                                               (**(std::prev(pvIt)))->getEventTime(),               // date1
-                                               Tucuxi::Common::UnitManager::convertToUnit(
-                                                   secondValue,
-                                                   (**(pvIt))->getUnit(),
-                                                   getFinalUnit(cvName)),                           // val2
-                                               (**(pvIt))->getEventTime(),                          // date2
-                                               refreshTime,                                         // dateRes
-                                               (*m_cdValued.at(cvName))->getInterpolationType(),    // interpolationType
-                                               newVal)) {                                           // valRes
+                        if (!interpolateValues(
+                                    Tucuxi::Common::UnitManager::convertToUnit(
+                                            firstValue,
+                                            (**(std::prev(pvIt)))->getUnit(),
+                                            getFinalUnit(cvName)),         // val1
+                                    (**(std::prev(pvIt)))->getEventTime(), // date1
+                                    Tucuxi::Common::UnitManager::convertToUnit(
+                                            secondValue,
+                                            (**(pvIt))->getUnit(),
+                                            getFinalUnit(cvName)),                    // val2
+                                    (**(pvIt))->getEventTime(),                       // date2
+                                    refreshTime,                                      // dateRes
+                                    (*m_cdValued.at(cvName))->getInterpolationType(), // interpolationType
+                                    newVal)) {                                        // valRes
                             return false;
                         }
                     }
                 }
-            } else {
+            }
+            else {
                 // Age covariate -- compute its value from either the birth date (if present) or the default values.
 
                 // If we have a birth date, then everything is referred to it. Otherwise, do computations relatives to
@@ -284,7 +295,8 @@ bool CovariateExtractor::computeEvents(const std::map<DateTime, std::vector<std:
                             std::make_shared<CovariateEvent>(**m_cdValued.at(cvName), refreshTime, newVal);
                     cEventsMap.insert(std::make_pair(cvName, std::make_pair(event, newVal)));
                     m_ogm.registerInput(event, cvName);
-                } else {
+                }
+                else {
                     (cEventsMap.at(cvName).first)->setValue(newVal);
                 }
 
@@ -303,10 +315,9 @@ bool CovariateExtractor::computeEvents(const std::map<DateTime, std::vector<std:
             // If we are at start, we still have to create the events associated with computed CVs and push them in the
             // OGM!
             if (refreshTime == m_start) {
-                for (const auto &cvm : m_cdComputed) {
-                    std::shared_ptr<CovariateEvent> event = std::make_shared<CovariateEvent>(**(cvm.second),
-                                                                                             m_start,
-                                                                                             0.0);
+                for (const auto& cvm : m_cdComputed) {
+                    std::shared_ptr<CovariateEvent> event =
+                            std::make_shared<CovariateEvent>(**(cvm.second), m_start, 0.0);
                     cEventsMap.insert(std::make_pair(cvm.first, std::make_pair(event, 0.0)));
                     m_ogm.registerOperable(event, cvm.first);
                 }
@@ -321,7 +332,7 @@ bool CovariateExtractor::computeEvents(const std::map<DateTime, std::vector<std:
 
             // If we are at the first iteration, then simply push all events, otherwise check those whose value has been
             // updated.
-            for (auto &cvm : m_cdComputed) {
+            for (auto& cvm : m_cdComputed) {
                 double cvVal;
                 if (!m_ogm.getValue(cvm.first, cvVal)) {
                     return false;
@@ -341,7 +352,7 @@ bool CovariateExtractor::computeEvents(const std::map<DateTime, std::vector<std:
 }
 
 
-ComputingStatus CovariateExtractor::extract(CovariateSeries &_series)
+ComputingStatus CovariateExtractor::extract(CovariateSeries& _series)
 {
     bool rc;
 
@@ -352,10 +363,12 @@ ComputingStatus CovariateExtractor::extract(CovariateSeries &_series)
     std::map<DateTime, std::vector<std::string>> refreshMap;
     collectRefreshIntervals(refreshMap);
 
-    TUCU_TRY {
-         rc = computeEvents(refreshMap, _series);
-    } TUCU_CATCH (std::invalid_argument& e) TUCU_ONEXCEPTION( {
-
+    TUCU_TRY
+    {
+        rc = computeEvents(refreshMap, _series);
+    }
+    TUCU_CATCH(std::invalid_argument & e)
+    TUCU_ONEXCEPTION({
         Tucuxi::Common::LoggerHelper logHelper;
         logHelper.error("Error with covariate extraction : {}", e.what());
         logHelper.error("If error due to conversion, please check Query and DrugModel units");
@@ -364,7 +377,8 @@ ComputingStatus CovariateExtractor::extract(CovariateSeries &_series)
 
     if (!rc) {
         Tucuxi::Common::LoggerHelper logHelper;
-        logHelper.error("Error with covariate extraction. It be caused by missing covariates used in a priori computations");
+        logHelper.error(
+                "Error with covariate extraction. It be caused by missing covariates used in a priori computations");
         return ComputingStatus::CovariateExtractionError;
     }
 
@@ -372,9 +386,9 @@ ComputingStatus CovariateExtractor::extract(CovariateSeries &_series)
 }
 
 
-void CovariateExtractor::collectRefreshIntervals(std::map<DateTime, std::vector<std::string>> &_refreshMap)
+void CovariateExtractor::collectRefreshIntervals(std::map<DateTime, std::vector<std::string>>& _refreshMap)
 {
-    for (const auto &cdv : m_cdValued) {
+    for (const auto& cdv : m_cdValued) {
         Duration refreshInterval;
         refreshInterval = (*(cdv.second))->getRefreshPeriod();
         if (((*(cdv.second))->getInterpolationType() != InterpolationType::Direct) && (!refreshInterval.isEmpty())) {
@@ -385,7 +399,8 @@ void CovariateExtractor::collectRefreshIntervals(std::map<DateTime, std::vector<
                 }
                 _refreshMap.at(t).push_back(cdv.first);
             }
-        } else {
+        }
+        else {
             // No refresh interval set, so we get the time instants given by patient variates:
             // # standard covariates #
             // - if no patient variates, then just add start (the default value won't change afterwards).
@@ -394,28 +409,31 @@ void CovariateExtractor::collectRefreshIntervals(std::map<DateTime, std::vector<
             // # ages #
             // - if a covariate named m_birthDateCName is present, then use it to set the refresh dates.
             // - else use the start interval and the type to set them.
-            if (((*(cdv.second))->getType() == CovariateType::Standard) || ((*(cdv.second))->getType() == CovariateType::Sex)
-                     || ((*(cdv.second))->getType() == CovariateType::Dose)) {
+            if (((*(cdv.second))->getType() == CovariateType::Standard)
+                || ((*(cdv.second))->getType() == CovariateType::Sex)
+                || ((*(cdv.second))->getType() == CovariateType::Dose)) {
                 DateTime t = m_start;
                 if (_refreshMap.find(t) == _refreshMap.end()) {
                     _refreshMap.insert(std::pair<DateTime, std::vector<std::string>>(t, std::vector<std::string>()));
                 }
                 _refreshMap.at(t).push_back(cdv.first);
                 if (m_pvValued.count(cdv.first) > 0) {
-                    const std::vector<pvIterator_t> &pvValues = m_pvValued.at(cdv.first);
+                    const std::vector<pvIterator_t>& pvValues = m_pvValued.at(cdv.first);
                     if (pvValues.size() > 1) {
-                        for (const auto &pv : pvValues) {
+                        for (const auto& pv : pvValues) {
                             DateTime t = (*pv)->getEventTime();
                             if (t > m_start && t <= m_end) {
                                 if (_refreshMap.find(t) == _refreshMap.end()) {
-                                    _refreshMap.insert(std::pair<DateTime, std::vector<std::string>>(t, std::vector<std::string>()));
+                                    _refreshMap.insert(std::pair<DateTime, std::vector<std::string>>(
+                                            t, std::vector<std::string>()));
                                 }
                                 _refreshMap.at(t).push_back(cdv.first);
                             }
                         }
                     }
                 }
-            } else {
+            }
+            else {
                 DateTime startDate = m_start;
                 if (m_hasBirthDate) {
                     startDate = m_birthDate;
@@ -425,7 +443,8 @@ void CovariateExtractor::collectRefreshIntervals(std::map<DateTime, std::vector<
                 while (t <= m_end) {
                     if (t >= m_start) {
                         if (_refreshMap.find(t) == _refreshMap.end()) {
-                            _refreshMap.insert(std::pair<DateTime, std::vector<std::string>>(t, std::vector<std::string>()));
+                            _refreshMap.insert(
+                                    std::pair<DateTime, std::vector<std::string>>(t, std::vector<std::string>()));
                         }
                         _refreshMap.at(t).push_back(cdv.first);
                     }
@@ -449,9 +468,11 @@ void CovariateExtractor::collectRefreshIntervals(std::map<DateTime, std::vector<
 
                 // The age has still to be computed at the start time, so we add it there if this is not the case.
                 if (_refreshMap.find(m_start) == _refreshMap.end()) {
-                    _refreshMap.insert(std::pair<DateTime, std::vector<std::string>>(m_start, std::vector<std::string>()));
+                    _refreshMap.insert(
+                            std::pair<DateTime, std::vector<std::string>>(m_start, std::vector<std::string>()));
                 }
-                if (std::find(_refreshMap.at(m_start).begin(), _refreshMap.at(m_start).end(), cdv.first) == _refreshMap.at(m_start).end()) {
+                if (std::find(_refreshMap.at(m_start).begin(), _refreshMap.at(m_start).end(), cdv.first)
+                    == _refreshMap.at(m_start).end()) {
                     _refreshMap.at(m_start).push_back(cdv.first);
                 }
             }
@@ -462,9 +483,9 @@ void CovariateExtractor::collectRefreshIntervals(std::map<DateTime, std::vector<
     // absent. We do this because we must have the best guess for each value at the time of the computation of new
     // values, and if the values is interpolated, so be it. This should have no impact on the computations performed,
     // since in any case we would have to redo the computations for the given time instant.
-    for (const auto &cv : m_cdValued) {
+    for (const auto& cv : m_cdValued) {
         if ((*(cv.second))->getInterpolationType() != InterpolationType::Direct) {
-            for (auto &t : _refreshMap) {
+            for (auto& t : _refreshMap) {
                 if (std::find(t.second.begin(), t.second.end(), cv.first) == t.second.end()) {
                     t.second.push_back(cv.first);
                 }
@@ -474,11 +495,14 @@ void CovariateExtractor::collectRefreshIntervals(std::map<DateTime, std::vector<
 }
 
 
-bool CovariateExtractor::interpolateValues(const Value _val1, const DateTime &_date1,
-                                           const Value _val2, const DateTime &_date2,
-                                           const DateTime &_dateRes,
-                                           const InterpolationType _interpolationType,
-                                           Value &_valRes) const
+bool CovariateExtractor::interpolateValues(
+        const Value _val1,
+        const DateTime& _date1,
+        const Value _val2,
+        const DateTime& _date2,
+        const DateTime& _dateRes,
+        const InterpolationType _interpolationType,
+        Value& _valRes) const
 {
     // Check precondition: dates are sorted.
     if (_date2 < _date1) {
@@ -510,19 +534,19 @@ bool CovariateExtractor::interpolateValues(const Value _val1, const DateTime &_d
         if (_date2 > _dateRes) {
             // Extend _date1 to _dateRes.
             _valRes = _val1;
-        } else {
+        }
+        else {
             // Extend _val2 past _date2.
             _valRes = _val2;
         }
         break;
-    case InterpolationType::Linear:
-    {
+    case InterpolationType::Linear: {
         // Angular coefficient.
         Value m = (_val2 - _val1) / (_date2.toSeconds() - _date1.toSeconds());
         // Intercept.
         Value b = _val2 - m * _date2.toSeconds();
         _valRes = _dateRes.toSeconds() * m + b;
-    }    break;
+    } break;
     default:
         // Other interpolation types not yet implemented.
         return false;
@@ -534,10 +558,11 @@ bool CovariateExtractor::interpolateValues(const Value _val1, const DateTime &_d
 void CovariateExtractor::sortPatientVariates()
 {
     // For each patient variate, sort by date the list of values, then discard those not of interest.
-    for (auto &pvV : m_pvValued) {
+    for (auto& pvV : m_pvValued) {
         // Sort by increasing date.
-        std::sort(pvV.second.begin(), pvV.second.end(),
-                  [](pvIterator_t &_a, pvIterator_t &_b) { return (*_a)->getEventTime() < (*_b)->getEventTime(); });
+        std::sort(pvV.second.begin(), pvV.second.end(), [](pvIterator_t& _a, pvIterator_t& _b) {
+            return (*_a)->getEventTime() < (*_b)->getEventTime();
+        });
 
         // If just one value, keep it, else do a cleanup.
         if (pvV.second.size() > 1) {
@@ -568,16 +593,17 @@ void CovariateExtractor::sortPatientVariates()
 
         // If InterpolationType == InterpolationType::Direct or a single value is present, then no interpolation is
         // performed and we can change the time of the first measurement with the initial interval time.
-        if ((*(m_cdValued.at(pvV.first)))->getInterpolationType() == InterpolationType::Direct ||
-                pvV.second.size() == 1) {
+        if ((*(m_cdValued.at(pvV.first)))->getInterpolationType() == InterpolationType::Direct
+            || pvV.second.size() == 1) {
             (*(pvV.second[0]))->setEventTime(m_start);
         }
     }
 }
 
-TucuUnit CovariateExtractor::getFinalUnit(const std::string &_cvName) const {
-    for(const auto &covInDM : m_defaults){
-        if(_cvName == covInDM->getId()){
+TucuUnit CovariateExtractor::getFinalUnit(const std::string& _cvName) const
+{
+    for (const auto& covInDM : m_defaults) {
+        if (_cvName == covInDM->getId()) {
             return covInDM->getUnit();
         }
     }
@@ -586,28 +612,33 @@ TucuUnit CovariateExtractor::getFinalUnit(const std::string &_cvName) const {
 }
 
 
-ComputingStatus CovariateExtractor::extractDosePatientVariate(const IntakeSeries &_intakeSeries,
-                                                              const CovariateDefinition &_covariateDefinition,
-                                                              PatientVariates &_patientCovariates)
+ComputingStatus CovariateExtractor::extractDosePatientVariate(
+        const IntakeSeries& _intakeSeries,
+        const CovariateDefinition& _covariateDefinition,
+        PatientVariates& _patientCovariates)
 {
-    TUCU_TRY {
-    // Default value that is not valid
-    Value currentDose = -1.0;
-    for (const auto &intake : _intakeSeries) {
-        Value finalValue = Tucuxi::Common::UnitManager::convertToUnit(intake.getDose(), intake.getUnit(), _covariateDefinition.getUnit());
-        // Be careful with a dose of 0. It should not be used as covariate
-        if ((finalValue != currentDose) && (finalValue != 0.0)) {
-            auto patientCovariate = std::make_unique<PatientCovariate>(_covariateDefinition.getId(),
-                                                                       std::to_string(finalValue),
-                                                                       DataType::Double,
-                                                                       _covariateDefinition.getUnit(),
-                                                                       intake.getEventTime());
-            _patientCovariates.push_back(std::move(patientCovariate));
+    TUCU_TRY
+    {
+        // Default value that is not valid
+        Value currentDose = -1.0;
+        for (const auto& intake : _intakeSeries) {
+            Value finalValue = Tucuxi::Common::UnitManager::convertToUnit(
+                    intake.getDose(), intake.getUnit(), _covariateDefinition.getUnit());
+            // Be careful with a dose of 0. It should not be used as covariate
+            if ((finalValue != currentDose) && (finalValue != 0.0)) {
+                auto patientCovariate = std::make_unique<PatientCovariate>(
+                        _covariateDefinition.getId(),
+                        std::to_string(finalValue),
+                        DataType::Double,
+                        _covariateDefinition.getUnit(),
+                        intake.getEventTime());
+                _patientCovariates.push_back(std::move(patientCovariate));
+            }
         }
+        return ComputingStatus::Ok;
     }
-    return ComputingStatus::Ok;
-    }
-    TUCU_CATCH(std::runtime_error &err) TUCU_ONEXCEPTION({
+    TUCU_CATCH(std::runtime_error & err)
+    TUCU_ONEXCEPTION({
         Tucuxi::Common::LoggerHelper logHelper;
         logHelper.error("Error with dose covariate extraction. Probably a conversion unit issue.");
         return ComputingStatus::CovariateExtractionError;

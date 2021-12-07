@@ -3,8 +3,8 @@
  */
 
 #include <iomanip>
-#include <sstream>
 #include <iostream>
+#include <sstream>
 
 #ifdef _WIN32
 
@@ -15,24 +15,25 @@
 #else
 
 #include <fstream>
-#include <sys/ioctl.h>   // get mac address
+#include <unistd.h> // get mac address
+
 #include <net/if.h>      // get mac address
-#include <unistd.h>      // get mac address
 #include <netinet/in.h>  // get mac address
+#include <sys/ioctl.h>   // get mac address
 #include <sys/utsname.h> // get name
 
 #ifdef MACOS
-#include <sys/types.h>
 #include <ifaddrs.h>
-#include <sys/types.h>
-#include <sys/socket.h>
+
 #include <net/if_dl.h>
-#include <ifaddrs.h>
+#include <sys/socket.h>
+#include <sys/types.h>
 #endif
 
 #endif
 
 #include "tucucommon/utils.h"
+
 #include "tucucrypto/systeminfo.h"
 
 namespace Tucuxi {
@@ -42,27 +43,26 @@ std::string SystemInfo::retrieveFingerPrint(MachineIdType _machineIdType)
 {
     try {
         switch (_machineIdType) {
-            case MachineIdType::CPU:
-                return retrieveCpu();
-            case MachineIdType::MOTHERBOARD:
-                return retrieveMotherboard();
-            case MachineIdType::DISK:
-                return retrieveDisk();
-            case MachineIdType::MAC:
-                return retrieveMacAddress();
-            case MachineIdType::BIOS:
-                return retrieveBios();
-            case MachineIdType::PRODUCT:
-                return retrieveProduct();
-            case MachineIdType::NAME:
-                return retrieveName();
-            default:
-                break;
+        case MachineIdType::CPU:
+            return retrieveCpu();
+        case MachineIdType::MOTHERBOARD:
+            return retrieveMotherboard();
+        case MachineIdType::DISK:
+            return retrieveDisk();
+        case MachineIdType::MAC:
+            return retrieveMacAddress();
+        case MachineIdType::BIOS:
+            return retrieveBios();
+        case MachineIdType::PRODUCT:
+            return retrieveProduct();
+        case MachineIdType::NAME:
+            return retrieveName();
+        default:
+            break;
         };
     }
-    catch (const std::exception& e)
-    {
-        std::cout << "Error in CryptoHelper::hash: " << e.what() << std::endl;        
+    catch (const std::exception& e) {
+        std::cout << "Error in CryptoHelper::hash: " << e.what() << std::endl;
     }
     return "";
 }
@@ -75,12 +75,14 @@ std::string SystemInfo::retrieveCpu()
     // Retrieve the processor serial number
     unsigned int eax = 3, ebx = 0, ecx = 0, edx = 0;
 
+    // clang-format off
     asm volatile("cpuid"
                  : "=a" (eax),
                  "=b" (ebx),
                  "=c" (ecx),
                  "=d" (edx)
                  : "0" (eax), "2" (ecx));
+    // clang-format on
 
     if (edx == 0 && ecx == 0) {
         return std::string();
@@ -121,21 +123,22 @@ std::string SystemInfo::retrieveDisk()
     std::stringstream ss_volume;
 
     // Volume ID
-    char volumeName[MAX_PATH + 1] = { 0 };
-    char fileSystemName[MAX_PATH + 1] = { 0 };
+    char volumeName[MAX_PATH + 1] = {0};
+    char fileSystemName[MAX_PATH + 1] = {0};
     DWORD serialNumber = 0;
     DWORD maxComponentLen = 0;
     DWORD fileSystemFlags = 0;
 
-    if (GetVolumeInformationA("C:\\",
-                             volumeName,
-                             sizeof(volumeName),
-                             &serialNumber,
-                             &maxComponentLen,
-                             &fileSystemFlags,
-                             fileSystemName,
-                             sizeof(fileSystemName)) == TRUE)
-    {
+    if (GetVolumeInformationA(
+                "C:\\",
+                volumeName,
+                sizeof(volumeName),
+                &serialNumber,
+                &maxComponentLen,
+                &fileSystemFlags,
+                fileSystemName,
+                sizeof(fileSystemName))
+        == TRUE) {
         ss_volume << volumeName << serialNumber << fileSystemName << maxComponentLen << fileSystemFlags;
     }
 
@@ -154,41 +157,40 @@ std::string SystemInfo::retrieveMacAddress()
     IP_ADAPTER_INFO AdapterInfo[16];
     DWORD dwBufLen = sizeof(AdapterInfo);
     GetAdaptersInfo(AdapterInfo, &dwBufLen);
-    IP_ADAPTER_INFO *pAdapterInfo = AdapterInfo;
+    IP_ADAPTER_INFO* pAdapterInfo = AdapterInfo;
 
     FIXED_INFO AdapterFixedInfo[16];
     DWORD dwLen = sizeof(AdapterFixedInfo);
     GetNetworkParams(AdapterFixedInfo, &dwLen);
 
-    do
-    {
+    do {
         std::string temp = pAdapterInfo->Description;
 
-        if(temp.find("VirtualBox") == std::string::npos) {
-            std::string macaddr = Utils::strFormat("%02x%02x%02x%02x%02x%02x",
-                pAdapterInfo->Address[0],
-                pAdapterInfo->Address[1],
-                pAdapterInfo->Address[2],
-                pAdapterInfo->Address[3],
-                pAdapterInfo->Address[4],
-                pAdapterInfo->Address[5]);
+        if (temp.find("VirtualBox") == std::string::npos) {
+            std::string macaddr = Utils::strFormat(
+                    "%02x%02x%02x%02x%02x%02x",
+                    pAdapterInfo->Address[0],
+                    pAdapterInfo->Address[1],
+                    pAdapterInfo->Address[2],
+                    pAdapterInfo->Address[3],
+                    pAdapterInfo->Address[4],
+                    pAdapterInfo->Address[5]);
             ss_mac << macaddr;
         }
 
         pAdapterInfo = pAdapterInfo->Next;
 
-    } while(pAdapterInfo);
+    } while (pAdapterInfo);
 
     return ss_mac.str();
 
 #elif defined MACOS
     struct ifaddrs *ifap, *ifaptr;
-    unsigned char *ptr;
+    unsigned char* ptr;
     if (getifaddrs(&ifap) == 0) {
-        for(ifaptr = ifap; ifaptr != NULL; ifaptr = (ifaptr)->ifa_next) {
-            if (ifaptr->ifa_addr->sa_family == AF_LINK 
-                    && !strcmp(ifaptr->ifa_name, "en0")) {
-                unsigned char * mac_address = (unsigned char *)LLADDR((struct sockaddr_dl *)(ifaptr)->ifa_addr);
+        for (ifaptr = ifap; ifaptr != NULL; ifaptr = (ifaptr)->ifa_next) {
+            if (ifaptr->ifa_addr->sa_family == AF_LINK && !strcmp(ifaptr->ifa_name, "en0")) {
+                unsigned char* mac_address = ( unsigned char* )LLADDR(( struct sockaddr_dl* )(ifaptr)->ifa_addr);
                 std::stringstream ss;
                 ss << std::hex << std::setfill('0');
                 ss << std::setw(2) << static_cast<unsigned>(mac_address[0]);
@@ -199,9 +201,10 @@ std::string SystemInfo::retrieveMacAddress()
                 ss << std::setw(2) << static_cast<unsigned>(mac_address[5]);
                 freeifaddrs(ifap);
                 return ss.str();
-                    }
             }
-    } else {
+        }
+    }
+    else {
         return std::string();
     }
 #else
@@ -280,6 +283,7 @@ std::string SystemInfo::retrieveProduct()
     SYSTEM_INFO siSysInfo;
     GetSystemInfo(&siSysInfo);
 
+    // clang-format off
     ss_hw << "HW:" << siSysInfo.dwOemId <<
              siSysInfo.dwNumberOfProcessors <<
              siSysInfo.dwPageSize <<
@@ -287,6 +291,7 @@ std::string SystemInfo::retrieveProduct()
              siSysInfo.lpMinimumApplicationAddress <<
              siSysInfo.lpMaximumApplicationAddress <<
              siSysInfo.dwActiveProcessorMask;
+    // clang-format on
 
     return ss_hw.str();
 
@@ -316,7 +321,7 @@ std::string SystemInfo::retrieveName()
     DWORD size = sizeof(computerName) / sizeof(computerName[0]);
     GetComputerName(computerName, &size);
 
-    for(size_t i=0; i < size; i++) {
+    for (size_t i = 0; i < size; i++) {
         ss_name << computerName[i];
     }
 
@@ -339,17 +344,17 @@ std::string SystemInfo::retrieveName()
 std::string SystemInfo::readDMIfile(std::string _filename)
 {
     std::string content;
-    std::ifstream file (_filename.c_str());
+    std::ifstream file(_filename.c_str());
 
     if (file.is_open()) {
-        std::getline (file, content);
+        std::getline(file, content);
     }
 
     file.close();
 
     // Some content of dmi file can be fill with space character.
-    for(size_t i=0; i < content.size(); i++) {
-        if(isblank(content[i]) == 0) {
+    for (size_t i = 0; i < content.size(); i++) {
+        if (isblank(content[i]) == 0) {
             return content;
         }
     }
@@ -360,4 +365,3 @@ std::string SystemInfo::readDMIfile(std::string _filename)
 
 } // namespace Common
 } // namespace Tucuxi
-

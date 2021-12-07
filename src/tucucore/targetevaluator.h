@@ -2,9 +2,9 @@
 #define TUCUXI_CORE_TARGETEVALUATOR_H
 
 // We need this include because IntakeSeries is a typedef, and as such can not be forward declared
-#include "tucucore/intakeevent.h"
-#include "tucucore/computingservice/computingresult.h"
 #include "tucucore/computingservice/computingresponse.h"
+#include "tucucore/computingservice/computingresult.h"
+#include "tucucore/intakeevent.h"
 #include "tucucore/targetevent.h"
 
 namespace Tucuxi {
@@ -23,7 +23,6 @@ class TargetEvaluationResult;
 class TargetEvaluator
 {
 public:
-
     TargetEvaluator();
 
     ///
@@ -35,10 +34,10 @@ public:
     /// \return Result::Ok if everything went well, Result::InvalidCandidate if the candidate is outside the boundaries, Result::EvaluationError if there is an internal with the evaluation
     ///
     ComputingStatus evaluate(
-            const ConcentrationPrediction &_prediction,
-            const Tucuxi::Core::IntakeSeries &_intakeSeries,
-            const TargetEvent &_targetEvent,
-            TargetEvaluationResult &_result);
+            const ConcentrationPrediction& _prediction,
+            const Tucuxi::Core::IntakeSeries& _intakeSeries,
+            const TargetEvent& _targetEvent,
+            TargetEvaluationResult& _result);
 
     ///
     /// \brief aucOverMicCalculator
@@ -46,11 +45,9 @@ public:
     /// \param _cycle : Cycle containing times
     /// \return double value corresponding to Area under Curve which is over the mic value
     ///
-    double aucOverMicCalculator(const TargetEvent &_targetEvent,
-                                CycleData &_cycle);
+    double aucOverMicCalculator(const TargetEvent& _targetEvent, CycleData& _cycle);
 
 protected:
-
     ///
     /// \brief Checks if the value is inside the boundaries
     /// \param _value Value to be checked
@@ -61,10 +58,7 @@ protected:
     /// delta is a value defined within the function as 1e-07. It allows to tolerate
     /// some floating point operations roundings.
     ///
-    bool isWithinBoundaries(
-            Value _value,
-            Value _min,
-            Value _max);
+    bool isWithinBoundaries(Value _value, Value _min, Value _max);
 
 
     ///
@@ -81,12 +75,7 @@ protected:
     /// _score is only modified if _ok is true and will contain the score calculation
     /// _outputValue is only modified if _ok is true and will contain _value
     ///
-    void evaluateValue(Value _value,
-            const TargetEvent &_targetEvent,
-            bool &_ok,
-            double &_score,
-            double &_outputValue);
-
+    void evaluateValue(Value _value, const TargetEvent& _targetEvent, bool& _ok, double& _score, double& _outputValue);
 };
 
 } // namespace Core

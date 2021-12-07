@@ -8,14 +8,14 @@
 namespace Tucuxi {
 namespace Core {
 
-bool CovariateEvent::evaluate(const OperableGraphManager &_graphMgr)
+bool CovariateEvent::evaluate(const OperableGraphManager& _graphMgr)
 {
-    Operation &op = getOperation();
+    Operation& op = getOperation();
 
     // Collect inputs
     OperationInputList inputs = getInputs();
 
-    for (auto &input : inputs) {
+    for (auto& input : inputs) {
         double val;
         bool rc = _graphMgr.getValue(input.getName(), val);
         if (!rc) {
@@ -26,7 +26,6 @@ bool CovariateEvent::evaluate(const OperableGraphManager &_graphMgr)
         if (!rc) {
             return false;
         }
-
     }
 
     return op.evaluate(inputs, m_value);

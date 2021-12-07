@@ -8,26 +8,26 @@
 #include <iostream>
 #include <memory>
 
-#include "fructose/fructose.h"
-
 #include "tucucore/hardcodedoperation.h"
 #include "tucucore/operation.h"
+
+#include "fructose/fructose.h"
 
 using namespace Tucuxi::Core;
 
 /// \brief Get an operation from a collection and check its type.
 /// \param _TYPE Type of the operation to get.
-#define TEST_GET_OPERATION(_TYPE) \
-    do { \
+#define TEST_GET_OPERATION(_TYPE)                                                     \
+    do {                                                                              \
         std::shared_ptr<Operation> operation = collection.getOperationFromId(#_TYPE); \
-        fructose_assert(operation != nullptr); \
-        fructose_assert(dynamic_cast<_TYPE*>(operation.get()) != nullptr); \
+        fructose_assert(operation != nullptr);                                        \
+        fructose_assert(dynamic_cast<_TYPE*>(operation.get()) != nullptr);            \
     } while (0);
 
 
 struct TestOperationCollection : public fructose::test_base<TestOperationCollection>
 {
-    TestOperationCollection() { }
+    TestOperationCollection() {}
 
     /// \brief Test: Add the default hardcoded operations and get them back.
     void testOperationCollection(const std::string& /* _testName */)
@@ -57,7 +57,6 @@ struct TestOperationCollection : public fructose::test_base<TestOperationCollect
         TEST_GET_OPERATION(eGFR_Schwartz);
         TEST_GET_OPERATION(GFR_Jelliffe);
         TEST_GET_OPERATION(eGFR_SalazarCorcoran);
-
     }
 };
 

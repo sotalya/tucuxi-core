@@ -3,9 +3,11 @@
 */
 
 #include "tucucore/residualerrormodel.h"
+
+#include "tucucommon/general.h"
+
 #include "tucucore/definitions.h"
 #include "tucucore/sampleevent.h"
-#include "tucucommon/general.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -31,7 +33,8 @@ bool SigmaResidualErrorModel::isEmpty() const
 }
 
 
-void SigmaResidualErrorModel::applyEpsToValue(Concentration &_concentration, const Deviations &_eps) const {
+void SigmaResidualErrorModel::applyEpsToValue(Concentration& _concentration, const Deviations& _eps) const
+{
 
     switch (m_errorModel) {
     case ResidualErrorType::EXPONENTIAL:
@@ -45,8 +48,8 @@ void SigmaResidualErrorModel::applyEpsToValue(Concentration &_concentration, con
         _concentration += m_sigma[0] * _eps[0];
         break;
     case ResidualErrorType::MIXED:
-         // m_sigma[0] is the additive SD and m_sigma[1] the exponential SD
-        _concentration += _eps[0] * std::sqrt(std::pow(_concentration * m_sigma[1], 2)  + std::pow(m_sigma[0], 2));
+        // m_sigma[0] is the additive SD and m_sigma[1] the exponential SD
+        _concentration += _eps[0] * std::sqrt(std::pow(_concentration * m_sigma[1], 2) + std::pow(m_sigma[0], 2));
         break;
     default:
         // Should never happen
@@ -54,10 +57,11 @@ void SigmaResidualErrorModel::applyEpsToValue(Concentration &_concentration, con
     }
 };
 
-void SigmaResidualErrorModel::applyEpsToArray(Concentrations &_concentrations, const Deviations &_eps) const {
+void SigmaResidualErrorModel::applyEpsToArray(Concentrations& _concentrations, const Deviations& _eps) const
+{
 
     // Loop through the main compartment concentrations and apply the residual error
-    for (double & concentration : _concentrations) {
+    for (double& concentration : _concentrations) {
         switch (m_errorModel) {
         case ResidualErrorType::EXPONENTIAL:
         case ResidualErrorType::PROPEXP:
@@ -70,7 +74,7 @@ void SigmaResidualErrorModel::applyEpsToArray(Concentrations &_concentrations, c
             concentration += m_sigma[0] * _eps[0];
             break;
         case ResidualErrorType::MIXED:
-            concentration += _eps[0] * std::sqrt(std::pow(concentration * m_sigma[1], 2)  + std::pow(m_sigma[0], 2));
+            concentration += _eps[0] * std::sqrt(std::pow(concentration * m_sigma[1], 2) + std::pow(m_sigma[0], 2));
             break;
         default:
             // Should never happen
@@ -86,7 +90,7 @@ Value SigmaResidualErrorModel::calculateSampleLikelihood(Value _expected, Value 
     // Sig is calculated with _y here
     double sig = 0.0;
 
-    switch(m_errorModel) {
+    switch (m_errorModel) {
     case ResidualErrorType::ADDITIVE: {
         expectedObservedDiff = _observed - _expected;
         sig = m_sigma(0);
@@ -115,7 +119,7 @@ Value SigmaResidualErrorModel::calculateSampleLikelihood(Value _expected, Value 
     } break;
     case ResidualErrorType::MIXED: {
         expectedObservedDiff = _observed - _expected;
-        sig = std::sqrt(std::pow(m_sigma(1) * _expected, 2) + std::pow(m_sigma(0),2));
+        sig = std::sqrt(std::pow(m_sigma(1) * _expected, 2) + std::pow(m_sigma(0), 2));
     } break;
     default: {
         // Should never happen
@@ -125,10 +129,9 @@ Value SigmaResidualErrorModel::calculateSampleLikelihood(Value _expected, Value 
     // If there is no resid variance, there is only one
     // possibility (assuming it can be reached based on the limits of eta)
     // The interindividual variance takes over and reaches the sample value
-    if(sig == 0.0) {
+    if (sig == 0.0) {
         // Something wrong happened
-        if (expectedObservedDiff == 0.0)
-        {
+        if (expectedObservedDiff == 0.0) {
             return 0.0;
         }
         return -std::numeric_limits<double>::max();
@@ -139,7 +142,7 @@ Value SigmaResidualErrorModel::calculateSampleLikelihood(Value _expected, Value 
 
     // The following should be used for real Exponential models
     // Unfortunately NONMEM does not work that way
-/*    if (m_errorModel == ResidualErrorType::EXPONENTIAL) {
+    /*    if (m_errorModel == ResidualErrorType::EXPONENTIAL) {
         phi =
                 (0.5 * log(2 * PI)) +
                 log(_expected) +     // There is this specific log(_expected for LogNormal distribution
@@ -152,10 +155,8 @@ Value SigmaResidualErrorModel::calculateSampleLikelihood(Value _expected, Value 
     // the log scale
     {
         // This is the calculation with a sig of one element
-        phi =
-                (0.5 * log(2 * PI)) +
-                log(sig) +
-                0.5 * expectedObservedDiff * 1.0/(std::pow(sig,2)) * expectedObservedDiff;
+        phi = (0.5 * log(2 * PI)) + log(sig)
+              + 0.5 * expectedObservedDiff * 1.0 / (std::pow(sig, 2)) * expectedObservedDiff;
     }
 
     // If we have a really big problem, like we have a log of zero
@@ -163,7 +164,7 @@ Value SigmaResidualErrorModel::calculateSampleLikelihood(Value _expected, Value 
         //        EXLOG(QtWarningMsg, ezechiel::math::NOEZERROR, QObject::tr("Log likelihood is NAN"))
         phi = std::numeric_limits<double>::max();
     }
-    return - phi;
+    return -phi;
 }
 
 } // namespace Core

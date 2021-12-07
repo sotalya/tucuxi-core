@@ -1,15 +1,22 @@
 #ifndef MULTICONSTANTELIMINATIONBOLUS_H
 #define MULTICONSTANTELIMINATIONBOLUS_H
 
-#include "tucucore/intakeintervalcalculatoranalytical.h"
-
 #include "tucucore/intakeevent.h"
+#include "tucucore/intakeintervalcalculatoranalytical.h"
 
 namespace Tucuxi {
 namespace Core {
 
-enum class MultiConstantEliminationBolusExponentials : int { P0, P1 };
-enum class MultiConstantEliminationBolusCompartments : int { First, Second };
+enum class MultiConstantEliminationBolusExponentials : int
+{
+    P0,
+    P1
+};
+enum class MultiConstantEliminationBolusCompartments : int
+{
+    First,
+    Second
+};
 
 
 /// \ingroup TucuCore
@@ -33,12 +40,14 @@ enum class MultiConstantEliminationBolusCompartments : int { First, Second };
 
 class MultiConstantEliminationBolus : public IntakeIntervalCalculatorBase<2, MultiConstantEliminationBolusExponentials>
 {
-   INTAKEINTERVALCALCULATOR_UTILS(MultiConstantEliminationBolus)
+    INTAKEINTERVALCALCULATOR_UTILS(MultiConstantEliminationBolus)
 public:
     /// \brief Constructor
-    MultiConstantEliminationBolus() : IntakeIntervalCalculatorBase<2, MultiConstantEliminationBolusExponentials> (new PertinentTimesCalculatorStandard())
+    MultiConstantEliminationBolus()
+        : IntakeIntervalCalculatorBase<2, MultiConstantEliminationBolusExponentials>(
+                new PertinentTimesCalculatorStandard())
     {
-       // By default there is a single analyte. So, set m_nbAnalytes to the correct value for this specific intake interval calculator.
+        // By default there is a single analyte. So, set m_nbAnalytes to the correct value for this specific intake interval calculator.
         m_nbAnalytes = 2;
     }
 
@@ -54,7 +63,7 @@ protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override
     {
 
-        if(!checkCondition(_parameters.size() >= 8, "The number of parameters should be equal to 8.")) {
+        if (!checkCondition(_parameters.size() >= 8, "The number of parameters should be equal to 8.")) {
             return false;
         }
 
@@ -70,7 +79,7 @@ protected:
         m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());
         m_Int = static_cast<int>((_intakeEvent.getInterval()).toHours());
 
-    #ifdef DEBUG
+#ifdef DEBUG
         Tucuxi::Common::LoggerHelper logHelper;
 
         logHelper.debug("<<Input Values>>");
@@ -81,7 +90,7 @@ protected:
         logHelper.debug("m_nbPoints: {}", m_nbPoints);
         logHelper.debug("m_Int: {}", m_Int);
 
-    #endif
+#endif
 
         // check the inputs
         bool bOK = true;
@@ -98,10 +107,10 @@ protected:
         Eigen::VectorXd val0 = _times;
         Eigen::VectorXd val1 = _times;
         auto s1 = val0.size();
-        for(int i = 0; i < s1; i++) {
+        for (int i = 0; i < s1; i++) {
             val0[i] = (1 - _times[i] * m_S0) * m_M0;
         }
-        for(int j = 0; j <s1; j++){
+        for (int j = 0; j < s1; j++) {
             val1[j] = (1 - _times[j] * m_S1) * m_M1;
         }
 
@@ -117,14 +126,18 @@ protected:
         setExponentials(Exponentials::P1, val1.array());
     }
 
-    bool computeConcentrations(const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) override
+    bool computeConcentrations(
+            const Residuals& _inResiduals,
+            bool _isAll,
+            std::vector<Concentrations>& _concentrations,
+            Residuals& _outResiduals) override
     {
         Eigen::VectorXd concentrations1, concentrations2;
         size_t firstCompartment = static_cast<size_t>(Compartments::First);
         size_t secondCompartment = static_cast<size_t>(Compartments::Second);
 
         // Compute concentrations
-            compute(_inResiduals, concentrations1, concentrations2);
+        compute(_inResiduals, concentrations1, concentrations2);
 
         // Return finla residual
         _outResiduals[firstCompartment] = concentrations1[m_nbPoints - 1];
@@ -132,15 +145,23 @@ protected:
 
 
         // Return concentrations of first compartment
-        _concentrations[firstCompartment].assign(concentrations1.data(), concentrations1.data() + concentrations1.size());
+        _concentrations[firstCompartment].assign(
+                concentrations1.data(), concentrations1.data() + concentrations1.size());
         // Return concentrations of the second compartment
-        _concentrations[secondCompartment].assign(concentrations2.data(), concentrations2.data() + concentrations2.size());
+        _concentrations[secondCompartment].assign(
+                concentrations2.data(), concentrations2.data() + concentrations2.size());
         TMP_UNUSED_PARAMETER(_isAll);
 
-        return checkCondition(_outResiduals[firstCompartment] >= 0, "The concentration is negative.") && checkCondition(_outResiduals[secondCompartment] >= 0, "The concentration is negative.");
+        return checkCondition(_outResiduals[firstCompartment] >= 0, "The concentration is negative.")
+               && checkCondition(_outResiduals[secondCompartment] >= 0, "The concentration is negative.");
     }
 
-    bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) override
+    bool computeConcentration(
+            const Value& _atTime,
+            const Residuals& _inResiduals,
+            bool _isAll,
+            std::vector<Concentrations>& _concentrations,
+            Residuals& _outResiduals) override
     {
         TMP_UNUSED_PARAMETER(_atTime);
 
@@ -169,30 +190,31 @@ protected:
         _outResiduals[firstCompartment] = concentrations1[atEndInterval];
         _outResiduals[secondCompartment] = concentrations2[atEndInterval];
 
-        return checkCondition(_outResiduals[firstCompartment] >= 0, "The concentration is negative.") && checkCondition(_outResiduals[secondCompartment] >= 0, "The concentration is negative.");
+        return checkCondition(_outResiduals[firstCompartment] >= 0, "The concentration is negative.")
+               && checkCondition(_outResiduals[secondCompartment] >= 0, "The concentration is negative.");
     }
 
 
     void compute(const Residuals& _inResiduals, Eigen::VectorXd& _concentrations, Eigen::VectorXd& _concentrations2);
 
-    Value m_D;	/// Quantity of drug
-    Value m_S0;	/// Slope of elimination of the concentration nb 0
-    Value m_M0;	/// Multiplicative factor of the concentration nb 0
-    Value m_A0;  /// Additional value to concentration nb 0
-    Value m_R0;  /// Multiplier for the residual of the concentration nb 0
-    Value m_S1;	/// Slope of elimination of the concentration nb 1
-    Value m_M1;	/// Multiplicative factor of the concentration nb 1
-    Value m_A1;  /// Additional value to concentration nb 1
-    Value m_R1;  /// Multiplier for the residual of the concentration nb 1
+    Value m_D;               /// Quantity of drug
+    Value m_S0;              /// Slope of elimination of the concentration nb 0
+    Value m_M0;              /// Multiplicative factor of the concentration nb 0
+    Value m_A0;              /// Additional value to concentration nb 0
+    Value m_R0;              /// Multiplier for the residual of the concentration nb 0
+    Value m_S1;              /// Slope of elimination of the concentration nb 1
+    Value m_M1;              /// Multiplicative factor of the concentration nb 1
+    Value m_A1;              /// Additional value to concentration nb 1
+    Value m_R1;              /// Multiplier for the residual of the concentration nb 1
     Eigen::Index m_nbPoints; /// Number measure points during interval
-    Value m_Int; /// Interval (hours)
+    Value m_Int;             /// Interval (hours)
 
 private:
-
     typedef MultiConstantEliminationBolusCompartments Compartments;
 };
 
-inline void MultiConstantEliminationBolus::compute(const Residuals& _inResiduals, Eigen::VectorXd& _concentrations1, Eigen::VectorXd& _concentrations2)
+inline void MultiConstantEliminationBolus::compute(
+        const Residuals& _inResiduals, Eigen::VectorXd& _concentrations1, Eigen::VectorXd& _concentrations2)
 {
     _concentrations1 = ((m_D + m_R0 * _inResiduals[0]) * exponentials(Exponentials::P0));
     for (int i = 0; i < _concentrations1.size(); i++) {

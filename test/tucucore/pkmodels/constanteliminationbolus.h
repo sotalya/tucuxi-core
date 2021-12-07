@@ -5,15 +5,20 @@
 #ifndef LINEARBOLUS_H
 #define LINEARBOLUS_H
 
-#include "tucucore/intakeintervalcalculatoranalytical.h"
-
 #include "tucucore/intakeevent.h"
+#include "tucucore/intakeintervalcalculatoranalytical.h"
 
 namespace Tucuxi {
 namespace Core {
 
-enum class ConstantEliminationBolusExponentials : int { P };
-enum class ConstantEliminationBolusCompartments : int { First };
+enum class ConstantEliminationBolusExponentials : int
+{
+    P
+};
+enum class ConstantEliminationBolusCompartments : int
+{
+    First
+};
 
 /// \ingroup TucuCore
 /// \brief Intake interval calculator for tests. It is a bolus with a linear slope
@@ -37,9 +42,9 @@ class ConstantEliminationBolus : public IntakeIntervalCalculatorBase<1, Constant
     INTAKEINTERVALCALCULATOR_UTILS(ConstantEliminationBolus)
 public:
     /// \brief Constructor
-    ConstantEliminationBolus() : IntakeIntervalCalculatorBase<1, ConstantEliminationBolusExponentials> (new PertinentTimesCalculatorStandard())
+    ConstantEliminationBolus()
+        : IntakeIntervalCalculatorBase<1, ConstantEliminationBolusExponentials>(new PertinentTimesCalculatorStandard())
     {
-
     }
 
     typedef ConstantEliminationBolusExponentials Exponentials;
@@ -54,7 +59,7 @@ protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override
     {
 
-        if(!checkCondition(_parameters.size() >= 4, "The number of parameters should be equal to 4.")) {
+        if (!checkCondition(_parameters.size() >= 4, "The number of parameters should be equal to 4.")) {
             return false;
         }
 
@@ -66,7 +71,7 @@ protected:
         m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());
         m_Int = static_cast<int>((_intakeEvent.getInterval()).toHours());
 
-    #ifdef DEBUG
+#ifdef DEBUG
         Tucuxi::Common::LoggerHelper logHelper;
 
         logHelper.debug("<<Input Values>>");
@@ -74,7 +79,7 @@ protected:
         logHelper.debug("m_A: {}", m_A);
         logHelper.debug("m_nbPoints: {}", m_nbPoints);
         logHelper.debug("m_Int: {}", m_Int);
-    #endif
+#endif
 
         // check the inputs
         bool bOK = true;
@@ -88,13 +93,17 @@ protected:
     {
         Eigen::VectorXd val = _times;
         auto s = val.size();
-        for(int i = 0; i < s; i++) {
+        for (int i = 0; i < s; i++) {
             val[i] = (1 - _times[i] * m_S) * m_M;
         }
         setExponentials(Exponentials::P, val.array());
     }
 
-    bool computeConcentrations(const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) override
+    bool computeConcentrations(
+            const Residuals& _inResiduals,
+            bool _isAll,
+            std::vector<Concentrations>& _concentrations,
+            Residuals& _outResiduals) override
     {
         Eigen::VectorXd concentrations;
         size_t firstCompartment = static_cast<size_t>(Compartments::First);
@@ -114,7 +123,12 @@ protected:
         return checkCondition(_outResiduals[firstCompartment] >= 0, "The concentration is negative.");
     }
 
-    bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) override
+    bool computeConcentration(
+            const Value& _atTime,
+            const Residuals& _inResiduals,
+            bool _isAll,
+            std::vector<Concentrations>& _concentrations,
+            Residuals& _outResiduals) override
     {
         TMP_UNUSED_PARAMETER(_atTime);
 
@@ -145,13 +159,13 @@ protected:
 
     void compute(const Residuals& _inResiduals, Eigen::VectorXd& _concentrations);
 
-    Value m_D;	/// Quantity of drug
-    Value m_S;	/// Slope of elimination
-    Value m_M;	/// Multiplicative factor of the concentration
-    Value m_A;  /// Additional value to concentration
-    Value m_R;  /// Multiplier for the residual
+    Value m_D;               /// Quantity of drug
+    Value m_S;               /// Slope of elimination
+    Value m_M;               /// Multiplicative factor of the concentration
+    Value m_A;               /// Additional value to concentration
+    Value m_R;               /// Multiplier for the residual
     Eigen::Index m_nbPoints; /// Number measure points during interval
-    Value m_Int; /// Interval (hours)
+    Value m_Int;             /// Interval (hours)
 
 private:
     typedef ConstantEliminationBolusCompartments Compartments;

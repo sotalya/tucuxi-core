@@ -10,13 +10,12 @@
 namespace Tucuxi {
 namespace Core {
 
-ComputingRequest::ComputingRequest(RequestResponseId _id,
-    const DrugModel& _drugModel,
-    const DrugTreatment& _drugTreatment,
-     std::unique_ptr<ComputingTrait> _computingTrait) :
-    m_id(std::move(_id)),
-    m_drugModel(_drugModel),
-    m_drugTreatment(_drugTreatment)
+ComputingRequest::ComputingRequest(
+        RequestResponseId _id,
+        const DrugModel& _drugModel,
+        const DrugTreatment& _drugTreatment,
+        std::unique_ptr<ComputingTrait> _computingTrait)
+    : m_id(std::move(_id)), m_drugModel(_drugModel), m_drugTreatment(_drugTreatment)
 {
     m_computingTraits = std::make_unique<ComputingTraits>();
     m_computingTraits->addTrait(std::move(_computingTrait));
@@ -42,5 +41,5 @@ const ComputingTraits& ComputingRequest::getComputingTraits() const
     return *m_computingTraits;
 }
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi

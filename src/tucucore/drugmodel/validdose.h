@@ -7,8 +7,8 @@
 
 #include "tucucore/definitions.h"
 #include "tucucore/drugdefinitions.h"
-#include "tucucore/validvalues.h"
 #include "tucucore/invariants.h"
+#include "tucucore/validvalues.h"
 
 
 namespace Tucuxi {
@@ -24,7 +24,6 @@ public:
 
     // No invariants
     EMPTYINVARIANTS
-
 };
 
 
@@ -34,4 +33,3 @@ public:
 
 
 #endif // VALIDDOSE_H
-

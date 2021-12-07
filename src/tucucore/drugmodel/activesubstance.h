@@ -5,9 +5,9 @@
 #ifndef ACTIVESUBSTANCE_H
 #define ACTIVESUBSTANCE_H
 
+#include <memory>
 #include <string>
 #include <vector>
-#include <memory>
 
 #include "analyte.h"
 

@@ -4,12 +4,12 @@
 #include "tucucommon/datetime.h"
 #include "tucucommon/loggerhelper.h"
 
+#include "tucucore/computingservice/computingtrait.h"
 #include "tucucore/computingservice/icomputingservice.h"
+#include "tucucore/covariateevent.h"
 #include "tucucore/definitions.h"
 #include "tucucore/dosage.h"
-#include "tucucore/covariateevent.h"
 #include "tucucore/drugmodel/drugmodel.h"
-#include "tucucore/computingservice/computingtrait.h"
 #include "tucucore/drugtreatment/sample.h"
 
 namespace Tucuxi {
@@ -30,77 +30,74 @@ class GeneralExtractor
 public:
     GeneralExtractor();
 
-    Duration secureStartDuration(const HalfLife &_halfLife);
+    Duration secureStartDuration(const HalfLife& _halfLife);
 
     ComputingStatus extractAposterioriEtas(
-            Etas &_etas,
-            const ComputingRequest &_request,
+            Etas& _etas,
+            const ComputingRequest& _request,
             const AnalyteGroupId& _analyteGroupId,
-            const IntakeSeries &_intakeSeries,
-            const ParameterSetSeries &_parameterSeries,
-            const Tucuxi::Core::CovariateSeries &_covariateSeries,
+            const IntakeSeries& _intakeSeries,
+            const ParameterSetSeries& _parameterSeries,
+            const Tucuxi::Core::CovariateSeries& _covariateSeries,
             Common::DateTime _calculationStartTime,
             Common::DateTime _endTime);
 
     ComputingStatus extractOmega(
-            const DrugModel &_drugModel,
+            const DrugModel& _drugModel,
             const AnalyteGroupId& _analyteGroupId,
-            std::vector<const FullFormulationAndRoute *> &_formulationAndRoutes,
-            OmegaMatrix &_omega);
+            std::vector<const FullFormulationAndRoute*>& _formulationAndRoutes,
+            OmegaMatrix& _omega);
 
     ComputingStatus generalExtractions(
-            const Tucuxi::Core::ComputingTraitStandard *_traits,
-            const DrugModel &_drugModel,
-            const DosageHistory &_dosageHistory,
-            const Samples &_samples,
-            const PatientVariates &_patientVariates,
-            const PkModelCollection *_modelCollection,
-            std::map<AnalyteGroupId, std::shared_ptr<PkModel> > &_pkModel,
-            GroupsIntakeSeries &_intakeSeries,
-            CovariateSeries &_covariatesSeries,
-            GroupsParameterSetSeries &_parameterSeries,
-            Common::DateTime &_calculationStartTime);
+            const Tucuxi::Core::ComputingTraitStandard* _traits,
+            const DrugModel& _drugModel,
+            const DosageHistory& _dosageHistory,
+            const Samples& _samples,
+            const PatientVariates& _patientVariates,
+            const PkModelCollection* _modelCollection,
+            std::map<AnalyteGroupId, std::shared_ptr<PkModel> >& _pkModel,
+            GroupsIntakeSeries& _intakeSeries,
+            CovariateSeries& _covariatesSeries,
+            GroupsParameterSetSeries& _parameterSeries,
+            Common::DateTime& _calculationStartTime);
 
     ComputingStatus generalExtractions(
-            const Tucuxi::Core::ComputingTraitStandard *_traits,
-            const ComputingRequest &_request,
-            const PkModelCollection *_modelCollection,
-            std::map<AnalyteGroupId, std::shared_ptr<PkModel> > &_pkModel,
-            GroupsIntakeSeries &_intakeSeries,
-            CovariateSeries &_covariatesSeries,
-            GroupsParameterSetSeries &_parameterSeries,
-            Common::DateTime &_calculationStartTime);
+            const Tucuxi::Core::ComputingTraitStandard* _traits,
+            const ComputingRequest& _request,
+            const PkModelCollection* _modelCollection,
+            std::map<AnalyteGroupId, std::shared_ptr<PkModel> >& _pkModel,
+            GroupsIntakeSeries& _intakeSeries,
+            CovariateSeries& _covariatesSeries,
+            GroupsParameterSetSeries& _parameterSeries,
+            Common::DateTime& _calculationStartTime);
 
     std::vector<const FullFormulationAndRoute*> extractFormulationAndRoutes(
-            const DrugModel &_drugModel,
-            const IntakeSeries &_intakeSeries);
+            const DrugModel& _drugModel, const IntakeSeries& _intakeSeries);
 
     ComputingStatus convertAnalytes(
-            IntakeSeries &_intakeSeries,
-            const DrugModel &_drugModel,
-            const AnalyteSet *_analyteGroup);
+            IntakeSeries& _intakeSeries, const DrugModel& _drugModel, const AnalyteSet* _analyteGroup);
 
     ComputingStatus extractParameters(
-            const std::vector<FormulationAndRoute> &_formulationsAndRoutes,
-            const AnalyteSets &_analyteSets,
-            const DrugModel &_drugModel,
-            const CovariateSeries &_covariatesSeries,
+            const std::vector<FormulationAndRoute>& _formulationsAndRoutes,
+            const AnalyteSets& _analyteSets,
+            const DrugModel& _drugModel,
+            const CovariateSeries& _covariatesSeries,
             DateTime _start,
             DateTime _end,
             PredictionParameterType _parametersType,
-            GroupsParameterSetSeries &_parameterSeries);
+            GroupsParameterSetSeries& _parameterSeries);
 
 
-    ComputingStatus extractPkModel(const DrugModel &_drugModel,
-            const PkModelCollection *_modelCollection,
-            std::map<AnalyteGroupId, std::shared_ptr<PkModel> > &_pkModel);
+    ComputingStatus extractPkModel(
+            const DrugModel& _drugModel,
+            const PkModelCollection* _modelCollection,
+            std::map<AnalyteGroupId, std::shared_ptr<PkModel> >& _pkModel);
 
 protected:
-
     bool findFormulationAndRoutes(
-            std::vector<FormulationAndRoute> &_treatmentFandR,
-            const FormulationAndRoutes &_drugModelFandR,
-            std::map<FormulationAndRoute, const FullFormulationAndRoute *> &_result);
+            std::vector<FormulationAndRoute>& _treatmentFandR,
+            const FormulationAndRoutes& _drugModelFandR,
+            std::map<FormulationAndRoute, const FullFormulationAndRoute*>& _result);
 
     Tucuxi::Common::LoggerHelper m_logger;
 };

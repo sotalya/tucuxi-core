@@ -43,7 +43,7 @@ public:
         return true;
     }
 
-    void init(const PercentileRanks& _ranks, const std::vector<TimeOffsets> &_times, const IntakeSeries &_intakes)
+    void init(const PercentileRanks& _ranks, const std::vector<TimeOffsets>& _times, const IntakeSeries& _intakes)
     {
         m_ranks = _ranks;
         m_times = _times;
@@ -51,28 +51,37 @@ public:
 
         PercentileRanks::iterator itRank = m_ranks.begin();
         while (itRank != m_ranks.end()) {
-            std::vector< std::vector<Concentration> > vec;
+            std::vector<std::vector<Concentration> > vec;
             for (size_t cycle = 0; cycle < _intakes.size(); cycle++) {
                 vec.push_back(std::vector<Concentration>(_intakes[cycle].getNbPoints()));
             }
             m_values.push_back(vec);
             itRank++;
-        }        
+        }
     }
 
-    const PercentileRanks& getRanks() const { return m_ranks; }
-    const std::vector<TimeOffsets>& getTimes() const { return m_times; }
-    const std::vector<std::vector<std::vector<Value> > >& getValues() const { return m_values; }
+    const PercentileRanks& getRanks() const
+    {
+        return m_ranks;
+    }
+    const std::vector<TimeOffsets>& getTimes() const
+    {
+        return m_times;
+    }
+    const std::vector<std::vector<std::vector<Value> > >& getValues() const
+    {
+        return m_values;
+    }
 
     void appendPercentile(size_t _percentileRank, size_t _cycle, size_t _point, Value _value)
-    { 
-        m_values[_percentileRank][_cycle][_point] = _value; 
+    {
+        m_values[_percentileRank][_cycle][_point] = _value;
     }
 
 private:
     std::vector<TimeOffsets> m_times;
     PercentileRanks m_ranks;
-    std::vector<std::vector<std::vector<Value> > >m_values; // Cycles->Points->Value
+    std::vector<std::vector<std::vector<Value> > > m_values; // Cycles->Points->Value
 };
 typedef std::unique_ptr<PercentilesPrediction> PercentilesPredictionPtr;
 

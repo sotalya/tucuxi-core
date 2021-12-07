@@ -1,18 +1,18 @@
 #include "rkmichaelismentenenzyme.h"
+
 #include "tucucore/intakeevent.h"
 
 namespace Tucuxi {
 namespace Core {
 
 
-RkMichaelisMentenEnzyme::RkMichaelisMentenEnzyme() : IntakeIntervalCalculatorRK4Base<3, RkMichaelisMentenEnzyme> (new PertinentTimesCalculatorStandard())
+RkMichaelisMentenEnzyme::RkMichaelisMentenEnzyme()
+    : IntakeIntervalCalculatorRK4Base<3, RkMichaelisMentenEnzyme>(new PertinentTimesCalculatorStandard())
 {
 }
 
 
-RkMichaelisMentenEnzymeExtra::RkMichaelisMentenEnzymeExtra() : RkMichaelisMentenEnzyme()
-{
-}
+RkMichaelisMentenEnzymeExtra::RkMichaelisMentenEnzymeExtra() : RkMichaelisMentenEnzyme() {}
 
 std::vector<std::string> RkMichaelisMentenEnzymeExtra::getParametersId()
 {
@@ -48,7 +48,7 @@ bool RkMichaelisMentenEnzymeExtra::checkInputs(const IntakeEvent& _intakeEvent, 
 
     m_ktr = (m_NN + 1.0) / m_MTT;
     // Logarithm of the approximation to the gamma function
-    auto l = 0.9189385 + (m_NN + 0.5)*std::log(m_NN) - m_NN + std::log(1.0 + 1.0/(12.0 * m_NN));
+    auto l = 0.9189385 + (m_NN + 0.5) * std::log(m_NN) - m_NN + std::log(1.0 + 1.0 / (12.0 * m_NN));
 
     Value tvbio;
 
@@ -62,15 +62,15 @@ bool RkMichaelisMentenEnzymeExtra::checkInputs(const IntakeEvent& _intakeEvent, 
     auto highBound = criticalPoint + 37.0;
     if ((m_D < criticalPoint) && (m_D > lowBound)) {
         // If the dose is in [lowerBoud, criticalPoint], use the value at the bound
-        tvbio = m_F *(1.0 + m_Fmax * (lowBound - m_DoseMid) / (m_EDmid + (lowBound - m_DoseMid)));
+        tvbio = m_F * (1.0 + m_Fmax * (lowBound - m_DoseMid) / (m_EDmid + (lowBound - m_DoseMid)));
     }
     else if ((m_D > criticalPoint) && (m_D < highBound)) {
         // If the dose in is [criticalPoint, higherBound], use the value at the bound
-        tvbio = m_F *(1.0 + m_Fmax * (highBound - m_DoseMid) / (m_EDmid + (highBound - m_DoseMid)));
+        tvbio = m_F * (1.0 + m_Fmax * (highBound - m_DoseMid) / (m_EDmid + (highBound - m_DoseMid)));
     }
     else {
         // Else use the initial formula
-        tvbio = m_F *(1.0 + m_Fmax * (m_D - m_DoseMid) / (m_EDmid + (m_D - m_DoseMid)));
+        tvbio = m_F * (1.0 + m_Fmax * (m_D - m_DoseMid) / (m_EDmid + (m_D - m_DoseMid)));
     }
 
     // Just a final check about the value
@@ -107,9 +107,7 @@ bool RkMichaelisMentenEnzymeExtra::checkInputs(const IntakeEvent& _intakeEvent, 
 }
 
 
-RkMichaelisMentenEnzymeBolus::RkMichaelisMentenEnzymeBolus() : RkMichaelisMentenEnzyme()
-{
-}
+RkMichaelisMentenEnzymeBolus::RkMichaelisMentenEnzymeBolus() : RkMichaelisMentenEnzyme() {}
 
 std::vector<std::string> RkMichaelisMentenEnzymeBolus::getParametersId()
 {

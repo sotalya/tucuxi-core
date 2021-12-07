@@ -3,6 +3,7 @@
 */
 
 #include "tucucore/dosage.h"
+
 #include "tucucore/intakeextractor.h"
 
 namespace Tucuxi {
@@ -13,11 +14,18 @@ namespace Core {
 
 /// \brief Visitor function's implementation.
 // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
-#define DOSAGE_UTILS_IMPL(className) \
-int className::extract(IntakeExtractor &_extractor, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, const TucuUnit &_toUnit, IntakeSeries &_series, ExtractionOption _option) const \
-{ \
-    return _extractor.extract(*this, _start, _end, _nbPointsPerHour, _toUnit, _series, _option); \
-}
+#define DOSAGE_UTILS_IMPL(className)                                                                 \
+    int className::extract(                                                                          \
+            IntakeExtractor& _extractor,                                                             \
+            const DateTime& _start,                                                                  \
+            const DateTime& _end,                                                                    \
+            double _nbPointsPerHour,                                                                 \
+            const TucuUnit& _toUnit,                                                                 \
+            IntakeSeries& _series,                                                                   \
+            ExtractionOption _option) const                                                          \
+    {                                                                                                \
+        return _extractor.extract(*this, _start, _end, _nbPointsPerHour, _toUnit, _series, _option); \
+    }
 
 
 DOSAGE_UTILS_IMPL(DosageBounded)
@@ -30,7 +38,7 @@ DOSAGE_UTILS_IMPL(LastingDose)
 DOSAGE_UTILS_IMPL(DailyDose)
 DOSAGE_UTILS_IMPL(WeeklyDose)
 
-bool timeRangesOverlap(const DosageTimeRange &_timeRange, const DosageTimeRangeList &_timeRangeList)
+bool timeRangesOverlap(const DosageTimeRange& _timeRange, const DosageTimeRangeList& _timeRangeList)
 {
     for (auto&& tr : _timeRangeList) {
         if (timeRangesOverlap(_timeRange, *tr)) {
@@ -40,35 +48,36 @@ bool timeRangesOverlap(const DosageTimeRange &_timeRange, const DosageTimeRangeL
     return false;
 }
 
-bool timeRangesOverlap(const DosageTimeRange &_first, const DosageTimeRange &_second)
+bool timeRangesOverlap(const DosageTimeRange& _first, const DosageTimeRange& _second)
 {
     if (_first.m_endDate.isUndefined() && _second.m_endDate.isUndefined()) {
         return true;
     }
     if (_first.m_endDate.isUndefined()) {
-        return (_first.m_startDate  < _second.m_endDate);
+        return (_first.m_startDate < _second.m_endDate);
     }
     if (_second.m_endDate.isUndefined()) {
-        return (_second.m_startDate < _first.m_endDate );
+        return (_second.m_startDate < _first.m_endDate);
     }
-    return  (_first.m_endDate   < _second.m_endDate   && _first.m_endDate   > _second.m_startDate) ||
-            (_first.m_startDate > _second.m_startDate && _first.m_startDate < _second.m_endDate  ) ||
-            (_first.m_startDate < _second.m_startDate && _first.m_endDate   > _second.m_endDate  ) ||
-            (_first.m_startDate > _second.m_startDate && _first.m_endDate   < _second.m_endDate  );
+    return (_first.m_endDate < _second.m_endDate && _first.m_endDate > _second.m_startDate)
+           || (_first.m_startDate > _second.m_startDate && _first.m_startDate < _second.m_endDate)
+           || (_first.m_startDate < _second.m_startDate && _first.m_endDate > _second.m_endDate)
+           || (_first.m_startDate > _second.m_startDate && _first.m_endDate < _second.m_endDate);
 }
 
 
 
-void DosageHistory::mergeDosage(const DosageTimeRange *_newDosage)
+void DosageHistory::mergeDosage(const DosageTimeRange* _newDosage)
 {
     // First remove the existing time ranges that are replaced because of
     // the new dosage
 
     DateTime newStart = _newDosage->getStartDate();
 
-    auto iterator = std::remove_if(m_history.begin(), m_history.end(), [newStart](std::unique_ptr<DosageTimeRange> & _val) {
-        return (_val->m_startDate >= newStart);
-    });
+    auto iterator =
+            std::remove_if(m_history.begin(), m_history.end(), [newStart](std::unique_ptr<DosageTimeRange>& _val) {
+                return (_val->m_startDate >= newStart);
+            });
 
     m_history.erase(iterator, m_history.end());
 
@@ -87,9 +96,15 @@ void DosageHistory::mergeDosage(const DosageTimeRange *_newDosage)
             // At least a number of intervals allowing to fill the interval asked
             Duration duration = _newDosage->getStartDate() - m_history.back()->m_endDate;
             unsigned int nbTimes = 1;
-            LastingDose lastingDose(0.0, TucuUnit("mg"), m_history.back()->getDosage()->getLastFormulationAndRoute(), Duration(), duration);
+            LastingDose lastingDose(
+                    0.0,
+                    TucuUnit("mg"),
+                    m_history.back()->getDosage()->getLastFormulationAndRoute(),
+                    Duration(),
+                    duration);
             DosageRepeat repeat(lastingDose, nbTimes);
-            DosageTimeRange gapFiller = DosageTimeRange(m_history.back()->m_endDate, m_history.back()->m_endDate + duration, repeat);
+            DosageTimeRange gapFiller =
+                    DosageTimeRange(m_history.back()->m_endDate, m_history.back()->m_endDate + duration, repeat);
             addTimeRange(gapFiller);
         }
     }
@@ -108,7 +123,7 @@ FormulationAndRoute DosageHistory::getLastFormulationAndRoute() const
 std::vector<FormulationAndRoute> DosageHistory::getFormulationAndRouteList() const
 {
     std::vector<FormulationAndRoute> result;
-    for (const auto &timeRange : m_history) {
+    for (const auto& timeRange : m_history) {
         result = mergeFormulationAndRouteList(result, timeRange->getDosage()->getFormulationAndRouteList());
     }
     return result;

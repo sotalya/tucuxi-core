@@ -1,8 +1,8 @@
 #ifndef TUCUXI_CORE_TARGETEVALUATIONRESULT_H
 #define TUCUXI_CORE_TARGETEVALUATIONRESULT_H
 
-#include "tucucore/drugmodel/targetdefinition.h"
 #include "tucucore/definitions.h"
+#include "tucucore/drugmodel/targetdefinition.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -15,19 +15,33 @@ namespace Core {
 class TargetEvaluationResult
 {
 public:
-    explicit TargetEvaluationResult() : m_targetType(TargetType::UnknownTarget), m_score(0.0), m_value(0.0), m_unit(TucuUnit()) {}
+    explicit TargetEvaluationResult()
+        : m_targetType(TargetType::UnknownTarget), m_score(0.0), m_value(0.0), m_unit(TucuUnit())
+    {
+    }
     explicit TargetEvaluationResult(TargetType _targetType, double _score, Value _value, TucuUnit _unit);
 
-    TargetType getTargetType() const { return m_targetType;}
+    TargetType getTargetType() const
+    {
+        return m_targetType;
+    }
 
-    double getScore() const { return m_score;}
+    double getScore() const
+    {
+        return m_score;
+    }
 
-    Value getValue() const { return m_value;}
+    Value getValue() const
+    {
+        return m_value;
+    }
 
-    TucuUnit getUnit() const { return m_unit;}
+    TucuUnit getUnit() const
+    {
+        return m_unit;
+    }
 
 protected:
-
     //! Type of target, as there should be only a single one of each type it is sufficient to discriminate
     TargetType m_targetType;
 

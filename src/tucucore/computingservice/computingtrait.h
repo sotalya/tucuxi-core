@@ -7,9 +7,9 @@
 
 #include "tucucommon/datetime.h"
 
-#include "tucucore/definitions.h"
-#include "tucucore/computingservice/icomputingservice.h"
 #include "tucucore/computingservice/computingaborter.h"
+#include "tucucore/computingservice/icomputingservice.h"
+#include "tucucore/definitions.h"
 
 
 namespace Tucuxi {
@@ -25,7 +25,8 @@ class MultiComputingComponent;
 /// 2. Apriori : The covariates modify the parameters
 /// 3. Aposteriori : The covariates and the existing measures modify the parameters
 ///
-enum class PredictionParameterType {
+enum class PredictionParameterType
+{
     Population = 0, //!< Population parameters
     Apriori,        //!< Covariates modify the parameters
     Aposteriori     //!< Covariates and mesaures modify the parameters
@@ -35,18 +36,20 @@ enum class PredictionParameterType {
 /// \brief The CompartmentsOption enum.
 /// This enum allows to select if only the main compartment concentration has to be
 /// calculated or if the concentrations of all compartments are required.
-enum class CompartmentsOption {
-    AllActiveMoieties = 0, //!< Only interested in the active moieties
-    AllAnalytes,           //!< Interested in all analytes
-    AllCompartments,       //!< Interested in all compartments
-    Specific,              //!< Another mean is used to define what info should be retrieved
-    MainCompartment = AllActiveMoieties,   //!< Backward compatibility
+enum class CompartmentsOption
+{
+    AllActiveMoieties = 0,               //!< Only interested in the active moieties
+    AllAnalytes,                         //!< Interested in all analytes
+    AllCompartments,                     //!< Interested in all compartments
+    Specific,                            //!< Another mean is used to define what info should be retrieved
+    MainCompartment = AllActiveMoieties, //!< Backward compatibility
 };
 
 ///
 /// \brief The RetrieveStatisticsOption enum
 /// This enum allows to define if statistics shall be computed and retrieved
-enum class RetrieveStatisticsOption {
+enum class RetrieveStatisticsOption
+{
     RetrieveStatistics = 0, //!< Please, retrieve the statistics
     DoNotRetrieveStatistics //!< Do not calculate and retrieve statistics
 };
@@ -54,7 +57,8 @@ enum class RetrieveStatisticsOption {
 ///
 /// \brief The RetrieveParametersOption enum
 /// This enum allows to define if PK parameters shall be retrieved or not
-enum class RetrieveParametersOption {
+enum class RetrieveParametersOption
+{
     RetrieveParameters = 0, //!< Please, retrieve the parameters
     DoNotRetrieveParameters //!< Do not retrieve parameters
 };
@@ -62,7 +66,8 @@ enum class RetrieveParametersOption {
 ///
 /// \brief The RetrieveCovariatesOption enum
 /// This enum allows to define if covariates shall be retrieved or not
-enum class RetrieveCovariatesOption {
+enum class RetrieveCovariatesOption
+{
     RetrieveCovariates = 0, //!< Please, retrieve the covariates
     DoNotRetrieveCovariates //!< Do not retrieve the covariates
 };
@@ -71,7 +76,8 @@ enum class RetrieveCovariatesOption {
 ///
 /// \brief The RetrieveCovariatesOption enum
 /// This enum allows to define if covariates shall be retrieved or not
-enum class ForceUgPerLiterOption {
+enum class ForceUgPerLiterOption
+{
     Force = 0, //!< Force the output to be in ug/l
     DoNotForce //!< Please, respect the drug model
 };
@@ -82,9 +88,9 @@ enum class ForceUgPerLiterOption {
 /// Currently it offers choice for the type of parameters and which compartment we are
 /// interested in.
 ///
-class ComputingOption {
+class ComputingOption
+{
 public:
-
     ///
     /// \brief ComputingOption Simple constructor.
     /// \param _parameterType Type of parameters (population, aPriori, aPosteriori)
@@ -94,51 +100,69 @@ public:
     /// \param _retrieveCovariates Indicates if covariate values have to be retrieved
     /// \param _forceUgPerLiter Indicates if the results should be forced in ug/l
     ///
-    ComputingOption(PredictionParameterType _parameterType,
+    ComputingOption(
+            PredictionParameterType _parameterType,
             CompartmentsOption _compartmentsOption,
             RetrieveStatisticsOption _retrieveStatistics = RetrieveStatisticsOption::DoNotRetrieveStatistics,
             RetrieveParametersOption _retrieveParameters = RetrieveParametersOption::DoNotRetrieveParameters,
             RetrieveCovariatesOption _retrieveCovariates = RetrieveCovariatesOption::DoNotRetrieveCovariates,
-            ForceUgPerLiterOption    _forceUgPerLiter    = ForceUgPerLiterOption::Force);
+            ForceUgPerLiterOption _forceUgPerLiter = ForceUgPerLiterOption::Force);
 
     ///
     /// \brief getParametersType Gets the type of parameters
     /// \return The type of parameters
     ///
-    PredictionParameterType getParametersType() const { return m_parameterType;}
+    PredictionParameterType getParametersType() const
+    {
+        return m_parameterType;
+    }
 
     ///
     /// \brief getCompartmentsOption Gets what compartment is of interest
     /// \return The type of compartments of interest
     ///
-    CompartmentsOption getCompartmentsOption() const { return m_compartmentsOption;}
+    CompartmentsOption getCompartmentsOption() const
+    {
+        return m_compartmentsOption;
+    }
 
     ///
     /// \brief retrieveStatistics indicates if statistics have to be computed
     /// \return GetStatisticsOption::GetStatistics if statistics have to be calculated
     ///
-    RetrieveStatisticsOption retrieveStatistics() const { return m_retrieveStatistics;}
+    RetrieveStatisticsOption retrieveStatistics() const
+    {
+        return m_retrieveStatistics;
+    }
 
     ///
     /// \brief retrieveParameters indicates if parameters have to be retrieved
     /// \return GetParametersOption::GetStatistics if parameters have to be retrieved
     ///
-    RetrieveParametersOption retrieveParameters() const { return m_retrieveParameters;}
+    RetrieveParametersOption retrieveParameters() const
+    {
+        return m_retrieveParameters;
+    }
 
     ///
     /// \brief retrieveCovariates indicates if covariates have to be retrieved
     /// \return GetCovariatesOption::GetStatistics if covariates have to be retrieved
     ///
-    RetrieveCovariatesOption retrieveCovariates() const { return m_retrieveCovariates;}
+    RetrieveCovariatesOption retrieveCovariates() const
+    {
+        return m_retrieveCovariates;
+    }
 
     ///
     /// \brief forceUgPerLiter Indicates if the results shall be in ug/l
     /// \return ForceUgPerLiterOption::Foce if it should be forced
     ///
-    ForceUgPerLiterOption forceUgPerLiter() const { return m_forceUgPerLiterOption;}
+    ForceUgPerLiterOption forceUgPerLiter() const
+    {
+        return m_forceUgPerLiterOption;
+    }
 
 protected:
-
     //! Type of parameters
     PredictionParameterType m_parameterType;
 
@@ -178,7 +202,7 @@ public:
     /// \brief ~ComputingTrait virtual destructor
     ///
     virtual ~ComputingTrait();
-    
+
 protected:
     ///
     /// \brief ComputingTrait constructor.
@@ -205,13 +229,15 @@ private:
     /// It allows the use of a visitor pattern from the ComputingComponent that can then
     /// iterate on the list of ComputingRequest for starting the computations.
     ///
-    virtual ComputingStatus compute(ComputingComponent &_computingComponent,
-                                    const ComputingRequest &_request,
-                                    std::unique_ptr<ComputingResponse> &_response) const = 0;
+    virtual ComputingStatus compute(
+            ComputingComponent& _computingComponent,
+            const ComputingRequest& _request,
+            std::unique_ptr<ComputingResponse>& _response) const = 0;
 
-    virtual ComputingStatus compute(MultiComputingComponent &_computingComponent,
-                                    const ComputingRequest &_request,
-                                    std::unique_ptr<ComputingResponse> &_response) const = 0;
+    virtual ComputingStatus compute(
+            MultiComputingComponent& _computingComponent,
+            const ComputingRequest& _request,
+            std::unique_ptr<ComputingResponse>& _response) const = 0;
 };
 
 
@@ -227,7 +253,6 @@ private:
 class ComputingTraitStandard : public ComputingTrait
 {
 public:
-
     //! Emtpy destructor
     ~ComputingTraitStandard() override;
 
@@ -258,13 +283,15 @@ public:
     double getNbPointsPerHour() const;
 
     /// This function should not be called. It returns ERROR
-    ComputingStatus compute(ComputingComponent &_computingComponent,
-                            const ComputingRequest &_request,
-                            std::unique_ptr<ComputingResponse> &_response) const override;
+    ComputingStatus compute(
+            ComputingComponent& _computingComponent,
+            const ComputingRequest& _request,
+            std::unique_ptr<ComputingResponse>& _response) const override;
 
-    ComputingStatus compute(MultiComputingComponent &_computingComponent,
-                            const ComputingRequest &_request,
-                            std::unique_ptr<ComputingResponse> &_response) const override;
+    ComputingStatus compute(
+            MultiComputingComponent& _computingComponent,
+            const ComputingRequest& _request,
+            std::unique_ptr<ComputingResponse>& _response) const override;
 
     ///
     /// \brief ComputingTraitStandard A simple constructor.
@@ -276,14 +303,14 @@ public:
     /// The constructor is public because we use it in ComputingComponent, but this class
     /// shall not be used directly for computing
     ///
-    ComputingTraitStandard(RequestResponseId _id,
-                            Tucuxi::Common::DateTime _start,
-                            Tucuxi::Common::DateTime _end,
-                            double _nbPointsPerHour,
-                            ComputingOption _computingOption);
+    ComputingTraitStandard(
+            RequestResponseId _id,
+            Tucuxi::Common::DateTime _start,
+            Tucuxi::Common::DateTime _end,
+            double _nbPointsPerHour,
+            ComputingOption _computingOption);
 
 private:
-
     //! Some processing options (type of parameters, what compartments)
     ComputingOption m_computingOption;
 
@@ -296,7 +323,6 @@ private:
 
     //! _nbPointsPerHour Requested number of points per hour
     double m_nbPointsPerHour;
-
 };
 
 ///
@@ -307,18 +333,16 @@ private:
 class ComputingTraitSinglePoints : public ComputingTrait
 {
 public:
-
     ///
     /// \brief ComputingTraitSinglePoints Simple constructor
     /// \param _id Id of the request
     /// \param _times A vector of times of interest
     /// \param _computingOption Computing options (parameters type, compartments)
     ///
-    ComputingTraitSinglePoints(RequestResponseId _id,
-                                std::vector<Tucuxi::Common::DateTime> _times,
-                                ComputingOption _computingOption);
+    ComputingTraitSinglePoints(
+            RequestResponseId _id, std::vector<Tucuxi::Common::DateTime> _times, ComputingOption _computingOption);
 
-    const std::vector<Tucuxi::Common::DateTime> &getTimes() const;
+    const std::vector<Tucuxi::Common::DateTime>& getTimes() const;
 
     ///
     /// \brief getComputingOption Get the computing options
@@ -327,7 +351,6 @@ public:
     ComputingOption getComputingOption() const;
 
 protected:
-
     //! Vector of the times of interest
     std::vector<Tucuxi::Common::DateTime> m_times;
 
@@ -335,7 +358,6 @@ protected:
     ComputingOption m_computingOption;
 
 private:
-
     ///
     /// \brief Calls the compute() method in ComputingComponent.
     /// \param _computingComponent The computing component that will do the computing job
@@ -343,13 +365,15 @@ private:
     /// \param _response The response list in which we will add the new response
     /// \return ComputingResult::Success if everything went well, ComputingResult::Error else
     ///
-    ComputingStatus compute(ComputingComponent &_computingComponent,
-                            const ComputingRequest &_request,
-                            std::unique_ptr<ComputingResponse> &_response) const override;
+    ComputingStatus compute(
+            ComputingComponent& _computingComponent,
+            const ComputingRequest& _request,
+            std::unique_ptr<ComputingResponse>& _response) const override;
 
-    ComputingStatus compute(MultiComputingComponent &_computingComponent,
-                            const ComputingRequest &_request,
-                            std::unique_ptr<ComputingResponse> &_response) const override;
+    ComputingStatus compute(
+            MultiComputingComponent& _computingComponent,
+            const ComputingRequest& _request,
+            std::unique_ptr<ComputingResponse>& _response) const override;
 
     friend ComputingComponent;
 };
@@ -363,7 +387,6 @@ private:
 class ComputingTraitAtMeasures : public ComputingTrait
 {
 public:
-
     ///
     /// \brief ComputingTraitAtMeasures Simple constructor.
     /// \param _id Id of the request
@@ -378,12 +401,10 @@ public:
     ComputingOption getComputingOption() const;
 
 protected:
-
     //! Some processing options (type of parameters, what compartments)
     ComputingOption m_computingOption;
 
 private:
-
     ///
     /// \brief Calls the compute() method in ComputingComponent.
     /// \param _computingComponent The computing component that will do the computing job
@@ -391,13 +412,15 @@ private:
     /// \param _response The response list in which we will add the new response
     /// \return ComputingResult::Success if everything went well, ComputingResult::Error else
     ///
-    ComputingStatus compute(ComputingComponent &_computingComponent,
-                            const ComputingRequest &_request,
-                            std::unique_ptr<ComputingResponse> &_response) const override;
+    ComputingStatus compute(
+            ComputingComponent& _computingComponent,
+            const ComputingRequest& _request,
+            std::unique_ptr<ComputingResponse>& _response) const override;
 
-    ComputingStatus compute(MultiComputingComponent &_computingComponent,
-                            const ComputingRequest &_request,
-                            std::unique_ptr<ComputingResponse> &_response) const override;
+    ComputingStatus compute(
+            MultiComputingComponent& _computingComponent,
+            const ComputingRequest& _request,
+            std::unique_ptr<ComputingResponse>& _response) const override;
 };
 
 ///
@@ -527,18 +550,19 @@ public:
     ///
     /// If _nbPointsPerHour = 0, then no curve will be returned by the computation, only the dosages
     ///
-    ComputingTraitAdjustment(RequestResponseId _id,
-                             Tucuxi::Common::DateTime _start,
-                             Tucuxi::Common::DateTime _end,
-                             double _nbPointsPerHour,
-                             ComputingOption _computingOption,
-                             Tucuxi::Common::DateTime _adjustmentTime,
-                             BestCandidatesOption _candidatesOption,
-                             LoadingOption _loadingOption,
-                             RestPeriodOption _restPeriodOption,
-                             SteadyStateTargetOption _steadyStateTargetOption,
-                             TargetExtractionOption _targetExtractionOption,
-                             FormulationAndRouteSelectionOption _formulationAndRouteSelectionOption);
+    ComputingTraitAdjustment(
+            RequestResponseId _id,
+            Tucuxi::Common::DateTime _start,
+            Tucuxi::Common::DateTime _end,
+            double _nbPointsPerHour,
+            ComputingOption _computingOption,
+            Tucuxi::Common::DateTime _adjustmentTime,
+            BestCandidatesOption _candidatesOption,
+            LoadingOption _loadingOption,
+            RestPeriodOption _restPeriodOption,
+            SteadyStateTargetOption _steadyStateTargetOption,
+            TargetExtractionOption _targetExtractionOption,
+            FormulationAndRouteSelectionOption _formulationAndRouteSelectionOption);
 
     ///
     /// \brief Gets the time of adjustment
@@ -583,7 +607,6 @@ public:
     TargetExtractionOption getTargetExtractionOption() const;
 
 protected:
-
     //! Date of the adjustment
     Tucuxi::Common::DateTime m_adjustmentTime;
 
@@ -606,7 +629,6 @@ protected:
     FormulationAndRouteSelectionOption m_formulationAndRouteSelectionOption;
 
 private:
-
     ///
     /// \brief Calls the compute() method in ComputingComponent
     /// \param _computingComponent The computing component that will do the computing job
@@ -614,13 +636,15 @@ private:
     /// \param _response The response list in which we will add the new response
     /// \return ComputingResult::Success if everything went well, ComputingResult::Error else
     ///
-    ComputingStatus compute(ComputingComponent &_computingComponent,
-                            const ComputingRequest &_request,
-                            std::unique_ptr<ComputingResponse> &_response) const override;
+    ComputingStatus compute(
+            ComputingComponent& _computingComponent,
+            const ComputingRequest& _request,
+            std::unique_ptr<ComputingResponse>& _response) const override;
 
-    ComputingStatus compute(MultiComputingComponent &_computingComponent,
-                            const ComputingRequest &_request,
-                            std::unique_ptr<ComputingResponse> &_response) const override;
+    ComputingStatus compute(
+            MultiComputingComponent& _computingComponent,
+            const ComputingRequest& _request,
+            std::unique_ptr<ComputingResponse>& _response) const override;
 };
 
 ///
@@ -630,7 +654,6 @@ private:
 class ComputingTraitConcentration : public ComputingTraitStandard
 {
 public:
-
     ///
     /// \brief ComputingTraitConcentration Simple constructor
     /// \param _id Id of the request
@@ -639,13 +662,14 @@ public:
     /// \param _nbPointsPerHour Requested number of points per hour
     /// \param _computingOption Some computing options
     ///
-    ComputingTraitConcentration(RequestResponseId _id,
-                                 Tucuxi::Common::DateTime _start,
-                                 Tucuxi::Common::DateTime _end,
-                                 double _nbPointsPerHour,
-                                 ComputingOption _computingOption);
-private:
+    ComputingTraitConcentration(
+            RequestResponseId _id,
+            Tucuxi::Common::DateTime _start,
+            Tucuxi::Common::DateTime _end,
+            double _nbPointsPerHour,
+            ComputingOption _computingOption);
 
+private:
     ///
     /// \brief Calls the compute() method in ComputingComponent
     /// \param _computingComponent The computing component that will do the computing job
@@ -653,13 +677,15 @@ private:
     /// \param _response The response list in which we will add the new response
     /// \return ComputingResult::Success if everything went well, ComputingResult::Error else
     ///
-    ComputingStatus compute(ComputingComponent &_computingComponent,
-                            const ComputingRequest &_request,
-                            std::unique_ptr<ComputingResponse> &_response) const override;
+    ComputingStatus compute(
+            ComputingComponent& _computingComponent,
+            const ComputingRequest& _request,
+            std::unique_ptr<ComputingResponse>& _response) const override;
 
-    ComputingStatus compute(MultiComputingComponent &_computingComponent,
-                            const ComputingRequest &_request,
-                            std::unique_ptr<ComputingResponse> &_response) const override;
+    ComputingStatus compute(
+            MultiComputingComponent& _computingComponent,
+            const ComputingRequest& _request,
+            std::unique_ptr<ComputingResponse>& _response) const override;
 };
 
 
@@ -672,7 +698,6 @@ private:
 class ComputingTraitPercentiles : public ComputingTraitStandard
 {
 public:
-
     ///
     /// \brief ComputingTraitPercentiles Simple constructor
     /// \param _id Id of the request
@@ -687,30 +712,35 @@ public:
             RequestResponseId _id,
             Tucuxi::Common::DateTime _start,
             Tucuxi::Common::DateTime _end,
-            const PercentileRanks &_ranks,
+            const PercentileRanks& _ranks,
             double _nbPointsPerHour,
             ComputingOption _computingOption,
-            ComputingAborter *_aborter = nullptr);
+            ComputingAborter* _aborter = nullptr);
 
     ///
     /// \brief Retrieves the vector of percentile ranks
     /// \return The vector of percentiles ranks
     ///
-    const PercentileRanks &getRanks() const { return m_ranks;}
+    const PercentileRanks& getRanks() const
+    {
+        return m_ranks;
+    }
 
     ///
     /// \brief Retrieves the aborter
     /// \return The current aborter that should be used by the computing engine
     ///
-    ComputingAborter *getAborter() const { return m_aborter;}
+    ComputingAborter* getAborter() const
+    {
+        return m_aborter;
+    }
 
 private:
-
     //! A vector of percentile ranks
     PercentileRanks m_ranks;
 
     //! An aborter to cancel current computing
-    ComputingAborter *m_aborter;
+    ComputingAborter* m_aborter;
 
     ///
     /// \brief Calls the compute() method in ComputingComponent
@@ -720,13 +750,14 @@ private:
     /// \return ComputingResult::Success if everything went well, ComputingResult::Error else
     ///
     ComputingStatus compute(
-            ComputingComponent &_computingComponent,
-            const ComputingRequest &_request,
-            std::unique_ptr<ComputingResponse> &_response) const override;
+            ComputingComponent& _computingComponent,
+            const ComputingRequest& _request,
+            std::unique_ptr<ComputingResponse>& _response) const override;
 
-    ComputingStatus compute(MultiComputingComponent &_computingComponent,
-                            const ComputingRequest &_request,
-                            std::unique_ptr<ComputingResponse> &_response) const override;
+    ComputingStatus compute(
+            MultiComputingComponent& _computingComponent,
+            const ComputingRequest& _request,
+            std::unique_ptr<ComputingResponse>& _response) const override;
 };
 
 
@@ -757,7 +788,6 @@ private:
 class ComputingTraits
 {
 public:
-
     ///
     /// \brief Adds a ComputingTrait to the list
     /// \param _trait The ComputingTrait to pass, as a unique_ptr
@@ -801,16 +831,21 @@ public:
     /// \brief Returns an iterator on the beginning of the list
     /// \return The iterator on the beginning of the list
     ///
-    Iterator begin() const { return m_traits.begin(); }
+    Iterator begin() const
+    {
+        return m_traits.begin();
+    }
 
     ///
     /// \brief Returns an iterator on the end of the list
     /// \return The iterator on the end of the list
     ///
-    Iterator end() const { return m_traits.end(); }
+    Iterator end() const
+    {
+        return m_traits.end();
+    }
 
 protected:
-
     //! A vector of ComputingTraits
     Traits m_traits;
 };

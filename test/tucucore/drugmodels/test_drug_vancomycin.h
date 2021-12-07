@@ -11,18 +11,17 @@
 
 #include <date/date.h>
 
-#include "fructose/fructose.h"
-
 #include "tucucommon/datetime.h"
 
-
-#include "tucucore/drugmodelimport.h"
+#include "tucucore/computingcomponent.h"
 #include "tucucore/computingservice/computingrequest.h"
 #include "tucucore/computingservice/computingresponse.h"
 #include "tucucore/computingservice/computingtrait.h"
-#include "tucucore/computingcomponent.h"
 #include "tucucore/drugmodel/drugmodel.h"
+#include "tucucore/drugmodelimport.h"
 #include "tucucore/drugtreatment/drugtreatment.h"
+
+#include "fructose/fructose.h"
 
 using namespace std::chrono_literals;
 using namespace date;
@@ -239,7 +238,7 @@ static const std::string vancomycin_tdd = R"(<?xml version="1.0" encoding="UTF-8
                                                         <desc lang='en'>Sex of the patient</desc>
                                                     </description>
                                                     <unit>y</unit>)"
-                                                    R"(<covariateType>standard</covariateType>
+                                          R"(<covariateType>standard</covariateType>
                                                     <dataType>double</dataType>
                                                     <interpolationType>direct</interpolationType>
                                                     <refreshPeriod>
@@ -452,10 +451,10 @@ static const std::string vancomycin_tdd = R"(<?xml version="1.0" encoding="UTF-8
                                                                     </micValue>
                                                                 </mic>
                                                             </targetValues>)"
-                                                            R"(<comments>
+                                          R"(<comments>
                                                                 <comment lang="en">Targets suggested by Philip Drennan</comment>
                                                             </comments>)"
-                                                        R"(</target>
+                                          R"(</target>
                                                     </targets>
                                                 </activeMoiety>
                                             </activeMoieties>
@@ -671,7 +670,7 @@ static const std::string vancomycin_tdd = R"(<?xml version="1.0" encoding="UTF-8
                                                         </rangeValues>
                                                     </availableDoses>)"
 
-                                                    R"(<intervals>
+                                          R"(<intervals>
                                                         <unit>h</unit>
                                                         <default>
                                                             <standardValue>12</standardValue>
@@ -736,7 +735,7 @@ static const std::string vancomycin_tdd = R"(<?xml version="1.0" encoding="UTF-8
 
 struct TestDrugVancomycin : public fructose::test_base<TestDrugVancomycin>
 {
-    TestDrugVancomycin() { }
+    TestDrugVancomycin() {}
 
     std::unique_ptr<DrugTreatment> buildDrugTreatment(const FormulationAndRoute& _route)
     {
@@ -747,18 +746,15 @@ struct TestDrugVancomycin : public fructose::test_base<TestDrugVancomycin>
 
         // Create a time range starting at the beginning of june 2017, with no upper end (to test that the repetitions
         // are handled correctly)
-        DateTime startSept2018(date::year_month_day(date::year(2018), date::month(9), date::day(1)),
-                               Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
+        DateTime startSept2018(
+                date::year_month_day(date::year(2018), date::month(9), date::day(1)),
+                Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
 
 
         //const FormulationAndRoute route("formulation", AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular);
         // Add a treatment intake every ten days in June
         // 200mg via a intravascular at 08h30, starting the 01.06
-        LastingDose periodicDose(DoseValue(200.0),
-                                 TucuUnit("mg"),
-                                 _route,
-                                 Duration(),
-                                 Duration(std::chrono::hours(6)));
+        LastingDose periodicDose(DoseValue(200.0), TucuUnit("mg"), _route, Duration(), Duration(std::chrono::hours(6)));
         DosageRepeat repeatedDose(periodicDose, 16);
         auto sept2018 = std::make_unique<Tucuxi::Core::DosageTimeRange>(startSept2018, repeatedDose);
 
@@ -777,16 +773,17 @@ struct TestDrugVancomycin : public fructose::test_base<TestDrugVancomycin>
 
         auto importStatus = importer.importFromString(drugModel, vancomycin_tdd);
         fructose_assert_eq(importStatus, DrugModelImport::Status::Ok);
-//        importer.importFromFile(drugModel, "/home/ythoma/docs/ezechiel/git/dev/src/drugs2/ch.tucuxi.vancomycin.tdd");
+        //        importer.importFromFile(drugModel, "/home/ythoma/docs/ezechiel/git/dev/src/drugs2/ch.tucuxi.vancomycin.tdd");
 
         fructose_assert(drugModel != nullptr);
 
 
-        IComputingService *component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+        IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
 
-        fructose_assert( component != nullptr);
+        fructose_assert(component != nullptr);
 
-        const FormulationAndRoute route(Formulation::ParenteralSolution, AdministrationRoute::IntravenousDrip, AbsorptionModel::Infusion);
+        const FormulationAndRoute route(
+                Formulation::ParenteralSolution, AdministrationRoute::IntravenousDrip, AbsorptionModel::Infusion);
 
         auto drugTreatment = buildDrugTreatment(route);
 
@@ -797,9 +794,8 @@ struct TestDrugVancomycin : public fructose::test_base<TestDrugVancomycin>
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
             double nbPointsPerHour = 10.0;
             ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
-            std::unique_ptr<ComputingTraitConcentration> traits =
-                    std::make_unique<ComputingTraitConcentration>(
-                        requestResponseId, start, end, nbPointsPerHour, computingOption);
+            std::unique_ptr<ComputingTraitConcentration> traits = std::make_unique<ComputingTraitConcentration>(
+                    requestResponseId, start, end, nbPointsPerHour, computingOption);
 
             ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
 
@@ -808,18 +804,19 @@ struct TestDrugVancomycin : public fructose::test_base<TestDrugVancomycin>
             ComputingStatus result;
             result = component->compute(request, response);
 
-            fructose_assert_eq( result, ComputingStatus::Ok);
+            fructose_assert_eq(result, ComputingStatus::Ok);
 
             const ComputedData* responseData = response->getData();
             fructose_assert(dynamic_cast<const SinglePredictionData*>(responseData) != nullptr);
-            const SinglePredictionData *resp = dynamic_cast<const SinglePredictionData*>(responseData);
+            const SinglePredictionData* resp = dynamic_cast<const SinglePredictionData*>(responseData);
             if (resp == nullptr) {
                 return;
             }
 
             fructose_assert_eq(resp->getCompartmentInfos().size(), size_t{1});
             fructose_assert_eq(resp->getCompartmentInfos()[0].getId(), "vancomycin");
-            fructose_assert_eq(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
+            fructose_assert_eq(
+                    resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
             //std::cout << "Population parameters : " << std::endl;
             //for (auto parameter : resp->getData()[0].m_parameters) {
@@ -834,9 +831,8 @@ struct TestDrugVancomycin : public fructose::test_base<TestDrugVancomycin>
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
             double nbPointsPerHour = 10.0;
             ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment);
-            std::unique_ptr<ComputingTraitConcentration> traits =
-                    std::make_unique<ComputingTraitConcentration>(
-                        requestResponseId, start, end, nbPointsPerHour, computingOption);
+            std::unique_ptr<ComputingTraitConcentration> traits = std::make_unique<ComputingTraitConcentration>(
+                    requestResponseId, start, end, nbPointsPerHour, computingOption);
 
             ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
 
@@ -845,15 +841,16 @@ struct TestDrugVancomycin : public fructose::test_base<TestDrugVancomycin>
             ComputingStatus result;
             result = component->compute(request, response);
 
-            fructose_assert_eq( result, ComputingStatus::Ok);
+            fructose_assert_eq(result, ComputingStatus::Ok);
 
             const ComputedData* responseData = response->getData();
             fructose_assert(dynamic_cast<const SinglePredictionData*>(responseData) != nullptr);
-            const SinglePredictionData *resp = dynamic_cast<const SinglePredictionData*>(responseData);
+            const SinglePredictionData* resp = dynamic_cast<const SinglePredictionData*>(responseData);
 
             fructose_assert_eq(resp->getCompartmentInfos().size(), size_t{1});
             fructose_assert_eq(resp->getCompartmentInfos()[0].getId(), "vancomycin");
-            fructose_assert_eq(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
+            fructose_assert_eq(
+                    resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
             //std::cout << "A priori parameters : " << std::endl;
             //for (auto parameter : resp->getData()[0].m_parameters) {

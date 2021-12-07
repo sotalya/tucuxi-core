@@ -11,5 +11,5 @@ ActiveSubstance::ActiveSubstance()
 }
 */
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
