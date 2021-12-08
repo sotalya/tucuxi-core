@@ -95,11 +95,11 @@ Value MultiLikelihood::negativeLogLikelihood(const Etas& _etas) const
 
     for (unsigned int i = 0; i < m_samples.size(); ++i){
         SampleSeries::const_iterator sit = m_samples[i].begin();
-        SampleSeries::const_iterator sitEnd= m_samples[i].begin();
+        SampleSeries::const_iterator sitEnd= m_samples[i].end();
         size_t sampleCounter = 0;
         while( sit != sitEnd ) {
             // SampleEvent s = *sit;
-            gll += calculateSampleNegativeLogLikelihood(concentrations[sampleCounter], *sit, m_residualErrorModel[i]);
+            gll += calculateSampleNegativeLogLikelihood(_concentrations[sampleCounter][i], *sit, m_residualErrorModel[i]);
             sampleCounter++;
             sit++;
         }
