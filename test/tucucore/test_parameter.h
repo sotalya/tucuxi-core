@@ -103,44 +103,49 @@ struct TestParameter : public fructose::test_base<TestParameter>
         Tucuxi::Core::ParameterDefinitions parameterDefs;
         Tucuxi::Core::ParameterDefinition def("F", 100, Tucuxi::Core::ParameterVariabilityType::None);
         Tucuxi::Core::ParameterSetEvent parameters0(
-                DateTime(Tucuxi::Common::Duration(std::chrono::minutes(200))), parameterDefs);
+                DateTime::fromDurationSinceEpoch(Tucuxi::Common::Duration(std::chrono::minutes(200))), parameterDefs);
         parameters0.addParameterEvent(def, 200);
         Tucuxi::Core::ParameterSetEvent parameters1(
-                DateTime(Tucuxi::Common::Duration(std::chrono::minutes(300))), parameterDefs);
+                DateTime::fromDurationSinceEpoch(Tucuxi::Common::Duration(std::chrono::minutes(300))), parameterDefs);
         parameters1.addParameterEvent(def, 300);
         Tucuxi::Core::ParameterSetEvent parameters2(
-                DateTime(Tucuxi::Common::Duration(std::chrono::minutes(400))), parameterDefs);
+                DateTime::fromDurationSinceEpoch(Tucuxi::Common::Duration(std::chrono::minutes(400))), parameterDefs);
         parameters2.addParameterEvent(def, 400);
         Tucuxi::Core::ParameterSetSeries parametersSeries;
         parametersSeries.addParameterSetEvent(parameters0);
         parametersSeries.addParameterSetEvent(parameters1);
         parametersSeries.addParameterSetEvent(parameters2);
         {
-            auto ps = parametersSeries.getAtTime(DateTime(Tucuxi::Common::Duration(std::chrono::minutes(200))));
+            auto ps = parametersSeries.getAtTime(
+                    DateTime::fromDurationSinceEpoch(Tucuxi::Common::Duration(std::chrono::minutes(200))));
             for (auto p = ps->begin(); p < ps->end(); p++) {
                 fructose_assert_eq(ps->getValue(ParameterId::F), 200);
             }
         }
         {
-            auto ps = parametersSeries.getAtTime(DateTime(Tucuxi::Common::Duration(std::chrono::minutes(250))));
+            auto ps = parametersSeries.getAtTime(
+                    DateTime::fromDurationSinceEpoch(Tucuxi::Common::Duration(std::chrono::minutes(250))));
             for (auto p = ps->begin(); p < ps->end(); p++) {
                 fructose_assert_eq(ps->getValue(ParameterId::F), 200);
             }
         }
         {
-            auto ps = parametersSeries.getAtTime(DateTime(Tucuxi::Common::Duration(std::chrono::minutes(300))));
+            auto ps = parametersSeries.getAtTime(
+                    DateTime::fromDurationSinceEpoch(Tucuxi::Common::Duration(std::chrono::minutes(300))));
             for (auto p = ps->begin(); p < ps->end(); p++) {
                 fructose_assert_eq(ps->getValue(ParameterId::F), 300);
             }
         }
         {
-            auto ps = parametersSeries.getAtTime(DateTime(Tucuxi::Common::Duration(std::chrono::minutes(350))));
+            auto ps = parametersSeries.getAtTime(
+                    DateTime::fromDurationSinceEpoch(Tucuxi::Common::Duration(std::chrono::minutes(350))));
             for (auto p = ps->begin(); p < ps->end(); p++) {
                 fructose_assert_eq(ps->getValue(ParameterId::F), 300);
             }
         }
         {
-            auto ps = parametersSeries.getAtTime(DateTime(Tucuxi::Common::Duration(std::chrono::minutes(400))));
+            auto ps = parametersSeries.getAtTime(
+                    DateTime::fromDurationSinceEpoch(Tucuxi::Common::Duration(std::chrono::minutes(400))));
             for (auto p = ps->begin(); p < ps->end(); p++) {
                 fructose_assert_eq(ps->getValue(ParameterId::F), 400);
             }

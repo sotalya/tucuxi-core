@@ -174,13 +174,17 @@ DateTime::DateTime(const date::year_month_day& _date, const std::chrono::seconds
 }
 
 
-DateTime::DateTime(const Duration& _durationSinceEpoch)
+DateTime DateTime::fromDurationSinceEpoch(const Duration& _durationSinceEpoch)
 {
     int64 ms = _durationSinceEpoch.toMilliseconds();
     const std::chrono::system_clock::duration d = std::chrono::milliseconds(ms);
-    m_date = std::chrono::time_point<std::chrono::system_clock>(d);
-    SETDEFINED(true);
-    UPDATESTRING;
+    DateTime date;
+    date.m_date = std::chrono::time_point<std::chrono::system_clock>(d);
+    date.m_isDefined = true;
+#ifdef EASY_DEBUG
+    date.updateString();
+#endif // EASY_DEBUG
+    return date;
 }
 
 

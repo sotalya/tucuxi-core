@@ -108,7 +108,8 @@ bool DrugFileValidator::validate(const std::string& _drugFileName, const std::st
                 sampleDate = Common::DateTime(sampleDateString, DATA_FORMAT);
             }
             else {
-                sampleDate = Common::DateTime(std::chrono::hours(365 * 2 * 24));
+                sampleDate =
+                        Common::DateTime(Common::DateTime::fromDurationSinceEpoch(std::chrono::hours(365 * 2 * 24)));
             }
 
             Tucuxi::Common::DateTime startDate(sampleDate);
@@ -157,7 +158,7 @@ bool DrugFileValidator::validate(const std::string& _drugFileName, const std::st
 
 
                 TucuUnit unit(unitString);
-                Tucuxi::Common::DateTime date(std::chrono::hours(1));
+                Tucuxi::Common::DateTime date(Common::DateTime::fromDurationSinceEpoch(std::chrono::hours(1)));
                 std::unique_ptr<Tucuxi::Core::PatientCovariate> covariate =
                         std::make_unique<Tucuxi::Core::PatientCovariate>(id, value, dataType, unit, date);
                 patientVariates.push_back(std::move(covariate));

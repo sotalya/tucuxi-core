@@ -87,7 +87,8 @@ struct TestDateTime : public fructose::test_base<TestDateTime>
 
         // Test to and from seconds
         double nSeconds = d10.toSeconds();
-        Tucuxi::Common::DateTime d30(Tucuxi::Common::Duration(std::chrono::seconds(static_cast<int64>(nSeconds))));
+        Tucuxi::Common::DateTime d30 = Tucuxi::Common::DateTime::fromDurationSinceEpoch(
+                Tucuxi::Common::Duration(std::chrono::seconds(static_cast<int64>(nSeconds))));
         checkDateTime(d30, 2017, 12, 17, 17, 34, 20);
 
         // Test addDays, addMonth and addYears

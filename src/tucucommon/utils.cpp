@@ -184,7 +184,7 @@ std::string Utils::varToString(const DateTime& _value)
 
 DateTime Utils::ValueToDate(const Value& _value)
 {
-    DateTime dt(Duration(std::chrono::seconds(static_cast<int64>(_value))));
+    DateTime dt = DateTime::fromDurationSinceEpoch(Duration(std::chrono::seconds(static_cast<int64>(_value))));
 
     return dt;
 }

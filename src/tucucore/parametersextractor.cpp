@@ -294,8 +294,8 @@ ComputingStatus ParametersExtractor::buildFullSet(
 
 ComputingStatus ParametersExtractor::extractPopulation(ParameterSetSeries& _series)
 {
-    // Parameters valid since the epoch
-    ParameterSetEvent pSetEvent(DateTime(Tucuxi::Common::Duration(0h)));
+    // Parameters valid since the beginning of time
+    ParameterSetEvent pSetEvent(DateTime::min()); // (Tucuxi::Common::Duration(0h)));
     // Add default values of all parameters
     m_paramsIterator.reset();
     while (!m_paramsIterator.isDone()) {

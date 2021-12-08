@@ -85,7 +85,7 @@ public:
 
     /// \brief Build a date and time with the specified duration
     /// \param _date The duration since epoch (see documentation of std::chrono::time_point)
-    DateTime(const Duration& _durationSinceEpoch);
+    static DateTime fromDurationSinceEpoch(const Duration& _durationSinceEpoch);
 
     /// \brief Returns the date part of the object.
     date::year_month_day getDate() const;
