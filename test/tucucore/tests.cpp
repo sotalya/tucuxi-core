@@ -9,7 +9,6 @@
 #include "tucucommon/loggerhelper.h"
 
 
-
 /// The following strange way of including files is meant to include all of them
 /// || only a selection, thanks to DEFINES.
 /// If no specific DEFINES is added, then all tests are compiled.

@@ -151,7 +151,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
                              Duration(std::chrono::minutes(20)),
                              static_cast<int>(CYCLE_SIZE));
 
-        std::shared_ptr<Tucuxi::Core::IntakeIntervalCalculator> calculator = std::make_shared<Tucuxi::Core::MultiConstantEliminationBolus>();
+        std::shared_ptr<Tucuxi::Core::IntakeIntervalCalculator> calculator = std::make_shared<Tucuxi::Core::ConstantEliminationBolus>();
         _intakes[0].setCalculator(calculator);
         _intakes[1].setCalculator(calculator);
 
@@ -227,6 +227,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
             fructose_assert_double_eq(x, expectedValue);
 
     }
+
 
 
 
@@ -392,6 +393,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
             fructose_assert_double_eq(x, expectedValue);
     }
     
+
     
     void test3(const std::string& /* _testName */)  //HAVE TO FINISH THIS
         // Third scenario: A 2-analyte with one sample on analyte 1 (using MultiConstantEliminationBolus)
