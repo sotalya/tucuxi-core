@@ -91,12 +91,12 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
 
 
         Tucuxi::Core::OmegaMatrix omega;
-        std::vector<IResidualErrorModel*> m_residualErrorModel;
-        std::vector<SampleSeries> _samples;
-        IntakeSeries _intakes;
-        ParameterSetSeries _parameters;
-        MultiConcentrationCalculator _concentrationCalculator;
-        Etas _etas;
+        std::vector<IResidualErrorModel*> residualErrorModel;
+        std::vector<SampleSeries> samples;
+        IntakeSeries intakes;
+        ParameterSetSeries parameters;
+        MultiConcentrationCalculator concentrationCalculator;
+        Etas etas;
 
         //definition of the omega matrix
         omega = Tucuxi::Core::OmegaMatrix(1,1);
@@ -104,7 +104,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
 
 
 
-        //definition of the m_residualErrorModel
+        //definition of the residualErrorModel
 
 
         SigmaResidualErrorModel *newErrorModel = new SigmaResidualErrorModel();
@@ -112,7 +112,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
         sigma(0) = 0.3138;
         newErrorModel->setErrorModel(Tucuxi::Core::ResidualErrorType::PROPORTIONAL);
         newErrorModel->setSigma(sigma);
-        m_residualErrorModel.push_back(newErrorModel);
+        residualErrorModel.push_back(newErrorModel);
         //here i'm supposed to use a vector of pointers of IResidualErrorModel or a vector of pointers of SigmaResidualErrorModel
 
         //definition of the samples
@@ -123,14 +123,14 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
         Tucuxi::Core::SampleEvent s0(date0, 200.0);
         sampleSeries.push_back(s0);
 
-        _samples.push_back(sampleSeries);
+        samples.push_back(sampleSeries);
 
 
 
         //definition of the intakes
 
 
-        _intakes.emplace_back(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(6)),
+        intakes.emplace_back(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(6)),
                                       Duration(std::chrono::hours(8), std::chrono::minutes(30), std::chrono::seconds(0))),
                              Duration(),
                              DoseValue(200.0),
@@ -141,7 +141,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
                              Duration(std::chrono::minutes(20)),
                              static_cast<int>(CYCLE_SIZE));
 
-        _intakes.emplace_back(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(7)),
+        intakes.emplace_back(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(7)),
                                       Duration(std::chrono::hours(8), std::chrono::minutes(30), std::chrono::seconds(0))),
                              Duration(),
                              DoseValue(200.0),
@@ -153,8 +153,8 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
                              static_cast<int>(CYCLE_SIZE));
 
         std::shared_ptr<Tucuxi::Core::IntakeIntervalCalculator> calculator = std::make_shared<Tucuxi::Core::ConstantEliminationBolus>();
-        _intakes[0].setCalculator(calculator);
-        _intakes[1].setCalculator(calculator);
+        intakes[0].setCalculator(calculator);
+        intakes[1].setCalculator(calculator);
 
 
         //Definition of the parameters
@@ -165,58 +165,23 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestM", 1.0, Tucuxi::Core::ParameterVariabilityType::None)));
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestR", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestS", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
-        _parameters.addParameterSetEvent(parameters);
-
-
-        //Definition of the Concentration Calculator
-
-        //Tucuxi::Core::MultiConcentrationPredictionPtr predictionPtr;
-        /*{
-            predictionPtr = std::make_unique<Tucuxi::Core::MultiConcentrationPrediction>();
-
-            DateTime recordFrom = date::year_month_day(date::year(2018), date::month(9), date::day(1));
-            DateTime recordTo = recordFrom + interval;
-
-            Tucuxi::Core::IntakeSeries intakeSeries;
-            std::shared_ptr<IntakeIntervalCalculator> calculator2 = std::make_shared<ConstantEliminationBolus>();
-            intakeEvent.setCalculator(calculator2);
-            intakeSeries.push_back(intakeEvent);
-            Tucuxi::Core::IMultiConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::MultiConcentrationCalculator();
-            auto status = concentrationCalculator->computeConcentrations(
-                predictionPtr,
-                false,
-                recordFrom,
-                recordTo,
-                intakeSeries,
-                _parameters);
-            delete concentrationCalculator;
-            fructose_assert_eq(status, ComputingStatus::Ok);
-
-    #if 0
-            for (int i = 0; i<nbPoints; i++) {
-                std::cout << i << ":" << predictionPtr->getValues()[0][i] << std::endl;
-            }
-    #endif
-        }
-        */
+        Tucuxi::Core::ParameterSetEvent parameterset(DateTime::now(), parameterDefs);
+        parameters.addParameterSetEvent(parameterset);
 
 
 
-            Tucuxi::Core::MultiLikelihood aux(omega, m_residualErrorModel, _samples, _intakes, _parameters, _concentrationCalculator);
+
+            Tucuxi::Core::MultiLikelihood aux(omega, residualErrorModel, samples, intakes, parameters, concentrationCalculator);
 
             // Set initial etas to 0 for CL and V
 
-            _etas.push_back(0.1);
-            //_etas.push_back(0.0);
+            etas.push_back(0.1);
+            //etas.push_back(0.0);
 
-            Value x = aux.negativeLogLikelihood(_etas);
+            Value x = aux.negativeLogLikelihood(etas);
 
             // We compute the expected result
 
-            // Prior: 0.5 * (_etas.transpose() * m_inverseOmega * _etas + m_omegaAdd)
-            // m_omega = m_omegaAdd(static_cast<double>(_omega.rows()) * log(2 * PI) + log(_omega.determinant()))
-            // sample likelihood: - _residualErrorModel.calculateSampleLikelihood(_expected, _observed.getValue());
             double expectedSampleValue = 201.1;
             double omegaAdd = static_cast<double>(omega.rows()) * log(2 * PI) + log(omega.determinant());
 
@@ -224,14 +189,10 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
             etasmd[0] = 0.1;
 
             double expectedValue = 0.5 * (etasmd.transpose() * omega.inverse() * etasmd + omegaAdd) -
-                    m_residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue, s0.getValue());
+                    residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue, s0.getValue());
             fructose_assert_double_eq(x, expectedValue);
 
     }
-
-
-
-
 
 
 
@@ -246,12 +207,12 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
 
 
         Tucuxi::Core::OmegaMatrix omega;
-        std::vector<IResidualErrorModel*> m_residualErrorModel;
-        std::vector<SampleSeries> _samples;
-        IntakeSeries _intakes;
-        ParameterSetSeries _parameters;
-        MultiConcentrationCalculator _concentrationCalculator;
-        Etas _etas;
+        std::vector<IResidualErrorModel*> residualErrorModel;
+        std::vector<SampleSeries> samples;
+        IntakeSeries intakes;
+        ParameterSetSeries parameters;
+        MultiConcentrationCalculator concentrationCalculator;
+        Etas etas;
 
         //definition of the omega matrix
         omega = Tucuxi::Core::OmegaMatrix(1,1);
@@ -259,7 +220,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
 
 
 
-        //definition of the m_residualErrorModel
+        //definition of the residualErrorModel
 
 
         SigmaResidualErrorModel *newErrorModel = new SigmaResidualErrorModel();
@@ -267,7 +228,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
         sigma(0) = 0.3138;
         newErrorModel->setErrorModel(Tucuxi::Core::ResidualErrorType::PROPORTIONAL);
         newErrorModel->setSigma(sigma);
-        m_residualErrorModel.push_back(newErrorModel);
+        residualErrorModel.push_back(newErrorModel);
         //here i'm supposed to use a vector of pointers of IResidualErrorModel or a vector of pointers of SigmaResidualErrorModel
 
         //definition of the samples
@@ -287,14 +248,14 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
                                   Duration(std::chrono::hours(17), std::chrono::minutes(30), std::chrono::seconds(0)));
         Tucuxi::Core::SampleEvent s2(date2, 200.0);
         sampleSeries.push_back(s2);
-        _samples.push_back(sampleSeries);
+        samples.push_back(sampleSeries);
 
 
 
         //definition of the intakes
 
 
-        _intakes.emplace_back(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(6)),
+        intakes.emplace_back(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(6)),
                                       Duration(std::chrono::hours(8), std::chrono::minutes(30), std::chrono::seconds(0))),
                              Duration(),
                              DoseValue(200.0),
@@ -305,7 +266,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
                              Duration(std::chrono::minutes(20)),
                              static_cast<int>(CYCLE_SIZE));
 
-        _intakes.emplace_back(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(7)),
+        intakes.emplace_back(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(7)),
                                       Duration(std::chrono::hours(8), std::chrono::minutes(30), std::chrono::seconds(0))),
                              Duration(),
                              DoseValue(200.0),
@@ -314,11 +275,12 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
                              getBolusFormulationAndRoute(),
                              getBolusFormulationAndRoute().getAbsorptionModel(),
                              Duration(std::chrono::minutes(20)),
-
                              static_cast<int>(CYCLE_SIZE));
+
+
         std::shared_ptr<Tucuxi::Core::IntakeIntervalCalculator> calculator = std::make_shared<Tucuxi::Core::ConstantEliminationBolus>();
-        _intakes[0].setCalculator(calculator);
-        _intakes[1].setCalculator(calculator);
+        intakes[0].setCalculator(calculator);
+        intakes[1].setCalculator(calculator);
 
 
         //Definition of the parameters
@@ -326,62 +288,26 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
 
         Tucuxi::Core::ParameterDefinitions parameterDefs;
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestA", 1.0, Tucuxi::Core::ParameterVariabilityType::Additive)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestM", 1.0, Tucuxi::Core::ParameterVariabilityType::None)));
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestR", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestS", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestM", 1.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
-        Tucuxi::Core::ParameterSetSeries parametersSeries;
-        parametersSeries.addParameterSetEvent(parameters);
-
-
-        //Definition of the Concentration Calculator
-
-        //Tucuxi::Core::MultiConcentrationPredictionPtr predictionPtr;
-        /*{
-            predictionPtr = std::make_unique<Tucuxi::Core::MultiConcentrationPrediction>();
-
-            DateTime recordFrom = date::year_month_day(date::year(2018), date::month(9), date::day(1));
-            DateTime recordTo = recordFrom + interval;
-
-            Tucuxi::Core::IntakeSeries intakeSeries;
-            std::shared_ptr<IntakeIntervalCalculator> calculator2 = std::make_shared<ConstantEliminationBolus>();
-            intakeEvent.setCalculator(calculator2);
-            intakeSeries.push_back(intakeEvent);
-            Tucuxi::Core::IMultiConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::MultiConcentrationCalculator();
-            auto status = concentrationCalculator->computeConcentrations(
-                predictionPtr,
-                false,
-                recordFrom,
-                recordTo,
-                intakeSeries,
-                _parameters);
-            delete concentrationCalculator;
-            fructose_assert_eq(status, ComputingStatus::Ok);
-
-    #if 0
-            for (int i = 0; i<nbPoints; i++) {
-                std::cout << i << ":" << predictionPtr->getValues()[0][i] << std::endl;
-            }
-    #endif
-        }
-        */
+        Tucuxi::Core::ParameterSetEvent parameterset(DateTime::now(), parameterDefs);
+        parameters.addParameterSetEvent(parameterset);
 
 
 
-            Tucuxi::Core::MultiLikelihood aux(omega, m_residualErrorModel, _samples, _intakes, _parameters, _concentrationCalculator);
+
+            Tucuxi::Core::MultiLikelihood aux(omega, residualErrorModel, samples, intakes, parameters, concentrationCalculator);
 
             // Set initial etas to 0 for CL and V
 
-            _etas.push_back(0.1);
-            //_etas.push_back(0.0);
+            etas.push_back(0.1);
+            //etas.push_back(0.0);
 
-            Value x = aux.negativeLogLikelihood(_etas);
+            Value x = aux.negativeLogLikelihood(etas);
 
             // We compute the expected result
 
-            // Prior: 0.5 * (_etas.transpose() * m_inverseOmega * _etas + m_omegaAdd)
-            // m_omega = m_omegaAdd(static_cast<double>(_omega.rows()) * log(2 * PI) + log(_omega.determinant()))
-            // sample likelihood: - _residualErrorModel.calculateSampleLikelihood(_expected, _observed.getValue());
             double expectedSampleValue1 = 121.1;
             double expectedSampleValue2 = 41.1;
             double expectedSampleValue3 = 21.1;
@@ -391,13 +317,13 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
             etasmd[0] = 0.1;
 
             double expectedValue = 0.5 * (etasmd.transpose() * omega.inverse() * etasmd + omegaAdd) -
-                    m_residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue1, s0.getValue() - m_residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue2, s1.getValue()) - m_residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue3, s2.getValue()));
+                    residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue1, s0.getValue() - residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue2, s1.getValue()) - residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue3, s2.getValue()));
             fructose_assert_double_eq(x, expectedValue);
     }
     
 
     
-    void test3(const std::string& /* _testName */)  //HAVE TO FINISH THIS
+    void test3(const std::string& /* _testName */)
         // Third scenario: A 2-analyte with one sample on analyte 1 (using MultiConstantEliminationBolus)
 
     {
@@ -408,20 +334,19 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
 
 
         Tucuxi::Core::OmegaMatrix omega;
-        std::vector<IResidualErrorModel*> m_residualErrorModel;
-        std::vector<SampleSeries> _samples;
-        IntakeSeries _intakes;
-        ParameterSetSeries _parameters;
-        MultiConcentrationCalculator _concentrationCalculator;
-        Etas _etas;
+        std::vector<IResidualErrorModel*> residualErrorModel;
+        std::vector<SampleSeries> samples;
+        IntakeSeries intakes;
+        ParameterSetSeries parameters;
+        MultiConcentrationCalculator concentrationCalculator;
+        Etas etas;
 
         //definition of the omega matrix
         omega = Tucuxi::Core::OmegaMatrix(1,1);
         omega(0,0) = 0.1; // Variance of A
 
 
-
-        //definition of the m_residualErrorModel
+        //definition of the residualErrorModel
 
 
         SigmaResidualErrorModel *newErrorModel1 = new SigmaResidualErrorModel();
@@ -429,9 +354,8 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
         sigma1(0) = 0.3138;
         newErrorModel1->setErrorModel(Tucuxi::Core::ResidualErrorType::PROPORTIONAL);
         newErrorModel1->setSigma(sigma1);
-        m_residualErrorModel.push_back(newErrorModel1);
+        residualErrorModel.push_back(newErrorModel1);
         //here i'm supposed to use a vector of pointers of IResidualErrorModel or a vector of pointers of SigmaResidualErrorModel
-
 
 
         SigmaResidualErrorModel *newErrorModel2 = new SigmaResidualErrorModel();
@@ -439,7 +363,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
         sigma2(0) = 0.3138;
         newErrorModel1->setErrorModel(Tucuxi::Core::ResidualErrorType::PROPORTIONAL);
         newErrorModel1->setSigma(sigma2);
-        m_residualErrorModel.push_back(newErrorModel2);
+        residualErrorModel.push_back(newErrorModel2);
         //here i'm supposed to use a vector of pointers of IResidualErrorModel or a vector of pointers of SigmaResidualErrorModel
 
         //definition of the samples
@@ -447,16 +371,16 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
         DateTime date0 = DateTime((date::year(2017), date::month(6), date::day(6), Duration(std::chrono::hours(12), std::chrono::minutes(30), std::chrono::seconds(0))));
         Tucuxi::Core::SampleEvent s0(date0, 200.0);
         sampleSeries1.push_back(s0);
-        _samples.push_back(sampleSeries1);
+        samples.push_back(sampleSeries1);
 
         Tucuxi::Core::SampleSeries sampleSeries2;
-         _samples.push_back(sampleSeries2);
+         samples.push_back(sampleSeries2);
 
 
         //definition of the intakes
 
 
-        _intakes.emplace_back(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(6)),
+        intakes.emplace_back(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(6)),
                                       Duration(std::chrono::hours(8), std::chrono::minutes(30), std::chrono::seconds(0))),
                              Duration(),
                              DoseValue(200.0),
@@ -467,7 +391,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
                              Duration(std::chrono::minutes(20)),
                              static_cast<int>(CYCLE_SIZE));
 
-        _intakes.emplace_back(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(7)),
+        intakes.emplace_back(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(7)),
                                       Duration(std::chrono::hours(8), std::chrono::minutes(30), std::chrono::seconds(0))),
                              Duration(),
                              DoseValue(200.0),
@@ -479,8 +403,8 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
 
                              static_cast<int>(CYCLE_SIZE));
         std::shared_ptr<Tucuxi::Core::IntakeIntervalCalculator> calculator = std::make_shared<Tucuxi::Core::ConstantEliminationBolus>();
-        _intakes[0].setCalculator(calculator);
-        _intakes[1].setCalculator(calculator);
+        intakes[0].setCalculator(calculator);
+        intakes[1].setCalculator(calculator);
 
 
         //Definition of the parameters
@@ -495,59 +419,22 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestR1", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestS1", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestM1", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
-        Tucuxi::Core::ParameterSetSeries parametersSeries;
-        parametersSeries.addParameterSetEvent(parameters);
-
-
-        //Definition of the Concentration Calculator
-
-        //Tucuxi::Core::MultiConcentrationPredictionPtr predictionPtr;
-        /*{
-            predictionPtr = std::make_unique<Tucuxi::Core::MultiConcentrationPrediction>();
-
-            DateTime recordFrom = date::year_month_day(date::year(2018), date::month(9), date::day(1));
-            DateTime recordTo = recordFrom + interval;
-
-            Tucuxi::Core::IntakeSeries intakeSeries;
-            std::shared_ptr<IntakeIntervalCalculator> calculator2 = std::make_shared<ConstantEliminationBolus>();
-            intakeEvent.setCalculator(calculator2);
-            intakeSeries.push_back(intakeEvent);
-            Tucuxi::Core::IMultiConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::MultiConcentrationCalculator();
-            auto status = concentrationCalculator->computeConcentrations(
-                predictionPtr,
-                false,
-                recordFrom,
-                recordTo,
-                intakeSeries,
-                _parameters);
-            delete concentrationCalculator;
-            fructose_assert_eq(status, ComputingStatus::Ok);
-
-    #if 0
-            for (int i = 0; i<nbPoints; i++) {
-                std::cout << i << ":" << predictionPtr->getValues()[0][i] << std::endl;
-            }
-    #endif
-        }
-        */
+        Tucuxi::Core::ParameterSetEvent parameterset(DateTime::now(), parameterDefs);
+        parameters.addParameterSetEvent(parameterset);
 
 
 
-            Tucuxi::Core::MultiLikelihood aux(omega, m_residualErrorModel, _samples, _intakes, _parameters, _concentrationCalculator);
+            Tucuxi::Core::MultiLikelihood aux(omega, residualErrorModel, samples, intakes, parameters, concentrationCalculator);
 
             // Set initial etas to 0 for CL and V
 
-            _etas.push_back(0.1);
-            //_etas.push_back(0.0);
+            etas.push_back(0.1);
+            etas.push_back(0.1);
 
-            Value x = aux.negativeLogLikelihood(_etas);
+            Value x = aux.negativeLogLikelihood(etas);
 
             // We compute the expected result
 
-            // Prior: 0.5 * (_etas.transpose() * m_inverseOmega * _etas + m_omegaAdd)
-            // m_omega = m_omegaAdd(static_cast<double>(_omega.rows()) * log(2 * PI) + log(_omega.determinant()))
-            // sample likelihood: - _residualErrorModel.calculateSampleLikelihood(_expected, _observed.getValue());
             double expectedSampleValue = 201.1;
             double omegaAdd = static_cast<double>(omega.rows()) * log(2 * PI) + log(omega.determinant());
 
@@ -555,14 +442,16 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
             etasmd[0] = 0.1;
 
             double expectedValue = 0.5 * (etasmd.transpose() * omega.inverse() * etasmd + omegaAdd) -
-                    m_residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue, s0.getValue()) - m_residualErrorModel[1]->calculateSampleLikelihood(expectedSampleValue, 0); //0 as the second sample is empty
+                    residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue, s0.getValue()); //0 as the second sample is empty
+
+            fructose_assert_double_ne(x, std::numeric_limits<double>::max());
             fructose_assert_double_eq(x, expectedValue);
         }
 
 
     void test4(const std::string& /* _testName */){
-        //A 2-analyte with one sample on analyte 2
 
+        //A 2-analyte with one sample on analyte 2
 
         if (verbose()) {
               std::cout << __FUNCTION__ << std::endl;
@@ -570,12 +459,12 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
 
 
         Tucuxi::Core::OmegaMatrix omega;
-        std::vector<IResidualErrorModel*> m_residualErrorModel;
-        std::vector<SampleSeries> _samples;
-        IntakeSeries _intakes;
-        ParameterSetSeries _parameters;
-        MultiConcentrationCalculator _concentrationCalculator;
-        Etas _etas;
+        std::vector<IResidualErrorModel*> residualErrorModel;
+        std::vector<SampleSeries> samples;
+        IntakeSeries intakes;
+        ParameterSetSeries parameters;
+        MultiConcentrationCalculator concentrationCalculator;
+        Etas etas;
 
         //definition of the omega matrix
         omega = Tucuxi::Core::OmegaMatrix(1,1);
@@ -583,7 +472,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
 
 
 
-        //definition of the m_residualErrorModel
+        //definition of the residualErrorModel
 
 
         SigmaResidualErrorModel *newErrorModel1 = new SigmaResidualErrorModel();
@@ -591,7 +480,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
         sigma1(0) = 0.3138;
         newErrorModel1->setErrorModel(Tucuxi::Core::ResidualErrorType::PROPORTIONAL);
         newErrorModel1->setSigma(sigma1);
-        m_residualErrorModel.push_back(newErrorModel1);
+        residualErrorModel.push_back(newErrorModel1);
         //here i'm supposed to use a vector of pointers of IResidualErrorModel or a vector of pointers of SigmaResidualErrorModel
 
 
@@ -601,24 +490,24 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
         sigma2(0) = 0.3138;
         newErrorModel1->setErrorModel(Tucuxi::Core::ResidualErrorType::PROPORTIONAL);
         newErrorModel1->setSigma(sigma2);
-        m_residualErrorModel.push_back(newErrorModel2);
+        residualErrorModel.push_back(newErrorModel2);
         //here i'm supposed to use a vector of pointers of IResidualErrorModel or a vector of pointers of SigmaResidualErrorModel
 
         //definition of the samples
         Tucuxi::Core::SampleSeries sampleSeries1;
-        _samples.push_back(sampleSeries1);
+        samples.push_back(sampleSeries1);
 
         Tucuxi::Core::SampleSeries sampleSeries2;
         DateTime date0 = DateTime((date::year(2017), date::month(6), date::day(6), Duration(std::chrono::hours(12), std::chrono::minutes(30), std::chrono::seconds(0))));
         Tucuxi::Core::SampleEvent s0(date0, 200.0);
         sampleSeries2.push_back(s0);
-         _samples.push_back(sampleSeries2);
+         samples.push_back(sampleSeries2);
 
 
         //definition of the intakes
 
 
-        _intakes.emplace_back(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(6)),
+        intakes.emplace_back(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(6)),
                                       Duration(std::chrono::hours(8), std::chrono::minutes(30), std::chrono::seconds(0))),
                              Duration(),
                              DoseValue(200.0),
@@ -629,7 +518,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
                              Duration(std::chrono::minutes(20)),
                              static_cast<int>(CYCLE_SIZE));
 
-        _intakes.emplace_back(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(7)),
+        intakes.emplace_back(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(7)),
                                       Duration(std::chrono::hours(8), std::chrono::minutes(30), std::chrono::seconds(0))),
                              Duration(),
                              DoseValue(200.0),
@@ -641,8 +530,8 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
 
                              static_cast<int>(CYCLE_SIZE));
         std::shared_ptr<Tucuxi::Core::IntakeIntervalCalculator> calculator = std::make_shared<Tucuxi::Core::ConstantEliminationBolus>();
-        _intakes[0].setCalculator(calculator);
-        _intakes[1].setCalculator(calculator);
+        intakes[0].setCalculator(calculator);
+        intakes[1].setCalculator(calculator);
 
 
         //Definition of the parameters
@@ -657,67 +546,30 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestR1", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestS1", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestM1", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
-        Tucuxi::Core::ParameterSetSeries parametersSeries;
-        parametersSeries.addParameterSetEvent(parameters);
-
-
-        //Definition of the Concentration Calculator
-
-        //Tucuxi::Core::MultiConcentrationPredictionPtr predictionPtr;
-        /*{
-            predictionPtr = std::make_unique<Tucuxi::Core::MultiConcentrationPrediction>();
-
-            DateTime recordFrom = date::year_month_day(date::year(2018), date::month(9), date::day(1));
-            DateTime recordTo = recordFrom + interval;
-
-            Tucuxi::Core::IntakeSeries intakeSeries;
-            std::shared_ptr<IntakeIntervalCalculator> calculator2 = std::make_shared<ConstantEliminationBolus>();
-            intakeEvent.setCalculator(calculator2);
-            intakeSeries.push_back(intakeEvent);
-            Tucuxi::Core::IMultiConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::MultiConcentrationCalculator();
-            auto status = concentrationCalculator->computeConcentrations(
-                predictionPtr,
-                false,
-                recordFrom,
-                recordTo,
-                intakeSeries,
-                _parameters);
-            delete concentrationCalculator;
-            fructose_assert_eq(status, ComputingStatus::Ok);
-
-    #if 0
-            for (int i = 0; i<nbPoints; i++) {
-                std::cout << i << ":" << predictionPtr->getValues()[0][i] << std::endl;
-            }
-    #endif
-        }
-        */
+        Tucuxi::Core::ParameterSetEvent parameterset(DateTime::now(), parameterDefs);
+        parameters.addParameterSetEvent(parameterset);
 
 
 
-            Tucuxi::Core::MultiLikelihood aux(omega, m_residualErrorModel, _samples, _intakes, _parameters, _concentrationCalculator);
+            Tucuxi::Core::MultiLikelihood aux(omega, residualErrorModel, samples, intakes, parameters, concentrationCalculator);
 
             // Set initial etas to 0 for CL and V
 
-            _etas.push_back(0.1);
-            //_etas.push_back(0.0);
+            etas.push_back(0.1);
+            etas.push_back(0.1);
 
-            Value x = aux.negativeLogLikelihood(_etas);
+            Value x = aux.negativeLogLikelihood(etas);
 
             // We compute the expected result
 
-            // Prior: 0.5 * (_etas.transpose() * m_inverseOmega * _etas + m_omegaAdd)
-            // m_omega = m_omegaAdd(static_cast<double>(_omega.rows()) * log(2 * PI) + log(_omega.determinant()))
-            // sample likelihood: - _residualErrorModel.calculateSampleLikelihood(_expected, _observed.getValue());
             double expectedSampleValue = 201.1;
             double omegaAdd = static_cast<double>(omega.rows()) * log(2 * PI) + log(omega.determinant());
 
             EigenVector etasmd(1);
             etasmd[0] = 0.1;
 
-            double expectedValue = 0.5 * (etasmd.transpose() * omega.inverse() * etasmd + omegaAdd) -
-                    m_residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue, 0) - m_residualErrorModel[1]->calculateSampleLikelihood(expectedSampleValue, s0.getValue()); //0 as the first sample is empty
+            double expectedValue = 0.5 * (etasmd.transpose() * omega.inverse() * etasmd + omegaAdd)
+                     - residualErrorModel[1]->calculateSampleLikelihood(expectedSampleValue, s0.getValue()); //0 as the first sample is empty
             fructose_assert_double_eq(x, expectedValue);
 
 
@@ -732,12 +584,12 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
 
 
         Tucuxi::Core::OmegaMatrix omega;
-        std::vector<IResidualErrorModel*> m_residualErrorModel;
-        std::vector<SampleSeries> _samples;
-        IntakeSeries _intakes;
-        ParameterSetSeries _parameters;
-        MultiConcentrationCalculator _concentrationCalculator;
-        Etas _etas;
+        std::vector<IResidualErrorModel*> residualErrorModel;
+        std::vector<SampleSeries> samples;
+        IntakeSeries intakes;
+        ParameterSetSeries parameters;
+        MultiConcentrationCalculator concentrationCalculator;
+        Etas etas;
 
         //definition of the omega matrix
         omega = Tucuxi::Core::OmegaMatrix(1,1);
@@ -745,7 +597,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
 
 
 
-        //definition of the m_residualErrorModel
+        //definition of the residualErrorModel
 
 
         SigmaResidualErrorModel *newErrorModel1 = new SigmaResidualErrorModel();
@@ -753,7 +605,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
         sigma1(0) = 0.3138;
         newErrorModel1->setErrorModel(Tucuxi::Core::ResidualErrorType::PROPORTIONAL);
         newErrorModel1->setSigma(sigma1);
-        m_residualErrorModel.push_back(newErrorModel1);
+        residualErrorModel.push_back(newErrorModel1);
         //here i'm supposed to use a vector of pointers of IResidualErrorModel or a vector of pointers of SigmaResidualErrorModel
 
 
@@ -763,7 +615,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
         sigma2(0) = 0.3138;
         newErrorModel1->setErrorModel(Tucuxi::Core::ResidualErrorType::PROPORTIONAL);
         newErrorModel1->setSigma(sigma2);
-        m_residualErrorModel.push_back(newErrorModel2);
+        residualErrorModel.push_back(newErrorModel2);
         //here i'm supposed to use a vector of pointers of IResidualErrorModel or a vector of pointers of SigmaResidualErrorModel
 
         //definition of the samples
@@ -771,19 +623,19 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
         DateTime date0 = DateTime((date::year(2017), date::month(6), date::day(6), Duration(std::chrono::hours(12), std::chrono::minutes(30), std::chrono::seconds(0))));
         Tucuxi::Core::SampleEvent s0(date0, 200.0);
         sampleSeries1.push_back(s0);
-        _samples.push_back(sampleSeries1);
+        samples.push_back(sampleSeries1);
 
         Tucuxi::Core::SampleSeries sampleSeries2;
         DateTime date1 = DateTime((date::year(2017), date::month(6), date::day(6), Duration(std::chrono::hours(16), std::chrono::minutes(30), std::chrono::seconds(0))));
         Tucuxi::Core::SampleEvent s1(date1, 200.0);
         sampleSeries2.push_back(s0);
-         _samples.push_back(sampleSeries2);
+         samples.push_back(sampleSeries2);
 
 
         //definition of the intakes
 
 
-        _intakes.emplace_back(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(6)),
+        intakes.emplace_back(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(6)),
                                       Duration(std::chrono::hours(8), std::chrono::minutes(30), std::chrono::seconds(0))),
                              Duration(),
                              DoseValue(200.0),
@@ -794,7 +646,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
                              Duration(std::chrono::minutes(20)),
                              static_cast<int>(CYCLE_SIZE));
 
-        _intakes.emplace_back(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(7)),
+        intakes.emplace_back(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(7)),
                                       Duration(std::chrono::hours(8), std::chrono::minutes(30), std::chrono::seconds(0))),
                              Duration(),
                              DoseValue(200.0),
@@ -806,8 +658,8 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
 
                              static_cast<int>(CYCLE_SIZE));
         std::shared_ptr<Tucuxi::Core::IntakeIntervalCalculator> calculator = std::make_shared<Tucuxi::Core::ConstantEliminationBolus>();
-        _intakes[0].setCalculator(calculator);
-        _intakes[1].setCalculator(calculator);
+        intakes[0].setCalculator(calculator);
+        intakes[1].setCalculator(calculator);
 
 
         //Definition of the parameters
@@ -822,57 +674,24 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestR1", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestS1", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestM1", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
-        Tucuxi::Core::ParameterSetSeries parametersSeries;
-        parametersSeries.addParameterSetEvent(parameters);
-
-
-        //Definition of the Concentration Calculator
-
-        //Tucuxi::Core::MultiConcentrationPredictionPtr predictionPtr;
-        /*{
-            predictionPtr = std::make_unique<Tucuxi::Core::MultiConcentrationPrediction>();
-
-            DateTime recordFrom = date::year_month_day(date::year(2018), date::month(9), date::day(1));
-            DateTime recordTo = recordFrom + interval;
-
-            Tucuxi::Core::IntakeSeries intakeSeries;
-            std::shared_ptr<IntakeIntervalCalculator> calculator2 = std::make_shared<ConstantEliminationBolus>();
-            intakeEvent.setCalculator(calculator2);
-            intakeSeries.push_back(intakeEvent);
-            Tucuxi::Core::IMultiConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::MultiConcentrationCalculator();
-            auto status = concentrationCalculator->computeConcentrations(
-                predictionPtr,
-                false,
-                recordFrom,
-                recordTo,
-                intakeSeries,
-                _parameters);
-            delete concentrationCalculator;
-            fructose_assert_eq(status, ComputingStatus::Ok);
-
-    #if 0
-            for (int i = 0; i<nbPoints; i++) {
-                std::cout << i << ":" << predictionPtr->getValues()[0][i] << std::endl;
-            }
-    #endif
-        }
-        */
+        Tucuxi::Core::ParameterSetEvent parameterset(DateTime::now(), parameterDefs);
+        parameters.addParameterSetEvent(parameterset);
 
 
 
-            Tucuxi::Core::MultiLikelihood aux(omega, m_residualErrorModel, _samples, _intakes, _parameters, _concentrationCalculator);
+
+            Tucuxi::Core::MultiLikelihood aux(omega, residualErrorModel, samples, intakes, parameters, concentrationCalculator);
 
             // Set initial etas to 0 for CL and V
 
-            _etas.push_back(0.1);
-            //_etas.push_back(0.0);
+            etas.push_back(0.1);
+            etas.push_back(0.0);
 
-            Value x = aux.negativeLogLikelihood(_etas);
+            Value x = aux.negativeLogLikelihood(etas);
 
             // We compute the expected result
 
-            // Prior: 0.5 * (_etas.transpose() * m_inverseOmega * _etas + m_omegaAdd)
+            // Prior: 0.5 * (etas.transpose() * m_inverseOmega * etas + m_omegaAdd)
             // m_omega = m_omegaAdd(static_cast<double>(_omega.rows()) * log(2 * PI) + log(_omega.determinant()))
             // sample likelihood: - _residualErrorModel.calculateSampleLikelihood(_expected, _observed.getValue());
             double expectedSampleValue1 = 121.1;
@@ -883,7 +702,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
             etasmd[0] = 0.1;
 
             double expectedValue = 0.5 * (etasmd.transpose() * omega.inverse() * etasmd + omegaAdd) -
-                    m_residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue1, s0.getValue()) - m_residualErrorModel[1]->calculateSampleLikelihood(expectedSampleValue2, s1.getValue());
+                    residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue1, s0.getValue()) - residualErrorModel[1]->calculateSampleLikelihood(expectedSampleValue2, s1.getValue());
             fructose_assert_double_eq(x, expectedValue);
     }
 
@@ -896,12 +715,12 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
 
 
         Tucuxi::Core::OmegaMatrix omega;
-        std::vector<IResidualErrorModel*> m_residualErrorModel;
-        std::vector<SampleSeries> _samples;
-        IntakeSeries _intakes;
-        ParameterSetSeries _parameters;
-        MultiConcentrationCalculator _concentrationCalculator;
-        Etas _etas;
+        std::vector<IResidualErrorModel*> residualErrorModel;
+        std::vector<SampleSeries> samples;
+        IntakeSeries intakes;
+        ParameterSetSeries parameters;
+        MultiConcentrationCalculator concentrationCalculator;
+        Etas etas;
 
         //definition of the omega matrix
         omega = Tucuxi::Core::OmegaMatrix(1,1);
@@ -909,7 +728,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
 
 
 
-        //definition of the m_residualErrorModel
+        //definition of the residualErrorModel
 
 
         SigmaResidualErrorModel *newErrorModel1 = new SigmaResidualErrorModel();
@@ -917,7 +736,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
         sigma1(0) = 0.3138;
         newErrorModel1->setErrorModel(Tucuxi::Core::ResidualErrorType::PROPORTIONAL);
         newErrorModel1->setSigma(sigma1);
-        m_residualErrorModel.push_back(newErrorModel1);
+        residualErrorModel.push_back(newErrorModel1);
         //here i'm supposed to use a vector of pointers of IResidualErrorModel or a vector of pointers of SigmaResidualErrorModel
 
 
@@ -927,7 +746,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
         sigma2(0) = 0.3138;
         newErrorModel1->setErrorModel(Tucuxi::Core::ResidualErrorType::PROPORTIONAL);
         newErrorModel1->setSigma(sigma2);
-        m_residualErrorModel.push_back(newErrorModel2);
+        residualErrorModel.push_back(newErrorModel2);
         //here i'm supposed to use a vector of pointers of IResidualErrorModel or a vector of pointers of SigmaResidualErrorModel
 
         //definition of the samples
@@ -935,19 +754,19 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
         DateTime date0 = DateTime((date::year(2017), date::month(6), date::day(6), Duration(std::chrono::hours(12), std::chrono::minutes(30), std::chrono::seconds(0))));
         Tucuxi::Core::SampleEvent s0(date0, 200.0);
         sampleSeries1.push_back(s0);
-        _samples.push_back(sampleSeries1);
+        samples.push_back(sampleSeries1);
 
         Tucuxi::Core::SampleSeries sampleSeries2;
         DateTime date1 = DateTime((date::year(2017), date::month(6), date::day(6), Duration(std::chrono::hours(16), std::chrono::minutes(30), std::chrono::seconds(0))));
         Tucuxi::Core::SampleEvent s1(date1, 200.0);
         sampleSeries2.push_back(s0);
-         _samples.push_back(sampleSeries2);
+         samples.push_back(sampleSeries2);
 
 
         //definition of the intakes
 
 
-        _intakes.emplace_back(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(6)),
+        intakes.emplace_back(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(6)),
                                       Duration(std::chrono::hours(8), std::chrono::minutes(30), std::chrono::seconds(0))),
                              Duration(),
                              DoseValue(200.0),
@@ -958,7 +777,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
                              Duration(std::chrono::minutes(20)),
                              static_cast<int>(CYCLE_SIZE));
 
-        _intakes.emplace_back(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(7)),
+        intakes.emplace_back(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(7)),
                                       Duration(std::chrono::hours(8), std::chrono::minutes(30), std::chrono::seconds(0))),
                              Duration(),
                              DoseValue(200.0),
@@ -970,8 +789,8 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
 
                              static_cast<int>(CYCLE_SIZE));
         std::shared_ptr<Tucuxi::Core::IntakeIntervalCalculator> calculator = std::make_shared<Tucuxi::Core::ConstantEliminationBolus>();
-        _intakes[0].setCalculator(calculator);
-        _intakes[1].setCalculator(calculator);
+        intakes[0].setCalculator(calculator);
+        intakes[1].setCalculator(calculator);
 
 
         //Definition of the parameters
@@ -986,59 +805,21 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestR1", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestS1", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestM1", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
-        Tucuxi::Core::ParameterSetSeries parametersSeries;
-        parametersSeries.addParameterSetEvent(parameters);
+        Tucuxi::Core::ParameterSetEvent parameterset(DateTime::now(), parameterDefs);
+        parameters.addParameterSetEvent(parameterset);
 
 
-        //Definition of the Concentration Calculator
-
-        //Tucuxi::Core::MultiConcentrationPredictionPtr predictionPtr;
-        /*{
-            predictionPtr = std::make_unique<Tucuxi::Core::MultiConcentrationPrediction>();
-
-            DateTime recordFrom = date::year_month_day(date::year(2018), date::month(9), date::day(1));
-            DateTime recordTo = recordFrom + interval;
-
-            Tucuxi::Core::IntakeSeries intakeSeries;
-            std::shared_ptr<IntakeIntervalCalculator> calculator2 = std::make_shared<ConstantEliminationBolus>();
-            intakeEvent.setCalculator(calculator2);
-            intakeSeries.push_back(intakeEvent);
-            Tucuxi::Core::IMultiConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::MultiConcentrationCalculator();
-            auto status = concentrationCalculator->computeConcentrations(
-                predictionPtr,
-                false,
-                recordFrom,
-                recordTo,
-                intakeSeries,
-                _parameters);
-            delete concentrationCalculator;
-            fructose_assert_eq(status, ComputingStatus::Ok);
-
-    #if 0
-            for (int i = 0; i<nbPoints; i++) {
-                std::cout << i << ":" << predictionPtr->getValues()[0][i] << std::endl;
-            }
-    #endif
-        }
-        */
-
-
-
-            Tucuxi::Core::MultiLikelihood aux(omega, m_residualErrorModel, _samples, _intakes, _parameters, _concentrationCalculator);
+            Tucuxi::Core::MultiLikelihood aux(omega, residualErrorModel, samples, intakes, parameters, concentrationCalculator);
 
             // Set initial etas to 0 for CL and V
 
-            _etas.push_back(0.1);
-            //_etas.push_back(0.0);
+            etas.push_back(0.1);
+            etas.push_back(0.1);
 
-            Value x = aux.negativeLogLikelihood(_etas);
+            Value x = aux.negativeLogLikelihood(etas);
 
             // We compute the expected result
 
-            // Prior: 0.5 * (_etas.transpose() * m_inverseOmega * _etas + m_omegaAdd)
-            // m_omega = m_omegaAdd(static_cast<double>(_omega.rows()) * log(2 * PI) + log(_omega.determinant()))
-            // sample likelihood: - _residualErrorModel.calculateSampleLikelihood(_expected, _observed.getValue());
             double expectedSampleValue = 201.1;
             double omegaAdd = static_cast<double>(omega.rows()) * log(2 * PI) + log(omega.determinant());
 
@@ -1046,7 +827,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
             etasmd[0] = 0.1;
 
             double expectedValue = 0.5 * (etasmd.transpose() * omega.inverse() * etasmd + omegaAdd) -
-                    m_residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue, s0.getValue()) - m_residualErrorModel[1]->calculateSampleLikelihood(expectedSampleValue, s1.getValue());   //WE CAN NOT USE 2.0 * m_residual... as they are 2 different analytes
+                    residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue, s0.getValue()) - residualErrorModel[1]->calculateSampleLikelihood(expectedSampleValue, s1.getValue());   //WE CAN NOT USE 2.0 * m_residual... as they are 2 different analytes
             fructose_assert_double_eq(x, expectedValue);
     }
 
@@ -1062,12 +843,12 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
 
 
         Tucuxi::Core::OmegaMatrix omega;
-        std::vector<IResidualErrorModel*> m_residualErrorModel;
-        std::vector<SampleSeries> _samples;
-        IntakeSeries _intakes;
-        ParameterSetSeries _parameters;
-        MultiConcentrationCalculator _concentrationCalculator;
-        Etas _etas;
+        std::vector<IResidualErrorModel*> residualErrorModel;
+        std::vector<SampleSeries> samples;
+        IntakeSeries intakes;
+        ParameterSetSeries parameters;
+        MultiConcentrationCalculator concentrationCalculator;
+        Etas etas;
 
         //definition of the omega matrix
         omega = Tucuxi::Core::OmegaMatrix(1,1);
@@ -1075,7 +856,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
 
 
 
-        //definition of the m_residualErrorModel
+        //definition of the residualErrorModel
 
 
         SigmaResidualErrorModel *newErrorModel1 = new SigmaResidualErrorModel();
@@ -1083,7 +864,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
         sigma1(0) = 0.3138;
         newErrorModel1->setErrorModel(Tucuxi::Core::ResidualErrorType::PROPORTIONAL);
         newErrorModel1->setSigma(sigma1);
-        m_residualErrorModel.push_back(newErrorModel1);
+        residualErrorModel.push_back(newErrorModel1);
         //here i'm supposed to use a vector of pointers of IResidualErrorModel or a vector of pointers of SigmaResidualErrorModel
 
 
@@ -1093,7 +874,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
         sigma2(0) = 0.3138;
         newErrorModel1->setErrorModel(Tucuxi::Core::ResidualErrorType::PROPORTIONAL);
         newErrorModel1->setSigma(sigma2);
-        m_residualErrorModel.push_back(newErrorModel2);
+        residualErrorModel.push_back(newErrorModel2);
         //here i'm supposed to use a vector of pointers of IResidualErrorModel or a vector of pointers of SigmaResidualErrorModel
 
         //definition of the samples
@@ -1112,7 +893,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
         sampleSeries1.push_back(s2);
 
 
-        _samples.push_back(sampleSeries1);
+        samples.push_back(sampleSeries1);
 
         Tucuxi::Core::SampleSeries sampleSeries2;
 
@@ -1128,13 +909,13 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
         Tucuxi::Core::SampleEvent s5(date5, 100.0);
         sampleSeries1.push_back(s5);
 
-         _samples.push_back(sampleSeries2);
+         samples.push_back(sampleSeries2);
 
 
         //definition of the intakes
 
 
-        _intakes.emplace_back(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(6)),
+        intakes.emplace_back(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(6)),
                                       Duration(std::chrono::hours(8), std::chrono::minutes(30), std::chrono::seconds(0))),
                              Duration(),
                              DoseValue(200.0),
@@ -1145,7 +926,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
                              Duration(std::chrono::minutes(20)),
                              static_cast<int>(CYCLE_SIZE));
 
-        _intakes.emplace_back(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(7)),
+        intakes.emplace_back(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(7)),
                                       Duration(std::chrono::hours(8), std::chrono::minutes(30), std::chrono::seconds(0))),
                              Duration(),
                              DoseValue(200.0),
@@ -1157,8 +938,8 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
 
                              static_cast<int>(CYCLE_SIZE));
         std::shared_ptr<Tucuxi::Core::IntakeIntervalCalculator> calculator = std::make_shared<Tucuxi::Core::ConstantEliminationBolus>();
-        _intakes[0].setCalculator(calculator);
-        _intakes[1].setCalculator(calculator);
+        intakes[0].setCalculator(calculator);
+        intakes[1].setCalculator(calculator);
 
 
         //Definition of the parameters
@@ -1173,59 +954,23 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestR1", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestS1", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestM1", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
-        Tucuxi::Core::ParameterSetSeries parametersSeries;
-        parametersSeries.addParameterSetEvent(parameters);
-
-
-        //Definition of the Concentration Calculator
-
-        //Tucuxi::Core::MultiConcentrationPredictionPtr predictionPtr;
-        /*{
-            predictionPtr = std::make_unique<Tucuxi::Core::MultiConcentrationPrediction>();
-
-            DateTime recordFrom = date::year_month_day(date::year(2018), date::month(9), date::day(1));
-            DateTime recordTo = recordFrom + interval;
-
-            Tucuxi::Core::IntakeSeries intakeSeries;
-            std::shared_ptr<IntakeIntervalCalculator> calculator2 = std::make_shared<ConstantEliminationBolus>();
-            intakeEvent.setCalculator(calculator2);
-            intakeSeries.push_back(intakeEvent);
-            Tucuxi::Core::IMultiConcentrationCalculator *concentrationCalculator = new Tucuxi::Core::MultiConcentrationCalculator();
-            auto status = concentrationCalculator->computeConcentrations(
-                predictionPtr,
-                false,
-                recordFrom,
-                recordTo,
-                intakeSeries,
-                _parameters);
-            delete concentrationCalculator;
-            fructose_assert_eq(status, ComputingStatus::Ok);
-
-    #if 0
-            for (int i = 0; i<nbPoints; i++) {
-                std::cout << i << ":" << predictionPtr->getValues()[0][i] << std::endl;
-            }
-    #endif
-        }
-        */
+        Tucuxi::Core::ParameterSetEvent parameterset(DateTime::now(), parameterDefs);
+        parameters.addParameterSetEvent(parameterset);
 
 
 
-            Tucuxi::Core::MultiLikelihood aux(omega, m_residualErrorModel, _samples, _intakes, _parameters, _concentrationCalculator);
+            Tucuxi::Core::MultiLikelihood aux(omega, residualErrorModel, samples, intakes, parameters, concentrationCalculator);
 
             // Set initial etas to 0 for CL and V
 
-            _etas.push_back(0.1);
-            //_etas.push_back(0.0);
+            etas.push_back(0.1);
+            etas.push_back(0.1);
 
-            Value x = aux.negativeLogLikelihood(_etas);
+            Value x = aux.negativeLogLikelihood(etas);
 
             // We compute the expected result
 
-            // Prior: 0.5 * (_etas.transpose() * m_inverseOmega * _etas + m_omegaAdd)
-            // m_omega = m_omegaAdd(static_cast<double>(_omega.rows()) * log(2 * PI) + log(_omega.determinant()))
-            // sample likelihood: - _residualErrorModel.calculateSampleLikelihood(_expected, _observed.getValue());
+
             double expectedSampleValue1 = 121.1;
             double expectedSampleValue2 = 41.1;
             double expectedSampleValue3 = 21.1;
@@ -1238,19 +983,10 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>{
             etasmd[0] = 0.1;
 
             double expectedValue = 0.5 * (etasmd.transpose() * omega.inverse() * etasmd + omegaAdd) -
-                    m_residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue1, s0.getValue()) - m_residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue2, s1.getValue() -m_residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue3, s2.getValue()) - m_residualErrorModel[1]->calculateSampleLikelihood(expectedSampleValue4, s3.getValue()) - m_residualErrorModel[1]->calculateSampleLikelihood(expectedSampleValue5, s4.getValue()) -m_residualErrorModel[1]->calculateSampleLikelihood(expectedSampleValue6, s5.getValue()));
+                    residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue1, s0.getValue()) - residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue2, s1.getValue() -residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue3, s2.getValue()) - residualErrorModel[1]->calculateSampleLikelihood(expectedSampleValue4, s3.getValue()) - residualErrorModel[1]->calculateSampleLikelihood(expectedSampleValue5, s4.getValue()) -residualErrorModel[1]->calculateSampleLikelihood(expectedSampleValue6, s5.getValue()));
             fructose_assert_double_eq(x, expectedValue);
     }
 
-/*     template<class CalculatorClass>
-     void testCalculator(const Tucuxi::Core::ParameterSetSeries &_parameters,
-                            double _dose,
-                            Tucuxi::Core::AbsorptionModel _route,
-                            std::chrono::hours _interval,
-                            std::chrono::seconds _infusionTime,
-                            CycleSize _nbPoints);
-
-*/
 
 };
 

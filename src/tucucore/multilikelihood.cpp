@@ -6,7 +6,7 @@
 #include "multilikelihood.h"
 #include "multiconcentrationcalculator.h"
 #include "residualerrormodel.h"
-
+#include "fructose/fructose.h"
 #include <boost/math/special_functions/erf.hpp>
 #include <Eigen/LU>
 #include <iostream>

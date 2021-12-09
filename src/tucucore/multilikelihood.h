@@ -14,6 +14,7 @@
 #include "dosage.h"
 #include "parameter.h"
 #include "multiconcentrationcalculator.h"
+#include "fructose/fructose.h"
 
 namespace Tucuxi {
 namespace Core {
